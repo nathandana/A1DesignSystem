@@ -1,0 +1,132 @@
+/* ─── Spacing utilities ───────────────────────────────────────────────────────
+   Classes follow the pattern: a1-{property}{dimension?}-{size}
+   Properties : p (padding)  m (margin)
+   Dimensions : (omit = all)  t  b  l  r  x (inline)  y (block)
+   Sizes      : xxs  xs  sm  md  lg  xl  xxl
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Padding — all ──────────────────────────────────────────────────────── */
+.a1-p-xxs { padding: var(--base-spacing-xxs); }
+.a1-p-xs  { padding: var(--base-spacing-xs);  }
+.a1-p-sm  { padding: var(--base-spacing-sm);  }
+.a1-p-md  { padding: var(--base-spacing-md);  }
+.a1-p-lg  { padding: var(--base-spacing-lg);  }
+.a1-p-xl  { padding: var(--base-spacing-xl);  }
+.a1-p-xxl { padding: var(--base-spacing-xxl); }
+
+/* ── Padding — top ──────────────────────────────────────────────────────── */
+.a1-pt-xxs { padding-top: var(--base-spacing-xxs); }
+.a1-pt-xs  { padding-top: var(--base-spacing-xs);  }
+.a1-pt-sm  { padding-top: var(--base-spacing-sm);  }
+.a1-pt-md  { padding-top: var(--base-spacing-md);  }
+.a1-pt-lg  { padding-top: var(--base-spacing-lg);  }
+.a1-pt-xl  { padding-top: var(--base-spacing-xl);  }
+.a1-pt-xxl { padding-top: var(--base-spacing-xxl); }
+
+/* ── Padding — bottom ───────────────────────────────────────────────────── */
+.a1-pb-xxs { padding-bottom: var(--base-spacing-xxs); }
+.a1-pb-xs  { padding-bottom: var(--base-spacing-xs);  }
+.a1-pb-sm  { padding-bottom: var(--base-spacing-sm);  }
+.a1-pb-md  { padding-bottom: var(--base-spacing-md);  }
+.a1-pb-lg  { padding-bottom: var(--base-spacing-lg);  }
+.a1-pb-xl  { padding-bottom: var(--base-spacing-xl);  }
+.a1-pb-xxl { padding-bottom: var(--base-spacing-xxl); }
+
+/* ── Padding — left ─────────────────────────────────────────────────────── */
+.a1-pl-xxs { padding-left: var(--base-spacing-xxs); }
+.a1-pl-xs  { padding-left: var(--base-spacing-xs);  }
+.a1-pl-sm  { padding-left: var(--base-spacing-sm);  }
+.a1-pl-md  { padding-left: var(--base-spacing-md);  }
+.a1-pl-lg  { padding-left: var(--base-spacing-lg);  }
+.a1-pl-xl  { padding-left: var(--base-spacing-xl);  }
+.a1-pl-xxl { padding-left: var(--base-spacing-xxl); }
+
+/* ── Padding — right ────────────────────────────────────────────────────── */
+.a1-pr-xxs { padding-right: var(--base-spacing-xxs); }
+.a1-pr-xs  { padding-right: var(--base-spacing-xs);  }
+.a1-pr-sm  { padding-right: var(--base-spacing-sm);  }
+.a1-pr-md  { padding-right: var(--base-spacing-md);  }
+.a1-pr-lg  { padding-right: var(--base-spacing-lg);  }
+.a1-pr-xl  { padding-right: var(--base-spacing-xl);  }
+.a1-pr-xxl { padding-right: var(--base-spacing-xxl); }
+
+/* ── Padding — x (inline) ───────────────────────────────────────────────── */
+.a1-px-xxs { padding-left: var(--base-spacing-xxs); padding-right: var(--base-spacing-xxs); }
+.a1-px-xs  { padding-left: var(--base-spacing-xs);  padding-right: var(--base-spacing-xs);  }
+.a1-px-sm  { padding-left: var(--base-spacing-sm);  padding-right: var(--base-spacing-sm);  }
+.a1-px-md  { padding-left: var(--base-spacing-md);  padding-right: var(--base-spacing-md);  }
+.a1-px-lg  { padding-left: var(--base-spacing-lg);  padding-right: var(--base-spacing-lg);  }
+.a1-px-xl  { padding-left: var(--base-spacing-xl);  padding-right: var(--base-spacing-xl);  }
+.a1-px-xxl { padding-left: var(--base-spacing-xxl); padding-right: var(--base-spacing-xxl); }
+
+/* ── Padding — y (block) ────────────────────────────────────────────────── */
+.a1-py-xxs { padding-top: var(--base-spacing-xxs); padding-bottom: var(--base-spacing-xxs); }
+.a1-py-xs  { padding-top: var(--base-spacing-xs);  padding-bottom: var(--base-spacing-xs);  }
+.a1-py-sm  { padding-top: var(--base-spacing-sm);  padding-bottom: var(--base-spacing-sm);  }
+.a1-py-md  { padding-top: var(--base-spacing-md);  padding-bottom: var(--base-spacing-md);  }
+.a1-py-lg  { padding-top: var(--base-spacing-lg);  padding-bottom: var(--base-spacing-lg);  }
+.a1-py-xl  { padding-top: var(--base-spacing-xl);  padding-bottom: var(--base-spacing-xl);  }
+.a1-py-xxl { padding-top: var(--base-spacing-xxl); padding-bottom: var(--base-spacing-xxl); }
+
+/* ── Margin — all ───────────────────────────────────────────────────────── */
+.a1-m-xxs { margin: var(--base-spacing-xxs); }
+.a1-m-xs  { margin: var(--base-spacing-xs);  }
+.a1-m-sm  { margin: var(--base-spacing-sm);  }
+.a1-m-md  { margin: var(--base-spacing-md);  }
+.a1-m-lg  { margin: var(--base-spacing-lg);  }
+.a1-m-xl  { margin: var(--base-spacing-xl);  }
+.a1-m-xxl { margin: var(--base-spacing-xxl); }
+
+/* ── Margin — top ───────────────────────────────────────────────────────── */
+.a1-mt-xxs { margin-top: var(--base-spacing-xxs); }
+.a1-mt-xs  { margin-top: var(--base-spacing-xs);  }
+.a1-mt-sm  { margin-top: var(--base-spacing-sm);  }
+.a1-mt-md  { margin-top: var(--base-spacing-md);  }
+.a1-mt-lg  { margin-top: var(--base-spacing-lg);  }
+.a1-mt-xl  { margin-top: var(--base-spacing-xl);  }
+.a1-mt-xxl { margin-top: var(--base-spacing-xxl); }
+
+/* ── Margin — bottom ────────────────────────────────────────────────────── */
+.a1-mb-xxs { margin-bottom: var(--base-spacing-xxs); }
+.a1-mb-xs  { margin-bottom: var(--base-spacing-xs);  }
+.a1-mb-sm  { margin-bottom: var(--base-spacing-sm);  }
+.a1-mb-md  { margin-bottom: var(--base-spacing-md);  }
+.a1-mb-lg  { margin-bottom: var(--base-spacing-lg);  }
+.a1-mb-xl  { margin-bottom: var(--base-spacing-xl);  }
+.a1-mb-xxl { margin-bottom: var(--base-spacing-xxl); }
+
+/* ── Margin — left ──────────────────────────────────────────────────────── */
+.a1-ml-xxs { margin-left: var(--base-spacing-xxs); }
+.a1-ml-xs  { margin-left: var(--base-spacing-xs);  }
+.a1-ml-sm  { margin-left: var(--base-spacing-sm);  }
+.a1-ml-md  { margin-left: var(--base-spacing-md);  }
+.a1-ml-lg  { margin-left: var(--base-spacing-lg);  }
+.a1-ml-xl  { margin-left: var(--base-spacing-xl);  }
+.a1-ml-xxl { margin-left: var(--base-spacing-xxl); }
+
+/* ── Margin — right ─────────────────────────────────────────────────────── */
+.a1-mr-xxs { margin-right: var(--base-spacing-xxs); }
+.a1-mr-xs  { margin-right: var(--base-spacing-xs);  }
+.a1-mr-sm  { margin-right: var(--base-spacing-sm);  }
+.a1-mr-md  { margin-right: var(--base-spacing-md);  }
+.a1-mr-lg  { margin-right: var(--base-spacing-lg);  }
+.a1-mr-xl  { margin-right: var(--base-spacing-xl);  }
+.a1-mr-xxl { margin-right: var(--base-spacing-xxl); }
+
+/* ── Margin — x (inline) ────────────────────────────────────────────────── */
+.a1-mx-xxs { margin-left: var(--base-spacing-xxs); margin-right: var(--base-spacing-xxs); }
+.a1-mx-xs  { margin-left: var(--base-spacing-xs);  margin-right: var(--base-spacing-xs);  }
+.a1-mx-sm  { margin-left: var(--base-spacing-sm);  margin-right: var(--base-spacing-sm);  }
+.a1-mx-md  { margin-left: var(--base-spacing-md);  margin-right: var(--base-spacing-md);  }
+.a1-mx-lg  { margin-left: var(--base-spacing-lg);  margin-right: var(--base-spacing-lg);  }
+.a1-mx-xl  { margin-left: var(--base-spacing-xl);  margin-right: var(--base-spacing-xl);  }
+.a1-mx-xxl { margin-left: var(--base-spacing-xxl); margin-right: var(--base-spacing-xxl); }
+
+/* ── Margin — y (block) ─────────────────────────────────────────────────── */
+.a1-my-xxs { margin-top: var(--base-spacing-xxs); margin-bottom: var(--base-spacing-xxs); }
+.a1-my-xs  { margin-top: var(--base-spacing-xs);  margin-bottom: var(--base-spacing-xs);  }
+.a1-my-sm  { margin-top: var(--base-spacing-sm);  margin-bottom: var(--base-spacing-sm);  }
+.a1-my-md  { margin-top: var(--base-spacing-md);  margin-bottom: var(--base-spacing-md);  }
+.a1-my-lg  { margin-top: var(--base-spacing-lg);  margin-bottom: var(--base-spacing-lg);  }
+.a1-my-xl  { margin-top: var(--base-spacing-xl);  margin-bottom: var(--base-spacing-xl);  }
+.a1-my-xxl { margin-top: var(--base-spacing-xxl); margin-bottom: var(--base-spacing-xxl); }

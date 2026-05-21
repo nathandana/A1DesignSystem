@@ -1,0 +1,10 @@
+{
+  "component": {
+    "dialog": {
+      "padding":      { "$type": "dimension", "$value": "{base.spacing.lg}" },
+      "borderRadius": { "$type": "dimension", "$value": "{base.radius.xl}" },
+      "borderWidth":  { "$type": "dimension", "$value": "1px" },
+      "shadow":       { "$type": "shadow",    "$value": "{semantic.shadow.xl}" }
+    }
+  }
+}

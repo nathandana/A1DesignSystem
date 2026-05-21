@@ -1,0 +1,40 @@
+.a1-heading {
+  margin: 0;
+  font-family: var(--a1-heading-family);
+  font-size: var(--a1-heading-size);
+  font-weight: var(--a1-heading-weight);
+  line-height: var(--a1-heading-line-height);
+  color: var(--a1-heading-color, var(--semantic-color-text-default));
+}
+
+.a1-heading--heading {
+  --a1-heading-family: var(--component-heading-font-family-heading);
+  --a1-heading-weight: var(--component-heading-font-weight-heading);
+  --a1-heading-line-height: var(--component-heading-font-line-height-heading);
+}
+
+.a1-heading--display {
+  --a1-heading-family: var(--component-heading-font-family-display);
+  --a1-heading-weight: var(--component-heading-font-weight-display);
+  --a1-heading-line-height: var(--component-heading-font-line-height-display);
+}
+
+/* Heading sizes */
+.a1-heading--heading-xl { --a1-heading-size: var(--semantic-font-size-heading-xl); }
+.a1-heading--heading-lg { --a1-heading-size: var(--semantic-font-size-heading-lg); }
+.a1-heading--heading-md { --a1-heading-size: var(--semantic-font-size-heading-md); }
+.a1-heading--heading-sm { --a1-heading-size: var(--semantic-font-size-heading-sm); }
+.a1-heading--heading-xs { --a1-heading-size: var(--semantic-font-size-heading-xs); }
+
+/* Display sizes */
+.a1-heading--display-sm     { --a1-heading-size: var(--semantic-font-size-display-sm); }
+.a1-heading--display-md     { --a1-heading-size: var(--semantic-font-size-display-md); }
+.a1-heading--display-lg     { --a1-heading-size: var(--semantic-font-size-display-lg); }
+.a1-heading--display-xl     { --a1-heading-size: var(--semantic-font-size-display-xl); }
+.a1-heading--display-xxl    { --a1-heading-size: var(--semantic-font-size-display-xxl); }
+.a1-heading--display-jumbo  { --a1-heading-size: var(--semantic-font-size-display-jumbo); }
+.a1-heading--display-xJumbo { --a1-heading-size: var(--semantic-font-size-display-x-jumbo); }
+
+/* Color modifiers */
+.a1-heading--muted   { --a1-heading-color: var(--semantic-color-text-muted); }
+.a1-heading--inverse { --a1-heading-color: var(--semantic-color-text-inverse); }

@@ -1,0 +1,79 @@
+.a1-dialog {
+  box-sizing: border-box;
+  border: var(--component-dialog-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--component-dialog-border-radius);
+  padding: var(--component-dialog-padding);
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--component-dialog-shadow);
+  color: var(--semantic-color-text-default);
+  width: min(560px, calc(100vw - var(--base-spacing-xxl)));
+  max-height: calc(100dvh - var(--base-spacing-xxl));
+  overflow: hidden;
+}
+
+.a1-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-md);
+}
+
+.a1-dialog::backdrop {
+  background: rgba(6, 11, 20, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.a1-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--base-spacing-md);
+}
+
+.a1-dialog__title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--component-heading-font-family-heading);
+  font-size: var(--semantic-font-size-heading-sm);
+  font-weight: var(--component-heading-font-weight-heading);
+  line-height: var(--component-heading-font-line-height-heading);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-dialog__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-top: -4px;
+  margin-right: -4px;
+  border: none;
+  border-radius: var(--base-radius-control);
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  cursor: pointer;
+}
+
+.a1-dialog__close:hover {
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-dialog__close:focus-visible {
+  outline: 3px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+.a1-dialog__body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.a1-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--base-spacing-sm);
+  padding-top: var(--base-spacing-md);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}

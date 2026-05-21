@@ -317,6 +317,56 @@
           }
         }
       }
+    },
+    "paragraph": {
+      "font": {
+        "family": {
+          "$type": "fontFamily",
+          "$value": "{theme.a1Light.font.family.body}"
+        },
+        "weight": {
+          "$type": "fontWeight",
+          "$value": "{semantic.font.weight.body}"
+        },
+        "lineHeight": {
+          "$type": "lineHeight",
+          "$value": "{semantic.font.lineHeight.body}"
+        }
+      }
+    },
+    "heading": {
+      "font": {
+        "family": {
+          "heading": {
+            "$type": "fontFamily",
+            "$value": "{theme.a1Light.font.family.heading}"
+          },
+          "display": {
+            "$type": "fontFamily",
+            "$value": "{theme.a1Light.font.family.display}"
+          }
+        },
+        "weight": {
+          "heading": {
+            "$type": "fontWeight",
+            "$value": "{semantic.font.weight.heading}"
+          },
+          "display": {
+            "$type": "fontWeight",
+            "$value": "{semantic.font.weight.display}"
+          }
+        },
+        "lineHeight": {
+          "heading": {
+            "$type": "lineHeight",
+            "$value": "{semantic.font.lineHeight.heading}"
+          },
+          "display": {
+            "$type": "lineHeight",
+            "$value": "{semantic.font.lineHeight.display}"
+          }
+        }
+      }
     }
   },
   "brand": {

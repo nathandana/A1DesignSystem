@@ -25,15 +25,13 @@
   color: var(--a1-button-foreground);
 }
 
-.a1-button:hover,
-.a1-button--state-hover {
+.a1-button:hover {
   background: var(--a1-button-background-hover);
   border-color: var(--a1-button-border-hover, var(--a1-button-border));
   color: var(--a1-button-foreground-hover, var(--a1-button-foreground));
 }
 
-.a1-button:active,
-.a1-button--state-active {
+.a1-button:active {
   background: var(--a1-button-background-pressed);
   border-color: var(--a1-button-border-pressed, var(--a1-button-border));
   color: var(--a1-button-foreground-pressed, var(--a1-button-foreground));
@@ -87,4 +85,8 @@
   --a1-button-border-hover: var(--component-button-tertiary-border-hover);
   --a1-button-border-pressed: var(--component-button-tertiary-border-pressed);
   --a1-button-border-width: var(--component-button-tertiary-border-width);
+}
+
+.a1-button__icon {
+  font-size: 20px;
 }

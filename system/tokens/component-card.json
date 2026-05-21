@@ -1,0 +1,17 @@
+{
+  "base": {
+    "space": {
+      "card": {
+        "padding": { "$type": "dimension", "$value": "{base.spacing.md}" },
+        "borderWidth": { "$type": "dimension", "$value": "1px" }
+      }
+    }
+  },
+  "component": {
+    "card": {
+      "padding": { "$type": "dimension", "$value": "{base.space.card.padding}" },
+      "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" },
+      "borderWidth": { "$type": "dimension", "$value": "{base.space.card.borderWidth}" }
+    }
+  }
+}

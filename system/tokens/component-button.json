@@ -4,6 +4,14 @@
       "control": {
         "$type": "dimension",
         "$value": "6px"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "8px"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "12px"
       }
     },
     "space": {
@@ -18,7 +26,7 @@
         },
         "minHeight": {
           "$type": "dimension",
-          "$value": "40px"
+          "$value": "{base.spacing.xl}"
         },
         "gap": {
           "$type": "dimension",

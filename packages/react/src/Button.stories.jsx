@@ -9,7 +9,8 @@ const meta = {
     children: "Button",
     disabled: false,
     href: "#",
-    state: undefined,
+    icon: undefined,
+    iconPosition: "start",
     variant: "primary"
   },
   argTypes: {
@@ -28,9 +29,13 @@ const meta = {
       control: "text",
       if: { arg: "as", eq: "a" }
     },
-    state: {
+    icon: {
+      control: "text",
+      description: "Material Symbols icon name (e.g. \"add\", \"arrow_forward\")"
+    },
+    iconPosition: {
       control: "inline-radio",
-      options: [undefined, "default", "hover", "active"]
+      options: ["start", "end"]
     },
     variant: {
       control: "inline-radio",
@@ -55,63 +60,32 @@ export const Configurable = {};
 export const Variants = {
   render: args => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-      <Button {...args} variant="primary">
-        Primary
-      </Button>
-      <Button {...args} variant="secondary">
-        Secondary
-      </Button>
-      <Button {...args} variant="tertiary">
-        Tertiary
-      </Button>
+      <Button {...args} variant="primary">Primary</Button>
+      <Button {...args} variant="secondary">Secondary</Button>
+      <Button {...args} variant="tertiary">Tertiary</Button>
     </div>
   )
 };
 
-export const PrimaryStates = {
+export const WithIconStart = {
+  name: "Icon — Start",
   render: args => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-      <Button {...args} state="default" variant="primary">
-        Default
-      </Button>
-      <Button {...args} state="hover" variant="primary">
-        Hover
-      </Button>
-      <Button {...args} state="active" variant="primary">
-        Active
-      </Button>
+      <Button {...args} variant="primary" icon="add">Add item</Button>
+      <Button {...args} variant="secondary" icon="download">Download</Button>
+      <Button {...args} variant="tertiary" icon="settings">Settings</Button>
     </div>
   )
 };
 
-export const SecondaryStates = {
+export const WithIconEnd = {
+  name: "Icon — End",
   render: args => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-      <Button {...args} state="default" variant="secondary">
-        Default
-      </Button>
-      <Button {...args} state="hover" variant="secondary">
-        Hover
-      </Button>
-      <Button {...args} state="active" variant="secondary">
-        Active
-      </Button>
+      <Button {...args} variant="primary" icon="arrow_forward" iconPosition="end">Continue</Button>
+      <Button {...args} variant="secondary" icon="open_in_new" iconPosition="end">Open link</Button>
+      <Button {...args} variant="tertiary" icon="chevron_right" iconPosition="end">See more</Button>
     </div>
   )
 };
 
-export const TertiaryStates = {
-  render: args => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-      <Button {...args} state="default" variant="tertiary">
-        Default
-      </Button>
-      <Button {...args} state="hover" variant="tertiary">
-        Hover
-      </Button>
-      <Button {...args} state="active" variant="tertiary">
-        Active
-      </Button>
-    </div>
-  )
-};

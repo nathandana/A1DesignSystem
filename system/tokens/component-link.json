@@ -1,0 +1,9 @@
+{
+  "component": {
+    "link": {
+      "color":        { "$type": "color", "$value": "{semantic.color.action.background}" },
+      "colorHover":   { "$type": "color", "$value": "{semantic.color.action.backgroundHover}" },
+      "colorPressed": { "$type": "color", "$value": "{semantic.color.action.backgroundPressed}" }
+    }
+  }
+}
