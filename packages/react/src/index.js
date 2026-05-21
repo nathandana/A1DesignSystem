@@ -6,3 +6,4 @@ export { Heading } from "./Heading.jsx";
 export { Icon } from "./Icon.jsx";
 export { Link } from "./Link.jsx";
 export { Paragraph } from "./Paragraph.jsx";
+export { Tabs, TabList, Tab, TabPanel } from "./Tabs.jsx";

@@ -1,0 +1,135 @@
+/* ─── Tabs ────────────────────────────────────────────────────────────────── */
+
+.a1-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Tab list ────────────────────────────────────────────────────────────── */
+
+.a1-tab-list {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* ── Line variant ───────────────────────────────────────────────────────── */
+
+.a1-tab-list--line {
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+  gap: 0;
+}
+
+/* ── Folder variant ─────────────────────────────────────────────────────── */
+
+.a1-tab-list--folder {
+  align-items: flex-end;
+  gap: var(--base-spacing-xxs);
+  padding: var(--base-spacing-xs) var(--base-spacing-xs) 0;
+  border-bottom: 1px solid var(--semantic-color-border-strong);
+}
+
+/* ─── Tab button ──────────────────────────────────────────────────────────── */
+
+.a1-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-xs);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--component-paragraph-font-family);
+  transition: color 0.15s, background 0.15s;
+}
+
+.a1-tab:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: -2px;
+  border-radius: var(--base-radius-control);
+}
+
+/* ── Line tab ───────────────────────────────────────────────────────────── */
+
+.a1-tab--line {
+  padding: var(--component-tab-padding-block) var(--component-tab-padding-inline);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 400;
+  color: var(--semantic-color-text-muted);
+  border-bottom: var(--component-tab-indicator-size) solid transparent;
+  margin-bottom: -1px;
+}
+
+.a1-tab--line:hover:not([aria-selected="true"]) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-tab--line[aria-selected="true"] {
+  color: var(--semantic-color-action-background);
+  font-weight: 500;
+  border-bottom-color: var(--semantic-color-action-background);
+}
+
+/* ── Folder tab ─────────────────────────────────────────────────────────── */
+
+.a1-tab--folder {
+  padding: var(--component-tab-padding-block) var(--component-tab-padding-inline);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 400;
+  color: var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-panel);
+  border: 1px solid var(--semantic-color-border-default);
+  border-bottom: none;
+  border-radius: var(--base-radius-lg) var(--base-radius-lg) 0 0;
+  margin-bottom: -1px;
+  position: relative;
+}
+
+.a1-tab--folder:hover:not([aria-selected="true"]) {
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tab--folder[aria-selected="true"] {
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-weight: 500;
+  border-color: var(--semantic-color-border-strong);
+  z-index: 1;
+}
+
+/* ─── Level 2 ─────────────────────────────────────────────────────────────── */
+
+.a1-tabs--level-2 .a1-tab--line {
+  padding: var(--component-tab-padding-block-sm) var(--component-tab-padding-inline-sm);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-tabs--level-2 .a1-tab--folder {
+  padding: var(--component-tab-padding-block-sm) var(--component-tab-padding-inline-sm);
+  font-size: var(--semantic-font-size-body-xs);
+  border-radius: var(--base-radius-control) var(--base-radius-control) 0 0;
+}
+
+.a1-tabs--level-2 .a1-tab-list--folder {
+  padding: var(--base-spacing-xxs) var(--base-spacing-xxs) 0;
+}
+
+/* ─── Tab panel ───────────────────────────────────────────────────────────── */
+
+.a1-tab-panel--line {
+  padding: var(--base-spacing-md) 0;
+}
+
+.a1-tab-panel--folder {
+  background: var(--semantic-color-surface-page);
+  border: 1px solid var(--semantic-color-border-strong);
+  border-top: none;
+  border-radius: 0 0 var(--base-radius-lg) var(--base-radius-lg);
+  padding: var(--base-spacing-md);
+}
+
+.a1-tabs--level-2 .a1-tab-panel--folder {
+  border-radius: 0 0 var(--base-radius-control) var(--base-radius-control);
+  padding: var(--base-spacing-sm);
+}
