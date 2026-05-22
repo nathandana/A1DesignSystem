@@ -24,6 +24,9 @@ Netlify publishes the generated static app from:
 examples/a1-design/dist
 ```
 
+The example page is available at `/`, and Storybook is published from the
+same deploy at `/storybook/`.
+
 To check the production build locally:
 
 ```sh
