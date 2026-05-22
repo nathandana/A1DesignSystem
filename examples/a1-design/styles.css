@@ -55,8 +55,12 @@
   color: var(--semantic-color-text-default);
 }
 
-.a1-design-hero {
+.a1-design-home {
   flex: 1;
+}
+
+.a1-design-hero {
+  min-height: calc(100vh - 64px);
   padding: var(--base-spacing-64) var(--base-spacing-40);
   display: flex;
   flex-direction: column;
@@ -86,6 +90,54 @@
 .a1-design-actions {
   width: 100%;
   max-width: 560px;
+}
+
+.a1-design-overview {
+  padding: var(--base-spacing-64) var(--base-spacing-40);
+}
+
+.a1-design-overview-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: var(--base-spacing-48);
+  align-items: start;
+}
+
+.a1-design-overview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-design-overview-list {
+  margin: 0;
+  display: grid;
+  gap: var(--base-spacing-20);
+}
+
+.a1-design-overview-list > div {
+  padding-bottom: var(--base-spacing-20);
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-design-overview-list > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.a1-design-overview-list dt {
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-heading-xs);
+  font-weight: 900;
+}
+
+.a1-design-overview-list dd {
+  margin: var(--base-spacing-8) 0 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-md);
+  line-height: var(--semantic-line-height-body-md);
 }
 
 .a1-design-components-page {
@@ -141,8 +193,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--base-spacing-16);
+  align-items: flex-start;
 }
-
+.a1-design-component-list .a1-message-badge {
+  align-self: flex-start;
+}
 .a1-design-component-section {
   scroll-margin-top: var(--base-spacing-24);
 }
@@ -154,9 +209,6 @@
   align-items: start;
 }
 
-.a1-design-component-section-header > .a1-message-badge {
-  flex-shrink: 0;
-}
 
 .a1-design-component-meta {
   margin: var(--base-spacing-24) 0 0;
@@ -192,8 +244,18 @@
   }
 
   .a1-design-hero,
+  .a1-design-overview,
   .a1-design-components-page {
     padding: var(--base-spacing-40) var(--base-spacing-24);
+  }
+
+  .a1-design-hero {
+    min-height: auto;
+  }
+
+  .a1-design-overview-inner {
+    grid-template-columns: 1fr;
+    gap: var(--base-spacing-32);
   }
 
   .a1-design-components-layout {

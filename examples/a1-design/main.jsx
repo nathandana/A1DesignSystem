@@ -4,6 +4,7 @@ import { Button } from "../../packages/react/src/Button.jsx";
 import { ButtonContainer } from "../../packages/react/src/ButtonContainer.jsx";
 import { Card } from "../../packages/react/src/Card.jsx";
 import { Heading } from "../../packages/react/src/Heading.jsx";
+import { Inverse } from "../../packages/react/src/Inverse.jsx";
 import { Paragraph } from "../../packages/react/src/Paragraph.jsx";
 import { MessageBadge } from "../../packages/react/src/Message.jsx";
 import "./styles.css";
@@ -64,38 +65,73 @@ function NavButton({ active, children, ...props }) {
 
 function HomePage({ onNavigate }) {
   return (
-    <main className="a1-design-hero">
-      <div className="a1-design-badge-wrap">
-        <MessageBadge variant="subtle" icon="auto_awesome">
-          AI token generation
-        </MessageBadge>
-      </div>
+    <main className="a1-design-home">
+      <section className="a1-design-hero">
+        <div className="a1-design-badge-wrap">
+          <MessageBadge variant="subtle" icon="auto_awesome">
+            AI token generation
+          </MessageBadge>
+        </div>
 
-      <div className="a1-design-heading-wrap">
-        <Heading as="h1" type="display" size={{ xs: "xl", md: "jumbo", lg: "xJumbo" }}>
-          <div>A1 Design: </div>
-          <span style={{ color: "var(--semantic-color-text-accent)" }}>AI-first design systems</span>
-        </Heading>
-      </div>
+        <div className="a1-design-heading-wrap">
+          <Heading as="h1" type="display" size={{ xs: "xl", md: "jumbo", lg: "xJumbo" }}>
+            <div>A1 Design: </div>
+            <span style={{ color: "var(--semantic-color-text-accent)" }}>AI-first design systems</span>
+          </Heading>
+        </div>
 
-      <div className="a1-design-paragraph-wrap">
-        <Paragraph size="lg" color="muted">
-          A token-driven, component-first design system built for the AI era.
-        </Paragraph>
-        <Paragraph size="md" color="muted">
-          Consistent, accessible, and fully themeable — from design tokens to
-          production-ready React components.
-        </Paragraph>
-      </div>
+        <div className="a1-design-paragraph-wrap">
+          <Paragraph size="lg" color="muted">
+            A token-driven, component-first design system built for the AI era.
+          </Paragraph>
+          <Paragraph size="md" color="muted">
+            Consistent, accessible, and fully themeable — from design tokens to
+            production-ready React components.
+          </Paragraph>
+        </div>
 
-      <ButtonContainer className="a1-design-actions" align="center">
-        <Button variant="primary" icon="arrow_forward" iconPosition="end" onClick={() => onNavigate("components")}>
-          Get started
-        </Button>
-        <Button variant="secondary" onClick={() => onNavigate("documentation")}>
-          View documentation
-        </Button>
-      </ButtonContainer>
+        <ButtonContainer className="a1-design-actions" align="center">
+          <Button variant="primary" icon="arrow_forward" iconPosition="end" onClick={() => onNavigate("components")}>
+            Get started
+          </Button>
+          <Button variant="secondary" onClick={() => onNavigate("documentation")}>
+            View documentation
+          </Button>
+        </ButtonContainer>
+      </section>
+
+      <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">
+        <div className="a1-design-overview-inner">
+          <div className="a1-design-overview-copy">
+            <MessageBadge variant="subtle" icon="hub">
+              System overview
+            </MessageBadge>
+            <Heading as="h2" id="overview-title" type="display" size={{ xs: "lg", md: "xl" }}>
+              Built once, expressed everywhere.
+            </Heading>
+            <Paragraph size="lg" color="muted">
+              A1 Design is a compact proof of concept for a design system where tokens,
+              rules, React components, Storybook docs, and Figma foundations share the
+              same source of truth.
+            </Paragraph>
+          </div>
+
+          <dl className="a1-design-overview-list">
+            <div>
+              <dt>AI-ready</dt>
+              <dd>Structured tokens and rules give agents clear constraints for consistent output.</dd>
+            </div>
+            <div>
+              <dt>Themeable</dt>
+              <dd>Color, type, spacing, radius, shadows, density, and language can evolve by brand.</dd>
+            </div>
+            <div>
+              <dt>Production-facing</dt>
+              <dd>Reusable components, visual docs, and examples show how the system is consumed.</dd>
+            </div>
+          </dl>
+        </div>
+      </Inverse>
     </main>
   );
 }
