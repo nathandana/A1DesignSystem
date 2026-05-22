@@ -1,0 +1,44 @@
+<style>
+  .a1-storybook-home-link {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 2147483647;
+    border: 1px solid rgba(46, 63, 153, 0.24);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #ffffff;
+    color: #2e3f99;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+    font-family: Inter, "Nunito Sans", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .a1-storybook-home-link:hover {
+    color: #1d2870;
+    border-color: rgba(46, 63, 153, 0.48);
+  }
+</style>
+<script>
+  (function () {
+    function addHomeLink() {
+      if (document.querySelector(".a1-storybook-home-link")) return;
+
+      var link = document.createElement("a");
+      link.className = "a1-storybook-home-link";
+      link.href = "/";
+      link.textContent = "A1 Design";
+      link.setAttribute("aria-label", "Back to A1 Design home page");
+      document.body.appendChild(link);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", addHomeLink);
+    } else {
+      addHomeLink();
+    }
+  })();
+</script>

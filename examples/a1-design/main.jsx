@@ -11,7 +11,8 @@ import "./styles.css";
 const navItems = [
   { id: "components", label: "Components" },
   { id: "tokens", label: "Tokens" },
-  { id: "documentation", label: "Documentation" }
+  { id: "documentation", label: "Documentation" },
+  { href: "/storybook/", label: "Storybook" }
 ];
 
 const componentSections = [
@@ -192,10 +193,16 @@ function App() {
         <nav>
           <ul className="a1-design-nav-list">
             {navItems.map((item) => (
-              <li key={item.id}>
-                <NavButton active={activePage === item.id} onClick={() => setActivePage(item.id)}>
-                  {item.label}
-                </NavButton>
+              <li key={item.id ?? item.href}>
+                {item.href ? (
+                  <a className="a1-design-nav-link" href={item.href}>
+                    {item.label}
+                  </a>
+                ) : (
+                  <NavButton active={activePage === item.id} onClick={() => setActivePage(item.id)}>
+                    {item.label}
+                  </NavButton>
+                )}
               </li>
             ))}
           </ul>

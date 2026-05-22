@@ -47,6 +47,7 @@
 .a1-design-nav-link {
   color: var(--semantic-color-text-muted);
   font-size: var(--semantic-font-size-body-sm);
+  text-decoration: none;
 }
 
 .a1-design-nav-link--active,
