@@ -1,0 +1,8 @@
+{
+  "component": {
+    "pageLayout": {
+      "sidebarWidth": { "$type": "dimension", "$value": "280px" },
+      "gap":          { "$type": "dimension", "$value": "{base.spacing.24}" }
+    }
+  }
+}

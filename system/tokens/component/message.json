@@ -1,0 +1,38 @@
+{
+  "component": {
+    "message": {
+      "banner": {
+        "padding":         { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "borderRadius":    { "$type": "dimension", "$value": "{base.radius.lg}" },
+        "borderWidth":     { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "iconSize":        { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "iconMarginTop":   { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "iconOpticalSize": { "$type": "number",    "$value": 20 },
+        "titleFontWeight": { "$type": "number",    "$value": 600 },
+        "dismissSize":     { "$type": "dimension", "$value": "{base.spacing.24}" },
+        "dismissOffset":   { "$value": "-2px" },
+        "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
+        "focusRingOffset": { "$type": "dimension", "$value": "1px" }
+      },
+      "badge": {
+        "paddingBlock":   { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "borderRadius":   { "$type": "dimension", "$value": "{base.radius.control}" },
+        "fontWeight":     { "$type": "number", "$value": 500 }
+      },
+      "emptyState": {
+        "iconSizePage":          { "$type": "dimension", "$value": "48px" },
+        "iconSizeSection":       { "$type": "dimension", "$value": "28px" },
+        "iconSizeCard":          { "$type": "dimension", "$value": "20px" },
+        "iconOpticalSizePage":   { "$type": "number",    "$value": 48 },
+        "iconOpticalSizeSection":{ "$type": "number",    "$value": 28 },
+        "iconOpticalSizeCard":   { "$type": "number",    "$value": 20 },
+        "wrapSizePage":          { "$type": "dimension", "$value": "88px" },
+        "wrapSizeSection":       { "$type": "dimension", "$value": "56px" },
+        "wrapSizeCard":          { "$type": "dimension", "$value": "36px" },
+        "maxWidthPage":          { "$type": "dimension", "$value": "480px" },
+        "maxWidthSection":       { "$type": "dimension", "$value": "360px" }
+      }
+    }
+  }
+}

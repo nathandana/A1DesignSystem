@@ -1,0 +1,22 @@
+{
+  "breakpoint": {
+    "xs": {
+      "max": { "$type": "dimension", "$value": "480px" }
+    },
+    "sm": {
+      "min": { "$type": "dimension", "$value": "481px" },
+      "max": { "$type": "dimension", "$value": "640px" }
+    },
+    "md": {
+      "min": { "$type": "dimension", "$value": "641px" },
+      "max": { "$type": "dimension", "$value": "1024px" }
+    },
+    "lg": {
+      "min": { "$type": "dimension", "$value": "1025px" },
+      "max": { "$type": "dimension", "$value": "1440px" }
+    },
+    "xl": {
+      "min": { "$type": "dimension", "$value": "1441px" }
+    }
+  }
+}

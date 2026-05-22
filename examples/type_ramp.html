@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A1 Typography Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Atkinson+Hyperlegible+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="./shared.css">
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Typography Ramp</h1>
+        <p class="lede">
+          Rendered from <span class="path">system/tokens/typography.json</span>.
+        </p>
+      </header>
+
+      <section class="controls" aria-label="Typography controls">
+        <label>
+          Theme
+          <select id="themeSelect"></select>
+        </label>
+        <label>
+          User size
+          <select id="userSizeSelect"></select>
+        </label>
+      </section>
+
+      <section class="stack" id="demo"></section>
+    </main>
+
+    <script type="module">
+      const sourcePath = "../system/tokens/typography.json";
+      const colorSourcePath = "../system/tokens/color-ramp.json";
+      const demo = document.querySelector("#demo");
+      const themeSelect = document.querySelector("#themeSelect");
+      const userSizeSelect = document.querySelector("#userSizeSelect");
+      let tokens = null;
+      let colorTokens = null;
+      let selectedTheme = "a1Light";
+      let selectedUserSize = "medium";
+
+      const scaleOrder = [
+        "100",
+        "150",
+        "200",
+        "250",
+        "300",
+        "400",
+        "500",
+        "600",
+        "700",
+        "800",
+        "900",
+        "1000"
+      ];
+
+      const roleOrder = {
+        body: ["xs", "sm", "md", "lg", "xl"],
+        heading: ["xs", "sm", "md", "lg", "xl"],
+        display: ["sm", "md", "lg", "xl", "xxl", "jumbo", "xJumbo"]
+      };
+
+      const sampleText = {
+        body: "Body text for interface reading. The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        heading: "Heading text",
+        display: "Display text"
+      };
+
+      function getPath(object, path) {
+        return path.split(".").reduce((current, key) => current?.[key], object);
+      }
+
+      function resolveValue(tokens, value) {
+        const reference = typeof value === "string"
+          ? value.match(/^\{(.+)\}$/)
+          : null;
+
+        if (!reference) return value;
+
+        const token = getPath(tokens, reference[1]);
+        return resolveValue(tokens, token?.$value);
+      }
+
+      function formatRem(value) {
+        return `${Number(value.toFixed(5)).toString()}rem`;
+      }
+
+      function scaleRem(rem, multiplier) {
+        return formatRem(parseFloat(rem) * parseFloat(multiplier));
+      }
+
+      function remToPx(rem) {
+        return `${Math.round(parseFloat(rem) * 16)}px`;
+      }
+
+      function themeLabel(name) {
+        return name
+          .replace(/^a1/, "A1 ")
+          .replace(/([A-Z])/g, " $1")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function renderSection(title, path, content) {
+        return `
+          <article class="section">
+            <div class="section-heading">
+              <h2>${title}</h2>
+              <span class="path">${path}</span>
+            </div>
+            ${content}
+          </article>
+        `;
+      }
+
+      function renderControls() {
+        themeSelect.innerHTML = Object.keys(tokens.theme).map(themeName => `
+          <option value="${themeName}" ${themeName === selectedTheme ? "selected" : ""}>
+            ${themeLabel(themeName)}
+          </option>
+        `).join("");
+
+        userSizeSelect.innerHTML = Object.keys(tokens.theme[selectedTheme].font.user.size).map(sizeName => `
+          <option value="${sizeName}" ${sizeName === selectedUserSize ? "selected" : ""}>
+            ${sizeName}
+          </option>
+        `).join("");
+      }
+
+      function userSizeMultiplier() {
+        const token = tokens.theme[selectedTheme].font.user.size[selectedUserSize];
+        return resolveValue(tokens, token.$value);
+      }
+
+      function themeScale() {
+        return selectedTheme === "a1Accessible"
+          ? tokens.base.font.size.accessibleScale
+          : tokens.base.font.size.scale;
+      }
+
+      function setPageTypography() {
+        const theme = tokens.theme[selectedTheme];
+        const multiplier = userSizeMultiplier();
+        const root = document.documentElement;
+
+        ["body", "heading", "display"].forEach(role => {
+          root.style.setProperty(
+            `--font-${role}`,
+            resolveValue(tokens, theme.font.family[role].$value)
+          );
+          root.style.setProperty(
+            `--weight-${role}`,
+            resolveValue(tokens, theme.font.weight[role].$value)
+          );
+          root.style.setProperty(
+            `--line-height-${role}`,
+            resolveValue(tokens, theme.font.lineHeight[role].$value)
+          );
+        });
+
+        Object.entries(theme.font.size).forEach(([role, sizes]) => {
+          Object.entries(sizes).forEach(([name, token]) => {
+            const tokenSize = resolveValue(tokens, token.$value);
+            root.style.setProperty(`--size-${role}-${name}`, scaleRem(tokenSize, multiplier));
+          });
+        });
+      }
+
+      function setPageColor() {
+        if (!colorTokens) return;
+
+        const color = colorTokens.theme.a1Light.color;
+        const root = document.documentElement;
+
+        root.style.setProperty("--page", resolveValue(colorTokens, color.surface.page.$value));
+        root.style.setProperty("--panel", resolveValue(colorTokens, color.surface.panel.$value));
+        root.style.setProperty("--ink", resolveValue(colorTokens, color.text.default.$value));
+        root.style.setProperty("--muted", resolveValue(colorTokens, color.text.muted.$value));
+        root.style.setProperty("--line", resolveValue(colorTokens, color.border.subtle.$value));
+        root.style.setProperty("--accent", resolveValue(colorTokens, color.action.background.$value));
+      }
+
+      function renderBaseScale() {
+        const scale = themeScale();
+        const multiplier = userSizeMultiplier();
+        const content = `
+          <div class="scale-grid">
+            ${scaleOrder.map(step => {
+              const tokenSize = resolveValue(tokens, scale[step].$value);
+              const size = scaleRem(tokenSize, multiplier);
+
+              return `
+                <div class="scale-card">
+                  <div class="meta">
+                    <span>${step}</span>
+                    <span>${remToPx(size)} / ${size}</span>
+                  </div>
+                  <div class="scale-sample" style="font-size: ${size};">Aa</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+
+        const path = selectedTheme === "a1Accessible"
+          ? "base.font.size.accessibleScale"
+          : "base.font.size.scale";
+
+        return renderSection("Base Scale", `${path} x user.${selectedUserSize}`, content);
+      }
+
+      function renderRoleScale(role) {
+        const theme = tokens.theme[selectedTheme];
+        const sizes = theme.font.size[role];
+        const weight = resolveValue(tokens, theme.font.weight[role].$value);
+        const lineHeight = resolveValue(tokens, theme.font.lineHeight[role].$value);
+        const family = resolveValue(tokens, theme.font.family[role].$value);
+        const multiplier = userSizeMultiplier();
+        const rows = roleOrder[role].map(name => {
+          const tokenSize = resolveValue(tokens, sizes[name].$value);
+          const size = scaleRem(tokenSize, multiplier);
+
+          return `
+            <div class="type-row">
+              <div class="role">${role}-${name}</div>
+              <div class="value">${remToPx(size)} / ${size}<br>${weight}<br>${lineHeight}</div>
+              <div
+                class="sample"
+                style="font-family: ${family}; font-size: ${size}; font-weight: ${weight}; line-height: ${lineHeight};"
+              >${sampleText[role]}</div>
+            </div>
+          `;
+        }).join("");
+
+        return renderSection(
+          `${role[0].toUpperCase()}${role.slice(1)} Scale`,
+          `theme.${selectedTheme}.font.size.${role} x user.${selectedUserSize}`,
+          `<div class="type-list">${rows}</div>`
+        );
+      }
+
+      function renderUserSizes() {
+        const userSizes = tokens.theme[selectedTheme].font.user.size;
+        const content = `
+          <div class="user-grid">
+            ${Object.entries(userSizes).map(([name, token]) => {
+              const size = resolveValue(tokens, token.$value);
+
+              return `
+                <div class="user-card">
+                  <strong>${name}</strong>
+                  <span class="value">${remToPx(size)} / ${size}</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+
+        return renderSection("User Size Options", `theme.${selectedTheme}.font.user.size`, content);
+      }
+
+      function renderDemo() {
+        renderControls();
+        setPageColor();
+        setPageTypography();
+
+        demo.innerHTML = [
+          renderBaseScale(),
+          renderRoleScale("body"),
+          renderRoleScale("heading"),
+          renderRoleScale("display"),
+          renderUserSizes()
+        ].join("");
+      }
+
+      async function render() {
+        try {
+          const [response, colorResponse] = await Promise.all([
+            fetch(sourcePath),
+            fetch(colorSourcePath)
+          ]);
+
+          if (!response.ok) {
+            throw new Error(`Could not load ${sourcePath}`);
+          }
+
+          if (!colorResponse.ok) {
+            throw new Error(`Could not load ${colorSourcePath}`);
+          }
+
+          tokens = await response.json();
+          colorTokens = await colorResponse.json();
+          renderDemo();
+        } catch (error) {
+          demo.innerHTML = `<p class="error">${error.message}</p>`;
+        }
+      }
+
+      themeSelect.addEventListener("change", event => {
+        selectedTheme = event.target.value;
+        renderDemo();
+      });
+
+      userSizeSelect.addEventListener("change", event => {
+        selectedUserSize = event.target.value;
+        renderDemo();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

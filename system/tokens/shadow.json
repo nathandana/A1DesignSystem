@@ -1,0 +1,106 @@
+{
+  "base": {
+    "shadow": {
+      "100": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0px",
+          "offsetY": "1px",
+          "blur": "2px",
+          "spread": "0px",
+          "color": "rgba(6, 11, 20, 0.05)"
+        }
+      },
+      "200": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "1px",
+            "blur": "3px",
+            "spread": "0px",
+            "color": "rgba(6, 11, 20, 0.10)"
+          },
+          {
+            "offsetX": "0px",
+            "offsetY": "1px",
+            "blur": "2px",
+            "spread": "-1px",
+            "color": "rgba(6, 11, 20, 0.06)"
+          }
+        ]
+      },
+      "300": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "4px",
+            "blur": "6px",
+            "spread": "-1px",
+            "color": "rgba(6, 11, 20, 0.10)"
+          },
+          {
+            "offsetX": "0px",
+            "offsetY": "2px",
+            "blur": "4px",
+            "spread": "-2px",
+            "color": "rgba(6, 11, 20, 0.06)"
+          }
+        ]
+      },
+      "400": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "10px",
+            "blur": "15px",
+            "spread": "-3px",
+            "color": "rgba(6, 11, 20, 0.10)"
+          },
+          {
+            "offsetX": "0px",
+            "offsetY": "4px",
+            "blur": "6px",
+            "spread": "-4px",
+            "color": "rgba(6, 11, 20, 0.05)"
+          }
+        ]
+      },
+      "500": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "20px",
+            "blur": "25px",
+            "spread": "-5px",
+            "color": "rgba(6, 11, 20, 0.10)"
+          },
+          {
+            "offsetX": "0px",
+            "offsetY": "8px",
+            "blur": "10px",
+            "spread": "-6px",
+            "color": "rgba(6, 11, 20, 0.04)"
+          }
+        ]
+      }
+    }
+  },
+  "semantic": {
+    "shadow": {
+      "xs": { "$type": "shadow", "$value": "{base.shadow.100}" },
+      "sm": { "$type": "shadow", "$value": "{base.shadow.200}" },
+      "md": { "$type": "shadow", "$value": "{base.shadow.300}" },
+      "lg": { "$type": "shadow", "$value": "{base.shadow.400}" },
+      "xl": { "$type": "shadow", "$value": "{base.shadow.500}" }
+    }
+  },
+  "component": {
+    "card": {
+      "shadow": { "$type": "shadow", "$value": "{semantic.shadow.sm}" }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+/* ─── Pagination ──────────────────────────────────────────────────────────── */
+
+.a1-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--component-pagination-gap);
+}
+
+/* ─── Item (shared between page buttons and prev/next) ────────────────────── */
+
+.a1-pagination__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--a1-pagination-size);
+  height: var(--a1-pagination-size);
+  padding: 0 var(--base-spacing-4);
+  border: var(--component-pagination-border-width) solid transparent;
+  border-radius: var(--base-radius-control);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-pagination-font-size);
+  font-weight: var(--component-pagination-font-weight-default);
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--semantic-motion-duration-fast), border-color var(--semantic-motion-duration-fast), color var(--semantic-motion-duration-fast);
+}
+
+.a1-pagination__item:hover:not([aria-current="page"]):not(:disabled) {
+  background: var(--semantic-color-surface-panel);
+  border-color: var(--semantic-color-border-default);
+}
+
+.a1-pagination__item:focus-visible {
+  outline: var(--component-pagination-focus-ring-width) solid var(--semantic-color-action-background);
+  outline-offset: var(--component-pagination-focus-ring-offset);
+}
+
+.a1-pagination__item[aria-current="page"] {
+  background: var(--semantic-color-action-background);
+  border-color: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  font-weight: var(--component-pagination-font-weight-active);
+  cursor: default;
+}
+
+.a1-pagination__item:disabled {
+  opacity: var(--component-pagination-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* Prev / next icons inherit item size */
+.a1-pagination__item .a1-icon {
+  font-size: calc(var(--a1-pagination-size) * 0.5);
+}
+
+/* ─── Ellipsis ────────────────────────────────────────────────────────────── */
+
+.a1-pagination__ellipsis {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: var(--a1-pagination-size);
+  height: var(--a1-pagination-size);
+  padding-bottom: var(--component-pagination-ellipsis-padding-bottom);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--a1-pagination-font-size);
+  font-family: var(--component-paragraph-font-family);
+  user-select: none;
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+
+.a1-pagination--md {
+  --a1-pagination-size: var(--component-pagination-item-size);
+  --a1-pagination-font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-pagination--sm {
+  --a1-pagination-size: var(--component-pagination-item-size-sm);
+  --a1-pagination-font-size: var(--semantic-font-size-body-xs);
+}

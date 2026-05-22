@@ -1,0 +1,7 @@
+{
+  "name": "A1 Design System – Generate Card",
+  "id": "a1-design-system-generate-card",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}

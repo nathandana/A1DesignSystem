@@ -1,0 +1,7 @@
+@import "../packages/react/src/themes.css";
+
+/* Storybook canvas root also needs the surface background */
+#storybook-root {
+  background: var(--semantic-color-surface-page, #ffffff);
+  transition: background var(--semantic-motion-duration-fast, 0.1s);
+}

@@ -1,0 +1,29 @@
+{
+  "name": "a1-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-first multifunctional design system proof of concept.",
+  "scripts": {
+    "build:tokens": "style-dictionary build --config sd.config.js",
+    "build:storybook": "storybook build",
+    "check": "npm --version",
+    "clean:tokens": "style-dictionary clean",
+    "dev": "vite --host 127.0.0.1",
+    "dev:button": "vite --host 127.0.0.1 --open /examples/react-button/",
+    "dev:bookstore": "vite --host 127.0.0.1 --open /examples/bookstore/",
+    "storybook": "storybook dev"
+  },
+  "dependencies": {
+    "culori": "^4.0.2",
+    "style-dictionary": "^5.4.1"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "storybook": "^10.4.0",
+    "vite": "^8.0.13"
+  }
+}

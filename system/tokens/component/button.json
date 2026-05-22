@@ -1,0 +1,188 @@
+{
+  "base": {
+    "radius": {
+      "control": {
+        "$type": "dimension",
+        "$value": "6px"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "8px"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "12px"
+      }
+    },
+    "space": {
+      "button": {
+        "paddingBlock": {
+          "$type": "dimension",
+          "$value": "10px"
+        },
+        "paddingInline": {
+          "$type": "dimension",
+          "$value": "12px"
+        },
+        "minHeight": {
+          "$type": "dimension",
+          "$value": "{base.spacing.40}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "0.5rem"
+        },
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "0px"
+        },
+        "focusRingWidth": {
+          "$type": "dimension",
+          "$value": "3px"
+        },
+        "focusRingOffset": {
+          "$type": "dimension",
+          "$value": "2px"
+        },
+        "disabledOpacity": {
+          "$type": "opacity",
+          "$value": 0.55
+        }
+      }
+    }
+  },
+  "semantic": {
+    "radius": {
+      "control": {
+        "$type": "dimension",
+        "$value": "{base.radius.control}"
+      }
+    }
+  },
+  "component": {
+    "button": {
+      "primary": {
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "{base.space.button.borderWidth}"
+        }
+      },
+      "secondary": {
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "1px"
+        }
+      },
+      "tertiary": {
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "1px"
+        }
+      },
+      "borderRadius": {
+        "$type": "dimension",
+        "$value": "{semantic.radius.control}"
+      },
+      "paddingBlock": {
+        "$type": "dimension",
+        "$value": "{base.space.button.paddingBlock}"
+      },
+      "paddingInline": {
+        "$type": "dimension",
+        "$value": "{base.space.button.paddingInline}"
+      },
+      "minHeight": {
+        "$type": "dimension",
+        "$value": "{base.space.button.minHeight}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{base.space.button.gap}"
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{base.space.button.borderWidth}"
+      },
+      "focusRingWidth": {
+        "$type": "dimension",
+        "$value": "{base.space.button.focusRingWidth}"
+      },
+      "focusRingOffset": {
+        "$type": "dimension",
+        "$value": "{base.space.button.focusRingOffset}"
+      },
+      "disabledOpacity": {
+        "$type": "opacity",
+        "$value": "{base.space.button.disabledOpacity}"
+      },
+      "iconSize": {
+        "$type": "dimension",
+        "$value": "{base.spacing.20}"
+      },
+      "iconOpticalSize": {
+        "$type": "number",
+        "$value": 20
+      }
+    }
+  },
+  "theme": {
+    "a1Light": {
+      "button": {
+        "primary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.primary.borderWidth}"
+          }
+        },
+        "secondary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.secondary.borderWidth}"
+          }
+        },
+        "tertiary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.tertiary.borderWidth}"
+          }
+        },
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "{component.button.borderRadius}"
+        },
+        "paddingBlock": {
+          "$type": "dimension",
+          "$value": "{component.button.paddingBlock}"
+        },
+        "paddingInline": {
+          "$type": "dimension",
+          "$value": "{component.button.paddingInline}"
+        },
+        "minHeight": {
+          "$type": "dimension",
+          "$value": "{component.button.minHeight}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{component.button.gap}"
+        },
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "{component.button.borderWidth}"
+        },
+        "focusRingWidth": {
+          "$type": "dimension",
+          "$value": "{component.button.focusRingWidth}"
+        },
+        "focusRingOffset": {
+          "$type": "dimension",
+          "$value": "{component.button.focusRingOffset}"
+        },
+        "disabledOpacity": {
+          "$type": "opacity",
+          "$value": "{component.button.disabledOpacity}"
+        }
+      }
+    }
+  }
+}

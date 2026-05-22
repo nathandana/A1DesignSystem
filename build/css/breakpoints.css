@@ -1,0 +1,29 @@
+/* ─── Breakpoints ─────────────────────────────────────────────────────────────
+   Generated from system/tokens/breakpoint.json via Style Dictionary.
+   @custom-media rules follow the CSS Media Queries Level 5 draft.
+   Use postcss-custom-media to expand these at build time, or reference
+   the --breakpoint-* CSS custom properties in JavaScript.
+─────────────────────────────────────────────────────────────────────────── */
+
+/* XS — up to 480px */
+@custom-media --bp-xs      (max-width: 480px);
+@custom-media --bp-xs-down (max-width: 480px);
+
+/* SM — 481px – 640px */
+@custom-media --bp-sm      (min-width: 481px) and (max-width: 640px);
+@custom-media --bp-sm-up   (min-width: 481px);
+@custom-media --bp-sm-down (max-width: 640px);
+
+/* MD — 641px – 1024px */
+@custom-media --bp-md      (min-width: 641px) and (max-width: 1024px);
+@custom-media --bp-md-up   (min-width: 641px);
+@custom-media --bp-md-down (max-width: 1024px);
+
+/* LG — 1025px – 1440px */
+@custom-media --bp-lg      (min-width: 1025px) and (max-width: 1440px);
+@custom-media --bp-lg-up   (min-width: 1025px);
+@custom-media --bp-lg-down (max-width: 1440px);
+
+/* XL — 1441px and above */
+@custom-media --bp-xl      (min-width: 1441px);
+@custom-media --bp-xl-up   (min-width: 1441px);

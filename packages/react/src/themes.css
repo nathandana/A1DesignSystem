@@ -1,0 +1,112 @@
+/* ─── A1 Accessible theme ────────────────────────────────────────────────────
+   Applied via .a1-theme-accessible on <html>.
+   Overrides semantic font-size variables and component font-family variables
+   so all components respond without any component-level changes.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-theme-accessible {
+  /* Font families */
+  --component-button-font-family:            var(--theme-a1-accessible-font-family-body);
+  --component-paragraph-font-family:         var(--theme-a1-accessible-font-family-body);
+  --component-heading-font-family-heading:   var(--theme-a1-accessible-font-family-heading);
+  --component-heading-font-family-display:   var(--theme-a1-accessible-font-family-display);
+
+  /* Body font sizes */
+  --semantic-font-size-body-xs: var(--theme-a1-accessible-font-size-body-xs);
+  --semantic-font-size-body-sm: var(--theme-a1-accessible-font-size-body-sm);
+  --semantic-font-size-body-md: var(--theme-a1-accessible-font-size-body-md);
+  --semantic-font-size-body-lg: var(--theme-a1-accessible-font-size-body-lg);
+  --semantic-font-size-body-xl: var(--theme-a1-accessible-font-size-body-xl);
+
+  /* Heading font sizes */
+  --semantic-font-size-heading-xs: var(--theme-a1-accessible-font-size-heading-xs);
+  --semantic-font-size-heading-sm: var(--theme-a1-accessible-font-size-heading-sm);
+  --semantic-font-size-heading-md: var(--theme-a1-accessible-font-size-heading-md);
+  --semantic-font-size-heading-lg: var(--theme-a1-accessible-font-size-heading-lg);
+  --semantic-font-size-heading-xl: var(--theme-a1-accessible-font-size-heading-xl);
+
+  /* Display font sizes */
+  --semantic-font-size-display-sm:      var(--theme-a1-accessible-font-size-display-sm);
+  --semantic-font-size-display-md:      var(--theme-a1-accessible-font-size-display-md);
+  --semantic-font-size-display-lg:      var(--theme-a1-accessible-font-size-display-lg);
+  --semantic-font-size-display-xl:      var(--theme-a1-accessible-font-size-display-xl);
+  --semantic-font-size-display-xxl:     var(--theme-a1-accessible-font-size-display-xxl);
+  --semantic-font-size-display-jumbo:   var(--theme-a1-accessible-font-size-display-jumbo);
+  --semantic-font-size-display-x-jumbo: var(--theme-a1-accessible-font-size-display-x-jumbo);
+
+  /* Icons */
+  --a1-icon-fill: 1;
+}
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────────
+   Applied via .a1-theme-dark on <html>.
+   Overrides every semantic color token. All components respond automatically
+   because they reference semantic tokens, not base ramp values directly.
+   Combinable with .a1-theme-accessible: both classes can be active together.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-theme-dark {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --semantic-color-surface-page:    var(--base-color-neutral-900);
+  --semantic-color-surface-panel:   var(--base-color-neutral-800);
+  --semantic-color-surface-raised:  var(--base-color-neutral-700);
+  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --semantic-color-text-default: var(--base-color-neutral-50);
+  --semantic-color-text-muted:   var(--base-color-neutral-400);
+  --semantic-color-text-inverse: var(--base-color-neutral-900);
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --semantic-color-border-subtle:  var(--base-color-neutral-700);
+  --semantic-color-border-default: var(--base-color-neutral-600);
+  --semantic-color-border-strong:  var(--base-color-neutral-400);
+
+  /* ── Action (accent / purple) ─────────────────────────────────────────── */
+  --semantic-color-action-background:         var(--base-color-accent-400);
+  --semantic-color-action-background-hover:   var(--base-color-accent-300);
+  --semantic-color-action-background-pressed: var(--base-color-accent-500);
+  --semantic-color-action-foreground:         var(--base-color-accent-1000);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-surface:            var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-500);
+
+  /* ── Status: info ─────────────────────────────────────────────────────── */
+  --semantic-color-status-info-background: var(--base-color-info-400);
+  --semantic-color-status-info-surface:    var(--base-color-info-900);
+  --semantic-color-status-info-border:     var(--base-color-info-500);
+  --semantic-color-status-info-foreground: var(--base-color-info-1000);
+
+  /* ── Status: error ────────────────────────────────────────────────────── */
+  --semantic-color-status-error-background: var(--base-color-error-400);
+  --semantic-color-status-error-surface:    var(--base-color-error-900);
+  --semantic-color-status-error-border:     var(--base-color-error-500);
+  --semantic-color-status-error-foreground: var(--base-color-neutral-900);
+
+  /* ── Status: warn ─────────────────────────────────────────────────────── */
+  --semantic-color-status-warn-background: var(--base-color-warn-400);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-900);
+  --semantic-color-status-warn-border:     var(--base-color-warn-500);
+  --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+
+  /* ── Status: success ──────────────────────────────────────────────────── */
+  --semantic-color-status-success-background: var(--base-color-success-400);
+  --semantic-color-status-success-surface:    var(--base-color-success-900);
+  --semantic-color-status-success-border:     var(--base-color-success-500);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+
+  /* ── Dialog backdrop ──────────────────────────────────────────────────── */
+  --component-dialog-backdrop-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Page background follows the surface token */
+body {
+  background: var(--semantic-color-surface-page, #ffffff);
+  transition: background var(--semantic-motion-duration-fast, 0.1s);
+}
+
+/* Notification default: neutral-600 is too dark on dark backgrounds */
+.a1-theme-dark .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-500);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}

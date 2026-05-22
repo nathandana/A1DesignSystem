@@ -1,0 +1,60 @@
+import { MessageBadge } from "./Message.jsx";
+
+const STATUSES = ["neutral", "info", "success", "warn", "error"];
+
+const meta = {
+  title: "Components/Messaging/Badge",
+  component: MessageBadge,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  args: {
+    status: "success",
+    children: "Saved",
+  },
+  argTypes: {
+    status: {
+      control: "inline-radio",
+      options: STATUSES,
+    },
+    children: { control: "text", name: "label" },
+    icon: { control: "text", description: "Override the default status icon" },
+  },
+};
+
+export default meta;
+
+export const Configurable = {};
+
+export const Statuses = {
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)", flexWrap: "wrap" }}>
+      <MessageBadge status="neutral">Default</MessageBadge>
+      <MessageBadge status="info">In progress</MessageBadge>
+      <MessageBadge status="success">Complete</MessageBadge>
+      <MessageBadge status="warn">Pending review</MessageBadge>
+      <MessageBadge status="error">Failed</MessageBadge>
+    </div>
+  ),
+};
+
+export const InlineUsage = {
+  name: "Inline in text",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
+      {[
+        { label: "Build passed", status: "success" },
+        { label: "Review needed", status: "warn" },
+        { label: "Deploy failed", status: "error" },
+        { label: "Syncing", status: "info" },
+        { label: "Draft", status: "neutral" },
+      ].map(({ label, status }) => (
+        <div key={label} style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-default)" }}>
+          <span style={{ color: "var(--semantic-color-text-muted)", minWidth: "120px" }}>Pipeline status</span>
+          <MessageBadge status={status}>{label}</MessageBadge>
+        </div>
+      ))}
+    </div>
+  ),
+};
