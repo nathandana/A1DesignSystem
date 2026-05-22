@@ -58,12 +58,19 @@ export function MessageBanner({
    MessageBadge  (inline filled status chip)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export function MessageBadge({ status = "neutral", icon, children }) {
+const VARIANTS = ["bold", "subtle"];
+
+export function MessageBadge({ status = "neutral", variant = "bold", icon, children }) {
   const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
+  const resolvedVariant = VARIANTS.includes(variant) ? variant : "bold";
   const resolvedIcon = icon ?? STATUS_ICONS[resolvedStatus];
 
   return (
-    <span className={`a1-message-badge a1-message-badge--${resolvedStatus}`}>
+    <span className={[
+      "a1-message-badge",
+      `a1-message-badge--${resolvedStatus}`,
+      resolvedVariant === "subtle" && "a1-message-badge--subtle",
+    ].filter(Boolean).join(" ")}>
       <Icon name={resolvedIcon} />
       {children}
     </span>

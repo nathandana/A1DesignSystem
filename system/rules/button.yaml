@@ -1,0 +1,225 @@
+component: Button
+rules:
+  - id: button-clear-action-label
+    components:
+      - Button
+    requirement: Use clear, action-oriented labels that describe what will happen.
+    do: Use labels like "Save changes", "Create account", "Download report", or "Cancel order".
+    dont: Use vague labels like "Submit", "OK", "Yes", or "Continue" when the action is not obvious.
+    applies_to:
+      - content
+      - usability
+
+  - id: button-visual-hierarchy
+    components:
+      - Button
+    requirement: Use button hierarchy to communicate action priority.
+    do: Use primary, secondary, tertiary, destructive, and icon button variants consistently.
+    dont: Give multiple unrelated actions the same visual weight.
+    applies_to:
+      - hierarchy
+      - visual-design
+
+  - id: button-single-primary-action
+    requirement: Use only one primary button within a single decision area.
+    do: Make the main recommended action the only primary button in a form, dialog, or action group.
+    dont: Place several primary buttons together and force users to compare competing actions.
+    applies_to:
+      - hierarchy
+      - layout
+
+  - id: button-not-color-alone
+    components:
+      - Button
+      - IconButton
+    requirement: Do not rely on color alone to communicate purpose, priority, or risk.
+    do: Pair visual treatment with clear labels, icons, helper text, or confirmation patterns when needed.
+    dont: Use only red, green, or another color to indicate meaning.
+    applies_to:
+      - accessibility
+      - visual-design
+
+  - id: button-destructive-clarity
+    components:
+      - Button
+      - IconButton
+    requirement: Make destructive actions explicit and harder to trigger accidentally.
+    do: Use labels like "Delete project" or "Remove member" and add confirmation for high-risk actions.
+    dont: Use vague labels like "Confirm" for destructive actions.
+    applies_to:
+      - safety
+      - content
+      - interaction
+
+  - id: button-appropriate-visual-weight
+    components:
+      - Button
+      - IconButton
+    requirement: Match button emphasis to the importance and risk of the action.
+    do: Make the primary action visually strongest and keep secondary actions quieter.
+    dont: Make destructive or low-priority actions look like the preferred next step unless context requires it.
+    applies_to:
+      - hierarchy
+      - visual-design
+
+  - id: button-short-specific-labels
+    components:
+      - Button
+      - IconButton
+    requirement: Keep button labels short, specific, and scannable.
+    do: Use concise labels, usually two to four words.
+    dont: Use long sentence-style labels unless necessary for clarity.
+    applies_to:
+      - content
+      - usability
+
+  - id: button-verb-first-labels
+    components:
+      - Button
+      - IconButton
+    requirement: Use verbs for action buttons.
+    do: Use labels like "Edit profile", "Add payment method", or "Download invoice".
+    dont: Use noun-only labels like "Profile", "Payment method", or "Invoice" for actions.
+    applies_to:
+      - content
+      - usability
+
+  - id: button-consistent-placement
+    components:
+      - Button
+      - IconButton
+    requirement: Place actions consistently across similar interfaces.
+    do: Keep primary, secondary, cancel, and destructive actions in predictable positions.
+    dont: Move equivalent actions to different locations across similar screens or dialogs.
+    applies_to:
+      - layout
+      - consistency
+
+  - id: button-align-with-content
+    components:
+      - Button
+      - IconButton
+    requirement: Button alignment should match the alignment of the surrounding content.
+    do: Align buttons with the content they act on.
+    dont: Center or right-align buttons when the related content is left-aligned.
+    applies_to:
+      - layout
+      - consistency
+      - usability
+
+  - id: button-center-alignment-context
+    components:
+      - Button
+      - IconButton
+    requirement: Only center buttons when the parent content is also centered.
+    do: Center buttons in empty states, confirmations, or other centered layouts.
+    dont: Center buttons under left-aligned headings, body copy, forms, or settings.
+    applies_to:
+      - layout
+      - visual-design
+      - consistency
+
+  - id: button-right-alignment-contained
+    components:
+      - Button
+      - IconButton
+    requirement: Right-aligned buttons should only be used when the parent area is clearly defined and does not create a floating button effect.
+    do: Right-align buttons inside a clear parent container such as a dialog footer, card, or panel.
+    dont: Place a right-aligned button in open space where it appears detached from the content it affects.
+    applies_to:
+      - layout
+      - visual-design
+      - usability
+
+  - id: button-touch-target-size
+    components:
+      - Button
+      - IconButton
+    requirement: Provide a large enough clickable or tappable target.
+    do: Use a minimum target size of 44 by 44 pixels for touch interactions.
+    dont: Make buttons or icon buttons difficult to click, tap, or focus.
+    applies_to:
+      - sizing
+      - accessibility
+      - interaction
+
+  - id: button-clear-states
+    components:
+      - Button
+      - IconButton
+    requirement: Define clear visual states for all button interactions.
+    do: Provide default, hover, focus, active, disabled, loading, success, and error states as needed.
+    dont: Leave buttons without visible focus, loading, or disabled states.
+    applies_to:
+      - interaction
+      - accessibility
+      - visual-design
+
+  - id: button-visible-focus
+    components:
+      - Button
+      - IconButton
+    requirement: Provide a clearly visible focus state for keyboard users.
+    do: Use a focus indicator that is easy to see and distinct from hover or active states.
+    dont: Remove focus outlines without replacing them with an accessible alternative.
+    applies_to:
+      - accessibility
+      - interaction
+
+  - id: button-disabled-explanation
+    components:
+      - Button
+      - IconButton
+    requirement: Explain why a button is disabled when the reason is not obvious.
+    do: Provide helper text, validation messages, or visible requirements near the button or related fields.
+    dont: Disable a button with no explanation and leave users guessing what to fix.
+    applies_to:
+      - usability
+      - accessibility
+      - content
+
+  - id: button-loading-prevents-duplicates
+    components:
+      - Button
+      - IconButton
+    requirement: Use loading states to prevent duplicate actions.
+    do: Show progress with labels like "Saving..." and prevent repeat submissions while the action is processing.
+    dont: Allow users to click the same action repeatedly while a request is in progress.
+    applies_to:
+      - interaction
+      - feedback
+
+  - id: button-icon-accessible-label
+    components:
+      - Button
+      - IconButton
+    requirement: Icon-only buttons must have accessible names.
+    do: Provide an aria-label, tooltip when useful, and a large enough hit area.
+    dont: Rely on the icon alone to communicate the action to all users.
+    applies_to:
+      - accessibility
+      - content
+      - interaction
+
+  - id: button-vs-link-usage
+    components:
+      - Button
+      - IconButton
+    requirement: Use buttons for actions and links for navigation.
+    do: Use a button for saving, submitting, deleting, opening a modal, or changing state.
+    dont: Use buttons for basic navigation when a link would be semantically correct.
+    applies_to:
+      - semantics
+      - accessibility
+      - interaction
+
+  - id: button-limited-variant-set
+    components:
+      - Button
+      - IconButton
+    requirement: Keep the button system limited to reusable, purposeful variants.
+    do: Provide a standard set such as primary, secondary, tertiary, destructive, text, and icon buttons.
+    dont: Create one-off button styles for individual screens or edge cases.
+    applies_to:
+      - system-design
+      - consistency

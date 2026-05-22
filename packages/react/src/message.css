@@ -120,6 +120,13 @@
   --a1-msg-foreground: var(--semantic-color-status-error-foreground);
 }
 
+/* Subtle variant — light surface + border, no fill */
+.a1-message-badge--subtle {
+  --a1-msg-accent:     var(--semantic-color-action-surface);
+  --a1-msg-foreground: var(--semantic-color-action-background);
+  border: 1px solid var(--semantic-color-action-border);
+}
+
 .a1-message-badge .a1-icon {
   font-size: 1em;
 }

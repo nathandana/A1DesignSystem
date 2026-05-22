@@ -60,7 +60,7 @@ const preview = {
         order: [
           "Components", [
             "Controls",   ["Button", "Icon Button", "Link", "Pagination", "Segmented Control", "Tabs"],
-            "Containers", ["Card", "Dialog", "Grid", "Page Layout"],
+            "Containers", ["Card", "Dialog", "Grid", "Inverse", "Page Layout"],
             "Messaging",  ["Banner", "Empty State", "Notification"],
           ],
           "Foundations", [
@@ -73,6 +73,7 @@ const preview = {
             ],
             "Typography",
           ],
+          "Rules",
           "Utilities",
         ],
       },

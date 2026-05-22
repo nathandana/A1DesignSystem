@@ -92,7 +92,8 @@
       "text": {
         "default": { "$type": "color", "$value": "{base.color.neutral.900}" },
         "muted": { "$type": "color", "$value": "{base.color.neutral.600}" },
-        "inverse": { "$type": "color", "$value": "{base.color.neutral.0}" }
+        "inverse": { "$type": "color", "$value": "{base.color.neutral.0}" },
+        "accent": { "$type": "color", "$value": "{base.color.accent.500}" }
       },
       "surface": {
         "page": { "$type": "color", "$value": "{base.color.neutral.0}" },
@@ -148,8 +149,9 @@
         "background": { "$type": "color", "$value": "{semantic.color.action.background}" },
         "backgroundHover": { "$type": "color", "$value": "{semantic.color.action.backgroundHover}" },
         "backgroundPressed": { "$type": "color", "$value": "{semantic.color.action.backgroundPressed}" },
-        "foreground": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
-        "foregroundPressed": { "$type": "color", "$value": "{semantic.color.action.foregroundPressed}" },
+        "foreground": { "$type": "color", "$value": "{base.color.accent.0}" },
+        "foregroundHover": { "$type": "color", "$value": "{base.color.accent.50}" },
+        "foregroundPressed": { "$type": "color", "$value": "{base.color.accent.100}" },
         "border": { "$type": "color", "$value": "{semantic.color.action.background}" }
       },
       "secondary": {
@@ -197,6 +199,7 @@
           "backgroundHover": { "$type": "color", "$value": "{component.button.primary.backgroundHover}" },
           "backgroundPressed": { "$type": "color", "$value": "{component.button.primary.backgroundPressed}" },
           "foreground": { "$type": "color", "$value": "{component.button.primary.foreground}" },
+          "foregroundHover": { "$type": "color", "$value": "{component.button.primary.foregroundHover}" },
           "foregroundPressed": { "$type": "color", "$value": "{component.button.primary.foregroundPressed}" },
           "border": { "$type": "color", "$value": "{component.button.primary.border}" }
         },

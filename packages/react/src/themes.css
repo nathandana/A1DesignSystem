@@ -38,14 +38,17 @@
   --a1-icon-fill: 1;
 }
 
-/* ─── Dark mode ──────────────────────────────────────────────────────────────
-   Applied via .a1-theme-dark on <html>.
-   Overrides every semantic color token. All components respond automatically
-   because they reference semantic tokens, not base ramp values directly.
-   Combinable with .a1-theme-accessible: both classes can be active together.
+/* ─── Dark color set ─────────────────────────────────────────────────────────
+   Applied in two contexts:
+     1. .a1-theme-dark on <html> — global dark mode
+     2. .a1-inverse — any element that should invert the current color scheme
+        (shows dark colors in light mode, light colors in dark mode — see below)
    ─────────────────────────────────────────────────────────────────────────── */
 
-.a1-theme-dark {
+.a1-theme-dark,
+.a1-inverse {
+  color-scheme: dark;
+
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
   --semantic-color-surface-page:    var(--base-color-neutral-900);
   --semantic-color-surface-panel:   var(--base-color-neutral-800);
@@ -97,16 +100,116 @@
 
   /* ── Dialog backdrop ──────────────────────────────────────────────────── */
   --component-dialog-backdrop-color: rgba(0, 0, 0, 0.7);
+
+  /* ── Button: primary (Figma spec — accent-500 bg, accent-0/50/100 text) ── */
+  --component-button-primary-background:           var(--base-color-accent-500);
+  --component-button-primary-background-hover:     var(--base-color-accent-600);
+  --component-button-primary-background-pressed:   var(--base-color-accent-800);
+  --component-button-primary-foreground:           var(--base-color-accent-0);
+  --component-button-primary-foreground-hover:     var(--base-color-accent-50);
+  --component-button-primary-foreground-pressed:   var(--base-color-accent-100);
+  --component-button-primary-border:               var(--base-color-accent-500);
 }
 
-/* Page background follows the surface token */
-body {
+/* ─── Inverse inside dark mode → light color set ─────────────────────────────
+   When .a1-inverse is nested inside .a1-theme-dark, the color scheme flips back
+   to light. References the same base token aliases as :root in tokens.css so
+   the light values stay in sync if the ramp ever changes.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-theme-dark .a1-inverse {
+  color-scheme: light;
+
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --semantic-color-surface-page:    var(--base-color-neutral-0);
+  --semantic-color-surface-panel:   var(--base-color-neutral-50);
+  --semantic-color-surface-raised:  var(--base-color-neutral-100);
+  --semantic-color-surface-inverse: var(--base-color-neutral-900);
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --semantic-color-text-default: var(--base-color-neutral-900);
+  --semantic-color-text-muted:   var(--base-color-neutral-600);
+  --semantic-color-text-inverse: var(--base-color-neutral-0);
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --semantic-color-border-subtle:  var(--base-color-neutral-200);
+  --semantic-color-border-default: var(--base-color-neutral-300);
+  --semantic-color-border-strong:  var(--base-color-neutral-500);
+
+  /* ── Action (accent / purple) ─────────────────────────────────────────── */
+  --semantic-color-action-background:         var(--base-color-accent-500);
+  --semantic-color-action-background-hover:   var(--base-color-accent-600);
+  --semantic-color-action-background-pressed: var(--base-color-accent-800);
+  --semantic-color-action-foreground:         var(--base-color-accent-100);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-300);
+  --semantic-color-action-surface:            var(--base-color-accent-50);
+  --semantic-color-action-border:             var(--base-color-accent-300);
+
+  /* ── Status: info ─────────────────────────────────────────────────────── */
+  --semantic-color-status-info-background: var(--base-color-info-500);
+  --semantic-color-status-info-surface:    var(--base-color-info-50);
+  --semantic-color-status-info-border:     var(--base-color-info-300);
+  --semantic-color-status-info-foreground: var(--base-color-info-0);
+
+  /* ── Status: error ────────────────────────────────────────────────────── */
+  --semantic-color-status-error-background: var(--base-color-error-500);
+  --semantic-color-status-error-surface:    var(--base-color-error-50);
+  --semantic-color-status-error-border:     var(--base-color-error-300);
+  --semantic-color-status-error-foreground: var(--base-color-error-0);
+
+  /* ── Status: warn ─────────────────────────────────────────────────────── */
+  --semantic-color-status-warn-background: var(--base-color-warn-500);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-50);
+  --semantic-color-status-warn-border:     var(--base-color-warn-300);
+  --semantic-color-status-warn-foreground: var(--base-color-warn-0);
+
+  /* ── Status: success ──────────────────────────────────────────────────── */
+  --semantic-color-status-success-background: var(--base-color-success-500);
+  --semantic-color-status-success-surface:    var(--base-color-success-50);
+  --semantic-color-status-success-border:     var(--base-color-success-300);
+  --semantic-color-status-success-foreground: var(--base-color-success-0);
+
+  /* ── Dialog backdrop ──────────────────────────────────────────────────── */
+  --component-dialog-backdrop-color: rgba(6, 11, 20, 0.5);
+
+  /* ── Button: reset primary to light-mode values ──────────────────────── */
+  --component-button-primary-background:           var(--base-color-accent-500);
+  --component-button-primary-background-hover:     var(--base-color-accent-600);
+  --component-button-primary-background-pressed:   var(--base-color-accent-800);
+  --component-button-primary-foreground:           var(--base-color-accent-0);
+  --component-button-primary-foreground-hover:     var(--base-color-accent-50);
+  --component-button-primary-foreground-pressed:   var(--base-color-accent-100);
+  --component-button-primary-border:               var(--base-color-accent-500);
+}
+
+/* ─── Surface paint ──────────────────────────────────────────────────────────
+   body and .a1-inverse both need to paint their own background using the
+   currently active surface-page token so the color scheme is visible.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+body,
+.a1-inverse {
   background: var(--semantic-color-surface-page, #ffffff);
-  transition: background var(--semantic-motion-duration-fast, 0.1s);
+  color: var(--semantic-color-text-default);
+  transition:
+    background var(--semantic-motion-duration-fast, 0.1s),
+    color var(--semantic-motion-duration-fast, 0.1s);
 }
 
-/* Notification default: neutral-600 is too dark on dark backgrounds */
-.a1-theme-dark .a1-notification--default {
+/* ─── Component overrides ────────────────────────────────────────────────────
+   Components that use absolute base-ramp tokens (not semantic tokens) need
+   explicit overrides for dark and inverse contexts.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Notification default: neutral-600 is too dark on a dark surface */
+.a1-theme-dark .a1-notification--default,
+.a1-inverse .a1-notification--default {
   --a1-notification-background: var(--base-color-neutral-500);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}
+
+/* Reset notification inside .a1-inverse nested within dark mode */
+.a1-theme-dark .a1-inverse .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-600);
   --a1-notification-foreground: var(--base-color-neutral-0);
 }

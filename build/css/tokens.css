@@ -156,6 +156,7 @@
   --semantic-color-text-default: #060b14;
   --semantic-color-text-muted: #414e61;
   --semantic-color-text-inverse: #ffffff;
+  --semantic-color-text-accent: #7c3aed;
   --semantic-color-surface-page: #ffffff;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;
@@ -219,8 +220,9 @@
   --component-button-primary-background: #7c3aed;
   --component-button-primary-background-hover: #5916b5;
   --component-button-primary-background-pressed: #230051;
-  --component-button-primary-foreground: #e8e4ff;
-  --component-button-primary-foreground-pressed: #b5a0ff;
+  --component-button-primary-foreground: #fcfbff;
+  --component-button-primary-foreground-hover: #f5f3ff;
+  --component-button-primary-foreground-pressed: #e8e4ff;
   --component-button-primary-border: #7c3aed;
   --component-button-primary-border-width: 0px;
   --component-button-secondary-background: #fcfbff;
@@ -379,8 +381,9 @@
   --brand-a1-button-primary-background: #7c3aed;
   --brand-a1-button-primary-background-hover: #5916b5;
   --brand-a1-button-primary-background-pressed: #230051;
-  --brand-a1-button-primary-foreground: #e8e4ff;
-  --brand-a1-button-primary-foreground-pressed: #b5a0ff;
+  --brand-a1-button-primary-foreground: #fcfbff;
+  --brand-a1-button-primary-foreground-hover: #f5f3ff;
+  --brand-a1-button-primary-foreground-pressed: #e8e4ff;
   --brand-a1-button-primary-border: #7c3aed;
   --brand-a1-button-secondary-background: #fcfbff;
   --brand-a1-button-secondary-background-hover: #f5f3ff;
@@ -460,8 +463,8 @@
   --theme-a1-light-button-primary-background: #7c3aed;
   --theme-a1-light-button-primary-background-hover: #5916b5;
   --theme-a1-light-button-primary-background-pressed: #230051;
-  --theme-a1-light-button-primary-foreground: #e8e4ff;
-  --theme-a1-light-button-primary-foreground-pressed: #b5a0ff;
+  --theme-a1-light-button-primary-foreground: #fcfbff;
+  --theme-a1-light-button-primary-foreground-pressed: #e8e4ff;
   --theme-a1-light-button-primary-border: #7c3aed;
   --theme-a1-light-button-primary-border-width: 0px;
   --theme-a1-light-button-secondary-background: #fcfbff;
@@ -554,4 +557,7 @@
   --theme-a1-accessible-font-user-size-medium: 1rem;
   --theme-a1-accessible-font-user-size-large: 1.125rem;
   --theme-a1-accessible-font-user-size-xl: 1.25rem;
+  --container-query-compact-min: 0px;
+  --container-query-compact-max: 480px;
+  --container-query-standard-min: 480px;
 }

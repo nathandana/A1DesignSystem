@@ -13,5 +13,4 @@
 .a1-paragraph--lg { --a1-paragraph-size: var(--semantic-font-size-body-lg); }
 .a1-paragraph--xl { --a1-paragraph-size: var(--semantic-font-size-body-xl); }
 
-.a1-paragraph--muted   { --a1-paragraph-color: var(--semantic-color-text-muted); }
-.a1-paragraph--inverse { --a1-paragraph-color: var(--semantic-color-text-inverse); }
+.a1-paragraph--muted { --a1-paragraph-color: var(--semantic-color-text-muted); }

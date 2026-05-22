@@ -1,10 +1,46 @@
 .a1-heading {
   margin: 0;
   font-family: var(--a1-heading-family);
-  font-size: var(--a1-heading-size);
+  font-size: var(--a1-heading-responsive-size, var(--a1-heading-size));
   font-weight: var(--a1-heading-weight);
   line-height: var(--a1-heading-line-height);
   color: var(--a1-heading-color, var(--semantic-color-text-default));
+}
+
+@media (min-width: 481px) {
+  .a1-heading {
+    --a1-heading-responsive-size: var(--a1-heading-size-sm, var(--a1-heading-size));
+  }
+}
+
+@media (min-width: 641px) {
+  .a1-heading {
+    --a1-heading-responsive-size: var(
+      --a1-heading-size-md,
+      var(--a1-heading-size-sm, var(--a1-heading-size))
+    );
+  }
+}
+
+@media (min-width: 1025px) {
+  .a1-heading {
+    --a1-heading-responsive-size: var(
+      --a1-heading-size-lg,
+      var(--a1-heading-size-md, var(--a1-heading-size-sm, var(--a1-heading-size)))
+    );
+  }
+}
+
+@media (min-width: 1441px) {
+  .a1-heading {
+    --a1-heading-responsive-size: var(
+      --a1-heading-size-xl,
+      var(
+        --a1-heading-size-lg,
+        var(--a1-heading-size-md, var(--a1-heading-size-sm, var(--a1-heading-size)))
+      )
+    );
+  }
 }
 
 .a1-heading--heading {
@@ -37,4 +73,4 @@
 
 /* Color modifiers */
 .a1-heading--muted   { --a1-heading-color: var(--semantic-color-text-muted); }
-.a1-heading--inverse { --a1-heading-color: var(--semantic-color-text-inverse); }
+.a1-heading--accent  { --a1-heading-color: var(--semantic-color-text-accent); }

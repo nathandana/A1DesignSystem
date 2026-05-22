@@ -11,7 +11,7 @@
     "clean:tokens": "style-dictionary clean",
     "dev": "vite --host 127.0.0.1",
     "dev:button": "vite --host 127.0.0.1 --open /examples/react-button/",
-    "dev:bookstore": "vite --host 127.0.0.1 --open /examples/bookstore/",
+    "dev:a1-design": "vite --host 127.0.0.1 --open /examples/a1-design/",
     "storybook": "storybook dev"
   },
   "dependencies": {

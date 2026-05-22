@@ -1,0 +1,13 @@
+component: System
+rules:
+  - id: system-heading-sentence-case
+    components:
+      - System
+      - Heading
+    requirement: Use sentence case for headings.
+    do: Write headings like "Create account", "Payment details", or "Recent activity".
+    dont: Write headings in title case like "Create Account", "Payment Details", or "Recent Activity".
+    applies_to:
+      - content
+      - typography
+      - consistency

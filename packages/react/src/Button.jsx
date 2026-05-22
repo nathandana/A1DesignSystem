@@ -1,7 +1,7 @@
 import "./button.css";
 import { Icon } from "./Icon.jsx";
 
-const variants = ["primary", "secondary", "tertiary"];
+const variants = ["primary", "secondary", "tertiary", "destructive", "success"];
 const iconPositions = ["start", "end"];
 
 export function Button({

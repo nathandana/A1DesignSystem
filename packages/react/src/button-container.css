@@ -1,0 +1,38 @@
+.a1-button-container {
+  container: a1-button-container / inline-size;
+}
+
+.a1-button-container__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--base-spacing-8);
+}
+
+.a1-button-container__inner > .a1-button {
+  width: 100%;
+}
+
+@container a1-button-container (min-width: 480px) {
+  .a1-button-container__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .a1-button-container__inner > .a1-button {
+    width: auto;
+  }
+
+  .a1-button-container--start .a1-button-container__inner {
+    justify-content: flex-start;
+  }
+
+  .a1-button-container--center .a1-button-container__inner {
+    justify-content: center;
+  }
+
+  .a1-button-container--end .a1-button-container__inner {
+    justify-content: flex-end;
+  }
+}
