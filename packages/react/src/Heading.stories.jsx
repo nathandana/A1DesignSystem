@@ -1,4 +1,5 @@
 import { Heading } from "./Heading.jsx";
+import { Inverse } from "./Inverse.jsx";
 
 const meta = {
   title: "Foundations/Typography/Heading",
@@ -24,7 +25,7 @@ const meta = {
     },
     color: {
       control: "inline-radio",
-      options: ["default", "muted", "inverse"]
+      options: ["default", "muted", "accent"]
     }
   }
 };
@@ -101,14 +102,26 @@ export const DisplayScale = {
   )
 };
 
+export const ResponsiveSize = {
+  name: "Responsive Size",
+  render: () => (
+    <div style={{ maxWidth: "760px" }}>
+      <Heading as="h1" type="display" size={{ xs: "lg", md: "jumbo", lg: "xJumbo" }}>
+        Resize the preview
+      </Heading>
+    </div>
+  )
+};
+
 export const Colors = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
       <Heading as="h2" color="default">Default heading color</Heading>
       <Heading as="h2" color="muted">Muted heading color</Heading>
-      <div style={{ background: "var(--semantic-color-surface-inverse)", padding: "16px", borderRadius: "6px" }}>
-        <Heading as="h2" color="inverse">Inverse heading color</Heading>
-      </div>
+      <Heading as="h2" color="accent">Accent heading color</Heading>
+      <Inverse style={{ padding: "16px", borderRadius: "6px" }}>
+        <Heading as="h2">Inverse surface heading</Heading>
+      </Inverse>
     </div>
   )
 };

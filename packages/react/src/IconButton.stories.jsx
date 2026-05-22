@@ -8,12 +8,12 @@ const meta = {
   args: {
     icon: "settings",
     label: "Settings",
-    variant: "default",
+    variant: "tertiary",
   },
   argTypes: {
     variant: {
       control: "inline-radio",
-      options: ["default", "filled"],
+      options: ["tertiary", "secondary", "destructive", "success"],
     },
     icon:     { control: "text" },
     label:    { control: "text" },
@@ -29,8 +29,10 @@ export const Variants = {
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)" }}>
-      <IconButton icon="close"    label="Close"    />
-      <IconButton icon="settings" label="Settings" variant="filled" />
+      <IconButton icon="close"    label="Close"    variant="tertiary" />
+      <IconButton icon="settings" label="Settings" variant="secondary" />
+      <IconButton icon="delete"   label="Delete"   variant="destructive" />
+      <IconButton icon="check"    label="Approve"  variant="success" />
     </div>
   ),
 };
@@ -41,32 +43,52 @@ export const CommonIcons = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-24)" }}>
       <div>
-        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>default</p>
+        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>variant="tertiary"</p>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
-          <IconButton icon="close"         label="Close"          />
-          <IconButton icon="more_vert"     label="More options"   />
-          <IconButton icon="edit"          label="Edit"           />
-          <IconButton icon="delete"        label="Delete"         />
-          <IconButton icon="search"        label="Search"         />
-          <IconButton icon="notifications" label="Notifications"  />
+          <IconButton icon="close"         label="Close"          variant="tertiary" />
+          <IconButton icon="more_vert"     label="More options"   variant="tertiary" />
+          <IconButton icon="edit"          label="Edit"           variant="tertiary" />
+          <IconButton icon="delete"        label="Delete"         variant="tertiary" />
+          <IconButton icon="search"        label="Search"         variant="tertiary" />
+          <IconButton icon="notifications" label="Notifications"  variant="tertiary" />
         </div>
       </div>
       <div>
-        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>variant="filled"</p>
+        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>variant="secondary"</p>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
-          <IconButton icon="close"         label="Close"          variant="filled" />
-          <IconButton icon="more_vert"     label="More options"   variant="filled" />
-          <IconButton icon="edit"          label="Edit"           variant="filled" />
-          <IconButton icon="delete"        label="Delete"         variant="filled" />
-          <IconButton icon="search"        label="Search"         variant="filled" />
-          <IconButton icon="notifications" label="Notifications"  variant="filled" />
+          <IconButton icon="close"         label="Close"          variant="secondary" />
+          <IconButton icon="more_vert"     label="More options"   variant="secondary" />
+          <IconButton icon="edit"          label="Edit"           variant="secondary" />
+          <IconButton icon="delete"        label="Delete"         variant="secondary" />
+          <IconButton icon="search"        label="Search"         variant="secondary" />
+          <IconButton icon="notifications" label="Notifications"  variant="secondary" />
+        </div>
+      </div>
+      <div>
+        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>variant="destructive"</p>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
+          <IconButton icon="delete"        label="Delete"         variant="destructive" />
+          <IconButton icon="remove"        label="Remove"         variant="destructive" />
+          <IconButton icon="block"         label="Block"          variant="destructive" />
+          <IconButton icon="close"         label="Close"          variant="destructive" />
+        </div>
+      </div>
+      <div>
+        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>variant="success"</p>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
+          <IconButton icon="check"         label="Approve"        variant="success" />
+          <IconButton icon="done_all"      label="Complete all"   variant="success" />
+          <IconButton icon="task_alt"      label="Mark complete"  variant="success" />
+          <IconButton icon="thumb_up"      label="Accept"         variant="success" />
         </div>
       </div>
       <div>
         <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>disabled</p>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
           <IconButton icon="edit"   label="Edit"   disabled />
-          <IconButton icon="delete" label="Delete" disabled variant="filled" />
+          <IconButton icon="delete" label="Delete" disabled variant="secondary" />
+          <IconButton icon="delete" label="Delete" disabled variant="destructive" />
+          <IconButton icon="check"  label="Approve" disabled variant="success" />
         </div>
       </div>
     </div>

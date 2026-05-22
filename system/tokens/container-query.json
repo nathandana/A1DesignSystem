@@ -1,0 +1,11 @@
+{
+  "containerQuery": {
+    "compact": {
+      "min": { "$type": "dimension", "$value": "0px" },
+      "max": { "$type": "dimension", "$value": "480px" }
+    },
+    "standard": {
+      "min": { "$type": "dimension", "$value": "480px" }
+    }
+  }
+}

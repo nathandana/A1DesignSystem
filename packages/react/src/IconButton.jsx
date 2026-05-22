@@ -1,18 +1,21 @@
 import "./icon-button.css";
 import { Icon } from "./Icon.jsx";
 
+const variants = ["tertiary", "secondary", "destructive", "success"];
+
 export function IconButton({
   icon,
   label,
-  variant = "default",
+  variant = "tertiary",
   disabled = false,
   onClick,
   className = "",
   ...props
 }) {
+  const resolvedVariant = variants.includes(variant) ? variant : "tertiary";
   const classes = [
     "a1-icon-button",
-    variant !== "default" && `a1-icon-button--${variant}`,
+    `a1-icon-button--${resolvedVariant}`,
     className,
   ].filter(Boolean).join(" ");
 

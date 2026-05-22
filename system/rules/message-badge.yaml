@@ -1,0 +1,166 @@
+component: Badge
+rules:
+  - id: badge-natural-width
+    requirement: Always size badges to the natural width of their content.
+    do: Let the badge hug its label and optional icon.
+    dont: Stretch badges to fill a parent container, grid column, or full row.
+    applies_to:
+      - layout
+      - sizing
+
+  - id: badge-short-label
+    requirement: Keep badge labels short and scannable.
+    do: Use concise labels like "New", "Active", "Draft", "Beta", or "Past due".
+    dont: Use long phrases or sentence-style labels inside badges.
+    applies_to:
+      - content
+      - usability
+
+  - id: badge-status-clarity
+    requirement: Use badges to communicate status, category, count, or metadata.
+    do: Use badges for states like "Approved", "Pending", "Error", "Optional", or "Required".
+    dont: Use badges for primary actions or navigational controls.
+    applies_to:
+      - semantics
+      - usability
+
+  - id: badge-not-actionable-by-default
+    requirement: Do not make badges interactive unless the interaction is explicit and necessary.
+    do: Use a button, chip, tag, or link pattern when the element is clickable.
+    dont: Make a badge clickable without clear affordance, focus state, or accessible role.
+    applies_to:
+      - interaction
+      - accessibility
+      - semantics
+
+  - id: badge-color-not-alone
+    requirement: Do not rely on color alone to communicate meaning.
+    do: Pair color with text such as "Error", "Success", "Warning", or "Inactive".
+    dont: Use only red, green, yellow, or gray to indicate status.
+    applies_to:
+      - accessibility
+      - visual-design
+
+  - id: badge-accessible-contrast
+    requirement: Ensure badge text and icons meet contrast requirements against the badge background.
+    do: Use color pairings that maintain readable contrast in all themes and states.
+    dont: Use pale text on pale backgrounds or saturated combinations that reduce legibility.
+    applies_to:
+      - accessibility
+      - color
+
+  - id: badge-consistent-meaning
+    requirement: Use badge colors and variants consistently across the product.
+    do: Reserve semantic variants like success, warning, error, info, and neutral for consistent meanings.
+    dont: Use the same color to mean different things in different contexts.
+    applies_to:
+      - consistency
+      - visual-design
+
+  - id: badge-semantic-variant-before-custom
+    requirement: Prefer semantic variants over one-off custom styles.
+    do: Use standard variants such as neutral, brand, info, success, warning, error, and inverse.
+    dont: Create screen-specific badge colors unless the system explicitly supports them.
+    applies_to:
+      - system-design
+      - consistency
+
+  - id: badge-icon-supportive
+    requirement: Use icons only when they add meaning or improve recognition.
+    do: Pair an icon with a label for statuses that benefit from quick recognition.
+    dont: Add decorative icons that increase clutter without improving understanding.
+    applies_to:
+      - iconography
+      - usability
+
+  - id: badge-icon-not-required-for-status
+    requirement: Do not require icons for badge comprehension.
+    do: Make the text label sufficient on its own.
+    dont: Depend on an icon as the only way to distinguish badge meaning.
+    applies_to:
+      - accessibility
+      - content
+      - iconography
+
+  - id: badge-readable-type-size
+    requirement: Use a readable text size for badge labels.
+    do: Keep badge text large enough to read comfortably at normal interface scale.
+    dont: Use overly small text to make badges feel compact.
+    applies_to:
+      - typography
+      - accessibility
+
+  - id: badge-stable-height
+    requirement: Use consistent badge height and vertical alignment.
+    do: Align badges visually with adjacent text, headings, table content, or form labels.
+    dont: Let badge height vary unpredictably across variants with similar purpose.
+    applies_to:
+      - layout
+      - visual-design
+
+  - id: badge-appropriate-density
+    requirement: Match badge padding and spacing to the density of the surrounding UI.
+    do: Use compact spacing in tables and denser areas, and more comfortable spacing in cards or page headers.
+    dont: Use oversized badges in dense content or cramped badges in prominent areas.
+    applies_to:
+      - spacing
+      - layout
+
+  - id: badge-inline-alignment
+    requirement: Align inline badges with the text they support.
+    do: Place badges close to the label, title, or item they describe.
+    dont: Separate badges so far from their related content that the relationship becomes unclear.
+    applies_to:
+      - layout
+      - usability
+
+  - id: badge-count-formatting
+    requirement: Format count badges consistently.
+    do: Use predictable count formats such as "3", "12", or "99+".
+    dont: Allow large numbers to break the badge layout or create inconsistent widths.
+    applies_to:
+      - content
+      - layout
+
+  - id: badge-overuse-avoidance
+    requirement: Use badges sparingly to preserve their signal value.
+    do: Apply badges to information that benefits from quick visual scanning.
+    dont: Badge every item, label, or attribute on the page.
+    applies_to:
+      - usability
+      - visual-design
+
+  - id: badge-theme-support
+    requirement: Ensure badge variants work across supported themes.
+    do: Define badge tokens for background, text, border, and icon color across light, dark, and high-contrast modes.
+    dont: Hard-code colors that only work in one theme.
+    applies_to:
+      - theming
+      - color
+      - system-design
+
+  - id: badge-truncation-rules
+    requirement: Define how badges behave when content is too long.
+    do: Prefer short controlled labels, or truncate only when the full value is available elsewhere.
+    dont: Let long badge labels wrap awkwardly or distort nearby layout.
+    applies_to:
+      - content
+      - layout
+      - responsive
+
+  - id: badge-localization-support
+    requirement: Account for translated labels that may be longer than the source language.
+    do: Test badge layouts with longer localized strings.
+    dont: Assume English badge length will represent all languages.
+    applies_to:
+      - localization
+      - responsive
+      - content
+
+  - id: badge-screen-reader-meaning
+    requirement: Ensure the badge meaning is understandable to assistive technology.
+    do: Use clear text labels and add accessible context when the badge alone is ambiguous.
+    dont: Expose unexplained visual-only labels or decorative symbols as meaningful content.
+    applies_to:
+      - accessibility
+      - semantics

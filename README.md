@@ -10,6 +10,27 @@ export PATH="$PWD/.tools/node/bin:$PATH"
 npm --version
 ```
 
+## Netlify deploy
+
+The repo includes `netlify.toml`, so Netlify can build from the repository root with:
+
+```sh
+npm run build
+```
+
+Netlify publishes the generated static app from:
+
+```sh
+examples/a1-design/dist
+```
+
+To check the production build locally:
+
+```sh
+npm run build
+npm run preview:a1-design
+```
+
 From scratch design system that leverages AI to help create it, but more importantly is setup to be consumed by AI agents to create consistent outputs.
 
 Features:

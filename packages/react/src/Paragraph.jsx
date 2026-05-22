@@ -1,7 +1,7 @@
 import "./paragraph.css";
 
 const sizes = ["xs", "sm", "md", "lg", "xl"];
-const colors = ["default", "muted", "inverse"];
+const colors = ["default", "muted"];
 
 export function Paragraph({
   as: Component = "p",

@@ -39,7 +39,7 @@ const meta = {
     },
     variant: {
       control: "inline-radio",
-      options: ["primary", "secondary", "tertiary"]
+      options: ["primary", "secondary", "tertiary", "destructive", "success"]
     }
   },
   render: ({ as, disabled, href, ...args }) => (
@@ -63,6 +63,8 @@ export const Variants = {
       <Button {...args} variant="primary">Primary</Button>
       <Button {...args} variant="secondary">Secondary</Button>
       <Button {...args} variant="tertiary">Tertiary</Button>
+      <Button {...args} variant="destructive">Destructive</Button>
+      <Button {...args} variant="success">Success</Button>
     </div>
   )
 };
@@ -74,6 +76,8 @@ export const WithIconStart = {
       <Button {...args} variant="primary" icon="add">Add item</Button>
       <Button {...args} variant="secondary" icon="download">Download</Button>
       <Button {...args} variant="tertiary" icon="settings">Settings</Button>
+      <Button {...args} variant="destructive" icon="delete">Delete</Button>
+      <Button {...args} variant="success" icon="check">Approve</Button>
     </div>
   )
 };
@@ -85,7 +89,8 @@ export const WithIconEnd = {
       <Button {...args} variant="primary" icon="arrow_forward" iconPosition="end">Continue</Button>
       <Button {...args} variant="secondary" icon="open_in_new" iconPosition="end">Open link</Button>
       <Button {...args} variant="tertiary" icon="chevron_right" iconPosition="end">See more</Button>
+      <Button {...args} variant="destructive" icon="delete" iconPosition="end">Delete</Button>
+      <Button {...args} variant="success" icon="check" iconPosition="end">Approve</Button>
     </div>
   )
 };
-

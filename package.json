@@ -5,13 +5,16 @@
   "type": "module",
   "description": "AI-first multifunctional design system proof of concept.",
   "scripts": {
+    "build": "npm run build:a1-design",
+    "build:a1-design": "npm run build:tokens && vite build examples/a1-design -- --outDir dist",
     "build:tokens": "style-dictionary build --config sd.config.js",
     "build:storybook": "storybook build",
     "check": "npm --version",
     "clean:tokens": "style-dictionary clean",
     "dev": "vite --host 127.0.0.1",
     "dev:button": "vite --host 127.0.0.1 --open /examples/react-button/",
-    "dev:bookstore": "vite --host 127.0.0.1 --open /examples/bookstore/",
+    "dev:a1-design": "vite --host 127.0.0.1 --open /examples/a1-design/",
+    "preview:a1-design": "vite preview examples/a1-design --host 127.0.0.1",
     "storybook": "storybook dev"
   },
   "dependencies": {

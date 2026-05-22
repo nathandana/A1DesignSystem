@@ -1,0 +1,209 @@
+.a1-design-page {
+  min-height: 100vh;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: Inter, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.a1-design-header {
+  height: 64px;
+  padding: 0 var(--base-spacing-40);
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.a1-design-logo,
+.a1-design-nav-link {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.a1-design-logo {
+  color: var(--semantic-color-text-default);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.a1-design-logo-accent {
+  color: var(--semantic-color-text-accent);
+}
+
+.a1-design-nav-list {
+  display: flex;
+  gap: var(--base-spacing-32);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a1-design-nav-link {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-design-nav-link--active,
+.a1-design-nav-link:hover {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-design-hero {
+  flex: 1;
+  padding: var(--base-spacing-64) var(--base-spacing-40);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-32);
+  text-align: center;
+}
+
+.a1-design-badge-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.a1-design-heading-wrap {
+  max-width: 900px;
+}
+
+.a1-design-paragraph-wrap {
+  max-width: 560px;
+}
+
+.a1-design-paragraph-wrap .a1-paragraph + .a1-paragraph {
+  margin-top: var(--base-spacing-8);
+}
+
+.a1-design-actions {
+  width: 100%;
+  max-width: 560px;
+}
+
+.a1-design-components-page {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: var(--base-spacing-64) var(--base-spacing-40);
+}
+
+.a1-design-page-heading {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-design-components-layout {
+  margin-top: var(--base-spacing-40);
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--base-spacing-40);
+  align-items: start;
+}
+
+.a1-design-toc {
+  position: sticky;
+  top: var(--base-spacing-24);
+  padding: var(--base-spacing-20);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-control);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-design-toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+  margin: var(--base-spacing-16) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-design-toc-link {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  text-decoration: none;
+}
+
+.a1-design-toc-link:hover {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-design-component-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-design-component-section {
+  scroll-margin-top: var(--base-spacing-24);
+}
+
+.a1-design-component-section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-24);
+  align-items: start;
+}
+
+.a1-design-component-section-header > .a1-message-badge {
+  flex-shrink: 0;
+}
+
+.a1-design-component-meta {
+  margin: var(--base-spacing-24) 0 0;
+  padding-top: var(--base-spacing-16);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-design-component-meta dt {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 700;
+}
+
+.a1-design-component-meta dd {
+  margin: var(--base-spacing-4) 0 0;
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+@media (max-width: 720px) {
+  .a1-design-header {
+    height: auto;
+    min-height: 64px;
+    padding: var(--base-spacing-16) var(--base-spacing-24);
+    align-items: flex-start;
+    gap: var(--base-spacing-16);
+    flex-direction: column;
+  }
+
+  .a1-design-nav-list {
+    gap: var(--base-spacing-20);
+    flex-wrap: wrap;
+  }
+
+  .a1-design-hero,
+  .a1-design-components-page {
+    padding: var(--base-spacing-40) var(--base-spacing-24);
+  }
+
+  .a1-design-components-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .a1-design-toc {
+    position: static;
+  }
+
+  .a1-design-component-section-header {
+    flex-direction: column;
+  }
+}

@@ -1,4 +1,5 @@
 import { Paragraph } from "./Paragraph.jsx";
+import { Inverse } from "./Inverse.jsx";
 
 const meta = {
   title: "Foundations/Typography/Paragraph",
@@ -58,9 +59,9 @@ export const Colors = {
     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
       <Paragraph color="default">Default — primary text color for body copy.</Paragraph>
       <Paragraph color="muted">Muted — secondary text for captions and supporting copy.</Paragraph>
-      <div style={{ background: "var(--semantic-color-surface-inverse)", padding: "12px", borderRadius: "6px" }}>
-        <Paragraph color="inverse">Inverse — for text on dark backgrounds.</Paragraph>
-      </div>
+      <Inverse style={{ padding: "12px", borderRadius: "6px" }}>
+        <Paragraph>Inverse surface — text color adapts automatically.</Paragraph>
+      </Inverse>
     </div>
   )
 };

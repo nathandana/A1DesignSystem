@@ -12,28 +12,28 @@
   padding: 0;
   border-radius: var(--component-icon-button-border-radius);
   cursor: pointer;
+  background: var(--a1-icon-button-background);
+  border-width: var(--a1-icon-button-border-width, var(--component-button-tertiary-border-width));
+  border-style: solid;
+  border-color: var(--a1-icon-button-border);
+  color: var(--a1-icon-button-foreground);
+}
 
-  /* default: tertiary button styling */
-  background: var(--component-button-tertiary-background);
-  border: var(--component-button-tertiary-border-width) solid var(--component-button-tertiary-border);
-  color: var(--component-button-tertiary-foreground);
+.a1-icon-button:hover {
+  background: var(--a1-icon-button-background-hover);
+  border-color: var(--a1-icon-button-border-hover);
+  color: var(--a1-icon-button-foreground-hover);
+}
+
+.a1-icon-button:active {
+  background: var(--a1-icon-button-background-pressed);
+  border-color: var(--a1-icon-button-border-pressed);
+  color: var(--a1-icon-button-foreground-pressed);
 }
 
 .a1-icon-button .a1-icon {
   font-size: var(--component-icon-button-icon-size);
   --a1-icon-opsz: var(--component-icon-button-icon-optical-size);
-}
-
-.a1-icon-button:hover {
-  background: var(--component-button-tertiary-background-hover);
-  border-color: var(--component-button-tertiary-border-hover);
-  color: var(--component-button-tertiary-foreground-hover);
-}
-
-.a1-icon-button:active {
-  background: var(--component-button-tertiary-background-pressed);
-  border-color: var(--component-button-tertiary-border-pressed);
-  color: var(--component-button-tertiary-foreground-pressed);
 }
 
 .a1-icon-button:focus-visible {
@@ -47,22 +47,150 @@
   pointer-events: none;
 }
 
-/* ── Variant: filled (secondary button styling) ───────────────────────────── */
+/* ── Variant: tertiary ───────────────────────────────────────────────────── */
 
-.a1-icon-button--filled {
-  background: var(--component-button-secondary-background);
-  border: var(--component-button-secondary-border-width) solid var(--component-button-secondary-border);
-  color: var(--component-button-secondary-foreground);
+.a1-icon-button--tertiary {
+  --a1-icon-button-background: var(--component-button-tertiary-background);
+  --a1-icon-button-background-hover: var(--component-button-tertiary-background-hover);
+  --a1-icon-button-background-pressed: var(--component-button-tertiary-background-pressed);
+  --a1-icon-button-foreground: var(--component-button-tertiary-foreground);
+  --a1-icon-button-foreground-hover: var(--component-button-tertiary-foreground-hover);
+  --a1-icon-button-foreground-pressed: var(--component-button-tertiary-foreground-pressed);
+  --a1-icon-button-border: var(--component-button-tertiary-border);
+  --a1-icon-button-border-hover: var(--component-button-tertiary-border-hover);
+  --a1-icon-button-border-pressed: var(--component-button-tertiary-border-pressed);
+  --a1-icon-button-border-width: var(--component-button-tertiary-border-width);
 }
 
-.a1-icon-button--filled:hover {
-  background: var(--component-button-secondary-background-hover);
-  border-color: var(--component-button-secondary-border-hover);
-  color: var(--component-button-secondary-foreground-hover);
+/* ── Variant: secondary ──────────────────────────────────────────────────── */
+
+.a1-icon-button--secondary {
+  --a1-icon-button-background: var(--component-button-secondary-background);
+  --a1-icon-button-background-hover: var(--component-button-secondary-background-hover);
+  --a1-icon-button-background-pressed: var(--component-button-secondary-background-pressed);
+  --a1-icon-button-foreground: var(--component-button-secondary-foreground);
+  --a1-icon-button-foreground-hover: var(--component-button-secondary-foreground-hover);
+  --a1-icon-button-foreground-pressed: var(--component-button-secondary-foreground-pressed);
+  --a1-icon-button-border: var(--component-button-secondary-border);
+  --a1-icon-button-border-hover: var(--component-button-secondary-border-hover);
+  --a1-icon-button-border-pressed: var(--component-button-secondary-border-pressed);
+  --a1-icon-button-border-width: var(--component-button-secondary-border-width);
 }
 
-.a1-icon-button--filled:active {
-  background: var(--component-button-secondary-background-pressed);
-  border-color: var(--component-button-secondary-border-pressed);
-  color: var(--component-button-secondary-foreground-pressed);
+/* ── Variant: destructive ───────────────────────────────────────────────── */
+
+.a1-icon-button--destructive {
+  background: var(--semantic-color-status-error-surface);
+  border-color: var(--semantic-color-status-error-border);
+  color: var(--semantic-color-status-error-background);
+}
+
+.a1-icon-button--destructive:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-error-surface), var(--semantic-color-status-error-background) 8%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-background);
+}
+
+.a1-icon-button--destructive:active {
+  background: color-mix(in srgb, var(--semantic-color-status-error-surface), var(--semantic-color-status-error-background) 16%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-background);
+}
+
+/* ── Variant: success ───────────────────────────────────────────────────── */
+
+.a1-icon-button--success {
+  background: var(--semantic-color-status-success-surface);
+  border-color: var(--semantic-color-status-success-border);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-icon-button--success:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-success-surface), var(--semantic-color-status-success-background) 8%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-icon-button--success:active {
+  background: color-mix(in srgb, var(--semantic-color-status-success-surface), var(--semantic-color-status-success-background) 16%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-theme-dark .a1-icon-button--destructive,
+.a1-inverse .a1-icon-button--destructive {
+  background: var(--semantic-color-status-error-background);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+}
+
+.a1-theme-dark .a1-icon-button--destructive:hover,
+.a1-inverse .a1-icon-button--destructive:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-error-background), black 16%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+}
+
+.a1-theme-dark .a1-icon-button--destructive:active,
+.a1-inverse .a1-icon-button--destructive:active {
+  background: color-mix(in srgb, var(--semantic-color-status-error-background), black 32%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+}
+
+.a1-theme-dark .a1-icon-button--success,
+.a1-inverse .a1-icon-button--success {
+  background: var(--semantic-color-status-success-background);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-foreground);
+}
+
+.a1-theme-dark .a1-icon-button--success:hover,
+.a1-inverse .a1-icon-button--success:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-success-background), black 16%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-foreground);
+}
+
+.a1-theme-dark .a1-icon-button--success:active,
+.a1-inverse .a1-icon-button--success:active {
+  background: color-mix(in srgb, var(--semantic-color-status-success-background), black 32%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-foreground);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--destructive {
+  background: var(--semantic-color-status-error-surface);
+  border-color: var(--semantic-color-status-error-border);
+  color: var(--semantic-color-status-error-background);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--destructive:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-error-surface), var(--semantic-color-status-error-background) 8%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-background);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--destructive:active {
+  background: color-mix(in srgb, var(--semantic-color-status-error-surface), var(--semantic-color-status-error-background) 16%);
+  border-color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-background);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--success {
+  background: var(--semantic-color-status-success-surface);
+  border-color: var(--semantic-color-status-success-border);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--success:hover {
+  background: color-mix(in srgb, var(--semantic-color-status-success-surface), var(--semantic-color-status-success-background) 8%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-theme-dark .a1-inverse .a1-icon-button--success:active {
+  background: color-mix(in srgb, var(--semantic-color-status-success-surface), var(--semantic-color-status-success-background) 16%);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-background);
 }
