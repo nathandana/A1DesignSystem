@@ -4,7 +4,7 @@ import { Heading } from "./Heading.jsx";
 import { Paragraph } from "./Paragraph.jsx";
 
 const meta = {
-  title: "Components/Tabs",
+  title: "Components/Controls/Tabs",
   parameters: { layout: "padded" },
 };
 
@@ -14,7 +14,7 @@ export default meta;
 
 function SamplePanel({ title }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-xs)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-8)" }}>
       <Heading as="h3" type="heading" size="xs">{title}</Heading>
       <Paragraph color="muted" size="sm">
         This is the content area for the <strong>{title}</strong> tab. Add any components

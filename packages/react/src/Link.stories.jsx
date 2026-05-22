@@ -2,7 +2,7 @@ import { Link } from "./Link.jsx";
 import { Paragraph } from "./Paragraph.jsx";
 
 const meta = {
-  title: "Components/Link",
+  title: "Components/Controls/Link",
   component: Link,
   tags: ["autodocs"],
   args: {
@@ -46,7 +46,7 @@ export const Configurable = {};
 export const Sizes = {
   parameters: { controls: { include: ["weight", "icon", "iconPosition"] } },
   render: args => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-sm)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
       {["xs", "sm", "md", "lg", "xl"].map(size => (
         <Link key={size} {...args} size={size} href="#">
           {size} — Link text
@@ -59,7 +59,7 @@ export const Sizes = {
 export const Weights = {
   parameters: { controls: { include: ["size", "icon", "iconPosition"] } },
   render: args => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-sm)", fontSize: "var(--semantic-font-size-body-md)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)", fontSize: "var(--semantic-font-size-body-md)" }}>
       <Link {...args} href="#">Inherited weight (default)</Link>
       {["normal", "medium", "semibold", "bold"].map(weight => (
         <Link key={weight} {...args} weight={weight} href="#">
@@ -78,7 +78,7 @@ export const WithIcons = {
   name:"With icons",
   parameters: { controls: { include: ["size", "weight"] } },
   render:args => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-sm)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
       <Link {...args} icon="arrow_forward" iconPosition="end" href="#">Continue reading</Link>
       <Link {...args} icon="open_in_new" iconPosition="end" href="#">Open in new tab</Link>
       <Link {...args} icon="download" iconPosition="start" href="#">Download file</Link>
@@ -91,7 +91,7 @@ export const InlineText = {
   name: "Inline in text",
   parameters: { controls: { include: [] } },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-md)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
       <Paragraph>
         You can read more about this in our <Link href="#">documentation</Link>, or{" "}
         <Link href="#">contact support</Link> if you need help.

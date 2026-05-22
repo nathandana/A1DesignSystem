@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   IconButton
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.a1-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: var(--component-icon-button-size);
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: var(--component-icon-button-border-radius);
+  cursor: pointer;
+
+  /* default: tertiary button styling */
+  background: var(--component-button-tertiary-background);
+  border: var(--component-button-tertiary-border-width) solid var(--component-button-tertiary-border);
+  color: var(--component-button-tertiary-foreground);
+}
+
+.a1-icon-button .a1-icon {
+  font-size: var(--component-icon-button-icon-size);
+  --a1-icon-opsz: var(--component-icon-button-icon-optical-size);
+}
+
+.a1-icon-button:hover {
+  background: var(--component-button-tertiary-background-hover);
+  border-color: var(--component-button-tertiary-border-hover);
+  color: var(--component-button-tertiary-foreground-hover);
+}
+
+.a1-icon-button:active {
+  background: var(--component-button-tertiary-background-pressed);
+  border-color: var(--component-button-tertiary-border-pressed);
+  color: var(--component-button-tertiary-foreground-pressed);
+}
+
+.a1-icon-button:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-icon-button-focus-ring-offset);
+}
+
+.a1-icon-button:disabled {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Variant: filled (secondary button styling) ───────────────────────────── */
+
+.a1-icon-button--filled {
+  background: var(--component-button-secondary-background);
+  border: var(--component-button-secondary-border-width) solid var(--component-button-secondary-border);
+  color: var(--component-button-secondary-foreground);
+}
+
+.a1-icon-button--filled:hover {
+  background: var(--component-button-secondary-background-hover);
+  border-color: var(--component-button-secondary-border-hover);
+  color: var(--component-button-secondary-foreground-hover);
+}
+
+.a1-icon-button--filled:active {
+  background: var(--component-button-secondary-background-pressed);
+  border-color: var(--component-button-secondary-border-pressed);
+  color: var(--component-button-secondary-foreground-pressed);
+}

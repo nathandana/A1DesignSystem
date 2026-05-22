@@ -5,7 +5,7 @@ import { Heading } from "./Heading.jsx";
 import { Paragraph } from "./Paragraph.jsx";
 
 const meta = {
-  title: "Components/Dialog",
+  title: "Components/Containers/Dialog",
   component: Dialog,
   tags: ["autodocs"],
   parameters: { layout: "centered" }
@@ -75,7 +75,7 @@ export const WithRichContent = {
             </>
           }
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-sm)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
             <Heading as="h3" type="heading" size="xs">Overview</Heading>
             <Paragraph color="muted" size="sm">
               Provide a short description of what this project covers, who it is intended for,

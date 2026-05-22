@@ -26,7 +26,7 @@
         },
         "minHeight": {
           "$type": "dimension",
-          "$value": "{base.spacing.xl}"
+          "$value": "{base.spacing.40}"
         },
         "gap": {
           "$type": "dimension",
@@ -114,6 +114,14 @@
       "disabledOpacity": {
         "$type": "opacity",
         "$value": "{base.space.button.disabledOpacity}"
+      },
+      "iconSize": {
+        "$type": "dimension",
+        "$value": "{base.spacing.20}"
+      },
+      "iconOpticalSize": {
+        "$type": "number",
+        "$value": 20
       }
     }
   },

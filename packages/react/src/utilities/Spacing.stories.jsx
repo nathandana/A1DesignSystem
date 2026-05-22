@@ -1,11 +1,18 @@
 const SIZES = [
-  { name: "xxs", value: "4px" },
-  { name: "xs",  value: "8px" },
-  { name: "sm",  value: "12px" },
-  { name: "md",  value: "16px" },
-  { name: "lg",  value: "24px" },
-  { name: "xl",  value: "40px" },
-  { name: "xxl", value: "64px" },
+  { name: "1",   value: "1px" },
+  { name: "2",   value: "2px" },
+  { name: "4",   value: "4px" },
+  { name: "6",   value: "6px" },
+  { name: "8",   value: "8px" },
+  { name: "12",  value: "12px" },
+  { name: "16",  value: "16px" },
+  { name: "20",  value: "20px" },
+  { name: "24",  value: "24px" },
+  { name: "32",  value: "32px" },
+  { name: "40",  value: "40px" },
+  { name: "64",  value: "64px" },
+  { name: "96",  value: "96px" },
+  { name: "128", value: "128px" },
 ];
 
 const DIMENSIONS = [
@@ -50,9 +57,9 @@ export default meta;
 export const Scale = {
   name: "Spacing scale",
   render: () => (
-    <div style={{ padding: "var(--base-spacing-xl)" }}>
-      <div style={{ marginBottom: "var(--base-spacing-lg)" }}>
-        <p style={{ margin: "0 0 var(--base-spacing-xs)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
+    <div style={{ padding: "var(--base-spacing-40)" }}>
+      <div style={{ marginBottom: "var(--base-spacing-24)" }}>
+        <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
           Spacing scale
         </p>
         <p style={{ margin: 0, fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-muted)" }}>
@@ -61,9 +68,9 @@ export const Scale = {
         </p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-sm)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
         {SIZES.map(({ name, value }) => (
-          <div key={name} style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-md)" }}>
+          <div key={name} style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)" }}>
             <code style={{ fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-muted)", width: "36px", flexShrink: 0 }}>
               {name}
             </code>
@@ -92,8 +99,8 @@ export const Scale = {
 export const Padding = {
   name: "Padding classes",
   render: () => (
-    <div style={{ padding: "var(--base-spacing-xl)" }}>
-      <p style={{ margin: "0 0 var(--base-spacing-lg)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
+    <div style={{ padding: "var(--base-spacing-40)" }}>
+      <p style={{ margin: "0 0 var(--base-spacing-24)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
         Padding
       </p>
       <table style={{ width: "100%", borderCollapse: "collapse", background: "var(--semantic-color-surface-page)", border: "1px solid var(--semantic-color-border-subtle)", borderRadius: "var(--base-radius-lg)", overflow: "hidden" }}>
@@ -129,8 +136,8 @@ export const Padding = {
 export const Margin = {
   name: "Margin classes",
   render: () => (
-    <div style={{ padding: "var(--base-spacing-xl)" }}>
-      <p style={{ margin: "0 0 var(--base-spacing-lg)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
+    <div style={{ padding: "var(--base-spacing-40)" }}>
+      <p style={{ margin: "0 0 var(--base-spacing-24)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
         Margin
       </p>
       <table style={{ width: "100%", borderCollapse: "collapse", background: "var(--semantic-color-surface-page)", border: "1px solid var(--semantic-color-border-subtle)", borderRadius: "var(--base-radius-lg)", overflow: "hidden" }}>
@@ -182,7 +189,7 @@ export const Demo = {
   args: {
     property: "padding",
     dimension: "all",
-    size: "md",
+    size: "16",
   },
   render: ({ property, dimension, size }) => {
     const prop = property === "padding" ? "p" : "m";
@@ -191,9 +198,9 @@ export const Demo = {
     const token = `--base-spacing-${size}`;
 
     return (
-      <div style={{ padding: "var(--base-spacing-xl)", display: "flex", flexDirection: "column", gap: "var(--base-spacing-xl)" }}>
+      <div style={{ padding: "var(--base-spacing-40)", display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
         <div>
-          <p style={{ margin: "0 0 var(--base-spacing-xs)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-lg)", color: "var(--semantic-color-action-background)", fontWeight: 600 }}>
+          <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-lg)", color: "var(--semantic-color-action-background)", fontWeight: 600 }}>
             .{cls}
           </p>
           <p style={{ margin: 0, fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-muted)" }}>
@@ -201,7 +208,7 @@ export const Demo = {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "var(--base-spacing-xl)", alignItems: "flex-start", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "var(--base-spacing-40)", alignItems: "flex-start", flexWrap: "wrap" }}>
           {/* Padding demo */}
           {property === "padding" && (
             <div style={{ position: "relative" }}>
@@ -218,7 +225,7 @@ export const Demo = {
                   background: "var(--semantic-color-surface-page)",
                   border: "1px solid var(--semantic-color-border-subtle)",
                   borderRadius: "var(--base-radius-control)",
-                  padding: "var(--base-spacing-sm) var(--base-spacing-md)",
+                  padding: "var(--base-spacing-12) var(--base-spacing-16)",
                   fontFamily: "var(--component-paragraph-font-family)",
                   fontSize: "var(--semantic-font-size-body-sm)",
                   color: "var(--semantic-color-text-muted)",
@@ -227,7 +234,7 @@ export const Demo = {
                   Content
                 </div>
               </div>
-              <p style={{ margin: "var(--base-spacing-xs) 0 0", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>
+              <p style={{ margin: "var(--base-spacing-8) 0 0", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>
                 Shaded area = applied padding
               </p>
             </div>
@@ -235,14 +242,14 @@ export const Demo = {
 
           {/* Margin demo */}
           {property === "margin" && (
-            <div style={{ background: "var(--semantic-color-surface-raised)", borderRadius: "var(--base-radius-lg)", padding: "var(--base-spacing-xs)" }}>
+            <div style={{ background: "var(--semantic-color-surface-raised)", borderRadius: "var(--base-radius-lg)", padding: "var(--base-spacing-8)" }}>
               <div
                 className={cls}
                 style={{
                   background: "var(--semantic-color-surface-page)",
                   border: "1px solid var(--semantic-color-border-subtle)",
                   borderRadius: "var(--base-radius-control)",
-                  padding: "var(--base-spacing-sm) var(--base-spacing-md)",
+                  padding: "var(--base-spacing-12) var(--base-spacing-16)",
                   fontFamily: "var(--component-paragraph-font-family)",
                   fontSize: "var(--semantic-font-size-body-sm)",
                   color: "var(--semantic-color-text-muted)",
@@ -251,7 +258,7 @@ export const Demo = {
               >
                 Content
               </div>
-              <p style={{ margin: "var(--base-spacing-xs) 0 0", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>
+              <p style={{ margin: "var(--base-spacing-8) 0 0", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>
                 Shaded surround = applied margin
               </p>
             </div>

@@ -1,0 +1,17 @@
+{
+  "component": {
+    "segmented": {
+      "padding":               { "$type": "dimension",  "$value": "3px" },
+      "gap":                   { "$type": "dimension",  "$value": "2px" },
+      "segmentPaddingBlock":   { "$type": "dimension",  "$value": "{base.spacing.4}" },
+      "segmentPaddingInline":  { "$type": "dimension",  "$value": "{base.spacing.12}" },
+      "segmentPaddingBlockSm": { "$type": "dimension",  "$value": "2px" },
+      "segmentPaddingInlineSm":{ "$type": "dimension",  "$value": "{base.spacing.8}" },
+      "borderWidth":           { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "fontWeightDefault":     { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
+      "fontWeightActive":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "focusRingWidth":        { "$type": "dimension",  "$value": "2px" },
+      "focusRingOffset":       { "$value": "-2px" }
+    }
+  }
+}

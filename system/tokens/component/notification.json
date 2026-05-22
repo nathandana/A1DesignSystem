@@ -1,10 +1,12 @@
 {
   "component": {
-    "badge": {
+    "notification": {
       "height":        { "$type": "dimension", "$value": "18px" },
       "dotSize":       { "$type": "dimension", "$value": "8px" },
       "paddingInline": { "$type": "dimension", "$value": "5px" },
-      "fontSize":      { "$type": "dimension", "$value": "11px" }
+      "fontSize":      { "$type": "dimension", "$value": "11px" },
+      "fontWeight":    { "$type": "number",    "$value": 600 },
+      "ringWidth":     { "$type": "dimension", "$value": "2px" }
     }
   }
 }

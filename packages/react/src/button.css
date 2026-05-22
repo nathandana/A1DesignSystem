@@ -88,5 +88,6 @@
 }
 
 .a1-button__icon {
-  font-size: 20px;
+  font-size: var(--component-button-icon-size);
+  --a1-icon-opsz: var(--component-button-icon-optical-size);
 }

@@ -10,15 +10,15 @@
 .a1-link:active { color: var(--component-link-color-pressed); }
 
 .a1-link:focus-visible {
-  outline: 2px solid var(--component-link-color);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: var(--component-link-focus-ring-width) solid var(--component-link-color);
+  outline-offset: var(--component-link-focus-ring-offset);
+  border-radius: var(--component-link-focus-ring-radius);
 }
 
 .a1-link__text {
   text-decoration: underline;
   text-decoration-color: currentColor;
-  text-underline-offset: 0.2em;
+  text-underline-offset: var(--component-link-underline-offset);
 }
 
 /* ── Size modifiers ─────────────────────────────────────────────────────── */
@@ -31,17 +31,17 @@
 
 /* ── Weight modifiers ───────────────────────────────────────────────────── */
 
-.a1-link--normal   { font-weight: 400; --a1-icon-weight: 400; }
-.a1-link--medium   { font-weight: 500; --a1-icon-weight: 500; }
-.a1-link--semibold { font-weight: 600; --a1-icon-weight: 600; }
-.a1-link--bold     { font-weight: 700; --a1-icon-weight: 700; }
+.a1-link--normal   { font-weight: var(--base-font-weight-regular);  --a1-icon-weight: var(--base-font-weight-regular); }
+.a1-link--medium   { font-weight: var(--base-font-weight-medium);   --a1-icon-weight: var(--base-font-weight-medium); }
+.a1-link--semibold { font-weight: var(--base-font-weight-semibold); --a1-icon-weight: var(--base-font-weight-semibold); }
+.a1-link--bold     { font-weight: var(--base-font-weight-bold);     --a1-icon-weight: var(--base-font-weight-bold); }
 
 /* ── Icon layout ────────────────────────────────────────────────────────── */
 
 .a1-link--has-icon {
   display: inline-flex;
   align-items: center;
-  gap: 0.25em;
+  gap: var(--component-link-icon-gap);
 }
 
 .a1-link__icon {

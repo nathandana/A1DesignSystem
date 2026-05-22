@@ -37,3 +37,78 @@
   /* Icons */
   --a1-icon-fill: 1;
 }
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────────
+   Applied via .a1-theme-dark on <html>.
+   Overrides every semantic color token. All components respond automatically
+   because they reference semantic tokens, not base ramp values directly.
+   Combinable with .a1-theme-accessible: both classes can be active together.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-theme-dark {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --semantic-color-surface-page:    var(--base-color-neutral-900);
+  --semantic-color-surface-panel:   var(--base-color-neutral-800);
+  --semantic-color-surface-raised:  var(--base-color-neutral-700);
+  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --semantic-color-text-default: var(--base-color-neutral-50);
+  --semantic-color-text-muted:   var(--base-color-neutral-400);
+  --semantic-color-text-inverse: var(--base-color-neutral-900);
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  --semantic-color-border-subtle:  var(--base-color-neutral-700);
+  --semantic-color-border-default: var(--base-color-neutral-600);
+  --semantic-color-border-strong:  var(--base-color-neutral-400);
+
+  /* ── Action (accent / purple) ─────────────────────────────────────────── */
+  --semantic-color-action-background:         var(--base-color-accent-400);
+  --semantic-color-action-background-hover:   var(--base-color-accent-300);
+  --semantic-color-action-background-pressed: var(--base-color-accent-500);
+  --semantic-color-action-foreground:         var(--base-color-accent-1000);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-surface:            var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-500);
+
+  /* ── Status: info ─────────────────────────────────────────────────────── */
+  --semantic-color-status-info-background: var(--base-color-info-400);
+  --semantic-color-status-info-surface:    var(--base-color-info-900);
+  --semantic-color-status-info-border:     var(--base-color-info-500);
+  --semantic-color-status-info-foreground: var(--base-color-info-1000);
+
+  /* ── Status: error ────────────────────────────────────────────────────── */
+  --semantic-color-status-error-background: var(--base-color-error-400);
+  --semantic-color-status-error-surface:    var(--base-color-error-900);
+  --semantic-color-status-error-border:     var(--base-color-error-500);
+  --semantic-color-status-error-foreground: var(--base-color-neutral-900);
+
+  /* ── Status: warn ─────────────────────────────────────────────────────── */
+  --semantic-color-status-warn-background: var(--base-color-warn-400);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-900);
+  --semantic-color-status-warn-border:     var(--base-color-warn-500);
+  --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+
+  /* ── Status: success ──────────────────────────────────────────────────── */
+  --semantic-color-status-success-background: var(--base-color-success-400);
+  --semantic-color-status-success-surface:    var(--base-color-success-900);
+  --semantic-color-status-success-border:     var(--base-color-success-500);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+
+  /* ── Dialog backdrop ──────────────────────────────────────────────────── */
+  --component-dialog-backdrop-color: rgba(0, 0, 0, 0.7);
+
+}
+
+/* Canvas background follows the page surface token */
+body, #storybook-root {
+  background: var(--semantic-color-surface-page, #ffffff);
+  transition: background var(--semantic-motion-duration-fast, 0.1s);
+}
+
+/* Notification default: neutral-600 is too dark on the dark page surface,
+   step up to neutral-500 so the badge remains visible. */
+.a1-theme-dark .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-500);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}

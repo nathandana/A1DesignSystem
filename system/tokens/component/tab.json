@@ -1,0 +1,18 @@
+{
+  "component": {
+    "tab": {
+      "paddingBlock":      { "$type": "dimension",  "$value": "{base.spacing.8}" },
+      "paddingInline":     { "$type": "dimension",  "$value": "{base.spacing.16}" },
+      "paddingBlockSm":    { "$type": "dimension",  "$value": "{base.spacing.4}" },
+      "paddingInlineSm":   { "$type": "dimension",  "$value": "{base.spacing.12}" },
+      "indicatorSize":     { "$type": "dimension",  "$value": "2px" },
+      "borderWidth":       { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "fontWeightDefault": { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
+      "fontWeightActive":  { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "focusRingWidth":    { "$type": "dimension",  "$value": "2px" },
+      "focusRingOffset":   { "$value": "-2px" },
+      "zIndexActive":      { "$type": "number",     "$value": 1 },
+      "marginBottom":      { "$value": "-1px" }
+    }
+  }
+}

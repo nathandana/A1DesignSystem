@@ -4,7 +4,7 @@ import { Heading } from "./Heading.jsx";
 import { Paragraph } from "./Paragraph.jsx";
 
 const meta = {
-  title: "Components/Card",
+  title: "Components/Containers/Card",
   component: Card,
   tags: ["autodocs"],
   args: {

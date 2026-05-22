@@ -25,7 +25,7 @@ export function Button({
     .filter(Boolean)
     .join(" ");
 
-  const iconEl = icon ? <Icon name={icon} opticalSize={20} className="a1-button__icon" /> : null;
+  const iconEl = icon ? <Icon name={icon} className="a1-button__icon" /> : null;
 
   return (
     <Component

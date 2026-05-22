@@ -66,7 +66,7 @@ const variantControls = {
 };
 
 const meta = {
-  title: "Components/Icon",
+  title: "Foundations/Icon",
   component: Icon,
   tags: ["autodocs"],
   args: {

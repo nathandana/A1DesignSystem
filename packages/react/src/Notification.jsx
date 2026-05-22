@@ -1,4 +1,4 @@
-import "./badge.css";
+import "./notification.css";
 
 const variants = ["default", "error", "success", "warn", "info"];
 const positions = ["top-right", "top-left", "bottom-right", "bottom-left"];
@@ -10,7 +10,7 @@ function formatCount(n, max) {
   return String(n);
 }
 
-export function Badge({
+export function Notification({
   children,
   count,
   label,
@@ -33,11 +33,11 @@ export function Badge({
     }
   }
 
-  const badgeClasses = [
-    "a1-badge",
-    `a1-badge--${resolvedVariant}`,
-    `a1-badge--${resolvedPosition}`,
-    isDot && "a1-badge--dot",
+  const classes = [
+    "a1-notification",
+    `a1-notification--${resolvedVariant}`,
+    `a1-notification--${resolvedPosition}`,
+    isDot && "a1-notification--dot",
   ]
     .filter(Boolean)
     .join(" ");
@@ -45,9 +45,9 @@ export function Badge({
   const ariaLabel = count !== undefined ? `${count} notifications` : undefined;
 
   return (
-    <span className="a1-badge-root">
+    <span className="a1-notification-root">
       {children}
-      <span className={badgeClasses} aria-label={ariaLabel}>
+      <span className={classes} aria-label={ariaLabel}>
         {content}
       </span>
     </span>

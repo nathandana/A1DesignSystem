@@ -1,0 +1,7 @@
+{
+  "semantic": {
+    "motion": {
+      "durationFast": { "$value": "0.1s" }
+    }
+  }
+}

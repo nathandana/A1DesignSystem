@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import "./dialog.css";
-import { Icon } from "./Icon.jsx";
+import { IconButton } from "./IconButton.jsx";
 
 export function Dialog({ open = false, onClose, title, footer, children, ...props }) {
   const ref = useRef(null);
@@ -30,14 +30,12 @@ export function Dialog({ open = false, onClose, title, footer, children, ...prop
     <dialog ref={ref} className="a1-dialog" {...props}>
       <div className="a1-dialog__header">
         {title && <p className="a1-dialog__title">{title}</p>}
-        <button
-          className="a1-dialog__close"
-          type="button"
+        <IconButton
+          icon="close"
+          label="Close dialog"
           onClick={onClose}
-          aria-label="Close dialog"
-        >
-          <Icon name="close" opticalSize={20} />
-        </button>
+          className="a1-dialog__close"
+        />
       </div>
       <div className="a1-dialog__body">{children}</div>
       {footer && <div className="a1-dialog__footer">{footer}</div>}

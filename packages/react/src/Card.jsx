@@ -20,7 +20,7 @@ export function Card({
     <Component className={classes} {...props}>
       {icon && (
         <span className="a1-card__icon" aria-hidden="true">
-          <Icon name={icon} opticalSize={20} />
+          <Icon name={icon} />
         </span>
       )}
       {children}

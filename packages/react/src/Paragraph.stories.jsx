@@ -1,7 +1,7 @@
 import { Paragraph } from "./Paragraph.jsx";
 
 const meta = {
-  title: "Typography/Paragraph",
+  title: "Foundations/Typography/Paragraph",
   component: Paragraph,
   tags: ["autodocs"],
   args: {

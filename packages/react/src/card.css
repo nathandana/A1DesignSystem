@@ -12,17 +12,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--base-spacing-xl);
-  height: var(--base-spacing-xl);
+  width: var(--base-spacing-40);
+  height: var(--base-spacing-40);
   border-radius: var(--base-radius-control);
   background: var(--semantic-color-action-surface);
   color: var(--semantic-color-action-background);
-  margin-bottom: var(--base-spacing-sm);
+  margin-bottom: var(--base-spacing-12);
   flex-shrink: 0;
 }
 
+.a1-card__icon {
+  --a1-icon-opsz: var(--component-card-icon-optical-size);
+}
+
 .a1-card__icon .a1-icon {
-  font-size: 20px;
+  font-size: var(--component-card-icon-size);
 }
 
 .a1-card--shadow-none { --a1-card-shadow: none; }

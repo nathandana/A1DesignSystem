@@ -1,15 +1,10 @@
 .a1-icon {
-  --a1-icon-fill:   0;
-  --a1-icon-weight: 400;
-  --a1-icon-grade:  0;
-  --a1-icon-opsz:   24;
-
   font-size: inherit;
   line-height: 1;
   user-select: none;
   font-variation-settings:
-    "FILL" var(--a1-icon-fill),
-    "wght" var(--a1-icon-weight),
-    "GRAD" var(--a1-icon-grade),
-    "opsz" var(--a1-icon-opsz);
+    "FILL" var(--a1-icon-fill, 0),
+    "wght" var(--a1-icon-weight, var(--base-font-weight-regular)),
+    "GRAD" var(--a1-icon-grade, 0),
+    "opsz" var(--a1-icon-opsz, var(--base-icon-optical-size));
 }

@@ -1,7 +1,7 @@
 import { Heading } from "./Heading.jsx";
 
 const meta = {
-  title: "Typography/Heading",
+  title: "Foundations/Typography/Heading",
   component: Heading,
   tags: ["autodocs"],
   args: {

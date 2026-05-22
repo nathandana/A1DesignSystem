@@ -1,5 +1,8 @@
 {
   "base": {
+    "icon": {
+      "opticalSize": { "$type": "number", "$value": 24 }
+    },
     "font": {
       "size": {
         "root": {
@@ -129,6 +132,14 @@
         "regular": {
           "$type": "fontWeight",
           "$value": 400
+        },
+        "medium": {
+          "$type": "fontWeight",
+          "$value": 500
+        },
+        "semibold": {
+          "$type": "fontWeight",
+          "$value": 600
         },
         "bold": {
           "$type": "fontWeight",

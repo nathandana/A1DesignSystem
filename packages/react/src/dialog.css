@@ -6,26 +6,26 @@
   background: var(--semantic-color-surface-page);
   box-shadow: var(--component-dialog-shadow);
   color: var(--semantic-color-text-default);
-  width: min(560px, calc(100vw - var(--base-spacing-xxl)));
-  max-height: calc(100dvh - var(--base-spacing-xxl));
+  width: min(560px, calc(100vw - var(--base-spacing-64)));
+  max-height: calc(100dvh - var(--base-spacing-64));
   overflow: hidden;
 }
 
 .a1-dialog[open] {
   display: flex;
   flex-direction: column;
-  gap: var(--base-spacing-md);
+  gap: var(--base-spacing-16);
 }
 
 .a1-dialog::backdrop {
-  background: rgba(6, 11, 20, 0.5);
-  backdrop-filter: blur(2px);
+  background: var(--component-dialog-backdrop-color);
+  backdrop-filter: blur(var(--component-dialog-backdrop-blur));
 }
 
 .a1-dialog__header {
   display: flex;
   align-items: flex-start;
-  gap: var(--base-spacing-md);
+  gap: var(--base-spacing-16);
 }
 
 .a1-dialog__title {
@@ -39,30 +39,9 @@
 }
 
 .a1-dialog__close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  margin-top: -4px;
-  margin-right: -4px;
-  border: none;
-  border-radius: var(--base-radius-control);
-  background: transparent;
-  color: var(--semantic-color-text-muted);
-  cursor: pointer;
-}
-
-.a1-dialog__close:hover {
-  background: var(--semantic-color-surface-raised);
-  color: var(--semantic-color-text-default);
-}
-
-.a1-dialog__close:focus-visible {
-  outline: 3px solid var(--semantic-color-action-background);
-  outline-offset: 2px;
+  margin-top: var(--component-dialog-close-offset);
+  margin-right: var(--component-dialog-close-offset);
 }
 
 .a1-dialog__body {
@@ -73,7 +52,7 @@
 .a1-dialog__footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--base-spacing-sm);
-  padding-top: var(--base-spacing-md);
-  border-top: 1px solid var(--semantic-color-border-subtle);
+  gap: var(--base-spacing-12);
+  padding-top: var(--base-spacing-16);
+  border-top: var(--component-dialog-footer-border-width) solid var(--semantic-color-border-subtle);
 }

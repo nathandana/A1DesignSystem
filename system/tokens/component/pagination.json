@@ -1,0 +1,16 @@
+{
+  "component": {
+    "pagination": {
+      "itemSize":             { "$type": "dimension",  "$value": "36px" },
+      "itemSizeSm":           { "$type": "dimension",  "$value": "28px" },
+      "gap":                  { "$type": "dimension",  "$value": "{base.spacing.4}" },
+      "borderWidth":          { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "fontWeightDefault":    { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
+      "fontWeightActive":     { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "focusRingWidth":       { "$type": "dimension",  "$value": "2px" },
+      "focusRingOffset":      { "$type": "dimension",  "$value": "2px" },
+      "disabledOpacity":      { "$type": "opacity",    "$value": 0.35 },
+      "ellipsisPaddingBottom":{ "$type": "dimension",  "$value": "{base.spacing.4}" }
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "base": {
     "color": {
       "neutral": {
-        "0": { "$type": "color", "$value": "#fafcff" },
+        "0": { "$type": "color", "$value": "#ffffff" },
         "50": { "$type": "color", "$value": "#f0f6fe" },
         "100": { "$type": "color", "$value": "#e1e8f3" },
         "200": { "$type": "color", "$value": "#c8d2e0" },
@@ -13,7 +13,7 @@
         "700": { "$type": "color", "$value": "#293343" },
         "800": { "$type": "color", "$value": "#151d29" },
         "900": { "$type": "color", "$value": "#060b14" },
-        "1000": { "$type": "color", "$value": "#000002" }
+        "1000": { "$type": "color", "$value": "#000000" }
       },
       "accent": {
         "0": { "$type": "color", "$value": "#fcfbff" },

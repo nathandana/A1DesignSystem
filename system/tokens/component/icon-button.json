@@ -1,0 +1,12 @@
+{
+  "component": {
+    "iconButton": {
+      "size":            { "$type": "dimension", "$value": "40px" },
+      "iconSize":        { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "borderRadius":    { "$type": "dimension", "$value": "{base.radius.control}" },
+      "iconOpticalSize": { "$type": "number",    "$value": 24 },
+      "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
+      "focusRingOffset": { "$type": "dimension", "$value": "1px" }
+    }
+  }
+}

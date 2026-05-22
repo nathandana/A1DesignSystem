@@ -5,7 +5,7 @@
   "type": "module",
   "description": "AI-first multifunctional design system proof of concept.",
   "scripts": {
-    "build:tokens": "style-dictionary build",
+    "build:tokens": "style-dictionary build --config sd.config.js",
     "build:storybook": "storybook build",
     "check": "npm --version",
     "clean:tokens": "style-dictionary clean",
