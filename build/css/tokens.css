@@ -160,6 +160,7 @@
   --semantic-color-surface-page: #ffffff;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;
+  --semantic-color-surface-inverse: #060b14;
   --semantic-color-border-subtle: #c8d2e0;
   --semantic-color-border-default: #a6b2c4;
   --semantic-color-border-strong: #64748b;
@@ -178,11 +179,11 @@
   --semantic-color-status-error-surface: #fff2f0;
   --semantic-color-status-error-border: #ff8b7e;
   --semantic-color-status-error-foreground: #fffbfa;
-  --semantic-color-status-warn-background: #d97706;
+  --semantic-color-status-warn-background: #4f2700;
   --semantic-color-status-warn-surface: #fff3ea;
   --semantic-color-status-warn-border: #e59f68;
   --semantic-color-status-warn-foreground: #fffbf8;
-  --semantic-color-status-success-background: #16a34a;
+  --semantic-color-status-success-background: #003f17;
   --semantic-color-status-success-surface: #dfffe4;
   --semantic-color-status-success-border: #78c687;
   --semantic-color-status-success-foreground: #f5fff6;
@@ -501,11 +502,11 @@
   --theme-a1-light-color-status-error-surface: #fff2f0;
   --theme-a1-light-color-status-error-border: #ff8b7e;
   --theme-a1-light-color-status-error-foreground: #fffbfa;
-  --theme-a1-light-color-status-warn-background: #d97706;
+  --theme-a1-light-color-status-warn-background: #4f2700;
   --theme-a1-light-color-status-warn-surface: #fff3ea;
   --theme-a1-light-color-status-warn-border: #e59f68;
   --theme-a1-light-color-status-warn-foreground: #fffbf8;
-  --theme-a1-light-color-status-success-background: #16a34a;
+  --theme-a1-light-color-status-success-background: #003f17;
   --theme-a1-light-color-status-success-surface: #dfffe4;
   --theme-a1-light-color-status-success-border: #78c687;
   --theme-a1-light-color-status-success-foreground: #f5fff6;

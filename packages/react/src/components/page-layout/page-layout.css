@@ -50,8 +50,8 @@
 }
 
 @media (max-width: 640px) {
-  .a1-page-layout__body {
-    flex-direction: column !important;
+  .a1-page-layout.a1-page-layout .a1-page-layout__body {
+    flex-direction: column;
   }
 
   .a1-page-layout__sidebar {

@@ -425,7 +425,7 @@
         "warn": {
           "background": {
             "$type": "color",
-            "$value": "{base.color.warn.500}"
+            "$value": "{base.color.warn.700}"
           },
           "surface": {
             "$type": "color",
@@ -443,7 +443,7 @@
         "success": {
           "background": {
             "$type": "color",
-            "$value": "{base.color.success.500}"
+            "$value": "{base.color.success.700}"
           },
           "surface": {
             "$type": "color",

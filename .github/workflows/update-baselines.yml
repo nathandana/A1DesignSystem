@@ -1,0 +1,57 @@
+name: Update Visual Baselines
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Regenerate baseline screenshots
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build Storybook
+        run: npm run build:storybook
+
+      - name: Serve Storybook (background)
+        run: npx serve storybook-static --listen 6006 --no-clipboard &
+
+      - name: Wait for Storybook to be ready
+        run: timeout 60 sh -c 'until curl -sf http://localhost:6006 > /dev/null; do sleep 2; done'
+
+      - name: Update baselines
+        run: npm run test:qa:update
+
+      - name: Open PR with updated baselines
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: baselines/update-${{ github.run_id }}
+          commit-message: "chore: update visual baselines"
+          title: "chore: update visual baselines"
+          body: |
+            Automated baseline update triggered by @${{ github.actor }}.
+
+            **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Review the screenshot diffs before merging.
+          labels: visual-baselines

@@ -17,15 +17,22 @@
     "dev:button": "vite --host 127.0.0.1 --open /examples/react-button/",
     "dev:a1-design": "vite --host 127.0.0.1 --open /examples/a1-design/",
     "preview:a1-design": "vite preview examples/a1-design --host 127.0.0.1",
-    "storybook": "storybook dev"
+    "storybook": "storybook dev",
+    "test:qa": "sh -c 'node .storybook/qa-setup.mjs && (test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'",
+    "test:qa:update": "sh -c 'node .storybook/qa-setup.mjs && (UPDATE_SNAPSHOTS=true test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'"
   },
   "dependencies": {
     "culori": "^4.0.2",
     "style-dictionary": "^5.4.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.60.0",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
+    "@storybook/test-runner": "^0.24.4",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "storybook": "^10.4.0",

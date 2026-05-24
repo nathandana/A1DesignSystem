@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { userEvent, within, waitFor } from "storybook/test";
 import { Dialog } from "./Dialog.jsx";
 import { Button } from "../button/Button.jsx";
 import { Heading } from "../heading/Heading.jsx";
@@ -27,7 +28,12 @@ export const Default = {
         </Dialog>
       </>
     );
-  }
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
 };
 
 export const WithFooter = {
@@ -54,7 +60,12 @@ export const WithFooter = {
         </Dialog>
       </>
     );
-  }
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
 };
 
 export const WithRichContent = {
@@ -90,5 +101,10 @@ export const WithRichContent = {
         </Dialog>
       </>
     );
-  }
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
 };
