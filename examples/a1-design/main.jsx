@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button } from "../../packages/react/src/Button.jsx";
-import { ButtonContainer } from "../../packages/react/src/ButtonContainer.jsx";
-import { Card } from "../../packages/react/src/Card.jsx";
-import { Grid } from "../../packages/react/src/Grid.jsx";
-import { Heading } from "../../packages/react/src/Heading.jsx";
-import { Inverse } from "../../packages/react/src/Inverse.jsx";
-import { IconButton } from "../../packages/react/src/IconButton.jsx";
-import { LabelsProvider, useLabel } from "../../packages/react/src/Labels.jsx";
-import { Menu, MenuSection } from "../../packages/react/src/Menu.jsx";
-import { PageLayout } from "../../packages/react/src/PageLayout.jsx";
-import { Paragraph } from "../../packages/react/src/Paragraph.jsx";
-import { MessageBadge } from "../../packages/react/src/Message.jsx";
-import { SegmentedControl } from "../../packages/react/src/SegmentedControl.jsx";
+import {
+  Button,
+  ButtonContainer,
+  Card,
+  Grid,
+  Heading,
+  IconButton,
+  Inverse,
+  LabelsProvider,
+  Menu,
+  MenuSection,
+  MessageBadge,
+  PageLayout,
+  Paragraph,
+  SegmentedControl,
+  useLabel,
+} from "../../packages/react/src/index.js";
 import actionLabels from "../../system/labels/action.json";
 import "./styles.css";
 
