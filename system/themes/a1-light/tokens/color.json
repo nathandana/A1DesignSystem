@@ -39,10 +39,6 @@
           "raised": {
             "$type": "color",
             "$value": "{semantic.color.surface.raised}"
-          },
-          "inverse": {
-            "$type": "color",
-            "$value": "{semantic.color.surface.inverse}"
           }
         },
         "border": {

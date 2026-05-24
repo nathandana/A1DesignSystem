@@ -125,6 +125,12 @@ export const HeaderAndFooter = {
   ),
 };
 
+/**
+ * The body row has no gap between sidebar and main. All spacing is owned by
+ * the main content — apply padding directly to the content inside `children`.
+ * This keeps the sidebar flush against the main area so its border or
+ * background extends edge-to-edge without a seam.
+ */
 export const WithSidebar = {
   name: "With Sidebar",
   render: () => {

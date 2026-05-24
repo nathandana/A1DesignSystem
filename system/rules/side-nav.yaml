@@ -1,0 +1,35 @@
+component: SideNav
+rules:
+  - id: side-nav-sticky-desktop
+    components:
+      - SideNav
+      - PageLayout
+    requirement: At desktop (≥1025px) the sidebar must be sticky — it does not scroll with the page.
+    do: Place SideNav as a sibling to the page's main content area in a flex row. The component applies `position: sticky; top: 0; height: 100vh` automatically at lg/xl, keeping the sidebar pinned to the viewport top while the page scrolls.
+    dont: Wrap the SideNav in a container that has `overflow: hidden` or `overflow: auto` at desktop — this breaks sticky positioning. Do not apply `position: fixed` or `position: relative` overrides that interfere with stickiness.
+    applies_to:
+      - layout
+      - responsive
+      - behavior
+
+  - id: side-nav-internal-scroll
+    components:
+      - SideNav
+    requirement: Nav items scroll internally. The header and footer slots must remain visible at all times.
+    do: Let the nav item list grow naturally — the `.a1-side-nav__nav` region scrolls when its content overflows. The header row and footer are outside the scroll region and always stay anchored.
+    dont: Place the header or footer content inside the nav item list, and do not set a fixed height on the sidebar that cuts off the header or footer.
+    applies_to:
+      - layout
+      - behavior
+      - accessibility
+
+  - id: side-nav-mobile-overlay
+    components:
+      - SideNav
+    requirement: At mobile and tablet (≤1024px) the sidebar is a fixed overlay that slides in from the edge. It must not be persistent.
+    do: Control visibility with the `open` prop and close it via `onClose`. Provide a menu button in the page header to re-open it. The component renders a scrim on sm/md that dismisses the drawer on click.
+    dont: Force the sidebar to be permanently visible at mobile widths — it will cover content and break the layout.
+    applies_to:
+      - layout
+      - responsive
+      - behavior

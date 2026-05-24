@@ -99,7 +99,7 @@ function HomePage({ onNavigate }) {
     <div className="a1-design-home">
       <section className="a1-design-hero">
         <div className="a1-design-badge-wrap">
-          <MessageBadge variant="subtle" icon="auto_awesome">
+          <MessageBadge subtle  icon="auto_awesome">
             AI token generation
           </MessageBadge>
         </div>
@@ -134,7 +134,7 @@ function HomePage({ onNavigate }) {
       <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">
         <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-overview-inner">
           <div className="a1-design-overview-copy">
-            <MessageBadge variant="subtle" icon="hub">
+            <MessageBadge subtle  icon="hub">
               System overview
             </MessageBadge>
             <Heading as="h2" id="overview-title" type="display" size={{ xs: "lg", md: "xl" }}>
@@ -171,7 +171,7 @@ function DocumentationPage() {
   return (
     <div className="a1-design-content-page">
       <section className="a1-design-page-heading" aria-labelledby="documentation-title">
-        <MessageBadge variant="subtle" icon="description">
+        <MessageBadge subtle  icon="description">
           Documentation
         </MessageBadge>
         <Heading as="h1" id="documentation-title" type="display" size={{ xs: "xl", md: "xxl" }}>
@@ -227,7 +227,7 @@ function ComponentsPage() {
                     {section.summary}
                   </Paragraph>
                 </div>
-                <MessageBadge status={section.statusType} variant="subtle">
+                <MessageBadge subtle status={section.statusType} >
                   {section.status}
                 </MessageBadge>
               </div>

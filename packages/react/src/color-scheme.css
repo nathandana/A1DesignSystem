@@ -7,10 +7,9 @@
 
 .a1-theme-dark, .a1-inverse {
   color-scheme: dark;
-  --semantic-color-surface-page:    var(--base-color-neutral-900);
-  --semantic-color-surface-panel:   var(--base-color-neutral-800);
-  --semantic-color-surface-raised:  var(--base-color-neutral-700);
-  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+  --semantic-color-surface-page:   var(--base-color-neutral-900);
+  --semantic-color-surface-panel:  var(--base-color-neutral-800);
+  --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
   --semantic-color-text-muted:   var(--base-color-neutral-400);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
@@ -72,10 +71,9 @@
 .a1-theme-dark .a1-inverse,
 .a1-theme-dark .a1-theme-light {
   color-scheme: light;
-  --semantic-color-surface-page:    var(--base-color-neutral-0);
-  --semantic-color-surface-panel:   var(--base-color-neutral-50);
-  --semantic-color-surface-raised:  var(--base-color-neutral-100);
-  --semantic-color-surface-inverse: var(--base-color-neutral-900);
+  --semantic-color-surface-page:   var(--base-color-neutral-0);
+  --semantic-color-surface-panel:  var(--base-color-neutral-50);
+  --semantic-color-surface-raised: var(--base-color-neutral-100);
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted:   var(--base-color-neutral-600);
   --semantic-color-text-inverse: var(--base-color-neutral-0);
@@ -150,10 +148,9 @@
 
 .a1-theme-light {
   color-scheme: light;
-  --semantic-color-surface-page:    var(--base-color-neutral-0);
-  --semantic-color-surface-panel:   var(--base-color-neutral-50);
-  --semantic-color-surface-raised:  var(--base-color-neutral-100);
-  --semantic-color-surface-inverse: var(--base-color-neutral-900);
+  --semantic-color-surface-page:   var(--base-color-neutral-0);
+  --semantic-color-surface-panel:  var(--base-color-neutral-50);
+  --semantic-color-surface-raised: var(--base-color-neutral-100);
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted:   var(--base-color-neutral-600);
   --semantic-color-text-inverse: var(--base-color-neutral-0);

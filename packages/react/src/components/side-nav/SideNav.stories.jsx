@@ -197,6 +197,8 @@ export const RightAligned = {
 /**
  * At lg/xl (≥1025px) the sidebar is persistent with a collapse toggle (‹) in the top-right.
  * When collapsed it shrinks to an icon rail — click any group icon to re-expand.
+ * The sidebar is sticky (`position: sticky; top: 0; height: 100vh`) and does not scroll
+ * with the page — nav items scroll internally while the header and footer stay fixed.
  */
 export const Collapsed = {
   name: "Collapsed — Desktop Rail",
@@ -215,9 +217,10 @@ export const Collapsed = {
 
 /**
  * Resize the preview to see all three breakpoints:
- * - lg/xl (≥1025px): persistent; ‹ button collapses to icon rail, clicking icon re-expands
- * - sm/md (481–1024px): overlay with scrim; ✕ button or Escape closes the drawer
- * - xs (≤480px): full-width overlay; ✕ button or Escape closes the drawer
+ * - lg/xl (≥1025px): sticky sidebar — stays fixed to the viewport top while the page scrolls;
+ *   nav items scroll internally; header and footer remain anchored; ‹ collapses to icon rail
+ * - sm/md (481–1024px): fixed overlay with scrim; ✕ button or Escape closes the drawer
+ * - xs (≤480px): full-width fixed overlay; ✕ button or Escape closes the drawer
  */
 export const Responsive = {
   name: "Responsive — Full Layout",
@@ -237,4 +240,48 @@ export const Responsive = {
       </AppShell>
     );
   },
+};
+
+/**
+ * Demonstrates the sticky sidebar in a document-scroll context: the page is taller than the
+ * viewport, the sidebar stays pinned to the top while the main content scrolls freely.
+ * The nav list scrolls internally if it overflows — the header and footer remain fixed.
+ * This is the expected behavior at lg/xl (≥1025px).
+ */
+export const StickyLayout = {
+  name: "Sticky — Document Scroll",
+  render: () => (
+    <div style={{ display: "flex", background: "var(--semantic-color-surface-page)" }}>
+      <SideNav
+        header={(collapsed) => <HeaderSlot collapsed={collapsed} />}
+        footer={<FooterSlot />}
+      >
+        <NavItems />
+      </SideNav>
+      <main style={{ flex: "1 1 0", minWidth: 0, padding: "var(--base-spacing-32)" }}>
+        <h1 style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "var(--semantic-font-family-heading)", fontSize: 24, color: "var(--semantic-color-text-default)" }}>
+          Sticky sidebar demo
+        </h1>
+        <p style={{ margin: "0 0 var(--base-spacing-32)", color: "var(--semantic-color-text-muted)", fontSize: 14 }}>
+          Scroll this page — the sidebar stays pinned to the top of the viewport while content scrolls beneath it.
+        </p>
+        {Array.from({ length: 20 }, (_, i) => (
+          <div key={i} style={{
+            height: 80,
+            marginBottom: "var(--base-spacing-16)",
+            borderRadius: 8,
+            background: "var(--semantic-color-surface-raised)",
+            border: "1px solid var(--semantic-color-border-subtle)",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 var(--base-spacing-16)",
+            color: "var(--semantic-color-text-muted)",
+            fontSize: 13,
+          }}>
+            Content block {i + 1}
+          </div>
+        ))}
+      </main>
+    </div>
+  ),
 };
