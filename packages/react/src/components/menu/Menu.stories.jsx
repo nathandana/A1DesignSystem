@@ -5,7 +5,7 @@ import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Menu, MenuItem, MenuSection } from "./Menu.jsx";
 
 const meta = {
-  title: "Components/Overlays/Menu",
+  title: "Components/Navigation/Menu",
   component: Menu,
   subcomponents: { MenuSection, MenuItem },
   tags: ["autodocs"],

@@ -276,7 +276,7 @@ function HomePage({ navigate }) {
           <Heading as="h2" size={{ xs: "xl", md: "xxl" }} className="pf-section-title">
             Case studies
           </Heading>
-          <Grid columns={{ xs: 1, md: 2 }} gap={32}>
+          <Grid columns={{ xs: 1, md: 2 }} gap="lg">
             {caseStudies.map((study) => (
               <CaseStudyCard key={study.id} study={study} navigate={navigate} />
             ))}
@@ -287,7 +287,7 @@ function HomePage({ navigate }) {
       {/* ── About teaser ── */}
       <Section surface="panel" padding="lg">
         <div className="pf-section-inner">
-          <Grid columns={{ xs: 1, lg: 2 }} gap={64} className="pf-about-split">
+          <Grid columns={{ xs: 1, lg: 2 }} gap="lg" className="pf-about-split">
             <div className="pf-about-photo">
               <div className="pf-about-photo-inner">
                 <Icon name="person" className="pf-about-photo-icon" />
@@ -311,7 +311,7 @@ function HomePage({ navigate }) {
                 Elegance" — stripping away the noise to let the core purpose of
                 a product shine.
               </Paragraph>
-              <Grid columns={{ xs: 1, sm: 2 }} gap={32} className="pf-expertise-grid">
+              <Grid columns={{ xs: 1, sm: 2 }} gap="lg" className="pf-expertise-grid">
                 <div>
                   <Heading as="h3" size="xs">Core expertise</Heading>
                   <BadgeList items={expertise} />
@@ -597,7 +597,7 @@ function AboutPage({ navigate }) {
       </Section>
 
       <Section as="div" padding="lg" className="pf-about-page-content">
-        <Grid columns={{ xs: 1, lg: 2 }} gap={64} className="pf-about-split">
+        <Grid columns={{ xs: 1, lg: 2 }} gap="lg" className="pf-about-split">
           <div className="pf-about-photo">
             <div className="pf-about-photo-inner">
               <Icon name="person" className="pf-about-photo-icon" />
@@ -631,7 +631,7 @@ function AboutPage({ navigate }) {
         </Grid>
 
         <div className="pf-about-skills">
-          <Grid columns={{ xs: 1, md: 3 }} gap={64}>
+          <Grid columns={{ xs: 1, md: 3 }} gap="lg">
             <div>
               <Heading as="h3" size="sm">Core expertise</Heading>
               <BadgeList items={expertise} />
@@ -687,7 +687,7 @@ function ContactPage() {
       </Section>
 
       <Section as="div" padding="lg" className="pf-contact-page">
-        <Grid columns={{ xs: 1, lg: 2 }} gap={96}>
+        <Grid columns={{ xs: 1, lg: 2 }} gap="lg">
           <div className="pf-contact-info">
             <Heading as="h2" size="xl">Get in touch</Heading>
             <Paragraph size="lg" color="muted">

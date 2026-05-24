@@ -85,7 +85,7 @@ export const SizeScale = {
 export const VerticalDividers = {
   name: "Vertical dividers",
   render: () => (
-    <Grid columns={{ xs: 1, md: 3 }} gap={16} style={{ maxWidth: 760 }}>
+    <Grid columns={{ xs: 1, md: 3 }} gap="md" style={{ maxWidth: 760 }}>
       {["subtle", "strong", "accent"].map((variant) => (
         <Card
           key={variant}

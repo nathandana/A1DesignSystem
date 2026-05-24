@@ -12,6 +12,7 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     sidebarPlacement: { control: "inline-radio", options: ["start", "end"] },
+    asidePlacement:   { control: "inline-radio", options: ["start", "end"] },
     stickyHeader:     { control: "boolean" },
   },
 };
@@ -37,6 +38,18 @@ const footerStyle = {
 
 const mainStyle = {
   padding: "var(--base-spacing-24)",
+};
+
+const asideStyle = {
+  padding: "var(--base-spacing-24)",
+  background: "var(--semantic-color-surface-panel)",
+  borderInlineStart: "1px solid var(--semantic-color-border-subtle)",
+};
+
+const asideStartStyle = {
+  ...asideStyle,
+  borderInlineStart: 0,
+  borderInlineEnd: "1px solid var(--semantic-color-border-subtle)",
 };
 
 function Placeholder({ label, height = 120 }) {
@@ -228,6 +241,74 @@ export const WithRightSideNav = {
   },
 };
 
+export const WithAside = {
+  name: "With Aside",
+  render: () => (
+    <PageLayout
+      header={
+        <div style={headerStyle}>
+          <Heading as="span" size="xs">Article layout</Heading>
+        </div>
+      }
+      aside={
+        <div style={asideStyle}>
+          <Heading as="h2" size="xs" style={{ marginBottom: "var(--base-spacing-12)" }}>
+            Related
+          </Heading>
+          <Paragraph size="sm" color="muted" style={{ marginBottom: "var(--base-spacing-16)" }}>
+            The aside occupies one third of the content area on wider screens.
+          </Paragraph>
+          <Placeholder label="Aside block" height={160} />
+        </div>
+      }
+    >
+      <div style={mainStyle}>
+        <Heading as="h1" size="xl" style={{ marginBottom: "var(--base-spacing-12)" }}>
+          Main content
+        </Heading>
+        <Paragraph color="muted" style={{ marginBottom: "var(--base-spacing-16)" }}>
+          The main region occupies two thirds of the content area, paired with a right-aligned aside.
+        </Paragraph>
+        <Placeholder label="Main content block" height={280} />
+      </div>
+    </PageLayout>
+  ),
+};
+
+export const WithLeftAside = {
+  name: "With Left Aside",
+  render: () => (
+    <PageLayout
+      asidePlacement="start"
+      header={
+        <div style={headerStyle}>
+          <Heading as="span" size="xs">Reference layout</Heading>
+        </div>
+      }
+      aside={
+        <div style={asideStartStyle}>
+          <Heading as="h2" size="xs" style={{ marginBottom: "var(--base-spacing-12)" }}>
+            Filters
+          </Heading>
+          <Paragraph size="sm" color="muted" style={{ marginBottom: "var(--base-spacing-16)" }}>
+            Left asides are useful for filters, summaries, or local context.
+          </Paragraph>
+          <Placeholder label="Aside block" height={160} />
+        </div>
+      }
+    >
+      <div style={mainStyle}>
+        <Heading as="h1" size="xl" style={{ marginBottom: "var(--base-spacing-12)" }}>
+          Results
+        </Heading>
+        <Paragraph color="muted" style={{ marginBottom: "var(--base-spacing-16)" }}>
+          The content area keeps the same 2/3 and 1/3 proportions with the aside on the left.
+        </Paragraph>
+        <Placeholder label="Main content block" height={280} />
+      </div>
+    </PageLayout>
+  ),
+};
 
 export const StickyHeader = {
   name: "Sticky Header",

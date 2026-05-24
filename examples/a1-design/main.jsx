@@ -218,7 +218,7 @@ function HomePage({ onNavigate }) {
       </section>
 
       <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">
-        <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-overview-inner">
+        <Grid columns={{ xs: 1, md: 2 }} gap="lg" className="a1-design-overview-inner">
           <div className="a1-design-overview-copy">
             <MessageBadge subtle  icon="hub">
               System overview
@@ -287,7 +287,7 @@ function TokensPage() {
         </Paragraph>
       </section>
 
-      <Grid columns={{ xs: 1, md: 3 }} gap={16} className="a1-design-token-grid">
+      <Grid columns={{ xs: 1, md: 3 }} gap="md" className="a1-design-token-grid">
         {[
           ["Color", "Semantic surfaces, text, actions, and status colors."],
           ["Typography", "Display, heading, body, family, weight, and line-height decisions."],
@@ -319,7 +319,7 @@ function ComponentsPage() {
         </Paragraph>
       </section>
 
-      <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-components-layout">
+      <Grid columns={{ xs: 1, md: 2 }} gap="lg" className="a1-design-components-layout">
         <aside className="a1-design-toc" aria-labelledby="components-toc-title">
           <Heading as="h2" id="components-toc-title" size="xs">
             Contents
@@ -383,7 +383,7 @@ function AuditReportPage() {
         </Paragraph>
       </section>
 
-      <Grid columns={{ xs: 1, md: 3 }} gap={16} className="a1-design-audit-summary" aria-label="Audit summary">
+      <Grid columns={{ xs: 1, md: 3 }} gap="md" className="a1-design-audit-summary" aria-label="Audit summary">
         {auditSummary.map((item) => (
           <Card key={item.label} shadow="xs" className="a1-design-audit-stat">
             <MessageBadge subtle status={item.status}>
@@ -404,7 +404,7 @@ function AuditReportPage() {
         No files were changed during the audit.
       </MessageBanner>
 
-      <Grid columns={{ xs: 1, lg: 3 }} gap={40} className="a1-design-audit-layout">
+      <Grid columns={{ xs: 1, lg: 3 }} gap="lg" className="a1-design-audit-layout">
         <aside className="a1-design-toc" aria-labelledby="audit-toc-title">
           <Heading as="h2" id="audit-toc-title" size="xs">
             Findings

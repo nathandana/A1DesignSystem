@@ -171,7 +171,7 @@ function KitchenSinkContent() {
       {/* ── Cards + Notifications ───────────────────────────────── */}
       <div>
         <SectionLabel>Cards &amp; Notifications</SectionLabel>
-        <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap={16}>
+        <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
           <GridItem>
             <Notification count={5} variant="error">
               <Card icon="folder" shadow="sm" style={{ padding: "var(--base-spacing-16)", width: "100%" }}>
@@ -294,7 +294,7 @@ function KitchenSinkSections() {
       {/* Panel surface — subtle background lift */}
       <Section surface="panel" padding="sm">
         <SectionLabel>Section — panel surface</SectionLabel>
-        <Grid columns={{ xs: 1, sm: 2 }} gap={24}>
+        <Grid columns={{ xs: 1, sm: 2 }} gap="lg">
           <GridItem>
             <Heading as="h4" type="heading" size="sm">Built for teams</Heading>
             <Paragraph size="md" color="muted" style={{ marginTop: "var(--base-spacing-8)" }}>
