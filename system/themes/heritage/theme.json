@@ -75,7 +75,6 @@
       "--semantic-color-surface-page": "var(--base-color-neutral-0)",
       "--semantic-color-surface-panel": "var(--base-color-neutral-50)",
       "--semantic-color-surface-raised": "var(--base-color-neutral-100)",
-      "--semantic-color-surface-inverse": "var(--base-color-neutral-900)",
       "--semantic-color-border-subtle": "var(--base-color-neutral-200)",
       "--semantic-color-border-default": "var(--base-color-neutral-300)",
       "--semantic-color-border-strong": "var(--base-color-neutral-500)",

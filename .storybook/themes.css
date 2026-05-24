@@ -1,8 +1,15 @@
 @import "../packages/react/src/themes.css";
 @import "../packages/react/src/color-scheme.css";
 
-/* Storybook canvas root also needs the surface background */
-#storybook-root {
+/* Storybook canvas and docs roots also need the active design-system surface. */
+body,
+#storybook-root,
+.sbdocs-wrapper,
+.sbdocs-content,
+.sbdocs-preview,
+.docs-story,
+.docs-story > div {
   background: var(--semantic-color-surface-page, #ffffff);
+  color: var(--semantic-color-text-default);
   transition: background var(--semantic-motion-duration-fast, 0.1s);
 }

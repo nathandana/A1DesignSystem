@@ -1,0 +1,5 @@
+.a1-bleed {
+  margin-block: calc(var(--a1-bleed-block, 0) * -1);
+  margin-inline: calc(var(--a1-bleed-inline, var(--base-spacing-16)) * -1);
+  min-width: 0;
+}

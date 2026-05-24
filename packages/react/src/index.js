@@ -1,10 +1,14 @@
 export { Notification } from "./components/notification/Notification.jsx";
+export { Bleed } from "./components/bleed/Bleed.jsx";
 export { IconButton } from "./components/icon-button/IconButton.jsx";
 export { Button } from "./components/button/Button.jsx";
 export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";
 export { Card } from "./components/card/Card.jsx";
+export { Cluster } from "./components/cluster/Cluster.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
+export { Divider } from "./components/divider/Divider.jsx";
 export { Heading } from "./components/heading/Heading.jsx";
+export { Inset } from "./components/inset/Inset.jsx";
 export { Icon } from "./components/icon/Icon.jsx";
 export { Link } from "./components/link/Link.jsx";
 export { Paragraph } from "./components/paragraph/Paragraph.jsx";
@@ -14,7 +18,9 @@ export { SegmentedControl } from "./components/segmented-control/SegmentedContro
 export { Tabs, TabList, Tab, TabPanel } from "./components/tabs/Tabs.jsx";
 export { Grid, GridItem } from "./components/grid/Grid.jsx";
 export { Inverse } from "./components/inverse/Inverse.jsx";
+export { Section } from "./components/section/Section.jsx";
+export { Stack } from "./components/stack/Stack.jsx";
 export { PageLayout } from "./components/page-layout/PageLayout.jsx";
 export { LabelsProvider, useLabel } from "./components/labels/Labels.jsx";
-export { Menu, MenuSection } from "./components/menu/Menu.jsx";
+export { Menu, MenuSection, MenuItem } from "./components/menu/Menu.jsx";
 export { SideNav, SideNavItem, SideNavGroup } from "./components/side-nav/SideNav.jsx";

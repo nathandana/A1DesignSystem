@@ -1,12 +1,38 @@
 {
-  "name": "@a1-design-system/react",
+  "name": "@gtivr4/a1-design-system-react",
   "version": "0.1.0",
-  "private": true,
+  "description": "React components for the A1 token-driven design system.",
   "type": "module",
   "main": "./src/index.js",
+  "keywords": [
+    "design-system",
+    "react",
+    "tokens",
+    "components"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "README.md",
+    "src/**/*.css",
+    "src/**/*.jsx",
+    "src/index.js",
+    "!src/**/*.stories.jsx",
+    "!src/tokens/**",
+    "!src/rules/**",
+    "!src/Breakpoints.stories.jsx",
+    "!src/Colors.stories.jsx"
+  ],
   "exports": {
     ".": "./src/index.js",
-    "./button.css": "./src/button.css"
+    "./themes.css": "./src/themes.css",
+    "./color-scheme.css": "./src/color-scheme.css",
+    "./utilities/spacing.css": "./src/utilities/spacing.css",
+    "./components/*": "./src/components/*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "react": ">=18"

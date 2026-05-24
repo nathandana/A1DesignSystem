@@ -168,7 +168,6 @@ const S = {
   section:  { marginBottom: "40px" },
   h2: {
     margin: "0 0 4px", fontSize: "0.75rem", fontWeight: 700,
-    letterSpacing: "0.08em", textTransform: "uppercase",
     color: "var(--semantic-color-text-muted)",
   },
   divider: { margin: "8px 0 0", border: "none", borderTop: "1px solid var(--semantic-color-border-subtle)" },

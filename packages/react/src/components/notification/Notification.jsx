@@ -47,7 +47,7 @@ export function Notification({
   return (
     <span className="a1-notification-root">
       {children}
-      <span className={classes} aria-label={ariaLabel}>
+      <span className={classes} role={ariaLabel ? "img" : undefined} aria-label={ariaLabel}>
         {content}
       </span>
     </span>

@@ -1,0 +1,87 @@
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+
+.a1-section {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ── Surface ───────────────────────────────────────────────────────────────── */
+
+.a1-section--surface-page   { background: var(--semantic-color-surface-page); }
+.a1-section--surface-panel  { background: var(--semantic-color-surface-panel); }
+.a1-section--surface-raised { background: var(--semantic-color-surface-raised); }
+
+/* ── Padding — static (with built-in responsive scaling) ───────────────────── */
+/*
+ * Three tiers scale across three breakpoints:
+ *   lg  96/64  →  96/40 at ≤1024  →  64/24 at ≤640
+ *   md  64/40  →  40/24 at ≤1024  →  32/16 at ≤640
+ *   sm  32/24  →  24/16 at ≤1024  →  16/12 at ≤640
+ * Block (top/bottom) / Inline (left/right)
+ */
+
+.a1-section--padding-none {
+  padding: 0;
+}
+
+.a1-section--padding-sm {
+  padding-block: var(--base-spacing-32);
+  padding-inline: var(--base-spacing-24);
+}
+
+.a1-section--padding-md {
+  padding-block: var(--base-spacing-64);
+  padding-inline: var(--base-spacing-40);
+}
+
+.a1-section--padding-lg {
+  padding-block: var(--base-spacing-96);
+  padding-inline: var(--base-spacing-64);
+}
+
+@media (max-width: 1024px) {
+  .a1-section--padding-sm { padding-block: var(--base-spacing-24); padding-inline: var(--base-spacing-16); }
+  .a1-section--padding-md { padding-block: var(--base-spacing-40); padding-inline: var(--base-spacing-24); }
+  .a1-section--padding-lg { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
+}
+
+@media (max-width: 640px) {
+  .a1-section--padding-sm { padding-block: var(--base-spacing-16); padding-inline: var(--base-spacing-12); }
+  .a1-section--padding-md { padding-block: var(--base-spacing-24); padding-inline: var(--base-spacing-16); }
+  .a1-section--padding-lg { padding-block: var(--base-spacing-40); padding-inline: var(--base-spacing-24); }
+}
+
+/* ── Padding — responsive modifiers (mobile-first overrides, no auto-scaling) ─
+ * Use when the padding object prop is passed: padding={{ xs: "sm", lg: "lg" }}
+ * Each modifier applies the raw padding at or above that breakpoint.
+ */
+
+/* xs: base, no media query */
+.a1-section--xs-padding-none { padding: 0; }
+.a1-section--xs-padding-sm   { padding-block: var(--base-spacing-32); padding-inline: var(--base-spacing-24); }
+.a1-section--xs-padding-md   { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
+.a1-section--xs-padding-lg   { padding-block: var(--base-spacing-96); padding-inline: var(--base-spacing-64); }
+
+/* sm: ≥481px */
+@media (min-width: 481px) {
+  .a1-section--sm-padding-none { padding: 0; }
+  .a1-section--sm-padding-sm   { padding-block: var(--base-spacing-32); padding-inline: var(--base-spacing-24); }
+  .a1-section--sm-padding-md   { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
+  .a1-section--sm-padding-lg   { padding-block: var(--base-spacing-96); padding-inline: var(--base-spacing-64); }
+}
+
+/* md: ≥769px */
+@media (min-width: 769px) {
+  .a1-section--md-padding-none { padding: 0; }
+  .a1-section--md-padding-sm   { padding-block: var(--base-spacing-24); padding-inline: var(--base-spacing-16); }
+  .a1-section--md-padding-md   { padding-block: var(--base-spacing-40); padding-inline: var(--base-spacing-24); }
+  .a1-section--md-padding-lg   { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
+}
+
+/* lg: ≥1025px */
+@media (min-width: 1025px) {
+  .a1-section--lg-padding-none { padding: 0; }
+  .a1-section--lg-padding-sm   { padding-block: var(--base-spacing-32); padding-inline: var(--base-spacing-24); }
+  .a1-section--lg-padding-md   { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
+  .a1-section--lg-padding-lg   { padding-block: var(--base-spacing-96); padding-inline: var(--base-spacing-64); }
+}

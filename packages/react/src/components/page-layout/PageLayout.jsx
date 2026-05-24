@@ -5,6 +5,8 @@ export function PageLayout({
   footer,
   sidebar,
   sidebarPlacement = "start",
+  aside,
+  asidePlacement = "end",
   stickyHeader = false,
   className = "",
   children,
@@ -14,6 +16,7 @@ export function PageLayout({
     "a1-page-layout",
     stickyHeader && "a1-page-layout--sticky-header",
     sidebar && `a1-page-layout--sidebar-${sidebarPlacement}`,
+    aside && `a1-page-layout--aside-${asidePlacement}`,
     className,
   ]
     .filter(Boolean)
@@ -29,7 +32,15 @@ export function PageLayout({
         {sidebar && (
           <aside className="a1-page-layout__sidebar">{sidebar}</aside>
         )}
-        <main className="a1-page-layout__main">{children}</main>
+        <div className="a1-page-layout__content">
+          {aside && asidePlacement === "start" && (
+            <aside className="a1-page-layout__aside">{aside}</aside>
+          )}
+          <main className="a1-page-layout__main">{children}</main>
+          {aside && asidePlacement !== "start" && (
+            <aside className="a1-page-layout__aside">{aside}</aside>
+          )}
+        </div>
       </div>
 
       {footer && (

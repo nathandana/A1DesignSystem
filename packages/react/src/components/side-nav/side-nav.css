@@ -247,7 +247,15 @@
 /* ── Collapsed state (lg/xl only) ──────────────────────────────────────── */
 
 @media (min-width: 1025px) {
+  /*
+   * Sticky sidebar: the nav sticks to the viewport top and never scrolls with
+   * the page. Internal nav content scrolls via .a1-side-nav__nav (overflow-y:
+   * auto). The header row and footer remain anchored at all times.
+   */
   .a1-side-nav {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     transition: width 250ms ease;
   }
 

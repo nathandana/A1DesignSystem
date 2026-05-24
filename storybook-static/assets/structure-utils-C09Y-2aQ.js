@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-Cs4UwXAW.js";function t(e){if(e==null)return;if(e===`none`)return`0`;let t=Number(e);return n.includes(t)?`var(--base-spacing-${t})`:void 0}var n,r=e((()=>{n=[0,1,2,4,6,8,12,16,20,24,32,40,64,96,128]}));export{t as n,r as t};

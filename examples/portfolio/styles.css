@@ -1,0 +1,576 @@
+/* ── Base ─────────────────────────────────────────────────────────── */
+
+body {
+  font-family: Inter, sans-serif;
+}
+
+/* Prevent MessageBadge from stretching in flex-column parents */
+.a1-message-badge {
+  align-self: flex-start;
+}
+
+/* ── Mobile header (hidden ≥ 1025px — SideNav is persistent there) ── */
+
+.pf-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--base-spacing-24);
+  height: 60px;
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-page);
+}
+
+/* Link used as logo — strip link underline/color, apply logo styling */
+.pf-mobile-logo {
+  font-size: var(--semantic-font-size-heading-sm);
+  font-weight: 900;
+  color: var(--semantic-color-text-default);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.pf-mobile-logo .a1-link__text {
+  text-decoration: none;
+}
+
+.pf-mobile-logo-accent {
+  color: var(--semantic-color-text-accent);
+}
+
+@media (min-width: 1025px) {
+  .pf-mobile-header {
+    display: none;
+  }
+}
+
+/* ── Sidebar brand ─────────────────────────────────────────────── */
+
+.pf-nav-brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+.pf-nav-brand-name {
+  font-size: var(--semantic-font-size-heading-sm);
+  font-weight: 900;
+  color: var(--semantic-color-text-default);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.pf-nav-brand-title {
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  line-height: 1.4;
+}
+
+/* ── Accent text ──────────────────────────────────────────────── */
+
+.pf-accent {
+  color: var(--semantic-color-text-accent);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
+
+.pf-hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.pf-hero-inner {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-32);
+}
+
+.pf-hero-heading {
+  letter-spacing: -0.02em;
+}
+
+.pf-hero-sub {
+  max-width: 540px;
+}
+
+/* ── Section band ──────────────────────────────────────────────── */
+
+.pf-section-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.pf-section-title {
+  margin-bottom: var(--base-spacing-48);
+  letter-spacing: -0.02em;
+}
+
+/* ── Case study cards ──────────────────────────────────────────── */
+
+.pf-study-card {
+  --component-card-padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pf-study-image {
+  background: var(--base-color-neutral-900);
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--semantic-color-text-accent);
+}
+
+.pf-study-image-icon {
+  font-size: 72px;
+  opacity: 0.35;
+  --a1-icon-fill: 0.4;
+}
+
+.pf-study-body {
+  padding: var(--base-spacing-24) var(--base-spacing-24) var(--base-spacing-28);
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-12);
+  flex: 1;
+}
+
+/* Shared tag row — used in cards and detail hero */
+.pf-tag-row {
+  display: flex;
+  gap: var(--base-spacing-8);
+  flex-wrap: wrap;
+}
+
+/* ── Badge list — replaces all <ul>/<li> expertise/tools lists ─── */
+
+.pf-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-8);
+  margin-top: var(--base-spacing-16);
+}
+
+/* ── About section on home ─────────────────────────────────────── */
+
+/* Grid handles columns — only layout details needed here */
+.pf-about-split {
+  align-items: start;
+}
+
+.pf-about-photo {
+  position: sticky;
+  top: var(--base-spacing-32);
+  align-self: start;
+}
+
+.pf-about-photo-inner {
+  aspect-ratio: 3 / 4;
+  background: var(--semantic-color-surface-page);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pf-about-photo-icon {
+  font-size: 140px;
+  color: var(--semantic-color-text-muted);
+  opacity: 0.2;
+  --a1-icon-fill: 0.3;
+}
+
+.pf-about-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-24);
+  padding-top: var(--base-spacing-8);
+}
+
+/* Grid handles columns — only spacing between groups needed here */
+.pf-expertise-grid {
+  padding: var(--base-spacing-32) 0;
+  border-top: 1px solid var(--semantic-color-border-subtle);
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* ── Contact CTA (home) ────────────────────────────────────────── */
+
+.pf-cta-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--base-spacing-32);
+}
+
+.pf-cta-heading {
+  letter-spacing: -0.02em;
+}
+
+.pf-cta-sub {
+  max-width: 540px;
+}
+
+/* ── Case study detail ─────────────────────────────────────────── */
+
+.pf-detail-hero-inner {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-24);
+}
+
+.pf-detail-hero-sub {
+  max-width: 600px;
+}
+
+.pf-detail-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.pf-detail-image {
+  background: var(--base-color-neutral-900);
+  border-radius: var(--base-radius-container);
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--base-spacing-64);
+  color: var(--semantic-color-text-accent);
+}
+
+.pf-detail-image-icon {
+  font-size: 120px;
+  opacity: 0.3;
+  --a1-icon-fill: 0.3;
+}
+
+/* dl is semantically important — no DS Grid equivalent for dt/dd */
+.pf-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--base-spacing-40);
+  margin: 0 0 var(--base-spacing-64);
+  padding: var(--base-spacing-32) 0;
+  border-top: 1px solid var(--semantic-color-border-subtle);
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+}
+
+.pf-detail-meta-item dt {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 700;
+  margin-bottom: var(--base-spacing-8);
+}
+
+.pf-detail-meta-item dd {
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: 600;
+  margin: 0;
+}
+
+.pf-detail-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-24);
+}
+
+.pf-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.pf-detail-card--outcome {
+  background: color-mix(in srgb, var(--semantic-color-surface-page), var(--semantic-color-text-accent) 4%);
+}
+
+.pf-detail-nav {
+  margin-top: var(--base-spacing-64);
+  padding-top: var(--base-spacing-40);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* ── Process page ──────────────────────────────────────────────── */
+
+.pf-process-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--base-spacing-64);
+}
+
+.pf-process-step {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: var(--base-spacing-64);
+  padding: var(--base-spacing-80) 0;
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+.pf-process-step:first-child {
+  border-top: none;
+  padding-top: var(--base-spacing-64);
+}
+
+.pf-process-step-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--base-spacing-16);
+  position: sticky;
+  top: var(--base-spacing-32);
+  height: fit-content;
+  align-self: start;
+}
+
+.pf-process-number {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--semantic-color-text-accent);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.pf-process-step-icon-wrap {
+  width: var(--base-spacing-48);
+  height: var(--base-spacing-48);
+  border-radius: var(--base-radius-control);
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-accent) 10%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--semantic-color-text-accent);
+  flex-shrink: 0;
+}
+
+.pf-process-step-icon {
+  font-size: 22px;
+}
+
+.pf-process-label {
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 700;
+  color: var(--semantic-color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.pf-process-step-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-24);
+  padding-top: var(--base-spacing-8);
+}
+
+.pf-process-key-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-8);
+}
+
+/* blockquote is a semantic HTML element — no DS equivalent */
+.pf-process-quote {
+  margin: var(--base-spacing-8) 0 0;
+  padding: var(--base-spacing-24) var(--base-spacing-32);
+  border-left: 3px solid var(--semantic-color-text-accent);
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), var(--semantic-color-text-accent) 5%);
+  border-radius: 0 var(--base-radius-control) var(--base-radius-control) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+}
+
+.pf-process-quote-icon {
+  font-size: 28px;
+  color: var(--semantic-color-text-accent);
+  opacity: 0.5;
+  --a1-icon-fill: 1;
+  flex-shrink: 0;
+}
+
+.pf-process-quote-text {
+  font-style: italic;
+  font-weight: 500;
+}
+
+.pf-process-quote--inverse {
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-accent) 8%);
+}
+
+/* ── Process postscript ────────────────────────────────────────── */
+
+.pf-process-postscript {
+  margin: 0 calc(-1 * var(--base-spacing-64));
+  padding: var(--base-spacing-80) var(--base-spacing-64);
+}
+
+.pf-process-postscript-inner {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-32);
+}
+
+/* ── Process bottom nav ────────────────────────────────────────── */
+
+.pf-process-nav {
+  padding: var(--base-spacing-64) 0 var(--base-spacing-96);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* ── About page ────────────────────────────────────────────────── */
+
+.pf-about-page-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-96);
+}
+
+.pf-about-skills {
+  border-top: 1px solid var(--semantic-color-border-subtle);
+  padding-top: var(--base-spacing-64);
+}
+
+/* ── Contact page ──────────────────────────────────────────────── */
+
+.pf-contact-page {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.pf-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-32);
+}
+
+.pf-contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+/* Contact info rows (email, URL, location) — intentionally plain text + icon */
+.pf-contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-12);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-md);
+}
+
+.pf-contact-item-icon {
+  font-size: 20px;
+  color: var(--semantic-color-text-accent);
+  flex-shrink: 0;
+}
+
+.pf-contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .pf-process-content {
+    padding-inline: var(--base-spacing-40);
+  }
+
+  .pf-process-postscript {
+    margin-inline: calc(-1 * var(--base-spacing-40));
+    padding-inline: var(--base-spacing-40);
+  }
+}
+
+@media (max-width: 768px) {
+  .pf-about-split {
+    gap: var(--base-spacing-40);
+  }
+
+  .pf-about-photo {
+    position: static;
+  }
+
+  .pf-about-photo-inner {
+    aspect-ratio: 16 / 9;
+  }
+
+  .pf-process-step {
+    grid-template-columns: 1fr;
+    gap: var(--base-spacing-32);
+  }
+
+  .pf-process-step-aside {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--base-spacing-16);
+  }
+
+  .pf-process-number {
+    font-size: 2.5rem;
+  }
+
+  .pf-detail-meta {
+    grid-template-columns: 1fr 1fr;
+    row-gap: var(--base-spacing-32);
+  }
+
+  .pf-detail-meta-item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .pf-process-content {
+    padding-inline: var(--base-spacing-24);
+  }
+
+  .pf-hero {
+    min-height: auto;
+  }
+
+  .pf-study-image {
+    height: 180px;
+  }
+
+  .pf-detail-image {
+    height: 220px;
+    margin-bottom: var(--base-spacing-40);
+  }
+
+  .pf-detail-meta {
+    grid-template-columns: 1fr;
+    gap: var(--base-spacing-24);
+  }
+
+  .pf-detail-meta-item:last-child {
+    grid-column: auto;
+  }
+
+  .pf-process-postscript {
+    margin-inline: calc(-1 * var(--base-spacing-24));
+    padding-inline: var(--base-spacing-24);
+  }
+
+  .pf-process-quote {
+    padding: var(--base-spacing-20) var(--base-spacing-24);
+  }
+}

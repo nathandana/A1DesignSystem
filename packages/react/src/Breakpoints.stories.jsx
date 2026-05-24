@@ -69,7 +69,6 @@ const S = {
   lead: { margin: "0 0 40px", fontSize: "0.875rem", color: "var(--semantic-color-text-muted)" },
   h2: {
     margin: "0 0 4px", fontSize: "0.75rem", fontWeight: 700,
-    letterSpacing: "0.08em", textTransform: "uppercase",
     color: "var(--semantic-color-text-muted)",
   },
   divider: { margin: "8px 0 20px", border: "none", borderTop: "1px solid var(--semantic-color-border-subtle)" },

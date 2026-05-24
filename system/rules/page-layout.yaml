@@ -1,0 +1,20 @@
+rules:
+  - id: page-layout-no-body-gap
+    component: PageLayout
+    title: No gap between sidebar and main
+    description: >
+      The `.a1-page-layout__body` flex row has no gap property. The sidebar and
+      main area are adjacent with zero space between them. Any inset spacing
+      must come from padding applied inside the main content — not from the
+      layout itself. This ensures sidebar backgrounds and borders extend
+      flush to the main area without a visible seam.
+    rationale: >
+      A gap on the body row creates a bare strip between the sidebar and content
+      that cannot be filled by either child, making it impossible to achieve
+      a clean edge-to-edge sidebar appearance.
+    do:
+      - Apply padding to the element placed inside PageLayout children.
+      - Use a Section component or a padded wrapper as the first child of main.
+    dont:
+      - Do not add gap, margin, or padding-inline-start to .a1-page-layout__body.
+      - Do not add margin to .a1-page-layout__sidebar or .a1-page-layout__main.

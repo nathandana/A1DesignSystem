@@ -52,7 +52,6 @@ const SEMANTIC_GROUPS = [
       "--semantic-color-surface-page",
       "--semantic-color-surface-panel",
       "--semantic-color-surface-raised",
-      "--semantic-color-surface-inverse",
     ],
   },
   {

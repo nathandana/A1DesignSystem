@@ -1,2 +1,6 @@
 .tools/
 node_modules/
+
+# QA report output — generated per run, not committed
+reports/
+# visual-baselines/ is intentionally tracked (via Git LFS)

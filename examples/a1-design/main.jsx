@@ -11,6 +11,7 @@ import {
   LabelsProvider,
   Menu,
   MenuSection,
+  MessageBanner,
   MessageBadge,
   PageLayout,
   Paragraph,
@@ -37,12 +38,97 @@ const colorSchemeOptions = [
   { value: "dark", icon: "dark_mode" },
 ];
 
+const pageIds = ["home", "components", "tokens", "audit", "documentation"];
+
 const navItems = [
   { id: "components", label: "Components" },
   { id: "tokens", label: "Tokens" },
+  { id: "audit", label: "Audit" },
   { id: "documentation", label: "Documentation" },
   { href: "/storybook/", label: "Storybook" }
 ];
+
+const auditSummary = [
+  { label: "High", value: "0", status: "success" },
+  { label: "Medium", value: "2", status: "warn" },
+  { label: "Low", value: "1", status: "info" }
+];
+
+const auditFindings = [
+  {
+    id: "storybook-shell",
+    severity: "Medium",
+    status: "warn",
+    title: "Storybook shell branding depends on private DOM structure",
+    summary:
+      "The manager head file rewrites Storybook markup with innerHTML, sidebar selectors, raw colors, and a MutationObserver. It works today, but a Storybook update could break it.",
+    evidence: [
+      ".storybook/manager-head.html:6",
+      ".storybook/manager-head.html:55",
+      ".storybook/manager-head.html:72",
+      ".storybook/manager-head.html:83"
+    ],
+    recommendation:
+      "Move as much as possible into supported Storybook manager configuration and keep any remaining DOM bridge small and well documented."
+  },
+  {
+    id: "inline-story-styles",
+    severity: "Medium",
+    status: "warn",
+    title: "Stories lean on inline styles for layout and documentation",
+    summary:
+      "The package stories contain hundreds of inline style objects. Story code doubles as consumer guidance, so these examples can normalize bypassing the system.",
+    evidence: [
+      "packages/react/src/KitchenSink.stories.jsx:31",
+      "packages/react/src/components/page-layout/PageLayout.stories.jsx:23",
+      "packages/react/src/tokens/_shared.jsx:158"
+    ],
+    recommendation:
+      "Create a small set of docs layout primitives or story utility classes that use tokens and can be reused consistently."
+  },
+  {
+    id: "scrim-token",
+    severity: "Low",
+    status: "info",
+    title: "Scrim colors are authored as raw rgba values",
+    summary:
+      "The source CSS defines semantic scrim variables directly with rgba values. That is functional, but it skips the token source of truth.",
+    evidence: [
+      "packages/react/src/color-scheme.css:42",
+      "packages/react/src/color-scheme.css:106",
+      "packages/react/src/color-scheme.css:184"
+    ],
+    recommendation:
+      "Move scrim values into token JSON or theme generation so all semantic color decisions have one source."
+  }
+];
+
+function getRouteBase(pathname = window.location.pathname) {
+  return pathname.startsWith("/examples/a1-design") ? "/examples/a1-design" : "";
+}
+
+function getRoutePage(search = window.location.search) {
+  const page = new URLSearchParams(search).get("page") || "home";
+
+  return pageIds.includes(page) ? page : "home";
+}
+
+function getRoutePath(page) {
+  const base = getRouteBase();
+  const indexPath = base ? `${base}/` : "/";
+
+  return page === "home" ? indexPath : `${indexPath}?page=${page}`;
+}
+
+function isPlainLeftClick(event) {
+  return (
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.altKey &&
+    !event.ctrlKey &&
+    !event.shiftKey
+  );
+}
 
 const componentSections = [
   {
@@ -79,15 +165,15 @@ const componentSections = [
   }
 ];
 
-function NavButton({ active, children, ...props }) {
+function NavLink({ active, children, ...props }) {
   return (
-    <button
+    <a
       className={`a1-design-nav-link${active ? " a1-design-nav-link--active" : ""}`}
-      type="button"
+      aria-current={active ? "page" : undefined}
       {...props}
     >
       {children}
-    </button>
+    </a>
   );
 }
 
@@ -99,7 +185,7 @@ function HomePage({ onNavigate }) {
     <div className="a1-design-home">
       <section className="a1-design-hero">
         <div className="a1-design-badge-wrap">
-          <MessageBadge variant="subtle" icon="auto_awesome">
+          <MessageBadge subtle  icon="auto_awesome">
             AI token generation
           </MessageBadge>
         </div>
@@ -132,9 +218,9 @@ function HomePage({ onNavigate }) {
       </section>
 
       <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">
-        <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-overview-inner">
+        <Grid columns={{ xs: 1, md: 2 }} gap="lg" className="a1-design-overview-inner">
           <div className="a1-design-overview-copy">
-            <MessageBadge variant="subtle" icon="hub">
+            <MessageBadge subtle  icon="hub">
               System overview
             </MessageBadge>
             <Heading as="h2" id="overview-title" type="display" size={{ xs: "lg", md: "xl" }}>
@@ -171,7 +257,7 @@ function DocumentationPage() {
   return (
     <div className="a1-design-content-page">
       <section className="a1-design-page-heading" aria-labelledby="documentation-title">
-        <MessageBadge variant="subtle" icon="description">
+        <MessageBadge subtle  icon="description">
           Documentation
         </MessageBadge>
         <Heading as="h1" id="documentation-title" type="display" size={{ xs: "xl", md: "xxl" }}>
@@ -181,6 +267,42 @@ function DocumentationPage() {
           Practical guidance for applying A1 tokens, components, and rules.
         </Paragraph>
       </section>
+    </div>
+  );
+}
+
+function TokensPage() {
+  return (
+    <div className="a1-design-content-page">
+      <section className="a1-design-page-heading" aria-labelledby="tokens-title">
+        <MessageBadge subtle icon="token">
+          Tokens
+        </MessageBadge>
+        <Heading as="h1" id="tokens-title" type="display" size={{ xs: "xl", md: "xxl" }}>
+          Tokens
+        </Heading>
+        <Paragraph size="lg" color="muted">
+          The shared source of truth for color, typography, spacing, radius, shadows,
+          themes, and responsive behavior.
+        </Paragraph>
+      </section>
+
+      <Grid columns={{ xs: 1, md: 3 }} gap="md" className="a1-design-token-grid">
+        {[
+          ["Color", "Semantic surfaces, text, actions, and status colors."],
+          ["Typography", "Display, heading, body, family, weight, and line-height decisions."],
+          ["Layout", "Spacing, breakpoints, radius, and shadow foundations."]
+        ].map(([title, description]) => (
+          <Card key={title} shadow="xs" className="a1-design-token-card">
+            <Heading as="h2" size="sm">
+              {title}
+            </Heading>
+            <Paragraph size="sm" color="muted">
+              {description}
+            </Paragraph>
+          </Card>
+        ))}
+      </Grid>
     </div>
   );
 }
@@ -197,7 +319,7 @@ function ComponentsPage() {
         </Paragraph>
       </section>
 
-      <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-components-layout">
+      <Grid columns={{ xs: 1, md: 2 }} gap="lg" className="a1-design-components-layout">
         <aside className="a1-design-toc" aria-labelledby="components-toc-title">
           <Heading as="h2" id="components-toc-title" size="xs">
             Contents
@@ -227,7 +349,7 @@ function ComponentsPage() {
                     {section.summary}
                   </Paragraph>
                 </div>
-                <MessageBadge status={section.statusType} variant="subtle">
+                <MessageBadge subtle status={section.statusType} >
                   {section.status}
                 </MessageBadge>
               </div>
@@ -245,12 +367,155 @@ function ComponentsPage() {
   );
 }
 
+function AuditReportPage() {
+  return (
+    <div className="a1-design-content-page">
+      <section className="a1-design-page-heading" aria-labelledby="audit-title">
+        <MessageBadge subtle icon="rule">
+          Repo audit
+        </MessageBadge>
+        <Heading as="h1" id="audit-title" type="display" size={{ xs: "xl", md: "xxl" }}>
+          Custom styling and hacks report
+        </Heading>
+        <Paragraph size="lg" color="muted">
+          A focused pass over maintained source files for styling drift, brittle overrides,
+          raw values, and examples that teach patterns outside the design system.
+        </Paragraph>
+      </section>
+
+      <Grid columns={{ xs: 1, md: 3 }} gap="md" className="a1-design-audit-summary" aria-label="Audit summary">
+        {auditSummary.map((item) => (
+          <Card key={item.label} shadow="xs" className="a1-design-audit-stat">
+            <MessageBadge subtle status={item.status}>
+              {item.label}
+            </MessageBadge>
+            <Heading as="p" type="display" size="lg">
+              {item.value}
+            </Heading>
+            <Paragraph size="sm" color="muted">
+              Findings
+            </Paragraph>
+          </Card>
+        ))}
+      </Grid>
+
+      <MessageBanner status="info" title="Scope">
+        Generated output such as build, dist, storybook-static, and visual baselines was excluded.
+        No files were changed during the audit.
+      </MessageBanner>
+
+      <Grid columns={{ xs: 1, lg: 3 }} gap="lg" className="a1-design-audit-layout">
+        <aside className="a1-design-toc" aria-labelledby="audit-toc-title">
+          <Heading as="h2" id="audit-toc-title" size="xs">
+            Findings
+          </Heading>
+          <nav aria-label="Audit findings">
+            <ol className="a1-design-toc-list">
+              {auditFindings.map((finding) => (
+                <li key={finding.id}>
+                  <a className="a1-design-toc-link" href={`#${finding.id}`}>
+                    {finding.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+
+        <div className="a1-design-audit-findings">
+          {auditFindings.map((finding) => (
+            <Card
+              key={finding.id}
+              as="section"
+              id={finding.id}
+              shadow="xs"
+              className="a1-design-audit-finding"
+            >
+              <div className="a1-design-audit-finding-header">
+                <div>
+                  <MessageBadge subtle status={finding.status}>
+                    {finding.severity}
+                  </MessageBadge>
+                  <Heading as="h2" size="md">
+                    {finding.title}
+                  </Heading>
+                </div>
+              </div>
+
+              <Paragraph size="md" color="muted">
+                {finding.summary}
+              </Paragraph>
+
+              <div className="a1-design-audit-detail">
+                <Heading as="h3" size="xs">
+                  Evidence
+                </Heading>
+                <ul className="a1-design-audit-evidence">
+                  {finding.evidence.map((item) => (
+                    <li key={item}>
+                      <code>{item}</code>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="a1-design-audit-detail">
+                <Heading as="h3" size="xs">
+                  Recommendation
+                </Heading>
+                <Paragraph size="sm" color="muted">
+                  {finding.recommendation}
+                </Paragraph>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Grid>
+    </div>
+  );
+}
+
 function App() {
-  const [activePage, setActivePage] = useState("home");
+  const [activePage, setActivePage] = useState(() => getRoutePage());
   const [locale, setLocale] = useState("en");
   const [theme, setTheme] = useState("a1Light");
   const [colorScheme, setColorScheme] = useState("light");
   const [menuOpen, setMenuOpen] = useState(false);
+
+  function navigate(page, { replace = false } = {}) {
+    const nextPage = pageIds.includes(page) ? page : "home";
+    const nextPath = getRoutePath(nextPage);
+    const currentPath = `${window.location.pathname}${window.location.search}`;
+
+    if (nextPath !== currentPath) {
+      const method = replace ? "replaceState" : "pushState";
+      window.history[method]({ page: nextPage }, "", nextPath);
+    }
+
+    setActivePage(nextPage);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+
+  function handleRouteClick(event, page) {
+    if (!isPlainLeftClick(event)) return;
+
+    event.preventDefault();
+    navigate(page);
+  }
+
+  useEffect(() => {
+    const resolvedPage = getRoutePage();
+
+    window.history.replaceState({ page: resolvedPage }, "", window.location.href);
+    setActivePage(resolvedPage);
+
+    const onPopState = () => {
+      setActivePage(getRoutePage());
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("a1-theme-heritage", theme === "a1Heritage");
@@ -258,11 +523,30 @@ function App() {
     document.documentElement.classList.toggle("a1-theme-dark", colorScheme === "dark");
   }, [theme, colorScheme]);
 
+  useEffect(() => {
+    const pageTitle = navItems.find((item) => item.id === activePage)?.label;
+    document.title = pageTitle ? `${pageTitle} | A1 Design System` : "A1 Design System";
+  }, [activePage]);
+
+  useEffect(() => {
+    if (!window.location.hash) return;
+
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(window.location.hash.slice(1));
+      target?.scrollIntoView();
+    });
+  }, [activePage]);
+
   const header = (
     <header className="a1-design-header">
-      <button className="a1-design-logo" type="button" onClick={() => setActivePage("home")}>
+      <a
+        className="a1-design-logo"
+        href={getRoutePath("home")}
+        onClick={(event) => handleRouteClick(event, "home")}
+        aria-current={activePage === "home" ? "page" : undefined}
+      >
         <span className="a1-design-logo-accent">A1:</span> Design
-      </button>
+      </a>
       <div className="a1-design-header-end">
         <nav>
           <ul className="a1-design-nav-list">
@@ -273,9 +557,13 @@ function App() {
                     {item.label}
                   </a>
                 ) : (
-                  <NavButton active={activePage === item.id} onClick={() => setActivePage(item.id)}>
+                  <NavLink
+                    active={activePage === item.id}
+                    href={getRoutePath(item.id)}
+                    onClick={(event) => handleRouteClick(event, item.id)}
+                  >
                     {item.label}
-                  </NavButton>
+                  </NavLink>
                 )}
               </li>
             ))}
@@ -296,9 +584,11 @@ function App() {
     <LabelsProvider locale={locale} labels={actionLabels}>
       <PageLayout stickyHeader header={header}>
         {activePage === "components" && <ComponentsPage />}
+        {activePage === "tokens" && <TokensPage />}
+        {activePage === "audit" && <AuditReportPage />}
         {activePage === "documentation" && <DocumentationPage />}
-        {activePage !== "components" && activePage !== "documentation" && (
-          <HomePage onNavigate={setActivePage} />
+        {activePage !== "components" && activePage !== "tokens" && activePage !== "audit" && activePage !== "documentation" && (
+          <HomePage onNavigate={navigate} />
         )}
       </PageLayout>
       <Menu open={menuOpen} onClose={() => setMenuOpen(false)} aria-label="Settings">

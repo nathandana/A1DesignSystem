@@ -9,6 +9,7 @@ const meta = {
   parameters: { layout: "centered" },
   args: {
     status: "success",
+    subtle: false,
     children: "Saved",
   },
   argTypes: {
@@ -16,6 +17,7 @@ const meta = {
       control: "inline-radio",
       options: STATUSES,
     },
+    subtle: { control: "boolean" },
     children: { control: "text", name: "label" },
     icon: { control: "text", description: "Override the default status icon" },
   },
@@ -26,6 +28,7 @@ export default meta;
 export const Configurable = {};
 
 export const Statuses = {
+  name: "Bold — all statuses",
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)", flexWrap: "wrap" }}>
@@ -34,6 +37,20 @@ export const Statuses = {
       <MessageBadge status="success">Complete</MessageBadge>
       <MessageBadge status="warn">Pending review</MessageBadge>
       <MessageBadge status="error">Failed</MessageBadge>
+    </div>
+  ),
+};
+
+export const Subtle = {
+  name: "Subtle — all statuses",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)", flexWrap: "wrap" }}>
+      <MessageBadge status="neutral" subtle>Default</MessageBadge>
+      <MessageBadge status="info" subtle>In progress</MessageBadge>
+      <MessageBadge status="success" subtle>Complete</MessageBadge>
+      <MessageBadge status="warn" subtle>Pending review</MessageBadge>
+      <MessageBadge status="error" subtle>Failed</MessageBadge>
     </div>
   ),
 };

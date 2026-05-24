@@ -26,6 +26,7 @@ body {
   color: var(--semantic-color-text-default);
   font-size: 1rem;
   font-weight: 900;
+  text-decoration: none;
 }
 
 .a1-design-logo-accent {
@@ -227,6 +228,84 @@ body {
   font-size: var(--semantic-font-size-body-sm);
 }
 
+.a1-design-token-grid {
+  margin-top: var(--base-spacing-40);
+}
+
+.a1-design-token-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+}
+
+.a1-design-audit-summary {
+  margin-top: var(--base-spacing-40);
+  margin-bottom: var(--base-spacing-24);
+}
+
+.a1-design-audit-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+}
+
+.a1-design-audit-layout {
+  margin-top: var(--base-spacing-40);
+  align-items: start;
+}
+
+.a1-design-audit-findings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-design-audit-finding {
+  scroll-margin-top: calc(64px + var(--base-spacing-24));
+}
+
+.a1-design-audit-finding-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-24);
+  align-items: start;
+  margin-bottom: var(--base-spacing-16);
+}
+
+.a1-design-audit-finding-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-12);
+}
+
+.a1-design-audit-detail {
+  margin-top: var(--base-spacing-24);
+  padding-top: var(--base-spacing-16);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-design-audit-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-8);
+  margin: var(--base-spacing-12) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-design-audit-evidence code {
+  display: inline-flex;
+  max-width: 100%;
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-control);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 720px) {
   .a1-design-header {
     height: auto;
@@ -257,6 +336,10 @@ body {
   }
 
   .a1-design-component-section-header {
+    flex-direction: column;
+  }
+
+  .a1-design-audit-finding-header {
     flex-direction: column;
   }
 }
