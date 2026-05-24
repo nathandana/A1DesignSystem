@@ -8,7 +8,7 @@
   backdrop-filter: blur(var(--component-scrim-blur));
   opacity: 0;
   pointer-events: none;
-  transition: opacity 250ms ease;
+  transition: opacity var(--semantic-motion-duration-slow) var(--semantic-motion-easing-standard);
 }
 
 .a1-scrim--visible {

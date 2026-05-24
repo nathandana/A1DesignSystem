@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { userEvent, waitFor, within } from "storybook/test";
 import { Button } from "../button/Button.jsx";
+import { Card } from "../card/Card.jsx";
+import { Heading } from "../heading/Heading.jsx";
+import { IconButton } from "../icon-button/IconButton.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Menu, MenuItem, MenuSection } from "./Menu.jsx";
 
@@ -130,6 +133,107 @@ export const WithIntroText = {
           </>
         )}
       </MenuTrigger>
+    </div>
+  ),
+};
+
+// ─── Viewport alignment test ──────────────────────────────────────────────────
+
+const LOREM = "Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+
+export const ViewportAlignment = {
+  name: "Viewport alignment",
+  parameters: { layout: "padded" },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-24)", maxWidth: "640px" }}>
+      <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM}</Paragraph>
+
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <MenuTrigger label="Open menu">
+          {({ close }) => (
+            <>
+              <MenuSection label="Actions">
+                <MenuItem icon="edit" shortcut="E" onClick={close}>Rename</MenuItem>
+                <MenuItem icon="content_copy" shortcut="D" onClick={close}>Duplicate</MenuItem>
+                <MenuItem icon="share" onClick={close}>Share</MenuItem>
+                <MenuItem icon="download" onClick={close}>Download</MenuItem>
+                <MenuItem icon="archive" onClick={close}>Archive</MenuItem>
+              </MenuSection>
+              <MenuSection>
+                <MenuItem icon="delete" variant="destructive" onClick={close}>Delete</MenuItem>
+              </MenuSection>
+            </>
+          )}
+        </MenuTrigger>
+      </div>
+
+      <Paragraph color="muted">{LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM}</Paragraph>
+      <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
+    </div>
+  ),
+};
+
+// ─── Card with context menu ───────────────────────────────────────────────────
+
+function CardMenu({ title, description }) {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+
+  return (
+    <Card style={{ position: "relative" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--base-spacing-8)" }}>
+        <Heading as="h3" size="sm">{title}</Heading>
+        <div ref={anchorRef} style={{ flexShrink: 0, marginTop: "-4px", marginRight: "-4px" }}>
+          <IconButton
+            icon="more_vert"
+            label="More options"
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            onClick={() => setOpen(true)}
+          />
+          <Menu open={open} onClose={() => setOpen(false)} anchorRef={anchorRef} aria-label="Card options">
+            <MenuSection>
+              <MenuItem icon="edit" onClick={() => setOpen(false)}>Edit</MenuItem>
+              <MenuItem icon="open_in_new" onClick={() => setOpen(false)}>Open in full view</MenuItem>
+              <MenuItem icon="content_copy" onClick={() => setOpen(false)}>Duplicate</MenuItem>
+            </MenuSection>
+            <MenuSection>
+              <MenuItem icon="delete" variant="destructive" onClick={() => setOpen(false)}>Delete</MenuItem>
+            </MenuSection>
+          </Menu>
+        </div>
+      </div>
+      <Paragraph size="sm" color="muted" style={{ marginTop: "var(--base-spacing-8)" }}>{description}</Paragraph>
+    </Card>
+  );
+}
+
+export const CardContextMenu = {
+  name: "Card context menu",
+  parameters: { layout: "padded" },
+  render: () => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "var(--base-spacing-16)", maxWidth: "860px" }}>
+      <CardMenu
+        title="Q3 Brand Refresh"
+        description="Update the color palette and typographic scale across all marketing surfaces."
+      />
+      <CardMenu
+        title="Component Audit"
+        description="Review all 48 components for accessibility compliance against WCAG 2.1 AA."
+      />
+      <CardMenu
+        title="Token Migration"
+        description="Move legacy hardcoded values to semantic design tokens before the v2 release."
+      />
+      <CardMenu
+        title="Dark Mode QA"
+        description="Test every screen in the Heritage and Accessible themes under dark mode conditions."
+      />
     </div>
   ),
 };

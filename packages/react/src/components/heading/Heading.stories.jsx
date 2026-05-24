@@ -2,7 +2,7 @@ import { Heading } from "./Heading.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
 
 const meta = {
-  title: "Foundations/Typography/Heading",
+  title: "Components/Typography/Heading",
   component: Heading,
   tags: ["autodocs"],
   args: {

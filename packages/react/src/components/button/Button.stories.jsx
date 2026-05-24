@@ -60,11 +60,20 @@ const meta = {
 
 export default meta;
 
+const row = { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px" };
+
+const labelStyle = {
+  fontFamily: "var(--component-paragraph-font-family)",
+  fontSize: "var(--semantic-font-size-body-xs)",
+  color: "var(--semantic-color-text-muted)",
+  minWidth: "56px",
+};
+
 export const Configurable = {};
 
 export const Variants = {
   render: args => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+    <div style={row}>
       <Button {...args} variant="primary">Primary</Button>
       <Button {...args} variant="secondary">Secondary</Button>
       <Button {...args} variant="tertiary">Tertiary</Button>
@@ -74,30 +83,27 @@ export const Variants = {
   )
 };
 
-const labelStyle = {
-  fontFamily: "var(--component-paragraph-font-family)",
-  fontSize: "var(--semantic-font-size-body-xs)",
-  color: "var(--semantic-color-text-muted)",
-  width: "80px",
-};
-
 export const Sizes = {
   parameters: { controls: { include: [] } },
   render: () => {
     const variants = ["primary", "secondary", "tertiary", "destructive", "success"];
     const sizes = ["sm", "md", "lg"];
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {sizes.map(size => (
-          <div key={size} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={labelStyle}>{size}</span>
-            {variants.map(variant => (
-              <Button key={variant} size={size} variant={variant}>
-                {variant.charAt(0).toUpperCase() + variant.slice(1)}
-              </Button>
-            ))}
-          </div>
-        ))}
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {sizes.map(size => (
+            <div key={size} style={row}>
+              <span style={labelStyle}>{size}</span>
+              {variants.map(variant => (
+                <Button key={variant} size={size} variant={variant} icon="add_circle">
+                  {variant.charAt(0).toUpperCase() + variant.slice(1)}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+
       </div>
     );
   }
@@ -106,7 +112,7 @@ export const Sizes = {
 export const WithIconStart = {
   name: "Icon — Start",
   render: args => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+    <div style={row}>
       <Button {...args} variant="primary" icon="add">Add item</Button>
       <Button {...args} variant="secondary" icon="download">Download</Button>
       <Button {...args} variant="tertiary" icon="settings">Settings</Button>
@@ -119,7 +125,7 @@ export const WithIconStart = {
 export const WithIconEnd = {
   name: "Icon — End",
   render: args => (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+    <div style={row}>
       <Button {...args} variant="primary" icon="arrow_forward" iconPosition="end">Continue</Button>
       <Button {...args} variant="secondary" icon="open_in_new" iconPosition="end">Open link</Button>
       <Button {...args} variant="tertiary" icon="chevron_right" iconPosition="end">See more</Button>

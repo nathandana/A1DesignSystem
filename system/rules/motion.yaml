@@ -1,0 +1,127 @@
+component: Motion
+rules:
+  - id: motion-scale-duration-to-size
+    components: []
+    requirement: Match animation duration to the physical scale of what is moving.
+    do: |
+      Use shorter durations (quick 100ms, fast 150ms) for small elements like icon state changes,
+      tooltips, and badge counts. Use normal (200ms) for mid-size elements like expanding rows or
+      inline menus. Use slow (300ms) or slower (500ms) for large panels, full-screen overlays,
+      and page-level transitions.
+    dont: |
+      Apply the same duration to a tiny badge toggle and a full side panel entrance. A large
+      panel animating at 100ms feels jerky; a small badge animating at 500ms feels broken.
+    applies_to:
+      - animation
+      - visual-design
+
+  - id: motion-scale-distance-to-duration
+    components: []
+    requirement: Elements that travel greater distances should take proportionally longer.
+    do: |
+      A panel sliding in from off-screen (large distance) should use slow (300ms). A row
+      expanding in place (small distance) should use normal (200ms) or fast (150ms).
+    dont: |
+      Animate an element that crosses the full viewport width in the same time as one that
+      shifts a few pixels. The physics feel wrong and create a jarring experience.
+    applies_to:
+      - animation
+      - visual-design
+
+  - id: motion-easing-by-direction
+    components: []
+    requirement: Use enter easing for elements arriving, exit easing for elements leaving, and standard easing for elements transforming in place.
+    do: |
+      Use --semantic-motion-easing-enter (decelerate) when a panel, dialog, or dropdown opens.
+      Use --semantic-motion-easing-exit (accelerate) when it closes. Use
+      --semantic-motion-easing-standard for toggles, state changes, and bidirectional transforms.
+    dont: |
+      Apply the same easing curve to both entering and exiting motion. An element that enters
+      fast and leaves slowly creates spatial confusion about where it came from.
+    applies_to:
+      - animation
+      - interaction
+
+  - id: motion-expressive-reserved
+    components: []
+    requirement: Reserve expressive (springy) easing for high-intent, infrequent moments only.
+    do: |
+      Use --semantic-motion-easing-expressive for prominent one-time transitions — a
+      confirmation success state, a feature introduction, or a modal opening on first use.
+    dont: |
+      Apply expressive easing to every hover or focus interaction. Repeated springy motion
+      becomes distracting and undermines the feeling of a polished product.
+    applies_to:
+      - animation
+      - visual-design
+      - usability
+
+  - id: motion-functional-only
+    components: []
+    requirement: Every animation must serve a functional purpose — it should orient, confirm, or guide.
+    do: |
+      Animate to show spatial relationships (where a panel came from), confirm an action
+      (a checkmark animating in on save), or guide attention (highlighting a newly added item).
+    dont: |
+      Add animation purely for visual decoration. Animations that have no functional role
+      increase cognitive load and slow users down on repeated tasks.
+    applies_to:
+      - animation
+      - usability
+      - interaction
+
+  - id: motion-non-blocking
+    components: []
+    requirement: Animations must never block or delay user interaction.
+    do: |
+      Make interactive targets (buttons, links, inputs) immediately responsive. If an element
+      is animating in, it should be interactive as soon as its hit area is visible — not after
+      the animation completes.
+    dont: |
+      Disable pointer events or delay focus management until an animation finishes. Users
+      who click or tab quickly should not be penalized by the animation timeline.
+    applies_to:
+      - accessibility
+      - interaction
+      - usability
+
+  - id: motion-reduced-motion
+    components: []
+    requirement: All animated behavior must respect the prefers-reduced-motion: reduce media query.
+    do: |
+      Use the --semantic-motion-duration-* tokens for all transitions and animations.
+      These tokens are automatically set to 0ms when reduced motion is active. For animations
+      driven by JavaScript (GSAP, Framer Motion, etc.) read the media query explicitly and
+      skip or replace the animation.
+    dont: |
+      Hardcode duration values in CSS or JS. Tokens set to 0ms collapse transitions
+      transparently; hardcoded values remain active even for users who have requested less motion.
+    applies_to:
+      - accessibility
+
+  - id: motion-no-infinite-loops
+    components: []
+    requirement: Do not use infinite or auto-playing animations except for explicit loading states.
+    do: |
+      Limit looping animations to spinners, skeleton screens, and progress indicators that
+      communicate an ongoing async operation. Stop them as soon as the operation completes.
+    dont: |
+      Animate decorative elements (background gradients, floating particles, pulsing badges)
+      in infinite loops. Persistent motion is distracting, drains battery on mobile devices,
+      and can trigger vestibular disorders.
+    applies_to:
+      - accessibility
+      - performance
+
+  - id: motion-use-tokens
+    components: []
+    requirement: Always use --semantic-motion-duration-* and --semantic-motion-easing-* tokens. Never hardcode timing values.
+    do: |
+      transition: background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+    dont: |
+      transition: background 150ms ease-in-out; — hardcoded values cannot be themed,
+      overridden by reduced-motion, or adjusted globally.
+    applies_to:
+      - animation
+      - consistency
+      - system-design

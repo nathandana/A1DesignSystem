@@ -6,7 +6,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--component-button-gap);
+  gap: var(--a1-button-gap, var(--component-button-gap));
   border-width: var(--a1-button-border-width, var(--component-button-border-width));
   border-style: solid;
   border-radius: var(--a1-button-border-radius, var(--component-button-border-radius));
@@ -15,6 +15,7 @@
   font-family: var(--component-button-font-family);
   font-size: var(--a1-button-font-size, var(--component-button-font-size));
   font-weight: var(--a1-button-font-weight, var(--component-button-font-weight));
+  --a1-icon-weight: 700;
   line-height: var(--component-button-font-line-height);
   text-decoration: none;
   white-space: nowrap;
@@ -23,6 +24,10 @@
   background: var(--a1-button-background);
   border-color: var(--a1-button-border);
   color: var(--a1-button-foreground);
+  transition:
+    background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
 }
 
 .a1-button:hover {
@@ -119,17 +124,33 @@
   --a1-button-font-weight: var(--base-font-weight-medium);
   --a1-button-border-radius: 4px;
   --a1-button-padding-inline: var(--base-spacing-8);
+  --a1-button-gap: var(--base-spacing-6);
+  --a1-button-icon-size: 20px;
+  --a1-button-icon-opsz: 20;
+}
+
+.a1-button--md {
+  --a1-button-font-weight: var(--base-font-weight-semibold);
+  --a1-button-icon-size: 24px;
+  --a1-button-icon-opsz: 24;
+}
+
+.a1-button--lg.a1-button--secondary {
+  --a1-button-border-width: 2px;
 }
 
 .a1-button--lg {
+  --a1-icon-weight: 900;
   --a1-button-height: 56px;
   --a1-button-font-size: var(--semantic-font-size-body-lg);
   --a1-button-font-weight: var(--base-font-weight-extra-bold);
   --a1-button-border-radius: var(--base-radius-lg);
-  --a1-button-padding-inline: var(--base-spacing-16);
+  --a1-button-padding-inline: var(--base-spacing-20);
+  --a1-button-icon-size: 40px;
+  --a1-button-icon-opsz: 40;
 }
 
 .a1-button__icon {
-  font-size: var(--component-button-icon-size);
-  --a1-icon-opsz: var(--component-button-icon-optical-size);
+  font-size: var(--a1-button-icon-size, var(--component-button-icon-size));
+  --a1-icon-opsz: var(--a1-button-icon-opsz, var(--component-button-icon-optical-size));
 }

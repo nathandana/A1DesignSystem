@@ -8,6 +8,7 @@ export { Cluster } from "./components/cluster/Cluster.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
 export { Divider } from "./components/divider/Divider.jsx";
 export { Heading } from "./components/heading/Heading.jsx";
+export { List, ListItem } from "./components/list/List.jsx";
 export { Inset } from "./components/inset/Inset.jsx";
 export { Icon } from "./components/icon/Icon.jsx";
 export { Link } from "./components/link/Link.jsx";

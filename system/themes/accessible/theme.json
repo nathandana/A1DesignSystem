@@ -28,7 +28,18 @@
       "--semantic-font-size-display-jumbo":   "var(--theme-a1-accessible-font-size-display-jumbo)",
       "--semantic-font-size-display-x-jumbo": "var(--theme-a1-accessible-font-size-display-x-jumbo)",
 
-      "--a1-icon-fill": "1"
+      "--a1-icon-fill": "1",
+
+      "--base-radius-control": "10px",
+      "--base-radius-lg": "14px",
+      "--base-radius-xl": "20px",
+      "--component-button-border-radius": "10px",
+      "--component-card-border-radius": "14px",
+      "--component-dialog-border-radius": "20px",
+      "--component-icon-button-border-radius": "10px",
+      "--component-message-banner-border-radius": "14px",
+      "--component-message-badge-border-radius": "10px",
+      "--component-side-nav-item-border-radius": "10px"
     }
   },
   "labels": {
