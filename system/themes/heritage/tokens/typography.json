@@ -1,0 +1,146 @@
+{
+  "theme": {
+    "a1Heritage": {
+      "font": {
+        "family": {
+          "body": {
+            "$type": "fontFamily",
+            "$value": "Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          },
+          "heading": {
+            "$type": "fontFamily",
+            "$value": "Libre Baskerville, Georgia, Cambria, Times New Roman, serif"
+          },
+          "display": {
+            "$type": "fontFamily",
+            "$value": "Roboto Slab, Rockwell, Clarendon, Georgia, serif"
+          }
+        },
+        "size": {
+          "body": {
+            "xs": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.body.xs}"
+            },
+            "sm": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.body.sm}"
+            },
+            "md": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.body.md}"
+            },
+            "lg": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.body.lg}"
+            },
+            "xl": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.body.xl}"
+            }
+          },
+          "heading": {
+            "xl": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.heading.xl}"
+            },
+            "lg": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.heading.lg}"
+            },
+            "md": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.heading.md}"
+            },
+            "sm": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.heading.sm}"
+            },
+            "xs": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.heading.xs}"
+            }
+          },
+          "display": {
+            "sm": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.sm}"
+            },
+            "md": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.md}"
+            },
+            "lg": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.lg}"
+            },
+            "xl": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.xl}"
+            },
+            "xxl": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.xxl}"
+            },
+            "jumbo": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.jumbo}"
+            },
+            "xJumbo": {
+              "$type": "dimension",
+              "$value": "{brand.a1.font.size.display.xJumbo}"
+            }
+          }
+        },
+        "weight": {
+          "body": {
+            "$type": "fontWeight",
+            "$value": 400
+          },
+          "heading": {
+            "$type": "fontWeight",
+            "$value": 400
+          },
+          "display": {
+            "$type": "fontWeight",
+            "$value": 300
+          }
+        },
+        "lineHeight": {
+          "body": {
+            "$type": "lineHeight",
+            "$value": "{brand.a1.font.lineHeight.body}"
+          },
+          "heading": {
+            "$type": "lineHeight",
+            "$value": "{brand.a1.font.lineHeight.heading}"
+          },
+          "display": {
+            "$type": "lineHeight",
+            "$value": "{brand.a1.font.lineHeight.display}"
+          }
+        },
+        "user": {
+          "size": {
+            "small": {
+              "$type": "dimension",
+              "$value": "{base.font.size.user.small}"
+            },
+            "medium": {
+              "$type": "dimension",
+              "$value": "{base.font.size.user.medium}"
+            },
+            "large": {
+              "$type": "dimension",
+              "$value": "{base.font.size.user.large}"
+            },
+            "xl": {
+              "$type": "dimension",
+              "$value": "{base.font.size.user.xl}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

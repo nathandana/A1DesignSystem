@@ -1,0 +1,62 @@
+{
+  "theme": {
+    "a1Light": {
+      "button": {
+        "primary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.primary.borderWidth}"
+          }
+        },
+        "secondary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.secondary.borderWidth}"
+          }
+        },
+        "tertiary": {
+          "borderWidth": {
+            "$type": "dimension",
+            "$value": "{component.button.tertiary.borderWidth}"
+          }
+        },
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "{component.button.borderRadius}"
+        },
+        "paddingBlock": {
+          "$type": "dimension",
+          "$value": "{component.button.paddingBlock}"
+        },
+        "paddingInline": {
+          "$type": "dimension",
+          "$value": "{component.button.paddingInline}"
+        },
+        "minHeight": {
+          "$type": "dimension",
+          "$value": "{component.button.minHeight}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{component.button.gap}"
+        },
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "{component.button.borderWidth}"
+        },
+        "focusRingWidth": {
+          "$type": "dimension",
+          "$value": "{component.button.focusRingWidth}"
+        },
+        "focusRingOffset": {
+          "$type": "dimension",
+          "$value": "{component.button.focusRingOffset}"
+        },
+        "disabledOpacity": {
+          "$type": "opacity",
+          "$value": "{component.button.disabledOpacity}"
+        }
+      }
+    }
+  }
+}

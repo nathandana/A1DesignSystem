@@ -1,0 +1,76 @@
+/* ─── Segmented control ───────────────────────────────────────────────────── */
+
+.a1-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--semantic-color-surface-raised);
+  border: var(--component-segmented-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-control);
+  padding: var(--component-segmented-padding);
+  gap: var(--component-segmented-gap);
+}
+
+.a1-segmented--full-width {
+  display: flex;
+}
+
+/* ─── Segment button ──────────────────────────────────────────────────────── */
+
+.a1-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-8);
+  border: none;
+  /* Inner radius sits flush inside the container */
+  border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-weight: var(--component-segmented-font-weight-default);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--semantic-motion-duration-fast), color var(--semantic-motion-duration-fast), box-shadow var(--semantic-motion-duration-fast);
+}
+
+.a1-segment:hover:not([aria-checked="true"]) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-segment[aria-checked="true"] {
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-weight: var(--component-segmented-font-weight-active);
+  box-shadow: var(--semantic-shadow-xs);
+}
+
+.a1-segment:focus-visible {
+  outline: var(--component-segmented-focus-ring-width) solid var(--semantic-color-action-background);
+  outline-offset: var(--component-segmented-focus-ring-offset);
+}
+
+/* ─── Padding & size ──────────────────────────────────────────────────────── */
+
+.a1-segment {
+  padding: var(--component-segmented-segment-padding-block)
+           var(--component-segmented-segment-padding-inline);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+/* ─── Icon ────────────────────────────────────────────────────────────────── */
+
+.a1-segment__icon {
+  font-size: 1em;
+}
+
+/* Icon-only: match inline padding to block padding so the segment is square */
+.a1-segment--icon-only {
+  padding-inline: var(--component-segmented-segment-padding-block);
+}
+
+/* ─── Full width ──────────────────────────────────────────────────────────── */
+
+.a1-segmented--full-width .a1-segment {
+  flex: 1;
+}

@@ -49,7 +49,103 @@
     <link href="./sb-addons/storybook-core-server-presets-0/common-manager-bundle.js" rel="modulepreload" />
     
     <link href="./sb-addons/docs-1/manager-bundle.js" rel="modulepreload" />
-       
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  body, button, input, select, textarea {
+    font-family: Inter, "Nunito Sans", Arial, sans-serif !important;
+  }
+
+  .a1-storybook-brand {
+    display: inline-flex;
+    align-items: baseline;
+    color: #060b14;
+    font-family: Inter, "Nunito Sans", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .a1-storybook-brand__accent {
+    color: #7c3aed;
+  }
+
+  .a1-storybook-home-link {
+    display: block;
+    margin: 0 8px 12px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: #414e61;
+    font-family: Inter, "Nunito Sans", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .a1-storybook-home-link:hover,
+  .a1-storybook-home-link:focus {
+    background: #f0f6fe;
+    color: #060b14;
+  }
+</style>
+<script>
+  (function () {
+    function replaceBrand(header) {
+      var brandLink =
+        header.querySelector('a[title="Storybook"]') ||
+        header.querySelector('a[href="./"]');
+
+      if (!brandLink || brandLink.dataset.a1Brand === "true") return;
+
+      brandLink.dataset.a1Brand = "true";
+      brandLink.href = "./";
+      brandLink.title = "A1 Design";
+      brandLink.innerHTML =
+        '<span class="a1-storybook-brand"><span class="a1-storybook-brand__accent">A1:</span>&nbsp;Design</span>';
+    }
+
+    function addHomeLink(header) {
+      if (document.querySelector(".a1-storybook-home-link")) return;
+
+      var link = document.createElement("a");
+      link.className = "a1-storybook-home-link";
+      link.href = "/";
+      link.textContent = "Back to index";
+      link.setAttribute("aria-label", "Back to A1 Design index page");
+
+      header.insertAdjacentElement("afterend", link);
+    }
+
+    function customizeSidebar() {
+      var header = document.querySelector(".sidebar-header");
+      if (!header) return false;
+
+      replaceBrand(header);
+      addHomeLink(header);
+      return true;
+    }
+
+    function start() {
+      if (customizeSidebar()) return;
+
+      var observer = new MutationObserver(function () {
+        if (customizeSidebar()) observer.disconnect();
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", start);
+    } else {
+      start();
+    }
+  })();
+</script>
+ 
 
     <style>
       #storybook-root[hidden] {

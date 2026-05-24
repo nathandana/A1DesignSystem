@@ -1,0 +1,12 @@
+{
+  "name": "Base",
+  "description": "Global baseline — ensures body and .a1-inverse paint their background from the active surface token.",
+  "selectors": {
+    "body, .a1-inverse": {
+      "background": "var(--semantic-color-surface-page, #ffffff)",
+      "color": "var(--semantic-color-text-default)",
+      "transition": "background var(--semantic-motion-duration-fast, 0.1s), color var(--semantic-motion-duration-fast, 0.1s)"
+    }
+  },
+  "labels": {}
+}

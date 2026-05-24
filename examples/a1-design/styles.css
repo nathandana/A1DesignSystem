@@ -1,16 +1,12 @@
-.a1-design-page {
-  min-height: 100vh;
-  background: var(--semantic-color-surface-page);
-  color: var(--semantic-color-text-default);
+body {
   font-family: Inter, sans-serif;
-  display: flex;
-  flex-direction: column;
 }
 
 .a1-design-header {
   height: 64px;
   padding: 0 var(--base-spacing-40);
   border-bottom: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-page);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,6 +43,7 @@
 .a1-design-nav-link {
   color: var(--semantic-color-text-muted);
   font-size: var(--semantic-font-size-body-sm);
+  text-decoration: none;
 }
 
 .a1-design-nav-link--active,
@@ -54,8 +51,14 @@
   color: var(--semantic-color-text-default);
 }
 
+.a1-design-header-end {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-24);
+}
+
 .a1-design-hero {
-  flex: 1;
+  min-height: calc(95vh - 64px);
   padding: var(--base-spacing-64) var(--base-spacing-40);
   display: flex;
   flex-direction: column;
@@ -87,7 +90,57 @@
   max-width: 560px;
 }
 
-.a1-design-components-page {
+.a1-design-overview {
+  padding: var(--base-spacing-64) var(--base-spacing-40);
+}
+
+/* Grid handles display:grid and columns; keep centering + alignment here */
+.a1-design-overview-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  align-items: start;
+}
+
+.a1-design-overview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-message-badge {
+  align-self: flex-start;
+}
+
+.a1-design-overview-list {
+  margin: 0;
+  display: grid;
+  gap: var(--base-spacing-20);
+}
+
+.a1-design-overview-list > div {
+  padding-bottom: var(--base-spacing-20);
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-design-overview-list > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.a1-design-overview-list dt {
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-heading-xs);
+  font-weight: 900;
+}
+
+.a1-design-overview-list dd {
+  margin: var(--base-spacing-8) 0 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-md);
+  line-height: var(--semantic-line-height-body-md);
+}
+
+.a1-design-content-page {
   width: min(1120px, 100%);
   margin: 0 auto;
   padding: var(--base-spacing-64) var(--base-spacing-40);
@@ -100,17 +153,16 @@
   gap: var(--base-spacing-16);
 }
 
+/* Grid handles display:grid and columns; keep spacing + alignment here */
 .a1-design-components-layout {
   margin-top: var(--base-spacing-40);
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: var(--base-spacing-40);
   align-items: start;
 }
 
 .a1-design-toc {
   position: sticky;
-  top: var(--base-spacing-24);
+  /* offset for the sticky header height */
+  top: calc(64px + var(--base-spacing-24));
   padding: var(--base-spacing-20);
   border: 1px solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-control);
@@ -140,10 +192,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--base-spacing-16);
+  align-items: flex-start;
 }
-
+.a1-design-component-list .a1-message-badge {
+  align-self: flex-start;
+}
 .a1-design-component-section {
-  scroll-margin-top: var(--base-spacing-24);
+  width: 100%;
+  scroll-margin-top: calc(64px + var(--base-spacing-24));
 }
 
 .a1-design-component-section-header {
@@ -151,10 +207,6 @@
   justify-content: space-between;
   gap: var(--base-spacing-24);
   align-items: start;
-}
-
-.a1-design-component-section-header > .a1-message-badge {
-  flex-shrink: 0;
 }
 
 .a1-design-component-meta {
@@ -191,12 +243,13 @@
   }
 
   .a1-design-hero,
-  .a1-design-components-page {
+  .a1-design-overview,
+  .a1-design-content-page {
     padding: var(--base-spacing-40) var(--base-spacing-24);
   }
 
-  .a1-design-components-layout {
-    grid-template-columns: 1fr;
+  .a1-design-hero {
+    min-height: auto;
   }
 
   .a1-design-toc {

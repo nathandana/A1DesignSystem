@@ -5,8 +5,6 @@
       "borderRadius": { "$type": "dimension", "$value": "{base.radius.xl}" },
       "borderWidth":  { "$type": "dimension", "$value": "{base.spacing.1}" },
       "shadow":             { "$type": "shadow",    "$value": "{semantic.shadow.xl}" },
-      "backdropColor":      { "$value": "rgba(6, 11, 20, 0.5)" },
-      "backdropBlur":       { "$type": "dimension", "$value": "{base.spacing.2}" },
       "closeOffset":        { "$value": "-4px" },
       "footerBorderWidth":  { "$type": "dimension", "$value": "{base.spacing.1}" }
     }

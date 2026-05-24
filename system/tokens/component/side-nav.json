@@ -1,0 +1,52 @@
+{
+  "component": {
+    "sideNav": {
+      "width": {
+        "$type": "dimension",
+        "$value": "280px"
+      },
+      "paddingBlock": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "paddingInline": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "item": {
+        "height": {
+          "$type": "dimension",
+          "$value": "36px"
+        },
+        "paddingInline": {
+          "$type": "dimension",
+          "$value": "{base.spacing.8}"
+        },
+        "gap": {
+          "$type": "dimension",
+          "$value": "{base.spacing.8}"
+        },
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "{semantic.radius.control}"
+        },
+        "iconSize": {
+          "$type": "dimension",
+          "$value": "{base.spacing.20}"
+        },
+        "indent": {
+          "$type": "dimension",
+          "$value": "{base.spacing.20}"
+        },
+        "focusRingWidth": {
+          "$type": "dimension",
+          "$value": "3px"
+        },
+        "focusRingOffset": {
+          "$type": "dimension",
+          "$value": "-2px"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,277 @@
+{
+  "theme": {
+    "a1Light": {
+      "source": {
+        "brand": "a1",
+        "colors": {
+          "neutral": "#64748b",
+          "accent": "#7c3aed",
+          "info": "#2563eb",
+          "error": "#dc2626",
+          "warn": "#d97706",
+          "success": "#16a34a"
+        }
+      },
+      "color": {
+        "text": {
+          "default": {
+            "$type": "color",
+            "$value": "{semantic.color.text.default}"
+          },
+          "muted": {
+            "$type": "color",
+            "$value": "{semantic.color.text.muted}"
+          },
+          "inverse": {
+            "$type": "color",
+            "$value": "{semantic.color.text.inverse}"
+          }
+        },
+        "surface": {
+          "page": {
+            "$type": "color",
+            "$value": "{semantic.color.surface.page}"
+          },
+          "panel": {
+            "$type": "color",
+            "$value": "{semantic.color.surface.panel}"
+          },
+          "raised": {
+            "$type": "color",
+            "$value": "{semantic.color.surface.raised}"
+          },
+          "inverse": {
+            "$type": "color",
+            "$value": "{semantic.color.surface.inverse}"
+          }
+        },
+        "border": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{semantic.color.border.subtle}"
+          },
+          "default": {
+            "$type": "color",
+            "$value": "{semantic.color.border.default}"
+          },
+          "strong": {
+            "$type": "color",
+            "$value": "{semantic.color.border.strong}"
+          }
+        },
+        "action": {
+          "background": {
+            "$type": "color",
+            "$value": "{semantic.color.action.background}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{semantic.color.action.backgroundHover}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{semantic.color.action.backgroundPressed}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.action.foreground}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{semantic.color.action.foregroundPressed}"
+          },
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.action.surface}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{semantic.color.action.border}"
+          }
+        },
+        "status": {
+          "info": {
+            "background": {
+              "$type": "color",
+              "$value": "{semantic.color.status.info.background}"
+            },
+            "surface": {
+              "$type": "color",
+              "$value": "{semantic.color.status.info.surface}"
+            },
+            "border": {
+              "$type": "color",
+              "$value": "{semantic.color.status.info.border}"
+            },
+            "foreground": {
+              "$type": "color",
+              "$value": "{semantic.color.status.info.foreground}"
+            }
+          },
+          "error": {
+            "background": {
+              "$type": "color",
+              "$value": "{semantic.color.status.error.background}"
+            },
+            "surface": {
+              "$type": "color",
+              "$value": "{semantic.color.status.error.surface}"
+            },
+            "border": {
+              "$type": "color",
+              "$value": "{semantic.color.status.error.border}"
+            },
+            "foreground": {
+              "$type": "color",
+              "$value": "{semantic.color.status.error.foreground}"
+            }
+          },
+          "warn": {
+            "background": {
+              "$type": "color",
+              "$value": "{semantic.color.status.warn.background}"
+            },
+            "surface": {
+              "$type": "color",
+              "$value": "{semantic.color.status.warn.surface}"
+            },
+            "border": {
+              "$type": "color",
+              "$value": "{semantic.color.status.warn.border}"
+            },
+            "foreground": {
+              "$type": "color",
+              "$value": "{semantic.color.status.warn.foreground}"
+            }
+          },
+          "success": {
+            "background": {
+              "$type": "color",
+              "$value": "{semantic.color.status.success.background}"
+            },
+            "surface": {
+              "$type": "color",
+              "$value": "{semantic.color.status.success.surface}"
+            },
+            "border": {
+              "$type": "color",
+              "$value": "{semantic.color.status.success.border}"
+            },
+            "foreground": {
+              "$type": "color",
+              "$value": "{semantic.color.status.success.foreground}"
+            }
+          }
+        }
+      },
+      "button": {
+        "primary": {
+          "background": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.background}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.backgroundHover}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.backgroundPressed}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.foreground}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.foregroundPressed}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{brand.a1.button.primary.border}"
+          }
+        },
+        "secondary": {
+          "background": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.background}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.backgroundHover}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.backgroundPressed}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.foreground}"
+          },
+          "foregroundHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.foregroundHover}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.foregroundPressed}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.border}"
+          },
+          "borderHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.borderHover}"
+          },
+          "borderPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.secondary.borderPressed}"
+          }
+        },
+        "tertiary": {
+          "background": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.background}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.backgroundHover}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.backgroundPressed}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.foreground}"
+          },
+          "foregroundHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.foregroundHover}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.foregroundPressed}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.border}"
+          },
+          "borderHover": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.borderHover}"
+          },
+          "borderPressed": {
+            "$type": "color",
+            "$value": "{brand.a1.button.tertiary.borderPressed}"
+          }
+        },
+        "focusRing": {
+          "$type": "color",
+          "$value": "{brand.a1.button.focusRing}"
+        }
+      }
+    }
+  }
+}
