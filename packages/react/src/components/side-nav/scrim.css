@@ -1,0 +1,17 @@
+/* ── Scrim overlay — shared by Dialog (::backdrop) and SideNav ────────── */
+
+.a1-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: var(--component-scrim-color);
+  backdrop-filter: blur(var(--component-scrim-blur));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.a1-scrim--visible {
+  opacity: 1;
+  pointer-events: auto;
+}

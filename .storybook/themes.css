@@ -1,4 +1,5 @@
 @import "../packages/react/src/themes.css";
+@import "../packages/react/src/color-scheme.css";
 
 /* Storybook canvas root also needs the surface background */
 #storybook-root {

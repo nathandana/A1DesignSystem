@@ -1,0 +1,24 @@
+{
+  "label": {
+    "action": {
+      "getStarted": {
+        "$type": "string",
+        "$value": "Get started",
+        "$description": "Primary call-to-action that leads users into the main experience.",
+        "locale": {
+          "es": "Comenzar",
+          "fr": "Commencer"
+        }
+      },
+      "viewDocumentation": {
+        "$type": "string",
+        "$value": "View documentation",
+        "$description": "Secondary call-to-action linking to the documentation section.",
+        "locale": {
+          "es": "Ver documentación",
+          "fr": "Voir la documentation"
+        }
+      }
+    }
+  }
+}

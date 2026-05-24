@@ -53,7 +53,10 @@ function breakpointsCssFormat({ dictionary }) {
 }
 
 export default {
-  source: ["system/tokens/**/*.json"],
+  source: [
+    "system/tokens/**/*.json",
+    "system/themes/*/tokens/**/*.json",
+  ],
   hooks: {
     formats: {
       "custom/breakpoints-css": breakpointsCssFormat,

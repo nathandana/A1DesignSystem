@@ -7,7 +7,8 @@
   "scripts": {
     "build": "npm run build:a1-design && npm run build:storybook && npm run copy:storybook",
     "build:a1-design": "npm run build:tokens && vite build examples/a1-design -- --outDir dist",
-    "build:tokens": "style-dictionary build --config sd.config.js",
+    "build:tokens": "style-dictionary build --config sd.config.js && node system/build-themes.mjs",
+    "build:themes": "node system/build-themes.mjs",
     "build:storybook": "storybook build",
     "check": "npm --version",
     "clean:tokens": "style-dictionary clean",

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button } from "../Button.jsx";
-import { Heading } from "../Heading.jsx";
-import { IconButton } from "../IconButton.jsx";
-import { Link } from "../Link.jsx";
-import { MessageBadge } from "../Message.jsx";
-import { Paragraph } from "../Paragraph.jsx";
+import { Button } from "../components/button/Button.jsx";
+import { Heading } from "../components/heading/Heading.jsx";
+import { IconButton } from "../components/icon-button/IconButton.jsx";
+import { Link } from "../components/link/Link.jsx";
+import { MessageBadge } from "../components/message/Message.jsx";
+import { Paragraph } from "../components/paragraph/Paragraph.jsx";
 
 const ruleFiles = import.meta.glob("../../../../system/rules/*.yaml", {
   eager: true,
@@ -292,6 +292,10 @@ function SystemRuleExamples({ rule }) {
     "system-heading-sentence-case": {
       do: <Heading as="h2" size="md">Payment details</Heading>,
       dont: <Heading as="h2" size="md">Payment Details</Heading>
+    },
+    "system-no-uppercase-content": {
+      do: <Heading as="h2" size="md">Submit form</Heading>,
+      dont: <Heading as="h2" size="md" style={{ textTransform: "uppercase" }}>Submit form</Heading>
     }
   };
   const demo = demos[rule.id];
@@ -568,6 +572,10 @@ function ButtonRuleExamples({ rule }) {
     "button-verb-first-labels": {
       do: <Button>Edit profile</Button>,
       dont: <Button>Profile</Button>
+    },
+    "button-icon-and-verb": {
+      do: <Button variant="tertiary" icon="settings">Edit settings</Button>,
+      dont: <Button variant="tertiary">Edit settings</Button>
     },
     "button-consistent-placement": {
       do: (

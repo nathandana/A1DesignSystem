@@ -11,3 +11,15 @@ rules:
       - content
       - typography
       - consistency
+  - id: system-no-uppercase-content
+    components:
+      - System
+      - Heading
+      - Paragraph
+    requirement: Do not use uppercase transforms on content text.
+    do: Write "Submit form" or "Recent activity" — sentence-case content reads clearly for all users.
+    dont: Apply text-transform uppercase or write ALL CAPS content, as screen readers may spell out individual characters.
+    applies_to:
+      - content
+      - typography
+      - accessibility

@@ -84,6 +84,17 @@ rules:
       - content
       - usability
 
+  - id: button-icon-and-verb
+    components:
+      - Button
+    requirement: Tertiary buttons must always include both a visible icon and a verb-led label.
+    do: Pair every button with a relevant icon and a verb label so users can identify the action visually and by meaning.
+    dont: Use a button with text only or an icon only — an icon adds scannability, and the verb ensures the action is understood without relying on shape alone.
+    applies_to:
+      - accessibility
+      - content
+      - usability
+
   - id: button-consistent-placement
     components:
       - Button

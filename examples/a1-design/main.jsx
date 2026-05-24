@@ -1,13 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Button } from "../../packages/react/src/Button.jsx";
 import { ButtonContainer } from "../../packages/react/src/ButtonContainer.jsx";
 import { Card } from "../../packages/react/src/Card.jsx";
+import { Grid } from "../../packages/react/src/Grid.jsx";
 import { Heading } from "../../packages/react/src/Heading.jsx";
 import { Inverse } from "../../packages/react/src/Inverse.jsx";
+import { IconButton } from "../../packages/react/src/IconButton.jsx";
+import { LabelsProvider, useLabel } from "../../packages/react/src/Labels.jsx";
+import { Menu, MenuSection } from "../../packages/react/src/Menu.jsx";
+import { PageLayout } from "../../packages/react/src/PageLayout.jsx";
 import { Paragraph } from "../../packages/react/src/Paragraph.jsx";
 import { MessageBadge } from "../../packages/react/src/Message.jsx";
+import { SegmentedControl } from "../../packages/react/src/SegmentedControl.jsx";
+import actionLabels from "../../system/labels/action.json";
 import "./styles.css";
+
+const localeOptions = [
+  { value: "en", label: "EN" },
+  { value: "es", label: "ES" },
+  { value: "fr", label: "FR" },
+];
+
+const themeOptions = [
+  { value: "a1Light", label: "Default" },
+  { value: "a1Heritage", label: "Heritage" },
+  { value: "a1Accessible", label: "Accessible" },
+];
+
+const colorSchemeOptions = [
+  { value: "light", icon: "light_mode" },
+  { value: "dark", icon: "dark_mode" },
+];
 
 const navItems = [
   { id: "components", label: "Components" },
@@ -64,8 +88,11 @@ function NavButton({ active, children, ...props }) {
 }
 
 function HomePage({ onNavigate }) {
+  const labelGetStarted = useLabel("action.getStarted");
+  const labelViewDocs = useLabel("action.viewDocumentation");
+
   return (
-    <main className="a1-design-home">
+    <div className="a1-design-home">
       <section className="a1-design-hero">
         <div className="a1-design-badge-wrap">
           <MessageBadge variant="subtle" icon="auto_awesome">
@@ -92,16 +119,16 @@ function HomePage({ onNavigate }) {
 
         <ButtonContainer className="a1-design-actions" align="center">
           <Button variant="primary" icon="arrow_forward" iconPosition="end" onClick={() => onNavigate("components")}>
-            Get started
+            {labelGetStarted}
           </Button>
           <Button variant="secondary" onClick={() => onNavigate("documentation")}>
-            View documentation
+            {labelViewDocs}
           </Button>
         </ButtonContainer>
       </section>
 
       <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">
-        <div className="a1-design-overview-inner">
+        <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-overview-inner">
           <div className="a1-design-overview-copy">
             <MessageBadge variant="subtle" icon="hub">
               System overview
@@ -130,15 +157,15 @@ function HomePage({ onNavigate }) {
               <dd>Reusable components, visual docs, and examples show how the system is consumed.</dd>
             </div>
           </dl>
-        </div>
+        </Grid>
       </Inverse>
-    </main>
+    </div>
   );
 }
 
 function DocumentationPage() {
   return (
-    <main className="a1-design-components-page">
+    <div className="a1-design-content-page">
       <section className="a1-design-page-heading" aria-labelledby="documentation-title">
         <MessageBadge variant="subtle" icon="description">
           Documentation
@@ -150,17 +177,14 @@ function DocumentationPage() {
           Practical guidance for applying A1 tokens, components, and rules.
         </Paragraph>
       </section>
-    </main>
+    </div>
   );
 }
 
 function ComponentsPage() {
   return (
-    <main className="a1-design-components-page">
+    <div className="a1-design-content-page">
       <section className="a1-design-page-heading" aria-labelledby="components-title">
-        <MessageBadge variant="subtle" icon="widgets">
-          Component library
-        </MessageBadge>
         <Heading as="h1" id="components-title" type="display" size={{ xs: "xl", md: "xxl" }}>
           Components
         </Heading>
@@ -169,7 +193,7 @@ function ComponentsPage() {
         </Paragraph>
       </section>
 
-      <div className="a1-design-components-layout">
+      <Grid columns={{ xs: 1, md: 2 }} gap={40} className="a1-design-components-layout">
         <aside className="a1-design-toc" aria-labelledby="components-toc-title">
           <Heading as="h2" id="components-toc-title" size="xs">
             Contents
@@ -212,20 +236,30 @@ function ComponentsPage() {
             </Card>
           ))}
         </div>
-      </div>
-    </main>
+      </Grid>
+    </div>
   );
 }
 
 function App() {
   const [activePage, setActivePage] = useState("home");
+  const [locale, setLocale] = useState("en");
+  const [theme, setTheme] = useState("a1Light");
+  const [colorScheme, setColorScheme] = useState("light");
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  return (
-    <div className="a1-design-page">
-      <header className="a1-design-header">
-        <button className="a1-design-logo" type="button" onClick={() => setActivePage("home")}>
-          <span className="a1-design-logo-accent">A1:</span> Design
-        </button>
+  useEffect(() => {
+    document.documentElement.classList.toggle("a1-theme-heritage", theme === "a1Heritage");
+    document.documentElement.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
+    document.documentElement.classList.toggle("a1-theme-dark", colorScheme === "dark");
+  }, [theme, colorScheme]);
+
+  const header = (
+    <header className="a1-design-header">
+      <button className="a1-design-logo" type="button" onClick={() => setActivePage("home")}>
+        <span className="a1-design-logo-accent">A1:</span> Design
+      </button>
+      <div className="a1-design-header-end">
         <nav>
           <ul className="a1-design-nav-list">
             {navItems.map((item) => (
@@ -243,14 +277,56 @@ function App() {
             ))}
           </ul>
         </nav>
-      </header>
+        <IconButton
+          icon="settings"
+          label="Open settings"
+          onClick={() => setMenuOpen(true)}
+          aria-expanded={menuOpen}
+          aria-haspopup="dialog"
+        />
+      </div>
+    </header>
+  );
 
-      {activePage === "components" && <ComponentsPage />}
-      {activePage === "documentation" && <DocumentationPage />}
-      {activePage !== "components" && activePage !== "documentation" && (
-        <HomePage onNavigate={setActivePage} />
-      )}
-    </div>
+  return (
+    <LabelsProvider locale={locale} labels={actionLabels}>
+      <PageLayout stickyHeader header={header}>
+        {activePage === "components" && <ComponentsPage />}
+        {activePage === "documentation" && <DocumentationPage />}
+        {activePage !== "components" && activePage !== "documentation" && (
+          <HomePage onNavigate={setActivePage} />
+        )}
+      </PageLayout>
+      <Menu open={menuOpen} onClose={() => setMenuOpen(false)} aria-label="Settings">
+        <MenuSection label="Theme">
+          <SegmentedControl
+            options={themeOptions}
+            value={theme}
+            onChange={setTheme}
+            size="sm"
+            fullWidth
+          />
+        </MenuSection>
+        <MenuSection label="Color scheme">
+          <SegmentedControl
+            options={colorSchemeOptions}
+            value={colorScheme}
+            onChange={setColorScheme}
+            size="sm"
+            fullWidth
+          />
+        </MenuSection>
+        <MenuSection label="Language">
+          <SegmentedControl
+            options={localeOptions}
+            value={locale}
+            onChange={setLocale}
+            size="sm"
+            fullWidth
+          />
+        </MenuSection>
+      </Menu>
+    </LabelsProvider>
   );
 }
 
