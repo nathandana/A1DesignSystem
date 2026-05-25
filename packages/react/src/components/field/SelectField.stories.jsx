@@ -1,4 +1,46 @@
+import { useState } from "react";
 import { SelectField } from "./SelectField.jsx";
+
+const US_STATES = [
+  ["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],
+  ["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["FL","Florida"],["GA","Georgia"],
+  ["HI","Hawaii"],["ID","Idaho"],["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],
+  ["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],
+  ["MA","Massachusetts"],["MI","Michigan"],["MN","Minnesota"],["MS","Mississippi"],["MO","Missouri"],
+  ["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],["NJ","New Jersey"],
+  ["NM","New Mexico"],["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],
+  ["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],
+  ["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],["UT","Utah"],["VT","Vermont"],
+  ["VA","Virginia"],["WA","Washington"],["WV","West Virginia"],["WI","Wisconsin"],["WY","Wyoming"],
+];
+
+// Shows abbreviation when selected; "VT — Vermont" inside the open dropdown.
+function CombinedStateSelect(props) {
+  const [value, setValue]     = useState("");
+  const [focused, setFocused] = useState(false);
+
+  const overlay = value && !focused ? (
+    <div className="a1-field__mask-overlay" aria-hidden="true">
+      <span className="a1-field__mask-typed">{value}</span>
+    </div>
+  ) : null;
+
+  return (
+    <SelectField
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      inputOverlay={overlay}
+      {...props}
+    >
+      <option value="">—</option>
+      {US_STATES.map(([abbr, name]) => (
+        <option key={abbr} value={abbr}>{abbr} — {name}</option>
+      ))}
+    </SelectField>
+  );
+}
 
 const COUNTRIES = (
   <>
@@ -154,6 +196,48 @@ export const OptionGroups = {
   render: () => (
     <div style={{ maxWidth: 480 }}>
       <SelectField label="Timezone" hint="All times are shown in the selected timezone.">{TIMEZONES}</SelectField>
+    </div>
+  ),
+};
+
+/* ── US State select ──────────────────────────────────────────────────────── */
+
+const LABEL_STYLE = { fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" };
+
+export const StateSelect = {
+  name: "State select",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", gap: "var(--base-spacing-40)", flexWrap: "wrap", alignItems: "flex-start" }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Abbreviation only</p>
+        <SelectField label="State" autoComplete="address-level1" style={{ minWidth: 90 }}>
+          <option value="">—</option>
+          {US_STATES.map(([abbr]) => (
+            <option key={abbr} value={abbr}>{abbr}</option>
+          ))}
+        </SelectField>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Combined — abbr when selected</p>
+        <CombinedStateSelect label="State" autoComplete="address-level1" style={{ minWidth: 90 }} />
+        <p style={{ ...LABEL_STYLE, marginTop: "var(--base-spacing-8)", textTransform: "none", letterSpacing: 0, fontWeight: 400, fontSize: "var(--semantic-font-size-body-xs)" }}>
+          Dropdown shows "VT — Vermont"; closed shows "VT"
+        </p>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Full name</p>
+        <SelectField label="State" autoComplete="address-level1" style={{ minWidth: 180 }}>
+          <option value="">—</option>
+          {US_STATES.map(([abbr, name]) => (
+            <option key={abbr} value={abbr}>{name}</option>
+          ))}
+        </SelectField>
+      </div>
+
     </div>
   ),
 };

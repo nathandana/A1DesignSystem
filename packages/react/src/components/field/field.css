@@ -254,6 +254,44 @@
   width: auto;
 }
 
+/* ─── Mask overlay (PhoneField, ZipField) ─────────────────────────────────── */
+
+.a1-field__mask-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  /* Offset by border-width so text aligns with the (transparent) input text */
+  padding-left: calc(var(--component-field-border-width) + var(--a1-field-padding-inline));
+  padding-right: var(--a1-field-padding-inline);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-font-size);
+  font-weight: var(--base-font-weight-regular);
+  line-height: var(--semantic-font-line-height-body);
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.a1-field__mask-typed       { color: var(--semantic-color-text-default); }
+.a1-field__mask-placeholder { color: var(--semantic-color-text-muted); }
+
+/* Hide the actual input/select text; keep the caret visible */
+.a1-field__control:has(.a1-field__mask-overlay) .a1-field__input {
+  color: transparent;
+  caret-color: var(--semantic-color-text-default);
+}
+
+.a1-field__control:has(.a1-field__mask-overlay) .a1-field__select {
+  color: transparent;
+}
+
+/* Disabled: collapse typed portion to muted so whole mask reads uniformly */
+.a1-field--disabled .a1-field__mask-typed {
+  color: var(--semantic-color-text-muted);
+}
+
 /* ─── Message (hint / error) ───────────────────────────────────────────────── */
 
 .a1-field__message {
@@ -291,4 +329,23 @@
   /* Cancel the bottom half of the label's vertical-centering padding so the
      hint sits close to the label text. Net gap = row-gap + base-spacing-2. */
   margin-top: calc((var(--a1-field-label-size) * 1.5 - var(--a1-field-height)) / 2 + var(--base-spacing-2));
+}
+
+/* ─── Side label → stacked on xs/sm ───────────────────────────────────────── */
+
+@media (--bp-sm-down) {
+  .a1-field--label-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--a1-field-gap); /* restore: grid overrode row-gap to base-spacing-4 */
+    align-items: stretch;     /* restore: grid set align-items: start */
+  }
+
+  .a1-field--label-side .a1-field__label {
+    padding-top: 0;
+  }
+
+  .a1-field--label-side .a1-field__message {
+    margin-top: 0;
+  }
 }

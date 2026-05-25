@@ -1,48 +1,39 @@
-import { useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { TextField } from "./TextField.jsx";
+import { buildDisplay, extractDigits, maskMaxDigits, nextSlotIndex } from "./maskUtils.js";
 
 const DEFAULT_MASK = "#-###-###-####";
-
-function formatWithMask(digits, mask) {
-  let out = "", di = 0;
-  for (let i = 0; i < mask.length && di < digits.length; i++) {
-    out += mask[i] === "#" ? digits[di++] : mask[i];
-  }
-  return out;
-}
-
-const extractDigits = (v) => v.replace(/\D/g, "");
-const maskMaxDigits = (mask) => [...mask].filter(c => c === "#").length;
-
-// Map how many digits are before the cursor to a cursor position in the formatted string.
-// Separator characters between digits are included in the advance.
-function formattedCursorPos(digitCount, mask) {
-  let dc = 0, pos = 0;
-  for (let i = 0; i < mask.length; i++) {
-    if (mask[i] === "#") {
-      if (dc >= digitCount) break;
-      dc++;
-      pos = i + 1;
-    } else if (dc > 0 && dc < digitCount) {
-      // Separator between digits we've already passed — advance past it
-      pos = i + 1;
-    }
-  }
-  return pos;
-}
 
 export function PhoneField({
   mask = DEFAULT_MASK,
   value,
   defaultValue,
   onChange,
+  onKeyDown: externalKeyDown,
+  onFocus:   externalFocus,
+  onClick:   externalClick,
   ...props
 }) {
+  const maxLen = maskMaxDigits(mask);
+
+  const [digits, setDigits] = useState(() =>
+    value != null
+      ? extractDigits(String(value)).slice(0, maxLen)
+      : defaultValue != null
+      ? extractDigits(String(defaultValue)).slice(0, maxLen)
+      : ""
+  );
+
   const inputRef   = useRef(null);
   const nextCursor = useRef(null);
-  const maxLen     = maskMaxDigits(mask);
 
-  // After React commits the new value, restore the calculated cursor position.
+  // In controlled mode derive digits from value prop; otherwise use internal state
+  const currentDigits = value != null
+    ? extractDigits(String(value)).slice(0, maxLen)
+    : digits;
+
+  const display = buildDisplay(currentDigits, mask);
+
   useLayoutEffect(() => {
     if (nextCursor.current !== null && inputRef.current) {
       const pos = nextCursor.current;
@@ -51,31 +42,61 @@ export function PhoneField({
     }
   });
 
-  function handleChange(e) {
-    const raw          = e.target.value;
-    const cursorBefore = e.target.selectionStart;
-    const digits       = extractDigits(raw).slice(0, maxLen);
-    const formatted    = formatWithMask(digits, mask);
-
-    // Count digits that were to the left of the cursor before formatting,
-    // then find that same digit-count position in the new formatted string.
-    const digitsLeft   = extractDigits(raw.slice(0, cursorBefore)).length;
-    nextCursor.current = formattedCursorPos(digitsLeft, mask);
-
-    onChange?.({ ...e, target: { ...e.target, value: formatted } });
+  function updateDigits(newDigits) {
+    if (value == null) setDigits(newDigits);
+    onChange?.({ target: { value: buildDisplay(newDigits, mask) } });
+    nextCursor.current = nextSlotIndex(newDigits.length, mask);
   }
 
-  const formattedValue   = value        != null ? formatWithMask(extractDigits(String(value)),        mask) : undefined;
-  const formattedDefault = defaultValue != null ? formatWithMask(extractDigits(String(defaultValue)), mask) : undefined;
+  function handleKeyDown(e) {
+    if (e.key >= "0" && e.key <= "9") {
+      e.preventDefault();
+      if (currentDigits.length < maxLen) updateDigits(currentDigits + e.key);
+    } else if (e.key === "Backspace" || e.key === "Delete") {
+      e.preventDefault();
+      const { selectionStart, selectionEnd } = e.target;
+      if (selectionStart !== selectionEnd) updateDigits("");
+      else if (currentDigits.length > 0) updateDigits(currentDigits.slice(0, -1));
+    }
+    externalKeyDown?.(e);
+  }
+
+  function handleChange(e) {
+    // Handles paste and browser autocomplete
+    const newDigits = extractDigits(e.target.value).slice(0, maxLen);
+    updateDigits(newDigits);
+  }
+
+  function handleFocus(e) {
+    nextCursor.current = nextSlotIndex(currentDigits.length, mask);
+    externalFocus?.(e);
+  }
+
+  function handleClick(e) {
+    nextCursor.current = nextSlotIndex(currentDigits.length, mask);
+    externalClick?.(e);
+  }
+
+  const splitAt = nextSlotIndex(currentDigits.length, mask);
+  const inputOverlay = (
+    <div className="a1-field__mask-overlay" aria-hidden="true">
+      <span className="a1-field__mask-typed">{display.slice(0, splitAt)}</span>
+      <span className="a1-field__mask-placeholder">{display.slice(splitAt)}</span>
+    </div>
+  );
 
   return (
     <TextField
       ref={inputRef}
       type="tel"
       inputMode="numeric"
-      value={formattedValue}
-      defaultValue={formattedDefault}
+      autoComplete="tel"
+      value={display}
       onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      onFocus={handleFocus}
+      onClick={handleClick}
+      inputOverlay={inputOverlay}
       {...props}
     />
   );

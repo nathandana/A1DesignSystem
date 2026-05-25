@@ -1,4 +1,7 @@
 import { TextField } from "./TextField.jsx";
+import { PhoneField } from "./PhoneField.jsx";
+import { ZipField, ZIP_MASKS } from "./ZipField.jsx";
+import { CreditCardField } from "./CreditCardField.jsx";
 
 const meta = {
   title: "Components/Forms/Input Text",
@@ -153,6 +156,123 @@ export const RequiredBadge = {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
           <TextField size="default" label="Full name" hint="As it appears on your ID." required />
           <TextField size="compact" label="Email address" required />
+        </div>
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── Phone number ─────────────────────────────────────────────────────────── */
+
+const LABEL_STYLE = { fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" };
+
+export const PhoneNumber = {
+  name: "Phone number",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)", maxWidth: 480 }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Default US format</p>
+        <PhoneField label="Phone number" hint="Include your country code." />
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>States</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <PhoneField label="Default" hint="Include your country code." />
+          <PhoneField label="Required" hint="We'll only use this for account alerts." required />
+          <PhoneField label="Error" defaultValue="123" error="Enter a complete phone number." />
+          <PhoneField label="Disabled" disabled />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Country formats</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <PhoneField label="United States" hint="e.g. 1-800-555-1234" mask="#-###-###-####" />
+          <PhoneField label="United Kingdom" hint="e.g. 07700 900123" mask="##### ######" />
+          <PhoneField label="Australia" hint="e.g. 0412 345 678" mask="#### ### ###" />
+          <PhoneField label="Brazil" hint="e.g. (11) 98765-4321" mask="(##) #####-####" />
+          <PhoneField label="Germany" hint="e.g. 030 12345678" mask="### ########" />
+        </div>
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── ZIP code ─────────────────────────────────────────────────────────────── */
+
+export const ZipCode = {
+  name: "ZIP code",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)" }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Formats</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-24)", flexWrap: "wrap" }}>
+          <ZipField label="5-digit ZIP" mask={ZIP_MASKS.zip5} hint="e.g. 90210" />
+          <ZipField label="ZIP+4" mask={ZIP_MASKS.zip9} hint="e.g. 90210-1234" />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>States</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-24)", flexWrap: "wrap" }}>
+          <ZipField label="Default" />
+          <ZipField label="Required" required />
+          <ZipField label="Error" defaultValue="123" error="Enter a valid ZIP code." />
+          <ZipField label="Disabled" disabled />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>In a form row</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap", alignItems: "flex-start", maxWidth: 560 }}>
+          <div style={{ flex: "1 1 200px" }}>
+            <TextField label="City" required />
+          </div>
+          <ZipField label="ZIP code" required />
+        </div>
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── Credit card ──────────────────────────────────────────────────────────── */
+
+export const CreditCard = {
+  name: "Credit card",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)", maxWidth: 480 }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Card number</p>
+        <CreditCardField label="Card number" hint="Start typing to detect your card type." />
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Card types</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <CreditCardField label="Visa" defaultValue="4111111111111111" hint="Starts with 4" />
+          <CreditCardField label="Mastercard" defaultValue="5500000000000004" hint="Starts with 51–55 or 2221–2720" />
+          <CreditCardField label="Amex" defaultValue="371449635398431" hint="Starts with 34 or 37 — 15 digits" />
+          <CreditCardField label="Discover" defaultValue="6011111111111117" hint="Starts with 6011, 622, 644–649 or 65" />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>States</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <CreditCardField label="Default" />
+          <CreditCardField label="Required" required hint="Required to complete your purchase." />
+          <CreditCardField label="Error" defaultValue="1234" error="Enter a valid card number." />
+          <CreditCardField label="Disabled" disabled />
         </div>
       </div>
 

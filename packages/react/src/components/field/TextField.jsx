@@ -1,6 +1,7 @@
-import { useId, forwardRef } from "react";
+import { useId, forwardRef, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
+import { FieldsetContext } from "../fieldset/FieldsetContext.js";
 import "./field.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
@@ -10,23 +11,25 @@ export const TextField = forwardRef(function TextField({
   label,
   hint,
   error,
-  size = "default",
-  labelPosition = "above",
+  size,
+  labelPosition,
   required = false,
   disabled = false,
   readOnly = false,
   id: providedId,
   className = "",
   placeholder: _removed,
+  inputOverlay,
   ...props
 }, ref) {
+  const ctx     = useContext(FieldsetContext);
   const autoId  = useId();
   const id      = providedId ?? autoId;
   const hintId  = `${id}-hint`;
   const errorId = `${id}-error`;
 
-  const resolvedSize     = SIZES.includes(size)                   ? size          : "default";
-  const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : "above";
+  const resolvedSize     = SIZES.includes(size)           ? size          : (ctx?.size          ?? "default");
+  const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : (ctx?.labelPosition ?? "above");
 
   const classes = [
     "a1-field",
@@ -68,6 +71,7 @@ export const TextField = forwardRef(function TextField({
           aria-invalid={error ? "true" : undefined}
           {...props}
         />
+        {inputOverlay}
       </div>
       {error ? (
         <p className="a1-field__message a1-field__message--error" id={errorId} role="alert">{error}</p>

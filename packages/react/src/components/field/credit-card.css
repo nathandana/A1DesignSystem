@@ -1,0 +1,30 @@
+/* ─── CreditCardField ────────────────────────────────────────────────────── */
+
+.a1-credit-card__badge {
+  position: absolute;
+  right: var(--a1-field-padding-inline);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 600;
+  color: var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-raised);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  padding: 2px 6px;
+  min-width: 40px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Shift input text and mask overlay left when badge is visible */
+.a1-credit-card--detected .a1-field__input {
+  padding-right: calc(var(--a1-field-padding-inline) + 52px);
+}
+
+.a1-credit-card--detected .a1-field__mask-overlay {
+  padding-right: calc(var(--a1-field-padding-inline) + 52px);
+}

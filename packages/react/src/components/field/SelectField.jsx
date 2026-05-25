@@ -1,32 +1,35 @@
-import { useId } from "react";
+import { useId, forwardRef, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { Icon } from "../icon/Icon.jsx";
+import { FieldsetContext } from "../fieldset/FieldsetContext.js";
 import "./field.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
 const LABEL_POSITIONS = ["above", "side"];
 
-export function SelectField({
+export const SelectField = forwardRef(function SelectField({
   label,
   hint,
   error,
-  size = "default",
-  labelPosition = "above",
+  size,
+  labelPosition,
   required = false,
   disabled = false,
   id: providedId,
   className = "",
+  inputOverlay,
   children,
   ...props
-}) {
+}, ref) {
+  const ctx     = useContext(FieldsetContext);
   const autoId  = useId();
   const id      = providedId ?? autoId;
   const hintId  = `${id}-hint`;
   const errorId = `${id}-error`;
 
-  const resolvedSize     = SIZES.includes(size)                   ? size          : "default";
-  const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : "above";
+  const resolvedSize     = SIZES.includes(size)                   ? size          : (ctx?.size          ?? "default");
+  const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : (ctx?.labelPosition ?? "above");
 
   const classes = [
     "a1-field",
@@ -57,6 +60,7 @@ export function SelectField({
       )}
       <div className="a1-field__control">
         <select
+          ref={ref}
           id={id}
           className="a1-field__select"
           required={required}
@@ -70,6 +74,7 @@ export function SelectField({
         <span className="a1-field__chevron" aria-hidden="true">
           <Icon name="expand_more" />
         </span>
+        {inputOverlay}
       </div>
       {error ? (
         <p className="a1-field__message a1-field__message--error" id={errorId} role="alert">{error}</p>
@@ -78,4 +83,4 @@ export function SelectField({
       ) : null}
     </div>
   );
-}
+});
