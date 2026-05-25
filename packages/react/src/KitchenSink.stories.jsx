@@ -9,7 +9,8 @@ import { Heading } from "./components/heading/Heading.jsx";
 import { IconButton } from "./components/icon-button/IconButton.jsx";
 import { Link } from "./components/link/Link.jsx";
 import { Menu, MenuSection, MenuItem } from "./components/menu/Menu.jsx";
-import { MessageBadge, MessageBanner, MessageEmptyState } from "./components/message/Message.jsx";
+import { MessageBadge, MessageEmptyState } from "./components/message/Message.jsx";
+import { Banner } from "./components/banner/Banner.jsx";
 import { Notification } from "./components/notification/Notification.jsx";
 import { Pagination } from "./components/pagination/Pagination.jsx";
 import { Paragraph } from "./components/paragraph/Paragraph.jsx";
@@ -121,11 +122,11 @@ function KitchenSinkContent() {
       <div>
         <SectionLabel>Banners</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-8)" }}>
-          <MessageBanner status="neutral" title="Neutral">Something you should know.</MessageBanner>
-          <MessageBanner status="info" title="Informational">Your session will expire in 15 minutes.</MessageBanner>
-          <MessageBanner status="success" title="Success">Changes saved successfully.</MessageBanner>
-          <MessageBanner status="warn" title="Warning">This action may have unintended effects.</MessageBanner>
-          <MessageBanner status="error" title="Error">Failed to load data. Please try again.</MessageBanner>
+          <Banner status="neutral" title="Neutral">Something you should know.</Banner>
+          <Banner status="info" title="Informational">Your session will expire in 15 minutes.</Banner>
+          <Banner status="success" title="Success">Changes saved successfully.</Banner>
+          <Banner status="warn" title="Warning">This action may have unintended effects.</Banner>
+          <Banner status="error" title="Error">Failed to load data. Please try again.</Banner>
         </div>
       </div>
 

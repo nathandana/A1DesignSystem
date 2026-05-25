@@ -50,9 +50,18 @@
 }
 
 .a1-dialog__footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--base-spacing-12);
   padding-top: var(--base-spacing-16);
   border-top: var(--component-dialog-footer-border-width) solid var(--semantic-color-border-subtle);
+}
+
+@media (max-width: 640px) {
+  .a1-dialog {
+    padding-inline: var(--base-spacing-20);
+  }
+}
+
+@media (max-width: 480px) {
+  .a1-dialog {
+    width: calc(100vw - var(--base-spacing-32));
+  }
 }

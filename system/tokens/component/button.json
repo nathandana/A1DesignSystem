@@ -1,6 +1,14 @@
 {
   "base": {
     "radius": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "4px"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "6px"
+      },
       "control": {
         "$type": "dimension",
         "$value": "6px"

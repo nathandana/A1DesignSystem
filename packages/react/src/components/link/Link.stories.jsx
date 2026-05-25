@@ -14,10 +14,6 @@ const meta = {
     iconPosition: "start"
   },
   argTypes: {
-    as: {
-      control: "select",
-      options: ["a", "button", "span"]
-    },
     size: {
       control: "select",
       options: [undefined, "xs", "sm", "md", "lg", "xl"],

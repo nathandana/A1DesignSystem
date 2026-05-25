@@ -5,6 +5,53 @@
   flex-direction: column;
 }
 
+/* ─── Tab list wrapper ────────────────────────────────────────────────────── */
+
+/*
+ * Wrapper is a flex row — scroll buttons are flex siblings of the tab list.
+ * Line variant: border-bottom lives on wrapper (always full-width).
+ * Folder variant: border-bottom, padding, and align-items live on wrapper.
+ */
+
+.a1-tab-list-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.a1-tab-list-wrapper--line {
+  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-subtle);
+}
+
+.a1-tab-list-wrapper--folder {
+  align-items: flex-end;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-8) var(--base-spacing-8) 0;
+  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+}
+
+/* ─── Scroll buttons (line variant only) ─────────────────────────────────── */
+
+.a1-tab-list__scroll-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  background: var(--semantic-color-surface-page);
+  border: none;
+  cursor: pointer;
+  color: var(--semantic-color-text-muted);
+  padding: 0;
+}
+
+.a1-tab-list__scroll-btn:hover {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tab-list__scroll-btn .a1-icon {
+  font-size: 20px;
+}
+
 /* ─── Tab list ────────────────────────────────────────────────────────────── */
 
 .a1-tab-list {
@@ -12,10 +59,20 @@
   flex-shrink: 0;
 }
 
+/* Line variant gets overflow scroll; the tab list scrolls, wrapper border stays full-width */
+.a1-tab-list--scrollable {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.a1-tab-list--scrollable::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Line variant ───────────────────────────────────────────────────────── */
 
 .a1-tab-list--line {
-  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-subtle);
   gap: 0;
 }
 
@@ -24,8 +81,7 @@
 .a1-tab-list--folder {
   align-items: flex-end;
   gap: var(--base-spacing-4);
-  padding: var(--base-spacing-8) var(--base-spacing-8) 0;
-  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  flex: 1;
 }
 
 /* ─── Tab button ──────────────────────────────────────────────────────────── */
@@ -48,12 +104,53 @@
   border-radius: var(--base-radius-control);
 }
 
+/* ── Icon styles ─────────────────────────────────────────────────────────── */
+
+.a1-tab__icon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.a1-tab--icon-above {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  white-space: normal;
+  text-align: center;
+}
+
+.a1-tab--icon-above .a1-tab__icon {
+  font-size: 1.5em;
+}
+
+/* ── Count badge ─────────────────────────────────────────────────────────── */
+
+.a1-tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: var(--base-font-weight-medium);
+  line-height: 1;
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-tab[aria-selected="true"] .a1-tab__count {
+  background: color-mix(in srgb, var(--semantic-color-action-background) 12%, transparent);
+  color: var(--semantic-color-action-background);
+}
+
 /* ── Line tab ───────────────────────────────────────────────────────────── */
 
 .a1-tab--line {
   padding: var(--component-tab-padding-block) var(--component-tab-padding-inline);
   font-size: var(--semantic-font-size-body-sm);
-  font-weight: var(--component-tab-font-weight-default);
+  font-weight: var(--base-font-weight-medium);
   color: var(--semantic-color-text-muted);
   border-bottom: var(--component-tab-indicator-size) solid transparent;
   margin-bottom: var(--component-tab-margin-bottom);
@@ -66,8 +163,9 @@
 
 .a1-tab--line[aria-selected="true"] {
   color: var(--semantic-color-action-background);
-  font-weight: var(--component-tab-font-weight-active);
+  font-weight: var(--base-font-weight-semibold);
   border-bottom-color: var(--semantic-color-action-background);
+  cursor: default;
 }
 
 /* ── Folder tab ─────────────────────────────────────────────────────────── */
@@ -75,14 +173,15 @@
 .a1-tab--folder {
   padding: var(--component-tab-padding-block) var(--component-tab-padding-inline);
   font-size: var(--semantic-font-size-body-sm);
-  font-weight: var(--component-tab-font-weight-default);
+  font-weight: var(--base-font-weight-medium);
   color: var(--semantic-color-text-muted);
   background: var(--semantic-color-surface-panel);
   border: var(--component-tab-border-width) solid var(--semantic-color-border-default);
-  border-bottom: none;
+  border-bottom: var(--component-tab-border-width) solid transparent;
   border-radius: var(--base-radius-lg) var(--base-radius-lg) 0 0;
   margin-bottom: var(--component-tab-margin-bottom);
   position: relative;
+  overflow: visible;
 }
 
 .a1-tab--folder:hover:not([aria-selected="true"]) {
@@ -93,9 +192,189 @@
 .a1-tab--folder[aria-selected="true"] {
   background: var(--semantic-color-surface-page);
   color: var(--semantic-color-text-default);
-  font-weight: var(--component-tab-font-weight-active);
+  font-weight: var(--base-font-weight-semibold);
   border-color: var(--semantic-color-border-strong);
+  border-bottom-color: var(--semantic-color-surface-page);
   z-index: var(--component-tab-z-index-active);
+  cursor: default;
+}
+
+/* Outward curves at active folder tab bottom corners */
+.a1-tab--folder[aria-selected="true"]::before,
+.a1-tab--folder[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  width: var(--base-radius-lg);
+  height: var(--base-radius-lg);
+  pointer-events: none;
+  z-index: var(--component-tab-z-index-active);
+}
+
+.a1-tab--folder[aria-selected="true"]::before {
+  left: calc(-1 * var(--base-radius-lg));
+  background: radial-gradient(
+    circle at 0% 0%,
+    transparent calc(var(--base-radius-lg) - 0.5px),
+    var(--semantic-color-surface-page) var(--base-radius-lg)
+  );
+}
+
+.a1-tab--folder[aria-selected="true"]::after {
+  right: calc(-1 * var(--base-radius-lg));
+  background: radial-gradient(
+    circle at 100% 0%,
+    transparent calc(var(--base-radius-lg) - 0.5px),
+    var(--semantic-color-surface-page) var(--base-radius-lg)
+  );
+}
+
+/* ── Progress variant ───────────────────────────────────────────────────── */
+
+.a1-tab-list-wrapper--progress {
+  border-bottom: none;
+}
+
+.a1-tab-list--progress {
+  counter-reset: progress-step;
+  gap: 0;
+  align-items: flex-start;
+  flex: 1;
+}
+
+/* Custom properties for responsive step geometry */
+.a1-tab--progress {
+  --_step-pad-top: var(--base-spacing-8);
+  --_step-size: 24px;
+}
+
+@media (min-width: 641px) {
+  .a1-tab--progress {
+    --_step-pad-top: var(--base-spacing-16);
+    --_step-size: 32px;
+  }
+}
+
+.a1-tab--progress {
+  counter-increment: progress-step;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  padding: var(--_step-pad-top) var(--base-spacing-4) var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-muted);
+  background: transparent;
+  border: none;
+  position: relative;
+  white-space: normal;
+  text-align: center;
+  cursor: pointer;
+}
+
+.a1-tab--progress:hover {
+  color: var(--semantic-color-text-default);
+}
+
+/* Connecting line — left half (coming from previous step) */
+.a1-tab--progress:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--_step-pad-top) + var(--_step-size) / 2);
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background: var(--semantic-color-border-subtle);
+  z-index: 0;
+}
+
+/* Connecting line — right half (going to next step) */
+.a1-tab--progress:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--_step-pad-top) + var(--_step-size) / 2);
+  right: 0;
+  width: 50%;
+  height: 2px;
+  background: var(--semantic-color-border-subtle);
+  z-index: 0;
+}
+
+/* Color the line going INTO a completed or in-progress step */
+.a1-tab--progress.a1-tab--status-completed:not(:first-child)::before,
+.a1-tab--progress.a1-tab--status-in-progress:not(:first-child)::before {
+  background: var(--semantic-color-status-success-background);
+}
+
+/* Color the line going OUT of a completed step */
+.a1-tab--progress.a1-tab--status-completed:not(:last-child)::after {
+  background: var(--semantic-color-status-success-background);
+}
+
+/* Step circle */
+.a1-tab__step {
+  width: var(--_step-size);
+  height: var(--_step-size);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: var(--base-font-weight-semibold);
+  position: relative;
+  z-index: 1;
+  background: var(--semantic-color-surface-page);
+  border: 2px solid var(--semantic-color-border-default);
+  color: var(--semantic-color-text-muted);
+  transition:
+    background var(--semantic-motion-duration-fast),
+    border-color var(--semantic-motion-duration-fast),
+    box-shadow var(--semantic-motion-duration-fast);
+}
+
+/* Step number via CSS counter (hidden when completed — icon replaces it) */
+.a1-tab__step::before {
+  content: counter(progress-step);
+}
+
+/* in-progress state */
+.a1-tab--status-in-progress .a1-tab__step {
+  background: var(--semantic-color-action-background);
+  border-color: var(--semantic-color-action-background);
+  color: var(--semantic-color-surface-page);
+}
+
+/* completed state */
+.a1-tab--status-completed .a1-tab__step {
+  background: var(--semantic-color-status-success-background);
+  border-color: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-foreground);
+}
+
+.a1-tab--status-completed .a1-tab__step::before {
+  content: none;
+}
+
+.a1-tab--status-completed .a1-tab__step .a1-icon {
+  font-size: 16px;
+}
+
+/* Selected (active view) — ring around step circle */
+.a1-tab--progress[aria-selected="true"] {
+  color: var(--semantic-color-text-default);
+  font-weight: var(--base-font-weight-semibold);
+  cursor: default;
+}
+
+.a1-tab--progress[aria-selected="true"] .a1-tab__step {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-color-action-background) 25%, transparent);
+}
+
+/* Selected todo step gets accent border + color */
+.a1-tab--progress[aria-selected="true"]:not(.a1-tab--status-completed):not(.a1-tab--status-in-progress) .a1-tab__step {
+  border-color: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-background);
 }
 
 /* ─── Level 2 ─────────────────────────────────────────────────────────────── */
@@ -111,8 +390,59 @@
   border-radius: var(--base-radius-control) var(--base-radius-control) 0 0;
 }
 
-.a1-tabs--level-2 .a1-tab-list--folder {
+.a1-tabs--level-2 .a1-tab-list-wrapper--folder {
   padding: var(--base-spacing-4) var(--base-spacing-4) 0;
+}
+
+/* Level-2 folder curves (smaller radius) */
+.a1-tabs--level-2 .a1-tab--folder[aria-selected="true"]::before {
+  left: calc(-1 * var(--base-radius-control));
+  width: var(--base-radius-control);
+  height: var(--base-radius-control);
+  background: radial-gradient(
+    circle at 0% 0%,
+    transparent calc(var(--base-radius-control) - 0.5px),
+    var(--semantic-color-surface-page) var(--base-radius-control)
+  );
+}
+
+.a1-tabs--level-2 .a1-tab--folder[aria-selected="true"]::after {
+  right: calc(-1 * var(--base-radius-control));
+  width: var(--base-radius-control);
+  height: var(--base-radius-control);
+  background: radial-gradient(
+    circle at 100% 0%,
+    transparent calc(var(--base-radius-control) - 0.5px),
+    var(--semantic-color-surface-page) var(--base-radius-control)
+  );
+}
+
+/* ─── Responsive font sizes ───────────────────────────────────────────────── */
+
+@media (min-width: 641px) {
+  .a1-tab--line,
+  .a1-tab--folder,
+  .a1-tab--progress {
+    font-size: var(--semantic-font-size-body-md);
+  }
+
+  .a1-tabs--level-2 .a1-tab--line,
+  .a1-tabs--level-2 .a1-tab--folder {
+    font-size: var(--semantic-font-size-body-sm);
+  }
+}
+
+@media (min-width: 1025px) {
+  .a1-tab--line,
+  .a1-tab--folder,
+  .a1-tab--progress {
+    font-size: var(--semantic-font-size-body-lg);
+  }
+
+  .a1-tabs--level-2 .a1-tab--line,
+  .a1-tabs--level-2 .a1-tab--folder {
+    font-size: var(--semantic-font-size-body-md);
+  }
 }
 
 /* ─── Tab panel ───────────────────────────────────────────────────────────── */
@@ -132,4 +462,8 @@
 .a1-tabs--level-2 .a1-tab-panel--folder {
   border-radius: 0 0 var(--base-radius-control) var(--base-radius-control);
   padding: var(--base-spacing-12);
+}
+
+.a1-tab-panel--progress {
+  padding: var(--base-spacing-24) 0;
 }

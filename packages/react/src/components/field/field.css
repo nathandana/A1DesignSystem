@@ -1,0 +1,294 @@
+/* ─── Field — local custom properties ───────────────────────────────────────── */
+
+.a1-field {
+  /* size — defaults to "default" */
+  --a1-field-height:         var(--component-field-default-height);
+  --a1-field-padding-inline: var(--component-field-default-padding-inline);
+  --a1-field-gap:            var(--component-field-default-gap);
+  --a1-field-border-radius:  var(--component-field-default-border-radius);
+  --a1-field-font-size:      var(--semantic-font-size-body-md);
+  --a1-field-label-size:     var(--semantic-font-size-body-sm);
+  --a1-field-label-weight:   var(--component-field-label-font-weight);
+  --a1-field-message-size:   var(--semantic-font-size-body-xs);
+  --a1-field-chevron-size:   20px;
+  --a1-field-side-label-width:      minmax(100px, 160px);
+  --a1-field-accent-border-width:   var(--component-field-required-border-width);
+  --a1-field-accent-compensation:   7px;
+
+  /* interaction */
+  --a1-field-background:            var(--semantic-color-surface-page);
+  --a1-field-border-color:          var(--semantic-color-border-strong);
+  --a1-field-hover-background:      var(--component-field-hover-background);
+  --a1-field-hover-border-color:    var(--component-field-hover-border-color);
+  --a1-field-active-background:     var(--component-field-active-background);
+  --a1-field-active-border-color:   var(--component-field-active-border-color);
+  --a1-field-focus-ring-color:      var(--component-field-focus-ring-color);
+  --a1-field-focus-ring-width:      var(--component-field-focus-ring-width);
+  --a1-field-focus-ring-offset:     var(--component-field-focus-ring-offset);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-field-gap);
+}
+
+/* ─── Sizes ────────────────────────────────────────────────────────────────── */
+
+.a1-field--comfortable {
+  --a1-field-height:         var(--component-field-comfortable-height);
+  --a1-field-padding-inline: var(--component-field-comfortable-padding-inline);
+  --a1-field-gap:            var(--component-field-comfortable-gap);
+  --a1-field-border-radius:  var(--component-field-comfortable-border-radius);
+  --a1-field-label-size:     var(--semantic-font-size-body-md);
+  --a1-field-message-size:   var(--semantic-font-size-body-sm);
+  --a1-field-chevron-size:   24px;
+  --a1-field-side-label-width: minmax(120px, 200px);
+}
+
+@media (--bp-md-up) {
+  .a1-field--comfortable {
+    --a1-field-font-size:  var(--semantic-font-size-body-lg);
+    --a1-field-label-size: var(--semantic-font-size-body-lg);
+  }
+}
+
+@media (--bp-lg-up) {
+  .a1-field--comfortable {
+    --a1-field-label-size:   var(--semantic-font-size-body-xl);
+    --a1-field-message-size: var(--semantic-font-size-body-md);
+  }
+}
+
+@media (--bp-xl-up) {
+  .a1-field--comfortable {
+    --a1-field-label-size: var(--semantic-font-size-heading-md);
+  }
+}
+
+.a1-field--compact {
+  --a1-field-height:         var(--component-field-compact-height);
+  --a1-field-padding-inline: var(--component-field-compact-padding-inline);
+  --a1-field-gap:            var(--component-field-compact-gap);
+  --a1-field-border-radius:  var(--component-field-compact-border-radius);
+  --a1-field-font-size:      var(--semantic-font-size-body-sm);
+  --a1-field-label-size:     var(--semantic-font-size-body-xs);
+  --a1-field-label-weight:   500;
+  --a1-field-message-size:   var(--semantic-font-size-body-xs);
+  --a1-field-chevron-size:   16px;
+  --a1-field-accent-border-width: 4px;
+  --a1-field-accent-compensation: 3px;
+}
+
+/* Compact restores 16px input font on small screens (prevents iOS zoom) */
+@media (--bp-sm-down) {
+  .a1-field--compact {
+    --a1-field-font-size: var(--semantic-font-size-body-md);
+  }
+}
+
+/* ─── Label ────────────────────────────────────────────────────────────────── */
+
+.a1-field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-label-size);
+  font-weight: var(--a1-field-label-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-field__asterisk {
+  color: var(--semantic-color-status-info-background);
+}
+
+/* ─── Control wrapper ──────────────────────────────────────────────────────── */
+
+.a1-field__control {
+  position: relative;
+  display: flex;
+}
+
+/* ─── Shared control styles (input + select) ─────────────────────────────── */
+
+:is(.a1-field__input, .a1-field__select) {
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--a1-field-height);
+  padding-inline: var(--a1-field-padding-inline);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-font-size);
+  font-weight: var(--base-font-weight-regular);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-default);
+  background: var(--a1-field-background);
+  border: var(--component-field-border-width) solid var(--a1-field-border-color);
+  border-radius: var(--a1-field-border-radius);
+  transition:
+    border-color var(--semantic-motion-duration-fast),
+    background var(--semantic-motion-duration-fast);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ─── Input-specific ────────────────────────────────────────────────────────── */
+
+.a1-field__input::placeholder {
+  color: var(--semantic-color-text-muted);
+  font-weight: var(--base-font-weight-regular);
+}
+
+/* ─── Select-specific ───────────────────────────────────────────────────────── */
+
+.a1-field__select {
+  padding-right: calc(var(--a1-field-padding-inline) + var(--a1-field-chevron-size) + var(--base-spacing-6));
+  cursor: pointer;
+}
+
+.a1-field__chevron {
+  position: absolute;
+  right: var(--a1-field-padding-inline);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--a1-field-chevron-size);
+  color: var(--semantic-color-text-muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Hover ────────────────────────────────────────────────────────────────── */
+
+:is(.a1-field__input, .a1-field__select):hover:not(:disabled):not(:focus) {
+  background: var(--a1-field-hover-background);
+  border-color: var(--a1-field-hover-border-color);
+}
+
+.a1-field__input:read-only:hover:not(:disabled):not(:focus) {
+  background: var(--component-field-read-only-background);
+  border-color: var(--component-field-read-only-border-color);
+}
+
+/* ─── Active ───────────────────────────────────────────────────────────────── */
+
+:is(.a1-field__input, .a1-field__select):active:not(:disabled) {
+  background: var(--a1-field-active-background);
+  border-color: var(--a1-field-active-border-color);
+}
+
+.a1-field__input:read-only:active:not(:disabled) {
+  background: var(--component-field-read-only-background);
+  border-color: var(--component-field-read-only-border-color);
+}
+
+/* ─── Focus ────────────────────────────────────────────────────────────────── */
+
+:is(.a1-field__input, .a1-field__select):focus {
+  outline: var(--a1-field-focus-ring-width) solid var(--a1-field-focus-ring-color);
+  outline-offset: var(--a1-field-focus-ring-offset);
+  border-color: var(--semantic-color-action-background);
+}
+
+/* ─── Required ─────────────────────────────────────────────────────────────── */
+
+.a1-field--required :is(.a1-field__input, .a1-field__select) {
+  border-color: var(--semantic-color-status-info-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-info-background);
+  padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
+}
+
+.a1-field--required :is(.a1-field__input, .a1-field__select):focus {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* ─── Error ────────────────────────────────────────────────────────────────── */
+
+.a1-field--error :is(.a1-field__input, .a1-field__select) {
+  border-width: var(--component-field-error-border-width);
+  border-color: var(--semantic-color-status-error-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-error-background);
+  padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
+}
+
+.a1-field--error :is(.a1-field__input, .a1-field__select):focus {
+  border-color: var(--semantic-color-status-error-background);
+}
+
+/* ─── Disabled ─────────────────────────────────────────────────────────────── */
+
+.a1-field--disabled .a1-field__label {
+  color: var(--semantic-color-text-muted);
+}
+
+:is(.a1-field__input, .a1-field__select):disabled {
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+.a1-field--disabled .a1-field__chevron {
+  color: var(--semantic-color-text-muted);
+  opacity: 0.5;
+}
+
+/* ─── Read-only (input only) ─────────────────────────────────────────────── */
+
+.a1-field__input:read-only:not(:disabled) {
+  background: var(--component-field-read-only-background);
+  color: var(--component-field-read-only-text);
+  border-color: var(--component-field-read-only-border-color);
+  cursor: text;
+  user-select: text;
+}
+
+/* ─── Fit-content width (date, zip, and other fixed-width fields) ───────────── */
+
+.a1-field--fit {
+  width: fit-content;
+}
+
+.a1-field--fit .a1-field__input {
+  width: auto;
+}
+
+/* ─── Message (hint / error) ───────────────────────────────────────────────── */
+
+.a1-field__message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-message-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-field__message--hint {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-field__message--error {
+  color: var(--semantic-color-status-error-background);
+}
+
+/* ─── Side label layout ────────────────────────────────────────────────────── */
+
+.a1-field--label-side {
+  display: grid;
+  grid-template-columns: var(--a1-field-side-label-width) 1fr;
+  column-gap: var(--base-spacing-16);
+  row-gap: var(--base-spacing-4);
+  align-items: start;
+}
+
+.a1-field--label-side .a1-field__label {
+  padding-top: calc((var(--a1-field-height) - 1lh) / 2);
+}
+
+.a1-field--label-side .a1-field__message {
+  grid-column: 1;
+  grid-row: 2;
+  /* Cancel the bottom half of the label's vertical-centering padding so the
+     hint sits close to the label text. Net gap = row-gap + base-spacing-2. */
+  margin-top: calc((var(--a1-field-label-size) * 1.5 - var(--a1-field-height)) / 2 + var(--base-spacing-2));
+}

@@ -2,7 +2,7 @@
   "base": {
     "space": {
       "card": {
-        "padding": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "padding": { "$type": "dimension", "$value": "{base.spacing.20}" },
         "borderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" }
       }
     }

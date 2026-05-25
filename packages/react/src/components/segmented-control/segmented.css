@@ -69,6 +69,18 @@
   padding-inline: var(--component-segmented-segment-padding-block);
 }
 
+/* ─── Dark mode ───────────────────────────────────────────────────────────── */
+
+.a1-theme-dark .a1-segment:not([aria-checked="true"]),
+.a1-inverse .a1-segment:not([aria-checked="true"]) {
+  color: var(--base-color-neutral-300);
+}
+
+.a1-theme-dark .a1-segment:hover:not([aria-checked="true"]),
+.a1-inverse .a1-segment:hover:not([aria-checked="true"]) {
+  color: var(--base-color-neutral-100);
+}
+
 /* ─── Full width ──────────────────────────────────────────────────────────── */
 
 .a1-segmented--full-width .a1-segment {

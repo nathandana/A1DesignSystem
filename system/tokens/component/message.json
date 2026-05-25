@@ -16,7 +16,7 @@
       },
       "badge": {
         "paddingBlock":   { "$type": "dimension", "$value": "{base.spacing.4}" },
-        "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.8}" },
         "borderRadius":   { "$type": "dimension", "$value": "{base.radius.control}" },
         "fontWeight":     { "$type": "number", "$value": 500 }
       },

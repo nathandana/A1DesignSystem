@@ -1,0 +1,42 @@
+{
+  "component": {
+    "field": {
+      "borderWidth":         { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "requiredBorderWidth": { "$type": "dimension", "$value": "8px" },
+      "errorBorderWidth":    { "$type": "dimension", "$value": "2px" },
+      "labelFontWeight":     { "$type": "number",    "$value": 600 },
+
+      "focusRingColor":      { "$type": "color",     "$value": "{component.button.focusRing}" },
+      "focusRingWidth":      { "$type": "dimension", "$value": "{component.button.focusRingWidth}" },
+      "focusRingOffset":     { "$type": "dimension", "$value": "{component.button.focusRingOffset}" },
+
+      "hoverBackground":     { "$type": "color",     "$value": "{base.color.neutral.50}" },
+      "hoverBorderColor":    { "$type": "color",     "$value": "{base.color.neutral.600}" },
+      "activeBackground":    { "$type": "color",     "$value": "{base.color.neutral.100}" },
+      "activeBorderColor":   { "$type": "color",     "$value": "{base.color.neutral.700}" },
+
+      "readOnlyBackground":  { "$type": "color",     "$value": "{base.color.info.50}" },
+      "readOnlyBorderColor": { "$type": "color",     "$value": "{base.color.info.200}" },
+      "readOnlyText":        { "$type": "color",     "$value": "{base.color.info.1000}" },
+
+      "comfortable": {
+        "height":        { "$type": "dimension", "$value": "52px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.lg}" }
+      },
+      "default": {
+        "height":        { "$type": "dimension", "$value": "40px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.md}" }
+      },
+      "compact": {
+        "height":        { "$type": "dimension", "$value": "32px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.sm}" }
+      }
+    }
+  }
+}
