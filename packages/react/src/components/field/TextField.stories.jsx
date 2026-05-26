@@ -2,6 +2,8 @@ import { TextField } from "./TextField.jsx";
 import { PhoneField } from "./PhoneField.jsx";
 import { ZipField, ZIP_MASKS } from "./ZipField.jsx";
 import { CreditCardField } from "./CreditCardField.jsx";
+import { NumberField } from "./NumberField.jsx";
+import { TimeField } from "./TimeField.jsx";
 
 const meta = {
   title: "Components/Forms/Input Text",
@@ -273,6 +275,89 @@ export const CreditCard = {
           <CreditCardField label="Required" required hint="Required to complete your purchase." />
           <CreditCardField label="Error" defaultValue="1234" error="Enter a valid card number." />
           <CreditCardField label="Disabled" disabled />
+        </div>
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── Number ───────────────────────────────────────────────────────────────── */
+
+export const NumberInput = {
+  name: "Number",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)", maxWidth: 480 }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Basic</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <NumberField label="Quantity" hint="How many units?" min={1} max={99} defaultValue={1} />
+          <NumberField label="Price" hint="USD" min={0} step={0.01} defaultValue={9.99} />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>States</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <NumberField label="Default"  hint="Enter a number." min={0} />
+          <NumberField label="Required" hint="This field must be completed." min={1} required />
+          <NumberField label="Error"    defaultValue={-5} min={0} error="Value must be 0 or greater." />
+          <NumberField label="Disabled" defaultValue={42} disabled />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Sizes</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <NumberField size="comfortable" label="Quantity" min={1} defaultValue={1} />
+          <NumberField size="default"     label="Quantity" min={1} defaultValue={1} />
+          <NumberField size="compact"     label="Quantity" min={1} defaultValue={1} />
+        </div>
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── Time ─────────────────────────────────────────────────────────────────── */
+
+export const TimeInput = {
+  name: "Time",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)" }}>
+
+      <div>
+        <p style={LABEL_STYLE}>Basic</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap" }}>
+          <TimeField label="Start time" hint="HH:MM" defaultValue="09:00" />
+          <TimeField label="End time"   hint="HH:MM" defaultValue="17:00" />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>With range constraint</p>
+        <TimeField label="Appointment time" hint="Available 8 am – 6 pm." min="08:00" max="18:00" />
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>States</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <TimeField label="Default"  hint="Select a time." />
+          <TimeField label="Required" required />
+          <TimeField label="Error"    error="Select a valid time." />
+          <TimeField label="Disabled" defaultValue="09:00" disabled />
+        </div>
+      </div>
+
+      <div>
+        <p style={LABEL_STYLE}>Sizes</p>
+        <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <TimeField size="comfortable" label="Start time" defaultValue="09:00" />
+          <TimeField size="default"     label="Start time" defaultValue="09:00" />
+          <TimeField size="compact"     label="Start time" defaultValue="09:00" />
         </div>
       </div>
 

@@ -5,7 +5,7 @@
   --a1-field-height:         var(--component-field-default-height);
   --a1-field-padding-inline: var(--component-field-default-padding-inline);
   --a1-field-gap:            var(--component-field-default-gap);
-  --a1-field-border-radius:  var(--component-field-default-border-radius);
+  --a1-field-border-radius:  var(--base-radius-md);
   --a1-field-font-size:      var(--semantic-font-size-body-md);
   --a1-field-label-size:     var(--semantic-font-size-body-sm);
   --a1-field-label-weight:   var(--component-field-label-font-weight);
@@ -15,20 +15,16 @@
   --a1-field-accent-border-width:   var(--component-field-required-border-width);
   --a1-field-accent-compensation:   7px;
 
-  /* interaction */
+  /* interaction — hover/active/readonly values come from :root in color-scheme.css */
   --a1-field-background:            var(--semantic-color-surface-page);
   --a1-field-border-color:          var(--semantic-color-border-strong);
-  --a1-field-hover-background:      var(--component-field-hover-background);
-  --a1-field-hover-border-color:    var(--component-field-hover-border-color);
-  --a1-field-active-background:     var(--component-field-active-background);
-  --a1-field-active-border-color:   var(--component-field-active-border-color);
   --a1-field-focus-ring-color:      var(--component-field-focus-ring-color);
   --a1-field-focus-ring-width:      var(--component-field-focus-ring-width);
   --a1-field-focus-ring-offset:     var(--component-field-focus-ring-offset);
 
   display: flex;
   flex-direction: column;
-  gap: var(--a1-field-gap);
+  gap: 0;
 }
 
 /* ─── Sizes ────────────────────────────────────────────────────────────────── */
@@ -37,7 +33,7 @@
   --a1-field-height:         var(--component-field-comfortable-height);
   --a1-field-padding-inline: var(--component-field-comfortable-padding-inline);
   --a1-field-gap:            var(--component-field-comfortable-gap);
-  --a1-field-border-radius:  var(--component-field-comfortable-border-radius);
+  --a1-field-border-radius:  var(--base-radius-lg);
   --a1-field-label-size:     var(--semantic-font-size-body-md);
   --a1-field-message-size:   var(--semantic-font-size-body-sm);
   --a1-field-chevron-size:   24px;
@@ -68,7 +64,7 @@
   --a1-field-height:         var(--component-field-compact-height);
   --a1-field-padding-inline: var(--component-field-compact-padding-inline);
   --a1-field-gap:            var(--component-field-compact-gap);
-  --a1-field-border-radius:  var(--component-field-compact-border-radius);
+  --a1-field-border-radius:  var(--base-radius-sm);
   --a1-field-font-size:      var(--semantic-font-size-body-sm);
   --a1-field-label-size:     var(--semantic-font-size-body-xs);
   --a1-field-label-weight:   500;
@@ -96,6 +92,9 @@
   font-weight: var(--a1-field-label-weight);
   color: var(--semantic-color-text-default);
   line-height: var(--semantic-font-line-height-body);
+  /* Extend touch area downward so clicking in the gap between label and input
+     still activates the associated field (label is linked via htmlFor). */
+  padding-bottom: var(--a1-field-gap);
 }
 
 .a1-field__asterisk {
@@ -165,8 +164,8 @@
 }
 
 .a1-field__input:read-only:hover:not(:disabled):not(:focus) {
-  background: var(--component-field-read-only-background);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
 }
 
 /* ─── Active ───────────────────────────────────────────────────────────────── */
@@ -177,8 +176,8 @@
 }
 
 .a1-field__input:read-only:active:not(:disabled) {
-  background: var(--component-field-read-only-background);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
 }
 
 /* ─── Focus ────────────────────────────────────────────────────────────────── */
@@ -237,11 +236,37 @@
 /* ─── Read-only (input only) ─────────────────────────────────────────────── */
 
 .a1-field__input:read-only:not(:disabled) {
-  background: var(--component-field-read-only-background);
-  color: var(--component-field-read-only-text);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  color: var(--a1-field-read-only-text);
+  border-color: var(--a1-field-read-only-border-color);
   cursor: text;
   user-select: text;
+}
+
+/* ─── Number input — hide native spin buttons ────────────────────────────── */
+
+.a1-field__input[type="number"]::-webkit-inner-spin-button,
+.a1-field__input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.a1-field__input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ─── Date / time — native picker indicator ──────────────────────────────── */
+
+.a1-field__input[type="date"]::-webkit-calendar-picker-indicator,
+.a1-field__input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+.a1-field--disabled .a1-field__input[type="date"]::-webkit-calendar-picker-indicator,
+.a1-field--disabled .a1-field__input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.25;
+  cursor: not-allowed;
 }
 
 /* ─── Fit-content width (date, zip, and other fixed-width fields) ───────────── */
@@ -283,6 +308,7 @@
   caret-color: var(--semantic-color-text-default);
 }
 
+
 .a1-field__control:has(.a1-field__mask-overlay) .a1-field__select {
   color: transparent;
 }
@@ -296,6 +322,7 @@
 
 .a1-field__message {
   margin: 0;
+  margin-top: var(--a1-field-gap);
   font-family: var(--component-paragraph-font-family);
   font-size: var(--a1-field-message-size);
   line-height: var(--semantic-font-line-height-body);
@@ -321,13 +348,14 @@
 
 .a1-field--label-side .a1-field__label {
   padding-top: calc((var(--a1-field-height) - 1lh) / 2);
+  padding-bottom: 0;
 }
 
 .a1-field--label-side .a1-field__message {
   grid-column: 1;
   grid-row: 2;
-  /* Cancel the bottom half of the label's vertical-centering padding so the
-     hint sits close to the label text. Net gap = row-gap + base-spacing-2. */
+  /* Fine-tuned margin: overrides the base margin-top added for the above-label
+     layout. Net gap = row-gap + base-spacing-2 below the label text. */
   margin-top: calc((var(--a1-field-label-size) * 1.5 - var(--a1-field-height)) / 2 + var(--base-spacing-2));
 }
 
@@ -343,9 +371,10 @@
 
   .a1-field--label-side .a1-field__label {
     padding-top: 0;
+    padding-bottom: var(--a1-field-gap);
   }
 
   .a1-field--label-side .a1-field__message {
-    margin-top: 0;
+    margin-top: var(--a1-field-gap);
   }
 }

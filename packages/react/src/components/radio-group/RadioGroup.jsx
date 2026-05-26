@@ -2,11 +2,11 @@ import { useId, useState, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
-import "./checkbox-group.css";
+import "./radio-group.css";
 
 const SIZES = ["comfortable", "default", "compact"];
 
-export function CheckboxGroup({
+export function RadioGroup({
   label,
   hint,
   error,
@@ -17,7 +17,7 @@ export function CheckboxGroup({
   name,
   options      = [],
   value,
-  defaultValue,
+  defaultValue = null,
   onChange,
   id: providedId,
   className    = "",
@@ -31,24 +31,22 @@ export function CheckboxGroup({
 
   const resolvedSize = SIZES.includes(size) ? size : (ctx?.size ?? "default");
 
-  const [internalValue, setInternalValue] = useState(defaultValue ?? []);
-  const currentValue = value ?? internalValue;
+  const [internalValue, setInternalValue] = useState(defaultValue);
+  // value === undefined → uncontrolled; null → controlled with nothing selected
+  const currentValue = value !== undefined ? value : internalValue;
 
-  function handleChange(optionValue, checked) {
-    const next = checked
-      ? [...currentValue, optionValue]
-      : currentValue.filter(v => v !== optionValue);
-    if (value == null) setInternalValue(next);
-    onChange?.(next);
+  function handleChange(optionValue) {
+    if (value === undefined) setInternalValue(optionValue);
+    onChange?.(optionValue);
   }
 
   const classes = [
-    "a1-checkbox-group",
-    `a1-checkbox-group--${resolvedSize}`,
-    inline   && "a1-checkbox-group--inline",
-    error    && "a1-checkbox-group--error",
-    required && "a1-checkbox-group--required",
-    disabled && "a1-checkbox-group--disabled",
+    "a1-radio-group",
+    `a1-radio-group--${resolvedSize}`,
+    inline   && "a1-radio-group--inline",
+    error    && "a1-radio-group--error",
+    required && "a1-radio-group--required",
+    disabled && "a1-radio-group--disabled",
     className,
   ].filter(Boolean).join(" ");
 
@@ -57,11 +55,14 @@ export function CheckboxGroup({
 
   const requiredText = useLabel("field.required", "Required");
 
+  // Fall back to the group id so all radios share a name and behave as a group
+  const groupName = name ?? id;
+
   return (
     <fieldset className={classes} aria-describedby={describedBy} {...props}>
       {label && (
-        <legend className="a1-checkbox-group__legend">
-          <span className="a1-checkbox-group__legend-inner">
+        <legend className="a1-radio-group__legend">
+          <span className="a1-radio-group__legend-inner">
             {label}
             {required && resolvedSize === "comfortable" ? (
               <MessageBadge status="info" subtle>{requiredText}</MessageBadge>
@@ -72,13 +73,13 @@ export function CheckboxGroup({
         </legend>
       )}
       {hint && !error && (
-        <p className="a1-checkbox-group__message a1-checkbox-group__message--hint" id={hintId}>
+        <p className="a1-radio-group__message a1-radio-group__message--hint" id={hintId}>
           {hint}
         </p>
       )}
-      <div className="a1-checkbox-group__items">
+      <div className="a1-radio-group__items">
         {options.map((option) => {
-          const isChecked  = currentValue.includes(option.value);
+          const isChecked  = currentValue === option.value;
           const isDisabled = disabled || option.disabled;
           const itemId     = `${id}-${option.value}`;
 
@@ -86,24 +87,24 @@ export function CheckboxGroup({
             <label
               key={option.value}
               className={[
-                "a1-checkbox-item",
-                isDisabled && "a1-checkbox-item--disabled",
+                "a1-radio-item",
+                isDisabled && "a1-radio-item--disabled",
               ].filter(Boolean).join(" ")}
             >
               <input
-                type="checkbox"
+                type="radio"
                 id={itemId}
-                className="a1-checkbox-item__input"
-                name={name}
+                className="a1-radio-item__input"
+                name={groupName}
                 value={option.value}
                 checked={isChecked}
                 disabled={isDisabled}
-                onChange={(e) => handleChange(option.value, e.target.checked)}
+                onChange={() => handleChange(option.value)}
               />
-              <span className="a1-checkbox-item__content">
-                <span className="a1-checkbox-item__label">{option.label}</span>
+              <span className="a1-radio-item__content">
+                <span className="a1-radio-item__label">{option.label}</span>
                 {option.hint && (
-                  <span className="a1-checkbox-item__hint">{option.hint}</span>
+                  <span className="a1-radio-item__hint">{option.hint}</span>
                 )}
               </span>
             </label>
@@ -111,7 +112,7 @@ export function CheckboxGroup({
         })}
       </div>
       {error && (
-        <p className="a1-checkbox-group__message a1-checkbox-group__message--error" id={errorId} role="alert">
+        <p className="a1-radio-group__message a1-radio-group__message--error" id={errorId} role="alert">
           {error}
         </p>
       )}

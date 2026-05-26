@@ -51,7 +51,9 @@ export function PhoneField({
   function handleKeyDown(e) {
     if (e.key >= "0" && e.key <= "9") {
       e.preventDefault();
-      if (currentDigits.length < maxLen) updateDigits(currentDigits + e.key);
+      const { selectionStart, selectionEnd } = e.target;
+      const base = selectionStart !== selectionEnd ? "" : currentDigits;
+      if (base.length < maxLen) updateDigits(base + e.key);
     } else if (e.key === "Backspace" || e.key === "Delete") {
       e.preventDefault();
       const { selectionStart, selectionEnd } = e.target;
@@ -68,12 +70,14 @@ export function PhoneField({
   }
 
   function handleFocus(e) {
-    nextCursor.current = nextSlotIndex(currentDigits.length, mask);
+    const pos = nextSlotIndex(currentDigits.length, mask);
+    requestAnimationFrame(() => { inputRef.current?.setSelectionRange(pos, pos); });
     externalFocus?.(e);
   }
 
   function handleClick(e) {
-    nextCursor.current = nextSlotIndex(currentDigits.length, mask);
+    const pos = nextSlotIndex(currentDigits.length, mask);
+    requestAnimationFrame(() => { inputRef.current?.setSelectionRange(pos, pos); });
     externalClick?.(e);
   }
 

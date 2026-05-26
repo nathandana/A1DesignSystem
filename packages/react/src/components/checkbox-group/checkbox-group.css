@@ -43,6 +43,10 @@
   --a1-cb-msg-size:    var(--semantic-font-size-body-sm);
 }
 
+.a1-checkbox-group--comfortable .a1-checkbox-item__label {
+  font-weight: var(--base-font-weight-medium);
+}
+
 @media (--bp-md-up) {
   .a1-checkbox-group--comfortable {
     --a1-cb-legend-size: var(--semantic-font-size-body-lg);
@@ -180,15 +184,25 @@
     background-color   var(--semantic-motion-duration-fast);
 }
 
+/* Checked row — always show a tinted background */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):has(.a1-checkbox-item__input:checked) {
+  background-color: var(--a1-field-hover-background);
+}
+
 /* Hover — entire row background, triggered anywhere on the label */
 .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover {
-  background-color: var(--component-field-hover-background);
+  background-color: var(--a1-field-hover-background);
+}
+
+/* Checked row on hover — step one shade deeper/lighter */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(.a1-checkbox-item__input:checked) {
+  background-color: var(--a1-field-active-background);
 }
 
 /* Also darken the input border on row hover (unchecked/non-indeterminate only) */
 .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover
   .a1-checkbox-item__input:not(:checked):not(:indeterminate) {
-  border-color: var(--component-field-hover-border-color);
+  border-color: var(--a1-field-hover-border-color);
 }
 
 /* Focus */
@@ -228,6 +242,47 @@
 .a1-checkbox-item__input:checked:disabled {
   background-color: var(--semantic-color-border-default);
   border-color: var(--semantic-color-border-default);
+}
+
+/* ─── Inline layout ───────────────────────────────────────────────────────── */
+
+.a1-checkbox-group--inline .a1-checkbox-group__items {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--a1-cb-gap);
+}
+
+/* Each inline item becomes a bordered pill — provides visual separation */
+.a1-checkbox-group--inline .a1-checkbox-item {
+  margin-inline: 0;
+  border: var(--component-field-border-width) solid var(--semantic-color-border-subtle);
+}
+
+/* Unchecked inline hover — darken border */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover {
+  border-color: var(--a1-field-hover-border-color);
+}
+
+/* Checked inline item — accent border + background tint */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):has(.a1-checkbox-item__input:checked) {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* Checked inline hover — keep accent border, deepen background */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(.a1-checkbox-item__input:checked) {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* Disabled inline item */
+.a1-checkbox-group--inline .a1-checkbox-item--disabled {
+  border-color: var(--semantic-color-border-subtle);
+  opacity: 0.6;
+}
+
+/* Inline error — left accent doesn't suit a row layout; just use input borders */
+.a1-checkbox-group--inline.a1-checkbox-group--error .a1-checkbox-group__items {
+  border-left: none;
+  padding-left: 0;
 }
 
 /* ─── Error state ─────────────────────────────────────────────────────────── */

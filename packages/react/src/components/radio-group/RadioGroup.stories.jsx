@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { CheckboxGroup } from "./CheckboxGroup.jsx";
+import { RadioGroup } from "./RadioGroup.jsx";
 import { Fieldset } from "../fieldset/Fieldset.jsx";
 import { TextField } from "../field/TextField.jsx";
 import { ButtonContainer } from "../button-container/ButtonContainer.jsx";
 import { Button } from "../button/Button.jsx";
 
 const meta = {
-  title: "Components/Forms/Checkbox Group",
-  component: CheckboxGroup,
+  title: "Components/Forms/Radio Group",
+  component: RadioGroup,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
   args: {
-    label: "Preferences",
+    label: "Options",
     size: "default",
     required: false,
     disabled: false,
@@ -43,11 +43,11 @@ const LABEL = {
   marginBottom: "var(--base-spacing-12)",
 };
 
-const CONTACT_OPTIONS = [
-  { value: "email", label: "Email", hint: "Daily digest at 9 am" },
-  { value: "sms",   label: "SMS",   hint: "Standard rates may apply" },
-  { value: "push",  label: "Push notifications" },
-  { value: "post",  label: "Post mail", disabled: true },
+const PLAN_OPTIONS = [
+  { value: "starter",      label: "Starter",      hint: "Up to 3 users · 5 GB storage" },
+  { value: "professional", label: "Professional",  hint: "Up to 25 users · 50 GB storage" },
+  { value: "enterprise",   label: "Enterprise",    hint: "Unlimited users · 1 TB storage" },
+  { value: "legacy",       label: "Legacy plan",   disabled: true },
 ];
 
 const SIMPLE_OPTIONS = [
@@ -61,11 +61,11 @@ const SIMPLE_OPTIONS = [
 export const Configurable = {
   args: {
     options: SIMPLE_OPTIONS,
-    defaultValue: ["a"],
+    defaultValue: "a",
   },
   render: (args) => (
     <div style={{ maxWidth: 400 }}>
-      <CheckboxGroup {...args} />
+      <RadioGroup {...args} />
     </div>
   ),
 };
@@ -80,27 +80,26 @@ export const Options = {
 
       <div>
         <p style={LABEL}>With hints</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Notification channels"
-          hint="Select how you'd like to be contacted."
-          defaultValue={["email"]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          hint="Choose the plan that fits your team."
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>No hints</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Dietary requirements"
-          defaultValue={[]}
+          label="Delivery method"
+          defaultValue="standard"
           options={[
-            { value: "veg",    label: "Vegetarian" },
-            { value: "vegan",  label: "Vegan" },
-            { value: "gf",     label: "Gluten-free" },
-            { value: "halal",  label: "Halal" },
-            { value: "kosher", label: "Kosher" },
+            { value: "standard",  label: "Standard shipping" },
+            { value: "express",   label: "Express shipping" },
+            { value: "overnight", label: "Overnight shipping" },
+            { value: "pickup",    label: "In-store pickup" },
           ]}
         />
       </div>
@@ -118,47 +117,45 @@ export const States = {
 
       <div>
         <p style={LABEL}>Default</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Notification channels"
-          hint="Select all that apply."
-          defaultValue={["email"]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          hint="Choose the plan that fits your team."
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>Required</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Notification channels"
-          hint="You must select at least one."
+          label="Subscription plan"
+          hint="You must select a plan to continue."
           required
-          defaultValue={[]}
-          options={CONTACT_OPTIONS}
+          options={PLAN_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>Error</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Notification channels"
-          error="Select at least one notification method."
-          defaultValue={[]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          error="Select a plan to continue."
+          options={PLAN_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>Disabled</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
-          label="Notification channels"
-          hint="Not available in your current plan."
+          label="Subscription plan"
+          hint="Plan changes are locked during your trial."
           disabled
-          defaultValue={["email"]}
-          options={CONTACT_OPTIONS}
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
         />
       </div>
 
@@ -176,25 +173,23 @@ export const Sizes = {
         <div key={sz}>
           <p style={LABEL}>{sz}</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-20)" }}>
-            <CheckboxGroup
+            <RadioGroup
               size={sz}
-              label="Notification channels"
-              hint="Select all that apply."
-              defaultValue={["email"]}
-              options={CONTACT_OPTIONS}
+              label="Subscription plan"
+              hint="Choose the plan that fits your team."
+              defaultValue="professional"
+              options={PLAN_OPTIONS}
             />
-            <CheckboxGroup
+            <RadioGroup
               size={sz}
-              label="Notification channels"
+              label="Subscription plan"
               required
-              defaultValue={[]}
               options={SIMPLE_OPTIONS}
             />
-            <CheckboxGroup
+            <RadioGroup
               size={sz}
-              label="Notification channels"
-              error="Select at least one option."
-              defaultValue={[]}
+              label="Subscription plan"
+              error="Select a plan to continue."
               options={SIMPLE_OPTIONS}
             />
           </div>
@@ -213,55 +208,61 @@ export const Inline = {
 
       <div>
         <p style={LABEL}>Default</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
           inline
-          label="Dietary requirements"
-          hint="Select all that apply."
-          defaultValue={["veg"]}
+          label="Delivery method"
+          defaultValue="standard"
           options={[
-            { value: "veg",    label: "Vegetarian" },
-            { value: "vegan",  label: "Vegan" },
-            { value: "gf",     label: "Gluten-free" },
-            { value: "halal",  label: "Halal" },
-            { value: "kosher", label: "Kosher" },
+            { value: "standard",  label: "Standard" },
+            { value: "express",   label: "Express" },
+            { value: "overnight", label: "Overnight" },
           ]}
         />
       </div>
 
       <div>
+        <p style={LABEL}>With hints</p>
+        <RadioGroup
+          {...args}
+          inline
+          label="Subscription plan"
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
+        />
+      </div>
+
+      <div>
         <p style={LABEL}>Required</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
           inline
           required
-          label="Notification channels"
-          defaultValue={[]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          options={SIMPLE_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>Error</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
           inline
-          label="Notification channels"
-          error="Select at least one notification method."
-          defaultValue={[]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          error="Select a plan to continue."
+          options={SIMPLE_OPTIONS}
         />
       </div>
 
       <div>
         <p style={LABEL}>Disabled</p>
-        <CheckboxGroup
+        <RadioGroup
           {...args}
           inline
           disabled
-          label="Notification channels"
-          defaultValue={["email"]}
-          options={CONTACT_OPTIONS}
+          label="Subscription plan"
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
         />
       </div>
 
@@ -271,15 +272,15 @@ export const Inline = {
 
 /* ── In a form ────────────────────────────────────────────────────────────── */
 
-function ContactForm() {
-  const [channels, setChannels] = useState(["email"]);
+function PlanForm() {
+  const [plan, setPlan] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (channels.length === 0) {
-      setError("Select at least one notification method.");
+    if (!plan) {
+      setError("Select a plan to continue.");
       return;
     }
     setError(null);
@@ -288,29 +289,29 @@ function ContactForm() {
 
   return submitted ? (
     <p style={{ fontFamily: "var(--component-paragraph-font-family)", color: "var(--semantic-color-text-default)" }}>
-      Saved! Notifications via: {channels.join(", ")}.{" "}
+      Signed up for: {plan}.{" "}
       <button
         style={{ background: "none", border: "none", padding: 0, color: "inherit", textDecoration: "underline", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit" }}
-        onClick={() => setSubmitted(false)}
+        onClick={() => { setSubmitted(false); setPlan(null); }}
       >
-        Edit
+        Change
       </button>
     </p>
   ) : (
-    <form style={{ maxWidth: 560 }} onSubmit={handleSubmit} onReset={() => { setChannels(["email"]); setError(null); }}>
-      <Fieldset legend="Notification preferences" markRequired>
-        <TextField label="Email address" type="email" autoComplete="email" required />
-        <CheckboxGroup
-          label="Notification channels"
-          hint="We'll only contact you through your chosen channels."
+    <form style={{ maxWidth: 560 }} onSubmit={handleSubmit} onReset={() => { setPlan(null); setError(null); }}>
+      <Fieldset legend="Sign up" markRequired>
+        <TextField label="Full name" autoComplete="name" required />
+        <RadioGroup
+          label="Subscription plan"
+          hint="You can change your plan at any time."
           error={error}
           required
-          value={channels}
-          onChange={(v) => { setChannels(v); if (v.length > 0) setError(null); }}
-          options={CONTACT_OPTIONS}
+          value={plan}
+          onChange={(v) => { setPlan(v); if (v) setError(null); }}
+          options={PLAN_OPTIONS}
         />
         <ButtonContainer align="start">
-          <Button type="submit" variant="primary">Save preferences</Button>
+          <Button type="submit" variant="primary">Continue</Button>
           <Button type="reset" variant="secondary">Reset</Button>
         </ButtonContainer>
       </Fieldset>
@@ -321,5 +322,5 @@ function ContactForm() {
 export const InAForm = {
   name: "In a form",
   parameters: { controls: { include: [] } },
-  render: () => <ContactForm />,
+  render: () => <PlanForm />,
 };

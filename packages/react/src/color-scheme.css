@@ -1,6 +1,21 @@
 /* Base design system color scheme switching — not a theme.
    Edit this file directly; do not generate from system/themes/. */
 
+/* ─── Form field interaction tokens — light mode defaults ────────────────────
+   Single source of truth for hover, active, and read-only states across all
+   form field components. Overridden in every dark-mode context below.
+   Components reference --a1-field-* directly; never --component-field-*. */
+
+:root {
+  --a1-field-hover-background:       var(--base-color-neutral-50);
+  --a1-field-hover-border-color:     var(--base-color-neutral-600);
+  --a1-field-active-background:      var(--base-color-neutral-100);
+  --a1-field-active-border-color:    var(--base-color-neutral-700);
+  --a1-field-read-only-background:   var(--base-color-info-50);
+  --a1-field-read-only-border-color: var(--base-color-info-200);
+  --a1-field-read-only-text:         var(--base-color-info-1000);
+}
+
 /* ─── System dark mode (OS-level preference) ─────────────────────────────────
    Activates when the OS prefers dark and no explicit class overrides it.
    Explicit .a1-theme-dark and .a1-theme-light classes are defined below with
@@ -67,6 +82,13 @@
     --component-button-tertiary-border:             var(--base-color-accent-900);
     --component-button-tertiary-border-hover:       var(--base-color-accent-800);
     --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+    --a1-field-hover-background:       var(--base-color-neutral-800);
+    --a1-field-hover-border-color:     var(--base-color-neutral-300);
+    --a1-field-active-background:      var(--base-color-neutral-700);
+    --a1-field-active-border-color:    var(--base-color-neutral-200);
+    --a1-field-read-only-background:   var(--base-color-info-800);
+    --a1-field-read-only-border-color: var(--base-color-info-600);
+    --a1-field-read-only-text:         var(--base-color-info-50);
   }
 
   /* .a1-inverse inside a system-dark page inverts back to light */
@@ -81,6 +103,13 @@
     --semantic-color-border-subtle:  var(--base-color-neutral-200);
     --semantic-color-border-default: var(--base-color-neutral-300);
     --semantic-color-border-strong:  var(--base-color-neutral-500);
+    --a1-field-hover-background:       var(--base-color-neutral-50);
+    --a1-field-hover-border-color:     var(--base-color-neutral-600);
+    --a1-field-active-background:      var(--base-color-neutral-100);
+    --a1-field-active-border-color:    var(--base-color-neutral-700);
+    --a1-field-read-only-background:   var(--base-color-info-50);
+    --a1-field-read-only-border-color: var(--base-color-info-200);
+    --a1-field-read-only-text:         var(--base-color-info-1000);
   }
 }
 
@@ -149,6 +178,13 @@
   --component-button-tertiary-border:             var(--base-color-accent-900);
   --component-button-tertiary-border-hover:       var(--base-color-accent-800);
   --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+  --a1-field-hover-background:       var(--base-color-neutral-800);
+  --a1-field-hover-border-color:     var(--base-color-neutral-300);
+  --a1-field-active-background:      var(--base-color-neutral-700);
+  --a1-field-active-border-color:    var(--base-color-neutral-200);
+  --a1-field-read-only-background:   var(--base-color-info-800);
+  --a1-field-read-only-border-color: var(--base-color-info-600);
+  --a1-field-read-only-text:         var(--base-color-info-50);
 }
 
 /* Light restore inside a dark context (.a1-inverse or .a1-theme-light nested under .a1-theme-dark) */
@@ -213,6 +249,13 @@
   --component-button-tertiary-border:             var(--base-color-accent-0);
   --component-button-tertiary-border-hover:       var(--base-color-accent-50);
   --component-button-tertiary-border-pressed:     var(--base-color-accent-100);
+  --a1-field-hover-background:       var(--base-color-neutral-50);
+  --a1-field-hover-border-color:     var(--base-color-neutral-600);
+  --a1-field-active-background:      var(--base-color-neutral-100);
+  --a1-field-active-border-color:    var(--base-color-neutral-700);
+  --a1-field-read-only-background:   var(--base-color-info-50);
+  --a1-field-read-only-border-color: var(--base-color-info-200);
+  --a1-field-read-only-text:         var(--base-color-info-1000);
 }
 
 .a1-theme-dark .a1-notification--default,
@@ -291,6 +334,13 @@
   --component-button-tertiary-border:             var(--base-color-accent-0);
   --component-button-tertiary-border-hover:       var(--base-color-accent-50);
   --component-button-tertiary-border-pressed:     var(--base-color-accent-100);
+  --a1-field-hover-background:       var(--base-color-neutral-50);
+  --a1-field-hover-border-color:     var(--base-color-neutral-600);
+  --a1-field-active-background:      var(--base-color-neutral-100);
+  --a1-field-active-border-color:    var(--base-color-neutral-700);
+  --a1-field-read-only-background:   var(--base-color-info-50);
+  --a1-field-read-only-border-color: var(--base-color-info-200);
+  --a1-field-read-only-text:         var(--base-color-info-1000);
 }
 
 /* ─── Reduced motion ─────────────────────────────────────────────────────────

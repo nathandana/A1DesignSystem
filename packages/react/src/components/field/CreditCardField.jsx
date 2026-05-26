@@ -67,7 +67,9 @@ export function CreditCardField({
   function handleKeyDown(e) {
     if (e.key >= "0" && e.key <= "9") {
       e.preventDefault();
-      if (trimmed.length < maxLen) updateDigits(currentDigits.slice(0, maxLen) + e.key);
+      const { selectionStart, selectionEnd } = e.target;
+      const base = selectionStart !== selectionEnd ? "" : currentDigits.slice(0, maxLen);
+      if (base.length < maxLen) updateDigits(base + e.key);
     } else if (e.key === "Backspace" || e.key === "Delete") {
       e.preventDefault();
       const { selectionStart, selectionEnd } = e.target;
@@ -83,12 +85,14 @@ export function CreditCardField({
   }
 
   function handleFocus(e) {
-    nextCursor.current = nextSlotIndex(trimmed.length, mask);
+    const pos = nextSlotIndex(trimmed.length, mask);
+    requestAnimationFrame(() => { inputRef.current?.setSelectionRange(pos, pos); });
     externalFocus?.(e);
   }
 
   function handleClick(e) {
-    nextCursor.current = nextSlotIndex(trimmed.length, mask);
+    const pos = nextSlotIndex(trimmed.length, mask);
+    requestAnimationFrame(() => { inputRef.current?.setSelectionRange(pos, pos); });
     externalClick?.(e);
   }
 

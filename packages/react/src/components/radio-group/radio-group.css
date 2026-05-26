@@ -1,0 +1,268 @@
+/* ─── RadioGroup ───────────────────────────────────────────────────────────── */
+
+.a1-radio-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+
+  /* Size tokens — default */
+  --a1-rb-size:          16px;
+  --a1-rb-gap:           8px;     /* horizontal gap: circle ↔ text */
+  --a1-rb-item-gap:      2px;     /* gap between items */
+  --a1-rb-group-gap:     8px;     /* vertical gap between legend/hint and message */
+  --a1-rb-items-top-gap: 12px;    /* extra space between legend/hint and the items stack */
+  --a1-rb-input-nudge:   4px;     /* top margin aligning circle center with label cap-height */
+  --a1-rb-row-py:        4px;     /* vertical padding on each item row */
+  --a1-rb-row-px:        6px;     /* horizontal padding on each item row */
+  --a1-rb-legend-size:  var(--semantic-font-size-body-sm);
+  --a1-rb-label-size:   var(--semantic-font-size-body-md);
+  --a1-rb-hint-size:    var(--semantic-font-size-body-xs);
+  --a1-rb-msg-size:     var(--semantic-font-size-body-xs);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-rb-group-gap);
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+
+.a1-radio-group--comfortable {
+  --a1-rb-size:          20px;
+  --a1-rb-gap:           10px;
+  --a1-rb-item-gap:      2px;
+  --a1-rb-group-gap:     10px;
+  --a1-rb-items-top-gap: 16px;
+  --a1-rb-input-nudge:   2px;
+  --a1-rb-row-py:        6px;
+  --a1-rb-row-px:        8px;
+  --a1-rb-legend-size: var(--semantic-font-size-body-md);
+  --a1-rb-label-size:  var(--semantic-font-size-body-md);
+  --a1-rb-hint-size:   var(--semantic-font-size-body-sm);
+  --a1-rb-msg-size:    var(--semantic-font-size-body-sm);
+}
+
+.a1-radio-group--comfortable .a1-radio-item__label {
+  font-weight: var(--base-font-weight-medium);
+}
+
+@media (--bp-md-up) {
+  .a1-radio-group--comfortable {
+    --a1-rb-legend-size: var(--semantic-font-size-body-lg);
+    --a1-rb-label-size:  var(--semantic-font-size-body-lg);
+    --a1-rb-size:        22px;
+    --a1-rb-input-nudge: 2px;
+  }
+}
+
+.a1-radio-group--compact {
+  --a1-rb-size:          14px;
+  --a1-rb-gap:           6px;
+  --a1-rb-item-gap:      2px;
+  --a1-rb-group-gap:     4px;
+  --a1-rb-items-top-gap: 8px;
+  --a1-rb-input-nudge:   3px;
+  --a1-rb-row-py:        2px;
+  --a1-rb-row-px:        4px;
+  --a1-rb-legend-size: var(--semantic-font-size-body-xs);
+  --a1-rb-label-size:  var(--semantic-font-size-body-sm);
+  --a1-rb-hint-size:   var(--semantic-font-size-body-xs);
+  --a1-rb-msg-size:    var(--semantic-font-size-body-xs);
+}
+
+/* ─── Legend ──────────────────────────────────────────────────────────────── */
+
+.a1-radio-group__legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-rb-legend-size);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-radio-group--disabled .a1-radio-group__legend {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-radio-group__legend-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+}
+
+/* ─── Group hint / error message ──────────────────────────────────────────── */
+
+.a1-radio-group__message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-rb-msg-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-radio-group__message--hint  { color: var(--semantic-color-text-muted); }
+.a1-radio-group__message--error { color: var(--semantic-color-status-error-background); }
+
+/* ─── Items stack ─────────────────────────────────────────────────────────── */
+
+.a1-radio-group__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-rb-item-gap);
+  margin-top: var(--a1-rb-items-top-gap);
+}
+
+/* ─── Individual item ─────────────────────────────────────────────────────── */
+
+.a1-radio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--a1-rb-gap);
+  padding: var(--a1-rb-row-py) var(--a1-rb-row-px);
+  margin-inline: calc(-1 * var(--a1-rb-row-px));
+  border-radius: var(--base-radius-md);
+  cursor: pointer;
+  transition: background-color var(--semantic-motion-duration-fast);
+}
+
+.a1-radio-item--disabled {
+  cursor: not-allowed;
+}
+
+.a1-radio-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.a1-radio-item__label {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-rb-label-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* Restore default color when the item is selected */
+.a1-radio-item:has(.a1-radio-item__input:checked) .a1-radio-item__label {
+  color: var(--semantic-color-text-default);
+}
+
+/* Disabled always stays muted regardless of checked state */
+.a1-radio-item--disabled .a1-radio-item__label {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-radio-item__hint {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-rb-hint-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ─── Radio input ─────────────────────────────────────────────────────────── */
+
+.a1-radio-item__input {
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+  width: var(--a1-rb-size);
+  height: var(--a1-rb-size);
+  margin-top: var(--a1-rb-input-nudge);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: 50%;
+  background-color: var(--semantic-color-surface-page);
+  cursor: pointer;
+  transition:
+    border-color     var(--semantic-motion-duration-fast),
+    background-color var(--semantic-motion-duration-fast);
+}
+
+/* Selected row — tinted background, no further interaction */
+.a1-radio-item:not(.a1-radio-item--disabled):has(.a1-radio-item__input:checked) {
+  background-color: var(--a1-field-hover-background);
+  cursor: default;
+}
+
+.a1-radio-item:not(.a1-radio-item--disabled):has(.a1-radio-item__input:checked)
+  .a1-radio-item__input {
+  cursor: default;
+}
+
+/* Hover — entire row background (unselected only) */
+.a1-radio-item:not(.a1-radio-item--disabled):not(:has(.a1-radio-item__input:checked)):hover {
+  background-color: var(--a1-field-hover-background);
+}
+
+/* Darken the input border on row hover (unselected only) */
+.a1-radio-item:not(.a1-radio-item--disabled):not(:has(.a1-radio-item__input:checked)):hover
+  .a1-radio-item__input {
+  border-color: var(--a1-field-hover-border-color);
+}
+
+/* Focus */
+.a1-radio-item__input:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+/* Selected */
+.a1-radio-item__input:checked {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='5' fill='white'/%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+}
+
+/* Disabled (unselected) */
+.a1-radio-item__input:disabled {
+  background-color: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+/* Disabled + selected */
+.a1-radio-item__input:checked:disabled {
+  background-color: var(--semantic-color-border-default);
+  border-color: var(--semantic-color-border-default);
+}
+
+/* ─── Inline layout ───────────────────────────────────────────────────────── */
+
+.a1-radio-group--inline .a1-radio-group__items {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--a1-rb-gap);
+}
+
+.a1-radio-group--inline .a1-radio-item {
+  margin-inline: 0;
+}
+
+/* Inline error — left accent doesn't suit a row layout */
+.a1-radio-group--inline.a1-radio-group--error .a1-radio-group__items {
+  border-left: none;
+  padding-left: 0;
+}
+
+/* ─── Error state ─────────────────────────────────────────────────────────── */
+
+.a1-radio-group--error .a1-radio-group__items {
+  border-left: 3px solid var(--semantic-color-status-error-background);
+  padding-left: var(--base-spacing-12);
+}
+
+/* Unselected items get a red border */
+.a1-radio-group--error .a1-radio-item__input:not(:checked):not(:disabled) {
+  border-color: var(--semantic-color-status-error-border);
+}
+
+/* Bolder error message */
+.a1-radio-group__message--error {
+  font-weight: 600;
+}

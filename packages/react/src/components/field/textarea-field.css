@@ -49,8 +49,8 @@
 }
 
 .a1-field__textarea:read-only:hover:not(:disabled):not(:focus) {
-  background: var(--component-field-read-only-background);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
 }
 
 /* ─── Active ─────────────────────────────────────────────────────────────── */
@@ -61,8 +61,8 @@
 }
 
 .a1-field__textarea:read-only:active:not(:disabled) {
-  background: var(--component-field-read-only-background);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
 }
 
 /* ─── Focus ──────────────────────────────────────────────────────────────── */
@@ -113,9 +113,9 @@
 /* ─── Read-only ──────────────────────────────────────────────────────────── */
 
 .a1-field__textarea:read-only:not(:disabled) {
-  background: var(--component-field-read-only-background);
-  color: var(--component-field-read-only-text);
-  border-color: var(--component-field-read-only-border-color);
+  background: var(--a1-field-read-only-background);
+  color: var(--a1-field-read-only-text);
+  border-color: var(--a1-field-read-only-border-color);
   cursor: text;
   user-select: text;
   resize: none;
@@ -127,6 +127,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--base-spacing-8);
+  margin-top: var(--a1-field-gap);
 }
 
 .a1-field__footer-message {
@@ -166,16 +167,19 @@
  */
 .a1-field--label-side:has(.a1-field__textarea) .a1-field__label {
   padding-top: var(--a1-textarea-padding-block);
+  padding-bottom: 0;
 }
 
 /* Place the footer under the textarea (column 2) instead of under the label */
 .a1-field--label-side .a1-field__footer {
   grid-column: 2;
   grid-row: 2;
+  margin-top: 0;
 }
 
 @media (--bp-sm-down) {
   .a1-field--label-side:has(.a1-field__textarea) .a1-field__label {
     padding-top: 0;
+    padding-bottom: var(--a1-field-gap);
   }
 }
