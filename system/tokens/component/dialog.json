@@ -6,7 +6,8 @@
       "borderWidth":  { "$type": "dimension", "$value": "{base.spacing.1}" },
       "shadow":             { "$type": "shadow",    "$value": "{semantic.shadow.xl}" },
       "closeOffset":        { "$value": "-4px" },
-      "footerBorderWidth":  { "$type": "dimension", "$value": "{base.spacing.1}" }
+      "footerBorderWidth":  { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "width":              { "$type": "dimension", "$value": "560px" }
     }
   }
 }

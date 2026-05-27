@@ -1,0 +1,10 @@
+{
+  "component": {
+    "divider": {
+      "sizeXs": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "sizeSm": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "sizeMd": { "$type": "dimension", "$value": "3px" },
+      "sizeLg": { "$type": "dimension", "$value": "{base.spacing.4}" }
+    }
+  }
+}

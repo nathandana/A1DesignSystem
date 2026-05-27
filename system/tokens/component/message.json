@@ -12,13 +12,17 @@
         "dismissSize":     { "$type": "dimension", "$value": "{base.spacing.24}" },
         "dismissOffset":   { "$value": "-2px" },
         "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
-        "focusRingOffset": { "$type": "dimension", "$value": "1px" }
+        "focusRingOffset": { "$type": "dimension", "$value": "1px" },
+        "systemMaxWidth":  { "$type": "dimension", "$value": "1280px" }
       },
       "badge": {
         "paddingBlock":   { "$type": "dimension", "$value": "{base.spacing.4}" },
-        "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.8}" },
         "borderRadius":   { "$type": "dimension", "$value": "{base.radius.control}" },
-        "fontWeight":     { "$type": "number", "$value": 500 }
+        "fontWeight":     { "$type": "number", "$value": 500 },
+        "borderWidth":    { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "lineHeight":     { "$value": "1" },
+        "iconSize":       { "$value": "1em" }
       },
       "emptyState": {
         "iconSizePage":          { "$type": "dimension", "$value": "48px" },

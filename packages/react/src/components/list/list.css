@@ -1,0 +1,135 @@
+/* ── Container ──────────────────────────────────────────────────────────────── */
+
+.a1-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-list-size, var(--semantic-font-size-body-md));
+  font-weight: var(--component-paragraph-font-weight);
+  line-height: var(--component-paragraph-font-line-height);
+  color: var(--a1-list-color, var(--semantic-color-text-default));
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-list-gap, var(--base-spacing-4));
+}
+
+/* ── Size scale ─────────────────────────────────────────────────────────────── */
+
+.a1-list--xs { --a1-list-size: var(--semantic-font-size-body-xs); --a1-list-gap: var(--base-spacing-2); }
+.a1-list--sm { --a1-list-size: var(--semantic-font-size-body-sm); --a1-list-gap: var(--base-spacing-2); }
+.a1-list--md { --a1-list-size: var(--semantic-font-size-body-md); --a1-list-gap: var(--base-spacing-4); }
+.a1-list--lg { --a1-list-size: var(--semantic-font-size-body-lg); --a1-list-gap: var(--base-spacing-6); }
+.a1-list--xl { --a1-list-size: var(--semantic-font-size-body-xl); --a1-list-gap: var(--base-spacing-8); }
+
+/* ── Color ──────────────────────────────────────────────────────────────────── */
+
+.a1-list--muted { --a1-list-color: var(--semantic-color-text-muted); }
+
+/* ── Item ───────────────────────────────────────────────────────────────────── */
+
+.a1-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.a1-list-item__marker {
+  flex-shrink: 0;
+}
+
+.a1-list-item__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Nested list: add top breathing room when a list follows text inside an item */
+.a1-list-item__content > .a1-list {
+  margin-top: var(--a1-list-gap, var(--base-spacing-4));
+}
+
+/* ── Unordered — bullet hierarchy ───────────────────────────────────────────── */
+
+/*
+ * Direct-child selectors scope each level's marker width to its own items only,
+ * preventing ordered-list counter styles from bleeding into nested unordered lists.
+ *
+ * margin-top positions the bullet at the cap-height of the first text line.
+ * For line-height 1.5: half-leading = 0.25em above em-square top;
+ * cap-height midpoint ≈ 0.35em into em-square → center at ~0.60em from line top.
+ * margin-top = center - half-bullet-height = 0.60em - 0.20em = 0.40em.
+ */
+
+/* Level 1 — filled disc */
+.a1-list--unordered > .a1-list-item > .a1-list-item__marker {
+  width: 1em;
+}
+
+.a1-list--unordered > .a1-list-item > .a1-list-item__marker::before {
+  content: "";
+  display: block;
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.65;
+  margin-top: 0.38em;
+}
+
+/* Level 2 — open circle */
+.a1-list--unordered .a1-list--unordered > .a1-list-item > .a1-list-item__marker::before {
+  background: transparent;
+  border: 0.09em solid currentColor;
+  opacity: 0.65;
+}
+
+/* Level 3 — filled square */
+.a1-list--unordered .a1-list--unordered .a1-list--unordered > .a1-list-item > .a1-list-item__marker::before {
+  background: currentColor;
+  border: none;
+  border-radius: 0;
+  opacity: 0.65;
+}
+
+/* Level 4+ — bordered square */
+.a1-list--unordered .a1-list--unordered .a1-list--unordered .a1-list--unordered > .a1-list-item > .a1-list-item__marker::before {
+  background: transparent;
+  border: 0.09em solid currentColor;
+  border-radius: 0;
+  opacity: 0.65;
+}
+
+/* ── Ordered — CSS counter ──────────────────────────────────────────────────── */
+
+.a1-list--ordered {
+  counter-reset: a1-list;
+}
+
+/* Direct-child selector: only increment items that directly belong to this ordered list */
+.a1-list--ordered > .a1-list-item {
+  counter-increment: a1-list;
+}
+
+.a1-list--ordered > .a1-list-item > .a1-list-item__marker {
+  min-width: 1.5em;
+  text-align: right;
+  color: var(--semantic-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.a1-list--ordered > .a1-list-item > .a1-list-item__marker::before {
+  content: counter(a1-list) ".";
+}
+
+/* ── Icon ───────────────────────────────────────────────────────────────────── */
+
+/*
+ * margin-top aligns the icon's optical center with the cap-height of the first
+ * text line, matching the disc bullet position. Material Symbols glyphs sit
+ * centrally within the em square, so offset = half-leading = ~0.25em.
+ */
+.a1-list--icon .a1-list-item__marker {
+  font-size: 1em;
+  color: var(--semantic-color-text-accent);
+  margin-top: 0.25em;
+}

@@ -1,0 +1,42 @@
+{
+  "component": {
+    "switch": {
+      "trackWidth": { "$type": "dimension", "$value": "{base.spacing.40}" },
+      "trackHeight": { "$type": "dimension", "$value": "22px" },
+      "thumbSize": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "gap": { "$type": "dimension", "$value": "3px" },
+      "rowGap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "contentGap": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "groupGap": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "thumbShadow": { "$type": "shadow", "$value": "{semantic.shadow.sm}" },
+      "messageErrorFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+      "accessibleIconSize": { "$value": "60%" },
+
+      "comfortable": {
+        "trackWidth": { "$type": "dimension", "$value": "56px" },
+        "trackHeight": { "$type": "dimension", "$value": "28px" },
+        "thumbSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "gap": { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "rowGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "contentGap": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "groupGap": { "$type": "dimension", "$value": "{base.spacing.6}" }
+      },
+
+      "compact": {
+        "trackWidth": { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "trackHeight": { "$type": "dimension", "$value": "18px" },
+        "thumbSize": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "gap": { "$type": "dimension", "$value": "3px" },
+        "rowGap": { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "contentGap": { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "groupGap": { "$type": "dimension", "$value": "{base.spacing.2}" }
+      }
+    }
+  }
+}

@@ -1,0 +1,304 @@
+/* ─── CheckboxGroup ───────────────────────────────────────────────────────── */
+
+.a1-checkbox-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+
+  /* Size tokens — default */
+  --a1-cb-size:          var(--component-checkbox-group-box-size);
+  --a1-cb-radius:        var(--base-radius-sm);
+  --a1-cb-gap:           var(--component-checkbox-group-gap);     /* horizontal gap: box ↔ text */
+  --a1-cb-item-gap:      var(--component-checkbox-group-item-gap);     /* gap between items (row padding provides visual breathing room) */
+  --a1-cb-group-gap:     var(--component-checkbox-group-group-gap);     /* vertical gap between legend/hint and message */
+  --a1-cb-items-top-gap: var(--component-checkbox-group-items-top-gap);    /* extra space between legend/hint and the items stack */
+  --a1-cb-input-nudge:   var(--component-checkbox-group-input-nudge);     /* top margin aligning box center with label cap-height */
+  --a1-cb-row-py:        var(--component-checkbox-group-row-padding-block);     /* vertical padding on each item row */
+  --a1-cb-row-px:        var(--component-checkbox-group-row-padding-inline);     /* horizontal padding on each item row */
+  --a1-cb-legend-size:  var(--semantic-font-size-body-sm);
+  --a1-cb-label-size:   var(--semantic-font-size-body-md);
+  --a1-cb-hint-size:    var(--semantic-font-size-body-xs);
+  --a1-cb-msg-size:     var(--semantic-font-size-body-xs);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-cb-group-gap);
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+
+.a1-checkbox-group--comfortable {
+  --a1-cb-size:          var(--component-checkbox-group-comfortable-box-size);
+  --a1-cb-gap:           var(--component-checkbox-group-comfortable-gap);
+  --a1-cb-item-gap:      var(--component-checkbox-group-comfortable-item-gap);
+  --a1-cb-group-gap:     var(--component-checkbox-group-comfortable-group-gap);
+  --a1-cb-items-top-gap: var(--component-checkbox-group-comfortable-items-top-gap);
+  --a1-cb-input-nudge:   var(--component-checkbox-group-comfortable-input-nudge);
+  --a1-cb-row-py:        var(--component-checkbox-group-comfortable-row-padding-block);
+  --a1-cb-row-px:        var(--component-checkbox-group-comfortable-row-padding-inline);
+  --a1-cb-legend-size: var(--semantic-font-size-body-md);
+  --a1-cb-label-size:  var(--semantic-font-size-body-md);
+  --a1-cb-hint-size:   var(--semantic-font-size-body-sm);
+  --a1-cb-msg-size:    var(--semantic-font-size-body-sm);
+}
+
+.a1-checkbox-group--comfortable .a1-checkbox-item__label {
+  font-weight: var(--base-font-weight-medium);
+}
+
+@media (--bp-md-up) {
+  .a1-checkbox-group--comfortable {
+    --a1-cb-legend-size: var(--semantic-font-size-body-lg);
+    --a1-cb-label-size:  var(--semantic-font-size-body-lg);
+    --a1-cb-size:        var(--component-checkbox-group-comfortable-box-size-md);
+    --a1-cb-input-nudge: var(--component-checkbox-group-comfortable-input-nudge);
+  }
+}
+
+.a1-checkbox-group--compact {
+  --a1-cb-size:          var(--component-checkbox-group-compact-box-size);
+  --a1-cb-gap:           var(--component-checkbox-group-compact-gap);
+  --a1-cb-item-gap:      var(--component-checkbox-group-compact-item-gap);
+  --a1-cb-group-gap:     var(--component-checkbox-group-compact-group-gap);
+  --a1-cb-items-top-gap: var(--component-checkbox-group-compact-items-top-gap);
+  --a1-cb-input-nudge:   var(--component-checkbox-group-compact-input-nudge);
+  --a1-cb-row-py:        var(--component-checkbox-group-compact-row-padding-block);
+  --a1-cb-row-px:        var(--component-checkbox-group-compact-row-padding-inline);
+  --a1-cb-legend-size: var(--semantic-font-size-body-xs);
+  --a1-cb-label-size:  var(--semantic-font-size-body-sm);
+  --a1-cb-hint-size:   var(--semantic-font-size-body-xs);
+  --a1-cb-msg-size:    var(--semantic-font-size-body-xs);
+}
+
+/* ─── Legend ──────────────────────────────────────────────────────────────── */
+
+.a1-checkbox-group__legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cb-legend-size);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-checkbox-group--disabled .a1-checkbox-group__legend {
+  color: var(--semantic-color-text-muted);
+}
+
+/* Inline-flex wrapper handles the gap between legend text and required badge/asterisk */
+.a1-checkbox-group__legend-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+}
+
+/* ─── Group hint / error message ──────────────────────────────────────────── */
+
+.a1-checkbox-group__message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cb-msg-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-checkbox-group__message--hint  { color: var(--semantic-color-text-muted); }
+.a1-checkbox-group__message--error { color: var(--semantic-color-status-error-background); }
+
+/* ─── Items stack ─────────────────────────────────────────────────────────── */
+
+.a1-checkbox-group__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-cb-item-gap);
+  margin-top: var(--a1-cb-items-top-gap);
+}
+
+/* ─── Individual item ─────────────────────────────────────────────────────── */
+
+.a1-checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--a1-cb-gap);
+  padding: var(--a1-cb-row-py) var(--a1-cb-row-px);
+  margin-inline: calc(-1 * var(--a1-cb-row-px));
+  border-radius: var(--base-radius-md);
+  cursor: pointer;
+  transition: background-color var(--semantic-motion-duration-fast);
+}
+
+.a1-checkbox-item--disabled {
+  cursor: not-allowed;
+}
+
+.a1-checkbox-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-content-gap);
+}
+
+.a1-checkbox-item__label {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cb-label-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* Restore default color when the item is checked */
+.a1-checkbox-item:has(.a1-checkbox-item__input:checked) .a1-checkbox-item__label {
+  color: var(--semantic-color-text-default);
+}
+
+/* Disabled always stays muted regardless of checked state */
+.a1-checkbox-item--disabled .a1-checkbox-item__label {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-checkbox-item__hint {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cb-hint-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ─── Checkbox input ──────────────────────────────────────────────────────── */
+
+.a1-checkbox-item__input {
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+  width: var(--a1-cb-size);
+  height: var(--a1-cb-size);
+  /* Nudge aligns the checkbox's visual center with the label's cap-height */
+  margin-top: var(--a1-cb-input-nudge);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--a1-cb-radius);
+  background-color: var(--semantic-color-surface-page);
+  cursor: pointer;
+  transition:
+    border-color       var(--semantic-motion-duration-fast),
+    background-color   var(--semantic-motion-duration-fast);
+}
+
+/* Checked row — always show a tinted background */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):has(.a1-checkbox-item__input:checked) {
+  background-color: var(--a1-field-hover-background);
+}
+
+/* Hover — entire row background, triggered anywhere on the label */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):hover {
+  background-color: var(--a1-field-hover-background);
+}
+
+/* Checked row on hover — step one shade deeper/lighter */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(.a1-checkbox-item__input:checked) {
+  background-color: var(--a1-field-active-background);
+}
+
+/* Also darken the input border on row hover (unchecked/non-indeterminate only) */
+.a1-checkbox-item:not(.a1-checkbox-item--disabled):hover
+  .a1-checkbox-item__input:not(:checked):not(:indeterminate) {
+  border-color: var(--a1-field-hover-border-color);
+}
+
+/* Focus */
+.a1-checkbox-item__input:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+/* Checked */
+.a1-checkbox-item__input:checked {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23fafcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--component-checkbox-group-icon-size);
+}
+
+/* Indeterminate */
+.a1-checkbox-item__input:indeterminate {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%23fafcff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--component-checkbox-group-icon-size);
+}
+
+/* Disabled (unchecked) */
+.a1-checkbox-item__input:disabled {
+  background-color: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+/* Disabled + checked */
+.a1-checkbox-item__input:checked:disabled {
+  background-color: var(--semantic-color-border-default);
+  border-color: var(--semantic-color-border-default);
+}
+
+/* ─── Inline layout ───────────────────────────────────────────────────────── */
+
+.a1-checkbox-group--inline .a1-checkbox-group__items {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--a1-cb-gap);
+}
+
+/* Each inline item becomes a bordered pill — provides visual separation */
+.a1-checkbox-group--inline .a1-checkbox-item {
+  margin-inline: 0;
+  border: var(--component-field-border-width) solid var(--semantic-color-border-subtle);
+}
+
+/* Unchecked inline hover — darken border */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover {
+  border-color: var(--a1-field-hover-border-color);
+}
+
+/* Checked inline item — accent border + background tint */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):has(.a1-checkbox-item__input:checked) {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* Checked inline hover — keep accent border, deepen background */
+.a1-checkbox-group--inline .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(.a1-checkbox-item__input:checked) {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* Disabled inline item */
+.a1-checkbox-group--inline .a1-checkbox-item--disabled {
+  border-color: var(--semantic-color-border-subtle);
+  opacity: var(--component-checkbox-group-disabled-opacity);
+}
+
+/* Inline error — left accent doesn't suit a row layout; just use input borders */
+.a1-checkbox-group--inline.a1-checkbox-group--error .a1-checkbox-group__items {
+  border-left: none;
+  padding-left: 0;
+}
+
+/* ─── Error state ─────────────────────────────────────────────────────────── */
+
+/* Left accent border on the items block makes the error scope obvious at a glance */
+.a1-checkbox-group--error .a1-checkbox-group__items {
+  border-left: var(--component-checkbox-group-error-accent-width) solid var(--semantic-color-status-error-background);
+  padding-left: var(--base-spacing-12);
+}
+
+/* Unchecked items get a red border too */
+.a1-checkbox-group--error .a1-checkbox-item__input:not(:checked):not(:disabled) {
+  border-color: var(--semantic-color-status-error-border);
+}
+
+/* Bolder error message */
+.a1-checkbox-group__message--error {
+  font-weight: var(--component-checkbox-group-error-message-font-weight);
+}

@@ -1,0 +1,51 @@
+/* ─── FieldRow ───────────────────────────────────────────────────────────── */
+
+.a1-field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--base-spacing-12);
+}
+
+/* Every direct child fills an equal share of the available width */
+.a1-field-row > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Fixed-width fields (ZipField, DateField) keep their natural fit-content width */
+.a1-field-row > .a1-field--fit {
+  flex: none;
+}
+
+/* ─── Stacked — used when side labels are active ─────────────────────────── */
+
+.a1-field-row--stacked {
+  flex-direction: column;
+}
+
+.a1-field-row--stacked > * {
+  flex: none;
+  width: 100%;
+}
+
+/* Fit-content fields don't stretch to full width even when stacked */
+.a1-field-row--stacked > .a1-field--fit {
+  width: fit-content;
+}
+
+/* ─── Responsive — stack on xs / sm viewports ─────────────────────────────── */
+
+@media (--bp-sm-down) {
+  .a1-field-row {
+    flex-direction: column;
+  }
+
+  .a1-field-row > * {
+    flex: none;
+    width: 100%;
+  }
+
+  .a1-field-row > .a1-field--fit {
+    width: fit-content;
+  }
+}

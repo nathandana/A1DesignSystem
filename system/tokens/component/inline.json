@@ -1,0 +1,12 @@
+{
+  "component": {
+    "inline": {
+      "paddingBlock": { "$type": "dimension", "$value": "0.1em" },
+      "paddingInline": { "$type": "dimension", "$value": "0.35em" },
+      "kbdPaddingInline": { "$type": "dimension", "$value": "0.4em" },
+      "borderRadius": { "$type": "dimension", "$value": "0.2em" },
+      "codeFontSize": { "$type": "dimension", "$value": "0.875em" },
+      "emphasisFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.medium}" }
+    }
+  }
+}

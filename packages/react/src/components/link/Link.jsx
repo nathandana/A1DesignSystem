@@ -6,7 +6,6 @@ const weights = ["normal", "medium", "semibold", "bold"];
 const iconPositions = ["start", "end"];
 
 export function Link({
-  as: Component = "a",
   size,
   weight,
   icon,
@@ -32,10 +31,10 @@ export function Link({
   const iconEl = icon ? <Icon name={icon} className="a1-link__icon" /> : null;
 
   return (
-    <Component className={classes} {...props}>
+    <a className={classes} {...props}>
       {resolvedPosition === "start" && iconEl}
       <span className="a1-link__text">{children}</span>
       {resolvedPosition === "end" && iconEl}
-    </Component>
+    </a>
   );
 }

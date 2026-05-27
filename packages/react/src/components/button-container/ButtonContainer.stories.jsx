@@ -2,6 +2,7 @@ import { Button } from "../button/Button.jsx";
 import { ButtonContainer } from "./ButtonContainer.jsx";
 import { Card } from "../card/Card.jsx";
 import { Heading } from "../heading/Heading.jsx";
+import { Link } from "../link/Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 
 const meta = {
@@ -31,6 +32,8 @@ const meta = {
 export default meta;
 
 export const Configurable = {};
+
+/* ── Card widths ──────────────────────────────────────────────────────────── */
 
 const examples = [
   {
@@ -98,21 +101,105 @@ export const CardWidths = {
   )
 };
 
+/* ── Alignment & ordering ─────────────────────────────────────────────────── */
+
 export const Alignment = {
+  name: "Alignment & button order",
   render: () => (
     <div style={{ display: "grid", gap: "24px", maxWidth: 640 }}>
-      {["start", "center", "end"].map(align => (
-        <Card key={align} shadow="sm">
-          <Heading as="h3" size="sm" style={{ marginBottom: "16px" }}>
-            {align}
-          </Heading>
-          <ButtonContainer align={align}>
-            <Button variant="primary">Save changes</Button>
-            <Button variant="secondary">Cancel</Button>
-            <Button variant="tertiary">Reset</Button>
-          </ButtonContainer>
-        </Card>
-      ))}
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>start</Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          Primary leads — DOM order: primary → secondary → tertiary.
+        </Paragraph>
+        <ButtonContainer align="start">
+          <Button variant="primary">Save</Button>
+          <Button variant="secondary">Cancel</Button>
+          <Button variant="tertiary">Reset</Button>
+        </ButtonContainer>
+      </Card>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>center</Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          Primary leads — same DOM order as start.
+        </Paragraph>
+        <ButtonContainer align="center">
+          <Button variant="primary">Save</Button>
+          <Button variant="secondary">Cancel</Button>
+          <Button variant="tertiary">Reset</Button>
+        </ButtonContainer>
+      </Card>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>end</Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          Primary lands rightmost — write DOM order primary → secondary → tertiary and
+          the layout reverses it visually to tertiary → secondary → primary.
+        </Paragraph>
+        <ButtonContainer align="end">
+          <Button variant="primary">Save</Button>
+          <Button variant="secondary">Cancel</Button>
+          <Button variant="tertiary">Reset</Button>
+        </ButtonContainer>
+      </Card>
+
+    </div>
+  )
+};
+
+/* ── With inline link ─────────────────────────────────────────────────────── */
+
+export const WithLink = {
+  name: "With inline link",
+  render: () => (
+    <div style={{ display: "grid", gap: "24px", maxWidth: 640 }}>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>
+          Start — link follows buttons
+        </Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          DOM order: primary → secondary → link. Link appears after the action buttons.
+        </Paragraph>
+        <ButtonContainer align="start">
+          <Button variant="primary">Submit</Button>
+          <Button variant="secondary">Cancel</Button>
+          <Link href="#">Learn more</Link>
+        </ButtonContainer>
+      </Card>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>
+          End — link shifts to the left
+        </Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          Same DOM order: primary → secondary → link. The end-alignment reversal pushes
+          the link to the far left and the primary action to the far right.
+        </Paragraph>
+        <ButtonContainer align="end">
+          <Button variant="primary">Save changes</Button>
+          <Button variant="secondary">Discard</Button>
+          <Link href="#">View documentation</Link>
+        </ButtonContainer>
+      </Card>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>
+          Confirmation dialog footer
+        </Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          A common pattern: destructive primary action right, link as a low-emphasis
+          escape hatch on the left.
+        </Paragraph>
+        <ButtonContainer align="end">
+          <Button variant="destructive">Delete account</Button>
+          <Button variant="secondary">Keep account</Button>
+          <Link href="#">What gets deleted?</Link>
+        </ButtonContainer>
+      </Card>
+
     </div>
   )
 };

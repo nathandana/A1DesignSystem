@@ -1,0 +1,19 @@
+{
+  "label": {
+    "field": {
+      "required": {
+        "$type": "string",
+        "$value": "Required",
+        "$description": "Badge label shown on required fields in the comfortable size variant.",
+        "locale": {
+          "es": "Requerido",
+          "fr": "Requis",
+          "de": "Pflichtfeld",
+          "pt": "Obrigatório",
+          "ja": "必須",
+          "zh": "必填"
+        }
+      }
+    }
+  }
+}

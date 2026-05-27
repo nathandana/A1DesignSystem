@@ -1,5 +1,5 @@
 {
-  "name": "A1 Light",
+  "name": "Base",
   "description": "Default A1 theme tokens. No runtime selector is required because these values compile to :root.",
   "selectors": {},
   "labels": {}

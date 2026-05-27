@@ -257,7 +257,7 @@ export function MenuItem({
     >
       {icon && <Icon name={icon} className="a1-menu-item__icon" />}
       <span className="a1-menu-item__label">{children}</span>
-      {shortcut && <span className="a1-menu-item__shortcut" aria-hidden="true">{shortcut}</span>}
+      {shortcut && <kbd className="a1-menu-item__shortcut" aria-hidden="true">{shortcut}</kbd>}
     </Component>
   );
 }

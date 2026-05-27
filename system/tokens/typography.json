@@ -290,7 +290,7 @@
         },
         "weight": {
           "$type": "fontWeight",
-          "$value": "{semantic.font.weight.heading}"
+          "$value": "{base.font.weight.medium}"
         },
         "lineHeight": {
           "$type": "lineHeight",
@@ -328,6 +328,16 @@
           "lineHeight": {
             "$type": "lineHeight",
             "$value": "{semantic.font.lineHeight.body}"
+          }
+        }
+      }
+    },
+    "inline": {
+      "font": {
+        "family": {
+          "mono": {
+            "$type": "fontFamily",
+            "$value": "{theme.a1Light.font.family.mono}"
           }
         }
       }

@@ -14,7 +14,7 @@ export const globalTypes = {
     toolbar: {
       icon: "paintbrush",
       items: [
-        { value: "a1Light",      title: "A1 Light" },
+        { value: "a1Light",      title: "Base" },
         { value: "a1Heritage",   title: "A1 Heritage" },
         { value: "a1Accessible", title: "A1 Accessible" },
       ],
@@ -29,8 +29,22 @@ export const globalTypes = {
     toolbar: {
       icon: "sun",
       items: [
-        { value: "light", title: "Light", icon: "sun" },
-        { value: "dark",  title: "Dark",  icon: "moon" },
+        { value: "light",  title: "Light",  icon: "sun" },
+        { value: "dark",   title: "Dark",   icon: "moon" },
+        { value: "system", title: "System", icon: "browser" },
+      ],
+      dynamicTitle: true,
+    },
+  },
+  reducedMotion: {
+    name: "Reduced motion",
+    description: "Simulate prefers-reduced-motion: reduce",
+    defaultValue: "system",
+    toolbar: {
+      icon: "accessibility",
+      items: [
+        { value: "system", title: "Motion: System", icon: "browser" },
+        { value: "reduce", title: "Motion: Reduced", icon: "accessibility" },
       ],
       dynamicTitle: true,
     },
@@ -40,22 +54,31 @@ export const globalTypes = {
 const withTheme = (Story) => {
   const [globals] = useGlobals();
 
-  const theme       = globals?.theme       ?? "a1Light";
-  const colorScheme = globals?.colorScheme ?? "light";
+  const theme         = globals?.theme         ?? "a1Light";
+  const colorScheme   = globals?.colorScheme   ?? "light";
+  const reducedMotion = globals?.reducedMotion ?? "system";
 
   useEffect(() => {
-    document.documentElement.classList.toggle("a1-theme-heritage", theme === "a1Heritage");
-    document.documentElement.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
-    document.documentElement.classList.toggle("a1-theme-dark", colorScheme === "dark");
+    const html = document.documentElement;
+    html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
+    html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
+    // Explicit light/dark: set the matching class and clear the other.
+    // "system" clears both so the prefers-color-scheme media query takes over.
+    html.classList.toggle("a1-theme-dark",  colorScheme === "dark");
+    html.classList.toggle("a1-theme-light", colorScheme === "light");
+    // Reduced motion: set explicit class to mirror prefers-reduced-motion.
+    html.classList.toggle("a1-reduce-motion", reducedMotion === "reduce");
 
     return () => {
-      document.documentElement.classList.remove(
+      html.classList.remove(
         "a1-theme-heritage",
         "a1-theme-accessible",
         "a1-theme-dark",
+        "a1-theme-light",
+        "a1-reduce-motion",
       );
     };
-  }, [theme, colorScheme]);
+  }, [theme, colorScheme, reducedMotion]);
 
   return <Story />;
 };
@@ -80,6 +103,7 @@ const preview = {
             "Controls",   ["Button", "Icon Button", "Link", "Pagination", "Segmented Control", "Tabs"],
             "Containers", ["Card", "Dialog", "Grid", "Inverse", "Page Layout"],
             "Messaging",  ["Banner", "Empty State", "Notification"],
+            "Typography", ["Heading", "Paragraph", "List", "Inline"],
           ],
           "Foundations", [
             "Breakpoints", "Colors", "Icon",
@@ -89,7 +113,7 @@ const preview = {
               "Notification", "Button", "Card", "Dialog", "Icon Button",
               "Link", "Message", "Page Layout", "Pagination", "Segmented Control", "Tab", "Typography",
             ],
-            "Typography",
+            "Motion",
             "Themes",
           ],
           "Rules",

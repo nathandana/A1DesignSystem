@@ -7,13 +7,13 @@
   color: var(--a1-heading-color, var(--semantic-color-text-default));
 }
 
-@media (min-width: 481px) {
+@media (--bp-sm-up) {
   .a1-heading {
     --a1-heading-responsive-size: var(--a1-heading-size-sm, var(--a1-heading-size));
   }
 }
 
-@media (min-width: 641px) {
+@media (--bp-md-up) {
   .a1-heading {
     --a1-heading-responsive-size: var(
       --a1-heading-size-md,
@@ -22,7 +22,7 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (--bp-lg-up) {
   .a1-heading {
     --a1-heading-responsive-size: var(
       --a1-heading-size-lg,
@@ -31,7 +31,7 @@
   }
 }
 
-@media (min-width: 1441px) {
+@media (--bp-xl) {
   .a1-heading {
     --a1-heading-responsive-size: var(
       --a1-heading-size-xl,

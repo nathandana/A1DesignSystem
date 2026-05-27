@@ -12,7 +12,25 @@
       "focusRingWidth":    { "$type": "dimension",  "$value": "2px" },
       "focusRingOffset":   { "$value": "-2px" },
       "zIndexActive":      { "$type": "number",     "$value": 1 },
-      "marginBottom":      { "$value": "-1px" }
+      "marginBottom":      { "$value": "-1px" },
+      "scrollButtonWidth": { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "scrollButtonIconSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+      "iconSize": { "$value": "1.1em" },
+      "iconAboveSize": { "$value": "1.5em" },
+      "countMinWidth": { "$type": "dimension", "$value": "18px" },
+      "countHeight": { "$type": "dimension", "$value": "18px" },
+      "countPaddingInline": { "$type": "dimension", "$value": "5px" },
+      "countBorderRadius": { "$type": "dimension", "$value": "999px" },
+      "countFontSize": { "$type": "dimension", "$value": "11px" },
+      "countLineHeight": { "$value": "1" },
+      "folderCurveAdjustment": { "$type": "dimension", "$value": "0.5px" },
+      "progressStepSize": { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "progressStepSizeMd": { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "progressLineHeight": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "progressStepFontSize": { "$type": "dimension", "$value": "0.75rem" },
+      "progressStepBorderWidth": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "progressCompletedIconSize": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "progressSelectedRing": { "$type": "shadow", "$value": "0 0 0 3px color-mix(in srgb, var(--semantic-color-action-background) 25%, transparent)" }
     }
   }
 }

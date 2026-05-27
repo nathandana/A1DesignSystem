@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .a1-icon-button {
+  --a1-icon-weight: 500;
   display: inline-flex;
   align-items: center;
   justify-content: center;

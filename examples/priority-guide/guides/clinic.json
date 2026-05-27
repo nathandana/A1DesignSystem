@@ -1,0 +1,65 @@
+{
+  "$schema": "./schema.json",
+  "id": "clinic",
+  "tab": "Clinic intake",
+  "icon": "medical_information",
+  "title": "Community clinic intake page",
+  "pageType": "Form",
+  "context": "Public service appointment flow",
+  "problemStatement": "Patients may abandon intake if the page implies care is unavailable, expensive, or dependent on documentation they do not have.",
+  "audience": "New patients booking free or low-cost care from a mobile phone",
+  "userGoal": "Understand whether the clinic can help today and what information is needed to request care.",
+  "businessGoal": "Route patients to the right intake path while reducing incomplete requests.",
+  "contextDetails": [
+    { "label": "Decision needed", "value": "- [ ] Agree which reassurance copy must appear before the form.", "checkable": true },
+    { "label": "Out of scope", "value": "Clinical triage logic, insurance verification, and translated final copy." },
+    { "label": "Contributors", "value": "Clinic ops, patient advocate, content design, engineering" }
+  ],
+  "items": [
+    {
+      "kind": "group",
+      "type": "Intake decision",
+      "componentType": "Section",
+      "title": "Reassurance before action",
+      "content": "The highest-priority content that makes the appointment request feel possible.",
+      "annotations": [
+        "Keep reassurance and the appointment request together before preparation details."
+      ],
+      "children": [
+        {
+          "type": "Critical reassurance",
+          "componentType": "Heading",
+          "title": "Care is available regardless of insurance status",
+          "content": "The clinic supports uninsured patients, Medicaid patients, and people unsure about eligibility.",
+          "annotations": [
+            "Show before forms so people do not abandon due to cost anxiety.",
+            "Plain-language note should be translated in later content pass."
+          ],
+          "links": ["Eligibility details", "Language support"]
+        },
+        {
+          "type": "Primary action",
+          "componentType": "Button",
+          "title": "Request an appointment",
+          "content": "Ask for name, preferred contact method, reason for visit, urgency, and best times to be contacted.",
+          "annotations": [
+            "Urgent symptoms route to a call-now message.",
+            "Contact preference controls whether phone or SMS consent copy appears."
+          ],
+          "links": ["Urgent care guidance", "Contact consent"],
+          "linkedGuideId": "incident"
+        }
+      ]
+    },
+    {
+      "type": "Preparation",
+      "componentType": "Checklist",
+      "title": "What to bring",
+      "content": "List ID if available, current medications, recent paperwork, and questions for the care team.",
+      "annotations": [
+        "Content should not imply documents are required for care."
+      ],
+      "links": ["Visit checklist"]
+    }
+  ]
+}

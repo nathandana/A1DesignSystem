@@ -1,0 +1,75 @@
+/* ─── Fieldset — reset browser defaults ──────────────────────────────────── */
+
+.a1-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0; /* prevents default overflow on narrow containers */
+}
+
+/* ─── Legend ─────────────────────────────────────────────────────────────── */
+
+.a1-fieldset__legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--base-spacing-16);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-lg);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* Tighten bottom margin when the required note follows */
+.a1-fieldset__legend--has-note {
+  margin-bottom: var(--base-spacing-4);
+}
+
+/* ─── Required note (* Required field) ───────────────────────────────────── */
+
+.a1-fieldset__required-note {
+  margin: 0 0 var(--base-spacing-12);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-fieldset__required-note__asterisk {
+  color: var(--semantic-color-status-info-background);
+}
+
+/* ─── Body ───────────────────────────────────────────────────────────────── */
+
+.a1-fieldset__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+/* ─── Surface variant ────────────────────────────────────────────────────── */
+
+.a1-fieldset--surface {
+  background: var(--semantic-color-surface-page);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-card-border-radius);
+  box-shadow: var(--component-card-shadow);
+  padding: var(--component-card-padding);
+}
+
+/*
+ * float: left is the standard hack to pull <legend> out of its special
+ * browser rendering (where it would otherwise sit on top of the border).
+ * With float the legend becomes a normal block at the top of the card.
+ */
+.a1-fieldset--surface > .a1-fieldset__legend {
+  float: left;
+  width: 100%;
+}
+
+/* Clear the legend float so subsequent content flows below it */
+.a1-fieldset--surface > .a1-fieldset__required-note,
+.a1-fieldset--surface > .a1-fieldset__body {
+  clear: left;
+}

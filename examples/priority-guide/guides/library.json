@@ -1,0 +1,63 @@
+{
+  "$schema": "./schema.json",
+  "id": "library",
+  "tab": "Library event",
+  "icon": "local_library",
+  "title": "Public library workshop page",
+  "pageType": "Landing",
+  "context": "Community event detail page",
+  "problemStatement": "Potential attendees cannot quickly tell whether the free workshop matches their skill level, schedule, and access needs.",
+  "audience": "Adults deciding whether to attend a free digital skills workshop",
+  "userGoal": "Know if the workshop is useful, accessible, and worth reserving a seat for.",
+  "businessGoal": "Increase attendance from first-time visitors and reduce day-of confusion.",
+  "contextDetails": [
+    { "label": "Decision needed", "value": "- [ ] Confirm whether learning outcomes or logistics should lead the page.", "checkable": true },
+    { "label": "Out of scope", "value": "Waitlist rules, recurring series pages, and post-event surveys." },
+    { "label": "Contributors", "value": "Program lead, branch staff, accessibility coordinator" }
+  ],
+  "items": [
+    {
+      "kind": "group",
+      "type": "Decision details",
+      "componentType": "Card",
+      "title": "Workshop value and logistics",
+      "content": "The paired information attendees need before reserving a seat.",
+      "annotations": [
+        "Group outcomes with logistics so the action is based on a complete decision."
+      ],
+      "children": [
+        {
+          "type": "Decision driver",
+          "componentType": "Heading",
+          "title": "What attendees will learn",
+          "content": "Create a strong password, recognize suspicious links, and set up account recovery options.",
+          "annotations": [
+            "Learning outcomes outrank date/time because they answer relevance first."
+          ],
+          "links": ["Workshop curriculum"]
+        },
+        {
+          "type": "Logistics",
+          "componentType": "Details",
+          "title": "When and where",
+          "content": "Tuesday, June 18, 6:00 PM. Main Library, Room B. Wheelchair accessible entrance on Oak Street.",
+          "annotations": [
+            "Use the user's local branch timezone if this becomes dynamic."
+          ],
+          "links": ["Branch directions", "Accessibility notes"]
+        }
+      ]
+    },
+    {
+      "type": "Action",
+      "componentType": "Button",
+      "title": "Reserve a free seat",
+      "content": "Reservation collects name and email only. Walk-ins are welcome if seats remain.",
+      "annotations": [
+        "Mention free status near the action to remove hesitation."
+      ],
+      "links": ["Registration confirmation"],
+      "linkedGuideId": "clinic"
+    }
+  ]
+}

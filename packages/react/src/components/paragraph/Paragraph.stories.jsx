@@ -2,7 +2,7 @@ import { Paragraph } from "./Paragraph.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
 
 const meta = {
-  title: "Foundations/Typography/Paragraph",
+  title: "Components/Typography/Paragraph",
   component: Paragraph,
   tags: ["autodocs"],
   args: {

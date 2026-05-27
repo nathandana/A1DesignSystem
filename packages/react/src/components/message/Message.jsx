@@ -1,6 +1,5 @@
 import "./message.css";
 import { Icon } from "../icon/Icon.jsx";
-import { IconButton } from "../icon-button/IconButton.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 
@@ -20,47 +19,6 @@ const ES_SCALE_CONFIG = {
   section: { headingAs: "h2", headingSize: "xs", paragraphSize: "md" },
   card:    { headingAs: "h3", headingSize: "xs", paragraphSize: "sm" },
 };
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MessageBanner
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-export function MessageBanner({
-  status = "neutral",
-  title,
-  icon,
-  onDismiss,
-  children,
-}) {
-  const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
-  const resolvedIcon = icon ?? STATUS_ICONS[resolvedStatus];
-
-  return (
-    <div
-      className={`a1-message-banner a1-message-banner--${resolvedStatus}`}
-      role="alert"
-      aria-live="polite"
-    >
-      <span className="a1-message-banner__icon" aria-hidden="true">
-        <Icon name={resolvedIcon} />
-      </span>
-
-      <div className="a1-message-banner__content">
-        {title   && <p className="a1-message-banner__title">{title}</p>}
-        {children && <p className="a1-message-banner__body">{children}</p>}
-      </div>
-
-      {onDismiss && (
-        <IconButton
-          icon="close"
-          label="Dismiss"
-          onClick={onDismiss}
-          className="a1-message-banner__dismiss"
-        />
-      )}
-    </div>
-  );
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MessageBadge  (inline filled status chip)

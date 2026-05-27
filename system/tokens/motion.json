@@ -1,7 +1,23 @@
 {
   "semantic": {
     "motion": {
-      "durationFast": { "$value": "0.1s" }
+      "duration": {
+        "instant": { "$value": "0ms" },
+        "quick":   { "$value": "100ms" },
+        "fast":    { "$value": "150ms" },
+        "normal":  { "$value": "200ms" },
+        "slow":    { "$value": "300ms" },
+        "slower":  { "$value": "500ms" },
+        "slowest": { "$value": "750ms" }
+      },
+      "easing": {
+        "linear":     { "$value": "linear" },
+        "standard":   { "$value": "cubic-bezier(0.4, 0, 0.2, 1)" },
+        "enter":      { "$value": "cubic-bezier(0, 0, 0.2, 1)" },
+        "exit":       { "$value": "cubic-bezier(0.4, 0, 1, 1)" },
+        "expressive": { "$value": "cubic-bezier(0.34, 1.56, 0.64, 1)" },
+        "sharp":      { "$value": "cubic-bezier(0.4, 0, 0.6, 1)" }
+      }
     }
   }
 }

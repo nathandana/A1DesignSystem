@@ -1,0 +1,185 @@
+/* ─── TextareaField — size-specific padding ──────────────────────────────── */
+
+.a1-field {
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block);
+}
+
+.a1-field--comfortable {
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block-comfortable);
+}
+
+.a1-field--compact {
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block-compact);
+}
+
+/* ─── Textarea control ───────────────────────────────────────────────────── */
+
+.a1-field__textarea {
+  box-sizing: border-box;
+  display: block; /* removes inline gap below element */
+  width: 100%;
+  padding-inline: var(--a1-field-padding-inline);
+  padding-block: var(--a1-textarea-padding-block);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-font-size);
+  font-weight: var(--base-font-weight-regular);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-default);
+  background: var(--a1-field-background);
+  border: var(--component-field-border-width) solid var(--a1-field-border-color);
+  border-radius: var(--a1-field-border-radius);
+  transition:
+    border-color var(--semantic-motion-duration-fast),
+    background   var(--semantic-motion-duration-fast);
+  -webkit-appearance: none;
+  appearance: none;
+  resize: vertical;
+}
+
+.a1-field__textarea::placeholder {
+  color: var(--semantic-color-text-muted);
+  font-weight: var(--base-font-weight-regular);
+}
+
+/* ─── Hover ──────────────────────────────────────────────────────────────── */
+
+.a1-field__textarea:hover:not(:disabled):not(:focus) {
+  background: var(--a1-field-hover-background);
+  border-color: var(--a1-field-hover-border-color);
+}
+
+.a1-field__textarea:read-only:hover:not(:disabled):not(:focus) {
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
+}
+
+/* ─── Active ─────────────────────────────────────────────────────────────── */
+
+.a1-field__textarea:active:not(:disabled) {
+  background: var(--a1-field-active-background);
+  border-color: var(--a1-field-active-border-color);
+}
+
+.a1-field__textarea:read-only:active:not(:disabled) {
+  background: var(--a1-field-read-only-background);
+  border-color: var(--a1-field-read-only-border-color);
+}
+
+/* ─── Focus ──────────────────────────────────────────────────────────────── */
+
+.a1-field__textarea:focus {
+  outline: var(--a1-field-focus-ring-width) solid var(--a1-field-focus-ring-color);
+  outline-offset: var(--a1-field-focus-ring-offset);
+  border-color: var(--semantic-color-action-background);
+}
+
+/* ─── Required ───────────────────────────────────────────────────────────── */
+
+.a1-field--required .a1-field__textarea {
+  border-color: var(--semantic-color-status-info-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-info-background);
+  padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
+}
+
+.a1-field--required .a1-field__textarea:focus {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* ─── Error ──────────────────────────────────────────────────────────────── */
+
+.a1-field--error .a1-field__textarea {
+  border-width: var(--component-field-error-border-width);
+  border-color: var(--semantic-color-status-error-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-error-background);
+  padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
+}
+
+.a1-field--error .a1-field__textarea:focus {
+  border-color: var(--semantic-color-status-error-background);
+}
+
+/* ─── Disabled ───────────────────────────────────────────────────────────── */
+
+.a1-field__textarea:disabled {
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* ─── Read-only ──────────────────────────────────────────────────────────── */
+
+.a1-field__textarea:read-only:not(:disabled) {
+  background: var(--a1-field-read-only-background);
+  color: var(--a1-field-read-only-text);
+  border-color: var(--a1-field-read-only-border-color);
+  cursor: text;
+  user-select: text;
+  resize: none;
+}
+
+/* ─── Footer (hint / error + char count row) ─────────────────────────────── */
+
+.a1-field__footer {
+  display: flex;
+  align-items: baseline;
+  gap: var(--base-spacing-8);
+  margin-top: var(--a1-field-gap);
+}
+
+.a1-field__footer-message {
+  flex: 1;
+  min-width: 0;
+}
+
+.a1-field__footer .a1-field__message {
+  margin: 0;
+}
+
+/* ─── Character count ────────────────────────────────────────────────────── */
+
+.a1-field__char-count {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-message-size);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.a1-field__char-count--warning {
+  color: var(--semantic-color-status-warn-background);
+}
+
+.a1-field__char-count--over {
+  color: var(--semantic-color-status-error-background);
+}
+
+/* ─── Side label layout adjustments ─────────────────────────────────────── */
+
+/*
+ * Align label to the top of the textarea's first text line rather than
+ * centering it vertically as with single-line inputs.
+ */
+.a1-field--label-side:has(.a1-field__textarea) .a1-field__label {
+  padding-top: var(--a1-textarea-padding-block);
+  padding-bottom: 0;
+}
+
+/* Place the footer under the textarea (column 2) instead of under the label */
+.a1-field--label-side .a1-field__footer {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0;
+}
+
+@media (--bp-sm-down) {
+  .a1-field--label-side:has(.a1-field__textarea) .a1-field__label {
+    padding-top: 0;
+    padding-bottom: var(--a1-field-gap);
+  }
+}

@@ -13,6 +13,30 @@
         "$type": "dimension",
         "$value": "{base.spacing.8}"
       },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.1}"
+      },
+      "headerMinHeight": {
+        "$type": "dimension",
+        "$value": "52px"
+      },
+      "collapsedWidth": {
+        "$type": "dimension",
+        "$value": "52px"
+      },
+      "overlayZIndex": {
+        "$type": "number",
+        "$value": 200
+      },
+      "overlayShadowStart": {
+        "$type": "shadow",
+        "$value": "8px 0 40px rgba(0, 0, 0, 0.18)"
+      },
+      "overlayShadowEnd": {
+        "$type": "shadow",
+        "$value": "-8px 0 40px rgba(0, 0, 0, 0.18)"
+      },
       "item": {
         "height": {
           "$type": "dimension",
@@ -45,6 +69,17 @@
         "focusRingOffset": {
           "$type": "dimension",
           "$value": "-2px"
+        },
+        "fontLineHeight": {
+          "$value": "1.5"
+        },
+        "activeFontWeight": {
+          "$type": "fontWeight",
+          "$value": "{base.font.weight.medium}"
+        },
+        "chevronSize": {
+          "$type": "dimension",
+          "$value": "18px"
         }
       }
     }

@@ -1,6 +1,14 @@
 {
   "base": {
     "radius": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "4px"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "6px"
+      },
       "control": {
         "$type": "dimension",
         "$value": "6px"
@@ -122,6 +130,22 @@
       "iconOpticalSize": {
         "$type": "number",
         "$value": 20
+      },
+      "small": {
+        "height": { "$type": "dimension", "$value": "28px" },
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.sm}" },
+        "iconSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "iconOpticalSize": { "$type": "number", "$value": 20 }
+      },
+      "medium": {
+        "iconSize": { "$type": "dimension", "$value": "{base.spacing.24}" },
+        "iconOpticalSize": { "$type": "number", "$value": 24 }
+      },
+      "large": {
+        "height": { "$type": "dimension", "$value": "56px" },
+        "secondaryBorderWidth": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "iconSize": { "$type": "dimension", "$value": "{base.spacing.40}" },
+        "iconOpticalSize": { "$type": "number", "$value": 40 }
       }
     }
   }

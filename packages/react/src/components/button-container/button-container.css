@@ -13,6 +13,11 @@
   width: 100%;
 }
 
+/* Links sit inline alongside buttons; vertically centered in row layout */
+.a1-button-container__inner > .a1-link {
+  align-self: center;
+}
+
 @container a1-button-container (min-width: 480px) {
   .a1-button-container__inner {
     flex-direction: row;
@@ -33,6 +38,9 @@
   }
 
   .a1-button-container--end .a1-button-container__inner {
-    justify-content: flex-end;
+    /* row-reverse flips visual order so primary lands rightmost.
+       flex-start = pack toward the visual right in a reversed row. */
+    flex-direction: row-reverse;
+    justify-content: flex-start;
   }
 }

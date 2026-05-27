@@ -1,18 +1,32 @@
-[13:20:10.406] [INFO] storybook v10.4.0
-[13:20:10.509] [DEBUG] Getting package.json info for /Users/nathandana/Sites/A1DesignSystem/package.json...
-[13:20:10.680] [DEBUG] Serving static files from .storybook/public at /
-[13:20:10.680] [INFO] Starting...
-[13:20:10.884] [DEBUG] Starting preview..
-[13:20:10.944] [INFO] Vite Re-optimizing dependencies because lockfile has changed
-[13:20:10.972] [DEBUG] Change detection enabled.
-[13:20:10.972] [DEBUG] Change detection: snapshotting Vite resolve config (restart required if vite.config.ts changes)
-[13:20:10.972] [DEBUG] Change detection: ignored 12 regex alias(es); related modules tracked as opaque-leaf.
-[13:20:10.972] [DEBUG] ChangeDetectionResolverFactory: skipped regex aliases [/^@storybook\/global$/, /^storybook\/test$/, /^storybook\/actions$/, /^storybook\/preview-api$/, /^storybook\/internal\/channels$/, /^storybook\/internal\/client-logger$/, /^storybook\/internal\/core-events$/, /^storybook\/internal\/preview-errors$/, /^storybook\/internal\/types$/, /^storybook\/internal\/preview-api$/, /^\/?@vite\/env/, /^\/?@vite\/client/]
-[13:20:10.982] [ERROR] [38;2;241;97;97mError: listen EADDRINUSE: address already in use 127.0.0.1:6015[39m
-    at Server.setupListenHandle [as _listen2] (node:net:2008:16)
-    at listenInCluster (node:net:2065:12)
-    at node:net:2274:7
-    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
-[13:20:10.982] [WARN] Broken build, fix the error above.
+[21:43:37.135] [INFO] storybook v10.4.0
+[21:43:37.233] [DEBUG] Getting package.json info for /Users/nathandana/Sites/A1DesignSystem/package.json...
+[21:43:37.456] [DEBUG] Serving static files from .storybook/public at /
+[21:43:37.456] [INFO] Starting...
+[21:43:37.696] [DEBUG] Starting preview..
+[21:43:37.723] [WARN] 🚨 Unable to index files:
+- ./packages/react/src/components/message/MessageBanner.stories.jsx: CSF: missing default export /Users/nathandana/Sites/A1DesignSystem/packages/react/src/components/message/MessageBanner.stories.jsx (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export
+- ./packages/react/src/components/system-banner/SystemBanner.stories.jsx: CSF: missing default export /Users/nathandana/Sites/A1DesignSystem/packages/react/src/components/system-banner/SystemBanner.stories.jsx (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export
+[21:43:37.724] [ERROR] Failed to build the preview
+[21:43:37.726] [ERROR] Error: [38;2;241;97;97mUnable to index files:
+- ./packages/react/src/components/message/MessageBanner.stories.jsx: CSF: missing default export ./packages/react/src/components/message/MessageBanner.stories.jsx (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export
+- ./packages/react/src/components/system-banner/SystemBanner.stories.jsx: CSF: missing default export ./packages/react/src/components/system-banner/SystemBanner.stories.jsx (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export[39m
+    at _StoryIndexGenerator.getIndexAndStats (file://./node_modules/storybook/dist/core-server/index.js:16835:15)
+    at async _StoryIndexGenerator.getIndex (file://./node_modules/storybook/dist/core-server/index.js:16824:13)
+    at async BasicMinimalPluginContext.config (file://./node_modules/@storybook/builder-vite/dist/_node-chunks/chunk-RPKZLEOZ.js:184:19)
+    at async runConfigHook (file://./node_modules/vite/dist/node/chunks/node.js:34918:15)
+    at async resolveConfig (file://./node_modules/vite/dist/node/chunks/node.js:34370:11)
+    at async _createServer (file://./node_modules/vite/dist/node/chunks/node.js:26080:65)
+    at async Module.start (file://./node_modules/@storybook/builder-vite/dist/index.js:1606:17)
+    at async storybookDevServer (file://./node_modules/storybook/dist/core-server/index.js:18917:158)
+    at async buildOrThrow (file://./node_modules/storybook/dist/core-server/index.js:8205:12)
+    at async buildDevStandalone (file://./node_modules/storybook/dist/core-server/index.js:19478:41)
+[21:43:37.726] [WARN] Broken build, fix the error above.
 You may need to refresh the browser.
-[13:20:11.045] [DEBUG] Change detection graph built: 47 stories, 110 deps tracked, 70ms

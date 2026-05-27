@@ -1,9 +1,9 @@
 {
   "component": {
     "link": {
-      "color":           { "$type": "color",     "$value": "{semantic.color.action.background}" },
-      "colorHover":      { "$type": "color",     "$value": "{semantic.color.action.backgroundHover}" },
-      "colorPressed":    { "$type": "color",     "$value": "{semantic.color.action.backgroundPressed}" },
+      "color":           { "$type": "color",     "$value": "{base.color.info.500}" },
+      "colorHover":      { "$type": "color",     "$value": "{base.color.info.600}" },
+      "colorPressed":    { "$type": "color",     "$value": "{base.color.info.700}" },
       "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
       "focusRingOffset": { "$type": "dimension", "$value": "2px" },
       "focusRingRadius": { "$type": "dimension", "$value": "2px" },

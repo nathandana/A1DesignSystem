@@ -112,7 +112,8 @@ export function SideNavGroup({ icon, label, defaultOpen = false, open: controlle
  * - sm/md (481–1024px): fixed-width overlay with scrim; built-in close (✕) button
  * - lg/xl (≥1025px): persistent in the document flow; built-in collapse (‹/›) toggle
  *
- * The close/collapse button is rendered inline with the header content.
+ * The close button is rendered inline with the header content. The desktop
+ * collapse button can be rendered in the header or footer.
  *
  * @param {object} props
  * @param {React.ReactNode | ((collapsed: boolean) => React.ReactNode)} [props.header]
@@ -125,6 +126,7 @@ export function SideNavGroup({ icon, label, defaultOpen = false, open: controlle
  * @param {boolean} [props.defaultCollapsed=false] - Initial collapsed state for lg/xl (uncontrolled)
  * @param {boolean} [props.collapsed] - Controlled collapsed state for lg/xl
  * @param {function} [props.onCollapsedChange] - Called with next boolean when collapsed state changes
+ * @param {"header"|"footer"} [props.collapseButtonPlacement="header"] - Where the desktop collapse button appears
  * @param {"start"|"end"} [props.placement="start"] - Side of the viewport/layout where the nav appears
  * @param {string} [props.className]
  */
@@ -132,6 +134,7 @@ export function SideNav({
   header, footer, children,
   open = false, onClose,
   collapsed: controlledCollapsed, defaultCollapsed = false, onCollapsedChange,
+  collapseButtonPlacement = "header",
   placement = "start",
   className = "", ...props
 }) {
@@ -161,6 +164,7 @@ export function SideNav({
   const navClasses = [
     "a1-side-nav",
     `a1-side-nav--placement-${placement}`,
+    collapseButtonPlacement === "footer" && "a1-side-nav--collapse-footer",
     open && "a1-side-nav--open",
     isCollapsed && "a1-side-nav--collapsed",
     className,
@@ -194,6 +198,7 @@ export function SideNav({
             label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
             className="a1-side-nav__collapse-btn"
             onClick={toggleCollapse}
+            hidden={collapseButtonPlacement !== "header"}
           />
         </div>
 
@@ -201,7 +206,19 @@ export function SideNav({
           <div className="a1-side-nav__nav">{children}</div>
         </SideNavCtx.Provider>
 
-        {footer && <div className="a1-side-nav__footer">{footer}</div>}
+        {(footer || collapseButtonPlacement === "footer") && (
+          <div className="a1-side-nav__footer">
+            {footer && <div className="a1-side-nav__footer-content">{footer}</div>}
+            {collapseButtonPlacement === "footer" && (
+              <IconButton
+                icon={collapseIcon}
+                label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
+                className="a1-side-nav__collapse-btn"
+                onClick={toggleCollapse}
+              />
+            )}
+          </div>
+        )}
       </nav>
     </>
   );

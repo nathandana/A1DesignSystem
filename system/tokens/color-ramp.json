@@ -312,7 +312,7 @@
         },
         "muted": {
           "$type": "color",
-          "$value": "{base.color.neutral.600}"
+          "$value": "{base.color.neutral.500}"
         },
         "inverse": {
           "$type": "color",

@@ -47,6 +47,107 @@ export const Line = {
   },
 };
 
+/* ── With count badges ────────────────────────────────────────────────────── */
+
+export const WithCount = {
+  name: "With count badges",
+  render: () => {
+    const [active, setActive] = useState("inbox");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line">
+        <TabList>
+          <Tab value="inbox" count={12}>Inbox</Tab>
+          <Tab value="sent" count={0}>Sent</Tab>
+          <Tab value="drafts" count={3}>Drafts</Tab>
+          <Tab value="archived">Archived</Tab>
+        </TabList>
+        <TabPanel value="inbox"><SamplePanel title="Inbox" /></TabPanel>
+        <TabPanel value="sent"><SamplePanel title="Sent" /></TabPanel>
+        <TabPanel value="drafts"><SamplePanel title="Drafts" /></TabPanel>
+        <TabPanel value="archived"><SamplePanel title="Archived" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── With inline icons ────────────────────────────────────────────────────── */
+
+export const WithIconInline = {
+  name: "With icons — inline",
+  render: () => {
+    const [active, setActive] = useState("home");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line">
+        <TabList>
+          <Tab value="home" icon="home">Home</Tab>
+          <Tab value="explore" icon="explore">Explore</Tab>
+          <Tab value="notifications" icon="notifications" count={5}>Alerts</Tab>
+          <Tab value="settings" icon="settings" iconPosition="end">Settings</Tab>
+        </TabList>
+        <TabPanel value="home"><SamplePanel title="Home" /></TabPanel>
+        <TabPanel value="explore"><SamplePanel title="Explore" /></TabPanel>
+        <TabPanel value="notifications"><SamplePanel title="Alerts" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── With icons above ─────────────────────────────────────────────────────── */
+
+export const WithIconAbove = {
+  name: "With icons — above",
+  render: () => {
+    const [active, setActive] = useState("home");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line">
+        <TabList>
+          <Tab value="home" icon="home" iconPosition="above">Home</Tab>
+          <Tab value="explore" icon="explore" iconPosition="above">Explore</Tab>
+          <Tab value="notifications" icon="notifications" iconPosition="above" count={5}>Alerts</Tab>
+          <Tab value="profile" icon="person" iconPosition="above">Profile</Tab>
+          <Tab value="settings" icon="settings" iconPosition="above">Settings</Tab>
+        </TabList>
+        <TabPanel value="home"><SamplePanel title="Home" /></TabPanel>
+        <TabPanel value="explore"><SamplePanel title="Explore" /></TabPanel>
+        <TabPanel value="notifications"><SamplePanel title="Alerts" /></TabPanel>
+        <TabPanel value="profile"><SamplePanel title="Profile" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Overflow scroll ──────────────────────────────────────────────────────── */
+
+export const Overflow = {
+  name: "Overflow (many tabs)",
+  render: () => {
+    const [active, setActive] = useState("general");
+    const tabs = [
+      "General", "Appearance", "Security", "Notifications", "Billing",
+      "Integrations", "API", "Webhooks", "Members", "Roles",
+      "Audit log", "Advanced",
+    ];
+    return (
+      <div style={{ maxWidth: 480 }}>
+        <Tabs value={active} onChange={setActive} variant="line">
+          <TabList>
+            {tabs.map(t => (
+              <Tab key={t} value={t.toLowerCase().replace(" ", "-")}>{t}</Tab>
+            ))}
+          </TabList>
+          {tabs.map(t => (
+            <TabPanel key={t} value={t.toLowerCase().replace(" ", "-")}>
+              <SamplePanel title={t} />
+            </TabPanel>
+          ))}
+        </Tabs>
+      </div>
+    );
+  },
+};
+
 /* ── Folder variant ───────────────────────────────────────────────────────── */
 
 export const Folder = {
@@ -69,7 +170,6 @@ export const Folder = {
     );
   },
 };
-
 
 /* ── Folder + nested line ─────────────────────────────────────────────────── */
 
@@ -104,6 +204,56 @@ export const FolderNested = {
 
         <TabPanel value="history"><SamplePanel title="History" /></TabPanel>
         <TabPanel value="shared"><SamplePanel title="Shared" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Progress variant ─────────────────────────────────────────────────────── */
+
+export const Progress = {
+  name: "Progress (stepper)",
+  render: () => {
+    const [active, setActive] = useState("details");
+
+    const steps = [
+      { value: "account",  label: "Account",  status: "completed" },
+      { value: "plan",     label: "Plan",      status: "completed" },
+      { value: "details",  label: "Details",   status: "in-progress" },
+      { value: "review",   label: "Review",    status: "todo" },
+      { value: "confirm",  label: "Confirm",   status: "todo" },
+    ];
+
+    const current = steps.find(s => s.value === active);
+
+    const statusLabel = {
+      "completed":   "Completed",
+      "in-progress": "In progress",
+      "todo":        "Not started",
+    };
+
+    return (
+      <Tabs value={active} onChange={setActive} variant="progress">
+        <TabList>
+          {steps.map(s => (
+            <Tab key={s.value} value={s.value} status={s.status}>
+              {s.label}
+            </Tab>
+          ))}
+        </TabList>
+        {steps.map(s => (
+          <TabPanel key={s.value} value={s.value}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-8)" }}>
+              <Heading as="h3" type="heading" size="xs">
+                Step {steps.indexOf(s) + 1}: {s.label}
+              </Heading>
+              <Paragraph color="muted" size="sm">
+                Status: <strong>{statusLabel[s.status]}</strong>. Fill in the required
+                information for this step before continuing to the next.
+              </Paragraph>
+            </div>
+          </TabPanel>
+        ))}
       </Tabs>
     );
   },

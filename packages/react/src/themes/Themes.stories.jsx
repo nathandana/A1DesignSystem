@@ -1,3 +1,4 @@
+import { useGlobals } from "storybook/preview-api";
 import a1LightTheme from "../../../../system/themes/a1-light/theme.json";
 import accessibleTheme from "../../../../system/themes/accessible/theme.json";
 import heritageTheme from "../../../../system/themes/heritage/theme.json";
@@ -232,13 +233,20 @@ function LivePreview() {
 // ─── Per-theme story layout ───────────────────────────────────────────────────
 
 function ThemeStory({ theme, className }) {
+  const [globals] = useGlobals();
+  const isDark = globals?.colorScheme === "dark";
+
   const rootVars = getRootVars();
   const selectors = Object.entries(theme.selectors ?? {});
   const overrideCount = selectors.reduce((n, [, props]) => n + Object.keys(props).length, 0);
 
+  // Apply the theme class AND, when dark mode is active, a1-theme-dark on the
+  // same element so dark vars (higher source order in color-scheme.css) win.
+  const classes = [className, isDark && "a1-theme-dark"].filter(Boolean).join(" ") || undefined;
+
   return (
     <div
-      className={className}
+      className={classes}
       style={{
         padding: "40px 48px",
         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
@@ -317,9 +325,9 @@ function ThemeStory({ theme, className }) {
 
 // ─── Stories ──────────────────────────────────────────────────────────────────
 
-export const A1Light = {
-  name: "A1 Light",
-  render: () => <ThemeStory theme={a1LightTheme} className="a1-theme-light" />,
+export const Base = {
+  name: "Base",
+  render: () => <ThemeStory theme={a1LightTheme} className="" />,
 };
 
 export const Accessible = {

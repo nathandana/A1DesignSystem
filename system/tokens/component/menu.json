@@ -1,0 +1,17 @@
+{
+  "component": {
+    "menu": {
+      "width": { "$type": "dimension", "$value": "260px" },
+      "viewportOffset": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "borderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "sectionLabelFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.bold}" },
+      "itemFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
+      "itemLineHeight": { "$value": "1.5" },
+      "itemFocusRingWidth": { "$type": "dimension", "$value": "{base.space.button.focusRingWidth}" },
+      "itemFocusRingOffset": { "$type": "dimension", "$value": "-2px" },
+      "itemDisabledOpacity": { "$type": "opacity", "$value": 0.4 },
+      "itemIconSize": { "$type": "dimension", "$value": "18px" },
+      "mobileMaxHeight": { "$value": "80dvh" }
+    }
+  }
+}

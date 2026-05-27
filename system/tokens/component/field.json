@@ -1,0 +1,68 @@
+{
+  "component": {
+    "field": {
+      "borderWidth":         { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "requiredBorderWidth": { "$type": "dimension", "$value": "8px" },
+      "errorBorderWidth":    { "$type": "dimension", "$value": "2px" },
+      "labelFontWeight":     { "$type": "number",    "$value": 600 },
+
+      "focusRingColor":      { "$type": "color",     "$value": "{component.button.focusRing}" },
+      "focusRingWidth":      { "$type": "dimension", "$value": "{component.button.focusRingWidth}" },
+      "focusRingOffset":     { "$type": "dimension", "$value": "{component.button.focusRingOffset}" },
+
+      "hoverBackground":     { "$type": "color",     "$value": "{base.color.neutral.50}" },
+      "hoverBorderColor":    { "$type": "color",     "$value": "{base.color.neutral.600}" },
+      "activeBackground":    { "$type": "color",     "$value": "{base.color.neutral.100}" },
+      "activeBorderColor":   { "$type": "color",     "$value": "{base.color.neutral.700}" },
+
+      "readOnlyBackground":  { "$type": "color",     "$value": "{base.color.info.50}" },
+      "readOnlyBorderColor": { "$type": "color",     "$value": "{base.color.info.200}" },
+      "readOnlyText":        { "$type": "color",     "$value": "{base.color.info.1000}" },
+
+      "comfortable": {
+        "height":        { "$type": "dimension", "$value": "52px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.lg}" }
+      },
+      "default": {
+        "height":        { "$type": "dimension", "$value": "40px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.md}" }
+      },
+      "compact": {
+        "height":        { "$type": "dimension", "$value": "32px" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "gap":           { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.sm}" }
+      },
+
+      "chevronSize":            { "$type": "dimension",  "$value": "{base.spacing.20}" },
+      "chevronSizeComfortable": { "$type": "dimension",  "$value": "{base.spacing.24}" },
+      "chevronSizeCompact":     { "$type": "dimension",  "$value": "{base.spacing.16}" },
+      "sideLabelWidth":         { "$value": "minmax(100px, 160px)" },
+      "sideLabelWidthComfortable": { "$value": "minmax(120px, 200px)" },
+      "accentCompensation":     { "$type": "dimension",  "$value": "7px" },
+      "accentCompensationCompact": { "$type": "dimension", "$value": "3px" },
+      "compactLabelFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "compactAccentBorderWidth": { "$type": "dimension", "$value": "{base.spacing.4}" },
+
+      "textarea": {
+        "paddingBlock":            { "$type": "dimension", "$value": "10px" },
+        "paddingBlockComfortable": { "$type": "dimension", "$value": "14px" },
+        "paddingBlockCompact":     { "$type": "dimension", "$value": "{base.spacing.6}" }
+      },
+
+      "creditCard": {
+        "badgeFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+        "badgeBorderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "badgePaddingBlock": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "badgePaddingInline": { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "badgeMinWidth": { "$type": "dimension", "$value": "{base.spacing.40}" },
+        "badgeLineHeight": { "$value": "1.4" },
+        "detectedOffset": { "$type": "dimension", "$value": "52px" }
+      }
+    }
+  }
+}
