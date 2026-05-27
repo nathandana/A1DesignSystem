@@ -36,7 +36,7 @@
 .a1-grid--xs-6  { --a1-grid-cols: 6; }
 .a1-grid--xs-12 { --a1-grid-cols: 12; }
 
-@media (min-width: 481px) {
+@media (--bp-sm-up) {
   .a1-grid--sm-1  { --a1-grid-cols: 1; }
   .a1-grid--sm-2  { --a1-grid-cols: 2; }
   .a1-grid--sm-3  { --a1-grid-cols: 3; }
@@ -45,7 +45,7 @@
   .a1-grid--sm-12 { --a1-grid-cols: 12; }
 }
 
-@media (min-width: 641px) {
+@media (--bp-md-up) {
   .a1-grid--md-1  { --a1-grid-cols: 1; }
   .a1-grid--md-2  { --a1-grid-cols: 2; }
   .a1-grid--md-3  { --a1-grid-cols: 3; }
@@ -54,7 +54,7 @@
   .a1-grid--md-12 { --a1-grid-cols: 12; }
 }
 
-@media (min-width: 1025px) {
+@media (--bp-lg-up) {
   .a1-grid--lg-1  { --a1-grid-cols: 1; }
   .a1-grid--lg-2  { --a1-grid-cols: 2; }
   .a1-grid--lg-3  { --a1-grid-cols: 3; }
@@ -63,7 +63,7 @@
   .a1-grid--lg-12 { --a1-grid-cols: 12; }
 }
 
-@media (min-width: 1441px) {
+@media (--bp-xl) {
   .a1-grid--xl-1  { --a1-grid-cols: 1; }
   .a1-grid--xl-2  { --a1-grid-cols: 2; }
   .a1-grid--xl-3  { --a1-grid-cols: 3; }
@@ -118,7 +118,7 @@
 .a1-grid-item--xs-row-span-5 { grid-row: span 5; }
 .a1-grid-item--xs-row-span-6 { grid-row: span 6; }
 
-@media (min-width: 481px) {
+@media (--bp-sm-up) {
   .a1-grid-item--sm-span-1  { grid-column: span 1; }
   .a1-grid-item--sm-span-2  { grid-column: span 2; }
   .a1-grid-item--sm-span-3  { grid-column: span 3; }
@@ -141,7 +141,7 @@
   .a1-grid-item--sm-row-span-6 { grid-row: span 6; }
 }
 
-@media (min-width: 641px) {
+@media (--bp-md-up) {
   .a1-grid-item--md-span-1  { grid-column: span 1; }
   .a1-grid-item--md-span-2  { grid-column: span 2; }
   .a1-grid-item--md-span-3  { grid-column: span 3; }
@@ -164,7 +164,7 @@
   .a1-grid-item--md-row-span-6 { grid-row: span 6; }
 }
 
-@media (min-width: 1025px) {
+@media (--bp-lg-up) {
   .a1-grid-item--lg-span-1  { grid-column: span 1; }
   .a1-grid-item--lg-span-2  { grid-column: span 2; }
   .a1-grid-item--lg-span-3  { grid-column: span 3; }
@@ -187,7 +187,7 @@
   .a1-grid-item--lg-row-span-6 { grid-row: span 6; }
 }
 
-@media (min-width: 1441px) {
+@media (--bp-xl) {
   .a1-grid-item--xl-span-1  { grid-column: span 1; }
   .a1-grid-item--xl-span-2  { grid-column: span 2; }
   .a1-grid-item--xl-span-3  { grid-column: span 3; }

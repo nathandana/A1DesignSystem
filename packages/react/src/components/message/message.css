@@ -42,7 +42,7 @@
   flex-shrink: 0;
   color: var(--a1-msg-accent);
   font-size: var(--component-message-banner-icon-size);
-  line-height: 1;
+  line-height: var(--component-message-badge-line-height);
   margin-top: var(--component-message-banner-icon-margin-top);
   --a1-icon-opsz: var(--component-message-banner-icon-optical-size);
 }
@@ -92,6 +92,8 @@
   --a1-badge-subtle-border: var(--semantic-color-border-default);
 
   display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
   align-items: center;
   gap: var(--base-spacing-4);
   padding: var(--component-message-badge-padding-block)
@@ -139,11 +141,11 @@
 .a1-message-badge--subtle {
   --a1-badge-bg: var(--a1-badge-subtle-bg);
   --a1-badge-fg: var(--a1-badge-subtle-fg);
-  outline: 1px solid var(--a1-badge-subtle-border);
+  outline: var(--component-message-badge-border-width) solid var(--a1-badge-subtle-border);
 }
 
 .a1-message-badge .a1-icon {
-  font-size: 1em;
+  font-size: var(--component-message-badge-icon-size);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

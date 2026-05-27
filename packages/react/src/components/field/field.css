@@ -10,10 +10,10 @@
   --a1-field-label-size:     var(--semantic-font-size-body-sm);
   --a1-field-label-weight:   var(--component-field-label-font-weight);
   --a1-field-message-size:   var(--semantic-font-size-body-xs);
-  --a1-field-chevron-size:   20px;
-  --a1-field-side-label-width:      minmax(100px, 160px);
+  --a1-field-chevron-size:   var(--component-field-chevron-size);
+  --a1-field-side-label-width:      var(--component-field-side-label-width);
   --a1-field-accent-border-width:   var(--component-field-required-border-width);
-  --a1-field-accent-compensation:   7px;
+  --a1-field-accent-compensation:   var(--component-field-accent-compensation);
 
   /* interaction — hover/active/readonly values come from :root in color-scheme.css */
   --a1-field-background:            var(--semantic-color-surface-page);
@@ -36,8 +36,8 @@
   --a1-field-border-radius:  var(--base-radius-lg);
   --a1-field-label-size:     var(--semantic-font-size-body-md);
   --a1-field-message-size:   var(--semantic-font-size-body-sm);
-  --a1-field-chevron-size:   24px;
-  --a1-field-side-label-width: minmax(120px, 200px);
+  --a1-field-chevron-size:   var(--component-field-chevron-size-comfortable);
+  --a1-field-side-label-width: var(--component-field-side-label-width-comfortable);
 }
 
 @media (--bp-md-up) {
@@ -67,11 +67,11 @@
   --a1-field-border-radius:  var(--base-radius-sm);
   --a1-field-font-size:      var(--semantic-font-size-body-sm);
   --a1-field-label-size:     var(--semantic-font-size-body-xs);
-  --a1-field-label-weight:   500;
+  --a1-field-label-weight:   var(--component-field-compact-label-font-weight);
   --a1-field-message-size:   var(--semantic-font-size-body-xs);
-  --a1-field-chevron-size:   16px;
-  --a1-field-accent-border-width: 4px;
-  --a1-field-accent-compensation: 3px;
+  --a1-field-chevron-size:   var(--component-field-chevron-size-compact);
+  --a1-field-accent-border-width: var(--component-field-compact-accent-border-width);
+  --a1-field-accent-compensation: var(--component-field-accent-compensation-compact);
 }
 
 /* Compact restores 16px input font on small screens (prevents iOS zoom) */

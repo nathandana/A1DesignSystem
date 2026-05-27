@@ -36,7 +36,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  width: var(--component-tab-scroll-button-width);
   background: var(--semantic-color-surface-page);
   border: none;
   cursor: pointer;
@@ -49,7 +49,7 @@
 }
 
 .a1-tab-list__scroll-btn .a1-icon {
-  font-size: 20px;
+  font-size: var(--component-tab-scroll-button-icon-size);
 }
 
 /* ─── Tab list ────────────────────────────────────────────────────────────── */
@@ -107,7 +107,7 @@
 /* ── Icon styles ─────────────────────────────────────────────────────────── */
 
 .a1-tab__icon {
-  font-size: 1.1em;
+  font-size: var(--component-tab-icon-size);
   flex-shrink: 0;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .a1-tab--icon-above .a1-tab__icon {
-  font-size: 1.5em;
+  font-size: var(--component-tab-icon-above-size);
 }
 
 /* ── Count badge ─────────────────────────────────────────────────────────── */
@@ -129,13 +129,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  font-size: 11px;
+  min-width: var(--component-tab-count-min-width);
+  height: var(--component-tab-count-height);
+  padding: 0 var(--component-tab-count-padding-inline);
+  border-radius: var(--component-tab-count-border-radius);
+  font-size: var(--component-tab-count-font-size);
   font-weight: var(--base-font-weight-medium);
-  line-height: 1;
+  line-height: var(--component-tab-count-line-height);
   background: var(--semantic-color-surface-raised);
   color: var(--semantic-color-text-muted);
 }
@@ -204,7 +204,7 @@
 .a1-tab--folder[aria-selected="true"]::after {
   content: "";
   position: absolute;
-  bottom: -1px;
+  bottom: var(--component-tab-margin-bottom);
   width: var(--base-radius-lg);
   height: var(--base-radius-lg);
   pointer-events: none;
@@ -215,7 +215,7 @@
   left: calc(-1 * var(--base-radius-lg));
   background: radial-gradient(
     circle at 0% 0%,
-    transparent calc(var(--base-radius-lg) - 0.5px),
+    transparent calc(var(--base-radius-lg) - var(--component-tab-folder-curve-adjustment)),
     var(--semantic-color-surface-page) var(--base-radius-lg)
   );
 }
@@ -224,7 +224,7 @@
   right: calc(-1 * var(--base-radius-lg));
   background: radial-gradient(
     circle at 100% 0%,
-    transparent calc(var(--base-radius-lg) - 0.5px),
+    transparent calc(var(--base-radius-lg) - var(--component-tab-folder-curve-adjustment)),
     var(--semantic-color-surface-page) var(--base-radius-lg)
   );
 }
@@ -245,13 +245,13 @@
 /* Custom properties for responsive step geometry */
 .a1-tab--progress {
   --_step-pad-top: var(--base-spacing-8);
-  --_step-size: 24px;
+  --_step-size: var(--component-tab-progress-step-size);
 }
 
-@media (min-width: 641px) {
+@media (--bp-md-up) {
   .a1-tab--progress {
     --_step-pad-top: var(--base-spacing-16);
-    --_step-size: 32px;
+    --_step-size: var(--component-tab-progress-step-size-md);
   }
 }
 
@@ -284,7 +284,7 @@
   top: calc(var(--_step-pad-top) + var(--_step-size) / 2);
   left: 0;
   width: 50%;
-  height: 2px;
+  height: var(--component-tab-progress-line-height);
   background: var(--semantic-color-border-subtle);
   z-index: 0;
 }
@@ -296,7 +296,7 @@
   top: calc(var(--_step-pad-top) + var(--_step-size) / 2);
   right: 0;
   width: 50%;
-  height: 2px;
+  height: var(--component-tab-progress-line-height);
   background: var(--semantic-color-border-subtle);
   z-index: 0;
 }
@@ -320,12 +320,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: var(--component-tab-progress-step-font-size);
   font-weight: var(--base-font-weight-semibold);
   position: relative;
   z-index: 1;
   background: var(--semantic-color-surface-page);
-  border: 2px solid var(--semantic-color-border-default);
+  border: var(--component-tab-progress-step-border-width) solid var(--semantic-color-border-default);
   color: var(--semantic-color-text-muted);
   transition:
     background var(--semantic-motion-duration-fast),
@@ -357,7 +357,7 @@
 }
 
 .a1-tab--status-completed .a1-tab__step .a1-icon {
-  font-size: 16px;
+  font-size: var(--component-tab-progress-completed-icon-size);
 }
 
 /* Selected (active view) — ring around step circle */
@@ -368,7 +368,7 @@
 }
 
 .a1-tab--progress[aria-selected="true"] .a1-tab__step {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-color-action-background) 25%, transparent);
+  box-shadow: var(--component-tab-progress-selected-ring);
 }
 
 /* Selected todo step gets accent border + color */
@@ -401,7 +401,7 @@
   height: var(--base-radius-control);
   background: radial-gradient(
     circle at 0% 0%,
-    transparent calc(var(--base-radius-control) - 0.5px),
+    transparent calc(var(--base-radius-control) - var(--component-tab-folder-curve-adjustment)),
     var(--semantic-color-surface-page) var(--base-radius-control)
   );
 }
@@ -412,14 +412,14 @@
   height: var(--base-radius-control);
   background: radial-gradient(
     circle at 100% 0%,
-    transparent calc(var(--base-radius-control) - 0.5px),
+    transparent calc(var(--base-radius-control) - var(--component-tab-folder-curve-adjustment)),
     var(--semantic-color-surface-page) var(--base-radius-control)
   );
 }
 
 /* ─── Responsive font sizes ───────────────────────────────────────────────── */
 
-@media (min-width: 641px) {
+@media (--bp-md-up) {
   .a1-tab--line,
   .a1-tab--folder,
   .a1-tab--progress {
@@ -432,7 +432,7 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (--bp-lg-up) {
   .a1-tab--line,
   .a1-tab--folder,
   .a1-tab--progress {

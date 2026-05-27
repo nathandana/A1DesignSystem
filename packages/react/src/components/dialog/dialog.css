@@ -6,7 +6,7 @@
   background: var(--semantic-color-surface-page);
   box-shadow: var(--component-dialog-shadow);
   color: var(--semantic-color-text-default);
-  width: min(560px, calc(100vw - var(--base-spacing-64)));
+  width: min(var(--component-dialog-width), calc(100vw - var(--base-spacing-64)));
   max-height: calc(100dvh - var(--base-spacing-64));
   overflow: hidden;
 }
@@ -54,13 +54,13 @@
   border-top: var(--component-dialog-footer-border-width) solid var(--semantic-color-border-subtle);
 }
 
-@media (max-width: 640px) {
+@media (--bp-sm-down) {
   .a1-dialog {
     padding-inline: var(--base-spacing-20);
   }
 }
 
-@media (max-width: 480px) {
+@media (--bp-xs) {
   .a1-dialog {
     width: calc(100vw - var(--base-spacing-32));
   }

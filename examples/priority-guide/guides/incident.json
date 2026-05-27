@@ -1,0 +1,49 @@
+{
+  "$schema": "./schema.json",
+  "id": "incident",
+  "tab": "Incident review",
+  "icon": "report",
+  "title": "Internal incident review page",
+  "context": "Operations dashboard workflow",
+  "problemStatement": "Incident reviews become hard to scan when impact, status, timeline, and follow-up actions compete for attention.",
+  "audience": "Support leads, engineers, and product owners reviewing a service disruption",
+  "userGoal": "Understand what happened, what is affected, and what action is needed next.",
+  "businessGoal": "Create a shared record that improves response quality without assigning blame.",
+  "contextDetails": [
+    { "label": "Decision needed", "value": "- [ ] Approve the hierarchy for executive readouts and team retros.", "checkable": true },
+    { "label": "Out of scope", "value": "Root-cause taxonomy, alert configuration, and customer messaging templates." },
+    { "label": "Contributors", "value": "Support, platform engineering, product ops, communications" }
+  ],
+  "items": [
+    {
+      "type": "Current state",
+      "componentType": "Status summary",
+      "title": "Incident status and customer impact",
+      "content": "Resolved at 10:42 AM. Some file uploads failed for 18 minutes. No data loss detected.",
+      "annotations": [
+        "Status, impact, and data-risk statement must stay above timeline details."
+      ],
+      "links": ["Customer comms", "Status page update"]
+    },
+    {
+      "type": "Timeline",
+      "componentType": "Timeline",
+      "title": "What changed and when",
+      "content": "Deploy began at 10:13 AM, alerts fired at 10:21 AM, rollback started at 10:31 AM, service recovered at 10:42 AM.",
+      "annotations": [
+        "Timeline can become a structured component in the editor."
+      ],
+      "links": ["Deploy record", "Alert thread"]
+    },
+    {
+      "type": "Follow-up",
+      "componentType": "Action item",
+      "title": "Owner, next step, due date",
+      "content": "Platform team will add upload smoke tests to release checks by Friday.",
+      "annotations": [
+        "Action items need owner and due date before the guide is considered complete."
+      ],
+      "links": ["Action tracker"]
+    }
+  ]
+}

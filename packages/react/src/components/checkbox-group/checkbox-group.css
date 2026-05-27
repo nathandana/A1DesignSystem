@@ -7,15 +7,15 @@
   min-width: 0;
 
   /* Size tokens — default */
-  --a1-cb-size:          16px;
+  --a1-cb-size:          var(--component-checkbox-group-box-size);
   --a1-cb-radius:        var(--base-radius-sm);
-  --a1-cb-gap:           8px;     /* horizontal gap: box ↔ text */
-  --a1-cb-item-gap:      2px;     /* gap between items (row padding provides visual breathing room) */
-  --a1-cb-group-gap:     8px;     /* vertical gap between legend/hint and message */
-  --a1-cb-items-top-gap: 12px;    /* extra space between legend/hint and the items stack */
-  --a1-cb-input-nudge:   4px;     /* top margin aligning box center with label cap-height */
-  --a1-cb-row-py:        4px;     /* vertical padding on each item row */
-  --a1-cb-row-px:        6px;     /* horizontal padding on each item row */
+  --a1-cb-gap:           var(--component-checkbox-group-gap);     /* horizontal gap: box ↔ text */
+  --a1-cb-item-gap:      var(--component-checkbox-group-item-gap);     /* gap between items (row padding provides visual breathing room) */
+  --a1-cb-group-gap:     var(--component-checkbox-group-group-gap);     /* vertical gap between legend/hint and message */
+  --a1-cb-items-top-gap: var(--component-checkbox-group-items-top-gap);    /* extra space between legend/hint and the items stack */
+  --a1-cb-input-nudge:   var(--component-checkbox-group-input-nudge);     /* top margin aligning box center with label cap-height */
+  --a1-cb-row-py:        var(--component-checkbox-group-row-padding-block);     /* vertical padding on each item row */
+  --a1-cb-row-px:        var(--component-checkbox-group-row-padding-inline);     /* horizontal padding on each item row */
   --a1-cb-legend-size:  var(--semantic-font-size-body-sm);
   --a1-cb-label-size:   var(--semantic-font-size-body-md);
   --a1-cb-hint-size:    var(--semantic-font-size-body-xs);
@@ -29,14 +29,14 @@
 /* ─── Sizes ───────────────────────────────────────────────────────────────── */
 
 .a1-checkbox-group--comfortable {
-  --a1-cb-size:          20px;
-  --a1-cb-gap:           10px;
-  --a1-cb-item-gap:      2px;
-  --a1-cb-group-gap:     10px;
-  --a1-cb-items-top-gap: 16px;
-  --a1-cb-input-nudge:   2px;
-  --a1-cb-row-py:        6px;
-  --a1-cb-row-px:        8px;
+  --a1-cb-size:          var(--component-checkbox-group-comfortable-box-size);
+  --a1-cb-gap:           var(--component-checkbox-group-comfortable-gap);
+  --a1-cb-item-gap:      var(--component-checkbox-group-comfortable-item-gap);
+  --a1-cb-group-gap:     var(--component-checkbox-group-comfortable-group-gap);
+  --a1-cb-items-top-gap: var(--component-checkbox-group-comfortable-items-top-gap);
+  --a1-cb-input-nudge:   var(--component-checkbox-group-comfortable-input-nudge);
+  --a1-cb-row-py:        var(--component-checkbox-group-comfortable-row-padding-block);
+  --a1-cb-row-px:        var(--component-checkbox-group-comfortable-row-padding-inline);
   --a1-cb-legend-size: var(--semantic-font-size-body-md);
   --a1-cb-label-size:  var(--semantic-font-size-body-md);
   --a1-cb-hint-size:   var(--semantic-font-size-body-sm);
@@ -51,20 +51,20 @@
   .a1-checkbox-group--comfortable {
     --a1-cb-legend-size: var(--semantic-font-size-body-lg);
     --a1-cb-label-size:  var(--semantic-font-size-body-lg);
-    --a1-cb-size:        22px;
-    --a1-cb-input-nudge: 2px;
+    --a1-cb-size:        var(--component-checkbox-group-comfortable-box-size-md);
+    --a1-cb-input-nudge: var(--component-checkbox-group-comfortable-input-nudge);
   }
 }
 
 .a1-checkbox-group--compact {
-  --a1-cb-size:          14px;
-  --a1-cb-gap:           6px;
-  --a1-cb-item-gap:      2px;
-  --a1-cb-group-gap:     4px;
-  --a1-cb-items-top-gap: 8px;
-  --a1-cb-input-nudge:   3px;
-  --a1-cb-row-py:        2px;
-  --a1-cb-row-px:        4px;
+  --a1-cb-size:          var(--component-checkbox-group-compact-box-size);
+  --a1-cb-gap:           var(--component-checkbox-group-compact-gap);
+  --a1-cb-item-gap:      var(--component-checkbox-group-compact-item-gap);
+  --a1-cb-group-gap:     var(--component-checkbox-group-compact-group-gap);
+  --a1-cb-items-top-gap: var(--component-checkbox-group-compact-items-top-gap);
+  --a1-cb-input-nudge:   var(--component-checkbox-group-compact-input-nudge);
+  --a1-cb-row-py:        var(--component-checkbox-group-compact-row-padding-block);
+  --a1-cb-row-px:        var(--component-checkbox-group-compact-row-padding-inline);
   --a1-cb-legend-size: var(--semantic-font-size-body-xs);
   --a1-cb-label-size:  var(--semantic-font-size-body-sm);
   --a1-cb-hint-size:   var(--semantic-font-size-body-xs);
@@ -136,7 +136,7 @@
 .a1-checkbox-item__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--component-checkbox-group-content-gap);
 }
 
 .a1-checkbox-item__label {
@@ -215,20 +215,20 @@
 .a1-checkbox-item__input:checked {
   background-color: var(--semantic-color-status-info-background);
   border-color: var(--semantic-color-status-info-background);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23fafcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 75%;
+  background-size: var(--component-checkbox-group-icon-size);
 }
 
 /* Indeterminate */
 .a1-checkbox-item__input:indeterminate {
   background-color: var(--semantic-color-status-info-background);
   border-color: var(--semantic-color-status-info-background);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%23fafcff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 75%;
+  background-size: var(--component-checkbox-group-icon-size);
 }
 
 /* Disabled (unchecked) */
@@ -276,7 +276,7 @@
 /* Disabled inline item */
 .a1-checkbox-group--inline .a1-checkbox-item--disabled {
   border-color: var(--semantic-color-border-subtle);
-  opacity: 0.6;
+  opacity: var(--component-checkbox-group-disabled-opacity);
 }
 
 /* Inline error — left accent doesn't suit a row layout; just use input borders */
@@ -289,7 +289,7 @@
 
 /* Left accent border on the items block makes the error scope obvious at a glance */
 .a1-checkbox-group--error .a1-checkbox-group__items {
-  border-left: 3px solid var(--semantic-color-status-error-background);
+  border-left: var(--component-checkbox-group-error-accent-width) solid var(--semantic-color-status-error-background);
   padding-left: var(--base-spacing-12);
 }
 
@@ -300,5 +300,5 @@
 
 /* Bolder error message */
 .a1-checkbox-group__message--error {
-  font-weight: 600;
+  font-weight: var(--component-checkbox-group-error-message-font-weight);
 }

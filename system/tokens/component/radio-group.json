@@ -1,0 +1,41 @@
+{
+  "component": {
+    "radioGroup": {
+      "controlSize": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "gap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "itemGap": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "groupGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "itemsTopGap": { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "inputNudge": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "contentGap": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "dotSize": { "$value": "40%" },
+      "errorAccentWidth": { "$type": "dimension", "$value": "3px" },
+      "errorMessageFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+
+      "comfortable": {
+        "controlSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "controlSizeMd": { "$type": "dimension", "$value": "22px" },
+        "gap": { "$type": "dimension", "$value": "10px" },
+        "itemGap": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "groupGap": { "$type": "dimension", "$value": "10px" },
+        "itemsTopGap": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "inputNudge": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.8}" }
+      },
+
+      "compact": {
+        "controlSize": { "$type": "dimension", "$value": "14px" },
+        "gap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "itemGap": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "groupGap": { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "itemsTopGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "inputNudge": { "$type": "dimension", "$value": "3px" },
+        "rowPaddingBlock": { "$type": "dimension", "$value": "{base.spacing.2}" },
+        "rowPaddingInline": { "$type": "dimension", "$value": "{base.spacing.4}" }
+      }
+    }
+  }
+}

@@ -56,7 +56,7 @@
     --semantic-color-status-success-surface:    var(--base-color-success-900);
     --semantic-color-status-success-border:     var(--base-color-success-500);
     --semantic-color-status-success-foreground: var(--base-color-neutral-900);
-    --component-scrim-color: rgba(181, 160, 255, 0.6);
+    --component-scrim-color: var(--component-scrim-color-dark);
     --component-button-primary-background:         var(--base-color-accent-200);
     --component-button-primary-background-hover:   var(--base-color-accent-100);
     --component-button-primary-background-pressed: var(--base-color-accent-50);
@@ -152,7 +152,7 @@
   --semantic-color-status-success-surface:    var(--base-color-success-900);
   --semantic-color-status-success-border:     var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
-  --component-scrim-color: rgba(181, 160, 255, 0.6);
+  --component-scrim-color: var(--component-scrim-color-dark);
   --component-button-primary-background:         var(--base-color-accent-200);
   --component-button-primary-background-hover:   var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);

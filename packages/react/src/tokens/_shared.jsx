@@ -5,14 +5,21 @@ import colorRamp        from "../../../../system/tokens/color-ramp.json";
 import componentNotification from "../../../../system/tokens/component/notification.json";
 import componentButton  from "../../../../system/tokens/component/button.json";
 import componentCard    from "../../../../system/tokens/component/card.json";
+import componentCheckboxGroup from "../../../../system/tokens/component/checkbox-group.json";
 import componentDialog  from "../../../../system/tokens/component/dialog.json";
+import componentDivider from "../../../../system/tokens/component/divider.json";
+import componentField   from "../../../../system/tokens/component/field.json";
 import componentIconBtn from "../../../../system/tokens/component/icon-button.json";
+import componentInline  from "../../../../system/tokens/component/inline.json";
 import componentLink    from "../../../../system/tokens/component/link.json";
+import componentMenu    from "../../../../system/tokens/component/menu.json";
 import componentMsg     from "../../../../system/tokens/component/message.json";
 import componentPag     from "../../../../system/tokens/component/pagination.json";
+import componentRadioGroup from "../../../../system/tokens/component/radio-group.json";
 import componentSeg     from "../../../../system/tokens/component/segmented.json";
 import componentTab     from "../../../../system/tokens/component/tab.json";
 import componentPageLayout from "../../../../system/tokens/component/page-layout.json";
+import componentSwitch  from "../../../../system/tokens/component/switch.json";
 import shadow           from "../../../../system/tokens/shadow.json";
 import spacing          from "../../../../system/tokens/spacing.json";
 import typography       from "../../../../system/tokens/typography.json";
@@ -48,8 +55,9 @@ function flattenRefs(obj, path = "") {
 
 const SOURCE_FILES = [
   breakpoint, motion, colorRamp, componentNotification, componentButton, componentCard, componentDialog,
-  componentIconBtn, componentLink, componentMsg, componentPag, componentSeg,
-  componentTab, componentPageLayout, shadow, spacing, typography,
+  componentCheckboxGroup, componentDivider, componentField, componentIconBtn, componentInline,
+  componentLink, componentMenu, componentMsg, componentPag, componentRadioGroup, componentSeg,
+  componentTab, componentPageLayout, componentSwitch, shadow, spacing, typography,
 ];
 
 export const TOKEN_REFS = SOURCE_FILES.reduce(

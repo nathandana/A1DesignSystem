@@ -4,26 +4,26 @@ del {
 
 cite {
   background: var(--semantic-color-surface-raised);
-  padding: 0.1em 0.35em;
-  border-radius: 0.2em;
+  padding: var(--component-inline-padding-block) var(--component-inline-padding-inline);
+  border-radius: var(--component-inline-border-radius);
   font-style: italic;
 }
 
 code {
   font-family: var(--component-inline-font-family-mono);
   background: var(--semantic-color-surface-raised);
-  padding: 0.1em 0.35em;
-  border-radius: 0.2em;
-  font-size: 0.875em;
+  padding: var(--component-inline-padding-block) var(--component-inline-padding-inline);
+  border-radius: var(--component-inline-border-radius);
+  font-size: var(--component-inline-code-font-size);
 }
 
 kbd {
   font-family: var(--component-inline-font-family-mono);
   background: var(--semantic-color-surface-raised);
-  padding: 0.1em 0.4em;
-  border-radius: 0.2em;
-  border: 1px solid var(--semantic-color-border-subtle);
-  font-size: 0.875em;
+  padding: var(--component-inline-padding-block) var(--component-inline-kbd-padding-inline);
+  border-radius: var(--component-inline-border-radius);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  font-size: var(--component-inline-code-font-size);
 }
 
 var {
@@ -32,12 +32,12 @@ var {
 }
 
 time {
-  font-weight: 500;
+  font-weight: var(--component-inline-emphasis-font-weight);
 }
 
 q {
   font-style: italic;
-  font-weight: 500;
+  font-weight: var(--component-inline-emphasis-font-weight);
 }
 
 /* ── Custom inline utilities ─────────────────────────────────────────────────── */

@@ -20,19 +20,19 @@
 }
 
 .a1-divider--xs {
-  --a1-divider-size: 1px;
+  --a1-divider-size: var(--component-divider-size-xs);
 }
 
 .a1-divider--sm {
-  --a1-divider-size: 2px;
+  --a1-divider-size: var(--component-divider-size-sm);
 }
 
 .a1-divider--md {
-  --a1-divider-size: 3px;
+  --a1-divider-size: var(--component-divider-size-md);
 }
 
 .a1-divider--lg {
-  --a1-divider-size: 4px;
+  --a1-divider-size: var(--component-divider-size-lg);
 }
 
 .a1-divider--subtle {

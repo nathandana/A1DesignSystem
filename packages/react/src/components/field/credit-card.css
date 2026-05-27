@@ -9,22 +9,22 @@
   user-select: none;
   font-family: var(--component-paragraph-font-family);
   font-size: var(--semantic-font-size-body-xs);
-  font-weight: 600;
+  font-weight: var(--component-field-credit-card-badge-font-weight);
   color: var(--semantic-color-text-muted);
   background: var(--semantic-color-surface-raised);
-  border: 1px solid var(--semantic-color-border-subtle);
+  border: var(--component-field-credit-card-badge-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-sm);
-  padding: 2px 6px;
-  min-width: 40px;
+  padding: var(--component-field-credit-card-badge-padding-block) var(--component-field-credit-card-badge-padding-inline);
+  min-width: var(--component-field-credit-card-badge-min-width);
   text-align: center;
-  line-height: 1.4;
+  line-height: var(--component-field-credit-card-badge-line-height);
 }
 
 /* Shift input text and mask overlay left when badge is visible */
 .a1-credit-card--detected .a1-field__input {
-  padding-right: calc(var(--a1-field-padding-inline) + 52px);
+  padding-right: calc(var(--a1-field-padding-inline) + var(--component-field-credit-card-detected-offset));
 }
 
 .a1-credit-card--detected .a1-field__mask-overlay {
-  padding-right: calc(var(--a1-field-padding-inline) + 52px);
+  padding-right: calc(var(--a1-field-padding-inline) + var(--component-field-credit-card-detected-offset));
 }

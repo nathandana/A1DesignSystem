@@ -2,15 +2,15 @@
 
 .a1-switch {
   /* Size tokens — default */
-  --a1-sw-track-width:  40px;
-  --a1-sw-track-height: 22px;
-  --a1-sw-thumb:        16px;    /* track-height - 2*gap */
-  --a1-sw-gap:          3px;
-  --a1-sw-row-gap:      6px;     /* gap between track and label content */
-  --a1-sw-row-py:       4px;
-  --a1-sw-row-px:       6px;
-  --a1-sw-content-gap:  1px;     /* gap between label text and hint */
-  --a1-sw-group-gap:    4px;     /* outer flex gap (for no-label hint/error) */
+  --a1-sw-track-width:  var(--component-switch-track-width);
+  --a1-sw-track-height: var(--component-switch-track-height);
+  --a1-sw-thumb:        var(--component-switch-thumb-size);    /* track-height - 2*gap */
+  --a1-sw-gap:          var(--component-switch-gap);
+  --a1-sw-row-gap:      var(--component-switch-row-gap);     /* gap between track and label content */
+  --a1-sw-row-py:       var(--component-switch-row-padding-block);
+  --a1-sw-row-px:       var(--component-switch-row-padding-inline);
+  --a1-sw-content-gap:  var(--component-switch-content-gap);     /* gap between label text and hint */
+  --a1-sw-group-gap:    var(--component-switch-group-gap);     /* outer flex gap (for no-label hint/error) */
   --a1-sw-label-size:   var(--semantic-font-size-body-md);
   --a1-sw-msg-size:     var(--semantic-font-size-body-xs);
 
@@ -22,15 +22,15 @@
 /* ─── Sizes ───────────────────────────────────────────────────────────────── */
 
 .a1-switch--comfortable {
-  --a1-sw-track-width:  56px;
-  --a1-sw-track-height: 28px;
-  --a1-sw-thumb:        20px;
-  --a1-sw-gap:          4px;
-  --a1-sw-row-gap:      8px;
-  --a1-sw-row-py:       6px;
-  --a1-sw-row-px:       8px;
-  --a1-sw-content-gap:  2px;
-  --a1-sw-group-gap:    6px;
+  --a1-sw-track-width:  var(--component-switch-comfortable-track-width);
+  --a1-sw-track-height: var(--component-switch-comfortable-track-height);
+  --a1-sw-thumb:        var(--component-switch-comfortable-thumb-size);
+  --a1-sw-gap:          var(--component-switch-comfortable-gap);
+  --a1-sw-row-gap:      var(--component-switch-comfortable-row-gap);
+  --a1-sw-row-py:       var(--component-switch-comfortable-row-padding-block);
+  --a1-sw-row-px:       var(--component-switch-comfortable-row-padding-inline);
+  --a1-sw-content-gap:  var(--component-switch-comfortable-content-gap);
+  --a1-sw-group-gap:    var(--component-switch-comfortable-group-gap);
   --a1-sw-label-size:   var(--semantic-font-size-body-md);
   --a1-sw-msg-size:     var(--semantic-font-size-body-sm);
 }
@@ -46,15 +46,15 @@
 }
 
 .a1-switch--compact {
-  --a1-sw-track-width:  32px;
-  --a1-sw-track-height: 18px;
-  --a1-sw-thumb:        12px;
-  --a1-sw-gap:          3px;
-  --a1-sw-row-gap:      4px;
-  --a1-sw-row-py:       2px;
-  --a1-sw-row-px:       4px;
-  --a1-sw-content-gap:  1px;
-  --a1-sw-group-gap:    2px;
+  --a1-sw-track-width:  var(--component-switch-compact-track-width);
+  --a1-sw-track-height: var(--component-switch-compact-track-height);
+  --a1-sw-thumb:        var(--component-switch-compact-thumb-size);
+  --a1-sw-gap:          var(--component-switch-compact-gap);
+  --a1-sw-row-gap:      var(--component-switch-compact-row-gap);
+  --a1-sw-row-py:       var(--component-switch-compact-row-padding-block);
+  --a1-sw-row-px:       var(--component-switch-compact-row-padding-inline);
+  --a1-sw-content-gap:  var(--component-switch-compact-content-gap);
+  --a1-sw-group-gap:    var(--component-switch-compact-group-gap);
   --a1-sw-label-size:   var(--semantic-font-size-body-sm);
   --a1-sw-msg-size:     var(--semantic-font-size-body-xs);
 }
@@ -168,7 +168,7 @@
   height: var(--a1-sw-thumb);
   border-radius: 50%;
   background-color: var(--semantic-color-status-info-background);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--component-switch-thumb-shadow);
   transform: translateX(0);
   transition:
     transform         var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
@@ -241,55 +241,36 @@
 .a1-switch__message--hint  { color: var(--semantic-color-text-muted); }
 .a1-switch__message--error {
   color: var(--semantic-color-status-error-background);
-  font-weight: 600;
+  font-weight: var(--component-switch-message-error-font-weight);
 }
 
 /* ─── Accessible theme — on/off icon stamped onto the thumb ──────────────────
-   Icon variables live on .a1-switch (common ancestor of input and track) so
-   the ::after on .a1-switch__track can inherit them via the cascade.
    Off = "O" (open circle / power-off); On = "|" (vertical bar / power-on).
    The ::after travels with the thumb using the same translateX transition.
    ─────────────────────────────────────────────────────────────────────────── */
 
-.a1-theme-accessible .a1-switch {
-  --a1-sw-icon-off: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='3' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E");
-  --a1-sw-icon-on:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='5' y1='2' x2='5' y2='8' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-
-/* Dark mode: on-icon uses info-400 so it contrasts against the white thumb */
-@media (prefers-color-scheme: dark) {
-  .a1-theme-accessible .a1-switch {
-    --a1-sw-icon-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='5' y1='2' x2='5' y2='8' stroke='%235189fd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  }
-}
-
-.a1-theme-accessible.a1-theme-dark .a1-switch,
-.a1-theme-dark .a1-theme-accessible .a1-switch {
-  --a1-sw-icon-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='5' y1='2' x2='5' y2='8' stroke='%235189fd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-
-.a1-theme-accessible.a1-theme-dark .a1-theme-light .a1-switch,
-.a1-theme-dark .a1-theme-accessible .a1-theme-light .a1-switch {
-  --a1-sw-icon-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='5' y1='2' x2='5' y2='8' stroke='%232563eb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-
 .a1-theme-accessible .a1-switch__track::after {
-  content: "";
+  content: "O";
   position: absolute;
   top: var(--a1-sw-gap);
   left: var(--a1-sw-gap);
   width: var(--a1-sw-thumb);
   height: var(--a1-sw-thumb);
   border-radius: 50%;
-  background-image: var(--a1-sw-icon-off);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 60%;
+  color: var(--semantic-color-status-info-foreground);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-switch-accessible-icon-size);
+  font-weight: var(--base-font-weight-bold);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   transition: transform var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
 }
 
 .a1-theme-accessible .a1-switch__track--on::after {
+  content: "|";
   transform: translateX(calc(var(--a1-sw-track-width) - var(--a1-sw-track-height)));
-  background-image: var(--a1-sw-icon-on);
+  color: var(--semantic-color-status-info-background);
 }

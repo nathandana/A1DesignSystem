@@ -21,7 +21,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--base-spacing-8) var(--base-spacing-12);
-  max-width: 1280px;
+  max-width: var(--component-message-banner-system-max-width);
   margin-inline: auto;
   padding-block: var(--base-spacing-12);
   padding-inline: var(--base-spacing-24);
@@ -32,9 +32,9 @@
 .a1-system-banner__icon {
   flex-shrink: 0;
   display: flex;
-  font-size: 20px;
+  font-size: var(--component-message-banner-icon-size);
   line-height: 1;
-  --a1-icon-opsz: 20;
+  --a1-icon-opsz: var(--component-message-banner-icon-optical-size);
 }
 
 /* ─── Content (title + body inline) ───────────────────────────────────────── */
@@ -52,12 +52,12 @@
 }
 
 .a1-system-banner__title {
-  font-weight: 600;
+  font-weight: var(--component-message-banner-title-font-weight);
   color: var(--a1-sysbanner-fg);
 }
 
 .a1-system-banner__body {
-  font-weight: 400;
+  font-weight: var(--semantic-font-weight-body);
   color: var(--a1-sysbanner-fg);
   opacity: 0.85;
 }

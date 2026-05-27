@@ -1,15 +1,15 @@
 /* ─── TextareaField — size-specific padding ──────────────────────────────── */
 
 .a1-field {
-  --a1-textarea-padding-block: 10px;
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block);
 }
 
 .a1-field--comfortable {
-  --a1-textarea-padding-block: 14px;
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block-comfortable);
 }
 
 .a1-field--compact {
-  --a1-textarea-padding-block: 6px;
+  --a1-textarea-padding-block: var(--component-field-textarea-padding-block-compact);
 }
 
 /* ─── Textarea control ───────────────────────────────────────────────────── */

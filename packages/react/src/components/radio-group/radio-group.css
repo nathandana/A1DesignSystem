@@ -7,14 +7,14 @@
   min-width: 0;
 
   /* Size tokens — default */
-  --a1-rb-size:          16px;
-  --a1-rb-gap:           8px;     /* horizontal gap: circle ↔ text */
-  --a1-rb-item-gap:      2px;     /* gap between items */
-  --a1-rb-group-gap:     8px;     /* vertical gap between legend/hint and message */
-  --a1-rb-items-top-gap: 12px;    /* extra space between legend/hint and the items stack */
-  --a1-rb-input-nudge:   4px;     /* top margin aligning circle center with label cap-height */
-  --a1-rb-row-py:        4px;     /* vertical padding on each item row */
-  --a1-rb-row-px:        6px;     /* horizontal padding on each item row */
+  --a1-rb-size:          var(--component-radio-group-control-size);
+  --a1-rb-gap:           var(--component-radio-group-gap);     /* horizontal gap: circle ↔ text */
+  --a1-rb-item-gap:      var(--component-radio-group-item-gap);     /* gap between items */
+  --a1-rb-group-gap:     var(--component-radio-group-group-gap);     /* vertical gap between legend/hint and message */
+  --a1-rb-items-top-gap: var(--component-radio-group-items-top-gap);    /* extra space between legend/hint and the items stack */
+  --a1-rb-input-nudge:   var(--component-radio-group-input-nudge);     /* top margin aligning circle center with label cap-height */
+  --a1-rb-row-py:        var(--component-radio-group-row-padding-block);     /* vertical padding on each item row */
+  --a1-rb-row-px:        var(--component-radio-group-row-padding-inline);     /* horizontal padding on each item row */
   --a1-rb-legend-size:  var(--semantic-font-size-body-sm);
   --a1-rb-label-size:   var(--semantic-font-size-body-md);
   --a1-rb-hint-size:    var(--semantic-font-size-body-xs);
@@ -28,14 +28,14 @@
 /* ─── Sizes ───────────────────────────────────────────────────────────────── */
 
 .a1-radio-group--comfortable {
-  --a1-rb-size:          20px;
-  --a1-rb-gap:           10px;
-  --a1-rb-item-gap:      2px;
-  --a1-rb-group-gap:     10px;
-  --a1-rb-items-top-gap: 16px;
-  --a1-rb-input-nudge:   2px;
-  --a1-rb-row-py:        6px;
-  --a1-rb-row-px:        8px;
+  --a1-rb-size:          var(--component-radio-group-comfortable-control-size);
+  --a1-rb-gap:           var(--component-radio-group-comfortable-gap);
+  --a1-rb-item-gap:      var(--component-radio-group-comfortable-item-gap);
+  --a1-rb-group-gap:     var(--component-radio-group-comfortable-group-gap);
+  --a1-rb-items-top-gap: var(--component-radio-group-comfortable-items-top-gap);
+  --a1-rb-input-nudge:   var(--component-radio-group-comfortable-input-nudge);
+  --a1-rb-row-py:        var(--component-radio-group-comfortable-row-padding-block);
+  --a1-rb-row-px:        var(--component-radio-group-comfortable-row-padding-inline);
   --a1-rb-legend-size: var(--semantic-font-size-body-md);
   --a1-rb-label-size:  var(--semantic-font-size-body-md);
   --a1-rb-hint-size:   var(--semantic-font-size-body-sm);
@@ -50,20 +50,20 @@
   .a1-radio-group--comfortable {
     --a1-rb-legend-size: var(--semantic-font-size-body-lg);
     --a1-rb-label-size:  var(--semantic-font-size-body-lg);
-    --a1-rb-size:        22px;
-    --a1-rb-input-nudge: 2px;
+    --a1-rb-size:        var(--component-radio-group-comfortable-control-size-md);
+    --a1-rb-input-nudge: var(--component-radio-group-comfortable-input-nudge);
   }
 }
 
 .a1-radio-group--compact {
-  --a1-rb-size:          14px;
-  --a1-rb-gap:           6px;
-  --a1-rb-item-gap:      2px;
-  --a1-rb-group-gap:     4px;
-  --a1-rb-items-top-gap: 8px;
-  --a1-rb-input-nudge:   3px;
-  --a1-rb-row-py:        2px;
-  --a1-rb-row-px:        4px;
+  --a1-rb-size:          var(--component-radio-group-compact-control-size);
+  --a1-rb-gap:           var(--component-radio-group-compact-gap);
+  --a1-rb-item-gap:      var(--component-radio-group-compact-item-gap);
+  --a1-rb-group-gap:     var(--component-radio-group-compact-group-gap);
+  --a1-rb-items-top-gap: var(--component-radio-group-compact-items-top-gap);
+  --a1-rb-input-nudge:   var(--component-radio-group-compact-input-nudge);
+  --a1-rb-row-py:        var(--component-radio-group-compact-row-padding-block);
+  --a1-rb-row-px:        var(--component-radio-group-compact-row-padding-inline);
   --a1-rb-legend-size: var(--semantic-font-size-body-xs);
   --a1-rb-label-size:  var(--semantic-font-size-body-sm);
   --a1-rb-hint-size:   var(--semantic-font-size-body-xs);
@@ -134,7 +134,7 @@
 .a1-radio-item__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--component-radio-group-content-gap);
 }
 
 .a1-radio-item__label {
@@ -213,10 +213,10 @@
 .a1-radio-item__input:checked {
   background-color: var(--semantic-color-status-info-background);
   border-color: var(--semantic-color-status-info-background);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='5' fill='white'/%3E%3C%2Fsvg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='5' fill='%23fafcff'/%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 40%;
+  background-size: var(--component-radio-group-dot-size);
 }
 
 /* Disabled (unselected) */
@@ -253,7 +253,7 @@
 /* ─── Error state ─────────────────────────────────────────────────────────── */
 
 .a1-radio-group--error .a1-radio-group__items {
-  border-left: 3px solid var(--semantic-color-status-error-background);
+  border-left: var(--component-radio-group-error-accent-width) solid var(--semantic-color-status-error-background);
   padding-left: var(--base-spacing-12);
 }
 
@@ -264,5 +264,5 @@
 
 /* Bolder error message */
 .a1-radio-group__message--error {
-  font-weight: 600;
+  font-weight: var(--component-radio-group-error-message-font-weight);
 }
