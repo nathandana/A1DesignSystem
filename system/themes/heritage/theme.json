@@ -69,7 +69,7 @@
       "--base-color-success-1000": "#000100",
 
       "--semantic-color-text-default": "var(--base-color-neutral-900)",
-      "--semantic-color-text-muted": "var(--base-color-neutral-600)",
+      "--semantic-color-text-muted": "var(--base-color-neutral-800)",
       "--semantic-color-text-inverse": "var(--base-color-neutral-0)",
       "--semantic-color-text-accent": "var(--base-color-accent-600)",
       "--semantic-color-surface-page": "var(--base-color-neutral-0)",

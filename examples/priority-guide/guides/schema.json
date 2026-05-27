@@ -6,6 +6,91 @@
   "type": "object",
   "required": ["id", "title", "context", "problemStatement", "audience", "userGoal", "businessGoal", "items"],
   "additionalProperties": false,
+  "definitions": {
+    "guideItem": {
+      "type": "object",
+      "required": ["title", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["item"],
+          "description": "Optional item marker. Omit or set to item for normal elements."
+        },
+        "type": {
+          "type": "string",
+          "description": "Content category label that names the role this element plays on the page.",
+          "examples": ["Critical reassurance", "Primary action", "Decision driver", "Alert", "Timeline", "Follow-up"]
+        },
+        "componentType": {
+          "type": "string",
+          "description": "Suggested UI component or pattern. Not prescriptive — use to give the team a starting point.",
+          "examples": ["Heading", "Button", "Checklist", "Alert", "Timeline", "Card", "Details", "Paragraph"]
+        },
+        "title": {
+          "type": "string",
+          "description": "The element headline or label — written as real content, not a placeholder."
+        },
+        "content": {
+          "type": "string",
+          "description": "Description of what this element contains, communicates, or does. Use real words, not lorem ipsum."
+        },
+        "annotations": {
+          "type": "array",
+          "description": "Side notes that explain why the element exists, how it behaves, what it links to, or what conditions affect it.",
+          "items": { "type": "string" }
+        },
+        "links": {
+          "type": "array",
+          "description": "Related pages, documents, components, or flows this element connects to.",
+          "items": { "type": "string" }
+        },
+        "linkedGuideId": {
+          "type": "string",
+          "description": "Optional guide id this button or link should navigate to in a flow."
+        }
+      }
+    },
+    "guideGroup": {
+      "type": "object",
+      "required": ["kind", "componentType", "title", "content", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["group"],
+          "description": "Marks this top-level item as a one-level group."
+        },
+        "type": {
+          "type": "string",
+          "description": "Content category label that names the role this group plays on the page."
+        },
+        "componentType": {
+          "type": "string",
+          "enum": ["Section", "Card", "Button container"],
+          "description": "Container class component used to frame the group."
+        },
+        "title": {
+          "type": "string",
+          "description": "Group title."
+        },
+        "content": {
+          "type": "string",
+          "description": "What the group contains or why the children belong together."
+        },
+        "annotations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "children": {
+          "type": "array",
+          "description": "One-level child items. Groups cannot contain nested groups.",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/guideItem" }
+        }
+      }
+    }
+  },
   "properties": {
     "id": {
       "type": "string",
@@ -82,43 +167,10 @@
       "description": "Prioritized content elements for this page, ordered from most to least critical (index 0 = highest priority). Each item represents one content block, action, or functional element the page must include.",
       "minItems": 1,
       "items": {
-        "type": "object",
-        "required": ["type", "title", "content"],
-        "additionalProperties": false,
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Content category label that names the role this element plays on the page.",
-            "examples": ["Critical reassurance", "Primary action", "Decision driver", "Alert", "Timeline", "Follow-up"]
-          },
-          "componentType": {
-            "type": "string",
-            "description": "Suggested UI component or pattern. Not prescriptive — use to give the team a starting point.",
-            "examples": ["Heading", "Button", "Checklist", "Alert", "Timeline", "Link card", "Status summary", "Details", "Paragraph"]
-          },
-          "title": {
-            "type": "string",
-            "description": "The element headline or label — written as real content, not a placeholder."
-          },
-          "content": {
-            "type": "string",
-            "description": "Description of what this element contains, communicates, or does. Use real words, not lorem ipsum."
-          },
-          "annotations": {
-            "type": "array",
-            "description": "Side notes that explain why the element exists, how it behaves, what it links to, or what conditions affect it.",
-            "items": {
-              "type": "string"
-            }
-          },
-          "links": {
-            "type": "array",
-            "description": "Related pages, documents, components, or flows this element connects to.",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
+        "oneOf": [
+          { "$ref": "#/definitions/guideItem" },
+          { "$ref": "#/definitions/guideGroup" }
+        ]
       }
     }
   }

@@ -4,6 +4,7 @@
   "tab": "Incident review",
   "icon": "report",
   "title": "Internal incident review page",
+  "pageType": "Dashboard",
   "context": "Operations dashboard workflow",
   "problemStatement": "Incident reviews become hard to scan when impact, status, timeline, and follow-up actions compete for attention.",
   "audience": "Support leads, engineers, and product owners reviewing a service disruption",
@@ -16,24 +17,36 @@
   ],
   "items": [
     {
-      "type": "Current state",
-      "componentType": "Status summary",
-      "title": "Incident status and customer impact",
-      "content": "Resolved at 10:42 AM. Some file uploads failed for 18 minutes. No data loss detected.",
+      "kind": "group",
+      "type": "Review summary",
+      "componentType": "Section",
+      "title": "Status and sequence",
+      "content": "The incident facts that leaders need before reviewing follow-up work.",
       "annotations": [
-        "Status, impact, and data-risk statement must stay above timeline details."
+        "Group status and timeline so the readout starts with shared facts."
       ],
-      "links": ["Customer comms", "Status page update"]
-    },
-    {
-      "type": "Timeline",
-      "componentType": "Timeline",
-      "title": "What changed and when",
-      "content": "Deploy began at 10:13 AM, alerts fired at 10:21 AM, rollback started at 10:31 AM, service recovered at 10:42 AM.",
-      "annotations": [
-        "Timeline can become a structured component in the editor."
-      ],
-      "links": ["Deploy record", "Alert thread"]
+      "children": [
+        {
+          "type": "Current state",
+          "componentType": "Status",
+          "title": "Incident status and customer impact",
+          "content": "Resolved at 10:42 AM. Some file uploads failed for 18 minutes. No data loss detected.",
+          "annotations": [
+            "Status, impact, and data-risk statement must stay above timeline details."
+          ],
+          "links": ["Customer comms", "Status page update"]
+        },
+        {
+          "type": "Timeline",
+          "componentType": "Timeline",
+          "title": "What changed and when",
+          "content": "Deploy began at 10:13 AM, alerts fired at 10:21 AM, rollback started at 10:31 AM, service recovered at 10:42 AM.",
+          "annotations": [
+            "Timeline can become a structured component in the editor."
+          ],
+          "links": ["Deploy record", "Alert thread"]
+        }
+      ]
     },
     {
       "type": "Follow-up",

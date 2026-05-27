@@ -80,6 +80,17 @@
   border-block-start: var(--component-side-nav-border-width) solid var(--semantic-color-border-subtle);
 }
 
+.a1-side-nav--collapse-footer .a1-side-nav__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+}
+
+.a1-side-nav__footer-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* ── Item — shared by SideNavItem and SideNavGroup trigger ─────────────── */
 
 .a1-side-nav-item {
@@ -273,8 +284,17 @@
     gap: var(--base-spacing-4);
   }
 
-  /* Hide footer in collapsed state */
-  .a1-side-nav--collapsed .a1-side-nav__footer {
+  /* Hide footer in collapsed state unless it owns the collapse button */
+  .a1-side-nav--collapsed:not(.a1-side-nav--collapse-footer) .a1-side-nav__footer {
+    display: none;
+  }
+
+  .a1-side-nav--collapsed.a1-side-nav--collapse-footer .a1-side-nav__footer {
+    justify-content: center;
+    padding-inline: var(--base-spacing-4);
+  }
+
+  .a1-side-nav--collapsed.a1-side-nav--collapse-footer .a1-side-nav__footer-content {
     display: none;
   }
 

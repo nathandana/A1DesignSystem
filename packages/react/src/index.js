@@ -1,4 +1,5 @@
 export { Notification } from "./components/notification/Notification.jsx";
+export { Snackbar } from "./components/snackbar/Snackbar.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";
 export { IconButton } from "./components/icon-button/IconButton.jsx";
 export { Button } from "./components/button/Button.jsx";
@@ -29,7 +30,7 @@ export { CheckboxGroup } from "./components/checkbox-group/CheckboxGroup.jsx";
 export { RadioGroup } from "./components/radio-group/RadioGroup.jsx";
 export { Switch } from "./components/switch/Switch.jsx";
 export { MessageBadge, MessageEmptyState } from "./components/message/Message.jsx";
-export { MessageBanner } from "./components/MessageBanner/MessageBanner.jsx";
+
 export { Pagination } from "./components/pagination/Pagination.jsx";
 export { SegmentedControl } from "./components/segmented-control/SegmentedControl.jsx";
 export { Tabs, TabList, Tab, TabPanel } from "./components/tabs/Tabs.jsx";

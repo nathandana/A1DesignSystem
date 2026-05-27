@@ -4,6 +4,7 @@
   "tab": "Trail closure",
   "icon": "terrain",
   "title": "Regional trail closure notice",
+  "pageType": "Overview",
   "context": "Parks and recreation alert page",
   "problemStatement": "Visitors need a fast, trustworthy closure notice before they travel, plus a safe alternative when plans change.",
   "audience": "Hikers checking conditions before traveling to a trailhead",
@@ -16,24 +17,36 @@
   ],
   "items": [
     {
-      "type": "Alert",
-      "componentType": "Alert",
-      "title": "North Ridge Trail is closed after storm damage",
-      "content": "Downed trees and unstable footing make the upper trail unsafe. Crews are assessing repairs.",
+      "kind": "group",
+      "type": "Safety decision",
+      "componentType": "Card",
+      "title": "Closure and safe alternative",
+      "content": "The warning and substitute route that help visitors make a safe choice.",
       "annotations": [
-        "Closure status and reason must be first, especially on mobile."
+        "Pair the closure with an alternative so the notice is actionable."
       ],
-      "links": ["Safety advisory"]
-    },
-    {
-      "type": "Alternative",
-      "componentType": "Link card",
-      "title": "Use Meadow Loop for a similar distance",
-      "content": "Meadow Loop is open, 3.1 miles, moderate grade, and accessible from the same parking area.",
-      "annotations": [
-        "Offer a useful next step instead of ending at the warning."
-      ],
-      "links": ["Meadow Loop map"]
+      "children": [
+        {
+          "type": "Alert",
+          "componentType": "Alert",
+          "title": "North Ridge Trail is closed after storm damage",
+          "content": "Downed trees and unstable footing make the upper trail unsafe. Crews are assessing repairs.",
+          "annotations": [
+            "Closure status and reason must be first, especially on mobile."
+          ],
+          "links": ["Safety advisory"]
+        },
+        {
+          "type": "Alternative",
+          "componentType": "Card",
+          "title": "Use Meadow Loop for a similar distance",
+          "content": "Meadow Loop is open, 3.1 miles, moderate grade, and accessible from the same parking area.",
+          "annotations": [
+            "Offer a useful next step instead of ending at the warning."
+          ],
+          "links": ["Meadow Loop map"]
+        }
+      ]
     },
     {
       "type": "Update path",
