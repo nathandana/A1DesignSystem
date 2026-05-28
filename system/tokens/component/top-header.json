@@ -1,0 +1,10 @@
+{
+  "component": {
+    "topHeader": {
+      "height":        { "$value": "64px" },
+      "paddingInline": { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "borderWidth":   { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "zIndex":        { "$value": "100" }
+    }
+  }
+}

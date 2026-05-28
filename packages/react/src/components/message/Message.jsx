@@ -24,7 +24,7 @@ const ES_SCALE_CONFIG = {
    MessageBadge  (inline filled status chip)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export function MessageBadge({ status = "neutral", subtle = false, icon, children }) {
+export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, children }) {
   const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
   const resolvedIcon = icon ?? STATUS_ICONS[resolvedStatus];
 
@@ -33,6 +33,7 @@ export function MessageBadge({ status = "neutral", subtle = false, icon, childre
       "a1-message-badge",
       `a1-message-badge--${resolvedStatus}`,
       subtle && "a1-message-badge--subtle",
+      size === "lg" && "a1-message-badge--lg",
     ].filter(Boolean).join(" ")}>
       <Icon name={resolvedIcon} />
       {children}

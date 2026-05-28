@@ -19,6 +19,28 @@ const meta = {
       control: "select",
       options: ["page", "panel", "raised", undefined],
     },
+    gap: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg", undefined],
+    },
+    gradient: {
+      control: "select",
+      options: ["accent", "highlight", "info", "success", "warn", undefined],
+    },
+    gradientPosition: {
+      control: "select",
+      options: [
+        "top",
+        "top-right",
+        "right",
+        "bottom-right",
+        "bottom",
+        "bottom-left",
+        "left",
+        "top-left",
+        "center",
+      ],
+    },
     inverse: { control: "boolean" },
     as: { control: "text" },
   },
@@ -57,6 +79,9 @@ export const Default = {
   args: {
     padding: "lg",
     surface: "page",
+    gap: undefined,
+    gradient: undefined,
+    gradientPosition: "center",
     inverse: false,
   },
   render: (args) => (
@@ -67,6 +92,99 @@ export const Default = {
         body="Use the controls panel to change padding (lg / md / sm / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
       />
     </Section>
+  ),
+};
+
+export const Gap = {
+  name: "Content gap",
+  render: () => (
+    <>
+      {["xs", "sm", "md", "lg"].map((gap) => (
+        <Section key={gap} padding="md" surface="panel" gap={gap}>
+          <MessageBadge subtle>{gap}</MessageBadge>
+          <Heading as="h2" size="xl">{gap.toUpperCase()} section gap</Heading>
+          <Paragraph size="lg" color="muted">
+            Section can apply a token-backed t-shirt gap between direct children.
+          </Paragraph>
+          <ButtonContainer align="start">
+            <Button variant="primary">Primary action</Button>
+            <Button variant="secondary">Secondary action</Button>
+          </ButtonContainer>
+        </Section>
+      ))}
+    </>
+  ),
+};
+
+export const GradientSurfaces = {
+  name: "Gradient surfaces",
+  render: () => (
+    <>
+      <Section padding="lg" surface="page" gradient="accent" gradientPosition="left">
+        <SampleContent
+          badge={{ icon: "gradient", label: "Accent · left edge" }}
+          heading="A subtle wash for editorial rhythm"
+          body="Gradient washes layer over the selected section surface, using current theme tokens instead of fixed page colors."
+        />
+      </Section>
+
+      <Section padding="lg" surface="panel" gradient="highlight" gradientPosition="center">
+        <SampleContent
+          badge={{ icon: "flare", label: "Highlight · centered" }}
+          heading="Centered emphasis without a hard panel"
+          body="Use centered gradients when the content itself is the focal point and the surrounding surface should stay quiet."
+        />
+      </Section>
+
+      <Section padding="lg" surface="raised" gradient="info" gradientPosition="right">
+        <SampleContent
+          badge={{ icon: "info", label: "Info · right edge" }}
+          heading="Edge-attached gradients guide the eye"
+          body="Attach the wash to top, right, bottom, or left when the composition needs directional weight."
+        />
+      </Section>
+
+      <Section padding="lg" surface="page" inverse gradient="success" gradientPosition="bottom">
+        <SampleContent
+          badge={{ icon: "dark_mode", label: "Inverse · bottom edge" }}
+          heading="Inverse sections keep the wash restrained"
+          body="In inverse mode the same gradient API uses the dark semantic color scheme and a lower strength token."
+        />
+      </Section>
+    </>
+  ),
+};
+
+export const GradientPositions = {
+  name: "Gradient positions",
+  render: () => (
+    <>
+      {[
+        ["top-left", "Top left"],
+        ["top", "Top"],
+        ["top-right", "Top right"],
+        ["left", "Left"],
+        ["center", "Center"],
+        ["right", "Right"],
+        ["bottom-left", "Bottom left"],
+        ["bottom", "Bottom"],
+        ["bottom-right", "Bottom right"],
+      ].map(([position, label]) => (
+        <Section
+          key={position}
+          padding="md"
+          surface="panel"
+          gradient="accent"
+          gradientPosition={position}
+        >
+          <MessageBadge subtle>{label}</MessageBadge>
+          <Heading as="h2" size="xl">{label} gradient</Heading>
+          <Paragraph size="lg" color="muted">
+            This section anchors the same subtle theme gradient to {label.toLowerCase()}.
+          </Paragraph>
+        </Section>
+      ))}
+    </>
   ),
 };
 

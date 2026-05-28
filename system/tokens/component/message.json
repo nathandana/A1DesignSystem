@@ -22,7 +22,9 @@
         "fontWeight":     { "$type": "number", "$value": 500 },
         "borderWidth":    { "$type": "dimension", "$value": "{base.spacing.1}" },
         "lineHeight":     { "$value": "1" },
-        "iconSize":       { "$value": "1em" }
+        "iconSize":       { "$value": "1em" },
+        "lgPaddingBlock":  { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "lgPaddingInline": { "$type": "dimension", "$value": "{base.spacing.12}" }
       },
       "emptyState": {
         "iconSizePage":          { "$type": "dimension", "$value": "48px" },

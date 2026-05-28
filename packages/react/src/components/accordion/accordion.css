@@ -4,6 +4,7 @@
   /* Size tokens — default (md) */
   --a1-ac-height:      var(--component-accordion-trigger-height-md);
   --a1-ac-px:          var(--component-accordion-padding-inline-md);
+  --a1-ac-py:          var(--base-spacing-8);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-md);
   --a1-ac-font-size:   var(--semantic-font-size-body-md);
   --a1-ac-font-weight: var(--base-font-weight-medium);
@@ -14,6 +15,7 @@
 .a1-accordion--sm {
   --a1-ac-height:      var(--component-accordion-trigger-height-sm);
   --a1-ac-px:          var(--component-accordion-padding-inline-sm);
+  --a1-ac-py:          var(--base-spacing-6);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-sm);
   --a1-ac-font-size:   var(--semantic-font-size-body-sm);
   --a1-ac-font-weight: var(--base-font-weight-medium);
@@ -22,9 +24,10 @@
 .a1-accordion--lg {
   --a1-ac-height:      var(--component-accordion-trigger-height-lg);
   --a1-ac-px:          var(--component-accordion-padding-inline-lg);
+  --a1-ac-py:          var(--base-spacing-12);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-lg);
   --a1-ac-font-size:   var(--semantic-font-size-body-lg);
-  --a1-ac-font-weight: var(--base-font-weight-semibold);
+  --a1-ac-font-weight: var(--base-font-weight-bold);
 }
 
 /* ─── Trigger ───────────────────────────────────────────────────────────────── */
@@ -34,8 +37,9 @@
   align-items: center;
   gap: var(--base-spacing-6);
   width: 100%;
-  height: var(--a1-ac-height);
+  min-height: var(--a1-ac-height);
   padding-inline: var(--a1-ac-px);
+  padding-block: var(--a1-ac-py);
   border: none;
   border-radius: var(--component-accordion-border-radius);
   background: transparent;
@@ -86,9 +90,6 @@
 .a1-accordion__label {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* ─── Body — CSS grid height animation ──────────────────────────────────────── */

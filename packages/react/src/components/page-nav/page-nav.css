@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PageNav — in-page navigation with reading progress bar
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Card shell override ─────────────────────────────────────────────────── */
+
+.a1-page-nav.a1-card {
+  padding: 0;
+  overflow: hidden; /* clip progress bar to card border-radius */
+}
+
+/* ── Progress bar ────────────────────────────────────────────────────────── */
+
+.a1-page-nav__progress {
+  height: 3px;
+  background: var(--semantic-color-border-subtle);
+}
+
+.a1-page-nav__progress-fill {
+  height: 100%;
+  background: var(--semantic-color-action-background);
+  min-width: 0;
+  transition: width 80ms linear;
+}
+
+/* ── Inner layout ────────────────────────────────────────────────────────── */
+
+.a1-page-nav__inner {
+  padding: var(--base-spacing-16);
+}
+
+.a1-page-nav__heading {
+  margin: 0 0 var(--base-spacing-12) 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 600;
+  color: var(--semantic-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.a1-page-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+/* ── Nav links ───────────────────────────────────────────────────────────── */
+
+.a1-page-nav__link {
+  display: block;
+  width: 100%;
+  text-align: start;
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+  border: none;
+  border-radius: var(--base-radius-md);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 400;
+  color: var(--semantic-color-text-muted);
+  line-height: 1.4;
+  transition:
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-page-nav__link:hover {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-page-nav__link:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: -1px;
+}
+
+.a1-page-nav__link--active {
+  color: var(--semantic-color-action-background);
+  font-weight: 500;
+  background: var(--semantic-color-surface-panel);
+}
+
+/* Level-2 sub-items (indented, smaller) */
+.a1-page-nav__link--l2 {
+  padding-inline-start: var(--base-spacing-20);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+/* ── Responsive — horizontal scrollable pill list ────────────────────────── */
+/* At narrow widths the aside stacks. PageNav converts to a compact chip rail  */
+/* that lets users jump to sections without taking up vertical space.          */
+
+@media (max-width: 768px) {
+  .a1-page-nav.a1-card {
+    border-radius: 0;
+    border-inline: none;
+    border-block-start: none;
+  }
+
+  .a1-page-nav__heading {
+    display: none;
+  }
+
+  .a1-page-nav__inner {
+    padding: var(--base-spacing-8) var(--base-spacing-16);
+  }
+
+  .a1-page-nav__list {
+    flex-direction: row;
+    gap: var(--base-spacing-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-block: var(--base-spacing-4);
+  }
+
+  .a1-page-nav__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .a1-page-nav__item {
+    flex-shrink: 0;
+  }
+
+  .a1-page-nav__link {
+    white-space: nowrap;
+    border-radius: 9999px;
+    border: 1px solid var(--semantic-color-border-subtle);
+    padding: var(--base-spacing-4) var(--base-spacing-12);
+    font-size: var(--semantic-font-size-body-xs);
+  }
+
+  .a1-page-nav__link--l2 {
+    padding-inline-start: var(--base-spacing-12);
+  }
+
+  .a1-page-nav__link--active {
+    background: var(--semantic-color-action-background);
+    color: #fff;
+    border-color: var(--semantic-color-action-background);
+  }
+}

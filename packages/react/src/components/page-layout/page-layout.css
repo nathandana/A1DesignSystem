@@ -71,10 +71,46 @@
 
 .a1-page-layout__aside {
   min-width: 0;
+  /* Stretch to match the main column height so that sticky children
+     have a tall-enough containing block to actually stick. */
+  align-self: stretch;
 }
 
 .a1-page-layout__footer {
   flex-shrink: 0;
+}
+
+/* ── Viewport-height mode (editor / app shell layouts) ───────────────────── */
+/* Each panel scrolls independently; the outer container never overflows.     */
+
+.a1-page-layout--viewport-height {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__body {
+  overflow: hidden;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__sidebar {
+  overflow-y: auto;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__content {
+  overflow: hidden;
+}
+
+.a1-page-layout--viewport-height.a1-page-layout--aside-end .a1-page-layout__content,
+.a1-page-layout--viewport-height.a1-page-layout--aside-start .a1-page-layout__content {
+  align-items: stretch;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__aside {
+  overflow-y: auto;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__main {
+  overflow-y: auto;
 }
 
 @media (--bp-sm-down) {

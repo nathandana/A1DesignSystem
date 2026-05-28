@@ -4,11 +4,27 @@ import "./section.css";
 
 const VALID_PADDING = ["lg", "md", "sm", "none"];
 const VALID_SURFACES = ["page", "panel", "raised"];
+const VALID_GAPS = ["xs", "sm", "md", "lg"];
+const VALID_GRADIENTS = ["accent", "highlight", "info", "success", "warn"];
+const VALID_GRADIENT_POSITIONS = [
+  "top",
+  "top-right",
+  "right",
+  "bottom-right",
+  "bottom",
+  "bottom-left",
+  "left",
+  "top-left",
+  "center",
+];
 
 export function Section({
   as: Component = "section",
   padding = "md",
   surface,
+  gap,
+  gradient,
+  gradientPosition = "center",
   inverse = false,
   className = "",
   children,
@@ -30,6 +46,18 @@ export function Section({
 
   if (surface && VALID_SURFACES.includes(surface)) {
     classes.push(`a1-section--surface-${surface}`);
+  }
+
+  if (gap && VALID_GAPS.includes(gap)) {
+    classes.push(`a1-section--gap-${gap}`);
+  }
+
+  if (gradient && VALID_GRADIENTS.includes(gradient)) {
+    classes.push(`a1-section--gradient-${gradient}`);
+  }
+
+  if (gradient && VALID_GRADIENT_POSITIONS.includes(gradientPosition)) {
+    classes.push(`a1-section--gradient-${gradientPosition}`);
   }
 
   if (inverse) {

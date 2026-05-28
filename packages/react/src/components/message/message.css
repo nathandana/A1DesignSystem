@@ -116,15 +116,15 @@
   --a1-badge-subtle-border: var(--semantic-color-status-info-border);
 }
 .a1-message-badge--success {
-  --a1-badge-bg:            var(--semantic-color-status-success-surface);
-  --a1-badge-fg:            var(--semantic-color-status-success-background);
+  --a1-badge-bg:            var(--semantic-color-status-success-background);
+  --a1-badge-fg:            var(--semantic-color-status-success-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-success-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-success-background);
   --a1-badge-subtle-border: var(--semantic-color-status-success-border);
 }
 .a1-message-badge--warn {
-  --a1-badge-bg:            var(--semantic-color-status-warn-surface);
-  --a1-badge-fg:            var(--semantic-color-status-warn-background);
+  --a1-badge-bg:            var(--semantic-color-status-warn-background);
+  --a1-badge-fg:            var(--semantic-color-status-warn-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-warn-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-warn-background);
   --a1-badge-subtle-border: var(--semantic-color-status-warn-border);
@@ -142,6 +142,12 @@
   --a1-badge-bg: var(--a1-badge-subtle-bg);
   --a1-badge-fg: var(--a1-badge-subtle-fg);
   outline: var(--component-message-badge-border-width) solid var(--a1-badge-subtle-border);
+}
+
+.a1-message-badge--lg {
+  padding: var(--component-message-badge-lg-padding-block)
+           var(--component-message-badge-lg-padding-inline);
+  font-size: var(--semantic-font-size-body-md);
 }
 
 .a1-message-badge .a1-icon {

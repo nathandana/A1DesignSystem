@@ -1,10 +1,21 @@
+@keyframes a1-snackbar-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 .a1-snackbar {
   position: fixed;
   z-index: var(--component-snackbar-z-index, 1100);
   box-sizing: border-box;
   width: min(420px, calc(100vw - var(--base-spacing-32)));
   min-height: 56px;
-  padding: var(--base-spacing-10) var(--base-spacing-12) var(--base-spacing-10) var(--base-spacing-24);
+  padding: var(--base-spacing-12) var(--base-spacing-24);
   border: 1px solid var(--a1-snackbar-border);
   border-radius: var(--component-card-border-radius);
   background: var(--a1-snackbar-background);
@@ -13,6 +24,13 @@
   display: flex;
   align-items: center;
   gap: var(--base-spacing-8);
+  animation: a1-snackbar-in var(--semantic-motion-duration-standard, 200ms) var(--semantic-motion-easing-standard, ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-snackbar {
+    animation: none;
+  }
 }
 
 .a1-snackbar--bottom,
@@ -52,7 +70,7 @@
 .a1-snackbar--info {
   --a1-snackbar-background: var(--semantic-color-surface-inverse, var(--base-color-neutral-900));
   --a1-snackbar-border: var(--semantic-color-surface-inverse, var(--base-color-neutral-900));
-  --a1-snackbar-foreground: var(--semantic-color-text-inverse, var(--base-color-neutral-0));
+  --a1-snackbar-foreground: var(--semantic-color-text-default, var(--base-color-neutral-0));
 }
 
 .a1-snackbar--success {

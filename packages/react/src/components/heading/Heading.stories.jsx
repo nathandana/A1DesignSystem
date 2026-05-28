@@ -1,4 +1,4 @@
-import { Heading } from "./Heading.jsx";
+import { Heading, HeadingMark } from "./Heading.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
 
 const meta = {
@@ -122,6 +122,33 @@ export const Colors = {
       <Inverse style={{ padding: "16px", borderRadius: "6px" }}>
         <Heading as="h2">Inverse surface heading</Heading>
       </Inverse>
+    </div>
+  )
+};
+
+export const ExpressiveMarks = {
+  name: "Expressive Marks",
+  render: () => (
+    <div style={{ display: "grid", gap: "32px", maxWidth: "980px" }}>
+      <Heading as="h1" type="display" size={{ xs: "lg", md: "xxl" }}>
+        Build <HeadingMark>alignment</HeadingMark> before the interface.
+      </Heading>
+
+      <Heading as="h2" type="display" size="xl">
+        Make the moment <HeadingMark variant="underline">impossible to miss</HeadingMark>.
+      </Heading>
+
+      <div style={{ display: "grid", gap: "18px" }}>
+        <Heading as="h3" size="lg">
+          Swoop underline for <HeadingMark variant="underline" underlineStyle="swoop">editorial emphasis</HeadingMark>
+        </Heading>
+        <Heading as="h3" size="lg">
+          Wave underline for <HeadingMark variant="underline" underlineStyle="wave">energetic emphasis</HeadingMark>
+        </Heading>
+        <Heading as="h3" size="lg">
+          Sketch underline for <HeadingMark variant="underline" underlineStyle="sketch">rough-draft emphasis</HeadingMark>
+        </Heading>
+      </div>
     </div>
   )
 };

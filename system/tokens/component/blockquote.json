@@ -1,0 +1,12 @@
+{
+  "component": {
+    "blockquote": {
+      "borderWidth":    { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "borderRadius":   { "$type": "dimension", "$value": "{base.radius.lg}" },
+      "paddingBlock":   { "$type": "dimension", "$value": "{base.spacing.20}" },
+      "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "markSize":       { "$value": "5rem" },
+      "citeFontWeight": { "$type": "number",    "$value": 500 }
+    }
+  }
+}

@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TopHeader
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shell ───────────────────────────────────────────────────────────────── */
+
+.a1-top-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--component-top-header-z-index);
+  display: flex;
+  align-items: stretch;
+  height: var(--component-top-header-height);
+  padding-inline: var(--component-top-header-padding-inline);
+  background: var(--semantic-color-surface-page);
+  border-bottom: var(--component-top-header-border-width) solid var(--semantic-color-border-subtle);
+}
+
+/* ── Hamburger (hidden on desktop) ───────────────────────────────────────── */
+
+.a1-top-header__hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin-inline-end: var(--base-spacing-4);
+  background: transparent;
+  border: none;
+  border-radius: var(--base-radius-md);
+  color: var(--semantic-color-text-default);
+  cursor: pointer;
+  font-size: 24px;
+  flex-shrink: 0;
+  transition: background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-top-header__hamburger:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-top-header__hamburger:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 1px;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────────── */
+
+.a1-top-header__logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-heading-sm);
+  font-weight: var(--semantic-font-weight-display);
+  letter-spacing: -0.015em;
+  line-height: 1;
+  padding-inline-end: var(--base-spacing-16);
+}
+
+.a1-top-header__logo img,
+.a1-top-header__logo svg {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
+/* ── Desktop nav ─────────────────────────────────────────────────────────── */
+
+.a1-top-header__nav {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.a1-top-header__nav-list {
+  display: flex;
+  align-items: stretch;
+  gap: var(--base-spacing-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a1-top-header__nav-item {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.a1-top-header__nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  padding-inline: var(--base-spacing-12);
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-top-header__nav-link:hover {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-top-header__nav-link:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: -2px;
+}
+
+.a1-top-header__nav-link--active {
+  color: var(--semantic-color-text-default);
+  border-bottom-color: var(--semantic-color-action-background);
+}
+
+/* icon-only: square-ish click target, no text gap */
+.a1-top-header__nav-link--icon-only {
+  padding-inline: var(--base-spacing-12);
+}
+
+.a1-top-header__nav-link-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.a1-top-header__nav-chevron {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-inline-start: calc(var(--base-spacing-4) * -1);
+  transition: transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+[aria-expanded="true"] > .a1-top-header__nav-chevron {
+  transform: rotate(180deg);
+}
+
+/* Nav submenus use the DS Menu component — no custom dropdown CSS needed. */
+
+/* ── Right-side end zone ──────────────────────────────────────────────────── */
+
+.a1-top-header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  margin-inline-start: auto;
+  padding-inline-start: var(--base-spacing-8);
+  flex-shrink: 0;
+}
+
+/* ── Action button + badge ────────────────────────────────────────────────── */
+
+.a1-top-header__action {
+  position: relative;
+}
+
+.a1-top-header__action-badge-wrap {
+  position: relative;
+}
+
+.a1-top-header__action-badge-wrap::after {
+  content: attr(data-count);
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--base-spacing-4);
+  background: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+  border-radius: 8px;
+  font-family: var(--component-paragraph-font-family);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Action menus use the DS Menu component — no custom dropdown CSS needed. */
+
+/* ── Identity header (non-interactive) inside action menus ───────────────── */
+
+.a1-top-header__menu-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+}
+
+.a1-top-header__menu-identity-name {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 600;
+  color: var(--semantic-color-text-default);
+  line-height: 1.3;
+}
+
+.a1-top-header__menu-identity-desc {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  line-height: 1.4;
+}
+
+/* Mobile drawer uses the DS SideNav component — no custom drawer CSS needed. */
+
+/* ── Login button in end zone ─────────────────────────────────────────────── */
+
+.a1-top-header__login {
+  margin-inline-start: var(--base-spacing-4);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .a1-top-header {
+    padding-inline: var(--base-spacing-16);
+  }
+
+  .a1-top-header__hamburger {
+    display: flex;
+  }
+
+  .a1-top-header__nav {
+    display: none;
+  }
+}

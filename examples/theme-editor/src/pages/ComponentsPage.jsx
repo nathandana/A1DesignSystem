@@ -13,7 +13,6 @@ import {
   TextField,
   TokenSelect,
 } from "../../../../packages/react/src/index.js";
-import { AppHeader } from "../components/AppHeader.jsx";
 import { NAV, findEntry, findVariant } from "../lib/componentRegistry.jsx";
 import { ThemeContext } from "../lib/ThemeContext.js";
 import {
@@ -441,7 +440,7 @@ const REDUCE_MOTION_VARS = {
   "--semantic-motion-duration-slowest": "0ms",
 };
 
-export function ComponentsPage({ onNavigate }) {
+export function ComponentsPage() {
   const [themes, setThemes] = useState(loadThemes);
   const [activeId, setActiveId] = useState(() => loadActiveId(loadThemes()));
   const [selectedId, setSelectedId] = useState("button");
@@ -528,8 +527,6 @@ export function ComponentsPage({ onNavigate }) {
   return (
     <ThemeContext.Provider value={themeContextValue}>
       <div className="components-page">
-        <AppHeader page="components" onNavigate={onNavigate} />
-
         <ThemeToolbar
           themes={themes}
           activeTheme={activeTheme}

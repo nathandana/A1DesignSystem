@@ -1,0 +1,103 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Blockquote
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+.a1-blockquote {
+  margin: 0;
+}
+
+.a1-blockquote__quote {
+  margin: 0;
+  padding: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-lg);
+  font-weight: var(--semantic-font-weight-body);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-blockquote__cite {
+  display: block;
+  margin-top: var(--base-spacing-12);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--component-blockquote-cite-font-weight);
+  font-style: normal;
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-blockquote__cite::before {
+  content: "\2014\00a0";
+}
+
+.a1-blockquote__cite-link {
+  color: inherit;
+}
+
+.a1-blockquote__cite-link:hover {
+  color: var(--semantic-color-text-default);
+}
+
+/* ── Variant: border ──────────────────────────────────────────────────────── */
+
+.a1-blockquote--border {
+  padding-block: var(--component-blockquote-padding-block);
+  padding-inline-start: var(--component-blockquote-padding-inline);
+  border-inline-start: var(--component-blockquote-border-width) solid
+    var(--semantic-color-action-background);
+}
+
+/* ── Variant: filled ──────────────────────────────────────────────────────── */
+
+.a1-blockquote--filled {
+  padding: var(--component-blockquote-padding-block)
+    var(--component-blockquote-padding-inline);
+  background: var(--semantic-color-surface-panel);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-blockquote-border-radius);
+}
+
+/* ── Variant: feature ─────────────────────────────────────────────────────── */
+
+.a1-blockquote--feature {
+  padding-block: var(--component-blockquote-padding-block);
+}
+
+.a1-blockquote--feature .a1-blockquote__quote {
+  font-size: var(--semantic-font-size-display-sm);
+  font-weight: var(--semantic-font-weight-display);
+  line-height: var(--semantic-font-line-height-display);
+}
+
+.a1-blockquote--feature .a1-blockquote__quote::before {
+  content: "\201C";
+  display: block;
+  font-size: var(--component-blockquote-mark-size);
+  line-height: 0.75;
+  color: var(--semantic-color-action-background);
+  margin-bottom: var(--base-spacing-8);
+}
+
+.a1-blockquote--feature .a1-blockquote__cite {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: var(--semantic-font-size-body-xs);
+  margin-top: var(--base-spacing-20);
+}
+
+.a1-blockquote--feature .a1-blockquote__cite::before {
+  content: none;
+}
+
+/* ── Variant: minimal ─────────────────────────────────────────────────────── */
+
+.a1-blockquote--minimal {
+  padding-block-start: var(--component-blockquote-padding-block);
+  border-block-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-blockquote--minimal .a1-blockquote__quote {
+  font-style: italic;
+  color: var(--semantic-color-text-muted);
+}

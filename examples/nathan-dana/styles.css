@@ -1,0 +1,101 @@
+:root {
+  --nd-header-height: 64px;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  background: var(--semantic-color-surface-page);
+  overflow: hidden;
+}
+
+.nd-app {
+  min-height: 100vh;
+}
+
+.nd-tabs {
+  min-height: 100vh;
+}
+
+.nd-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--nd-header-height);
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  align-items: end;
+  gap: var(--base-spacing-16);
+  padding: var(--base-spacing-8) var(--base-spacing-16) 0;
+  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  background: var(--semantic-color-surface-page);
+}
+
+.nd-name {
+  align-self: center;
+  color: var(--semantic-color-text-default);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nd-name :where(h1) {
+  margin: 0;
+}
+
+.nd-header .a1-tab-list-wrapper--folder {
+  align-self: end;
+}
+
+.nd-frame-shell {
+  padding-top: var(--nd-header-height);
+}
+
+.nd-frame-shell .a1-tab-panel--folder {
+  padding: 0;
+}
+
+.nd-frame {
+  display: block;
+  width: 100%;
+  height: calc(100vh - var(--nd-header-height));
+  border: 0;
+  background: var(--semantic-color-surface-page);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --nd-header-height: 112px;
+  }
+
+  .nd-header {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--base-spacing-8);
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .nd-header {
+    padding-inline: var(--base-spacing-12);
+  }
+
+  .nd-header .a1-tab {
+    justify-content: center;
+    min-width: 44px;
+    padding-inline: var(--base-spacing-12);
+  }
+
+  .nd-header .a1-tab__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .nd-header .a1-tab__icon {
+    margin-inline: 0;
+  }
+}

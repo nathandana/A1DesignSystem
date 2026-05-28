@@ -30,6 +30,7 @@
   --semantic-color-text-default: var(--base-color-neutral-50);
   --semantic-color-text-muted:   var(--base-color-neutral-400);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
+  --semantic-color-text-accent:  var(--base-color-accent-300);
   --semantic-color-border-subtle:  var(--base-color-neutral-700);
   --semantic-color-border-default: var(--base-color-neutral-600);
   --semantic-color-border-strong:  var(--base-color-neutral-400);
@@ -105,6 +106,7 @@
     --semantic-color-text-default: var(--base-color-neutral-50);
     --semantic-color-text-muted:   var(--base-color-neutral-400);
     --semantic-color-text-inverse: var(--base-color-neutral-900);
+    --semantic-color-text-accent:  var(--base-color-accent-300);
     --semantic-color-border-subtle:  var(--base-color-neutral-700);
     --semantic-color-border-default: var(--base-color-neutral-600);
     --semantic-color-border-strong:  var(--base-color-neutral-400);
@@ -175,6 +177,7 @@
     --semantic-color-text-default: var(--base-color-neutral-900);
     --semantic-color-text-muted:   var(--base-color-neutral-600);
     --semantic-color-text-inverse: var(--base-color-neutral-0);
+    --semantic-color-text-accent:  var(--base-color-accent-500);
     --semantic-color-border-subtle:  var(--base-color-neutral-200);
     --semantic-color-border-default: var(--base-color-neutral-300);
     --semantic-color-border-strong:  var(--base-color-neutral-500);
@@ -249,6 +252,7 @@
   --semantic-color-text-default: var(--base-color-neutral-50);
   --semantic-color-text-muted:   var(--base-color-neutral-400);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
+  --semantic-color-text-accent:  var(--base-color-accent-300);
   --semantic-color-border-subtle:  var(--base-color-neutral-700);
   --semantic-color-border-default: var(--base-color-neutral-600);
   --semantic-color-border-strong:  var(--base-color-neutral-400);
@@ -320,6 +324,7 @@
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted:   var(--base-color-neutral-600);
   --semantic-color-text-inverse: var(--base-color-neutral-0);
+  --semantic-color-text-accent:  var(--base-color-accent-500);
   --semantic-color-border-subtle:  var(--base-color-neutral-200);
   --semantic-color-border-default: var(--base-color-neutral-300);
   --semantic-color-border-strong:  var(--base-color-neutral-500);

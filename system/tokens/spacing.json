@@ -23,5 +23,15 @@
       "neg-24": { "$type": "dimension", "$value": "-24px" },
       "neg-32": { "$type": "dimension", "$value": "-32px" }
     }
+  },
+  "semantic": {
+    "spacing": {
+      "gap": {
+        "xs": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "sm": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.24}" }
+      }
+    }
   }
 }

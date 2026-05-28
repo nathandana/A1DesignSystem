@@ -8,6 +8,7 @@ export function PageLayout({
   aside,
   asidePlacement = "end",
   stickyHeader = false,
+  viewportHeight = false,
   className = "",
   children,
   ...props
@@ -15,6 +16,7 @@ export function PageLayout({
   const rootClasses = [
     "a1-page-layout",
     stickyHeader && "a1-page-layout--sticky-header",
+    viewportHeight && "a1-page-layout--viewport-height",
     sidebar && `a1-page-layout--sidebar-${sidebarPlacement}`,
     aside && `a1-page-layout--aside-${asidePlacement}`,
     className,

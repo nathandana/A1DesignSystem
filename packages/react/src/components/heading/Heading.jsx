@@ -67,3 +67,31 @@ export function Heading({
 
   return <Component className={classes} style={resolvedStyle} {...props} />;
 }
+
+export function HeadingMark({
+  children,
+  variant = "highlight",
+  underlineStyle = "swoop",
+  className = "",
+  ...props
+}) {
+  const resolvedVariant = variant === "underline" ? "underline" : "highlight";
+  const resolvedUnderlineStyle = ["swoop", "wave", "sketch"].includes(underlineStyle)
+    ? underlineStyle
+    : "swoop";
+
+  const classes = [
+    "a1-heading-mark",
+    `a1-heading-mark--${resolvedVariant}`,
+    resolvedVariant === "underline" && `a1-heading-mark--underline-${resolvedUnderlineStyle}`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <span className={classes} {...props}>
+      {children}
+    </span>
+  );
+}
