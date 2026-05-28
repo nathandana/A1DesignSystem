@@ -1,0 +1,132 @@
+/* ── Shell ──────────────────────────────────────────────────────────────── */
+
+.a1-breadcrumb {
+  container: a1-breadcrumb / inline-size;
+}
+
+/* ── Full list ──────────────────────────────────────────────────────────── */
+
+.a1-breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.a1-breadcrumb__item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+/* Separator between items */
+.a1-breadcrumb__item + .a1-breadcrumb__item::before {
+  content: "/";
+  flex-shrink: 0;
+  padding-inline: var(--base-spacing-6);
+  color: var(--semantic-color-text-muted);
+  user-select: none;
+}
+
+/* ── Item content: link, button, current, ancestor ─────────────────────── */
+
+.a1-breadcrumb__link,
+.a1-breadcrumb__current,
+.a1-breadcrumb__ancestor {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Anchor (Link component) */
+a.a1-breadcrumb__link {
+  /* color/underline handled by .a1-link; block-level display above enables truncation */
+}
+
+/* Button variant: style to match Link */
+button.a1-breadcrumb__link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-family: var(--component-paragraph-font-family);
+  cursor: pointer;
+  color: var(--component-link-color);
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: var(--component-link-underline-offset);
+}
+
+button.a1-breadcrumb__link:hover  { color: var(--component-link-color-hover); }
+button.a1-breadcrumb__link:active { color: var(--component-link-color-pressed); }
+
+button.a1-breadcrumb__link:focus-visible {
+  outline: var(--component-link-focus-ring-width) solid currentColor;
+  outline-offset: var(--component-link-focus-ring-offset);
+  border-radius: var(--component-link-focus-ring-radius);
+}
+
+/* Current page */
+.a1-breadcrumb__current {
+  color: var(--semantic-color-text-default);
+  font-weight: var(--base-font-weight-semibold);
+}
+
+/* Non-linked ancestor text */
+.a1-breadcrumb__ancestor {
+  color: var(--semantic-color-text-muted);
+}
+
+/* ── Back link — hidden by default; shown in narrow containers ──────────── */
+
+/* Higher specificity than .a1-link--has-icon to ensure display: none wins */
+.a1-breadcrumb .a1-breadcrumb__back {
+  display: none;
+}
+
+/* ── Responsive: narrow container ──────────────────────────────────────── */
+
+@container a1-breadcrumb (max-width: 480px) {
+  .a1-breadcrumb__list {
+    display: none;
+  }
+
+  .a1-breadcrumb .a1-breadcrumb__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--component-link-icon-gap, 0.25em);
+  }
+
+  /* Button variant back link */
+  button.a1-breadcrumb__back {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-family: var(--component-paragraph-font-family);
+    cursor: pointer;
+    color: var(--component-link-color);
+    text-decoration: none;
+  }
+
+  button.a1-breadcrumb__back:hover  { color: var(--component-link-color-hover); }
+  button.a1-breadcrumb__back:active { color: var(--component-link-color-pressed); }
+
+  .a1-breadcrumb__back-icon {
+    font-size: 1.1em;
+    flex-shrink: 0;
+  }
+
+  .a1-breadcrumb__back-label {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: var(--component-link-underline-offset);
+  }
+}

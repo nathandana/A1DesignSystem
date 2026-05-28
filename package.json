@@ -18,6 +18,7 @@
     "dev:button": "vite --host 127.0.0.1 --open /examples/react-button/",
     "dev:a1-design": "vite --host 127.0.0.1 --open /examples/a1-design/",
     "dev:priority-guide": "vite --host 127.0.0.1 --open /examples/priority-guide/",
+    "dev:theme-editor": "npm run build:tokens && vite --host 127.0.0.1 --open /examples/theme-editor/",
     "preview:a1-design": "vite preview examples/a1-design --host 127.0.0.1",
     "preview:priority-guide": "vite preview examples/priority-guide --host 127.0.0.1",
     "storybook": "storybook dev",

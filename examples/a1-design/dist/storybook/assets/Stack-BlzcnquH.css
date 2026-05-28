@@ -1,0 +1,1 @@
+.a1-stack{flex-direction:var(--a1-stack-direction,column);flex-wrap:var(--a1-stack-wrap,nowrap);align-items:var(--a1-stack-align,stretch);justify-content:var(--a1-stack-justify,flex-start);gap:var(--a1-stack-gap,var(--base-spacing-16));min-width:0;display:flex}

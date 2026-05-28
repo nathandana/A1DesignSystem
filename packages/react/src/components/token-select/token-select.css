@@ -1,0 +1,110 @@
+/* ─── TokenSelect — trigger ──────────────────────────────────────────────── */
+
+/* Widen the menu to comfortably show token names + hex values side by side */
+.a1-token-select {
+  --component-menu-width: 288px;
+}
+
+/* The trigger is a <button> using field.css's a1-field__select class.
+   We need flex layout for the swatch + label inside it. */
+.a1-token-select__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  text-align: start;
+  cursor: pointer;
+}
+
+.a1-token-select__swatch {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--base-radius-xs, 3px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.a1-token-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "Fira Code", monospace;
+  font-size: 0.82em;
+  line-height: 1;
+}
+
+/* ─── TokenItem (menu list items) ────────────────────────────────────────── */
+
+.a1-token-item {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  width: 100%;
+  padding: var(--base-spacing-5) var(--base-spacing-8);
+  border: none;
+  border-radius: var(--base-radius-control);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font-family: var(--semantic-font-family-body);
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: var(--component-menu-item-line-height);
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-token-item:hover {
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), var(--semantic-color-text-default) 6%);
+}
+
+.a1-token-item:active {
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), var(--semantic-color-text-default) 12%);
+}
+
+.a1-token-item:focus-visible {
+  outline: var(--component-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline-offset: var(--component-menu-item-focus-ring-offset);
+}
+
+.a1-token-item--selected {
+  color: var(--semantic-color-text-accent);
+}
+
+.a1-token-item__swatch {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--base-radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.a1-token-item__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "Fira Code", monospace;
+  font-size: 0.8125rem;
+  font-weight: inherit;
+}
+
+.a1-token-item--selected .a1-token-item__name {
+  font-weight: var(--base-font-weight-semibold);
+}
+
+.a1-token-item__hex {
+  flex-shrink: 0;
+  font-family: ui-monospace, "Fira Code", monospace;
+  font-size: 0.6875rem;
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-token-item__check {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: var(--semantic-color-text-accent);
+}

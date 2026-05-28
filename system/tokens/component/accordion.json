@@ -1,0 +1,18 @@
+{
+  "component": {
+    "accordion": {
+      "triggerHeightSm":  { "$type": "dimension", "$value": "32px" },
+      "triggerHeightMd":  { "$type": "dimension", "$value": "40px" },
+      "triggerHeightLg":  { "$type": "dimension", "$value": "52px" },
+      "paddingInlineSm":  { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "paddingInlineMd":  { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "paddingInlineLg":  { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "iconSizeSm":       { "$type": "dimension", "$value": "18px" },
+      "iconSizeMd":       { "$type": "dimension", "$value": "20px" },
+      "iconSizeLg":       { "$type": "dimension", "$value": "24px" },
+      "borderRadius":     { "$type": "dimension", "$value": "{base.radius.md}" },
+      "focusRingWidth":   { "$type": "dimension", "$value": "2px" },
+      "focusRingOffset":  { "$value": "-2px" }
+    }
+  }
+}

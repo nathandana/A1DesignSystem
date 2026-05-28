@@ -290,12 +290,15 @@
   }
 
   .a1-side-nav--collapsed.a1-side-nav--collapse-footer .a1-side-nav__footer {
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     padding-inline: var(--base-spacing-4);
+    gap: var(--base-spacing-2);
   }
 
   .a1-side-nav--collapsed.a1-side-nav--collapse-footer .a1-side-nav__footer-content {
-    display: none;
+    flex: none;
   }
 
   /* Center items and remove indentation in collapsed state */

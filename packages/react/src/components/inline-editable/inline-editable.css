@@ -1,0 +1,47 @@
+.a1-inline-editable {
+  cursor: text;
+  display: block;
+  border-radius: var(--base-border-radius-sm);
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.15s;
+}
+
+.a1-inline-editable:hover {
+  outline-color: var(--semantic-color-border-default);
+}
+
+.a1-inline-editable:focus-visible {
+  outline: 2px solid var(--semantic-color-border-strong);
+  outline-offset: 2px;
+}
+
+.a1-inline-editable--disabled {
+  cursor: default;
+}
+
+.a1-inline-editable__placeholder {
+  color: var(--semantic-color-text-muted);
+  opacity: 0.7;
+}
+
+.a1-inline-editable__input {
+  display: block;
+  width: 100%;
+  min-height: 2em;
+  background: var(--semantic-color-surface-page);
+  border: 1px solid var(--semantic-color-border-strong);
+  border-radius: var(--base-border-radius-sm);
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  font: inherit;
+  color: var(--semantic-color-text-default);
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.a1-inline-editable__input:focus {
+  border-color: var(--semantic-color-interactive-default);
+  outline: 2px solid var(--semantic-color-interactive-default);
+  outline-offset: -1px;
+}

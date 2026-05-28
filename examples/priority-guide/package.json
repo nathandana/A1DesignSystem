@@ -1,0 +1,12 @@
+{
+  "name": "priority-guide",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && npm run build:tokens && vite --host 127.0.0.1 --open /examples/priority-guide/",
+    "build": "cd ../.. && npm run build:priority-guide",
+    "preview": "cd ../.. && npm run preview:priority-guide",
+    "netlify:build": "cd ../.. && npm ci && npm run build:priority-guide"
+  }
+}

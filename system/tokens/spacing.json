@@ -14,7 +14,14 @@
       "40":  { "$type": "dimension", "$value": "40px" },
       "64":  { "$type": "dimension", "$value": "64px" },
       "96":  { "$type": "dimension", "$value": "96px" },
-      "128": { "$type": "dimension", "$value": "128px" }
+      "128": { "$type": "dimension", "$value": "128px" },
+      "neg-4":  { "$type": "dimension", "$value": "-4px" },
+      "neg-8":  { "$type": "dimension", "$value": "-8px" },
+      "neg-12": { "$type": "dimension", "$value": "-12px" },
+      "neg-16": { "$type": "dimension", "$value": "-16px" },
+      "neg-20": { "$type": "dimension", "$value": "-20px" },
+      "neg-24": { "$type": "dimension", "$value": "-24px" },
+      "neg-32": { "$type": "dimension", "$value": "-32px" }
     }
   }
 }

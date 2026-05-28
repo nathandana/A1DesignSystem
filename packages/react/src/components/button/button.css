@@ -30,19 +30,19 @@
     color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
 }
 
-.a1-button:hover {
+.a1-button:not(:disabled):not([aria-disabled="true"]):hover {
   background: var(--a1-button-background-hover);
   border-color: var(--a1-button-border-hover, var(--a1-button-border));
   color: var(--a1-button-foreground-hover, var(--a1-button-foreground));
 }
 
-.a1-button:active {
+.a1-button:not(:disabled):not([aria-disabled="true"]):active {
   background: var(--a1-button-background-pressed);
   border-color: var(--a1-button-border-pressed, var(--a1-button-border));
   color: var(--a1-button-foreground-pressed, var(--a1-button-foreground));
 }
 
-.a1-button:focus-visible {
+.a1-button:not(:disabled):not([aria-disabled="true"]):focus-visible {
   outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-button-focus-ring-offset);
 }
@@ -51,6 +51,7 @@
 .a1-button[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: var(--component-button-disabled-opacity);
+  pointer-events: none;
 }
 
 .a1-button--primary {

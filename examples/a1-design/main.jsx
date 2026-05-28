@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  Banner,
   Button,
   ButtonContainer,
   Card,
@@ -11,7 +12,6 @@ import {
   LabelsProvider,
   Menu,
   MenuSection,
-  MessageBanner,
   MessageBadge,
   PageLayout,
   Paragraph,
@@ -399,10 +399,10 @@ function AuditReportPage() {
         ))}
       </Grid>
 
-      <MessageBanner status="info" title="Scope">
+      <Banner status="info" title="Scope">
         Generated output such as build, dist, storybook-static, and visual baselines was excluded.
         No files were changed during the audit.
-      </MessageBanner>
+      </Banner>
 
       <Grid columns={{ xs: 1, lg: 3 }} gap="lg" className="a1-design-audit-layout">
         <aside className="a1-design-toc" aria-labelledby="audit-toc-title">

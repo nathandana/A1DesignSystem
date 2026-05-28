@@ -1,3 +1,5 @@
+export { Accordion } from "./components/accordion/Accordion.jsx";
+export { Breadcrumb } from "./components/breadcrumb/Breadcrumb.jsx";
 export { Notification } from "./components/notification/Notification.jsx";
 export { Snackbar } from "./components/snackbar/Snackbar.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";
@@ -8,6 +10,7 @@ export { Card } from "./components/card/Card.jsx";
 export { Cluster } from "./components/cluster/Cluster.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
 export { Divider } from "./components/divider/Divider.jsx";
+export { InlineEditable } from "./components/inline-editable/InlineEditable.jsx";
 export { Heading } from "./components/heading/Heading.jsx";
 export { List, ListItem } from "./components/list/List.jsx";
 export { Inset } from "./components/inset/Inset.jsx";
@@ -42,3 +45,4 @@ export { PageLayout } from "./components/page-layout/PageLayout.jsx";
 export { LabelsProvider, useLabel } from "./components/labels/Labels.jsx";
 export { Menu, MenuSection, MenuItem } from "./components/menu/Menu.jsx";
 export { SideNav, SideNavItem, SideNavGroup } from "./components/side-nav/SideNav.jsx";
+export { TokenSelect } from "./components/token-select/TokenSelect.jsx";
