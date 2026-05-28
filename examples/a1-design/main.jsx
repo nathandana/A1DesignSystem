@@ -7,6 +7,7 @@ import {
   Card,
   Grid,
   Heading,
+  Icon,
   IconButton,
   Inverse,
   LabelsProvider,
@@ -41,11 +42,38 @@ const colorSchemeOptions = [
 const pageIds = ["home", "components", "tokens", "audit", "documentation"];
 
 const navItems = [
-  { id: "components", label: "Components" },
-  { id: "tokens", label: "Tokens" },
   { id: "audit", label: "Audit" },
-  { id: "documentation", label: "Documentation" },
-  { href: "/storybook/", label: "Storybook" }
+  { href: "../priority-guide/", label: "Priority Guide" },
+  { href: "../theme-editor/", label: "Theme Editor" },
+  { href: "../portfolio/", label: "Portfolio" },
+  { href: "../../storybook-static/", label: "Storybook" },
+];
+
+const projectLinks = [
+  {
+    href: "../priority-guide/",
+    icon: "checklist",
+    label: "Priority Guide",
+    description: "Content prioritization framework and scoring tool for UX teams.",
+  },
+  {
+    href: "../theme-editor/",
+    icon: "palette",
+    label: "Theme Editor",
+    description: "Visual token editor for customizing and exporting design system themes.",
+  },
+  {
+    href: "../portfolio/",
+    icon: "work",
+    label: "Portfolio",
+    description: "Senior UX Designer portfolio with product design case studies.",
+  },
+  {
+    href: "/storybook/",
+    icon: "auto_stories",
+    label: "Storybook",
+    description: "Component documentation, visual testing, and interaction examples.",
+  },
 ];
 
 const auditSummary = [
@@ -215,6 +243,31 @@ function HomePage({ onNavigate }) {
             {labelViewDocs}
           </Button>
         </ButtonContainer>
+      </section>
+
+      <section className="a1-design-projects" aria-labelledby="projects-title">
+        <div className="a1-design-projects-inner">
+          <Heading as="h2" id="projects-title" size="xs" className="a1-design-projects-label">
+            Projects
+          </Heading>
+          <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="md">
+            {projectLinks.map((project) => (
+              <Card
+                key={project.href}
+                as="a"
+                href={project.href}
+                shadow="xs"
+                className="a1-design-project-card"
+              >
+                <span className="a1-design-project-card__icon" aria-hidden="true">
+                  <Icon name={project.icon} />
+                </span>
+                <Heading as="h3" size="sm">{project.label}</Heading>
+                <Paragraph size="sm" color="muted">{project.description}</Paragraph>
+              </Card>
+            ))}
+          </Grid>
+        </div>
       </section>
 
       <Inverse as="section" className="a1-design-overview" aria-labelledby="overview-title">

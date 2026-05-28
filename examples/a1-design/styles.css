@@ -35,7 +35,7 @@ body {
 
 .a1-design-nav-list {
   display: flex;
-  gap: var(--base-spacing-32);
+  gap: var(--base-spacing-20);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -91,6 +91,51 @@ body {
   max-width: 560px;
 }
 
+/* ─── Project cards ─────────────────────────────────────── */
+.a1-design-projects {
+  padding: var(--base-spacing-64) var(--base-spacing-40);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-design-projects-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.a1-design-projects-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--semantic-color-text-muted);
+  margin-bottom: var(--base-spacing-24);
+}
+
+.a1-design-project-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-12);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow var(--semantic-motion-duration-fast, 0.1s) ease;
+}
+
+.a1-design-project-card:hover {
+  box-shadow: var(--base-shadow-md, 0 4px 12px rgba(0,0,0,.12));
+}
+
+.a1-design-project-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--base-radius-control);
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-text-accent);
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+/* ─── Overview ──────────────────────────────────────────── */
 .a1-design-overview {
   padding: var(--base-spacing-64) var(--base-spacing-40);
 }
@@ -323,6 +368,7 @@ body {
 
   .a1-design-hero,
   .a1-design-overview,
+  .a1-design-projects,
   .a1-design-content-page {
     padding: var(--base-spacing-40) var(--base-spacing-24);
   }
