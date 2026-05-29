@@ -26,16 +26,18 @@ const ES_SCALE_CONFIG = {
 
 export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, children }) {
   const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
-  const resolvedIcon = icon ?? STATUS_ICONS[resolvedStatus];
+  // icon={null} explicitly suppresses the icon; undefined falls back to the status default
+  const resolvedIcon = icon === null ? null : (icon ?? STATUS_ICONS[resolvedStatus]);
 
   return (
     <span className={[
       "a1-message-badge",
       `a1-message-badge--${resolvedStatus}`,
       subtle && "a1-message-badge--subtle",
+      size === "sm" && "a1-message-badge--sm",
       size === "lg" && "a1-message-badge--lg",
     ].filter(Boolean).join(" ")}>
-      <Icon name={resolvedIcon} />
+      {resolvedIcon && <Icon name={resolvedIcon} />}
       {children}
     </span>
   );

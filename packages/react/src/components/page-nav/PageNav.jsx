@@ -60,44 +60,51 @@ export function PageNav({
   }, [sections]);
 
   function handleClick(id) {
+    // Immediately highlight the clicked item — don't wait for the observer
+    setActiveId(id);
     const el = document.getElementById(id);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
-    <Card className={["a1-page-nav", className].filter(Boolean).join(" ")} {...props}>
-      {/* Progress bar — spans full card width above padding */}
-      <div className="a1-page-nav__progress" aria-hidden="true">
-        <div
-          className="a1-page-nav__progress-fill"
-          style={{ width: `${progress.toFixed(1)}%` }}
-        />
-      </div>
+    <>
+      <Card className={["a1-page-nav", className].filter(Boolean).join(" ")} {...props}>
+        {/* Progress bar — spans full card width above padding */}
+        <div className="a1-page-nav__progress" aria-hidden="true">
+          <div
+            className="a1-page-nav__progress-fill"
+            style={{ width: `${progress.toFixed(1)}%` }}
+          />
+        </div>
 
-      <nav className="a1-page-nav__inner" aria-label={label}>
-        <p className="a1-page-nav__heading">{label}</p>
-        <ul className="a1-page-nav__list" role="list">
-          {sections.map(({ id, label: itemLabel, level = 1 }) => (
-            <li key={id} className="a1-page-nav__item">
-              <button
-                type="button"
-                className={[
-                  "a1-page-nav__link",
-                  level === 2 && "a1-page-nav__link--l2",
-                  activeId === id && "a1-page-nav__link--active",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                aria-current={activeId === id ? "location" : undefined}
-                onClick={() => handleClick(id)}
-              >
-                {itemLabel}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </Card>
+        <nav className="a1-page-nav__inner" aria-label={label}>
+          <p className="a1-page-nav__heading">{label}</p>
+          <ul className="a1-page-nav__list" role="list">
+            {sections.map(({ id, label: itemLabel, level = 1 }) => (
+              <li key={id} className="a1-page-nav__item">
+                <button
+                  type="button"
+                  className={[
+                    "a1-page-nav__link",
+                    level === 2 && "a1-page-nav__link--l2",
+                    activeId === id && "a1-page-nav__link--active",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  aria-current={activeId === id ? "location" : undefined}
+                  onClick={() => handleClick(id)}
+                >
+                  {itemLabel}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </Card>
+
+      {/* Reserves space for the fixed pill nav on mobile so content isn't hidden beneath it */}
+      <div className="a1-page-nav__spacer" aria-hidden="true" />
+    </>
   );
 }

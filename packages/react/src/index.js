@@ -49,3 +49,5 @@ export { Menu, MenuSection, MenuItem } from "./components/menu/Menu.jsx";
 export { SideNav, SideNavItem, SideNavGroup } from "./components/side-nav/SideNav.jsx";
 export { TokenSelect } from "./components/token-select/TokenSelect.jsx";
 export { TopHeader } from "./components/top-header/TopHeader.jsx";
+export { DataTable } from "./components/data-table/DataTable.jsx";
+export { DataTableFilters } from "./components/data-table/DataTableFilters.jsx";

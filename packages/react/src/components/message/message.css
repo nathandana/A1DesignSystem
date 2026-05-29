@@ -144,6 +144,12 @@
   outline: var(--component-message-badge-border-width) solid var(--a1-badge-subtle-border);
 }
 
+.a1-message-badge--sm {
+  padding: var(--component-message-badge-sm-padding-block)
+           var(--component-message-badge-sm-padding-inline);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
 .a1-message-badge--lg {
   padding: var(--component-message-badge-lg-padding-block)
            var(--component-message-badge-lg-padding-inline);

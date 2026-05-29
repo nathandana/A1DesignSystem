@@ -1,0 +1,309 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DataTableFilters
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.a1-dt-filters {
+  min-height: 32px;
+}
+
+/* ── Desktop chip row (hidden at xs ≤480px) ──────────────────────────────── */
+
+.a1-dt-filters__desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-10);
+  flex-wrap: wrap;
+}
+
+/* ── Mobile layout (shown only at xs ≤480px) ─────────────────────────────── */
+
+.a1-dt-filters__mobile {
+  display: none;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  flex-wrap: wrap;
+}
+
+.a1-dt-filters__mobile-trigger {
+  display: contents;
+}
+
+@media (max-width: 480px) {
+  .a1-dt-filters__desktop { display: none; }
+  .a1-dt-filters__mobile  { display: flex; }
+}
+
+/* ── "Filters" label ─────────────────────────────────────────────────────── */
+
+.a1-dt-filters__label {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 500;
+  color: var(--semantic-color-text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ── Chip row ────────────────────────────────────────────────────────────── */
+
+.a1-dt-filters__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-6);
+}
+
+/* ── Chip + clear button wrapper ─────────────────────────────────────────── */
+
+.a1-dt-filters__chip-wrap {
+  display: flex;
+  align-items: stretch;
+}
+
+/* ── Filter chip button ──────────────────────────────────────────────────── */
+
+.a1-dt-filters__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-6) var(--base-spacing-12);
+  border: 1px solid var(--semantic-color-border-default);
+  border-radius: 9999px;
+  background: transparent;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 100ms ease, border-color 100ms ease;
+}
+
+.a1-dt-filters__chip:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-dt-filters__chip:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* Active state — a value is selected */
+.a1-dt-filters__chip--active {
+  border-color: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-background);
+  border-start-end-radius: var(--base-radius-sm);
+  border-end-end-radius: var(--base-radius-sm);
+}
+
+.a1-dt-filters__chip-sep {
+  color: var(--semantic-color-text-muted);
+  font-weight: 400;
+}
+
+.a1-dt-filters__chip-value {
+  font-weight: 500;
+}
+
+.a1-dt-filters__chip-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-inline-start: -2px;
+}
+
+/* ── Clear × button (adjacent to active chip) ────────────────────────────── */
+
+.a1-dt-filters__chip-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--base-spacing-8);
+  border: 1px solid var(--semantic-color-action-background);
+  border-inline-start: 1px solid var(--semantic-color-border-subtle);
+  border-start-end-radius: 9999px;
+  border-end-end-radius: 9999px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  background: transparent;
+  color: var(--semantic-color-action-background);
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+
+.a1-dt-filters__chip-clear .a1-icon {
+  font-size: 14px;
+}
+
+.a1-dt-filters__chip-clear:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-dt-filters__chip-clear:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* ── Radio / checkbox icon color in open menu ────────────────────────────── */
+
+.a1-dt-filters__item--on .a1-menu-item__icon {
+  color: var(--semantic-color-action-background);
+}
+
+/* ── Clear all ───────────────────────────────────────────────────────────── */
+
+.a1-dt-filters__clear-all {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  background: none;
+  border: none;
+  border-radius: var(--base-radius-sm);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-action-background);
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+
+.a1-dt-filters__clear-all:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-dt-filters__clear-all:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* ── Mobile active-filter count badge ───────────────────────────────────── */
+
+.a1-dt-filters__mobile-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: var(--base-spacing-4);
+  border-radius: 9999px;
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  margin-inline-start: var(--base-spacing-4);
+}
+
+/* ── Mobile menu clear section ───────────────────────────────────────────── */
+
+.a1-dt-filters__menu-clear {
+  padding: var(--base-spacing-8) var(--base-spacing-16) var(--base-spacing-16);
+}
+
+/* ── Search field — matches compact TextField exactly ────────────────────── */
+
+.a1-dt-filters__search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Compact field geometry */
+  height: var(--component-field-compact-height);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--component-field-compact-border-radius);
+  background: var(--semantic-color-surface-page);
+  min-width: 200px;
+  overflow: hidden;
+  transition:
+    border-color var(--semantic-motion-duration-fast),
+    background var(--semantic-motion-duration-fast);
+}
+
+.a1-dt-filters__search-wrap:hover:not(:focus-within) {
+  background: var(--a1-field-hover-background);
+  border-color: var(--a1-field-hover-border-color);
+}
+
+.a1-dt-filters__search-wrap:focus-within {
+  border-color: var(--semantic-color-action-background);
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+/* Search icon — 16px matches chevron-size-compact */
+.a1-dt-filters__search-icon {
+  position: absolute;
+  left: var(--component-field-compact-padding-inline);
+  font-size: var(--component-field-chevron-size-compact);
+  color: var(--semantic-color-text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Input — fills remaining space; no individual border/outline */
+.a1-dt-filters__search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
+  /* Left padding = field padding-inline + icon + gap (4px) */
+  padding-inline-start: calc(
+    var(--component-field-compact-padding-inline) +
+    var(--component-field-chevron-size-compact) +
+    var(--component-field-compact-gap)
+  );
+  padding-inline-end: var(--component-field-compact-padding-inline);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-default);
+  outline: none;
+}
+
+.a1-dt-filters__search-input::-webkit-search-cancel-button { display: none; }
+
+.a1-dt-filters__search-input::placeholder {
+  color: var(--semantic-color-text-muted);
+  font-weight: var(--base-font-weight-regular);
+}
+
+/* ── Scope selector (right side of search) ───────────────────────────────── */
+
+.a1-dt-filters__scope-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  border-inline-start: var(--component-field-border-width) solid var(--semantic-color-border-subtle);
+}
+
+.a1-dt-filters__scope-select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 100%;
+  border: none;
+  background: var(--semantic-color-surface-panel);
+  /* Right padding accommodates the chevron icon */
+  padding-inline-start: var(--component-field-compact-padding-inline);
+  padding-inline-end: calc(var(--component-field-chevron-size-compact) + var(--component-field-compact-padding-inline));
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  cursor: pointer;
+  max-width: 120px;
+  outline: none;
+}
+
+/* Chevron for scope select */
+.a1-dt-filters__scope-icon {
+  position: absolute;
+  right: var(--component-field-compact-padding-inline);
+  font-size: var(--component-field-chevron-size-compact);
+  color: var(--semantic-color-text-muted);
+  pointer-events: none;
+}
+
+/* Mobile: search stretches to fill the row */
+@media (max-width: 480px) {
+  .a1-dt-filters__search-wrap {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

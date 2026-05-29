@@ -1,0 +1,28 @@
+{
+  "component": {
+    "dataTable": {
+      "borderWidth":           { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "headerFontWeight":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "focusRingWidth":        { "$type": "dimension",  "$value": "2px" },
+      "focusRingOffset":       { "$type": "dimension",  "$value": "-1px" },
+
+      "density": {
+        "compact": {
+          "cellPaddingBlock":  { "$type": "dimension",  "$value": "{base.spacing.6}" },
+          "cellPaddingInline": { "$type": "dimension",  "$value": "{base.spacing.12}" },
+          "fontSize":          { "$type": "dimension",  "$value": "{base.font.size.scale.100}" }
+        },
+        "default": {
+          "cellPaddingBlock":  { "$type": "dimension",  "$value": "{base.spacing.12}" },
+          "cellPaddingInline": { "$type": "dimension",  "$value": "{base.spacing.16}" },
+          "fontSize":          { "$type": "dimension",  "$value": "{base.font.size.scale.150}" }
+        },
+        "comfortable": {
+          "cellPaddingBlock":  { "$type": "dimension",  "$value": "{base.spacing.20}" },
+          "cellPaddingInline": { "$type": "dimension",  "$value": "{base.spacing.20}" },
+          "fontSize":          { "$type": "dimension",  "$value": "{base.font.size.scale.150}" }
+        }
+      }
+    }
+  }
+}
