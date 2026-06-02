@@ -1,6 +1,6 @@
 import "./blockquote.css";
 
-const VARIANTS = ["border", "filled", "feature", "minimal"];
+const VARIANTS = ["border", "filled", "feature", "minimal", "accent", "pull", "ruled"];
 
 export function Blockquote({
   variant = "border",

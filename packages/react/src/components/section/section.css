@@ -75,6 +75,27 @@
 .a1-section--gap-md { gap: var(--semantic-spacing-gap-md); }
 .a1-section--gap-lg { gap: var(--semantic-spacing-gap-lg); }
 
+/* ── Height ────────────────────────────────────────────────────────────────── */
+
+.a1-section--height-screen {
+  min-height: 100svh;
+}
+
+/* ── Content width ─────────────────────────────────────────────────────────── */
+
+.a1-section__inner {
+  width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.a1-section__inner--xs  { max-width: 28.5rem; }
+.a1-section__inner--sm  { max-width: 40rem;  }
+.a1-section__inner--md  { max-width: 50rem;  }
+.a1-section__inner--lg  { max-width: 60rem;  }
+.a1-section__inner--xl  { max-width: 70rem;  }
+.a1-section__inner--2xl { max-width: 90rem;  }
+
 /* ── Padding — static (with built-in responsive scaling) ───────────────────── */
 /*
  * Three tiers scale across three breakpoints:

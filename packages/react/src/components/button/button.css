@@ -151,7 +151,7 @@
   --a1-button-icon-opsz: var(--component-button-large-icon-optical-size);
 }
 
-.a1-button__icon {
+.a1-button .a1-button__icon {
   font-size: var(--a1-button-icon-size, var(--component-button-icon-size));
   --a1-icon-opsz: var(--a1-button-icon-opsz, var(--component-button-icon-optical-size));
 }

@@ -1,0 +1,67 @@
+export const processSteps = [
+  {
+    id: "discovery",
+    number: "01",
+    label: "Discovery",
+    icon: "travel_explore",
+    heading: "Asking bold questions",
+    keyPoints: [
+      { icon: "psychology", text: "Naturally inquisitive, strategic questioner" },
+      { icon: "record_voice_over", text: "Build trust early through active listening" },
+    ],
+    body: "Great solutions require deeply understanding the problem first. I lean into curiosity through design jams and stakeholder workshops — not just asking what, but always why. This phase is about listening, aligning with business goals, understanding user pain points, and uncovering the constraints that actually shape what's possible. I ask the uncomfortable questions across product, design, accessibility, and engineering that others sometimes avoid.",
+    quote: "Help me understand the hierarchy here. Is this new feature the most important thing for the user?",
+  },
+  {
+    id: "wireframe",
+    number: "02",
+    label: "Wireframe",
+    icon: "draw",
+    heading: "Start ugly and sharp",
+    keyPoints: [
+      { icon: "edit_note", text: "Post-its and Sharpies are preferred tools" },
+      { icon: "format_shapes", text: "Structure and content come first, always" },
+    ],
+    body: "I'm not a visual artist — and that's a strength, not a limitation. Fat Sharpies, small Post-its, and whiteboards force rapid iteration, clear thinking, and early collaboration. When fidelity is low, feedback is honest. I advocate for content-first design from the start, building around semantic structure and clear hierarchy aligned with accessibility standards. If a screen reader can't navigate it meaningfully, neither can a user.",
+    quote: "Can you say that back to me in your own words? I want to make sure I'm not talking about triangles when you are talking about pyramids.",
+  },
+  {
+    id: "design",
+    number: "03",
+    label: "Design",
+    icon: "design_services",
+    heading: "Jumping into Figma",
+    keyPoints: [
+      { icon: "widgets", text: "Expert in components, variables, and auto layout" },
+      { icon: "code", text: "Prototype in code when Figma hits its limits" },
+    ],
+    body: "I leverage deep Figma expertise — components, variables, auto layout, and interactive prototyping — to move quickly without sacrificing scalability or brand consistency. Libraries and systems are the foundation. When a flow is too complex for Figma to communicate accurately, I'll build a quick CodePen or coded prototype instead. AI tools turn repetitive work into minutes, freeing attention for the decisions that actually matter.",
+    quote: "Check out this quick CodePen I threw together — it better illustrates how responsive behavior should work here.",
+  },
+  {
+    id: "validate",
+    number: "04",
+    label: "Validate",
+    icon: "fact_check",
+    heading: "Feedback is fuel",
+    keyPoints: [
+      { icon: "diversity_3", text: "Champion inclusive feedback loops with diverse voices" },
+      { icon: "bar_chart", text: "Use testing and data to refine and reduce risk" },
+    ],
+    body: "Research isn't a checkpoint — it's an ongoing rhythm. I test early with paper sketches and teammates, then move into usability testing, stakeholder walkthroughs, and analytics as fidelity increases. Sharing work early and often, with leadership, developers, accessibility experts, and end-users, leads to better outcomes and avoids the expensive surprises that come from late-stage feedback. The best validation finds what's broken before it ships.",
+    quote: "Feedback when you think you are done is the absolute worst. Early on, it's no big deal.",
+  },
+  {
+    id: "finalize",
+    number: "05",
+    label: "Finalize",
+    icon: "verified",
+    heading: "Obsess the details",
+    keyPoints: [
+      { icon: "straighten", text: "Sharp eye for spacing, tokens, and accessibility" },
+      { icon: "handyman", text: "Partner closely with developers for quality delivery" },
+    ],
+    body: "As a project nears completion, my focus sharpens on the details that separate good from great: spacing, hierarchy, interaction logic, accessibility labels, and token consistency. I pair closely with developers through ticket review, documentation, and direct collaboration to ensure high-quality delivery. Every intentional pixel and property decision in this phase is also an investment in the next project — making the system smarter, faster, and more consistent over time.",
+    quote: "I'm so glad we are past the days of project-final-37.psd.",
+  },
+];

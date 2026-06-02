@@ -21,11 +21,15 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["xl", "lg", "md", "sm", "xs", "xxl", "jumbo", "xJumbo"]
+      options: ["xxl", "xl", "lg", "md", "sm", "xs", "jumbo", "xJumbo"]
     },
     color: {
       control: "inline-radio",
       options: ["default", "muted", "accent"]
+    },
+    margin: {
+      control: "inline-radio",
+      options: ["sm", "md", "lg"]
     }
   }
 };
@@ -39,6 +43,7 @@ export const HeadingScale = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {[
+        { as: "h1", size: "xxl" },
         { as: "h1", size: "xl" },
         { as: "h2", size: "lg" },
         { as: "h3", size: "md" },

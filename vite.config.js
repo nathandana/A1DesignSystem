@@ -5,9 +5,10 @@ export default {
       configureServer(server) {
         server.middlewares.use((req, _res, next) => {
           const url = req.url ?? "";
-          const isPortfolioRoute = url.startsWith("/examples/portfolio/");
-          const isNathanDanaRoute = url === "/examples/nathan-dana" || url.startsWith("/examples/nathan-dana/");
-          const isAssetRequest = /\.[a-z0-9]+($|\?)/i.test(url);
+          const path = url.split("?")[0];
+          const isPortfolioRoute = path === "/examples/portfolio" || path.startsWith("/examples/portfolio/");
+          const isNathanDanaRoute = path === "/examples/nathan-dana" || path.startsWith("/examples/nathan-dana/");
+          const isAssetRequest = /\.[a-z0-9]+$/i.test(path);
 
           if (isPortfolioRoute && !isAssetRequest) {
             req.url = "/examples/portfolio/index.html";

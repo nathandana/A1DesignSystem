@@ -41,6 +41,14 @@ const meta = {
         "center",
       ],
     },
+    contentWidth: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg", "xl", "2xl", undefined],
+    },
+    height: {
+      control: "select",
+      options: ["screen", undefined],
+    },
     inverse: { control: "boolean" },
     as: { control: "text" },
   },
@@ -82,6 +90,7 @@ export const Default = {
     gap: undefined,
     gradient: undefined,
     gradientPosition: "center",
+    contentWidth: undefined,
     inverse: false,
   },
   render: (args) => (
@@ -92,6 +101,29 @@ export const Default = {
         body="Use the controls panel to change padding (lg / md / sm / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
       />
     </Section>
+  ),
+};
+
+/**
+ * `contentWidth` constrains children to a max-width and centers them, while the
+ * section itself remains full-width (useful for padded full-bleed bands with
+ * a readable text column inside). When combined with `gap`, the gap applies
+ * to the inner wrapper rather than the section element.
+ */
+export const ContentWidth = {
+  name: "Content width",
+  render: () => (
+    <>
+      {["xs", "sm", "md", "lg", "xl", "2xl"].map((size) => (
+        <Section key={size} padding="md" surface="panel" gap="sm" contentWidth={size}>
+          <MessageBadge subtle>{size}</MessageBadge>
+          <Heading as="h2" size="lg">contentWidth="{size}"</Heading>
+          <Paragraph color="muted">
+            Children are constrained to a centered max-width column while the section background remains full-bleed.
+          </Paragraph>
+        </Section>
+      ))}
+    </>
   ),
 };
 

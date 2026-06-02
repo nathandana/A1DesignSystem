@@ -24,7 +24,7 @@ const meta = {
     },
     space: {
       control: "select",
-      options: ["none", "xs", "sm", "md", "lg"],
+      options: ["none", "xs", "sm", "md", "lg", "xl", "xxl"],
     },
     decorative: { control: "boolean" },
   },
@@ -78,6 +78,31 @@ export const SizeScale = {
           <Divider size={size} variant={size === "xs" ? "subtle" : "strong"} space="sm" />
         </div>
       ))}
+    </Card>
+  ),
+};
+
+export const ResponsiveOrientation = {
+  name: "Responsive orientation",
+  render: () => (
+    <Card
+      shadow="xs"
+      style={{ display: "flex", alignItems: "stretch", maxWidth: 640 }}
+    >
+      <div style={{ flex: 1 }}>
+        <Heading as="h2" size="sm">Left</Heading>
+        <Paragraph size="sm" color="muted">Horizontal on mobile, vertical on wider screens.</Paragraph>
+      </div>
+      <Divider
+        orientation={{ xs: "horizontal", sm: "vertical" }}
+        variant="subtle"
+        size="sm"
+        space="md"
+      />
+      <div style={{ flex: 1 }}>
+        <Heading as="h3" size="sm">Right</Heading>
+        <Paragraph size="sm" color="muted">Resize the window to see it switch.</Paragraph>
+      </div>
     </Card>
   ),
 };

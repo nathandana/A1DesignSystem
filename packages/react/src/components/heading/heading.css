@@ -56,6 +56,7 @@
 }
 
 /* Heading sizes */
+.a1-heading--heading-xxl { --a1-heading-size: var(--semantic-font-size-heading-xxl); }
 .a1-heading--heading-xl { --a1-heading-size: var(--semantic-font-size-heading-xl); }
 .a1-heading--heading-lg { --a1-heading-size: var(--semantic-font-size-heading-lg); }
 .a1-heading--heading-md { --a1-heading-size: var(--semantic-font-size-heading-md); }
@@ -74,6 +75,11 @@
 /* Color modifiers */
 .a1-heading--muted   { --a1-heading-color: var(--semantic-color-text-muted); }
 .a1-heading--accent  { --a1-heading-color: var(--semantic-color-text-accent); }
+
+/* Margin modifiers — em units scale with the heading's own font size */
+.a1-heading--margin-sm { margin-bottom: 0.25em; }
+.a1-heading--margin-md { margin-bottom: 0.5em; }
+.a1-heading--margin-lg { margin-bottom: 1em; }
 
 /* Expressive marks */
 .a1-heading-mark {

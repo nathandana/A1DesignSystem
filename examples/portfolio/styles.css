@@ -12,9 +12,6 @@ body {
 /* ── Mobile header (hidden ≥ 1025px — SideNav is persistent there) ── */
 
 .pf-mobile-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 0 var(--base-spacing-24);
   height: 60px;
   border-bottom: 1px solid var(--semantic-color-border-subtle);
@@ -119,6 +116,8 @@ body {
   display: flex;
   flex-direction: column;
   transition: box-shadow var(--semantic-motion-duration-fast, 0.1s) ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .pf-study-card:hover {
@@ -127,19 +126,20 @@ body {
 
 .pf-study-image {
   background: var(--semantic-color-surface-raised);
-  height: 220px;
+  aspect-ratio: 16 / 8;
   overflow: hidden;
 }
 
 .pf-study-image-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center center;
   display: block;
 }
 
 .pf-study-body {
-  padding: var(--base-spacing-24) var(--base-spacing-24) var(--base-spacing-28);
+  padding: var(--base-spacing-16) var(--base-spacing-16) var(--base-spacing-16);
   display: flex;
   flex-direction: column;
   gap: var(--base-spacing-12);
@@ -224,6 +224,37 @@ body {
 
 .pf-cta-sub {
   max-width: 540px;
+}
+
+/* ── Case study hero meta strip ────────────────────────────────────── */
+
+.pf-study-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-32);
+  margin: 0;
+  padding-top: var(--base-spacing-16);
+  border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.pf-study-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-4);
+}
+
+.pf-study-meta-item dt {
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, currentColor 50%, transparent);
+}
+
+.pf-study-meta-item dd {
+  margin: 0;
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: 500;
 }
 
 /* ── Case study detail ─────────────────────────────────────────── */
@@ -579,34 +610,23 @@ body {
 }
 
 .pf-detail-impact {
-  margin-top: var(--base-spacing-40);
+  padding: var(--base-spacing-24) var(--base-spacing-28);
+  border-left: 3px solid var(--semantic-color-text-accent);
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), var(--semantic-color-text-accent) 3%);
+  border-radius: 0 var(--base-radius-control) var(--base-radius-control) 0;
   display: flex;
   flex-direction: column;
-  gap: var(--base-spacing-16);
+  gap: var(--base-spacing-12);
 }
 
-.pf-detail-impact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--base-spacing-10);
+.pf-detail-impact-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--semantic-color-text-accent);
 }
 
-.pf-detail-impact-list li {
-  display: flex;
-  align-items: center;
-  gap: var(--base-spacing-10);
+.pf-detail-impact .pf-resume-bullets {
   font-size: var(--semantic-font-size-body-md);
-  color: var(--semantic-color-text-default);
-  font-weight: 500;
-}
-
-.pf-impact-icon {
-  color: var(--semantic-color-status-success-foreground);
-  font-size: 20px;
-  flex-shrink: 0;
 }
 
 /* ── Home skills section ───────────────────────────────────────── */
@@ -680,7 +700,8 @@ body {
 }
 
 .pf-resume-section-heading {
-  padding-bottom: var(--base-spacing-12);
+  padding-bottom: var(--base-spacing-8);
+  margin-bottom: var(--base-spacing-16);
   border-bottom: 2px solid var(--semantic-color-text-accent);
 }
 
@@ -697,19 +718,6 @@ body {
   border-bottom: none;
 }
 
-.pf-resume-role-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--base-spacing-16);
-}
-
-.pf-resume-dates {
-  font-size: var(--semantic-font-size-body-sm);
-  color: var(--semantic-color-text-muted);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 .pf-resume-bullets {
   padding-left: var(--base-spacing-20);
@@ -799,10 +807,6 @@ body {
     min-height: auto;
   }
 
-  .pf-study-image {
-    height: 180px;
-  }
-
   .pf-detail-image {
     height: 220px;
     margin-bottom: var(--base-spacing-40);
@@ -818,6 +822,58 @@ body {
   }
 
   .pf-process-quote {
+    padding: var(--base-spacing-20) var(--base-spacing-24);
+  }
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+
+.pf-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-16);
+  padding: var(--base-spacing-20) var(--base-spacing-32);
+  border-top: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-muted);
+}
+
+.pf-footer-name {
+  font-weight: 700;
+  color: var(--semantic-color-text-default);
+  letter-spacing: -0.01em;
+}
+
+.pf-footer-links {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-24);
+}
+
+.pf-footer-link {
+  color: var(--semantic-color-text-muted);
+  text-decoration: none;
+  transition: color 100ms ease;
+}
+
+.pf-footer-link:hover {
+  color: var(--semantic-color-text-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.pf-footer-copy {
+  color: var(--semantic-color-text-muted);
+}
+
+@media (max-width: 640px) {
+  .pf-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--base-spacing-12);
     padding: var(--base-spacing-20) var(--base-spacing-24);
   }
 }

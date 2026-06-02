@@ -14,10 +14,15 @@ import { Grid } from "../grid/Grid.jsx";
 import { Heading, HeadingMark } from "../heading/Heading.jsx";
 import { Icon } from "../icon/Icon.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
+import { Blockquote } from "../blockquote/Blockquote.jsx";
+import { Divider } from "../divider/Divider.jsx";
+import { Link } from "../link/Link.jsx";
+import { List, ListItem } from "../list/List.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { PageLayout } from "./PageLayout.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Section } from "../section/Section.jsx";
+import { Stack } from "../stack/Stack.jsx";
 import { SideNav, SideNavGroup, SideNavItem } from "../side-nav/SideNav.jsx";
 import { Switch } from "../switch/Switch.jsx";
 import { TopHeader } from "../top-header/TopHeader.jsx";
@@ -445,7 +450,7 @@ export const Details = {
 
     return (
       <PageLayout header={header} aside={aside} stickyHeader>
-        <Section gap="md">
+        <Section  gap="md">
           <div>
             <MessageBadge status="info" subtle>In progress</MessageBadge>
           </div>
@@ -487,8 +492,8 @@ export const Form = {
 
     return (
       <PageLayout header={header} stickyHeader>
-        <Section>
-          <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <Section contentWidth="sm" padding="lg">
+          <div>
             <Heading as="h1" type="heading" size="lg" style={{ marginBlockEnd: "var(--base-spacing-8)" }}>
               New project
             </Heading>
@@ -768,42 +773,42 @@ export const SummarySuccess = {
           <Icon
             name="check_circle"
             style={{
-              fontSize: 64,
+              fontSize: 96,
               color: "var(--semantic-color-status-success-background)",
             }}
           />
           <div>
-            <Heading as="h1" type="display" size="md" style={{ marginBlockEnd: "var(--base-spacing-8)" }}>
+            <Heading as="h1" type="display" size="lg" style={{ marginBlockEnd: "var(--base-spacing-8)" }}>
               Project created
             </Heading>
             <Paragraph color="muted" size="lg">
               Your project has been created and your team has been notified.
             </Paragraph>
           </div>
-          <MessageBadge status="success">Submitted Jun 1, 2026 at 10:42 am</MessageBadge>
+          <MessageBadge status="success" subtle>Submitted Jun 1, 2026 at 10:42 am</MessageBadge>
         </div>
       </Section>
 
       {/* ── Summary ── */}
-      <Section padding="md" gap="lg">
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+      <Section padding="md" gap="lg" contentWidth="sm">
+        <div>
+          <Card>
           <Heading as="h2" type="heading" size="md" style={{ marginBlockEnd: "var(--base-spacing-4)" }}>
             Submission summary
           </Heading>
           <Paragraph color="muted" size="sm" style={{ marginBlockEnd: "var(--base-spacing-24)" }}>
             Review what was submitted. You can edit these details from the project settings at any time.
           </Paragraph>
-          <Card>
-            <div style={{ padding: "var(--base-spacing-4) var(--base-spacing-24)" }}>
+            <div style={{ padding: "var(--base-spacing-4) var(--base-spacing-8)" }}>
               {SUBMITTED_PROJECT.map((row) => (
                 <SummaryRow key={row.label} {...row} />
               ))}
             </div>
-          </Card>
           <ButtonContainer style={{ marginBlockStart: "var(--base-spacing-32)" }}>
             <Button variant="primary">Go to project</Button>
             <Button variant="secondary">Back to dashboard</Button>
           </ButtonContainer>
+          </Card>
         </div>
       </Section>
 
@@ -826,37 +831,40 @@ export const SummaryError = {
       >
         We couldn't create your project. Your data has been saved and you can try again below.
       </Banner>
-
-      {/* ── Status section ── */}
-      <Section padding="md">
+      <Section padding="md" surface="page" gradient="success" gradientPosition="center">
         <div
           style={{
             maxWidth: 640,
             margin: "0 auto",
+            textAlign: "center",
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "var(--base-spacing-20)",
+            alignItems: "center",
+            gap: "var(--base-spacing-16)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)" }}>
-            <Icon
-              name="error"
-              style={{
-                fontSize: 48,
+          <Icon
+            name="error"
+            style={{
+              fontSize: 96,
                 color: "var(--semantic-color-status-error-background)",
-                flexShrink: 0,
-              }}
-            />
-            <div>
-              <Heading as="h1" type="heading" size="xl" style={{ marginBlockEnd: "var(--base-spacing-4)" }}>
-                Something went wrong
-              </Heading>
-              <Paragraph color="muted">
+            }}
+          />
+          <div>
+            <Heading as="h1" type="display" size="lg" style={{ marginBlockEnd: "var(--base-spacing-8)" }}>
+              Something went wrong
+            </Heading>
+            <Paragraph color="muted" size="lg">
                 The project could not be created due to a server error (500). Your input has been preserved below.
-              </Paragraph>
-            </div>
+            </Paragraph>
           </div>
+          <MessageBadge status="success" subtle>Submitted Jun 1, 2026 at 10:42 am</MessageBadge>
+        </div>
+      </Section>
+
+      {/* ── Status section ── */}
+      <Section padding="md" contentWidth="sm">
+        <div>
 
           <Card>
             <div style={{ padding: "var(--base-spacing-16) var(--base-spacing-20)", display: "flex", flexDirection: "column", gap: "var(--base-spacing-8)" }}>
@@ -920,93 +928,15 @@ export const Login = {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-      <div style={{ display: "flex", minHeight: "100vh" }}>
+      <div>
 
-        {/* ── Left: branding panel ── */}
-        <Section
-          as="div"
-          padding="lg"
-          inverse
-          surface="page"
-          gradient="accent"
-          gradientPosition="top-left"
-          style={{
-            flex: "0 0 44%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            gap: "var(--base-spacing-64)",
-          }}
-        >
-          {/* Logo */}
-          <Heading as="div" type="heading" size="md">A1</Heading>
-
-          {/* Headline + features */}
-          <div>
-            <Heading
-              as="h2"
-              type="display"
-              size="lg"
-              style={{ marginBlockEnd: "var(--base-spacing-20)" }}
-            >
-              Build faster,{" "}
-              <HeadingMark variant="underline" underlineStyle="swoop">
-                ship together
-              </HeadingMark>
-            </Heading>
-            <Paragraph size="lg" style={{ marginBlockEnd: "var(--base-spacing-32)" }}>
-              Everything your team needs to build consistent, accessible UIs — all in one place.
-            </Paragraph>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
-              {LOGIN_FEATURES.map((feature) => (
-                <div key={feature} style={{ display: "flex", gap: "var(--base-spacing-10)", alignItems: "flex-start" }}>
-                  <Icon
-                    name="check_circle"
-                    aria-hidden="true"
-                    style={{
-                      fontSize: 20,
-                      flexShrink: 0,
-                      marginBlockStart: 2,
-                      color: "var(--semantic-color-status-success-background)",
-                    }}
-                  />
-                  <Paragraph size="sm">{feature}</Paragraph>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Testimonial */}
-          <div
-            style={{
-              borderTop: "1px solid var(--semantic-color-border-subtle)",
-              paddingBlockStart: "var(--base-spacing-24)",
-            }}
-          >
-            <Paragraph size="sm" style={{ fontStyle: "italic", marginBlockEnd: "var(--base-spacing-8)" }}>
-              "A1 cut our UI review cycles in half. Design and engineering finally share the same language."
-            </Paragraph>
-            <Paragraph size="xs" color="muted">— Jordan Lee, Head of Design at Vanta</Paragraph>
-          </div>
-        </Section>
 
         {/* ── Right: form panel ── */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "var(--base-spacing-48)",
-            background: "var(--semantic-color-surface-page)",
-            overflowY: "auto",
-          }}
-        >
-          <div style={{ width: "100%", maxWidth: 400 }}>
+        <Section contentWidth="xs">
 
             {/* Form header */}
             <div style={{ marginBlockEnd: "var(--base-spacing-32)" }}>
-              <Heading as="h1" type="heading" size="lg" style={{ marginBlockEnd: "var(--base-spacing-8)" }}>
+              <Heading as="h1" type="heading" size="xl" margin="sm">
                 Sign in to your account
               </Heading>
               <Paragraph color="muted">Welcome back. Enter your details to continue.</Paragraph>
@@ -1022,10 +952,12 @@ export const Login = {
                 type="email"
                 autoComplete="email"
                 required
+                size="comfortable"
               />
 
               <TextField
                 label="Password"
+                size="comfortable"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
@@ -1042,62 +974,43 @@ export const Login = {
               />
 
               {/* Remember me + forgot password */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Stack direction="row" justify="between" align="center">
                 <Switch label="Remember me" />
-                <a
-                  href="#"
-                  style={{
-                    color: "var(--semantic-color-action-background)",
-                    fontSize: "var(--semantic-font-size-body-sm)",
-                    fontWeight: 500,
-                    textDecoration: "none",
-                  }}
-                >
-                  Forgot password?
-                </a>
-              </div>
+                <Link href="#">Forgot password?</Link>
+              </Stack>
 
               {/* Primary action — full width */}
-              <Button variant="primary" type="submit" style={{ width: "100%" }}>
+                            <ButtonContainer size="lg">
+<Button variant="primary" type="submit">
                 Sign in
               </Button>
-
+</ButtonContainer>
               {/* OR divider */}
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
-                <div style={{ flex: 1, height: 1, background: "var(--semantic-color-border-subtle)" }} role="presentation" />
+              <Stack direction="row" align="center" gap="sm">
+                <Divider style={{ flex: 1 }} space="none" />
                 <Paragraph size="sm" color="muted">or continue with</Paragraph>
-                <div style={{ flex: 1, height: 1, background: "var(--semantic-color-border-subtle)" }} role="presentation" />
-              </div>
+                <Divider style={{ flex: 1 }} space="none" />
+              </Stack>
 
               {/* Social login — equal-width buttons */}
-              <div style={{ display: "flex", gap: "var(--base-spacing-12)" }}>
-                <Button variant="secondary" style={{ flex: 1 }}>
-                  <Icon name="language" aria-hidden="true" style={{ fontSize: 18 }} />
-                  {" "}Google
+              <ButtonContainer>
+                <Button variant="secondary">
+                  <Icon name="language" aria-hidden="true"/>
+                  Google
                 </Button>
-                <Button variant="secondary" style={{ flex: 1 }}>
-                  <Icon name="terminal" aria-hidden="true" style={{ fontSize: 18 }} />
-                  {" "}GitHub
+                <Button variant="secondary">
+                  <Icon name="terminal" aria-hidden="true"/>
+                  GitHub
                 </Button>
-              </div>
+              </ButtonContainer>
 
               {/* Sign up link */}
-              <Paragraph size="sm" color="muted" style={{ textAlign: "center" }}>
-                Don't have an account?{" "}
-                <a
-                  href="#"
-                  style={{
-                    color: "var(--semantic-color-action-background)",
-                    fontWeight: 500,
-                    textDecoration: "none",
-                  }}
-                >
-                  Sign up for free
-                </a>
+              <Paragraph size="md" color="muted" style={{ textAlign: "center" }}>
+                Don't have an account?{"  "}
+                <Link href="#">Sign up for free</Link>
               </Paragraph>
             </form>
-          </div>
-        </div>
+        </Section>
 
       </div>
     );

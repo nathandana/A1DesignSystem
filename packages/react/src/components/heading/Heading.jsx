@@ -1,8 +1,9 @@
 import "./heading.css";
 
-const headingSizes = ["xl", "lg", "md", "sm", "xs"];
+const headingSizes = ["xxl", "xl", "lg", "md", "sm", "xs"];
 const displaySizes = ["sm", "md", "lg", "xl", "xxl", "jumbo", "xJumbo"];
 const colors = ["default", "muted", "accent"];
+const margins = ["sm", "md", "lg"];
 const levels = ["h1", "h2", "h3", "h4", "h5", "h6"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 
@@ -40,6 +41,7 @@ export function Heading({
   type = "heading",
   size,
   color = "default",
+  margin,
   className = "",
   style,
   ...props
@@ -50,6 +52,7 @@ export function Heading({
   const defaultSize = isDisplay ? "md" : (levelDefaults[resolvedAs] ?? "md");
   const resolvedSize = resolveSize(size, validSizes, defaultSize);
   const resolvedColor = colors.includes(color) ? color : "default";
+  const resolvedMargin = margins.includes(margin) ? margin : null;
   const responsiveSizeStyle = getResponsiveSizeStyle(size, type, validSizes);
   const resolvedStyle = Object.keys(responsiveSizeStyle).length
     ? { ...responsiveSizeStyle, ...style }
@@ -60,6 +63,7 @@ export function Heading({
     `a1-heading--${type}`,
     `a1-heading--${type}-${resolvedSize}`,
     resolvedColor !== "default" && `a1-heading--${resolvedColor}`,
+    resolvedMargin && `a1-heading--margin-${resolvedMargin}`,
     className
   ]
     .filter(Boolean)

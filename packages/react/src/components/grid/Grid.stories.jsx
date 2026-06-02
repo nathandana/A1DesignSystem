@@ -12,7 +12,7 @@ const meta = {
   parameters: { layout: "padded" },
   argTypes: {
     columns: { control: "number" },
-    gap:     { control: "select", options: ["sm", "md", "lg"] },
+    gap:     { control: "select", options: ["sm", "md", "lg", "xl", "xxl"] },
     layout:  { control: "select", options: ["default", "bento"] },
   },
 };

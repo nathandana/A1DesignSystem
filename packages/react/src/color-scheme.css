@@ -28,7 +28,7 @@
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
-  --semantic-color-text-muted:   var(--base-color-neutral-400);
+  --semantic-color-text-muted:   var(--base-color-neutral-300);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
   --semantic-color-text-accent:  var(--base-color-accent-300);
   --semantic-color-border-subtle:  var(--base-color-neutral-700);
@@ -104,7 +104,7 @@
     --semantic-color-surface-panel:  var(--base-color-neutral-800);
     --semantic-color-surface-raised: var(--base-color-neutral-700);
     --semantic-color-text-default: var(--base-color-neutral-50);
-    --semantic-color-text-muted:   var(--base-color-neutral-400);
+    --semantic-color-text-muted:   var(--base-color-neutral-300);
     --semantic-color-text-inverse: var(--base-color-neutral-900);
     --semantic-color-text-accent:  var(--base-color-accent-300);
     --semantic-color-border-subtle:  var(--base-color-neutral-700);
@@ -250,7 +250,7 @@
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
-  --semantic-color-text-muted:   var(--base-color-neutral-400);
+  --semantic-color-text-muted:   var(--base-color-neutral-300);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
   --semantic-color-text-accent:  var(--base-color-accent-300);
   --semantic-color-border-subtle:  var(--base-color-neutral-700);

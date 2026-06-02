@@ -51,3 +51,5 @@ export { TokenSelect } from "./components/token-select/TokenSelect.jsx";
 export { TopHeader } from "./components/top-header/TopHeader.jsx";
 export { DataTable } from "./components/data-table/DataTable.jsx";
 export { DataTableFilters } from "./components/data-table/DataTableFilters.jsx";
+export { Figure } from "./components/figure/Figure.jsx";
+export { Spacer } from "./components/spacer/Spacer.jsx";

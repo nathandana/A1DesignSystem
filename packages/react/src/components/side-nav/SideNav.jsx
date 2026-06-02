@@ -17,7 +17,7 @@ const SideNavCtx = createContext({ collapsed: false, onExpand: null });
  * @param {boolean} [props.active] - Marks this item as the current page
  * @param {string} [props.className]
  */
-export function SideNavItem({ as: Component = "a", icon, label, active, className = "", ...props }) {
+export function SideNavItem({ as: Component = "a", icon, label, badge, active, className = "", ...props }) {
   const depth = useContext(DepthCtx);
   const { collapsed } = useContext(SideNavCtx);
 
@@ -37,6 +37,7 @@ export function SideNavItem({ as: Component = "a", icon, label, active, classNam
     >
       {icon && <Icon name={icon} className="a1-side-nav-item__icon" />}
       <span className="a1-side-nav-item__label">{label}</span>
+      {badge && !collapsed && <span className="a1-side-nav-item__badge">{badge}</span>}
     </Component>
   );
 }

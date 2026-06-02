@@ -17,6 +17,8 @@ const VALID_GRADIENT_POSITIONS = [
   "top-left",
   "center",
 ];
+const VALID_CONTENT_WIDTHS = ["xs", "sm", "md", "lg", "xl", "2xl"];
+const VALID_HEIGHTS = ["screen"];
 
 export function Section({
   as: Component = "section",
@@ -26,11 +28,14 @@ export function Section({
   gradient,
   gradientPosition = "center",
   inverse = false,
+  contentWidth,
+  height,
   className = "",
   children,
   ...props
 }) {
   const classes = ["a1-section"];
+  const resolvedContentWidth = VALID_CONTENT_WIDTHS.includes(contentWidth) ? contentWidth : null;
 
   if (typeof padding === "string") {
     if (VALID_PADDING.includes(padding)) {
@@ -48,7 +53,8 @@ export function Section({
     classes.push(`a1-section--surface-${surface}`);
   }
 
-  if (gap && VALID_GAPS.includes(gap)) {
+  // When contentWidth is set, gap moves to the inner wrapper — keep section flat.
+  if (gap && VALID_GAPS.includes(gap) && !resolvedContentWidth) {
     classes.push(`a1-section--gap-${gap}`);
   }
 
@@ -60,15 +66,29 @@ export function Section({
     classes.push(`a1-section--gradient-${gradientPosition}`);
   }
 
+  if (height && VALID_HEIGHTS.includes(height)) {
+    classes.push(`a1-section--height-${height}`);
+  }
+
   if (inverse) {
     classes.push("a1-inverse");
   }
 
   if (className) classes.push(className);
 
+  const innerClasses = [
+    "a1-section__inner",
+    resolvedContentWidth && `a1-section__inner--${resolvedContentWidth}`,
+    gap && VALID_GAPS.includes(gap) && `a1-section--gap-${gap}`,
+  ].filter(Boolean).join(" ");
+
   return (
     <Component className={classes.join(" ")} {...props}>
-      {children}
+      {resolvedContentWidth ? (
+        <div className={innerClasses}>
+          {children}
+        </div>
+      ) : children}
     </Component>
   );
 }

@@ -15,8 +15,8 @@ const meta = {
   },
   argTypes: {
     variant: {
-      control: "inline-radio",
-      options: ["border", "filled", "feature", "minimal"],
+      control: "select",
+      options: ["border", "filled", "feature", "minimal", "accent", "pull", "ruled"],
       description: "Visual style of the blockquote",
     },
     cite: { control: "text", description: "Attribution name or source" },
@@ -61,6 +61,27 @@ export const AllVariants = {
           The details are not the details. They make the design.
         </Blockquote>
       </div>
+
+      <div>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--semantic-color-text-muted)", marginBottom: "var(--base-spacing-16)" }}>accent</p>
+        <Blockquote variant="accent" cite="Jony Ive">
+          True simplicity is derived from so much more than just the absence of clutter and ornamentation.
+        </Blockquote>
+      </div>
+
+      <div>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--semantic-color-text-muted)", marginBottom: "var(--base-spacing-16)" }}>pull</p>
+        <Blockquote variant="pull" cite="Paula Scher">
+          {QUOTE_LONG}
+        </Blockquote>
+      </div>
+
+      <div>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--semantic-color-text-muted)", marginBottom: "var(--base-spacing-16)" }}>ruled</p>
+        <Blockquote variant="ruled" cite="Massimo Vignelli">
+          The life of a designer is a life of fight: fight against the ugliness.
+        </Blockquote>
+      </div>
     </div>
   ),
 };
@@ -74,6 +95,9 @@ export const WithoutCite = {
       <Blockquote variant="filled">{QUOTE_SHORT}</Blockquote>
       <Blockquote variant="feature">{QUOTE_SHORT}</Blockquote>
       <Blockquote variant="minimal">{QUOTE_SHORT}</Blockquote>
+      <Blockquote variant="accent">{QUOTE_SHORT}</Blockquote>
+      <Blockquote variant="pull">{QUOTE_SHORT}</Blockquote>
+      <Blockquote variant="ruled">{QUOTE_SHORT}</Blockquote>
     </div>
   ),
 };

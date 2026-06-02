@@ -162,6 +162,11 @@
   text-overflow: ellipsis;
 }
 
+.a1-side-nav-item__badge {
+  flex-shrink: 0;
+  line-height: 1;
+}
+
 /* ── Group ─────────────────────────────────────────────────────────────── */
 
 .a1-side-nav-group {

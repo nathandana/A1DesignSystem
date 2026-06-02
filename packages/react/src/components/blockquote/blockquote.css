@@ -5,7 +5,7 @@
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 
 .a1-blockquote {
-  margin: 0;
+  margin: var(--base-spacing-32) 0;
 }
 
 .a1-blockquote__quote {
@@ -67,7 +67,7 @@
 .a1-blockquote--feature .a1-blockquote__quote {
   font-size: var(--semantic-font-size-display-sm);
   font-weight: var(--semantic-font-weight-display);
-  line-height: var(--semantic-font-line-height-display);
+  line-height: 1.75em;
 }
 
 .a1-blockquote--feature .a1-blockquote__quote::before {
@@ -100,4 +100,67 @@
 .a1-blockquote--minimal .a1-blockquote__quote {
   font-style: italic;
   color: var(--semantic-color-text-muted);
+}
+
+/* ── Variant: accent ──────────────────────────────────────────────────────── */
+
+.a1-blockquote--accent {
+  padding: var(--component-blockquote-padding-block)
+    var(--component-blockquote-padding-inline);
+  background: var(--semantic-color-action-background);
+  border-radius: var(--component-blockquote-border-radius);
+}
+
+.a1-blockquote--accent .a1-blockquote__quote {
+  color: var(--semantic-color-text-inverse);
+}
+
+.a1-blockquote--accent .a1-blockquote__cite {
+  color: color-mix(in srgb, var(--semantic-color-text-inverse), transparent 35%);
+}
+
+.a1-blockquote--accent .a1-blockquote__cite-link:hover {
+  color: var(--semantic-color-text-inverse);
+}
+
+/* ── Variant: pull ────────────────────────────────────────────────────────── */
+
+.a1-blockquote--pull {
+  padding-block: var(--component-blockquote-padding-block);
+  text-align: center;
+}
+
+.a1-blockquote--pull .a1-blockquote__quote {
+  font-size: var(--semantic-font-size-display-sm);
+  font-style: italic;
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-blockquote--pull .a1-blockquote__quote::before {
+  content: "\201C";
+  color: var(--semantic-color-text-muted);
+  margin-inline-end: 0.05em;
+}
+
+.a1-blockquote--pull .a1-blockquote__quote::after {
+  content: "\201D";
+  color: var(--semantic-color-text-muted);
+  margin-inline-start: 0.05em;
+}
+
+.a1-blockquote--pull .a1-blockquote__cite {
+  text-align: center;
+}
+
+/* ── Variant: ruled ───────────────────────────────────────────────────────── */
+
+.a1-blockquote--ruled {
+  padding-block: var(--component-blockquote-padding-block);
+  border-block-start: 1px solid var(--semantic-color-border-default);
+  border-block-end: 1px solid var(--semantic-color-border-default);
+  text-align: center;
+}
+
+.a1-blockquote--ruled .a1-blockquote__cite {
+  text-align: center;
 }
