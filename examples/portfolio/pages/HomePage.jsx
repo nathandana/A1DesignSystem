@@ -15,7 +15,7 @@ import { CaseStudyCard } from "../components/CaseStudyCard.jsx";
 export function HomePage({ navigate }) {
   return (
     <>
-      <Section inverse padding="lg" gap="lg" contentWidth="lg">
+      <Section inverse padding="lg" gap="md" contentWidth="lg">
           <MessageBadge size="lg" status="info" icon="person">
             Principal AI Designer
           </MessageBadge>
@@ -51,9 +51,8 @@ onClick={(event) => navigate("process", event)}>
           </ButtonContainer>
       </Section>
 
-      <Section contentWidth="lg" padding="md">
+      <Section contentWidth="lg" padding="md" id="case-studies">
         <div className="pf-section-inner">
-          <MessageBadge subtle icon="work">Selected projects</MessageBadge>
           <Heading as="h2" type="display" size={{ xs: "xl", md: "xxl" }}>
             Case studies
           </Heading>
