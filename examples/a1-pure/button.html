@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Button — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body>
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html" aria-current="page">Button</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html" aria-current="page">Button</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Button</h1>
+        <p class="a1-p">The <code class="a1-code">&lt;button&gt;</code> element maps directly to the A1 primary button style. No class name is required — a bare button element is a fully styled primary action button.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Default</h2>
+        <p class="a1-p">A plain <code class="a1-code">&lt;button&gt;</code> element renders as the primary A1 button.</p>
+        <figure class="a1-figure">
+          <button class="a1-button">Click me</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button&gt;Click me&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Disabled</h2>
+        <p class="a1-p">Add the <code class="a1-code">disabled</code> attribute to render the button in a reduced-opacity, non-interactive state.</p>
+        <figure class="a1-figure">
+          <button class="a1-button" disabled>Disabled</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button disabled&gt;Disabled&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">As a link</h2>
+        <p class="a1-p">The <code class="a1-code">&lt;a&gt;</code> element receives link styling — underlined text in the link color token — not button styling. In A1 Pure, there is no classless way to make a link look like a button. For a button-styled link, use the BEM class package (<code class="a1-code">.a1-button</code> on an anchor element).</p>
+        <figure class="a1-figure">
+          <a class="a1-a" href="#">Link styled as an anchor</a>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;a href="#"&gt;Link styled as an anchor&lt;/a&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">In a form</h2>
+        <p class="a1-p">A <code class="a1-code">&lt;button type="submit"&gt;</code> inside a <code class="a1-code">&lt;form&gt;</code> submits the form. It receives the same primary button styling.</p>
+        <figure class="a1-figure">
+          <form>
+            <label class="a1-label">
+              Email address
+              <input class="a1-input" type="email" placeholder="you@example.com">
+            </label>
+            <button class="a1-button" type="submit">Subscribe</button>
+          </form>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;form&gt;
+  &lt;label&gt;
+    Email address
+    &lt;input type="email" placeholder="you@example.com"&gt;
+  &lt;/label&gt;
+  &lt;button type="submit"&gt;Subscribe&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Interactive states</h2>
+        <p class="a1-p">Hover, active, and focus-visible states are handled entirely by CSS. No JavaScript is required. Interact with any of the buttons above to see the states in action.</p>
+        <ul class="a1-ul">
+          <li><strong>Default</strong> — primary background color from <code class="a1-code">--component-button-primary-background</code></li>
+          <li><strong>Hover</strong> — slightly darker background</li>
+          <li><strong>Active</strong> — darkest background, slight scale reduction</li>
+          <li><strong>Focus-visible</strong> — visible focus ring using the A1 focus token, for keyboard navigation</li>
+          <li><strong>Disabled</strong> — reduced opacity, <code class="a1-code">cursor: not-allowed</code>, no interaction</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small>All styles applied by <code class="a1-code">a1-pure.css</code> — no class attributes required.</small></p>
+    </footer>
+
+  </body>
+</html>

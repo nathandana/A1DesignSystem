@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "description": "AI-first multifunctional design system proof of concept.",
   "scripts": {
     "build": "npm run build:a1-design && npm run build:priority-guide && npm run build:storybook && npm run copy:storybook",
     "build:a1-design": "npm run build:tokens && vite build examples/a1-design -- --outDir dist",
     "build:priority-guide": "npm run build:tokens && vite build examples/priority-guide -- --outDir dist",
-    "build:tokens": "style-dictionary build --config sd.config.js && node system/build-themes.mjs",
+    "build:tokens": "style-dictionary build --config sd.config.js && node system/build-themes.mjs && node scripts/build-html-css.mjs",
+    "build:html-css": "npm run build:tokens",
     "build:themes": "node system/build-themes.mjs",
     "build:storybook": "storybook build",
     "check": "npm --version",

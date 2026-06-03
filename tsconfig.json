@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/ios-example" },
+    { "path": "./packages/react-native" }
+  ]
+}

@@ -143,7 +143,7 @@ export const sampleGuideJson = JSON.stringify({
     {
       componentType: "Button",
       title: "Register",
-      content: "Primary action that starts the signup flow.",
+      content: "Primary action that starts the sign-up process.",
       annotations: ["Button opens the registration form for this specific workshop."],
       linkedGuideId: "library",
     },

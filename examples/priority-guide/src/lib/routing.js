@@ -8,8 +8,9 @@ export function getRouteBase(pathname = window.location.pathname) {
 export function getRoute(pathname = window.location.pathname, search = window.location.search, hash = window.location.hash) {
   const params = new URLSearchParams(search);
   const pageParam = params.get("page");
-  const page = pageIds.includes(pageParam)
-    ? pageParam
+  const resolvedPageParam = pageParam === "flows" || pageParam === "flow-editor" ? "guides" : pageParam;
+  const page = pageIds.includes(resolvedPageParam)
+    ? resolvedPageParam
     : (!hash && hasLocalGuides() ? "guides" : "home");
   const guide = params.get("guide");
 

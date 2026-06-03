@@ -1,0 +1,30 @@
+{
+  "name": "ios-example",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@expo-google-fonts/atkinson-hyperlegible": "^0.4.1",
+    "@expo-google-fonts/libre-baskerville": "^0.4.3",
+    "@expo-google-fonts/nunito": "^0.4.2",
+    "@expo-google-fonts/roboto-slab": "^0.4.2",
+    "@expo/vector-icons": "^15.0.2",
+    "@gtivr4/a1-design-system-react-native": "*",
+    "expo": "~56.0.8",
+    "expo-haptics": "~14.1.4",
+    "expo-status-bar": "~56.0.4",
+    "react": "19.2.3",
+    "react-native": "0.85.3",
+    "react-native-safe-area-context": "~5.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "private": true
+}

@@ -5,13 +5,11 @@ import {
   PageLayout,
   SegmentedControl,
 } from "../../../packages/react/src/index.js";
-import { exampleGuides, exampleFlows, pageIds } from "./lib/data.jsx";
+import { exampleGuides, pageIds } from "./lib/data.jsx";
 import { getRoute, getRoutePath, isPlainLeftClick } from "./lib/routing.js";
 import {
   EditorPage,
   ExamplesPage,
-  FlowEditorPage,
-  FlowsPage,
   GuideLibraryPage,
   LandingPage,
   NewGuidePage,
@@ -52,11 +50,11 @@ export function App() {
     const pageTitles = {
       examples: "Examples | Priority Guide",
       start: "Start | Priority Guide",
-      flows: "Flows | Priority Guide",
-      "flow-editor": "Flow Editor | Priority Guide",
-      guides: "Pages | Priority Guide",
+      flows: "Editor | Priority Guide",
+      "flow-editor": "Editor | Priority Guide",
+      guides: "Editor | Priority Guide",
       new: "New guide | Priority Guide",
-      editor: "Pages | Priority Guide",
+      editor: "Editor | Priority Guide",
       presentation: "Presentation | Priority Guide",
     };
     const title = pageTitles[route.page] ?? "Priority Guide";
@@ -89,10 +87,11 @@ export function App() {
   }, [route.page, route.hash]);
 
   function navigate(page, { guide = route.guide, flow = route.flow, hash } = {}) {
+    const visiblePage = page === "flows" || page === "flow-editor" ? "guides" : page;
     const nextRoute = {
-      page: pageIds.includes(page) ? page : "home",
+      page: pageIds.includes(visiblePage) ? visiblePage : "home",
       guide: guide || exampleGuides[0].id,
-      flow: flow || exampleFlows[0].id,
+      flow: flow || "",
       hash: hash ?? "",
     };
     const nextPath = getRoutePath(nextRoute.page, { guide: nextRoute.guide, flow: nextRoute.flow, hash });
@@ -163,20 +162,12 @@ export function App() {
           Start
         </a>
         <a
-          className={route.page === "flows" || route.page === "flow-editor" ? "priority-guide-nav-link--active" : ""}
-          href={getRoutePath("flows", { flow: route.flow })}
-          onClick={(event) => handleRouteClick(event, "flows")}
-          aria-current={route.page === "flows" || route.page === "flow-editor" ? "page" : undefined}
-        >
-          Flows
-        </a>
-        <a
           className={route.page === "guides" || route.page === "editor" || route.page === "new" ? "priority-guide-nav-link--active" : ""}
           href={getRoutePath("guides")}
           onClick={(event) => handleRouteClick(event, "guides")}
           aria-current={route.page === "guides" || route.page === "editor" || route.page === "new" ? "page" : undefined}
         >
-          Pages
+          Editor
         </a>
       </nav>
       <div ref={settingsAnchorRef} className="priority-guide-header-settings">
@@ -212,10 +203,6 @@ export function App() {
         <ExamplesPage activeGuide={route.guide} onGuideChange={handleGuideChange} />
       ) : route.page === "start" ? (
         <StartPage onNavigate={handleRouteClick} />
-      ) : route.page === "flows" ? (
-        <FlowsPage onNavigate={handleRouteClick} />
-      ) : route.page === "flow-editor" ? (
-        <FlowEditorPage flowId={route.flow} onNavigate={handleRouteClick} />
       ) : route.page === "guides" ? (
         <GuideLibraryPage onNavigate={handleRouteClick} />
       ) : route.page === "new" ? (

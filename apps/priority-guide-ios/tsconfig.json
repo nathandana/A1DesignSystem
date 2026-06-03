@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "composite": true,
+    "paths": {
+      "@priority-guide/guides/*": ["../../examples/priority-guide/guides/*"]
+    }
+  }
+}

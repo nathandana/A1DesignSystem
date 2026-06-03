@@ -1,0 +1,9 @@
+{
+  "name": "@a1/design-system-html-css",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pure HTML and CSS A1 Design System package.",
+  "files": [
+    "dist"
+  ]
+}

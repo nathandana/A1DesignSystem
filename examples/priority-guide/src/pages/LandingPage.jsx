@@ -29,7 +29,7 @@ import {
   TextareaField,
   TextField,
 } from "../../../../packages/react/src/index.js";
-import { principles, workflow } from "../lib/data.jsx";
+import { principles } from "../lib/data.jsx";
 import { getRoutePath } from "../lib/routing.js";
 
 export function LandingPage({ onNavigate }) {
@@ -45,7 +45,7 @@ export function LandingPage({ onNavigate }) {
               The Priority Guide
             </Heading>
             <Paragraph size="xl">
-              When you align together on content, the rest flows. Use this tool to create and manage priority guides for your application.
+              When you align together on content, the interface gets clearer. Use this tool to create and manage priority guides for your application.
             </Paragraph>
           </div>
           <ButtonContainer className="priority-guide-actions" align="center" size="lg">
@@ -105,10 +105,10 @@ export function LandingPage({ onNavigate }) {
           <Icon name="auto_awesome" />
           <div>
             <Heading as="h2" size="md">
-              Next: guide components, an editor, and AI-assisted flows.
+              Next: guide components, an editor, and AI-assisted drafts.
             </Heading>
             <Paragraph size="md" color="muted">
-              Future pages can turn this landing page into a working content system: reusable guide blocks, collaborative editing, AI-generated first drafts, critique prompts, and flow maps that connect guides across an experience.
+              Future pages can turn this landing page into a working content system: reusable guide blocks, collaborative editing, AI-generated first drafts, and critique prompts that improve the guide before design work begins.
             </Paragraph>
           <Link href={getRoutePath("examples")} onClick={(event) => onNavigate(event, "examples")}>
             Explore example guides

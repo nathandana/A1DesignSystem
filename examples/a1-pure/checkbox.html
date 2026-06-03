@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkbox — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body>
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html" aria-current="page">Checkbox</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1">Checkbox</h1>
+        <p class="a1-p">Checkboxes and radio buttons are styled at the element level. Wrap each <code class="a1-code">&lt;input type="checkbox"&gt;</code> or <code class="a1-code">&lt;input type="radio"&gt;</code> inside a <code class="a1-code">&lt;label&gt;</code> — the label uses flexbox to align the control and text side by side. Group related controls in a <code class="a1-code">&lt;fieldset&gt;</code> with a <code class="a1-code">&lt;legend&gt;</code>.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Single checkbox</h2>
+        <p class="a1-p">Each state — unchecked, checked, disabled unchecked, and disabled checked — is demonstrated below. The control and label text are vertically centered by <code class="a1-code">label:has(&gt; input[type="checkbox"])</code>.</p>
+        <figure class="a1-figure">
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Unchecked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Checked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" disabled> Disabled unchecked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked disabled> Disabled checked</label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;&lt;input type="checkbox"&gt; Unchecked&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" checked&gt; Checked&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" disabled&gt; Disabled unchecked&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" checked disabled&gt; Disabled checked&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Checkbox group</h2>
+        <p class="a1-p">Use <code class="a1-code">&lt;fieldset&gt;</code> and <code class="a1-code">&lt;legend&gt;</code> to group related checkboxes. The fieldset provides the border and the legend labels the group.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Notification preferences</legend>
+            <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Email notifications</label>
+            <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Push notifications</label>
+            <label class="a1-label"><input class="a1-checkbox" type="checkbox"> SMS alerts</label>
+            <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Weekly digest</label>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset&gt;
+  &lt;legend&gt;Notification preferences&lt;/legend&gt;
+  &lt;label&gt;&lt;input type="checkbox" checked&gt; Email notifications&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox"&gt; Push notifications&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox"&gt; SMS alerts&lt;/label&gt;
+  &lt;label&gt;&lt;input type="checkbox" checked&gt; Weekly digest&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Radio group</h2>
+        <p class="a1-p">Radio inputs share the same label and fieldset pattern. Only one option can be selected at a time within a group (by matching <code class="a1-code">name</code> attribute).</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Delivery method</legend>
+            <label class="a1-label"><input class="a1-radio" type="radio" name="delivery" checked> Standard (3–5 days)</label>
+            <label class="a1-label"><input class="a1-radio" type="radio" name="delivery"> Express (1–2 days)</label>
+            <label class="a1-label"><input class="a1-radio" type="radio" name="delivery"> Overnight</label>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset&gt;
+  &lt;legend&gt;Delivery method&lt;/legend&gt;
+  &lt;label&gt;&lt;input type="radio" name="delivery" checked&gt; Standard (3–5 days)&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="delivery"&gt; Express (1–2 days)&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="delivery"&gt; Overnight&lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Indeterminate state</h2>
+        <p class="a1-p">The indeterminate state — a dash instead of a check — cannot be set with an HTML attribute alone. It requires JavaScript to set the <code class="a1-code">indeterminate</code> property on the element directly.</p>
+        <pre class="a1-pre"><code class="a1-code">const checkbox = document.querySelector('input[type="checkbox"]');
+checkbox.indeterminate = true;</code></pre>
+        <p class="a1-p">This is commonly used for "select all" controls where only some children are checked. The CSS renders the appropriate visual state once the property is set.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Accessibility notes</h2>
+        <ul class="a1-ul">
+          <li>Always associate a label with every checkbox or radio input — wrapping the input inside the <code class="a1-code">&lt;label&gt;</code> element is the simplest way to do this.</li>
+          <li>Always group related checkboxes and radios with <code class="a1-code">&lt;fieldset&gt;</code> and <code class="a1-code">&lt;legend&gt;</code> so screen readers announce the group name alongside each option.</li>
+          <li>If you add supplemental help text outside the label, use <code class="a1-code">aria-describedby</code> to connect it to the input.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small>All styles applied by <code class="a1-code">a1-pure.css</code> — no class attributes required.</small></p>
+    </footer>
+
+  </body>
+</html>

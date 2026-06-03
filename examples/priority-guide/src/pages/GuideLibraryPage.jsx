@@ -31,7 +31,7 @@ import {
 } from "../../../../packages/react/src/index.js";
 import { exampleGuides } from "../lib/data.jsx";
 import { getRoutePath } from "../lib/routing.js";
-import { getStoredFlows, getStoredGuides, loadStoredEditor, saveStoredEditor, makeDraft } from "../lib/storage.js";
+import { getStoredGuides, loadStoredEditor, saveStoredEditor, makeDraft } from "../lib/storage.js";
 
 export function GuideLibraryPage({ onNavigate }) {
   const [guides, setGuides] = useState(() => getStoredGuides());
@@ -101,20 +101,6 @@ export function GuideLibraryPage({ onNavigate }) {
     setGuides(getStoredGuides());
     setDeletedGuide(null);
   }
-
-  const flows = getStoredFlows();
-  const guideToFlows = {};
-  for (const flow of flows) {
-    for (const state of flow.states ?? []) {
-      if (!guideToFlows[state.guideId]) guideToFlows[state.guideId] = [];
-      if (!guideToFlows[state.guideId].includes(flow.id)) guideToFlows[state.guideId].push(flow.id);
-    }
-  }
-  const flowSections = flows.map((flow) => ({
-    flow,
-    guides: guides.filter((g) => (guideToFlows[g.id] ?? []).includes(flow.id)),
-  })).filter((s) => s.guides.length > 0);
-  const ungrouped = guides.filter((g) => !guideToFlows[g.id]);
 
   function renderGuideCard(guide) {
     const isExampleGuide = exampleGuides.some((item) => item.id === guide.id);
@@ -187,7 +173,7 @@ export function GuideLibraryPage({ onNavigate }) {
           <div className="priority-guide-library-header">
             <div className="priority-guide-section-heading">
               <MessageBadge subtle icon="folder_open">
-                Pages
+                Editor
               </MessageBadge>
               <Heading as="h1" type="display" size={{ xs: "lg", md: "xl" }}>
                 Your priority guides.
@@ -207,37 +193,9 @@ export function GuideLibraryPage({ onNavigate }) {
             </Button>
           </div>
 
-          {flowSections.map(({ flow, guides: flowGuides }) => (
-            <div key={flow.id} className="priority-guide-pages-section">
-              <div className="priority-guide-pages-section__header">
-                <Icon name="account_tree" />
-                <a
-                  href={getRoutePath("flow-editor", { flow: flow.id })}
-                  onClick={(e) => onNavigate(e, "flow-editor", { flow: flow.id })}
-                  className="priority-guide-pages-section__flow-link"
-                >
-                  {flow.title}
-                </a>
-              </div>
-              <Grid columns={{ xs: 1, md: 2, lg: 3 }} gap="md" className="priority-guide-library-grid">
-                {flowGuides.map(renderGuideCard)}
-              </Grid>
-            </div>
-          ))}
-
-          {ungrouped.length > 0 && (
-            <div className="priority-guide-pages-section">
-              {flowSections.length > 0 && (
-                <div className="priority-guide-pages-section__header">
-                  <Icon name="folder_open" />
-                  <span>Not in a flow</span>
-                </div>
-              )}
-              <Grid columns={{ xs: 1, md: 2, lg: 3 }} gap="md" className="priority-guide-library-grid">
-                {ungrouped.map(renderGuideCard)}
-              </Grid>
-            </div>
-          )}
+          <Grid columns={{ xs: 1, md: 2, lg: 3 }} gap="md" className="priority-guide-library-grid">
+            {guides.map(renderGuideCard)}
+          </Grid>
 
           {guides.length === 0 && (
             <Grid columns={{ xs: 1, md: 2, lg: 3 }} gap="md" className="priority-guide-library-grid">
