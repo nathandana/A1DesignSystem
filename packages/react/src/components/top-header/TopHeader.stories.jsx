@@ -21,6 +21,7 @@ const NAV_ITEMS = [
     id: "analytics",
     label: "Analytics",
     icon: "analytics",
+    href: "/analytics",
     items: [
       { label: "Overview",    href: "/analytics" },
       { label: "Reports",     href: "/analytics/reports" },

@@ -18,7 +18,8 @@ const VALID_GRADIENT_POSITIONS = [
   "center",
 ];
 const VALID_CONTENT_WIDTHS = ["xs", "sm", "md", "lg", "xl", "2xl"];
-const VALID_HEIGHTS = ["screen"];
+const VALID_HEIGHTS = ["screen", "hero"];
+const VALID_ALIGNMENTS = ["left", "center", "right"];
 
 export function Section({
   as: Component = "section",
@@ -30,6 +31,7 @@ export function Section({
   inverse = false,
   contentWidth,
   height,
+  alignment,
   className = "",
   children,
   ...props
@@ -68,6 +70,18 @@ export function Section({
 
   if (height && VALID_HEIGHTS.includes(height)) {
     classes.push(`a1-section--height-${height}`);
+  }
+
+  if (typeof alignment === "string") {
+    if (VALID_ALIGNMENTS.includes(alignment)) {
+      classes.push(`a1-section--align-${alignment}`);
+    }
+  } else if (alignment && typeof alignment === "object") {
+    for (const [bp, align] of Object.entries(alignment)) {
+      if (VALID_ALIGNMENTS.includes(align)) {
+        classes.push(`a1-section--${bp}-align-${align}`);
+      }
+    }
   }
 
   if (inverse) {

@@ -1,0 +1,119 @@
+/* ── Global ── */
+body {
+  font-family: Inter, sans-serif;
+}
+
+/* ── Site logo ── */
+.a1-web-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  font-weight: 800;
+  font-size: var(--semantic-font-size-body-md);
+}
+
+.a1-web-logo__mark {
+  color: var(--semantic-color-text-accent);
+}
+
+/* ── Hero ── */
+.a1-web-hero__subtext {
+  max-inline-size: 600px;
+  text-wrap: pretty;
+}
+
+/* ── Stats ── */
+.a1-web-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding-block: var(--base-spacing-16);
+}
+
+.a1-web-stat__value {
+  line-height: 1;
+}
+
+
+/* ── Feature cards ── */
+.a1-web-feature-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-accent);
+  flex-shrink: 0;
+}
+
+/* ── Component category cards ── */
+.a1-web-category-card {
+  cursor: pointer;
+  border: 1px solid var(--semantic-color-border-subtle);
+  transition: border-color var(--semantic-motion-duration-fast, 150ms);
+}
+
+.a1-web-category-card:hover {
+  border-color: var(--semantic-color-border-default);
+}
+
+.a1-web-category-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-accent);
+  flex-shrink: 0;
+}
+
+/* ── Platform card icon ── */
+.a1-web-platform-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--base-radius-md);
+  background: color-mix(in srgb, var(--semantic-color-text-accent) 15%, transparent);
+  color: var(--semantic-color-text-accent);
+  flex-shrink: 0;
+}
+
+/* ── Code chips (platform tag, theme selector) ── */
+.a1-web-platform-card__tag,
+.a1-web-theme-card__selector {
+  display: inline-block;
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted, var(--base-color-neutral-500));
+  background: var(--semantic-color-surface-raised);
+  padding: var(--base-spacing-2) var(--base-spacing-8);
+  border-radius: var(--base-radius-sm);
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+}
+
+.a1-web-theme-card__selector {
+  margin-block-start: auto;
+}
+
+/* ── Foundation token swatches ── */
+.a1-web-color-swatch {
+  display: block;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-web-color-swatch);
+}
+
+.a1-web-token-code {
+  overflow-wrap: anywhere;
+  font-family: var(--theme-a1-light-font-family-mono);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+}

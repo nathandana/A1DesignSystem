@@ -47,7 +47,11 @@ const meta = {
     },
     height: {
       control: "select",
-      options: ["screen", undefined],
+      options: ["screen", "hero", undefined],
+    },
+    alignment: {
+      control: "inline-radio",
+      options: ["left", "center", "right", undefined],
     },
     inverse: { control: "boolean" },
     as: { control: "text" },
@@ -91,6 +95,8 @@ export const Default = {
     gradient: undefined,
     gradientPosition: "center",
     contentWidth: undefined,
+    height: undefined,
+    alignment: undefined,
     inverse: false,
   },
   render: (args) => (
@@ -384,5 +390,66 @@ export const StackedBands = {
         />
       </Section>
     </>
+  ),
+};
+
+/**
+ * `alignment` aligns the section's direct children as layout items.
+ * Pass a responsive object `alignment={{ xs: "center", lg: "left" }}` for per-breakpoint control.
+ */
+export const AlignmentProp = {
+  name: "Alignment",
+  render: () => (
+    <>
+      {["left", "center", "right"].map((alignment) => (
+        <Section key={alignment} padding="md" surface="panel" alignment={alignment}>
+          <Heading as="h2" size="lg" align={alignment}>align="{alignment}"</Heading>
+          <Paragraph size="lg" color="muted" align={alignment}>
+            The alignment prop aligns direct children without overriding nested content.
+            Use Heading and Paragraph alignment props when text itself should align.
+          </Paragraph>
+          <ButtonContainer align={alignment === "right" ? "end" : alignment === "center" ? "center" : "start"}>
+            <Button variant="primary">Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+          </ButtonContainer>
+        </Section>
+      ))}
+      <Section padding="md" surface="raised" alignment={{ xs: "center", lg: "left" }}>
+        <Heading as="h2" size="lg">Responsive: center on mobile, left on desktop</Heading>
+        <Paragraph size="lg" color="muted">
+          alignment={{ xs: "center", lg: "left" }} — resize the preview to see direct children move without cascading text alignment into nested components.
+        </Paragraph>
+      </Section>
+    </>
+  ),
+};
+
+/**
+ * `height="hero"` sets `min-block-size: calc(90svh - header-height)` and vertically centres
+ * children, designed for landing page hero sections below a sticky top header.
+ */
+export const HeroHeight = {
+  name: 'Height — "hero"',
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <Section
+      padding="lg"
+      height="hero"
+      alignment="center"
+      gradient="accent"
+      gradientPosition="center"
+    >
+      <Heading as="h1" type="display" size={{ xs: "xl", md: "xxl" }} textWrap="balance" align="center">
+        Hero section fills 90svh minus the header
+      </Heading>
+      <Paragraph size="lg" color="muted" align="center">
+        Content is vertically centred. Text alignment is controlled by the typography components.
+        The gradient and surface props compose freely.
+      </Paragraph>
+      <ButtonContainer align="center">
+        <Button variant="primary">Get started</Button>
+        <Button variant="secondary">Learn more</Button>
+      </ButtonContainer>
+    </Section>
   ),
 };

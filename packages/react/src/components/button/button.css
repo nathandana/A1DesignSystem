@@ -147,8 +147,8 @@
   --a1-button-font-weight: var(--base-font-weight-extra-bold);
   --a1-button-border-radius: var(--base-radius-lg);
   --a1-button-padding-inline: var(--base-spacing-20);
-  --a1-button-icon-size: var(--component-button-large-icon-size);
-  --a1-button-icon-opsz: var(--component-button-large-icon-optical-size);
+  --a1-button-icon-size: var(--component-button-icon-size);
+  --a1-button-icon-opsz: var(--component-button-icon-optical-size);
 }
 
 .a1-button .a1-button__icon {

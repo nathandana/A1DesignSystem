@@ -11,8 +11,10 @@ const HERO_COLORS = {
 };
 
 export function Card({
-  as: Component = "div",
+  as,
   bare = false,
+  variant = "default",
+  href,
   icon,
   heroIcon,
   heroColor = "action",
@@ -20,9 +22,13 @@ export function Card({
   children,
   ...props
 }) {
+  const isNavigation = variant === "navigation";
+  const Component = as ?? (isNavigation ? (href ? "a" : "button") : "div");
+
   const classes = [
     "a1-card",
     bare && "a1-card--bare",
+    isNavigation && "a1-card--navigation",
     heroIcon && "a1-card--has-hero",
     className,
   ]
@@ -30,9 +36,12 @@ export function Card({
     .join(" ");
 
   const heroBg = HERO_COLORS[heroColor] ?? heroColor;
+  const interactiveProps = isNavigation && Component === "button" && !props.type
+    ? { type: "button" }
+    : {};
 
   return (
-    <Component className={classes} {...props}>
+    <Component className={classes} href={href} {...interactiveProps} {...props}>
       {heroIcon && (
         <div className="a1-card__hero" style={{ "--a1-card-hero-bg": heroBg }}>
           <Icon name={heroIcon} className="a1-card__hero-icon" />

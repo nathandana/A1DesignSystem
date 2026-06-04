@@ -1,5 +1,7 @@
-# Claude Code Instructions
+# A1 Pure Example Site — Agent Instructions
 
-Read and follow the shared project context:
+Read the central system context first, then this site context:
 
-/ai/project-context.md
+@../../../ai/project-context.md
+
+@ai/project-context.md

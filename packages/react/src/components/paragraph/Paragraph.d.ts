@@ -13,6 +13,10 @@ export interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElemen
   size?: ParagraphSize | Partial<Record<Breakpoints, ParagraphSize>>;
   /** Text colour. Default: "default" */
   color?: "default" | "muted";
+  /** Apply text-wrap. "balance" distributes line lengths evenly — use for short intro copy. */
+  textWrap?: "balance";
+  /** Horizontal text alignment. */
+  align?: "left" | "center" | "right";
   children?: React.ReactNode;
 }
 

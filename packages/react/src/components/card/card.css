@@ -8,6 +8,42 @@
   color: var(--semantic-color-text-default);
 }
 
+/* ─── Navigation variant — the whole card is the link/button ─────────────── */
+
+.a1-card--navigation {
+  display: block;
+  inline-size: 100%;
+  text-align: start;
+  text-decoration: none;
+  border-color: var(--semantic-color-text-accent);
+  cursor: pointer;
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    box-shadow var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+button.a1-card--navigation {
+  appearance: none;
+  font: inherit;
+}
+
+.a1-card--navigation:hover {
+  background: var(--semantic-color-action-surface);
+  border-color: var(--semantic-color-action-background);
+}
+
+.a1-card--navigation:active {
+  background: var(--semantic-color-surface-panel);
+  border-color: var(--semantic-color-action-background);
+  box-shadow: var(--semantic-shadow-xs);
+}
+
+.a1-card--navigation:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--semantic-color-action-background);
+  outline-offset: var(--base-spacing-2);
+}
+
 /* ─── Bare variant — no chrome, no padding ─────────────────────────────────── */
 
 .a1-card--bare {

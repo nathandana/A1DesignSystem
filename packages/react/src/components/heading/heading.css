@@ -81,6 +81,14 @@
 .a1-heading--margin-md { margin-bottom: 0.5em; }
 .a1-heading--margin-lg { margin-bottom: 1em; }
 
+/* Text wrap */
+.a1-heading--wrap-balance { text-wrap: balance; }
+
+/* Alignment */
+.a1-heading--align-left   { text-align: start;  }
+.a1-heading--align-center { text-align: center; }
+.a1-heading--align-right  { text-align: end;    }
+
 /* Expressive marks */
 .a1-heading-mark {
   display: inline;

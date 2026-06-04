@@ -1,4 +1,4 @@
-# HTML/CSS Package — Agent Instructions
+# React Native Package — Claude Code Instructions
 
 Read the central system context first, then this package context:
 

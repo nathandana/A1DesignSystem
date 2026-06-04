@@ -24,6 +24,10 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   color?: "default" | "muted" | "accent";
   /** Add bottom margin. Useful when followed by body text. */
   margin?: "sm" | "md" | "lg";
+  /** Apply text-wrap. "balance" distributes line lengths evenly — best for short headings. */
+  textWrap?: "balance";
+  /** Horizontal text alignment. */
+  align?: "left" | "center" | "right";
   children?: React.ReactNode;
 }
 

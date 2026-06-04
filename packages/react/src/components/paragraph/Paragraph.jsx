@@ -3,6 +3,8 @@ import "./paragraph.css";
 const sizes = ["xs", "sm", "md", "lg", "xl"];
 const colors = ["default", "muted"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
+const textWraps = ["balance"];
+const aligns = ["left", "center", "right"];
 
 function isResponsiveSize(size) {
   return size && typeof size === "object" && !Array.isArray(size);
@@ -27,12 +29,16 @@ export function Paragraph({
   as: Component = "p",
   size = "md",
   color = "default",
+  textWrap,
+  align,
   className = "",
   style,
   ...props
 }) {
   const resolvedSize = resolveBaseSize(size);
   const resolvedColor = colors.includes(color) ? color : "default";
+  const resolvedTextWrap = textWraps.includes(textWrap) ? textWrap : null;
+  const resolvedAlign = aligns.includes(align) ? align : null;
   const responsiveStyle = getResponsiveSizeStyle(size);
   const resolvedStyle = Object.keys(responsiveStyle).length
     ? { ...responsiveStyle, ...style }
@@ -42,6 +48,8 @@ export function Paragraph({
     "a1-paragraph",
     `a1-paragraph--${resolvedSize}`,
     resolvedColor !== "default" && `a1-paragraph--${resolvedColor}`,
+    resolvedTextWrap && `a1-paragraph--wrap-${resolvedTextWrap}`,
+    resolvedAlign && `a1-paragraph--align-${resolvedAlign}`,
     className
   ]
     .filter(Boolean)

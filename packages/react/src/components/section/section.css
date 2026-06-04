@@ -9,9 +9,11 @@
   --a1-section-gradient-height: var(--component-section-gradient-center-height);
   --a1-section-gradient-anchor: center;
   --a1-section-gradient-strength: var(--component-section-gradient-strength);
+  --a1-section-justify-items: stretch;
 }
 
 .a1-section.a1-inverse {
+  --a1-section-surface: var(--semantic-color-surface-page);
   --a1-section-gradient-strength: var(--component-section-gradient-strength-inverse);
 }
 
@@ -68,6 +70,7 @@
 .a1-section--gap-md,
 .a1-section--gap-lg {
   display: grid;
+  justify-items: var(--a1-section-justify-items);
 }
 
 .a1-section--gap-xs { gap: var(--semantic-spacing-gap-xs); }
@@ -81,9 +84,18 @@
   min-height: 100svh;
 }
 
+/* Fills the viewport minus the sticky top header — use for hero/landing sections. */
+.a1-section--height-hero {
+  min-block-size: calc(90svh - var(--component-top-header-height));
+  display: grid;
+  align-content: center;
+}
+
 /* ── Content width ─────────────────────────────────────────────────────────── */
 
 .a1-section__inner {
+  display: grid;
+  justify-items: var(--a1-section-justify-items);
   width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
@@ -95,6 +107,102 @@
 .a1-section__inner--lg  { max-width: 60rem;  }
 .a1-section__inner--xl  { max-width: 70rem;  }
 .a1-section__inner--2xl { max-width: 90rem;  }
+
+/* ── Alignment ─────────────────────────────────────────────────────────────── */
+/*
+ * Aligns direct children as layout items.
+ * Use the object prop for responsive changes: alignment={{ xs: "center", lg: "left" }}
+ */
+
+.a1-section[class*="-align-"] {
+  display: grid;
+  justify-items: var(--a1-section-justify-items);
+}
+
+.a1-section--align-left {
+  --a1-section-justify-items: start;
+}
+
+.a1-section--align-center {
+  --a1-section-justify-items: center;
+}
+
+.a1-section--align-right {
+  --a1-section-justify-items: end;
+}
+
+/* xs: base, no media query */
+.a1-section--xs-align-left {
+  --a1-section-justify-items: start;
+}
+
+.a1-section--xs-align-center {
+  --a1-section-justify-items: center;
+}
+
+.a1-section--xs-align-right {
+  --a1-section-justify-items: end;
+}
+
+/* sm: ≥481px */
+@media (--bp-sm-up) {
+  .a1-section--sm-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--sm-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--sm-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* md: ≥641px */
+@media (--bp-md-up) {
+  .a1-section--md-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--md-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--md-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* lg: ≥1025px */
+@media (--bp-lg-up) {
+  .a1-section--lg-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--lg-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--lg-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* xl: ≥1441px */
+@media (--bp-xl-up) {
+  .a1-section--xl-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--xl-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--xl-align-right {
+    --a1-section-justify-items: end;
+  }
+}
 
 /* ── Padding — static (with built-in responsive scaling) ───────────────────── */
 /*

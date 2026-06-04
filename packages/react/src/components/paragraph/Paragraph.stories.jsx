@@ -22,6 +22,14 @@ const meta = {
     color: {
       control: "inline-radio",
       options: ["default", "muted", "inverse"]
+    },
+    textWrap: {
+      control: "inline-radio",
+      options: ["balance", undefined]
+    },
+    align: {
+      control: "inline-radio",
+      options: ["left", "center", "right", undefined]
     }
   }
 };
@@ -46,6 +54,44 @@ export const SizeScale = {
             {size}
           </span>
           <Paragraph size={size}>
+            The quick brown fox jumps over the lazy dog.
+          </Paragraph>
+        </div>
+      ))}
+    </div>
+  )
+};
+
+export const TextWrap = {
+  name: "Text wrap — balance",
+  render: () => (
+    <div style={{ display: "grid", gap: "32px", maxWidth: "480px" }}>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>Without textWrap</p>
+        <Paragraph size="lg">
+          A token-driven, multi-platform design system built for consistent, accessible interfaces.
+        </Paragraph>
+      </div>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>textWrap="balance"</p>
+        <Paragraph size="lg" textWrap="balance">
+          A token-driven, multi-platform design system built for consistent, accessible interfaces.
+        </Paragraph>
+      </div>
+    </div>
+  )
+};
+
+export const Alignment = {
+  name: "Alignment",
+  render: () => (
+    <div style={{ display: "grid", gap: "24px" }}>
+      {["left", "center", "right"].map(align => (
+        <div key={align}>
+          <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>
+            align="{align}"
+          </p>
+          <Paragraph align={align}>
             The quick brown fox jumps over the lazy dog.
           </Paragraph>
         </div>

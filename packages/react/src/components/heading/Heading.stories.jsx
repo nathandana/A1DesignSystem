@@ -30,6 +30,14 @@ const meta = {
     margin: {
       control: "inline-radio",
       options: ["sm", "md", "lg"]
+    },
+    textWrap: {
+      control: "inline-radio",
+      options: ["balance", undefined]
+    },
+    align: {
+      control: "inline-radio",
+      options: ["left", "center", "right", undefined]
     }
   }
 };
@@ -127,6 +135,44 @@ export const Colors = {
       <Inverse style={{ padding: "16px", borderRadius: "6px" }}>
         <Heading as="h2">Inverse surface heading</Heading>
       </Inverse>
+    </div>
+  )
+};
+
+export const TextWrap = {
+  name: "Text wrap — balance",
+  render: () => (
+    <div style={{ display: "grid", gap: "32px", maxWidth: "540px" }}>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>Without textWrap</p>
+        <Heading as="h2" type="display" size="lg">
+          The design system built for the AI era
+        </Heading>
+      </div>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>textWrap="balance"</p>
+        <Heading as="h2" type="display" size="lg" textWrap="balance">
+          The design system built for the AI era
+        </Heading>
+      </div>
+    </div>
+  )
+};
+
+export const Alignment = {
+  name: "Alignment",
+  render: () => (
+    <div style={{ display: "grid", gap: "24px" }}>
+      {["left", "center", "right"].map(align => (
+        <div key={align}>
+          <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>
+            align="{align}"
+          </p>
+          <Heading as="h2" size="lg" align={align}>
+            The quick brown fox jumps over the lazy dog
+          </Heading>
+        </div>
+      ))}
     </div>
   )
 };

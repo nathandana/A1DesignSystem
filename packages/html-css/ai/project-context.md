@@ -1,11 +1,42 @@
-## Overview
-A1 Pure is a CSS only package that reflects the A1 Design system, it is built on top of style dictionary and a sibling package to the A1 react design system. 
+## HTML/CSS Package
 
-## Additional Context
-All styles should be scoped with the "a1-" prefix. Styles should be added to mimic react properties. For example: <button class="a1-button a1-button-size-sm a1-type-primary">
+This package provides two CSS distributions that implement the A1 design system without JavaScript.
 
-The react library is the point of truth, built on top of tokens defined in style dictionary. 
+### dist/ file map
 
-When new properties are added to each component, add examples to the demo page.
+| File | Authored | Contents |
+|------|----------|----------|
+| `a1-light.css` | Generated | Semantic + component tokens for the light theme |
+| `a1-accessible.css` | Generated | Token overrides for the accessible theme |
+| `a1-heritage.css` | Generated | Token overrides for the heritage theme |
+| `a1-base.css` | Hand-authored | Full BEM component classes for general use |
+| `a1-pure.css` | Hand-authored | Scoped `a1-*` classes; `@import`s `a1-light.css` for tokens |
+| `index.html` | Hand-authored | Quick-reference demo of all base classes |
 
-All styles are to be pulled from tokens through style dictionary.
+**Never edit the generated files directly.** Token and theme changes go in `system/` and are rebuilt via `npm run build:html-css`.
+
+### a1-base.css rules
+
+- BEM classes: `a1-block`, `a1-block__element`, `a1-block--modifier`.
+- Newer components use flat modifier classes: `a1-button`, `a1-button-secondary`, `a1-button-large`.
+- All values from `var(--token-name)`. Verify in `a1-light.css` before using.
+- Use CSS variable architecture for variants — base class reads `--a1-{component}-*`; modifiers set them.
+
+### a1-pure.css rules
+
+- This file is the CSS backing the `examples/a1-pure/` demo site.
+- Every component in the pure package must have its class in this file.
+- When the React package gains a new component or variant, replicate it here.
+- `@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:...')` is already present — do not add another font import.
+- Class organization order: body, page layout, header, footer, headings, paragraph, link, icon, code, lists, blockquote, divider, figure, table, button, icon-button, form, form fields, fieldset, disclosure, reduced motion.
+- The `.a1-form` container uses `--semantic-spacing-gap-md` for field gap.
+
+### Verifying token existence
+
+Before referencing any CSS custom property in either base or pure:
+
+```bash
+grep "property-name" packages/html-css/dist/a1-light.css
+```
+
+If it is not there, the token must be added to `system/tokens/` and the package rebuilt.

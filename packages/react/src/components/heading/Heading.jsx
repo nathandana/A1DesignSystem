@@ -6,6 +6,8 @@ const colors = ["default", "muted", "accent"];
 const margins = ["sm", "md", "lg"];
 const levels = ["h1", "h2", "h3", "h4", "h5", "h6"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
+const textWraps = ["balance"];
+const aligns = ["left", "center", "right"];
 
 const levelDefaults = { h1: "xl", h2: "lg", h3: "md", h4: "sm", h5: "xs", h6: "xs" };
 
@@ -42,6 +44,8 @@ export function Heading({
   size,
   color = "default",
   margin,
+  textWrap,
+  align,
   className = "",
   style,
   ...props
@@ -53,6 +57,8 @@ export function Heading({
   const resolvedSize = resolveSize(size, validSizes, defaultSize);
   const resolvedColor = colors.includes(color) ? color : "default";
   const resolvedMargin = margins.includes(margin) ? margin : null;
+  const resolvedTextWrap = textWraps.includes(textWrap) ? textWrap : null;
+  const resolvedAlign = aligns.includes(align) ? align : null;
   const responsiveSizeStyle = getResponsiveSizeStyle(size, type, validSizes);
   const resolvedStyle = Object.keys(responsiveSizeStyle).length
     ? { ...responsiveSizeStyle, ...style }
@@ -64,6 +70,8 @@ export function Heading({
     `a1-heading--${type}-${resolvedSize}`,
     resolvedColor !== "default" && `a1-heading--${resolvedColor}`,
     resolvedMargin && `a1-heading--margin-${resolvedMargin}`,
+    resolvedTextWrap && `a1-heading--wrap-${resolvedTextWrap}`,
+    resolvedAlign && `a1-heading--align-${resolvedAlign}`,
     className
   ]
     .filter(Boolean)

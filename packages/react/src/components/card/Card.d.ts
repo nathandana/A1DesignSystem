@@ -3,6 +3,10 @@ import * as React from "react";
 export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   /** Underlying element. Default: "div" */
   as?: React.ElementType;
+  /** Visual and semantic card variant. Navigation cards make the entire card interactive. Default: "default" */
+  variant?: "default" | "navigation";
+  /** Destination for navigation cards. When `variant="navigation"` is set, the card renders as an anchor by default. */
+  href?: string;
   /** Remove the card border and background. Default: false */
   bare?: boolean;
   /** Material Symbols icon shown in the card body area */

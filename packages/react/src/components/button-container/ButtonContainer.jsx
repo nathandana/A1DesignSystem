@@ -1,7 +1,21 @@
 import "./button-container.css";
+import { Children, cloneElement, isValidElement } from "react";
+import { Button } from "../button/Button.jsx";
 
 const alignments = ["start", "center", "end"];
 const sizes = ["sm", "md", "lg"];
+
+function applyButtonSize(children, size) {
+  if (!size) return children;
+
+  return Children.map(children, (child) => {
+    if (!isValidElement(child) || child.type !== Button || child.props.size) {
+      return child;
+    }
+
+    return cloneElement(child, { size });
+  });
+}
 
 export function ButtonContainer({
   align = "start",
@@ -20,11 +34,12 @@ export function ButtonContainer({
   ]
     .filter(Boolean)
     .join(" ");
+  const resolvedChildren = applyButtonSize(children, resolvedSize);
 
   return (
     <div className={classes} {...props}>
       <div className="a1-button-container__inner">
-        {children}
+        {resolvedChildren}
       </div>
     </div>
   );

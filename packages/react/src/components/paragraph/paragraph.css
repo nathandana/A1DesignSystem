@@ -39,6 +39,14 @@
 
 .a1-paragraph--muted { --a1-paragraph-color: var(--semantic-color-text-muted); }
 
+/* Text wrap */
+.a1-paragraph--wrap-balance { text-wrap: balance; }
+
+/* Alignment */
+.a1-paragraph--align-left   { text-align: start;  }
+.a1-paragraph--align-center { text-align: center; }
+.a1-paragraph--align-right  { text-align: end;    }
+
 .a1-paragraph + .a1-paragraph,
 .a1-paragraph + .a1-heading {
   margin-top: 1.5em;

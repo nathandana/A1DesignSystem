@@ -92,6 +92,10 @@
   align-items: stretch;
 }
 
+.a1-top-header__nav-item--split {
+  gap: 0;
+}
+
 .a1-top-header__nav-link {
   display: inline-flex;
   align-items: center;
@@ -125,6 +129,18 @@
 .a1-top-header__nav-link--active {
   color: var(--semantic-color-text-default);
   border-bottom-color: var(--semantic-color-action-background);
+}
+
+.a1-top-header__nav-item--split > .a1-top-header__nav-link:first-child {
+  padding-inline-end: var(--base-spacing-8);
+}
+
+.a1-top-header__nav-submenu-trigger {
+  padding-inline: var(--base-spacing-8);
+}
+
+.a1-top-header__nav-submenu-trigger .a1-top-header__nav-chevron {
+  margin-inline-start: 0;
 }
 
 /* icon-only: square-ish click target, no text gap */

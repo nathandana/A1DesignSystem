@@ -15,6 +15,7 @@ const meta = {
   parameters: { layout: "padded" },
   args: {
     bare: false,
+    variant: "default",
     icon: undefined,
     heroIcon: undefined,
     heroColor: "action",
@@ -23,6 +24,11 @@ const meta = {
     as: {
       control: "select",
       options: ["div", "article", "section"],
+    },
+    variant: {
+      control: "select",
+      options: ["default", "navigation"],
+      description: "Use navigation when the whole card links to another page. Do not place buttons or links inside navigation cards.",
     },
     bare: {
       control: "boolean",
@@ -42,8 +48,16 @@ const meta = {
       description: "Background color of the hero icon area",
     },
   },
-  render: ({ bare, icon, heroIcon, heroColor }) => (
-    <Card bare={bare} icon={icon} heroIcon={heroIcon} heroColor={heroColor} style={{ width: 320 }}>
+  render: ({ bare, variant, icon, heroIcon, heroColor }) => (
+    <Card
+      bare={bare}
+      variant={variant}
+      href={variant === "navigation" ? "#" : undefined}
+      icon={icon}
+      heroIcon={heroIcon}
+      heroColor={heroColor}
+      style={{ width: 320 }}
+    >
       <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Card title</Heading>
       <Paragraph color="muted">Supporting text describing the card content.</Paragraph>
     </Card>
@@ -72,6 +86,33 @@ export const WithSmallIcon = {
       <Card icon="star" style={{ width: 280 }}>
         <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Quality</Heading>
         <Paragraph color="muted">Every token and component reviewed against design standards.</Paragraph>
+      </Card>
+    </div>
+  ),
+};
+
+/* ── Navigation variant ──────────────────────────────────────────────────── */
+
+export const Navigation = {
+  name: "Navigation",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "grid", gap: "var(--base-spacing-16)" }}>
+      <Card variant="navigation" href="#" icon="palette">
+        <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>
+          Color foundation
+        </Heading>
+        <Paragraph color="muted">
+          Navigate to the color foundation page. Navigation cards must not contain nested buttons or links.
+        </Paragraph>
+      </Card>
+      <Card variant="navigation" href="#" icon="widgets">
+        <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>
+          Components
+        </Heading>
+        <Paragraph color="muted">
+          Use the whole card as one target when the card represents a single destination.
+        </Paragraph>
       </Card>
     </div>
   ),

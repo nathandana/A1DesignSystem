@@ -11,8 +11,9 @@ export interface TabsProps {
    * pills    — filled pill buttons
    * segment  — segmented control style
    * progress — step-progress indicator
+   * folder   — browser-tab style folders
    */
-  variant?: "line" | "pills" | "segment" | "progress";
+  variant?: "line" | "pills" | "segment" | "progress" | "folder";
   /**
    * Heading level for accessibility. Tabs at level 1 sit above level 2 tabs.
    * Default: 1

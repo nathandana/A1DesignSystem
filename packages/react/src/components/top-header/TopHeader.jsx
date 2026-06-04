@@ -29,8 +29,16 @@ function splitIntoSections(items) {
 function NavItem({ item, openId, onOpen }) {
   const triggerRef = useRef(null);
   const hasSubmenu = item.items?.length > 0;
+  const hasRoute = !!item.href;
   const isOpen = hasSubmenu && openId === item.id;
   const isIconOnly = !!item.iconOnly;
+
+  const itemClass = [
+    "a1-top-header__nav-item",
+    hasSubmenu && hasRoute && "a1-top-header__nav-item--split",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const linkClass = [
     "a1-top-header__nav-link",
@@ -40,7 +48,7 @@ function NavItem({ item, openId, onOpen }) {
     .filter(Boolean)
     .join(" ");
 
-  const content = (
+  const linkContent = (
     <>
       {item.icon && (
         <Icon
@@ -50,31 +58,49 @@ function NavItem({ item, openId, onOpen }) {
         />
       )}
       {!isIconOnly && <span>{item.label}</span>}
-      {!isIconOnly && hasSubmenu && (
-        <Icon
-          name="expand_more"
-          className="a1-top-header__nav-chevron"
-          aria-hidden="true"
-        />
-      )}
+    </>
+  );
+
+  const submenuChevron = (
+    hasSubmenu && (
+      <Icon
+        name="expand_more"
+        className="a1-top-header__nav-chevron"
+        aria-hidden="true"
+      />
+    )
+  );
+
+  const submenuButtonContent = (
+    <>
+      {linkContent}
+      {submenuChevron}
     </>
   );
 
   return (
-    <li className="a1-top-header__nav-item">
-      {hasSubmenu ? (
+    <li className={itemClass}>
+      {hasSubmenu && hasRoute ? (
         <>
+          <a
+            href={item.href}
+            className={linkClass}
+            aria-current={item.active ? "page" : undefined}
+            aria-label={isIconOnly ? item.label : undefined}
+            onClick={item.onClick}
+          >
+            {linkContent}
+          </a>
           <button
             ref={triggerRef}
             type="button"
-            className={linkClass}
+            className="a1-top-header__nav-link a1-top-header__nav-submenu-trigger"
             aria-expanded={isOpen}
             aria-haspopup="menu"
-            aria-current={item.active ? "page" : undefined}
-            aria-label={isIconOnly ? item.label : undefined}
+            aria-label={`${item.label} submenu`}
             onClick={() => onOpen(isOpen ? null : item.id)}
           >
-            {content}
+            {submenuChevron}
           </button>
           <Menu
             open={isOpen}
@@ -88,7 +114,41 @@ function NavItem({ item, openId, onOpen }) {
                   key={sub.label}
                   icon={sub.icon}
                   href={sub.href}
-                  onClick={sub.href ? undefined : () => { sub.onClick?.(); onOpen(null); }}
+                  onClick={(event) => { sub.onClick?.(event); onOpen(null); }}
+                >
+                  {sub.label}
+                </MenuItem>
+              ))}
+            </MenuSection>
+          </Menu>
+        </>
+      ) : hasSubmenu ? (
+        <>
+          <button
+            ref={triggerRef}
+            type="button"
+            className={linkClass}
+            aria-expanded={isOpen}
+            aria-haspopup="menu"
+            aria-current={item.active ? "page" : undefined}
+            aria-label={isIconOnly ? item.label : undefined}
+            onClick={() => onOpen(isOpen ? null : item.id)}
+          >
+            {submenuButtonContent}
+          </button>
+          <Menu
+            open={isOpen}
+            onClose={() => onOpen(null)}
+            anchorRef={triggerRef}
+            aria-label={`${item.label} submenu`}
+          >
+            <MenuSection>
+              {item.items.map((sub) => (
+                <MenuItem
+                  key={sub.label}
+                  icon={sub.icon}
+                  href={sub.href}
+                  onClick={(event) => { sub.onClick?.(event); onOpen(null); }}
                 >
                   {sub.label}
                 </MenuItem>
@@ -102,8 +162,9 @@ function NavItem({ item, openId, onOpen }) {
           className={linkClass}
           aria-current={item.active ? "page" : undefined}
           aria-label={isIconOnly ? item.label : undefined}
+          onClick={item.onClick}
         >
-          {content}
+          {linkContent}
         </a>
       ) : (
         <button
@@ -113,11 +174,29 @@ function NavItem({ item, openId, onOpen }) {
           aria-label={isIconOnly ? item.label : undefined}
           onClick={item.onClick}
         >
-          {content}
+          {linkContent}
         </button>
       )}
     </li>
   );
+}
+
+/*
+ * Mobile nav renders submenu parents as groups. When a parent also has a route,
+ * the first child links to that parent page so the route remains reachable.
+ */
+function getMobileSubItems(item) {
+  if (!item.href) return item.items ?? [];
+
+  return [
+    {
+      icon: item.icon,
+      label: item.label,
+      href: item.href,
+      onClick: item.onClick,
+    },
+    ...(item.items ?? []),
+  ];
 }
 
 // ── ActionMenu ─────────────────────────────────────────────────────────────────
@@ -207,14 +286,14 @@ function MobileDrawer({ navItems, onClose }) {
               open={openSubId === item.id}
               onOpenChange={(next) => setOpenSubId(next ? item.id : null)}
             >
-              {item.items.map((sub) => (
+              {getMobileSubItems(item).map((sub) => (
                 <SideNavItem
                   key={sub.label}
                   as={sub.href ? "a" : "button"}
                   href={sub.href}
                   icon={sub.icon}
                   label={sub.label}
-                  onClick={sub.onClick}
+                  onClick={(event) => { sub.onClick?.(event); onClose(); }}
                 />
               ))}
             </SideNavGroup>
@@ -229,7 +308,7 @@ function MobileDrawer({ navItems, onClose }) {
             icon={item.icon}
             label={item.label}
             active={item.active}
-            onClick={item.onClick}
+            onClick={(event) => { item.onClick?.(event); onClose(); }}
           />
         );
       })}
@@ -252,6 +331,28 @@ export function TopHeader({
   const [openAction, setOpenAction] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   // SideNav handles its own Escape key; Menu handles its own Escape + outside click.
+
+  useEffect(() => {
+    if (!mobileNavOpen || typeof window === "undefined" || !window.matchMedia) return undefined;
+
+    const desktopQuery = window.matchMedia("(min-width: 769px)");
+    const closeAtDesktop = (event) => {
+      if (event.matches) setMobileNavOpen(false);
+    };
+
+    if (desktopQuery.matches) {
+      setMobileNavOpen(false);
+      return undefined;
+    }
+
+    if (desktopQuery.addEventListener) {
+      desktopQuery.addEventListener("change", closeAtDesktop);
+      return () => desktopQuery.removeEventListener("change", closeAtDesktop);
+    }
+
+    desktopQuery.addListener(closeAtDesktop);
+    return () => desktopQuery.removeListener(closeAtDesktop);
+  }, [mobileNavOpen]);
 
   return (
     <>
