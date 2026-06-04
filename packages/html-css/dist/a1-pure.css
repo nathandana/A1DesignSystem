@@ -1,4 +1,5 @@
 @import url('./a1-light.css');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block');
 
 /*
   a1-pure.css — Scoped element styles
@@ -19,6 +20,28 @@
 
 body {
   margin: 0;
+}
+
+/*
+  Apply class="a1-body" to the <body> element to set the base font, color,
+  and background for the page. All child elements inherit the font family
+  and size, so unstyled elements render consistently without extra classes.
+*/
+.a1-body {
+  box-sizing: border-box;
+  min-block-size: 100vh;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family, var(--component-button-font-family));
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--component-paragraph-font-weight, var(--semantic-font-weight-body));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-body *,
+.a1-body *::before,
+.a1-body *::after {
+  box-sizing: border-box;
 }
 
 /* ─── Page layout ────────────────────────────────────────────────────── */
@@ -363,21 +386,74 @@ abbr[title] { text-decoration: underline dotted; cursor: help; }
   color: var(--component-heading-mark-highlight-foreground-color);
 }
 
-/* ─── Links ──────────────────────────────────────────────────────────── */
+/* ─── Link ───────────────────────────────────────────────────────────── */
 
-.a1-a {
+.a1-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--component-link-icon-gap);
   color: var(--component-link-color);
+  text-decoration-line: underline;
   text-underline-offset: var(--component-link-underline-offset);
   transition: color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
 }
 
-.a1-a:hover { color: var(--component-link-color-hover); }
-.a1-a:active { color: var(--component-link-color-pressed); }
+.a1-link:visited {
+  color: var(--component-link-color);
+}
 
-.a1-a:focus-visible {
+.a1-link:hover {
+  color: var(--component-link-color-hover);
+}
+
+.a1-link:active {
+  color: var(--component-link-color-pressed);
+}
+
+.a1-link:focus-visible {
   outline: var(--component-link-focus-ring-width) solid var(--component-field-focus-ring-color);
   outline-offset: var(--component-link-focus-ring-offset);
   border-radius: var(--component-link-focus-ring-radius);
+}
+
+/* Icon inside a link — 1em keeps it visually matching the surrounding text */
+.a1-link .a1-icon {
+  font-size: 1em;
+  --a1-icon-opsz: 20;
+  flex-shrink: 0;
+}
+
+/* ─── Icon ───────────────────────────────────────────────────────────── */
+/*
+  Usage: <span class="a1-icon" aria-hidden="true">icon_name</span>
+  Icon names are Material Symbols ligature strings, e.g. "add", "close", "check_circle".
+  Use CSS custom properties to control variation axes:
+    --a1-icon-fill   0 (outline) or 1 (filled)
+    --a1-icon-weight font-weight axis (default: base-font-weight-regular)
+    --a1-icon-grade  GRAD axis (default: 0)
+    --a1-icon-opsz   optical size axis (default: base-icon-optical-size = 24)
+*/
+
+.a1-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: inherit;
+  line-height: 1;
+  color: inherit;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    "FILL" var(--a1-icon-fill, 0),
+    "wght" var(--a1-icon-weight, var(--base-font-weight-regular)),
+    "GRAD" var(--a1-icon-grade, 0),
+    "opsz" var(--a1-icon-opsz, var(--base-icon-optical-size));
+}
+
+/* Filled variant */
+.a1-icon-filled {
+  --a1-icon-fill: 1;
 }
 
 /* ─── Code ───────────────────────────────────────────────────────────── */
@@ -532,11 +608,11 @@ aside > .a1-blockquote cite {
   color: color-mix(in srgb, var(--semantic-color-text-inverse), transparent 35%);
 }
 
-aside > .a1-blockquote .a1-a {
+aside > .a1-blockquote .a1-link {
   color: inherit;
 }
 
-aside > .a1-blockquote .a1-a:hover {
+aside > .a1-blockquote .a1-link:hover {
   color: var(--semantic-color-text-inverse);
 }
 
@@ -598,32 +674,52 @@ aside > .a1-blockquote .a1-a:hover {
 }
 
 /* ─── Button ─────────────────────────────────────────────────────────── */
+/*
+  CSS variable architecture: .a1-button reads from --a1-button-* variables
+  with primary values as fallbacks. Type/size/shape modifier classes set
+  those variables, so any combination works without specificity fights.
+
+  Usage:
+    <button class="a1-button">Primary</button>
+    <button class="a1-button a1-button-secondary a1-button-large">…</button>
+    <button class="a1-button a1-button-pill">…</button>
+*/
 
 .a1-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-block-size: var(--component-button-min-height);
+  min-block-size: var(--a1-button-height, var(--component-button-min-height));
   padding-block: var(--component-button-padding-block);
-  padding-inline: var(--base-spacing-20);
-  border: none;
-  border-radius: var(--component-button-border-radius);
-  background: var(--component-button-primary-background);
-  color: var(--component-button-primary-foreground);
+  padding-inline: var(--a1-button-padding-inline, var(--base-spacing-20));
+  border-width: var(--a1-button-border-width, 0px);
+  border-style: solid;
+  border-color: var(--a1-button-border, transparent);
+  border-radius: var(--a1-button-border-radius, var(--component-button-border-radius));
+  background: var(--a1-button-background, var(--component-button-primary-background));
+  color: var(--a1-button-foreground, var(--component-button-primary-foreground));
   font-family: var(--component-button-font-family);
-  font-size: var(--semantic-font-size-body-md);
-  font-weight: var(--base-font-weight-semibold);
+  font-size: var(--a1-button-font-size, var(--semantic-font-size-body-md));
+  font-weight: var(--a1-button-font-weight, var(--base-font-weight-semibold));
   cursor: pointer;
   text-decoration: none;
-  transition: background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+  white-space: nowrap;
+  transition:
+    background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
 }
 
-.a1-button:hover {
-  background: var(--component-button-primary-background-hover);
+.a1-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--a1-button-background-hover, var(--component-button-primary-background-hover));
+  border-color: var(--a1-button-border-hover, transparent);
+  color: var(--a1-button-foreground-hover, var(--component-button-primary-foreground));
 }
 
-.a1-button:active {
-  background: var(--component-button-primary-background-pressed);
+.a1-button:active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--a1-button-background-pressed, var(--component-button-primary-background-pressed));
+  border-color: var(--a1-button-border-pressed, transparent);
+  color: var(--a1-button-foreground-pressed, var(--component-button-primary-foreground));
 }
 
 .a1-button:focus-visible {
@@ -637,18 +733,221 @@ aside > .a1-blockquote .a1-a:hover {
   cursor: not-allowed;
 }
 
+/* ── Button types ─────────────────────────────────────────────────────── */
+
+.a1-button-secondary {
+  --a1-button-background: var(--component-button-secondary-background);
+  --a1-button-background-hover: var(--component-button-secondary-background-hover);
+  --a1-button-background-pressed: var(--component-button-secondary-background-pressed);
+  --a1-button-foreground: var(--component-button-secondary-foreground);
+  --a1-button-foreground-hover: var(--component-button-secondary-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-secondary-foreground-pressed);
+  --a1-button-border: var(--component-button-secondary-border);
+  --a1-button-border-hover: var(--component-button-secondary-border-hover);
+  --a1-button-border-pressed: var(--component-button-secondary-border-pressed);
+  --a1-button-border-width: var(--component-button-secondary-border-width, 1px);
+}
+
+.a1-button-tertiary {
+  --a1-button-background: var(--component-button-tertiary-background);
+  --a1-button-background-hover: var(--component-button-tertiary-background-hover);
+  --a1-button-background-pressed: var(--component-button-tertiary-background-pressed);
+  --a1-button-foreground: var(--component-button-tertiary-foreground);
+  --a1-button-foreground-hover: var(--component-button-tertiary-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-tertiary-foreground-pressed);
+  --a1-button-border: var(--component-button-tertiary-border);
+  --a1-button-border-hover: var(--component-button-tertiary-border-hover);
+  --a1-button-border-pressed: var(--component-button-tertiary-border-pressed);
+  --a1-button-border-width: var(--component-button-tertiary-border-width, 0px);
+}
+
+/* ── Button sizes ─────────────────────────────────────────────────────── */
+
+.a1-button-small {
+  --a1-button-height: var(--component-button-small-height);
+  --a1-button-font-size: var(--semantic-font-size-body-sm);
+  --a1-button-font-weight: var(--base-font-weight-medium);
+  --a1-button-border-radius: var(--component-button-small-border-radius);
+  --a1-button-padding-inline: var(--base-spacing-12);
+  --a1-button-icon-size: var(--component-button-small-icon-size);
+  --a1-button-icon-opsz: var(--component-button-small-icon-optical-size);
+}
+
+.a1-button-large {
+  --a1-button-height: var(--component-button-large-height);
+  --a1-button-font-size: var(--semantic-font-size-body-lg);
+  --a1-button-font-weight: var(--base-font-weight-extra-bold);
+  --a1-button-border-radius: var(--base-radius-lg);
+  --a1-button-padding-inline: var(--base-spacing-24);
+  --a1-button-icon-size: var(--component-button-large-icon-size);
+  --a1-button-icon-opsz: var(--component-button-large-icon-optical-size);
+}
+
+/* ── Button shape ─────────────────────────────────────────────────────── */
+
+.a1-button-pill {
+  --a1-button-border-radius: var(--component-button-pill-border-radius);
+}
+
+/* ── Icon inside button ───────────────────────────────────────────────── */
+
+.a1-button .a1-icon {
+  font-size: var(--a1-button-icon-size, var(--component-button-icon-size));
+  --a1-icon-opsz: var(--a1-button-icon-opsz, var(--component-button-icon-optical-size));
+  flex-shrink: 0;
+}
+
+/* ─── Icon button ─────────────────────────────────────────────────────── */
+/*
+  A square button containing only an icon. Uses the same CSS variable
+  architecture as .a1-button for types and hover/focus/disabled states.
+
+  Usage:
+    <button class="a1-icon-button" aria-label="Close">
+      <span class="a1-icon" aria-hidden="true">close</span>
+    </button>
+*/
+
+.a1-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  block-size: var(--component-icon-button-size);
+  inline-size: var(--component-icon-button-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--component-icon-button-border-radius);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  cursor: pointer;
+  transition: background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-icon-button .a1-icon {
+  font-size: var(--component-icon-button-icon-size);
+  --a1-icon-opsz: var(--component-icon-button-icon-optical-size);
+}
+
+.a1-icon-button:hover {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-icon-button:focus-visible {
+  outline: var(--component-icon-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-icon-button-focus-ring-offset);
+}
+
+.a1-icon-button:disabled,
+.a1-icon-button[aria-disabled="true"] {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ─── Form ───────────────────────────────────────────────────────────── */
+
+.a1-form {
+  display: grid;
+  gap: var(--semantic-spacing-gap-md);
+}
+
 /* ─── Form fields ────────────────────────────────────────────────────── */
+/*
+  CSS variable architecture: .a1-label sets --a1-field-* custom properties.
+  .a1-input, .a1-select, .a1-textarea read them, so size modifier classes
+  on the label scale the entire field — label font, input height, padding,
+  border-radius, and font size — from one class.
+*/
 
 .a1-label {
   display: grid;
-  gap: var(--component-field-default-gap);
+  gap: var(--a1-field-gap, var(--component-field-default-gap));
   font-family: var(--component-paragraph-font-family);
-  font-size: var(--semantic-font-size-body-sm);
+  font-size: var(--a1-field-label-size, var(--semantic-font-size-body-sm));
   font-weight: var(--component-field-label-font-weight);
   color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
 }
 
-/* Checkbox / radio labels sit inline */
+/* ── Size modifiers ───────────────────────────────────────────────────── */
+
+.a1-label-compact {
+  --a1-field-gap:              var(--component-field-compact-gap);
+  --a1-field-label-size:       var(--semantic-font-size-body-xs);
+  --a1-field-height:           var(--component-field-compact-height);
+  --a1-field-padding-inline:   var(--component-field-compact-padding-inline);
+  --a1-field-border-radius:    var(--component-field-compact-border-radius);
+  --a1-field-font-size:        var(--semantic-font-size-body-sm);
+  --a1-field-accent-compensation: var(--component-field-accent-compensation-compact);
+}
+
+.a1-label-comfortable {
+  --a1-field-gap:              var(--component-field-comfortable-gap);
+  --a1-field-label-size:       var(--semantic-font-size-body-md);
+  --a1-field-height:           var(--component-field-comfortable-height);
+  --a1-field-padding-inline:   var(--component-field-comfortable-padding-inline);
+  --a1-field-border-radius:    var(--component-field-comfortable-border-radius);
+  --a1-field-font-size:        var(--semantic-font-size-body-md);
+}
+
+/* ── Required indicator ───────────────────────────────────────────────── */
+
+.a1-required {
+  color: var(--semantic-color-status-info-background);
+}
+
+/* Left accent border — auto-applied when field has the required attribute */
+.a1-label:has(.a1-input:required) .a1-input,
+.a1-label:has(.a1-select:required) .a1-select,
+.a1-label:has(.a1-textarea:required) .a1-textarea {
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-info-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+/* ── Status modifiers ─────────────────────────────────────────────────── */
+
+.a1-label-error .a1-input,
+.a1-label-error .a1-select,
+.a1-label-error .a1-textarea {
+  border-width: var(--component-field-error-border-width);
+  border-color: var(--semantic-color-status-error-border);
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-error-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+.a1-label-success .a1-input,
+.a1-label-success .a1-select,
+.a1-label-success .a1-textarea {
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-success-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+/* ── Status messages ──────────────────────────────────────────────────── */
+
+.a1-message-hint {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-message-error {
+  color: var(--semantic-color-status-error-background);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  font-weight: var(--base-font-weight-semibold);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-message-success {
+  color: var(--semantic-color-status-success-background);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ── Checkbox / radio item labels ─────────────────────────────────────── */
+
 .a1-label:has(> .a1-checkbox),
 .a1-label:has(> .a1-radio) {
   display: flex;
@@ -661,22 +960,48 @@ aside > .a1-blockquote .a1-a:hover {
   cursor: pointer;
 }
 
+/* Top-align when item has hint text so checkbox sits at the cap-height */
+.a1-label:has(.a1-label-hint) {
+  align-items: flex-start;
+}
+
+.a1-label:has(.a1-label-hint) .a1-checkbox,
+.a1-label:has(.a1-label-hint) .a1-radio {
+  margin-block-start: var(--component-checkbox-group-input-nudge, 4px);
+}
+
+/* Wrap label text + hint in a column */
+.a1-label-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-content-gap, var(--base-spacing-2));
+}
+
+.a1-label-hint {
+  display: block;
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
 .a1-input,
 .a1-select,
 .a1-textarea {
   box-sizing: border-box;
   inline-size: 100%;
-  min-block-size: var(--component-field-default-height);
-  padding-inline: var(--component-field-default-padding-inline);
+  min-block-size: var(--a1-field-height, var(--component-field-default-height));
+  padding-inline: var(--a1-field-padding-inline, var(--component-field-default-padding-inline));
   border: var(--component-field-border-width) solid var(--semantic-color-border-default);
-  border-radius: var(--component-field-default-border-radius);
+  border-radius: var(--a1-field-border-radius, var(--component-field-default-border-radius));
   background: var(--semantic-color-surface-page);
   color: var(--semantic-color-text-default);
-  font: inherit;
+  font-family: inherit;
+  font-size: var(--a1-field-font-size, var(--semantic-font-size-body-md));
 }
 
 .a1-textarea {
-  min-block-size: calc(var(--component-field-default-height) * 2.5);
+  min-block-size: calc(var(--a1-field-height, var(--component-field-default-height)) * 2.5);
   padding-block: var(--component-field-textarea-padding-block);
 }
 
@@ -737,7 +1062,9 @@ aside > .a1-blockquote .a1-a:hover {
   cursor: not-allowed;
 }
 
-/* Fieldset for grouped controls */
+/* ─── Fieldset ────────────────────────────────────────────────────────── */
+
+/* Generic fieldset — bordered card */
 .a1-fieldset {
   margin: 0;
   padding: var(--base-spacing-16);
@@ -745,21 +1072,79 @@ aside > .a1-blockquote .a1-a:hover {
   border-radius: var(--component-card-border-radius);
 }
 
+/* Checkbox/radio group — borderless flex column, matches React component */
 .a1-fieldset:has(.a1-checkbox),
 .a1-fieldset:has(.a1-radio) {
-  display: grid;
-  gap: var(--component-checkbox-group-item-gap);
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-group-gap);
 }
 
 .a1-fieldset legend {
-  padding-inline: var(--base-spacing-4);
+  padding-inline: 0;
+  font-family: var(--component-paragraph-font-family);
   font-size: var(--semantic-font-size-body-sm);
   font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
 }
 
-.a1-fieldset:has(.a1-checkbox) legend,
-.a1-fieldset:has(.a1-radio) legend {
-  margin-block-end: calc(var(--component-checkbox-group-items-top-gap) - var(--component-checkbox-group-item-gap));
+/* Restore legend float inside border for generic (non-checkbox/radio) fieldsets */
+.a1-fieldset:not(:has(.a1-checkbox)):not(:has(.a1-radio)) legend {
+  padding-inline: var(--base-spacing-4);
+}
+
+/* ── Group hint & messages ─────────────────────────────────────────────── */
+
+.a1-fieldset-hint,
+.a1-fieldset-message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-fieldset-hint { color: var(--semantic-color-text-muted); }
+
+.a1-fieldset-message-error {
+  color: var(--semantic-color-status-error-background);
+  font-weight: var(--component-checkbox-group-error-message-font-weight);
+}
+
+.a1-fieldset-message-success {
+  color: var(--semantic-color-status-success-background);
+}
+
+/* ── Items wrapper ─────────────────────────────────────────────────────── */
+
+.a1-fieldset-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-item-gap);
+  margin-block-start: var(--component-checkbox-group-items-top-gap);
+}
+
+/* No extra top margin when hint already separates legend and items */
+.a1-fieldset-hint + .a1-fieldset-items {
+  margin-block-start: 0;
+}
+
+/* ── Error state ───────────────────────────────────────────────────────── */
+
+.a1-fieldset-error .a1-fieldset-items {
+  border-inline-start: var(--component-checkbox-group-error-accent-width) solid
+    var(--semantic-color-status-error-background);
+  padding-inline-start: var(--base-spacing-12);
+}
+
+/* ── Success state ─────────────────────────────────────────────────────── */
+
+.a1-fieldset-success .a1-fieldset-items {
+  border-inline-start: var(--component-checkbox-group-error-accent-width) solid
+    var(--semantic-color-status-success-background);
+  padding-inline-start: var(--base-spacing-12);
 }
 
 /* ─── Disclosure ─────────────────────────────────────────────────────── */

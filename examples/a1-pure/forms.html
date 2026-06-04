@@ -6,7 +6,7 @@
     <title>Forms — A1 Pure</title>
     <link rel="stylesheet" href="a1-pure.css">
   </head>
-  <body>
+  <body class="a1-body">
 
     <header class="a1-header">
       <a href="index.html">A1 Pure</a>
@@ -14,8 +14,12 @@
         <a href="index.html">Overview</a>
         <a href="typography.html">Typography</a>
         <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
         <a href="forms.html" aria-current="page">Forms</a>
         <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
       </nav>
       <details>
         <summary>&#9776;</summary>
@@ -23,8 +27,12 @@
           <a href="index.html">Overview</a>
           <a href="typography.html">Typography</a>
           <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
           <a href="forms.html" aria-current="page">Forms</a>
           <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
         </nav>
       </details>
       <a href="index.html#get-started">Get started</a>
@@ -33,37 +41,73 @@
     <main>
 
       <section class="a1-section">
-        <h1 class="a1-h1">Forms</h1>
-        <p class="a1-p">Text inputs, selects, and textareas are styled at the element level. A <code class="a1-code">&lt;label&gt;</code> uses <code class="a1-code">display: grid</code> so the label text, input, and any help text stack vertically — no wrapper div required.</p>
+        <h1 class="a1-h1 a1-heading-size-xxl">Forms</h1>
+        <p class="a1-p">Apply <code class="a1-code">a1-label</code> to the wrapping <code class="a1-code">&lt;label&gt;</code> and the matching <code class="a1-code">a1-input</code>, <code class="a1-code">a1-select</code>, or <code class="a1-code">a1-textarea</code> to the control. The label uses <code class="a1-code">display: grid</code> so label text, input, and messages stack automatically. Size, required, and status modifier classes all go on the label.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Sizes</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-label-compact</code> or <code class="a1-code">a1-label-comfortable</code> to scale the label font, input height, padding, and border-radius together. The default (no size class) is the medium size.</p>
+        <figure class="a1-figure">
+          <label class="a1-label a1-label-compact">
+            Compact
+            <input class="a1-input" type="text">
+          </label>
+          <label class="a1-label">
+            Default
+            <input class="a1-input" type="text">
+          </label>
+          <label class="a1-label a1-label-comfortable">
+            Comfortable
+            <input class="a1-input" type="text">
+          </label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Compact --&gt;
+&lt;label class="a1-label a1-label-compact"&gt;
+  Compact
+  &lt;input class="a1-input" type="text"&gt;
+&lt;/label&gt;
+
+&lt;!-- Default (no size class) --&gt;
+&lt;label class="a1-label"&gt;
+  Default
+  &lt;input class="a1-input" type="text"&gt;
+&lt;/label&gt;
+
+&lt;!-- Comfortable --&gt;
+&lt;label class="a1-label a1-label-comfortable"&gt;
+  Comfortable
+  &lt;input class="a1-input" type="text"&gt;
+&lt;/label&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Text input</h2>
-        <p class="a1-p">Wrap an <code class="a1-code">&lt;input&gt;</code> inside a <code class="a1-code">&lt;label&gt;</code>. The label text and input stack automatically.</p>
+        <p class="a1-p">Wrap an <code class="a1-code">&lt;input class="a1-input"&gt;</code> inside a <code class="a1-code">&lt;label class="a1-label"&gt;</code>. The label text and input stack automatically via the grid layout.</p>
         <figure class="a1-figure">
           <label class="a1-label">
             Full name
-            <input class="a1-input" type="text" placeholder="Ada Lovelace">
+            <input class="a1-input" type="text">
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Full name
-  &lt;input type="text" placeholder="Ada Lovelace"&gt;
+  &lt;input class="a1-input" type="text"&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Email input</h2>
-        <p class="a1-p">Use <code class="a1-code">type="email"</code> for email addresses. Mobile browsers will show an optimized keyboard.</p>
+        <p class="a1-p">Use <code class="a1-code">type="email"</code> for email addresses. Mobile browsers show an optimized keyboard.</p>
         <figure class="a1-figure">
           <label class="a1-label">
             Email address
-            <input class="a1-input" type="email" placeholder="ada@example.com">
+            <input class="a1-input" type="email">
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Email address
-  &lt;input type="email" placeholder="ada@example.com"&gt;
+  &lt;input class="a1-input" type="email"&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
@@ -73,12 +117,12 @@
         <figure class="a1-figure">
           <label class="a1-label">
             Password
-            <input class="a1-input" type="password" placeholder="Enter your password">
+            <input class="a1-input" type="password">
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Password
-  &lt;input type="password" placeholder="Enter your password"&gt;
+  &lt;input class="a1-input" type="password"&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
@@ -88,33 +132,33 @@
         <figure class="a1-figure">
           <label class="a1-label">
             Quantity
-            <input class="a1-input" type="number" placeholder="0" min="0">
+            <input class="a1-input" type="number" min="0">
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Quantity
-  &lt;input type="number" placeholder="0" min="0"&gt;
+  &lt;input class="a1-input" type="number" min="0"&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Textarea</h2>
-        <p class="a1-p">A <code class="a1-code">&lt;textarea&gt;</code> inside a <code class="a1-code">&lt;label&gt;</code> stacks with the same grid layout as text inputs.</p>
+        <p class="a1-p">A <code class="a1-code">&lt;textarea class="a1-textarea"&gt;</code> inside an <code class="a1-code">a1-label</code> uses the same grid layout. Height scales with the size modifier if one is applied.</p>
         <figure class="a1-figure">
           <label class="a1-label">
             Message
-            <textarea class="a1-textarea" placeholder="Write here…"></textarea>
+            <textarea class="a1-textarea"></textarea>
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Message
-  &lt;textarea placeholder="Write here…"&gt;&lt;/textarea&gt;
+  &lt;textarea class="a1-textarea"&gt;&lt;/textarea&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Select</h2>
-        <p class="a1-p">A native <code class="a1-code">&lt;select&gt;</code> is styled with the same border, radius, and padding as text inputs.</p>
+        <p class="a1-p">A <code class="a1-code">&lt;select class="a1-select"&gt;</code> is styled with the same border, radius, and padding as text inputs. Size modifiers apply the same way.</p>
         <figure class="a1-figure">
           <label class="a1-label">
             Category
@@ -126,9 +170,9 @@
             </select>
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Category
-  &lt;select&gt;
+  &lt;select class="a1-select"&gt;
     &lt;option&gt;Design systems&lt;/option&gt;
     &lt;option&gt;Accessibility&lt;/option&gt;
     &lt;option&gt;Frontend engineering&lt;/option&gt;
@@ -138,48 +182,119 @@
       </section>
 
       <section class="a1-section">
+        <h2 class="a1-h2">Hint text</h2>
+        <p class="a1-p">Place a <code class="a1-code">&lt;small class="a1-message-hint"&gt;</code> after the input inside the label. The grid layout stacks it beneath the input automatically.</p>
+        <figure class="a1-figure">
+          <label class="a1-label">
+            Username
+            <input class="a1-input" type="text">
+            <small class="a1-message-hint">Only letters, numbers, and underscores. 3–20 characters.</small>
+          </label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
+  Username
+  &lt;input class="a1-input" type="text"&gt;
+  &lt;small class="a1-message-hint"&gt;Only letters, numbers, and underscores.&lt;/small&gt;
+&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Required field</h2>
+        <p class="a1-p">Add the <code class="a1-code">required</code> attribute to the input. CSS automatically applies a blue left accent border. Use <code class="a1-code">&lt;span class="a1-required"&gt;*&lt;/span&gt;</code> in the label text to show the required asterisk.</p>
+        <figure class="a1-figure">
+          <label class="a1-label">
+            Email address <span class="a1-required">*</span>
+            <input class="a1-input" type="email" required>
+            <small class="a1-message-hint">We'll never share your email with anyone.</small>
+          </label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
+  Email address &lt;span class="a1-required"&gt;*&lt;/span&gt;
+  &lt;input class="a1-input" type="email" required&gt;
+  &lt;small class="a1-message-hint"&gt;We'll never share your email.&lt;/small&gt;
+&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Error state</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-label-error</code> to the label. The input gets a red left accent border and a thicker red border. Use <code class="a1-code">&lt;small class="a1-message-error"&gt;</code> for the error message.</p>
+        <figure class="a1-figure">
+          <label class="a1-label a1-label-error">
+            Email address
+            <input class="a1-input" type="email" value="not-an-email">
+            <small class="a1-message-error">Please enter a valid email address.</small>
+          </label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label a1-label-error"&gt;
+  Email address
+  &lt;input class="a1-input" type="email" value="not-an-email"&gt;
+  &lt;small class="a1-message-error"&gt;Please enter a valid email address.&lt;/small&gt;
+&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Success state</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-label-success</code> to the label. The input gets a green left accent border. Use <code class="a1-code">&lt;small class="a1-message-success"&gt;</code> for the confirmation message.</p>
+        <figure class="a1-figure">
+          <label class="a1-label a1-label-success">
+            Username
+            <input class="a1-input" type="text" value="nathandana">
+            <small class="a1-message-success">Username is available.</small>
+          </label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label a1-label-success"&gt;
+  Username
+  &lt;input class="a1-input" type="text" value="nathandana"&gt;
+  &lt;small class="a1-message-success"&gt;Username is available.&lt;/small&gt;
+&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
         <h2 class="a1-h2">Disabled field</h2>
-        <p class="a1-p">The <code class="a1-code">disabled</code> attribute reduces opacity and sets <code class="a1-code">cursor: not-allowed</code>. The field cannot receive focus or input.</p>
+        <p class="a1-p">The <code class="a1-code">disabled</code> attribute reduces opacity and sets <code class="a1-code">cursor: not-allowed</code>. Works with any size modifier or status state.</p>
         <figure class="a1-figure">
           <label class="a1-label">
             Account ID
             <input class="a1-input" type="text" value="ACC-00412" disabled>
           </label>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
   Account ID
-  &lt;input type="text" value="ACC-00412" disabled&gt;
+  &lt;input class="a1-input" type="text" value="ACC-00412" disabled&gt;
 &lt;/label&gt;</code></pre>
       </section>
 
       <section class="a1-section">
-        <h2 class="a1-h2">Help text</h2>
-        <p class="a1-p">Place a <code class="a1-code">&lt;small&gt;</code> element after the input, inside the <code class="a1-code">&lt;label&gt;</code>. The grid layout stacks it beneath the input automatically.</p>
-        <figure class="a1-figure">
-          <label class="a1-label">
-            Username
-            <input class="a1-input" type="text" placeholder="yourname">
-            <small>Only letters, numbers, and underscores. 3–20 characters.</small>
-          </label>
-        </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;label&gt;
-  Username
-  &lt;input type="text" placeholder="yourname"&gt;
-  &lt;small&gt;Only letters, numbers, and underscores.&lt;/small&gt;
-&lt;/label&gt;</code></pre>
+        <h2 class="a1-h2">Interactive states</h2>
+        <p class="a1-p">All interactive states are driven by CSS pseudo-classes — no JavaScript required.</p>
+        <ul class="a1-ul">
+          <li><strong>Default</strong> — border from <code class="a1-code">--semantic-color-border-default</code></li>
+          <li><strong>Hover</strong> — <code class="a1-code">:hover</code> — shifted border color and background tint</li>
+          <li><strong>Focus</strong> — <code class="a1-code">:focus-visible</code> — focus ring using <code class="a1-code">--component-field-focus-ring-color</code></li>
+          <li><strong>Disabled</strong> — <code class="a1-code">:disabled</code> — reduced opacity, <code class="a1-code">cursor: not-allowed</code></li>
+          <li><strong>Required</strong> — blue left accent border, auto-applied via <code class="a1-code">:has(input:required)</code></li>
+          <li><strong>Error</strong> — <code class="a1-code">a1-label-error</code> — red border with red left accent</li>
+          <li><strong>Success</strong> — <code class="a1-code">a1-label-success</code> — green left accent</li>
+        </ul>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Full form example</h2>
-        <p class="a1-p">A complete form combining multiple field types. All styling is applied by element selectors — no class attributes required.</p>
-        <form>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-form"</code> to the <code class="a1-code">&lt;form&gt;</code> element to get a <code class="a1-code">display: grid</code> layout with the system gap (<code class="a1-code">--semantic-spacing-gap-md</code>) between each field.</p>
+        <form class="a1-form">
           <label class="a1-label">
-            Full name
-            <input class="a1-input" type="text" placeholder="Ada Lovelace" autocomplete="name">
+            Full name <span class="a1-required">*</span>
+            <input class="a1-input" type="text" autocomplete="name" required>
           </label>
-          <label class="a1-label">
-            Email address
-            <input class="a1-input" type="email" placeholder="ada@example.com" autocomplete="email">
+          <label class="a1-label a1-label-error">
+            Email address <span class="a1-required">*</span>
+            <input class="a1-input" type="email" value="not-an-email" required>
+            <small class="a1-message-error">Please enter a valid email address.</small>
+          </label>
+          <label class="a1-label a1-label-success">
+            Username
+            <input class="a1-input" type="text" value="ada_lovelace">
+            <small class="a1-message-success">Username is available.</small>
           </label>
           <label class="a1-label">
             Category
@@ -192,31 +307,27 @@
           </label>
           <label class="a1-label">
             Message
-            <textarea class="a1-textarea" placeholder="Tell us what you're building…"></textarea>
+            <textarea class="a1-textarea"></textarea>
+            <small class="a1-message-hint">Maximum 500 characters.</small>
           </label>
           <button class="a1-button" type="submit">Send message</button>
         </form>
-        <pre class="a1-pre"><code class="a1-code">&lt;form&gt;
-  &lt;label&gt;
-    Full name
-    &lt;input type="text" placeholder="Ada Lovelace"&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;form class="a1-form"&gt;
+  &lt;label class="a1-label"&gt;
+    Full name &lt;span class="a1-required"&gt;*&lt;/span&gt;
+    &lt;input class="a1-input" type="text" required&gt;
   &lt;/label&gt;
-  &lt;label&gt;
-    Email address
-    &lt;input type="email" placeholder="ada@example.com"&gt;
+  &lt;label class="a1-label a1-label-error"&gt;
+    Email address &lt;span class="a1-required"&gt;*&lt;/span&gt;
+    &lt;input class="a1-input" type="email" required&gt;
+    &lt;small class="a1-message-error"&gt;Please enter a valid email address.&lt;/small&gt;
   &lt;/label&gt;
-  &lt;label&gt;
-    Category
-    &lt;select&gt;
-      &lt;option&gt;Design systems&lt;/option&gt;
-      &lt;option&gt;Accessibility&lt;/option&gt;
-    &lt;/select&gt;
+  &lt;label class="a1-label a1-label-success"&gt;
+    Username
+    &lt;input class="a1-input" type="text"&gt;
+    &lt;small class="a1-message-success"&gt;Username is available.&lt;/small&gt;
   &lt;/label&gt;
-  &lt;label&gt;
-    Message
-    &lt;textarea placeholder="Tell us what you're building…"&gt;&lt;/textarea&gt;
-  &lt;/label&gt;
-  &lt;button type="submit"&gt;Send message&lt;/button&gt;
+  &lt;button class="a1-button" type="submit"&gt;Send message&lt;/button&gt;
 &lt;/form&gt;</code></pre>
       </section>
 
@@ -224,7 +335,7 @@
 
     <footer class="a1-footer">
       <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
-      <p class="a1-p"><small>All styles applied by <code class="a1-code">a1-pure.css</code> — no class attributes required.</small></p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
     </footer>
 
   </body>

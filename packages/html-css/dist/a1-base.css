@@ -665,6 +665,9 @@
 .a1-stack-small {
   --a1-stack-gap: var(--semantic-spacing-gap-sm);
 }
+.a1-stack-none {
+  --a1-stack-gap: 0;
+}
 
 .a1-stack-large {
   --a1-stack-gap: var(--semantic-spacing-gap-lg);

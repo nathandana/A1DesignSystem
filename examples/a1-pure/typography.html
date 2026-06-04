@@ -6,7 +6,7 @@
     <title>Typography — A1 Pure</title>
     <link rel="stylesheet" href="a1-pure.css">
   </head>
-  <body>
+  <body class="a1-body">
 
     <header class="a1-header">
       <a href="index.html">A1 Pure</a>
@@ -14,8 +14,12 @@
         <a href="index.html">Overview</a>
         <a href="typography.html" aria-current="page">Typography</a>
         <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
         <a href="forms.html">Forms</a>
         <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
       </nav>
       <details>
         <summary>&#9776;</summary>
@@ -23,8 +27,12 @@
           <a href="index.html">Overview</a>
           <a href="typography.html" aria-current="page">Typography</a>
           <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
           <a href="forms.html">Forms</a>
           <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
         </nav>
       </details>
       <a href="index.html#get-started">Get started</a>
@@ -34,58 +42,89 @@
 
       <section class="a1-section">
         <h1 class="a1-h1 a1-heading-size-xxl">Typography</h1>
-        <p class="a1-p">A1 Pure maps the full A1 type scale to native HTML heading and text elements. Every heading level, paragraph size, and inline element is styled directly — no class attributes required.</p>
+        <p class="a1-p">A1 Pure maps the full A1 type scale to HTML elements via explicit <code class="a1-code">a1-*</code> class names. Apply the appropriate class to any element to get consistent heading, body, and inline text styling backed by design tokens.</p>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Headings</h2>
-        <p class="a1-p">All six semantic heading levels are styled with the A1 heading scale, progressing from display size at <code class="a1-code">&lt;h1&gt;</code> down to a compact label size at <code class="a1-code">&lt;h6&gt;</code>.</p>
+        <p class="a1-p">All six semantic heading levels are styled with the A1 heading scale, progressing from display size at <code class="a1-code">&lt;h1&gt;</code> down to a compact label size at <code class="a1-code">&lt;h6&gt;</code>. Each heading element requires its corresponding <code class="a1-code">a1-h*</code> class.</p>
         <figure class="a1-figure">
-          <p><h1 class="a1-h1">Heading 1 — display scale</h1></p>
-          <p><h2 class="a1-h2">Heading 2 — heading XXL</h2></p>
-          <p><h3 class="a1-h3">Heading 3 — heading XL</h3></p>
-          <p><h4 class="a1-h4">Heading 4 — heading LG</h4></p>
-          <p><h5 class="a1-h5">Heading 5 — heading MD</h5></p>
-          <p><h6 class="a1-h6">Heading 6 — heading SM</h6></p>
+          <h1 class="a1-h1">Heading 1 — heading XL</h1>
+          <h2 class="a1-h2">Heading 2 — heading LG</h2>
+          <h3 class="a1-h3">Heading 3 — heading MD</h3>
+          <h4 class="a1-h4">Heading 4 — heading SM</h4>
+          <h5 class="a1-h5">Heading 5 — heading XS</h5>
+          <h6 class="a1-h6">Heading 6 — heading XS</h6>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;h1&gt;Heading 1&lt;/h1&gt;
-&lt;h2&gt;Heading 2&lt;/h2&gt;
-&lt;h3&gt;Heading 3&lt;/h3&gt;
-&lt;h4&gt;Heading 4&lt;/h4&gt;
-&lt;h5&gt;Heading 5&lt;/h5&gt;
-&lt;h6&gt;Heading 6&lt;/h6&gt;</code></pre>
+        <pre class="a1-pre"><code class="a1-code">&lt;h1 class="a1-h1"&gt;Heading 1&lt;/h1&gt;
+&lt;h2 class="a1-h2"&gt;Heading 2&lt;/h2&gt;
+&lt;h3 class="a1-h3"&gt;Heading 3&lt;/h3&gt;
+&lt;h4 class="a1-h4"&gt;Heading 4&lt;/h4&gt;
+&lt;h5 class="a1-h5"&gt;Heading 5&lt;/h5&gt;
+&lt;h6 class="a1-h6"&gt;Heading 6&lt;/h6&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Heading size modifiers</h2>
+        <p class="a1-p">Override the default size for any heading level using <code class="a1-code">a1-heading-size-*</code> modifier classes. This decouples the semantic level from the visual scale — useful for hero text, section labels, or sub-headings.</p>
+        <figure class="a1-figure">
+          <h2 class="a1-h2 a1-heading-size-xxl">Display XXL on an h2</h2>
+          <h1 class="a1-h1 a1-heading-size-md">Heading MD on an h1</h1>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;h2 class="a1-h2 a1-heading-size-xxl"&gt;Display XXL on an h2&lt;/h2&gt;
+&lt;h1 class="a1-h1 a1-heading-size-md"&gt;Heading MD on an h1&lt;/h1&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Display type</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-heading-type-display</code> alongside a size modifier to switch to the display type treatment — a different font family, weight, and line height suited to hero and marketing headings.</p>
+        <figure class="a1-figure">
+          <h1 class="a1-h1 a1-heading-type-display a1-heading-size-xl">Display XL</h1>
+          <h2 class="a1-h2 a1-heading-type-display a1-heading-size-lg">Display LG</h2>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;h1 class="a1-h1 a1-heading-type-display a1-heading-size-xl"&gt;Display XL&lt;/h1&gt;
+&lt;h2 class="a1-h2 a1-heading-type-display a1-heading-size-lg"&gt;Display LG&lt;/h2&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Heading color modifiers</h2>
+        <p class="a1-p">Change a heading's color using <code class="a1-code">a1-heading-color-*</code> modifier classes. These map directly to semantic color tokens.</p>
+        <figure class="a1-figure">
+          <h3 class="a1-h3 a1-heading-color-default">Default color</h3>
+          <h3 class="a1-h3 a1-heading-color-muted">Muted color</h3>
+          <h3 class="a1-h3 a1-heading-color-accent">Accent color</h3>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;h3 class="a1-h3 a1-heading-color-default"&gt;Default color&lt;/h3&gt;
+&lt;h3 class="a1-h3 a1-heading-color-muted"&gt;Muted color&lt;/h3&gt;
+&lt;h3 class="a1-h3 a1-heading-color-accent"&gt;Accent color&lt;/h3&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Paragraphs</h2>
-        <p class="a1-p">The body type scale runs from <code class="a1-code">xs</code> up through <code class="a1-code">xl</code>. The default <code class="a1-code">&lt;p&gt;</code> renders at the <code class="a1-code">md</code> size.</p>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-p"</code> to any <code class="a1-code">&lt;p&gt;</code> element to get the standard body text treatment — medium size, body font family, and comfortable line height.</p>
         <figure class="a1-figure">
-          <p><small>Extra small — body xs</small></p>
-          <p>Small — body sm</p>
-          <p>Medium — body md (default)</p>
-          <p>Large — body lg</p>
-          <p>Extra large — body xl</p>
+          <p class="a1-p">The quick brown fox jumps over the lazy dog. A standard paragraph at the default medium body size with proper line height and font family.</p>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;p&gt;A standard paragraph of body text.&lt;/p&gt;</code></pre>
+        <pre class="a1-pre"><code class="a1-code">&lt;p class="a1-p"&gt;Body text here.&lt;/p&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Muted text</h2>
-        <p class="a1-p">Wrap content in <code class="a1-code">&lt;small&gt;</code> to render it at a reduced size in the muted foreground color — suitable for captions, metadata, and supporting detail.</p>
+        <p class="a1-p">Wrap content in <code class="a1-code">&lt;small class="a1-small"&gt;</code> to render it at a reduced size in the muted foreground color — suitable for captions, metadata, and supporting detail.</p>
         <figure class="a1-figure">
-          <p><small>This is muted text rendered with &lt;small&gt;. Use it for captions, timestamps, and secondary information that should recede from the main content.</small></p>
+          <p class="a1-p"><small class="a1-small">This is muted text using <code class="a1-code">a1-small</code>. Use it for captions, timestamps, and secondary information that should recede from the main content.</small></p>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;p&gt;&lt;small&gt;Supporting detail or caption text.&lt;/small&gt;&lt;/p&gt;</code></pre>
+        <pre class="a1-pre"><code class="a1-code">&lt;p class="a1-p"&gt;&lt;small class="a1-small"&gt;Supporting detail or caption text.&lt;/small&gt;&lt;/p&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Inline elements</h2>
-        <p class="a1-p">All standard HTML inline elements are styled from A1 tokens with no class attributes.</p>
+        <p class="a1-p">Standard HTML inline elements are styled from A1 tokens. <code class="a1-code">&lt;strong&gt;</code> and <code class="a1-code">&lt;em&gt;</code> use element selectors. Links, code, keyboard shortcuts, highlights, and abbreviations require their <code class="a1-code">a1-*</code> class.</p>
         <figure class="a1-figure">
-          <p>
+          <p class="a1-p">
             <strong>Strong emphasis</strong>,
             <em>italic emphasis</em>,
-            an <a class="a1-a" href="#">inline link</a>,
+            an <a class="a1-link" href="#">inline link</a>,
             <code class="a1-code">inline code</code>,
             a keyboard shortcut <kbd class="a1-kbd">⌘K</kbd>,
             <mark class="a1-mark">highlighted text</mark>, and an
@@ -94,38 +133,38 @@
         </figure>
         <pre class="a1-pre"><code class="a1-code">&lt;strong&gt;Bold&lt;/strong&gt;
 &lt;em&gt;Italic&lt;/em&gt;
-&lt;a href="#"&gt;Link&lt;/a&gt;
-&lt;code&gt;inline code&lt;/code&gt;
-&lt;kbd&gt;⌘K&lt;/kbd&gt;
-&lt;mark&gt;Highlighted&lt;/mark&gt;
+&lt;a class="a1-link" href="#"&gt;Link&lt;/a&gt;
+&lt;code class="a1-code"&gt;inline code&lt;/code&gt;
+&lt;kbd class="a1-kbd"&gt;⌘K&lt;/kbd&gt;
+&lt;mark class="a1-mark"&gt;Highlighted&lt;/mark&gt;
 &lt;abbr title="HyperText Markup Language"&gt;HTML&lt;/abbr&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Blockquote — border</h2>
-        <p class="a1-p">A plain <code class="a1-code">&lt;blockquote&gt;</code> receives a left-border treatment using the A1 border and spacing tokens.</p>
+        <p class="a1-p">A <code class="a1-code">&lt;blockquote class="a1-blockquote"&gt;</code> by default receives a left-border treatment using the A1 border and spacing tokens.</p>
         <blockquote class="a1-blockquote">
           <p class="a1-p">Good design is as little design as possible. Less, but better — because it concentrates on the essential aspects, and the products are not burdened with non-essentials.</p>
           <cite>Dieter Rams — Ten Principles for Good Design</cite>
         </blockquote>
-        <pre class="a1-pre"><code class="a1-code">&lt;blockquote&gt;
-  &lt;p&gt;Quote text here.&lt;/p&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;blockquote class="a1-blockquote"&gt;
+  &lt;p class="a1-p"&gt;Quote text here.&lt;/p&gt;
   &lt;cite&gt;Author — Source&lt;/cite&gt;
 &lt;/blockquote&gt;</code></pre>
       </section>
 
       <section class="a1-section">
         <h2 class="a1-h2">Blockquote — feature</h2>
-        <p class="a1-p">Wrapping a <code class="a1-code">&lt;blockquote&gt;</code> in a <code class="a1-code">&lt;figure&gt;</code> applies the feature variant — a centered, visually prominent treatment for pull quotes.</p>
+        <p class="a1-p">Wrapping a <code class="a1-code">&lt;blockquote class="a1-blockquote"&gt;</code> in a <code class="a1-code">&lt;figure class="a1-figure"&gt;</code> applies the feature variant — a centered, visually prominent treatment for pull quotes.</p>
         <figure class="a1-figure">
           <blockquote class="a1-blockquote">
             <p class="a1-p">Simplicity is not the absence of clutter. Simplicity is somehow essentially describing the purpose and place of an object and product.</p>
             <cite>Jonathan Ive, Former Chief Design Officer, Apple</cite>
           </blockquote>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;figure&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;Quote text here.&lt;/p&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;figure class="a1-figure"&gt;
+  &lt;blockquote class="a1-blockquote"&gt;
+    &lt;p class="a1-p"&gt;Quote text here.&lt;/p&gt;
     &lt;cite&gt;Author&lt;/cite&gt;
   &lt;/blockquote&gt;
 &lt;/figure&gt;</code></pre>
@@ -133,7 +172,7 @@
 
       <section class="a1-section">
         <h2 class="a1-h2">Blockquote — accent</h2>
-        <p class="a1-p">Wrapping a <code class="a1-code">&lt;blockquote&gt;</code> in an <code class="a1-code">&lt;aside&gt;</code> applies an accent background — useful for callouts and highlighted asides within body copy.</p>
+        <p class="a1-p">Wrapping a <code class="a1-code">&lt;blockquote class="a1-blockquote"&gt;</code> in an <code class="a1-code">&lt;aside&gt;</code> applies an accent background — useful for callouts and highlighted asides within body copy.</p>
         <aside>
           <blockquote class="a1-blockquote">
             <p class="a1-p">Design is not just what it looks like and feels like. Design is how it works.</p>
@@ -141,8 +180,8 @@
           </blockquote>
         </aside>
         <pre class="a1-pre"><code class="a1-code">&lt;aside&gt;
-  &lt;blockquote&gt;
-    &lt;p&gt;Quote text here.&lt;/p&gt;
+  &lt;blockquote class="a1-blockquote"&gt;
+    &lt;p class="a1-p"&gt;Quote text here.&lt;/p&gt;
     &lt;cite&gt;Author&lt;/cite&gt;
   &lt;/blockquote&gt;
 &lt;/aside&gt;</code></pre>
@@ -150,28 +189,41 @@
 
       <section class="a1-section">
         <h2 class="a1-h2">Code blocks</h2>
-        <p class="a1-p">Inline <code class="a1-code">&lt;code&gt;</code> renders in the system monospace font with a subtle background. Block-level <code class="a1-code">&lt;pre&gt;&lt;code&gt;</code> adds a panel surface, border, and horizontal scrolling on narrow viewports.</p>
+        <p class="a1-p"><code class="a1-code">&lt;code class="a1-code"&gt;</code> renders inline in the system monospace font with a subtle background. <code class="a1-code">&lt;pre class="a1-pre"&gt;&lt;code class="a1-code"&gt;</code> adds a panel surface, border, and horizontal scrolling on narrow viewports.</p>
         <figure class="a1-figure">
-          <p>Use <code class="a1-code">var(--component-button-primary-background)</code> to reference the button token.</p>
+          <p class="a1-p">Use <code class="a1-code">var(--component-button-primary-background)</code> to reference the button token.</p>
           <pre class="a1-pre"><code class="a1-code">button {
   background: var(--component-button-primary-background);
   color: var(--component-button-primary-foreground);
   border-radius: var(--component-button-border-radius);
 }</code></pre>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;p&gt;Inline &lt;code&gt;code&lt;/code&gt; in a sentence.&lt;/p&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;p class="a1-p"&gt;Inline &lt;code class="a1-code"&gt;code&lt;/code&gt; in a sentence.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;/* block code */
+&lt;pre class="a1-pre"&gt;&lt;code class="a1-code"&gt;/* block code */
 button { background: var(--token); }&lt;/code&gt;&lt;/pre&gt;</code></pre>
       </section>
 
       <section class="a1-section">
+        <h2 class="a1-h2">Divider</h2>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-hr"</code> to an <code class="a1-code">&lt;hr&gt;</code> element to render a full-width horizontal rule using the subtle border token.</p>
+        <figure class="a1-figure">
+          <p class="a1-p">Content above the divider.</p>
+          <hr class="a1-hr">
+          <p class="a1-p">Content below the divider.</p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;p class="a1-p"&gt;Content above.&lt;/p&gt;
+&lt;hr class="a1-hr"&gt;
+&lt;p class="a1-p"&gt;Content below.&lt;/p&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
         <h2 class="a1-h2">Lists</h2>
-        <p class="a1-p">Both ordered and unordered lists receive proper indentation, spacing, and nested list support.</p>
+        <p class="a1-p">Both ordered and unordered lists receive proper indentation, spacing, and nested list support. Apply <code class="a1-code">a1-ul</code> or <code class="a1-code">a1-ol</code> to the list element. Nested lists use the same classes.</p>
         <figure class="a1-figure">
           <ul class="a1-ul">
-            <li>Design tokens applied to native HTML elements</li>
-            <li>No wrapper classes or data attributes needed</li>
+            <li>Design tokens applied to HTML elements via class names</li>
+            <li>No wrapper divs or data attributes needed</li>
             <li>Nesting is supported:
               <ul class="a1-ul">
                 <li>Second-level items inherit spacing from the parent</li>
@@ -181,20 +233,20 @@ button { background: var(--token); }&lt;/code&gt;&lt;/pre&gt;</code></pre>
           </ul>
           <ol class="a1-ol">
             <li>Link the stylesheet</li>
-            <li>Write semantic HTML</li>
+            <li>Write semantic HTML with a1-* classes</li>
             <li>Everything is styled automatically</li>
           </ol>
         </figure>
-        <pre class="a1-pre"><code class="a1-code">&lt;ul&gt;
+        <pre class="a1-pre"><code class="a1-code">&lt;ul class="a1-ul"&gt;
   &lt;li&gt;Item one&lt;/li&gt;
   &lt;li&gt;Item two
-    &lt;ul&gt;
+    &lt;ul class="a1-ul"&gt;
       &lt;li&gt;Nested item&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;ol&gt;
+&lt;ol class="a1-ol"&gt;
   &lt;li&gt;First step&lt;/li&gt;
   &lt;li&gt;Second step&lt;/li&gt;
 &lt;/ol&gt;</code></pre>
@@ -204,7 +256,7 @@ button { background: var(--token); }&lt;/code&gt;&lt;/pre&gt;</code></pre>
 
     <footer class="a1-footer">
       <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
-      <p class="a1-p"><small>All styles applied by <code class="a1-code">a1-pure.css</code> — no class attributes required.</small></p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
     </footer>
 
   </body>

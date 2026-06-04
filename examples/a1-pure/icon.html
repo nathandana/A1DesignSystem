@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Icon — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html" aria-current="page">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+          <a href="icon.html" aria-current="page">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Icon</h1>
+        <p class="a1-p">Icons use the Material Symbols Outlined variable font, loaded automatically by <code class="a1-code">a1-pure.css</code>. Apply <code class="a1-code">class="a1-icon"</code> to a <code class="a1-code">&lt;span&gt;</code> and put the icon name as the text content. Always add <code class="a1-code">aria-hidden="true"</code> — icons are decorative and the surrounding label provides meaning.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Basic icons</h2>
+        <p class="a1-p">The icon name is the Material Symbols ligature string. Icons inherit <code class="a1-code">font-size</code> and <code class="a1-code">color</code> from their parent by default.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+            <span class="a1-icon" aria-hidden="true">add</span>
+            <span class="a1-icon" aria-hidden="true">close</span>
+            <span class="a1-icon" aria-hidden="true">check</span>
+            <span class="a1-icon" aria-hidden="true">search</span>
+            <span class="a1-icon" aria-hidden="true">settings</span>
+            <span class="a1-icon" aria-hidden="true">home</span>
+            <span class="a1-icon" aria-hidden="true">person</span>
+            <span class="a1-icon" aria-hidden="true">notifications</span>
+            <span class="a1-icon" aria-hidden="true">arrow_forward</span>
+            <span class="a1-icon" aria-hidden="true">download</span>
+            <span class="a1-icon" aria-hidden="true">edit</span>
+            <span class="a1-icon" aria-hidden="true">delete</span>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;span class="a1-icon" aria-hidden="true"&gt;add&lt;/span&gt;
+&lt;span class="a1-icon" aria-hidden="true"&gt;close&lt;/span&gt;
+&lt;span class="a1-icon" aria-hidden="true"&gt;check&lt;/span&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Sizes</h2>
+        <p class="a1-p">Icons inherit <code class="a1-code">font-size</code> from their parent, so set <code class="a1-code">font-size</code> on the parent or use an inline style. Set <code class="a1-code">--a1-icon-opsz</code> to match the rendered size for optimal rendering quality (20, 24, or 40 are the system sizes).</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+            <span class="a1-icon" aria-hidden="true" style="font-size:20px;--a1-icon-opsz:20;">notifications</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;--a1-icon-opsz:24;">notifications</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:40px;--a1-icon-opsz:40;">notifications</span>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- 20px --&gt;
+&lt;span class="a1-icon" aria-hidden="true" style="font-size:20px;--a1-icon-opsz:20;"&gt;notifications&lt;/span&gt;
+
+&lt;!-- 24px --&gt;
+&lt;span class="a1-icon" aria-hidden="true" style="font-size:24px;--a1-icon-opsz:24;"&gt;notifications&lt;/span&gt;
+
+&lt;!-- 40px --&gt;
+&lt;span class="a1-icon" aria-hidden="true" style="font-size:40px;--a1-icon-opsz:40;"&gt;notifications&lt;/span&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Filled variant</h2>
+        <p class="a1-p">Add <code class="a1-code">class="a1-icon-filled"</code> alongside <code class="a1-code">a1-icon</code> to switch to the filled version of any icon. Alternatively, set <code class="a1-code">--a1-icon-fill: 1</code> via inline style.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+            <span style="display:flex;gap:0.5rem;align-items:center;">
+              <span class="a1-icon" aria-hidden="true" style="font-size:24px;">notifications</span>
+              <span class="a1-p">Outline (default)</span>
+            </span>
+            <span style="display:flex;gap:0.5rem;align-items:center;">
+              <span class="a1-icon a1-icon-filled" aria-hidden="true" style="font-size:24px;">notifications</span>
+              <span class="a1-p">Filled</span>
+            </span>
+            <span style="display:flex;gap:0.5rem;align-items:center;">
+              <span class="a1-icon" aria-hidden="true" style="font-size:24px;">favorite</span>
+              <span class="a1-p">Outline</span>
+            </span>
+            <span style="display:flex;gap:0.5rem;align-items:center;">
+              <span class="a1-icon a1-icon-filled" aria-hidden="true" style="font-size:24px;">favorite</span>
+              <span class="a1-p">Filled</span>
+            </span>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Outline (default) --&gt;
+&lt;span class="a1-icon" aria-hidden="true"&gt;favorite&lt;/span&gt;
+
+&lt;!-- Filled --&gt;
+&lt;span class="a1-icon a1-icon-filled" aria-hidden="true"&gt;favorite&lt;/span&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Color</h2>
+        <p class="a1-p">Icons inherit <code class="a1-code">color</code> from their parent. Set color on the parent element or use a utility style to apply status colors.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;">info</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;color:var(--semantic-color-status-info-background);">info</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;color:var(--semantic-color-status-success-background);">check_circle</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;color:var(--semantic-color-status-warn-background);">warning</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;color:var(--semantic-color-status-error-background);">error</span>
+            <span class="a1-icon" aria-hidden="true" style="font-size:24px;color:var(--semantic-color-text-muted);">close</span>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Inherits text color --&gt;
+&lt;span class="a1-icon" aria-hidden="true"&gt;info&lt;/span&gt;
+
+&lt;!-- Explicit status color via CSS custom property --&gt;
+&lt;span class="a1-icon" aria-hidden="true" style="color:var(--semantic-color-status-error-background);"&gt;error&lt;/span&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Icon in button</h2>
+        <p class="a1-p">Place an <code class="a1-code">a1-icon</code> before or after the button label. The button's flex layout aligns and centers the icon automatically. Icon size scales with the button size modifier.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+            <button class="a1-button">
+              <span class="a1-icon" aria-hidden="true">add</span>
+              Create
+            </button>
+            <button class="a1-button">
+              Download
+              <span class="a1-icon" aria-hidden="true">download</span>
+            </button>
+            <button class="a1-button a1-button-secondary">
+              <span class="a1-icon" aria-hidden="true">edit</span>
+              Edit
+            </button>
+            <button class="a1-button a1-button-tertiary">
+              <span class="a1-icon" aria-hidden="true">share</span>
+              Share
+            </button>
+          </p>
+          <p class="a1-p" style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-top:0.75rem;">
+            <button class="a1-button a1-button-small">
+              <span class="a1-icon" aria-hidden="true">add</span>
+              Small
+            </button>
+            <button class="a1-button">
+              <span class="a1-icon" aria-hidden="true">add</span>
+              Default
+            </button>
+            <button class="a1-button a1-button-large">
+              <span class="a1-icon" aria-hidden="true">add</span>
+              Large
+            </button>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Leading icon --&gt;
+&lt;button class="a1-button"&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;add&lt;/span&gt;
+  Create
+&lt;/button&gt;
+
+&lt;!-- Trailing icon --&gt;
+&lt;button class="a1-button"&gt;
+  Download
+  &lt;span class="a1-icon" aria-hidden="true"&gt;download&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Small button with icon --&gt;
+&lt;button class="a1-button a1-button-small"&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;add&lt;/span&gt;
+  Small
+&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Icon button</h2>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-icon-button"</code> to a <code class="a1-code">&lt;button&gt;</code> for a square icon-only button. Always provide a meaningful <code class="a1-code">aria-label</code> since there is no visible text.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+            <button class="a1-icon-button" aria-label="Add">
+              <span class="a1-icon" aria-hidden="true">add</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Search">
+              <span class="a1-icon" aria-hidden="true">search</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Edit">
+              <span class="a1-icon" aria-hidden="true">edit</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Delete">
+              <span class="a1-icon" aria-hidden="true">delete</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Settings">
+              <span class="a1-icon" aria-hidden="true">settings</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Close">
+              <span class="a1-icon" aria-hidden="true">close</span>
+            </button>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-icon-button" aria-label="Add"&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;add&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;button class="a1-icon-button" aria-label="Close"&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;close&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Icon button — disabled</h2>
+        <p class="a1-p">Add the <code class="a1-code">disabled</code> attribute or <code class="a1-code">aria-disabled="true"</code> to render the icon button in a non-interactive state.</p>
+        <figure class="a1-figure">
+          <p class="a1-p" style="display:flex;gap:0.5rem;align-items:center;">
+            <button class="a1-icon-button" aria-label="Add" disabled>
+              <span class="a1-icon" aria-hidden="true">add</span>
+            </button>
+            <button class="a1-icon-button" aria-label="Delete" disabled>
+              <span class="a1-icon" aria-hidden="true">delete</span>
+            </button>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-icon-button" aria-label="Add" disabled&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;add&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Icon in link</h2>
+        <p class="a1-p">An <code class="a1-code">a1-icon</code> inside an <code class="a1-code">a1-link</code> renders at <code class="a1-code">1em</code> — matching the surrounding text size. The link uses <code class="a1-code">inline-flex</code> with <code class="a1-code">align-items: baseline</code> for proper text alignment.</p>
+        <figure class="a1-figure">
+          <p class="a1-p">
+            <a class="a1-link" href="#">
+              <span class="a1-icon" aria-hidden="true">arrow_forward</span>
+              Read the documentation
+            </a>
+          </p>
+          <p class="a1-p">
+            <a class="a1-link" href="#">
+              Download the report
+              <span class="a1-icon" aria-hidden="true">download</span>
+            </a>
+          </p>
+          <p class="a1-p">
+            <a class="a1-link" href="#" target="_blank" rel="noopener noreferrer">
+              Opens in a new tab
+              <span class="a1-icon" aria-hidden="true">open_in_new</span>
+            </a>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;a class="a1-link" href="#"&gt;
+  &lt;span class="a1-icon" aria-hidden="true"&gt;arrow_forward&lt;/span&gt;
+  Read the documentation
+&lt;/a&gt;
+
+&lt;a class="a1-link" href="#" target="_blank" rel="noopener noreferrer"&gt;
+  Opens in a new tab
+  &lt;span class="a1-icon" aria-hidden="true"&gt;open_in_new&lt;/span&gt;
+&lt;/a&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Accessibility</h2>
+        <ul class="a1-ul">
+          <li>Always add <code class="a1-code">aria-hidden="true"</code> to icons — they are decorative and the surrounding context provides meaning.</li>
+          <li>For icon buttons, always include a descriptive <code class="a1-code">aria-label</code> on the button element itself.</li>
+          <li>Never rely on icon color alone to convey information — always pair with text or other visual cues.</li>
+          <li>Use <code class="a1-code">a1-icon-filled</code> to indicate state changes (e.g. bookmarked vs. not), not just for decoration.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>
