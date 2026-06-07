@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+### Prompt: Move Configure controls into tab
+
+- Moved component Configure controls from the right-side detail aside into the Configure tab content.
+- Simplified the Components docs shell by removing the unused right-aside layout path.
+
+### Prompt: Build component Anatomy tab
+
+- Preserved the selected component detail tab while navigating between component pages from the sidebar.
+- Replaced Anatomy tab placeholders with a centered component anatomy diagram, numbered feature callouts, and sizing/overflow documentation.
+- Added category-level anatomy defaults plus targeted overrides for common components including Button, Icon Button, Link, Card, Tabs, and Data Table.
+- Expanded Anatomy previews to render real default component examples such as Paragraph text, Button, fields, choice groups, feedback, layout primitives, and pagination.
+- Added visible width and height behavior labels inside the anatomy preview area.
+- Added a Show callouts switch to the Anatomy tab and anchored callout markers to the component preview rather than the stage.
+- Replaced overlaid anatomy number markers with labeled dotted-line connector callouts that point to the component without covering it.
+- Increased anatomy callout contrast with stronger label borders, thicker dotted connectors, and larger endpoint dots.
+- Added tokenized anatomy stage and callout marker styles for the component detail page.
+
+### Prompt: Split Components page implementation
+
+- Broke the large `Components.jsx` implementation into a `pages/components/` module structure with separate data, utility, sidebar, overview, category, detail, and shell files.
+- Kept `pages/Components.jsx` as a compatibility re-export so existing app imports continue to work.
+- Changed related components on detail Overview tabs from navigation cards to a `List` of system `Link` items.
+
+### Prompt: Update component detail Overview tab
+
+- Used the component detail metadata as the single source of truth for component status, with every component currently marked beta.
+- Added a Component status card and related component links to the component detail Overview tab.
+- Constrained component detail tab content with `Section contentWidth="lg"` so tab panels do not grow too wide.
+- Removed the Overview tab "When to use" section because that guidance belongs in Rules.
+
 ### Prompt: Fix accessibility contrast — success, warn, error, destructive
 
 #### Success button and badge (light mode + accessible theme)
