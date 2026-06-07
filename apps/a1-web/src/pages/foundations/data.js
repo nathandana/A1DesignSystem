@@ -1,0 +1,58 @@
+export const foundations = [
+  {
+    id: 'foundation-color',
+    title: 'Color',
+    icon: 'palette',
+    body: 'Color ramps, semantic color roles, status colors, surfaces, borders, action colors, inverse mode, and dark-mode behavior.',
+    points: ['Base color ramps', 'Semantic text and surface roles', 'Status and action colors'],
+  },
+  {
+    id: 'foundation-size',
+    title: 'Size',
+    icon: 'straighten',
+    body: 'Spacing, dimensions, density, component sizing, icon sizing, touch targets, layout rhythm, and responsive scale decisions.',
+    points: ['Spacing scale', 'Component dimensions', 'Responsive density'],
+  },
+  {
+    id: 'foundation-type-scale',
+    title: 'Type scale',
+    icon: 'text_fields',
+    body: 'Body, heading, and display type scales for readable interfaces across compact tools, editorial pages, and high-impact hero moments.',
+    points: ['Body sizes', 'Heading sizes', 'Display sizes'],
+  },
+  {
+    id: 'foundation-shape',
+    title: 'Shape',
+    icon: 'rounded_corner',
+    body: 'Radius, container shape, control shape, card shape, dialog shape, and theme-specific geometry such as the heritage square profile.',
+    points: ['Radius scale', 'Control corners', 'Container shape'],
+  },
+  {
+    id: 'foundation-motion',
+    title: 'Motion',
+    icon: 'animation',
+    body: 'Motion duration, easing, transition timing, and reduced-motion expectations for interactive components.',
+    points: ['Duration scale', 'Easing roles', 'Reduced-motion behavior'],
+  },
+  {
+    id: 'foundation-elevation',
+    title: 'Elevation',
+    icon: 'layers',
+    body: 'Surface hierarchy, shadows, raised surfaces, panels, dialogs, menus, and the visual rules that separate content layers.',
+    points: ['Surface hierarchy', 'Shadow tokens', 'Overlay depth'],
+  },
+  {
+    id: 'foundation-iconography',
+    title: 'Iconography',
+    icon: 'interests',
+    body: 'Material Symbols usage, icon sizing, optical size, weight, fill, and the rules for passing icon names into components.',
+    points: ['Material Symbols', 'Icon name props', 'Optical sizing'],
+  },
+  {
+    id: 'foundation-accessibility',
+    title: 'Accessibility',
+    icon: 'accessibility_new',
+    body: 'Contrast, focus states, semantic markup, keyboard interaction, screen reader labels, and accessible component defaults.',
+    points: ['Focus visibility', 'Semantic structure', 'Keyboard support'],
+  },
+]

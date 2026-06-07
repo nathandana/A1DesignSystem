@@ -32,6 +32,16 @@ const releases = [
         items: [
           "Figure: size prop now applies max-width via class instead of inline style; center alignment applies size constraint to img + figcaption via compound selectors",
           "Paragraph: paragraph + heading spacing now matches paragraph + paragraph (1.5em top margin)",
+          "PageLayout viewport-height mode now scrolls an inner main region so header and footer remain outside the page scroll container",
+          "TopHeader nav submenus now support divider-separated menu sections",
+          "TopHeader nav submenus now support third-level flyout menus from child items",
+          "TopHeader tertiary flyouts stay open across pointer movement and show a visible focus outline on their triggers",
+          "TopHeader tertiary flyouts flip left when right-side viewport space is constrained and scroll within available height",
+          "TopHeader parent nav items stay highlighted while menus are open and header nav items have a stronger pressed state",
+          "Menu items now constrain long labels, section labels, and shortcuts so content stays inside the menu container",
+          "TopHeader tertiary flyouts now require intentional keyboard opening and trap focus independently once open",
+          "TopHeader flyout triggers now wrap long labels so secondary menu items stay inside their container",
+          "TopHeader flyout triggers now reuse MenuItem row classes so icons, labels, and chevrons align consistently",
         ],
       },
     ],
@@ -185,7 +195,7 @@ function ChangelogPage() {
         <div key={release.version} style={{ marginBottom: 56 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 16 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{release.version}</h2>
-            <span style={{ fontSize: 13, color: "#9ca3af" }}>{release.date}</span>
+            <span style={{ fontSize: 13, color: "var(--semantic-color-text-muted)" }}>{release.date}</span>
           </div>
           <div
             style={{

@@ -29,7 +29,7 @@ function getSublabel(filter, selected) {
     const arr = Array.isArray(selected) ? selected : [];
     if (arr.length === 0) return null;
     if (arr.length === 1) return filter.options.find((o) => o.value === arr[0])?.label ?? arr[0];
-    return `${arr.length} selected`;
+    return `${arr.length}`;
   }
   if (!selected) return null;
   return filter.options.find((o) => o.value === selected)?.label ?? selected;
@@ -95,17 +95,6 @@ function FilterChip({ filter, selected, onSet }) {
         />
       </button>
 
-      {isActive && (
-        <button
-          type="button"
-          className="a1-dt-filters__chip-clear"
-          aria-label={`Clear ${filter.label} filter`}
-          onClick={() => onSet(isMulti ? [] : "")}
-        >
-          <Icon name="close" />
-        </button>
-      )}
-
       <Menu
         open={open}
         anchorRef={anchorRef}
@@ -126,6 +115,18 @@ function FilterChip({ filter, selected, onSet }) {
             </MenuItem>
           );
         })}
+        {isActive && (
+          <div className="a1-dt-filters__menu-clear">
+            <Button
+              variant="tertiary"
+              size="sm"
+              icon="close"
+              onClick={() => { onSet(isMulti ? [] : ""); setOpen(false); }}
+            >
+              Clear
+            </Button>
+          </div>
+        )}
       </Menu>
     </div>
   );
@@ -221,9 +222,9 @@ export function DataTableFilters({
         )}
 
         {hasActive && (
-          <button type="button" className="a1-dt-filters__clear-all" onClick={clearAll}>
+          <Button variant="secondary" size="sm" onClick={clearAll} className="a1-dt-filters__clear-all">
             Clear all
-          </button>
+          </Button>
         )}
       </div>
 
@@ -253,9 +254,9 @@ export function DataTableFilters({
         )}
 
         {hasActive && (
-          <button type="button" className="a1-dt-filters__clear-all" onClick={clearAll}>
+          <Button variant="secondary" size="sm" onClick={clearAll}>
             Clear all
-          </button>
+          </Button>
         )}
 
         {filters.length > 0 && (

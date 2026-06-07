@@ -17,6 +17,7 @@ export const globalTypes = {
         { value: "a1Light",      title: "Base" },
         { value: "a1Heritage",   title: "A1 Heritage" },
         { value: "a1Accessible", title: "A1 Accessible" },
+        { value: "a1Catlympics", title: "CatLympics" },
       ],
       showName: true,
       dynamicTitle: true,
@@ -49,6 +50,19 @@ export const globalTypes = {
       dynamicTitle: true,
     },
   },
+  contrastMode: {
+    name: "Contrast",
+    description: "Simulate prefers-contrast: more",
+    defaultValue: "system",
+    toolbar: {
+      icon: "contrast",
+      items: [
+        { value: "system", title: "Contrast: System", icon: "browser" },
+        { value: "more",   title: "Contrast: More",   icon: "contrast" },
+      ],
+      dynamicTitle: true,
+    },
+  },
 };
 
 const withTheme = (Story) => {
@@ -57,17 +71,21 @@ const withTheme = (Story) => {
   const theme         = globals?.theme         ?? "a1Light";
   const colorScheme   = globals?.colorScheme   ?? "light";
   const reducedMotion = globals?.reducedMotion ?? "system";
+  const contrastMode  = globals?.contrastMode  ?? "system";
 
   useEffect(() => {
     const html = document.documentElement;
     html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
     html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
+    html.classList.toggle("a1-theme-catlympics", theme === "a1Catlympics");
     // Explicit light/dark: set the matching class and clear the other.
     // "system" clears both so the prefers-color-scheme media query takes over.
     html.classList.toggle("a1-theme-dark",  colorScheme === "dark");
     html.classList.toggle("a1-theme-light", colorScheme === "light");
     // Reduced motion: set explicit class to mirror prefers-reduced-motion.
     html.classList.toggle("a1-reduce-motion", reducedMotion === "reduce");
+    // Contrast: set explicit class to mirror prefers-contrast: more.
+    html.classList.toggle("a1-contrast-more", contrastMode === "more");
 
     return () => {
       html.classList.remove(
@@ -76,9 +94,10 @@ const withTheme = (Story) => {
         "a1-theme-dark",
         "a1-theme-light",
         "a1-reduce-motion",
+        "a1-contrast-more",
       );
     };
-  }, [theme, colorScheme, reducedMotion]);
+  }, [theme, colorScheme, reducedMotion, contrastMode]);
 
   return <Story />;
 };

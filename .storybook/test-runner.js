@@ -38,6 +38,14 @@ const A11Y_SKIP_PREFIXES = [
   'rules--',
 ];
 
+// Intentional negative examples — these stories deliberately demonstrate
+// inaccessible patterns and are expected to trigger axe violations.
+const A11Y_SKIP_IDS = new Set([
+  'components-navigation-menu--a-11-y-icon-trigger-missing-label',
+  'components-containers-dialog--a-11-y-missing-title',
+  'components-navigation-breadcrumb--a-11-y-current-page-missing',
+]);
+
 // ─── Lazy dir creation (idempotent; setup script handles initial clear) ───────
 
 let _dirsReady = false;
@@ -112,7 +120,7 @@ export default {
     }
 
     // ── Accessibility (WCAG 2.0 / 2.1 / 2.2 — Levels A & AA) ─────────────────
-    const skipA11y = A11Y_SKIP_PREFIXES.some(p => context.id.startsWith(p));
+    const skipA11y = A11Y_SKIP_PREFIXES.some(p => context.id.startsWith(p)) || A11Y_SKIP_IDS.has(context.id);
     if (!skipA11y) {
       try {
         const results = await new AxeBuilder({ page })

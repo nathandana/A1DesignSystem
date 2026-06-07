@@ -9,7 +9,6 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageBreadcrumb } from './PageBreadcrumb.jsx'
 
 const topLevelFeatures = [
   {
@@ -46,6 +45,8 @@ const topLevelFeatures = [
       'Semantic heading and section APIs',
       'Accessible form and navigation patterns',
       'Status, feedback, and dialog primitives',
+      'prefers-contrast: more steps every interactive token one ramp deeper',
+      'prefers-reduced-motion collapses all duration tokens to 0ms at the token level',
     ],
   },
   {
@@ -111,6 +112,7 @@ const minorFeatureGroups = [
       'Container-query-aware button grouping',
       'Inverse Sections, surfaces, gradient washes, and full-bleed bands',
       'Material Symbols icon support through simple icon name props',
+      'Contrast mode and reduced motion controls in the settings menu, persisted to localStorage',
       'Design rules and project context files for AI-assisted development',
       'A1 web changelog documenting prompt-by-prompt changes',
     ],
@@ -210,12 +212,6 @@ export function Features({ onNavigate }) {
         aria-labelledby="features-page-heading"
       >
         <Stack direction="column" gap="sm">
-          <PageBreadcrumb
-            items={[
-              { href: '/', label: 'Home' },
-              { label: 'Features' },
-            ]}
-          />
           <MessageBadge icon="star">Features</MessageBadge>
           <Heading
             as="h1"

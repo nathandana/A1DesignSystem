@@ -25,7 +25,14 @@ function getFocusableElements(container) {
 
 /* ── Menu ────────────────────────────────────────────────────────────────── */
 
-export function Menu({ open, onClose, anchorRef, "aria-label": ariaLabel, children }) {
+export function Menu({
+  open,
+  onClose,
+  anchorRef,
+  "aria-label": ariaLabel,
+  className = "",
+  children,
+}) {
   const ref = useRef(null);
   const fallbackAnchorRef = useRef(null);
   const modalRef = useRef(false);
@@ -198,7 +205,12 @@ export function Menu({ open, onClose, anchorRef, "aria-label": ariaLabel, childr
   }, [anchorRef, onClose, open]);
 
   return (
-    <dialog ref={ref} className="a1-menu" aria-label={ariaLabel} tabIndex={-1}>
+    <dialog
+      ref={ref}
+      className={["a1-menu", className].filter(Boolean).join(" ")}
+      aria-label={ariaLabel}
+      tabIndex={-1}
+    >
       <IconButton
         icon="close"
         label="Close menu"

@@ -5,6 +5,7 @@
 /* ── Shell ───────────────────────────────────────────────────────────────── */
 
 .a1-top-header {
+  box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: var(--component-top-header-z-index);
@@ -121,6 +122,13 @@
   background: var(--semantic-color-surface-panel);
 }
 
+.a1-top-header__nav-link:active,
+.a1-top-header__nav-link[aria-expanded="true"],
+.a1-top-header__nav-item--split:has(.a1-top-header__nav-submenu-trigger[aria-expanded="true"]) > .a1-top-header__nav-link {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-raised);
+}
+
 .a1-top-header__nav-link:focus-visible {
   outline: 2px solid var(--semantic-color-action-background);
   outline-offset: -2px;
@@ -164,7 +172,79 @@
   transform: rotate(180deg);
 }
 
-/* Nav submenus use the DS Menu component — no custom dropdown CSS needed. */
+/* ── Nested nav flyouts ───────────────────────────────────────────────────── */
+
+.a1-menu--with-flyouts {
+  overflow: visible;
+}
+
+.a1-top-header__flyout-wrap {
+  position: relative;
+}
+
+.a1-top-header__flyout-trigger {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-top-header__flyout-label {
+  overflow-wrap: anywhere;
+}
+
+.a1-top-header__flyout-trigger:hover,
+.a1-top-header__flyout-wrap:focus-within > .a1-top-header__flyout-trigger,
+.a1-top-header__flyout-wrap:hover > .a1-top-header__flyout-trigger {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-top-header__flyout-trigger:active,
+.a1-top-header__flyout-trigger[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--semantic-color-surface-raised), var(--semantic-color-text-default) 8%);
+}
+
+.a1-top-header__flyout-trigger:focus-visible {
+  background: var(--semantic-color-surface-raised);
+  outline: var(--component-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline-offset: var(--component-menu-item-focus-ring-offset);
+}
+
+.a1-top-header__flyout-icon {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-top-header__flyout-chevron {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  font-size: var(--semantic-font-size-body-md);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-top-header__flyout-menu {
+  position: absolute;
+  z-index: calc(var(--component-menu-z-index, 1000) + 1);
+  inset-block-start: calc(var(--base-spacing-8) * -1);
+  inset-inline-start: 100%;
+  inset-inline-end: auto;
+  box-sizing: border-box;
+  min-inline-size: var(--component-menu-width);
+  max-inline-size: calc(100dvw - (var(--component-menu-viewport-offset) * 2));
+  max-block-size: var(
+    --a1-top-header-flyout-max-block-size,
+    calc(100dvh - var(--component-menu-viewport-offset))
+  );
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--base-spacing-8);
+  border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+  box-shadow: var(--semantic-shadow-lg);
+}
+
+.a1-top-header__flyout-menu[data-placement="start"] {
+  inset-inline-start: auto;
+  inset-inline-end: 100%;
+}
 
 /* ── Right-side end zone ──────────────────────────────────────────────────── */
 

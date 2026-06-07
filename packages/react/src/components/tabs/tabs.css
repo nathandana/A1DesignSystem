@@ -1,6 +1,7 @@
 /* ─── Tabs ────────────────────────────────────────────────────────────────── */
 
 .a1-tabs {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -406,6 +407,26 @@
   border-bottom-left-radius: var(--base-radius-control);
 }
 
+/* ─── Responsive tab labels (xs/sm: icon-only for inactive tabs) ─────────── */
+
+@media (--bp-sm-down) {
+  .a1-tab {
+    position: relative;
+  }
+
+  /* Visually hide label on inactive tabs — kept in DOM for accessibility */
+  .a1-tab[aria-selected="false"] .a1-tab__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
 /* ─── Responsive font sizes ───────────────────────────────────────────────── */
 
 @media (--bp-md-up) {
@@ -442,15 +463,11 @@
 
 .a1-tab-panel--folder {
   background: var(--semantic-color-surface-page);
-  border: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
-  border-top: none;
-  border-radius: 0 0 var(--base-radius-lg) var(--base-radius-lg);
-  padding: var(--base-spacing-16);
+  padding: var(--base-spacing-16) 0 0;
 }
 
 .a1-tabs--level-2 .a1-tab-panel--folder {
-  border-radius: 0 0 var(--base-radius-control) var(--base-radius-control);
-  padding: var(--base-spacing-12);
+  padding: var(--base-spacing-12) 0 0;
 }
 
 .a1-tab-panel--progress {

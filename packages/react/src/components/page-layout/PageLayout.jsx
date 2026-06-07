@@ -38,7 +38,9 @@ export function PageLayout({
           {aside && asidePlacement === "start" && (
             <aside className="a1-page-layout__aside">{aside}</aside>
           )}
-          <main className="a1-page-layout__main">{children}</main>
+          <main className="a1-page-layout__main">
+            <div className="a1-page-layout__main-scroll" tabIndex={0}>{children}</div>
+          </main>
           {aside && asidePlacement !== "start" && (
             <aside className="a1-page-layout__aside">{aside}</aside>
           )}

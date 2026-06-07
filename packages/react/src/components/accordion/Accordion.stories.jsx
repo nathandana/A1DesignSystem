@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { userEvent, within, waitFor } from "storybook/test";
 import { Accordion } from "./Accordion.jsx";
 import { Button } from "../button/Button.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
@@ -176,5 +177,55 @@ export const Group = {
         ))}
       </div>
     );
+  },
+};
+
+// ─── Accessibility stories ────────────────────────────────────────────────────
+
+export const A11yKeyboardToggle = {
+  name: "[A11y] Keyboard toggle",
+  tags: ["a11y", "a11y-required"],
+  parameters: { layout: "padded" },
+  args: {
+    label: "Keyboard navigation",
+    children: "This panel was opened using the keyboard. The trigger button uses aria-expanded and aria-controls to communicate state and relationship to assistive technology.",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Keyboard navigation" });
+    await trigger.focus();
+    // Enter should open
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      if (trigger.getAttribute("aria-expanded") !== "true") throw new Error("Not expanded");
+    });
+    // Space should close
+    await userEvent.keyboard(" ");
+    await waitFor(() => {
+      if (trigger.getAttribute("aria-expanded") !== "false") throw new Error("Not collapsed");
+    });
+  },
+};
+
+export const A11yHighContrast = {
+  name: "[A11y] High contrast theme",
+  tags: ["a11y", "a11y-theme"],
+  globals: { theme: "a1Accessible" },
+  parameters: { layout: "padded" },
+  args: {
+    label: "High contrast accordion",
+    defaultOpen: true,
+    children: "Verify focus ring, chevron, label, and body text contrast under the Accessible theme.",
+  },
+};
+
+export const A11yDisabledState = {
+  name: "[A11y] Disabled state",
+  tags: ["a11y", "a11y-edge-case"],
+  parameters: { layout: "padded" },
+  args: {
+    label: "Disabled accordion",
+    disabled: true,
+    children: LOREM,
   },
 };

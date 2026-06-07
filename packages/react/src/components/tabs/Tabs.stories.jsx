@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { userEvent, within, waitFor } from "storybook/test";
 import { Tabs, TabList, Tab, TabPanel } from "./Tabs.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
@@ -254,6 +255,68 @@ export const Progress = {
             </div>
           </TabPanel>
         ))}
+      </Tabs>
+    );
+  },
+};
+
+// ─── Accessibility stories ────────────────────────────────────────────────────
+
+export const A11yKeyboardNavigation = {
+  name: "[A11y] Keyboard navigation",
+  tags: ["a11y", "a11y-required"],
+  parameters: { layout: "padded" },
+  render: () => {
+    const [active, setActive] = useState("overview");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line">
+        <TabList>
+          <Tab value="overview">Overview</Tab>
+          <Tab value="activity">Activity</Tab>
+          <Tab value="settings">Settings</Tab>
+        </TabList>
+        <TabPanel value="overview"><SamplePanel title="Overview" /></TabPanel>
+        <TabPanel value="activity"><SamplePanel title="Activity" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
+      </Tabs>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const overviewTab = canvas.getByRole("tab", { name: "Overview" });
+    await userEvent.click(overviewTab);
+    // ArrowRight should move to Activity
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      const focused = document.activeElement;
+      if (!focused?.textContent?.includes("Activity")) throw new Error("Activity tab not focused");
+    });
+    // ArrowRight again should move to Settings
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      const focused = document.activeElement;
+      if (!focused?.textContent?.includes("Settings")) throw new Error("Settings tab not focused");
+    });
+  },
+};
+
+export const A11yHighContrast = {
+  name: "[A11y] High contrast theme",
+  tags: ["a11y", "a11y-theme"],
+  globals: { theme: "a1Accessible" },
+  parameters: { layout: "padded" },
+  render: () => {
+    const [active, setActive] = useState("overview");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line">
+        <TabList>
+          <Tab value="overview">Overview</Tab>
+          <Tab value="activity">Activity</Tab>
+          <Tab value="settings">Settings</Tab>
+        </TabList>
+        <TabPanel value="overview"><SamplePanel title="Overview" /></TabPanel>
+        <TabPanel value="activity"><SamplePanel title="Activity" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
       </Tabs>
     );
   },

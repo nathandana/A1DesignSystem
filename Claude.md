@@ -1,20 +1,23 @@
 # A1 Design System — Claude Code Instructions
 
+> **Do not add content directly to this file.**
+> All project context, policies, and reference material belongs in `system/ai/`.
+> Add a link below when you create or update a file there.
+
+---
+
 Read and follow the central project context before starting any task:
 
-@ai/project-context.md
+@system/ai/project-context.md
 
 Before asking whether a component exists or where it is implemented, check the component registry:
 
-@ai/components.md
+@system/ai/components.md
 
-## Quick orientation
+For build commands and key file locations:
 
-- **Token changes:** edit `system/tokens/`, then `npm run build:tokens && npm run build:html-css`
-- **Theme changes:** edit `system/themes/`, then `npm run build:themes`
-- **React component:** `packages/react/src/components/{name}/`
-- **HTML/CSS BEM classes:** `packages/html-css/dist/a1-base.css` (hand-authored)
-- **HTML/CSS pure classes:** `packages/html-css/dist/a1-pure.css` (hand-authored)
-- **Pure example site:** `examples/a1-pure/`
-- **Storybook:** run with `npm run storybook`
-- **Dev server:** run with `npm run dev`
+@system/ai/quick-orientation.md
+
+For the accessibility check policy and a11y commands:
+
+@system/ai/a11y-policy.md

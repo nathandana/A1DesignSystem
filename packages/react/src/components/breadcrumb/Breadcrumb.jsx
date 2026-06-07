@@ -15,7 +15,7 @@ import { Link } from "../link/Link.jsx";
  *
  * @param {{ label: string, href?: string, onClick?: function }[]} items
  */
-export function Breadcrumb({ items = [], className = "", ...props }) {
+export function Breadcrumb({ items = [], backLabel = "Back", className = "", ...props }) {
   const parentItem = items.length >= 2 ? items[items.length - 2] : null;
   const backTarget = (parentItem?.href || parentItem?.onClick) ? parentItem : null;
 
@@ -64,7 +64,7 @@ export function Breadcrumb({ items = [], className = "", ...props }) {
             icon="arrow_back"
             className="a1-breadcrumb__back"
           >
-            Back
+            {backLabel}
           </Link>
         ) : (
           <button
@@ -73,7 +73,7 @@ export function Breadcrumb({ items = [], className = "", ...props }) {
             onClick={backTarget.onClick}
           >
             <Icon name="arrow_back" className="a1-breadcrumb__back-icon" />
-            <span className="a1-breadcrumb__back-label">Back</span>
+            <span className="a1-breadcrumb__back-label">{backLabel}</span>
           </button>
         )
       )}

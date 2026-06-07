@@ -24,7 +24,16 @@ const NAV_ITEMS = [
     href: "/analytics",
     items: [
       { label: "Overview",    href: "/analytics" },
-      { label: "Reports",     href: "/analytics/reports" },
+      { divider: true },
+      {
+        label: "Reports",
+        href: "/analytics/reports",
+        items: [
+          { label: "Revenue", href: "/analytics/reports/revenue" },
+          { label: "Engagement", href: "/analytics/reports/engagement" },
+          { label: "Retention", href: "/analytics/reports/retention" },
+        ],
+      },
       { label: "Forecasting", href: "/analytics/forecast" },
     ],
   },

@@ -4,30 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>A1 HTML/CSS Button</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">    <link rel="stylesheet" href="./a1-base.css">
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">    
-    
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-
-
     <link rel="stylesheet" href="./a1-base.css">
-    <link rel="stylesheet" href="./a1-accessible.css">
+    <link rel="stylesheet" href="./a1-light.css">
   </head>
   <body class="a1-body">
-    <main class="a1-stack a1-stack-none">
-      <section class="a1-section a1-section-surface-panel  a1-section-padding-sm a1-section-gap-sm a1-section-gradient-accent a1-section-gradient-bottom-right">
-        <div class="a1-section-inner a1-section-inner-lg  a1-stack">
+    <main class="a1-stack a1-stack-large">
+      <section class="a1-section a1-section-surface-panel a1-section-padding-lg a1-section-gap-md a1-section-gradient-accent a1-section-gradient-bottom-right">
+        <div class="a1-section-inner a1-section-inner-xl a1-stack">
           <p class="a1-badge a1-badge-info"><span class="a1-badge-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z'/><path d='m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z'/></svg></span>Pure HTML/CSS</p>
-          <h1 class="a1-display a1-display-large">A1 Pure</h1>
-          <p class="a1-paragraph a1-paragraph-large">Semantic HTML elements styled with A1 design tokens. Nothing else.</p>
+          <h1 class="a1-display a1-display-large">A1 components</h1>
+          <p class="a1-paragraph a1-paragraph-large">Semantic HTML elements styled with A1 design tokens.</p>
         </div>
       </section>
-      <section class="a1-section a1-section-surface-raised a1-section-padding-sm a1-section-gap-lg">
-        <div class="a1-section-inner a1-section-inner-lg  a1-stack">
-            <h2 class="a1-heading">Buttons</h2>
+
+      <section class="a1-section a1-section-padding-md a1-section-gap-lg">
+        <h2 class="a1-heading">Buttons</h2>
         <div class="a1-cluster" aria-label="Primary buttons">
           <button class="a1-button a1-button-primary a1-button-small"><span class="a1-button-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='m20 6-11 11-5-5'/></svg></span>Small primary</button>
           <button class="a1-button a1-button-primary a1-button-medium"><span class="a1-button-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='m20 6-11 11-5-5'/></svg></span>Medium primary</button>
@@ -52,12 +43,11 @@
           <a class="a1-button a1-button-secondary a1-button-medium" href="#"><span class="a1-button-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1'/><path d='M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1'/></svg></span>Button link</a>
           <button class="a1-icon-button" aria-label="Settings"><span class="a1-icon a1-icon-button-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z'/><path d='M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.6 1h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z'/></svg></span></button>
         </div>
-</div>      </section>
+      </section>
 
       <section class="a1-section a1-section-surface-raised a1-section-padding-md a1-section-gap-lg">
         <div class="a1-section-inner a1-section-inner-lg a1-stack">
           <h2 class="a1-heading">Typography</h2>
-
           <div class="a1-stack">
             <h1 class="a1-heading a1-heading-xxl">Heading XXL</h1>
             <h2 class="a1-heading a1-heading-xl">Heading XL</h2>
@@ -66,95 +56,19 @@
             <h5 class="a1-heading a1-heading-sm">Heading SM</h5>
             <h6 class="a1-heading a1-heading-xs">Heading XS</h6>
           </div>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Type and size modifiers — any element, any scale</p>
-          <div class="a1-stack">
-            <h2 class="a1-heading a1-heading-type-display a1-heading-size-xxl">Display XXL on an h2</h2>
-            <h3 class="a1-heading a1-heading-type-display a1-heading-size-xl">Display XL on an h3</h3>
-            <h4 class="a1-heading a1-heading-type-display a1-heading-size-lg">Display LG on an h4</h4>
-            <h5 class="a1-heading a1-heading-type-display a1-heading-size-md">Display MD on an h5</h5>
-            <p  class="a1-heading a1-heading-type-heading a1-heading-size-lg">Heading LG on a paragraph element</p>
-          </div>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Color modifiers</p>
-          <div class="a1-stack">
-            <h3 class="a1-heading a1-heading-size-md a1-heading-color-default">Default color</h3>
-            <h3 class="a1-heading a1-heading-size-md a1-heading-color-muted">Muted color</h3>
-            <h3 class="a1-heading a1-heading-size-md a1-heading-color-accent">Accent color</h3>
-          </div>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Paragraph size and color modifiers</p>
-          <div class="a1-stack">
-            <p class="a1-paragraph a1-paragraph-size-xl">Paragraph size XL</p>
-            <p class="a1-paragraph a1-paragraph-size-lg">Paragraph size LG</p>
-            <p class="a1-paragraph a1-paragraph-size-md">Paragraph size MD (default)</p>
-            <p class="a1-paragraph a1-paragraph-size-sm">Paragraph size SM</p>
-            <p class="a1-paragraph a1-paragraph-size-xs">Paragraph size XS</p>
-            <p class="a1-paragraph a1-paragraph-size-sm a1-paragraph-color-muted">SM muted — supporting detail</p>
-            <p class="a1-paragraph a1-paragraph-color-accent">Accent color paragraph</p>
-          </div>
-
           <p class="a1-paragraph a1-paragraph-xl">Paragraph XL for introductory copy.</p>
           <p class="a1-paragraph">Paragraph MD for standard body content with <a class="a1-link" href="#"><span class="a1-link-icon" aria-hidden="true"><svg class="a1-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d='M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1'/><path d='M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1'/></svg></span>links</a>, <code class="a1-inline-code">inline code</code>, and <kbd class="a1-kbd">Esc</kbd>.</p>
           <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Paragraph SM muted for supporting details.</p>
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Unordered — default</p>
           <ul class="a1-list a1-list-unordered">
-            <li>Semantic HTML with token-driven spacing and typography applied via BEM utility classes</li>
-            <li>Each variant uses CSS custom properties scoped to the component, keeping overrides predictable</li>
-            <li>This item is intentionally long to show how wrapped text respects the list indentation — the second and subsequent lines stay indented under the bullet, not the container edge</li>
-            <li>Short item</li>
+            <li>Unordered list item</li>
+            <li>Second unordered item</li>
+            <li>Third unordered item</li>
           </ul>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Unordered — large</p>
-          <ul class="a1-list a1-list-unordered a1-list-large">
-            <li>Larger body font with more generous row spacing</li>
-            <li>Well suited for feature lists, marketing copy, or scannable summaries</li>
-            <li>Wrapping still works: this sentence runs long enough to break onto a second line and the hanging indent holds the text away from the bullet marker</li>
-          </ul>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Ordered — default</p>
-          <ol class="a1-list a1-list-ordered">
-            <li>Install the package from the A1 design system registry</li>
-            <li>Import the base stylesheet then layer a theme stylesheet on top</li>
-            <li>Add <code class="a1-inline-code">class="a1-body"</code> to the root element so tokens and resets apply</li>
-            <li>Use semantic HTML elements paired with the relevant utility classes</li>
-          </ol>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Ordered — compact</p>
           <ol class="a1-list a1-list-ordered a1-list-compact">
-            <li>Compact reduces both font size and row gap</li>
-            <li>Good for dense reference lists, changelogs, or metadata</li>
-            <li>Text still wraps correctly while remaining tight and readable even across multiple lines of content</li>
-            <li>Short item</li>
-            <li>Another short item</li>
+            <li>Ordered compact item</li>
+            <li>Second ordered item</li>
+            <li>Third ordered item</li>
           </ol>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Plain — no marker, no indent</p>
-          <ul class="a1-list a1-list-plain">
-            <li>No bullet, no left indent — useful for custom-styled lists or nav-like structures</li>
-            <li>Pairs well with icon prefixes or custom markers applied via CSS or inline elements</li>
-            <li>Wrapping content aligns flush to the container edge without any hanging indent</li>
-          </ul>
-
-          <p class="a1-paragraph a1-paragraph-sm a1-paragraph-muted">Nested — indentation</p>
-          <ul class="a1-list a1-list-unordered">
-            <li>
-              Top-level item
-              <ul class="a1-list a1-list-unordered">
-                <li>Nested item — inherits font size and line height from parent</li>
-                <li>A longer nested item that wraps to confirm the second level indentation holds and text does not escape back to the parent margin</li>
-                <li>
-                  Doubly nested
-                  <ul class="a1-list a1-list-unordered">
-                    <li>Third level — browser default markers shift to a circle</li>
-                    <li>Indentation stacks predictably at each level</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>Sibling top-level item after the nested block</li>
-            <li>Another sibling with enough text to confirm the top-level gap and indent are unaffected by the nested content above</li>
-          </ul>
         </div>
       </section>
 

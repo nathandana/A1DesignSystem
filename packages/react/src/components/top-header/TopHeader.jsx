@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { Icon } from "../icon/Icon.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
@@ -24,6 +24,189 @@ function splitIntoSections(items) {
   return sections;
 }
 
+const menuFocusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
+
+function getMenuFocusableElements(container) {
+  return [...container.querySelectorAll(menuFocusableSelector)].filter((element) => {
+    if (element.getAttribute("aria-disabled") === "true") return false;
+    return element.getClientRects().length > 0;
+  });
+}
+
+function NavMenuItem({ item, onClose }) {
+  const [open, setOpen] = useState(false);
+  const [flyoutPlacement, setFlyoutPlacement] = useState("end");
+  const [flyoutMaxHeight, setFlyoutMaxHeight] = useState(undefined);
+  const flyoutRef = useRef(null);
+  const hasFlyout = item.items?.length > 0;
+  const sections = hasFlyout ? splitIntoSections(item.items) : [];
+  const Trigger = item.href ? "a" : "button";
+
+  const triggerProps = item.href
+    ? {
+        href: item.href,
+        onClick: (event) => { item.onClick?.(event); onClose?.(); },
+      }
+    : {
+        type: "button",
+        onClick: () => setOpen((next) => !next),
+      };
+
+  const focusFirstFlyoutItem = () => {
+    requestAnimationFrame(() => {
+      flyoutRef.current?.querySelector("a, button")?.focus();
+    });
+  };
+
+  const openFlyoutFromKeyboard = () => {
+    setOpen(true);
+    focusFirstFlyoutItem();
+  };
+
+  useLayoutEffect(() => {
+    if (!hasFlyout || !open) return undefined;
+
+    const updateFlyoutLayout = () => {
+      const flyout = flyoutRef.current;
+      const trigger = flyout
+        ?.closest(".a1-top-header__flyout-wrap")
+        ?.querySelector(".a1-top-header__flyout-trigger");
+      if (!flyout || !trigger) return;
+
+      const viewportMargin = 8;
+      const triggerRect = trigger.getBoundingClientRect();
+      const flyoutRect = flyout.getBoundingClientRect();
+      const rightSpace = window.innerWidth - triggerRect.right - viewportMargin;
+      const leftSpace = triggerRect.left - viewportMargin;
+      const nextPlacement = rightSpace >= flyoutRect.width || rightSpace >= leftSpace
+        ? "end"
+        : "start";
+      const maxHeight = Math.max(1, window.innerHeight - flyoutRect.top - viewportMargin);
+
+      setFlyoutPlacement(nextPlacement);
+      setFlyoutMaxHeight(`${Math.floor(maxHeight)}px`);
+    };
+
+    updateFlyoutLayout();
+    window.addEventListener("resize", updateFlyoutLayout);
+    window.addEventListener("scroll", updateFlyoutLayout, true);
+    return () => {
+      window.removeEventListener("resize", updateFlyoutLayout);
+      window.removeEventListener("scroll", updateFlyoutLayout, true);
+    };
+  }, [hasFlyout, open]);
+
+  if (!hasFlyout) {
+    return (
+      <MenuItem
+        icon={item.icon}
+        href={item.href}
+        onClick={(event) => { item.onClick?.(event); onClose?.(); }}
+      >
+        {item.label}
+      </MenuItem>
+    );
+  }
+
+  return (
+    <div
+      className="a1-top-header__flyout-wrap"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <Trigger
+        className="a1-menu-item a1-top-header__flyout-trigger"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openFlyoutFromKeyboard();
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            openFlyoutFromKeyboard();
+          }
+        }}
+        {...triggerProps}
+      >
+        {item.icon && (
+          <Icon
+            name={item.icon}
+            className="a1-menu-item__icon a1-top-header__flyout-icon"
+            aria-hidden="true"
+          />
+        )}
+        <span className="a1-menu-item__label a1-top-header__flyout-label">
+          {item.label}
+        </span>
+        <Icon
+          name="chevron_right"
+          className="a1-top-header__flyout-chevron"
+          aria-hidden="true"
+        />
+      </Trigger>
+
+      {open && (
+        <div
+          ref={flyoutRef}
+          className="a1-top-header__flyout-menu"
+          data-placement={flyoutPlacement}
+          style={{ "--a1-top-header-flyout-max-block-size": flyoutMaxHeight }}
+          role="menu"
+          aria-label={`${item.label} submenu`}
+          onKeyDown={(event) => {
+            if (event.key === "Tab") {
+              const focusableElements = getMenuFocusableElements(event.currentTarget);
+              if (focusableElements.length === 0) {
+                event.preventDefault();
+                return;
+              }
+
+              const firstElement = focusableElements[0];
+              const lastElement = focusableElements[focusableElements.length - 1];
+
+              if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+              } else if (!event.shiftKey && document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+              }
+              event.stopPropagation();
+              return;
+            }
+
+            if (event.key === "ArrowLeft" || event.key === "Escape") {
+              event.preventDefault();
+              event.stopPropagation();
+              setOpen(false);
+              event.currentTarget
+                .closest(".a1-top-header__flyout-wrap")
+                ?.querySelector(".a1-top-header__flyout-trigger")
+                ?.focus();
+            }
+          }}
+        >
+          {sections.map((section, i) => (
+            <MenuSection key={i}>
+              {section.map((sub) => (
+                <NavMenuItem key={sub.label} item={sub} onClose={onClose} />
+              ))}
+            </MenuSection>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── NavItem (desktop) ──────────────────────────────────────────────────────────
 
 function NavItem({ item, openId, onOpen }) {
@@ -32,6 +215,7 @@ function NavItem({ item, openId, onOpen }) {
   const hasRoute = !!item.href;
   const isOpen = hasSubmenu && openId === item.id;
   const isIconOnly = !!item.iconOnly;
+  const sections = hasSubmenu ? splitIntoSections(item.items) : [];
 
   const itemClass = [
     "a1-top-header__nav-item",
@@ -107,19 +291,19 @@ function NavItem({ item, openId, onOpen }) {
             onClose={() => onOpen(null)}
             anchorRef={triggerRef}
             aria-label={`${item.label} submenu`}
+            className="a1-menu--with-flyouts"
           >
-            <MenuSection>
-              {item.items.map((sub) => (
-                <MenuItem
-                  key={sub.label}
-                  icon={sub.icon}
-                  href={sub.href}
-                  onClick={(event) => { sub.onClick?.(event); onOpen(null); }}
-                >
-                  {sub.label}
-                </MenuItem>
-              ))}
-            </MenuSection>
+            {sections.map((section, i) => (
+              <MenuSection key={i}>
+                {section.map((sub) => (
+                  <NavMenuItem
+                    key={sub.label}
+                    item={sub}
+                    onClose={() => onOpen(null)}
+                  />
+                ))}
+              </MenuSection>
+            ))}
           </Menu>
         </>
       ) : hasSubmenu ? (
@@ -141,19 +325,19 @@ function NavItem({ item, openId, onOpen }) {
             onClose={() => onOpen(null)}
             anchorRef={triggerRef}
             aria-label={`${item.label} submenu`}
+            className="a1-menu--with-flyouts"
           >
-            <MenuSection>
-              {item.items.map((sub) => (
-                <MenuItem
-                  key={sub.label}
-                  icon={sub.icon}
-                  href={sub.href}
-                  onClick={(event) => { sub.onClick?.(event); onOpen(null); }}
-                >
-                  {sub.label}
-                </MenuItem>
-              ))}
-            </MenuSection>
+            {sections.map((section, i) => (
+              <MenuSection key={i}>
+                {section.map((sub) => (
+                  <NavMenuItem
+                    key={sub.label}
+                    item={sub}
+                    onClose={() => onOpen(null)}
+                  />
+                ))}
+              </MenuSection>
+            ))}
           </Menu>
         </>
       ) : item.href ? (
@@ -186,7 +370,7 @@ function NavItem({ item, openId, onOpen }) {
  * the first child links to that parent page so the route remains reachable.
  */
 function getMobileSubItems(item) {
-  if (!item.href) return item.items ?? [];
+  if (!item.href) return (item.items ?? []).filter((sub) => !sub.divider);
 
   return [
     {
@@ -196,14 +380,48 @@ function getMobileSubItems(item) {
       onClick: item.onClick,
     },
     ...(item.items ?? []),
-  ];
+  ].filter((sub) => !sub.divider);
+}
+
+function MobileDrawerItem({ item, onClose }) {
+  const children = (item.items ?? []).filter((sub) => !sub.divider);
+
+  if (children.length > 0) {
+    return (
+      <SideNavGroup icon={item.icon} label={item.label}>
+        {item.href && (
+          <SideNavItem
+            as="a"
+            href={item.href}
+            icon={item.icon}
+            label="Overview"
+            onClick={(event) => { item.onClick?.(event); onClose(); }}
+          />
+        )}
+        {children.map((sub) => (
+          <MobileDrawerItem key={sub.label} item={sub} onClose={onClose} />
+        ))}
+      </SideNavGroup>
+    );
+  }
+
+  return (
+    <SideNavItem
+      as={item.href ? "a" : "button"}
+      href={item.href}
+      icon={item.icon}
+      label={item.label}
+      onClick={(event) => { item.onClick?.(event); onClose(); }}
+    />
+  );
 }
 
 // ── ActionMenu ─────────────────────────────────────────────────────────────────
 
 function ActionMenu({ action, isOpen, onToggle }) {
   const btnRef = useRef(null);
-  const sections = splitIntoSections(action.items ?? []);
+  const hasItems = (action.items?.length ?? 0) > 0;
+  const sections = hasItems ? splitIntoSections(action.items) : [];
 
   return (
     <div className="a1-top-header__action">
@@ -215,50 +433,52 @@ function ActionMenu({ action, isOpen, onToggle }) {
         <IconButton
           icon={action.icon}
           label={action.label}
-          aria-expanded={isOpen}
-          aria-haspopup="menu"
-          onClick={onToggle}
+          aria-expanded={hasItems ? isOpen : undefined}
+          aria-haspopup={hasItems ? "menu" : undefined}
+          onClick={hasItems ? onToggle : action.onClick}
         />
       </div>
 
-      <Menu
-        open={isOpen}
-        onClose={onToggle}
-        anchorRef={btnRef}
-        aria-label={action.label}
-      >
-        {sections.map((section, i) => (
-          <MenuSection key={i}>
-            {section.map((item, j) => {
-              if (item.isHeader) {
-                return (
-                  <div key={j} className="a1-top-header__menu-identity">
-                    <span className="a1-top-header__menu-identity-name">
-                      {item.label}
-                    </span>
-                    {item.description && (
-                      <span className="a1-top-header__menu-identity-desc">
-                        {item.description}
+      {hasItems && (
+        <Menu
+          open={isOpen}
+          onClose={onToggle}
+          anchorRef={btnRef}
+          aria-label={action.label}
+        >
+          {sections.map((section, i) => (
+            <MenuSection key={i}>
+              {section.map((item, j) => {
+                if (item.isHeader) {
+                  return (
+                    <div key={j} className="a1-top-header__menu-identity">
+                      <span className="a1-top-header__menu-identity-name">
+                        {item.label}
                       </span>
-                    )}
-                  </div>
+                      {item.description && (
+                        <span className="a1-top-header__menu-identity-desc">
+                          {item.description}
+                        </span>
+                      )}
+                    </div>
+                  );
+                }
+                return (
+                  <MenuItem
+                    key={j}
+                    icon={item.icon}
+                    href={item.href}
+                    variant={item.danger ? "destructive" : "default"}
+                    onClick={item.onClick}
+                  >
+                    {item.label}
+                  </MenuItem>
                 );
-              }
-              return (
-                <MenuItem
-                  key={j}
-                  icon={item.icon}
-                  href={item.href}
-                  variant={item.danger ? "destructive" : "default"}
-                  onClick={item.onClick}
-                >
-                  {item.label}
-                </MenuItem>
-              );
-            })}
-          </MenuSection>
-        ))}
-      </Menu>
+              })}
+            </MenuSection>
+          ))}
+        </Menu>
+      )}
     </div>
   );
 }
@@ -287,14 +507,7 @@ function MobileDrawer({ navItems, onClose }) {
               onOpenChange={(next) => setOpenSubId(next ? item.id : null)}
             >
               {getMobileSubItems(item).map((sub) => (
-                <SideNavItem
-                  key={sub.label}
-                  as={sub.href ? "a" : "button"}
-                  href={sub.href}
-                  icon={sub.icon}
-                  label={sub.label}
-                  onClick={(event) => { sub.onClick?.(event); onClose(); }}
-                />
+                <MobileDrawerItem key={sub.label} item={sub} onClose={onClose} />
               ))}
             </SideNavGroup>
           );

@@ -1,13 +1,24 @@
 # A1 Design System — Agent Instructions
 
+> **Do not add content directly to this file.**
+> All project context, policies, and reference material belongs in `system/ai/`.
+> Add a link below when you create or update a file there.
+
+---
+
 Read and follow the central project context before starting any task:
 
-@ai/project-context.md
+@system/ai/project-context.md
 
 Before asking whether a component exists or where it is implemented, check the component registry:
 
-@ai/components.md
+@system/ai/components.md
 
-## Scope reminder
+For build commands and key file locations:
 
-This is a multi-package design system. Changes to tokens, themes, or labels ripple across all packages. Before making changes, identify which packages are affected and update all of them. The checklist in the central context under "Adding a new component" applies to all cross-cutting work.
+@system/ai/quick-orientation.md
+
+For the accessibility check policy and a11y commands:
+
+@system/ai/a11y-policy.md
+

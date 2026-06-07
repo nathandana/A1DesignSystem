@@ -4,25 +4,46 @@ import '../../../packages/react/src/color-scheme.css'
 import { createRoot } from 'react-dom/client'
 import { useEffect, useState } from 'react'
 import {
+  Button,
   LabelsProvider,
   Menu,
   MenuSection,
   PageLayout,
+  RadioGroup,
   SegmentedControl,
+  SelectField,
+  Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
 import actionLabels from '../../../system/labels/action.json'
 import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
-import { FoundationDetail, Foundations, foundations } from './pages/Foundations.jsx'
-import { Components } from './pages/Components.jsx'
+import { FoundationDetail, Foundations, foundations } from './pages/foundations'
+import {
+  Components,
+  getComponentsSidebar,
+  componentCategories,
+  componentCategoryPageIds,
+  componentPageIds,
+  componentPageTitles,
+} from './pages/Components.jsx'
 import { Projects } from './pages/Projects.jsx'
+import { Templates } from './pages/Templates.jsx'
+import { Accessibility } from './pages/Accessibility.jsx'
 import './styles.css'
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
+const RESOURCE_PAGE_IDS = ['features', 'get-started', 'projects', 'accessibility']
+const RESOURCE_PAGE_ICONS = {
+  features: 'star',
+  'get-started': 'rocket_launch',
+  projects: 'folder_open',
+  accessibility: 'accessibility',
+}
+const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, 'components', 'projects']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'projects', 'accessibility']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -30,14 +51,17 @@ const PAGE_TITLES = {
   'get-started': 'Get Started',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
-  components: 'Components',
+  ...componentPageTitles,
+  templates: 'Templates',
   projects: 'Projects',
+  accessibility: 'Accessibility',
 }
 
 const themeOptions = [
   { value: 'a1Light', label: 'Default' },
   { value: 'a1Heritage', label: 'Heritage' },
   { value: 'a1Accessible', label: 'Accessible' },
+  { value: 'catlympics', label: 'Catlympics' },
 ]
 
 const colorSchemeOptions = [
@@ -45,6 +69,9 @@ const colorSchemeOptions = [
   { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode' },
   { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode' },
 ]
+
+const VALID_THEMES = themeOptions.map((o) => o.value)
+const VALID_COLOR_MODES = colorSchemeOptions.map((o) => o.value)
 
 function getPage(search = window.location.search) {
   const page = new URLSearchParams(search).get('page') || 'home'
@@ -61,12 +88,25 @@ function isPlainLeftClick(e) {
 
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
-  const [theme, setTheme] = useState('a1Light')
-  const [colorMode, setColorMode] = useState('light')
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem('a1-web-theme')
+    return VALID_THEMES.includes(stored) ? stored : 'a1Light'
+  })
+  const [colorMode, setColorMode] = useState(() => {
+    const stored = localStorage.getItem('a1-web-color-mode')
+    return VALID_COLOR_MODES.includes(stored) ? stored : 'system'
+  })
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    localStorage.getItem('a1-web-reduced-motion') === 'true'
+  )
+  const [contrastMore, setContrastMore] = useState(() =>
+    localStorage.getItem('a1-web-contrast-more') === 'true'
+  )
   const [systemColorScheme, setSystemColorScheme] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [componentSearch, setComponentSearch] = useState('')
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   function navigate(page, { replace = false } = {}) {
@@ -97,8 +137,17 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('a1-theme-heritage', theme === 'a1Heritage')
     document.documentElement.classList.toggle('a1-theme-accessible', theme === 'a1Accessible')
+    document.documentElement.classList.toggle('a1-theme-catlympics', theme === 'catlympics')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
-  }, [theme, resolvedColorScheme])
+    document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
+    document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
+    document.documentElement.classList.toggle('a1-contrast-more', contrastMore)
+  }, [theme, resolvedColorScheme, colorMode, reducedMotion, contrastMore])
+
+  useEffect(() => { localStorage.setItem('a1-web-theme', theme) }, [theme])
+  useEffect(() => { localStorage.setItem('a1-web-color-mode', colorMode) }, [colorMode])
+  useEffect(() => { localStorage.setItem('a1-web-reduced-motion', reducedMotion) }, [reducedMotion])
+  useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return undefined
@@ -124,22 +173,71 @@ function App() {
     document.title = activePage === 'home' ? title : `${title} — A1 Design System`
   }, [activePage])
 
-  const navPages = ['features', 'get-started', 'foundations', 'components', 'projects']
-  const navItems = navPages.map((id) => ({
-    id,
-    label: PAGE_TITLES[id],
-    href: getPath(id),
-    active: id === 'foundations' ? activePage === id || FOUNDATION_PAGE_IDS.includes(activePage) : activePage === id,
-    onClick: (e) => handleNavClick(e, id),
-    items: id === 'foundations'
-      ? foundations.map((foundation) => ({
+  const navItems = [
+    {
+      id: 'resources',
+      label: 'Resources',
+      active: RESOURCE_PAGE_IDS.includes(activePage),
+      items: RESOURCE_PAGE_IDS.map((id) => ({
+        icon: RESOURCE_PAGE_ICONS[id],
+        label: PAGE_TITLES[id],
+        href: getPath(id),
+        onClick: (e) => handleNavClick(e, id),
+      })),
+    },
+    {
+      id: 'foundations',
+      label: PAGE_TITLES.foundations,
+      active: activePage === 'foundations' || FOUNDATION_PAGE_IDS.includes(activePage),
+      items: [
+        {
+          icon: 'foundation',
+          label: 'Overview',
+          href: getPath('foundations'),
+          onClick: (e) => handleNavClick(e, 'foundations'),
+        },
+        { divider: true },
+        ...foundations.map((foundation) => ({
           icon: foundation.icon,
           label: foundation.title,
           href: getPath(foundation.id),
           onClick: (e) => handleNavClick(e, foundation.id),
-        }))
-      : undefined,
-  }))
+        })),
+      ],
+    },
+    {
+      id: 'components',
+      label: PAGE_TITLES.components,
+      active: COMPONENT_ROUTE_IDS.includes(activePage),
+      items: [
+        {
+          icon: 'widgets',
+          label: 'Overview',
+          href: getPath('components'),
+          onClick: (e) => handleNavClick(e, 'components'),
+        },
+        { divider: true },
+        ...componentCategories.map((category) => ({
+          icon: category.icon,
+          label: category.title,
+          href: getPath(`components-${category.id}`),
+          onClick: (e) => handleNavClick(e, `components-${category.id}`),
+          items: category.components.map((component) => ({
+            label: component.title,
+            href: getPath(`component-${component.id}`),
+            onClick: (e) => handleNavClick(e, `component-${component.id}`),
+          })),
+        })),
+      ],
+    },
+    ...['templates'].map((id) => ({
+      id,
+      label: PAGE_TITLES[id],
+      href: getPath(id),
+      active: activePage === id,
+      onClick: (e) => handleNavClick(e, id),
+    })),
+  ]
 
   const actions = [
     {
@@ -162,6 +260,13 @@ function App() {
     <LabelsProvider labels={actionLabels}>
       <PageLayout
         stickyHeader
+        viewportHeight
+        sidebar={COMPONENT_ROUTE_IDS.includes(activePage) ? getComponentsSidebar({
+          activePage,
+          onNavigate: navigate,
+          search: componentSearch,
+          setSearch: setComponentSearch,
+        }) : undefined}
         header={
           <TopHeader
             logo={logo}
@@ -180,25 +285,44 @@ function App() {
             foundation={foundations.find((foundation) => foundation.id === activePage)}
             onNavigate={navigate}
             theme={theme}
-            onThemeChange={setTheme}
             colorMode={colorMode}
-            onColorModeChange={setColorMode}
           />
         )}
-        {activePage === 'components' && <Components />}
+        {COMPONENT_ROUTE_IDS.includes(activePage) && (
+          <Components 
+            activePage={activePage} 
+            onNavigate={navigate}
+            search={componentSearch}
+            setSearch={setComponentSearch}
+          />
+        )}
+        {activePage === 'templates' && <Templates />}
         {activePage === 'projects' && <Projects />}
+        {activePage === 'accessibility' && <Accessibility />}
       </PageLayout>
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
         <MenuSection label="Theme">
-          <SegmentedControl
-            options={themeOptions}
-            value={theme}
-            onChange={setTheme}
-            aria-label="Theme"
-            size="sm"
-            fullWidth
-          />
+          {themeOptions.length > 5 ? (
+            <SelectField
+              aria-label="Theme"
+              size="compact"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+            >
+              {themeOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </SelectField>
+          ) : (
+            <RadioGroup
+              options={themeOptions}
+              value={theme}
+              onChange={setTheme}
+              size="compact"
+              aria-label="Theme"
+            />
+          )}
         </MenuSection>
         <MenuSection label="Color scheme">
           <SegmentedControl
@@ -209,6 +333,34 @@ function App() {
             size="sm"
             fullWidth
           />
+        </MenuSection>
+        <MenuSection label="Accessibility">
+          <Switch
+            label="Reduce motion"
+            checked={reducedMotion}
+            onChange={setReducedMotion}
+            size="compact"
+          />
+          <Switch
+            label="Increase contrast"
+            checked={contrastMore}
+            onChange={setContrastMore}
+            size="compact"
+          />
+        </MenuSection>
+        <MenuSection>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              setTheme('a1Light')
+              setColorMode('system')
+              setReducedMotion(false)
+              setContrastMore(false)
+            }}
+          >
+            Reset to defaults
+          </Button>
         </MenuSection>
       </Menu>
     </LabelsProvider>

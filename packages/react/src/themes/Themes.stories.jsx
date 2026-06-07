@@ -2,6 +2,7 @@ import { useGlobals } from "storybook/preview-api";
 import a1LightTheme from "../../../../system/themes/a1-light/theme.json";
 import accessibleTheme from "../../../../system/themes/accessible/theme.json";
 import heritageTheme from "../../../../system/themes/heritage/theme.json";
+import catlympicsTheme from "../../../../system/themes/catlympics/theme.json";
 
 export default {
   title: "Foundations/Themes",
@@ -232,8 +233,7 @@ function LivePreview() {
 
 // ─── Per-theme story layout ───────────────────────────────────────────────────
 
-function ThemeStory({ theme, className }) {
-  const [globals] = useGlobals();
+function ThemeStory({ theme, className, globals }) {
   const isDark = globals?.colorScheme === "dark";
 
   const rootVars = getRootVars();
@@ -327,15 +327,32 @@ function ThemeStory({ theme, className }) {
 
 export const Base = {
   name: "Base",
-  render: () => <ThemeStory theme={a1LightTheme} className="" />,
+  render: () => {
+    const [globals] = useGlobals();
+    return <ThemeStory theme={a1LightTheme} className="" globals={globals} />;
+  },
 };
 
 export const Accessible = {
   name: "Accessible",
-  render: () => <ThemeStory theme={accessibleTheme} className="a1-theme-accessible" />,
+  render: () => {
+    const [globals] = useGlobals();
+    return <ThemeStory theme={accessibleTheme} className="a1-theme-accessible" globals={globals} />;
+  },
 };
 
 export const Heritage = {
   name: "Heritage",
-  render: () => <ThemeStory theme={heritageTheme} className="a1-theme-heritage" />,
+  render: () => {
+    const [globals] = useGlobals();
+    return <ThemeStory theme={heritageTheme} className="a1-theme-heritage" globals={globals} />;
+  },
+};
+
+export const CatLympics = {
+  name: "CatLympics",
+  render: () => {
+    const [globals] = useGlobals();
+    return <ThemeStory theme={catlympicsTheme} className="a1-theme-catlympics" globals={globals} />;
+  },
 };

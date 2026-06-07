@@ -5,6 +5,7 @@
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 
 .a1-data-table-wrapper {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: var(--base-spacing-16);
@@ -63,14 +64,15 @@
 /* ── Caption ─────────────────────────────────────────────────────────────── */
 
 .a1-data-table caption {
-  caption-side: top;
-  padding: var(--component-data-table-density-default-cell-padding-block)
-    var(--component-data-table-density-default-cell-padding-inline);
-  text-align: start;
-  font-weight: var(--component-data-table-header-font-weight);
-  font-size: var(--semantic-font-size-body-sm);
-  color: var(--semantic-color-text-muted);
-  border-bottom: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */

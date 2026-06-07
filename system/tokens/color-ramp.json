@@ -470,6 +470,11 @@
           "foreground": {
             "$type": "color",
             "$value": "{base.color.error.0}"
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{base.color.error.700}",
+            "$description": "Error-colored text or icon on a neutral surface. Darker than background to meet 4.5:1."
           }
         },
         "warn": {
@@ -488,6 +493,11 @@
           "foreground": {
             "$type": "color",
             "$value": "{base.color.warn.0}"
+          },
+          "text": {
+            "$type": "color",
+            "$value": "{base.color.warn.700}",
+            "$description": "Warn-colored text or icon on a neutral surface. Darker than background to meet 4.5:1."
           }
         },
         "success": {

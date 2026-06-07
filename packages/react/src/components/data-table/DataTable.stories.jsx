@@ -212,7 +212,7 @@ export const DensityComparison = {
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       {["comfortable", "default", "compact"].map((density) => (
         <div key={density}>
-          <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "#888", marginBottom: 8, textTransform: "capitalize" }}>
+          <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "var(--semantic-color-text-muted)", marginBottom: 8, textTransform: "capitalize" }}>
             {density}
           </p>
           <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 4)} density={density} />
@@ -228,7 +228,7 @@ export const ResponsiveDensity = {
   parameters: { layout: "fullscreen" },
   render: () => (
     <div style={{ padding: 24 }}>
-      <p style={{ fontFamily: "sans-serif", fontSize: 13, color: "#888", marginBottom: 16 }}>
+      <p style={{ fontFamily: "sans-serif", fontSize: 13, color: "var(--semantic-color-text-muted)", marginBottom: 16 }}>
         Resize the Storybook canvas — the table automatically switches between comfortable,
         default, and compact density based on the available container width and column type estimates.
       </p>
@@ -401,7 +401,7 @@ export const ColumnTypes = {
 export const HorizontalScroll = {
   render: () => (
     <div style={{ maxWidth: 500 }}>
-      <p style={{ fontFamily: "sans-serif", fontSize: 13, color: "#888", marginBottom: 12 }}>
+      <p style={{ fontFamily: "sans-serif", fontSize: 13, color: "var(--semantic-color-text-muted)", marginBottom: 12 }}>
         Container constrained to 500px — scrollable prop enables horizontal overflow.
       </p>
       <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 5)} scrollable />
@@ -519,7 +519,7 @@ export const Documentation = {
               <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
                 {["comfortable", "default", "compact"].map((d) => (
                   <div key={d}>
-                    <p style={{ fontFamily: "sans-serif", fontSize: 11, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{d}</p>
+                    <p style={{ fontFamily: "sans-serif", fontSize: 11, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{d}</p>
                     <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 3)} density={d} />
                   </div>
                 ))}
@@ -565,7 +565,7 @@ export const Documentation = {
                 No JavaScript required. Horizontal scrolling is off by default — enable it with <code style={{ fontFamily: "monospace" }}>scrollable</code> for tables that must preserve column widths.
               </Paragraph>
               <Card style={{ padding: 16, background: "var(--semantic-color-surface-panel)" }}>
-                <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "#888", marginBottom: 12 }}>
+                <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "var(--semantic-color-text-muted)", marginBottom: 12 }}>
                   Card-flip preview (simulated at 400px max-width)
                 </p>
                 <div style={{ maxWidth: 400 }}>

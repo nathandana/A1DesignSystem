@@ -76,7 +76,7 @@ export function Dialog({ open = false, onClose, title, footer, children, ...prop
           className="a1-dialog__close"
         />
       </div>
-      <div className="a1-dialog__body">{children}</div>
+      <div className="a1-dialog__body" tabIndex={0}>{children}</div>
       {footer && (
         <div className="a1-dialog__footer">
           <ButtonContainer align="end">{footer}</ButtonContainer>

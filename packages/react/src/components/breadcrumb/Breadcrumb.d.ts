@@ -13,6 +13,10 @@ export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
    * All previous items render as links or buttons.
    */
   items?: BreadcrumbItem[];
+  /**
+   * Label for the back link shown in narrow containers. Defaults to "Back".
+   */
+  backLabel?: string;
 }
 
 export declare function Breadcrumb(props: BreadcrumbProps): React.ReactElement;

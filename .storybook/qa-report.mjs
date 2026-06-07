@@ -1,4 +1,4 @@
-// Reads per-story artifacts and generates HTML reports.
+// Reads per-story artifacts and generates HTML + Markdown reports.
 import { writeFileSync, readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -19,12 +19,14 @@ const a11yFiles   = existsSync(A11Y_DIR) ? readdirSync(A11Y_DIR).filter(f => f.e
 const a11yStories = a11yFiles.map(f => JSON.parse(readFileSync(join(A11Y_DIR, f), 'utf8')));
 
 writeFileSync(join(REPORTS, 'a11y.html'), buildA11yReport(a11yStories, totalScanned));
+writeFileSync(join(REPORTS, 'a11y.md'), buildA11yMarkdown(a11yStories, totalScanned));
+writeFileSync(join(REPORTS, 'a11y.json'), buildA11yJson(a11yStories, totalScanned));
 
 if (a11yStories.length === 0) {
-  console.log(`\n✅  No accessibility violations across ${totalScanned} stories → reports/a11y.html\n`);
+  console.log(`\n✅  No accessibility violations across ${totalScanned} stories → reports/a11y.html + reports/a11y.md + reports/a11y.json\n`);
 } else {
   const total = a11yStories.reduce((n, s) => n + s.violations.length, 0);
-  console.log(`\n⚠️   ${total} a11y violation(s) in ${a11yStories.length} / ${totalScanned} stories → reports/a11y.html\n`);
+  console.log(`\n⚠️   ${total} a11y violation(s) in ${a11yStories.length} / ${totalScanned} stories → reports/a11y.html + reports/a11y.md + reports/a11y.json\n`);
 }
 
 // ── Visual diff report — written only when regressions exist ──────────────────
@@ -188,6 +190,114 @@ function buildVisualReport(diffs, totalScanned = 0) {
   <div class="content">${rows}</div>
 </body>
 </html>`;
+}
+
+// ─── A11y JSON report (consumed by a1-web Accessibility page) ────────────────
+
+function buildA11yJson(stories, totalScanned = 0) {
+  const totalViolations = stories.reduce((n, s) => n + s.violations.length, 0);
+  const counts = { critical: 0, serious: 0, moderate: 0, minor: 0 };
+  for (const s of stories) for (const v of s.violations) counts[v.impact] = (counts[v.impact] ?? 0) + 1;
+  const status = totalViolations === 0
+    ? 'pass'
+    : (counts.critical > 0 || counts.serious > 0) ? 'fail' : 'pass-with-warnings';
+
+  return JSON.stringify({
+    generated: new Date().toISOString().slice(0, 10),
+    status,
+    totalScanned,
+    totalViolations,
+    storiesAffected: stories.length,
+    counts,
+    stories: stories.map(s => ({
+      id: s.id,
+      title: s.title,
+      violations: s.violations.map(v => ({
+        id: v.id,
+        impact: v.impact,
+        description: v.description,
+        helpUrl: v.helpUrl,
+        nodeCount: v.nodes.length,
+        nodes: v.nodes.map(n => ({
+          html: n.html,
+          failureSummary: n.failureSummary,
+        })),
+      })),
+    })),
+  }, null, 2);
+}
+
+// ─── A11y Markdown report ─────────────────────────────────────────────────────
+
+function buildA11yMarkdown(stories, totalScanned = 0) {
+  const totalViolations = stories.reduce((n, s) => n + s.violations.length, 0);
+  const counts = { critical: 0, serious: 0, moderate: 0, minor: 0 };
+  for (const s of stories) for (const v of s.violations) counts[v.impact] = (counts[v.impact] ?? 0) + 1;
+
+  const status = totalViolations === 0
+    ? 'pass'
+    : (counts.critical > 0 || counts.serious > 0) ? 'fail' : 'pass-with-warnings';
+
+  const now = new Date().toISOString().slice(0, 10);
+
+  const lines = [
+    '---',
+    `generated: ${now}`,
+    `status: ${status}`,
+    '---',
+    '',
+    '# Accessibility Report — A1 Design System',
+    '',
+    '## Summary',
+    '',
+    '| Metric | Result |',
+    '|--------|-------:|',
+    `| Stories scanned | ${totalScanned} |`,
+    `| Stories with violations | ${stories.length} |`,
+    `| Total violations | ${totalViolations} |`,
+    `| Critical | ${counts.critical} |`,
+    `| Serious | ${counts.serious} |`,
+    `| Moderate | ${counts.moderate} |`,
+    `| Minor | ${counts.minor} |`,
+    '',
+    '## Status key',
+    '',
+    '| Status | Meaning |',
+    '|--------|---------|',
+    '| `pass` | No known automated violations |',
+    '| `pass-with-warnings` | No blocking failures, but review recommended |',
+    '| `fail` | Critical or serious violations found |',
+    '',
+  ];
+
+  if (stories.length === 0) {
+    lines.push('_No violations found. All stories passed WCAG 2.0 / 2.1 / 2.2 Levels A & AA._');
+  } else {
+    lines.push('## Violations by story', '');
+    for (const s of stories) {
+      lines.push(`### \`${s.id}\``, '');
+      for (const v of s.violations) {
+        lines.push(`**[${v.impact}]** \`${v.id}\` — ${v.description}`, '');
+        for (const n of v.nodes) {
+          lines.push('```html');
+          lines.push(n.html);
+          lines.push('```');
+          lines.push(`> ${n.failureSummary.replace(/\n/g, ' ')}`, '');
+        }
+        lines.push(`[Learn more](${v.helpUrl})`, '');
+      }
+    }
+  }
+
+  lines.push(
+    '---',
+    '',
+    '> Automated pass ≠ accessibility approved.',
+    '> Automated pass = no known machine-detectable violation in tested scenarios.',
+    '> Manual review is required for screen reader phrasing, cognitive load, motion sensitivity, and complex live-region behavior.',
+  );
+
+  return lines.join('\n');
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────

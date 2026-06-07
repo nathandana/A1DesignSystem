@@ -3,6 +3,37 @@
   "description": "Larger font sizes and filled icons for improved legibility. Apply .a1-theme-accessible to <html>.",
   "selectors": {
     ".a1-theme-accessible": {
+      "--base-color-accent-400": "#1D68E5",
+      "--base-color-accent-500": "#1250C4",
+      "--base-color-accent-600": "#0C3DA0",
+
+      "--semantic-color-border-subtle":  "var(--base-color-neutral-400)",
+      "--semantic-color-border-default": "var(--base-color-neutral-500)",
+
+      "--component-button-secondary-border":         "var(--base-color-accent-700)",
+      "--component-button-secondary-border-hover":   "var(--base-color-accent-700)",
+      "--component-button-secondary-border-pressed": "var(--base-color-accent-800)",
+      "--component-button-tertiary-border":          "var(--base-color-neutral-400)",
+      "--component-button-tertiary-border-hover":    "var(--base-color-neutral-500)",
+      "--component-button-tertiary-border-pressed":  "var(--base-color-neutral-500)",
+
+      "--component-button-secondary-border-width":    "2px",
+      "--component-button-tertiary-border-width":     "2px",
+      "--component-button-large-secondary-border-width": "3px",
+      "--component-card-border-width":                "2px",
+      "--component-data-table-border-width":          "2px",
+      "--component-dialog-border-width":              "2px",
+      "--component-dialog-footer-border-width":       "2px",
+      "--component-field-border-width":               "2px",
+      "--component-menu-border-width":                "2px",
+      "--component-message-banner-border-width":      "2px",
+      "--component-message-badge-border-width":       "2px",
+      "--component-pagination-border-width":          "2px",
+      "--component-segmented-border-width":           "2px",
+      "--component-side-nav-border-width":            "2px",
+      "--component-tab-border-width":                 "2px",
+      "--component-top-header-border-width":          "2px",
+
       "--component-button-font-family":          "var(--theme-a1-accessible-font-family-body)",
       "--component-paragraph-font-family":       "var(--theme-a1-accessible-font-family-body)",
       "--component-heading-font-family-heading": "var(--theme-a1-accessible-font-family-heading)",
@@ -40,6 +71,11 @@
       "--component-message-banner-border-radius": "14px",
       "--component-message-badge-border-radius": "10px",
       "--component-side-nav-item-border-radius": "10px"
+    },
+
+    ".a1-theme-accessible.a1-theme-light, .a1-theme-light.a1-theme-accessible": {
+      "--semantic-color-status-success-background": "var(--base-color-success-700)",
+      "--semantic-color-status-success-foreground": "var(--base-color-success-0)"
     }
   },
   "labels": {

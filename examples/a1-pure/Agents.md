@@ -2,6 +2,6 @@
 
 Read the central system context first, then this site context:
 
-@../../../ai/project-context.md
+@../../../system/ai/project-context.md
 
 @ai/project-context.md

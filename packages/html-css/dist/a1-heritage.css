@@ -663,6 +663,7 @@
   --semantic-color-status-error-border: var(--base-color-error-300);
   --semantic-color-status-error-foreground: var(--base-color-error-0);
   --semantic-color-status-error-surface: var(--base-color-error-50);
+  --semantic-color-status-error-text: #660005;
   --semantic-color-status-info-background: #2563eb;
   --semantic-color-status-info-border: #87b0ff;
   --semantic-color-status-info-foreground: #fafcff;
@@ -675,6 +676,7 @@
   --semantic-color-status-warn-border: var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-warn-0);
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
+  --semantic-color-status-warn-text: #4f2700;
   --semantic-color-surface-inverse: #060b14;
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-panel: var(--base-color-neutral-50);
@@ -765,6 +767,13 @@
   --theme-a1-accessible-font-weight-body: 400;
   --theme-a1-accessible-font-weight-display: 900;
   --theme-a1-accessible-font-weight-heading: 700;
+  --theme-a1-catlympics-font-family-body: 'Nunito Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --theme-a1-catlympics-font-family-display: 'Baloo 2', system-ui, -apple-system, sans-serif;
+  --theme-a1-catlympics-font-family-heading: 'Patrick Hand SC', system-ui, -apple-system, sans-serif;
+  --theme-a1-catlympics-font-family-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --theme-a1-catlympics-font-weight-body: 400;
+  --theme-a1-catlympics-font-weight-display: 700;
+  --theme-a1-catlympics-font-weight-heading: 400;
   --theme-a1-heritage-font-family-body: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
   --theme-a1-heritage-font-family-display: Roboto Slab, Rockwell, Clarendon, Georgia, serif;
   --theme-a1-heritage-font-family-heading: Libre Baskerville, Georgia, Cambria, Times New Roman, serif;

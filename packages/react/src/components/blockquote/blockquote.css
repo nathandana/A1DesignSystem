@@ -116,7 +116,7 @@
 }
 
 .a1-blockquote--accent .a1-blockquote__cite {
-  color: color-mix(in srgb, var(--semantic-color-text-inverse), transparent 35%);
+  color: color-mix(in srgb, var(--semantic-color-text-inverse), transparent 10%);
 }
 
 .a1-blockquote--accent .a1-blockquote__cite-link:hover {

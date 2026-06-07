@@ -14,6 +14,7 @@ const meta = {
     sidebarPlacement: { control: "inline-radio", options: ["start", "end"] },
     asidePlacement:   { control: "inline-radio", options: ["start", "end"] },
     stickyHeader:     { control: "boolean" },
+    viewportHeight:   { control: "boolean" },
   },
 };
 
@@ -326,6 +327,30 @@ export const StickyHeader = {
         {Array.from({ length: 12 }, (_, i) => (
           <div key={i} style={{ marginBottom: "var(--base-spacing-16)" }}>
             <Placeholder label={`Content block ${i + 1}`} height={80} />
+          </div>
+        ))}
+      </div>
+    </PageLayout>
+  ),
+};
+
+export const ViewportHeightMainScroll = {
+  name: "Viewport Height Main Scroll",
+  render: () => (
+    <PageLayout
+      stickyHeader
+      viewportHeight
+      header={
+        <div style={{ ...headerStyle, boxShadow: "var(--semantic-shadow-sm)" }}>
+          <Heading as="span" size="xs">App shell</Heading>
+          <Paragraph size="xs" color="muted">Header stays outside the main scroll region</Paragraph>
+        </div>
+      }
+    >
+      <div style={mainStyle}>
+        {Array.from({ length: 18 }, (_, i) => (
+          <div key={i} style={{ marginBottom: "var(--base-spacing-16)" }}>
+            <Placeholder label={`Scrollable main block ${i + 1}`} height={96} />
           </div>
         ))}
       </div>

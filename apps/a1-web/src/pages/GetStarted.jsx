@@ -32,7 +32,7 @@ const packages = [
       'packages/react/Agents.md',
       'packages/react/Claude.md',
       'packages/react/ai/project-context.md',
-      'ai/project-context.md',
+      'system/ai/project-context.md',
       'apps/a1-web/CHANGELOG.md',
     ],
     prompt: `Use the A1 React package. Before coding, read packages/react/Agents.md, packages/react/Claude.md, packages/react/ai/project-context.md, and ai/project-context.md. Follow the component APIs and existing page patterns. Use Section, Stack, Grid, Card, Heading, Paragraph, Button, ButtonContainer, MessageBadge, and List before adding custom CSS. Do not invent raw colors, spacing, radius, font sizes, or one-off styles. Update apps/a1-web/CHANGELOG.md with the prompt and changes.`,
@@ -95,7 +95,7 @@ export function ExamplePage() {
       'packages/react-native/ai/project-context.md',
       'apps/ios-example/App.tsx',
       'apps/priority-guide-ios/App.tsx',
-      'ai/project-context.md',
+      'system/ai/project-context.md',
     ],
     prompt: `Use the A1 React Native package. Before coding, read packages/react-native/Agents.md, packages/react-native/Claude.md, packages/react-native/ai/project-context.md, ai/project-context.md, and the existing iOS example screens. Use exported native components and generated token values. Do not hardcode colors, spacing, type sizes, radius, shadows, or icon sizing. Prefer icon name props where supported. Keep iOS and web examples aligned when they represent the same product surface.`,
     code: `import {
@@ -146,7 +146,7 @@ export function ExampleScreen() {
       'packages/html-css/ai/project-context.md',
       'packages/html-css/README.md',
       'packages/html-css/dist/index.html',
-      'ai/project-context.md',
+      'system/ai/project-context.md',
     ],
     prompt: `Use the A1 pure HTML/CSS package. Before coding, read packages/html-css/Agents.md, packages/html-css/Claude.md, packages/html-css/ai/project-context.md, packages/html-css/README.md, and packages/html-css/dist/index.html. Output semantic HTML and A1 classes only. No JavaScript. Do not add custom CSS unless a missing system class is being added to the package generator. Use values from generated theme CSS and style dictionary output.`,
     code: `<link rel="stylesheet" href="./a1-base.css">

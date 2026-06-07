@@ -457,7 +457,7 @@ export function DataTable({
           </SelectField>
         </div>
       )}
-      <div className={["a1-data-table-scroll", scrollable && "a1-data-table-scroll--scrollable"].filter(Boolean).join(" ")}>
+      <div className={["a1-data-table-scroll", scrollable && "a1-data-table-scroll--scrollable"].filter(Boolean).join(" ")} tabIndex={scrollable ? 0 : undefined}>
         {rows.length === 0 ? (
           <div className="a1-data-table__empty">
             <MessageEmptyState

@@ -1,6 +1,14 @@
 /* ── Global ── */
+html,
+body,
+#root {
+  block-size: 100%;
+}
+
 body {
+  margin: 0;
   font-family: Inter, sans-serif;
+  overflow: hidden;
 }
 
 /* ── Site logo ── */
@@ -16,43 +24,20 @@ body {
   color: var(--semantic-color-text-accent);
 }
 
-/* ── Hero ── */
-.a1-web-hero__subtext {
+/* ── Section subtitles ── */
+.a1-web-section-body {
   max-inline-size: 600px;
   text-wrap: pretty;
 }
 
 /* ── Stats ── */
 .a1-web-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--base-spacing-4);
   padding-block: var(--base-spacing-16);
-}
-
-.a1-web-stat__value {
-  line-height: 1;
-}
-
-
-/* ── Feature cards ── */
-.a1-web-feature-card__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 40px;
-  block-size: 40px;
-  border-radius: var(--base-radius-md);
-  background: var(--semantic-color-surface-raised);
-  color: var(--semantic-color-text-accent);
-  flex-shrink: 0;
 }
 
 /* ── Component category cards ── */
 .a1-web-category-card {
   cursor: pointer;
-  border: 1px solid var(--semantic-color-border-subtle);
   transition: border-color var(--semantic-motion-duration-fast, 150ms);
 }
 
@@ -60,29 +45,80 @@ body {
   border-color: var(--semantic-color-border-default);
 }
 
-.a1-web-category-card__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 36px;
-  block-size: 36px;
-  border-radius: var(--base-radius-md);
-  background: var(--semantic-color-surface-raised);
-  color: var(--semantic-color-text-accent);
-  flex-shrink: 0;
+/* ── Components docs shell ── */
+.a1-web-components-shell {
+  display: block;
+  width: 100%;
 }
 
-/* ── Platform card icon ── */
-.a1-web-platform-card__icon {
+.a1-web-components-shell--with-aside {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: var(--base-spacing-24);
+}
+
+.a1-web-components-shell__main {
+  min-width: 0;
+  max-inline-size: var(--component-section-content-width-xl);
+  inline-size: 100%;
+  padding: var(--base-spacing-24);
+  margin-inline: auto;
+}
+
+.a1-web-components-shell__aside {
+  margin-block-start: var(--base-spacing-24);
+  margin-inline-end: var(--base-spacing-24);
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-components-tree .a1-side-nav__close-btn,
+.a1-web-components-tree .a1-side-nav__collapse-btn {
+  display: none;
+}
+
+.a1-web-component-packages {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 40px;
-  block-size: 40px;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-4);
+}
+
+.a1-web-components-placeholder,
+.a1-web-component-preview {
+  padding: var(--base-spacing-24);
+  border: var(--component-card-border-width) dashed var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-component-preview {
+  display: grid;
+  place-items: center;
+  min-block-size: 280px;
+  border-style: solid;
+  background:
+    linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--semantic-color-surface-raised), transparent 35%) 25%,
+      transparent 25%,
+      transparent 75%,
+      color-mix(in srgb, var(--semantic-color-surface-raised), transparent 35%) 75%
+    );
+  background-size: var(--base-spacing-24) var(--base-spacing-24);
+}
+
+.a1-web-code-block {
+  margin: 0;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  padding: var(--base-spacing-16);
   border-radius: var(--base-radius-md);
-  background: color-mix(in srgb, var(--semantic-color-text-accent) 15%, transparent);
-  color: var(--semantic-color-text-accent);
-  flex-shrink: 0;
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-default);
+  font-family: var(--theme-a1-light-font-family-mono);
+  font-size: var(--semantic-font-size-body-sm);
 }
 
 /* ── Code chips (platform tag, theme selector) ── */
@@ -117,3 +153,86 @@ body {
   font-size: var(--semantic-font-size-body-xs);
   color: var(--semantic-color-text-muted);
 }
+
+/* ── Foundation page visual helpers ── */
+.a1-web-spacing-swatch {
+  display: block;
+  block-size: var(--base-spacing-12);
+  background: var(--semantic-color-action-background);
+  border-radius: var(--base-radius-sm);
+  opacity: 0.6;
+  min-inline-size: 2px;
+}
+
+.a1-web-radius-swatch {
+  display: block;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  background: var(--semantic-color-action-surface);
+  border: 1px solid var(--semantic-color-action-border);
+}
+
+.a1-web-shadow-swatch {
+  display: block;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  background: var(--semantic-color-surface-page);
+  border-radius: var(--base-radius-md);
+}
+
+.a1-web-type-sample {
+  font-family: var(--component-paragraph-font-family);
+  color: var(--semantic-color-text-default);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.a1-web-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--base-spacing-96), 1fr));
+  gap: var(--base-spacing-4);
+}
+
+.a1-web-icon-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  padding: var(--base-spacing-12) var(--base-spacing-8);
+  border-radius: var(--base-radius-md);
+  border: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-icon-cell__name {
+  font-family: var(--theme-a1-light-font-family-mono);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .a1-web-components-shell,
+  .a1-web-components-shell--with-aside {
+    grid-template-columns: 1fr;
+  }
+
+  .a1-web-components-shell__nav,
+  .a1-web-components-shell__aside {
+    position: static;
+  }
+
+  .a1-web-components-shell__nav {
+    padding-inline: var(--base-spacing-16);
+  }
+
+  .a1-web-components-shell__main {
+    padding: var(--base-spacing-16);
+  }
+
+  .a1-web-components-shell__aside {
+    margin: 0 var(--base-spacing-16) var(--base-spacing-16);
+  }
+}
+

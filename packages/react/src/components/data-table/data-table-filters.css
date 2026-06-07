@@ -42,6 +42,7 @@
   color: var(--semantic-color-text-muted);
   white-space: nowrap;
   user-select: none;
+  margin-inline-start: var(--base-spacing-16);
 }
 
 /* ── Chip row ────────────────────────────────────────────────────────────── */
@@ -50,6 +51,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--base-spacing-6);
+  margin-inline-start: var(--base-spacing-6);
 }
 
 /* ── Chip + clear button wrapper ─────────────────────────────────────────── */
@@ -90,8 +92,6 @@
 .a1-dt-filters__chip--active {
   border-color: var(--semantic-color-action-background);
   color: var(--semantic-color-action-background);
-  border-start-end-radius: var(--base-radius-sm);
-  border-end-end-radius: var(--base-radius-sm);
 }
 
 .a1-dt-filters__chip-sep {
@@ -109,67 +109,17 @@
   margin-inline-start: -2px;
 }
 
-/* ── Clear × button (adjacent to active chip) ────────────────────────────── */
-
-.a1-dt-filters__chip-clear {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline: var(--base-spacing-8);
-  border: 1px solid var(--semantic-color-action-background);
-  border-inline-start: 1px solid var(--semantic-color-border-subtle);
-  border-start-end-radius: 9999px;
-  border-end-end-radius: 9999px;
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-  background: transparent;
-  color: var(--semantic-color-action-background);
-  cursor: pointer;
-  transition: background 100ms ease;
-}
-
-.a1-dt-filters__chip-clear .a1-icon {
-  font-size: 14px;
-}
-
-.a1-dt-filters__chip-clear:hover {
-  background: var(--semantic-color-surface-raised);
-}
-
-.a1-dt-filters__chip-clear:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
-  outline-offset: 2px;
-}
-
 /* ── Radio / checkbox icon color in open menu ────────────────────────────── */
 
 .a1-dt-filters__item--on .a1-menu-item__icon {
   color: var(--semantic-color-action-background);
 }
 
-/* ── Clear all ───────────────────────────────────────────────────────────── */
+
+/* ── Clear all button (desktop) ─────────────────────────────────────────── */
 
 .a1-dt-filters__clear-all {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--base-spacing-4) var(--base-spacing-8);
-  background: none;
-  border: none;
-  border-radius: var(--base-radius-sm);
-  font-family: var(--component-paragraph-font-family);
-  font-size: var(--semantic-font-size-body-sm);
-  color: var(--semantic-color-action-background);
-  cursor: pointer;
-  transition: background 100ms ease;
-}
-
-.a1-dt-filters__clear-all:hover {
-  background: var(--semantic-color-surface-raised);
-}
-
-.a1-dt-filters__clear-all:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
-  outline-offset: 2px;
+  margin-inline-start: var(--base-spacing-16);
 }
 
 /* ── Mobile active-filter count badge ───────────────────────────────────── */

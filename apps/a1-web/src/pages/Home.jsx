@@ -4,7 +4,6 @@ import {
   Card,
   Grid,
   Heading,
-  Icon,
   MessageBadge,
   Paragraph,
   Section,
@@ -88,26 +87,29 @@ export function Home({ onNavigate }) {
         gradientPosition="center"
         aria-labelledby="hero-heading"
       >
-        {/*
-          No align="center" on Stack — ButtonContainer uses container queries that
-          require full width to render buttons in row mode. Section alignment="center"
-          centers direct children as layout items. ButtonContainer align="center" handles buttons.
-        */}
-          <MessageBadge icon="auto_awesome">
-            AI-first design system
-          </MessageBadge>
-
+<Stack direction="column" gap="xs" align="center">
+          <Heading
+            as="h1"
+            id="hero-heading"
+            type="display"
+            color="accent"
+            align="center"
+            size={{ xs: 'xl', md: 'xxl', lg: 'xJumbo' }}
+            textWrap="balance"
+          >
+            A1:Design
+          </Heading>
           <Heading
             as="h1"
             id="hero-heading"
             type="display"
             align="center"
-            size={{ xs: 'xl', md: 'xxl', lg: 'jumbo' }}
+            size={{ xs: 'xl', md: 'xxl', lg: 'xxl' }}
             textWrap="balance"
           >
-            The design system<br />built for the&nbsp;AI&nbsp;era.
+            Optimized for AI
           </Heading>
-
+</Stack>
           <Paragraph size={{ xs: 'md', md: 'lg', lg: 'xl' }} color="muted" align="center">
             40+ production-ready components across React, HTML/CSS, and React Native — all driven by a single Style Dictionary token source.
           </Paragraph>
@@ -137,14 +139,14 @@ export function Home({ onNavigate }) {
       <Section padding="sm" surface="raised" contentWidth="lg" alignment="center" aria-label="System statistics">
         <Grid columns={{ xs: 2, sm: 4 }} gap="md">
           {stats.map((stat) => (
-            <div key={stat.label} className="a1-web-stat">
+            <Stack key={stat.label} direction="column" gap={4} align="center" className="a1-web-stat">
               <Heading as="p" type="display" size={{ xs: 'md', md: 'lg', lg: 'xl' }}>
                 {stat.value}
               </Heading>
               <Paragraph size={{ xs: 'sm', md: 'md', lg: 'lg' }} color="muted">
                 <strong>{stat.label}</strong>
               </Paragraph>
-            </div>
+            </Stack>
           ))}
         </Grid>
       </Section>
@@ -166,11 +168,8 @@ export function Home({ onNavigate }) {
 
           <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="lg">
             {features.map((feature) => (
-              <Card key={feature.title}>
+              <Card key={feature.title} icon={feature.icon}>
                 <Stack direction="column" gap="sm">
-                  <span className="a1-web-feature-card__icon" aria-hidden="true">
-                    <Icon name={feature.icon} />
-                  </span>
                   <Heading as="h3" size="md">
                     {feature.title}
                   </Heading>
@@ -207,11 +206,9 @@ export function Home({ onNavigate }) {
                 className="a1-web-category-card"
                 as="button"
                 type="button"
+                icon={cat.icon}
                 onClick={() => onNavigate('components')}
               >
-                <span className="a1-web-category-card__icon" aria-hidden="true">
-                  <Icon name={cat.icon} />
-                </span>
                 <Heading as="span" size="xs" align="left">
                   {cat.label}
                 </Heading>
@@ -241,11 +238,8 @@ export function Home({ onNavigate }) {
 
           <Grid columns={{ xs: 1, sm: 3 }} gap="md">
             {platforms.map((platform) => (
-              <Card key={platform.title} shadow="sm">
+              <Card key={platform.title} shadow="sm" icon={platform.icon}>
                 <Stack direction="column" gap="sm">
-                  <span className="a1-web-platform-card__icon" aria-hidden="true">
-                    <Icon name={platform.icon} />
-                  </span>
                   <Heading as="h3" size="md">
                     {platform.title}
                   </Heading>

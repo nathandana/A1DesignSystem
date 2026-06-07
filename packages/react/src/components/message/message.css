@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .a1-message-banner {
+  box-sizing: border-box;
   /* defaults: neutral */
   --a1-msg-surface: var(--semantic-color-surface-panel);
   --a1-msg-border:  var(--semantic-color-border-subtle);
@@ -123,17 +124,17 @@
   --a1-badge-subtle-border: var(--semantic-color-status-success-border);
 }
 .a1-message-badge--warn {
-  --a1-badge-bg:            var(--semantic-color-status-warn-background);
-  --a1-badge-fg:            var(--semantic-color-status-warn-foreground);
+  --a1-badge-bg:            var(--base-color-warn-200);
+  --a1-badge-fg:            var(--base-color-neutral-900);
   --a1-badge-subtle-bg:     var(--semantic-color-status-warn-surface);
-  --a1-badge-subtle-fg:     var(--semantic-color-status-warn-background);
+  --a1-badge-subtle-fg:     var(--semantic-color-status-warn-text);
   --a1-badge-subtle-border: var(--semantic-color-status-warn-border);
 }
 .a1-message-badge--error {
   --a1-badge-bg:            var(--semantic-color-status-error-background);
   --a1-badge-fg:            var(--semantic-color-status-error-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-error-surface);
-  --a1-badge-subtle-fg:     var(--semantic-color-status-error-background);
+  --a1-badge-subtle-fg:     var(--semantic-color-status-error-text);
   --a1-badge-subtle-border: var(--semantic-color-status-error-border);
 }
 

@@ -2,6 +2,7 @@
 
 .a1-breadcrumb {
   container: a1-breadcrumb / inline-size;
+  font-size: var(--semantic-font-size-body-sm);
 }
 
 /* ── Full list ──────────────────────────────────────────────────────────── */

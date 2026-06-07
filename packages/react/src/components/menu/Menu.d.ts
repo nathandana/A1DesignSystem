@@ -9,6 +9,8 @@ export interface MenuProps {
   anchorRef?: React.RefObject<HTMLElement>;
   /** Accessible label for the menu `dialog` element */
   "aria-label"?: string;
+  /** Additional CSS class names for the menu dialog */
+  className?: string;
   children?: React.ReactNode;
 }
 
