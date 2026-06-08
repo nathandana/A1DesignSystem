@@ -195,6 +195,10 @@
           }
         },
         "heading": {
+          "xxl": {
+            "$type": "dimension",
+            "$value": "{base.font.size.scale.700}"
+          },
           "xl": {
             "$type": "dimension",
             "$value": "{base.font.size.scale.600}"
@@ -354,7 +358,7 @@
         },
         "lineHeight": {
           "$type": "lineHeight",
-          "$value": "{semantic.font.lineHeight.body}"
+          "$value": "1.75em"
         }
       }
     },
@@ -420,6 +424,10 @@
             }
           },
           "heading": {
+            "xxl": {
+              "$type": "dimension",
+              "$value": "{semantic.font.size.heading.xxl}"
+            },
             "xl": {
               "$type": "dimension",
               "$value": "{semantic.font.size.heading.xl}"

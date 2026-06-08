@@ -1,5 +1,6 @@
 import { List, ListItem } from "./List.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Typography/List",
@@ -22,9 +23,13 @@ const meta = {
       control: "inline-radio",
       options: ["default", "muted"],
     },
+    variant: {
+      control: "inline-radio",
+      options: ["unordered", "ordered", "icon", "divider"],
+      description: "List style variant — 'divider' renders items separated by horizontal rules with no bullet",
+    },
     icon: {
-      control: "text",
-      description: "Material Symbol name — switches to icon variant when set",
+      ...iconArgType("Switches to icon variant when set"),
     },
   },
 };
@@ -69,6 +74,26 @@ export const SizeScale = {
             {size}
           </span>
           <List size={size}>
+            {SHORT.map((item) => <ListItem key={item}>{item}</ListItem>)}
+          </List>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+// ─── Divider variant ──────────────────────────────────────────────────────────
+
+export const DividerVariant = {
+  name: "Divider Variant",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "32px", maxWidth: "400px" }}>
+      {["xs", "sm", "md", "lg", "xl"].map((size) => (
+        <div key={size} style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+          <span style={{ width: "28px", fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", flexShrink: 0, paddingTop: "8px" }}>
+            {size}
+          </span>
+          <List variant="divider" size={size} style={{ flex: 1 }}>
             {SHORT.map((item) => <ListItem key={item}>{item}</ListItem>)}
           </List>
         </div>

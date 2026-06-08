@@ -1,0 +1,9 @@
+{
+  "name": "theme-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && npm run dev:theme-editor"
+  }
+}

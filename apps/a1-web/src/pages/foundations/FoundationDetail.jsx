@@ -1,0 +1,43 @@
+import { ColorFoundationPage } from './ColorFoundation.jsx'
+import { SizeFoundationPage } from './SizeFoundation.jsx'
+import { TypeScaleFoundationPage } from './TypeScaleFoundation.jsx'
+import { ShapeFoundationPage } from './ShapeFoundation.jsx'
+import { MotionFoundationPage } from './MotionFoundation.jsx'
+import { ElevationFoundationPage } from './ElevationFoundation.jsx'
+import { IconographyFoundationPage } from './IconographyFoundation.jsx'
+import { AccessibilityFoundationPage } from './AccessibilityFoundation.jsx'
+import { LabelsFoundationPage } from './LabelsFoundation.jsx'
+import { BreakpointsFoundationPage } from './BreakpointsFoundation.jsx'
+
+export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
+  switch (foundation?.id) {
+    case 'foundation-color':
+      return (
+        <ColorFoundationPage
+          onNavigate={onNavigate}
+          theme={theme}
+          colorMode={colorMode}
+        />
+      )
+    case 'foundation-size':
+      return <SizeFoundationPage onNavigate={onNavigate} />
+    case 'foundation-type-scale':
+      return <TypeScaleFoundationPage onNavigate={onNavigate} />
+    case 'foundation-shape':
+      return <ShapeFoundationPage onNavigate={onNavigate} />
+    case 'foundation-motion':
+      return <MotionFoundationPage onNavigate={onNavigate} />
+    case 'foundation-elevation':
+      return <ElevationFoundationPage onNavigate={onNavigate} />
+    case 'foundation-iconography':
+      return <IconographyFoundationPage onNavigate={onNavigate} />
+    case 'foundation-accessibility':
+      return <AccessibilityFoundationPage onNavigate={onNavigate} />
+    case 'foundation-labels':
+      return <LabelsFoundationPage onNavigate={onNavigate} />
+    case 'foundation-responsive':
+      return <BreakpointsFoundationPage onNavigate={onNavigate} />
+    default:
+      return null
+  }
+}

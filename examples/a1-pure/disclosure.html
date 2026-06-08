@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Disclosure — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html" aria-current="page">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html" aria-current="page">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Disclosure</h1>
+        <p class="a1-p">The disclosure component uses the native <code class="a1-code">&lt;details&gt;</code> and <code class="a1-code">&lt;summary&gt;</code> elements. Apply <code class="a1-code">class="a1-details"</code> to get a bordered panel with a styled toggle — no JavaScript required.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Single disclosure</h2>
+        <p class="a1-p">A single <code class="a1-code">&lt;details class="a1-details"&gt;</code>. The <code class="a1-code">&lt;summary&gt;</code> is the clickable trigger; any sibling element becomes the revealed panel content.</p>
+        <figure class="a1-figure">
+          <details class="a1-details">
+            <summary>What is A1 Pure?</summary>
+            <p class="a1-p">A1 Pure is a scoped stylesheet that applies the A1 design token system to HTML elements via explicit <code class="a1-code">a1-*</code> class names. Drop in one stylesheet, add the classes, and pages styled with browser defaults start looking like a coherent product.</p>
+          </details>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;details class="a1-details"&gt;
+  &lt;summary&gt;What is A1 Pure?&lt;/summary&gt;
+  &lt;p class="a1-p"&gt;Panel content here.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Open by default</h2>
+        <p class="a1-p">Add the <code class="a1-code">open</code> attribute to render the panel expanded on page load.</p>
+        <figure class="a1-figure">
+          <details class="a1-details" open>
+            <summary>Expanded by default</summary>
+            <p class="a1-p">This panel is open when the page loads because the <code class="a1-code">open</code> attribute is present on the <code class="a1-code">&lt;details&gt;</code> element.</p>
+          </details>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;details class="a1-details" open&gt;
+  &lt;summary&gt;Expanded by default&lt;/summary&gt;
+  &lt;p class="a1-p"&gt;Panel content here.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Accordion group</h2>
+        <p class="a1-p">Stack multiple <code class="a1-code">.a1-details</code> elements directly. Adjacent panels are spaced with a small gap between them via the <code class="a1-code">.a1-details + .a1-details</code> selector.</p>
+        <figure class="a1-figure">
+          <details class="a1-details">
+            <summary>Can I use this without a build step?</summary>
+            <p class="a1-p">Yes. A1 Pure is a plain CSS file. Link it from any HTML page and add <code class="a1-code">a1-*</code> class names to your elements — no npm, no bundler, no framework required.</p>
+          </details>
+          <details class="a1-details">
+            <summary>Does it conflict with existing styles?</summary>
+            <p class="a1-p">No. All A1 styles are scoped to explicit <code class="a1-code">a1-*</code> class selectors. Bare elements are untouched, so you can safely drop <code class="a1-code">a1-pure.css</code> into a page that already has its own styles.</p>
+          </details>
+          <details class="a1-details">
+            <summary>How do I change the theme?</summary>
+            <p class="a1-p">Swap the imported token file inside <code class="a1-code">a1-pure.css</code>, or override individual CSS custom properties on any element. The entire visual system is driven by design tokens.</p>
+          </details>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;details class="a1-details"&gt;
+  &lt;summary&gt;Question one&lt;/summary&gt;
+  &lt;p class="a1-p"&gt;Answer here.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details class="a1-details"&gt;
+  &lt;summary&gt;Question two&lt;/summary&gt;
+  &lt;p class="a1-p"&gt;Answer here.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details class="a1-details"&gt;
+  &lt;summary&gt;Question three&lt;/summary&gt;
+  &lt;p class="a1-p"&gt;Answer here.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Rich panel content</h2>
+        <p class="a1-p">Panel content can include any A1-styled elements — paragraphs, lists, code, and more.</p>
+        <figure class="a1-figure">
+          <details class="a1-details">
+            <summary>Getting started checklist</summary>
+            <ol class="a1-ol">
+              <li>Add <code class="a1-code">&lt;link rel="stylesheet" href="a1-pure.css"&gt;</code> to your <code class="a1-code">&lt;head&gt;</code>.</li>
+              <li>Add <code class="a1-code">a1-*</code> class names to the HTML elements you want styled.</li>
+              <li>Swap the token import inside <code class="a1-code">a1-pure.css</code> to change the theme.</li>
+            </ol>
+          </details>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;details class="a1-details"&gt;
+  &lt;summary&gt;Getting started checklist&lt;/summary&gt;
+  &lt;ol class="a1-ol"&gt;
+    &lt;li&gt;Step one.&lt;/li&gt;
+    &lt;li&gt;Step two.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/details&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>

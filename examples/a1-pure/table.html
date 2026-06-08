@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Table — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html" aria-current="page">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html" aria-current="page">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Table</h1>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-table"</code> to a <code class="a1-code">&lt;table&gt;</code> element for a full-width, border-collapsed table with styled header cells, row separators, and consistent cell padding from design tokens.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Basic table</h2>
+        <p class="a1-p">A standard table with a header row and body rows. Use <code class="a1-code">&lt;thead&gt;</code>, <code class="a1-code">&lt;tbody&gt;</code>, <code class="a1-code">&lt;th&gt;</code>, and <code class="a1-code">&lt;td&gt;</code> elements — no additional classes needed beyond <code class="a1-code">a1-table</code> on the <code class="a1-code">&lt;table&gt;</code>.</p>
+        <figure class="a1-figure">
+          <table class="a1-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ada Lovelace</td>
+                <td>Engineer</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Grace Hopper</td>
+                <td>Engineer</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Alan Turing</td>
+                <td>Researcher</td>
+                <td>Inactive</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;table class="a1-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Name&lt;/th&gt;
+      &lt;th&gt;Role&lt;/th&gt;
+      &lt;th&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Ada Lovelace&lt;/td&gt;
+      &lt;td&gt;Engineer&lt;/td&gt;
+      &lt;td&gt;Active&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">With mixed content</h2>
+        <p class="a1-p">Table cells can contain any inline A1 elements — code, links, badges — using their respective <code class="a1-code">a1-*</code> classes.</p>
+        <figure class="a1-figure">
+          <table class="a1-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Value</th>
+                <th>Usage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code class="a1-code">--semantic-color-action-background</code></td>
+                <td><code class="a1-code">#0057FF</code></td>
+                <td>Primary button, focus rings</td>
+              </tr>
+              <tr>
+                <td><code class="a1-code">--semantic-color-text-default</code></td>
+                <td><code class="a1-code">#111118</code></td>
+                <td>Body text, headings</td>
+              </tr>
+              <tr>
+                <td><code class="a1-code">--semantic-color-border-subtle</code></td>
+                <td><code class="a1-code">#E5E7EB</code></td>
+                <td>Dividers, panel borders</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;table class="a1-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Token&lt;/th&gt;
+      &lt;th&gt;Value&lt;/th&gt;
+      &lt;th&gt;Usage&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class="a1-code"&gt;--token-name&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class="a1-code"&gt;#value&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Description&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Row headers</h2>
+        <p class="a1-p">Use <code class="a1-code">&lt;th scope="row"&gt;</code> in the body to mark row headers — useful for comparison tables and property lists.</p>
+        <figure class="a1-figure">
+          <table class="a1-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Border radius</th>
+                <td><code class="a1-code">--component-button-border-radius</code></td>
+              </tr>
+              <tr>
+                <th scope="row">Min height</th>
+                <td><code class="a1-code">--component-button-min-height</code></td>
+              </tr>
+              <tr>
+                <th scope="row">Font weight</th>
+                <td><code class="a1-code">--base-font-weight-semibold</code></td>
+              </tr>
+              <tr>
+                <th scope="row">Focus ring color</th>
+                <td><code class="a1-code">--component-button-focus-ring</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;table class="a1-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Property&lt;/th&gt;
+      &lt;th&gt;Value&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;Border radius&lt;/th&gt;
+      &lt;td&gt;&lt;code class="a1-code"&gt;--component-button-border-radius&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">With caption</h2>
+        <p class="a1-p">A <code class="a1-code">&lt;caption&gt;</code> provides an accessible title for the table, announced by screen readers and rendered above the table content.</p>
+        <figure class="a1-figure">
+          <table class="a1-table">
+            <caption style="text-align:start; padding-block-end: var(--base-spacing-8); font-weight: var(--base-font-weight-semibold);">Q2 component releases</caption>
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Version</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Button</td>
+                <td>2.4.0</td>
+                <td>Stable</td>
+              </tr>
+              <tr>
+                <td>Disclosure</td>
+                <td>1.1.0</td>
+                <td>Stable</td>
+              </tr>
+              <tr>
+                <td>Data table</td>
+                <td>1.0.0</td>
+                <td>Beta</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;table class="a1-table"&gt;
+  &lt;caption&gt;Q2 component releases&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Component&lt;/th&gt;
+      &lt;th&gt;Version&lt;/th&gt;
+      &lt;th&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Button&lt;/td&gt;
+      &lt;td&gt;2.4.0&lt;/td&gt;
+      &lt;td&gt;Stable&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">With footer</h2>
+        <p class="a1-p">A <code class="a1-code">&lt;tfoot&gt;</code> row receives the same cell styling as body rows. Use it for totals, summaries, or persistent labels.</p>
+        <figure class="a1-figure">
+          <table class="a1-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Design tokens</td>
+                <td>1</td>
+                <td>$0</td>
+              </tr>
+              <tr>
+                <td>Component library</td>
+                <td>1</td>
+                <td>$0</td>
+              </tr>
+              <tr>
+                <td>Documentation site</td>
+                <td>1</td>
+                <td>$0</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>3</strong></td>
+                <td><strong>$0</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;table class="a1-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Item&lt;/th&gt;
+      &lt;th&gt;Qty&lt;/th&gt;
+      &lt;th&gt;Price&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Row data&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;$0&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;1&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;$0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>

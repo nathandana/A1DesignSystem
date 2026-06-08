@@ -421,7 +421,7 @@ function KitchenSinkLayout() {
               </MenuSection>
               <MenuSection label="Account">
                 <MenuItem icon="person">Profile</MenuItem>
-                <MenuItem icon="tune">Preferences</MenuItem>
+                <MenuItem icon="settings">Preferences</MenuItem>
                 <MenuItem icon="keyboard" shortcut="⌘K">Command palette</MenuItem>
               </MenuSection>
               <MenuSection label="Workspace">

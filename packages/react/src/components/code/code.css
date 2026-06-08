@@ -1,0 +1,60 @@
+.a1-code {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  line-height: 1.6;
+  color: var(--semantic-color-text-default);
+}
+
+.a1-code--inline {
+  display: inline;
+  padding: var(--component-inline-padding-block) var(--component-inline-padding-inline);
+  border-radius: var(--component-inline-border-radius);
+  background: var(--semantic-color-surface-raised);
+  white-space: nowrap;
+}
+
+.a1-code--inline.a1-code--wrapping {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.a1-code-block {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--base-spacing-8);
+  max-inline-size: 100%;
+  color: var(--semantic-color-text-default);
+}
+
+.a1-code-block__pre {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  inline-size: 100%;
+  margin: 0;
+  overflow-x: auto;
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-code--block {
+  display: block;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  white-space: pre;
+}
+
+.a1-code--block.a1-code--wrapping {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.a1-code-block__copy {
+  margin: 0;
+}

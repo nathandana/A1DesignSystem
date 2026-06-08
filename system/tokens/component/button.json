@@ -91,6 +91,10 @@
         "$type": "dimension",
         "$value": "{semantic.radius.control}"
       },
+      "pillBorderRadius": {
+        "$type": "dimension",
+        "$value": "9999px"
+      },
       "paddingBlock": {
         "$type": "dimension",
         "$value": "{base.space.button.paddingBlock}"

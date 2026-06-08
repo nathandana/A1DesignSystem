@@ -1,0 +1,298 @@
+/* ── Base reset ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--component-paragraph-font-family, system-ui, sans-serif);
+  color: var(--semantic-color-text-default);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,0.9) 0%, transparent 36%),
+    radial-gradient(circle at 82% 14%, rgba(255,255,255,0.85) 0%, transparent 30%),
+    radial-gradient(circle at 50% 72%, var(--base-color-accent-100) 0%, transparent 38%),
+    var(--semantic-color-surface-page);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+/* ── Shell ───────────────────────────────────────────────────────────────── */
+.cl-shell {
+  min-height: 100vh;
+}
+
+.cl-shell--loading {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+/* ── Loading panel ───────────────────────────────────────────────────────── */
+.cl-loading-panel {
+  max-width: 400px;
+  padding: 3rem 2rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.1);
+}
+
+.cl-spinner {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.7);
+  border-top-color: var(--base-color-accent-600);
+  animation: cl-spin 0.9s linear infinite;
+}
+
+@keyframes cl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Form card ───────────────────────────────────────────────────────────── */
+.cl-form-card {
+  flex: 0 0 auto;
+  width: min(100%, 400px);
+}
+
+.cl-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* ── Color presets ───────────────────────────────────────────────────────── */
+.cl-color-presets {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cl-field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--semantic-color-text-muted);
+}
+
+.cl-presets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cl-preset-swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border-width: 3px;
+  border-style: solid;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  padding: 0;
+}
+
+.cl-preset-swatch:hover {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px var(--base-color-accent-300);
+}
+
+.cl-preset-swatch:focus-visible {
+  outline: 2px solid var(--component-button-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Color pickers ───────────────────────────────────────────────────────── */
+.cl-color-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cl-color-pick {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--semantic-color-text-muted);
+  cursor: pointer;
+}
+
+.cl-color-pick input[type="color"] {
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid var(--semantic-color-border-subtle);
+  padding: 0.35rem;
+  background: var(--semantic-color-surface-panel);
+  cursor: pointer;
+}
+
+/* ── Live preview panel ──────────────────────────────────────────────────── */
+.cl-preview-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.cl-live-preview-card {
+  width: 100%;
+}
+
+.cl-live-preview {
+  display: grid;
+  place-items: center;
+  min-height: 340px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 1.25rem;
+  padding: 1rem;
+}
+
+/* ── Arena stage ─────────────────────────────────────────────────────────── */
+.cl-stage-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.cl-stage {
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 1.25rem;
+  padding: 1rem;
+}
+
+/* ── Cat SVG illustration ────────────────────────────────────────────────── */
+.cat-preview__wrap {
+  width: min(100%, 320px);
+  transform-origin: center bottom;
+}
+
+.cat-preview__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+.cat-preview__wrap--run {
+  animation: cl-run 0.9s ease-in-out infinite;
+}
+
+.cat-preview__wrap--jump {
+  animation: cl-jump 1.3s ease-in-out;
+}
+
+.cat-preview__wrap--curl {
+  animation: cl-curl 1.3s ease-in-out;
+}
+
+.cat-preview__wrap--sit {
+  animation: cl-sit 1.2s ease-in-out;
+}
+
+@keyframes cl-run {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(10px) rotate(1.5deg); }
+  75% { transform: translateX(-6px) rotate(-1deg); }
+}
+
+@keyframes cl-jump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-28px) scale(1.04, 0.97); }
+  60% { transform: translateY(-22px) scale(1.02, 0.99); }
+}
+
+@keyframes cl-curl {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  30% { transform: rotate(-4deg) scale(0.97); }
+  60% { transform: rotate(-7deg) scale(0.95); }
+}
+
+@keyframes cl-sit {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(5px) scaleY(0.97); }
+}
+
+/* ── Roster ──────────────────────────────────────────────────────────────── */
+.cl-roster-card {
+  flex: 0 0 auto;
+  width: min(100%, 360px);
+}
+
+.cl-roster-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cl-roster-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  border: 1.5px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-page);
+  transition: border-color 150ms;
+}
+
+.cl-roster-item--active {
+  border-color: var(--base-color-accent-400);
+  background: var(--semantic-color-action-surface);
+}
+
+.cl-roster-choose {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.cl-roster-swatch {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  outline-offset: 2px;
+}
+
+.cl-roster-meta {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+/* ── Status message card ─────────────────────────────────────────────────── */
+.cl-message-card {
+  animation: cl-fadein 200ms ease;
+}
+
+@keyframes cl-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .cl-form-card {
+    width: 100%;
+  }
+
+  .cl-roster-card {
+    width: 100%;
+  }
+
+  .cl-color-pickers {
+    grid-template-columns: 1fr;
+  }
+}

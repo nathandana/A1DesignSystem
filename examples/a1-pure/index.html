@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A1 Pure — Beautiful HTML, out of the box</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html" aria-current="page">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html" aria-current="page">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <p class="a1-p">A1 Design System</p>
+        <h1 class="a1-h1 a1-heading-type-display a1-heading-size-xl">Beautiful HTML, out of the box.</h1>
+        <p class="a1-p">A1 Pure is a classless stylesheet that applies the A1 design token system directly to standard HTML elements. Write clean, semantic markup and let the stylesheet handle the rest — no class names, no frameworks, no build step.</p>
+        <p class="a1-p"><a class="a1-link" href="#get-started">Get started</a> &nbsp;&nbsp; <a class="a1-link" href="#components">Browse components</a></p>
+      </section>
+
+      <!-- <section class="a1-section">
+        <h2 class="a1-h2">What is A1 Pure?</h2>
+        <p class="a1-p">The main A1 HTML/CSS package uses BEM class names — <code class="a1-code">.a1-button</code>, <code class="a1-code">.a1-heading-xl</code>, <code class="a1-code">.a1-list-unordered</code>. That approach is powerful for large component-driven UIs where fine control matters. But it requires learning the class vocabulary and applying it consistently across every element.</p>
+        <p class="a1-p">A1 Pure takes the opposite approach. It targets HTML element selectors directly, so a plain <code class="a1-code">&lt;button&gt;</code> becomes a primary A1 button, a plain <code class="a1-code">&lt;blockquote&gt;</code> gets the bordered panel treatment, and heading elements adopt the full A1 type scale — all without a single class attribute.</p>
+        <blockquote class="a1-blockquote">
+          <p class="a1-p">The web has always had a visual language. A1 Pure just makes it speak A1.</p>
+          <cite>A1 Design System — Notes on pure HTML</cite>
+        </blockquote>
+      </section> -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Why PURE?</h2>
+        <p class="a1-p">Enterprises are full of ancient interfaces — internal tools, legacy portals, random web pages built across decades by teams who've long moved on. Updating them to the latest React library isn't realistic: the capacity isn't there, the risk is too high, and the ROI is hard to justify.</p>
+        <p class="a1-p">A1 Pure offers a lower bar of entry. Drop in one stylesheet, add a handful of class names, and a page that looked like 2003 starts looking like a coherent product. No build step, no npm, no framework lock-in. It's a step toward consistency that any team can deliver.</p>
+        <ul class="a1-ul">
+          <li>Works in any HTML page — no framework, no build pipeline</li>
+          <li>Additive by design — add classes where you want A1 styling, leave the rest alone</li>
+          <li>Shares the same design tokens as the React component library — consistent by construction</li>
+          <li>Swap the theme file to change the entire look without touching markup</li>
+        </ul>
+      </section>
+
+      <section class="a1-section" id="get-started">
+        <h2 class="a1-h2">Get started</h2>
+        <p class="a1-p">Add a single <code class="a1-code">&lt;link&gt;</code> tag to the <code class="a1-code">&lt;head&gt;</code> of your document.</p>
+        <pre class="a1-pre"><code class="a1-code">&lt;link rel="stylesheet" href="a1-pure.css"&gt;</code></pre>
+        <ol class="a1-ol">
+          <li>Write semantic HTML — <code class="a1-code">&lt;h1&gt;</code>, <code class="a1-code">&lt;p&gt;</code>, <code class="a1-code">&lt;ul&gt;</code>, <code class="a1-code">&lt;form&gt;</code>, and so on.</li>
+          <li>Link <code class="a1-code">a1-pure.css</code>. The stylesheet handles all visual styling automatically.</li>
+          <li>To change the theme, swap the imported token file inside <code class="a1-code">a1-pure.css</code>.</li>
+          <li>Override individual properties using CSS custom properties when you need to diverge from the defaults.</li>
+        </ol>
+      </section>
+
+      <section class="a1-section" id="components">
+        <h2 class="a1-h2">Components</h2>
+        <ul class="a1-ul">
+          <li><a class="a1-link" href="typography.html">Typography</a> — headings, paragraphs, inline elements, blockquotes, lists, code</li>
+          <li><a class="a1-link" href="button.html">Button</a> — primary, secondary, tertiary, sizes, shapes, states</li>
+          <li><a class="a1-link" href="link.html">Link</a> — inline, in text, in lists, external, vs button</li>
+          <li><a class="a1-link" href="icon.html">Icon</a> — basic icons, sizes, filled variant, icon button, icon in button and link</li>
+          <li><a class="a1-link" href="forms.html">Forms</a> — text, email, password, number, textarea, select, help text</li>
+          <li><a class="a1-link" href="checkbox.html">Checkbox</a> — single checkbox, checkbox group, radio group</li>
+          <li><a class="a1-link" href="disclosure.html">Disclosure</a> — single, open by default, accordion group, rich content</li>
+          <li><a class="a1-link" href="table.html">Table</a> — basic, mixed content, with footer</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small>All styles applied by <code class="a1-code">a1-pure.css</code> — no class attributes required.</small></p>
+    </footer>
+
+  </body>
+</html>

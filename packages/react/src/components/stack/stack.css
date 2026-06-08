@@ -1,9 +1,37 @@
 .a1-stack {
   display: flex;
-  flex-direction: var(--a1-stack-direction, column);
+  flex-direction: var(--a1-stack-direction-responsive, var(--a1-stack-direction, column));
   flex-wrap: var(--a1-stack-wrap, nowrap);
   align-items: var(--a1-stack-align, stretch);
-  justify-content: var(--a1-stack-justify, flex-start);
+  justify-content: var(--a1-stack-justify-responsive, var(--a1-stack-justify, flex-start));
   gap: var(--a1-stack-gap, var(--base-spacing-16));
   min-width: 0;
+}
+
+@media (--bp-sm-up) {
+  .a1-stack {
+    --a1-stack-direction-responsive: var(--a1-stack-direction-sm, var(--a1-stack-direction, column));
+    --a1-stack-justify-responsive: var(--a1-stack-justify-sm, var(--a1-stack-justify, flex-start));
+  }
+}
+
+@media (--bp-md-up) {
+  .a1-stack {
+    --a1-stack-direction-responsive: var(--a1-stack-direction-md, var(--a1-stack-direction-sm, var(--a1-stack-direction, column)));
+    --a1-stack-justify-responsive: var(--a1-stack-justify-md, var(--a1-stack-justify-sm, var(--a1-stack-justify, flex-start)));
+  }
+}
+
+@media (--bp-lg-up) {
+  .a1-stack {
+    --a1-stack-direction-responsive: var(--a1-stack-direction-lg, var(--a1-stack-direction-md, var(--a1-stack-direction-sm, var(--a1-stack-direction, column))));
+    --a1-stack-justify-responsive: var(--a1-stack-justify-lg, var(--a1-stack-justify-md, var(--a1-stack-justify-sm, var(--a1-stack-justify, flex-start))));
+  }
+}
+
+@media (--bp-xl) {
+  .a1-stack {
+    --a1-stack-direction-responsive: var(--a1-stack-direction-xl, var(--a1-stack-direction-lg, var(--a1-stack-direction-md, var(--a1-stack-direction-sm, var(--a1-stack-direction, column)))));
+    --a1-stack-justify-responsive: var(--a1-stack-justify-xl, var(--a1-stack-justify-lg, var(--a1-stack-justify-md, var(--a1-stack-justify-sm, var(--a1-stack-justify, flex-start)))));
+  }
 }

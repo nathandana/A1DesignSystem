@@ -228,3 +228,11 @@
 .a1-my-64  { margin-top: var(--base-spacing-64);  margin-bottom: var(--base-spacing-64);  }
 .a1-my-96  { margin-top: var(--base-spacing-96);  margin-bottom: var(--base-spacing-96);  }
 .a1-my-128 { margin-top: var(--base-spacing-128); margin-bottom: var(--base-spacing-128); }
+
+/* ── Gap utilities ─────────────────────────────────────────────────────────
+   Apply to flex or grid containers. Values map to semantic t-shirt sizes,
+   which are backed by foundational spacing tokens. */
+.a1-gap-xs { gap: var(--semantic-spacing-gap-xs); }
+.a1-gap-sm { gap: var(--semantic-spacing-gap-sm); }
+.a1-gap-md { gap: var(--semantic-spacing-gap-md); }
+.a1-gap-lg { gap: var(--semantic-spacing-gap-lg); }

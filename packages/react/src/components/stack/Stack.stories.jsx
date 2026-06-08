@@ -13,10 +13,11 @@ const meta = {
     direction: {
       control: "select",
       options: ["column", "column-reverse", "row", "row-reverse"],
+      description: "Also accepts a breakpoint object: { xs: 'column', md: 'row' }",
     },
     gap: {
       control: "select",
-      options: [0, 2, 4, 8, 12, 16, 24, 32, 40],
+      options: ["xs", "sm", "md", "lg", 0, 2, 4, 8, 12, 16, 24, 32, 40],
     },
     align: {
       control: "select",
@@ -35,7 +36,7 @@ export default meta;
 export const Configurable = {
   args: {
     direction: "column",
-    gap: 16,
+    gap: "md",
     align: "stretch",
     justify: "start",
     wrap: false,
@@ -51,6 +52,39 @@ export const Configurable = {
         <Button>Primary action</Button>
       </Stack>
     </Card>
+  ),
+};
+
+export const ResponsiveDirection = {
+  name: "Responsive direction",
+  render: () => (
+    <Card shadow="xs" style={{ maxWidth: 560 }}>
+      <Stack direction={{ xs: "column", sm: "row" }} gap="md" align="start">
+        <Heading as="h3" size="sm" style={{ whiteSpace: "nowrap" }}>Label</Heading>
+        <Paragraph color="muted">
+          This stack is column on mobile and switches to row at the sm breakpoint.
+          Resize the viewport to see the layout change.
+        </Paragraph>
+      </Stack>
+    </Card>
+  ),
+};
+
+export const GapScale = {
+  name: "Gap scale",
+  render: () => (
+    <>
+      {["xs", "sm", "md", "lg"].map((size) => (
+        <Card key={size} shadow="xs" style={{ maxWidth: 560, marginBottom: 16 }}>
+          <Stack gap={size}>
+            <Heading as="h3" size="sm">gap="{size}"</Heading>
+            <Paragraph color="muted">First item in the stack.</Paragraph>
+            <Paragraph color="muted">Second item in the stack.</Paragraph>
+            <Paragraph color="muted">Third item in the stack.</Paragraph>
+          </Stack>
+        </Card>
+      ))}
+    </>
   ),
 };
 

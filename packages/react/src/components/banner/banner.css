@@ -26,6 +26,12 @@
   --a1-banner-accent:  var(--semantic-color-status-warn-background);
   --a1-banner-bg:      var(--semantic-color-status-warn-background);
 }
+
+/* System banners render white text on a solid background — warn.500 only hits
+   3.18:1. Use warn.text (warn.600 in light, warn.300 in dark) which always passes. */
+.a1-banner--system.a1-banner--warn {
+  --a1-banner-bg: var(--semantic-color-status-warn-text);
+}
 .a1-banner--error {
   --a1-banner-surface: var(--semantic-color-status-error-surface);
   --a1-banner-border:  var(--semantic-color-status-error-border);
@@ -132,9 +138,9 @@
 .a1-banner--system .a1-banner__icon {
   flex-shrink: 0;
   display: flex;
-  font-size: var(--component-message-banner-icon-size);
+  font-size: var(--component-message-banner-system-icon-size, var(--base-spacing-24));
   line-height: 1;
-  --a1-icon-opsz: var(--component-message-banner-icon-optical-size);
+  --a1-icon-opsz: 24;
 }
 
 .a1-banner--system .a1-banner__content {
@@ -150,7 +156,6 @@
 
 .a1-banner--system .a1-banner__body {
   color: var(--a1-banner-fg);
-  opacity: 0.85;
 }
 
 .a1-banner--system .a1-banner__dismiss {

@@ -19,6 +19,40 @@ const meta = {
       control: "select",
       options: ["page", "panel", "raised", undefined],
     },
+    gap: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg", undefined],
+    },
+    gradient: {
+      control: "select",
+      options: ["accent", "highlight", "info", "success", "warn", undefined],
+    },
+    gradientPosition: {
+      control: "select",
+      options: [
+        "top",
+        "top-right",
+        "right",
+        "bottom-right",
+        "bottom",
+        "bottom-left",
+        "left",
+        "top-left",
+        "center",
+      ],
+    },
+    contentWidth: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg", "xl", "2xl", undefined],
+    },
+    height: {
+      control: "select",
+      options: ["screen", "hero", undefined],
+    },
+    alignment: {
+      control: "inline-radio",
+      options: ["left", "center", "right", undefined],
+    },
     inverse: { control: "boolean" },
     as: { control: "text" },
   },
@@ -57,6 +91,12 @@ export const Default = {
   args: {
     padding: "lg",
     surface: "page",
+    gap: undefined,
+    gradient: undefined,
+    gradientPosition: "center",
+    contentWidth: undefined,
+    height: undefined,
+    alignment: undefined,
     inverse: false,
   },
   render: (args) => (
@@ -67,6 +107,122 @@ export const Default = {
         body="Use the controls panel to change padding (lg / md / sm / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
       />
     </Section>
+  ),
+};
+
+/**
+ * `contentWidth` constrains children to a max-width and centers them, while the
+ * section itself remains full-width (useful for padded full-bleed bands with
+ * a readable text column inside). When combined with `gap`, the gap applies
+ * to the inner wrapper rather than the section element.
+ */
+export const ContentWidth = {
+  name: "Content width",
+  render: () => (
+    <>
+      {["xs", "sm", "md", "lg", "xl", "2xl"].map((size) => (
+        <Section key={size} padding="md" surface="panel" gap="sm" contentWidth={size}>
+          <MessageBadge subtle>{size}</MessageBadge>
+          <Heading as="h2" size="lg">contentWidth="{size}"</Heading>
+          <Paragraph color="muted">
+            Children are constrained to a centered max-width column while the section background remains full-bleed.
+          </Paragraph>
+        </Section>
+      ))}
+    </>
+  ),
+};
+
+export const Gap = {
+  name: "Content gap",
+  render: () => (
+    <>
+      {["xs", "sm", "md", "lg"].map((gap) => (
+        <Section key={gap} padding="md" surface="panel" gap={gap}>
+          <MessageBadge subtle>{gap}</MessageBadge>
+          <Heading as="h2" size="xl">{gap.toUpperCase()} section gap</Heading>
+          <Paragraph size="lg" color="muted">
+            Section can apply a token-backed t-shirt gap between direct children.
+          </Paragraph>
+          <ButtonContainer align="start">
+            <Button variant="primary">Primary action</Button>
+            <Button variant="secondary">Secondary action</Button>
+          </ButtonContainer>
+        </Section>
+      ))}
+    </>
+  ),
+};
+
+export const GradientSurfaces = {
+  name: "Gradient surfaces",
+  render: () => (
+    <>
+      <Section padding="lg" surface="page" gradient="accent" gradientPosition="left">
+        <SampleContent
+          badge={{ icon: "gradient", label: "Accent · left edge" }}
+          heading="A subtle wash for editorial rhythm"
+          body="Gradient washes layer over the selected section surface, using current theme tokens instead of fixed page colors."
+        />
+      </Section>
+
+      <Section padding="lg" surface="panel" gradient="highlight" gradientPosition="center">
+        <SampleContent
+          badge={{ icon: "flare", label: "Highlight · centered" }}
+          heading="Centered emphasis without a hard panel"
+          body="Use centered gradients when the content itself is the focal point and the surrounding surface should stay quiet."
+        />
+      </Section>
+
+      <Section padding="lg" surface="raised" gradient="info" gradientPosition="right">
+        <SampleContent
+          badge={{ icon: "info", label: "Info · right edge" }}
+          heading="Edge-attached gradients guide the eye"
+          body="Attach the wash to top, right, bottom, or left when the composition needs directional weight."
+        />
+      </Section>
+
+      <Section padding="lg" surface="page" inverse gradient="success" gradientPosition="bottom">
+        <SampleContent
+          badge={{ icon: "dark_mode", label: "Inverse · bottom edge" }}
+          heading="Inverse sections keep the wash restrained"
+          body="In inverse mode the same gradient API uses the dark semantic color scheme and a lower strength token."
+        />
+      </Section>
+    </>
+  ),
+};
+
+export const GradientPositions = {
+  name: "Gradient positions",
+  render: () => (
+    <>
+      {[
+        ["top-left", "Top left"],
+        ["top", "Top"],
+        ["top-right", "Top right"],
+        ["left", "Left"],
+        ["center", "Center"],
+        ["right", "Right"],
+        ["bottom-left", "Bottom left"],
+        ["bottom", "Bottom"],
+        ["bottom-right", "Bottom right"],
+      ].map(([position, label]) => (
+        <Section
+          key={position}
+          padding="md"
+          surface="panel"
+          gradient="accent"
+          gradientPosition={position}
+        >
+          <MessageBadge subtle>{label}</MessageBadge>
+          <Heading as="h2" size="xl">{label} gradient</Heading>
+          <Paragraph size="lg" color="muted">
+            This section anchors the same subtle theme gradient to {label.toLowerCase()}.
+          </Paragraph>
+        </Section>
+      ))}
+    </>
   ),
 };
 
@@ -234,5 +390,66 @@ export const StackedBands = {
         />
       </Section>
     </>
+  ),
+};
+
+/**
+ * `alignment` aligns the section's direct children as layout items.
+ * Pass a responsive object `alignment={{ xs: "center", lg: "left" }}` for per-breakpoint control.
+ */
+export const AlignmentProp = {
+  name: "Alignment",
+  render: () => (
+    <>
+      {["left", "center", "right"].map((alignment) => (
+        <Section key={alignment} padding="md" surface="panel" alignment={alignment}>
+          <Heading as="h2" size="lg" align={alignment}>align="{alignment}"</Heading>
+          <Paragraph size="lg" color="muted" align={alignment}>
+            The alignment prop aligns direct children without overriding nested content.
+            Use Heading and Paragraph alignment props when text itself should align.
+          </Paragraph>
+          <ButtonContainer align={alignment === "right" ? "end" : alignment === "center" ? "center" : "start"}>
+            <Button variant="primary">Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+          </ButtonContainer>
+        </Section>
+      ))}
+      <Section padding="md" surface="raised" alignment={{ xs: "center", lg: "left" }}>
+        <Heading as="h2" size="lg">Responsive: center on mobile, left on desktop</Heading>
+        <Paragraph size="lg" color="muted">
+          alignment={{ xs: "center", lg: "left" }} — resize the preview to see direct children move without cascading text alignment into nested components.
+        </Paragraph>
+      </Section>
+    </>
+  ),
+};
+
+/**
+ * `height="hero"` sets `min-block-size: calc(90svh - header-height)` and vertically centres
+ * children, designed for landing page hero sections below a sticky top header.
+ */
+export const HeroHeight = {
+  name: 'Height — "hero"',
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <Section
+      padding="lg"
+      height="hero"
+      alignment="center"
+      gradient="accent"
+      gradientPosition="center"
+    >
+      <Heading as="h1" type="display" size={{ xs: "xl", md: "xxl" }} textWrap="balance" align="center">
+        Hero section fills 90svh minus the header
+      </Heading>
+      <Paragraph size="lg" color="muted" align="center">
+        Content is vertically centred. Text alignment is controlled by the typography components.
+        The gradient and surface props compose freely.
+      </Paragraph>
+      <ButtonContainer align="center">
+        <Button variant="primary">Get started</Button>
+        <Button variant="secondary">Learn more</Button>
+      </ButtonContainer>
+    </Section>
   ),
 };

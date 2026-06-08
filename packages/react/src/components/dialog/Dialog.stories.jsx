@@ -114,6 +114,110 @@ export const LongContent = {
   },
 };
 
+// ─── Accessibility stories ────────────────────────────────────────────────────
+
+export const A11yFocusManagement = {
+  name: "[A11y] Focus management",
+  tags: ["a11y", "a11y-required"],
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          title="Focus management demo"
+          footer={
+            <>
+              <Button variant="primary" onClick={() => setOpen(false)}>Confirm</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+            </>
+          }
+        >
+          <Paragraph color="muted">
+            When this dialog opens, focus moves inside. When it closes, focus returns to the trigger button.
+            Tab and Shift+Tab cycle within the dialog without escaping to the page behind.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+    // Tab through the dialog then Escape to close
+    await userEvent.keyboard("{Tab}");
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => {
+      const dialog = document.querySelector("dialog[open]");
+      if (dialog) throw new Error("Dialog still open");
+    });
+  },
+};
+
+export const A11yHighContrast = {
+  name: "[A11y] High contrast theme",
+  tags: ["a11y", "a11y-theme"],
+  globals: { theme: "a1Accessible" },
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          title="High contrast dialog"
+          footer={
+            <>
+              <Button variant="primary" onClick={() => setOpen(false)}>Confirm</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+            </>
+          }
+        >
+          <Paragraph color="muted">
+            Verify that title text, body text, button labels, and the close button all meet WCAG AA contrast
+            under the Accessible theme — including focus ring visibility.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+// Negative example — missing title makes dialog purpose unclear to screen readers
+export const A11yMissingTitle = {
+  name: "[A11y] ⚠ No title (negative example)",
+  tags: ["a11y", "a11y-negative-example"],
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        {/* No title prop — screen readers cannot announce the dialog purpose */}
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <Paragraph color="muted">
+            This dialog has no title. Screen readers will announce it as an unnamed dialog,
+            which leaves users without context about its purpose.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
 export const WithRichContent = {
   name: "With rich content",
   render: () => {

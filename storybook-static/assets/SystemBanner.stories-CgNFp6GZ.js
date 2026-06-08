@@ -1,0 +1,1 @@
+import{i as e}from"./preload-helper-Cs4UwXAW.js";var t,n,r;e((()=>{t={title:`Components/Messaging/_SystemBanner`,tags:[`hidden`]},n={},n.parameters={...n.parameters,docs:{...n.parameters?.docs,source:{originalSource:`{}`,...n.parameters?.docs?.source}}},r=[`Placeholder`]}))();export{n as Placeholder,r as __namedExportsOrder,t as default};

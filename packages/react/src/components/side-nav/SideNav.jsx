@@ -17,7 +17,7 @@ const SideNavCtx = createContext({ collapsed: false, onExpand: null });
  * @param {boolean} [props.active] - Marks this item as the current page
  * @param {string} [props.className]
  */
-export function SideNavItem({ as: Component = "a", icon, label, active, className = "", ...props }) {
+export function SideNavItem({ as: Component = "a", icon, label, badge, active, className = "", ...props }) {
   const depth = useContext(DepthCtx);
   const { collapsed } = useContext(SideNavCtx);
 
@@ -37,6 +37,7 @@ export function SideNavItem({ as: Component = "a", icon, label, active, classNam
     >
       {icon && <Icon name={icon} className="a1-side-nav-item__icon" />}
       <span className="a1-side-nav-item__label">{label}</span>
+      {badge && !collapsed && <span className="a1-side-nav-item__badge">{badge}</span>}
     </Component>
   );
 }
@@ -160,6 +161,7 @@ export function SideNav({
   }, [open, onClose]);
 
   const resolvedHeader = typeof header === "function" ? header(isCollapsed) : header;
+  const resolvedFooter = typeof footer === "function" ? footer(isCollapsed) : footer;
 
   const navClasses = [
     "a1-side-nav",
@@ -193,22 +195,23 @@ export function SideNav({
             className="a1-side-nav__close-btn"
             onClick={onClose}
           />
-          <IconButton
-            icon={collapseIcon}
-            label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
-            className="a1-side-nav__collapse-btn"
-            onClick={toggleCollapse}
-            hidden={collapseButtonPlacement !== "header"}
-          />
+          {collapseButtonPlacement === "header" && (
+            <IconButton
+              icon={collapseIcon}
+              label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
+              className="a1-side-nav__collapse-btn"
+              onClick={toggleCollapse}
+            />
+          )}
         </div>
 
         <SideNavCtx.Provider value={{ collapsed: isCollapsed, onExpand: handleExpand }}>
           <div className="a1-side-nav__nav">{children}</div>
         </SideNavCtx.Provider>
 
-        {(footer || collapseButtonPlacement === "footer") && (
+        {(resolvedFooter || collapseButtonPlacement === "footer") && (
           <div className="a1-side-nav__footer">
-            {footer && <div className="a1-side-nav__footer-content">{footer}</div>}
+            {resolvedFooter && <div className="a1-side-nav__footer-content">{resolvedFooter}</div>}
             {collapseButtonPlacement === "footer" && (
               <IconButton
                 icon={collapseIcon}

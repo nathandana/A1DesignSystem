@@ -1,0 +1,36 @@
+{
+  "component": {
+    "section": {
+      "gradient": {
+        "edgeWidth": {
+          "$type": "dimension",
+          "$value": "78%"
+        },
+        "edgeHeight": {
+          "$type": "dimension",
+          "$value": "62%"
+        },
+        "centerWidth": {
+          "$type": "dimension",
+          "$value": "68%"
+        },
+        "centerHeight": {
+          "$type": "dimension",
+          "$value": "76%"
+        },
+        "strength": {
+          "$type": "number",
+          "$value": 24
+        },
+        "strengthInverse": {
+          "$type": "number",
+          "$value": 18
+        },
+        "fade": {
+          "$type": "number",
+          "$value": 72
+        }
+      }
+    }
+  }
+}

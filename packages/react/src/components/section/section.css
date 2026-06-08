@@ -3,13 +3,206 @@
 .a1-section {
   box-sizing: border-box;
   width: 100%;
+  --a1-section-surface: transparent;
+  --a1-section-gradient-color: transparent;
+  --a1-section-gradient-width: var(--component-section-gradient-center-width);
+  --a1-section-gradient-height: var(--component-section-gradient-center-height);
+  --a1-section-gradient-anchor: center;
+  --a1-section-gradient-strength: var(--component-section-gradient-strength);
+  --a1-section-justify-items: stretch;
+}
+
+.a1-section.a1-inverse {
+  --a1-section-surface: var(--semantic-color-surface-page);
+  --a1-section-gradient-strength: var(--component-section-gradient-strength-inverse);
 }
 
 /* ── Surface ───────────────────────────────────────────────────────────────── */
 
-.a1-section--surface-page   { background: var(--semantic-color-surface-page); }
-.a1-section--surface-panel  { background: var(--semantic-color-surface-panel); }
-.a1-section--surface-raised { background: var(--semantic-color-surface-raised); }
+.a1-section--surface-page   { --a1-section-surface: var(--semantic-color-surface-page); background: var(--a1-section-surface); }
+.a1-section--surface-panel  { --a1-section-surface: var(--semantic-color-surface-panel); background: var(--a1-section-surface); }
+.a1-section--surface-raised { --a1-section-surface: var(--semantic-color-surface-raised); background: var(--a1-section-surface); }
+
+/* ── Gradient wash ─────────────────────────────────────────────────────────── */
+
+.a1-section--gradient-accent    { --a1-section-gradient-color: var(--semantic-color-action-background); }
+.a1-section--gradient-highlight { --a1-section-gradient-color: var(--base-color-highlited-200); }
+.a1-section--gradient-info      { --a1-section-gradient-color: var(--semantic-color-status-info-background); }
+.a1-section--gradient-success   { --a1-section-gradient-color: var(--semantic-color-status-success-background); }
+.a1-section--gradient-warn      { --a1-section-gradient-color: var(--semantic-color-status-warn-background); }
+
+.a1-section--gradient-top,
+.a1-section--gradient-top-right,
+.a1-section--gradient-right,
+.a1-section--gradient-bottom-right,
+.a1-section--gradient-bottom,
+.a1-section--gradient-bottom-left,
+.a1-section--gradient-top-left,
+.a1-section--gradient-left {
+  --a1-section-gradient-width: var(--component-section-gradient-edge-width);
+  --a1-section-gradient-height: var(--component-section-gradient-edge-height);
+}
+
+.a1-section--gradient-top          { --a1-section-gradient-anchor: top center; }
+.a1-section--gradient-top-right    { --a1-section-gradient-anchor: top right; }
+.a1-section--gradient-right        { --a1-section-gradient-anchor: right center; }
+.a1-section--gradient-bottom-right { --a1-section-gradient-anchor: bottom right; }
+.a1-section--gradient-bottom       { --a1-section-gradient-anchor: bottom center; }
+.a1-section--gradient-bottom-left  { --a1-section-gradient-anchor: bottom left; }
+.a1-section--gradient-left         { --a1-section-gradient-anchor: left center; }
+.a1-section--gradient-top-left     { --a1-section-gradient-anchor: top left; }
+.a1-section--gradient-center       { --a1-section-gradient-anchor: center; }
+
+.a1-section[class*="a1-section--gradient-"] {
+  background:
+    radial-gradient(
+      ellipse var(--a1-section-gradient-width) var(--a1-section-gradient-height) at var(--a1-section-gradient-anchor),
+      color-mix(in srgb, var(--a1-section-gradient-color) calc(var(--a1-section-gradient-strength) * 1%), transparent) 0%,
+      transparent calc(var(--component-section-gradient-fade) * 1%)
+    ),
+    var(--a1-section-surface, var(--semantic-color-surface-page));
+}
+
+/* ── Content gap ──────────────────────────────────────────────────────────── */
+
+.a1-section--gap-xs,
+.a1-section--gap-sm,
+.a1-section--gap-md,
+.a1-section--gap-lg {
+  display: grid;
+  justify-items: var(--a1-section-justify-items);
+}
+
+.a1-section--gap-xs { gap: var(--semantic-spacing-gap-xs); }
+.a1-section--gap-sm { gap: var(--semantic-spacing-gap-sm); }
+.a1-section--gap-md { gap: var(--semantic-spacing-gap-md); }
+.a1-section--gap-lg { gap: var(--semantic-spacing-gap-lg); }
+
+/* ── Height ────────────────────────────────────────────────────────────────── */
+
+.a1-section--height-screen {
+  min-height: 100svh;
+}
+
+/* Fills the viewport minus the sticky top header — use for hero/landing sections. */
+.a1-section--height-hero {
+  min-block-size: calc(90svh - var(--component-top-header-height));
+  display: grid;
+  align-content: center;
+}
+
+/* ── Content width ─────────────────────────────────────────────────────────── */
+
+.a1-section__inner {
+  display: grid;
+  justify-items: var(--a1-section-justify-items);
+  width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.a1-section__inner--xs  { max-width: 28.5rem; }
+.a1-section__inner--sm  { max-width: 40rem;  }
+.a1-section__inner--md  { max-width: 50rem;  }
+.a1-section__inner--lg  { max-width: 60rem;  }
+.a1-section__inner--xl  { max-width: 70rem;  }
+.a1-section__inner--2xl { max-width: 90rem;  }
+
+/* ── Alignment ─────────────────────────────────────────────────────────────── */
+/*
+ * Aligns direct children as layout items.
+ * Use the object prop for responsive changes: alignment={{ xs: "center", lg: "left" }}
+ */
+
+.a1-section[class*="-align-"] {
+  display: grid;
+  justify-items: var(--a1-section-justify-items);
+}
+
+.a1-section--align-left {
+  --a1-section-justify-items: start;
+}
+
+.a1-section--align-center {
+  --a1-section-justify-items: center;
+}
+
+.a1-section--align-right {
+  --a1-section-justify-items: end;
+}
+
+/* xs: base, no media query */
+.a1-section--xs-align-left {
+  --a1-section-justify-items: start;
+}
+
+.a1-section--xs-align-center {
+  --a1-section-justify-items: center;
+}
+
+.a1-section--xs-align-right {
+  --a1-section-justify-items: end;
+}
+
+/* sm: ≥481px */
+@media (--bp-sm-up) {
+  .a1-section--sm-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--sm-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--sm-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* md: ≥641px */
+@media (--bp-md-up) {
+  .a1-section--md-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--md-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--md-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* lg: ≥1025px */
+@media (--bp-lg-up) {
+  .a1-section--lg-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--lg-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--lg-align-right {
+    --a1-section-justify-items: end;
+  }
+}
+
+/* xl: ≥1441px */
+@media (--bp-xl-up) {
+  .a1-section--xl-align-left {
+    --a1-section-justify-items: start;
+  }
+
+  .a1-section--xl-align-center {
+    --a1-section-justify-items: center;
+  }
+
+  .a1-section--xl-align-right {
+    --a1-section-justify-items: end;
+  }
+}
 
 /* ── Padding — static (with built-in responsive scaling) ───────────────────── */
 /*

@@ -1,0 +1,19 @@
+{
+  "name": "a1-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --strictPort --port 5177",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --strictPort --port 4177"
+  },
+  "dependencies": {
+    "@gtivr4/a1-design-system-react": "*",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "vite": "^8.0.13"
+  }
+}

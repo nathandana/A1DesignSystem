@@ -15,20 +15,20 @@
   border-radius: var(--component-link-focus-ring-radius);
 }
 
-/* Dark mode and inverse — use a lighter info blue for contrast */
+/* Dark mode and inverse — bright light blue for contrast on dark backgrounds */
 .a1-theme-dark .a1-link,
 .a1-inverse .a1-link {
-  color: var(--base-color-info-300);
+  color: var(--base-color-info-100);
 }
 
 .a1-theme-dark .a1-link:hover,
 .a1-inverse .a1-link:hover {
-  color: var(--base-color-info-200);
+  color: var(--base-color-info-50);
 }
 
 .a1-theme-dark .a1-link:active,
 .a1-inverse .a1-link:active {
-  color: var(--base-color-info-100);
+  color: var(--base-color-info-200);
 }
 
 /* Dark on inverse restores light-mode values */

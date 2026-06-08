@@ -25,6 +25,13 @@ const DIMENSIONS = [
   { suffix: "y",  label: "Y",      property: "padding-top + bottom / margin-top + bottom" },
 ];
 
+const GAP_SIZES = [
+  { name: "xs", token: "--semantic-spacing-gap-xs", value: "8px" },
+  { name: "sm", token: "--semantic-spacing-gap-sm", value: "12px" },
+  { name: "md", token: "--semantic-spacing-gap-md", value: "16px" },
+  { name: "lg", token: "--semantic-spacing-gap-lg", value: "24px" },
+];
+
 const cellStyle = {
   padding: "10px 16px",
   fontSize: "var(--semantic-font-size-body-sm)",
@@ -164,6 +171,61 @@ export const Margin = {
           ))}
         </tbody>
       </table>
+    </div>
+  ),
+};
+
+/* ── Gap reference ────────────────────────────────────────────────────────── */
+
+export const Gap = {
+  name: "Gap classes",
+  render: () => (
+    <div style={{ padding: "var(--base-spacing-40)" }}>
+      <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "var(--component-heading-font-family-heading)", fontSize: "var(--semantic-font-size-heading-sm)", fontWeight: "var(--component-heading-font-weight-heading)", color: "var(--semantic-color-text-default)" }}>
+        Gap
+      </p>
+      <p style={{ margin: "0 0 var(--base-spacing-24)", fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-muted)" }}>
+        Apply t-shirt sized gap utilities to flex or grid containers. Each class maps to a semantic gap token backed by the foundational spacing scale.
+      </p>
+
+      <div style={{ display: "grid", gap: "var(--base-spacing-24)" }}>
+        {GAP_SIZES.map(({ name, token, value }) => (
+          <div key={name}>
+            <p style={{ margin: "0 0 var(--base-spacing-8)", fontFamily: "monospace", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-action-background)", fontWeight: 600 }}>
+              .a1-gap-{name} <span style={{ color: "var(--semantic-color-text-muted)", fontWeight: 400 }}>({token}, {value})</span>
+            </p>
+            <div
+              className={`a1-gap-${name}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "var(--base-spacing-12)",
+                border: "1px solid var(--semantic-color-border-subtle)",
+                background: "var(--semantic-color-surface-panel)",
+              }}
+            >
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  style={{
+                    width: "48px",
+                    height: "32px",
+                    display: "grid",
+                    placeItems: "center",
+                    background: "var(--semantic-color-action-surface)",
+                    border: "1px solid var(--semantic-color-action-border)",
+                    color: "var(--semantic-color-text-default)",
+                    fontFamily: "var(--component-paragraph-font-family)",
+                    fontSize: "var(--semantic-font-size-body-sm)",
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   ),
 };

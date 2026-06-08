@@ -5,6 +5,7 @@ import { ButtonContainer } from "../button-container/ButtonContainer.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { Link } from "../link/Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const HERO_COLORS = ["action", "neutral", "info", "success", "warn", "error"];
 
@@ -15,8 +16,9 @@ const meta = {
   parameters: { layout: "padded" },
   args: {
     bare: false,
+    variant: "default",
     icon: undefined,
-    heroIcon: undefined,
+    iconDisplay: "default",
     heroColor: "action",
   },
   argTypes: {
@@ -24,26 +26,38 @@ const meta = {
       control: "select",
       options: ["div", "article", "section"],
     },
+    variant: {
+      control: "select",
+      options: ["default", "navigation"],
+      description: "Use navigation when the whole card links to another page. Do not place buttons or links inside navigation cards.",
+    },
     bare: {
       control: "boolean",
       description: "Removes all visual chrome and padding",
     },
     icon: {
-      control: "text",
-      description: "Small icon in the card header (Material Symbols name)",
+      ...iconArgType("Material Symbols icon name"),
     },
-    heroIcon: {
-      control: "text",
-      description: "Full-bleed hero icon at the top of the card (Material Symbols name)",
+    iconDisplay: {
+      control: "inline-radio",
+      options: ["none", "default", "hero"],
+      description: "How the icon is rendered. default = small block above content (scales with container). hero = full-bleed coloured header.",
     },
     heroColor: {
       control: "select",
       options: HERO_COLORS,
-      description: "Background color of the hero icon area",
+      description: "Background colour of the hero area (only used when iconDisplay=\"hero\")",
     },
   },
-  render: ({ bare, icon, heroIcon, heroColor }) => (
-    <Card bare={bare} icon={icon} heroIcon={heroIcon} heroColor={heroColor} style={{ width: 320 }}>
+  render: ({ bare, variant, icon, iconDisplay, heroColor }) => (
+    <Card
+      bare={bare}
+      variant={variant}
+      href={variant === "navigation" ? "#" : undefined}
+      icon={icon}
+      iconDisplay={iconDisplay}
+      heroColor={heroColor}
+    >
       <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Card title</Heading>
       <Paragraph color="muted">Supporting text describing the card content.</Paragraph>
     </Card>
@@ -54,10 +68,30 @@ export default meta;
 
 export const Configurable = {};
 
-/* ── Small icon ───────────────────────────────────────────────────────────── */
+/* ── Default icon — responsive scaling ───────────────────────────────────── */
 
-export const WithSmallIcon = {
-  name: "With small icon",
+export const IconDefaultResponsive = {
+  name: "Default icon — responsive (resize to see steps)",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <Paragraph size="sm" color="muted">
+        Drag the card width or resize the window. At ≥ 320 px the icon grows one step, at ≥ 480 px the box expands, at ≥ 640 px the icon shifts left alongside the content.
+      </Paragraph>
+      <div style={{ resize: "horizontal", overflow: "hidden", minWidth: 200, maxWidth: 900, border: "1px dashed var(--semantic-color-border-subtle)", padding: 8 }}>
+        <Card icon="bolt">
+          <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Responsive icon</Heading>
+          <Paragraph color="muted">This card responds to its own width via container queries.</Paragraph>
+        </Card>
+      </div>
+    </div>
+  ),
+};
+
+/* ── Default icon — three at once ────────────────────────────────────────── */
+
+export const WithIcon = {
+  name: "With icon (default display)",
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
@@ -77,22 +111,49 @@ export const WithSmallIcon = {
   ),
 };
 
-/* ── Big icon ─────────────────────────────────────────────────────────────── */
+/* ── Navigation variant ──────────────────────────────────────────────────── */
+
+export const Navigation = {
+  name: "Navigation",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "grid", gap: "var(--base-spacing-16)" }}>
+      <Card variant="navigation" href="#" icon="palette">
+        <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>
+          Color foundation
+        </Heading>
+        <Paragraph color="muted">
+          Navigate to the color foundation page. Navigation cards must not contain nested buttons or links.
+        </Paragraph>
+      </Card>
+      <Card variant="navigation" href="#" icon="widgets">
+        <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>
+          Components
+        </Heading>
+        <Paragraph color="muted">
+          Use the whole card as one target when the card represents a single destination.
+        </Paragraph>
+      </Card>
+    </div>
+  ),
+};
+
+/* ── Hero icon ───────────────────────────────────────────────────────────── */
 
 const ICON_CARDS = [
-  { heroIcon: "bolt",    heroColor: "action",  label: "Performance", body: "Optimised rendering keeps every interaction snappy at any scale." },
-  { heroIcon: "shield",  heroColor: "success", label: "Security",    body: "Enterprise-grade protections baked in from the ground up." },
-  { heroIcon: "warning", heroColor: "warn",    label: "Monitoring",  body: "Alerts surface issues before they affect your end users." },
-  { heroIcon: "star",    heroColor: "error",   label: "Quality",     body: "Every component reviewed against the full design standard." },
+  { icon: "bolt",    heroColor: "action",  label: "Performance", body: "Optimised rendering keeps every interaction snappy at any scale." },
+  { icon: "shield",  heroColor: "success", label: "Security",    body: "Enterprise-grade protections baked in from the ground up." },
+  { icon: "warning", heroColor: "warn",    label: "Monitoring",  body: "Alerts surface issues before they affect your end users." },
+  { icon: "star",    heroColor: "error",   label: "Quality",     body: "Every component reviewed against the full design standard." },
 ];
 
-export const BigIcon = {
-  name: "Big icon",
+export const HeroIcon = {
+  name: "Hero icon",
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", alignItems: "flex-start" }}>
-      {ICON_CARDS.map(({ heroIcon, heroColor, label, body }) => (
-        <Card key={label} heroIcon={heroIcon} heroColor={heroColor} style={{ width: 240 }}>
+      {ICON_CARDS.map(({ icon, heroColor, label, body }) => (
+        <Card key={label} icon={icon} iconDisplay="hero" heroColor={heroColor} style={{ width: 240 }}>
           <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{label}</Heading>
           <Paragraph size="sm" color="muted">{body}</Paragraph>
         </Card>

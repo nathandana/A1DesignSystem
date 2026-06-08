@@ -1,0 +1,97 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Figure
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@import "../../utilities/sr-only.css";
+
+.a1-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+}
+
+.a1-figure__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--base-radius-container);
+}
+
+.a1-figure__caption {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--semantic-font-weight-body);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-muted);
+  font-style: italic;
+}
+
+/* ── Rounded modifier ──────────────────────────────────────────────────────── */
+
+.a1-figure--rounded .a1-figure__img {
+  border-radius: var(--base-radius-container);
+}
+
+.a1-figure--rounded-none .a1-figure__img {
+  border-radius: 0;
+}
+
+.a1-figure--rounded-sm .a1-figure__img {
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-figure--rounded-md .a1-figure__img {
+  border-radius: var(--base-radius-md);
+}
+
+.a1-figure--rounded-lg .a1-figure__img {
+  border-radius: var(--base-radius-lg);
+}
+
+/* ── Margin ──────────────────────────────────────────────────────────────── */
+
+.a1-figure--mt-sm { margin-top: var(--base-spacing-8); }
+.a1-figure--mt-md { margin-top: var(--base-spacing-16); }
+.a1-figure--mt-lg { margin-top: var(--base-spacing-24); }
+
+.a1-figure--mb-sm { margin-bottom: var(--base-spacing-8); }
+.a1-figure--mb-md { margin-bottom: var(--base-spacing-16); }
+.a1-figure--mb-lg { margin-bottom: var(--base-spacing-24); }
+
+/* ── Alignment ───────────────────────────────────────────────────────────── */
+
+/* start/end: constrain the figure itself and shift via margin */
+.a1-figure--align-end { margin-inline-start: auto; }
+
+/* center: figure stays full-width; size constrains img + caption */
+.a1-figure--align-center { align-items: center; }
+
+/* ── Size ────────────────────────────────────────────────────────────────── */
+
+/* Default: constrain the figure element */
+.a1-figure--xs { max-width: 12rem; }
+.a1-figure--sm { max-width: 20rem; }
+.a1-figure--md { max-width: 30rem; }
+.a1-figure--lg { max-width: 40rem; }
+
+/* Center override: transfer the constraint to img + caption instead */
+.a1-figure--align-center { max-width: none; }
+
+.a1-figure--align-center.a1-figure--xs .a1-figure__img,
+.a1-figure--align-center.a1-figure--xs .a1-figure__caption { max-width: 12rem; }
+
+.a1-figure--align-center.a1-figure--sm .a1-figure__img,
+.a1-figure--align-center.a1-figure--sm .a1-figure__caption { max-width: 20rem; }
+
+.a1-figure--align-center.a1-figure--md .a1-figure__img,
+.a1-figure--align-center.a1-figure--md .a1-figure__caption { max-width: 30rem; }
+
+.a1-figure--align-center.a1-figure--lg .a1-figure__img,
+.a1-figure--align-center.a1-figure--lg .a1-figure__caption { max-width: 40rem; }
+
+/* ── Caption position ──────────────────────────────────────────────────────── */
+
+.a1-figure--caption-center .a1-figure__caption {
+  text-align: center;
+}

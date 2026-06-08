@@ -1,0 +1,1204 @@
+@import url('./a1-light.css');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block');
+
+/*
+  a1-pure.css — Scoped element styles
+  All styling requires an a1-* class. Bare elements render with browser
+  defaults so A1 Pure can be safely dropped into any existing page.
+
+  Exceptions: *, body, strong, em, abbr — these carry no visual design
+  decisions beyond what browsers already apply semantically.
+*/
+
+/* ─── Reset ──────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ─── Body base ──────────────────────────────────────────────────────── */
+
+body {
+  margin: 0;
+}
+
+/*
+  Apply class="a1-body" to the <body> element to set the base font, color,
+  and background for the page. All child elements inherit the font family
+  and size, so unstyled elements render consistently without extra classes.
+*/
+.a1-body {
+  box-sizing: border-box;
+  min-block-size: 100vh;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family, var(--component-button-font-family));
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--component-paragraph-font-weight, var(--semantic-font-weight-body));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-body *,
+.a1-body *::before,
+.a1-body *::after {
+  box-sizing: border-box;
+}
+
+/* ─── Page layout ────────────────────────────────────────────────────── */
+/*
+  Centering trick: padding-inline grows so content stays in a ~64rem
+  column on wide viewports without a wrapper div.
+*/
+
+.a1-footer,
+.a1-section {
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+  padding-inline: max(1.5rem, calc(50% - 32rem));
+}
+
+.a1-section {
+  display: grid;
+  gap: var(--semantic-spacing-gap-lg);
+}
+
+.a1-section + .a1-section {
+  border-block-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* Hero — first a1-section in its parent */
+.a1-section:first-child {
+  background: var(--semantic-color-surface-panel);
+}
+
+/* Eyebrow label inside the hero */
+.a1-section:first-child > .a1-p:first-child {
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  color: var(--semantic-color-text-accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Alternating section tint */
+.a1-section:nth-child(even) {
+  background: var(--semantic-color-surface-panel);
+}
+
+/* ─── Header (sticky topbar) ─────────────────────────────────────────── */
+
+.a1-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--component-top-header-z-index);
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  height: var(--component-top-header-height);
+  padding-inline: var(--component-top-header-padding-inline);
+  background: var(--semantic-color-surface-page);
+  border-block-end: var(--component-top-header-border-width) solid
+    var(--semantic-color-border-subtle);
+}
+
+/* Brand / logo link — first direct child anchor */
+.a1-header > a:first-child {
+  flex-shrink: 0;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  padding-inline-end: var(--base-spacing-16);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-heading-sm);
+  font-weight: var(--semantic-font-weight-display);
+  letter-spacing: -0.015em;
+  line-height: 1;
+  text-decoration: none;
+}
+
+/*
+  Desktop nav — a direct <nav> child, always visible.
+  We avoid the <details> trick here because browsers hide non-summary
+  children via their rendering engine (not CSS), so display:flex cannot
+  reliably override it when <details> is closed.
+*/
+.a1-header > nav {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: stretch;
+}
+
+.a1-header > nav > a {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--base-spacing-12);
+  border-block-end: 2px solid transparent;
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-header > nav > a:hover {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-header > nav > a[aria-current="page"] {
+  color: var(--semantic-color-text-default);
+  border-block-end-color: var(--semantic-color-action-background);
+}
+
+/* Mobile hamburger — a direct <details> child, hidden on desktop */
+.a1-header > details {
+  display: none;
+}
+
+/* CTA button link — last direct child anchor */
+.a1-header > a:last-child {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding-inline: var(--base-spacing-16);
+  border: 1px solid var(--component-button-secondary-border);
+  border-radius: var(--component-button-border-radius);
+  background: transparent;
+  color: var(--component-button-secondary-foreground);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-header > a:last-child:hover {
+  background: var(--component-button-secondary-background-hover);
+  color: var(--component-button-secondary-foreground-hover);
+}
+
+/* ── Mobile: hide desktop nav, show hamburger details ────────────────── */
+
+@media (max-width: 768px) {
+  .a1-header {
+    padding-inline: var(--base-spacing-16);
+  }
+
+  .a1-header > nav,
+  .a1-header > a:last-child {
+    display: none;
+  }
+
+  .a1-header > details {
+    display: block;
+    position: relative;
+    margin-inline-start: auto;
+  }
+
+  .a1-header > details > summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: var(--component-top-header-height);
+    list-style: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--semantic-color-text-default);
+    user-select: none;
+  }
+
+  .a1-header > details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .a1-header > details[open] > nav {
+    display: grid;
+    position: absolute;
+    inset-block-start: calc(100% + var(--base-spacing-4));
+    inset-inline-end: 0;
+    min-inline-size: 13rem;
+    padding: var(--base-spacing-8);
+    background: var(--semantic-color-surface-page);
+    border: 1px solid var(--semantic-color-border-subtle);
+    border-radius: var(--base-radius-lg);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--semantic-color-text-default) 10%, transparent);
+    z-index: calc(var(--component-top-header-z-index) + 1);
+  }
+
+  .a1-header > details[open] > nav > a {
+    display: block;
+    padding: var(--base-spacing-8) var(--base-spacing-12);
+    color: var(--semantic-color-text-muted);
+    font-family: var(--component-paragraph-font-family);
+    font-size: var(--semantic-font-size-body-sm);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: var(--base-radius-md);
+  }
+
+  .a1-header > details[open] > nav > a:hover {
+    color: var(--semantic-color-text-default);
+    background: var(--semantic-color-surface-panel);
+  }
+
+  .a1-header > details[open] > nav > a[aria-current="page"] {
+    color: var(--semantic-color-text-accent);
+    font-weight: var(--base-font-weight-semibold);
+  }
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────── */
+
+.a1-footer {
+  background: var(--semantic-color-surface-inverse);
+  color: var(--semantic-color-text-inverse);
+  display: grid;
+  gap: var(--semantic-spacing-gap-sm);
+}
+
+.a1-footer small {
+  color: var(--base-color-neutral-400);
+}
+
+.a1-footer .a1-code {
+  background: color-mix(in srgb, var(--semantic-color-text-inverse) 10%, transparent);
+  color: var(--semantic-color-action-foreground);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+/* ─── Headings ───────────────────────────────────────────────────────── */
+/*
+  The a1-h* class marks the semantic level. Size, type, and color are
+  controlled independently via modifier classes so any heading element
+  can render at any visual scale:
+
+    <h1 class="a1-h1 a1-heading-type-display a1-heading-size-xl">…</h1>
+    <h2 class="a1-h2 a1-heading-color-muted">…</h2>
+    <h4 class="a1-h4 a1-heading-size-xxl">…</h4>
+*/
+
+.a1-h1,
+.a1-h2,
+.a1-h3,
+.a1-h4,
+.a1-h5,
+.a1-h6 {
+  margin: 0;
+  font-family: var(--a1-heading-family, var(--component-heading-font-family-heading));
+  font-size: var(--a1-heading-size);
+  font-weight: var(--a1-heading-weight, var(--component-heading-font-weight-heading));
+  line-height: var(--a1-heading-line-height, var(--component-heading-font-line-height-heading));
+  color: var(--a1-heading-color, var(--semantic-color-text-default));
+}
+
+/* Default size per level — override freely with .a1-heading-size-* */
+.a1-h1 { --a1-heading-size: var(--semantic-font-size-heading-xl); }
+.a1-h2 { --a1-heading-size: var(--semantic-font-size-heading-lg); }
+.a1-h3 { --a1-heading-size: var(--semantic-font-size-heading-md); }
+.a1-h4 { --a1-heading-size: var(--semantic-font-size-heading-sm); }
+.a1-h5 { --a1-heading-size: var(--semantic-font-size-heading-xs); }
+.a1-h6 { --a1-heading-size: var(--semantic-font-size-heading-xs); }
+
+/* ── Type modifiers ───────────────────────────────────────────────────── */
+
+.a1-heading-type-heading {
+  --a1-heading-family: var(--component-heading-font-family-heading);
+  --a1-heading-weight: var(--component-heading-font-weight-heading);
+  --a1-heading-line-height: var(--component-heading-font-line-height-heading);
+}
+
+.a1-heading-type-display {
+  --a1-heading-family: var(--component-heading-font-family-display);
+  --a1-heading-weight: var(--component-heading-font-weight-display);
+  --a1-heading-line-height: var(--component-heading-font-line-height-display);
+}
+
+/* ── Size modifiers — heading scale ───────────────────────────────────── */
+
+.a1-heading-size-xs  { --a1-heading-size: var(--semantic-font-size-heading-xs); }
+.a1-heading-size-sm  { --a1-heading-size: var(--semantic-font-size-heading-sm); }
+.a1-heading-size-md  { --a1-heading-size: var(--semantic-font-size-heading-md); }
+.a1-heading-size-lg  { --a1-heading-size: var(--semantic-font-size-heading-lg); }
+.a1-heading-size-xl  { --a1-heading-size: var(--semantic-font-size-heading-xl); }
+.a1-heading-size-xxl { --a1-heading-size: var(--semantic-font-size-heading-xxl); }
+
+/* Display scale — combined selector wins via specificity over the heading sizes above */
+.a1-heading-type-display.a1-heading-size-sm  { --a1-heading-size: var(--semantic-font-size-display-sm); }
+.a1-heading-type-display.a1-heading-size-md  { --a1-heading-size: var(--semantic-font-size-display-md); }
+.a1-heading-type-display.a1-heading-size-lg  { --a1-heading-size: var(--semantic-font-size-display-lg); }
+.a1-heading-type-display.a1-heading-size-xl  { --a1-heading-size: var(--semantic-font-size-display-xl); }
+.a1-heading-type-display.a1-heading-size-xxl { --a1-heading-size: var(--semantic-font-size-display-xxl); }
+
+/* Display-only sizes (no heading equivalent) */
+.a1-heading-size-jumbo   { --a1-heading-size: var(--semantic-font-size-display-jumbo); }
+.a1-heading-size-x-jumbo { --a1-heading-size: var(--semantic-font-size-display-x-jumbo); }
+
+/* ── Color modifiers ──────────────────────────────────────────────────── */
+
+.a1-heading-color-default { --a1-heading-color: var(--semantic-color-text-default); }
+.a1-heading-color-muted   { --a1-heading-color: var(--semantic-color-text-muted); }
+.a1-heading-color-accent  { --a1-heading-color: var(--semantic-color-text-accent); }
+
+/* ── Margin modifiers — em units scale with the heading's own size ────── */
+
+.a1-heading-margin-sm { margin-block-end: 0.25em; }
+.a1-heading-margin-md { margin-block-end: 0.5em; }
+.a1-heading-margin-lg { margin-block-end: 1em; }
+
+/* ─── Paragraph & inline text ────────────────────────────────────────── */
+
+.a1-p {
+  margin: 0;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--semantic-font-weight-body);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* strong / em / abbr carry semantic meaning — keep element selectors */
+strong { font-weight: var(--base-font-weight-semibold); }
+abbr[title] { text-decoration: underline dotted; cursor: help; }
+
+.a1-small {
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-mark {
+  padding-block: var(--component-heading-mark-highlight-padding-block);
+  padding-inline: var(--component-heading-mark-highlight-padding-inline);
+  border-radius: 2px;
+  background: var(--component-heading-mark-highlight-background-color);
+  color: var(--component-heading-mark-highlight-foreground-color);
+}
+
+/* ─── Link ───────────────────────────────────────────────────────────── */
+
+.a1-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--component-link-icon-gap);
+  color: var(--component-link-color);
+  text-decoration-line: underline;
+  text-underline-offset: var(--component-link-underline-offset);
+  transition: color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-link:visited {
+  color: var(--component-link-color);
+}
+
+.a1-link:hover {
+  color: var(--component-link-color-hover);
+}
+
+.a1-link:active {
+  color: var(--component-link-color-pressed);
+}
+
+.a1-link:focus-visible {
+  outline: var(--component-link-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-link-focus-ring-offset);
+  border-radius: var(--component-link-focus-ring-radius);
+}
+
+/* Icon inside a link — 1em keeps it visually matching the surrounding text */
+.a1-link .a1-icon {
+  font-size: 1em;
+  --a1-icon-opsz: 20;
+  flex-shrink: 0;
+}
+
+/* ─── Icon ───────────────────────────────────────────────────────────── */
+/*
+  Usage: <span class="a1-icon" aria-hidden="true">icon_name</span>
+  Icon names are Material Symbols ligature strings, e.g. "add", "close", "check_circle".
+  Use CSS custom properties to control variation axes:
+    --a1-icon-fill   0 (outline) or 1 (filled)
+    --a1-icon-weight font-weight axis (default: base-font-weight-regular)
+    --a1-icon-grade  GRAD axis (default: 0)
+    --a1-icon-opsz   optical size axis (default: base-icon-optical-size = 24)
+*/
+
+.a1-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: inherit;
+  line-height: 1;
+  color: inherit;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    "FILL" var(--a1-icon-fill, 0),
+    "wght" var(--a1-icon-weight, var(--base-font-weight-regular)),
+    "GRAD" var(--a1-icon-grade, 0),
+    "opsz" var(--a1-icon-opsz, var(--base-icon-optical-size));
+}
+
+/* Filled variant */
+.a1-icon-filled {
+  --a1-icon-fill: 1;
+}
+
+/* ─── Code ───────────────────────────────────────────────────────────── */
+
+.a1-code {
+  padding-block: var(--component-inline-padding-block);
+  padding-inline: var(--component-inline-padding-inline);
+  border-radius: var(--component-inline-border-radius);
+  background: var(--semantic-color-surface-panel);
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+}
+
+.a1-pre {
+  margin: 0;
+  padding: var(--base-spacing-20);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+  overflow-x: auto;
+}
+
+/* code inside pre — reset padding, keep font */
+.a1-pre .a1-code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: 1.7;
+}
+
+.a1-kbd {
+  padding-block: var(--component-inline-padding-block);
+  padding-inline: var(--component-inline-kbd-padding-inline);
+  border: 1px solid var(--semantic-color-border-default);
+  border-radius: var(--component-inline-border-radius);
+  background: var(--semantic-color-surface-raised);
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+}
+
+/* ─── Lists ──────────────────────────────────────────────────────────── */
+
+.a1-ul,
+.a1-ol {
+  margin: 0;
+  padding-inline-start: var(--base-spacing-24);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-md);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-ul { list-style: disc; }
+.a1-ol { list-style: decimal; }
+
+.a1-ul li + li,
+.a1-ol li + li {
+  margin-block-start: var(--base-spacing-8);
+}
+
+/* Nested lists */
+.a1-ul .a1-ul,
+.a1-ul .a1-ol,
+.a1-ol .a1-ul,
+.a1-ol .a1-ol {
+  margin-block-start: var(--base-spacing-8);
+}
+
+/* ─── Blockquote ─────────────────────────────────────────────────────── */
+/*
+  Three variants via structural context:
+    .a1-blockquote                        → border (left accent rule)
+    figure > .a1-blockquote               → feature (display pull quote)
+    aside  > .a1-blockquote               → accent (filled background)
+*/
+
+.a1-blockquote {
+  margin: 0;
+}
+
+.a1-blockquote .a1-p {
+  font-size: var(--semantic-font-size-body-lg);
+}
+
+.a1-blockquote cite {
+  display: block;
+  margin-block-start: var(--base-spacing-12);
+  color: var(--semantic-color-text-muted);
+  font-style: normal;
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--component-blockquote-cite-font-weight);
+}
+
+.a1-blockquote cite::before {
+  content: "\2014\00a0";
+}
+
+/* Border variant (default) */
+.a1-blockquote:not(figure > .a1-blockquote):not(aside .a1-blockquote) {
+  padding-block: var(--component-blockquote-padding-block);
+  padding-inline-start: var(--component-blockquote-padding-inline);
+  border-inline-start: var(--component-blockquote-border-width) solid
+    var(--semantic-color-action-background);
+}
+
+/* Feature variant */
+figure > .a1-blockquote {
+  padding-block: var(--component-blockquote-padding-block);
+}
+
+figure > .a1-blockquote::before {
+  content: "\201C";
+  display: block;
+  font-family: var(--component-heading-font-family-heading);
+  font-size: var(--component-blockquote-mark-size);
+  line-height: 0.75;
+  color: var(--semantic-color-action-background);
+  margin-block-end: var(--base-spacing-8);
+}
+
+figure > .a1-blockquote .a1-p {
+  font-size: var(--semantic-font-size-display-sm);
+  font-weight: var(--semantic-font-weight-display);
+  line-height: 1.75em;
+}
+
+figure > .a1-blockquote cite {
+  margin-block-start: var(--base-spacing-20);
+  font-size: var(--semantic-font-size-body-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+figure > .a1-blockquote cite::before {
+  content: none;
+}
+
+/* Accent variant */
+aside > .a1-blockquote {
+  padding: var(--component-blockquote-padding-block)
+    var(--component-blockquote-padding-inline);
+  background: var(--semantic-color-action-background);
+  border-radius: var(--component-blockquote-border-radius);
+}
+
+aside > .a1-blockquote .a1-p {
+  color: var(--semantic-color-text-inverse);
+}
+
+aside > .a1-blockquote cite {
+  color: color-mix(in srgb, var(--semantic-color-text-inverse), transparent 35%);
+}
+
+aside > .a1-blockquote .a1-link {
+  color: inherit;
+}
+
+aside > .a1-blockquote .a1-link:hover {
+  color: var(--semantic-color-text-inverse);
+}
+
+/* ─── Divider ────────────────────────────────────────────────────────── */
+
+.a1-hr {
+  border: 0;
+  border-block-start: 1px solid var(--semantic-color-border-subtle);
+  margin: 0;
+}
+
+/* ─── Figure ─────────────────────────────────────────────────────────── */
+
+.a1-figure {
+  margin: 0;
+}
+
+.a1-figure img {
+  display: block;
+  max-inline-size: 100%;
+  border-radius: var(--component-card-border-radius);
+}
+
+.a1-figure figcaption {
+  margin-block-start: var(--base-spacing-8);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+/* Component demo frame — figure with no image or svg child */
+.a1-figure:not(:has(img)):not(:has(svg)):not(:has(.a1-blockquote)) {
+  padding: var(--base-spacing-24);
+  background: var(--semantic-color-surface-panel);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-card-border-radius);
+}
+
+/* ─── Table ──────────────────────────────────────────────────────────── */
+
+.a1-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-data-table-density-default-font-size);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-table th,
+.a1-table td {
+  padding-block: var(--component-data-table-density-default-cell-padding-block);
+  padding-inline: var(--component-data-table-density-default-cell-padding-inline);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+  text-align: start;
+}
+
+.a1-table th {
+  background: var(--semantic-color-surface-panel);
+  font-weight: var(--component-data-table-header-font-weight);
+}
+
+/* ─── Button ─────────────────────────────────────────────────────────── */
+/*
+  CSS variable architecture: .a1-button reads from --a1-button-* variables
+  with primary values as fallbacks. Type/size/shape modifier classes set
+  those variables, so any combination works without specificity fights.
+
+  Usage:
+    <button class="a1-button">Primary</button>
+    <button class="a1-button a1-button-secondary a1-button-large">…</button>
+    <button class="a1-button a1-button-pill">…</button>
+*/
+
+.a1-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--a1-button-height, var(--component-button-min-height));
+  padding-block: var(--component-button-padding-block);
+  padding-inline: var(--a1-button-padding-inline, var(--base-spacing-20));
+  border-width: var(--a1-button-border-width, 0px);
+  border-style: solid;
+  border-color: var(--a1-button-border, transparent);
+  border-radius: var(--a1-button-border-radius, var(--component-button-border-radius));
+  background: var(--a1-button-background, var(--component-button-primary-background));
+  color: var(--a1-button-foreground, var(--component-button-primary-foreground));
+  font-family: var(--component-button-font-family);
+  font-size: var(--a1-button-font-size, var(--semantic-font-size-body-md));
+  font-weight: var(--a1-button-font-weight, var(--base-font-weight-semibold));
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+.a1-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--a1-button-background-hover, var(--component-button-primary-background-hover));
+  border-color: var(--a1-button-border-hover, transparent);
+  color: var(--a1-button-foreground-hover, var(--component-button-primary-foreground));
+}
+
+.a1-button:active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--a1-button-background-pressed, var(--component-button-primary-background-pressed));
+  border-color: var(--a1-button-border-pressed, transparent);
+  color: var(--a1-button-foreground-pressed, var(--component-button-primary-foreground));
+}
+
+.a1-button:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-button:disabled,
+.a1-button[aria-disabled="true"] {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ── Button types ─────────────────────────────────────────────────────── */
+
+.a1-button-secondary {
+  --a1-button-background: var(--component-button-secondary-background);
+  --a1-button-background-hover: var(--component-button-secondary-background-hover);
+  --a1-button-background-pressed: var(--component-button-secondary-background-pressed);
+  --a1-button-foreground: var(--component-button-secondary-foreground);
+  --a1-button-foreground-hover: var(--component-button-secondary-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-secondary-foreground-pressed);
+  --a1-button-border: var(--component-button-secondary-border);
+  --a1-button-border-hover: var(--component-button-secondary-border-hover);
+  --a1-button-border-pressed: var(--component-button-secondary-border-pressed);
+  --a1-button-border-width: var(--component-button-secondary-border-width, 1px);
+}
+
+.a1-button-tertiary {
+  --a1-button-background: var(--component-button-tertiary-background);
+  --a1-button-background-hover: var(--component-button-tertiary-background-hover);
+  --a1-button-background-pressed: var(--component-button-tertiary-background-pressed);
+  --a1-button-foreground: var(--component-button-tertiary-foreground);
+  --a1-button-foreground-hover: var(--component-button-tertiary-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-tertiary-foreground-pressed);
+  --a1-button-border: var(--component-button-tertiary-border);
+  --a1-button-border-hover: var(--component-button-tertiary-border-hover);
+  --a1-button-border-pressed: var(--component-button-tertiary-border-pressed);
+  --a1-button-border-width: var(--component-button-tertiary-border-width, 0px);
+}
+
+/* ── Button sizes ─────────────────────────────────────────────────────── */
+
+.a1-button-small {
+  --a1-button-height: var(--component-button-small-height);
+  --a1-button-font-size: var(--semantic-font-size-body-sm);
+  --a1-button-font-weight: var(--base-font-weight-medium);
+  --a1-button-border-radius: var(--component-button-small-border-radius);
+  --a1-button-padding-inline: var(--base-spacing-12);
+  --a1-button-icon-size: var(--component-button-small-icon-size);
+  --a1-button-icon-opsz: var(--component-button-small-icon-optical-size);
+}
+
+.a1-button-large {
+  --a1-button-height: var(--component-button-large-height);
+  --a1-button-font-size: var(--semantic-font-size-body-lg);
+  --a1-button-font-weight: var(--base-font-weight-extra-bold);
+  --a1-button-border-radius: var(--base-radius-lg);
+  --a1-button-padding-inline: var(--base-spacing-24);
+  --a1-button-icon-size: var(--component-button-large-icon-size);
+  --a1-button-icon-opsz: var(--component-button-large-icon-optical-size);
+}
+
+/* ── Button shape ─────────────────────────────────────────────────────── */
+
+.a1-button-pill {
+  --a1-button-border-radius: var(--component-button-pill-border-radius);
+}
+
+/* ── Icon inside button ───────────────────────────────────────────────── */
+
+.a1-button .a1-icon {
+  font-size: var(--a1-button-icon-size, var(--component-button-icon-size));
+  --a1-icon-opsz: var(--a1-button-icon-opsz, var(--component-button-icon-optical-size));
+  flex-shrink: 0;
+}
+
+/* ─── Icon button ─────────────────────────────────────────────────────── */
+/*
+  A square button containing only an icon. Uses the same CSS variable
+  architecture as .a1-button for types and hover/focus/disabled states.
+
+  Usage:
+    <button class="a1-icon-button" aria-label="Close">
+      <span class="a1-icon" aria-hidden="true">close</span>
+    </button>
+*/
+
+.a1-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  block-size: var(--component-icon-button-size);
+  inline-size: var(--component-icon-button-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--component-icon-button-border-radius);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  cursor: pointer;
+  transition: background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-icon-button .a1-icon {
+  font-size: var(--component-icon-button-icon-size);
+  --a1-icon-opsz: var(--component-icon-button-icon-optical-size);
+}
+
+.a1-icon-button:hover {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-icon-button:focus-visible {
+  outline: var(--component-icon-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-icon-button-focus-ring-offset);
+}
+
+.a1-icon-button:disabled,
+.a1-icon-button[aria-disabled="true"] {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ─── Form ───────────────────────────────────────────────────────────── */
+
+.a1-form {
+  display: grid;
+  gap: var(--semantic-spacing-gap-md);
+}
+
+/* ─── Form fields ────────────────────────────────────────────────────── */
+/*
+  CSS variable architecture: .a1-label sets --a1-field-* custom properties.
+  .a1-input, .a1-select, .a1-textarea read them, so size modifier classes
+  on the label scale the entire field — label font, input height, padding,
+  border-radius, and font size — from one class.
+*/
+
+.a1-label {
+  display: grid;
+  gap: var(--a1-field-gap, var(--component-field-default-gap));
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-label-size, var(--semantic-font-size-body-sm));
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ── Size modifiers ───────────────────────────────────────────────────── */
+
+.a1-label-compact {
+  --a1-field-gap:              var(--component-field-compact-gap);
+  --a1-field-label-size:       var(--semantic-font-size-body-xs);
+  --a1-field-height:           var(--component-field-compact-height);
+  --a1-field-padding-inline:   var(--component-field-compact-padding-inline);
+  --a1-field-border-radius:    var(--component-field-compact-border-radius);
+  --a1-field-font-size:        var(--semantic-font-size-body-sm);
+  --a1-field-accent-compensation: var(--component-field-accent-compensation-compact);
+}
+
+.a1-label-comfortable {
+  --a1-field-gap:              var(--component-field-comfortable-gap);
+  --a1-field-label-size:       var(--semantic-font-size-body-md);
+  --a1-field-height:           var(--component-field-comfortable-height);
+  --a1-field-padding-inline:   var(--component-field-comfortable-padding-inline);
+  --a1-field-border-radius:    var(--component-field-comfortable-border-radius);
+  --a1-field-font-size:        var(--semantic-font-size-body-md);
+}
+
+/* ── Required indicator ───────────────────────────────────────────────── */
+
+.a1-required {
+  color: var(--semantic-color-status-info-background);
+}
+
+/* Left accent border — auto-applied when field has the required attribute */
+.a1-label:has(.a1-input:required) .a1-input,
+.a1-label:has(.a1-select:required) .a1-select,
+.a1-label:has(.a1-textarea:required) .a1-textarea {
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-info-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+/* ── Status modifiers ─────────────────────────────────────────────────── */
+
+.a1-label-error .a1-input,
+.a1-label-error .a1-select,
+.a1-label-error .a1-textarea {
+  border-width: var(--component-field-error-border-width);
+  border-color: var(--semantic-color-status-error-border);
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-error-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+.a1-label-success .a1-input,
+.a1-label-success .a1-select,
+.a1-label-success .a1-textarea {
+  border-left-width: var(--component-field-required-border-width);
+  border-left-color: var(--semantic-color-status-success-background);
+  padding-inline-start: calc(var(--a1-field-padding-inline, var(--component-field-default-padding-inline)) - var(--a1-field-accent-compensation, var(--component-field-accent-compensation)));
+}
+
+/* ── Status messages ──────────────────────────────────────────────────── */
+
+.a1-message-hint {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-message-error {
+  color: var(--semantic-color-status-error-background);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  font-weight: var(--base-font-weight-semibold);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-message-success {
+  color: var(--semantic-color-status-success-background);
+  font-size: var(--a1-field-message-size, var(--semantic-font-size-body-xs));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ── Checkbox / radio item labels ─────────────────────────────────────── */
+
+.a1-label:has(> .a1-checkbox),
+.a1-label:has(> .a1-radio) {
+  display: flex;
+  align-items: center;
+  gap: var(--component-checkbox-group-gap);
+  padding-block: var(--component-checkbox-group-row-padding-block);
+  padding-inline: var(--component-checkbox-group-row-padding-inline);
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--semantic-font-weight-body);
+  cursor: pointer;
+}
+
+/* Top-align when item has hint text so checkbox sits at the cap-height */
+.a1-label:has(.a1-label-hint) {
+  align-items: flex-start;
+}
+
+.a1-label:has(.a1-label-hint) .a1-checkbox,
+.a1-label:has(.a1-label-hint) .a1-radio {
+  margin-block-start: var(--component-checkbox-group-input-nudge, 4px);
+}
+
+/* Wrap label text + hint in a column */
+.a1-label-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-content-gap, var(--base-spacing-2));
+}
+
+.a1-label-hint {
+  display: block;
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-input,
+.a1-select,
+.a1-textarea {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--a1-field-height, var(--component-field-default-height));
+  padding-inline: var(--a1-field-padding-inline, var(--component-field-default-padding-inline));
+  border: var(--component-field-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--a1-field-border-radius, var(--component-field-default-border-radius));
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: inherit;
+  font-size: var(--a1-field-font-size, var(--semantic-font-size-body-md));
+}
+
+.a1-textarea {
+  min-block-size: calc(var(--a1-field-height, var(--component-field-default-height)) * 2.5);
+  padding-block: var(--component-field-textarea-padding-block);
+}
+
+.a1-input:hover,
+.a1-select:hover,
+.a1-textarea:hover {
+  border-color: var(--component-field-hover-border-color);
+  background: var(--component-field-hover-background);
+}
+
+.a1-input:focus-visible,
+.a1-select:focus-visible,
+.a1-textarea:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+.a1-input:disabled,
+.a1-select:disabled,
+.a1-textarea:disabled {
+  opacity: var(--component-checkbox-group-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* Checkboxes and radios */
+.a1-checkbox,
+.a1-radio {
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--semantic-color-action-background);
+  cursor: pointer;
+}
+
+.a1-checkbox {
+  inline-size: var(--component-checkbox-group-box-size);
+  block-size: var(--component-checkbox-group-box-size);
+}
+
+.a1-radio {
+  inline-size: var(--component-radio-group-control-size);
+  block-size: var(--component-radio-group-control-size);
+}
+
+.a1-checkbox:focus-visible,
+.a1-radio:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+.a1-checkbox:disabled,
+.a1-radio:disabled {
+  cursor: not-allowed;
+}
+
+.a1-label:has(.a1-checkbox:disabled),
+.a1-label:has(.a1-radio:disabled) {
+  opacity: var(--component-checkbox-group-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ─── Fieldset ────────────────────────────────────────────────────────── */
+
+/* Generic fieldset — bordered card */
+.a1-fieldset {
+  margin: 0;
+  padding: var(--base-spacing-16);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-card-border-radius);
+}
+
+/* Checkbox/radio group — borderless flex column, matches React component */
+.a1-fieldset:has(.a1-checkbox),
+.a1-fieldset:has(.a1-radio) {
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-group-gap);
+}
+
+.a1-fieldset legend {
+  padding-inline: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* Restore legend float inside border for generic (non-checkbox/radio) fieldsets */
+.a1-fieldset:not(:has(.a1-checkbox)):not(:has(.a1-radio)) legend {
+  padding-inline: var(--base-spacing-4);
+}
+
+/* ── Group hint & messages ─────────────────────────────────────────────── */
+
+.a1-fieldset-hint,
+.a1-fieldset-message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-fieldset-hint { color: var(--semantic-color-text-muted); }
+
+.a1-fieldset-message-error {
+  color: var(--semantic-color-status-error-background);
+  font-weight: var(--component-checkbox-group-error-message-font-weight);
+}
+
+.a1-fieldset-message-success {
+  color: var(--semantic-color-status-success-background);
+}
+
+/* ── Items wrapper ─────────────────────────────────────────────────────── */
+
+.a1-fieldset-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-checkbox-group-item-gap);
+  margin-block-start: var(--component-checkbox-group-items-top-gap);
+}
+
+/* No extra top margin when hint already separates legend and items */
+.a1-fieldset-hint + .a1-fieldset-items {
+  margin-block-start: 0;
+}
+
+/* ── Error state ───────────────────────────────────────────────────────── */
+
+.a1-fieldset-error .a1-fieldset-items {
+  border-inline-start: var(--component-checkbox-group-error-accent-width) solid
+    var(--semantic-color-status-error-background);
+  padding-inline-start: var(--base-spacing-12);
+}
+
+/* ── Success state ─────────────────────────────────────────────────────── */
+
+.a1-fieldset-success .a1-fieldset-items {
+  border-inline-start: var(--component-checkbox-group-error-accent-width) solid
+    var(--semantic-color-status-success-background);
+  padding-inline-start: var(--base-spacing-12);
+}
+
+/* ─── Disclosure ─────────────────────────────────────────────────────── */
+
+.a1-details {
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-accordion-border-radius);
+  background: var(--semantic-color-surface-panel);
+  overflow: hidden;
+}
+
+.a1-details + .a1-details {
+  margin-block-start: var(--semantic-spacing-gap-xs);
+}
+
+.a1-details > summary {
+  min-block-size: var(--component-accordion-trigger-height-md);
+  padding-inline: var(--component-accordion-padding-inline-md);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: var(--component-paragraph-font-family);
+  font-weight: var(--base-font-weight-semibold);
+  color: var(--semantic-color-text-default);
+  list-style: none;
+  user-select: none;
+}
+
+.a1-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.a1-details > summary::after {
+  content: '+';
+  margin-inline-start: auto;
+  font-size: var(--semantic-font-size-body-lg);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  transition: transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-details[open] > summary::after {
+  transform: rotate(45deg);
+}
+
+.a1-details > :not(summary) {
+  padding: var(--component-accordion-padding-inline-lg);
+  border-block-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: var(--semantic-motion-duration-instant) !important;
+  }
+}

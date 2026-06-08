@@ -25,7 +25,14 @@ function getFocusableElements(container) {
 
 /* ── Menu ────────────────────────────────────────────────────────────────── */
 
-export function Menu({ open, onClose, anchorRef, "aria-label": ariaLabel, children }) {
+export function Menu({
+  open,
+  onClose,
+  anchorRef,
+  "aria-label": ariaLabel,
+  className = "",
+  children,
+}) {
   const ref = useRef(null);
   const fallbackAnchorRef = useRef(null);
   const modalRef = useRef(false);
@@ -198,7 +205,12 @@ export function Menu({ open, onClose, anchorRef, "aria-label": ariaLabel, childr
   }, [anchorRef, onClose, open]);
 
   return (
-    <dialog ref={ref} className="a1-menu" aria-label={ariaLabel} tabIndex={-1}>
+    <dialog
+      ref={ref}
+      className={["a1-menu", className].filter(Boolean).join(" ")}
+      aria-label={ariaLabel}
+      tabIndex={-1}
+    >
       <IconButton
         icon="close"
         label="Close menu"
@@ -229,6 +241,7 @@ export function MenuItem({
   icon,
   shortcut,
   variant = "default",
+  active = false,
   disabled = false,
   href,
   onClick,
@@ -241,6 +254,7 @@ export function MenuItem({
   const classes = [
     "a1-menu-item",
     resolvedVariant !== "default" && `a1-menu-item--${resolvedVariant}`,
+    active && "a1-menu-item--active",
     className,
   ].filter(Boolean).join(" ");
 
@@ -251,6 +265,7 @@ export function MenuItem({
       type={!href ? "button" : undefined}
       disabled={!href ? disabled : undefined}
       aria-disabled={href && disabled ? true : undefined}
+      aria-current={active ? "page" : undefined}
       tabIndex={href && disabled ? -1 : undefined}
       onClick={disabled ? undefined : onClick}
       {...props}

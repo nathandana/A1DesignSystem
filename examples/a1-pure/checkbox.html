@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkbox — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html" aria-current="page">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html" aria-current="page">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Checkbox</h1>
+        <p class="a1-p">Checkboxes and radios use <code class="a1-code">a1-checkbox</code> and <code class="a1-code">a1-radio</code> on the input, and <code class="a1-code">a1-label</code> on the wrapping element. Groups use <code class="a1-code">&lt;fieldset class="a1-fieldset"&gt;</code> — no border, legend sits directly above the items. Wrap items in <code class="a1-code">.a1-fieldset-items</code> to enable hint text, error, and success states.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Single checkbox</h2>
+        <p class="a1-p">All four states — unchecked, checked, disabled unchecked, disabled checked. The <code class="a1-code">a1-label</code> switches to flex layout automatically when it contains a checkbox or radio.</p>
+        <figure class="a1-figure">
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Unchecked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Checked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" disabled> Disabled unchecked</label>
+          <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked disabled> Disabled checked</label>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; Unchecked&lt;/label&gt;
+&lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" checked&gt; Checked&lt;/label&gt;
+&lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" disabled&gt; Disabled unchecked&lt;/label&gt;
+&lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" checked disabled&gt; Disabled checked&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Checkbox group</h2>
+        <p class="a1-p">Use <code class="a1-code">&lt;fieldset class="a1-fieldset"&gt;</code> with a <code class="a1-code">&lt;legend&gt;</code> and <code class="a1-code">&lt;div class="a1-fieldset-items"&gt;</code>. The fieldset is borderless — the legend sits directly above the items.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Notification preferences</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Email notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Push notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> SMS alerts</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Weekly digest</label>
+            </div>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset"&gt;
+  &lt;legend&gt;Notification preferences&lt;/legend&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" checked&gt; Email notifications&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; Push notifications&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; SMS alerts&lt;/label&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">With group hint text</h2>
+        <p class="a1-p">Place a <code class="a1-code">&lt;p class="a1-fieldset-hint"&gt;</code> between the legend and the items wrapper. The items wrapper removes its top margin automatically when hint text is present.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Notification preferences</legend>
+            <p class="a1-fieldset-hint">Select all that apply. You can change these at any time.</p>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Email notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Push notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> SMS alerts</label>
+            </div>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset"&gt;
+  &lt;legend&gt;Notification preferences&lt;/legend&gt;
+  &lt;p class="a1-fieldset-hint"&gt;Select all that apply.&lt;/p&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" checked&gt; Email notifications&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; Push notifications&lt;/label&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">With item hint text</h2>
+        <p class="a1-p">Wrap label text and hint in <code class="a1-code">&lt;span class="a1-label-content"&gt;</code>. The hint uses <code class="a1-code">&lt;span class="a1-label-hint"&gt;</code>. The checkbox aligns to the label cap-height automatically.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Notification preferences</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label">
+                <input class="a1-checkbox" type="checkbox" checked>
+                <span class="a1-label-content">
+                  Email notifications
+                  <span class="a1-label-hint">Daily summary sent to your inbox at 9am</span>
+                </span>
+              </label>
+              <label class="a1-label">
+                <input class="a1-checkbox" type="checkbox">
+                <span class="a1-label-content">
+                  Push notifications
+                  <span class="a1-label-hint">Real-time alerts on your device</span>
+                </span>
+              </label>
+              <label class="a1-label">
+                <input class="a1-checkbox" type="checkbox" disabled>
+                <span class="a1-label-content">
+                  SMS alerts
+                  <span class="a1-label-hint">Not available on your current plan</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;label class="a1-label"&gt;
+  &lt;input class="a1-checkbox" type="checkbox"&gt;
+  &lt;span class="a1-label-content"&gt;
+    Label text
+    &lt;span class="a1-label-hint"&gt;Hint text below the label&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/label&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Error state</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-fieldset-error</code> to the fieldset. The items wrapper gets a red left accent border. The error message uses <code class="a1-code">a1-fieldset-message a1-fieldset-message-error</code>.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset a1-fieldset-error">
+            <legend>Notification preferences</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Email notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Push notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> SMS alerts</label>
+            </div>
+            <p class="a1-fieldset-message a1-fieldset-message-error">Please select at least one notification type.</p>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset a1-fieldset-error"&gt;
+  &lt;legend&gt;Notification preferences&lt;/legend&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; Email notifications&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox"&gt; Push notifications&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;p class="a1-fieldset-message a1-fieldset-message-error"&gt;Please select at least one notification type.&lt;/p&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Success state</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-fieldset-success</code> to the fieldset. The items wrapper gets a green left accent border and the success message is styled accordingly.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset a1-fieldset-success">
+            <legend>Notification preferences</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Email notifications</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox" checked> Weekly digest</label>
+              <label class="a1-label"><input class="a1-checkbox" type="checkbox"> Push notifications</label>
+            </div>
+            <p class="a1-fieldset-message a1-fieldset-message-success">Preferences saved successfully.</p>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset a1-fieldset-success"&gt;
+  &lt;legend&gt;Notification preferences&lt;/legend&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-checkbox" type="checkbox" checked&gt; Email notifications&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;p class="a1-fieldset-message a1-fieldset-message-success"&gt;Preferences saved successfully.&lt;/p&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Radio group</h2>
+        <p class="a1-p">Radio inputs use <code class="a1-code">class="a1-radio"</code> with the identical fieldset pattern. Only one option can be selected at a time within a group (matched by <code class="a1-code">name</code> attribute).</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset">
+            <legend>Delivery method</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery" checked> Standard (3–5 days)</label>
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery"> Express (1–2 days)</label>
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery"> Overnight</label>
+            </div>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset"&gt;
+  &lt;legend&gt;Delivery method&lt;/legend&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-radio" type="radio" name="delivery" checked&gt; Standard (3–5 days)&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-radio" type="radio" name="delivery"&gt; Express (1–2 days)&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-radio" type="radio" name="delivery"&gt; Overnight&lt;/label&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Radio group — error state</h2>
+        <p class="a1-p">Same pattern as the checkbox error state — <code class="a1-code">a1-fieldset-error</code> on the fieldset and an error message after the items wrapper.</p>
+        <figure class="a1-figure">
+          <fieldset class="a1-fieldset a1-fieldset-error">
+            <legend>Delivery method</legend>
+            <div class="a1-fieldset-items">
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery-err"> Standard (3–5 days)</label>
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery-err"> Express (1–2 days)</label>
+              <label class="a1-label"><input class="a1-radio" type="radio" name="delivery-err"> Overnight</label>
+            </div>
+            <p class="a1-fieldset-message a1-fieldset-message-error">Please select a delivery method.</p>
+          </fieldset>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;fieldset class="a1-fieldset a1-fieldset-error"&gt;
+  &lt;legend&gt;Delivery method&lt;/legend&gt;
+  &lt;div class="a1-fieldset-items"&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-radio" type="radio" name="delivery"&gt; Standard&lt;/label&gt;
+    &lt;label class="a1-label"&gt;&lt;input class="a1-radio" type="radio" name="delivery"&gt; Express&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;p class="a1-fieldset-message a1-fieldset-message-error"&gt;Please select a delivery method.&lt;/p&gt;
+&lt;/fieldset&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Indeterminate state</h2>
+        <p class="a1-p">The indeterminate state requires JavaScript — it cannot be set via an HTML attribute alone.</p>
+        <pre class="a1-pre"><code class="a1-code">const checkbox = document.querySelector('.a1-checkbox');
+checkbox.indeterminate = true;</code></pre>
+        <p class="a1-p">Commonly used for "select all" controls where only some children are checked. The browser renders the intermediate visual state once the property is set.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Accessibility notes</h2>
+        <ul class="a1-ul">
+          <li>Always wrap each input inside its <code class="a1-code">&lt;label&gt;</code> — the simplest way to associate them without needing <code class="a1-code">for</code>/<code class="a1-code">id</code>.</li>
+          <li>Always use <code class="a1-code">&lt;fieldset&gt;</code> and <code class="a1-code">&lt;legend&gt;</code> for groups so screen readers announce the group name alongside each option.</li>
+          <li>If supplemental help text lives outside the label, link it with <code class="a1-code">aria-describedby</code>.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>

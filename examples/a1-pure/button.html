@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Button — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html" aria-current="page">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html" aria-current="page">Button</a>
+          <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Button</h1>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-button"</code> to a <code class="a1-code">&lt;button&gt;</code> or <code class="a1-code">&lt;a&gt;</code> element. Combine with type, size, and shape modifier classes. All interactive states are handled by CSS — no JavaScript required.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Types</h2>
+        <p class="a1-p">Three visual types cover the full hierarchy of actions. Apply <code class="a1-code">a1-button-secondary</code> or <code class="a1-code">a1-button-tertiary</code> alongside <code class="a1-code">a1-button</code>. The default (no type class) is primary.</p>
+        <figure class="a1-figure">
+          <button class="a1-button">Primary</button>
+          <button class="a1-button a1-button-secondary">Secondary</button>
+          <button class="a1-button a1-button-tertiary">Tertiary</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Primary (default) --&gt;
+&lt;button class="a1-button"&gt;Primary&lt;/button&gt;
+
+&lt;!-- Secondary --&gt;
+&lt;button class="a1-button a1-button-secondary"&gt;Secondary&lt;/button&gt;
+
+&lt;!-- Tertiary --&gt;
+&lt;button class="a1-button a1-button-tertiary"&gt;Tertiary&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Sizes</h2>
+        <p class="a1-p">Three sizes scale the height, font size, and padding. Add <code class="a1-code">a1-button-small</code> or <code class="a1-code">a1-button-large</code> to any type. The default (no size class) is the medium size.</p>
+        <figure class="a1-figure">
+          <button class="a1-button a1-button-small">Small</button>
+          <button class="a1-button">Medium (default)</button>
+          <button class="a1-button a1-button-large">Large</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-button a1-button-small"&gt;Small&lt;/button&gt;
+&lt;button class="a1-button"&gt;Medium (default)&lt;/button&gt;
+&lt;button class="a1-button a1-button-large"&gt;Large&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Shape</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-button-pill</code> to any type and size to apply a fully rounded border-radius. Works as a modifier on top of any combination.</p>
+        <figure class="a1-figure">
+          <button class="a1-button a1-button-pill">Pill primary</button>
+          <button class="a1-button a1-button-secondary a1-button-pill">Pill secondary</button>
+          <button class="a1-button a1-button-tertiary a1-button-pill">Pill tertiary</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-button a1-button-pill"&gt;Pill primary&lt;/button&gt;
+&lt;button class="a1-button a1-button-secondary a1-button-pill"&gt;Pill secondary&lt;/button&gt;
+&lt;button class="a1-button a1-button-tertiary a1-button-pill"&gt;Pill tertiary&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Combining modifiers</h2>
+        <p class="a1-p">Type, size, and shape modifiers compose freely. Any combination is valid.</p>
+        <figure class="a1-figure">
+          <button class="a1-button a1-button-secondary a1-button-small">Secondary small</button>
+          <button class="a1-button a1-button-secondary a1-button-large">Secondary large</button>
+          <button class="a1-button a1-button-tertiary a1-button-small a1-button-pill">Tertiary small pill</button>
+          <button class="a1-button a1-button-large a1-button-pill">Primary large pill</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-button a1-button-secondary a1-button-small"&gt;Secondary small&lt;/button&gt;
+&lt;button class="a1-button a1-button-secondary a1-button-large"&gt;Secondary large&lt;/button&gt;
+&lt;button class="a1-button a1-button-tertiary a1-button-small a1-button-pill"&gt;Tertiary small pill&lt;/button&gt;
+&lt;button class="a1-button a1-button-large a1-button-pill"&gt;Primary large pill&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Disabled</h2>
+        <p class="a1-p">Add the <code class="a1-code">disabled</code> attribute to render any button in its disabled state — reduced opacity, <code class="a1-code">cursor: not-allowed</code>, no interaction. Works with all types and sizes.</p>
+        <figure class="a1-figure">
+          <button class="a1-button" disabled>Primary disabled</button>
+          <button class="a1-button a1-button-secondary" disabled>Secondary disabled</button>
+          <button class="a1-button a1-button-tertiary" disabled>Tertiary disabled</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-button" disabled&gt;Primary disabled&lt;/button&gt;
+&lt;button class="a1-button a1-button-secondary" disabled&gt;Secondary disabled&lt;/button&gt;
+&lt;button class="a1-button a1-button-tertiary" disabled&gt;Tertiary disabled&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Aria disabled</h2>
+        <p class="a1-p">Use <code class="a1-code">aria-disabled="true"</code> when the button must remain focusable (e.g. to show a tooltip explaining why it is disabled). The visual state is identical to the <code class="a1-code">disabled</code> attribute but the element stays in the tab order.</p>
+        <figure class="a1-figure">
+          <button class="a1-button" aria-disabled="true">Aria disabled</button>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;button class="a1-button" aria-disabled="true"&gt;Aria disabled&lt;/button&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">As a link</h2>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-button"</code> to an <code class="a1-code">&lt;a&gt;</code> element to render it with button styling. All type, size, and shape modifiers work identically. Without the button class, use <code class="a1-code">class="a1-link"</code> for standard inline link styling.</p>
+        <figure class="a1-figure">
+          <a class="a1-button" href="#">Button link — primary</a>
+          <a class="a1-button a1-button-secondary" href="#">Button link — secondary</a>
+          <a class="a1-link" href="#">Inline link</a>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;a class="a1-button" href="#"&gt;Button link — primary&lt;/a&gt;
+&lt;a class="a1-button a1-button-secondary" href="#"&gt;Button link — secondary&lt;/a&gt;
+
+&lt;!-- Standard inline link --&gt;
+&lt;a class="a1-link" href="#"&gt;Inline link&lt;/a&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">In a form</h2>
+        <p class="a1-p">A <code class="a1-code">&lt;button class="a1-button" type="submit"&gt;</code> inside a <code class="a1-code">&lt;form&gt;</code> submits the form. All button modifiers apply normally.</p>
+        <figure class="a1-figure">
+          <form>
+            <label class="a1-label">
+              Email address
+              <input class="a1-input" type="email" placeholder="you@example.com">
+            </label>
+            <button class="a1-button" type="submit">Subscribe</button>
+          </form>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;form&gt;
+  &lt;label class="a1-label"&gt;
+    Email address
+    &lt;input class="a1-input" type="email" placeholder="you@example.com"&gt;
+  &lt;/label&gt;
+  &lt;button class="a1-button" type="submit"&gt;Subscribe&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Interactive states</h2>
+        <p class="a1-p">All states are driven entirely by CSS pseudo-classes — no JavaScript required.</p>
+        <ul class="a1-ul">
+          <li><strong>Default</strong> — resting appearance; background, border, and foreground from the active type's tokens</li>
+          <li><strong>Hover</strong> — <code class="a1-code">:hover</code> — slightly shifted background or border color</li>
+          <li><strong>Active / pressed</strong> — <code class="a1-code">:active</code> — darkest state while the button is held</li>
+          <li><strong>Focus-visible</strong> — <code class="a1-code">:focus-visible</code> — visible focus ring using <code class="a1-code">--component-button-focus-ring</code>, only shown for keyboard navigation</li>
+          <li><strong>Disabled</strong> — <code class="a1-code">:disabled</code> or <code class="a1-code">aria-disabled="true"</code> — reduced opacity, <code class="a1-code">cursor: not-allowed</code>; hover and active states suppressed</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>

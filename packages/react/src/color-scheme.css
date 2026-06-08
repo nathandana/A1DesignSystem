@@ -1,6 +1,14 @@
 /* Base design system color scheme switching — not a theme.
    Edit this file directly; do not generate from system/themes/. */
 
+/* ─── Global box model reset ────────────────────────────────────────────────
+   Declared here so the design system is self-contained: border and padding are
+   always included within declared sizes regardless of any host-app reset. */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* ─── Form field interaction tokens — light mode defaults ────────────────────
    Single source of truth for hover, active, and read-only states across all
    form field components. Overridden in every dark-mode context below.
@@ -16,10 +24,89 @@
   --a1-field-read-only-text:         var(--base-color-info-1000);
 }
 
+/* ─── .a1-inverse: dark island on a light page ───────────────────────────────
+   Defined before the system dark-mode media query so the media query can
+   override it (same specificity, later source order wins).
+   On a light page: .a1-inverse = dark.
+   On a dark page (system or .a1-theme-dark): .a1-inverse = light (see below). */
+
+.a1-inverse {
+  color-scheme: dark;
+  --semantic-color-surface-page:   var(--base-color-neutral-900);
+  --semantic-color-surface-panel:  var(--base-color-neutral-800);
+  --semantic-color-surface-raised: var(--base-color-neutral-700);
+  --semantic-color-text-default: var(--base-color-neutral-50);
+  --semantic-color-text-muted:   var(--base-color-neutral-300);
+  --semantic-color-text-inverse: var(--base-color-neutral-900);
+  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+  --semantic-color-text-accent:  var(--base-color-accent-300);
+  --semantic-color-border-subtle:  var(--base-color-neutral-700);
+  --semantic-color-border-default: var(--base-color-neutral-600);
+  --semantic-color-border-strong:  var(--base-color-neutral-400);
+  --semantic-color-action-background:         var(--base-color-accent-400);
+  --semantic-color-action-background-hover:   var(--base-color-accent-300);
+  --semantic-color-action-background-pressed: var(--base-color-accent-500);
+  --semantic-color-action-foreground:         var(--base-color-accent-1000);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-surface:            var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-500);
+  --semantic-color-status-info-background: var(--base-color-info-400);
+  --semantic-color-status-info-surface:    var(--base-color-info-900);
+  --semantic-color-status-info-border:     var(--base-color-info-500);
+  --semantic-color-status-info-foreground: var(--base-color-info-1000);
+  --semantic-color-status-error-background: var(--base-color-error-400);
+  --semantic-color-status-error-surface:    var(--base-color-error-900);
+  --semantic-color-status-error-border:     var(--base-color-error-500);
+  --semantic-color-status-error-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-warn-background: var(--base-color-warn-400);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-900);
+  --semantic-color-status-warn-border:     var(--base-color-warn-500);
+  --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-warn-text:  var(--base-color-warn-300);
+  --semantic-color-status-error-text: var(--base-color-error-300);
+  --semantic-color-status-success-background: var(--base-color-success-400);
+  --semantic-color-status-success-surface:    var(--base-color-success-900);
+  --semantic-color-status-success-border:     var(--base-color-success-500);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --component-scrim-color: var(--component-scrim-color-dark);
+  --component-button-primary-background:         var(--base-color-accent-200);
+  --component-button-primary-background-hover:   var(--base-color-accent-100);
+  --component-button-primary-background-pressed: var(--base-color-accent-50);
+  --component-button-primary-foreground:         var(--base-color-accent-900);
+  --component-button-primary-foreground-hover:   var(--base-color-accent-800);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-700);
+  --component-button-primary-border:             var(--base-color-accent-200);
+  --component-button-secondary-background:         var(--base-color-accent-900);
+  --component-button-secondary-background-hover:   var(--base-color-accent-800);
+  --component-button-secondary-background-pressed: var(--base-color-accent-700);
+  --component-button-secondary-foreground:         var(--base-color-accent-200);
+  --component-button-secondary-foreground-hover:   var(--base-color-accent-100);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-secondary-border:             var(--base-color-accent-200);
+  --component-button-secondary-border-hover:       var(--base-color-accent-100);
+  --component-button-secondary-border-pressed:     var(--base-color-accent-50);
+  --component-button-tertiary-background:         var(--base-color-accent-900);
+  --component-button-tertiary-background-hover:   var(--base-color-accent-800);
+  --component-button-tertiary-background-pressed: var(--base-color-accent-700);
+  --component-button-tertiary-foreground:         var(--base-color-accent-200);
+  --component-button-tertiary-foreground-hover:   var(--base-color-accent-100);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-tertiary-border:             var(--base-color-accent-900);
+  --component-button-tertiary-border-hover:       var(--base-color-accent-800);
+  --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+  --a1-field-hover-background:       var(--base-color-neutral-800);
+  --a1-field-hover-border-color:     var(--base-color-neutral-300);
+  --a1-field-active-background:      var(--base-color-neutral-700);
+  --a1-field-active-border-color:    var(--base-color-neutral-200);
+  --a1-field-read-only-background:   var(--base-color-info-800);
+  --a1-field-read-only-border-color: var(--base-color-info-600);
+  --a1-field-read-only-text:         var(--base-color-info-50);
+}
+
 /* ─── System dark mode (OS-level preference) ─────────────────────────────────
    Activates when the OS prefers dark and no explicit class overrides it.
-   Explicit .a1-theme-dark and .a1-theme-light classes are defined below with
-   higher source order, so they always beat this media query. */
+   .a1-inverse restore comes after the standalone .a1-inverse rule above,
+   so it wins and correctly flips the island back to light in dark mode. */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -28,8 +115,10 @@
     --semantic-color-surface-panel:  var(--base-color-neutral-800);
     --semantic-color-surface-raised: var(--base-color-neutral-700);
     --semantic-color-text-default: var(--base-color-neutral-50);
-    --semantic-color-text-muted:   var(--base-color-neutral-400);
+    --semantic-color-text-muted:   var(--base-color-neutral-300);
     --semantic-color-text-inverse: var(--base-color-neutral-900);
+    --semantic-color-surface-inverse: var(--base-color-neutral-0);
+    --semantic-color-text-accent:  var(--base-color-accent-300);
     --semantic-color-border-subtle:  var(--base-color-neutral-700);
     --semantic-color-border-default: var(--base-color-neutral-600);
     --semantic-color-border-strong:  var(--base-color-neutral-400);
@@ -52,6 +141,8 @@
     --semantic-color-status-warn-surface:    var(--base-color-warn-900);
     --semantic-color-status-warn-border:     var(--base-color-warn-500);
     --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+    --semantic-color-status-warn-text:  var(--base-color-warn-300);
+    --semantic-color-status-error-text: var(--base-color-error-300);
     --semantic-color-status-success-background: var(--base-color-success-400);
     --semantic-color-status-success-surface:    var(--base-color-success-900);
     --semantic-color-status-success-border:     var(--base-color-success-500);
@@ -100,9 +191,61 @@
     --semantic-color-text-default: var(--base-color-neutral-900);
     --semantic-color-text-muted:   var(--base-color-neutral-600);
     --semantic-color-text-inverse: var(--base-color-neutral-0);
+    --semantic-color-text-accent:  var(--base-color-accent-500);
     --semantic-color-border-subtle:  var(--base-color-neutral-200);
     --semantic-color-border-default: var(--base-color-neutral-300);
     --semantic-color-border-strong:  var(--base-color-neutral-500);
+    --semantic-color-action-background:         var(--base-color-accent-500);
+    --semantic-color-action-background-hover:   var(--base-color-accent-600);
+    --semantic-color-action-background-pressed: var(--base-color-accent-800);
+    --semantic-color-action-foreground:         var(--base-color-accent-100);
+    --semantic-color-action-foreground-pressed: var(--base-color-accent-300);
+    --semantic-color-action-surface:            var(--base-color-accent-50);
+    --semantic-color-action-border:             var(--base-color-accent-300);
+    --semantic-color-status-info-background: var(--base-color-info-500);
+    --semantic-color-status-info-surface:    var(--base-color-info-50);
+    --semantic-color-status-info-border:     var(--base-color-info-300);
+    --semantic-color-status-info-foreground: var(--base-color-info-0);
+    --semantic-color-status-error-background: var(--base-color-error-500);
+    --semantic-color-status-error-surface:    var(--base-color-error-50);
+    --semantic-color-status-error-border:     var(--base-color-error-300);
+    --semantic-color-status-error-foreground: var(--base-color-error-0);
+    --semantic-color-status-warn-background: var(--base-color-warn-500);
+    --semantic-color-status-warn-surface:    var(--base-color-warn-50);
+    --semantic-color-status-warn-border:     var(--base-color-warn-300);
+    --semantic-color-status-warn-foreground: var(--base-color-warn-0);
+    --semantic-color-status-warn-text:  var(--base-color-warn-600);
+    --semantic-color-status-error-text: var(--base-color-error-600);
+    --semantic-color-status-success-background: var(--base-color-success-600);
+    --semantic-color-status-success-surface:    var(--base-color-success-50);
+    --semantic-color-status-success-border:     var(--base-color-success-300);
+    --semantic-color-status-success-foreground: var(--base-color-success-0);
+    --component-scrim-color: rgba(15, 0, 42, 0.6);
+    --component-button-primary-background:         var(--base-color-accent-500);
+    --component-button-primary-background-hover:   var(--base-color-accent-600);
+    --component-button-primary-background-pressed: var(--base-color-accent-800);
+    --component-button-primary-foreground:         var(--base-color-accent-0);
+    --component-button-primary-foreground-hover:   var(--base-color-accent-50);
+    --component-button-primary-foreground-pressed: var(--base-color-accent-100);
+    --component-button-primary-border:             var(--base-color-accent-500);
+    --component-button-secondary-background:         var(--base-color-accent-0);
+    --component-button-secondary-background-hover:   var(--base-color-accent-50);
+    --component-button-secondary-background-pressed: var(--base-color-accent-100);
+    --component-button-secondary-foreground:         var(--base-color-accent-600);
+    --component-button-secondary-foreground-hover:   var(--base-color-accent-700);
+    --component-button-secondary-foreground-pressed: var(--base-color-accent-800);
+    --component-button-secondary-border:             var(--base-color-accent-500);
+    --component-button-secondary-border-hover:       var(--base-color-accent-700);
+    --component-button-secondary-border-pressed:     var(--base-color-accent-800);
+    --component-button-tertiary-background:         var(--base-color-accent-0);
+    --component-button-tertiary-background-hover:   var(--base-color-accent-50);
+    --component-button-tertiary-background-pressed: var(--base-color-accent-100);
+    --component-button-tertiary-foreground:         var(--base-color-accent-600);
+    --component-button-tertiary-foreground-hover:   var(--base-color-accent-700);
+    --component-button-tertiary-foreground-pressed: var(--base-color-accent-800);
+    --component-button-tertiary-border:             var(--base-color-accent-0);
+    --component-button-tertiary-border-hover:       var(--base-color-accent-50);
+    --component-button-tertiary-border-pressed:     var(--base-color-accent-100);
     --a1-field-hover-background:       var(--base-color-neutral-50);
     --a1-field-hover-border-color:     var(--base-color-neutral-600);
     --a1-field-active-background:      var(--base-color-neutral-100);
@@ -115,17 +258,18 @@
 
 /* ─── Dark ───────────────────────────────────────────────────────────────────
    Apply .a1-theme-dark to <html> for global dark mode.
-   .a1-inverse on any container also activates dark colors.
    Placed after the media query so explicit class always wins regardless of OS. */
 
-.a1-theme-dark, .a1-inverse {
+html.a1-theme-dark {
   color-scheme: dark;
   --semantic-color-surface-page:   var(--base-color-neutral-900);
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
-  --semantic-color-text-muted:   var(--base-color-neutral-400);
+  --semantic-color-text-muted:   var(--base-color-neutral-300);
   --semantic-color-text-inverse: var(--base-color-neutral-900);
+  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+  --semantic-color-text-accent:  var(--base-color-accent-300);
   --semantic-color-border-subtle:  var(--base-color-neutral-700);
   --semantic-color-border-default: var(--base-color-neutral-600);
   --semantic-color-border-strong:  var(--base-color-neutral-400);
@@ -148,6 +292,8 @@
   --semantic-color-status-warn-surface:    var(--base-color-warn-900);
   --semantic-color-status-warn-border:     var(--base-color-warn-500);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-warn-text:  var(--base-color-warn-300);
+  --semantic-color-status-error-text: var(--base-color-error-300);
   --semantic-color-status-success-background: var(--base-color-success-400);
   --semantic-color-status-success-surface:    var(--base-color-success-900);
   --semantic-color-status-success-border:     var(--base-color-success-500);
@@ -188,92 +334,8 @@
 }
 
 /* Light restore inside a dark context (.a1-inverse or .a1-theme-light nested under .a1-theme-dark) */
-.a1-theme-dark .a1-inverse,
-.a1-theme-dark .a1-theme-light {
-  color-scheme: light;
-  --semantic-color-surface-page:   var(--base-color-neutral-0);
-  --semantic-color-surface-panel:  var(--base-color-neutral-50);
-  --semantic-color-surface-raised: var(--base-color-neutral-100);
-  --semantic-color-text-default: var(--base-color-neutral-900);
-  --semantic-color-text-muted:   var(--base-color-neutral-600);
-  --semantic-color-text-inverse: var(--base-color-neutral-0);
-  --semantic-color-border-subtle:  var(--base-color-neutral-200);
-  --semantic-color-border-default: var(--base-color-neutral-300);
-  --semantic-color-border-strong:  var(--base-color-neutral-500);
-  --semantic-color-action-background:         var(--base-color-accent-500);
-  --semantic-color-action-background-hover:   var(--base-color-accent-600);
-  --semantic-color-action-background-pressed: var(--base-color-accent-800);
-  --semantic-color-action-foreground:         var(--base-color-accent-100);
-  --semantic-color-action-foreground-pressed: var(--base-color-accent-300);
-  --semantic-color-action-surface:            var(--base-color-accent-50);
-  --semantic-color-action-border:             var(--base-color-accent-300);
-  --semantic-color-status-info-background: var(--base-color-info-500);
-  --semantic-color-status-info-surface:    var(--base-color-info-50);
-  --semantic-color-status-info-border:     var(--base-color-info-300);
-  --semantic-color-status-info-foreground: var(--base-color-info-0);
-  --semantic-color-status-error-background: var(--base-color-error-500);
-  --semantic-color-status-error-surface:    var(--base-color-error-50);
-  --semantic-color-status-error-border:     var(--base-color-error-300);
-  --semantic-color-status-error-foreground: var(--base-color-error-0);
-  --semantic-color-status-warn-background: var(--base-color-warn-500);
-  --semantic-color-status-warn-surface:    var(--base-color-warn-50);
-  --semantic-color-status-warn-border:     var(--base-color-warn-300);
-  --semantic-color-status-warn-foreground: var(--base-color-warn-0);
-  --semantic-color-status-success-background: var(--base-color-success-500);
-  --semantic-color-status-success-surface:    var(--base-color-success-50);
-  --semantic-color-status-success-border:     var(--base-color-success-300);
-  --semantic-color-status-success-foreground: var(--base-color-success-0);
-  --component-scrim-color: rgba(15, 0, 42, 0.6);
-  --component-button-primary-background:         var(--base-color-accent-500);
-  --component-button-primary-background-hover:   var(--base-color-accent-600);
-  --component-button-primary-background-pressed: var(--base-color-accent-800);
-  --component-button-primary-foreground:         var(--base-color-accent-0);
-  --component-button-primary-foreground-hover:   var(--base-color-accent-50);
-  --component-button-primary-foreground-pressed: var(--base-color-accent-100);
-  --component-button-primary-border:             var(--base-color-accent-500);
-  --component-button-secondary-background:         var(--base-color-accent-0);
-  --component-button-secondary-background-hover:   var(--base-color-accent-50);
-  --component-button-secondary-background-pressed: var(--base-color-accent-100);
-  --component-button-secondary-foreground:         var(--base-color-accent-600);
-  --component-button-secondary-foreground-hover:   var(--base-color-accent-700);
-  --component-button-secondary-foreground-pressed: var(--base-color-accent-800);
-  --component-button-secondary-border:             var(--base-color-accent-500);
-  --component-button-secondary-border-hover:       var(--base-color-accent-700);
-  --component-button-secondary-border-pressed:     var(--base-color-accent-800);
-  --component-button-tertiary-background:         var(--base-color-accent-0);
-  --component-button-tertiary-background-hover:   var(--base-color-accent-50);
-  --component-button-tertiary-background-pressed: var(--base-color-accent-100);
-  --component-button-tertiary-foreground:         var(--base-color-accent-600);
-  --component-button-tertiary-foreground-hover:   var(--base-color-accent-700);
-  --component-button-tertiary-foreground-pressed: var(--base-color-accent-800);
-  --component-button-tertiary-border:             var(--base-color-accent-0);
-  --component-button-tertiary-border-hover:       var(--base-color-accent-50);
-  --component-button-tertiary-border-pressed:     var(--base-color-accent-100);
-  --a1-field-hover-background:       var(--base-color-neutral-50);
-  --a1-field-hover-border-color:     var(--base-color-neutral-600);
-  --a1-field-active-background:      var(--base-color-neutral-100);
-  --a1-field-active-border-color:    var(--base-color-neutral-700);
-  --a1-field-read-only-background:   var(--base-color-info-50);
-  --a1-field-read-only-border-color: var(--base-color-info-200);
-  --a1-field-read-only-text:         var(--base-color-info-1000);
-}
-
-.a1-theme-dark .a1-notification--default,
-.a1-inverse .a1-notification--default {
-  --a1-notification-background: var(--base-color-neutral-500);
-  --a1-notification-foreground: var(--base-color-neutral-0);
-}
-
-.a1-theme-dark .a1-inverse .a1-notification--default,
-.a1-theme-dark .a1-theme-light .a1-notification--default {
-  --a1-notification-background: var(--base-color-neutral-600);
-  --a1-notification-foreground: var(--base-color-neutral-0);
-}
-
-/* ─── Light ──────────────────────────────────────────────────────────────────
-   Use .a1-theme-light to explicitly force light mode, e.g. inside a dark container. */
-
-.a1-theme-light {
+html.a1-theme-dark .a1-inverse,
+html.a1-theme-dark .a1-theme-light {
   color-scheme: light;
   --semantic-color-surface-page:   var(--base-color-neutral-0);
   --semantic-color-surface-panel:  var(--base-color-neutral-50);
@@ -304,7 +366,9 @@
   --semantic-color-status-warn-surface:    var(--base-color-warn-50);
   --semantic-color-status-warn-border:     var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-warn-0);
-  --semantic-color-status-success-background: var(--base-color-success-500);
+  --semantic-color-status-warn-text:  var(--base-color-warn-600);
+  --semantic-color-status-error-text: var(--base-color-error-600);
+  --semantic-color-status-success-background: var(--base-color-success-600);
   --semantic-color-status-success-surface:    var(--base-color-success-50);
   --semantic-color-status-success-border:     var(--base-color-success-300);
   --semantic-color-status-success-foreground: var(--base-color-success-0);
@@ -343,6 +407,171 @@
   --a1-field-read-only-text:         var(--base-color-info-1000);
 }
 
+html.a1-theme-dark .a1-notification--default,
+.a1-inverse .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-500);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}
+
+html.a1-theme-dark .a1-inverse .a1-notification--default,
+html.a1-theme-dark .a1-theme-light .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-600);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}
+
+/* ─── Light ──────────────────────────────────────────────────────────────────
+   Use .a1-theme-light to explicitly force light mode, e.g. inside a dark container. */
+
+html.a1-theme-light {
+  color-scheme: light;
+  --semantic-color-surface-page:   var(--base-color-neutral-0);
+  --semantic-color-surface-panel:  var(--base-color-neutral-50);
+  --semantic-color-surface-raised: var(--base-color-neutral-100);
+  --semantic-color-text-default: var(--base-color-neutral-900);
+  --semantic-color-text-muted:   var(--base-color-neutral-600);
+  --semantic-color-text-inverse: var(--base-color-neutral-0);
+  --semantic-color-text-accent:  var(--base-color-accent-500);
+  --semantic-color-border-subtle:  var(--base-color-neutral-200);
+  --semantic-color-border-default: var(--base-color-neutral-300);
+  --semantic-color-border-strong:  var(--base-color-neutral-500);
+  --semantic-color-action-background:         var(--base-color-accent-500);
+  --semantic-color-action-background-hover:   var(--base-color-accent-600);
+  --semantic-color-action-background-pressed: var(--base-color-accent-800);
+  --semantic-color-action-foreground:         var(--base-color-accent-100);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-300);
+  --semantic-color-action-surface:            var(--base-color-accent-50);
+  --semantic-color-action-border:             var(--base-color-accent-300);
+  --semantic-color-status-info-background: var(--base-color-info-500);
+  --semantic-color-status-info-surface:    var(--base-color-info-50);
+  --semantic-color-status-info-border:     var(--base-color-info-300);
+  --semantic-color-status-info-foreground: var(--base-color-info-0);
+  --semantic-color-status-error-background: var(--base-color-error-500);
+  --semantic-color-status-error-surface:    var(--base-color-error-50);
+  --semantic-color-status-error-border:     var(--base-color-error-300);
+  --semantic-color-status-error-foreground: var(--base-color-error-0);
+  --semantic-color-status-warn-background: var(--base-color-warn-500);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-50);
+  --semantic-color-status-warn-border:     var(--base-color-warn-300);
+  --semantic-color-status-warn-foreground: var(--base-color-warn-0);
+  --semantic-color-status-warn-text:  var(--base-color-warn-600);
+  --semantic-color-status-error-text: var(--base-color-error-600);
+  --semantic-color-status-success-background: var(--base-color-success-600);
+  --semantic-color-status-success-surface:    var(--base-color-success-50);
+  --semantic-color-status-success-border:     var(--base-color-success-300);
+  --semantic-color-status-success-foreground: var(--base-color-success-0);
+  --component-scrim-color: rgba(15, 0, 42, 0.6);
+  --component-button-primary-background:         var(--base-color-accent-500);
+  --component-button-primary-background-hover:   var(--base-color-accent-600);
+  --component-button-primary-background-pressed: var(--base-color-accent-800);
+  --component-button-primary-foreground:         var(--base-color-accent-0);
+  --component-button-primary-foreground-hover:   var(--base-color-accent-50);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-100);
+  --component-button-primary-border:             var(--base-color-accent-500);
+  --component-button-secondary-background:         var(--base-color-accent-0);
+  --component-button-secondary-background-hover:   var(--base-color-accent-50);
+  --component-button-secondary-background-pressed: var(--base-color-accent-100);
+  --component-button-secondary-foreground:         var(--base-color-accent-600);
+  --component-button-secondary-foreground-hover:   var(--base-color-accent-700);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-800);
+  --component-button-secondary-border:             var(--base-color-accent-500);
+  --component-button-secondary-border-hover:       var(--base-color-accent-700);
+  --component-button-secondary-border-pressed:     var(--base-color-accent-800);
+  --component-button-tertiary-background:         var(--base-color-accent-0);
+  --component-button-tertiary-background-hover:   var(--base-color-accent-50);
+  --component-button-tertiary-background-pressed: var(--base-color-accent-100);
+  --component-button-tertiary-foreground:         var(--base-color-accent-600);
+  --component-button-tertiary-foreground-hover:   var(--base-color-accent-700);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-800);
+  --component-button-tertiary-border:             var(--base-color-accent-0);
+  --component-button-tertiary-border-hover:       var(--base-color-accent-50);
+  --component-button-tertiary-border-pressed:     var(--base-color-accent-100);
+  --a1-field-hover-background:       var(--base-color-neutral-50);
+  --a1-field-hover-border-color:     var(--base-color-neutral-600);
+  --a1-field-active-background:      var(--base-color-neutral-100);
+  --a1-field-active-border-color:    var(--base-color-neutral-700);
+  --a1-field-read-only-background:   var(--base-color-info-50);
+  --a1-field-read-only-border-color: var(--base-color-info-200);
+  --a1-field-read-only-text:         var(--base-color-info-1000);
+}
+
+/* ─── .a1-theme-light .a1-inverse ───────────────────────────────────────────
+   When .a1-theme-light forces light mode on <html> but the OS prefers dark,
+   the system dark media query (0,1,0) would flip .a1-inverse sections to light.
+   This compound rule (0,2,1) overrides that and keeps inverse sections dark. */
+
+html.a1-theme-light .a1-inverse {
+  color-scheme: dark;
+  --semantic-color-surface-page:   var(--base-color-neutral-900);
+  --semantic-color-surface-panel:  var(--base-color-neutral-800);
+  --semantic-color-surface-raised: var(--base-color-neutral-700);
+  --semantic-color-text-default: var(--base-color-neutral-50);
+  --semantic-color-text-muted:   var(--base-color-neutral-300);
+  --semantic-color-text-inverse: var(--base-color-neutral-900);
+  --semantic-color-surface-inverse: var(--base-color-neutral-0);
+  --semantic-color-text-accent:  var(--base-color-accent-300);
+  --semantic-color-border-subtle:  var(--base-color-neutral-700);
+  --semantic-color-border-default: var(--base-color-neutral-600);
+  --semantic-color-border-strong:  var(--base-color-neutral-400);
+  --semantic-color-action-background:         var(--base-color-accent-400);
+  --semantic-color-action-background-hover:   var(--base-color-accent-300);
+  --semantic-color-action-background-pressed: var(--base-color-accent-500);
+  --semantic-color-action-foreground:         var(--base-color-accent-1000);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-surface:            var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-500);
+  --semantic-color-status-info-background: var(--base-color-info-400);
+  --semantic-color-status-info-surface:    var(--base-color-info-900);
+  --semantic-color-status-info-border:     var(--base-color-info-500);
+  --semantic-color-status-info-foreground: var(--base-color-info-1000);
+  --semantic-color-status-error-background: var(--base-color-error-400);
+  --semantic-color-status-error-surface:    var(--base-color-error-900);
+  --semantic-color-status-error-border:     var(--base-color-error-500);
+  --semantic-color-status-error-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-warn-background: var(--base-color-warn-400);
+  --semantic-color-status-warn-surface:    var(--base-color-warn-900);
+  --semantic-color-status-warn-border:     var(--base-color-warn-500);
+  --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-warn-text:  var(--base-color-warn-300);
+  --semantic-color-status-error-text: var(--base-color-error-300);
+  --semantic-color-status-success-background: var(--base-color-success-400);
+  --semantic-color-status-success-surface:    var(--base-color-success-900);
+  --semantic-color-status-success-border:     var(--base-color-success-500);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --component-scrim-color: var(--component-scrim-color-dark);
+  --component-button-primary-background:         var(--base-color-accent-200);
+  --component-button-primary-background-hover:   var(--base-color-accent-100);
+  --component-button-primary-background-pressed: var(--base-color-accent-50);
+  --component-button-primary-foreground:         var(--base-color-accent-900);
+  --component-button-primary-foreground-hover:   var(--base-color-accent-800);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-700);
+  --component-button-primary-border:             var(--base-color-accent-200);
+  --component-button-secondary-background:         var(--base-color-accent-900);
+  --component-button-secondary-background-hover:   var(--base-color-accent-800);
+  --component-button-secondary-background-pressed: var(--base-color-accent-700);
+  --component-button-secondary-foreground:         var(--base-color-accent-200);
+  --component-button-secondary-foreground-hover:   var(--base-color-accent-100);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-secondary-border:             var(--base-color-accent-200);
+  --component-button-secondary-border-hover:       var(--base-color-accent-100);
+  --component-button-secondary-border-pressed:     var(--base-color-accent-50);
+  --component-button-tertiary-background:         var(--base-color-accent-900);
+  --component-button-tertiary-background-hover:   var(--base-color-accent-800);
+  --component-button-tertiary-background-pressed: var(--base-color-accent-700);
+  --component-button-tertiary-foreground:         var(--base-color-accent-200);
+  --component-button-tertiary-foreground-hover:   var(--base-color-accent-100);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-tertiary-border:             var(--base-color-accent-900);
+  --component-button-tertiary-border-hover:       var(--base-color-accent-800);
+  --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+  --a1-field-hover-background:       var(--base-color-neutral-800);
+  --a1-field-hover-border-color:     var(--base-color-neutral-300);
+  --a1-field-active-background:      var(--base-color-neutral-700);
+  --a1-field-active-border-color:    var(--base-color-neutral-200);
+  --a1-field-read-only-background:   var(--base-color-info-800);
+  --a1-field-read-only-border-color: var(--base-color-info-600);
+  --a1-field-read-only-text:         var(--base-color-info-50);
+}
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────────
    When OS requests reduced motion, collapse all duration tokens to 0ms so any
    CSS transition built on tokens becomes instant. .a1-reduce-motion mirrors
@@ -359,11 +588,188 @@
   }
 }
 
-.a1-reduce-motion {
+html.a1-reduce-motion {
   --semantic-motion-duration-quick:   0ms;
   --semantic-motion-duration-fast:    0ms;
   --semantic-motion-duration-normal:  0ms;
   --semantic-motion-duration-slow:    0ms;
   --semantic-motion-duration-slower:  0ms;
   --semantic-motion-duration-slowest: 0ms;
+}
+
+/* ─── Contrast: more ─────────────────────────────────────────────────────────
+   Responds to the OS prefers-contrast: more preference.
+   .a1-contrast-more mirrors it for Storybook and explicit simulation.
+   The compound dark-mode rule uses specificity (0,2,0) to override the
+   individual (0,1,0) class rules when both dark and more-contrast are active. */
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Interactive elements — one step deeper in the ramp */
+    --semantic-color-action-background:         var(--base-color-accent-600);
+    --semantic-color-action-background-hover:   var(--base-color-accent-700);
+    --semantic-color-action-background-pressed: var(--base-color-accent-900);
+    --semantic-color-action-surface:            var(--base-color-accent-100);
+    --semantic-color-action-border:             var(--base-color-accent-400);
+    --semantic-color-text-accent:               var(--base-color-accent-600);
+    --semantic-color-text-muted:                var(--base-color-neutral-700);
+
+    /* Component button backgrounds and borders (hardcoded in tokens.css; must be explicit) */
+    --component-button-primary-background:         var(--base-color-accent-600);
+    --component-button-primary-background-hover:   var(--base-color-accent-700);
+    --component-button-primary-background-pressed: var(--base-color-accent-900);
+    --component-button-primary-border:             var(--base-color-accent-600);
+    --component-button-secondary-border:           var(--base-color-accent-600);
+    --component-button-secondary-border-hover:     var(--base-color-accent-700);
+    --component-button-secondary-border-pressed:   var(--base-color-accent-800);
+    --component-button-tertiary-border:            var(--base-color-neutral-300);
+    --component-button-tertiary-border-hover:      var(--base-color-neutral-400);
+    --component-button-tertiary-border-pressed:    var(--base-color-neutral-400);
+
+    /* Borders — one step more visible */
+    --semantic-color-border-subtle:  var(--base-color-neutral-300);
+    --semantic-color-border-default: var(--base-color-neutral-400);
+    --semantic-color-border-strong:  var(--base-color-neutral-600);
+
+    /* Border widths — +1px on interactive and structural components */
+    --component-button-secondary-border-width:       2px;
+    --component-button-tertiary-border-width:        2px;
+    --component-card-border-width:                   2px;
+    --component-data-table-border-width:             2px;
+    --component-dialog-border-width:                 2px;
+    --component-dialog-footer-border-width:          2px;
+    --component-field-border-width:                  2px;
+    --component-menu-border-width:                   2px;
+    --component-message-banner-border-width:         2px;
+    --component-message-badge-border-width:          2px;
+    --component-pagination-border-width:             2px;
+    --component-segmented-border-width:              2px;
+    --component-side-nav-border-width:               2px;
+    --component-tab-border-width:                    2px;
+    --component-top-header-border-width:             2px;
+  }
+
+  /* Dark mode + system more-contrast: step toward lighter (higher contrast on dark bg) */
+  html.a1-theme-dark {
+    --semantic-color-action-background:         var(--base-color-accent-300);
+    --semantic-color-action-background-hover:   var(--base-color-accent-200);
+    --semantic-color-action-background-pressed: var(--base-color-accent-400);
+    --semantic-color-action-surface:            var(--base-color-accent-800);
+    --semantic-color-action-border:             var(--base-color-accent-400);
+    --semantic-color-text-accent:               var(--base-color-accent-200);
+    --semantic-color-text-muted:                var(--base-color-neutral-200);
+    --component-button-primary-background:         var(--base-color-accent-100);
+    --component-button-primary-background-hover:   var(--base-color-accent-50);
+    --component-button-primary-background-pressed: var(--base-color-accent-200);
+    --component-button-primary-border:             var(--base-color-accent-100);
+    --semantic-color-border-subtle:             var(--base-color-neutral-600);
+    --semantic-color-border-default:            var(--base-color-neutral-500);
+    --semantic-color-border-strong:             var(--base-color-neutral-300);
+  }
+}
+
+/* Explicit simulation class — mirrors the @media block above */
+html.a1-contrast-more {
+  --semantic-color-action-background:         var(--base-color-accent-600);
+  --semantic-color-action-background-hover:   var(--base-color-accent-700);
+  --semantic-color-action-background-pressed: var(--base-color-accent-900);
+  --semantic-color-action-surface:            var(--base-color-accent-100);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-600);
+  --semantic-color-text-muted:                var(--base-color-neutral-700);
+  --component-button-primary-background:         var(--base-color-accent-600);
+  --component-button-primary-background-hover:   var(--base-color-accent-700);
+  --component-button-primary-background-pressed: var(--base-color-accent-900);
+  --component-button-primary-border:             var(--base-color-accent-600);
+  --component-button-secondary-border:           var(--base-color-accent-600);
+  --component-button-secondary-border-hover:     var(--base-color-accent-700);
+  --component-button-secondary-border-pressed:   var(--base-color-accent-800);
+  --component-button-tertiary-border:            var(--base-color-neutral-300);
+  --component-button-tertiary-border-hover:      var(--base-color-neutral-400);
+  --component-button-tertiary-border-pressed:    var(--base-color-neutral-400);
+  --semantic-color-border-subtle:  var(--base-color-neutral-300);
+  --semantic-color-border-default: var(--base-color-neutral-400);
+  --semantic-color-border-strong:  var(--base-color-neutral-600);
+  --component-button-secondary-border-width:       2px;
+  --component-button-tertiary-border-width:        2px;
+  --component-card-border-width:                   2px;
+  --component-data-table-border-width:             2px;
+  --component-dialog-border-width:                 2px;
+  --component-dialog-footer-border-width:          2px;
+  --component-field-border-width:                  2px;
+  --component-menu-border-width:                   2px;
+  --component-message-banner-border-width:         2px;
+  --component-message-badge-border-width:          2px;
+  --component-pagination-border-width:             2px;
+  --component-segmented-border-width:              2px;
+  --component-side-nav-border-width:               2px;
+  --component-tab-border-width:                    2px;
+  --component-top-header-border-width:             2px;
+}
+
+/* Dark mode + explicit more-contrast — (0,2,1) beats individual class rules */
+html.a1-theme-dark.a1-contrast-more,
+html.a1-contrast-more.a1-theme-dark {
+  --semantic-color-action-background:         var(--base-color-accent-300);
+  --semantic-color-action-background-hover:   var(--base-color-accent-200);
+  --semantic-color-action-background-pressed: var(--base-color-accent-400);
+  --semantic-color-action-surface:            var(--base-color-accent-800);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-200);
+  --semantic-color-text-muted:                var(--base-color-neutral-200);
+  --component-button-primary-background:         var(--base-color-accent-100);
+  --component-button-primary-background-hover:   var(--base-color-accent-50);
+  --component-button-primary-background-pressed: var(--base-color-accent-200);
+  --component-button-primary-border:             var(--base-color-accent-100);
+  --semantic-color-border-subtle:             var(--base-color-neutral-600);
+  --semantic-color-border-default:            var(--base-color-neutral-500);
+  --semantic-color-border-strong:             var(--base-color-neutral-300);
+}
+
+/* Contrast-more inside inverse sections — light mode context (dark inverse bg).
+   One step lighter for higher contrast against the dark surface. (0,2,0). */
+
+html.a1-contrast-more .a1-inverse {
+  --semantic-color-action-background:         var(--base-color-accent-300);
+  --semantic-color-action-background-hover:   var(--base-color-accent-200);
+  --semantic-color-action-background-pressed: var(--base-color-accent-400);
+  --semantic-color-action-border:             var(--base-color-accent-300);
+  --semantic-color-text-accent:               var(--base-color-accent-200);
+  --semantic-color-text-muted:                var(--base-color-neutral-200);
+  --component-button-primary-background:         var(--base-color-accent-100);
+  --component-button-primary-background-hover:   var(--base-color-accent-50);
+  --component-button-primary-background-pressed: var(--base-color-accent-200);
+  --component-button-primary-border:             var(--base-color-accent-100);
+}
+
+/* Dark mode + contrast-more inside inverse sections — the inverse is now LIGHT,
+   so contrast direction flips: one step darker, same as light-mode contrast-more.
+   Specificity (0,3,0) beats .a1-contrast-more .a1-inverse above. */
+
+html.a1-theme-dark.a1-contrast-more .a1-inverse,
+html.a1-contrast-more.a1-theme-dark .a1-inverse {
+  --semantic-color-action-background:         var(--base-color-accent-600);
+  --semantic-color-action-background-hover:   var(--base-color-accent-700);
+  --semantic-color-action-background-pressed: var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-600);
+  --semantic-color-text-muted:                var(--base-color-neutral-700);
+  --component-button-primary-background:         var(--base-color-accent-600);
+  --component-button-primary-background-hover:   var(--base-color-accent-700);
+  --component-button-primary-background-pressed: var(--base-color-accent-900);
+  --component-button-primary-border:             var(--base-color-accent-600);
+  --semantic-color-border-subtle:  var(--base-color-neutral-300);
+  --semantic-color-border-default: var(--base-color-neutral-400);
+  --semantic-color-border-strong:  var(--base-color-neutral-600);
+}
+
+/* ─── Accessible theme — dark mode border override ───────────────────────────
+   Specificity (0,2,0) beats individual .a1-theme-accessible and .a1-theme-dark
+   rules (0,1,0 each), ensuring accessible borders stay two steps lighter than
+   the dark-mode defaults (neutral-700→500 and neutral-600→400). */
+
+html.a1-theme-accessible.a1-theme-dark,
+html.a1-theme-dark.a1-theme-accessible {
+  --semantic-color-border-subtle:  var(--base-color-neutral-500);
+  --semantic-color-border-default: var(--base-color-neutral-400);
 }

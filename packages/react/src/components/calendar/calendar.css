@@ -1,0 +1,225 @@
+/* ── Outer scroll shell — plain block, no containment ───────── */
+
+.a1-calendar {
+  font-family: var(--component-paragraph-font-family);
+}
+
+/* ── Inner container — establishes the container query context ─ */
+
+.a1-calendar__inner {
+  container-type: inline-size;
+  container-name: a1-calendar;
+}
+
+/* ── Month block ─────────────────────────────────────────── */
+
+.a1-calendar__month {
+  padding-block-end: var(--component-calendar-month-gap);
+}
+
+.a1-calendar__month:last-child {
+  padding-block-end: 0;
+}
+
+/* ── Month heading ───────────────────────────────────────── */
+
+.a1-calendar__month-heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--component-calendar-heading-gap);
+  padding-block: var(--component-calendar-heading-padding-block);
+  font-size: var(--semantic-font-size-heading-xs);
+  font-weight: var(--semantic-font-weight-heading);
+  line-height: var(--semantic-font-line-height-heading);
+  color: var(--semantic-color-text-default);
+  margin: 0;
+}
+
+.a1-calendar__year {
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--semantic-font-weight-body);
+  color: var(--semantic-color-text-muted);
+}
+
+/* ── Grid (table) ────────────────────────────────────────── */
+
+.a1-calendar__grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* ── Weekday header row ──────────────────────────────────── */
+
+.a1-calendar__weekday {
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-muted);
+  text-align: center;
+  padding-block: var(--component-calendar-cell-padding);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* Three label lengths — show/hide via container queries below */
+.a1-calendar__weekday-label--long   { display: inline; }
+.a1-calendar__weekday-label--short  { display: none; }
+.a1-calendar__weekday-label--letter { display: none; }
+
+/* ── Day cells ───────────────────────────────────────────── */
+
+.a1-calendar__day {
+  text-align: center;
+  padding: var(--component-calendar-cell-padding);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  vertical-align: middle;
+  border: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-calendar__day--empty {
+  border: none;
+  pointer-events: none;
+}
+
+.a1-calendar__day-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--component-calendar-cell-size);
+  height: var(--component-calendar-cell-size);
+  border-radius: var(--component-calendar-cell-border-radius);
+  margin-inline: auto;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Today highlight — fills the whole cell in full-size view */
+.a1-calendar__day--today {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-text-inverse);
+}
+
+.a1-calendar__day--today .a1-calendar__day-number {
+  font-weight: var(--semantic-font-weight-heading);
+}
+
+/* Past dates — background differentiates; text stays at full contrast (~16:1) */
+.a1-calendar__day--past {
+  background: var(--semantic-color-surface-raised);
+}
+
+/* ── Paginated variant — nav bar ─────────────────────────── */
+
+.a1-calendar__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--component-calendar-heading-padding-block);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-calendar__nav-label {
+  display: flex;
+  align-items: center;
+  gap: var(--component-calendar-heading-gap);
+}
+
+/* Responsive nav controls: Button (wide) ↔ IconButton (narrow) */
+.a1-calendar__nav-wide   { display: flex; }
+.a1-calendar__nav-narrow { display: none; }
+
+/* Today button — visually separated from the selects */
+.a1-calendar__nav-today {
+  display: flex;
+  align-items: center;
+  margin-inline-start: var(--component-calendar-heading-gap);
+  padding-inline-start: var(--component-calendar-heading-gap);
+  border-inline-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* SelectField context overrides — strip layout width so selects size to content */
+.a1-calendar__nav-field,
+.a1-calendar__nav-field .a1-field__control,
+.a1-calendar__nav-field .a1-field__select {
+  width: auto;
+}
+
+/* ── Container: Medium (< 400px) ─────────────────────────── */
+
+@container a1-calendar (max-width: 479px) {
+  .a1-calendar__month-heading {
+    font-size: var(--semantic-font-size-body-lg);
+    padding-block: var(--component-calendar-heading-padding-block-compact);
+  }
+
+  .a1-calendar__year {
+    font-size: var(--semantic-font-size-body-sm);
+  }
+
+  .a1-calendar__weekday,
+  .a1-calendar__day {
+    padding: var(--component-calendar-cell-padding-compact);
+  }
+
+  .a1-calendar__day {
+    border: none;
+  }
+
+  /* Today: revert to circle-only highlight in narrow view */
+  .a1-calendar__day--today {
+    background: none;
+    color: var(--semantic-color-text-default);
+  }
+
+  .a1-calendar__day--today .a1-calendar__day-number {
+    background: var(--semantic-color-action-background);
+    color: var(--semantic-color-text-inverse);
+  }
+
+  .a1-calendar__nav {
+    padding-block: var(--component-calendar-heading-padding-block-compact);
+  }
+
+  /* Swap to icon-only buttons in narrow view */
+  .a1-calendar__nav-wide   { display: none; }
+  .a1-calendar__nav-narrow { display: flex; }
+
+  .a1-calendar__weekday-label--long   { display: none; }
+  .a1-calendar__weekday-label--short  { display: inline; }
+  .a1-calendar__weekday-label--letter { display: none; }
+}
+
+/* ── Container: Compact (< 240px) ────────────────────────── */
+
+@container a1-calendar (max-width: 319px) {
+  .a1-calendar__month-heading {
+    font-size: var(--semantic-font-size-body-md);
+    gap: var(--component-calendar-cell-padding-compact);
+  }
+
+  .a1-calendar__year {
+    font-size: var(--semantic-font-size-body-xl);
+  }
+
+  .a1-calendar__weekday {
+    font-size: var(--semantic-font-size-body-xs);
+    padding: var(--component-calendar-cell-padding-minimal);
+    letter-spacing: 0;
+  }
+
+  .a1-calendar__day {
+    padding: var(--component-calendar-cell-padding-minimal);
+    font-size: var(--semantic-font-size-body-xs);
+  }
+
+  .a1-calendar__day-number {
+    width: var(--component-calendar-cell-size-compact);
+    height: var(--component-calendar-cell-size-compact);
+  }
+
+  .a1-calendar__weekday-label--long   { display: none; }
+  .a1-calendar__weekday-label--short  { display: none; }
+  .a1-calendar__weekday-label--letter { display: inline; }
+}

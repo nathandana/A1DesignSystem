@@ -46,7 +46,7 @@ export const AccountMenu = {
         <>
           <MenuSection label="Account">
             <MenuItem icon="person" onClick={close}>Profile</MenuItem>
-            <MenuItem icon="tune" onClick={close}>Preferences</MenuItem>
+            <MenuItem icon="settings" onClick={close}>Preferences</MenuItem>
             <MenuItem icon="keyboard" shortcut="⌘K" onClick={close}>Command palette</MenuItem>
           </MenuSection>
           <MenuSection label="Workspace">
@@ -104,6 +104,33 @@ export const ItemStates = {
           </MenuSection>
           <MenuSection label="Danger zone">
             <MenuItem icon="delete" variant="destructive" onClick={close}>Delete project</MenuItem>
+          </MenuSection>
+        </>
+      )}
+    </MenuTrigger>
+  ),
+};
+
+export const OverflowContent = {
+  name: "Overflow content",
+  render: () => (
+    <MenuTrigger label="Open overflow menu">
+      {({ close }) => (
+        <>
+          <MenuSection label="Extremely long section label that should wrap instead of pushing outside the menu">
+            <MenuItem
+              icon="drive_file_rename_outline"
+              shortcut="Command+Option+Shift+Control+K"
+              onClick={close}
+            >
+              Rename the component-with-an-exceptionally-long-unbroken-identifier-for-QA
+            </MenuItem>
+            <MenuItem icon="link" onClick={close}>
+              Copy https://example.com/a/path/with/a/very/long/unbroken/segment/that/still/stays-inside
+            </MenuItem>
+            <MenuItem icon="delete" variant="destructive" onClick={close}>
+              Delete legacy-release-candidate-navigation-snapshot-with-a-long-name
+            </MenuItem>
           </MenuSection>
         </>
       )}
@@ -176,6 +203,96 @@ export const ViewportAlignment = {
       <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
     </div>
   ),
+};
+
+// ─── Accessibility stories ────────────────────────────────────────────────────
+
+export const A11yKeyboardNavigation = {
+  name: "[A11y] Keyboard navigation",
+  tags: ["a11y", "a11y-required"],
+  parameters: { layout: "padded" },
+  render: () => (
+    <MenuTrigger label="Open actions menu">
+      {({ close }) => (
+        <>
+          <MenuSection label="Actions">
+            <MenuItem icon="edit" onClick={close}>Rename</MenuItem>
+            <MenuItem icon="share" onClick={close}>Share</MenuItem>
+            <MenuItem icon="download" onClick={close}>Download</MenuItem>
+            <MenuItem icon="lock" disabled>Restricted action</MenuItem>
+          </MenuSection>
+          <MenuSection>
+            <MenuItem icon="delete" variant="destructive" onClick={close}>Delete</MenuItem>
+          </MenuSection>
+        </>
+      )}
+    </MenuTrigger>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /open actions menu/i });
+    await userEvent.click(trigger);
+    await waitFor(() => within(document.body).getByRole("dialog"));
+    // Press Escape — dialog should close and focus should return to trigger
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => {
+      const dialog = document.querySelector('[role="dialog"]');
+      if (dialog) throw new Error("Dialog still open");
+    });
+  },
+};
+
+export const A11yHighContrast = {
+  name: "[A11y] High contrast theme",
+  tags: ["a11y", "a11y-theme"],
+  globals: { theme: "a1Accessible" },
+  parameters: { layout: "padded" },
+  render: () => (
+    <MenuTrigger label="Open menu (high contrast)">
+      {({ close }) => (
+        <>
+          <MenuSection label="Actions">
+            <MenuItem icon="edit" onClick={close}>Rename</MenuItem>
+            <MenuItem icon="delete" variant="destructive" onClick={close}>Delete</MenuItem>
+          </MenuSection>
+        </>
+      )}
+    </MenuTrigger>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open menu/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+// Negative example — intentionally demonstrates what NOT to do
+export const A11yIconTriggerMissingLabel = {
+  name: "[A11y] ⚠ Icon trigger missing label (negative example)",
+  tags: ["a11y", "a11y-negative-example"],
+  parameters: { layout: "padded" },
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        {/* Missing aria-label on icon button — screen reader cannot announce purpose */}
+        <IconButton
+          icon="more_vert"
+          label=""
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+        />
+        <Menu open={open} onClose={() => setOpen(false)}>
+          {() => (
+            <MenuSection>
+              <MenuItem icon="edit" onClick={() => setOpen(false)}>Edit</MenuItem>
+            </MenuSection>
+          )}
+        </Menu>
+      </>
+    );
+  },
 };
 
 // ─── Card with context menu ───────────────────────────────────────────────────

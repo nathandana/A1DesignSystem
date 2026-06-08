@@ -1,4 +1,4 @@
-import { Heading } from "./Heading.jsx";
+import { Heading, HeadingMark } from "./Heading.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
 
 const meta = {
@@ -21,11 +21,23 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["xl", "lg", "md", "sm", "xs", "xxl", "jumbo", "xJumbo"]
+      options: ["xxl", "xl", "lg", "md", "sm", "xs", "jumbo", "xJumbo"]
     },
     color: {
       control: "inline-radio",
       options: ["default", "muted", "accent"]
+    },
+    margin: {
+      control: "inline-radio",
+      options: ["sm", "md", "lg"]
+    },
+    textWrap: {
+      control: "inline-radio",
+      options: ["balance", undefined]
+    },
+    align: {
+      control: "inline-radio",
+      options: ["left", "center", "right", undefined]
     }
   }
 };
@@ -39,6 +51,7 @@ export const HeadingScale = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {[
+        { as: "h1", size: "xxl" },
         { as: "h1", size: "xl" },
         { as: "h2", size: "lg" },
         { as: "h3", size: "md" },
@@ -122,6 +135,71 @@ export const Colors = {
       <Inverse style={{ padding: "16px", borderRadius: "6px" }}>
         <Heading as="h2">Inverse surface heading</Heading>
       </Inverse>
+    </div>
+  )
+};
+
+export const TextWrap = {
+  name: "Text wrap — balance",
+  render: () => (
+    <div style={{ display: "grid", gap: "32px", maxWidth: "540px" }}>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>Without textWrap</p>
+        <Heading as="h2" type="display" size="lg">
+          The design system built for the AI era
+        </Heading>
+      </div>
+      <div>
+        <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>textWrap="balance"</p>
+        <Heading as="h2" type="display" size="lg" textWrap="balance">
+          The design system built for the AI era
+        </Heading>
+      </div>
+    </div>
+  )
+};
+
+export const Alignment = {
+  name: "Alignment",
+  render: () => (
+    <div style={{ display: "grid", gap: "24px" }}>
+      {["left", "center", "right"].map(align => (
+        <div key={align}>
+          <p style={{ fontSize: "0.75rem", color: "var(--semantic-color-text-muted)", marginBottom: "8px" }}>
+            align="{align}"
+          </p>
+          <Heading as="h2" size="lg" align={align}>
+            The quick brown fox jumps over the lazy dog
+          </Heading>
+        </div>
+      ))}
+    </div>
+  )
+};
+
+export const ExpressiveMarks = {
+  name: "Expressive Marks",
+  render: () => (
+    <div style={{ display: "grid", gap: "32px", maxWidth: "980px" }}>
+      <Heading as="h1" type="display" size={{ xs: "lg", md: "xxl" }}>
+        Build <HeadingMark>alignment</HeadingMark> before the interface.
+      </Heading>
+
+      <Heading as="h2" type="display" size="xl">
+        Make the moment <HeadingMark variant="underline">impossible to miss</HeadingMark>.
+      </Heading>
+
+      <div style={{ display: "grid", gap: "18px" }}>
+        <Heading as="h3" size="lg">
+          Swoop underline for <HeadingMark variant="underline" underlineStyle="swoop">editorial emphasis</HeadingMark>
+        </Heading>
+        <Heading as="h3" size="lg">
+          Wave underline for <HeadingMark variant="underline" underlineStyle="wave">energetic emphasis</HeadingMark>
+        </Heading>
+        <Heading as="h3" size="lg">
+          Sketch underline for <HeadingMark variant="underline" underlineStyle="sketch">rough-draft emphasis</HeadingMark>
+        </Heading>
+      </div>
     </div>
   )
 };

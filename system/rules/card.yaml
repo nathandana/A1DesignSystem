@@ -1,0 +1,23 @@
+component: Card
+rules:
+  - id: card-navigation-no-nested-interactive
+    components:
+      - Card
+    requirement: Do not place interactive elements inside a Card when the Card itself is the interactive element.
+    do: Use `variant="navigation"` with a single `href` or navigation handler, and keep the card contents to static text, icons, images, lists, and layout components.
+    dont: Put buttons, links, form controls, menus, tabs, or other clickable controls inside a navigation Card.
+    applies_to:
+      - accessibility
+      - interaction
+      - semantic-html
+
+  - id: card-navigation-single-destination
+    components:
+      - Card
+    requirement: Use navigation Cards only when the entire card represents one destination.
+    do: Make the Card destination match the title and supporting content.
+    dont: Use a navigation Card when different parts of the card imply different actions or destinations.
+    applies_to:
+      - usability
+      - content
+      - interaction

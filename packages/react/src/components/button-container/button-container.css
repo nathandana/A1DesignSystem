@@ -1,5 +1,9 @@
 .a1-button-container {
+  box-sizing: border-box;
   container: a1-button-container / inline-size;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .a1-button-container__inner {
@@ -43,4 +47,10 @@
     flex-direction: row-reverse;
     justify-content: flex-start;
   }
+}
+
+/* ── Size modifiers ──────────────────────────────────────────────────────── */
+
+.a1-button-container--lg .a1-button-container__inner {
+  gap: var(--base-spacing-16) var(--base-spacing-24);
 }

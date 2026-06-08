@@ -1,4 +1,5 @@
 import { IconButton } from "./IconButton.jsx";
+import { requiredIconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Controls/Icon Button",
@@ -15,7 +16,7 @@ const meta = {
       control: "inline-radio",
       options: ["tertiary", "secondary", "destructive", "success"],
     },
-    icon:     { control: "text" },
+    icon:     { ...requiredIconArgType("A1 icon registry name") },
     label:    { control: "text" },
     disabled: { control: "boolean" },
   },
@@ -78,7 +79,7 @@ export const CommonIcons = {
         <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-12)" }}>
           <IconButton icon="check"         label="Approve"        variant="success" />
           <IconButton icon="done_all"      label="Complete all"   variant="success" />
-          <IconButton icon="task_alt"      label="Mark complete"  variant="success" />
+          <IconButton icon="check_circle"  label="Mark complete"  variant="success" />
           <IconButton icon="thumb_up"      label="Accept"         variant="success" />
         </div>
       </div>

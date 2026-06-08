@@ -1,0 +1,34 @@
+{
+  "label": {
+    "code": {
+      "copyCode": {
+        "$type": "string",
+        "$value": "Copy code",
+        "$description": "Button label for copying a code snippet to the clipboard.",
+        "locale": {
+          "es": "Copiar código",
+          "fr": "Copier le code",
+          "de": "Code kopieren",
+          "pt": "Copiar código",
+          "ja": "コードをコピー",
+          "zh": "复制代码",
+          "ar": "نسخ الرمز"
+        }
+      },
+      "copied": {
+        "$type": "string",
+        "$value": "Copied",
+        "$description": "Temporary button label shown after a code snippet is copied to the clipboard.",
+        "locale": {
+          "es": "Copiado",
+          "fr": "Copié",
+          "de": "Kopiert",
+          "pt": "Copiado",
+          "ja": "コピーしました",
+          "zh": "已复制",
+          "ar": "تم النسخ"
+        }
+      }
+    }
+  }
+}

@@ -10,40 +10,58 @@ const HERO_COLORS = {
   error:   "var(--semantic-color-status-error-background)",
 };
 
+const VALID_ICON_DISPLAY = ["none", "default", "hero"];
+
 export function Card({
-  as: Component = "div",
+  as,
   bare = false,
+  variant = "default",
+  href,
   icon,
-  heroIcon,
+  iconDisplay = "default",
   heroColor = "action",
   className = "",
   children,
   ...props
 }) {
+  const isNavigation = variant === "navigation";
+  const Component = as ?? (isNavigation ? (href ? "a" : "button") : "div");
+
+  const resolvedDisplay = icon && VALID_ICON_DISPLAY.includes(iconDisplay)
+    ? iconDisplay
+    : "none";
+
   const classes = [
     "a1-card",
     bare && "a1-card--bare",
-    heroIcon && "a1-card--has-hero",
+    isNavigation && "a1-card--navigation",
+    resolvedDisplay === "hero" && "a1-card--has-hero",
+    resolvedDisplay === "default" && "a1-card--has-icon",
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
   const heroBg = HERO_COLORS[heroColor] ?? heroColor;
+  const interactiveProps = isNavigation && Component === "button" && !props.type
+    ? { type: "button" }
+    : {};
 
   return (
-    <Component className={classes} {...props}>
-      {heroIcon && (
-        <div className="a1-card__hero" style={{ "--a1-card-hero-bg": heroBg }}>
-          <Icon name={heroIcon} className="a1-card__hero-icon" />
-        </div>
-      )}
-      {icon && (
-        <span className="a1-card__icon" aria-hidden="true">
-          <Icon name={icon} />
-        </span>
-      )}
-      {children}
+    <Component className={classes} href={href} {...interactiveProps} {...props}>
+      <div className="a1-card__layout">
+        {resolvedDisplay === "hero" && (
+          <div className="a1-card__hero" style={{ "--a1-card-hero-bg": heroBg }}>
+            <Icon name={icon} aria-hidden="true" />
+          </div>
+        )}
+        {resolvedDisplay === "default" && (
+          <span className="a1-card__icon" aria-hidden="true">
+            <Icon name={icon} />
+          </span>
+        )}
+        <div className="a1-card__content">{children}</div>
+      </div>
     </Component>
   );
 }

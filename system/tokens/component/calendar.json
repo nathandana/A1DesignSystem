@@ -1,0 +1,16 @@
+{
+  "component": {
+    "calendar": {
+      "monthGap":                   { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "headingPaddingBlock":        { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "headingPaddingBlockCompact": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "headingGap":                 { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "cellPadding":                { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "cellPaddingCompact":         { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "cellPaddingMinimal":         { "$type": "dimension", "$value": "1px" },
+      "cellSize":                   { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "cellSizeCompact":            { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "cellBorderRadius":           { "$type": "dimension", "$value": "{base.radius.sm}" }
+    }
+  }
+}

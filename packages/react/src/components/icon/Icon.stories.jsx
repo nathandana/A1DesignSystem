@@ -1,47 +1,6 @@
 import { useState } from "react";
 import { Icon } from "./Icon.jsx";
-
-const ICONS = [
-  // Navigation
-  "home", "menu", "close", "arrow_back", "arrow_forward", "arrow_upward", "arrow_downward",
-  "chevron_right", "chevron_left", "expand_more", "expand_less", "more_horiz", "more_vert",
-  "first_page", "last_page", "navigate_next", "navigate_before", "unfold_more", "subdirectory_arrow_right",
-  // Actions
-  "add", "remove", "delete", "edit", "save", "copy", "content_cut", "content_paste",
-  "undo", "redo", "search", "filter_list", "sort", "refresh", "sync",
-  "download", "upload", "share", "open_in_new", "link", "launch",
-  "settings", "tune", "build", "construction", "drag_indicator",
-  // Communication
-  "mail", "chat", "comment", "forum", "send", "reply", "forward",
-  "call", "video_call", "notifications", "notification_add", "alarm",
-  "schedule", "calendar_today", "event", "today",
-  // Content
-  "article", "description", "note", "notes", "subject", "list",
-  "view_list", "grid_view", "dashboard", "feed",
-  "photo", "image", "camera", "play_circle", "pause_circle",
-  "movie", "music_note", "headphones", "volume_up", "volume_off",
-  // Status & Feedback
-  "check", "check_circle", "cancel", "error", "warning", "info", "help",
-  "flag", "report", "block", "verified", "new_releases",
-  "star", "star_border", "favorite", "favorite_border", "bookmark", "bookmark_border",
-  "thumb_up", "thumb_down", "mood", "sentiment_satisfied", "sentiment_dissatisfied",
-  // People & Security
-  "person", "group", "groups", "account_circle", "manage_accounts", "badge",
-  "lock", "lock_open", "security", "shield", "key", "fingerprint",
-  "visibility", "visibility_off", "admin_panel_settings",
-  // Data & Charts
-  "bar_chart", "trending_up", "trending_down", "analytics", "insights",
-  "data_usage", "pie_chart", "show_chart", "leaderboard",
-  // Objects & Misc
-  "bolt", "star_rate", "rocket_launch", "local_fire_department", "celebration",
-  "emoji_events", "workspace_premium", "label", "tag", "sell",
-  "receipt", "paid", "savings", "shopping_cart", "storefront",
-  "palette", "brush", "auto_fix_high", "auto_awesome", "magic_button",
-  "cloud", "cloud_upload", "cloud_download", "storage", "memory",
-  "computer", "phone_iphone", "tablet", "monitor", "keyboard",
-  "dark_mode", "light_mode", "wb_sunny", "nights_stay", "language",
-  "public", "location_on", "map", "navigation", "explore",
-];
+import { ICON_OPTIONS, requiredIconArgType } from "../../storybook/icon-controls.js";
 
 const variantControls = {
   weight: {
@@ -78,9 +37,7 @@ const meta = {
   },
   argTypes: {
     name: {
-      control: "select",
-      options: ICONS,
-      description: "Material Symbols icon name"
+      ...requiredIconArgType("A1 icon registry name")
     },
     ...variantControls
   }
@@ -96,8 +53,8 @@ export const Explorer = {
     const [query, setQuery] = useState("");
     const [active, setActive] = useState("star");
     const filtered = query
-      ? ICONS.filter(n => n.includes(query.toLowerCase().replace(/\s+/g, "_")))
-      : ICONS;
+      ? ICON_OPTIONS.filter(n => n.includes(query.toLowerCase().replace(/\s+/g, "_")))
+      : ICON_OPTIONS;
 
     return (
       <div style={{ width: 680 }}>

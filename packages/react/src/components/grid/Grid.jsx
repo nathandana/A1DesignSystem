@@ -2,9 +2,11 @@ import "./grid.css";
 
 const SPACING_KEYS = [1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 64, 96, 128];
 const gapSizes = {
-  sm: "var(--base-spacing-8)",
-  md: "var(--base-spacing-16)",
-  lg: "var(--base-spacing-24)",
+  sm:  "var(--base-spacing-8)",
+  md:  "var(--base-spacing-16)",
+  lg:  "var(--base-spacing-24)",
+  xl:  "var(--base-spacing-32)",
+  xxl: "var(--base-spacing-64)",
 };
 const layouts = ["default", "bento"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];

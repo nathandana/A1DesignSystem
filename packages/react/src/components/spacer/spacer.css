@@ -1,0 +1,44 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Spacer
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.a1-spacer {
+  display: block;
+  height: var(--a1-spacer-responsive-size, var(--a1-spacer-size, 0px));
+}
+
+@media (--bp-sm-up) {
+  .a1-spacer {
+    --a1-spacer-responsive-size: var(--a1-spacer-size-sm, var(--a1-spacer-size));
+  }
+}
+
+@media (--bp-md-up) {
+  .a1-spacer {
+    --a1-spacer-responsive-size: var(
+      --a1-spacer-size-md,
+      var(--a1-spacer-size-sm, var(--a1-spacer-size))
+    );
+  }
+}
+
+@media (--bp-lg-up) {
+  .a1-spacer {
+    --a1-spacer-responsive-size: var(
+      --a1-spacer-size-lg,
+      var(--a1-spacer-size-md, var(--a1-spacer-size-sm, var(--a1-spacer-size)))
+    );
+  }
+}
+
+@media (--bp-xl) {
+  .a1-spacer {
+    --a1-spacer-responsive-size: var(
+      --a1-spacer-size-xl,
+      var(
+        --a1-spacer-size-lg,
+        var(--a1-spacer-size-md, var(--a1-spacer-size-sm, var(--a1-spacer-size)))
+      )
+    );
+  }
+}

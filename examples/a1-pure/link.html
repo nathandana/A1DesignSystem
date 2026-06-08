@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Link — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html" aria-current="page">Link</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html" aria-current="page">Link</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Link</h1>
+        <p class="a1-p">Apply <code class="a1-code">class="a1-link"</code> to any <code class="a1-code">&lt;a&gt;</code> element for inline link styling — the A1 link color, underline, and all interactive states. For a button-styled link, use <code class="a1-code">class="a1-button"</code> instead.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Default</h2>
+        <p class="a1-p">A bare <code class="a1-code">&lt;a class="a1-link"&gt;</code> renders with the A1 link color and an underline. Color and offset come from component link tokens.</p>
+        <figure class="a1-figure">
+          <p class="a1-p"><a class="a1-link" href="#">This is a link</a></p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;a class="a1-link" href="#"&gt;This is a link&lt;/a&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Inline in text</h2>
+        <p class="a1-p">Links sit naturally inside paragraphs and list items. The underline color, offset, and interactive states are consistent regardless of surrounding text size.</p>
+        <figure class="a1-figure">
+          <p class="a1-p">A1 Pure is built on the same <a class="a1-link" href="#">design token system</a> as the React component library. Drop in one stylesheet and your existing HTML gets <a class="a1-link" href="#">consistent typography</a>, <a class="a1-link" href="#">form styling</a>, and interactive components — with no build step required.</p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;p class="a1-p"&gt;
+  Use &lt;a class="a1-link" href="#"&gt;design tokens&lt;/a&gt; to keep styles consistent.
+&lt;/p&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">In a list</h2>
+        <p class="a1-p">Links inside list items work the same as inline links. No extra classes are needed on the <code class="a1-code">&lt;li&gt;</code>.</p>
+        <figure class="a1-figure">
+          <ul class="a1-ul">
+            <li><a class="a1-link" href="#">Typography</a> — headings, body text, inline elements</li>
+            <li><a class="a1-link" href="#">Button</a> — primary, secondary, tertiary, sizes, shapes</li>
+            <li><a class="a1-link" href="#">Forms</a> — inputs, textarea, select, help text</li>
+          </ul>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;ul class="a1-ul"&gt;
+  &lt;li&gt;&lt;a class="a1-link" href="#"&gt;Typography&lt;/a&gt; — description&lt;/li&gt;
+  &lt;li&gt;&lt;a class="a1-link" href="#"&gt;Button&lt;/a&gt; — description&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">External link</h2>
+        <p class="a1-p">For links that open in a new tab, add <code class="a1-code">target="_blank"</code> and <code class="a1-code">rel="noopener noreferrer"</code>. No additional class is needed — the same <code class="a1-code">a1-link</code> style applies.</p>
+        <figure class="a1-figure">
+          <p class="a1-p"><a class="a1-link" href="#" target="_blank" rel="noopener noreferrer">Opens in a new tab</a></p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;a class="a1-link" href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;
+  Opens in a new tab
+&lt;/a&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Interactive states</h2>
+        <p class="a1-p">All states are handled by CSS — no JavaScript required.</p>
+        <ul class="a1-ul">
+          <li><strong>Default</strong> — link color from <code class="a1-code">--component-link-color</code> with underline</li>
+          <li><strong>Visited</strong> — <code class="a1-code">:visited</code> — same color as default to maintain brand consistency</li>
+          <li><strong>Hover</strong> — <code class="a1-code">:hover</code> — shifted color from <code class="a1-code">--component-link-color-hover</code></li>
+          <li><strong>Active</strong> — <code class="a1-code">:active</code> — pressed color from <code class="a1-code">--component-link-color-pressed</code></li>
+          <li><strong>Focus-visible</strong> — <code class="a1-code">:focus-visible</code> — visible focus ring using the field focus ring token, shown only for keyboard navigation</li>
+        </ul>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Link vs button</h2>
+        <p class="a1-p">Use <code class="a1-code">a1-link</code> for navigating to a URL. Use <code class="a1-code">a1-button</code> on an <code class="a1-code">&lt;a&gt;</code> when the visual treatment should be a button — for example, a prominent call-to-action that links to another page.</p>
+        <figure class="a1-figure">
+          <p class="a1-p">
+            <a class="a1-link" href="#">Inline link — navigates to a page</a>
+          </p>
+          <p class="a1-p">
+            <a class="a1-button" href="#">Button link — prominent call to action</a>
+          </p>
+        </figure>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- Inline navigation --&gt;
+&lt;a class="a1-link" href="#"&gt;Read the docs&lt;/a&gt;
+
+&lt;!-- Prominent call to action --&gt;
+&lt;a class="a1-button" href="#"&gt;Get started&lt;/a&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+      <p class="a1-p"><small class="a1-small">All styles applied via <code class="a1-code">a1-*</code> class names using <code class="a1-code">a1-pure.css</code>.</small></p>
+    </footer>
+
+  </body>
+</html>

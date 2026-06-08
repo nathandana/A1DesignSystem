@@ -152,11 +152,11 @@
 }
 
 .a1-field__char-count--warning {
-  color: var(--semantic-color-status-warn-background);
+  color: var(--semantic-color-status-warn-text);
 }
 
 .a1-field__char-count--over {
-  color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-text);
 }
 
 /* ─── Side label layout adjustments ─────────────────────────────────────── */

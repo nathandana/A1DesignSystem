@@ -1,4 +1,5 @@
 import { MessageBadge } from "./Message.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const STATUSES = ["neutral", "info", "success", "warn", "error"];
 
@@ -17,9 +18,14 @@ const meta = {
       control: "inline-radio",
       options: STATUSES,
     },
+    size: {
+      control: "inline-radio",
+      options: ["md", "lg"],
+      description: "Badge size",
+    },
     subtle: { control: "boolean" },
     children: { control: "text", name: "label" },
-    icon: { control: "text", description: "Override the default status icon" },
+    icon: { ...iconArgType("Override the default status icon") },
   },
 };
 
@@ -51,6 +57,19 @@ export const Subtle = {
       <MessageBadge status="success" subtle>Complete</MessageBadge>
       <MessageBadge status="warn" subtle>Pending review</MessageBadge>
       <MessageBadge status="error" subtle>Failed</MessageBadge>
+    </div>
+  ),
+};
+
+export const Sizes = {
+  name: "Sizes",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)", flexWrap: "wrap" }}>
+      <MessageBadge status="success" size="md">Medium</MessageBadge>
+      <MessageBadge status="success" size="lg">Large</MessageBadge>
+      <MessageBadge status="success" subtle size="md">Medium subtle</MessageBadge>
+      <MessageBadge status="success" subtle size="lg">Large subtle</MessageBadge>
     </div>
   ),
 };

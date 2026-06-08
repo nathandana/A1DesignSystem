@@ -1,6 +1,7 @@
 /* ─── Tabs ────────────────────────────────────────────────────────────────── */
 
 .a1-tabs {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -163,7 +164,6 @@
 
 .a1-tab--line[aria-selected="true"] {
   color: var(--semantic-color-action-background);
-  font-weight: var(--base-font-weight-semibold);
   border-bottom-color: var(--semantic-color-action-background);
   cursor: default;
 }
@@ -192,7 +192,6 @@
 .a1-tab--folder[aria-selected="true"] {
   background: var(--semantic-color-surface-page);
   color: var(--semantic-color-text-default);
-  font-weight: var(--base-font-weight-semibold);
   border-color: var(--semantic-color-border-strong);
   border-bottom-color: var(--semantic-color-surface-page);
   z-index: var(--component-tab-z-index-active);
@@ -209,24 +208,21 @@
   height: var(--base-radius-lg);
   pointer-events: none;
   z-index: var(--component-tab-z-index-active);
+  background: var(--semantic-color-surface-page);
 }
 
 .a1-tab--folder[aria-selected="true"]::before {
   left: calc(-1 * var(--base-radius-lg));
-  background: radial-gradient(
-    circle at 0% 0%,
-    transparent calc(var(--base-radius-lg) - var(--component-tab-folder-curve-adjustment)),
-    var(--semantic-color-surface-page) var(--base-radius-lg)
-  );
+  border-right: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  border-bottom-right-radius: var(--base-radius-lg);
 }
 
 .a1-tab--folder[aria-selected="true"]::after {
   right: calc(-1 * var(--base-radius-lg));
-  background: radial-gradient(
-    circle at 100% 0%,
-    transparent calc(var(--base-radius-lg) - var(--component-tab-folder-curve-adjustment)),
-    var(--semantic-color-surface-page) var(--base-radius-lg)
-  );
+  border-left: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  border-bottom: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  border-bottom-left-radius: var(--base-radius-lg);
 }
 
 /* ── Progress variant ───────────────────────────────────────────────────── */
@@ -363,7 +359,6 @@
 /* Selected (active view) — ring around step circle */
 .a1-tab--progress[aria-selected="true"] {
   color: var(--semantic-color-text-default);
-  font-weight: var(--base-font-weight-semibold);
   cursor: default;
 }
 
@@ -399,22 +394,34 @@
   left: calc(-1 * var(--base-radius-control));
   width: var(--base-radius-control);
   height: var(--base-radius-control);
-  background: radial-gradient(
-    circle at 0% 0%,
-    transparent calc(var(--base-radius-control) - var(--component-tab-folder-curve-adjustment)),
-    var(--semantic-color-surface-page) var(--base-radius-control)
-  );
+  border-bottom-right-radius: var(--base-radius-control);
 }
 
 .a1-tabs--level-2 .a1-tab--folder[aria-selected="true"]::after {
   right: calc(-1 * var(--base-radius-control));
   width: var(--base-radius-control);
   height: var(--base-radius-control);
-  background: radial-gradient(
-    circle at 100% 0%,
-    transparent calc(var(--base-radius-control) - var(--component-tab-folder-curve-adjustment)),
-    var(--semantic-color-surface-page) var(--base-radius-control)
-  );
+  border-bottom-left-radius: var(--base-radius-control);
+}
+
+/* ─── Responsive tab labels (xs/sm: icon-only for inactive tabs) ─────────── */
+
+@media (--bp-sm-down) {
+  .a1-tab {
+    position: relative;
+  }
+
+  /* Visually hide label on inactive tabs — kept in DOM for accessibility */
+  .a1-tab[aria-selected="false"] .a1-tab__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
 }
 
 /* ─── Responsive font sizes ───────────────────────────────────────────────── */
@@ -453,15 +460,11 @@
 
 .a1-tab-panel--folder {
   background: var(--semantic-color-surface-page);
-  border: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
-  border-top: none;
-  border-radius: 0 0 var(--base-radius-lg) var(--base-radius-lg);
-  padding: var(--base-spacing-16);
+  padding: var(--base-spacing-16) 0 0;
 }
 
 .a1-tabs--level-2 .a1-tab-panel--folder {
-  border-radius: 0 0 var(--base-radius-control) var(--base-radius-control);
-  padding: var(--base-spacing-12);
+  padding: var(--base-spacing-12) 0 0;
 }
 
 .a1-tab-panel--progress {

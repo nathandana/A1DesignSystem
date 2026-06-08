@@ -10,6 +10,8 @@ export function SegmentedControl({
   value,
   onChange,
   fullWidth = false,
+  size,
+  ...props
 }) {
   const items = options.map(normalize);
 
@@ -41,10 +43,12 @@ export function SegmentedControl({
       role="radiogroup"
       className={[
         "a1-segmented",
+        size && `a1-segmented--${size}`,
         fullWidth && "a1-segmented--full-width",
       ]
         .filter(Boolean)
         .join(" ")}
+      {...props}
       onKeyDown={handleKeyDown}
     >
       {items.map((opt) => {

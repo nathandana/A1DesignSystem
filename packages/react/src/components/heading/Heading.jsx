@@ -1,10 +1,13 @@
 import "./heading.css";
 
-const headingSizes = ["xl", "lg", "md", "sm", "xs"];
+const headingSizes = ["xxl", "xl", "lg", "md", "sm", "xs"];
 const displaySizes = ["sm", "md", "lg", "xl", "xxl", "jumbo", "xJumbo"];
 const colors = ["default", "muted", "accent"];
+const margins = ["sm", "md", "lg"];
 const levels = ["h1", "h2", "h3", "h4", "h5", "h6"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
+const textWraps = ["balance"];
+const aligns = ["left", "center", "right"];
 
 const levelDefaults = { h1: "xl", h2: "lg", h3: "md", h4: "sm", h5: "xs", h6: "xs" };
 
@@ -40,6 +43,9 @@ export function Heading({
   type = "heading",
   size,
   color = "default",
+  margin,
+  textWrap,
+  align,
   className = "",
   style,
   ...props
@@ -50,6 +56,9 @@ export function Heading({
   const defaultSize = isDisplay ? "md" : (levelDefaults[resolvedAs] ?? "md");
   const resolvedSize = resolveSize(size, validSizes, defaultSize);
   const resolvedColor = colors.includes(color) ? color : "default";
+  const resolvedMargin = margins.includes(margin) ? margin : null;
+  const resolvedTextWrap = textWraps.includes(textWrap) ? textWrap : null;
+  const resolvedAlign = aligns.includes(align) ? align : null;
   const responsiveSizeStyle = getResponsiveSizeStyle(size, type, validSizes);
   const resolvedStyle = Object.keys(responsiveSizeStyle).length
     ? { ...responsiveSizeStyle, ...style }
@@ -60,10 +69,41 @@ export function Heading({
     `a1-heading--${type}`,
     `a1-heading--${type}-${resolvedSize}`,
     resolvedColor !== "default" && `a1-heading--${resolvedColor}`,
+    resolvedMargin && `a1-heading--margin-${resolvedMargin}`,
+    resolvedTextWrap && `a1-heading--wrap-${resolvedTextWrap}`,
+    resolvedAlign && `a1-heading--align-${resolvedAlign}`,
     className
   ]
     .filter(Boolean)
     .join(" ");
 
   return <Component className={classes} style={resolvedStyle} {...props} />;
+}
+
+export function HeadingMark({
+  children,
+  variant = "highlight",
+  underlineStyle = "swoop",
+  className = "",
+  ...props
+}) {
+  const resolvedVariant = variant === "underline" ? "underline" : "highlight";
+  const resolvedUnderlineStyle = ["swoop", "wave", "sketch"].includes(underlineStyle)
+    ? underlineStyle
+    : "swoop";
+
+  const classes = [
+    "a1-heading-mark",
+    `a1-heading-mark--${resolvedVariant}`,
+    resolvedVariant === "underline" && `a1-heading-mark--underline-${resolvedUnderlineStyle}`,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <span className={classes} {...props}>
+      {children}
+    </span>
+  );
 }

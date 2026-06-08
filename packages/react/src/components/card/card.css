@@ -1,4 +1,5 @@
 .a1-card {
+  container: a1-card / inline-size;
   box-sizing: border-box;
   background: var(--semantic-color-surface-page);
   border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
@@ -6,6 +7,42 @@
   padding: var(--component-card-padding);
   box-shadow: var(--semantic-shadow-sm);
   color: var(--semantic-color-text-default);
+}
+
+/* ─── Navigation variant — the whole card is the link/button ─────────────── */
+
+.a1-card--navigation {
+  display: block;
+  inline-size: 100%;
+  text-align: start;
+  text-decoration: none;
+  border-color: var(--semantic-color-text-accent);
+  cursor: pointer;
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    box-shadow var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+button.a1-card--navigation {
+  appearance: none;
+  font: inherit;
+}
+
+.a1-card--navigation:hover {
+  background: var(--semantic-color-action-surface);
+  border-color: var(--semantic-color-action-background);
+}
+
+.a1-card--navigation:active {
+  background: var(--semantic-color-surface-panel);
+  border-color: var(--semantic-color-action-background);
+  box-shadow: var(--semantic-shadow-xs);
+}
+
+.a1-card--navigation:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--semantic-color-action-background);
+  outline-offset: var(--base-spacing-2);
 }
 
 /* ─── Bare variant — no chrome, no padding ─────────────────────────────────── */
@@ -18,13 +55,29 @@
   padding: 0;
 }
 
-/* ─── Hero icon (full-bleed header area) ───────────────────────────────────── */
+/* ─── Content wrapper ─────────────────────────────────────────────────────── */
+
+.a1-card__content {
+  min-width: 0;
+}
+
+/* ─── Hero icon — full-bleed header area (or left strip at lg) ─────────────
+   Container query breakpoints: sm=320px, md=480px, lg=640px
+   base/sm/md : coloured band spanning the full card width at the top
+   lg ≥ 640px : coloured strip spanning the full card height on the left
+   ─────────────────────────────────────────────────────────────────────────── */
 
 .a1-card--has-hero {
   overflow: hidden;
 }
 
+.a1-card--has-hero .a1-card__layout {
+  display: flex;
+  flex-direction: column;
+}
+
 .a1-card__hero {
+  /* Bleed out to the card edges on all four sides then add inner padding */
   margin-top: calc(-1 * var(--component-card-padding));
   margin-inline: calc(-1 * var(--component-card-padding));
   margin-bottom: var(--component-card-padding);
@@ -33,22 +86,71 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.a1-card__hero-icon {
-  font-size: var(--base-spacing-64);
-  color: var(--semantic-color-text-inverse);
+  flex-shrink: 0;
   --a1-icon-opsz: 48;
 }
 
-/* ─── Small icon ───────────────────────────────────────────────────────────── */
+/* Higher specificity (0,2,0) beats .a1-icon (0,1,0) so font-size is not overridden by inherit */
+.a1-card__hero .a1-icon {
+  font-size: var(--base-spacing-64);
+  color: var(--semantic-color-text-inverse);
+}
+
+/* lg ≥ 640px — hero becomes a left strip, full card height; icon 3 steps larger (128px) */
+@container a1-card (min-width: 640px) {
+  .a1-card--has-hero > .a1-card__layout {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .a1-card__hero {
+    /* Reset top-strip margins; bleed left/top/bottom only */
+    margin-top: calc(-1 * var(--component-card-padding));
+    margin-bottom: calc(-1 * var(--component-card-padding));
+    margin-inline-start: calc(-1 * var(--component-card-padding));
+    margin-inline-end: 0;
+    margin-block: calc(-1 * var(--component-card-padding));
+    /* Vertical strip padding */
+    padding: var(--base-spacing-32) var(--base-spacing-40);
+    /* Round left corners only — right side butts flush against content */
+    border-start-start-radius: calc(var(--component-card-border-radius) - var(--component-card-border-width));
+    border-end-start-radius: calc(var(--component-card-border-radius) - var(--component-card-border-width));
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .a1-card__hero .a1-icon {
+    font-size: var(--base-spacing-128);
+  }
+
+  .a1-card--has-hero .a1-card__content {
+    flex: 1 1 auto;
+    padding-inline-start: var(--component-card-padding);
+  }
+}
+
+/* ─── Default icon — small tokenised icon block ─────────────────────────────
+   Container query breakpoints (standard: sm=320px, md=480px, lg=640px):
+   base       : 40×40 box, 20px icon, icon above content (column)
+   sm ≥ 320px : 40×40 box, 24px icon
+   md ≥ 480px : 64×64 box, 32px icon
+   lg ≥ 640px : 96×96 box, 40px icon, shifted left (row layout)
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-card--has-icon .a1-card__layout {
+  display: flex;
+  flex-direction: column;
+}
 
 .a1-card__icon {
+  --a1-card-icon-box: var(--base-spacing-40);
+  --a1-card-icon-size: var(--component-card-icon-size);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--base-spacing-40);
-  height: var(--base-spacing-40);
+  width: var(--a1-card-icon-box);
+  height: var(--a1-card-icon-box);
   border-radius: var(--base-radius-control);
   background: var(--semantic-color-action-surface);
   color: var(--semantic-color-action-background);
@@ -58,5 +160,42 @@
 }
 
 .a1-card__icon .a1-icon {
-  font-size: var(--component-card-icon-size);
+  font-size: var(--a1-card-icon-size);
+}
+
+/* sm ≥ 320px — icon one step larger (24px), box unchanged */
+@container a1-card (min-width: 320px) {
+  .a1-card__icon {
+    --a1-card-icon-size: var(--base-spacing-24);
+    --a1-icon-opsz: 24;
+  }
+}
+
+/* md ≥ 480px — icon two steps larger (32px), box one step larger (64px) */
+@container a1-card (min-width: 480px) {
+  .a1-card__icon {
+    --a1-card-icon-box: var(--base-spacing-64);
+    --a1-card-icon-size: var(--base-spacing-32);
+    --a1-icon-opsz: 40;
+  }
+}
+
+/* lg ≥ 640px — icon three steps larger (40px), box two steps larger (96px), shifted left */
+@container a1-card (min-width: 640px) {
+  .a1-card--has-icon > .a1-card__layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--base-spacing-16);
+  }
+
+  .a1-card__icon {
+    --a1-card-icon-box: var(--base-spacing-96);
+    --a1-card-icon-size: var(--base-spacing-40);
+    --a1-icon-opsz: 48;
+    margin-bottom: 0;
+  }
+
+  .a1-card--has-icon .a1-card__content {
+    flex: 1 1 auto;
+  }
 }
