@@ -417,7 +417,7 @@ export const AlignmentProp = {
       <Section padding="md" surface="raised" alignment={{ xs: "center", lg: "left" }}>
         <Heading as="h2" size="lg">Responsive: center on mobile, left on desktop</Heading>
         <Paragraph size="lg" color="muted">
-          alignment={{ xs: "center", lg: "left" }} — resize the preview to see direct children move without cascading text alignment into nested components.
+          {`alignment={{ xs: "center", lg: "left" }}`} — resize the preview to see direct children move without cascading text alignment into nested components.
         </Paragraph>
       </Section>
     </>
