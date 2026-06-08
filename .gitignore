@@ -3,4 +3,6 @@ node_modules/
 
 # QA report output — generated per run, not committed
 reports/
+# Playwright test artifacts — generated per run, not committed
+test-results/
 # visual-baselines/ is intentionally tracked (via Git LFS)
