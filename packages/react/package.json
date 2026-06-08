@@ -1,6 +1,6 @@
 {
   "name": "@gtivr4/a1-design-system-react",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "React components for the A1 token-driven design system.",
   "type": "module",
   "main": "./src/index.js",
