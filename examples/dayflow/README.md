@@ -27,3 +27,29 @@ Open http://127.0.0.1:5183/examples/dayflow/
 ```sh
 npm run build:dayflow
 ```
+
+## Deploy to the cloud (Netlify)
+
+Dayflow is a static SPA — no server or API keys required. Everything runs in the browser (localStorage, simulated calendars, client-side optimization).
+
+**Option A — deploy from the example folder (recommended)**
+
+1. In [Netlify](https://www.netlify.com/), create a new site from this repo.
+2. Set **Base directory** to `examples/dayflow`.
+3. Netlify reads `examples/dayflow/netlify.toml` automatically:
+   - Build command: `npm run netlify:build`
+   - Publish directory: `dist`
+
+**Option B — deploy from the repo root**
+
+Update the root `netlify.toml` to:
+
+```toml
+[build]
+  command = "npm run build:dayflow"
+  publish = "examples/dayflow/dist"
+```
+
+Then connect the repo to Netlify as usual.
+
+The app also works on Vercel, Cloudflare Pages, or any static host — build with `npm run build:dayflow` and serve `examples/dayflow/dist`.
