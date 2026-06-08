@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build:priority-guide"
-  publish = "examples/priority-guide/dist"
+  command = "npm run build:dayflow"
+  publish = "examples/dayflow/dist"
 
 [build.environment]
   NODE_VERSION = "22"
