@@ -227,7 +227,7 @@ export const GradientPositions = {
 };
 
 export const PaddingScale = {
-  name: "Padding — lg / md / sm",
+  name: "Padding — lg / md / sm / xs",
   render: () => (
     <>
       <Section padding="lg" surface="panel">
@@ -254,6 +254,15 @@ export const PaddingScale = {
         <Paragraph size="lg" color="muted">
           32px block / 24px inline at desktop, scales to 24/16 at tablet and 16/12 on mobile.
           Use for compact bands, banners, or dense product-UI sections.
+        </Paragraph>
+      </Section>
+
+      <Section padding="xs">
+        <MessageBadge subtleicon="fit_screen">xs — extra small</MessageBadge>
+        <Heading as="h2" size="xl">Extra-small padding</Heading>
+        <Paragraph size="lg" color="muted">
+          16px block / 16px inline at desktop, scales to 12/12 at tablet and 8/8 on mobile.
+          Use for tight inset bands, toolbars, or nested layout zones that need minimal breathing room.
         </Paragraph>
       </Section>
     </>

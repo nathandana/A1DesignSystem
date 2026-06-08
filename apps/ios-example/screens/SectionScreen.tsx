@@ -58,7 +58,7 @@ export function SectionScreen() {
 
       {/* ── Padding ─────────────────────────────────────── */}
       <DemoLabel text="Padding" />
-      {(['lg', 'md', 'sm', 'none'] as const).map(p => (
+      {(['lg', 'md', 'sm', 'xs', 'none'] as const).map(p => (
         <Section key={p} surface="panel" padding={p}>
           <Paragraph size="sm">padding="{p}"</Paragraph>
         </Section>

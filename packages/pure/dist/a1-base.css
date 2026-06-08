@@ -387,6 +387,12 @@
   --a1-section-padding-inline: 0;
 }
 
+.a1-section-padding-xs,
+.a1-section--padding-xs {
+  --a1-section-padding-block: var(--base-spacing-16);
+  --a1-section-padding-inline: var(--base-spacing-16);
+}
+
 .a1-section-padding-sm,
 .a1-section--padding-sm {
   --a1-section-padding-block: var(--base-spacing-32);
@@ -549,6 +555,12 @@
 }
 
 @media (max-width: 1024px) {
+  .a1-section-padding-xs,
+  .a1-section--padding-xs {
+    --a1-section-padding-block: var(--base-spacing-12);
+    --a1-section-padding-inline: var(--base-spacing-12);
+  }
+
   .a1-section-padding-sm,
   .a1-section--padding-sm {
     --a1-section-padding-block: var(--base-spacing-24);
@@ -569,6 +581,12 @@
 }
 
 @media (max-width: 640px) {
+  .a1-section-padding-xs,
+  .a1-section--padding-xs {
+    --a1-section-padding-block: var(--base-spacing-8);
+    --a1-section-padding-inline: var(--base-spacing-8);
+  }
+
   .a1-section-padding-sm,
   .a1-section--padding-sm {
     --a1-section-padding-block: var(--base-spacing-16);

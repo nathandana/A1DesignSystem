@@ -206,10 +206,11 @@
 
 /* ── Padding — static (with built-in responsive scaling) ───────────────────── */
 /*
- * Three tiers scale across three breakpoints:
+ * Four tiers scale across three breakpoints:
  *   lg  96/64  →  96/40 at ≤1024  →  64/24 at ≤640
  *   md  64/40  →  40/24 at ≤1024  →  32/16 at ≤640
  *   sm  32/24  →  24/16 at ≤1024  →  16/12 at ≤640
+ *   xs  16/16  →  12/12 at ≤1024  →   8/8  at ≤640
  * Block (top/bottom) / Inline (left/right)
  */
 

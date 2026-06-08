@@ -1,6 +1,6 @@
 import React from 'react';
 import { type StyleProp, type ViewStyle } from 'react-native';
-export type SectionPadding = 'lg' | 'md' | 'sm' | 'none';
+export type SectionPadding = 'lg' | 'md' | 'sm' | 'xs' | 'none';
 export type SectionSurface = 'page' | 'panel' | 'raised';
 export type SectionGap = 'xs' | 'sm' | 'md' | 'lg';
 export interface SectionProps {

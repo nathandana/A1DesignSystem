@@ -3,7 +3,7 @@ import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { DesignSystemProvider, useDesignSystem } from '../../context/DesignSystemContext';
 import { spacingTokens } from '../../tokens/spacing';
 
-export type SectionPadding = 'lg' | 'md' | 'sm' | 'none';
+export type SectionPadding = 'lg' | 'md' | 'sm' | 'xs' | 'none';
 export type SectionSurface = 'page' | 'panel' | 'raised';
 export type SectionGap     = 'xs' | 'sm' | 'md' | 'lg';
 
@@ -11,6 +11,7 @@ const PADDING: Record<SectionPadding, number> = {
   lg: spacingTokens.base[40],
   md: spacingTokens.semantic.gap.lg,
   sm: spacingTokens.semantic.gap.md,
+  xs: spacingTokens.semantic.gap.sm,
   none: 0,
 };
 const GAP: Record<SectionGap, number> = spacingTokens.semantic.gap;

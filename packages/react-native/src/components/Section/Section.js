@@ -6,6 +6,7 @@ const PADDING = {
     lg: spacingTokens.base[40],
     md: spacingTokens.semantic.gap.lg,
     sm: spacingTokens.semantic.gap.md,
+    xs: spacingTokens.semantic.gap.sm,
     none: 0,
 };
 const GAP = spacingTokens.semantic.gap;
