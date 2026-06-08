@@ -4,6 +4,24 @@ This file records prop renames, value changes, and removals by version so agents
 
 ---
 
+## Released — 0.4.1
+
+### Calendar: `selectable` prop required to enable date selection
+
+Date selection is now opt-in. Pass `selectable` to enable click/keyboard interaction on day cells. Without it the calendar is display-only — no click handlers, hover states, or focus management on day cells.
+
+Out-of-range dates (outside `minDate` / `maxDate`) are unconditionally blocked from selection even when `selectable` is true.
+
+```jsx
+// Before (broken — clicking had no effect without selectable)
+<Calendar variant="paginated" selectedDate={date} onChange={setDate} />
+
+// After
+<Calendar variant="paginated" selectable selectedDate={date} onChange={setDate} />
+```
+
+---
+
 ## Released — 0.4.0
 
 ### Tab: `status="warning"` → `status="warn"`

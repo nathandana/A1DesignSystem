@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Prompt: Calendar — selectable date range enforcement and 0.4.1
+
+- Added `selectable` prop to `Calendar` — date selection is now opt-in (off by default). Previously the `DateRange` and `SelectedDate` Storybook stories were missing this prop.
+- Out-of-range dates (outside `minDate`/`maxDate`) are fully non-interactive in selectable mode: no click handler, no `tabIndex`, and `handleDayClick` has an early-exit guard as a safety net.
+- Updated `Calendar.d.ts` to document the `selectable` prop.
+- Bumped `@gtivr4/a1-design-system-react` from `0.4.0` to `0.4.1`.
+- Storybook `DateRange` story now spans June this year to July next year (was two months from today); both `SelectedDate` and `DateRange` stories no longer constrain the calendar width.
+
+---
+
 ### Prompt: StatusBar pause button, labels, and React package 0.4.0
 
 - Replaced the StatusBar indeterminate pause/play toggle from a custom bare `<button>` to a `<Button size="sm" variant="secondary">` component.

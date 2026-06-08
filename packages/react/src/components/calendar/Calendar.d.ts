@@ -42,6 +42,34 @@ export interface CalendarProps extends React.HTMLAttributes<HTMLDivElement> {
    * Default: false
    */
   todayButton?: boolean;
+  /**
+   * Enables date selection. When false (default), the calendar is display-only —
+   * no click handlers, hover effects, or keyboard interaction on day cells.
+   * Pass `selectedDate` or `defaultSelectedDate` alongside this prop.
+   * Default: false
+   */
+  selectable?: boolean;
+  /**
+   * The currently selected date (controlled). Pass `null` to clear the selection.
+   * Omit entirely to use uncontrolled mode with `defaultSelectedDate`.
+   */
+  selectedDate?: Date | null;
+  /**
+   * Initial selected date for uncontrolled mode. Ignored when `selectedDate` is provided.
+   */
+  defaultSelectedDate?: Date | null;
+  /**
+   * Called with the new `Date` whenever the user clicks a selectable day.
+   */
+  onChange?: (date: Date) => void;
+  /**
+   * Earliest selectable date (inclusive). Days before this are disabled.
+   */
+  minDate?: Date;
+  /**
+   * Latest selectable date (inclusive). Days after this are disabled.
+   */
+  maxDate?: Date;
 }
 
 export declare function Calendar(props: CalendarProps): React.ReactElement;

@@ -110,6 +110,50 @@
   background: var(--semantic-color-surface-raised);
 }
 
+/* ── Selected — full-cell fill (display and selectable modes) ─── */
+
+.a1-calendar__day--selected {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-text-inverse);
+}
+
+/* ── Disabled (out of range) — same surface as past dates ──────── */
+
+.a1-calendar__day--disabled {
+  background: var(--semantic-color-surface-raised);
+}
+
+/* ── Selectable mode (opt-in via selectable prop) ──────────────── */
+
+.a1-calendar--selectable .a1-calendar__day:not(.a1-calendar__day--empty):not(.a1-calendar__day--disabled) {
+  cursor: pointer;
+}
+.a1-calendar--selectable .a1-calendar__day--disabled {
+  cursor: not-allowed;
+}
+
+/* Today — neutral ring instead of action fill (yields to selected) */
+.a1-calendar--selectable .a1-calendar__day--today:not(.a1-calendar__day--selected) {
+  background: transparent;
+  color: var(--semantic-color-text-default);
+}
+.a1-calendar--selectable .a1-calendar__day--today:not(.a1-calendar__day--selected) .a1-calendar__day-number {
+  outline: 2px solid var(--semantic-color-text-default);
+  outline-offset: -1px;
+}
+
+/* Full-cell hover for non-selected, non-disabled days */
+.a1-calendar--selectable .a1-calendar__day:not(.a1-calendar__day--empty):not(.a1-calendar__day--disabled):not(.a1-calendar__day--selected):hover {
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+}
+
+/* Focus ring */
+.a1-calendar--selectable .a1-calendar__day:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: -2px;
+}
+
 /* ── Paginated variant — nav bar ─────────────────────────── */
 
 .a1-calendar__nav {
@@ -176,6 +220,33 @@
   .a1-calendar__day--today .a1-calendar__day-number {
     background: var(--semantic-color-action-background);
     color: var(--semantic-color-text-inverse);
+  }
+
+  /* Selected: revert to circle in narrow view */
+  .a1-calendar__day--selected {
+    background: transparent;
+    color: var(--semantic-color-text-default);
+  }
+  .a1-calendar__day--selected .a1-calendar__day-number {
+    background: var(--semantic-color-action-background);
+    color: var(--semantic-color-text-inverse);
+  }
+
+  /* Selectable: today ring (suppress action-bg circle from non-selectable narrow rule) */
+  .a1-calendar--selectable .a1-calendar__day--today:not(.a1-calendar__day--selected) .a1-calendar__day-number {
+    background: transparent;
+    color: var(--semantic-color-text-default);
+    outline: 2px solid var(--semantic-color-text-default);
+    outline-offset: -1px;
+  }
+
+  /* Selectable: hover as circle in narrow */
+  .a1-calendar--selectable .a1-calendar__day:not(.a1-calendar__day--empty):not(.a1-calendar__day--disabled):not(.a1-calendar__day--selected):hover {
+    background: transparent;
+    color: var(--semantic-color-text-default);
+  }
+  .a1-calendar--selectable .a1-calendar__day:not(.a1-calendar__day--empty):not(.a1-calendar__day--disabled):not(.a1-calendar__day--selected):hover .a1-calendar__day-number {
+    background: var(--semantic-color-surface-panel);
   }
 
   .a1-calendar__nav {

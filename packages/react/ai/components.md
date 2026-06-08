@@ -288,6 +288,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-09 | Calendar: added `selectable` prop (opt-in date selection); out-of-range dates fully blocked when minDate/maxDate set; React package bumped to 0.4.1 |
 | 2026-06-09 | StatusBar pause button → `<Button size="sm" variant="secondary">` with "Pause"/"Play" text; added system/labels/status-bar.json with translations (es/fr/de/pt/ja/zh/ar); React package bumped to 0.4.0 |
 | 2026-06-09 | Prop consistency pass (v0.4.0): Tab status "warning"→"warn"; Section alignment→align; Notification variant→status, "default"→"neutral"; Heading/Paragraph align now accepts "start"/"end"; TextField/TextareaField/SelectField/Fieldset labelPosition "side"→"before"; Grid gap adds "xs"; SegmentedControl.d.ts created with size typed; DataTable density→size (omit=auto) |
 | 2026-06-08 | Fixed StatusBar RTL indeterminate animation (physical left/right anchor + animation-direction: reverse); added pause/resume button appearing after 3 s; label accepts ReactNode |

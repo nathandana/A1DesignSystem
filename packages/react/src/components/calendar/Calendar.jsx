@@ -42,6 +42,12 @@ export function Calendar({
   dimPast = true,
   variant = "scroll",
   todayButton = false,
+  selectable = false,
+  selectedDate,
+  defaultSelectedDate,
+  onChange,
+  minDate,
+  maxDate,
   className = "",
   ...props
 }) {
@@ -62,6 +68,35 @@ export function Calendar({
   const [viewYear, setViewYear]   = useState(centerYear);
   const [viewMonth, setViewMonth] = useState(centerMonth);
   const currentMonthRef           = useRef(null);
+
+  // Selection — controlled when selectedDate is provided, otherwise internal state
+  const isControlled = selectedDate !== undefined;
+  const [internalSelected, setInternalSelected] = useState(defaultSelectedDate ?? null);
+  const selected = isControlled ? selectedDate : internalSelected;
+
+  function isSameDay(d, y, m, day) {
+    return d instanceof Date && d.getFullYear() === y && d.getMonth() === m && d.getDate() === day;
+  }
+
+  function isDayDisabled(y, m, day) {
+    const date = new Date(y, m, day);
+    if (minDate) {
+      const min = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+      if (date < min) return true;
+    }
+    if (maxDate) {
+      const max = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+      if (date > max) return true;
+    }
+    return false;
+  }
+
+  function handleDayClick(y, m, day) {
+    if (isDayDisabled(y, m, day)) return;
+    const date = new Date(y, m, day);
+    if (!isControlled) setInternalSelected(date);
+    onChange?.(date);
+  }
 
   // ── Localised strings ─────────────────────────────────────────
 
@@ -210,15 +245,30 @@ export function Calendar({
                   dimPast &&
                   new Date(year, month, day) < new Date(todayYear, todayMonth, todayDay);
 
+                const isSelected = isSameDay(selected, year, month, day);
+                const isDisabled = isDayDisabled(year, month, day);
+
                 return (
                   <td
                     key={di}
                     className={[
                       "a1-calendar__day",
-                      isToday && "a1-calendar__day--today",
-                      isPast  && "a1-calendar__day--past",
+                      isToday    && "a1-calendar__day--today",
+                      isPast     && "a1-calendar__day--past",
+                      isSelected && "a1-calendar__day--selected",
+                      isDisabled && "a1-calendar__day--disabled",
                     ].filter(Boolean).join(" ")}
                     aria-current={isToday ? "date" : undefined}
+                    aria-selected={isSelected ? true : undefined}
+                    aria-disabled={isDisabled ? true : undefined}
+                    tabIndex={selectable && !isDisabled ? 0 : undefined}
+                    onClick={selectable && !isDisabled ? () => handleDayClick(year, month, day) : undefined}
+                    onKeyDown={selectable && !isDisabled ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleDayClick(year, month, day);
+                      }
+                    } : undefined}
                   >
                     <span className="a1-calendar__day-number" aria-hidden="true">
                       {day}
@@ -235,17 +285,27 @@ export function Calendar({
 
   // ── Paginated variant ─────────────────────────────────────────
   if (variant === "paginated") {
-    const yearStart = todayYear - 10;
-    const yearEnd   = todayYear + 15;
+    const minYear = minDate ? minDate.getFullYear() : todayYear - 10;
+    const minMon  = minDate ? minDate.getMonth()    : 0;
+    const maxYear = maxDate ? maxDate.getFullYear() : todayYear + 15;
+    const maxMon  = maxDate ? maxDate.getMonth()    : 11;
+
+    const yearStart = minDate ? minDate.getFullYear() : todayYear - 10;
+    const yearEnd   = maxDate ? maxDate.getFullYear() : todayYear + 15;
     const years     = Array.from({ length: yearEnd - yearStart + 1 }, (_, i) => yearStart + i);
 
+    const prevAtMin = viewYear === minYear && viewMonth === minMon;
+    const nextAtMax = viewYear === maxYear && viewMonth === maxMon;
+
     const goPrev = () => {
+      if (prevAtMin) return;
       const p = addMonths(viewYear, viewMonth, -1);
       setViewYear(p.year);
       setViewMonth(p.month);
     };
 
     const goNext = () => {
+      if (nextAtMax) return;
       const n = addMonths(viewYear, viewMonth, 1);
       setViewYear(n.year);
       setViewMonth(n.month);
@@ -263,19 +323,19 @@ export function Calendar({
 
     return (
       <div
-        className={["a1-calendar", "a1-calendar--paginated", className].filter(Boolean).join(" ")}
+        className={["a1-calendar", "a1-calendar--paginated", selectable && "a1-calendar--selectable", className].filter(Boolean).join(" ")}
         {...props}
       >
         <div className="a1-calendar__inner">
           <div className="a1-calendar__nav">
 
             <span className="a1-calendar__nav-wide">
-              <Button variant="tertiary" size="sm" icon={isRtl ? "chevron_right" : "chevron_left"} iconPosition="start" onClick={goPrev}>
+              <Button variant="tertiary" size="sm" icon={isRtl ? "chevron_right" : "chevron_left"} iconPosition="start" onClick={goPrev} disabled={prevAtMin}>
                 {prevMonthLabel}
               </Button>
             </span>
             <span className="a1-calendar__nav-narrow">
-              <IconButton icon={isRtl ? "chevron_right" : "chevron_left"} label={prevMonthLabel} variant="tertiary" onClick={goPrev} />
+              <IconButton icon={isRtl ? "chevron_right" : "chevron_left"} label={prevMonthLabel} variant="tertiary" onClick={goPrev} disabled={prevAtMin} />
             </span>
 
             <div className="a1-calendar__nav-label">
@@ -286,9 +346,12 @@ export function Calendar({
                 value={viewMonth}
                 onChange={e => setViewMonth(Number(e.target.value))}
               >
-                {MONTHS.map((name, i) => (
-                  <option key={i} value={i}>{name}</option>
-                ))}
+                {MONTHS.map((name, i) => {
+                  const disabled =
+                    (viewYear === minYear && i < minMon) ||
+                    (viewYear === maxYear && i > maxMon);
+                  return <option key={i} value={i} disabled={disabled}>{name}</option>;
+                })}
               </SelectField>
               <SelectField
                 className="a1-calendar__nav-field"
@@ -327,12 +390,12 @@ export function Calendar({
             </div>
 
             <span className="a1-calendar__nav-wide">
-              <Button variant="tertiary" size="sm" icon={isRtl ? "chevron_left" : "chevron_right"} iconPosition="end" onClick={goNext}>
+              <Button variant="tertiary" size="sm" icon={isRtl ? "chevron_left" : "chevron_right"} iconPosition="end" onClick={goNext} disabled={nextAtMax}>
                 {nextMonthLabel}
               </Button>
             </span>
             <span className="a1-calendar__nav-narrow">
-              <IconButton icon={isRtl ? "chevron_left" : "chevron_right"} label={nextMonthLabel} variant="tertiary" onClick={goNext} />
+              <IconButton icon={isRtl ? "chevron_left" : "chevron_right"} label={nextMonthLabel} variant="tertiary" onClick={goNext} disabled={nextAtMax} />
             </span>
 
           </div>
@@ -351,7 +414,7 @@ export function Calendar({
 
   return (
     <div
-      className={["a1-calendar", className].filter(Boolean).join(" ")}
+      className={["a1-calendar", selectable && "a1-calendar--selectable", className].filter(Boolean).join(" ")}
       {...props}
     >
       <div className="a1-calendar__inner">
