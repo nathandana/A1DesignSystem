@@ -25,8 +25,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for PKG in packages/react packages/react-native; do
-            NAME=$(cd $PKG && npm pkg get name | tr -d '"')
-            VERSION=$(cd $PKG && npm pkg get version | tr -d '"')
+            NAME=$(node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('$PKG/package.json','utf8'));process.stdout.write(p.name)")
+            VERSION=$(node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('$PKG/package.json','utf8'));process.stdout.write(p.version)")
             PUBLISHED=$(npm view "${NAME}@${VERSION}" version 2>/dev/null || true)
             if [ -z "$PUBLISHED" ]; then
               echo "→ Publishing ${NAME}@${VERSION}"
