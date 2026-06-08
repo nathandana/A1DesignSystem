@@ -1,6 +1,6 @@
 # A1 Design System — Foundations
 
-This file covers the repository structure and shared system concepts. Read it with `system/ai/project-context.md` before changing tokens, themes, labels, or package-wide architecture.
+This file covers the repository structure and shared system concepts. Read it with `packages/react/ai/project-context.md` before changing tokens, themes, labels, or package-wide architecture.
 
 ---
 

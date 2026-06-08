@@ -1,6 +1,6 @@
 # A1 Design System — Workflows and Rules
 
-This file covers implementation rules and change workflows. Read it with `system/ai/project-context.md` before editing CSS, components, examples, package code, or system rules.
+This file covers implementation rules and change workflows. Read it with `packages/react/ai/project-context.md` before editing CSS, components, examples, package code, or system rules.
 
 ---
 
@@ -112,7 +112,7 @@ packages/react/src/components/{component-name}/
 8. **Storybook** — Ensure the React stories cover all variants, sizes, states, and all supported themes.
 9. **Changelog** — Record the addition in every affected project/package/app changelog that exists, including `changelog.md` or `CHANGELOG.md`, with the component name, what was added, and what packages were affected.
 10. **Theme + breakpoint validation** — Confirm the component renders correctly across all themes (base, a1-light, accessible, heritage) and all breakpoints (xs–xl).
-11. **Component registry** — Update `system/ai/components.md` to reflect the new component and which packages it is available in.
+11. **Component registry** — Update `packages/react/ai/components.md` to reflect the new component and which packages it is available in.
 
 The same checklist applies when updating or removing an existing component (steps 1–11 as relevant). Never ship an API change, feature addition, or feature removal without updating documentation, stories, examples, and relevant changelogs in the same change.
 
@@ -190,7 +190,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 
 ## Key Invariants
 
-These rules cannot be broken regardless of context. They are a union of the Agent Rules in `system/ai/project-context.md` and the technical constraints of the system.
+These rules cannot be broken regardless of context. They are a union of the Agent Rules in `packages/react/ai/project-context.md` and the technical constraints of the system.
 
 **System first**
 1. **Use A1 before building custom.** Components, tokens, patterns, and utilities exist for a reason. Reaching for a custom solution without exhausting system options is a violation of the design contract.
@@ -221,4 +221,4 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Operations**
 13. **Build before testing.** After any token or theme change, run `npm run build:tokens && npm run build:html-css` before testing, committing, or declaring the work done.
-14. **Keep the AI context current.** When a component is added, removed, renamed, or its package coverage changes, update `system/ai/components.md`. When a system rule, token convention, or workflow changes, update the relevant `system/ai/` context file. Stale context is worse than no context — it actively misleads future agents.
+14. **Keep the AI context current.** When a component is added, removed, renamed, or its package coverage changes, update `packages/react/ai/components.md`. When a system rule, token convention, or workflow changes, update the relevant `packages/react/ai/` context file. Stale context is worse than no context — it actively misleads future agents.

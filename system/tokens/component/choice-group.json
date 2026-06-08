@@ -1,0 +1,38 @@
+{
+  "component": {
+    "choiceGroup": {
+      "borderRadius":  { "$type": "dimension", "$value": "{base.radius.lg}" },
+      "borderWidth":   { "$type": "dimension", "$value": "{base.space.card.borderWidth}" },
+      "gapSm":         { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "gapMd":         { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "gapLg":         { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "compact": {
+        "padding":       { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "iconSize":      { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "indicatorSize": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "contentGap":    { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "minWidth":      { "$type": "dimension", "$value": "100px" },
+        "groupGap":      { "$type": "dimension", "$value": "{base.spacing.4}" },
+        "itemsTopGap":   { "$type": "dimension", "$value": "{base.spacing.8}" }
+      },
+      "default": {
+        "padding":       { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "iconSize":      { "$type": "dimension", "$value": "{base.spacing.24}" },
+        "indicatorSize": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "contentGap":    { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "minWidth":      { "$type": "dimension", "$value": "140px" },
+        "groupGap":      { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "itemsTopGap":   { "$type": "dimension", "$value": "{base.spacing.12}" }
+      },
+      "comfortable": {
+        "padding":       { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "iconSize":      { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "indicatorSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "contentGap":    { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "minWidth":      { "$type": "dimension", "$value": "200px" },
+        "groupGap":      { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "itemsTopGap":   { "$type": "dimension", "$value": "{base.spacing.16}" }
+      }
+    }
+  }
+}

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Prompt: Add Choice Group component
+
+- Added `ChoiceGroup` to `packages/react` — a card-tile selection group supporting single-select (radio) and multi-select (checkbox) modes.
+- New props: `size` (sm/md/lg tile size), `gap` (sm/md/lg tile spacing), `columns` (fixed column count or "auto" responsive fill), `multiple` (boolean), `required`, `disabled`, `hint`, `error`.
+- Each option accepts `value`, `label`, `subtext`, `icon` (Material Symbols), and `disabled`.
+- Visual indicator in the top-right corner of each tile: circle for single-select, checkbox square for multi-select.
+- Added component tokens in `system/tokens/component/choice-group.json` and rebuilt token output.
+- Added Storybook stories: Configurable, Single vs Multi, Sizes, Gap, Columns, With Icons, Without Icons, States, Controlled.
+- Exported `ChoiceGroup` from the React package index.
+- Updated `system/ai/components.md` registry.
+
 ### Prompt: Stabilize local dev ports and Catlympics theme mode
 
 - Added fixed `--strictPort` dev scripts for the examples index, a1-web, Storybook, Priority Guide, Cat Stack Cafe, Theme Editor, and Catlympics so local URLs are bookmarkable.

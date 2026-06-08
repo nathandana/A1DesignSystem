@@ -33,6 +33,7 @@ export { NumberField } from "./components/field/NumberField.jsx";
 export { TimeField } from "./components/field/TimeField.jsx";
 export { TextareaField } from "./components/field/TextareaField.jsx";
 export { CheckboxGroup } from "./components/checkbox-group/CheckboxGroup.jsx";
+export { ChoiceGroup } from "./components/choice-group/ChoiceGroup.jsx";
 export { RadioGroup } from "./components/radio-group/RadioGroup.jsx";
 export { Switch } from "./components/switch/Switch.jsx";
 export { MessageBadge, MessageEmptyState } from "./components/message/Message.jsx";

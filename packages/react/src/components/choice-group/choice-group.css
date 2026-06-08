@@ -1,0 +1,332 @@
+/* ─── ChoiceGroup ──────────────────────────────────────────────────────────── */
+
+.a1-choice-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+
+  /* Tile size defaults (default) */
+  --a1-cg-padding:             var(--component-choice-group-default-padding);
+  --a1-cg-icon-size:           var(--component-choice-group-default-icon-size);
+  --a1-cg-indicator-size:      var(--component-choice-group-default-indicator-size);
+  --a1-cg-content-gap:         var(--component-choice-group-default-content-gap);
+  --a1-cg-min-width:           var(--component-choice-group-default-min-width);
+  --a1-cg-label-size:          var(--semantic-font-size-body-md);
+  --a1-cg-subtext-size:        var(--semantic-font-size-body-sm);
+  --a1-cg-legend-size:         var(--semantic-font-size-body-sm);
+  --a1-cg-section-label-size:  var(--semantic-font-size-body-xs);
+
+  /* Gap between tiles — tracks size */
+  --a1-cg-gap:            var(--component-choice-group-gap-md);
+
+  /* Spacing between legend/messages and the items container */
+  --a1-cg-group-gap:      var(--component-choice-group-default-group-gap);
+  --a1-cg-items-top-gap:  var(--component-choice-group-default-items-top-gap);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-cg-group-gap);
+}
+
+/* ─── Tile sizes — affect only tile padding and child element sizes ─────────── */
+
+.a1-choice-group--compact {
+  --a1-cg-padding:        var(--component-choice-group-compact-padding);
+  --a1-cg-icon-size:      var(--component-choice-group-compact-icon-size);
+  --a1-cg-indicator-size: var(--component-choice-group-compact-indicator-size);
+  --a1-cg-content-gap:    var(--component-choice-group-compact-content-gap);
+  --a1-cg-min-width:      var(--component-choice-group-compact-min-width);
+  --a1-cg-label-size:     var(--semantic-font-size-body-sm);
+  --a1-cg-subtext-size:   var(--semantic-font-size-body-xs);
+  --a1-cg-legend-size:    var(--semantic-font-size-body-xs);
+  --a1-cg-gap:            var(--component-choice-group-gap-sm);
+  --a1-cg-group-gap:      var(--component-choice-group-compact-group-gap);
+  --a1-cg-items-top-gap:  var(--component-choice-group-compact-items-top-gap);
+}
+
+.a1-choice-group--comfortable {
+  --a1-cg-padding:             var(--component-choice-group-comfortable-padding);
+  --a1-cg-icon-size:           var(--component-choice-group-comfortable-icon-size);
+  --a1-cg-indicator-size:      var(--component-choice-group-comfortable-indicator-size);
+  --a1-cg-content-gap:         var(--component-choice-group-comfortable-content-gap);
+  --a1-cg-min-width:           var(--component-choice-group-comfortable-min-width);
+  --a1-cg-label-size:          var(--semantic-font-size-body-lg);
+  --a1-cg-subtext-size:        var(--semantic-font-size-body-md);
+  --a1-cg-legend-size:         var(--semantic-font-size-body-md);
+  --a1-cg-section-label-size:  var(--semantic-font-size-body-sm);
+  --a1-cg-gap:                 var(--component-choice-group-gap-lg);
+  --a1-cg-group-gap:           var(--component-choice-group-comfortable-group-gap);
+  --a1-cg-items-top-gap:       var(--component-choice-group-comfortable-items-top-gap);
+}
+
+@media (--bp-md-up) {
+  .a1-choice-group--comfortable {
+    --a1-cg-legend-size: var(--semantic-font-size-body-lg);
+  }
+}
+
+/* ─── Legend ────────────────────────────────────────────────────────────────── */
+
+.a1-choice-group__legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cg-legend-size);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-choice-group__legend-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+}
+
+/* ─── Group messages (hint / error / success) ────────────────────────────────── */
+
+.a1-choice-group__message {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cg-legend-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-choice-group__message--hint    { color: var(--semantic-color-text-muted); }
+.a1-choice-group__message--error   {
+  color: var(--semantic-color-status-error-background);
+  font-weight: var(--base-font-weight-medium);
+}
+.a1-choice-group__message--success {
+  color: var(--semantic-color-status-success-background);
+  font-weight: var(--base-font-weight-medium);
+}
+
+/* ─── Sections ───────────────────────────────────────────────────────────────── */
+
+.a1-choice-group__section-divider {
+  border: none;
+  border-top: 1px solid var(--semantic-color-border-subtle);
+  margin: var(--a1-cg-gap) 0 0;
+  padding: 0;
+}
+
+.a1-choice-group__section {
+  display: flex;
+  flex-direction: column;
+}
+
+.a1-choice-group__section-label {
+  margin: 0 0 var(--a1-cg-items-top-gap);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cg-section-label-size);
+  font-weight: var(--base-font-weight-semibold);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* Items inside a section — the section label handles the top spacing */
+.a1-choice-group__section .a1-choice-group__items {
+  margin-top: 0;
+}
+
+/* ─── Items flex layout ─────────────────────────────────────────────────────── */
+
+.a1-choice-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--a1-cg-gap);
+  margin-top: var(--a1-cg-items-top-gap);
+}
+
+/* Fixed column count when --a1-cg-columns is set */
+.a1-choice-group--fixed-columns .a1-choice-group__items > .a1-choice-item {
+  flex: 0 0 calc((100% - (var(--a1-cg-columns) - 1) * var(--a1-cg-gap)) / var(--a1-cg-columns));
+}
+
+/* ─── Choice item (card tile) ───────────────────────────────────────────────── */
+
+.a1-choice-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 var(--a1-cg-min-width);
+  gap: var(--a1-cg-content-gap);
+  overflow: hidden;
+  /* Start padding offsets all content clear of the indicator in the top-start corner */
+  padding-block: var(--a1-cg-padding);
+  padding-inline-end: var(--a1-cg-padding);
+  padding-inline-start: calc(var(--a1-cg-padding) + var(--a1-cg-indicator-size) + var(--base-spacing-8));
+  border: var(--component-choice-group-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-choice-group-border-radius);
+  background-color: var(--semantic-color-surface-page);
+  cursor: pointer;
+  transition:
+    border-color     var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    background-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    box-shadow       var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-choice-item--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: var(--semantic-color-surface-raised);
+}
+
+.a1-choice-item--disabled .a1-choice-item__input {
+  pointer-events: none;
+}
+
+/* Hover (unselected, non-disabled) */
+.a1-choice-item:not(.a1-choice-item--disabled):not(:has(.a1-choice-item__input:checked)):hover {
+  border-color: var(--semantic-color-action-border);
+  background-color: var(--semantic-color-action-surface);
+}
+
+/* Selected */
+.a1-choice-item:not(.a1-choice-item--disabled):has(.a1-choice-item__input:checked) {
+  border-color: var(--semantic-color-action-background);
+  background-color: var(--semantic-color-action-surface);
+  box-shadow: inset 0 0 0 1px var(--semantic-color-action-background);
+}
+
+/* Selected hover */
+.a1-choice-item:not(.a1-choice-item--disabled):has(.a1-choice-item__input:checked):hover {
+  border-color: var(--semantic-color-action-background-hover);
+  box-shadow: inset 0 0 0 1px var(--semantic-color-action-background-hover);
+}
+
+/* Focus ring on card when hidden input receives keyboard focus */
+.a1-choice-item:has(.a1-choice-item__input:focus-visible) {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* ─── Hidden input ──────────────────────────────────────────────────────────── */
+
+.a1-choice-item__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Icon ──────────────────────────────────────────────────────────────────── */
+
+.a1-choice-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--a1-cg-icon-size);
+  height: var(--a1-cg-icon-size);
+  color: var(--semantic-color-action-background);
+  flex-shrink: 0;
+}
+
+.a1-choice-item__icon .a1-icon {
+  font-size: var(--a1-cg-icon-size);
+}
+
+/* ─── Label and subtext ─────────────────────────────────────────────────────── */
+
+.a1-choice-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.a1-choice-item__label {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cg-label-size);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+  overflow-wrap: break-word;
+}
+
+.a1-choice-item__subtext {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-cg-subtext-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+  line-height: var(--semantic-font-line-height-body);
+  overflow-wrap: break-word;
+}
+
+/* ─── Selection indicator ───────────────────────────────────────────────────── */
+
+.a1-choice-item__indicator {
+  position: absolute;
+  top: calc(var(--a1-cg-padding) + var(--base-spacing-4));
+  inset-inline-start: var(--a1-cg-padding);
+  width: var(--a1-cg-indicator-size);
+  height: var(--a1-cg-indicator-size);
+  border: 1.5px solid var(--semantic-color-border-default);
+  background-color: var(--semantic-color-surface-page);
+  background-repeat: no-repeat;
+  background-position: center;
+  transition:
+    border-color     var(--semantic-motion-duration-fast),
+    background-color var(--semantic-motion-duration-fast);
+}
+
+/* Single-select (radio) — circle */
+.a1-choice-group--single .a1-choice-item__indicator {
+  border-radius: 50%;
+}
+
+/* Multi-select (checkbox) — rounded square */
+.a1-choice-group--multiple .a1-choice-item__indicator {
+  border-radius: var(--base-radius-sm);
+}
+
+/* Hover indicator border (unselected only) */
+.a1-choice-item:not(.a1-choice-item--disabled):not(:has(.a1-choice-item__input:checked)):hover
+  .a1-choice-item__indicator {
+  border-color: var(--semantic-color-action-background);
+}
+
+/* Selected indicator — filled */
+.a1-choice-item:has(.a1-choice-item__input:checked) .a1-choice-item__indicator {
+  border-color: var(--semantic-color-action-background);
+  background-color: var(--semantic-color-action-background);
+}
+
+/* Radio selected: white dot */
+.a1-choice-group--single
+  .a1-choice-item:has(.a1-choice-item__input:checked)
+  .a1-choice-item__indicator {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ccircle cx='5' cy='5' r='3' fill='%23ffffff'/%3E%3C/svg%3E");
+  background-size: 100%;
+}
+
+/* Checkbox selected: white checkmark */
+.a1-choice-group--multiple
+  .a1-choice-item:has(.a1-choice-item__input:checked)
+  .a1-choice-item__indicator {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 80%;
+}
+
+/* ─── Error state ───────────────────────────────────────────────────────────── */
+
+.a1-choice-group--error
+  .a1-choice-item:not(.a1-choice-item--disabled):not(:has(.a1-choice-item__input:checked)) {
+  border-color: var(--semantic-color-status-error-border);
+  box-shadow: inset 0 0 0 1px var(--semantic-color-status-error-border);
+}
+
+.a1-choice-group--error
+  .a1-choice-item:not(.a1-choice-item--disabled):not(:has(.a1-choice-item__input:checked))
+  .a1-choice-item__indicator {
+  border-color: var(--semantic-color-status-error-border);
+}

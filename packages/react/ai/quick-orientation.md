@@ -39,7 +39,7 @@ Always run `npm run build:tokens && npm run build:html-css` after any change to 
 | Hand-authored pure classes | `packages/pure/dist/a1-pure.css` |
 | Pure example site | `examples/a1-pure/` |
 | Color scheme switching (dark mode, inverse) | `packages/react/src/color-scheme.css` |
-| Component registry | `system/ai/components.md` |
+| Component registry | `packages/react/ai/components.md` |
 | a1-web app | `apps/a1-web/src/` |
 | Accessibility report data | `reports/a11y.json` |
 

@@ -1,6 +1,6 @@
 # A1 Design System — Component Registry
 
-**Keep this file current.** Update it whenever a component is added, removed, renamed, or its package coverage changes. This is part of the component addition checklist in `system/ai/project-context.md`.
+**Keep this file current.** Update it whenever a component is added, removed, renamed, or its package coverage changes. This is part of the component addition checklist in `packages/react/ai/project-context.md`.
 
 ## Package key
 
@@ -93,11 +93,14 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Textarea | ✓ | — | ✓ |
 | Select | ✓ | — | ✓ |
 | Checkbox Group | ✓ | — | ✓ |
+| Choice Group | ✓ | — | — |
 | Radio Group | ✓ | — | ✓ |
 | Fieldset | ✓ | — | ✓ |
 | Switch (input) | ✓ | — | — |
 | Inline Editable | ✓ | — | — |
 
+> **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
+>
 > **Pure notes:** Field uses `.a1-label` + `.a1-input` + size modifiers. Form container uses `.a1-form`. Status uses `.a1-label-error` / `.a1-label-success`. Required indicator uses `.a1-required`. Messages use `.a1-message-error` / `.a1-message-success` / `.a1-message-hint`.
 
 ---
@@ -193,9 +196,11 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 | Date | Change |
 |------|--------|
+| 2026-06-08 | Revised Choice Group: removed direction prop; columns now accepts number or responsive breakpoint object; size uses compact/default/comfortable convention; indicator in top-start corner |
+| 2026-06-08 | Added Choice Group component (React only); single/multi-select, size/gap/columns props, icon + subtext per option |
 | 2026-06-07 | Added React Code component and system labels for copy-code affordance |
 | 2026-06-07 | Added Calendar to a1-web component docs (Data category, experimental status) |
 | 2026-06-07 | Added Calendar component (React only); paginated variant, RTL/locale support, todayButton |
-| 2026-06-07 | Simplified tables to 3 packages (React, Native, Pure); moved registry to system/ai/ |
+| 2026-06-07 | Simplified tables to 3 packages (React, Native, Pure); moved registry to packages/react/ai/ |
 | 2026-06-05 | Added a1-web Components menu hierarchy and selected category icons |
 | 2026-06-04 | Initial registry created from current package state |
