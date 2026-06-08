@@ -1,0 +1,335 @@
+/* ── AutoDex theme tokens ─────────────────────────────────────────────────── */
+html.a1-theme-autodex {
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --ad-accent: #e85d04;
+  --ad-accent-soft: rgba(232, 93, 4, 0.12);
+  --ad-hero-bg: #0b0908;
+  --ad-hero-ink: #f8f9fa;
+  --ad-grid-line: rgba(255, 255, 255, 0.06);
+}
+
+html.a1-theme-autodex body {
+  font-family: var(--font-body);
+  background: var(--semantic-color-surface-page);
+}
+
+/* ── Brand & layout ───────────────────────────────────────────────────────── */
+.ad-accent {
+  color: var(--ad-accent);
+}
+
+.ad-nav-brand,
+.ad-mobile-logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.ad-nav-brand {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ad-nav-brand-tag,
+.ad-nav-brand-name {
+  display: block;
+}
+
+.ad-nav-brand-tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--semantic-color-text-muted);
+}
+
+.ad-mobile-header {
+  padding: 0.25rem 0;
+}
+
+.ad-footer {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 0;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.ad-hero {
+  background:
+    linear-gradient(135deg, rgba(232, 93, 4, 0.08) 0%, transparent 45%),
+    repeating-linear-gradient(
+      90deg,
+      var(--ad-grid-line) 0,
+      var(--ad-grid-line) 1px,
+      transparent 1px,
+      transparent 80px
+    ),
+    var(--ad-hero-bg) !important;
+  color: var(--ad-hero-ink);
+  border-radius: 0 0 1.5rem 1.5rem;
+}
+
+.ad-hero .a1-paragraph,
+.ad-hero .a1-heading,
+.ad-hero .a1-message-badge {
+  color: inherit;
+}
+
+.ad-hero-lead {
+  max-width: 42rem;
+  opacity: 0.88;
+}
+
+.ad-hero-title {
+  max-width: 16ch;
+  font-family: var(--font-display);
+  line-height: 1.05;
+}
+
+.ad-stat-grid {
+  margin-top: 0.5rem;
+}
+
+.ad-stat-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.ad-stat-value {
+  font-family: var(--font-display);
+  color: var(--ad-accent);
+}
+
+/* ── Cards & chips ────────────────────────────────────────────────────────── */
+.ad-feature-card,
+.ad-era-card,
+.ad-result-card,
+.ad-related-card {
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.ad-feature-card:hover,
+.ad-era-card:hover,
+.ad-related-card:hover,
+.ad-result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.ad-feature-swatch {
+  height: 120px;
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 55%),
+    var(--car-color, #343a40);
+}
+
+.ad-spec-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ad-spec-chip {
+  display: inline-grid;
+  gap: 0.1rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: var(--semantic-color-surface-panel);
+  border: 1px solid var(--semantic-color-border-subtle);
+  font-size: 0.78rem;
+}
+
+.ad-spec-chip--highlight,
+.ad-spec-chip--hero:first-child {
+  background: var(--ad-accent-soft);
+  border-color: rgba(232, 93, 4, 0.25);
+}
+
+.ad-spec-chip-label {
+  color: var(--semantic-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.ad-spec-chip-value {
+  font-weight: 600;
+}
+
+/* ── Tags ─────────────────────────────────────────────────────────────────── */
+.ad-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.ad-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.ad-tag:hover {
+  border-color: var(--ad-accent);
+  background: var(--ad-accent-soft);
+}
+
+/* ── Search ───────────────────────────────────────────────────────────────── */
+.ad-search-panel {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 2;
+}
+
+.ad-search-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+@media (max-width: 640px) {
+  .ad-search-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ad-results-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.ad-result-main {
+  min-width: 0;
+}
+
+.ad-empty-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+/* ── Details ──────────────────────────────────────────────────────────────── */
+.ad-detail-hero {
+  padding-top: 0.5rem;
+}
+
+.ad-detail-visual {
+  flex: 0 0 auto;
+  width: min(100%, 280px);
+  aspect-ratio: 4 / 5;
+  border-radius: 1rem;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 40%),
+    var(--car-color, #343a40);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+}
+
+.ad-detail-visual-inner {
+  display: grid;
+  align-content: end;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 1.25rem;
+  color: #fff;
+}
+
+.ad-detail-year {
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.ad-detail-make {
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.ad-detail-intro {
+  flex: 1;
+  min-width: 0;
+}
+
+.ad-spec-section--highlight {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--ad-accent-soft);
+  border: 1px solid rgba(232, 93, 4, 0.18);
+}
+
+.ad-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1.5rem;
+}
+
+.ad-spec-row {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--semantic-color-border-subtle);
+}
+
+.ad-spec-row dt {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--semantic-color-text-muted);
+}
+
+.ad-spec-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ad-notes-card {
+  margin-top: 0.5rem;
+  background: var(--semantic-color-surface-panel) !important;
+}
+
+.ad-color-list,
+.ad-highlight-list,
+.ad-options-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.ad-color-list li,
+.ad-highlight-list li,
+.ad-options-list li {
+  margin-bottom: 0.45rem;
+}
+
+.ad-color-list li {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.ad-color-meta {
+  font-size: 0.82rem;
+  color: var(--semantic-color-text-muted);
+}
+
+.ad-related-card {
+  min-height: 100%;
+}
+
+/* ── Tabs spacing ─────────────────────────────────────────────────────────── */
+.ad-detail-hero + .a1-section .a1-tab-panel {
+  padding-top: 1.25rem;
+}
