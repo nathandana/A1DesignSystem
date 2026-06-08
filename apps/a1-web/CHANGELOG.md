@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Prompt: StatusBar pause button, labels, and React package 0.4.0
+
+- Replaced the StatusBar indeterminate pause/play toggle from a custom bare `<button>` to a `<Button size="sm" variant="secondary">` component.
+- Pause and Play buttons now display a visible text label alongside the icon.
+- Added `system/labels/status-bar.json` with `statusBar.pause` ("Pause") and `statusBar.play` ("Play") labels and translations for es, fr, de, pt, ja, zh, and ar.
+- Wired status-bar labels into the Storybook `LabelsProvider` and the a1-web `LabelsProvider` so locale switching affects the button text.
+- Removed the now-redundant custom `.a1-status-bar__pause` CSS block; only the appear animation is retained.
+- Bumped `@gtivr4/a1-design-system-react` from `0.3.1` to `0.4.0`.
+- This release also includes the 0.4.0 prop consistency changes: Tab `status="warning"→"warn"`, Section `alignment→align`, Notification `variant→status` / `"default"→"neutral"`, Heading/Paragraph `align` logical values `"start"/"end"`, labelPosition `"side"→"before"`, Grid `gap="xs"`, SegmentedControl `size` typed, DataTable `density→size`.
+
 ### Prompt: Add Choice Group component
 
 - Added `ChoiceGroup` to `packages/react` — a card-tile selection group supporting single-select (radio) and multi-select (checkbox) modes.

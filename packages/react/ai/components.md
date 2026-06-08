@@ -25,7 +25,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Tabs, Page Nav |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control |
 | Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
-| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, System Banner |
+| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, System Banner, Status Bar |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu |
 | Category | `components-data` | Data | `table_chart` | Data Table, Pagination, Calendar |
@@ -155,7 +155,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Switch (input) | ✓ | — | — |
 | Inline Editable | ✓ | — | — |
 
-> **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
+> **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
+>
+> **Field `labelPosition` values:** `"above"` (default) stacks the label on top. `"before"` places the label to the inline-start side of the input in a two-column grid (collapses to stacked on xs/sm viewports). Pass `labelPosition` on individual fields or on the parent `Fieldset` to apply it to all children.
 >
 > **Pure notes:** Field uses `.a1-label` + `.a1-input` + size modifiers. Form container uses `.a1-form`. Status uses `.a1-label-error` / `.a1-label-success`. Required indicator uses `.a1-required`. Messages use `.a1-message-error` / `.a1-message-success` / `.a1-message-hint`.
 
@@ -171,7 +173,14 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Snackbar | ✓ | ✓ | — |
 | Empty State | ✓ | ✓ | — |
 | System Banner | ✓ | — | — |
+| Status Bar | ✓ | — | — |
 
+> **Notification props:** `status` ("neutral" | "error" | "success" | "warn" | "info", default "neutral"), `position` ("top-right" | "top-left" | "bottom-right" | "bottom-left", default "top-right"), `count` (number), `label` (string — used when count is not set), `dot` (boolean — show a dot with no content), `max` (number, default 99).
+>
+> **Status Bar props:** `value` (number, default 0), `max` (number, default 100 — fill percentage is `value/max`), `size` ("sm" | "md" | "lg", default "md"), `labelPosition` ("above" | "below" | "before" | "after", default "above" — "before" and "after" use a row layout and are RTL-aware), `indeterminate` (boolean — shows an animated loading sweep, hides value-based fill, removes `aria-valuenow`, default false). When no `label` is provided, pass `aria-label` for the progressbar's accessible name. After 3 seconds of `indeterminate` playback, a `<Button size="sm" variant="secondary">` appears with "Pause" / "Play" labels sourced from `system/labels/status-bar.json` (`statusBar.pause`, `statusBar.play`) — wrap in `LabelsProvider` to translate.
+>
+> **Status Bar accessible theme:** The track gains a `2px` border (via `--component-status-bar-border-width`) in the accessible theme to distinguish the track boundary at high contrast. No other theme overrides are needed — the fill and track colors come from semantic color tokens that already adapt.
+>
 > **Badge / Message standard variants:** `neutral`, `brand`, `info`, `success`, `warning`, `error`, `inverse`. Use these before creating any custom badge style.
 >
 > **Badges communicate status, category, count, or metadata** — not primary actions. Do not make a badge interactive without a clear affordance, focus state, and accessible role. Use a Button, chip, or Link pattern for clickable elements.
@@ -179,6 +188,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **Pair color with a text label:** Never rely on color alone to convey meaning (e.g. a red badge with no label). Always include text alongside color.
 >
 > **Use badges sparingly:** Badging every attribute on a page dilutes their signal value. Apply badges only to information that benefits from quick visual scanning.
+>
+> **Snackbar props:** `open` (boolean, required — renders nothing when false), `variant` ("default" | "success" | "info" | "warn" | "error", default "default"), `position` ("bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right", default "bottom"), `inverse` (boolean, default true — applies `a1-inverse` for dark surface), `actionLabel` + `onAction` (both required to show the action button — omit either to hide it), `onClose` (renders a dismiss IconButton when provided), `children` (message content).
+>
+> **Snackbar accessibility:** Uses `role="alert"` and `aria-live="assertive"` for `variant="error"`; all other variants use `role="status"` and `aria-live="polite"`. Do not override `role` unless you have a specific reason — the component sets it automatically based on variant.
+>
+> **Snackbar is not a modal:** It renders as a fixed overlay and does not trap focus. Use it for brief, non-blocking feedback only. For errors that require user action before continuing, use a Dialog or Banner instead.
 
 ---
 
@@ -207,6 +222,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > - Use `Card` for small, repeated, bounded content units: product tiles, profile summaries, navigation destinations, data items in a grid.
 > - A Card that spans a full content column or wraps a long-form layout is a misuse of the component. When in doubt, ask: "Is this one item in a repeating set?" If yes, Card. If no, Section.
 >
+> **Do not nest Cards inside Cards.** A Card inside a Card creates ambiguous visual hierarchy, conflicting surface elevations, and unclear interaction boundaries. If you need a grouped sub-item within a Card, use a `Stack` or `Inset` to structure the content, not another Card.
+>
 > **PageLayout no-gap rule:** There is no gap between the sidebar and main area. Do not add `gap`, `margin`, or `padding` to `.a1-page-layout__body`, `.a1-page-layout__sidebar`, or `.a1-page-layout__main`. Apply all inset spacing inside the main content child — use a `Section` or padded wrapper as the first element in the main slot.
 >
 > **Section spans the full viewport:** `Section` is designed to fill the full available width. Place it as the direct child of `<main>` inside `PageLayout` — do not wrap it in a `Stack`, `Grid`, `Card`, or any other container that would constrain its width. Nesting a `Section` inside another layout component breaks the full-bleed surface and padding model.
@@ -229,6 +246,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Data Table | ✓ | — | ✓ |
 | Pagination | ✓ | ✓ | — |
 
+> **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
+>
 > **Pure notes:** Data Table uses `.a1-table`.
 
 ---
@@ -269,6 +288,13 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-09 | StatusBar pause button → `<Button size="sm" variant="secondary">` with "Pause"/"Play" text; added system/labels/status-bar.json with translations (es/fr/de/pt/ja/zh/ar); React package bumped to 0.4.0 |
+| 2026-06-09 | Prop consistency pass (v0.4.0): Tab status "warning"→"warn"; Section alignment→align; Notification variant→status, "default"→"neutral"; Heading/Paragraph align now accepts "start"/"end"; TextField/TextareaField/SelectField/Fieldset labelPosition "side"→"before"; Grid gap adds "xs"; SegmentedControl.d.ts created with size typed; DataTable density→size (omit=auto) |
+| 2026-06-08 | Fixed StatusBar RTL indeterminate animation (physical left/right anchor + animation-direction: reverse); added pause/resume button appearing after 3 s; label accepts ReactNode |
+| 2026-06-08 | Added StatusBar component (React only): value/max fill, indeterminate loading, three sizes, four label positions (RTL-aware), accessible-theme track border |
+| 2026-06-08 | Added Choice Group inlineIcon prop: places tile icon left of label/subtext instead of above |
+| 2026-06-08 | Added no-nested-cards rule to Card guidance in Layout notes |
+| 2026-06-08 | Added Snackbar notes: props (open, variant, position, inverse, actionLabel/onAction, onClose), accessibility behavior (role/aria-live auto-set by variant), and non-modal usage guidance |
 | 2026-06-08 | Added rules from all system/rules YAML files: Typography (sentence case, no uppercase, no font-weight on states), Button (vs-link, single-primary, tertiary icon+verb, icon a11y label), SideNav (sticky desktop, mobile overlay, internal scroll), Badge/Message (standard variants, status-only, color+text, use sparingly), PageLayout (no-gap rule) |
 | 2026-06-08 | Added Card vs Section guidance to Layout notes; added card-not-for-page-sections rule to system/rules/card.yaml |
 | 2026-06-08 | Revised Choice Group: removed direction prop; columns now accepts number or responsive breakpoint object; size uses compact/default/comfortable convention; indicator in top-start corner |

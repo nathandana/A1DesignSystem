@@ -97,7 +97,7 @@ const meta = {
     },
     labelPosition: {
       control: "inline-radio",
-      options: ["above", "side"],
+      options: ["above", "before"],
     },
     error: { control: "text" },
     hint:  { control: "text" },
@@ -179,8 +179,8 @@ export const LabelPosition = {
       <div>
         <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-16)" }}>Side</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
-          <SelectField {...args} labelPosition="side" label="Country">{COUNTRIES}</SelectField>
-          <SelectField {...args} labelPosition="side" label="Timezone">{TIMEZONES}</SelectField>
+          <SelectField {...args} labelPosition="before" label="Country">{COUNTRIES}</SelectField>
+          <SelectField {...args} labelPosition="before" label="Timezone">{TIMEZONES}</SelectField>
         </div>
       </div>
 

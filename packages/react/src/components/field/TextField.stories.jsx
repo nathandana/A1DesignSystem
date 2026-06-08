@@ -26,7 +26,7 @@ const meta = {
     },
     labelPosition: {
       control: "inline-radio",
-      options: ["above", "side"],
+      options: ["above", "before"],
     },
     error: { control: "text" },
     hint:  { control: "text" },
@@ -111,9 +111,9 @@ export const LabelPosition = {
       <div>
         <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-16)" }}>Side</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
-          <TextField {...args} labelPosition="side" label="First name" />
-          <TextField {...args} labelPosition="side" label="Last name" />
-          <TextField {...args} labelPosition="side" label="Email" hint="We'll never share your email." required />
+          <TextField {...args} labelPosition="before" label="First name" />
+          <TextField {...args} labelPosition="before" label="Last name" />
+          <TextField {...args} labelPosition="before" label="Email" hint="We'll never share your email." required />
         </div>
       </div>
 

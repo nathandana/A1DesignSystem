@@ -214,7 +214,7 @@ export function IconographyFoundationPage({ onNavigate }) {
                     onSearchColumnChange={setIconSearchColumn}
                     searchableColumns={iconSearchColumns}
                     pageSize={50}
-                    density="compact"
+                    size="compact"
                     scrollable
                     caption="System icon registry"
                     emptyTitle="No icons found"
@@ -238,7 +238,7 @@ export function IconographyFoundationPage({ onNavigate }) {
                   onSearchColumnChange={setUsageSearchColumn}
                   searchableColumns={iconUsageSearchColumns}
                   pageSize={50}
-                  density="compact"
+                  size="compact"
                   scrollable
                   caption="System icon usage lookup"
                   emptyTitle="No icon usage found"
@@ -254,7 +254,7 @@ export function IconographyFoundationPage({ onNavigate }) {
                   columns={iconSizingColumns}
                   rows={iconSizingRows}
                   getRowId={(r) => r.id}
-                  density="comfortable"
+                  size="comfortable"
                   scrollable
                   caption="Icon sizing tokens"
                 />

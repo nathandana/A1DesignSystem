@@ -43,7 +43,7 @@
 
 /* ── Variants ───────────────────────────────────────────────────────────── */
 
-.a1-notification--default {
+.a1-notification--neutral {
   --a1-notification-background: var(--base-color-neutral-600);
   --a1-notification-foreground: var(--base-color-neutral-0);
 }

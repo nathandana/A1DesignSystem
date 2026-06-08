@@ -203,7 +203,7 @@ export function Accessibility() {
       </Section>
 
       {/* ── Coverage note ── */}
-      <Section padding="lg" inverse contentWidth="md" alignment="center" aria-labelledby="coverage-heading">
+      <Section padding="lg" inverse contentWidth="md" align="center" aria-labelledby="coverage-heading">
         <Stack direction="column" gap="md" align="center">
           <Heading as="h2" id="coverage-heading" size={{ xs: 'md', md: 'lg' }} align="center">
             Run the checks yourself

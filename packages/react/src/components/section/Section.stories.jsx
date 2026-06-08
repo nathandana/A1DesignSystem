@@ -49,7 +49,7 @@ const meta = {
       control: "select",
       options: ["screen", "hero", undefined],
     },
-    alignment: {
+    align: {
       control: "inline-radio",
       options: ["left", "center", "right", undefined],
     },
@@ -96,7 +96,7 @@ export const Default = {
     gradientPosition: "center",
     contentWidth: undefined,
     height: undefined,
-    alignment: undefined,
+    align: undefined,
     inverse: false,
   },
   render: (args) => (
@@ -403,30 +403,30 @@ export const StackedBands = {
 };
 
 /**
- * `alignment` aligns the section's direct children as layout items.
- * Pass a responsive object `alignment={{ xs: "center", lg: "left" }}` for per-breakpoint control.
+ * `align` aligns the section's direct children as layout items.
+ * Pass a responsive object `align={{ xs: "center", lg: "left" }}` for per-breakpoint control.
  */
 export const AlignmentProp = {
   name: "Alignment",
   render: () => (
     <>
-      {["left", "center", "right"].map((alignment) => (
-        <Section key={alignment} padding="md" surface="panel" alignment={alignment}>
-          <Heading as="h2" size="lg" align={alignment}>align="{alignment}"</Heading>
-          <Paragraph size="lg" color="muted" align={alignment}>
+      {["left", "center", "right"].map((align) => (
+        <Section key={align} padding="md" surface="panel" align={align}>
+          <Heading as="h2" size="lg" align={align}>align="{align}"</Heading>
+          <Paragraph size="lg" color="muted" align={align}>
             The alignment prop aligns direct children without overriding nested content.
             Use Heading and Paragraph alignment props when text itself should align.
           </Paragraph>
-          <ButtonContainer align={alignment === "right" ? "end" : alignment === "center" ? "center" : "start"}>
+          <ButtonContainer align={align === "right" ? "end" : align === "center" ? "center" : "start"}>
             <Button variant="primary">Primary</Button>
             <Button variant="secondary">Secondary</Button>
           </ButtonContainer>
         </Section>
       ))}
-      <Section padding="md" surface="raised" alignment={{ xs: "center", lg: "left" }}>
+      <Section padding="md" surface="raised" align={{ xs: "center", lg: "left" }}>
         <Heading as="h2" size="lg">Responsive: center on mobile, left on desktop</Heading>
         <Paragraph size="lg" color="muted">
-          {`alignment={{ xs: "center", lg: "left" }}`} — resize the preview to see direct children move without cascading text alignment into nested components.
+          {`align={{ xs: "center", lg: "left" }}`} — resize the preview to see direct children move without cascading text alignment into nested components.
         </Paragraph>
       </Section>
     </>
@@ -444,7 +444,7 @@ export const HeroHeight = {
     <Section
       padding="lg"
       height="hero"
-      alignment="center"
+      align="center"
       gradient="accent"
       gradientPosition="center"
     >

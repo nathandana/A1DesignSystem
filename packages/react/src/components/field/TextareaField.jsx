@@ -6,7 +6,7 @@ import "./field.css";
 import "./textarea-field.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
-const LABEL_POSITIONS = ["above", "side"];
+const LABEL_POSITIONS = ["above", "before"];
 const ROW_SIZES       = { sm: 2, md: 4, lg: 8, xl: 12 };
 
 function resolveRows(rows) {

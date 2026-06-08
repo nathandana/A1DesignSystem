@@ -37,7 +37,7 @@ export interface TabProps {
   /** Icon placement relative to the label. Default: "start" */
   iconPosition?: "start" | "end" | "above";
   /** Status indicator (used in "progress" variant) */
-  status?: "completed" | "error" | "warning";
+  status?: "completed" | "error" | "warn";
   children?: React.ReactNode;
 }
 

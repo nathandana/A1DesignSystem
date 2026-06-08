@@ -26,8 +26,8 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   margin?: "sm" | "md" | "lg";
   /** Apply text-wrap. "balance" distributes line lengths evenly — best for short headings. */
   textWrap?: "balance";
-  /** Horizontal text alignment. */
-  align?: "left" | "center" | "right";
+  /** Horizontal text alignment. "start"/"end" are logical aliases for LTR/RTL-safe alignment. */
+  align?: "left" | "center" | "right" | "start" | "end";
   children?: React.ReactNode;
 }
 

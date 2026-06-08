@@ -31,7 +31,7 @@ export function Section({
   inverse = false,
   contentWidth,
   height,
-  alignment,
+  align,
   className = "",
   children,
   ...props
@@ -72,14 +72,14 @@ export function Section({
     classes.push(`a1-section--height-${height}`);
   }
 
-  if (typeof alignment === "string") {
-    if (VALID_ALIGNMENTS.includes(alignment)) {
-      classes.push(`a1-section--align-${alignment}`);
+  if (typeof align === "string") {
+    if (VALID_ALIGNMENTS.includes(align)) {
+      classes.push(`a1-section--align-${align}`);
     }
-  } else if (alignment && typeof alignment === "object") {
-    for (const [bp, align] of Object.entries(alignment)) {
-      if (VALID_ALIGNMENTS.includes(align)) {
-        classes.push(`a1-section--${bp}-align-${align}`);
+  } else if (align && typeof align === "object") {
+    for (const [bp, alignVal] of Object.entries(align)) {
+      if (VALID_ALIGNMENTS.includes(alignVal)) {
+        classes.push(`a1-section--${bp}-align-${alignVal}`);
       }
     }
   }

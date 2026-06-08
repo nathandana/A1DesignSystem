@@ -40,7 +40,7 @@ function OverviewTable({ onNavigate }) {
       caption="All A1 components"
       columns={columns}
       rows={rows}
-      density="compact"
+      size="compact"
       zebra
       scrollable
       defaultSort={{ key: 'category', direction: 'asc' }}

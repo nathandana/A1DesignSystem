@@ -42,7 +42,6 @@
 .a1-segment[aria-checked="true"] {
   background: var(--semantic-color-surface-page);
   color: var(--semantic-color-text-default);
-  font-weight: var(--component-segmented-font-weight-active);
   box-shadow: var(--semantic-shadow-xs);
 }
 

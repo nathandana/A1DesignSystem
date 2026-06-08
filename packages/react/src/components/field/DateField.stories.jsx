@@ -20,7 +20,7 @@ const meta = {
     },
     labelPosition: {
       control: "inline-radio",
-      options: ["above", "side"],
+      options: ["above", "before"],
     },
     error: { control: "text" },
     hint:  { control: "text" },

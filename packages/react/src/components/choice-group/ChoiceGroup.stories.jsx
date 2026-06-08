@@ -17,8 +17,9 @@ const meta = {
   argTypes: {
     size:     { control: "inline-radio", options: ["compact", "default", "comfortable"] },
     columns:  { control: "object" },
-    multiple: { control: "boolean" },
-    required: { control: "boolean" },
+    multiple:    { control: "boolean" },
+    inlineIcon:  { control: "boolean" },
+    required:    { control: "boolean" },
     hint:     { control: "text" },
     error:    { control: "text" },
     success:  { control: "text" },
@@ -321,6 +322,44 @@ export const ContentVariants = {
           {...args}
           label="Preferred contact method"
           options={LABEL_ONLY_OPTIONS}
+        />
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── Inline icon ──────────────────────────────────────────────────────────── */
+
+export const InlineIcon = {
+  name: "Inline icon",
+  parameters: { controls: { include: ["size", "multiple"] } },
+  render: (args) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
+
+      <div>
+        <p style={LABEL}>Single select · icon left of label + subtext</p>
+        <ChoiceGroup
+          {...args}
+          label="Subscription plan"
+          hint="Choose the plan that fits your team."
+          inlineIcon
+          columns={1}
+          defaultValue="professional"
+          options={PLAN_OPTIONS}
+        />
+      </div>
+
+      <div>
+        <p style={LABEL}>Multi select · icon left of label + subtext</p>
+        <ChoiceGroup
+          {...args}
+          label="Add-on features"
+          multiple
+          inlineIcon
+          columns={1}
+          defaultValue={["analytics", "api"]}
+          options={FEATURE_OPTIONS}
         />
       </div>
 

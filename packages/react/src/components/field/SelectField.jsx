@@ -6,7 +6,7 @@ import { FieldsetContext } from "../fieldset/FieldsetContext.js";
 import "./field.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
-const LABEL_POSITIONS = ["above", "side"];
+const LABEL_POSITIONS = ["above", "before"];
 
 export const SelectField = forwardRef(function SelectField({
   label,

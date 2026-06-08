@@ -79,7 +79,7 @@ export function ElevationFoundationPage({ onNavigate }) {
             columns={shadowColumns}
             rows={shadowRows}
             getRowId={(r) => r.id}
-            density="default"
+            size="default"
             scrollable
             caption="Semantic shadow tokens"
           />

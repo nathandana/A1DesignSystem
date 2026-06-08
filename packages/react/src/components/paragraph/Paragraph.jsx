@@ -4,7 +4,7 @@ const sizes = ["xs", "sm", "md", "lg", "xl"];
 const colors = ["default", "muted"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 const textWraps = ["balance"];
-const aligns = ["left", "center", "right"];
+const aligns = ["left", "center", "right", "start", "end"];
 
 function isResponsiveSize(size) {
   return size && typeof size === "object" && !Array.isArray(size);

@@ -26,7 +26,7 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   /** Force a specific height. "hero" fills 90svh minus the sticky header height and vertically centres content. */
   height?: "screen" | "hero";
   /** Horizontal layout alignment for direct children. Responsive object syntax supported. */
-  alignment?: ResponsiveAlignment;
+  align?: ResponsiveAlignment;
   children?: React.ReactNode;
 }
 

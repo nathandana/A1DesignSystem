@@ -1,0 +1,146 @@
+/* ─── StatusBar ─────────────────────────────────────────────────────────────── */
+
+.a1-status-bar {
+  --a1-sb-height:       var(--component-status-bar-md-height);
+  --a1-sb-track-bg:     var(--component-status-bar-track-background);
+  --a1-sb-fill-bg:      var(--component-status-bar-fill-background);
+  --a1-sb-radius:       var(--component-status-bar-border-radius);
+  --a1-sb-border-width: var(--component-status-bar-border-width);
+  --a1-sb-border-color: var(--component-status-bar-border-color);
+  --a1-sb-label-gap:    var(--component-status-bar-label-gap);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-sb-label-gap);
+  inline-size: 100%;
+}
+
+/* ─── Sizes ─────────────────────────────────────────────────────────────────── */
+
+.a1-status-bar--sm { --a1-sb-height: var(--component-status-bar-sm-height); }
+.a1-status-bar--lg { --a1-sb-height: var(--component-status-bar-lg-height); }
+
+/* ─── Label positions ───────────────────────────────────────────────────────── */
+
+/* below: column layout, DOM order is [bar-row, label] so no CSS change needed */
+
+.a1-status-bar--before,
+.a1-status-bar--after {
+  flex-direction: row;
+  align-items: center;
+}
+
+.a1-status-bar--before .a1-status-bar__bar-row,
+.a1-status-bar--after .a1-status-bar__bar-row {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.a1-status-bar--before .a1-status-bar__label,
+.a1-status-bar--after .a1-status-bar__label {
+  flex-shrink: 0;
+}
+
+/* ─── Bar row (track + optional pause button) ───────────────────────────────── */
+
+.a1-status-bar__bar-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--base-spacing-8);
+}
+
+.a1-status-bar__bar-row .a1-status-bar__track {
+  flex: 1;
+  min-inline-size: 0;
+  inline-size: auto;
+}
+
+/* ─── Label ─────────────────────────────────────────────────────────────────── */
+
+.a1-status-bar__label {
+  display: block;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ─── Track ─────────────────────────────────────────────────────────────────── */
+
+.a1-status-bar__track {
+  position: relative;
+  display: flex; /* flex direction inherits writing mode — fills from inline-start in RTL */
+  block-size: var(--a1-sb-height);
+  inline-size: 100%;
+  background-color: var(--a1-sb-track-bg);
+  border-radius: var(--a1-sb-radius);
+  border: var(--a1-sb-border-width) solid var(--a1-sb-border-color);
+  overflow: hidden;
+}
+
+/* ─── Fill ──────────────────────────────────────────────────────────────────── */
+
+/* Flex child — grows from inline-start, which in RTL means it grows from the right */
+.a1-status-bar__fill {
+  flex-shrink: 0;
+  block-size: 100%;
+  inline-size: 0;
+  background-color: var(--a1-sb-fill-bg);
+  border-radius: inherit;
+  transition: inline-size var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+/* ─── Indeterminate (loading) ───────────────────────────────────────────────── */
+
+/* Absolute positioning takes the fill out of flex flow for the sweep animation */
+.a1-status-bar__fill--indeterminate {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  inline-size: 35%;
+  animation: a1-sb-indeterminate var(--component-status-bar-indeterminate-duration) ease-in-out infinite;
+}
+
+/* RTL: anchor to the physical right and reverse the sweep direction */
+[dir="rtl"] .a1-status-bar__fill--indeterminate {
+  left: auto;
+  right: 0;
+  animation-direction: reverse;
+}
+
+.a1-status-bar--paused .a1-status-bar__fill--indeterminate {
+  animation-play-state: paused;
+}
+
+@keyframes a1-sb-indeterminate {
+  0%   { transform: translateX(-115%); }
+  100% { transform: translateX(300%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-status-bar__fill--indeterminate {
+    animation: none;
+    inline-size: 100%;
+    opacity: 0.4;
+  }
+}
+
+/* ─── Pause / play button ────────────────────────────────────────────────────── */
+
+.a1-status-bar__pause {
+  flex-shrink: 0;
+  animation: a1-sb-pause-appear var(--semantic-motion-duration-normal) var(--semantic-motion-easing-enter);
+}
+
+@keyframes a1-sb-pause-appear {
+  from { opacity: 0; transform: scale(0.75); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-status-bar__pause {
+    animation: none;
+  }
+}

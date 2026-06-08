@@ -6,10 +6,11 @@ import "../packages/react/src/utilities/spacing.css";
 import { useEffect } from "react";
 import { useGlobals } from "storybook/preview-api";
 import { LabelsProvider } from "../packages/react/src/components/labels/Labels.jsx";
-import actionJson   from "../system/labels/action.json";
-import calendarJson from "../system/labels/calendar.json";
-import codeJson     from "../system/labels/code.json";
-import fieldJson    from "../system/labels/field.json";
+import actionJson    from "../system/labels/action.json";
+import calendarJson  from "../system/labels/calendar.json";
+import codeJson      from "../system/labels/code.json";
+import fieldJson     from "../system/labels/field.json";
+import statusBarJson from "../system/labels/status-bar.json";
 
 const allLabels = {
   label: {
@@ -17,6 +18,7 @@ const allLabels = {
     ...calendarJson.label,
     ...codeJson.label,
     ...fieldJson.label,
+    ...statusBarJson.label,
   },
 };
 

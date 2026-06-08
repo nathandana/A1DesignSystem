@@ -1,6 +1,6 @@
 import "./notification.css";
 
-const variants = ["default", "error", "success", "warn", "info"];
+const statuses = ["neutral", "error", "success", "warn", "info"];
 const positions = ["top-right", "top-left", "bottom-right", "bottom-left"];
 
 function formatCount(n, max) {
@@ -15,11 +15,11 @@ export function Notification({
   count,
   label,
   dot = false,
-  variant = "default",
+  status = "neutral",
   position = "top-right",
   max = 99,
 }) {
-  const resolvedVariant = variants.includes(variant) ? variant : "default";
+  const resolvedStatus = statuses.includes(status) ? status : "neutral";
   const resolvedPosition = positions.includes(position) ? position : "top-right";
 
   const isDot = dot || (count === undefined && label === undefined);
@@ -35,7 +35,7 @@ export function Notification({
 
   const classes = [
     "a1-notification",
-    `a1-notification--${resolvedVariant}`,
+    `a1-notification--${resolvedStatus}`,
     `a1-notification--${resolvedPosition}`,
     isDot && "a1-notification--dot",
   ]

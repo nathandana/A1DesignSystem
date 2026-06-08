@@ -169,7 +169,7 @@ export function AccessibilityFoundationPage({ onNavigate }) {
                 columns={focusColumns}
                 rows={focusRows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Focus ring tokens"
               />

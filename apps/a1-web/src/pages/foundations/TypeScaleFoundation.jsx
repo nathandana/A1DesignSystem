@@ -153,7 +153,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
                   columns={typeColumns}
                   rows={filteredBodyRows}
                   getRowId={(r) => r.id}
-                  density="default"
+                  size="default"
                   scrollable
                   caption="Body size tokens"
                   emptyTitle="No matching tokens"
@@ -168,7 +168,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
                   columns={typeColumns}
                   rows={filteredHeadingRows}
                   getRowId={(r) => r.id}
-                  density="default"
+                  size="default"
                   scrollable
                   caption="Heading size tokens"
                   emptyTitle="No matching tokens"
@@ -183,7 +183,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
                   columns={typeColumns}
                   rows={filteredDisplayRows}
                   getRowId={(r) => r.id}
-                  density="default"
+                  size="default"
                   scrollable
                   caption="Display size tokens"
                   emptyTitle="No matching tokens"
@@ -197,7 +197,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
                 columns={weightColumns}
                 rows={weightRows}
                 getRowId={(r) => r.id}
-                density="default"
+                size="default"
                 scrollable
                 caption="Font weight tokens"
               />

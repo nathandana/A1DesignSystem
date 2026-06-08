@@ -618,6 +618,16 @@
   --component-side-nav-padding-block: 0.5rem;
   --component-side-nav-padding-inline: 0.5rem;
   --component-side-nav-width: 17.5rem;
+  --component-status-bar-border-color: #a6b2c4;
+  --component-status-bar-border-radius: 624.9375rem;
+  --component-status-bar-border-width: 0;
+  --component-status-bar-fill-background: #7c3aed;
+  --component-status-bar-indeterminate-duration: 1400ms;
+  --component-status-bar-label-gap: 0.5rem;
+  --component-status-bar-lg-height: 0.75rem;
+  --component-status-bar-md-height: 0.5rem;
+  --component-status-bar-sm-height: 0.25rem;
+  --component-status-bar-track-background: #e1e8f3;
   --component-switch-accessible-icon-size: 60%;
   --component-switch-comfortable-content-gap: 0.125rem;
   --component-switch-comfortable-gap: 0.25rem;

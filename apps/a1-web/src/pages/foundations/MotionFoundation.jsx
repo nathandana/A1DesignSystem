@@ -94,7 +94,7 @@ export function MotionFoundationPage({ onNavigate }) {
                 columns={durationColumns}
                 rows={durationRows}
                 getRowId={(r) => r.id}
-                density="default"
+                size="default"
                 scrollable
                 caption="Semantic motion duration tokens"
               />
@@ -105,7 +105,7 @@ export function MotionFoundationPage({ onNavigate }) {
                 columns={easingColumns}
                 rows={easingRows}
                 getRowId={(r) => r.id}
-                density="default"
+                size="default"
                 scrollable
                 caption="Semantic motion easing tokens"
               />

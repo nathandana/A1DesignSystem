@@ -72,7 +72,7 @@ export function ShapeFoundationPage({ onNavigate }) {
             columns={radiusColumns}
             rows={radiusRows}
             getRowId={(r) => r.id}
-            density="compact"
+            size="compact"
             scrollable
             caption="Base radius tokens"
           />

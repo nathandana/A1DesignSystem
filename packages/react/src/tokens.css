@@ -646,6 +646,16 @@
   --component-side-nav-item-font-line-height: 1.5;
   --component-side-nav-item-active-font-weight: 500;
   --component-side-nav-item-chevron-size: 1.125rem;
+  --component-status-bar-sm-height: 0.25rem;
+  --component-status-bar-md-height: 0.5rem;
+  --component-status-bar-lg-height: 0.75rem;
+  --component-status-bar-border-radius: 624.9375rem;
+  --component-status-bar-border-width: 0;
+  --component-status-bar-border-color: #a6b2c4;
+  --component-status-bar-track-background: #e1e8f3;
+  --component-status-bar-fill-background: #7c3aed;
+  --component-status-bar-label-gap: 0.5rem;
+  --component-status-bar-indeterminate-duration: 1400ms;
   --component-switch-track-width: 2.5rem;
   --component-switch-track-height: 1.375rem;
   --component-switch-thumb-size: 1rem;

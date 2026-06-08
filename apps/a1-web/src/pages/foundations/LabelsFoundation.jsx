@@ -138,7 +138,7 @@ export function LabelsFoundationPage() {
                 columns={calendarData.columns}
                 rows={calendarData.rows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Calendar component labels and locale translations"
               />
@@ -149,7 +149,7 @@ export function LabelsFoundationPage() {
                 columns={codeData.columns}
                 rows={codeData.rows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Code component labels and locale translations"
               />
@@ -160,7 +160,7 @@ export function LabelsFoundationPage() {
                 columns={fieldData.columns}
                 rows={fieldData.rows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Field component labels and locale translations"
               />
@@ -171,7 +171,7 @@ export function LabelsFoundationPage() {
                 columns={actionData.columns}
                 rows={actionData.rows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Action labels and locale translations"
               />

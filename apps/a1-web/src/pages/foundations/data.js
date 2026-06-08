@@ -69,4 +69,11 @@ export const foundations = [
     body: 'Viewport breakpoints for page-level layout and container query breakpoints for component-level adaptation. Both use T-shirt sizes (xs–xl) at values suited to their context.',
     points: ['Viewport breakpoints (media queries)', 'Container query breakpoints', 'Standard container query sizes'],
   },
+  {
+    id: 'foundation-prop-conventions',
+    title: 'Prop conventions',
+    icon: 'rule',
+    body: 'Shared prop names and value sets used consistently across all A1 components. Use these when building or extending a component.',
+    points: ['Size scales', 'Status, variant, and alignment values', 'Controlled state pattern'],
+  },
 ]

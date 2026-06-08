@@ -15,8 +15,8 @@ export interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElemen
   color?: "default" | "muted";
   /** Apply text-wrap. "balance" distributes line lengths evenly — use for short intro copy. */
   textWrap?: "balance";
-  /** Horizontal text alignment. */
-  align?: "left" | "center" | "right";
+  /** Horizontal text alignment. "start"/"end" are logical aliases for LTR/RTL-safe alignment. */
+  align?: "left" | "center" | "right" | "start" | "end";
   children?: React.ReactNode;
 }
 

@@ -317,6 +317,17 @@
   background-size: 80%;
 }
 
+/* ─── Inline icon layout ────────────────────────────────────────────────────── */
+
+.a1-choice-group--inline-icon .a1-choice-item {
+  flex-direction: row;
+  align-items: center;
+}
+
+.a1-choice-group--inline-icon .a1-choice-item__icon {
+  flex-shrink: 0;
+}
+
 /* ─── Error state ───────────────────────────────────────────────────────────── */
 
 .a1-choice-group--error

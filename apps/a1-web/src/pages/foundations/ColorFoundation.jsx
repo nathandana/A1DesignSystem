@@ -318,7 +318,7 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
                   columns={primitiveColorColumns}
                   rows={filteredPrimitiveRows}
                   getRowId={(row) => row.id}
-                  density="compact"
+                  size="compact"
                   scrollable
                   caption="Primitive color tokens"
                   emptyTitle="No matching tokens"
@@ -344,7 +344,7 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
                   columns={semanticColorColumns}
                   rows={filteredSemanticRows}
                   getRowId={(row) => row.id}
-                  density="compact"
+                  size="compact"
                   scrollable
                   caption="Semantic color tokens"
                   emptyTitle="No matching tokens"
@@ -370,7 +370,7 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
                   columns={componentColorColumns}
                   rows={filteredComponentRows}
                   getRowId={(row) => row.id}
-                  density="compact"
+                  size="compact"
                   scrollable
                   caption="Component color tokens"
                   emptyTitle="No matching tokens"

@@ -22,8 +22,8 @@ import "./data-table.css";
  * }>
  * rows: Array<Record<string, any>>
  * getRowId?: (row: Record<string, any>, index: number) => string | number
- * density?: "auto" | "comfortable" | "default" | "compact"
- *   "auto" (default) — switches between densities based on available width and column definitions
+ * size?: "comfortable" | "default" | "compact"
+ *   omit (default) — switches between densities automatically based on available container width
  */
 
 // Estimated minimum content width per column type at a "neutral" padding level
@@ -193,7 +193,7 @@ function SelectionCheckbox({ checked, indeterminate = false, label, onChange }) 
 export function DataTable({
   columns = [],
   rows = [],
-  density = "default",
+  size,
   zebra = false,
   scrollable = false,
   caption,
@@ -238,14 +238,14 @@ export function DataTable({
   const [internalSearchColumn, setInternalSearchColumn] = useState(defaultSearchColumn);
   const [internalSelectedRowIds, setInternalSelectedRowIds] = useState(() => normalizeRowIds(defaultSelectedRowIds));
 
-  const isAuto = density === "auto";
+  const isAuto = size === undefined;
   const isSortControlled = sort !== undefined;
   const isPageControlled = page !== undefined;
   const isFilterControlled = filterValue !== undefined;
   const isSearchControlled = searchValue !== undefined;
   const isSearchColumnControlled = searchColumn !== undefined;
   const isSelectionControlled = selectedRowIds !== undefined;
-  const activeDensity = isAuto ? autoDensity : density;
+  const activeDensity = isAuto ? autoDensity : size;
   const activeSort = isSortControlled ? normalizeSort(sort) : internalSort;
   const activePage = isPageControlled ? page : internalPage;
   const activeFilterValue = isFilterControlled

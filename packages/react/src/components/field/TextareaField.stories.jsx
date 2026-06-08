@@ -22,7 +22,7 @@ const meta = {
     },
     labelPosition: {
       control: "inline-radio",
-      options: ["above", "side"],
+      options: ["above", "before"],
     },
     rows: {
       control: "inline-radio",
@@ -178,7 +178,7 @@ export const LabelPosition = {
       </div>
       <div>
         <p style={LABEL}>Side</p>
-        <TextareaField {...args} labelPosition="side" label="Message" rows="sm" hint="We'll respond within 2 business days." />
+        <TextareaField {...args} labelPosition="before" label="Message" rows="sm" hint="We'll respond within 2 business days." />
       </div>
     </div>
   ),

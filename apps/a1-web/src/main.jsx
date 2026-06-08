@@ -15,10 +15,11 @@ import {
   Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
-import actionLabels   from '../../../system/labels/action.json'
-import calendarLabels from '../../../system/labels/calendar.json'
-import codeLabels     from '../../../system/labels/code.json'
-import fieldLabels    from '../../../system/labels/field.json'
+import actionLabels    from '../../../system/labels/action.json'
+import calendarLabels  from '../../../system/labels/calendar.json'
+import codeLabels      from '../../../system/labels/code.json'
+import fieldLabels     from '../../../system/labels/field.json'
+import statusBarLabels from '../../../system/labels/status-bar.json'
 
 const allLabels = {
   label: {
@@ -26,6 +27,7 @@ const allLabels = {
     ...calendarLabels.label,
     ...codeLabels.label,
     ...fieldLabels.label,
+    ...statusBarLabels.label,
   },
 }
 

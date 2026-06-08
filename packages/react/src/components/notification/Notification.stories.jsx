@@ -8,7 +8,7 @@ const meta = {
   tags: ["autodocs"],
   args: {
     count: 5,
-    variant: "error",
+    status: "error",
     position: "top-right",
     max: 99,
     dot: false,
@@ -26,9 +26,9 @@ const meta = {
       control: "boolean",
       description: "Show a dot with no content"
     },
-    variant: {
+    status: {
       control: "inline-radio",
-      options: ["default", "error", "success", "warn", "info"]
+      options: ["neutral", "error", "success", "warn", "info"]
     },
     position: {
       control: "select",
@@ -105,15 +105,15 @@ export const Variants = {
   parameters: { controls: { include: ["count", "position", "dot", "max"] } },
   render: (args) => (
     <div style={{ display: "flex", gap: "var(--base-spacing-64)", alignItems: "center", padding: "var(--base-spacing-40)", flexWrap: "wrap" }}>
-      {["default", "error", "success", "warn", "info"].map(variant => (
-        <div key={variant} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--base-spacing-12)" }}>
-          <Notification {...args} variant={variant}>
+      {["neutral", "error", "success", "warn", "info"].map(status => (
+        <div key={status} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--base-spacing-12)" }}>
+          <Notification {...args} status={status}>
             <span style={{ fontSize: "28px", display: "inline-flex" }}>
               <Icon name="notifications" opticalSize={24} />
             </span>
           </Notification>
           <span style={{ fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)", fontFamily: "var(--component-paragraph-font-family)" }}>
-            {variant}
+            {status}
           </span>
         </div>
       ))}

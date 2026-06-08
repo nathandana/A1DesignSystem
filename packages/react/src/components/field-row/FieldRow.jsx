@@ -5,9 +5,9 @@ import "./field-row.css";
 export function FieldRow({ children, className = "", ...props }) {
   const ctx = useContext(FieldsetContext);
 
-  // Side-label fields already use an internal two-column grid;
+  // Before-label fields already use an internal two-column grid;
   // stacking the row prevents layout conflicts.
-  const stacked = ctx?.labelPosition === "side";
+  const stacked = ctx?.labelPosition === "before";
 
   const classes = [
     "a1-field-row",

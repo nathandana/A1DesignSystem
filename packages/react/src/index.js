@@ -5,6 +5,7 @@ export { Blockquote } from "./components/blockquote/Blockquote.jsx";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb.jsx";
 export { Notification } from "./components/notification/Notification.jsx";
 export { Snackbar } from "./components/snackbar/Snackbar.jsx";
+export { StatusBar } from "./components/status-bar/StatusBar.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";
 export { IconButton } from "./components/icon-button/IconButton.jsx";
 export { Button } from "./components/button/Button.jsx";export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";

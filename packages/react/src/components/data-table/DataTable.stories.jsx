@@ -106,7 +106,7 @@ const SEARCH_COLS = [
 
 export const Configurable = {
   args: {
-    density:          "default",
+    size:             undefined,
     zebra:            false,
     scrollable:       false,
     caption:          "",
@@ -117,10 +117,10 @@ export const Configurable = {
     rowCount:         8,
   },
   argTypes: {
-    density: {
+    size: {
       control: "select",
-      options: ["compact", "default", "comfortable", "auto"],
-      description: '"auto" switches density based on available container width',
+      options: ["compact", "default", "comfortable", undefined],
+      description: 'Omit (default) to auto-select density from available container width',
     },
     zebra:            { control: "boolean" },
     scrollable:       { control: "boolean", description: "Enable horizontal scrolling when content overflows" },
@@ -173,12 +173,12 @@ export const WithFilters = {
 export const DensityComparison = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-      {["comfortable", "default", "compact"].map((density) => (
-        <div key={density}>
+      {["comfortable", "default", "compact"].map((size) => (
+        <div key={size}>
           <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "var(--semantic-color-text-muted)", marginBottom: 8, textTransform: "capitalize" }}>
-            {density}
+            {size}
           </p>
-          <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 4)} density={density} />
+          <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 4)} size={size} />
         </div>
       ))}
     </div>
@@ -195,7 +195,7 @@ export const ResponsiveDensity = {
         Resize the Storybook canvas — the table automatically switches between comfortable,
         default, and compact density based on the available container width and column type estimates.
       </p>
-      <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 8)} density="auto" zebra caption="Team directory — auto density" />
+      <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 8)} zebra caption="Team directory — auto density" />
     </div>
   ),
 };
@@ -416,7 +416,7 @@ const PROP_ROWS = [
   { name: <CodeValue>onSelectedRowIdsChange</CodeValue>, type: <CodeValue>(ids: string[]) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when row selection changes" },
   { name: <CodeValue>onDeleteSelected</CodeValue>, type: <CodeValue>(rows: Row[], ids: string[]) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Shows a destructive Delete bulk action and calls back with selected rows and ids" },
   { name: <CodeValue>getRowId</CodeValue>, type: <CodeValue>(row, index) =&gt; string|number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Returns each row's stable id. Defaults to id, key, name, then index" },
-  { name: <CodeValue>density</CodeValue>, type: <CodeValue>"compact"|"default"|"comfortable"|"auto"</CodeValue>, defaultVal: <CodeValue muted>"default"</CodeValue>, description: "Cell spacing. auto picks density from container width" },
+  { name: <CodeValue>size</CodeValue>, type: <CodeValue>"compact"|"default"|"comfortable"</CodeValue>, defaultVal: <CodeValue muted>auto</CodeValue>, description: 'Cell spacing density. Omit to auto-select from container width.' },
   { name: <CodeValue>zebra</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Alternate row background shading" },
   { name: <CodeValue>scrollable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Enable horizontal overflow scrolling" },
   { name: <CodeValue>caption</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Accessible table caption (renders above header)" },
@@ -480,13 +480,13 @@ export const Documentation = {
               <Paragraph style={{ marginBottom: 20 }}>
                 Three densities — <strong>compact</strong>, <strong>default</strong>, and <strong>comfortable</strong> — adjust cell padding and font size.
                 Compact mode also switches badges to the <code style={{ fontFamily: "monospace" }}>sm</code> size and hides their icons.
-                Set <code style={{ fontFamily: "monospace" }}>density="auto"</code> to let the table choose based on available container width.
+                Omit <code style={{ fontFamily: "monospace" }}>size</code> (the default) to let the table choose based on available container width.
               </Paragraph>
               <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
                 {["comfortable", "default", "compact"].map((d) => (
                   <div key={d}>
                     <p style={{ fontFamily: "sans-serif", fontSize: 11, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{d}</p>
-                    <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 3)} density={d} />
+                    <DataTable columns={COLUMNS} rows={ALL_ROWS.slice(0, 3)} size={d} />
                   </div>
                 ))}
               </div>
@@ -548,7 +548,7 @@ export const Documentation = {
               <DataTable
                 columns={PROP_COLUMNS}
                 rows={PROP_ROWS}
-                density="compact"
+                size="compact"
                 scrollable
               />
             </section>

@@ -2,7 +2,7 @@ import { FieldsetContext } from "./FieldsetContext.js";
 import "./fieldset.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
-const LABEL_POSITIONS = ["above", "side"];
+const LABEL_POSITIONS = ["above", "before"];
 
 export function Fieldset({
   legend,

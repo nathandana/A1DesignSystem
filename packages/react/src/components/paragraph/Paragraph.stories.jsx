@@ -29,7 +29,7 @@ const meta = {
     },
     align: {
       control: "inline-radio",
-      options: ["left", "center", "right", undefined]
+      options: ["left", "center", "right", "start", "end", undefined]
     }
   }
 };

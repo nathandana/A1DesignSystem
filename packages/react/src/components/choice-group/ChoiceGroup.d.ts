@@ -37,6 +37,11 @@ export interface ChoiceGroupProps {
    * option may be selected at a time (radio semantics). Default: false
    */
   multiple?: boolean;
+  /**
+   * Place each tile's icon to the left of the label and subtext instead of
+   * above the content block. Has no effect on tiles with no icon. Default: false
+   */
+  inlineIcon?: boolean;
   required?: boolean;
   /** Input name attribute. Defaults to the group id. */
   name?: string;

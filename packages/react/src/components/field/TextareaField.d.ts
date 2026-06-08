@@ -10,7 +10,7 @@ export interface TextareaFieldProps extends Omit<React.TextareaHTMLAttributes<HT
   /** Size density. Inherits from parent `Fieldset` when omitted. Default: "default" */
   size?: "comfortable" | "default" | "compact";
   /** Label position. Inherits from parent `Fieldset` when omitted. Default: "above" */
-  labelPosition?: "above" | "side";
+  labelPosition?: "above" | "before";
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;

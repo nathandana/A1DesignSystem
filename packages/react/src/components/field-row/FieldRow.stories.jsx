@@ -88,8 +88,8 @@ export const LabelSide = {
     <div style={{ maxWidth: 800, display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
 
       <div>
-        <p style={LABEL}>FieldRow inside a side-label fieldset stacks automatically</p>
-        <Fieldset legend="Billing address" labelPosition="side">
+        <p style={LABEL}>FieldRow inside a before-label fieldset stacks automatically</p>
+        <Fieldset legend="Billing address" labelPosition="before">
           <TextField label="Street address" autoComplete="street-address" />
           <FieldRow>
             <TextField label="City" autoComplete="address-level2" required />

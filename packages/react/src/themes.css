@@ -52,6 +52,7 @@ html.a1-theme-accessible {
   --component-side-nav-border-width: 2px;
   --component-tab-border-width: 2px;
   --component-top-header-border-width: 2px;
+  --component-status-bar-border-width: 2px;
   --component-button-font-family: var(--theme-a1-accessible-font-family-body);
   --component-paragraph-font-family: var(--theme-a1-accessible-font-family-body);
   --component-heading-font-family-heading: var(--theme-a1-accessible-font-family-heading);

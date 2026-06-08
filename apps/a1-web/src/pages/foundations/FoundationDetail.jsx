@@ -8,6 +8,7 @@ import { IconographyFoundationPage } from './IconographyFoundation.jsx'
 import { AccessibilityFoundationPage } from './AccessibilityFoundation.jsx'
 import { LabelsFoundationPage } from './LabelsFoundation.jsx'
 import { BreakpointsFoundationPage } from './BreakpointsFoundation.jsx'
+import { PropConventionsFoundationPage } from './PropConventionsFoundation.jsx'
 
 export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
   switch (foundation?.id) {
@@ -37,6 +38,8 @@ export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
       return <LabelsFoundationPage onNavigate={onNavigate} />
     case 'foundation-responsive':
       return <BreakpointsFoundationPage onNavigate={onNavigate} />
+    case 'foundation-prop-conventions':
+      return <PropConventionsFoundationPage onNavigate={onNavigate} />
     default:
       return null
   }

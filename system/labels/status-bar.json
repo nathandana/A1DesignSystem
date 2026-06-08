@@ -1,0 +1,34 @@
+{
+  "label": {
+    "statusBar": {
+      "pause": {
+        "$type": "string",
+        "$value": "Pause",
+        "$description": "Label for the button that pauses an indeterminate loading animation.",
+        "locale": {
+          "es": "Pausar",
+          "fr": "Pause",
+          "de": "Pause",
+          "pt": "Pausar",
+          "ja": "一時停止",
+          "zh": "暂停",
+          "ar": "إيقاف مؤقت"
+        }
+      },
+      "play": {
+        "$type": "string",
+        "$value": "Play",
+        "$description": "Label for the button that resumes an indeterminate loading animation after it has been paused.",
+        "locale": {
+          "es": "Reanudar",
+          "fr": "Reprendre",
+          "de": "Fortsetzen",
+          "pt": "Retomar",
+          "ja": "再生",
+          "zh": "播放",
+          "ar": "تشغيل"
+        }
+      }
+    }
+  }
+}

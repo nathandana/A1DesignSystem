@@ -7,7 +7,7 @@ const margins = ["sm", "md", "lg"];
 const levels = ["h1", "h2", "h3", "h4", "h5", "h6"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 const textWraps = ["balance"];
-const aligns = ["left", "center", "right"];
+const aligns = ["left", "center", "right", "start", "end"];
 
 const levelDefaults = { h1: "xl", h2: "lg", h3: "md", h4: "sm", h5: "xs", h6: "xs" };
 

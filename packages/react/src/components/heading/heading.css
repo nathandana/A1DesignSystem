@@ -88,6 +88,8 @@
 .a1-heading--align-left   { text-align: start;  }
 .a1-heading--align-center { text-align: center; }
 .a1-heading--align-right  { text-align: end;    }
+.a1-heading--align-start  { text-align: start;  }
+.a1-heading--align-end    { text-align: end;    }
 
 /* Expressive marks */
 .a1-heading-mark {

@@ -82,7 +82,7 @@ export function Home({ onNavigate }) {
         inverse
         contentWidth="md"
         gap="lg"
-        alignment="center"
+        align="center"
         gradient="accent"
         gradientPosition="center"
         aria-labelledby="hero-heading"
@@ -136,7 +136,7 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Stats strip ── */}
-      <Section padding="sm" surface="raised" contentWidth="lg" alignment="center" aria-label="System statistics">
+      <Section padding="sm" surface="raised" contentWidth="lg" align="center" aria-label="System statistics">
         <Grid columns={{ xs: 2, sm: 4 }} gap="md">
           {stats.map((stat) => (
             <Stack key={stat.label} direction="column" gap={4} align="center" className="a1-web-stat">
@@ -219,7 +219,7 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Platforms ── */}
-      <Section padding="lg" inverse alignment="center" contentWidth="lg" aria-labelledby="platforms-heading">
+      <Section padding="lg" inverse align="center" contentWidth="lg" aria-labelledby="platforms-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge subtle icon="devices">
@@ -295,7 +295,7 @@ export function Home({ onNavigate }) {
         gradient="accent"
         gradientPosition="top-right"
         contentWidth="sm"
-        alignment="center"
+        align="center"
         aria-labelledby="cta-heading"
       >
         <Stack direction="column" gap="lg">

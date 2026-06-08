@@ -10,7 +10,7 @@ export interface SelectFieldProps extends Omit<React.SelectHTMLAttributes<HTMLSe
   /** Size density. Inherits from parent `Fieldset` when omitted. Default: "default" */
   size?: "comfortable" | "default" | "compact";
   /** Label position. Inherits from parent `Fieldset` when omitted. Default: "above" */
-  labelPosition?: "above" | "side";
+  labelPosition?: "above" | "before";
   required?: boolean;
   disabled?: boolean;
   /** Element rendered inside the field control */

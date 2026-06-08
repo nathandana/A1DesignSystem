@@ -111,7 +111,7 @@
 /* ── Alignment ─────────────────────────────────────────────────────────────── */
 /*
  * Aligns direct children as layout items.
- * Use the object prop for responsive changes: alignment={{ xs: "center", lg: "left" }}
+ * Use the object prop for responsive changes: align={{ xs: "center", lg: "left" }}
  */
 
 .a1-section[class*="-align-"] {

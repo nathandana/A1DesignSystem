@@ -147,7 +147,7 @@ export function SizeFoundationPage({ onNavigate }) {
                   columns={spacingColumns}
                   rows={filteredSpacingRows}
                   getRowId={(r) => r.id}
-                  density="compact"
+                  size="compact"
                   scrollable
                   caption="Base spacing tokens"
                   emptyTitle="No matching tokens"
@@ -161,7 +161,7 @@ export function SizeFoundationPage({ onNavigate }) {
                 columns={gapColumns}
                 rows={gapRows}
                 getRowId={(r) => r.id}
-                density="compact"
+                size="compact"
                 scrollable
                 caption="Semantic gap tokens"
               />

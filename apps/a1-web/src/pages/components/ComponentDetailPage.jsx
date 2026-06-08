@@ -597,7 +597,7 @@ function AnatomyComponentPreview({ component }) {
       return (
         <DataTable
           caption="Anatomy table example"
-          density="compact"
+          size="compact"
           columns={[
             { key: 'name', label: 'Name' },
             { key: 'status', label: 'Status' },
@@ -703,7 +703,7 @@ function AnatomyPanel({ component, category }) {
         <Heading as="h3" size="sm">Sizing and overflow</Heading>
         <DataTable
           caption={`${component.title} sizing and overflow behavior`}
-          density="compact"
+          size="compact"
           columns={[
             { key: 'item', label: 'Item', sortable: true },
             { key: 'value', label: 'Default' },
@@ -1888,7 +1888,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
           <TabPanel value="overview">
             <Stack gap="xl">
 
-              <Section padding="md" surface="raised" alignment="center">
+              <Section padding="md" surface="raised" align="center">
                   <AnatomyComponentPreview component={component} />
               </Section>
                 <Paragraph size="sm">{component.body}</Paragraph>
@@ -1942,7 +1942,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                   {table.title && <Heading as="h3" size="sm">{table.title}</Heading>}
                   <DataTable
                     caption={table.title ?? `${component.title} properties`}
-                    density="comfortable"
+                    size="comfortable"
                     columns={[
                       { key: 'name', label: 'Property', sortable: true, width: '160px' },
                       { key: 'type', label: 'Type', width: '260px' },

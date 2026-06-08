@@ -8,6 +8,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/components.md` — live registry of every component and which packages it exists in. Read it before asking "does X exist?" or "where is Y implemented?". Update it when components change.
 - `packages/react/ai/quick-orientation.md` — build commands and key file locations.
 - `packages/react/ai/a11y-policy.md` — accessibility check policy and commands.
+- `packages/react/ai/updates.md` — prop renames, value changes, and removals by version. Read before migrating consumer code between versions.
 - `system/icons/icon-usage.md` — system-level icon usage guidance for agents, with theme override rules and scenario mappings.
 
 > **Scope reminder:** This is a multi-package design system. Changes to tokens, themes, labels, or component APIs can ripple across React, HTML/CSS, React Native, examples, and apps. Before making changes, identify which packages are affected and update all of them.

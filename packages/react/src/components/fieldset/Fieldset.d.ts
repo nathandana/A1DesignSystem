@@ -12,7 +12,7 @@ export interface FieldsetProps extends React.FieldsetHTMLAttributes<HTMLFieldSet
    * Label position applied to all child fields via context.
    * Individual fields can override this.
    */
-  labelPosition?: "above" | "side";
+  labelPosition?: "above" | "before";
   /**
    * Show a "* Required field" note below the legend.
    * Only shown for "default" and "compact" sizes (comfortable fields show inline badges).

@@ -39,7 +39,7 @@ const meta = {
     },
     labelPosition: {
       control: "inline-radio",
-      options: ["above", "side"],
+      options: ["above", "before"],
     },
     markRequired: { control: "boolean" },
     surface: { control: "boolean" },

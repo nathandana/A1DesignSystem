@@ -336,9 +336,9 @@
   color: var(--semantic-color-status-error-background);
 }
 
-/* ─── Side label layout ────────────────────────────────────────────────────── */
+/* ─── Before label layout ───────────────────────────────────────────────────── */
 
-.a1-field--label-side {
+.a1-field--label-before {
   display: grid;
   grid-template-columns: var(--a1-field-side-label-width) 1fr;
   column-gap: var(--base-spacing-16);
@@ -346,12 +346,12 @@
   align-items: start;
 }
 
-.a1-field--label-side .a1-field__label {
+.a1-field--label-before .a1-field__label {
   padding-top: calc((var(--a1-field-height) - 1lh) / 2);
   padding-bottom: 0;
 }
 
-.a1-field--label-side .a1-field__message {
+.a1-field--label-before .a1-field__message {
   grid-column: 1;
   grid-row: 2;
   /* Fine-tuned margin: overrides the base margin-top added for the above-label
@@ -359,22 +359,22 @@
   margin-top: calc((var(--a1-field-label-size) * 1.5 - var(--a1-field-height)) / 2 + var(--base-spacing-2));
 }
 
-/* ─── Side label → stacked on xs/sm ───────────────────────────────────────── */
+/* ─── Before label → stacked on xs/sm ─────────────────────────────────────── */
 
 @media (--bp-sm-down) {
-  .a1-field--label-side {
+  .a1-field--label-before {
     display: flex;
     flex-direction: column;
     gap: var(--a1-field-gap); /* restore: grid overrode row-gap to base-spacing-4 */
     align-items: stretch;     /* restore: grid set align-items: start */
   }
 
-  .a1-field--label-side .a1-field__label {
+  .a1-field--label-before .a1-field__label {
     padding-top: 0;
     padding-bottom: var(--a1-field-gap);
   }
 
-  .a1-field--label-side .a1-field__message {
+  .a1-field--label-before .a1-field__message {
     margin-top: var(--a1-field-gap);
   }
 }
