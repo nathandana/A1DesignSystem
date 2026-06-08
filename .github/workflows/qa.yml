@@ -1,10 +1,6 @@
 name: Visual Regression & Accessibility
 
 on:
-  # Run on every push to main (pre-deployment gate)
-  push:
-    branches: [main]
-  # Run on-demand from the Actions tab
   workflow_dispatch:
 
 jobs:
