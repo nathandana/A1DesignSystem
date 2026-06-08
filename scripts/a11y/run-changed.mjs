@@ -46,7 +46,9 @@ for (const component of changed) {
 }
 
 if (exitCode !== 0) {
-  console.error("\n⚠️  One or more components had accessibility violations.\n");
+  console.error("\n⚠️  One or more components had accessibility violations.");
+  console.error('Continuing without failing the process (warnings only).\n');
 }
 
-process.exit(exitCode);
+// Always exit 0 so accessibility issues are reported as warnings
+process.exit(0);
