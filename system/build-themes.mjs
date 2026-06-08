@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync } from "fs";
+import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -6,6 +6,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const themesDir = join(__dirname, "themes");
 const outFile = join(__dirname, "../packages/react/src/themes.css");
 const tokenFile = join(__dirname, "../build/json/tokens.json");
+const tokensCssSrc = join(__dirname, "../build/css/tokens.css");
+const tokensCssDest = join(__dirname, "../packages/react/src/tokens.css");
+const breakpointsCssSrc = join(__dirname, "../build/css/breakpoints.css");
+const breakpointsCssDest = join(__dirname, "../packages/react/src/breakpoints.css");
 const nativeOutDir = join(__dirname, "../packages/react-native/src/tokens");
 const nativeTsOutFile = join(nativeOutDir, "generatedThemeColors.ts");
 const nativeJsOutFile = join(nativeOutDir, "generatedThemeColors.js");
@@ -60,6 +64,20 @@ for (const { id, file } of files) {
 
 writeFileSync(outFile, css);
 console.log(`✔︎ themes.css  (${files.length} theme file${files.length !== 1 ? "s" : ""})`);
+
+if (existsSync(tokensCssSrc)) {
+  copyFileSync(tokensCssSrc, tokensCssDest);
+  console.log("✔︎ tokens.css  → packages/react/src/tokens.css");
+} else {
+  console.warn("⚠︎ build/css/tokens.css not found; skipping tokens.css copy.");
+}
+
+if (existsSync(breakpointsCssSrc)) {
+  copyFileSync(breakpointsCssSrc, breakpointsCssDest);
+  console.log("✔︎ breakpoints.css  → packages/react/src/breakpoints.css");
+} else {
+  console.warn("⚠︎ build/css/breakpoints.css not found; skipping breakpoints.css copy.");
+}
 
 if (!existsSync(tokenFile)) {
   console.warn("⚠︎ build/json/tokens.json not found; skipping React Native theme color generation.");

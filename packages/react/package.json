@@ -1,6 +1,6 @@
 {
   "name": "@gtivr4/a1-design-system-react",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "React components for the A1 token-driven design system.",
   "type": "module",
   "main": "./src/index.js",
@@ -15,6 +15,7 @@
   ],
   "files": [
     "README.md",
+    "guidelines/**/*.md",
     "src/**/*.css",
     "src/**/*.jsx",
     "src/index.js",
@@ -26,7 +27,9 @@
   ],
   "exports": {
     ".": "./src/index.js",
+    "./tokens.css": "./src/tokens.css",
     "./themes.css": "./src/themes.css",
+    "./breakpoints.css": "./src/breakpoints.css",
     "./color-scheme.css": "./src/color-scheme.css",
     "./utilities/spacing.css": "./src/utilities/spacing.css",
     "./components/*": "./src/components/*"
