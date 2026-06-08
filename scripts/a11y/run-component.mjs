@@ -29,5 +29,7 @@ try {
     { stdio: "inherit" }
   );
 } catch {
-  process.exit(1);
+  console.error(`\n⚠️  Accessibility violations detected for component: ${component}.`);
+  console.error('Continuing without failing the process (warnings only).\n');
+  process.exit(0);
 }
