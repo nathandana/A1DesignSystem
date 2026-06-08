@@ -1,6 +1,6 @@
 {
   "name": "a1-design-system",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -33,7 +33,7 @@
     "test:qa:update": "sh -c 'node .storybook/qa-setup.mjs && (UPDATE_SNAPSHOTS=true test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'",
     "a11y:component": "node scripts/a11y/run-component.mjs",
     "a11y:changed": "node scripts/a11y/run-changed.mjs",
-    "a11y:playwright": "playwright test --project=a11y",
+    "a11y:playwright": "node scripts/a11y/run-playwright.mjs",
     "a11y:report": "node .storybook/qa-report.mjs",
     "a11y:full": "npm run test:qa && npm run a11y:playwright"
   },
