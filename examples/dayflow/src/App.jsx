@@ -26,9 +26,9 @@ export function App() {
   const [syncMessage, setSyncMessage] = useState("");
 
   useEffect(() => {
-    document.documentElement.classList.add("a1-theme-heritage");
+    document.documentElement.classList.add("a1-theme-accessible");
     document.title = "Dayflow — AI Day Planner";
-    return () => document.documentElement.classList.remove("a1-theme-heritage");
+    return () => document.documentElement.classList.remove("a1-theme-accessible");
   }, []);
 
   useEffect(() => {
@@ -41,17 +41,19 @@ export function App() {
 
   const handleConnect = async (calendar) => {
     const connected = await connectCalendar(calendar);
-    updateState({
-      calendars: state.calendars.map((c) => (c.id === calendar.id ? connected : c)),
-    });
+    setState((prev) => ({
+      ...prev,
+      calendars: prev.calendars.map((c) => (c.id === calendar.id ? connected : c)),
+    }));
   };
 
   const handleDisconnect = async (calendar) => {
     const disconnected = await disconnectCalendar(calendar);
-    updateState({
-      calendars: state.calendars.map((c) => (c.id === calendar.id ? disconnected : c)),
-      events: state.events.filter((e) => e.calendarId !== calendar.id),
-    });
+    setState((prev) => ({
+      ...prev,
+      calendars: prev.calendars.map((c) => (c.id === calendar.id ? disconnected : c)),
+      events: prev.events.filter((e) => e.calendarId !== calendar.id),
+    }));
   };
 
   const handleSync = async () => {
@@ -78,11 +80,11 @@ export function App() {
   };
 
   const handleAddErrand = (errand) => {
-    updateState({ errands: [...state.errands, errand] });
+    setState((prev) => ({ ...prev, errands: [...prev.errands, errand] }));
   };
 
   const handleRemoveErrand = (id) => {
-    updateState({ errands: state.errands.filter((e) => e.id !== id) });
+    setState((prev) => ({ ...prev, errands: prev.errands.filter((e) => e.id !== id) }));
   };
 
   const handleReset = () => {

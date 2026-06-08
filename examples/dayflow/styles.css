@@ -1,19 +1,25 @@
 @import "../shared.css";
 
 :root {
-  --dayflow-accent: #2d6a4f;
-  --dayflow-accent-soft: #d8f3dc;
+  --dayflow-accent: var(--base-color-accent-600);
+  --dayflow-accent-soft: var(--base-color-accent-100);
   --dayflow-ink: var(--semantic-color-text-default);
   --dayflow-muted: var(--semantic-color-text-muted);
   --dayflow-line: var(--semantic-color-border-subtle);
   --dayflow-panel: var(--semantic-color-surface-panel);
+  --dayflow-priority-high: var(--semantic-color-status-error-text);
+  --dayflow-priority-high-bg: var(--semantic-color-status-error-background);
+  --dayflow-priority-medium: var(--semantic-color-status-warning-text);
+  --dayflow-priority-medium-bg: var(--semantic-color-status-warning-background);
+  --dayflow-priority-low: var(--semantic-color-text-muted);
+  --dayflow-priority-low-bg: var(--semantic-color-surface-panel);
 }
 
 body {
-  font-family: "Sora", Inter, sans-serif;
+  font-family: var(--theme-a1-accessible-font-family-body, "Atkinson Hyperlegible", Inter, sans-serif);
   background:
-    radial-gradient(circle at 0% 0%, rgba(45, 106, 79, 0.08), transparent 40%),
-    radial-gradient(circle at 100% 0%, rgba(64, 145, 108, 0.08), transparent 35%),
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--base-color-accent-500) 10%, transparent), transparent 40%),
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--base-color-accent-400) 8%, transparent), transparent 35%),
     var(--semantic-color-surface-page);
 }
 
@@ -199,6 +205,66 @@ body {
   border-radius: 8px;
   background: var(--dayflow-accent-soft);
   color: var(--dayflow-accent);
+}
+
+.dayflow-priority--high {
+  --dayflow-priority-color: var(--dayflow-priority-high);
+  --dayflow-priority-surface: var(--dayflow-priority-high-bg);
+}
+
+.dayflow-priority--medium {
+  --dayflow-priority-color: var(--dayflow-priority-medium);
+  --dayflow-priority-surface: var(--dayflow-priority-medium-bg);
+}
+
+.dayflow-priority--low {
+  --dayflow-priority-color: var(--dayflow-priority-low);
+  --dayflow-priority-surface: var(--dayflow-priority-low-bg);
+}
+
+.dayflow-errand-card {
+  border-left: 4px solid var(--dayflow-priority-color, var(--dayflow-line));
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--dayflow-priority-surface, var(--dayflow-panel)) 24%, transparent),
+    transparent 55%
+  );
+}
+
+.dayflow-errand-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dayflow-errand-card__title-row,
+.dayflow-timeline__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dayflow-priority-marker {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dayflow-priority-color) 16%, transparent);
+  color: var(--dayflow-priority-color);
+}
+
+.dayflow-timeline__card.dayflow-priority--high,
+.dayflow-timeline__card.dayflow-priority--medium,
+.dayflow-timeline__card.dayflow-priority--low {
+  border-left: 3px solid var(--dayflow-priority-color);
+}
+
+.dayflow-timeline__icon-wrap.dayflow-priority--high,
+.dayflow-timeline__icon-wrap.dayflow-priority--medium,
+.dayflow-timeline__icon-wrap.dayflow-priority--low {
+  background: color-mix(in srgb, var(--dayflow-priority-color) 14%, transparent);
+  color: var(--dayflow-priority-color);
 }
 
 .dayflow-calendar-card__row,

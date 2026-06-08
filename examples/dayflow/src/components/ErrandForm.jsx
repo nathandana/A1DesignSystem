@@ -1,67 +1,153 @@
+import { useEffect, useId, useState } from "react";
 import {
+  Banner,
   Button,
   ButtonContainer,
+  ChoiceGroup,
   NumberField,
-  SelectField,
   Stack,
   TextField,
 } from "../../../../packages/react/src/index.js";
 import { lookupPlace } from "../lib/locations.js";
+import { PRIORITY_OPTIONS } from "../lib/priority.js";
 
-const PRIORITY_OPTIONS = [
-  { value: "high", label: "High" },
-  { value: "medium", label: "Medium" },
-  { value: "low", label: "Low" },
-];
+const EMPTY_FORM = {
+  name: "",
+  address: "",
+  duration: "15",
+  priority: "medium",
+  earliest: "",
+  latest: "",
+  notes: "",
+};
 
-export function ErrandForm({ onAdd, onCancel }) {
-  const handleSubmit = (event) => {
+export function ErrandForm({ onAdd, onCancel, formKey }) {
+  const formId = useId();
+  const [fields, setFields] = useState(EMPTY_FORM);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setFields(EMPTY_FORM);
+    setError("");
+  }, [formKey]);
+
+  function updateField(key, value) {
+    setFields((prev) => ({ ...prev, [key]: value }));
+    setError("");
+  }
+
+  function handleSubmit(event) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = data.get("name")?.toString().trim();
-    const address = data.get("address")?.toString().trim();
-    if (!name || !address) return;
 
-    const location = lookupPlace(address);
+    const name = fields.name.trim();
+    const address = fields.address.trim();
+    if (!name || !address) {
+      setError("Enter an errand name and destination.");
+      return;
+    }
+
+    const durationMinutes = Number(fields.duration);
+    if (!Number.isFinite(durationMinutes) || durationMinutes < 5) {
+      setError("Duration must be at least 5 minutes.");
+      return;
+    }
+
+    if (fields.earliest && fields.latest && fields.earliest >= fields.latest) {
+      setError("Latest time must be after earliest time.");
+      return;
+    }
+
     onAdd({
       id: `err-${Date.now()}`,
       name,
-      location,
-      durationMinutes: Number(data.get("duration")) || 15,
-      priority: data.get("priority")?.toString() || "medium",
-      timeWindow: data.get("earliest") && data.get("latest")
-        ? { earliest: data.get("earliest").toString(), latest: data.get("latest").toString() }
+      location: lookupPlace(address),
+      durationMinutes,
+      priority: fields.priority,
+      timeWindow: fields.earliest && fields.latest
+        ? { earliest: fields.earliest, latest: fields.latest }
         : null,
-      notes: data.get("notes")?.toString() ?? "",
+      notes: fields.notes.trim(),
     });
-    event.currentTarget.reset();
-  };
+
+    setFields(EMPTY_FORM);
+    setError("");
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id={formId} onSubmit={handleSubmit} noValidate>
       <Stack gap="md">
-        <TextField id="errand-name" name="name" label="Errand name" placeholder="Grocery run" required />
+        {error ? <Banner status="error">{error}</Banner> : null}
+
         <TextField
-          id="errand-address"
+          id={`${formId}-name`}
+          name="name"
+          label="Errand name"
+          value={fields.name}
+          onChange={(e) => updateField("name", e.target.value)}
+          required
+        />
+        <TextField
+          id={`${formId}-address`}
           name="address"
           label="Destination"
           hint="Try Whole Foods, USPS Mission, Target…"
-          placeholder="Address or place name"
+          value={fields.address}
+          onChange={(e) => updateField("address", e.target.value)}
           required
         />
+
         <div className="dayflow-form-grid">
-          <NumberField id="errand-duration" name="duration" label="Duration (min)" defaultValue={15} min={5} max={180} />
-          <SelectField id="errand-priority" name="priority" label="Priority" defaultValue="medium">
-            {PRIORITY_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </SelectField>
+          <NumberField
+            id={`${formId}-duration`}
+            name="duration"
+            label="Duration (min)"
+            min={5}
+            max={180}
+            value={fields.duration}
+            onChange={(e) => updateField("duration", e.target.value)}
+            required
+          />
         </div>
+
+        <ChoiceGroup
+          label="Priority"
+          name="priority"
+          options={PRIORITY_OPTIONS}
+          value={fields.priority}
+          onChange={(value) => updateField("priority", value)}
+          columns={1}
+          inlineIcon
+          required
+        />
+
         <div className="dayflow-form-grid">
-          <TextField id="errand-earliest" name="earliest" label="Earliest" hint="Optional time window" type="time" />
-          <TextField id="errand-latest" name="latest" label="Latest" type="time" />
+          <TextField
+            id={`${formId}-earliest`}
+            name="earliest"
+            label="Earliest"
+            hint="Optional time window"
+            type="time"
+            value={fields.earliest}
+            onChange={(e) => updateField("earliest", e.target.value)}
+          />
+          <TextField
+            id={`${formId}-latest`}
+            name="latest"
+            label="Latest"
+            type="time"
+            value={fields.latest}
+            onChange={(e) => updateField("latest", e.target.value)}
+          />
         </div>
-        <TextField id="errand-notes" name="notes" label="Notes" placeholder="Optional details" />
+
+        <TextField
+          id={`${formId}-notes`}
+          name="notes"
+          label="Notes"
+          value={fields.notes}
+          onChange={(e) => updateField("notes", e.target.value)}
+        />
+
         <ButtonContainer>
           <Button type="submit" icon="add">Add errand</Button>
           {onCancel ? (

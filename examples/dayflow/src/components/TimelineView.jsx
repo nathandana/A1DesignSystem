@@ -1,5 +1,7 @@
 import { Card, Heading, Icon, Paragraph, Stack } from "../../../../packages/react/src/index.js";
+import { PriorityBadge } from "./PriorityBadge.jsx";
 import { formatDuration, formatTime, formatTimeRange } from "../lib/format.js";
+import { getPriorityMeta } from "../lib/priority.js";
 
 const TYPE_META = {
   "drive-to-event": { icon: "directions_car", label: "Drive to appointment" },
@@ -24,6 +26,8 @@ export function TimelineView({ segments }) {
         const meta = TYPE_META[seg.type] ?? { icon: "schedule", label: "Activity" };
         const title = seg.item?.title ?? seg.item?.name ?? meta.label;
         const isDrive = seg.type.startsWith("drive-");
+        const isErrand = seg.type === "errand";
+        const priorityMeta = isErrand ? getPriorityMeta(seg.item?.priority) : null;
 
         return (
           <div key={`${seg.type}-${title}-${index}`} className="dayflow-timeline__item" role="listitem">
@@ -31,14 +35,17 @@ export function TimelineView({ segments }) {
               <span className={`dayflow-timeline__dot ${isDrive ? "dayflow-timeline__dot--drive" : ""}`} />
               {index < segments.length - 1 ? <span className="dayflow-timeline__line" /> : null}
             </div>
-            <Card className="dayflow-timeline__card">
+            <Card className={`dayflow-timeline__card ${priorityMeta ? priorityMeta.className : ""}`}>
               <Stack gap="sm">
                 <div className="dayflow-timeline__header">
-                  <span className="dayflow-timeline__icon-wrap">
-                    <Icon name={meta.icon} size="sm" />
+                  <span className={`dayflow-timeline__icon-wrap ${priorityMeta ? priorityMeta.className : ""}`}>
+                    <Icon name={isErrand ? priorityMeta.icon : meta.icon} size="sm" />
                   </span>
                   <div>
-                    <Heading as="h4" size="sm">{title}</Heading>
+                    <div className="dayflow-timeline__title-row">
+                      <Heading as="h4" size="sm">{title}</Heading>
+                      {isErrand ? <PriorityBadge priority={seg.item.priority} size="sm" /> : null}
+                    </div>
                     <Paragraph size="sm" color="muted">
                       {isDrive
                         ? `Leave ${formatTime(seg.leaveBy)} · ${formatDuration(seg.driveMinutes)} · ${seg.traffic} traffic`
