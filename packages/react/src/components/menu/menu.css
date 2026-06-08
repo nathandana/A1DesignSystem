@@ -104,6 +104,18 @@
   background: transparent;
 }
 
+/* Active / current-page indicator */
+.a1-menu-item--active {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-action-surface);
+  border-inline-start: 2px solid var(--semantic-color-action-background);
+  padding-inline-start: calc(var(--base-spacing-8) - 2px);
+}
+
+.a1-menu-item--active .a1-menu-item__icon {
+  color: var(--semantic-color-action-background);
+}
+
 /* Destructive variant */
 .a1-menu-item--destructive {
   color: var(--semantic-color-status-error-text);

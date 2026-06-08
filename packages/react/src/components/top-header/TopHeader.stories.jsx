@@ -66,7 +66,7 @@ const ACTIONS = [
     icon: "settings",
     label: "Settings",
     items: [
-      { label: "Preferences", icon: "tune",    href: "#" },
+      { label: "Preferences", icon: "settings", href: "#" },
       { label: "Appearance",  icon: "palette", href: "#" },
       { label: "API Keys",    icon: "key",     href: "#" },
     ],
@@ -173,6 +173,47 @@ export const NoIcons = {
           },
         ]}
         actions={ACTIONS.slice(2)}
+      />
+      {PAGE_CONTENT}
+    </div>
+  ),
+};
+
+export const ActiveInSubmenu = {
+  name: "Active item in secondary/tertiary menu",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navItems={[
+          { id: "home", label: "Home", icon: "home", iconOnly: true, href: "/" },
+          { id: "products", label: "Products", icon: "inventory_2", href: "/products" },
+          {
+            id: "analytics",
+            label: "Analytics",
+            icon: "analytics",
+            href: "/analytics",
+            active: true,
+            items: [
+              { label: "Overview", href: "/analytics" },
+              { divider: true },
+              {
+                label: "Reports",
+                href: "/analytics/reports",
+                items: [
+                  { label: "Revenue", href: "/analytics/reports/revenue", active: true },
+                  { label: "Engagement", href: "/analytics/reports/engagement" },
+                  { label: "Retention", href: "/analytics/reports/retention" },
+                ],
+              },
+              { label: "Forecasting", href: "/analytics/forecast" },
+            ],
+          },
+          { id: "docs", label: "Documentation", icon: "article", href: "/docs" },
+        ]}
+        actions={ACTIONS}
       />
       {PAGE_CONTENT}
     </div>

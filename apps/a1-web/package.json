@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1 --strictPort --port 5177",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --host 127.0.0.1 --strictPort --port 4177"
   },
   "dependencies": {
     "@gtivr4/a1-design-system-react": "*",

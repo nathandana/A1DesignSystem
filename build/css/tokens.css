@@ -330,6 +330,16 @@
   --component-blockquote-padding-inline: 24px;
   --component-blockquote-mark-size: 5rem;
   --component-blockquote-cite-font-weight: 500;
+  --component-calendar-month-gap: 32px;
+  --component-calendar-heading-padding-block: 12px;
+  --component-calendar-heading-padding-block-compact: 8px;
+  --component-calendar-heading-gap: 8px;
+  --component-calendar-cell-padding: 4px;
+  --component-calendar-cell-padding-compact: 2px;
+  --component-calendar-cell-padding-minimal: 1px;
+  --component-calendar-cell-size: 32px;
+  --component-calendar-cell-size-compact: 24px;
+  --component-calendar-cell-border-radius: 4px;
   --component-card-padding: 20px;
   --component-card-border-radius: 8px;
   --component-card-border-width: 1px;

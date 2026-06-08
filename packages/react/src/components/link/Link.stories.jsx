@@ -1,5 +1,6 @@
 import { Link } from "./Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Controls/Link",
@@ -25,8 +26,7 @@ const meta = {
       description: "Font weight — omit to inherit from parent"
     },
     icon: {
-      control: "text",
-      description: "Material Symbols icon name (e.g. \"open_in_new\", \"arrow_forward\")"
+      ...iconArgType("A1 icon registry name")
     },
     iconPosition: {
       control: "inline-radio",

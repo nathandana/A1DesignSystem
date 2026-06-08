@@ -1,3 +1,21 @@
+/* ── Alpha badge — used inline in settings menu section labels ── */
+.a1-web-alpha-badge {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--base-spacing-6);
+  padding-block: var(--base-spacing-2);
+  border-radius: var(--base-radius-xl);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-medium);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-inline-start: var(--base-spacing-6);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-text-inverse);
+}
+
 /* ── Global ── */
 html,
 body,
@@ -304,10 +322,21 @@ body {
   overflow-x: auto;
   padding: var(--base-spacing-16);
   border-radius: var(--base-radius-md);
-  background: var(--semantic-color-surface-raised);
+  background: var(--semantic-color-surface-panel);
   color: var(--semantic-color-text-default);
-  font-family: var(--theme-a1-light-font-family-mono);
+  font-family: var(--component-inline-font-family-mono);
   font-size: var(--semantic-font-size-body-sm);
+  line-height: 1.75;
+}
+
+/* ── Inline code — file paths, values, snippets in running text ── */
+.a1-web-inline-code {
+  font-family: var(--component-inline-font-family-mono);
+  font-size: 0.875em;
+  background: var(--semantic-color-surface-panel);
+  border-radius: var(--base-radius-sm);
+  padding: 0.1em 0.4em;
+  line-height: 1.75;
 }
 
 /* ── Code chips (platform tag, theme selector) ── */
@@ -376,29 +405,15 @@ body {
   line-height: 1.2;
 }
 
-.a1-web-icon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--base-spacing-96), 1fr));
-  gap: var(--base-spacing-4);
-}
-
-.a1-web-icon-cell {
-  display: flex;
-  flex-direction: column;
+.a1-web-icon-table-preview {
+  display: inline-flex;
   align-items: center;
-  gap: var(--base-spacing-6);
-  padding: var(--base-spacing-12) var(--base-spacing-8);
-  border-radius: var(--base-radius-md);
-  border: 1px solid var(--semantic-color-border-subtle);
-  background: var(--semantic-color-surface-panel);
+  justify-content: center;
+  color: var(--semantic-color-text-default);
 }
 
-.a1-web-icon-cell__name {
-  font-family: var(--theme-a1-light-font-family-mono);
-  font-size: var(--semantic-font-size-body-xs);
-  color: var(--semantic-color-text-muted);
-  text-align: center;
-  overflow-wrap: anywhere;
+.a1-web-icon-table-preview .a1-icon {
+  font-size: var(--base-spacing-32);
 }
 
 @media (max-width: 1024px) {

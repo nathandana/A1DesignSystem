@@ -101,6 +101,16 @@ function FilterChip({ filter, selected, onSet }) {
         onClose={() => setOpen(false)}
         aria-label={filter.label}
       >
+        {!isMulti && (
+          <MenuItem
+            key="__all__"
+            icon={radioIcon(!selected)}
+            className={!selected ? "a1-dt-filters__item--on" : ""}
+            onClick={() => { onSet(""); setOpen(false); }}
+          >
+            All
+          </MenuItem>
+        )}
         {filter.options.map((opt) => {
           const checked = isMulti ? arr.includes(opt.value) : selected === opt.value;
           const icon    = isMulti ? checkIcon(checked) : radioIcon(checked);
@@ -115,13 +125,13 @@ function FilterChip({ filter, selected, onSet }) {
             </MenuItem>
           );
         })}
-        {isActive && (
+        {isMulti && isActive && (
           <div className="a1-dt-filters__menu-clear">
             <Button
               variant="tertiary"
               size="sm"
               icon="close"
-              onClick={() => { onSet(isMulti ? [] : ""); setOpen(false); }}
+              onClick={() => { onSet([]); setOpen(false); }}
             >
               Clear
             </Button>
@@ -273,6 +283,16 @@ export function DataTableFilters({
 
               return (
                 <MenuSection key={f.key} label={f.label}>
+                  {!isMulti && (
+                    <MenuItem
+                      key="__all__"
+                      icon={radioIcon(!val)}
+                      className={!val ? "a1-dt-filters__item--on" : ""}
+                      onClick={() => set(f.key, "")}
+                    >
+                      All
+                    </MenuItem>
+                  )}
                   {f.options.map((opt) => {
                     const checked = isMulti ? arr.includes(opt.value) : val === opt.value;
                     const icon    = isMulti ? checkIcon(checked) : radioIcon(checked);

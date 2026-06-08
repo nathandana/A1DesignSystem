@@ -1,4 +1,5 @@
 export { Accordion } from "./components/accordion/Accordion.jsx";
+export { Calendar } from "./components/calendar/Calendar.jsx";
 export { PageNav } from "./components/page-nav/PageNav.jsx";
 export { Blockquote } from "./components/blockquote/Blockquote.jsx";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb.jsx";
@@ -9,6 +10,7 @@ export { IconButton } from "./components/icon-button/IconButton.jsx";
 export { Button } from "./components/button/Button.jsx";export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";
 export { Card } from "./components/card/Card.jsx";
 export { Cluster } from "./components/cluster/Cluster.jsx";
+export { Code } from "./components/code/Code.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
 export { Divider } from "./components/divider/Divider.jsx";
 export { InlineEditable } from "./components/inline-editable/InlineEditable.jsx";

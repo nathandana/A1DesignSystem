@@ -260,7 +260,7 @@
    Apply .a1-theme-dark to <html> for global dark mode.
    Placed after the media query so explicit class always wins regardless of OS. */
 
-.a1-theme-dark {
+html.a1-theme-dark {
   color-scheme: dark;
   --semantic-color-surface-page:   var(--base-color-neutral-900);
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
@@ -334,8 +334,8 @@
 }
 
 /* Light restore inside a dark context (.a1-inverse or .a1-theme-light nested under .a1-theme-dark) */
-.a1-theme-dark .a1-inverse,
-.a1-theme-dark .a1-theme-light {
+html.a1-theme-dark .a1-inverse,
+html.a1-theme-dark .a1-theme-light {
   color-scheme: light;
   --semantic-color-surface-page:   var(--base-color-neutral-0);
   --semantic-color-surface-panel:  var(--base-color-neutral-50);
@@ -407,14 +407,14 @@
   --a1-field-read-only-text:         var(--base-color-info-1000);
 }
 
-.a1-theme-dark .a1-notification--default,
+html.a1-theme-dark .a1-notification--default,
 .a1-inverse .a1-notification--default {
   --a1-notification-background: var(--base-color-neutral-500);
   --a1-notification-foreground: var(--base-color-neutral-0);
 }
 
-.a1-theme-dark .a1-inverse .a1-notification--default,
-.a1-theme-dark .a1-theme-light .a1-notification--default {
+html.a1-theme-dark .a1-inverse .a1-notification--default,
+html.a1-theme-dark .a1-theme-light .a1-notification--default {
   --a1-notification-background: var(--base-color-neutral-600);
   --a1-notification-foreground: var(--base-color-neutral-0);
 }
@@ -422,7 +422,7 @@
 /* ─── Light ──────────────────────────────────────────────────────────────────
    Use .a1-theme-light to explicitly force light mode, e.g. inside a dark container. */
 
-.a1-theme-light {
+html.a1-theme-light {
   color-scheme: light;
   --semantic-color-surface-page:   var(--base-color-neutral-0);
   --semantic-color-surface-panel:  var(--base-color-neutral-50);
@@ -497,9 +497,9 @@
 /* ─── .a1-theme-light .a1-inverse ───────────────────────────────────────────
    When .a1-theme-light forces light mode on <html> but the OS prefers dark,
    the system dark media query (0,1,0) would flip .a1-inverse sections to light.
-   This compound rule (0,2,0) overrides that and keeps inverse sections dark. */
+   This compound rule (0,2,1) overrides that and keeps inverse sections dark. */
 
-.a1-theme-light .a1-inverse {
+html.a1-theme-light .a1-inverse {
   color-scheme: dark;
   --semantic-color-surface-page:   var(--base-color-neutral-900);
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
@@ -588,7 +588,7 @@
   }
 }
 
-.a1-reduce-motion {
+html.a1-reduce-motion {
   --semantic-motion-duration-quick:   0ms;
   --semantic-motion-duration-fast:    0ms;
   --semantic-motion-duration-normal:  0ms;
@@ -650,7 +650,7 @@
   }
 
   /* Dark mode + system more-contrast: step toward lighter (higher contrast on dark bg) */
-  .a1-theme-dark {
+  html.a1-theme-dark {
     --semantic-color-action-background:         var(--base-color-accent-300);
     --semantic-color-action-background-hover:   var(--base-color-accent-200);
     --semantic-color-action-background-pressed: var(--base-color-accent-400);
@@ -669,7 +669,7 @@
 }
 
 /* Explicit simulation class — mirrors the @media block above */
-.a1-contrast-more {
+html.a1-contrast-more {
   --semantic-color-action-background:         var(--base-color-accent-600);
   --semantic-color-action-background-hover:   var(--base-color-accent-700);
   --semantic-color-action-background-pressed: var(--base-color-accent-900);
@@ -707,9 +707,9 @@
   --component-top-header-border-width:             2px;
 }
 
-/* Dark mode + explicit more-contrast — (0,2,0) beats individual class rules */
-.a1-theme-dark.a1-contrast-more,
-.a1-contrast-more.a1-theme-dark {
+/* Dark mode + explicit more-contrast — (0,2,1) beats individual class rules */
+html.a1-theme-dark.a1-contrast-more,
+html.a1-contrast-more.a1-theme-dark {
   --semantic-color-action-background:         var(--base-color-accent-300);
   --semantic-color-action-background-hover:   var(--base-color-accent-200);
   --semantic-color-action-background-pressed: var(--base-color-accent-400);
@@ -729,7 +729,7 @@
 /* Contrast-more inside inverse sections — light mode context (dark inverse bg).
    One step lighter for higher contrast against the dark surface. (0,2,0). */
 
-.a1-contrast-more .a1-inverse {
+html.a1-contrast-more .a1-inverse {
   --semantic-color-action-background:         var(--base-color-accent-300);
   --semantic-color-action-background-hover:   var(--base-color-accent-200);
   --semantic-color-action-background-pressed: var(--base-color-accent-400);
@@ -746,8 +746,8 @@
    so contrast direction flips: one step darker, same as light-mode contrast-more.
    Specificity (0,3,0) beats .a1-contrast-more .a1-inverse above. */
 
-.a1-theme-dark.a1-contrast-more .a1-inverse,
-.a1-contrast-more.a1-theme-dark .a1-inverse {
+html.a1-theme-dark.a1-contrast-more .a1-inverse,
+html.a1-contrast-more.a1-theme-dark .a1-inverse {
   --semantic-color-action-background:         var(--base-color-accent-600);
   --semantic-color-action-background-hover:   var(--base-color-accent-700);
   --semantic-color-action-background-pressed: var(--base-color-accent-900);
@@ -768,8 +768,8 @@
    rules (0,1,0 each), ensuring accessible borders stay two steps lighter than
    the dark-mode defaults (neutral-700→500 and neutral-600→400). */
 
-.a1-theme-accessible.a1-theme-dark,
-.a1-theme-dark.a1-theme-accessible {
+html.a1-theme-accessible.a1-theme-dark,
+html.a1-theme-dark.a1-theme-accessible {
   --semantic-color-border-subtle:  var(--base-color-neutral-500);
   --semantic-color-border-default: var(--base-color-neutral-400);
 }

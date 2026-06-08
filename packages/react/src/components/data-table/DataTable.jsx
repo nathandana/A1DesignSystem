@@ -5,6 +5,7 @@ import { Icon } from "../icon/Icon.jsx";
 import { Link } from "../link/Link.jsx";
 import { MessageBadge, MessageEmptyState } from "../message/Message.jsx";
 import { Pagination } from "../pagination/Pagination.jsx";
+import { DataTableFilters } from "./DataTableFilters.jsx";
 import "./data-table.css";
 
 /**
@@ -106,6 +107,59 @@ function normalizeRowIds(ids) {
   return (ids ?? []).map((id) => String(id));
 }
 
+function normalizeFilterValue(filters, value = {}) {
+  return filters.reduce((next, filter) => {
+    next[filter.key] = value[filter.key] ?? (filter.type === "multi" ? [] : "");
+    return next;
+  }, {});
+}
+
+function filterMatches(rowValue, selectedValue, type) {
+  if (type === "multi") {
+    const selected = Array.isArray(selectedValue) ? selectedValue : [];
+    if (selected.length === 0) return true;
+    if (Array.isArray(rowValue)) return selected.some((value) => rowValue.includes(value));
+    return selected.includes(rowValue);
+  }
+
+  if (!selectedValue) return true;
+  if (Array.isArray(rowValue)) return rowValue.includes(selectedValue);
+  return rowValue === selectedValue;
+}
+
+function getSearchValue(row, column) {
+  if (typeof column.searchAccessor === "function") return column.searchAccessor(row);
+  return row[column.key];
+}
+
+function applyFiltersAndSearch(rows, filters, filterValue, searchValue, searchColumn, searchableColumns, columns) {
+  let result = rows;
+
+  if (filters.length > 0) {
+    result = result.filter((row) =>
+      filters.every((filter) => filterMatches(row[filter.key], filterValue[filter.key], filter.type))
+    );
+  }
+
+  const query = String(searchValue ?? "").trim().toLowerCase().replace(/\s+/g, "_");
+  if (!query) return result;
+
+  const searchColumns = searchableColumns?.length > 0
+    ? searchableColumns
+    : columns.map((column) => ({ key: column.key, label: column.label }));
+
+  return result.filter((row) => {
+    if (searchColumn) {
+      const column = searchColumns.find((item) => item.key === searchColumn) ?? { key: searchColumn };
+      return String(getSearchValue(row, column) ?? "").toLowerCase().includes(query);
+    }
+
+    return searchColumns.some((column) =>
+      String(getSearchValue(row, column) ?? "").toLowerCase().includes(query)
+    );
+  });
+}
+
 function isInteractiveColumn(col) {
   return col.type === "link" || col.type === "actions";
 }
@@ -144,12 +198,25 @@ export function DataTable({
   scrollable = false,
   caption,
   page,
+  defaultPage = 1,
+  pageSize,
   totalPages,
   totalRows,
   onPageChange,
   sort,
   defaultSort,
   onSortChange,
+  filters = [],
+  filterValue,
+  defaultFilterValue = {},
+  onFilterChange,
+  searchValue,
+  defaultSearchValue = "",
+  onSearchChange,
+  searchColumn,
+  defaultSearchColumn = "",
+  onSearchColumnChange,
+  searchableColumns,
   selectable = false,
   selectedRowIds,
   defaultSelectedRowIds = [],
@@ -165,13 +232,27 @@ export function DataTable({
   const wrapperRef = useRef(null);
   const [autoDensity, setAutoDensity] = useState("default");
   const [internalSort, setInternalSort] = useState(() => normalizeSort(defaultSort));
+  const [internalPage, setInternalPage] = useState(defaultPage);
+  const [internalFilterValue, setInternalFilterValue] = useState(() => normalizeFilterValue(filters, defaultFilterValue));
+  const [internalSearchValue, setInternalSearchValue] = useState(defaultSearchValue);
+  const [internalSearchColumn, setInternalSearchColumn] = useState(defaultSearchColumn);
   const [internalSelectedRowIds, setInternalSelectedRowIds] = useState(() => normalizeRowIds(defaultSelectedRowIds));
 
   const isAuto = density === "auto";
   const isSortControlled = sort !== undefined;
+  const isPageControlled = page !== undefined;
+  const isFilterControlled = filterValue !== undefined;
+  const isSearchControlled = searchValue !== undefined;
+  const isSearchColumnControlled = searchColumn !== undefined;
   const isSelectionControlled = selectedRowIds !== undefined;
   const activeDensity = isAuto ? autoDensity : density;
   const activeSort = isSortControlled ? normalizeSort(sort) : internalSort;
+  const activePage = isPageControlled ? page : internalPage;
+  const activeFilterValue = isFilterControlled
+    ? normalizeFilterValue(filters, filterValue)
+    : normalizeFilterValue(filters, internalFilterValue);
+  const activeSearchValue = isSearchControlled ? searchValue : internalSearchValue;
+  const activeSearchColumn = isSearchColumnControlled ? searchColumn : internalSearchColumn;
   const activeSelectedRowIds = isSelectionControlled
     ? normalizeRowIds(selectedRowIds)
     : internalSelectedRowIds;
@@ -210,24 +291,49 @@ export function DataTable({
     .filter(Boolean)
     .join(" ");
 
-  const showPagination = totalPages != null && totalPages > 1;
-  const rowStart = page != null ? (page - 1) * rows.length + 1 : 1;
-  const rowEnd   = page != null ? rowStart + rows.length - 1 : rows.length;
-  const knownTotal = totalRows ?? (showPagination ? totalPages * rows.length : rows.length);
+  const filteredRows = applyFiltersAndSearch(
+    rows,
+    filters,
+    activeFilterValue,
+    activeSearchValue,
+    activeSearchColumn,
+    searchableColumns,
+    columns
+  );
   const sortableColumns = columns.filter((col) => col.sortable);
   const sortedRows = activeSort
-    ? [...rows].sort((a, b) => {
+    ? [...filteredRows].sort((a, b) => {
       const col = columns.find((column) => column.key === activeSort.key);
       if (!col) return 0;
 
       const result = compareSortValues(getSortValue(a, col), getSortValue(b, col));
       return activeSort.direction === "desc" ? -result : result;
     })
-    : rows;
-  const visibleRowEntries = sortedRows.map((row, index) => ({
+    : filteredRows;
+  const hasInternalPagination = Number.isFinite(pageSize) && pageSize > 0;
+  const resolvedTotalPages = hasInternalPagination
+    ? Math.max(1, Math.ceil(sortedRows.length / pageSize))
+    : totalPages;
+  const clampedPage = resolvedTotalPages != null
+    ? Math.min(Math.max(activePage ?? 1, 1), resolvedTotalPages)
+    : activePage;
+  const paginatedRows = hasInternalPagination
+    ? sortedRows.slice((clampedPage - 1) * pageSize, clampedPage * pageSize)
+    : sortedRows;
+  const showPagination = resolvedTotalPages != null && resolvedTotalPages > 1;
+  const rowStart = hasInternalPagination
+    ? (paginatedRows.length > 0 ? (clampedPage - 1) * pageSize + 1 : 0)
+    : (page != null ? (page - 1) * filteredRows.length + 1 : 1);
+  const rowEnd = hasInternalPagination
+    ? (paginatedRows.length > 0 ? rowStart + paginatedRows.length - 1 : 0)
+    : (page != null ? rowStart + filteredRows.length - 1 : filteredRows.length);
+  const knownTotal = hasInternalPagination
+    ? sortedRows.length
+    : (totalRows ?? (showPagination ? totalPages * filteredRows.length : filteredRows.length));
+  const visibleRowEntries = paginatedRows.map((row, index) => ({
     row,
-    index,
-    id: String(getRowId(row, index)),
+    index: hasInternalPagination ? (clampedPage - 1) * pageSize + index : index,
+    id: String(getRowId(row, hasInternalPagination ? (clampedPage - 1) * pageSize + index : index)),
     supportsRowClickSelection: selectable && !columns.some((col) =>
       isInteractiveColumn(col) && hasInteractiveValue(row[col.key])
     ),
@@ -240,9 +346,41 @@ export function DataTable({
     && visibleRowEntries.every((entry) => selectedRowIdSet.has(entry.id));
   const someVisibleSelected = visibleRowEntries.some((entry) => selectedRowIdSet.has(entry.id));
 
+  function updatePage(nextPage) {
+    const normalized = resolvedTotalPages != null
+      ? Math.min(Math.max(nextPage, 1), resolvedTotalPages)
+      : Math.max(nextPage, 1);
+    if (!isPageControlled) setInternalPage(normalized);
+    onPageChange?.(normalized);
+  }
+
+  function resetPage() {
+    updatePage(1);
+  }
+
   function updateSort(nextSort) {
     if (!isSortControlled) setInternalSort(nextSort);
     onSortChange?.(nextSort);
+    resetPage();
+  }
+
+  function updateFilterValue(nextValue) {
+    const normalized = normalizeFilterValue(filters, nextValue);
+    if (!isFilterControlled) setInternalFilterValue(normalized);
+    onFilterChange?.(normalized);
+    resetPage();
+  }
+
+  function updateSearchValue(nextValue) {
+    if (!isSearchControlled) setInternalSearchValue(nextValue);
+    onSearchChange?.(nextValue);
+    resetPage();
+  }
+
+  function updateSearchColumn(nextValue) {
+    if (!isSearchColumnControlled) setInternalSearchColumn(nextValue);
+    onSearchColumnChange?.(nextValue);
+    resetPage();
   }
 
   function updateSelectedRowIds(nextIds) {
@@ -411,6 +549,18 @@ export function DataTable({
 
   return (
     <div ref={wrapperRef} className="a1-data-table-wrapper" {...props}>
+      {(filters.length > 0 || searchableColumns?.length > 0 || onSearchChange || searchValue !== undefined) && (
+        <DataTableFilters
+          filters={filters}
+          value={activeFilterValue}
+          onChange={updateFilterValue}
+          searchValue={activeSearchValue}
+          onSearchChange={updateSearchValue}
+          searchColumn={activeSearchColumn}
+          onSearchColumnChange={updateSearchColumn}
+          searchableColumns={searchableColumns}
+        />
+      )}
       {selectable && selectedCount > 0 && (
         <div className="a1-data-table-bulk-actions" role="region" aria-label="Bulk actions">
           <span className="a1-data-table-bulk-actions__count">
@@ -458,7 +608,7 @@ export function DataTable({
         </div>
       )}
       <div className={["a1-data-table-scroll", scrollable && "a1-data-table-scroll--scrollable"].filter(Boolean).join(" ")} tabIndex={scrollable ? 0 : undefined}>
-        {rows.length === 0 ? (
+        {filteredRows.length === 0 ? (
           <div className="a1-data-table__empty">
             <MessageEmptyState
               scale="card"
@@ -549,18 +699,18 @@ export function DataTable({
         )}
       </div>
 
-      {(showPagination || rows.length > 0) && (
+      {(showPagination || filteredRows.length > 0) && (
         <div className="a1-data-table-footer">
           <span className="a1-data-table-footer__count">
             {showPagination
               ? `Showing ${rowStart}–${rowEnd} of ${knownTotal} results`
-              : `${rows.length} ${rows.length === 1 ? "result" : "results"}`}
+              : `${filteredRows.length} ${filteredRows.length === 1 ? "result" : "results"}`}
           </span>
           {showPagination && (
             <Pagination
-              page={page}
-              totalPages={totalPages}
-              onChange={onPageChange}
+              page={clampedPage}
+              totalPages={resolvedTotalPages}
+              onChange={updatePage}
               size="sm"
             />
           )}

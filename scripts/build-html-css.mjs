@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, "..");
 const tokenFile = join(rootDir, "build/json/tokens.json");
-const packageDir = join(rootDir, "packages/html-css");
+const packageDir = join(rootDir, "packages/pure");
 const distDir = join(packageDir, "dist");
 
 const themes = [

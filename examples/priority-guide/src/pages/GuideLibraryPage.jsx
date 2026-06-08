@@ -172,7 +172,7 @@ export function GuideLibraryPage({ onNavigate }) {
         <div className="priority-guide-shell">
           <div className="priority-guide-library-header">
             <div className="priority-guide-section-heading">
-              <MessageBadge subtle icon="folder_open">
+              <MessageBadge subtle icon="folder">
                 Editor
               </MessageBadge>
               <Heading as="h1" type="display" size={{ xs: "lg", md: "xl" }}>

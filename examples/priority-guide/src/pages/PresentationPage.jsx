@@ -99,7 +99,7 @@ export function PresentationPage({ activeGuide, onNavigate }) {
           />
         )}
         <SegmentedControl
-          options={[{ value: "preview", icon: "grid_view", label: "Preview" }, { value: "outline", icon: "format_list_bulleted", label: "Outline" }]}
+          options={[{ value: "preview", icon: "grid_view", label: "Preview" }, { value: "outline", icon: "view_list", label: "Outline" }]}
           value={viewMode}
           onChange={setViewMode}
         />

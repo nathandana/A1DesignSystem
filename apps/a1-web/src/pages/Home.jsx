@@ -59,10 +59,10 @@ const platforms = [
     tag: 'packages/react',
   },
   {
-    icon: 'style',
+    icon: 'palette',
     title: 'HTML / CSS',
     body: 'BEM-style classes and scoped utility classes for use on any page without a framework.',
-    tag: 'packages/html-css',
+    tag: 'packages/pure',
   },
   {
     icon: 'phone_iphone',

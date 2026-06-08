@@ -15,7 +15,7 @@ src/components/{component-name}/
 ### CSS rules
 
 - Import only `./component-name.css` from the component file — no cross-component CSS imports.
-- Every property value comes from a `var(--token-name)` reference. Verify the token exists in `packages/html-css/dist/a1-light.css` before using it.
+- Every property value comes from a `var(--token-name)` reference. Verify the token exists in `packages/pure/dist/a1-light.css` before using it.
 - Use the CSS variable architecture for variants: the base class reads `--a1-{component}-*` variables; variant modifier classes set those variables.
 - Do not use `!important`. Do not use inline styles.
 

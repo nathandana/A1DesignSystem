@@ -1,0 +1,185 @@
+{
+  "label": {
+    "calendar": {
+      "weekStart": {
+        "$type": "string",
+        "$value": "0",
+        "$description": "First day of the week as a 0-indexed integer string: 0 = Sunday, 1 = Monday, 6 = Saturday. Used by the calendar grid to offset leading blank cells and rotate weekday headers.",
+        "locale": {
+          "es": "1",
+          "fr": "1",
+          "de": "1",
+          "pt": "1",
+          "ja": "0",
+          "zh": "1",
+          "ar": "6"
+        }
+      },
+      "direction": {
+        "$type": "string",
+        "$value": "ltr",
+        "$description": "Text direction for this locale. 'ltr' or 'rtl'. Applied as the dir attribute on the calendar container so CSS logical properties and flex order respond correctly.",
+        "locale": {
+          "ar": "rtl"
+        }
+      },
+      "previousMonth": {
+        "$type": "string",
+        "$value": "Previous month",
+        "$description": "Label for the previous-month navigation button in the paginated calendar variant.",
+        "locale": {
+          "es": "Mes anterior",
+          "fr": "Mois précédent",
+          "de": "Vorheriger Monat",
+          "pt": "Mês anterior",
+          "ja": "前の月",
+          "zh": "上个月",
+          "ar": "الشهر السابق"
+        }
+      },
+      "nextMonth": {
+        "$type": "string",
+        "$value": "Next month",
+        "$description": "Label for the next-month navigation button in the paginated calendar variant.",
+        "locale": {
+          "es": "Mes siguiente",
+          "fr": "Mois suivant",
+          "de": "Nächster Monat",
+          "pt": "Próximo mês",
+          "ja": "次の月",
+          "zh": "下个月",
+          "ar": "الشهر التالي"
+        }
+      },
+      "selectMonth": {
+        "$type": "string",
+        "$value": "Month",
+        "$description": "Accessible label for the month selector in the paginated calendar variant.",
+        "locale": {
+          "es": "Mes",
+          "fr": "Mois",
+          "de": "Monat",
+          "pt": "Mês",
+          "ja": "月",
+          "zh": "月份",
+          "ar": "الشهر"
+        }
+      },
+      "selectYear": {
+        "$type": "string",
+        "$value": "Year",
+        "$description": "Accessible label for the year selector in the paginated calendar variant.",
+        "locale": {
+          "es": "Año",
+          "fr": "Année",
+          "de": "Jahr",
+          "pt": "Ano",
+          "ja": "年",
+          "zh": "年份",
+          "ar": "السنة"
+        }
+      },
+      "today": {
+        "$type": "string",
+        "$value": "Today",
+        "$description": "Button label that navigates the paginated calendar to the current month.",
+        "locale": {
+          "es": "Hoy",
+          "fr": "Aujourd'hui",
+          "de": "Heute",
+          "pt": "Hoje",
+          "ja": "今日",
+          "zh": "今天",
+          "ar": "اليوم"
+        }
+      },
+      "month": {
+        "january": {
+          "$type": "string", "$value": "January", "$description": "Full name of the first month.",
+          "locale": { "es": "Enero", "fr": "Janvier", "de": "Januar", "pt": "Janeiro", "ja": "1月", "zh": "一月", "ar": "يناير" }
+        },
+        "february": {
+          "$type": "string", "$value": "February", "$description": "Full name of the second month.",
+          "locale": { "es": "Febrero", "fr": "Février", "de": "Februar", "pt": "Fevereiro", "ja": "2月", "zh": "二月", "ar": "فبراير" }
+        },
+        "march": {
+          "$type": "string", "$value": "March", "$description": "Full name of the third month.",
+          "locale": { "es": "Marzo", "fr": "Mars", "de": "März", "pt": "Março", "ja": "3月", "zh": "三月", "ar": "مارس" }
+        },
+        "april": {
+          "$type": "string", "$value": "April", "$description": "Full name of the fourth month.",
+          "locale": { "es": "Abril", "fr": "Avril", "de": "April", "pt": "Abril", "ja": "4月", "zh": "四月", "ar": "أبريل" }
+        },
+        "may": {
+          "$type": "string", "$value": "May", "$description": "Full name of the fifth month.",
+          "locale": { "es": "Mayo", "fr": "Mai", "de": "Mai", "pt": "Maio", "ja": "5月", "zh": "五月", "ar": "مايو" }
+        },
+        "june": {
+          "$type": "string", "$value": "June", "$description": "Full name of the sixth month.",
+          "locale": { "es": "Junio", "fr": "Juin", "de": "Juni", "pt": "Junho", "ja": "6月", "zh": "六月", "ar": "يونيو" }
+        },
+        "july": {
+          "$type": "string", "$value": "July", "$description": "Full name of the seventh month.",
+          "locale": { "es": "Julio", "fr": "Juillet", "de": "Juli", "pt": "Julho", "ja": "7月", "zh": "七月", "ar": "يوليو" }
+        },
+        "august": {
+          "$type": "string", "$value": "August", "$description": "Full name of the eighth month.",
+          "locale": { "es": "Agosto", "fr": "Août", "de": "August", "pt": "Agosto", "ja": "8月", "zh": "八月", "ar": "أغسطس" }
+        },
+        "september": {
+          "$type": "string", "$value": "September", "$description": "Full name of the ninth month.",
+          "locale": { "es": "Septiembre", "fr": "Septembre", "de": "September", "pt": "Setembro", "ja": "9月", "zh": "九月", "ar": "سبتمبر" }
+        },
+        "october": {
+          "$type": "string", "$value": "October", "$description": "Full name of the tenth month.",
+          "locale": { "es": "Octubre", "fr": "Octobre", "de": "Oktober", "pt": "Outubro", "ja": "10月", "zh": "十月", "ar": "أكتوبر" }
+        },
+        "november": {
+          "$type": "string", "$value": "November", "$description": "Full name of the eleventh month.",
+          "locale": { "es": "Noviembre", "fr": "Novembre", "de": "November", "pt": "Novembro", "ja": "11月", "zh": "十一月", "ar": "نوفمبر" }
+        },
+        "december": {
+          "$type": "string", "$value": "December", "$description": "Full name of the twelfth month.",
+          "locale": { "es": "Diciembre", "fr": "Décembre", "de": "Dezember", "pt": "Dezembro", "ja": "12月", "zh": "十二月", "ar": "ديسمبر" }
+        }
+      },
+      "weekday": {
+        "sunday": {
+          "full":   { "$type": "string", "$value": "Sunday",    "$description": "Full name of Sunday.",    "locale": { "es": "Domingo",    "fr": "Dimanche",  "de": "Sonntag",    "pt": "Domingo",       "ja": "日曜日", "zh": "星期日", "ar": "الأحد"     } },
+          "short":  { "$type": "string", "$value": "Su",        "$description": "2-letter abbreviation of Sunday.",   "locale": { "es": "Do",         "fr": "Di",        "de": "So",         "pt": "Do",            "ja": "日",     "zh": "日",     "ar": "أحد"       } },
+          "letter": { "$type": "string", "$value": "S",         "$description": "1-letter abbreviation of Sunday.",   "locale": { "es": "D",          "fr": "D",         "de": "S",          "pt": "D",             "ja": "日",     "zh": "日",     "ar": "ح"         } }
+        },
+        "monday": {
+          "full":   { "$type": "string", "$value": "Monday",    "$description": "Full name of Monday.",    "locale": { "es": "Lunes",      "fr": "Lundi",     "de": "Montag",     "pt": "Segunda-feira", "ja": "月曜日", "zh": "星期一", "ar": "الاثنين"   } },
+          "short":  { "$type": "string", "$value": "Mo",        "$description": "2-letter abbreviation of Monday.",   "locale": { "es": "Lu",         "fr": "Lu",        "de": "Mo",         "pt": "Se",            "ja": "月",     "zh": "一",     "ar": "اثن"       } },
+          "letter": { "$type": "string", "$value": "M",         "$description": "1-letter abbreviation of Monday.",   "locale": { "es": "L",          "fr": "L",         "de": "M",          "pt": "S",             "ja": "月",     "zh": "一",     "ar": "ن"         } }
+        },
+        "tuesday": {
+          "full":   { "$type": "string", "$value": "Tuesday",   "$description": "Full name of Tuesday.",   "locale": { "es": "Martes",     "fr": "Mardi",     "de": "Dienstag",   "pt": "Terça-feira",   "ja": "火曜日", "zh": "星期二", "ar": "الثلاثاء"  } },
+          "short":  { "$type": "string", "$value": "Tu",        "$description": "2-letter abbreviation of Tuesday.",  "locale": { "es": "Ma",         "fr": "Ma",        "de": "Di",         "pt": "Te",            "ja": "火",     "zh": "二",     "ar": "ثلا"       } },
+          "letter": { "$type": "string", "$value": "T",         "$description": "1-letter abbreviation of Tuesday.",  "locale": { "es": "M",          "fr": "M",         "de": "D",          "pt": "T",             "ja": "火",     "zh": "二",     "ar": "ث"         } }
+        },
+        "wednesday": {
+          "full":   { "$type": "string", "$value": "Wednesday", "$description": "Full name of Wednesday.", "locale": { "es": "Miércoles",  "fr": "Mercredi",  "de": "Mittwoch",   "pt": "Quarta-feira",  "ja": "水曜日", "zh": "星期三", "ar": "الأربعاء"  } },
+          "short":  { "$type": "string", "$value": "We",        "$description": "2-letter abbreviation of Wednesday.", "locale": { "es": "Mi",        "fr": "Me",        "de": "Mi",         "pt": "Qu",            "ja": "水",     "zh": "三",     "ar": "أرب"       } },
+          "letter": { "$type": "string", "$value": "W",         "$description": "1-letter abbreviation of Wednesday.", "locale": { "es": "X",         "fr": "M",         "de": "M",          "pt": "Q",             "ja": "水",     "zh": "三",     "ar": "ر"         } }
+        },
+        "thursday": {
+          "full":   { "$type": "string", "$value": "Thursday",  "$description": "Full name of Thursday.",  "locale": { "es": "Jueves",     "fr": "Jeudi",     "de": "Donnerstag", "pt": "Quinta-feira",  "ja": "木曜日", "zh": "星期四", "ar": "الخميس"    } },
+          "short":  { "$type": "string", "$value": "Th",        "$description": "2-letter abbreviation of Thursday.",  "locale": { "es": "Ju",        "fr": "Je",        "de": "Do",         "pt": "Qu",            "ja": "木",     "zh": "四",     "ar": "خمي"       } },
+          "letter": { "$type": "string", "$value": "T",         "$description": "1-letter abbreviation of Thursday.",  "locale": { "es": "J",         "fr": "J",         "de": "D",          "pt": "Q",             "ja": "木",     "zh": "四",     "ar": "خ"         } }
+        },
+        "friday": {
+          "full":   { "$type": "string", "$value": "Friday",    "$description": "Full name of Friday.",    "locale": { "es": "Viernes",    "fr": "Vendredi",  "de": "Freitag",    "pt": "Sexta-feira",   "ja": "金曜日", "zh": "星期五", "ar": "الجمعة"    } },
+          "short":  { "$type": "string", "$value": "Fr",        "$description": "2-letter abbreviation of Friday.",   "locale": { "es": "Vi",        "fr": "Ve",        "de": "Fr",         "pt": "Se",            "ja": "金",     "zh": "五",     "ar": "جمع"       } },
+          "letter": { "$type": "string", "$value": "F",         "$description": "1-letter abbreviation of Friday.",   "locale": { "es": "V",         "fr": "V",         "de": "F",          "pt": "S",             "ja": "金",     "zh": "五",     "ar": "ج"         } }
+        },
+        "saturday": {
+          "full":   { "$type": "string", "$value": "Saturday",  "$description": "Full name of Saturday.",  "locale": { "es": "Sábado",     "fr": "Samedi",    "de": "Samstag",    "pt": "Sábado",        "ja": "土曜日", "zh": "星期六", "ar": "السبت"     } },
+          "short":  { "$type": "string", "$value": "Sa",        "$description": "2-letter abbreviation of Saturday.", "locale": { "es": "Sá",        "fr": "Sa",        "de": "Sa",         "pt": "Sá",            "ja": "土",     "zh": "六",     "ar": "سبت"       } },
+          "letter": { "$type": "string", "$value": "S",         "$description": "1-letter abbreviation of Saturday.", "locale": { "es": "S",         "fr": "S",         "de": "S",          "pt": "S",             "ja": "土",     "zh": "六",     "ar": "س"         } }
+        }
+      }
+    }
+  }
+}

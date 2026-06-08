@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {
   Card,
+  Code,
   Grid,
   Heading,
   List,
@@ -32,6 +33,7 @@ const packages = [
       'packages/react/Agents.md',
       'packages/react/Claude.md',
       'packages/react/ai/project-context.md',
+      'packages/react/README.md',
       'system/ai/project-context.md',
       'apps/a1-web/CHANGELOG.md',
     ],
@@ -128,27 +130,27 @@ export function ExampleScreen() {
 }`,
   },
   {
-    value: 'html-css',
-    label: 'HTML/CSS',
+    value: 'pure',
+    label: 'Pure',
     icon: 'html',
-    badge: '@a1/design-system-html-css',
+    badge: '@a1/pure',
     intro: 'Use the pure HTML/CSS package for static pages, framework-free prototypes, and environments where JavaScript components are not available.',
     install: [
       'Build the CSS output from the workspace: npm run build:html-css',
-      'Load packages/html-css/dist/a1-base.css first.',
-      'Load one theme file after the base file, such as packages/html-css/dist/a1-heritage.css.',
+      'Load packages/pure/dist/a1-base.css first.',
+      'Load one theme file after the base file, such as packages/pure/dist/a1-heritage.css.',
       'Use scoped class names like a1-button, a1-section, a1-card, a1-heading, and a1-paragraph.',
       'Do not use components that require JavaScript behavior in this package.',
     ],
     contextFiles: [
-      'packages/html-css/Agents.md',
-      'packages/html-css/Claude.md',
-      'packages/html-css/ai/project-context.md',
-      'packages/html-css/README.md',
-      'packages/html-css/dist/index.html',
+      'packages/pure/Agents.md',
+      'packages/pure/Claude.md',
+      'packages/pure/ai/project-context.md',
+      'packages/pure/README.md',
+      'packages/pure/dist/index.html',
       'system/ai/project-context.md',
     ],
-    prompt: `Use the A1 pure HTML/CSS package. Before coding, read packages/html-css/Agents.md, packages/html-css/Claude.md, packages/html-css/ai/project-context.md, packages/html-css/README.md, and packages/html-css/dist/index.html. Output semantic HTML and A1 classes only. No JavaScript. Do not add custom CSS unless a missing system class is being added to the package generator. Use values from generated theme CSS and style dictionary output.`,
+    prompt: `Use the A1 pure HTML/CSS package. Before coding, read packages/pure/Agents.md, packages/pure/Claude.md, packages/pure/ai/project-context.md, packages/pure/README.md, and packages/pure/dist/index.html. Output semantic HTML and A1 classes only. No JavaScript. Do not add custom CSS unless a missing system class is being added to the package generator. Use values from generated theme CSS and style dictionary output.`,
     code: `<link rel="stylesheet" href="./a1-base.css">
 <link rel="stylesheet" href="./a1-heritage.css">
 
@@ -169,11 +171,26 @@ export function ExampleScreen() {
 
 function CodeExample({ children, wrap = false }) {
   return (
-    <pre style={wrap ? { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' } : undefined}>
-      <code>{children}</code>
-    </pre>
+    <Code variant="block" wrapping={wrap} copyCode>
+      {children}
+    </Code>
   )
 }
+
+const repoSetupCommand = `git clone https://github.com/nathandana/A1DesignSystem.git
+cd A1DesignSystem
+npm install
+npm run build
+npm run dev --workspace a1-web`
+
+const repoContextFiles = [
+  'AGENTS.md',
+  'CLAUDE.md',
+  'system/ai/project-context.md',
+  'system/ai/components.md',
+  'system/ai/quick-orientation.md',
+  'system/ai/a11y-policy.md',
+]
 
 function PackagePanel({ pkg }) {
   return (
@@ -215,7 +232,7 @@ function PackagePanel({ pkg }) {
             <List icon="description" size="sm" color="muted">
               {pkg.contextFiles.map((file) => (
                 <ListItem key={file}>
-                  <code>{file}</code>
+                  <Code wrapping>{file}</Code>
                 </ListItem>
               ))}
             </List>
@@ -223,7 +240,7 @@ function PackagePanel({ pkg }) {
         </Card>
       </Grid>
 
-      <Card>
+      <Card icon="auto_awesome">
         <Stack gap="sm">
           <Heading as="h3" size="md">
             AI prompt
@@ -255,8 +272,8 @@ export function GetStarted() {
 
   return (
     <>
-      {/* <Section
-        padding="lg"
+      <Section
+        padding="sm"
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
@@ -265,25 +282,64 @@ export function GetStarted() {
         aria-labelledby="get-started-heading"
       >
         <Stack direction="column" gap="sm">
-          <MessageBadge icon="rocket_launch">Get Started</MessageBadge>
-          <Heading
-            as="h1"
-            id="get-started-heading"
-            type="display"
-            size={{ xs: 'xl', md: 'xxl' }}
-            textWrap="balance"
-          >
-            Start with the right package, the right context, and system-shaped code.
+          <MessageBadge icon="rocket_launch">Get started</MessageBadge>
+          <Heading as="h1" id="get-started-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
+            Setup guides
           </Heading>
-          <Paragraph size={{ xs: 'md', md: 'lg', lg: 'xl' }} color="muted">
-            Choose the package for your surface, install it manually, then give AI tools the correct markdown context before asking them to build.
+          <Paragraph size="lg" color="muted">
+            Add A1 from GitHub, run the local docs site, or use the package tabs for implementation-specific setup.
           </Paragraph>
         </Stack>
-      </Section> */}
+      </Section>
 
+      <Section padding="sm" contentWidth="lg" aria-labelledby="repo-setup-heading">
+        <Grid columns={{ xs: 1, md: 2 }} gap="md">
+          <Card icon="code">
+            <Stack gap="sm">
+              <Heading as="h2" id="repo-setup-heading" size="md">
+                Add the GitHub repo
+              </Heading>
+              <Paragraph size="sm" color="muted">
+                Clone <Code variant="inline">nathandana/A1DesignSystem</Code>, install workspace dependencies, build generated assets, and start the A1 web app locally.
+              </Paragraph>
+              <CodeExample wrap>{repoSetupCommand}</CodeExample>
+              <Paragraph size="sm" color="muted">
+                Repository URL: <Code variant="inline">https://github.com/nathandana/A1DesignSystem</Code>
+              </Paragraph>
+            </Stack>
+          </Card>
+
+          <Card icon="auto_awesome">
+            <Stack gap="sm">
+              <Heading as="h2" size="md">
+                Before editing with AI
+              </Heading>
+              <Paragraph size="sm" color="muted">
+                Ask the assistant to read the repo instructions and central context before changing components, tokens, labels, or documentation.
+              </Paragraph>
+              <List icon="description" size="sm" color="muted">
+                {repoContextFiles.map((file) => (
+                  <ListItem key={file}>
+                    <Code wrapping>{file}</Code>
+                  </ListItem>
+                ))}
+              </List>
+            </Stack>
+          </Card>
+        </Grid>
+      </Section>
+  
       <Section padding="sm" contentWidth="lg" aria-labelledby="package-tabs-heading">
         <Stack gap="lg">
-          <Tabs value={activePackage} onChange={setActivePackage} variant="folder">
+          <Stack direction="column" gap="xs">
+            <Heading as="h2" id="package-tabs-heading" size={{ xs: 'md', md: 'lg' }}>
+              Package setup
+            </Heading>
+            <Paragraph size="md" color="muted">
+              Each tab includes installation steps, AI context prompts, and examples of code that fits the system.
+            </Paragraph>
+          </Stack>
+          <Tabs value={activePackage} onChange={setActivePackage}>
             <TabList>
               {packages.map((pkg) => (
                 <Tab key={pkg.value} value={pkg.value} icon={pkg.icon}>
@@ -295,15 +351,6 @@ export function GetStarted() {
             {packages.map((pkg) => (
               <TabPanel key={pkg.value} value={pkg.value}>
                 <Stack gap="lg">
-                  <Stack gap="sm">
-                    <MessageBadge icon="inventory_2">Packages</MessageBadge>
-                    <Heading as="h2" id="package-tabs-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-                      Package setup guides.
-                    </Heading>
-                    <Paragraph size="lg" color="muted">
-                      Each tab includes installation steps, AI context prompts, and examples of code that fits the system.
-                    </Paragraph>
-                  </Stack>
                   <PackagePanel pkg={pkg} />
                 </Stack>
               </TabPanel>

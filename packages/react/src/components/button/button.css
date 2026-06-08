@@ -24,22 +24,30 @@
   background: var(--a1-button-background);
   border-color: var(--a1-button-border);
   color: var(--a1-button-foreground);
+  box-shadow: var(--component-button-box-shadow, none);
+  transform: var(--component-button-hover-transform, none);
   transition:
     background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
     border-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
-    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    box-shadow var(--semantic-motion-duration-quick, 100ms) var(--semantic-motion-easing-standard),
+    transform var(--semantic-motion-duration-quick, 100ms) var(--semantic-motion-easing-standard);
 }
 
 .a1-button:not(:disabled):not([aria-disabled="true"]):hover {
   background: var(--a1-button-background-hover);
   border-color: var(--a1-button-border-hover, var(--a1-button-border));
   color: var(--a1-button-foreground-hover, var(--a1-button-foreground));
+  box-shadow: var(--component-button-box-shadow-hover, var(--component-button-box-shadow, none));
+  transform: var(--component-button-hover-transform, none);
 }
 
 .a1-button:not(:disabled):not([aria-disabled="true"]):active {
   background: var(--a1-button-background-pressed);
   border-color: var(--a1-button-border-pressed, var(--a1-button-border));
   color: var(--a1-button-foreground-pressed, var(--a1-button-foreground));
+  box-shadow: var(--component-button-box-shadow-active, var(--component-button-box-shadow, none));
+  transform: var(--component-button-press-transform, none);
 }
 
 .a1-button:not(:disabled):not([aria-disabled="true"]):focus-visible {
@@ -145,7 +153,7 @@
   --a1-button-height: var(--component-button-large-height);
   --a1-button-font-size: var(--semantic-font-size-body-lg);
   --a1-button-font-weight: var(--base-font-weight-extra-bold);
-  --a1-button-border-radius: var(--base-radius-lg);
+  --a1-button-border-radius: var(--component-button-large-border-radius, var(--base-radius-lg));
   --a1-button-padding-inline: var(--base-spacing-20);
   --a1-button-icon-size: var(--component-button-icon-size);
   --a1-button-icon-opsz: var(--component-button-icon-optical-size);

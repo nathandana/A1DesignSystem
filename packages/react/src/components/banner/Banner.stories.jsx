@@ -4,6 +4,7 @@ import { Button } from "../button/Button.jsx";
 import { Link } from "../link/Link.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const STATUSES = ["neutral", "info", "success", "warn", "error"];
 
@@ -37,7 +38,7 @@ const meta = {
     },
     title:    { control: "text" },
     children: { control: "text", name: "body" },
-    icon:     { control: "text", description: "Override the default status icon (Material Symbols name)" },
+    icon:     { ...iconArgType("Override the default status icon") },
   },
 };
 

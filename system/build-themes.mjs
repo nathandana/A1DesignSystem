@@ -42,7 +42,14 @@ for (const { id, file } of files) {
   css += `   ${BAR} */\n\n`;
 
   for (const [selector, properties] of Object.entries(theme.selectors ?? {})) {
-    css += `${selector} {\n`;
+    const cssSelector = selector
+      .split(",")
+      .map((s) => {
+        const t = s.trim();
+        return t.startsWith(".a1-theme-") ? `html${t}` : t;
+      })
+      .join(", ");
+    css += `${cssSelector} {\n`;
     for (const [prop, value] of Object.entries(properties)) {
       if (value === "") continue;
       css += `  ${prop}: ${value};\n`;

@@ -27,6 +27,8 @@ export interface MenuItemProps extends React.HTMLAttributes<HTMLElement> {
   shortcut?: string;
   /** Visual style. Default: "default" */
   variant?: "default" | "destructive";
+  /** Marks this item as the current page. Adds a left-border indicator and aria-current="page". */
+  active?: boolean;
   disabled?: boolean;
   /** Renders as an anchor `<a>` when provided */
   href?: string;

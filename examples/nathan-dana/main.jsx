@@ -17,12 +17,6 @@ const projects = [
     src: "/examples/portfolio/",
   },
   {
-    id: "a1-design",
-    label: "A1-Design",
-    icon: "design_services",
-    src: "/storybook-static/",
-  },
-  {
     id: "priority-guide",
     label: "Priority Guide",
     icon: "low_priority",

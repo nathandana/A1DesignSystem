@@ -8,7 +8,7 @@ import { PageNav } from "../page-nav/PageNav.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Section } from "../section/Section.jsx";
 import { DataTable } from "./DataTable.jsx";
-import { DataTableFilters } from "./DataTableFilters.jsx";
+import { requiredIconArgType } from "../../storybook/icon-controls.js";
 
 export default {
   title: "Components/DataTable",
@@ -58,6 +58,8 @@ const ALL_ROWS = [
   { name: "Mike Chen",      department: "Engineering", role: "Staff Engineer",       location: "Remote",  status: "Active",    salary: 168000 },
 ];
 
+const PAGE_SIZE = 6;
+
 const FILTER_DEFS = [
   {
     key: "department",
@@ -100,33 +102,6 @@ const SEARCH_COLS = [
   { key: "department", label: "Department" },
 ];
 
-const PAGE_SIZE = 6;
-
-function applyFiltersAndSearch(rows, filters, searchValue, searchColumn) {
-  let result = rows;
-
-  // Column filters
-  result = result.filter((row) =>
-    FILTER_DEFS.every((f) => {
-      const v = filters[f.key];
-      if (!v || (Array.isArray(v) && v.length === 0)) return true;
-      if (Array.isArray(v)) return v.includes(row[f.key]);
-      return row[f.key] === v;
-    })
-  );
-
-  // Search
-  if (searchValue) {
-    const q = searchValue.toLowerCase();
-    result = result.filter((row) => {
-      if (searchColumn) return String(row[searchColumn] ?? "").toLowerCase().includes(q);
-      return COLUMNS.some((col) => String(row[col.key] ?? "").toLowerCase().includes(q));
-    });
-  }
-
-  return result;
-}
-
 // ── Configurable ─────────────────────────────────────────────────────────────
 
 export const Configurable = {
@@ -138,6 +113,7 @@ export const Configurable = {
     emptyTitle:       "No results",
     emptyDescription: "",
     emptyIcon:        "inbox",
+    pageSize:         undefined,
     rowCount:         8,
   },
   argTypes: {
@@ -151,7 +127,8 @@ export const Configurable = {
     caption:          { control: "text" },
     emptyTitle:       { control: "text" },
     emptyDescription: { control: "text" },
-    emptyIcon:        { control: "text",   description: "Material symbol name" },
+    emptyIcon:        { ...requiredIconArgType("Empty state icon name") },
+    pageSize:         { control: "number", description: "Rows per page for built-in client-side pagination" },
     rowCount: {
       control: { type: "range", min: 0, max: 20 },
       description: "Rows to display — set to 0 to preview the empty state",
@@ -169,38 +146,24 @@ export const WithFilters = {
     const [filters, setFilters]           = useState({});
     const [searchValue, setSearchValue]   = useState("");
     const [searchColumn, setSearchColumn] = useState("");
-    const [page, setPage]                 = useState(1);
-
-    const filtered = applyFiltersAndSearch(ALL_ROWS, filters, searchValue, searchColumn);
-    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-    const pageRows   = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-    function reset() { setPage(1); }
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <DataTableFilters
-          filters={FILTER_DEFS}
-          value={filters}
-          onChange={(v) => { setFilters(v); reset(); }}
-          searchValue={searchValue}
-          onSearchChange={(v) => { setSearchValue(v); reset(); }}
-          searchColumn={searchColumn}
-          onSearchColumnChange={(v) => { setSearchColumn(v); reset(); }}
-          searchableColumns={SEARCH_COLS}
-        />
-        <DataTable
-          columns={COLUMNS}
-          rows={pageRows}
-          page={page}
-          totalPages={totalPages > 1 ? totalPages : undefined}
-          totalRows={filtered.length}
-          onPageChange={setPage}
-          emptyTitle="No matching team members"
-          emptyDescription="Try adjusting your search or clearing some filters."
-          emptyIcon="person_search"
-        />
-      </div>
+      <DataTable
+        columns={COLUMNS}
+        rows={ALL_ROWS}
+        filters={FILTER_DEFS}
+        filterValue={filters}
+        onFilterChange={setFilters}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        searchColumn={searchColumn}
+        onSearchColumnChange={setSearchColumn}
+        searchableColumns={SEARCH_COLS}
+        pageSize={PAGE_SIZE}
+        emptyTitle="No matching team members"
+        emptyDescription="Try adjusting your search or clearing some filters."
+        emptyIcon="person_search"
+      />
     );
   },
 };
@@ -376,7 +339,7 @@ const TYPE_ROWS = [
     brief: { href: "#tom-erikson", label: "Open brief", icon: "open_in_new" },
     updated: "May 10, 2026",
     notes: "See attached brief",
-    actions: [{ label: "Resolve", icon: "task_alt", onClick: () => {} }],
+    actions: [{ label: "Resolve", icon: "check_circle", onClick: () => {} }],
   },
   {
     name: "Leila F.",
@@ -458,6 +421,8 @@ const PROP_ROWS = [
   { name: <CodeValue>scrollable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Enable horizontal overflow scrolling" },
   { name: <CodeValue>caption</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Accessible table caption (renders above header)" },
   { name: <CodeValue>page</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Current page (1-indexed). Enables pagination footer" },
+  { name: <CodeValue>defaultPage</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>1</CodeValue>, description: "Initial page for uncontrolled pagination" },
+  { name: <CodeValue>pageSize</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Rows per page for built-in client-side pagination" },
   { name: <CodeValue>totalPages</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total number of pages" },
   { name: <CodeValue>totalRows</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total row count across all pages (for footer text)" },
   { name: <CodeValue>onPageChange</CodeValue>, type: <CodeValue>(page: number) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when the user changes page" },
@@ -492,7 +457,8 @@ export const Documentation = {
                 Each column specifies a <code style={{ fontFamily: "monospace" }}>type</code> that controls rendering — text, number, currency, date, badge, or avatar.
                 Mark columns as <code style={{ fontFamily: "monospace" }}>sortable</code> to add header controls and a mobile sort selector.
                 Enable <code style={{ fontFamily: "monospace" }}>selectable</code> to add row checkboxes and bulk actions.
-                Pair it with <code style={{ fontFamily: "monospace" }}>DataTableFilters</code> for interactive filtering and search.
+                Use the built-in <code style={{ fontFamily: "monospace" }}>filters</code> and <code style={{ fontFamily: "monospace" }}>searchableColumns</code> props for interactive filtering and search.
+                Add <code style={{ fontFamily: "monospace" }}>pageSize</code> for client-side pagination, or control pages externally with <code style={{ fontFamily: "monospace" }}>page</code>, <code style={{ fontFamily: "monospace" }}>totalPages</code>, and <code style={{ fontFamily: "monospace" }}>onPageChange</code>.
               </Paragraph>
               <DataTable columns={SORTABLE_COLUMNS} rows={ALL_ROWS.slice(0, 5)} zebra caption="Team members" defaultSort={{ key: "name", direction: "asc" }} />
             </section>
@@ -530,7 +496,7 @@ export const Documentation = {
             <section id="dt-filtering">
               <Heading as="h2" size="xs" style={{ marginBottom: 8 }}>Filtering</Heading>
               <Paragraph style={{ marginBottom: 20 }}>
-                <code style={{ fontFamily: "monospace" }}>DataTableFilters</code> renders a chip row on wider screens and collapses into a single menu button at the xs breakpoint (≤480px).
+                <code style={{ fontFamily: "monospace" }}>DataTable</code> renders configured filters as a chip row on wider screens and collapses them into a single menu button at the xs breakpoint (≤480px).
                 Filters support <strong>single-select</strong> (radio buttons) and <strong>multi-select</strong> (checkboxes).
                 A search input with an optional column-scope selector is included.
               </Paragraph>
@@ -538,21 +504,23 @@ export const Documentation = {
                 const [filters, setFilters] = useState({});
                 const [search, setSearch]   = useState("");
                 const [col, setCol]         = useState("");
-                const rows = applyFiltersAndSearch(ALL_ROWS, filters, search, col);
                 return (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    <DataTableFilters
-                      filters={FILTER_DEFS} value={filters} onChange={setFilters}
-                      searchValue={search} onSearchChange={setSearch}
-                      searchColumn={col} onSearchColumnChange={setCol}
-                      searchableColumns={SEARCH_COLS}
-                    />
-                    <DataTable columns={COLUMNS} rows={rows.slice(0, 6)}
-                      emptyTitle="No matching team members"
-                      emptyDescription="Try adjusting your search or filters."
-                      emptyIcon="person_search"
-                    />
-                  </div>
+                  <DataTable
+                    columns={COLUMNS}
+                    rows={ALL_ROWS}
+                    filters={FILTER_DEFS}
+                    filterValue={filters}
+                    onFilterChange={setFilters}
+                    searchValue={search}
+                    onSearchChange={setSearch}
+                    searchColumn={col}
+                    onSearchColumnChange={setCol}
+                    searchableColumns={SEARCH_COLS}
+                    pageSize={PAGE_SIZE}
+                    emptyTitle="No matching team members"
+                    emptyDescription="Try adjusting your search or filters."
+                    emptyIcon="person_search"
+                  />
                 );
               })()}
             </section>

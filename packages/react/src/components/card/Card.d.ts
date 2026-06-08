@@ -9,12 +9,18 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   href?: string;
   /** Remove the card border and background. Default: false */
   bare?: boolean;
-  /** Material Symbols icon shown in the card body area */
+  /** Material Symbols icon name. Used by `iconDisplay` to render the icon. */
   icon?: string;
-  /** Material Symbols icon shown in a coloured hero block at the top of the card */
-  heroIcon?: string;
   /**
-   * Background colour of the hero block.
+   * Controls how the icon is displayed.
+   * - `"default"` — small tokenised icon block above card content; scales with the card container (sm/md/lg).
+   * - `"hero"` — full-bleed coloured header area at the top of the card.
+   * - `"none"` — icon is not rendered.
+   * Default: `"default"` (when `icon` is provided).
+   */
+  iconDisplay?: "none" | "default" | "hero";
+  /**
+   * Background colour of the hero block when `iconDisplay="hero"`.
    * Accepts a semantic colour role or any valid CSS colour value.
    * Default: "action"
    */

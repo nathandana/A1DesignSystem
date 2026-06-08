@@ -2,6 +2,205 @@
 
 ## Unreleased
 
+### Prompt: Stabilize local dev ports and Catlympics theme mode
+
+- Added fixed `--strictPort` dev scripts for the examples index, a1-web, Storybook, Priority Guide, Cat Stack Cafe, Theme Editor, and Catlympics so local URLs are bookmarkable.
+- Documented the stable local port map in `system/ai/quick-orientation.md`.
+- Updated example package dev scripts to call the fixed root dev scripts.
+- Added Catlympics compound theme overrides so its fixed light theme wins when a host also applies `a1-theme-light` or `a1-theme-dark`.
+- Cleaned up the Storybook Catlympics theme class during decorator teardown.
+
+### Prompt: Update Catlympics example to latest A1 theme
+
+- Updated the Catlympics example to load the current Catlympics font stack and rounded Material Symbols font.
+- Removed local Inter font variable overrides so the example uses the generated A1 Catlympics theme tokens.
+- Added the Catlympics rounded icon font family to the system theme source and regenerated React theme CSS.
+- Rebuilt the Catlympics example dist output against the latest local A1 React source.
+- Fixed the Catlympics dark/light conflict by loading `color-scheme.css` before `themes.css` and forcing `color-scheme: light` in the Catlympics theme.
+
+### Prompt: Remove examples/a1-design project
+
+- Removed the `examples/a1-design` project and its generated build output.
+- Removed root build, dev, preview, and Storybook copy scripts that targeted `examples/a1-design`.
+- Updated README, project structure context, and the Nathan Dana project launcher so they no longer reference the removed example.
+- Added a root local dev index page so `npm run dev` at `/` links to the remaining examples.
+
+### Prompt: Add GitHub repo setup details to Get Started
+
+- Added a GitHub repo setup section to Get Started for `nathandana/A1DesignSystem`.
+- Added copyable clone, install, build, and local dev commands.
+- Added repo-level context files, including `AGENTS.md` and `CLAUDE.md`, for AI-assisted editing before package-specific setup.
+
+## 0.2.0 — 2026-06-08
+
+### Prompt: Organize 0.2.0 release and Releases page
+
+- Published the accumulated A1 web changelog as the `0.2.0` release.
+- Added a Releases page under Resources with one tab per changelog release.
+- Rendered release notes from `apps/a1-web/CHANGELOG.md` so the app uses the repo changelog as the release source.
+
+### Prompt: Bump A1 React package to 0.2.0
+
+- Updated `@gtivr4/a1-design-system-react` from `0.1.0` to `0.2.0`.
+- Updated the workspace lockfile entry for `packages/react`.
+
+### Prompt: Add first-class Code component
+
+- Added a React `Code` component with inline and block variants, optional wrapping, and a copy-code affordance.
+- Added a standard Storybook docs page and Configurable story for the `Code` component.
+- Added a border to block code surfaces and moved the copy-code button outside the bordered code display area.
+- Added a clipboard fallback so the copy-code button still works when the browser exposes `navigator.clipboard` but rejects `writeText`.
+- Fixed Storybook copy-code behavior by ignoring empty `copyText` overrides and letting the component copy rendered code content by default.
+- Added `system/labels/code.json` with default English labels for "Copy code" and "Copied"; wired those labels into a1-web and Storybook label providers.
+- Added es/fr/de/pt/ja/zh/ar translations for the copy-code labels.
+- Updated Get Started code examples to use the first-class `Code` component with copy buttons.
+- Standardized clipboard/copy-code icon guidance on `content_copy` in `system/icons/icon-usage.md`.
+- Updated agent guidance so new user-facing labels must include supported translations unless explicitly blocked.
+
+### Prompt: Catlympics button enhancements and contrast fixes
+
+- Added `box-shadow: var(--component-button-box-shadow, none)` to `.a1-button` in `button.css`, defaulting to `none` so other themes are unaffected.
+- Added `box-shadow` to the button transition list for smooth state changes.
+- Changed `.a1-button--lg` to reference `var(--component-button-large-border-radius, var(--base-radius-lg))` instead of `var(--base-radius-lg)` directly, enabling per-theme radius override without touching `--base-radius-lg` globally.
+- Catlympics: set `--component-button-box-shadow: 4px 4px 0 var(--base-color-neutral-900)` — hard no-blur shadow to the bottom-right.
+- Catlympics: fully rounded (pill) buttons — set `--component-button-border-radius`, `--component-button-small-border-radius`, and `--component-button-large-border-radius` all to `9999px`.
+- Catlympics contrast fix — primary button foreground changed from `accent-0` to `neutral-900` (#1a0f07, 5.84:1 on #ff3fa6); hover foreground same.
+- Catlympics contrast fix — primary button pressed foreground changed to `neutral-0` (#fffdfb, 6.26:1 on pressed `accent-700` #b1226a) so light text sits correctly on the dark pink pressed state.
+- Catlympics contrast fix — secondary and tertiary button foreground changed from `accent-600` (#e03595, 3.89:1) to `accent-700` (#b1226a, 6.01:1) on their light backgrounds.
+- Catlympics contrast fix — `--semantic-color-text-accent` changed from `accent-600` to `accent-700` (6.26:1 on neutral-0).
+
+### Prompt: Fix Catlympics icon font not rendering
+
+- Added `&display=block` to the Material Symbols Google Fonts link in `apps/a1-web/index.html`.
+- Without `display=block`, Google Fonts uses `font-display: optional`, which skips loading uncached fonts on first visit — causing icon ligature names to render as plain text instead of glyphs in the Catlympics theme (which switches to Material Symbols Rounded, newly added and not yet cached).
+
+### Prompt: Centralize icon registry and Iconography table
+
+- Added `system/icons/material-symbols.json` as the system-level source of truth for available A1 icon names, seeded from Google Fonts Material Symbols metadata.
+- Updated Storybook icon controls for Icon, Button, Icon Button, Link, Card, Banner, List, Empty State, Badge, and Data Table to use the shared icon registry as select options.
+- Added built-in `DataTable` search and filter props, then replaced the Iconography foundation sample icon grid with a searchable and category-filterable `DataTable` showing the full registry.
+- Split the Iconography foundation into Icons and Sizing tokens tabs, with the icon registry first.
+- Added built-in client-side `DataTable` pagination via `pageSize` and applied it to the icon registry table.
+- Fixed icon registry name and category cells by using plain icon row values when no category filter is active.
+- Removed 16 Material Symbols metadata entries that do not render as ligatures in the current outlined webfont.
+- Added `system/icons/icon-usage.md` as the system-level source of truth for scenario-based icon choices.
+- Added an Iconography Usage tab that displays the icon usage lookup from the system markdown file.
+- Standardized icon usage decisions around settings, success/completion, lists, folders, and palettes.
+- Replaced invalid current web icon names with verified registry icons.
+
+### Prompt: Better icons for Storybook motion and contrast toolbar controls
+
+- Changed the Reduced motion toolbar icon from `"play"` (media playback) to `"lightning"` (motion/animation energy).
+- Changed the Reduced motion "Reduced" item icon from `"accessibility"` to `"lightningOff"` (motion disabled).
+- Changed the Contrast toolbar icon from `"contrast"` to `"eye"` (visual perception); kept `"contrast"` for the "More" item.
+
+### Prompt: Scope Calendar scrollIntoView to nearest scrollable container
+
+- Replaced the scroll-variant `scrollIntoView` call with a manual DOM walk that finds the nearest `overflow: auto/scroll/overlay` ancestor.
+- If no explicitly scrollable container is found before `document.documentElement` (e.g. in the anatomy panel), the scroll is skipped entirely — the page no longer jumps.
+- When the Calendar is inside a proper scroll region (e.g. `PageLayout`'s main area), it scrolls that container to show the current month.
+
+### Prompt: Add Calendar to a1-web component docs
+
+- Added `calendar` to the Data category in `componentCategories` in `apps/a1-web/src/pages/components/data.js`.
+- Added `calendar: ['React']` to `PACKAGE_COVERAGE` and `calendar: 'experimental'` to `COMPONENT_STATUS`.
+- Added `calendar: ['data-table', 'field', 'pagination']` to `COMPONENT_RELATED`.
+- Added `Calendar` import and a dedicated `case 'calendar'` anatomy preview (scroll variant, one month) to `ComponentDetailPage.jsx`.
+- Added `COMPONENT_ANATOMY_OVERRIDES.calendar` with four callouts (Container, Month heading, Day grid, Weekday headers) and Calendar-specific sizing descriptions.
+- Added `COMPONENT_SNIPPETS.calendar` with scroll and paginated usage examples.
+- Added `COMPONENT_PROPS.calendar` with all seven real Calendar props (variant, initialMonth, monthsToShow, highlightToday, dimPast, todayButton, className).
+- Updated `system/ai/components.md` Data category row and Calendar props note.
+
+### Prompt: Add locale selector to a1-web settings menu
+
+- Added `calendarLabels` and `fieldLabels` JSON imports to `main.jsx`; merged into `allLabels` passed to `LabelsProvider`.
+- Added `localeOptions` (en/es/fr/de/pt/ja/zh/ar with display names) and `VALID_LOCALES` validation list.
+- Added `locale` state initialised from `localStorage` (`a1-web-locale`) with valid-value guard.
+- Added a Locale `MenuSection` with a compact `SelectField` to the settings menu.
+- Added an Alpha badge next to the Locale label using `.a1-web-alpha-badge`.
+- Added `setLocale('en')` to the Reset to defaults button.
+- Added `.a1-web-alpha-badge` CSS class to `styles.css` using action-background and action-foreground tokens.
+
+### Prompt: Add Labels foundation page to a1-web
+
+- Created `apps/a1-web/src/pages/foundations/LabelsFoundation.jsx` with a `flattenLabels` helper that recursively extracts `$value` leaf nodes from the label JSON.
+- Built a tabbed page (Calendar, Field, Action tabs) where each tab shows a `DataTable` of all translated values with columns for the label key and each supported locale.
+- Arabic column values render with `dir="rtl" lang="ar"` for correct bidirectional text.
+- Added `foundation-labels` to the foundations data and wired the new page into `FoundationDetail.jsx`.
+- Added "Localised label system with per-locale translations and RTL support" to the Foundations features bullet list.
+- Added "Locale selector in settings for live translation preview across all labeled components" to the Workflow features list.
+
+### Prompt: Add locale toolbar to Storybook scoped to story canvas
+
+- Added a `locale` global toolbar to `.storybook/preview.jsx` with all eight supported locales (en/es/fr/de/pt/ja/zh/ar) using a `globe` icon and `dynamicTitle: true`.
+- Wrapped the `withTheme` decorator story output in `<LabelsProvider locale={…} labels={allLabels}>` so locale affects only the rendered story, not the Storybook UI.
+- Scoped RTL to the story canvas via `<div dir={dir}>` around `<Story />` — `document.documentElement` is not modified.
+- Removed `locale` from the `useEffect` dependency array so locale changes do not re-fire theme DOM effects.
+
+### Prompt: Calendar RTL support and locale week-start
+
+- Added `calendar.weekStart` and `calendar.direction` labels to `system/labels/calendar.json`; defaults are `"0"` (Sunday start) and `"ltr"`.
+- Added per-locale week-start overrides (Monday start for es/fr/de/pt/zh, Saturday start for ar) and RTL direction for Arabic.
+- Added Arabic translations for all 12 month names, three weekday label lengths, and all five nav strings.
+- Calendar scroll and paginated variants read `weekStartDay` from labels and rotate weekday header columns accordingly using `rotateArray`.
+- RTL is detected from the `direction` label; paginated prev/next chevron icons swap when `isRtl` is true.
+- Updated Storybook stories to remove the local `LabelsProvider` and `locale` argType — locale is now handled by the global toolbar.
+
+### Prompt: Calendar today button for paginated variant
+
+- Added `todayButton` prop (default `false`) to the paginated Calendar variant.
+- Pressing Today calls `goToCurrentMonth()`, resetting the displayed month to the current one.
+- Today button is visually separated from the month/year selects with a `border-inline-start` divider.
+- Added `todayButton` to `Calendar.d.ts` with a JSDoc comment noting it applies to paginated only.
+- Added `PaginatedWithToday` story to `Calendar.stories.jsx`.
+
+### Prompt: Translate Calendar month and weekday names
+
+- Added 12 month-name labels and three weekday label lengths (long/short/letter) to `system/labels/calendar.json` with translations for es/fr/de/pt/ja/zh.
+- Calendar component reads all 39 label values at the top level using individual `useLabel` calls (required by React Rules of Hooks — no calls in loops).
+- Month names and weekday column headers are now fully localised when a `LabelsProvider` with a matching locale is present.
+
+### Prompt: Storybook toolbar icons for motion and contrast controls
+
+- Replaced the Motion and Contrast toolbar title text with icon-only display using `dynamicTitle: true`.
+- Motion toolbar uses `icon: "play"` with items `browser` and `accessibility`.
+- Contrast toolbar uses `icon: "contrast"` with items `browser` and `contrast`.
+
+### Prompt: Calendar container query breakpoints
+
+- Changed the medium calendar container query breakpoint from 400 px to 479 px (trigger at < 480 px).
+- Changed the compact container query breakpoint from 240 px to 319 px (trigger at < 320 px).
+- Medium density now covers a wider range of narrow containers; compact activates only on very small surfaces.
+
+### Prompt: Calendar paginated variant
+
+- Added `variant` prop (`"scroll"` | `"paginated"`, default `"scroll"`) to the Calendar component.
+- Paginated variant renders one month at a time with Previous and Next navigation.
+- At ≥ 480 px, prev/next use `Button` components with full text labels; at < 480 px they swap to `IconButton` to save space.
+- Month and year selects use the `SelectField` component; labels come from `system/labels/calendar.json`.
+- Added all five paginated navigation strings (`previousMonth`, `nextMonth`, `selectMonth`, `selectYear`, `today`) to `system/labels/calendar.json` with translations for es/fr/de/pt/ja/zh.
+- Added `Calendar.d.ts` with TypeScript types for all props.
+- Added `Paginated` and `PaginatedNarrow` stories to `Calendar.stories.jsx`.
+
+### Prompt: Calendar leading blank cell background
+
+- Applied the same `--semantic-color-surface-raised` background to leading blank cells in the first calendar row.
+- Only cells before the first day of the month in the first row are shaded; trailing blanks in later rows (future-month carryover) remain transparent.
+
+### Prompt: Calendar font weight token
+
+- Replaced hardcoded `font-weight: 500` on `.a1-calendar__weekday` with `var(--base-font-weight-medium)`.
+
+### Prompt: Calendar today full-cell highlight
+
+- In the full-size (≥ 480 px) calendar view, the entire today cell is highlighted with `--semantic-color-action-background` background and `--semantic-color-text-inverse` text.
+- In narrow (< 480 px) view, the cell background reverts to transparent and only the day-number circle receives the highlight, matching the compact density.
+
+### Prompt: Calendar past-day dimming
+
+- Added `.a1-calendar__day--past` with `background: var(--semantic-color-surface-raised)` to visually differentiate dates before today.
+- Text remains `--semantic-color-text-default` (~16:1 contrast against the raised surface) to meet WCAG AA contrast on the tinted background.
+
 ### Prompt: Move Configure controls into tab
 
 - Moved component Configure controls from the right-side detail aside into the Configure tab content.

@@ -1,4 +1,5 @@
 import { Button } from "./Button.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Controls/Button",
@@ -31,8 +32,7 @@ const meta = {
       if: { arg: "as", eq: "a" }
     },
     icon: {
-      control: "text",
-      description: "Material Symbols icon name (e.g. \"add\", \"arrow_forward\")"
+      ...iconArgType("A1 icon registry name")
     },
     iconPosition: {
       control: "inline-radio",

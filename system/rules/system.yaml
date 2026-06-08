@@ -11,6 +11,17 @@ rules:
       - content
       - typography
       - consistency
+  - id: system-no-font-weight-on-state
+    components:
+      - System
+    requirement: Never change font-weight on interactive or selection states.
+    do: Use color, border, background, or underline to communicate hover, active, focus, and selected states.
+    dont: Apply a different font-weight on :hover, :active, :focus, [aria-selected="true"], [aria-current], or [aria-pressed] — this causes the element to resize, which can shift surrounding layout and cause reflow.
+    applies_to:
+      - css
+      - interaction
+      - typography
+
   - id: system-no-uppercase-content
     components:
       - System

@@ -7,8 +7,10 @@ import {
   Breadcrumb,
   Button,
   ButtonContainer,
+  Calendar,
   Card,
   CheckboxGroup,
+  Code,
   Cluster,
   DataTable,
   Divider,
@@ -59,7 +61,7 @@ import {
 const PACKAGE_META = {
   React:  { icon: 'code',         desc: 'packages/react' },
   Native: { icon: 'phone_iphone', desc: 'packages/react-native' },
-  Pure:   { icon: 'style',        desc: 'packages/html-css' },
+  Pure:   { icon: 'palette',      desc: 'packages/pure' },
 }
 
 function PackageSupportGrid({ packages }) {
@@ -276,6 +278,22 @@ const COMPONENT_ANATOMY_OVERRIDES = {
     },
   },
   'data-table': CATEGORY_ANATOMY.data,
+  calendar: {
+    callouts: [
+      { label: 'Container', description: 'Outer element uses container-type: inline-size to drive density via container queries at 480px and 320px.', anchor: 'top-left' },
+      { label: 'Month heading', description: 'Year and month label provides orientation. In the paginated variant it includes prev/next buttons and month/year selects.', anchor: 'top' },
+      { label: 'Day grid', description: '7-column grid maps each date to its weekday column. Today is highlighted; past dates receive a background tint.', anchor: 'center' },
+      { label: 'Weekday headers', description: 'Abbreviated day names adapt to the locale week-start setting (Sunday-first or Monday-first).', anchor: 'top-right' },
+    ],
+    sizing: {
+      width: 'Flexible',
+      widthBehavior: 'Fills the parent container. Container queries adjust cell density at 480px (medium) and 320px (compact).',
+      height: 'Content-driven',
+      heightBehavior: 'Scroll variant grows with monthsToShow. Paginated shows one month at a time.',
+      wrapping: 'Day cells never wrap; the grid column count is always 7.',
+      overflow: 'Scroll variant overflows the page vertically with native scroll. Paginated variant contains everything in a single month view.',
+    },
+  },
 }
 
 function mergeAnatomySpec(component, category) {
@@ -319,8 +337,14 @@ function AnatomyComponentPreview({ component }) {
     case 'inline':
       return (
         <Paragraph>
-          Inline content can include <code>code</code>, <kbd>keyboard</kbd>, and <mark>marked text</mark>.
+          Inline content can include <Code>code</Code>, <kbd>keyboard</kbd>, and <mark>marked text</mark>.
         </Paragraph>
+      )
+    case 'code':
+      return (
+        <Code variant="block" wrapping copyCode>
+          npm install @gtivr4/a1-design-system-react
+        </Code>
       )
     case 'link':
       return <Link href={getComponentPath(`component-${component.id}`)}>{component.title}</Link>
@@ -555,6 +579,8 @@ function AnatomyComponentPreview({ component }) {
           ]}
         />
       )
+    case 'calendar':
+      return <Calendar monthsToShow={1} />
     case 'pagination':
       return <Pagination page={page} totalPages={5} onChange={setPage} />
     case 'icon':
@@ -740,11 +766,43 @@ function RulesPanel({ component }) {
   )
 }
 
+const COMPONENT_SNIPPETS = {
+  code: {
+    react: `<Code>--semantic-color-text-default</Code>\n\n<Code variant="block" wrapping copyCode>\n{exampleCode}\n</Code>`,
+    native: `// Not available in the Native package.`,
+    pure: `// Not available in the Pure package.`,
+  },
+  calendar: {
+    react: `// Scroll variant — renders all months vertically (default)\n<Calendar monthsToShow={13} />\n\n// Paginated variant — one month at a time with navigation\n<Calendar\n  variant="paginated"\n  highlightToday\n  dimPast\n  todayButton\n/>`,
+    native: `// Not available in the Native package.`,
+    pure: `// Not available in the Pure package.`,
+  },
+}
+
+const COMPONENT_PROPS = {
+  code: [
+    { id: 'variant',   name: 'variant',   type: '"inline" | "block"', description: 'Presentation mode. Inline keeps minimal padding in prose; block renders a preformatted code surface. Default: "inline".' },
+    { id: 'wrapping',  name: 'wrapping',  type: 'boolean',            description: 'Allows long inline values or block snippets to wrap instead of scrolling horizontally. Default: false.' },
+    { id: 'copyCode',  name: 'copyCode',  type: 'boolean',            description: 'Adds a small tertiary copy button below the code block. Default: false.' },
+    { id: 'copyText',  name: 'copyText',  type: 'string',             description: 'Optional clipboard text override. Defaults to the text content rendered inside the component.' },
+    { id: 'className', name: 'className', type: 'string',             description: 'Additional CSS class names for local layout adjustment.' },
+  ],
+  calendar: [
+    { id: 'variant',       name: 'variant',       type: '"scroll" | "paginated"',   description: 'Display mode. scroll renders all months vertically; paginated shows one month at a time with prev/next navigation. Default: "scroll".' },
+    { id: 'initialMonth',  name: 'initialMonth',  type: 'Date | { year, month }',   description: 'Starting month. month is 1-indexed. Default: current month.' },
+    { id: 'monthsToShow',  name: 'monthsToShow',  type: 'number',                   description: 'Total months to render. Applies to the scroll variant only. Default: 13.' },
+    { id: 'highlightToday',name: 'highlightToday',type: 'boolean',                  description: "Highlight today's date with the action colour. Default: true." },
+    { id: 'dimPast',       name: 'dimPast',       type: 'boolean',                  description: 'Apply a background tint to dates before today. Default: true.' },
+    { id: 'todayButton',   name: 'todayButton',   type: 'boolean',                  description: 'Show a Today button in the paginated nav that jumps to the current month. Applies to variant="paginated" only. Default: false.' },
+    { id: 'className',     name: 'className',     type: 'string',                   description: 'Additional CSS class names for local layout adjustment.' },
+  ],
+}
+
 function CodeSnippets({ component }) {
   const [packageTab, setPackageTab] = useState('react')
   const reactName = component.title.replace(/\s+/g, '')
 
-  const snippets = {
+  const snippets = COMPONENT_SNIPPETS[component.id] ?? {
     react: `<${reactName}>${component.title}</${reactName}>`,
     native: `<${reactName}>${component.title}</${reactName}>`,
     pure: `<div class="a1-${component.id}">${component.title}</div>`,
@@ -759,7 +817,7 @@ function CodeSnippets({ component }) {
       </TabList>
       {Object.entries(snippets).map(([key, snippet]) => (
         <TabPanel key={key} value={key}>
-          <pre className="a1-web-code-block"><code>{snippet}</code></pre>
+          <Code variant="block" wrapping copyCode>{snippet}</Code>
         </TabPanel>
       ))}
     </Tabs>
@@ -868,7 +926,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                 { key: 'type', label: 'Type' },
                 { key: 'description', label: 'Description' },
               ]}
-              rows={[
+              rows={COMPONENT_PROPS[component.id] ?? [
                 { id: 'children', name: 'children', type: 'ReactNode', description: 'Visible content or composed child elements.' },
                 { id: 'className', name: 'className', type: 'string', description: 'Additional CSS class names for local layout hooks.' },
                 { id: 'size', name: 'size', type: 'option', description: 'Component density or scale when supported.' },

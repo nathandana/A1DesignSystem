@@ -4,6 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "cd ../.. && npm run build:tokens && vite --host 127.0.0.1 --open /examples/theme-editor/"
+    "dev": "cd ../.. && npm run dev:theme-editor"
   }
 }

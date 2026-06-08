@@ -1,4 +1,4 @@
-# A1 Design System — Claude Code Instructions
+# A1 Design System — Agent Instructions
 
 > **Do not add content directly to this file.**
 > All project context, policies, and reference material belongs in `system/ai/`.
@@ -9,6 +9,14 @@
 Read and follow the central project context before starting any task:
 
 @system/ai/project-context.md
+
+For repository structure, tokens, themes, labels, and shared system foundations:
+
+@system/ai/project-foundations.md
+
+For CSS rules, component workflows, package rules, and invariants:
+
+@system/ai/project-workflows.md
 
 Before asking whether a component exists or where it is implemented, check the component registry:
 

@@ -55,4 +55,18 @@ export const foundations = [
     body: 'Contrast, focus states, semantic markup, keyboard interaction, screen reader labels, and accessible component defaults.',
     points: ['Focus visibility', 'Semantic structure', 'Keyboard support'],
   },
+  {
+    id: 'foundation-labels',
+    title: 'Labels',
+    icon: 'translate',
+    body: 'Localised UI strings used by A1 components. Every user-facing string is a named label with a default English value and per-locale translations.',
+    points: ['Dot-notation label keys', 'Per-locale translations', 'LabelsProvider and useLabel hook'],
+  },
+  {
+    id: 'foundation-responsive',
+    title: 'Responsive',
+    icon: 'devices',
+    body: 'Viewport breakpoints for page-level layout and container query breakpoints for component-level adaptation. Both use T-shirt sizes (xs–xl) at values suited to their context.',
+    points: ['Viewport breakpoints (media queries)', 'Container query breakpoints', 'Standard container query sizes'],
+  },
 ]

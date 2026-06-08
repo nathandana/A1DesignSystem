@@ -4,9 +4,9 @@ import pageLayoutRules from '../../../../../system/rules/page-layout.yaml?raw'
 import sideNavRules from '../../../../../system/rules/side-nav.yaml?raw'
 import messageBadgeRules from '../../../../../system/rules/message-badge.yaml?raw'
 
-export const LAST_UPDATED = '2026-06-06'
+export const LAST_UPDATED = '2026-06-07'
 export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure']
-export const ICON_OPTIONS = ['widgets', 'check', 'add', 'edit', 'settings', 'download', 'star', 'near_me', 'touch_app']
+export const ICON_OPTIONS = ['widgets', 'check', 'add', 'edit', 'settings', 'download', 'star', 'near_me', 'touch_app', 'science']
 
 // Mirrors the "A1 Web menu hierarchy" section in system/ai/components.md.
 export const componentCategories = [
@@ -20,6 +20,7 @@ export const componentCategories = [
       { id: 'paragraph', title: 'Paragraph', body: 'Body copy with responsive sizing, alignment, and muted states.' },
       { id: 'blockquote', title: 'Blockquote', body: 'Editorial quotation patterns with accent, pull, and ruled variants.' },
       { id: 'list', title: 'List', body: 'Ordered and unordered lists with tokenized rhythm and icons.' },
+      { id: 'code', title: 'Code', body: 'Inline and block code treatments with wrapping and copy support.' },
       { id: 'divider', title: 'Divider', body: 'Horizontal and vertical separation for content groups.' },
       { id: 'inline', title: 'Inline', body: 'Code, keyboard, mark, and other inline text treatments.' },
     ],
@@ -111,11 +112,12 @@ export const componentCategories = [
   {
     id: 'data',
     title: 'Data',
-    icon: 'table',
-    body: 'Components for tabular information, filtering, and pagination.',
+    icon: 'table_chart',
+    body: 'Components for tabular information, filtering, pagination, and date browsing.',
     components: [
       { id: 'data-table', title: 'Data Table', body: 'Sortable, selectable, responsive tabular data.' },
       { id: 'pagination', title: 'Pagination', body: 'Paged navigation for long result sets.' },
+      { id: 'calendar', title: 'Calendar', body: 'Month-grid date browser with scroll and paginated variants, localised labels, today highlight, and past-day dimming.' },
     ],
   },
   {
@@ -143,6 +145,7 @@ export const PACKAGE_COVERAGE = {
   paragraph:          ['React', 'Native', 'Pure'],
   blockquote:         ['React', 'Native', 'Pure'],
   list:               ['React', 'Native', 'Pure'],
+  code:               ['React'],
   divider:            ['React', 'Pure'],
   inline:             ['React', 'Pure'],
   link:               ['React', 'Native', 'Pure'],
@@ -183,6 +186,7 @@ export const PACKAGE_COVERAGE = {
   menu:               ['React'],
   'data-table':       ['React', 'Pure'],
   pagination:         ['React', 'Native'],
+  calendar:           ['React'],
   icon:               ['React', 'Pure'],
   accordion:          ['React', 'Pure'],
 }
@@ -195,6 +199,7 @@ export const COMPONENT_STATUS = {
   paragraph:           'beta',
   blockquote:          'beta',
   list:                'beta',
+  code:                'beta',
   divider:             'beta',
   inline:              'beta',
   link:                'beta',
@@ -235,14 +240,15 @@ export const COMPONENT_STATUS = {
   menu:                'beta',
   'data-table':        'beta',
   pagination:          'beta',
+  calendar:            'experimental',
   icon:                'beta',
   accordion:           'beta',
 }
 
 export const STATUS_META = {
-  stable:       { status: 'success', label: 'Stable',       icon: 'verified',   desc: 'Production-ready. API is stable and fully documented.' },
+  stable:       { status: 'success', label: 'Stable',       icon: 'check_circle', desc: 'Production-ready. API is stable and fully documented.' },
   beta:         { status: 'warn',    label: 'Beta',         icon: 'science',    desc: 'Available for use. API may evolve before the stable release.' },
-  experimental: { status: 'info',    label: 'Experimental', icon: 'experiment', desc: 'Proof of concept. Breaking changes are expected.' },
+  experimental: { status: 'info',    label: 'Experimental', icon: 'science',    desc: 'Proof of concept. Breaking changes are expected.' },
   deprecated:   { status: 'error',   label: 'Deprecated',   icon: 'block',      desc: 'Scheduled for removal. Migrate to the recommended alternative.' },
 }
 
@@ -252,6 +258,7 @@ export const COMPONENT_RELATED = {
   paragraph:           ['heading', 'blockquote', 'inline'],
   blockquote:          ['paragraph', 'divider'],
   list:                ['paragraph', 'divider'],
+  code:                ['paragraph', 'button'],
   divider:             ['spacer', 'section'],
   inline:              ['paragraph', 'field'],
   link:                ['button', 'breadcrumb', 'page-nav'],
@@ -292,6 +299,7 @@ export const COMPONENT_RELATED = {
   menu:                ['dialog', 'top-header', 'button'],
   'data-table':        ['pagination', 'section'],
   pagination:          ['data-table'],
+  calendar:            ['data-table', 'field', 'pagination'],
   icon:                ['icon-button', 'message'],
   accordion:           ['tabs', 'section'],
 }

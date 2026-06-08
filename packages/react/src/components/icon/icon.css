@@ -2,6 +2,7 @@
   font-size: inherit;
   line-height: 1;
   user-select: none;
+  font-family: var(--a1-icon-font-family, 'Material Symbols Outlined');
   font-variation-settings:
     "FILL" var(--a1-icon-fill, 0),
     "wght" var(--a1-icon-weight, var(--base-font-weight-regular)),

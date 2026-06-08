@@ -108,6 +108,7 @@ function NavMenuItem({ item, onClose }) {
       <MenuItem
         icon={item.icon}
         href={item.href}
+        active={!!item.active}
         onClick={(event) => { item.onClick?.(event); onClose?.(); }}
       >
         {item.label}
@@ -122,8 +123,9 @@ function NavMenuItem({ item, onClose }) {
       onMouseLeave={() => setOpen(false)}
     >
       <Trigger
-        className="a1-menu-item a1-top-header__flyout-trigger"
+        className={["a1-menu-item", "a1-top-header__flyout-trigger", item.active && "a1-menu-item--active"].filter(Boolean).join(" ")}
         aria-expanded={open}
+        aria-current={item.active ? "page" : undefined}
         aria-haspopup="menu"
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {

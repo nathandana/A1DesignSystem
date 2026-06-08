@@ -1,4 +1,5 @@
 import "./inline.css";
+import { Code as CodeText } from "../code/Code.jsx";
 
 const meta = {
   title: "Components/Typography/Inline",
@@ -30,7 +31,7 @@ export const All = {
           ["cite",          <p>As described in <cite>The Elements of Typographic Style</cite>, good typography is largely invisible.</p>],
           ["q",             <p>She said <q>the system should feel effortless</q> and left it at that.</p>],
           ["time",          <p>The release is scheduled for <time dateTime="2025-09-01">September 1, 2025</time>.</p>],
-          ["code",          <p>Set the token value using <code>--semantic-color-text-default</code> in your CSS.</p>],
+          ["code",          <p>Set the token value using <CodeText>--semantic-color-text-default</CodeText> in your CSS.</p>],
           ["kbd",           <p>Press <kbd>⌘K</kbd> to open the command palette.</p>],
           ["samp",          <p>The terminal returned <samp>Error: module not found</samp> after the build failed.</p>],
           ["var",           <p>The function takes two arguments: <var>width</var> and <var>height</var>.</p>],
@@ -122,7 +123,7 @@ export const Time = {
 // ─── Code ─────────────────────────────────────────────────────────────────────
 
 export const Code = {
-  render: () => <p>Set the token value using <code>--semantic-color-text-default</code> in your CSS.</p>,
+  render: () => <p>Set the token value using <CodeText>--semantic-color-text-default</CodeText> in your CSS.</p>,
 };
 
 export const Kbd = {

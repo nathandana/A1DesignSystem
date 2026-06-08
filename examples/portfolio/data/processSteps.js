@@ -55,7 +55,7 @@ export const processSteps = [
     id: "finalize",
     number: "05",
     label: "Finalize",
-    icon: "verified",
+    icon: "check_circle",
     heading: "Obsess the details",
     keyPoints: [
       { icon: "straighten", text: "Sharp eye for spacing, tokens, and accessibility" },

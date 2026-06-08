@@ -1,5 +1,6 @@
 import { List, ListItem } from "./List.jsx";
 import { Inverse } from "../inverse/Inverse.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Typography/List",
@@ -28,8 +29,7 @@ const meta = {
       description: "List style variant — 'divider' renders items separated by horizontal rules with no bullet",
     },
     icon: {
-      control: "text",
-      description: "Material Symbol name — switches to icon variant when set",
+      ...iconArgType("Switches to icon variant when set"),
     },
   },
 };

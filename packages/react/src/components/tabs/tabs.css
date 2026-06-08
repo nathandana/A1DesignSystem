@@ -164,7 +164,6 @@
 
 .a1-tab--line[aria-selected="true"] {
   color: var(--semantic-color-action-background);
-  font-weight: var(--base-font-weight-semibold);
   border-bottom-color: var(--semantic-color-action-background);
   cursor: default;
 }
@@ -193,7 +192,6 @@
 .a1-tab--folder[aria-selected="true"] {
   background: var(--semantic-color-surface-page);
   color: var(--semantic-color-text-default);
-  font-weight: var(--base-font-weight-semibold);
   border-color: var(--semantic-color-border-strong);
   border-bottom-color: var(--semantic-color-surface-page);
   z-index: var(--component-tab-z-index-active);
@@ -361,7 +359,6 @@
 /* Selected (active view) — ring around step circle */
 .a1-tab--progress[aria-selected="true"] {
   color: var(--semantic-color-text-default);
-  font-weight: var(--base-font-weight-semibold);
   cursor: default;
 }
 

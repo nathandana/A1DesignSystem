@@ -1,4 +1,5 @@
 import { MessageBadge } from "./Message.jsx";
+import { iconArgType } from "../../storybook/icon-controls.js";
 
 const STATUSES = ["neutral", "info", "success", "warn", "error"];
 
@@ -24,7 +25,7 @@ const meta = {
     },
     subtle: { control: "boolean" },
     children: { control: "text", name: "label" },
-    icon: { control: "text", description: "Override the default status icon" },
+    icon: { ...iconArgType("Override the default status icon") },
   },
 };
 

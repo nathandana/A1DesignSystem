@@ -15,7 +15,32 @@ import {
   Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
-import actionLabels from '../../../system/labels/action.json'
+import actionLabels   from '../../../system/labels/action.json'
+import calendarLabels from '../../../system/labels/calendar.json'
+import codeLabels     from '../../../system/labels/code.json'
+import fieldLabels    from '../../../system/labels/field.json'
+
+const allLabels = {
+  label: {
+    ...actionLabels.label,
+    ...calendarLabels.label,
+    ...codeLabels.label,
+    ...fieldLabels.label,
+  },
+}
+
+const localeOptions = [
+  { value: 'en', label: 'English' },
+  { value: 'es', label: 'Español' },
+  { value: 'fr', label: 'Français' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'pt', label: 'Português' },
+  { value: 'ja', label: '日本語' },
+  { value: 'zh', label: '中文' },
+  { value: 'ar', label: 'العربية' },
+]
+
+const VALID_LOCALES = localeOptions.map((o) => o.value)
 import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
@@ -31,19 +56,21 @@ import {
 import { Projects } from './pages/Projects.jsx'
 import { Templates } from './pages/Templates.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
+import { Releases } from './pages/Releases.jsx'
 import './styles.css'
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'projects', 'accessibility']
+const RESOURCE_PAGE_IDS = ['features', 'get-started', 'projects', 'accessibility', 'releases']
 const RESOURCE_PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
-  projects: 'folder_open',
+  projects: 'folder',
   accessibility: 'accessibility',
+  releases: 'new_releases',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'projects', 'accessibility']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'projects', 'accessibility', 'releases']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -55,6 +82,7 @@ const PAGE_TITLES = {
   templates: 'Templates',
   projects: 'Projects',
   accessibility: 'Accessibility',
+  releases: 'Releases',
 }
 
 const themeOptions = [
@@ -102,6 +130,10 @@ function App() {
   const [contrastMore, setContrastMore] = useState(() =>
     localStorage.getItem('a1-web-contrast-more') === 'true'
   )
+  const [locale, setLocale] = useState(() => {
+    const stored = localStorage.getItem('a1-web-locale')
+    return VALID_LOCALES.includes(stored) ? stored : 'en'
+  })
   const [systemColorScheme, setSystemColorScheme] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
@@ -148,6 +180,7 @@ function App() {
   useEffect(() => { localStorage.setItem('a1-web-color-mode', colorMode) }, [colorMode])
   useEffect(() => { localStorage.setItem('a1-web-reduced-motion', reducedMotion) }, [reducedMotion])
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
+  useEffect(() => { localStorage.setItem('a1-web-locale', locale) }, [locale])
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return undefined
@@ -257,7 +290,7 @@ function App() {
   )
 
   return (
-    <LabelsProvider labels={actionLabels}>
+    <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
       <PageLayout
         stickyHeader
         viewportHeight
@@ -299,6 +332,7 @@ function App() {
         {activePage === 'templates' && <Templates />}
         {activePage === 'projects' && <Projects />}
         {activePage === 'accessibility' && <Accessibility />}
+        {activePage === 'releases' && <Releases />}
       </PageLayout>
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
@@ -348,6 +382,18 @@ function App() {
             size="compact"
           />
         </MenuSection>
+        <MenuSection label={<>Locale <span className="a1-web-alpha-badge">Alpha</span></>}>
+          <SelectField
+            aria-label="Locale"
+            size="compact"
+            value={locale}
+            onChange={(e) => setLocale(e.target.value)}
+          >
+            {localeOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </SelectField>
+        </MenuSection>
         <MenuSection>
           <Button
             variant="secondary"
@@ -357,6 +403,7 @@ function App() {
               setColorMode('system')
               setReducedMotion(false)
               setContrastMore(false)
+              setLocale('en')
             }}
           >
             Reset to defaults

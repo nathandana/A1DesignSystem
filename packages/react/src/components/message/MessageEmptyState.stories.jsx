@@ -3,6 +3,7 @@ import { Button } from "../button/Button.jsx";
 import { Card } from "../card/Card.jsx";
 import { Dialog } from "../dialog/Dialog.jsx";
 import { useState } from "react";
+import { requiredIconArgType } from "../../storybook/icon-controls.js";
 
 const meta = {
   title: "Components/Messaging/Empty State",
@@ -20,7 +21,7 @@ const meta = {
       control: "inline-radio",
       options: ["page", "section", "card"],
     },
-    icon:        { control: "text" },
+    icon:        { ...requiredIconArgType("A1 icon registry name") },
     title:       { control: "text" },
     description: { control: "text" },
   },
@@ -49,7 +50,7 @@ export const Scales = {
         <div style={{ border: "1px dashed var(--semantic-color-border-subtle)", borderRadius: "var(--base-radius-lg)" }}>
           <MessageEmptyState
             scale="page"
-            icon="folder_open"
+            icon="folder"
             title="No projects yet"
             description="Create your first project to start organising your work and collaborating with your team."
             action={<Button variant="primary" icon="add">New project</Button>}

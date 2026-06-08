@@ -46,7 +46,7 @@ export const AccountMenu = {
         <>
           <MenuSection label="Account">
             <MenuItem icon="person" onClick={close}>Profile</MenuItem>
-            <MenuItem icon="tune" onClick={close}>Preferences</MenuItem>
+            <MenuItem icon="settings" onClick={close}>Preferences</MenuItem>
             <MenuItem icon="keyboard" shortcut="⌘K" onClick={close}>Command palette</MenuItem>
           </MenuSection>
           <MenuSection label="Workspace">

@@ -18,20 +18,11 @@ The repo includes `netlify.toml`, so Netlify can build from the repository root 
 npm run build
 ```
 
-Netlify publishes the generated static app from:
-
-```sh
-examples/a1-design/dist
-```
-
-The example page is available at `/`, and Storybook is published from the
-same deploy at `/storybook/`.
-
 To check the production build locally:
 
 ```sh
 npm run build
-npm run preview:a1-design
+npm run preview:priority-guide
 ```
 
 From scratch design system that leverages AI to help create it, but more importantly is setup to be consumed by AI agents to create consistent outputs.

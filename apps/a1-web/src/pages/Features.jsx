@@ -26,7 +26,7 @@ const topLevelFeatures = [
   {
     icon: 'devices',
     label: 'Platforms',
-    title: 'One system across surfaces',
+    title: 'One system - multiple platforms',
     page: 'get-started',
     body: 'React, React Native, and pure HTML/CSS packages express the same design decisions in the language each platform expects.',
     points: [
@@ -75,6 +75,7 @@ const minorFeatureGroups = [
       'Spacing scale, semantic gaps, and component spacing tokens',
       'Radius, shadow, motion, icon, and focus-ring tokens',
       'Style Dictionary build pipeline',
+      'Localised label system with per-locale translations and RTL support',
     ],
   },
   {
@@ -113,6 +114,7 @@ const minorFeatureGroups = [
       'Inverse Sections, surfaces, gradient washes, and full-bleed bands',
       'Material Symbols icon support through simple icon name props',
       'Contrast mode and reduced motion controls in the settings menu, persisted to localStorage',
+      'Locale selector in settings for live translation preview across all labeled components',
       'Design rules and project context files for AI-assisted development',
       'A1 web changelog documenting prompt-by-prompt changes',
     ],
@@ -122,7 +124,7 @@ const minorFeatureGroups = [
 const techStack = [
   {
     title: 'Core build tools',
-    icon: 'manufacturing',
+    icon: 'precision_manufacturing',
     items: [
       'Style Dictionary for token generation',
       'Vite for local apps and examples',
@@ -152,7 +154,7 @@ const techStack = [
   },
   {
     title: 'Quality and automation',
-    icon: 'verified',
+    icon: 'check_circle',
     items: [
       'Playwright and axe-core for browser QA',
       'Storybook test runner for component checks',
@@ -170,7 +172,7 @@ const builtWithTools = [
   },
   {
     title: 'Claude Code',
-    icon: 'code_blocks',
+    icon: 'code',
     body: 'Supported codebase exploration, component planning, and alternate AI-assisted development workflows.',
   },
   {
@@ -203,7 +205,7 @@ export function Features({ onNavigate }) {
   return (
     <>
       <Section
-        padding="lg"
+        padding="sm"
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
@@ -212,7 +214,6 @@ export function Features({ onNavigate }) {
         aria-labelledby="features-page-heading"
       >
         <Stack direction="column" gap="sm">
-          <MessageBadge icon="star">Features</MessageBadge>
           <Heading
             as="h1"
             id="features-page-heading"
@@ -220,9 +221,10 @@ export function Features({ onNavigate }) {
             size={{ xs: 'xl', md: 'xxl' }}
             textWrap="balance"
           >
-            Everything A1 does for product teams, platforms, and AI-assisted UI.
+            Everything A1 does
           </Heading>
-          <Paragraph size={{ xs: 'md', md: 'lg', lg: 'xl' }} color="muted">
+          <Heading as="h2" color="muted" size="md"> for product teams, platforms, and AI-assisted UI.</Heading>
+          <Paragraph size="md" color="muted">
             A1 is more than a component kit. It is a token-governed system for building consistent interfaces across web, mobile, static HTML, and AI-generated work.
           </Paragraph>
         </Stack>
@@ -241,14 +243,13 @@ export function Features({ onNavigate }) {
         </Grid>
       </Section>
 
-      <Section padding="lg" contentWidth="lg" aria-labelledby="top-features-heading">
+      <Section padding="sm" contentWidth="lg" aria-labelledby="top-features-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
-            <MessageBadge icon="bolt">Top level</MessageBadge>
             <Heading as="h2" id="top-features-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              The big features.
+              Top features
             </Heading>
-            <Paragraph size="lg" color="muted" className="a1-web-section-body">
+            <Paragraph size="lg" color="muted">
               These are the system-level capabilities that shape every component, package, and example.
             </Paragraph>
           </Stack>
@@ -260,18 +261,21 @@ export function Features({ onNavigate }) {
                 variant="navigation"
                 href={`/?page=${feature.page}`}
                 icon={feature.icon}
+                heroColor="info"
+                  iconDisplay="hero"
+
                 onClick={(event) => handleNavigationCardClick(event, feature.page)}
               >
                 <Stack direction="column" gap="md">
                   <Stack direction="column" gap="xs">
-                    <Heading as="h3" size="lg">
+                    <Heading as="h3" size="md">
                       {feature.title}
                     </Heading>
-                    <Paragraph size="md" color="muted">
+                    <Paragraph size="sm" color="muted">
                       {feature.body}
                     </Paragraph>
                   </Stack>
-                  <List icon="check_circle" size="md" color="muted">
+                  <List icon="check_circle" size="sm" color="muted">
                     {feature.points.map((point) => (
                       <ListItem key={point}>{point}</ListItem>
                     ))}
@@ -283,14 +287,13 @@ export function Features({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="lg" surface="panel" contentWidth="lg" aria-labelledby="tech-stack-heading">
+      <Section padding="md" surface="panel" contentWidth="lg" aria-labelledby="tech-stack-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
-            <MessageBadge icon="terminal">Tech stack</MessageBadge>
             <Heading as="h2" id="tech-stack-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
               The tools behind the system.
             </Heading>
-            <Paragraph size="lg" color="muted" className="a1-web-section-body">
+            <Paragraph size="lg" color="muted">
               A1 uses a small, practical stack: generated tokens, platform-native packages, documented examples, and automated checks.
             </Paragraph>
           </Stack>
@@ -343,12 +346,11 @@ export function Features({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="lg" surface="raised" contentWidth="lg" aria-labelledby="minor-features-heading">
+      <Section padding="md" surface="raised" contentWidth="lg" aria-labelledby="minor-features-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
-            <MessageBadge icon="view_list">Minor features</MessageBadge>
             <Heading as="h2" id="minor-features-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              The details that make the system usable every day.
+              Minor features
             </Heading>
             <Paragraph size="lg" color="muted" className="a1-web-section-body">
               Smaller capabilities add up: token scales, responsive props, package parity, documentation patterns, and interface primitives for real product work.
