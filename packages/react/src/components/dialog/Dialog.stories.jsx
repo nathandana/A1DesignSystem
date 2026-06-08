@@ -145,14 +145,20 @@ export const A11yFocusManagement = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
-    await waitFor(() => within(document.body).getByRole("dialog"));
-    // Tab through the dialog then Escape to close
-    await userEvent.keyboard("{Tab}");
-    await userEvent.keyboard("{Escape}");
+    const trigger = canvas.getByRole("button", { name: /open dialog/i });
+    await userEvent.click(trigger);
+    const dialog = await waitFor(() => within(document.body).getByRole("dialog"));
+    // Verify focus moved inside the dialog on open
     await waitFor(() => {
-      const dialog = document.querySelector("dialog[open]");
-      if (dialog) throw new Error("Dialog still open");
+      if (!dialog.contains(document.activeElement)) throw new Error("Focus not inside dialog");
+    });
+    // Close via button and verify focus returns to the trigger
+    await userEvent.click(within(dialog).getByRole("button", { name: /cancel/i }));
+    await waitFor(() => {
+      if (document.querySelector("dialog[open]")) throw new Error("Dialog still open");
+    });
+    await waitFor(() => {
+      if (document.activeElement !== trigger) throw new Error("Focus did not return to trigger");
     });
   },
 };

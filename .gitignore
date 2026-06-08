@@ -5,4 +5,6 @@ node_modules/
 reports/
 # Playwright test artifacts — generated per run, not committed
 test-results/
+# Storybook build output — generated per run, not committed
+storybook-static/
 # visual-baselines/ is intentionally tracked (via Git LFS)
