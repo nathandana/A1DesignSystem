@@ -320,14 +320,15 @@ function getInitialPage() {
   return navItems.some((item) => item.id === hashPage) ? hashPage : "dashboard";
 }
 
-function ProgressBar({ label, value, total, helper }) {
-  const percent = Math.min(100, Math.round((value / total) * 100));
+function ProgressBar({ label, value, used, total, helper }) {
+  const current = value ?? used ?? 0;
+  const percent = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
 
   return (
     <div className="careguide-progress">
       <div className="careguide-progress__header">
         <span>{label}</span>
-        <strong>{currency(value)} of {currency(total)}</strong>
+        <strong>{currency(current)} of {currency(total)}</strong>
       </div>
       <div className="careguide-progress__track" aria-label={`${label}: ${percent}% used`}>
         <span style={{ inlineSize: `${percent}%` }} />
