@@ -21,3 +21,15 @@ rules:
       - usability
       - content
       - interaction
+
+  - id: card-not-for-page-sections
+    components:
+      - Card
+      - Section
+    requirement: Do not use Card to create page-level sections or large content blocks.
+    do: Use `Section` for page-level regions — it provides the correct surface, padding, width constraints, and theme support. Reserve Card for small, repeated, bounded content units such as product tiles, user profiles, summary items, or navigation destinations.
+    dont: Wrap a hero, a full-page form, a marketing row, an article body, or any other large block of content in a Card. A Card that spans a full content column or contains a long-form layout is a misuse of the component.
+    applies_to:
+      - layout
+      - semantics
+      - usability

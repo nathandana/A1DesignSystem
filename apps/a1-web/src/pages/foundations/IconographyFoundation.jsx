@@ -166,7 +166,7 @@ export function IconographyFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="iconography-heading"
       >
@@ -178,7 +178,7 @@ export function IconographyFoundationPage({ onNavigate }) {
               { label: 'Iconography' },
             ]}
           />
-          <Heading as="h1" id="iconography-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="iconography-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Iconography
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -187,7 +187,7 @@ export function IconographyFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-label="Iconography details">
+      <Section padding="none" contentWidth="xl" aria-label="Iconography details">
         <Stack gap="lg">
           <Tabs value={activeTab} onChange={setActiveTab}>
             <TabList>
@@ -254,7 +254,7 @@ export function IconographyFoundationPage({ onNavigate }) {
                   columns={iconSizingColumns}
                   rows={iconSizingRows}
                   getRowId={(r) => r.id}
-                  density="compact"
+                  density="comfortable"
                   scrollable
                   caption="Icon sizing tokens"
                 />

@@ -54,6 +54,37 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
 > **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override). Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
+>
+> **Heading content rules (system-wide):** Write all headings in sentence case — "Create account", not "Create Account". Never apply `text-transform: uppercase` to content text; screen readers may spell out individual letters. Use the `size` prop to control visual scale independently of the semantic heading level.
+>
+> **Font-weight on states (system-wide):** Never change `font-weight` on `:hover`, `:focus`, `:active`, `[aria-selected]`, or `[aria-current]`. This causes layout reflow as the element resizes. Use color, border, background, or underline to communicate interactive and selection states instead.
+
+---
+
+## Typography composition patterns
+
+These are named UI patterns built from existing typography components. Do not invent custom components or arbitrary CSS values for any of them.
+
+### Eyebrow
+
+An eyebrow is a small label that sits above a heading to provide category or section context. It is not a component — compose it from `Paragraph` and `Heading` inside a `Stack`.
+
+```jsx
+<Stack direction="column" gap="xs">
+  <Paragraph as="span" size="xs" color="muted">
+    Category label
+  </Paragraph>
+  <Heading as="h2" size="lg">Section heading</Heading>
+</Stack>
+```
+
+
+**Rules:**
+- Use `Paragraph` (not a custom `<span>` or `<p>`) so font-family and size tokens are applied correctly.
+- Use `size="xs"` or `size="sm"` — never a raw `font-size`.
+- Use `color="muted"` for the default neutral eyebrow, or omit for default text colour.
+- Use `Stack` with `gap="xs"` to control spacing between the eyebrow and heading — never use a raw `margin`.
+- Do not hardcode a colour, font-size, or font-family in the eyebrow class.
 
 ---
 
@@ -69,6 +100,23 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Page Nav | ✓ | — | — |
 
 > **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`.
+>
+> **Tabs `variant` covers five distinct patterns — do not build custom alternatives:**
+>
+> | variant | Use for |
+> |---------|---------|
+> | `"line"` | Standard horizontal navigation tabs (default) |
+> | `"pills"` | Pill-style filter or view-switcher tabs |
+> | `"segment"` | Compact segmented control — identical to SegmentedControl; prefer Tabs when you also need TabPanel content |
+> | `"progress"` | **Step-by-step wizards, multi-step forms, and progress indicators.** Each `Tab` accepts a `status` prop (`"completed"` \| `"error"` \| `"warning"`) to reflect step state. This is the correct component for anything described as a "stepper", "wizard", "multi-step form", or "progress indicator". Do not build a custom stepper. |
+> | `"folder"` | Browser-tab / folder-style navigation |
+>
+> When a design brief, task description, or Priority Guide mentions a stepper, wizard, onboarding flow, checkout steps, or progress indicator, always reach for `<Tabs variant="progress">` before considering any custom implementation.
+>
+> **SideNav behavior rules:**
+> - **Desktop (≥1025px):** SideNav is sticky (`position: sticky; top: 0; height: 100vh`). Do not wrap it in a container that has `overflow: hidden` or `overflow: auto` — this breaks sticky positioning.
+> - **Mobile/tablet (≤1024px):** SideNav is a fixed overlay that slides in from the edge. Control it with the `open` and `onClose` props. Do not force it to be permanently visible at these breakpoints.
+> - **Internal scroll:** The nav item list scrolls internally when content overflows. The header and footer slots are outside the scroll region and always remain visible — do not place them inside the nav item list.
 
 ---
 
@@ -82,6 +130,14 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Segmented Control | ✓ | — | — |
 
 > **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`.
+>
+> **Button vs Link:** Use `<Button>` for actions (save, submit, delete, open a dialog, change state). Use `<Link>` for navigation. Do not use `<Button>` where an `<a>` element is semantically correct.
+>
+> **One primary per decision area:** Only one `variant="primary"` button should appear within a single form, dialog, or action group. Multiple primary buttons compete for attention and obscure the recommended action.
+>
+> **Tertiary requires icon + verb:** `variant="tertiary"` buttons must always include both a visible icon and a verb-led label (e.g. "Edit profile", "Download report"). Never tertiary with text only or icon only.
+>
+> **Icon buttons need accessible names:** Every `<IconButton>` must have an `aria-label` that describes the action. The icon alone is not an accessible name.
 
 ---
 
@@ -116,6 +172,14 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Empty State | ✓ | ✓ | — |
 | System Banner | ✓ | — | — |
 
+> **Badge / Message standard variants:** `neutral`, `brand`, `info`, `success`, `warning`, `error`, `inverse`. Use these before creating any custom badge style.
+>
+> **Badges communicate status, category, count, or metadata** — not primary actions. Do not make a badge interactive without a clear affordance, focus state, and accessible role. Use a Button, chip, or Link pattern for clickable elements.
+>
+> **Pair color with a text label:** Never rely on color alone to convey meaning (e.g. a red badge with no label). Always include text alongside color.
+>
+> **Use badges sparingly:** Badging every attribute on a page dilutes their signal value. Apply badges only to information that benefits from quick visual scanning.
+
 ---
 
 ## Layout
@@ -137,6 +201,15 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 > **Pure notes:** Section uses `.a1-section`. Footer uses `.a1-footer`. Figure uses `.a1-figure`.
 >
 > **Card props:** `icon` renders a small tokenized icon block above card content (`.a1-card__icon`). `heroIcon` renders a full-bleed colored header area (`.a1-card__hero`). Use these props instead of custom icon spans — do not recreate the icon block with custom CSS classes.
+>
+> **Card vs Section — do not confuse these:**
+> - Use `Section` for page-level regions: heroes, content rows, marketing blocks, full-width layout zones. Section handles surface colour, padding, width constraints, and theme tokens correctly at that scale.
+> - Use `Card` for small, repeated, bounded content units: product tiles, profile summaries, navigation destinations, data items in a grid.
+> - A Card that spans a full content column or wraps a long-form layout is a misuse of the component. When in doubt, ask: "Is this one item in a repeating set?" If yes, Card. If no, Section.
+>
+> **PageLayout no-gap rule:** There is no gap between the sidebar and main area. Do not add `gap`, `margin`, or `padding` to `.a1-page-layout__body`, `.a1-page-layout__sidebar`, or `.a1-page-layout__main`. Apply all inset spacing inside the main content child — use a `Section` or padded wrapper as the first element in the main slot.
+>
+> **Section spans the full viewport:** `Section` is designed to fill the full available width. Place it as the direct child of `<main>` inside `PageLayout` — do not wrap it in a `Stack`, `Grid`, `Card`, or any other container that would constrain its width. Nesting a `Section` inside another layout component breaks the full-bleed surface and padding model.
 
 ---
 
@@ -196,6 +269,8 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 | Date | Change |
 |------|--------|
+| 2026-06-08 | Added rules from all system/rules YAML files: Typography (sentence case, no uppercase, no font-weight on states), Button (vs-link, single-primary, tertiary icon+verb, icon a11y label), SideNav (sticky desktop, mobile overlay, internal scroll), Badge/Message (standard variants, status-only, color+text, use sparingly), PageLayout (no-gap rule) |
+| 2026-06-08 | Added Card vs Section guidance to Layout notes; added card-not-for-page-sections rule to system/rules/card.yaml |
 | 2026-06-08 | Revised Choice Group: removed direction prop; columns now accepts number or responsive breakpoint object; size uses compact/default/comfortable convention; indicator in top-start corner |
 | 2026-06-08 | Added Choice Group component (React only); single/multi-select, size/gap/columns props, icon + subtext per option |
 | 2026-06-07 | Added React Code component and system labels for copy-code affordance |

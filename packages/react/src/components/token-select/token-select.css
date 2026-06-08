@@ -105,6 +105,6 @@
 
 .a1-token-item__check {
   flex-shrink: 0;
-  font-size: 16px;
+  font-size: var(--semantic-font-size-body-md);
   color: var(--semantic-color-text-accent);
 }

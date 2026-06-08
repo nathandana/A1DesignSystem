@@ -59,7 +59,7 @@ export function MotionFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="motion-heading"
       >
@@ -71,7 +71,7 @@ export function MotionFoundationPage({ onNavigate }) {
               { label: 'Motion' },
             ]}
           />
-          <Heading as="h1" id="motion-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="motion-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Motion
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -80,18 +80,10 @@ export function MotionFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="motion-token-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="motion-token-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="motion-token-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse motion tokens.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              Duration tokens define how long animations take. Easing tokens define their acceleration curve. Use the <code className="a1-web-token-code">prefers-reduced-motion</code> class to disable non-essential animation.
-            </Paragraph>
-          </Stack>
 
-          <Tabs value={activeTab} onChange={setActiveTab} variant="folder">
+          <Tabs value={activeTab} onChange={setActiveTab} variant="line">
             <TabList>
               <Tab value="duration" icon="timer">Duration</Tab>
               <Tab value="easing" icon="animation">Easing</Tab>
@@ -102,7 +94,7 @@ export function MotionFoundationPage({ onNavigate }) {
                 columns={durationColumns}
                 rows={durationRows}
                 getRowId={(r) => r.id}
-                density="compact"
+                density="default"
                 scrollable
                 caption="Semantic motion duration tokens"
               />
@@ -113,7 +105,7 @@ export function MotionFoundationPage({ onNavigate }) {
                 columns={easingColumns}
                 rows={easingRows}
                 getRowId={(r) => r.id}
-                density="compact"
+                density="default"
                 scrollable
                 caption="Semantic motion easing tokens"
               />

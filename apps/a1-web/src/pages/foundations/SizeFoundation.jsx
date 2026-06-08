@@ -105,7 +105,7 @@ export function SizeFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="size-heading"
       >
@@ -117,7 +117,7 @@ export function SizeFoundationPage({ onNavigate }) {
               { label: 'Size' },
             ]}
           />
-          <Heading as="h1" id="size-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="size-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Size
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -126,18 +126,9 @@ export function SizeFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="size-token-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="size-token-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="size-token-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse size tokens.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              The base spacing scale is a fixed set of pixel values. Semantic gap tokens alias into that scale for layout use.
-            </Paragraph>
-          </Stack>
-
-          <Tabs value={activeTab} onChange={setActiveTab} variant="folder">
+          <Tabs value={activeTab} onChange={setActiveTab} variant="line">
             <TabList>
               <Tab value="spacing" icon="straighten">Spacing scale</Tab>
               <Tab value="gap" icon="space_bar">Gap scale</Tab>

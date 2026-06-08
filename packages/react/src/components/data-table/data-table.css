@@ -263,7 +263,7 @@
   border-radius: 9999px;
   background: var(--semantic-color-action-background);
   color: var(--semantic-color-action-foreground);
-  font-size: 10px;
+  font-size: var(--semantic-font-size-body-xs);
   font-weight: 600;
   letter-spacing: 0.02em;
   user-select: none;
@@ -272,7 +272,7 @@
 .a1-data-table--compact .a1-data-table__avatar {
   width: 22px;
   height: 22px;
-  font-size: 9px;
+  font-size: var(--component-notification-font-size);
 }
 
 .a1-data-table__actions {

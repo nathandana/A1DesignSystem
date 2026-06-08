@@ -104,7 +104,7 @@
 }
 
 .a1-dt-filters__chip-icon {
-  font-size: 18px;
+  font-size: var(--component-menu-item-icon-size);
   flex-shrink: 0;
   margin-inline-start: -2px;
 }
@@ -134,7 +134,7 @@
   border-radius: 9999px;
   background: var(--semantic-color-action-background);
   color: var(--semantic-color-action-foreground);
-  font-size: 11px;
+  font-size: var(--component-tab-count-font-size);
   font-weight: 600;
   line-height: 1;
   margin-inline-start: var(--base-spacing-4);

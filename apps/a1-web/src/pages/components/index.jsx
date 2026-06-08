@@ -24,7 +24,7 @@ export { componentCategories }
 export { componentCategoryPageIds, componentPageIds, componentPageTitles }
 
 export function Components({ activePage = 'components', onNavigate }) {
-  const [detailTab, setDetailTab] = useState('overview')
+  const [detailTab, setDetailTab] = useState('configure')
   const { category, component } = getComponentEntry(activePage)
   const breadcrumbItems = getBreadcrumbItems({ category, component }, onNavigate)
   const currentComponent = component
@@ -33,10 +33,10 @@ export function Components({ activePage = 'components', onNavigate }) {
 
   return (
     <>
-      <Section padding="sm" surface="panel" gradient="accent" gradientPosition="left" contentWidth="lg">
+      <Section padding="sm" surface="panel" gradient="accent" gradientPosition='top-right' contentWidth="xl">
         <Stack direction="column" gap="xs">
           <Breadcrumb items={breadcrumbItems} />
-          <Heading as="h1" id="components-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
             {component?.title ?? category?.title ?? 'Components'}
           </Heading>
         </Stack>

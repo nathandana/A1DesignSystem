@@ -105,7 +105,7 @@ export function AccessibilityFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="a11y-heading"
       >
@@ -117,7 +117,7 @@ export function AccessibilityFoundationPage({ onNavigate }) {
               { label: 'Accessibility' },
             ]}
           />
-          <Heading as="h1" id="a11y-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="a11y-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Accessibility
           </Heading>
           <Paragraph size="sm" color="muted">

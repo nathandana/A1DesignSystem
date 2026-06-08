@@ -115,7 +115,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="type-scale-heading"
       >
@@ -127,7 +127,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
               { label: 'Type scale' },
             ]}
           />
-          <Heading as="h1" id="type-scale-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="type-scale-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Type scale
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -136,18 +136,10 @@ export function TypeScaleFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="type-token-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="type-token-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="type-token-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse type tokens.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              Three size scales cover every text context: body for UI copy, heading for structural headings, display for hero and editorial moments.
-            </Paragraph>
-          </Stack>
 
-          <Tabs value={activeTab} onChange={setActiveTab} variant="folder">
+          <Tabs value={activeTab} onChange={setActiveTab} variant="line">
             <TabList>
               <Tab value="body" icon="text_fields">Body</Tab>
               <Tab value="heading" icon="title">Heading</Tab>
@@ -157,18 +149,11 @@ export function TypeScaleFoundationPage({ onNavigate }) {
 
             <TabPanel value="body">
               <Stack gap="md">
-                <DataTableFilters
-                  searchValue={search}
-                  onSearchChange={setSearch}
-                  searchColumn={searchCol}
-                  onSearchColumnChange={setSearchCol}
-                  searchableColumns={SIZE_SEARCH_COLS}
-                />
                 <DataTable
                   columns={typeColumns}
                   rows={filteredBodyRows}
                   getRowId={(r) => r.id}
-                  density="compact"
+                  density="default"
                   scrollable
                   caption="Body size tokens"
                   emptyTitle="No matching tokens"
@@ -179,18 +164,11 @@ export function TypeScaleFoundationPage({ onNavigate }) {
 
             <TabPanel value="heading">
               <Stack gap="md">
-                <DataTableFilters
-                  searchValue={search}
-                  onSearchChange={setSearch}
-                  searchColumn={searchCol}
-                  onSearchColumnChange={setSearchCol}
-                  searchableColumns={SIZE_SEARCH_COLS}
-                />
                 <DataTable
                   columns={typeColumns}
                   rows={filteredHeadingRows}
                   getRowId={(r) => r.id}
-                  density="compact"
+                  density="default"
                   scrollable
                   caption="Heading size tokens"
                   emptyTitle="No matching tokens"
@@ -201,18 +179,11 @@ export function TypeScaleFoundationPage({ onNavigate }) {
 
             <TabPanel value="display">
               <Stack gap="md">
-                <DataTableFilters
-                  searchValue={search}
-                  onSearchChange={setSearch}
-                  searchColumn={searchCol}
-                  onSearchColumnChange={setSearchCol}
-                  searchableColumns={SIZE_SEARCH_COLS}
-                />
                 <DataTable
                   columns={typeColumns}
                   rows={filteredDisplayRows}
                   getRowId={(r) => r.id}
-                  density="compact"
+                  density="default"
                   scrollable
                   caption="Display size tokens"
                   emptyTitle="No matching tokens"
@@ -226,7 +197,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
                 columns={weightColumns}
                 rows={weightRows}
                 getRowId={(r) => r.id}
-                density="compact"
+                density="default"
                 scrollable
                 caption="Font weight tokens"
               />

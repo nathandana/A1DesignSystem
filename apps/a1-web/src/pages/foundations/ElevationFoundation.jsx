@@ -51,7 +51,7 @@ export function ElevationFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="elevation-heading"
       >
@@ -63,7 +63,7 @@ export function ElevationFoundationPage({ onNavigate }) {
               { label: 'Elevation' },
             ]}
           />
-          <Heading as="h1" id="elevation-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="elevation-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Elevation
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -72,22 +72,14 @@ export function ElevationFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="elevation-token-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="elevation-token-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="elevation-token-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse elevation tokens.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              Each shadow level is a layered multi-value box-shadow. Use xs for subtle raised surfaces, md for cards, xl for dialogs and overlays.
-            </Paragraph>
-          </Stack>
 
           <DataTable
             columns={shadowColumns}
             rows={shadowRows}
             getRowId={(r) => r.id}
-            density="compact"
+            density="default"
             scrollable
             caption="Semantic shadow tokens"
           />

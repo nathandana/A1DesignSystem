@@ -264,7 +264,7 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="color-foundation-heading"
       >
@@ -279,7 +279,7 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
           <Heading
             as="h1"
             id="color-foundation-heading"
-            type="display"
+            type="heading"
             size={{ xs: 'xl', md: 'xxl' }}
             textWrap="balance"
           >
@@ -292,18 +292,10 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="color-token-browser-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="color-token-browser-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="color-token-browser-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse color by token layer.
-            </Heading>
-            <Paragraph size="sm" color="muted" className="a1-web-section-body">
-              Primitive tokens define the raw ramps. Semantic tokens assign purpose. Component tokens apply color to specific interface parts.
-            </Paragraph>
-          </Stack>
 
-          <Tabs value={activeTab} onChange={setActiveTab} variant="folder">
+          <Tabs value={activeTab} onChange={setActiveTab} variant="line">
             <TabList>
               <Tab value="primitives" icon="gradient">Primitives</Tab>
               <Tab value="semantic" icon="category">Semantic</Tab>

@@ -44,7 +44,7 @@ export function ShapeFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="shape-heading"
       >
@@ -56,7 +56,7 @@ export function ShapeFoundationPage({ onNavigate }) {
               { label: 'Shape' },
             ]}
           />
-          <Heading as="h1" id="shape-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="shape-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Shape
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -65,16 +65,8 @@ export function ShapeFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="shape-token-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="shape-token-heading">
         <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="shape-token-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse shape tokens.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              The radius scale ranges from tight control corners to expressive container shapes. Theme overrides can restyle every surface without touching component code.
-            </Paragraph>
-          </Stack>
 
           <DataTable
             columns={radiusColumns}

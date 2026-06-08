@@ -136,7 +136,7 @@ export function BreakpointsFoundationPage({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="responsive-heading"
       >
@@ -148,7 +148,7 @@ export function BreakpointsFoundationPage({ onNavigate }) {
               { label: 'Responsive' },
             ]}
           />
-          <Heading as="h1" id="responsive-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="responsive-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Responsive
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -157,11 +157,11 @@ export function BreakpointsFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="responsive-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="responsive-heading">
         <Tabs value={activeTab} onChange={setActiveTab}>
           <TabList>
-            <Tab value="viewport">Viewport breakpoints</Tab>
-            <Tab value="container">Container queries</Tab>
+            <Tab value="viewport" icon='devices'>Breakpoints</Tab>
+            <Tab value="container" icon='crop_free'>Containers</Tab>
           </TabList>
 
           <TabPanel value="viewport">

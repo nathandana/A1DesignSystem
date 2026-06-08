@@ -9,6 +9,16 @@
   box-sizing: border-box;
 }
 
+/* ─── Root typeface ──────────────────────────────────────────────────────────
+   Apply the design system body font to the document so unscoped elements
+   inherit the correct typeface without requiring any A1 component to be
+   rendered first. Without this, the browser default (serif) is used until a
+   component's own CSS loads. */
+
+body {
+  font-family: var(--component-paragraph-font-family);
+}
+
 /* ─── Form field interaction tokens — light mode defaults ────────────────────
    Single source of truth for hover, active, and read-only states across all
    form field components. Overridden in every dark-mode context below.

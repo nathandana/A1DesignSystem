@@ -104,7 +104,7 @@ export function Home({ onNavigate }) {
             id="hero-heading"
             type="display"
             align="center"
-            size={{ xs: 'xl', md: 'xxl', lg: 'xxl' }}
+            size={{ xs: 'xl', md: 'xxl' }}
             textWrap="balance"
           >
             Optimized for AI
@@ -202,17 +202,14 @@ export function Home({ onNavigate }) {
             {componentCategories.map((cat) => (
               <Card
                 key={cat.label}
-                shadow="xs"
-                className="a1-web-category-card"
-                as="button"
-                type="button"
+                variant="navigation"
                 icon={cat.icon}
                 onClick={() => onNavigate('components')}
               >
-                <Heading as="span" size="xs" align="left">
+                <Heading as="h3" size="xs">
                   {cat.label}
                 </Heading>
-                <Paragraph size="sm" align="left" color="muted">
+                <Paragraph size="sm" color="muted">
                   {cat.count} components
                 </Paragraph>
               </Card>

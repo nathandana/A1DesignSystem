@@ -2,7 +2,7 @@ import "../../themes.css";
 import "../../color-scheme.css";
 import "./section.css";
 
-const VALID_PADDING = ["lg", "md", "sm", "none"];
+const VALID_PADDING = ["lg", "md", "sm", "xs", "none"];
 const VALID_SURFACES = ["page", "panel", "raised"];
 const VALID_GAPS = ["xs", "sm", "md", "lg"];
 const VALID_GRADIENTS = ["accent", "highlight", "info", "success", "warn"];

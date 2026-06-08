@@ -1,7 +1,7 @@
 import * as React from "react";
 
 type Breakpoints = "xs" | "sm" | "md" | "lg" | "xl";
-type PaddingSize = "lg" | "md" | "sm" | "none";
+type PaddingSize = "lg" | "md" | "sm" | "xs" | "none";
 type ResponsivePadding = PaddingSize | Partial<Record<Breakpoints, PaddingSize>>;
 type AlignmentValue = "left" | "center" | "right";
 type ResponsiveAlignment = AlignmentValue | Partial<Record<Breakpoints, AlignmentValue>>;

@@ -13,7 +13,7 @@ const meta = {
   argTypes: {
     padding: {
       control: "select",
-      options: ["lg", "md", "sm", "none"],
+      options: ["lg", "md", "sm", "xs", "none"],
     },
     surface: {
       control: "select",
@@ -104,7 +104,7 @@ export const Default = {
       <SampleContent
         badge={{ icon: "crop_free", label: "Section component" }}
         heading="Configurable section"
-        body="Use the controls panel to change padding (lg / md / sm / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
+        body="Use the controls panel to change padding (lg / md / sm / xs / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
       />
     </Section>
   ),

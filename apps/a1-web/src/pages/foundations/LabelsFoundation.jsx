@@ -102,7 +102,7 @@ export function LabelsFoundationPage() {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
+        contentWidth="xl"
         gap="lg"
         aria-labelledby="labels-heading"
       >
@@ -114,7 +114,7 @@ export function LabelsFoundationPage() {
               { label: 'Labels' },
             ]}
           />
-          <Heading as="h1" id="labels-heading" type="display" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="labels-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
             Labels
           </Heading>
           <Paragraph size="sm" color="muted">
@@ -123,18 +123,9 @@ export function LabelsFoundationPage() {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="labels-browser-heading">
-        <Stack gap="lg">
-          <Stack direction="column" gap="sm">
-            <Heading as="h2" id="labels-browser-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Browse labels by category.
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              Labels are grouped by the component family they belong to. Keys use dot notation matching the <code className="a1-web-token-code">useLabel</code> hook — for example, <code className="a1-web-token-code">calendar.month.january</code>. Columns show only locales that have at least one translation in that category.
-            </Paragraph>
-          </Stack>
+      <Section padding="sm" contentWidth="xl" aria-labelledby="labels-browser-heading">
 
-          <Tabs value={activeTab} onChange={setActiveTab} variant="folder">
+          <Tabs value={activeTab} onChange={setActiveTab} variant="line">
             <TabList>
               <Tab value="calendar" icon="calendar_month">Calendar</Tab>
               <Tab value="code" icon="code">Code</Tab>
@@ -186,7 +177,6 @@ export function LabelsFoundationPage() {
               />
             </TabPanel>
           </Tabs>
-        </Stack>
       </Section>
     </>
   )

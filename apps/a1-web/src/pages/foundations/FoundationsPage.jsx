@@ -20,11 +20,10 @@ export function Foundations({ onNavigate }) {
         surface="panel"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="lg"
-        gap="lg"
+        contentWidth="xl"
+        gap="sm"
         aria-labelledby="foundations-heading"
       >
-        <Stack direction="column" gap="sm">
           <Breadcrumb
             items={[
               { href: '/', label: 'Home' },
@@ -34,19 +33,18 @@ export function Foundations({ onNavigate }) {
             <Heading
               as="h1"
               id="color-foundation-heading"
-              type="display"
+              type="heading"
               size={{ xs: 'xl', md: 'xxl' }}
               textWrap="balance"
             >
               Foundations
             </Heading>
-          <Paragraph size="md" color="muted">
+          <Paragraph size="sm" color="muted">
             Foundations define the shared language for color, size, type, shape, motion, elevation, icons, and accessibility across every package.
           </Paragraph>
-        </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="foundation-list-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="foundation-list-heading">
         <Stack gap="lg">
           <Stack gap="sm">
             <Heading as="h2" id="foundation-list-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>

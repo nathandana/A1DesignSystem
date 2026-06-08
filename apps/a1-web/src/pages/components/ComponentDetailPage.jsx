@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Accordion,
   Banner,
@@ -18,6 +18,7 @@ import {
   Fieldset,
   Figure,
   Grid,
+  GridItem,
   Heading,
   Icon,
   IconButton,
@@ -94,19 +95,34 @@ function PackageSupportGrid({ packages }) {
 }
 
 function ComponentPreview({ component, config }) {
+  if (component.id === 'heading') {
+    const textWrap = config.textWrap ? 'balance' : undefined
+    return (
+      <Heading
+        as={config.as}
+        type={config.type}
+        size={config.size}
+        color={config.color}
+        align={config.align}
+        margin={config.margin || undefined}
+        textWrap={textWrap}
+      >
+        {config.children || component.title}
+      </Heading>
+    )
+  }
+
   return (
-    <div className="a1-web-component-preview">
-      <Stack direction="column" gap="md" align="center">
-        <Icon name={config.icon} />
-        <Heading as="h3" size={config.size === 'lg' ? 'lg' : 'md'}>{config.label || component.title}</Heading>
-        <Paragraph size="sm" color="muted">
-          {component.body}
-        </Paragraph>
-        <Button variant={config.variant} size={config.size === 'compact' ? 'sm' : 'md'} icon={config.showIcon ? config.icon : undefined}>
-          {config.label || component.title}
-        </Button>
-      </Stack>
-    </div>
+    <Stack direction="column" gap="md" align="center">
+      <Icon name={config.icon} />
+      <Heading as="h3" size={config.size === 'lg' ? 'lg' : 'md'}>{config.label || component.title}</Heading>
+      <Paragraph size="sm" color="muted">
+        {component.body}
+      </Paragraph>
+      <Button variant={config.variant} size={config.size === 'compact' ? 'sm' : 'md'} icon={config.showIcon ? config.icon : undefined}>
+        {config.label || component.title}
+      </Button>
+    </Stack>
   )
 }
 
@@ -700,7 +716,250 @@ function AnatomyPanel({ component, category }) {
   )
 }
 
-function ConfigureControls({ config, setConfig }) {
+const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
+const HEADING_TYPE_OPTIONS = ['heading', 'display']
+const HEADING_SIZE_OPTIONS = {
+  heading: ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'],
+  display: ['sm', 'md', 'lg', 'xl', 'xxl', 'jumbo', 'xJumbo'],
+}
+const HEADING_COLOR_OPTIONS = ['default', 'muted', 'accent']
+const HEADING_ALIGN_OPTIONS = ['left', 'center', 'right']
+const HEADING_MARGIN_OPTIONS = ['', 'sm', 'md', 'lg']
+
+function optionLabel(value) {
+  return value === 'xJumbo'
+    ? 'X jumbo'
+    : value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function radioOptions(options) {
+  return options.map((option) => ({
+    value: option,
+    label: optionLabel(option),
+  }))
+}
+
+function ConfigureControls({ component, config, setConfig }) {
+  if (component.id === 'heading') {
+    const sizeOptions = HEADING_SIZE_OPTIONS[config.type] ?? HEADING_SIZE_OPTIONS.heading
+
+    return (
+      <Stack gap="lg">
+        <TextField
+          label="Text"
+          size="compact"
+          value={config.children}
+          onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
+        />
+        <SelectField
+          label="Element"
+          size="compact"
+          value={config.as}
+          onChange={(event) => setConfig((current) => ({ ...current, as: event.target.value }))}
+        >
+          {HEADING_ELEMENT_OPTIONS.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </SelectField>
+        <RadioGroup
+          label="Type"
+          size="compact"
+          inline
+          value={config.type}
+          options={radioOptions(HEADING_TYPE_OPTIONS)}
+          onChange={(type) => {
+            const nextSizeOptions = HEADING_SIZE_OPTIONS[type] ?? HEADING_SIZE_OPTIONS.heading
+            setConfig((current) => ({
+              ...current,
+              type,
+              size: nextSizeOptions.includes(current.size) ? current.size : nextSizeOptions[2],
+            }))
+          }}
+        />
+        <SelectField
+          label="Size"
+          size="compact"
+          value={config.size}
+          onChange={(event) => setConfig((current) => ({ ...current, size: event.target.value }))}
+        >
+          {sizeOptions.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </SelectField>
+
+        <div>
+
+                              <ChoiceGroup
+            defaultValue="h2"
+            label="Element"
+            options={[
+              {
+                label: 'h1',
+                value: 'h1'
+              },
+              {
+                label: 'h2',
+                value: 'h2'
+              },
+              {
+                label: 'h3',
+                value: 'h3'
+              },
+              {
+                label: 'h4',
+                value: 'h4'
+              },
+              {
+                label: 'h5',
+                value: 'h5'
+              },
+              {
+                label: 'h6',
+                value: 'h6'
+              },
+              {label: 'p', value: 'p'},
+              {label: 'span', value: 'span'}
+            ]}
+            size="compact"
+          />
+
+
+                    <ChoiceGroup
+            defaultValue="heading"
+            label="Type"
+            options={[
+              {
+                label: 'Heading',
+                value: 'heading'
+              },
+              {
+                label: 'Display',
+                value: 'display'
+              }
+            ]}
+            size="compact"
+          />
+          <ChoiceGroup
+            defaultValue="left"
+            label="Alignment"
+            options={[
+              {
+                icon: 'align_horizontal_left',
+                value: 'left'
+              },
+              {
+                icon: 'align_horizontal_center',
+                value: 'center'
+              },
+              {
+                icon: 'align_horizontal_right',
+                value: 'right'
+              }
+            ]}
+            size="compact"
+          />
+
+          <ChoiceGroup
+            defaultValue="sm"
+            label="Color"
+            options={[
+              {
+                label: 'xs',
+                value: 'xs'
+              },
+              {
+                label: 'sm',
+                value: 'sm'
+              },
+              {
+                label: 'md',
+                value: 'md'
+              },
+              {
+                label: 'lg',
+                value: 'lg'
+              },
+              {
+                label: 'xl',
+                value: 'xl'
+              },
+              {
+                label: 'jumbo',
+                value: 'jumbo'
+              },
+              {
+                label: 'xJumbo',
+                value: 'xJumbo'
+              }
+            ]}
+            size="compact"
+          />
+          <ChoiceGroup
+            defaultValue="None"
+            label="Margin"
+            options={[
+              {
+                label: 'None',
+                value: 'None'
+              },
+              {
+                label: 'sm',
+                value: 'sm'
+              },
+              {
+                label: 'md',
+                value: 'md'
+              },
+              {
+                label: 'lg',
+                value: 'lg'
+              }
+            ]}
+            size="compact"
+          />
+        </div>
+
+
+
+
+
+        <RadioGroup
+          label="Color"
+          size="compact"
+          inline
+          value={config.color}
+          options={radioOptions(HEADING_COLOR_OPTIONS)}
+          onChange={(color) => setConfig((current) => ({ ...current, color }))}
+        />
+        <RadioGroup
+          label="Align"
+          size="compact"
+          inline
+          value={config.align}
+          options={radioOptions(HEADING_ALIGN_OPTIONS)}
+          onChange={(align) => setConfig((current) => ({ ...current, align }))}
+        />
+        <SelectField
+          label="Margin"
+          size="compact"
+          value={config.margin}
+          onChange={(event) => setConfig((current) => ({ ...current, margin: event.target.value }))}
+        >
+          <option value="">None</option>
+          {HEADING_MARGIN_OPTIONS.filter(Boolean).map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </SelectField>
+        <Switch
+          label="Balance wrapping"
+          size="compact"
+          checked={config.textWrap}
+          onChange={(checked) => setConfig((current) => ({ ...current, textWrap: checked }))}
+        />
+      </Stack>
+    )
+  }
+
   return (
     <Stack gap="md">
       <Heading as="h2" size="sm">Configure</Heading>
@@ -720,26 +979,30 @@ function ConfigureControls({ config, setConfig }) {
           <option key={icon} value={icon}>{icon}</option>
         ))}
       </SelectField>
-      <SelectField
+      <RadioGroup
         label="Size"
         size="compact"
+        inline
         value={config.size}
-        onChange={(event) => setConfig((current) => ({ ...current, size: event.target.value }))}
-      >
-        <option value="compact">Compact</option>
-        <option value="default">Default</option>
-        <option value="lg">Large</option>
-      </SelectField>
-      <SelectField
+        options={[
+          { value: 'compact', label: 'Compact' },
+          { value: 'default', label: 'Default' },
+          { value: 'lg', label: 'Large' },
+        ]}
+        onChange={(size) => setConfig((current) => ({ ...current, size }))}
+      />
+      <RadioGroup
         label="Variant"
         size="compact"
+        inline
         value={config.variant}
-        onChange={(event) => setConfig((current) => ({ ...current, variant: event.target.value }))}
-      >
-        <option value="primary">Primary</option>
-        <option value="secondary">Secondary</option>
-        <option value="tertiary">Tertiary</option>
-      </SelectField>
+        options={[
+          { value: 'primary', label: 'Primary' },
+          { value: 'secondary', label: 'Secondary' },
+          { value: 'tertiary', label: 'Tertiary' },
+        ]}
+        onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
+      />
       <Switch
         label="Show icon"
         size="compact"
@@ -1262,7 +1525,7 @@ const COMPONENT_PROPS = {
   // ── Layout ────────────────────────────────────────────────────────────────
   section: [
     { id: 'as',               name: 'as',               type: 'ElementType', description: 'Underlying HTML element. Default: "section".' },
-    { id: 'padding',          name: 'padding',          type: '"none" | "sm" | "md" | "lg" | ResponsiveObject', description: 'Block padding scale. Accepts a responsive object. Default: "md".' },
+    { id: 'padding',          name: 'padding',          type: '"none" | "xs" | "sm" | "md" | "lg" | ResponsiveObject', description: 'Block padding scale. Accepts a responsive object. Default: "md".' },
     { id: 'surface',          name: 'surface',          type: '"page" | "panel" | "raised"', description: 'Background surface treatment.' },
     { id: 'gap',              name: 'gap',              type: '"xs" | "sm" | "md" | "lg"',  description: 'Gap between direct children.' },
     { id: 'gradient',         name: 'gradient',         type: '"accent" | "highlight" | "info" | "success" | "warn"', description: 'Gradient overlay colour.' },
@@ -1496,9 +1759,41 @@ const COMPONENT_PROPS = {
   ],
 }
 
-function CodeSnippets({ component }) {
-  const [packageTab, setPackageTab] = useState('react')
+function escapeJsxText(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+}
+
+function propLine(name, value, defaultValue) {
+  if (value === undefined || value === null || value === defaultValue || value === '') return null
+  return `  ${name}="${value}"`
+}
+
+function buildHeadingSnippet(config) {
+  const textWrap = config.textWrap ? 'balance' : undefined
+  const lines = [
+    '<Heading',
+    propLine('as', config.as, 'h2'),
+    propLine('type', config.type, 'heading'),
+    propLine('size', config.size, undefined),
+    propLine('color', config.color, 'default'),
+    propLine('align', config.align, 'left'),
+    propLine('margin', config.margin, undefined),
+    propLine('textWrap', textWrap, undefined),
+    '>',
+  ].filter(Boolean)
+
+  return `${lines.join('\n')}\n  ${escapeJsxText(config.children || 'Heading')}\n</Heading>`
+}
+
+function CodeSnippets({ component, config }) {
   const reactName = component.title.replace(/\s+/g, '')
+
+  if (component.id === 'heading') {
+    return <Code variant="block" wrapping copyCode>{buildHeadingSnippet(config)}</Code>
+  }
 
   const snippets = COMPONENT_SNIPPETS[component.id] ?? {
     react: `<${reactName}>${component.title}</${reactName}>`,
@@ -1506,20 +1801,7 @@ function CodeSnippets({ component }) {
     pure: `<div class="a1-${component.id}">${component.title}</div>`,
   }
 
-  return (
-    <Tabs value={packageTab} onChange={setPackageTab} variant="line">
-      <TabList>
-        <Tab value="react">React</Tab>
-        <Tab value="native">Native</Tab>
-        <Tab value="pure">Pure</Tab>
-      </TabList>
-      {Object.entries(snippets).map(([key, snippet]) => (
-        <TabPanel key={key} value={key}>
-          <Code variant="block" wrapping copyCode>{snippet}</Code>
-        </TabPanel>
-      ))}
-    </Tabs>
-  )
+  return <Code variant="block" wrapping copyCode>{snippets.react}</Code>
 }
 
 const FALLBACK_PROP_ROWS = [
@@ -1536,30 +1818,72 @@ function normalizePropTables(component) {
   return [{ title: component.title, rows: entry }]
 }
 
-export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
-  const [config, setConfig] = useState({
+function getDefaultConfig(component, category) {
+  if (component.id === 'heading') {
+    return {
+      as: 'h2',
+      type: 'heading',
+      size: 'md',
+      color: 'default',
+      align: 'left',
+      margin: '',
+      textWrap: false,
+      children: component.title,
+    }
+  }
+
+  return {
     label: component.title,
     icon: category.icon,
     size: 'default',
     variant: 'primary',
     showIcon: true,
-  })
+  }
+}
+
+export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
+  const [config, setConfig] = useState(() => getDefaultConfig(component, category))
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
 
+  useEffect(() => {
+    setConfig(getDefaultConfig(component, category))
+  }, [component.id, component.title, category.icon])
+
   return (
     <ComponentDocsShell>
       <Section padding="none" contentWidth="xl">
-        <Tabs value={tab} onChange={onTabChange} variant="line">
+        <Tabs value={tab} onChange={onTabChange}>
           <TabList>
+            <Tab value="configure">Configure</Tab>
             <Tab value="overview">Overview</Tab>
             <Tab value="anatomy">Anatomy</Tab>
             <Tab value="rules">Rules</Tab>
-            <Tab value="configure">Configure</Tab>
             <Tab value="properties">Properties</Tab>
             <Tab value="accessibility">Accessibility</Tab>
           </TabList>
+          <TabPanel value="configure">
+            <Stack gap="xl">
+              <Grid columns={{ xs: 1, md: 12 }} gap="md">
+                <GridItem span={{ xs: 1, md: 8 }}>
+                                <Stack gap="sm">
+                  <Section surface="panel" gap="lg">
+                    <ComponentPreview component={component} config={config} />
+                  </Section>
+
+                <CodeSnippets component={component} config={config} />
+              </Stack>
+
+                </GridItem>
+                <GridItem span={{ xs: 1, md: 4 }}>
+                  <Section padding="xs" surface="raised">
+                    <ConfigureControls component={component} config={config} setConfig={setConfig} />
+                  </Section>
+                </GridItem>
+              </Grid>
+            </Stack>
+          </TabPanel>
 
           <TabPanel value="overview">
             <Stack gap="xl">
@@ -1610,23 +1934,6 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             <RulesPanel component={component} />
           </TabPanel>
 
-          <TabPanel value="configure">
-            <Stack gap="xl">
-              <Grid columns={{ xs: 1, md: 2 }} gap="md">
-                <Stack gap="md">
-                  <Heading as="h3" size="md">Configurable preview</Heading>
-                  <ComponentPreview component={component} config={config} />
-                </Stack>
-                <Card>
-                  <ConfigureControls config={config} setConfig={setConfig} />
-                </Card>
-              </Grid>
-              <Stack gap="sm">
-                <Heading as="h3" size="md">Code snippet</Heading>
-                <CodeSnippets component={component} />
-              </Stack>
-            </Stack>
-          </TabPanel>
 
           <TabPanel value="properties">
             <Stack gap="xl">
