@@ -305,6 +305,94 @@ body {
   gap: 12px;
 }
 
+/* Add errand — bottom sheet on mobile, dialog on tablet+ */
+.dayflow-errand-overlay__handle {
+  display: none;
+}
+
+.dayflow-errand-overlay__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--base-spacing-16);
+}
+
+.dayflow-errand-overlay__title {
+  flex: 1;
+  margin: 0;
+}
+
+.dayflow-errand-overlay__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .dayflow-errand-overlay.a1-dialog {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    max-height: min(92dvh, 100%);
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: calc(var(--component-dialog-padding) + env(safe-area-inset-bottom, 0px));
+    animation: dayflow-sheet-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dayflow-errand-overlay__handle {
+    display: block;
+    width: 2.5rem;
+    height: 0.3rem;
+    margin: 0 auto var(--base-spacing-12);
+    border-radius: 999px;
+    background: var(--semantic-color-border-default);
+  }
+
+  .dayflow-errand-overlay__header {
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 641px) {
+  .dayflow-errand-overlay.a1-dialog {
+    width: min(36rem, calc(100vw - var(--base-spacing-64)));
+    max-height: calc(100dvh - var(--base-spacing-64));
+    animation: dayflow-dialog-in 0.22s ease-out;
+  }
+
+  .dayflow-errand-overlay__handle {
+    display: none;
+  }
+}
+
+@keyframes dayflow-sheet-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dayflow-dialog-in {
+  from {
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 900px) {
   .dayflow-dashboard-grid,
   .dayflow-metrics,

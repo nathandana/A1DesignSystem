@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Button,
   Card,
-  Dialog,
   Heading,
   IconButton,
   Paragraph,
@@ -10,6 +9,7 @@ import {
   Stack,
 } from "../../../../packages/react/src/index.js";
 import { ErrandForm } from "../components/ErrandForm.jsx";
+import { ErrandOverlay } from "../components/ErrandOverlay.jsx";
 import { PriorityBadge } from "../components/PriorityBadge.jsx";
 import { formatDuration } from "../lib/format.js";
 import { getPriorityMeta } from "../lib/priority.js";
@@ -77,7 +77,7 @@ export function ErrandsPage({ errands, onAdd, onRemove }) {
         </Card>
       ) : null}
 
-      <Dialog
+      <ErrandOverlay
         open={dialogOpen}
         onClose={closeDialog}
         title="Add errand"
@@ -89,7 +89,7 @@ export function ErrandsPage({ errands, onAdd, onRemove }) {
           onAdd={handleAdd}
           onCancel={closeDialog}
         />
-      </Dialog>
+      </ErrandOverlay>
     </Stack>
   );
 }
