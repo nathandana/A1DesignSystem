@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Circular Progress — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+        <a href="definition-list.html">Definition List</a>
+        <a href="circular-progress.html" aria-current="page">Circular Progress</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+          <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+          <a href="definition-list.html">Definition List</a>
+          <a href="circular-progress.html" aria-current="page">Circular Progress</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Circular Progress</h1>
+        <p class="a1-p">Use <code class="a1-code">Circular Progress</code> to communicate loading state or a completion percentage with a circular ring. Static values show how much of a task is done; indeterminate mode shows an activity spinner. Custom content — percentage labels, icons, or status text — sits inside the ring for all sizes except <code class="a1-code">xs</code>, which places content inline after the ring.</p>
+      </section>
+
+      <!-- ── Default (md) ─────────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Default (md)</h2>
+        <p class="a1-p">Set <code class="a1-code">--a1-cp-pct</code> on the <code class="a1-code">__ring</code> element as a decimal from 0 to 1. Always provide <code class="a1-code">role="progressbar"</code>, <code class="a1-code">aria-valuenow</code>, <code class="a1-code">aria-valuemin</code>, <code class="a1-code">aria-valuemax</code>, and <code class="a1-code">aria-label</code>.</p>
+        <div style="display:flex;gap:var(--base-spacing-32);flex-wrap:wrap;align-items:center">
+          <div class="a1-circular-progress"
+               role="progressbar" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100" aria-label="21% complete">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.21"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-h3" style="line-height:1">21%</span>
+              <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted);margin-top:var(--base-spacing-4)">complete</span>
+            </div>
+          </div>
+          <div class="a1-circular-progress"
+               role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65% uploaded">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-h3" style="line-height:1">65%</span>
+              <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted);margin-top:var(--base-spacing-4)">uploaded</span>
+            </div>
+          </div>
+          <div class="a1-circular-progress"
+               role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Complete">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:1"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-icon" style="font-size:var(--base-spacing-32);color:var(--semantic-color-action-background)" aria-hidden="true">check_circle</span>
+            </div>
+          </div>
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-circular-progress"
+     role="progressbar" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100" aria-label="21% complete"&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.21"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;
+    &lt;span class="a1-h3" style="line-height:1"&gt;21%&lt;/span&gt;
+    &lt;span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted);margin-top:var(--base-spacing-4)"&gt;complete&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <!-- ── Sizes ───────────────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Sizes</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-circular-progress-small</code> or <code class="a1-code">a1-circular-progress-large</code> for the sm and lg sizes. Add <code class="a1-code">a1-circular-progress-xs</code> for the smallest size, which places content after the ring.</p>
+        <div style="display:flex;gap:var(--base-spacing-32);flex-wrap:wrap;align-items:center">
+
+          <!-- xs -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:var(--base-spacing-8)">
+            <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)">xs</span>
+            <div class="a1-circular-progress a1-circular-progress-xs"
+                 role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65%">
+              <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"></div>
+              <span class="a1-p" style="font-size:var(--semantic-font-size-body-sm)">65%</span>
+            </div>
+          </div>
+
+          <!-- sm -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:var(--base-spacing-8)">
+            <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)">sm</span>
+            <div class="a1-circular-progress a1-circular-progress-small"
+                 role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65%">
+              <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"></div>
+              <div class="a1-circular-progress__inner">
+                <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);font-weight:var(--base-font-weight-semibold)">65%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- md (default) -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:var(--base-spacing-8)">
+            <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)">md</span>
+            <div class="a1-circular-progress"
+                 role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65%">
+              <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"></div>
+              <div class="a1-circular-progress__inner">
+                <span class="a1-h4" style="line-height:1">65%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- lg -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:var(--base-spacing-8)">
+            <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)">lg</span>
+            <div class="a1-circular-progress a1-circular-progress-large"
+                 role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="65%">
+              <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"></div>
+              <div class="a1-circular-progress__inner">
+                <span class="a1-h2" style="line-height:1">65%</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- xs — content after ring --&gt;
+&lt;div class="a1-circular-progress a1-circular-progress-xs" role="progressbar" ...&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"&gt;&lt;/div&gt;
+  &lt;span class="a1-p"&gt;65%&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- sm --&gt;
+&lt;div class="a1-circular-progress a1-circular-progress-small" role="progressbar" ...&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;&lt;span class="a1-p"&gt;65%&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- md (default) --&gt;
+&lt;div class="a1-circular-progress" role="progressbar" ...&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;&lt;span class="a1-h4"&gt;65%&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- lg --&gt;
+&lt;div class="a1-circular-progress a1-circular-progress-large" role="progressbar" ...&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.65"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;&lt;span class="a1-h2"&gt;65%&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <!-- ── Indeterminate ───────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Indeterminate (loading)</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-circular-progress-indeterminate</code> for a continuously spinning arc. Remove <code class="a1-code">aria-valuenow</code> so assistive technology announces an indeterminate state. Omit <code class="a1-code">--a1-cp-pct</code> on the ring — the arc length is a fixed 25% set by the animation.</p>
+        <div style="display:flex;gap:var(--base-spacing-32);flex-wrap:wrap;align-items:center">
+
+          <div class="a1-circular-progress a1-circular-progress-indeterminate"
+               role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Loading">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.25"></div>
+          </div>
+
+          <div class="a1-circular-progress a1-circular-progress-indeterminate"
+               role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Processing">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.25"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)">Loading…</span>
+            </div>
+          </div>
+
+          <div class="a1-circular-progress a1-circular-progress-large a1-circular-progress-indeterminate"
+               role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.25"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-h4" style="line-height:1">73%</span>
+              <span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted);margin-top:var(--base-spacing-4)">verifying…</span>
+            </div>
+          </div>
+
+          <!-- xs indeterminate -->
+          <div class="a1-circular-progress a1-circular-progress-xs a1-circular-progress-indeterminate"
+               role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Saving">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.25"></div>
+            <span class="a1-p" style="font-size:var(--semantic-font-size-body-sm);color:var(--semantic-color-text-muted)">Saving…</span>
+          </div>
+
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-circular-progress a1-circular-progress-indeterminate"
+     role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Loading"&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.25"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;
+    &lt;span class="a1-p" style="font-size:var(--semantic-font-size-body-xs);color:var(--semantic-color-text-muted)"&gt;Loading…&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <!-- ── Token overrides ─────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Token overrides</h2>
+        <p class="a1-p">Override <code class="a1-code">--a1-cp-fill</code> and <code class="a1-code">--a1-cp-track</code> to change ring colors without altering the token source.</p>
+        <div style="display:flex;gap:var(--base-spacing-32);flex-wrap:wrap;align-items:center">
+
+          <div class="a1-circular-progress"
+               style="--a1-cp-fill:var(--semantic-color-status-success-background);--a1-cp-track:var(--semantic-color-status-success-surface)"
+               role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="85% healthy">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.85"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-h4" style="line-height:1;color:var(--semantic-color-status-success-background)">85%</span>
+            </div>
+          </div>
+
+          <div class="a1-circular-progress"
+               style="--a1-cp-fill:var(--semantic-color-status-error-background);--a1-cp-track:var(--semantic-color-status-error-surface)"
+               role="progressbar" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100" aria-label="12% storage critical">
+            <div class="a1-circular-progress__ring" style="--a1-cp-pct:0.12"></div>
+            <div class="a1-circular-progress__inner">
+              <span class="a1-h4" style="line-height:1;color:var(--semantic-color-status-error-background)">12%</span>
+            </div>
+          </div>
+
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-circular-progress"
+     style="--a1-cp-fill:var(--semantic-color-status-success-background);
+            --a1-cp-track:var(--semantic-color-status-success-surface)"
+     role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="85% healthy"&gt;
+  &lt;div class="a1-circular-progress__ring" style="--a1-cp-pct:0.85"&gt;&lt;/div&gt;
+  &lt;div class="a1-circular-progress__inner"&gt;
+    &lt;span class="a1-h4" style="color:var(--semantic-color-status-success-background)"&gt;85%&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p">A1 Design System</p>
+    </footer>
+
+  </body>
+</html>

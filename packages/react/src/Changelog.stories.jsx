@@ -13,6 +13,9 @@ const releases = [
       {
         type: "Added",
         items: [
+          "DefinitionList component — semantic label/value pairs with row/column layouts, sm/md/lg sizes, auto/fixed responsive label widths, Heading-based value typography, and optional copy buttons",
+          "React package publish file list now includes component .d.ts declaration files",
+          "Heading runtime validation now honours documented as=\"p\" and as=\"span\" values",
           "Spacer component — xs through xxl sizes, responsive object-syntax breakpoints",
           "Figure: align prop (start / center / end); captionSrOnly prop for screen-reader-only captions",
           "sr-only utility CSS (packages/react/src/utilities/sr-only.css)",

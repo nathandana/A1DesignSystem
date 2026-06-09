@@ -14,6 +14,7 @@ import {
   Code,
   Cluster,
   DataTable,
+  DefinitionList,
   Divider,
   Fieldset,
   Figure,
@@ -109,6 +110,21 @@ function ComponentPreview({ component, config }) {
       >
         {config.children || component.title}
       </Heading>
+    )
+  }
+
+  if (component.id === 'definition-list') {
+    return (
+      <DefinitionList
+        direction="row"
+        labelWidth="fixed"
+        copyValue
+        items={[
+          { label: 'Account ID', value: 'A1-849204' },
+          { label: 'Plan', value: 'Enterprise' },
+          { label: 'Renewal', value: 'June 30, 2026' },
+        ]}
+      />
     )
   }
 
@@ -295,6 +311,22 @@ const COMPONENT_ANATOMY_OVERRIDES = {
     },
   },
   'data-table': CATEGORY_ANATOMY.data,
+  'definition-list': {
+    callouts: [
+      { label: 'List container', description: 'Semantic dl element owns direction, size, and responsive label width behavior.', anchor: 'top-left' },
+      { label: 'Label term', description: 'Each dt names the value and uses muted, medium-weight text for scanability.', anchor: 'top' },
+      { label: 'Value description', description: 'Each dd contains the value and may render body text, rich React content, or Heading typography.', anchor: 'center' },
+      { label: 'Copy action', description: 'Optional copy button sits beside exact reusable values and keeps an accessible label.', anchor: 'bottom-right' },
+    ],
+    sizing: {
+      width: 'Flexible',
+      widthBehavior: 'Fills the parent container. Fixed row labels use container width to align values while preserving responsive space.',
+      height: 'Content-driven',
+      heightBehavior: 'Height grows from item count, selected size, wrapping labels, values, and optional copy buttons.',
+      wrapping: 'Labels and values wrap by default. Row layout stacks at narrow container widths.',
+      overflow: 'Content should wrap inside each pair; use DataTable for wide multi-column comparison.',
+    },
+  },
   calendar: {
     callouts: [
       { label: 'Container', description: 'Outer element uses container-type: inline-size to drive density via container queries at 480px and 320px.', anchor: 'top-left' },
@@ -605,6 +637,19 @@ function AnatomyComponentPreview({ component }) {
           rows={[
             { id: 'one', name: 'Row one', status: 'Ready' },
             { id: 'two', name: 'Row two', status: 'Draft' },
+          ]}
+        />
+      )
+    case 'definition-list':
+      return (
+        <DefinitionList
+          direction="row"
+          labelWidth="fixed"
+          size="sm"
+          items={[
+            { label: 'Status', value: 'Ready' },
+            { label: 'Record ID', value: 'A1-849204', copyValue: true },
+            { label: 'Owner', value: 'Platform team' },
           ]}
         />
       )
@@ -1052,6 +1097,11 @@ const COMPONENT_SNIPPETS = {
     react: `// Scroll variant — renders all months vertically (default)\n<Calendar monthsToShow={13} />\n\n// Paginated variant — one month at a time with navigation\n<Calendar\n  variant="paginated"\n  highlightToday\n  dimPast\n  todayButton\n/>`,
     native: `// Not available in the Native package.`,
     pure: `// Not available in the Pure package.`,
+  },
+  'definition-list': {
+    react: `<DefinitionList\n  direction="row"\n  labelWidth="fixed"\n  copyValue\n  items={[\n    { label: "Account ID", value: "A1-849204" },\n    { label: "Plan", value: "Enterprise" },\n    { label: "Renewal", value: "June 30, 2026" },\n  ]}\n/>`,
+    native: `// Not available in the Native package.`,
+    pure: `<dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-fixed">\n  <div class="a1-definition-list-item">\n    <dt class="a1-definition-list-label">Account ID</dt>\n    <dd class="a1-definition-list-value">\n      <span class="a1-definition-list-value-content">A1-849204</span>\n    </dd>\n  </div>\n</dl>`,
   },
 }
 
@@ -1718,6 +1768,36 @@ const COMPONENT_PROPS = {
         { id: 'key',     name: 'key',     type: 'string',               description: 'Row property to filter on. Required.' },
         { id: 'label',   name: 'label',   type: 'string',               description: 'Filter chip label. Required.' },
         { id: 'options', name: 'options', type: '{ value, label }[]',   description: 'Available filter values shown in the filter dropdown.' },
+      ],
+    },
+  ],
+  'definition-list': [
+    {
+      title: 'DefinitionList',
+      rows: [
+        { id: 'items',             name: 'items',             type: 'DefinitionListItem[]',                    description: 'Label/value pairs rendered as semantic dt/dd groups. Default: [].' },
+        { id: 'direction',         name: 'direction',         type: '"row" | "column"',                       description: 'Pair layout. Row places label and value side-by-side; column stacks each label above its value. Default: "row".' },
+        { id: 'size',              name: 'size',              type: '"sm" | "md" | "lg"',                     description: 'Spacing and body text size. Default: "md".' },
+        { id: 'labelWidth',        name: 'labelWidth',        type: '"auto" | "fixed"',                       description: 'Row label sizing. Auto lets each label hug content; fixed aligns values using a responsive label column that adapts to container width. Default: "auto".' },
+        { id: 'copyValue',         name: 'copyValue',         type: 'boolean',                                description: 'Show copy buttons for copyable text values. Can be overridden per item. Default: false.' },
+        { id: 'copyLabel',         name: 'copyLabel',         type: 'string',                                 description: 'Accessible label for copy buttons. Default: "Copy value".' },
+        { id: 'copiedLabel',       name: 'copiedLabel',       type: 'string',                                 description: 'Accessible label after a copy succeeds. Default: "Copied".' },
+        { id: 'valueHeadingProps', name: 'valueHeadingProps', type: 'Omit<HeadingProps, "children" | "className">', description: 'Render values with Heading typography, including type and all Heading/Display sizes. Can be overridden per item.' },
+        { id: 'className',         name: 'className',         type: 'string',                                 description: 'Additional CSS class names for local layout adjustment.' },
+      ],
+    },
+    {
+      title: 'DefinitionListItem',
+      rows: [
+        { id: 'id',                name: 'id',                type: 'React.Key',                              description: 'Stable key for this item. Falls back to label or index.' },
+        { id: 'label',             name: 'label',             type: 'ReactNode',                              description: 'Label rendered in the dt element. Required.' },
+        { id: 'value',             name: 'value',             type: 'ReactNode',                              description: 'Value rendered in the dd element.' },
+        { id: 'children',          name: 'children',          type: 'ReactNode',                              description: 'Alternate value content for object-literal ergonomics.' },
+        { id: 'copyValue',         name: 'copyValue',         type: 'boolean',                                description: 'Enables or disables the copy button for this item. Defaults to the list-level copyValue prop.' },
+        { id: 'copyText',          name: 'copyText',          type: 'string',                                 description: 'Exact clipboard text. Defaults to the rendered text value when it can be inferred.' },
+        { id: 'copyLabel',         name: 'copyLabel',         type: 'string',                                 description: 'Accessible label override for this item copy button.' },
+        { id: 'copiedLabel',       name: 'copiedLabel',       type: 'string',                                 description: 'Accessible copied-state label override for this item copy button.' },
+        { id: 'valueHeadingProps', name: 'valueHeadingProps', type: 'Omit<HeadingProps, "children" | "className">', description: 'Heading typography override for this item value.' },
       ],
     },
   ],

@@ -1,0 +1,16 @@
+{
+  "component": {
+    "circularProgress": {
+      "xs":  { "size": { "$type": "dimension", "$value": "{base.spacing.40}" } },
+      "sm":  { "size": { "$type": "dimension", "$value": "{base.spacing.64}" } },
+      "md":  { "size": { "$type": "dimension", "$value": "{base.spacing.96}" } },
+      "lg":  { "size": { "$type": "dimension", "$value": "{base.spacing.128}" } },
+      "trackColor": { "$type": "color", "$value": "{semantic.color.surface.raised}" },
+      "fillColor":  { "$type": "color", "$value": "{semantic.color.action.background}" },
+      "gap":        { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "indeterminate": {
+        "duration": { "$value": "1200ms" }
+      }
+    }
+  }
+}

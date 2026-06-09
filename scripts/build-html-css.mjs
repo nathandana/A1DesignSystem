@@ -1322,6 +1322,108 @@ function componentCss() {
   font-weight: var(--component-data-table-header-font-weight);
 }
 
+.a1-definition-list {
+  container-type: inline-size;
+  margin: 0;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+}
+
+.a1-definition-list-small {
+  --a1-definition-list-gap: var(--component-definition-list-gap-sm);
+  --a1-definition-list-row-gap: var(--component-definition-list-row-gap-sm);
+  --a1-definition-list-column-gap: var(--component-definition-list-column-gap-sm);
+  --a1-definition-list-font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-definition-list-medium {
+  --a1-definition-list-gap: var(--component-definition-list-gap-md);
+  --a1-definition-list-row-gap: var(--component-definition-list-row-gap-md);
+  --a1-definition-list-column-gap: var(--component-definition-list-column-gap-md);
+  --a1-definition-list-font-size: var(--semantic-font-size-body-md);
+}
+
+.a1-definition-list-large {
+  --a1-definition-list-gap: var(--component-definition-list-gap-lg);
+  --a1-definition-list-row-gap: var(--component-definition-list-row-gap-lg);
+  --a1-definition-list-column-gap: var(--component-definition-list-column-gap-lg);
+  --a1-definition-list-font-size: var(--semantic-font-size-body-lg);
+}
+
+.a1-definition-list-item {
+  min-inline-size: 0;
+}
+
+.a1-definition-list-label,
+.a1-definition-list-value {
+  min-inline-size: 0;
+  margin: 0;
+  font-size: var(--a1-definition-list-font-size, var(--semantic-font-size-body-md));
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-definition-list-label {
+  font-weight: var(--component-definition-list-label-font-weight);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-definition-list-value {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--component-definition-list-copy-gap);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-definition-list-value-content {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.a1-definition-list-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-definition-list-gap, var(--component-definition-list-gap-md));
+}
+
+.a1-definition-list-column .a1-definition-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-definition-list-row-gap, var(--component-definition-list-row-gap-md));
+}
+
+.a1-definition-list-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a1-definition-list-row-gap, var(--component-definition-list-row-gap-md));
+}
+
+.a1-definition-list-row .a1-definition-list-item {
+  display: grid;
+  grid-template-columns: var(--a1-definition-list-label-column) minmax(0, 1fr);
+  column-gap: var(--a1-definition-list-column-gap, var(--component-definition-list-column-gap-md));
+  align-items: start;
+}
+
+.a1-definition-list-label-auto {
+  --a1-definition-list-label-column: max-content;
+}
+
+.a1-definition-list-label-fixed {
+  --a1-definition-list-label-column: clamp(
+    var(--component-definition-list-label-width-min),
+    var(--component-definition-list-label-width-preferred),
+    var(--component-definition-list-label-width-max)
+  );
+}
+
+@container (max-width: 360px) {
+  .a1-definition-list-row .a1-definition-list-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--a1-definition-list-row-gap, var(--component-definition-list-row-gap-md));
+  }
+}
+
 .a1-breadcrumb,
 .a1-top-header {
   display: flex;
@@ -1614,6 +1716,16 @@ function html() {
             <tr><td>Accordion</td><td><span class="a1-badge a1-badge-info">Native</span></td><td>HTML/CSS</td></tr>
           </tbody>
         </table>
+        <dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-fixed">
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Component</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">Definition List</span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Use for</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">Semantic label/value pairs</span></dd>
+          </div>
+        </dl>
       </section>
     </main>
   </body>

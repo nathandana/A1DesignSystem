@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### Prompt: Add CircularProgress component
+
+- Added `CircularProgress` to the React package: SVG-based ring progress indicator with `value`/`max` determinate mode and `indeterminate` spinning mode.
+- Sizes: `xs` (40 px, children after ring), `sm` (64 px), `md` (96 px, default), `lg` (128 px) — sm/md/lg support arbitrary `children` centered inside the ring.
+- SVG uses a 100×100 viewBox with a 10-unit stroke so the ring scales proportionally with the CSS container size.
+- Added Pure HTML/CSS implementation using `conic-gradient` + CSS `mask` radial cutout — background-color agnostic and theme-safe.
+- Added `system/tokens/component/circular-progress.json` and ran token rebuild.
+- Added `system/rules/circular-progress.yaml` with six usage rules covering accessibility, xs behaviour, indeterminate ARIA, and color overrides.
+- Added Pure example page `examples/a1-pure/circular-progress.html` with all size, indeterminate, and token-override variants.
+- Updated nav on all existing example pages to include Circular Progress.
+- Added to a1-web component docs under Feedback (coverage: React + Pure, status: beta).
+
+---
+
+### Prompt: Add Definition List component
+
+- Added `DefinitionList` to the React package with semantic `<dl>/<dt>/<dd>` output.
+- Added row and column directions, `sm`/`md`/`lg` sizes, auto and fixed row label widths, Heading-based value typography, and optional copy value buttons.
+- Updated the React package publish file list to include component `.d.ts` declarations.
+- Fixed `Heading` runtime validation so documented `as="p"` and `as="span"` values render correctly.
+- Added `system/rules/definition-list.yaml` with guidance for column, row-auto, row-fixed, copy values, and heading values.
+- Added Definition List to a1-web component docs under Data with preview, snippets, prop tables, related components, and rule coverage.
+- Added Pure HTML/CSS classes and a Pure example page for Definition List.
+
+---
+
 ### Prompt: Calendar — selectable date range enforcement and 0.4.1
 
 - Added `selectable` prop to `Calendar` — date selection is now opt-in (off by default). Previously the `DateRange` and `SelectedDate` Storybook stories were missing this prop.

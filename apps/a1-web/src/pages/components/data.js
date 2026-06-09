@@ -3,8 +3,10 @@ import cardRules from '../../../../../system/rules/card.yaml?raw'
 import pageLayoutRules from '../../../../../system/rules/page-layout.yaml?raw'
 import sideNavRules from '../../../../../system/rules/side-nav.yaml?raw'
 import messageBadgeRules from '../../../../../system/rules/message-badge.yaml?raw'
+import definitionListRules from '../../../../../system/rules/definition-list.yaml?raw'
+import circularProgressRules from '../../../../../system/rules/circular-progress.yaml?raw'
 
-export const LAST_UPDATED = '2026-06-07'
+export const LAST_UPDATED = '2026-06-09'
 export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure']
 export const ICON_OPTIONS = ['widgets', 'check', 'add', 'edit', 'settings', 'download', 'star', 'near_me', 'touch_app', 'science']
 
@@ -79,6 +81,7 @@ export const componentCategories = [
       { id: 'snackbar', title: 'Snackbar', body: 'Transient confirmations and alerts.' },
       { id: 'empty-state', title: 'Empty State', body: 'Guidance for blank or unavailable content.' },
       { id: 'system-banner', title: 'System Banner', body: 'System-wide operational announcements.' },
+      { id: 'circular-progress', title: 'Circular Progress', body: 'Circular ring progress indicator with static value display, inner content, and loading spinner.' },
     ],
   },
   {
@@ -117,6 +120,7 @@ export const componentCategories = [
     body: 'Components for tabular information, filtering, pagination, and date browsing.',
     components: [
       { id: 'data-table', title: 'Data Table', body: 'Sortable, selectable, responsive tabular data.' },
+      { id: 'definition-list', title: 'Definition List', body: 'Semantic label/value pairs for metadata, summaries, and details.' },
       { id: 'pagination', title: 'Pagination', body: 'Paged navigation for long result sets.' },
       { id: 'calendar', title: 'Calendar', body: 'Month-grid date browser with scroll and paginated variants, localised labels, today highlight, and past-day dimming.' },
     ],
@@ -173,6 +177,7 @@ export const PACKAGE_COVERAGE = {
   snackbar:           ['React', 'Native'],
   'empty-state':      ['React', 'Native'],
   'system-banner':    ['React'],
+  'circular-progress':['React', 'Pure'],
   section:            ['React', 'Native', 'Pure'],
   card:               ['React', 'Native'],
   stack:              ['React'],
@@ -187,6 +192,7 @@ export const PACKAGE_COVERAGE = {
   dialog:             ['React', 'Native'],
   menu:               ['React'],
   'data-table':       ['React', 'Pure'],
+  'definition-list':  ['React', 'Pure'],
   pagination:         ['React', 'Native'],
   calendar:           ['React'],
   icon:               ['React', 'Pure'],
@@ -228,6 +234,7 @@ export const COMPONENT_STATUS = {
   snackbar:            'beta',
   'empty-state':       'beta',
   'system-banner':     'beta',
+  'circular-progress': 'beta',
   section:             'beta',
   card:                'beta',
   stack:               'beta',
@@ -242,6 +249,7 @@ export const COMPONENT_STATUS = {
   dialog:              'beta',
   menu:                'beta',
   'data-table':        'beta',
+  'definition-list':   'beta',
   pagination:          'beta',
   calendar:            'experimental',
   icon:                'beta',
@@ -301,9 +309,11 @@ export const COMPONENT_RELATED = {
   figure:              ['card', 'section'],
   dialog:              ['menu', 'button'],
   menu:                ['dialog', 'top-header', 'button'],
-  'data-table':        ['pagination', 'section'],
+  'circular-progress': ['status-bar', 'message', 'icon'],
+  'data-table':        ['definition-list', 'pagination', 'section'],
+  'definition-list':   ['data-table', 'heading', 'icon-button'],
   pagination:          ['data-table'],
-  calendar:            ['data-table', 'field', 'pagination'],
+  calendar:            ['data-table', 'definition-list', 'field', 'pagination'],
   icon:                ['icon-button', 'message'],
   accordion:           ['tabs', 'section'],
 }
@@ -314,4 +324,6 @@ export const ruleSourceFiles = [
   { file: 'system/rules/page-layout.yaml', raw: pageLayoutRules },
   { file: 'system/rules/side-nav.yaml', raw: sideNavRules },
   { file: 'system/rules/message-badge.yaml', raw: messageBadgeRules },
+  { file: 'system/rules/definition-list.yaml', raw: definitionListRules },
+  { file: 'system/rules/circular-progress.yaml', raw: circularProgressRules },
 ]

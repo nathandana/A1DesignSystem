@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Definition List — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+        <a href="definition-list.html" aria-current="page">Definition List</a>
+          <a href="circular-progress.html">Circular Progress</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+          <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+          <a href="definition-list.html" aria-current="page">Definition List</a>
+          <a href="circular-progress.html">Circular Progress</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Definition List</h1>
+        <p class="a1-p">Use <code class="a1-code">Definition List</code> for semantic label/value pairs: metadata, settings summaries, object details, contact details, record attributes, and compact stats.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Row with auto labels</h2>
+        <p class="a1-p">Use auto label width when labels are short and each pair can size naturally.</p>
+        <dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-auto">
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Plan</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">Enterprise</span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Account ID</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">A1-849204</span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Renewal</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">June 30, 2026</span></dd>
+          </div>
+        </dl>
+        <pre class="a1-pre"><code class="a1-code">&lt;dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-auto"&gt;
+  &lt;div class="a1-definition-list-item"&gt;
+    &lt;dt class="a1-definition-list-label"&gt;Plan&lt;/dt&gt;
+    &lt;dd class="a1-definition-list-value"&gt;
+      &lt;span class="a1-definition-list-value-content"&gt;Enterprise&lt;/span&gt;
+    &lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Row with fixed labels</h2>
+        <p class="a1-p">Use fixed label width when aligned values improve scanning. The label column responds to the container width and stacks in narrow spaces.</p>
+        <dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-fixed">
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Created by</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">Design systems team</span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Last published</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content">June 9, 2026</span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Repository</dt>
+            <dd class="a1-definition-list-value">
+              <span class="a1-definition-list-value-content">a1-design-system</span>
+              <button class="a1-icon-button a1-icon-button-tertiary" type="button" aria-label="Copy repository">
+                <span class="a1-icon" aria-hidden="true">content_copy</span>
+              </button>
+            </dd>
+          </div>
+        </dl>
+        <pre class="a1-pre"><code class="a1-code">&lt;dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-fixed"&gt;
+  &lt;div class="a1-definition-list-item"&gt;
+    &lt;dt class="a1-definition-list-label"&gt;Repository&lt;/dt&gt;
+    &lt;dd class="a1-definition-list-value"&gt;
+      &lt;span class="a1-definition-list-value-content"&gt;a1-design-system&lt;/span&gt;
+      &lt;button class="a1-icon-button a1-icon-button-tertiary" type="button" aria-label="Copy repository"&gt;
+        &lt;span class="a1-icon" aria-hidden="true"&gt;content_copy&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Column with heading values</h2>
+        <p class="a1-p">Use column direction for narrow layouts, long values, or values that need stronger hierarchy.</p>
+        <dl class="a1-definition-list a1-definition-list-column a1-definition-list-small">
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Monthly recurring revenue</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content"><span class="a1-display a1-display-lg">$128,400</span></span></dd>
+          </div>
+          <div class="a1-definition-list-item">
+            <dt class="a1-definition-list-label">Active accounts</dt>
+            <dd class="a1-definition-list-value"><span class="a1-definition-list-value-content"><span class="a1-display a1-display-lg">4,812</span></span></dd>
+          </div>
+        </dl>
+        <pre class="a1-pre"><code class="a1-code">&lt;dl class="a1-definition-list a1-definition-list-column a1-definition-list-small"&gt;
+  &lt;div class="a1-definition-list-item"&gt;
+    &lt;dt class="a1-definition-list-label"&gt;Monthly recurring revenue&lt;/dt&gt;
+    &lt;dd class="a1-definition-list-value"&gt;
+      &lt;span class="a1-definition-list-value-content"&gt;
+        &lt;span class="a1-display a1-display-lg"&gt;$128,400&lt;/span&gt;
+      &lt;/span&gt;
+    &lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p"><strong>A1 Design System</strong> — Pure HTML edition</p>
+    </footer>
+
+  </body>
+</html>

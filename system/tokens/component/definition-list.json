@@ -1,0 +1,28 @@
+{
+  "component": {
+    "definitionList": {
+      "gap": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.16}" }
+      },
+      "rowGap": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.12}" }
+      },
+      "columnGap": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.20}" }
+      },
+      "labelWidth": {
+        "min": { "$type": "dimension", "$value": "{base.spacing.96}" },
+        "preferred": { "$type": "dimension", "$value": "28cqi" },
+        "max": { "$type": "dimension", "$value": "{base.spacing.128}" }
+      },
+      "labelFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "copyGap": { "$type": "dimension", "$value": "{base.spacing.8}" }
+    }
+  }
+}

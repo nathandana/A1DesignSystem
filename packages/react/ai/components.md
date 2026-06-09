@@ -25,10 +25,10 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Tabs, Page Nav |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control |
 | Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
-| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, System Banner, Status Bar |
+| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, System Banner, Status Bar, Circular Progress |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu |
-| Category | `components-data` | Data | `table_chart` | Data Table, Pagination, Calendar |
+| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Icon |
 | Category | `components-disclosure` | Disclosure | `unfold_more` | Accordion |
 
@@ -174,7 +174,14 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Empty State | ✓ | ✓ | — |
 | System Banner | ✓ | — | — |
 | Status Bar | ✓ | — | — |
+| Circular Progress | ✓ | — | ✓ |
 
+> **CircularProgress props:** `value` (number, default 0), `max` (number, default 100), `size` ("xs" | "sm" | "md" | "lg", default "md"), `indeterminate` (boolean, default false), `children` (ReactNode — centered inside the ring for sm/md/lg; rendered inline after the ring for xs). Always pass `aria-label` for the progressbar's accessible name since inner children receive `aria-hidden="true"`.
+>
+> **CircularProgress usage rules:** Use xs for inline loading indicators where space is tight and content goes after the ring. Use sm/md/lg when a percentage or status icon inside the ring is the primary visual treatment. Override `--a1-cp-fill` and `--a1-cp-track` via CSS custom properties to change ring colors; always use semantic color tokens, never raw hex.
+>
+> **Pure notes:** Circular Progress uses `.a1-circular-progress` with `.a1-circular-progress-small`, `.a1-circular-progress-large`, `.a1-circular-progress-xs` size modifiers and `.a1-circular-progress-indeterminate` for the loading state. Set `--a1-cp-pct` (0–1) on the `.a1-circular-progress__ring` element via inline style for determinate mode; use `--a1-cp-pct:0.25` for indeterminate. The ring uses `conic-gradient` + a CSS `mask` cutout — background-color-agnostic and theme-safe.
+>
 > **Notification props:** `status` ("neutral" | "error" | "success" | "warn" | "info", default "neutral"), `position` ("top-right" | "top-left" | "bottom-right" | "bottom-left", default "top-right"), `count` (number), `label` (string — used when count is not set), `dot` (boolean — show a dot with no content), `max` (number, default 99).
 >
 > **Status Bar props:** `value` (number, default 0), `max` (number, default 100 — fill percentage is `value/max`), `size` ("sm" | "md" | "lg", default "md"), `labelPosition` ("above" | "below" | "before" | "after", default "above" — "before" and "after" use a row layout and are RTL-aware), `indeterminate` (boolean — shows an animated loading sweep, hides value-based fill, removes `aria-valuenow`, default false). When no `label` is provided, pass `aria-label` for the progressbar's accessible name. After 3 seconds of `indeterminate` playback, a `<Button size="sm" variant="secondary">` appears with "Pause" / "Play" labels sourced from `system/labels/status-bar.json` (`statusBar.pause`, `statusBar.play`) — wrap in `LabelsProvider` to translate.
@@ -244,11 +251,16 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Component | React | Native | Pure |
 |-----------|:-----:|:------:|:----:|
 | Data Table | ✓ | — | ✓ |
+| Definition List | ✓ | — | ✓ |
 | Pagination | ✓ | ✓ | — |
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
 >
-> **Pure notes:** Data Table uses `.a1-table`.
+> **DefinitionList props:** `items` (`{ label, value, children?, copyValue?, copyText?, valueHeadingProps? }[]`), `direction` ("row" | "column", default "row"), `size` ("sm" | "md" | "lg", default "md"), `labelWidth` ("auto" | "fixed", row only, default "auto"), `copyValue` (boolean), `copyLabel`, `copiedLabel`, and `valueHeadingProps` (Heading props for value typography). Fixed row labels use a responsive container-based label column and stack at narrow widths.
+>
+> **DefinitionList usage rules:** Use column layout for narrow/detail-heavy metadata, long labels, rich values, and heading-styled values. Use row + auto labels for compact short metadata. Use row + fixed labels when aligned values improve scanning across a record. Enable copy buttons only for exact reusable values such as IDs, emails, URLs, phone numbers, addresses, or codes.
+>
+> **Pure notes:** Data Table uses `.a1-table`. Definition List uses `.a1-definition-list` with `.a1-definition-list-row` / `.a1-definition-list-column`, `.a1-definition-list-small|medium|large`, and `.a1-definition-list-label-auto|fixed`.
 
 ---
 
@@ -288,6 +300,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-09 | Added CircularProgress component (React + Pure): SVG-based ring progress indicator, xs/sm/md/lg sizes, indeterminate spin, custom inner content, xs places children after ring, conic-gradient Pure implementation |
+| 2026-06-09 | Added DefinitionList component (React + Pure): semantic label/value pairs, row/column direction, sm/md/lg sizes, auto/fixed responsive label widths, Heading-based value typography, optional copy value buttons, and usage rules |
 | 2026-06-09 | Calendar: added `selectable` prop (opt-in date selection); out-of-range dates fully blocked when minDate/maxDate set; React package bumped to 0.4.1 |
 | 2026-06-09 | StatusBar pause button → `<Button size="sm" variant="secondary">` with "Pause"/"Play" text; added system/labels/status-bar.json with translations (es/fr/de/pt/ja/zh/ar); React package bumped to 0.4.0 |
 | 2026-06-09 | Prop consistency pass (v0.4.0): Tab status "warning"→"warn"; Section alignment→align; Notification variant→status, "default"→"neutral"; Heading/Paragraph align now accepts "start"/"end"; TextField/TextareaField/SelectField/Fieldset labelPosition "side"→"before"; Grid gap adds "xs"; SegmentedControl.d.ts created with size typed; DataTable density→size (omit=auto) |

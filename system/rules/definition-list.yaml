@@ -1,0 +1,65 @@
+component: DefinitionList
+rules:
+  - id: definition-list-use-for-label-value-pairs
+    components:
+      - DefinitionList
+    requirement: Use DefinitionList for label/value pairs where the label names, qualifies, or identifies the value.
+    do: Use DefinitionList for metadata, settings summaries, object details, contact details, record attributes, and compact stats where each value needs an explicit label.
+    dont: Use DefinitionList for tabular comparison across many columns, free-form prose, navigation menus, or form inputs.
+    applies_to:
+      - semantic-html
+      - content
+      - data-display
+
+  - id: definition-list-direction-column
+    components:
+      - DefinitionList
+    requirement: Use `direction="column"` when values need more vertical reading room.
+    do: Choose column layout for narrow containers, mobile-first summaries, multi-line values, long labels, or values containing headings or rich React content.
+    dont: Force row layout when labels or values wrap so frequently that scanning becomes harder than reading top-to-bottom.
+    applies_to:
+      - responsive-layout
+      - readability
+
+  - id: definition-list-direction-row-auto
+    components:
+      - DefinitionList
+    requirement: Use `direction="row"` with `labelWidth="auto"` when labels are short and natural label widths are acceptable.
+    do: Choose auto label width for compact metadata where each pair can size itself, such as invoice number, status, or short account details.
+    dont: Use auto label width when multiple rows need strong vertical alignment for fast comparison.
+    applies_to:
+      - layout
+      - scanning
+
+  - id: definition-list-direction-row-fixed
+    components:
+      - DefinitionList
+    requirement: Use `direction="row"` with `labelWidth="fixed"` when aligned values improve scanning.
+    do: Choose fixed label width for record details, profile summaries, order metadata, or settings readouts where users compare values down the column.
+    dont: Use fixed label width in very narrow spaces where labels consume too much of the row; switch to column layout instead.
+    applies_to:
+      - layout
+      - responsive-layout
+      - scanning
+
+  - id: definition-list-copy-values
+    components:
+      - DefinitionList
+    requirement: Show copy buttons only for exact values users reasonably need to reuse.
+    do: Enable copy for IDs, emails, phone numbers, addresses, URLs, API keys, confirmation codes, and other exact text values.
+    dont: Add copy buttons to every descriptive value, status label, or value rendered as complex interactive content.
+    applies_to:
+      - interaction
+      - usability
+      - accessibility
+
+  - id: definition-list-heading-values
+    components:
+      - DefinitionList
+      - Heading
+    requirement: Use heading-styled values only when the value is the dominant datum in the group.
+    do: Use `valueHeadingProps` for financial totals, KPI values, important account state, or hero metadata that should use Heading sizing while keeping `<dt>`/`<dd>` semantics.
+    dont: Use large heading values for ordinary metadata where body text hierarchy is sufficient.
+    applies_to:
+      - typography
+      - hierarchy

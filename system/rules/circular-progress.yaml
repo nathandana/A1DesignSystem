@@ -1,0 +1,33 @@
+component: circular-progress
+description: Circular ring progress indicator with determinate values and indeterminate loading state.
+
+rules:
+  - id: use-for-progress-or-loading
+    title: Use for completion percentage or loading state
+    body: |
+      Use CircularProgress when the metric is best communicated as a ring — storage percentage, task completion, upload progress, or a step count. Use StatusBar for linear progress that spans a full container width.
+
+  - id: always-accessible-name
+    title: Always provide an accessible name
+    body: |
+      The progressbar role requires an accessible name. Pass aria-label on the root element. Since inner children receive aria-hidden="true", the visible label text is not automatically exposed to assistive technology — aria-label is mandatory when no visible label is linked via aria-labelledby.
+
+  - id: xs-no-inner-content
+    title: xs places content after the ring, not inside it
+    body: |
+      The xs size (40 px) is too small for legible inner content. Children are rendered inline after the ring instead. Use xs for inline loading spinners alongside text, not for percentage displays.
+
+  - id: inner-content-is-decorative
+    title: Inner content is decorative — aria-hidden
+    body: |
+      The React component wraps children in aria-hidden="true" because the progressbar role already exposes aria-valuenow and aria-valuemax to assistive technology. Do not duplicate the value in the inner content with a live region — this causes double-announcing.
+
+  - id: indeterminate-removes-aria-valuenow
+    title: Remove aria-valuenow for indeterminate mode
+    body: |
+      When indeterminate is true the component omits aria-valuenow so assistive technology announces the progressbar as indeterminate rather than announcing a stale value. In the Pure HTML version, omit aria-valuenow from the root element markup when using the indeterminate modifier.
+
+  - id: no-custom-fill-colors
+    title: Use semantic status tokens for color overrides
+    body: |
+      Override --a1-cp-fill and --a1-cp-track via CSS custom properties only — do not hardcode hex values. Use semantic.color.status.* tokens (success-background, error-background, warn-background) to communicate status through color, and always pair the color with a visible text label or accessible name.

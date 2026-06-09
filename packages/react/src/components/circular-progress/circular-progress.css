@@ -1,0 +1,104 @@
+/* ─── CircularProgress ───────────────────────────────────────────────────────── */
+
+.a1-circular-progress {
+  --a1-cp-size:    var(--component-circular-progress-md-size);
+  --a1-cp-track:   var(--component-circular-progress-track-color);
+  --a1-cp-fill:    var(--component-circular-progress-fill-color);
+  --a1-cp-gap:     var(--component-circular-progress-gap);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--a1-cp-gap);
+}
+
+/* ─── Sizes ──────────────────────────────────────────────────────────────────── */
+
+.a1-circular-progress--xs { --a1-cp-size: var(--component-circular-progress-xs-size); }
+.a1-circular-progress--sm { --a1-cp-size: var(--component-circular-progress-sm-size); }
+/* md is the default — no modifier needed */
+.a1-circular-progress--lg { --a1-cp-size: var(--component-circular-progress-lg-size); }
+
+/* ─── Ring (SVG + optional inner content) ────────────────────────────────────── */
+
+.a1-circular-progress__ring {
+  flex-shrink: 0;
+  position: relative;
+  width:  var(--a1-cp-size);
+  height: var(--a1-cp-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── SVG ────────────────────────────────────────────────────────────────────── */
+
+.a1-circular-progress__svg {
+  position: absolute;
+  inset: 0;
+  width:  100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ─── Track ──────────────────────────────────────────────────────────────────── */
+
+.a1-circular-progress__track {
+  stroke: var(--a1-cp-track);
+}
+
+/* ─── Fill ───────────────────────────────────────────────────────────────────── */
+
+.a1-circular-progress__fill {
+  stroke: var(--a1-cp-fill);
+  transition: stroke-dashoffset var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+/* ─── Inner content (sm / md / lg) ──────────────────────────────────────────── */
+
+/* position: relative sits above the absolute SVG inside the flex __ring */
+.a1-circular-progress__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* 80% keeps content within the inner edge of the 10 %-wide viewBox stroke */
+  max-width: 80%;
+  overflow: hidden;
+}
+
+/* ─── After content (xs only, rendered after the ring in DOM order) ─────────── */
+
+.a1-circular-progress__after {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+/* ─── Indeterminate (spin) ───────────────────────────────────────────────────── */
+
+.a1-circular-progress--indeterminate .a1-circular-progress__svg {
+  animation: a1-cp-spin var(--component-circular-progress-indeterminate-duration) linear infinite;
+  transform-origin: center;
+}
+
+.a1-circular-progress--indeterminate .a1-circular-progress__fill {
+  transition: none;
+}
+
+@keyframes a1-cp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-circular-progress--indeterminate .a1-circular-progress__svg {
+    animation: none;
+  }
+  .a1-circular-progress__fill {
+    transition: none;
+  }
+}

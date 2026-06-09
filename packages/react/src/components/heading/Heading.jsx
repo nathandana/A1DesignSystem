@@ -4,7 +4,7 @@ const headingSizes = ["xxl", "xl", "lg", "md", "sm", "xs"];
 const displaySizes = ["sm", "md", "lg", "xl", "xxl", "jumbo", "xJumbo"];
 const colors = ["default", "muted", "accent"];
 const margins = ["sm", "md", "lg"];
-const levels = ["h1", "h2", "h3", "h4", "h5", "h6"];
+const elements = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 const textWraps = ["balance"];
 const aligns = ["left", "center", "right", "start", "end"];
@@ -50,7 +50,7 @@ export function Heading({
   style,
   ...props
 }) {
-  const resolvedAs = levels.includes(Component) ? Component : "h2";
+  const resolvedAs = elements.includes(Component) ? Component : "h2";
   const isDisplay = type === "display";
   const validSizes = isDisplay ? displaySizes : headingSizes;
   const defaultSize = isDisplay ? "md" : (levelDefaults[resolvedAs] ?? "md");
