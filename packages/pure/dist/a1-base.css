@@ -861,6 +861,23 @@
   line-height: 1;
 }
 
+/* Icon size modifiers */
+.a1-icon-xs     { --a1-icon-size: var(--base-spacing-16); --a1-icon-opsz: 20; }
+.a1-icon-sm     { --a1-icon-size: var(--base-spacing-20); --a1-icon-opsz: 20; }
+.a1-icon-lg     { --a1-icon-size: var(--base-spacing-32); --a1-icon-opsz: 40; }
+.a1-icon-xl     { --a1-icon-size: var(--base-spacing-40); --a1-icon-opsz: 48; }
+.a1-icon-jumbo  { --a1-icon-size: var(--base-spacing-64); --a1-icon-opsz: 48; }
+.a1-icon-xjumbo { --a1-icon-size: var(--base-spacing-96); --a1-icon-opsz: 48; }
+
+/* Icon color modifiers */
+.a1-icon-muted   { color: var(--semantic-color-text-muted); }
+.a1-icon-accent  { color: var(--semantic-color-text-accent); }
+.a1-icon-inverse { color: var(--semantic-color-text-inverse); }
+.a1-icon-success { color: var(--semantic-color-status-success-background); }
+.a1-icon-error   { color: var(--semantic-color-status-error-background); }
+.a1-icon-warn    { color: var(--semantic-color-status-warn-background); }
+.a1-icon-info    { color: var(--semantic-color-status-info-background); }
+
 .a1-icon-button {
   inline-size: var(--component-icon-button-size);
   block-size: var(--component-icon-button-size);

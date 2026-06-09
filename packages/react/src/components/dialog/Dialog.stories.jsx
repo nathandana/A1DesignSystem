@@ -9,7 +9,13 @@ const meta = {
   title: "Components/Containers/Dialog",
   component: Dialog,
   tags: ["autodocs"],
-  parameters: { layout: "centered" }
+  parameters: { layout: "centered" },
+  argTypes: {
+    status: {
+      control: "inline-radio",
+      options: [undefined, "success", "error", "warn", "info", "neutral"],
+    },
+  },
 };
 
 export default meta;
@@ -114,116 +120,6 @@ export const LongContent = {
   },
 };
 
-// ─── Accessibility stories ────────────────────────────────────────────────────
-
-export const A11yFocusManagement = {
-  name: "[A11y] Focus management",
-  tags: ["a11y", "a11y-required"],
-  render: () => {
-    const [open, setOpen] = useState(false);
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>Open dialog</Button>
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          title="Focus management demo"
-          footer={
-            <>
-              <Button variant="primary" onClick={() => setOpen(false)}>Confirm</Button>
-              <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
-            </>
-          }
-        >
-          <Paragraph color="muted">
-            When this dialog opens, focus moves inside. When it closes, focus returns to the trigger button.
-            Tab and Shift+Tab cycle within the dialog without escaping to the page behind.
-          </Paragraph>
-        </Dialog>
-      </>
-    );
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const trigger = canvas.getByRole("button", { name: /open dialog/i });
-    await userEvent.click(trigger);
-    const dialog = await waitFor(() => within(document.body).getByRole("dialog"));
-    // Verify focus moved inside the dialog on open
-    await waitFor(() => {
-      if (!dialog.contains(document.activeElement)) throw new Error("Focus not inside dialog");
-    });
-    // Close via button and verify focus returns to the trigger
-    await userEvent.click(within(dialog).getByRole("button", { name: /cancel/i }));
-    await waitFor(() => {
-      if (document.querySelector("dialog[open]")) throw new Error("Dialog still open");
-    });
-    await waitFor(() => {
-      if (document.activeElement !== trigger) throw new Error("Focus did not return to trigger");
-    });
-  },
-};
-
-export const A11yHighContrast = {
-  name: "[A11y] High contrast theme",
-  tags: ["a11y", "a11y-theme"],
-  globals: { theme: "a1Accessible" },
-  render: () => {
-    const [open, setOpen] = useState(false);
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>Open dialog</Button>
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          title="High contrast dialog"
-          footer={
-            <>
-              <Button variant="primary" onClick={() => setOpen(false)}>Confirm</Button>
-              <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
-            </>
-          }
-        >
-          <Paragraph color="muted">
-            Verify that title text, body text, button labels, and the close button all meet WCAG AA contrast
-            under the Accessible theme — including focus ring visibility.
-          </Paragraph>
-        </Dialog>
-      </>
-    );
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
-    await waitFor(() => within(document.body).getByRole("dialog"));
-  },
-};
-
-// Negative example — missing title makes dialog purpose unclear to screen readers
-export const A11yMissingTitle = {
-  name: "[A11y] ⚠ No title (negative example)",
-  tags: ["a11y", "a11y-negative-example"],
-  render: () => {
-    const [open, setOpen] = useState(false);
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>Open dialog</Button>
-        {/* No title prop — screen readers cannot announce the dialog purpose */}
-        <Dialog open={open} onClose={() => setOpen(false)}>
-          <Paragraph color="muted">
-            This dialog has no title. Screen readers will announce it as an unnamed dialog,
-            which leaves users without context about its purpose.
-          </Paragraph>
-        </Dialog>
-      </>
-    );
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
-    await waitFor(() => within(document.body).getByRole("dialog"));
-  },
-};
-
 export const WithRichContent = {
   name: "With rich content",
   render: () => {
@@ -254,6 +150,166 @@ export const WithRichContent = {
               onboarding new collaborators.
             </Paragraph>
           </div>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+// ─── Status variants ──────────────────────────────────────────────────────────
+
+export const StatusSuccess = {
+  name: "Status — success",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          status="success"
+          title="Payment confirmed"
+          footer={
+            <Button variant="primary" onClick={() => setOpen(false)}>Done</Button>
+          }
+        >
+          <Paragraph color="muted">
+            Your payment of $149.00 was processed successfully. A receipt has been sent to your
+            email address.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+export const StatusError = {
+  name: "Status — error",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          status="error"
+          title="Payment failed"
+          footer={
+            <>
+              <Button variant="primary" onClick={() => setOpen(false)}>Try again</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+            </>
+          }
+        >
+          <Paragraph color="muted">
+            We could not process your payment. Please check your card details and try again,
+            or contact your bank for further assistance.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+export const StatusWarn = {
+  name: "Status — warn",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          status="warn"
+          title="Unsaved changes"
+          footer={
+            <>
+              <Button variant="primary" onClick={() => setOpen(false)}>Save and continue</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>Discard changes</Button>
+            </>
+          }
+        >
+          <Paragraph color="muted">
+            You have unsaved changes that will be lost if you continue without saving.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+export const StatusInfo = {
+  name: "Status — info",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          status="info"
+          title="New feature available"
+          footer={
+            <>
+              <Button variant="primary" onClick={() => setOpen(false)}>Learn more</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>Dismiss</Button>
+            </>
+          }
+        >
+          <Paragraph color="muted">
+            We have added a new reporting dashboard to your account. Visit the Analytics section
+            to explore your data with the updated tools.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+export const StatusCustomIcon = {
+  name: "Status — custom icon override",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open dialog</Button>
+        <Dialog
+          open={open}
+          status="success"
+          icon="verified"
+          title="Account verified"
+          footer={
+            <Button variant="primary" onClick={() => setOpen(false)}>Continue</Button>
+          }
+        >
+          <Paragraph color="muted">
+            Your identity has been verified. You now have full access to all platform features.
+          </Paragraph>
         </Dialog>
       </>
     );

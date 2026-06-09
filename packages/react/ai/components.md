@@ -244,6 +244,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Dialog | ✓ | ✓ | — |
 | Menu | ✓ | — | — |
 
+> **Dialog props:** `open` (boolean), `onClose` (optional — omit to hide the close button entirely), `title` (optional), `footer` (ReactNode), `status` ("success" | "error" | "warn" | "info" | "neutral" — renders a full-bleed colored hero band at the top with a status icon), `icon` (string — overrides the default status icon when `status` is set).
+>
+> **Dialog status variant:** When `status` is set, a full-bleed colored hero area appears above the title row with a centered icon. Uses the same semantic status background tokens as Card's heroColor. Default icons: success=`check_circle`, error=`error`, warn=`warning`, info=`info`, neutral=`info`. Pass `icon` to override.
+>
+> **No close button:** Omit `onClose` to hide the dismiss button. In this case the dialog can only be closed programmatically or via footer actions. Still handle the Escape key — pass an `onClose` or add your own cancel listener if keyboard dismissal matters.
+
 ---
 
 ## Data
@@ -270,7 +276,13 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 |-----------|:-----:|:------:|:----:|
 | Icon | ✓ | — | ✓ |
 
-> **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined, ligature name as text content). Filled variant uses `.a1-icon-filled`.
+> **Icon props:** `name` (string, required), `size` ("xs" | "sm" | "md" | "lg" | "xl" | "jumbo" | "xJumbo", default "md" = inherits from parent), `color` ("muted" | "accent" | "inverse" | "success" | "error" | "warn" | "info", default = inherits current text color), `weight` (font variation 100–700), `grade` (-50–200), `opticalSize` (20|24|40|48), `fill` (boolean).
+>
+> **Icon size px values:** xs=16, sm=20, md=inherit/~24, lg=32, xl=40, jumbo=64, xJumbo=96. Size classes also set `--a1-icon-opsz` automatically for sharp rendering at that scale.
+>
+> **Icon color tokens:** Status colors (`success`, `error`, `warn`, `info`) map to semantic status background tokens. Use `inverse` on dark surfaces. Omit `color` entirely to inherit the current text color from the parent.
+>
+> **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined). Size classes: `.a1-icon-xs|sm|lg|xl|jumbo|xjumbo`. Color classes: `.a1-icon-muted|accent|inverse|success|error|warn|info`. Filled variant: `.a1-icon-filled`.
 
 ---
 
@@ -300,6 +312,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-09 | Icon: added `size` prop (xs/sm/md/lg/xl/jumbo/xJumbo) and `color` prop (muted/accent/inverse/success/error/warn/info); size classes auto-set opsz for optimal rendering; size/color classes added to a1-base.css and a1-pure.css |
+| 2026-06-09 | Dialog: added `status` prop (success/error/warn/info/neutral) rendering a full-bleed hero band with status icon; `onClose` now optional (omit to hide close button); removed A11y example stories |
 | 2026-06-09 | Added CircularProgress component (React + Pure): SVG-based ring progress indicator, xs/sm/md/lg sizes, indeterminate spin, custom inner content, xs places children after ring, conic-gradient Pure implementation |
 | 2026-06-09 | Added DefinitionList component (React + Pure): semantic label/value pairs, row/column direction, sm/md/lg sizes, auto/fixed responsive label widths, Heading-based value typography, optional copy value buttons, and usage rules |
 | 2026-06-09 | Calendar: added `selectable` prop (opt-in date selection); out-of-range dates fully blocked when minDate/maxDate set; React package bumped to 0.4.1 |

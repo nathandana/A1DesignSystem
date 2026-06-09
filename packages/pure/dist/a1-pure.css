@@ -560,6 +560,23 @@ abbr[title] { text-decoration: underline dotted; cursor: help; }
   --a1-icon-fill: 1;
 }
 
+/* Sizes */
+.a1-icon-xs     { --a1-icon-size: var(--base-spacing-16); --a1-icon-opsz: 20; font-size: var(--a1-icon-size); }
+.a1-icon-sm     { --a1-icon-size: var(--base-spacing-20); --a1-icon-opsz: 20; font-size: var(--a1-icon-size); }
+.a1-icon-lg     { --a1-icon-size: var(--base-spacing-32); --a1-icon-opsz: 40; font-size: var(--a1-icon-size); }
+.a1-icon-xl     { --a1-icon-size: var(--base-spacing-40); --a1-icon-opsz: 48; font-size: var(--a1-icon-size); }
+.a1-icon-jumbo  { --a1-icon-size: var(--base-spacing-64); --a1-icon-opsz: 48; font-size: var(--a1-icon-size); }
+.a1-icon-xjumbo { --a1-icon-size: var(--base-spacing-96); --a1-icon-opsz: 48; font-size: var(--a1-icon-size); }
+
+/* Colors */
+.a1-icon-muted   { color: var(--semantic-color-text-muted); }
+.a1-icon-accent  { color: var(--semantic-color-text-accent); }
+.a1-icon-inverse { color: var(--semantic-color-text-inverse); }
+.a1-icon-success { color: var(--semantic-color-status-success-background); }
+.a1-icon-error   { color: var(--semantic-color-status-error-background); }
+.a1-icon-warn    { color: var(--semantic-color-status-warn-background); }
+.a1-icon-info    { color: var(--semantic-color-status-info-background); }
+
 /* ─── Code ───────────────────────────────────────────────────────────── */
 
 .a1-code {

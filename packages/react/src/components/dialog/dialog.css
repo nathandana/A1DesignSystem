@@ -1,4 +1,5 @@
 .a1-dialog {
+  --a1-dialog-padding-inline: var(--component-dialog-padding);
   box-sizing: border-box;
   border: var(--component-dialog-border-width) solid var(--semantic-color-border-strong);
   border-radius: var(--component-dialog-border-radius);
@@ -58,8 +59,36 @@
   border-top: var(--component-dialog-footer-border-width) solid var(--semantic-color-border-subtle);
 }
 
+/* ─── Hero icon (status variant) ─────────────────────────────────────────── */
+
+.a1-dialog--has-hero {
+  overflow: hidden;
+}
+
+.a1-dialog--has-hero[open] {
+  /* Body is the 3rd child when a hero is present, so needs an extra auto row */
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.a1-dialog__hero {
+  margin-top: calc(-1 * var(--component-dialog-padding));
+  margin-inline: calc(-1 * var(--a1-dialog-padding-inline, var(--component-dialog-padding)));
+  padding: var(--base-spacing-32) 0;
+  background: var(--a1-dialog-hero-bg, var(--semantic-color-action-background));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --a1-icon-opsz: 48;
+}
+
+.a1-dialog__hero .a1-icon {
+  font-size: var(--base-spacing-64);
+  color: var(--semantic-color-text-inverse);
+}
+
 @media (--bp-sm-down) {
   .a1-dialog {
+    --a1-dialog-padding-inline: var(--base-spacing-20);
     padding-inline: var(--base-spacing-20);
   }
 }

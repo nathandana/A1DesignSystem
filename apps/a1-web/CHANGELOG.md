@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Prompt: Icon sizes and colors; Dialog status variant
+
+- **Icon:** Added `size` prop (`xs`/`sm`/`md`/`lg`/`xl`/`jumbo`/`xJumbo`) with automatic optical-size tuning. Added `color` prop (`muted`/`accent`/`inverse`/`success`/`error`/`warn`/`info`). Size and color classes added to `a1-base.css` and `a1-pure.css`.
+- **Dialog:** Added `status` prop (`success`/`error`/`warn`/`info`/`neutral`) rendering a full-bleed colored hero band with a status icon above the title. Default icons per status. Pass `icon` to override the default icon. `onClose` is now optional — omit it to hide the dismiss button.
+- Removed A11y example stories from Dialog (focus management, high contrast, missing title).
+
+---
+
 ### Prompt: Add CircularProgress component
 
 - Added `CircularProgress` to the React package: SVG-based ring progress indicator with `value`/`max` determinate mode and `indeterminate` spinning mode.

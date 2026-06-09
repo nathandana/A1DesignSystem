@@ -39,6 +39,14 @@ const meta = {
     name: {
       ...requiredIconArgType("A1 icon registry name")
     },
+    size: {
+      control: "inline-radio",
+      options: [undefined, "xs", "sm", "md", "lg", "xl", "jumbo", "xJumbo"],
+    },
+    color: {
+      control: "inline-radio",
+      options: [undefined, "muted", "accent", "inverse", "success", "error", "warn", "info"],
+    },
     ...variantControls
   }
 };
@@ -246,6 +254,75 @@ export const SizeInheritance = {
           <span style={{ fontSize: "11px", color: "var(--semantic-color-text-muted)" }}>{size}px</span>
         </div>
       ))}
+    </div>
+  )
+};
+
+export const Sizes = {
+  name: "Sizes (size prop)",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "flex-end", gap: "24px", flexWrap: "wrap" }}>
+      {[
+        { size: "xs",    label: "xs (16px)" },
+        { size: "sm",    label: "sm (20px)" },
+        { size: "md",    label: "md (24px)" },
+        { size: "lg",    label: "lg (32px)" },
+        { size: "xl",    label: "xl (40px)" },
+        { size: "jumbo", label: "jumbo (64px)" },
+        { size: "xJumbo", label: "xJumbo (96px)" },
+      ].map(({ size, label }) => (
+        <div key={size} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+          <Icon name="star" size={size === "md" ? undefined : size} />
+          <span style={{ fontSize: "11px", color: "var(--semantic-color-text-muted)", fontFamily: "monospace" }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  )
+};
+
+export const Colors = {
+  name: "Colors (color prop)",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+      {[
+        { color: undefined, label: "default" },
+        { color: "muted",   label: "muted" },
+        { color: "accent",  label: "accent" },
+        { color: "success", label: "success" },
+        { color: "error",   label: "error" },
+        { color: "warn",    label: "warn" },
+        { color: "info",    label: "info" },
+      ].map(({ color, label }) => (
+        <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+          <Icon name="favorite" size="xl" color={color} />
+          <span style={{ fontSize: "11px", color: "var(--semantic-color-text-muted)" }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  )
+};
+
+export const InverseColors = {
+  name: "Colors — inverse",
+  parameters: { controls: { include: [] }, backgrounds: { default: "dark" } },
+  render: () => (
+    <div
+      data-theme="a1-light"
+      style={{
+        background: "var(--semantic-color-surface-inverse)",
+        padding: "var(--base-spacing-24)",
+        borderRadius: "var(--base-radius-lg)",
+        display: "flex",
+        gap: "20px",
+        alignItems: "center"
+      }}
+    >
+      <Icon name="check_circle" size="xl" color="inverse" />
+      <span style={{ fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-inverse)", fontFamily: "var(--component-paragraph-font-family)" }}>
+        Use <code>color="inverse"</code> on dark surfaces
+      </span>
     </div>
   )
 };
