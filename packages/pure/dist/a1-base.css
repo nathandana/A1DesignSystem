@@ -861,23 +861,6 @@
   line-height: 1;
 }
 
-/* Icon size modifiers */
-.a1-icon-xs     { --a1-icon-size: var(--base-spacing-16); --a1-icon-opsz: 20; }
-.a1-icon-sm     { --a1-icon-size: var(--base-spacing-20); --a1-icon-opsz: 20; }
-.a1-icon-lg     { --a1-icon-size: var(--base-spacing-32); --a1-icon-opsz: 40; }
-.a1-icon-xl     { --a1-icon-size: var(--base-spacing-40); --a1-icon-opsz: 48; }
-.a1-icon-jumbo  { --a1-icon-size: var(--base-spacing-64); --a1-icon-opsz: 48; }
-.a1-icon-xjumbo { --a1-icon-size: var(--base-spacing-96); --a1-icon-opsz: 48; }
-
-/* Icon color modifiers */
-.a1-icon-muted   { color: var(--semantic-color-text-muted); }
-.a1-icon-accent  { color: var(--semantic-color-text-accent); }
-.a1-icon-inverse { color: var(--semantic-color-text-inverse); }
-.a1-icon-success { color: var(--semantic-color-status-success-background); }
-.a1-icon-error   { color: var(--semantic-color-status-error-background); }
-.a1-icon-warn    { color: var(--semantic-color-status-warn-background); }
-.a1-icon-info    { color: var(--semantic-color-status-info-background); }
-
 .a1-icon-button {
   inline-size: var(--component-icon-button-size);
   block-size: var(--component-icon-button-size);
@@ -1290,97 +1273,5 @@
 @media (prefers-reduced-motion: reduce) {
   .a1-button {
     transition-duration: var(--semantic-motion-duration-instant);
-  }
-}
-
-/* ─── Circular Progress ───────────────────────────────────────────────────── */
-
-.a1-circular-progress {
-  --a1-cp-size:  var(--component-circular-progress-md-size);
-  --a1-cp-track: var(--component-circular-progress-track-color);
-  --a1-cp-fill:  var(--component-circular-progress-fill-color);
-  --a1-cp-gap:   var(--component-circular-progress-gap);
-
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width:  var(--a1-cp-size);
-  height: var(--a1-cp-size);
-}
-
-.a1-circular-progress-small { --a1-cp-size: var(--component-circular-progress-sm-size); }
-.a1-circular-progress-large { --a1-cp-size: var(--component-circular-progress-lg-size); }
-.a1-circular-progress-xs    { --a1-cp-size: var(--component-circular-progress-xs-size); }
-
-/* xs: flex row so content appears after the ring */
-.a1-circular-progress-xs {
-  width: auto;
-  height: auto;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: var(--a1-cp-gap);
-}
-
-/* ring — conic-gradient with mask cutout */
-.a1-circular-progress__ring {
-  --a1-cp-pct: 0;
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(
-    var(--a1-cp-fill) calc(var(--a1-cp-pct) * 360deg),
-    var(--a1-cp-track) 0
-  );
-  /* 80% cutout matches the 10%-wide viewBox stroke used in the React SVG */
-  mask: radial-gradient(farthest-side, transparent 80%, black 80%);
-  -webkit-mask: radial-gradient(farthest-side, transparent 80%, black 80%);
-  /* start fill arc from 12 o'clock */
-  transform: rotate(-0.25turn);
-}
-
-.a1-circular-progress-xs .a1-circular-progress__ring {
-  position: relative;
-  inset: auto;
-  flex-shrink: 0;
-  width:  var(--a1-cp-size);
-  height: var(--a1-cp-size);
-}
-
-/* inner content — sits above the ring via z-index */
-.a1-circular-progress__inner {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  max-width: 80%;
-  overflow: hidden;
-}
-
-.a1-circular-progress-xs .a1-circular-progress__inner {
-  position: static;
-  z-index: auto;
-  max-width: none;
-}
-
-/* indeterminate: spin the ring, counter-spin the inner content */
-.a1-circular-progress-indeterminate .a1-circular-progress__ring {
-  animation: a1-cp-spin var(--component-circular-progress-indeterminate-duration) linear infinite;
-}
-
-.a1-circular-progress-indeterminate .a1-circular-progress__inner {
-  animation: a1-cp-counter-spin var(--component-circular-progress-indeterminate-duration) linear infinite;
-}
-
-@keyframes a1-cp-spin         { to { transform: rotate(calc(-0.25turn + 360deg)); } }
-@keyframes a1-cp-counter-spin { to { transform: rotate(-360deg); } }
-
-@media (prefers-reduced-motion: reduce) {
-  .a1-circular-progress-indeterminate .a1-circular-progress__ring,
-  .a1-circular-progress-indeterminate .a1-circular-progress__inner {
-    animation: none;
   }
 }

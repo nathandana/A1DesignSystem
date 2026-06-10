@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Prompt: Fresh theme
+
+- Added **Fresh** theme (`[data-theme='fresh']`): sky-blue accent/info ramp (#0A62DC), teal-green success (#209261), red error (#D11720), amber warning (#D19317), mint gradient background (`linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%)`).
+- Typography: Nunito for body + headings (ExtraBold weight 800 for headings), Baskerville for display.
+- Border radius: `--base-radius-xl` overridden to `10px`; card and dialog border-radius set to match.
+- Added `system/themes/fresh/theme.json` and `system/themes/fresh/tokens/typography.json`.
+- Generated `packages/pure/dist/a1-fresh.css`; gradient rule added to `a1-pure.css` for `[data-theme='fresh']`.
+- Fixed pre-existing token error: added missing `base.spacing.48` (48px) to `system/tokens/spacing.json`, required by `component.circularProgress.xs.size`.
+
+---
+
 ### Prompt: Icon sizes and colors; Dialog status variant
 
 - **Icon:** Added `size` prop (`xs`/`sm`/`md`/`lg`/`xl`/`jumbo`/`xJumbo`) with automatic optical-size tuning. Added `color` prop (`muted`/`accent`/`inverse`/`success`/`error`/`warn`/`info`). Size and color classes added to `a1-base.css` and `a1-pure.css`.

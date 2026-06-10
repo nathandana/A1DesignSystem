@@ -312,6 +312,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-10 | Added Fresh theme: sky-blue accent/info (#0A62DC), teal-green success (#209261), red error (#D11720), amber warn (#D19317), Nunito body/heading (ExtraBold headings), Baskerville display, 10px large radius, mint gradient background; added base.spacing.48 token |
 | 2026-06-09 | Icon: added `size` prop (xs/sm/md/lg/xl/jumbo/xJumbo) and `color` prop (muted/accent/inverse/success/error/warn/info); size classes auto-set opsz for optimal rendering; size/color classes added to a1-base.css and a1-pure.css |
 | 2026-06-09 | Dialog: added `status` prop (success/error/warn/info/neutral) rendering a full-bleed hero band with status icon; `onClose` now optional (omit to hide close button); removed A11y example stories |
 | 2026-06-09 | Added CircularProgress component (React + Pure): SVG-based ring progress indicator, xs/sm/md/lg sizes, indeterminate spin, custom inner content, xs places children after ring, conic-gradient Pure implementation |

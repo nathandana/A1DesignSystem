@@ -174,7 +174,8 @@ system/themes/{theme-name}/
 | `base` | `:root` | Default — no selector required |
 | `a1-light` | `[data-theme='a1-light']` | Standard light theme |
 | `accessible` | `[data-theme='accessible']` | High-contrast accessible variant |
-| `heritage` | `[data-theme='heritage']` | Legacy brand theme |
+| `heritage` | `.a1-theme-heritage` | Legacy brand theme |
+| `fresh` | `[data-theme='fresh']` | Sky-blue accents, Nunito/Baskerville type, mint gradient background |
 
 ### Breakpoints
 

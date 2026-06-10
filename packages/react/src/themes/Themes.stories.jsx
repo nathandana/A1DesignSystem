@@ -2,7 +2,7 @@ import { useGlobals } from "storybook/preview-api";
 import a1LightTheme from "../../../../system/themes/a1-light/theme.json";
 import accessibleTheme from "../../../../system/themes/accessible/theme.json";
 import heritageTheme from "../../../../system/themes/heritage/theme.json";
-import catlympicsTheme from "../../../../system/themes/catlympics/theme.json";
+import freshTheme from "../../../../system/themes/fresh/theme.json";
 
 export default {
   title: "Foundations/Themes",
@@ -233,7 +233,7 @@ function LivePreview() {
 
 // ─── Per-theme story layout ───────────────────────────────────────────────────
 
-function ThemeStory({ theme, className, globals }) {
+function ThemeStory({ theme, className, dataTheme, globals }) {
   const isDark = globals?.colorScheme === "dark";
 
   const rootVars = getRootVars();
@@ -247,6 +247,7 @@ function ThemeStory({ theme, className, globals }) {
   return (
     <div
       className={classes}
+      data-theme={dataTheme}
       style={{
         padding: "40px 48px",
         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
@@ -349,10 +350,10 @@ export const Heritage = {
   },
 };
 
-export const CatLympics = {
-  name: "CatLympics",
+export const Fresh = {
+  name: "Fresh",
   render: () => {
     const [globals] = useGlobals();
-    return <ThemeStory theme={catlympicsTheme} className="a1-theme-catlympics" globals={globals} />;
+    return <ThemeStory theme={freshTheme} dataTheme="fresh" globals={globals} />;
   },
 };

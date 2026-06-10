@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { CircularProgress } from "./CircularProgress.jsx";
+import { Icon } from "../icon/Icon.jsx";
 
 export default {
   title: "Components/Feedback/Circular Progress",
@@ -13,7 +14,7 @@ export default {
     indeterminate: false,
   },
   argTypes: {
-    size:          { control: "inline-radio", options: ["xs", "sm", "md", "lg"] },
+    size:          { control: "inline-radio", options: ["xs", "sm", "md", "lg", "xl"] },
     indeterminate: { control: "boolean" },
     value:         { control: { type: "range", min: 0, max: 100, step: 1 } },
     max:           { control: "number" },
@@ -120,11 +121,15 @@ export const WithInnerContent = {
       <div>
         <p style={LABEL}>Icon + status</p>
         <CircularProgress size="md" value={100} aria-label="Upload complete">
-          <span style={{
-            fontFamily: "var(--component-paragraph-font-family)",
-            fontSize: "var(--semantic-font-size-body-xl)",
-            color: "var(--semantic-color-text-accent)",
-          }} aria-hidden="true">check_circle</span>
+          <Icon
+  color="info"
+  fill={null}
+  grade={0}
+  name="check"
+  opticalSize={24}
+  size="xl"
+  weight={400}
+/>
         </CircularProgress>
       </div>
 

@@ -44,6 +44,12 @@ body {
   box-sizing: border-box;
 }
 
+/* Fresh theme — mint gradient background applied to the page body */
+[data-theme='fresh'] .a1-body,
+[data-theme='fresh'].a1-body {
+  background: linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%) fixed #D7FFF8;
+}
+
 /* ─── Page layout ────────────────────────────────────────────────────── */
 /*
   Centering trick: padding-inline grows so content stays in a ~64rem

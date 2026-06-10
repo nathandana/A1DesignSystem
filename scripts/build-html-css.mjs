@@ -27,6 +27,12 @@ const themes = [
     fileName: "a1-heritage.css",
     themeFile: join(rootDir, "system/themes/heritage/theme.json"),
   },
+  {
+    id: "fresh",
+    name: "Fresh",
+    fileName: "a1-fresh.css",
+    themeFile: join(rootDir, "system/themes/fresh/theme.json"),
+  },
 ];
 
 function toKebab(value) {
