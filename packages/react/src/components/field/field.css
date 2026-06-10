@@ -279,6 +279,137 @@
   width: auto;
 }
 
+/* ─── Number field prefix (e.g. "$") and unit (e.g. "lbs") ─────────────────── */
+/* The control container becomes the visual field; the input becomes borderless.
+   Prefix is reordered before the input via CSS order. Unit follows the input
+   as a compact flex child so it sits immediately beside the value. */
+
+.a1-field--has-prefix .a1-field__control,
+.a1-field--has-unit .a1-field__control {
+  display: flex;
+  align-items: center;
+  background: var(--a1-field-background);
+  border: var(--component-field-border-width) solid var(--a1-field-border-color);
+  border-radius: var(--a1-field-border-radius);
+  transition:
+    border-color var(--semantic-motion-duration-fast),
+    background var(--semantic-motion-duration-fast);
+  overflow: hidden;
+}
+
+/* Input loses its own border/background; container provides them */
+.a1-field--has-prefix .a1-field__input,
+.a1-field--has-unit .a1-field__input {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  outline: none;
+  /* suppress the native hover/active border — container handles it */
+  box-shadow: none;
+}
+
+.a1-field--has-prefix .a1-field__input:hover,
+.a1-field--has-unit .a1-field__input:hover,
+.a1-field--has-prefix .a1-field__input:active,
+.a1-field--has-unit .a1-field__input:active {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Focus ring moves to container */
+.a1-field--has-prefix .a1-field__control:focus-within,
+.a1-field--has-unit .a1-field__control:focus-within {
+  outline: var(--a1-field-focus-ring-width) solid var(--a1-field-focus-ring-color);
+  outline-offset: var(--a1-field-focus-ring-offset);
+  border-color: var(--semantic-color-action-background);
+}
+
+/* Hover on container */
+.a1-field--has-prefix .a1-field__control:hover:not(:focus-within),
+.a1-field--has-unit .a1-field__control:hover:not(:focus-within) {
+  background: var(--a1-field-hover-background);
+  border-color: var(--a1-field-hover-border-color);
+}
+
+/* Disabled: suppress hover on container */
+.a1-field--disabled.a1-field--has-prefix .a1-field__control,
+.a1-field--disabled.a1-field--has-unit .a1-field__control {
+  background: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+/* Error: container */
+.a1-field--error.a1-field--has-prefix .a1-field__control,
+.a1-field--error.a1-field--has-unit .a1-field__control {
+  border-color: var(--semantic-color-status-error-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-error-background);
+}
+
+.a1-field--error.a1-field--has-prefix .a1-field__control:focus-within,
+.a1-field--error.a1-field--has-unit .a1-field__control:focus-within {
+  border-color: var(--semantic-color-status-error-background);
+  outline-color: var(--semantic-color-status-error-background);
+}
+
+/* Required: container */
+.a1-field--required.a1-field--has-prefix .a1-field__control,
+.a1-field--required.a1-field--has-unit .a1-field__control {
+  border-color: var(--semantic-color-status-info-border);
+  border-left-width: var(--a1-field-accent-border-width);
+  border-left-color: var(--semantic-color-status-info-background);
+}
+
+/* ─── Prefix: same size/color as value, visually before the input ────────── */
+
+.a1-field__prefix {
+  order: -1;  /* renders after input in DOM; flex order places it first */
+  flex-shrink: 0;
+  padding-inline-start: var(--a1-field-padding-inline);
+  padding-inline-end: var(--base-spacing-2);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-field-font-size);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-default);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.a1-field--has-prefix .a1-field__input {
+  flex: 1;
+  min-width: 0;
+  padding-inline-start: 0;
+}
+
+/* ─── Unit: smaller/muted, immediately after the value ───────────────────── */
+/* Unit fills remaining space so clicks anywhere right of the value focus the input. */
+
+.a1-field__unit {
+  flex: 1;
+  padding-inline-start: var(--base-spacing-4);
+  padding-inline-end: var(--a1-field-padding-inline);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  line-height: 1;
+  pointer-events: auto;
+  user-select: none;
+  cursor: text;
+}
+
+/* Input shrinks to its value so the unit sits right beside it.
+   JS sets --a1-field-number-width per keystroke. field-sizing: content
+   auto-sizes in Chrome 123+ / Firefox 128+ regardless. */
+.a1-field--has-unit .a1-field__input {
+  flex: 0 0 auto;
+  width: calc(var(--a1-field-number-width, 4ch) + var(--a1-field-padding-inline));
+  min-width: 2ch;
+  padding-inline-end: 0;
+  field-sizing: content;
+}
+
 /* ─── Mask overlay (PhoneField, ZipField) ─────────────────────────────────── */
 
 .a1-field__mask-overlay {

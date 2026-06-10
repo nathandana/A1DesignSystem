@@ -54,3 +54,23 @@
 .a1-button-container--lg .a1-button-container__inner {
   gap: var(--base-spacing-16) var(--base-spacing-24);
 }
+
+/* ── Fill buttons ────────────────────────────────────────────────────────── */
+/* Buttons stretch to fill remaining space; icon buttons stay their natural
+   square size. Always row — does not collapse to column on narrow containers. */
+
+.a1-button-container--fill-buttons .a1-button-container__inner {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.a1-button-container--fill-buttons .a1-button-container__inner > .a1-button {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  width: auto;
+}
+
+.a1-button-container--fill-buttons .a1-button-container__inner > .a1-icon-button {
+  flex: 0 0 auto;
+}

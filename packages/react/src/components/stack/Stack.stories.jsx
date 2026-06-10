@@ -17,7 +17,7 @@ const meta = {
     },
     gap: {
       control: "select",
-      options: ["xs", "sm", "md", "lg", 0, 2, 4, 8, 12, 16, 24, 32, 40],
+      options: ["xs", "sm", "md", "lg", "xl", 0, 2, 4, 8, 12, 16, 24, 32, 40],
     },
     align: {
       control: "select",

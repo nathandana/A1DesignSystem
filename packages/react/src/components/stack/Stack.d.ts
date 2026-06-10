@@ -4,7 +4,7 @@ type Breakpoints = "xs" | "sm" | "md" | "lg" | "xl";
 type Direction = "column" | "column-reverse" | "row" | "row-reverse";
 type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 type Align = "stretch" | "start" | "center" | "end" | "baseline";
-type SemanticGap = "xs" | "sm" | "md" | "lg";
+type SemanticGap = "xs" | "sm" | "md" | "lg" | "xl";
 type SpacingToken = 1 | 2 | 4 | 6 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 64 | 96 | 128;
 
 export interface StackProps extends React.HTMLAttributes<HTMLElement> {

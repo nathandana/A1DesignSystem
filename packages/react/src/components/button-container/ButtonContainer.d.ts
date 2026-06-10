@@ -5,6 +5,8 @@ export interface ButtonContainerProps extends React.HTMLAttributes<HTMLDivElemen
   align?: "start" | "center" | "end";
   /** Default size passed to child Button elements that do not set their own size. */
   size?: "sm" | "md" | "lg";
+  /** When true, Button children stretch to fill remaining row space while IconButton children keep their natural square size. Always renders as a row — does not collapse to column on narrow containers. Default: false */
+  fillButtons?: boolean;
   children?: React.ReactNode;
 }
 

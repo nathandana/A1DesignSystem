@@ -8,6 +8,7 @@ import { PageNav } from "../page-nav/PageNav.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Section } from "../section/Section.jsx";
 import { DataTable } from "./DataTable.jsx";
+import { SystemBanner } from "../system-banner/SystemBanner.jsx";
 import { requiredIconArgType } from "../../storybook/icon-controls.js";
 
 export default {
@@ -283,6 +284,54 @@ export const EmptyState = {
       emptyTitle="No team members found"
       emptyDescription="Try adjusting your filters or search term."
       emptyIcon="person_search"
+    />
+  ),
+};
+
+export const NoticeRow = {
+  name: "Notice row",
+  render: () => (
+    <DataTable
+      columns={COLUMNS}
+      rows={ALL_ROWS.slice(0, 6)}
+      notices={[
+        {
+          content: (
+            <SystemBanner status="warn" title="Scheduled maintenance">
+              This table will be read-only on Saturday 14 June from 2:00–4:00 am UTC.
+            </SystemBanner>
+          ),
+          afterRow: 2,
+        },
+      ]}
+    />
+  ),
+};
+
+export const MultipleNotices = {
+  name: "Multiple notice rows",
+  render: () => (
+    <DataTable
+      columns={COLUMNS}
+      rows={ALL_ROWS.slice(0, 8)}
+      notices={[
+        {
+          content: (
+            <SystemBanner status="info" title="New records available">
+              3 team members were added since your last visit.
+            </SystemBanner>
+          ),
+          afterRow: 0,
+        },
+        {
+          content: (
+            <SystemBanner status="warn" title="Scheduled maintenance">
+              This table will be read-only on Saturday 14 June from 2:00–4:00 am UTC.
+            </SystemBanner>
+          ),
+          afterRow: 4,
+        },
+      ]}
     />
   ),
 };

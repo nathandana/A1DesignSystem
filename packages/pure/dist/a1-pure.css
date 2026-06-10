@@ -983,6 +983,16 @@ aside > .a1-blockquote .a1-link:hover {
   cursor: not-allowed;
 }
 
+.a1-icon-button-large {
+  block-size: var(--component-button-large-height);
+  inline-size: var(--component-button-large-height);
+}
+
+.a1-icon-button-large .a1-icon {
+  font-size: var(--component-button-icon-size);
+  --a1-icon-opsz: var(--component-button-icon-optical-size);
+}
+
 /* ─── Form ───────────────────────────────────────────────────────────── */
 
 .a1-form {

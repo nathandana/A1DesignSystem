@@ -4,7 +4,7 @@ import { resolveSpacing } from "../structure-utils.js";
 const directions = ["column", "column-reverse", "row", "row-reverse"];
 const alignments = ["stretch", "start", "center", "end", "baseline"];
 const justifications = ["start", "center", "end", "between", "around", "evenly"];
-const semanticGaps = ["xs", "sm", "md", "lg"];
+const semanticGaps = ["xs", "sm", "md", "lg", "xl"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 
 function resolveGap(gap) {

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Prompt: Section/Stack xl gap · NumberField unit fix · DataTable notice row
+
+- **Section `gap="xl"`** — added xl (40px) gap option to Section; CSS class `a1-section--gap-xl` maps to `--semantic-spacing-gap-xl`.
+- **Stack `gap="xl"`** — added xl to Stack's semantic gap options; resolves to `var(--semantic-spacing-gap-xl)`.
+- **Added `semantic.spacing.gap.xl` token** — 40px, references `base.spacing.40`.
+- **NumberField unit layout fix** — unit label now sits immediately beside the value and shifts as the value changes. JS tracks value length and sets `--a1-field-number-width` per keystroke; `field-sizing: content` auto-sizes in Chrome 123+/Firefox 128+. Clicking anywhere to the right of the value focuses the input (unit span is `flex: 1` and forwards clicks).
+- **DataTable `notices` prop** — accepts `{ content: ReactNode; afterRow?: number }[]`. Each entry renders a full-width no-padding row at the specified position (`afterRow` is 0-based; default 0 = before all data rows). Multiple notices can be placed at different positions or stacked at the same position. CSS classes: `a1-data-table__notice-row`, `a1-data-table__notice-cell`.
+
+### Prompt: IconButton large size + ButtonContainer fillButtons
+
+- **IconButton `size` prop** — added `size="lg"` option matching Button's large height (3.5rem, 2.5rem icon, opsz 40). Default remains `"md"`. React class `a1-icon-button--large`; Pure/Base class `a1-icon-button-large`.
+- **ButtonContainer `fillButtons` prop** — when true, `Button` children stretch to fill remaining row space (`flex: 1`) while `IconButton` children stay at their natural square size. Always renders as a row — no collapse to column at narrow widths. React class `a1-button-container--fill-buttons`; Base class `a1-button-container-fill-buttons`.
+
+---
+
 ### Prompt: StepTracker component
 
 - Added `StepTracker` to the React package: non-interactive step position indicator with a pill for the current step and dots for all others.

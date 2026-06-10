@@ -20,6 +20,7 @@ function applyButtonSize(children, size) {
 export function ButtonContainer({
   align = "start",
   size,
+  fillButtons = false,
   className = "",
   children,
   ...props
@@ -30,6 +31,7 @@ export function ButtonContainer({
     "a1-button-container",
     `a1-button-container--${resolvedAlign}`,
     resolvedSize && `a1-button-container--${resolvedSize}`,
+    fillButtons && "a1-button-container--fill-buttons",
     className
   ]
     .filter(Boolean)

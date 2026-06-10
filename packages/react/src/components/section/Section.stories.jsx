@@ -21,7 +21,7 @@ const meta = {
     },
     gap: {
       control: "select",
-      options: ["xs", "sm", "md", "lg", undefined],
+      options: ["xs", "sm", "md", "lg", "xl", undefined],
     },
     gradient: {
       control: "select",
@@ -137,7 +137,7 @@ export const Gap = {
   name: "Content gap",
   render: () => (
     <>
-      {["xs", "sm", "md", "lg"].map((gap) => (
+      {["xs", "sm", "md", "lg", "xl"].map((gap) => (
         <Section key={gap} padding="md" surface="panel" gap={gap}>
           <MessageBadge subtle>{gap}</MessageBadge>
           <Heading as="h2" size="xl">{gap.toUpperCase()} section gap</Heading>

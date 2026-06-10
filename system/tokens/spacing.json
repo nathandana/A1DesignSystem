@@ -31,7 +31,8 @@
         "xs": { "$type": "dimension", "$value": "{base.spacing.8}" },
         "sm": { "$type": "dimension", "$value": "{base.spacing.12}" },
         "md": { "$type": "dimension", "$value": "{base.spacing.16}" },
-        "lg": { "$type": "dimension", "$value": "{base.spacing.24}" }
+        "lg": { "$type": "dimension", "$value": "{base.spacing.24}" },
+        "xl": { "$type": "dimension", "$value": "{base.spacing.40}" }
       }
     }
   }

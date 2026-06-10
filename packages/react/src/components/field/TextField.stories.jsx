@@ -317,6 +317,17 @@ export const NumberInput = {
         </div>
       </div>
 
+      <div>
+        <p style={LABEL_STYLE}>Prefix and unit</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
+          <NumberField label="Price"       prefix="$"   min={0} step={0.01} defaultValue={24.99} />
+          <NumberField label="Weight"      unit="lbs"   min={0} step={0.1}  defaultValue={185} />
+          <NumberField label="Distance"    unit="km"    min={0}             defaultValue={10} />
+          <NumberField label="Height (ft)" unit="ft"    min={3} max={8}     defaultValue={5} size="comfortable" />
+          <NumberField label="Height (in)" unit="in"    min={0} max={11}    defaultValue={8} size="comfortable" />
+        </div>
+      </div>
+
     </div>
   ),
 };

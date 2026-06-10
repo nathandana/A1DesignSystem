@@ -14,7 +14,7 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   /** Background surface treatment */
   surface?: "page" | "panel" | "raised";
   /** Gap between direct children */
-  gap?: "xs" | "sm" | "md" | "lg";
+  gap?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Gradient overlay colour */
   gradient?: "accent" | "highlight" | "info" | "success" | "warn";
   /** Gradient origin. Default: "center" */

@@ -201,6 +201,17 @@
   border-bottom: none;
 }
 
+/* ── Notice row (no-padding custom content spanning all columns) ─────────── */
+
+/* Double-class specificity (0-2-0) beats density td rules (0-1-1) */
+.a1-data-table .a1-data-table__notice-cell {
+  padding: 0;
+}
+
+.a1-data-table--zebra tbody .a1-data-table__notice-row td {
+  background: transparent;
+}
+
 /* ── Zebra striping ──────────────────────────────────────────────────────── */
 
 .a1-data-table--zebra tbody tr:nth-child(even) td {

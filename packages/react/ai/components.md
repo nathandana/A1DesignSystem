@@ -263,6 +263,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
 >
+> **DataTable `notices` prop:** Accepts `{ content: ReactNode; afterRow?: number }[]`. Each entry renders a full-width zero-padding row spanning all columns. `afterRow` (0-based, default 0) controls position — 0 = before all data rows, N = before the Nth data row. Multiple entries at the same position stack in order. Intended for `SystemBanner`, inline alerts, or maintenance notices. Notice rows are not filtered, sorted, or paginated.
+>
 > **DefinitionList props:** `items` (`{ label, value, children?, copyValue?, copyText?, valueHeadingProps? }[]`), `direction` ("row" | "column", default "row"), `size` ("sm" | "md" | "lg", default "md"), `labelWidth` ("auto" | "fixed", row only, default "auto"), `copyValue` (boolean), `copyLabel`, `copiedLabel`, and `valueHeadingProps` (Heading props for value typography). Fixed row labels use a responsive container-based label column and stack at narrow widths.
 >
 > **DefinitionList usage rules:** Use column layout for narrow/detail-heavy metadata, long labels, rich values, and heading-styled values. Use row + auto labels for compact short metadata. Use row + fixed labels when aligned values improve scanning across a record. Enable copy buttons only for exact reusable values such as IDs, emails, URLs, phone numbers, addresses, or codes.
@@ -313,6 +315,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-10 | DataTable: added `notices` prop (`{ content: ReactNode; afterRow?: number }[]`) — full-width no-padding rows inserted at arbitrary positions in tbody; `afterRow` is 0-based (default 0 = before all rows); multiple entries at the same position stack in order; CSS class `a1-data-table__notice-cell` (padding:0); `a1-data-table__notice-row` (zebra-safe) |
+| 2026-06-10 | NumberField unit fix: unit shifts with value via JS-tracked `--a1-field-number-width` + `field-sizing:content`; `.a1-field__unit` is now `flex:1` + clickable so clicking right of value focuses input |
+| 2026-06-10 | Section `gap="xl"` (40px) + Stack `gap="xl"` added; `semantic.spacing.gap.xl` token added; CSS class `a1-section--gap-xl`; Stack resolves "xl" to `var(--semantic-spacing-gap-xl)` |
+| 2026-06-10 | IconButton: added `size` prop ("md" default, "lg" = 3.5rem height / 2.5rem icon, matches Button large); CSS class `a1-icon-button--large` (React), `a1-icon-button-large` (Pure/Base) |
+| 2026-06-10 | ButtonContainer: added `fillButtons` prop — Button children fill remaining space (`flex:1`); IconButton children stay at natural square width; always row layout; CSS class `a1-button-container--fill-buttons` (React), `a1-button-container-fill-buttons` (Base) |
 | 2026-06-10 | Added StepTracker component (React + Pure): non-interactive step position indicator, pill + dot display, left/center/right/full alignment |
 | 2026-06-10 | Added Fresh theme: sky-blue accent/info (#0A62DC), teal-green success (#209261), red error (#D11720), amber warn (#D19317), Nunito body/heading (ExtraBold headings), Baskerville display, 10px large radius, mint gradient background; added base.spacing.48 token |
 | 2026-06-09 | Icon: added `size` prop (xs/sm/md/lg/xl/jumbo/xJumbo) and `color` prop (muted/accent/inverse/success/error/warn/info); size classes auto-set opsz for optimal rendering; size/color classes added to a1-base.css and a1-pure.css |

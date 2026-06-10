@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  height: var(--component-icon-button-size);
+  height: var(--a1-icon-button-size, var(--component-icon-button-size));
   aspect-ratio: 1;
   padding: 0;
   border-radius: var(--component-icon-button-border-radius);
@@ -33,8 +33,17 @@
 }
 
 .a1-icon-button .a1-icon {
-  font-size: var(--component-icon-button-icon-size);
-  --a1-icon-opsz: var(--component-icon-button-icon-optical-size);
+  font-size: var(--a1-icon-button-icon-size, var(--component-icon-button-icon-size));
+  --a1-icon-opsz: var(--a1-icon-button-icon-opsz, var(--component-icon-button-icon-optical-size));
+}
+
+/* ── Size: large ─────────────────────────────────────────────────────────── */
+/* Touch target matches Button lg (3.5rem); icon matches Button lg's icon. */
+
+.a1-icon-button--large {
+  --a1-icon-button-size:      var(--component-button-large-height);
+  --a1-icon-button-icon-size: var(--component-button-icon-size);
+  --a1-icon-button-icon-opsz: var(--component-button-icon-optical-size);
 }
 
 .a1-icon-button:focus-visible {

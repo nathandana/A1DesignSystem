@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { SelectField } from "../field/SelectField.jsx";
 import { Icon } from "../icon/Icon.jsx";
@@ -197,6 +197,7 @@ export function DataTable({
   zebra = false,
   scrollable = false,
   caption,
+  notices = [],
   page,
   defaultPage = 1,
   pageSize,
@@ -661,39 +662,54 @@ export function DataTable({
               </tr>
             </thead>
             <tbody>
-              {visibleRowEntries.map(({ row, index: rowIndex, id: rowId, supportsRowClickSelection }) => {
-                const isSelected = selectedRowIdSet.has(rowId);
-                return (
-                  <tr
-                    key={rowId}
-                    data-selected={isSelected ? "true" : undefined}
-                    data-selectable-row={supportsRowClickSelection ? "true" : undefined}
-                    onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
-                  >
-                    {selectable && (
-                      <td
-                        className="a1-data-table__select-cell"
-                        data-label="Select"
+              {(() => {
+                const noticeColSpan = selectable ? columns.length + 1 : columns.length;
+                const noticeMap = {};
+                notices.forEach(({ content, afterRow = 0 }) => {
+                  if (!noticeMap[afterRow]) noticeMap[afterRow] = [];
+                  noticeMap[afterRow].push(content);
+                });
+                return visibleRowEntries.map(({ row, index: rowIndex, id: rowId, supportsRowClickSelection }, i) => {
+                  const isSelected = selectedRowIdSet.has(rowId);
+                  const noticesHere = noticeMap[i] ?? [];
+                  return (
+                    <Fragment key={rowId}>
+                      {noticesHere.map((content, j) => (
+                        <tr key={j} className="a1-data-table__notice-row">
+                          <td className="a1-data-table__notice-cell" colSpan={noticeColSpan}>{content}</td>
+                        </tr>
+                      ))}
+                      <tr
+                        data-selected={isSelected ? "true" : undefined}
+                        data-selectable-row={supportsRowClickSelection ? "true" : undefined}
+                        onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
                       >
-                        <SelectionCheckbox
-                          checked={isSelected}
-                          label={`Select row ${rowIndex + 1}`}
-                          onChange={(checked) => toggleRowSelected(rowId, checked)}
-                        />
-                      </td>
-                    )}
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        data-label={col.label}
-                        data-align={getAlign(col)}
-                      >
-                        {renderCell(col, row[col.key])}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
+                        {selectable && (
+                          <td
+                            className="a1-data-table__select-cell"
+                            data-label="Select"
+                          >
+                            <SelectionCheckbox
+                              checked={isSelected}
+                              label={`Select row ${rowIndex + 1}`}
+                              onChange={(checked) => toggleRowSelected(rowId, checked)}
+                            />
+                          </td>
+                        )}
+                        {columns.map((col) => (
+                          <td
+                            key={col.key}
+                            data-label={col.label}
+                            data-align={getAlign(col)}
+                          >
+                            {renderCell(col, row[col.key])}
+                          </td>
+                        ))}
+                      </tr>
+                    </Fragment>
+                  );
+                });
+              })()}
             </tbody>
           </table>
         )}

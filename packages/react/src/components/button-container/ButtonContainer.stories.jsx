@@ -2,6 +2,7 @@ import { Button } from "../button/Button.jsx";
 import { ButtonContainer } from "./ButtonContainer.jsx";
 import { Card } from "../card/Card.jsx";
 import { Heading } from "../heading/Heading.jsx";
+import { IconButton } from "../icon-button/IconButton.jsx";
 import { Link } from "../link/Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 
@@ -18,8 +19,9 @@ const meta = {
   argTypes: {
     align: {
       control: "inline-radio",
-      options: ["start", "center", "end"]
-    }
+      options: ["start", "center", "end"],
+    },
+    fillButtons: { control: "boolean" },
   },
   render: args => (
     <ButtonContainer {...args} style={{ maxWidth: 560 }}>
@@ -197,6 +199,40 @@ export const WithLink = {
           <Button variant="destructive">Delete account</Button>
           <Button variant="secondary">Keep account</Button>
           <Link href="#">What gets deleted?</Link>
+        </ButtonContainer>
+      </Card>
+
+    </div>
+  )
+};
+
+/* ── fillButtons ──────────────────────────────────────────────────────────── */
+
+export const FillButtons = {
+  name: "Fill buttons",
+  render: () => (
+    <div style={{ display: "grid", gap: "24px", maxWidth: 480 }}>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>Back + primary action</Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          The icon button stays square; the primary button fills the remaining width.
+        </Paragraph>
+        <ButtonContainer fillButtons size="lg">
+          <IconButton icon="arrow_back" label="Back" variant="secondary" size="lg" />
+          <Button variant="primary">Next — your activity</Button>
+        </ButtonContainer>
+      </Card>
+
+      <Card shadow="sm">
+        <Heading as="h3" size="sm" style={{ marginBottom: "6px" }}>Two actions with a close</Heading>
+        <Paragraph size="sm" color="muted" style={{ marginBottom: "16px" }}>
+          Works with any number of Buttons alongside the icon button.
+        </Paragraph>
+        <ButtonContainer fillButtons>
+          <IconButton icon="close" label="Cancel" variant="tertiary" />
+          <Button variant="secondary">Save draft</Button>
+          <Button variant="primary">Publish</Button>
         </ButtonContainer>
       </Card>
 

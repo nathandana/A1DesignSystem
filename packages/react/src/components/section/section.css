@@ -68,7 +68,8 @@
 .a1-section--gap-xs,
 .a1-section--gap-sm,
 .a1-section--gap-md,
-.a1-section--gap-lg {
+.a1-section--gap-lg,
+.a1-section--gap-xl {
   display: grid;
   justify-items: var(--a1-section-justify-items);
 }
@@ -77,6 +78,7 @@
 .a1-section--gap-sm { gap: var(--semantic-spacing-gap-sm); }
 .a1-section--gap-md { gap: var(--semantic-spacing-gap-md); }
 .a1-section--gap-lg { gap: var(--semantic-spacing-gap-lg); }
+.a1-section--gap-xl { gap: var(--semantic-spacing-gap-xl); }
 
 /* ── Height ────────────────────────────────────────────────────────────────── */
 

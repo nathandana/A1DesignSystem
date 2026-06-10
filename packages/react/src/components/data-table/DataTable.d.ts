@@ -78,6 +78,12 @@ export interface DataTableProps extends React.HTMLAttributes<HTMLDivElement> {
   emptyTitle?: string;
   emptyDescription?: string;
   emptyIcon?: string;
+  /**
+   * Custom full-width no-padding rows inserted into the table body.
+   * Each entry specifies `content` (ReactNode) and an optional `afterRow` index (0-based,
+   * default 0 = before all data rows). Multiple entries with the same `afterRow` stack in order.
+   */
+  notices?: Array<{ content: React.ReactNode; afterRow?: number }>;
 }
 
 export declare function DataTable(props: DataTableProps): React.ReactElement;
