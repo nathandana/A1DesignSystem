@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Step Tracker — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+        <a href="definition-list.html">Definition List</a>
+        <a href="circular-progress.html">Circular Progress</a>
+        <a href="step-tracker.html" aria-current="page">Step Tracker</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+          <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+          <a href="definition-list.html">Definition List</a>
+          <a href="circular-progress.html">Circular Progress</a>
+          <a href="step-tracker.html" aria-current="page">Step Tracker</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Step Tracker</h1>
+        <p class="a1-p">Use <code class="a1-code">Step Tracker</code> to show a user's position within a sequence. The current step renders as a wider dark pill; all other steps render as small neutral dots. The component is display-only — for interactive step navigation use the Tabs component with <code class="a1-code">variant="progress"</code>.</p>
+      </section>
+
+      <!-- ── Default (left) ──────────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Default</h2>
+        <p class="a1-p">Apply <code class="a1-code">role="img"</code> and <code class="a1-code">aria-label</code> to describe the step position to assistive technology. All child elements are <code class="a1-code">aria-hidden="true"</code>.</p>
+        <div style="display:flex;flex-direction:column;gap:var(--base-spacing-12)">
+          <div class="a1-step-tracker" role="img" aria-label="Step 1 of 5">
+            <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+          </div>
+          <div class="a1-step-tracker" role="img" aria-label="Step 3 of 5">
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+          </div>
+          <div class="a1-step-tracker" role="img" aria-label="Step 5 of 5">
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+          </div>
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-step-tracker" role="img" aria-label="Step 1 of 5"&gt;
+  &lt;div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="a1-step-tracker__step" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="a1-step-tracker__step" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="a1-step-tracker__step" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="a1-step-tracker__step" aria-hidden="true"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <!-- ── Alignments ──────────────────────────────────────────────────────── -->
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Alignments</h2>
+        <p class="a1-p">Add an alignment modifier to justify the tracker within its container. <code class="a1-code">--center</code> and <code class="a1-code">--right</code> use flexbox justification. <code class="a1-code">--full</code> expands the active pill to fill all remaining space — useful inside cards and bottom sheets.</p>
+        <div style="display:flex;flex-direction:column;gap:var(--base-spacing-20)">
+
+          <div>
+            <p class="a1-p" style="margin-bottom:var(--base-spacing-8)"><code class="a1-code">left</code> (default)</p>
+            <div class="a1-step-tracker" role="img" aria-label="Step 2 of 5">
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div>
+            <p class="a1-p" style="margin-bottom:var(--base-spacing-8)"><code class="a1-code">a1-step-tracker--center</code></p>
+            <div class="a1-step-tracker a1-step-tracker--center" role="img" aria-label="Step 2 of 5">
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div>
+            <p class="a1-p" style="margin-bottom:var(--base-spacing-8)"><code class="a1-code">a1-step-tracker--right</code></p>
+            <div class="a1-step-tracker a1-step-tracker--right" role="img" aria-label="Step 2 of 5">
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div>
+            <p class="a1-p" style="margin-bottom:var(--base-spacing-8)"><code class="a1-code">a1-step-tracker--full</code></p>
+            <div class="a1-step-tracker a1-step-tracker--full" role="img" aria-label="Step 2 of 5">
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step a1-step-tracker__step--current" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+              <div class="a1-step-tracker__step" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="a1-pre"><code class="a1-code">&lt;!-- center --&gt;
+&lt;div class="a1-step-tracker a1-step-tracker--center" role="img" aria-label="Step 2 of 5"&gt; ... &lt;/div&gt;
+
+&lt;!-- right --&gt;
+&lt;div class="a1-step-tracker a1-step-tracker--right" role="img" aria-label="Step 2 of 5"&gt; ... &lt;/div&gt;
+
+&lt;!-- full — active pill expands to fill remaining space --&gt;
+&lt;div class="a1-step-tracker a1-step-tracker--full" role="img" aria-label="Step 2 of 5"&gt; ... &lt;/div&gt;</code></pre>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p">A1 Design System — Pure HTML/CSS reference</p>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "component": {
+    "stepTracker": {
+      "dot": {
+        "size":   { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "color":  { "$type": "color",     "$value": "{semantic.color.border.strong}" }
+      },
+      "active": {
+        "width":  { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "color":  { "$type": "color",     "$value": "{semantic.color.text.default}" }
+      },
+      "gap":    { "$type": "dimension", "$value": "{base.spacing.6}" }
+    }
+  }
+}

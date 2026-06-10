@@ -175,6 +175,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | System Banner | ✓ | — | — |
 | Status Bar | ✓ | — | — |
 | Circular Progress | ✓ | — | ✓ |
+| Step Tracker | ✓ | — | ✓ |
 
 > **CircularProgress props:** `value` (number, default 0), `max` (number, default 100), `size` ("xs" | "sm" | "md" | "lg", default "md"), `indeterminate` (boolean, default false), `children` (ReactNode — centered inside the ring for sm/md/lg; rendered inline after the ring for xs). Always pass `aria-label` for the progressbar's accessible name since inner children receive `aria-hidden="true"`.
 >
@@ -312,6 +313,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-10 | Added StepTracker component (React + Pure): non-interactive step position indicator, pill + dot display, left/center/right/full alignment |
 | 2026-06-10 | Added Fresh theme: sky-blue accent/info (#0A62DC), teal-green success (#209261), red error (#D11720), amber warn (#D19317), Nunito body/heading (ExtraBold headings), Baskerville display, 10px large radius, mint gradient background; added base.spacing.48 token |
 | 2026-06-09 | Icon: added `size` prop (xs/sm/md/lg/xl/jumbo/xJumbo) and `color` prop (muted/accent/inverse/success/error/warn/info); size classes auto-set opsz for optimal rendering; size/color classes added to a1-base.css and a1-pure.css |
 | 2026-06-09 | Dialog: added `status` prop (success/error/warn/info/neutral) rendering a full-bleed hero band with status icon; `onClose` now optional (omit to hide close button); removed A11y example stories |

@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Prompt: StepTracker component
+
+- Added `StepTracker` to the React package: non-interactive step position indicator with a pill for the current step and dots for all others.
+- Props: `steps` (total count), `currentStep` (1-indexed, default 1), `align` ("left" | "center" | "right" | "full", default "left"). `align="full"` expands the active pill to fill remaining container width.
+- Accessible via `role="img"` + auto-generated `aria-label="Step N of M"`.
+- Added `system/tokens/component/step-tracker.json` and `system/rules/step-tracker.yaml`.
+- Added Pure HTML/CSS classes (`.a1-step-tracker`, `.a1-step-tracker__step`, `.a1-step-tracker__step--current`, alignment modifiers) to `a1-base.css` and `a1-pure.css`.
+- Added `examples/a1-pure/step-tracker.html` with default, positions, and alignment demos.
+- Updated nav on all example pages and the index components list.
+
+---
+
 ### Prompt: Fresh theme
 
 - Added **Fresh** theme (`[data-theme='fresh']`): sky-blue accent/info ramp (#0A62DC), teal-green success (#209261), red error (#D11720), amber warning (#D19317), mint gradient background (`linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%)`).

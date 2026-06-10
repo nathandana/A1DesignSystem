@@ -1,0 +1,37 @@
+.a1-step-tracker {
+  --a1-st-dot-size:     var(--component-step-tracker-dot-size);
+  --a1-st-active-width: var(--component-step-tracker-active-width);
+  --a1-st-dot-color:    var(--component-step-tracker-dot-color);
+  --a1-st-active-color: var(--component-step-tracker-active-color);
+  --a1-st-gap:          var(--component-step-tracker-gap);
+
+  display: flex;
+  align-items: center;
+  gap: var(--a1-st-gap);
+}
+
+/* ─── Alignment ───────────────────────────────────────────────────────────── */
+
+.a1-step-tracker--center { justify-content: center; }
+.a1-step-tracker--right  { justify-content: flex-end; }
+
+/* full: dots stay fixed, active pill expands to fill remaining space */
+.a1-step-tracker--full .a1-step-tracker__step--current {
+  flex: 1;
+}
+
+/* ─── Step ────────────────────────────────────────────────────────────────── */
+
+.a1-step-tracker__step {
+  block-size: var(--a1-st-dot-size);
+  inline-size: var(--a1-st-dot-size);
+  border-radius: 9999px;
+  background: var(--a1-st-dot-color);
+  flex-shrink: 0;
+  transition: inline-size var(--semantic-motion-duration-fast, 150ms) var(--semantic-motion-easing-standard, ease);
+}
+
+.a1-step-tracker__step--current {
+  inline-size: var(--a1-st-active-width);
+  background: var(--a1-st-active-color);
+}

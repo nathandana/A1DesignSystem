@@ -1,0 +1,23 @@
+component: step-tracker
+description: Non-interactive step position indicator. Shows a user's position within a sequence using a pill for the current step and dots for all others.
+
+rules:
+  - id: display-only
+    title: Do not make it interactive
+    body: |
+      StepTracker is a display-only status indicator. Do not attach click handlers, keyboard events, or ARIA interactive roles to it or its children. For interactive step navigation use Tabs variant="progress".
+
+  - id: align-full-for-fluid-containers
+    title: Use align="full" inside fixed-width containers
+    body: |
+      The "full" alignment expands the active pill to fill remaining space. Use it inside cards, bottom sheets, or any container where the tracker should span the full width. Avoid "full" in unconstrained-width containers — the pill will grow unboundedly.
+
+  - id: always-provide-context
+    title: Pair with a visible step label or heading
+    body: |
+      The tracker communicates position visually but carries no text. Always show an adjacent step count ("Step 2 of 5") or heading so sighted users and screen reader users both get the same information. The component exposes an aria-label built from steps and currentStep but a visible label is still required.
+
+  - id: neutral-colors-only
+    title: Use neutral semantic colors — not status colors
+    body: |
+      The dot and active colors map to neutral semantic tokens (border.strong and text.default). Do not override these with status or brand colors unless the specific step carries a status meaning. If individual steps need status (error, complete) use Tabs variant="progress" instead.
