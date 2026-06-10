@@ -35,7 +35,7 @@ export const globalTypes = {
         { value: "a1Light",      title: "Base" },
         { value: "a1Heritage",   title: "A1 Heritage" },
         { value: "a1Accessible", title: "A1 Accessible" },
-        { value: "a1Catlympics", title: "CatLympics" },
+        { value: "a1Fresh",      title: "Fresh" },
       ],
       showName: true,
       dynamicTitle: true,
@@ -115,7 +115,11 @@ const withTheme = (Story) => {
     const html = document.documentElement;
     html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
     html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
-    html.classList.toggle("a1-theme-catlympics", theme === "a1Catlympics");
+    if (theme === "a1Fresh") {
+      html.setAttribute("data-theme", "fresh");
+    } else {
+      html.removeAttribute("data-theme");
+    }
     // Explicit light/dark: set the matching class and clear the other.
     // "system" clears both so the prefers-color-scheme media query takes over.
     html.classList.toggle("a1-theme-dark",  colorScheme === "dark");
@@ -129,12 +133,12 @@ const withTheme = (Story) => {
       html.classList.remove(
         "a1-theme-heritage",
         "a1-theme-accessible",
-        "a1-theme-catlympics",
         "a1-theme-dark",
         "a1-theme-light",
         "a1-reduce-motion",
         "a1-contrast-more",
       );
+      html.removeAttribute("data-theme");
     };
   }, [theme, colorScheme, reducedMotion, contrastMode]);
 

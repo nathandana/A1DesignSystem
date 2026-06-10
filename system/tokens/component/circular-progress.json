@@ -1,7 +1,7 @@
 {
   "component": {
     "circularProgress": {
-      "xs":  { "size": { "$type": "dimension", "$value": "{base.spacing.40}" } },
+      "xs":  { "size": { "$type": "dimension", "$value": "{base.spacing.48}" } },
       "sm":  { "size": { "$type": "dimension", "$value": "{base.spacing.64}" } },
       "md":  { "size": { "$type": "dimension", "$value": "{base.spacing.96}" } },
       "lg":  { "size": { "$type": "dimension", "$value": "{base.spacing.128}" } },
