@@ -115,11 +115,7 @@ const withTheme = (Story) => {
     const html = document.documentElement;
     html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
     html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
-    if (theme === "a1Fresh") {
-      html.setAttribute("data-theme", "fresh");
-    } else {
-      html.removeAttribute("data-theme");
-    }
+    html.classList.toggle("a1-theme-fresh",      theme === "a1Fresh");
     // Explicit light/dark: set the matching class and clear the other.
     // "system" clears both so the prefers-color-scheme media query takes over.
     html.classList.toggle("a1-theme-dark",  colorScheme === "dark");
@@ -133,12 +129,12 @@ const withTheme = (Story) => {
       html.classList.remove(
         "a1-theme-heritage",
         "a1-theme-accessible",
+        "a1-theme-fresh",
         "a1-theme-dark",
         "a1-theme-light",
         "a1-reduce-motion",
         "a1-contrast-more",
       );
-      html.removeAttribute("data-theme");
     };
   }, [theme, colorScheme, reducedMotion, contrastMode]);
 

@@ -233,7 +233,7 @@ function LivePreview() {
 
 // ─── Per-theme story layout ───────────────────────────────────────────────────
 
-function ThemeStory({ theme, className, dataTheme, globals }) {
+function ThemeStory({ theme, className, globals }) {
   const isDark = globals?.colorScheme === "dark";
 
   const rootVars = getRootVars();
@@ -247,7 +247,6 @@ function ThemeStory({ theme, className, dataTheme, globals }) {
   return (
     <div
       className={classes}
-      data-theme={dataTheme}
       style={{
         padding: "40px 48px",
         fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
@@ -354,6 +353,6 @@ export const Fresh = {
   name: "Fresh",
   render: () => {
     const [globals] = useGlobals();
-    return <ThemeStory theme={freshTheme} dataTheme="fresh" globals={globals} />;
+    return <ThemeStory theme={freshTheme} className="a1-theme-fresh" globals={globals} />;
   },
 };

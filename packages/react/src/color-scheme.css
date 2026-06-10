@@ -783,3 +783,41 @@ html.a1-theme-dark.a1-theme-accessible {
   --semantic-color-border-subtle:  var(--base-color-neutral-500);
   --semantic-color-border-default: var(--base-color-neutral-400);
 }
+
+/* ─── Fresh theme — gradient on body, surface tokens on html ─────────────────
+   Light mode: mint gradient. Dark mode: dark teal gradient.
+   CSS custom properties stay on html so they inherit throughout the document.
+   background-image targets body so it doesn't paint behind the html scroll area. */
+
+html.a1-theme-fresh body {
+  background-image: linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%);
+  background-attachment: fixed;
+  background-color: var(--semantic-color-surface-page);
+}
+
+/* Dark mode surface tokens — stay on html for inheritance (0,2,1 beats html.a1-theme-dark 0,1,1) */
+html.a1-theme-fresh.a1-theme-dark,
+html.a1-theme-dark.a1-theme-fresh {
+  --semantic-color-surface-page:   #03453A;
+  --semantic-color-surface-panel:  #046756;
+  --semantic-color-surface-raised: #057868;
+}
+
+html.a1-theme-fresh.a1-theme-dark body,
+html.a1-theme-dark.a1-theme-fresh body {
+  background-image: linear-gradient(207.43deg, #046756 0%, #03453A 57.44%);
+  background-color: #03453A;
+}
+
+@media (prefers-color-scheme: dark) {
+  html.a1-theme-fresh {
+    --semantic-color-surface-page:   #03453A;
+    --semantic-color-surface-panel:  #046756;
+    --semantic-color-surface-raised: #057868;
+  }
+
+  html.a1-theme-fresh body {
+    background-image: linear-gradient(207.43deg, #046756 0%, #03453A 57.44%);
+    background-color: #03453A;
+  }
+}

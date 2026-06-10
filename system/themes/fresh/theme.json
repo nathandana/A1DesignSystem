@@ -1,8 +1,8 @@
 {
   "name": "Fresh",
-  "description": "A crisp, airy theme with sky-blue accents, Nunito body text (ExtraBold headings), Baskerville display typography, and a cool mint gradient background. Apply [data-theme='fresh'] to <html>.",
+  "description": "A crisp, airy theme with sky-blue accents, Nunito body text (ExtraBold headings), Baskerville display typography, and a cool mint gradient background. Apply class=\"a1-theme-fresh\" to <html>.",
   "selectors": {
-    "[data-theme='fresh']": {
+    ".a1-theme-fresh": {
       "--base-color-accent-0":    "#FAFCFF",
       "--base-color-accent-50":   "#ECF3FE",
       "--base-color-accent-100":  "#D8E8FD",
@@ -145,10 +145,7 @@
       "--semantic-font-weight-display":               "var(--theme-a1-fresh-font-weight-display)",
       "--component-paragraph-font-weight":            "var(--theme-a1-fresh-font-weight-body)",
       "--component-heading-font-weight-heading":      "var(--theme-a1-fresh-font-weight-heading)",
-      "--component-heading-font-weight-display":      "var(--theme-a1-fresh-font-weight-display)",
-
-      "background-image":      "linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%)",
-      "background-attachment": "fixed"
+      "--component-heading-font-weight-display":      "var(--theme-a1-fresh-font-weight-display)"
     }
   },
   "labels": {}

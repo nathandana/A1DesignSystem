@@ -1,8 +1,8 @@
 .a1-step-tracker {
   --a1-st-dot-size:     var(--component-step-tracker-dot-size);
   --a1-st-active-width: var(--component-step-tracker-active-width);
-  --a1-st-dot-color:    var(--component-step-tracker-dot-color);
-  --a1-st-active-color: var(--component-step-tracker-active-color);
+  --a1-st-dot-color:    var(--semantic-color-border-strong);
+  --a1-st-active-color: var(--semantic-color-text-default);
   --a1-st-gap:          var(--component-step-tracker-gap);
 
   display: flex;

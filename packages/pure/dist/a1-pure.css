@@ -45,9 +45,21 @@ body {
 }
 
 /* Fresh theme — mint gradient background applied to the page body */
-[data-theme='fresh'] .a1-body,
-[data-theme='fresh'].a1-body {
+.a1-theme-fresh .a1-body,
+.a1-theme-fresh.a1-body {
   background: linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%) fixed #D7FFF8;
+}
+
+@media (prefers-color-scheme: dark) {
+  .a1-theme-fresh .a1-body,
+  .a1-theme-fresh.a1-body {
+    background: linear-gradient(207.43deg, #046756 0%, #03453A 57.44%) fixed #03453A;
+  }
+}
+
+.a1-theme-fresh.a1-theme-dark .a1-body,
+.a1-theme-fresh.a1-theme-dark.a1-body {
+  background: linear-gradient(207.43deg, #046756 0%, #03453A 57.44%) fixed #03453A;
 }
 
 /* ─── Page layout ────────────────────────────────────────────────────── */
@@ -1406,8 +1418,8 @@ aside > .a1-blockquote .a1-link:hover {
 .a1-step-tracker {
   --a1-st-dot-size:     var(--component-step-tracker-dot-size);
   --a1-st-active-width: var(--component-step-tracker-active-width);
-  --a1-st-dot-color:    var(--component-step-tracker-dot-color);
-  --a1-st-active-color: var(--component-step-tracker-active-color);
+  --a1-st-dot-color:    var(--semantic-color-border-strong);
+  --a1-st-active-color: var(--semantic-color-text-default);
   --a1-st-gap:          var(--component-step-tracker-gap);
 
   display: flex;
