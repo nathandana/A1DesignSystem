@@ -111,7 +111,7 @@ const meta = {
     logoHref: { control: "text" },
     navIconPosition: {
       control: "inline-radio",
-      options: ["start", "above"],
+      options: ["start", "above", "hidden"],
     },
     loginButton: { control: "boolean", description: "Show login button" },
   },

@@ -1,0 +1,9 @@
+{
+  "component": {
+    "bottomDrawer": {
+      "height":      { "$type": "dimension", "$value": "{base.spacing.56}" },
+      "borderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "zIndex":      { "$value": "200" }
+    }
+  }
+}

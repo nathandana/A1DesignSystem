@@ -378,6 +378,10 @@
           "$type": "color",
           "$value": "{base.color.neutral.0}"
         },
+        "card": {
+          "$type": "color",
+          "$value": "{base.color.neutral.0}"
+        },
         "panel": {
           "$type": "color",
           "$value": "{base.color.neutral.50}"

@@ -164,6 +164,7 @@ function makeDarkVars(themeId) {
   return makeVars({
     ...lightVars,
     "--semantic-color-surface-page": neutral(900),
+    "--semantic-color-surface-card": neutral(800),
     "--semantic-color-surface-panel": neutral(800),
     "--semantic-color-surface-raised": neutral(700),
     "--semantic-color-text-default": neutral(50),

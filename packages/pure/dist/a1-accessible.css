@@ -163,6 +163,7 @@
   --base-spacing-4: 0.25rem;
   --base-spacing-40: 2.5rem;
   --base-spacing-48: 3rem;
+  --base-spacing-56: 3.5rem;
   --base-spacing-6: 0.375rem;
   --base-spacing-64: 4rem;
   --base-spacing-8: 0.5rem;
@@ -257,6 +258,9 @@
   --component-blockquote-mark-size: 5rem;
   --component-blockquote-padding-block: 1.25rem;
   --component-blockquote-padding-inline: 1.5rem;
+  --component-bottom-drawer-border-width: 1px;
+  --component-bottom-drawer-height: 3.5rem;
+  --component-bottom-drawer-z-index: 200;
   --component-button-border-radius: 10px;
   --component-button-border-width: 0;
   --component-button-disabled-opacity: 0.55;
@@ -755,6 +759,7 @@
   --semantic-color-status-warn-foreground: #fffbf8;
   --semantic-color-status-warn-surface: #fff3ea;
   --semantic-color-status-warn-text: #4f2700;
+  --semantic-color-surface-card: #ffffff;
   --semantic-color-surface-inverse: #060b14;
   --semantic-color-surface-page: #ffffff;
   --semantic-color-surface-panel: #f0f6fe;
@@ -1071,6 +1076,7 @@
   --semantic-color-status-warn-border: var(--base-color-warn-500);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
+  --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-panel: var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
@@ -1134,6 +1140,7 @@
   --semantic-color-status-warn-border: var(--base-color-warn-500);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
+  --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-panel: var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
@@ -1196,6 +1203,7 @@
   --semantic-color-status-warn-border: #e59f68;
   --semantic-color-status-warn-foreground: #fffbf8;
   --semantic-color-status-warn-surface: #fff3ea;
+  --semantic-color-surface-card: #ffffff;
   --semantic-color-surface-page: #ffffff;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;

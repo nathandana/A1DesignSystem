@@ -127,6 +127,7 @@
   --base-spacing-32: 2rem;
   --base-spacing-40: 2.5rem;
   --base-spacing-48: 3rem;
+  --base-spacing-56: 3.5rem;
   --base-spacing-64: 4rem;
   --base-spacing-96: 6rem;
   --base-spacing-128: 8rem;
@@ -181,6 +182,7 @@
   --semantic-color-text-inverse: #ffffff;
   --semantic-color-text-accent: #7c3aed;
   --semantic-color-surface-page: #ffffff;
+  --semantic-color-surface-card: #ffffff;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;
   --semantic-color-surface-inverse: #060b14;
@@ -333,6 +335,9 @@
   --component-blockquote-padding-inline: 1.5rem;
   --component-blockquote-mark-size: 5rem;
   --component-blockquote-cite-font-weight: 500;
+  --component-bottom-drawer-height: 3.5rem;
+  --component-bottom-drawer-border-width: 1px;
+  --component-bottom-drawer-z-index: 200;
   --component-calendar-month-gap: 2rem;
   --component-calendar-heading-padding-block: 0.75rem;
   --component-calendar-heading-padding-block-compact: 0.5rem;

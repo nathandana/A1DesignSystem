@@ -22,7 +22,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 |------------|----------|-------|---------------|----------|
 | Overview | `components` | Components | `widgets` | Component categories |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
-| Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Tabs, Page Nav |
+| Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Bottom Drawer, Tabs, Page Nav |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control |
 | Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
 | Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, Status Bar, Circular Progress |
@@ -96,10 +96,15 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Breadcrumb | ✓ | — | — |
 | Side Nav | ✓ | ✓ | — |
 | Top Header | ✓ | — | ✓ |
+| Bottom Drawer | ✓ | — | ✓ |
 | Tabs | ✓ | — | — |
 | Page Nav | ✓ | — | — |
 
-> **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`.
+> **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`. Bottom Drawer uses `.a1-bottom-drawer`.
+>
+> **BottomDrawer props:** `items` (`{ id, label, icon, href?, onClick?, active?, badge?, disabled? }[]`, max 5), `aria-label` (string, required), `className` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Badge values are capped at 99+. Shares `--a1-nav-stacked-icon-size`, `--a1-nav-stacked-label-size`, and `--a1-nav-stacked-gap` CSS custom properties with TopHeader icon-above mode for visual consistency.
+>
+> **BottomDrawer + TopHeader responsive pattern:** Use `navIconPosition={{ xs: "hidden", sm: "above", lg: "start" }}` on TopHeader and a CSS media query `@media (min-width: 481px) { .a1-bottom-drawer { display: none } }` to show the BottomDrawer only at xs. Both use the same items configuration.
 >
 > **Tabs `variant` covers five distinct patterns — do not build custom alternatives:**
 >
@@ -316,6 +321,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-11 | Added BottomDrawer component (React + Pure): fixed bottom nav bar, max 5 items, icon-above-label stacked layout, badge support, shares --a1-nav-stacked-* vars with TopHeader; navIconPosition="hidden" added to TopHeader |
+| 2026-06-11 | Added semantic.color.surface.card token; Card (React + Pure) now uses --semantic-color-surface-card; dark mode and Fresh theme overrides applied across all build pipelines |
 | 2026-06-10 | Removed SystemBanner component; replaced by `<Banner variant="system">` — all internal usages updated; `packages/react/src/components/system-banner/` deleted |
 | 2026-06-10 | DataTable: added `notices` prop (`{ content: ReactNode; afterRow?: number }[]`) — full-width no-padding rows inserted at arbitrary positions in tbody; `afterRow` is 0-based (default 0 = before all rows); multiple entries at the same position stack in order; CSS class `a1-data-table__notice-cell` (padding:0); `a1-data-table__notice-row` (zebra-safe) |
 | 2026-06-10 | NumberField unit fix: unit shifts with value via JS-tracked `--a1-field-number-width` + `field-sizing:content`; `.a1-field__unit` is now `flex:1` + clickable so clicking right of value focuses input |

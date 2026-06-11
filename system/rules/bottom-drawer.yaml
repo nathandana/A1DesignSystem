@@ -1,0 +1,36 @@
+name: BottomDrawer
+description: >
+  Fixed bottom navigation bar for mobile viewports. Shows up to 5 items with
+  icon stacked above a short label. Shares the --a1-nav-stacked-* CSS custom
+  properties with TopHeader icon-above mode so both remain visually consistent.
+
+rules:
+  - id: max-five-items
+    description: >
+      The BottomDrawer accepts a maximum of 5 items. Exceeding this limit crowds
+      the bar and makes touch targets too narrow. The component silently truncates
+      to 5.
+
+  - id: icon-required
+    description: >
+      Every item must have a Material Symbols icon name. The icon is the primary
+      visual identifier on a small screen; a label-only item is not permitted.
+
+  - id: label-required
+    description: >
+      Every item must have a short text label (1–2 words). Icon-only navigation
+      is inaccessible — labels provide context for low-vision and cognitive
+      accessibility.
+
+  - id: pair-with-top-header
+    description: >
+      When used with TopHeader, set navIconPosition={{ xs: "hidden", sm: "above" }}
+      (or similar breakpoint object) on TopHeader so the hamburger and nav are
+      suppressed at xs. The BottomDrawer then provides the sole navigation at xs.
+      Use a CSS media query (min-width: 481px) to hide the BottomDrawer at sm+.
+
+  - id: safe-area
+    description: >
+      The BottomDrawer applies env(safe-area-inset-bottom) padding to avoid
+      overlap with iOS home indicator. Do not add additional bottom padding on
+      top of this.

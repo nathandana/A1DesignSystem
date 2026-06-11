@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bottom Drawer — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+    <style>
+      /* Demo layout: constrain the demo to a phone-width frame */
+      .demo-phone {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 390px;
+        height: 680px;
+        border: 2px solid var(--semantic-color-border-subtle);
+        border-radius: var(--base-radius-xl);
+        overflow: hidden;
+        background: var(--semantic-color-surface-page);
+      }
+      /* Scope the fixed drawer inside the demo frame */
+      .demo-phone .a1-bottom-drawer {
+        position: absolute;
+      }
+      .demo-content {
+        padding: var(--base-spacing-24);
+        flex: 1;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="link.html">Link</a>
+        <a href="icon.html">Icon</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+        <a href="definition-list.html">Definition List</a>
+        <a href="circular-progress.html">Circular Progress</a>
+        <a href="step-tracker.html">Step Tracker</a>
+        <a href="bottom-drawer.html" aria-current="page">Bottom Drawer</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="link.html">Link</a>
+          <a href="icon.html">Icon</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+          <a href="definition-list.html">Definition List</a>
+          <a href="circular-progress.html">Circular Progress</a>
+          <a href="step-tracker.html">Step Tracker</a>
+          <a href="bottom-drawer.html" aria-current="page">Bottom Drawer</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Bottom Drawer</h1>
+        <p class="a1-p">Fixed bottom navigation bar for mobile viewports. Up to 5 items, each with an icon stacked above a short label. Uses the same <code class="a1-code">--a1-nav-stacked-*</code> CSS custom properties as the TopHeader icon-above nav so both remain visually consistent.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Default — 5 items</h2>
+        <p class="a1-p">All five slots filled. Each item renders as an <code class="a1-code">&lt;a&gt;</code> with icon above label. The active item uses the accent color.</p>
+
+        <div class="demo-phone">
+          <div class="demo-content">
+            <p class="a1-p a1-paragraph-size-sm" style="color: var(--semantic-color-text-muted)">Page content</p>
+          </div>
+          <nav class="a1-bottom-drawer" aria-label="Primary navigation">
+            <ul class="a1-bottom-drawer__list">
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link" aria-current="page">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">home</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Home</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">explore</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Explore</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">inbox</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Inbox</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">account_circle</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Profile</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">settings</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Settings</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <pre class="a1-pre"><code class="a1-code">&lt;nav class="a1-bottom-drawer" aria-label="Primary navigation"&gt;
+  &lt;ul class="a1-bottom-drawer__list"&gt;
+    &lt;li class="a1-bottom-drawer__item"&gt;
+      &lt;a href="/home" class="a1-bottom-drawer__link" aria-current="page"&gt;
+        &lt;span class="a1-bottom-drawer__link-icon-wrap"&gt;
+          &lt;span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true"&gt;home&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;span class="a1-bottom-drawer__link-label"&gt;Home&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;!-- up to 5 items --&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Three items</h2>
+        <p class="a1-p">Fewer than 5 items distribute evenly across the bar.</p>
+
+        <div class="demo-phone" style="height: 120px;">
+          <nav class="a1-bottom-drawer" aria-label="Primary navigation">
+            <ul class="a1-bottom-drawer__list">
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link" aria-current="page">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">home</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Home</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">search</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Search</span>
+                </a>
+              </li>
+              <li class="a1-bottom-drawer__item">
+                <a href="#" class="a1-bottom-drawer__link">
+                  <span class="a1-bottom-drawer__link-icon-wrap">
+                    <span class="a1-icon a1-bottom-drawer__link-icon" aria-hidden="true">account_circle</span>
+                  </span>
+                  <span class="a1-bottom-drawer__link-label">Profile</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2">Responsive pattern — TopHeader + BottomDrawer</h2>
+        <p class="a1-p">At <code class="a1-code">xs</code> (≤480px): set the TopHeader to <code class="a1-code">navIconPosition="hidden"</code> and show the BottomDrawer. At <code class="a1-code">sm+</code> (≥481px): hide the BottomDrawer and show the TopHeader nav with icon-above layout. Both components share the same nav items array.</p>
+        <pre class="a1-pre"><code class="a1-code">/* Show BottomDrawer on xs only */
+@media (min-width: 481px) {
+  .bottom-drawer { display: none; }
+}
+
+/* Show TopHeader nav (icon-above) on sm+ only */
+/* TopHeader with navIconPosition={{ xs: "hidden", sm: "above", lg: "start" }} */</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

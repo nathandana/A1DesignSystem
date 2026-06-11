@@ -7,6 +7,25 @@ export default meta;
 
 const releases = [
   {
+    version: "v0.9.0",
+    date: "2026-06-11",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "BottomDrawer component — fixed bottom navigation bar for mobile viewports (max 5 items); items support href, onClick, active, badge, and disabled props; badge values are capped at 99+",
+          "TopHeader navIconPosition=\"hidden\" — suppresses nav + hamburger at a given breakpoint for use with BottomDrawer at xs; resolveIconAbove() refactored to resolveNavMode() returning \"start\" | \"above\" | \"hidden\"",
+          "semantic.color.surface.card token — separates card surface from page surface; Card (React + Pure) now uses --semantic-color-surface-card instead of --semantic-color-surface-page",
+          "Fresh theme card contrast — surface.card set to neutral.0 so cards appear white against the mint gradient background",
+          "Dark mode card surface — color-scheme.css and both build pipelines override --semantic-color-surface-card to neutral.800 in dark contexts",
+          "base.spacing.56 token — 56px spacing value added to system/tokens/spacing.json",
+          "component.bottom-drawer tokens — height (56px), border-width (1px), z-index (200) added to system/tokens/component/bottom-drawer.json",
+          "BottomDrawer Pure HTML/CSS classes — BEM classes in a1-base.css; scoped classes in a1-pure.css; example page at examples/a1-pure/bottom-drawer.html",
+        ],
+      },
+    ],
+  },
+  {
     version: "v0.8.0",
     date: "2026-06-10",
     sections: [

@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BottomDrawer
+   Fixed bottom navigation bar — up to 5 items, icon stacked above label.
+   Mirrors the TopHeader icon-above item style via shared --a1-nav-stacked-*
+   custom properties.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shared stacked-nav-item variables ───────────────────────────────────── */
+/* These same names are referenced in top-header.css icon-above mode so both
+   components stay in sync when tokens change. */
+
+:root {
+  --a1-nav-stacked-icon-size:  var(--semantic-font-size-heading-sm);
+  --a1-nav-stacked-label-size: var(--semantic-font-size-body-xs);
+  --a1-nav-stacked-gap:        var(--base-spacing-2);
+}
+
+/* ── Shell ────────────────────────────────────────────────────────────────── */
+
+.a1-bottom-drawer {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--component-bottom-drawer-z-index);
+  display: flex;
+  align-items: stretch;
+  min-block-size: var(--component-bottom-drawer-height);
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  background: var(--semantic-color-surface-page);
+  border-block-start: var(--component-bottom-drawer-border-width) solid var(--semantic-color-border-subtle);
+  box-shadow: 0 -4px 12px color-mix(in srgb, var(--semantic-color-text-default) 8%, transparent);
+}
+
+/* ── Item list ────────────────────────────────────────────────────────────── */
+
+.a1-bottom-drawer__list {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.a1-bottom-drawer__item {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-inline-size: 0;
+}
+
+/* ── Nav link — icon above label ─────────────────────────────────────────── */
+
+.a1-bottom-drawer__link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a1-nav-stacked-gap);
+  width: 100%;
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-4);
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--a1-nav-stacked-label-size);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition:
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-bottom-drawer__link:hover:not(.a1-bottom-drawer__link--disabled) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-bottom-drawer__link:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: -2px;
+}
+
+.a1-bottom-drawer__link--active {
+  color: var(--semantic-color-action-background);
+}
+
+.a1-bottom-drawer__link--disabled {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Icon ─────────────────────────────────────────────────────────────────── */
+
+.a1-bottom-drawer__link-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.a1-bottom-drawer__link-icon {
+  font-size: var(--a1-nav-stacked-icon-size);
+  flex-shrink: 0;
+}
+
+/* ── Badge ────────────────────────────────────────────────────────────────── */
+
+.a1-bottom-drawer__badge {
+  position: absolute;
+  top: -3px;
+  right: -6px;
+  min-inline-size: 16px;
+  block-size: 16px;
+  padding-inline: var(--base-spacing-4);
+  background: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+  border-radius: 8px;
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-tab-count-font-size, 10px);
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── Label ────────────────────────────────────────────────────────────────── */
+
+.a1-bottom-drawer__link-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-inline-size: 100%;
+}

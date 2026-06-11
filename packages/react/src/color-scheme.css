@@ -43,6 +43,7 @@ body {
 .a1-inverse {
   color-scheme: dark;
   --semantic-color-surface-page:   var(--base-color-neutral-900);
+  --semantic-color-surface-card:   var(--base-color-neutral-800);
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
@@ -122,6 +123,7 @@ body {
   :root {
     color-scheme: dark;
     --semantic-color-surface-page:   var(--base-color-neutral-900);
+    --semantic-color-surface-card:   var(--base-color-neutral-800);
     --semantic-color-surface-panel:  var(--base-color-neutral-800);
     --semantic-color-surface-raised: var(--base-color-neutral-700);
     --semantic-color-text-default: var(--base-color-neutral-50);
@@ -196,6 +198,7 @@ body {
   .a1-inverse {
     color-scheme: light;
     --semantic-color-surface-page:   var(--base-color-neutral-0);
+    --semantic-color-surface-card:   var(--base-color-neutral-0);
     --semantic-color-surface-panel:  var(--base-color-neutral-50);
     --semantic-color-surface-raised: var(--base-color-neutral-100);
     --semantic-color-text-default: var(--base-color-neutral-900);
@@ -273,6 +276,7 @@ body {
 html.a1-theme-dark {
   color-scheme: dark;
   --semantic-color-surface-page:   var(--base-color-neutral-900);
+  --semantic-color-surface-card:   var(--base-color-neutral-800);
   --semantic-color-surface-panel:  var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
   --semantic-color-text-default: var(--base-color-neutral-50);
@@ -348,6 +352,7 @@ html.a1-theme-dark .a1-inverse,
 html.a1-theme-dark .a1-theme-light {
   color-scheme: light;
   --semantic-color-surface-page:   var(--base-color-neutral-0);
+  --semantic-color-surface-card:   var(--base-color-neutral-0);
   --semantic-color-surface-panel:  var(--base-color-neutral-50);
   --semantic-color-surface-raised: var(--base-color-neutral-100);
   --semantic-color-text-default: var(--base-color-neutral-900);

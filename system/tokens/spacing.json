@@ -13,6 +13,7 @@
       "32":  { "$type": "dimension", "$value": "32px" },
       "40":  { "$type": "dimension", "$value": "40px" },
       "48":  { "$type": "dimension", "$value": "48px" },
+      "56":  { "$type": "dimension", "$value": "56px" },
       "64":  { "$type": "dimension", "$value": "64px" },
       "96":  { "$type": "dimension", "$value": "96px" },
       "128": { "$type": "dimension", "$value": "128px" },

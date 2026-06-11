@@ -1,5 +1,18 @@
 # A1 Web Changelog
 
+## v0.9.0
+
+### Prompt: BottomDrawer component + surface-card token
+
+- **BottomDrawer component** — fixed bottom navigation bar for mobile viewports. Up to 5 items, each with a Material Symbols icon stacked above a short text label. Items support `href` (renders `<a>`) or `onClick` (renders `<button>`), `active`, `badge` (capped at 99+), and `disabled`. Shares `--a1-nav-stacked-*` CSS custom properties with TopHeader's icon-above mode for visual consistency. Added `system/tokens/component/bottom-drawer.json` (height 56px, border-width 1px, z-index 200), `system/rules/bottom-drawer.yaml`, React component and stories, BEM classes in `a1-base.css`, scoped classes in `a1-pure.css`, and `examples/a1-pure/bottom-drawer.html`.
+- **TopHeader `navIconPosition="hidden"`** — new value suppresses the nav and hamburger entirely at a given breakpoint, intended for use when BottomDrawer covers navigation at xs. `resolveIconAbove()` refactored to `resolveNavMode()` returning `"start" | "above" | "hidden"`. CSS class `a1-top-header--nav-hidden`.
+- **`semantic.color.surface.card` token** — separates card surface from page surface. Default value `neutral.0` (same as page). All Card components (React + Pure) now reference `--semantic-color-surface-card` instead of `--semantic-color-surface-page`, enabling theme-level card contrast overrides without affecting the page background.
+- **Fresh theme card contrast** — Fresh theme sets `--semantic-color-surface-card: var(--base-color-neutral-0)` so cards appear white against the mint gradient page background.
+- **Dark mode card surface** — `color-scheme.css` and the `build-themes.mjs` / `build-html-css.mjs` pipelines updated so dark contexts override `--semantic-color-surface-card` to `neutral.800`.
+- **`base.spacing.56` token** — 56px added to `system/tokens/spacing.json`.
+
+---
+
 ## v0.8.0
 
 ### Prompt: CircularProgress xl size · field story files split · NumberField unit font size

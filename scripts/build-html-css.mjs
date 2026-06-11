@@ -82,6 +82,7 @@ function declarations(vars, names = Object.keys(vars)) {
 
 const lightModeNames = [
   "--semantic-color-surface-page",
+  "--semantic-color-surface-card",
   "--semantic-color-surface-panel",
   "--semantic-color-surface-raised",
   "--semantic-color-text-default",
@@ -143,6 +144,7 @@ const lightModeNames = [
 
 const darkModeVars = {
   "--semantic-color-surface-page": "var(--base-color-neutral-900)",
+  "--semantic-color-surface-card": "var(--base-color-neutral-800)",
   "--semantic-color-surface-panel": "var(--base-color-neutral-800)",
   "--semantic-color-surface-raised": "var(--base-color-neutral-700)",
   "--semantic-color-text-default": "var(--base-color-neutral-50)",

@@ -17,9 +17,9 @@ const BP_QUERIES = {
 };
 
 // Resolve a scalar or responsive { xs?, sm?, md?, lg?, xl? } navIconPosition
-// value to a boolean indicating whether icon-above mode is active right now.
-function resolveIconAbove(prop) {
-  if (!prop || typeof prop === "string") return prop === "above";
+// value to the mode active at the current viewport: "start" | "above" | "hidden".
+function resolveNavMode(prop) {
+  if (!prop || typeof prop === "string") return prop ?? "start";
   // Cascade xs → sm → md → lg → xl, carrying forward the last explicit value.
   let resolved = prop.xs ?? "start";
   for (const [bp, query] of Object.entries(BP_QUERIES)) {
@@ -27,7 +27,7 @@ function resolveIconAbove(prop) {
       resolved = prop[bp] ?? resolved;
     }
   }
-  return resolved === "above";
+  return resolved; // "start" | "above" | "hidden"
 }
 
 // Split a flat items array into sections separated by { divider: true } markers.
@@ -589,7 +589,7 @@ export function TopHeader({
   navIconPosition = "start",
   className = "",
 }) {
-  const [iconAbove, setIconAbove] = useState(() => resolveIconAbove(navIconPosition));
+  const [navMode, setNavMode] = useState(() => resolveNavMode(navIconPosition));
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [openAction, setOpenAction] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -617,11 +617,11 @@ export function TopHeader({
     return () => desktopQuery.removeListener(closeAtDesktop);
   }, [mobileNavOpen]);
 
-  // Re-resolve iconAbove whenever navIconPosition or the viewport changes.
+  // Re-resolve navMode whenever navIconPosition or the viewport changes.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return undefined;
 
-    const update = () => setIconAbove(resolveIconAbove(navIconPosition));
+    const update = () => setNavMode(resolveNavMode(navIconPosition));
     const listeners = Object.values(BP_QUERIES).map((q) => {
       const mq = window.matchMedia(q);
       mq.addEventListener("change", update);
@@ -637,7 +637,8 @@ export function TopHeader({
       <header
         className={[
           "a1-top-header",
-          iconAbove && "a1-top-header--nav-icon-above",
+          navMode === "above" && "a1-top-header--nav-icon-above",
+          navMode === "hidden" && "a1-top-header--nav-hidden",
           className,
         ].filter(Boolean).join(" ")}
       >
@@ -666,7 +667,7 @@ export function TopHeader({
                   item={item}
                   openId={openSubmenu}
                   onOpen={setOpenSubmenu}
-                  iconAbove={iconAbove}
+                  iconAbove={navMode === "above"}
                 />
               ))}
             </ul>
@@ -698,7 +699,7 @@ export function TopHeader({
         </div>
       </header>
 
-      {mobileNavOpen && (
+      {mobileNavOpen && navMode !== "hidden" && (
         <MobileDrawer
           navItems={navItems}
           onClose={() => setMobileNavOpen(false)}
