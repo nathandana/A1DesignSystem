@@ -27,6 +27,7 @@ import { Section } from "../section/Section.jsx";
 import { Stack } from "../stack/Stack.jsx";
 import { SideNav, SideNavGroup, SideNavItem } from "../side-nav/SideNav.jsx";
 import { StepTracker } from "../step-tracker/StepTracker.jsx";
+import { StickyActions } from "../sticky-actions/StickyActions.jsx";
 import { Switch } from "../switch/Switch.jsx";
 import { TopHeader } from "../top-header/TopHeader.jsx";
 
@@ -1572,6 +1573,16 @@ export const Documentation = {
 
 const ONBOARDING_STEPS = 4;
 
+const SECTION_PROPS = {
+  padding: "md",
+  contentWidth: "xs",
+  align: "center",
+  gap: "lg",
+  surface: "page",
+  // Extra bottom padding so content never hides behind the fixed StickyActions bar
+  style: { minHeight: "100vh", paddingBlockEnd: "calc(var(--base-spacing-64) + var(--base-spacing-96))" },
+};
+
 function OnboardingDemo() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
@@ -1597,135 +1608,140 @@ function OnboardingDemo() {
     setStep((s) => Math.min(ONBOARDING_STEPS, s + 1));
   }
 
-  const stepFooter = (
-    <>
-      <Divider size="md" />
-      <StepTracker steps={ONBOARDING_STEPS} currentStep={step} align="center" />
-      <ButtonContainer fillButtons size="lg">
-        {step > 1 && (
-          <IconButton icon="arrow_back" label="Back" variant="secondary" size="lg" onClick={onBack} />
-        )}
-        <Button variant="primary" onClick={onContinue}>
-          {step === 1 && "Next — your details"}
-          {step === 2 && "Next — your activity"}
-          {step === 3 && "Next — your goal"}
-          {step === 4 && "Let's go"}
-        </Button>
-      </ButtonContainer>
-    </>
-  );
+  const stepContent = (() => {
+    if (step === 1) {
+      return (
+        <>
+          <Stack gap="sm">
+            <Heading type="display" size="jumbo" as="h1" align="center">Welcome</Heading>
+            <Paragraph color="muted" align="center">A few steps to personalise your experience.</Paragraph>
+          </Stack>
+          <Stack gap="lg" style={{ width: "100%" }}>
+            <TextField label="Your name" value={form.name} onChange={(e) => set("name", e.target.value)} size="comfortable" />
+            <TextField label="Email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} size="comfortable" />
+          </Stack>
+        </>
+      );
+    }
 
-  if (step === 1) {
-    return (
-      <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page" style={{ minHeight: "100vh" }}>
-        <Stack gap="sm">
-          <Heading type="display" size="jumbo" as="h1" align="center">Welcome</Heading>
-          <Paragraph color="muted" align="center">A few steps to personalise your experience.</Paragraph>
-        </Stack>
-        <Stack gap="lg" style={{ width: "100%" }}>
-          <TextField label="Your name" value={form.name} onChange={(e) => set("name", e.target.value)} size="comfortable" />
-          <TextField label="Email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} size="comfortable" />
-        </Stack>
-        {stepFooter}
-      </Section>
-    );
-  }
-
-  if (step === 2) {
-    return (
-      <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page" style={{ minHeight: "100vh" }}>
-        <Heading type="display" size="jumbo" as="h1" align="center">
-          A few quick details
-        </Heading>
-        <Stack gap="lg" style={{ width: "100%" }}>
-          <FieldRow>
+    if (step === 2) {
+      return (
+        <>
+          <Heading type="display" size="jumbo" as="h1" align="center">
+            A few quick details
+          </Heading>
+          <Stack gap="lg" style={{ width: "100%" }}>
+            <FieldRow>
+              <NumberField
+                label="Feet"
+                value={form.heightFeet}
+                onChange={(e) => set("heightFeet", Number(e.target.value))}
+                min={3} max={8} step={1}
+                unit="ft"
+                inputMode="numeric"
+                size="comfortable"
+                style={{ flex: 1 }}
+              />
+              <NumberField
+                label="Inches"
+                value={form.heightInches}
+                onChange={(e) => set("heightInches", Number(e.target.value))}
+                min={0} max={11} step={1}
+                unit="in"
+                inputMode="numeric"
+                size="comfortable"
+                style={{ flex: 1 }}
+              />
+            </FieldRow>
             <NumberField
-              label="Feet"
-              value={form.heightFeet}
-              onChange={(e) => set("heightFeet", Number(e.target.value))}
-              min={3} max={8} step={1}
-              unit="ft"
+              label="Age"
+              value={form.age}
+              onChange={(e) => set("age", Number(e.target.value))}
+              min={13} max={120} step={1}
               inputMode="numeric"
               size="comfortable"
-              style={{ flex: 1 }}
             />
-            <NumberField
-              label="Inches"
-              value={form.heightInches}
-              onChange={(e) => set("heightInches", Number(e.target.value))}
-              min={0} max={11} step={1}
-              unit="in"
-              inputMode="numeric"
-              size="comfortable"
-              style={{ flex: 1 }}
+            <ChoiceGroup
+              label="Biological sex"
+              options={[
+                { value: "female", label: "Female" },
+                { value: "male", label: "Male" },
+              ]}
+              columns={2}
+              value={form.sex}
+              onChange={(v) => set("sex", v)}
             />
-          </FieldRow>
-          <NumberField
-            label="Age"
-            value={form.age}
-            onChange={(e) => set("age", Number(e.target.value))}
-            min={13} max={120} step={1}
-            inputMode="numeric"
-            size="comfortable"
-          />
+          </Stack>
+        </>
+      );
+    }
+
+    if (step === 3) {
+      return (
+        <>
+          <Heading type="display" size="jumbo" as="h1" align="center">
+            How active are you?
+          </Heading>
           <ChoiceGroup
-            label="Biological sex"
+            label="Activity level"
             options={[
-              { value: "female", label: "Female" },
-              { value: "male", label: "Male" },
+              { value: "sedentary",  label: "Sedentary",         subtext: "Little or no exercise",  icon: "weekend" },
+              { value: "light",      label: "Lightly active",    subtext: "1–3 days per week",       icon: "directions_walk" },
+              { value: "moderate",   label: "Moderately active", subtext: "3–5 days per week",       icon: "directions_run" },
+              { value: "active",     label: "Very active",       subtext: "6–7 days per week",       icon: "fitness_center" },
             ]}
             columns={2}
-            value={form.sex}
-            onChange={(v) => set("sex", v)}
+            value={form.activity}
+            onChange={(v) => set("activity", v)}
           />
-        </Stack>
-        {stepFooter}
-      </Section>
-    );
-  }
+        </>
+      );
+    }
 
-  if (step === 3) {
     return (
-      <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page" style={{ minHeight: "100vh" }}>
+      <>
         <Heading type="display" size="jumbo" as="h1" align="center">
-          How active are you?
+          What's your goal?
         </Heading>
         <ChoiceGroup
-          label="Activity level"
+          label="Primary goal"
           options={[
-            { value: "sedentary",  label: "Sedentary",         subtext: "Little or no exercise",  icon: "weekend" },
-            { value: "light",      label: "Lightly active",    subtext: "1–3 days per week",       icon: "directions_walk" },
-            { value: "moderate",   label: "Moderately active", subtext: "3–5 days per week",       icon: "directions_run" },
-            { value: "active",     label: "Very active",       subtext: "6–7 days per week",       icon: "fitness_center" },
+            { value: "lose",     label: "Lose weight",  icon: "trending_down" },
+            { value: "maintain", label: "Maintain",     icon: "trending_flat" },
+            { value: "gain",     label: "Gain weight",  icon: "trending_up" },
+            { value: "muscle",   label: "Build muscle", icon: "fitness_center" },
           ]}
           columns={2}
-          value={form.activity}
-          onChange={(v) => set("activity", v)}
+          value={form.goal}
+          onChange={(v) => set("goal", v)}
         />
-        {stepFooter}
-      </Section>
+      </>
     );
-  }
+  })();
 
   return (
-    <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page" style={{ minHeight: "100vh" }}>
-      <Heading type="display" size="jumbo" as="h1" align="center">
-        What's your goal?
-      </Heading>
-      <ChoiceGroup
-        label="Primary goal"
-        options={[
-          { value: "lose",     label: "Lose weight",  icon: "trending_down" },
-          { value: "maintain", label: "Maintain",     icon: "trending_flat" },
-          { value: "gain",     label: "Gain weight",  icon: "trending_up" },
-          { value: "muscle",   label: "Build muscle", icon: "fitness_center" },
-        ]}
-        columns={2}
-        value={form.goal}
-        onChange={(v) => set("goal", v)}
-      />
-      {stepFooter}
-    </Section>
+    <>
+      <Section {...SECTION_PROPS}>
+        {stepContent}
+      </Section>
+
+      {/* StickyActions stays fixed at the bottom across all steps so the
+          button position never jumps as content changes between steps. */}
+      <StickyActions contentWidth="xs">
+        <StepTracker steps={ONBOARDING_STEPS} currentStep={step} align="center" />
+        <ButtonContainer fillButtons size="lg">
+          {step > 1 && (
+            <IconButton icon="arrow_back" label="Back" variant="secondary" size="lg" onClick={onBack} />
+          )}
+          <Button variant="primary" onClick={onContinue}>
+            {step === 1 && "Next — your details"}
+            {step === 2 && "Next — your activity"}
+            {step === 3 && "Next — your goal"}
+            {step === 4 && "Let's go"}
+          </Button>
+        </ButtonContainer>
+      </StickyActions>
+    </>
   );
 }
 

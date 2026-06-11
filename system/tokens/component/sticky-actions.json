@@ -1,0 +1,12 @@
+{
+  "component": {
+    "stickyActions": {
+      "background":     { "$type": "color",     "$value": "{semantic.color.surface.page}" },
+      "borderWidth":    { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "paddingBlock":   { "$type": "dimension",  "$value": "{base.spacing.16}" },
+      "paddingInline":  { "$type": "dimension",  "$value": "{base.spacing.16}" },
+      "gap":            { "$type": "dimension",  "$value": "{base.spacing.12}" },
+      "zIndex":         { "$value": "150" }
+    }
+  }
+}

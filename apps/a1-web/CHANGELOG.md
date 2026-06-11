@@ -1,5 +1,12 @@
 # A1 Web Changelog
 
+## v0.11.0
+
+- **StickyActions component** — new React component that fixes a button group to the bottom of the viewport. Use it for onboarding flows, wizards, checkout, and any multi-step form where button position should not move between steps. Accepts a `contentWidth` prop (xs/sm/md/lg/xl/2xl) that mirrors Section's content width values — match it to the Section above for visual alignment. Always nest a `ButtonContainer` inside. Do not combine with `BottomDrawer` on the same screen. Includes `env(safe-area-inset-bottom)` padding for notch devices.
+- **Onboarding template** — refactored to use `StickyActions` + `StepTracker` + `ButtonContainer` at the bottom of the viewport. Content steps now render in a single `Section` that re-renders per step, with the action bar staying fixed in place so the button position never jumps between steps.
+
+---
+
 ## v0.10.0
 
 - **DefinitionList copy action** — copy value affordance now uses a small tertiary `Button` with visible copy/copied text instead of an icon-only `IconButton`; layout keeps the action immediately after the value instead of pushing it to the far edge of the row.

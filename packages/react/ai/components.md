@@ -23,7 +23,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Overview | `components` | Components | `widgets` | Component categories |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
 | Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Bottom Drawer, Tabs, Page Nav |
-| Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control |
+| Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control, Sticky Actions |
 | Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
 | Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, Status Bar, Circular Progress |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
@@ -133,8 +133,17 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Icon Button | ✓ | ✓ | ✓ |
 | Switch | ✓ | — | — |
 | Segmented Control | ✓ | — | — |
+| Sticky Actions | ✓ | — | — |
 
 > **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`.
+>
+> **StickyActions props:** `contentWidth` ("xs" | "sm" | "md" | "lg" | "xl" | "2xl") — constrains the inner content to the same max-widths as Section's `contentWidth`. Match this to the `contentWidth` of the Section above for visual alignment.
+>
+> **StickyActions usage rules:**
+> - **Do not combine with BottomDrawer.** Both occupy the bottom of the viewport and will overlap. Use StickyActions for flow navigation (onboarding, wizards, checkout) and BottomDrawer for persistent app navigation — never both on the same screen.
+> - **Always nest a ButtonContainer.** Do not place bare buttons directly inside StickyActions — ButtonContainer handles responsive layout, fill behaviour, and alignment.
+> - **Match contentWidth to the Section above.** If the page content uses `contentWidth="sm"`, set `StickyActions contentWidth="sm"` so buttons stay aligned with the content.
+> - **Add bottom offset to scrollable content.** StickyActions overlays the bottom of the viewport. Add `paddingBlockEnd` or a `Spacer` at the bottom of the page Section so the last content item is not hidden behind the bar.
 >
 > **Button vs Link:** Use `<Button>` for actions (save, submit, delete, open a dialog, change state). Use `<Link>` for navigation. Do not use `<Button>` where an `<a>` element is semantically correct.
 >
@@ -321,6 +330,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-11 | Added StickyActions component (React only): fixed bottom action bar for flows and wizards; contentWidth prop mirrors Section's max-width values; children stacked with gap; safe-area-inset-bottom for notch devices; z-index 150; rule: do not combine with BottomDrawer; rule: always nest a ButtonContainer; Onboarding template updated to use StickyActions |
 | 2026-06-11 | Added BottomDrawer component (React + Pure): fixed bottom nav bar, max 5 items, icon-above-label stacked layout, badge support, shares --a1-nav-stacked-* vars with TopHeader; navIconPosition="hidden" added to TopHeader |
 | 2026-06-11 | Added semantic.color.surface.card token; Card (React + Pure) now uses --semantic-color-surface-card; dark mode and Fresh theme overrides applied across all build pipelines |
 | 2026-06-10 | Removed SystemBanner component; replaced by `<Banner variant="system">` — all internal usages updated; `packages/react/src/components/system-banner/` deleted |

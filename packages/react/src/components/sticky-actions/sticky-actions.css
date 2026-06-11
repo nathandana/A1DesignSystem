@@ -1,0 +1,29 @@
+.a1-sticky-actions {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--component-sticky-actions-z-index);
+  background: var(--component-sticky-actions-background);
+  border-block-start: var(--component-sticky-actions-border-width) solid var(--semantic-color-border-subtle);
+  padding-block-start: var(--component-sticky-actions-padding-block);
+  padding-block-end: calc(var(--component-sticky-actions-padding-block) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--component-sticky-actions-padding-inline);
+  box-sizing: border-box;
+}
+
+.a1-sticky-actions__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-sticky-actions-gap);
+  width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* Content width — mirrors Section's contentWidth values for visual alignment */
+.a1-sticky-actions__inner--xs  { max-width: 28.5rem; }
+.a1-sticky-actions__inner--sm  { max-width: 40rem;   }
+.a1-sticky-actions__inner--md  { max-width: 50rem;   }
+.a1-sticky-actions__inner--lg  { max-width: 60rem;   }
+.a1-sticky-actions__inner--xl  { max-width: 70rem;   }
+.a1-sticky-actions__inner--2xl { max-width: 90rem;   }

@@ -662,6 +662,12 @@
   --component-step-tracker-dot-color: #64748b;
   --component-step-tracker-dot-size: 0.5rem;
   --component-step-tracker-gap: 0.375rem;
+  --component-sticky-actions-background: #ffffff;
+  --component-sticky-actions-border-width: 1px;
+  --component-sticky-actions-gap: 0.75rem;
+  --component-sticky-actions-padding-block: 1rem;
+  --component-sticky-actions-padding-inline: 1rem;
+  --component-sticky-actions-z-index: 150;
   --component-switch-accessible-icon-size: 60%;
   --component-switch-comfortable-content-gap: 0.125rem;
   --component-switch-comfortable-gap: 0.25rem;

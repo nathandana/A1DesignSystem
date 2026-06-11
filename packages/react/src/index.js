@@ -60,3 +60,4 @@ export { DataTable } from "./components/data-table/DataTable.jsx";
 export { DataTableFilters } from "./components/data-table/DataTableFilters.jsx";
 export { Figure } from "./components/figure/Figure.jsx";
 export { Spacer } from "./components/spacer/Spacer.jsx";
+export { StickyActions } from "./components/sticky-actions/StickyActions.jsx";

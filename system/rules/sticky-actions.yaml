@@ -1,0 +1,31 @@
+component: StickyActions
+rules:
+  - id: no-bottom-drawer
+    severity: error
+    description: >
+      Do not use StickyActions on the same screen as BottomDrawer. Both components
+      occupy the bottom of the viewport and will overlap. Use one or the other:
+      StickyActions for flow navigation (onboarding, wizards, checkout, multi-step forms),
+      BottomDrawer for persistent app-level navigation.
+
+  - id: use-button-container
+    severity: error
+    description: >
+      Always place a ButtonContainer inside StickyActions for button groups. Do not
+      place naked buttons or icon buttons directly inside StickyActions — the
+      ButtonContainer handles responsive button layout, fill behaviour, and alignment.
+
+  - id: content-width-alignment
+    severity: warning
+    description: >
+      Set contentWidth on StickyActions to match the contentWidth of the Section
+      above it so that buttons align visually with the page content. For example,
+      if the page uses <Section contentWidth="sm">, set <StickyActions contentWidth="sm">.
+
+  - id: page-offset
+    severity: warning
+    description: >
+      When StickyActions is present, add bottom padding to the scrollable page content
+      equal to or greater than the height of the StickyActions bar so the last
+      content item is not hidden behind the fixed overlay. A Spacer or
+      paddingBlockEnd on the containing Section is the recommended approach.

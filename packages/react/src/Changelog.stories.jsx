@@ -7,6 +7,25 @@ export default meta;
 
 const releases = [
   {
+    version: "v0.11.0",
+    date: "2026-06-11",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "StickyActions component — fixed bottom action bar for flows and wizards. contentWidth prop (xs/sm/md/lg/xl/2xl) mirrors Section's max-width values for visual alignment with page content. Nested children stacked with gap; env(safe-area-inset-bottom) for notch devices; z-index 150.",
+          "StickyActions rules — no-bottom-drawer (do not combine with BottomDrawer on the same screen), use-button-container (always nest a ButtonContainer), content-width-alignment (match contentWidth to Section above), page-offset (add bottom padding to scrollable content).",
+        ],
+      },
+      {
+        type: "Changed",
+        items: [
+          "Onboarding template refactored to use StickyActions — step content renders in a single Section per step; StickyActions holds StepTracker + ButtonContainer fixed at the bottom so button position never jumps between steps.",
+        ],
+      },
+    ],
+  },
+  {
     version: "v0.10.0",
     date: "2026-06-11",
     sections: [
