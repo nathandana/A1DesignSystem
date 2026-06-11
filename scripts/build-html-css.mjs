@@ -83,6 +83,7 @@ function declarations(vars, names = Object.keys(vars)) {
 const lightModeNames = [
   "--semantic-color-surface-page",
   "--semantic-color-surface-card",
+  "--semantic-color-surface-field",
   "--semantic-color-surface-panel",
   "--semantic-color-surface-raised",
   "--semantic-color-text-default",
@@ -145,6 +146,7 @@ const lightModeNames = [
 const darkModeVars = {
   "--semantic-color-surface-page": "var(--base-color-neutral-900)",
   "--semantic-color-surface-card": "var(--base-color-neutral-800)",
+  "--semantic-color-surface-field": "var(--base-color-neutral-700)",
   "--semantic-color-surface-panel": "var(--base-color-neutral-800)",
   "--semantic-color-surface-raised": "var(--base-color-neutral-700)",
   "--semantic-color-text-default": "var(--base-color-neutral-50)",
@@ -1141,7 +1143,7 @@ function componentCss() {
   padding-inline: var(--component-field-default-padding-inline);
   border: var(--component-field-border-width) solid var(--semantic-color-border-default);
   border-radius: var(--component-field-default-border-radius);
-  background: var(--semantic-color-surface-page);
+  background: var(--semantic-color-surface-field);
   color: var(--semantic-color-text-default);
   font: inherit;
 }
@@ -1276,7 +1278,7 @@ function componentCss() {
   inline-size: var(--component-switch-thumb-size);
   block-size: var(--component-switch-thumb-size);
   border-radius: var(--component-button-pill-border-radius);
-  background: var(--semantic-color-surface-page);
+  background: var(--semantic-color-surface-field);
   box-shadow: var(--component-switch-thumb-shadow);
   transition: transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
 }

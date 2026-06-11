@@ -30,7 +30,19 @@ const ACTIONS = [
 const meta = {
   title: "Components/Navigation/BottomDrawer",
   component: BottomDrawer,
+  tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
+  argTypes: {
+    items: {
+      description: "Up to 5 navigation items. Each item needs `id`, `label`, and `icon` (Material Symbols name). Provide `href` for links or `onClick` for buttons. Use `active` to mark the current destination. `badge` shows a numeric count (capped at 99+). `disabled` prevents interaction.",
+      control: false,
+    },
+    "aria-label": {
+      control: "text",
+      description: "Accessible name for the `<nav>` element.",
+      defaultValue: "Primary navigation",
+    },
+  },
 };
 
 export default meta;

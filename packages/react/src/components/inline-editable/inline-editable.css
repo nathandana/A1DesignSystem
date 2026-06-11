@@ -29,7 +29,7 @@
   display: block;
   width: 100%;
   min-height: 2em;
-  background: var(--semantic-color-surface-page);
+  background: var(--semantic-color-surface-field);
   border: 1px solid var(--semantic-color-border-strong);
   border-radius: var(--base-border-radius-sm);
   padding: var(--base-spacing-4) var(--base-spacing-8);

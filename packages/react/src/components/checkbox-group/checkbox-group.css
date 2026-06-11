@@ -177,7 +177,7 @@
   margin-top: var(--a1-cb-input-nudge);
   border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
   border-radius: var(--a1-cb-radius);
-  background-color: var(--semantic-color-surface-page);
+  background-color: var(--semantic-color-surface-field);
   cursor: pointer;
   transition:
     border-color       var(--semantic-motion-duration-fast),

@@ -161,7 +161,7 @@
   padding-inline-start: calc(var(--a1-cg-padding) + var(--a1-cg-indicator-size) + var(--base-spacing-8));
   border: var(--component-choice-group-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-choice-group-border-radius);
-  background-color: var(--semantic-color-surface-page);
+  background-color: var(--semantic-color-surface-field);
   cursor: pointer;
   transition:
     border-color     var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
@@ -271,7 +271,7 @@
   width: var(--a1-cg-indicator-size);
   height: var(--a1-cg-indicator-size);
   border: 1.5px solid var(--semantic-color-border-default);
-  background-color: var(--semantic-color-surface-page);
+  background-color: var(--semantic-color-surface-field);
   background-repeat: no-repeat;
   background-position: center;
   transition:

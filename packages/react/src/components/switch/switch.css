@@ -150,7 +150,7 @@
   height: var(--a1-sw-track-height);
   border-radius: var(--a1-sw-track-height);
   border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
-  background-color: var(--semantic-color-surface-page);
+  background-color: var(--semantic-color-surface-field);
   cursor: pointer;
   transition:
     background-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),

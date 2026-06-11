@@ -1143,7 +1143,7 @@ aside > .a1-blockquote .a1-link:hover {
   padding-inline: var(--a1-field-padding-inline, var(--component-field-default-padding-inline));
   border: var(--component-field-border-width) solid var(--semantic-color-border-default);
   border-radius: var(--a1-field-border-radius, var(--component-field-default-border-radius));
-  background: var(--semantic-color-surface-page);
+  background: var(--semantic-color-surface-field);
   color: var(--semantic-color-text-default);
   font-family: inherit;
   font-size: var(--a1-field-font-size, var(--semantic-font-size-body-md));

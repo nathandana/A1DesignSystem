@@ -51,7 +51,7 @@
 /* ─── Surface variant ────────────────────────────────────────────────────── */
 
 .a1-fieldset--surface {
-  background: var(--semantic-color-surface-page);
+  background: var(--semantic-color-surface-card);
   border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-card-border-radius);
   box-shadow: var(--component-card-shadow);

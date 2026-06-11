@@ -758,6 +758,7 @@
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
   --semantic-color-status-warn-text: #4f2700;
   --semantic-color-surface-card: #ffffff;
+  --semantic-color-surface-field: #ffffff;
   --semantic-color-surface-inverse: #060b14;
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-panel: var(--base-color-neutral-50);
@@ -1075,6 +1076,7 @@
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
   --semantic-color-surface-card: var(--base-color-neutral-800);
+  --semantic-color-surface-field: var(--base-color-neutral-700);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-panel: var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
@@ -1139,6 +1141,7 @@
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
   --semantic-color-surface-card: var(--base-color-neutral-800);
+  --semantic-color-surface-field: var(--base-color-neutral-700);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-panel: var(--base-color-neutral-800);
   --semantic-color-surface-raised: var(--base-color-neutral-700);
@@ -1202,6 +1205,7 @@
   --semantic-color-status-warn-foreground: var(--base-color-warn-0);
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
   --semantic-color-surface-card: #ffffff;
+  --semantic-color-surface-field: #ffffff;
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-panel: var(--base-color-neutral-50);
   --semantic-color-surface-raised: var(--base-color-neutral-100);

@@ -433,4 +433,15 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  /* Notice rows span the full card width — suppress the column-label ::before
+     and reset td to block so the content fills edge-to-edge. */
+  .a1-data-table__notice-row td {
+    display: block;
+    padding: 0;
+  }
+
+  .a1-data-table__notice-row td::before {
+    display: none;
+  }
 }

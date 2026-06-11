@@ -16,7 +16,7 @@
   --a1-field-accent-compensation:   var(--component-field-accent-compensation);
 
   /* interaction — hover/active/readonly values come from :root in color-scheme.css */
-  --a1-field-background:            var(--semantic-color-surface-page);
+  --a1-field-background:            var(--semantic-color-surface-field);
   --a1-field-border-color:          var(--semantic-color-border-strong);
   --a1-field-focus-ring-color:      var(--component-field-focus-ring-color);
   --a1-field-focus-ring-width:      var(--component-field-focus-ring-width);

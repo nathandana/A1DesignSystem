@@ -7,6 +7,32 @@ export default meta;
 
 const releases = [
   {
+    version: "v0.10.0",
+    date: "2026-06-11",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "semantic.color.surface.field token — independent surface token for form field backgrounds (default neutral.0; dark mode neutral.700; Fresh theme neutral.0/white)",
+        ],
+      },
+      {
+        type: "Changed",
+        items: [
+          "Field, Textarea, Select, Checkbox, Radio, Switch, Choice Group, and Inline Editable now use --semantic-color-surface-field instead of --semantic-color-surface-page",
+          "Fieldset surface variant uses surface.card (panel/card grouping) instead of surface.page",
+          "BottomDrawer stories: added tags: [\"autodocs\"] and argTypes for Storybook Docs page generation",
+        ],
+      },
+      {
+        type: "Fixed",
+        items: [
+          "DataTable notice rows now span full card width on mobile (≤640px) — suppressed the column-label ::before pseudo-element that was pushing banner content to the right",
+        ],
+      },
+    ],
+  },
+  {
     version: "v0.9.0",
     date: "2026-06-11",
     sections: [
