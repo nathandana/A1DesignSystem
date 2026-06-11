@@ -8,7 +8,7 @@ import { PageNav } from "../page-nav/PageNav.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Section } from "../section/Section.jsx";
 import { DataTable } from "./DataTable.jsx";
-import { SystemBanner } from "../system-banner/SystemBanner.jsx";
+import { Banner } from "../banner/Banner.jsx";
 import { requiredIconArgType } from "../../storybook/icon-controls.js";
 
 export default {
@@ -297,9 +297,9 @@ export const NoticeRow = {
       notices={[
         {
           content: (
-            <SystemBanner status="warn" title="Scheduled maintenance">
+            <Banner variant="system" status="warn" title="Scheduled maintenance">
               This table will be read-only on Saturday 14 June from 2:00–4:00 am UTC.
-            </SystemBanner>
+            </Banner>
           ),
           afterRow: 2,
         },
@@ -317,17 +317,17 @@ export const MultipleNotices = {
       notices={[
         {
           content: (
-            <SystemBanner status="info" title="New records available">
+            <Banner variant="system" status="info" title="New records available">
               3 team members were added since your last visit.
-            </SystemBanner>
+            </Banner>
           ),
           afterRow: 0,
         },
         {
           content: (
-            <SystemBanner status="warn" title="Scheduled maintenance">
+            <Banner variant="system" status="warn" title="Scheduled maintenance">
               This table will be read-only on Saturday 14 June from 2:00–4:00 am UTC.
-            </SystemBanner>
+            </Banner>
           ),
           afterRow: 4,
         },

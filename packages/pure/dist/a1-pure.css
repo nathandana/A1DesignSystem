@@ -1362,6 +1362,7 @@ aside > .a1-blockquote .a1-link:hover {
 
 .a1-circular-progress-small { --a1-cp-size: var(--component-circular-progress-sm-size); }
 .a1-circular-progress-large { --a1-cp-size: var(--component-circular-progress-lg-size); }
+.a1-circular-progress-xl    { --a1-cp-size: var(--component-circular-progress-xl-size); }
 .a1-circular-progress-xs    { --a1-cp-size: var(--component-circular-progress-xs-size); }
 
 .a1-circular-progress-xs {

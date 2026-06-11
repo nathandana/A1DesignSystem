@@ -86,7 +86,7 @@ const minorFeatureGroups = [
       'Typography: Heading, Paragraph, List, Blockquote, Figure',
       'Actions: Button, ButtonContainer, IconButton, links',
       'Inputs: TextField, TextareaField, SelectField, DateField, CheckboxGroup, RadioGroup, Switch',
-      'Feedback: MessageBadge, Banner, Snackbar, Empty State, SystemBanner',
+      'Feedback: MessageBadge, Banner, Snackbar, Empty State',
       'Navigation: TopHeader, SideNav, Breadcrumb, PageNav, Tabs, Pagination',
       'Structure: Section, Stack, Grid, Card, Surface, Inset, Bleed, Divider',
       'Data and overlays: DataTable, Dialog, Menu, Notification',

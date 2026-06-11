@@ -109,6 +109,10 @@ const meta = {
   argTypes: {
     logoText: { control: "text" },
     logoHref: { control: "text" },
+    navIconPosition: {
+      control: "inline-radio",
+      options: ["start", "above"],
+    },
     loginButton: { control: "boolean", description: "Show login button" },
   },
 };
@@ -216,6 +220,50 @@ export const ActiveInSubmenu = {
         actions={ACTIONS}
       />
       {PAGE_CONTENT}
+    </div>
+  ),
+};
+
+export const IconAbove = {
+  name: "Icon above label",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navIconPosition="above"
+        navItems={NAV_ITEMS}
+        actions={ACTIONS}
+      />
+      {PAGE_CONTENT}
+    </div>
+  ),
+};
+
+export const IconAboveResponsive = {
+  name: "Icon above — responsive",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navIconPosition={{ xs: "above", lg: "start" }}
+        navItems={NAV_ITEMS}
+        actions={ACTIONS}
+      />
+      <div
+        style={{
+          padding: "var(--base-spacing-24) var(--base-spacing-40)",
+          fontFamily: "var(--component-paragraph-font-family)",
+          fontSize: "var(--semantic-font-size-body-sm)",
+          color: "var(--semantic-color-text-muted)",
+        }}
+      >
+        Icon above at xs–md (compact stacked nav, no hamburger). Inline icon+label from lg up.
+        Resize the viewport to see the transition.
+      </div>
     </div>
   ),
 };

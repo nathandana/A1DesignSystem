@@ -25,7 +25,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Tabs, Page Nav |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control |
 | Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
-| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, System Banner, Status Bar, Circular Progress |
+| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, Status Bar, Circular Progress |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu |
 | Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
@@ -169,10 +169,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 |-----------|:-----:|:------:|:----:|
 | Banner | ✓ | ✓ | — |
 | Badge / Message | ✓ | ✓ | — |
+
+> **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices.
 | Notification | ✓ | — | — |
 | Snackbar | ✓ | ✓ | — |
 | Empty State | ✓ | ✓ | — |
-| System Banner | ✓ | — | — |
 | Status Bar | ✓ | — | — |
 | Circular Progress | ✓ | — | ✓ |
 | Step Tracker | ✓ | — | ✓ |
@@ -263,7 +264,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
 >
-> **DataTable `notices` prop:** Accepts `{ content: ReactNode; afterRow?: number }[]`. Each entry renders a full-width zero-padding row spanning all columns. `afterRow` (0-based, default 0) controls position — 0 = before all data rows, N = before the Nth data row. Multiple entries at the same position stack in order. Intended for `SystemBanner`, inline alerts, or maintenance notices. Notice rows are not filtered, sorted, or paginated.
+> **DataTable `notices` prop:** Accepts `{ content: ReactNode; afterRow?: number }[]`. Each entry renders a full-width zero-padding row spanning all columns. `afterRow` (0-based, default 0) controls position — 0 = before all data rows, N = before the Nth data row. Multiple entries at the same position stack in order. Intended for `<Banner variant="system">`, inline alerts, or maintenance notices. Notice rows are not filtered, sorted, or paginated.
 >
 > **DefinitionList props:** `items` (`{ label, value, children?, copyValue?, copyText?, valueHeadingProps? }[]`), `direction` ("row" | "column", default "row"), `size` ("sm" | "md" | "lg", default "md"), `labelWidth` ("auto" | "fixed", row only, default "auto"), `copyValue` (boolean), `copyLabel`, `copiedLabel`, and `valueHeadingProps` (Heading props for value typography). Fixed row labels use a responsive container-based label column and stack at narrow widths.
 >
@@ -315,6 +316,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-10 | Removed SystemBanner component; replaced by `<Banner variant="system">` — all internal usages updated; `packages/react/src/components/system-banner/` deleted |
 | 2026-06-10 | DataTable: added `notices` prop (`{ content: ReactNode; afterRow?: number }[]`) — full-width no-padding rows inserted at arbitrary positions in tbody; `afterRow` is 0-based (default 0 = before all rows); multiple entries at the same position stack in order; CSS class `a1-data-table__notice-cell` (padding:0); `a1-data-table__notice-row` (zebra-safe) |
 | 2026-06-10 | NumberField unit fix: unit shifts with value via JS-tracked `--a1-field-number-width` + `field-sizing:content`; `.a1-field__unit` is now `flex:1` + clickable so clicking right of value focuses input |
 | 2026-06-10 | Section `gap="xl"` (40px) + Stack `gap="xl"` added; `semantic.spacing.gap.xl` token added; CSS class `a1-section--gap-xl`; Stack resolves "xl" to `var(--semantic-spacing-gap-xl)` |

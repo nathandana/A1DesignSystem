@@ -15,6 +15,7 @@ export default {
   },
   argTypes: {
     size:          { control: "inline-radio", options: ["xs", "sm", "md", "lg", "xl"] },
+
     indeterminate: { control: "boolean" },
     value:         { control: { type: "range", min: 0, max: 100, step: 1 } },
     max:           { control: "number" },
@@ -67,8 +68,13 @@ export const Sizes = {
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--base-spacing-32)" }}>
-      {(["xs", "sm", "md", "lg"]).map((sz) => {
+      {(["xs", "sm", "md", "lg", "xl"]).map((sz) => {
         const pct = 65;
+        const fontSize = sz === "sm"
+          ? "var(--semantic-font-size-body-xs)"
+          : sz === "xl"
+          ? "var(--semantic-font-size-body-lg)"
+          : "var(--semantic-font-size-body-sm)";
         return (
           <div key={sz} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--base-spacing-8)" }}>
             <p style={{ ...LABEL, marginBottom: 0 }}>{sz}</p>
@@ -76,7 +82,7 @@ export const Sizes = {
               {sz !== "xs" && (
                 <span style={{
                   fontFamily: "var(--component-paragraph-font-family)",
-                  fontSize: sz === "sm" ? "var(--semantic-font-size-body-xs)" : "var(--semantic-font-size-body-sm)",
+                  fontSize,
                   fontWeight: "var(--base-font-weight-semibold)",
                   color: "var(--semantic-color-text-default)",
                 }}>
@@ -221,7 +227,7 @@ export const Indeterminate = {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
         <p style={{ ...LABEL, marginBottom: 0 }}>All sizes</p>
-        {["xs", "sm", "md", "lg"].map((sz) => (
+        {["xs", "sm", "md", "lg", "xl"].map((sz) => (
           <div key={sz} style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-8)" }}>
             <CircularProgress size={sz} indeterminate aria-label={`Loading ${sz}`} />
             <span style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", color: "var(--semantic-color-text-muted)" }}>{sz}</span>

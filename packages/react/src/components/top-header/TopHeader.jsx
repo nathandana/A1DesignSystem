@@ -8,6 +8,28 @@ import "./top-header.css";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
+// Breakpoint min-widths that match the system breakpoint tokens.
+const BP_QUERIES = {
+  sm: "(min-width: 481px)",
+  md: "(min-width: 641px)",
+  lg: "(min-width: 1025px)",
+  xl: "(min-width: 1441px)",
+};
+
+// Resolve a scalar or responsive { xs?, sm?, md?, lg?, xl? } navIconPosition
+// value to a boolean indicating whether icon-above mode is active right now.
+function resolveIconAbove(prop) {
+  if (!prop || typeof prop === "string") return prop === "above";
+  // Cascade xs → sm → md → lg → xl, carrying forward the last explicit value.
+  let resolved = prop.xs ?? "start";
+  for (const [bp, query] of Object.entries(BP_QUERIES)) {
+    if (typeof window !== "undefined" && window.matchMedia(query).matches) {
+      resolved = prop[bp] ?? resolved;
+    }
+  }
+  return resolved === "above";
+}
+
 // Split a flat items array into sections separated by { divider: true } markers.
 function splitIntoSections(items) {
   const sections = [];
@@ -211,7 +233,7 @@ function NavMenuItem({ item, onClose }) {
 
 // ── NavItem (desktop) ──────────────────────────────────────────────────────────
 
-function NavItem({ item, openId, onOpen }) {
+function NavItem({ item, openId, onOpen, iconAbove }) {
   const triggerRef = useRef(null);
   const hasSubmenu = item.items?.length > 0;
   const hasRoute = !!item.href;
@@ -234,7 +256,32 @@ function NavItem({ item, openId, onOpen }) {
     .filter(Boolean)
     .join(" ");
 
-  const linkContent = (
+  // In icon-above mode the chevron is nested inside the label span so it sits
+  // inline with the text in the column layout, rather than appearing as a
+  // third stacked row below the icon and label.
+  const linkContent = iconAbove ? (
+    <>
+      {item.icon && (
+        <Icon
+          name={item.icon}
+          className="a1-top-header__nav-link-icon"
+          aria-hidden="true"
+        />
+      )}
+      {!isIconOnly && (
+        <span className="a1-top-header__nav-link-label">
+          {item.label}
+          {hasSubmenu && (
+            <Icon
+              name="expand_more"
+              className="a1-top-header__nav-chevron"
+              aria-hidden="true"
+            />
+          )}
+        </span>
+      )}
+    </>
+  ) : (
     <>
       {item.icon && (
         <Icon
@@ -247,14 +294,13 @@ function NavItem({ item, openId, onOpen }) {
     </>
   );
 
-  const submenuChevron = (
-    hasSubmenu && (
-      <Icon
-        name="expand_more"
-        className="a1-top-header__nav-chevron"
-        aria-hidden="true"
-      />
-    )
+  // In icon-above mode the chevron lives inside linkContent (see above).
+  const submenuChevron = !iconAbove && hasSubmenu && (
+    <Icon
+      name="expand_more"
+      className="a1-top-header__nav-chevron"
+      aria-hidden="true"
+    />
   );
 
   const submenuButtonContent = (
@@ -540,8 +586,10 @@ export function TopHeader({
   navItems = [],
   actions = [],
   loginButton,
+  navIconPosition = "start",
   className = "",
 }) {
+  const [iconAbove, setIconAbove] = useState(() => resolveIconAbove(navIconPosition));
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [openAction, setOpenAction] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -569,10 +617,29 @@ export function TopHeader({
     return () => desktopQuery.removeListener(closeAtDesktop);
   }, [mobileNavOpen]);
 
+  // Re-resolve iconAbove whenever navIconPosition or the viewport changes.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return undefined;
+
+    const update = () => setIconAbove(resolveIconAbove(navIconPosition));
+    const listeners = Object.values(BP_QUERIES).map((q) => {
+      const mq = window.matchMedia(q);
+      mq.addEventListener("change", update);
+      return [mq, update];
+    });
+    update();
+    return () => listeners.forEach(([mq, fn]) => mq.removeEventListener("change", fn));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(navIconPosition)]);
+
   return (
     <>
       <header
-        className={["a1-top-header", className].filter(Boolean).join(" ")}
+        className={[
+          "a1-top-header",
+          iconAbove && "a1-top-header--nav-icon-above",
+          className,
+        ].filter(Boolean).join(" ")}
       >
         <button
           type="button"
@@ -599,6 +666,7 @@ export function TopHeader({
                   item={item}
                   openId={openSubmenu}
                   onOpen={setOpenSubmenu}
+                  iconAbove={iconAbove}
                 />
               ))}
             </ul>

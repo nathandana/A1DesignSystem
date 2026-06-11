@@ -14,7 +14,7 @@ export interface CircularProgressProps {
    * Circle diameter. xs renders the smallest ring (no inner content — children
    * are placed inline after the ring instead). Default: "md"
    */
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   /**
    * Shows a continuously rotating arc instead of a value-based fill.
    * Removes aria-valuenow so assistive technology announces an indeterminate

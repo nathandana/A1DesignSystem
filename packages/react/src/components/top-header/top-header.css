@@ -320,6 +320,38 @@
   margin-inline-start: var(--base-spacing-4);
 }
 
+/* ── Icon-above nav layout ────────────────────────────────────────────────── */
+
+/* Nav links become a column: icon above, label (+ optional chevron) below. */
+.a1-top-header--nav-icon-above .a1-top-header__nav-link {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-2);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+/* Icon slightly larger so it reads clearly at the top of each item. */
+.a1-top-header--nav-icon-above .a1-top-header__nav-link-icon {
+  font-size: var(--semantic-font-size-heading-sm);
+}
+
+/* Label row: inline-flex so the small chevron sits beside the text. */
+.a1-top-header--nav-icon-above .a1-top-header__nav-link-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-2);
+  line-height: 1;
+}
+
+/* Chevron in this context is a small inline decoration next to the label. */
+.a1-top-header--nav-icon-above .a1-top-header__nav-link-label .a1-top-header__nav-chevron {
+  font-size: var(--semantic-font-size-body-sm);
+  margin-inline-start: 0;
+  transition: transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
@@ -332,6 +364,25 @@
   }
 
   .a1-top-header__nav {
+    display: none;
+  }
+
+  /* Icon-above mode: nav is always visible; hamburger is not needed. */
+  .a1-top-header--nav-icon-above .a1-top-header__hamburger {
+    display: none;
+  }
+
+  .a1-top-header--nav-icon-above .a1-top-header__nav {
+    display: flex;
+  }
+
+  /* Allow horizontal scrolling if items overflow on very small screens. */
+  .a1-top-header--nav-icon-above .a1-top-header__nav-list {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .a1-top-header--nav-icon-above .a1-top-header__nav-list::-webkit-scrollbar {
     display: none;
   }
 }

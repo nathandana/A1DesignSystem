@@ -46,7 +46,7 @@ const STATUS_ROWS = [
     id: 'status',
     prop: <Code>status</Code>,
     values: <><Code>"neutral"</Code> · <Code>"info"</Code> · <Code>"success"</Code> · <Code>"warn"</Code> · <Code>"error"</Code></>,
-    components: 'Banner, MessageBadge, Notification, Snackbar, StatusBar, SystemBanner',
+    components: 'Banner, MessageBadge, Notification, Snackbar, StatusBar',
   },
 ]
 

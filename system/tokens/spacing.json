@@ -16,6 +16,7 @@
       "64":  { "$type": "dimension", "$value": "64px" },
       "96":  { "$type": "dimension", "$value": "96px" },
       "128": { "$type": "dimension", "$value": "128px" },
+      "192": { "$type": "dimension", "$value": "192px" },
       "neg-4":  { "$type": "dimension", "$value": "-4px" },
       "neg-8":  { "$type": "dimension", "$value": "-8px" },
       "neg-12": { "$type": "dimension", "$value": "-12px" },

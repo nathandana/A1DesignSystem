@@ -158,7 +158,6 @@ Every named export from `@gtivr4/a1-design-system-react` — verified against `s
 | `MessageEmptyState` | Empty state block; `scale="page\|section\|card"`, `icon`, `title`, `description`, `action` |
 | `Notification` | Badge wrapper; `count`, `label`, `dot`, `variant`, `position`, `max` |
 | `Snackbar` | Toast notification; `open`, `onClose`, `message`, `action` |
-| `SystemBanner` | Full-width system alert; `status`, `title`, `message`, `onDismiss` |
 
 ### Overlay
 

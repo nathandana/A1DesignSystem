@@ -5,6 +5,7 @@
       "sm":  { "size": { "$type": "dimension", "$value": "{base.spacing.64}" } },
       "md":  { "size": { "$type": "dimension", "$value": "{base.spacing.96}" } },
       "lg":  { "size": { "$type": "dimension", "$value": "{base.spacing.128}" } },
+      "xl":  { "size": { "$type": "dimension", "$value": "{base.spacing.192}" } },
       "trackColor": { "$type": "color", "$value": "{semantic.color.surface.raised}" },
       "fillColor":  { "$type": "color", "$value": "{semantic.color.action.background}" },
       "gap":        { "$type": "dimension", "$value": "{base.spacing.8}" },

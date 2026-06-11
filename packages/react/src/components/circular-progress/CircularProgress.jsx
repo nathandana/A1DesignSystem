@@ -1,6 +1,6 @@
 import "./circular-progress.css";
 
-const SIZES = ["xs", "sm", "md", "lg"];
+const SIZES = ["xs", "sm", "md", "lg", "xl"];
 
 // SVG uses a 100×100 viewBox with a 10-unit stroke so the ring scales
 // proportionally when the container size changes via CSS.

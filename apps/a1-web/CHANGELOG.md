@@ -1,6 +1,15 @@
 # A1 Web Changelog
 
-## Unreleased
+## v0.8.0
+
+### Prompt: CircularProgress xl size · field story files split · NumberField unit font size
+
+- **CircularProgress `size="xl"`** — added xl size (192px) to CircularProgress React and Pure. New token `component.circularProgress.xl.size` references `base.spacing.192`. CSS modifier `.a1-circular-progress--xl` (React); `.a1-circular-progress-xl` (Pure). TypeScript type updated.
+- **`base.spacing.192` token** — 192px added to `system/tokens/spacing.json`.
+- **NumberField unit font size** — unit label now uses `--a1-field-font-size` (matches input value size at all density levels) instead of fixed `body-xs`. Color remains muted.
+- **Field story files split** — PhoneField, ZipField, CreditCardField, TimeField, and NumberField each have their own dedicated Storybook story file. All removed from `TextField.stories.jsx`.
+
+### Prompt: Section/Stack xl gap · NumberField unit fix · DataTable notice row
 
 ### Prompt: Section/Stack xl gap · NumberField unit fix · DataTable notice row
 

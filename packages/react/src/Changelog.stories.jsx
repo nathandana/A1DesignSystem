@@ -7,12 +7,14 @@ export default meta;
 
 const releases = [
   {
-    version: "Current session",
-    date: "2026-06-01",
+    version: "v0.8.0",
+    date: "2026-06-10",
     sections: [
       {
         type: "Added",
         items: [
+          "CircularProgress size=\"xl\" — 192px ring, new base.spacing.192 token and component.circularProgress.xl.size token; CSS modifier .a1-circular-progress--xl (React) and .a1-circular-progress-xl (Pure)",
+          "Field story files split — PhoneField, ZipField, CreditCardField, TimeField, and NumberField each have dedicated Storybook story files; removed from TextField.stories.jsx",
           "DefinitionList component — semantic label/value pairs with row/column layouts, sm/md/lg sizes, auto/fixed responsive label widths, Heading-based value typography, and optional copy buttons",
           "React package publish file list now includes component .d.ts declaration files",
           "Heading runtime validation now honours documented as=\"p\" and as=\"span\" values",
@@ -33,6 +35,7 @@ const releases = [
       {
         type: "Changed",
         items: [
+          "NumberField unit label now uses --a1-field-font-size (matches input value size at all density levels) instead of fixed body-xs; color remains muted",
           "Figure: size prop now applies max-width via class instead of inline style; center alignment applies size constraint to img + figcaption via compound selectors",
           "Paragraph: paragraph + heading spacing now matches paragraph + paragraph (1.5em top margin)",
           "PageLayout viewport-height mode now scrolls an inner main region so header and footer remain outside the page scroll container",

@@ -516,8 +516,6 @@ function AnatomyComponentPreview({ component }) {
       return <Snackbar open actionLabel="Undo" onAction={() => {}}>Saved changes</Snackbar>
     case 'empty-state':
       return <MessageEmptyState title={component.title} description="No items to show yet." icon="inbox" />
-    case 'system-banner':
-      return <Banner variant="system" status="info" title={component.title}>System-wide announcement.</Banner>
     case 'section':
       return (
         <Section padding="sm" surface="panel" contentWidth="sm">
@@ -1563,15 +1561,6 @@ const COMPONENT_PROPS = {
     { id: 'description', name: 'description', type: 'string',    description: 'Supporting description text below the title.' },
     { id: 'action',      name: 'action',      type: 'ReactNode', description: 'Action element (e.g. a Button) rendered below the description.' },
   ],
-  'system-banner': [
-    { id: 'status',    name: 'status',    type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Semantic status colour. Default: "neutral".' },
-    { id: 'title',     name: 'title',     type: 'string',    description: 'Bold title text.' },
-    { id: 'icon',      name: 'icon',      type: 'string',    description: 'Override the default status icon with any Material Symbols name.' },
-    { id: 'action',    name: 'action',    type: 'ReactNode', description: 'Action element rendered at the trailing end.' },
-    { id: 'onDismiss', name: 'onDismiss', type: '() => void', description: 'Called when the dismiss button is clicked. Omit to hide the dismiss button.' },
-    { id: 'children',  name: 'children',  type: 'ReactNode', description: 'Banner body text.' },
-  ],
-
   // ── Layout ────────────────────────────────────────────────────────────────
   section: [
     { id: 'as',               name: 'as',               type: 'ElementType', description: 'Underlying HTML element. Default: "section".' },

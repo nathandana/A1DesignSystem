@@ -17,6 +17,7 @@
 .a1-circular-progress--sm { --a1-cp-size: var(--component-circular-progress-sm-size); }
 /* md is the default — no modifier needed */
 .a1-circular-progress--lg { --a1-cp-size: var(--component-circular-progress-lg-size); }
+.a1-circular-progress--xl { --a1-cp-size: var(--component-circular-progress-xl-size); }
 
 /* ─── Ring (SVG + optional inner content) ────────────────────────────────────── */
 

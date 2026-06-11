@@ -130,6 +130,7 @@
   --base-spacing-64: 4rem;
   --base-spacing-96: 6rem;
   --base-spacing-128: 8rem;
+  --base-spacing-192: 12rem;
   --base-spacing-neg-4: -0.25rem;
   --base-spacing-neg-8: -0.5rem;
   --base-spacing-neg-12: -0.75rem;
@@ -414,6 +415,7 @@
   --component-circular-progress-sm-size: 4rem;
   --component-circular-progress-md-size: 6rem;
   --component-circular-progress-lg-size: 8rem;
+  --component-circular-progress-xl-size: 12rem;
   --component-circular-progress-track-color: #e1e8f3;
   --component-circular-progress-fill-color: #7c3aed;
   --component-circular-progress-gap: 0.5rem;
