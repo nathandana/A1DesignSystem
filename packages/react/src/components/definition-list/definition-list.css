@@ -52,7 +52,8 @@
 }
 
 .a1-definition-list__copy {
-  margin-block-start: calc((1lh - var(--component-icon-button-size)) / 2);
+  flex: 0 0 auto;
+  margin-block-start: calc((1lh - var(--component-button-small-height)) / 2);
 }
 
 .a1-definition-list--column {
@@ -99,10 +100,10 @@
 }
 
 .a1-definition-list__value-content {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 
-@container (max-width: 360px) {
+@container (max-width: 240px) {
   .a1-definition-list--row .a1-definition-list__item {
     display: flex;
     flex-direction: column;

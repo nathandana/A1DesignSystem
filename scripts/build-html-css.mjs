@@ -1426,7 +1426,7 @@ function componentCss() {
   );
 }
 
-@container (max-width: 360px) {
+@container (max-width: 240px) {
   .a1-definition-list-row .a1-definition-list-item {
     display: flex;
     flex-direction: column;

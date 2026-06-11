@@ -2,6 +2,7 @@
 
 ## v0.10.0
 
+- **DefinitionList copy action** — copy value affordance now uses a small tertiary `Button` with visible copy/copied text instead of an icon-only `IconButton`; layout keeps the action immediately after the value instead of pushing it to the far edge of the row.
 - **`semantic.color.surface.field` token** — new surface token for form field backgrounds, independent of `surface.page`. All field-family components (Field, Textarea, Select, Checkbox, Radio, Switch, Choice Group, Inline Editable) now reference `--semantic-color-surface-field`. Fieldset surface variant uses `surface.card`. Dark mode value: `neutral.700` (elevated above `neutral.800` page). Fresh theme override: `neutral.0` (white) so fields stand out against the mint gradient.
 - **DataTable notice row mobile fix** — at ≤640px the card layout's `td::before` column-label pseudo-element was creating a blank 110px gap before notice row content. Notice rows now suppress `::before` and reset to `display: block` so banners span the full card width.
 - **BottomDrawer Storybook Docs** — added `tags: ["autodocs"]` and `argTypes` to `BottomDrawer.stories.jsx` so the component has a generated Docs page in Storybook.

@@ -21,6 +21,7 @@ const releases = [
         items: [
           "Field, Textarea, Select, Checkbox, Radio, Switch, Choice Group, and Inline Editable now use --semantic-color-surface-field instead of --semantic-color-surface-page",
           "Fieldset surface variant uses surface.card (panel/card grouping) instead of surface.page",
+          "DefinitionList copy value affordance now renders as a small tertiary Button with visible copy/copied text and sits immediately after the value content",
           "BottomDrawer stories: added tags: [\"autodocs\"] and argTypes for Storybook Docs page generation",
         ],
       },

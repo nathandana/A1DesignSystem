@@ -1,6 +1,6 @@
 import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "../button/Button.jsx";
 import { Heading } from "../heading/Heading.jsx";
-import { IconButton } from "../icon-button/IconButton.jsx";
 import "./definition-list.css";
 
 const directions = ["row", "column"];
@@ -86,13 +86,16 @@ function DefinitionCopyButton({ text, label = "Copy value", copiedLabel = "Copie
   }
 
   return (
-    <IconButton
+    <Button
       className="a1-definition-list__copy"
       icon={copied ? "check" : "content_copy"}
-      label={copied ? copiedLabel : label}
       onClick={handleCopy}
+      size="sm"
+      type="button"
       variant="tertiary"
-    />
+    >
+      {copied ? copiedLabel : label}
+    </Button>
   );
 }
 
