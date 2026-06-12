@@ -22,10 +22,10 @@ rules:
       above it so that buttons align visually with the page content. For example,
       if the page uses <Section contentWidth="sm">, set <StickyActions contentWidth="sm">.
 
-  - id: page-offset
-    severity: warning
+  - id: auto-spacer
+    severity: info
     description: >
-      When StickyActions is present, add bottom padding to the scrollable page content
-      equal to or greater than the height of the StickyActions bar so the last
-      content item is not hidden behind the fixed overlay. A Spacer or
-      paddingBlockEnd on the containing Section is the recommended approach.
+      StickyActions automatically renders an invisible spacer sibling in document
+      flow whose height matches the bar. This keeps content above the bar visible
+      without any manual paddingBlockEnd or Spacer required from the consumer.
+      Do not add your own bottom padding to offset the bar — the spacer handles it.

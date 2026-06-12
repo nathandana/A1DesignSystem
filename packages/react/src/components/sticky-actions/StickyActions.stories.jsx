@@ -28,7 +28,7 @@ export const Default = {
   name: "Default",
   render: () => (
     <>
-      <Section padding="md" contentWidth="sm" gap="lg" surface="page" style={{ paddingBlockEnd: "var(--base-spacing-96)" }}>
+      <Section padding="md" contentWidth="sm" gap="lg" surface="page">
         <Heading as="h1" type="heading" size="xl">Review your changes</Heading>
         <Paragraph color="muted">
           Check everything below before saving. You can go back to make corrections at any point.
@@ -55,7 +55,7 @@ export const WithStepTracker = {
 
     return (
       <>
-        <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page" style={{ paddingBlockEnd: "var(--base-spacing-96)" }}>
+        <Section padding="md" contentWidth="xs" align="center" gap="lg" surface="page">
           <Heading as="h1" type="display" size="lg" align="center">
             {step === 1 && "Welcome"}
             {step === 2 && "Your details"}
@@ -100,7 +100,7 @@ export const ContentWidthAlignment = {
   name: "Content width alignment",
   render: () => (
     <>
-      <Section padding="md" contentWidth="md" gap="lg" surface="page" style={{ paddingBlockEnd: "var(--base-spacing-96)" }}>
+      <Section padding="md" contentWidth="md" gap="lg" surface="page">
         <Heading as="h1" type="heading" size="xl">Project settings</Heading>
         <Paragraph color="muted">
           The StickyActions below uses contentWidth="md" to match this Section's

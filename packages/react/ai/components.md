@@ -143,7 +143,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > - **Do not combine with BottomDrawer.** Both occupy the bottom of the viewport and will overlap. Use StickyActions for flow navigation (onboarding, wizards, checkout) and BottomDrawer for persistent app navigation — never both on the same screen.
 > - **Always nest a ButtonContainer.** Do not place bare buttons directly inside StickyActions — ButtonContainer handles responsive layout, fill behaviour, and alignment.
 > - **Match contentWidth to the Section above.** If the page content uses `contentWidth="sm"`, set `StickyActions contentWidth="sm"` so buttons stay aligned with the content.
-> - **Add bottom offset to scrollable content.** StickyActions overlays the bottom of the viewport. Add `paddingBlockEnd` or a `Spacer` at the bottom of the page Section so the last content item is not hidden behind the bar.
+> - **Bottom spacing is automatic.** StickyActions renders an invisible spacer sibling in document flow sized to match the bar via `ResizeObserver`. No manual `paddingBlockEnd` or `Spacer` is needed — the spacer keeps content visible above the bar automatically.
 >
 > **Button vs Link:** Use `<Button>` for actions (save, submit, delete, open a dialog, change state). Use `<Link>` for navigation. Do not use `<Button>` where an `<a>` element is semantically correct.
 >

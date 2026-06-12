@@ -1579,8 +1579,7 @@ const SECTION_PROPS = {
   align: "center",
   gap: "lg",
   surface: "page",
-  // Extra bottom padding so content never hides behind the fixed StickyActions bar
-  style: { minHeight: "100vh", paddingBlockEnd: "calc(var(--base-spacing-64) + var(--base-spacing-96))" },
+  style: { minHeight: "100vh" },
 };
 
 function OnboardingDemo() {

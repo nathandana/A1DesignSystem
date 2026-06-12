@@ -11,4 +11,11 @@ export interface StickyActionsProps extends Omit<HTMLAttributes<HTMLDivElement>,
   children?: ReactNode;
 }
 
+/**
+ * Fixed bottom action bar for flows, wizards, and multi-step forms.
+ *
+ * Renders a position:fixed bar at the bottom of the viewport and an invisible
+ * spacer sibling in document flow. The spacer height is measured via ResizeObserver
+ * and kept in sync automatically — no manual bottom padding needed on the page.
+ */
 export declare function StickyActions(props: StickyActionsProps): JSX.Element;

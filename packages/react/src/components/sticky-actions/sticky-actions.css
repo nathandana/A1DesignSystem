@@ -5,9 +5,6 @@
   z-index: var(--component-sticky-actions-z-index);
   background: var(--component-sticky-actions-background);
   border-block-start: var(--component-sticky-actions-border-width) solid var(--semantic-color-border-subtle);
-  padding-block-start: var(--component-sticky-actions-padding-block);
-  padding-block-end: calc(var(--component-sticky-actions-padding-block) + env(safe-area-inset-bottom, 0px));
-  padding-inline: var(--component-sticky-actions-padding-inline);
   box-sizing: border-box;
 }
 
@@ -15,6 +12,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--component-sticky-actions-gap);
+  /* Padding lives here so max-width + margin-inline: auto center correctly
+     against the full viewport width, not the outer padded content area. */
+  padding-inline: var(--component-sticky-actions-padding-inline);
+  padding-block-start: var(--component-sticky-actions-padding-block);
+  padding-block-end: calc(var(--component-sticky-actions-padding-block) + env(safe-area-inset-bottom, 0px));
   width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
