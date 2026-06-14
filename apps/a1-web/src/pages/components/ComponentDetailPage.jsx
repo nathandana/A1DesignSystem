@@ -1793,7 +1793,7 @@ function getDefaultConfig(component, category) {
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const [config, setConfig] = useState(() => getDefaultConfig(component, category))
   const [configPanelTab, setConfigPanelTab] = useState('configure')
-  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'lg' })
+  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'lg', inverse: false })
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -1819,7 +1819,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Grid columns={{ xs: 1, md: 12 }} gap="md">
                 <GridItem span={{ xs: 1, md: 8 }}>
                                 <Stack gap="sm">
-                  <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} gap="lg">
+                  <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
                     <ComponentPreview component={component} config={config} />
                   </Section>
 
@@ -1843,26 +1843,28 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                             label="Background"
                             size="compact"
                             hideIndicator
+                            columns={2}
                             value={displayConfig.surface}
                             onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
                             options={[
                               { label: 'Panel', value: 'panel' },
                               { label: 'Raised', value: 'raised' },
                               { label: 'Sunken', value: 'sunken' },
-                              { label: 'Inverse', value: 'inverse' },
+                              { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
                             ]}
                           />
                           <ChoiceGroup
                             label="Alignment"
                             size="compact"
                             hideIndicator
+                            iconOnly
                             columns={3}
                             value={displayConfig.align}
                             onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
                             options={[
-                              { label: 'Start', value: 'start' },
-                              { label: 'Center', value: 'center' },
-                              { label: 'End', value: 'end' },
+                              { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
+                              { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
+                              { icon: 'align_horizontal_right', label: 'End', value: 'end' },
                             ]}
                           />
                           <ChoiceGroup
@@ -1876,6 +1878,18 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                               { label: 'Xs', value: 'xs' },
                               { label: 'Md', value: 'md' },
                               { label: 'Lg', value: 'lg' },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Inverse"
+                            size="compact"
+                            hideIndicator
+                            columns={2}
+                            value={displayConfig.inverse ? 'on' : 'off'}
+                            onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
+                            options={[
+                              { label: 'Off', value: 'off' },
+                              { label: 'On', value: 'on' },
                             ]}
                           />
                         </Stack>
