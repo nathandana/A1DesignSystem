@@ -1,5 +1,17 @@
 # A1 Web Changelog
 
+## v0.13.0
+
+### Component detail page redesign
+
+- **Tabs compact size** — added `size="compact"` prop to Tabs component for reduced padding (6px block, 8px inline) and xs font size. Applied to page-level tabs and config panel tabs for tighter visual hierarchy.
+- **Tabs moved into header** — page-level tabs (Configure, Overview, Anatomy, Rules, Properties, Accessibility) now render inside the header Section with breadcrumb and heading, improving layout cohesion.
+- **Breadcrumb and heading in ComponentDetailPage** — moved from Components index into ComponentDetailPage so the full header (breadcrumb, title, tabs) is co-located with the content.
+- **Configuration panel as right sidebar** — replaced Grid layout with flex layout; configuration controls now render in a fixed-width (280px) right sidebar that extends to viewport bottom with internal scrolling. Mirrors the left content area's scrolling behavior.
+- **Display tab surfaces from component** — Background options now read from actual Section component surfaces (`["page", "panel", "raised"]`) instead of hardcoded values. Removed invalid "sunken" option.
+- **Padding "none" option** — added None option (with `layers_clear` icon) to padding choices in Display tab, matching Section's valid padding values.
+- **Tabs Storybook Docs** — added `tags: ["autodocs"]` to Tabs meta and `argTypes` for variant/size/level with control options. Added Playground story with configurable controls for all variant types (line/pills/segment/progress/folder).
+
 ## v0.12.1
 
 - **ChoiceGroup spacing fix** — removed redundant `margin-top` on the items grid that was adding extra space on top of the flex container gap, causing the gap between the legend/hint and tiles to be double what other form fields use.
