@@ -7,6 +7,18 @@ export default meta;
 
 const releases = [
   {
+    version: "v0.12.1",
+    date: "2026-06-12",
+    sections: [
+      {
+        type: "Fixed",
+        items: [
+          "ChoiceGroup spacing — removed redundant margin-top on the items grid that doubled the gap between legend/hint and tiles. Spacing now relies solely on the flex container gap, matching other form fields.",
+        ],
+      },
+    ],
+  },
+  {
     version: "v0.11.0",
     date: "2026-06-11",
     sections: [

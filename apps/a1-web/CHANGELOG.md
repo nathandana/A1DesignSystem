@@ -1,5 +1,11 @@
 # A1 Web Changelog
 
+## v0.12.1
+
+- **ChoiceGroup spacing fix** — removed redundant `margin-top` on the items grid that was adding extra space on top of the flex container gap, causing the gap between the legend/hint and tiles to be double what other form fields use.
+
+---
+
 ## v0.11.0
 
 - **StickyActions component** — new React component that fixes a button group to the bottom of the viewport. Use it for onboarding flows, wizards, checkout, and any multi-step form where button position should not move between steps. Accepts a `contentWidth` prop (xs/sm/md/lg/xl/2xl) that mirrors Section's content width values — match it to the Section above for visual alignment. Always nest a `ButtonContainer` inside. Do not combine with `BottomDrawer` on the same screen. Includes `env(safe-area-inset-bottom)` padding for notch devices.

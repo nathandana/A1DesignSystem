@@ -138,7 +138,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--a1-cg-gap);
-  margin-top: var(--a1-cg-items-top-gap);
 }
 
 /* Fixed column count when --a1-cg-columns is set */
