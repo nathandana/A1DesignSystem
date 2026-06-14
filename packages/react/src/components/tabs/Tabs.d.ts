@@ -19,6 +19,8 @@ export interface TabsProps {
    * Default: 1
    */
   level?: 1 | 2;
+  /** Size variant. Default: undefined (standard) */
+  size?: "compact";
   className?: string;
   children?: React.ReactNode;
 }

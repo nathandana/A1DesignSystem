@@ -1,17 +1,10 @@
 import { useState } from 'react'
-import {
-  Breadcrumb,
-  Heading,
-  Section,
-  Stack,
-} from '@gtivr4/a1-design-system-react'
 import { componentCategories } from './data.js'
 import {
   allComponents,
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
-  getBreadcrumbItems,
   getComponentEntry,
 } from './utils.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
@@ -26,22 +19,12 @@ export { componentCategoryPageIds, componentPageIds, componentPageTitles }
 export function Components({ activePage = 'components', onNavigate }) {
   const [detailTab, setDetailTab] = useState('configure')
   const { category, component } = getComponentEntry(activePage)
-  const breadcrumbItems = getBreadcrumbItems({ category, component }, onNavigate)
   const currentComponent = component
     ? allComponents.find((item) => item.id === component.id) ?? component
     : null
 
   return (
     <>
-      <Section padding="sm" surface="panel" gradient="accent" gradientPosition='top-right' contentWidth="xl">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb items={breadcrumbItems} />
-          <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
-            {component?.title ?? category?.title ?? 'Components'}
-          </Heading>
-        </Stack>
-      </Section>
-
       {currentComponent ? (
         <ComponentDetailPage
           component={currentComponent}

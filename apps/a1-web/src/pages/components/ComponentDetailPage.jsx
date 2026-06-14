@@ -59,6 +59,7 @@ import {
   getRelatedComponents,
   getRulesForComponent,
   navigateCard,
+  navigateBreadcrumb,
 } from './utils.js'
 
 const PACKAGE_META = {
@@ -1802,10 +1803,26 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
     setConfig(getDefaultConfig(component, category))
   }, [component.id, component.title, category.icon])
 
+  const breadcrumbItems = [
+    { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateBreadcrumb(e, onNavigate, 'components') },
+  ]
+  if (category) {
+    breadcrumbItems.push({ label: category.title, href: getComponentPath(`components-${category.id}`), onClick: (e) => navigateBreadcrumb(e, onNavigate, `components-${category.id}`) })
+  }
+  if (component) {
+    breadcrumbItems.push({ label: component.title })
+  }
+
   return (
     <ComponentDocsShell>
-      <Section padding="none" contentWidth="xl">
-        <Tabs value={tab} onChange={onTabChange}>
+      <Section padding="xs" surface="panel" gradient="accent" gradientPosition='top-right' contentWidth="xl">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb items={breadcrumbItems} />
+          <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
+            {component?.title}
+          </Heading>
+        </Stack>
+        <Tabs value={tab} onChange={onTabChange} size="compact">
           <TabList>
             <Tab value="configure">Configure</Tab>
             <Tab value="overview">Overview</Tab>
@@ -1829,7 +1846,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                 </GridItem>
                 <GridItem span={{ xs: 1, md: 4 }}>
                   <Section padding="xs" surface="raised">
-                    <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line">
+                    <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
                       <TabList>
                         <Tab value="configure">Configure</Tab>
                         <Tab value="display">Display</Tab>

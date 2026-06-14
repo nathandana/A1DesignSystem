@@ -6,11 +6,11 @@ const TabsContext = createContext(null);
 
 /* ─── Tabs ─────────────────────────────────────────────────────────────────── */
 
-export function Tabs({ children, value, onChange, variant = "line", level = 1, className = "" }) {
+export function Tabs({ children, value, onChange, variant = "line", level = 1, size, className = "" }) {
   const uid = useId();
   return (
-    <TabsContext.Provider value={{ value, onChange, variant, level, uid }}>
-      <div className={["a1-tabs", `a1-tabs--level-${level}`, className].filter(Boolean).join(" ")}>
+    <TabsContext.Provider value={{ value, onChange, variant, level, size, uid }}>
+      <div className={["a1-tabs", `a1-tabs--level-${level}`, size && `a1-tabs--${size}`, className].filter(Boolean).join(" ")}>
         {children}
       </div>
     </TabsContext.Provider>

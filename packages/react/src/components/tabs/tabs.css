@@ -470,3 +470,19 @@
 .a1-tab-panel--progress {
   padding: var(--base-spacing-24) 0;
 }
+
+/* ─── Compact size ──────────────────────────────────────────────────────────── */
+
+.a1-tabs--compact .a1-tab {
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-xs);
+  gap: var(--base-spacing-4);
+}
+
+.a1-tabs--compact .a1-tab--line {
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+}
+
+.a1-tabs--compact .a1-tab--folder {
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+}
