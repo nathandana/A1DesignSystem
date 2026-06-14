@@ -1792,6 +1792,8 @@ function getDefaultConfig(component, category) {
 
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const [config, setConfig] = useState(() => getDefaultConfig(component, category))
+  const [configPanelTab, setConfigPanelTab] = useState('configure')
+  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'lg' })
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -1817,7 +1819,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Grid columns={{ xs: 1, md: 12 }} gap="md">
                 <GridItem span={{ xs: 1, md: 8 }}>
                                 <Stack gap="sm">
-                  <Section surface="panel" gap="lg">
+                  <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} gap="lg">
                     <ComponentPreview component={component} config={config} />
                   </Section>
 
@@ -1826,9 +1828,61 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
 
                 </GridItem>
                 <GridItem span={{ xs: 1, md: 4 }}>
-                  <Section padding="xs" surface="raised">
-                    <ConfigureControls component={component} config={config} setConfig={setConfig} />
-                  </Section>
+                  <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line">
+                    <TabList>
+                      <Tab value="configure">Configure</Tab>
+                      <Tab value="display">Display</Tab>
+                    </TabList>
+                    <TabPanel value="configure">
+                      <Section padding="xs" surface="raised">
+                        <ConfigureControls component={component} config={config} setConfig={setConfig} />
+                      </Section>
+                    </TabPanel>
+                    <TabPanel value="display">
+                      <Section padding="xs" surface="raised">
+                        <Stack gap="lg">
+                          <ChoiceGroup
+                            label="Background"
+                            size="compact"
+                            hideIndicator
+                            value={displayConfig.surface}
+                            onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
+                            options={[
+                              { label: 'Panel', value: 'panel' },
+                              { label: 'Raised', value: 'raised' },
+                              { label: 'Sunken', value: 'sunken' },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Alignment"
+                            size="compact"
+                            hideIndicator
+                            columns={3}
+                            value={displayConfig.align}
+                            onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
+                            options={[
+                              { label: 'Start', value: 'start' },
+                              { label: 'Center', value: 'center' },
+                              { label: 'End', value: 'end' },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Padding"
+                            size="compact"
+                            hideIndicator
+                            columns={3}
+                            value={displayConfig.padding}
+                            onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
+                            options={[
+                              { label: 'Xs', value: 'xs' },
+                              { label: 'Md', value: 'md' },
+                              { label: 'Lg', value: 'lg' },
+                            ]}
+                          />
+                        </Stack>
+                      </Section>
+                    </TabPanel>
+                  </Tabs>
                 </GridItem>
               </Grid>
             </Stack>
