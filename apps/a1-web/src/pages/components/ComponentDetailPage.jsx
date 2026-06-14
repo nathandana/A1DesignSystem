@@ -868,11 +868,17 @@ function ConfigureControls({ component, config, setConfig }) {
             { label: 'Lg',   value: 'lg'                   },
           ]}
         />
-        <Switch
-          label="Balance wrapping"
+        <ChoiceGroup
+          label="Text wrap"
           size="compact"
-          checked={config.textWrap}
-          onChange={(checked) => setConfig((current) => ({ ...current, textWrap: checked }))}
+          hideIndicator
+          columns={2}
+          value={config.textWrap ? 'balance' : 'default'}
+          onChange={(value) => setConfig((current) => ({ ...current, textWrap: value === 'balance' }))}
+          options={[
+            { label: 'Default', value: 'default' },
+            { label: 'Balance', value: 'balance' },
+          ]}
         />
       </Stack>
     )
