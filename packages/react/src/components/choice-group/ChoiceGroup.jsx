@@ -13,19 +13,21 @@ export function ChoiceGroup({
   hint,
   error,
   success,
-  size        = "default",
+  size          = "default",
   columns,
-  multiple    = false,
-  inlineIcon  = false,
-  required    = false,
+  multiple      = false,
+  inlineIcon    = false,
+  hideIndicator = false,
+  iconOnly      = false,
+  required      = false,
   name,
-  options     = [],
+  options       = [],
   sections,
   value,
   defaultValue,
   onChange,
   id: providedId,
-  className   = "",
+  className     = "",
   ...props
 }) {
   const autoId = useId();
@@ -77,7 +79,9 @@ export function ChoiceGroup({
     "a1-choice-group",
     resolvedSize !== "default" && `a1-choice-group--${resolvedSize}`,
     multiple ? "a1-choice-group--multiple" : "a1-choice-group--single",
-    inlineIcon && "a1-choice-group--inline-icon",
+    inlineIcon    && "a1-choice-group--inline-icon",
+    hideIndicator && "a1-choice-group--no-indicator",
+    iconOnly      && "a1-choice-group--icon-only",
     isFixedColumns && "a1-choice-group--fixed-columns",
     responsiveClass,
     error   && "a1-choice-group--error",
@@ -105,7 +109,8 @@ export function ChoiceGroup({
         htmlFor={itemId}
         className={[
           "a1-choice-item",
-          isDisabled && "a1-choice-item--disabled",
+          isDisabled   && "a1-choice-item--disabled",
+          option.iconOnly && "a1-choice-item--icon-only",
         ].filter(Boolean).join(" ")}
       >
         <input
@@ -118,7 +123,14 @@ export function ChoiceGroup({
           disabled={isDisabled}
           onChange={(e) => handleChange(option.value, e.target.checked)}
         />
-        {option.icon && (
+        {option.swatch && (
+          <span
+            className="a1-choice-item__swatch"
+            aria-hidden="true"
+            style={{ "--a1-swatch-color": option.swatch }}
+          />
+        )}
+        {!option.swatch && option.icon && (
           <span className="a1-choice-item__icon" aria-hidden="true">
             <Icon name={option.icon} />
           </span>

@@ -327,6 +327,49 @@
   flex-shrink: 0;
 }
 
+/* ─── No indicator ──────────────────────────────────────────────────────────── */
+
+.a1-choice-group--no-indicator .a1-choice-item {
+  padding-inline-start: var(--a1-cg-padding);
+}
+
+.a1-choice-group--no-indicator .a1-choice-item__indicator {
+  display: none;
+}
+
+/* ─── Icon only (group-level and per-option) ────────────────────────────────── */
+
+.a1-choice-group--icon-only .a1-choice-item,
+.a1-choice-item--icon-only {
+  align-items: center;
+  justify-content: center;
+}
+
+.a1-choice-group--icon-only .a1-choice-item__content,
+.a1-choice-item--icon-only .a1-choice-item__content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Swatch ────────────────────────────────────────────────────────────────── */
+
+.a1-choice-item__swatch {
+  display: block;
+  width: var(--base-spacing-20);
+  height: var(--base-spacing-20);
+  border-radius: var(--base-radius-sm);
+  background-color: var(--a1-swatch-color, var(--semantic-color-text-default));
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  flex-shrink: 0;
+}
+
 /* ─── Error state ───────────────────────────────────────────────────────────── */
 
 .a1-choice-group--error

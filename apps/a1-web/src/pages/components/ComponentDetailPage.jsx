@@ -794,22 +794,11 @@ function ConfigureControls({ component, config, setConfig }) {
           value={config.children}
           onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
         />
-        <SelectField
-          label="Element"
-          size="compact"
-          value={config.as}
-          onChange={(event) => setConfig((current) => ({ ...current, as: event.target.value }))}
-        >
-          {HEADING_ELEMENT_OPTIONS.map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </SelectField>
-        <RadioGroup
+        <ChoiceGroup
           label="Type"
           size="compact"
-          inline
+          hideIndicator
           value={config.type}
-          options={radioOptions(HEADING_TYPE_OPTIONS)}
           onChange={(type) => {
             const nextSizeOptions = HEADING_SIZE_OPTIONS[type] ?? HEADING_SIZE_OPTIONS.heading
             setConfig((current) => ({
@@ -818,181 +807,67 @@ function ConfigureControls({ component, config, setConfig }) {
               size: nextSizeOptions.includes(current.size) ? current.size : nextSizeOptions[2],
             }))
           }}
+          options={HEADING_TYPE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
-        <SelectField
+        <ChoiceGroup
+          label="Element"
+          size="compact"
+          hideIndicator
+          columns={4}
+          value={config.as}
+          onChange={(as) => setConfig((current) => ({ ...current, as }))}
+          options={HEADING_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
+        />
+        <ChoiceGroup
           label="Size"
           size="compact"
+          hideIndicator
+          columns={3}
           value={config.size}
-          onChange={(event) => setConfig((current) => ({ ...current, size: event.target.value }))}
-        >
-          {sizeOptions.map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </SelectField>
-
-        <div>
-
-                              <ChoiceGroup
-            defaultValue="h2"
-            label="Element"
-            options={[
-              {
-                label: 'h1',
-                value: 'h1'
-              },
-              {
-                label: 'h2',
-                value: 'h2'
-              },
-              {
-                label: 'h3',
-                value: 'h3'
-              },
-              {
-                label: 'h4',
-                value: 'h4'
-              },
-              {
-                label: 'h5',
-                value: 'h5'
-              },
-              {
-                label: 'h6',
-                value: 'h6'
-              },
-              {label: 'p', value: 'p'},
-              {label: 'span', value: 'span'}
-            ]}
-            size="compact"
-          />
-
-
-                    <ChoiceGroup
-            defaultValue="heading"
-            label="Type"
-            options={[
-              {
-                label: 'Heading',
-                value: 'heading'
-              },
-              {
-                label: 'Display',
-                value: 'display'
-              }
-            ]}
-            size="compact"
-          />
-          <ChoiceGroup
-            defaultValue="left"
-            label="Alignment"
-            options={[
-              {
-                icon: 'align_horizontal_left',
-                value: 'left'
-              },
-              {
-                icon: 'align_horizontal_center',
-                value: 'center'
-              },
-              {
-                icon: 'align_horizontal_right',
-                value: 'right'
-              }
-            ]}
-            size="compact"
-          />
-
-          <ChoiceGroup
-            defaultValue="sm"
-            label="Color"
-            options={[
-              {
-                label: 'xs',
-                value: 'xs'
-              },
-              {
-                label: 'sm',
-                value: 'sm'
-              },
-              {
-                label: 'md',
-                value: 'md'
-              },
-              {
-                label: 'lg',
-                value: 'lg'
-              },
-              {
-                label: 'xl',
-                value: 'xl'
-              },
-              {
-                label: 'jumbo',
-                value: 'jumbo'
-              },
-              {
-                label: 'xJumbo',
-                value: 'xJumbo'
-              }
-            ]}
-            size="compact"
-          />
-          <ChoiceGroup
-            defaultValue="None"
-            label="Margin"
-            options={[
-              {
-                label: 'None',
-                value: 'None'
-              },
-              {
-                label: 'sm',
-                value: 'sm'
-              },
-              {
-                label: 'md',
-                value: 'md'
-              },
-              {
-                label: 'lg',
-                value: 'lg'
-              }
-            ]}
-            size="compact"
-          />
-        </div>
-
-
-
-
-
-        <RadioGroup
+          onChange={(size) => setConfig((current) => ({ ...current, size }))}
+          options={sizeOptions.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        />
+        <ChoiceGroup
           label="Color"
           size="compact"
-          inline
+          hideIndicator
+          columns={3}
           value={config.color}
-          options={radioOptions(HEADING_COLOR_OPTIONS)}
           onChange={(color) => setConfig((current) => ({ ...current, color }))}
+          options={[
+            { label: 'Default', value: 'default', swatch: 'var(--semantic-color-text-default)'      },
+            { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'        },
+            { label: 'Accent',  value: 'accent',  swatch: 'var(--semantic-color-action-background)' },
+          ]}
         />
-        <RadioGroup
+        <ChoiceGroup
           label="Align"
           size="compact"
-          inline
+          hideIndicator
+          iconOnly
+          columns={3}
           value={config.align}
-          options={radioOptions(HEADING_ALIGN_OPTIONS)}
           onChange={(align) => setConfig((current) => ({ ...current, align }))}
+          options={[
+            { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
+            { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
+            { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
+          ]}
         />
-        <SelectField
+        <ChoiceGroup
           label="Margin"
           size="compact"
-          value={config.margin}
-          onChange={(event) => setConfig((current) => ({ ...current, margin: event.target.value }))}
-        >
-          <option value="">None</option>
-          {HEADING_MARGIN_OPTIONS.filter(Boolean).map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </SelectField>
+          hideIndicator
+          columns={4}
+          value={config.margin || 'none'}
+          onChange={(margin) => setConfig((current) => ({ ...current, margin: margin === 'none' ? '' : margin }))}
+          options={[
+            { label: 'None', value: 'none', icon: 'remove_circle', iconOnly: true },
+            { label: 'Sm',   value: 'sm'                   },
+            { label: 'Md',   value: 'md'                   },
+            { label: 'Lg',   value: 'lg'                   },
+          ]}
+        />
         <Switch
           label="Balance wrapping"
           size="compact"
@@ -1842,8 +1717,7 @@ function propLine(name, value, defaultValue) {
 
 function buildHeadingSnippet(config) {
   const textWrap = config.textWrap ? 'balance' : undefined
-  const lines = [
-    '<Heading',
+  const props = [
     propLine('as', config.as, 'h2'),
     propLine('type', config.type, 'heading'),
     propLine('size', config.size, undefined),
@@ -1851,10 +1725,10 @@ function buildHeadingSnippet(config) {
     propLine('align', config.align, 'left'),
     propLine('margin', config.margin, undefined),
     propLine('textWrap', textWrap, undefined),
-    '>',
-  ].filter(Boolean)
+  ].filter(Boolean).join(' ')
 
-  return `${lines.join('\n')}\n  ${escapeJsxText(config.children || 'Heading')}\n</Heading>`
+  const propsStr = props ? ` ${props}` : ''
+  return `<Heading${propsStr}>\n  ${escapeJsxText(config.children || 'Heading')}\n</Heading>`
 }
 
 function CodeSnippets({ component, config }) {

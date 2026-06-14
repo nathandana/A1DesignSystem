@@ -18,8 +18,10 @@ const meta = {
     size:     { control: "inline-radio", options: ["compact", "default", "comfortable"] },
     columns:  { control: "object" },
     multiple:    { control: "boolean" },
-    inlineIcon:  { control: "boolean" },
-    required:    { control: "boolean" },
+    inlineIcon:    { control: "boolean" },
+    hideIndicator: { control: "boolean" },
+    iconOnly:      { control: "boolean" },
+    required:      { control: "boolean" },
     hint:     { control: "text" },
     error:    { control: "text" },
     success:  { control: "text" },
@@ -360,6 +362,83 @@ export const InlineIcon = {
           columns={1}
           defaultValue={["analytics", "api"]}
           options={FEATURE_OPTIONS}
+        />
+      </div>
+
+    </div>
+  ),
+};
+
+/* ── No indicator · icon-only · swatch ───────────────────────────────────── */
+
+export const CompactControls = {
+  name: "Compact controls (hideIndicator · iconOnly · swatch)",
+  parameters: { controls: { include: ["size"] } },
+  render: (args) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
+
+      <div>
+        <p style={LABEL}>hideIndicator — label only, 3 columns</p>
+        <ChoiceGroup
+          {...args}
+          label="Element"
+          size="compact"
+          hideIndicator
+          columns={3}
+          defaultValue="h2"
+          options={["h1","h2","h3","h4","h5","h6","p","span"].map((v) => ({ label: v, value: v }))}
+        />
+      </div>
+
+      <div>
+        <p style={LABEL}>hideIndicator · iconOnly — icon-only tiles, 3 columns</p>
+        <ChoiceGroup
+          {...args}
+          label="Text alignment"
+          size="compact"
+          hideIndicator
+          iconOnly
+          columns={3}
+          defaultValue="left"
+          options={[
+            { icon: "align_horizontal_left",   label: "Left",   value: "left"   },
+            { icon: "align_horizontal_center",  label: "Center", value: "center" },
+            { icon: "align_horizontal_right",   label: "Right",  value: "right"  },
+          ]}
+        />
+      </div>
+
+      <div>
+        <p style={LABEL}>swatch — color dot above label, no indicator</p>
+        <ChoiceGroup
+          {...args}
+          label="Text color"
+          size="compact"
+          hideIndicator
+          defaultValue="default"
+          options={[
+            { label: "Default", value: "default", swatch: "var(--semantic-color-text-default)"          },
+            { label: "Muted",   value: "muted",   swatch: "var(--semantic-color-text-muted)"            },
+            { label: "Accent",  value: "accent",  swatch: "var(--semantic-color-action-background)"     },
+          ]}
+        />
+      </div>
+
+      <div>
+        <p style={LABEL}>option.iconOnly — per-tile icon-only alongside labeled tiles</p>
+        <ChoiceGroup
+          {...args}
+          label="Margin"
+          size="compact"
+          hideIndicator
+          columns={4}
+          defaultValue="none"
+          options={[
+            { label: "None", value: "none", icon: "remove_circle", iconOnly: true },
+            { label: "Sm",   value: "sm"   },
+            { label: "Md",   value: "md"   },
+            { label: "Lg",   value: "lg"   },
+          ]}
         />
       </div>
 

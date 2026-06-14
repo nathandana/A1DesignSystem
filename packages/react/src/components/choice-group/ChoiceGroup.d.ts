@@ -11,7 +11,18 @@ export interface ChoiceOption {
   value: string;
   label: string;
   subtext?: string;
+  /** Material Symbols icon name. Mutually exclusive with swatch — swatch takes precedence. */
   icon?: string;
+  /**
+   * CSS color value rendered as a filled circle swatch instead of an icon.
+   * Accepts any CSS color including custom properties, e.g. "var(--semantic-color-action-background)".
+   */
+  swatch?: string;
+  /**
+   * Visually hide this tile's label/subtext, showing only the icon. The label
+   * is still rendered for screen readers. Requires `icon` to be set. Default: false
+   */
+  iconOnly?: boolean;
   disabled?: boolean;
 }
 
@@ -42,6 +53,18 @@ export interface ChoiceGroupProps {
    * above the content block. Has no effect on tiles with no icon. Default: false
    */
   inlineIcon?: boolean;
+  /**
+   * Hide the radio/checkbox selection indicator from all tiles. Selection state is
+   * still communicated via border, background, and the accessible input.
+   * Useful for compact configuration controls. Default: false
+   */
+  hideIndicator?: boolean;
+  /**
+   * Visually hide the label and subtext, showing only the icon. The label is still
+   * rendered in the DOM for screen readers. Requires each option to have both
+   * `icon` and `label`. Default: false
+   */
+  iconOnly?: boolean;
   required?: boolean;
   /** Input name attribute. Defaults to the group id. */
   name?: string;
