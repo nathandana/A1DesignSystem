@@ -1832,14 +1832,14 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Tab value="accessibility">Accessibility</Tab>
             </TabList>
             <TabPanel value="configure">
-              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', minHeight: 0 }}>
-                <Stack gap="sm" style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', height: 'calc(100vh - 280px)', minHeight: 0 }}>
+                <Stack gap="sm" style={{ flex: 1, minWidth: 0, overflow: 'auto' }}>
                   <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
                     <ComponentPreview component={component} config={config} />
                   </Section>
                   <CodeSnippets component={component} config={config} />
                 </Stack>
-                <div style={{ width: '280px', position: 'sticky', top: 0, height: 'fit-content' }}>
+                <div style={{ width: '280px', overflow: 'auto', flexShrink: 0 }}>
                   <Section padding="xs" surface="raised">
                     <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
                       <TabList>
