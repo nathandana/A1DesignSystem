@@ -1794,7 +1794,7 @@ function getDefaultConfig(component, category) {
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const [config, setConfig] = useState(() => getDefaultConfig(component, category))
   const [configPanelTab, setConfigPanelTab] = useState('configure')
-  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'lg', inverse: false })
+  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'md', inverse: false })
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -1815,181 +1815,184 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
 
   return (
     <ComponentDocsShell>
-        <Section padding="sm" surface='raised' direction="column" gap="xs">
+        <Section padding="xs" surface='page' direction="column" gap="xs">
           <Breadcrumb items={breadcrumbItems} />
           <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
             {component?.title}
           </Heading>
         </Section>
-        <Tabs value={tab} onChange={onTabChange} size="compact">
-          <TabList>
-            <Tab value="configure">Configure</Tab>
-            <Tab value="overview">Overview</Tab>
-            <Tab value="anatomy">Anatomy</Tab>
-            <Tab value="rules">Rules</Tab>
-            <Tab value="properties">Properties</Tab>
-            <Tab value="accessibility">Accessibility</Tab>
-          </TabList>
-          <TabPanel value="configure">
-            <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', minHeight: 0 }}>
-              <Stack gap="sm" style={{ flex: 1, minWidth: 0 }}>
-                <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
-                  <ComponentPreview component={component} config={config} />
-                </Section>
-                <CodeSnippets component={component} config={config} />
-              </Stack>
-              <div style={{ width: '280px', position: 'sticky', top: 0, height: 'fit-content' }}>
-                <Section padding="xs" surface="raised">
-                  <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
-                    <TabList>
-                      <Tab value="configure">Configure</Tab>
-                      <Tab value="display">Display</Tab>
-                    </TabList>
-                    <TabPanel value="configure">
-                      <ConfigureControls component={component} config={config} setConfig={setConfig} />
-                    </TabPanel>
-                    <TabPanel value="display">
-                      <Stack gap="lg">
-                        <ChoiceGroup
-                          label="Background"
-                          size="compact"
-                          hideIndicator
-                          columns={2}
-                          value={displayConfig.surface}
-                          onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
-                          options={[
-                            { label: 'Panel', value: 'panel' },
-                            { label: 'Raised', value: 'raised' },
-                            { label: 'Sunken', value: 'sunken' },
-                            { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
-                          ]}
-                        />
-                        <ChoiceGroup
-                          label="Alignment"
-                          size="compact"
-                          hideIndicator
-                          iconOnly
-                          columns={3}
-                          value={displayConfig.align}
-                          onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
-                          options={[
-                            { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
-                            { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
-                            { icon: 'align_horizontal_right', label: 'End', value: 'end' },
-                          ]}
-                        />
-                        <ChoiceGroup
-                          label="Padding"
-                          size="compact"
-                          hideIndicator
-                          columns={3}
-                          value={displayConfig.padding}
-                          onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
-                          options={[
-                            { label: 'Xs', value: 'xs' },
-                            { label: 'Md', value: 'md' },
-                            { label: 'Lg', value: 'lg' },
-                          ]}
-                        />
-                        <ChoiceGroup
-                          label="Inverse"
-                          size="compact"
-                          hideIndicator
-                          columns={2}
-                          value={displayConfig.inverse ? 'on' : 'off'}
-                          onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
-                          options={[
-                            { label: 'Off', value: 'off' },
-                            { label: 'On', value: 'on' },
-                          ]}
-                        />
-                      </Stack>
-                    </TabPanel>
-                  </Tabs>
-                </Section>
+        <Section padding="xs" surface='page' direction="column" gap="xs">
+          <Tabs value={tab} onChange={onTabChange} size="compact">
+            <TabList>
+              <Tab value="configure">Configure</Tab>
+              <Tab value="overview">Overview</Tab>
+              <Tab value="anatomy">Anatomy</Tab>
+              <Tab value="rules">Rules</Tab>
+              <Tab value="properties">Properties</Tab>
+              <Tab value="accessibility">Accessibility</Tab>
+            </TabList>
+            <TabPanel value="configure">
+              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', minHeight: 0 }}>
+                <Stack gap="sm" style={{ flex: 1, minWidth: 0 }}>
+                  <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
+                    <ComponentPreview component={component} config={config} />
+                  </Section>
+                  <CodeSnippets component={component} config={config} />
+                </Stack>
+                <div style={{ width: '280px', position: 'sticky', top: 0, height: 'fit-content' }}>
+                  <Section padding="xs" surface="raised">
+                    <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
+                      <TabList>
+                        <Tab value="configure">Configure</Tab>
+                        <Tab value="display">Display</Tab>
+                      </TabList>
+                      <TabPanel value="configure">
+                        <ConfigureControls component={component} config={config} setConfig={setConfig} />
+                      </TabPanel>
+                      <TabPanel value="display">
+                        <Stack gap="lg">
+                          <ChoiceGroup
+                            label="Background"
+                            size="compact"
+                            hideIndicator
+                            columns={2}
+                            value={displayConfig.surface}
+                            onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
+                            options={[
+                              { label: 'Page', value: 'page' },
+                              { label: 'Panel', value: 'panel' },
+                              { label: 'Raised', value: 'raised' },
+                              { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Alignment"
+                            size="compact"
+                            hideIndicator
+                            iconOnly
+                            columns={3}
+                            value={displayConfig.align}
+                            onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
+                            options={[
+                              { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
+                              { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
+                              { icon: 'align_horizontal_right', label: 'End', value: 'end' },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Padding"
+                            size="compact"
+                            hideIndicator
+                            columns={3}
+                            value={displayConfig.padding}
+                            onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
+                            options={[
+                              { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
+                              { label: 'Xs', value: 'xs' },
+                              { label: 'Md', value: 'md' },
+                              { label: 'Lg', value: 'lg' },
+                            ]}
+                          />
+                          <ChoiceGroup
+                            label="Inverse"
+                            size="compact"
+                            hideIndicator
+                            columns={2}
+                            value={displayConfig.inverse ? 'on' : 'off'}
+                            onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
+                            options={[
+                              { label: 'Off', value: 'off' },
+                              { label: 'On', value: 'on' },
+                            ]}
+                          />
+                        </Stack>
+                      </TabPanel>
+                    </Tabs>
+                  </Section>
+                </div>
               </div>
-            </div>
-          </TabPanel>
+            </TabPanel>
 
-          <TabPanel value="overview">
-            <Stack gap="xl">
+            <TabPanel value="overview">
+              <Stack gap="xl">
 
-              <Section padding="md" surface="raised" align="center">
-                  <AnatomyComponentPreview component={component} />
-              </Section>
-                <Paragraph size="sm">{component.body}</Paragraph>
+                <Section padding="md" surface="raised" align="center">
+                    <AnatomyComponentPreview component={component} />
+                </Section>
+                  <Paragraph size="sm">{component.body}</Paragraph>
 
-              <Card shadow="xs">
+                <Card shadow="xs">
+                  <Stack direction="column" gap="sm">
+                    <MessageBadge status={statusMeta.status} icon={statusMeta.icon}>{statusMeta.label}</MessageBadge>
+                    <Heading as="h3" size="sm">Component status</Heading>
+                    <Paragraph size="sm" color="muted">{statusMeta.desc}</Paragraph>
+                  </Stack>
+                </Card>
+
                 <Stack direction="column" gap="sm">
-                  <MessageBadge status={statusMeta.status} icon={statusMeta.icon}>{statusMeta.label}</MessageBadge>
-                  <Heading as="h3" size="sm">Component status</Heading>
-                  <Paragraph size="sm" color="muted">{statusMeta.desc}</Paragraph>
+                  <Heading as="h3" size="sm">Package support</Heading>
+                  <PackageSupportGrid packages={component.packages ?? ['React']} />
                 </Stack>
-              </Card>
 
-              <Stack direction="column" gap="sm">
-                <Heading as="h3" size="sm">Package support</Heading>
-                <PackageSupportGrid packages={component.packages ?? ['React']} />
+                {relatedComponents.length > 0 && (
+                  <Stack direction="column" gap="sm">
+                    <Heading as="h3" size="sm">Related components</Heading>
+                    <List icon="arrow_forward" size="sm" color="muted">
+                      {relatedComponents.map((relatedComponent) => (
+                        <ListItem key={relatedComponent.id}>
+                          <Link
+                            href={getComponentPath(`component-${relatedComponent.id}`)}
+                            onClick={(event) => navigateCard(event, onNavigate, `component-${relatedComponent.id}`)}
+                          >
+                            {relatedComponent.title}
+                          </Link>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Stack>
+                )}
               </Stack>
+            </TabPanel>
 
-              {relatedComponents.length > 0 && (
-                <Stack direction="column" gap="sm">
-                  <Heading as="h3" size="sm">Related components</Heading>
-                  <List icon="arrow_forward" size="sm" color="muted">
-                    {relatedComponents.map((relatedComponent) => (
-                      <ListItem key={relatedComponent.id}>
-                        <Link
-                          href={getComponentPath(`component-${relatedComponent.id}`)}
-                          onClick={(event) => navigateCard(event, onNavigate, `component-${relatedComponent.id}`)}
-                        >
-                          {relatedComponent.title}
-                        </Link>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Stack>
-              )}
-            </Stack>
-          </TabPanel>
+            <TabPanel value="anatomy">
+              <AnatomyPanel component={component} category={category} />
+            </TabPanel>
 
-          <TabPanel value="anatomy">
-            <AnatomyPanel component={component} category={category} />
-          </TabPanel>
-
-          <TabPanel value="rules">
-            <RulesPanel component={component} />
-          </TabPanel>
+            <TabPanel value="rules">
+              <RulesPanel component={component} />
+            </TabPanel>
 
 
-          <TabPanel value="properties">
-            <Stack gap="xl">
-              {normalizePropTables(component).map((table, i) => (
-                <Stack key={i} gap="sm">
-                  {table.title && <Heading as="h3" size="sm">{table.title}</Heading>}
-                  <DataTable
-                    caption={table.title ?? `${component.title} properties`}
-                    size="comfortable"
-                    columns={[
-                      { key: 'name', label: 'Property', sortable: true, width: '160px' },
-                      { key: 'type', label: 'Type', width: '260px' },
-                      { key: 'description', label: 'Description' },
-                    ]}
-                    rows={table.rows}
-                  />
-                </Stack>
-              ))}
-            </Stack>
-          </TabPanel>
+            <TabPanel value="properties">
+              <Stack gap="xl">
+                {normalizePropTables(component).map((table, i) => (
+                  <Stack key={i} gap="sm">
+                    {table.title && <Heading as="h3" size="sm">{table.title}</Heading>}
+                    <DataTable
+                      caption={table.title ?? `${component.title} properties`}
+                      size="comfortable"
+                      columns={[
+                        { key: 'name', label: 'Property', sortable: true, width: '160px' },
+                        { key: 'type', label: 'Type', width: '260px' },
+                        { key: 'description', label: 'Description' },
+                      ]}
+                      rows={table.rows}
+                    />
+                  </Stack>
+                ))}
+              </Stack>
+            </TabPanel>
 
-          <TabPanel value="accessibility">
-            <div className="a1-web-components-placeholder">
-              <Heading as="h3" size="md">Accessibility report</Heading>
-              <Paragraph size="sm" color="muted">
-                Future area for automated accessibility results, manual checks, keyboard behavior, and screen reader notes.
-              </Paragraph>
-            </div>
-          </TabPanel>
-        </Tabs>
+            <TabPanel value="accessibility">
+              <div className="a1-web-components-placeholder">
+                <Heading as="h3" size="md">Accessibility report</Heading>
+                <Paragraph size="sm" color="muted">
+                  Future area for automated accessibility results, manual checks, keyboard behavior, and screen reader notes.
+                </Paragraph>
+              </div>
+            </TabPanel>
+          </Tabs>
+          </Section>
     </ComponentDocsShell>
   )
 }

@@ -6,7 +6,31 @@ import { Paragraph } from "../paragraph/Paragraph.jsx";
 
 const meta = {
   title: "Components/Controls/Tabs",
+  tags: ["autodocs"],
   parameters: { layout: "padded" },
+  argTypes: {
+    variant: {
+      control: "inline-radio",
+      options: ["line", "pills", "segment", "progress", "folder"],
+      description: "Visual style variant"
+    },
+    size: {
+      control: "inline-radio",
+      options: [undefined, "compact"],
+      description: "Size variant (compact for reduced padding)"
+    },
+    level: {
+      control: "inline-radio",
+      options: [1, 2],
+      description: "Heading level for accessibility"
+    },
+    value: {
+      description: "Currently active tab value (controlled)"
+    },
+    onChange: {
+      description: "Called with the new value when a tab is clicked"
+    },
+  },
 };
 
 export default meta;
@@ -317,6 +341,38 @@ export const A11yHighContrast = {
         <TabPanel value="overview"><SamplePanel title="Overview" /></TabPanel>
         <TabPanel value="activity"><SamplePanel title="Activity" /></TabPanel>
         <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Playground ─────────────────────────────────────────────────────────── */
+
+export const Playground = {
+  argTypes: {
+    variant: { control: "inline-radio", options: ["line", "pills", "segment", "progress", "folder"] },
+    size: { control: "inline-radio", options: [undefined, "compact"] },
+    level: { control: "inline-radio", options: [1, 2] },
+  },
+  args: {
+    variant: "line",
+    size: undefined,
+    level: 1,
+  },
+  render: (args) => {
+    const [active, setActive] = useState("overview");
+    return (
+      <Tabs value={active} onChange={setActive} variant={args.variant} size={args.size} level={args.level}>
+        <TabList>
+          <Tab value="overview">Overview</Tab>
+          <Tab value="activity">Activity</Tab>
+          <Tab value="settings">Settings</Tab>
+          <Tab value="members">Members</Tab>
+        </TabList>
+        <TabPanel value="overview"><SamplePanel title="Overview" /></TabPanel>
+        <TabPanel value="activity"><SamplePanel title="Activity" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
+        <TabPanel value="members"><SamplePanel title="Members" /></TabPanel>
       </Tabs>
     );
   },
