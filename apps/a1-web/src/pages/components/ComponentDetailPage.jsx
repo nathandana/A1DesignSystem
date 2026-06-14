@@ -1828,18 +1828,16 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
 
                 </GridItem>
                 <GridItem span={{ xs: 1, md: 4 }}>
-                  <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line">
-                    <TabList>
-                      <Tab value="configure">Configure</Tab>
-                      <Tab value="display">Display</Tab>
-                    </TabList>
-                    <TabPanel value="configure">
-                      <Section padding="xs" surface="raised">
+                  <Section padding="xs" surface="raised">
+                    <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line">
+                      <TabList>
+                        <Tab value="configure">Configure</Tab>
+                        <Tab value="display">Display</Tab>
+                      </TabList>
+                      <TabPanel value="configure">
                         <ConfigureControls component={component} config={config} setConfig={setConfig} />
-                      </Section>
-                    </TabPanel>
-                    <TabPanel value="display">
-                      <Section padding="xs" surface="raised">
+                      </TabPanel>
+                      <TabPanel value="display">
                         <Stack gap="lg">
                           <ChoiceGroup
                             label="Background"
@@ -1851,6 +1849,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                               { label: 'Panel', value: 'panel' },
                               { label: 'Raised', value: 'raised' },
                               { label: 'Sunken', value: 'sunken' },
+                              { label: 'Inverse', value: 'inverse' },
                             ]}
                           />
                           <ChoiceGroup
@@ -1880,9 +1879,9 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                             ]}
                           />
                         </Stack>
-                      </Section>
-                    </TabPanel>
-                  </Tabs>
+                      </TabPanel>
+                    </Tabs>
+                  </Section>
                 </GridItem>
               </Grid>
             </Stack>
