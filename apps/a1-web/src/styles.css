@@ -69,6 +69,37 @@ body {
   width: 100%;
 }
 
+/* Fill mode: the detail page fills the scroll viewport so the preview and the
+   configuration panel scroll independently, matching the left sidebar. */
+.a1-web-components-shell--fill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.a1-web-components-shell--fill .a1-web-detail-header {
+  flex-shrink: 0;
+}
+
+.a1-web-components-shell--fill .a1-web-detail-tabs-section {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.a1-web-components-shell--fill .a1-web-detail-tabs {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.a1-web-components-shell--fill .a1-web-detail-tabs > .a1-tab-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .a1-web-components-shell__main {
   min-width: 0;
   max-inline-size: var(--component-section-content-width-xl);

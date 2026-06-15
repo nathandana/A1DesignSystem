@@ -1814,15 +1814,15 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   }
 
   return (
-    <ComponentDocsShell>
-        <Section padding="xs" surface='page' direction="column" gap="xs">
+    <ComponentDocsShell fill={tab === 'configure'}>
+        <Section className="a1-web-detail-header" padding="xs" surface='page' direction="column" gap="xs">
           <Breadcrumb items={breadcrumbItems} />
           <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
             {component?.title}
           </Heading>
         </Section>
-        <Section padding="xs" surface='page' direction="column" gap="xs">
-          <Tabs value={tab} onChange={onTabChange} size="compact">
+        <Section className="a1-web-detail-tabs-section" padding="xs" surface='page' direction="column" gap="xs">
+          <Tabs className="a1-web-detail-tabs" value={tab} onChange={onTabChange} size="compact">
             <TabList>
               <Tab value="configure">Configure</Tab>
               <Tab value="overview">Overview</Tab>
@@ -1832,7 +1832,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Tab value="accessibility">Accessibility</Tab>
             </TabList>
             <TabPanel value="configure">
-              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', height: 'calc(100vh - 280px)', minHeight: 0 }}>
+              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', height: '100%', minHeight: 0 }}>
                 <Stack gap="sm" style={{ flex: 1, minWidth: 0, overflow: 'auto' }}>
                   <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
                     <ComponentPreview component={component} config={config} />
