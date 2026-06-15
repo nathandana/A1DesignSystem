@@ -1,5 +1,6 @@
 import * as generic from './generic.jsx'
 import * as heading from './heading.jsx'
+import * as paragraph from './paragraph.jsx'
 import * as definitionList from './definition-list.jsx'
 
 // Registry of per-component detail modules. A component only needs an entry when
@@ -7,6 +8,7 @@ import * as definitionList from './definition-list.jsx'
 // not provided by a module falls back to the generic implementation.
 const REGISTRY = {
   heading,
+  paragraph,
   'definition-list': definitionList,
 }
 
