@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { componentCategories } from './data.js'
 import {
   allComponents,
@@ -16,8 +15,7 @@ import { ComponentsSidebar } from './ComponentsSidebar.jsx'
 export { componentCategories }
 export { componentCategoryPageIds, componentPageIds, componentPageTitles }
 
-export function Components({ activePage = 'components', onNavigate }) {
-  const [detailTab, setDetailTab] = useState('configure')
+export function Components({ activePage = 'components', onNavigate, detailTab = 'configure', setDetailTab }) {
   const { category, component } = getComponentEntry(activePage)
   const currentComponent = component
     ? allComponents.find((item) => item.id === component.id) ?? component
@@ -55,4 +53,12 @@ export function getComponentsSidebar({ activePage, onNavigate, search, setSearch
       setSearch={setSearch}
     />
   )
+}
+
+/* Mount point for the component configuration panel, rendered into the
+   PageLayout aside slot. Only present on a component detail page's Configure
+   tab. ComponentDetailPage portals the controls into this element. */
+export function getComponentsAside({ activePage, detailTab }) {
+  if (!componentPageIds.includes(activePage) || detailTab !== 'configure') return null
+  return <div id="a1-web-config-aside-slot" className="a1-web-config-aside" />
 }

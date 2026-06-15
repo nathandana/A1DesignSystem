@@ -5,4 +5,5 @@ export {
   componentPageIds,
   componentPageTitles,
   getComponentsSidebar,
+  getComponentsAside,
 } from './components/index.jsx'

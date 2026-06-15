@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Accordion,
   Banner,
@@ -1791,10 +1792,95 @@ function getDefaultConfig(component, category) {
   }
 }
 
+/* The component configuration controls. Rendered into the PageLayout aside slot
+   (right rail) via a portal — see ComponentDetailPage. */
+function ConfigurationPanel({
+  component,
+  config,
+  setConfig,
+  displayConfig,
+  setDisplayConfig,
+  configPanelTab,
+  setConfigPanelTab,
+}) {
+  return (
+    <div className="a1-web-config-aside__inner">
+      <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
+        <TabList>
+          <Tab value="configure">Configure</Tab>
+          <Tab value="display">Display</Tab>
+        </TabList>
+        <TabPanel value="configure">
+          <ConfigureControls component={component} config={config} setConfig={setConfig} />
+        </TabPanel>
+        <TabPanel value="display">
+          <Stack gap="lg">
+            <ChoiceGroup
+              label="Background"
+              size="compact"
+              hideIndicator
+              columns={2}
+              value={displayConfig.surface}
+              onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
+              options={[
+                { label: 'Page', value: 'page' },
+                { label: 'Panel', value: 'panel' },
+                { label: 'Raised', value: 'raised' },
+                { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
+              ]}
+            />
+            <ChoiceGroup
+              label="Alignment"
+              size="compact"
+              hideIndicator
+              iconOnly
+              columns={3}
+              value={displayConfig.align}
+              onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
+              options={[
+                { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
+                { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
+                { icon: 'align_horizontal_right', label: 'End', value: 'end' },
+              ]}
+            />
+            <ChoiceGroup
+              label="Padding"
+              size="compact"
+              hideIndicator
+              columns={3}
+              value={displayConfig.padding}
+              onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
+              options={[
+                { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
+                { label: 'Xs', value: 'xs' },
+                { label: 'Md', value: 'md' },
+                { label: 'Lg', value: 'lg' },
+              ]}
+            />
+            <ChoiceGroup
+              label="Inverse"
+              size="compact"
+              hideIndicator
+              columns={2}
+              value={displayConfig.inverse ? 'on' : 'off'}
+              onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
+              options={[
+                { label: 'Off', value: 'off' },
+                { label: 'On', value: 'on' },
+              ]}
+            />
+          </Stack>
+        </TabPanel>
+      </Tabs>
+    </div>
+  )
+}
+
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const [config, setConfig] = useState(() => getDefaultConfig(component, category))
   const [configPanelTab, setConfigPanelTab] = useState('configure')
   const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'md', inverse: false })
+  const [asideNode, setAsideNode] = useState(null)
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -1802,6 +1888,12 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   useEffect(() => {
     setConfig(getDefaultConfig(component, category))
   }, [component.id, component.title, category.icon])
+
+  // Mount the configuration panel into the PageLayout aside slot (right rail).
+  // The slot is rendered by the app shell only on the Configure tab.
+  useLayoutEffect(() => {
+    setAsideNode(tab === 'configure' ? document.getElementById('a1-web-config-aside-slot') : null)
+  }, [tab, component.id])
 
   const breadcrumbItems = [
     { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateBreadcrumb(e, onNavigate, 'components') },
@@ -1814,15 +1906,27 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   }
 
   return (
-    <ComponentDocsShell fill={tab === 'configure'}>
-        <Section className="a1-web-detail-header" padding="xs" surface='page' direction="column" gap="xs">
+    <ComponentDocsShell>
+        {asideNode && createPortal(
+          <ConfigurationPanel
+            component={component}
+            config={config}
+            setConfig={setConfig}
+            displayConfig={displayConfig}
+            setDisplayConfig={setDisplayConfig}
+            configPanelTab={configPanelTab}
+            setConfigPanelTab={setConfigPanelTab}
+          />,
+          asideNode,
+        )}
+        <Section padding="xs" surface='page' direction="column" gap="xs">
           <Breadcrumb items={breadcrumbItems} />
           <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
             {component?.title}
           </Heading>
         </Section>
-        <Section className="a1-web-detail-tabs-section" padding="xs" surface='page' direction="column" gap="xs">
-          <Tabs className="a1-web-detail-tabs" value={tab} onChange={onTabChange} size="compact">
+        <Section padding="xs" surface='page' direction="column" gap="xs">
+          <Tabs value={tab} onChange={onTabChange} size="compact">
             <TabList>
               <Tab value="configure">Configure</Tab>
               <Tab value="overview">Overview</Tab>
@@ -1832,85 +1936,12 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Tab value="accessibility">Accessibility</Tab>
             </TabList>
             <TabPanel value="configure">
-              <div style={{ display: 'flex', gap: 'var(--base-spacing-16)', height: '100%', minHeight: 0 }}>
-                <Stack gap="sm" style={{ flex: 1, minWidth: 0, overflow: 'auto' }}>
-                  <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
-                    <ComponentPreview component={component} config={config} />
-                  </Section>
-                  <CodeSnippets component={component} config={config} />
-                </Stack>
-                <div style={{ width: '280px', overflow: 'auto', flexShrink: 0 }}>
-                  <Section padding="xs" surface="raised">
-                    <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
-                      <TabList>
-                        <Tab value="configure">Configure</Tab>
-                        <Tab value="display">Display</Tab>
-                      </TabList>
-                      <TabPanel value="configure">
-                        <ConfigureControls component={component} config={config} setConfig={setConfig} />
-                      </TabPanel>
-                      <TabPanel value="display">
-                        <Stack gap="lg">
-                          <ChoiceGroup
-                            label="Background"
-                            size="compact"
-                            hideIndicator
-                            columns={2}
-                            value={displayConfig.surface}
-                            onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
-                            options={[
-                              { label: 'Page', value: 'page' },
-                              { label: 'Panel', value: 'panel' },
-                              { label: 'Raised', value: 'raised' },
-                              { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
-                            ]}
-                          />
-                          <ChoiceGroup
-                            label="Alignment"
-                            size="compact"
-                            hideIndicator
-                            iconOnly
-                            columns={3}
-                            value={displayConfig.align}
-                            onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
-                            options={[
-                              { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
-                              { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
-                              { icon: 'align_horizontal_right', label: 'End', value: 'end' },
-                            ]}
-                          />
-                          <ChoiceGroup
-                            label="Padding"
-                            size="compact"
-                            hideIndicator
-                            columns={3}
-                            value={displayConfig.padding}
-                            onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
-                            options={[
-                              { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
-                              { label: 'Xs', value: 'xs' },
-                              { label: 'Md', value: 'md' },
-                              { label: 'Lg', value: 'lg' },
-                            ]}
-                          />
-                          <ChoiceGroup
-                            label="Inverse"
-                            size="compact"
-                            hideIndicator
-                            columns={2}
-                            value={displayConfig.inverse ? 'on' : 'off'}
-                            onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
-                            options={[
-                              { label: 'Off', value: 'off' },
-                              { label: 'On', value: 'on' },
-                            ]}
-                          />
-                        </Stack>
-                      </TabPanel>
-                    </Tabs>
-                  </Section>
-                </div>
-              </div>
+              <Stack gap="sm">
+                <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
+                  <ComponentPreview component={component} config={config} />
+                </Section>
+                <CodeSnippets component={component} config={config} />
+              </Stack>
             </TabPanel>
 
             <TabPanel value="overview">

@@ -50,6 +50,7 @@ import { FoundationDetail, Foundations, foundations } from './pages/foundations'
 import {
   Components,
   getComponentsSidebar,
+  getComponentsAside,
   componentCategories,
   componentCategoryPageIds,
   componentPageIds,
@@ -141,6 +142,7 @@ function App() {
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [componentSearch, setComponentSearch] = useState('')
+  const [detailTab, setDetailTab] = useState('configure')
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   function navigate(page, { replace = false } = {}) {
@@ -294,6 +296,7 @@ function App() {
   return (
     <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
       <PageLayout
+        className="a1-web-page-layout"
         stickyHeader
         viewportHeight
         sidebar={COMPONENT_ROUTE_IDS.includes(activePage) ? getComponentsSidebar({
@@ -302,6 +305,7 @@ function App() {
           search: componentSearch,
           setSearch: setComponentSearch,
         }) : undefined}
+        aside={getComponentsAside({ activePage, detailTab })}
         header={
           <TopHeader
             logo={logo}
@@ -324,11 +328,13 @@ function App() {
           />
         )}
         {COMPONENT_ROUTE_IDS.includes(activePage) && (
-          <Components 
-            activePage={activePage} 
+          <Components
+            activePage={activePage}
             onNavigate={navigate}
             search={componentSearch}
             setSearch={setComponentSearch}
+            detailTab={detailTab}
+            setDetailTab={setDetailTab}
           />
         )}
         {activePage === 'templates' && <Templates />}

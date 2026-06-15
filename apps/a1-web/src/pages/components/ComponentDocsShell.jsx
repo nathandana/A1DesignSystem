@@ -1,6 +1,6 @@
-export function ComponentDocsShell({ children, fill = false }) {
+export function ComponentDocsShell({ children }) {
   return (
-    <div className={`a1-web-components-shell${fill ? ' a1-web-components-shell--fill' : ''}`}>
+    <div className="a1-web-components-shell">
         {children}
     </div>
   )
