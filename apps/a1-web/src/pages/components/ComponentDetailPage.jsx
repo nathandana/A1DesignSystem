@@ -49,12 +49,12 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import {
   COMPONENT_STATUS,
-  ICON_OPTIONS,
   PACKAGE_COLUMNS,
   STATUS_META,
   LAST_UPDATED,
 } from './data.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
+import { getDetailModule } from './detail/index.js'
 import {
   getComponentPath,
   getRelatedComponents,
@@ -94,53 +94,6 @@ function PackageSupportGrid({ packages }) {
         )
       })}
     </Grid>
-  )
-}
-
-function ComponentPreview({ component, config }) {
-  if (component.id === 'heading') {
-    const textWrap = config.textWrap ? 'balance' : undefined
-    return (
-      <Heading
-        as={config.as}
-        type={config.type}
-        size={config.size}
-        color={config.color}
-        align={config.align}
-        margin={config.margin || undefined}
-        textWrap={textWrap}
-      >
-        {config.children || component.title}
-      </Heading>
-    )
-  }
-
-  if (component.id === 'definition-list') {
-    return (
-      <DefinitionList
-        direction="row"
-        labelWidth="fixed"
-        copyValue
-        items={[
-          { label: 'Account ID', value: 'A1-849204' },
-          { label: 'Plan', value: 'Enterprise' },
-          { label: 'Renewal', value: 'June 30, 2026' },
-        ]}
-      />
-    )
-  }
-
-  return (
-    <Stack direction="column" gap="md" align="center">
-      <Icon name={config.icon} />
-      <Heading as="h3" size={config.size === 'lg' ? 'lg' : 'md'}>{config.label || component.title}</Heading>
-      <Paragraph size="sm" color="muted">
-        {component.body}
-      </Paragraph>
-      <Button variant={config.variant} size={config.size === 'compact' ? 'sm' : 'md'} icon={config.showIcon ? config.icon : undefined}>
-        {config.label || component.title}
-      </Button>
-    </Stack>
   )
 }
 
@@ -761,184 +714,6 @@ function AnatomyPanel({ component, category }) {
   )
 }
 
-const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
-const HEADING_TYPE_OPTIONS = ['heading', 'display']
-const HEADING_SIZE_OPTIONS = {
-  heading: ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'],
-  display: ['sm', 'md', 'lg', 'xl', 'xxl', 'jumbo', 'xJumbo'],
-}
-const HEADING_COLOR_OPTIONS = ['default', 'muted', 'accent']
-const HEADING_ALIGN_OPTIONS = ['left', 'center', 'right']
-const HEADING_MARGIN_OPTIONS = ['', 'sm', 'md', 'lg']
-
-function optionLabel(value) {
-  return value === 'xJumbo'
-    ? 'X jumbo'
-    : value.charAt(0).toUpperCase() + value.slice(1)
-}
-
-function radioOptions(options) {
-  return options.map((option) => ({
-    value: option,
-    label: optionLabel(option),
-  }))
-}
-
-function ConfigureControls({ component, config, setConfig }) {
-  if (component.id === 'heading') {
-    const sizeOptions = HEADING_SIZE_OPTIONS[config.type] ?? HEADING_SIZE_OPTIONS.heading
-
-    return (
-      <Stack gap="lg">
-        <TextField
-          label="Text"
-          size="compact"
-          value={config.children}
-          onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
-        />
-        <ChoiceGroup
-          label="Type"
-          size="compact"
-          hideIndicator
-          value={config.type}
-          onChange={(type) => {
-            const nextSizeOptions = HEADING_SIZE_OPTIONS[type] ?? HEADING_SIZE_OPTIONS.heading
-            setConfig((current) => ({
-              ...current,
-              type,
-              size: nextSizeOptions.includes(current.size) ? current.size : nextSizeOptions[2],
-            }))
-          }}
-          options={HEADING_TYPE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-        />
-        <ChoiceGroup
-          label="Element"
-          size="compact"
-          hideIndicator
-          columns={4}
-          value={config.as}
-          onChange={(as) => setConfig((current) => ({ ...current, as }))}
-          options={HEADING_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
-        />
-        <ChoiceGroup
-          label="Size"
-          size="compact"
-          hideIndicator
-          columns={3}
-          value={config.size}
-          onChange={(size) => setConfig((current) => ({ ...current, size }))}
-          options={sizeOptions.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-        />
-        <ChoiceGroup
-          label="Color"
-          size="compact"
-          hideIndicator
-          columns={3}
-          value={config.color}
-          onChange={(color) => setConfig((current) => ({ ...current, color }))}
-          options={[
-            { label: 'Default', value: 'default', swatch: 'var(--semantic-color-text-default)'      },
-            { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'        },
-            { label: 'Accent',  value: 'accent',  swatch: 'var(--semantic-color-action-background)' },
-          ]}
-        />
-        <ChoiceGroup
-          label="Align"
-          size="compact"
-          hideIndicator
-          iconOnly
-          columns={3}
-          value={config.align}
-          onChange={(align) => setConfig((current) => ({ ...current, align }))}
-          options={[
-            { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
-            { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
-            { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
-          ]}
-        />
-        <ChoiceGroup
-          label="Margin"
-          size="compact"
-          hideIndicator
-          columns={4}
-          value={config.margin || 'none'}
-          onChange={(margin) => setConfig((current) => ({ ...current, margin: margin === 'none' ? '' : margin }))}
-          options={[
-            { label: 'None', value: 'none', icon: 'remove_circle', iconOnly: true },
-            { label: 'Sm',   value: 'sm'                   },
-            { label: 'Md',   value: 'md'                   },
-            { label: 'Lg',   value: 'lg'                   },
-          ]}
-        />
-        <ChoiceGroup
-          label="Text wrap"
-          size="compact"
-          hideIndicator
-          columns={2}
-          value={config.textWrap ? 'balance' : 'default'}
-          onChange={(value) => setConfig((current) => ({ ...current, textWrap: value === 'balance' }))}
-          options={[
-            { label: 'Default', value: 'default' },
-            { label: 'Balance', value: 'balance' },
-          ]}
-        />
-      </Stack>
-    )
-  }
-
-  return (
-    <Stack gap="md">
-      <Heading as="h2" size="sm">Configure</Heading>
-      <TextField
-        label="Label"
-        size="compact"
-        value={config.label}
-        onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
-      />
-      <SelectField
-        label="Icon"
-        size="compact"
-        value={config.icon}
-        onChange={(event) => setConfig((current) => ({ ...current, icon: event.target.value }))}
-      >
-        {ICON_OPTIONS.map((icon) => (
-          <option key={icon} value={icon}>{icon}</option>
-        ))}
-      </SelectField>
-      <RadioGroup
-        label="Size"
-        size="compact"
-        inline
-        value={config.size}
-        options={[
-          { value: 'compact', label: 'Compact' },
-          { value: 'default', label: 'Default' },
-          { value: 'lg', label: 'Large' },
-        ]}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-      />
-      <RadioGroup
-        label="Variant"
-        size="compact"
-        inline
-        value={config.variant}
-        options={[
-          { value: 'primary', label: 'Primary' },
-          { value: 'secondary', label: 'Secondary' },
-          { value: 'tertiary', label: 'Tertiary' },
-        ]}
-        onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
-      />
-      <Switch
-        label="Show icon"
-        size="compact"
-        checked={config.showIcon}
-        onChange={(checked) => setConfig((current) => ({ ...current, showIcon: checked }))}
-      />
-    </Stack>
-  )
-}
-
 function RulesPanel({ component }) {
   const rules = getRulesForComponent(component)
 
@@ -966,24 +741,6 @@ function RulesPanel({ component }) {
       ))}
     </Stack>
   )
-}
-
-const COMPONENT_SNIPPETS = {
-  code: {
-    react: `<Code>--semantic-color-text-default</Code>\n\n<Code variant="block" wrapping copyCode>\n{exampleCode}\n</Code>`,
-    native: `// Not available in the Native package.`,
-    pure: `// Not available in the Pure package.`,
-  },
-  calendar: {
-    react: `// Scroll variant — renders all months vertically (default)\n<Calendar monthsToShow={13} />\n\n// Paginated variant — one month at a time with navigation\n<Calendar\n  variant="paginated"\n  highlightToday\n  dimPast\n  todayButton\n/>`,
-    native: `// Not available in the Native package.`,
-    pure: `// Not available in the Pure package.`,
-  },
-  'definition-list': {
-    react: `<DefinitionList\n  direction="row"\n  labelWidth="fixed"\n  copyValue\n  items={[\n    { label: "Account ID", value: "A1-849204" },\n    { label: "Plan", value: "Enterprise" },\n    { label: "Renewal", value: "June 30, 2026" },\n  ]}\n/>`,
-    native: `// Not available in the Native package.`,
-    pure: `<dl class="a1-definition-list a1-definition-list-row a1-definition-list-medium a1-definition-list-label-fixed">\n  <div class="a1-definition-list-item">\n    <dt class="a1-definition-list-label">Account ID</dt>\n    <dd class="a1-definition-list-value">\n      <span class="a1-definition-list-value-content">A1-849204</span>\n    </dd>\n  </div>\n</dl>`,
-  },
 }
 
 const COMPONENT_PROPS = {
@@ -1711,50 +1468,6 @@ const COMPONENT_PROPS = {
   ],
 }
 
-function escapeJsxText(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-}
-
-function propLine(name, value, defaultValue) {
-  if (value === undefined || value === null || value === defaultValue || value === '') return null
-  return `  ${name}="${value}"`
-}
-
-function buildHeadingSnippet(config) {
-  const textWrap = config.textWrap ? 'balance' : undefined
-  const props = [
-    propLine('as', config.as, 'h2'),
-    propLine('type', config.type, 'heading'),
-    propLine('size', config.size, undefined),
-    propLine('color', config.color, 'default'),
-    propLine('align', config.align, 'left'),
-    propLine('margin', config.margin, undefined),
-    propLine('textWrap', textWrap, undefined),
-  ].filter(Boolean).join(' ')
-
-  const propsStr = props ? ` ${props}` : ''
-  return `<Heading${propsStr}>\n  ${escapeJsxText(config.children || 'Heading')}\n</Heading>`
-}
-
-function CodeSnippets({ component, config }) {
-  const reactName = component.title.replace(/\s+/g, '')
-
-  if (component.id === 'heading') {
-    return <Code variant="block" wrapping copyCode>{buildHeadingSnippet(config)}</Code>
-  }
-
-  const snippets = COMPONENT_SNIPPETS[component.id] ?? {
-    react: `<${reactName}>${component.title}</${reactName}>`,
-    native: `<${reactName}>${component.title}</${reactName}>`,
-    pure: `<div class="a1-${component.id}">${component.title}</div>`,
-  }
-
-  return <Code variant="block" wrapping copyCode>{snippets.react}</Code>
-}
-
 const FALLBACK_PROP_ROWS = [
   { id: 'children', name: 'children', type: 'ReactNode', description: 'Visible content or composed child elements.' },
   { id: 'className', name: 'className', type: 'string', description: 'Additional CSS class names for local layout hooks.' },
@@ -1769,29 +1482,6 @@ function normalizePropTables(component) {
   return [{ title: component.title, rows: entry }]
 }
 
-function getDefaultConfig(component, category) {
-  if (component.id === 'heading') {
-    return {
-      as: 'h2',
-      type: 'heading',
-      size: 'md',
-      color: 'default',
-      align: 'left',
-      margin: '',
-      textWrap: false,
-      children: component.title,
-    }
-  }
-
-  return {
-    label: component.title,
-    icon: category.icon,
-    size: 'default',
-    variant: 'primary',
-    showIcon: true,
-  }
-}
-
 /* The component configuration controls. Rendered into the PageLayout aside slot
    (right rail) via a portal — see ComponentDetailPage. */
 function ConfigurationPanel({
@@ -1802,6 +1492,7 @@ function ConfigurationPanel({
   setDisplayConfig,
   configPanelTab,
   setConfigPanelTab,
+  Controls,
 }) {
   return (
     <div className="a1-web-config-aside__inner">
@@ -1811,7 +1502,7 @@ function ConfigurationPanel({
           <Tab value="display">Display</Tab>
         </TabList>
         <TabPanel value="configure">
-          <ConfigureControls component={component} config={config} setConfig={setConfig} />
+          <Controls component={component} config={config} setConfig={setConfig} />
         </TabPanel>
         <TabPanel value="display">
           <Stack gap="lg">
@@ -1877,7 +1568,8 @@ function ConfigurationPanel({
 }
 
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
-  const [config, setConfig] = useState(() => getDefaultConfig(component, category))
+  const detail = getDetailModule(component.id)
+  const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
   const [configPanelTab, setConfigPanelTab] = useState('configure')
   const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'md', inverse: false })
   const [asideNode, setAsideNode] = useState(null)
@@ -1886,7 +1578,8 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const relatedComponents = getRelatedComponents(component)
 
   useEffect(() => {
-    setConfig(getDefaultConfig(component, category))
+    setConfig(detail.getDefaultConfig(component, category))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
 
   // Mount the configuration panel into the PageLayout aside slot (right rail).
@@ -1916,6 +1609,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             setDisplayConfig={setDisplayConfig}
             configPanelTab={configPanelTab}
             setConfigPanelTab={setConfigPanelTab}
+            Controls={detail.Controls}
           />,
           asideNode,
         )}
@@ -1938,9 +1632,9 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             <TabPanel value="configure">
               <Stack gap="sm">
                 <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
-                  <ComponentPreview component={component} config={config} />
+                  <detail.Preview component={component} config={config} />
                 </Section>
-                <CodeSnippets component={component} config={config} />
+                <detail.Snippet component={component} config={config} />
               </Stack>
             </TabPanel>
 

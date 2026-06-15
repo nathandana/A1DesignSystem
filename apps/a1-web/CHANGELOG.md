@@ -11,6 +11,7 @@
 - **Display tab surfaces from component** — Background options now read from actual Section component surfaces (`["page", "panel", "raised"]`) instead of hardcoded values. Removed invalid "sunken" option.
 - **Padding "none" option** — added None option (with `layers_clear` icon) to padding choices in Display tab, matching Section's valid padding values.
 - **Tabs Storybook Docs** — added `tags: ["autodocs"]` to Tabs meta and `argTypes` for variant/size/level with control options. Added Playground story with configurable controls for all variant types (line/pills/segment/progress/folder).
+- **Per-component detail registry** — the bespoke per-component parts of the Configure tab (default config, preview, controls, code snippet) are extracted into `src/pages/components/detail/`. Each component with custom behaviour gets its own file (`heading.jsx`, `definition-list.jsx`); `detail/index.js` maps `component.id` → module and falls back to `detail/generic.jsx` for everything else. `ComponentDetailPage` is now a thin shell that resolves the module via `getDetailModule(component.id)` and renders `detail.Preview` / `detail.Controls` / `detail.Snippet` / `detail.getDefaultConfig`. Code snippets data moved to `detail/snippets.js`. No behaviour change.
 
 ## v0.12.1
 
