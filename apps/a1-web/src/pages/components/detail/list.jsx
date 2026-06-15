@@ -14,8 +14,12 @@ const LIST_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
 
 const SAMPLE_ITEMS = [
   '- Define tokens once in Style Dictionary',
-  '- Generate themed CSS and JSON from a single source',
-  '- Consume the same values in React, HTML/CSS, and Native',
+  '  - Base, semantic, and component tiers',
+  '- Generate themed CSS and JSON from one source',
+  '- Consume the same values everywhere',
+  '  - React',
+  '  - HTML/CSS',
+  '  - React Native',
 ].join('\n')
 
 function optionLabel(value) {
@@ -29,17 +33,31 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
-// Parse a Markdown-ish textarea into list items: one item per non-empty line,
-// with leading bullet/number markers (-, *, +, 1.) stripped.
-function parseItems(text) {
-  return String(text ?? '')
-    .split('\n')
-    .map((line) => line.replace(/^\s*(?:[-*+]|\d+\.)\s+/, '').trim())
-    .filter(Boolean)
-}
-
 function elementFor(variant) {
   return variant === 'ordered' ? 'ol' : 'ul'
+}
+
+// Parse a Markdown-ish textarea into a nested item tree. One item per non-empty
+// line; leading bullet/number markers (-, *, +, 1.) are stripped. Indentation
+// (2 spaces or a tab per level) creates nested lists.
+function parseTree(text) {
+  const root = { children: [] }
+  const stack = [{ depth: -1, node: root }]
+
+  for (const raw of String(text ?? '').split('\n')) {
+    if (!raw.trim()) continue
+    const indent = raw.match(/^[ \t]*/)[0].replace(/\t/g, '  ').length
+    const depth = Math.floor(indent / 2)
+    const content = raw.replace(/^[ \t]*(?:[-*+]|\d+\.)\s+/, '').trim()
+    if (!content) continue
+
+    const item = { text: content, children: [] }
+    while (stack.length > 1 && stack[stack.length - 1].depth >= depth) stack.pop()
+    stack[stack.length - 1].node.children.push(item)
+    stack.push({ depth, node: item })
+  }
+
+  return root.children
 }
 
 function propLine(name, value, defaultValue) {
@@ -47,19 +65,54 @@ function propLine(name, value, defaultValue) {
   return `${name}="${value}"`
 }
 
-function buildListSnippet(config) {
-  const items = parseItems(config.children)
-  const props = [
+function listProps(config) {
+  return [
     propLine('as', elementFor(config.variant), 'ul'),
     config.variant === 'divider' ? propLine('variant', 'divider', '') : null,
     config.variant === 'icon' ? propLine('icon', config.icon, '') : null,
     propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
   ].filter(Boolean).join(' ')
+}
 
-  const propsStr = props ? ` ${props}` : ''
-  const itemsStr = items.map((item) => `  <ListItem>${escapeJsxText(item)}</ListItem>`).join('\n')
-  return `<List${propsStr}>\n${itemsStr}\n</List>`
+function buildItems(items, config, indent) {
+  const pad = '  '.repeat(indent)
+  const propsStr = listProps(config) ? ` ${listProps(config)}` : ''
+  return items
+    .map((item) => {
+      if (item.children.length > 0) {
+        const inner = buildItems(item.children, config, indent + 2)
+        return `${pad}<ListItem>\n${pad}  ${escapeJsxText(item.text)}\n${pad}  <List${propsStr}>\n${inner}\n${pad}  </List>\n${pad}</ListItem>`
+      }
+      return `${pad}<ListItem>${escapeJsxText(item.text)}</ListItem>`
+    })
+    .join('\n')
+}
+
+function buildListSnippet(config) {
+  const tree = parseTree(config.children)
+  const propsStr = listProps(config) ? ` ${listProps(config)}` : ''
+  return `<List${propsStr}>\n${buildItems(tree, config, 1)}\n</List>`
+}
+
+function renderItems(items, config) {
+  const icon = config.variant === 'icon' ? config.icon : undefined
+  return items.map((item, index) => (
+    <ListItem key={index}>
+      {item.text}
+      {item.children.length > 0 && (
+        <List
+          as={elementFor(config.variant)}
+          variant={config.variant}
+          size={config.size}
+          color={config.color}
+          icon={icon}
+        >
+          {renderItems(item.children, config)}
+        </List>
+      )}
+    </ListItem>
+  ))
 }
 
 export function getDefaultConfig() {
@@ -73,7 +126,6 @@ export function getDefaultConfig() {
 }
 
 export function Preview({ config }) {
-  const items = parseItems(config.children)
   const icon = config.variant === 'icon' ? config.icon : undefined
   return (
     <List
@@ -83,9 +135,7 @@ export function Preview({ config }) {
       color={config.color}
       icon={icon}
     >
-      {items.map((item, index) => (
-        <ListItem key={index}>{item}</ListItem>
-      ))}
+      {renderItems(parseTree(config.children), config)}
     </List>
   )
 }
@@ -95,9 +145,9 @@ export function Controls({ config, setConfig }) {
     <Stack gap="lg">
       <TextareaField
         label="Items"
-        hint="One item per line. Markdown markers (-, *, 1.) are stripped."
+        hint="One item per line. Indent two spaces to nest. Markdown markers (-, *, 1.) are stripped."
         size="compact"
-        rows={5}
+        rows={6}
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
