@@ -3,11 +3,14 @@ import {
   Code,
   Paragraph,
   Stack,
-  TextField,
+  TextareaField,
 } from '@gtivr4/a1-design-system-react'
 
 const PARAGRAPH_ELEMENT_OPTIONS = ['p', 'span', 'div']
 const PARAGRAPH_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
+
+const SAMPLE_TEXT =
+  'A1 is a token-driven design system that keeps React, HTML/CSS, and React Native in sync. Every colour, space, and type ramp traces back to a single source of truth, so the same decision renders consistently across every platform and theme.'
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -46,7 +49,7 @@ export function getDefaultConfig(component) {
     color: 'default',
     align: 'left',
     textWrap: false,
-    children: component.title,
+    children: SAMPLE_TEXT,
   }
 }
 
@@ -68,9 +71,10 @@ export function Preview({ component, config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <TextField
+      <TextareaField
         label="Text"
         size="compact"
+        rows={5}
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
