@@ -20,6 +20,10 @@ const VALID_GRADIENT_POSITIONS = [
 const VALID_CONTENT_WIDTHS = ["xs", "sm", "md", "lg", "xl", "2xl"];
 const VALID_HEIGHTS = ["screen", "hero"];
 const VALID_ALIGNMENTS = ["left", "center", "right"];
+const VALID_BORDER_SIZES = ["xs", "sm", "md", "lg"];
+const VALID_BORDER_STYLES = ["solid", "dashed", "dotted"];
+const VALID_BORDER_VARIANTS = ["subtle", "strong", "accent"];
+const VALID_RADII = ["none", "sm", "md", "lg", "xl"];
 
 export function Section({
   as: Component = "section",
@@ -32,6 +36,10 @@ export function Section({
   contentWidth,
   height,
   align,
+  borderSize,
+  borderStyle = "solid",
+  borderVariant = "subtle",
+  radius,
   className = "",
   children,
   ...props
@@ -86,6 +94,22 @@ export function Section({
 
   if (inverse) {
     classes.push("a1-inverse");
+  }
+
+  if (borderSize && VALID_BORDER_SIZES.includes(borderSize)) {
+    classes.push(`a1-section--border-${borderSize}`);
+  }
+
+  if (borderStyle && VALID_BORDER_STYLES.includes(borderStyle)) {
+    classes.push(`a1-section--border-${borderStyle}`);
+  }
+
+  if (borderVariant && VALID_BORDER_VARIANTS.includes(borderVariant)) {
+    classes.push(`a1-section--border-${borderVariant}`);
+  }
+
+  if (radius && VALID_RADII.includes(radius)) {
+    classes.push(`a1-section--radius-${radius}`);
   }
 
   if (className) classes.push(className);

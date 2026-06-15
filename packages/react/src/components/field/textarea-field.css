@@ -55,13 +55,12 @@
 
 /* ─── Active ─────────────────────────────────────────────────────────────── */
 
+/* Active keeps the border feedback only — no background colour change. */
 .a1-field__textarea:active:not(:disabled) {
-  background: var(--a1-field-active-background);
   border-color: var(--a1-field-active-border-color);
 }
 
 .a1-field__textarea:read-only:active:not(:disabled) {
-  background: var(--a1-field-read-only-background);
   border-color: var(--a1-field-read-only-border-color);
 }
 

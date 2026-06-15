@@ -27,6 +27,14 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   height?: "screen" | "hero";
   /** Horizontal layout alignment for direct children. Responsive object syntax supported. */
   align?: ResponsiveAlignment;
+  /** Border thickness. Uses the same size tokens as Divider. Omit for no border. */
+  borderSize?: "xs" | "sm" | "md" | "lg";
+  /** Border pattern. Uses the same line styles as Divider. Default: "solid" */
+  borderStyle?: "solid" | "dashed" | "dotted";
+  /** Border color tone. Uses the same variants as Divider. Default: "subtle" */
+  borderVariant?: "subtle" | "strong" | "accent";
+  /** Border radius scale. */
+  radius?: "none" | "sm" | "md" | "lg" | "xl";
   children?: React.ReactNode;
 }
 

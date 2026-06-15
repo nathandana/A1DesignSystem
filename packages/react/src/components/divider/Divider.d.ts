@@ -9,8 +9,10 @@ export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
    * @example orientation={{ xs: "horizontal", md: "vertical" }}
    */
   orientation?: Orientation | Partial<Record<Breakpoints, Orientation>>;
-  /** Visual style. Default: "subtle" */
-  variant?: "subtle" | "strong" | "accent" | "dashed" | "dotted";
+  /** Color tone. Default: "subtle" */
+  variant?: "subtle" | "strong" | "accent";
+  /** Border pattern. Default: "solid" */
+  lineStyle?: "solid" | "dashed" | "dotted";
   /** Line thickness. Default: "xs" */
   size?: "xs" | "sm" | "md" | "lg";
   /** Block-axis margin (space above and below for horizontal, left/right for vertical). Default: "sm" */

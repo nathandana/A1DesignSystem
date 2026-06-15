@@ -5,6 +5,8 @@
   margin: 0;
   padding: 0;
   min-width: 0; /* prevents default overflow on narrow containers */
+  inline-size: 100%; /* fill the container regardless of flex/grid/intrinsic sizing */
+  box-sizing: border-box;
 }
 
 /* ─── Legend ─────────────────────────────────────────────────────────────── */

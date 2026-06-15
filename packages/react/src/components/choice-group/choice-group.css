@@ -5,6 +5,8 @@
   margin: 0;
   padding: 0;
   min-width: 0;
+  inline-size: 100%; /* fill the container regardless of flex/grid/intrinsic sizing */
+  box-sizing: border-box;
 
   /* Tile size defaults (default) */
   --a1-cg-padding:             var(--component-choice-group-default-padding);
@@ -12,9 +14,9 @@
   --a1-cg-indicator-size:      var(--component-choice-group-default-indicator-size);
   --a1-cg-content-gap:         var(--component-choice-group-default-content-gap);
   --a1-cg-min-width:           var(--component-choice-group-default-min-width);
-  --a1-cg-label-size:          var(--semantic-font-size-body-md);
-  --a1-cg-subtext-size:        var(--semantic-font-size-body-sm);
-  --a1-cg-legend-size:         var(--semantic-font-size-body-sm);
+  --a1-cg-label-size:          var(--semantic-font-size-body-sm);
+  --a1-cg-subtext-size:        var(--semantic-font-size-body-xs);
+  --a1-cg-legend-size:         var(--semantic-font-size-form-label-default);
   --a1-cg-section-label-size:  var(--semantic-font-size-body-xs);
 
   /* Gap between tiles — tracks size */
@@ -37,9 +39,10 @@
   --a1-cg-indicator-size: var(--component-choice-group-compact-indicator-size);
   --a1-cg-content-gap:    var(--component-choice-group-compact-content-gap);
   --a1-cg-min-width:      var(--component-choice-group-compact-min-width);
-  --a1-cg-label-size:     var(--semantic-font-size-body-sm);
-  --a1-cg-subtext-size:   var(--semantic-font-size-body-xs);
-  --a1-cg-legend-size:    var(--semantic-font-size-body-xs);
+  /* Compact reduces label and subtext one step below the default size. */
+  --a1-cg-label-size:     var(--semantic-font-size-body-xs);
+  --a1-cg-subtext-size:   var(--semantic-font-size-body-2xs);
+  --a1-cg-legend-size:    var(--semantic-font-size-form-label-compact);
   --a1-cg-gap:            var(--component-choice-group-gap-sm);
   --a1-cg-group-gap:      var(--component-choice-group-compact-group-gap);
   --a1-cg-items-top-gap:  var(--component-choice-group-compact-items-top-gap);
@@ -53,7 +56,7 @@
   --a1-cg-min-width:           var(--component-choice-group-comfortable-min-width);
   --a1-cg-label-size:          var(--semantic-font-size-body-lg);
   --a1-cg-subtext-size:        var(--semantic-font-size-body-md);
-  --a1-cg-legend-size:         var(--semantic-font-size-body-md);
+  --a1-cg-legend-size:         var(--semantic-font-size-form-label-comfortable);
   --a1-cg-section-label-size:  var(--semantic-font-size-body-sm);
   --a1-cg-gap:                 var(--component-choice-group-gap-lg);
   --a1-cg-group-gap:           var(--component-choice-group-comfortable-group-gap);

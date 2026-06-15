@@ -24,8 +24,8 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
 | Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Bottom Drawer, Tabs, Page Nav |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control, Sticky Actions |
-| Category | `components-inputs` | Inputs | `edit_note` | Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Inline Editable |
-| Category | `components-feedback` | Feedback | `campaign` | Banner, Message, Notification, Snackbar, Empty State, Status Bar, Circular Progress |
+| Category | `components-inputs` | Inputs | `edit_note` | Text Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Field Row, Inline Editable |
+| Category | `components-feedback` | Feedback | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu |
 | Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
@@ -54,6 +54,8 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
 > **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override). Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
+>
+> **React Divider props:** `orientation` ("horizontal" | "vertical" | responsive object, default "horizontal"), `variant` ("subtle" | "strong" | "accent", default "subtle"), `lineStyle` ("solid" | "dashed" | "dotted", default "solid"), `size` ("xs" | "sm" | "md" | "lg", default "xs"), `space` ("none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl", default "sm"), `decorative` (boolean, default true). `variant` controls color tone and `lineStyle` controls border pattern so combinations like accent + dashed or subtle + dotted are valid.
 >
 > **Heading content rules (system-wide):** Write all headings in sentence case — "Create account", not "Create Account". Never apply `text-transform: uppercase` to content text; screen readers may spell out individual letters. Use the `size` prop to control visual scale independently of the semantic heading level.
 >
@@ -145,6 +147,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > - **Match contentWidth to the Section above.** If the page content uses `contentWidth="sm"`, set `StickyActions contentWidth="sm"` so buttons stay aligned with the content.
 > - **Bottom spacing is automatic.** StickyActions renders an invisible spacer sibling in document flow sized to match the bar via `ResizeObserver`. No manual `paddingBlockEnd` or `Spacer` is needed — the spacer keeps content visible above the bar automatically.
 >
+> **Button `fullWidth` and `loading`:** `fullWidth` (boolean, default false) stretches the button to fill its container; when false it keeps its natural content width. `loading` (boolean, default false) shows a spinner in place of the icon and makes the button inert (disabled + `aria-busy`) — use it for in-progress actions like form submission, paired with a present-tense label ("Saving…"). **IconButton has neither prop — it is always a fixed square at natural width and must never be stretched (rule `icon-button-natural-width`).**
+>
 > **Button vs Link:** Use `<Button>` for actions (save, submit, delete, open a dialog, change state). Use `<Link>` for navigation. Do not use `<Button>` where an `<a>` element is semantically correct.
 >
 > **One primary per decision area:** Only one `variant="primary"` button should appear within a single form, dialog, or action group. Multiple primary buttons compete for attention and obscure the recommended action.
@@ -159,19 +163,36 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Component | React | Native | Pure |
 |-----------|:-----:|:------:|:----:|
-| Field (text, email, password, number, date) | ✓ | — | ✓ |
+| Text Field (text, email, password) | ✓ | — | ✓ |
+| Number Field | ✓ | — | — |
+| Date Field | ✓ | — | — |
+| Time Field | ✓ | — | — |
+| Phone Field | ✓ | — | — |
+| Zip Field | ✓ | — | — |
+| Credit Card Field | ✓ | — | — |
 | Textarea | ✓ | — | ✓ |
 | Select | ✓ | — | ✓ |
 | Checkbox Group | ✓ | — | ✓ |
 | Choice Group | ✓ | — | — |
 | Radio Group | ✓ | — | ✓ |
 | Fieldset | ✓ | — | ✓ |
+| Field Row | ✓ | — | — |
 | Switch (input) | ✓ | — | — |
 | Inline Editable | ✓ | — | — |
 
 > **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
 >
+> **Field family:** the text-input family is a set of individual components that share the `TextField` base (label, hint, error, size, labelPosition, required, disabled, readOnly): `TextField` (text/email/password), `NumberField` (adds `prefix`, `unit`), `DateField`, `TimeField`, `PhoneField` (mask), `ZipField` (mask + `ZIP_MASKS`), `CreditCardField` (mask). They each have their own a1-web page and Storybook entry. Fields have no `placeholder` by design.
+>
+> **Field autocomplete:** all field-family components forward `autoComplete` to the native input for browser/password-manager autofill (e.g. `"email"`, `"username"`, `"current-password"`, `"new-password"`, `"tel"`, `"postal-code"`, `"cc-number"`, `"off"`). The a1-web configurators seed sensible defaults (Text Field email → `email`, Phone → `tel`, Zip → `postal-code`, Credit Card → `cc-number`); always set an appropriate `autoComplete` on real forms so autofill works.
+>
+> **Form fields have no `:active` background change:** the pressed (`:active`) state keeps only the border feedback — hover, focus, error, and read-only treatments are unchanged.
+>
 > **Field `labelPosition` values:** `"above"` (default) stacks the label on top. `"before"` places the label to the inline-start side of the input in a two-column grid (collapses to stacked on xs/sm viewports). Pass `labelPosition` on individual fields or on the parent `Fieldset` to apply it to all children.
+>
+> **FieldRow:** lays out related field components side by side in equal-width columns (`children` only, no other props). Each direct child gets `flex: 1 1 0`; fit-content fields (DateField, ZipField via `.a1-field--fit`) keep their natural width. Stacks to a single column on xs/sm viewports, and stacks automatically when the parent `Fieldset` uses `labelPosition="before"` (reads `FieldsetContext`). Use it inside a `Fieldset` to group inline fields like First/Last name or City/State/ZIP. Do not hand-roll a `display: flex` row for fields — use `FieldRow`.
+>
+> **Comfortable required marker:** at `size="comfortable"`, the required indicator across the field family and Checkbox/Radio/Choice group legends renders as a small subtle info `MessageBadge` ("Required", `size="sm"`, no icon) rather than an asterisk. Compact/default sizes keep the asterisk.
 >
 > **Pure notes:** Field uses `.a1-label` + `.a1-input` + size modifiers. Form container uses `.a1-form`. Status uses `.a1-label-error` / `.a1-label-success`. Required indicator uses `.a1-required`. Messages use `.a1-message-error` / `.a1-message-success` / `.a1-message-hint`.
 
@@ -182,9 +203,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Component | React | Native | Pure |
 |-----------|:-----:|:------:|:----:|
 | Banner | ✓ | ✓ | — |
-| Badge / Message | ✓ | ✓ | — |
-
-> **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices.
+| Badge | ✓ | ✓ | — |
 | Notification | ✓ | — | — |
 | Snackbar | ✓ | ✓ | — |
 | Empty State | ✓ | ✓ | — |
@@ -192,6 +211,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Circular Progress | ✓ | — | ✓ |
 | Step Tracker | ✓ | — | ✓ |
 
+> **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices.
+>
+> **Badge props:** `status` ("neutral" | "info" | "success" | "warn" | "error", default "neutral"), `subtle` (boolean, default false), `size` ("sm" | "md" | "lg", default "md"), `icon` (Material Symbols name override; pass `null` to suppress the default status icon), `children` (badge label). React exports this as `MessageBadge`; React Native exports this as `Badge`.
+>
+> **Empty State props:** `scale` ("page" | "section" | "card", default "section"), `icon` (Material Symbols name, default "inbox"), `title`, `description`, `action` (ReactNode, usually a Button). React exports this as `MessageEmptyState`; React Native exports this as `EmptyState`.
+>
 > **CircularProgress props:** `value` (number, default 0), `max` (number, default 100), `size` ("xs" | "sm" | "md" | "lg", default "md"), `indeterminate` (boolean, default false), `children` (ReactNode — centered inside the ring for sm/md/lg; rendered inline after the ring for xs). Always pass `aria-label` for the progressbar's accessible name since inner children receive `aria-hidden="true"`.
 >
 > **CircularProgress usage rules:** Use xs for inline loading indicators where space is tight and content goes after the ring. Use sm/md/lg when a percentage or status icon inside the ring is the primary visual treatment. Override `--a1-cp-fill` and `--a1-cp-track` via CSS custom properties to change ring colors; always use semantic color tokens, never raw hex.
@@ -204,7 +229,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Status Bar accessible theme:** The track gains a `2px` border (via `--component-status-bar-border-width`) in the accessible theme to distinguish the track boundary at high contrast. No other theme overrides are needed — the fill and track colors come from semantic color tokens that already adapt.
 >
-> **Badge / Message standard variants:** `neutral`, `brand`, `info`, `success`, `warning`, `error`, `inverse`. Use these before creating any custom badge style.
+> **Badge standard statuses:** `neutral`, `info`, `success`, `warn`, and `error`. Use these before creating any custom badge style.
 >
 > **Badges communicate status, category, count, or metadata** — not primary actions. Do not make a badge interactive without a clear affordance, focus state, and accessible role. Use a Button, chip, or Link pattern for clickable elements.
 >
@@ -212,11 +237,13 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Use badges sparingly:** Badging every attribute on a page dilutes their signal value. Apply badges only to information that benefits from quick visual scanning.
 >
-> **Snackbar props:** `open` (boolean, required — renders nothing when false), `variant` ("default" | "success" | "info" | "warn" | "error", default "default"), `position` ("bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right", default "bottom"), `inverse` (boolean, default true — applies `a1-inverse` for dark surface), `actionLabel` + `onAction` (both required to show the action button — omit either to hide it), `onClose` (renders a dismiss IconButton when provided), `children` (message content).
+> **Snackbar props:** `open` (boolean, required — renders nothing when false), `position` ("bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right", default "bottom"), `actionLabel` + `onAction` (both required to show the action button — omit either to hide it), `onClose` (renders a dismiss IconButton when provided), `children` (message content). Snackbar has one default visual style and applies its inverse treatment internally for child controls; use Banner for persistent status-coloured messages.
 >
-> **Snackbar accessibility:** Uses `role="alert"` and `aria-live="assertive"` for `variant="error"`; all other variants use `role="status"` and `aria-live="polite"`. Do not override `role` unless you have a specific reason — the component sets it automatically based on variant.
+> **Snackbar accessibility:** Uses `role="status"` and `aria-live="polite"` by default. Do not override `role` unless you have a specific reason.
 >
 > **Snackbar is not a modal:** It renders as a fixed overlay and does not trap focus. Use it for brief, non-blocking feedback only. For errors that require user action before continuing, use a Dialog or Banner instead.
+
+> **A1 Web configurators:** Feedback pages include configurators for Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, and Step Tracker. Status Bar keeps the `status-bar` route and emits the `StatusBar` React export in code snippets.
 
 ---
 
@@ -250,6 +277,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **PageLayout no-gap rule:** There is no gap between the sidebar and main area. Do not add `gap`, `margin`, or `padding` to `.a1-page-layout__body`, `.a1-page-layout__sidebar`, or `.a1-page-layout__main`. Apply all inset spacing inside the main content child — use a `Section` or padded wrapper as the first element in the main slot.
 >
 > **Section spans the full viewport:** `Section` is designed to fill the full available width. Place it as the direct child of `<main>` inside `PageLayout` — do not wrap it in a `Stack`, `Grid`, `Card`, or any other container that would constrain its width. Nesting a `Section` inside another layout component breaks the full-bleed surface and padding model.
+>
+> **Section border props:** `borderSize` (`"xs" | "sm" | "md" | "lg"`) uses the same thickness tokens as Divider. `borderStyle` (`"solid" | "dashed" | "dotted"`) and `borderVariant` (`"subtle" | "strong" | "accent"`) also mirror Divider. Use `radius` (`"none" | "sm" | "md" | "lg" | "xl"`) for tokenized rounded Section corners.
 
 ---
 
@@ -330,6 +359,17 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-15 | Stack now preserves internal CSS variables when callers pass `style`, preventing direction/gap/align/justify/wrap from being reset by custom inline styles |
+| 2026-06-15 | Added a1-web Stack configurator for `as`, direction, semantic/numeric gap, align, justify, and wrap |
+| 2026-06-15 | Card now fills its containing inline size by default so container-query previews and grid tracks do not collapse to content width; a1-web Card configurator gained element and navigation href controls |
+| 2026-06-15 | Section `height="screen"` now sets `align-content: start` so grid rows do not stretch extra viewport height and `gap` remains token-accurate |
+| 2026-06-15 | Section gained opt-in border props (`borderSize`, `borderStyle`, `borderVariant`) using Divider tokens plus tokenized `radius`; Storybook, property docs, and a1-web controls updated |
+| 2026-06-15 | Added a1-web Section configurator as bare display: sample Heading + Paragraph inside the Section, controls for Section props, and no outer Display tab controls |
+| 2026-06-15 | Snackbar simplified to one default visual style; status variants removed from React, Storybook, a1-web controls, and current docs; `inverse` removed as a public prop; default surface fixed to dark neutral background with light foreground |
+| 2026-06-15 | Added a1-web feedback configurators for Notification, Snackbar, Status Bar, Circular Progress, and Step Tracker |
+| 2026-06-15 | Split the old Feedback "Message" registry entry into Badge (`MessageBadge` in React, `Badge` in Native) and Empty State (`MessageEmptyState` in React, `EmptyState` in Native); a1-web now exposes separate Badge and Empty State component pages/configurators |
+| 2026-06-15 | Comfortable required marker: field family + Checkbox/Radio/Choice group legends now render the `MessageBadge` required indicator at `size="sm"` with `icon={null}` (small badge, no icon) |
+| 2026-06-15 | FieldRow added to registry (React, Inputs category) and a1-web (component card, packages, status, related, configurator); Fieldset configurator added to a1-web (simple grouped example, no FieldRow) |
 | 2026-06-11 | Added StickyActions component (React only): fixed bottom action bar for flows and wizards; contentWidth prop mirrors Section's max-width values; children stacked with gap; safe-area-inset-bottom for notch devices; z-index 150; rule: do not combine with BottomDrawer; rule: always nest a ButtonContainer; Onboarding template updated to use StickyActions |
 | 2026-06-11 | Added BottomDrawer component (React + Pure): fixed bottom nav bar, max 5 items, icon-above-label stacked layout, badge support, shares --a1-nav-stacked-* vars with TopHeader; navIconPosition="hidden" added to TopHeader |
 | 2026-06-11 | Added semantic.color.surface.card token; Card (React + Pure) now uses --semantic-color-surface-card; dark mode and Fresh theme overrides applied across all build pipelines |

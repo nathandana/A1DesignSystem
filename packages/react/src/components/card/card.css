@@ -1,6 +1,7 @@
 .a1-card {
   container: a1-card / inline-size;
   box-sizing: border-box;
+  inline-size: 100%;
   background: var(--semantic-color-surface-card);
   border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-card-border-radius);

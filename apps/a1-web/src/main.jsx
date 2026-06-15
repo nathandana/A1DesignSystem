@@ -92,7 +92,7 @@ const themeOptions = [
   { value: 'a1Light', label: 'Default' },
   { value: 'a1Heritage', label: 'Heritage' },
   { value: 'a1Accessible', label: 'Accessible' },
-  { value: 'catlympics', label: 'Catlympics' },
+  { value: 'fresh', label: 'Fresh' },
 ]
 
 const colorSchemeOptions = [
@@ -173,7 +173,7 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('a1-theme-heritage', theme === 'a1Heritage')
     document.documentElement.classList.toggle('a1-theme-accessible', theme === 'a1Accessible')
-    document.documentElement.classList.toggle('a1-theme-catlympics', theme === 'catlympics')
+    document.documentElement.classList.toggle('a1-theme-fresh', theme === 'fresh')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)

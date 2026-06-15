@@ -112,6 +112,7 @@
   --base-font-size-scale-250: 1.125rem;
   --base-font-size-scale-300: 1.25rem;
   --base-font-size-scale-400: 1.5rem;
+  --base-font-size-scale-50: 0.625rem;
   --base-font-size-scale-500: 1.75rem;
   --base-font-size-scale-600: 2rem;
   --base-font-size-scale-700: 2.5rem;
@@ -130,6 +131,7 @@
   --base-radius-control: 10px;
   --base-radius-lg: 14px;
   --base-radius-md: 0.375rem;
+  --base-radius-pill: 624.9375rem;
   --base-radius-sm: 0.25rem;
   --base-radius-xl: 20px;
   --base-shadow-100-blur: 2px;
@@ -778,6 +780,7 @@
   --semantic-font-line-height-body: 1.5em;
   --semantic-font-line-height-display: 1.125em;
   --semantic-font-line-height-heading: 1.25em;
+  --semantic-font-size-body-2xs: 0.625rem;
   --semantic-font-size-body-lg: var(--theme-a1-accessible-font-size-body-lg);
   --semantic-font-size-body-md: var(--theme-a1-accessible-font-size-body-md);
   --semantic-font-size-body-sm: var(--theme-a1-accessible-font-size-body-sm);
@@ -790,6 +793,9 @@
   --semantic-font-size-display-x-jumbo: var(--theme-a1-accessible-font-size-display-x-jumbo);
   --semantic-font-size-display-xl: var(--theme-a1-accessible-font-size-display-xl);
   --semantic-font-size-display-xxl: var(--theme-a1-accessible-font-size-display-xxl);
+  --semantic-font-size-form-label-comfortable: 1rem;
+  --semantic-font-size-form-label-compact: 0.75rem;
+  --semantic-font-size-form-label-default: 0.875rem;
   --semantic-font-size-heading-lg: var(--theme-a1-accessible-font-size-heading-lg);
   --semantic-font-size-heading-md: var(--theme-a1-accessible-font-size-heading-md);
   --semantic-font-size-heading-sm: var(--theme-a1-accessible-font-size-heading-sm);

@@ -1,7 +1,7 @@
 import { DateField } from "./DateField.jsx";
 
 const meta = {
-  title: "Components/Forms/Input Date",
+  title: "Components/Forms/Date Field",
   component: DateField,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

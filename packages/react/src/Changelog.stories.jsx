@@ -7,6 +7,104 @@ export default meta;
 
 const releases = [
   {
+    version: "v0.13.3",
+    date: "2026-06-15",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "InlineEditable — added the missing TypeScript types (InlineEditable.d.ts) and a Storybook entry (Components/Forms/Inline Editable) with Configurable, Single line, Multiline, Placeholder, Seamless, and Disabled stories.",
+          "InlineEditable seamless prop — edits the text in place via contentEditable instead of swapping to a boxed field. The editable element inherits all typography (font, size, weight, colour, line-height, alignment, wrapping) from the surrounding component, so editing never resizes or restyles the text. This makes any heading, paragraph, label, or button text live-editable by nesting <InlineEditable seamless> inside it. Only a focus ring is added for accessibility; empty state shows the placeholder via :empty::before. CSS class a1-inline-editable--seamless (+ --multiline).",
+        ],
+      },
+      {
+        type: "Changed",
+        items: [
+          "Comfortable required marker — the \"Required\" indicator shown at size=\"comfortable\" (TextField/TextareaField/SelectField and CheckboxGroup/RadioGroup/ChoiceGroup legends) now renders as a small subtle info badge (MessageBadge size=\"sm\", icon suppressed) instead of the larger icon badge. Compact/default sizes still use the asterisk.",
+          "Fieldset now fills the full width of its container (inline-size:100%; box-sizing:border-box) regardless of flex/grid/intrinsic sizing.",
+          "ChoiceGroup now fills the full width of its container (inline-size:100%; box-sizing:border-box) so it is no longer constrained when placed in a flex/grid parent.",
+          "InlineEditable disabled — no longer shows the hover outline; it now reads as plain, selectable text (cursor:auto, user-select:text) with no interactive affordances.",
+          "Removed all-uppercase text transforms from shipped CSS — Calendar weekday header, PageNav section heading, and the feature Blockquote citation (plus the pure eyebrow label and figure citation) now render in their authored sentence case. The companion letter-spacing tracking was removed with them.",
+        ],
+      },
+    ],
+  },
+  {
+    version: "v0.13.2",
+    date: "2026-06-15",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "Token semantic.font.size.formLabel (compact/default/comfortable) — single source of truth for form-field label/legend size. Field, CheckboxGroup, RadioGroup, and ChoiceGroup legends now reference it so they can't drift (no visual change; the values already matched).",
+        ],
+      },
+      {
+        type: "Changed",
+        items: [
+          "DateField / TimeField — the native format placeholder (mm/dd/yyyy, --:--) now renders in the muted text colour while the field is empty, matching the muted mask placeholder used by PhoneField/ZipField/CreditCardField. Components track empty state and add a1-field--mask-empty.",
+        ],
+      },
+    ],
+  },
+  {
+    version: "v0.13.1",
+    date: "2026-06-15",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "Token semantic.font.size.body.2xs (0.625rem, from new base.font.size.scale.50) — a caption-scale step below body-xs.",
+          "Fields — autoComplete is now a documented, first-class prop on the field family (forwarded to the native input). TextField Storybook adds an autoComplete control and an Autocomplete sign-in story.",
+        ],
+      },
+      {
+        type: "Changed",
+        items: [
+          "Fields — removed the background-colour change on the :active (pressed) state for TextField/NumberField/DateField/TimeField/PhoneField/ZipField/CreditCardField and TextareaField. Active now keeps only the border feedback; hover, focus, and read-only treatments are unchanged.",
+          "ChoiceGroup compact — reduced label (body-sm → body-xs) and subtext (body-xs → body-2xs) one step each for a denser compact tile.",
+          "Storybook — normalized field story titles to Components/Forms/Text Field and Components/Forms/Date Field (were \"Input Text\" / \"Input Date\").",
+        ],
+      },
+    ],
+  },
+  {
+    version: "v0.13.0",
+    date: "2026-06-14",
+    sections: [
+      {
+        type: "Added",
+        items: [
+          "Button fullWidth prop — stretches the button to fill its container (display:flex; width:100%). Default false keeps the natural content width. CSS class a1-button--full-width.",
+          "Button loading prop — shows a spinner in place of the icon and makes the button inert (disabled + aria-busy) for in-progress actions like form submission. Full opacity + cursor:progress distinguish it from the disabled state; spinner respects prefers-reduced-motion. CSS classes a1-button--loading / a1-button__spinner.",
+          "Rules — icon-button-natural-width (IconButton must never be stretched to full width), button-full-width-usage (when to use fullWidth), and button-loading-state (use loading during async work).",
+        ],
+      },
+    ],
+  },
+  {
+    version: "v0.12.2",
+    date: "2026-06-14",
+    sections: [
+      {
+        type: "Fixed",
+        items: [
+          "Tabs pills variant — implemented the missing CSS. Pill-shaped tabs with a raised resting surface; selected tab uses the action background with action-foreground text. Previously rendered as unstyled buttons.",
+          "Tabs segment variant — implemented the missing CSS, mirroring SegmentedControl (raised track, inner-radius segments, selected segment on the page surface with shadow-xs). Previously rendered as unstyled buttons.",
+          "Tabs compact size — added compact padding for the pills and segment variants (segment uses the segmented -sm padding tokens) so size has a visible effect across all variants.",
+        ],
+      },
+      {
+        type: "Added",
+        items: [
+          "Token base.radius.pill (624.9375rem) — full-pill radius promoted from the button-only pillBorderRadius; component.button.pillBorderRadius now references it, and Tabs pills use it.",
+          "Storybook — Pills (filters) and Segment (view switcher) stories for Tabs.",
+          "Storybook — PageNav stories (Default, Flat sections, Custom label) with a real two-column article layout so active-section tracking and the reading-progress bar are demonstrable.",
+        ],
+      },
+    ],
+  },
+  {
     version: "v0.12.1",
     date: "2026-06-12",
     sections: [

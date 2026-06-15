@@ -20,6 +20,10 @@
       "xl": {
         "$type": "dimension",
         "$value": "12px"
+      },
+      "pill": {
+        "$type": "dimension",
+        "$value": "624.9375rem"
       }
     },
     "space": {
@@ -93,7 +97,7 @@
       },
       "pillBorderRadius": {
         "$type": "dimension",
-        "$value": "9999px"
+        "$value": "{base.radius.pill}"
       },
       "paddingBlock": {
         "$type": "dimension",

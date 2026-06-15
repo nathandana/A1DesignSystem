@@ -16,7 +16,11 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["subtle", "strong", "accent", "dashed", "dotted"],
+      options: ["subtle", "strong", "accent"],
+    },
+    lineStyle: {
+      control: "select",
+      options: ["solid", "dashed", "dotted"],
     },
     size: {
       control: "select",
@@ -36,6 +40,7 @@ export const Configurable = {
   args: {
     orientation: "horizontal",
     variant: "subtle",
+    lineStyle: "solid",
     size: "xs",
     space: "sm",
     decorative: true,
@@ -48,7 +53,7 @@ export const Configurable = {
       </Paragraph>
       <Divider {...args} />
       <Paragraph>
-        Adjust orientation, visual weight, style, and spacing from the controls panel.
+        Adjust orientation, tone, line style, thickness, and spacing from the controls panel.
       </Paragraph>
     </Card>
   ),
@@ -58,10 +63,29 @@ export const HorizontalVariants = {
   name: "Horizontal variants",
   render: () => (
     <Card shadow="xs" style={{ maxWidth: 640 }}>
-      {["subtle", "strong", "accent", "dashed", "dotted"].map((variant) => (
+      {["subtle", "strong", "accent"].map((variant) => (
         <div key={variant}>
           <Paragraph size="sm" color="muted">{variant}</Paragraph>
           <Divider variant={variant} space="sm" />
+        </div>
+      ))}
+    </Card>
+  ),
+};
+
+export const LineStyleCombinations = {
+  name: "Line style combinations",
+  render: () => (
+    <Card shadow="xs" style={{ maxWidth: 640 }}>
+      {[
+        { variant: "subtle", lineStyle: "dotted" },
+        { variant: "strong", lineStyle: "dashed" },
+        { variant: "accent", lineStyle: "dashed" },
+        { variant: "accent", lineStyle: "dotted" },
+      ].map(({ variant, lineStyle }) => (
+        <div key={`${variant}-${lineStyle}`}>
+          <Paragraph size="sm" color="muted">{variant} + {lineStyle}</Paragraph>
+          <Divider variant={variant} lineStyle={lineStyle} size="sm" space="sm" />
         </div>
       ))}
     </Card>
@@ -96,6 +120,7 @@ export const ResponsiveOrientation = {
       <Divider
         orientation={{ xs: "horizontal", sm: "vertical" }}
         variant="subtle"
+        lineStyle="dashed"
         size="sm"
         space="md"
       />

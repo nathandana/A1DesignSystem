@@ -12,6 +12,8 @@ const meta = {
     href: "#",
     icon: undefined,
     iconPosition: "start",
+    fullWidth: false,
+    loading: false,
     size: "md",
     variant: "primary"
   },
@@ -37,6 +39,12 @@ const meta = {
     iconPosition: {
       control: "inline-radio",
       options: ["start", "end"]
+    },
+    fullWidth: {
+      control: "boolean"
+    },
+    loading: {
+      control: "boolean"
     },
     size: {
       control: "inline-radio",
@@ -131,6 +139,28 @@ export const WithIconEnd = {
       <Button {...args} variant="tertiary" icon="chevron_right" iconPosition="end">See more</Button>
       <Button {...args} variant="destructive" icon="delete" iconPosition="end">Delete</Button>
       <Button {...args} variant="success" icon="check" iconPosition="end">Approve</Button>
+    </div>
+  )
+};
+
+export const FullWidth = {
+  name: "Full width",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "20rem" }}>
+      <Button fullWidth>Save changes</Button>
+      <Button fullWidth variant="secondary" icon="download">Download report</Button>
+    </div>
+  )
+};
+
+export const Loading = {
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={row}>
+      <Button loading>Saving…</Button>
+      <Button loading variant="secondary">Submitting</Button>
+      <Button loading variant="primary" fullWidth>Processing payment</Button>
     </div>
   )
 };

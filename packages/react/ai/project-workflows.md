@@ -23,6 +23,18 @@ This file covers implementation rules and change workflows. Read it with `packag
 
 Custom `display: flex` or `display: grid` CSS is only justified when no layout component supports the pattern and the pattern is genuinely unique to that context. Document why in a comment.
 
+### The law: never uppercase text
+
+**Never convert text to all-uppercase — anywhere, in any package, by any mechanism.** This applies to:
+
+- **CSS:** never use `text-transform: uppercase` (or `lowercase`/`capitalize`) on content text. Screen readers may spell out individual letters, and it breaks localized strings.
+- **JS/JSX:** never call `.toUpperCase()` (or equivalent) on a whole word, label, heading, button text, badge, or any user-facing string.
+- **Content:** author labels and headings in sentence case directly ("Create account", not "Create Account" or "CREATE ACCOUNT").
+
+**The only permitted casing transform** is capitalizing the *first letter* of a single token to produce sentence case from a lowercase enum value (e.g. `value.charAt(0).toUpperCase() + value.slice(1)` to turn `"compact"` into `"Compact"` for a control label). Title-casing or upper-casing entire words is not allowed.
+
+If a design or brand asset shows uppercase text, treat it as a visual style to be rejected — flag it rather than reproducing it.
+
 ### The law: all values from tokens
 
 **Never hardcode visual values.** Every color, spacing unit, font size, border radius, shadow, and duration must reference a CSS custom property that maps to a Style Dictionary token. Raw fallback values in CSS (e.g. `var(--token, 8px)`) are acceptable only for tokens that are guaranteed to exist — always verify in `packages/pure/dist/a1-light.css` before adding a fallback.
@@ -209,6 +221,7 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Content**
 8. **Preserve agreed content.** Content from Priority Guides, approved JSON, or design specs is not a suggestion. Preserve it exactly — do not invent, reword, reorder, or omit.
+8a. **Never uppercase text.** No `text-transform: uppercase` in any CSS and no `.toUpperCase()` on whole strings in any JS/JSX, in any package. Author content in sentence case. The only allowed transform is capitalizing the first letter of a single enum token for a sentence-case label. See "The law: never uppercase text" in [Style and CSS Rules](#style-and-css-rules).
 
 **Documentation**
 9. **Document every change.** Token additions, API changes, new variants, new themes, new components, feature additions, and feature removals all require updated Storybook stories, example pages, documentation, and changelog entries in the same commit.

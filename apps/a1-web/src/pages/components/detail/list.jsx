@@ -3,11 +3,10 @@ import {
   Code,
   List,
   ListItem,
-  SelectField,
   Stack,
   TextareaField,
 } from '@gtivr4/a1-design-system-react'
-import { ICON_OPTIONS } from '../data.js'
+import { IconSelect } from './IconSelect.jsx'
 
 const LIST_VARIANT_OPTIONS = ['unordered', 'ordered', 'icon', 'divider']
 const LIST_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
@@ -161,16 +160,11 @@ export function Controls({ config, setConfig }) {
         options={LIST_VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
       {config.variant === 'icon' && (
-        <SelectField
+        <IconSelect
           label="Icon"
-          size="compact"
           value={config.icon}
-          onChange={(event) => setConfig((current) => ({ ...current, icon: event.target.value }))}
-        >
-          {ICON_OPTIONS.map((icon) => (
-            <option key={icon} value={icon}>{icon}</option>
-          ))}
-        </SelectField>
+          onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
+        />
       )}
       <ChoiceGroup
         label="Size"

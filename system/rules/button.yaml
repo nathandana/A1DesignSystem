@@ -224,6 +224,39 @@ rules:
       - accessibility
       - interaction
 
+  - id: icon-button-natural-width
+    components:
+      - IconButton
+    requirement: Icon buttons are always a fixed, square, natural-width control and must never be stretched to fill their container.
+    do: Let the icon button size itself from its size token (md or lg). When you need a full-width action, use a Button with fullWidth and a text label instead.
+    dont: Apply fullWidth, width:100%, flex:1, or any other stretching to an IconButton, or wrap it in a layout that forces it to span the available width.
+    applies_to:
+      - sizing
+      - layout
+      - visual-design
+
+  - id: button-full-width-usage
+    components:
+      - Button
+    requirement: Use the fullWidth prop only when a button should intentionally span its container.
+    do: Use fullWidth for primary actions in narrow or mobile-width containers, stacked call-to-action groups, and form footers. Leave it off (natural width) everywhere else.
+    dont: Stretch buttons to full width in wide layouts where a natural-width button reads better, and never apply fullWidth to an IconButton.
+    applies_to:
+      - layout
+      - visual-design
+      - usability
+
+  - id: button-loading-state
+    components:
+      - Button
+    requirement: Use the loading prop while an action is in progress so the button is inert and clearly communicates that work is happening.
+    do: Set loading during async work such as form submission; pair it with a present-tense label like "Saving…" and rely on the built-in spinner and aria-busy state.
+    dont: Leave a button interactive during a long-running action, or hand-roll a separate spinner when the loading prop already provides one.
+    applies_to:
+      - interaction
+      - feedback
+      - accessibility
+
   - id: button-limited-variant-set
     components:
       - Button

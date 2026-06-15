@@ -27,7 +27,7 @@ function ComponentTree({ activePage, onNavigate, search }) {
         as="a"
         href={getComponentPath('components')}
         icon="widgets"
-        label="Overview"
+        label="All Components"
         active={activePage === 'components'}
         onClick={(event) => navigateCard(event, onNavigate, 'components')}
       />
@@ -38,13 +38,13 @@ function ComponentTree({ activePage, onNavigate, search }) {
           label={category.title}
           defaultOpen={!query || activePage === `components-${category.id}` || category.components.some((component) => activePage === `component-${component.id}`)}
         >
-          <SideNavItem
+          {/* <SideNavItem
             as="a"
             href={getComponentPath(`components-${category.id}`)}
             label="Category overview"
             active={activePage === `components-${category.id}`}
             onClick={(event) => navigateCard(event, onNavigate, `components-${category.id}`)}
-          />
+          /> */}
           {category.components.map((component) => (
             <SideNavItem
               key={component.id}

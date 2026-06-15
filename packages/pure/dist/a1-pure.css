@@ -93,8 +93,6 @@ body {
   font-size: var(--semantic-font-size-body-sm);
   font-weight: var(--base-font-weight-semibold);
   color: var(--semantic-color-text-accent);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 /* Alternating section tint */
@@ -723,8 +721,6 @@ figure > .a1-blockquote .a1-p {
 figure > .a1-blockquote cite {
   margin-block-start: var(--base-spacing-20);
   font-size: var(--semantic-font-size-body-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 figure > .a1-blockquote cite::before {

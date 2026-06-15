@@ -1,0 +1,84 @@
+import {
+  ChoiceGroup,
+  Code,
+  Stack,
+  StepTracker,
+  TextField,
+} from '@gtivr4/a1-design-system-react'
+
+const ALIGN_OPTIONS = ['left', 'center', 'right', 'full']
+
+function optionLabel(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function numberValue(value, fallback) {
+  const next = Number(value)
+  return Number.isFinite(next) ? next : fallback
+}
+
+function buildStepTrackerSnippet(config) {
+  const props = [
+    `steps={${numberValue(config.steps, 5)}}`,
+    numberValue(config.currentStep, 1) !== 1 ? `currentStep={${numberValue(config.currentStep, 1)}}` : null,
+    config.align !== 'left' ? `align="${config.align}"` : null,
+  ].filter(Boolean).join('\n  ')
+
+  return `<StepTracker\n  ${props}\n/>`
+}
+
+export function getDefaultConfig() {
+  return {
+    steps: 5,
+    currentStep: 2,
+    align: 'left',
+  }
+}
+
+export function Preview({ config }) {
+  return (
+    <div className="a1-web-field-fill">
+      <StepTracker
+        steps={numberValue(config.steps, 5)}
+        currentStep={numberValue(config.currentStep, 1)}
+        align={config.align}
+      />
+    </div>
+  )
+}
+
+export function Controls({ config, setConfig }) {
+  const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+
+  return (
+    <Stack gap="lg">
+      <TextField
+        label="Steps"
+        size="compact"
+        type="number"
+        value={String(config.steps)}
+        onChange={(event) => set({ steps: event.target.value })}
+      />
+      <TextField
+        label="Current step"
+        size="compact"
+        type="number"
+        value={String(config.currentStep)}
+        onChange={(event) => set({ currentStep: event.target.value })}
+      />
+      <ChoiceGroup
+        label="Align"
+        size="compact"
+        hideIndicator
+        columns={2}
+        value={config.align}
+        onChange={(align) => set({ align })}
+        options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+      />
+    </Stack>
+  )
+}
+
+export function Snippet({ config }) {
+  return <Code variant="block" wrapping copyCode>{buildStepTrackerSnippet(config)}</Code>
+}

@@ -196,6 +196,50 @@ export const Folder = {
   },
 };
 
+/* ── Pills variant ────────────────────────────────────────────────────────── */
+
+export const Pills = {
+  name: "Pills (filters)",
+  render: () => {
+    const [active, setActive] = useState("all");
+    return (
+      <Tabs value={active} onChange={setActive} variant="pills">
+        <TabList>
+          <Tab value="all">All</Tab>
+          <Tab value="active" count={8}>Active</Tab>
+          <Tab value="archived" count={24}>Archived</Tab>
+          <Tab value="drafts">Drafts</Tab>
+        </TabList>
+        <TabPanel value="all"><SamplePanel title="All" /></TabPanel>
+        <TabPanel value="active"><SamplePanel title="Active" /></TabPanel>
+        <TabPanel value="archived"><SamplePanel title="Archived" /></TabPanel>
+        <TabPanel value="drafts"><SamplePanel title="Drafts" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Segment variant ──────────────────────────────────────────────────────── */
+
+export const Segment = {
+  name: "Segment (view switcher)",
+  render: () => {
+    const [active, setActive] = useState("day");
+    return (
+      <Tabs value={active} onChange={setActive} variant="segment">
+        <TabList>
+          <Tab value="day">Day</Tab>
+          <Tab value="week">Week</Tab>
+          <Tab value="month">Month</Tab>
+        </TabList>
+        <TabPanel value="day"><SamplePanel title="Day" /></TabPanel>
+        <TabPanel value="week"><SamplePanel title="Week" /></TabPanel>
+        <TabPanel value="month"><SamplePanel title="Month" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
 /* ── Folder + nested line ─────────────────────────────────────────────────── */
 
 export const FolderNested = {

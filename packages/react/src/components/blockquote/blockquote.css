@@ -80,8 +80,6 @@
 }
 
 .a1-blockquote--feature .a1-blockquote__cite {
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   font-size: var(--semantic-font-size-body-xs);
   margin-top: var(--base-spacing-20);
 }

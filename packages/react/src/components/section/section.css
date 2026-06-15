@@ -10,6 +10,10 @@
   --a1-section-gradient-anchor: center;
   --a1-section-gradient-strength: var(--component-section-gradient-strength);
   --a1-section-justify-items: stretch;
+  --a1-section-border-size: 0;
+  --a1-section-border-style: solid;
+  --a1-section-border-color: transparent;
+  border: var(--a1-section-border-size) var(--a1-section-border-style) var(--a1-section-border-color);
 }
 
 .a1-section.a1-inverse {
@@ -22,6 +26,29 @@
 .a1-section--surface-page   { --a1-section-surface: var(--semantic-color-surface-page); background: var(--a1-section-surface); }
 .a1-section--surface-panel  { --a1-section-surface: var(--semantic-color-surface-panel); background: var(--a1-section-surface); }
 .a1-section--surface-raised { --a1-section-surface: var(--semantic-color-surface-raised); background: var(--a1-section-surface); }
+
+/* ── Border ────────────────────────────────────────────────────────────────── */
+
+.a1-section--border-xs { --a1-section-border-size: var(--component-divider-size-xs); }
+.a1-section--border-sm { --a1-section-border-size: var(--component-divider-size-sm); }
+.a1-section--border-md { --a1-section-border-size: var(--component-divider-size-md); }
+.a1-section--border-lg { --a1-section-border-size: var(--component-divider-size-lg); }
+
+.a1-section--border-solid  { --a1-section-border-style: solid; }
+.a1-section--border-dashed { --a1-section-border-style: dashed; }
+.a1-section--border-dotted { --a1-section-border-style: dotted; }
+
+.a1-section--border-subtle { --a1-section-border-color: var(--semantic-color-border-subtle); }
+.a1-section--border-strong { --a1-section-border-color: var(--semantic-color-border-strong); }
+.a1-section--border-accent { --a1-section-border-color: var(--semantic-color-text-accent); }
+
+/* ── Radius ────────────────────────────────────────────────────────────────── */
+
+.a1-section--radius-none { border-radius: 0; }
+.a1-section--radius-sm   { border-radius: var(--base-radius-sm); }
+.a1-section--radius-md   { border-radius: var(--base-radius-md); }
+.a1-section--radius-lg   { border-radius: var(--base-radius-lg); }
+.a1-section--radius-xl   { border-radius: var(--base-radius-xl); }
 
 /* ── Gradient wash ─────────────────────────────────────────────────────────── */
 
@@ -84,6 +111,7 @@
 
 .a1-section--height-screen {
   min-height: 100svh;
+  align-content: start;
 }
 
 /* Fills the viewport minus the sticky top header — use for hero/landing sections. */

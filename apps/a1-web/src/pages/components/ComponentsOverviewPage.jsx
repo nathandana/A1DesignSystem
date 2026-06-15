@@ -4,6 +4,7 @@ import {
   Grid,
   Heading,
   Paragraph,
+  Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { ruleSourceFiles } from './data.js'
@@ -15,7 +16,7 @@ function OverviewTable({ onNavigate }) {
     { key: 'category', label: 'Category', sortable: true },
     { key: 'updated', label: 'Last updated', sortable: true },
     { key: 'packages', label: 'Packages' },
-    { key: 'actions', label: 'Open', type: 'actions' },
+    // { key: 'actions', label: 'Open', type: 'actions' },
   ]
 
   const rows = allComponents.map((component) => ({
@@ -40,7 +41,7 @@ function OverviewTable({ onNavigate }) {
       caption="All A1 components"
       columns={columns}
       rows={rows}
-      size="compact"
+      // size="compact"
       zebra
       scrollable
       defaultSort={{ key: 'category', direction: 'asc' }}
@@ -56,7 +57,7 @@ export function ComponentsOverviewPage({ onNavigate }) {
   ]
 
   return (
-    <Stack gap="lg">
+    <Section gap="lg" padding="md" surface='panel'>
       <Grid columns={{ xs: 1, sm: 3 }} gap="md">
         {overviewStats.map((stat) => (
           <Card key={stat.label}>
@@ -76,6 +77,6 @@ export function ComponentsOverviewPage({ onNavigate }) {
         </Paragraph>
       </Stack>
       <OverviewTable onNavigate={onNavigate} />
-    </Stack>
+    </Section>
   )
 }

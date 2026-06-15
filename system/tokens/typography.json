@@ -31,6 +31,10 @@
           }
         },
         "scale": {
+          "50": {
+            "$type": "dimension",
+            "$value": "0.625rem"
+          },
           "100": {
             "$type": "dimension",
             "$value": "0.75rem"
@@ -173,6 +177,10 @@
     "font": {
       "size": {
         "body": {
+          "2xs": {
+            "$type": "dimension",
+            "$value": "{base.font.size.scale.50}"
+          },
           "xs": {
             "$type": "dimension",
             "$value": "{base.font.size.scale.100}"
@@ -192,6 +200,21 @@
           "xl": {
             "$type": "dimension",
             "$value": "{base.font.size.scale.300}"
+          }
+        },
+        "formLabel": {
+          "$description": "Single source of truth for form-field label/legend size by density. Used by Field, CheckboxGroup, RadioGroup, and ChoiceGroup so their labels never drift.",
+          "compact": {
+            "$type": "dimension",
+            "$value": "{semantic.font.size.body.xs}"
+          },
+          "default": {
+            "$type": "dimension",
+            "$value": "{semantic.font.size.body.sm}"
+          },
+          "comfortable": {
+            "$type": "dimension",
+            "$value": "{semantic.font.size.body.md}"
           }
         },
         "heading": {

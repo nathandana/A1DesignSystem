@@ -62,6 +62,45 @@
   pointer-events: none;
 }
 
+/* Full-width: stretch to fill the container. Default buttons stay inline-flex
+   (natural content width). */
+.a1-button--full-width {
+  display: flex;
+  width: 100%;
+}
+
+/* Loading: the button is inert but reads as working (not disabled). A spinner
+   replaces the icon; full opacity distinguishes it from the disabled state. */
+.a1-button--loading {
+  cursor: progress;
+}
+
+.a1-button--loading:disabled,
+.a1-button--loading[aria-disabled="true"] {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.a1-button__spinner {
+  inline-size: var(--component-button-icon-size);
+  block-size: var(--component-button-icon-size);
+  flex-shrink: 0;
+  border: var(--base-spacing-2) solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--base-radius-pill);
+  animation: a1-button-spin var(--semantic-motion-duration-slowest) linear infinite;
+}
+
+@keyframes a1-button-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-button__spinner {
+    animation-duration: calc(var(--semantic-motion-duration-slowest) * 3);
+  }
+}
+
 .a1-button--primary {
   --a1-button-background: var(--component-button-primary-background);
   --a1-button-background-hover: var(--component-button-primary-background-hover);

@@ -14,6 +14,8 @@ export interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInput
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  /** Autofill hint forwarded to the native input, e.g. "email", "current-password", "tel", "postal-code", "cc-number", "off". Improves browser and password-manager autofill. */
+  autoComplete?: string;
   /** Element rendered inside the field control (e.g. a unit suffix) */
   inputOverlay?: React.ReactNode;
 }

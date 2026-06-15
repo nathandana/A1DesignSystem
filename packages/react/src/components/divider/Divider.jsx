@@ -1,7 +1,8 @@
 import "./divider.css";
 
 const orientations = ["horizontal", "vertical"];
-const variants = ["subtle", "strong", "accent", "dashed", "dotted"];
+const variants = ["subtle", "strong", "accent"];
+const lineStyles = ["solid", "dashed", "dotted"];
 const sizes = ["xs", "sm", "md", "lg"];
 const spacing = ["none", "xs", "sm", "md", "lg", "xl", "xxl"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
@@ -33,13 +34,16 @@ function getOrientationClasses(orientation) {
 export function Divider({
   orientation = "horizontal",
   variant = "subtle",
+  lineStyle = "solid",
   size = "xs",
   space = "sm",
   decorative = true,
   className = "",
   ...props
 }) {
+  const legacyLineStyle = lineStyles.includes(variant) ? variant : undefined;
   const resolvedVariant = variants.includes(variant) ? variant : "subtle";
+  const resolvedLineStyle = legacyLineStyle || (lineStyles.includes(lineStyle) ? lineStyle : "solid");
   const resolvedSize = sizes.includes(size) ? size : "xs";
   const resolvedSpace = spacing.includes(space) ? space : "sm";
   const resolvedOrientation = resolveBaseOrientation(orientation);
@@ -48,6 +52,7 @@ export function Divider({
     "a1-divider",
     ...getOrientationClasses(orientation),
     `a1-divider--${resolvedVariant}`,
+    `a1-divider--${resolvedLineStyle}`,
     `a1-divider--${resolvedSize}`,
     `a1-divider--space-${resolvedSpace}`,
     className,

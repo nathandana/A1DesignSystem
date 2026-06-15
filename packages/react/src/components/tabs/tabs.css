@@ -225,6 +225,77 @@
   border-bottom-left-radius: var(--base-radius-lg);
 }
 
+/* ── Pills variant ──────────────────────────────────────────────────────── */
+
+.a1-tab-list-wrapper--pills {
+  align-items: center;
+}
+
+.a1-tab-list--pills {
+  gap: var(--base-spacing-8);
+  flex-wrap: wrap;
+}
+
+.a1-tab--pills {
+  padding: var(--component-tab-padding-block) var(--component-tab-padding-inline);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-raised);
+  border-radius: var(--base-radius-pill);
+}
+
+.a1-tab--pills:hover:not([aria-selected="true"]) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-tab--pills[aria-selected="true"] {
+  color: var(--semantic-color-action-foreground);
+  background: var(--semantic-color-action-background);
+  cursor: default;
+}
+
+.a1-tab--pills[aria-selected="true"] .a1-tab__count {
+  background: color-mix(in srgb, var(--semantic-color-action-foreground) 24%, transparent);
+  color: var(--semantic-color-action-foreground);
+}
+
+/* ── Segment variant (mirrors SegmentedControl) ─────────────────────────── */
+
+.a1-tab-list-wrapper--segment {
+  align-items: center;
+}
+
+.a1-tab-list--segment {
+  gap: var(--component-segmented-gap);
+  padding: var(--component-segmented-padding);
+  background: var(--semantic-color-surface-raised);
+  border: var(--component-segmented-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-control);
+}
+
+.a1-tab--segment {
+  padding: var(--component-segmented-segment-padding-block) var(--component-segmented-segment-padding-inline);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-muted);
+  border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));
+  justify-content: center;
+}
+
+.a1-tab--segment:hover:not([aria-selected="true"]) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-tab--segment[aria-selected="true"] {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-xs);
+  cursor: default;
+}
+
 /* ── Progress variant ───────────────────────────────────────────────────── */
 
 .a1-tab-list-wrapper--progress {
@@ -485,4 +556,12 @@
 
 .a1-tabs--compact .a1-tab--folder {
   padding: var(--base-spacing-6) var(--base-spacing-8);
+}
+
+.a1-tabs--compact .a1-tab--pills {
+  padding: var(--base-spacing-4) var(--base-spacing-12);
+}
+
+.a1-tabs--compact .a1-tab--segment {
+  padding: var(--component-segmented-segment-padding-block-sm) var(--component-segmented-segment-padding-inline-sm);
 }

@@ -8,8 +8,6 @@
   font-size: var(--semantic-font-size-body-xs);
   font-weight: var(--base-font-weight-medium);
   line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   vertical-align: middle;
   margin-inline-start: var(--base-spacing-6);
   background: var(--semantic-color-action-background);
@@ -79,6 +77,7 @@ body {
 
 .a1-web-config-aside {
   box-sizing: border-box;
+  display: flex;
   width: var(--component-page-layout-sidebar-width);
   min-height: 100%;
   background: var(--semantic-color-surface-page);
@@ -86,7 +85,94 @@ body {
 }
 
 .a1-web-config-aside__inner {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 100%;
+  min-inline-size: 0;
   padding: var(--base-spacing-16);
+}
+
+.a1-web-config-aside__tabs {
+  flex: 1 1 auto;
+  min-block-size: 100%;
+}
+
+.a1-web-config-aside__tabs > .a1-tab-panel {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+/* Field preview that should span the full preview container (e.g. Textarea). */
+.a1-web-field-fill,
+.a1-web-field-fill > .a1-field {
+  inline-size: 100%;
+}
+
+.a1-web-config-panel {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100%;
+}
+
+/* Tighten the spacing between top-level controls (choice groups, fields) in the
+   configuration panels. Only the panel's own top-level Stack is affected —
+   nested Stacks (e.g. per-item editors) keep their own gap. */
+.a1-web-config-panel__body > .a1-stack,
+.a1-web-config-aside__tabs > .a1-tab-panel > .a1-stack {
+  gap: var(--semantic-spacing-gap-md);
+}
+
+/* Preview frame for components that own their full height (e.g. SideNav).
+   SideNav is height:100%, so the preview needs a bounded, scrollable box. */
+.a1-web-side-nav-preview {
+  display: flex;
+  block-size: 28rem;
+  max-block-size: 70vh;
+  overflow: hidden;
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+}
+
+/* At lg+ the SideNav becomes position: sticky with height: 100vh. Inside this
+   bounded preview frame that pushes the footer out of view, so constrain the
+   nav to fill the frame and anchor its footer at the bottom. */
+.a1-web-side-nav-preview .a1-side-nav {
+  position: relative;
+  inset-block-start: auto;
+  block-size: 100%;
+}
+
+/* The placement prop only changes which side the nav's border sits on; within
+   this standalone frame the nav must also be pushed to the matching edge so
+   end placement is visible without a full page layout around it. */
+.a1-web-side-nav-preview--end {
+  justify-content: end;
+}
+
+/* TopHeader owns its own surface and is position: sticky; in this standalone
+   preview there is no scroll container, so it simply sits in a bordered frame. */
+.a1-web-top-header-preview {
+  overflow: hidden;
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+}
+
+.a1-web-top-header-preview .a1-top-header {
+  position: relative;
+  inset-block-start: auto;
+}
+
+.a1-web-config-panel__footer {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  align-items: end;
+  min-block-size: var(--base-spacing-64);
+  margin-block-start: auto;
+  padding-block-start: var(--base-spacing-16);
+  background: var(--semantic-color-surface-page);
+  border-block-start: 1px solid var(--semantic-color-border-subtle);
 }
 
 @media (max-width: 640px) {
@@ -138,6 +224,39 @@ body {
       color-mix(in srgb, var(--semantic-color-surface-raised), transparent 35%) 75%
     );
   background-size: var(--base-spacing-24) var(--base-spacing-24);
+}
+
+.a1-web-container-query-preview-scroll {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.a1-web-container-query-preview {
+  box-sizing: border-box;
+  inline-size: var(--a1-web-container-query-preview-width);
+  max-inline-size: none;
+}
+
+/* Standard component container query preview widths:
+   xs covers very narrow component containers; sm/md/lg/xl match the documented
+   320/480/640/960px container query standards. */
+.a1-web-container-query-preview--xs { --a1-web-container-query-preview-width: 15rem; }
+.a1-web-container-query-preview--sm { --a1-web-container-query-preview-width: 20rem; }
+.a1-web-container-query-preview--md { --a1-web-container-query-preview-width: 30rem; }
+.a1-web-container-query-preview--lg { --a1-web-container-query-preview-width: 40rem; }
+.a1-web-container-query-preview--xl { --a1-web-container-query-preview-width: 60rem; }
+
+/* Card container queries are evaluated against the card content box. Add the
+   component chrome back to the preview frame so the selected query width still
+   maps to the actual Card query threshold. */
+.a1-web-container-query-preview--card {
+  inline-size: calc(
+    var(--a1-web-container-query-preview-width)
+    + (var(--component-card-padding) * 2)
+    + (var(--component-card-border-width) * 2)
+  );
 }
 
 .a1-web-anatomy-stage {

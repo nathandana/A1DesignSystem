@@ -1,7 +1,7 @@
 import { TextField } from "./TextField.jsx";
 
 const meta = {
-  title: "Components/Forms/Input Text",
+  title: "Components/Forms/Text Field",
   component: TextField,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
@@ -10,6 +10,7 @@ const meta = {
     hint: "We'll only use this to send you account notifications.",
     size: "default",
     labelPosition: "above",
+    autoComplete: "email",
     required: false,
     disabled: false,
     readOnly: false,
@@ -22,6 +23,10 @@ const meta = {
     labelPosition: {
       control: "inline-radio",
       options: ["above", "before"],
+    },
+    autoComplete: {
+      control: "text",
+      description: "Native autofill hint, e.g. email, username, current-password, tel, postal-code, cc-number, off.",
     },
     error: { control: "text" },
     hint:  { control: "text" },
@@ -191,4 +196,17 @@ export const SizesAndStates = {
       </div>
     );
   },
+};
+
+/* ── Autocomplete (sign-in form) ──────────────────────────────────────────── */
+
+export const Autocomplete = {
+  name: "Autocomplete",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <form style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)", maxWidth: 360 }}>
+      <TextField label="Email address" type="email" autoComplete="email" hint="Browsers and password managers will offer to autofill this." />
+      <TextField label="Password" type="password" autoComplete="current-password" />
+    </form>
+  ),
 };

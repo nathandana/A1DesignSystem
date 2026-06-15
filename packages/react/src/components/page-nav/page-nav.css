@@ -35,8 +35,6 @@
   font-size: var(--semantic-font-size-body-xs);
   font-weight: 600;
   color: var(--semantic-color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   line-height: 1;
 }
 

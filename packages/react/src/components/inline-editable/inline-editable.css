@@ -16,8 +16,14 @@
   outline-offset: 2px;
 }
 
+/* Disabled — render as plain, selectable text with no interactive affordances */
 .a1-inline-editable--disabled {
-  cursor: default;
+  cursor: auto;
+  user-select: text;
+}
+
+.a1-inline-editable--disabled:hover {
+  outline-color: transparent;
 }
 
 .a1-inline-editable__placeholder {
@@ -44,4 +50,41 @@
   border-color: var(--semantic-color-interactive-default);
   outline: 2px solid var(--semantic-color-interactive-default);
   outline-offset: -1px;
+}
+
+/* ── Seamless ──────────────────────────────────────────────────────────────
+   Edits the text in place via contentEditable. The element inherits everything
+   — font, size, weight, colour, line-height, alignment, wrapping — from the
+   surrounding component (Heading, Paragraph, Button, …), so editing never
+   resizes or restyles the text. Only a focus ring is added, for accessibility. */
+.a1-inline-editable--seamless {
+  display: inline;
+  cursor: text;
+  border-radius: var(--base-border-radius-sm);
+  outline: none;
+  /* allow the caret/selection to sit just outside the glyphs without clipping */
+  outline-offset: 2px;
+}
+
+/* Multiline keeps authored line breaks */
+.a1-inline-editable--multiline {
+  white-space: pre-wrap;
+}
+
+.a1-inline-editable--seamless:focus,
+.a1-inline-editable--seamless:focus-visible {
+  outline: 2px solid var(--semantic-color-interactive-default);
+}
+
+/* Placeholder while empty (no value typed yet) */
+.a1-inline-editable--seamless:empty::before {
+  content: attr(data-placeholder);
+  color: var(--semantic-color-text-muted);
+  opacity: 0.7;
+}
+
+/* Disabled seamless — plain, selectable text with no caret affordance */
+.a1-inline-editable--seamless.a1-inline-editable--disabled {
+  cursor: auto;
+  user-select: text;
 }

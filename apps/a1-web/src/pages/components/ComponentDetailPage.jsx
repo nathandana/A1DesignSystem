@@ -12,6 +12,7 @@ import {
   Card,
   CheckboxGroup,
   ChoiceGroup,
+  CircularProgress,
   Code,
   Cluster,
   DataTable,
@@ -38,7 +39,9 @@ import {
   SegmentedControl,
   SelectField,
   Stack,
+  StatusBar,
   Snackbar,
+  StepTracker,
   Switch,
   Tab,
   TabList,
@@ -402,8 +405,20 @@ function AnatomyComponentPreview({ component }) {
           ]}
         />
       )
-    case 'field':
+    case 'text-field':
       return <TextField label={component.title} value="Example value" readOnly />
+    case 'number-field':
+      return <TextField label={component.title} type="text" value="1,200" readOnly />
+    case 'date-field':
+      return <TextField label={component.title} type="date" value="2026-06-15" readOnly />
+    case 'time-field':
+      return <TextField label={component.title} type="time" value="09:30" readOnly />
+    case 'phone-field':
+      return <TextField label={component.title} type="tel" value="(555) 012-3456" readOnly />
+    case 'zip-field':
+      return <TextField label={component.title} value="90210" readOnly />
+    case 'credit-card-field':
+      return <TextField label={component.title} value="4242 4242 4242 4242" readOnly />
     case 'textarea':
       return <TextareaField label={component.title} value="Example multi-line value" readOnly />
     case 'select':
@@ -459,7 +474,7 @@ function AnatomyComponentPreview({ component }) {
       return <TextField label={component.title} value="Editable text" readOnly />
     case 'banner':
       return <Banner status="info" title={component.title}>A short page-level message.</Banner>
-    case 'message':
+    case 'badge':
       return <MessageBadge status="info">{component.title}</MessageBadge>
     case 'notification':
       return (
@@ -471,6 +486,12 @@ function AnatomyComponentPreview({ component }) {
       return <Snackbar open actionLabel="Undo" onAction={() => {}}>Saved changes</Snackbar>
     case 'empty-state':
       return <MessageEmptyState title={component.title} description="No items to show yet." icon="inbox" />
+    case 'status-bar':
+      return <StatusBar value={65} label="Progress" />
+    case 'circular-progress':
+      return <CircularProgress value={65} aria-label="65% complete">65%</CircularProgress>
+    case 'step-tracker':
+      return <StepTracker steps={5} currentStep={2} />
     case 'section':
       return (
         <Section padding="sm" surface="panel" contentWidth="sm">
@@ -743,6 +764,19 @@ function RulesPanel({ component }) {
   )
 }
 
+// Shared prop rows for the field family (TextField, NumberField, DateField, …).
+const FIELD_BASE_ROWS = [
+  { id: 'label',         name: 'label',         type: 'string',   description: 'Visible label text.' },
+  { id: 'hint',          name: 'hint',          type: 'string',   description: 'Helper text shown below the field.' },
+  { id: 'error',         name: 'error',         type: 'string',   description: 'Error message — replaces hint and marks the field invalid.' },
+  { id: 'size',          name: 'size',          type: '"comfortable" | "default" | "compact"', description: 'Size density. Inherits from parent Fieldset when omitted. Default: "default".' },
+  { id: 'labelPosition', name: 'labelPosition', type: '"above" | "before"', description: 'Label placement. Inherits from parent Fieldset when omitted. Default: "above".' },
+  { id: 'value',         name: 'value',         type: 'string',   description: 'Controlled input value (use defaultValue for uncontrolled).' },
+  { id: 'required',      name: 'required',      type: 'boolean',  description: 'Marks the field as required and shows a required indicator.' },
+  { id: 'disabled',      name: 'disabled',      type: 'boolean',  description: 'Disables the input.' },
+  { id: 'readOnly',      name: 'readOnly',      type: 'boolean',  description: 'Makes the input read-only.' },
+]
+
 const COMPONENT_PROPS = {
   // ── Typography ────────────────────────────────────────────────────────────
   heading: [
@@ -805,7 +839,7 @@ const COMPONENT_PROPS = {
     },
   ],
   inline: [
-    { id: 'element',  name: '(element)', type: 'strong | b | em | i | u | s | del | ins | mark | kbd | abbr | cite | q', description: 'Inline uses native semantic HTML elements directly — no wrapper component. Each element carries its semantic meaning: strong/b for importance, em/i for emphasis, del/ins for edits, mark for highlights, kbd for keyboard input, abbr for abbreviations.' },
+    { id: 'element',  name: '(element)', type: 'strong | b | em | i | u | s | del | ins | mark | small | sub | sup | abbr | cite | q | time | code | kbd | samp | var | span.a1-muted | span.a1-accent', description: 'Inline uses native semantic HTML elements directly — no wrapper component. Each element carries its semantic meaning, and utility spans provide muted/accent inline text.' },
     { id: 'children', name: 'children',  type: 'ReactNode', description: 'Inline text content.' },
   ],
   code: [
@@ -817,7 +851,8 @@ const COMPONENT_PROPS = {
   ],
   divider: [
     { id: 'orientation', name: 'orientation', type: '"horizontal" | "vertical" | ResponsiveObject', description: 'Line orientation. Accepts a responsive object. Default: "horizontal".' },
-    { id: 'variant',     name: 'variant',     type: '"subtle" | "strong" | "accent" | "dashed" | "dotted"', description: 'Visual style. Default: "subtle".' },
+    { id: 'variant',     name: 'variant',     type: '"subtle" | "strong" | "accent"', description: 'Color tone. Default: "subtle".' },
+    { id: 'lineStyle',   name: 'lineStyle',   type: '"solid" | "dashed" | "dotted"', description: 'Border pattern. Can combine with any variant, for example accent + dashed. Default: "solid".' },
     { id: 'size',        name: 'size',        type: '"xs" | "sm" | "md" | "lg"', description: 'Line thickness. Default: "xs".' },
     { id: 'space',       name: 'space',       type: '"none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl"', description: 'Block-axis margin above and below (or left/right for vertical). Default: "sm".' },
     { id: 'decorative',  name: 'decorative',  type: 'boolean', description: 'When true the element has no semantic role (aria-hidden). Default: true.' },
@@ -1009,19 +1044,27 @@ const COMPONENT_PROPS = {
   ],
 
   // ── Inputs ────────────────────────────────────────────────────────────────
-  field: [
-    { id: 'label',         name: 'label',         type: 'string',   description: 'Visible label text.' },
-    { id: 'hint',          name: 'hint',          type: 'string',   description: 'Helper text shown below the field.' },
-    { id: 'error',         name: 'error',         type: 'string',   description: 'Error message — replaces hint and marks the field invalid.' },
-    { id: 'size',          name: 'size',          type: '"comfortable" | "default" | "compact"', description: 'Size density. Inherits from parent Fieldset when omitted. Default: "default".' },
-    { id: 'labelPosition', name: 'labelPosition', type: '"above" | "side"', description: 'Label placement. Inherits from parent Fieldset when omitted. Default: "above".' },
-    { id: 'type',          name: 'type',          type: 'string',   description: 'HTML input type (text, email, password, number, date, etc.). Default: "text".' },
-    { id: 'value',         name: 'value',         type: 'string',   description: 'Controlled input value.' },
-    { id: 'required',      name: 'required',      type: 'boolean',  description: 'Marks the field as required and shows a required indicator.' },
-    { id: 'disabled',      name: 'disabled',      type: 'boolean',  description: 'Disables the input.' },
-    { id: 'readOnly',      name: 'readOnly',      type: 'boolean',  description: 'Makes the input read-only.' },
-    { id: 'inputOverlay',  name: 'inputOverlay',  type: 'ReactNode',description: 'Element rendered inside the field control, e.g. a unit suffix.' },
+  'text-field': [
+    ...FIELD_BASE_ROWS,
+    { id: 'type',         name: 'type',         type: '"text" | "email" | "password" | string', description: 'HTML input type. Default: "text".' },
+    { id: 'inputOverlay', name: 'inputOverlay', type: 'ReactNode', description: 'Element rendered inside the field control, e.g. a unit suffix.' },
   ],
+  'number-field': [
+    ...FIELD_BASE_ROWS,
+    { id: 'prefix', name: 'prefix', type: 'string', description: 'Non-editable prefix before the value at full size (e.g. "$").' },
+    { id: 'unit',   name: 'unit',   type: 'string', description: 'Non-editable unit after the value, smaller and muted (e.g. "lbs").' },
+  ],
+  'date-field': FIELD_BASE_ROWS,
+  'time-field': FIELD_BASE_ROWS,
+  'phone-field': [
+    ...FIELD_BASE_ROWS,
+    { id: 'mask', name: 'mask', type: 'string', description: 'Input mask pattern. Defaults to a standard phone format.' },
+  ],
+  'zip-field': [
+    ...FIELD_BASE_ROWS,
+    { id: 'mask', name: 'mask', type: 'string', description: 'Input mask pattern. ZIP_MASKS provides common presets.' },
+  ],
+  'credit-card-field': FIELD_BASE_ROWS,
   textarea: [
     { id: 'label',         name: 'label',         type: 'string',   description: 'Visible label text.' },
     { id: 'hint',          name: 'hint',          type: 'string',   description: 'Helper text shown below the textarea.' },
@@ -1168,7 +1211,7 @@ const COMPONENT_PROPS = {
     { id: 'onDismiss', name: 'onDismiss', type: '() => void',           description: 'Called when the dismiss button is clicked. Omit to hide the dismiss button.' },
     { id: 'children',  name: 'children',  type: 'ReactNode',            description: 'Banner body text.' },
   ],
-  message: [
+  badge: [
     { id: 'status',   name: 'status',   type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Semantic status colour. Default: "neutral".' },
     { id: 'subtle',   name: 'subtle',   type: 'boolean',  description: 'Reduce background opacity for a softer appearance. Default: false.' },
     { id: 'size',     name: 'size',     type: '"sm" | "md" | "lg"', description: 'Badge size. Default: "md".' },
@@ -1180,7 +1223,7 @@ const COMPONENT_PROPS = {
     { id: 'count',    name: 'count',    type: 'number',     description: 'Numeric count shown in the badge. Values above max display as "max+". Omit to show a dot.' },
     { id: 'label',    name: 'label',    type: 'string',     description: 'Text label shown in the badge instead of a count.' },
     { id: 'dot',      name: 'dot',      type: 'boolean',    description: 'Show a small dot with no label. Auto-enabled when count and label are both omitted. Default: false.' },
-    { id: 'variant',  name: 'variant',  type: '"default" | "neutral" | "info" | "success" | "warn" | "error"', description: 'Badge colour. Default: "default" (action colour).' },
+    { id: 'status',   name: 'status',   type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Badge status colour. Default: "neutral".' },
     { id: 'position', name: 'position', type: '"top-right" | "top-left" | "bottom-right" | "bottom-left"', description: 'Corner the badge anchors to. Default: "top-right".' },
     { id: 'max',      name: 'max',      type: 'number',     description: 'Maximum count shown before displaying as "max+". Default: 99.' },
   ],
@@ -1190,9 +1233,7 @@ const COMPONENT_PROPS = {
     { id: 'actionLabel', name: 'actionLabel', type: 'string',    description: 'Label for the inline action button (e.g. "Undo").' },
     { id: 'onAction',    name: 'onAction',    type: '() => void', description: 'Called when the action button is clicked.' },
     { id: 'onClose',     name: 'onClose',     type: '() => void', description: 'Called when the snackbar auto-dismisses or is closed.' },
-    { id: 'variant',     name: 'variant',     type: '"default" | "success" | "error"', description: 'Colour variant. Default: "default".' },
-    { id: 'position',    name: 'position',    type: '"bottom" | "top"', description: 'Screen position. Default: "bottom".' },
-    { id: 'inverse',     name: 'inverse',     type: 'boolean',   description: 'Apply the inverse (dark) colour scheme. Default: true.' },
+    { id: 'position',    name: 'position',    type: '"bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right"', description: 'Screen position. Default: "bottom".' },
   ],
   'empty-state': [
     { id: 'scale',       name: 'scale',       type: '"page" | "section" | "card"', description: 'Visual scale matching the container. page = largest (h1), section = medium (h2), card = compact (h3). Default: "section".' },
@@ -1200,6 +1241,28 @@ const COMPONENT_PROPS = {
     { id: 'title',       name: 'title',       type: 'string',    description: 'Primary message.' },
     { id: 'description', name: 'description', type: 'string',    description: 'Supporting description text below the title.' },
     { id: 'action',      name: 'action',      type: 'ReactNode', description: 'Action element (e.g. a Button) rendered below the description.' },
+  ],
+  'status-bar': [
+    { id: 'value',         name: 'value',         type: 'number', description: 'Current progress value. Default: 0.' },
+    { id: 'max',           name: 'max',           type: 'number', description: 'Maximum progress value. Default: 100.' },
+    { id: 'label',         name: 'label',         type: 'ReactNode', description: 'Visible label shown before, after, above, or below the bar.' },
+    { id: 'labelPosition', name: 'labelPosition', type: '"above" | "below" | "before" | "after"', description: 'Label placement. Default: "above".' },
+    { id: 'size',          name: 'size',          type: '"sm" | "md" | "lg"', description: 'Track height. Default: "md".' },
+    { id: 'indeterminate', name: 'indeterminate', type: 'boolean', description: 'Shows an animated loading sweep and removes aria-valuenow. Default: false.' },
+    { id: 'aria-label',    name: 'aria-label',    type: 'string', description: 'Accessible name for the progressbar when no visible label is provided.' },
+  ],
+  'circular-progress': [
+    { id: 'value',         name: 'value',         type: 'number', description: 'Current progress value. Default: 0.' },
+    { id: 'max',           name: 'max',           type: 'number', description: 'Maximum progress value. Default: 100.' },
+    { id: 'size',          name: 'size',          type: '"xs" | "sm" | "md" | "lg" | "xl"', description: 'Ring size. Default: "md".' },
+    { id: 'indeterminate', name: 'indeterminate', type: 'boolean', description: 'Shows a spinning loading indicator and removes aria-valuenow. Default: false.' },
+    { id: 'children',      name: 'children',      type: 'ReactNode', description: 'Optional visual content inside the ring for sm and larger, or after the ring for xs.' },
+    { id: 'aria-label',    name: 'aria-label',    type: 'string', description: 'Accessible name for the progressbar. Required because visual children are aria-hidden.' },
+  ],
+  'step-tracker': [
+    { id: 'steps',       name: 'steps',       type: 'number', description: 'Total number of steps. Minimum effective value is 1.' },
+    { id: 'currentStep', name: 'currentStep', type: 'number', description: 'Current 1-based step. Values are clamped between 1 and steps. Default: 1.' },
+    { id: 'align',       name: 'align',       type: '"left" | "center" | "right" | "full"', description: 'Horizontal alignment. Full expands the current step pill to fill remaining width. Default: "left".' },
   ],
   // ── Layout ────────────────────────────────────────────────────────────────
   section: [
@@ -1212,7 +1275,11 @@ const COMPONENT_PROPS = {
     { id: 'inverse',          name: 'inverse',          type: 'boolean',     description: 'Apply the inverse (dark) colour scheme to this section.' },
     { id: 'contentWidth',     name: 'contentWidth',     type: '"xs" | "sm" | "md" | "lg" | "xl" | "2xl"', description: 'Constrain inner content to a max-width and centre it.' },
     { id: 'height',           name: 'height',           type: '"screen" | "hero"',           description: '"screen" fills full viewport height; "hero" fills 90svh minus the sticky header and vertically centres content.' },
-    { id: 'alignment',        name: 'alignment',        type: '"left" | "center" | "right" | ResponsiveObject', description: 'Horizontal alignment of direct children.' },
+    { id: 'align',            name: 'align',            type: '"left" | "center" | "right" | ResponsiveObject', description: 'Horizontal alignment of direct children.' },
+    { id: 'borderSize',       name: 'borderSize',       type: '"xs" | "sm" | "md" | "lg"', description: 'Border thickness. Uses the same size tokens as Divider. Omit for no border.' },
+    { id: 'borderStyle',      name: 'borderStyle',      type: '"solid" | "dashed" | "dotted"', description: 'Border pattern. Uses the same line styles as Divider. Default: "solid".' },
+    { id: 'borderVariant',    name: 'borderVariant',    type: '"subtle" | "strong" | "accent"', description: 'Border color tone. Uses the same variants as Divider. Default: "subtle".' },
+    { id: 'radius',           name: 'radius',           type: '"none" | "sm" | "md" | "lg" | "xl"', description: 'Border radius scale. Default: "none".' },
     { id: 'children',         name: 'children',         type: 'ReactNode',   description: 'Section content.' },
   ],
   card: [
@@ -1473,6 +1540,43 @@ const FALLBACK_PROP_ROWS = [
   { id: 'className', name: 'className', type: 'string', description: 'Additional CSS class names for local layout hooks.' },
 ]
 
+const CONTAINER_QUERY_COMPONENT_IDS = new Set([
+  'breadcrumb',
+  'button-container',
+  'calendar',
+  'card',
+  'definition-list',
+])
+
+const CONTAINER_QUERY_PRESETS = [
+  { label: 'Auto', value: 'auto', subtext: '100%' },
+  { label: 'xs', value: 'xs', subtext: '240px' },
+  { label: 'sm', value: 'sm', subtext: '320px' },
+  { label: 'md', value: 'md', subtext: '480px' },
+  { label: 'lg', value: 'lg', subtext: '640px' },
+  { label: 'xl', value: 'xl', subtext: '960px' },
+]
+
+function supportsContainerQueries(component) {
+  return CONTAINER_QUERY_COMPONENT_IDS.has(component.id)
+}
+
+function ContainerQueryPreviewFrame({ component, displayConfig, children }) {
+  const preset = displayConfig.containerQuery ?? 'auto'
+
+  if (!supportsContainerQueries(component) || preset === 'auto') {
+    return children
+  }
+
+  return (
+    <div className="a1-web-container-query-preview-scroll">
+      <div className={`a1-web-container-query-preview a1-web-container-query-preview--${preset} a1-web-container-query-preview--${component.id}`}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
 function normalizePropTables(component) {
   const entry = COMPONENT_PROPS[component.id]
   if (!entry) return [{ title: null, rows: FALLBACK_PROP_ROWS }]
@@ -1488,78 +1592,119 @@ function ConfigurationPanel({
   component,
   config,
   setConfig,
+  onResetConfig,
   displayConfig,
   setDisplayConfig,
   configPanelTab,
   setConfigPanelTab,
   Controls,
+  bareDisplay = false,
 }) {
   return (
     <div className="a1-web-config-aside__inner">
-      <Tabs value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
+      <Tabs className="a1-web-config-aside__tabs" value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
         <TabList>
           <Tab value="configure">Configure</Tab>
           <Tab value="display">Display</Tab>
         </TabList>
         <TabPanel value="configure">
-          <Controls component={component} config={config} setConfig={setConfig} />
+          <div className="a1-web-config-panel">
+            <div className="a1-web-config-panel__body">
+              <Controls component={component} config={config} setConfig={setConfig} />
+            </div>
+            <div className="a1-web-config-panel__footer">
+              <Button
+                icon="restart_alt"
+                size="sm"
+                variant="tertiary"
+                type="button"
+                onClick={onResetConfig}
+              >
+                Reset
+              </Button>
+            </div>
+          </div>
         </TabPanel>
         <TabPanel value="display">
           <Stack gap="lg">
-            <ChoiceGroup
-              label="Background"
-              size="compact"
-              hideIndicator
-              columns={2}
-              value={displayConfig.surface}
-              onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
-              options={[
-                { label: 'Page', value: 'page' },
-                { label: 'Panel', value: 'panel' },
-                { label: 'Raised', value: 'raised' },
-                { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
-              ]}
-            />
-            <ChoiceGroup
-              label="Alignment"
-              size="compact"
-              hideIndicator
-              iconOnly
-              columns={3}
-              value={displayConfig.align}
-              onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
-              options={[
-                { icon: 'align_horizontal_left', label: 'Start', value: 'start' },
-                { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
-                { icon: 'align_horizontal_right', label: 'End', value: 'end' },
-              ]}
-            />
-            <ChoiceGroup
-              label="Padding"
-              size="compact"
-              hideIndicator
-              columns={3}
-              value={displayConfig.padding}
-              onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
-              options={[
-                { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
-                { label: 'Xs', value: 'xs' },
-                { label: 'Md', value: 'md' },
-                { label: 'Lg', value: 'lg' },
-              ]}
-            />
-            <ChoiceGroup
-              label="Inverse"
-              size="compact"
-              hideIndicator
-              columns={2}
-              value={displayConfig.inverse ? 'on' : 'off'}
-              onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
-              options={[
-                { label: 'Off', value: 'off' },
-                { label: 'On', value: 'on' },
-              ]}
-            />
+            {supportsContainerQueries(component) && (
+              <ChoiceGroup
+                label="Container query"
+                hint="Constrain the preview to a standard container width."
+                size="compact"
+                hideIndicator
+                columns={3}
+                value={displayConfig.containerQuery ?? 'auto'}
+                onChange={(containerQuery) => setDisplayConfig((current) => ({ ...current, containerQuery }))}
+                options={CONTAINER_QUERY_PRESETS}
+              />
+            )}
+            {/* Surface/alignment/padding/inverse only apply when the preview is
+                wrapped in a Section. Components that own their own layout
+                (bareDisplay) hide these. */}
+            {!bareDisplay && (
+              <>
+                <ChoiceGroup
+                  label="Background"
+                  size="compact"
+                  hideIndicator
+                  columns={3}
+                  value={displayConfig.surface}
+                  onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
+                  options={[
+                    { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
+                    { label: 'Page', value: 'page' },
+                    { label: 'Panel', value: 'panel' },
+                    { label: 'Raised', value: 'raised' },
+                  ]}
+                />
+                <ChoiceGroup
+                  label="Alignment"
+                  size="compact"
+                  hideIndicator
+                  iconOnly
+                  columns={3}
+                  value={displayConfig.align}
+                  onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
+                  options={[
+                    { icon: 'align_horizontal_left', label: 'Left', value: 'left' },
+                    { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
+                    { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
+                  ]}
+                />
+                <ChoiceGroup
+                  label="Padding"
+                  size="compact"
+                  hideIndicator
+                  columns={4}
+                  value={displayConfig.padding}
+                  onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
+                  options={[
+                    { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
+                    { label: 'Xs', value: 'xs' },
+                    { label: 'Md', value: 'md' },
+                    { label: 'Lg', value: 'lg' },
+                  ]}
+                />
+                <ChoiceGroup
+                  label="Inverse"
+                  size="compact"
+                  hideIndicator
+                  columns={4}
+                  value={displayConfig.inverse ? 'on' : 'off'}
+                  onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
+                  options={[
+                    { label: 'Off', value: 'off' },
+                    { label: 'On', value: 'on' },
+                  ]}
+                />
+              </>
+            )}
+            {bareDisplay && !supportsContainerQueries(component) && (
+              <Paragraph size="sm" color="muted">
+                {component.title} manages its own surface and layout, so there are no display options to configure.
+              </Paragraph>
+            )}
           </Stack>
         </TabPanel>
       </Tabs>
@@ -1571,7 +1716,17 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const detail = getDetailModule(component.id)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
   const [configPanelTab, setConfigPanelTab] = useState('configure')
-  const [displayConfig, setDisplayConfig] = useState({ surface: 'panel', align: 'start', padding: 'md', inverse: false })
+  const [displayConfig, setDisplayConfig] = useState({
+    surface: '',
+    align: 'left',
+    padding: 'md',
+    inverse: false,
+    containerQuery: 'auto',
+    borderSize: 'xs',
+    borderStyle: 'solid',
+    borderVariant: 'subtle',
+    radius: 'md',
+  })
   const [asideNode, setAsideNode] = useState(null)
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
@@ -1581,6 +1736,10 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
     setConfig(detail.getDefaultConfig(component, category))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
+
+  function resetConfig() {
+    setConfig(detail.getDefaultConfig(component, category))
+  }
 
   // Mount the configuration panel into the PageLayout aside slot (right rail).
   // The slot is rendered by the app shell only on the Configure tab.
@@ -1605,11 +1764,13 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             component={component}
             config={config}
             setConfig={setConfig}
+            onResetConfig={resetConfig}
             displayConfig={displayConfig}
             setDisplayConfig={setDisplayConfig}
             configPanelTab={configPanelTab}
             setConfigPanelTab={setConfigPanelTab}
             Controls={detail.Controls}
+            bareDisplay={detail.bareDisplay}
           />,
           asideNode,
         )}
@@ -1631,9 +1792,27 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             </TabList>
             <TabPanel value="configure">
               <Stack gap="sm">
-                <Section surface={displayConfig.surface} align={displayConfig.align} padding={displayConfig.padding} inverse={displayConfig.inverse} gap="lg">
-                  <detail.Preview component={component} config={config} />
-                </Section>
+                {detail.bareDisplay ? (
+                  <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+                    <detail.Preview component={component} config={config} setConfig={setConfig} />
+                  </ContainerQueryPreviewFrame>
+                ) : (
+                  <Section
+                    surface={displayConfig.surface || undefined}
+                    align={displayConfig.align}
+                    padding={displayConfig.padding}
+                    inverse={displayConfig.inverse}
+                    gap="lg"
+                    borderSize={displayConfig.borderSize}
+                    borderStyle={displayConfig.borderStyle}
+                    borderVariant={displayConfig.borderVariant}
+                    radius={displayConfig.radius}
+                  >
+                    <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+                      <detail.Preview component={component} config={config} setConfig={setConfig} />
+                    </ContainerQueryPreviewFrame>
+                  </Section>
+                )}
                 <detail.Snippet component={component} config={config} />
               </Stack>
             </TabPanel>

@@ -74,6 +74,7 @@ export function Stack({
   justify = "start",
   wrap = false,
   className = "",
+  style: styleProp,
   children,
   ...props
 }) {
@@ -89,7 +90,7 @@ export function Stack({
     "--a1-stack-wrap": wrap ? "wrap" : "nowrap",
     ...getResponsiveDirectionStyle(direction),
     ...getResponsiveJustifyStyle(justify),
-    ...props.style,
+    ...styleProp,
   };
 
   return (

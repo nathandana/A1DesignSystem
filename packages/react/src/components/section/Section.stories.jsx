@@ -53,6 +53,22 @@ const meta = {
       control: "inline-radio",
       options: ["left", "center", "right", undefined],
     },
+    borderSize: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg", undefined],
+    },
+    borderStyle: {
+      control: "select",
+      options: ["solid", "dashed", "dotted"],
+    },
+    borderVariant: {
+      control: "select",
+      options: ["subtle", "strong", "accent"],
+    },
+    radius: {
+      control: "select",
+      options: ["none", "sm", "md", "lg", "xl", undefined],
+    },
     inverse: { control: "boolean" },
     as: { control: "text" },
   },
@@ -66,7 +82,7 @@ function SampleContent({ badge, heading, body, actions = true }) {
   return (
     <>
       {badge && (
-        <MessageBadge subtleicon={badge.icon}>{badge.label}</MessageBadge>
+        <MessageBadge subtle icon={badge.icon}>{badge.label}</MessageBadge>
       )}
       <Heading as="h2" size={{ xs: "xl", md: "xxl" }}>
         {heading}
@@ -97,6 +113,10 @@ export const Default = {
     contentWidth: undefined,
     height: undefined,
     align: undefined,
+    borderSize: undefined,
+    borderStyle: "solid",
+    borderVariant: "subtle",
+    radius: undefined,
     inverse: false,
   },
   render: (args) => (
@@ -107,6 +127,36 @@ export const Default = {
         body="Use the controls panel to change padding (lg / md / sm / xs / none), surface (page / panel / raised / inverse), and toggle inverse mode. All values come from design tokens — no hard-coded colors or spacing."
       />
     </Section>
+  ),
+};
+
+export const BorderProps = {
+  name: "Border props",
+  render: () => (
+    <>
+      {[
+        { label: "subtle + solid", borderSize: "xs", borderStyle: "solid", borderVariant: "subtle", radius: "sm" },
+        { label: "strong + dashed", borderSize: "sm", borderStyle: "dashed", borderVariant: "strong", radius: "md" },
+        { label: "accent + dotted", borderSize: "md", borderStyle: "dotted", borderVariant: "accent", radius: "lg" },
+      ].map(({ label, borderSize, borderStyle, borderVariant, radius }) => (
+        <Section
+          key={label}
+          padding="md"
+          surface="page"
+          gap="sm"
+          borderSize={borderSize}
+          borderStyle={borderStyle}
+          borderVariant={borderVariant}
+          radius={radius}
+        >
+          <MessageBadge subtle>{label}</MessageBadge>
+          <Heading as="h2" size="xl">Bordered section</Heading>
+          <Paragraph size="lg" color="muted">
+            Section border props reuse Divider thickness, line-style, and tone tokens, then compose with radius.
+          </Paragraph>
+        </Section>
+      ))}
+    </>
   ),
 };
 
@@ -231,7 +281,7 @@ export const PaddingScale = {
   render: () => (
     <>
       <Section padding="lg" surface="panel">
-        <MessageBadge subtleicon="zoom_out_map">lg — large</MessageBadge>
+        <MessageBadge subtle icon="zoom_out_map">lg — large</MessageBadge>
         <Heading as="h2" size="xl">Large padding</Heading>
         <Paragraph size="lg" color="muted">
           96px block / 64px inline at desktop, 64/40 at tablet, 40/24 on mobile.
@@ -240,7 +290,7 @@ export const PaddingScale = {
       </Section>
 
       <Section padding="md">
-        <MessageBadge subtleicon="crop_free">md — medium</MessageBadge>
+        <MessageBadge subtle icon="crop_free">md — medium</MessageBadge>
         <Heading as="h2" size="xl">Medium padding</Heading>
         <Paragraph size="lg" color="muted">
           64px block / 40px inline at desktop, 40/24 at tablet, 24/16 on mobile.
@@ -249,7 +299,7 @@ export const PaddingScale = {
       </Section>
 
       <Section padding="sm" surface="raised">
-        <MessageBadge subtleicon="compress">sm — small</MessageBadge>
+        <MessageBadge subtle icon="compress">sm — small</MessageBadge>
         <Heading as="h2" size="xl">Small padding</Heading>
         <Paragraph size="lg" color="muted">
           32px block / 24px inline at desktop, scales to 24/16 at tablet and 16/12 on mobile.
@@ -258,7 +308,7 @@ export const PaddingScale = {
       </Section>
 
       <Section padding="xs">
-        <MessageBadge subtleicon="fit_screen">xs — extra small</MessageBadge>
+        <MessageBadge subtle icon="fit_screen">xs — extra small</MessageBadge>
         <Heading as="h2" size="xl">Extra-small padding</Heading>
         <Paragraph size="lg" color="muted">
           16px block / 16px inline at desktop, scales to 12/12 at tablet and 8/8 on mobile.

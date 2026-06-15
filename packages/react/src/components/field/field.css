@@ -7,7 +7,7 @@
   --a1-field-gap:            var(--component-field-default-gap);
   --a1-field-border-radius:  var(--base-radius-md);
   --a1-field-font-size:      var(--semantic-font-size-body-md);
-  --a1-field-label-size:     var(--semantic-font-size-body-sm);
+  --a1-field-label-size:     var(--semantic-font-size-form-label-default);
   --a1-field-label-weight:   var(--component-field-label-font-weight);
   --a1-field-message-size:   var(--semantic-font-size-body-xs);
   --a1-field-chevron-size:   var(--component-field-chevron-size);
@@ -34,7 +34,7 @@
   --a1-field-padding-inline: var(--component-field-comfortable-padding-inline);
   --a1-field-gap:            var(--component-field-comfortable-gap);
   --a1-field-border-radius:  var(--base-radius-lg);
-  --a1-field-label-size:     var(--semantic-font-size-body-md);
+  --a1-field-label-size:     var(--semantic-font-size-form-label-comfortable);
   --a1-field-message-size:   var(--semantic-font-size-body-sm);
   --a1-field-chevron-size:   var(--component-field-chevron-size-comfortable);
   --a1-field-side-label-width: var(--component-field-side-label-width-comfortable);
@@ -66,7 +66,7 @@
   --a1-field-gap:            var(--component-field-compact-gap);
   --a1-field-border-radius:  var(--base-radius-sm);
   --a1-field-font-size:      var(--semantic-font-size-body-sm);
-  --a1-field-label-size:     var(--semantic-font-size-body-xs);
+  --a1-field-label-size:     var(--semantic-font-size-form-label-compact);
   --a1-field-label-weight:   var(--component-field-compact-label-font-weight);
   --a1-field-message-size:   var(--semantic-font-size-body-xs);
   --a1-field-chevron-size:   var(--component-field-chevron-size-compact);
@@ -170,13 +170,12 @@
 
 /* ─── Active ───────────────────────────────────────────────────────────────── */
 
+/* Active keeps the border feedback only — no background colour change. */
 :is(.a1-field__input, .a1-field__select):active:not(:disabled) {
-  background: var(--a1-field-active-background);
   border-color: var(--a1-field-active-border-color);
 }
 
 .a1-field__input:read-only:active:not(:disabled) {
-  background: var(--a1-field-read-only-background);
   border-color: var(--a1-field-read-only-border-color);
 }
 
@@ -267,6 +266,14 @@
 .a1-field--disabled .a1-field__input[type="time"]::-webkit-calendar-picker-indicator {
   opacity: 0.25;
   cursor: not-allowed;
+}
+
+/* Mute the native date/time format placeholder (mm/dd/yyyy, --:--) while the
+   field is empty, matching the muted mask placeholder used by Phone/Zip/Card.
+   DateField/TimeField add a1-field--mask-empty until a value is entered. */
+.a1-field--mask-empty .a1-field__input[type="date"]::-webkit-datetime-edit,
+.a1-field--mask-empty .a1-field__input[type="time"]::-webkit-datetime-edit {
+  color: var(--semantic-color-text-muted);
 }
 
 /* ─── Fit-content width (date, zip, and other fixed-width fields) ───────────── */

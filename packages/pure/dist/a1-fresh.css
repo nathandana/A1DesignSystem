@@ -111,6 +111,7 @@
   --base-font-size-scale-250: 1.125rem;
   --base-font-size-scale-300: 1.25rem;
   --base-font-size-scale-400: 1.5rem;
+  --base-font-size-scale-50: 0.625rem;
   --base-font-size-scale-500: 1.75rem;
   --base-font-size-scale-600: 2rem;
   --base-font-size-scale-700: 2.5rem;
@@ -129,6 +130,7 @@
   --base-radius-control: 0.375rem;
   --base-radius-lg: 0.75rem;
   --base-radius-md: 0.375rem;
+  --base-radius-pill: 624.9375rem;
   --base-radius-sm: 0.25rem;
   --base-radius-xl: 10px;
   --base-shadow-100-blur: 2px;
@@ -776,6 +778,7 @@
   --semantic-font-line-height-body: 1.5em;
   --semantic-font-line-height-display: 1.125em;
   --semantic-font-line-height-heading: 1.25em;
+  --semantic-font-size-body-2xs: 0.625rem;
   --semantic-font-size-body-lg: 1.125rem;
   --semantic-font-size-body-md: 1rem;
   --semantic-font-size-body-sm: 0.875rem;
@@ -788,6 +791,9 @@
   --semantic-font-size-display-x-jumbo: 6rem;
   --semantic-font-size-display-xl: 2.5rem;
   --semantic-font-size-display-xxl: 3.5rem;
+  --semantic-font-size-form-label-comfortable: 1rem;
+  --semantic-font-size-form-label-compact: 0.75rem;
+  --semantic-font-size-form-label-default: 0.875rem;
   --semantic-font-size-heading-lg: 1.75rem;
   --semantic-font-size-heading-md: 1.5rem;
   --semantic-font-size-heading-sm: 1.25rem;

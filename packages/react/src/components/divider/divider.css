@@ -151,11 +151,15 @@
 
 /* ── Variant ─────────────────────────────────────────────────────────────── */
 
-.a1-divider--subtle  { --a1-divider-style: solid;  color: var(--semantic-color-border-subtle); }
-.a1-divider--strong  { --a1-divider-style: solid;  color: var(--semantic-color-border-strong); }
-.a1-divider--accent  { --a1-divider-style: solid;  color: var(--semantic-color-text-accent); }
-.a1-divider--dashed  { --a1-divider-style: dashed; color: var(--semantic-color-border-subtle); }
-.a1-divider--dotted  { --a1-divider-style: dotted; color: var(--semantic-color-border-subtle); }
+.a1-divider--subtle  { color: var(--semantic-color-border-subtle); }
+.a1-divider--strong  { color: var(--semantic-color-border-strong); }
+.a1-divider--accent  { color: var(--semantic-color-text-accent); }
+
+/* ── Line style ──────────────────────────────────────────────────────────── */
+
+.a1-divider--solid  { --a1-divider-style: solid; }
+.a1-divider--dashed { --a1-divider-style: dashed; }
+.a1-divider--dotted { --a1-divider-style: dotted; }
 
 /* ── Space ───────────────────────────────────────────────────────────────── */
 /* --a1-divider-space-value is routed to margin-block or margin-inline

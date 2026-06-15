@@ -1,0 +1,158 @@
+import {
+  ChoiceGroup,
+  Code,
+  Stack,
+  TextField,
+} from '@gtivr4/a1-design-system-react'
+import { Toggle } from './Toggle.jsx'
+
+// Shared configurator factory for the field family (TextField, NumberField,
+// DateField, TimeField, PhoneField, ZipField, CreditCardField). Each field
+// component shares the same base props; type-specific extras are injected.
+
+const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
+const LABEL_POSITION_OPTIONS = ['above', 'before']
+
+function optionLabel(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function escapeJsxString(value) {
+  return String(value ?? '').replaceAll('"', '&quot;')
+}
+
+export function createFieldModule({
+  Component,
+  componentName,
+  defaults = {},
+  ExtraControls,
+  getExtraProps,
+  getExtraSnippetProps,
+  fillContainer = false,
+}) {
+  function getDefaultConfig() {
+    return {
+      label: 'Label',
+      value: '',
+      hint: '',
+      error: '',
+      size: 'default',
+      labelPosition: 'above',
+      autoComplete: '',
+      required: false,
+      disabled: false,
+      readOnly: false,
+      ...defaults,
+    }
+  }
+
+  function Preview({ config }) {
+    const extra = getExtraProps ? getExtraProps(config) : {}
+    const field = (
+      <Component
+        // Remount when the value or type-specific props change so the
+        // uncontrolled field reflects the config while staying editable.
+        key={JSON.stringify([config.value, extra])}
+        label={config.label || undefined}
+        hint={config.hint || undefined}
+        error={config.error || undefined}
+        size={config.size}
+        labelPosition={config.labelPosition}
+        required={config.required}
+        disabled={config.disabled}
+        readOnly={config.readOnly}
+        autoComplete={config.autoComplete || undefined}
+        defaultValue={config.value || undefined}
+        {...extra}
+      />
+    )
+    if (fillContainer) {
+      return <div className="a1-web-field-fill">{field}</div>
+    }
+    return field
+  }
+
+  function Controls({ config, setConfig }) {
+    const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+    return (
+      <Stack gap="lg">
+        <TextField
+          label="Label"
+          size="compact"
+          value={config.label}
+          onChange={(event) => set({ label: event.target.value })}
+        />
+        {ExtraControls && <ExtraControls config={config} setConfig={setConfig} />}
+        <TextField
+          label="Value"
+          size="compact"
+          value={config.value}
+          onChange={(event) => set({ value: event.target.value })}
+        />
+        <TextField
+          label="Hint"
+          size="compact"
+          value={config.hint}
+          onChange={(event) => set({ hint: event.target.value })}
+        />
+        <TextField
+          label="Error"
+          size="compact"
+          value={config.error}
+          onChange={(event) => set({ error: event.target.value })}
+        />
+        <TextField
+          label="Autocomplete"
+          hint="Autofill hint, e.g. email, tel, postal-code, cc-number, off."
+          size="compact"
+          value={config.autoComplete}
+          onChange={(event) => set({ autoComplete: event.target.value })}
+        />
+        <ChoiceGroup
+          label="Size"
+          size="compact"
+          hideIndicator
+          columns={3}
+          value={config.size}
+          onChange={(size) => set({ size })}
+          options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        />
+        <ChoiceGroup
+          label="Label position"
+          size="compact"
+          hideIndicator
+          columns={2}
+          value={config.labelPosition}
+          onChange={(labelPosition) => set({ labelPosition })}
+          options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        />
+        <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
+        <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+        <Toggle label="Read only" value={config.readOnly} onChange={(readOnly) => set({ readOnly })} />
+      </Stack>
+    )
+  }
+
+  function Snippet({ config }) {
+    const extraSnippet = getExtraSnippetProps ? getExtraSnippetProps(config) : []
+    const props = [
+      ...extraSnippet,
+      config.label ? `label="${escapeJsxString(config.label)}"` : null,
+      config.value ? `defaultValue="${escapeJsxString(config.value)}"` : null,
+      config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,
+      config.error ? `error="${escapeJsxString(config.error)}"` : null,
+      config.size !== 'default' ? `size="${config.size}"` : null,
+      config.labelPosition !== 'above' ? `labelPosition="${config.labelPosition}"` : null,
+      config.autoComplete ? `autoComplete="${escapeJsxString(config.autoComplete)}"` : null,
+      config.required ? 'required' : null,
+      config.disabled ? 'disabled' : null,
+      config.readOnly ? 'readOnly' : null,
+    ].filter(Boolean).join('\n  ')
+
+    return <Code variant="block" wrapping copyCode>{`<${componentName}\n  ${props}\n/>`}</Code>
+  }
+
+  return { getDefaultConfig, Preview, Controls, Snippet }
+}
+
+export { escapeJsxString }

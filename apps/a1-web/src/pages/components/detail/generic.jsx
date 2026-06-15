@@ -5,12 +5,11 @@ import {
   Icon,
   Paragraph,
   RadioGroup,
-  SelectField,
   Stack,
   Switch,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { ICON_OPTIONS } from '../data.js'
+import { IconSelect } from './IconSelect.jsx'
 import { COMPONENT_SNIPPETS } from './snippets.js'
 
 // Default detail behaviour used by every component without a bespoke module.
@@ -50,16 +49,11 @@ export function Controls({ config, setConfig }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <SelectField
+      <IconSelect
         label="Icon"
-        size="compact"
         value={config.icon}
-        onChange={(event) => setConfig((current) => ({ ...current, icon: event.target.value }))}
-      >
-        {ICON_OPTIONS.map((icon) => (
-          <option key={icon} value={icon}>{icon}</option>
-        ))}
-      </SelectField>
+        onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
+      />
       <RadioGroup
         label="Size"
         size="compact"

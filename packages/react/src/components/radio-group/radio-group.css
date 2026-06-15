@@ -15,7 +15,7 @@
   --a1-rb-input-nudge:   var(--component-radio-group-input-nudge);     /* top margin aligning circle center with label cap-height */
   --a1-rb-row-py:        var(--component-radio-group-row-padding-block);     /* vertical padding on each item row */
   --a1-rb-row-px:        var(--component-radio-group-row-padding-inline);     /* horizontal padding on each item row */
-  --a1-rb-legend-size:  var(--semantic-font-size-body-sm);
+  --a1-rb-legend-size:  var(--semantic-font-size-form-label-default);
   --a1-rb-label-size:   var(--semantic-font-size-body-md);
   --a1-rb-hint-size:    var(--semantic-font-size-body-xs);
   --a1-rb-msg-size:     var(--semantic-font-size-body-xs);
@@ -36,7 +36,7 @@
   --a1-rb-input-nudge:   var(--component-radio-group-comfortable-input-nudge);
   --a1-rb-row-py:        var(--component-radio-group-comfortable-row-padding-block);
   --a1-rb-row-px:        var(--component-radio-group-comfortable-row-padding-inline);
-  --a1-rb-legend-size: var(--semantic-font-size-body-md);
+  --a1-rb-legend-size: var(--semantic-font-size-form-label-comfortable);
   --a1-rb-label-size:  var(--semantic-font-size-body-md);
   --a1-rb-hint-size:   var(--semantic-font-size-body-sm);
   --a1-rb-msg-size:    var(--semantic-font-size-body-sm);
@@ -64,7 +64,7 @@
   --a1-rb-input-nudge:   var(--component-radio-group-compact-input-nudge);
   --a1-rb-row-py:        var(--component-radio-group-compact-row-padding-block);
   --a1-rb-row-px:        var(--component-radio-group-compact-row-padding-inline);
-  --a1-rb-legend-size: var(--semantic-font-size-body-xs);
+  --a1-rb-legend-size: var(--semantic-font-size-form-label-compact);
   --a1-rb-label-size:  var(--semantic-font-size-body-sm);
   --a1-rb-hint-size:   var(--semantic-font-size-body-xs);
   --a1-rb-msg-size:    var(--semantic-font-size-body-xs);

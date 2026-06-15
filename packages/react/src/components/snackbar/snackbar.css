@@ -66,29 +66,14 @@
   flex: 1;
 }
 
-.a1-snackbar--default,
-.a1-snackbar--info {
-  --a1-snackbar-background: var(--semantic-color-surface-inverse, var(--base-color-neutral-900));
-  --a1-snackbar-border: var(--semantic-color-surface-inverse, var(--base-color-neutral-900));
-  --a1-snackbar-foreground: var(--semantic-color-text-default, var(--base-color-neutral-0));
-}
+.a1-snackbar.a1-snackbar--default {
+  --a1-snackbar-background: var(--base-color-neutral-900);
+  --a1-snackbar-border: var(--base-color-neutral-900);
+  --a1-snackbar-foreground: var(--base-color-neutral-0);
 
-.a1-snackbar--success {
-  --a1-snackbar-background: var(--semantic-color-status-success-background);
-  --a1-snackbar-border: var(--semantic-color-status-success-border, var(--semantic-color-status-success-background));
-  --a1-snackbar-foreground: var(--semantic-color-status-success-foreground);
-}
-
-.a1-snackbar--warn {
-  --a1-snackbar-background: var(--semantic-color-status-warn-background);
-  --a1-snackbar-border: var(--semantic-color-status-warn-border, var(--semantic-color-status-warn-background));
-  --a1-snackbar-foreground: var(--semantic-color-status-warn-foreground);
-}
-
-.a1-snackbar--error {
-  --a1-snackbar-background: var(--semantic-color-status-error-background);
-  --a1-snackbar-border: var(--semantic-color-status-error-border, var(--semantic-color-status-error-background));
-  --a1-snackbar-foreground: var(--semantic-color-status-error-foreground);
+  background: var(--a1-snackbar-background);
+  border-color: var(--a1-snackbar-border);
+  color: var(--a1-snackbar-foreground);
 }
 
 @media (max-width: 720px) {

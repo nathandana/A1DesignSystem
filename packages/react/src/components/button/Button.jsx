@@ -11,35 +11,47 @@ export function Button({
   size = "md",
   icon,
   iconPosition = "start",
+  fullWidth = false,
+  loading = false,
   className = "",
   type,
+  disabled,
   children,
   ...props
 }) {
   const resolvedVariant = variants.includes(variant) ? variant : "primary";
   const resolvedSize = sizes.includes(size) ? size : "md";
   const resolvedPosition = iconPositions.includes(iconPosition) ? iconPosition : "start";
+  const isButton = Component === "button";
+  const isInert = disabled || loading;
   const classes = [
     "a1-button",
     `a1-button--${resolvedVariant}`,
     resolvedSize !== "md" && `a1-button--${resolvedSize}`,
     icon && "a1-button--has-icon",
+    fullWidth && "a1-button--full-width",
+    loading && "a1-button--loading",
     className
   ]
     .filter(Boolean)
     .join(" ");
 
   const iconEl = icon ? <Icon name={icon} className="a1-button__icon" /> : null;
+  // While loading, a spinner replaces the icon and the button becomes inert.
+  const spinnerEl = loading ? <span className="a1-button__spinner" aria-hidden="true" /> : null;
 
   return (
     <Component
       className={classes}
-      type={Component === "button" ? type ?? "button" : type}
+      type={isButton ? type ?? "button" : type}
+      disabled={isButton ? isInert || undefined : undefined}
+      aria-disabled={!isButton && isInert ? "true" : undefined}
+      aria-busy={loading ? "true" : undefined}
       {...props}
     >
-      {resolvedPosition === "start" && iconEl}
+      {loading ? spinnerEl : resolvedPosition === "start" && iconEl}
       {children}
-      {resolvedPosition === "end" && iconEl}
+      {!loading && resolvedPosition === "end" && iconEl}
     </Component>
   );
 }

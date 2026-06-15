@@ -172,7 +172,7 @@ export function ChoiceGroup({
             <span className="a1-choice-group__legend-inner">
               {label}
               {required && resolvedSize === "comfortable" ? (
-                <MessageBadge status="info" subtle>{requiredText}</MessageBadge>
+                <MessageBadge status="info" subtle size="sm" icon={null}>{requiredText}</MessageBadge>
               ) : required ? (
                 <span className="a1-field__asterisk" aria-hidden="true"> *</span>
               ) : null}

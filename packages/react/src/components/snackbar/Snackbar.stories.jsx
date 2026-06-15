@@ -7,10 +7,6 @@ export default {
   component: Snackbar,
   parameters: { layout: "padded" },
   argTypes: {
-    variant: {
-      control: "inline-radio",
-      options: ["default", "success", "info", "warn", "error"],
-    },
     position: {
       control: "select",
       options: ["bottom", "bottom-left", "bottom-right", "top", "top-left", "top-right"],
@@ -25,7 +21,6 @@ export const Configurable = {
     open: true,
     children: "Guide deleted.",
     actionLabel: "Undo",
-    variant: "default",
     position: "bottom",
   },
   render: (args) => (
@@ -58,21 +53,20 @@ export const Demo = {
   },
 };
 
-export const Variants = {
-  name: "Variants",
+export const Positions = {
+  name: "Positions",
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)", maxWidth: 420 }}>
-      {["default", "success", "info", "warn", "error"].map((variant) => (
+      {["bottom", "bottom-left", "bottom-right", "top", "top-left", "top-right"].map((position) => (
         <Snackbar
-          key={variant}
+          key={position}
           open
-          variant={variant}
-          position="bottom-left"
+          position={position}
           style={{ position: "static", width: "100%", transform: "none" }}
           onClose={() => {}}
         >
-          {variant.charAt(0).toUpperCase() + variant.slice(1)} message content
+          {position.charAt(0).toUpperCase() + position.slice(1).replaceAll("-", " ")} position
         </Snackbar>
       ))}
     </div>

@@ -16,7 +16,7 @@
   --a1-cb-input-nudge:   var(--component-checkbox-group-input-nudge);     /* top margin aligning box center with label cap-height */
   --a1-cb-row-py:        var(--component-checkbox-group-row-padding-block);     /* vertical padding on each item row */
   --a1-cb-row-px:        var(--component-checkbox-group-row-padding-inline);     /* horizontal padding on each item row */
-  --a1-cb-legend-size:  var(--semantic-font-size-body-sm);
+  --a1-cb-legend-size:  var(--semantic-font-size-form-label-default);
   --a1-cb-label-size:   var(--semantic-font-size-body-md);
   --a1-cb-hint-size:    var(--semantic-font-size-body-xs);
   --a1-cb-msg-size:     var(--semantic-font-size-body-xs);
@@ -37,7 +37,7 @@
   --a1-cb-input-nudge:   var(--component-checkbox-group-comfortable-input-nudge);
   --a1-cb-row-py:        var(--component-checkbox-group-comfortable-row-padding-block);
   --a1-cb-row-px:        var(--component-checkbox-group-comfortable-row-padding-inline);
-  --a1-cb-legend-size: var(--semantic-font-size-body-md);
+  --a1-cb-legend-size: var(--semantic-font-size-form-label-comfortable);
   --a1-cb-label-size:  var(--semantic-font-size-body-md);
   --a1-cb-hint-size:   var(--semantic-font-size-body-sm);
   --a1-cb-msg-size:    var(--semantic-font-size-body-sm);
@@ -65,7 +65,7 @@
   --a1-cb-input-nudge:   var(--component-checkbox-group-compact-input-nudge);
   --a1-cb-row-py:        var(--component-checkbox-group-compact-row-padding-block);
   --a1-cb-row-px:        var(--component-checkbox-group-compact-row-padding-inline);
-  --a1-cb-legend-size: var(--semantic-font-size-body-xs);
+  --a1-cb-legend-size: var(--semantic-font-size-form-label-compact);
   --a1-cb-label-size:  var(--semantic-font-size-body-sm);
   --a1-cb-hint-size:   var(--semantic-font-size-body-xs);
   --a1-cb-msg-size:    var(--semantic-font-size-body-xs);

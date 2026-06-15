@@ -100,6 +100,7 @@
   --base-radius-control: 0.375rem;
   --base-radius-lg: 0.5rem;
   --base-radius-xl: 0.75rem;
+  --base-radius-pill: 624.9375rem;
   --base-space-button-padding-block: 0.625rem;
   --base-space-button-padding-inline: 0.75rem;
   --base-space-button-min-height: 2.5rem;
@@ -145,6 +146,7 @@
   --base-font-size-user-medium: 1rem;
   --base-font-size-user-large: 1.125rem;
   --base-font-size-user-xl: 1.25rem;
+  --base-font-size-scale-50: 0.625rem;
   --base-font-size-scale-100: 0.75rem;
   --base-font-size-scale-150: 0.875rem;
   --base-font-size-scale-200: 1rem;
@@ -239,11 +241,15 @@
   --semantic-spacing-gap-md: 1rem;
   --semantic-spacing-gap-lg: 1.5rem;
   --semantic-spacing-gap-xl: 2.5rem;
+  --semantic-font-size-body-2xs: 0.625rem;
   --semantic-font-size-body-xs: 0.75rem;
   --semantic-font-size-body-sm: 0.875rem;
   --semantic-font-size-body-md: 1rem;
   --semantic-font-size-body-lg: 1.125rem;
   --semantic-font-size-body-xl: 1.25rem;
+  --semantic-font-size-form-label-compact: 0.75rem;
+  --semantic-font-size-form-label-default: 0.875rem;
+  --semantic-font-size-form-label-comfortable: 1rem;
   --semantic-font-size-heading-xxl: 2.5rem;
   --semantic-font-size-heading-xl: 2rem;
   --semantic-font-size-heading-lg: 1.75rem;

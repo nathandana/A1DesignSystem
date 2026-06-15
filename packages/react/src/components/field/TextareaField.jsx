@@ -106,7 +106,7 @@ export const TextareaField = forwardRef(function TextareaField({
         <label className="a1-field__label" htmlFor={id}>
           {label}
           {required && resolvedSize === "comfortable" ? (
-            <MessageBadge status="info" subtle>{requiredText}</MessageBadge>
+            <MessageBadge status="info" subtle size="sm" icon={null}>{requiredText}</MessageBadge>
           ) : required ? (
             <span className="a1-field__asterisk" aria-hidden="true"> *</span>
           ) : null}
