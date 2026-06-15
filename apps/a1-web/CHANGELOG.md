@@ -13,6 +13,7 @@
 - **Tabs Storybook Docs** — added `tags: ["autodocs"]` to Tabs meta and `argTypes` for variant/size/level with control options. Added Playground story with configurable controls for all variant types (line/pills/segment/progress/folder).
 - **Per-component detail registry** — the bespoke per-component parts of the Configure tab (default config, preview, controls, code snippet) are extracted into `src/pages/components/detail/`. Each component with custom behaviour gets its own file (`heading.jsx`, `definition-list.jsx`); `detail/index.js` maps `component.id` → module and falls back to `detail/generic.jsx` for everything else. `ComponentDetailPage` is now a thin shell that resolves the module via `getDetailModule(component.id)` and renders `detail.Preview` / `detail.Controls` / `detail.Snippet` / `detail.getDefaultConfig`. Code snippets data moved to `detail/snippets.js`. No behaviour change.
 - **Paragraph configurator** — added `detail/paragraph.jsx` with a live preview, controls, and code snippet covering every Paragraph prop: `as` (p/span/div), `size` (xs–xl), `color` (default/muted with swatches), `align` (left/center/right), and `textWrap` (default/balance). Mirrors the heading configurator's structure.
+- **Blockquote configurator** — added `detail/blockquote.jsx` with preview, controls, and code snippet covering every Blockquote prop: `children` (Textarea quote), `cite` (TextField), `citeUrl` (TextField), and `variant` (border/filled/feature/minimal/accent/pull/ruled). Seeded with A1-themed sample copy.
 
 ## v0.12.1
 

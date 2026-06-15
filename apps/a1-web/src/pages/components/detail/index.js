@@ -1,6 +1,7 @@
 import * as generic from './generic.jsx'
 import * as heading from './heading.jsx'
 import * as paragraph from './paragraph.jsx'
+import * as blockquote from './blockquote.jsx'
 import * as definitionList from './definition-list.jsx'
 
 // Registry of per-component detail modules. A component only needs an entry when
@@ -9,6 +10,7 @@ import * as definitionList from './definition-list.jsx'
 const REGISTRY = {
   heading,
   paragraph,
+  blockquote,
   'definition-list': definitionList,
 }
 
