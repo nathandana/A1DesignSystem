@@ -556,7 +556,7 @@ export function DataTable({
           value={activeFilterValue}
           onChange={updateFilterValue}
           searchValue={activeSearchValue}
-          onSearchChange={updateSearchValue}
+          onSearchChange={onSearchChange != null || searchValue !== undefined || searchableColumns?.length > 0 ? updateSearchValue : undefined}
           searchColumn={activeSearchColumn}
           onSearchColumnChange={updateSearchColumn}
           searchableColumns={searchableColumns}

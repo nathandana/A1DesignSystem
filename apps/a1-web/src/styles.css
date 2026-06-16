@@ -27,6 +27,230 @@ body {
   overflow: hidden;
 }
 
+/* ── Editor ── */
+
+/* Tighten control gap in the editor props/history panels. */
+#a1-web-editor-aside-slot .a1-tab-panel > .a1-stack {
+  gap: var(--semantic-spacing-gap-md);
+}
+
+/* Editor sidebar — tab switcher placed in the SideNav header slot */
+.a1-web-editor-sidebar__tab-switcher {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding-block: var(--base-spacing-4);
+  padding-inline-end: var(--base-spacing-4);
+}
+
+/* Page switcher select in sidebar header */
+.a1-web-editor-sidebar__page-select {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding-block: var(--base-spacing-4);
+  padding-inline-end: var(--base-spacing-4);
+}
+
+/* Editor sidebar — page-tree TreeMenu wrapper */
+.a1-web-editor-sidebar__tree {
+  padding: var(--base-spacing-8);
+}
+
+/* ── Editor aside panel — Configure / History tabs ── */
+
+/* Standalone flex column — does NOT extend a1-web-config-aside__inner so
+   there is no cascade conflict with that class's padding. */
+.a1-web-aside-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+/* Stretch the Tabs component to fill the remaining height. */
+.a1-web-aside-panel > .a1-tabs {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+/* Make tab panels scrollable and add inline padding that the component
+   intentionally omits (it ships with padding-block only). */
+.a1-web-aside-panel .a1-tab-panel {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  padding-inline: var(--base-spacing-16);
+}
+
+/* ── Editor history panel ── */
+
+.a1-web-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-16);
+}
+
+.a1-web-history-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+.a1-web-history-group__label {
+  display: block;
+  padding-block: var(--base-spacing-4);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-medium);
+  color: var(--semantic-color-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.a1-web-history-entry {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--base-spacing-8);
+  width: 100%;
+  padding-block: var(--base-spacing-6);
+  padding-inline: var(--base-spacing-8);
+  border: none;
+  border-radius: var(--base-radius-sm);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font-family: inherit;
+  font-size: var(--semantic-font-size-body-sm);
+  text-align: start;
+  cursor: pointer;
+}
+
+.a1-web-history-entry:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-web-history-entry:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 1px;
+}
+
+.a1-web-history-entry--current {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-web-history-entry--current:hover {
+  background: var(--semantic-color-action-background);
+}
+
+.a1-web-history-entry__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-web-history-entry__time {
+  flex: 0 0 auto;
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-web-history-entry--current .a1-web-history-entry__time {
+  color: var(--semantic-color-action-foreground);
+  opacity: 0.8;
+}
+
+/* Primary (renamed) entries show a bookmark icon before the label */
+.a1-web-history-entry__bookmark {
+  flex: 0 0 auto;
+  color: var(--semantic-color-action-background);
+}
+
+.a1-web-history-entry--current .a1-web-history-entry__bookmark {
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-web-history-entry--primary .a1-web-history-entry__label {
+  font-weight: var(--base-font-weight-medium);
+}
+
+/* Inline rename input */
+.a1-web-history-rename-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-4);
+  border: 1px solid var(--semantic-color-action-background);
+  border-radius: var(--base-radius-xs);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: inherit;
+  font-size: var(--semantic-font-size-body-sm);
+  outline: none;
+}
+
+.a1-web-history-rename-input:focus {
+  box-shadow: 0 0 0 2px var(--semantic-color-action-background);
+}
+
+/* ── Editor selection outlines ── */
+
+/* All editor nodes get a transparent dashed outline by default so the
+   transition is smooth when hover/selected state appears. */
+[data-editor-node] {
+  cursor: default;
+  outline: 2px dashed transparent;
+  outline-offset: 3px;
+  transition: outline-color 120ms ease;
+}
+
+/* Hover: dashed accent outline — signals "you can select this".
+   Also applied via data-editor-hover when the tree menu item is hovered. */
+[data-editor-node]:hover,
+[data-editor-hover='true'] {
+  outline-color: var(--semantic-color-text-accent);
+}
+
+/* Selected: solid outline — signals "this is the active element".
+   !important overrides the hover rule when both data attrs are present. */
+[data-editor-selected='true'] {
+  outline: 2px solid var(--semantic-color-action-background) !important;
+  outline-offset: 3px;
+}
+
+/* Catalog drag-and-drop: before/after/into position indicators on canvas nodes.
+   Imperative DOM sets data-drop-position during dragover; CSS renders the visual.
+   box-shadow is used so layout is never affected. */
+[data-editor-node][data-drop-position='before'] {
+  box-shadow: inset 0 3px 0 0 var(--semantic-color-action-background) !important;
+}
+[data-editor-node][data-drop-position='after'] {
+  box-shadow: inset 0 -3px 0 0 var(--semantic-color-action-background) !important;
+}
+[data-editor-node][data-drop-position='into'] {
+  box-shadow: inset 0 0 0 3px var(--semantic-color-action-background) !important;
+}
+
+/* Catalog card dragging state */
+.a1-web-add-panel-card[data-dragging='true'] {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+/* Canvas floor — drop zone below all page content; expands when catalog drag enters */
+.a1-web-canvas-floor {
+  min-block-size: var(--base-spacing-48);
+}
+.a1-web-canvas-floor[data-active='true'] {
+  background: color-mix(in srgb, var(--semantic-color-action-background) 8%, transparent);
+  outline: 2px dashed var(--semantic-color-action-background);
+  outline-offset: -4px;
+}
+
+/* Editor context menus use the A1 ContextMenu component — styles live in
+   packages/react/src/components/context-menu/context-menu.css */
+
 /* ── Site logo ── */
 .a1-web-logo {
   display: flex;
@@ -573,4 +797,228 @@ body {
     padding: var(--base-spacing-16);
   }
 
+}
+
+/* ── Keyboard shortcuts dialog ─────────────────────────────────────────────── */
+
+.a1-web-shortcuts-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-4);
+}
+
+.a1-web-shortcuts-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+}
+
+.a1-web-shortcuts-label {
+  font-family: var(--component-paragraph-font-family, inherit);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-web-shortcuts-keys {
+  font-family: var(--component-code-font-family, monospace);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-raised);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-6);
+  white-space: nowrap;
+}
+
+/* ── Add component panel ────────────────────────────────────────────────────── */
+
+.a1-web-add-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--base-spacing-8);
+}
+
+.a1-web-add-panel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-12) var(--base-spacing-8);
+  background: var(--semantic-color-surface-page);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  cursor: pointer;
+  color: var(--semantic-color-text-default);
+  transition: background var(--base-duration-fast, 120ms), border-color var(--base-duration-fast, 120ms);
+  text-align: center;
+}
+
+.a1-web-add-panel-card:hover {
+  background: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-strong);
+}
+
+.a1-web-add-panel-card:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+.a1-web-add-panel-label {
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: 1.2;
+}
+
+/* ── Canvas "Add component inside" button ───────────────────────────────────── */
+
+.a1-web-add-child-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-4);
+  width: 100%;
+  padding-block: var(--base-spacing-8);
+  margin-block-start: var(--base-spacing-8);
+  background: transparent;
+  border: 1px dashed var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  cursor: pointer;
+  transition: border-color var(--base-duration-fast, 120ms), color var(--base-duration-fast, 120ms),
+              background var(--base-duration-fast, 120ms);
+}
+
+.a1-web-add-child-btn:hover {
+  border-color: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-background);
+  background: color-mix(in srgb, var(--semantic-color-action-background) 6%, transparent);
+}
+
+.a1-web-add-child-btn:focus-visible {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* ── Version switcher — toolbar ─────────────────────────────────────────────── */
+
+.a1-web-version-switcher {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-2);
+}
+
+/* ── Versions panel — aside ─────────────────────────────────────────────────── */
+
+.a1-web-version-switcher {
+  display: flex;
+  align-items: center;
+  max-width: 160px;
+}
+
+.a1-web-version-tree {
+  margin-inline: calc(-1 * var(--base-spacing-8));
+}
+
+.a1-web-version-label-input {
+  width: 100%;
+  height: 32px;
+  border: 1px solid var(--semantic-color-action-background);
+  border-radius: var(--base-radius-sm);
+  padding-inline: var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-page);
+  outline: none;
+}
+
+/* ── Diff list ──────────────────────────────────────────────────────────────── */
+
+.a1-web-diff-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-6);
+}
+
+.a1-web-diff-entry {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: var(--base-spacing-4);
+  align-items: start;
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-web-diff-kind {
+  font-weight: 700;
+  font-size: 11px;
+  padding-block-start: 1px;
+}
+
+.a1-web-diff-entry--added    .a1-web-diff-kind { color: var(--semantic-color-status-success-text, #1a7a4a); }
+.a1-web-diff-entry--removed  .a1-web-diff-kind { color: var(--semantic-color-status-error-text, #b91c1c); }
+.a1-web-diff-entry--changed  .a1-web-diff-kind { color: var(--semantic-color-status-info-text, #1d4ed8); }
+
+.a1-web-diff-header {
+  display: flex;
+  gap: var(--base-spacing-6);
+  align-items: baseline;
+}
+
+.a1-web-diff-type {
+  font-weight: 500;
+  color: var(--semantic-color-text-default);
+}
+
+.a1-web-diff-id {
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-code-font-family, monospace);
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.a1-web-diff-changes {
+  padding-block-start: var(--base-spacing-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+.a1-web-diff-change {
+  color: var(--semantic-color-text-muted);
+  font-size: 11px;
+}
+
+.a1-web-diff-change code {
+  font-family: var(--component-code-font-family, monospace);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-web-diff-from { color: var(--semantic-color-status-error-text, #b91c1c); }
+.a1-web-diff-to   { color: var(--semantic-color-status-success-text, #1a7a4a); }
+
+/* ── Editable heading preview + heading-mark selection toolbar ── */
+.a1-web-editable-heading {
+  position: relative;
+  inline-size: 100%;
+}
+
+.a1-web-editable-heading .a1-heading:focus-visible {
+  outline: 2px solid var(--semantic-color-action-border);
+  outline-offset: var(--base-spacing-4);
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-web-heading-mark-toolbar {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, calc(-100% - var(--base-spacing-8)));
+  display: flex;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-4);
+  background: var(--semantic-color-surface-raised);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  box-shadow: var(--semantic-shadow-md);
 }

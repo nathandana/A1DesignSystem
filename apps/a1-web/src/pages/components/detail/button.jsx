@@ -6,6 +6,7 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from './IconSelect.jsx'
+import { PageLinkField } from './PageLinkField.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const VARIANT_OPTIONS = ['primary', 'secondary', 'tertiary', 'destructive', 'success']
@@ -28,6 +29,7 @@ export function getDefaultConfig() {
     label: 'Save changes',
     variant: 'primary',
     size: 'md',
+    href: '',
     icon: '',
     iconPosition: 'start',
     fullWidth: false,
@@ -41,6 +43,7 @@ export function Preview({ config }) {
     <Button
       variant={config.variant}
       size={config.size}
+      href={config.href || undefined}
       icon={config.icon || undefined}
       iconPosition={config.iconPosition}
       fullWidth={config.fullWidth}
@@ -52,7 +55,7 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, pages }) {
   return (
     <Stack gap="lg">
       <TextField
@@ -101,6 +104,11 @@ export function Controls({ config, setConfig }) {
           />
         </>
       )}
+      <PageLinkField
+        pages={pages}
+        value={config.href ?? ''}
+        onChange={(href) => setConfig((current) => ({ ...current, href }))}
+      />
       <Toggle label="Full width" value={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
       <Toggle label="Loading" value={config.loading} onChange={(loading) => setConfig((current) => ({ ...current, loading }))} />
       <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
@@ -112,6 +120,7 @@ function buildButtonSnippet(config) {
   const props = [
     config.variant !== 'primary' ? `variant="${config.variant}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
+    config.href ? `href="${config.href}"` : null,
     config.icon ? `icon="${config.icon}"` : null,
     config.icon && config.iconPosition !== 'start' ? `iconPosition="${config.iconPosition}"` : null,
     config.fullWidth ? 'fullWidth' : null,

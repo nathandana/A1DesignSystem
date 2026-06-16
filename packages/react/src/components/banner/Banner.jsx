@@ -28,7 +28,9 @@ export function Banner({
   icon,
   action,
   onDismiss,
+  className = "",
   children,
+  ...rest
 }) {
   const resolvedVariant = VARIANTS.includes(variant) ? variant : "inline";
   const resolvedStatus  = STATUSES.includes(status)  ? status  : "neutral";
@@ -36,9 +38,10 @@ export function Banner({
 
   return (
     <div
-      className={`a1-banner a1-banner--${resolvedVariant} a1-banner--${resolvedStatus}`}
+      className={`a1-banner a1-banner--${resolvedVariant} a1-banner--${resolvedStatus}${className ? ` ${className}` : ""}`}
       role="alert"
       aria-live="polite"
+      {...rest}
     >
       <div className="a1-banner__inner">
         <span className="a1-banner__icon" aria-hidden="true">

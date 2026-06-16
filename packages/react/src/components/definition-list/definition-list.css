@@ -68,6 +68,21 @@
   gap: var(--a1-definition-list-row-gap);
 }
 
+.a1-definition-list--column.a1-definition-list--sm {
+  --a1-definition-list-gap: var(--component-definition-list-gap-md);
+  --a1-definition-list-row-gap: var(--base-spacing-4);
+}
+
+.a1-definition-list--column.a1-definition-list--md {
+  --a1-definition-list-gap: var(--component-definition-list-gap-lg);
+  --a1-definition-list-row-gap: var(--component-definition-list-row-gap-sm);
+}
+
+.a1-definition-list--column.a1-definition-list--lg {
+  --a1-definition-list-gap: var(--base-spacing-20);
+  --a1-definition-list-row-gap: var(--component-definition-list-row-gap-md);
+}
+
 .a1-definition-list--row {
   display: flex;
   flex-direction: column;

@@ -6,6 +6,7 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from './IconSelect.jsx'
+import { PageLinkField } from './PageLinkField.jsx'
 import { Toggle } from './Toggle.jsx'
 
 // IconButton is always a fixed, square, natural-width control — it is never
@@ -24,6 +25,7 @@ export function getDefaultConfig() {
     label: 'Settings',
     variant: 'tertiary',
     size: 'md',
+    href: '',
     disabled: false,
   }
 }
@@ -35,12 +37,13 @@ export function Preview({ config }) {
       label={config.label || 'Action'}
       variant={config.variant}
       size={config.size}
+      href={config.href || undefined}
       disabled={config.disabled}
     />
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, pages }) {
   return (
     <Stack gap="lg">
       <IconSelect
@@ -72,6 +75,11 @@ export function Controls({ config, setConfig }) {
         onChange={(size) => setConfig((current) => ({ ...current, size }))}
         options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
+      <PageLinkField
+        pages={pages}
+        value={config.href ?? ''}
+        onChange={(href) => setConfig((current) => ({ ...current, href }))}
+      />
       <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
     </Stack>
   )
@@ -79,10 +87,12 @@ export function Controls({ config, setConfig }) {
 
 function buildIconButtonSnippet(config) {
   const props = [
+    config.href ? 'as="a"' : null,
     `icon="${config.icon || 'help'}"`,
     `label="${String(config.label || 'Action').replaceAll('"', '&quot;')}"`,
     config.variant !== 'tertiary' ? `variant="${config.variant}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
+    config.href ? `href="${config.href}"` : null,
     config.disabled ? 'disabled' : null,
   ].filter(Boolean).join(' ')
 

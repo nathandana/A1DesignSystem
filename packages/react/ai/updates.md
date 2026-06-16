@@ -4,6 +4,24 @@ This file records prop renames, value changes, and removals by version so agents
 
 ---
 
+## Unreleased
+
+### Section: `align` default changed from `"left"` to no alignment
+
+The Section component's `align` prop now defaults to no alignment (no class applied). Previously, omitting `align` was equivalent to `align="left"`. Consumers that relied on the implicit left-alignment do not need to change — left is the natural block default. Only update if you were explicitly passing `align="left"` as a no-op: remove it, since it now has no effect if omitted.
+
+```jsx
+// Before — explicit "left" was the default and could be omitted
+<Section align="left">…</Section>
+
+// After — omit align for no alignment override (same visual result)
+<Section>…</Section>
+```
+
+If you need a guaranteed `text-align: left` override (e.g. inside a centered section), keep `align="left"` explicitly.
+
+---
+
 ## Released — 0.4.1
 
 ### Calendar: `selectable` prop required to enable date selection

@@ -1,11 +1,11 @@
 import { Icon } from "../icon/Icon.jsx";
 import "./bottom-drawer.css";
 
-export function BottomDrawer({ items = [], "aria-label": ariaLabel = "Primary navigation", className = "" }) {
+export function BottomDrawer({ items = [], "aria-label": ariaLabel = "Primary navigation", className = "", ...rest }) {
   const visibleItems = items.slice(0, 5);
 
   return (
-    <nav className={["a1-bottom-drawer", className].filter(Boolean).join(" ")} aria-label={ariaLabel}>
+    <nav className={["a1-bottom-drawer", className].filter(Boolean).join(" ")} aria-label={ariaLabel} {...rest}>
       <ul className="a1-bottom-drawer__list" role="list">
         {visibleItems.map((item) => {
           const Tag = item.href ? "a" : "button";

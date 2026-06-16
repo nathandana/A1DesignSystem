@@ -24,19 +24,23 @@ const ES_SCALE_CONFIG = {
    MessageBadge  (inline filled status chip)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, children }) {
+export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, className = "", children, ...rest }) {
   const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
   // icon={null} explicitly suppresses the icon; undefined falls back to the status default
   const resolvedIcon = icon === null ? null : (icon ?? STATUS_ICONS[resolvedStatus]);
 
   return (
-    <span className={[
-      "a1-message-badge",
-      `a1-message-badge--${resolvedStatus}`,
-      subtle && "a1-message-badge--subtle",
-      size === "sm" && "a1-message-badge--sm",
-      size === "lg" && "a1-message-badge--lg",
-    ].filter(Boolean).join(" ")}>
+    <span
+      className={[
+        "a1-message-badge",
+        `a1-message-badge--${resolvedStatus}`,
+        subtle && "a1-message-badge--subtle",
+        size === "sm" && "a1-message-badge--sm",
+        size === "lg" && "a1-message-badge--lg",
+        className,
+      ].filter(Boolean).join(" ")}
+      {...rest}
+    >
       {resolvedIcon && <Icon name={resolvedIcon} />}
       {children}
     </span>
@@ -53,12 +57,14 @@ export function MessageEmptyState({
   title,
   description,
   action,
+  className = "",
+  ...rest
 }) {
   const resolvedScale = ES_SCALES.includes(scale) ? scale : "section";
   const { headingAs, headingSize, paragraphSize } = ES_SCALE_CONFIG[resolvedScale];
 
   return (
-    <div className={`a1-message-empty a1-message-empty--${resolvedScale}`}>
+    <div className={`a1-message-empty a1-message-empty--${resolvedScale}${className ? ` ${className}` : ""}`} {...rest}>
       <div className="a1-message-empty__icon-wrap" aria-hidden="true">
         <Icon name={icon} />
       </div>

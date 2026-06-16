@@ -23,12 +23,24 @@ const meta = {
     icon:     { ...requiredIconArgType("A1 icon registry name") },
     label:    { control: "text" },
     disabled: { control: "boolean" },
+    as:       { control: "inline-radio", options: ["button", "a"] },
   },
 };
 
 export default meta;
 
 export const Configurable = {};
+
+export const AsLink = {
+  name: "As link",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)" }}>
+      <IconButton as="a" href="#settings" icon="settings" label="Open settings" />
+      <IconButton as="a" href="#help" icon="help" label="Get help" variant="secondary" />
+    </div>
+  ),
+};
 
 export const Variants = {
   parameters: { controls: { include: [] } },

@@ -1,0 +1,223 @@
+/**
+ * A1 page-definition types — the contract for the JSON/TypeScript-driven page
+ * editor proof of concept.
+ *
+ * The JSON page definition is the source of truth: a layout-first tree of A1
+ * component nodes that the renderer (`pageRenderer.tsx`) maps to real A1 React
+ * components. These types are intentionally small but shaped to grow toward the
+ * full editor (visual editing, JSON editing, code import/export, wired actions)
+ * without breaking the contract.
+ *
+ * Stability note: `ComponentType` names match the exported A1 React component
+ * names exactly. The casing is part of the contract and is treated as locked.
+ */
+
+/**
+ * Names of the A1 components the renderer is allowed to instantiate.
+ *
+ * These MUST match the exported A1 React component names exactly — do not
+ * normalise to lowercase or to HTML tag names. To allow a new component, add it
+ * here AND register the real component in `componentRegistry.ts`; the registry
+ * is typed against this union so the two stay in sync.
+ */
+export type ComponentType =
+  | 'PageLayout'
+  | 'Section'
+  | 'Stack'
+  | 'Grid'
+  | 'Cluster'
+  | 'Card'
+  | 'Bleed'
+  | 'Inset'
+  | 'Spacer'
+  | 'ButtonContainer'
+  | 'Heading'
+  | 'Paragraph'
+  | 'Blockquote'
+  | 'Code'
+  | 'Divider'
+  | 'List'
+  | 'ListItem'
+  | 'Icon'
+  | 'Figure'
+  | 'Link'
+  | 'Button'
+  | 'IconButton'
+  | 'Switch'
+  | 'SegmentedControl'
+  | 'Banner'
+  | 'MessageBadge'
+  | 'MessageEmptyState'
+  | 'StatusBar'
+  | 'CircularProgress'
+  | 'StepTracker'
+  | 'TextField'
+  | 'TextareaField'
+  | 'SelectField'
+  | 'NumberField'
+  | 'DateField'
+  | 'TimeField'
+  | 'PhoneField'
+  | 'ZipField'
+  | 'CreditCardField'
+  | 'Fieldset'
+  | 'CheckboxGroup'
+  | 'RadioGroup'
+  | 'ChoiceGroup'
+  | 'DefinitionList'
+  | 'Pagination'
+  | 'Calendar'
+  | 'Breadcrumb'
+  | 'TopHeader'
+  | 'BottomDrawer'
+  | 'StickyActions'
+  | 'Accordion';
+
+/**
+ * A value that may vary by breakpoint. Mirrors A1's responsive object syntax
+ * (e.g. `size={{ xs: 'lg', md: 'xl' }}`). Reserved for future use — most A1
+ * props already accept responsive objects directly inside `ComponentProps`.
+ */
+export type ResponsiveDefinition<T> =
+  | T
+  | Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', T>>;
+
+/**
+ * Props passed straight through to the underlying A1 component.
+ *
+ * Kept open (`Record<string, unknown>`) for the PoC so a definition can use the
+ * full, real prop surface of each A1 component without the type system blocking
+ * valid props. A future iteration can replace this with a per-component
+ * discriminated union keyed on `ComponentNode["type"]`.
+ */
+export type ComponentProps = Record<string, unknown>;
+
+/**
+ * Text content for a node. Supports a localization key plus direct fallback
+ * text. The renderer resolves `textKey` through the A1 labels helper and shows
+ * `fallback` when no localized value is registered.
+ */
+export interface ContentDefinition {
+  /** Localization key resolved via the A1 labels system, e.g. `"editor.example.hero.title"`. */
+  textKey?: string;
+  /** Literal text shown when `textKey` has no registered/localized value. Always provided. */
+  fallback: string;
+}
+
+/**
+ * Accessibility metadata for a node. The renderer maps these onto ARIA
+ * attributes / accessible names on the rendered component. Optional — set only
+ * when a node needs an explicit name, relationship, or role beyond its
+ * semantic defaults.
+ */
+export interface A11yDefinition {
+  /** Accessible name (maps to `aria-label`). */
+  label?: string;
+  /** ID reference for `aria-labelledby`. */
+  labelledBy?: string;
+  /** ID reference for `aria-describedby`. */
+  describedBy?: string;
+  /** Explicit ARIA role override. */
+  role?: string;
+}
+
+/**
+ * A future-facing action descriptor. Actions are NOT executed by the current
+ * renderer — the shape is reserved so the editor can wire behaviour later
+ * without changing the page-definition contract.
+ *
+ * Future-supported action types:
+ * - `navigate`     → go to an in-app page (`target` = route)
+ * - `openDialog`   → open a dialog (`target` = dialog id)
+ * - `appAction`    → trigger a named app-level action (`target` = action name)
+ * - `submitForm`   → submit a form (`target` = form id)
+ * - `externalLink` → open an external URL (`target` = url)
+ */
+export interface ActionDefinition {
+  type: 'navigate' | 'openDialog' | 'appAction' | 'submitForm' | 'externalLink';
+  /** Route, dialog id, app-action name, form id, or URL — depends on `type`. */
+  target?: string;
+  /** Arbitrary parameters for the future action handler. */
+  params?: Record<string, unknown>;
+}
+
+/**
+ * Map of event name → action. Reserved for future wiring. The current renderer
+ * ignores this (see the TODO in `pageRenderer.tsx`).
+ */
+export interface ActionMap {
+  onClick?: ActionDefinition;
+  onSubmit?: ActionDefinition;
+}
+
+/**
+ * A single renderable component instance in the page tree.
+ *
+ * `type` selects an A1 component from the registry; `props` are forwarded to it;
+ * `content` supplies primary text; `children` nests further nodes.
+ */
+export interface ComponentNode {
+  /** Stable id — used as the React key and as a future editor selection handle. */
+  id: string;
+  /** A1 component name. Must exist in the component registry, or the renderer shows a fallback. */
+  type: ComponentType;
+  /** Props forwarded to the A1 component. */
+  props?: ComponentProps;
+  /**
+   * Responsive prop overrides. Reserved — A1 props in `props` already accept
+   * responsive objects inline, so this is for future editor ergonomics.
+   */
+  responsive?: Record<string, ResponsiveDefinition<unknown>>;
+  /** Primary text content (resolved through the labels helper). */
+  content?: ContentDefinition;
+  /** Accessibility metadata mapped onto the component. */
+  a11y?: A11yDefinition;
+  /** Future action wiring — ignored by the current renderer. */
+  actions?: ActionMap;
+  /** Nested child nodes. */
+  children?: ComponentNode[];
+}
+
+/** A named area inside the layout that holds an ordered list of nodes. */
+export interface PageRegion {
+  /** Stable region id — used as the React key. */
+  id: string;
+  /** Human/editor-facing region name. */
+  name?: string;
+  /** The node tree rendered inside this region. */
+  nodes: ComponentNode[];
+}
+
+/**
+ * The top-level, layout-first container for a page. `type` is an A1 layout
+ * component (e.g. `"PageLayout"`); `regions` hold the node trees rendered inside
+ * it. Layout-first means the page starts from structure, not content.
+ */
+export interface PageLayoutDefinition {
+  type: ComponentType;
+  props?: ComponentProps;
+  regions: PageRegion[];
+}
+
+/** Human/editor-facing metadata about the page. */
+export interface PageMetadata {
+  /** Stable page id. */
+  id: string;
+  /** Display name. */
+  name: string;
+  /** Short description of the page's purpose. */
+  description?: string;
+}
+
+/**
+ * The full page definition: metadata + layout. This object is the source of
+ * truth for the rendered page and for the strict JSON shown in the editor.
+ */
+export interface PageDefinition {
+  /** Schema version of the page-definition format (semver). */
+  schemaVersion: string;
+  /** Page metadata plus the layout-first component tree. */
+  page: PageMetadata & {
+    layout: PageLayoutDefinition;
+  };
+}

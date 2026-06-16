@@ -1,5 +1,4 @@
 import {
-  Button,
   ChoiceGroup,
   Code,
   Stack,
@@ -8,8 +7,8 @@ import { Toggle } from './Toggle.jsx'
 
 const AS_OPTIONS = ['div', 'section', 'nav', 'form']
 const DIRECTION_OPTIONS = ['column', 'row', 'column-reverse', 'row-reverse']
-const GAP_OPTIONS = [,'none', 'xs', 'sm', 'md', 'lg', 'xl']
-const ALIGN_OPTIONS = ['stretch', 'start', 'center', 'end', 'baseline']
+const GAP_OPTIONS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
+const ALIGN_OPTIONS = ['start', 'center', 'end', 'stretch', 'baseline']
 const JUSTIFY_OPTIONS = ['start', 'center', 'end', 'between', 'around', 'evenly']
 
 function optionLabel(value) {
@@ -36,13 +35,14 @@ function buildStackSnippet(config) {
   const props = [
     propValue('as', config.as, 'div'),
     propValue('direction', config.direction, 'column'),
-    propValue('gap', config.gap, 16),
-    propValue('align', config.align, 'stretch'),
+    propValue('gap', config.gap, 'md'),
+    propValue('align', config.align, 'start'),
     propValue('justify', config.justify, 'start'),
     propBoolean('wrap', config.wrap, false),
   ].filter(Boolean).join('\n  ')
 
   return `<Stack${props ? `\n  ${props}\n` : ''}>
+  {/* children */}
 </Stack>`
 }
 
@@ -50,50 +50,54 @@ export function getDefaultConfig() {
   return {
     as: 'div',
     direction: 'column',
-    gap: 16,
-    align: 'stretch',
+    gap: 'md',
+    align: 'start',
     justify: 'start',
     wrap: false,
+    childCount: 3,
   }
 }
 
+// Blocks with different natural widths so align / justify are visually meaningful
+const BLOCKS = [
+  { label: '1', bg: 'var(--semantic-color-action-background)',   color: 'var(--semantic-color-text-inverse)', w: '80px',  h: '48px' },
+  { label: '2', bg: 'var(--semantic-color-status-info-background)', color: 'var(--semantic-color-text-inverse)', w: '120px', h: '64px' },
+  { label: '3', bg: 'var(--semantic-color-status-success-background)', color: 'var(--semantic-color-text-inverse)', w: '56px',  h: '56px' },
+]
+
 export function Preview({ config }) {
+  const blocks = BLOCKS.slice(0, config.childCount ?? 3)
+
   return (
     <Stack
       as={config.as}
       direction={config.direction}
-      gap={config.gap}
+      gap={config.gap || undefined}
       align={config.align}
       justify={config.justify}
       wrap={config.wrap}
-  style={{
-    width: '100%',
-  }}
+      style={{ width: '100%', minHeight: '160px' }}
     >
-      <div
-  style={{
-    backgroundColor: 'red',
-    display: 'block',
-    width: '100%',
-    height: '64px',
-  }}
-/>
-      <div
-  style={{
-    backgroundColor: 'blue',
-    display: 'block',
-    width: '100%',
-    height: '64px',
-  }}
-/>
-      <div
-  style={{
-    backgroundColor: 'green',
-    display: 'block',
-    width: '100%',
-    height: '64px',
-  }}
-/>
+      {blocks.map((b) => (
+        <div
+          key={b.label}
+          style={{
+            background: b.bg,
+            color: b.color,
+            width: b.w,
+            height: b.h,
+            borderRadius: 'var(--base-radius-sm)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 700,
+            fontSize: 'var(--semantic-font-size-body-sm)',
+            flexShrink: 0,
+          }}
+        >
+          {b.label}
+        </div>
+      ))}
     </Stack>
   )
 }
@@ -103,6 +107,19 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
+      <ChoiceGroup
+        label="Children"
+        hint="Number of labeled blocks shown in the preview."
+        size="compact"
+        hideIndicator
+        columns={2}
+        value={config.childCount ?? 3}
+        onChange={(childCount) => set({ childCount })}
+        options={[
+          { label: '2', value: 2 },
+          { label: '3', value: 3 },
+        ]}
+      />
       <ChoiceGroup
         label="Element"
         size="compact"
@@ -125,13 +142,14 @@ export function Controls({ config, setConfig }) {
         label="Gap"
         size="compact"
         hideIndicator
-        columns={5}
+        columns={3}
         value={config.gap}
         onChange={(gap) => set({ gap })}
         options={GAP_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
       <ChoiceGroup
         label="Align"
+        hint="Cross-axis alignment of children."
         size="compact"
         hideIndicator
         columns={3}
@@ -141,6 +159,7 @@ export function Controls({ config, setConfig }) {
       />
       <ChoiceGroup
         label="Justify"
+        hint="Main-axis distribution of children."
         size="compact"
         hideIndicator
         columns={3}

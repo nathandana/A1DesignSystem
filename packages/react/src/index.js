@@ -1,4 +1,6 @@
 export { Accordion } from "./components/accordion/Accordion.jsx";
+export { ContextMenu } from "./components/context-menu/ContextMenu.jsx";
+export { TreeMenu } from "./components/tree-menu/TreeMenu.jsx";
 export { Calendar } from "./components/calendar/Calendar.jsx";
 export { PageNav } from "./components/page-nav/PageNav.jsx";
 export { Blockquote } from "./components/blockquote/Blockquote.jsx";

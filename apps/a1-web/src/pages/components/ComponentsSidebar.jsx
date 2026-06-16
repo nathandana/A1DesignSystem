@@ -4,7 +4,7 @@ import {
   SideNavItem,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { componentCategories } from './data.js'
+import { componentCategories, COMPONENT_STATUS } from './data.js'
 import { getComponentPath, navigateCard } from './utils.js'
 
 function ComponentTree({ activePage, onNavigate, search }) {
@@ -45,16 +45,20 @@ function ComponentTree({ activePage, onNavigate, search }) {
             active={activePage === `components-${category.id}`}
             onClick={(event) => navigateCard(event, onNavigate, `components-${category.id}`)}
           /> */}
-          {category.components.map((component) => (
-            <SideNavItem
-              key={component.id}
-              as="a"
-              href={getComponentPath(`component-${component.id}`)}
-              label={component.title}
-              active={activePage === `component-${component.id}`}
-              onClick={(event) => navigateCard(event, onNavigate, `component-${component.id}`)}
-            />
-          ))}
+          {category.components.map((component) => {
+            const status = COMPONENT_STATUS[component.id]
+            return (
+              <SideNavItem
+                key={component.id}
+                as="a"
+                href={getComponentPath(`component-${component.id}`)}
+                label={component.title}
+                active={activePage === `component-${component.id}`}
+                badge={status === 'deprecated' ? 'Deprecated' : undefined}
+                onClick={(event) => navigateCard(event, onNavigate, `component-${component.id}`)}
+              />
+            )
+          })}
         </SideNavGroup>
       ))}
     </SideNav>

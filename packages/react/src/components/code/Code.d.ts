@@ -9,6 +9,10 @@ export interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   copyCode?: boolean;
   /** Text copied to the clipboard. Defaults to the rendered text children. */
   copyText?: string;
+  /** Render the block as an editable textarea initialized from children. Only meaningful in block mode. Default: false */
+  editable?: boolean;
+  /** Called with the current string value whenever the editable textarea changes. */
+  onChangeValue?: (value: string) => void;
   children?: React.ReactNode;
 }
 

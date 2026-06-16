@@ -1,0 +1,332 @@
+import { useEffect, useState } from 'react'
+import { ContextMenu, IconButton, Paragraph, SelectField, SideNav, Stack, TreeMenu } from '@gtivr4/a1-design-system-react'
+import { EDITOR_EXAMPLES, NEW_PAGE_ID } from './examples/index.ts'
+import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+
+// ── Node → tree item conversion ───────────────────────────────────────────────
+
+const TYPE_ICONS = {
+  PageLayout:       'web',
+  Section:          'crop_free',
+  Stack:            'view_agenda',
+  Grid:             'grid_view',
+  Cluster:          'hub',
+  Card:             'article',
+  Bleed:            'open_in_full',
+  Inset:            'padding',
+  ButtonContainer:  'view_week',
+  List:             'format_list_bulleted',
+  Heading:          'title',
+  Paragraph:        'notes',
+  Blockquote:       'format_quote',
+  Code:             'code',
+  Divider:          'horizontal_rule',
+  Icon:             'interests',
+  Figure:           'image',
+  Link:             'link',
+  Button:           'smart_button',
+  IconButton:       'radio_button_checked',
+  Switch:           'toggle_on',
+  SegmentedControl: 'linear_scale',
+  Banner:           'info',
+  MessageBadge:     'label',
+  MessageEmptyState:'inbox',
+  StatusBar:        'linear_scale',
+  CircularProgress: 'donut_large',
+  StepTracker:      'more_horiz',
+  TextField:        'text_fields',
+  TextareaField:    'subject',
+  CheckboxGroup:    'check_box',
+  RadioGroup:       'radio_button_checked',
+  ChoiceGroup:      'grid_view',
+  DefinitionList:   'format_list_numbered',
+  Pagination:       'last_page',
+  Accordion:        'expand_circle_down',
+}
+
+const CONTAINER_TYPES = new Set([
+  'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
+  'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
+])
+
+function nodeToTreeItem(node) {
+  const text = node.content?.fallback
+  const label = text
+    ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
+    : node.type
+  const isContainer = CONTAINER_TYPES.has(node.type)
+  return {
+    id: node.id,
+    label,
+    icon: TYPE_ICONS[node.type] ?? 'widgets',
+    // Container types always expose children (even when empty) so the tree
+    // renders them as branch nodes and allows drag-into in drag-and-drop mode.
+    children: isContainer
+      ? (node.children?.length ? node.children.map(nodeToTreeItem) : [])
+      : (node.children?.length ? node.children.map(nodeToTreeItem) : undefined),
+  }
+}
+
+function definitionToTreeItems(definition) {
+  if (!definition) return []
+  const regions = definition.page.layout.regions
+  if (regions.length === 1) return regions[0].nodes.map(nodeToTreeItem)
+  return regions.map(region => ({
+    id: region.id,
+    label: region.name ?? region.id,
+    icon: 'space_dashboard',
+    children: region.nodes.map(nodeToTreeItem),
+  }))
+}
+
+// Returns array of ancestor IDs for targetId, or null if not found.
+function getAncestorIds(items, targetId, path = []) {
+  for (const item of items) {
+    if (item.id === targetId) return path
+    if (item.children?.length) {
+      const found = getAncestorIds(item.children, targetId, [...path, item.id])
+      if (found !== null) return found
+    }
+  }
+  return null
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
+export function EditorSidebar({
+  activeExample,
+  activePageName,
+  isDirty = false,
+  definition,
+  selectedNodeId,
+  userPages = [],
+  onSelectNode,
+  onSelectExample,
+  onNodeMove,
+  onRequestAdd,
+  onNodeAction,
+  onConvertNode,
+}) {
+  const [expandedIds, setExpandedIds] = useState([])
+  const [treeCtxMenu, setTreeCtxMenu] = useState(null) // { id, x, y }
+
+  const treeItems = definitionToTreeItems(definition)
+
+  // When a node is selected in the canvas, expand its ancestors in the tree.
+  useEffect(() => {
+    if (!selectedNodeId) return
+    const ancestors = getAncestorIds(treeItems, selectedNodeId)
+    if (ancestors?.length) {
+      setExpandedIds(prev => {
+        const next = new Set(prev)
+        ancestors.forEach(id => next.add(id))
+        return Array.from(next)
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNodeId])
+
+  function handleTreeHover(id) {
+    const prev = document.querySelector('[data-editor-hover="true"]')
+    if (prev) prev.removeAttribute('data-editor-hover')
+    if (id) {
+      const el = document.querySelector(`[data-editor-node="${CSS.escape(id)}"]`)
+      if (el) el.setAttribute('data-editor-hover', 'true')
+    }
+  }
+
+  function handleTreeSelect(id) {
+    onSelectNode(id)
+    if (id) {
+      requestAnimationFrame(() => {
+        const el = document.querySelector(`[data-editor-node="${CSS.escape(id)}"]`)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      })
+    }
+  }
+
+  function handleItemContextMenu(id, e) {
+    setTreeCtxMenu({ id, x: e.clientX, y: e.clientY })
+  }
+
+  function findNodeById(nodes, id) {
+    for (const n of nodes) {
+      if (n.id === id) return n
+      if (n.children) { const found = findNodeById(n.children, id); if (found) return found }
+    }
+    return null
+  }
+
+  function findNode(id) {
+    if (!definition) return null
+    for (const region of definition.page.layout.regions) {
+      const found = findNodeById(region.nodes, id)
+      if (found) return found
+    }
+    return null
+  }
+
+  function buildTreeContextMenuItems(id) {
+    const node = findNode(id)
+    const nodeType = node?.type ?? null
+    const isContainer = CONTAINER_TYPES.has(nodeType)
+    const hasChildren = !!(node?.children?.length)
+    const items = []
+
+    if (isContainer) {
+      items.push({
+        id: 'add-inside',
+        label: 'Add inside',
+        icon: 'add',
+        onClick: () => onRequestAdd?.({ targetId: id, position: 'into' }),
+      })
+    }
+    items.push({
+      id: 'add-below',
+      label: 'Add below',
+      icon: 'add_box',
+      onClick: () => onRequestAdd?.({ targetId: id, position: 'after' }),
+    })
+
+    if (isContainer && hasChildren) {
+      items.push({ type: 'divider', id: 'div-ungroup' })
+      items.push({
+        id: 'ungroup',
+        label: 'Ungroup',
+        icon: 'table_rows',
+        onClick: () => {
+          setTreeCtxMenu(null)
+          onNodeAction?.({ type: 'ungroup', nodeId: id })
+        },
+      })
+    }
+
+    items.push({
+      id: 'duplicate',
+      label: 'Duplicate',
+      icon: 'content_copy',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'duplicate', nodeId: id })
+      },
+    })
+
+    if (nodeType !== 'Stack') {
+      items.push({
+        id: 'group-as-stack',
+        label: 'Group as Stack',
+        icon: 'view_agenda',
+        onClick: () => {
+          setTreeCtxMenu(null)
+          onNodeAction?.({ type: 'group-as-stack', nodeId: id })
+        },
+      })
+    }
+
+    const conversionTargets = onConvertNode ? (CONVERSION_MAP[nodeType] ?? []) : []
+    if (conversionTargets.length > 0) {
+      items.push({ type: 'divider', id: 'div-convert' })
+      items.push({ type: 'group', id: 'group-convert', label: 'Convert to' })
+      conversionTargets.forEach((toType) => {
+        items.push({
+          id: `convert-${toType}`,
+          label: toType,
+          icon: TYPE_ICONS[toType] ?? 'autorenew',
+          onClick: () => {
+            setTreeCtxMenu(null)
+            onConvertNode(id, toType, getConvertedProps(nodeType, toType, node?.props))
+          },
+        })
+      })
+    }
+
+    items.push({ type: 'divider', id: 'div-delete' })
+    items.push({
+      id: 'delete',
+      label: 'Delete',
+      icon: 'delete',
+      variant: 'destructive',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'delete', nodeId: id })
+      },
+    })
+
+    return items
+  }
+
+  const pageSelect = (
+    <div className="a1-web-editor-sidebar__page-select">
+      <SelectField
+        size="compact"
+        aria-label="Select page"
+        value={activeExample}
+        onChange={(e) => onSelectExample(e.target.value)}
+      >
+        {EDITOR_EXAMPLES.map(example => (
+          <option key={example.id} value={example.id}>
+            {activeExample === example.id && activePageName ? activePageName : example.label}
+            {activeExample === example.id && isDirty ? ' ●' : ''}
+          </option>
+        ))}
+        {userPages.map(page => (
+          <option key={page.id} value={page.id}>
+            {activeExample === page.id && activePageName ? activePageName : page.label}
+            {activeExample === page.id && isDirty ? ' ●' : ''}
+          </option>
+        ))}
+        <option value={NEW_PAGE_ID}>+ New page</option>
+      </SelectField>
+    </div>
+  )
+
+  const footer = (
+    <Stack direction="row" align="center" gap="xs">
+      <IconButton
+        icon="add_circle"
+        label="Add component"
+        onClick={() => onRequestAdd?.({ targetId: selectedNodeId ?? null, position: 'after' })}
+      />
+    </Stack>
+  )
+
+  return (
+    <>
+      <SideNav
+        header={pageSelect}
+        footer={footer}
+        collapseButtonPlacement="footer"
+      >
+        <div className="a1-web-editor-sidebar__tree">
+          {!treeItems.length
+            ? <Paragraph size="sm" color="muted">No valid definition loaded.</Paragraph>
+            : (
+              <TreeMenu
+                items={treeItems}
+                selectedId={selectedNodeId}
+                onSelect={handleTreeSelect}
+                onHoverChange={handleTreeHover}
+                onItemContextMenu={handleItemContextMenu}
+                expandedIds={expandedIds}
+                onExpandedChange={setExpandedIds}
+                showExpandControls
+                draggable={!!onNodeMove}
+                onMove={onNodeMove}
+                aria-label="Page structure"
+              />
+            )
+          }
+        </div>
+      </SideNav>
+
+      <ContextMenu
+        open={!!treeCtxMenu}
+        x={treeCtxMenu?.x ?? 0}
+        y={treeCtxMenu?.y ?? 0}
+        items={treeCtxMenu ? buildTreeContextMenuItems(treeCtxMenu.id) : []}
+        onClose={() => setTreeCtxMenu(null)}
+        aria-label="Element options"
+      />
+    </>
+  )
+}

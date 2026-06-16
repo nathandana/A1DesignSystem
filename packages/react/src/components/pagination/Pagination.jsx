@@ -21,11 +21,13 @@ export function Pagination({
   onChange,
   siblings = 1,
   size = "md",
+  className = "",
+  ...rest
 }) {
   const items = getPageItems(page, totalPages, siblings);
 
   return (
-    <nav aria-label="Pagination" className={`a1-pagination a1-pagination--${size}`}>
+    <nav aria-label="Pagination" className={`a1-pagination a1-pagination--${size}${className ? ` ${className}` : ""}`} {...rest}>
       <IconButton
         icon="chevron_left"
         label="Previous page"

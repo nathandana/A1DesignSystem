@@ -1,0 +1,18 @@
+{
+  "component": {
+    "treeMenu": {
+      "item": {
+        "height":          { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "gap":             { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "indent":          { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "paddingInline":   { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "borderRadius":    { "$type": "dimension", "$value": "{base.radius.md}" },
+        "iconSize":        { "$type": "dimension", "$value": "18px" },
+        "chevronSize":     { "$type": "dimension", "$value": "16px" },
+        "lineHeight":      { "$value": "1.5" },
+        "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
+        "focusRingOffset": { "$value": "-2px" }
+      }
+    }
+  }
+}

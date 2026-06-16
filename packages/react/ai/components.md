@@ -22,12 +22,12 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 |------------|----------|-------|---------------|----------|
 | Overview | `components` | Components | `widgets` | Component categories |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
-| Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Bottom Drawer, Tabs, Page Nav |
+| Category | `components-navigation` | Navigation | `near_me` | Link, Breadcrumb, Side Nav, Top Header, Bottom Drawer, Tabs, Page Nav, Tree Menu |
 | Category | `components-actions` | Actions | `touch_app` | Button, Icon Button, Switch, Segmented Control, Sticky Actions |
 | Category | `components-inputs` | Inputs | `edit_note` | Text Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-layout` | Layout | `dashboard` | Section, Card, Stack, Cluster, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Figure |
-| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu |
+| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
 | Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Icon |
 | Category | `components-disclosure` | Disclosure | `unfold_more` | Accordion |
@@ -53,7 +53,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
-> **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override). Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
+> **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override), `editable` (boolean, default false — renders a `<textarea>` instead of `<pre><code>` so the block is user-editable; only meaningful in block mode), `onChangeValue` (callback receiving the current string value on each keystroke). When `editable` and `copyCode` are combined, the copy button copies the live textarea content, not the original `children`. Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
 >
 > **React Divider props:** `orientation` ("horizontal" | "vertical" | responsive object, default "horizontal"), `variant` ("subtle" | "strong" | "accent", default "subtle"), `lineStyle` ("solid" | "dashed" | "dotted", default "solid"), `size` ("xs" | "sm" | "md" | "lg", default "xs"), `space` ("none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl", default "sm"), `decorative` (boolean, default true). `variant` controls color tone and `lineStyle` controls border pattern so combinations like accent + dashed or subtle + dotted are valid.
 >
@@ -101,6 +101,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Bottom Drawer | ✓ | — | ✓ |
 | Tabs | ✓ | — | — |
 | Page Nav | ✓ | — | — |
+| Tree Menu | ✓ | — | — |
+
+> **Tree Menu props:** `items` (`TreeItem[]` — `{ id, label, icon?, href?, disabled?, children? }[]`), `selectedId` (string | null), `onSelect` (callback), `defaultExpandedIds` (string[], uncontrolled), `expandedIds` (string[], controlled), `onExpandedChange` (callback), `showExpandControls` (boolean, default false — renders "Expand all" / "Collapse all" buttons above the tree), `onHoverChange` (callback, fires with id on mouseenter and null on mouseleave), `draggable` (boolean, default false — enables drag-and-drop reordering and reparenting), `onMove` (`({ draggedId, targetId, position: 'before' | 'into' | 'after' }) => void` — called when the user drops an item; the consumer is responsible for updating the `items` array), `aria-label` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Supports unlimited nesting depth. Expand/collapse (`add_box` / `indeterminate_check_box`) is independent from selection: clicking the toggle icon only expands/collapses the branch; clicking the label selects the node. Keyboard: Arrow Right expands or descends into a branch; Arrow Left collapses or moves to parent; Home/End jump to first/last visible node; Enter/Space selects only. Selected state uses the full action background (`--semantic-color-action-background`) for a clear, unambiguous highlight. Roving tabindex keeps one item in the tab sequence at a time. **Drag-and-drop:** when `draggable` is true, each row becomes a drag source and drop target. Dragging over the top 30% of a row shows a "drop before" indicator; over the bottom 30% shows "drop after"; over the middle 40% of a branch node shows "drop into" (reparent). Collapsed branches auto-expand after 600 ms when held over. An item cannot be dropped onto itself or any of its descendants.
 
 > **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`. Bottom Drawer uses `.a1-bottom-drawer`.
 >
@@ -156,6 +159,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **Tertiary requires icon + verb:** `variant="tertiary"` buttons must always include both a visible icon and a verb-led label (e.g. "Edit profile", "Download report"). Never tertiary with text only or icon only.
 >
 > **Icon buttons need accessible names:** Every `<IconButton>` must have an `aria-label` that describes the action. The icon alone is not an accessible name.
+>
+> **IconButton `as` / `href`:** Like Button, IconButton accepts `as` (default `"button"`). Pass `as="a"` with an `href` to render it as a navigation link while keeping the icon-button styling — use this for icon-only navigation. When `as="a"`, `disabled` maps to `aria-disabled` (the native `disabled` attribute does not apply to anchors). The a1-web Button, Link, and IconButton configurators expose a page-link selector that emits `as="a"` + `href` automatically.
 
 ---
 
@@ -288,6 +293,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 |-----------|:-----:|:------:|:----:|
 | Dialog | ✓ | ✓ | — |
 | Menu | ✓ | — | — |
+| Context Menu | ✓ | — | — |
+
+> **ContextMenu props:** `open` (boolean, default false), `x` (number — viewport x position, typically `event.clientX`), `y` (number — viewport y position, typically `event.clientY`), `items` (`ContextMenuEntry[]`), `onClose` (() => void — called on outside click or Escape), `aria-label` (string, default "Context menu"). Items are typed: `{ type?: 'item'; id; label; icon?; shortcut?; variant?: 'default' | 'destructive'; active?; disabled?; onClick? }` | `{ type: 'divider'; id }` | `{ type: 'group'; id; label }`. Portals to `document.body`. Keyboard: Escape closes, Arrow Up/Down navigates items, Home/End jump to first/last, Enter activates. Closes on outside mousedown. The position is clamped to stay within the viewport.
+>
+> **ContextMenu usage:** Mount the component once in the host element alongside the triggering content. Set `open`, `x`, and `y` from the `onContextMenu` handler on the container element. Do not use a separate trigger button — ContextMenu is always triggered by a right-click (contextmenu event).
 
 > **Dialog props:** `open` (boolean), `onClose` (optional — omit to hide the close button entirely), `title` (optional), `footer` (ReactNode), `status` ("success" | "error" | "warn" | "info" | "neutral" — renders a full-bleed colored hero band at the top with a status icon), `icon` (string — overrides the default status icon when `status` is set).
 >
@@ -359,6 +369,15 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Date | Change |
 |------|--------|
+| 2026-06-15 | Prop forwarding: MessageBadge, MessageEmptyState, Banner, Pagination, TopHeader, BottomDrawer, and Accordion now spread `...rest` (and merge `className`) onto their root element. These previously dropped unknown props, so the a1-web Editor's injected `data-editor-node` / `onClick` never reached the DOM and clicking them on the canvas didn't open the config panel. Fixes editor selection for those components. |
+| 2026-06-15 | IconButton: added `as` prop (default `"button"`) + `href` — `as="a"` renders the icon button as a navigation link while keeping its styling; `disabled` maps to `aria-disabled` for anchors; IconButton.d.ts + Storybook `As link` story added; a1-web icon-button configurator gained a page-link selector (shared `PageLinkField` with Button/Link); editor renderer renders Button/IconButton with an href as anchors and wires intra-prototype navigation via onClick |
+| 2026-06-15 | TreeMenu: added `draggable` prop (boolean, default false) and `onMove` callback (`{ draggedId, targetId, position }`) — enables drag-and-drop reordering and reparenting; drop-before/drop-after indicators use 2px accent line; drop-into shows tinted background + inset ring; collapsed branches auto-expand after 600 ms on hover; items cannot be dropped on themselves or descendants; HTML5 DnD API (no library); anchor label-btns have `draggable={false}` to suppress browser link-drag; CSS classes `a1-tree-menu__row--dragging`, `--drop-before`, `--drop-into`, `--drop-after`; Storybook `Draggable` story with live state management; EditorSidebar wired with `draggable` + `onMove`; EditorPage processes moves via `pendingMove` command prop using `extractFromNodes` + `insertInNodes` helpers; history entry double-click also triggers rename |
+| 2026-06-15 | Added ContextMenu component (React only): right-click menu portaled to document.body; controlled via open/x/y; items support type=item/divider/group, icon, shortcut, variant=destructive, active state; keyboard Arrow/Home/End/Enter/Escape; clamped to viewport; Storybook stories (Default, EditorStyle, StaticPreview); a1-web detail page with file and editor examples; exported from package index; registered in components.md and a1-web data |
+| 2026-06-15 | TreeMenu: added onHoverChange prop — fires on mouseenter/mouseleave of each label button; used by the Editor sidebar to mirror hover outlines onto the canvas; EditorSidebar handleTreeHover uses DOM querySelector to set data-editor-hover attr; handleTreeSelect adds scrollIntoView after selection |
+| 2026-06-15 | Editor: left click on canvas selects innermost element; right click opens ContextMenu (replaces inline EditorNodePicker) with element picker + Delete action; Delete triggers delete node in EditorPage with Snackbar undo; Snackbar.d.ts added to type the component |
+| 2026-06-15 | TreeMenu: separated expand/collapse from selection — toggle icon (`add_box` / `indeterminate_check_box`) only expands/collapses; label click only selects; Enter/Space selects only (no longer also toggles); keyboard Arrow Right/Left still control expand/collapse; added `showExpandControls` prop (renders "Expand all" / "Collapse all" buttons above the tree using `unfold_more` / `unfold_less` icons); reduced item `padding-block` from `base-spacing-4` to `base-spacing-2`; CSS rewritten to use `.a1-tree-menu__row` wrapper + `.a1-tree-menu__toggle` + `.a1-tree-menu__label-btn` structure; Storybook `WithExpandControls` story added; a1-web configurator gained `showExpandControls` switch |
+| 2026-06-15 | Added TreeMenu component (React only): hierarchical navigation tree, unlimited nesting, icons, `href` support, full ARIA tree role + keyboard nav (Arrow/Home/End/Enter/Space), roving tabindex, expand/collapse with CSS grid animation, solid action-background selected state; component tokens in `system/tokens/component/tree-menu.json`; Storybook stories (FileExplorer, DocumentNavigation, NoIcons, DeepNesting); a1-web detail page with item editor and code snippet |
+| 2026-06-15 | Code: added `editable` prop (boolean, default false) — renders `<textarea>` instead of `<pre><code>` for live editing; `onChangeValue` callback delivers the current string on each keystroke; `copyCode` copies from live textarea value when combined; CSS class `a1-code-block--editable` on wrapper, `a1-code-block__textarea` on the textarea; Storybook `Editable` story added |
 | 2026-06-15 | Stack now preserves internal CSS variables when callers pass `style`, preventing direction/gap/align/justify/wrap from being reset by custom inline styles |
 | 2026-06-15 | Added a1-web Stack configurator for `as`, direction, semantic/numeric gap, align, justify, and wrap |
 | 2026-06-15 | Card now fills its containing inline size by default so container-query previews and grid tracks do not collapse to content width; a1-web Card configurator gained element and navigation href controls |

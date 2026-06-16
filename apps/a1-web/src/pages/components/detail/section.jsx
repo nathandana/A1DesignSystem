@@ -23,15 +23,15 @@ const BORDER_VARIANT_OPTIONS = ['subtle', 'strong', 'accent']
 const RADIUS_OPTIONS = ['none', 'sm', 'md', 'lg', 'xl']
 const NONE_ICON = 'layers_clear'
 const GRADIENT_POSITION_OPTIONS = [
-  'center',
+  'top-left',
   'top',
   'top-right',
-  'right',
-  'bottom-right',
-  'bottom',
-  'bottom-left',
   'left',
-  'top-left',
+  'center',
+  'right',
+  'bottom-left',
+  'bottom',
+  'bottom-right',
 ]
 
 function optionLabel(value) {
@@ -117,7 +117,7 @@ export function getDefaultConfig() {
     gap: 'sm',
     contentWidth: 'md',
     height: '',
-    align: 'left',
+    align: '',
     gradient: '',
     gradientPosition: 'center',
     borderSize: '',

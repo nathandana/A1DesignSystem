@@ -13,6 +13,7 @@ export function Accordion({
   size = "md",
   disabled = false,
   className = "",
+  ...rest
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
@@ -48,6 +49,7 @@ export function Accordion({
         disabled && "a1-accordion--disabled",
         className,
       ].filter(Boolean).join(" ")}
+      {...rest}
     >
       <button
         id={triggerId}

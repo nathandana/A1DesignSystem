@@ -10,6 +10,7 @@ const meta = {
     variant: "inline",
     wrapping: false,
     copyCode: false,
+    editable: false,
   },
   argTypes: {
     variant: {
@@ -28,6 +29,10 @@ const meta = {
     copyText: {
       control: "text",
       description: "Optional clipboard text override. Defaults to the rendered text children.",
+    },
+    editable: {
+      control: "boolean",
+      description: "Render the block as an editable textarea. Only meaningful in block mode.",
     },
   },
 };
@@ -73,5 +78,19 @@ export const CopyCode = {
     variant: "block",
     copyCode: true,
     children: `npm install @gtivr4/a1-design-system-react`,
+  },
+};
+
+export const Editable = {
+  name: "Editable",
+  args: {
+    variant: "block",
+    editable: true,
+    copyCode: true,
+    children: `import { Button } from "@gtivr4/a1-design-system-react";
+
+export function Example() {
+  return <Button icon="arrow_forward">Continue</Button>;
+}`,
   },
 };

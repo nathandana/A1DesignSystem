@@ -3,6 +3,8 @@ import {
   Button,
   ChoiceGroup,
   Code,
+  Divider,
+  Paragraph,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
@@ -90,7 +92,15 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+/**
+ * `itemsMode` controls how individual options are edited:
+ * - "accordion" (default, used on the standalone detail page): each option is an
+ *   expandable accordion.
+ * - "select" (used in the a1-web Editor): a master-detail picker — click an
+ *   option to select it, then edit its props in a dedicated area below. The
+ *   selected option id is held in `config.openItems[0]`.
+ */
+export function Controls({ config, setConfig, itemsMode = 'accordion' }) {
   const options = normalizeOptions(config.options)
   const openItems = Array.isArray(config.openItems) ? config.openItems : []
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
@@ -112,6 +122,10 @@ export function Controls({ config, setConfig }) {
     })
   }
 
+  function selectOption(id) {
+    setConfig((current) => ({ ...current, openItems: [id] }))
+  }
+
   function removeOption(id) {
     setConfig((current) => {
       const next = normalizeOptions(current.options).filter((opt) => opt.id !== id)
@@ -127,13 +141,73 @@ export function Controls({ config, setConfig }) {
     setConfig((current) => {
       const list = normalizeOptions(current.options)
       const next = createOption(`Option ${list.length + 1}`)
+      const currentOpen = Array.isArray(current.openItems) ? current.openItems : []
       return {
         ...current,
         options: [...list, next],
-        openItems: Array.from(new Set([...(current.openItems ?? []), next.id])),
+        // Select mode: the new option becomes the single selection.
+        // Accordion mode: the new option is added to the expanded set.
+        openItems: itemsMode === 'select' ? [next.id] : Array.from(new Set([...currentOpen, next.id])),
       }
     })
   }
+
+  const optionFields = (opt) => (
+    <Stack gap="md">
+      <TextField label="Label" size="compact" value={opt.label} onChange={(e) => updateOption(opt.id, { label: e.target.value })} />
+      <TextField label="Subtext" size="compact" value={opt.subtext} onChange={(e) => updateOption(opt.id, { subtext: e.target.value })} />
+      <IconSelect label="Icon" value={opt.icon} onChange={(icon) => updateOption(opt.id, { icon })} />
+      <Toggle label="Disabled" value={opt.disabled} onChange={(disabled) => updateOption(opt.id, { disabled })} />
+      <Button type="button" variant="destructive" size="sm" icon="delete" disabled={options.length <= 1} onClick={() => removeOption(opt.id)}>
+        Remove option
+      </Button>
+    </Stack>
+  )
+
+  // Master-detail selection (select mode): fall back to the first option when
+  // the stored selection no longer exists (e.g. after a remove).
+  const selectedId = options.some((o) => o.id === openItems[0]) ? openItems[0] : options[0]?.id
+  const selectedOption = options.find((o) => o.id === selectedId)
+
+  const itemsSection = itemsMode === 'select' ? (
+    <Stack gap="sm">
+      <Paragraph size="xs" color="muted">Options</Paragraph>
+      <Stack gap="xs">
+        {options.map((opt, index) => (
+          <Button
+            key={opt.id}
+            type="button"
+            variant={opt.id === selectedId ? 'primary' : 'secondary'}
+            size="sm"
+            fullWidth
+            onClick={() => selectOption(opt.id)}
+          >
+            {`${index + 1}. ${opt.label || 'Untitled option'}`}
+          </Button>
+        ))}
+      </Stack>
+      {selectedOption && (
+        <>
+          <Divider space="xs" />
+          {optionFields(selectedOption)}
+        </>
+      )}
+    </Stack>
+  ) : (
+    <Stack gap="sm">
+      {options.map((opt, index) => (
+        <Accordion
+          key={opt.id}
+          label={`${index + 1}. ${opt.label || 'Untitled option'}`}
+          size="sm"
+          open={openItems.includes(opt.id)}
+          onChange={(open) => toggleOption(opt.id, open)}
+        >
+          {optionFields(opt)}
+        </Accordion>
+      ))}
+    </Stack>
+  )
 
   return (
     <Stack gap="lg">
@@ -156,27 +230,7 @@ export function Controls({ config, setConfig }) {
       <Toggle label="Hide indicator" value={config.hideIndicator} onChange={(hideIndicator) => set({ hideIndicator })} />
       <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
 
-      <Stack gap="sm">
-        {options.map((opt, index) => (
-          <Accordion
-            key={opt.id}
-            label={`${index + 1}. ${opt.label || 'Untitled option'}`}
-            size="sm"
-            open={openItems.includes(opt.id)}
-            onChange={(open) => toggleOption(opt.id, open)}
-          >
-            <Stack gap="md">
-              <TextField label="Label" size="compact" value={opt.label} onChange={(e) => updateOption(opt.id, { label: e.target.value })} />
-              <TextField label="Subtext" size="compact" value={opt.subtext} onChange={(e) => updateOption(opt.id, { subtext: e.target.value })} />
-              <IconSelect label="Icon" value={opt.icon} onChange={(icon) => updateOption(opt.id, { icon })} />
-              <Toggle label="Disabled" value={opt.disabled} onChange={(disabled) => updateOption(opt.id, { disabled })} />
-              <Button type="button" variant="destructive" size="sm" icon="delete" disabled={options.length <= 1} onClick={() => removeOption(opt.id)}>
-                Remove option
-              </Button>
-            </Stack>
-          </Accordion>
-        ))}
-      </Stack>
+      {itemsSection}
 
       <Button type="button" variant="secondary" size="sm" icon="add" onClick={addOption}>
         Add option

@@ -55,6 +55,35 @@
   overflow-wrap: anywhere;
 }
 
+.a1-code-block__textarea {
+  box-sizing: border-box;
+  align-self: stretch;
+  inline-size: 100%;
+  margin: 0;
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  line-height: 1.6;
+  color: var(--semantic-color-text-default);
+  white-space: pre;
+  overflow-x: auto;
+  resize: vertical;
+}
+
+.a1-code-block__textarea:focus-visible {
+  outline: none;
+  border-color: var(--semantic-color-action-background);
+  box-shadow: 0 0 0 var(--component-card-border-width) var(--semantic-color-action-background);
+}
+
+.a1-code-block__textarea--wrapping {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .a1-code-block__copy {
   margin: 0;
 }

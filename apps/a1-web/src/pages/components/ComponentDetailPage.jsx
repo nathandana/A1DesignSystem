@@ -592,6 +592,13 @@ function AnatomyComponentPreview({ component }) {
           <ListItem>Another item</ListItem>
         </List>
       )
+    case 'context-menu':
+      return (
+        <Stack direction="column" gap="xs">
+          <Icon name="right_click" size="lg" color="muted" />
+          <Paragraph size="sm" color="muted">Right-click menu</Paragraph>
+        </Stack>
+      )
     case 'list':
       return (
         <List icon="check" size="sm">
@@ -1653,7 +1660,6 @@ function ConfigurationPanel({
                   onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
                   options={[
                     { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
-                    { label: 'Page', value: 'page' },
                     { label: 'Panel', value: 'panel' },
                     { label: 'Raised', value: 'raised' },
                   ]}
@@ -1663,10 +1669,11 @@ function ConfigurationPanel({
                   size="compact"
                   hideIndicator
                   iconOnly
-                  columns={3}
+                  columns={4}
                   value={displayConfig.align}
                   onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
                   options={[
+                    { icon: 'layers_clear', label: 'None', value: '' },
                     { icon: 'align_horizontal_left', label: 'Left', value: 'left' },
                     { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
                     { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
@@ -1718,7 +1725,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const [configPanelTab, setConfigPanelTab] = useState('configure')
   const [displayConfig, setDisplayConfig] = useState({
     surface: '',
-    align: 'left',
+    align: '',
     padding: 'md',
     inverse: false,
     containerQuery: 'auto',
@@ -1803,9 +1810,9 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                     padding={displayConfig.padding}
                     inverse={displayConfig.inverse}
                     gap="lg"
-                    borderSize={displayConfig.borderSize}
-                    borderStyle={displayConfig.borderStyle}
-                    borderVariant={displayConfig.borderVariant}
+                    borderSize={displayConfig.surface ? undefined : displayConfig.borderSize}
+                    borderStyle={displayConfig.surface ? undefined : displayConfig.borderStyle}
+                    borderVariant={displayConfig.surface ? undefined : displayConfig.borderVariant}
                     radius={displayConfig.radius}
                   >
                     <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>

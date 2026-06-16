@@ -588,6 +588,7 @@ export function TopHeader({
   loginButton,
   navIconPosition = "start",
   className = "",
+  ...rest
 }) {
   const [navMode, setNavMode] = useState(() => resolveNavMode(navIconPosition));
   const [openSubmenu, setOpenSubmenu] = useState(null);
@@ -641,6 +642,7 @@ export function TopHeader({
           navMode === "hidden" && "a1-top-header--nav-hidden",
           className,
         ].filter(Boolean).join(" ")}
+        {...rest}
       >
         <button
           type="button"

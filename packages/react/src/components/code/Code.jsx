@@ -54,26 +54,45 @@ export function Code({
   wrapping = false,
   copyCode = false,
   copyText,
+  editable = false,
+  onChangeValue,
   className = "",
   children,
   ...props
 }) {
   const resolvedVariant = variants.includes(variant) ? variant : "inline";
   const [copied, setCopied] = useState(false);
+  const [editableValue, setEditableValue] = useState(() =>
+    textFromChildren(Children.toArray(children))
+  );
   const resetTimer = useRef(null);
+
+  // Keep the textarea in sync when children change from outside (e.g. undo/redo).
+  // React's Object.is bail-out means this is a no-op while the user is typing
+  // (children and editableValue are already equal after each keystroke).
+  useEffect(() => {
+    if (!editable) return;
+    setEditableValue(textFromChildren(Children.toArray(children)));
+  }, [children, editable]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const copyLabel = useLabel("code.copyCode", "Copy code");
   const copiedLabel = useLabel("code.copied", "Copied");
   const textToCopy = useMemo(
-    () => copyText || textFromChildren(Children.toArray(children)),
-    [children, copyText],
+    () => copyText || (editable ? editableValue : textFromChildren(Children.toArray(children))),
+    [children, copyText, editable, editableValue],
   );
-  const shouldRenderBlock = resolvedVariant === "block" || copyCode;
+  const shouldRenderBlock = resolvedVariant === "block" || copyCode || editable;
 
   useEffect(() => {
     return () => {
       if (resetTimer.current) window.clearTimeout(resetTimer.current);
     };
   }, []);
+
+  function handleTextareaChange(e) {
+    setEditableValue(e.target.value);
+    onChangeValue?.(e.target.value);
+  }
 
   async function handleCopy() {
     await writeClipboard(textToCopy);
@@ -108,16 +127,33 @@ export function Code({
       className={[
         "a1-code-block",
         copyCode && "a1-code-block--copyable",
+        editable && "a1-code-block--editable",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <pre className="a1-code-block__pre">
-        <code className={codeClasses} {...props}>
-          {children}
-        </code>
-      </pre>
+      {editable ? (
+        <textarea
+          className={[
+            "a1-code-block__textarea",
+            wrapping && "a1-code-block__textarea--wrapping",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          rows={10}
+          value={editableValue}
+          onChange={handleTextareaChange}
+          spellCheck={false}
+          {...props}
+        />
+      ) : (
+        <pre className="a1-code-block__pre">
+          <code className={codeClasses} {...props}>
+            {children}
+          </code>
+        </pre>
+      )}
       {copyCode && (
         <Button
           className="a1-code-block__copy"

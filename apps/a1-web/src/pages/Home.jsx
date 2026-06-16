@@ -119,18 +119,17 @@ export function Home({ onNavigate }) {
               variant="primary"
               icon="arrow_forward"
               iconPosition="end"
-              onClick={() => onNavigate('components')}
+              onClick={() => onNavigate('editor')}
             >
-              Explore components
+              Open the editor
             </Button>
             <Button
               variant="secondary"
-              icon="auto_stories"
+              icon="widgets"
               iconPosition="start"
-              as="a"
-              href="../../storybook-static/"
+              onClick={() => onNavigate('components')}
             >
-              View Storybook
+              Explore components
             </Button>
           </ButtonContainer>
       </Section>
@@ -219,7 +218,7 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Platforms ── */}
-      <Section padding="lg" inverse align="center" contentWidth="lg" aria-labelledby="platforms-heading">
+      <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="components-heading" inverse>
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge subtle icon="devices">
@@ -252,7 +251,7 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Themes ── */}
-      <Section padding="lg" aria-labelledby="themes-heading">
+      <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="themes-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge subtle icon="palette">
@@ -294,12 +293,12 @@ export function Home({ onNavigate }) {
         padding="lg"
         gradient="accent"
         gradientPosition="top-right"
-        contentWidth="sm"
+        contentWidth="lg"
         align="center"
         aria-labelledby="cta-heading"
       >
         <Stack direction="column" gap="lg">
-          <Heading as="h2" id="cta-heading" type="display" size={{ xs: 'lg', md: 'xl' }} align="center">
+          <Heading as="h2" id="cta-heading" type="display" size={{ xs: 'lg', md: 'xxl' }} align="center">
             Start building with A1.
           </Heading>
           <Paragraph size="lg" color="muted" align="center">
@@ -310,17 +309,9 @@ export function Home({ onNavigate }) {
               variant="primary"
               icon="arrow_forward"
               iconPosition="end"
-              onClick={() => onNavigate('components')}
+              onClick={() => onNavigate('editor')}
             >
-              Explore components
-            </Button>
-            <Button
-              variant="secondary"
-              icon="description"
-              iconPosition="start"
-              onClick={() => onNavigate('tokens')}
-            >
-              Browse tokens
+              Open the editor
             </Button>
           </ButtonContainer>
         </Stack>

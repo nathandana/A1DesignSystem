@@ -5,6 +5,7 @@ const variants = ["tertiary", "secondary", "destructive", "success"];
 const sizes = ["md", "lg"];
 
 export function IconButton({
+  as: Component = "button",
   icon,
   label,
   variant = "tertiary",
@@ -16,6 +17,9 @@ export function IconButton({
 }) {
   const resolvedVariant = variants.includes(variant) ? variant : "tertiary";
   const resolvedSize = sizes.includes(size) ? size : null;
+  // When rendered as a link (as="a") the native `disabled` attribute does not
+  // apply, so fall back to aria-disabled for assistive tech.
+  const isButton = Component === "button";
   const classes = [
     "a1-icon-button",
     `a1-icon-button--${resolvedVariant}`,
@@ -24,15 +28,16 @@ export function IconButton({
   ].filter(Boolean).join(" ");
 
   return (
-    <button
-      type="button"
+    <Component
+      type={isButton ? "button" : undefined}
       className={classes}
       aria-label={label}
-      disabled={disabled}
+      disabled={isButton ? disabled : undefined}
+      aria-disabled={!isButton && disabled ? "true" : undefined}
       onClick={onClick}
       {...props}
     >
       <Icon name={icon} />
-    </button>
+    </Component>
   );
 }

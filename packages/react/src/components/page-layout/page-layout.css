@@ -110,6 +110,19 @@
   overflow-y: auto;
 }
 
+/* When a SideNav is inside the viewport-height sidebar, the SideNav manages
+   its own internal scroll — let it fill the sidebar height exactly so the
+   footer stays pinned to the bottom rather than scrolling off screen. */
+.a1-page-layout--viewport-height .a1-page-layout__sidebar:has(.a1-side-nav) {
+  overflow-y: hidden;
+}
+
+.a1-page-layout--viewport-height .a1-page-layout__sidebar .a1-side-nav {
+  position: relative;
+  top: auto;
+  height: 100%;
+}
+
 .a1-page-layout--viewport-height .a1-page-layout__content {
   overflow: hidden;
 }

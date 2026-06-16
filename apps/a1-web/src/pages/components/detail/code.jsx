@@ -7,7 +7,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './Toggle.jsx'
 
-const CODE_VARIANT_OPTIONS = ['inline', 'block']
+const CODE_VARIANT_OPTIONS = ['block', 'inline']
 
 const SAMPLE_INLINE_CODE = '--semantic-color-action-background'
 const SAMPLE_BLOCK_CODE = `import { Button, Code } from '@gtivr4/a1-design-system-react'
@@ -57,11 +57,13 @@ function propExpression(name, value) {
 }
 
 function codeProps(config) {
+  const isInline = config.variant === 'inline'
   return [
     propString('variant', config.variant, 'inline'),
-    propBoolean('wrapping', config.wrapping),
-    propBoolean('copyCode', config.copyCode),
-    propExpression('copyText', config.copyText),
+    !isInline ? propBoolean('wrapping', config.wrapping) : null,
+    !isInline ? propBoolean('editable', config.editable) : null,
+    !isInline ? propBoolean('copyCode', config.copyCode) : null,
+    !isInline ? propExpression('copyText', config.copyText) : null,
   ].filter(Boolean).join(' ')
 }
 
@@ -73,11 +75,7 @@ function buildCodeSnippet(config) {
   const children = config.children || sampleForVariant(config.variant)
   const props = codeProps(config)
   const propsStr = props ? ` ${props}` : ''
-  const isCompactInline = config.variant === 'inline'
-    && !config.wrapping
-    && !config.copyCode
-    && !config.copyText
-    && !children.includes('\n')
+  const isCompactInline = config.variant === 'inline' && !children.includes('\n')
 
   if (isCompactInline) {
     return `<Code>${escapeJsxText(children)}</Code>`
@@ -92,11 +90,12 @@ function buildCodeSnippet(config) {
 
 export function getDefaultConfig() {
   return {
-    variant: 'inline',
-    wrapping: false,
+    variant: 'block',
+    wrapping: true,
+    editable: false,
     copyCode: false,
     copyText: '',
-    children: SAMPLE_INLINE_CODE,
+    children: SAMPLE_BLOCK_CODE,
   }
 }
 
@@ -104,13 +103,11 @@ export function Preview({ config }) {
   const children = config.children || sampleForVariant(config.variant)
   const copyText = config.copyText || undefined
 
-  if (config.variant === 'inline' && !config.copyCode) {
+  if (config.variant === 'inline') {
     return (
       <Paragraph>
         Set the token value with{' '}
-        <Code wrapping={config.wrapping} copyText={copyText}>
-          {children}
-        </Code>
+        <Code>{children}</Code>
         {' '}in your CSS.
       </Paragraph>
     )
@@ -120,6 +117,7 @@ export function Preview({ config }) {
     <Code
       variant={config.variant}
       wrapping={config.wrapping}
+      editable={config.editable}
       copyCode={config.copyCode}
       copyText={copyText}
     >
@@ -129,6 +127,21 @@ export function Preview({ config }) {
 }
 
 export function Controls({ config, setConfig }) {
+  const isInline = config.variant === 'inline'
+
+  function handleVariantChange(variant) {
+    setConfig((current) => {
+      const hasSampleCode = current.children === SAMPLE_INLINE_CODE || current.children === SAMPLE_BLOCK_CODE
+      return {
+        ...current,
+        variant,
+        children: hasSampleCode ? sampleForVariant(variant) : current.children,
+        // reset block-only props when switching to inline
+        ...(variant === 'inline' ? { wrapping: false, editable: false, copyCode: false, copyText: '' } : {}),
+      }
+    })
+  }
+
   return (
     <Stack gap="lg">
       <TextareaField
@@ -144,29 +157,25 @@ export function Controls({ config, setConfig }) {
         hideIndicator
         columns={2}
         value={config.variant}
-        onChange={(variant) => {
-          setConfig((current) => {
-            const hasSampleCode = current.children === SAMPLE_INLINE_CODE || current.children === SAMPLE_BLOCK_CODE
-            return {
-              ...current,
-              variant,
-              children: hasSampleCode ? sampleForVariant(variant) : current.children,
-            }
-          })
-        }}
+        onChange={handleVariantChange}
         options={CODE_VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Wrapping" value={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
-      <Toggle label="Copy button" value={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
-      {config.copyCode && (
-        <TextareaField
-          label="Clipboard text"
-          hint="Optional override. Leave empty to copy the rendered code."
-          size="compact"
-          rows={3}
-          value={config.copyText}
-          onChange={(event) => setConfig((current) => ({ ...current, copyText: event.target.value }))}
-        />
+      {!isInline && (
+        <>
+          <Toggle label="Wrapping" value={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
+          <Toggle label="Editable" value={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable }))} />
+          <Toggle label="Copy button" value={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
+          {config.copyCode && (
+            <TextareaField
+              label="Clipboard text"
+              hint="Optional override. Leave empty to copy the rendered code."
+              size="compact"
+              rows={3}
+              value={config.copyText}
+              onChange={(event) => setConfig((current) => ({ ...current, copyText: event.target.value }))}
+            />
+          )}
+        </>
       )}
     </Stack>
   )

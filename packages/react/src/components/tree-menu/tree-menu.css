@@ -1,0 +1,254 @@
+/* ── Root ─────────────────────────────────────────────────────────────────── */
+
+.a1-tree-menu-root {
+  display: flex;
+  flex-direction: column;
+}
+
+.a1-tree-menu,
+.a1-tree-menu__group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+/* ── Group expand / collapse (CSS grid trick, same as Accordion / SideNav) ── */
+
+.a1-tree-menu__group-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+.a1-tree-menu__group-wrapper--open {
+  grid-template-rows: 1fr;
+}
+
+.a1-tree-menu__group-inner {
+  overflow: hidden;
+}
+
+/* ── Row container ────────────────────────────────────────────────────────── */
+
+.a1-tree-menu__row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-inline-start: calc(
+    var(--component-tree-menu-item-padding-inline) +
+    var(--component-tree-menu-item-indent) * var(--a1-tree-depth, 0)
+  );
+  border-radius: var(--component-tree-menu-item-border-radius);
+  color: var(--semantic-color-text-default);
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    color      var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-tree-menu__row:hover {
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-default) 6%);
+}
+
+.a1-tree-menu__row:active {
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-default) 10%);
+}
+
+/* ── Selected row ─────────────────────────────────────────────────────────── */
+
+.a1-tree-menu__row--selected {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-tree-menu__row--selected:hover {
+  background: var(--semantic-color-action-background-hover);
+}
+
+.a1-tree-menu__row--selected:active {
+  background: var(--semantic-color-action-background-pressed);
+}
+
+/* ── Disabled row ─────────────────────────────────────────────────────────── */
+
+.a1-tree-menu__row--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Toggle button (expand / collapse — branch nodes only) ────────────────── */
+
+.a1-tree-menu__toggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--component-tree-menu-item-chevron-size);
+  height: var(--component-tree-menu-item-chevron-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--component-tree-menu-item-chevron-size);
+  border-radius: var(--base-radius-sm);
+  transition: color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-tree-menu__toggle:hover {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tree-menu__row--selected .a1-tree-menu__toggle {
+  color: inherit;
+}
+
+/* Suppress native focus ring — toggle is mouse-only (tabIndex=-1). */
+.a1-tree-menu__toggle:focus {
+  outline: none;
+}
+
+/* ── Toggle spacer (leaf nodes — keeps label aligned with branch labels) ──── */
+
+.a1-tree-menu__toggle-spacer {
+  flex-shrink: 0;
+  display: block;
+  width: var(--component-tree-menu-item-chevron-size);
+}
+
+/* ── Label button (the selectable surface) ────────────────────────────────── */
+
+.a1-tree-menu__label-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--component-tree-menu-item-gap);
+  padding-block: var(--base-spacing-2);
+  padding-inline-end: var(--component-tree-menu-item-padding-inline);
+  min-height: var(--component-tree-menu-item-height);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font-family: var(--component-paragraph-font-family, inherit);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-regular);
+  line-height: var(--component-tree-menu-item-line-height);
+  text-decoration: none;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.a1-tree-menu__label-btn:focus-visible {
+  outline: var(--component-tree-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline-offset: var(--component-tree-menu-item-focus-ring-offset);
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-tree-menu__row--selected .a1-tree-menu__label-btn {
+  font-weight: var(--base-font-weight-medium);
+}
+
+.a1-tree-menu__row--selected .a1-tree-menu__label-btn:focus-visible {
+  outline-color: var(--semantic-color-action-foreground);
+}
+
+.a1-tree-menu__label-btn--disabled {
+  cursor: not-allowed;
+}
+
+/* ── Icon ─────────────────────────────────────────────────────────────────── */
+
+.a1-tree-menu__icon {
+  flex-shrink: 0;
+  font-size: var(--component-tree-menu-item-icon-size);
+}
+
+/* ── Label text ───────────────────────────────────────────────────────────── */
+
+.a1-tree-menu__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Expand all / Collapse all controls ───────────────────────────────────── */
+
+.a1-tree-menu__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding-block-end: var(--base-spacing-4);
+  padding-inline: var(--component-tree-menu-item-padding-inline);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+  margin-block-end: var(--base-spacing-4);
+}
+
+.a1-tree-menu__control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family, inherit);
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: 1;
+  transition: color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-tree-menu__control-btn:hover {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tree-menu__control-btn:focus-visible {
+  outline: 2px solid var(--semantic-color-text-accent);
+  outline-offset: 2px;
+  border-radius: var(--base-radius-sm);
+}
+
+/* ── Drag and drop ─────────────────────────────────────────────────────────── */
+
+/* The item being dragged — faded so the ghost reads as a copy, not an absence. */
+.a1-tree-menu__row--dragging {
+  opacity: 0.4;
+}
+
+/* Drop-before / drop-after: accent insertion line. */
+.a1-tree-menu__row--drop-before,
+.a1-tree-menu__row--drop-after {
+  position: relative;
+}
+
+.a1-tree-menu__row--drop-before::before,
+.a1-tree-menu__row--drop-after::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--semantic-color-action-background);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.a1-tree-menu__row--drop-before::before {
+  inset-block-start: -1px;
+}
+
+.a1-tree-menu__row--drop-after::after {
+  inset-block-end: -1px;
+}
+
+/* Drop-into: tinted background + inset ring to show "nest inside" intent. */
+.a1-tree-menu__row--drop-into {
+  background: color-mix(in srgb, var(--semantic-color-action-background) 12%, transparent);
+  box-shadow: inset 0 0 0 2px var(--semantic-color-action-background);
+}

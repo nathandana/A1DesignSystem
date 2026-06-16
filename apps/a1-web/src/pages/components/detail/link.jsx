@@ -7,6 +7,7 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from './IconSelect.jsx'
+import { PageLinkField } from './PageLinkField.jsx'
 
 const LINK_SIZE_OPTIONS = ['', 'xs', 'sm', 'md', 'lg', 'xl']
 const LINK_WEIGHT_OPTIONS = ['', 'normal', 'medium', 'semibold', 'bold']
@@ -74,7 +75,7 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, pages }) {
   return (
     <Stack gap="lg">
       <TextField
@@ -83,11 +84,10 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <TextField
-        label="Href"
-        size="compact"
+      <PageLinkField
+        pages={pages}
         value={config.href}
-        onChange={(event) => setConfig((current) => ({ ...current, href: event.target.value }))}
+        onChange={(href) => setConfig((current) => ({ ...current, href }))}
       />
       <ChoiceGroup
         label="Size"
