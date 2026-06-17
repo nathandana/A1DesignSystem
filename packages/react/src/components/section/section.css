@@ -13,7 +13,15 @@
   --a1-section-border-size: 0;
   --a1-section-border-style: solid;
   --a1-section-border-color: transparent;
-  border: var(--a1-section-border-size) var(--a1-section-border-style) var(--a1-section-border-color);
+  /* Per-side widths default to the full border size (all sides). The sided
+     modifier zeroes them so individual sides can be opted back in. */
+  --a1-section-border-top: var(--a1-section-border-size);
+  --a1-section-border-right: var(--a1-section-border-size);
+  --a1-section-border-bottom: var(--a1-section-border-size);
+  --a1-section-border-left: var(--a1-section-border-size);
+  border-style: var(--a1-section-border-style);
+  border-color: var(--a1-section-border-color);
+  border-width: var(--a1-section-border-top) var(--a1-section-border-right) var(--a1-section-border-bottom) var(--a1-section-border-left);
 }
 
 .a1-section.a1-inverse {
@@ -41,6 +49,18 @@
 .a1-section--border-subtle { --a1-section-border-color: var(--semantic-color-border-subtle); }
 .a1-section--border-strong { --a1-section-border-color: var(--semantic-color-border-strong); }
 .a1-section--border-accent { --a1-section-border-color: var(--semantic-color-text-accent); }
+
+/* Per-side borders: start from no sides, then opt each chosen side back in. */
+.a1-section--border-sided {
+  --a1-section-border-top: 0;
+  --a1-section-border-right: 0;
+  --a1-section-border-bottom: 0;
+  --a1-section-border-left: 0;
+}
+.a1-section--border-side-top    { --a1-section-border-top: var(--a1-section-border-size); }
+.a1-section--border-side-right  { --a1-section-border-right: var(--a1-section-border-size); }
+.a1-section--border-side-bottom { --a1-section-border-bottom: var(--a1-section-border-size); }
+.a1-section--border-side-left   { --a1-section-border-left: var(--a1-section-border-size); }
 
 /* ── Radius ────────────────────────────────────────────────────────────────── */
 
@@ -92,20 +112,23 @@
 
 /* ── Content gap ──────────────────────────────────────────────────────────── */
 
-.a1-section--gap-xs,
-.a1-section--gap-sm,
-.a1-section--gap-md,
-.a1-section--gap-lg,
-.a1-section--gap-xl {
-  display: grid;
-  justify-items: var(--a1-section-justify-items);
-}
-
+/* A gap is the grid gap only when the section is a grid — i.e. when it is
+   aligned (or height-hero). Without alignment the section flows as block
+   (block children fill the width; inline content keeps its natural size) and
+   the gap becomes vertical rhythm via margins, since `gap` has no effect on
+   display:block. This keeps natural-width content (a Button, a Badge) from
+   being stretched by the grid when no alignment is requested. */
 .a1-section--gap-xs { gap: var(--semantic-spacing-gap-xs); }
 .a1-section--gap-sm { gap: var(--semantic-spacing-gap-sm); }
 .a1-section--gap-md { gap: var(--semantic-spacing-gap-md); }
 .a1-section--gap-lg { gap: var(--semantic-spacing-gap-lg); }
 .a1-section--gap-xl { gap: var(--semantic-spacing-gap-xl); }
+
+.a1-section--gap-xs:not([class*="-align-"]):not(.a1-section--height-hero) > * + * { margin-block-start: var(--semantic-spacing-gap-xs); }
+.a1-section--gap-sm:not([class*="-align-"]):not(.a1-section--height-hero) > * + * { margin-block-start: var(--semantic-spacing-gap-sm); }
+.a1-section--gap-md:not([class*="-align-"]):not(.a1-section--height-hero) > * + * { margin-block-start: var(--semantic-spacing-gap-md); }
+.a1-section--gap-lg:not([class*="-align-"]):not(.a1-section--height-hero) > * + * { margin-block-start: var(--semantic-spacing-gap-lg); }
+.a1-section--gap-xl:not([class*="-align-"]):not(.a1-section--height-hero) > * + * { margin-block-start: var(--semantic-spacing-gap-xl); }
 
 /* ── Height ────────────────────────────────────────────────────────────────── */
 

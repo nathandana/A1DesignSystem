@@ -261,7 +261,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'IconButton',
         label: 'Icon button',
-        icon: 'radio_button_checked',
+        icon: 'touch_app',
         description: 'Square icon-only action button',
         defaultNode: {
           type: 'IconButton',
@@ -281,7 +281,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'SegmentedControl',
         label: 'Segmented control',
-        icon: 'linear_scale',
+        icon: 'splitscreen',
         description: 'Compact mutually-exclusive option group',
         defaultNode: {
           type: 'SegmentedControl',
@@ -291,6 +291,55 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
               { value: 'day', label: 'Day' },
               { value: 'week', label: 'Week' },
               { value: 'month', label: 'Month' },
+            ],
+          },
+        },
+      },
+      {
+        type: 'Slider',
+        label: 'Slider',
+        icon: 'tune',
+        description: 'Range input with optional snap detents',
+        defaultNode: {
+          type: 'Slider',
+          props: {
+            label: 'Padding',
+            detents: [
+              { value: 0, label: 'None' },
+              { value: 1, label: 'XS' },
+              { value: 2, label: 'SM' },
+              { value: 3, label: 'MD' },
+              { value: 4, label: 'LG' },
+            ],
+            defaultValue: 2,
+          },
+        },
+      },
+      {
+        type: 'Toolbar',
+        label: 'Toolbar',
+        icon: 'build',
+        description: 'Compact bar grouping editing controls',
+        defaultNode: {
+          type: 'Toolbar',
+          props: { example: 'text-editor', showLabels: false, showLabel: false, fullWidth: false, disabled: false },
+        },
+      },
+      {
+        type: 'Tabs',
+        label: 'Tabs',
+        icon: 'tab',
+        description: 'Tabbed navigation with panels (line, pills, progress…)',
+        defaultNode: {
+          type: 'Tabs',
+          props: {
+            variant: 'line',
+            size: 'default',
+            level: 1,
+            items: [
+              { id: 'tab-overview', label: 'Overview', icon: '', iconPosition: 'start', count: '', status: 'none' },
+              { id: 'tab-activity', label: 'Activity', icon: '', iconPosition: 'start', count: '12', status: 'none' },
+              { id: 'tab-settings', label: 'Settings', icon: '', iconPosition: 'start', count: '', status: 'none' },
             ],
           },
         },
@@ -305,7 +354,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'Banner',
         label: 'Banner',
-        icon: 'info',
+        icon: 'view_day',
         description: 'Inline status alert or announcement',
         defaultNode: {
           type: 'Banner',
@@ -506,7 +555,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'ChoiceGroup',
         label: 'Choice group',
-        icon: 'grid_view',
+        icon: 'dashboard_customize',
         description: 'Selectable tile cards with icon, label, and subtext',
         defaultNode: {
           type: 'ChoiceGroup',
@@ -536,6 +585,19 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           ],
         },
       },
+      {
+        type: 'FieldRow',
+        label: 'Field row',
+        icon: 'table_rows',
+        description: 'Lays out related fields side by side in equal columns',
+        defaultNode: {
+          type: 'FieldRow',
+          children: [
+            { type: 'TextField', props: { label: 'First name', autoComplete: 'given-name', size: 'default' } },
+            { type: 'TextField', props: { label: 'Last name', autoComplete: 'family-name', size: 'default' } },
+          ],
+        },
+      },
     ],
   },
   {
@@ -559,6 +621,31 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
               { label: 'Plan', value: 'Enterprise' },
               { label: 'Renewal', value: 'June 30, 2026' },
             ],
+          },
+        },
+      },
+      {
+        type: 'DataTable',
+        label: 'Data table',
+        icon: 'table_chart',
+        description: 'Sortable, filterable table of records',
+        defaultNode: {
+          type: 'DataTable',
+          props: {
+            size: 'responsive',
+            zebra: false,
+            scrollable: false,
+            caption: 'Team members',
+            sortable: true,
+            showSearch: false,
+            showFilters: false,
+            showPagination: false,
+            pageSize: 3,
+            selectable: false,
+            showDeleteSelected: false,
+            emptyTitle: 'No results',
+            emptyDescription: '',
+            emptyIcon: 'inbox',
           },
         },
       },
@@ -624,7 +711,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'BottomDrawer',
         label: 'Bottom drawer',
-        icon: 'dock_to_bottom',
+        icon: 'call_to_action',
         description: 'Fixed bottom navigation bar for mobile',
         defaultNode: {
           type: 'BottomDrawer',
@@ -641,7 +728,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'StickyActions',
         label: 'Sticky actions',
-        icon: 'push_pin',
+        icon: 'vertical_align_bottom',
         description: 'Fixed bottom action bar for flows and wizards',
         defaultNode: {
           type: 'StickyActions',
@@ -658,6 +745,57 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           ],
         },
       },
+      {
+        type: 'PageNav',
+        label: 'Page nav',
+        icon: 'toc',
+        description: 'In-page "on this page" table of contents',
+        defaultNode: {
+          type: 'PageNav',
+          props: {
+            label: 'On this page',
+            sections: [
+              { id: 'overview', label: 'Overview', level: 1 },
+              { id: 'usage', label: 'Usage', level: 1 },
+              { id: 'examples', label: 'Examples', level: 2 },
+              { id: 'props', label: 'Props', level: 1 },
+            ],
+          },
+        },
+      },
+      {
+        type: 'TreeMenu',
+        label: 'Tree menu',
+        icon: 'account_tree',
+        description: 'Hierarchical, collapsible navigation tree',
+        defaultNode: {
+          type: 'TreeMenu',
+          props: {
+            selectedId: 'invoices',
+            expandedIds: ['account', 'billing'],
+            showExpandControls: false,
+            draggable: false,
+            items: [
+              {
+                id: 'account', label: 'Account', icon: 'manage_accounts', openInPanel: false,
+                children: [
+                  { id: 'profile', label: 'Profile', icon: 'person', openInPanel: false, children: [] },
+                  { id: 'security', label: 'Security', icon: 'lock', openInPanel: false, children: [] },
+                  {
+                    id: 'billing', label: 'Billing', icon: 'credit_card', openInPanel: false,
+                    children: [
+                      { id: 'invoices', label: 'Invoices', icon: 'receipt_long', openInPanel: false, children: [] },
+                      { id: 'payment', label: 'Payment methods', icon: 'payment', openInPanel: false, children: [] },
+                    ],
+                  },
+                ],
+              },
+              { id: 'notifications', label: 'Notifications', icon: 'notifications', openInPanel: false, children: [] },
+              { id: 'integrations', label: 'Integrations', icon: 'extension', openInPanel: false, children: [] },
+            ],
+          },
+        },
+      },
     ],
   },
   {
@@ -668,7 +806,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       {
         type: 'Accordion',
         label: 'Accordion',
-        icon: 'expand_circle_down',
+        icon: 'unfold_more',
         description: 'Collapsible section with trigger label',
         defaultNode: {
           type: 'Accordion',
@@ -678,6 +816,55 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
     ],
   },
 ];
+
+// ── Lookup by component id (matches the `data.js` componentCategories ids) ─────
+// The Add panel derives its display order, categories, labels, and icons from
+// the component registry source of truth (`pages/components/data.js`), and uses
+// these maps to resolve each component id back to its addable catalog entry.
+
+const TYPE_TO_ID_ALIASES: Record<string, string> = {
+  MessageBadge: 'badge',
+  MessageEmptyState: 'empty-state',
+  SelectField: 'select',
+  TextareaField: 'textarea',
+};
+
+/** Map a catalog entry `type` to its `data.js` component id (kebab-case + aliases). */
+export function catalogIdForType(type: string): string {
+  return TYPE_TO_ID_ALIASES[type] ?? type.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+/** Every catalog entry, flattened. */
+export const ALL_CATALOG_ENTRIES: CatalogEntry[] = COMPONENT_CATALOG.flatMap((c) => c.entries);
+
+/** Catalog entries keyed by their `data.js` component id. */
+export const CATALOG_ENTRIES_BY_ID: Record<string, CatalogEntry> = Object.fromEntries(
+  ALL_CATALOG_ENTRIES.map((entry) => [catalogIdForType(entry.type), entry]),
+);
+
+/**
+ * The most-used components, shown in the Add panel's "Common" set. Everything
+ * else is revealed by switching the panel to "All". Ids match the `data.js`
+ * component ids.
+ */
+export const COMMON_COMPONENT_IDS = new Set<string>([
+  // Layout & Display
+  'section', 'card', 'stack', 'grid',
+  // Typography
+  'heading', 'paragraph', 'list', 'divider',
+  // Actions & controls
+  'button', 'link', 'icon-button', 'accordion', 'tabs',
+  // Navigation
+  'breadcrumb', 'top-header',
+  // Inputs
+  'text-field', 'textarea', 'select', 'checkbox-group', 'radio-group',
+  // Feedback & messaging
+  'banner', 'badge',
+  // Media and iconography
+  'figure', 'icon',
+  // Data
+  'data-table', 'definition-list', 'pagination',
+]);
 
 function freshId(): string {
   return `node-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;

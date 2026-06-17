@@ -1,78 +1,101 @@
 import {
-  ChoiceGroup,
+  Accordion,
   Code,
   Heading,
   Paragraph,
   Section,
+  Slider,
   Stack,
+  Toolbar,
+  ToolbarButton,
+  ToolbarDivider,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { Toggle } from './Toggle.jsx'
+import { ResponsiveControl, responsiveProp } from './configKit.jsx'
+
+const BORDER_SIDES = ['top', 'right', 'bottom', 'left']
+
+// Spacing/size scales shown as compact Sliders. The slider works in index space;
+// map the index back to the string value (the lowest stop is '' or 'none').
+const PADDING_VALUES = ['none', 'xs', 'sm', 'md', 'lg']
+const GAP_VALUES = ['', 'xs', 'sm', 'md', 'lg', 'xl']
+const CONTENT_WIDTH_VALUES = ['', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+const BORDER_SIZE_VALUES = ['', 'xs', 'sm', 'md', 'lg']
+const RADIUS_VALUES = ['none', 'sm', 'md', 'lg', 'xl']
 
 export const bareDisplay = true
-
-const AS_OPTIONS = ['section', 'div', 'main', 'header', 'footer']
-const PADDING_OPTIONS = ['none', 'xs', 'sm', 'md', 'lg']
-const SURFACE_OPTIONS = ['', 'page', 'panel', 'raised']
-const GAP_OPTIONS = ['', 'xs', 'sm', 'md', 'lg', 'xl']
-const CONTENT_WIDTH_OPTIONS = ['', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
-const HEIGHT_OPTIONS = ['', 'hero', 'screen']
-const ALIGN_OPTIONS = ['', 'left', 'center', 'right']
-const GRADIENT_OPTIONS = ['', 'accent', 'highlight', 'info', 'success', 'warn']
-const BORDER_SIZE_OPTIONS = ['', 'xs', 'sm', 'md', 'lg']
-const BORDER_STYLE_OPTIONS = ['solid', 'dashed', 'dotted']
-const BORDER_VARIANT_OPTIONS = ['subtle', 'strong', 'accent']
-const RADIUS_OPTIONS = ['none', 'sm', 'md', 'lg', 'xl']
-const NONE_ICON = 'layers_clear'
-const GRADIENT_POSITION_OPTIONS = [
-  'top-left',
-  'top',
-  'top-right',
-  'left',
-  'center',
-  'right',
-  'bottom-left',
-  'bottom',
-  'bottom-right',
-]
 
 function optionLabel(value) {
   if (!value) return 'None'
   return value.charAt(0).toUpperCase() + value.slice(1).replaceAll('-', ' ')
 }
 
-function optionWithNoneIcon(value, noneValue = '') {
-  if (value === noneValue) {
-    return { label: optionLabel(value), value, icon: NONE_ICON, iconOnly: true }
-  }
+// Join the applied (truthy) parts into a collapsed-accordion summary.
+const summarize = (parts) => parts.filter(Boolean).join(' · ')
 
-  return { label: optionLabel(value), value }
+// Plain labelled options (none value renders as "None").
+const labelItems = (values) => values.map((value) => ({ value, label: optionLabel(value) }))
+
+const AS_ITEMS = labelItems(['section', 'div', 'main', 'header', 'footer'])
+// Surface options preview the actual surface colours via Toolbar swatches.
+const SURFACE_ITEMS = [
+  { value: '', label: 'None' },
+  { value: 'page', label: 'Page', swatch: 'var(--semantic-color-surface-page)' },
+  { value: 'panel', label: 'Panel', swatch: 'var(--semantic-color-surface-panel)' },
+  { value: 'raised', label: 'Raised', swatch: 'var(--semantic-color-surface-raised)' },
+]
+// Slider detents (index space). The lowest/none stop renders as "--".
+const sliderDetents = (values) => values.map((value, index) => ({ value: index, label: (value && value !== 'none') ? optionLabel(value) : '--' }))
+const PADDING_DETENTS = sliderDetents(PADDING_VALUES)
+const GAP_DETENTS = sliderDetents(GAP_VALUES)
+const CONTENT_WIDTH_DETENTS = sliderDetents(CONTENT_WIDTH_VALUES)
+const BORDER_SIZE_DETENTS = sliderDetents(BORDER_SIZE_VALUES)
+const RADIUS_DETENTS = sliderDetents(RADIUS_VALUES)
+
+const HEIGHT_ITEMS = labelItems(['', 'hero', 'screen'])
+// Gradient + border variant preview their colours via Toolbar swatches.
+const GRADIENT_ITEMS = [
+  { value: '', label: 'None' },
+  { value: 'accent', label: 'Accent', swatch: 'var(--semantic-color-action-background)' },
+  { value: 'highlight', label: 'Highlight', swatch: 'var(--base-color-highlited-200)' },
+  { value: 'info', label: 'Info', swatch: 'var(--semantic-color-status-info-background)' },
+  { value: 'success', label: 'Success', swatch: 'var(--semantic-color-status-success-background)' },
+  { value: 'warn', label: 'Warn', swatch: 'var(--semantic-color-status-warn-background)' },
+]
+// Material Symbols has no distinct solid/dashed/dotted line glyphs, so these stay labelled.
+const BORDER_STYLE_ITEMS = labelItems(['solid', 'dashed', 'dotted'])
+const BORDER_VARIANT_ITEMS = [
+  { value: 'subtle', label: 'Subtle', swatch: 'var(--semantic-color-border-subtle)' },
+  { value: 'strong', label: 'Strong', swatch: 'var(--semantic-color-border-strong)' },
+  { value: 'accent', label: 'Accent', swatch: 'var(--semantic-color-text-accent)' },
+]
+
+// Icon-only groups. The none value (no icon) auto-uses the standard Toolbar
+// none icon in icon-only mode.
+const ALIGN_ITEMS = [
+  { value: '', label: 'None' },
+  { value: 'left', label: 'Left', icon: 'align_horizontal_left' },
+  { value: 'center', label: 'Center', icon: 'align_horizontal_center' },
+  { value: 'right', label: 'Right', icon: 'align_horizontal_right' },
+]
+
+// Arrows point inward (toward the centre) to indicate where the gradient is anchored.
+const GRADIENT_POSITION_ICONS = {
+  center: 'center_focus_strong',
+  top: 'south',
+  'top-right': 'south_west',
+  right: 'west',
+  'bottom-right': 'north_west',
+  bottom: 'north',
+  'bottom-left': 'north_east',
+  left: 'east',
+  'top-left': 'south_east',
 }
-
-const ALIGN_OPTION_ITEMS = ALIGN_OPTIONS.map((value) => {
-  const icons = {
-    '': NONE_ICON,
-    left: 'align_horizontal_left',
-    center: 'align_horizontal_center',
-    right: 'align_horizontal_right',
-  }
-
-  return { label: optionLabel(value), value, icon: icons[value], iconOnly: true }
-})
-
-const GRADIENT_POSITION_OPTION_ITEMS = GRADIENT_POSITION_OPTIONS.map((value) => {
-  const icons = {
-    center: 'center_focus_strong',
-    top: 'north',
-    'top-right': 'north_east',
-    right: 'east',
-    'bottom-right': 'south_east',
-    bottom: 'south',
-    'bottom-left': 'south_west',
-    left: 'west',
-    'top-left': 'north_west',
-  }
-
-  return { label: optionLabel(value), value, icon: icons[value], iconOnly: true }
-})
+const GRADIENT_POSITION_ITEMS = ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'].map(
+  (value) => ({ value, label: optionLabel(value), icon: GRADIENT_POSITION_ICONS[value] }),
+)
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -91,17 +114,21 @@ function propBoolean(name, value, defaultValue) {
 function buildSectionSnippet(config) {
   const props = [
     propString('as', config.as, 'section'),
-    propString('padding', config.padding, 'md'),
+    typeof config.padding === 'object' ? responsiveProp('padding', config.padding) : propString('padding', config.padding, 'md'),
     propString('surface', config.surface, ''),
     propString('gap', config.gap, ''),
     propString('contentWidth', config.contentWidth, ''),
     propString('height', config.height, ''),
-    propString('align', config.align, ''),
+    typeof config.align === 'object' ? responsiveProp('align', config.align) : propString('align', config.align, ''),
     propString('gradient', config.gradient, ''),
     config.gradient ? propString('gradientPosition', config.gradientPosition, 'center') : null,
     propString('borderSize', config.borderSize, ''),
     propString('borderStyle', config.borderStyle, 'solid'),
     propString('borderVariant', config.borderVariant, 'subtle'),
+    // Border sides — omit when all four (the default "all").
+    config.borderSize && config.borderSides.length !== 4
+      ? `borderSides={[${config.borderSides.map((side) => `'${side}'`).join(', ')}]}`
+      : null,
     propString('radius', config.radius, 'none'),
     propBoolean('inverse', config.inverse, false),
   ].filter(Boolean).join('\n  ')
@@ -123,6 +150,7 @@ export function getDefaultConfig() {
     borderSize: '',
     borderStyle: 'solid',
     borderVariant: 'subtle',
+    borderSides: ['top', 'right', 'bottom', 'left'],
     radius: 'none',
     inverse: false,
   }
@@ -143,6 +171,7 @@ export function Preview({ config }) {
       borderSize={config.borderSize || undefined}
       borderStyle={config.borderStyle}
       borderVariant={config.borderVariant}
+      borderSides={config.borderSides}
       radius={config.radius}
       inverse={config.inverse}
     >
@@ -156,148 +185,121 @@ export function Preview({ config }) {
   )
 }
 
+// A compact, subtle Slider over a string-value scale (index space ↔ value).
+function DetentSlider({ label, values, detents, value, onChange }) {
+  return (
+    <Slider
+      size="compact"
+      variant="subtle"
+      label={label}
+      detents={detents}
+      value={Math.max(0, values.indexOf(value))}
+      onChange={(index) => onChange(values[index])}
+    />
+  )
+}
+
 export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+  const toggleSide = (side) =>
+    set({
+      borderSides: config.borderSides.includes(side)
+        ? config.borderSides.filter((s) => s !== side)
+        : BORDER_SIDES.filter((s) => s === side || config.borderSides.includes(s)),
+    })
+
+  // Collapsed-state summaries of the applied properties per accordion.
+  const sizingSummary = summarize([
+    config.padding !== 'none' && `Padding ${optionLabel(config.padding)}`,
+    config.gap && `Gap ${optionLabel(config.gap)}`,
+    config.contentWidth && `Width ${optionLabel(config.contentWidth)}`,
+  ])
+  const backgroundSummary = summarize([
+    config.inverse && 'Inverse',
+    config.surface && `${optionLabel(config.surface)} surface`,
+    config.gradient && `${optionLabel(config.gradient)} gradient`,
+  ])
+  const borderSummary = summarize([
+    config.borderSize && `${optionLabel(config.borderSize)} ${config.borderVariant} border`,
+    config.radius !== 'none' && `${optionLabel(config.radius)} radius`,
+  ])
+  const advancedSummary = summarize([
+    config.height && optionLabel(config.height),
+    config.align && `${optionLabel(config.align)} align`,
+    config.as !== 'section' && `<${config.as}>`,
+  ])
 
   return (
-    <Stack gap="lg">
-      <ChoiceGroup
-        label="Element"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.as}
-        onChange={(as) => set({ as })}
-        options={AS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="Surface"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.surface}
-        onChange={(surface) => set({ surface })}
-        options={SURFACE_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      <ChoiceGroup
-        label="Padding"
-        size="compact"
-        hideIndicator
-        columns={5}
-        value={config.padding}
-        onChange={(padding) => set({ padding })}
-        options={PADDING_OPTIONS.map((opt) => optionWithNoneIcon(opt, 'none'))}
-      />
-      <ChoiceGroup
-        label="Gap"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.gap}
-        onChange={(gap) => set({ gap })}
-        options={GAP_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      <ChoiceGroup
-        label="Content width"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.contentWidth}
-        onChange={(contentWidth) => set({ contentWidth })}
-        options={CONTENT_WIDTH_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      <ChoiceGroup
-        label="Align"
-        size="compact"
-        hideIndicator
-        iconOnly
-        columns={4}
-        value={config.align}
-        onChange={(align) => set({ align })}
-        options={ALIGN_OPTION_ITEMS}
-      />
-      <ChoiceGroup
-        label="Height"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.height}
-        onChange={(height) => set({ height })}
-        options={HEIGHT_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      <ChoiceGroup
-        label="Gradient"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.gradient}
-        onChange={(gradient) => set({ gradient })}
-        options={GRADIENT_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      {config.gradient && (
-        <ChoiceGroup
-          label="Gradient position"
-          size="compact"
-          hideIndicator
-          iconOnly
-          columns={3}
-          value={config.gradientPosition}
-          onChange={(gradientPosition) => set({ gradientPosition })}
-          options={GRADIENT_POSITION_OPTION_ITEMS}
-        />
-      )}
-      <ChoiceGroup
-        label="Border size"
-        size="compact"
-        hideIndicator
-        columns={5}
-        value={config.borderSize}
-        onChange={(borderSize) => set({ borderSize })}
-        options={BORDER_SIZE_OPTIONS.map((opt) => optionWithNoneIcon(opt))}
-      />
-      {config.borderSize && (
-        <>
-          <ChoiceGroup
-            label="Border style"
-            size="compact"
-            hideIndicator
-            columns={3}
-            value={config.borderStyle}
-            onChange={(borderStyle) => set({ borderStyle })}
-            options={BORDER_STYLE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-          />
-          <ChoiceGroup
-            label="Border variant"
-            size="compact"
-            hideIndicator
-            columns={3}
-            value={config.borderVariant}
-            onChange={(borderVariant) => set({ borderVariant })}
-            options={BORDER_VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-          />
-        </>
-      )}
-      <ChoiceGroup
-        label="Radius"
-        size="compact"
-        hideIndicator
-        columns={5}
-        value={config.radius}
-        onChange={(radius) => set({ radius })}
-        options={RADIUS_OPTIONS.map((opt) => optionWithNoneIcon(opt, 'none'))}
-      />
-      <ChoiceGroup
-        label="Inverse"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.inverse ? 'on' : 'off'}
-        onChange={(value) => set({ inverse: value === 'on' })}
-        options={[
-          { label: 'Off', value: 'off' },
-          { label: 'On', value: 'on' },
-        ]}
-      />
+    <Stack gap="sm">
+      <Accordion label="Sizing" size="sm" subtext={sizingSummary} divider defaultOpen>
+        <Stack gap="md">
+          <ResponsiveControl label="Padding" value={config.padding} onChange={(padding) => set({ padding })} defaultValue="md">
+            {(val, setVal) => <DetentSlider values={PADDING_VALUES} detents={PADDING_DETENTS} value={val} onChange={setVal} />}
+          </ResponsiveControl>
+          <DetentSlider label="Gap" values={GAP_VALUES} detents={GAP_DETENTS} value={config.gap} onChange={(gap) => set({ gap })} />
+          <DetentSlider label="Content width" values={CONTENT_WIDTH_VALUES} detents={CONTENT_WIDTH_DETENTS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
+        </Stack>
+      </Accordion>
+
+      <Accordion label="Background" size="sm" subtext={backgroundSummary} divider defaultOpen>
+        <Stack gap="lg">
+          <Toolbar label="Surface">
+            <ToolbarGroup aria-label="Surface" showLabels value={config.surface} onChange={(surface) => set({ surface })} options={SURFACE_ITEMS} />
+          </Toolbar>
+          <Toggle label="Inverse" value={config.inverse} onChange={(inverse) => set({ inverse })} />
+          <Toolbar label="Gradient">
+            <ToolbarGroup aria-label="Gradient" showLabels value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
+          </Toolbar>
+          {config.gradient ? (
+            <Toolbar label="Gradient position">
+              <ToolbarGroup aria-label="Gradient position" columns={3} value={config.gradientPosition} onChange={(gradientPosition) => set({ gradientPosition })} options={GRADIENT_POSITION_ITEMS} />
+            </Toolbar>
+          ) : null}
+        </Stack>
+      </Accordion>
+
+      <Accordion label="Border" size="sm" subtext={borderSummary} divider>
+        <Stack gap="md">
+          <DetentSlider label="Border size" values={BORDER_SIZE_VALUES} detents={BORDER_SIZE_DETENTS} value={config.borderSize} onChange={(borderSize) => set({ borderSize })} />
+          {config.borderSize ? (
+            <>
+              <Toolbar label="Border style">
+                <ToolbarGroup aria-label="Border style" showLabels value={config.borderStyle} onChange={(borderStyle) => set({ borderStyle })} options={BORDER_STYLE_ITEMS} />
+              </Toolbar>
+              <Toolbar label="Border variant">
+                <ToolbarGroup aria-label="Border variant" showLabels value={config.borderVariant} onChange={(borderVariant) => set({ borderVariant })} options={BORDER_VARIANT_ITEMS} />
+              </Toolbar>
+              <Toolbar label="Border sides">
+                <ToolbarButton icon="border_all" label="All" onClick={() => set({ borderSides: [...BORDER_SIDES] })} />
+                <ToolbarDivider />
+                <ToolbarToggle icon="border_top" label="Top" pressed={config.borderSides.includes('top')} onChange={() => toggleSide('top')} />
+                <ToolbarToggle icon="border_right" label="Right" pressed={config.borderSides.includes('right')} onChange={() => toggleSide('right')} />
+                <ToolbarToggle icon="border_bottom" label="Bottom" pressed={config.borderSides.includes('bottom')} onChange={() => toggleSide('bottom')} />
+                <ToolbarToggle icon="border_left" label="Left" pressed={config.borderSides.includes('left')} onChange={() => toggleSide('left')} />
+              </Toolbar>
+            </>
+          ) : null}
+          <DetentSlider label="Radius" values={RADIUS_VALUES} detents={RADIUS_DETENTS} value={config.radius} onChange={(radius) => set({ radius })} />
+        </Stack>
+      </Accordion>
+
+      <Accordion label="Advanced" size="sm" subtext={advancedSummary} divider>
+        <Stack gap="md">
+          <Toolbar label="Height">
+            <ToolbarGroup aria-label="Height" showLabels value={config.height} onChange={(height) => set({ height })} options={HEIGHT_ITEMS} />
+          </Toolbar>
+          <ResponsiveControl label="Alignment" value={config.align} onChange={(align) => set({ align })} defaultValue="">
+            {(val, setVal) => (
+              <Toolbar aria-label="Alignment">
+                <ToolbarGroup aria-label="Alignment" value={val} onChange={setVal} options={ALIGN_ITEMS} />
+              </Toolbar>
+            )}
+          </ResponsiveControl>
+          <Toolbar label="Element">
+            <ToolbarGroup aria-label="Element" showLabels value={config.as} onChange={(as) => set({ as })} options={AS_ITEMS} />
+          </Toolbar>
+        </Stack>
+      </Accordion>
     </Stack>
   )
 }

@@ -1,4 +1,5 @@
-import { ChoiceGroup, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { ConfigSlider } from './configKit.jsx'
 import { createFieldModule } from './fieldKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -8,16 +9,7 @@ function TextareaExtras({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
     <>
-      <ChoiceGroup
-        label="Rows"
-        hint="Initial visible height: sm=2, md=4, lg=8, xl=12."
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.rows}
-        onChange={(rows) => set({ rows })}
-        options={ROWS_OPTIONS.map((opt) => ({ label: opt.charAt(0).toUpperCase() + opt.slice(1), value: opt }))}
-      />
+      <ConfigSlider label="Rows" values={ROWS_OPTIONS} value={config.rows} onChange={(rows) => set({ rows })} />
       <TextField
         label="Max length"
         hint="Maximum character count (enables the counter)."

@@ -1,7 +1,6 @@
 import {
   Button,
   ButtonContainer,
-  ChoiceGroup,
   Code,
   Paragraph,
   Section,
@@ -9,6 +8,7 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 export const bareDisplay = true
@@ -69,15 +69,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
-        label="Content width"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.contentWidth}
-        onChange={(contentWidth) => set({ contentWidth })}
-        options={CONTENT_WIDTH_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
+      <ConfigSlider label="Content width" values={CONTENT_WIDTH_OPTIONS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
       <TextField
         label="Primary button label"
         size="compact"

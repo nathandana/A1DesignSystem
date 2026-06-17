@@ -1,8 +1,8 @@
 .a1-button {
   box-sizing: border-box;
-  height: var(--a1-button-height, var(--component-button-min-height));
+  /* min-height keeps the standard target size for a single line; the button
+     grows taller when a long label wraps to multiple lines. */
   min-height: var(--a1-button-height, var(--component-button-min-height));
-  max-height: var(--a1-button-height, var(--component-button-min-height));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +18,11 @@
   --a1-icon-weight: 700;
   line-height: var(--component-button-font-line-height);
   text-decoration: none;
-  white-space: nowrap;
+  /* Allow long labels to wrap onto multiple lines (centered), breaking an
+     over-long word if needed, instead of overflowing a fixed-height pill. */
+  white-space: normal;
+  text-align: center;
+  overflow-wrap: anywhere;
   overflow: clip;
   cursor: pointer;
   background: var(--a1-button-background);

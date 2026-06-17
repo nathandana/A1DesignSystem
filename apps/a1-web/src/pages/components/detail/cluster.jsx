@@ -1,12 +1,12 @@
 import {
   Banner,
   Cluster,
-  ChoiceGroup,
   Code,
   MessageBadge,
   Paragraph,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const GAP_OPTIONS = [4, 8, 12, 16, 24, 32]
 const ALIGN_OPTIONS = ['start', 'center', 'end', 'stretch', 'baseline']
@@ -70,7 +70,7 @@ export function Controls({ config, setConfig }) {
           Cluster is deprecated. Use <code>{'<Stack direction="row" wrap>'}</code> with a gap instead.
         </Paragraph>
       </Banner>
-      <ChoiceGroup
+      <Choice
         label="Gap"
         size="compact"
         hideIndicator
@@ -79,7 +79,7 @@ export function Controls({ config, setConfig }) {
         onChange={(gap) => set({ gap })}
         options={GAP_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Align"
         size="compact"
         hideIndicator
@@ -88,7 +88,7 @@ export function Controls({ config, setConfig }) {
         onChange={(align) => set({ align })}
         options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Justify"
         size="compact"
         hideIndicator

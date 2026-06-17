@@ -1,0 +1,229 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Toolbar
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Labelled field wrapper ────────────────────────────────────────────────── */
+/* Optional caption above the bar — matches the compact ChoiceGroup label so a
+   Toolbar sits naturally next to form controls. */
+.a1-toolbar-field {
+  display: flex;
+  flex-direction: column;
+  /* Keep the label and bar at their natural width so a stretching flex parent
+     (e.g. a column Stack with the default `align-items: stretch`) doesn't force
+     the bar to full width. A `fullWidth` bar still fills (it sets its own
+     `inline-size: 100%`). */
+  align-items: flex-start;
+  gap: var(--component-choice-group-compact-group-gap);
+}
+
+.a1-toolbar-field__label {
+  font-family: var(--component-paragraph-font-family);
+  /* The smallest body step. */
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-toolbar {
+  /* Variant layer — every value resolves to a Style Dictionary token. */
+  --a1-toolbar-item-size: var(--base-spacing-32);
+  --a1-toolbar-bg: var(--semantic-color-surface-raised);
+  /* Unselected tools sit back in muted text; the selected tool steps forward
+     with default text on a darker neutral background — low-contrast, neutral. */
+  --a1-toolbar-fg: var(--semantic-color-text-muted);
+  --a1-toolbar-hover-bg: color-mix(in srgb, var(--semantic-color-text-default) 8%, transparent);
+  --a1-toolbar-selected-bg: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+  --a1-toolbar-selected-fg: var(--semantic-color-text-default);
+  /* No boundary by default; the accessible theme and high-contrast modes raise
+     it so the bar is clearly delimited against the page surface. */
+  --a1-toolbar-border-width: 0;
+  --a1-toolbar-border-color: var(--semantic-color-border-default);
+
+  display: inline-flex;
+  align-items: center;
+  /* Tools wrap onto new rows when they run out of width — never overflow the
+     container and never scroll horizontally. */
+  flex-wrap: wrap;
+  max-inline-size: 100%;
+  gap: var(--base-spacing-2);
+  padding: var(--base-spacing-2);
+  background: var(--a1-toolbar-bg);
+  border: var(--a1-toolbar-border-width) solid var(--a1-toolbar-border-color);
+  border-radius: var(--base-radius-md);
+}
+
+/* Accessible theme: add a clear boundary at high contrast. */
+[data-theme='accessible'] .a1-toolbar {
+  --a1-toolbar-border-width: var(--component-divider-size-sm);
+}
+
+/* OS high-contrast / forced-colors: add the same boundary. */
+@media (prefers-contrast: more) {
+  .a1-toolbar {
+    --a1-toolbar-border-width: var(--component-divider-size-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .a1-toolbar {
+    --a1-toolbar-border-width: var(--component-divider-size-sm);
+  }
+}
+
+/* ── Full width (fill container, tools share the space) ────────────────────── */
+.a1-toolbar--full-width {
+  display: flex;
+  inline-size: 100%;
+}
+
+/* Tools grow to share the available space; dividers keep their natural size. */
+.a1-toolbar--full-width > :not(.a1-toolbar__divider) {
+  flex: 1 1 0;
+}
+
+/* A stretched (non-grid) group distributes its own buttons across its share. */
+.a1-toolbar--full-width .a1-toolbar__group:not(.a1-toolbar__group--grid) > .a1-toolbar__button {
+  flex: 1 1 0;
+}
+
+/* ── Overlay (floating, elevated bar over page content) ────────────────────── */
+.a1-toolbar--overlay {
+  background: var(--semantic-color-surface-card);
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-default);
+  box-shadow: var(--semantic-shadow-lg);
+}
+
+/* ── Buttons (toggle / action / group items) ───────────────────────────────── */
+
+.a1-toolbar__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-4);
+  min-inline-size: var(--a1-toolbar-item-size);
+  block-size: var(--a1-toolbar-item-size);
+  padding-inline: var(--base-spacing-6);
+  margin: 0;
+  border: none;
+  border-radius: var(--base-radius-sm);
+  background: transparent;
+  color: var(--a1-toolbar-fg);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.a1-toolbar__button:hover {
+  background: var(--a1-toolbar-hover-bg);
+}
+
+.a1-toolbar__button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--component-button-focus-ring-width) var(--component-field-focus-ring-color);
+}
+
+/* Selected state for toggles (aria-pressed) and group items (aria-checked) —
+   default text on a darker neutral fill. */
+.a1-toolbar__button[aria-pressed="true"],
+.a1-toolbar__button[aria-checked="true"] {
+  background: var(--a1-toolbar-selected-bg);
+  color: var(--a1-toolbar-selected-fg);
+}
+
+/* A toggle (aria-pressed) can be turned off, so it keeps hover feedback when on.
+   A radio group item (aria-checked) can't be deselected, so it shows no hover or
+   active change — clicking it does nothing. */
+.a1-toolbar__button[aria-pressed="true"]:hover {
+  background: color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+}
+
+.a1-toolbar__button[aria-checked="true"]:hover,
+.a1-toolbar__button[aria-checked="true"]:active {
+  background: var(--a1-toolbar-selected-bg);
+}
+
+.a1-toolbar__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.a1-toolbar__label {
+  white-space: nowrap;
+}
+
+/* Colour swatch shown inside a tool to preview a specific colour. The border
+   keeps a light swatch from bleeding into the toolbar surface. */
+.a1-toolbar__swatch {
+  flex: none;
+  inline-size: var(--base-spacing-16);
+  block-size: var(--base-spacing-16);
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-default);
+}
+
+/* Responsive label visibility (showLabel/showLabels as a breakpoint object).
+   The component emits one cascading class per breakpoint (xs → xl); the last
+   matching media query wins, mirroring Divider's responsive pattern. */
+.a1-toolbar__label--hide-xs { display: none; }
+.a1-toolbar__label--show-xs { display: inline; }
+
+@media (--bp-sm-up) {
+  .a1-toolbar__label--hide-sm { display: none; }
+  .a1-toolbar__label--show-sm { display: inline; }
+}
+
+@media (--bp-md-up) {
+  .a1-toolbar__label--hide-md { display: none; }
+  .a1-toolbar__label--show-md { display: inline; }
+}
+
+@media (--bp-lg-up) {
+  .a1-toolbar__label--hide-lg { display: none; }
+  .a1-toolbar__label--show-lg { display: inline; }
+}
+
+@media (--bp-xl) {
+  .a1-toolbar__label--hide-xl { display: none; }
+  .a1-toolbar__label--show-xl { display: inline; }
+}
+
+/* ── Menu button (opens a dropdown Menu) ───────────────────────────────────── */
+
+.a1-toolbar__menu-button {
+  inline-size: auto;
+}
+
+.a1-toolbar__caret {
+  /* Pull the caret tight to the icon/label so the menu button stays compact. */
+  margin-inline-start: calc(-1 * var(--base-spacing-2));
+}
+
+/* ── Group (segmented) + grid ──────────────────────────────────────────────── */
+
+.a1-toolbar__group {
+  display: inline-flex;
+  align-items: center;
+  /* A wide single group wraps its own buttons rather than overflowing the bar. */
+  flex-wrap: wrap;
+  gap: var(--base-spacing-2);
+}
+
+.a1-toolbar__group--grid {
+  display: grid;
+  grid-template-columns: repeat(var(--a1-toolbar-grid-columns, 3), var(--a1-toolbar-item-size));
+  gap: var(--base-spacing-2);
+}
+
+/* ── Divider ───────────────────────────────────────────────────────────────── */
+
+.a1-toolbar__divider {
+  align-self: stretch;
+  inline-size: var(--component-divider-size-xs);
+  min-block-size: var(--a1-toolbar-item-size);
+  margin-inline: var(--base-spacing-2);
+  background: var(--semantic-color-border-default);
+  border-radius: var(--base-radius-pill);
+}
+

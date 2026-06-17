@@ -1,6 +1,5 @@
 import {
   Card,
-  ChoiceGroup,
   Code,
   Heading,
   Paragraph,
@@ -8,6 +7,7 @@ import {
   Switch,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 
 const AS_OPTIONS = ['div', 'article', 'section']
@@ -116,7 +116,7 @@ export function Controls({ config, setConfig }) {
         value={config.body}
         onChange={(event) => setConfig((current) => ({ ...current, body: event.target.value }))}
       /> */}
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -129,7 +129,7 @@ export function Controls({ config, setConfig }) {
         ]}
       />
       {config.variant !== 'navigation' && (
-        <ChoiceGroup
+        <Choice
           label="Element"
           size="compact"
           hideIndicator
@@ -147,7 +147,7 @@ export function Controls({ config, setConfig }) {
           onChange={(event) => setConfig((current) => ({ ...current, href: event.target.value }))}
         />
       )}
-      <ChoiceGroup
+      <Choice
         label="Icon display"
         size="compact"
         hideIndicator
@@ -164,14 +164,12 @@ export function Controls({ config, setConfig }) {
         />
       )}
       {config.iconDisplay === 'hero' && (
-        <ChoiceGroup
+        <Choice
           label="Hero color"
-          size="compact"
-          hideIndicator
-          columns={2}
+          iconOnly
           value={config.heroColor}
           onChange={(heroColor) => setConfig((current) => ({ ...current, heroColor }))}
-          options={HERO_COLOR_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+          options={statusOptions(HERO_COLOR_OPTIONS)}
         />
       )}
       <Switch

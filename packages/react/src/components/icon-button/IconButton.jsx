@@ -2,7 +2,8 @@ import "./icon-button.css";
 import { Icon } from "../icon/Icon.jsx";
 
 const variants = ["tertiary", "secondary", "destructive", "success"];
-const sizes = ["md", "lg"];
+const sizes = ["sm", "md", "lg"];
+const sizeClass = { sm: "a1-icon-button--small", lg: "a1-icon-button--large" };
 
 export function IconButton({
   as: Component = "button",
@@ -23,7 +24,7 @@ export function IconButton({
   const classes = [
     "a1-icon-button",
     `a1-icon-button--${resolvedVariant}`,
-    resolvedSize === "lg" && "a1-icon-button--large",
+    resolvedSize && sizeClass[resolvedSize],
     className,
   ].filter(Boolean).join(" ");
 

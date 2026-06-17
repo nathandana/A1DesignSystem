@@ -1,22 +1,16 @@
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { DensityChoice, FieldState } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 // Shared configurator factory for CheckboxGroup and RadioGroup. They share the
 // same option shape ({ value, label, hint, disabled }) and group props; the only
 // difference is multi- vs single-select default value handling.
-
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function escapeJsString(value) {
   return String(value ?? '')
@@ -127,14 +121,15 @@ export function createGroupModule({ Component, componentName, multiple }) {
         <TextField label="Legend" size="compact" value={config.label} onChange={(e) => set({ label: e.target.value })} />
         <TextField label="Hint" size="compact" value={config.hint} onChange={(e) => set({ hint: e.target.value })} />
         <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
-        <ChoiceGroup
-          label="Size" size="compact" hideIndicator columns={3}
-          value={config.size} onChange={(size) => set({ size })}
-          options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-        />
+        <DensityChoice value={config.size} onChange={(size) => set({ size })} />
         <Toggle label="Inline" value={config.inline} onChange={(inline) => set({ inline })} />
-        <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
-        <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+        <FieldState
+          items={[
+            { key: 'required', label: 'Required', icon: 'asterisk', value: config.required },
+            { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
+          ]}
+          onChange={set}
+        />
 
         <Stack gap="sm">
           {options.map((opt, index) => (

@@ -20,10 +20,12 @@ const meta = {
   },
   argTypes: {
     label: { control: "text" },
+    subtext: { control: "text" },
     size: {
       control: "inline-radio",
       options: ["sm", "md", "lg"],
     },
+    divider: { control: "boolean" },
     disabled: { control: "boolean" },
     defaultOpen: { control: "boolean" },
     open: { control: "boolean", description: "Controlled open state" },
@@ -33,6 +35,25 @@ const meta = {
 export default meta;
 
 export const Configurable = {};
+
+export const WithSubtext = {
+  name: "Subtext (collapsed summary)",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-4)", maxWidth: 480 }}>
+      <Accordion label="Sizing" subtext="Padding Md · Gap Sm" divider>
+        <Paragraph size="sm" color="muted" style={{ padding: "var(--base-spacing-8) var(--base-spacing-16) var(--base-spacing-16)" }}>
+          The subtext shows a glanceable summary while collapsed, then hides when the panel opens.
+        </Paragraph>
+      </Accordion>
+      <Accordion label="Background" subtext="Panel surface · Accent gradient">
+        <Paragraph size="sm" color="muted" style={{ padding: "var(--base-spacing-8) var(--base-spacing-16) var(--base-spacing-16)" }}>
+          {LOREM}
+        </Paragraph>
+      </Accordion>
+    </div>
+  ),
+};
 
 export const Sizes = {
   name: "Sizes",

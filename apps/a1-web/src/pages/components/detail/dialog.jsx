@@ -2,13 +2,13 @@ import { useState } from 'react'
 import {
   Button,
   ButtonContainer,
-  ChoiceGroup,
   Code,
   Dialog,
   Paragraph,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, statusOptions } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 import { IconSelect } from './IconSelect.jsx'
 
@@ -100,15 +100,12 @@ export function Controls({ config, setConfig }) {
         value={config.title}
         onChange={(event) => set({ title: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Status"
-        hint="Renders a full-bleed hero band at the top with a status icon."
-        size="compact"
-        hideIndicator
-        columns={3}
+        iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
-        options={STATUS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={statusOptions(STATUS_OPTIONS)}
       />
       {config.status && (
         <>

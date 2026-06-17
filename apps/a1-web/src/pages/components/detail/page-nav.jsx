@@ -1,12 +1,12 @@
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   PageNav,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const DEFAULT_LABEL = 'On this page'
 
@@ -144,7 +144,7 @@ export function Controls({ config, setConfig }) {
                   onChange={(event) => updateSection(section.key, { label: event.target.value })}
                 />
 
-                <ChoiceGroup
+                <Choice
                   label="Level"
                   size="compact"
                   hideIndicator

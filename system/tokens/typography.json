@@ -31,6 +31,10 @@
           }
         },
         "scale": {
+          "25": {
+            "$type": "dimension",
+            "$value": "0.5rem"
+          },
           "50": {
             "$type": "dimension",
             "$value": "0.625rem"
@@ -177,6 +181,10 @@
     "font": {
       "size": {
         "body": {
+          "3xs": {
+            "$type": "dimension",
+            "$value": "{base.font.size.scale.25}"
+          },
           "2xs": {
             "$type": "dimension",
             "$value": "{base.font.size.scale.50}"

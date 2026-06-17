@@ -1,16 +1,14 @@
 import {
-  ChoiceGroup,
   Code,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, DensityChoice, FieldState } from './configKit.jsx'
 
 // Shared configurator factory for the field family (TextField, NumberField,
 // DateField, TimeField, PhoneField, ZipField, CreditCardField). Each field
 // component shares the same base props; type-specific extras are injected.
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
 const LABEL_POSITION_OPTIONS = ['above', 'before']
 
 function optionLabel(value) {
@@ -108,16 +106,8 @@ export function createFieldModule({
           value={config.autoComplete}
           onChange={(event) => set({ autoComplete: event.target.value })}
         />
-        <ChoiceGroup
-          label="Size"
-          size="compact"
-          hideIndicator
-          columns={3}
-          value={config.size}
-          onChange={(size) => set({ size })}
-          options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-        />
-        <ChoiceGroup
+        <DensityChoice value={config.size} onChange={(size) => set({ size })} />
+        <Choice
           label="Label position"
           size="compact"
           hideIndicator
@@ -126,9 +116,14 @@ export function createFieldModule({
           onChange={(labelPosition) => set({ labelPosition })}
           options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
-        <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
-        <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
-        <Toggle label="Read only" value={config.readOnly} onChange={(readOnly) => set({ readOnly })} />
+        <FieldState
+          items={[
+            { key: 'required', label: 'Required', icon: 'asterisk', value: config.required },
+            { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
+            { key: 'readOnly', label: 'Read only', icon: 'edit_off', value: config.readOnly },
+          ]}
+          onChange={set}
+        />
       </Stack>
     )
   }

@@ -11,7 +11,7 @@
  * the node, so it is held in local state here.
  */
 import { useState } from 'react'
-import { Button, ChoiceGroup, Divider, Heading, Link, Paragraph, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { Button, ChoiceGroup, Divider, Heading, Link, Paragraph, SelectField, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 
@@ -79,6 +79,14 @@ import { Controls as StickyActionsControls } from '../pages/components/detail/st
 // Disclosure
 import { Controls as AccordionControls } from '../pages/components/detail/accordion.jsx'
 
+// Actions & controls / data (added editor support)
+import { Controls as SliderControls, getDefaultConfig as sliderDefaults } from '../pages/components/detail/slider.jsx'
+import { Controls as TabsControls, getDefaultConfig as tabsDefaults } from '../pages/components/detail/tabs.jsx'
+import { Controls as ToolbarControls, getDefaultConfig as toolbarDefaults } from '../pages/components/detail/toolbar.jsx'
+import { Controls as DataTableControls, getDefaultConfig as dataTableDefaults } from '../pages/components/detail/data-table.jsx'
+import { Controls as PageNavControls, getDefaultConfig as pageNavDefaults } from '../pages/components/detail/page-nav.jsx'
+import { Controls as TreeMenuControls, getDefaultConfig as treeMenuDefaults } from '../pages/components/detail/tree-menu.jsx'
+
 // ── Node lookup ───────────────────────────────────────────────────────────────
 
 function findInNodes(nodes, id) {
@@ -101,8 +109,10 @@ export function findNodeInDefinition(definition, id) {
 }
 
 // ── Config bridges: node → Controls config ────────────────────────────────────
+// Exported so the "Copy pattern" feature can introspect which props a component
+// type understands (config keys) and which props it produces (node prop keys).
 
-const propsToConfig = {
+export const propsToConfig = {
   // Layout
   Section: (props) => ({
     as: props?.as ?? 'section',
@@ -117,6 +127,7 @@ const propsToConfig = {
     borderSize: props?.borderSize ?? '',
     borderStyle: props?.borderStyle ?? 'solid',
     borderVariant: props?.borderVariant ?? 'subtle',
+    borderSides: Array.isArray(props?.borderSides) ? props.borderSides : ['top', 'right', 'bottom', 'left'],
     radius: props?.radius ?? 'none',
     inverse: props?.inverse ?? false,
   }),
@@ -235,9 +246,16 @@ const propsToConfig = {
     caption: props?.caption ?? '',
     radius: props?.radius ?? 'md',
     size: props?.size ?? '',
-    align: props?.align ?? 'start',
+    align: props?.align ?? 'none',
     captionPosition: props?.captionPosition ?? 'start',
     captionSrOnly: props?.captionSrOnly ?? false,
+    // A node with a cropRect uses the freeform "Custom" crop; otherwise it uses
+    // the preset aspect-ratio + named focal point.
+    aspectRatio: props?.aspectRatio ?? '',
+    crop: props?.crop ?? 'center',
+    customCrop: !!props?.cropRect,
+    cropRatio: '',
+    cropRect: props?.cropRect ?? null,
   }),
 
   // Actions
@@ -438,7 +456,7 @@ const propsToConfig = {
     error: props?.error ?? '',
     success: props?.success ?? '',
     size: props?.size ?? 'default',
-    columns: props?.columns != null ? String(props.columns) : 'auto',
+    columns: props?.columns == null ? 'auto' : (typeof props.columns === 'object' ? props.columns : String(props.columns)),
     multiple: props?.multiple ?? false,
     inlineIcon: props?.inlineIcon ?? false,
     hideIndicator: props?.hideIndicator ?? false,
@@ -639,11 +657,51 @@ const propsToConfig = {
     children: content?.fallback ?? '',
     icon: props?.icon ?? '',
   }),
+
+  // Actions & controls — Slider/PageNav use real props; Tabs/Toolbar use
+  // config-as-props (the node's props are the configurator config, rendered by
+  // the editor adapters in editorComponents.jsx).
+  Slider: (props) => {
+    const d = sliderDefaults()
+    return {
+      label: props?.label ?? 'Slider',
+      size: props?.size ?? 'default',
+      variant: props?.variant ?? 'default',
+      mode: Array.isArray(props?.detents) ? 'detents' : (props ? 'continuous' : d.mode),
+      detents: Array.isArray(props?.detents) ? props.detents : d.detents,
+      min: props?.min ?? 0,
+      max: props?.max ?? 100,
+      step: props?.step ?? 1,
+      valuePosition: props?.valuePosition ?? 'above',
+      showValue: props?.showValue ?? true,
+      disabled: props?.disabled ?? false,
+    }
+  },
+
+  Tabs: (props) => ({ ...tabsDefaults(), ...(props ?? {}), openItems: [] }),
+
+  Toolbar: (props) => ({ ...toolbarDefaults(), ...(props ?? {}) }),
+
+  // Navigation
+  PageNav: (props) => ({
+    label: props?.label ?? 'On this page',
+    sections: (props?.sections ?? pageNavDefaults().sections.map((s) => ({ id: s.key, label: s.label, level: s.level })))
+      .map((s, i) => ({ key: s.id ?? `page-nav-${i}`, label: s.label ?? '', level: s.level ?? 1 })),
+    openItems: [],
+  }),
+
+  TreeMenu: (props) => ({ ...treeMenuDefaults(), ...(props ?? {}) }),
+
+  // Inputs — FieldRow has no props of its own (it lays out its field children).
+  FieldRow: () => ({}),
+
+  // Data
+  DataTable: (props) => ({ ...dataTableDefaults(), ...(props ?? {}) }),
 }
 
 // ── Config bridges: Controls config → node update ─────────────────────────────
 
-const configToNodeUpdate = {
+export const configToNodeUpdate = {
   // Layout
   Section: (config) => ({
     props: {
@@ -659,6 +717,10 @@ const configToNodeUpdate = {
       borderSize: config.borderSize || undefined,
       borderStyle: config.borderStyle,
       borderVariant: config.borderVariant,
+      borderSides:
+        config.borderSize && Array.isArray(config.borderSides) && config.borderSides.length !== 4
+          ? config.borderSides
+          : undefined,
       radius: config.radius,
       inverse: config.inverse || undefined,
     },
@@ -677,7 +739,8 @@ const configToNodeUpdate = {
 
   Grid: (config) => ({
     props: {
-      columns: Number(config.columns),
+      // columns may be a number or a responsive `{ xs, sm, … }` object.
+      columns: config.columns && typeof config.columns === 'object' ? config.columns : Number(config.columns),
       gap: config.gap,
       layout: config.layout !== 'default' ? config.layout : undefined,
     },
@@ -795,9 +858,12 @@ const configToNodeUpdate = {
       src: config.src || undefined,
       alt: config.alt || undefined,
       caption: config.captionSrOnly ? undefined : (config.caption || undefined),
-      radius: config.radius || undefined,
+      radius: config.radius && config.radius !== 'none' ? config.radius : undefined,
       size: config.size || undefined,
-      align: config.align !== 'start' ? config.align : undefined,
+      align: config.align && config.align !== 'none' ? config.align : undefined,
+      aspectRatio: !config.customCrop && config.aspectRatio ? config.aspectRatio : undefined,
+      crop: !config.customCrop && config.aspectRatio && config.crop && config.crop !== 'center' ? config.crop : undefined,
+      cropRect: config.customCrop ? (config.cropRect || undefined) : undefined,
       captionPosition: config.captionPosition !== 'start' ? config.captionPosition : undefined,
       captionSrOnly: config.captionSrOnly || undefined,
     },
@@ -1010,7 +1076,9 @@ const configToNodeUpdate = {
       error: config.error || undefined,
       success: config.success || undefined,
       size: config.size,
-      columns: config.columns === 'auto' ? undefined : Number(config.columns),
+      columns: config.columns && typeof config.columns === 'object'
+        ? Object.fromEntries(Object.entries(config.columns).filter(([, v]) => v !== 'auto' && v != null && v !== '').map(([k, v]) => [k, Number(v)]))
+        : (config.columns === 'auto' ? undefined : Number(config.columns)),
       multiple: config.multiple || undefined,
       inlineIcon: config.inlineIcon || undefined,
       hideIndicator: config.hideIndicator || undefined,
@@ -1214,25 +1282,75 @@ const configToNodeUpdate = {
     props: { icon: config.icon || undefined },
     contentFallback: config.children,
   }),
+
+  // Actions & controls
+  Slider: (config) => {
+    const isDetents = config.mode === 'detents'
+    const mid = isDetents && config.detents?.length
+      ? config.detents[Math.floor((config.detents.length - 1) / 2)].value
+      : 40
+    return {
+      props: {
+        label: config.label || undefined,
+        size: config.size !== 'default' ? config.size : undefined,
+        variant: config.variant !== 'default' ? config.variant : undefined,
+        detents: isDetents ? config.detents : undefined,
+        defaultValue: isDetents ? mid : 40,
+        min: !isDetents && config.min !== 0 ? config.min : undefined,
+        max: !isDetents && config.max !== 100 ? config.max : undefined,
+        step: !isDetents && config.step !== 1 ? config.step : undefined,
+        valuePosition: config.valuePosition !== 'above' ? config.valuePosition : undefined,
+        showValue: config.showValue ? undefined : false,
+        disabled: config.disabled || undefined,
+      },
+    }
+  },
+
+  // Config-as-props adapters: the node's props ARE the configurator config (the
+  // editor adapters in editorComponents.jsx render the matching detail Preview).
+  Tabs: (config) => {
+    const { openItems: _openItems, ...rest } = config
+    return { props: rest }
+  },
+
+  Toolbar: (config) => ({ props: { ...config } }),
+
+  TreeMenu: (config) => ({
+    props: {
+      selectedId: config.selectedId,
+      expandedIds: config.expandedIds,
+      showExpandControls: config.showExpandControls,
+      draggable: config.draggable,
+      items: config.items,
+    },
+  }),
+
+  DataTable: (config) => ({ props: { ...config } }),
+
+  // Inputs
+  FieldRow: () => ({ props: {} }),
+
+  // Navigation — PageNav renders the real component, so emit real props.
+  PageNav: (config) => ({
+    props: {
+      label: config.label || undefined,
+      sections: (config.sections ?? []).map((s) => ({
+        id: s.key,
+        label: s.label || 'Untitled',
+        level: s.level,
+      })),
+    },
+  }),
 }
 
 // ── Conversion map: type → possible target types ──────────────────────────────
 
 // ── Inline Controls for types without a dedicated configurator ─────────────────
 
+// FigureControls already includes the Image URL field (with the AI image finder),
+// so this just forwards to it.
 function FigureEditorControls({ config, setConfig }) {
-  const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
-  return (
-    <Stack gap="lg">
-      <TextField
-        label="Image URL"
-        size="compact"
-        value={config.src ?? ''}
-        onChange={(e) => set({ src: e.target.value })}
-      />
-      <FigureControls config={config} setConfig={setConfig} />
-    </Stack>
-  )
+  return <FigureControls config={config} setConfig={setConfig} />
 }
 
 const LIST_VARIANT_OPTIONS = ['unordered', 'ordered', 'icon', 'divider']
@@ -1289,6 +1407,17 @@ function ListEditorControls({ config, setConfig }) {
 // the standalone detail page.
 function ChoiceGroupEditorControls(props) {
   return <ChoiceGroupControls {...props} itemsMode="select" />
+}
+
+// FieldRow has no props of its own — it arranges its field children in a row.
+function FieldRowEditorControls() {
+  return (
+    <Paragraph size="sm" color="muted">
+      Field Row lays out the field components inside it in equal-width columns. Add
+      or remove fields on the canvas to change the row — it has no properties of
+      its own.
+    </Paragraph>
+  )
 }
 
 function ListItemControls({ config, setConfig }) {
@@ -1368,6 +1497,15 @@ const CONTROLS_BY_TYPE = {
   // Disclosure
   Accordion: AccordionControls,
 
+  // Actions & controls / data (added editor support)
+  Slider: SliderControls,
+  Tabs: TabsControls,
+  Toolbar: ToolbarControls,
+  PageNav: PageNavControls,
+  TreeMenu: TreeMenuControls,
+  DataTable: DataTableControls,
+  FieldRow: FieldRowEditorControls,
+
   // Inline Controls (no separate configurator file)
   List: ListEditorControls,
   ListItem: ListItemControls,
@@ -1375,7 +1513,7 @@ const CONTROLS_BY_TYPE = {
 
 // ── Page metadata form (shown when no node is selected) ───────────────────────
 
-function PageConfigForm({ definition, onPageMetadataChange, onDuplicatePage, onDeletePage }) {
+function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel, onPageMetadataChange, onDuplicatePage, onDeletePage }) {
   if (!definition) {
     return (
       <Paragraph size="sm" color="muted">
@@ -1384,23 +1522,45 @@ function PageConfigForm({ definition, onPageMetadataChange, onDuplicatePage, onD
     )
   }
 
-  const { name = '', description = '' } = definition.page
+  const { name = '', description = '', icon = '' } = definition.page
+  const levels = availableLevels ?? [1, 2, 3]
 
   return (
     <Stack gap="md">
       <Heading as="h3" size="xs" color="muted">Page</Heading>
       <TextField
-        label="Name"
+        label="Title"
         size="compact"
         value={name}
-        onChange={(e) => onPageMetadataChange(e.target.value, description)}
+        onChange={(e) => onPageMetadataChange({ name: e.target.value })}
+      />
+      <IconSelect
+        label="Icon"
+        size="compact"
+        value={icon || 'description'}
+        onChange={(value) => onPageMetadataChange({ icon: value })}
       />
       <TextareaField
         label="Description"
         size="compact"
         value={description}
-        onChange={(e) => onPageMetadataChange(name, e.target.value)}
+        onChange={(e) => onPageMetadataChange({ description: e.target.value })}
       />
+      {onSetPageLevel && (
+        <SelectField
+          label="Level"
+          size="compact"
+          hint="Level 2 and 3 pages appear in the top navigation menus."
+          value={String(pageLevel ?? 1)}
+          onChange={(e) => onSetPageLevel(Number(e.target.value))}
+        >
+          {[1, 2, 3].map((lvl) => (
+            <option key={lvl} value={lvl} disabled={!levels.includes(lvl)}>
+              Level {lvl}
+            </option>
+          ))}
+        </SelectField>
+      )}
       {(onDuplicatePage || onDeletePage) && <Divider space="xs" />}
       {onDuplicatePage && (
         <Button
@@ -1434,6 +1594,9 @@ export function EditorPropsPanel({
   selectedNodeId,
   definition,
   pages = [],
+  pageLevel,
+  availableLevels,
+  onSetPageLevel,
   onNodePropsChange,
   onPageMetadataChange,
   onConvertNode,
@@ -1449,6 +1612,9 @@ export function EditorPropsPanel({
     return (
       <PageConfigForm
         definition={definition}
+        pageLevel={pageLevel}
+        availableLevels={availableLevels}
+        onSetPageLevel={onSetPageLevel}
         onPageMetadataChange={onPageMetadataChange}
         onDuplicatePage={onDuplicatePage}
         onDeletePage={onDeletePage}

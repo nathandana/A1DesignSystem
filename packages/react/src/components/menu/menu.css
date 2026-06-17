@@ -104,16 +104,27 @@
   background: transparent;
 }
 
-/* Active / current-page indicator */
+/* Active / current-page indicator — matches the TreeMenu selected pattern:
+   a solid action-background fill for a clear, unambiguous highlight. */
 .a1-menu-item--active {
-  color: var(--semantic-color-text-default);
-  background: var(--semantic-color-action-surface);
-  border-inline-start: 2px solid var(--semantic-color-action-background);
-  padding-inline-start: calc(var(--base-spacing-8) - 2px);
+  color: var(--semantic-color-action-foreground);
+  background: var(--semantic-color-action-background);
+}
+
+.a1-menu-item--active:hover {
+  background: var(--semantic-color-action-background-hover);
+}
+
+.a1-menu-item--active:active {
+  background: var(--semantic-color-action-background-pressed);
+}
+
+.a1-menu-item--active:focus-visible {
+  outline-color: var(--semantic-color-action-foreground);
 }
 
 .a1-menu-item--active .a1-menu-item__icon {
-  color: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
 }
 
 /* Destructive variant */

@@ -3,7 +3,6 @@ import {
   Accordion,
   BottomDrawer,
   Button,
-  ChoiceGroup,
   Code,
   NumberField,
   Paragraph,
@@ -12,6 +11,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './Toggle.jsx'
 import { IconSelect } from './IconSelect.jsx'
+import { useInResponsivePreview } from './responsivePreview.js'
 
 export const bareDisplay = true
 
@@ -57,10 +57,25 @@ export function getDefaultConfig() {
 }
 
 export function Preview({ config }) {
+  const inResponsive = useInResponsivePreview()
   const items = config.items.map(({ id: _id, ...rest }) => ({
     ...rest,
     badge: rest.badge > 0 ? rest.badge : undefined,
   }))
+
+  // In the responsive iframe, the drawer is genuinely fixed to the device
+  // viewport bottom (no transformed ancestor). In the normal "Fit" preview it is
+  // contained in a bounded, transformed box so the fixed bar can't cover the app.
+  if (inResponsive) {
+    return (
+      <div style={{ minBlockSize: '100%', background: 'var(--semantic-color-surface-page)' }}>
+        <Paragraph size="sm" color="muted" style={{ padding: 'var(--base-spacing-24)' }}>
+          Pinned to the bottom of the device viewport.
+        </Paragraph>
+        <BottomDrawer items={items} aria-label={config.ariaLabel} />
+      </div>
+    )
+  }
 
   return (
     <div style={{
@@ -71,7 +86,7 @@ export function Preview({ config }) {
       overflow: 'hidden',
     }}>
       <Paragraph size="sm" color="muted" style={{ padding: 'var(--base-spacing-24)' }}>
-        Pinned to the bottom of the viewport on mobile screens.
+        Pinned to the bottom of the viewport on mobile screens. Use the responsive preview to see it fixed to a device.
       </Paragraph>
       <BottomDrawer items={items} aria-label={config.ariaLabel} />
     </div>
@@ -104,7 +119,7 @@ function ItemEditor({ item, onChange, onRemove, onSetActive, isOpen, onToggleOpe
           value={item.badge ?? 0}
           onChange={(e) => onChange({ badge: Math.max(0, parseInt(e.target.value, 10) || 0) })}
         />
-        <Button type="button" variant="destructive" size="sm" icon="delete" onClick={onRemove}>
+        <Button type="button" variant="destructive" size="sm" icon="delete" disabled={!onRemove} onClick={onRemove}>
           Remove
         </Button>
       </Stack>
@@ -117,7 +132,7 @@ export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
 
   const canAdd = config.items.length < 5
-  const canRemove = config.items.length > 3
+  const canRemove = config.items.length > 1
 
   function updateItem(id, patch) {
     setConfig((c) => ({ ...c, items: c.items.map((item) => item.id === id ? { ...item, ...patch } : item) }))
@@ -169,11 +184,12 @@ export function Controls({ config, setConfig }) {
         ))}
       </Stack>
 
-      {canAdd && (
-        <Button type="button" variant="secondary" size="sm" icon="add" onClick={addItem}>
+      <Stack gap="xs">
+        <Button type="button" variant="secondary" size="sm" icon="add" disabled={!canAdd} onClick={addItem}>
           Add item
         </Button>
-      )}
+        <Paragraph size="xs" color="muted">{config.items.length} of 5 items (BottomDrawer supports up to 5).</Paragraph>
+      </Stack>
     </Stack>
   )
 }

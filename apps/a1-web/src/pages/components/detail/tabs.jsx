@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   Paragraph,
   Stack,
@@ -12,6 +11,7 @@ import {
   Tabs,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -159,7 +159,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -168,7 +168,7 @@ export function Controls({ config, setConfig }) {
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Size"
         size="compact"
         hideIndicator
@@ -180,7 +180,7 @@ export function Controls({ config, setConfig }) {
           { label: 'Compact', value: 'compact' },
         ]}
       />
-      <ChoiceGroup
+      <Choice
         label="Level"
         size="compact"
         hideIndicator
@@ -224,7 +224,7 @@ export function Controls({ config, setConfig }) {
                       value={item.icon}
                       onChange={(icon) => updateItem(item.id, { icon })}
                     />
-                    <ChoiceGroup
+                    <Choice
                       label="Icon position"
                       size="compact"
                       hideIndicator
@@ -244,7 +244,7 @@ export function Controls({ config, setConfig }) {
                   onChange={(event) => updateItem(item.id, { count: event.target.value })}
                 />
 
-                <ChoiceGroup
+                <Choice
                   label="Status"
                   hint="Step state, shown in the progress variant."
                   size="compact"

@@ -1,17 +1,47 @@
 import {
   Button,
-  ChoiceGroup,
   Code,
+  SplitButton,
   Stack,
   TextField,
+  Toolbar,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
-import { Toggle } from './Toggle.jsx'
 
 const VARIANT_OPTIONS = ['primary', 'secondary', 'tertiary', 'destructive', 'success']
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-const ICON_POSITION_OPTIONS = ['start', 'end']
+
+// Sample secondary actions for the split-button demo.
+const SAMPLE_ACTIONS = [
+  { id: 'draft', label: 'Save as draft', icon: 'draft' },
+  { id: 'template', label: 'Save as template', icon: 'bookmark' },
+  { id: 'duplicate', label: 'Duplicate', icon: 'content_copy' },
+]
+
+// Platforms the page can render the component "as". The detail page reads this
+// to show a "View as" toolbar; Preview/Controls/Snippet receive the active mode.
+export const viewAsModes = [
+  { value: 'react', label: 'React' },
+  { value: 'native', label: 'Native' },
+  { value: 'pure', label: 'Pure' },
+]
+
+// Which props each platform's Button supports. variant / size / icon /
+// iconPosition / disabled apply everywhere; these differ:
+// - Native (React Native) navigates via onPress, so there is no href.
+// - Pure (HTML/CSS) has no full-width or loading modifier.
+const PROP_SUPPORT = {
+  react: { href: true, fullWidth: true, loading: true, split: true },
+  native: { href: false, fullWidth: true, loading: true, split: false },
+  pure: { href: true, fullWidth: false, loading: false, split: false },
+}
+
+function support(viewAs) {
+  return PROP_SUPPORT[viewAs] ?? PROP_SUPPORT.react
+}
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -35,19 +65,39 @@ export function getDefaultConfig() {
     fullWidth: false,
     loading: false,
     disabled: false,
+    split: false,
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, viewAs = 'react' }) {
+  // The A1 design is identical across platforms, so the preview always renders
+  // the React component — but only with the props the selected platform supports
+  // (e.g. Native drops href, Pure drops full-width/loading).
+  const s = support(viewAs)
+  if (config.split && s.split) {
+    return (
+      <SplitButton
+        variant={config.variant}
+        size={config.size}
+        icon={config.icon || undefined}
+        iconPosition={config.iconPosition}
+        loading={config.loading}
+        disabled={config.disabled}
+        actions={SAMPLE_ACTIONS}
+      >
+        {config.label || 'Button'}
+      </SplitButton>
+    )
+  }
   return (
     <Button
       variant={config.variant}
       size={config.size}
-      href={config.href || undefined}
+      href={s.href ? (config.href || undefined) : undefined}
       icon={config.icon || undefined}
       iconPosition={config.iconPosition}
-      fullWidth={config.fullWidth}
-      loading={config.loading}
+      fullWidth={s.fullWidth ? config.fullWidth : false}
+      loading={s.loading ? config.loading : false}
       disabled={config.disabled}
     >
       {config.label || 'Button'}
@@ -55,7 +105,8 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig, pages }) {
+export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
+  const s = support(viewAs)
   return (
     <Stack gap="lg">
       <TextField
@@ -64,7 +115,7 @@ export function Controls({ config, setConfig, pages }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -73,50 +124,50 @@ export function Controls({ config, setConfig, pages }) {
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Toggle
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice
         label="Icon"
-        value={!!config.icon}
-        onChange={(checked) => setConfig((current) => ({ ...current, icon: checked ? (current.icon || 'check') : '' }))}
+        iconOnly
+        value={!config.icon ? 'none' : (config.iconPosition === 'end' ? 'right' : 'left')}
+        onChange={(placement) => setConfig((current) => placement === 'none'
+          ? { ...current, icon: '' }
+          : { ...current, icon: current.icon || 'check', iconPosition: placement === 'right' ? 'end' : 'start' })}
+        options={[
+          { value: 'none', label: 'None' },
+          { value: 'left', label: 'Left', icon: 'align_horizontal_left' },
+          { value: 'right', label: 'Right', icon: 'align_horizontal_right' },
+        ]}
       />
       {config.icon && (
-        <>
-          <IconSelect
-            value={config.icon}
-            onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
-          />
-          <ChoiceGroup
-            label="Icon position"
-            size="compact"
-            hideIndicator
-            columns={2}
-            value={config.iconPosition}
-            onChange={(iconPosition) => setConfig((current) => ({ ...current, iconPosition }))}
-            options={ICON_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-          />
-        </>
+        <IconSelect
+          value={config.icon}
+          onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
+        />
       )}
-      <PageLinkField
-        pages={pages}
-        value={config.href ?? ''}
-        onChange={(href) => setConfig((current) => ({ ...current, href }))}
-      />
-      <Toggle label="Full width" value={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
-      <Toggle label="Loading" value={config.loading} onChange={(loading) => setConfig((current) => ({ ...current, loading }))} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+      {s.href && (
+        <PageLinkField
+          pages={pages}
+          value={config.href ?? ''}
+          onChange={(href) => setConfig((current) => ({ ...current, href }))}
+        />
+      )}
+      <Toolbar label="State">
+        {s.fullWidth && (
+          <ToolbarToggle icon="width_full" label="Full width" pressed={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
+        )}
+        {s.loading && (
+          <ToolbarToggle icon="progress_activity" label="Loading" pressed={config.loading} onChange={(loading) => setConfig((current) => ({ ...current, loading }))} />
+        )}
+        <ToolbarToggle icon="block" label="Disabled" pressed={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+        {s.split && (
+          <ToolbarToggle icon="arrow_drop_down_circle" label="Split (menu)" pressed={config.split} onChange={(split) => setConfig((current) => ({ ...current, split }))} />
+        )}
+      </Toolbar>
     </Stack>
   )
 }
 
-function buildButtonSnippet(config) {
+function buildReactSnippet(config) {
   const props = [
     config.variant !== 'primary' ? `variant="${config.variant}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
@@ -132,6 +183,82 @@ function buildButtonSnippet(config) {
   return `<Button${propsStr}>${escapeJsxText(config.label || 'Button')}</Button>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildButtonSnippet(config)}</Code>
+function buildNativeSnippet(config) {
+  // React Native: navigates via onPress (no href); same visual props otherwise.
+  const props = [
+    config.variant !== 'primary' ? `variant="${config.variant}"` : null,
+    config.size !== 'md' ? `size="${config.size}"` : null,
+    config.icon ? `icon="${config.icon}"` : null,
+    config.icon && config.iconPosition !== 'start' ? `iconPosition="${config.iconPosition}"` : null,
+    config.fullWidth ? 'fullWidth' : null,
+    config.loading ? 'loading' : null,
+    config.disabled ? 'disabled' : null,
+    'onPress={handlePress}',
+  ].filter(Boolean).join(' ')
+
+  return `import { Button } from '@gtivr4/a1-design-system-react-native'
+
+<Button ${props}>${escapeJsxText(config.label || 'Button')}</Button>`
+}
+
+const PURE_VARIANT_CLASS = {
+  secondary: 'a1-button-secondary',
+  tertiary: 'a1-button-tertiary',
+  destructive: 'a1-button-destructive',
+  success: 'a1-button-success',
+}
+const PURE_SIZE_CLASS = { sm: 'a1-button-small', lg: 'a1-button-large' }
+
+function buildPureSnippet(config) {
+  const classes = ['a1-button']
+  if (config.variant !== 'primary' && PURE_VARIANT_CLASS[config.variant]) classes.push(PURE_VARIANT_CLASS[config.variant])
+  if (PURE_SIZE_CLASS[config.size]) classes.push(PURE_SIZE_CLASS[config.size])
+  const classAttr = classes.join(' ')
+
+  const label = escapeJsxText(config.label || 'Button')
+  const iconSpan = config.icon ? `<span class="a1-icon" aria-hidden="true">${config.icon}</span>` : ''
+  const inner = !iconSpan
+    ? label
+    : (config.iconPosition === 'end' ? `${label} ${iconSpan}` : `${iconSpan} ${label}`)
+
+  // An href renders an anchor styled as a button; disabled maps to aria-disabled.
+  if (config.href) {
+    const ariaDisabled = config.disabled ? ' aria-disabled="true"' : ''
+    return `<a class="${classAttr}" href="${config.href}"${ariaDisabled}>${inner}</a>`
+  }
+  const disabledAttr = config.disabled ? ' disabled' : ''
+  return `<button class="${classAttr}" type="button"${disabledAttr}>${inner}</button>`
+}
+
+function buildSplitSnippet(config) {
+  const props = [
+    config.variant !== 'primary' ? `variant="${config.variant}"` : null,
+    config.size !== 'md' ? `size="${config.size}"` : null,
+    config.icon ? `icon="${config.icon}"` : null,
+    config.icon && config.iconPosition !== 'start' ? `iconPosition="${config.iconPosition}"` : null,
+    config.loading ? 'loading' : null,
+    config.disabled ? 'disabled' : null,
+    'onClick={handleSave}',
+  ].filter(Boolean).join('\n  ')
+
+  return `<SplitButton
+  ${props}
+  actions={[
+    { id: 'draft', label: 'Save as draft', icon: 'draft' },
+    { id: 'template', label: 'Save as template', icon: 'bookmark' },
+    { id: 'duplicate', label: 'Duplicate', icon: 'content_copy' },
+  ]}
+>
+  ${escapeJsxText(config.label || 'Button')}
+</SplitButton>`
+}
+
+export function Snippet({ config, viewAs = 'react' }) {
+  if (config.split && support(viewAs).split) {
+    return <Code variant="block" wrapping copyCode>{buildSplitSnippet(config)}</Code>
+  }
+  const build = viewAs === 'native' ? buildNativeSnippet
+    : viewAs === 'pure' ? buildPureSnippet
+      : buildReactSnippet
+  return <Code variant="block" wrapping copyCode>{build(config)}</Code>
 }

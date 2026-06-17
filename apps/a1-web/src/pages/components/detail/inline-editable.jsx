@@ -1,5 +1,4 @@
 import {
-  ChoiceGroup,
   Code,
   Heading,
   InlineEditable,
@@ -7,13 +6,15 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
-const AS_OPTIONS = ['text', 'paragraph', 'heading', 'button']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+const AS_OPTIONS = [
+  { value: 'text', label: 'Text', icon: 'text_fields' },
+  { value: 'paragraph', label: 'Paragraph', icon: 'subject' },
+  { value: 'heading', label: 'Heading', icon: 'title' },
+  { value: 'button', label: 'Button', icon: 'smart_button' },
+]
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -73,10 +74,11 @@ export function Controls({ config, setConfig }) {
       <TextField label="Value" size="compact" value={config.value} onChange={(e) => set({ value: e.target.value })} />
       <TextField label="Placeholder" size="compact" hint="Shown when the value is empty." value={config.placeholder} onChange={(e) => set({ placeholder: e.target.value })} />
       <TextField label="Accessible label" size="compact" value={config.ariaLabel} onChange={(e) => set({ ariaLabel: e.target.value })} />
-      <ChoiceGroup
-        label="Display as" size="compact" hideIndicator columns={2}
+      <Choice
+        label="Display as"
+        iconOnly
         value={config.as} onChange={(as) => set({ as })}
-        options={AS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={AS_OPTIONS}
       />
       <Toggle label="Multiline" value={config.multiline} onChange={(multiline) => set({ multiline })} />
       <Toggle label="Seamless"  value={config.seamless} onChange={(seamless) => set({ seamless })} />

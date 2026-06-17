@@ -21,6 +21,13 @@ const SHORTCUT_GROUPS = [
     ],
   },
   {
+    label: 'Style',
+    items: [
+      { label: 'Copy pattern (style)',  keys: `${MOD}${ALT}C` },
+      { label: 'Paste pattern (style)', keys: `${MOD}${ALT}V` },
+    ],
+  },
+  {
     label: 'General',
     items: [
       { label: 'Keyboard shortcuts',  keys: `${MOD}K` },

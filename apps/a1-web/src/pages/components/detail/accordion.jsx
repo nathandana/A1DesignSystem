@@ -1,18 +1,13 @@
 import {
   Accordion,
-  ChoiceGroup,
   Code,
   Paragraph,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { ConfigSlider, FieldState } from './configKit.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -66,17 +61,14 @@ export function Controls({ config, setConfig }) {
         value={config.label}
         onChange={(event) => set({ label: event.target.value })}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <FieldState
+        items={[
+          { key: 'defaultOpen', label: 'Default open', icon: 'unfold_more', value: config.defaultOpen },
+          { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
+        ]}
+        onChange={set}
       />
-      <Toggle label="Default open" value={config.defaultOpen} onChange={(defaultOpen) => set({ defaultOpen })} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
     </Stack>
   )
 }

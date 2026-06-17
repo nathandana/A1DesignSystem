@@ -1,13 +1,13 @@
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   Divider,
   Stack,
   TextField,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -188,7 +188,7 @@ export function Controls({ config, setConfig }) {
         value={config.logoText}
         onChange={(event) => setConfig((current) => ({ ...current, logoText: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Nav icon position"
         size="compact"
         hideIndicator
@@ -224,7 +224,7 @@ export function Controls({ config, setConfig }) {
                   onChange={(event) => updateNavItem(item.id, { label: event.target.value })}
                 />
 
-                <ChoiceGroup
+                <Choice
                   label="Behavior"
                   size="compact"
                   hideIndicator

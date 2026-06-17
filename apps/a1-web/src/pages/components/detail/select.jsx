@@ -1,15 +1,13 @@
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   SelectField,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, DensityChoice, FieldState } from './configKit.jsx'
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
 const LABEL_POSITION_OPTIONS = ['above', 'before']
 
 function optionLabel(value) {
@@ -123,18 +121,19 @@ export function Controls({ config, setConfig }) {
       <TextField label="Label" size="compact" value={config.label} onChange={(e) => set({ label: e.target.value })} />
       <TextField label="Hint" size="compact" value={config.hint} onChange={(e) => set({ hint: e.target.value })} />
       <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
-      <ChoiceGroup
-        label="Size" size="compact" hideIndicator columns={3}
-        value={config.size} onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <DensityChoice value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Label position" size="compact" hideIndicator columns={2}
         value={config.labelPosition} onChange={(labelPosition) => set({ labelPosition })}
         options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+      <FieldState
+        items={[
+          { key: 'required', label: 'Required', icon: 'asterisk', value: config.required },
+          { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
+        ]}
+        onChange={set}
+      />
 
       <Stack gap="sm">
         {options.map((opt, index) => (

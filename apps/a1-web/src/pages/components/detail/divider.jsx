@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   Divider,
   Paragraph,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const ORIENTATION_OPTIONS = ['horizontal', 'vertical']
@@ -128,7 +128,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Orientation"
         size="compact"
         hideIndicator
@@ -146,7 +146,7 @@ export function Controls({ config, setConfig }) {
         ]}
       />
       {config.orientationMode === 'responsive' && RESPONSIVE_BREAKPOINTS.map((breakpoint) => (
-        <ChoiceGroup
+        <Choice
           key={breakpoint}
           label={`${breakpoint} orientation`}
           size="compact"
@@ -163,7 +163,7 @@ export function Controls({ config, setConfig }) {
           options={ORIENTATION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
       ))}
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -180,7 +180,7 @@ export function Controls({ config, setConfig }) {
               : 'var(--semantic-color-text-accent)',
         }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Line style"
         size="compact"
         hideIndicator
@@ -189,24 +189,8 @@ export function Controls({ config, setConfig }) {
         onChange={(lineStyle) => setConfig((current) => ({ ...current, lineStyle }))}
         options={DIVIDER_LINE_STYLE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={DIVIDER_SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="Space"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.space}
-        onChange={(space) => setConfig((current) => ({ ...current, space }))}
-        options={DIVIDER_SPACE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
+      <ConfigSlider label="Size" values={DIVIDER_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider label="Space" values={DIVIDER_SPACE_OPTIONS} value={config.space} onChange={(space) => setConfig((current) => ({ ...current, space }))} />
       <Toggle label="Decorative" value={config.decorative} onChange={(decorative) => setConfig((current) => ({ ...current, decorative }))} />
     </Stack>
   )

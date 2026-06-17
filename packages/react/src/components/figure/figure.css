@@ -15,7 +15,13 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--base-radius-container);
+  /* Square by default — this is the same as radius="none". Use the `radius`
+     prop to round the corners. */
+  border-radius: 0;
+  /* Crop point. Harmless on natural-ratio images (the box already matches the
+     intrinsic ratio); takes effect once a fixed aspect-ratio or height crops. */
+  object-fit: cover;
+  object-position: var(--a1-figure-crop, center);
 }
 
 .a1-figure__caption {
@@ -27,25 +33,47 @@
   font-style: italic;
 }
 
-/* ── Rounded modifier ──────────────────────────────────────────────────────── */
-
-.a1-figure--rounded .a1-figure__img {
-  border-radius: var(--base-radius-container);
+/* ── Freeform crop (cropRect) ────────────────────────────────────────────────
+   The crop box clips a sub-rectangle of the image. The image is scaled so the
+   crop region fills the box width and shifted so the region's top-left aligns. */
+.a1-figure__crop {
+  position: relative;
+  inline-size: 100%;
+  overflow: hidden;
 }
 
-.a1-figure--rounded-none .a1-figure__img {
+.a1-figure--cropped .a1-figure__crop .a1-figure__img {
+  position: absolute;
+  inline-size: calc(100% / var(--a1-figure-crop-w));
+  max-inline-size: none;
+  block-size: auto;
+  inset-inline-start: calc(var(--a1-figure-crop-x) / var(--a1-figure-crop-w) * -100%);
+  inset-block-start: calc(var(--a1-figure-crop-y) / var(--a1-figure-crop-h) * -100%);
   border-radius: 0;
 }
 
-.a1-figure--rounded-sm .a1-figure__img {
+/* ── Rounded modifier ──────────────────────────────────────────────────────── */
+
+/* radius="none" matches the default (square) — kept so a figure can be reset to
+   square when a wrapping context sets a radius. The crop box, when present, is
+   the clipping element so it carries the radius. */
+.a1-figure--rounded-none .a1-figure__img,
+.a1-figure--rounded-none .a1-figure__crop {
+  border-radius: 0;
+}
+
+.a1-figure--rounded-sm .a1-figure__img,
+.a1-figure--rounded-sm .a1-figure__crop {
   border-radius: var(--base-radius-sm);
 }
 
-.a1-figure--rounded-md .a1-figure__img {
+.a1-figure--rounded-md .a1-figure__img,
+.a1-figure--rounded-md .a1-figure__crop {
   border-radius: var(--base-radius-md);
 }
 
-.a1-figure--rounded-lg .a1-figure__img {
+.a1-figure--rounded-lg .a1-figure__img,
+.a1-figure--rounded-lg .a1-figure__crop {
   border-radius: var(--base-radius-lg);
 }
 
@@ -60,8 +88,11 @@
 .a1-figure--mb-lg { margin-bottom: var(--base-spacing-24); }
 
 /* ── Alignment ───────────────────────────────────────────────────────────── */
+/* Default (align="none"): no alignment — the figure flows at the inline-start in
+   normal document flow. start/center/end are explicit alignments. */
 
 /* start/end: constrain the figure itself and shift via margin */
+.a1-figure--align-start { margin-inline-end: auto; }
 .a1-figure--align-end { margin-inline-start: auto; }
 
 /* center: figure stays full-width; size constrains img + caption */
@@ -70,13 +101,23 @@
 /* ── Size ────────────────────────────────────────────────────────────────── */
 
 /* Default: constrain the figure element */
+.a1-figure--3xs { max-width: 5rem; }
+.a1-figure--2xs { max-width: 8rem; }
 .a1-figure--xs { max-width: 12rem; }
 .a1-figure--sm { max-width: 20rem; }
 .a1-figure--md { max-width: 30rem; }
 .a1-figure--lg { max-width: 40rem; }
+.a1-figure--xl { max-width: 50rem; }
+.a1-figure--xxl { max-width: 60rem; }
 
 /* Center override: transfer the constraint to img + caption instead */
 .a1-figure--align-center { max-width: none; }
+
+.a1-figure--align-center.a1-figure--3xs .a1-figure__img,
+.a1-figure--align-center.a1-figure--3xs .a1-figure__caption { max-width: 5rem; }
+
+.a1-figure--align-center.a1-figure--2xs .a1-figure__img,
+.a1-figure--align-center.a1-figure--2xs .a1-figure__caption { max-width: 8rem; }
 
 .a1-figure--align-center.a1-figure--xs .a1-figure__img,
 .a1-figure--align-center.a1-figure--xs .a1-figure__caption { max-width: 12rem; }
@@ -89,6 +130,37 @@
 
 .a1-figure--align-center.a1-figure--lg .a1-figure__img,
 .a1-figure--align-center.a1-figure--lg .a1-figure__caption { max-width: 40rem; }
+
+.a1-figure--align-center.a1-figure--xl .a1-figure__img,
+.a1-figure--align-center.a1-figure--xl .a1-figure__caption { max-width: 50rem; }
+
+.a1-figure--align-center.a1-figure--xxl .a1-figure__img,
+.a1-figure--align-center.a1-figure--xxl .a1-figure__caption { max-width: 60rem; }
+
+/* ── Aspect ratio ────────────────────────────────────────────────────────── */
+
+/* A fixed aspect-ratio box; the image fills it via object-fit: cover, cropping
+   to the `crop` point. width:100% + height:auto lets aspect-ratio size the box. */
+.a1-figure--ratio-16-9 .a1-figure__img { aspect-ratio: 16 / 9; }
+.a1-figure--ratio-4-3 .a1-figure__img { aspect-ratio: 4 / 3; }
+.a1-figure--ratio-3-2 .a1-figure__img { aspect-ratio: 3 / 2; }
+.a1-figure--ratio-1-1 .a1-figure__img { aspect-ratio: 1 / 1; }
+.a1-figure--ratio-2-3 .a1-figure__img { aspect-ratio: 2 / 3; }
+.a1-figure--ratio-3-4 .a1-figure__img { aspect-ratio: 3 / 4; }
+.a1-figure--ratio-9-16 .a1-figure__img { aspect-ratio: 9 / 16; }
+.a1-figure--ratio-21-9 .a1-figure__img { aspect-ratio: 21 / 9; }
+
+/* ── Crop (object-position) ──────────────────────────────────────────────────
+   Each modifier sets --a1-figure-crop, read by .a1-figure__img's
+   object-position. Default (center) needs no class. */
+.a1-figure--crop-top { --a1-figure-crop: center top; }
+.a1-figure--crop-bottom { --a1-figure-crop: center bottom; }
+.a1-figure--crop-left { --a1-figure-crop: left center; }
+.a1-figure--crop-right { --a1-figure-crop: right center; }
+.a1-figure--crop-top-left { --a1-figure-crop: left top; }
+.a1-figure--crop-top-right { --a1-figure-crop: right top; }
+.a1-figure--crop-bottom-left { --a1-figure-crop: left bottom; }
+.a1-figure--crop-bottom-right { --a1-figure-crop: right bottom; }
 
 /* ── Caption position ──────────────────────────────────────────────────────── */
 

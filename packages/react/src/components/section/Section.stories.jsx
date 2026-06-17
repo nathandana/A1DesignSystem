@@ -65,6 +65,10 @@ const meta = {
       control: "select",
       options: ["subtle", "strong", "accent"],
     },
+    borderSides: {
+      control: "check",
+      options: ["top", "right", "bottom", "left"],
+    },
     radius: {
       control: "select",
       options: ["none", "sm", "md", "lg", "xl", undefined],
@@ -157,6 +161,35 @@ export const BorderProps = {
         </Section>
       ))}
     </>
+  ),
+};
+
+export const BorderSides = {
+  name: "Border sides",
+  render: () => (
+    <div style={{ display: "grid", gap: 24 }}>
+      {[
+        { label: 'borderSides="all" (default)', borderSides: undefined },
+        { label: 'borderSides={["bottom"]}', borderSides: ["bottom"] },
+        { label: 'borderSides={["top", "bottom"]}', borderSides: ["top", "bottom"] },
+        { label: 'borderSides={["left"]}', borderSides: ["left"] },
+      ].map(({ label, borderSides }) => (
+        <Section
+          key={label}
+          padding="md"
+          surface="page"
+          gap="sm"
+          borderSize="md"
+          borderVariant="strong"
+          borderSides={borderSides}
+        >
+          <Heading as="h2" size="lg">{label}</Heading>
+          <Paragraph color="muted">
+            A border can be drawn on any combination of sides; omit the prop (or pass "all") for all four.
+          </Paragraph>
+        </Section>
+      ))}
+    </div>
   ),
 };
 

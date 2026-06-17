@@ -6,11 +6,13 @@ const SIZES = ["sm", "md", "lg"];
 
 export function Accordion({
   label,
+  subtext,
   children,
   open: controlledOpen,
   defaultOpen = false,
   onChange,
   size = "md",
+  divider = false,
   disabled = false,
   className = "",
   ...rest
@@ -46,6 +48,7 @@ export function Accordion({
         "a1-accordion",
         `a1-accordion--${resolvedSize}`,
         open && "a1-accordion--open",
+        divider && "a1-accordion--divider",
         disabled && "a1-accordion--disabled",
         className,
       ].filter(Boolean).join(" ")}
@@ -63,7 +66,12 @@ export function Accordion({
         <span className="a1-accordion__chevron" aria-hidden="true">
           <Icon name="expand_more" />
         </span>
-        <span className="a1-accordion__label">{label}</span>
+        <span className="a1-accordion__text">
+          <span className="a1-accordion__label">{label}</span>
+          {subtext != null && subtext !== "" && (
+            <span className="a1-accordion__subtext">{subtext}</span>
+          )}
+        </span>
       </button>
 
       <div

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import {
-  ChoiceGroup,
   Code,
   NumberField,
   Pagination,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md']
 const SIBLINGS_OPTIONS = [0, 1, 2]
@@ -67,7 +67,7 @@ export function Controls({ config, setConfig }) {
           set({ totalPages: n })
         }}
       />
-      <ChoiceGroup
+      <Choice
         label="Siblings"
         hint="Page buttons shown on each side of the current page."
         size="compact"
@@ -77,7 +77,7 @@ export function Controls({ config, setConfig }) {
         onChange={(siblings) => set({ siblings })}
         options={SIBLINGS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Size"
         size="compact"
         hideIndicator

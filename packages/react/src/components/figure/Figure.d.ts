@@ -13,12 +13,38 @@ export interface FigureProps extends React.HTMLAttributes<HTMLElement> {
   captionSrOnly?: boolean;
   /** Caption alignment. Default: "start" */
   captionPosition?: "start" | "center";
-  /** Border radius on the image. */
+  /** Border radius on the image. Default (no prop) is square, same as "none". */
   radius?: "none" | "sm" | "md" | "lg";
   /** Constrain figure width. */
-  size?: "xs" | "sm" | "md" | "lg";
-  /** Horizontal alignment of the figure. Default: "start" */
-  align?: "start" | "center" | "end";
+  size?: "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+  /** Horizontal alignment of the figure. Default: "none" (normal flow). */
+  align?: "none" | "start" | "center" | "end";
+  /**
+   * Fix the image to a set aspect ratio, cropping to fill via `object-fit: cover`.
+   * Omit for the image's natural ratio.
+   */
+  aspectRatio?: "16:9" | "4:3" | "3:2" | "1:1" | "2:3" | "3:4" | "9:16" | "21:9";
+  /**
+   * Crop focal point used when the image is cropped (i.e. when `aspectRatio` or a
+   * fixed height applies). Maps to `object-position`. Default: "center"
+   */
+  crop?:
+    | "center"
+    | "top"
+    | "bottom"
+    | "left"
+    | "right"
+    | "top-left"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right";
+  /**
+   * Freeform crop: a sub-rectangle of the image to show, expressed as fractions
+   * (0–1) of the natural image — `{ x, y, width, height }` where x/y is the
+   * top-left corner. Applied non-destructively (CSS only); the image is never
+   * modified. Takes precedence over `aspectRatio` / `crop` when set.
+   */
+  cropRect?: { x: number; y: number; width: number; height: number };
   /** Top margin. */
   marginTop?: "sm" | "md" | "lg";
   /** Bottom margin. */

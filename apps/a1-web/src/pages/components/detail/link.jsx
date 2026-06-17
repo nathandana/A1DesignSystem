@@ -1,17 +1,16 @@
 import {
-  ChoiceGroup,
   Code,
   Link,
   Paragraph,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
 const LINK_SIZE_OPTIONS = ['', 'xs', 'sm', 'md', 'lg', 'xl']
 const LINK_WEIGHT_OPTIONS = ['', 'normal', 'medium', 'semibold', 'bold']
-const LINK_ICON_POSITION_OPTIONS = ['start', 'end']
 
 function optionLabel(value) {
   if (value === '') return 'Inherit'
@@ -89,16 +88,8 @@ export function Controls({ config, setConfig, pages }) {
         value={config.href}
         onChange={(href) => setConfig((current) => ({ ...current, href }))}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={LINK_SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ConfigSlider label="Size" values={LINK_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice
         label="Weight"
         size="compact"
         hideIndicator
@@ -107,35 +98,25 @@ export function Controls({ config, setConfig, pages }) {
         onChange={(weight) => setConfig((current) => ({ ...current, weight }))}
         options={LINK_WEIGHT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Icon"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.showIcon ? 'show' : 'hide'}
-        onChange={(value) => setConfig((current) => ({ ...current, showIcon: value === 'show' }))}
+        iconOnly
+        value={!config.showIcon ? 'none' : (config.iconPosition === 'end' ? 'right' : 'left')}
+        onChange={(placement) => setConfig((current) => placement === 'none'
+          ? { ...current, showIcon: false }
+          : { ...current, showIcon: true, iconPosition: placement === 'right' ? 'end' : 'start' })}
         options={[
-          { label: 'Hide', value: 'hide' },
-          { label: 'Show', value: 'show' },
+          { value: 'none', label: 'None' },
+          { value: 'left', label: 'Left', icon: 'align_horizontal_left' },
+          { value: 'right', label: 'Right', icon: 'align_horizontal_right' },
         ]}
       />
       {config.showIcon && (
-        <>
-          <IconSelect
-            label="Icon name"
-            value={config.icon}
-            onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
-          />
-          <ChoiceGroup
-            label="Icon position"
-            size="compact"
-            hideIndicator
-            columns={2}
-            value={config.iconPosition}
-            onChange={(iconPosition) => setConfig((current) => ({ ...current, iconPosition }))}
-            options={LINK_ICON_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-          />
-        </>
+        <IconSelect
+          label="Icon name"
+          value={config.icon}
+          onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
+        />
       )}
     </Stack>
   )

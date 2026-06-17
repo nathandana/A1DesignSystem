@@ -14,17 +14,23 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Code,
-  IconButton,
   MessageBadge,
   Paragraph,
   Section,
-  SegmentedControl,
   SelectField,
   Snackbar,
   Stack,
+  Toolbar,
+  ToolbarButton,
+  ToolbarDivider,
+  ToolbarGroup,
+  TopHeader,
 } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
+import { buildProjectNav, type ProjectNavItem } from '../projects/projectNav';
+import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
+import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { isMac } from '../editor/shortcuts.ts';
@@ -35,7 +41,133 @@ import { EDITOR_PREVIEW_SESSION_KEY, EDITOR_PREVIEW_PAGES_MAP_KEY, EDITOR_PREVIE
 import { readStored, writeStored } from '../editor/storage';
 import type { CatalogEntry } from '../editor/componentCatalog';
 import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatalog';
+import { definitionToJsx } from '../editor/definitionToJsx';
 import type { ComponentNode, ComponentProps, ComponentType, PageDefinition } from '../editor/pageTypes';
+
+// ── Copy pattern (style props) ────────────────────────────────────────────────
+
+const PATTERN_KEY = 'a1-editor-pattern-clipboard';
+
+// Props that are content / identity / data / state rather than visual style —
+// excluded when copying a "pattern" so only the look-and-feel travels.
+const NON_PATTERN_PROPS = new Set<string>([
+  'id', 'children', 'content',
+  'src', 'alt', 'caption', 'href', 'label', 'text',
+  'items', 'options', 'sections',
+  'icon', 'heroIcon', 'placeholder', 'hint',
+  'count', 'max', 'min', 'steps', 'currentStep', 'totalPages', 'value', 'defaultValue',
+  'prefix', 'unit', 'mask', 'name',
+  'checked', 'open', 'defaultOpen', 'active', 'indeterminate',
+  'disabled', 'readOnly', 'required', 'loading',
+]);
+
+/** The set of prop names a component type accepts, derived from its configurator
+ *  bridges. Returns null when the type has no configurator (not pasteable). */
+function patternTargetKeys(type: string, props: ComponentProps | undefined): Set<string> | null {
+  const toConfig = (propsToConfig as Record<string, (p: unknown) => unknown>)[type];
+  const toNode = (configToNodeUpdate as Record<string, (c: unknown) => { props?: Record<string, unknown> }>)[type];
+  if (!toConfig || !toNode) return null;
+  try {
+    const out = toNode(toConfig(props ?? {}));
+    return new Set(Object.keys(out?.props ?? {}));
+  } catch {
+    return null;
+  }
+}
+
+// Per type: `keys` is the full style-prop surface for that component; `props`
+// holds only the non-default values. A key in `keys` but not in `props` is at its
+// default, and on paste is cleared from the target so it falls back to default.
+type PatternStyle = { keys: string[]; props: Record<string, unknown> };
+type PatternStyles = Record<string, PatternStyle>;
+
+/** Resolve a node's effective style via the configurator bridges, so defaults
+ *  (e.g. a Badge's implicit `subtle: false`) are captured even when absent from
+ *  the raw JSON. Returns null for types without a configurator. */
+function nodeStyleEntry(node: ComponentNode): PatternStyle | null {
+  const toConfig = (propsToConfig as Record<string, (p: unknown) => unknown>)[node.type];
+  const toNode = (configToNodeUpdate as Record<string, (c: unknown) => { props?: Record<string, unknown> }>)[node.type];
+  if (!toConfig || !toNode) return null;
+  let normalized: Record<string, unknown>;
+  try {
+    normalized = toNode(toConfig(node.props ?? {}))?.props ?? {};
+  } catch {
+    return null;
+  }
+  const keys: string[] = [];
+  const props: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(normalized)) {
+    if (NON_PATTERN_PROPS.has(k)) continue; // skip content/identity/data/state
+    keys.push(k);
+    if (v !== undefined) props[k] = v; // present + defined → a non-default value
+  }
+  return keys.length ? { keys, props } : null;
+}
+
+/** Build a `type → style` map from a node and all its descendants. First
+ *  occurrence of a type/key wins (the topmost element defines its style). */
+function collectPatternStyles(node: ComponentNode): PatternStyles {
+  const styles: PatternStyles = {};
+  const visit = (n: ComponentNode) => {
+    const entry = nodeStyleEntry(n);
+    if (entry) {
+      const existing = styles[n.type];
+      if (!existing) {
+        styles[n.type] = { keys: [...entry.keys], props: { ...entry.props } };
+      } else {
+        for (const k of entry.keys) if (!existing.keys.includes(k)) existing.keys.push(k);
+        for (const [k, v] of Object.entries(entry.props)) if (!(k in existing.props)) existing.props[k] = v;
+      }
+    }
+    n.children?.forEach(visit);
+  };
+  visit(node);
+  return styles;
+}
+
+/** Apply a `type → style` map across a node and its descendants: every element
+ *  whose type is in the map is restyled to the source's effective look — setting
+ *  its non-default values and clearing the keys the source left at default.
+ *  Returns the new node and how many elements changed. */
+function applyPatternToSubtree(node: ComponentNode, styles: PatternStyles): { node: ComponentNode; count: number } {
+  let count = 0;
+  let props = node.props;
+  const entry = styles[node.type];
+  if (entry) {
+    const validKeys = patternTargetKeys(node.type, node.props);
+    if (validKeys) {
+      const next: Record<string, unknown> = { ...(node.props ?? {}) };
+      let changed = false;
+      for (const k of entry.keys) {
+        if (!validKeys.has(k)) continue;
+        if (k in entry.props) {
+          if (next[k] !== entry.props[k]) { next[k] = entry.props[k]; changed = true; }
+        } else if (k in next) {
+          delete next[k]; changed = true; // source had this at default → reset target
+        }
+      }
+      if (changed) { props = next as ComponentProps; count += 1; }
+    }
+  }
+  let children = node.children;
+  if (children?.length) {
+    children = children.map((c) => {
+      const r = applyPatternToSubtree(c, styles);
+      count += r.count;
+      return r.node;
+    });
+  }
+  return { node: { ...node, props, ...(children ? { children } : {}) }, count };
+}
+
+/** Replace the node with `id` (anywhere in the tree) with `newNode`. */
+function replaceNodeInList(nodes: ComponentNode[], id: string, newNode: ComponentNode): ComponentNode[] {
+  return nodes.map((n) => {
+    if (n.id === id) return newNode;
+    if (n.children?.length) return { ...n, children: replaceNodeInList(n.children, id, newNode) };
+    return n;
+  });
+}
 
 type ParseResult =
   | { ok: true; value: PageDefinition }
@@ -343,6 +475,13 @@ export function EditorPage({
   definition = editorExamplePage,
   exampleId = 'default',
   pages = [],
+  projectId = null,
+  projectName,
+  projectPages = [],
+  onNavigateToPage,
+  pageLevel,
+  availableLevels,
+  onSetPageLevel,
   onDuplicatePage,
   onDeletePage,
   selectedNodeId = null,
@@ -363,6 +502,13 @@ export function EditorPage({
   definition?: PageDefinition;
   exampleId?: string;
   pages?: { id: string; label: string }[];
+  projectId?: string | null;
+  projectName?: string;
+  projectPages?: ProjectPage[];
+  onNavigateToPage?: (id: string) => void;
+  pageLevel?: number;
+  availableLevels?: number[];
+  onSetPageLevel?: (level: number) => void;
   onDuplicatePage?: () => void;
   onDeletePage?: () => void;
   selectedNodeId?: string | null;
@@ -375,7 +521,7 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack'; nodeId: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern'; nodeId: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
@@ -402,10 +548,13 @@ export function EditorPage({
   const history = useEditorHistory(activeVersion?.json ?? fallbackJson, HISTORY_KEY(exampleId));
 
   const [view, setView] = useState('edit');
+  // "Code snippet" view sub-format: editable JSON, or read-only generated React.
+  const [codeFormat, setCodeFormat] = useState<'json' | 'react'>('json');
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [notice, setNotice] = useState(''); // transient one-line snackbar (copy/paste pattern)
 
   // Debounce timer ref for text-input style changes.
   const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -464,6 +613,8 @@ export function EditorPage({
     handleUngroup:        (_id: string) => {},
     handleDuplicateNode:  (_id: string) => {},
     handleNodeDelete:     (_id: string) => {},
+    handleCopyPattern:    () => {},
+    handlePastePattern:   () => {},
     setShortcutsOpen:     (_open: boolean) => {},
   });
   // Updated every render so the effect always sees current values without re-registering.
@@ -503,6 +654,15 @@ export function EditorPage({
         e.preventDefault();
         const { selectedNodeId: id, handleUngroup } = editorActionsRef.current;
         if (id) handleUngroup(id);
+      } else if (mod && e.altKey && e.code === 'KeyC') {
+        // ⌘⌥C / Ctrl+Alt+C — match e.code, not e.key (Option composes letters on macOS).
+        if (isText) return;
+        e.preventDefault();
+        editorActionsRef.current.handleCopyPattern();
+      } else if (mod && e.altKey && e.code === 'KeyV') {
+        if (isText) return;
+        e.preventDefault();
+        editorActionsRef.current.handlePastePattern();
       } else if (mod && e.key.toLowerCase() === 'd') {
         if (isText) return;
         e.preventDefault();
@@ -527,6 +687,12 @@ export function EditorPage({
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
   }, [history.workingJson]);
+
+  // Read-only React (JSX) rendition of the current definition.
+  const reactCode = useMemo(
+    () => (parsedDefinition.ok ? definitionToJsx(parsedDefinition.value) : '// Fix the JSON to see the React output.'),
+    [parsedDefinition],
+  );
 
   // Notify parent shell of the current parsed definition so the sidebar tree stays in sync.
   useEffect(() => {
@@ -573,6 +739,8 @@ export function EditorPage({
     else if (pendingAction.type === 'ungroup') handleUngroup(pendingAction.nodeId);
     else if (pendingAction.type === 'duplicate') handleDuplicateNode(pendingAction.nodeId);
     else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeId);
+    else if (pendingAction.type === 'copy-pattern') handleCopyPattern(pendingAction.nodeId);
+    else if (pendingAction.type === 'paste-pattern') handlePastePattern(pendingAction.nodeId);
     onPendingActionDone?.();
   }, [pendingAction]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -618,12 +786,16 @@ export function EditorPage({
     if (v !== 'edit') onSelectNode?.(null);
   }
 
-  function handlePageMetadataChange(name: string, description: string) {
+  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string }) {
     if (!parsedDefinition.ok) return;
-    const newJson = JSON.stringify(
-      { ...parsedDefinition.value, page: { ...parsedDefinition.value.page, name, description: description || undefined } },
-      null, 2,
-    );
+    const page = parsedDefinition.value.page;
+    const newPage = {
+      ...page,
+      ...(patch.name !== undefined ? { name: patch.name } : {}),
+      ...(patch.description !== undefined ? { description: patch.description || undefined } : {}),
+      ...(patch.icon !== undefined ? { icon: patch.icon || undefined } : {}),
+    };
+    const newJson = JSON.stringify({ ...parsedDefinition.value, page: newPage }, null, 2);
     history.setWorking(newJson);
     commitDebounced(newJson, 'Updated page settings');
   }
@@ -723,6 +895,54 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), `Grouped ${nodeType} as Stack`);
   }
 
+  // ── Copy pattern: copy a node's style props, paste matching ones elsewhere ────
+
+  function findNodeInDefinition(nodeId: string): ComponentNode | null {
+    if (!parsedDefinition.ok) return null;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const found = findNodeById(region.nodes, nodeId);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function handleCopyPattern(nodeId: string | null = selectedNodeId) {
+    if (!parsedDefinition.ok) return;
+    if (!nodeId) { setNotice('Select an element to copy its style'); return; }
+    const node = findNodeInDefinition(nodeId);
+    if (!node) return;
+    const styles = collectPatternStyles(node);
+    const typeCount = Object.keys(styles).length;
+    if (typeCount === 0) { setNotice(`${node.type} can’t be copied as a pattern`); return; }
+    writeStored(PATTERN_KEY, JSON.stringify({ root: node.type, styles }));
+    setNotice(`Copied pattern from ${node.type}${typeCount > 1 ? ` (${typeCount} element types)` : ''}`);
+  }
+
+  function handlePastePattern(nodeId: string | null = selectedNodeId) {
+    if (!parsedDefinition.ok) return;
+    if (!nodeId) { setNotice('Select an element to paste a pattern onto'); return; }
+    let pattern: { root?: string; styles?: PatternStyles } | null = null;
+    try { pattern = JSON.parse(readStored(PATTERN_KEY) ?? 'null'); } catch { pattern = null; }
+    if (!pattern || !pattern.styles || !Object.keys(pattern.styles).length) {
+      setNotice(`Copy a pattern first (${isMac ? '⌘⌥C' : 'Ctrl+Alt+C'})`);
+      return;
+    }
+    const node = findNodeInDefinition(nodeId);
+    if (!node) return;
+    const { node: newNode, count } = applyPatternToSubtree(node, pattern.styles);
+    if (count === 0) { setNotice(`No matching elements to paste onto ${node.type}`); return; }
+    const regions = parsedDefinition.value.page.layout.regions.map((r) => ({
+      ...r,
+      nodes: replaceNodeInList(r.nodes, nodeId, newNode),
+    }));
+    const newDef = {
+      ...parsedDefinition.value,
+      page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions } },
+    };
+    history.commit(JSON.stringify(newDef, null, 2), `Pasted pattern to ${node.type}`);
+    setNotice(`Applied pattern to ${count} ${count === 1 ? 'element' : 'elements'}`);
+  }
+
   function getNodeInfoFn(nodeId: string): { isFirst: boolean; isLast: boolean; hasChildren: boolean } {
     if (!parsedDefinition.ok) return { isFirst: false, isLast: false, hasChildren: false };
     for (const region of parsedDefinition.value.page.layout.regions) {
@@ -800,6 +1020,8 @@ export function EditorPage({
   editorActionsRef.current.handleUngroup       = handleUngroup;
   editorActionsRef.current.handleDuplicateNode = handleDuplicateNode;
   editorActionsRef.current.handleNodeDelete    = handleNodeDelete;
+  editorActionsRef.current.handleCopyPattern   = handleCopyPattern;
+  editorActionsRef.current.handlePastePattern  = handlePastePattern;
   editorActionsRef.current.setShortcutsOpen    = setShortcutsOpen;
 
   function handleCodeChange(val: string) {
@@ -829,8 +1051,10 @@ export function EditorPage({
     writeStored(EDITOR_PREVIEW_PAGES_MAP_KEY, JSON.stringify({ [exampleId]: history.workingJson }));
 
     // Include the screen id so the prototype opens at — and has a shareable URL
-    // for — the current page.
-    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(exampleId)}`;
+    // for — the current page, plus the project id so the prototype can build the
+    // generated navigation from the project's page hierarchy.
+    const projectParam = projectId ? `&project=${encodeURIComponent(projectId)}` : '';
+    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(exampleId)}${projectParam}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -901,12 +1125,35 @@ export function EditorPage({
     try { return JSON.parse(baseVersion.json); } catch { return null; }
   }, [baseVersion]);
 
+  // Auto-generated project navigation, rendered above the page in every view so
+  // the page behaves like a real multi-page site. Clicking a nav item switches
+  // the open page; the href keeps middle-click / open-in-new-tab working.
+  const projectNavItems: ProjectNavItem[] = projectPages.length
+    ? buildProjectNav(projectPages, {
+        activePageId: exampleId,
+        onNavigate: (id) => onNavigateToPage?.(id),
+        hrefFor: (id) =>
+          `/?page=editor${projectId ? `&project=${encodeURIComponent(projectId)}` : ''}&doc=${encodeURIComponent(id)}`,
+      })
+    : [];
+
+  const generatedHeader = projectNavItems.length ? (
+    <TopHeader
+      className="a1-web-generated-header"
+      logo={projectName ? <span className="a1-web-logo">{projectName}</span> : undefined}
+      navItems={projectNavItems}
+    />
+  ) : null;
+
   const asidePanel = asideNode
     ? createPortal(
         <EditorAsidePanel
           selectedNodeId={selectedNodeId}
           definition={parsedDefinition.ok ? parsedDefinition.value : null}
           pages={pages}
+          pageLevel={pageLevel}
+          availableLevels={availableLevels}
+          onSetPageLevel={onSetPageLevel}
           onNodePropsChange={handleNodePropsChange}
           onPageMetadataChange={handlePageMetadataChange}
           historyEntries={history.entries}
@@ -934,65 +1181,80 @@ export function EditorPage({
 
   return (
     <>
-      <Section padding="xs" surface="raised">
+      <Section padding="xs" surface="panel" borderSize="xs"
+  borderSides={['bottom']}>
         <Stack direction="row" align="center" justify="between">
-          <Stack direction="row" align="center" gap="sm">
-            <SegmentedControl
-              value={view}
-              onChange={handleViewChange}
+          <Toolbar aria-label="Editor">
+            <ToolbarGroup
               aria-label="Editor view"
+              showLabels
+              value={view}
+              onChange={(v) => handleViewChange(v as string)}
               options={[
                 { value: 'edit', label: 'Edit', icon: 'edit' },
                 { value: 'preview', label: 'Preview', icon: 'visibility' },
                 { value: 'json', label: 'Code snippet', icon: 'data_object' },
               ]}
             />
-            {versions.length > 1 && (
-              <div className="a1-web-version-switcher">
-                <SelectField
-                  size="compact"
-                  aria-label="Active version"
-                  value={activeVersionId}
-                  onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
-                >
-                  {versions.map((v) => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </SelectField>
-              </div>
+            {view === 'json' && (
+              <>
+                <ToolbarDivider />
+                <ToolbarGroup
+                  aria-label="Code format"
+                  showLabels
+                  value={codeFormat}
+                  onChange={(v) => setCodeFormat(v as 'json' | 'react')}
+                  options={[
+                    { value: 'json', label: 'JSON', icon: 'data_object' },
+                    { value: 'react', label: 'React', icon: 'code' },
+                  ]}
+                />
+              </>
             )}
-            {isDirty && (
-              <MessageBadge status="info" size="sm" subtle icon={null}>
-                Unsaved changes
-              </MessageBadge>
-            )}
-          </Stack>
-          <Stack direction="row" align="center" gap="xs">
-            <IconButton
+            <ToolbarDivider />
+            <ToolbarButton
               icon="undo"
               label="Undo"
               disabled={!history.canUndo}
               onClick={history.undo}
             />
-            <IconButton
+            <ToolbarButton
               icon="redo"
               label="Redo"
               disabled={!history.canRedo}
               onClick={history.redo}
             />
-            <IconButton
+            <ToolbarDivider />
+            <ToolbarButton
               icon="keyboard"
               label="Keyboard shortcuts"
               onClick={() => setShortcutsOpen(true)}
             />
-            <IconButton icon="open_in_new" variant="tertiary" onClick={handleExpandPreview} label='Launch Prototype'>
-              
-            </IconButton>
-          </Stack>
+            <ToolbarButton
+              icon="open_in_new"
+              label="Launch prototype"
+              onClick={handleExpandPreview}
+            />
+          </Toolbar>
+          {versions.length > 1 && (
+            <div className="a1-web-version-switcher">
+              <SelectField
+                size="compact"
+                aria-label="Active version"
+                value={activeVersionId}
+                onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
+              >
+                {versions.map((v) => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </SelectField>
+            </div>
+          )}
         </Stack>
       </Section>
 
       <Section padding="none">
+        {view !== 'json' && generatedHeader}
         {view === 'edit' && (
           parsedDefinition.ok ? (
             <>
@@ -1008,6 +1270,8 @@ export function EditorPage({
                 onDuplicateNode={handleDuplicateNode}
                 onGroupAsStack={handleGroupAsStack}
                 onConvertNode={handleConvertNode}
+                onCopyPattern={handleCopyPattern}
+                onPastePattern={handlePastePattern}
                 getNodeProps={getNodeProps}
                 getNodeInfo={getNodeInfoFn}
                 onRequestAddChild={handleRequestAddChild}
@@ -1046,14 +1310,27 @@ export function EditorPage({
 
         {view === 'json' && (
           <Stack direction="column" gap="sm">
-            <Paragraph size="sm" color="muted">
-              Edit the JSON below — the live preview updates on every change.
-              Component <Code variant="inline">type</Code> names must match A1
-              React export names exactly.
-            </Paragraph>
-            <Code variant="block" editable wrapping copyCode onChangeValue={handleCodeChange}>
-              {history.workingJson}
-            </Code>
+            {codeFormat === 'json' ? (
+              <>
+                <Paragraph size="sm" color="muted">
+                  Edit the JSON below — the live preview updates on every change.
+                  Component <Code variant="inline">type</Code> names must match A1
+                  React export names exactly.
+                </Paragraph>
+                <Code variant="block" editable wrapping copyCode onChangeValue={handleCodeChange}>
+                  {history.workingJson}
+                </Code>
+              </>
+            ) : (
+              <>
+                <Paragraph size="sm" color="muted">
+                  Read-only React (JSX) generated from the page definition. Edit via the JSON tab or the canvas.
+                </Paragraph>
+                <Code variant="block" wrapping copyCode>
+                  {reactCode}
+                </Code>
+              </>
+            )}
           </Stack>
         )}
       </Section>
@@ -1067,6 +1344,10 @@ export function EditorPage({
         onAction={() => { history.undo(); setSnackbarOpen(false); }}
       >
         {deletedLabel} deleted
+      </Snackbar>
+
+      <Snackbar open={!!notice} onClose={() => setNotice('')}>
+        {notice}
       </Snackbar>
 
       <EditorShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />

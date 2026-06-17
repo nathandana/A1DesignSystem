@@ -1,19 +1,16 @@
 import {
-  ChoiceGroup,
   Code,
   MessageBadge,
   Spacer,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl']
 
-function optionLabel(value) {
-  return value.toUpperCase()
-}
-
 function buildSpacerSnippet(config) {
-  return `<Spacer${config.size !== 'md' ? ` size="${config.size}"` : ''} />`
+  const size = responsiveProp('size', config.size, 'md')
+  return `<Spacer${size ? ` ${size}` : ''} />`
 }
 
 export function getDefaultConfig() {
@@ -32,15 +29,9 @@ export function Preview({ config }) {
 
 export function Controls({ config, setConfig }) {
   return (
-    <ChoiceGroup
-      label="Size"
-      size="compact"
-      hideIndicator
-      columns={3}
-      value={config.size}
-      onChange={(size) => setConfig((current) => ({ ...current, size }))}
-      options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-    />
+    <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+      {(val, setVal) => <ConfigSlider values={SIZE_OPTIONS} value={val} onChange={setVal} />}
+    </ResponsiveControl>
   )
 }
 

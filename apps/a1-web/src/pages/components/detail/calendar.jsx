@@ -1,10 +1,9 @@
 import {
   Calendar,
-  ChoiceGroup,
   Code,
   Stack,
-  Switch,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, FieldState } from './configKit.jsx'
 
 function propBoolean(name, value, defaultValue) {
   if (value === defaultValue) return null
@@ -53,9 +52,10 @@ export function Preview({ config }) {
 }
 
 export function Controls({ config, setConfig }) {
+  const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -68,7 +68,7 @@ export function Controls({ config, setConfig }) {
         ]}
       />
       {config.variant === 'scroll' && (
-        <ChoiceGroup
+        <Choice
           label="Months"
           size="compact"
           hideIndicator
@@ -82,26 +82,17 @@ export function Controls({ config, setConfig }) {
           ]}
         />
       )}
-      <Switch
-        label="Highlight today"
-        size="compact"
-        checked={config.highlightToday}
-        onChange={(highlightToday) => setConfig((current) => ({ ...current, highlightToday }))}
+      <FieldState
+        label="Options"
+        items={[
+          { key: 'highlightToday', label: 'Highlight today', icon: 'today', value: config.highlightToday },
+          { key: 'dimPast', label: 'Dim past', icon: 'history', value: config.dimPast },
+          ...(config.variant === 'paginated'
+            ? [{ key: 'todayButton', label: 'Today button', icon: 'calendar_today', value: config.todayButton }]
+            : []),
+        ]}
+        onChange={set}
       />
-      <Switch
-        label="Dim past"
-        size="compact"
-        checked={config.dimPast}
-        onChange={(dimPast) => setConfig((current) => ({ ...current, dimPast }))}
-      />
-      {config.variant === 'paginated' && (
-        <Switch
-          label="Today button"
-          size="compact"
-          checked={config.todayButton}
-          onChange={(todayButton) => setConfig((current) => ({ ...current, todayButton }))}
-        />
-      )}
     </Stack>
   )
 }

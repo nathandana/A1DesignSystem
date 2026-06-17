@@ -1,20 +1,23 @@
 import {
   Button,
-  ChoiceGroup,
   Code,
   Snackbar,
   Stack,
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, FieldState } from './configKit.jsx'
 import { useEffect, useState } from 'react'
-import { Toggle } from './Toggle.jsx'
 
-const POSITION_OPTIONS = ['bottom', 'bottom-left', 'bottom-right', 'top', 'top-left', 'top-right']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1).replaceAll('-', ' ')
-}
+// A 3×2 grid of directional arrows matching the on-screen corners/edges.
+const POSITION_OPTIONS = [
+  { value: 'top-left', label: 'Top left', icon: 'north_west' },
+  { value: 'top', label: 'Top', icon: 'north' },
+  { value: 'top-right', label: 'Top right', icon: 'north_east' },
+  { value: 'bottom-left', label: 'Bottom left', icon: 'south_west' },
+  { value: 'bottom', label: 'Bottom', icon: 'south' },
+  { value: 'bottom-right', label: 'Bottom right', icon: 'south_east' },
+]
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -95,16 +98,22 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Position"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
+        columns={3}
         value={config.position}
         onChange={(position) => set({ position })}
-        options={POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={POSITION_OPTIONS}
       />
-      <Toggle label="Action" value={config.action} onChange={(action) => set({ action })} />
+      <FieldState
+        label="Options"
+        items={[
+          { key: 'action', label: 'Action', icon: 'touch_app', value: config.action },
+          { key: 'dismissible', label: 'Dismissible', icon: 'close', value: config.dismissible },
+        ]}
+        onChange={set}
+      />
       {config.action && (
         <TextField
           label="Action label"
@@ -113,11 +122,6 @@ export function Controls({ config, setConfig }) {
           onChange={(event) => set({ actionLabel: event.target.value })}
         />
       )}
-      <Toggle
-        label="Dismissible"
-        value={config.dismissible}
-        onChange={(dismissible) => set({ dismissible })}
-      />
     </Stack>
   )
 }
