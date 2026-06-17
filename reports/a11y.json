@@ -1,0 +1,14 @@
+{
+  "generated": "2026-06-08",
+  "status": "pass",
+  "totalScanned": 355,
+  "totalViolations": 0,
+  "storiesAffected": 0,
+  "counts": {
+    "critical": 0,
+    "serious": 0,
+    "moderate": 0,
+    "minor": 0
+  },
+  "stories": []
+}
