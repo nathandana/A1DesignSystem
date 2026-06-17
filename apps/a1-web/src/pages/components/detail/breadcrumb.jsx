@@ -2,11 +2,11 @@ import {
   Accordion,
   Breadcrumb,
   Button,
-  ChoiceGroup,
   Code,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const ITEM_BEHAVIOR_OPTIONS = ['link', 'button', 'static']
 
@@ -185,7 +185,7 @@ export function Controls({ config, setConfig }) {
                 />
 
                 {!isLast && (
-                  <ChoiceGroup
+                  <Choice
                     label="Behavior"
                     size="compact"
                     hideIndicator

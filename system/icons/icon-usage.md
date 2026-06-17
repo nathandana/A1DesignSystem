@@ -117,3 +117,74 @@ Theme-specific products may override these choices later with a theme-local icon
 These were found during the repo scan but are not yet system-standardized.
 
 - `open_in_new` is used for both external links and dialog/modal examples. This is acceptable for now.
+
+## Component Icons
+
+Every A1 component has **one canonical icon** used wherever the component is represented with an icon — the component browser, the editor **Add** panel, the layers tree, etc. The source of truth is `componentCategories[].components[].icon` in `apps/a1-web/src/pages/components/data.js` (also exported as `COMPONENT_ICONS`). When a component is added, renamed, or shown with an icon, use this icon and update both the map here and in `data.js`.
+
+| Category | Component | Icon |
+| --- | --- | --- |
+| Layout & Display | Section | `crop_free` |
+| Layout & Display | Card | `article` |
+| Layout & Display | Stack | `view_agenda` |
+| Layout & Display | Grid | `grid_view` |
+| Layout & Display | Bleed | `open_in_full` |
+| Layout & Display | Inset | `padding` |
+| Layout & Display | Spacer | `space_bar` |
+| Layout & Display | Page Layout | `space_dashboard` |
+| Layout & Display | Button Container | `view_week` |
+| Typography | Heading | `title` |
+| Typography | Paragraph | `notes` |
+| Typography | Blockquote | `format_quote` |
+| Typography | List | `format_list_bulleted` |
+| Typography | Code | `code` |
+| Typography | Divider | `horizontal_rule` |
+| Typography | Inline | `format_size` |
+| Actions & Controls | Button | `smart_button` |
+| Actions & Controls | Icon Button | `touch_app` |
+| Actions & Controls | Switch | `toggle_on` |
+| Actions & Controls | Segmented Control | `splitscreen` |
+| Actions & Controls | Slider | `tune` |
+| Actions & Controls | Toolbar | `build` |
+| Actions & Controls | Sticky Actions | `vertical_align_bottom` |
+| Actions & Controls | Accordion | `unfold_more` |
+| Actions & Controls | Tabs | `tab` |
+| Actions & Controls | Link | `link` |
+| Navigation | Breadcrumb | `chevron_right` |
+| Navigation | Side Nav | `view_sidebar` |
+| Navigation | Top Header | `web_asset` |
+| Navigation | Bottom Drawer | `call_to_action` |
+| Navigation | Page Nav | `toc` |
+| Navigation | Tree Menu | `account_tree` |
+| Inputs | Text Field | `text_fields` |
+| Inputs | Number Field | `pin` |
+| Inputs | Date Field | `event` |
+| Inputs | Time Field | `schedule` |
+| Inputs | Phone Field | `phone` |
+| Inputs | Zip Field | `local_post_office` |
+| Inputs | Credit Card Field | `credit_card` |
+| Inputs | Textarea | `subject` |
+| Inputs | Select | `arrow_drop_down_circle` |
+| Inputs | Checkbox Group | `check_box` |
+| Inputs | Radio Group | `radio_button_checked` |
+| Inputs | Choice Group | `dashboard_customize` |
+| Inputs | Fieldset | `check_box_outline_blank` |
+| Inputs | Field Row | `table_rows` |
+| Inputs | Inline Editable | `edit` |
+| Feedback & Messaging | Banner | `view_day` |
+| Feedback & Messaging | Badge | `label` |
+| Feedback & Messaging | Notification | `notifications` |
+| Feedback & Messaging | Snackbar | `notification_important` |
+| Feedback & Messaging | Empty State | `inbox` |
+| Feedback & Messaging | Status Bar | `linear_scale` |
+| Feedback & Messaging | Circular Progress | `donut_large` |
+| Feedback & Messaging | Step Tracker | `more_horiz` |
+| Media and iconography | Figure | `image` |
+| Media and iconography | Icon | `interests` |
+| Overlay | Dialog | `picture_in_picture` |
+| Overlay | Menu | `menu` |
+| Overlay | Context Menu | `more_vert` |
+| Data | Data Table | `table_chart` |
+| Data | Definition List | `format_list_numbered` |
+| Data | Pagination | `last_page` |
+| Data | Calendar | `calendar_month` |

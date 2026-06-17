@@ -21,11 +21,19 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["xs", "sm", "md", "lg", undefined],
+      options: ["3xs", "2xs", "xs", "sm", "md", "lg", "xl", "xxl", undefined],
     },
     align: {
       control: "inline-radio",
-      options: ["start", "center", "end"],
+      options: ["none", "start", "center", "end"],
+    },
+    aspectRatio: {
+      control: "select",
+      options: [undefined, "16:9", "4:3", "3:2", "1:1", "2:3", "3:4", "9:16", "21:9"],
+    },
+    crop: {
+      control: "select",
+      options: ["center", "top", "bottom", "left", "right", "top-left", "top-right", "bottom-left", "bottom-right"],
     },
   },
 };
@@ -92,7 +100,7 @@ export const SizeScale = {
   name: "Size scale",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      {["xs", "sm", "md", "lg"].map((s) => (
+      {["3xs", "2xs", "xs", "sm", "md", "lg", "xl", "xxl"].map((s) => (
         <Figure
           key={s}
           src={SAMPLE_IMG}
@@ -101,6 +109,51 @@ export const SizeScale = {
           size={s}
         />
       ))}
+    </div>
+  ),
+};
+
+export const AspectRatios = {
+  name: "Aspect ratios",
+  render: () => (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, maxWidth: 640 }}>
+      <Figure src={SAMPLE_IMG} alt="Mountain landscape" caption={'aspectRatio="16:9"'} aspectRatio="16:9" radius="md" />
+      <Figure src={SAMPLE_PORTRAIT} alt="Office workspace" caption={'aspectRatio="1:1"'} aspectRatio="1:1" radius="md" />
+    </div>
+  ),
+};
+
+export const CropPoints = {
+  name: "Crop points",
+  render: () => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, maxWidth: 640 }}>
+      {["top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom", "bottom-right"].map((c) => (
+        <Figure
+          key={c}
+          src={SAMPLE_PORTRAIT}
+          alt="Office workspace"
+          caption={`crop="${c}"`}
+          aspectRatio="1:1"
+          crop={c}
+          radius="sm"
+        />
+      ))}
+    </div>
+  ),
+};
+
+export const FreeformCrop = {
+  name: "Freeform crop (cropRect)",
+  render: () => (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, maxWidth: 640 }}>
+      <Figure src={SAMPLE_IMG} alt="Mountain landscape" caption="Full image" radius="md" />
+      <Figure
+        src={SAMPLE_IMG}
+        alt="Mountain landscape, cropped"
+        caption="cropRect — centre detail"
+        radius="md"
+        cropRect={{ x: 0.3, y: 0.25, width: 0.4, height: 0.4 }}
+      />
     </div>
   ),
 };

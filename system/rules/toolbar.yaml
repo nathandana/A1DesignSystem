@@ -1,0 +1,11 @@
+component: Toolbar
+rules:
+  - id: toolbar-surface-contrast
+    components:
+      - Toolbar
+    requirement: Place a Toolbar on a panel or page surface only — never on a raised surface.
+    do: Use a Toolbar on the page background or a panel surface (e.g. the configurator/editor side panel), where its raised background reads clearly against the surface beneath it.
+    dont: Place a Toolbar on a raised surface — its bar uses the raised surface token, so it would have no contrast against a raised background and the toolbar would visually disappear.
+    applies_to:
+      - visual-design
+      - contrast

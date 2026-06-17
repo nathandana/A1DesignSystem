@@ -71,7 +71,14 @@ export type ComponentType =
   | 'TopHeader'
   | 'BottomDrawer'
   | 'StickyActions'
-  | 'Accordion';
+  | 'Accordion'
+  | 'Slider'
+  | 'Toolbar'
+  | 'Tabs'
+  | 'FieldRow'
+  | 'PageNav'
+  | 'TreeMenu'
+  | 'DataTable';
 
 /**
  * A value that may vary by breakpoint. Mirrors A1's responsive object syntax
@@ -207,6 +214,8 @@ export interface PageMetadata {
   name: string;
   /** Short description of the page's purpose. */
   description?: string;
+  /** Material Symbols icon name used for the page in project navigation. */
+  icon?: string;
 }
 
 /**

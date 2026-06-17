@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   Paragraph,
   Stack,
   TextareaField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const PARAGRAPH_ELEMENT_OPTIONS = ['p', 'span', 'div']
 const PARAGRAPH_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
@@ -32,7 +32,7 @@ function buildParagraphSnippet(config) {
   const textWrap = config.textWrap ? 'balance' : undefined
   const props = [
     propLine('as', config.as, 'p'),
-    propLine('size', config.size, 'md'),
+    config.size && typeof config.size === 'object' ? `  ${responsiveProp('size', config.size)}` : propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
     propLine('align', config.align, 'left'),
     propLine('textWrap', textWrap, undefined),
@@ -78,7 +78,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="As"
         size="compact"
         hideIndicator
@@ -87,16 +87,10 @@ export function Controls({ config, setConfig }) {
         onChange={(as) => setConfig((current) => ({ ...current, as }))}
         options={PARAGRAPH_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={PARAGRAPH_SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+        {(val, setVal) => <ConfigSlider values={PARAGRAPH_SIZE_OPTIONS} value={val} onChange={setVal} />}
+      </ResponsiveControl>
+      <Choice
         label="Color"
         size="compact"
         hideIndicator
@@ -108,7 +102,7 @@ export function Controls({ config, setConfig }) {
           { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'   },
         ]}
       />
-      <ChoiceGroup
+      <Choice
         label="Align"
         size="compact"
         hideIndicator
@@ -122,7 +116,7 @@ export function Controls({ config, setConfig }) {
           { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
         ]}
       />
-      <ChoiceGroup
+      <Choice
         label="Text wrap"
         size="compact"
         hideIndicator

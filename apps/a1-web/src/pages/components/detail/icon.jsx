@@ -1,19 +1,14 @@
 import {
-  ChoiceGroup,
   Code,
   Icon,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['', 'xs', 'sm', 'lg', 'xl', 'jumbo']
 const COLOR_OPTIONS = ['', 'muted', 'accent', 'inverse', 'success', 'error', 'warn', 'info']
-
-function optionLabel(value) {
-  if (!value) return 'Inherit'
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function propString(name, value, defaultValue) {
   if (value === undefined || value === null || value === defaultValue || value === '') return null
@@ -60,23 +55,13 @@ export function Controls({ config, setConfig }) {
         value={config.name}
         onChange={(name) => set({ name })}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Color"
-        size="compact"
-        hideIndicator
-        columns={3}
+        iconOnly
         value={config.color}
         onChange={(color) => set({ color })}
-        options={COLOR_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={statusOptions(COLOR_OPTIONS, { noneLabel: 'Inherit' })}
       />
       <Toggle
         label="Fill"

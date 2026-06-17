@@ -61,6 +61,8 @@ interface EditorSelectionBoundaryProps {
   onDuplicateNode?: (nodeId: string) => void;
   onGroupAsStack?: (nodeId: string) => void;
   onConvertNode?: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
+  onCopyPattern?: (nodeId: string) => void;
+  onPastePattern?: (nodeId: string) => void;
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo: (id: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   isContainer?: boolean;
@@ -81,6 +83,8 @@ export function EditorSelectionBoundary({
   onDuplicateNode,
   onGroupAsStack,
   onConvertNode,
+  onCopyPattern,
+  onPastePattern,
   getNodeProps,
   getNodeInfo,
   isContainer,
@@ -199,6 +203,28 @@ export function EditorSelectionBoundary({
         shortcut: `${MOD}G`,
         onClick: () => onGroupAsStack(target.id),
       });
+    }
+
+    if (onCopyPattern || onPastePattern) {
+      items.push({ type: 'divider', id: 'divider-pattern' });
+      if (onCopyPattern) {
+        items.push({
+          id: 'copy-pattern',
+          label: 'Copy pattern',
+          icon: 'colorize',
+          shortcut: isMac ? '⌘⌥C' : 'Ctrl+Alt+C',
+          onClick: () => onCopyPattern(target.id),
+        });
+      }
+      if (onPastePattern) {
+        items.push({
+          id: 'paste-pattern',
+          label: 'Paste pattern',
+          icon: 'format_paint',
+          shortcut: isMac ? '⌘⌥V' : 'Ctrl+Alt+V',
+          onClick: () => onPastePattern(target.id),
+        });
+      }
     }
 
     const conversionTargets = onConvertNode ? (CONVERSION_MAP[target.type] ?? []) : [];

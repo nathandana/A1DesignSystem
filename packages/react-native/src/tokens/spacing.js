@@ -103,7 +103,7 @@ export const spacingTokens = {
       }
     },
     "card": {
-      "padding": 20,
+      "padding": 16,
       "borderRadius": 8,
       "borderWidth": 1,
       "shadowOffset": {

@@ -1,17 +1,23 @@
 import {
   Button,
-  ChoiceGroup,
   Code,
   IconButton,
   Notification,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
-import { Toggle } from './Toggle.jsx'
 
 const STATUS_OPTIONS = ['neutral', 'info', 'success', 'warn', 'error']
-const POSITION_OPTIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left']
+// Laid out as a 2×2 corner grid with directional arrows (reading order matches
+// the on-screen corners: top-left, top-right, bottom-left, bottom-right).
+const POSITION_OPTIONS = [
+  { value: 'top-left', label: 'Top left', icon: 'north_west' },
+  { value: 'top-right', label: 'Top right', icon: 'north_east' },
+  { value: 'bottom-left', label: 'Bottom left', icon: 'south_west' },
+  { value: 'bottom-right', label: 'Bottom right', icon: 'south_east' },
+]
 const CONTENT_OPTIONS = ['count', 'label', 'dot']
 const ANCHOR_OPTIONS = ['icon', 'button']
 
@@ -117,7 +123,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Anchor"
         size="compact"
         hideIndicator
@@ -137,7 +143,7 @@ export function Controls({ config, setConfig }) {
         value={config.anchorLabel}
         onChange={(event) => set({ anchorLabel: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Content"
         size="compact"
         hideIndicator
@@ -172,29 +178,20 @@ export function Controls({ config, setConfig }) {
           onChange={(event) => set({ label: event.target.value })}
         />
       )}
-      <ChoiceGroup
+      <Choice
         label="Status"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
-        options={STATUS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={statusOptions(STATUS_OPTIONS)}
       />
-      <ChoiceGroup
+      <Choice
         label="Position"
-        size="compact"
-        hideIndicator
+        iconOnly
         columns={2}
         value={config.position}
         onChange={(position) => set({ position })}
-        options={POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Toggle
-        label="Dot"
-        hint="Switches the badge to dot-only content."
-        value={config.content === 'dot'}
-        onChange={(checked) => set({ content: checked ? 'dot' : 'count' })}
+        options={POSITION_OPTIONS}
       />
     </Stack>
   )

@@ -13,8 +13,8 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   label: string;
   /** Visual style. Default: "tertiary" */
   variant?: "tertiary" | "secondary" | "destructive" | "success";
-  /** Button size. "lg" matches Button's large touch target (3.5rem) and icon size, suitable for pairing with large Buttons. Default: "md" */
-  size?: "md" | "lg";
+  /** Button size. "sm" is a 24×24px target (the WCAG 2.2 AA minimum) for dense toolbars; "lg" matches Button's large touch target (3.5rem) and icon size. Default: "md" */
+  size?: "sm" | "md" | "lg";
   /** Link target when rendered with `as="a"`. */
   href?: string;
   disabled?: boolean;

@@ -1,0 +1,22 @@
+component: Section
+rules:
+  - id: section-content-padding
+    components:
+      - Section
+    requirement: A Section used to separate large blocks of content must have at least some block padding so content does not run into the top and bottom edges.
+    do: Give a content-separating Section a `padding` of at least `sm` (or a responsive padding) so there is breathing room above and below its content.
+    dont: Use `padding="none"` on a Section that holds a real block of content — the first and last children will butt against the section edges and adjacent sections.
+    applies_to:
+      - layout
+      - spacing
+
+  - id: section-matching-padding
+    components:
+      - Section
+    requirement: Related sections (a sequence of content rows in the same flow) should use matching padding so the page rhythm stays consistent.
+    do: Apply the same `padding` value (and the same responsive padding object) across a related group of stacked sections.
+    dont: Mix `padding="lg"` on one row with `padding="xs"` on the next within the same content sequence — the uneven rhythm reads as a mistake.
+    applies_to:
+      - layout
+      - spacing
+      - consistency

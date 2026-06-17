@@ -42,6 +42,7 @@ export const typographyTokens = {
     "fontWeight": "400",
     "lineHeightMultiplier": 1.5,
     "sizes": {
+      "3xs": 8,
       "2xs": 10,
       "xs": 12,
       "sm": 14,

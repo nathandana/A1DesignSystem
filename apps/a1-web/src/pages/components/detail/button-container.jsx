@@ -1,20 +1,22 @@
 import {
   Button,
   ButtonContainer,
-  ChoiceGroup,
   Code,
   IconButton,
   Stack,
-  Switch,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 
-const ALIGN_OPTIONS = ['start', 'center', 'end']
+// "Fill" folds the fillButtons prop into the alignment control as a fourth
+// option (justify reads as "stretch to fill the row").
+const ALIGN_OPTIONS = [
+  { value: 'start', label: 'Start', icon: 'format_align_left' },
+  { value: 'center', label: 'Center', icon: 'format_align_center' },
+  { value: 'end', label: 'End', icon: 'format_align_right' },
+  { value: 'fill', label: 'Fill buttons', icon: 'format_align_justify' },
+]
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function escapeJsxText(value) {
   return String(value)
@@ -86,32 +88,20 @@ export function Controls({ config, setConfig }) {
         value={config.secondaryLabel}
         onChange={(event) => setConfig((current) => ({ ...current, secondaryLabel: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Align"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.align}
-        onChange={(align) => setConfig((current) => ({ ...current, align }))}
-        options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        iconOnly
+        value={config.fillButtons ? 'fill' : config.align}
+        onChange={(value) => setConfig((current) => value === 'fill'
+          ? { ...current, fillButtons: true }
+          : { ...current, align: value, fillButtons: false })}
+        options={ALIGN_OPTIONS}
       />
-      <ChoiceGroup
+      <ConfigSlider
         label="Size"
-        size="compact"
-        hideIndicator
-        columns={2}
+        values={['', ...SIZE_OPTIONS]}
         value={config.size}
         onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={[
-          { label: 'Default', value: '' },
-          ...SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt })),
-        ]}
-      />
-      <Switch
-        label="Fill buttons"
-        size="compact"
-        checked={config.fillButtons}
-        onChange={(fillButtons) => setConfig((current) => ({ ...current, fillButtons }))}
       />
     </Stack>
   )

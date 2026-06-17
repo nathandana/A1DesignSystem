@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ContextMenu, IconButton, Paragraph, SelectField, SideNav, Stack, TreeMenu } from '@gtivr4/a1-design-system-react'
-import { EDITOR_EXAMPLES, NEW_PAGE_ID } from './examples/index.ts'
+import { ContextMenu, Paragraph, TreeMenu } from '@gtivr4/a1-design-system-react'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 
 // ── Node → tree item conversion ───────────────────────────────────────────────
@@ -93,15 +92,16 @@ function getAncestorIds(items, targetId, path = []) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function EditorSidebar({
-  activeExample,
-  activePageName,
-  isDirty = false,
+/**
+ * ComponentTreePanel — the page's component (layer) tree. Rendered as the
+ * "Layers" tab inside ProjectWorkspaceSidebar; it owns the TreeMenu over the
+ * current page definition plus the per-node right-click context menu. The
+ * SideNav chrome and the page list live in the workspace shell, not here.
+ */
+export function ComponentTreePanel({
   definition,
   selectedNodeId,
-  userPages = [],
   onSelectNode,
-  onSelectExample,
   onNodeMove,
   onRequestAdd,
   onNodeAction,
@@ -223,6 +223,26 @@ export function EditorSidebar({
       })
     }
 
+    items.push({ type: 'divider', id: 'div-pattern' })
+    items.push({
+      id: 'copy-pattern',
+      label: 'Copy pattern',
+      icon: 'colorize',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'copy-pattern', nodeId: id })
+      },
+    })
+    items.push({
+      id: 'paste-pattern',
+      label: 'Paste pattern',
+      icon: 'format_paint',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'paste-pattern', nodeId: id })
+      },
+    })
+
     const conversionTargets = onConvertNode ? (CONVERSION_MAP[nodeType] ?? []) : []
     if (conversionTargets.length > 0) {
       items.push({ type: 'divider', id: 'div-convert' })
@@ -255,50 +275,12 @@ export function EditorSidebar({
     return items
   }
 
-  const pageSelect = (
-    <div className="a1-web-editor-sidebar__page-select">
-      <SelectField
-        size="compact"
-        aria-label="Select page"
-        value={activeExample}
-        onChange={(e) => onSelectExample(e.target.value)}
-      >
-        {EDITOR_EXAMPLES.map(example => (
-          <option key={example.id} value={example.id}>
-            {activeExample === example.id && activePageName ? activePageName : example.label}
-            {activeExample === example.id && isDirty ? ' ●' : ''}
-          </option>
-        ))}
-        {userPages.map(page => (
-          <option key={page.id} value={page.id}>
-            {activeExample === page.id && activePageName ? activePageName : page.label}
-            {activeExample === page.id && isDirty ? ' ●' : ''}
-          </option>
-        ))}
-        <option value={NEW_PAGE_ID}>+ New page</option>
-      </SelectField>
-    </div>
-  )
-
-  const footer = (
-    <Stack direction="row" align="center" gap="xs">
-      <IconButton
-        icon="add_circle"
-        label="Add component"
-        onClick={() => onRequestAdd?.({ targetId: selectedNodeId ?? null, position: 'after' })}
-      />
-    </Stack>
-  )
-
   return (
     <>
-      <SideNav
-        header={pageSelect}
-        footer={footer}
-        collapseButtonPlacement="footer"
-      >
-        <div className="a1-web-editor-sidebar__tree">
-          {!treeItems.length
+      <div className="a1-web-editor-sidebar__tree">
+        {!definition
+          ? <Paragraph size="sm" color="muted">Open a page to edit its layers.</Paragraph>
+          : !treeItems.length
             ? <Paragraph size="sm" color="muted">No valid definition loaded.</Paragraph>
             : (
               <TreeMenu
@@ -315,9 +297,8 @@ export function EditorSidebar({
                 aria-label="Page structure"
               />
             )
-          }
-        </div>
-      </SideNav>
+        }
+      </div>
 
       <ContextMenu
         open={!!treeCtxMenu}

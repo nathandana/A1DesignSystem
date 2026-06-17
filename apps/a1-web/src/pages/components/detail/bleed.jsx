@@ -1,12 +1,12 @@
 import {
   Bleed,
   Card,
-  ChoiceGroup,
   Code,
   Inset,
   Paragraph,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const SPACE_OPTIONS = [4, 8, 12, 16, 24, 32, 40]
 
@@ -42,7 +42,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Space"
         hint="Amount of bleed on all sides — should match the surrounding Inset."
         size="compact"

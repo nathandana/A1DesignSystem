@@ -81,6 +81,18 @@ export function Menu({
     el.style.setProperty("--a1-menu-top", `${Math.round(top)}px`);
     el.style.setProperty("--a1-menu-left", `${Math.round(left)}px`);
     el.style.setProperty("--a1-menu-max-height", `${Math.floor(maxHeight)}px`);
+
+    // `position: fixed` resolves against the nearest transformed/filtered
+    // ancestor's box, not the viewport — e.g. an `overlay` Toolbar positioned
+    // with a CSS transform. Measure where the menu actually landed and correct
+    // by the containing-block offset so it stays anchored to the viewport.
+    const placed = el.getBoundingClientRect();
+    const dx = left - placed.left;
+    const dy = top - placed.top;
+    if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+      el.style.setProperty("--a1-menu-left", `${Math.round(left + dx)}px`);
+      el.style.setProperty("--a1-menu-top", `${Math.round(top + dy)}px`);
+    }
   }, [anchorRef]);
 
   const openDialog = useCallback(() => {

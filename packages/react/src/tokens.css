@@ -109,7 +109,7 @@
   --base-space-button-focus-ring-width: 0.1875rem;
   --base-space-button-focus-ring-offset: 0.125rem;
   --base-space-button-disabled-opacity: 0.55;
-  --base-space-card-padding: 1.25rem;
+  --base-space-card-padding: 1rem;
   --base-space-card-border-width: 1px;
   --base-shadow-100: 0px 1px 2px 0px rgba(6, 11, 20, 0.05);
   --base-shadow-200: 0px 1px 3px 0px rgba(6, 11, 20, 0.10), 0px 1px 2px -1px rgba(6, 11, 20, 0.06);
@@ -146,6 +146,7 @@
   --base-font-size-user-medium: 1rem;
   --base-font-size-user-large: 1.125rem;
   --base-font-size-user-xl: 1.25rem;
+  --base-font-size-scale-25: 0.5rem;
   --base-font-size-scale-50: 0.625rem;
   --base-font-size-scale-100: 0.75rem;
   --base-font-size-scale-150: 0.875rem;
@@ -241,6 +242,7 @@
   --semantic-spacing-gap-md: 1rem;
   --semantic-spacing-gap-lg: 1.5rem;
   --semantic-spacing-gap-xl: 2.5rem;
+  --semantic-font-size-body-3xs: 0.5rem;
   --semantic-font-size-body-2xs: 0.625rem;
   --semantic-font-size-body-xs: 0.75rem;
   --semantic-font-size-body-sm: 0.875rem;
@@ -355,7 +357,7 @@
   --component-calendar-cell-size: 2rem;
   --component-calendar-cell-size-compact: 1.5rem;
   --component-calendar-cell-border-radius: 0.25rem;
-  --component-card-padding: 1.25rem;
+  --component-card-padding: 1rem;
   --component-card-border-radius: 0.5rem;
   --component-card-border-width: 1px;
   --component-card-icon-size: 1.25rem;

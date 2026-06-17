@@ -1,13 +1,11 @@
 import {
-  ChoiceGroup,
   Code,
   Fieldset,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, DensityChoice, FieldState } from './configKit.jsx'
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
 const LABEL_POSITION_OPTIONS = ['above', 'before']
 
 function optionLabel(value) {
@@ -50,18 +48,20 @@ export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
       <TextField label="Legend" size="compact" value={config.legend} onChange={(e) => set({ legend: e.target.value })} />
-      <ChoiceGroup
-        label="Size" size="compact" hideIndicator columns={3}
-        value={config.size} onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <DensityChoice value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Label position" size="compact" hideIndicator columns={2}
         value={config.labelPosition} onChange={(labelPosition) => set({ labelPosition })}
         options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Mark required" hint="Shows a required-field note (compact / default sizes)." value={config.markRequired} onChange={(markRequired) => set({ markRequired })} />
-      <Toggle label="Surface" hint="Wraps the group in a bordered surface." value={config.surface} onChange={(surface) => set({ surface })} />
+      <FieldState
+        label="Options"
+        items={[
+          { key: 'markRequired', label: 'Mark required', icon: 'asterisk', value: config.markRequired },
+          { key: 'surface', label: 'Surface', icon: 'border_outer', value: config.surface },
+        ]}
+        onChange={set}
+      />
     </Stack>
   )
 }

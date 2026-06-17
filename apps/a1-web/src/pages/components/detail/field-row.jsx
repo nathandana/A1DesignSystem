@@ -1,5 +1,4 @@
 import {
-  ChoiceGroup,
   Code,
   FieldRow,
   Fieldset,
@@ -8,8 +7,8 @@ import {
   TextField,
   ZipField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, DensityChoice } from './configKit.jsx'
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
 const EXAMPLE_OPTIONS = ['name', 'address']
 
 function optionLabel(value) {
@@ -61,12 +60,8 @@ export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
       <TextField label="Legend" size="compact" value={config.legend} onChange={(e) => set({ legend: e.target.value })} />
-      <ChoiceGroup
-        label="Size" size="compact" hideIndicator columns={3}
-        value={config.size} onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <DensityChoice value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Example" size="compact" hideIndicator columns={2}
         value={config.example} onChange={(example) => set({ example })}
         options={EXAMPLE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}

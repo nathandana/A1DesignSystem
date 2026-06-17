@@ -108,6 +108,7 @@
   --base-font-size-scale-1000: 6rem;
   --base-font-size-scale-150: 0.875rem;
   --base-font-size-scale-200: 1rem;
+  --base-font-size-scale-25: 0.5rem;
   --base-font-size-scale-250: 1.125rem;
   --base-font-size-scale-300: 1.25rem;
   --base-font-size-scale-400: 1.5rem;
@@ -151,7 +152,7 @@
   --base-space-button-padding-block: 0.625rem;
   --base-space-button-padding-inline: 0.75rem;
   --base-space-card-border-width: 1px;
-  --base-space-card-padding: 1.25rem;
+  --base-space-card-padding: 1rem;
   --base-spacing-1: 1px;
   --base-spacing-12: 0.75rem;
   --base-spacing-128: 8rem;
@@ -334,7 +335,7 @@
   --component-card-border-width: 1px;
   --component-card-icon-optical-size: 20;
   --component-card-icon-size: 1.25rem;
-  --component-card-padding: 1.25rem;
+  --component-card-padding: 1rem;
   --component-card-shadow: [object Object],[object Object];
   --component-card-title-font-line-height: 1.25em;
   --component-card-title-font-size: 1.25rem;
@@ -789,6 +790,7 @@
   --semantic-font-line-height-display: 1.125em;
   --semantic-font-line-height-heading: 1.25em;
   --semantic-font-size-body-2xs: 0.625rem;
+  --semantic-font-size-body-3xs: 0.5rem;
   --semantic-font-size-body-lg: 1.125rem;
   --semantic-font-size-body-md: 1rem;
   --semantic-font-size-body-sm: 0.875rem;

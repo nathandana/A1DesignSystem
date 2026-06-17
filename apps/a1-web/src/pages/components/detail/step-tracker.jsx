@@ -1,16 +1,17 @@
 import {
-  ChoiceGroup,
   Code,
   Stack,
   StepTracker,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
-const ALIGN_OPTIONS = ['left', 'center', 'right', 'full']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+const ALIGN_OPTIONS = [
+  { value: 'left', label: 'Left', icon: 'format_align_left' },
+  { value: 'center', label: 'Center', icon: 'format_align_center' },
+  { value: 'right', label: 'Right', icon: 'format_align_right' },
+  { value: 'full', label: 'Full', icon: 'format_align_justify' },
+]
 
 function numberValue(value, fallback) {
   const next = Number(value)
@@ -66,14 +67,12 @@ export function Controls({ config, setConfig }) {
         value={String(config.currentStep)}
         onChange={(event) => set({ currentStep: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Align"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.align}
         onChange={(align) => set({ align })}
-        options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={ALIGN_OPTIONS}
       />
     </Stack>
   )

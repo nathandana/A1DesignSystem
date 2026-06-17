@@ -20,6 +20,8 @@ import * as button from './button.jsx'
 import * as iconButton from './icon-button.jsx'
 import * as switchControl from './switch.jsx'
 import * as segmentedControl from './segmented-control.jsx'
+import * as slider from './slider.jsx'
+import * as toolbar from './toolbar.jsx'
 import * as stickyActions from './sticky-actions.jsx'
 import * as textField from './text-field.jsx'
 import * as numberField from './number-field.jsx'
@@ -88,6 +90,8 @@ const REGISTRY = {
   'icon-button': iconButton,
   switch: switchControl,
   'segmented-control': segmentedControl,
+  slider,
+  toolbar,
   'sticky-actions': stickyActions,
   'text-field': textField,
   'number-field': numberField,
@@ -142,5 +146,8 @@ export function getDetailModule(componentId) {
     // When true, the preview owns its own surface/height and is rendered without
     // the wrapping Section. The Display tab hides the Section-related controls.
     bareDisplay: specific.bareDisplay ?? false,
+    // Platforms the component can be viewed/coded as (React / Native / Pure).
+    // Present only on modules that opt in; drives the page's "View as" toolbar.
+    viewAsModes: specific.viewAsModes ?? null,
   }
 }

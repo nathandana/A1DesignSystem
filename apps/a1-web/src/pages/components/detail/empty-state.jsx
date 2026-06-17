@@ -1,17 +1,16 @@
 import {
   Button,
-  ChoiceGroup,
   Code,
   MessageEmptyState,
   Stack,
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SCALE_OPTIONS = ['page', 'section', 'card']
-const ACTION_VARIANT_OPTIONS = ['primary', 'secondary', 'tertiary']
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -30,7 +29,7 @@ function escapeJsxText(value) {
 
 function buildEmptyStateSnippet(config) {
   const action = config.showAction
-    ? `action={<Button variant="${config.actionVariant}">${escapeJsxText(config.actionLabel || 'Get started')}</Button>}`
+    ? `action={<Button variant="secondary">${escapeJsxText(config.actionLabel || 'Get started')}</Button>}`
     : null
 
   const props = [
@@ -54,7 +53,6 @@ export function getDefaultConfig() {
     description: "Content will appear here once it's available.",
     showAction: true,
     actionLabel: 'Get started',
-    actionVariant: 'secondary',
   }
 }
 
@@ -66,7 +64,7 @@ export function Preview({ config }) {
       title={config.title || undefined}
       description={config.description || undefined}
       action={config.showAction ? (
-        <Button variant={config.actionVariant}>
+        <Button variant="secondary">
           {config.actionLabel || 'Get started'}
         </Button>
       ) : undefined}
@@ -97,7 +95,7 @@ export function Controls({ config, setConfig }) {
         value={config.icon}
         onChange={(icon) => set({ icon })}
       />
-      <ChoiceGroup
+      <Choice
         label="Scale"
         size="compact"
         hideIndicator
@@ -112,23 +110,12 @@ export function Controls({ config, setConfig }) {
         onChange={(showAction) => set({ showAction })}
       />
       {config.showAction && (
-        <>
-          <TextField
-            label="Action label"
-            size="compact"
-            value={config.actionLabel}
-            onChange={(event) => set({ actionLabel: event.target.value })}
-          />
-          <ChoiceGroup
-            label="Action variant"
-            size="compact"
-            hideIndicator
-            columns={3}
-            value={config.actionVariant}
-            onChange={(actionVariant) => set({ actionVariant })}
-            options={ACTION_VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-          />
-        </>
+        <TextField
+          label="Action label"
+          size="compact"
+          value={config.actionLabel}
+          onChange={(event) => set({ actionLabel: event.target.value })}
+        />
       )}
     </Stack>
   )

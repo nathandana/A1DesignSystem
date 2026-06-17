@@ -8,10 +8,10 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, DensityChoice, FieldState, ResponsiveControl } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 import { IconSelect } from './IconSelect.jsx'
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
 const COLUMN_OPTIONS = ['auto', '1', '2', '3']
 
 function optionLabel(value) {
@@ -58,7 +58,25 @@ export function getDefaultConfig() {
 }
 
 function resolveColumns(columns) {
+  // columns can be 'auto' / '1'… or a responsive object of those values.
+  if (columns && typeof columns === 'object') {
+    const out = {}
+    for (const [key, value] of Object.entries(columns)) {
+      if (value !== 'auto' && value != null && value !== '') out[key] = Number(value)
+    }
+    return Object.keys(out).length ? out : undefined
+  }
   return columns === 'auto' ? undefined : Number(columns)
+}
+
+function columnsSnippet(columns) {
+  if (columns && typeof columns === 'object') {
+    const entries = ['xs', 'sm', 'md', 'lg', 'xl']
+      .filter((key) => columns[key] !== undefined && columns[key] !== 'auto')
+      .map((key) => `${key}: ${Number(columns[key])}`)
+    return entries.length ? `columns={{ ${entries.join(', ')} }}` : null
+  }
+  return columns !== 'auto' ? `columns={${Number(columns)}}` : null
 }
 
 function buildOptions(options) {
@@ -215,20 +233,25 @@ export function Controls({ config, setConfig, itemsMode = 'accordion' }) {
       <TextField label="Hint" size="compact" value={config.hint} onChange={(e) => set({ hint: e.target.value })} />
       <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
       <TextField label="Success" size="compact" value={config.success} onChange={(e) => set({ success: e.target.value })} />
-      <ChoiceGroup
-        label="Size" size="compact" hideIndicator columns={3}
-        value={config.size} onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+      <DensityChoice value={config.size} onChange={(size) => set({ size })} />
+      <ResponsiveControl label="Columns" value={config.columns} onChange={(columns) => set({ columns })} defaultValue="auto">
+        {(val, setVal) => (
+          <Choice
+            value={val} onChange={setVal}
+            options={COLUMN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+          />
+        )}
+      </ResponsiveControl>
+      <FieldState
+        label="Options"
+        items={[
+          { key: 'required', label: 'Required', icon: 'asterisk', value: config.required },
+          { key: 'hideIndicator', label: 'Hide indicator', icon: 'visibility_off', value: config.hideIndicator },
+          { key: 'inlineIcon', label: 'Inline icon', icon: 'align_horizontal_left', value: config.inlineIcon },
+          { key: 'multiple', label: 'Multiple', icon: 'select_check_box', value: config.multiple },
+        ]}
+        onChange={set}
       />
-      <ChoiceGroup
-        label="Columns" size="compact" hideIndicator columns={4}
-        value={config.columns} onChange={(columns) => set({ columns })}
-        options={COLUMN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Toggle label="Multiple" hint="Multi-select (checkbox) instead of single-select (radio)." value={config.multiple} onChange={(multiple) => set({ multiple })} />
-      <Toggle label="Inline icon" hint="Place each icon left of the label instead of above." value={config.inlineIcon} onChange={(inlineIcon) => set({ inlineIcon })} />
-      <Toggle label="Hide indicator" value={config.hideIndicator} onChange={(hideIndicator) => set({ hideIndicator })} />
-      <Toggle label="Required" value={config.required} onChange={(required) => set({ required })} />
 
       {itemsSection}
 
@@ -246,7 +269,7 @@ function buildSnippet(config) {
     config.error ? `error="${escapeJsxString(config.error)}"` : null,
     config.success ? `success="${escapeJsxString(config.success)}"` : null,
     config.size !== 'default' ? `size="${config.size}"` : null,
-    config.columns !== 'auto' ? `columns={${Number(config.columns)}}` : null,
+    columnsSnippet(config.columns),
     config.multiple ? 'multiple' : null,
     config.inlineIcon ? 'inlineIcon' : null,
     config.hideIndicator ? 'hideIndicator' : null,

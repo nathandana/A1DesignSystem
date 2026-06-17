@@ -11,8 +11,8 @@ import {
 } from '@gtivr4/a1-design-system-react'
 
 const stats = [
-  { value: '40+', label: 'Components' },
-  { value: '3', label: 'Platforms' },
+  { value: '60+', label: 'Components' },
+  { value: '4', label: 'Platforms' },
   { value: '4', label: 'Themes' },
   { value: '200+', label: 'Tokens' },
 ]
@@ -107,11 +107,11 @@ export function Home({ onNavigate }) {
             size={{ xs: 'xl', md: 'xxl' }}
             textWrap="balance"
           >
-            Optimized for AI
+            By the rules
           </Heading>
 </Stack>
-          <Paragraph size={{ xs: 'md', md: 'lg', lg: 'xl' }} color="muted" align="center">
-            40+ production-ready components across React, HTML/CSS, and React Native — all driven by a single Style Dictionary token source.
+          <Paragraph size={{ xs: 'md', md: 'lg', lg: 'lg' }} align="center">
+A1 is a rules based design system. Everything has a clear source of truth. It has a robust component library, a rules engine, a full web site editor and many more features. It’s so knowledgeable that you can design with it directly and follow your enterprise rules, or use AI. Even AI won’t mess this up.
           </Paragraph>
 
           <ButtonContainer align="center" size="lg">

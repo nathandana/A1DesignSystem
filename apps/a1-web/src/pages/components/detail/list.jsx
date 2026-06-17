@@ -1,11 +1,11 @@
 import {
-  ChoiceGroup,
   Code,
   List,
   ListItem,
   Stack,
   TextareaField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 
 const LIST_VARIANT_OPTIONS = ['unordered', 'ordered', 'icon', 'divider']
@@ -69,7 +69,7 @@ function listProps(config) {
     propLine('as', elementFor(config.variant), 'ul'),
     config.variant === 'divider' ? propLine('variant', 'divider', '') : null,
     config.variant === 'icon' ? propLine('icon', config.icon, '') : null,
-    propLine('size', config.size, 'md'),
+    config.size && typeof config.size === 'object' ? `  ${responsiveProp('size', config.size)}` : propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
   ].filter(Boolean).join(' ')
 }
@@ -150,7 +150,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -166,16 +166,10 @@ export function Controls({ config, setConfig }) {
           onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
         />
       )}
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={LIST_SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+        {(val, setVal) => <ConfigSlider values={LIST_SIZE_OPTIONS} value={val} onChange={setVal} />}
+      </ResponsiveControl>
+      <Choice
         label="Color"
         size="compact"
         hideIndicator

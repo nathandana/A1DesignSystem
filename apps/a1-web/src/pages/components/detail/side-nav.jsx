@@ -1,7 +1,6 @@
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   Divider,
   SideNav,
@@ -9,6 +8,7 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -152,7 +152,7 @@ export function Controls({ config, setConfig }) {
         value={config.header}
         onChange={(event) => setConfig((current) => ({ ...current, header: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Placement"
         size="compact"
         hideIndicator
@@ -161,7 +161,7 @@ export function Controls({ config, setConfig }) {
         onChange={(placement) => setConfig((current) => ({ ...current, placement }))}
         options={PLACEMENT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Collapse button"
         size="compact"
         hideIndicator

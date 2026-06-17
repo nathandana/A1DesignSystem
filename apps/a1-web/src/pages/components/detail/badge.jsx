@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   MessageBadge,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -76,25 +76,15 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Status"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
-        options={STATUS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={statusOptions(STATUS_OPTIONS)}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Icon"
         size="compact"
         hideIndicator

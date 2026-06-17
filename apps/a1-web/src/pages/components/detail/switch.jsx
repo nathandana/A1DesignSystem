@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   Stack,
   Switch,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
@@ -68,7 +68,7 @@ export function Controls({ config, setConfig }) {
         value={config.error}
         onChange={(event) => setConfig((current) => ({ ...current, error: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Size"
         size="compact"
         hideIndicator
@@ -77,7 +77,7 @@ export function Controls({ config, setConfig }) {
         onChange={(size) => setConfig((current) => ({ ...current, size }))}
         options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Label position"
         size="compact"
         hideIndicator

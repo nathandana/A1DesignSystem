@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Paragraph, Section } from '@gtivr4/a1-design-system-react';
+import { Paragraph, Section, TopHeader } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
 import { EDITOR_EXAMPLES, BLANK_PAGE } from '../editor/examples/index.ts';
 import { decompress, readStored } from '../editor/storage';
+import { buildProjectNav } from '../projects/projectNav';
+import { loadPages, loadProjects } from '../projects/projectStore';
 import type { PageDefinition } from '../editor/pageTypes';
 
 const SESSION_KEY = 'a1-editor-preview';
@@ -73,10 +75,13 @@ function screenIdFromUrl(): string | null {
   return new URLSearchParams(window.location.search).get('screen');
 }
 
-/** Build a shareable URL for a given screen id, preserving standalone mode. */
+/** Build a shareable URL for a given screen id, preserving standalone mode and
+ *  the owning project so the generated nav survives in-prototype navigation. */
 function urlForScreen(pageId: string): string {
+  const project = new URLSearchParams(window.location.search).get('project');
+  const projectParam = project ? `&project=${encodeURIComponent(project)}` : '';
   // Built manually so `standalone` stays a bare flag (no trailing "=").
-  return `${window.location.pathname}?page=editor-preview&standalone&screen=${encodeURIComponent(pageId)}`;
+  return `${window.location.pathname}?page=editor-preview&standalone&screen=${encodeURIComponent(pageId)}${projectParam}`;
 }
 
 export function EditorPreviewPage() {
@@ -99,6 +104,15 @@ export function EditorPreviewPage() {
     }
     return readStored(SESSION_KEY);
   });
+  const [screenId, setScreenId] = useState<string | null>(() => screenIdFromUrl());
+
+  // The owning project (from the launch URL) drives the auto-generated TopHeader.
+  const projectId = useMemo(() => new URLSearchParams(window.location.search).get('project'), []);
+  const projectPages = useMemo(() => (projectId ? loadPages(projectId) : []), [projectId]);
+  const projectName = useMemo(
+    () => (projectId ? loadProjects().find((p) => p.id === projectId)?.name : undefined),
+    [projectId],
+  );
 
   // Navigate to another prototype screen: swap the definition AND update the URL
   // so the address bar always holds a unique, shareable link to the current page.
@@ -106,6 +120,7 @@ export function EditorPreviewPage() {
     const json = resolvePageJson(pageId);
     if (!json) return;
     setCurrentJson(json);
+    setScreenId(pageId);
     if (pushHistory) {
       window.history.pushState({ screen: pageId }, '', urlForScreen(pageId));
     }
@@ -141,20 +156,38 @@ export function EditorPreviewPage() {
 
   const definition = useMemo(() => parseDef(currentJson), [currentJson]);
 
+  const generatedHeader = projectPages.length ? (
+    <TopHeader
+      className="a1-web-generated-header"
+      logo={projectName ? <span className="a1-web-logo">{projectName}</span> : undefined}
+      navItems={buildProjectNav(projectPages, {
+        activePageId: screenId,
+        onNavigate: (pageId) => navigateToScreen(pageId),
+        hrefFor: (pageId) => urlForScreen(pageId),
+      })}
+    />
+  ) : null;
+
   if (!definition) {
     return (
-      <Section padding="md">
-        <Paragraph size="sm" color="muted">
-          No page definition found. Open this preview from the Editor page.
-        </Paragraph>
-      </Section>
+      <>
+        {generatedHeader}
+        <Section padding="md">
+          <Paragraph size="sm" color="muted">
+            No page definition found. Open this preview from the Editor page.
+          </Paragraph>
+        </Section>
+      </>
     );
   }
 
   return (
-    <RenderPageDefinition
-      definition={definition}
-      onNavigate={(pageId) => navigateToScreen(pageId)}
-    />
+    <>
+      {generatedHeader}
+      <RenderPageDefinition
+        definition={definition}
+        onNavigate={(pageId) => navigateToScreen(pageId)}
+      />
+    </>
   );
 }

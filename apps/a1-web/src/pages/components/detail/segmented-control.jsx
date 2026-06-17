@@ -2,20 +2,16 @@ import { useState } from 'react'
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   SegmentedControl,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function escapeJsString(value) {
   return String(value ?? '')
@@ -121,15 +117,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <Toggle label="Full width" value={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
 
       <Stack gap="sm">

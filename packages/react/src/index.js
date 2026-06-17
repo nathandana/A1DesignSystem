@@ -12,7 +12,9 @@ export { CircularProgress } from "./components/circular-progress/CircularProgres
 export { StepTracker } from "./components/step-tracker/StepTracker.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";
 export { IconButton } from "./components/icon-button/IconButton.jsx";
-export { Button } from "./components/button/Button.jsx";export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";
+export { Button } from "./components/button/Button.jsx";
+export { SplitButton } from "./components/split-button/SplitButton.jsx";
+export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";
 export { Card } from "./components/card/Card.jsx";
 export { Cluster } from "./components/cluster/Cluster.jsx";
 export { Code } from "./components/code/Code.jsx";
@@ -46,6 +48,16 @@ export { MessageBadge, MessageEmptyState } from "./components/message/Message.js
 
 export { Pagination } from "./components/pagination/Pagination.jsx";
 export { SegmentedControl } from "./components/segmented-control/SegmentedControl.jsx";
+export { Slider } from "./components/slider/Slider.jsx";
+export {
+  Toolbar,
+  ToolbarToggle,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarMenu,
+  ToolbarDivider,
+  TOOLBAR_NONE_ICON,
+} from "./components/toolbar/Toolbar.jsx";
 export { Tabs, TabList, Tab, TabPanel } from "./components/tabs/Tabs.jsx";
 export { Grid, GridItem } from "./components/grid/Grid.jsx";
 export { Inverse } from "./components/inverse/Inverse.jsx";

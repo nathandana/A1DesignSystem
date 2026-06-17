@@ -1,11 +1,11 @@
 import {
   Blockquote,
-  ChoiceGroup,
   Code,
   Stack,
   TextField,
   TextareaField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const BLOCKQUOTE_VARIANT_OPTIONS = ['border', 'filled', 'feature', 'minimal', 'accent', 'pull', 'ruled']
 
@@ -83,7 +83,7 @@ export function Controls({ config, setConfig }) {
         value={config.citeUrl}
         onChange={(event) => setConfig((current) => ({ ...current, citeUrl: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator

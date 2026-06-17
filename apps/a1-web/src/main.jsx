@@ -8,7 +8,6 @@ import {
   LabelsProvider,
   Menu,
   MenuSection,
-  MessageEmptyState,
   PageLayout,
   RadioGroup,
   Section,
@@ -59,15 +58,18 @@ import {
   componentPageIds,
   componentPageTitles,
 } from './pages/Components.jsx'
-import { Projects } from './pages/Projects.jsx'
 import { Templates } from './pages/Templates.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
+import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
-import { EditorPreviewPage, resolvePageJson } from './pages/EditorPreviewPage.tsx'
-import { EditorSidebar } from './editor/EditorSidebar.jsx'
-import { EDITOR_EXAMPLES, DEFAULT_EXAMPLE_ID, NEW_PAGE_ID, makeBlankPage } from './editor/examples/index.ts'
-import { readStored, writeStored, suppressHistoryFlush } from './editor/storage.ts'
+import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
+import { ProjectsList } from './projects/ProjectsList.jsx'
+import { AllPagesView } from './projects/AllPagesView.jsx'
+import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
+import * as projectStore from './projects/projectStore.ts'
+import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
+import { suppressHistoryFlush } from './editor/storage.ts'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -84,7 +86,7 @@ const RESOURCE_PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'editor', 'editor-preview', 'projects', 'accessibility', 'releases']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'editor', 'editor-preview', 'projects', 'help', 'accessibility', 'releases']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -93,10 +95,11 @@ const PAGE_TITLES = {
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
-  templates: 'Templates',
+  templates: 'Patterns',
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   projects: 'Projects',
+  help: 'Help',
   accessibility: 'Accessibility',
   releases: 'Releases',
 }
@@ -157,15 +160,21 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState('configure')
-  const [editorExampleId, setEditorExampleId] = useState(() => {
-    // A `doc` query param deep-links straight to a specific page in the editor.
-    const doc = new URLSearchParams(window.location.search).get('doc')
-    if (doc) return doc
-    return localStorage.getItem('a1-editor-active-example') ?? DEFAULT_EXAMPLE_ID
+  // ── Projects state ─────────────────────────────────────────────────────────
+  // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
+  // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
+  const [projects, setProjects] = useState(() => projectStore.loadProjects())
+  const [activeProjectId, setActiveProjectId] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('project') || projectStore.getActiveProjectId() || null
   })
-  const [userPages, setUserPages] = useState(
-    () => { try { return JSON.parse(readStored('a1-editor-user-pages') ?? '[]') } catch { return [] } }
-  )
+  const [projectPages, setProjectPages] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const pid = params.get('project') || projectStore.getActiveProjectId()
+    return pid ? projectStore.loadPages(pid) : []
+  })
+  const [openPageId, setOpenPageId] = useState(() => new URLSearchParams(window.location.search).get('doc') || null)
+
   const [editorView, setEditorView] = useState('edit')
   const [editorDirty, setEditorDirty] = useState(false)
   const [editorSelectedNodeId, setEditorSelectedNodeId] = useState(null)
@@ -174,126 +183,171 @@ function App() {
   const [editorAddTarget, setEditorAddTarget] = useState(null)
   const [editorPendingAction, setEditorPendingAction] = useState(null) // { type: 'delete'|'ungroup', nodeId }
   const [editorPendingConvert, setEditorPendingConvert] = useState(null) // { nodeId, newType, newProps }
-  const [deletedPage, setDeletedPage] = useState(null) // { page: { id, label }, index } — for undo
-  const [pageSnackbarOpen, setPageSnackbarOpen] = useState(false)
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
   const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
-  // Switch the editor to another page id (shared by select, delete, and undo).
-  function switchToEditorPage(id) {
-    setEditorExampleId(id)
-    localStorage.setItem('a1-editor-active-example', id)
-    setEditorView('edit')
-    setEditorDirty(false)
+  const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  // The initial definition for an open page: a built-in example's definition, or
+  // a blank page (seeded page content in localStorage overrides this anyway).
+  function definitionForPage(pageId) {
+    const example = EDITOR_EXAMPLES.find((e) => e.id === pageId)
+    if (example) return example.definition
+    const meta = projectPages.find((p) => p.id === pageId)
+    return makeBlankPage(pageId, meta?.title || 'Untitled')
+  }
+
+  function refreshProjects() {
+    setProjects(projectStore.loadProjects())
+  }
+
+  // ── Project navigation ───────────────────────────────────────────────────────
+
+  function openProject(id) {
+    setActiveProjectId(id)
+    projectStore.setActiveProjectId(id)
+    setProjectPages(projectStore.loadPages(id))
+    setOpenPageId(null)
     setEditorSelectedNodeId(null)
     setEditorDefinition(null)
+    setEditorView('edit')
+    navigate('editor')
   }
 
-  // Whether an editor page id resolves to something we can open. Editor pages are
-  // stored locally, so a shared `doc` link to a page created in another browser
-  // won't resolve here — we show a "page not found" notice for those.
-  function editorPageExists(id) {
-    if (!id) return false
-    if (EDITOR_EXAMPLES.some((e) => e.id === id)) return true
-    if (userPages.some((p) => p.id === id)) return true
-    try {
-      if (localStorage.getItem(`a1-editor-versions-${id}`)) return true
-      if (localStorage.getItem(`a1-editor-history-${id}`)) return true
-    } catch { /* ignore */ }
-    return false
+  function handleBackToProjects() {
+    setActiveProjectId(null)
+    projectStore.setActiveProjectId(null)
+    setOpenPageId(null)
+    setEditorSelectedNodeId(null)
+    setEditorDefinition(null)
+    navigate('editor')
   }
 
-  // Delete the active user page (built-in examples are not deletable). The page's
-  // saved content is left in localStorage so Undo can restore it intact.
-  function handleDeletePage() {
-    if (!editorExampleId.startsWith(NEW_PAGE_ID)) return
-    const index = userPages.findIndex((p) => p.id === editorExampleId)
-    if (index === -1) return
-    const page = userPages[index]
-    const remaining = userPages.filter((p) => p.id !== editorExampleId)
-    setUserPages(remaining)
-    writeStored('a1-editor-user-pages', JSON.stringify(remaining))
-    setDeletedPage({ page, index })
-    setPageSnackbarOpen(true)
-    const nextId = remaining.length > 0
-      ? remaining[Math.max(0, index - 1)].id
-      : DEFAULT_EXAMPLE_ID
-    switchToEditorPage(nextId)
+  // Top-nav "Editor" always lands on the Projects list (editor home).
+  function handleEditorNav(e) {
+    if (!isPlainLeftClick(e)) return
+    e.preventDefault()
+    handleBackToProjects()
   }
 
-  function handleUndoDeletePage() {
-    if (!deletedPage) return
-    const { page, index } = deletedPage
-    setUserPages((prev) => {
-      const next = [...prev]
-      next.splice(Math.min(index, next.length), 0, page)
-      writeStored('a1-editor-user-pages', JSON.stringify(next))
-      return next
-    })
-    switchToEditorPage(page.id)
-    setPageSnackbarOpen(false)
-    setDeletedPage(null)
+  // Top-nav Editor submenu entry — opens a project directly.
+  function handleProjectNav(e, projectId) {
+    if (!isPlainLeftClick(e)) return
+    e.preventDefault()
+    openProject(projectId)
   }
 
-  // Duplicate the active page (built-in or user) into a new user page seeded with
-  // the current content, then switch to it.
-  function handleDuplicatePage() {
-    const sourceDef = editorDefinition
-    if (!sourceDef) return
-    const newId = `${NEW_PAGE_ID}-${Date.now()}`
-    const newName = `${sourceDef.page?.name || 'Untitled'} copy`
-    const newDef = { ...sourceDef, page: { ...sourceDef.page, id: newId, name: newName } }
-    const json = JSON.stringify(newDef, null, 2)
-    const versionId = `v-${Date.now()}`
-    // Seed the new page's versions state so the editor loads the copied content.
-    const ok = writeStored(
-      `a1-editor-versions-${newId}`,
-      JSON.stringify({ versions: [{ id: versionId, label: 'Base', json }], activeVersionId: versionId }),
-    )
-    if (!ok) {
-      setEditorMessage('Could not duplicate — browser storage is full. Delete unused pages and try again.')
+  function handleOpenPage(id) {
+    setOpenPageId(id)
+    setEditorSelectedNodeId(null)
+    setEditorDefinition(null)
+    setEditorView('edit')
+  }
+
+  // ── Project CRUD ─────────────────────────────────────────────────────────────
+
+  function handleCreateProject(values) {
+    const project = projectStore.createProject(values)
+    refreshProjects()
+    openProject(project.id)
+  }
+
+  function handleRenameProject(id, patch) {
+    projectStore.updateProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleDuplicateProject(id) {
+    projectStore.duplicateProject(id)
+    refreshProjects()
+  }
+
+  function handleDeleteProject(id) {
+    projectStore.deleteProject(id)
+    refreshProjects()
+    if (activeProjectId === id) handleBackToProjects()
+  }
+
+  // ── Page CRUD (operate on the active project) ──────────────────────────────────
+
+  function handleAddPage({ parentId = null, afterId = null } = {}) {
+    if (!activeProjectId) return
+    const { pages, page } = projectStore.addPage(activeProjectId, { parentId, afterId, title: 'Untitled' })
+    setProjectPages(pages)
+    handleOpenPage(page.id)
+    refreshProjects()
+  }
+
+  function handleDuplicateProjectPage(id) {
+    if (!activeProjectId) return
+    const result = projectStore.duplicatePage(activeProjectId, id)
+    if (!result) return
+    setProjectPages(result.pages)
+    handleOpenPage(result.page.id)
+    refreshProjects()
+  }
+
+  function handleDeleteProjectPage(id) {
+    if (!activeProjectId) return
+    const { pages, removedIds } = projectStore.deletePage(activeProjectId, id)
+    setProjectPages(pages)
+    if (removedIds.includes(openPageId)) {
+      setOpenPageId(null)
+      setEditorSelectedNodeId(null)
+      setEditorDefinition(null)
+    }
+    setEditorMessage('Page deleted')
+    refreshProjects()
+  }
+
+  function handleMoveProjectPage(move) {
+    if (!activeProjectId) return
+    const next = projectStore.applyPageMove(projectPages, move)
+    if (!next) {
+      setEditorMessage('Can’t move there — pages can be nested at most three levels deep.')
       return
     }
-    setUserPages((prev) => {
-      const next = [...prev, { id: newId, label: newName }]
-      writeStored('a1-editor-user-pages', JSON.stringify(next))
-      return next
-    })
-    switchToEditorPage(newId)
+    projectStore.savePages(activeProjectId, next)
+    setProjectPages(projectStore.loadPages(activeProjectId))
+    refreshProjects()
   }
 
-  // Export every editor page (built-in + user) as one plain-text file holding
-  // each page's latest JSON, so nothing is lost if local storage is cleared.
-  function handleExportAll() {
-    const allPages = [
-      ...EDITOR_EXAMPLES.map((e) => ({ id: e.id, label: e.label })),
-      ...userPages,
-    ]
-    const sections = allPages.map(({ id, label }) => {
-      const json = resolvePageJson(id) ?? '(no content)'
-      return `===== ${label} (${id}) =====\n${json}`
-    })
-    const content =
-      `A1 Editor — all pages export\n` +
-      `Generated: ${new Date().toISOString()}\n` +
-      `Pages: ${allPages.length}\n\n` +
-      sections.join('\n\n')
+  function handleSetPageLevel(level) {
+    if (!activeProjectId || !openPageId) return
+    const next = projectStore.setPageLevel(projectPages, openPageId, level)
+    projectStore.savePages(activeProjectId, next)
+    setProjectPages(projectStore.loadPages(activeProjectId))
+    refreshProjects()
+  }
 
+  // Open the project as a standalone prototype, starting at `pageId` (or the
+  // project's first page). Page content resolves from localStorage in the new tab.
+  function launchProjectPrototype(pageId) {
+    const target = pageId ?? projectPages[0]?.id
+    if (!target || !activeProjectId) return
+    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  // Export every project (and its pages' latest JSON) as one plain-text backup
+  // file, so nothing is lost if local storage is cleared.
+  function handleExportAll() {
+    const content = projectStore.exportAllText()
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `a1-editor-pages-${new Date().toISOString().slice(0, 10)}.txt`
+    a.download = `a1-editor-projects-${new Date().toISOString().slice(0, 10)}.txt`
     document.body.appendChild(a)
     a.click()
     a.remove()
     URL.revokeObjectURL(url)
   }
 
-  // Restore pages from an "Export all" file: parse each delimited section back
-  // into its page JSON, write it to that page's storage, register any new user
-  // pages, then reload so the editor picks everything up cleanly.
+  // Restore projects + pages from an "Export all" file, then reload so the editor
+  // picks everything up cleanly. Suppress the open page's history flush first so
+  // its stale in-memory state can't clobber the freshly-imported content.
   async function handleImportFile(event) {
     const file = event.target.files?.[0]
     event.target.value = '' // allow re-importing the same file later
@@ -302,53 +356,12 @@ function App() {
     let text = ''
     try { text = await file.text() } catch { setEditorMessage('Could not read that file.'); return }
 
-    // Sections look like:  ===== Label (id) =====\n<json>
-    const re = /^===== (.*?) \(([^)]+)\) =====$/gm
-    const matches = [...text.matchAll(re)]
-    if (matches.length === 0) {
-      setEditorMessage('No pages found in that file.')
+    const { projects: importedProjects } = projectStore.importAllText(text)
+    if (importedProjects === 0) {
+      setEditorMessage('No projects found in that file.')
       return
     }
 
-    const exampleIds = new Set(EDITOR_EXAMPLES.map((e) => e.id))
-    let nextUserPages = [...userPages]
-    let imported = 0
-
-    matches.forEach((m, i) => {
-      const id = m[2]
-      const start = m.index + m[0].length
-      const end = i + 1 < matches.length ? matches[i + 1].index : text.length
-      const json = text.slice(start, end).trim()
-
-      let parsed
-      try { parsed = JSON.parse(json) } catch { return } // skip invalid sections
-      const pretty = JSON.stringify(parsed, null, 2)
-      const stamp = `${Date.now()}-${i}`
-
-      // Seed both stores so the page loads regardless of which the editor reads.
-      writeStored(`a1-editor-versions-${id}`, JSON.stringify({
-        versions: [{ id: `v-import-${stamp}`, label: 'Imported', json: pretty }],
-        activeVersionId: `v-import-${stamp}`,
-      }))
-      writeStored(`a1-editor-history-${id}`, JSON.stringify({
-        entries: [{ id: `h-import-${stamp}`, json: pretty, label: 'Imported', timestamp: Date.now() }],
-        index: 0,
-      }))
-
-      if (!exampleIds.has(id) && !nextUserPages.some((p) => p.id === id)) {
-        nextUserPages.push({ id, label: parsed.page?.name || m[1] || 'Untitled' })
-      }
-      imported += 1
-    })
-
-    if (imported === 0) {
-      setEditorMessage('That file did not contain any valid page JSON.')
-      return
-    }
-
-    writeStored('a1-editor-user-pages', JSON.stringify(nextUserPages))
-    // Reload to load imported content. Suppress the editor's history flush first
-    // so the open page's stale in-memory state can't clobber what we just wrote.
     suppressHistoryFlush()
     window.location.reload()
   }
@@ -373,7 +386,14 @@ function App() {
   useEffect(() => {
     window.history.replaceState({ page: getPage() }, '', window.location.href)
     setActivePage(getPage())
-    const onPop = () => setActivePage(getPage())
+    const onPop = () => {
+      setActivePage(getPage())
+      const params = new URLSearchParams(window.location.search)
+      const proj = params.get('project') || null
+      setActiveProjectId(proj)
+      setProjectPages(proj ? projectStore.loadPages(proj) : [])
+      setOpenPageId(params.get('doc') || null)
+    }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
@@ -394,27 +414,50 @@ function App() {
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
   useEffect(() => { localStorage.setItem('a1-web-locale', locale) }, [locale])
 
-  // Keep the user-page label in sync with the page definition's name.
+  // Mirror the open page's definition metadata (name/description/icon) into its
+  // project page record so the page tree and generated nav stay in sync as you
+  // edit. Hierarchy (parentId/order) is owned by the tree, not the definition.
   useEffect(() => {
-    const pageName = editorDefinition?.page?.name
-    if (!pageName || !editorExampleId.startsWith(NEW_PAGE_ID)) return
-    setUserPages((prev) => {
-      const next = prev.map((p) => p.id === editorExampleId ? { ...p, label: pageName } : p)
-      writeStored('a1-editor-user-pages', JSON.stringify(next))
+    const page = editorDefinition?.page
+    if (!page || !activeProjectId || !openPageId) return
+    setProjectPages((prev) => {
+      const target = prev.find((p) => p.id === openPageId)
+      if (!target) return prev
+      const title = page.name || 'Untitled'
+      const description = page.description || undefined
+      const icon = page.icon ?? target.icon
+      if (target.title === title && target.description === description && target.icon === icon) return prev
+      const next = prev.map((p) => (p.id === openPageId ? { ...p, title, description, icon } : p))
+      projectStore.savePages(activeProjectId, next)
       return next
     })
-  }, [editorDefinition?.page?.name, editorExampleId])
+  }, [editorDefinition?.page?.name, editorDefinition?.page?.description, editorDefinition?.page?.icon, activeProjectId, openPageId])
 
-  // Keep the editor URL pointed at the active page (`?page=editor&doc=<id>`) so it
-  // can be copied and shared as a direct link to editing that page.
+  // Keep the editor URL pointed at the active project + page
+  // (`?page=editor&project=<id>&doc=<id>`) so it is shareable. Each genuine
+  // in-editor navigation (changing project or page) PUSHES a history entry so
+  // the browser Back button steps through All Projects → project → page. The
+  // very first sync after entering the editor (mount or resume from a stored
+  // project) REPLACES instead, so we don't leave a spurious entry behind.
+  const editorUrlSynced = useRef(false)
   useEffect(() => {
     if (activePage !== 'editor') return
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('doc') === editorExampleId) return
+    const params = new URLSearchParams()
     params.set('page', 'editor')
-    params.set('doc', editorExampleId)
-    window.history.replaceState({ page: 'editor' }, '', `${window.location.pathname}?${params.toString()}`)
-  }, [activePage, editorExampleId])
+    if (activeProjectId) params.set('project', activeProjectId)
+    if (openPageId) params.set('doc', openPageId)
+    const next = `${window.location.pathname}?${params.toString()}`
+    if (`${window.location.pathname}${window.location.search}` === next) {
+      editorUrlSynced.current = true
+      return
+    }
+    if (editorUrlSynced.current) {
+      window.history.pushState({ page: 'editor' }, '', next)
+    } else {
+      window.history.replaceState({ page: 'editor' }, '', next)
+    }
+    editorUrlSynced.current = true
+  }, [activePage, activeProjectId, openPageId])
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return undefined
@@ -497,13 +540,41 @@ function App() {
         })),
       ],
     },
-    ...['templates', 'editor'].map((id) => ({
-      id,
-      label: PAGE_TITLES[id],
-      href: getPath(id),
-      active: activePage === id,
-      onClick: (e) => handleNavClick(e, id),
-    })),
+    {
+      id: 'templates',
+      label: PAGE_TITLES.templates,
+      href: getPath('templates'),
+      active: activePage === 'templates',
+      onClick: (e) => handleNavClick(e, 'templates'),
+    },
+    {
+      id: 'editor',
+      label: PAGE_TITLES.editor,
+      active: activePage === 'editor' || activePage === 'help',
+      items: [
+        {
+          icon: 'grid_view',
+          label: 'All projects',
+          href: getPath('editor'),
+          onClick: handleEditorNav,
+        },
+        {
+          icon: 'help',
+          label: 'Editor help',
+          href: getPath('help'),
+          active: activePage === 'help',
+          onClick: (e) => handleNavClick(e, 'help'),
+        },
+        ...(projects.length ? [{ divider: true }] : []),
+        ...projects.map((project) => ({
+          icon: project.icon || 'folder',
+          label: project.name,
+          href: `/?page=editor&project=${project.id}`,
+          active: activePage === 'editor' && activeProjectId === project.id,
+          onClick: (e) => handleProjectNav(e, project.id),
+        })),
+      ],
+    },
   ]
 
   const actions = [
@@ -538,47 +609,32 @@ function App() {
         stickyHeader
         viewportHeight
         sidebar={
-          activePage === 'editor'
-            ? <EditorSidebar
-                activeExample={editorExampleId}
-                activePageName={editorDefinition?.page?.name}
-                isDirty={editorDirty}
+          activePage === 'editor' && activeProject
+            ? <ProjectWorkspaceSidebar
+                project={activeProject}
+                onBackToProjects={handleBackToProjects}
+                pages={projectPages}
+                activePageId={openPageId}
+                hasOpenPage={!!openPageId}
+                onSelectPage={handleOpenPage}
+                onAddPage={handleAddPage}
+                onDuplicatePage={handleDuplicateProjectPage}
+                onDeletePage={handleDeleteProjectPage}
+                onMovePage={handleMoveProjectPage}
                 definition={editorDefinition}
                 selectedNodeId={editorSelectedNodeId}
-                userPages={userPages}
                 onSelectNode={setEditorSelectedNodeId}
                 onNodeMove={setEditorPendingMove}
                 onRequestAdd={setEditorAddTarget}
                 onNodeAction={setEditorPendingAction}
                 onConvertNode={(nodeId, newType, newProps) => setEditorPendingConvert({ nodeId, newType, newProps })}
-                onSelectExample={(id) => {
-                  // Each "New page" gets a unique ID so it starts with a clean
-                  // slate rather than inheriting a previous draft from localStorage.
-                  const resolvedId = id === NEW_PAGE_ID
-                    ? `${NEW_PAGE_ID}-${Date.now()}`
-                    : id
-                  if (id === NEW_PAGE_ID) {
-                    const newPage = { id: resolvedId, label: 'Untitled' }
-                    setUserPages((prev) => {
-                      const next = [...prev, newPage]
-                      writeStored('a1-editor-user-pages', JSON.stringify(next))
-                      return next
-                    })
-                  }
-                  setEditorExampleId(resolvedId)
-                  localStorage.setItem('a1-editor-active-example', resolvedId)
-                  setEditorView('edit')
-                  setEditorDirty(false)
-                  setEditorSelectedNodeId(null)
-                  setEditorDefinition(null)
-                }}
               />
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({ activePage, onNavigate: navigate, search: componentSearch, setSearch: setComponentSearch })
             : undefined
         }
         aside={
-          activePage === 'editor'
+          activePage === 'editor' && activeProject && openPageId
             ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
             : getComponentsAside({ activePage, detailTab })
         }
@@ -615,17 +671,44 @@ function App() {
         )}
         {activePage === 'templates' && <Templates />}
         {activePage === 'editor' && (
-          editorPageExists(editorExampleId) ? (
+          !activeProject ? (
+            <ProjectsList
+              projects={projects}
+              onOpenProject={openProject}
+              onCreateProject={handleCreateProject}
+              onRenameProject={handleRenameProject}
+              onDuplicateProject={handleDuplicateProject}
+              onDeleteProject={handleDeleteProject}
+              onNavigateHome={() => navigate('home')}
+              onOpenHelp={() => navigate('help')}
+            />
+          ) : !openPageId || !projectPages.some((p) => p.id === openPageId) ? (
+            <AllPagesView
+              project={activeProject}
+              pages={projectPages}
+              onOpenPage={handleOpenPage}
+              onAddPage={handleAddPage}
+              onLaunchPrototype={() => launchProjectPrototype()}
+              onRenameProject={handleRenameProject}
+              onDeleteProject={handleDeleteProject}
+              onNavigateHome={() => navigate('home')}
+              onBackToProjects={handleBackToProjects}
+            />
+          ) : (
             <EditorPage
-              key={editorExampleId}
-              exampleId={editorExampleId}
-              definition={editorExampleId.startsWith(NEW_PAGE_ID) ? makeBlankPage(editorExampleId) : EDITOR_EXAMPLES.find((e) => e.id === editorExampleId)?.definition}
-              pages={[
-                ...EDITOR_EXAMPLES.map((e) => ({ id: e.id, label: e.label })),
-                ...userPages,
-              ]}
-              onDuplicatePage={handleDuplicatePage}
-              onDeletePage={editorExampleId.startsWith(NEW_PAGE_ID) ? handleDeletePage : undefined}
+              key={openPageId}
+              exampleId={openPageId}
+              definition={definitionForPage(openPageId)}
+              pages={projectPages.map((p) => ({ id: p.id, label: p.title }))}
+              projectId={activeProjectId}
+              projectName={activeProject.name}
+              projectPages={projectPages}
+              onNavigateToPage={handleOpenPage}
+              pageLevel={projectStore.getPageLevel(projectPages, openPageId)}
+              availableLevels={projectStore.availableLevels(projectPages, openPageId)}
+              onSetPageLevel={handleSetPageLevel}
+              onDuplicatePage={() => handleDuplicateProjectPage(openPageId)}
+              onDeletePage={() => handleDeleteProjectPage(openPageId)}
               selectedNodeId={editorSelectedNodeId}
               onSelectNode={setEditorSelectedNodeId}
               onViewChange={setEditorView}
@@ -641,25 +724,23 @@ function App() {
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
             />
-          ) : (
-            <Section padding="xl" height="screen" align="center">
-              <MessageEmptyState
-                scale="page"
-                icon="error"
-                title="Page not found"
-                description="This page isn’t available in this browser. Editor pages are stored locally, so a shared link only opens on the device where the page was created."
-                action={(
-                  <Button onClick={() => switchToEditorPage(DEFAULT_EXAMPLE_ID)}>
-                    Go to default page
-                  </Button>
-                )}
-              />
-            </Section>
           )
         )}
         {activePage === 'editor-preview' && <EditorPreviewPage />}
-        {activePage === 'projects' && <Projects />}
+        {activePage === 'projects' && (
+          <ProjectsList
+            projects={projects}
+            onOpenProject={openProject}
+            onCreateProject={handleCreateProject}
+            onRenameProject={handleRenameProject}
+            onDuplicateProject={handleDuplicateProject}
+            onDeleteProject={handleDeleteProject}
+            onNavigateHome={() => navigate('home')}
+            onOpenHelp={() => navigate('help')}
+          />
+        )}
         {activePage === 'accessibility' && <Accessibility />}
+        {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases />}
       </PageLayout>
 
@@ -765,15 +846,6 @@ function App() {
           </Button>
         </MenuSection>
       </Menu>
-
-      <Snackbar
-        open={pageSnackbarOpen}
-        onClose={() => setPageSnackbarOpen(false)}
-        actionLabel="Undo"
-        onAction={handleUndoDeletePage}
-      >
-        {deletedPage ? `“${deletedPage.page.label}” deleted` : 'Page deleted'}
-      </Snackbar>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
         {editorMessage}

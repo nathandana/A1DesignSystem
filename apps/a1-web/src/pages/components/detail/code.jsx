@@ -1,11 +1,12 @@
 import {
-  ChoiceGroup,
   Code,
   Paragraph,
   Stack,
   TextareaField,
+  Toolbar,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice } from './configKit.jsx'
 
 const CODE_VARIANT_OPTIONS = ['block', 'inline']
 
@@ -151,7 +152,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -162,9 +163,11 @@ export function Controls({ config, setConfig }) {
       />
       {!isInline && (
         <>
-          <Toggle label="Wrapping" value={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
-          <Toggle label="Editable" value={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable }))} />
-          <Toggle label="Copy button" value={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
+          <Toolbar label="Options">
+            <ToolbarToggle icon="wrap_text" label="Wrapping" pressed={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
+            <ToolbarToggle icon="edit" label="Editable" pressed={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable }))} />
+            <ToolbarToggle icon="content_copy" label="Copy button" pressed={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
+          </Toolbar>
           {config.copyCode && (
             <TextareaField
               label="Clipboard text"

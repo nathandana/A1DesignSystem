@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Accordion,
@@ -49,7 +49,12 @@ import {
   Tabs,
   TextField,
   TextareaField,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarMenu,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { Toggle } from './detail/Toggle.jsx'
 import {
   COMPONENT_STATUS,
   PACKAGE_COLUMNS,
@@ -58,6 +63,7 @@ import {
 } from './data.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
+import { ResponsivePreviewContext } from './detail/responsivePreview.js'
 import {
   getComponentPath,
   getRelatedComponents,
@@ -222,6 +228,20 @@ const COMPONENT_ANATOMY_OVERRIDES = {
       wrapping: 'Prefer concise labels; multi-line buttons should be intentional and tested.',
     },
   },
+  notification: {
+    sizing: {
+      width: 'Content-sized',
+      widthBehavior: 'A small dot, count, or label badge anchored to its child — it takes only the space its content needs, so it centers in the display Section.',
+    },
+  },
+  slider: {
+    sizing: {
+      width: 'Flexible',
+      widthBehavior: 'The slider fills its container width; it should not be centered or shrunk.',
+      height: 'Fixed by size',
+      heightBehavior: 'Track and thumb scale with the `size` prop; the label adds height above.',
+    },
+  },
   'icon-button': {
     callouts: [
       { label: 'Button surface', description: 'Square interactive target owns hover, active, disabled, and focus-visible states.', anchor: 'top-left' },
@@ -315,6 +335,23 @@ function mergeAnatomySpec(component, category) {
       ...(override.sizing ?? {}),
     },
   }
+}
+
+// Components with a natural (content-sized) width — buttons, badges, etc. — look
+// best centered in the display Section. Flexible/full-width components (Paragraph,
+// fields, tables) must stay full-width, so they default to no alignment; the
+// Section's `align` (justify-items) would otherwise shrink them to their content.
+function componentHasNaturalWidth(component, category) {
+  // Both content-sized and fixed-width controls (e.g. Icon Button) don't stretch,
+  // so they should be centered rather than pinned to the start.
+  const width = mergeAnatomySpec(component, category).sizing.width
+  return width === 'Content-sized' || width === 'Fixed'
+}
+
+// Default display alignment for a component: center natural-width controls, leave
+// flexible components full-width (overridable either way via the Display tab).
+function defaultDisplayAlign(component, category) {
+  return componentHasNaturalWidth(component, category) ? 'center' : ''
 }
 
 function AnatomyComponentPreview({ component }) {
@@ -1584,6 +1621,121 @@ function ContainerQueryPreviewFrame({ component, displayConfig, children }) {
   )
 }
 
+// Viewport presets for the responsive preview. Each renders the preview inside
+// an iframe of the given width — a real nested viewport, so CSS @media (and
+// container) queries respond accurately — then scales it down to fit the panel.
+const VIEWPORT_PRESETS = [
+  { value: 'fit', label: 'Fit', icon: 'fit_screen' },
+  { value: 'xs', label: 'XS', icon: 'smartphone', width: 390, height: 844 },
+  { value: 'sm', label: 'SM', icon: 'tablet_android', width: 600, height: 960 },
+  { value: 'md', label: 'MD', icon: 'tablet_mac', width: 820, height: 1180 },
+  { value: 'lg', label: 'LG', icon: 'laptop', width: 1280, height: 800 },
+  { value: 'xl', label: 'XL', icon: 'desktop_windows', width: 1600, height: 1000 },
+]
+
+// Preview padding options for the center-panel display toolbar.
+const PADDING_ITEMS = [
+  { value: 'none', label: 'None' },
+  { value: 'xs', label: 'XS' },
+  { value: 'md', label: 'MD' },
+  { value: 'lg', label: 'LG' },
+]
+
+// Resolve the active responsive-preview device size, or null for "Fit".
+function viewportSize(displayConfig) {
+  const value = displayConfig.viewport ?? 'fit'
+  if (value === 'fit') return null
+  const preset = VIEWPORT_PRESETS.find((p) => p.value === value)
+  return preset?.width ? { width: preset.width, height: preset.height } : null
+}
+
+/**
+ * ResponsivePreviewFrame — renders its children inside an iframe sized to a
+ * device width (a genuine nested viewport, so the component's @media/container
+ * breakpoints apply), then scales the iframe down with a CSS transform so a wide
+ * desktop layout is viewable inside a narrow panel (e.g. on a phone). `width`
+ * null = "fit" (no simulation; children render normally).
+ */
+function ResponsivePreviewFrame({ width, height, children }) {
+  const outerRef = useRef(null)
+  // Callback ref (state) so the setup effect runs once the iframe is in the DOM.
+  const [iframeEl, setIframeEl] = useState(null)
+  const [scale, setScale] = useState(1)
+  const [body, setBody] = useState(null)
+
+  // Scale = available panel width ÷ device width (never enlarge past 1:1). The
+  // device keeps a real fixed height; its page scrolls inside the iframe.
+  useLayoutEffect(() => {
+    if (!width) return undefined
+    const measure = () => {
+      const available = outerRef.current?.clientWidth ?? width
+      setScale(Math.min(1, available / width))
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (outerRef.current) ro.observe(outerRef.current)
+    window.addEventListener('resize', measure)
+    return () => { ro.disconnect(); window.removeEventListener('resize', measure) }
+  }, [width])
+
+  // Prepare the iframe document: clone the app stylesheets + theme so A1 CSS
+  // applies inside, and expose its <body> as the portal target. A src-less
+  // (about:blank) iframe fires `load` unreliably, so set up directly (guarded)
+  // and also on `load`.
+  useEffect(() => {
+    if (!iframeEl) { setBody(null); return undefined }
+    const setup = () => {
+      const doc = iframeEl.contentDocument
+      if (!doc || !doc.body) return
+      doc.head.querySelectorAll('[data-a1-cloned]').forEach((node) => node.remove())
+      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => {
+        const clone = node.cloneNode(true)
+        clone.setAttribute('data-a1-cloned', '')
+        doc.head.appendChild(clone)
+      })
+      const html = document.documentElement
+      if (html.getAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
+      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
+      doc.body.style.margin = '0'
+      doc.body.style.minBlockSize = '100%'
+      doc.body.style.background = 'var(--semantic-color-surface-page)'
+      setBody(doc.body)
+    }
+    setup()
+    iframeEl.addEventListener('load', setup)
+    return () => iframeEl.removeEventListener('load', setup)
+  }, [iframeEl])
+
+  if (!width) return children
+
+  return (
+    <div ref={outerRef} className="a1-web-responsive-preview">
+      <div className="a1-web-responsive-preview__caption">
+        {width} × {height}px{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
+      </div>
+      <div
+        className="a1-web-responsive-preview__viewport"
+        style={{ inlineSize: `${width * scale}px`, blockSize: `${height * scale}px` }}
+      >
+        <iframe
+          ref={setIframeEl}
+          title="Responsive preview"
+          className="a1-web-responsive-preview__frame"
+          style={{
+            inlineSize: `${width}px`,
+            blockSize: `${height}px`,
+            transform: `scale(${scale})`,
+          }}
+        />
+        {body && createPortal(
+          <ResponsivePreviewContext.Provider value={true}>{children}</ResponsivePreviewContext.Provider>,
+          body,
+        )}
+      </div>
+    </div>
+  )
+}
+
 function normalizePropTables(component) {
   const entry = COMPONENT_PROPS[component.id]
   if (!entry) return [{ title: null, rows: FALLBACK_PROP_ROWS }]
@@ -1600,121 +1752,82 @@ function ConfigurationPanel({
   config,
   setConfig,
   onResetConfig,
-  displayConfig,
-  setDisplayConfig,
-  configPanelTab,
-  setConfigPanelTab,
   Controls,
-  bareDisplay = false,
+  viewAs,
+  setViewAs,
+  viewAsModes,
 }) {
   return (
     <div className="a1-web-config-aside__inner">
-      <Tabs className="a1-web-config-aside__tabs" value={configPanelTab} onChange={setConfigPanelTab} variant="line" size="compact">
-        <TabList>
-          <Tab value="configure">Configure</Tab>
-          <Tab value="display">Display</Tab>
-        </TabList>
-        <TabPanel value="configure">
-          <div className="a1-web-config-panel">
-            <div className="a1-web-config-panel__body">
-              <Controls component={component} config={config} setConfig={setConfig} />
+      <div className="a1-web-config-panel">
+        <div className="a1-web-config-panel__body">
+          {viewAsModes && (
+            <div className="a1-web-config-viewas">
+              <Toolbar label="Codebase">
+                <ToolbarGroup
+                  aria-label="Codebase"
+                  showLabels
+                  value={viewAs}
+                  onChange={setViewAs}
+                  options={viewAsModes}
+                />
+              </Toolbar>
             </div>
-            <div className="a1-web-config-panel__footer">
-              <Button
-                icon="restart_alt"
-                size="sm"
-                variant="tertiary"
-                type="button"
-                onClick={onResetConfig}
-              >
-                Reset
-              </Button>
-            </div>
-          </div>
-        </TabPanel>
-        <TabPanel value="display">
-          <Stack gap="lg">
-            {supportsContainerQueries(component) && (
-              <ChoiceGroup
-                label="Container query"
-                hint="Constrain the preview to a standard container width."
-                size="compact"
-                hideIndicator
-                columns={3}
-                value={displayConfig.containerQuery ?? 'auto'}
-                onChange={(containerQuery) => setDisplayConfig((current) => ({ ...current, containerQuery }))}
-                options={CONTAINER_QUERY_PRESETS}
-              />
-            )}
-            {/* Surface/alignment/padding/inverse only apply when the preview is
-                wrapped in a Section. Components that own their own layout
-                (bareDisplay) hide these. */}
-            {!bareDisplay && (
-              <>
-                <ChoiceGroup
-                  label="Background"
-                  size="compact"
-                  hideIndicator
-                  columns={3}
-                  value={displayConfig.surface}
-                  onChange={(surface) => setDisplayConfig((current) => ({ ...current, surface }))}
-                  options={[
-                    { label: 'None', value: '', icon: 'layers_clear', iconOnly: true },
-                    { label: 'Panel', value: 'panel' },
-                    { label: 'Raised', value: 'raised' },
-                  ]}
-                />
-                <ChoiceGroup
-                  label="Alignment"
-                  size="compact"
-                  hideIndicator
-                  iconOnly
-                  columns={4}
-                  value={displayConfig.align}
-                  onChange={(align) => setDisplayConfig((current) => ({ ...current, align }))}
-                  options={[
-                    { icon: 'layers_clear', label: 'None', value: '' },
-                    { icon: 'align_horizontal_left', label: 'Left', value: 'left' },
-                    { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
-                    { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
-                  ]}
-                />
-                <ChoiceGroup
-                  label="Padding"
-                  size="compact"
-                  hideIndicator
-                  columns={4}
-                  value={displayConfig.padding}
-                  onChange={(padding) => setDisplayConfig((current) => ({ ...current, padding }))}
-                  options={[
-                    { label: 'None', value: 'none', icon: 'layers_clear', iconOnly: true },
-                    { label: 'Xs', value: 'xs' },
-                    { label: 'Md', value: 'md' },
-                    { label: 'Lg', value: 'lg' },
-                  ]}
-                />
-                <ChoiceGroup
-                  label="Inverse"
-                  size="compact"
-                  hideIndicator
-                  columns={4}
-                  value={displayConfig.inverse ? 'on' : 'off'}
-                  onChange={(value) => setDisplayConfig((current) => ({ ...current, inverse: value === 'on' }))}
-                  options={[
-                    { label: 'Off', value: 'off' },
-                    { label: 'On', value: 'on' },
-                  ]}
-                />
-              </>
-            )}
-            {bareDisplay && !supportsContainerQueries(component) && (
-              <Paragraph size="sm" color="muted">
-                {component.title} manages its own surface and layout, so there are no display options to configure.
-              </Paragraph>
-            )}
-          </Stack>
-        </TabPanel>
-      </Tabs>
+          )}
+          <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+        </div>
+        <div className="a1-web-config-panel__footer">
+          <Button
+            icon="restart_alt"
+            size="sm"
+            variant="tertiary"
+            type="button"
+            onClick={onResetConfig}
+          >
+            Reset
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* Display controls shown as a toolbar in the top-right of the centre preview
+   panel: responsive viewport, preview padding, and inverse. */
+function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
+  const set = (patch) => setDisplayConfig((current) => ({ ...current, ...patch }))
+  return (
+    <div className="a1-web-display-bar">
+      <Toolbar aria-label="Display options">
+        <ToolbarMenu
+          aria-label="Responsive view"
+          label="Responsive view"
+          showLabel
+          value={displayConfig.viewport ?? 'fit'}
+          onChange={(viewport) => set({ viewport })}
+          items={VIEWPORT_PRESETS}
+        />
+        {!bareDisplay && (
+          <ToolbarMenu
+            icon="padding"
+            aria-label="Padding"
+            label="Padding"
+            showLabel
+            value={displayConfig.padding}
+            onChange={(padding) => set({ padding })}
+            items={PADDING_ITEMS}
+          />
+        )}
+        {!bareDisplay && (
+          <ToolbarToggle
+            icon="invert_colors"
+            label="Inverse"
+            showLabel
+            pressed={displayConfig.inverse}
+            onChange={(inverse) => set({ inverse })}
+          />
+        )}
+      </Toolbar>
     </div>
   )
 }
@@ -1722,13 +1835,15 @@ function ConfigurationPanel({
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const detail = getDetailModule(component.id)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
-  const [configPanelTab, setConfigPanelTab] = useState('configure')
+  // Platform the component is viewed/coded as (React / Native / Pure). Only
+  // components whose detail module exports `viewAsModes` show the control.
+  const [viewAs, setViewAs] = useState('react')
   const [displayConfig, setDisplayConfig] = useState({
-    surface: '',
-    align: '',
+    align: defaultDisplayAlign(component, category),
     padding: 'md',
     inverse: false,
     containerQuery: 'auto',
+    viewport: 'fit',
     borderSize: 'xs',
     borderStyle: 'solid',
     borderVariant: 'subtle',
@@ -1741,6 +1856,10 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
+    setViewAs('react')
+    // Re-apply the per-component display alignment default (center for
+    // natural-width components, none for flexible ones) on navigation.
+    setDisplayConfig((current) => ({ ...current, align: defaultDisplayAlign(component, category) }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
 
@@ -1772,20 +1891,15 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             config={config}
             setConfig={setConfig}
             onResetConfig={resetConfig}
-            displayConfig={displayConfig}
-            setDisplayConfig={setDisplayConfig}
-            configPanelTab={configPanelTab}
-            setConfigPanelTab={setConfigPanelTab}
             Controls={detail.Controls}
-            bareDisplay={detail.bareDisplay}
+            viewAs={viewAs}
+            setViewAs={setViewAs}
+            viewAsModes={detail.viewAsModes}
           />,
           asideNode,
         )}
         <Section padding="xs" surface='page' direction="column" gap="xs">
           <Breadcrumb items={breadcrumbItems} />
-          <Heading as="h1" id="components-heading" size={{ xs: 'xl', md: 'xxl' }}>
-            {component?.title}
-          </Heading>
         </Section>
         <Section padding="xs" surface='page' direction="column" gap="xs">
           <Tabs value={tab} onChange={onTabChange} size="compact">
@@ -1799,28 +1913,35 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             </TabList>
             <TabPanel value="configure">
               <Stack gap="sm">
-                {detail.bareDisplay ? (
-                  <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                    <detail.Preview component={component} config={config} setConfig={setConfig} />
-                  </ContainerQueryPreviewFrame>
-                ) : (
-                  <Section
-                    surface={displayConfig.surface || undefined}
-                    align={displayConfig.align}
-                    padding={displayConfig.padding}
-                    inverse={displayConfig.inverse}
-                    gap="lg"
-                    borderSize={displayConfig.surface ? undefined : displayConfig.borderSize}
-                    borderStyle={displayConfig.surface ? undefined : displayConfig.borderStyle}
-                    borderVariant={displayConfig.surface ? undefined : displayConfig.borderVariant}
-                    radius={displayConfig.radius}
-                  >
+                <DisplayToolbar
+                  displayConfig={displayConfig}
+                  setDisplayConfig={setDisplayConfig}
+                  bareDisplay={detail.bareDisplay}
+                />
+                <ResponsivePreviewFrame {...(viewportSize(displayConfig) ?? {})}>
+                  {detail.bareDisplay ? (
                     <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                      <detail.Preview component={component} config={config} setConfig={setConfig} />
+                      <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
                     </ContainerQueryPreviewFrame>
-                  </Section>
-                )}
-                <detail.Snippet component={component} config={config} />
+                  ) : (
+                    <Section
+                      align={displayConfig.align}
+                      padding={displayConfig.padding}
+                      inverse={displayConfig.inverse}
+                      gap="lg"
+                      borderSize={displayConfig.borderSize}
+                      borderStyle={displayConfig.borderStyle}
+                      borderVariant={displayConfig.borderVariant}
+                      radius={displayConfig.radius}
+                    >
+                      <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+                        <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+                      </ContainerQueryPreviewFrame>
+                    </Section>
+                  )}
+                </ResponsivePreviewFrame>
+                <Divider lineStyle="dashed" space="lg" />
+                <detail.Snippet component={component} config={config} viewAs={viewAs} />
               </Stack>
             </TabPanel>
 

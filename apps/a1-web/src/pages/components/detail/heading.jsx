@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  Button,
-  ChoiceGroup,
+  Accordion,
   Code,
   Heading,
   Paragraph,
+  Slider,
+  Spacer,
   Stack,
+  TextareaField,
   TextField,
+  Toolbar,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { Toggle } from './Toggle.jsx'
+import { ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
 const HEADING_TYPE_OPTIONS = ['heading', 'display']
@@ -20,6 +27,27 @@ function optionLabel(value) {
   return value === 'xJumbo'
     ? 'X jumbo'
     : value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+// Join the applied (truthy) parts into a collapsed-accordion summary.
+const summarize = (parts) => parts.filter(Boolean).join(' · ')
+
+// Margin scale as a Slider (index space ↔ value; '' = no margin).
+const MARGIN_VALUES = ['', 'sm', 'md', 'lg']
+const MARGIN_DETENTS = MARGIN_VALUES.map((value, index) => ({ value: index, label: value ? optionLabel(value) : '--' }))
+
+// A compact, subtle Slider over a string-value scale (matches the Section configurator).
+function DetentSlider({ label, values, detents, value, onChange }) {
+  return (
+    <Slider
+      size="compact"
+      variant="subtle"
+      label={label}
+      detents={detents}
+      value={Math.max(0, values.indexOf(value))}
+      onChange={(index) => onChange(values[index])}
+    />
+  )
 }
 
 function escapeJsxText(value) {
@@ -152,7 +180,7 @@ function buildHeadingSnippet(config) {
   const props = [
     config.as !== 'h2' ? `as="${config.as}"` : null,
     config.type !== 'heading' ? `type="${config.type}"` : null,
-    config.size ? `size="${config.size}"` : null,
+    config.size && typeof config.size === 'object' ? responsiveProp('size', config.size) : (config.size ? `size="${config.size}"` : null),
     config.color !== 'default' ? `color="${config.color}"` : null,
     config.align !== 'left' ? `align="${config.align}"` : null,
     config.margin ? `margin="${config.margin}"` : null,
@@ -313,22 +341,22 @@ function EditableHeading({ component, config, setConfig }) {
           style={{ left: `${toolbar.left}px`, top: `${toolbar.top}px` }}
           onMouseDown={(event) => event.preventDefault()}
         >
-          <Button
-            size="sm"
-            variant={activeHighlight ? 'primary' : 'secondary'}
-            icon="ink_highlighter"
-            onClick={() => applyMark('highlight')}
-          >
-            Highlight
-          </Button>
-          <Button
-            size="sm"
-            variant={activeUnderline ? 'primary' : 'secondary'}
-            icon="format_underlined"
-            onClick={() => applyMark('underline')}
-          >
-            Underline
-          </Button>
+          <Toolbar overlay aria-label="Heading mark">
+            <ToolbarToggle
+              icon="ink_highlighter"
+              label="Highlight"
+              showLabel
+              pressed={activeHighlight}
+              onChange={() => applyMark('highlight')}
+            />
+            <ToolbarToggle
+              icon="format_underlined"
+              label="Underline"
+              showLabel
+              pressed={activeUnderline}
+              onChange={() => applyMark('underline')}
+            />
+          </Toolbar>
         </div>
       )}
     </div>
@@ -358,137 +386,96 @@ export function Preview({ component, config, setConfig }) {
 export function Controls({ config, setConfig }) {
   const sizeOptions = HEADING_SIZE_OPTIONS[config.type] ?? HEADING_SIZE_OPTIONS.heading
   const markState = getMarkState(config.children)
+  const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+
+  const advancedSummary = summarize([
+    config.align !== 'left' && `${optionLabel(config.align)} align`,
+    config.margin && `${optionLabel(config.margin)} margin`,
+    config.textWrap && 'Balanced',
+  ])
 
   return (
     <Stack gap="lg">
-      <Paragraph size="sm" color="muted">
-        Edit the heading directly in the preview and select text to add a mark — or type
-        in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
-      </Paragraph>
-      <TextField
+<TextareaField
         label="Text"
+        rows="sm"
+        
         hint="==text== highlights · __text__ underlines"
         size="compact"
         value={htmlToMarkdown(config.children)}
-        onChange={(event) => setConfig((current) => ({ ...current, children: markdownToHtml(event.target.value) }))}
+        onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
       />
-      <ChoiceGroup
-        label="Heading mark"
-        hint="Applies to selected text, or the last word if nothing is marked yet."
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={markState.variant ?? 'none'}
-        onChange={(variant) => setConfig((current) => ({
-          ...current,
-          children: setHeadingMark(current.children, variant, markState.underlineStyle),
-        }))}
-        options={[
-          { label: 'None',      value: 'none'      },
-          { label: 'Highlight', value: 'highlight' },
-          { label: 'Underline', value: 'underline' },
-        ]}
-      />
-      {markState.variant === 'underline' && (
-        <ChoiceGroup
-          label="Underline style"
-          size="compact"
-          hideIndicator
-          columns={3}
-          value={markState.underlineStyle}
-          onChange={(style) => setConfig((current) => ({
-            ...current,
-            children: setUnderlineStyle(current.children, style),
-          }))}
-          options={UNDERLINE_STYLES.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+      <Toolbar label="Type">
+        <ToolbarGroup
+          aria-label="Type"
+          showLabels
+          value={config.type}
+          onChange={(type) => {
+            const nextSizeOptions = HEADING_SIZE_OPTIONS[type] ?? HEADING_SIZE_OPTIONS.heading
+            setConfig((current) => ({
+              ...current,
+              type,
+              size: nextSizeOptions.includes(current.size) ? current.size : nextSizeOptions[2],
+            }))
+          }}
+          options={HEADING_TYPE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
-      )}
-      <ChoiceGroup
-        label="Type"
-        size="compact"
-        hideIndicator
-        value={config.type}
-        onChange={(type) => {
-          const nextSizeOptions = HEADING_SIZE_OPTIONS[type] ?? HEADING_SIZE_OPTIONS.heading
-          setConfig((current) => ({
-            ...current,
-            type,
-            size: nextSizeOptions.includes(current.size) ? current.size : nextSizeOptions[2],
-          }))
-        }}
-        options={HEADING_TYPE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="As"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.as}
-        onChange={(as) => setConfig((current) => ({ ...current, as }))}
-        options={HEADING_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
-      />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={sizeOptions.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="Color"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.color}
-        onChange={(color) => setConfig((current) => ({ ...current, color }))}
-        options={[
-          { label: 'Default', value: 'default', swatch: 'var(--semantic-color-text-default)'      },
-          { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'        },
-          { label: 'Accent',  value: 'accent',  swatch: 'var(--semantic-color-action-background)' },
-        ]}
-      />
-      <ChoiceGroup
-        label="Align"
-        size="compact"
-        hideIndicator
-        iconOnly
-        columns={3}
-        value={config.align}
-        onChange={(align) => setConfig((current) => ({ ...current, align }))}
-        options={[
-          { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
-          { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
-          { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
-        ]}
-      />
-      <ChoiceGroup
-        label="Margin"
-        size="compact"
-        hideIndicator
-        columns={4}
-        value={config.margin || 'none'}
-        onChange={(margin) => setConfig((current) => ({ ...current, margin: margin === 'none' ? '' : margin }))}
-        options={[
-          { label: 'None', value: 'none', icon: 'remove_circle', iconOnly: true },
-          { label: 'Sm',   value: 'sm'                   },
-          { label: 'Md',   value: 'md'                   },
-          { label: 'Lg',   value: 'lg'                   },
-        ]}
-      />
-      <ChoiceGroup
-        label="Text wrap"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.textWrap ? 'balance' : 'default'}
-        onChange={(value) => setConfig((current) => ({ ...current, textWrap: value === 'balance' }))}
-        options={[
-          { label: 'Default', value: 'default' },
-          { label: 'Balance', value: 'balance' },
-        ]}
-      />
+      </Toolbar>
+      <Toolbar label="Element">
+        <ToolbarGroup aria-label="Element" showLabels value={config.as} onChange={(as) => set({ as })} options={HEADING_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))} />
+      </Toolbar>
+      <ResponsiveControl label="Size" value={config.size} onChange={(size) => set({ size })} defaultValue={sizeOptions[2]}>
+        {(val, setVal) => (
+          <DetentSlider
+            values={sizeOptions}
+            detents={sizeOptions.map((value, index) => ({ value: index, label: optionLabel(value) }))}
+            value={val}
+            onChange={setVal}
+          />
+        )}
+      </ResponsiveControl>
+      <Toolbar label="Color">
+        <ToolbarGroup
+          aria-label="Color"
+          showLabels
+          value={config.color}
+          onChange={(color) => set({ color })}
+          options={[
+            { label: 'Default', value: 'default', swatch: 'var(--semantic-color-text-default)' },
+            { label: 'Muted', value: 'muted', swatch: 'var(--semantic-color-text-muted)' },
+            { label: 'Accent', value: 'accent', swatch: 'var(--semantic-color-action-background)' },
+          ]}
+        />
+      </Toolbar>
+
+      <Accordion label="Advanced" size="sm" subtext={advancedSummary} divider>
+        
+
+        <Stack gap="md">
+<Spacer size="xs"></Spacer>
+          
+      <Paragraph size="xs" color="muted">
+        Edit the heading directly in the preview and select text to add a mark — or type
+        in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
+      </Paragraph>
+          <Toolbar label="Align">
+            <ToolbarGroup
+              aria-label="Align"
+              value={config.align}
+              onChange={(align) => set({ align })}
+              options={[
+                { icon: 'align_horizontal_left', label: 'Left', value: 'left' },
+                { icon: 'align_horizontal_center', label: 'Center', value: 'center' },
+                { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
+              ]}
+            />
+          </Toolbar>
+          <DetentSlider label="Margin" values={MARGIN_VALUES} detents={MARGIN_DETENTS} value={config.margin} onChange={(margin) => set({ margin })} />
+          <Toggle label="Balance text wrap" value={config.textWrap} onChange={(textWrap) => set({ textWrap })} />
+        </Stack>
+
+
+      </Accordion>
     </Stack>
   )
 }

@@ -10,6 +10,9 @@ export function EditorAsidePanel({
   selectedNodeId,
   definition,
   pages = [],
+  pageLevel,
+  availableLevels,
+  onSetPageLevel,
   onNodePropsChange,
   onPageMetadataChange,
   onConvertNode,
@@ -66,6 +69,9 @@ export function EditorAsidePanel({
             selectedNodeId={selectedNodeId}
             definition={definition}
             pages={pages}
+            pageLevel={pageLevel}
+            availableLevels={availableLevels}
+            onSetPageLevel={onSetPageLevel}
             onNodePropsChange={onNodePropsChange}
             onPageMetadataChange={onPageMetadataChange}
             onConvertNode={onConvertNode}

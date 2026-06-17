@@ -3,31 +3,34 @@
 .a1-accordion {
   /* Size tokens — default (md) */
   --a1-ac-height:      var(--component-accordion-trigger-height-md);
-  --a1-ac-px:          var(--component-accordion-padding-inline-md);
+  --a1-ac-px:          var(--base-spacing-8);
   --a1-ac-py:          var(--base-spacing-8);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-md);
   --a1-ac-font-size:   var(--semantic-font-size-body-md);
   --a1-ac-font-weight: var(--base-font-weight-medium);
+  --a1-ac-subtext-size: var(--semantic-font-size-body-sm);
 }
 
 /* ─── Sizes ─────────────────────────────────────────────────────────────────── */
 
 .a1-accordion--sm {
   --a1-ac-height:      var(--component-accordion-trigger-height-sm);
-  --a1-ac-px:          var(--component-accordion-padding-inline-sm);
+  --a1-ac-px:          var(--base-spacing-4);
   --a1-ac-py:          var(--base-spacing-6);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-sm);
   --a1-ac-font-size:   var(--semantic-font-size-body-sm);
   --a1-ac-font-weight: var(--base-font-weight-medium);
+  --a1-ac-subtext-size: var(--semantic-font-size-body-xs);
 }
 
 .a1-accordion--lg {
   --a1-ac-height:      var(--component-accordion-trigger-height-lg);
-  --a1-ac-px:          var(--component-accordion-padding-inline-lg);
+  --a1-ac-px:          var(--base-spacing-12);
   --a1-ac-py:          var(--base-spacing-12);
   --a1-ac-icon-size:   var(--component-accordion-icon-size-lg);
   --a1-ac-font-size:   var(--semantic-font-size-body-lg);
   --a1-ac-font-weight: var(--base-font-weight-bold);
+  --a1-ac-subtext-size: var(--semantic-font-size-body-md);
 }
 
 /* ─── Trigger ───────────────────────────────────────────────────────────────── */
@@ -41,7 +44,6 @@
   padding-inline: var(--a1-ac-px);
   padding-block: var(--a1-ac-py);
   border: none;
-  border-radius: var(--component-accordion-border-radius);
   background: transparent;
   cursor: pointer;
   color: var(--semantic-color-text-default);
@@ -85,11 +87,34 @@
   transform: rotate(0deg);
 }
 
-/* ─── Label ─────────────────────────────────────────────────────────────────── */
+/* ─── Label + subtext ───────────────────────────────────────────────────────── */
+
+/* Label and subtext stack vertically (subtext below the title). */
+.a1-accordion__text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
 
 .a1-accordion__label {
-  flex: 1;
   min-width: 0;
+}
+
+/* Secondary info below the title, shown only while collapsed (e.g. a summary of
+   applied settings). Truncates with an ellipsis. */
+.a1-accordion__subtext {
+  min-width: 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--a1-ac-subtext-size);
+  font-weight: var(--semantic-font-weight-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.a1-accordion--open .a1-accordion__subtext {
+  display: none;
 }
 
 /* ─── Body — CSS grid height animation ──────────────────────────────────────── */
@@ -107,6 +132,15 @@
 .a1-accordion__body-inner {
   overflow: hidden;
   min-height: 0;
+}
+
+/* ─── Divider (optional) ────────────────────────────────────────────────────── */
+/* Attached to the trigger (the expanding header), so it stays put under the
+   header whether collapsed or expanded — never drops to the bottom of the open
+   panel. */
+
+.a1-accordion--divider .a1-accordion__trigger {
+  border-block-end: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
 }
 
 /* ─── Disabled ──────────────────────────────────────────────────────────────── */

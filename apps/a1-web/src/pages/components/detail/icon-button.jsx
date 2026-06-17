@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   IconButton,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 import { Toggle } from './Toggle.jsx'
@@ -13,7 +13,7 @@ import { Toggle } from './Toggle.jsx'
 // stretched to full width. Do not add a fullWidth option here; use Button with
 // fullWidth for full-width actions. See system rule `icon-button-natural-width`.
 const VARIANT_OPTIONS = ['tertiary', 'secondary', 'destructive', 'success']
-const SIZE_OPTIONS = ['md', 'lg']
+const SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -57,7 +57,7 @@ export function Controls({ config, setConfig, pages }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -66,15 +66,7 @@ export function Controls({ config, setConfig, pages }) {
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <PageLinkField
         pages={pages}
         value={config.href ?? ''}

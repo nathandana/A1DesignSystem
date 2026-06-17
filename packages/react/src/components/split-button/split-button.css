@@ -1,0 +1,40 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Split Button — a primary action joined to a caret toggle that opens a Menu.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.a1-split-button {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* The two targets sit flush; the main rounds its inline-start corners, the
+   toggle rounds its inline-end corners, so together they read as one pill. */
+.a1-split-button__main {
+  --a1-button-border-radius: var(--component-button-border-radius) 0 0 var(--component-button-border-radius);
+}
+
+.a1-split-button__toggle {
+  --a1-button-border-radius: 0 var(--component-button-border-radius) var(--component-button-border-radius) 0;
+  /* A snug caret target rather than a full text button's inline padding. */
+  --a1-button-padding-inline: var(--base-spacing-8);
+  position: relative;
+}
+
+/* Hairline divider between the two targets, drawn in the button's own foreground
+   so it reads on every variant. */
+.a1-split-button__toggle::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--base-spacing-8);
+  inset-inline-start: 0;
+  inline-size: var(--component-divider-size-sm);
+  background: color-mix(in srgb, var(--a1-button-foreground) 35%, transparent);
+}
+
+.a1-split-button__caret {
+  font-size: var(--component-button-icon-size);
+}
+
+.a1-split-button--disabled {
+  cursor: not-allowed;
+}

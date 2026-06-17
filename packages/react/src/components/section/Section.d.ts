@@ -33,6 +33,12 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   borderStyle?: "solid" | "dashed" | "dotted";
   /** Border color tone. Uses the same variants as Divider. Default: "subtle" */
   borderVariant?: "subtle" | "strong" | "accent";
+  /**
+   * Which sides the border is drawn on (requires `borderSize`). `"all"` (default)
+   * draws all four sides; pass an array to draw only those sides, e.g.
+   * `["top", "bottom"]`. An empty array draws no border.
+   */
+  borderSides?: "all" | ("top" | "right" | "bottom" | "left")[];
   /** Border radius scale. */
   radius?: "none" | "sm" | "md" | "lg" | "xl";
   children?: React.ReactNode;

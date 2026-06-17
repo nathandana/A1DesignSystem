@@ -1,18 +1,20 @@
 import {
-  ChoiceGroup,
   Code,
   Stack,
   StatusBar,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-const LABEL_POSITION_OPTIONS = ['above', 'below', 'before', 'after']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+// An inline row of directional arrows showing where the label sits relative to the bar.
+const LABEL_POSITION_OPTIONS = [
+  { value: 'above', label: 'Above', icon: 'arrow_upward' },
+  { value: 'below', label: 'Below', icon: 'arrow_downward' },
+  { value: 'before', label: 'Before', icon: 'arrow_back' },
+  { value: 'after', label: 'After', icon: 'arrow_forward' },
+]
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -98,23 +100,13 @@ export function Controls({ config, setConfig }) {
         value={String(config.max)}
         onChange={(event) => set({ max: event.target.value })}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice
         label="Label position"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.labelPosition}
         onChange={(labelPosition) => set({ labelPosition })}
-        options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={LABEL_POSITION_OPTIONS}
       />
       <Toggle
         label="Indeterminate"

@@ -1,5 +1,4 @@
 import {
-  ChoiceGroup,
   Code,
   DataTable,
   Divider,
@@ -7,12 +6,18 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, FieldState } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 
 export const bareDisplay = true
 
-const SIZE_OPTIONS = ['responsive', 'comfortable', 'default', 'compact']
+// Density as icons: responsive (auto) plus the three density steps.
+const SIZE_OPTIONS = [
+  { value: 'responsive', label: 'Responsive', icon: 'width' },
+  { value: 'compact', label: 'Compact', icon: 'density_small' },
+  { value: 'default', label: 'Default', icon: 'density_medium' },
+  { value: 'comfortable', label: 'Comfortable', icon: 'density_large' },
+]
 
 const STATUS_MAP = {
   Active:   'success',
@@ -69,10 +74,6 @@ const SEARCHABLE_COLUMNS = [
 
 function resolvedSize(configSize) {
   return configSize === 'responsive' ? undefined : configSize
-}
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 function buildSnippet(config) {
@@ -146,24 +147,20 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Density"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.size}
         onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={SIZE_OPTIONS}
       />
-      <Toggle
-        label="Zebra stripes"
-        value={config.zebra}
-        onChange={(zebra) => set({ zebra })}
-      />
-      <Toggle
-        label="Scrollable"
-        value={config.scrollable}
-        onChange={(scrollable) => set({ scrollable })}
+      <FieldState
+        label="Appearance"
+        items={[
+          { key: 'zebra', label: 'Zebra stripes', icon: 'table_rows', value: config.zebra },
+          { key: 'scrollable', label: 'Scrollable', icon: 'swap_horiz', value: config.scrollable },
+        ]}
+        onChange={set}
       />
       <TextField
         label="Caption"
@@ -174,25 +171,15 @@ export function Controls({ config, setConfig }) {
 
       <Divider space="none" />
 
-      <Toggle
-        label="Sortable columns"
-        value={config.sortable}
-        onChange={(sortable) => set({ sortable })}
-      />
-      <Toggle
-        label="Search"
-        value={config.showSearch}
-        onChange={(showSearch) => set({ showSearch })}
-      />
-      <Toggle
-        label="Filters"
-        value={config.showFilters}
-        onChange={(showFilters) => set({ showFilters })}
-      />
-      <Toggle
-        label="Pagination"
-        value={config.showPagination}
-        onChange={(showPagination) => set({ showPagination })}
+      <FieldState
+        label="Features"
+        items={[
+          { key: 'sortable', label: 'Sortable columns', icon: 'sort', value: config.sortable },
+          { key: 'showSearch', label: 'Search', icon: 'search', value: config.showSearch },
+          { key: 'showFilters', label: 'Filters', icon: 'filter_alt', value: config.showFilters },
+          { key: 'showPagination', label: 'Pagination', icon: 'last_page', value: config.showPagination },
+        ]}
+        onChange={set}
       />
       {config.showPagination && (
         <NumberField
@@ -205,18 +192,16 @@ export function Controls({ config, setConfig }) {
 
       <Divider space="none" />
 
-      <Toggle
-        label="Selectable"
-        value={config.selectable}
-        onChange={(selectable) => set({ selectable })}
+      <FieldState
+        label="Selection"
+        items={[
+          { key: 'selectable', label: 'Selectable', icon: 'checklist', value: config.selectable },
+          ...(config.selectable
+            ? [{ key: 'showDeleteSelected', label: 'Delete selected', icon: 'delete', value: config.showDeleteSelected }]
+            : []),
+        ]}
+        onChange={set}
       />
-      {config.selectable && (
-        <Toggle
-          label="Delete selected"
-          value={config.showDeleteSelected}
-          onChange={(showDeleteSelected) => set({ showDeleteSelected })}
-        />
-      )}
 
       <Divider space="none" />
 

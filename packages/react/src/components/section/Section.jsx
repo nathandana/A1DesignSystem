@@ -23,7 +23,18 @@ const VALID_ALIGNMENTS = ["left", "center", "right"];
 const VALID_BORDER_SIZES = ["xs", "sm", "md", "lg"];
 const VALID_BORDER_STYLES = ["solid", "dashed", "dotted"];
 const VALID_BORDER_VARIANTS = ["subtle", "strong", "accent"];
+const VALID_BORDER_SIDES = ["top", "right", "bottom", "left"];
 const VALID_RADII = ["none", "sm", "md", "lg", "xl"];
+
+// Resolve which sides get the border. `null` means all sides (the default);
+// an array means only those sides (an empty array means no border).
+function resolveBorderSides(borderSides) {
+  if (borderSides == null || borderSides === "all") return null;
+  const arr = Array.isArray(borderSides) ? borderSides : [borderSides];
+  const sides = VALID_BORDER_SIDES.filter((side) => arr.includes(side));
+  if (sides.length === VALID_BORDER_SIDES.length) return null; // all four = all
+  return sides;
+}
 
 export function Section({
   as: Component = "section",
@@ -39,6 +50,7 @@ export function Section({
   borderSize,
   borderStyle = "solid",
   borderVariant = "subtle",
+  borderSides,
   radius,
   className = "",
   children,
@@ -98,6 +110,13 @@ export function Section({
 
   if (borderSize && VALID_BORDER_SIZES.includes(borderSize)) {
     classes.push(`a1-section--border-${borderSize}`);
+
+    // Per-side borders. Omitted / "all" draws all four sides (default).
+    const sides = resolveBorderSides(borderSides);
+    if (sides) {
+      classes.push("a1-section--border-sided");
+      sides.forEach((side) => classes.push(`a1-section--border-side-${side}`));
+    }
   }
 
   if (borderStyle && VALID_BORDER_STYLES.includes(borderStyle)) {

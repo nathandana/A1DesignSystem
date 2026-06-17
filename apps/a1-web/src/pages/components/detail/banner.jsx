@@ -1,7 +1,6 @@
 import {
   Banner,
   Button,
-  ChoiceGroup,
   Code,
   Link,
   Paragraph,
@@ -9,6 +8,7 @@ import {
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
@@ -133,7 +133,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <ChoiceGroup
+      <Choice
         label="Variant"
         size="compact"
         hideIndicator
@@ -142,16 +142,14 @@ export function Controls({ config, setConfig }) {
         onChange={(variant) => set({ variant })}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
+      <Choice
         label="Status"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
-        options={STATUS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={statusOptions(STATUS_OPTIONS)}
       />
-      <ChoiceGroup
+      <Choice
         label="Icon"
         size="compact"
         hideIndicator
@@ -170,7 +168,7 @@ export function Controls({ config, setConfig }) {
           onChange={(icon) => set({ icon })}
         />
       )}
-      <ChoiceGroup
+      <Choice
         label="Action"
         size="compact"
         hideIndicator

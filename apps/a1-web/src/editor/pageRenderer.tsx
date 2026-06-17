@@ -28,6 +28,7 @@ import type {
 const CONTAINER_TYPES = new Set([
   'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
   'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
+  'FieldRow',
 ]);
 
 // Components whose editable text is delivered via a named prop instead of as
@@ -62,6 +63,8 @@ interface EditorModeContextValue {
   onDuplicateNode: (nodeId: string) => void;
   onGroupAsStack: (nodeId: string) => void;
   onConvertNode: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
+  onCopyPattern: (nodeId: string) => void;
+  onPastePattern: (nodeId: string) => void;
   getNodeProps: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild: (nodeId: string) => void;
@@ -82,6 +85,8 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   onDuplicateNode: () => {},
   onGroupAsStack: () => {},
   onConvertNode: () => {},
+  onCopyPattern: () => {},
+  onPastePattern: () => {},
   getNodeProps: () => undefined,
   getNodeInfo: () => ({ isFirst: false, isLast: false, hasChildren: false }),
   onRequestAddChild: () => {},
@@ -232,7 +237,7 @@ function inlineMarkdownToNodes(text: string): ReactNode[] | null {
 function RenderNode({ node }: { node: ComponentNode }) {
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
-  const { enabled: editorMode, onNavigate, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, getNodeProps, getNodeInfo, onRequestAddChild, onCatalogDrop } = useContext(EditorModeContext);
+  const { enabled: editorMode, onNavigate, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onCatalogDrop } = useContext(EditorModeContext);
   const Component = resolveComponent(node.type);
 
   if (!Component) {
@@ -357,6 +362,8 @@ function RenderNode({ node }: { node: ComponentNode }) {
       onDuplicateNode={onDuplicateNode}
       onGroupAsStack={onGroupAsStack}
       onConvertNode={onConvertNode}
+      onCopyPattern={onCopyPattern}
+      onPastePattern={onPastePattern}
       getNodeProps={getNodeProps}
       getNodeInfo={getNodeInfo}
       isContainer={isContainer}
@@ -414,6 +421,8 @@ export function RenderPageDefinition({
   onDuplicateNode,
   onGroupAsStack,
   onConvertNode,
+  onCopyPattern,
+  onPastePattern,
   getNodeProps,
   getNodeInfo,
   onRequestAddChild,
@@ -431,6 +440,8 @@ export function RenderPageDefinition({
   onDuplicateNode?: (nodeId: string) => void;
   onGroupAsStack?: (nodeId: string) => void;
   onConvertNode?: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
+  onCopyPattern?: (nodeId: string) => void;
+  onPastePattern?: (nodeId: string) => void;
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo?: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild?: (nodeId: string) => void;
@@ -450,6 +461,8 @@ export function RenderPageDefinition({
     onDuplicateNode: onDuplicateNode ?? (() => {}),
     onGroupAsStack: onGroupAsStack ?? (() => {}),
     onConvertNode: onConvertNode ?? (() => {}),
+    onCopyPattern: onCopyPattern ?? (() => {}),
+    onPastePattern: onPastePattern ?? (() => {}),
     getNodeProps: getNodeProps ?? (() => undefined),
     getNodeInfo: getNodeInfo ?? noInfo,
     onRequestAddChild: onRequestAddChild ?? (() => {}),

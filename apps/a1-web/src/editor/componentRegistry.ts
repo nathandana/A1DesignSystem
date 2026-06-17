@@ -30,6 +30,7 @@ import {
   DateField,
   DefinitionList,
   Divider,
+  FieldRow,
   Figure,
   Fieldset,
   Grid,
@@ -44,6 +45,7 @@ import {
   MessageEmptyState,
   NumberField,
   PageLayout,
+  PageNav,
   Pagination,
   Paragraph,
   PhoneField,
@@ -51,6 +53,7 @@ import {
   Section,
   SegmentedControl,
   SelectField,
+  Slider,
   Spacer,
   Stack,
   StatusBar,
@@ -65,6 +68,7 @@ import {
 } from '@gtivr4/a1-design-system-react';
 import type { ComponentType as ReactComponentType } from 'react';
 import type { ComponentType } from './pageTypes';
+import { EditorDataTable, EditorTabs, EditorToolbar, EditorTreeMenu } from './editorComponents.jsx';
 
 export const componentRegistry: Record<ComponentType, ReactComponentType<any>> = {
   // Layout
@@ -124,6 +128,16 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   TopHeader,
   BottomDrawer,
   StickyActions,
+  PageNav,
   // Disclosure
   Accordion,
+  // Actions & controls (config-as-props adapters + real components)
+  Slider,
+  Tabs: EditorTabs,
+  Toolbar: EditorToolbar,
+  // Inputs
+  FieldRow,
+  // Data
+  TreeMenu: EditorTreeMenu,
+  DataTable: EditorDataTable,
 };

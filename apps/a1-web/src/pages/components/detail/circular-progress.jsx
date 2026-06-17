@@ -1,12 +1,11 @@
 import {
-  ChoiceGroup,
   CircularProgress,
   Code,
   Icon,
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { IconSelect } from './IconSelect.jsx'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
@@ -121,17 +120,9 @@ export function Controls({ config, setConfig }) {
         value={String(config.max)}
         onChange={(event) => set({ max: event.target.value })}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="Inner content"
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice
+        label="Inner content (Example)"
         size="compact"
         hideIndicator
         columns={2}
@@ -139,21 +130,6 @@ export function Controls({ config, setConfig }) {
         onChange={(content) => set({ content })}
         options={CONTENT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      {config.content === 'label' && (
-        <TextField
-          label="Inner label"
-          size="compact"
-          value={config.label}
-          onChange={(event) => set({ label: event.target.value })}
-        />
-      )}
-      {config.content === 'icon' && (
-        <IconSelect
-          label="Inner icon"
-          value={config.icon}
-          onChange={(icon) => set({ icon })}
-        />
-      )}
       <Toggle
         label="Indeterminate"
         value={config.indeterminate}

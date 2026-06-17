@@ -1,10 +1,10 @@
 import {
-  ChoiceGroup,
   Code,
   Paragraph,
   Stack,
   TextareaField,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 
 const SAMPLE_MARKDOWN = 'Example paragraph with **bold** and *italic*, `code`, ==marked text==, [kbd:⌘K], [abbr:CSS|Cascading Style Sheets], [cite:A1 Design System], [q:semantic text], [time:2026-06-15|June 15, 2026], ~~removed text~~, ++inserted text++, __underlined text__, [small:fine print], H[sub:2]O, x[sup:2], [samp:Error: missing token], [var:width], [muted:muted text], and [accent:accent text].'
 
@@ -192,7 +192,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Element"
         size="compact"
         hideIndicator

@@ -2,28 +2,31 @@ import { useState } from 'react'
 import {
   Accordion,
   Button,
-  ChoiceGroup,
   Code,
   DefinitionList,
   Divider,
   Paragraph,
   Stack,
   TextField,
+  Toolbar,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, ConfigSlider } from './configKit.jsx'
 
 function uid() {
   return `dl-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
 }
 
-const DIRECTION_OPTIONS = ['row', 'column']
+const DIRECTION_OPTIONS = [
+  { value: 'row', label: 'Row', icon: 'view_column' },
+  { value: 'column', label: 'Column', icon: 'view_agenda' },
+]
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
-const LABEL_WIDTH_OPTIONS = ['auto', 'fixed']
+const LABEL_WIDTH_OPTIONS = [
+  { value: 'auto', label: 'Auto', icon: 'width' },
+  { value: 'fixed', label: 'Fixed', icon: 'straighten' },
+]
 const VALUE_HEADING_SIZES = ['sm', 'md', 'lg', 'xl']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
 
 function esc(s) {
   return String(s ?? '').replaceAll('"', '&quot;')
@@ -101,28 +104,28 @@ function ItemEditor({ item, onChange, onRemove, isOpen, onToggleOpen }) {
           onChange={(e) => onChange({ value: e.target.value })}
         />
 
-        <Toggle
-          label="Value as heading"
-          value={hasHeading}
-          onChange={(v) => onChange({ valueHeadingProps: v ? { size: 'lg' } : undefined })}
-        />
+        <Toolbar label="Display">
+          <ToolbarToggle
+            icon="title"
+            label="Value as heading"
+            pressed={hasHeading}
+            onChange={(v) => onChange({ valueHeadingProps: v ? { size: 'lg' } : undefined })}
+          />
+          <ToolbarToggle
+            icon="content_copy"
+            label="Copy button"
+            pressed={!!item.copyValue}
+            onChange={(v) => onChange({ copyValue: v || undefined })}
+          />
+        </Toolbar>
         {hasHeading && (
-          <ChoiceGroup
+          <ConfigSlider
             label="Heading size"
-            size="compact"
-            hideIndicator
-            columns={4}
+            values={VALUE_HEADING_SIZES}
             value={item.valueHeadingProps.size}
             onChange={(size) => onChange({ valueHeadingProps: { ...item.valueHeadingProps, size } })}
-            options={VALUE_HEADING_SIZES.map((s) => ({ label: s, value: s }))}
           />
         )}
-
-        <Toggle
-          label="Copy button"
-          value={!!item.copyValue}
-          onChange={(v) => onChange({ copyValue: v || undefined })}
-        />
         {item.copyValue && (
           <>
             <TextField
@@ -181,33 +184,21 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Direction"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
         value={config.direction}
         onChange={(direction) => set({ direction })}
-        options={DIRECTION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={DIRECTION_OPTIONS}
       />
-      <ChoiceGroup
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => set({ size })}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
+      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
       {config.direction === 'row' && (
-        <ChoiceGroup
+        <Choice
           label="Label width"
-          size="compact"
-          hideIndicator
-          columns={2}
+          iconOnly
           value={config.labelWidth}
           onChange={(labelWidth) => set({ labelWidth })}
-          options={LABEL_WIDTH_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+          options={LABEL_WIDTH_OPTIONS}
         />
       )}
 

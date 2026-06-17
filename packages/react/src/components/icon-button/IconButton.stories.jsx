@@ -18,7 +18,7 @@ const meta = {
     },
     size: {
       control: "inline-radio",
-      options: ["md", "lg"],
+      options: ["sm", "md", "lg"],
     },
     icon:     { ...requiredIconArgType("A1 icon registry name") },
     label:    { control: "text" },
@@ -58,6 +58,7 @@ export const Sizes = {
   parameters: { controls: { include: [] } },
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--base-spacing-16)" }}>
+      <IconButton icon="settings" label="Settings" variant="secondary" size="sm" />
       <IconButton icon="settings" label="Settings" variant="secondary" />
       <IconButton icon="settings" label="Settings" variant="secondary" size="lg" />
     </div>

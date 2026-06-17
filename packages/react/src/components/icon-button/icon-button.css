@@ -37,12 +37,22 @@
   --a1-icon-opsz: var(--a1-icon-button-icon-opsz, var(--component-icon-button-icon-optical-size));
 }
 
+/* ── Size: small ─────────────────────────────────────────────────────────── */
+/* 24×24px total — the WCAG 2.2 target-size (AA) minimum; for dense toolbars. */
+
+.a1-icon-button--small {
+  --a1-icon-button-size:      var(--base-spacing-24);
+  --a1-icon-button-icon-size: var(--base-spacing-16);
+}
+
 /* ── Size: large ─────────────────────────────────────────────────────────── */
 /* Touch target matches Button lg (3.5rem); icon matches Button lg's icon. */
 
 .a1-icon-button--large {
   --a1-icon-button-size:      var(--component-button-large-height);
-  --a1-icon-button-icon-size: var(--component-button-icon-size);
+  /* Icon is two steps up the icon scale (20 → 24 → 32px) so it reads at the
+     larger touch target. */
+  --a1-icon-button-icon-size: var(--base-spacing-32);
   --a1-icon-button-icon-opsz: var(--component-button-icon-optical-size);
 }
 

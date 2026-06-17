@@ -1,11 +1,12 @@
-import { ChoiceGroup, TextField } from '@gtivr4/a1-design-system-react'
+import { TextField } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { createFieldModule } from './fieldKit.jsx'
 
 const TYPE_OPTIONS = ['text', 'email', 'password']
 
 function TypeControl({ config, setConfig }) {
   return (
-    <ChoiceGroup
+    <Choice
       label="Type"
       size="compact"
       hideIndicator

@@ -1,15 +1,34 @@
 import {
-  ChoiceGroup,
   Code,
   Stack,
+  Toolbar,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
+import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const AS_OPTIONS = ['div', 'section', 'nav', 'form']
-const DIRECTION_OPTIONS = ['column', 'row', 'column-reverse', 'row-reverse']
+const DIRECTION_OPTIONS = [
+  { value: 'column', label: 'Column', icon: 'south' },
+  { value: 'row', label: 'Row', icon: 'east' },
+  { value: 'column-reverse', label: 'Column reverse', icon: 'north' },
+  { value: 'row-reverse', label: 'Row reverse', icon: 'west' },
+]
 const GAP_OPTIONS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
-const ALIGN_OPTIONS = ['start', 'center', 'end', 'stretch', 'baseline']
-const JUSTIFY_OPTIONS = ['start', 'center', 'end', 'between', 'around', 'evenly']
+const ALIGN_OPTIONS = [
+  { value: 'start', label: 'Start', icon: 'vertical_align_top' },
+  { value: 'center', label: 'Center', icon: 'vertical_align_center' },
+  { value: 'end', label: 'End', icon: 'vertical_align_bottom' },
+  { value: 'stretch', label: 'Stretch', icon: 'height' },
+  { value: 'baseline', label: 'Baseline', icon: 'text_fields' },
+]
+const JUSTIFY_OPTIONS = [
+  { value: 'start', label: 'Start', icon: 'align_horizontal_left' },
+  { value: 'center', label: 'Center', icon: 'align_horizontal_center' },
+  { value: 'end', label: 'End', icon: 'align_horizontal_right' },
+  { value: 'between', label: 'Space between', icon: 'horizontal_distribute' },
+  { value: 'around', label: 'Space around', icon: 'space_bar' },
+  { value: 'evenly', label: 'Space evenly', icon: 'view_week' },
+]
 
 function optionLabel(value) {
   if (typeof value === 'number') return String(value)
@@ -34,10 +53,10 @@ function propBoolean(name, value, defaultValue) {
 function buildStackSnippet(config) {
   const props = [
     propValue('as', config.as, 'div'),
-    propValue('direction', config.direction, 'column'),
+    typeof config.direction === 'object' ? responsiveProp('direction', config.direction) : propValue('direction', config.direction, 'column'),
     propValue('gap', config.gap, 'md'),
     propValue('align', config.align, 'start'),
-    propValue('justify', config.justify, 'start'),
+    typeof config.justify === 'object' ? responsiveProp('justify', config.justify) : propValue('justify', config.justify, 'start'),
     propBoolean('wrap', config.wrap, false),
   ].filter(Boolean).join('\n  ')
 
@@ -107,7 +126,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ChoiceGroup
+      <Choice
         label="Children"
         hint="Number of labeled blocks shown in the preview."
         size="compact"
@@ -120,7 +139,7 @@ export function Controls({ config, setConfig }) {
           { label: '3', value: 3 },
         ]}
       />
-      <ChoiceGroup
+      <Choice
         label="Element"
         size="compact"
         hideIndicator
@@ -129,49 +148,23 @@ export function Controls({ config, setConfig }) {
         onChange={(as) => set({ as })}
         options={AS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ChoiceGroup
-        label="Direction"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.direction}
-        onChange={(direction) => set({ direction })}
-        options={DIRECTION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
-        label="Gap"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.gap}
-        onChange={(gap) => set({ gap })}
-        options={GAP_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <ChoiceGroup
+      <ResponsiveControl label="Direction" value={config.direction} onChange={(direction) => set({ direction })} defaultValue="column">
+        {(val, setVal) => <Choice iconOnly value={val} onChange={setVal} options={DIRECTION_OPTIONS} />}
+      </ResponsiveControl>
+      <Toolbar aria-label="Wrap">
+        <ToolbarToggle icon="wrap_text" label="Wrap" showLabel pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
+      </Toolbar>
+      <ConfigSlider label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
+      <Choice
         label="Align"
-        hint="Cross-axis alignment of children."
-        size="compact"
-        hideIndicator
-        columns={3}
+        iconOnly
         value={config.align}
         onChange={(align) => set({ align })}
-        options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={ALIGN_OPTIONS}
       />
-      <ChoiceGroup
-        label="Justify"
-        hint="Main-axis distribution of children."
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.justify}
-        onChange={(justify) => set({ justify })}
-        options={JUSTIFY_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Toggle
-        label="Wrap"
-        value={config.wrap}
-        onChange={(wrap) => set({ wrap })}
-      />
+      <ResponsiveControl label="Justify" value={config.justify} onChange={(justify) => set({ justify })} defaultValue="start">
+        {(val, setVal) => <Choice iconOnly value={val} onChange={setVal} options={JUSTIFY_OPTIONS} />}
+      </ResponsiveControl>
     </Stack>
   )
 }
