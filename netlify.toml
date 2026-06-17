@@ -1,9 +1,9 @@
 [build]
-  command = "npm run build:priority-guide"
-  publish = "examples/priority-guide/dist"
+  command = "npm run build:a1-web"
+  publish = "apps/a1-web/dist"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
 
 [[redirects]]
   from = "/*"

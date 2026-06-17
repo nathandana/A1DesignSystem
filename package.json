@@ -11,6 +11,7 @@
   "scripts": {
     "build": "npm run build:priority-guide && npm run build:cat-stack-cafe && npm run build:storybook",
     "build:priority-guide": "npm run build:tokens && vite build examples/priority-guide -- --outDir dist",
+    "build:a1-web": "npm run build:tokens && vite build apps/a1-web",
     "build:cat-stack-cafe": "npm run build:tokens && vite build examples/cat-stack-cafe -- --outDir dist",
     "build:tokens": "style-dictionary build --config sd.config.js && node system/build-themes.mjs && node scripts/build-html-css.mjs",
     "build:html-css": "npm run build:tokens",
