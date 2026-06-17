@@ -1,8 +1,11 @@
 .tools/
 node_modules/
 
-# QA report output — generated per run, not committed
-reports/
+# QA report output — generated per run, not committed.
+# Exception: a11y.json is a build-time data dependency of the a1-web
+# Accessibility page (statically imported), so it must be tracked.
+reports/*
+!reports/a11y.json
 # Playwright test artifacts — generated per run, not committed
 test-results/
 # Storybook build output — generated per run, not committed
