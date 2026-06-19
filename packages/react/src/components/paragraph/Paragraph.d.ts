@@ -17,6 +17,8 @@ export interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElemen
   textWrap?: "balance";
   /** Horizontal text alignment. "start"/"end" are logical aliases for LTR/RTL-safe alignment. */
   align?: "left" | "center" | "right" | "start" | "end";
+  /** Font weight. Omit to inherit the body default. */
+  weight?: "regular" | "medium" | "semibold" | "bold";
   children?: React.ReactNode;
 }
 

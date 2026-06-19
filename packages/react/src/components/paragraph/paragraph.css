@@ -2,7 +2,7 @@
   margin: 0;
   font-family: var(--component-paragraph-font-family);
   font-size: var(--a1-paragraph-responsive-size, var(--a1-paragraph-size));
-  font-weight: var(--component-paragraph-font-weight);
+  font-weight: var(--a1-paragraph-weight, var(--component-paragraph-font-weight));
   line-height: var(--component-paragraph-font-line-height);
   color: var(--a1-paragraph-color, var(--semantic-color-text-default));
 }
@@ -38,6 +38,11 @@
 .a1-paragraph--xl { --a1-paragraph-size: var(--semantic-font-size-body-xl); }
 
 .a1-paragraph--muted { --a1-paragraph-color: var(--semantic-color-text-muted); }
+
+.a1-paragraph--weight-regular  { --a1-paragraph-weight: var(--base-font-weight-regular); }
+.a1-paragraph--weight-medium   { --a1-paragraph-weight: var(--base-font-weight-medium); }
+.a1-paragraph--weight-semibold { --a1-paragraph-weight: var(--base-font-weight-semibold); }
+.a1-paragraph--weight-bold     { --a1-paragraph-weight: var(--base-font-weight-bold); }
 
 /* Text wrap */
 .a1-paragraph--wrap-balance { text-wrap: balance; }

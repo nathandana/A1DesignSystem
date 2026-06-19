@@ -12,6 +12,7 @@ import { Choice, ConfigSlider, Lockable, ResponsiveControl, responsiveProp } fro
 
 const PARAGRAPH_ELEMENT_OPTIONS = ['p', 'span', 'div']
 const PARAGRAPH_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
+const WEIGHT_OPTIONS = ['regular', 'medium', 'semibold', 'bold']
 
 const SAMPLE_TEXT =
   'A1 is a token-driven design system that keeps React, HTML/CSS, and React Native in sync. Every colour, space, and type ramp traces back to a single source of truth, so the same decision renders consistently across every platform and theme.'
@@ -38,6 +39,7 @@ function buildParagraphSnippet(config) {
     propLine('as', config.as, 'p'),
     config.size && typeof config.size === 'object' ? `  ${responsiveProp('size', config.size)}` : propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
+    propLine('weight', config.weight, 'regular'),
     propLine('align', config.align, 'left'),
     propLine('textWrap', textWrap, undefined),
   ].filter(Boolean).join(' ')
@@ -51,6 +53,7 @@ export function getDefaultConfig(component) {
     as: 'p',
     size: 'md',
     color: 'default',
+    weight: 'regular',
     align: 'left',
     textWrap: false,
     children: SAMPLE_TEXT,
@@ -64,6 +67,7 @@ export function Preview({ component, config }) {
       as={config.as}
       size={config.size}
       color={config.color}
+      weight={config.weight}
       align={config.align}
       textWrap={textWrap}
     >
@@ -105,6 +109,12 @@ export function Controls({ config, setConfig }) {
           { label: 'Default', value: 'default', swatch: 'var(--semantic-color-text-default)' },
           { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'   },
         ]}
+      />
+      <Choice prop="weight"
+        label="Weight"
+        value={config.weight}
+        onChange={(weight) => setConfig((current) => ({ ...current, weight }))}
+        options={WEIGHT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
       <Lockable prop="align"><Toolbar label="Align">
         <ToolbarGroup

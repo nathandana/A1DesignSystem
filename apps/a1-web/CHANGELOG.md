@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- **Paragraph configurator — weight control** — a **Weight** control (regular / medium / semibold /
+  bold) backed by the new Paragraph `weight` prop.
+
+- **DefinitionList configurator — value as a Link** — each item gains a "Value as link" toggle +
+  URL field; the value renders as an A1 `Link` in the preview and snippet. (The DefinitionList
+  component already accepts a node value — configurator-only.)
+
+- **Editor — inlineEditable click no longer toggles the selection off** — clicking (or
+  double-clicking) text inside an InlineEditable, field input, or any contentEditable now keeps the
+  node **selected** instead of toggling it off, so editing text doesn't drop the selection. (Other
+  nodes still toggle select/deselect on click as before.)
+
+- **TODO page — complexity badges + filtering** — the **Current** tab now parses each backlog item
+  and renders its priority + effort as **badges** (priority-toned: P0 error · P1 warn · P2 info ·
+  P3 neutral), with **Priority** and **Effort** filter toolbars that hide non-matching items (and
+  empty bands). The PageNav reflects the visible bands.
+
 - **Releases page — Upcoming tab + correct ordering** — the **Unreleased** changelog section now
   shows as an **Upcoming** tab (no date); release tabs are now **sorted** (Upcoming first, then
   dated releases newest-first, then undated legacy by version descending) instead of trusting the

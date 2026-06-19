@@ -40,17 +40,11 @@ _None._
 
 ## P2 — Medium
 
-- [ ] **Segmented Control — prop audit** `P2 · S` — go through every SegmentedControl
-  prop and add any missing from the configurator (notably `labelMode` "all"/"selected";
-  confirm size / fullWidth / options coverage).
-- [ ] **Balance text-wrap → align toolbar toggle (Heading + Paragraph)** `P2 · S` — move
-  "balance text wrap" out of Advanced into the Align toolbar as a divider-separated toggle
-  icon; apply the same pattern to the Paragraph configurator. Configurator-only.
-- [ ] **Component browser coverage audit** `P2 · L` — reconcile every component's root + child
-  props across the MD registry, configurator, **Properties** tab, and Storybook; fill gaps; flag
-  which lack Pure/Native. _First pass done: **67** components have a configurator but only **56**
-  have a dedicated Properties table (~11 fall back to generic). Remaining: write the missing tables
-  + reconcile props (incl. children) + the Pure/Native coverage check._
+- [ ] **Complete component Properties tables + prop reconciliation** `P2 · L` — follow-up to the
+  coverage audit (first pass done). Finding: **67** components have a configurator but only **56**
+  have a dedicated Properties table (~11 fall back to generic). Write the **missing Properties
+  tables**, reconcile each component's **root + child props** across the MD registry / configurator
+  / Properties tab / Storybook, and flag which components lack **Pure / Native** coverage.
 - [ ] **Card — image variant (replace hero icon)** `P2 · M` — a Card header that uses the
   same space as the hero-icon block but shows an **image** instead (e.g. `heroImage`). DS
   Card change + configurator. _Also in the original "General changes" backlog._
@@ -118,12 +112,6 @@ _None._
   (sortable / filterable / search-by); **column components** (slot-like — allow specific
   components to render in a column); **inline-editable** cells. DS DataTable changes (column
   render slots + inline edit) + configurator. _Overlaps the Filter component item._
-- [ ] **Editor — inlineEditable click toggles selection (bug)** `P2 · S` — with an
-  InlineEditable in use, clicking / double-clicking the text flips the whole interface
-  selection on/off instead of just editing. Selection shouldn't toggle on text clicks.
-- [ ] **DefinitionList — render a value as a Link** `P2 · S` — allow a definition value to be a Link.
-- [ ] **Paragraph — configurable weight** `P2 · S` — expose a `weight` prop + configurator
-  control on Paragraph (currently none).
 - [ ] **Editor — rename items in the tree menu** `P2 · S` — rename nodes from the editor tree.
   _Verify: pages already rename; this may be about the Layers / component tree._
 - [ ] **Codebase control on all configs + property panels** `P2 · M` — the React / Native / Pure
@@ -234,6 +222,17 @@ _None._
   files, rendered to display via **A1 components** (inline elements as the baseline). Powers the
   Rich Text Editor, release-notes display, and the TODO page — replacing the current ad-hoc
   per-page markdown parsers. _Relates to Markdown-in-JSON, the MD component, and the RTE._
+- [ ] **Per-package release notes + overview** `P2 · L` — split release notes **by package/app**,
+  each with its own version: a **release overview** page of cards (one per package/app — name,
+  basic details, current version) that navigate to a **per-package detail** page. Reads each
+  package's CHANGELOG (a1-web, react, …). _Expands the current single Releases page; relates to the
+  MD↔A1 converter._
+- [ ] **TODO page → formal backlog tool** `P2 · XL` — evolve the read-only TODO page into a
+  lightweight Jira-like backlog: a **JSON-backed** store of items you can **add / edit / complete**,
+  change **priority + size** inline, **scope** each item to a theme / project / pattern / foundation
+  / component / package, **link to related details**, and attach **images**. Replaces the current
+  `TODO.md`-rendered page. _Builds on the complexity-badges/filtering work; relates to data binding
+  + the image library._
 
 ## P3 — Low / someday
 
@@ -263,8 +262,9 @@ _None._
   a1-web. _Relates to User accounts (auth); these are the page/flow templates._
 - [ ] **Rich Text Editor** `P3 · XL` — net-new component: a toolbar + inline-editable area
   that formats text via DS components (Paragraph, Link, Heading, Inline). Includes
-  keyboard-shortcut support and a context menu (especially on selected text).
-  _Depends on building the RTE component first._
+  keyboard-shortcut support, a context menu (especially on selected text), and **output as
+  MD / JSON / React / Pure**. _Depends on building the RTE component first; relates to the
+  MD↔A1 converter + Codebase-output work._
 - [ ] **AI-flow → A1 rebuild + ZIP import/convert** `P3 · XL` — experiment: take an
   AI-generated flow/app and **rebuild it with A1 components while retaining functionality**;
   and support **uploading a project as a ZIP** and converting it into the A1 project /
@@ -350,8 +350,6 @@ _None._
 - [ ] **Watch app + watch-native variants** `P3 · XL` — explore shipping downTracker as a **watch
   app**, optimizing components for it, and **native variants for watches**. _Relates to the
   App-view / React Native roadmap._
-- [ ] **TODO page — complexity badges + filtering** `P3 · M` — render the `P# · Effort` tags as
-  badges on the TODO page and add filtering (by priority / effort).
 - [ ] **Unwrap the CHANGELOG / TODO markdown** `P3 · S` — stop hard-wrapping lines in `TODO.md` and
   the CHANGELOGs (one line per item / paragraph; let editors soft-wrap). Also simplifies the
   TodoPage renderer's continuation-line joining.

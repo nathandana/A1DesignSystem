@@ -8,6 +8,7 @@
 - **Grid `gap="none"`** — a zero gap (matches the shared `resolveSpacing` "none" → 0 convention). Added to the `GapKey` type and the Gap Scale / argType stories.
 - **Grid responsive 8-column classes** — `columns={{ … }}` now supports `8` at every breakpoint (`.a1-grid--{xs…xl}-8`), alongside the existing 1/2/3/4/6/12. Fixed (non-responsive) `columns={8}` already worked via the inline column variable. Added `8` to the Column Counts story.
 - **Autocomplete grouped + icon options** — options gained **`icon`** (a Material Symbols glyph rendered beside the option, chip, and selected value) and **`group`** (a sticky category heading before each group; results are ordered by each group's first appearance). Also **`maxVisible`** (+ `moreText(shown)`) caps how many options render for very large lists (e.g. an icon picker), hiding the rest behind a "keep typing" footer. Fully backward compatible. Added `Grouped options + icons` and `Grouped + capped (maxVisible)` stories.
+- **Paragraph `weight`** (`"regular"` | `"medium"` | `"semibold"` | `"bold"`) — set the body text weight via the base font-weight tokens (CSS-variable architecture: `--a1-paragraph-weight`). Omit to inherit the default body weight. Added a `Weights` story + a1-web configurator control.
 
 ### Changed
 

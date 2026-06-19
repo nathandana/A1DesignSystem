@@ -7,6 +7,7 @@ import {
   GridItem,
   Heading,
   Icon,
+  MessageBadge,
   PageNav,
   Paragraph,
   Section,
@@ -15,8 +16,29 @@ import {
   TabList,
   TabPanel,
   Tabs,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
 import todoMarkdown from '../../../../TODO.md?raw'
+
+// Badge tone per priority band.
+const PRIORITY_STATUS = { P0: 'error', P1: 'warn', P2: 'info', P3: 'neutral' }
+const PRIORITY_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'P0', label: 'P0' },
+  { value: 'P1', label: 'P1' },
+  { value: 'P2', label: 'P2' },
+  { value: 'P3', label: 'P3' },
+]
+const EFFORT_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'XS', label: 'XS' },
+  { value: 'S', label: 'S' },
+  { value: 'M', label: 'M' },
+  { value: 'L', label: 'L' },
+  { value: 'XL', label: 'XL' },
+]
 
 // Strip inline markdown emphasis / code markers for plain display.
 function clean(text) {
@@ -27,8 +49,7 @@ function slug(text) {
   return clean(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
-// Collapse wrapped continuation lines (indented, not a new marker) into the line
-// they continue, so each list item / paragraph renders as one logical line.
+// Collapse wrapped continuation lines into the line they continue.
 function toLogicalLines(md) {
   const lines = []
   for (const raw of md.replace(/\r/g, '').split('\n')) {
@@ -42,21 +63,30 @@ function toLogicalLines(md) {
   return lines
 }
 
-// Render a non-heading logical line (headings are handled by the bucketer so they
-// can carry anchor ids for the PageNav).
+// Parse a checkbox item: `- [ ] **Title** \`P2 · M\` — description`.
+function parseItem(line) {
+  const done = line.startsWith('- [x] ')
+  const body = line.replace(/^- \[[ x]\] /, '')
+  const titleMatch = body.match(/^\*\*(.+?)\*\*/)
+  const tagMatch = body.match(/`(P[0-3]) · (XS|S|M|L|XL)`/)
+  let rest = body
+  if (titleMatch) rest = rest.slice(titleMatch[0].length)
+  if (tagMatch) rest = rest.replace(tagMatch[0], '')
+  rest = clean(rest).replace(/^[—–-]\s*/, '').trim()
+  return {
+    done,
+    title: titleMatch ? clean(titleMatch[1]) : clean(body),
+    priority: tagMatch ? tagMatch[1] : null,
+    effort: tagMatch ? tagMatch[2] : null,
+    description: rest,
+  }
+}
+
+// Render a non-heading, non-item line (overview / roadmap content).
 function renderLine(line, key) {
   if (line === '') return null
   if (line === '---') return <Divider key={key} space="sm" />
   if (line.startsWith('> ')) return <Paragraph key={key} size="sm" color="muted">{clean(line.slice(2))}</Paragraph>
-  if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
-    const done = line.startsWith('- [x] ')
-    return (
-      <Stack key={key} direction="row" gap="xs" align="start">
-        <Icon name={done ? 'check_box' : 'check_box_outline_blank'} color={done ? 'success' : undefined} />
-        <Paragraph size="sm" color={done ? 'muted' : undefined}>{clean(line.slice(6))}</Paragraph>
-      </Stack>
-    )
-  }
   if (line.startsWith('- ')) {
     return (
       <Stack key={key} direction="row" gap="xs" align="start">
@@ -68,36 +98,72 @@ function renderLine(line, key) {
   return <Paragraph key={key} size="sm">{clean(line)}</Paragraph>
 }
 
-// Split the TODO into Overview (intro + inbox) / Current (the P-bands) / Roadmap
-// (larger themes), each with its own nodes + PageNav sections.
+function renderItem(item, key) {
+  return (
+    <Stack key={key} direction="row" gap="sm" align="start">
+      <Icon name={item.done ? 'check_box' : 'check_box_outline_blank'} color={item.done ? 'success' : undefined} />
+      <Stack gap="xs">
+        <Stack direction="row" gap="xs" align="center" wrap>
+          <Paragraph size="sm" color={item.done ? 'muted' : undefined}>{item.title}</Paragraph>
+          {item.priority && (
+            <MessageBadge status={PRIORITY_STATUS[item.priority]} subtle size="sm">{item.priority}</MessageBadge>
+          )}
+          {item.effort && <MessageBadge status="neutral" subtle size="sm">{item.effort}</MessageBadge>}
+        </Stack>
+        {item.description && <Paragraph size="sm" color="muted">{item.description}</Paragraph>}
+      </Stack>
+    </Stack>
+  )
+}
+
+// Split the TODO into Overview / Current (parsed groups) / Roadmap.
 function buildTabs(md) {
-  const buckets = { overview: [], current: [], roadmap: [] }
-  const sections = { current: [], roadmap: [] }
+  const overview = []
+  const roadmapNodes = []
+  const roadmapSections = []
+  const currentGroups = []
   let phase = 'overview'
+  let group = null
 
   toLogicalLines(md).forEach((line, i) => {
-    if (line.startsWith('# ')) return // page title — shown in the header
+    if (line.startsWith('# ')) return
     if (line.startsWith('## ')) {
       const text = clean(line.slice(3))
       if (/^roadmap/i.test(text)) phase = 'roadmap'
       else if (/^p[0-3]\b/i.test(text)) phase = 'current'
       const id = `todo-${slug(text)}`
-      if (phase === 'current') sections.current.push({ id, label: text, level: 1 })
-      buckets[phase].push(<Heading key={i} as="h2" id={id} size="lg">{text}</Heading>)
+      if (phase === 'current') {
+        group = { heading: { text, id }, items: [], emptyNote: null }
+        currentGroups.push(group)
+      } else if (phase === 'roadmap') {
+        roadmapSections.push({ id, label: text, level: 1 })
+        roadmapNodes.push(<Heading key={i} as="h2" id={id} size="lg">{text}</Heading>)
+      } else {
+        overview.push(<Heading key={i} as="h2" id={id} size="lg">{text}</Heading>)
+      }
       return
     }
     if (line.startsWith('### ')) {
       const text = clean(line.slice(4))
       const id = `todo-${slug(text)}`
-      if (phase === 'roadmap') sections.roadmap.push({ id, label: text, level: 1 })
-      buckets[phase].push(<Heading key={i} as="h3" id={id} size="sm" color="muted">{text}</Heading>)
+      if (phase === 'roadmap') {
+        roadmapSections.push({ id, label: text, level: 2 })
+        roadmapNodes.push(<Heading key={i} as="h3" id={id} size="sm" color="muted">{text}</Heading>)
+      } else if (phase === 'overview') {
+        overview.push(<Heading key={i} as="h3" id={id} size="sm" color="muted">{text}</Heading>)
+      }
+      return
+    }
+    if (phase === 'current' && group) {
+      if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) group.items.push(parseItem(line))
+      else if (line === '_None._') group.emptyNote = 'None'
       return
     }
     const node = renderLine(line, i)
-    if (node) buckets[phase].push(node)
+    if (node) (phase === 'roadmap' ? roadmapNodes : overview).push(node)
   })
 
-  return { buckets, sections }
+  return { overview, roadmapNodes, roadmapSections, currentGroups }
 }
 
 function NavLayout({ sections, children }) {
@@ -114,9 +180,54 @@ function NavLayout({ sections, children }) {
   )
 }
 
+function CurrentTab({ groups }) {
+  const [priority, setPriority] = useState('all')
+  const [effort, setEffort] = useState('all')
+  const filterActive = priority !== 'all' || effort !== 'all'
+  const matches = (it) =>
+    (priority === 'all' || it.priority === priority) && (effort === 'all' || it.effort === effort)
+
+  const visibleGroups = groups
+    .map((g) => ({ ...g, shown: g.items.filter(matches) }))
+    .filter((g) => !filterActive || g.shown.length > 0)
+
+  const sections = visibleGroups.map((g) => ({ id: g.heading.id, label: g.heading.text, level: 1 }))
+
+  const content = (
+    <Stack gap="md">
+      <Toolbar label="Filter">
+        <ToolbarGroup aria-label="Priority" showLabels value={priority} onChange={setPriority} options={PRIORITY_OPTIONS} />
+        <ToolbarDivider />
+        <ToolbarGroup aria-label="Effort" showLabels value={effort} onChange={setEffort} options={EFFORT_OPTIONS} />
+      </Toolbar>
+      {visibleGroups.length === 0 ? (
+        <Paragraph size="sm" color="muted">No items match these filters.</Paragraph>
+      ) : (
+        visibleGroups.map((g) => (
+          <Stack key={g.heading.id} gap="xs">
+            <Heading as="h2" id={g.heading.id} size="lg">{g.heading.text}</Heading>
+            {g.shown.length
+              ? g.shown.map((it, i) => renderItem(it, i))
+              : <Paragraph size="sm" color="muted">{g.emptyNote || 'None'}</Paragraph>}
+          </Stack>
+        ))
+      )}
+    </Stack>
+  )
+
+  return (
+    <Grid columns={{ xs: 1, lg: 4 }} gap="lg">
+      <GridItem span={{ xs: 1, lg: 3 }}>{content}</GridItem>
+      <GridItem span={{ xs: 1, lg: 1 }}>
+        <PageNav sections={sections} />
+      </GridItem>
+    </Grid>
+  )
+}
+
 export function TodoPage({ onNavigate }) {
   const [tab, setTab] = useState('current')
-  const { buckets, sections } = buildTabs(todoMarkdown)
+  const { overview, roadmapNodes, roadmapSections, currentGroups } = buildTabs(todoMarkdown)
 
   return (
     <>
@@ -146,13 +257,13 @@ export function TodoPage({ onNavigate }) {
             <Tab value="roadmap">Roadmap</Tab>
           </TabList>
           <TabPanel value="overview">
-            <Stack gap="xs">{buckets.overview}</Stack>
+            <Stack gap="xs">{overview}</Stack>
           </TabPanel>
           <TabPanel value="current">
-            <NavLayout sections={sections.current}>{buckets.current}</NavLayout>
+            <CurrentTab groups={currentGroups} />
           </TabPanel>
           <TabPanel value="roadmap">
-            <NavLayout sections={sections.roadmap}>{buckets.roadmap}</NavLayout>
+            <NavLayout sections={roadmapSections}>{roadmapNodes}</NavLayout>
           </TabPanel>
         </Tabs>
       </Section>

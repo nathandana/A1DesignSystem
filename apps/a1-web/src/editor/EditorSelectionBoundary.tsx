@@ -131,7 +131,18 @@ export function EditorSelectionBoundary({
     );
 
     if (editorEls.length === 0) return;
-    onSelect(isSelected ? null : editorEls[0].dataset.editorNode!);
+
+    // If the click landed inside an editable text region (an InlineEditable's
+    // contentEditable, or a field input/textarea), just select the node — never
+    // toggle it off — so clicking or double-clicking text to edit doesn't drop
+    // the selection out from under you.
+    const inEditable = path.some(
+      (el) =>
+        el instanceof HTMLElement &&
+        (el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'),
+    );
+    const targetId = editorEls[0].dataset.editorNode!;
+    onSelect(inEditable ? targetId : isSelected ? null : targetId);
   }
 
   // Right click — shows the context menu with select + delete actions.

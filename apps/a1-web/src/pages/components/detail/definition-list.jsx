@@ -5,6 +5,7 @@ import {
   DefinitionList,
   Divider,
   IconButton,
+  Link,
   Paragraph,
   Stack,
   Tab,
@@ -30,8 +31,8 @@ function tabLabel(label, index, total) {
 }
 
 const DIRECTION_OPTIONS = [
-  { value: 'row', label: 'Row', icon: 'view_column' },
-  { value: 'column', label: 'Column', icon: 'view_agenda' },
+  { value: 'row', label: 'Row', icon: 'east' },
+  { value: 'column', label: 'Column', icon: 'south' },
 ]
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
 const LABEL_WIDTH_OPTIONS = [
@@ -53,9 +54,12 @@ function buildSnippet(config) {
 
   const itemsStr = config.items.map((item) => {
     const headingSize = item.valueHeadingProps?.size
+    const valuePart = item.href != null
+      ? `value: <Link href="${esc(item.href)}">${esc(item.value)}</Link>`
+      : `value: "${esc(item.value)}"`
     const parts = [
       `label: "${esc(item.label)}"`,
-      `value: "${esc(item.value)}"`,
+      valuePart,
       item.copyValue ? 'copyValue: true' : null,
       item.copyText  ? `copyText: "${esc(item.copyText)}"` : null,
       item.copyLabel ? `copyLabel: "${esc(item.copyLabel)}"` : null,
@@ -78,7 +82,7 @@ export function getDefaultConfig() {
     size: 'md',
     labelWidth: 'fixed',
     items: [
-      { id: uid(), label: 'Account ID', value: 'A1-849204',      copyValue: true },
+      { id: uid(), label: 'Account ID', value: 'A1-849204' },
       { id: uid(), label: 'Plan',       value: 'Enterprise' },
       { id: uid(), label: 'Renewal',    value: 'June 30, 2026' },
     ],
@@ -86,7 +90,10 @@ export function getDefaultConfig() {
 }
 
 export function Preview({ config }) {
-  const items = config.items.map(({ id: _id, ...rest }) => rest)
+  const items = config.items.map(({ id: _id, href, value, ...rest }) => ({
+    ...rest,
+    value: href ? <Link href={href}>{value}</Link> : value,
+  }))
   return (
     <DefinitionList
       direction={config.direction}
@@ -132,12 +139,26 @@ function ItemEditor({ item, onChange, onRemove }) {
             onChange={(v) => onChange({ valueHeadingProps: v ? { size: 'lg' } : undefined })}
           />
           <ToolbarToggle
+            icon="link"
+            label="Value as link"
+            pressed={item.href != null}
+            onChange={(v) => onChange({ href: v ? '#' : undefined })}
+          />
+          <ToolbarToggle
             icon="content_copy"
             label="Copy button"
             pressed={!!item.copyValue}
             onChange={(v) => onChange({ copyValue: v || undefined })}
           />
         </Toolbar>
+        {item.href != null && (
+          <TextField
+            label="Link URL"
+            size="compact"
+            value={item.href}
+            onChange={(e) => onChange({ href: e.target.value })}
+          />
+        )}
         {hasHeading && (
           <ConfigSlider
             label="Heading size"
