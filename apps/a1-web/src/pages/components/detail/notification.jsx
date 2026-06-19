@@ -123,7 +123,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="anchor"
         label="Anchor"
         size="compact"
         hideIndicator
@@ -143,7 +143,7 @@ export function Controls({ config, setConfig }) {
         value={config.anchorLabel}
         onChange={(event) => set({ anchorLabel: event.target.value })}
       />
-      <Choice
+      <Choice prop="content"
         label="Content"
         size="compact"
         hideIndicator
@@ -178,14 +178,14 @@ export function Controls({ config, setConfig }) {
           onChange={(event) => set({ label: event.target.value })}
         />
       )}
-      <Choice
+      <Choice prop="status"
         label="Status"
         iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
         options={statusOptions(STATUS_OPTIONS)}
       />
-      <Choice
+      <Choice prop="position"
         label="Position"
         iconOnly
         columns={2}

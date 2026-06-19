@@ -9,7 +9,7 @@ function TextareaExtras({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
     <>
-      <ConfigSlider label="Rows" values={ROWS_OPTIONS} value={config.rows} onChange={(rows) => set({ rows })} />
+      <ConfigSlider prop="rows" label="Rows" values={ROWS_OPTIONS} value={config.rows} onChange={(rows) => set({ rows })} />
       <TextField
         label="Max length"
         hint="Maximum character count (enables the counter)."
@@ -17,7 +17,7 @@ function TextareaExtras({ config, setConfig }) {
         value={config.maxLength}
         onChange={(event) => set({ maxLength: event.target.value.replace(/[^0-9]/g, '') })}
       />
-      <Toggle label="Show count" value={config.showCount} onChange={(showCount) => set({ showCount })} />
+      <Toggle prop="showCount" label="Show count" value={config.showCount} onChange={(showCount) => set({ showCount })} />
     </>
   )
 }

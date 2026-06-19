@@ -78,7 +78,9 @@ export type ComponentType =
   | 'FieldRow'
   | 'PageNav'
   | 'TreeMenu'
-  | 'DataTable';
+  | 'DataTable'
+  | 'Slot'
+  | 'Outlet';
 
 /**
  * A value that may vary by breakpoint. Mirrors A1's responsive object syntax
@@ -181,6 +183,25 @@ export interface ComponentNode {
   a11y?: A11yDefinition;
   /** Future action wiring — ignored by the current renderer. */
   actions?: ActionMap;
+  /**
+   * Pattern governance carried on a node instantiated from a pattern. When the
+   * renderer is asked to enforce locks, a locked node can't be deleted/moved,
+   * locked props are read-only, and locked text isn't editable. Absent on
+   * ordinary page nodes.
+   */
+  lock?: { node?: boolean; props?: string[]; content?: boolean };
+  /**
+   * Set on the root node when a pattern is inserted into a page, so the layers
+   * tree and configurator show the pattern's name and a pattern icon instead of
+   * the underlying component type.
+   */
+  patternInstance?: { id: string; name: string };
+  /**
+   * The id of the source node in the pattern this node was instantiated from.
+   * Lets the instance be reconciled against its pattern (locked props/content
+   * pulled forward, incompatibilities detected) even after ids are freshened.
+   */
+  patternNodeId?: string;
   /** Nested child nodes. */
   children?: ComponentNode[];
 }

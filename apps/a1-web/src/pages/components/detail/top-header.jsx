@@ -188,7 +188,7 @@ export function Controls({ config, setConfig }) {
         value={config.logoText}
         onChange={(event) => setConfig((current) => ({ ...current, logoText: event.target.value }))}
       />
-      <Choice
+      <Choice prop="navIconPosition"
         label="Nav icon position"
         size="compact"
         hideIndicator

@@ -152,7 +152,7 @@ export function Controls({ config, setConfig }) {
         value={config.header}
         onChange={(event) => setConfig((current) => ({ ...current, header: event.target.value }))}
       />
-      <Choice
+      <Choice prop="placement"
         label="Placement"
         size="compact"
         hideIndicator
@@ -161,7 +161,7 @@ export function Controls({ config, setConfig }) {
         onChange={(placement) => setConfig((current) => ({ ...current, placement }))}
         options={PLACEMENT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="collapseButtonPlacement"
         label="Collapse button"
         size="compact"
         hideIndicator
@@ -170,7 +170,7 @@ export function Controls({ config, setConfig }) {
         onChange={(collapseButtonPlacement) => setConfig((current) => ({ ...current, collapseButtonPlacement }))}
         options={COLLAPSE_BUTTON_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Collapsed" value={config.collapsed} onChange={(collapsed) => setConfig((current) => ({ ...current, collapsed }))} />
+      <Toggle prop="collapsed" label="Collapsed" value={config.collapsed} onChange={(collapsed) => setConfig((current) => ({ ...current, collapsed }))} />
       <Stack gap="sm">
         {items.map((item, index) => {
           const label = item.label || 'Untitled item'

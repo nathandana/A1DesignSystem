@@ -150,7 +150,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator
@@ -166,10 +166,10 @@ export function Controls({ config, setConfig }) {
           onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
         />
       )}
-      <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+      <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
         {(val, setVal) => <ConfigSlider values={LIST_SIZE_OPTIONS} value={val} onChange={setVal} />}
       </ResponsiveControl>
-      <Choice
+      <Choice prop="color"
         label="Color"
         size="compact"
         hideIndicator

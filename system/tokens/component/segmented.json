@@ -7,6 +7,8 @@
       "segmentPaddingInline":  { "$type": "dimension",  "$value": "{base.spacing.12}" },
       "segmentPaddingBlockSm": { "$type": "dimension",  "$value": "2px" },
       "segmentPaddingInlineSm":{ "$type": "dimension",  "$value": "{base.spacing.8}" },
+      "segmentPaddingBlockLg": { "$type": "dimension",  "$value": "{base.spacing.8}" },
+      "segmentPaddingInlineLg":{ "$type": "dimension",  "$value": "{base.spacing.16}" },
       "borderWidth":           { "$type": "dimension",  "$value": "{base.spacing.1}" },
       "fontWeightDefault":     { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
       "fontWeightActive":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },

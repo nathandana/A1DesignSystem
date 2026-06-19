@@ -10,6 +10,14 @@ const meta = {
     fullWidth: {
       control: "boolean",
     },
+    size: {
+      control: "inline-radio",
+      options: ["sm", "md", "lg"],
+    },
+    labelMode: {
+      control: "inline-radio",
+      options: ["all", "selected"],
+    },
   },
 };
 
@@ -98,6 +106,30 @@ export const FullWidth = {
           ]}
         />
       </div>
+    );
+  },
+};
+
+/* ── Label only on the selected segment ───────────────────────────────────── */
+
+export const SelectedLabelOnly = {
+  name: "Label on selected only",
+  parameters: { layout: "padded" },
+  render: (args) => {
+    const [value, setValue] = useState("configure");
+    return (
+      <SegmentedControl
+        {...args}
+        labelMode="selected"
+        value={value}
+        onChange={setValue}
+        options={[
+          { value: "configure", label: "Configure", icon: "tune" },
+          { value: "add",       label: "Add",       icon: "widgets" },
+          { value: "ai",        label: "AI",        icon: "auto_awesome" },
+          { value: "history",   label: "History",   icon: "history" },
+        ]}
+      />
     );
   },
 };

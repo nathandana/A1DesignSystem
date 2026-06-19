@@ -61,7 +61,7 @@ export function Controls({ config, setConfig }) {
     <Stack gap="lg">
       <TextField label="Legend" size="compact" value={config.legend} onChange={(e) => set({ legend: e.target.value })} />
       <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <Choice prop="example"
         label="Example" size="compact" hideIndicator columns={2}
         value={config.example} onChange={(example) => set({ example })}
         options={EXAMPLE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}

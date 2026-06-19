@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Heading, IconButton, SegmentedControl, SideNav, Stack } from '@gtivr4/a1-design-system-react'
+import { Button, Heading, IconButton, SegmentedControl, SideNav, SplitButton, Stack } from '@gtivr4/a1-design-system-react'
 import { ProjectPagesPanel } from './ProjectPagesPanel.jsx'
 import { ComponentTreePanel } from '../editor/EditorSidebar.jsx'
 
@@ -12,12 +12,15 @@ import { ComponentTreePanel } from '../editor/EditorSidebar.jsx'
 export function ProjectWorkspaceSidebar({
   project,
   onBackToProjects,
+  open,
+  onClose,
   // Pages tab
   pages,
   activePageId,
   hasOpenPage,
   onSelectPage,
   onAddPage,
+  onAddPageWithAi,
   onDuplicatePage,
   onDeletePage,
   onMovePage,
@@ -63,9 +66,20 @@ export function ProjectWorkspaceSidebar({
 
   const footer = tab === 'pages'
     ? (
-      <Button size="sm" variant="secondary" icon="add" fullWidth onClick={() => onAddPage?.({})}>
+      <SplitButton
+        size="sm"
+        variant="secondary"
+        icon="add"
+        className="a1-web-add-split"
+        onClick={() => onAddPage?.({})}
+        menuLabel="More ways to add a page"
+        toggleLabel="More ways to add a page"
+        actions={[
+          { id: 'ai', label: 'Make with AI', icon: 'auto_awesome', onClick: () => onAddPageWithAi?.() },
+        ]}
+      >
         Add page
-      </Button>
+      </SplitButton>
     )
     : (
       <Button
@@ -81,7 +95,7 @@ export function ProjectWorkspaceSidebar({
     )
 
   return (
-    <SideNav header={header} footer={footer} collapseButtonPlacement="footer">
+    <SideNav header={header} footer={footer} collapseButtonPlacement="footer" open={open} onClose={onClose}>
       {tab === 'pages' ? (
         <ProjectPagesPanel
           pages={pages}

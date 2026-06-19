@@ -69,14 +69,14 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ConfigSlider label="Content width" values={CONTENT_WIDTH_OPTIONS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
+      <ConfigSlider prop="contentWidth" label="Content width" values={CONTENT_WIDTH_OPTIONS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
       <TextField
         label="Primary button label"
         size="compact"
         value={config.primaryLabel}
         onChange={(e) => set({ primaryLabel: e.target.value })}
       />
-      <Toggle
+      <Toggle prop="showSecondary"
         label="Secondary button"
         value={config.showSecondary}
         onChange={(showSecondary) => set({ showSecondary })}

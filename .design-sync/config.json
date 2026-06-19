@@ -1,0 +1,10 @@
+{
+  "projectId": "ce1af259-b6a5-4e1f-8a7d-8d3cece0605b",
+  "shape": "storybook",
+  "storybookConfigDir": ".storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "pkg": "@gtivr4/a1-design-system-react",
+  "globalName": "A1",
+  "entry": "packages/react/src/index.js",
+  "buildCmd": "npm run build:tokens"
+}

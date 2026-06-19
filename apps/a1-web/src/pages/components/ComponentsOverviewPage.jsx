@@ -24,17 +24,25 @@ function OverviewTable({ onNavigate }) {
     component: {
       href: getComponentPath(`component-${component.id}`),
       label: component.title,
-      icon: 'arrow_forward',
+      icon: component.icon ?? 'arrow_forward',
     },
     category: component.categoryTitle,
     updated: component.updated,
     packages: component.packages.join(', '),
+    packageValues: component.packages, // array — for the Package filter
     actions: [{
       label: 'Open',
       icon: 'open_in_new',
       onClick: () => onNavigate?.(`component-${component.id}`),
     }],
   }))
+
+  const categoryOptions = Array.from(new Set(allComponents.map((c) => c.categoryTitle)))
+    .sort()
+    .map((c) => ({ value: c, label: c }))
+  const packageOptions = Array.from(new Set(allComponents.flatMap((c) => c.packages)))
+    .sort()
+    .map((p) => ({ value: p, label: p }))
 
   return (
     <DataTable
@@ -45,6 +53,15 @@ function OverviewTable({ onNavigate }) {
       zebra
       scrollable
       defaultSort={{ key: 'category', direction: 'asc' }}
+      searchableColumns={[
+        { key: 'component', label: 'Component', searchAccessor: (row) => row.component.label },
+        { key: 'category', label: 'Category' },
+        { key: 'packages', label: 'Packages' },
+      ]}
+      filters={[
+        { key: 'category', label: 'Category', type: 'single', options: categoryOptions },
+        { key: 'packageValues', label: 'Package', type: 'multi', options: packageOptions },
+      ]}
     />
   )
 }
@@ -57,18 +74,9 @@ export function ComponentsOverviewPage({ onNavigate }) {
   ]
 
   return (
-    <Section gap="lg" padding="md" surface='panel'>
-      <Grid columns={{ xs: 1, sm: 3 }} gap="md">
-        {overviewStats.map((stat) => (
-          <Card key={stat.label}>
-            <Stack direction="column" gap="xs">
-              <Heading as="h2" size="lg">{stat.value}</Heading>
-              <Paragraph size="sm" color="muted">{stat.label}</Paragraph>
-            </Stack>
-          </Card>
-        ))}
-      </Grid>
-      <Stack direction="column" gap="sm">
+    <>
+        <Section padding="xs" surface='panel'>
+      <Stack direction="column" gap="xs">
         <Heading as="h2" type="display" size={{ xs: 'lg', md: 'xl' }}>
           Component inventory
         </Heading>
@@ -76,7 +84,21 @@ export function ComponentsOverviewPage({ onNavigate }) {
           Full list of documented components, route targets, update dates, and package availability.
         </Paragraph>
       </Stack>
+      </Section>
+              <Section padding="xs" contentWidth='xl' gap='md'>
+      <Grid columns={{ xs: 1, sm: 3 }} gap="md">
+        {overviewStats.map((stat) => (
+          <Card key={stat.label}>
+            <Stack direction="column" gap="xs">
+              <Heading as="h2" size="xl" type='display'>{stat.value}</Heading>
+              <Paragraph size="sm" color="muted">{stat.label}</Paragraph>
+            </Stack>
+          </Card>
+        ))}
+      </Grid>
+
       <OverviewTable onNavigate={onNavigate} />
     </Section>
+    </>
   )
 }

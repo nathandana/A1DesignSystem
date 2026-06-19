@@ -29,7 +29,7 @@ export function Preview({ config }) {
 
 export function Controls({ config, setConfig }) {
   return (
-    <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+    <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
       {(val, setVal) => <ConfigSlider values={SIZE_OPTIONS} value={val} onChange={setVal} />}
     </ResponsiveControl>
   )

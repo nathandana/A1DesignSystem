@@ -78,7 +78,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <Choice
+      <Choice prop="as"
         label="As"
         size="compact"
         hideIndicator
@@ -87,10 +87,10 @@ export function Controls({ config, setConfig }) {
         onChange={(as) => setConfig((current) => ({ ...current, as }))}
         options={PARAGRAPH_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
       />
-      <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+      <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
         {(val, setVal) => <ConfigSlider values={PARAGRAPH_SIZE_OPTIONS} value={val} onChange={setVal} />}
       </ResponsiveControl>
-      <Choice
+      <Choice prop="color"
         label="Color"
         size="compact"
         hideIndicator
@@ -102,7 +102,7 @@ export function Controls({ config, setConfig }) {
           { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'   },
         ]}
       />
-      <Choice
+      <Choice prop="align"
         label="Align"
         size="compact"
         hideIndicator

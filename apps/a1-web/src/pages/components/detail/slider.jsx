@@ -156,7 +156,7 @@ export function Controls({ config, setConfig }) {
         onChange={(event) => set({ label: event.target.value })}
       />
       <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator
@@ -165,7 +165,7 @@ export function Controls({ config, setConfig }) {
         onChange={(variant) => set({ variant })}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="mode"
         label="Mode"
         size="compact"
         hideIndicator
@@ -183,7 +183,7 @@ export function Controls({ config, setConfig }) {
       ) : (
         <DetentEditor detents={config.detents} setConfig={setConfig} />
       )}
-      <Choice
+      <Choice prop="valuePosition"
         label="Value position"
         size="compact"
         hideIndicator
@@ -192,8 +192,8 @@ export function Controls({ config, setConfig }) {
         onChange={(valuePosition) => set({ valuePosition })}
         options={VALUE_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Show value bubble" value={config.showValue} onChange={(showValue) => set({ showValue })} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+      <Toggle prop="showValue" label="Show value bubble" value={config.showValue} onChange={(showValue) => set({ showValue })} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
     </Stack>
   )
 }

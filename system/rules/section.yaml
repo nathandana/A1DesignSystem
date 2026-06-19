@@ -20,3 +20,13 @@ rules:
       - layout
       - spacing
       - consistency
+
+  - id: section-primary-content-width
+    components:
+      - Section
+    requirement: A Section used as a page's primary (top-level) outer element should almost always set a `contentWidth` so content is held to a readable measure instead of spanning the full viewport.
+    do: Set `contentWidth` (e.g. `lg`, `xl`, or `2xl`) on each top-level Section, and use the same value on sibling sections that should align.
+    dont: Leave `contentWidth` off a primary Section so its content stretches edge-to-edge on wide screens.
+    applies_to:
+      - layout
+      - consistency

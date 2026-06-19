@@ -63,7 +63,7 @@ import {
 } from './data.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
-import { ResponsivePreviewContext } from './detail/responsivePreview.js'
+import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail/ResponsivePreviewFrame.jsx'
 import {
   getComponentPath,
   getRelatedComponents,
@@ -1624,15 +1624,6 @@ function ContainerQueryPreviewFrame({ component, displayConfig, children }) {
 // Viewport presets for the responsive preview. Each renders the preview inside
 // an iframe of the given width — a real nested viewport, so CSS @media (and
 // container) queries respond accurately — then scales it down to fit the panel.
-const VIEWPORT_PRESETS = [
-  { value: 'fit', label: 'Fit', icon: 'fit_screen' },
-  { value: 'xs', label: 'XS', icon: 'smartphone', width: 390, height: 844 },
-  { value: 'sm', label: 'SM', icon: 'tablet_android', width: 600, height: 960 },
-  { value: 'md', label: 'MD', icon: 'tablet_mac', width: 820, height: 1180 },
-  { value: 'lg', label: 'LG', icon: 'laptop', width: 1280, height: 800 },
-  { value: 'xl', label: 'XL', icon: 'desktop_windows', width: 1600, height: 1000 },
-]
-
 // Preview padding options for the center-panel display toolbar.
 const PADDING_ITEMS = [
   { value: 'none', label: 'None' },
@@ -1640,101 +1631,6 @@ const PADDING_ITEMS = [
   { value: 'md', label: 'MD' },
   { value: 'lg', label: 'LG' },
 ]
-
-// Resolve the active responsive-preview device size, or null for "Fit".
-function viewportSize(displayConfig) {
-  const value = displayConfig.viewport ?? 'fit'
-  if (value === 'fit') return null
-  const preset = VIEWPORT_PRESETS.find((p) => p.value === value)
-  return preset?.width ? { width: preset.width, height: preset.height } : null
-}
-
-/**
- * ResponsivePreviewFrame — renders its children inside an iframe sized to a
- * device width (a genuine nested viewport, so the component's @media/container
- * breakpoints apply), then scales the iframe down with a CSS transform so a wide
- * desktop layout is viewable inside a narrow panel (e.g. on a phone). `width`
- * null = "fit" (no simulation; children render normally).
- */
-function ResponsivePreviewFrame({ width, height, children }) {
-  const outerRef = useRef(null)
-  // Callback ref (state) so the setup effect runs once the iframe is in the DOM.
-  const [iframeEl, setIframeEl] = useState(null)
-  const [scale, setScale] = useState(1)
-  const [body, setBody] = useState(null)
-
-  // Scale = available panel width ÷ device width (never enlarge past 1:1). The
-  // device keeps a real fixed height; its page scrolls inside the iframe.
-  useLayoutEffect(() => {
-    if (!width) return undefined
-    const measure = () => {
-      const available = outerRef.current?.clientWidth ?? width
-      setScale(Math.min(1, available / width))
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    if (outerRef.current) ro.observe(outerRef.current)
-    window.addEventListener('resize', measure)
-    return () => { ro.disconnect(); window.removeEventListener('resize', measure) }
-  }, [width])
-
-  // Prepare the iframe document: clone the app stylesheets + theme so A1 CSS
-  // applies inside, and expose its <body> as the portal target. A src-less
-  // (about:blank) iframe fires `load` unreliably, so set up directly (guarded)
-  // and also on `load`.
-  useEffect(() => {
-    if (!iframeEl) { setBody(null); return undefined }
-    const setup = () => {
-      const doc = iframeEl.contentDocument
-      if (!doc || !doc.body) return
-      doc.head.querySelectorAll('[data-a1-cloned]').forEach((node) => node.remove())
-      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => {
-        const clone = node.cloneNode(true)
-        clone.setAttribute('data-a1-cloned', '')
-        doc.head.appendChild(clone)
-      })
-      const html = document.documentElement
-      if (html.getAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
-      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
-      doc.body.style.margin = '0'
-      doc.body.style.minBlockSize = '100%'
-      doc.body.style.background = 'var(--semantic-color-surface-page)'
-      setBody(doc.body)
-    }
-    setup()
-    iframeEl.addEventListener('load', setup)
-    return () => iframeEl.removeEventListener('load', setup)
-  }, [iframeEl])
-
-  if (!width) return children
-
-  return (
-    <div ref={outerRef} className="a1-web-responsive-preview">
-      <div className="a1-web-responsive-preview__caption">
-        {width} × {height}px{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
-      </div>
-      <div
-        className="a1-web-responsive-preview__viewport"
-        style={{ inlineSize: `${width * scale}px`, blockSize: `${height * scale}px` }}
-      >
-        <iframe
-          ref={setIframeEl}
-          title="Responsive preview"
-          className="a1-web-responsive-preview__frame"
-          style={{
-            inlineSize: `${width}px`,
-            blockSize: `${height}px`,
-            transform: `scale(${scale})`,
-          }}
-        />
-        {body && createPortal(
-          <ResponsivePreviewContext.Provider value={true}>{children}</ResponsivePreviewContext.Provider>,
-          body,
-        )}
-      </div>
-    </div>
-  )
-}
 
 function normalizePropTables(component) {
   const entry = COMPONENT_PROPS[component.id]
@@ -1870,7 +1766,11 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   // Mount the configuration panel into the PageLayout aside slot (right rail).
   // The slot is rendered by the app shell only on the Configure tab.
   useLayoutEffect(() => {
-    setAsideNode(tab === 'configure' ? document.getElementById('a1-web-config-aside-slot') : null)
+    // Re-acquire on resize too: at xs/sm the slot moves into a BottomSheet.
+    const find = () => setAsideNode(tab === 'configure' ? document.getElementById('a1-web-config-aside-slot') : null)
+    find()
+    window.addEventListener('resize', find)
+    return () => window.removeEventListener('resize', find)
   }, [tab, component.id])
 
   const breadcrumbItems = [
@@ -1918,7 +1818,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                   setDisplayConfig={setDisplayConfig}
                   bareDisplay={detail.bareDisplay}
                 />
-                <ResponsivePreviewFrame {...(viewportSize(displayConfig) ?? {})}>
+                <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
                   {detail.bareDisplay ? (
                     <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
                       <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />

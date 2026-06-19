@@ -68,7 +68,7 @@ export function Controls({ config, setConfig }) {
         value={config.error}
         onChange={(event) => setConfig((current) => ({ ...current, error: event.target.value }))}
       />
-      <Choice
+      <Choice prop="size"
         label="Size"
         size="compact"
         hideIndicator
@@ -77,7 +77,7 @@ export function Controls({ config, setConfig }) {
         onChange={(size) => setConfig((current) => ({ ...current, size }))}
         options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="labelPosition"
         label="Label position"
         size="compact"
         hideIndicator
@@ -86,8 +86,8 @@ export function Controls({ config, setConfig }) {
         onChange={(labelPosition) => setConfig((current) => ({ ...current, labelPosition }))}
         options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle label="Checked" value={config.checked} onChange={(checked) => setConfig((current) => ({ ...current, checked }))} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+      <Toggle prop="checked" label="Checked" value={config.checked} onChange={(checked) => setConfig((current) => ({ ...current, checked }))} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
     </Stack>
   )
 }

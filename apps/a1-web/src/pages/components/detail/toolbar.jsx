@@ -133,7 +133,7 @@ export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="example"
         label="Example"
         size="compact"
         hideIndicator
@@ -142,20 +142,20 @@ export function Controls({ config, setConfig }) {
         onChange={(example) => set({ example })}
         options={EXAMPLE_OPTIONS.map((opt) => ({ label: EXAMPLE_LABELS[opt], value: opt }))}
       />
-      <Toggle label="Show labels" value={config.showLabels} onChange={(showLabels) => set({ showLabels })} />
-      <Toggle
+      <Toggle prop="showLabels" label="Show labels" value={config.showLabels} onChange={(showLabels) => set({ showLabels })} />
+      <Toggle prop="showLabel"
         label="Toolbar label"
         value={config.showLabel}
         onChange={(showLabel) => set({ showLabel })}
         disabled={config.example === 'overlay'}
       />
-      <Toggle
+      <Toggle prop="fullWidth"
         label="Full width"
         value={config.fullWidth}
         onChange={(fullWidth) => set({ fullWidth })}
         disabled={config.example === 'overlay' || config.example === 'crop'}
       />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
     </Stack>
   )
 }

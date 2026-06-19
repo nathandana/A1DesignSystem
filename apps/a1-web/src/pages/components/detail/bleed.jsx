@@ -42,7 +42,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="space"
         label="Space"
         hint="Amount of bleed on all sides — should match the surrounding Inset."
         size="compact"

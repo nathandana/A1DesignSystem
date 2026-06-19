@@ -38,6 +38,7 @@ export function AllPagesView({
   onOpenPage,
   onAddPage,
   onLaunchPrototype,
+  onEditLayout,
   onRenameProject,
   onDeleteProject,
   onNavigateHome,
@@ -68,6 +69,9 @@ export function AllPagesView({
           </Stack>
           <Stack direction="row" gap="sm" align="center" wrap>
             <Button variant="secondary" size='sm' icon="edit" onClick={() => setEditOpen(true)}>Edit</Button>
+            {onEditLayout && (
+              <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
+            )}
             <Button variant="secondary" icon="delete"  size='sm' onClick={() => setConfirmDelete(true)}>Delete</Button>
             {flat.length > 0 && (
               <Button variant="secondary" icon="open_in_new" size='sm' onClick={onLaunchPrototype}>

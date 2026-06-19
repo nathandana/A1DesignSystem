@@ -48,6 +48,7 @@ function ComponentTree({ activePage, onNavigate, search }) {
         children: category.components.map((component) => ({
           id: `component-${component.id}`,
           label: component.title,
+          icon: component.icon,
         })),
       })),
     ],

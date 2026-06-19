@@ -98,7 +98,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <Choice
+      <Choice prop="position"
         label="Position"
         iconOnly
         columns={3}

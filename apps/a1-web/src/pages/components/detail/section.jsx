@@ -14,6 +14,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './Toggle.jsx'
 import { ResponsiveControl, responsiveProp } from './configKit.jsx'
+import { Lockable } from './configKit.jsx'
 
 const BORDER_SIDES = ['top', 'right', 'bottom', 'left']
 
@@ -29,6 +30,9 @@ export const bareDisplay = true
 
 function optionLabel(value) {
   if (!value) return 'None'
+  // Padding / gap / content width can be a responsive object ({ xs, md, … }).
+  if (typeof value === 'object') return 'Responsive'
+  if (typeof value !== 'string') return String(value)
   return value.charAt(0).toUpperCase() + value.slice(1).replaceAll('-', ' ')
 }
 
@@ -186,16 +190,18 @@ export function Preview({ config }) {
 }
 
 // A compact, subtle Slider over a string-value scale (index space ↔ value).
-function DetentSlider({ label, values, detents, value, onChange }) {
+function DetentSlider({ label, values, detents, value, onChange, prop }) {
   return (
-    <Slider
-      size="compact"
-      variant="subtle"
-      label={label}
-      detents={detents}
-      value={Math.max(0, values.indexOf(value))}
-      onChange={(index) => onChange(values[index])}
-    />
+    <Lockable prop={prop}>
+      <Slider
+        size="compact"
+        variant="subtle"
+        label={label}
+        detents={detents}
+        value={Math.max(0, values.indexOf(value))}
+        onChange={(index) => onChange(values[index])}
+      />
+    </Lockable>
   )
 }
 
@@ -233,71 +239,71 @@ export function Controls({ config, setConfig }) {
     <Stack gap="sm">
       <Accordion label="Sizing" size="sm" subtext={sizingSummary} divider defaultOpen>
         <Stack gap="md">
-          <ResponsiveControl label="Padding" value={config.padding} onChange={(padding) => set({ padding })} defaultValue="md">
+          <ResponsiveControl label="Padding" prop="padding" value={config.padding} onChange={(padding) => set({ padding })} defaultValue="md">
             {(val, setVal) => <DetentSlider values={PADDING_VALUES} detents={PADDING_DETENTS} value={val} onChange={setVal} />}
           </ResponsiveControl>
-          <DetentSlider label="Gap" values={GAP_VALUES} detents={GAP_DETENTS} value={config.gap} onChange={(gap) => set({ gap })} />
-          <DetentSlider label="Content width" values={CONTENT_WIDTH_VALUES} detents={CONTENT_WIDTH_DETENTS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
+          <DetentSlider label="Gap" prop="gap" values={GAP_VALUES} detents={GAP_DETENTS} value={config.gap} onChange={(gap) => set({ gap })} />
+          <DetentSlider label="Content width" prop="contentWidth" values={CONTENT_WIDTH_VALUES} detents={CONTENT_WIDTH_DETENTS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
         </Stack>
       </Accordion>
 
       <Accordion label="Background" size="sm" subtext={backgroundSummary} divider defaultOpen>
         <Stack gap="lg">
-          <Toolbar label="Surface">
+          <Lockable prop="surface"><Toolbar label="Surface">
             <ToolbarGroup aria-label="Surface" showLabels value={config.surface} onChange={(surface) => set({ surface })} options={SURFACE_ITEMS} />
-          </Toolbar>
-          <Toggle label="Inverse" value={config.inverse} onChange={(inverse) => set({ inverse })} />
-          <Toolbar label="Gradient">
+          </Toolbar></Lockable>
+          <Toggle prop="inverse" label="Inverse" value={config.inverse} onChange={(inverse) => set({ inverse })} />
+          <Lockable prop="gradient"><Toolbar label="Gradient">
             <ToolbarGroup aria-label="Gradient" showLabels value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
-          </Toolbar>
+          </Toolbar></Lockable>
           {config.gradient ? (
-            <Toolbar label="Gradient position">
+            <Lockable prop="gradientPosition"><Toolbar label="Gradient position">
               <ToolbarGroup aria-label="Gradient position" columns={3} value={config.gradientPosition} onChange={(gradientPosition) => set({ gradientPosition })} options={GRADIENT_POSITION_ITEMS} />
-            </Toolbar>
+            </Toolbar></Lockable>
           ) : null}
         </Stack>
       </Accordion>
 
       <Accordion label="Border" size="sm" subtext={borderSummary} divider>
         <Stack gap="md">
-          <DetentSlider label="Border size" values={BORDER_SIZE_VALUES} detents={BORDER_SIZE_DETENTS} value={config.borderSize} onChange={(borderSize) => set({ borderSize })} />
+          <DetentSlider label="Border size" prop="borderSize" values={BORDER_SIZE_VALUES} detents={BORDER_SIZE_DETENTS} value={config.borderSize} onChange={(borderSize) => set({ borderSize })} />
           {config.borderSize ? (
             <>
-              <Toolbar label="Border style">
+              <Lockable prop="borderStyle"><Toolbar label="Border style">
                 <ToolbarGroup aria-label="Border style" showLabels value={config.borderStyle} onChange={(borderStyle) => set({ borderStyle })} options={BORDER_STYLE_ITEMS} />
-              </Toolbar>
-              <Toolbar label="Border variant">
+              </Toolbar></Lockable>
+              <Lockable prop="borderVariant"><Toolbar label="Border variant">
                 <ToolbarGroup aria-label="Border variant" showLabels value={config.borderVariant} onChange={(borderVariant) => set({ borderVariant })} options={BORDER_VARIANT_ITEMS} />
-              </Toolbar>
-              <Toolbar label="Border sides">
+              </Toolbar></Lockable>
+              <Lockable prop="borderSides"><Toolbar label="Border sides">
                 <ToolbarButton icon="border_all" label="All" onClick={() => set({ borderSides: [...BORDER_SIDES] })} />
                 <ToolbarDivider />
                 <ToolbarToggle icon="border_top" label="Top" pressed={config.borderSides.includes('top')} onChange={() => toggleSide('top')} />
                 <ToolbarToggle icon="border_right" label="Right" pressed={config.borderSides.includes('right')} onChange={() => toggleSide('right')} />
                 <ToolbarToggle icon="border_bottom" label="Bottom" pressed={config.borderSides.includes('bottom')} onChange={() => toggleSide('bottom')} />
                 <ToolbarToggle icon="border_left" label="Left" pressed={config.borderSides.includes('left')} onChange={() => toggleSide('left')} />
-              </Toolbar>
+              </Toolbar></Lockable>
             </>
           ) : null}
-          <DetentSlider label="Radius" values={RADIUS_VALUES} detents={RADIUS_DETENTS} value={config.radius} onChange={(radius) => set({ radius })} />
+          <DetentSlider label="Radius" prop="radius" values={RADIUS_VALUES} detents={RADIUS_DETENTS} value={config.radius} onChange={(radius) => set({ radius })} />
         </Stack>
       </Accordion>
 
       <Accordion label="Advanced" size="sm" subtext={advancedSummary} divider>
         <Stack gap="md">
-          <Toolbar label="Height">
+          <Lockable prop="height"><Toolbar label="Height">
             <ToolbarGroup aria-label="Height" showLabels value={config.height} onChange={(height) => set({ height })} options={HEIGHT_ITEMS} />
-          </Toolbar>
-          <ResponsiveControl label="Alignment" value={config.align} onChange={(align) => set({ align })} defaultValue="">
+          </Toolbar></Lockable>
+          <ResponsiveControl label="Alignment" prop="align" value={config.align} onChange={(align) => set({ align })} defaultValue="">
             {(val, setVal) => (
               <Toolbar aria-label="Alignment">
                 <ToolbarGroup aria-label="Alignment" value={val} onChange={setVal} options={ALIGN_ITEMS} />
               </Toolbar>
             )}
           </ResponsiveControl>
-          <Toolbar label="Element">
+          <Lockable prop="as"><Toolbar label="Element">
             <ToolbarGroup aria-label="Element" showLabels value={config.as} onChange={(as) => set({ as })} options={AS_ITEMS} />
-          </Toolbar>
+          </Toolbar></Lockable>
         </Stack>
       </Accordion>
     </Stack>

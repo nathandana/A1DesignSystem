@@ -11,3 +11,9 @@ test-results/
 # Storybook build output — generated per run, not committed
 storybook-static/
 # visual-baselines/ is intentionally tracked (via Git LFS)
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.ds-sync/
+ds-bundle/

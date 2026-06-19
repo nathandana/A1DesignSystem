@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  Accordion,
   Button,
   Code,
+  Divider,
+  IconButton,
   Paragraph,
   Stack,
   Tab,
@@ -14,6 +15,13 @@ import {
 import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
+
+// Tab labels: full label for a few items; clamp past 4 so the strip stays compact.
+function tabLabel(label, index, total) {
+  const text = (label ?? '').trim() || `${index + 1}`
+  if (total <= 4) return text
+  return text.length > 4 ? `${text.slice(0, 4)}…` : text
+}
 
 const VARIANT_OPTIONS = ['line', 'pills', 'segment', 'progress', 'folder']
 const ICON_POSITION_OPTIONS = ['start', 'above', 'end']
@@ -67,8 +75,41 @@ export function getDefaultConfig() {
       { id: 'tab-activity', label: 'Activity', icon: '', iconPosition: 'start', count: '12', status: 'none' },
       { id: 'tab-settings', label: 'Settings', icon: '', iconPosition: 'start', count: '', status: 'none' },
     ],
-    openItems: [],
   }
+}
+
+function ItemEditor({ item, canRemove, onChange, onRemove }) {
+  return (
+    <Stack gap="sm">
+      <Stack direction="row" justify="end">
+        <IconButton icon="delete" variant="destructive" size="sm" aria-label="Remove tab" disabled={!canRemove} onClick={onRemove} />
+      </Stack>
+      <TextField label="Label" size="compact" value={item.label} onChange={(e) => onChange({ label: e.target.value })} />
+      <Toggle
+        label="Icon"
+        value={!!item.icon}
+        onChange={(checked) => onChange({ icon: checked ? (item.icon || 'dashboard') : '' })}
+      />
+      {item.icon && (
+        <>
+          <IconSelect value={item.icon} onChange={(icon) => onChange({ icon })} />
+          <Choice
+            label="Icon position" size="compact" hideIndicator columns={3}
+            value={item.iconPosition}
+            onChange={(iconPosition) => onChange({ iconPosition })}
+            options={ICON_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+          />
+        </>
+      )}
+      <TextField label="Count" hint="Optional badge after the label." size="compact" value={item.count} onChange={(e) => onChange({ count: e.target.value })} />
+      <Choice
+        label="Status" hint="Step state, shown in the progress variant." size="compact" hideIndicator columns={3}
+        value={item.status}
+        onChange={(status) => onChange({ status })}
+        options={STATUS_OPTIONS}
+      />
+    </Stack>
+  )
 }
 
 export function Preview({ config }) {
@@ -109,70 +150,58 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, activeItemIndex = null, onSelectItem }) {
   const items = normalizeItems(config.items)
-  const openItems = Array.isArray(config.openItems) ? config.openItems : []
+  const [activeId, setActiveId] = useState(items[0]?.id ?? '')
+
+  const externalId = activeItemIndex != null ? items[activeItemIndex]?.id : null
+  useEffect(() => {
+    if (externalId && externalId !== activeId) setActiveId(externalId)
+  }, [externalId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const activeItemId = items.some((i) => i.id === activeId) ? activeId : (items[0]?.id ?? '')
+
+  function selectTab(id) {
+    setActiveId(id)
+    const idx = items.findIndex((i) => i.id === id)
+    if (idx >= 0) onSelectItem?.(idx)
+  }
 
   function updateItem(id, patch) {
     setConfig((current) => ({
       ...current,
-      items: normalizeItems(current.items).map((item) => (
-        item.id === id ? { ...item, ...patch } : item
-      )),
+      items: normalizeItems(current.items).map((item) => (item.id === id ? { ...item, ...patch } : item)),
     }))
   }
 
-  function toggleItem(id, open) {
-    setConfig((current) => {
-      const currentOpenItems = Array.isArray(current.openItems) ? current.openItems : []
-      return {
-        ...current,
-        openItems: open
-          ? Array.from(new Set([...currentOpenItems, id]))
-          : currentOpenItems.filter((itemId) => itemId !== id),
-      }
-    })
-  }
-
   function removeItem(id) {
+    const idx = items.findIndex((i) => i.id === id)
+    const next = items[idx + 1]?.id ?? items[idx - 1]?.id ?? ''
     setConfig((current) => {
-      const nextItems = normalizeItems(current.items).filter((item) => item.id !== id)
-      return {
-        ...current,
-        items: nextItems.length > 0 ? nextItems : normalizeItems(current.items),
-        openItems: (current.openItems ?? []).filter((itemId) => itemId !== id),
-      }
+      const filtered = normalizeItems(current.items).filter((item) => item.id !== id)
+      return { ...current, items: filtered.length > 0 ? filtered : normalizeItems(current.items) }
     })
+    setActiveId(next)
   }
 
   function addItem() {
-    setConfig((current) => {
-      const currentItems = normalizeItems(current.items)
-      const nextItem = createItem(`Tab ${currentItems.length + 1}`)
-      return {
-        ...current,
-        items: [...currentItems, nextItem],
-        openItems: Array.from(new Set([...(current.openItems ?? []), nextItem.id])),
-      }
-    })
+    const item = createItem(`Tab ${items.length + 1}`)
+    const newIndex = items.length
+    setConfig((current) => ({ ...current, items: [...normalizeItems(current.items), item] }))
+    setActiveId(item.id)
+    onSelectItem?.(newIndex)
   }
 
   return (
     <Stack gap="lg">
-      <Choice
-        label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
+      <Choice prop="variant"
+        label="Variant" size="compact" hideIndicator columns={2}
         value={config.variant}
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={2}
+      <Choice prop="size"
+        label="Size" size="compact" hideIndicator columns={2}
         value={config.size}
         onChange={(size) => setConfig((current) => ({ ...current, size }))}
         options={[
@@ -181,10 +210,7 @@ export function Controls({ config, setConfig }) {
         ]}
       />
       <Choice
-        label="Level"
-        size="compact"
-        hideIndicator
-        columns={2}
+        label="Level" size="compact" hideIndicator columns={2}
         value={String(config.level)}
         onChange={(value) => setConfig((current) => ({ ...current, level: Number(value) }))}
         options={[
@@ -193,83 +219,31 @@ export function Controls({ config, setConfig }) {
         ]}
       />
 
-      <Stack gap="sm">
-        {items.map((item, index) => {
-          const label = item.label || 'Untitled tab'
-          return (
-            <Accordion
-              key={item.id}
-              label={`${index + 1}. ${label}`}
-              size="sm"
-              open={openItems.includes(item.id)}
-              onChange={(open) => toggleItem(item.id, open)}
-            >
-              <Stack gap="md">
-                <TextField
-                  label="Label"
-                  size="compact"
-                  value={item.label}
-                  onChange={(event) => updateItem(item.id, { label: event.target.value })}
+      <Divider space="none" />
+
+      {items.length > 0 ? (
+        <div className="a1-web-item-tabs">
+          <Tabs value={activeItemId} onChange={selectTab} variant="line" size="compact">
+            <TabList>
+              {items.map((item, i) => (
+                <Tab key={item.id} value={item.id}>{tabLabel(item.label, i, items.length)}</Tab>
+              ))}
+            </TabList>
+            {items.map((item) => (
+              <TabPanel key={item.id} value={item.id}>
+                <ItemEditor
+                  item={item}
+                  canRemove={items.length > 1}
+                  onChange={(patch) => updateItem(item.id, patch)}
+                  onRemove={() => removeItem(item.id)}
                 />
-
-                <Toggle
-                  label="Icon"
-                  value={!!item.icon}
-                  onChange={(checked) => updateItem(item.id, { icon: checked ? (item.icon || 'dashboard') : '' })}
-                />
-
-                {item.icon && (
-                  <>
-                    <IconSelect
-                      value={item.icon}
-                      onChange={(icon) => updateItem(item.id, { icon })}
-                    />
-                    <Choice
-                      label="Icon position"
-                      size="compact"
-                      hideIndicator
-                      columns={3}
-                      value={item.iconPosition}
-                      onChange={(iconPosition) => updateItem(item.id, { iconPosition })}
-                      options={ICON_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-                    />
-                  </>
-                )}
-
-                <TextField
-                  label="Count"
-                  hint="Optional badge after the label."
-                  size="compact"
-                  value={item.count}
-                  onChange={(event) => updateItem(item.id, { count: event.target.value })}
-                />
-
-                <Choice
-                  label="Status"
-                  hint="Step state, shown in the progress variant."
-                  size="compact"
-                  hideIndicator
-                  columns={3}
-                  value={item.status}
-                  onChange={(status) => updateItem(item.id, { status })}
-                  options={STATUS_OPTIONS}
-                />
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  icon="delete"
-                  disabled={items.length <= 1}
-                  onClick={() => removeItem(item.id)}
-                >
-                  Remove tab
-                </Button>
-              </Stack>
-            </Accordion>
-          )
-        })}
-      </Stack>
+              </TabPanel>
+            ))}
+          </Tabs>
+        </div>
+      ) : (
+        <Paragraph size="sm" color="muted">No tabs. Add one below.</Paragraph>
+      )}
 
       <Button type="button" variant="secondary" size="sm" icon="add" onClick={addItem}>
         Add tab

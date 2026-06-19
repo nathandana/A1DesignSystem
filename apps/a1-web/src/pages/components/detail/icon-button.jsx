@@ -57,7 +57,7 @@ export function Controls({ config, setConfig, pages }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator
@@ -66,13 +66,13 @@ export function Controls({ config, setConfig, pages }) {
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <PageLinkField
         pages={pages}
         value={config.href ?? ''}
         onChange={(href) => setConfig((current) => ({ ...current, href }))}
       />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
     </Stack>
   )
 }

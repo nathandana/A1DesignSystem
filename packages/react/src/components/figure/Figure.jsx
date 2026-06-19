@@ -1,6 +1,7 @@
 import "./figure.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bleed } from "../bleed/Bleed.jsx";
+import { Icon } from "../icon/Icon.jsx";
 
 function isCropRect(rect) {
   return (
@@ -35,6 +36,8 @@ export function Figure({
   marginTop,
   marginBottom,
   bleed,
+  placeholder = true,
+  placeholderIcon = "image",
   className = "",
   imgClassName = "",
   style,
@@ -45,6 +48,12 @@ export function Figure({
   // non-destructively. We measure the natural ratio to size the crop box.
   const cropped = isCropRect(cropRect);
   const [naturalRatio, setNaturalRatio] = useState(null);
+
+  // Show a tokenized placeholder pattern when there's no source or it fails to
+  // load (e.g. a deleted library image). Reset the error flag when src changes.
+  const [errored, setErrored] = useState(false);
+  useEffect(() => { setErrored(false); }, [src]);
+  const showPlaceholder = placeholder && (!src || errored);
 
   const classes = [
     "a1-figure",
@@ -70,6 +79,7 @@ export function Figure({
       alt={alt}
       className={["a1-figure__img", imgClassName].filter(Boolean).join(" ")}
       style={imgStyle}
+      onError={() => setErrored(true)}
       onLoad={cropped ? (e) => {
         const { naturalWidth, naturalHeight } = e.currentTarget;
         if (naturalWidth && naturalHeight) setNaturalRatio(naturalWidth / naturalHeight);
@@ -77,7 +87,18 @@ export function Figure({
     />
   );
 
-  const media = cropped ? (
+  const placeholderEl = (
+    <div
+      className={["a1-figure__img", "a1-figure__placeholder", imgClassName].filter(Boolean).join(" ")}
+      style={imgStyle}
+      role="img"
+      aria-label={alt || undefined}
+    >
+      <Icon name={placeholderIcon} className="a1-figure__placeholder-icon" aria-hidden="true" />
+    </div>
+  );
+
+  const media = showPlaceholder ? placeholderEl : cropped ? (
     <div
       className="a1-figure__crop"
       style={{

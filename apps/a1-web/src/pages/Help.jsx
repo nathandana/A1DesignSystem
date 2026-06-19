@@ -188,11 +188,11 @@ const HELP = [
       },
       {
         id: 'linking',
-        title: 'Linking buttons & links to pages',
-        keywords: 'link button page navigation prototype href page link selector connect screens',
+        title: 'Linking buttons, links & cards to pages',
+        keywords: 'link button page navigation prototype href page link selector connect screens card navigation card icon button',
         body: (
           <Stack gap="sm">
-            <P>Select a Button or Link and use the <strong>Link to page</strong> selector to point it at any page in the project. In the prototype, clicking it navigates there.</P>
+            <P>Select a <strong>Button</strong>, <strong>Link</strong>, <strong>Icon Button</strong>, or a <strong>navigation Card</strong> (a Card with <strong>Variant: Navigation</strong>) and use the <strong>Link to page</strong> selector to point it at any page in the project. In the prototype, clicking it navigates there.</P>
             <P>Behind the scenes this stores an <Kbd>{'/?page=<id>'}</Kbd> href that the prototype resolves.</P>
           </Stack>
         ),
@@ -357,6 +357,24 @@ const HELP = [
         ),
       },
       {
+        id: 'image-library',
+        title: 'Image library',
+        keywords: 'image library upload local images figure indexeddb store browser drag drop photo picker',
+        body: (
+          <Stack gap="sm">
+            <P>The <strong>Image library</strong> (open it from the Editor menu or the <Icon name="photo_library" size="sm" /> button on the Projects home) holds images you upload. They’re stored locally in this browser and shared across every project.</P>
+            <Steps items={[
+              'Upload images with the button or by dragging files onto the page; large images are downscaled automatically.',
+              'In a Figure, click the photo_library button next to the Image URL to choose an image from the library (or upload one inline).',
+              'Rename or delete images from the library page — deletes leave a missing image on any Figure that used them.',
+            ]} />
+            <Banner status="info" variant="inline" title="Stored locally">
+              Like everything else in the editor, the library lives in this browser (in IndexedDB). It isn’t uploaded anywhere, and it doesn’t travel with an exported project to another device.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
         id: 'ai-images',
         title: 'AI image finder',
         keywords: 'ai image finder unsplash claude api key describe suggestions thumbnails caption generate',
@@ -370,6 +388,26 @@ const HELP = [
             ]} />
             <Banner status="warn" variant="inline" title="API key">
               You provide an Anthropic API key the first time; it’s stored only in this browser. Fine for local prototyping — don’t use this pattern in a public production build (proxy the call through a backend there).
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'ai-page-editor',
+        title: 'AI page editor (chat)',
+        keywords: 'ai page editor chat claude describe change whole page json generate modify instruction undo opus make with ai add page split button',
+        body: (
+          <Stack gap="sm">
+            <P>The <strong>AI</strong> tab in the right-hand panel lets you edit the whole page by describing the change in plain language. Claude is sent the current page plus A1’s component and format reference, so it knows which components, props, and values are allowed.</P>
+            <P>To start a brand-new page this way, open the <strong>Add page</strong> split button (the caret) in the Pages sidebar footer and choose <strong>Make with AI</strong> — it creates the page and drops you straight into the AI tab with the prompt focused.</P>
+            <Steps items={[
+              'Open the AI tab and type an instruction — e.g. “Add a hero section with a heading and a primary call-to-action”, or “Turn the three cards into a grid”.',
+              'Press Enter (Shift+Enter for a new line). Claude returns a short summary and the updated page.',
+              'The change is applied to the canvas automatically as a single step — press Cmd/Ctrl+Z to undo the whole edit.',
+            ]} />
+            <P>It’s conversational — follow-ups like “now make the heading larger” build on the previous turn, and it always works from the live canvas (so manual edits in between are respected).</P>
+            <Banner status="warn" variant="inline" title="API key">
+              Uses the same in-browser Anthropic API key as the AI image and icon tools, stored only in this browser. Fine for local prototyping — don’t ship the in-browser key to a public production build.
             </Banner>
           </Stack>
         ),

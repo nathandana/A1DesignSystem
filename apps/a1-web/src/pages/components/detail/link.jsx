@@ -88,8 +88,8 @@ export function Controls({ config, setConfig, pages }) {
         value={config.href}
         onChange={(href) => setConfig((current) => ({ ...current, href }))}
       />
-      <ConfigSlider label="Size" values={LINK_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
-      <Choice
+      <ConfigSlider prop="size" label="Size" values={LINK_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice prop="weight"
         label="Weight"
         size="compact"
         hideIndicator

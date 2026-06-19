@@ -61,7 +61,7 @@ export function Controls({ config, setConfig }) {
         value={config.label}
         onChange={(event) => set({ label: event.target.value })}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
       <FieldState
         items={[
           { key: 'defaultOpen', label: 'Default open', icon: 'unfold_more', value: config.defaultOpen },

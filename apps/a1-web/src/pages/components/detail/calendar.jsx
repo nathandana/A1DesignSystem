@@ -55,7 +55,7 @@ export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator

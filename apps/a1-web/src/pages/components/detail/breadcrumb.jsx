@@ -1,9 +1,16 @@
+import { useEffect, useState } from 'react'
 import {
-  Accordion,
   Breadcrumb,
   Button,
   Code,
+  Divider,
+  IconButton,
+  Paragraph,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { Choice } from './configKit.jsx'
@@ -12,6 +19,13 @@ const ITEM_BEHAVIOR_OPTIONS = ['link', 'button', 'static']
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+// Tab labels: full label for a few items; clamp once the strip gets crowded.
+function tabLabel(label, index, total) {
+  const text = (label ?? '').trim() || `${index + 1}`
+  if (total <= 4) return text
+  return text.length > 4 ? `${text.slice(0, 4)}…` : text
 }
 
 function createItem(label, behavior = 'link', href = '#') {
@@ -84,7 +98,6 @@ export function getDefaultConfig() {
       { id: 'breadcrumb-navigation', label: 'Navigation', behavior: 'button', href: '' },
       { id: 'breadcrumb-current', label: 'Breadcrumb', behavior: 'static', href: '' },
     ],
-    openItems: ['breadcrumb-home'],
   }
 }
 
@@ -97,61 +110,88 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+// Per-item editor shown inside a tab. The last item is the current page (static).
+function ItemEditor({ item, isLast, canRemove, onChange, onRemove }) {
+  return (
+    <Stack gap="sm">
+      <Stack direction="row" justify="end">
+        <IconButton icon="delete" variant="destructive" size="sm" aria-label="Remove item" disabled={!canRemove} onClick={onRemove} />
+      </Stack>
+      <TextField
+        label={isLast ? 'Current page label' : 'Label'}
+        size="compact"
+        value={item.label}
+        onChange={(e) => onChange({ label: e.target.value })}
+      />
+      {!isLast && (
+        <Choice
+          label="Behavior"
+          size="compact"
+          hideIndicator
+          columns={3}
+          value={item.behavior}
+          onChange={(behavior) => onChange({ behavior })}
+          options={ITEM_BEHAVIOR_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        />
+      )}
+      {!isLast && item.behavior === 'link' && (
+        <TextField
+          label="Href"
+          size="compact"
+          value={item.href}
+          onChange={(e) => onChange({ href: e.target.value })}
+        />
+      )}
+    </Stack>
+  )
+}
+
+export function Controls({ config, setConfig, activeItemIndex = null, onSelectItem }) {
   const items = normalizeItems(config.items)
-  const openItems = Array.isArray(config.openItems) ? config.openItems : []
+  const [activeId, setActiveId] = useState(items[0]?.id ?? '')
+
+  // The canvas drives the active tab when an item is clicked there.
+  const externalId = activeItemIndex != null ? items[activeItemIndex]?.id : null
+  useEffect(() => {
+    if (externalId && externalId !== activeId) setActiveId(externalId)
+  }, [externalId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const activeItemId = items.some((i) => i.id === activeId) ? activeId : (items[0]?.id ?? '')
+
+  function selectTab(id) {
+    setActiveId(id)
+    const idx = items.findIndex((item) => item.id === id)
+    if (idx >= 0) onSelectItem?.(idx)
+  }
 
   function updateItem(id, patch) {
     setConfig((current) => ({
       ...current,
-      items: normalizeItems(current.items).map((item) => (
-        item.id === id ? { ...item, ...patch } : item
-      )),
+      items: normalizeItems(current.items).map((item) => (item.id === id ? { ...item, ...patch } : item)),
     }))
   }
 
-  function toggleItem(id, open) {
-    setConfig((current) => {
-      const currentOpenItems = Array.isArray(current.openItems) ? current.openItems : []
-
-      return {
-        ...current,
-        openItems: open
-          ? Array.from(new Set([...currentOpenItems, id]))
-          : currentOpenItems.filter((itemId) => itemId !== id),
-      }
-    })
-  }
-
   function removeItem(id) {
+    const idx = items.findIndex((item) => item.id === id)
+    const next = items[idx + 1]?.id ?? items[idx - 1]?.id ?? ''
     setConfig((current) => {
-      const nextItems = normalizeItems(current.items).filter((item) => item.id !== id)
-      return {
-        ...current,
-        items: nextItems.length > 0 ? nextItems : normalizeItems(current.items),
-        openItems: Array.isArray(current.openItems)
-          ? current.openItems.filter((itemId) => itemId !== id)
-          : [],
-      }
+      const filtered = normalizeItems(current.items).filter((item) => item.id !== id)
+      return { ...current, items: filtered.length > 0 ? filtered : normalizeItems(current.items) }
     })
+    setActiveId(next)
   }
 
+  // New items insert before the current (last) page, which stays the leaf.
   function addItem() {
+    const currentItems = normalizeItems(config.items)
+    const nextItem = createItem(`Section ${currentItems.length}`, 'link', '#')
+    const insertIndex = Math.max(currentItems.length - 1, 0)
     setConfig((current) => {
-      const currentItems = normalizeItems(current.items)
-      const nextItem = createItem(`Section ${currentItems.length}`, 'link', '#')
-      const currentPage = currentItems[currentItems.length - 1]
-
-      return {
-        ...current,
-        items: [
-          ...currentItems.slice(0, -1),
-          nextItem,
-          currentPage,
-        ],
-        openItems: Array.from(new Set([...(current.openItems ?? []), nextItem.id])),
-      }
+      const list = normalizeItems(current.items)
+      return { ...current, items: [...list.slice(0, -1), nextItem, list[list.length - 1]] }
     })
+    setActiveId(nextItem.id)
+    onSelectItem?.(insertIndex)
   }
 
   return (
@@ -163,63 +203,32 @@ export function Controls({ config, setConfig }) {
         onChange={(event) => setConfig((current) => ({ ...current, backLabel: event.target.value }))}
       />
 
-      <Stack gap="sm">
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1
-          const label = item.label || 'Untitled item'
+      <Divider space="none" />
 
-          return (
-            <Accordion
-              key={item.id}
-              label={`${index + 1}. ${label}${isLast ? ' (current)' : ''}`}
-              size="sm"
-              open={openItems.includes(item.id)}
-              onChange={(open) => toggleItem(item.id, open)}
-            >
-              <Stack gap="md">
-                <TextField
-                  label={isLast ? 'Current page label' : 'Label'}
-                  size="compact"
-                  value={item.label}
-                  onChange={(event) => updateItem(item.id, { label: event.target.value })}
+      {items.length > 0 ? (
+        <div className="a1-web-item-tabs">
+          <Tabs value={activeItemId} onChange={selectTab} variant="line" size="compact">
+            <TabList>
+              {items.map((item, i) => (
+                <Tab key={item.id} value={item.id}>{tabLabel(item.label, i, items.length)}</Tab>
+              ))}
+            </TabList>
+            {items.map((item, i) => (
+              <TabPanel key={item.id} value={item.id}>
+                <ItemEditor
+                  item={item}
+                  isLast={i === items.length - 1}
+                  canRemove={items.length > 1}
+                  onChange={(patch) => updateItem(item.id, patch)}
+                  onRemove={() => removeItem(item.id)}
                 />
-
-                {!isLast && (
-                  <Choice
-                    label="Behavior"
-                    size="compact"
-                    hideIndicator
-                    columns={3}
-                    value={item.behavior}
-                    onChange={(behavior) => updateItem(item.id, { behavior })}
-                    options={ITEM_BEHAVIOR_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-                  />
-                )}
-
-                {!isLast && item.behavior === 'link' && (
-                  <TextField
-                    label="Href"
-                    size="compact"
-                    value={item.href}
-                    onChange={(event) => updateItem(item.id, { href: event.target.value })}
-                  />
-                )}
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  icon="delete"
-                  disabled={items.length <= 1}
-                  onClick={() => removeItem(item.id)}
-                >
-                  Remove item
-                </Button>
-              </Stack>
-            </Accordion>
-          )
-        })}
-      </Stack>
+              </TabPanel>
+            ))}
+          </Tabs>
+        </div>
+      ) : (
+        <Paragraph size="sm" color="muted">No items. Add one below.</Paragraph>
+      )}
 
       <Button type="button" variant="secondary" size="sm" icon="add" onClick={addItem}>
         Add item

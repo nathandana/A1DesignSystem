@@ -1,9 +1,20 @@
 [build]
   command = "npm run build:a1-web"
   publish = "apps/a1-web/dist"
+  functions = "apps/a1-web/netlify/functions"
 
 [build.environment]
   NODE_VERSION = "24"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Keep the SPA catch-all from shadowing the image-storage function. (Netlify
+# excludes /.netlify/* automatically, but this is explicit and future-proof.)
+[[redirects]]
+  from = "/.netlify/functions/*"
+  status = 200
+  force = false
 
 [[redirects]]
   from = "/*"

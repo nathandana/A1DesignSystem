@@ -12,7 +12,7 @@ import "./data-table.css";
  * columns: Array<{
  *   key: string,
  *   label: string,
- *   type?: "text" | "number" | "currency" | "date" | "badge" | "avatar" | "link" | "actions",
+ *   type?: "text" | "number" | "currency" | "date" | "badge" | "avatar" | "image" | "link" | "actions",
  *   align?: "start" | "center" | "end",
  *   width?: string,
  *   sortable?: boolean,
@@ -29,6 +29,7 @@ import "./data-table.css";
 // Estimated minimum content width per column type at a "neutral" padding level
 const COL_BASE_WIDTH = {
   avatar:   160,  // avatar circle + name text
+  image:     72,  // small thumbnail
   date:     110,  // "Jan 12, 2026"
   actions:  120,  // one or two compact buttons
   link:     120,  // linked text
@@ -453,6 +454,15 @@ export function DataTable({
             <span>{value}</span>
           </span>
         );
+      }
+
+      case "image": {
+        // value is an image URL, or `{ src, alt }`.
+        const src = value && typeof value === "object" ? value.src : value;
+        const alt = value && typeof value === "object" ? (value.alt ?? "") : "";
+        return src
+          ? <img className="a1-data-table__thumb" src={src} alt={alt} loading="lazy" />
+          : <span className="a1-data-table__thumb a1-data-table__thumb--empty" aria-hidden="true" />;
       }
 
       case "badge": {

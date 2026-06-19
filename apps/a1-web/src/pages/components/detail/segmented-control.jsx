@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  Accordion,
   Button,
   Code,
+  Divider,
+  IconButton,
+  Paragraph,
   SegmentedControl,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { ConfigSlider } from './configKit.jsx'
@@ -12,6 +18,14 @@ import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
+
+// Tab labels: full label for a few items; clamp to the first few characters once
+// there are many so the tab strip stays compact. (Mirrors DefinitionList.)
+function tabLabel(label, index, total) {
+  const text = (label ?? '').trim() || `${index + 1}`
+  if (total <= 4) return text
+  return text.length > 4 ? `${text.slice(0, 4)}…` : text
+}
 
 function escapeJsString(value) {
   return String(value ?? '')
@@ -43,7 +57,6 @@ export function getDefaultConfig() {
       { id: 'segment-week', label: 'Week', icon: '' },
       { id: 'segment-month', label: 'Month', icon: '' },
     ],
-    openItems: [],
   }
 }
 
@@ -67,106 +80,111 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+function ItemEditor({ option, canRemove, onChange, onRemove }) {
+  return (
+    <Stack gap="sm">
+      <Stack direction="row" justify="end">
+        <IconButton
+          icon="delete"
+          variant="destructive"
+          size="sm"
+          aria-label="Remove option"
+          disabled={!canRemove}
+          onClick={onRemove}
+        />
+      </Stack>
+      <TextField
+        label="Label"
+        size="compact"
+        value={option.label ?? ''}
+        onChange={(event) => onChange({ label: event.target.value })}
+      />
+      <Toggle
+        label="Icon"
+        value={!!option.icon}
+        onChange={(checked) => onChange({ icon: checked ? (option.icon || 'star') : '' })}
+      />
+      {option.icon && (
+        <IconSelect value={option.icon} onChange={(icon) => onChange({ icon })} />
+      )}
+    </Stack>
+  )
+}
+
+export function Controls({ config, setConfig, activeItemIndex = null, onSelectItem }) {
   const options = normalizeOptions(config.options)
-  const openItems = Array.isArray(config.openItems) ? config.openItems : []
+  const [activeId, setActiveId] = useState(options[0]?.id ?? '')
+  const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+
+  // The canvas drives the active tab when a segment is clicked there.
+  const externalId = activeItemIndex != null ? options[activeItemIndex]?.id : null
+  useEffect(() => {
+    if (externalId && externalId !== activeId) setActiveId(externalId)
+  }, [externalId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const activeItemId = options.some((o) => o.id === activeId) ? activeId : (options[0]?.id ?? '')
+
+  function selectTab(id) {
+    setActiveId(id)
+    const idx = options.findIndex((o) => o.id === id)
+    if (idx >= 0) onSelectItem?.(idx)
+  }
 
   function updateOption(id, patch) {
     setConfig((current) => ({
       ...current,
-      options: normalizeOptions(current.options).map((opt) => (
-        opt.id === id ? { ...opt, ...patch } : opt
-      )),
+      options: normalizeOptions(current.options).map((opt) => (opt.id === id ? { ...opt, ...patch } : opt)),
     }))
   }
 
-  function toggleOption(id, open) {
-    setConfig((current) => {
-      const currentOpen = Array.isArray(current.openItems) ? current.openItems : []
-      return {
-        ...current,
-        openItems: open
-          ? Array.from(new Set([...currentOpen, id]))
-          : currentOpen.filter((itemId) => itemId !== id),
-      }
-    })
-  }
-
   function removeOption(id) {
+    const idx = options.findIndex((o) => o.id === id)
+    const next = options[idx + 1]?.id ?? options[idx - 1]?.id ?? ''
     setConfig((current) => {
-      const next = normalizeOptions(current.options).filter((opt) => opt.id !== id)
-      return {
-        ...current,
-        options: next.length > 0 ? next : normalizeOptions(current.options),
-        openItems: (current.openItems ?? []).filter((itemId) => itemId !== id),
-      }
+      const filtered = normalizeOptions(current.options).filter((opt) => opt.id !== id)
+      return { ...current, options: filtered.length > 0 ? filtered : normalizeOptions(current.options) }
     })
+    setActiveId(next)
   }
 
   function addOption() {
-    setConfig((current) => {
-      const list = normalizeOptions(current.options)
-      const next = createOption(`Option ${list.length + 1}`)
-      return {
-        ...current,
-        options: [...list, next],
-        openItems: Array.from(new Set([...(current.openItems ?? []), next.id])),
-      }
-    })
+    const option = createOption(`Option ${options.length + 1}`)
+    const newIndex = options.length
+    setConfig((current) => ({ ...current, options: [...normalizeOptions(current.options), option] }))
+    setActiveId(option.id)
+    onSelectItem?.(newIndex)
   }
 
   return (
     <Stack gap="lg">
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
-      <Toggle label="Full width" value={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Toggle prop="fullWidth" label="Full width" value={config.fullWidth} onChange={(fullWidth) => set({ fullWidth })} />
 
-      <Stack gap="sm">
-        {options.map((option, index) => {
-          const label = option.label || 'Untitled option'
-          return (
-            <Accordion
-              key={option.id}
-              label={`${index + 1}. ${label}`}
-              size="sm"
-              open={openItems.includes(option.id)}
-              onChange={(open) => toggleOption(option.id, open)}
-            >
-              <Stack gap="md">
-                <TextField
-                  label="Label"
-                  size="compact"
-                  value={option.label}
-                  onChange={(event) => updateOption(option.id, { label: event.target.value })}
+      <Divider space="none" />
+
+      {options.length > 0 ? (
+        <div className="a1-web-item-tabs">
+          <Tabs value={activeItemId} onChange={selectTab} variant="line" size="compact">
+            <TabList>
+              {options.map((option, i) => (
+                <Tab key={option.id} value={option.id}>{tabLabel(option.label, i, options.length)}</Tab>
+              ))}
+            </TabList>
+            {options.map((option) => (
+              <TabPanel key={option.id} value={option.id}>
+                <ItemEditor
+                  option={option}
+                  canRemove={options.length > 1}
+                  onChange={(patch) => updateOption(option.id, patch)}
+                  onRemove={() => removeOption(option.id)}
                 />
-
-                <Toggle
-                  label="Icon"
-                  value={!!option.icon}
-                  onChange={(checked) => updateOption(option.id, { icon: checked ? (option.icon || 'star') : '' })}
-                />
-
-                {option.icon && (
-                  <IconSelect
-                    value={option.icon}
-                    onChange={(icon) => updateOption(option.id, { icon })}
-                  />
-                )}
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  icon="delete"
-                  disabled={options.length <= 1}
-                  onClick={() => removeOption(option.id)}
-                >
-                  Remove option
-                </Button>
-              </Stack>
-            </Accordion>
-          )
-        })}
-      </Stack>
+              </TabPanel>
+            ))}
+          </Tabs>
+        </div>
+      ) : (
+        <Paragraph size="sm" color="muted">No options. Add one below.</Paragraph>
+      )}
 
       <Button type="button" variant="secondary" size="sm" icon="add" onClick={addOption}>
         Add option

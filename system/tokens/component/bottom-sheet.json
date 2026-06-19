@@ -1,0 +1,13 @@
+{
+  "component": {
+    "bottomSheet": {
+      "headerHeight":  { "$type": "dimension", "$value": "{base.spacing.56}" },
+      "borderRadius":  { "$type": "dimension", "$value": "{base.radius.lg}" },
+      "handleWidth":   { "$type": "dimension", "$value": "{base.spacing.40}" },
+      "handleHeight":  { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "padding":       { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "background":    { "$type": "color", "$value": "{semantic.color.surface.card}" },
+      "zIndex":        { "$value": "200" }
+    }
+  }
+}

@@ -14,6 +14,7 @@ import * as list from './list.jsx'
 import * as sideNav from './side-nav.jsx'
 import * as topHeader from './top-header.jsx'
 import * as bottomDrawer from './bottom-drawer.jsx'
+import * as bottomSheet from './bottom-sheet.jsx'
 import * as tabs from './tabs.jsx'
 import * as pageNav from './page-nav.jsx'
 import * as button from './button.jsx'
@@ -32,6 +33,7 @@ import * as zipField from './zip-field.jsx'
 import * as creditCardField from './credit-card-field.jsx'
 import * as textarea from './textarea.jsx'
 import * as select from './select.jsx'
+import * as autocomplete from './autocomplete.jsx'
 import * as checkboxGroup from './checkbox-group.jsx'
 import * as radioGroup from './radio-group.jsx'
 import * as choiceGroup from './choice-group.jsx'
@@ -84,6 +86,7 @@ const REGISTRY = {
   'side-nav': sideNav,
   'top-header': topHeader,
   'bottom-drawer': bottomDrawer,
+  'bottom-sheet': bottomSheet,
   tabs,
   'page-nav': pageNav,
   button,
@@ -102,6 +105,7 @@ const REGISTRY = {
   'credit-card-field': creditCardField,
   textarea,
   select,
+  autocomplete,
   'checkbox-group': checkboxGroup,
   'radio-group': radioGroup,
   'choice-group': choiceGroup,

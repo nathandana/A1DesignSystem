@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
-  Accordion,
   Button,
   Code,
   DefinitionList,
   Divider,
+  IconButton,
   Paragraph,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   TextField,
   Toolbar,
   ToolbarToggle,
@@ -15,6 +19,14 @@ import { Choice, ConfigSlider } from './configKit.jsx'
 
 function uid() {
   return `dl-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+}
+
+// Tab labels: show the full label for a few items; once there are many, clamp to
+// the first few characters so the tab strip stays compact.
+function tabLabel(label, index, total) {
+  const text = (label ?? '').trim() || `${index + 1}`
+  if (total <= 4) return text
+  return text.length > 4 ? `${text.slice(0, 4)}…` : text
 }
 
 const DIRECTION_OPTIONS = [
@@ -85,18 +97,26 @@ export function Preview({ config }) {
   )
 }
 
-function ItemEditor({ item, onChange, onRemove, isOpen, onToggleOpen }) {
+function ItemEditor({ item, onChange, onRemove }) {
   const hasHeading = !!item.valueHeadingProps?.size
 
   return (
-    <Accordion label={item.label || 'Untitled'} size="sm" open={isOpen} onChange={onToggleOpen}>
-      <Stack gap="sm">
-        <TextField
-          label="Label"
-          size="compact"
-          value={item.label ?? ''}
-          onChange={(e) => onChange({ label: e.target.value })}
+    <Stack gap="sm">
+      <Stack direction="row" justify="end">
+        <IconButton
+          icon="delete"
+          variant="destructive"
+          size="sm"
+          aria-label="Remove item"
+          onClick={onRemove}
         />
+      </Stack>
+      <TextField
+        label="Label"
+        size="compact"
+        value={item.label ?? ''}
+        onChange={(e) => onChange({ label: e.target.value })}
+      />
         <TextField
           label="Value"
           size="compact"
@@ -150,50 +170,61 @@ function ItemEditor({ item, onChange, onRemove, isOpen, onToggleOpen }) {
             />
           </>
         )}
-
-        <Button type="button" variant="destructive" size="sm" icon="delete" onClick={onRemove}>
-          Remove
-        </Button>
-      </Stack>
-    </Accordion>
+    </Stack>
   )
 }
 
-export function Controls({ config, setConfig }) {
-  const [openIds, setOpenIds] = useState([])
+export function Controls({ config, setConfig, activeItemIndex = null, onSelectItem }) {
+  const [activeId, setActiveId] = useState(config.items[0]?.id ?? '')
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+
+  // The canvas drives the active tab when an item is clicked there.
+  const externalId = activeItemIndex != null ? config.items[activeItemIndex]?.id : null
+  useEffect(() => {
+    if (externalId && externalId !== activeId) setActiveId(externalId)
+  }, [externalId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep the active tab valid as items are added/removed.
+  const activeItemId = config.items.some((i) => i.id === activeId) ? activeId : (config.items[0]?.id ?? '')
+
+  // Switch tab + mirror the selection onto the canvas (outline that item).
+  function selectTab(id) {
+    setActiveId(id)
+    const idx = config.items.findIndex((item) => item.id === id)
+    if (idx >= 0) onSelectItem?.(idx)
+  }
 
   function updateItem(id, patch) {
     setConfig((c) => ({ ...c, items: c.items.map((item) => item.id === id ? { ...item, ...patch } : item) }))
   }
 
   function removeItem(id) {
+    const idx = config.items.findIndex((item) => item.id === id)
+    const next = config.items[idx + 1]?.id ?? config.items[idx - 1]?.id ?? ''
     setConfig((c) => ({ ...c, items: c.items.filter((item) => item.id !== id) }))
-    setOpenIds((prev) => prev.filter((x) => x !== id))
+    setActiveId(next)
   }
 
   function addItem() {
     const id = uid()
+    const newIndex = config.items.length
     setConfig((c) => ({ ...c, items: [...c.items, { id, label: 'Label', value: 'Value' }] }))
-    setOpenIds((prev) => [...prev, id])
-  }
-
-  function toggleOpen(id) {
-    setOpenIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
+    setActiveId(id)
+    onSelectItem?.(newIndex)
   }
 
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="direction"
         label="Direction"
         iconOnly
         value={config.direction}
         onChange={(direction) => set({ direction })}
         options={DIRECTION_OPTIONS}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
       {config.direction === 'row' && (
-        <Choice
+        <Choice prop="labelWidth"
           label="Label width"
           iconOnly
           value={config.labelWidth}
@@ -204,21 +235,28 @@ export function Controls({ config, setConfig }) {
 
       <Divider space="none" />
 
-      <Stack gap="xs">
-        {config.items.map((item) => (
-          <ItemEditor
-            key={item.id}
-            item={item}
-            onChange={(patch) => updateItem(item.id, patch)}
-            onRemove={() => removeItem(item.id)}
-            isOpen={openIds.includes(item.id)}
-            onToggleOpen={() => toggleOpen(item.id)}
-          />
-        ))}
-        {config.items.length === 0 && (
-          <Paragraph size="sm" color="muted">No items. Add one below.</Paragraph>
-        )}
-      </Stack>
+      {config.items.length > 0 ? (
+        <div className="a1-web-item-tabs">
+        <Tabs value={activeItemId} onChange={selectTab} variant="line" size="compact">
+          <TabList>
+            {config.items.map((item, i) => (
+              <Tab key={item.id} value={item.id}>{tabLabel(item.label, i, config.items.length)}</Tab>
+            ))}
+          </TabList>
+          {config.items.map((item) => (
+            <TabPanel key={item.id} value={item.id}>
+              <ItemEditor
+                item={item}
+                onChange={(patch) => updateItem(item.id, patch)}
+                onRemove={() => removeItem(item.id)}
+              />
+            </TabPanel>
+          ))}
+        </Tabs>
+        </div>
+      ) : (
+        <Paragraph size="sm" color="muted">No items. Add one below.</Paragraph>
+      )}
 
       <Button type="button" variant="secondary" size="sm" icon="add" onClick={addItem}>
         Add item

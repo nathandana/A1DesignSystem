@@ -33,3 +33,26 @@ rules:
       - layout
       - semantics
       - usability
+
+  - id: cards-in-grid
+    components:
+      - Card
+      - Grid
+    requirement: A set of two or more sibling Cards (product tiles, feature cards, profiles) should be laid out in a Grid, not placed loosely in a Stack or Section.
+    do: Wrap repeated Cards in `<Grid columns={{ xs: 1, md: 3 }} gap="md">` so they form even rows that reflow responsively.
+    dont: Drop several Cards directly into a Section or Stack where they stretch full-width or wrap unevenly.
+    applies_to:
+      - layout
+      - consistency
+
+  - id: card-image-aspect-ratio
+    components:
+      - Card
+      - Figure
+    requirement: An image inside a Card should declare a valid, consistent aspect ratio so a grid of cards has uniform image heights.
+    do: Set `aspectRatio` on the card's `Figure` to a token value (`16:9`, `4:3`, `3:2`, `1:1`, `2:3`, `3:4`, `9:16`, `21:9`) and use the same ratio across all cards in the same grid.
+    dont: Omit `aspectRatio` (images render at varying natural heights) or pass a CSS-style value like `"4 / 3"` — only the colon token values apply a ratio.
+    applies_to:
+      - layout
+      - consistency
+      - media

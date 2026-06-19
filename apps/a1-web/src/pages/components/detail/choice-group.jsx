@@ -234,7 +234,7 @@ export function Controls({ config, setConfig, itemsMode = 'accordion' }) {
       <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
       <TextField label="Success" size="compact" value={config.success} onChange={(e) => set({ success: e.target.value })} />
       <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-      <ResponsiveControl label="Columns" value={config.columns} onChange={(columns) => set({ columns })} defaultValue="auto">
+      <ResponsiveControl prop="columns" label="Columns" value={config.columns} onChange={(columns) => set({ columns })} defaultValue="auto">
         {(val, setVal) => (
           <Choice
             value={val} onChange={setVal}

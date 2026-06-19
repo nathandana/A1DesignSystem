@@ -117,10 +117,16 @@
   overflow-y: hidden;
 }
 
-.a1-page-layout--viewport-height .a1-page-layout__sidebar .a1-side-nav {
-  position: relative;
-  top: auto;
-  height: 100%;
+/* Only at lg+ is the sidebar persistent and in flow; pin the SideNav to fill the
+   sidebar height so its footer stays anchored. At md and below the SideNav must
+   keep its fixed-overlay behaviour (see side-nav.css) so the sidebar slot
+   collapses and the main column expands to fill the freed space. */
+@media (--bp-lg-up) {
+  .a1-page-layout--viewport-height .a1-page-layout__sidebar .a1-side-nav {
+    position: relative;
+    top: auto;
+    height: 100%;
+  }
 }
 
 .a1-page-layout--viewport-height .a1-page-layout__content {

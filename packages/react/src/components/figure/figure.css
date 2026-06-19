@@ -167,3 +167,28 @@
 .a1-figure--caption-center .a1-figure__caption {
   text-align: center;
 }
+
+/* ─── Placeholder ─────────────────────────────────────────────────────────────
+   Shown when the image is missing or fails to load: a tokenized diagonal-stripe
+   pattern with a centered icon. Shares .a1-figure__img sizing, so aspect-ratio
+   and size variants apply; a 4/3 fallback box is used when no ratio is set. */
+.a1-figure__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background-color: var(--semantic-color-surface-raised);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--semantic-color-border-subtle) 0,
+    var(--semantic-color-border-subtle) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-figure__placeholder-icon {
+  font-size: var(--base-spacing-48);
+  opacity: 0.6;
+}

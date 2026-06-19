@@ -74,15 +74,15 @@ export function Controls({ config, setConfig }) {
       <TextField label="Value" size="compact" value={config.value} onChange={(e) => set({ value: e.target.value })} />
       <TextField label="Placeholder" size="compact" hint="Shown when the value is empty." value={config.placeholder} onChange={(e) => set({ placeholder: e.target.value })} />
       <TextField label="Accessible label" size="compact" value={config.ariaLabel} onChange={(e) => set({ ariaLabel: e.target.value })} />
-      <Choice
+      <Choice prop="as"
         label="Display as"
         iconOnly
         value={config.as} onChange={(as) => set({ as })}
         options={AS_OPTIONS}
       />
-      <Toggle label="Multiline" value={config.multiline} onChange={(multiline) => set({ multiline })} />
-      <Toggle label="Seamless"  value={config.seamless} onChange={(seamless) => set({ seamless })} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+      <Toggle prop="multiline" label="Multiline" value={config.multiline} onChange={(multiline) => set({ multiline })} />
+      <Toggle prop="seamless" label="Seamless"  value={config.seamless} onChange={(seamless) => set({ seamless })} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
     </Stack>
   )
 }

@@ -192,7 +192,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="inlineElement"
         label="Element"
         size="compact"
         hideIndicator

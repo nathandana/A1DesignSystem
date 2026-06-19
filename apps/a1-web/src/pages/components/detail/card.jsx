@@ -9,6 +9,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Choice, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
+import { PageLinkField } from './PageLinkField.jsx'
 
 const AS_OPTIONS = ['div', 'article', 'section']
 const ICON_DISPLAY_OPTIONS = ['default', 'hero', 'none']
@@ -101,7 +102,7 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, pages }) {
   return (
     <Stack gap="lg">
       {/* <TextField
@@ -116,7 +117,7 @@ export function Controls({ config, setConfig }) {
         value={config.body}
         onChange={(event) => setConfig((current) => ({ ...current, body: event.target.value }))}
       /> */}
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator
@@ -129,7 +130,7 @@ export function Controls({ config, setConfig }) {
         ]}
       />
       {config.variant !== 'navigation' && (
-        <Choice
+        <Choice prop="as"
           label="Element"
           size="compact"
           hideIndicator
@@ -140,14 +141,13 @@ export function Controls({ config, setConfig }) {
         />
       )}
       {config.variant === 'navigation' && (
-        <TextField
-          label="Href"
-          size="compact"
+        <PageLinkField
+          pages={pages}
           value={config.href}
-          onChange={(event) => setConfig((current) => ({ ...current, href: event.target.value }))}
+          onChange={(href) => setConfig((current) => ({ ...current, href }))}
         />
       )}
-      <Choice
+      <Choice prop="iconDisplay"
         label="Icon display"
         size="compact"
         hideIndicator
@@ -164,7 +164,7 @@ export function Controls({ config, setConfig }) {
         />
       )}
       {config.iconDisplay === 'hero' && (
-        <Choice
+        <Choice prop="heroColor"
           label="Hero color"
           iconOnly
           value={config.heroColor}

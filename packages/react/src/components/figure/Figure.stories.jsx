@@ -157,3 +157,17 @@ export const FreeformCrop = {
     </div>
   ),
 };
+
+/* ── Placeholder (missing / broken image) ─────────────────────────────────── */
+
+export const Placeholder = {
+  name: "Placeholder pattern",
+  parameters: { layout: "padded" },
+  render: () => (
+    <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap" }}>
+      <Figure src="" alt="No source" size="xs" aspectRatio="1:1" caption="No src" />
+      <Figure src="https://example.com/does-not-exist.jpg" alt="Broken" size="xs" aspectRatio="1:1" caption="Failed to load" />
+      <Figure src="" alt="Custom icon" size="xs" aspectRatio="1:1" placeholderIcon="broken_image" caption="Custom icon" />
+    </div>
+  ),
+};

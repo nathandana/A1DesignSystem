@@ -126,6 +126,8 @@
       "--component-button-focus-ring": "var(--base-color-accent-300)",
 
       "--base-radius-control": "2px",
+      "--base-radius-sm": "1px",
+      "--base-radius-md": "2px",
       "--base-radius-lg": "3px",
       "--base-radius-xl": "4px",
       "--component-button-border-radius": "2px",

@@ -364,6 +364,59 @@ body {
   border-color: var(--semantic-color-border-default);
 }
 
+/* Editor sidebar toggle — opens the workspace SideNav overlay at md and below
+   (where the persistent sidebar collapses). Hidden at lg+ where the sidebar is
+   always visible. Sits inline at the top-left of the content (does not float). */
+.a1-web-sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .a1-web-sidebar-toggle {
+    display: inline-flex;
+    margin: var(--base-spacing-12) 0 0 var(--base-spacing-12);
+  }
+}
+
+/* Config panel inside the xs/sm BottomSheet: fill its width, drop the rail
+   chrome (fixed width, side border, full-height min). */
+.a1-web-config-sheet .a1-web-config-aside {
+  inline-size: 100%;
+  min-block-size: 0;
+  border-inline-start: none;
+  background: transparent;
+}
+
+.a1-web-config-sheet .a1-web-theme-aside {
+  min-block-size: 0;
+}
+
+/* BottomSheet configurator preview: a constrained phone-like frame so the
+   fixed, xs/sm-only sheet is visible on a desktop docs page. */
+.a1-web-bottomsheet-preview {
+  position: relative;
+  block-size: 28rem;
+  inline-size: 100%;
+  max-inline-size: 24rem;
+  margin-inline: auto;
+  overflow: hidden;
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-raised);
+}
+
+/* Pin the sheet to the bottom of the mock (not the viewport), force it visible
+   even at md+ where it's normally hidden, and cap its height to the frame. */
+.a1-web-bottomsheet-preview .a1-bottom-sheet {
+  position: absolute;
+  display: flex;
+  max-block-size: 100%;
+}
+
+.a1-web-bottomsheet-preview .a1-bottom-sheet__spacer {
+  display: none;
+}
+
 /* ── Components docs shell ── */
 .a1-web-components-shell {
   display: block;
@@ -564,7 +617,6 @@ body {
   gap: var(--base-spacing-4);
 }
 
-.a1-web-components-placeholder,
 .a1-web-component-preview {
   padding: var(--base-spacing-24);
   border: var(--component-card-border-width) dashed var(--semantic-color-border-default);
@@ -1008,6 +1060,236 @@ body {
   line-height: 1.2;
 }
 
+/* Pattern editor — self-contained canvas + aside layout */
+.a1-web-pattern-editor {
+  display: flex;
+  flex-direction: column;
+  min-block-size: calc(100vh - var(--base-spacing-64, 4rem));
+}
+
+.a1-web-pattern-editor__bar {
+  padding: var(--base-spacing-8);
+  background: var(--semantic-color-surface-panel);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-pattern-editor__body {
+  display: flex;
+  flex: 1;
+  min-block-size: 0;
+}
+
+.a1-web-pattern-editor__sidebar {
+  inline-size: 15rem;
+  flex-shrink: 0;
+  overflow: auto;
+  border-inline-end: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-pattern-editor__sidebar-section {
+  padding: var(--base-spacing-12) var(--base-spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-pattern-editor__canvas {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.a1-web-pattern-editor__aside {
+  inline-size: 20rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-pattern-editor__tabs {
+  padding: var(--base-spacing-8);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-pattern-editor__panel {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Pattern authoring sidebar (main editor) */
+.a1-web-pattern-workspace-sidebar__section {
+  padding: var(--base-spacing-12) var(--base-spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+  border-block-end: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* DefinitionList child-item editing: clicking a label/value selects the item
+   (opens its config tab) and outlines the item being edited. */
+.a1-web-dl-item {
+  display: inline-block;
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-web-dl-item[data-active] {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* Child-item tab strip in a (narrow) configurator: scroll the tabs horizontally
+   instead of overflowing the panel; the tabs keep their width. */
+.a1-web-item-tabs [role="tablist"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  scrollbar-width: thin;
+}
+
+.a1-web-item-tabs [role="tablist"] > * {
+  flex-shrink: 0;
+}
+
+/* Icon select with an AI-finder affordance: the field grows, the auto_awesome
+   IconButton sits at its trailing edge, aligned to the input row. */
+.a1-web-icon-select {
+  display: flex;
+  gap: var(--base-spacing-8);
+  align-items: flex-end;
+}
+
+.a1-web-icon-select__field {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+/* Pattern "blank area" slot. The empty state is a dashed accent-bordered
+   placeholder; once filled it renders its children transparently. */
+.a1-web-slot--empty {
+  min-block-size: var(--base-spacing-64, 4rem);
+  text-align: center;
+  justify-items: center;
+}
+
+/* Pattern authoring: a config control paired with an inline lock toggle. The
+   control stays editable; a locked property gets a subtle red marker. */
+.a1-web-tool-authoring {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+}
+
+.a1-web-tool-authoring__control {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.a1-web-tool-authoring.is-locked .a1-web-tool-authoring__control {
+  box-shadow: inset 0 0 0 2px var(--semantic-color-status-error-border);
+  border-radius: var(--base-radius-md);
+  padding: var(--base-spacing-4);
+}
+
+/* A single locked configurator tool (a control or a whole toolbar): red outline
+   + lock badge, matching the canvas, and dimmed + non-interactive so a governed
+   property can't be edited (e.g. a locked slider can't be dragged). */
+.a1-web-tool-lock {
+  position: relative;
+  box-shadow: inset 0 0 0 2px var(--semantic-color-status-error-border);
+  border-radius: var(--base-radius-md);
+  padding: var(--base-spacing-8);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.a1-web-tool-lock::after {
+  content: 'lock';
+  font-family: 'Material Symbols Outlined';
+  font-size: 14px;
+  line-height: 1;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  padding: var(--base-spacing-2);
+  color: var(--semantic-color-status-error-foreground);
+  background: var(--semantic-color-status-error-background);
+  border-end-start-radius: var(--base-radius-sm);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* A fully-locked element is additionally dimmed and pointer-disabled, but keeps
+   accordion triggers usable so locked groups can still be expanded to review
+   them. (Edits are also blocked at the handler level.) */
+.a1-web-config-locked {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.a1-web-config-locked .a1-accordion__trigger {
+  pointer-events: auto;
+}
+
+/* Pattern-instance indicator on the editor canvas (when the instance is NOT the
+   one being edited): a highlight outline + a pattern icon badge in the corner.
+   While the instance is active, the red lock outlines take over instead. */
+[data-editor-pattern='true'] {
+  position: relative;
+  box-shadow: inset 0 0 0 2px var(--semantic-color-action-background);
+  border-radius: var(--base-radius-sm);
+}
+
+[data-editor-pattern='true']::after {
+  content: 'dashboard_customize';
+  font-family: 'Material Symbols Outlined';
+  font-size: 14px;
+  line-height: 1;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  padding: var(--base-spacing-2);
+  color: var(--semantic-color-action-foreground);
+  background: var(--semantic-color-action-background);
+  border-end-start-radius: var(--base-radius-sm);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Locked element indicator on the editor canvas: a red inset ring + a lock
+   badge in the top-right corner of the outline. */
+[data-editor-locked='true'] {
+  position: relative;
+  box-shadow: inset 0 0 0 2px var(--semantic-color-status-error-border);
+}
+
+[data-editor-locked='true']::after {
+  content: 'lock';
+  font-family: 'Material Symbols Outlined';
+  font-size: 14px;
+  line-height: 1;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  padding: var(--base-spacing-2);
+  color: var(--semantic-color-status-error-foreground);
+  background: var(--semantic-color-status-error-background);
+  border-end-start-radius: var(--base-radius-sm);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Pattern preview frame — a bordered window around a live pattern render */
+.a1-web-pattern-frame {
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  overflow: hidden;
+  background: var(--semantic-color-surface-page);
+}
+
 /* Add panel — list view */
 .a1-web-add-panel-list {
   display: flex;
@@ -1298,4 +1580,554 @@ body {
 
 .a1-web-figure-crop__bar > * {
   max-inline-size: 100%;
+}
+
+/* The sidebar-footer "Add page" SplitButton fills the footer width like the plain
+   Button it replaced: stretch the split container and let the main target grow,
+   while the caret toggle keeps its natural width. */
+.a1-web-add-split {
+  display: flex;
+  inline-size: 100%;
+}
+
+.a1-web-add-split .a1-split-button__main {
+  flex: 1;
+}
+
+/* The global app header (and its nav dropdowns) must stack above any in-page
+   TopHeader — e.g. the editor's generated project header, which shares the same
+   default header z-index and otherwise covers the open Editor menu. Raised via the
+   header's own z-index token; still below the portaled settings Menu (1000). */
+.a1-web-app-header {
+  --component-top-header-z-index: 120;
+}
+
+/* ─── Image library (editor) ───────────────────────────────────────────────── */
+
+.a1-web-img-drop {
+  border: var(--component-divider-size-sm) dashed var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  padding: var(--base-spacing-16);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.a1-web-img-drop--active {
+  border-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-status-info-surface);
+}
+
+.a1-web-img-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+}
+
+/* Thumbnail wrapper anchors the crop badge over the image. */
+.a1-web-img-card__thumb {
+  position: relative;
+}
+
+.a1-web-img-card__badge {
+  position: absolute;
+  inset-block-start: var(--base-spacing-8);
+  inset-inline-end: var(--base-spacing-8);
+}
+
+/* Removable category tag chip in the image edit dialog. */
+.a1-web-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-8);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-pill, 999px);
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-xs);
+  cursor: pointer;
+}
+
+.a1-web-tag-chip:hover {
+  border-color: var(--semantic-color-status-error-border);
+  color: var(--semantic-color-status-error-text);
+}
+
+.a1-web-tag-chip .a1-icon {
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+/* Truncate long file names to one line. */
+.a1-web-img-card__name,
+.a1-web-img-pick__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Selectable thumbnail in the Figure picker dialog — a <label> wrapping a hidden
+   (but keyboard-focusable) radio, so it's a real single-select group. */
+.a1-web-img-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-4);
+  border: var(--component-divider-size-sm) solid transparent;
+  border-radius: var(--base-radius-md);
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+}
+
+/* Visually hidden but still in the tab/arrow order for accessibility. */
+.a1-web-img-pick__radio {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  margin: 0;
+}
+
+.a1-web-img-pick:hover {
+  border-color: var(--semantic-color-border-subtle);
+}
+
+.a1-web-img-pick--selected {
+  border-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-status-info-surface);
+}
+
+.a1-web-img-pick:has(.a1-web-img-pick__radio:focus-visible) {
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: 2px;
+}
+
+/* ─── Theme editor ─────────────────────────────────────────────────────────── */
+
+.a1-web-theme-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: var(--base-spacing-24);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .a1-web-theme-grid { grid-template-columns: 1fr; }
+}
+
+.a1-web-theme-controls {
+  position: sticky;
+  top: var(--base-spacing-16);
+}
+
+.a1-web-theme-color-row {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+}
+
+.a1-web-theme-swatch {
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-md);
+  background: none;
+  cursor: pointer;
+}
+
+.a1-web-theme-color-name { flex: 1; font-size: var(--semantic-font-size-body-sm); }
+.a1-web-theme-color-hex {
+  font-family: var(--component-code-font-family, monospace);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+}
+
+/* The live preview is its own themed surface (the compiled vars are applied
+   inline on this element, so its descendants re-theme). */
+.a1-web-theme-preview {
+  padding: var(--base-spacing-24);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+}
+
+/* Left category tree sidebar. */
+.a1-web-theme-sidebar { padding: var(--base-spacing-12); }
+
+/* Style tile — a compact themed preview shown atop each category. */
+.a1-web-style-tile {
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+  overflow: hidden;
+}
+
+.a1-web-style-tile-chip {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+/* Theme card colour chips (themes list). */
+.a1-web-theme-card-chip {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+/* Swatch cell inside the colour DataTable. */
+.a1-web-theme-cell-swatch {
+  display: inline-block;
+  inline-size: 1.75rem;
+  block-size: 1.25rem;
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+/* A single ramp's 12 stops as a strip. */
+.a1-web-ramp-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-8);
+}
+
+.a1-web-ramp-stop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+  inline-size: 5rem;
+}
+
+.a1-web-ramp-chip {
+  block-size: 3.5rem;
+  border-radius: var(--base-radius-md);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-ramp-stop-num { font-size: var(--semantic-font-size-body-xs); font-weight: var(--semantic-font-weight-heading); }
+.a1-web-ramp-stop-hex { font-size: var(--semantic-font-size-body-3xs); color: var(--semantic-color-text-muted); }
+
+/* Typography detail page: scale rows. */
+.a1-web-type-scale-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+  padding-block: var(--base-spacing-8);
+  border-block-end: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-type-scale-sample {
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-web-type-scale-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  flex: none;
+}
+
+.a1-web-type-scale-name {
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  min-inline-size: 2.5rem;
+  text-align: end;
+}
+
+.a1-web-type-scale-unit { font-size: var(--semantic-font-size-body-xs); color: var(--semantic-color-text-muted); }
+
+.a1-web-type-size-input {
+  inline-size: 4.5rem;
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-field);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-web-type-color-sample { margin-inline-start: auto; }
+
+.a1-web-type-color-sample--inverse {
+  background: var(--semantic-color-text-default);
+  padding: var(--base-spacing-2) var(--base-spacing-8);
+  border-radius: var(--base-radius-sm);
+}
+
+/* Ramp colour rows: hex / RGB / HSL editable inputs. */
+.a1-web-color-fields {
+  display: inline-flex;
+  gap: var(--base-spacing-4);
+  margin-inline-start: auto;
+}
+
+.a1-web-color-num,
+.a1-web-color-hex-input {
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-field);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-sm);
+}
+
+.a1-web-color-num { inline-size: 3.25rem; }
+
+.a1-web-color-hex-input {
+  margin-inline-start: auto;
+  inline-size: 6.5rem;
+  font-family: var(--component-code-font-family, monospace);
+}
+
+/* Semantic colour editor: side-by-side Standard / Inverse showcase panels. */
+.a1-web-sem-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--base-spacing-16);
+}
+
+@media (min-width: 64rem) {
+  .a1-web-sem-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Each panel re-themes from its own inline CSS vars (standard or inverse). */
+.a1-web-sem-panel {
+  padding: var(--base-spacing-24);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+}
+
+/* Clickable showcase element (click to filter the controls to its colours). */
+.a1-web-sem-pick {
+  cursor: pointer;
+  border-radius: var(--base-radius-sm);
+  outline-offset: 3px;
+}
+
+.a1-web-sem-pick:hover {
+  outline: var(--component-divider-size-sm) dashed var(--semantic-color-border-strong);
+}
+
+.a1-web-sem-pick--active {
+  outline: var(--component-divider-size-md, 2px) solid var(--semantic-color-action-background);
+}
+
+/* Inline pick targets (link, muted, badges) shouldn't break text flow. */
+span.a1-web-sem-pick { display: inline-block; }
+
+/* Theme editor right rail: a single flex-column child of the (row) aside slot,
+   stacking the Config/History tabs above the active panel. */
+.a1-web-theme-aside {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 100%;
+}
+
+/* Config / History tabs — padded to match the config panel's inner padding. */
+.a1-web-theme-aside-tabs {
+  padding: var(--base-spacing-16) var(--base-spacing-16) 0;
+}
+
+/* Theme editor history panel (right rail). */
+.a1-web-history-panel {
+  border-block-start: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+  max-block-size: 18rem;
+  overflow-y: auto;
+}
+
+.a1-web-history__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--base-spacing-8);
+  inline-size: 100%;
+  text-align: start;
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+  border: none;
+  background: transparent;
+  border-radius: var(--base-radius-sm);
+  cursor: pointer;
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-web-history__item:hover {
+  background: color-mix(in srgb, var(--semantic-color-text-default) 6%, transparent);
+}
+
+.a1-web-history__item--current {
+  background: var(--semantic-color-action-surface);
+  font-weight: var(--semantic-font-weight-heading);
+}
+
+.a1-web-history__item--future { color: var(--semantic-color-text-muted); }
+
+.a1-web-history__index {
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  flex: none;
+}
+
+/* Live contrast report table. */
+.a1-web-contrast {
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  overflow: hidden;
+}
+
+.a1-web-contrast__head,
+.a1-web-contrast__row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--base-spacing-16);
+  align-items: center;
+  padding: var(--base-spacing-8) var(--base-spacing-12);
+}
+
+.a1-web-contrast__head {
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-web-contrast__row { border-block-start: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle); }
+.a1-web-contrast__row span:first-child { font-size: var(--semantic-font-size-body-sm); }
+.a1-web-contrast__head span:not(:first-child),
+.a1-web-contrast__row > :not(span:first-child) { justify-self: end; }
+
+/* Bulk-upload drop target (dialog). */
+.a1-web-bulk-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 12rem;
+  padding: var(--base-spacing-24);
+  text-align: center;
+  border: var(--component-divider-size-md, 2px) dashed var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-raised);
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.a1-web-bulk-drop:hover {
+  border-color: var(--semantic-color-action-background);
+}
+
+.a1-web-bulk-drop--active {
+  border-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-status-info-surface);
+}
+
+/* ─── Editor aside: draggable images panel ─────────────────────────────────── */
+
+.a1-web-img-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--base-spacing-4);
+}
+
+.a1-web-img-panel-item {
+  position: relative;
+  display: block;
+  padding: var(--base-spacing-2);
+  border: var(--component-divider-size-sm) solid transparent;
+  border-radius: var(--base-radius-md);
+  cursor: grab;
+}
+
+/* The whole tile is the drag source — stop the inner image/badge from
+   capturing the drag (native <img> drag was hijacking it, so dragging only
+   worked from the tile's padded edges). */
+.a1-web-img-panel-item :is(figure, img),
+.a1-web-img-panel-item .a1-web-img-panel-badge {
+  pointer-events: none;
+}
+
+.a1-web-img-panel-item:hover {
+  border-color: var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-img-panel-item[data-dragging='true'] {
+  opacity: 0.5;
+}
+
+.a1-web-img-panel-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-web-img-panel-badge {
+  position: absolute;
+  inset-block-start: var(--base-spacing-8);
+  inset-inline-end: var(--base-spacing-8);
+}
+
+/* ─── AI page-editor chat (editor aside) ───────────────────────────────────── */
+
+.a1-web-chat__transcript {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+  max-block-size: 22rem;
+  overflow-y: auto;
+  padding: var(--base-spacing-4);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-page);
+}
+
+.a1-web-chat__empty {
+  margin: var(--base-spacing-8);
+}
+
+.a1-web-chat__msg {
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-12);
+  border-radius: var(--base-radius-md);
+  max-inline-size: 90%;
+}
+
+/* User instructions: action-tinted bubble aligned to the trailing edge. */
+.a1-web-chat__msg--user {
+  align-self: flex-end;
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+/* Assistant replies: neutral panel bubble aligned to the leading edge. */
+.a1-web-chat__msg--assistant {
+  align-self: flex-start;
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-web-chat__msg--error {
+  background: var(--semantic-color-status-error-surface);
+  color: var(--semantic-color-status-error-text);
 }

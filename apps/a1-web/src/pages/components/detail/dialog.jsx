@@ -100,7 +100,7 @@ export function Controls({ config, setConfig }) {
         value={config.title}
         onChange={(event) => set({ title: event.target.value })}
       />
-      <Choice
+      <Choice prop="status"
         label="Status"
         iconOnly
         value={config.status}
@@ -109,7 +109,7 @@ export function Controls({ config, setConfig }) {
       />
       {config.status && (
         <>
-          <Toggle
+          <Toggle prop="customIcon"
             label="Custom icon"
             value={config.customIcon}
             onChange={(customIcon) => set({ customIcon })}
@@ -123,7 +123,7 @@ export function Controls({ config, setConfig }) {
           )}
         </>
       )}
-      <Toggle
+      <Toggle prop="showClose"
         label="Close button"
         hint="Omit onClose to hide the dismiss button entirely."
         value={config.showClose}

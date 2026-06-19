@@ -76,4 +76,11 @@ export const foundations = [
     body: 'Shared prop names and value sets used consistently across all A1 components. Use these when building or extending a component.',
     points: ['Size scales', 'Status, variant, and alignment values', 'Controlled state pattern'],
   },
+  {
+    id: 'foundation-z-index',
+    title: 'Z-index',
+    icon: 'filter_none',
+    body: 'Layering and stacking: the browser top layer (modals) vs. the numeric z-index scale (sticky, pinned, popover, modal, toast). Where each element lives, and why a higher number can’t beat a modal.',
+    points: ['Top layer vs. z-index scale', 'The layer scale (100 → 1200)', 'Component audit and rules'],
+  },
 ]

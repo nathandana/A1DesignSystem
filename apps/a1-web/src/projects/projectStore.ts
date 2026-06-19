@@ -18,6 +18,7 @@
 import { readStored, writeStored } from '../editor/storage';
 import { EDITOR_EXAMPLES, makeBlankPage } from '../editor/examples/index';
 import type { PageDefinition } from '../editor/pageTypes';
+import { LAYOUT_DOC_ID, defaultLayoutDefinition } from './projectLayout';
 import {
   restaurantProject,
   restaurantPages,
@@ -31,6 +32,8 @@ export interface Project {
   name: string;
   description?: string;
   icon?: string;
+  /** Free-form project metadata (e.g. SEO `metaTitle` / `metaDescription`). */
+  meta?: Record<string, string>;
   createdAt: number;
   updatedAt: number;
 }
@@ -49,6 +52,7 @@ export const MAX_LEVEL = 3;
 const PROJECTS_KEY = 'a1-projects';
 const ACTIVE_PROJECT_KEY = 'a1-active-project';
 const pagesKey = (projectId: string) => `a1-project-${projectId}-pages`;
+const layoutKey = (projectId: string) => `a1-project-${projectId}-layout`;
 const versionsKey = (pageId: string) => `a1-editor-versions-${pageId}`;
 const historyKey = (pageId: string) => `a1-editor-history-${pageId}`;
 
@@ -97,6 +101,12 @@ export function updateProject(id: string, patch: Partial<Omit<Project, 'id' | 'c
   return projects;
 }
 
+/** The project's image & illustration style note (used to seed AI image prompts). */
+export function getProjectImageStyle(id: string | null | undefined): string | undefined {
+  if (!id) return undefined;
+  return loadProjects().find((p) => p.id === id)?.meta?.imageStyle || undefined;
+}
+
 /** Delete a project and (optionally) every page's stored content. */
 export function deleteProject(id: string, { purgeContent = true } = {}): Project[] {
   if (purgeContent) {
@@ -133,6 +143,27 @@ export function getActiveProjectId(): string | null {
 export function setActiveProjectId(id: string | null): void {
   if (id) writeStored(ACTIVE_PROJECT_KEY, id);
   else try { localStorage.removeItem(ACTIVE_PROJECT_KEY); } catch { /* ignore */ }
+}
+
+// ── Shared layout (project chrome) ────────────────────────────────────────────
+
+export { LAYOUT_DOC_ID } from './projectLayout';
+
+/** The project's shared-layout definition JSON, seeding a default the first time. */
+export function loadProjectLayout(projectId: string): string {
+  try {
+    const raw = readStored(layoutKey(projectId));
+    if (raw) return raw;
+  } catch { /* ignore */ }
+  const name = loadProjects().find((p) => p.id === projectId)?.name ?? 'My project';
+  const json = JSON.stringify(defaultLayoutDefinition(name), null, 2);
+  try { writeStored(layoutKey(projectId), json); } catch { /* ignore */ }
+  return json;
+}
+
+export function saveProjectLayout(projectId: string, json: string): void {
+  writeStored(layoutKey(projectId), json);
+  touchProject(projectId);
 }
 
 // ── Pages ──────────────────────────────────────────────────────────────────
@@ -518,6 +549,252 @@ export function importAllText(text: string): { projects: number; pages: number }
 
   saveProjects([...byId.values()]);
   return { projects: projMatches.length, pages: pageCount };
+}
+
+// ── Upload a project from a single JSON object ──────────────────────────────────
+
+interface NormalizedImportPage {
+  key: string;
+  title: string;
+  icon?: string;
+  description?: string;
+  parentKey: string | null;
+  definitionJson: string | null;
+}
+interface NormalizedImport {
+  name: string;
+  description?: string;
+  icon?: string;
+  pages: NormalizedImportPage[];
+}
+
+function isPageDefinition(data: any): boolean {
+  return !!data && typeof data === 'object' && !!data.page && typeof data.page === 'object' && !!data.page.layout;
+}
+
+/** Accept either a **project bundle** (`{ name?, description?, icon?, pages: [...] }`,
+ *  each page `{ id?, title?, icon?, description?, parentId?, definition }`) or a
+ *  single **page definition** (`{ page: { … } }`, wrapped as a one-page project). */
+function normalizeImport(data: any): NormalizedImport | null {
+  if (!data || typeof data !== 'object') return null;
+
+  if (isPageDefinition(data)) {
+    return {
+      name: (typeof data.page.name === 'string' && data.page.name.trim()) || 'Imported page',
+      description: typeof data.page.description === 'string' ? data.page.description : undefined,
+      pages: [{
+        key: '#0',
+        title: (typeof data.page.name === 'string' && data.page.name.trim()) || 'Page',
+        parentKey: null,
+        definitionJson: JSON.stringify(data, null, 2),
+      }],
+    };
+  }
+
+  if (Array.isArray(data.pages)) {
+    return {
+      name: (typeof data.name === 'string' && data.name.trim()) || 'Imported project',
+      description: typeof data.description === 'string' ? data.description : undefined,
+      icon: typeof data.icon === 'string' ? data.icon : undefined,
+      pages: data.pages.map((p: any, i: number): NormalizedImportPage => ({
+        key: (typeof p?.id === 'string' && p.id) || `#${i}`,
+        title: (typeof p?.title === 'string' && p.title.trim()) || `Page ${i + 1}`,
+        icon: typeof p?.icon === 'string' ? p.icon : undefined,
+        description: typeof p?.description === 'string' ? p.description : undefined,
+        parentKey: typeof p?.parentId === 'string' ? p.parentId : null,
+        definitionJson: p?.definition != null
+          ? (typeof p.definition === 'string' ? p.definition : JSON.stringify(p.definition, null, 2))
+          : null,
+      })),
+    };
+  }
+
+  return null;
+}
+
+function checkImportNodes(
+  nodes: any[],
+  path: string,
+  errors: string[],
+  warnings: string[],
+  knownTypes?: Set<string>,
+): void {
+  nodes.forEach((n, i) => {
+    const p = `${path} › node ${i}`;
+    if (!n || typeof n !== 'object') { errors.push(`${p} is not an object.`); return; }
+    if (typeof n.type !== 'string') errors.push(`${p} is missing a string "type".`);
+    else if (knownTypes && knownTypes.size && !knownTypes.has(n.type)) {
+      warnings.push(`${p}: "${n.type}" is not a known A1 component — it will render a visible fallback.`);
+    }
+    if (n.children != null) {
+      if (!Array.isArray(n.children)) errors.push(`${p}.children must be an array.`);
+      else checkImportNodes(n.children, p, errors, warnings, knownTypes);
+    }
+  });
+}
+
+const FIGURE_ASPECT_RATIOS = new Set(['16:9', '4:3', '3:2', '1:1', '2:3', '3:4', '9:16', '21:9']);
+
+/**
+ * Consistency lint for a single page definition — non-blocking design-quality
+ * warnings (not structural errors). Covers the rules that keep generated pages
+ * consistent: no per-page TopHeader in a project (auto-generated), top-level
+ * sections need a contentWidth and non-zero, matching padding, cards belong in a
+ * Grid, and card images need a valid, consistent aspectRatio.
+ */
+function lintDefinition(def: any): string[] {
+  const warnings: string[] = [];
+  const regions = def?.page?.layout?.regions;
+  if (!Array.isArray(regions)) return warnings;
+
+  const walk = (nodes: any[], parentType: string | null): void => {
+    if (!Array.isArray(nodes)) return;
+    const cardSiblings = nodes.filter((n) => n?.type === 'Card').length;
+    for (const n of nodes) {
+      if (!n || typeof n !== 'object') continue;
+      const id = typeof n.id === 'string' ? n.id : n.type;
+
+      if (n.type === 'TopHeader') {
+        warnings.push(`remove the TopHeader node "${id}" — projects auto-generate the top nav from the page hierarchy (this creates a duplicate header).`);
+      }
+      if (n.type === 'Card' && parentType !== 'Grid' && cardSiblings >= 2) {
+        warnings.push(`card "${id}": multiple sibling cards should be wrapped in a Grid.`);
+      }
+      if (n.type === 'Figure') {
+        const ar = n.props?.aspectRatio;
+        if (ar != null && !FIGURE_ASPECT_RATIOS.has(ar)) {
+          warnings.push(`Figure "${id}": aspectRatio "${ar}" is invalid — use one of ${[...FIGURE_ASPECT_RATIOS].join(', ')}.`);
+        }
+        if (parentType === 'Card' && ar == null) {
+          warnings.push(`card image "${id}": set a consistent aspectRatio (e.g. "4:3") on card images.`);
+        }
+      }
+      if (Array.isArray(n.children)) walk(n.children, n.type);
+    }
+  };
+
+  for (const region of regions) {
+    const top: any[] = Array.isArray(region?.nodes) ? region.nodes : [];
+    walk(top, null);
+
+    // Top-level sections = the page's primary outer elements.
+    const sections = top.filter((n) => n?.type === 'Section');
+    let prevPad: unknown;
+    let prevId: string | undefined;
+    for (const s of sections) {
+      const id = typeof s.id === 'string' ? s.id : 'Section';
+      const pad = s.props?.padding;
+      if (s.props?.contentWidth == null) {
+        warnings.push(`Section "${id}": a primary (top-level) section should set a contentWidth.`);
+      }
+      if (pad == null || pad === 'none' || pad === 0) {
+        warnings.push(`Section "${id}": sections should generally have non-zero padding.`);
+      }
+      if (prevPad != null && pad != null && String(prevPad) !== String(pad)) {
+        warnings.push(`adjacent sections "${prevId}" and "${id}" use different padding ("${prevPad}" vs "${pad}") — neighboring sections should match.`);
+      }
+      prevPad = pad;
+      prevId = id;
+    }
+  }
+  return warnings;
+}
+
+/**
+ * Validate a parsed JSON object for {@link importProjectJson}. Returns blocking
+ * `errors` (clear these before importing) and non-blocking `warnings` (unknown
+ * component types + consistency lint, which still import and render). Pass the
+ * set of valid component `type` names (registry keys) to enable type warnings.
+ */
+export function validateProjectImport(
+  data: unknown,
+  knownTypes?: Set<string>,
+): { errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  if (data == null || typeof data !== 'object') {
+    errors.push('Expected a JSON object — a project bundle ({ "name", "pages": [ … ] }) or a single page definition ({ "page": { … } }).');
+    return { errors, warnings };
+  }
+  const norm = normalizeImport(data);
+  if (!norm) {
+    errors.push('Unrecognised shape. Provide "pages": [ … ] for a project, or a "page" definition for a single page.');
+    return { errors, warnings };
+  }
+  if (norm.pages.length === 0) errors.push('A project needs at least one page.');
+
+  norm.pages.forEach((pg, i) => {
+    const label = `Page ${i + 1}${pg.title ? ` ("${pg.title}")` : ''}`;
+    if (!pg.definitionJson) return; // a blank page is allowed
+    let def: any;
+    try { def = JSON.parse(pg.definitionJson); } catch (e: any) {
+      errors.push(`${label}: definition is not valid JSON (${e.message}).`); return;
+    }
+    const regions = def?.page?.layout?.regions;
+    if (!Array.isArray(regions)) { errors.push(`${label}: missing page.layout.regions array.`); return; }
+    regions.forEach((r: any, ri: number) => {
+      if (!Array.isArray(r?.nodes)) { errors.push(`${label}: region ${ri} has no "nodes" array.`); return; }
+      checkImportNodes(r.nodes, `${label} › region ${ri}`, errors, warnings, knownTypes);
+    });
+    for (const w of lintDefinition(def)) warnings.push(`${label}: ${w}`);
+  });
+
+  return { errors, warnings };
+}
+
+/** Create a brand-new project (and its pages + content) from a parsed JSON
+ *  object — a project bundle or a single page definition. Validate first with
+ *  {@link validateProjectImport}; this throws only if the shape is unusable. */
+export function importProjectJson(data: unknown): Project {
+  const norm = normalizeImport(data);
+  if (!norm) throw new Error('Invalid project JSON.');
+
+  const project = createProject({ name: norm.name, description: norm.description, icon: norm.icon });
+
+  const keyToId = new Map<string, string>();
+  norm.pages.forEach((p) => keyToId.set(p.key, uid('page')));
+
+  const pages: ProjectPage[] = norm.pages.map((p, i) => ({
+    id: keyToId.get(p.key)!,
+    title: p.title,
+    icon: p.icon,
+    description: p.description,
+    parentId: p.parentKey != null ? (keyToId.get(p.parentKey) ?? null) : null,
+    order: i,
+  }));
+
+  norm.pages.forEach((p, i) => seedPageContent(pages[i].id, p.definitionJson, pages[i].title));
+  savePages(project.id, reindex(pages));
+  return project;
+}
+
+/** Serialise a single project as a **project bundle** JSON string — the same
+ *  shape {@link importProjectJson} accepts, so a downloaded file round-trips.
+ *  Each page's `definition` is the parsed page-definition object; `id`/`parentId`
+ *  are preserved so the hierarchy survives re-import. */
+export function exportProjectJson(projectId: string): string | null {
+  const project = loadProjects().find((p) => p.id === projectId);
+  if (!project) return null;
+  const bundle = {
+    name: project.name,
+    description: project.description,
+    icon: project.icon,
+    pages: loadPages(projectId).map((pg) => {
+      const json = resolvePageJson(pg.id);
+      let definition: unknown;
+      if (json) { try { definition = JSON.parse(json); } catch { definition = json; } }
+      return {
+        id: pg.id,
+        title: pg.title,
+        icon: pg.icon,
+        description: pg.description,
+        parentId: pg.parentId,
+        definition,
+      };
+    }),
+  };
+  return JSON.stringify(bundle, null, 2);
 }
 
 // ── Project mutation bookkeeping ───────────────────────────────────────────────

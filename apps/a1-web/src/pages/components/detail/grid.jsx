@@ -97,7 +97,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ResponsiveControl
+      <ResponsiveControl prop="columns"
         label="Columns"
         value={config.columns}
         onChange={(columns) => set({ columns })}
@@ -111,7 +111,7 @@ export function Controls({ config, setConfig }) {
           />
         )}
       </ResponsiveControl>
-      <ConfigSlider label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
+      <ConfigSlider prop="gap" label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
     </Stack>
   )
 }

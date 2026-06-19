@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import {
   Accordion,
   IconButton,
@@ -9,8 +9,10 @@ import {
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { ConfigLockContext, Lockable, applyLockToggle } from './configLock.jsx'
 
 export { Toggle } from './Toggle.jsx'
+export { ConfigLockContext, Lockable } from './configLock.jsx'
 
 /**
  * The field-family density scale, mapped to Material Symbols density icons so
@@ -31,18 +33,20 @@ export const DENSITY_SIZE_OPTIONS = [
  * - `iconOnly` hides the labels (icon-only buttons) and keeps `columns` so icon
  *   grids (e.g. a 3×3 picker) stay a grid; labelled groups wrap instead.
  */
-export function Choice({ label, value, onChange, options, iconOnly = false, columns }) {
+export function Choice({ label, value, onChange, options, iconOnly = false, columns, prop }) {
   return (
-    <Toolbar label={label}>
-      <ToolbarGroup
-        aria-label={typeof label === 'string' ? label : undefined}
-        showLabels={!iconOnly}
-        columns={iconOnly ? columns : undefined}
-        value={value}
-        onChange={onChange}
-        options={options}
-      />
-    </Toolbar>
+    <Lockable prop={prop}>
+      <Toolbar label={label}>
+        <ToolbarGroup
+          aria-label={typeof label === 'string' ? label : undefined}
+          showLabels={!iconOnly}
+          columns={iconOnly ? columns : undefined}
+          value={value}
+          onChange={onChange}
+          options={options}
+        />
+      </Toolbar>
+    </Lockable>
   )
 }
 
@@ -50,9 +54,9 @@ export function Choice({ label, value, onChange, options, iconOnly = false, colu
  * DensityChoice — the form-field Size control rendered as an icon-only density
  * picker (density_small / density_medium / density_large).
  */
-export function DensityChoice({ label = 'Size', value, onChange }) {
+export function DensityChoice({ label = 'Size', value, onChange, prop = 'size' }) {
   return (
-    <Choice label={label} iconOnly value={value} onChange={onChange} options={DENSITY_SIZE_OPTIONS} />
+    <Choice label={label} iconOnly value={value} onChange={onChange} options={DENSITY_SIZE_OPTIONS} prop={prop} />
   )
 }
 
@@ -96,7 +100,12 @@ export function statusOptions(values, { noneLabel = 'None' } = {}) {
  * patch (e.g. `{ required: true }`) suitable for a `setConfig` merge.
  */
 export function FieldState({ label = 'State', items, onChange }) {
-  return (
+  // FieldState knows each toggle's config key, so it can self-mark when any of
+  // its keys (or the whole element) is locked, and lock them all when authoring.
+  const lockCtx = useContext(ConfigLockContext)
+  const keys = items.map((item) => item.prop ?? item.key)
+  const anyLocked = keys.some((key) => lockCtx.lockedProps.has(key))
+  const toolbar = (
     <Toolbar label={label}>
       {items.map((item) => (
         <ToolbarToggle
@@ -109,6 +118,23 @@ export function FieldState({ label = 'State', items, onChange }) {
       ))}
     </Toolbar>
   )
+
+  if (lockCtx.authoring && lockCtx.onSetLockedProps) {
+    return (
+      <div className={`a1-web-tool-authoring${anyLocked ? ' is-locked' : ''}`}>
+        <div className="a1-web-tool-authoring__control">{toolbar}</div>
+        <IconButton
+          icon={anyLocked ? 'lock' : 'lock_open'}
+          size="sm"
+          variant={anyLocked ? 'primary' : 'tertiary'}
+          aria-label={anyLocked ? 'Unlock these properties' : 'Lock these properties'}
+          onClick={() => applyLockToggle(lockCtx, keys, !anyLocked)}
+        />
+      </div>
+    )
+  }
+
+  return <Lockable locked={lockCtx.fullyLocked || anyLocked}>{toolbar}</Lockable>
 }
 
 // Viewport breakpoints (from system/tokens/breakpoint.json) for responsive props.
@@ -160,7 +186,7 @@ export function responsiveProp(name, value, defaultValue) {
  * underlying control **without its own label** (the label is supplied here, and
  * each breakpoint's accordion supplies the breakpoint name).
  */
-export function ResponsiveControl({ label, value, onChange, defaultValue, children }) {
+export function ResponsiveControl({ label, value, onChange, defaultValue, children, prop }) {
   const responsive = isResponsiveValue(value)
   // Remember the single value so it seeds newly-enabled breakpoints.
   const [scalarMemo, setScalarMemo] = useState(responsive ? defaultValue : value)
@@ -180,6 +206,7 @@ export function ResponsiveControl({ label, value, onChange, defaultValue, childr
   const setBreakpoint = (key, v) => onChange({ ...value, [key]: v })
 
   return (
+    <Lockable prop={prop}>
     <Stack gap="xs">
       <Stack direction="row" gap="xs" align="center" justify="between">
         {label != null && <Paragraph size="xs" color="muted">{label}</Paragraph>}
@@ -216,6 +243,7 @@ export function ResponsiveControl({ label, value, onChange, defaultValue, childr
         children(value, onChange)
       )}
     </Stack>
+    </Lockable>
   )
 }
 
@@ -247,18 +275,20 @@ function longSizeLabel(value) {
  * thumb index back to the string value. Pass `format` to customise the short
  * detent labels; `bubbleFormat` customises the longer value-bubble label.
  */
-export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel }) {
+export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel, prop }) {
   const detents = values.map((v, index) => ({ value: index, label: format(v) }))
   const clampIndex = (index) => Math.max(0, Math.min(values.length - 1, Math.round(index)))
   return (
-    <Slider
-      size="compact"
-      variant="subtle"
-      label={label}
-      detents={detents}
-      value={Math.max(0, values.indexOf(value))}
-      onChange={(index) => onChange(values[index])}
-      bubbleLabel={(index) => bubbleFormat(values[clampIndex(index)])}
-    />
+    <Lockable prop={prop}>
+      <Slider
+        size="compact"
+        variant="subtle"
+        label={label}
+        detents={detents}
+        value={Math.max(0, values.indexOf(value))}
+        onChange={(index) => onChange(values[index])}
+        bubbleLabel={(index) => bubbleFormat(values[clampIndex(index)])}
+      />
+    </Lockable>
   )
 }

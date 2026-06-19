@@ -45,7 +45,7 @@ export function Preview({ config }) {
 
 export function Controls({ config, setConfig }) {
   return (
-    <Choice
+    <Choice prop="space"
       label="Space"
       hint="Uniform padding applied to all sides."
       size="compact"

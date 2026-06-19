@@ -1,5 +1,24 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## 0.17.0 — 2026-06-18
+
+### Added
+
+- **Figure `placeholder`** (boolean, default true) + **`placeholderIcon`** (default `"image"`) — when `src` is missing or fails to load, Figure now renders a tokenized diagonal-stripe placeholder pattern with a centered icon instead of a broken image. Respects `aspectRatio`/`size` (4:3 fallback box). Added a `Placeholder pattern` story. Set `placeholder={false}` to opt out.
+- **DataTable column `type="image"`** — renders a small fixed-size thumbnail (`object-fit: cover`, ~2.5rem; ~2rem at compact density). The cell value is an image URL string or `{ src, alt }`; an empty value renders a dashed placeholder.
+- **Autocomplete** — a new filtering combobox component, single- or multi-select (`multiple`). Filters `options` as you type; multi mode renders removable chips. Optional `allowCreate` (+ `onCreate`) offers an "Add …" entry so users can add a value that isn't in the list. Matches the field family (`size`, `label`, `hint`, `error`, `required`, `disabled`) and follows the ARIA combobox/listbox pattern with full keyboard navigation (Arrow Up/Down, Enter, Escape, Backspace to remove the last chip). Exported from the package; `Single`, `Multiple`, `Multi-select + create`, and `Sizes` stories.
+- **SegmentedControl `labelMode`** (`"all"` | `"selected"`, default `"all"`) — `"selected"` shows the label only on the currently-selected segment and renders the rest **icon-only**, using each option's `ariaLabel`/`label` for its accessible name (options without an icon keep their label so they never render blank). Formalizes the compact "active = icon + label, others = icon" pattern. Added a `Label on selected only` story.
+
+### Fixed
+
+- **SegmentedControl `size`** now actually changes the control. The `sm`/`lg` classes previously had no CSS, so the `size` prop had no visible effect. `sm` now uses tighter padding and a font size one step down (`body-xs`); `lg` uses roomier padding and `body-md`. Added `component.segmented.segmentPaddingBlockLg` / `segmentPaddingInlineLg` tokens.
+
+## 0.16.0 — 2026-06-18
+
+### Added
+
+- **Banner `variant="calendar"`** — an event/date callout. A tokenized date block (a new `date` prop — accepts a `Date`, an ISO date string, or `{ month, day }`) replaces the status icon; a new `eyebrow` overline sits above a larger `title`; and `action`/`onDismiss` continue to work. The `neutral` status defaults the date block to the action colour, but any `status` still tints it. Month names render in sentence case (never uppercased). The root uses `role="group"` (not `role="alert"`) since a date callout is not an alert. Added `Calendar`, `CalendarWithLink`, and `CalendarStatuses` stories and a1-web configurator support (Variant gains Calendar; eyebrow + Date month/day fields; icon controls hidden for the calendar variant). React only.
+
 ## 0.15.0 — 2026-06-17
 
 ### Added

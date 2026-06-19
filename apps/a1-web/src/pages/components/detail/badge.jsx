@@ -76,15 +76,15 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <Choice
+      <Choice prop="status"
         label="Status"
         iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
         options={statusOptions(STATUS_OPTIONS)}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice prop="iconMode"
         label="Icon"
         size="compact"
         hideIndicator
@@ -100,7 +100,7 @@ export function Controls({ config, setConfig }) {
           onChange={(icon) => set({ icon })}
         />
       )}
-      <Toggle
+      <Toggle prop="subtle"
         label="Subtle"
         value={config.subtle}
         onChange={(subtle) => set({ subtle })}

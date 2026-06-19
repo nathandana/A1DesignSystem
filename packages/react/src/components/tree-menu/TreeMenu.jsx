@@ -482,16 +482,20 @@ export function TreeMenu({
 
   if (!showExpandControls) return tree;
 
+  // One toggle: if anything is expanded, collapse everything; otherwise expand all.
+  const anyExpanded = expandedIds.size > 0;
+
   return (
     <div className="a1-tree-menu-root">
       <div className="a1-tree-menu__controls">
-        <button type="button" className="a1-tree-menu__control-btn" onClick={handleExpandAll}>
-          <Icon name="unfold_more" />
-          Expand all
-        </button>
-        <button type="button" className="a1-tree-menu__control-btn" onClick={handleCollapseAll}>
-          <Icon name="unfold_less" />
-          Collapse all
+        <button
+          type="button"
+          className="a1-tree-menu__control-btn"
+          aria-expanded={anyExpanded}
+          onClick={anyExpanded ? handleCollapseAll : handleExpandAll}
+        >
+          <Icon name={anyExpanded ? 'unfold_less' : 'unfold_more'} />
+          {anyExpanded ? 'Collapse all' : 'Expand all'}
         </button>
       </div>
       {tree}

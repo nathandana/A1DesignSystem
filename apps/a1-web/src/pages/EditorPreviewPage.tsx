@@ -4,7 +4,8 @@ import { RenderPageDefinition } from '../editor/pageRenderer';
 import { EDITOR_EXAMPLES, BLANK_PAGE } from '../editor/examples/index.ts';
 import { decompress, readStored } from '../editor/storage';
 import { buildProjectNav } from '../projects/projectNav';
-import { loadPages, loadProjects } from '../projects/projectStore';
+import { loadPages, loadProjects, loadProjectLayout } from '../projects/projectStore';
+import { combinePageIntoLayout } from '../projects/projectLayout';
 import type { PageDefinition } from '../editor/pageTypes';
 
 const SESSION_KEY = 'a1-editor-preview';
@@ -156,22 +157,40 @@ export function EditorPreviewPage() {
 
   const definition = useMemo(() => parseDef(currentJson), [currentJson]);
 
-  const generatedHeader = projectPages.length ? (
+  const navItems = useMemo(
+    () => (projectPages.length
+      ? buildProjectNav(projectPages, {
+          activePageId: screenId,
+          onNavigate: (pageId) => navigateToScreen(pageId),
+          hrefFor: (pageId) => urlForScreen(pageId),
+        })
+      : null),
+    [projectPages, screenId, navigateToScreen, urlForScreen],
+  );
+
+  // The project's shared layout (editable chrome) wraps every page: the page is
+  // composed into it by replacing the Outlet. Falls back to the bare auto header
+  // for a standalone (no-project) preview.
+  const layoutDef = useMemo(() => (projectId ? parseDef(loadProjectLayout(projectId)) : null), [projectId]);
+
+  const composed = useMemo(() => {
+    if (!definition) return null;
+    if (layoutDef) return combinePageIntoLayout(layoutDef, definition, { navItems, logoFallback: projectName ?? '' });
+    return definition;
+  }, [definition, layoutDef, navItems, projectName]);
+
+  const fallbackHeader = !layoutDef && projectPages.length ? (
     <TopHeader
       className="a1-web-generated-header"
       logo={projectName ? <span className="a1-web-logo">{projectName}</span> : undefined}
-      navItems={buildProjectNav(projectPages, {
-        activePageId: screenId,
-        onNavigate: (pageId) => navigateToScreen(pageId),
-        hrefFor: (pageId) => urlForScreen(pageId),
-      })}
+      navItems={navItems ?? []}
     />
   ) : null;
 
-  if (!definition) {
+  if (!composed) {
     return (
       <>
-        {generatedHeader}
+        {fallbackHeader}
         <Section padding="md">
           <Paragraph size="sm" color="muted">
             No page definition found. Open this preview from the Editor page.
@@ -183,9 +202,9 @@ export function EditorPreviewPage() {
 
   return (
     <>
-      {generatedHeader}
+      {fallbackHeader}
       <RenderPageDefinition
-        definition={definition}
+        definition={composed}
         onNavigate={(pageId) => navigateToScreen(pageId)}
       />
     </>

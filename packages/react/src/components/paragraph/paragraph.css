@@ -48,8 +48,3 @@
 .a1-paragraph--align-right  { text-align: end;    }
 .a1-paragraph--align-start  { text-align: start;  }
 .a1-paragraph--align-end    { text-align: end;    }
-
-.a1-paragraph + .a1-paragraph,
-.a1-paragraph + .a1-heading {
-  margin-top: 1.5em;
-}
