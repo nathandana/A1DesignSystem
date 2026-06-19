@@ -108,8 +108,8 @@ export function Toolbar({
 }
 
 /** Visual separator between tools within a Toolbar. */
-export function ToolbarDivider() {
-  return <span className="a1-toolbar__divider" role="separator" aria-orientation="vertical" />;
+export function ToolbarDivider({ className = "", ...rest }) {
+  return <span className={cx("a1-toolbar__divider", className)} role="separator" aria-orientation="vertical" {...rest} />;
 }
 
 function ToolButtonContent({ icon, label, showLabel, swatch }) {
@@ -196,6 +196,7 @@ export function ToolbarMenu({
   disabled = false,
   "aria-label": ariaLabel,
   className = "",
+  ...rest
 }) {
   const [open, setOpen] = useState(false);
   const btnRef = useRef(null);
@@ -215,6 +216,7 @@ export function ToolbarMenu({
         title={label}
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
+        {...rest}
       >
         <ToolButtonContent icon={buttonIcon} label={label} showLabel={showLabel} />
         <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
@@ -252,6 +254,7 @@ export function ToolbarGroup({
   "aria-label": ariaLabel,
   disabled = false,
   className = "",
+  ...rest
 }) {
   const btnRefs = useRef([]);
   const grid = typeof columns === "number" && columns > 0;
@@ -296,6 +299,7 @@ export function ToolbarGroup({
       aria-label={ariaLabel}
       className={cx("a1-toolbar__group", grid && "a1-toolbar__group--grid", className)}
       style={style}
+      {...rest}
     >
       {options.map((opt, i) => {
         const selected = i === selectedIndex;

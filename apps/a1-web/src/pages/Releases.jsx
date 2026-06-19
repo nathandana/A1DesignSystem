@@ -39,9 +39,13 @@ function parsePromptGroups(body) {
     .map((section) => section.trim())
     .filter(Boolean)
     .map((section) => {
-      const [rawTitle = '', ...lines] = section.split('\n')
-      const title = rawTitle.replace(/^Prompt:\s*/i, '').trim()
-      const content = lines
+      const lines = section.split('\n')
+      // A `### ` group leads with its heading text. A flat preamble (a plain
+      // bullet list with no `### ` heading) has none — its first line is a
+      // bullet, so don't promote it to a title; treat every line as content.
+      const hasTitle = lines[0] && !lines[0].trim().startsWith('- ')
+      const title = hasTitle ? lines[0].replace(/^Prompt:\s*/i, '').trim() : ''
+      const content = (hasTitle ? lines.slice(1) : lines)
         .map((line) => line.trim())
         .filter(Boolean)
 
@@ -49,8 +53,29 @@ function parsePromptGroups(body) {
     })
 }
 
+function versionParts(version) {
+  return version.replace(/^v/i, '').split('.').map((n) => parseInt(n, 10) || 0)
+}
+
+// Order for the release tabs: Upcoming first, then dated releases newest-first,
+// then undated (legacy) entries by version descending. The changelog file isn't
+// strictly ordered and mixes `vX` / `X` series, so sort rather than trust order.
+function compareReleases(a, b) {
+  if (a.id === 'upcoming') return -1
+  if (b.id === 'upcoming') return 1
+  if (a.date && b.date) { if (a.date !== b.date) return a.date < b.date ? 1 : -1 }
+  else if (a.date) return -1
+  else if (b.date) return 1
+  const pa = versionParts(a.version)
+  const pb = versionParts(b.version)
+  for (let i = 0; i < 3; i += 1) {
+    if ((pb[i] || 0) !== (pa[i] || 0)) return (pb[i] || 0) - (pa[i] || 0)
+  }
+  return 0
+}
+
 function parseChangelog(markdown) {
-  return markdown
+  const releases = markdown
     .split(/^## /m)
     .slice(1)
     .map((section) => {
@@ -60,11 +85,14 @@ function parseChangelog(markdown) {
       const isUnreleased = title.toLowerCase() === 'unreleased'
       const hasReleaseNotes = body && !/^no unreleased changes\.$/i.test(body)
 
-      if (isUnreleased || !hasReleaseNotes) return null
+      if (!hasReleaseNotes) return null
 
-      const { version, date } = parseReleaseHeading(title)
+      // Surface the Unreleased section as an "Upcoming" tab (no date).
+      const { version, date } = isUnreleased
+        ? { version: 'Upcoming', date: null }
+        : parseReleaseHeading(title)
       return {
-        id: createReleaseId(version),
+        id: isUnreleased ? 'upcoming' : createReleaseId(version),
         title,
         version,
         date,
@@ -72,6 +100,17 @@ function parseChangelog(markdown) {
       }
     })
     .filter(Boolean)
+    .sort(compareReleases)
+
+  // De-duplicate ids (the changelog has more than one `0.2.0`) so tab values stay unique.
+  const seen = new Map()
+  for (const release of releases) {
+    const count = (seen.get(release.id) ?? 0) + 1
+    seen.set(release.id, count)
+    if (count > 1) release.id = `${release.id}-${count}`
+  }
+
+  return releases
 }
 
 function renderMarkdownLine(line, index) {
@@ -97,7 +136,7 @@ function ReleaseGroup({ group }) {
   return (
     <Card shadow="xs">
       <Stack direction="column" gap="sm">
-        <Heading as="h3" size="sm">{group.title}</Heading>
+        {group.title && <Heading as="h3" size="sm">{group.title}</Heading>}
         {otherLines.length > 0 && (
           <Stack direction="column" gap="xs">
             {otherLines.map(renderMarkdownLine)}

@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+- **Releases page — Upcoming tab + correct ordering** — the **Unreleased** changelog section now
+  shows as an **Upcoming** tab (no date); release tabs are now **sorted** (Upcoming first, then
+  dated releases newest-first, then undated legacy by version descending) instead of trusting the
+  file order, and duplicate version ids (the changelog has two `0.2.0`) are de-duplicated so tabs
+  stay unique.
+- **Segmented Control configurator** — added a **Labels** control (`labelMode`: all / selected /
+  none) and gave the default options icons (Day / Week / Month → calendar icons).
+- **Heading & Paragraph configurators — balance text-wrap moved into the Align toolbar** — the
+  balance-text-wrap toggle is now a divider-separated toggle in the Align toolbar (both
+  configurators), instead of a standalone control.
+- **Button configurator — `fullWidth` now fills the preview** — the Button configurator renders as
+  a **bare display** (full-width preview) and centers a natural-width button itself, so toggling
+  `fullWidth` actually stretches it. Previously the centered display Section shrank the button to
+  content, so the toggle had no visible effect (same root cause as the Toolbar fix).
+- **Releases page — flat bullet lists no longer render the first bullet as a heading** — a release
+  written as a plain bullet list (no `### ` groups) had its first bullet promoted to an `<h3>`. The
+  changelog parser now only treats a section's first line as a heading when it isn't a bullet, and
+  the group heading is skipped when there's no title.
+
+- **Resources menu** — added a **TODO** page (renders the repo-root `TODO.md` via a lightweight
+  markdown renderer) with the standard Resources header (breadcrumb + h1 + description) and
+  **Overview / Current / Roadmap tabs** so it isn't one giant page; the long tabs show a
+  right-column **sticky PageNav** (a1-web sets `--a1-page-nav-top` to clear the 64px TopHeader).
+  **Removed the Projects** item from the Resources menu (the route still exists; just not in that menu).
+- **Toolbar configurator — canvas tool editor** — the Toolbar configurator is now data-driven and **editable on the component itself**: the bar is built from a `tools` list (toggle / button / menu / group / divider), and **clicking a tool in the preview selects it** for editing in the panel (type, label, icon, menu items / group options) with reorder (move ←/→) and add/remove. Renders as a **bare display** (full-width preview, no centering Section) so the **`fullWidth`** toggle actually fills the width — previously the centered Section shrank the bar to content so fullWidth had no effect. (Design system: `ToolbarMenu`/`ToolbarGroup`/`ToolbarDivider` now forward `className` + `...rest` so the canvas can tag and outline each tool.)
+- **Sticky Actions / Accordion configurators** — Sticky Actions drops the per-button **label text inputs** (the demo buttons keep their default labels; Content width + Secondary-button toggle remain). The Accordion configurator now exposes **`subtext`** (a glanceable summary shown in the trigger while collapsed) and **`divider`** (added to the State toolbar) — both already supported by the component.
+- **Slider configurator** — detents are now edited with the DefinitionList tabs pattern (tab per detent + per-item editor + Add) instead of stacked accordions; **Value position**, **Show value**, and **Disabled** are folded into a single **Value bubble** toolbar (position icons + toggle icons). (Design system: the Slider's compact track/thumb step up one notch so the smallest slider stays grabbable.)
 - **Field-family Size picker shows the selected label** — the shared density Size control (`DensityChoice`, used by text fields, Select, Checkbox/Radio/Choice groups, Fieldset, Field Row, Autocomplete, Slider, Switch) now labels the chosen density (Compact / Default / Comfortable) while the others stay icon-only, via `ToolbarGroup labelMode="selected"`.
 - **Heading / Switch configurators** — Heading's "edit in the preview / markdown shorthand" guidance under **Advanced** now appears only when the **Helper text** toggle is on (new shared `ConfigHelp` gate). Switch's **Size** is the density icon picker (matching the field family), **Label position** is an icon pair, and **Checked**/**Disabled** are folded into a single **State** toolbar.
 - **Icon picker → grouped Autocomplete** — the configurator `IconSelect` (used across every component's Icon control) is now a filterable **Autocomplete** instead of a giant native select: all Material Symbols as options **grouped by Material category** under sticky headings, each row showing the glyph, capped at 200 with a "keep typing to narrow" footer. Backed by new design-system Autocomplete option fields (`icon`, `group`) + a `maxVisible` cap. The AI-find-icon button is unchanged.

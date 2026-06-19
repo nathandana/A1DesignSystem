@@ -578,6 +578,11 @@ body {
   inset-block-start: auto;
 }
 
+/* PageNav sticks below the app's sticky 64px TopHeader (+ a small gap). */
+.a1-page-nav {
+  --a1-page-nav-top: calc(var(--component-top-header-height) + var(--base-spacing-16));
+}
+
 .a1-web-config-panel__footer {
   position: sticky;
   inset-block-end: 0;
@@ -595,6 +600,17 @@ body {
 /* Per-property helper text under a config control (Helper text switch on). */
 .a1-web-config-help {
   margin-block-start: calc(-1 * var(--base-spacing-2));
+}
+
+/* Toolbar configurator: click a tool on the canvas to select it for editing. */
+.a1-web-toolbar-canvas [data-tool-id] {
+  cursor: pointer;
+}
+
+.a1-web-tool--selected {
+  outline: var(--base-spacing-2) solid var(--semantic-color-action-background);
+  outline-offset: var(--base-spacing-2);
+  border-radius: var(--base-radius-sm);
 }
 
 @media (max-width: 640px) {

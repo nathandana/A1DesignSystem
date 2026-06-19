@@ -68,6 +68,7 @@ import { patternToDefinition } from './patterns/patternDocument.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
+import { TodoPage } from './pages/TodoPage.jsx'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
@@ -90,17 +91,17 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'projects', 'accessibility', 'releases']
+const RESOURCE_PAGE_IDS = ['features', 'get-started', 'todo', 'accessibility', 'releases']
 const RESOURCE_PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
-  projects: 'folder',
+  todo: 'checklist',
   accessibility: 'accessibility',
   releases: 'new_releases',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'todo']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -119,6 +120,7 @@ const PAGE_TITLES = {
   help: 'Help',
   accessibility: 'Accessibility',
   releases: 'Releases',
+  todo: 'TODO',
 }
 
 const themeOptions = [
@@ -1006,6 +1008,7 @@ function App() {
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
+        {activePage === 'todo' && <TodoPage onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}

@@ -70,6 +70,7 @@ export function Controls({ config, setConfig }) {
       <Choice prop="labelPosition"
         label="Label position"
         iconOnly
+        labelMode="selected"
         value={config.labelPosition}
         onChange={(labelPosition) => setConfig((current) => ({ ...current, labelPosition }))}
         options={LABEL_POSITION_OPTIONS}
@@ -80,6 +81,7 @@ export function Controls({ config, setConfig }) {
           { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
         ]}
         onChange={(patch) => setConfig((current) => ({ ...current, ...patch }))}
+        
       />
     </Stack>
   )

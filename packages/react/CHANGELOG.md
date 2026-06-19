@@ -13,9 +13,13 @@
 
 - **Accordion divider spacing** — when `divider` is set, the open panel now has a `padding-block-start` (scaled to the accordion `size`) so the first content item no longer sits directly against the divider line.
 - **SegmentedControl sizing** — the segment icon is one step larger (`1.25em`) so glyphs read clearly; the default (md) segment inline padding steps down one notch (`component.segmented.segmentPaddingInline` 0.75rem → 0.5rem; affects md only, since sm/lg carry their own padding tokens); and the sm size tightens the icon↔label gap.
+- **Slider compact size** — the compact track and thumb step up one notch (track `base-spacing-6` → `8`, thumb `base-spacing-16` → `20`) so the smallest slider stays grabbable; the compact label/detent text is unchanged. (Note: this brings the compact track/thumb in line with the default size; the sizes still differ by label scale.)
+- **Toolbar sub-component prop forwarding** — `ToolbarMenu`, `ToolbarGroup`, and `ToolbarDivider` now spread `...rest` and merge `className` onto their root element (matching `ToolbarToggle` / `ToolbarButton`), so callers can attach `data-*` attributes, `className`, etc. Enables canvas selection (e.g. the a1-web Toolbar configurator's click-to-edit).
+- **PageNav now sticks on desktop** — on viewports ≥ 769px the nav uses `position: sticky` (`top` = `var(--a1-page-nav-top, 16px)` so a consumer can offset for a sticky header), `align-self: start`, and a `max-height` + internal scroll for long lists. (Mobile keeps the fixed top pill bar.)
 
 ### Fixed
 
+- **PageNav progress + active section now track the real scroll container.** It read `document.documentElement.scrollTop` / observed the viewport, so in a **nested scroll container** (e.g. a viewport-height `PageLayout`) the window never scrolled and the progress bar + active highlight froze. It now finds the nearest scrollable ancestor and uses it for both the scroll listener and the IntersectionObserver `root` (falling back to the window when the document scrolls).
 - **SegmentedControl `fullWidth`** now actually fills its container. `.a1-segmented--full-width` set `display: flex` but no width, so inside a centering flex/grid parent it stayed content-width; it now also sets `inline-size: 100%` so the equal-width segments stretch as intended.
 
 ## 0.17.0 — 2026-06-18

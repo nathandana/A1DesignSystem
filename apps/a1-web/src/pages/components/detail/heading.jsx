@@ -9,10 +9,10 @@ import {
   TextareaField,
   TextField,
   Toolbar,
+  ToolbarDivider,
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
 import { ConfigHelp, Lockable, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
@@ -472,9 +472,10 @@ export function Controls({ config, setConfig }) {
                 { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
               ]}
             />
+            <ToolbarDivider />
+            <ToolbarToggle icon="wrap_text" label="Balance text wrap" pressed={config.textWrap} onChange={(textWrap) => set({ textWrap })} />
           </Toolbar></Lockable>
           <DetentSlider prop="margin" label="Margin" values={MARGIN_VALUES} detents={MARGIN_DETENTS} value={config.margin} onChange={(margin) => set({ margin })} />
-          <Toggle prop="textWrap" label="Balance text wrap" value={config.textWrap} onChange={(textWrap) => set({ textWrap })} />
         </Stack>
 
 

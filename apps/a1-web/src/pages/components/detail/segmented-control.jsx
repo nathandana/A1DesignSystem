@@ -13,11 +13,16 @@ import {
   Tabs,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { ConfigSlider } from './configKit.jsx'
+import { Choice, ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
+const LABEL_MODE_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'selected', label: 'Selected' },
+  { value: 'none', label: 'None' },
+]
 
 // Tab labels: full label for a few items; clamp to the first few characters once
 // there are many so the tab strip stays compact. (Mirrors DefinitionList.)
@@ -52,10 +57,11 @@ export function getDefaultConfig() {
   return {
     size: 'md',
     fullWidth: false,
+    labelMode: 'all',
     options: [
-      { id: 'segment-day', label: 'Day', icon: '' },
-      { id: 'segment-week', label: 'Week', icon: '' },
-      { id: 'segment-month', label: 'Month', icon: '' },
+      { id: 'segment-day', label: 'Day', icon: 'calendar_view_day' },
+      { id: 'segment-week', label: 'Week', icon: 'calendar_view_week' },
+      { id: 'segment-month', label: 'Month', icon: 'calendar_month' },
     ],
   }
 }
@@ -71,6 +77,7 @@ export function Preview({ config }) {
       onChange={setValue}
       size={config.size}
       fullWidth={config.fullWidth}
+      labelMode={config.labelMode}
       options={options.map((opt) => ({
         value: opt.id,
         label: opt.label || 'Untitled',
@@ -158,6 +165,7 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
   return (
     <Stack gap="lg">
       <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice prop="labelMode" label="Labels" value={config.labelMode} onChange={(labelMode) => set({ labelMode })} options={LABEL_MODE_OPTIONS} />
       <Toggle prop="fullWidth" label="Full width" value={config.fullWidth} onChange={(fullWidth) => set({ fullWidth })} />
 
       <Divider space="none" />
@@ -208,6 +216,7 @@ function buildSegmentedSnippet(config) {
     `value={value}`,
     `onChange={setValue}`,
     config.size !== 'md' ? `size="${config.size}"` : null,
+    config.labelMode !== 'all' ? `labelMode="${config.labelMode}"` : null,
     config.fullWidth ? 'fullWidth' : null,
   ].filter(Boolean).join(' ')
 

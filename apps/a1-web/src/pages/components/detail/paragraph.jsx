@@ -3,8 +3,12 @@ import {
   Paragraph,
   Stack,
   TextareaField,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
+import { Choice, ConfigSlider, Lockable, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const PARAGRAPH_ELEMENT_OPTIONS = ['p', 'span', 'div']
 const PARAGRAPH_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
@@ -102,32 +106,20 @@ export function Controls({ config, setConfig }) {
           { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'   },
         ]}
       />
-      <Choice prop="align"
-        label="Align"
-        size="compact"
-        hideIndicator
-        iconOnly
-        columns={3}
-        value={config.align}
-        onChange={(align) => setConfig((current) => ({ ...current, align }))}
-        options={[
-          { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
-          { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
-          { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
-        ]}
-      />
-      <Choice
-        label="Text wrap"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.textWrap ? 'balance' : 'default'}
-        onChange={(value) => setConfig((current) => ({ ...current, textWrap: value === 'balance' }))}
-        options={[
-          { label: 'Default', value: 'default' },
-          { label: 'Balance', value: 'balance' },
-        ]}
-      />
+      <Lockable prop="align"><Toolbar label="Align">
+        <ToolbarGroup
+          aria-label="Align"
+          value={config.align}
+          onChange={(align) => setConfig((current) => ({ ...current, align }))}
+          options={[
+            { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
+            { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
+            { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
+          ]}
+        />
+        <ToolbarDivider />
+        <ToolbarToggle icon="wrap_text" label="Balance text wrap" pressed={config.textWrap} onChange={(textWrap) => setConfig((current) => ({ ...current, textWrap }))} />
+      </Toolbar></Lockable>
     </Stack>
   )
 }

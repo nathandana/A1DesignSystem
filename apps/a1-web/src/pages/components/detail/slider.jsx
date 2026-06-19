@@ -1,19 +1,33 @@
+import { useState } from 'react'
 import {
-  Accordion,
   Button,
   Code,
+  IconButton,
   Paragraph,
   Slider,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   TextField,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, DensityChoice } from './configKit.jsx'
+import { Choice, DensityChoice, Lockable } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
-import { Toggle } from './Toggle.jsx'
 
 const MODE_OPTIONS = ['continuous', 'detents']
-const VALUE_POSITION_OPTIONS = ['above', 'below']
 const VARIANT_OPTIONS = ['default', 'subtle']
+
+// Tab label for a detent: its label, else its value; clamped once there are many.
+function detentTabLabel(detent, index, total) {
+  const text = (detent.label ?? '').trim() || String(detent.value ?? index + 1)
+  if (total <= 4) return text
+  return text.length > 4 ? `${text.slice(0, 4)}…` : text
+}
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -75,69 +89,92 @@ export function Preview({ config }) {
   )
 }
 
+function DetentItemEditor({ detent, canRemove, onChange, onRemove }) {
+  return (
+    <Stack gap="sm">
+      <Stack direction="row" justify="end">
+        <IconButton
+          icon="delete"
+          variant="destructive"
+          size="sm"
+          aria-label="Remove detent"
+          disabled={!canRemove}
+          onClick={onRemove}
+        />
+      </Stack>
+      <Stack direction="row" gap="xs" align="end">
+        <TextField
+          label="Value"
+          type="number"
+          size="compact"
+          value={detent.value}
+          onChange={(e) => onChange({ value: Number(e.target.value) || 0 })}
+        />
+        <div className="a1-web-field-grow">
+          <TextField
+            label="Label"
+            size="compact"
+            value={detent.label ?? ''}
+            onChange={(e) => onChange({ label: e.target.value })}
+          />
+        </div>
+      </Stack>
+      <Choice
+        label="Display as"
+        value={detent.icon ? 'icon' : 'label'}
+        onChange={(mode) => onChange({ icon: mode === 'icon' ? (detent.icon || 'star') : undefined })}
+        options={[
+          { value: 'label', label: 'Label' },
+          { value: 'icon', label: 'Icon' },
+        ]}
+      />
+      {detent.icon && (
+        <IconSelect label="Icon" size="compact" value={detent.icon} onChange={(icon) => onChange({ icon })} />
+      )}
+    </Stack>
+  )
+}
+
 function DetentEditor({ detents, setConfig }) {
+  const [active, setActive] = useState(0)
   const update = (i, patch) =>
     setConfig((c) => ({ ...c, detents: c.detents.map((d, idx) => (idx === i ? { ...d, ...patch } : d)) }))
-  const remove = (i) => setConfig((c) => ({ ...c, detents: c.detents.filter((_, idx) => idx !== i) }))
-  const add = () =>
+  const remove = (i) => {
+    setConfig((c) => ({ ...c, detents: c.detents.filter((_, idx) => idx !== i) }))
+    setActive((a) => Math.max(0, Math.min(a, detents.length - 2)))
+  }
+  const add = () => {
     setConfig((c) => {
       const next = c.detents.length ? Math.max(...c.detents.map((d) => Number(d.value) || 0)) + 1 : 0
       return { ...c, detents: [...c.detents, { value: next, label: '' }] }
     })
+    setActive(detents.length)
+  }
+
+  const activeIndex = Math.min(active, detents.length - 1)
 
   return (
     <Stack gap="sm">
       <Paragraph size="sm" color="muted">Detents</Paragraph>
-      {detents.map((d, i) => (
-        <Accordion
-          key={i}
-          size="sm"
-          divider
-          defaultOpen={i === 0}
-          label={`${i + 1}. ${d.icon ? d.icon : (d.label || `Value ${d.value}`)}`}
-        >
-          <Stack gap="md">
-            <Stack direction="row" gap="xs" align="end">
-              <TextField
-                label="Value"
-                type="number"
-                size="compact"
-                value={d.value}
-                onChange={(e) => update(i, { value: Number(e.target.value) || 0 })}
+      <div className="a1-web-item-tabs">
+        <Tabs value={String(activeIndex)} onChange={(v) => setActive(Number(v))} variant="line" size="compact">
+          <TabList>
+            {detents.map((d, i) => (
+              <Tab key={i} value={String(i)}>{detentTabLabel(d, i, detents.length)}</Tab>
+            ))}
+          </TabList>
+          {detents.map((d, i) => (
+            <TabPanel key={i} value={String(i)}>
+              <DetentItemEditor
+                detent={d}
+                canRemove={detents.length > 2}
+                onChange={(patch) => update(i, patch)}
+                onRemove={() => remove(i)}
               />
-              <div className="a1-web-field-grow">
-                <TextField
-                  label="Label"
-                  size="compact"
-                  value={d.label ?? ''}
-                  onChange={(e) => update(i, { label: e.target.value })}
-                />
-              </div>
-            </Stack>
-            <Choice
-              label="Display as"
-              value={d.icon ? 'icon' : 'label'}
-              onChange={(mode) => update(i, { icon: mode === 'icon' ? (d.icon || 'star') : undefined })}
-              options={[
-                { value: 'label', label: 'Label' },
-                { value: 'icon', label: 'Icon' },
-              ]}
-            />
-            {d.icon && (
-              <IconSelect label="Icon" size="compact" value={d.icon} onChange={(icon) => update(i, { icon })} />
-            )}
-            <Button
-              variant="destructive"
-              size="sm"
-              icon="delete"
-              disabled={detents.length <= 2}
-              onClick={() => remove(i)}
-            >
-              Remove detent
-            </Button>
-          </Stack>
-        </Accordion>
-      ))}
+            </TabPanel>
+          ))}
+        </Tabs>
+      </div>
       <Button variant="secondary" size="sm" icon="add" onClick={add}>Add detent</Button>
     </Stack>
   )
@@ -183,17 +220,20 @@ export function Controls({ config, setConfig }) {
       ) : (
         <DetentEditor detents={config.detents} setConfig={setConfig} />
       )}
-      <Choice prop="valuePosition"
-        label="Value position"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.valuePosition}
-        onChange={(valuePosition) => set({ valuePosition })}
-        options={VALUE_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Toggle prop="showValue" label="Show value bubble" value={config.showValue} onChange={(showValue) => set({ showValue })} />
-      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => set({ disabled })} />
+      <Lockable prop="valuePosition"><Toolbar label="Value bubble">
+        <ToolbarGroup
+          aria-label="Value position"
+          value={config.valuePosition}
+          onChange={(valuePosition) => set({ valuePosition })}
+          options={[
+            { value: 'above', label: 'Above', icon: 'arrow_upward' },
+            { value: 'below', label: 'Below', icon: 'arrow_downward' },
+          ]}
+        />
+        <ToolbarDivider />
+        <ToolbarToggle icon="visibility" label="Show value" pressed={config.showValue} onChange={(showValue) => set({ showValue })} />
+        <ToolbarToggle icon="block" label="Disabled" pressed={config.disabled} onChange={(disabled) => set({ disabled })} />
+      </Toolbar></Lockable>
     </Stack>
   )
 }

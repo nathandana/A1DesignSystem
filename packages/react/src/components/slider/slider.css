@@ -25,8 +25,10 @@
 /* ── Sizes (match the field family: compact / default / comfortable) ─────────── */
 
 .a1-slider--compact {
-  --a1-slider-track-height: var(--base-spacing-6);
-  --a1-slider-thumb-size: var(--base-spacing-16);
+  /* Track + thumb are one step up from the smallest scale so the compact slider
+     stays grabbable; the label/detent text keeps the compact field-family size. */
+  --a1-slider-track-height: var(--base-spacing-8);
+  --a1-slider-thumb-size: var(--base-spacing-20);
   --a1-slider-label-size: var(--semantic-font-size-form-label-compact);
   --a1-slider-label-weight: var(--component-field-compact-label-font-weight);
   --a1-slider-detent-size: var(--semantic-font-size-body-xs);
