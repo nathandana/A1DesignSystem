@@ -101,23 +101,22 @@ export function AccessibilityFoundationPage({ onNavigate }) {
   return (
     <>
       <Section
-        padding="sm"
-        surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
+        padding="xs"
         contentWidth="xl"
-        gap="lg"
-        aria-labelledby="a11y-heading"
+        surface="panel"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { href: '/', label: 'Home' },
-              { href: '?page=foundations', label: 'Foundations' },
+              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
               { label: 'Accessibility' },
             ]}
           />
-          <Heading as="h1" id="a11y-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="a11y-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Accessibility
           </Heading>
           <Paragraph size="sm" color="muted">

@@ -77,6 +77,7 @@ export function Code({
 
   const copyLabel = useLabel("code.copyCode", "Copy code");
   const copiedLabel = useLabel("code.copied", "Copied");
+  const editLabel = useLabel("code.editCode", "Edit code");
   const textToCopy = useMemo(
     () => copyText || (editable ? editableValue : textFromChildren(Children.toArray(children))),
     [children, copyText, editable, editableValue],
@@ -113,6 +114,10 @@ export function Code({
   ]
     .filter(Boolean)
     .join(" ");
+  const editableProps = {
+    ...props,
+    ...(!props["aria-label"] && !props["aria-labelledby"] ? { "aria-label": editLabel } : null),
+  };
 
   if (!shouldRenderBlock) {
     return (
@@ -145,7 +150,7 @@ export function Code({
           value={editableValue}
           onChange={handleTextareaChange}
           spellCheck={false}
-          {...props}
+          {...editableProps}
         />
       ) : (
         <pre className="a1-code-block__pre">

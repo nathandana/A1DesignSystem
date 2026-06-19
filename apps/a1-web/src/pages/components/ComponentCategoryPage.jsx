@@ -14,21 +14,22 @@ import { getComponentPath, navigateCard } from './utils.js'
 export function ComponentCategoryPage({ category, onNavigate }) {
   return (
     <>
-    <Section padding="xs" surface='panel'>
-      <Stack direction="column" gap="sm">
+    <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+      <Stack direction="column" gap="xs">
         <Breadcrumb
           items={[
+            { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
             { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateCard(e, onNavigate, 'components') },
             { label: category.title },
           ]}
         />
-        <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>
+        <Heading as="h1" id={`${category.id}-category-heading`} size={{ xs: 'lg', md: 'xxl' }}>
           {category.title}
         </Heading>
         <Paragraph size="sm" color="muted">{category.body}</Paragraph>
       </Stack>
 </Section>
-    <Section padding="sm" contentWidth='xl'>
+    <Section padding="sm" contentWidth="xl" aria-labelledby={`${category.id}-category-heading`}>
     <Section   padding="xs"
   surface="raised"
   gap="sm"

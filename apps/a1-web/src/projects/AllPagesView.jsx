@@ -49,25 +49,23 @@ export function AllPagesView({
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   return (
-    <Section padding="lg" aria-labelledby="all-pages-heading" contentWidth='xl'>
-      <Stack direction="column" gap="lg">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: 'Projects', href: '/?page=editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
-            { label: project?.name ?? 'Project' },
-          ]}
-        />
-        <Stack direction="row" align="end" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="all-pages-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              {project?.name ?? 'Project'}
-            </Heading>
-            {project?.description && (
-              <Paragraph size="lg" color="muted">{project.description}</Paragraph>
-            )}
-          </Stack>
-          <Stack direction="row" gap="sm" align="center" wrap>
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+              { label: 'Projects', href: '/?page=editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
+              { label: project?.name ?? 'Project' },
+            ]}
+          />
+          <Heading as="h1" id="all-pages-heading" size={{ xs: 'lg', md: 'xxl' }}>
+            {project?.name ?? 'Project'}
+          </Heading>
+          {project?.description && (
+            <Paragraph size="sm" color="muted">{project.description}</Paragraph>
+          )}
+          <Stack direction="row" gap="xs" align="center" wrap>
             <Button variant="secondary" size='sm' icon="edit" onClick={() => setEditOpen(true)}>Edit</Button>
             {onEditLayout && (
               <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
@@ -81,6 +79,10 @@ export function AllPagesView({
             <Button icon="add" onClick={() => onAddPage?.({})} size='sm'>Add page</Button>
           </Stack>
         </Stack>
+      </Section>
+
+      <Section padding="sm" aria-labelledby="all-pages-heading" contentWidth="xl">
+        <Stack direction="column" gap="lg">
 
         {flat.length === 0 ? (
           <MessageEmptyState
@@ -152,6 +154,7 @@ export function AllPagesView({
           deleted. This can’t be undone.
         </Paragraph>
       </Dialog>
-    </Section>
+      </Section>
+    </>
   )
 }

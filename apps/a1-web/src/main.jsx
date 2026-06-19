@@ -831,7 +831,7 @@ function App() {
         )}
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
-        {activePage === 'get-started' && <GetStarted />}
+        {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail
@@ -1003,9 +1003,9 @@ function App() {
             onOpenHelp={() => navigate('help')}
           />
         )}
-        {activePage === 'accessibility' && <Accessibility />}
+        {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} />}
-        {activePage === 'releases' && <Releases />}
+        {activePage === 'releases' && <Releases onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}

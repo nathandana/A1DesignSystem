@@ -296,25 +296,23 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
   }
 
   return (
-    <Section padding="sm" aria-labelledby="image-library-heading" contentWidth="xl">
-      <Stack direction="column" gap="md">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: 'Projects', href: '/?page=editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
-            { label: 'Image library' },
-          ]}
-        />
-        <Stack direction="row" align="end" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="image-library-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Image library
-            </Heading>
-            <Paragraph size="lg" color="muted">
-              Upload images to use in Figures. They’re stored locally in this browser and shared
-              across every project.
-            </Paragraph>
-          </Stack>
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+              { label: 'Projects', href: '/?page=editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
+              { label: 'Image library' },
+            ]}
+          />
+          <Heading as="h1" id="image-library-heading" size={{ xs: 'lg', md: 'xxl' }}>
+            Image library
+          </Heading>
+          <Paragraph size="sm" color="muted">
+            Upload images to use in Figures. They’re stored locally in this browser and shared
+            across every project.
+          </Paragraph>
           <SplitButton
             icon="upload"
             loading={busy}
@@ -328,6 +326,10 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
             Upload images
           </SplitButton>
         </Stack>
+      </Section>
+
+      <Section padding="sm" aria-labelledby="image-library-heading" contentWidth="xl">
+        <Stack direction="column" gap="md">
 
         <input
           ref={fileRef}
@@ -764,6 +766,7 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
           tagged with it.
         </Paragraph>
       </Dialog>
-    </Section>
+      </Section>
+    </>
   )
 }

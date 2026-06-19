@@ -29,21 +29,23 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
   }
 
   return (
-    <Section padding="sm" contentWidth="xl" aria-labelledby="themes-heading">
-      <Stack direction="column" gap="md">
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
             { label: 'Theme' },
           ]}
         />
-        <Stack direction="row" align="end" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="themes-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>Theme</Heading>
-            <Paragraph size="lg" color="muted">Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.</Paragraph>
-          </Stack>
+          <Heading as="h1" id="themes-heading" size={{ xs: 'lg', md: 'xxl' }}>Theme</Heading>
+          <Paragraph size="sm" color="muted">Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.</Paragraph>
           <Button icon="add" onClick={newTheme}>New theme</Button>
         </Stack>
+      </Section>
+
+      <Section padding="sm" contentWidth="xl" aria-labelledby="themes-heading">
+        <Stack direction="column" gap="md">
 
         {themes.length === 0 ? (
           <MessageEmptyState
@@ -105,6 +107,7 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
       >
         <Paragraph>“{confirmDelete?.name}” will be removed.</Paragraph>
       </Dialog>
-    </Section>
+      </Section>
+    </>
   )
 }

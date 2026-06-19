@@ -222,6 +222,12 @@
 .a1-slider--disabled {
   --a1-slider-fill-color: var(--semantic-color-border-default);
   --a1-slider-thumb-color: var(--semantic-color-border-default);
+  --a1-slider-active-color: var(--semantic-color-text-muted);
+}
+
+.a1-slider--disabled .a1-slider__input,
+.a1-slider--disabled .a1-slider__track,
+.a1-slider--disabled .a1-slider__ticks {
   opacity: 0.6;
 }
 

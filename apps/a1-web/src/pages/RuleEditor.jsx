@@ -126,21 +126,19 @@ export function RuleEditor({ onNavigate }) {
   const userCount = rules.filter((r) => r.source === 'user').length
 
   return (
-    <Section padding="lg" contentWidth="xl" aria-labelledby="rules-heading">
-      <Stack direction="column" gap="lg">
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
             { label: 'Rules' },
           ]}
         />
-        <Stack direction="row" align="end" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="rules-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>Rules</Heading>
-            <Paragraph size="lg" color="muted">
+          <Heading as="h1" id="rules-heading" size={{ xs: 'lg', md: 'xxl' }}>Rules</Heading>
+          <Paragraph size="sm" color="muted">
               Every design rule in the system — {rules.length} total{userCount ? `, ${userCount} custom` : ''}. Add your own by hand or with AI; built-in rules are read-only.
             </Paragraph>
-          </Stack>
           <SplitButton
             icon="add"
             onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}
@@ -151,6 +149,10 @@ export function RuleEditor({ onNavigate }) {
             New rule
           </SplitButton>
         </Stack>
+      </Section>
+
+      <Section padding="sm" contentWidth="xl" aria-labelledby="rules-heading">
+        <Stack direction="column" gap="lg">
 
         {rules.length === 0 ? (
           <MessageEmptyState icon="gavel" title="No rules yet" description="Add a rule by hand or with AI." action={<Button icon="add" onClick={() => setNewOpen(true)}>New rule</Button>} />
@@ -255,6 +257,7 @@ export function RuleEditor({ onNavigate }) {
       >
         <Paragraph>“{confirmDelete?.id}” will be removed.</Paragraph>
       </Dialog>
-    </Section>
+      </Section>
+    </>
   )
 }

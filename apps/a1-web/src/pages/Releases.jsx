@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import {
+  Breadcrumb,
   Card,
   Code,
   Heading,
   List,
   ListItem,
-  MessageBadge,
   Paragraph,
   Section,
   Stack,
@@ -115,18 +115,24 @@ function ReleaseGroup({ group }) {
   )
 }
 
-export function Releases() {
+export function Releases({ onNavigate }) {
   const releases = useMemo(() => parseChangelog(changelogMarkdown), [])
   const [activeRelease, setActiveRelease] = useState(() => releases[0]?.id)
 
   if (releases.length === 0) {
     return (
-      <Section padding="lg" contentWidth="md" aria-labelledby="releases-heading">
-        <Stack direction="column" gap="sm">
-          <Heading as="h1" id="releases-heading" type="display" size={{ xs: 'lg', lg: 'jumbo' }}>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Releases' },
+            ]}
+          />
+          <Heading as="h1" id="releases-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Releases
           </Heading>
-          <Paragraph size="md" color="muted">
+          <Paragraph size="sm" color="muted">
             No published releases are listed in the changelog yet.
           </Paragraph>
         </Stack>
@@ -136,13 +142,18 @@ export function Releases() {
 
   return (
     <>
-      <Section padding="sm" surface="panel" contentWidth="lg" aria-labelledby="releases-heading">
-        <Stack direction="column" gap="sm">
-          <MessageBadge icon="new_releases">Resources</MessageBadge>
-          <Heading as="h1" id="releases-heading" type="display" size={{ xs: 'lg', lg: 'jumbo' }}>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Releases' },
+            ]}
+          />
+          <Heading as="h1" id="releases-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Releases
           </Heading>
-          <Paragraph size="md" color="muted">
+          <Paragraph size="sm" color="muted">
             Published changes from the A1 web changelog. Each release tab is generated from
             <Code variant="inline">apps/a1-web/CHANGELOG.md</Code>.
           </Paragraph>

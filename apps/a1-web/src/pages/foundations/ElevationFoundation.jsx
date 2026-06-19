@@ -47,23 +47,22 @@ export function ElevationFoundationPage({ onNavigate }) {
   return (
     <>
       <Section
-        padding="sm"
-        surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
+        padding="xs"
         contentWidth="xl"
-        gap="lg"
-        aria-labelledby="elevation-heading"
+        surface="panel"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { href: '/', label: 'Home' },
-              { href: '?page=foundations', label: 'Foundations' },
+              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
               { label: 'Elevation' },
             ]}
           />
-          <Heading as="h1" id="elevation-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="elevation-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Elevation
           </Heading>
           <Paragraph size="sm" color="muted">

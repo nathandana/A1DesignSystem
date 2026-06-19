@@ -1,4 +1,5 @@
 import {
+  Breadcrumb,
   Card,
   DataTable,
   Grid,
@@ -8,7 +9,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { ruleSourceFiles } from './data.js'
-import { allComponents, getComponentPath } from './utils.js'
+import { allComponents, getComponentPath, navigateCard } from './utils.js'
 
 function OverviewTable({ onNavigate }) {
   const columns = [
@@ -75,30 +76,36 @@ export function ComponentsOverviewPage({ onNavigate }) {
 
   return (
     <>
-        <Section padding="xs" surface='panel'>
-      <Stack direction="column" gap="xs">
-        <Heading as="h2" type="display" size={{ xs: 'lg', md: 'xl' }}>
-          Component inventory
-        </Heading>
-        <Paragraph size="sm" color="muted" className="a1-web-section-body">
-          Full list of documented components, route targets, update dates, and package availability.
-        </Paragraph>
-      </Stack>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
+              { label: 'Components' },
+            ]}
+          />
+          <Heading as="h1" id="component-inventory-heading" size={{ xs: 'lg', md: 'xxl' }}>
+            Component inventory
+          </Heading>
+          <Paragraph size="sm" color="muted" className="a1-web-section-body">
+            Full list of documented components, route targets, update dates, and package availability.
+          </Paragraph>
+        </Stack>
       </Section>
-              <Section padding="xs" contentWidth='xl' gap='md'>
-      <Grid columns={{ xs: 1, sm: 3 }} gap="md">
-        {overviewStats.map((stat) => (
-          <Card key={stat.label}>
-            <Stack direction="column" gap="xs">
-              <Heading as="h2" size="xl" type='display'>{stat.value}</Heading>
-              <Paragraph size="sm" color="muted">{stat.label}</Paragraph>
-            </Stack>
-          </Card>
-        ))}
-      </Grid>
+      <Section padding="sm" contentWidth="xl" gap="md" aria-labelledby="component-inventory-heading">
+        <Grid columns={{ xs: 1, sm: 3 }} gap="md">
+          {overviewStats.map((stat) => (
+            <Card key={stat.label}>
+              <Stack direction="column" gap="xs">
+                <Heading as="h2" size="xl" type='display'>{stat.value}</Heading>
+                <Paragraph size="sm" color="muted">{stat.label}</Paragraph>
+              </Stack>
+            </Card>
+          ))}
+        </Grid>
 
-      <OverviewTable onNavigate={onNavigate} />
-    </Section>
+        <OverviewTable onNavigate={onNavigate} />
+      </Section>
     </>
   )
 }

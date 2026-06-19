@@ -78,23 +78,21 @@ export function ProjectsList({
   const ctxProject = ctxMenu ? projects.find((p) => p.id === ctxMenu.id) : null
 
   return (
-    <Section padding="sm" aria-labelledby="projects-heading" contentWidth='xl'>
-      <Stack direction="column" gap="sm">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: 'Projects' },
-          ]}
-        />
-        <Stack direction="row" align="start" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="projects-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Projects
-            </Heading>
-            <Paragraph size="lg" color="muted">
-              Each project is an isolated set of pages with its own auto-generated navigation.
-            </Paragraph>
-          </Stack>
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+              { label: 'Projects' },
+            ]}
+          />
+          <Heading as="h1" id="projects-heading" size={{ xs: 'lg', md: 'xxl' }}>
+            Projects
+          </Heading>
+          <Paragraph size="sm" color="muted">
+            Each project is an isolated set of pages with its own auto-generated navigation.
+          </Paragraph>
           <Stack direction="row" gap="xs" align="center" wrap>
             <Button variant="secondary" icon="help" onClick={() => onOpenHelp?.()}>
               Help
@@ -122,6 +120,10 @@ export function ProjectsList({
             </SplitButton>
           </Stack>
         </Stack>
+      </Section>
+
+      <Section padding="sm" aria-labelledby="projects-heading" contentWidth="xl">
+        <Stack direction="column" gap="sm">
 
         {projects.length === 0 ? (
           <MessageEmptyState
@@ -235,7 +237,8 @@ export function ProjectsList({
           “{confirmDelete?.name}” and its {counts[confirmDelete?.id] ?? 0} page(s) will be permanently deleted.
           This can’t be undone.
         </Paragraph>
-      </Dialog>
-    </Section>
+        </Dialog>
+      </Section>
+    </>
   )
 }

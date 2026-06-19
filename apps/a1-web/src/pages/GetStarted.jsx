@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Breadcrumb,
   Card,
   Code,
   Grid,
@@ -267,26 +268,30 @@ function PackagePanel({ pkg }) {
   )
 }
 
-export function GetStarted() {
+export function GetStarted({ onNavigate }) {
   const [activePackage, setActivePackage] = useState(packages[0].value)
 
   return (
     <>
       <Section
-        padding="sm"
+        padding="xs"
+        contentWidth="xl"
         surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
-        contentWidth="lg"
-        gap="lg"
-        aria-labelledby="get-started-heading"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
-        <Stack direction="column" gap="sm">
-          <MessageBadge icon="rocket_launch">Get started</MessageBadge>
-          <Heading as="h1" id="get-started-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Setup guides' },
+            ]}
+          />
+          <Heading as="h1" id="get-started-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Setup guides
           </Heading>
-          <Paragraph size="lg" color="muted">
+          <Paragraph size="sm" color="muted">
             Add A1 from GitHub, run the local docs site, or use the package tabs for implementation-specific setup.
           </Paragraph>
         </Stack>

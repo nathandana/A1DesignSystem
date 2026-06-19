@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react'
 import {
   Accordion,
   Banner,
+  Breadcrumb,
   Button,
   ButtonContainer,
   Cluster,
@@ -554,13 +555,19 @@ export function Help({ onNavigate }) {
   }
 
   return (
-    <Section padding="md" contentWidth="lg" aria-labelledby="help-heading">
-      <Stack direction="column" gap="lg">
-        <Stack direction="column" gap="sm">
-          <Heading as="h1" id="help-heading" type="display" size={{ xs: 'xl', md: 'xxl' }}>
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Editor help' },
+            ]}
+          />
+          <Heading as="h1" id="help-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Editor help
           </Heading>
-          <Paragraph size="lg" color="muted">
+          <Paragraph size="sm" color="muted">
             How every editor feature works — search or browse by category.
           </Paragraph>
           <TextField
@@ -571,6 +578,10 @@ export function Help({ onNavigate }) {
             onChange={(e) => setQuery(e.target.value)}
           />
         </Stack>
+      </Section>
+
+      <Section padding="sm" contentWidth="lg" aria-labelledby="help-heading">
+        <Stack direction="column" gap="lg">
 
         {!searching && (
           <Cluster gap="xs">
@@ -631,6 +642,7 @@ export function Help({ onNavigate }) {
           </ButtonContainer>
         </Section>
       </Stack>
-    </Section>
+      </Section>
+    </>
   )
 }
