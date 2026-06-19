@@ -10,8 +10,8 @@ import { Choice, ConfigSlider, ResponsiveControl } from './configKit.jsx'
 
 export const bareDisplay = true
 
-const COLUMN_OPTIONS = [1, 2, 3, 4]
-const GAP_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
+const COLUMN_OPTIONS = [1, 2, 3, 4, 6, 8, 12]
+const GAP_OPTIONS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
 
 function optionLabel(value) {
   if (typeof value === 'number') return String(value)

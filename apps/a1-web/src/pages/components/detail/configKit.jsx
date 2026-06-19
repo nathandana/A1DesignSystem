@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import {
   Accordion,
   IconButton,
@@ -13,6 +13,40 @@ import { ConfigLockContext, Lockable, applyLockToggle } from './configLock.jsx'
 
 export { Toggle } from './Toggle.jsx'
 export { ConfigLockContext, Lockable } from './configLock.jsx'
+
+/**
+ * ConfigHelpContext — toggles per-property helper text across every configurator.
+ * The detail panel's "Helper text" switch provides `showHelp`; it is off by
+ * default. Controls in this kit accept an optional `helper` string and render a
+ * short muted summary beneath themselves only while `showHelp` is true.
+ */
+export const ConfigHelpContext = createContext({ showHelp: false })
+
+/**
+ * WithHelp — appends a muted helper line below a control when help is enabled.
+ * When help is off (or no `helper` is given) it returns the control untouched,
+ * so it adds no DOM in the default state.
+ */
+export function WithHelp({ helper, children }) {
+  const { showHelp } = useContext(ConfigHelpContext)
+  if (!helper || !showHelp) return children
+  return (
+    <Stack gap="xs">
+      {children}
+      <Paragraph size="xs" color="muted" className="a1-web-config-help">{helper}</Paragraph>
+    </Stack>
+  )
+}
+
+/**
+ * ConfigHelp — renders its children only while the Helper text toggle is on.
+ * Use it to gate standalone guidance blocks (not tied to a single control), e.g.
+ * the Heading configurator's "edit in the preview / markdown shorthand" note.
+ */
+export function ConfigHelp({ children }) {
+  const { showHelp } = useContext(ConfigHelpContext)
+  return showHelp ? children : null
+}
 
 /**
  * The field-family density scale, mapped to Material Symbols density icons so
@@ -33,20 +67,23 @@ export const DENSITY_SIZE_OPTIONS = [
  * - `iconOnly` hides the labels (icon-only buttons) and keeps `columns` so icon
  *   grids (e.g. a 3×3 picker) stay a grid; labelled groups wrap instead.
  */
-export function Choice({ label, value, onChange, options, iconOnly = false, columns, prop }) {
+export function Choice({ label, value, onChange, options, iconOnly = false, columns, prop, helper, labelMode }) {
   return (
-    <Lockable prop={prop}>
-      <Toolbar label={label}>
-        <ToolbarGroup
-          aria-label={typeof label === 'string' ? label : undefined}
-          showLabels={!iconOnly}
-          columns={iconOnly ? columns : undefined}
-          value={value}
-          onChange={onChange}
-          options={options}
-        />
-      </Toolbar>
-    </Lockable>
+    <WithHelp helper={helper}>
+      <Lockable prop={prop}>
+        <Toolbar label={label}>
+          <ToolbarGroup
+            aria-label={typeof label === 'string' ? label : undefined}
+            showLabels={!iconOnly}
+            labelMode={labelMode}
+            columns={iconOnly ? columns : undefined}
+            value={value}
+            onChange={onChange}
+            options={options}
+          />
+        </Toolbar>
+      </Lockable>
+    </WithHelp>
   )
 }
 
@@ -54,9 +91,11 @@ export function Choice({ label, value, onChange, options, iconOnly = false, colu
  * DensityChoice — the form-field Size control rendered as an icon-only density
  * picker (density_small / density_medium / density_large).
  */
-export function DensityChoice({ label = 'Size', value, onChange, prop = 'size' }) {
+export function DensityChoice({ label = 'Size', value, onChange, prop = 'size', helper }) {
+  // labelMode="selected": the chosen density shows its label; the rest stay
+  // icon-only (density_small / medium / large).
   return (
-    <Choice label={label} iconOnly value={value} onChange={onChange} options={DENSITY_SIZE_OPTIONS} prop={prop} />
+    <Choice label={label} labelMode="selected" value={value} onChange={onChange} options={DENSITY_SIZE_OPTIONS} prop={prop} helper={helper} />
   )
 }
 
@@ -99,7 +138,7 @@ export function statusOptions(values, { noneLabel = 'None' } = {}) {
  * Pass only the flags the control supports; `onChange` receives a single-key
  * patch (e.g. `{ required: true }`) suitable for a `setConfig` merge.
  */
-export function FieldState({ label = 'State', items, onChange }) {
+export function FieldState({ label = 'State', items, onChange, helper }) {
   // FieldState knows each toggle's config key, so it can self-mark when any of
   // its keys (or the whole element) is locked, and lock them all when authoring.
   const lockCtx = useContext(ConfigLockContext)
@@ -121,20 +160,26 @@ export function FieldState({ label = 'State', items, onChange }) {
 
   if (lockCtx.authoring && lockCtx.onSetLockedProps) {
     return (
-      <div className={`a1-web-tool-authoring${anyLocked ? ' is-locked' : ''}`}>
-        <div className="a1-web-tool-authoring__control">{toolbar}</div>
-        <IconButton
-          icon={anyLocked ? 'lock' : 'lock_open'}
-          size="sm"
-          variant={anyLocked ? 'primary' : 'tertiary'}
-          aria-label={anyLocked ? 'Unlock these properties' : 'Lock these properties'}
-          onClick={() => applyLockToggle(lockCtx, keys, !anyLocked)}
-        />
-      </div>
+      <WithHelp helper={helper}>
+        <div className={`a1-web-tool-authoring${anyLocked ? ' is-locked' : ''}`}>
+          <div className="a1-web-tool-authoring__control">{toolbar}</div>
+          <IconButton
+            icon={anyLocked ? 'lock' : 'lock_open'}
+            size="sm"
+            variant={anyLocked ? 'primary' : 'tertiary'}
+            aria-label={anyLocked ? 'Unlock these properties' : 'Lock these properties'}
+            onClick={() => applyLockToggle(lockCtx, keys, !anyLocked)}
+          />
+        </div>
+      </WithHelp>
     )
   }
 
-  return <Lockable locked={lockCtx.fullyLocked || anyLocked}>{toolbar}</Lockable>
+  return (
+    <WithHelp helper={helper}>
+      <Lockable locked={lockCtx.fullyLocked || anyLocked}>{toolbar}</Lockable>
+    </WithHelp>
+  )
 }
 
 // Viewport breakpoints (from system/tokens/breakpoint.json) for responsive props.
@@ -182,11 +227,13 @@ export function responsiveProp(name, value, defaultValue) {
  * breakpoint. Toggling them all off / pressing the button again returns to a
  * single value.
  *
- * `children` is a render prop `(value, onChange) => control` that renders the
+ * `children` is a render prop `(value, onChange, bp) => control` that renders the
  * underlying control **without its own label** (the label is supplied here, and
- * each breakpoint's accordion supplies the breakpoint name).
+ * each breakpoint's accordion supplies the breakpoint name). `bp` is `null` in
+ * single-value mode and the breakpoint key (`"xs"`…`"xl"`) per breakpoint — use
+ * it to render extra controls (e.g. a Wrap toggle) only in the single-value bar.
  */
-export function ResponsiveControl({ label, value, onChange, defaultValue, children, prop }) {
+export function ResponsiveControl({ label, value, onChange, defaultValue, children, prop, helper }) {
   const responsive = isResponsiveValue(value)
   // Remember the single value so it seeds newly-enabled breakpoints.
   const [scalarMemo, setScalarMemo] = useState(responsive ? defaultValue : value)
@@ -206,6 +253,7 @@ export function ResponsiveControl({ label, value, onChange, defaultValue, childr
   const setBreakpoint = (key, v) => onChange({ ...value, [key]: v })
 
   return (
+    <WithHelp helper={helper}>
     <Lockable prop={prop}>
     <Stack gap="xs">
       <Stack direction="row" gap="xs" align="center" justify="between">
@@ -225,7 +273,6 @@ export function ResponsiveControl({ label, value, onChange, defaultValue, childr
             {RESPONSIVE_BREAKPOINTS.map((bp) => (
               <ToolbarToggle
                 key={bp.key}
-                icon={bp.icon}
                 label={bp.label}
                 showLabel
                 pressed={value[bp.key] !== undefined}
@@ -235,15 +282,16 @@ export function ResponsiveControl({ label, value, onChange, defaultValue, childr
           </Toolbar>
           {RESPONSIVE_BREAKPOINTS.filter((bp) => value[bp.key] !== undefined).map((bp) => (
             <Accordion key={bp.key} label={`${bp.label} breakpoint`} subtext={bp.range} size="sm" divider defaultOpen>
-              {children(value[bp.key], (v) => setBreakpoint(bp.key, v))}
+              {children(value[bp.key], (v) => setBreakpoint(bp.key, v), bp.key)}
             </Accordion>
           ))}
         </Stack>
       ) : (
-        children(value, onChange)
+        children(value, onChange, null)
       )}
     </Stack>
     </Lockable>
+    </WithHelp>
   )
 }
 
@@ -275,20 +323,22 @@ function longSizeLabel(value) {
  * thumb index back to the string value. Pass `format` to customise the short
  * detent labels; `bubbleFormat` customises the longer value-bubble label.
  */
-export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel, prop }) {
+export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel, prop, helper }) {
   const detents = values.map((v, index) => ({ value: index, label: format(v) }))
   const clampIndex = (index) => Math.max(0, Math.min(values.length - 1, Math.round(index)))
   return (
-    <Lockable prop={prop}>
-      <Slider
-        size="compact"
-        variant="subtle"
-        label={label}
-        detents={detents}
-        value={Math.max(0, values.indexOf(value))}
-        onChange={(index) => onChange(values[index])}
-        bubbleLabel={(index) => bubbleFormat(values[clampIndex(index)])}
-      />
-    </Lockable>
+    <WithHelp helper={helper}>
+      <Lockable prop={prop}>
+        <Slider
+          size="compact"
+          variant="subtle"
+          label={label}
+          detents={detents}
+          value={Math.max(0, values.indexOf(value))}
+          onChange={(index) => onChange(values[index])}
+          bubbleLabel={(index) => bubbleFormat(values[clampIndex(index)])}
+        />
+      </Lockable>
+    </WithHelp>
   )
 }

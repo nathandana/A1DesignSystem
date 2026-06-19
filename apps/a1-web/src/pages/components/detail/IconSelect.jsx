@@ -1,9 +1,28 @@
 import { useRef, useState } from 'react'
-import { IconButton, SelectField } from '@gtivr4/a1-design-system-react'
+import { Autocomplete, IconButton } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
 
-const ICON_OPTIONS = iconRegistry.icons.map((icon) => icon.name)
+// Friendlier names for a few Material Symbols category ids; the rest are
+// sentence-cased from the id.
+const CATEGORY_LABELS = {
+  av: 'Audio & video',
+  ui: 'UI',
+}
+function categoryLabel(id) {
+  if (!id) return 'Other'
+  return CATEGORY_LABELS[id] ?? (id.charAt(0).toUpperCase() + id.slice(1))
+}
+
+// Grouped icon options, built once: every Material Symbol mapped to
+// `{ value, label, icon, group }` and sorted by category then name so the
+// Autocomplete renders one heading per category.
+const ICON_OPTIONS = iconRegistry.icons
+  .map((icon) => {
+    const cat = Array.isArray(icon.categories) ? icon.categories[0] : icon.categories
+    return { value: icon.name, label: icon.name, icon: icon.name, group: categoryLabel(cat) }
+  })
+  .sort((a, b) => a.group.localeCompare(b.group) || a.value.localeCompare(b.value))
 
 // Find a nearby label/text value to seed the AI prompt: scan a few ancestors up
 // from the icon control for a text field, preferring one whose label reads like
@@ -43,16 +62,16 @@ export function IconSelect({
     <>
       <div className="a1-web-icon-select" ref={wrapRef}>
         <div className="a1-web-icon-select__field">
-          <SelectField
+          <Autocomplete
             label={label}
             size={size}
-            value={value}
-            onChange={(event) => onChange?.(event.target.value)}
-          >
-            {ICON_OPTIONS.map((icon) => (
-              <option key={icon} value={icon}>{icon}</option>
-            ))}
-          </SelectField>
+            value={value ?? ''}
+            onChange={(name) => onChange?.(name)}
+            options={ICON_OPTIONS}
+            maxVisible={200}
+            emptyText="No icons match"
+            aria-label={label}
+          />
         </div>
         <IconButton
           icon="auto_awesome"

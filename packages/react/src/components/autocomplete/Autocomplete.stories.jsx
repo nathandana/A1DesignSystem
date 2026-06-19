@@ -113,6 +113,62 @@ export const Color = {
   },
 };
 
+const GROUPED = [
+  { value: "visa", label: "Visa", icon: "credit_card", group: "Payment" },
+  { value: "mastercard", label: "Mastercard", icon: "credit_card", group: "Payment" },
+  { value: "paypal", label: "PayPal", icon: "account_balance_wallet", group: "Payment" },
+  { value: "fedex", label: "FedEx", icon: "local_shipping", group: "Shipping" },
+  { value: "ups", label: "UPS", icon: "local_shipping", group: "Shipping" },
+  { value: "pickup", label: "Store pickup", icon: "storefront", group: "Shipping" },
+  { value: "email", label: "Email", icon: "mail", group: "Notifications" },
+  { value: "sms", label: "SMS", icon: "sms", group: "Notifications" },
+];
+
+export const Grouped = {
+  name: "Grouped options + icons",
+  render: (args) => {
+    const [value, setValue] = useState("");
+    return (
+      <div style={{ width: "320px" }}>
+        <Autocomplete
+          {...args}
+          label="Method"
+          hint="Options are grouped under category headings"
+          options={GROUPED}
+          value={value}
+          onChange={setValue}
+        />
+      </div>
+    );
+  },
+};
+
+export const LargeGrouped = {
+  name: "Grouped + capped (maxVisible)",
+  render: (args) => {
+    const [value, setValue] = useState("");
+    // 120 options across 6 groups; maxVisible caps the rendered list.
+    const options = Array.from({ length: 120 }, (_, i) => ({
+      value: `opt-${i}`,
+      label: `Option ${i + 1}`,
+      group: `Group ${String.fromCharCode(65 + (i % 6))}`,
+    }));
+    return (
+      <div style={{ width: "320px" }}>
+        <Autocomplete
+          {...args}
+          label="Large list"
+          hint="Capped to 40 — keep typing to narrow"
+          options={options}
+          maxVisible={40}
+          value={value}
+          onChange={setValue}
+        />
+      </div>
+    );
+  },
+};
+
 export const Sizes = {
   parameters: { layout: "padded", controls: { include: [] } },
   render: () => {

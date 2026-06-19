@@ -5,6 +5,10 @@ export interface AutocompleteOption {
   label?: string;
   /** A CSS colour rendered as a swatch beside the option (and on the selected value / chip). In `variant="color"` the swatch defaults to `value` when omitted. */
   swatch?: string;
+  /** A Material Symbols glyph name rendered beside the option / chip / selected value. */
+  icon?: string;
+  /** Group name. When any option has a `group`, the listbox renders a sticky heading before each group's options. Options are ordered by each group's first appearance. */
+  group?: string;
 }
 
 export interface AutocompleteProps {
@@ -39,6 +43,10 @@ export interface AutocompleteProps {
   emptyText?: React.ReactNode;
   /** Label for the create option, given the current query. */
   createLabel?: (query: string) => React.ReactNode;
+  /** Cap the number of options rendered in the listbox (for very large lists like an icon picker). Excess options are hidden behind a "keep typing" footer. */
+  maxVisible?: number;
+  /** Footer text shown when the list is capped by `maxVisible`, given the shown count. */
+  moreText?: (shown: number) => React.ReactNode;
   "aria-label"?: string;
 }
 

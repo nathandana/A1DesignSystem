@@ -38,6 +38,8 @@ export function Autocomplete({
   className = "",
   emptyText = "No matches",
   createLabel = (q) => `Add “${q}”`,
+  maxVisible,
+  moreText = (shown) => `Showing the first ${shown} — keep typing to narrow.`,
   "aria-label": ariaLabel,
   ...props
 }) {
@@ -51,6 +53,15 @@ export function Autocomplete({
   const requiredText = useLabel("field.required", "Required");
 
   const items = useMemo(() => options.map(normalizeOption), [options]);
+  // Grouping: when any option carries a `group`, the listbox renders a heading
+  // before each group. `groupRank` records each group's first-appearance order
+  // so results can be ordered to keep groups contiguous.
+  const hasGroups = useMemo(() => items.some((i) => i.group != null), [items]);
+  const groupRank = useMemo(() => {
+    const order = new Map();
+    for (const i of items) if (i.group != null && !order.has(i.group)) order.set(i.group, order.size);
+    return order;
+  }, [items]);
   const selectedValues = multiple
     ? (Array.isArray(value) ? value : [])
     : (value != null && value !== "" ? [value] : []);
@@ -74,19 +85,44 @@ export function Autocomplete({
     if (opt && opt.swatch) return opt.swatch;
     return resolvedVariant === "color" ? v : undefined;
   };
+  // A Material Symbols glyph for a value (option `icon`) — used by icon pickers.
+  const iconFor = (v) => items.find((i) => i.value === v)?.icon;
   const selectedLabel = !multiple && selectedValues.length ? labelFor(selectedValues[0]) : "";
   const selectedSwatch = !multiple && selectedValues.length ? swatchFor(selectedValues[0]) : undefined;
+  const selectedIcon = !multiple && selectedValues.length ? iconFor(selectedValues[0]) : undefined;
 
   const q = query.trim().toLowerCase();
   // In multi mode, keep selected options in the list (shown checked) so they can
   // be toggled off; in single mode the list is just the filter results.
   const filtered = items.filter((i) => !q || i.label.toLowerCase().includes(q));
+  // Order grouped results by each group's first appearance so the headings stay
+  // contiguous and keyboard navigation order matches the visual order.
+  const ordered = hasGroups
+    ? [...filtered].sort((a, b) => (groupRank.get(a.group) ?? Infinity) - (groupRank.get(b.group) ?? Infinity))
+    : filtered;
+  // Cap how many options render (large lists, e.g. the icon picker). The create
+  // row and the "refine" footer sit outside the cap.
+  const truncated = maxVisible != null && ordered.length > maxVisible;
+  const limited = truncated ? ordered.slice(0, maxVisible) : ordered;
   const exactExists = items.some((i) => i.label.toLowerCase() === q || String(i.value).toLowerCase() === q);
   const showCreate = allowCreate && q.length > 0 && !exactExists
     && !(multiple && selectedValues.includes(query.trim()));
   const visible = showCreate
-    ? [...filtered, { __create: true, value: query.trim(), label: createLabel(query.trim()) }]
-    : filtered;
+    ? [...limited, { __create: true, value: query.trim(), label: createLabel(query.trim()) }]
+    : limited;
+
+  // Precompute render rows: a group heading is inserted before the first option
+  // of each group. Headings are not part of `visible`, so keyboard navigation
+  // (which indexes `visible`) naturally skips them.
+  const rows = [];
+  let prevGroup;
+  visible.forEach((opt, idx) => {
+    if (hasGroups && !opt.__create && opt.group != null && opt.group !== prevGroup) {
+      rows.push({ kind: "group", label: opt.group, key: `__group-${opt.group}` });
+    }
+    if (!opt.__create) prevGroup = opt.group;
+    rows.push({ kind: "option", opt, idx });
+  });
 
   // Close on outside interaction. The portaled listbox lives outside rootRef, so
   // ignore clicks within it too.
@@ -216,6 +252,7 @@ export function Autocomplete({
         {multiple && selectedValues.map((v) => (
           <span key={v} className="a1-autocomplete__chip">
             {swatchFor(v) && <span className="a1-autocomplete__swatch" style={{ background: swatchFor(v) }} aria-hidden="true" />}
+            {iconFor(v) && <Icon name={iconFor(v)} className="a1-autocomplete__chip-icon" aria-hidden="true" />}
             {labelFor(v)}
             <button
               type="button"
@@ -231,6 +268,10 @@ export function Autocomplete({
 
         {!multiple && selectedSwatch && (
           <span className="a1-autocomplete__swatch a1-autocomplete__swatch--leading" style={{ background: selectedSwatch }} aria-hidden="true" />
+        )}
+
+        {!multiple && !selectedSwatch && selectedIcon && !open && (
+          <Icon name={selectedIcon} className="a1-autocomplete__leading-icon" aria-hidden="true" />
         )}
 
         <input
@@ -279,34 +320,48 @@ export function Autocomplete({
         >
           {visible.length === 0 ? (
             <li className="a1-autocomplete__empty">{emptyText}</li>
-          ) : visible.map((opt, idx) => {
-            const isSelected = !opt.__create && selectedValues.includes(opt.value);
-            return (
-              <li
-                key={opt.__create ? `__create-${opt.value}` : opt.value}
-                id={`${id}-opt-${idx}`}
-                role="option"
-                aria-selected={isSelected}
-                className={[
-                  "a1-autocomplete__option",
-                  idx === activeIndex && "a1-autocomplete__option--active",
-                  opt.__create && "a1-autocomplete__option--create",
-                ].filter(Boolean).join(" ")}
-                onMouseDown={(e) => { e.preventDefault(); commit(opt); }}
-                onMouseEnter={() => setActiveIndex(idx)}
-              >
-                {opt.__create && <Icon name="add" className="a1-autocomplete__option-icon" aria-hidden="true" />}
-                {multiple && !opt.__create && (
-                  <span className={`a1-autocomplete__checkbox${isSelected ? " a1-autocomplete__checkbox--on" : ""}`} aria-hidden="true" />
-                )}
-                {!opt.__create && swatchFor(opt.value) && (
-                  <span className="a1-autocomplete__swatch" style={{ background: swatchFor(opt.value) }} aria-hidden="true" />
-                )}
-                <span className="a1-autocomplete__option-label">{opt.label}</span>
-                {!multiple && isSelected && <Icon name="check" className="a1-autocomplete__option-check" aria-hidden="true" />}
-              </li>
-            );
-          })}
+          ) : (
+            <>
+              {rows.map((row) => {
+                if (row.kind === "group") {
+                  return <li key={row.key} className="a1-autocomplete__group" role="presentation">{row.label}</li>;
+                }
+                const { opt, idx } = row;
+                const isSelected = !opt.__create && selectedValues.includes(opt.value);
+                return (
+                  <li
+                    key={opt.__create ? `__create-${opt.value}` : opt.value}
+                    id={`${id}-opt-${idx}`}
+                    role="option"
+                    aria-selected={isSelected}
+                    className={[
+                      "a1-autocomplete__option",
+                      idx === activeIndex && "a1-autocomplete__option--active",
+                      opt.__create && "a1-autocomplete__option--create",
+                    ].filter(Boolean).join(" ")}
+                    onMouseDown={(e) => { e.preventDefault(); commit(opt); }}
+                    onMouseEnter={() => setActiveIndex(idx)}
+                  >
+                    {opt.__create && <Icon name="add" className="a1-autocomplete__option-icon" aria-hidden="true" />}
+                    {multiple && !opt.__create && (
+                      <span className={`a1-autocomplete__checkbox${isSelected ? " a1-autocomplete__checkbox--on" : ""}`} aria-hidden="true" />
+                    )}
+                    {!opt.__create && swatchFor(opt.value) && (
+                      <span className="a1-autocomplete__swatch" style={{ background: swatchFor(opt.value) }} aria-hidden="true" />
+                    )}
+                    {!opt.__create && opt.icon && (
+                      <Icon name={opt.icon} className="a1-autocomplete__option-icon" aria-hidden="true" />
+                    )}
+                    <span className="a1-autocomplete__option-label">{opt.label}</span>
+                    {!multiple && isSelected && <Icon name="check" className="a1-autocomplete__option-check" aria-hidden="true" />}
+                  </li>
+                );
+              })}
+              {truncated && (
+                <li className="a1-autocomplete__more" role="presentation">{moreText(maxVisible)}</li>
+              )}
+            </>
+          )}
         </ul>,
         // When inside a modal <dialog> (top layer), portal into it so the
         // listbox joins the dialog's top-layer stack and isn't painted behind

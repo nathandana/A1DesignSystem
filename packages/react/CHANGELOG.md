@@ -1,5 +1,23 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## 0.18.0 — 2026-06-19
+
+### Added
+
+- **ToolbarGroup `labelMode`** (`"all"` | `"selected"`, default `"all"`) — `"selected"` shows the label only on the currently-selected option and renders the rest **icon/swatch-only** (a `"none"`/empty value falls back to the standard none icon); non-selected options keep an `aria-label` so the accessible name stays stable. For swatch/variant pickers where only the chosen option needs naming — e.g. a Section surface/gradient picker or a Button/IconButton variant picker. Added a `Label on selected only (swatch picker)` story.
+- **Grid `gap="none"`** — a zero gap (matches the shared `resolveSpacing` "none" → 0 convention). Added to the `GapKey` type and the Gap Scale / argType stories.
+- **Grid responsive 8-column classes** — `columns={{ … }}` now supports `8` at every breakpoint (`.a1-grid--{xs…xl}-8`), alongside the existing 1/2/3/4/6/12. Fixed (non-responsive) `columns={8}` already worked via the inline column variable. Added `8` to the Column Counts story.
+- **Autocomplete grouped + icon options** — options gained **`icon`** (a Material Symbols glyph rendered beside the option, chip, and selected value) and **`group`** (a sticky category heading before each group; results are ordered by each group's first appearance). Also **`maxVisible`** (+ `moreText(shown)`) caps how many options render for very large lists (e.g. an icon picker), hiding the rest behind a "keep typing" footer. Fully backward compatible. Added `Grouped options + icons` and `Grouped + capped (maxVisible)` stories.
+
+### Changed
+
+- **Accordion divider spacing** — when `divider` is set, the open panel now has a `padding-block-start` (scaled to the accordion `size`) so the first content item no longer sits directly against the divider line.
+- **SegmentedControl sizing** — the segment icon is one step larger (`1.25em`) so glyphs read clearly; the default (md) segment inline padding steps down one notch (`component.segmented.segmentPaddingInline` 0.75rem → 0.5rem; affects md only, since sm/lg carry their own padding tokens); and the sm size tightens the icon↔label gap.
+
+### Fixed
+
+- **SegmentedControl `fullWidth`** now actually fills its container. `.a1-segmented--full-width` set `display: flex` but no width, so inside a centering flex/grid parent it stayed content-width; it now also sets `inline-size: 100%` so the equal-width segments stretch as intended.
+
 ## 0.17.0 — 2026-06-18
 
 ### Added

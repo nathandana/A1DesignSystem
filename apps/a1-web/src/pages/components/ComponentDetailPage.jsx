@@ -55,6 +55,7 @@ import {
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './detail/Toggle.jsx'
+import { ConfigHelpContext } from './detail/configKit.jsx'
 import {
   COMPONENT_STATUS,
   PACKAGE_COLUMNS,
@@ -1652,6 +1653,8 @@ function ConfigurationPanel({
   viewAs,
   setViewAs,
   viewAsModes,
+  showHelp,
+  onToggleHelp,
 }) {
   return (
     <div className="a1-web-config-aside__inner">
@@ -1670,9 +1673,17 @@ function ConfigurationPanel({
               </Toolbar>
             </div>
           )}
-          <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+          <ConfigHelpContext.Provider value={{ showHelp }}>
+            <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+          </ConfigHelpContext.Provider>
         </div>
         <div className="a1-web-config-panel__footer">
+          <Switch
+            label="Helper text"
+            checked={showHelp}
+            onChange={onToggleHelp}
+            size="compact"
+          />
           <Button
             icon="restart_alt"
             size="sm"
@@ -1734,6 +1745,9 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
   const [viewAs, setViewAs] = useState('react')
+  // Per-property helper text under each control. Off by default; toggled from the
+  // config panel footer and shared with every control via ConfigHelpContext.
+  const [showHelp, setShowHelp] = useState(false)
   const [displayConfig, setDisplayConfig] = useState({
     align: defaultDisplayAlign(component, category),
     padding: 'md',
@@ -1795,6 +1809,8 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             viewAs={viewAs}
             setViewAs={setViewAs}
             viewAsModes={detail.viewAsModes}
+            showHelp={showHelp}
+            onToggleHelp={setShowHelp}
           />,
           asideNode,
         )}

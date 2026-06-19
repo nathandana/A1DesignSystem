@@ -12,7 +12,7 @@ const meta = {
   parameters: { layout: "padded" },
   argTypes: {
     columns: { control: "number" },
-    gap:     { control: "select", options: ["sm", "md", "lg", "xl", "xxl"] },
+    gap:     { control: "select", options: ["none", "sm", "md", "lg", "xl", "xxl"] },
     layout:  { control: "select", options: ["default", "bento"] },
   },
 };
@@ -88,7 +88,7 @@ export const ColumnCounts = {
   name: "Column Counts",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)" }}>
-      {[1, 2, 3, 4, 6, 12].map(cols => (
+      {[1, 2, 3, 4, 6, 8, 12].map(cols => (
         <div key={cols}>
           <Label>columns={cols}</Label>
           <Grid columns={cols} gap="sm">
@@ -149,7 +149,7 @@ export const GapScale = {
   name: "Gap Scale",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
-      {["sm", "md", "lg"].map(g => (
+      {["none", "sm", "md", "lg"].map(g => (
         <div key={g}>
           <Label>gap={g}</Label>
           <Grid columns={4} gap={g}>

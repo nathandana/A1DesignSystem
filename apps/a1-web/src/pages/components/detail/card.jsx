@@ -4,17 +4,20 @@ import {
   Heading,
   Paragraph,
   Stack,
-  Switch,
-  TextField,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, statusOptions } from './configKit.jsx'
+import { Choice, Lockable, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
 const AS_OPTIONS = ['div', 'article', 'section']
-const ICON_DISPLAY_OPTIONS = ['default', 'hero', 'none']
+// None first and the standard circle-slash none icon; None is the default.
+const ICON_DISPLAY_OPTIONS = ['none', 'default', 'hero']
 const HERO_COLOR_OPTIONS = ['action', 'neutral', 'info', 'success', 'warn', 'error']
-const NONE_ICON = 'layers_clear'
+const NONE_ICON = 'block'
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -74,7 +77,7 @@ export function getDefaultConfig() {
     href: '#',
     bare: false,
     icon: 'dashboard',
-    iconDisplay: 'hero',
+    iconDisplay: 'none',
     heroColor: 'action',
   }
 }
@@ -117,18 +120,20 @@ export function Controls({ config, setConfig, pages }) {
         value={config.body}
         onChange={(event) => setConfig((current) => ({ ...current, body: event.target.value }))}
       /> */}
-      <Choice prop="variant"
-        label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.variant}
-        onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
-        options={[
-          { label: 'Default', value: 'default' },
-          { label: 'Navigation', value: 'navigation' },
-        ]}
-      />
+      <Lockable prop="variant"><Toolbar label="Variant">
+        <ToolbarGroup
+          aria-label="Variant"
+          showLabels
+          value={config.variant}
+          onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
+          options={[
+            { label: 'Default', value: 'default' },
+            { label: 'Navigation', value: 'navigation' },
+          ]}
+        />
+        <ToolbarDivider />
+        <ToolbarToggle icon="crop_free" label="Bare" pressed={config.bare} onChange={(bare) => setConfig((current) => ({ ...current, bare }))} />
+      </Toolbar></Lockable>
       {config.variant !== 'navigation' && (
         <Choice prop="as"
           label="Element"
@@ -172,12 +177,6 @@ export function Controls({ config, setConfig, pages }) {
           options={statusOptions(HERO_COLOR_OPTIONS)}
         />
       )}
-      <Switch
-        label="Bare"
-        size="compact"
-        checked={config.bare}
-        onChange={(bare) => setConfig((current) => ({ ...current, bare }))}
-      />
     </Stack>
   )
 }

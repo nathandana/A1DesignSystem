@@ -582,12 +582,19 @@ body {
   position: sticky;
   inset-block-end: 0;
   display: flex;
-  align-items: end;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--base-spacing-12);
   min-block-size: var(--base-spacing-64);
   margin-block-start: auto;
   padding-block-start: var(--base-spacing-16);
   background: var(--semantic-color-surface-panel);
   border-block-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+/* Per-property helper text under a config control (Helper text switch on). */
+.a1-web-config-help {
+  margin-block-start: calc(-1 * var(--base-spacing-2));
 }
 
 @media (max-width: 640px) {

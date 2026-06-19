@@ -12,6 +12,15 @@ import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
 const VARIANT_OPTIONS = ['primary', 'secondary', 'tertiary', 'destructive', 'success']
+// Icons for the variant picker: an emphasis ramp (primary → tertiary) plus the
+// two status variants. With labelMode="selected" only the chosen variant is named.
+const VARIANT_ICONS = {
+  primary: 'star',
+  secondary: 'star_half',
+  tertiary: 'star_outline',
+  destructive: 'delete',
+  success: 'check_circle',
+}
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 // Sample secondary actions for the split-button demo.
@@ -117,17 +126,17 @@ export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
       />
       <Choice prop="variant"
         label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
+        labelMode="selected"
+        helper="Sets the button's visual emphasis and intent. Use one primary per decision area."
         value={config.variant}
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
-        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt, icon: VARIANT_ICONS[opt] }))}
       />
-      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider prop="size" label="Size" helper="Controls the button's height, padding, and text size." values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <Choice
         label="Icon"
         iconOnly
+        helper="Adds a leading or trailing icon — or none."
         value={!config.icon ? 'none' : (config.iconPosition === 'end' ? 'right' : 'left')}
         onChange={(placement) => setConfig((current) => placement === 'none'
           ? { ...current, icon: '' }

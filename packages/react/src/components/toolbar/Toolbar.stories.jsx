@@ -127,6 +127,29 @@ export const LabeledGroup = {
   },
 };
 
+export const LabelOnSelected = {
+  name: "Label on selected only (swatch picker)",
+  render: () => {
+    const [surface, setSurface] = useState("panel");
+    return (
+      <Toolbar label="Surface">
+        <ToolbarGroup
+          aria-label="Surface"
+          value={surface}
+          onChange={setSurface}
+          labelMode="selected"
+          options={[
+            { value: "", label: "None" },
+            { value: "page", label: "Page", swatch: "var(--semantic-color-surface-page)" },
+            { value: "panel", label: "Panel", swatch: "var(--semantic-color-surface-panel)" },
+            { value: "raised", label: "Raised", swatch: "var(--semantic-color-surface-raised)" },
+          ]}
+        />
+      </Toolbar>
+    );
+  },
+};
+
 export const CropGrid = {
   name: "9-item grid — crop direction",
   render: () => {

@@ -12,8 +12,7 @@ import {
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
-import { ResponsiveControl, responsiveProp } from './configKit.jsx'
+import { Choice, ResponsiveControl, responsiveProp, WithHelp } from './configKit.jsx'
 import { Lockable } from './configKit.jsx'
 
 const BORDER_SIDES = ['top', 'right', 'bottom', 'left']
@@ -249,13 +248,16 @@ export function Controls({ config, setConfig }) {
 
       <Accordion label="Background" size="sm" subtext={backgroundSummary} divider defaultOpen>
         <Stack gap="lg">
-          <Lockable prop="surface"><Toolbar label="Surface">
-            <ToolbarGroup aria-label="Surface" showLabels value={config.surface} onChange={(surface) => set({ surface })} options={SURFACE_ITEMS} />
-          </Toolbar></Lockable>
-          <Toggle prop="inverse" label="Inverse" value={config.inverse} onChange={(inverse) => set({ inverse })} />
-          <Lockable prop="gradient"><Toolbar label="Gradient">
-            <ToolbarGroup aria-label="Gradient" showLabels value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
-          </Toolbar></Lockable>
+          <WithHelp helper="Sets the section's background surface token (page → panel → raised). Inverse flips the section to a dark island.">
+            <Lockable prop="surface"><Toolbar label="Surface">
+              <ToolbarGroup aria-label="Surface" labelMode="selected" value={config.surface} onChange={(surface) => set({ surface })} options={SURFACE_ITEMS} />
+              <ToolbarDivider />
+              <ToolbarToggle icon="invert_colors" label="Inverse" pressed={config.inverse} onChange={(inverse) => set({ inverse })} />
+            </Toolbar></Lockable>
+          </WithHelp>
+          <Choice prop="gradient" label="Gradient" labelMode="selected"
+            helper="Applies a tokenized gradient wash over the surface in the chosen tone."
+            value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
           {config.gradient ? (
             <Lockable prop="gradientPosition"><Toolbar label="Gradient position">
               <ToolbarGroup aria-label="Gradient position" columns={3} value={config.gradientPosition} onChange={(gradientPosition) => set({ gradientPosition })} options={GRADIENT_POSITION_ITEMS} />

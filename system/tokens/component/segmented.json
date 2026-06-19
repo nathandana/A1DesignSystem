@@ -4,7 +4,7 @@
       "padding":               { "$type": "dimension",  "$value": "3px" },
       "gap":                   { "$type": "dimension",  "$value": "2px" },
       "segmentPaddingBlock":   { "$type": "dimension",  "$value": "{base.spacing.4}" },
-      "segmentPaddingInline":  { "$type": "dimension",  "$value": "{base.spacing.12}" },
+      "segmentPaddingInline":  { "$type": "dimension",  "$value": "{base.spacing.8}" },
       "segmentPaddingBlockSm": { "$type": "dimension",  "$value": "2px" },
       "segmentPaddingInlineSm":{ "$type": "dimension",  "$value": "{base.spacing.8}" },
       "segmentPaddingBlockLg": { "$type": "dimension",  "$value": "{base.spacing.8}" },

@@ -2,6 +2,8 @@ import {
   Code,
   Stack,
   Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
@@ -149,11 +151,18 @@ export function Controls({ config, setConfig }) {
         options={AS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
       <ResponsiveControl prop="direction" label="Direction" value={config.direction} onChange={(direction) => set({ direction })} defaultValue="column">
-        {(val, setVal) => <Choice iconOnly value={val} onChange={setVal} options={DIRECTION_OPTIONS} />}
+        {(val, setVal, bp) => (
+          <Toolbar aria-label="Direction">
+            <ToolbarGroup aria-label="Direction" value={val} onChange={setVal} options={DIRECTION_OPTIONS} />
+            {bp == null && (
+              <>
+                <ToolbarDivider />
+                <ToolbarToggle icon="wrap_text" label="Wrap" pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
+              </>
+            )}
+          </Toolbar>
+        )}
       </ResponsiveControl>
-      <Toolbar aria-label="Wrap">
-        <ToolbarToggle icon="wrap_text" label="Wrap" showLabel pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
-      </Toolbar>
       <ConfigSlider prop="gap" label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
       <Choice prop="align"
         label="Align"

@@ -5,7 +5,6 @@ import {
   Heading,
   Paragraph,
   Slider,
-  Spacer,
   Stack,
   TextareaField,
   TextField,
@@ -14,8 +13,7 @@ import {
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './Toggle.jsx'
-import { ResponsiveControl, responsiveProp } from './configKit.jsx'
-import { Lockable } from './configKit.jsx'
+import { ConfigHelp, Lockable, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
 const HEADING_TYPE_OPTIONS = ['heading', 'display']
@@ -456,15 +454,13 @@ export function Controls({ config, setConfig }) {
       </Toolbar></Lockable>
 
       <Accordion label="Advanced" size="sm" subtext={advancedSummary} divider>
-        
-
         <Stack gap="md">
-<Spacer size="xs"></Spacer>
-          
-      <Paragraph size="xs" color="muted">
-        Edit the heading directly in the preview and select text to add a mark — or type
-        in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
-      </Paragraph>
+          <ConfigHelp>
+            <Paragraph size="xs" color="muted">
+              Edit the heading directly in the preview and select text to add a mark — or type
+              in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
+            </Paragraph>
+          </ConfigHelp>
           <Lockable prop="align"><Toolbar label="Align">
             <ToolbarGroup
               aria-label="Align"

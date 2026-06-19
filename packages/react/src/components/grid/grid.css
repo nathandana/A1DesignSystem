@@ -34,6 +34,7 @@
 .a1-grid--xs-3  { --a1-grid-cols: 3; }
 .a1-grid--xs-4  { --a1-grid-cols: 4; }
 .a1-grid--xs-6  { --a1-grid-cols: 6; }
+.a1-grid--xs-8  { --a1-grid-cols: 8; }
 .a1-grid--xs-12 { --a1-grid-cols: 12; }
 
 @media (--bp-sm-up) {
@@ -42,6 +43,7 @@
   .a1-grid--sm-3  { --a1-grid-cols: 3; }
   .a1-grid--sm-4  { --a1-grid-cols: 4; }
   .a1-grid--sm-6  { --a1-grid-cols: 6; }
+  .a1-grid--sm-8  { --a1-grid-cols: 8; }
   .a1-grid--sm-12 { --a1-grid-cols: 12; }
 }
 
@@ -51,6 +53,7 @@
   .a1-grid--md-3  { --a1-grid-cols: 3; }
   .a1-grid--md-4  { --a1-grid-cols: 4; }
   .a1-grid--md-6  { --a1-grid-cols: 6; }
+  .a1-grid--md-8  { --a1-grid-cols: 8; }
   .a1-grid--md-12 { --a1-grid-cols: 12; }
 }
 
@@ -60,6 +63,7 @@
   .a1-grid--lg-3  { --a1-grid-cols: 3; }
   .a1-grid--lg-4  { --a1-grid-cols: 4; }
   .a1-grid--lg-6  { --a1-grid-cols: 6; }
+  .a1-grid--lg-8  { --a1-grid-cols: 8; }
   .a1-grid--lg-12 { --a1-grid-cols: 12; }
 }
 
@@ -69,6 +73,7 @@
   .a1-grid--xl-3  { --a1-grid-cols: 3; }
   .a1-grid--xl-4  { --a1-grid-cols: 4; }
   .a1-grid--xl-6  { --a1-grid-cols: 6; }
+  .a1-grid--xl-8  { --a1-grid-cols: 8; }
   .a1-grid--xl-12 { --a1-grid-cols: 12; }
 }
 
