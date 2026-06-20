@@ -1,5 +1,6 @@
 import "./card.css";
 import { Icon } from "../icon/Icon.jsx";
+import { MessageBadge } from "../message/Message.jsx";
 
 const HERO_COLORS = {
   action:  "var(--semantic-color-action-background)",
@@ -12,6 +13,14 @@ const HERO_COLORS = {
 
 const VALID_ICON_DISPLAY = ["none", "default", "hero"];
 
+// 3×3 placement of a hero badge: "{block}-{inline}" where block ∈ top|middle|bottom
+// and inline ∈ start|center|end.
+const VALID_HERO_BADGE_POSITIONS = [
+  "top-start", "top-center", "top-end",
+  "middle-start", "middle-center", "middle-end",
+  "bottom-start", "bottom-center", "bottom-end",
+];
+
 export function Card({
   as,
   bare = false,
@@ -20,6 +29,9 @@ export function Card({
   icon,
   iconDisplay = "default",
   heroColor = "action",
+  heroBadge,
+  heroBadgeStatus = "neutral",
+  heroBadgePosition = "top-end",
   className = "",
   children,
   ...props
@@ -47,12 +59,22 @@ export function Card({
     ? { type: "button" }
     : {};
 
+  const badgePos = VALID_HERO_BADGE_POSITIONS.includes(heroBadgePosition)
+    ? heroBadgePosition
+    : "top-end";
+  const [badgeBlock, badgeInline] = badgePos.split("-");
+
   return (
     <Component className={classes} href={href} {...interactiveProps} {...props}>
       <div className="a1-card__layout">
         {resolvedDisplay === "hero" && (
           <div className="a1-card__hero" style={{ "--a1-card-hero-bg": heroBg }}>
             <Icon name={icon} aria-hidden="true" />
+            {heroBadge && (
+              <span className={`a1-card__hero-badge a1-card__hero-badge--${badgeBlock} a1-card__hero-badge--${badgeInline}`}>
+                <MessageBadge status={heroBadgeStatus} size="sm">{heroBadge}</MessageBadge>
+              </span>
+            )}
           </div>
         )}
         {resolvedDisplay === "default" && (

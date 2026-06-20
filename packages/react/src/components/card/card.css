@@ -79,6 +79,7 @@ button.a1-card--navigation {
 
 .a1-card__hero {
   /* Bleed out to the card edges on all four sides then add inner padding */
+  position: relative;
   margin-top: calc(-1 * var(--component-card-padding));
   margin-inline: calc(-1 * var(--component-card-padding));
   margin-bottom: var(--component-card-padding);
@@ -91,8 +92,26 @@ button.a1-card--navigation {
   --a1-icon-opsz: 48;
 }
 
+/* Hero badge — overlaid on the hero, placed via a 3×3 grid. */
+.a1-card__hero-badge {
+  position: absolute;
+  z-index: 1;
+}
+
+.a1-card__hero-badge--top    { inset-block-start: var(--base-spacing-8); }
+.a1-card__hero-badge--bottom { inset-block-end: var(--base-spacing-8); }
+.a1-card__hero-badge--middle { inset-block-start: 50%; }
+.a1-card__hero-badge--start  { inset-inline-start: var(--base-spacing-8); }
+.a1-card__hero-badge--end    { inset-inline-end: var(--base-spacing-8); }
+.a1-card__hero-badge--center { inset-inline-start: 50%; }
+
+/* Centre transforms for the middle/centre axes (combine when both). */
+.a1-card__hero-badge--middle:not(.a1-card__hero-badge--center) { transform: translateY(-50%); }
+.a1-card__hero-badge--center:not(.a1-card__hero-badge--middle) { transform: translateX(-50%); }
+.a1-card__hero-badge--middle.a1-card__hero-badge--center { transform: translate(-50%, -50%); }
+
 /* Higher specificity (0,2,0) beats .a1-icon (0,1,0) so font-size is not overridden by inherit */
-.a1-card__hero .a1-icon {
+.a1-card__hero > .a1-icon {
   font-size: var(--base-spacing-64);
   color: var(--semantic-color-text-inverse);
 }
@@ -120,7 +139,7 @@ button.a1-card--navigation {
     border-end-end-radius: 0;
   }
 
-  .a1-card__hero .a1-icon {
+  .a1-card__hero > .a1-icon {
     font-size: var(--base-spacing-128);
   }
 

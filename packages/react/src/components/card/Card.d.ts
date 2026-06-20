@@ -25,6 +25,15 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
    * Default: "action"
    */
   heroColor?: "action" | "neutral" | "info" | "success" | "warn" | "error" | (string & {});
+  /** Badge label overlaid on the hero (only renders when `iconDisplay="hero"`). */
+  heroBadge?: React.ReactNode;
+  /** Status colour of the hero badge. Default: "neutral" */
+  heroBadgeStatus?: "neutral" | "info" | "success" | "warn" | "error";
+  /** Placement of the hero badge on a 3×3 grid ("{top|middle|bottom}-{start|center|end}"). Default: "top-end" */
+  heroBadgePosition?:
+    | "top-start" | "top-center" | "top-end"
+    | "middle-start" | "middle-center" | "middle-end"
+    | "bottom-start" | "bottom-center" | "bottom-end";
   children?: React.ReactNode;
 }
 

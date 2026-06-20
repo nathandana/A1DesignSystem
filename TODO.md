@@ -40,10 +40,10 @@ _None._
 
 ## P2 — Medium
 
-- [ ] **TopHeader — selected parent icon colour** `P2 · S` — when on a secondary page, the parent
-  nav item gets a selected/current style, but its **icon colour is wrong** — the icon should just
-  **match the (selected) text colour**, not a different tint. DS `TopHeader` selected/`aria-current`
-  state (likely the icon keeps an accent/muted colour instead of inheriting `currentColor`).
+- [ ] **TopHeader configurator — child / flyout nav items** `P2 · M` — the a1-web TopHeader
+  configurator only edits **flat** links; it can't add a **parent with children** (the dropdown/flyout)
+  or mark a child active. Add child-item editing so flyouts (and the selected-parent state) are
+  demonstrable in the configurator, not just in Storybook / the editor's auto-generated project nav.
 - [ ] **Fix left sidebar collapse** `P2 · S` — the collapse/expand behaviour of the left sidebar
   is broken. _Q: which sidebar — the editor workspace sidebar (Pages/Layers) or the main site
   SideNav? Repro + expected behaviour._
@@ -62,9 +62,13 @@ _None._
 - [ ] **Card — image variant (replace hero icon)** `P2 · M` — a Card header that uses the
   same space as the hero-icon block but shows an **image** instead (e.g. `heroImage`). DS
   Card change + configurator. _Also in the original "General changes" backlog._
-- [ ] **Card — badge in hero (alignment grid)** `P2 · M` — let a Card's hero area carry a
-  Badge positioned via a 3×3 alignment grid (corners / edges / centre). DS Card change +
-  configurator (alignment-grid picker). _Pairs with the Card image variant._
+- [ ] **Card — image hero (`heroImage`), redo** `P2 · M` — a full-bleed **image** in the card hero
+  slot (instead of the hero icon). A first pass was built then **backed out** — the **display wasn't
+  as expected** (image sizing/crop in the top-band vs lg left-strip needs work). Redo the DS Card
+  `heroImage`/`heroAlt` prop + CSS so it renders cleanly at all container widths, and re-add the
+  configurator control using the **`ImageSourceField`** helper (already created at
+  `apps/a1-web/src/pages/components/detail/ImageSourceField.jsx` — the shared Figure image-adding
+  pattern) + a Storybook story. _Pairs with the Card badge-in-hero item below._
 - [ ] **Section — wider background colours / surfaces** `P2 · M` — expand Section background
   options beyond page / panel / raised (more tokenised surface colours / tints). New semantic
   surface tokens + Section surface options + configurator. _Q: which palette — status tints,
@@ -191,9 +195,6 @@ _None._
 - [ ] **Conditional logic editor (if/else)** `P2 · L` — simple logic for prototyping: e.g. "if
   field A and B are filled, show field C". A lightweight conditions layer over fields/elements.
   _Sibling of Interactivity — states & Form-submit validation._
-- [ ] **Sticky Footer scoping in the editor (bug)** `P2 · S` — a sticky footer / StickyActions is
-  fixed to the **viewport** rather than scoped to the **editable page** area, so it overlaps the
-  editor chrome. Scope it to the page container in edit/preview.
 - [ ] **Standalone Menus / Context Menus in the editor** `P2 · M` — add Menu and ContextMenu to a
   page in the editor and **wire their items to actions / pages / dialogs**. _Relates to Button
   action-type + Dialogs-as-pages + Interactivity._
@@ -268,8 +269,13 @@ _None._
   - **Local pull** — a way to export/sync the tickets down to the repo so items can be worked on
     (fixed / built) locally by an agent or dev.
   - **Board view** — a lightweight Jira: **streams / swimlanes** of tickets, move items between
-    statuses. _Builds on the Supabase shared workspace + auth (requester = signed-in user) + the
-    complexity-badges/filtering work + the image library; relates to data binding._
+    statuses.
+  - **Clarifying-question threads** — a ticket can carry a back-and-forth: a maintainer (or agent)
+    asks the **requester** a clarifying question ("can you give more detail about what this component
+    does?"), and that question lands in **the requester's queue** to answer. A lightweight per-ticket
+    comment/Q&A thread with an "awaiting requester" status. _Builds on the Supabase shared workspace +
+    auth (requester = signed-in user) + the complexity-badges/filtering work + the image library;
+    relates to data binding._
 - [ ] **True live co-editing of a single page (CRDT)** `P2 · XL` — real-time multiplayer editing of the
   same page, like Figma/Linear: concurrent edits **merge** instead of last-write-wins. Model the
   `PageDefinition` node tree as a **CRDT (Yjs)** — `Y.Map`/`Y.Array` — edited through the editor, with

@@ -1815,7 +1815,7 @@ export function EditorPage({
         </Stack>
       </Section>
 
-      <Section padding="none">
+      <Section padding="none" className="a1-web-canvas-scope">
         {view === 'edit' && (layoutChrome?.before
           ? <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
           : generatedHeader)}

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.9.0 — 2026-06-20
+
+- **Editor — sticky footer scoped to the canvas** — `StickyActions` (`position: fixed`) was pinned to
+  the viewport and overlapped the editor toolbar/aside; the canvas now uses layout containment
+  (`.a1-web-canvas-scope`) so a fixed footer scopes to the page area instead. Portaled menus/popovers
+  are unaffected (they live on `<body>`).
+- **Card — badge in hero** — a Card with `iconDisplay="hero"` can carry a `heroBadge` (status +
+  3×3 placement); the configurator gains a badge label, status picker, and an alignment-grid picker.
+- **TopHeader — selected parent icon colour** — when on a secondary page, the parent nav item's
+  leading icon now matches the selected text colour (was a muted tint).
+- **Code — collapsible polish** — copy + Show more/less sit inline on one row; the configurator
+  disables **Collapsible** when **Editable** is on (mutually exclusive); fixed the collapse never
+  engaging (the overflow check was self-cancelling).
+- _Card hero image: parked — backed out of the configurator; see TODO (display needs work)._
+
 ## 0.8.2 — 2026-06-19
 
 - **Collapsible Code — finish the wiring** — the Code configurator gains a **Collapsible** toggle +

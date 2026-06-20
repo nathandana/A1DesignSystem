@@ -146,7 +146,11 @@ export function Code({
     );
   }
 
-  const collapsed = collapses && overflows && !expanded;
+  // Cap the height whenever collapsible + not expanded (so the overflow check has
+  // a clamped height to measure against); `clipped` adds the fade only when the
+  // content actually overflows the cap.
+  const collapsed = collapses && !expanded;
+  const clipped = collapsed && overflows;
 
   return (
     <div
@@ -155,6 +159,7 @@ export function Code({
         copyCode && "a1-code-block--copyable",
         editable && "a1-code-block--editable",
         collapsed && "a1-code-block--collapsed",
+        clipped && "a1-code-block--clipped",
         className,
       ]
         .filter(Boolean)
@@ -185,29 +190,33 @@ export function Code({
           </code>
         </pre>
       )}
-      {copyCode && (
-        <Button
-          className="a1-code-block__copy"
-          icon="content_copy"
-          size="sm"
-          variant="tertiary"
-          onClick={handleCopy}
-          type="button"
-        >
-          {copied ? copiedLabel : copyLabel}
-        </Button>
-      )}
-      {collapses && overflows && (
-        <Button
-          className="a1-code-block__toggle"
-          icon={expanded ? "expand_less" : "expand_more"}
-          size="sm"
-          variant="tertiary"
-          onClick={() => setExpanded((v) => !v)}
-          type="button"
-        >
-          {expanded ? showLessLabel : showMoreLabel}
-        </Button>
+      {(copyCode || (collapses && overflows)) && (
+        <div className="a1-code-block__actions">
+          {copyCode && (
+            <Button
+              className="a1-code-block__copy"
+              icon="content_copy"
+              size="sm"
+              variant="tertiary"
+              onClick={handleCopy}
+              type="button"
+            >
+              {copied ? copiedLabel : copyLabel}
+            </Button>
+          )}
+          {collapses && overflows && (
+            <Button
+              className="a1-code-block__toggle"
+              icon={expanded ? "expand_less" : "expand_more"}
+              size="sm"
+              variant="tertiary"
+              onClick={() => setExpanded((v) => !v)}
+              type="button"
+            >
+              {expanded ? showLessLabel : showMoreLabel}
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );

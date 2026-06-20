@@ -317,6 +317,14 @@ body {
   cursor: grabbing;
 }
 
+/* Scope position:fixed page chrome (e.g. StickyActions) to the editor canvas
+   instead of the viewport, so it doesn't overlap the editor toolbar/aside.
+   Layout containment makes this element the containing block for fixed-positioned
+   descendants. Portaled menus/popovers live on <body>, so they're unaffected. */
+.a1-web-canvas-scope {
+  contain: layout;
+}
+
 /* Canvas floor — drop zone below all page content; expands when catalog drag enters */
 .a1-web-canvas-floor {
   min-block-size: var(--base-spacing-48);

@@ -4,12 +4,26 @@ import {
   Heading,
   Paragraph,
   Stack,
+  TextField,
   Toolbar,
   ToolbarDivider,
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Choice, Lockable, statusOptions } from './configKit.jsx'
+
+// 3×3 hero-badge placement → directional icons for the alignment-grid picker.
+const HERO_BADGE_POSITIONS = [
+  { value: 'top-start', icon: 'north_west' },
+  { value: 'top-center', icon: 'north' },
+  { value: 'top-end', icon: 'north_east' },
+  { value: 'middle-start', icon: 'west' },
+  { value: 'middle-center', icon: 'filter_center_focus' },
+  { value: 'middle-end', icon: 'east' },
+  { value: 'bottom-start', icon: 'south_west' },
+  { value: 'bottom-center', icon: 'south' },
+  { value: 'bottom-end', icon: 'south_east' },
+]
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
@@ -58,6 +72,9 @@ function buildCardSnippet(config) {
     propString('icon', icon, ''),
     propString('iconDisplay', icon ? config.iconDisplay : 'none', icon ? 'default' : 'none'),
     config.iconDisplay === 'hero' ? propString('heroColor', config.heroColor, 'action') : null,
+    config.iconDisplay === 'hero' ? propString('heroBadge', config.heroBadge, '') : null,
+    config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgeStatus', config.heroBadgeStatus, 'neutral') : null,
+    config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgePosition', config.heroBadgePosition, 'top-end') : null,
   ].filter(Boolean).join(' ')
 
   return `<Card${props ? ` ${props}` : ''}>
@@ -79,6 +96,9 @@ export function getDefaultConfig() {
     icon: 'dashboard',
     iconDisplay: 'none',
     heroColor: 'action',
+    heroBadge: '',
+    heroBadgeStatus: 'neutral',
+    heroBadgePosition: 'top-end',
   }
 }
 
@@ -94,6 +114,9 @@ export function Preview({ config }) {
       icon={icon}
       iconDisplay={config.iconDisplay}
       heroColor={config.heroColor}
+      heroBadge={config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined}
+      heroBadgeStatus={config.heroBadgeStatus}
+      heroBadgePosition={config.heroBadgePosition}
     >
       <Stack gap="xs">
         <Heading as="h3" size="sm">{config.title || 'Card title'}</Heading>
@@ -176,6 +199,35 @@ export function Controls({ config, setConfig, pages }) {
           onChange={(heroColor) => setConfig((current) => ({ ...current, heroColor }))}
           options={statusOptions(HERO_COLOR_OPTIONS)}
         />
+      )}
+      {config.iconDisplay === 'hero' && (
+        <TextField
+          label="Hero badge"
+          size="compact"
+          hint="Badge overlaid on the hero. Leave blank for none."
+          value={config.heroBadge}
+          onChange={(event) => setConfig((current) => ({ ...current, heroBadge: event.target.value }))}
+        />
+      )}
+      {config.iconDisplay === 'hero' && config.heroBadge && (
+        <>
+          <Choice prop="heroBadgeStatus"
+            label="Badge status"
+            iconOnly
+            value={config.heroBadgeStatus}
+            onChange={(heroBadgeStatus) => setConfig((current) => ({ ...current, heroBadgeStatus }))}
+            options={statusOptions(['neutral', 'info', 'success', 'warn', 'error'])}
+          />
+          <Toolbar label="Badge position">
+            <ToolbarGroup
+              aria-label="Badge position"
+              columns={3}
+              value={config.heroBadgePosition}
+              onChange={(heroBadgePosition) => setConfig((current) => ({ ...current, heroBadgePosition }))}
+              options={HERO_BADGE_POSITIONS.map((p) => ({ value: p.value, icon: p.icon, label: p.value.replace('-', ' ') }))}
+            />
+          </Toolbar>
+        </>
       )}
     </Stack>
   )

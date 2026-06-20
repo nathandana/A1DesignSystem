@@ -48,8 +48,26 @@ const meta = {
       options: HERO_COLORS,
       description: "Background colour of the hero area (only used when iconDisplay=\"hero\")",
     },
+    heroBadge: {
+      control: "text",
+      description: "Badge label overlaid on the hero (only with iconDisplay=\"hero\")",
+    },
+    heroBadgeStatus: {
+      control: "select",
+      options: ["neutral", "info", "success", "warn", "error"],
+      description: "Status colour of the hero badge",
+    },
+    heroBadgePosition: {
+      control: "select",
+      options: [
+        "top-start", "top-center", "top-end",
+        "middle-start", "middle-center", "middle-end",
+        "bottom-start", "bottom-center", "bottom-end",
+      ],
+      description: "3×3 placement of the hero badge",
+    },
   },
-  render: ({ bare, variant, icon, iconDisplay, heroColor }) => (
+  render: ({ bare, variant, icon, iconDisplay, heroColor, heroBadge, heroBadgeStatus, heroBadgePosition }) => (
     <Card
       bare={bare}
       variant={variant}
@@ -57,6 +75,9 @@ const meta = {
       icon={icon}
       iconDisplay={iconDisplay}
       heroColor={heroColor}
+      heroBadge={heroBadge || undefined}
+      heroBadgeStatus={heroBadgeStatus}
+      heroBadgePosition={heroBadgePosition}
     >
       <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Card title</Heading>
       <Paragraph color="muted">Supporting text describing the card content.</Paragraph>
@@ -156,6 +177,26 @@ export const HeroIcon = {
         <Card key={label} icon={icon} iconDisplay="hero" heroColor={heroColor} style={{ width: 240 }}>
           <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{label}</Heading>
           <Paragraph size="sm" color="muted">{body}</Paragraph>
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+export const HeroBadge = {
+  name: "Hero badge (3×3 placement)",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", alignItems: "flex-start" }}>
+      {[
+        { pos: "top-end", status: "success", badge: "New", label: "Top end" },
+        { pos: "top-start", status: "info", badge: "Beta", label: "Top start" },
+        { pos: "bottom-end", status: "warn", badge: "Sale", label: "Bottom end" },
+        { pos: "middle-center", status: "error", badge: "Live", label: "Centre" },
+      ].map(({ pos, status, badge, label }) => (
+        <Card key={pos} icon="image" iconDisplay="hero" heroColor="neutral" heroBadge={badge} heroBadgeStatus={status} heroBadgePosition={pos} style={{ width: 240 }}>
+          <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{label}</Heading>
+          <Paragraph size="sm" color="muted">A badge overlaid on the hero, placed via the 3×3 grid.</Paragraph>
         </Card>
       ))}
     </div>

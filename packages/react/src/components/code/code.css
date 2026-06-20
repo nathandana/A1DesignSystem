@@ -95,7 +95,7 @@
   overflow-y: hidden;
 }
 
-.a1-code-block--collapsed .a1-code-block__pre::after {
+.a1-code-block--clipped .a1-code-block__pre::after {
   content: "";
   position: absolute;
   inset-inline: 0;
@@ -109,4 +109,11 @@
 
 .a1-code-block__toggle {
   margin: 0;
+}
+
+/* Copy + Show more/less sit inline on one row. */
+.a1-code-block__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
 }

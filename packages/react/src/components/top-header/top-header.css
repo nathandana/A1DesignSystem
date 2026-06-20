@@ -213,6 +213,13 @@
   color: var(--semantic-color-text-muted);
 }
 
+/* When the parent is the current/selected item (a child page is active), its
+   leading icon matches the selected text colour instead of staying muted. */
+.a1-top-header__flyout-trigger.a1-menu-item--active .a1-top-header__flyout-icon,
+.a1-top-header__flyout-trigger[aria-current="page"] .a1-top-header__flyout-icon {
+  color: currentColor;
+}
+
 .a1-top-header__flyout-chevron {
   margin-inline-start: auto;
   flex-shrink: 0;

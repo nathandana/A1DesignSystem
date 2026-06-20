@@ -66,8 +66,8 @@ function codeProps(config) {
     !isInline ? propBoolean('editable', config.editable) : null,
     !isInline ? propBoolean('copyCode', config.copyCode) : null,
     !isInline ? propExpression('copyText', config.copyText) : null,
-    !isInline ? propBoolean('collapsible', config.collapsible) : null,
-    !isInline && config.collapsible && config.collapsedLines !== 14
+    !isInline && !config.editable ? propBoolean('collapsible', config.collapsible) : null,
+    !isInline && !config.editable && config.collapsible && config.collapsedLines !== 14
       ? propExpression('collapsedLines', config.collapsedLines) : null,
   ].filter(Boolean).join(' ')
 }
@@ -173,11 +173,11 @@ export function Controls({ config, setConfig }) {
         <>
           <Toolbar label="Options">
             <ToolbarToggle icon="wrap_text" label="Wrapping" pressed={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
-            <ToolbarToggle icon="edit" label="Editable" pressed={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable }))} />
+            <ToolbarToggle icon="edit" label="Editable" pressed={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable, ...(editable ? { collapsible: false } : {}) }))} />
             <ToolbarToggle icon="content_copy" label="Copy button" pressed={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
-            <ToolbarToggle icon="unfold_less" label="Collapsible" pressed={config.collapsible} onChange={(collapsible) => setConfig((current) => ({ ...current, collapsible }))} />
+            <ToolbarToggle icon="unfold_less" label="Collapsible" disabled={config.editable} pressed={config.collapsible && !config.editable} onChange={(collapsible) => setConfig((current) => ({ ...current, collapsible }))} />
           </Toolbar>
-          {config.collapsible && (
+          {config.collapsible && !config.editable && (
             <NumberField
               label="Collapsed lines"
               hint="Approximate lines shown before the Show more toggle."
