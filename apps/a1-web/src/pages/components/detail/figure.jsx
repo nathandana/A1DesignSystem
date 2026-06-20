@@ -20,6 +20,7 @@ import { Toggle } from './Toggle.jsx'
 import { ImageSuggestDialog } from './ImageSuggestDialog.jsx'
 import { ImageLibraryDialog } from './ImageLibraryDialog.jsx'
 import { ImageGenerateDialog } from './ImageGenerateDialog.jsx'
+import { AI_ENABLED } from '../../../lib/aiImages.ts'
 import { FigureCropTool } from './FigureCropTool.jsx'
 import { Lockable } from './configKit.jsx'
 import { addImage, isImageRef, resolveSrc, toImageRef } from '../../../lib/imageLibrary.ts'
@@ -214,8 +215,12 @@ export function Controls({ config, setConfig, projectId }) {
         <Toolbar label="Image source" aria-label="Image source">
           <ToolbarButton icon="photo_library" label="Add from library" onClick={() => { setUrlMode(false); setLibraryOpen(true) }} />
           <ToolbarButton icon="upload" label="Upload" onClick={() => { setUrlMode(false); uploadRef.current?.click() }} />
-          <ToolbarButton icon="image_search" label="Find with AI" onClick={() => { setUrlMode(false); setAiOpen(true) }} />
-          <ToolbarButton icon="auto_awesome" label="Generate with AI" onClick={() => { setUrlMode(false); setGenerateOpen(true) }} />
+          {AI_ENABLED && (
+            <>
+              <ToolbarButton icon="image_search" label="Find with AI" onClick={() => { setUrlMode(false); setAiOpen(true) }} />
+              <ToolbarButton icon="auto_awesome" label="Generate with AI" onClick={() => { setUrlMode(false); setGenerateOpen(true) }} />
+            </>
+          )}
           <ToolbarDivider />
           <ToolbarToggle
             icon="link"

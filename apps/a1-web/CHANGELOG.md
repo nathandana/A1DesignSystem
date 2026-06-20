@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.8.0 — 2026-06-19
+
+- **AI features hidden by default (save API credits)** — every AI entry point is now gated behind
+  `VITE_AI_ENABLED` (off unless exactly `"true"`): editor AI tab, Make/Create with AI, AI find/generate
+  image, AI find icon, AI theme/rule, "Suggest with AI". `getApiKey()` returns null when off, so **no
+  Anthropic call can fire** even if a control is reached. Set `VITE_AI_ENABLED=true` to re-enable.
+- **Collapsible code blocks** — the project-JSON dialog uses the new Code `collapsible` prop, so a
+  big bundle shows capped with a fade + Show more/less instead of a wall (copy still grabs the full text).
+- **Grid — vertical stretch control** — the Grid configurator gains an **Align items** control
+  (stretch / start / center / end) backed by the new Grid `alignItems` prop (equal-height items).
+- **InlineEditable: text with marks/markdown is now editable** — a heading with marks or a paragraph
+  with inline markdown renders to styled `<span>`s; previously that content skipped `InlineEditable`
+  and couldn't be edited on the canvas. In the editor it now always falls back to an editable
+  source field (rich rendering still applies in preview/prototype).
+
 ## 0.7.0 — 2026-06-19
 
 - **Shared edit history with user attribution** — the editor History panel now shows a **shared,

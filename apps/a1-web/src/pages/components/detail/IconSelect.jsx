@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Autocomplete, IconButton } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
+import { AI_ENABLED } from '../../../lib/aiImages.ts'
 
 // Friendlier names for a few Material Symbols category ids; the rest are
 // sentence-cased from the id.
@@ -73,21 +74,25 @@ export function IconSelect({
             aria-label={label}
           />
         </div>
-        <IconButton
-          icon="auto_awesome"
-          size={size === 'compact' ? 'sm' : 'md'}
-          variant="secondary"
-          aria-label="Find an icon with AI"
-          onClick={openAi}
-        />
+        {AI_ENABLED && (
+          <IconButton
+            icon="auto_awesome"
+            size={size === 'compact' ? 'sm' : 'md'}
+            variant="secondary"
+            aria-label="Find an icon with AI"
+            onClick={openAi}
+          />
+        )}
       </div>
-      <AiIconDialog
-        key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
-        open={aiOpen}
-        initialPrompt={hint}
-        onClose={() => setAiOpen(false)}
-        onApply={(name) => onChange?.(name)}
-      />
+      {AI_ENABLED && (
+        <AiIconDialog
+          key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
+          open={aiOpen}
+          initialPrompt={hint}
+          onClose={() => setAiOpen(false)}
+          onApply={(name) => onChange?.(name)}
+        />
+      )}
     </>
   )
 }

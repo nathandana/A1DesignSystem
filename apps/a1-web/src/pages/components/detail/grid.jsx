@@ -57,6 +57,7 @@ function buildGridSnippet(config) {
     columnsProp(config.columns),
     propString('gap', config.gap, 'md'),
     propString('layout', config.layout, 'default'),
+    propString('alignItems', config.alignItems, 'stretch'),
   ].filter(Boolean).join('\n  ')
 
   return `<Grid\n  ${props}\n>\n  {/* children */}\n</Grid>`
@@ -67,6 +68,7 @@ export function getDefaultConfig() {
     columns: 2,
     gap: 'md',
     layout: 'default',
+    alignItems: 'stretch',
   }
 }
 
@@ -79,6 +81,7 @@ export function Preview({ config }) {
       columns={config.columns}
       gap={config.gap}
       layout={config.layout}
+      alignItems={config.alignItems}
     >
       {items.map((item) => (
         <Card key={item.title}>
@@ -112,6 +115,17 @@ export function Controls({ config, setConfig }) {
         )}
       </ResponsiveControl>
       <ConfigSlider prop="gap" label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
+      <Choice
+        label="Align items (vertical)"
+        value={config.alignItems}
+        onChange={(alignItems) => set({ alignItems })}
+        options={[
+          { label: 'Stretch', value: 'stretch' },
+          { label: 'Start', value: 'start' },
+          { label: 'Center', value: 'center' },
+          { label: 'End', value: 'end' },
+        ]}
+      />
     </Stack>
   )
 }

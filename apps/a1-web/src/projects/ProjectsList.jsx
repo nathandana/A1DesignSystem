@@ -17,6 +17,7 @@ import {
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { ProjectImportDialog } from './ProjectImportDialog.jsx'
 import { AiProjectDialog } from './AiProjectDialog.jsx'
+import { AI_ENABLED } from '../lib/aiImages.ts'
 import { exportProjectJson, loadPages } from './projectStore.ts'
 
 // Trigger a browser download of a project as a JSON bundle (round-trips with the
@@ -107,17 +108,21 @@ export function ProjectsList({
                 Upload JSON
               </Button>
             )}
-            <SplitButton
-              icon="add"
-              onClick={() => setDialog({ mode: 'create' })}
-              menuLabel="More ways to create a project"
-              toggleLabel="More ways to create a project"
-              actions={[
-                { id: 'ai', label: 'Create with AI', icon: 'auto_awesome', onClick: () => setAiOpen(true) },
-              ]}
-            >
-              New project
-            </SplitButton>
+            {AI_ENABLED ? (
+              <SplitButton
+                icon="add"
+                onClick={() => setDialog({ mode: 'create' })}
+                menuLabel="More ways to create a project"
+                toggleLabel="More ways to create a project"
+                actions={[
+                  { id: 'ai', label: 'Create with AI', icon: 'auto_awesome', onClick: () => setAiOpen(true) },
+                ]}
+              >
+                New project
+              </SplitButton>
+            ) : (
+              <Button icon="add" onClick={() => setDialog({ mode: 'create' })}>New project</Button>
+            )}
           </Stack>
         </Stack>
       </Section>

@@ -28,6 +28,34 @@
           "zh": "已复制",
           "ar": "تم النسخ"
         }
+      },
+      "showMore": {
+        "$type": "string",
+        "$value": "Show more",
+        "$description": "Toggle label to expand a collapsed (height-capped) code block.",
+        "locale": {
+          "es": "Mostrar más",
+          "fr": "Afficher plus",
+          "de": "Mehr anzeigen",
+          "pt": "Mostrar mais",
+          "ja": "もっと見る",
+          "zh": "显示更多",
+          "ar": "عرض المزيد"
+        }
+      },
+      "showLess": {
+        "$type": "string",
+        "$value": "Show less",
+        "$description": "Toggle label to collapse an expanded code block back to its capped height.",
+        "locale": {
+          "es": "Mostrar menos",
+          "fr": "Afficher moins",
+          "de": "Weniger anzeigen",
+          "pt": "Mostrar menos",
+          "ja": "折りたたむ",
+          "zh": "显示更少",
+          "ar": "عرض أقل"
+        }
       }
     }
   }

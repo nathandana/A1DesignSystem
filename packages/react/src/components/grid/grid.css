@@ -9,6 +9,12 @@
   align-items: stretch;
 }
 
+/* Cross-axis (vertical) alignment of items within their row. */
+.a1-grid--align-start   { align-items: start; }
+.a1-grid--align-center  { align-items: center; }
+.a1-grid--align-end     { align-items: end; }
+.a1-grid--align-stretch { align-items: stretch; }
+
 .a1-grid--bento > .a1-grid-item {
   min-height: 0;
 }

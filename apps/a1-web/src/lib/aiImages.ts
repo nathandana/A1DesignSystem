@@ -14,6 +14,20 @@ import Anthropic from '@anthropic-ai/sdk';
 const KEY_STORAGE = 'a1-anthropic-api-key';
 
 /**
+ * Master switch for all AI features. OFF unless `VITE_AI_ENABLED === 'true'`, so
+ * the invite-only site ships with AI hidden and no Anthropic calls can fire (to
+ * save API credits). When off, `getApiKey()` returns null — every AI call throws
+ * NO_API_KEY before reaching the network — and `aiEnabled()` lets the UI hide the
+ * entry points. Flip the env var to re-enable.
+ */
+export const AI_ENABLED = import.meta.env.VITE_AI_ENABLED === 'true';
+
+/** True when AI features should be shown + callable. */
+export function aiEnabled(): boolean {
+  return AI_ENABLED;
+}
+
+/**
  * Model used for suggestions. Defaults to Opus 4.8; for this lightweight task a
  * faster/cheaper model also works well — swap to `'claude-haiku-4-5'`.
  */
@@ -26,6 +40,7 @@ export interface ImageSuggestion {
 }
 
 export function getApiKey(): string | null {
+  if (!AI_ENABLED) return null; // hard no-spend backstop when AI is disabled
   try { return localStorage.getItem(KEY_STORAGE); } catch { return null; }
 }
 

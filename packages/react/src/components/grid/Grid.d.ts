@@ -20,6 +20,8 @@ export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
   layout?: "default" | "bento";
   /** CSS value for `grid-auto-rows` */
   autoRows?: string;
+  /** Cross-axis (vertical) alignment of items within their row. Omit to inherit the grid default ("stretch" = equal-height items filling the row height). */
+  alignItems?: "start" | "center" | "end" | "stretch";
   children?: React.ReactNode;
 }
 

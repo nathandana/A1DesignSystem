@@ -34,6 +34,14 @@ const meta = {
       control: "boolean",
       description: "Render the block as an editable textarea. Only meaningful in block mode.",
     },
+    collapsible: {
+      control: "boolean",
+      description: "Cap a long read-only block with a fade + Show more/less toggle (block, non-editable).",
+    },
+    collapsedLines: {
+      control: "number",
+      description: "Approximate number of lines shown when collapsed. Default 14.",
+    },
   },
 };
 
@@ -92,5 +100,19 @@ export const Editable = {
 export function Example() {
   return <Button icon="arrow_forward">Continue</Button>;
 }`,
+  },
+};
+
+export const Collapsible = {
+  name: "Collapsible (long block)",
+  args: {
+    variant: "block",
+    collapsible: true,
+    collapsedLines: 8,
+    copyCode: true,
+    children: Array.from(
+      { length: 40 },
+      (_, i) => `line ${i + 1}: const token${i} = "var(--semantic-color-surface-panel)";`,
+    ).join("\n"),
   },
 };

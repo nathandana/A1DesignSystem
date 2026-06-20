@@ -6,6 +6,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/project-foundations.md` — repository structure, token flow, themes, labels, and shared system concepts.
 - `packages/react/ai/project-workflows.md` — CSS rules, component architecture, package-specific rules, and invariants.
 - `packages/react/ai/components.md` — live registry of every component and which packages it exists in. Read it before asking "does X exist?" or "where is Y implemented?". Update it when components change.
+- `packages/react/ai/components-maintenance.md` — dated log of component/token/theme/a1-web changes (split out of `components.md`). Add an entry here (newest at the top) whenever you change a component, token, theme, label, rule, or a1-web behaviour.
 - `packages/react/ai/quick-orientation.md` — build commands and key file locations.
 - `packages/react/ai/a11y-policy.md` — accessibility check policy and commands.
 - `packages/react/ai/updates.md` — prop renames, value changes, and removals by version. Read before migrating consumer code between versions.

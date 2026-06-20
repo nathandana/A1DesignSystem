@@ -11,6 +11,7 @@ const gapSizes = {
 };
 const layouts = ["default", "bento"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
+const alignments = ["start", "center", "end", "stretch"];
 
 function resolveGap(key) {
   if (key == null) return undefined;
@@ -29,6 +30,7 @@ export function Grid({
   columnGap,
   layout = "default",
   autoRows,
+  alignItems,
   className = "",
   children,
   ...props
@@ -38,6 +40,12 @@ export function Grid({
 
   if (resolvedLayout !== "default") {
     classes.push(`a1-grid--${resolvedLayout}`);
+  }
+
+  // Cross-axis (vertical) alignment of items in their row. Omit to inherit the
+  // grid default (stretch = equal-height items filling the row).
+  if (alignments.includes(alignItems)) {
+    classes.push(`a1-grid--align-${alignItems}`);
   }
 
   let inlineCols;

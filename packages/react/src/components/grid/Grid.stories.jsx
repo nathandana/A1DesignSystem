@@ -14,6 +14,7 @@ const meta = {
     columns: { control: "number" },
     gap:     { control: "select", options: ["none", "sm", "md", "lg", "xl", "xxl"] },
     layout:  { control: "select", options: ["default", "bento"] },
+    alignItems: { control: "inline-radio", options: ["stretch", "start", "center", "end"] },
   },
 };
 
@@ -223,6 +224,29 @@ export const BentoGrid = {
             body="Each item collapses to one column on xs viewports."
           />
         </GridItem>
+      </Grid>
+    </div>
+  ),
+};
+
+export const VerticalStretch = {
+  name: "Vertical stretch (equal-height items)",
+  render: () => (
+    <div>
+      <Label>alignItems="stretch" — every card fills the row height, regardless of its content length.</Label>
+      <Grid columns={3} gap="md" alignItems="stretch">
+        <Card shadow="xs" style={{ height: "100%" }}>
+          <Paragraph size="sm">Short card.</Paragraph>
+        </Card>
+        <Card shadow="xs" style={{ height: "100%" }}>
+          <Paragraph size="sm">
+            A taller card with more content — this one sets the row height, and the
+            siblings stretch to match it for a clean, even row of cards.
+          </Paragraph>
+        </Card>
+        <Card shadow="xs" style={{ height: "100%" }}>
+          <Paragraph size="sm">Medium card with a bit more text than the first.</Paragraph>
+        </Card>
       </Grid>
     </div>
   ),

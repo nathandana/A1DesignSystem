@@ -13,6 +13,10 @@ export interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   editable?: boolean;
   /** Called with the current string value whenever the editable textarea changes. */
   onChangeValue?: (value: string) => void;
+  /** Cap a long read-only block to `collapsedLines` with a fade + Show more/less toggle (the toggle appears only when the content overflows). Block, non-editable only. Default: false */
+  collapsible?: boolean;
+  /** Approximate number of lines shown when collapsed. Default: 14 */
+  collapsedLines?: number;
   children?: React.ReactNode;
 }
 

@@ -21,7 +21,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { addRule, deleteRule, listAllRules, RULE_CATEGORIES, subscribeRules } from '../rules/ruleStore.ts'
 import { describeError, generateRule } from '../rules/aiRule.ts'
-import { hasApiKey, setApiKey } from '../lib/aiImages.ts'
+import { hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { allComponents } from './components/utils.js'
 
 const COMPONENT_OPTIONS = (() => {
@@ -139,15 +139,19 @@ export function RuleEditor({ onNavigate }) {
           <Paragraph size="sm" color="muted">
               Every design rule in the system — {rules.length} total{userCount ? `, ${userCount} custom` : ''}. Add your own by hand or with AI; built-in rules are read-only.
             </Paragraph>
-          <SplitButton
-            icon="add"
-            onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}
-            menuLabel="More ways to add a rule"
-            toggleLabel="More ways to add a rule"
-            actions={[{ id: 'ai', label: 'Generate with AI', icon: 'auto_awesome', onClick: () => setAiOpen(true) }]}
-          >
-            New rule
-          </SplitButton>
+          {AI_ENABLED ? (
+            <SplitButton
+              icon="add"
+              onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}
+              menuLabel="More ways to add a rule"
+              toggleLabel="More ways to add a rule"
+              actions={[{ id: 'ai', label: 'Generate with AI', icon: 'auto_awesome', onClick: () => setAiOpen(true) }]}
+            >
+              New rule
+            </SplitButton>
+          ) : (
+            <Button icon="add" onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}>New rule</Button>
+          )}
         </Stack>
       </Section>
 

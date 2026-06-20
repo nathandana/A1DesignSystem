@@ -35,7 +35,7 @@ import { DEFAULT_RAMPS, RAMP_LABELS, RAMP_NAMES, RAMP_STOPS } from '../lib/theme
 import { compileThemeVars, inverseSemanticVars, rampFrom500, rampsFrom500, themeJsonString } from '../lib/themeCompile.ts'
 import { DEFAULT_FONT_SIZES, DEFAULT_FONT_WEIGHTS, DEFAULT_ICON_SETTINGS, DEFAULT_SEMANTIC_COLORS, DEFAULT_TEXT_COLORS, DEFAULT_TYPE_ADVANCED, DEFAULT_TYPE_STYLES, SCALE_STEPS, SEMANTIC_COLOR_GROUPS, getTheme, updateTheme } from '../lib/themeStore.ts'
 import { describeError, generateFontPairing, generateTheme } from '../lib/aiTheme.ts'
-import { hasApiKey, setApiKey } from '../lib/aiImages.ts'
+import { hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
 import { STYLE_TILE_DEFINITION } from './themeStyleTile.js'
@@ -828,6 +828,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     aside = (
       <div className="a1-web-config-aside__inner">
         <Stack gap="lg">
+          {AI_ENABLED && (<>
           <div>
             <Heading as="h2" size="sm">Generate with AI</Heading>
             {!keyReady ? (
@@ -845,6 +846,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             )}
           </div>
           <Divider space="none" />
+          </>)}
           <Stack gap="sm">
             <Heading as="h2" size="sm">Ramps</Heading>
             <Paragraph size="xs" color="muted">Set each ramp’s mid (-500). Open a ramp in the sidebar to edit individual values.</Paragraph>
@@ -987,6 +989,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <Heading as="h2" size="sm">Typography</Heading>
             <Paragraph size="xs" color="muted">Open Display, Heading, or Body in the sidebar to edit each role’s font, weight, scale, and advanced properties. Or pair a full set with AI.</Paragraph>
           </Stack>
+          {AI_ENABLED && (<>
           <Divider space="none" />
           {!fontAiOpen ? (
             <ButtonContainer>
@@ -1015,6 +1018,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
               )}
             </Stack>
           )}
+          </>)}
         </Stack>
       </div>
     )

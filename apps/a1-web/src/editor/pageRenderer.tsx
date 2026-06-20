@@ -308,11 +308,11 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   let textContent: ReactNode;
   if (text === undefined) {
     textContent = undefined;
-  } else if (headingHasMarks) {
-    textContent = renderHeadingRich(text);
-  } else if (paragraphRich) {
-    textContent = paragraphRich;
   } else if (editorMode && !contentLocked) {
+    // Always editable in the editor — edit the raw text/markdown source. This must
+    // come BEFORE the rich-render branches: content with marks or inline markdown
+    // renders to styled <span>s, which (when rendered directly) can't be edited.
+    // The rich render still applies in preview/prototype mode (the branches below).
     textContent = (
       <InlineEditable
         seamless
@@ -322,6 +322,10 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
         aria-label="Edit text"
       />
     );
+  } else if (headingHasMarks) {
+    textContent = renderHeadingRich(text);
+  } else if (paragraphRich) {
+    textContent = paragraphRich;
   } else {
     textContent = isHeading ? decodeEntities(text) : text;
   }

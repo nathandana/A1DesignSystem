@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Heading, IconButton, SegmentedControl, SideNav, SplitButton, Stack } from '@gtivr4/a1-design-system-react'
+import { AI_ENABLED } from '../lib/aiImages.ts'
 import { ProjectPagesPanel } from './ProjectPagesPanel.jsx'
 import { ComponentTreePanel } from '../editor/EditorSidebar.jsx'
 
@@ -66,20 +67,26 @@ export function ProjectWorkspaceSidebar({
 
   const footer = tab === 'pages'
     ? (
-      <SplitButton
-        size="sm"
-        variant="secondary"
-        icon="add"
-        className="a1-web-add-split"
-        onClick={() => onAddPage?.({})}
-        menuLabel="More ways to add a page"
-        toggleLabel="More ways to add a page"
-        actions={[
-          { id: 'ai', label: 'Make with AI', icon: 'auto_awesome', onClick: () => onAddPageWithAi?.() },
-        ]}
-      >
-        Add page
-      </SplitButton>
+      AI_ENABLED ? (
+        <SplitButton
+          size="sm"
+          variant="secondary"
+          icon="add"
+          className="a1-web-add-split"
+          onClick={() => onAddPage?.({})}
+          menuLabel="More ways to add a page"
+          toggleLabel="More ways to add a page"
+          actions={[
+            { id: 'ai', label: 'Make with AI', icon: 'auto_awesome', onClick: () => onAddPageWithAi?.() },
+          ]}
+        >
+          Add page
+        </SplitButton>
+      ) : (
+        <Button size="sm" variant="secondary" icon="add" fullWidth onClick={() => onAddPage?.({})}>
+          Add page
+        </Button>
+      )
     )
     : (
       <Button

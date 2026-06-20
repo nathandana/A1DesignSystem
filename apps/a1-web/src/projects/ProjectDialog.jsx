@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Banner, Button, ButtonContainer, Dialog, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
-import { describeError } from '../lib/aiImages.ts'
+import { describeError, AI_ENABLED } from '../lib/aiImages.ts'
 import { suggestImageStyle } from '../lib/aiProjectStyle.ts'
 
 /**
@@ -79,18 +79,20 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
             value={imageStyle}
             onChange={(e) => setImageStyle(e.target.value)}
           />
-          <ButtonContainer>
-            <Button
-              size="sm"
-              variant="secondary"
-              icon="auto_awesome"
-              loading={suggesting}
-              onClick={suggest}
-            >
-              {imageStyle ? 'Re-suggest with AI' : 'Suggest with AI'}
-            </Button>
-          </ButtonContainer>
-          {error && <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>}
+          {AI_ENABLED && (
+            <ButtonContainer>
+              <Button
+                size="sm"
+                variant="secondary"
+                icon="auto_awesome"
+                loading={suggesting}
+                onClick={suggest}
+              >
+                {imageStyle ? 'Re-suggest with AI' : 'Suggest with AI'}
+              </Button>
+            </ButtonContainer>
+          )}
+          {AI_ENABLED && error && <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>}
         </Stack>
       </Stack>
     </Dialog>

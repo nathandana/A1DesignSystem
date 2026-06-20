@@ -36,7 +36,14 @@ _None._
 
 ## P1 — High
 
-_None._
+- [ ] **Hide all AI features (save API credits)** `P1 · M` — gate every AI entry point behind a single
+  flag (e.g. `VITE_AI_ENABLED`, default off) so the UI is hidden and **no Anthropic calls** can fire.
+  Entry points to gate: editor **AI tab** (`EditorChatPanel`/`aiPage.ts`), **Make with AI** (add-page
+  split button), **AI find image** (`ImageSuggestDialog`/`aiImages.ts`/`aiImagePrompt.ts`), **AI find
+  icon** (`AiIconDialog`/`IconSelect`/`aiIcons.ts`), **AI project** (`AiProjectDialog`/
+  `aiProjectBuilder.ts`/`aiProjectStyle.ts`), **AI theme** (`aiTheme.ts` in ThemeEditor), **AI rule**
+  (`aiRule.ts`/RuleEditor), and the API-key field in settings. Add a central `aiEnabled()` helper;
+  hide the controls (not just fail on click). _Re-enable by flipping the flag once credits allow._
 
 ## P2 — Medium
 
@@ -49,6 +56,10 @@ _None._
   content contains a nested `<span>` with custom styling, editing is blocked / the text can't be
   edited. Likely the contentEditable focus/selection or the styled child intercepts. DS `InlineEditable`
   (`packages/react/src/components/inline-editable/`). _Repro: InlineEditable with an inner styled span._
+- [ ] **TopHeader — selected parent icon colour** `P2 · S` — when on a secondary page, the parent
+  nav item gets a selected/current style, but its **icon colour is wrong** — the icon should just
+  **match the (selected) text colour**, not a different tint. DS `TopHeader` selected/`aria-current`
+  state (likely the icon keeps an accent/muted colour instead of inheriting `currentColor`).
 - [ ] **Fix left sidebar collapse** `P2 · S` — the collapse/expand behaviour of the left sidebar
   is broken. _Q: which sidebar — the editor workspace sidebar (Pages/Layers) or the main site
   SideNav? Repro + expected behaviour._
@@ -57,6 +68,13 @@ _None._
   have a dedicated Properties table (~11 fall back to generic). Write the **missing Properties
   tables**, reconcile each component's **root + child props** across the MD registry / configurator
   / Properties tab / Storybook, and flag which components lack **Pure / Native** coverage.
+- [ ] **Component implementation hardening (forwardRef / memo / TS)** `P2 · L` — the public API surface
+  (`.d.ts`) is clean, but the **implementation** has gaps worth paying down: components are authored in
+  **`.jsx` with hand-written `.d.ts`** (not `.tsx` — no compiler-enforced strictness on the impl); only
+  **~4 of 62** components use **`forwardRef`** (so `ref` forwarding is unsupported on most, incl.
+  `Button`); **0** use `React.memo`. Audit + add `forwardRef` across interactive components, memoize
+  where it matters (lists/large trees), and decide on real type safety (migrate impl to **TSX**, or
+  enable `checkJs` + strict on the `.jsx`). _Quality/debt — the clean API can hide this._
 - [ ] **Card — image variant (replace hero icon)** `P2 · M` — a Card header that uses the
   same space as the hero-icon block but shows an **image** instead (e.g. `heroImage`). DS
   Card change + configurator. _Also in the original "General changes" backlog._
@@ -168,6 +186,14 @@ _None._
   reads the page JSON and checks it against the **rules**, plus runs an **axe a11y** pass on the
   page, surfacing issues live. _Extends the existing import-time `lintDefinition`; relates to
   Rules-in-editor + A11y review._
+- [ ] **Rules → real enforcement (ESLint plugin + CI gate)** `P2 · L` — today the rules engine is a
+  **documentation layer**: `system/rules/*.yaml` + the a1-web Rules page + the non-blocking
+  import-time `lintDefinition` warnings. Make rules **enforceable on real code**: ship an
+  **`eslint-plugin-a1`** with rules derived from the YAML (e.g. `button-single-primary-action`,
+  no-`text-transform: uppercase`, no raw hex / tokens-only, nested-interactive-in-card) and wire it
+  into **CI** as a gate. The YAML stays the source of truth; codegen the ESLint rules from it where
+  feasible. _This is the "transformative" path: same rule as lint/CI, not just docs. Pairs with the
+  editor linter above._
 - [ ] **Project chrome / TopHeader editing** `P2 · M` — better editing of a project's shared page
   chrome and **TopHeader**. _The per-project shared layout (TopHeader + Outlet + footer, edited on
   canvas) + auto-nav already exist — this improves that experience._
@@ -339,9 +365,14 @@ _None._
   drag-and-drop for keyboard-accessible reordering (could upgrade the TreeMenu DnD, which has no
   keyboard support today).
 - [ ] **Plugin — Joyride (walkthrough / onboarding)** `P3 · M` — product walkthroughs and tours.
-- [ ] **Plugin — Motion for React (animation)** `P3 · L` — sprinkle Motion animations into
-  screens; explore AI-prompted animation. First target: cards that **animate on scroll** —
-  appear one at a time, fading + scaling up from below. _Relates to the Animation editor._
+- [ ] **Animations + AI-described motion** `P3 · L` — bring motion to the editor via an animation
+  package (e.g. **Motion for React**), and let users **animate features by describing them in plain
+  language** (AI → animation config applied to the selected node(s)). Worked example: *"animate these
+  cards when they scroll into view, one at a time, with a fade and reveal from below"* →
+  scroll-triggered **staggered** fade + translate-up. Cover enter / scroll-into-view / hover / state
+  transitions; respect `prefers-reduced-motion`; emit tokenized durations/easings (motion tokens).
+  _First target: the scroll-in card stagger. Pairs with the **Animation editor** (visual authoring)
+  below + the AI page editor._
 - [ ] **Plugin — Recharts (data viz)** `P3 · L` — charts / data-visualization integration.
 - [ ] **Plugin — TanStack (data grids)** `P3 · L` — advanced data-grid integration.
 - [ ] **Expand codebase output + web-component proof** `P3 · L` — broaden the "Codebase"
@@ -351,8 +382,27 @@ _None._
   JSON feed**. Pulled into pages like components: **drag a dataset onto a compatible element
   (e.g. a DataTable) to auto-configure**, and **patterns can receive a dataset**. Feeds Data
   binding. _Relates to Pattern repeating + Data Table._
-- [ ] **Animation editor** `P3 · XL` — in-editor animation authoring. _Relates to the Motion for
-  React plugin._
+- [ ] **Animation editor (with timeline)** `P3 · XL` — in-editor animation authoring, including a
+  **timeline editor** (keyframes/tracks, scrub, per-element sequencing) for orchestrating motion.
+  _Relates to the Animations + AI-described motion plugin._
+- [ ] **Icons — allow all Material Symbols styles** `P3 · M` — let any Material Symbols **style** be
+  used: the three families (**Outlined / Rounded / Sharp**) plus the variable-font axes already partly
+  in `Icon` (`fill`, `weight`, `grade`, `opticalSize`). Surface family selection in the `Icon` API +
+  configurator; ensure the right font(s) are loaded. _`Icon` already takes weight/grade/fill/opsz;
+  this adds the family dimension._
+- [ ] **Icons — custom icon set (feasibility + pipeline)** `P3 · L` — research/plan a **custom A1 icon
+  set**: what's the source format (SVG sprite / icon font / per-icon components?), how icons are
+  authored and added to `system/icons/`, and how they adapt **across themes** (currentColor + size
+  tokens; per-theme overrides if needed). Extends the single `system/icons/material-symbols.json`
+  registry rather than package-local lists. _Decide build pipeline + whether custom + Material can
+  coexist. (Answers "what's the source, how do we create them across themes, can I do this.")_
+- [ ] **Gradient editor (approved ramps)** `P3 · M` — a visual gradient builder that composes
+  gradients **only from approved theme colour ramps** (no arbitrary hex), emitting tokenized gradient
+  values. Feeds Section/Figure gradients + the component designer. _Relates to the "gradient maker"
+  future-idea + Section gradient props._
+- [ ] **Billboard creator** `P3 · L` — a way to author large **promotional areas** (hero billboards /
+  marketing blocks) — big imagery + headline + CTA over Section/Figure with gradient scrims, layered
+  content, and approved tokens. _Relates to Figure overlay + the gradient editor + Section._
 - [ ] **Data binding / connections** `P3 · XL` — attach a **data model** to a component or
   pattern; **drag labels/fields** into slots (data cells / columns); **auto-build** UI from a
   dataset (e.g. a form that conforms to the schema). _Pairs with Data sets; relates to Pattern

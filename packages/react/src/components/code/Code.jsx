@@ -56,12 +56,17 @@ export function Code({
   copyText,
   editable = false,
   onChangeValue,
+  collapsible = false,
+  collapsedLines = 14,
   className = "",
   children,
   ...props
 }) {
   const resolvedVariant = variants.includes(variant) ? variant : "inline";
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+  const preRef = useRef(null);
   const [editableValue, setEditableValue] = useState(() =>
     textFromChildren(Children.toArray(children))
   );
@@ -78,17 +83,31 @@ export function Code({
   const copyLabel = useLabel("code.copyCode", "Copy code");
   const copiedLabel = useLabel("code.copied", "Copied");
   const editLabel = useLabel("code.editCode", "Edit code");
+  const showMoreLabel = useLabel("code.showMore", "Show more");
+  const showLessLabel = useLabel("code.showLess", "Show less");
   const textToCopy = useMemo(
     () => copyText || (editable ? editableValue : textFromChildren(Children.toArray(children))),
     [children, copyText, editable, editableValue],
   );
   const shouldRenderBlock = resolvedVariant === "block" || copyCode || editable;
+  // Collapsible only applies to a read-only block (not the editable textarea).
+  const collapses = collapsible && !editable && shouldRenderBlock;
 
   useEffect(() => {
     return () => {
       if (resetTimer.current) window.clearTimeout(resetTimer.current);
     };
   }, []);
+
+  // Detect whether the (collapsed) content actually overflows the cap, so the
+  // toggle only appears when it's needed. scrollHeight reports the full content
+  // height even while clipped, so this is accurate in either state.
+  useEffect(() => {
+    if (!collapses) { setOverflows(false); return; }
+    if (expanded) return; // measured while collapsed; keep so "Show less" stays
+    const el = preRef.current;
+    if (el) setOverflows(el.scrollHeight - el.clientHeight > 4);
+  }, [collapses, expanded, children, collapsedLines]);
 
   function handleTextareaChange(e) {
     setEditableValue(e.target.value);
@@ -127,12 +146,15 @@ export function Code({
     );
   }
 
+  const collapsed = collapses && overflows && !expanded;
+
   return (
     <div
       className={[
         "a1-code-block",
         copyCode && "a1-code-block--copyable",
         editable && "a1-code-block--editable",
+        collapsed && "a1-code-block--collapsed",
         className,
       ]
         .filter(Boolean)
@@ -153,7 +175,11 @@ export function Code({
           {...editableProps}
         />
       ) : (
-        <pre className="a1-code-block__pre">
+        <pre
+          ref={preRef}
+          className="a1-code-block__pre"
+          style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
+        >
           <code className={codeClasses} {...props}>
             {children}
           </code>
@@ -169,6 +195,18 @@ export function Code({
           type="button"
         >
           {copied ? copiedLabel : copyLabel}
+        </Button>
+      )}
+      {collapses && overflows && (
+        <Button
+          className="a1-code-block__toggle"
+          icon={expanded ? "expand_less" : "expand_more"}
+          size="sm"
+          variant="tertiary"
+          onClick={() => setExpanded((v) => !v)}
+          type="button"
+        >
+          {expanded ? showLessLabel : showMoreLabel}
         </Button>
       )}
     </div>
