@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.8.2 — 2026-06-19
+
+- **Collapsible Code — finish the wiring** — the Code configurator gains a **Collapsible** toggle +
+  **Collapsed lines** field, and the editor's read-only **React snippet** view is now collapsible
+  (`collapsedLines={24}`). Completes the collapsible-Code backlog item (the DS prop + project-JSON
+  dialog shipped in 0.8.0).
+
 ## 0.8.1 — 2026-06-19
 
 - **Home / Themes layout tweaks** — Home "Platforms" heading + body no longer force-centered;

@@ -1904,7 +1904,7 @@ export function EditorPage({
                 <Paragraph size="sm" color="muted">
                   Read-only React (JSX) generated from the page definition. Edit via the JSON tab or the canvas.
                 </Paragraph>
-                <Code variant="block" wrapping copyCode>
+                <Code variant="block" wrapping copyCode collapsible collapsedLines={24}>
                   {reactCode}
                 </Code>
               </>

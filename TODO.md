@@ -40,15 +40,6 @@ _None._
 
 ## P2 — Medium
 
-- [ ] **Code — abbreviated / collapsible blocks** `P2 · S` — large `Code` blocks (e.g. the project
-  definition JSON view, editor code snippets) render as massive walls. Add a **collapsed/abbreviated**
-  mode: cap the visible height with a fade + an **Expand / Collapse** toggle (and/or a line-count
-  summary like "+220 lines"). DS `Code` component prop (e.g. `collapsible` / `maxLines`) + configurator
-  + story; apply it to the a1-web project-JSON dialog and editor snippet views. _Block mode only._
-- [ ] **InlineEditable: can't edit when a styled `<span>` is inside** `P2 · S` — when an InlineEditable's
-  content contains a nested `<span>` with custom styling, editing is blocked / the text can't be
-  edited. Likely the contentEditable focus/selection or the styled child intercepts. DS `InlineEditable`
-  (`packages/react/src/components/inline-editable/`). _Repro: InlineEditable with an inner styled span._
 - [ ] **TopHeader — selected parent icon colour** `P2 · S` — when on a secondary page, the parent
   nav item gets a selected/current style, but its **icon colour is wrong** — the icon should just
   **match the (selected) text colour**, not a different tint. DS `TopHeader` selected/`aria-current`

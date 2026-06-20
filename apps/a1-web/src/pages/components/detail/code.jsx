@@ -1,5 +1,6 @@
 import {
   Code,
+  NumberField,
   Paragraph,
   Stack,
   TextareaField,
@@ -65,6 +66,9 @@ function codeProps(config) {
     !isInline ? propBoolean('editable', config.editable) : null,
     !isInline ? propBoolean('copyCode', config.copyCode) : null,
     !isInline ? propExpression('copyText', config.copyText) : null,
+    !isInline ? propBoolean('collapsible', config.collapsible) : null,
+    !isInline && config.collapsible && config.collapsedLines !== 14
+      ? propExpression('collapsedLines', config.collapsedLines) : null,
   ].filter(Boolean).join(' ')
 }
 
@@ -96,6 +100,8 @@ export function getDefaultConfig() {
     editable: false,
     copyCode: false,
     copyText: '',
+    collapsible: false,
+    collapsedLines: 14,
     children: SAMPLE_BLOCK_CODE,
   }
 }
@@ -121,6 +127,8 @@ export function Preview({ config }) {
       editable={config.editable}
       copyCode={config.copyCode}
       copyText={copyText}
+      collapsible={config.collapsible}
+      collapsedLines={config.collapsedLines}
     >
       {children}
     </Code>
@@ -138,7 +146,7 @@ export function Controls({ config, setConfig }) {
         variant,
         children: hasSampleCode ? sampleForVariant(variant) : current.children,
         // reset block-only props when switching to inline
-        ...(variant === 'inline' ? { wrapping: false, editable: false, copyCode: false, copyText: '' } : {}),
+        ...(variant === 'inline' ? { wrapping: false, editable: false, copyCode: false, copyText: '', collapsible: false } : {}),
       }
     })
   }
@@ -167,7 +175,17 @@ export function Controls({ config, setConfig }) {
             <ToolbarToggle icon="wrap_text" label="Wrapping" pressed={config.wrapping} onChange={(wrapping) => setConfig((current) => ({ ...current, wrapping }))} />
             <ToolbarToggle icon="edit" label="Editable" pressed={config.editable} onChange={(editable) => setConfig((current) => ({ ...current, editable }))} />
             <ToolbarToggle icon="content_copy" label="Copy button" pressed={config.copyCode} onChange={(copyCode) => setConfig((current) => ({ ...current, copyCode }))} />
+            <ToolbarToggle icon="unfold_less" label="Collapsible" pressed={config.collapsible} onChange={(collapsible) => setConfig((current) => ({ ...current, collapsible }))} />
           </Toolbar>
+          {config.collapsible && (
+            <NumberField
+              label="Collapsed lines"
+              hint="Approximate lines shown before the Show more toggle."
+              size="compact"
+              value={config.collapsedLines}
+              onChange={(event) => setConfig((current) => ({ ...current, collapsedLines: Number(event.target.value) || 14 }))}
+            />
+          )}
           {config.copyCode && (
             <TextareaField
               label="Clipboard text"
