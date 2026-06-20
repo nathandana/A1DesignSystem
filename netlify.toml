@@ -5,6 +5,13 @@
 
 [build.environment]
   NODE_VERSION = "24"
+  # Supabase (accounts + cloud sync). Vite inlines VITE_* at build time, so these
+  # must be present in the build env. The ANON/publishable key is client-safe —
+  # it ships in the public JS bundle and is protected by row-level security; the
+  # `sb_secret_` service key must NEVER be placed here. (Override via Netlify's
+  # Environment Variables UI to rotate without a commit.)
+  VITE_SUPABASE_URL = "https://pszmkbfvyjkifbyututo.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "sb_publishable_a_CSB8TLB8AziGTAVN4zoQ_Uum-Wr4I"
 
 [functions]
   node_bundler = "esbuild"
