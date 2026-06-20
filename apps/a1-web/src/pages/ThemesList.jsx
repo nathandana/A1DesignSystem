@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Breadcrumb,
   Button,
+  ButtonContainer,
   Card,
   ContextMenu,
   Dialog,
@@ -40,7 +41,9 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
         />
           <Heading as="h1" id="themes-heading" size={{ xs: 'lg', md: 'xxl' }}>Theme</Heading>
           <Paragraph size="sm" color="muted">Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.</Paragraph>
+          <ButtonContainer align='left'>
           <Button icon="add" onClick={newTheme}>New theme</Button>
+          </ButtonContainer>
         </Stack>
       </Section>
 

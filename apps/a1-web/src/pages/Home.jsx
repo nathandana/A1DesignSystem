@@ -224,10 +224,10 @@ A1 is a rules based design system. Everything has a clear source of truth. It ha
             <MessageBadge subtle icon="devices">
               Platforms
             </MessageBadge>
-            <Heading as="h2" id="platforms-heading" size={{ xs: 'lg', md: 'xl' }} align="center">
+            <Heading as="h2" id="platforms-heading" size={{ xs: 'lg', md: 'xl' }}>
               One token source. Every surface.
             </Heading>
-            <Paragraph size="lg" color="muted" align="center" className="a1-web-section-body">
+            <Paragraph size="lg" color="muted">
               The same token foundations power web, HTML, and mobile. No duplication, no drift.
             </Paragraph>
           </Stack>

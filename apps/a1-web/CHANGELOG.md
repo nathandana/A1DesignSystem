@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.8.1 — 2026-06-19
+
+- **Home / Themes layout tweaks** — Home "Platforms" heading + body no longer force-centered;
+  the Themes list "New theme" button is wrapped in a left-aligned `ButtonContainer`.
+
 ## 0.8.0 — 2026-06-19
 
 - **AI features hidden by default (save API credits)** — every AI entry point is now gated behind

@@ -36,14 +36,7 @@ _None._
 
 ## P1 — High
 
-- [ ] **Hide all AI features (save API credits)** `P1 · M` — gate every AI entry point behind a single
-  flag (e.g. `VITE_AI_ENABLED`, default off) so the UI is hidden and **no Anthropic calls** can fire.
-  Entry points to gate: editor **AI tab** (`EditorChatPanel`/`aiPage.ts`), **Make with AI** (add-page
-  split button), **AI find image** (`ImageSuggestDialog`/`aiImages.ts`/`aiImagePrompt.ts`), **AI find
-  icon** (`AiIconDialog`/`IconSelect`/`aiIcons.ts`), **AI project** (`AiProjectDialog`/
-  `aiProjectBuilder.ts`/`aiProjectStyle.ts`), **AI theme** (`aiTheme.ts` in ThemeEditor), **AI rule**
-  (`aiRule.ts`/RuleEditor), and the API-key field in settings. Add a central `aiEnabled()` helper;
-  hide the controls (not just fail on click). _Re-enable by flipping the flag once credits allow._
+_None._
 
 ## P2 — Medium
 
@@ -168,6 +161,13 @@ _None._
 - [ ] **Per-breakpoint component swap (editor)** `P2 · L` — swap a component for another at a
   given breakpoint (e.g. an IconButton instead of a Button at xs). Beyond per-breakpoint prop
   values (already built) — this swaps the element itself.
+- [ ] **Responsive sticky positioning (sticky by breakpoint)** `P2 · M` — let an element be made
+  **`position: sticky`** and gate it **per breakpoint** (e.g. sticky a page title only at **lg and
+  up**, like the existing responsive-prop pattern: `{ lg: true }`). Needs a `sticky` prop/utility +
+  a **sticky-offset token** (top inset, so it clears a sticky header) on a layout component (Section /
+  Stack / a small `Sticky` wrapper), with breakpoint-scoped sticky classes. _Caveat: sticky needs a
+  scrollable ancestor without `overflow: hidden` (see the PageLayout/PageNav sticky notes). Pairs
+  with **vertical breakpoints** below — only stick when there's enough vertical room._
 - [ ] **Dialogs as pages (editor)** `P2 · L` — treat dialogs as first-class documents in the
   page editor (like pages) and **open them from buttons** via the same page-connection
   mechanism used to link pages. _Builds on the existing page-link / navigation wiring + Dialog._
@@ -422,6 +422,13 @@ _None._
   solutions". _Messaging + layout; pairs with the Feature-set page._
 - [ ] **Foundations — verify all colour values display** `P3 · S` — audit the Foundations colour
   surfaces so every token value is shown.
+- [ ] **Vertical (height) breakpoints** `P3 · M` — add a **height axis** to responsiveness alongside
+  the existing width breakpoints (xs–xl): height breakpoint tokens + `@media (min-height/max-height)`
+  utilities, and **container `block-size` queries** (`container-type: size`) for component-level
+  height response. Use `dvh`/`svh`/`lvh` units for dynamic viewport height. Use cases: compact
+  layouts on short/landscape viewports, and gating **responsive sticky** on enough vertical room.
+  _Feasible — CSS supports height media + container size queries. Decide token scale (e.g. short/
+  tall) and how it composes with the width breakpoints (avoid a combinatorial explosion of classes)._
 - [ ] **Markdown support in page JSON** `P3 · M` — author rich text as **markdown** within the
   page JSON (rendered to A1 typography). _Relates to the Rich Text Editor._
 - [ ] **Better anatomy visualisation** `P3 · M` — a "Show anatomy" switch overlaying dashed
@@ -433,6 +440,9 @@ _None._
   **navigate you to a page**, and help with a task. _Relates to the AI Chat component._
 - [ ] **Resizable editor panels** `P3 · M` — drag-resize the editor side panels.
 - [ ] **Help page screenshots** `P3 · S` — add screenshots to the Help pages.
+- [ ] **Help page — use PageNav instead of buttons** `P3 · S` — the Help page navigates between
+  sections with buttons; replace that with the **`PageNav`** component (sticky in-page nav with
+  active-section tracking), matching the TODO/long-tab pattern. a1-web `pages/Help.jsx`.
 - [ ] **Video walkthroughs — prompt-to-MP4 pipeline** `P3 · L` — generate narrated video
   walkthroughs of features/flows from a prompt + a declarative spec. Pipeline:
   - **`walkthrough.yaml`** — the steps to demo (authored, or AI-generated from a prompt).
