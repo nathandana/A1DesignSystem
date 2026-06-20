@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Realtime shared sync + push fix** — the shared workspace now updates **live**: a Supabase realtime
+  subscription on `shared_state` re-pulls the bundle whenever any client writes, so one user's new
+  pattern/project/theme appears for others without a reload. Also fixed a bug where the debounced
+  auto-push (and "Import local data") called a removed `saveUserProjects`, so envelope changes never
+  reached the cloud — now `saveSharedData`. Requires `shared_state` in the `supabase_realtime`
+  publication. (Images already propagated live via direct reads.)
+
 - **Shared workspace (cloud scope)** — when signed in, projects, pages, patterns, themes, and images
   are now **one shared workspace** that every signed-in user reads and writes (was per-user). Supabase
   moves from per-user rows to a single `shared_state` bundle row + a globally-keyed `user_images`

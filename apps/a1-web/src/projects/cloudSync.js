@@ -1,4 +1,4 @@
-import { supabaseConfigured } from '../lib/supabase.js'
+import { supabase, supabaseConfigured } from '../lib/supabase.js'
 import { fetchSharedData, saveSharedData } from '../services/sharedDb.js'
 import { exportAllText, importAllText } from './projectStore'
 import { onStorageWrite, suspendStorageNotify } from '../editor/storage'
@@ -9,7 +9,9 @@ import { exportThemes, importThemes, subscribeThemes } from '../lib/themeStore'
 // reads and writes the same bundle. On sign-in the shared bundle is pulled into
 // local storage (or the shared row is seeded from local if empty), then local
 // changes are pushed back — debounced — whenever projects, patterns, or themes
-// change. The bundle is one JSON envelope in the `shared_state.data` text column:
+// change. A Supabase **realtime** subscription re-pulls automatically when any other
+// client writes, so changes propagate live without a reload. The bundle is one JSON
+// envelope in the `shared_state.data` text column:
 //   { __a1bundle, projects: <exportAllText text>, patterns: [...], themes: [...] }
 // Images are not in the envelope — they sync separately via Supabase Storage.
 // Last-write-wins across users (the whole envelope is replaced on each push).
@@ -48,44 +50,79 @@ let currentUserId = null
 let pushTimer = null
 let unsubscribers = []
 let suspendPush = false
+let channel = null
+let onHydratedCb = null
+// The envelope string we last pulled or pushed — used to ignore our own realtime
+// echo and skip redundant re-hydrates.
+let lastSyncedData = null
+
+/** Apply a shared bundle pulled from the cloud without echoing the writes back up. */
+function hydrateFromRemote(text) {
+  if (text == null || text === lastSyncedData) return
+  lastSyncedData = text
+  suspendPush = true
+  suspendStorageNotify(true)
+  try { importEnvelope(text) } finally { suspendStorageNotify(false); suspendPush = false }
+  onHydratedCb?.()
+}
 
 export async function startCloudSync(userId, { onHydrated } = {}) {
   currentUserId = userId
+  onHydratedCb = onHydrated ?? null
   if (!supabaseConfigured || !userId) return
   try {
     const remote = await fetchSharedData()
     if (remote && remote.trim()) {
-      // Hydrate local storage from the shared bundle without echoing writes back up.
+      lastSyncedData = remote
       suspendPush = true
       suspendStorageNotify(true)
       try { importEnvelope(remote) } finally { suspendStorageNotify(false); suspendPush = false }
       onHydrated?.()
     } else {
       // Shared bundle is empty — seed it from whatever is local.
-      await saveSharedData(exportEnvelope())
+      const envelope = exportEnvelope()
+      lastSyncedData = envelope
+      await saveSharedData(envelope)
     }
   } catch (e) {
     console.warn('[cloudSync] pull failed', e)
   }
+  // Live updates: re-pull whenever any client writes the shared row.
+  if (!channel) {
+    channel = supabase
+      .channel('shared_state_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'shared_state', filter: 'id=eq.1' },
+        (payload) => hydrateFromRemote(payload.new?.data),
+      )
+      .subscribe()
+  }
+  // Push local changes (debounced) when projects/pages, patterns, or themes change.
   if (!unsubscribers.length) {
-    unsubscribers.push(onStorageWrite(schedulePush))   // projects + pages
-    unsubscribers.push(subscribePatterns(schedulePush)) // user patterns
-    unsubscribers.push(subscribeThemes(schedulePush))   // saved themes
+    unsubscribers.push(onStorageWrite(schedulePush))
+    unsubscribers.push(subscribePatterns(schedulePush))
+    unsubscribers.push(subscribeThemes(schedulePush))
   }
 }
 
-// Explicitly push everything in local storage up to the user's account now
-// (replaces the cloud copy). Used by the Account page's "Import local data".
+// Explicitly push everything in local storage up to the shared workspace now
+// (replaces the shared copy). Used by the Account page's "Import local data".
 export async function pushLocalData(userId) {
   if (!supabaseConfigured || !userId) throw new Error('Cloud sync is not configured.')
-  await saveUserProjects(userId, exportEnvelope())
+  const envelope = exportEnvelope()
+  lastSyncedData = envelope
+  await saveSharedData(envelope)
 }
 
 export function stopCloudSync() {
   currentUserId = null
+  onHydratedCb = null
   unsubscribers.forEach((u) => u())
   unsubscribers = []
   if (pushTimer) { clearTimeout(pushTimer); pushTimer = null }
+  if (channel) { supabase.removeChannel(channel); channel = null }
+  lastSyncedData = null
 }
 
 function schedulePush() {
@@ -93,6 +130,8 @@ function schedulePush() {
   if (pushTimer) clearTimeout(pushTimer)
   pushTimer = setTimeout(() => {
     pushTimer = null
-    saveUserProjects(currentUserId, exportEnvelope()).catch((e) => console.warn('[cloudSync] push failed', e))
+    const envelope = exportEnvelope()
+    lastSyncedData = envelope // ignore the realtime echo of our own write
+    saveSharedData(envelope).catch((e) => console.warn('[cloudSync] push failed', e))
   }, 1500)
 }

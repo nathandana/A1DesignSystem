@@ -230,12 +230,30 @@ _None._
   basic details, current version) that navigate to a **per-package detail** page. Reads each
   package's CHANGELOG (a1-web, react, …). _Expands the current single Releases page; relates to the
   MD↔A1 converter._
-- [ ] **TODO page → formal backlog tool** `P2 · XL` — evolve the read-only TODO page into a
-  lightweight Jira-like backlog: a **JSON-backed** store of items you can **add / edit / complete**,
-  change **priority + size** inline, **scope** each item to a theme / project / pattern / foundation
-  / component / package, **link to related details**, and attach **images**. Replaces the current
-  `TODO.md`-rendered page. _Builds on the complexity-badges/filtering work; relates to data binding
-  + the image library._
+- [ ] **TODO page → backlog tool (Supabase-backed, lightweight Jira)** `P2 · XL` — evolve the
+  read-only TODO page into a real ticketing tool, replacing the `TODO.md`-rendered page:
+  - **Supabase-backed store** (a `backlog_items` table; not the MD file) — add / edit / complete,
+    change **priority + size** inline, **scope** each item to a theme / project / pattern / foundation
+    / component / package, link to related details, attach **images**.
+  - **"Request a feature" form across the app** — a simple add-to-backlog affordance surfaced in
+    Components, Projects, Patterns, and Themes (and elsewhere), **pre-scoped** to wherever it's opened.
+  - **Track requester + status** — record **who requested** each item (the signed-in user), created /
+    updated timestamps, and a **status** workflow (e.g. backlog → in progress → done).
+  - **Local pull** — a way to export/sync the tickets down to the repo so items can be worked on
+    (fixed / built) locally by an agent or dev.
+  - **Board view** — a lightweight Jira: **streams / swimlanes** of tickets, move items between
+    statuses. _Builds on the Supabase shared workspace + auth (requester = signed-in user) + the
+    complexity-badges/filtering work + the image library; relates to data binding._
+- [ ] **Shared edit history with user attribution (Supabase)** `P2 · L` — persist an edit history for
+  **page, theme, and pattern** changes to Supabase, each entry **tagged with the user** who made it
+  (now meaningful since the workspace is shared — "who changed this?"). Current state: page edits keep
+  a **local-only** history (`historyKey(pageId)` entries: json/label/timestamp, **no user**); **themes
+  and patterns have no history model** at all. Needs: (1) a shared `edit_history` table
+  (`entity_type` page|theme|pattern, `entity_id`, `user_id` + `user_email`, `label`, optional
+  `snapshot` jsonb, `created_at`; all-authenticated RLS); (2) append a row on each committed change —
+  page editor `history.commit`, `themeStore.updateTheme`, `patternStore.savePattern`; (3) surface the
+  history **with the user tag** in the editor / theme / pattern history UI. _Builds on the shared
+  workspace + cloud sync; decide retention/granularity (every keystroke vs. debounced/named saves)._
 - [ ] **Publish a prototype as a public site (outside the auth gate)** `P2 · M` — let a project's
   **preview/prototype** be published to a **public URL that bypasses the invite-only auth gate**, so
   it can be shared without an account. Same render as the standalone prototype preview, but served
