@@ -46,7 +46,9 @@ import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatal
 import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
-import { loadProjectLayout, saveProjectLayout } from '../projects/projectStore';
+import { loadProjectLayout, saveProjectLayout, resolvePageJson } from '../projects/projectStore';
+import { onRemoteHydrate } from '../projects/cloudSync.js';
+import { PagePresence } from '../editor/PagePresence.jsx';
 import { toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
@@ -735,6 +737,23 @@ export function EditorPage({
   // Stable refs used by keyboard handler so we never need to re-register the listener.
   const historyRef = useRef(history);
   historyRef.current = history;
+  const isDirtyRef = useRef(isDirty);
+  isDirtyRef.current = isDirty;
+
+  // Safe re-hydrate: when a teammate's change to THIS page arrives via cloud sync,
+  // adopt it — but only when the local user isn't mid-edit (no uncommitted change),
+  // so we never clobber active work. `!isDirty` means working === last commit, so a
+  // differing stored value can only have come from a remote write.
+  useEffect(() => {
+    if (documentKind !== 'page') return; // pages only (layout/patterns store elsewhere)
+    const unsub = onRemoteHydrate(() => {
+      const stored = resolvePageJson(exampleId);
+      if (stored && stored !== historyRef.current.workingJson && !isDirtyRef.current) {
+        historyRef.current.reset(stored, 'Synced from team');
+      }
+    });
+    return () => { unsub(); };
+  }, [documentKind, exampleId]);
 
   // These are filled in after the handler functions are declared below,
   // but the ref itself lives here so the keyboard effect can close over it once.
@@ -1734,20 +1753,23 @@ export function EditorPage({
               />
             )}
           </Toolbar>
-          {!isPattern && versions.length > 1 && (
-            <div className="a1-web-version-switcher">
-              <SelectField
-                size="compact"
-                aria-label="Active version"
-                value={activeVersionId}
-                onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
-              >
-                {versions.map((v) => (
-                  <option key={v.id} value={v.id}>{v.label}</option>
-                ))}
-              </SelectField>
-            </div>
-          )}
+          <Stack direction="row" align="center" gap="sm">
+            <PagePresence pageId={exampleId} />
+            {!isPattern && versions.length > 1 && (
+              <div className="a1-web-version-switcher">
+                <SelectField
+                  size="compact"
+                  aria-label="Active version"
+                  value={activeVersionId}
+                  onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
+                >
+                  {versions.map((v) => (
+                    <option key={v.id} value={v.id}>{v.label}</option>
+                  ))}
+                </SelectField>
+              </div>
+            )}
+          </Stack>
         </Stack>
       </Section>
 

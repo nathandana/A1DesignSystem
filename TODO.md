@@ -248,6 +248,15 @@ _None._
   - **Board view** — a lightweight Jira: **streams / swimlanes** of tickets, move items between
     statuses. _Builds on the Supabase shared workspace + auth (requester = signed-in user) + the
     complexity-badges/filtering work + the image library; relates to data binding._
+- [ ] **True live co-editing of a single page (CRDT)** `P2 · XL` — real-time multiplayer editing of the
+  same page, like Figma/Linear: concurrent edits **merge** instead of last-write-wins. Model the
+  `PageDefinition` node tree as a **CRDT (Yjs)** — `Y.Map`/`Y.Array` — edited through the editor, with
+  Yjs `UndoManager` and **awareness** (live cursors/selections). Transport options: **Liveblocks** or
+  **PartyKit** (managed, Yjs-native, least infra — recommended) / **Yjs + Supabase Realtime broadcast**
+  (no new vendor) / **Hocuspocus** (self-host); periodically snapshot the Yjs doc to Supabase. Requires
+  refactoring the editor to read/write the Yjs doc as the source of truth (node tree, props, history).
+  _The proper successor to the presence + safe-re-hydrate interim (#1, shipped). Skip OT — CRDT is
+  preferred. Pairs with the shared workspace + cloud sync._
 - [ ] **Shared edit history with user attribution (Supabase)** `P2 · L` — persist an edit history for
   **page, theme, and pattern** changes to Supabase, each entry **tagged with the user** who made it
   (now meaningful since the workspace is shared — "who changed this?"). Current state: page edits keep

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.6.0 — 2026-06-19
+
+- **Editor presence + safe re-hydrate** — a step toward live collaboration on the shared workspace.
+  The editor header shows **who else is on the same page** (a Supabase Realtime presence channel per
+  page id), and when a teammate's change to the open page arrives via cloud sync the editor **adopts
+  it automatically — but only when you're not mid-edit** (no uncommitted change), so active work is
+  never clobbered. (Full conflict-free co-editing is tracked separately as a CRDT/Yjs item.)
+
 ## 0.5.0 — 2026-06-19
 
 - **Live cross-user sync (polling + faster page flush)** — the shared workspace now reliably

@@ -198,9 +198,9 @@ export function useEditorHistory(fallbackJson: string, storageKey?: string) {
 
   // Discard the current history stack and start fresh from json.
   // Used when switching between versions so undo doesn't bleed across them.
-  function reset(json: string) {
+  function reset(json: string, label = 'Version switch') {
     setState({
-      entries: [{ id: uid(), json, label: 'Version switch', timestamp: Date.now() }],
+      entries: [{ id: uid(), json, label, timestamp: Date.now() }],
       index: 0,
       workingJson: json,
     })

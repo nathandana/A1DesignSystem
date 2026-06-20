@@ -58,6 +58,14 @@ const POLL_MS = 8000
 // echo and skip redundant re-hydrates.
 let lastSyncedData = null
 
+// Listeners notified after a genuine remote hydrate (not our own echo) — lets the
+// open editor safely re-sync the page it's showing.
+const remoteHydrateListeners = new Set()
+export function onRemoteHydrate(fn) {
+  remoteHydrateListeners.add(fn)
+  return () => remoteHydrateListeners.delete(fn)
+}
+
 /** Apply a shared bundle pulled from the cloud without echoing the writes back up. */
 function hydrateFromRemote(text) {
   if (text == null || text === lastSyncedData) return
@@ -66,6 +74,7 @@ function hydrateFromRemote(text) {
   suspendStorageNotify(true)
   try { importEnvelope(text) } finally { suspendStorageNotify(false); suspendPush = false }
   onHydratedCb?.()
+  for (const fn of remoteHydrateListeners) { try { fn() } catch { /* ignore */ } }
 }
 
 export async function startCloudSync(userId, { onHydrated } = {}) {
