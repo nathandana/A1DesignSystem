@@ -3,6 +3,7 @@ import {
   Breadcrumb,
   Button,
   Card,
+  Code,
   Dialog,
   Grid,
   Heading,
@@ -14,6 +15,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { ProjectDialog } from './ProjectDialog.jsx'
+import { exportProjectJson } from './projectStore'
 
 /** Flatten the page tree into document order, tagging each with its level. */
 function flattenPages(pages) {
@@ -47,6 +49,8 @@ export function AllPagesView({
   const flat = flattenPages(pages)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [jsonOpen, setJsonOpen] = useState(false)
+  const projectJson = jsonOpen ? (exportProjectJson(project?.id) ?? '{}') : ''
 
   return (
     <>
@@ -71,6 +75,7 @@ export function AllPagesView({
               <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
             )}
             <Button variant="secondary" icon="delete"  size='sm' onClick={() => setConfirmDelete(true)}>Delete</Button>
+            <Button variant="secondary" icon="data_object" size='sm' onClick={() => setJsonOpen(true)}>JSON</Button>
             {flat.length > 0 && (
               <Button variant="secondary" icon="open_in_new" size='sm' onClick={onLaunchPrototype}>
                 Launch
@@ -130,6 +135,20 @@ export function AllPagesView({
         onCancel={() => setEditOpen(false)}
         onSubmit={(values) => { onRenameProject?.(project.id, values); setEditOpen(false) }}
       />
+
+      <Dialog
+        open={jsonOpen}
+        onClose={() => setJsonOpen(false)}
+        title={`${project?.name ?? 'Project'} — definition`}
+      >
+        <Stack direction="column" gap="sm">
+          <Paragraph size="sm" color="muted">
+            The whole project as a JSON bundle — every page and its definition. This is the same
+            shape the project importer accepts, so it round-trips.
+          </Paragraph>
+          <Code variant="block" copyCode wrapping>{projectJson}</Code>
+        </Stack>
+      </Dialog>
 
       <Dialog
         open={confirmDelete}

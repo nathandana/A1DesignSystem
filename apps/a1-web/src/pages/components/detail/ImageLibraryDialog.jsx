@@ -46,8 +46,9 @@ export function ImageLibraryDialog({ open, projectId, onClose, onApply }) {
       let last = null
       for (const file of files) last = await addImage(file)
       if (last) setSelected(last.id) // select the just-uploaded image
-    } catch {
-      setError('Couldn’t store the image. It may be too large for this browser.')
+    } catch (e) {
+      console.error('[image library] upload failed', e)
+      setError(`Couldn’t store the image${e?.message ? `: ${e.message}` : '. It may be too large for this browser.'}`)
     } finally {
       setBusy(false)
     }

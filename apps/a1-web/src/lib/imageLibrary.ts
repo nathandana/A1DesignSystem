@@ -14,7 +14,7 @@
  * the page JSON to a tiny id (not an inline data URL) means an uploaded image can
  * be reused across many figures without duplicating bytes.
  */
-import { getBackend } from './imageStore';
+import { getBackend, localBackend } from './imageStore';
 
 /** The src scheme used to reference a library image from a Figure. */
 export const IMAGE_REF_SCHEME = 'a1img://';
@@ -122,6 +122,18 @@ export function ensureLoaded(): Promise<void> {
 /** The cached URL for a stored image, or undefined if not yet loaded. */
 export function getObjectUrl(id: string): string | undefined {
   return urlCache.get(id);
+}
+
+/** Drop the URL cache and reload from the active backend. Called on sign-in/out
+ *  (after `setSupabaseImageUser`) so referenced images re-resolve against the
+ *  newly-selected backend instead of stale object URLs. */
+export function resetImageCache(): void {
+  for (const url of blobUrls) URL.revokeObjectURL(url);
+  blobUrls.clear();
+  urlCache.clear();
+  loadPromise = null;
+  notify();
+  void ensureLoaded().then(notify);
 }
 
 // ── Reference helpers ──────────────────────────────────────────────────────────
@@ -293,6 +305,30 @@ export function imageAvailableToProject(meta: ImageMeta, projectId: string | nul
 /** Bulk delete (used by the table view's row selection). */
 export async function deleteImages(ids: string[]): Promise<void> {
   for (const id of ids) await deleteImage(id);
+}
+
+/** Copy every image held in the browser's local IndexedDB store up to the active
+ *  backend (Supabase, when signed in). Used by the Account dialog's "Import local
+ *  data". No-op unless the active backend is the cloud one. Returns how many
+ *  images were uploaded. */
+export async function migrateLocalImagesToCloud(): Promise<number> {
+  const target = await getBackend();
+  if (target.kind !== 'supabase') return 0;
+  const local = localBackend();
+  const metas = await local.list();
+  let uploaded = 0;
+  for (const meta of metas) {
+    const blob = await local.getBlob(meta.id);
+    if (!blob) continue;
+    await target.save(normalize(meta), blob);
+    uploaded += 1;
+  }
+  if (uploaded) {
+    loadPromise = null;
+    await ensureLoaded();
+    notify();
+  }
+  return uploaded;
 }
 
 /** Human-readable byte size for the library UI. */

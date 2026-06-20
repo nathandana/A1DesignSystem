@@ -85,6 +85,13 @@ import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { suppressHistoryFlush } from './editor/storage.ts'
+import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
+import { supabaseConfigured } from './lib/supabase.js'
+import { AccountPage } from './pages/AccountPage.jsx'
+import { AuthGate } from './AuthGate.jsx'
+import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
+import { resetImageCache } from './lib/imageLibrary'
+import { setSupabaseImageUser } from './lib/imageStore'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -101,7 +108,7 @@ const RESOURCE_PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'todo']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'todo', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -121,6 +128,7 @@ const PAGE_TITLES = {
   accessibility: 'Accessibility',
   releases: 'Releases',
   todo: 'TODO',
+  account: 'Account',
 }
 
 const themeOptions = [
@@ -179,6 +187,7 @@ function App() {
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const { user: authUser } = useAuth()
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState('configure')
   // ── Projects state ─────────────────────────────────────────────────────────
@@ -254,6 +263,17 @@ function App() {
   function refreshProjects() {
     setProjects(projectStore.loadProjects())
   }
+
+  // Cloud sync: on sign-in pull the user's projects into local storage (then
+  // refresh the list) and start pushing local changes up; on sign-out, stop.
+  useEffect(() => {
+    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects })
+    else stopCloudSync()
+    // Point the image library at the user's Supabase storage (or back to local)
+    // and rebuild the URL cache so referenced Figures re-resolve.
+    setSupabaseImageUser(authUser ? authUser.id : null)
+    resetImageCache()
+  }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────
 
@@ -1005,6 +1025,7 @@ function App() {
             onOpenHelp={() => navigate('help')}
           />
         )}
+        {activePage === 'account' && <AccountPage onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
@@ -1020,6 +1041,19 @@ function App() {
       </PageLayout>
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
+        {supabaseConfigured && (
+          <MenuSection label="Account">
+            <Button
+              variant="secondary"
+              size="sm"
+              fullWidth
+              icon="account_circle"
+              onClick={() => { setSettingsOpen(false); navigate('account') }}
+            >
+              {authUser ? authUser.email : 'Sign in'}
+            </Button>
+          </MenuSection>
+        )}
         <MenuSection label="Theme">
           {themeOptions.length > 5 ? (
             <SelectField
@@ -1130,4 +1164,10 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(
+  <AuthProvider>
+    <AuthGate>
+      <App />
+    </AuthGate>
+  </AuthProvider>,
+)

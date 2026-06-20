@@ -286,3 +286,18 @@ export function updateTheme(id: string, patch: Partial<Omit<StoredTheme, 'id' | 
 export function deleteTheme(id: string): void {
   write(read().filter((t) => t.id !== id));
 }
+
+/** Every saved theme (for cloud backup). */
+export function exportThemes(): StoredTheme[] {
+  return read();
+}
+
+/** Restore themes from a cloud backup (upsert by id; local-only themes kept).
+ *  Returns the number of incoming themes. */
+export function importThemes(themes: StoredTheme[]): number {
+  if (!Array.isArray(themes) || !themes.length) return 0;
+  const byId = new Map(read().map((t) => [t.id, t]));
+  for (const t of themes) if (t && t.id) byId.set(t.id, t);
+  write([...byId.values()]);
+  return themes.length;
+}

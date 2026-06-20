@@ -40,6 +40,9 @@ _None._
 
 ## P2 — Medium
 
+- [ ] **Fix left sidebar collapse** `P2 · S` — the collapse/expand behaviour of the left sidebar
+  is broken. _Q: which sidebar — the editor workspace sidebar (Pages/Layers) or the main site
+  SideNav? Repro + expected behaviour._
 - [ ] **Complete component Properties tables + prop reconciliation** `P2 · L` — follow-up to the
   coverage audit (first pass done). Finding: **67** components have a configurator but only **56**
   have a dedicated Properties table (~11 fall back to generic). Write the **missing Properties
@@ -233,6 +236,15 @@ _None._
   / component / package, **link to related details**, and attach **images**. Replaces the current
   `TODO.md`-rendered page. _Builds on the complexity-badges/filtering work; relates to data binding
   + the image library._
+- [ ] **Site analytics (PostHog)** `P2 · S` — add product analytics, mirroring the downTracker
+  (Weight) repo pattern at `/Users/nathandana/Sites/Weight`: `posthog-js` + `posthog-js/react`
+  `PostHogProvider` wrapping the app in `main.jsx`, and a `lib/posthog.js` that `initPostHog()`s
+  **only when `VITE_POSTHOG_KEY` is set** (dormant by default; host default `https://us.i.posthog.com`).
+  Same dormant-by-default shape as the Supabase integration. _Add `VITE_POSTHOG_KEY` to `.env.example`._
+- [ ] **Editor → Projects menu: Create new** `P2 · S` — add a "Create new" option to the top-nav
+  Editor → Projects menu that opens the create-project dialog.
+- [ ] **Grid — vertical stretch** `P2 · S` — add a way to make grid items stretch vertically (e.g.
+  equal-height items / fill the row height) — an `alignItems` / stretch option on Grid (DS).
 
 ## P3 — Low / someday
 
@@ -337,6 +349,17 @@ _None._
   **navigate you to a page**, and help with a task. _Relates to the AI Chat component._
 - [ ] **Resizable editor panels** `P3 · M` — drag-resize the editor side panels.
 - [ ] **Help page screenshots** `P3 · S` — add screenshots to the Help pages.
+- [ ] **Video walkthroughs — prompt-to-MP4 pipeline** `P3 · L` — generate narrated video
+  walkthroughs of features/flows from a prompt + a declarative spec. Pipeline:
+  - **`walkthrough.yaml`** — the steps to demo (authored, or AI-generated from a prompt).
+  - **Playwright runner** — opens the site, performs the steps, captures video/screenshots, and
+    records event timings.
+  - **Narration generator** — a script per step → voiceover (mp3/wav) with word/character
+    timestamps.
+  - **Remotion project** — imports the video/screenshots, places callouts / captions / cursor
+    highlights, syncs the voiceover to the timeline, renders the final mp4.
+  For Help / marketing / feature pages. _Reuse the QA Playwright setup for capture; relates to
+  **Help page screenshots** + the **Joyride walkthrough** plugin._
 - [ ] **a1-web About page** `P3 · S` — an About page for a1-web.
 - [ ] **Demo click feedback** `P3 · S` — show a Snackbar (or similar) on Breadcrumb / Link /
   Button clicks in demos so interactions feel real.
@@ -347,9 +370,17 @@ _None._
 - [ ] **Pure & Native coverage + platform strategy** `P3 · L` — evaluate every component for Pure
   and Native: which have no app-based equivalent, which should be **native-only**, and how to
   manage **android/iOS** differences. _Relates to the App-view roadmap + coverage audit._
+- [ ] **Swift/SwiftUI kit — Apple device compatibility** `P3 · XL` — a **Swift-native** output of
+  A1 (a SwiftUI Swift Package consuming the Style Dictionary tokens) for first-class Apple-platform
+  support, alongside a **demo watchOS app** to prove it out. Add a **compatibility surface** that
+  displays which components/tokens are supported per Apple device (iPhone / iPad / Mac / Watch /
+  Vision). _A Swift-native alternative to the React Native path; pairs with **Watch app +
+  watch-native variants** below and **Pure & Native coverage + platform strategy** above. Q: SwiftUI
+  package vs. Code Connect-style mapping only? Token pipeline → Swift (Style Dictionary Swift
+  formatter)?_
 - [ ] **Watch app + watch-native variants** `P3 · XL` — explore shipping downTracker as a **watch
   app**, optimizing components for it, and **native variants for watches**. _Relates to the
-  App-view / React Native roadmap._
+  App-view / React Native roadmap; see the **Swift/SwiftUI kit** item for a Swift-native watch path._
 - [ ] **Unwrap the CHANGELOG / TODO markdown** `P3 · S` — stop hard-wrapping lines in `TODO.md` and
   the CHANGELOGs (one line per item / paragraph; let editors soft-wrap). Also simplifies the
   TodoPage renderer's continuation-line joining.

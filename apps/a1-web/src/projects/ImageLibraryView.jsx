@@ -139,8 +139,9 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
       for (const s of staged) await addImage(s.file)
       clearStaged()
       setBulkOpen(false)
-    } catch {
-      setError('Couldn’t store one or more images. They may be too large for this browser.')
+    } catch (e) {
+      console.error('[image library] upload failed', e)
+      setError(`Couldn’t store one or more images${e?.message ? `: ${e.message}` : '. They may be too large for this browser.'}`)
     } finally {
       setBusy(false)
     }
@@ -262,8 +263,9 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
     setError('')
     try {
       for (const file of files) await addImage(file)
-    } catch {
-      setError('Couldn’t store one or more images. They may be too large for this browser.')
+    } catch (e) {
+      console.error('[image library] upload failed', e)
+      setError(`Couldn’t store one or more images${e?.message ? `: ${e.message}` : '. They may be too large for this browser.'}`)
     } finally {
       setBusy(false)
     }

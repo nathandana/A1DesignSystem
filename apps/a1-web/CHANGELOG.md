@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- **Accounts + cloud sync (Supabase)** — optional, dormant unless `VITE_SUPABASE_URL` +
+  `VITE_SUPABASE_ANON_KEY` are set (the app still works fully on local storage without them).
+  When configured: an **Account page** (sign-in, password reset, delete account) and per-user
+  **cloud sync** of all editor data — **projects, patterns, and themes** sync as one envelope in a
+  `user_projects` row, and **images** sync to a Supabase **Storage** bucket (`user_images` metadata).
+  The Account page shows a **"Where your data is stored"** panel and an **Import local data** button
+  that pushes everything in this browser up to the account. Schema in `apps/a1-web/supabase/schema.sql`.
+
+- **Invite-only full-site gate** — when Supabase is configured the whole app is gated behind a
+  sign-in screen; **public sign-up is disabled** (admin creates users in Supabase). The sign-in
+  screen carries a required alpha/IP **agreement** checkbox.
+
+- **Project overview — JSON view** — a **JSON** button on a project's overview shows the entire
+  project as a round-trippable bundle (the same shape the importer accepts) in a `Code` block.
+
 - **Paragraph configurator — weight control** — a **Weight** control (regular / medium / semibold /
   bold) backed by the new Paragraph `weight` prop.
 

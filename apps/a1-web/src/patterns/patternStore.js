@@ -9,6 +9,11 @@ const KEY = (id) => `a1-pattern-${id}`
 // Ids of user-created patterns (seed patterns live in patterns.js).
 const IDS_KEY = 'a1-pattern-ids'
 
+// Change subscription so cloud sync can push when user patterns change.
+const patternListeners = new Set()
+export function subscribePatterns(fn) { patternListeners.add(fn); return () => patternListeners.delete(fn) }
+function notifyPatterns() { for (const fn of patternListeners) fn() }
+
 function loadUserIds() {
   try {
     return JSON.parse(localStorage.getItem(IDS_KEY) ?? '[]')
@@ -49,6 +54,7 @@ export function savePattern(definition) {
   } catch {
     /* ignore quota errors */
   }
+  notifyPatterns()
 }
 
 /** Remove a saved edit so the pattern reverts to its seed definition. */
@@ -58,6 +64,7 @@ export function resetPattern(id) {
   } catch {
     /* ignore */
   }
+  notifyPatterns()
 }
 
 export function hasSavedPattern(id) {
@@ -131,6 +138,22 @@ export function duplicatePattern(id) {
 export function deletePattern(id) {
   try { localStorage.removeItem(KEY(id)) } catch { /* ignore */ }
   saveUserIds(loadUserIds().filter((x) => x !== id))
+  notifyPatterns()
+}
+
+/** Every user-created pattern definition (for cloud backup). */
+export function exportUserPatterns() {
+  return getAllPatterns().filter((p) => isUserPattern(p?.pattern?.id))
+}
+
+/** Restore user patterns from a cloud backup (upsert by id). Returns the count. */
+export function importUserPatterns(defs) {
+  if (!Array.isArray(defs)) return 0
+  let n = 0
+  for (const def of defs) {
+    if (def?.pattern?.id) { registerPattern(def); n += 1 }
+  }
+  return n
 }
 
 /** Create and persist a blank pattern; returns its definition. */
