@@ -286,6 +286,25 @@
   font-size: var(--component-notification-font-size);
 }
 
+/* Image (thumbnail) cell type. */
+.a1-data-table__thumb {
+  display: block;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  object-fit: cover;
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-data-table--compact .a1-data-table__thumb {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+
+.a1-data-table__thumb--empty {
+  border: var(--component-divider-size-sm) dashed var(--semantic-color-border-subtle);
+}
+
 .a1-data-table__actions {
   display: inline-flex;
   align-items: center;

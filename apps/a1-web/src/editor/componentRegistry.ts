@@ -68,7 +68,7 @@ import {
 } from '@gtivr4/a1-design-system-react';
 import type { ComponentType as ReactComponentType } from 'react';
 import type { ComponentType } from './pageTypes';
-import { EditorDataTable, EditorTabs, EditorToolbar, EditorTreeMenu } from './editorComponents.jsx';
+import { EditorDataTable, EditorOutlet, EditorSlot, EditorTabs, EditorToolbar, EditorTreeMenu } from './editorComponents.jsx';
 
 export const componentRegistry: Record<ComponentType, ReactComponentType<any>> = {
   // Layout
@@ -140,4 +140,8 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   // Data
   TreeMenu: EditorTreeMenu,
   DataTable: EditorDataTable,
+  // Pattern authoring
+  Slot: EditorSlot,
+  // Shared project layout
+  Outlet: EditorOutlet,
 };

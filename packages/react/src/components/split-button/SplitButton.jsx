@@ -32,6 +32,7 @@ export function SplitButton({
 }) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef(null);
+  const rootRef = useRef(null);
 
   const resolvedVariant = variants.includes(variant) ? variant : "primary";
   const resolvedSize = sizes.includes(size) ? size : "md";
@@ -48,6 +49,7 @@ export function SplitButton({
 
   return (
     <div
+      ref={rootRef}
       className={["a1-split-button", isInert && "a1-split-button--disabled", className].filter(Boolean).join(" ")}
       {...rest}
     >
@@ -75,7 +77,7 @@ export function SplitButton({
       >
         <Icon name="arrow_drop_down" className="a1-split-button__caret" aria-hidden="true" />
       </button>
-      <Menu open={open} onClose={() => setOpen(false)} anchorRef={toggleRef} aria-label={menuLabel}>
+      <Menu open={open} onClose={() => setOpen(false)} anchorRef={rootRef} aria-label={menuLabel}>
         {actions.map((action) => (
           <MenuItem
             key={action.id}

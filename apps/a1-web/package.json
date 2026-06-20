@@ -1,6 +1,6 @@
 {
   "name": "a1-web",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@gtivr4/a1-design-system-react": "*",
+    "@netlify/blobs": "^8.1.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "culori": "^4.0.1",
     "fflate": "^0.8.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

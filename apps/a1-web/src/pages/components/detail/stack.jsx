@@ -2,6 +2,8 @@ import {
   Code,
   Stack,
   Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
@@ -139,7 +141,7 @@ export function Controls({ config, setConfig }) {
           { label: '3', value: 3 },
         ]}
       />
-      <Choice
+      <Choice prop="as"
         label="Element"
         size="compact"
         hideIndicator
@@ -148,21 +150,28 @@ export function Controls({ config, setConfig }) {
         onChange={(as) => set({ as })}
         options={AS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ResponsiveControl label="Direction" value={config.direction} onChange={(direction) => set({ direction })} defaultValue="column">
-        {(val, setVal) => <Choice iconOnly value={val} onChange={setVal} options={DIRECTION_OPTIONS} />}
+      <ResponsiveControl prop="direction" label="Direction" value={config.direction} onChange={(direction) => set({ direction })} defaultValue="column">
+        {(val, setVal, bp) => (
+          <Toolbar aria-label="Direction">
+            <ToolbarGroup aria-label="Direction" value={val} onChange={setVal} options={DIRECTION_OPTIONS} />
+            {bp == null && (
+              <>
+                <ToolbarDivider />
+                <ToolbarToggle icon="wrap_text" label="Wrap" pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
+              </>
+            )}
+          </Toolbar>
+        )}
       </ResponsiveControl>
-      <Toolbar aria-label="Wrap">
-        <ToolbarToggle icon="wrap_text" label="Wrap" showLabel pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
-      </Toolbar>
-      <ConfigSlider label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
-      <Choice
+      <ConfigSlider prop="gap" label="Gap" values={GAP_OPTIONS} value={config.gap} onChange={(gap) => set({ gap })} />
+      <Choice prop="align"
         label="Align"
         iconOnly
         value={config.align}
         onChange={(align) => set({ align })}
         options={ALIGN_OPTIONS}
       />
-      <ResponsiveControl label="Justify" value={config.justify} onChange={(justify) => set({ justify })} defaultValue="start">
+      <ResponsiveControl prop="justify" label="Justify" value={config.justify} onChange={(justify) => set({ justify })} defaultValue="start">
         {(val, setVal) => <Choice iconOnly value={val} onChange={setVal} options={JUSTIFY_OPTIONS} />}
       </ResponsiveControl>
     </Stack>

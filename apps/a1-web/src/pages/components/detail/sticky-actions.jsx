@@ -6,7 +6,6 @@ import {
   Section,
   StickyActions,
   Stack,
-  TextField,
 } from '@gtivr4/a1-design-system-react'
 import { ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
@@ -14,10 +13,6 @@ import { Toggle } from './Toggle.jsx'
 export const bareDisplay = true
 
 const CONTENT_WIDTH_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl', '2xl']
-
-function optionLabel(v) {
-  return v.charAt(0).toUpperCase() + v.slice(1)
-}
 
 function buildSnippet(config) {
   const width = config.contentWidth !== 'sm' ? `\n  contentWidth="${config.contentWidth}"` : ''
@@ -69,26 +64,12 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <ConfigSlider label="Content width" values={CONTENT_WIDTH_OPTIONS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
-      <TextField
-        label="Primary button label"
-        size="compact"
-        value={config.primaryLabel}
-        onChange={(e) => set({ primaryLabel: e.target.value })}
-      />
-      <Toggle
+      <ConfigSlider prop="contentWidth" label="Content width" values={CONTENT_WIDTH_OPTIONS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />
+      <Toggle prop="showSecondary"
         label="Secondary button"
         value={config.showSecondary}
         onChange={(showSecondary) => set({ showSecondary })}
       />
-      {config.showSecondary && (
-        <TextField
-          label="Secondary button label"
-          size="compact"
-          value={config.secondaryLabel}
-          onChange={(e) => set({ secondaryLabel: e.target.value })}
-        />
-      )}
     </Stack>
   )
 }

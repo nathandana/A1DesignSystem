@@ -11,6 +11,7 @@ export function SegmentedControl({
   onChange,
   fullWidth = false,
   size,
+  labelMode = "all",
   ...props
 }) {
   const items = options.map(normalize);
@@ -52,8 +53,20 @@ export function SegmentedControl({
       onKeyDown={handleKeyDown}
     >
       {items.map((opt) => {
-        const iconOnly = Boolean(opt.icon) && !opt.label;
         const isSelected = value === opt.value;
+        // labelMode controls which segments show their text label:
+        //   "all" (default) — every segment.
+        //   "selected"      — only the selected segment.
+        //   "none"          — none of them (fully icon-only).
+        // An option with no icon always shows its label so it never goes blank.
+        const wantsLabel =
+          Boolean(opt.label) &&
+          (labelMode === "none"
+            ? !opt.icon
+            : labelMode === "selected"
+              ? (isSelected || !opt.icon)
+              : true);
+        const iconOnly = Boolean(opt.icon) && !wantsLabel;
 
         return (
           <button
@@ -61,7 +74,7 @@ export function SegmentedControl({
             role="radio"
             type="button"
             aria-checked={isSelected}
-            aria-label={iconOnly ? (opt.ariaLabel ?? opt.value) : undefined}
+            aria-label={iconOnly ? (opt.ariaLabel ?? opt.label ?? opt.value) : undefined}
             tabIndex={isSelected ? 0 : -1}
             className={[
               "a1-segment",
@@ -72,7 +85,7 @@ export function SegmentedControl({
             onClick={() => onChange?.(opt.value)}
           >
             {opt.icon && <Icon name={opt.icon} className="a1-segment__icon" />}
-            {opt.label}
+            {wantsLabel ? opt.label : null}
           </button>
         );
       })}

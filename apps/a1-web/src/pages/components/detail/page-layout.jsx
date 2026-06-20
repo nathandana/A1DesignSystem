@@ -192,7 +192,7 @@ export function Controls({ config, setConfig }) {
         onChange={set}
       />
       {config.showSidebar && (
-        <Choice
+        <Choice prop="sidebarPlacement"
           label="Sidebar placement"
           iconOnly
           value={config.sidebarPlacement}
@@ -201,7 +201,7 @@ export function Controls({ config, setConfig }) {
         />
       )}
       {config.showAside && (
-        <Choice
+        <Choice prop="asidePlacement"
           label="Aside placement"
           iconOnly
           value={config.asidePlacement}

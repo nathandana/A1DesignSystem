@@ -67,7 +67,7 @@ export function Controls({ config, setConfig }) {
           set({ totalPages: n })
         }}
       />
-      <Choice
+      <Choice prop="siblings"
         label="Siblings"
         hint="Page buttons shown on each side of the current page."
         size="compact"
@@ -77,7 +77,7 @@ export function Controls({ config, setConfig }) {
         onChange={(siblings) => set({ siblings })}
         options={SIBLINGS_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="size"
         label="Size"
         size="compact"
         hideIndicator

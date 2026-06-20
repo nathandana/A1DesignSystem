@@ -613,3 +613,31 @@ export const Documentation = {
     </div>
   ),
 };
+
+/* ── Image thumbnails + selection ─────────────────────────────────────────── */
+
+export const ImageThumbnails = {
+  name: "Image column + bulk delete",
+  render: () => {
+    const photo = (id) => `https://images.unsplash.com/photo-${id}?w=96&h=96&q=70&auto=format&fit=crop`;
+    const [rows, setRows] = useState([
+      { id: "1", thumb: { src: photo("1518770660439-4636190af475"), alt: "Circuit" }, name: "circuit-board", size: "182 KB" },
+      { id: "2", thumb: { src: photo("1506744038136-46273834b3fb"), alt: "Landscape" }, name: "mountain-lake", size: "240 KB" },
+      { id: "3", thumb: { src: "", alt: "" }, name: "missing-source", size: "—" },
+    ]);
+    return (
+      <DataTable
+        columns={[
+          { key: "thumb", label: "", type: "image", width: "3.5rem" },
+          { key: "name", label: "Name", sortable: true },
+          { key: "size", label: "Size", align: "end" },
+        ]}
+        rows={rows}
+        size="compact"
+        selectable
+        getRowId={(row) => row.id}
+        onDeleteSelected={(_rows, ids) => setRows((r) => r.filter((row) => !ids.includes(row.id)))}
+      />
+    );
+  },
+};

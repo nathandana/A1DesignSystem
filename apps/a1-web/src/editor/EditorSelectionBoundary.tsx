@@ -36,6 +36,12 @@ interface EditorNodeInfo {
   type: string;
 }
 
+interface PatternInstanceRef {
+  id: string;
+  name: string;
+  nodeId?: string;
+}
+
 const TYPE_ICONS: Record<string, string> = {
   PageLayout: 'web',
   Section:    'crop_free',
@@ -52,6 +58,9 @@ interface EditorSelectionBoundaryProps {
   nodeId: string;
   nodeType: string;
   isSelected: boolean;
+  isLocked?: boolean;
+  patternOutline?: boolean;
+  patternInstance?: PatternInstanceRef;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   onDelete: (id: string) => void;
@@ -67,6 +76,8 @@ interface EditorSelectionBoundaryProps {
   getNodeInfo: (id: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   isContainer?: boolean;
   onCatalogDrop?: (catalogType: string, position: 'before' | 'into' | 'after') => void;
+  onDetachPattern?: (nodeId: string) => void;
+  onCreatePattern?: (nodeId: string) => void;
   children: React.ReactElement;
 }
 
@@ -74,6 +85,9 @@ export function EditorSelectionBoundary({
   nodeId,
   nodeType,
   isSelected,
+  isLocked,
+  patternOutline,
+  patternInstance,
   selectedId,
   onSelect,
   onDelete,
@@ -89,11 +103,14 @@ export function EditorSelectionBoundary({
   getNodeInfo,
   isContainer,
   onCatalogDrop,
+  onDetachPattern,
+  onCreatePattern,
   children,
 }: EditorSelectionBoundaryProps) {
   const [contextMenu, setContextMenu] = useState<{
     nodes: EditorNodeInfo[];
     position: { x: number; y: number };
+    pattern: PatternInstanceRef | null;
   } | null>(null);
 
   // Left click — always selects the innermost (directly-clicked) editor node.
@@ -114,7 +131,18 @@ export function EditorSelectionBoundary({
     );
 
     if (editorEls.length === 0) return;
-    onSelect(isSelected ? null : editorEls[0].dataset.editorNode!);
+
+    // If the click landed inside an editable text region (an InlineEditable's
+    // contentEditable, or a field input/textarea), just select the node — never
+    // toggle it off — so clicking or double-clicking text to edit doesn't drop
+    // the selection out from under you.
+    const inEditable = path.some(
+      (el) =>
+        el instanceof HTMLElement &&
+        (el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'),
+    );
+    const targetId = editorEls[0].dataset.editorNode!;
+    onSelect(inEditable ? targetId : isSelected ? null : targetId);
   }
 
   // Right click — shows the context menu with select + delete actions.
@@ -129,20 +157,49 @@ export function EditorSelectionBoundary({
 
     if (editorEls.length === 0) return;
 
+    // Nearest pattern-instance ancestor in the path (so right-clicking inside an
+    // instance still offers "Edit pattern").
+    const patternEl = (e.nativeEvent.composedPath() as EventTarget[]).find(
+      (el): el is HTMLElement => el instanceof HTMLElement && typeof el.dataset.editorPatternId === 'string',
+    );
+    const pattern = patternEl
+      ? { id: patternEl.dataset.editorPatternId!, name: patternEl.dataset.editorPatternName ?? 'pattern', nodeId: patternEl.dataset.editorNode }
+      : null;
+
     setContextMenu({
       nodes: editorEls.map((el) => ({
         id: el.dataset.editorNode!,
         type: el.dataset.editorType ?? 'Component',
       })),
       position: { x: e.clientX, y: e.clientY },
+      pattern,
     });
   }
 
   // Build the ContextMenu items from the nodes in the right-click path.
-  function buildMenuItems(nodes: EditorNodeInfo[]): ContextMenuEntry[] {
+  function buildMenuItems(nodes: EditorNodeInfo[], pattern: PatternInstanceRef | null): ContextMenuEntry[] {
     const target = nodes[0]; // innermost element
     const info = getNodeInfo(target.id);
     const items: ContextMenuEntry[] = [];
+
+    if (pattern) {
+      items.push({
+        id: 'edit-pattern',
+        label: 'Edit pattern',
+        icon: 'edit',
+        onClick: () => { window.location.href = `/?page=editor&pattern=${pattern.id}`; },
+      });
+      if (onDetachPattern && pattern.nodeId) {
+        const rootId = pattern.nodeId;
+        items.push({
+          id: 'detach-pattern',
+          label: 'Detach pattern',
+          icon: 'link_off',
+          onClick: () => onDetachPattern(rootId),
+        });
+      }
+      items.push({ type: 'divider', id: 'divider-edit-pattern' });
+    }
 
     if (nodes.length > 1) {
       items.push({ type: 'group', id: 'group-heading', label: 'Edit element' });
@@ -205,12 +262,22 @@ export function EditorSelectionBoundary({
       });
     }
 
+    if (onCreatePattern) {
+      items.push({ type: 'divider', id: 'divider-create-pattern' });
+      items.push({
+        id: 'create-pattern',
+        label: 'Create pattern from selection',
+        icon: 'dashboard_customize',
+        onClick: () => onCreatePattern(target.id),
+      });
+    }
+
     if (onCopyPattern || onPastePattern) {
       items.push({ type: 'divider', id: 'divider-pattern' });
       if (onCopyPattern) {
         items.push({
           id: 'copy-pattern',
-          label: 'Copy pattern',
+          label: 'Copy properties',
           icon: 'colorize',
           shortcut: isMac ? '⌘⌥C' : 'Ctrl+Alt+C',
           onClick: () => onCopyPattern(target.id),
@@ -219,7 +286,7 @@ export function EditorSelectionBoundary({
       if (onPastePattern) {
         items.push({
           id: 'paste-pattern',
-          label: 'Paste pattern',
+          label: 'Paste properties',
           icon: 'format_paint',
           shortcut: isMac ? '⌘⌥V' : 'Ctrl+Alt+V',
           onClick: () => onPastePattern(target.id),
@@ -295,6 +362,9 @@ export function EditorSelectionBoundary({
     'data-editor-node': nodeId,
     'data-editor-type': nodeType,
     ...(isSelected ? { 'data-editor-selected': 'true' } : {}),
+    ...(isLocked ? { 'data-editor-locked': 'true' } : {}),
+    ...(patternOutline ? { 'data-editor-pattern': 'true' } : {}),
+    ...(patternInstance ? { 'data-editor-pattern-id': patternInstance.id, 'data-editor-pattern-name': patternInstance.name } : {}),
     ...dragHandlers,
   });
 
@@ -305,7 +375,7 @@ export function EditorSelectionBoundary({
         open={!!contextMenu}
         x={contextMenu?.position.x ?? 0}
         y={contextMenu?.position.y ?? 0}
-        items={contextMenu ? buildMenuItems(contextMenu.nodes) : []}
+        items={contextMenu ? buildMenuItems(contextMenu.nodes, contextMenu.pattern) : []}
         onClose={() => setContextMenu(null)}
         aria-label="Element actions"
       />

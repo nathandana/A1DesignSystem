@@ -128,7 +128,7 @@ export function Preview({ config }) {
 export function Controls({ config, setConfig }) {
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="orientationMode"
         label="Orientation"
         size="compact"
         hideIndicator
@@ -163,7 +163,7 @@ export function Controls({ config, setConfig }) {
           options={ORIENTATION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
       ))}
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator
@@ -180,7 +180,7 @@ export function Controls({ config, setConfig }) {
               : 'var(--semantic-color-text-accent)',
         }))}
       />
-      <Choice
+      <Choice prop="lineStyle"
         label="Line style"
         size="compact"
         hideIndicator
@@ -189,9 +189,9 @@ export function Controls({ config, setConfig }) {
         onChange={(lineStyle) => setConfig((current) => ({ ...current, lineStyle }))}
         options={DIVIDER_LINE_STYLE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <ConfigSlider label="Size" values={DIVIDER_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
-      <ConfigSlider label="Space" values={DIVIDER_SPACE_OPTIONS} value={config.space} onChange={(space) => setConfig((current) => ({ ...current, space }))} />
-      <Toggle label="Decorative" value={config.decorative} onChange={(decorative) => setConfig((current) => ({ ...current, decorative }))} />
+      <ConfigSlider prop="size" label="Size" values={DIVIDER_SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider prop="space" label="Space" values={DIVIDER_SPACE_OPTIONS} value={config.space} onChange={(space) => setConfig((current) => ({ ...current, space }))} />
+      <Toggle prop="decorative" label="Decorative" value={config.decorative} onChange={(decorative) => setConfig((current) => ({ ...current, decorative }))} />
     </Stack>
   )
 }

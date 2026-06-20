@@ -203,3 +203,84 @@
   --a1-icon-button-border-hover:       transparent;
   --a1-icon-button-border-pressed:     transparent;
 }
+
+/* ─── Calendar variant ─────────────────────────────────────────────────────────
+   An event/date callout: a tokenized date block replaces the status icon, and an
+   eyebrow sits above a larger title. Neutral defaults to the action colour for the
+   date block; status modifiers still drive the accent so a calendar callout can be
+   tinted to a status. Shares the inline surface treatment. */
+
+.a1-banner--calendar.a1-banner--neutral {
+  --a1-banner-accent: var(--semantic-color-action-background);
+}
+
+/* The date block puts inverse (white) text on the accent. warn.500 only hits
+   3.18:1 — too low for the small month label — so use warn.text, matching the
+   system variant's bg fix. */
+.a1-banner--calendar.a1-banner--warn {
+  --a1-banner-accent: var(--semantic-color-status-warn-text);
+}
+
+.a1-banner--calendar .a1-banner__inner {
+  align-items: center;
+  padding: var(--component-message-banner-padding);
+  border: var(--component-message-banner-border-width) solid var(--a1-banner-border);
+  border-radius: var(--component-message-banner-border-radius);
+  background: var(--a1-banner-surface);
+}
+
+.a1-banner__date {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-2);
+  min-inline-size: var(--base-spacing-48);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-8);
+  background: var(--a1-banner-accent);
+  color: var(--semantic-color-text-inverse);
+  border-radius: var(--base-radius-md);
+  line-height: 1;
+}
+
+.a1-banner__date-month {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-2xs);
+  font-weight: var(--component-message-banner-title-font-weight);
+  line-height: 1;
+}
+
+.a1-banner__date-day {
+  font-family: var(--component-heading-font-family);
+  font-size: var(--semantic-font-size-heading-md);
+  font-weight: var(--semantic-font-weight-heading);
+  line-height: 1;
+}
+
+.a1-banner--calendar .a1-banner__content {
+  flex-direction: column;
+  gap: var(--base-spacing-2);
+}
+
+.a1-banner__eyebrow {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-2xs);
+  font-weight: var(--semantic-font-weight-heading);
+  line-height: var(--semantic-font-line-height-body);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-banner--calendar .a1-banner__title {
+  font-size: var(--semantic-font-size-heading-sm);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-banner--calendar .a1-banner__body {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-banner--calendar .a1-banner__action {
+  align-self: center;
+}

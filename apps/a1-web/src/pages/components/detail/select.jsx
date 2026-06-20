@@ -122,7 +122,7 @@ export function Controls({ config, setConfig }) {
       <TextField label="Hint" size="compact" value={config.hint} onChange={(e) => set({ hint: e.target.value })} />
       <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
       <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <Choice prop="labelPosition"
         label="Label position" size="compact" hideIndicator columns={2}
         value={config.labelPosition} onChange={(labelPosition) => set({ labelPosition })}
         options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}

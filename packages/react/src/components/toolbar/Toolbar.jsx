@@ -108,8 +108,8 @@ export function Toolbar({
 }
 
 /** Visual separator between tools within a Toolbar. */
-export function ToolbarDivider() {
-  return <span className="a1-toolbar__divider" role="separator" aria-orientation="vertical" />;
+export function ToolbarDivider({ className = "", ...rest }) {
+  return <span className={cx("a1-toolbar__divider", className)} role="separator" aria-orientation="vertical" {...rest} />;
 }
 
 function ToolButtonContent({ icon, label, showLabel, swatch }) {
@@ -196,6 +196,7 @@ export function ToolbarMenu({
   disabled = false,
   "aria-label": ariaLabel,
   className = "",
+  ...rest
 }) {
   const [open, setOpen] = useState(false);
   const btnRef = useRef(null);
@@ -215,6 +216,7 @@ export function ToolbarMenu({
         title={label}
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
+        {...rest}
       >
         <ToolButtonContent icon={buttonIcon} label={label} showLabel={showLabel} />
         <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
@@ -248,9 +250,11 @@ export function ToolbarGroup({
   options = [],
   columns,
   showLabels = false,
+  labelMode = "all",
   "aria-label": ariaLabel,
   disabled = false,
   className = "",
+  ...rest
 }) {
   const btnRefs = useRef([]);
   const grid = typeof columns === "number" && columns > 0;
@@ -295,6 +299,7 @@ export function ToolbarGroup({
       aria-label={ariaLabel}
       className={cx("a1-toolbar__group", grid && "a1-toolbar__group--grid", className)}
       style={style}
+      {...rest}
     >
       {options.map((opt, i) => {
         const selected = i === selectedIndex;
@@ -302,7 +307,10 @@ export function ToolbarGroup({
         // selected) is the single tab stop for the group.
         const tabIndex = selected || (selectedIndex === -1 && i === 0) ? 0 : -1;
         const optLabel = opt.label ?? String(opt.value);
-        const icon = opt.icon ?? (!labelAlwaysShown(showLabels) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
+        // `labelMode="selected"` shows the label only on the selected option;
+        // the rest fall back to icon/swatch-only (and "none" to its icon).
+        const optShowLabel = labelMode === "selected" ? selected : showLabels;
+        const icon = opt.icon ?? (!labelAlwaysShown(optShowLabel) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
         return (
           <button
             key={String(opt.value)}
@@ -310,7 +318,7 @@ export function ToolbarGroup({
             type="button"
             role="radio"
             aria-checked={selected}
-            aria-label={toolAriaLabel(showLabels, optLabel)}
+            aria-label={toolAriaLabel(optShowLabel, optLabel)}
             title={optLabel}
             tabIndex={tabIndex}
             disabled={disabled || opt.disabled}
@@ -318,7 +326,7 @@ export function ToolbarGroup({
             onClick={() => onChange?.(opt.value)}
             onKeyDown={(e) => handleKeyDown(e, i)}
           >
-            <ToolButtonContent icon={icon} label={opt.label} showLabel={showLabels} swatch={opt.swatch} />
+            <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
           </button>
         );
       })}

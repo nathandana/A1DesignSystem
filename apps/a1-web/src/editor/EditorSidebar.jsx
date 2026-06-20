@@ -41,23 +41,29 @@ const TYPE_ICONS = {
   DefinitionList:   'format_list_numbered',
   Pagination:       'last_page',
   Accordion:        'expand_circle_down',
+  Slot:             'select_all',
 }
 
 const CONTAINER_TYPES = new Set([
   'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
   'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
+  'Slot',
 ])
 
 function nodeToTreeItem(node) {
   const text = node.content?.fallback
-  const label = text
-    ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
-    : node.type
+  // A pattern instance shows the pattern's name + a pattern icon, not the base
+  // component type/structure.
+  const label = node.patternInstance
+    ? node.patternInstance.name
+    : text
+      ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
+      : node.type
   const isContainer = CONTAINER_TYPES.has(node.type)
   return {
     id: node.id,
     label,
-    icon: TYPE_ICONS[node.type] ?? 'widgets',
+    icon: node.patternInstance ? 'dashboard_customize' : (TYPE_ICONS[node.type] ?? 'widgets'),
     // Container types always expose children (even when empty) so the tree
     // renders them as branch nodes and allows drag-into in drag-and-drop mode.
     children: isContainer
@@ -173,6 +179,22 @@ export function ComponentTreePanel({
     const hasChildren = !!(node?.children?.length)
     const items = []
 
+    if (node?.patternInstance) {
+      items.push({
+        id: 'edit-pattern',
+        label: 'Edit pattern',
+        icon: 'edit',
+        onClick: () => { window.location.href = `/?page=editor&pattern=${node.patternInstance.id}` },
+      })
+      items.push({
+        id: 'detach-pattern',
+        label: 'Detach pattern',
+        icon: 'link_off',
+        onClick: () => onNodeAction?.({ type: 'detach', nodeId: id }),
+      })
+      items.push({ type: 'divider', id: 'div-edit-pattern' })
+    }
+
     if (isContainer) {
       items.push({
         id: 'add-inside',
@@ -223,10 +245,21 @@ export function ComponentTreePanel({
       })
     }
 
+    items.push({ type: 'divider', id: 'div-create-pattern' })
+    items.push({
+      id: 'create-pattern',
+      label: 'Create pattern from selection',
+      icon: 'dashboard_customize',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'create-pattern', nodeId: id })
+      },
+    })
+
     items.push({ type: 'divider', id: 'div-pattern' })
     items.push({
       id: 'copy-pattern',
-      label: 'Copy pattern',
+      label: 'Copy properties',
       icon: 'colorize',
       onClick: () => {
         setTreeCtxMenu(null)
@@ -235,7 +268,7 @@ export function ComponentTreePanel({
     })
     items.push({
       id: 'paste-pattern',
-      label: 'Paste pattern',
+      label: 'Paste properties',
       icon: 'format_paint',
       onClick: () => {
         setTreeCtxMenu(null)

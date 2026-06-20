@@ -13,6 +13,14 @@ import { Toggle } from './Toggle.jsx'
 // stretched to full width. Do not add a fullWidth option here; use Button with
 // fullWidth for full-width actions. See system rule `icon-button-natural-width`.
 const VARIANT_OPTIONS = ['tertiary', 'secondary', 'destructive', 'success']
+// Icons for the variant picker, matching Button's emphasis ramp + status icons.
+// With labelMode="selected" only the chosen variant shows its label.
+const VARIANT_ICONS = {
+  secondary: 'star_half',
+  tertiary: 'star_outline',
+  destructive: 'delete',
+  success: 'check_circle',
+}
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 function optionLabel(value) {
@@ -57,22 +65,21 @@ export function Controls({ config, setConfig, pages }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
+        labelMode="selected"
+        helper="Sets the icon button's visual emphasis and intent."
         value={config.variant}
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
-        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt, icon: VARIANT_ICONS[opt] }))}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider prop="size" label="Size" helper="Sets the target size — sm (24px) for dense toolbars up to lg." values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <PageLinkField
         pages={pages}
         value={config.href ?? ''}
         onChange={(href) => setConfig((current) => ({ ...current, href }))}
       />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+      <Toggle prop="disabled" label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
     </Stack>
   )
 }

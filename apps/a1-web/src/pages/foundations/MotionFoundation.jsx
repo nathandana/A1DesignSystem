@@ -55,23 +55,22 @@ export function MotionFoundationPage({ onNavigate }) {
   return (
     <>
       <Section
-        padding="sm"
-        surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
+        padding="xs"
         contentWidth="xl"
-        gap="lg"
-        aria-labelledby="motion-heading"
+        surface="panel"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { href: '/', label: 'Home' },
-              { href: '?page=foundations', label: 'Foundations' },
+              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
               { label: 'Motion' },
             ]}
           />
-          <Heading as="h1" id="motion-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="motion-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Motion
           </Heading>
           <Paragraph size="sm" color="muted">

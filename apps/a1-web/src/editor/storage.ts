@@ -89,17 +89,44 @@ export function pruneEditorHistoryStorage(maxEntries = 10): void {
   }
 }
 
+// ── Change notification (for cloud sync) ──────────────────────────────────────
+type StorageWriteListener = (key: string) => void;
+const writeListeners = new Set<StorageWriteListener>();
+let notifySuspended = false;
+
+/** Subscribe to successful localStorage writes — used to trigger a debounced
+ *  cloud push. Returns an unsubscribe function. */
+export function onStorageWrite(listener: StorageWriteListener): () => void {
+  writeListeners.add(listener);
+  return () => { writeListeners.delete(listener); };
+}
+
+/** Suspend write notifications. Wrap a bulk import (e.g. a cloud pull) so its
+ *  writes don't immediately echo back out as a push. */
+export function suspendStorageNotify(suspend: boolean): void {
+  notifySuspended = suspend;
+}
+
+function notifyWrite(key: string): void {
+  if (notifySuspended) return;
+  for (const fn of writeListeners) {
+    try { fn(key); } catch { /* a listener error must not break persistence */ }
+  }
+}
+
 /** Compress + write to localStorage, freeing space and retrying once on a quota
  *  error. Returns true on success, false if it still cannot fit. */
 export function writeStored(key: string, value: string): boolean {
   const payload = compress(value);
   try {
     localStorage.setItem(key, payload);
+    notifyWrite(key);
     return true;
   } catch {
     pruneEditorHistoryStorage();
     try {
       localStorage.setItem(key, payload);
+      notifyWrite(key);
       return true;
     } catch {
       return false;

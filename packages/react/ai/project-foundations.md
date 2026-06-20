@@ -175,7 +175,9 @@ system/themes/{theme-name}/
 | `a1-light` | `[data-theme='a1-light']` | Standard light theme |
 | `accessible` | `[data-theme='accessible']` | High-contrast accessible variant |
 | `heritage` | `.a1-theme-heritage` | Legacy brand theme |
-| `fresh` | `[data-theme='fresh']` | Sky-blue accents, Nunito/Baskerville type, mint gradient background |
+| `fresh` | `.a1-theme-fresh` | Sky-blue accents, Nunito/Baskerville type, mint gradient background |
+| `crochet` | `.a1-theme-crochet` | Soft cozy pastels (dusty-rose accent, sage/periwinkle/apricot) on warm cream surfaces; Fraunces (expressive warm serif) display, Libre Baskerville headings, Roboto Slab (slab serif) body |
+| `aperture` | `.a1-theme-aperture` | Modern, minimal, gallery-grade for a photography portfolio — near-monochrome graphite on clean whites (Apple/Audi inspired), refined Apple-blue info + Audi-red error; Pinyon Script (elegant script) display, Playfair Display (editorial serif) headings, Manrope (clean elegant sans) body; small radii |
 
 ### Breakpoints
 
@@ -226,6 +228,54 @@ These values are de-facto standards derived from existing component usage:
   .a1-card--has-icon { flex-direction: row; }
 }
 ```
+
+---
+
+## Z-index and Layering
+
+A1 stacks overlays with **two distinct mechanisms**. Mixing them is the usual cause of "my menu is behind the dialog" bugs — so decide which layer an element belongs to before assigning any `z-index`.
+
+### 1. The browser top layer (modals)
+
+`Dialog` renders a native `<dialog>` opened with `showModal()`, which the browser paints in the **top layer** — above the entire normal stacking context, **regardless of any `z-index`**. No `z-index`, however large, can place a normal-layer element above an open `showModal` dialog.
+
+**Consequence:** anything that must appear **above a modal** — a menu opened inside a dialog, a confirmation snackbar, a tooltip — must **also live in the top layer**, not merely carry a higher number. Use the **Popover API** (`popover` attribute + `showPopover()`) or render the element **inside the open `<dialog>`**. Within the top layer, stacking is by **open order** (last opened wins), so a menu opened from a dialog naturally sits above it.
+
+A popover portaled to `<body>` (the current `Menu` / `Autocomplete` pattern) is in the **normal** layer and will render **behind** an open Dialog. As an interim fix, such a popover may portal into the nearest open `<dialog>` ancestor when there is one (so it joins the dialog's top-layer stack); the durable fix is the Popover API.
+
+### 2. The z-index scale (everything else)
+
+For elements that stay in the normal layer — sticky chrome, pinned app furniture, non-modal popovers, and toasts that never overlap a modal — use this single ordered scale. **Never invent values between the bands.**
+
+| Layer | Token (target) | Value | Used by |
+|-------|----------------|-------|---------|
+| Content | — | `auto` / 0 | In-flow content. Component-**local** `-1` / `0` / `1` for internal stacking only (Tabs active tab, Slider thumb, Heading mark) — never part of the global scale |
+| Sticky | `--semantic-z-sticky` | 100 | TopHeader, PageLayout sticky regions |
+| Pinned chrome | `--semantic-z-pinned` | 200 | SideNav overlay, BottomDrawer, PageNav, StickyActions |
+| Popover | `--semantic-z-popover` | 1000 | Menu, Autocomplete listbox, Select, ContextMenu, tooltips |
+| Modal (non-top-layer) | `--semantic-z-modal` | 1100 | Any modal that does **not** use the native top layer |
+| Toast | `--semantic-z-toast` | 1200 | Snackbar / toasts, above non-top-layer modals |
+
+### Current state (audit) — June 2026
+
+| Component | Current z-index | Layer | Action |
+|-----------|-----------------|-------|--------|
+| Dialog | native top layer | — | correct |
+| Menu, Autocomplete | `--component-menu-z-index` (1000), `<body>` portal | Popover | **behind a top-layer Dialog** → top layer / portal into dialog |
+| ContextMenu | hardcoded `1000` | Popover | replace with the popover token |
+| Snackbar | `--component-snackbar-z-index` (1100) | Toast | **behind a top-layer Dialog** → top layer (toasts must beat modals) |
+| TopHeader dropdown | `calc(menu + 1)` = 1001 | Popover | collapse onto the popover layer once menus are top-layer |
+| TopHeader bar | 100 | Sticky | ok |
+| PageLayout | 100 | Sticky | ok |
+| StickyActions | 150 | Pinned | fold into 200 |
+| SideNav (199 / overlay 200), BottomDrawer (200), PageNav (200) | ~200 | Pinned | align onto `--semantic-z-pinned` (200) |
+| Tabs / Slider / TreeMenu / Heading | `-1` … `1` | Content | component-local — leave as-is |
+
+### Rules
+
+1. **One scale.** Every normal-layer `z-index` references a layer token; no ad-hoc numbers between bands. If a token doesn't exist yet, add it to `system/tokens/` (semantic tier).
+2. **Top layer for anything that must beat a modal.** Menus, context menus, tooltips, and toasts that can appear over a `Dialog` use the Popover API or render inside the dialog — `z-index` alone will not work.
+3. **Component-local stacking** (`-1` / `0` / `1`) stays inside the component and never participates in the global scale.
 
 ---
 

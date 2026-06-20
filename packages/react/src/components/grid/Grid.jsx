@@ -14,6 +14,8 @@ const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 
 function resolveGap(key) {
   if (key == null) return undefined;
+  // "none" removes the gap (matches the shared resolveSpacing convention).
+  if (key === "none") return "0";
   if (gapSizes[key]) return gapSizes[key];
 
   const n = Number(key);

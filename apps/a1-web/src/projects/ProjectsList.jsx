@@ -11,10 +11,29 @@ import {
   MessageEmptyState,
   Paragraph,
   Section,
+  SplitButton,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { ProjectDialog } from './ProjectDialog.jsx'
-import { loadPages } from './projectStore.ts'
+import { ProjectImportDialog } from './ProjectImportDialog.jsx'
+import { AiProjectDialog } from './AiProjectDialog.jsx'
+import { exportProjectJson, loadPages } from './projectStore.ts'
+
+// Trigger a browser download of a project as a JSON bundle (round-trips with the
+// Upload JSON dialog).
+function downloadProjectJson(project) {
+  const json = exportProjectJson(project.id)
+  if (!json) return
+  const slug = (project.name || 'project').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'project'
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${slug}.json`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
 
 function formatDate(ts) {
   if (!ts) return ''
@@ -32,10 +51,14 @@ export function ProjectsList({
   onRenameProject,
   onDuplicateProject,
   onDeleteProject,
+  onImportProject,
+  onOpenImageLibrary,
   onNavigateHome,
   onOpenHelp,
 }) {
   const [dialog, setDialog] = useState(null)   // { mode: 'create' | 'rename', project }
+  const [importing, setImporting] = useState(false) // upload-from-JSON dialog
+  const [aiOpen, setAiOpen] = useState(false) // create-with-AI chat dialog
   const [ctxMenu, setCtxMenu] = useState(null)  // { id, x, y }
   const [confirmDelete, setConfirmDelete] = useState(null) // project
 
@@ -55,32 +78,52 @@ export function ProjectsList({
   const ctxProject = ctxMenu ? projects.find((p) => p.id === ctxMenu.id) : null
 
   return (
-    <Section padding="sm" aria-labelledby="projects-heading" contentWidth='xl'>
-      <Stack direction="column" gap="sm">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: 'Projects' },
-          ]}
-        />
-        <Stack direction="row" align="start" justify="between" wrap gap="md">
-          <Stack direction="column" gap="sm">
-            <Heading as="h1" id="projects-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Projects
-            </Heading>
-            <Paragraph size="lg" color="muted">
-              Each project is an isolated set of pages with its own auto-generated navigation.
-            </Paragraph>
-          </Stack>
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+              { label: 'Projects' },
+            ]}
+          />
+          <Heading as="h1" id="projects-heading" size={{ xs: 'lg', md: 'xxl' }}>
+            Projects
+          </Heading>
+          <Paragraph size="sm" color="muted">
+            Each project is an isolated set of pages with its own auto-generated navigation.
+          </Paragraph>
           <Stack direction="row" gap="xs" align="center" wrap>
             <Button variant="secondary" icon="help" onClick={() => onOpenHelp?.()}>
               Help
             </Button>
-            <Button icon="add" onClick={() => setDialog({ mode: 'create' })}>
+            {onOpenImageLibrary && (
+              <Button variant="secondary" icon="photo_library" onClick={() => onOpenImageLibrary()}>
+                Image library
+              </Button>
+            )}
+            {onImportProject && (
+              <Button variant="secondary" icon="upload" onClick={() => setImporting(true)}>
+                Upload JSON
+              </Button>
+            )}
+            <SplitButton
+              icon="add"
+              onClick={() => setDialog({ mode: 'create' })}
+              menuLabel="More ways to create a project"
+              toggleLabel="More ways to create a project"
+              actions={[
+                { id: 'ai', label: 'Create with AI', icon: 'auto_awesome', onClick: () => setAiOpen(true) },
+              ]}
+            >
               New project
-            </Button>
+            </SplitButton>
           </Stack>
         </Stack>
+      </Section>
+
+      <Section padding="sm" aria-labelledby="projects-heading" contentWidth="xl">
+        <Stack direction="column" gap="sm">
 
         {projects.length === 0 ? (
           <MessageEmptyState
@@ -140,6 +183,7 @@ export function ProjectsList({
           { id: 'open', label: 'Open', icon: 'arrow_forward', onClick: () => onOpenProject(ctxProject.id) },
           { id: 'rename', label: 'Rename…', icon: 'edit', onClick: () => setDialog({ mode: 'rename', project: ctxProject }) },
           { id: 'duplicate', label: 'Duplicate', icon: 'content_copy', onClick: () => onDuplicateProject(ctxProject.id) },
+          { id: 'download', label: 'Download as JSON', icon: 'download', onClick: () => downloadProjectJson(ctxProject) },
           { type: 'divider', id: 'div' },
           { id: 'delete', label: 'Delete…', icon: 'delete', variant: 'destructive', onClick: () => setConfirmDelete(ctxProject) },
         ] : []}
@@ -153,6 +197,23 @@ export function ProjectsList({
         onCancel={() => setDialog(null)}
         onSubmit={handleSubmit}
       />
+
+      {onImportProject && (
+        <ProjectImportDialog
+          key={importing ? 'import-open' : 'import-closed'}
+          open={importing}
+          onCancel={() => setImporting(false)}
+          onImport={(data) => { setImporting(false); onImportProject(data) }}
+        />
+      )}
+
+      {onImportProject && (
+        <AiProjectDialog
+          open={aiOpen}
+          onClose={() => setAiOpen(false)}
+          onCreated={(data) => { setAiOpen(false); onImportProject(data) }}
+        />
+      )}
 
       <Dialog
         open={!!confirmDelete}
@@ -176,7 +237,8 @@ export function ProjectsList({
           “{confirmDelete?.name}” and its {counts[confirmDelete?.id] ?? 0} page(s) will be permanently deleted.
           This can’t be undone.
         </Paragraph>
-      </Dialog>
-    </Section>
+        </Dialog>
+      </Section>
+    </>
   )
 }

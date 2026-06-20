@@ -143,6 +143,12 @@
   border-block-end: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
 }
 
+/* With a divider, give the open panel breathing room so its first item does not
+   sit directly against the divider line. Scales with the accordion size. */
+.a1-accordion--divider .a1-accordion__body-inner {
+  padding-block-start: var(--a1-ac-py);
+}
+
 /* ─── Disabled ──────────────────────────────────────────────────────────────── */
 
 .a1-accordion--disabled .a1-accordion__trigger {

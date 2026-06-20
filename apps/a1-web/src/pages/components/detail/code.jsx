@@ -152,7 +152,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator

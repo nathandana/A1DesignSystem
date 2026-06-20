@@ -6,7 +6,7 @@ const TYPE_OPTIONS = ['text', 'email', 'password']
 
 function TypeControl({ config, setConfig }) {
   return (
-    <Choice
+    <Choice prop="type"
       label="Type"
       size="compact"
       hideIndicator

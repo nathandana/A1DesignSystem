@@ -55,15 +55,15 @@ export function Controls({ config, setConfig }) {
         value={config.name}
         onChange={(name) => set({ name })}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice prop="color"
         label="Color"
         iconOnly
         value={config.color}
         onChange={(color) => set({ color })}
         options={statusOptions(COLOR_OPTIONS, { noneLabel: 'Inherit' })}
       />
-      <Toggle
+      <Toggle prop="fill"
         label="Fill"
         value={config.fill}
         onChange={(fill) => set({ fill })}

@@ -260,28 +260,25 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
   return (
     <>
       <Section
-        padding="sm"
-        surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
+        padding="xs"
         contentWidth="xl"
-        gap="lg"
-        aria-labelledby="color-foundation-heading"
+        surface="panel"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { href: '/', label: 'Home' },
-              { href: '?page=foundations', label: 'Foundations' },
+              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
               { label: 'Color' },
             ]}
           />
           <Heading
             as="h1"
             id="color-foundation-heading"
-            type="heading"
-            size={{ xs: 'xl', md: 'xxl' }}
-            textWrap="balance"
+            size={{ xs: 'lg', md: 'xxl' }}
           >
             Color
           </Heading>

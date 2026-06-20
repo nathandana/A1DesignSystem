@@ -83,7 +83,7 @@ export function Controls({ config, setConfig }) {
         value={config.citeUrl}
         onChange={(event) => setConfig((current) => ({ ...current, citeUrl: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
         size="compact"
         hideIndicator

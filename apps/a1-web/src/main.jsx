@@ -4,11 +4,16 @@ import '../../../packages/react/src/color-scheme.css'
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
 import {
+  BottomSheet,
   Button,
+  Heading,
+  IconButton,
   LabelsProvider,
+  Link,
   Menu,
   MenuSection,
   PageLayout,
+  Paragraph,
   RadioGroup,
   Section,
   SegmentedControl,
@@ -58,35 +63,52 @@ import {
   componentPageIds,
   componentPageTitles,
 } from './pages/Components.jsx'
-import { Templates } from './pages/Templates.jsx'
+import { Patterns } from './pages/Patterns.jsx'
+import { patternToDefinition } from './patterns/patternDocument.js'
+import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
+import { TodoPage } from './pages/TodoPage.jsx'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
 import { AllPagesView } from './projects/AllPagesView.jsx'
+import { ImageLibraryView } from './projects/ImageLibraryView.jsx'
+import { ThemeEditor } from './pages/ThemeEditor.jsx'
+import { ThemesList } from './pages/ThemesList.jsx'
+import { RuleEditor } from './pages/RuleEditor.jsx'
+import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
+import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
+import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { suppressHistoryFlush } from './editor/storage.ts'
+import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
+import { supabaseConfigured } from './lib/supabase.js'
+import { AccountPage } from './pages/AccountPage.jsx'
+import { AuthGate } from './AuthGate.jsx'
+import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
+import { resetImageCache } from './lib/imageLibrary'
+import { setSupabaseImageUser } from './lib/imageStore'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'projects', 'accessibility', 'releases']
+const RESOURCE_PAGE_IDS = ['features', 'get-started', 'todo', 'accessibility', 'releases']
 const RESOURCE_PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
-  projects: 'folder',
+  todo: 'checklist',
   accessibility: 'accessibility',
   releases: 'new_releases',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'templates', 'editor', 'editor-preview', 'projects', 'help', 'accessibility', 'releases']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'todo', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -95,18 +117,25 @@ const PAGE_TITLES = {
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
-  templates: 'Patterns',
+  patterns: 'Patterns',
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
+  'image-library': 'Image library',
+  'theme-editor': 'Theme',
+  'rules': 'Rules',
   projects: 'Projects',
   help: 'Help',
   accessibility: 'Accessibility',
   releases: 'Releases',
+  todo: 'TODO',
+  account: 'Account',
 }
 
 const themeOptions = [
   { value: 'a1Light', label: 'Default' },
   { value: 'a1Heritage', label: 'Heritage' },
+  { value: 'crochet', label: 'Crochet' },
+  { value: 'aperture', label: 'Aperture' },
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
 ]
@@ -158,6 +187,7 @@ function App() {
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const { user: authUser } = useAuth()
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState('configure')
   // ── Projects state ─────────────────────────────────────────────────────────
@@ -175,6 +205,10 @@ function App() {
   })
   const [openPageId, setOpenPageId] = useState(() => new URLSearchParams(window.location.search).get('doc') || null)
 
+  // Pattern authoring reuses the main editor: `?page=editor&pattern=<id>` opens a
+  // pattern as a document (no project context). Derived from the URL each render.
+  const editorPatternId = activePage === 'editor' ? new URLSearchParams(window.location.search).get('pattern') : null
+
   const [editorView, setEditorView] = useState('edit')
   const [editorDirty, setEditorDirty] = useState(false)
   const [editorSelectedNodeId, setEditorSelectedNodeId] = useState(null)
@@ -183,6 +217,31 @@ function App() {
   const [editorAddTarget, setEditorAddTarget] = useState(null)
   const [editorPendingAction, setEditorPendingAction] = useState(null) // { type: 'delete'|'ungroup', nodeId }
   const [editorPendingConvert, setEditorPendingConvert] = useState(null) // { nodeId, newType, newProps }
+  // Set to a page id by "Make with AI" so that, when that page opens, the editor
+  // lands on the AI tab with the prompt focused. Consumed (cleared) once handled.
+  const [aiComposePageId, setAiComposePageId] = useState(null)
+  // Theme editor: which saved theme is open, and which category pane is active.
+  // Both are mirrored in the URL (`?page=theme-editor&theme=…&cat=…`) so browser
+  // history steps through themes list → theme → category.
+  const [activeThemeId, setActiveThemeId] = useState(() => new URLSearchParams(window.location.search).get('theme') || null)
+  const [themeCategory, setThemeCategory] = useState(() => new URLSearchParams(window.location.search).get('cat') || 'color')
+  // Opens the editor workspace SideNav as an overlay at md and below (where it's
+  // collapsed). Toggled by the in-canvas sidebar button.
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  // At xs/sm the right config panel becomes a BottomSheet instead of a side rail.
+  const [isSmDown, setIsSmDown] = useState(() =>
+    typeof window !== 'undefined' && !!window.matchMedia?.('(max-width: 640px)').matches
+  )
+  useEffect(() => {
+    if (!window.matchMedia) return undefined
+    const mq = window.matchMedia('(max-width: 640px)')
+    const handler = (e) => setIsSmDown(e.matches)
+    mq.addEventListener?.('change', handler)
+    return () => mq.removeEventListener?.('change', handler)
+  }, [])
+  // Bump on theme-store changes so the sidebar theme name stays live after a rename.
+  const [, setThemesVersion] = useState(0)
+  useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
   const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
@@ -192,6 +251,9 @@ function App() {
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
   function definitionForPage(pageId) {
+    if (pageId === projectStore.LAYOUT_DOC_ID) {
+      try { return JSON.parse(projectStore.loadProjectLayout(activeProjectId)) } catch { return null }
+    }
     const example = EDITOR_EXAMPLES.find((e) => e.id === pageId)
     if (example) return example.definition
     const meta = projectPages.find((p) => p.id === pageId)
@@ -201,6 +263,17 @@ function App() {
   function refreshProjects() {
     setProjects(projectStore.loadProjects())
   }
+
+  // Cloud sync: on sign-in pull the user's projects into local storage (then
+  // refresh the list) and start pushing local changes up; on sign-out, stop.
+  useEffect(() => {
+    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects })
+    else stopCloudSync()
+    // Point the image library at the user's Supabase storage (or back to local)
+    // and rebuild the URL cache so referenced Figures re-resolve.
+    setSupabaseImageUser(authUser ? authUser.id : null)
+    resetImageCache()
+  }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────
 
@@ -249,8 +322,23 @@ function App() {
 
   function handleCreateProject(values) {
     const project = projectStore.createProject(values)
+    // createProject only takes name/description/icon — persist any extra meta.
+    if (values.meta && Object.keys(values.meta).length) {
+      projectStore.updateProject(project.id, { meta: values.meta })
+    }
     refreshProjects()
     openProject(project.id)
+  }
+
+  function handleImportProject(data) {
+    try {
+      const project = projectStore.importProjectJson(data)
+      refreshProjects()
+      openProject(project.id)
+    } catch (err) {
+      // Validation in the dialog gates this; this guards against unexpected shapes.
+      console.error('Project import failed:', err)
+    }
   }
 
   function handleRenameProject(id, patch) {
@@ -275,6 +363,17 @@ function App() {
     if (!activeProjectId) return
     const { pages, page } = projectStore.addPage(activeProjectId, { parentId, afterId, title: 'Untitled' })
     setProjectPages(pages)
+    handleOpenPage(page.id)
+    refreshProjects()
+  }
+
+  // "Make with AI": add a blank page, open it, and flag it so the editor lands on
+  // the AI tab with the prompt focused (consumed in EditorAsidePanel on mount).
+  function handleAddPageWithAi() {
+    if (!activeProjectId) return
+    const { pages, page } = projectStore.addPage(activeProjectId, { parentId: null, afterId: null, title: 'Untitled' })
+    setProjectPages(pages)
+    setAiComposePageId(page.id)
     handleOpenPage(page.id)
     refreshProjects()
   }
@@ -374,6 +473,7 @@ function App() {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
     }
     setActivePage(next)
+    setSidebarOpen(false)
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 
@@ -393,6 +493,8 @@ function App() {
       setActiveProjectId(proj)
       setProjectPages(proj ? projectStore.loadPages(proj) : [])
       setOpenPageId(params.get('doc') || null)
+      setActiveThemeId(params.get('theme') || null)
+      setThemeCategory(params.get('cat') || 'color')
     }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
@@ -402,6 +504,8 @@ function App() {
     document.documentElement.classList.toggle('a1-theme-heritage', theme === 'a1Heritage')
     document.documentElement.classList.toggle('a1-theme-accessible', theme === 'a1Accessible')
     document.documentElement.classList.toggle('a1-theme-fresh', theme === 'fresh')
+    document.documentElement.classList.toggle('a1-theme-crochet', theme === 'crochet')
+    document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
@@ -442,6 +546,9 @@ function App() {
   const editorUrlSynced = useRef(false)
   useEffect(() => {
     if (activePage !== 'editor') return
+    // Pattern authoring keeps its own `?page=editor&pattern=<id>` URL — don't
+    // rewrite it to the project/page form (which would drop the pattern param).
+    if (editorPatternId) return
     const params = new URLSearchParams()
     params.set('page', 'editor')
     if (activeProjectId) params.set('project', activeProjectId)
@@ -457,7 +564,33 @@ function App() {
       window.history.replaceState({ page: 'editor' }, '', next)
     }
     editorUrlSynced.current = true
-  }, [activePage, activeProjectId, openPageId])
+  }, [activePage, activeProjectId, openPageId, editorPatternId])
+
+  // Keep the theme editor URL pointed at the open theme + category
+  // (`?page=theme-editor&theme=<id>&cat=<category>`) so Back/Forward steps
+  // through Themes list → theme → category. First sync on entry REPLACES; each
+  // genuine change (open a theme, switch category) PUSHES a history entry.
+  const themeUrlSynced = useRef(false)
+  useEffect(() => {
+    if (activePage !== 'theme-editor') { themeUrlSynced.current = false; return }
+    const params = new URLSearchParams()
+    params.set('page', 'theme-editor')
+    if (activeThemeId) {
+      params.set('theme', activeThemeId)
+      params.set('cat', themeCategory)
+    }
+    const next = `${window.location.pathname}?${params.toString()}`
+    if (`${window.location.pathname}${window.location.search}` === next) {
+      themeUrlSynced.current = true
+      return
+    }
+    if (themeUrlSynced.current) {
+      window.history.pushState({ page: 'theme-editor' }, '', next)
+    } else {
+      window.history.replaceState({ page: 'theme-editor' }, '', next)
+    }
+    themeUrlSynced.current = true
+  }, [activePage, activeThemeId, themeCategory])
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return undefined
@@ -541,22 +674,58 @@ function App() {
       ],
     },
     {
-      id: 'templates',
-      label: PAGE_TITLES.templates,
-      href: getPath('templates'),
-      active: activePage === 'templates',
-      onClick: (e) => handleNavClick(e, 'templates'),
-    },
-    {
       id: 'editor',
       label: PAGE_TITLES.editor,
-      active: activePage === 'editor' || activePage === 'help',
+      active: activePage === 'editor' || activePage === 'help' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
         {
-          icon: 'grid_view',
-          label: 'All projects',
-          href: getPath('editor'),
-          onClick: handleEditorNav,
+          icon: 'folder',
+          label: 'Projects',
+          active: activePage === 'editor',
+          items: [
+            {
+              icon: 'grid_view',
+              label: 'All projects',
+              href: getPath('editor'),
+              onClick: handleEditorNav,
+            },
+            ...(projects.length ? [{ divider: true }] : []),
+            ...projects.map((project) => ({
+              icon: project.icon || 'folder',
+              label: project.name,
+              href: `/?page=editor&project=${project.id}`,
+              active: activePage === 'editor' && activeProjectId === project.id,
+              onClick: (e) => handleProjectNav(e, project.id),
+            })),
+          ],
+        },
+        {
+          icon: 'dashboard_customize',
+          label: 'Patterns',
+          href: getPath('patterns'),
+          active: activePage === 'patterns',
+          onClick: (e) => handleNavClick(e, 'patterns'),
+        },
+        {
+          icon: 'photo_library',
+          label: 'Image library',
+          href: getPath('image-library'),
+          active: activePage === 'image-library',
+          onClick: (e) => handleNavClick(e, 'image-library'),
+        },
+        {
+          icon: 'palette',
+          label: 'Theme',
+          href: getPath('theme-editor'),
+          active: activePage === 'theme-editor',
+          onClick: (e) => handleNavClick(e, 'theme-editor'),
+        },
+        {
+          icon: 'gavel',
+          label: 'Rules',
+          href: getPath('rules'),
+          active: activePage === 'rules',
+          onClick: (e) => handleNavClick(e, 'rules'),
         },
         {
           icon: 'help',
@@ -565,14 +734,6 @@ function App() {
           active: activePage === 'help',
           onClick: (e) => handleNavClick(e, 'help'),
         },
-        ...(projects.length ? [{ divider: true }] : []),
-        ...projects.map((project) => ({
-          icon: project.icon || 'folder',
-          label: project.name,
-          href: `/?page=editor&project=${project.id}`,
-          active: activePage === 'editor' && activeProjectId === project.id,
-          onClick: (e) => handleProjectNav(e, project.id),
-        })),
       ],
     },
   ]
@@ -589,8 +750,7 @@ function App() {
 
   const logo = (
     <span className="a1-web-logo">
-      <span className="a1-web-logo__mark" aria-hidden="true">A1</span>
-      Design System
+      <span className="a1-web-logo__mark" aria-hidden="true">A1:Design</span>
     </span>
   )
 
@@ -602,15 +762,42 @@ function App() {
     )
   }
 
+  const patternDef = editorPatternId ? patternToDefinition(editorPatternId) : null
+
+  // The right-side config panel (editor / theme / component configurators). At
+  // md+ it's the PageLayout aside rail; at xs/sm it moves into a BottomSheet.
+  const asideEl =
+    (activePage === 'editor' && editorPatternId) || (activePage === 'editor' && activeProject && openPageId)
+      ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
+      : activePage === 'theme-editor' && activeThemeId
+      ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
+      : getComponentsAside({ activePage, detailTab })
+
   return (
     <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
+      <ImageLibraryProvider>
       <PageLayout
         className="a1-web-page-layout"
         stickyHeader
         viewportHeight
         sidebar={
-          activePage === 'editor' && activeProject
+          activePage === 'editor' && editorPatternId
+            ? <PatternWorkspaceSidebar
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                patternId={editorPatternId}
+                definition={editorDefinition}
+                selectedNodeId={editorSelectedNodeId}
+                onSelectNode={setEditorSelectedNodeId}
+                onRequestAdd={setEditorAddTarget}
+                onNodeAction={setEditorPendingAction}
+                onNodeMove={setEditorPendingMove}
+                onConvertNode={(nodeId, newType, newProps) => setEditorPendingConvert({ nodeId, newType, newProps })}
+              />
+            : activePage === 'editor' && activeProject
             ? <ProjectWorkspaceSidebar
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
                 project={activeProject}
                 onBackToProjects={handleBackToProjects}
                 pages={projectPages}
@@ -618,6 +805,7 @@ function App() {
                 hasOpenPage={!!openPageId}
                 onSelectPage={handleOpenPage}
                 onAddPage={handleAddPage}
+                onAddPageWithAi={handleAddPageWithAi}
                 onDuplicatePage={handleDuplicateProjectPage}
                 onDeletePage={handleDeleteProjectPage}
                 onMovePage={handleMoveProjectPage}
@@ -629,17 +817,23 @@ function App() {
                 onNodeAction={setEditorPendingAction}
                 onConvertNode={(nodeId, newType, newProps) => setEditorPendingConvert({ nodeId, newType, newProps })}
               />
+            : activePage === 'theme-editor' && activeThemeId
+            ? <ThemeWorkspaceSidebar
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                themeName={getTheme(activeThemeId)?.name}
+                category={themeCategory}
+                onSelectCategory={setThemeCategory}
+                onBackToThemes={() => setActiveThemeId(null)}
+              />
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({ activePage, onNavigate: navigate, search: componentSearch, setSearch: setComponentSearch })
             : undefined
         }
-        aside={
-          activePage === 'editor' && activeProject && openPageId
-            ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
-            : getComponentsAside({ activePage, detailTab })
-        }
+        aside={isSmDown ? undefined : asideEl}
         header={
           <TopHeader
+            className="a1-web-app-header"
             logo={logo}
             logoHref={getPath('home')}
             navItems={navItems}
@@ -647,9 +841,19 @@ function App() {
           />
         }
       >
+        {((activePage === 'editor' && (editorPatternId || activeProject)) || (activePage === 'theme-editor' && activeThemeId)) && (
+          <IconButton
+            className="a1-web-sidebar-toggle"
+            icon="view_sidebar"
+            label="Open sidebar"
+            size='sm'
+            variant="secondary"
+            onClick={() => setSidebarOpen(true)}
+          />
+        )}
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
-        {activePage === 'get-started' && <GetStarted />}
+        {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail
@@ -669,8 +873,40 @@ function App() {
             setDetailTab={setDetailTab}
           />
         )}
-        {activePage === 'templates' && <Templates />}
-        {activePage === 'editor' && (
+        {activePage === 'patterns' && <Patterns onNavigate={navigate} />}
+        {activePage === 'rules' && <RuleEditor onNavigate={navigate} />}
+        {activePage === 'editor' && editorPatternId && (
+          patternDef ? (
+            <EditorPage
+              key={`pattern-${editorPatternId}`}
+              documentKind="pattern"
+              patternId={editorPatternId}
+              projects={projects}
+              exampleId={`pattern-${editorPatternId}`}
+              definition={patternDef}
+              selectedNodeId={editorSelectedNodeId}
+              onSelectNode={setEditorSelectedNodeId}
+              onViewChange={setEditorView}
+              onDefinitionChange={setEditorDefinition}
+              pendingMove={editorPendingMove}
+              onPendingMoveDone={() => setEditorPendingMove(null)}
+              pendingAction={editorPendingAction}
+              onPendingActionDone={() => setEditorPendingAction(null)}
+              pendingConvert={editorPendingConvert}
+              onPendingConvertDone={() => setEditorPendingConvert(null)}
+              addTarget={editorAddTarget}
+              onCancelAdd={() => setEditorAddTarget(null)}
+              onRequestAdd={setEditorAddTarget}
+            />
+          ) : (
+            <Section padding="lg" gap="sm">
+              <Heading as="h1" size="lg">Pattern not found</Heading>
+              <Paragraph color="muted">No pattern with id "{editorPatternId}".</Paragraph>
+              <Link href={getPath('patterns')}>Back to patterns</Link>
+            </Section>
+          )
+        )}
+        {activePage === 'editor' && !editorPatternId && (
           !activeProject ? (
             <ProjectsList
               projects={projects}
@@ -679,13 +915,39 @@ function App() {
               onRenameProject={handleRenameProject}
               onDuplicateProject={handleDuplicateProject}
               onDeleteProject={handleDeleteProject}
+              onImportProject={handleImportProject}
+              onOpenImageLibrary={() => navigate('image-library')}
               onNavigateHome={() => navigate('home')}
               onOpenHelp={() => navigate('help')}
+            />
+          ) : openPageId === projectStore.LAYOUT_DOC_ID ? (
+            <EditorPage
+              key="__layout__"
+              exampleId={projectStore.LAYOUT_DOC_ID}
+              definition={definitionForPage(projectStore.LAYOUT_DOC_ID)}
+              documentKind="layout"
+              projectId={activeProjectId}
+              projectName={activeProject.name}
+              selectedNodeId={editorSelectedNodeId}
+              onSelectNode={setEditorSelectedNodeId}
+              onViewChange={setEditorView}
+              onDirtyChange={setEditorDirty}
+              onDefinitionChange={setEditorDefinition}
+              pendingMove={editorPendingMove}
+              onPendingMoveDone={() => setEditorPendingMove(null)}
+              pendingAction={editorPendingAction}
+              onPendingActionDone={() => setEditorPendingAction(null)}
+              pendingConvert={editorPendingConvert}
+              onPendingConvertDone={() => setEditorPendingConvert(null)}
+              addTarget={editorAddTarget}
+              onCancelAdd={() => setEditorAddTarget(null)}
+              onRequestAdd={setEditorAddTarget}
             />
           ) : !openPageId || !projectPages.some((p) => p.id === openPageId) ? (
             <AllPagesView
               project={activeProject}
               pages={projectPages}
+              onEditLayout={() => handleOpenPage(projectStore.LAYOUT_DOC_ID)}
               onOpenPage={handleOpenPage}
               onAddPage={handleAddPage}
               onLaunchPrototype={() => launchProjectPrototype()}
@@ -704,6 +966,8 @@ function App() {
               projectName={activeProject.name}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
+              composeWithAi={openPageId === aiComposePageId}
+              onAiComposeConsumed={() => setAiComposePageId(null)}
               pageLevel={projectStore.getPageLevel(projectPages, openPageId)}
               availableLevels={projectStore.availableLevels(projectPages, openPageId)}
               onSetPageLevel={handleSetPageLevel}
@@ -727,6 +991,26 @@ function App() {
           )
         )}
         {activePage === 'editor-preview' && <EditorPreviewPage />}
+        {activePage === 'image-library' && (
+          <ImageLibraryView
+            projects={projects}
+            onBackToProjects={() => navigate('editor')}
+            onNavigateHome={() => navigate('home')}
+          />
+        )}
+        {activePage === 'theme-editor' && (
+          !activeThemeId
+            ? <ThemesList
+                onOpenTheme={(id) => { setActiveThemeId(id); setThemeCategory('color') }}
+                onNavigateHome={() => navigate('home')}
+              />
+            : <ThemeEditor
+                themeId={activeThemeId}
+                category={themeCategory}
+                onNavigate={navigate}
+                onBackToThemes={() => setActiveThemeId(null)}
+              />
+        )}
         {activePage === 'projects' && (
           <ProjectsList
             projects={projects}
@@ -735,16 +1019,41 @@ function App() {
             onRenameProject={handleRenameProject}
             onDuplicateProject={handleDuplicateProject}
             onDeleteProject={handleDeleteProject}
+            onImportProject={handleImportProject}
+            onOpenImageLibrary={() => navigate('image-library')}
             onNavigateHome={() => navigate('home')}
             onOpenHelp={() => navigate('help')}
           />
         )}
-        {activePage === 'accessibility' && <Accessibility />}
+        {activePage === 'account' && <AccountPage onNavigate={navigate} />}
+        {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} />}
-        {activePage === 'releases' && <Releases />}
+        {activePage === 'releases' && <Releases onNavigate={navigate} />}
+        {activePage === 'todo' && <TodoPage onNavigate={navigate} />}
+
+        {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
+            in-flow spacer reserves space at the bottom, not the top. */}
+        {isSmDown && asideEl && (
+          <BottomSheet className="a1-web-config-sheet" title="Configure" detents={[0.55, 0.95]} defaultDetent={0}>
+            {asideEl}
+          </BottomSheet>
+        )}
       </PageLayout>
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
+        {supabaseConfigured && (
+          <MenuSection label="Account">
+            <Button
+              variant="secondary"
+              size="sm"
+              fullWidth
+              icon="account_circle"
+              onClick={() => { setSettingsOpen(false); navigate('account') }}
+            >
+              {authUser ? authUser.email : 'Sign in'}
+            </Button>
+          </MenuSection>
+        )}
         <MenuSection label="Theme">
           {themeOptions.length > 5 ? (
             <SelectField
@@ -850,8 +1159,15 @@ function App() {
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
         {editorMessage}
       </Snackbar>
+      </ImageLibraryProvider>
     </LabelsProvider>
   )
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(
+  <AuthProvider>
+    <AuthGate>
+      <App />
+    </AuthGate>
+  </AuthProvider>,
+)

@@ -1,4 +1,5 @@
 import {
+  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -205,46 +206,48 @@ export function Features({ onNavigate }) {
   return (
     <>
       <Section
-        padding="sm"
+        padding="xs"
+        contentWidth="xl"
         surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
-        contentWidth="lg"
-        gap="lg"
-        aria-labelledby="features-page-heading"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
-        <Stack direction="column" gap="sm">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Features' },
+            ]}
+          />
           <Heading
             as="h1"
             id="features-page-heading"
-            type="display"
-            size={{ xs: 'xl', md: 'xxl' }}
-            textWrap="balance"
+            size={{ xs: 'lg', md: 'xxl' }}
           >
             Everything A1 does
           </Heading>
-          <Heading as="h2" color="muted" size="md"> for product teams, platforms, and AI-assisted UI.</Heading>
-          <Paragraph size="md" color="muted">
+          <Paragraph size="sm" color="muted">
             A1 is more than a component kit. It is a token-governed system for building consistent interfaces across web, mobile, static HTML, and AI-generated work.
           </Paragraph>
         </Stack>
-
-        <Grid columns={{ xs: 2, sm: 4 }} gap="md">
-          {capabilityStats.map((stat) => (
-            <Card key={stat.label}>
-              <Heading as="p" type="display" size={{ xs: 'md', md: 'lg' }}>
-                {stat.value}
-              </Heading>
-              <Paragraph size="sm" color="muted">
-                <strong>{stat.label}</strong>
-              </Paragraph>
-            </Card>
-          ))}
-        </Grid>
       </Section>
 
       <Section padding="sm" contentWidth="lg" aria-labelledby="top-features-heading">
         <Stack gap="lg">
+          <Grid columns={{ xs: 2, sm: 4 }} gap="md">
+            {capabilityStats.map((stat) => (
+              <Card key={stat.label}>
+                <Heading as="p" type="display" size={{ xs: 'md', md: 'lg' }}>
+                  {stat.value}
+                </Heading>
+                <Paragraph size="sm" color="muted">
+                  <strong>{stat.label}</strong>
+                </Paragraph>
+              </Card>
+            ))}
+          </Grid>
+
           <Stack direction="column" gap="sm">
             <Heading as="h2" id="top-features-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
               Top features

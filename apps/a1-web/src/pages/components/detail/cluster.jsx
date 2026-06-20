@@ -70,7 +70,7 @@ export function Controls({ config, setConfig }) {
           Cluster is deprecated. Use <code>{'<Stack direction="row" wrap>'}</code> with a gap instead.
         </Paragraph>
       </Banner>
-      <Choice
+      <Choice prop="gap"
         label="Gap"
         size="compact"
         hideIndicator
@@ -79,7 +79,7 @@ export function Controls({ config, setConfig }) {
         onChange={(gap) => set({ gap })}
         options={GAP_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="align"
         label="Align"
         size="compact"
         hideIndicator
@@ -88,7 +88,7 @@ export function Controls({ config, setConfig }) {
         onChange={(align) => set({ align })}
         options={ALIGN_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
+      <Choice prop="justify"
         label="Justify"
         size="compact"
         hideIndicator

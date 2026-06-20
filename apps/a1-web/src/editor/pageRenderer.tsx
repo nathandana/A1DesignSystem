@@ -16,6 +16,8 @@ import { createElement, createContext, useContext } from 'react';
 import { EditorSelectionBoundary } from './EditorSelectionBoundary';
 import type { ComponentType as ReactComponentType } from 'react';
 import { componentRegistry } from './componentRegistry';
+import { resolveSrc as resolveImageSrc } from '../lib/imageLibrary';
+import { useImageLibraryVersion } from './ImageLibraryContext';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -28,7 +30,7 @@ import type {
 const CONTAINER_TYPES = new Set([
   'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
   'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
-  'FieldRow',
+  'FieldRow', 'Slot',
 ]);
 
 // Components whose editable text is delivered via a named prop instead of as
@@ -53,6 +55,13 @@ interface EditorModeContextValue {
   enabled: boolean;
   /** Preview-only: navigate to another page by id when a link/button is clicked. */
   onNavigate: ((pageId: string) => void) | null;
+  /** Ids of nodes marked as locked (pattern editor) — shown with a lock badge. */
+  lockedNodeIds: Set<string>;
+  /** When true, a node's own `lock` metadata is enforced (page editor): locked
+   *  text is read-only here, and the host blocks locked prop/node edits. */
+  enforceLocks: boolean;
+  /** The pattern-instance root id currently being edited (it or a descendant is selected). */
+  activePatternRootId: string | null;
   selectedNodeId: string | null;
   onNodeSelect: (nodeId: string | null) => void;
   onContentChange: (nodeId: string, newFallback: string) => void;
@@ -69,12 +78,23 @@ interface EditorModeContextValue {
   getNodeInfo: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild: (nodeId: string) => void;
   onCatalogDrop: (catalogType: string, targetNodeId: string, position: 'before' | 'into' | 'after') => void;
+  onDetachPattern: (nodeId: string) => void;
+  onCreatePattern: (nodeId: string) => void;
+  /** Edit the text of a child-item field (e.g. a DefinitionList item's label/value). */
+  onItemTextChange: (nodeId: string, index: number, field: string, value: string) => void;
+  /** The child item being edited (so the canvas can outline it). */
+  activeItem: { nodeId: string; index: number } | null;
+  /** Select a child item (e.g. clicking a DefinitionList item opens its tab). */
+  onItemSelect: (nodeId: string, index: number) => void;
 }
 
 
 const EditorModeContext = createContext<EditorModeContextValue>({
   enabled: false,
   onNavigate: null,
+  lockedNodeIds: new Set(),
+  enforceLocks: false,
+  activePatternRootId: null,
   selectedNodeId: null,
   onNodeSelect: () => {},
   onContentChange: () => {},
@@ -90,7 +110,12 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   getNodeProps: () => undefined,
   getNodeInfo: () => ({ isFirst: false, isLast: false, hasChildren: false }),
   onRequestAddChild: () => {},
+  onItemTextChange: () => {},
+  activeItem: null,
+  onItemSelect: () => {},
   onCatalogDrop: () => {},
+  onDetachPattern: () => {},
+  onCreatePattern: () => {},
 });
 
 /**
@@ -233,12 +258,30 @@ function inlineMarkdownToNodes(text: string): ReactNode[] | null {
   return inlineNodesToReact(root);
 }
 
-/** Render a single component node and its children. */
-function RenderNode({ node }: { node: ComponentNode }) {
+/** Render a single component node and its children.
+ *
+ * `inPattern` is true when the node is inside a pattern *instance* (placed on a
+ * page); `patternActive` is true when that instance is the one currently being
+ * edited (the pattern root or one of its descendants is selected). A pattern
+ * instance shows a highlight outline + pattern icon by default, and only reveals
+ * its red lock outlines while it is active.
+ */
+function RenderNode({ node, inPattern = false, patternActive = false }: { node: ComponentNode; inPattern?: boolean; patternActive?: boolean }) {
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
-  const { enabled: editorMode, onNavigate, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onCatalogDrop } = useContext(EditorModeContext);
+  // Re-render when the image library hydrates so Figure refs resolve to real URLs.
+  useImageLibraryVersion();
+  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = useContext(EditorModeContext);
+  const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
+
+  // Active-pattern bookkeeping. A pattern instance is "active" when it (or a
+  // descendant) is selected; only then do its lock outlines show.
+  const isPatternRoot = !!node.patternInstance;
+  const nodeInPattern = isPatternRoot || inPattern;
+  const thisActive = isPatternRoot ? node.id === activePatternRootId : patternActive;
+  const childInPattern = nodeInPattern;
+  const childPatternActive = nodeInPattern ? thisActive : false;
 
   if (!Component) {
     return <UnsupportedComponent type={node.type} />;
@@ -269,7 +312,7 @@ function RenderNode({ node }: { node: ComponentNode }) {
     textContent = renderHeadingRich(text);
   } else if (paragraphRich) {
     textContent = paragraphRich;
-  } else if (editorMode) {
+  } else if (editorMode && !contentLocked) {
     textContent = (
       <InlineEditable
         seamless
@@ -294,16 +337,61 @@ function RenderNode({ node }: { node: ComponentNode }) {
   // below, not rendered as a child; everything else renders text as children.
   if (!textProp && textContent !== undefined) childList.push(textContent);
   if (node.children?.length) {
-    node.children.forEach((child) => childList.push(<RenderNode key={child.id} node={child} />));
+    node.children.forEach((child) => childList.push(
+      <RenderNode key={child.id} node={child} inPattern={childInPattern} patternActive={childPatternActive} />,
+    ));
   }
 
   const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
+
+  // Child-item inline editing: components whose data lives in an array prop render
+  // their text via InlineEditable in editor mode so each item can be edited on the
+  // canvas. (DefinitionList first — its `items` accept ReactNode label/value.)
+  if (editorMode && !contentLocked && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
+    const itemText = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v));
+    const activeIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null;
+    // Wrap a field so clicking/focusing it selects the item (opens its config tab)
+    // and outlines the item that's being edited.
+    const itemField = (i: number, child: ReactNode) => (
+      <span
+        className="a1-web-dl-item"
+        data-active={activeIndex === i || undefined}
+        onMouseDown={() => onItemSelect(node.id, i)}
+        // Don't let the click bubble to the selection boundary — it would toggle
+        // the just-selected node back off.
+        onClick={(e) => e.stopPropagation()}
+        onFocusCapture={() => onItemSelect(node.id, i)}
+      >
+        {child}
+      </span>
+    );
+    resolvedProps.items = (resolvedProps.items as Array<Record<string, unknown>>).map((item, i) => ({
+      ...item,
+      label: itemField(i, (
+        <InlineEditable
+          seamless
+          value={itemText(item.label)}
+          onChange={(val) => onItemTextChange(node.id, i, 'label', val)}
+          aria-label="Edit label"
+        />
+      )),
+      value: itemField(i, (
+        <InlineEditable
+          seamless
+          value={itemText(item.value ?? item.children)}
+          onChange={(val) => onItemTextChange(node.id, i, 'value', val)}
+          aria-label="Edit value"
+        />
+      )),
+      children: undefined,
+    }));
+  }
 
   // Assign editable text to its named prop (legend, etc.). Falls back to an
   // existing string prop value for nodes authored before text moved to content.
   if (textProp) {
     const raw = (text ?? (node.props?.[textProp] as string | undefined) ?? '') as string;
-    resolvedProps[textProp] = editorMode ? (
+    resolvedProps[textProp] = editorMode && !contentLocked ? (
       <InlineEditable
         seamless
         value={raw}
@@ -318,6 +406,12 @@ function RenderNode({ node }: { node: ComponentNode }) {
   // drop the href onto a <button> element where it does nothing.
   if ((node.type === 'Button' || node.type === 'IconButton') && resolvedProps.href && !resolvedProps.as) {
     resolvedProps.as = 'a';
+  }
+
+  // A Figure referencing a library image (`a1img://<id>`) resolves to the object
+  // URL created from the locally-stored blob.
+  if (node.type === 'Figure' && typeof resolvedProps.src === 'string') {
+    resolvedProps.src = resolveImageSrc(resolvedProps.src);
   }
 
   // In preview (not editor) mode, wire intra-prototype navigation directly to the
@@ -343,6 +437,15 @@ function RenderNode({ node }: { node: ComponentNode }) {
 
   const isContainer = CONTAINER_TYPES.has(node.type);
 
+  // Clicking a Slot on a page opens the Add panel targeted at the slot (so it
+  // offers only the components/patterns the slot accepts) instead of selecting
+  // it for configuration. In the pattern editor (where the slot's own rules are
+  // authored, `enforceLocks` is false) a click still selects it normally.
+  const slotAddMode = node.type === 'Slot' && enforceLocks;
+  const handleSelect = slotAddMode
+    ? () => onRequestAddChild(node.id)
+    : onNodeSelect;
+
   // In editor mode, wrap the component in EditorSelectionBoundary which:
   // - injects data-editor-node / data-editor-type attrs via cloneElement (no DOM wrapper)
   // - shows a dashed hover outline and solid selected outline via CSS
@@ -353,8 +456,11 @@ function RenderNode({ node }: { node: ComponentNode }) {
       nodeId={node.id}
       nodeType={node.type}
       isSelected={node.id === selectedNodeId}
+      isLocked={(lockedNodeIds.has(node.id) || !!node.lock?.node) && (nodeInPattern ? thisActive : true)}
+      patternOutline={isPatternRoot && !thisActive}
+      patternInstance={node.patternInstance}
       selectedId={selectedNodeId}
-      onSelect={onNodeSelect}
+      onSelect={handleSelect}
       onDelete={onNodeDelete}
       onMoveUp={onMoveUp}
       onMoveDown={onMoveDown}
@@ -368,6 +474,8 @@ function RenderNode({ node }: { node: ComponentNode }) {
       getNodeInfo={getNodeInfo}
       isContainer={isContainer}
       onCatalogDrop={(catalogType, position) => onCatalogDrop(catalogType, node.id, position)}
+      onDetachPattern={onDetachPattern}
+      onCreatePattern={onCreatePattern}
     >
       {componentEl}
     </EditorSelectionBoundary>
@@ -411,6 +519,9 @@ function RenderLayout({ layout }: { layout: PageLayoutDefinition }) {
 export function RenderPageDefinition({
   definition,
   onNavigate,
+  lockedNodeIds,
+  enforceLocks = false,
+  activePatternRootId = null,
   selectedNodeId = null,
   onNodeSelect,
   onContentChange,
@@ -426,10 +537,18 @@ export function RenderPageDefinition({
   getNodeProps,
   getNodeInfo,
   onRequestAddChild,
+  onItemTextChange,
+  activeItem = null,
+  onItemSelect,
   onCatalogDrop,
+  onDetachPattern,
+  onCreatePattern,
 }: {
   definition: PageDefinition;
   onNavigate?: (pageId: string) => void;
+  lockedNodeIds?: Set<string>;
+  enforceLocks?: boolean;
+  activePatternRootId?: string | null;
   selectedNodeId?: string | null;
   onNodeSelect?: (nodeId: string | null) => void;
   onContentChange?: (nodeId: string, newFallback: string) => void;
@@ -446,11 +565,19 @@ export function RenderPageDefinition({
   getNodeInfo?: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild?: (nodeId: string) => void;
   onCatalogDrop?: (catalogType: string, targetNodeId: string, position: 'before' | 'into' | 'after') => void;
+  onDetachPattern?: (nodeId: string) => void;
+  onCreatePattern?: (nodeId: string) => void;
+  onItemTextChange?: (nodeId: string, index: number, field: string, value: string) => void;
+  activeItem?: { nodeId: string; index: number } | null;
+  onItemSelect?: (nodeId: string, index: number) => void;
 }) {
   const noInfo = () => ({ isFirst: false, isLast: false, hasChildren: false });
   const ctx: EditorModeContextValue = {
     enabled: !!onContentChange,
     onNavigate: onNavigate ?? null,
+    lockedNodeIds: lockedNodeIds ?? new Set(),
+    enforceLocks,
+    activePatternRootId,
     selectedNodeId,
     onNodeSelect: onNodeSelect ?? (() => {}),
     onContentChange: onContentChange ?? (() => {}),
@@ -466,7 +593,12 @@ export function RenderPageDefinition({
     getNodeProps: getNodeProps ?? (() => undefined),
     getNodeInfo: getNodeInfo ?? noInfo,
     onRequestAddChild: onRequestAddChild ?? (() => {}),
+    onItemTextChange: onItemTextChange ?? (() => {}),
+    activeItem,
+    onItemSelect: onItemSelect ?? (() => {}),
     onCatalogDrop: onCatalogDrop ?? (() => {}),
+    onDetachPattern: onDetachPattern ?? (() => {}),
+    onCreatePattern: onCreatePattern ?? (() => {}),
   };
 
   return (

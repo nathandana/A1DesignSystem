@@ -23,8 +23,8 @@ const SHORTCUT_GROUPS = [
   {
     label: 'Style',
     items: [
-      { label: 'Copy pattern (style)',  keys: `${MOD}${ALT}C` },
-      { label: 'Paste pattern (style)', keys: `${MOD}${ALT}V` },
+      { label: 'Copy properties',  keys: `${MOD}${ALT}C` },
+      { label: 'Paste properties', keys: `${MOD}${ALT}V` },
     ],
   },
   {

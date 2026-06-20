@@ -2,6 +2,7 @@ import {
   Banner,
   Button,
   Code,
+  FieldRow,
   Link,
   Paragraph,
   Stack,
@@ -12,7 +13,7 @@ import { Choice, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 
-const VARIANT_OPTIONS = ['inline', 'system']
+const VARIANT_OPTIONS = ['inline', 'system', 'calendar']
 const STATUS_OPTIONS = ['neutral', 'info', 'success', 'warn', 'error']
 const ACTION_OPTIONS = ['none', 'link', 'button']
 
@@ -52,12 +53,23 @@ function actionSnippet(config) {
   return null
 }
 
+function dateSnippet(config) {
+  if (config.variant !== 'calendar') return null
+  const month = escapeJsxString(config.dateMonth || '')
+  const day = escapeJsxString(config.dateDay || '')
+  if (!month && !day) return null
+  return `date={{ month: "${month}", day: "${day}" }}`
+}
+
 function buildBannerSnippet(config) {
+  const isCalendar = config.variant === 'calendar'
   const props = [
     propString('variant', config.variant, 'inline'),
     propString('status', config.status, 'neutral'),
+    isCalendar ? propString('eyebrow', config.eyebrow, '') : null,
     propString('title', config.title, ''),
-    config.iconMode === 'custom' ? propString('icon', config.icon, '') : null,
+    dateSnippet(config),
+    !isCalendar && config.iconMode === 'custom' ? propString('icon', config.icon, '') : null,
     actionSnippet(config),
     config.dismissible ? 'onDismiss={() => setVisible(false)}' : null,
   ].filter(Boolean).join('\n  ')
@@ -75,6 +87,9 @@ export function getDefaultConfig() {
     children: 'Dashboard exports are now supported in CSV and PDF formats.',
     iconMode: 'default',
     icon: 'info',
+    eyebrow: 'Neighborhood event',
+    dateMonth: 'Jun',
+    dateDay: '28',
     action: 'link',
     actionLabel: 'Learn more',
     dismissible: true,
@@ -99,12 +114,16 @@ export function Preview({ config, setConfig }) {
     )
   }
 
+  const isCalendar = config.variant === 'calendar'
+
   return (
     <Banner
       variant={config.variant}
       status={config.status}
+      eyebrow={isCalendar ? (config.eyebrow || undefined) : undefined}
       title={config.title || undefined}
-      icon={config.iconMode === 'custom' ? config.icon : undefined}
+      date={isCalendar ? { month: config.dateMonth, day: config.dateDay } : undefined}
+      icon={!isCalendar && config.iconMode === 'custom' ? config.icon : undefined}
       action={actionElement(config)}
       onDismiss={config.dismissible
         ? () => setConfig?.((current) => ({ ...current, dismissed: true }))
@@ -117,15 +136,49 @@ export function Preview({ config, setConfig }) {
 
 export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+  const isCalendar = config.variant === 'calendar'
 
   return (
     <Stack gap="lg">
+      <Choice prop="variant"
+        label="Variant"
+        size="compact"
+        hideIndicator
+        columns={3}
+        value={config.variant}
+        onChange={(variant) => set({ variant })}
+        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+      />
+      {isCalendar && (
+        <TextField
+          label="Eyebrow"
+          size="compact"
+          value={config.eyebrow}
+          onChange={(event) => set({ eyebrow: event.target.value })}
+        />
+      )}
       <TextField
         label="Title"
         size="compact"
         value={config.title}
         onChange={(event) => set({ title: event.target.value })}
       />
+      {isCalendar && (
+        <FieldRow>
+          <TextField
+            label="Date month"
+            size="compact"
+            value={config.dateMonth}
+            onChange={(event) => set({ dateMonth: event.target.value })}
+          />
+          <TextField
+            label="Date day"
+            size="compact"
+            value={config.dateDay}
+            onChange={(event) => set({ dateDay: event.target.value })}
+          />
+        </FieldRow>
+      )}
       <TextareaField
         label="Body"
         size="compact"
@@ -133,42 +186,35 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => set({ children: event.target.value })}
       />
-      <Choice
-        label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.variant}
-        onChange={(variant) => set({ variant })}
-        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Choice
+      <Choice prop="status"
         label="Status"
         iconOnly
         value={config.status}
         onChange={(status) => set({ status })}
         options={statusOptions(STATUS_OPTIONS)}
       />
-      <Choice
-        label="Icon"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.iconMode}
-        onChange={(iconMode) => set({ iconMode })}
-        options={[
-          { label: 'Default', value: 'default' },
-          { label: 'Custom', value: 'custom' },
-        ]}
-      />
-      {config.iconMode === 'custom' && (
+      {!isCalendar && (
+        <Choice prop="iconMode"
+          label="Icon"
+          size="compact"
+          hideIndicator
+          columns={2}
+          value={config.iconMode}
+          onChange={(iconMode) => set({ iconMode })}
+          options={[
+            { label: 'Default', value: 'default' },
+            { label: 'Custom', value: 'custom' },
+          ]}
+        />
+      )}
+      {!isCalendar && config.iconMode === 'custom' && (
         <IconSelect
           label="Icon name"
           value={config.icon}
           onChange={(icon) => set({ icon })}
         />
       )}
-      <Choice
+      <Choice prop="action"
         label="Action"
         size="compact"
         hideIndicator
@@ -188,7 +234,7 @@ export function Controls({ config, setConfig }) {
           onChange={(event) => set({ actionLabel: event.target.value })}
         />
       )}
-      <Toggle
+      <Toggle prop="dismissible"
         label="Dismissible"
         value={config.dismissible}
         onChange={(dismissible) => set({ dismissible, dismissed: dismissible ? config.dismissed : false })}

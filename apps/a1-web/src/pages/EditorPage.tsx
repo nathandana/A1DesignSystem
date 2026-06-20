@@ -24,9 +24,11 @@ import {
   ToolbarButton,
   ToolbarDivider,
   ToolbarGroup,
+  ToolbarMenu,
   TopHeader,
 } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
+import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
 import { buildProjectNav, type ProjectNavItem } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
@@ -42,7 +44,14 @@ import { readStored, writeStored } from '../editor/storage';
 import type { CatalogEntry } from '../editor/componentCatalog';
 import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatalog';
 import { definitionToJsx } from '../editor/definitionToJsx';
+import { instantiatePattern } from '../patterns/instantiatePattern.js';
+import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
+import { loadProjectLayout, saveProjectLayout } from '../projects/projectStore';
+import { toImageRef } from '../lib/imageLibrary';
+import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
+import { reconcilePageInstances } from '../patterns/patternSync.js';
 import type { ComponentNode, ComponentProps, ComponentType, PageDefinition } from '../editor/pageTypes';
+import type { PatternNode } from '../patterns/patternTypes';
 
 // ── Copy pattern (style props) ────────────────────────────────────────────────
 
@@ -224,6 +233,50 @@ function convertDefinitionNode(def: PageDefinition, nodeId: string, newType: Com
   return patchRegions(def, (node) => convertNodeType(node, nodeId, newType, newProps));
 }
 
+// Detach a pattern instance into loose nodes (used by "Detach pattern"). Strips
+// the outer pattern's instance metadata + locks, but **stops at nested pattern
+// instances** (any descendant with `patternInstance`) — those stay intact so
+// detaching the outer pattern doesn't detach the patterns nested inside it.
+function detachPatternMeta(node: ComponentNode, isRoot: boolean): ComponentNode {
+  if (!isRoot && node.patternInstance) return node; // nested instance — keep linked
+  const { patternInstance: _pi, patternNodeId: _pn, lock: _lk, ...rest } = node;
+  return { ...rest, children: node.children?.map((child) => detachPatternMeta(child, false)) };
+}
+
+// Extract a subtree as a pattern source (for "Create pattern from selection").
+// Unlike `stripPatternMeta`, a **nested pattern instance** (any descendant with
+// `patternInstance`) is preserved as a `PatternRef` so it stays linked to its
+// source pattern instead of being flattened into loose nodes — patterns can
+// nest inside patterns. The selection root itself is always extracted as a
+// normal node (its own structure becomes the new pattern).
+function extractPatternSource(node: ComponentNode, isRoot: boolean): PatternNode {
+  if (!isRoot && node.patternInstance) {
+    return {
+      id: freshId(),
+      type: 'PatternRef',
+      patternId: node.patternInstance.id,
+      ...(node.lock ? { lock: node.lock } : {}),
+    };
+  }
+  const { patternInstance: _pi, patternNodeId: _pn, lock: _lk, ...rest } = node;
+  return {
+    ...rest,
+    id: freshId(),
+    children: node.children?.map((child) => extractPatternSource(child, false)),
+  } as PatternNode;
+}
+
+function setNodeLockInNode(node: ComponentNode, id: string, lock: ComponentNode['lock']): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (lock && (lock.node || lock.content || (lock.props && lock.props.length))) next.lock = lock;
+    else delete next.lock;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeLockInNode(c, id, lock)) };
+}
+
 function freshId(): string {
   return `node-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -321,6 +374,15 @@ function removeNodeFromList(nodes: ComponentNode[], id: string): ComponentNode[]
     .map((n) => ({ ...n, children: n.children ? removeNodeFromList(n.children, id) : undefined }));
 }
 
+// The node whose `children` contains `childId`, or null at a region root.
+function findParentInList(nodes: ComponentNode[], childId: string): ComponentNode | null {
+  for (const n of nodes) {
+    if (n.children?.some((c) => c.id === childId)) return n;
+    if (n.children) { const found = findParentInList(n.children, childId); if (found) return found; }
+  }
+  return null;
+}
+
 function deleteDefinitionNode(def: PageDefinition, nodeId: string): PageDefinition {
   return {
     ...def,
@@ -335,6 +397,21 @@ function deleteDefinitionNode(def: PageDefinition, nodeId: string): PageDefiniti
       },
     },
   };
+}
+
+// Find the pattern-instance root id whose subtree contains `selectedId` (so its
+// lock outlines show while it's being edited). Returns null if the selection
+// isn't inside a pattern instance.
+function findActivePatternRoot(nodes: ComponentNode[], selectedId: string, inheritedRoot: string | null = null): string | null | undefined {
+  for (const node of nodes) {
+    const rootHere = node.patternInstance ? node.id : inheritedRoot;
+    if (node.id === selectedId) return rootHere;
+    if (node.children) {
+      const found = findActivePatternRoot(node.children, selectedId, rootHere);
+      if (found !== undefined) return found;
+    }
+  }
+  return undefined;
 }
 
 function findNodeById(nodes: ComponentNode[], id: string): ComponentNode | null {
@@ -474,11 +551,16 @@ type AddTarget = { targetId: string | null; position: 'into' | 'after' } | null;
 export function EditorPage({
   definition = editorExamplePage,
   exampleId = 'default',
+  documentKind = 'page',
+  patternId = null,
   pages = [],
+  projects = [],
   projectId = null,
   projectName,
   projectPages = [],
   onNavigateToPage,
+  composeWithAi = false,
+  onAiComposeConsumed,
   pageLevel,
   availableLevels,
   onSetPageLevel,
@@ -501,11 +583,19 @@ export function EditorPage({
 }: {
   definition?: PageDefinition;
   exampleId?: string;
+  /** 'page' (default) edits a project page; 'pattern' authors a reusable pattern. */
+  documentKind?: 'page' | 'pattern' | 'layout';
+  /** The pattern id when documentKind === 'pattern' (used for save + lock authoring). */
+  patternId?: string | null;
   pages?: { id: string; label: string }[];
+  /** All projects — used to scope a pattern to specific projects. */
+  projects?: { id: string; name: string }[];
   projectId?: string | null;
   projectName?: string;
   projectPages?: ProjectPage[];
   onNavigateToPage?: (id: string) => void;
+  composeWithAi?: boolean;
+  onAiComposeConsumed?: () => void;
   pageLevel?: number;
   availableLevels?: number[];
   onSetPageLevel?: (level: number) => void;
@@ -521,12 +611,17 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern'; nodeId: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
 }) {
   const canonicalJson = useMemo(() => JSON.stringify(definition, null, 2), [definition]);
+
+  // Pattern-authoring mode: persist to the pattern store, author locks (don't
+  // enforce them), and hide page/project-only chrome.
+  const isPattern = documentKind === 'pattern';
+  const isLayout = documentKind === 'layout';
 
   // Use any legacy draft as the fallback so existing unsaved work is preserved.
   const [fallbackJson] = useState(() => readStored(DRAFT_KEY(exampleId)) ?? canonicalJson);
@@ -550,11 +645,16 @@ export function EditorPage({
   const [view, setView] = useState('edit');
   // "Code snippet" view sub-format: editable JSON, or read-only generated React.
   const [codeFormat, setCodeFormat] = useState<'json' | 'react'>('json');
+  // Responsive preview device for the Preview view ('fit' = no simulation).
+  const [previewViewport, setPreviewViewport] = useState('fit');
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [notice, setNotice] = useState(''); // transient one-line snackbar (copy/paste pattern)
+  // The child item being edited (e.g. a DefinitionList item) — shared by the
+  // canvas (outline) and the configurator (active tab).
+  const [activeItem, setActiveItem] = useState<{ nodeId: string; index: number } | null>(null);
 
   // Debounce timer ref for text-input style changes.
   const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -584,6 +684,34 @@ export function EditorPage({
   // the map stays tiny and can't blow the localStorage quota.
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (isLayout) {
+        // Persist the project's shared-layout document back to its own store key.
+        if (projectId) saveProjectLayout(projectId, history.workingJson);
+        return;
+      }
+      if (isPattern) {
+        // Persist the edited pattern back to the pattern store (unwrap the
+        // page-definition regions into the pattern's node list). Metadata and
+        // lock flags ride along on the nodes.
+        if (!patternId) return;
+        try {
+          const def = JSON.parse(history.workingJson) as PageDefinition;
+          const nodes = def.page.layout.regions.flatMap((r) => r.nodes);
+          const current = loadPattern(patternId);
+          if (current) {
+            savePattern({
+              ...current,
+              pattern: {
+                ...current.pattern,
+                name: def.page.name ?? current.pattern.name,
+                description: def.page.description ?? current.pattern.description,
+                nodes,
+              },
+            });
+          }
+        } catch { /* ignore malformed working json */ }
+        return;
+      }
       writeStored(EDITOR_PREVIEW_SESSION_KEY, history.workingJson);
       // Record which page is being edited so the prototype only live-updates
       // the screen on display when it matches.
@@ -596,7 +724,12 @@ export function EditorPage({
   // Grab the aside slot once on mount — it's always in the DOM when the
   // editor is active, regardless of view, so we can portal into it at any time.
   useLayoutEffect(() => {
-    setAsideNode(document.getElementById('a1-web-editor-aside-slot'));
+    // Re-acquire on resize too: at xs/sm the slot moves into a BottomSheet, so
+    // the portal target changes when crossing the breakpoint.
+    const find = () => setAsideNode(document.getElementById('a1-web-editor-aside-slot'));
+    find();
+    window.addEventListener('resize', find);
+    return () => window.removeEventListener('resize', find);
   }, []);
 
   // Stable refs used by keyboard handler so we never need to re-register the listener.
@@ -741,6 +874,8 @@ export function EditorPage({
     else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeId);
     else if (pendingAction.type === 'copy-pattern') handleCopyPattern(pendingAction.nodeId);
     else if (pendingAction.type === 'paste-pattern') handlePastePattern(pendingAction.nodeId);
+    else if (pendingAction.type === 'detach') handleDetachPattern(pendingAction.nodeId);
+    else if (pendingAction.type === 'create-pattern') handleCreatePatternFromNode(pendingAction.nodeId);
     onPendingActionDone?.();
   }, [pendingAction]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -769,6 +904,75 @@ export function EditorPage({
       if (found) return found.props as Record<string, unknown> | undefined;
     }
     return undefined;
+  }
+
+  // Lock metadata carried by nodes instantiated from a pattern. The page editor
+  // enforces these: a locked node can't be deleted/moved/restructured, locked
+  // props are read-only (reverted on change), and locked text isn't editable.
+  function getNodeLock(nodeId: string): { node?: boolean; props?: string[]; content?: boolean } | undefined {
+    // Locks are only *enforced* on a page. In the pattern editor the author is
+    // defining the locks, so every property (incl. a slot's allow-lists) stays
+    // freely editable.
+    if (!parsedDefinition.ok || isPattern) return undefined;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const found = findNodeById(region.nodes, nodeId);
+      if (found) return found.lock;
+    }
+    return undefined;
+  }
+
+  function notifyLocked() {
+    setNotice('Locked by its pattern — unlock it in the pattern editor to change it');
+  }
+
+  function getNode(nodeId: string): ComponentNode | undefined {
+    if (!parsedDefinition.ok) return undefined;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const found = findNodeById(region.nodes, nodeId);
+      if (found) return found;
+    }
+    return undefined;
+  }
+
+  // When adding INTO a Slot, enforce its allow-list. Returns a rejection message
+  // to show, or null when the add is allowed (or the target isn't a slot).
+  function slotRejection(
+    targetId: string | null | undefined,
+    position: string | undefined,
+    item: { type?: string; patternId?: string },
+  ): string | null {
+    if (position !== 'into' || !targetId) return null;
+    const target = getNode(targetId);
+    if (!target || target.type !== 'Slot') return null;
+    // Item count: a full slot rejects everything (even otherwise-allowed items).
+    const max = target.props?.max as number | undefined;
+    const count = target.children?.length ?? 0;
+    if (max != null && count >= max) return `This blank area is full (max ${max}).`;
+    const allow = (target.props?.allow as string[] | undefined) ?? [];
+    const allowPatterns = (target.props?.allowPatterns as string[] | undefined) ?? [];
+    if (!allow.length && !allowPatterns.length) return null; // open slot — accepts anything
+    if (item.patternId) {
+      if (allowPatterns.includes(item.patternId)) return null;
+      return 'This blank area doesn’t accept that pattern.';
+    }
+    if (item.type && allow.includes(item.type)) return null;
+    const accepts = [
+      ...allow,
+      ...allowPatterns.map((id) => getAllPatterns().find((p) => p.pattern.id === id)?.pattern.name ?? id),
+    ];
+    return `This blank area only accepts: ${accepts.join(', ')}.`;
+  }
+
+  // The root of a pattern instance. Even when locked, the page author may remove
+  // or reposition the whole instance (managing placement) — they just can't edit
+  // its locked internals.
+  function isPatternInstanceRoot(nodeId: string): boolean {
+    if (!parsedDefinition.ok) return false;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const found = findNodeById(region.nodes, nodeId);
+      if (found) return !!found.patternInstance;
+    }
+    return false;
   }
 
   function commitDebounced(json: string, label: string) {
@@ -806,6 +1010,8 @@ export function EditorPage({
 
   function handleContentChange(nodeId: string, newFallback: string) {
     if (!parsedDefinition.ok) return;
+    const lock = getNodeLock(nodeId);
+    if (lock?.node || lock?.content) return; // locked text is not editable
     const newJson = JSON.stringify(
       patchDefinitionContent(parsedDefinition.value, nodeId, newFallback),
       null, 2,
@@ -814,10 +1020,57 @@ export function EditorPage({
     commitDebounced(newJson, `Edited ${getNodeType(nodeId)} text`);
   }
 
+  // Inline-edit a child item's text field (e.g. a DefinitionList item's label or
+  // value) on the canvas, writing back into the node's `items` array prop.
+  function handleItemTextChange(nodeId: string, index: number, field: string, value: string) {
+    if (!parsedDefinition.ok) return;
+    const lock = getNodeLock(nodeId);
+    if (lock?.node || lock?.content) return;
+    const patchNode = (node: ComponentNode): ComponentNode => {
+      if (node.id === nodeId) {
+        const items = Array.isArray(node.props?.items)
+          ? (node.props!.items as Array<Record<string, unknown>>).map((it, i) => {
+              if (i !== index) return it;
+              const next: Record<string, unknown> = { ...it, [field]: value };
+              if (field === 'value') delete next.children;
+              return next;
+            })
+          : node.props?.items;
+        return { ...node, props: { ...node.props, items } };
+      }
+      if (node.children) return { ...node, children: node.children.map(patchNode) };
+      return node;
+    };
+    const patched = patchRegions(parsedDefinition.value, patchNode);
+    const newJson = JSON.stringify(patched, null, 2);
+    history.setWorking(newJson);
+    commitDebounced(newJson, `Edited ${getNodeType(nodeId)} item`);
+  }
+
+  // Clicking a child item on the canvas selects its node and marks the item so
+  // the configurator opens the matching tab and the canvas outlines it.
+  function handleItemSelect(nodeId: string, index: number) {
+    setActiveItem({ nodeId, index });
+    if (nodeId !== selectedNodeId) onSelectNode?.(nodeId);
+  }
+
   function handleNodePropsChange(nodeId: string, newProps: ComponentProps, newContentFallback?: string) {
     if (!parsedDefinition.ok) return;
-    let patched = patchDefinitionProps(parsedDefinition.value, nodeId, newProps);
-    if (newContentFallback !== undefined) {
+    const lock = getNodeLock(nodeId);
+    if (lock?.node) { notifyLocked(); return; } // fully locked — ignore all edits
+
+    let props = newProps;
+    // Locked props are read-only: restore their current values so any change reverts.
+    if (lock?.props?.length) {
+      const current = getNodeProps(nodeId) ?? {};
+      props = { ...newProps };
+      for (const key of lock.props) {
+        if (key in current) props[key] = current[key];
+        else delete props[key];
+      }
+    }
+    let patched = patchDefinitionProps(parsedDefinition.value, nodeId, props);
+    if (newContentFallback !== undefined && !lock?.content) {
       patched = patchDefinitionContent(patched, nodeId, newContentFallback);
     }
     const newJson = JSON.stringify(patched, null, 2);
@@ -826,6 +1079,19 @@ export function EditorPage({
 
   function handleNodeDelete(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
+    // A slot with a minimum item count won't drop below it.
+    const parent = parsedDefinition.value.page.layout.regions
+      .map((r) => findParentInList(r.nodes, nodeId))
+      .find(Boolean);
+    if (parent && parent.type === 'Slot') {
+      const min = parent.props?.min as number | undefined;
+      const count = parent.children?.length ?? 0;
+      if (min != null && count <= min) {
+        setNotice(`This blank area needs at least ${min} item${min === 1 ? '' : 's'}.`);
+        return;
+      }
+    }
     const nodeType = getNodeType(nodeId);
     const newJson = JSON.stringify(
       deleteDefinitionNode(parsedDefinition.value, nodeId),
@@ -839,6 +1105,7 @@ export function EditorPage({
 
   function handleMoveUp(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = moveNodeInListDirection(r.nodes, nodeId, 'up');
@@ -851,6 +1118,7 @@ export function EditorPage({
 
   function handleMoveDown(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = moveNodeInListDirection(r.nodes, nodeId, 'down');
@@ -863,6 +1131,7 @@ export function EditorPage({
 
   function handleUngroup(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = ungroupNodeFromList(r.nodes, nodeId);
@@ -876,6 +1145,7 @@ export function EditorPage({
 
   function handleConvertNode(nodeId: string, newType: ComponentType, newProps: ComponentProps) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node || isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
     const fromType = getNodeType(nodeId);
     const newDef = convertDefinitionNode(parsedDefinition.value, nodeId, newType, newProps);
     history.commit(JSON.stringify(newDef, null, 2), `Converted ${fromType} to ${newType}`);
@@ -887,8 +1157,82 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), `Duplicated ${getNodeType(nodeId)}`);
   }
 
+  // Reconcile this page's pattern instances against their current patterns:
+  // pull locked props/text forward and report any incompatible instance edits.
+  function handleSyncPatterns() {
+    if (!parsedDefinition.ok) return;
+    const { def, instanceCount, conflicts } = reconcilePageInstances(parsedDefinition.value, loadPattern);
+    if (instanceCount === 0) { setNotice('No pattern instances on this page'); return; }
+    const newJson = JSON.stringify(def, null, 2);
+    if (newJson === history.workingJson) {
+      setNotice(`${instanceCount} pattern instance${instanceCount === 1 ? '' : 's'} — already up to date`);
+      return;
+    }
+    history.commit(newJson, 'Synced pattern instances');
+    setNotice(
+      conflicts.length
+        ? `Synced ${instanceCount} instance${instanceCount === 1 ? '' : 's'} · ${conflicts.length} locked value${conflicts.length === 1 ? '' : 's'} updated`
+        : `Synced ${instanceCount} instance${instanceCount === 1 ? '' : 's'}`,
+    );
+  }
+
+  function findNodeAnywhere(nodeId: string): ComponentNode | null {
+    if (!parsedDefinition.ok) return null;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const found = findNodeById(region.nodes, nodeId);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function replaceNodeEverywhere(nodeId: string, newNode: ComponentNode, label: string) {
+    if (!parsedDefinition.ok) return;
+    const regions = parsedDefinition.value.page.layout.regions.map((r) => ({
+      ...r, nodes: replaceNodeInList(r.nodes, nodeId, newNode),
+    }));
+    const newDef = { ...parsedDefinition.value, page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions } } };
+    history.commit(JSON.stringify(newDef, null, 2), label);
+  }
+
+  // Detach a pattern instance: strip its pattern link + lock metadata so it
+  // becomes a loose, fully-editable set of components — but keep any patterns
+  // nested inside it linked as instances.
+  function handleDetachPattern(nodeId: string) {
+    const node = findNodeAnywhere(nodeId);
+    if (!node) return;
+    replaceNodeEverywhere(nodeId, detachPatternMeta(node, true), 'Detached pattern');
+    setNotice('Pattern detached');
+  }
+
+  // Create a pattern from the selected subtree, then replace the selection with a
+  // (linked) instance of the new pattern.
+  function handleCreatePatternFromNode(nodeId: string) {
+    const node = findNodeAnywhere(nodeId);
+    if (!node) return;
+    // Preserve nested pattern instances as PatternRefs (don't detach them).
+    const patternRoot = extractPatternSource(node, true);
+    const id = newPatternId();
+    registerPattern({
+      schemaVersion: '1.0',
+      pattern: { id, name: 'New pattern', description: '', category: 'section', nodes: [patternRoot] },
+    });
+    const instance = instantiatePattern(id);
+    if (!instance) return;
+    replaceNodeEverywhere(nodeId, instance, 'Created pattern from selection');
+    onSelectNode?.(instance.id);
+    setNotice('Created pattern from selection');
+  }
+
+  // Pattern authoring: set lock metadata on a node (governs instances of the pattern).
+  function handleSetNodeLock(nodeId: string, lock: ComponentNode['lock']) {
+    if (!parsedDefinition.ok) return;
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeLockInNode(node, nodeId, lock));
+    history.commit(JSON.stringify(newDef, null, 2), `Updated lock on ${getNodeType(nodeId)}`);
+  }
+
   function handleGroupAsStack(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
     const nodeType = getNodeType(nodeId);
     if (nodeType === 'Stack') return;
     const newDef = wrapDefinitionNodeInStack(parsedDefinition.value, nodeId);
@@ -908,19 +1252,19 @@ export function EditorPage({
 
   function handleCopyPattern(nodeId: string | null = selectedNodeId) {
     if (!parsedDefinition.ok) return;
-    if (!nodeId) { setNotice('Select an element to copy its style'); return; }
+    if (!nodeId) { setNotice('Select an element to copy its properties'); return; }
     const node = findNodeInDefinition(nodeId);
     if (!node) return;
     const styles = collectPatternStyles(node);
     const typeCount = Object.keys(styles).length;
-    if (typeCount === 0) { setNotice(`${node.type} can’t be copied as a pattern`); return; }
+    if (typeCount === 0) { setNotice(`${node.type} has no properties to copy`); return; }
     writeStored(PATTERN_KEY, JSON.stringify({ root: node.type, styles }));
-    setNotice(`Copied pattern from ${node.type}${typeCount > 1 ? ` (${typeCount} element types)` : ''}`);
+    setNotice(`Copied properties from ${node.type}${typeCount > 1 ? ` (${typeCount} element types)` : ''}`);
   }
 
   function handlePastePattern(nodeId: string | null = selectedNodeId) {
     if (!parsedDefinition.ok) return;
-    if (!nodeId) { setNotice('Select an element to paste a pattern onto'); return; }
+    if (!nodeId) { setNotice('Select an element to paste properties onto'); return; }
     let pattern: { root?: string; styles?: PatternStyles } | null = null;
     try { pattern = JSON.parse(readStored(PATTERN_KEY) ?? 'null'); } catch { pattern = null; }
     if (!pattern || !pattern.styles || !Object.keys(pattern.styles).length) {
@@ -955,6 +1299,11 @@ export function EditorPage({
   // Insert a catalog component at the current addTarget position.
   function handleAddNode(entry: CatalogEntry) {
     if (!parsedDefinition.ok) return;
+    if (addTarget?.position === 'into' && addTarget.targetId && getNodeLock(addTarget.targetId)?.node) {
+      notifyLocked(); onCancelAdd?.(); return;
+    }
+    const slotReject = slotRejection(addTarget?.targetId, addTarget?.position, { type: entry.type });
+    if (slotReject) { setNotice(slotReject); return; }
     const newNode = createNodeFromEntry(entry);
     const regions = parsedDefinition.value.page.layout.regions;
 
@@ -984,19 +1333,23 @@ export function EditorPage({
     onCancelAdd?.();
   }
 
-  // Insert a catalog component dropped onto a canvas node at the given position.
-  function handleCatalogDrop(catalogType: string, targetNodeId: string | null, position: 'before' | 'into' | 'after') {
+  // Insert a pattern (resolved to fresh, editable page nodes) at the addTarget.
+  function handleAddPattern(patternId: string) {
     if (!parsedDefinition.ok) return;
-    const entry = COMPONENT_CATALOG.flatMap((c) => c.entries).find((e) => e.type === catalogType);
-    if (!entry) return;
-    const newNode = createNodeFromEntry(entry);
+    if (addTarget?.position === 'into' && addTarget.targetId && getNodeLock(addTarget.targetId)?.node) {
+      notifyLocked(); onCancelAdd?.(); return;
+    }
+    const slotReject = slotRejection(addTarget?.targetId, addTarget?.position, { patternId });
+    if (slotReject) { setNotice(slotReject); return; }
+    const newNode = instantiatePattern(patternId);
+    if (!newNode) return;
     const regions = parsedDefinition.value.page.layout.regions;
     let newRegions;
-    if (!targetNodeId) {
+    if (!addTarget || addTarget.targetId === null) {
       newRegions = [{ ...regions[0], nodes: [...regions[0].nodes, newNode] }, ...regions.slice(1)];
     } else {
       newRegions = regions.map((r) => {
-        const updated = insertInNodes(r.nodes, newNode, targetNodeId, position);
+        const updated = insertInNodes(r.nodes, newNode, addTarget.targetId!, addTarget.position);
         return updated !== r.nodes ? { ...r, nodes: updated } : r;
       });
     }
@@ -1004,7 +1357,59 @@ export function EditorPage({
       ...parsedDefinition.value,
       page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions: newRegions } },
     };
-    history.commit(JSON.stringify(newDef, null, 2), `Added ${entry.label}`);
+    const name = getAllPatterns().find((p) => p.pattern.id === patternId)?.pattern.name ?? 'pattern';
+    history.commit(JSON.stringify(newDef, null, 2), `Added ${name}`);
+    onSelectNode?.(newNode.id);
+    onCancelAdd?.();
+  }
+
+  // Insert a catalog component dropped onto a canvas node at the given position.
+  function handleCatalogDrop(catalogType: string, targetNodeId: string | null, position: 'before' | 'into' | 'after') {
+    if (!parsedDefinition.ok) return;
+    if (position === 'into' && targetNodeId && getNodeLock(targetNodeId)?.node) { notifyLocked(); return; }
+    const isPatternDrop = catalogType.startsWith('pattern:');
+    const isFigureImage = catalogType.startsWith('figure-image:');
+    const slotReject = slotRejection(targetNodeId, position, isPatternDrop
+      ? { patternId: catalogType.slice('pattern:'.length) }
+      : { type: isFigureImage ? 'Figure' : catalogType });
+    if (slotReject) { setNotice(slotReject); return; }
+
+    // Encodings: `pattern:<id>` → a pattern instance; `figure-image:<id>` → a
+    // Figure pre-filled with a library image; everything else → a component type.
+    let newNode: ComponentNode | null;
+    let label: string;
+    if (catalogType.startsWith('pattern:')) {
+      const patternId = catalogType.slice('pattern:'.length);
+      newNode = instantiatePattern(patternId);
+      label = getAllPatterns().find((p) => p.pattern.id === patternId)?.pattern.name ?? 'pattern';
+    } else if (isFigureImage) {
+      const imageId = catalogType.slice('figure-image:'.length);
+      const entry = COMPONENT_CATALOG.flatMap((c) => c.entries).find((e) => e.type === 'Figure');
+      newNode = entry ? createNodeFromEntry(entry) : null;
+      if (newNode) newNode.props = { ...newNode.props, src: toImageRef(imageId) };
+      label = 'image';
+    } else {
+      const entry = COMPONENT_CATALOG.flatMap((c) => c.entries).find((e) => e.type === catalogType);
+      newNode = entry ? createNodeFromEntry(entry) : null;
+      label = entry?.label ?? 'component';
+    }
+    if (!newNode) return;
+
+    const regions = parsedDefinition.value.page.layout.regions;
+    let newRegions;
+    if (!targetNodeId) {
+      newRegions = [{ ...regions[0], nodes: [...regions[0].nodes, newNode] }, ...regions.slice(1)];
+    } else {
+      newRegions = regions.map((r) => {
+        const updated = insertInNodes(r.nodes, newNode!, targetNodeId, position);
+        return updated !== r.nodes ? { ...r, nodes: updated } : r;
+      });
+    }
+    const newDef = {
+      ...parsedDefinition.value,
+      page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions: newRegions } },
+    };
+    history.commit(JSON.stringify(newDef, null, 2), `Added ${label}`);
     onSelectNode?.(newNode.id);
   }
 
@@ -1145,17 +1550,86 @@ export function EditorPage({
     />
   ) : null;
 
+  // The project's shared layout wraps content pages: its chrome renders read-only
+  // around the editable canvas (edit view) and the page composes into it (preview).
+  // Not applied to the layout document itself or to patterns.
+  const sharedLayoutDef = useMemo(() => {
+    if (documentKind !== 'page' || !projectId) return null;
+    try { return JSON.parse(loadProjectLayout(projectId)) as PageDefinition; } catch { return null; }
+  }, [documentKind, projectId]);
+
+  const layoutChrome = useMemo(
+    () => (sharedLayoutDef ? splitLayoutAtOutlet(sharedLayoutDef, { navItems: projectNavItems, logoFallback: projectName ?? '' }) : null),
+    [sharedLayoutDef, projectNavItems, projectName],
+  );
+
+  const composedPreviewDef = useMemo(
+    () => (sharedLayoutDef && parsedDefinition.ok
+      ? combinePageIntoLayout(sharedLayoutDef, parsedDefinition.value, { navItems: projectNavItems, logoFallback: projectName ?? '' })
+      : null),
+    [sharedLayoutDef, parsedDefinition, projectNavItems, projectName],
+  );
+
+  // Only patterns available to the active project (unrestricted, or scoped to it).
+  const patternEntries = getAllPatterns()
+    .filter((p) => patternAvailableToProject(p.pattern, projectId))
+    .map((p) => ({
+      id: p.pattern.id,
+      label: p.pattern.name,
+      description: p.pattern.description,
+      icon: 'dashboard_customize',
+    }));
+
+  // The pattern instance currently being edited (its root or a descendant is
+  // selected) — only that instance reveals its red lock outlines.
+  const activePatternRootId = parsedDefinition.ok && selectedNodeId
+    ? (findActivePatternRoot(parsedDefinition.value.page.layout.regions.flatMap((r) => r.nodes), selectedNodeId) ?? null)
+    : null;
+
+  // When the Add target is a Slot, tell the Add panel what it accepts so it only
+  // offers the allowed components / patterns (and signals when it's full).
+  let slotFilter = null as
+    | null
+    | { allow: string[]; allowPatterns: string[]; open: boolean; full: boolean; max?: number };
+  if (addTarget?.position === 'into' && addTarget.targetId) {
+    const target = getNode(addTarget.targetId);
+    if (target && target.type === 'Slot') {
+      const allow = (target.props?.allow as string[] | undefined) ?? [];
+      const allowPatterns = (target.props?.allowPatterns as string[] | undefined) ?? [];
+      const max = target.props?.max as number | undefined;
+      const count = target.children?.length ?? 0;
+      slotFilter = {
+        allow,
+        allowPatterns,
+        open: !allow.length && !allowPatterns.length,
+        full: max != null && count >= max,
+        max,
+      };
+    }
+  }
+
   const asidePanel = asideNode
     ? createPortal(
         <EditorAsidePanel
           selectedNodeId={selectedNodeId}
           definition={parsedDefinition.ok ? parsedDefinition.value : null}
+          onApplyDefinition={(def: PageDefinition, label: string) =>
+            history.commit(JSON.stringify(def, null, 2), label)}
+          composeWithAi={composeWithAi}
+          onAiComposeConsumed={onAiComposeConsumed}
+          projectId={projectId}
           pages={pages}
           pageLevel={pageLevel}
           availableLevels={availableLevels}
           onSetPageLevel={onSetPageLevel}
           onNodePropsChange={handleNodePropsChange}
+          activeItem={activeItem}
+          onItemSelect={handleItemSelect}
           onPageMetadataChange={handlePageMetadataChange}
+          patternScope={isPattern && patternId ? { patternId, projects } : null}
+          lockEnforced={!isPattern}
+          lockAuthoring={isPattern}
+          onSetLock={handleSetNodeLock}
           historyEntries={history.entries}
           historyIndex={history.index}
           onHistoryJump={handleHistoryJump}
@@ -1167,6 +1641,9 @@ export function EditorPage({
           addTarget={addTarget}
           onCancelAdd={onCancelAdd}
           onAddNode={handleAddNode}
+          patternEntries={patternEntries}
+          onAddPattern={handleAddPattern}
+          slotFilter={slotFilter}
           versions={versions}
           activeVersionId={activeVersionId}
           baseDef={baseParsedDef}
@@ -1211,6 +1688,18 @@ export function EditorPage({
                 />
               </>
             )}
+            {view === 'preview' && (
+              <>
+                <ToolbarDivider />
+                <ToolbarMenu
+                  aria-label="Responsive preview"
+                  label={VIEWPORT_PRESETS.find((p) => p.value === previewViewport)?.label ?? 'Fit'}
+                  value={previewViewport}
+                  onChange={(v) => setPreviewViewport(v as string)}
+                  items={VIEWPORT_PRESETS}
+                />
+              </>
+            )}
             <ToolbarDivider />
             <ToolbarButton
               icon="undo"
@@ -1230,13 +1719,22 @@ export function EditorPage({
               label="Keyboard shortcuts"
               onClick={() => setShortcutsOpen(true)}
             />
-            <ToolbarButton
-              icon="open_in_new"
-              label="Launch prototype"
-              onClick={handleExpandPreview}
-            />
+            {!isPattern && (
+              <ToolbarButton
+                icon="sync"
+                label="Sync pattern instances"
+                onClick={handleSyncPatterns}
+              />
+            )}
+            {!isPattern && (
+              <ToolbarButton
+                icon="open_in_new"
+                label="Launch prototype"
+                onClick={handleExpandPreview}
+              />
+            )}
           </Toolbar>
-          {versions.length > 1 && (
+          {!isPattern && versions.length > 1 && (
             <div className="a1-web-version-switcher">
               <SelectField
                 size="compact"
@@ -1254,15 +1752,22 @@ export function EditorPage({
       </Section>
 
       <Section padding="none">
-        {view !== 'json' && generatedHeader}
+        {view === 'edit' && (layoutChrome?.before
+          ? <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
+          : generatedHeader)}
         {view === 'edit' && (
           parsedDefinition.ok ? (
             <>
               <RenderPageDefinition
                 definition={parsedDefinition.value}
+                enforceLocks={!isPattern}
+                activePatternRootId={activePatternRootId}
                 selectedNodeId={selectedNodeId}
                 onNodeSelect={onSelectNode}
                 onContentChange={handleContentChange}
+                onItemTextChange={handleItemTextChange}
+                activeItem={activeItem}
+                onItemSelect={handleItemSelect}
                 onNodeDelete={handleNodeDelete}
                 onMoveUp={handleMoveUp}
                 onMoveDown={handleMoveDown}
@@ -1276,6 +1781,8 @@ export function EditorPage({
                 getNodeInfo={getNodeInfoFn}
                 onRequestAddChild={handleRequestAddChild}
                 onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+                onDetachPattern={handleDetachPattern}
+                onCreatePattern={handleCreatePatternFromNode}
               />
               <div
                 className="a1-web-canvas-floor"
@@ -1298,13 +1805,20 @@ export function EditorPage({
                   handleCatalogDrop(catalogType, null, 'after');
                 }}
               />
+              {layoutChrome?.after && (
+                <RenderPageDefinition definition={layoutChrome.after} onNavigate={(id) => onNavigateToPage?.(id)} />
+              )}
             </>
           ) : parseError
         )}
 
         {view === 'preview' && (
           parsedDefinition.ok ? (
-            <RenderPageDefinition definition={parsedDefinition.value} />
+            <ResponsivePreviewFrame {...(viewportSize(previewViewport) ?? {})}>
+              {composedPreviewDef
+                ? <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
+                : <>{generatedHeader}<RenderPageDefinition definition={parsedDefinition.value} /></>}
+            </ResponsivePreviewFrame>
           ) : parseError
         )}
 

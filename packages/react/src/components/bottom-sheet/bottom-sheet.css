@@ -1,0 +1,113 @@
+/* BottomSheet — fixed bottom panel, no scrim, separation via shadow. Drag handle
+   resizes between detents; content scrolls internally. xs + sm only. */
+
+.a1-bottom-sheet {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--component-bottom-sheet-z-index, 200);
+
+  display: flex;
+  flex-direction: column;
+  block-size: var(--a1-bottom-sheet-height, var(--component-bottom-sheet-header-height, 3.5rem));
+  max-block-size: 96dvh;
+  min-block-size: var(--component-bottom-sheet-header-height, 3.5rem);
+
+  background: var(--component-bottom-sheet-background, var(--semantic-color-surface-card));
+  border-start-start-radius: var(--component-bottom-sheet-border-radius, var(--base-radius-lg));
+  border-start-end-radius: var(--component-bottom-sheet-border-radius, var(--base-radius-lg));
+  /* Strong 1px hairline along the top edge (and up the rounded corners). */
+  border-block-start: var(--component-divider-size-sm) solid var(--semantic-color-border-strong);
+  border-inline: var(--component-divider-size-sm) solid var(--semantic-color-border-strong);
+  /* Upward shadow only — separates the sheet from page content without a scrim. */
+  box-shadow:
+    0 calc(-1 * var(--base-spacing-2)) var(--base-spacing-8)
+      color-mix(in srgb, var(--semantic-color-text-default) 12%, transparent),
+    var(--semantic-shadow-xl);
+
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  transition: block-size var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-bottom-sheet--dragging {
+  transition: none;
+}
+
+/* ── Header (drag handle + title) ──────────────────────────────────────────── */
+
+.a1-bottom-sheet__header {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-8) var(--component-bottom-sheet-padding, var(--base-spacing-16));
+  min-block-size: var(--component-bottom-sheet-header-height, 3.5rem);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.a1-bottom-sheet--dragging .a1-bottom-sheet__header {
+  cursor: grabbing;
+}
+
+.a1-bottom-sheet__handle {
+  align-self: center;
+  flex: none;
+  inline-size: var(--component-bottom-sheet-handle-width, var(--base-spacing-40));
+  block-size: var(--component-bottom-sheet-handle-height, var(--base-spacing-4));
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--semantic-color-border-strong);
+  cursor: grab;
+}
+
+.a1-bottom-sheet__handle:focus-visible {
+  outline: var(--component-button-focus-ring-width, 2px) solid var(--semantic-color-text-accent);
+  outline-offset: var(--base-spacing-4);
+}
+
+.a1-bottom-sheet__title {
+  font-size: var(--semantic-font-size-body-md);
+  font-weight: var(--semantic-font-weight-heading);
+  color: var(--semantic-color-text-default);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Scrollable content ────────────────────────────────────────────────────── */
+
+.a1-bottom-sheet__content {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding:
+    0
+    var(--component-bottom-sheet-padding, var(--base-spacing-16))
+    var(--base-spacing-16);
+}
+
+/* When collapsed the content area has no height — it's clipped to the header. */
+.a1-bottom-sheet--collapsed .a1-bottom-sheet__content {
+  overflow: hidden;
+}
+
+/* ── Spacer: reserves the collapsed footprint in document flow ─────────────── */
+
+.a1-bottom-sheet__spacer {
+  block-size: var(--component-bottom-sheet-header-height, 3.5rem);
+}
+
+/* ── xs + sm only ──────────────────────────────────────────────────────────── */
+
+@media (--bp-md-up) {
+  .a1-bottom-sheet,
+  .a1-bottom-sheet__spacer {
+    display: none;
+  }
+}

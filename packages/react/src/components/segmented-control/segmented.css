@@ -13,6 +13,9 @@
 
 .a1-segmented--full-width {
   display: flex;
+  /* Fill the container so the equal-width segments actually stretch — `display:
+     flex` alone leaves it content-width inside a centering flex/grid parent. */
+  inline-size: 100%;
 }
 
 /* ─── Segment button ──────────────────────────────────────────────────────── */
@@ -58,15 +61,42 @@
   font-size: var(--semantic-font-size-body-sm);
 }
 
+/* Small: tighter padding and a font size one step down from the default. */
+.a1-segmented--sm .a1-segment {
+  padding: var(--component-segmented-segment-padding-block-sm)
+           var(--component-segmented-segment-padding-inline-sm);
+  font-size: var(--semantic-font-size-body-xs);
+  /* Tighter icon↔label gap at sm. */
+  gap: var(--base-spacing-4);
+}
+
+/* Large: roomier padding and a font size one step up. */
+.a1-segmented--lg .a1-segment {
+  padding: var(--component-segmented-segment-padding-block-lg)
+           var(--component-segmented-segment-padding-inline-lg);
+  font-size: var(--semantic-font-size-body-md);
+}
+
 /* ─── Icon ────────────────────────────────────────────────────────────────── */
 
 .a1-segment__icon {
-  font-size: 1em;
+  /* One step larger than the label so the glyph reads clearly at the md/lg sizes. */
+  font-size: 1.25em;
 }
 
 /* Icon-only: match inline padding to block padding so the segment is square */
 .a1-segment--icon-only {
   padding-inline: var(--component-segmented-segment-padding-block);
+}
+
+/* Small: a larger icon and tighter horizontal padding per segment (so an
+   icon-only sm strip stays compact). */
+.a1-segmented--sm .a1-segment__icon {
+  font-size: 1.5em;
+}
+
+.a1-segmented--sm .a1-segment--icon-only {
+  padding-inline: var(--component-segmented-segment-padding-block-sm);
 }
 
 /* ─── Dark mode ───────────────────────────────────────────────────────────── */

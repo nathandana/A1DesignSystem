@@ -107,7 +107,7 @@ export function createFieldModule({
           onChange={(event) => set({ autoComplete: event.target.value })}
         />
         <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-        <Choice
+        <Choice prop="labelPosition"
           label="Label position"
           size="compact"
           hideIndicator

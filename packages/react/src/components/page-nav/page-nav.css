@@ -163,3 +163,16 @@
     border-color: var(--semantic-color-action-background);
   }
 }
+
+/* ── Desktop: stick within its column as the reader scrolls ────────────────── */
+/* `--a1-page-nav-top` lets a consumer offset for a sticky header (default 16px);
+   a long nav scrolls internally rather than running past the viewport. */
+@media (min-width: 769px) {
+  .a1-page-nav.a1-card {
+    position: sticky;
+    top: var(--a1-page-nav-top, var(--base-spacing-16));
+    align-self: start;
+    max-block-size: calc(100vh - var(--a1-page-nav-top, var(--base-spacing-16)) - var(--base-spacing-16));
+    overflow: hidden auto;
+  }
+}

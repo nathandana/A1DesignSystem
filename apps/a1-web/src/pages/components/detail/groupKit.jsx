@@ -122,7 +122,7 @@ export function createGroupModule({ Component, componentName, multiple }) {
         <TextField label="Hint" size="compact" value={config.hint} onChange={(e) => set({ hint: e.target.value })} />
         <TextField label="Error" size="compact" value={config.error} onChange={(e) => set({ error: e.target.value })} />
         <DensityChoice value={config.size} onChange={(size) => set({ size })} />
-        <Toggle label="Inline" value={config.inline} onChange={(inline) => set({ inline })} />
+        <Toggle prop="inline" label="Inline" value={config.inline} onChange={(inline) => set({ inline })} />
         <FieldState
           items={[
             { key: 'required', label: 'Required', icon: 'asterisk', value: config.required },

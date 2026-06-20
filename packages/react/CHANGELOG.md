@@ -1,5 +1,47 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## 0.18.0 — 2026-06-19
+
+### Added
+
+- **ToolbarGroup `labelMode`** (`"all"` | `"selected"`, default `"all"`) — `"selected"` shows the label only on the currently-selected option and renders the rest **icon/swatch-only** (a `"none"`/empty value falls back to the standard none icon); non-selected options keep an `aria-label` so the accessible name stays stable. For swatch/variant pickers where only the chosen option needs naming — e.g. a Section surface/gradient picker or a Button/IconButton variant picker. Added a `Label on selected only (swatch picker)` story.
+- **Grid `gap="none"`** — a zero gap (matches the shared `resolveSpacing` "none" → 0 convention). Added to the `GapKey` type and the Gap Scale / argType stories.
+- **Grid responsive 8-column classes** — `columns={{ … }}` now supports `8` at every breakpoint (`.a1-grid--{xs…xl}-8`), alongside the existing 1/2/3/4/6/12. Fixed (non-responsive) `columns={8}` already worked via the inline column variable. Added `8` to the Column Counts story.
+- **Autocomplete grouped + icon options** — options gained **`icon`** (a Material Symbols glyph rendered beside the option, chip, and selected value) and **`group`** (a sticky category heading before each group; results are ordered by each group's first appearance). Also **`maxVisible`** (+ `moreText(shown)`) caps how many options render for very large lists (e.g. an icon picker), hiding the rest behind a "keep typing" footer. Fully backward compatible. Added `Grouped options + icons` and `Grouped + capped (maxVisible)` stories.
+- **Paragraph `weight`** (`"regular"` | `"medium"` | `"semibold"` | `"bold"`) — set the body text weight via the base font-weight tokens (CSS-variable architecture: `--a1-paragraph-weight`). Omit to inherit the default body weight. Added a `Weights` story + a1-web configurator control.
+
+### Changed
+
+- **Accordion divider spacing** — when `divider` is set, the open panel now has a `padding-block-start` (scaled to the accordion `size`) so the first content item no longer sits directly against the divider line.
+- **SegmentedControl sizing** — the segment icon is one step larger (`1.25em`) so glyphs read clearly; the default (md) segment inline padding steps down one notch (`component.segmented.segmentPaddingInline` 0.75rem → 0.5rem; affects md only, since sm/lg carry their own padding tokens); and the sm size tightens the icon↔label gap.
+- **Slider compact size** — the compact track and thumb step up one notch (track `base-spacing-6` → `8`, thumb `base-spacing-16` → `20`) so the smallest slider stays grabbable; the compact label/detent text is unchanged. (Note: this brings the compact track/thumb in line with the default size; the sizes still differ by label scale.)
+- **Toolbar sub-component prop forwarding** — `ToolbarMenu`, `ToolbarGroup`, and `ToolbarDivider` now spread `...rest` and merge `className` onto their root element (matching `ToolbarToggle` / `ToolbarButton`), so callers can attach `data-*` attributes, `className`, etc. Enables canvas selection (e.g. the a1-web Toolbar configurator's click-to-edit).
+- **PageNav now sticks on desktop** — on viewports ≥ 769px the nav uses `position: sticky` (`top` = `var(--a1-page-nav-top, 16px)` so a consumer can offset for a sticky header), `align-self: start`, and a `max-height` + internal scroll for long lists. (Mobile keeps the fixed top pill bar.)
+
+### Fixed
+
+- **PageNav progress + active section now track the real scroll container.** It read `document.documentElement.scrollTop` / observed the viewport, so in a **nested scroll container** (e.g. a viewport-height `PageLayout`) the window never scrolled and the progress bar + active highlight froze. It now finds the nearest scrollable ancestor and uses it for both the scroll listener and the IntersectionObserver `root` (falling back to the window when the document scrolls).
+- **SegmentedControl `fullWidth`** now actually fills its container. `.a1-segmented--full-width` set `display: flex` but no width, so inside a centering flex/grid parent it stayed content-width; it now also sets `inline-size: 100%` so the equal-width segments stretch as intended.
+
+## 0.17.0 — 2026-06-18
+
+### Added
+
+- **Figure `placeholder`** (boolean, default true) + **`placeholderIcon`** (default `"image"`) — when `src` is missing or fails to load, Figure now renders a tokenized diagonal-stripe placeholder pattern with a centered icon instead of a broken image. Respects `aspectRatio`/`size` (4:3 fallback box). Added a `Placeholder pattern` story. Set `placeholder={false}` to opt out.
+- **DataTable column `type="image"`** — renders a small fixed-size thumbnail (`object-fit: cover`, ~2.5rem; ~2rem at compact density). The cell value is an image URL string or `{ src, alt }`; an empty value renders a dashed placeholder.
+- **Autocomplete** — a new filtering combobox component, single- or multi-select (`multiple`). Filters `options` as you type; multi mode renders removable chips. Optional `allowCreate` (+ `onCreate`) offers an "Add …" entry so users can add a value that isn't in the list. Matches the field family (`size`, `label`, `hint`, `error`, `required`, `disabled`) and follows the ARIA combobox/listbox pattern with full keyboard navigation (Arrow Up/Down, Enter, Escape, Backspace to remove the last chip). Exported from the package; `Single`, `Multiple`, `Multi-select + create`, and `Sizes` stories.
+- **SegmentedControl `labelMode`** (`"all"` | `"selected"`, default `"all"`) — `"selected"` shows the label only on the currently-selected segment and renders the rest **icon-only**, using each option's `ariaLabel`/`label` for its accessible name (options without an icon keep their label so they never render blank). Formalizes the compact "active = icon + label, others = icon" pattern. Added a `Label on selected only` story.
+
+### Fixed
+
+- **SegmentedControl `size`** now actually changes the control. The `sm`/`lg` classes previously had no CSS, so the `size` prop had no visible effect. `sm` now uses tighter padding and a font size one step down (`body-xs`); `lg` uses roomier padding and `body-md`. Added `component.segmented.segmentPaddingBlockLg` / `segmentPaddingInlineLg` tokens.
+
+## 0.16.0 — 2026-06-18
+
+### Added
+
+- **Banner `variant="calendar"`** — an event/date callout. A tokenized date block (a new `date` prop — accepts a `Date`, an ISO date string, or `{ month, day }`) replaces the status icon; a new `eyebrow` overline sits above a larger `title`; and `action`/`onDismiss` continue to work. The `neutral` status defaults the date block to the action colour, but any `status` still tints it. Month names render in sentence case (never uppercased). The root uses `role="group"` (not `role="alert"`) since a date callout is not an alert. Added `Calendar`, `CalendarWithLink`, and `CalendarStatuses` stories and a1-web configurator support (Variant gains Calendar; eyebrow + Date month/day fields; icon controls hidden for the calendar variant). React only.
+
 ## 0.15.0 — 2026-06-17
 
 ### Added

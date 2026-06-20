@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   Button,
   ButtonContainer,
@@ -6,15 +6,25 @@ import {
   Dialog,
   Figure,
   IconButton,
+  MessageBadge,
   Stack,
   TextField,
   Toolbar,
+  ToolbarButton,
+  ToolbarDivider,
   ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { ConfigSlider } from './configKit.jsx'
 import { Toggle } from './Toggle.jsx'
 import { ImageSuggestDialog } from './ImageSuggestDialog.jsx'
+import { ImageLibraryDialog } from './ImageLibraryDialog.jsx'
+import { ImageGenerateDialog } from './ImageGenerateDialog.jsx'
 import { FigureCropTool } from './FigureCropTool.jsx'
+import { Lockable } from './configKit.jsx'
+import { addImage, isImageRef, resolveSrc, toImageRef } from '../../../lib/imageLibrary.ts'
+import { useImageLibraryVersion } from '../../../editor/ImageLibraryContext.jsx'
+import { getProjectImageStyle } from '../../../projects/projectStore.ts'
 
 const round3 = (n) => Math.round(n * 1000) / 1000
 
@@ -143,9 +153,10 @@ export function getDefaultConfig() {
 
 export function Preview({ config }) {
   const isCustom = config.customCrop
+  useImageLibraryVersion() // re-render when a library image hydrates
   return (
     <Figure
-      src={config.src || DEMO_SRC}
+      src={resolveSrc(config.src || DEMO_SRC)}
       alt={config.alt || ''}
       caption={config.captionSrOnly ? undefined : (config.caption || undefined)}
       radius={config.radius || undefined}
@@ -160,9 +171,24 @@ export function Preview({ config }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, projectId }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   const [aiOpen, setAiOpen] = useState(false)
+  const [libraryOpen, setLibraryOpen] = useState(false)
+  const [generateOpen, setGenerateOpen] = useState(false)
+  const [urlMode, setUrlMode] = useState(false)
+  const uploadRef = useRef(null)
+  const fromLibrary = isImageRef(config.src)
+  const showUrlField = !fromLibrary && (urlMode || (!!config.src && !isImageRef(config.src)))
+
+  async function handleUpload(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    const meta = await addImage(file)
+    set({ src: toImageRef(meta.id), alt: config.alt || meta.name })
+    setUrlMode(false)
+  }
 
   // Custom crop is edited in a dialog with its own draft state so Cancel can
   // discard changes; Apply commits the rectangle and activates custom crop.
@@ -183,8 +209,34 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <Stack direction="row" gap="xs" align="end">
-        <div className="a1-web-field-grow">
+      {/* Image source toolbar — pick how to set the Figure's image. */}
+      <Stack gap="sm">
+        <Toolbar label="Image source" aria-label="Image source">
+          <ToolbarButton icon="photo_library" label="Add from library" onClick={() => { setUrlMode(false); setLibraryOpen(true) }} />
+          <ToolbarButton icon="upload" label="Upload" onClick={() => { setUrlMode(false); uploadRef.current?.click() }} />
+          <ToolbarButton icon="image_search" label="Find with AI" onClick={() => { setUrlMode(false); setAiOpen(true) }} />
+          <ToolbarButton icon="auto_awesome" label="Generate with AI" onClick={() => { setUrlMode(false); setGenerateOpen(true) }} />
+          <ToolbarDivider />
+          <ToolbarToggle
+            icon="link"
+            label="Add from URL"
+            pressed={showUrlField}
+            onChange={(p) => {
+              if (p) { if (fromLibrary) set({ src: '' }); setUrlMode(true) }
+              else { setUrlMode(false); if (!isImageRef(config.src)) set({ src: '' }) }
+            }}
+          />
+        </Toolbar>
+
+        {fromLibrary && (
+          <Stack direction="row" gap="xs" align="center">
+            <MessageBadge size="sm" status="info" icon="photo_library">From library</MessageBadge>
+            <IconButton icon="swap_horiz" label="Choose a different library image" size="sm" variant="tertiary" onClick={() => setLibraryOpen(true)} />
+            <IconButton icon="close" label="Clear image" size="sm" variant="tertiary" onClick={() => set({ src: '' })} />
+          </Stack>
+        )}
+
+        {showUrlField && (
           <TextField
             label="Image URL"
             size="compact"
@@ -193,19 +245,34 @@ export function Controls({ config, setConfig }) {
             value={config.src ?? ''}
             onChange={(event) => set({ src: event.target.value })}
           />
-        </div>
-        <IconButton
-          icon="auto_awesome"
-          label="Find an image with AI"
-          size="sm"
-          onClick={() => setAiOpen(true)}
-        />
+        )}
+
+        <input ref={uploadRef} type="file" accept="image/*" hidden onChange={handleUpload} />
       </Stack>
       <ImageSuggestDialog
         open={aiOpen}
         onClose={() => setAiOpen(false)}
         initialPrompt={config.alt || ''}
         onApply={({ src, alt, caption }) => set({ src, alt: alt || config.alt, ...(caption ? { caption } : {}) })}
+      />
+      <ImageGenerateDialog
+        open={generateOpen}
+        onClose={() => setGenerateOpen(false)}
+        initialDescription={config.alt || ''}
+        styleContext={getProjectImageStyle(projectId)}
+      />
+      <ImageLibraryDialog
+        open={libraryOpen}
+        projectId={projectId}
+        onClose={() => setLibraryOpen(false)}
+        onApply={({ ref, name, crop }) => set({
+          src: ref,
+          alt: config.alt || name,
+          // Default to the image's stored crop; the crop controls can override it.
+          ...(crop?.cropRect
+            ? { customCrop: true, cropRect: crop.cropRect, cropRatio: crop.cropRatio || '' }
+            : {}),
+        })}
       />
       <TextField
         label="Alt text"
@@ -219,44 +286,44 @@ export function Controls({ config, setConfig }) {
         value={config.caption}
         onChange={(event) => set({ caption: event.target.value })}
       />
-      <Toggle
+      <Toggle prop="captionSrOnly"
         label="Caption screen-reader only"
         value={config.captionSrOnly}
         onChange={(captionSrOnly) => set({ captionSrOnly })}
       />
       {config.captionSrOnly ? null : (
-        <Toolbar label="Caption position">
+        <Lockable prop="captionPosition"><Toolbar label="Caption position">
           <ToolbarGroup
             aria-label="Caption position"
             value={config.captionPosition}
             onChange={(captionPosition) => set({ captionPosition })}
             options={CAPTION_POSITION_ITEMS}
           />
-        </Toolbar>
+        </Toolbar></Lockable>
       )}
-      <ConfigSlider
+      <ConfigSlider prop="radius"
         label="Radius"
         values={RADIUS_ITEMS.map((item) => item.value)}
         value={config.radius}
         onChange={(radius) => set({ radius })}
       />
-      <ConfigSlider
+      <ConfigSlider prop="size"
         label="Size"
         values={SIZE_ITEMS.map((item) => item.value)}
         value={config.size}
         onChange={(size) => set({ size })}
       />
       {config.size ? (
-        <Toolbar label="Align">
+        <Lockable prop="align"><Toolbar label="Align">
           <ToolbarGroup
             aria-label="Align"
             value={config.align}
             onChange={(align) => set({ align })}
             options={ALIGN_ITEMS}
           />
-        </Toolbar>
+        </Toolbar></Lockable>
       ) : null}
-      <Toolbar label="Aspect ratio">
+      <Lockable prop="aspectRatio"><Toolbar label="Aspect ratio">
         <ToolbarGroup
           aria-label="Aspect ratio"
           showLabels
@@ -264,9 +331,9 @@ export function Controls({ config, setConfig }) {
           onChange={(aspectRatio) => set({ aspectRatio, customCrop: false })}
           options={ASPECT_ITEMS}
         />
-      </Toolbar>
+      </Toolbar></Lockable>
       {config.aspectRatio && !config.customCrop ? (
-        <Toolbar label="Crop">
+        <Lockable prop="crop"><Toolbar label="Crop">
           <ToolbarGroup
             aria-label="Crop focal point"
             columns={3}
@@ -274,7 +341,7 @@ export function Controls({ config, setConfig }) {
             onChange={(crop) => set({ crop })}
             options={CROP_ITEMS}
           />
-        </Toolbar>
+        </Toolbar></Lockable>
       ) : null}
       <Stack direction="row" gap="xs">
         <Button
@@ -302,7 +369,7 @@ export function Controls({ config, setConfig }) {
         }
       >
         <FigureCropTool
-          src={config.src || DEMO_SRC}
+          src={resolveSrc(config.src || DEMO_SRC)}
           ratio={draftRatio}
           onRatioChange={setDraftRatio}
           rect={draftRect}

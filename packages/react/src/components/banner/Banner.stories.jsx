@@ -30,13 +30,15 @@ const meta = {
   argTypes: {
     variant: {
       control: "inline-radio",
-      options: ["inline", "system"],
+      options: ["inline", "system", "calendar"],
     },
     status: {
       control: "inline-radio",
       options: STATUSES,
     },
     title:    { control: "text" },
+    eyebrow:  { control: "text", description: "Overline above the title (calendar variant only)" },
+    date:     { control: "text", description: "Date for the calendar callout (calendar variant only)" },
     children: { control: "text", name: "body" },
     icon:     { ...iconArgType("Override the default status icon") },
   },
@@ -231,6 +233,73 @@ export const SystemDismissable = {
       </div>
     );
   },
+};
+
+/* ── Calendar: event callout ──────────────────────────────────────────────── */
+
+export const Calendar = {
+  name: "Calendar — event callout",
+  parameters: { layout: "padded", controls: { include: [] } },
+  render: () => (
+    <Banner
+      variant="calendar"
+      eyebrow="Neighborhood event"
+      title="Summer block party"
+      date={{ month: "Jun", day: "28" }}
+      action={<Button variant="tertiary" size="sm">RSVP</Button>}
+    >
+      Saturday, June 28 · 10:00 am – 2:00 pm · Right here in the neighborhood
+    </Banner>
+  ),
+};
+
+/* ── Calendar: with link + dismiss ────────────────────────────────────────── */
+
+export const CalendarWithLink = {
+  name: "Calendar — with link and dismiss",
+  parameters: { layout: "padded", controls: { include: [] } },
+  render: () => {
+    const [visible, setVisible] = useState(true);
+    if (!visible) return (
+      <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-sm)", color: "var(--semantic-color-text-muted)" }}>Dismissed.</p>
+    );
+    return (
+      <Banner
+        variant="calendar"
+        eyebrow="Webinar"
+        title="Designing with tokens"
+        date={new Date(2026, 6, 15)}
+        action={<Link href="#">Add to calendar</Link>}
+        onDismiss={() => setVisible(false)}
+      >
+        Wednesday, July 15 · 1:00 pm ET · Live, with Q&amp;A
+      </Banner>
+    );
+  },
+};
+
+/* ── Calendar: status tints ───────────────────────────────────────────────── */
+
+export const CalendarStatuses = {
+  name: "Calendar — status tints",
+  parameters: { layout: "padded", controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)" }}>
+      {STATUSES.map((status, i) => (
+        <Banner
+          key={status}
+          variant="calendar"
+          status={status}
+          eyebrow="Reminder"
+          title={EXAMPLES[status].title}
+          date={{ month: "Jun", day: String(10 + i) }}
+          action={<Link href="#">View</Link>}
+        >
+          {EXAMPLES[status].body}
+        </Banner>
+      ))}
+    </div>
+  ),
 };
 
 /* ── System: in context ───────────────────────────────────────────────────── */

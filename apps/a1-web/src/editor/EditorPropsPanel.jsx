@@ -10,9 +10,12 @@
  * configurators (ChoiceGroup, CheckboxGroup, RadioGroup) — which has no home in
  * the node, so it is held in local state here.
  */
-import { useState } from 'react'
-import { Button, ChoiceGroup, Divider, Heading, Link, Paragraph, SelectField, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { useContext, useState } from 'react'
+import { Button, CheckboxGroup, ChoiceGroup, Divider, Heading, Icon, IconButton, Link, NumberField, Paragraph, SelectField, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { getAllPatterns, getPatternProjects, setPatternProjects } from '../patterns/patternStore.js'
+import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
+import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 
 // Layout
@@ -697,6 +700,17 @@ export const propsToConfig = {
 
   // Data
   DataTable: (props) => ({ ...dataTableDefaults(), ...(props ?? {}) }),
+
+  // Pattern authoring — a constrained blank area.
+  Slot: (props) => ({
+    label: props?.label ?? '',
+    allow: props?.allow ?? [],
+    allowPatterns: props?.allowPatterns ?? [],
+    min: props?.min,
+    max: props?.max,
+    columns: props?.columns,
+    gap: props?.gap,
+  }),
 }
 
 // ── Config bridges: Controls config → node update ─────────────────────────────
@@ -1327,6 +1341,19 @@ export const configToNodeUpdate = {
 
   DataTable: (config) => ({ props: { ...config } }),
 
+  // Pattern authoring — a constrained blank area.
+  Slot: (config) => ({
+    props: {
+      label: config.label || undefined,
+      allow: config.allow?.length ? config.allow : undefined,
+      allowPatterns: config.allowPatterns?.length ? config.allowPatterns : undefined,
+      min: config.min != null && config.min !== '' ? config.min : undefined,
+      max: config.max != null && config.max !== '' ? config.max : undefined,
+      columns: config.columns != null ? config.columns : undefined,
+      gap: config.gap || undefined,
+    },
+  }),
+
   // Inputs
   FieldRow: () => ({ props: {} }),
 
@@ -1420,6 +1447,94 @@ function FieldRowEditorControls() {
   )
 }
 
+// A Slot is a constrained "blank area" in a pattern: configure the placeholder
+// label and which component types and/or patterns instances may drop into it.
+// Leaving both lists empty makes the slot accept anything.
+const SLOT_COMPONENT_OPTIONS = [
+  'Card', 'Button', 'IconButton', 'Link', 'Heading', 'Paragraph', 'Blockquote',
+  'Figure', 'Icon', 'MessageBadge', 'DefinitionList', 'Banner', 'List',
+  'Stack', 'Grid', 'Section',
+]
+
+function SlotEditorControls({ config, setConfig }) {
+  const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
+  // The accept-lists are pattern-authoring governance — only shown while authoring
+  // a pattern, not when a slot is configured on a page.
+  const { authoring } = useContext(ConfigLockContext)
+  const allow = config.allow ?? []
+  const allowPatterns = config.allowPatterns ?? []
+  const patterns = getAllPatterns()
+
+  return (
+    <Stack gap="lg">
+      <TextField
+        label="Placeholder label"
+        size="compact"
+        hint="Shown in the centre of the blank area."
+        value={config.label ?? ''}
+        onChange={(e) => set({ label: e.target.value })}
+      />
+      <Stack direction="row" gap="sm">
+        <NumberField
+          label="Min items"
+          size="compact"
+          min={0}
+          hint="Fewest allowed."
+          value={config.min ?? ''}
+          onChange={(e) => set({ min: e.target.value === '' ? undefined : Math.max(0, Number(e.target.value)) })}
+        />
+        <NumberField
+          label="Max items"
+          size="compact"
+          min={0}
+          hint="Most allowed."
+          value={config.max ?? ''}
+          onChange={(e) => set({ max: e.target.value === '' ? undefined : Math.max(0, Number(e.target.value)) })}
+        />
+      </Stack>
+      <Divider space="none" />
+      <Paragraph size="xs" color="muted">
+        Grid layout — lock a property (in the pattern editor) to fix it for instances, or leave it open.
+      </Paragraph>
+      <Choice
+        label="Columns"
+        prop="columns"
+        value={config.columns ?? 1}
+        onChange={(columns) => set({ columns })}
+        options={[1, 2, 3, 4].map((n) => ({ value: n, label: String(n) }))}
+      />
+      <ConfigSlider
+        label="Gap"
+        prop="gap"
+        values={['xs', 'sm', 'md', 'lg', 'xl']}
+        value={config.gap ?? 'md'}
+        onChange={(gap) => set({ gap })}
+      />
+      {authoring && (
+        <CheckboxGroup
+          label="Allowed components"
+          size="compact"
+          columns={2}
+          hint="Leave empty to accept any component."
+          value={allow}
+          onChange={(next) => set({ allow: next })}
+          options={SLOT_COMPONENT_OPTIONS.map((type) => ({ label: type, value: type }))}
+        />
+      )}
+      {authoring && patterns.length > 0 && (
+        <CheckboxGroup
+          label="Allowed patterns"
+          size="compact"
+          hint="Patterns instances may drop into this area."
+          value={allowPatterns}
+          onChange={(next) => set({ allowPatterns: next })}
+          options={patterns.map((p) => ({ label: p.pattern.name, value: p.pattern.id }))}
+        />
+      )}
+    </Stack>
+  )
+}
+
 function ListItemControls({ config, setConfig }) {
   const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
   return (
@@ -1434,6 +1549,7 @@ function ListItemControls({ config, setConfig }) {
         label="Icon"
         value={config.icon ?? ''}
         onChange={(icon) => set({ icon })}
+        promptHint={config.children}
       />
     </Stack>
   )
@@ -1505,6 +1621,7 @@ const CONTROLS_BY_TYPE = {
   TreeMenu: TreeMenuControls,
   DataTable: DataTableControls,
   FieldRow: FieldRowEditorControls,
+  Slot: SlotEditorControls,
 
   // Inline Controls (no separate configurator file)
   List: ListEditorControls,
@@ -1513,7 +1630,23 @@ const CONTROLS_BY_TYPE = {
 
 // ── Page metadata form (shown when no node is selected) ───────────────────────
 
-function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel, onPageMetadataChange, onDuplicatePage, onDeletePage }) {
+function PatternScopeField({ patternId, projects }) {
+  const [projectIds, setProjectIds] = useState(() => getPatternProjects(patternId))
+  if (projects.length === 0) {
+    return <Paragraph size="sm" color="muted">No projects yet — this pattern is available everywhere.</Paragraph>
+  }
+  return (
+    <CheckboxGroup
+      label="Restrict to projects"
+      hint="Leave all unchecked to make this pattern available to every project."
+      value={projectIds}
+      onChange={(next) => { setProjectIds(next); setPatternProjects(patternId, next) }}
+      options={projects.map((p) => ({ value: p.id, label: p.name }))}
+    />
+  )
+}
+
+function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel, onPageMetadataChange, onDuplicatePage, onDeletePage, patternScope }) {
   if (!definition) {
     return (
       <Paragraph size="sm" color="muted">
@@ -1527,7 +1660,7 @@ function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel
 
   return (
     <Stack gap="md">
-      <Heading as="h3" size="xs" color="muted">Page</Heading>
+      <Heading as="h3" size="xs" color="muted">{patternScope ? 'Pattern' : 'Page'}</Heading>
       <TextField
         label="Title"
         size="compact"
@@ -1546,6 +1679,9 @@ function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel
         value={description}
         onChange={(e) => onPageMetadataChange({ description: e.target.value })}
       />
+      {patternScope && (
+        <PatternScopeField patternId={patternScope.patternId} projects={patternScope.projects} />
+      )}
       {onSetPageLevel && (
         <SelectField
           label="Level"
@@ -1593,15 +1729,22 @@ function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel
 export function EditorPropsPanel({
   selectedNodeId,
   definition,
+  projectId,
   pages = [],
   pageLevel,
   availableLevels,
   onSetPageLevel,
   onNodePropsChange,
+  activeItem,
+  onItemSelect,
   onPageMetadataChange,
   onConvertNode,
   onDuplicatePage,
   onDeletePage,
+  patternScope = null,
+  lockEnforced = false,
+  lockAuthoring = false,
+  onSetLock,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1618,13 +1761,17 @@ export function EditorPropsPanel({
         onPageMetadataChange={onPageMetadataChange}
         onDuplicatePage={onDuplicatePage}
         onDeletePage={onDeletePage}
+        patternScope={patternScope}
       />
     )
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
   const componentHref = `/?page=component-${node.type.toLowerCase()}`
-  const conversionTargets = CONVERSION_MAP[node.type] ?? []
+  // Pattern instances (and locked pattern parts) can't be converted to another
+  // component type — that would break the pattern link.
+  const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
+  const conversionTargets = suppressConvert ? [] : (CONVERSION_MAP[node.type] ?? [])
 
   const ConvertSection = conversionTargets.length > 0 && onConvertNode ? (
     <Stack gap="sm">
@@ -1687,12 +1834,81 @@ export function EditorPropsPanel({
     onNodePropsChange(node.id, newProps, contentFallback)
   }
 
+  // Pattern-instance governance: when enforcing locks, a fully-locked element's
+  // controls are disabled; partially-locked elements show which parts are locked.
+  const lock = lockEnforced ? node.lock : undefined
+  const fullyLocked = !!lock?.node
+  const lockedParts = [...(lock?.props ?? []), ...(lock?.content ? ['text'] : [])]
+  const lockNote = lock ? (
+    <Stack direction="row" gap="xs" align="center">
+      <Icon name="lock" size="sm" color="muted" aria-hidden="true" />
+      <Paragraph size="sm" color="muted">
+        {fullyLocked
+          ? 'Locked by its pattern'
+          : `Locked by pattern: ${lockedParts.join(', ')}`}
+      </Paragraph>
+    </Stack>
+  ) : null
+
+  const activeItemIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null
+  const controls = (
+    <Controls
+      config={config}
+      setConfig={setConfig}
+      pages={pages}
+      projectId={projectId}
+      activeItemIndex={activeItemIndex}
+      onSelectItem={(index) => onItemSelect?.(node.id, index)}
+    />
+  )
+  // Provide the lock state so each configurator control outlines itself when the
+  // property it edits is locked (red outline + lock badge). A fully-locked element
+  // is additionally dimmed + pointer-disabled (accordions still toggle).
+  const lockValue = lockAuthoring
+    ? {
+        lockedProps: new Set(node.lock?.props ?? []),
+        fullyLocked: false,
+        authoring: true,
+        onSetLockedProps: (arr) => onSetLock?.(node.id, { ...(node.lock ?? {}), props: arr }),
+      }
+    : {
+        lockedProps: new Set(lock?.props ?? []),
+        fullyLocked: !!lock?.node,
+        authoring: false,
+        onSetLockedProps: null,
+      }
+  const lockedControls = (
+    <ConfigLockContext.Provider value={lockValue}>
+      {(!lockAuthoring && fullyLocked) ? <div className="a1-web-config-locked">{controls}</div> : controls}
+    </ConfigLockContext.Provider>
+  )
+
   return (
     <Stack gap="lg">
-      <Heading as="h3" size="xs" color="muted">
-        <Link href={componentHref}>{node.type}</Link>
-      </Heading>
-      <Controls config={config} setConfig={setConfig} pages={pages} />
+      {node.patternInstance ? (
+        <Stack direction="row" align="center" justify="between" gap="sm">
+          <Heading as="h3" size="xs" color="muted">{node.patternInstance.name}</Heading>
+          <IconButton
+            as="a"
+            href={`/?page=editor&pattern=${node.patternInstance.id}`}
+            icon="edit"
+            size="sm"
+            variant="tertiary"
+            aria-label="Edit pattern"
+          />
+        </Stack>
+      ) : (
+        <Heading as="h3" size="xs" color="muted">
+          <Link href={componentHref}>{node.type}</Link>
+        </Heading>
+      )}
+      {lockAuthoring && (
+        <Paragraph size="sm" color="muted">
+          Lock the properties that instances can’t change — use the lock icon next to each.
+        </Paragraph>
+      )}
+      {lockNote}
+      {(lock || lockAuthoring) ? lockedControls : controls}
       {ConvertSection}
     </Stack>
   )

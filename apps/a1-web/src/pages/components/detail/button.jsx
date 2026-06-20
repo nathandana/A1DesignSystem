@@ -11,7 +11,21 @@ import { Choice, ConfigSlider } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
+// Bare display: render the preview full-width (no centering Section) so the
+// `fullWidth` toggle actually fills — a centered Section would shrink it to
+// content. The Preview centers a natural-width button itself.
+export const bareDisplay = true
+
 const VARIANT_OPTIONS = ['primary', 'secondary', 'tertiary', 'destructive', 'success']
+// Icons for the variant picker: an emphasis ramp (primary → tertiary) plus the
+// two status variants. With labelMode="selected" only the chosen variant is named.
+const VARIANT_ICONS = {
+  primary: 'star',
+  secondary: 'star_half',
+  tertiary: 'star_outline',
+  destructive: 'delete',
+  success: 'check_circle',
+}
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 // Sample secondary actions for the split-button demo.
@@ -74,22 +88,19 @@ export function Preview({ config, viewAs = 'react' }) {
   // the React component — but only with the props the selected platform supports
   // (e.g. Native drops href, Pure drops full-width/loading).
   const s = support(viewAs)
-  if (config.split && s.split) {
-    return (
-      <SplitButton
-        variant={config.variant}
-        size={config.size}
-        icon={config.icon || undefined}
-        iconPosition={config.iconPosition}
-        loading={config.loading}
-        disabled={config.disabled}
-        actions={SAMPLE_ACTIONS}
-      >
-        {config.label || 'Button'}
-      </SplitButton>
-    )
-  }
-  return (
+  const el = config.split && s.split ? (
+    <SplitButton
+      variant={config.variant}
+      size={config.size}
+      icon={config.icon || undefined}
+      iconPosition={config.iconPosition}
+      loading={config.loading}
+      disabled={config.disabled}
+      actions={SAMPLE_ACTIONS}
+    >
+      {config.label || 'Button'}
+    </SplitButton>
+  ) : (
     <Button
       variant={config.variant}
       size={config.size}
@@ -103,6 +114,13 @@ export function Preview({ config, viewAs = 'react' }) {
       {config.label || 'Button'}
     </Button>
   )
+  // Centered so a natural-width button looks balanced; a fullWidth button
+  // (width: 100%) fills the row regardless of the centering.
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', inlineSize: '100%', padding: 'var(--base-spacing-16)' }}>
+      {el}
+    </div>
+  )
 }
 
 export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
@@ -115,19 +133,19 @@ export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
         value={config.label}
         onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
       />
-      <Choice
+      <Choice prop="variant"
         label="Variant"
-        size="compact"
-        hideIndicator
-        columns={2}
+        labelMode="selected"
+        helper="Sets the button's visual emphasis and intent. Use one primary per decision area."
         value={config.variant}
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
-        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt, icon: VARIANT_ICONS[opt] }))}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <ConfigSlider prop="size" label="Size" helper="Controls the button's height, padding, and text size." values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <Choice
         label="Icon"
         iconOnly
+        helper="Adds a leading or trailing icon — or none."
         value={!config.icon ? 'none' : (config.iconPosition === 'end' ? 'right' : 'left')}
         onChange={(placement) => setConfig((current) => placement === 'none'
           ? { ...current, icon: '' }

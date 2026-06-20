@@ -144,6 +144,8 @@
 }
 
 .a1-top-header__nav-submenu-trigger {
+  min-inline-size: 24px;
+  min-block-size: 24px;
   padding-inline: var(--base-spacing-8);
 }
 

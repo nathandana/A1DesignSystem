@@ -1,5 +1,6 @@
 import {
   Banner,
+  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -98,25 +99,30 @@ function ViolationCard({ story }) {
   )
 }
 
-export function Accessibility() {
+export function Accessibility({ onNavigate }) {
   const { generated, status, totalScanned, totalViolations, storiesAffected, counts, stories } = reportData
   const meta = STATUS_META[status] ?? STATUS_META.fail
 
   return (
     <>
-      {/* ── Hero ── */}
-      <Section padding="sm" inverse contentWidth="lg" aria-labelledby="a11y-heading">
-        <Stack direction="column" gap="md">
-          <Heading as="h1" id="a11y-heading" type="display" size={{ xs: 'lg', lg: 'jumbo' }}>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+        <Stack direction="column" gap="xs">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: 'Accessibility report' },
+            ]}
+          />
+          <Heading as="h1" id="a11y-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Accessibility report
           </Heading>
-          <Paragraph size="md" color="muted">
+          <Paragraph size="sm" color="muted">
             Automated WCAG 2.0 / 2.1 / 2.2 Level A &amp; AA checks run against every Storybook story
             in the default theme using axe-core via the Storybook test runner.
           </Paragraph>
-          <Stack direction="row" gap="sm" align="center" wrap>
-            <MessageBadge icon={meta.icon} size="lg" status={meta.status}>{meta.label}</MessageBadge>
-            <Paragraph size="md" color="muted">Last scanned: {generated}</Paragraph>
+          <Stack direction="row" gap="xs" align="center" wrap>
+            <MessageBadge icon={meta.icon} size="sm" status={meta.status}>{meta.label}</MessageBadge>
+            <Paragraph size="sm" color="muted">Last scanned: {generated}</Paragraph>
           </Stack>
         </Stack>
       </Section>
@@ -203,15 +209,18 @@ export function Accessibility() {
       </Section>
 
       {/* ── Coverage note ── */}
-      <Section padding="lg" inverse contentWidth="md" align="center" aria-labelledby="coverage-heading">
-        <Stack direction="column" gap="md" align="center">
-          <Heading as="h2" id="coverage-heading" size={{ xs: 'md', md: 'lg' }} align="center">
-            Run the checks yourself
-          </Heading>
-          <Paragraph size="lg" color="muted" align="center" style={{ maxInlineSize: '600px', textWrap: 'pretty' }}>
-            The full suite runs axe against every Storybook story, with Playwright keyboard
-            interaction tests for Menu, Dialog, Tabs, Accordion, and Breadcrumb.
-          </Paragraph>
+      <Section padding="lg" surface="panel" contentWidth="lg" aria-labelledby="coverage-heading">
+        <Stack direction="column" gap="md">
+          <Stack direction="column" gap="sm">
+            <MessageBadge icon="terminal">Local checks</MessageBadge>
+            <Heading as="h2" id="coverage-heading" size={{ xs: 'md', md: 'lg' }}>
+              Run the checks yourself
+            </Heading>
+            <Paragraph size="md" color="muted" style={{ maxInlineSize: '600px', textWrap: 'pretty' }}>
+              The full suite runs axe against every Storybook story, with Playwright keyboard
+              interaction tests for Menu, Dialog, Tabs, Accordion, and Breadcrumb.
+            </Paragraph>
+          </Stack>
           <Grid columns={{ xs: 1, sm: 3 }} gap="sm">
             {[
               { cmd: 'npm run test:qa',               desc: 'Full axe scan + visual regression + report' },

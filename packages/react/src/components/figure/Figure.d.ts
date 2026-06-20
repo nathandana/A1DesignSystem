@@ -54,6 +54,13 @@ export interface FigureProps extends React.HTMLAttributes<HTMLElement> {
    * Pass `true` for symmetric bleed or a numeric spacing token for inline-only.
    */
   bleed?: boolean | SpacingToken;
+  /**
+   * Show a tokenized placeholder pattern when `src` is missing or fails to load
+   * (e.g. a deleted image). Default: true. Set false to render the bare `<img>`.
+   */
+  placeholder?: boolean;
+  /** Material Symbols icon shown in the placeholder. Default: "image" */
+  placeholderIcon?: string;
   /** Extra class names on the `<figure>` element */
   className?: string;
   /** Extra class names on the `<img>` element */

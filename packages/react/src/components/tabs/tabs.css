@@ -64,6 +64,9 @@
 .a1-tab-list--scrollable {
   flex: 1;
   overflow-x: auto;
+  /* Setting overflow-x alone makes the browser compute overflow-y to `auto`,
+     which lets a sub-pixel of height add a stray vertical scroll. Pin it. */
+  overflow-y: hidden;
   scrollbar-width: none;
 }
 

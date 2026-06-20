@@ -30,6 +30,10 @@ const meta = {
     align: {
       control: "inline-radio",
       options: ["left", "center", "right", "start", "end", undefined]
+    },
+    weight: {
+      control: "inline-radio",
+      options: ["regular", "medium", "semibold", "bold", undefined]
     }
   }
 };
@@ -37,6 +41,30 @@ const meta = {
 export default meta;
 
 export const Configurable = {};
+
+export const Weights = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      {["regular", "medium", "semibold", "bold"].map(weight => (
+        <div key={weight} style={{ display: "flex", alignItems: "baseline", gap: "16px" }}>
+          <span
+            style={{
+              width: "64px",
+              fontSize: "0.75rem",
+              color: "var(--semantic-color-text-muted)",
+              flexShrink: 0
+            }}
+          >
+            {weight}
+          </span>
+          <Paragraph weight={weight}>
+            The quick brown fox jumps over the lazy dog.
+          </Paragraph>
+        </div>
+      ))}
+    </div>
+  )
+};
 
 export const SizeScale = {
   render: () => (

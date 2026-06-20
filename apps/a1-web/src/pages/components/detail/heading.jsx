@@ -5,16 +5,15 @@ import {
   Heading,
   Paragraph,
   Slider,
-  Spacer,
   Stack,
   TextareaField,
   TextField,
   Toolbar,
+  ToolbarDivider,
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Toggle } from './Toggle.jsx'
-import { ResponsiveControl, responsiveProp } from './configKit.jsx'
+import { ConfigHelp, Lockable, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const HEADING_ELEMENT_OPTIONS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span']
 const HEADING_TYPE_OPTIONS = ['heading', 'display']
@@ -24,6 +23,10 @@ const HEADING_SIZE_OPTIONS = {
 }
 
 function optionLabel(value) {
+  if (!value) return 'None'
+  // align/size can be a responsive object ({ xs, md, … }).
+  if (typeof value === 'object') return 'Responsive'
+  if (typeof value !== 'string') return String(value)
   return value === 'xJumbo'
     ? 'X jumbo'
     : value.charAt(0).toUpperCase() + value.slice(1)
@@ -37,16 +40,18 @@ const MARGIN_VALUES = ['', 'sm', 'md', 'lg']
 const MARGIN_DETENTS = MARGIN_VALUES.map((value, index) => ({ value: index, label: value ? optionLabel(value) : '--' }))
 
 // A compact, subtle Slider over a string-value scale (matches the Section configurator).
-function DetentSlider({ label, values, detents, value, onChange }) {
+function DetentSlider({ label, values, detents, value, onChange, prop }) {
   return (
-    <Slider
-      size="compact"
-      variant="subtle"
-      label={label}
-      detents={detents}
-      value={Math.max(0, values.indexOf(value))}
-      onChange={(index) => onChange(values[index])}
-    />
+    <Lockable prop={prop}>
+      <Slider
+        size="compact"
+        variant="subtle"
+        label={label}
+        detents={detents}
+        value={Math.max(0, values.indexOf(value))}
+        onChange={(index) => onChange(values[index])}
+      />
+    </Lockable>
   )
 }
 
@@ -405,7 +410,7 @@ export function Controls({ config, setConfig }) {
         value={htmlToMarkdown(config.children)}
         onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
       />
-      <Toolbar label="Type">
+      <Lockable prop="type"><Toolbar label="Type">
         <ToolbarGroup
           aria-label="Type"
           showLabels
@@ -420,11 +425,11 @@ export function Controls({ config, setConfig }) {
           }}
           options={HEADING_TYPE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
         />
-      </Toolbar>
-      <Toolbar label="Element">
+      </Toolbar></Lockable>
+      <Lockable prop="as"><Toolbar label="Element">
         <ToolbarGroup aria-label="Element" showLabels value={config.as} onChange={(as) => set({ as })} options={HEADING_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))} />
-      </Toolbar>
-      <ResponsiveControl label="Size" value={config.size} onChange={(size) => set({ size })} defaultValue={sizeOptions[2]}>
+      </Toolbar></Lockable>
+      <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => set({ size })} defaultValue={sizeOptions[2]}>
         {(val, setVal) => (
           <DetentSlider
             values={sizeOptions}
@@ -434,7 +439,7 @@ export function Controls({ config, setConfig }) {
           />
         )}
       </ResponsiveControl>
-      <Toolbar label="Color">
+      <Lockable prop="color"><Toolbar label="Color">
         <ToolbarGroup
           aria-label="Color"
           showLabels
@@ -446,19 +451,17 @@ export function Controls({ config, setConfig }) {
             { label: 'Accent', value: 'accent', swatch: 'var(--semantic-color-action-background)' },
           ]}
         />
-      </Toolbar>
+      </Toolbar></Lockable>
 
       <Accordion label="Advanced" size="sm" subtext={advancedSummary} divider>
-        
-
         <Stack gap="md">
-<Spacer size="xs"></Spacer>
-          
-      <Paragraph size="xs" color="muted">
-        Edit the heading directly in the preview and select text to add a mark — or type
-        in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
-      </Paragraph>
-          <Toolbar label="Align">
+          <ConfigHelp>
+            <Paragraph size="xs" color="muted">
+              Edit the heading directly in the preview and select text to add a mark — or type
+              in the Text field using markdown: <code>==text==</code> highlights, <code>__text__</code> underlines.
+            </Paragraph>
+          </ConfigHelp>
+          <Lockable prop="align"><Toolbar label="Align">
             <ToolbarGroup
               aria-label="Align"
               value={config.align}
@@ -469,9 +472,10 @@ export function Controls({ config, setConfig }) {
                 { icon: 'align_horizontal_right', label: 'Right', value: 'right' },
               ]}
             />
-          </Toolbar>
-          <DetentSlider label="Margin" values={MARGIN_VALUES} detents={MARGIN_DETENTS} value={config.margin} onChange={(margin) => set({ margin })} />
-          <Toggle label="Balance text wrap" value={config.textWrap} onChange={(textWrap) => set({ textWrap })} />
+            <ToolbarDivider />
+            <ToolbarToggle icon="wrap_text" label="Balance text wrap" pressed={config.textWrap} onChange={(textWrap) => set({ textWrap })} />
+          </Toolbar></Lockable>
+          <DetentSlider prop="margin" label="Margin" values={MARGIN_VALUES} detents={MARGIN_DETENTS} value={config.margin} onChange={(margin) => set({ margin })} />
         </Stack>
 
 

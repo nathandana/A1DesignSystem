@@ -116,6 +116,13 @@ export interface ToolbarGroupProps {
   columns?: number;
   /** Show option labels as text; boolean or a responsive breakpoint object. Default: false (icon-only) */
   showLabels?: ToolbarShowLabel;
+  /**
+   * `"all"` (default) honours `showLabels` for every option. `"selected"` shows
+   * the label only on the currently selected option; the rest render icon/swatch-only
+   * and a `"none"`/empty value falls back to the standard none icon. Use it for a
+   * swatch picker where only the chosen swatch is named (e.g. Section surface/gradient).
+   */
+  labelMode?: "all" | "selected";
   "aria-label"?: string;
   disabled?: boolean;
   className?: string;

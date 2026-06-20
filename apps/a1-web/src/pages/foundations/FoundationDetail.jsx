@@ -9,6 +9,7 @@ import { AccessibilityFoundationPage } from './AccessibilityFoundation.jsx'
 import { LabelsFoundationPage } from './LabelsFoundation.jsx'
 import { BreakpointsFoundationPage } from './BreakpointsFoundation.jsx'
 import { PropConventionsFoundationPage } from './PropConventionsFoundation.jsx'
+import { ZIndexFoundationPage } from './ZIndexFoundation.jsx'
 
 export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
   switch (foundation?.id) {
@@ -40,6 +41,8 @@ export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
       return <BreakpointsFoundationPage onNavigate={onNavigate} />
     case 'foundation-prop-conventions':
       return <PropConventionsFoundationPage onNavigate={onNavigate} />
+    case 'foundation-z-index':
+      return <ZIndexFoundationPage onNavigate={onNavigate} />
     default:
       return null
   }

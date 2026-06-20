@@ -67,7 +67,7 @@ export function Controls({ config, setConfig }) {
         value={String(config.currentStep)}
         onChange={(event) => set({ currentStep: event.target.value })}
       />
-      <Choice
+      <Choice prop="align"
         label="Align"
         iconOnly
         value={config.align}

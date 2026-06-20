@@ -111,23 +111,22 @@ export function TypeScaleFoundationPage({ onNavigate }) {
   return (
     <>
       <Section
-        padding="sm"
-        surface="panel"
-        gradient="accent"
-        gradientPosition="top-right"
+        padding="xs"
         contentWidth="xl"
-        gap="lg"
-        aria-labelledby="type-scale-heading"
+        surface="panel"
+        borderSize="sm"
+        borderVariant="accent"
+        borderSides="bottom"
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { href: '/', label: 'Home' },
-              { href: '?page=foundations', label: 'Foundations' },
+              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
               { label: 'Type scale' },
             ]}
           />
-          <Heading as="h1" id="type-scale-heading" type="heading" size={{ xs: 'xl', md: 'xxl' }} textWrap="balance">
+          <Heading as="h1" id="type-scale-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Type scale
           </Heading>
           <Paragraph size="sm" color="muted">

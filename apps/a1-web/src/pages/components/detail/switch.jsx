@@ -4,15 +4,13 @@ import {
   Switch,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { Choice } from './configKit.jsx'
-import { Toggle } from './Toggle.jsx'
+import { Choice, DensityChoice, FieldState } from './configKit.jsx'
 
-const SIZE_OPTIONS = ['compact', 'default', 'comfortable']
-const LABEL_POSITION_OPTIONS = ['start', 'end']
-
-function optionLabel(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+// Label position as an icon pair: start = label leading, end = label trailing.
+const LABEL_POSITION_OPTIONS = [
+  { value: 'start', label: 'Start', icon: 'align_horizontal_left' },
+  { value: 'end', label: 'End', icon: 'align_horizontal_right' },
+]
 
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
@@ -68,26 +66,23 @@ export function Controls({ config, setConfig }) {
         value={config.error}
         onChange={(event) => setConfig((current) => ({ ...current, error: event.target.value }))}
       />
-      <Choice
-        label="Size"
-        size="compact"
-        hideIndicator
-        columns={3}
-        value={config.size}
-        onChange={(size) => setConfig((current) => ({ ...current, size }))}
-        options={SIZE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
-      />
-      <Choice
+      <DensityChoice value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice prop="labelPosition"
         label="Label position"
-        size="compact"
-        hideIndicator
-        columns={2}
+        iconOnly
+        labelMode="selected"
         value={config.labelPosition}
         onChange={(labelPosition) => setConfig((current) => ({ ...current, labelPosition }))}
-        options={LABEL_POSITION_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
+        options={LABEL_POSITION_OPTIONS}
       />
-      <Toggle label="Checked" value={config.checked} onChange={(checked) => setConfig((current) => ({ ...current, checked }))} />
-      <Toggle label="Disabled" value={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
+      <FieldState
+        items={[
+          { key: 'checked', label: 'Checked', icon: 'check', value: config.checked },
+          { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
+        ]}
+        onChange={(patch) => setConfig((current) => ({ ...current, ...patch }))}
+        
+      />
     </Stack>
   )
 }

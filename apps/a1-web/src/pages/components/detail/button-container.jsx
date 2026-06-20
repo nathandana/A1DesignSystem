@@ -97,7 +97,7 @@ export function Controls({ config, setConfig }) {
           : { ...current, align: value, fillButtons: false })}
         options={ALIGN_OPTIONS}
       />
-      <ConfigSlider
+      <ConfigSlider prop="size"
         label="Size"
         values={['', ...SIZE_OPTIONS]}
         value={config.size}

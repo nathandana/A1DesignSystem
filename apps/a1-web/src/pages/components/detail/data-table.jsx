@@ -147,7 +147,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-      <Choice
+      <Choice prop="size"
         label="Density"
         iconOnly
         value={config.size}

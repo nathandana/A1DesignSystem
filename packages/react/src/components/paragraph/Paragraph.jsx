@@ -5,6 +5,7 @@ const colors = ["default", "muted"];
 const breakpoints = ["xs", "sm", "md", "lg", "xl"];
 const textWraps = ["balance"];
 const aligns = ["left", "center", "right", "start", "end"];
+const weights = ["regular", "medium", "semibold", "bold"];
 
 function isResponsiveSize(size) {
   return size && typeof size === "object" && !Array.isArray(size);
@@ -31,6 +32,7 @@ export function Paragraph({
   color = "default",
   textWrap,
   align,
+  weight,
   className = "",
   style,
   ...props
@@ -39,6 +41,7 @@ export function Paragraph({
   const resolvedColor = colors.includes(color) ? color : "default";
   const resolvedTextWrap = textWraps.includes(textWrap) ? textWrap : null;
   const resolvedAlign = aligns.includes(align) ? align : null;
+  const resolvedWeight = weights.includes(weight) ? weight : null;
   const responsiveStyle = getResponsiveSizeStyle(size);
   const resolvedStyle = Object.keys(responsiveStyle).length
     ? { ...responsiveStyle, ...style }
@@ -50,6 +53,7 @@ export function Paragraph({
     resolvedColor !== "default" && `a1-paragraph--${resolvedColor}`,
     resolvedTextWrap && `a1-paragraph--wrap-${resolvedTextWrap}`,
     resolvedAlign && `a1-paragraph--align-${resolvedAlign}`,
+    resolvedWeight && `a1-paragraph--weight-${resolvedWeight}`,
     className
   ]
     .filter(Boolean)

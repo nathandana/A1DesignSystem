@@ -3,11 +3,16 @@ import {
   Paragraph,
   Stack,
   TextareaField,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
+  ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx'
+import { Choice, ConfigSlider, Lockable, ResponsiveControl, responsiveProp } from './configKit.jsx'
 
 const PARAGRAPH_ELEMENT_OPTIONS = ['p', 'span', 'div']
 const PARAGRAPH_SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl']
+const WEIGHT_OPTIONS = ['regular', 'medium', 'semibold', 'bold']
 
 const SAMPLE_TEXT =
   'A1 is a token-driven design system that keeps React, HTML/CSS, and React Native in sync. Every colour, space, and type ramp traces back to a single source of truth, so the same decision renders consistently across every platform and theme.'
@@ -34,6 +39,7 @@ function buildParagraphSnippet(config) {
     propLine('as', config.as, 'p'),
     config.size && typeof config.size === 'object' ? `  ${responsiveProp('size', config.size)}` : propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
+    propLine('weight', config.weight, 'regular'),
     propLine('align', config.align, 'left'),
     propLine('textWrap', textWrap, undefined),
   ].filter(Boolean).join(' ')
@@ -47,6 +53,7 @@ export function getDefaultConfig(component) {
     as: 'p',
     size: 'md',
     color: 'default',
+    weight: 'regular',
     align: 'left',
     textWrap: false,
     children: SAMPLE_TEXT,
@@ -60,6 +67,7 @@ export function Preview({ component, config }) {
       as={config.as}
       size={config.size}
       color={config.color}
+      weight={config.weight}
       align={config.align}
       textWrap={textWrap}
     >
@@ -78,7 +86,7 @@ export function Controls({ config, setConfig }) {
         value={config.children}
         onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
       />
-      <Choice
+      <Choice prop="as"
         label="As"
         size="compact"
         hideIndicator
@@ -87,10 +95,10 @@ export function Controls({ config, setConfig }) {
         onChange={(as) => setConfig((current) => ({ ...current, as }))}
         options={PARAGRAPH_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
       />
-      <ResponsiveControl label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
+      <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
         {(val, setVal) => <ConfigSlider values={PARAGRAPH_SIZE_OPTIONS} value={val} onChange={setVal} />}
       </ResponsiveControl>
-      <Choice
+      <Choice prop="color"
         label="Color"
         size="compact"
         hideIndicator
@@ -102,32 +110,26 @@ export function Controls({ config, setConfig }) {
           { label: 'Muted',   value: 'muted',   swatch: 'var(--semantic-color-text-muted)'   },
         ]}
       />
-      <Choice
-        label="Align"
-        size="compact"
-        hideIndicator
-        iconOnly
-        columns={3}
-        value={config.align}
-        onChange={(align) => setConfig((current) => ({ ...current, align }))}
-        options={[
-          { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
-          { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
-          { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
-        ]}
+      <Choice prop="weight"
+        label="Weight"
+        value={config.weight}
+        onChange={(weight) => setConfig((current) => ({ ...current, weight }))}
+        options={WEIGHT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Choice
-        label="Text wrap"
-        size="compact"
-        hideIndicator
-        columns={2}
-        value={config.textWrap ? 'balance' : 'default'}
-        onChange={(value) => setConfig((current) => ({ ...current, textWrap: value === 'balance' }))}
-        options={[
-          { label: 'Default', value: 'default' },
-          { label: 'Balance', value: 'balance' },
-        ]}
-      />
+      <Lockable prop="align"><Toolbar label="Align">
+        <ToolbarGroup
+          aria-label="Align"
+          value={config.align}
+          onChange={(align) => setConfig((current) => ({ ...current, align }))}
+          options={[
+            { icon: 'align_horizontal_left',   label: 'Left',   value: 'left'   },
+            { icon: 'align_horizontal_center',  label: 'Center', value: 'center' },
+            { icon: 'align_horizontal_right',   label: 'Right',  value: 'right'  },
+          ]}
+        />
+        <ToolbarDivider />
+        <ToolbarToggle icon="wrap_text" label="Balance text wrap" pressed={config.textWrap} onChange={(textWrap) => setConfig((current) => ({ ...current, textWrap }))} />
+      </Toolbar></Lockable>
     </Stack>
   )
 }

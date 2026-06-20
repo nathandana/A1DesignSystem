@@ -128,6 +128,16 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           ],
         },
       },
+      {
+        type: 'Slot',
+        label: 'Blank area',
+        icon: 'select_all',
+        description: 'A constrained drop zone — restrict which components or patterns fill it',
+        defaultNode: {
+          type: 'Slot',
+          props: { label: 'Add content here', columns: 2, gap: 'md' },
+        },
+      },
     ],
   },
   {

@@ -95,7 +95,7 @@ export function Controls({ config, setConfig }) {
         value={config.icon}
         onChange={(icon) => set({ icon })}
       />
-      <Choice
+      <Choice prop="scale"
         label="Scale"
         size="compact"
         hideIndicator
@@ -104,7 +104,7 @@ export function Controls({ config, setConfig }) {
         onChange={(scale) => set({ scale })}
         options={SCALE_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle
+      <Toggle prop="showAction"
         label="Action"
         value={config.showAction}
         onChange={(showAction) => set({ showAction })}

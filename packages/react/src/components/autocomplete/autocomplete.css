@@ -1,0 +1,346 @@
+/* ─── Autocomplete (combobox) ─────────────────────────────────────────────────
+   Styled to match the A1 field family, with its own dropdown listbox + chips.
+   Size is driven by --a1-ac-* variables set per size modifier. */
+
+.a1-autocomplete {
+  --a1-ac-height: var(--component-field-default-height);
+  --a1-ac-padding-inline: var(--component-field-default-padding-inline);
+  --a1-ac-font-size: var(--semantic-font-size-body-md);
+  --a1-ac-label-size: var(--semantic-font-size-body-sm);
+  --a1-ac-radius: var(--base-radius-md);
+  --a1-ac-accent-width: var(--component-field-required-border-width);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-4);
+  font-family: var(--component-paragraph-font-family);
+}
+
+.a1-autocomplete--compact {
+  --a1-ac-height: var(--component-field-compact-height);
+  --a1-ac-padding-inline: var(--component-field-compact-padding-inline);
+  --a1-ac-font-size: var(--semantic-font-size-body-sm);
+  --a1-ac-label-size: var(--semantic-font-size-body-xs);
+  --a1-ac-radius: var(--base-radius-sm);
+  --a1-ac-accent-width: var(--component-field-compact-accent-border-width);
+}
+
+.a1-autocomplete--comfortable {
+  --a1-ac-height: var(--component-field-comfortable-height);
+  --a1-ac-padding-inline: var(--component-field-comfortable-padding-inline);
+  --a1-ac-radius: var(--base-radius-lg);
+}
+
+/* ─── Label ───────────────────────────────────────────────────────────────── */
+
+.a1-autocomplete__label {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  flex-wrap: wrap;
+  font-size: var(--a1-ac-label-size);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-autocomplete--disabled .a1-autocomplete__label {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-autocomplete__asterisk {
+  color: var(--semantic-color-status-error-background);
+}
+
+/* ─── Control (input box) ─────────────────────────────────────────────────── */
+
+.a1-autocomplete__control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  min-block-size: var(--a1-ac-height);
+  padding-inline: var(--a1-ac-padding-inline);
+  padding-block: var(--base-spacing-2);
+  background: var(--semantic-color-surface-field);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--a1-ac-radius);
+  cursor: text;
+  transition: border-color var(--semantic-motion-duration-fast), background var(--semantic-motion-duration-fast);
+}
+
+.a1-autocomplete__control:hover {
+  border-color: var(--semantic-color-border-strong);
+}
+
+.a1-autocomplete__control:focus-within {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+  border-color: var(--semantic-color-action-background);
+}
+
+/* Required: info-tinted border with a thick leading accent, matching the field family. */
+.a1-autocomplete--required .a1-autocomplete__control {
+  border-color: var(--semantic-color-status-info-border);
+  border-inline-start-width: var(--a1-ac-accent-width);
+  border-inline-start-color: var(--semantic-color-status-info-background);
+}
+
+.a1-autocomplete--required .a1-autocomplete__control:focus-within {
+  border-color: var(--semantic-color-status-info-background);
+}
+
+/* Error takes precedence over required. */
+.a1-autocomplete--error .a1-autocomplete__control {
+  border-color: var(--semantic-color-status-error-border);
+  border-inline-start-width: var(--a1-ac-accent-width);
+  border-inline-start-color: var(--semantic-color-status-error-background);
+}
+
+.a1-autocomplete--disabled .a1-autocomplete__control {
+  background: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+.a1-autocomplete__input {
+  flex: 1;
+  min-inline-size: 4ch;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--semantic-color-text-default);
+  font-family: inherit;
+  font-size: var(--a1-ac-font-size);
+  line-height: var(--semantic-font-line-height-body);
+  padding-block: var(--base-spacing-2);
+}
+
+.a1-autocomplete__input:disabled {
+  cursor: not-allowed;
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-autocomplete__chevron {
+  flex-shrink: 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--base-spacing-20);
+}
+
+.a1-autocomplete__clear {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  cursor: pointer;
+  border-radius: var(--base-radius-sm);
+  padding: var(--base-spacing-2);
+  font-size: var(--base-spacing-16);
+}
+
+.a1-autocomplete__clear:hover {
+  color: var(--semantic-color-text-default);
+}
+
+/* ─── Multi-select chips ──────────────────────────────────────────────────── */
+
+.a1-autocomplete__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-8);
+  background: var(--semantic-color-surface-panel);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-default);
+  white-space: nowrap;
+}
+
+.a1-autocomplete__chip-remove {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--base-spacing-16);
+}
+
+.a1-autocomplete__chip-remove:hover {
+  color: var(--semantic-color-status-error-text);
+}
+
+/* ─── Listbox dropdown ────────────────────────────────────────────────────── */
+
+.a1-autocomplete__listbox {
+  position: absolute;
+  z-index: var(--component-menu-z-index, 1000);
+  inset-block-start: calc(100% + var(--base-spacing-2));
+  inset-inline: 0;
+  margin: 0;
+  padding: var(--base-spacing-4);
+  list-style: none;
+  max-block-size: 16rem;
+  overflow-y: auto;
+  background: var(--semantic-color-surface-page);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-md);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+/* Portaled to <body>: positioned via inline fixed top/left/width so it escapes
+   any clipping ancestor (e.g. an Accordion's overflow:hidden panel). */
+.a1-autocomplete__listbox--floating {
+  inset-block-start: auto;
+  inset-inline: auto;
+  margin-block-start: var(--base-spacing-2);
+}
+
+.a1-autocomplete__option {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-8);
+  border-radius: var(--base-radius-sm);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-default);
+  cursor: pointer;
+}
+
+/* Colour swatch shown beside an option / chip / the selected value (colour variant).
+   Sized to fill the row height (`--a1-autocomplete-swatch-size`, set per context)
+   and always bordered so a light swatch can't bleed into the surface. */
+.a1-autocomplete__swatch {
+  flex: none;
+  inline-size: var(--a1-autocomplete-swatch-size, var(--base-spacing-24));
+  block-size: var(--a1-autocomplete-swatch-size, var(--base-spacing-24));
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-sm) solid var(--semantic-color-border-strong);
+}
+
+/* In the option list the swatch can be generous (fills the option line). */
+.a1-autocomplete__option .a1-autocomplete__swatch {
+  --a1-autocomplete-swatch-size: var(--base-spacing-24);
+}
+
+/* On the selected value in the control: match the input text line. */
+.a1-autocomplete__swatch--leading {
+  --a1-autocomplete-swatch-size: var(--base-spacing-24);
+  margin-inline: var(--base-spacing-8) 0;
+}
+
+/* Inside a multi-select chip: scale down to the chip height. */
+.a1-autocomplete__chip .a1-autocomplete__swatch {
+  --a1-autocomplete-swatch-size: var(--base-spacing-16);
+}
+
+.a1-autocomplete__option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-autocomplete__option--active {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-autocomplete__option[aria-selected="true"] {
+  color: var(--semantic-color-action-background);
+}
+
+.a1-autocomplete__option--create {
+  color: var(--semantic-color-action-background);
+  font-weight: var(--semantic-font-weight-heading);
+}
+
+/* Multi-select: a checkbox on each option makes multi-selection obvious. Matches
+   the CheckboxGroup checkbox exactly (size, border, radius, fill, SVG tick). */
+.a1-autocomplete__checkbox {
+  flex-shrink: 0;
+  inline-size: var(--component-checkbox-group-box-size);
+  block-size: var(--component-checkbox-group-box-size);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-sm);
+  background-color: var(--semantic-color-surface-field);
+}
+
+.a1-autocomplete__checkbox--on {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23fafcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--component-checkbox-group-icon-size);
+}
+
+.a1-autocomplete__option-check,
+.a1-autocomplete__option-icon {
+  flex-shrink: 0;
+  font-size: var(--base-spacing-20);
+}
+
+.a1-autocomplete__empty {
+  padding: var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-sm);
+  color: var(--semantic-color-text-muted);
+}
+
+/* ─── Group headings ──────────────────────────────────────────────────────────
+   Inserted before the first option of each group. Sticky so the current
+   category stays visible while scrolling a long grouped list. */
+.a1-autocomplete__group {
+  position: sticky;
+  inset-block-start: calc(-1 * var(--base-spacing-4));
+  padding-block: var(--base-spacing-6) var(--base-spacing-2);
+  padding-inline: var(--base-spacing-8);
+  background: var(--semantic-color-surface-page);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--component-field-label-font-weight);
+  color: var(--semantic-color-text-muted);
+}
+
+/* "Showing the first N — keep typing" footer when the list is capped. */
+.a1-autocomplete__more {
+  padding: var(--base-spacing-8);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  text-align: center;
+}
+
+/* Leading glyph for the selected value in the control (icon options). */
+.a1-autocomplete__leading-icon {
+  flex: none;
+  margin-inline-start: var(--base-spacing-4);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--base-spacing-20);
+}
+
+.a1-autocomplete__chip-icon {
+  flex: none;
+  font-size: var(--base-spacing-16);
+}
+
+/* ─── Messages ────────────────────────────────────────────────────────────── */
+
+.a1-autocomplete__message {
+  margin: 0;
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-autocomplete__message--hint {
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-autocomplete__message--error {
+  color: var(--semantic-color-status-error-text);
+}

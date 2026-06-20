@@ -120,8 +120,8 @@ export function Controls({ config, setConfig }) {
         value={String(config.max)}
         onChange={(event) => set({ max: event.target.value })}
       />
-      <ConfigSlider label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
-      <Choice
+      <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
+      <Choice prop="content"
         label="Inner content (Example)"
         size="compact"
         hideIndicator
@@ -130,7 +130,7 @@ export function Controls({ config, setConfig }) {
         onChange={(content) => set({ content })}
         options={CONTENT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}
       />
-      <Toggle
+      <Toggle prop="indeterminate"
         label="Indeterminate"
         value={config.indeterminate}
         onChange={(indeterminate) => set({ indeterminate })}
