@@ -9,13 +9,9 @@
 [functions]
   node_bundler = "esbuild"
 
-# Keep the SPA catch-all from shadowing the image-storage function. (Netlify
-# excludes /.netlify/* automatically, but this is explicit and future-proof.)
-[[redirects]]
-  from = "/.netlify/functions/*"
-  status = 200
-  force = false
-
+# SPA catch-all. Netlify serves functions at /.netlify/functions/* and static
+# files before applying this rewrite, so it does not shadow them — no explicit
+# function pass-through rule is needed (and one without a `to` is invalid).
 [[redirects]]
   from = "/*"
   to = "/index.html"
