@@ -40,6 +40,10 @@ _None._
 
 ## P2 — Medium
 
+- [ ] **InlineEditable: can't edit when a styled `<span>` is inside** `P2 · S` — when an InlineEditable's
+  content contains a nested `<span>` with custom styling, editing is blocked / the text can't be
+  edited. Likely the contentEditable focus/selection or the styled child intercepts. DS `InlineEditable`
+  (`packages/react/src/components/inline-editable/`). _Repro: InlineEditable with an inner styled span._
 - [ ] **Fix left sidebar collapse** `P2 · S` — the collapse/expand behaviour of the left sidebar
   is broken. _Q: which sidebar — the editor workspace sidebar (Pages/Layers) or the main site
   SideNav? Repro + expected behaviour._

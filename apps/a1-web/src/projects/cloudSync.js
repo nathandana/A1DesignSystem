@@ -51,7 +51,9 @@ let pushTimer = null
 let unsubscribers = []
 let suspendPush = false
 let channel = null
+let pollTimer = null
 let onHydratedCb = null
+const POLL_MS = 8000
 // The envelope string we last pulled or pushed — used to ignore our own realtime
 // echo and skip redundant re-hydrates.
 let lastSyncedData = null
@@ -87,8 +89,14 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
   } catch (e) {
     console.warn('[cloudSync] pull failed', e)
   }
-  // Live updates: re-pull whenever any client writes the shared row.
+  // Live updates: re-pull whenever any client writes the shared row. Realtime needs
+  // the access token so its connection is authenticated (the shared_state SELECT
+  // policy is `to authenticated`), or no change events are delivered.
   if (!channel) {
+    try {
+      const { data } = await supabase.auth.getSession()
+      if (data?.session?.access_token) supabase.realtime.setAuth(data.session.access_token)
+    } catch { /* ignore */ }
     channel = supabase
       .channel('shared_state_changes')
       .on(
@@ -97,6 +105,14 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
         (payload) => hydrateFromRemote(payload.new?.data),
       )
       .subscribe()
+  }
+  // Reliable fallback: poll the shared row so changes propagate even if Realtime
+  // isn't enabled on the table (or its auth doesn't resolve). hydrateFromRemote
+  // skips when nothing changed, so this is cheap.
+  if (!pollTimer) {
+    pollTimer = setInterval(() => {
+      fetchSharedData().then(hydrateFromRemote).catch(() => { /* offline */ })
+    }, POLL_MS)
   }
   // Push local changes (debounced) when projects/pages, patterns, or themes change.
   if (!unsubscribers.length) {
@@ -121,6 +137,7 @@ export function stopCloudSync() {
   unsubscribers.forEach((u) => u())
   unsubscribers = []
   if (pushTimer) { clearTimeout(pushTimer); pushTimer = null }
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
   if (channel) { supabase.removeChannel(channel); channel = null }
   lastSyncedData = null
 }

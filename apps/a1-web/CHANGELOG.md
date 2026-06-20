@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.5.0 — 2026-06-19
+
+- **Live cross-user sync (polling + faster page flush)** — the shared workspace now reliably
+  propagates changes between users: cloudSync **polls** the shared row (~8s) as a fallback when
+  Realtime isn't enabled on the table, authenticates the Realtime connection, and the editor now
+  **flushes page edits to storage ~2.5s after a commit** (was only every 60s) so they push promptly.
+
 - **Realtime shared sync + push fix** — the shared workspace now updates **live**: a Supabase realtime
   subscription on `shared_state` re-pulls the bundle whenever any client writes, so one user's new
   pattern/project/theme appears for others without a reload. Also fixed a bug where the debounced

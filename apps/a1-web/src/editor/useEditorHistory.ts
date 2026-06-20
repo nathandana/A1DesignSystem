@@ -103,7 +103,16 @@ export function useEditorHistory(fallbackJson: string, storageKey?: string) {
 
   useEffect(() => {
     dirtyRef.current = true
-  }, [state.entries, state.index])
+    // Also flush shortly after a commit (not just the 60s safety interval) so page
+    // edits reach storage — and therefore cloud sync — promptly for other users.
+    if (!storageKey) return
+    const t = setTimeout(() => {
+      if (isHistoryFlushSuppressed() || !dirtyRef.current) return
+      saveHistory(storageKey, latestRef.current.entries, latestRef.current.index)
+      dirtyRef.current = false
+    }, 2500)
+    return () => clearTimeout(t)
+  }, [state.entries, state.index, storageKey])
 
   useEffect(() => {
     if (!storageKey) return
