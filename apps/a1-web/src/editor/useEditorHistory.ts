@@ -76,7 +76,13 @@ function saveHistory(storageKey: string, entries: HistoryEntry[], index: number)
  * @param fallbackJson  Initial JSON used when no persisted history exists.
  * @param storageKey    localStorage key for persistence. Omit for session-only history.
  */
-export function useEditorHistory(fallbackJson: string, storageKey?: string) {
+export function useEditorHistory(
+  fallbackJson: string,
+  storageKey?: string,
+  onCommit?: (json: string, label: string) => void,
+) {
+  const onCommitRef = useRef(onCommit)
+  onCommitRef.current = onCommit
   const [state, setState] = useState<HistoryState>(() => {
     const persisted = storageKey ? loadHistory(storageKey) : null
     if (persisted) {
@@ -150,6 +156,7 @@ export function useEditorHistory(fallbackJson: string, storageKey?: string) {
       const capped = capHistory([...truncated, entry], truncated.length)
       return { entries: capped.entries, index: capped.index, workingJson: json }
     })
+    onCommitRef.current?.(json, label)
   }
 
   function undo() {

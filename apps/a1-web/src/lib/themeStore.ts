@@ -4,6 +4,7 @@
  * Theme editor lists these as cards (like Projects) and opens one for editing.
  */
 import { DEFAULT_RAMPS, type RampName } from './themeColors';
+import { appendHistory } from '../services/historyDb';
 import { rampsFrom500, type Ramp, type ThemeFonts } from './themeCompile';
 
 const KEY = 'a1-themes';
@@ -279,8 +280,21 @@ export function duplicateTheme(id: string): StoredTheme | undefined {
   return copy;
 }
 
+// Debounced shared-history logging for theme edits (coalesce rapid control tweaks
+// into one entry). Only user edits call updateTheme — cloud hydrate uses write()
+// directly — so this never logs on sync.
+const histTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+function logThemeHistory(id: string): void {
+  clearTimeout(histTimers[id]);
+  histTimers[id] = setTimeout(() => {
+    const theme = getTheme(id);
+    if (theme) appendHistory({ entityType: 'theme', entityId: id, label: `Edited ${theme.name}`, snapshot: JSON.stringify(theme) });
+  }, 4000);
+}
+
 export function updateTheme(id: string, patch: Partial<Omit<StoredTheme, 'id' | 'createdAt'>>): void {
   write(read().map((t) => (t.id === id ? { ...t, ...patch, updatedAt: Date.now() } : t)));
+  logThemeHistory(id);
 }
 
 export function deleteTheme(id: string): void {

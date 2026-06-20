@@ -99,6 +99,35 @@ create policy "images: public read" on storage.objects for select
 create policy "images: write" on storage.objects for all to authenticated
   using (bucket_id = 'images') with check (bucket_id = 'images');
 
+-- ─── Edit history (shared, attributed) ──────────────────────────────────────
+-- An append-only log of changes to a page / theme / pattern, each tagged with the
+-- user who made it. Shared: every signed-in user reads the whole log and can add
+-- to it (and rename entries). `snapshot` holds the object's state after the change
+-- so an entry can be restored. Attached to the object via (entity_type, entity_id).
+
+create table if not exists public.edit_history (
+  id          uuid        primary key default gen_random_uuid(),
+  entity_type text        not null,   -- 'page' | 'theme' | 'pattern'
+  entity_id   text        not null,
+  label       text        not null default 'Edit',
+  user_id     uuid        references auth.users(id) on delete set null,
+  user_email  text,
+  snapshot    text,                   -- object JSON after the change (for restore)
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists edit_history_entity_idx
+  on public.edit_history (entity_type, entity_id, created_at);
+
+alter table public.edit_history enable row level security;
+
+drop policy if exists "edit_history: read"   on public.edit_history;
+drop policy if exists "edit_history: insert" on public.edit_history;
+drop policy if exists "edit_history: update" on public.edit_history;
+create policy "edit_history: read"   on public.edit_history for select to authenticated using (true);
+create policy "edit_history: insert" on public.edit_history for insert to authenticated with check (true);
+create policy "edit_history: update" on public.edit_history for update to authenticated using (true) with check (true);
+
 -- ─── delete_user ─────────────────────────────────────────────────────────────
 -- Called from the client via supabase.rpc('delete_user'). Deletes the calling
 -- user from auth.users; shared data is left intact (it belongs to everyone).

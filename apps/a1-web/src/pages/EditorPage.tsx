@@ -48,6 +48,7 @@ import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
 import { loadProjectLayout, saveProjectLayout, resolvePageJson } from '../projects/projectStore';
 import { onRemoteHydrate } from '../projects/cloudSync.js';
+import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb';
 import { PagePresence } from '../editor/PagePresence.jsx';
 import { toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
@@ -641,8 +642,37 @@ export function EditorPage({
   const activeVersion = versions.find((v) => v.id === activeVersionId) ?? versions[0];
   const baseVersion = versions[0];
 
-  // Use the active version's json as the history starting point.
-  const history = useEditorHistory(activeVersion?.json ?? fallbackJson, HISTORY_KEY(exampleId));
+  // Shared, attributed edit history (Supabase). For pages, the History panel shows
+  // this cloud log (who changed what, when) rather than the local undo stack — so
+  // history is attached to the object and visible to every user. Local undo/redo
+  // (keyboard) still runs off useEditorHistory.
+  type CloudHistoryEntry = { id: string; label: string; user_email: string | null; snapshot: string | null; created_at: string };
+  const historyEntityType: 'page' | 'pattern' = documentKind === 'pattern' ? 'pattern' : 'page';
+  const historyEntityId = documentKind === 'pattern' ? patternId : exampleId;
+  const historyEnabled = (documentKind === 'page' || documentKind === 'pattern') && !!historyEntityId;
+  const [cloudHistory, setCloudHistory] = useState<CloudHistoryEntry[]>([]);
+  function refreshHistory() {
+    if (historyEnabled) fetchHistory(historyEntityType, historyEntityId as string).then(setCloudHistory);
+  }
+
+  // Use the active version's json as the history starting point. Each commit is also
+  // appended to the shared cloud history, tagged with the current user — so history
+  // is attached to the object (page/pattern) and visible to every user.
+  const history = useEditorHistory(
+    activeVersion?.json ?? fallbackJson,
+    HISTORY_KEY(exampleId),
+    (json, label) => {
+      if (historyEnabled) {
+        appendHistory({ entityType: historyEntityType, entityId: historyEntityId as string, label, snapshot: json }).then(refreshHistory);
+      }
+    },
+  );
+
+  // Map the cloud log into the History panel's entry shape (pages + patterns).
+  const panelEntries = historyEnabled
+    ? cloudHistory.map((r) => ({ id: r.id, json: r.snapshot ?? '', label: r.label, timestamp: Date.parse(r.created_at), userEmail: r.user_email ?? undefined }))
+    : history.entries;
+  const panelIndex = historyEnabled ? panelEntries.length - 1 : history.index;
 
   const [view, setView] = useState('edit');
   // "Code snippet" view sub-format: editable JSON, or read-only generated React.
@@ -745,15 +775,20 @@ export function EditorPage({
   // so we never clobber active work. `!isDirty` means working === last commit, so a
   // differing stored value can only have come from a remote write.
   useEffect(() => {
-    if (documentKind !== 'page') return; // pages only (layout/patterns store elsewhere)
+    if (!historyEnabled) return;
+    refreshHistory(); // load the shared history for this page/pattern
     const unsub = onRemoteHydrate(() => {
-      const stored = resolvePageJson(exampleId);
-      if (stored && stored !== historyRef.current.workingJson && !isDirtyRef.current) {
-        historyRef.current.reset(stored, 'Synced from team');
+      // Safe re-hydrate is page-only (layout/patterns are stored differently).
+      if (documentKind === 'page') {
+        const stored = resolvePageJson(exampleId);
+        if (stored && stored !== historyRef.current.workingJson && !isDirtyRef.current) {
+          historyRef.current.reset(stored, 'Synced from team');
+        }
       }
+      refreshHistory(); // a teammate's change may have added history entries
     });
     return () => { unsub(); };
-  }, [documentKind, exampleId]);
+  }, [historyEnabled, historyEntityType, historyEntityId, documentKind, exampleId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // These are filled in after the handler functions are declared below,
   // but the ref itself lives here so the keyboard effect can close over it once.
@@ -1024,6 +1059,7 @@ export function EditorPage({
   }
 
   function handleHistoryRename(entryId: string, label: string) {
+    if (historyEnabled) { updateHistoryLabel(entryId, label).then(refreshHistory); return; }
     history.rename(entryId, label);
   }
 
@@ -1453,12 +1489,18 @@ export function EditorPage({
     commitDebounced(val, 'Edited code');
   }
 
+  function restoreCloudSnapshot(entry?: CloudHistoryEntry) {
+    if (entry?.snapshot) history.reset(entry.snapshot, entry.label);
+  }
+
   function handleHistoryJump(i: number) {
+    if (historyEnabled) { restoreCloudSnapshot(cloudHistory[i]); onSelectNode?.(null); return; }
     history.jump(i);
     onSelectNode?.(null);
   }
 
   function handleHistoryRestore(entryId: string) {
+    if (historyEnabled) { restoreCloudSnapshot(cloudHistory.find((e) => e.id === entryId)); onSelectNode?.(null); return; }
     history.restore(entryId);
     onSelectNode?.(null);
   }
@@ -1649,8 +1691,8 @@ export function EditorPage({
           lockEnforced={!isPattern}
           lockAuthoring={isPattern}
           onSetLock={handleSetNodeLock}
-          historyEntries={history.entries}
-          historyIndex={history.index}
+          historyEntries={panelEntries}
+          historyIndex={panelIndex}
           onHistoryJump={handleHistoryJump}
           onHistoryRestore={handleHistoryRestore}
           onHistoryRename={handleHistoryRename}

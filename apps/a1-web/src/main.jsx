@@ -92,6 +92,7 @@ import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
 import { resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
+import { setHistoryUser } from './services/historyDb'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -280,6 +281,8 @@ function App() {
       if (authUser) posthog.identify(authUser.id, { email: authUser.email })
       else posthog.reset()
     }
+    // Tag shared edit-history entries with the signed-in user.
+    setHistoryUser(authUser ?? null)
   }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.7.0 — 2026-06-19
+
+- **Shared edit history with user attribution** — the editor History panel now shows a **shared,
+  cloud-backed** history (Supabase `edit_history` table) attached to the object — **page and pattern**
+  edits, each entry **tagged with the user** who made it, with restore + rename, visible to everyone
+  (no longer local-only). **Theme** edits are also logged (debounced); a theme history viewer is a
+  follow-up. Local keyboard undo/redo is unchanged. Requires running the updated `schema.sql`
+  (`edit_history` table + RLS).
+
 ## 0.6.0 — 2026-06-19
 
 - **Editor presence + safe re-hydrate** — a step toward live collaboration on the shared workspace.

@@ -40,6 +40,11 @@ _None._
 
 ## P2 — Medium
 
+- [ ] **Code — abbreviated / collapsible blocks** `P2 · S` — large `Code` blocks (e.g. the project
+  definition JSON view, editor code snippets) render as massive walls. Add a **collapsed/abbreviated**
+  mode: cap the visible height with a fade + an **Expand / Collapse** toggle (and/or a line-count
+  summary like "+220 lines"). DS `Code` component prop (e.g. `collapsible` / `maxLines`) + configurator
+  + story; apply it to the a1-web project-JSON dialog and editor snippet views. _Block mode only._
 - [ ] **InlineEditable: can't edit when a styled `<span>` is inside** `P2 · S` — when an InlineEditable's
   content contains a nested `<span>` with custom styling, editing is blocked / the text can't be
   edited. Likely the contentEditable focus/selection or the styled child intercepts. DS `InlineEditable`
@@ -257,16 +262,12 @@ _None._
   refactoring the editor to read/write the Yjs doc as the source of truth (node tree, props, history).
   _The proper successor to the presence + safe-re-hydrate interim (#1, shipped). Skip OT — CRDT is
   preferred. Pairs with the shared workspace + cloud sync._
-- [ ] **Shared edit history with user attribution (Supabase)** `P2 · L` — persist an edit history for
-  **page, theme, and pattern** changes to Supabase, each entry **tagged with the user** who made it
-  (now meaningful since the workspace is shared — "who changed this?"). Current state: page edits keep
-  a **local-only** history (`historyKey(pageId)` entries: json/label/timestamp, **no user**); **themes
-  and patterns have no history model** at all. Needs: (1) a shared `edit_history` table
-  (`entity_type` page|theme|pattern, `entity_id`, `user_id` + `user_email`, `label`, optional
-  `snapshot` jsonb, `created_at`; all-authenticated RLS); (2) append a row on each committed change —
-  page editor `history.commit`, `themeStore.updateTheme`, `patternStore.savePattern`; (3) surface the
-  history **with the user tag** in the editor / theme / pattern history UI. _Builds on the shared
-  workspace + cloud sync; decide retention/granularity (every keystroke vs. debounced/named saves)._
+- [ ] **Edit-history follow-ups (theme viewer + pruning)** `P2 · M` — the shared, attributed
+  `edit_history` (Supabase) now backs **page** and **pattern** history (the editor History panel shows
+  who changed what, with restore), and **theme** edits are **logged** but have **no viewer** (the theme
+  editor has no history panel). Add a **theme history panel** (view + restore + user tag), and add
+  **retention/pruning** for `edit_history` (each entry stores a full snapshot, so the table grows —
+  cap per entity or age-out). _Follows the shipped history feature; relates to the backlog tool._
 - [ ] **Publish a prototype as a public site (outside the auth gate)** `P2 · M` — let a project's
   **preview/prototype** be published to a **public URL that bypasses the invite-only auth gate**, so
   it can be shared without an account. Same render as the standalone prototype preview, but served

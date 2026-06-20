@@ -158,7 +158,9 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
                   )}
 
                   {!isRenaming && (
-                    <span className="a1-web-history-entry__time">{time}</span>
+                    <span className="a1-web-history-entry__time">
+                      {entry.userEmail ? `${entry.userEmail.split('@')[0]} · ${time}` : time}
+                    </span>
                   )}
                 </button>
               )
