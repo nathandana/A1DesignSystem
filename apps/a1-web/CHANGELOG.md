@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Analytics (PostHog)** — optional product analytics, dormant unless `VITE_POSTHOG_KEY` is set
+  (mirrors the downTracker app: `lib/posthog.js` + a gated `PostHogProvider` in `main.jsx`, 2025
+  defaults for history-based SPA `$pageview` capture, `person_profiles: 'identified_only'`).
+
 - **Accounts + cloud sync (Supabase)** — optional, dormant unless `VITE_SUPABASE_URL` +
   `VITE_SUPABASE_ANON_KEY` are set (the app still works fully on local storage without them).
   When configured: an **Account page** (sign-in, password reset, delete account) and per-user

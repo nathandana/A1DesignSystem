@@ -12,6 +12,10 @@
   # Environment Variables UI to rotate without a commit.)
   VITE_SUPABASE_URL = "https://pszmkbfvyjkifbyututo.supabase.co"
   VITE_SUPABASE_ANON_KEY = "sb_publishable_a_CSB8TLB8AziGTAVN4zoQ_Uum-Wr4I"
+  # PostHog product analytics. The phc_ project key is client-safe (it ships in
+  # the public bundle by design). US cloud host.
+  VITE_POSTHOG_KEY = "phc_sKdJsNwba3qDJAR3butqHz57etVVmZ2GRyqSv73WQ66k"
+  VITE_POSTHOG_HOST = "https://us.i.posthog.com"
 
 [functions]
   node_bundler = "esbuild"

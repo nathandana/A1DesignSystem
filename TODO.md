@@ -236,11 +236,13 @@ _None._
   / component / package, **link to related details**, and attach **images**. Replaces the current
   `TODO.md`-rendered page. _Builds on the complexity-badges/filtering work; relates to data binding
   + the image library._
-- [ ] **Site analytics (PostHog)** `P2 · S` — add product analytics, mirroring the downTracker
-  (Weight) repo pattern at `/Users/nathandana/Sites/Weight`: `posthog-js` + `posthog-js/react`
-  `PostHogProvider` wrapping the app in `main.jsx`, and a `lib/posthog.js` that `initPostHog()`s
-  **only when `VITE_POSTHOG_KEY` is set** (dormant by default; host default `https://us.i.posthog.com`).
-  Same dormant-by-default shape as the Supabase integration. _Add `VITE_POSTHOG_KEY` to `.env.example`._
+- [ ] **Publish a prototype as a public site (outside the auth gate)** `P2 · M` — let a project's
+  **preview/prototype** be published to a **public URL that bypasses the invite-only auth gate**, so
+  it can be shared without an account. Same render as the standalone prototype preview, but served
+  outside `AuthGate`. _Q: per-project publish toggle + a public route (e.g. `?share=<id>` / a
+  separate entry) that mounts the prototype without the gate; where do public viewers read the page
+  JSON from — a public Supabase read, or a baked/exported static bundle? Builds on the new auth gate
+  + standalone prototype renderer._
 - [ ] **Editor → Projects menu: Create new** `P2 · S` — add a "Create new" option to the top-nav
   Editor → Projects menu that opens the create-project dialog.
 - [ ] **Grid — vertical stretch** `P2 · S` — add a way to make grid items stretch vertically (e.g.

@@ -92,6 +92,8 @@ import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
 import { resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
+import { PostHogProvider } from 'posthog-js/react'
+import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -1164,10 +1166,17 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')).render(
+// No-op unless VITE_POSTHOG_KEY is set.
+initPostHog()
+
+const tree = (
   <AuthProvider>
     <AuthGate>
       <App />
     </AuthGate>
-  </AuthProvider>,
+  </AuthProvider>
+)
+
+createRoot(document.getElementById('root')).render(
+  posthogEnabled ? <PostHogProvider client={posthog}>{tree}</PostHogProvider> : tree,
 )
