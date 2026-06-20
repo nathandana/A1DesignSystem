@@ -4,19 +4,22 @@ import { listThemes } from './themeStore'
 import { listImages } from './imageLibrary'
 import { getBackend, activeBackendKind } from './imageStore'
 
-// Where each kind of editor data actually lives, so the Account dialog can show a
-// source tag per category. Projects sync as the exportAllText() blob; images use
-// a pluggable backend; patterns and themes are still local-only (raw localStorage,
-// not part of the cloud blob).
+// Where each kind of editor data actually lives, so the Account page can show a
+// source tag per category. When signed in, projects/patterns/themes/images are all
+// part of one SHARED workspace (every user reads/writes the same data); signed out
+// they're local-only to this browser.
 
 const IMAGE_DETAIL = {
-  supabase: 'Supabase Storage',
+  supabase: 'Shared (Supabase Storage)',
   netlify: 'Netlify Blobs',
   idb: 'This browser (IndexedDB)',
 }
 
+const sharedDetail = (signedIn) =>
+  signedIn ? 'Shared with all users' : 'This browser only — sign in to sync'
+
 /** Gather the storage location + live count for each data category. `signedIn`
- *  decides whether projects count as cloud-synced or local-only. */
+ *  decides whether data counts as shared (cloud) or local-only. */
 export async function getStorageStatus(signedIn) {
   const projects = loadProjects().length
   const patterns = getAllPatterns().filter((p) => isUserPattern(p.pattern.id)).length
@@ -33,7 +36,7 @@ export async function getStorageStatus(signedIn) {
       label: 'Projects & pages',
       count: projects,
       location: signedIn ? 'cloud' : 'local',
-      detail: signedIn ? 'Synced to your account' : 'This browser only — sign in to sync',
+      detail: sharedDetail(signedIn),
     },
     {
       key: 'images',
@@ -47,14 +50,14 @@ export async function getStorageStatus(signedIn) {
       label: 'Patterns',
       count: patterns,
       location: signedIn ? 'cloud' : 'local',
-      detail: signedIn ? 'Synced to your account' : 'This browser only — sign in to sync',
+      detail: sharedDetail(signedIn),
     },
     {
       key: 'themes',
       label: 'Themes',
       count: themes,
       location: signedIn ? 'cloud' : 'local',
-      detail: signedIn ? 'Synced to your account' : 'This browser only — sign in to sync',
+      detail: sharedDetail(signedIn),
     },
   ]
 }

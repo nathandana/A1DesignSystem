@@ -275,6 +275,11 @@ function App() {
     // and rebuild the URL cache so referenced Figures re-resolve.
     setSupabaseImageUser(authUser ? authUser.id : null)
     resetImageCache()
+    // Attribute analytics to the signed-in user (per-user reports in PostHog).
+    if (posthogEnabled) {
+      if (authUser) posthog.identify(authUser.id, { email: authUser.email })
+      else posthog.reset()
+    }
   }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────

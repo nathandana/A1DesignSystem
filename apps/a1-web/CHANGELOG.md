@@ -2,9 +2,18 @@
 
 ## Unreleased
 
+- **Shared workspace (cloud scope)** — when signed in, projects, pages, patterns, themes, and images
+  are now **one shared workspace** that every signed-in user reads and writes (was per-user). Supabase
+  moves from per-user rows to a single `shared_state` bundle row + a globally-keyed `user_images`
+  table + shared Storage policies (images stored under a flat `shared/<id>` path); RLS still requires
+  sign-in. Last-write-wins across users. Migration in `apps/a1-web/supabase/schema.sql` (seeds the
+  shared row from the most-recent per-user bundle, then drops `user_projects`).
+
 - **Analytics (PostHog)** — optional product analytics, dormant unless `VITE_POSTHOG_KEY` is set
   (mirrors the downTracker app: `lib/posthog.js` + a gated `PostHogProvider` in `main.jsx`, 2025
-  defaults for history-based SPA `$pageview` capture, `person_profiles: 'identified_only'`).
+  defaults for history-based SPA `$pageview` capture, `person_profiles: 'identified_only'`). Signed-in
+  users are **identified** (`posthog.identify(user.id, { email })`) and **reset** on sign-out, so
+  analytics can be tracked per user.
 
 - **Accounts + cloud sync (Supabase)** — optional, dormant unless `VITE_SUPABASE_URL` +
   `VITE_SUPABASE_ANON_KEY` are set (the app still works fully on local storage without them).

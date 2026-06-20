@@ -369,9 +369,11 @@ _None._
   illustrate its effect (especially align/justify); add/remove children.
 - [ ] **PageNav mobile UX** `P3 · M` — improve the in-page nav on small screens: a collapsed ↔
   expanded **floating-button** state (alongside / instead of the current top pill bar).
-- [ ] **Pure & Native coverage + platform strategy** `P3 · L` — evaluate every component for Pure
-  and Native: which have no app-based equivalent, which should be **native-only**, and how to
-  manage **android/iOS** differences. _Relates to the App-view roadmap + coverage audit._
+- [ ] **Pure & Native coverage + platform strategy** `P3 · L` — evaluate **every component** for Pure
+  and Native implementation: produce a **coverage matrix** (which exist, which are missing, which have
+  no app-based equivalent, which should be **native-only**), and decide how to manage **android/iOS**
+  differences. Output a prioritized build list from the gaps. _Relates to the App-view roadmap +
+  the component coverage audit + the Swift/SwiftUI kit item below._
 - [ ] **Swift/SwiftUI kit — Apple device compatibility** `P3 · XL` — a **Swift-native** output of
   A1 (a SwiftUI Swift Package consuming the Style Dictionary tokens) for first-class Apple-platform
   support, alongside a **demo watchOS app** to prove it out. Add a **compatibility surface** that

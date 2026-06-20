@@ -1,16 +1,18 @@
 import { supabaseConfigured } from '../lib/supabase.js'
-import { fetchUserProjects, saveUserProjects } from '../services/projectsDb.js'
+import { fetchSharedData, saveSharedData } from '../services/sharedDb.js'
 import { exportAllText, importAllText } from './projectStore'
 import { onStorageWrite, suspendStorageNotify } from '../editor/storage'
 import { exportUserPatterns, importUserPatterns, subscribePatterns } from '../patterns/patternStore'
 import { exportThemes, importThemes, subscribeThemes } from '../lib/themeStore'
 
-// Cloud sync for all editor data. On login the user's bundle is pulled into local
-// storage (or the cloud is seeded from local on first login), then local changes
-// are pushed back — debounced — whenever projects, patterns, or themes change.
-// The bundle is one JSON envelope per user (the `user_projects.data` text column):
+// Cloud sync for all editor data — a single SHARED workspace: every signed-in user
+// reads and writes the same bundle. On sign-in the shared bundle is pulled into
+// local storage (or the shared row is seeded from local if empty), then local
+// changes are pushed back — debounced — whenever projects, patterns, or themes
+// change. The bundle is one JSON envelope in the `shared_state.data` text column:
 //   { __a1bundle, projects: <exportAllText text>, patterns: [...], themes: [...] }
 // Images are not in the envelope — they sync separately via Supabase Storage.
+// Last-write-wins across users (the whole envelope is replaced on each push).
 // Dormant unless Supabase is configured and a user is signed in.
 
 const BUNDLE_VERSION = 2
@@ -51,16 +53,16 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
   currentUserId = userId
   if (!supabaseConfigured || !userId) return
   try {
-    const remote = await fetchUserProjects(userId)
+    const remote = await fetchSharedData()
     if (remote && remote.trim()) {
-      // Hydrate local storage from the cloud without echoing the writes back up.
+      // Hydrate local storage from the shared bundle without echoing writes back up.
       suspendPush = true
       suspendStorageNotify(true)
       try { importEnvelope(remote) } finally { suspendStorageNotify(false); suspendPush = false }
       onHydrated?.()
     } else {
-      // First login on this account — seed the cloud from whatever is local.
-      await saveUserProjects(userId, exportEnvelope())
+      // Shared bundle is empty — seed it from whatever is local.
+      await saveSharedData(exportEnvelope())
     }
   } catch (e) {
     console.warn('[cloudSync] pull failed', e)

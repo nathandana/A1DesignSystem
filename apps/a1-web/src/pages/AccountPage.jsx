@@ -104,7 +104,7 @@ export function AccountPage({ onNavigate }) {
         ) : user ? (
           <Card>
           <Stack gap="lg">
-            <Paragraph>Signed in as <strong>{user.email}</strong>. Your projects sync to this account.</Paragraph>
+            <Paragraph>Signed in as <strong>{user.email}</strong>. This is a shared workspace — every signed-in user sees and edits the same projects, themes, patterns, and images.</Paragraph>
             {status && <Banner status={status.status}>{status.message}</Banner>}
             {storage && (
               <Stack gap="xs">
@@ -123,7 +123,7 @@ export function AccountPage({ onNavigate }) {
             <Stack gap="xs">
               <Heading as="h2" size="sm">Import local data</Heading>
               <Paragraph size="sm" color="muted">
-                Push everything stored in this browser — projects, patterns, themes, and images — up to your account (replaces the cloud copy). Changes after this sync automatically.
+                Push everything stored in this browser — projects, patterns, themes, and images — up to the shared workspace (replaces the shared copy). Changes after this sync automatically.
               </Paragraph>
               <Button variant="secondary" icon="cloud_upload" loading={pushing} onClick={handlePushLocal}>
                 Import local data{loadProjects().length ? ` (${loadProjects().length} projects)` : ''}

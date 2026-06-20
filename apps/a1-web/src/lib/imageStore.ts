@@ -176,13 +176,15 @@ const netlifyBackend: ImageBackend = {
 
 const BUCKET = 'images';
 
-// The signed-in user whose images we read/write. Set by `setSupabaseImageUser`
-// on auth change; `null` (signed out) falls the selection back to Netlify/IDB.
+// The signed-in user. Set by `setSupabaseImageUser` on auth change; `null` (signed
+// out) falls the backend selection back to Netlify/IDB. Recorded as the uploader
+// on new images, but storage is shared — every signed-in user reads/writes all.
 let supabaseUserId: string | null = null;
 
-/** Storage path for an image: one folder per user so RLS scopes by owner. */
+/** Storage path for an image: a flat shared folder so the path is derivable from
+ *  the id alone (images are shared across all users, not scoped to an uploader). */
 function imagePath(id: string): string {
-  return `${supabaseUserId}/${id}`;
+  return `shared/${id}`;
 }
 
 function rowFromMeta(meta: ImageMeta) {
