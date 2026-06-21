@@ -2,8 +2,15 @@
 node_modules/
 
 # Local env files — may hold secrets (Supabase keys, etc.). Never commit.
-.env.local
-.env*.local
+# Ignore every .env variant but keep the committed .env.example template.
+.env
+.env.*
+!.env.example
+
+# Backlog local-sync cache — pulled from Supabase / written by the backlog scripts,
+# not source. Only the README in backlog/ is tracked.
+backlog/*
+!backlog/README.md
 
 # QA report output — generated per run, not committed.
 # Exception: a11y.json is a build-time data dependency of the a1-web

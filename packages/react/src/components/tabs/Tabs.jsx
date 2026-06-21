@@ -6,11 +6,11 @@ const TabsContext = createContext(null);
 
 /* ─── Tabs ─────────────────────────────────────────────────────────────────── */
 
-export function Tabs({ children, value, onChange, variant = "line", level = 1, size, className = "" }) {
+export function Tabs({ children, value, onChange, variant = "line", level = 1, size, equalHeight = false, labelMode = "all", className = "" }) {
   const uid = useId();
   return (
-    <TabsContext.Provider value={{ value, onChange, variant, level, size, uid }}>
-      <div className={["a1-tabs", `a1-tabs--level-${level}`, size && `a1-tabs--${size}`, className].filter(Boolean).join(" ")}>
+    <TabsContext.Provider value={{ value, onChange, variant, level, size, uid, equalHeight, labelMode }}>
+      <div className={["a1-tabs", `a1-tabs--level-${level}`, size && `a1-tabs--${size}`, equalHeight && "a1-tabs--equal-height", labelMode === "selected" && "a1-tabs--label-selected", className].filter(Boolean).join(" ")}>
         {children}
       </div>
     </TabsContext.Provider>
@@ -20,7 +20,7 @@ export function Tabs({ children, value, onChange, variant = "line", level = 1, s
 /* ─── TabList ───────────────────────────────────────────────────────────────── */
 
 export function TabList({ children }) {
-  const { variant } = useContext(TabsContext);
+  const { variant, value } = useContext(TabsContext);
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -48,6 +48,24 @@ export function TabList({ children }) {
       ro.disconnect();
     };
   }, [checkScroll, enableScroll]);
+
+  // Keep the selected tab in view when it changes (and on mount) by adjusting only
+  // the strip's own horizontal scroll — never scrollIntoView, which would also move
+  // the page vertically.
+  useEffect(() => {
+    if (!enableScroll) return;
+    const el = scrollRef.current;
+    const active = el?.querySelector('[role="tab"][aria-selected="true"]');
+    if (!el || !active) return;
+    const pad = 16;
+    const elRect = el.getBoundingClientRect();
+    const aRect = active.getBoundingClientRect();
+    if (aRect.left < elRect.left) {
+      el.scrollBy({ left: aRect.left - elRect.left - pad, behavior: "smooth" });
+    } else if (aRect.right > elRect.right) {
+      el.scrollBy({ left: aRect.right - elRect.right + pad, behavior: "smooth" });
+    }
+  }, [value, enableScroll]);
 
   const scrollBy = (dir) => {
     scrollRef.current?.scrollBy({ left: dir * 200, behavior: "smooth" });
@@ -154,15 +172,25 @@ export function Tab({ children, value: tabValue, count, icon, iconPosition = "st
 /* ─── TabPanel ──────────────────────────────────────────────────────────────── */
 
 export function TabPanel({ children, value: panelValue }) {
-  const { value, variant, uid } = useContext(TabsContext);
-  if (value !== panelValue) return null;
+  const { value, variant, uid, equalHeight } = useContext(TabsContext);
+  const isActive = value === panelValue;
+  // Default: unmount inactive panels (the panel area sizes to the active tab). With
+  // equalHeight, keep every panel mounted but stacked + hidden, so the area always
+  // reserves the tallest panel's height and the container never resizes on switch.
+  if (!equalHeight && !isActive) return null;
 
   return (
     <div
       role="tabpanel"
       id={`${uid}-panel-${panelValue}`}
       aria-labelledby={`${uid}-tab-${panelValue}`}
-      className={`a1-tab-panel a1-tab-panel--${variant}`}
+      aria-hidden={equalHeight && !isActive ? true : undefined}
+      className={[
+        "a1-tab-panel",
+        `a1-tab-panel--${variant}`,
+        equalHeight && "a1-tab-panel--stacked",
+        equalHeight && !isActive && "a1-tab-panel--inactive",
+      ].filter(Boolean).join(" ")}
     >
       {children}
     </div>

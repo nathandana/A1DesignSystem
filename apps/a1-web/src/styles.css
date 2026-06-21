@@ -2162,3 +2162,15 @@ span.a1-web-sem-pick { display: inline-block; }
   background: var(--semantic-color-status-error-surface);
   color: var(--semantic-color-status-error-text);
 }
+
+/* Attachment thumbnail with an overlaid remove button (CreateTicketDialog). */
+.a1-backlog-attach {
+  position: relative;
+  display: inline-flex;
+}
+
+.a1-backlog-attach .a1-icon-button {
+  position: absolute;
+  inset-block-start: var(--base-spacing-2);
+  inset-inline-end: var(--base-spacing-2);
+}

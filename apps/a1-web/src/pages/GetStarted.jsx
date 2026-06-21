@@ -31,14 +31,14 @@ const packages = [
       'Use design system composition primitives first: Section, Stack, Grid, Card, Heading, Paragraph, and ButtonContainer.',
     ],
     contextFiles: [
-      'packages/react/Agents.md',
-      'packages/react/Claude.md',
+      'packages/react/AGENTS.md',
+      'packages/react/CLAUDE.md',
       'packages/react/ai/project-context.md',
+      'packages/react/ai/components.md',
       'packages/react/README.md',
-      'system/ai/project-context.md',
       'apps/a1-web/CHANGELOG.md',
     ],
-    prompt: `Use the A1 React package. Before coding, read packages/react/Agents.md, packages/react/Claude.md, packages/react/ai/project-context.md, and ai/project-context.md. Follow the component APIs and existing page patterns. Use Section, Stack, Grid, Card, Heading, Paragraph, Button, ButtonContainer, MessageBadge, and List before adding custom CSS. Do not invent raw colors, spacing, radius, font sizes, or one-off styles. Update apps/a1-web/CHANGELOG.md with the prompt and changes.`,
+    prompt: `Use the A1 React package. Before coding, read packages/react/AGENTS.md, packages/react/CLAUDE.md, packages/react/ai/project-context.md, and packages/react/ai/components.md. Follow the component APIs and existing page patterns. Use Section, Stack, Grid, Card, Heading, Paragraph, Button, ButtonContainer, MessageBadge, and List before adding custom CSS. Do not invent raw colors, spacing, radius, font sizes, or one-off styles. Update apps/a1-web/CHANGELOG.md with the prompt and changes.`,
     code: `import {
   Button,
   ButtonContainer,
@@ -93,14 +93,14 @@ export function ExamplePage() {
       'Wrap screens in the design system provider pattern already used by the iOS example app.',
     ],
     contextFiles: [
-      'packages/react-native/Agents.md',
-      'packages/react-native/Claude.md',
+      'packages/react-native/AGENTS.md',
+      'packages/react-native/CLAUDE.md',
       'packages/react-native/ai/project-context.md',
       'apps/ios-example/App.tsx',
       'apps/priority-guide-ios/App.tsx',
-      'system/ai/project-context.md',
+      'packages/react/ai/project-context.md',
     ],
-    prompt: `Use the A1 React Native package. Before coding, read packages/react-native/Agents.md, packages/react-native/Claude.md, packages/react-native/ai/project-context.md, ai/project-context.md, and the existing iOS example screens. Use exported native components and generated token values. Do not hardcode colors, spacing, type sizes, radius, shadows, or icon sizing. Prefer icon name props where supported. Keep iOS and web examples aligned when they represent the same product surface.`,
+    prompt: `Use the A1 React Native package. Before coding, read packages/react-native/AGENTS.md, packages/react-native/CLAUDE.md, packages/react-native/ai/project-context.md, packages/react/ai/project-context.md, and the existing iOS example screens. Use exported native components and generated token values. Do not hardcode colors, spacing, type sizes, radius, shadows, or icon sizing. Prefer icon name props where supported. Keep iOS and web examples aligned when they represent the same product surface.`,
     code: `import {
   Button,
   Card,
@@ -144,23 +144,23 @@ export function ExampleScreen() {
       'Do not use components that require JavaScript behavior in this package.',
     ],
     contextFiles: [
-      'packages/pure/Agents.md',
-      'packages/pure/Claude.md',
+      'packages/pure/AGENTS.md',
+      'packages/pure/CLAUDE.md',
       'packages/pure/ai/project-context.md',
       'packages/pure/README.md',
       'packages/pure/dist/index.html',
-      'system/ai/project-context.md',
+      'packages/react/ai/project-context.md',
     ],
-    prompt: `Use the A1 pure HTML/CSS package. Before coding, read packages/pure/Agents.md, packages/pure/Claude.md, packages/pure/ai/project-context.md, packages/pure/README.md, and packages/pure/dist/index.html. Output semantic HTML and A1 classes only. No JavaScript. Do not add custom CSS unless a missing system class is being added to the package generator. Use values from generated theme CSS and style dictionary output.`,
+    prompt: `Use the A1 pure HTML/CSS package. Before coding, read packages/pure/AGENTS.md, packages/pure/CLAUDE.md, packages/pure/ai/project-context.md, packages/pure/README.md, and packages/pure/dist/index.html. Output semantic HTML and A1 classes only. No JavaScript. Do not add custom CSS unless a missing system class is being added to the package generator. Use values from generated theme CSS and style dictionary output.`,
     code: `<link rel="stylesheet" href="./a1-base.css">
 <link rel="stylesheet" href="./a1-heritage.css">
 
 <section class="a1-section a1-section--padding-lg a1-section--surface-panel">
   <span class="a1-badge a1-badge-info">HTML/CSS</span>
-  <h1 class="a1-heading a1-heading--display-xl">
+  <h1 class="a1-display a1-display-xl">
     Static pages can still use the system.
   </h1>
-  <p class="a1-paragraph a1-paragraph--lg a1-paragraph--muted">
+  <p class="a1-paragraph a1-paragraph-lg a1-paragraph-muted">
     Use semantic markup with scoped A1 classes and generated theme files.
   </p>
   <a class="a1-button a1-button-primary a1-button-large" href="/components">
@@ -181,16 +181,16 @@ function CodeExample({ children, wrap = false }) {
 const repoSetupCommand = `git clone https://github.com/nathandana/A1DesignSystem.git
 cd A1DesignSystem
 npm install
-npm run build
-npm run dev --workspace a1-web`
+npm run build:tokens && npm run build:html-css
+npm run dev:a1-web`
 
 const repoContextFiles = [
   'AGENTS.md',
   'CLAUDE.md',
-  'system/ai/project-context.md',
-  'system/ai/components.md',
-  'system/ai/quick-orientation.md',
-  'system/ai/a11y-policy.md',
+  'packages/react/ai/project-context.md',
+  'packages/react/ai/components.md',
+  'packages/react/ai/quick-orientation.md',
+  'packages/react/ai/a11y-policy.md',
 ]
 
 function PackagePanel({ pkg }) {
@@ -297,7 +297,7 @@ export function GetStarted({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="repo-setup-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="repo-setup-heading">
         <Grid columns={{ xs: 1, md: 2 }} gap="md">
           <Card icon="code">
             <Stack gap="sm">
@@ -334,7 +334,7 @@ export function GetStarted({ onNavigate }) {
         </Grid>
       </Section>
   
-      <Section padding="sm" contentWidth="lg" aria-labelledby="package-tabs-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="package-tabs-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="xs">
             <Heading as="h2" id="package-tabs-heading" size={{ xs: 'md', md: 'lg' }}>

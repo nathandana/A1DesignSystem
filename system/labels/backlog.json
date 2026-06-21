@@ -1,0 +1,120 @@
+{
+  "label": {
+    "backlog": {
+      "statusNew": {
+        "$type": "string",
+        "$value": "New",
+        "$description": "Backlog ticket status: just created, not yet triaged.",
+        "locale": { "es": "Nuevo", "fr": "Nouveau", "de": "Neu", "pt": "Novo", "ja": "新規", "zh": "新建", "ar": "جديد" }
+      },
+      "statusTriaged": {
+        "$type": "string",
+        "$value": "Triaged",
+        "$description": "Backlog ticket status: reviewed and prioritised.",
+        "locale": { "es": "Clasificado", "fr": "Trié", "de": "Eingeordnet", "pt": "Triado", "ja": "トリアージ済み", "zh": "已分类", "ar": "تم الفرز" }
+      },
+      "statusAccepted": {
+        "$type": "string",
+        "$value": "Accepted",
+        "$description": "Backlog ticket status: approved to be worked on.",
+        "locale": { "es": "Aceptado", "fr": "Accepté", "de": "Akzeptiert", "pt": "Aceito", "ja": "受理済み", "zh": "已接受", "ar": "مقبول" }
+      },
+      "statusInProgress": {
+        "$type": "string",
+        "$value": "In progress",
+        "$description": "Backlog ticket status: actively being worked on.",
+        "locale": { "es": "En curso", "fr": "En cours", "de": "In Arbeit", "pt": "Em andamento", "ja": "進行中", "zh": "进行中", "ar": "قيد التنفيذ" }
+      },
+      "statusDone": {
+        "$type": "string",
+        "$value": "Done",
+        "$description": "Backlog ticket status: built and merged.",
+        "locale": { "es": "Hecho", "fr": "Terminé", "de": "Fertig", "pt": "Concluído", "ja": "完了", "zh": "已完成", "ar": "تم" }
+      },
+      "statusReleased": {
+        "$type": "string",
+        "$value": "Released",
+        "$description": "Backlog ticket status: shipped to users.",
+        "locale": { "es": "Publicado", "fr": "Publié", "de": "Veröffentlicht", "pt": "Lançado", "ja": "リリース済み", "zh": "已发布", "ar": "تم الإصدار" }
+      },
+      "statusWontFix": {
+        "$type": "string",
+        "$value": "Won't fix",
+        "$description": "Backlog ticket terminal status: decided not to address.",
+        "locale": { "es": "No se corregirá", "fr": "Ne sera pas corrigé", "de": "Wird nicht behoben", "pt": "Não será corrigido", "ja": "対応しない", "zh": "不予修复", "ar": "لن يتم الإصلاح" }
+      },
+      "statusDuplicate": {
+        "$type": "string",
+        "$value": "Duplicate",
+        "$description": "Backlog ticket terminal status: a duplicate of another ticket.",
+        "locale": { "es": "Duplicado", "fr": "Doublon", "de": "Duplikat", "pt": "Duplicado", "ja": "重複", "zh": "重复", "ar": "مكرر" }
+      },
+      "typeFeature": {
+        "$type": "string",
+        "$value": "Feature",
+        "$description": "Backlog ticket type: a new capability or enhancement.",
+        "locale": { "es": "Función", "fr": "Fonctionnalité", "de": "Funktion", "pt": "Recurso", "ja": "機能", "zh": "功能", "ar": "ميزة" }
+      },
+      "typeBug": {
+        "$type": "string",
+        "$value": "Bug",
+        "$description": "Backlog ticket type: something is broken.",
+        "locale": { "es": "Error", "fr": "Bogue", "de": "Fehler", "pt": "Erro", "ja": "バグ", "zh": "缺陷", "ar": "خلل" }
+      },
+      "typeChore": {
+        "$type": "string",
+        "$value": "Chore",
+        "$description": "Backlog ticket type: maintenance or housekeeping work.",
+        "locale": { "es": "Tarea", "fr": "Tâche", "de": "Aufgabe", "pt": "Tarefa", "ja": "雑務", "zh": "杂务", "ar": "مهمة" }
+      },
+      "priorityCritical": {
+        "$type": "string",
+        "$value": "Critical",
+        "$description": "Backlog priority P0 — critical / blocking.",
+        "locale": { "es": "Crítica", "fr": "Critique", "de": "Kritisch", "pt": "Crítica", "ja": "緊急", "zh": "紧急", "ar": "حرجة" }
+      },
+      "priorityHigh": {
+        "$type": "string",
+        "$value": "High",
+        "$description": "Backlog priority P1 — high.",
+        "locale": { "es": "Alta", "fr": "Élevée", "de": "Hoch", "pt": "Alta", "ja": "高", "zh": "高", "ar": "عالية" }
+      },
+      "priorityMedium": {
+        "$type": "string",
+        "$value": "Medium",
+        "$description": "Backlog priority P2 — medium.",
+        "locale": { "es": "Media", "fr": "Moyenne", "de": "Mittel", "pt": "Média", "ja": "中", "zh": "中", "ar": "متوسطة" }
+      },
+      "priorityLow": {
+        "$type": "string",
+        "$value": "Low",
+        "$description": "Backlog priority P3 — low / someday.",
+        "locale": { "es": "Baja", "fr": "Faible", "de": "Niedrig", "pt": "Baixa", "ja": "低", "zh": "低", "ar": "منخفضة" }
+      },
+      "newTicket": {
+        "$type": "string",
+        "$value": "New ticket",
+        "$description": "Action: open the form to create a backlog ticket.",
+        "locale": { "es": "Nuevo ticket", "fr": "Nouveau ticket", "de": "Neues Ticket", "pt": "Novo ticket", "ja": "新しいチケット", "zh": "新建工单", "ar": "تذكرة جديدة" }
+      },
+      "reportOrRequest": {
+        "$type": "string",
+        "$value": "Report a bug or request a feature",
+        "$description": "Action label for the create-ticket affordance shown across the app.",
+        "locale": { "es": "Informar de un error o solicitar una función", "fr": "Signaler un bogue ou demander une fonctionnalité", "de": "Fehler melden oder Funktion anfragen", "pt": "Relatar um erro ou solicitar um recurso", "ja": "バグを報告または機能をリクエスト", "zh": "报告缺陷或请求功能", "ar": "أبلغ عن خلل أو اطلب ميزة" }
+      },
+      "vote": {
+        "$type": "string",
+        "$value": "Vote",
+        "$description": "Action: upvote a backlog ticket to signal demand.",
+        "locale": { "es": "Votar", "fr": "Voter", "de": "Abstimmen", "pt": "Votar", "ja": "投票", "zh": "投票", "ar": "تصويت" }
+      },
+      "askRequester": {
+        "$type": "string",
+        "$value": "Ask the requester",
+        "$description": "Action: post a clarifying question routed to the ticket's requester.",
+        "locale": { "es": "Preguntar al solicitante", "fr": "Demander au demandeur", "de": "Den Ersteller fragen", "pt": "Perguntar ao solicitante", "ja": "依頼者に質問", "zh": "询问请求者", "ar": "اسأل مقدم الطلب" }
+      }
+    }
+  }
+}

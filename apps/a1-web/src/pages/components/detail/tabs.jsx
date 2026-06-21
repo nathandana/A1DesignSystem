@@ -70,6 +70,8 @@ export function getDefaultConfig() {
     variant: 'line',
     size: 'default',
     level: 1,
+    equalHeight: false,
+    labelMode: 'all',
     items: [
       { id: 'tab-overview', label: 'Overview', icon: '', iconPosition: 'start', count: '', status: 'none' },
       { id: 'tab-activity', label: 'Activity', icon: '', iconPosition: 'start', count: '12', status: 'none' },
@@ -124,6 +126,8 @@ export function Preview({ config }) {
       variant={config.variant}
       level={config.level}
       size={resolveSize(config.size)}
+      equalHeight={config.equalHeight}
+      labelMode={config.labelMode}
     >
       <TabList>
         {items.map((item) => (
@@ -218,6 +222,22 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
           { label: 'Level 2', value: '2' },
         ]}
       />
+      <Choice
+        label="Label mode" size="compact" hideIndicator columns={2}
+        helper="“Selected” shows the label only on the active tab; inactive tabs are icon-only (give each tab an icon)."
+        value={config.labelMode}
+        onChange={(labelMode) => setConfig((current) => ({ ...current, labelMode }))}
+        options={[
+          { label: 'All', value: 'all' },
+          { label: 'Selected', value: 'selected' },
+        ]}
+      />
+      <Toggle
+        label="Equal height"
+        helper="Reserve the tallest panel's height so switching tabs doesn't resize the container. For tabs inside a Dialog/overlay."
+        value={config.equalHeight}
+        onChange={(equalHeight) => setConfig((current) => ({ ...current, equalHeight }))}
+      />
 
       <Divider space="none" />
 
@@ -280,6 +300,8 @@ function buildTabsSnippet(config) {
     config.variant !== 'line' ? `variant="${config.variant}"` : null,
     config.size === 'compact' ? `size="compact"` : null,
     config.level !== 1 ? `level={${config.level}}` : null,
+    config.equalHeight ? `equalHeight` : null,
+    config.labelMode !== 'all' ? `labelMode="${config.labelMode}"` : null,
   ].filter(Boolean).join(' ')
 
   const tabLines = items.map(tabSnippet).join('\n')

@@ -1,5 +1,11 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## 0.21.0 — 2026-06-21
+
+### Fixed
+
+- **Tabs no longer force a container or page wider (overflow scroll engages)** — a `line` tab strip with more tabs than fit (e.g. the Releases version tabs) was widening its container and forcing a horizontal page scroll because the scrollable list couldn't shrink below the tabs' intrinsic width. Added `min-width: 0` to the scrollable list (and defensive `min-width: 0` / `max-width: 100%` on the Tabs root + list wrapper) so the strip scrolls **internally** and the existing prev/next chevron arrows appear automatically. The selected tab is now kept in view by adjusting only the strip's own horizontal scroll (never `scrollIntoView`, which would also move the page). Annotated the `Overflow (many tabs)` story.
+
 ## 0.18.0 — 2026-06-19
 
 ### Added

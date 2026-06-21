@@ -122,11 +122,12 @@ packages/react/src/components/{component-name}/
 6. **Example site** — Add a new page to `examples/a1-pure/` showing all component variants with correct code snippets. Update the navigation on all pages and the index components list.
 7. **Labels** — If the component has any UI strings, add them to `system/labels/` with English `$value`, `$description`, and supported `locale` translations (`es`, `fr`, `de`, `pt`, `ja`, `zh`, `ar`) unless there is an explicit translation-blocking decision.
 8. **Storybook** — Ensure the React stories cover all variants, sizes, states, and all supported themes.
-9. **Changelog** — Record the addition in every affected project/package/app changelog that exists, including `changelog.md` or `CHANGELOG.md`, with the component name, what was added, and what packages were affected.
-10. **Theme + breakpoint validation** — Confirm the component renders correctly across all themes (base, a1-light, accessible, heritage) and all breakpoints (xs–xl).
-11. **Component registry** — Update `packages/react/ai/components.md` to reflect the new component and which packages it is available in.
+9. **a1-web configurator** — Add (or update) the component's page and interactive **configurator** under `apps/a1-web/src/pages/components/` so **every prop is adjustable in the live editor** and the generated code snippet stays correct, and register the page in the Components menu (`apps/a1-web/src/pages/Components.jsx`) per the menu hierarchy in `components.md`. A component or prop that isn't in the a1-web configurator is invisible to the people building with the editor.
+10. **Changelog** — Record the addition in every affected project/package/app changelog that exists, including `changelog.md` or `CHANGELOG.md`, with the component name, what was added, and what packages were affected.
+11. **Theme + breakpoint validation** — Confirm the component renders correctly across all themes (base, a1-light, accessible, heritage) and all breakpoints (xs–xl).
+12. **Component registry** — Update `packages/react/ai/components.md` to reflect the new component and which packages it is available in.
 
-The same checklist applies when updating or removing an existing component (steps 1–11 as relevant). Never ship an API change, feature addition, or feature removal without updating documentation, stories, examples, and relevant changelogs in the same change.
+The same checklist applies when updating or removing an existing component (steps 1–12 as relevant). Never ship an API change, feature addition, or feature removal without updating documentation, stories, examples, the **a1-web configurator**, and relevant changelogs in the same change.
 
 ### Adding a prop to an existing component (mandatory steps)
 
@@ -137,8 +138,9 @@ Every time a new prop is added to any component, all of the following must happe
 3. **TypeScript** — Add the prop to the component's `.d.ts` interface with a JSDoc comment describing the valid values and default.
 4. **Stories — argType** — Add the prop to `meta.argTypes` in the component's `.stories.jsx` so it appears in the Storybook controls panel with the correct control type (`"inline-radio"`, `"select"`, `"boolean"`, etc.) and all valid options listed.
 5. **Stories — story** — Add or update at least one named story that demonstrates the prop's effect. A prop that only appears in the controls panel but has no dedicated story is not documented.
-6. **Consumer updates** — If any package, example, or app currently uses the component, update usages to use the new prop where it replaces existing custom CSS or workarounds.
-7. **CSS cleanup** — Remove any custom CSS in consuming code that the new prop now replaces.
+6. **a1-web configurator** — Expose the new prop in the component's a1-web configurator: add a control for it in the **Configure** panel (and a row in the **Properties** table) under `apps/a1-web/src/pages/components/` so it's adjustable in the live editor and reflected in the emitted code snippet. **Give the control helper text** that explains the prop, wired through the shared **Helper-text switch** — pass it via the `helper` prop on the shared kit controls (driven by `ConfigHelpContext` / `WithHelp`) so it appears only when the user turns Helper text on. Never use a raw always-on `hint` for prop guidance; if a control doesn't yet support `helper`, add that support rather than bypassing the switch. A prop that isn't wired into the configurator — with switch-linked helper text — is invisible to the people building with the editor; this step is **not optional**.
+7. **Consumer updates** — If any package, example, or app currently uses the component, update usages to use the new prop where it replaces existing custom CSS or workarounds.
+8. **CSS cleanup** — Remove any custom CSS in consuming code that the new prop now replaces.
 
 > **Why stories are non-negotiable:** The Storybook stories are the primary consumer-facing documentation. An undocumented prop is an invisible prop — it will not be discovered or reused by other agents or developers.
 
@@ -225,7 +227,8 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Documentation**
 9. **Document every change.** Token additions, API changes, new variants, new themes, new components, feature additions, and feature removals all require updated Storybook stories, example pages, documentation, and changelog entries in the same commit.
-9a. **Update every relevant changelog.** When a project, package, or app has a `changelog.md` or `CHANGELOG.md`, add an entry as features are added or removed.
+9a. **Update every relevant changelog.** When a project, package, or app has a `changelog.md` or `CHANGELOG.md`, add an entry as features are added or removed. When a change resolves a **backlog ticket** (the a1-web Backlog), include that ticket's reference — `(A1-<n>)`, the `ticketRef` from `apps/a1-web/src/services/backlog/types.ts` — right after the entry's bold lead title, e.g. `- **Help page — PageNav** (A1-106) — …`. Find the number in `backlog/BACKLOG.md` (or the Backlog page). Direct requests with no ticket get no reference.
+9b. **Update the a1-web configurator.** Whenever a component is **added**, or a prop/variant/state is **added or changed**, wire it into that component's a1-web configurator (`apps/a1-web/src/pages/components/`) in the same change — a control in the Configure panel, a row in the Properties table, a correct code snippet, and **helper text linked to the Helper-text switch** (the `helper` prop on the shared kit controls, gated by `ConfigHelpContext` — not a raw always-on hint). An option that isn't in the configurator can't be used in the live editor. See the configurator steps in "Adding a new component" and "Adding a prop to an existing component" above.
 10. **Code snippets match demos.** The code shown in example pages must be copy-pasteable and produce exactly the result shown.
 
 **Stability**

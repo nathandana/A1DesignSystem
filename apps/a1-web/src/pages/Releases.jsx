@@ -199,7 +199,7 @@ export function Releases({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="lg" aria-label="Release notes">
+      <Section padding="sm" contentWidth="md" aria-label="Release notes">
         <Tabs value={activeRelease} onChange={setActiveRelease}>
           <TabList>
             {releases.map((release) => (

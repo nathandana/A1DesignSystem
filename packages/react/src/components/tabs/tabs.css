@@ -4,6 +4,10 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  /* Never force a flex/grid parent wider than its share: allow shrinking and cap
+     at the parent width so an overflowing tab strip scrolls instead of pushing it. */
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* ─── Tab list wrapper ────────────────────────────────────────────────────── */
@@ -17,6 +21,8 @@
 .a1-tab-list-wrapper {
   display: flex;
   align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .a1-tab-list-wrapper--line {
@@ -63,6 +69,11 @@
 /* Line variant gets overflow scroll; the tab list scrolls, wrapper border stays full-width */
 .a1-tab-list--scrollable {
   flex: 1;
+  /* min-width: 0 lets this flex item shrink below the tabs' intrinsic (min-content)
+     width — without it the strip grows to fit every tab and forces a horizontal
+     page/container overflow instead of scrolling internally. This is what makes the
+     overflow-x scroll (and the scroll-arrow buttons) actually engage. */
+  min-width: 0;
   overflow-x: auto;
   /* Setting overflow-x alone makes the browser compute overflow-y to `auto`,
      which lets a sub-pixel of height add a stray vertical scroll. Pin it. */
@@ -478,24 +489,23 @@
   border-bottom-left-radius: var(--base-radius-control);
 }
 
-/* ─── Responsive tab labels (xs/sm: icon-only for inactive tabs) ─────────── */
+/* ─── Label on selected only (opt-in via labelMode="selected") ─────────────────
+ * Inactive tabs render icon-only; the selected tab shows its label. The label stays
+ * in the DOM (visually hidden) so the accessible name is preserved. Pair with a Tab
+ * `icon` so inactive tabs aren't blank, and give every Tab a label. */
+.a1-tabs--label-selected .a1-tab {
+  position: relative;
+}
 
-@media (--bp-sm-down) {
-  .a1-tab {
-    position: relative;
-  }
-
-  /* Visually hide label on inactive tabs — kept in DOM for accessibility */
-  .a1-tab[aria-selected="false"] .a1-tab__label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
+.a1-tabs--label-selected .a1-tab[aria-selected="false"] .a1-tab__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 /* ─── Responsive font sizes ───────────────────────────────────────────────── */
@@ -543,6 +553,34 @@
 
 .a1-tab-panel--progress {
   padding: var(--base-spacing-24) 0;
+}
+
+/* ─── Equal-height panels (opt-in) ──────────────────────────────────────────────
+ * Keep every panel mounted and stacked in one grid cell so the panel area always
+ * reserves the *tallest* panel's height — switching tabs no longer changes the
+ * container height. Use inside a Dialog/overlay so the dialog doesn't resize and
+ * move its targets. Inactive panels stay laid out (so they contribute height) but
+ * are visually hidden and removed from the a11y tree (aria-hidden), which also
+ * takes their focusable descendants out of the tab order.
+ */
+.a1-tabs--equal-height {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.a1-tabs--equal-height > .a1-tab-list-wrapper {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.a1-tab-panel--stacked {
+  grid-row: 2;
+  grid-column: 1;
+  min-width: 0;
+}
+
+.a1-tab-panel--inactive {
+  visibility: hidden;
 }
 
 /* ─── Compact size ──────────────────────────────────────────────────────────── */

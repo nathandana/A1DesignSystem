@@ -1,149 +1,88 @@
 # A1 Web Changelog
 
-## Unreleased
+## 0.10.0 — 2026-06-21
+
+- **Removed the Roadmap (md) page** — the read-only `?page=todo` view of `TODO.md` is gone now that the Backlog (`?page=backlog`) is the live ticket tracker. Dropped the route, its Resources-menu entry + icon, and `pages/TodoPage.jsx`; `TODO.md` itself stays as the agent-maintained backlog source. A stale `?page=todo` link degrades to the home page.
+- **Help screenshots (proof of concept)** (A1-105) — a reusable Playwright script (`apps/a1-web/scripts/help-screenshots.mjs`, `npm run help:screenshots`) captures real UI states into `public/help/`, which Help articles render inline via the A1 `Figure` component (new `Shot` helper). Proven on the "Opening the editor" article with two auto-generated shots — the Projects list and the top-nav Editor menu. Re-run the script to refresh the images so the walkthrough never drifts from the live UI.
+- **Help page — new topics + moved to Resources** — added a **Patterns** category (what patterns are vs Copy pattern, creating from a selection / scratch / duplicate, using & detaching instances, and locking/slots/scope), an **Accounts & the shared workspace** topic, an **AI icon finder** topic, and **previewing at different screen sizes**. Corrected the now-stale storage docs: "where your work is saved" and the image-library note now explain cloud sync when signed in (shared workspace, syncs across devices) vs local-only when signed out — the old "stored locally / isn't uploaded anywhere" claims were misleading. The Help entry also **moved from the Editor top-nav menu to Resources**.
+- **Help page — PageNav in-page nav** (A1-106) — the Help page's category jump **buttons** were replaced with the `PageNav` component (sticky, with active-section tracking + a reading-progress bar) in a content + sidebar grid, matching the TODO/long-tab pattern. The nav reflects the visible categories, so it narrows with the search results.
+- **Backlog board — Size filter** — the board filter toolbars gained a **Size** `ToolbarGroup` (All / XS / S / M / L / XL) beside Type and Priority, filtering tickets by complexity (the size shown on each card's `ComplexityBadge`).
+- **Tabs no longer force a container/page wider (React fix)** — a `line` tab strip with more tabs than fit (e.g. the Releases version tabs) now scrolls **internally** with prev/next arrows instead of widening its container and forcing a horizontal page scroll; the selected tab is kept in view. See `packages/react` changelog. The Releases page benefits directly.
+- **Markdown unwrapped (one line per item)** (A1-115) — `TODO.md` and both CHANGELOGs (`apps/a1-web`, `packages/react`) no longer hard-wrap lines for width; each list item / paragraph is a single line and editors soft-wrap. This also fixes the Releases page, where wrapped bullet tails previously rendered as detached paragraphs, and let the TodoPage renderer drop its continuation-line joining (`toLogicalLines` now just trims each line). A "one line per item" note was added to the TODO maintenance header.
+- **Setup guides refresh** — the `?page=get-started` page now points at the current files and commands: AI context files moved from `system/ai/*` to `packages/react/ai/*`, the agent files use their real casing (`AGENTS.md` / `CLAUDE.md`), the repo-setup snippet builds generated assets with `npm run build:tokens && npm run build:html-css` and starts the app with `npm run dev:a1-web`, and the Pure code example uses real `a1-base.css` classes (`a1-display`/`a1-display-xl`, `a1-paragraph-lg`, `a1-paragraph-muted`).
+- **About page** (A1-108) — a new `?page=about` (Resources menu): what A1 is, an "Explore" grid linking to Foundations / Components / Editor / Themes / Backlog / Accessibility, the system's guiding principles, and the app version. Built entirely from A1 components.
+- **Backlog board polish** — the board is now pure A1 (zero-gap `Grid` of `Section` swimlanes with alternating surfaces + vertical dividers), each lane paginates, filters are toolbars, cards are navigation cards with a right-click context menu, and a Swimlanes toolbar shows/hides lanes (terminal statuses off by default). At xs/sm the board switches to a **tab per swimlane**.
+
+- **Backlog — a lightweight, Supabase-backed ticket tracker** — a new `?page=backlog` replaces the read-only `TODO.md` view (kept as "Roadmap (md)") with a real, shared backlog:
+  - **Create from anywhere** — a global "flag" button in the top header, plus pre-scoped buttons in the page editor toolbar, on every component page, and in the theme editor. Tickets carry a type (bug / feature / chore), a suggested priority (P0–P3) and complexity (XS–XL), a scope, and screenshot attachments (reusing the image library).
+  - **Numbering, statuses, attribution** — each ticket gets a human ref `A1-<n>` and moves through `new → triaged → accepted → in_progress → done → released` (plus terminal `wont_fix` / `duplicate`), attributed to its requester. Shared across all signed-in users; works offline against a local fallback store.
+  - **Board / All tickets / My queue** — a kanban board by status, a sortable/filterable table, and a per-user queue (created-by-me, assigned-to-me, awaiting-your-answer).
+  - **Voting, Q&A threads, activity log, notifications** — upvote to signal demand; a maintainer can "ask the requester" a clarifying question that lands in their queue; status/priority/assignee changes write an activity log; the header bell shows an unread count.
+  - **Local sync CLI** — `npm run backlog:pull` / `npm run backlog:push` round-trip tickets to `backlog/tickets.json` + `backlog/BACKLOG.md` so an agent or dev can triage and implement locally (needs `SUPABASE_SERVICE_ROLE_KEY`; see `backlog/README.md`).
+  - DB: new `backlog_items` / `backlog_comments` / `backlog_votes` / `backlog_notifications` tables in `apps/a1-web/supabase/schema.sql` (run it in the Supabase SQL editor). Localized strings staged in `system/labels/backlog.json`; Help page gains a "Backlog & feedback" section.
 
 ## 0.9.0 — 2026-06-20
 
-- **Editor — sticky footer scoped to the canvas** — `StickyActions` (`position: fixed`) was pinned to
-  the viewport and overlapped the editor toolbar/aside; the canvas now uses layout containment
-  (`.a1-web-canvas-scope`) so a fixed footer scopes to the page area instead. Portaled menus/popovers
-  are unaffected (they live on `<body>`).
-- **Card — badge in hero** — a Card with `iconDisplay="hero"` can carry a `heroBadge` (status +
-  3×3 placement); the configurator gains a badge label, status picker, and an alignment-grid picker.
-- **TopHeader — selected parent icon colour** — when on a secondary page, the parent nav item's
-  leading icon now matches the selected text colour (was a muted tint).
-- **Code — collapsible polish** — copy + Show more/less sit inline on one row; the configurator
-  disables **Collapsible** when **Editable** is on (mutually exclusive); fixed the collapse never
-  engaging (the overflow check was self-cancelling).
+- **Editor — sticky footer scoped to the canvas** — `StickyActions` (`position: fixed`) was pinned to the viewport and overlapped the editor toolbar/aside; the canvas now uses layout containment (`.a1-web-canvas-scope`) so a fixed footer scopes to the page area instead. Portaled menus/popovers are unaffected (they live on `<body>`).
+- **Card — badge in hero** — a Card with `iconDisplay="hero"` can carry a `heroBadge` (status + 3×3 placement); the configurator gains a badge label, status picker, and an alignment-grid picker.
+- **TopHeader — selected parent icon colour** — when on a secondary page, the parent nav item's leading icon now matches the selected text colour (was a muted tint).
+- **Code — collapsible polish** — copy + Show more/less sit inline on one row; the configurator disables **Collapsible** when **Editable** is on (mutually exclusive); fixed the collapse never engaging (the overflow check was self-cancelling).
 - _Card hero image: parked — backed out of the configurator; see TODO (display needs work)._
 
 ## 0.8.2 — 2026-06-19
 
-- **Collapsible Code — finish the wiring** — the Code configurator gains a **Collapsible** toggle +
-  **Collapsed lines** field, and the editor's read-only **React snippet** view is now collapsible
-  (`collapsedLines={24}`). Completes the collapsible-Code backlog item (the DS prop + project-JSON
-  dialog shipped in 0.8.0).
+- **Collapsible Code — finish the wiring** — the Code configurator gains a **Collapsible** toggle + **Collapsed lines** field, and the editor's read-only **React snippet** view is now collapsible (`collapsedLines={24}`). Completes the collapsible-Code backlog item (the DS prop + project-JSON dialog shipped in 0.8.0).
 
 ## 0.8.1 — 2026-06-19
 
-- **Home / Themes layout tweaks** — Home "Platforms" heading + body no longer force-centered;
-  the Themes list "New theme" button is wrapped in a left-aligned `ButtonContainer`.
+- **Home / Themes layout tweaks** — Home "Platforms" heading + body no longer force-centered; the Themes list "New theme" button is wrapped in a left-aligned `ButtonContainer`.
 
 ## 0.8.0 — 2026-06-19
 
-- **AI features hidden by default (save API credits)** — every AI entry point is now gated behind
-  `VITE_AI_ENABLED` (off unless exactly `"true"`): editor AI tab, Make/Create with AI, AI find/generate
-  image, AI find icon, AI theme/rule, "Suggest with AI". `getApiKey()` returns null when off, so **no
-  Anthropic call can fire** even if a control is reached. Set `VITE_AI_ENABLED=true` to re-enable.
-- **Collapsible code blocks** — the project-JSON dialog uses the new Code `collapsible` prop, so a
-  big bundle shows capped with a fade + Show more/less instead of a wall (copy still grabs the full text).
-- **Grid — vertical stretch control** — the Grid configurator gains an **Align items** control
-  (stretch / start / center / end) backed by the new Grid `alignItems` prop (equal-height items).
-- **InlineEditable: text with marks/markdown is now editable** — a heading with marks or a paragraph
-  with inline markdown renders to styled `<span>`s; previously that content skipped `InlineEditable`
-  and couldn't be edited on the canvas. In the editor it now always falls back to an editable
-  source field (rich rendering still applies in preview/prototype).
+- **AI features hidden by default (save API credits)** — every AI entry point is now gated behind `VITE_AI_ENABLED` (off unless exactly `"true"`): editor AI tab, Make/Create with AI, AI find/generate image, AI find icon, AI theme/rule, "Suggest with AI". `getApiKey()` returns null when off, so **no Anthropic call can fire** even if a control is reached. Set `VITE_AI_ENABLED=true` to re-enable.
+- **Collapsible code blocks** — the project-JSON dialog uses the new Code `collapsible` prop, so a big bundle shows capped with a fade + Show more/less instead of a wall (copy still grabs the full text).
+- **Grid — vertical stretch control** — the Grid configurator gains an **Align items** control (stretch / start / center / end) backed by the new Grid `alignItems` prop (equal-height items).
+- **InlineEditable: text with marks/markdown is now editable** — a heading with marks or a paragraph with inline markdown renders to styled `<span>`s; previously that content skipped `InlineEditable` and couldn't be edited on the canvas. In the editor it now always falls back to an editable source field (rich rendering still applies in preview/prototype).
 
 ## 0.7.0 — 2026-06-19
 
-- **Shared edit history with user attribution** — the editor History panel now shows a **shared,
-  cloud-backed** history (Supabase `edit_history` table) attached to the object — **page and pattern**
-  edits, each entry **tagged with the user** who made it, with restore + rename, visible to everyone
-  (no longer local-only). **Theme** edits are also logged (debounced); a theme history viewer is a
-  follow-up. Local keyboard undo/redo is unchanged. Requires running the updated `schema.sql`
-  (`edit_history` table + RLS).
+- **Shared edit history with user attribution** — the editor History panel now shows a **shared, cloud-backed** history (Supabase `edit_history` table) attached to the object — **page and pattern** edits, each entry **tagged with the user** who made it, with restore + rename, visible to everyone (no longer local-only). **Theme** edits are also logged (debounced); a theme history viewer is a follow-up. Local keyboard undo/redo is unchanged. Requires running the updated `schema.sql` (`edit_history` table + RLS).
 
 ## 0.6.0 — 2026-06-19
 
-- **Editor presence + safe re-hydrate** — a step toward live collaboration on the shared workspace.
-  The editor header shows **who else is on the same page** (a Supabase Realtime presence channel per
-  page id), and when a teammate's change to the open page arrives via cloud sync the editor **adopts
-  it automatically — but only when you're not mid-edit** (no uncommitted change), so active work is
-  never clobbered. (Full conflict-free co-editing is tracked separately as a CRDT/Yjs item.)
+- **Editor presence + safe re-hydrate** — a step toward live collaboration on the shared workspace. The editor header shows **who else is on the same page** (a Supabase Realtime presence channel per page id), and when a teammate's change to the open page arrives via cloud sync the editor **adopts it automatically — but only when you're not mid-edit** (no uncommitted change), so active work is never clobbered. (Full conflict-free co-editing is tracked separately as a CRDT/Yjs item.)
 
 ## 0.5.0 — 2026-06-19
 
-- **Live cross-user sync (polling + faster page flush)** — the shared workspace now reliably
-  propagates changes between users: cloudSync **polls** the shared row (~8s) as a fallback when
-  Realtime isn't enabled on the table, authenticates the Realtime connection, and the editor now
-  **flushes page edits to storage ~2.5s after a commit** (was only every 60s) so they push promptly.
+- **Live cross-user sync (polling + faster page flush)** — the shared workspace now reliably propagates changes between users: cloudSync **polls** the shared row (~8s) as a fallback when Realtime isn't enabled on the table, authenticates the Realtime connection, and the editor now **flushes page edits to storage ~2.5s after a commit** (was only every 60s) so they push promptly.
 
-- **Realtime shared sync + push fix** — the shared workspace now updates **live**: a Supabase realtime
-  subscription on `shared_state` re-pulls the bundle whenever any client writes, so one user's new
-  pattern/project/theme appears for others without a reload. Also fixed a bug where the debounced
-  auto-push (and "Import local data") called a removed `saveUserProjects`, so envelope changes never
-  reached the cloud — now `saveSharedData`. Requires `shared_state` in the `supabase_realtime`
-  publication. (Images already propagated live via direct reads.)
+- **Realtime shared sync + push fix** — the shared workspace now updates **live**: a Supabase realtime subscription on `shared_state` re-pulls the bundle whenever any client writes, so one user's new pattern/project/theme appears for others without a reload. Also fixed a bug where the debounced auto-push (and "Import local data") called a removed `saveUserProjects`, so envelope changes never reached the cloud — now `saveSharedData`. Requires `shared_state` in the `supabase_realtime` publication. (Images already propagated live via direct reads.)
 
-- **Shared workspace (cloud scope)** — when signed in, projects, pages, patterns, themes, and images
-  are now **one shared workspace** that every signed-in user reads and writes (was per-user). Supabase
-  moves from per-user rows to a single `shared_state` bundle row + a globally-keyed `user_images`
-  table + shared Storage policies (images stored under a flat `shared/<id>` path); RLS still requires
-  sign-in. Last-write-wins across users. Migration in `apps/a1-web/supabase/schema.sql` (seeds the
-  shared row from the most-recent per-user bundle, then drops `user_projects`).
+- **Shared workspace (cloud scope)** — when signed in, projects, pages, patterns, themes, and images are now **one shared workspace** that every signed-in user reads and writes (was per-user). Supabase moves from per-user rows to a single `shared_state` bundle row + a globally-keyed `user_images` table + shared Storage policies (images stored under a flat `shared/<id>` path); RLS still requires sign-in. Last-write-wins across users. Migration in `apps/a1-web/supabase/schema.sql` (seeds the shared row from the most-recent per-user bundle, then drops `user_projects`).
 
-- **Analytics (PostHog)** — optional product analytics, dormant unless `VITE_POSTHOG_KEY` is set
-  (mirrors the downTracker app: `lib/posthog.js` + a gated `PostHogProvider` in `main.jsx`, 2025
-  defaults for history-based SPA `$pageview` capture, `person_profiles: 'identified_only'`). Signed-in
-  users are **identified** (`posthog.identify(user.id, { email })`) and **reset** on sign-out, so
-  analytics can be tracked per user.
+- **Analytics (PostHog)** — optional product analytics, dormant unless `VITE_POSTHOG_KEY` is set (mirrors the downTracker app: `lib/posthog.js` + a gated `PostHogProvider` in `main.jsx`, 2025 defaults for history-based SPA `$pageview` capture, `person_profiles: 'identified_only'`). Signed-in users are **identified** (`posthog.identify(user.id, { email })`) and **reset** on sign-out, so analytics can be tracked per user.
 
-- **Accounts + cloud sync (Supabase)** — optional, dormant unless `VITE_SUPABASE_URL` +
-  `VITE_SUPABASE_ANON_KEY` are set (the app still works fully on local storage without them).
-  When configured: an **Account page** (sign-in, password reset, delete account) and per-user
-  **cloud sync** of all editor data — **projects, patterns, and themes** sync as one envelope in a
-  `user_projects` row, and **images** sync to a Supabase **Storage** bucket (`user_images` metadata).
-  The Account page shows a **"Where your data is stored"** panel and an **Import local data** button
-  that pushes everything in this browser up to the account. Schema in `apps/a1-web/supabase/schema.sql`.
+- **Accounts + cloud sync (Supabase)** — optional, dormant unless `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` are set (the app still works fully on local storage without them). When configured: an **Account page** (sign-in, password reset, delete account) and per-user **cloud sync** of all editor data — **projects, patterns, and themes** sync as one envelope in a `user_projects` row, and **images** sync to a Supabase **Storage** bucket (`user_images` metadata). The Account page shows a **"Where your data is stored"** panel and an **Import local data** button that pushes everything in this browser up to the account. Schema in `apps/a1-web/supabase/schema.sql`.
 
-- **Invite-only full-site gate** — when Supabase is configured the whole app is gated behind a
-  sign-in screen; **public sign-up is disabled** (admin creates users in Supabase). The sign-in
-  screen carries a required alpha/IP **agreement** checkbox.
+- **Invite-only full-site gate** — when Supabase is configured the whole app is gated behind a sign-in screen; **public sign-up is disabled** (admin creates users in Supabase). The sign-in screen carries a required alpha/IP **agreement** checkbox.
 
-- **Project overview — JSON view** — a **JSON** button on a project's overview shows the entire
-  project as a round-trippable bundle (the same shape the importer accepts) in a `Code` block.
+- **Project overview — JSON view** — a **JSON** button on a project's overview shows the entire project as a round-trippable bundle (the same shape the importer accepts) in a `Code` block.
 
-- **Paragraph configurator — weight control** — a **Weight** control (regular / medium / semibold /
-  bold) backed by the new Paragraph `weight` prop.
+- **Paragraph configurator — weight control** — a **Weight** control (regular / medium / semibold / bold) backed by the new Paragraph `weight` prop.
 
-- **DefinitionList configurator — value as a Link** — each item gains a "Value as link" toggle +
-  URL field; the value renders as an A1 `Link` in the preview and snippet. (The DefinitionList
-  component already accepts a node value — configurator-only.)
+- **DefinitionList configurator — value as a Link** — each item gains a "Value as link" toggle + URL field; the value renders as an A1 `Link` in the preview and snippet. (The DefinitionList component already accepts a node value — configurator-only.)
 
-- **Editor — inlineEditable click no longer toggles the selection off** — clicking (or
-  double-clicking) text inside an InlineEditable, field input, or any contentEditable now keeps the
-  node **selected** instead of toggling it off, so editing text doesn't drop the selection. (Other
-  nodes still toggle select/deselect on click as before.)
+- **Editor — inlineEditable click no longer toggles the selection off** — clicking (or double-clicking) text inside an InlineEditable, field input, or any contentEditable now keeps the node **selected** instead of toggling it off, so editing text doesn't drop the selection. (Other nodes still toggle select/deselect on click as before.)
 
-- **TODO page — complexity badges + filtering** — the **Current** tab now parses each backlog item
-  and renders its priority + effort as **badges** (priority-toned: P0 error · P1 warn · P2 info ·
-  P3 neutral), with **Priority** and **Effort** filter toolbars that hide non-matching items (and
-  empty bands). The PageNav reflects the visible bands.
+- **TODO page — complexity badges + filtering** — the **Current** tab now parses each backlog item and renders its priority + effort as **badges** (priority-toned: P0 error · P1 warn · P2 info · P3 neutral), with **Priority** and **Effort** filter toolbars that hide non-matching items (and empty bands). The PageNav reflects the visible bands.
 
-- **Releases page — Upcoming tab + correct ordering** — the **Unreleased** changelog section now
-  shows as an **Upcoming** tab (no date); release tabs are now **sorted** (Upcoming first, then
-  dated releases newest-first, then undated legacy by version descending) instead of trusting the
-  file order, and duplicate version ids (the changelog has two `0.2.0`) are de-duplicated so tabs
-  stay unique.
-- **Segmented Control configurator** — added a **Labels** control (`labelMode`: all / selected /
-  none) and gave the default options icons (Day / Week / Month → calendar icons).
-- **Heading & Paragraph configurators — balance text-wrap moved into the Align toolbar** — the
-  balance-text-wrap toggle is now a divider-separated toggle in the Align toolbar (both
-  configurators), instead of a standalone control.
-- **Button configurator — `fullWidth` now fills the preview** — the Button configurator renders as
-  a **bare display** (full-width preview) and centers a natural-width button itself, so toggling
-  `fullWidth` actually stretches it. Previously the centered display Section shrank the button to
-  content, so the toggle had no visible effect (same root cause as the Toolbar fix).
-- **Releases page — flat bullet lists no longer render the first bullet as a heading** — a release
-  written as a plain bullet list (no `### ` groups) had its first bullet promoted to an `<h3>`. The
-  changelog parser now only treats a section's first line as a heading when it isn't a bullet, and
-  the group heading is skipped when there's no title.
+- **Releases page — Upcoming tab + correct ordering** — the **Unreleased** changelog section now shows as an **Upcoming** tab (no date); release tabs are now **sorted** (Upcoming first, then dated releases newest-first, then undated legacy by version descending) instead of trusting the file order, and duplicate version ids (the changelog has two `0.2.0`) are de-duplicated so tabs stay unique.
+- **Segmented Control configurator** — added a **Labels** control (`labelMode`: all / selected / none) and gave the default options icons (Day / Week / Month → calendar icons).
+- **Heading & Paragraph configurators — balance text-wrap moved into the Align toolbar** — the balance-text-wrap toggle is now a divider-separated toggle in the Align toolbar (both configurators), instead of a standalone control.
+- **Button configurator — `fullWidth` now fills the preview** — the Button configurator renders as a **bare display** (full-width preview) and centers a natural-width button itself, so toggling `fullWidth` actually stretches it. Previously the centered display Section shrank the button to content, so the toggle had no visible effect (same root cause as the Toolbar fix).
+- **Releases page — flat bullet lists no longer render the first bullet as a heading** — a release written as a plain bullet list (no `### ` groups) had its first bullet promoted to an `<h3>`. The changelog parser now only treats a section's first line as a heading when it isn't a bullet, and the group heading is skipped when there's no title.
 
-- **Resources menu** — added a **TODO** page (renders the repo-root `TODO.md` via a lightweight
-  markdown renderer) with the standard Resources header (breadcrumb + h1 + description) and
-  **Overview / Current / Roadmap tabs** so it isn't one giant page; the long tabs show a
-  right-column **sticky PageNav** (a1-web sets `--a1-page-nav-top` to clear the 64px TopHeader).
-  **Removed the Projects** item from the Resources menu (the route still exists; just not in that menu).
+- **Resources menu** — added a **TODO** page (renders the repo-root `TODO.md` via a lightweight markdown renderer) with the standard Resources header (breadcrumb + h1 + description) and **Overview / Current / Roadmap tabs** so it isn't one giant page; the long tabs show a right-column **sticky PageNav** (a1-web sets `--a1-page-nav-top` to clear the 64px TopHeader). **Removed the Projects** item from the Resources menu (the route still exists; just not in that menu).
 - **Toolbar configurator — canvas tool editor** — the Toolbar configurator is now data-driven and **editable on the component itself**: the bar is built from a `tools` list (toggle / button / menu / group / divider), and **clicking a tool in the preview selects it** for editing in the panel (type, label, icon, menu items / group options) with reorder (move ←/→) and add/remove. Renders as a **bare display** (full-width preview, no centering Section) so the **`fullWidth`** toggle actually fills the width — previously the centered Section shrank the bar to content so fullWidth had no effect. (Design system: `ToolbarMenu`/`ToolbarGroup`/`ToolbarDivider` now forward `className` + `...rest` so the canvas can tag and outline each tool.)
 - **Sticky Actions / Accordion configurators** — Sticky Actions drops the per-button **label text inputs** (the demo buttons keep their default labels; Content width + Secondary-button toggle remain). The Accordion configurator now exposes **`subtext`** (a glanceable summary shown in the trigger while collapsed) and **`divider`** (added to the State toolbar) — both already supported by the component.
 - **Slider configurator** — detents are now edited with the DefinitionList tabs pattern (tab per detent + per-item editor + Add) instead of stacked accordions; **Value position**, **Show value**, and **Disabled** are folded into a single **Value bubble** toolbar (position icons + toggle icons). (Design system: the Slider's compact track/thumb step up one notch so the smallest slider stays grabbable.)

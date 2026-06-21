@@ -21,6 +21,22 @@ export interface TabsProps {
   level?: 1 | 2;
   /** Size variant. Default: undefined (standard) */
   size?: "compact";
+  /**
+   * Keep every panel mounted, stacked in one cell, so the panel area always reserves
+   * the **tallest** panel's height — switching tabs won't change the container height.
+   * Opt-in (default `false`); use inside a Dialog/overlay so it doesn't resize and move
+   * its targets. On a page, leave it off so tabs size to the active panel.
+   * Default: false
+   */
+  equalHeight?: boolean;
+  /**
+   * Label display. `"all"` (default) shows every tab's label at all breakpoints.
+   * `"selected"` shows the label only on the **active** tab; inactive tabs render
+   * **icon-only** (the label stays in the DOM for the accessible name). Pair with a
+   * `Tab` `icon` so inactive tabs aren't blank, and give **every** `Tab` a label.
+   * Mirrors `ToolbarGroup`'s `labelMode`. Default: "all"
+   */
+  labelMode?: "all" | "selected";
   className?: string;
   children?: React.ReactNode;
 }

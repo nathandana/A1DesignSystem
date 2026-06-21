@@ -38,6 +38,7 @@ import { describeError, generateFontPairing, generateTheme } from '../lib/aiThem
 import { hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
+import { useOpenCreateTicket } from '../backlog/BacklogContext'
 import { STYLE_TILE_DEFINITION } from './themeStyleTile.js'
 import { formatHex, hsl as toHsl, rgb as toRgb, wcagContrast } from 'culori'
 
@@ -341,6 +342,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     setHistory({ entries: t ? [histEntry(t, 'Opened')] : [], cursor: t ? 0 : -1 })
   }, [themeId])
   const [asideTab, setAsideTab] = useState('config') // right panel: config | history
+  const openTicket = useOpenCreateTicket()
   const theme = history.entries[history.cursor]?.theme ?? null
   const canUndo = history.cursor > 0
   const canRedo = history.cursor < history.entries.length - 1
@@ -1194,6 +1196,12 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <ToolbarButton icon="redo" label="Redo" disabled={!canRedo} onClick={redo} />
             <ToolbarDivider />
             <ToolbarGroup aria-label="View" value={viewValue} onChange={onViewChange} showLabels options={viewOptions} />
+            <ToolbarDivider />
+            <ToolbarButton
+              icon="flag"
+              label="Report a bug or request a feature"
+              onClick={() => openTicket({ kind: 'theme', ref: themeId, label: theme.name })}
+            />
           </Toolbar>
           {view === 'preview' ? tile : specific}
         </Stack>

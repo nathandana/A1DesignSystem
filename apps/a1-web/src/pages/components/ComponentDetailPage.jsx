@@ -64,6 +64,7 @@ import {
 } from './data.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
+import { CreateTicketButton } from '../../backlog/CreateTicketButton'
 import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail/ResponsivePreviewFrame.jsx'
 import {
   getComponentPath,
@@ -1684,15 +1685,21 @@ function ConfigurationPanel({
             onChange={onToggleHelp}
             size="compact"
           />
-          <Button
-            icon="restart_alt"
-            size="sm"
-            variant="tertiary"
-            type="button"
-            onClick={onResetConfig}
-          >
-            Reset
-          </Button>
+          <Stack direction="row" gap="xs" align="center">
+            <CreateTicketButton
+              as="icon"
+              scope={{ kind: 'component', ref: component.id, label: component.title }}
+            />
+            <Button
+              icon="restart_alt"
+              size="sm"
+              variant="tertiary"
+              type="button"
+              onClick={onResetConfig}
+            >
+              Reset
+            </Button>
+          </Stack>
         </div>
       </div>
     </div>

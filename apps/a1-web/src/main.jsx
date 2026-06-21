@@ -23,6 +23,7 @@ import {
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
 import actionLabels    from '../../../system/labels/action.json'
+import backlogLabels   from '../../../system/labels/backlog.json'
 import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
@@ -31,6 +32,7 @@ import statusBarLabels from '../../../system/labels/status-bar.json'
 const allLabels = {
   label: {
     ...actionLabels.label,
+    ...backlogLabels.label,
     ...calendarLabels.label,
     ...codeLabels.label,
     ...fieldLabels.label,
@@ -68,7 +70,8 @@ import { patternToDefinition } from './patterns/patternDocument.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
-import { TodoPage } from './pages/TodoPage.jsx'
+import { Backlog } from './pages/Backlog.jsx'
+import { About } from './pages/About.jsx'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
@@ -93,6 +96,8 @@ import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
 import { resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
 import { setHistoryUser } from './services/historyDb'
+import { BacklogProvider } from './backlog/BacklogContext.jsx'
+import { useBacklog } from './backlog/BacklogContext.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -101,17 +106,19 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'todo', 'accessibility', 'releases']
+const RESOURCE_PAGE_IDS = ['features', 'get-started', 'help', 'backlog', 'accessibility', 'releases', 'about']
 const RESOURCE_PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
-  todo: 'checklist',
+  help: 'help',
+  backlog: 'task_alt',
   accessibility: 'accessibility',
   releases: 'new_releases',
+  about: 'info',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'todo', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -130,7 +137,8 @@ const PAGE_TITLES = {
   help: 'Help',
   accessibility: 'Accessibility',
   releases: 'Releases',
-  todo: 'TODO',
+  backlog: 'Backlog',
+  about: 'About',
   account: 'Account',
 }
 
@@ -191,6 +199,7 @@ function App() {
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
   const { user: authUser } = useAuth()
+  const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState('configure')
   // ── Projects state ─────────────────────────────────────────────────────────
@@ -283,6 +292,8 @@ function App() {
     }
     // Tag shared edit-history entries with the signed-in user.
     setHistoryUser(authUser ?? null)
+    // (The backlog points itself at the right store via BacklogProvider, which
+    // owns its own auth wiring.)
   }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────
@@ -686,7 +697,7 @@ function App() {
     {
       id: 'editor',
       label: PAGE_TITLES.editor,
-      active: activePage === 'editor' || activePage === 'help' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'theme-editor' || activePage === 'rules',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
         {
           icon: 'folder',
@@ -737,18 +748,31 @@ function App() {
           active: activePage === 'rules',
           onClick: (e) => handleNavClick(e, 'rules'),
         },
-        {
-          icon: 'help',
-          label: 'Editor help',
-          href: getPath('help'),
-          active: activePage === 'help',
-          onClick: (e) => handleNavClick(e, 'help'),
-        },
       ],
     },
   ]
 
   const actions = [
+    {
+      id: 'new-ticket',
+      icon: 'flag',
+      iconOnly: true,
+      label: 'Report a bug or request a feature',
+      onClick: () => backlog?.openCreate({ kind: 'general' }),
+    },
+    {
+      id: 'backlog-queue',
+      icon: 'notifications',
+      iconOnly: true,
+      label: 'Your backlog queue',
+      badge: backlog?.unreadCount || undefined,
+      onClick: () => {
+        if (backlog?.unreadCount) {
+          backlog.markRead(backlog.notifications.filter((n) => !n.read).map((n) => n.id))
+        }
+        navigate('backlog')
+      },
+    },
     {
       id: 'settings',
       icon: 'settings',
@@ -1039,7 +1063,8 @@ function App() {
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
-        {activePage === 'todo' && <TodoPage onNavigate={navigate} />}
+        {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
+        {activePage === 'about' && <About onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}
@@ -1180,7 +1205,9 @@ initPostHog()
 const tree = (
   <AuthProvider>
     <AuthGate>
-      <App />
+      <BacklogProvider>
+        <App />
+      </BacklogProvider>
     </AuthGate>
   </AuthProvider>
 )
