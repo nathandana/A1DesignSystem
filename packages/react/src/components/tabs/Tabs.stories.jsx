@@ -19,6 +19,15 @@ const meta = {
       options: [undefined, "compact"],
       description: "Size variant (compact for reduced padding)"
     },
+    equalHeight: {
+      control: "boolean",
+      description: "Keep all panels mounted + stacked, reserving the tallest panel's height (opt-in; for tabs inside a Dialog/overlay so it doesn't resize)"
+    },
+    labelMode: {
+      control: "inline-radio",
+      options: ["all", "selected"],
+      description: "Label display — 'selected' shows the label only on the active tab (inactive tabs are icon-only; pair with a Tab icon)"
+    },
     level: {
       control: "inline-radio",
       options: [1, 2],
@@ -147,6 +156,17 @@ export const WithIconAbove = {
 
 export const Overflow = {
   name: "Overflow (many tabs)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "When a `line` tab strip has more tabs than fit, it **scrolls internally** and " +
+          "shows prev/next chevron buttons — it never widens its container or forces a " +
+          "horizontal page scroll. The selected tab is kept in view automatically. Try " +
+          "narrowing the frame: the arrows appear as soon as the tabs overflow.",
+      },
+    },
+  },
   render: () => {
     const [active, setActive] = useState("general");
     const tabs = [
@@ -235,6 +255,76 @@ export const Segment = {
         <TabPanel value="day"><SamplePanel title="Day" /></TabPanel>
         <TabPanel value="week"><SamplePanel title="Week" /></TabPanel>
         <TabPanel value="month"><SamplePanel title="Month" /></TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Equal height (stable container) ──────────────────────────────────────── */
+
+export const EqualHeight = {
+  name: "Equal height (stable container)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "With `equalHeight`, all panels stay mounted and stacked so the panel area " +
+          "always reserves the **tallest** panel's height. Switch between the short and " +
+          "tall tabs — the container does not resize. Use this for tabs inside a Dialog " +
+          "or overlay so the dialog doesn't grow/shrink and move its targets.",
+      },
+    },
+  },
+  render: () => {
+    const [active, setActive] = useState("short");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line" equalHeight>
+        <TabList>
+          <Tab value="short">Short</Tab>
+          <Tab value="tall">Tall</Tab>
+        </TabList>
+        <TabPanel value="short">
+          <Paragraph size="sm">A short panel — a single line of content.</Paragraph>
+        </TabPanel>
+        <TabPanel value="tall">
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-8)" }}>
+            {Array.from({ length: 8 }, (_, i) => (
+              <Paragraph key={i} size="sm">Row {i + 1} of a much taller panel.</Paragraph>
+            ))}
+          </div>
+        </TabPanel>
+      </Tabs>
+    );
+  },
+};
+
+/* ── Label on selected only ───────────────────────────────────────────────── */
+
+export const LabelOnSelected = {
+  name: "Label on selected (icon-only inactive)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "With `labelMode=\"selected\"`, only the **active** tab shows its label; inactive " +
+          "tabs render **icon-only** (the label stays in the DOM for the accessible name). " +
+          "Give every `Tab` an `icon` and a label. Useful for a compact tab strip on small " +
+          "screens — e.g. a tab per board swimlane.",
+      },
+    },
+  },
+  render: () => {
+    const [active, setActive] = useState("overview");
+    return (
+      <Tabs value={active} onChange={setActive} variant="line" size="compact" labelMode="selected">
+        <TabList>
+          <Tab value="overview" icon="dashboard">Overview</Tab>
+          <Tab value="activity" icon="history" count={12}>Activity</Tab>
+          <Tab value="settings" icon="settings">Settings</Tab>
+        </TabList>
+        <TabPanel value="overview"><SamplePanel title="Overview" /></TabPanel>
+        <TabPanel value="activity"><SamplePanel title="Activity" /></TabPanel>
+        <TabPanel value="settings"><SamplePanel title="Settings" /></TabPanel>
       </Tabs>
     );
   },

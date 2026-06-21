@@ -67,6 +67,31 @@ export function Dialog({
     return () => el.removeEventListener("cancel", handleCancel);
   }, [onClose]);
 
+  // Dismissable dialogs (those with an onClose) also close when the backdrop — the
+  // area outside the dialog box — is clicked, matching Escape. Require both the press
+  // and the release to land on the backdrop so a drag that starts inside the dialog
+  // (e.g. selecting text and releasing past the edge) doesn't dismiss it.
+  useEffect(() => {
+    const el = ref.current;
+    if (!open || !el || !onClose) return;
+    const onBackdrop = (e) => {
+      const r = el.getBoundingClientRect();
+      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    };
+    let downOnBackdrop = false;
+    const handleMouseDown = (e) => { downOnBackdrop = e.target === el && onBackdrop(e); };
+    const handleClick = (e) => {
+      if (downOnBackdrop && e.target === el && onBackdrop(e)) onClose();
+      downOnBackdrop = false;
+    };
+    el.addEventListener("mousedown", handleMouseDown);
+    el.addEventListener("click", handleClick);
+    return () => {
+      el.removeEventListener("mousedown", handleMouseDown);
+      el.removeEventListener("click", handleClick);
+    };
+  }, [open, onClose]);
+
   useEffect(() => {
     const el = ref.current;
     if (!open || !el) return;

@@ -35,6 +35,7 @@ import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { useEditorHistory } from '../editor/useEditorHistory';
+import { useOpenCreateTicket } from '../backlog/BacklogContext';
 import { isMac } from '../editor/shortcuts.ts';
 import { editorExamplePage } from '../editor/examples/editorExamplePage';
 import { SHOWCASE_VERSIONS } from '../editor/examples/editorExampleVersions';
@@ -625,6 +626,7 @@ export function EditorPage({
   // enforce them), and hide page/project-only chrome.
   const isPattern = documentKind === 'pattern';
   const isLayout = documentKind === 'layout';
+  const openTicket = useOpenCreateTicket();
 
   // Use any legacy draft as the fallback so existing unsaved work is preserved.
   const [fallbackJson] = useState(() => readStored(DRAFT_KEY(exampleId)) ?? canonicalJson);
@@ -1779,6 +1781,15 @@ export function EditorPage({
               icon="keyboard"
               label="Keyboard shortcuts"
               onClick={() => setShortcutsOpen(true)}
+            />
+            <ToolbarButton
+              icon="flag"
+              label="Report a bug or request a feature"
+              onClick={() => openTicket({
+                kind: isPattern ? 'pattern' : 'project',
+                ref: isPattern ? patternId : null,
+                label: isPattern ? 'Pattern editor' : 'Page editor',
+              })}
             />
             {!isPattern && (
               <ToolbarButton
