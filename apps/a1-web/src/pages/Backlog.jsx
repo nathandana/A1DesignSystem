@@ -4,7 +4,6 @@ import {
   Banner,
   Breadcrumb,
   Button,
-  ButtonContainer,
   Card,
   ContextMenu,
   DataTable,
@@ -58,10 +57,10 @@ const SORTERS = {
 }
 
 const SORT_OPTIONS = [
-  { value: 'updated', label: 'Recently updated' },
-  { value: 'votes', label: 'Most votes' },
-  { value: 'priority', label: 'Priority' },
-  { value: 'number', label: 'Newest' },
+  { value: 'updated', label: 'Recently updated', icon: 'history' },
+  { value: 'votes', label: 'Most votes', icon: 'thumb_up' },
+  { value: 'priority', label: 'Priority', icon: 'priority_high' },
+  { value: 'number', label: 'Newest', icon: 'fiber_new' },
 ]
 
 // How many cards a swimlane shows per page before paginating.
@@ -374,18 +373,8 @@ export function Backlog({ onNavigate }) {
               { label: 'Backlog' },
             ]}
           />
-          {/* Title row: page title with the backlog search pinned top-right. */}
-          <Stack direction="row" gap="sm" align="center" justify="between" wrap>
-            <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
-            <div style={{ width: 'min(22rem, 100%)' }}>
-              <SearchField
-                aria-label="Search backlog"
-                size="compact"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-          </Stack>
+          {/* Search + New ticket now live in the right-hand panel (A1-154). */}
+          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
           <Stack direction="row" gap="xs" align="center" wrap>
             <Paragraph size="sm" color="muted">
               A lightweight, shared ticket tracker. Suggest a priority, complexity and type; vote;
@@ -394,12 +383,6 @@ export function Backlog({ onNavigate }) {
             <MessageBadge status="info" subtle size="sm">{counts.open} open</MessageBadge>
             <MessageBadge status="neutral" subtle size="sm">{counts.total} total</MessageBadge>
           </Stack>
-          {/* New ticket — a small secondary action below the description. */}
-          <ButtonContainer align="start">
-            <Button size="sm" icon="add" variant="secondary" onClick={() => backlog?.openCreate({ kind: 'general' })}>
-              New ticket
-            </Button>
-          </ButtonContainer>
           {backlog && !backlog.isCloud && (
             <Banner status="info" variant="inline">
               You’re not signed in — tickets are saved in this browser only. Sign in to share the
@@ -555,18 +538,27 @@ export function Backlog({ onNavigate }) {
       {asideNode && createPortal(
         <div className="a1-web-config-aside__inner">
           <Stack gap="lg">
+            <SearchField
+              aria-label="Search backlog"
+              size="compact"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+
+            <Divider space="none" />
+
             <Stack direction="row" gap="xs" align="center">
               <Heading as="h2" size="sm">Filters</Heading>
               {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
             </Stack>
+
             <Toolbar label="Sort by" aria-label="Sort tickets">
-              <ToolbarMenu
+              <ToolbarGroup
                 aria-label="Sort by"
-                showLabel
-                label={SORT_OPTIONS.find((o) => o.value === sort)?.label ?? 'Sort'}
+                labelMode="selected"
                 value={sort}
                 onChange={setSort}
-                items={SORT_OPTIONS}
+                options={SORT_OPTIONS}
               />
             </Toolbar>
             <Toolbar label="Type" aria-label="Filter by type">
@@ -578,7 +570,7 @@ export function Backlog({ onNavigate }) {
                 options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
               />
             </Toolbar>
-            <Toolbar label="Priority" aria-label="Filter by priority">
+            <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
               <ToolbarGroup
                 aria-label="Priority"
                 showLabels
@@ -587,7 +579,7 @@ export function Backlog({ onNavigate }) {
                 options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
               />
             </Toolbar>
-            <Toolbar label="Size" aria-label="Filter by size">
+            <Toolbar label="Size" aria-label="Filter by size" fullWidth>
               <ToolbarGroup
                 aria-label="Size"
                 showLabels
@@ -612,6 +604,13 @@ export function Backlog({ onNavigate }) {
               </Button>
             )}
           </Stack>
+
+          {/* New ticket — pinned to the bottom of the panel as a sticky footer. */}
+          <div className="a1-web-config-panel__footer">
+            <Button fullWidth icon="add" onClick={() => backlog?.openCreate({ kind: 'general' })}>
+              New ticket
+            </Button>
+          </div>
         </div>,
         asideNode,
       )}
