@@ -522,6 +522,11 @@
    keeps its own border/background and just gains inline padding so the value never
    collides with them. Logical properties keep it RTL-correct. */
 
+/* Pill-shaped by default — overrides the field radius via the existing variable layer. */
+.a1-field--search {
+  --a1-field-border-radius: var(--base-radius-pill);
+}
+
 .a1-field--search .a1-field__search-icon {
   position: absolute;
   inset-inline-start: var(--a1-field-padding-inline);
