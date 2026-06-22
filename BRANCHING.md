@@ -9,7 +9,22 @@ tried together locally before anything lands on `main`.
 |--------|------|
 | `main` | Production-ready. Only updated via reviewed PRs. The base for every new branch. |
 | per-ticket branches | One branch per ticket/task, cut from `main`. Named for the ticket (e.g. `a1-176-virtual-architect`) or the work (`build-with-ai-local-plan`). |
-| `release` | Long-lived **integration** branch. Every feature branch is merged here so the whole set can be run and checked locally before it reaches `main`. Never the base for new work. |
+| `release` | Long-lived **integration** branch. Every feature branch is merged here so the whole set can be run and checked locally before it reaches `main`. **This is also where the version is bumped.** Never the base for new work. |
+
+## Versioning — bump on `release`, not on feature branches
+
+The version is cut **once, on `release`**, when a set of work is ready — not on each feature
+branch. So:
+
+- **Feature branches do NOT touch `package.json` versions.** They add their changelog
+  entry under the **`## Unreleased`** heading (no dated `## x.y.z` section), and add their
+  `components-maintenance.md` row as usual.
+- **`release` bumps the versions** (`apps/a1-web/package.json`, `packages/react/package.json`)
+  and **cuts the dated changelog section** (`## Unreleased` → `## x.y.z — <date>`), folding in
+  every integrated branch's Unreleased entries.
+
+This keeps all the in-flight branches at the same base version, so they never collide on the
+version line when their PRs merge to `main` one at a time.
 
 ## Flow for each ticket
 
@@ -18,8 +33,9 @@ tried together locally before anything lands on `main`.
    git checkout main && git pull
    git checkout -b <ticket-or-topic>
    ```
-2. Do the work (bump the affected `package.json` version + update the changelog(s) as the
-   repo rules require).
+2. Do the work. Add the changelog entry under **`## Unreleased`** and a
+   `components-maintenance.md` row — **but do not bump any `package.json` version** (that
+   happens on `release`).
 3. **Push the branch for review** (it becomes its own PR to `main`):
    ```sh
    git push -u origin <ticket-or-topic>
@@ -28,8 +44,9 @@ tried together locally before anything lands on `main`.
    ```sh
    git checkout release
    git merge --no-ff origin/<ticket-or-topic> -m "Integrate <ticket-or-topic> into release"
-   # resolve any changelog / maintenance-log / version conflicts (combine entries),
-   # then rebuild the a1-web bundle so dist isn't a mix of per-branch builds:
+   # resolve any changelog / maintenance-log conflicts (combine entries),
+   # bump the affected package.json version(s) + cut/extend the dated changelog
+   # section here on release, then rebuild so dist isn't a mix of per-branch builds:
    rm -rf apps/a1-web/dist && npm run build --workspace=apps/a1-web
    git add -A && git commit
    git push origin release
@@ -65,6 +82,7 @@ The files that conflict most when integrating several branches are predictable:
 - **`apps/a1-web/CHANGELOG.md` / `packages/react/CHANGELOG.md`** — each branch adds an entry
   at the top. Resolve by **combining** the entries under one version section.
 - **`packages/react/ai/components-maintenance.md`** — same: keep **all** new rows.
-- **`apps/*/package.json` versions** — pick the highest appropriate bump for the release.
+- **`apps/*/package.json` versions** — feature branches stay at the base version, so there's
+  nothing to conflict; `release` is the only branch that bumps them.
 - **`apps/a1-web/dist/**`** — built artifacts with content-hashed names. Don't hand-merge;
   resolve to either side and then `rm -rf apps/a1-web/dist && npm run build` once.
