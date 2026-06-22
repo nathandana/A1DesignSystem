@@ -25,7 +25,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
 | Category | `components-actions` | Actions & Controls | `touch_app` | Button, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
 | Category | `components-navigation` | Navigation | `near_me` | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu |
-| Category | `components-inputs` | Inputs | `edit_note` | Text Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
+| Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
@@ -204,6 +204,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Component | React | Native | Pure |
 |-----------|:-----:|:------:|:----:|
 | Text Field (text, email, password) | ✓ | — | ✓ |
+| Search Field | ✓ | — | — |
 | Number Field | ✓ | — | — |
 | Date Field | ✓ | — | — |
 | Time Field | ✓ | — | — |
@@ -225,7 +226,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
 >
-> **Field family:** the text-input family is a set of individual components that share the `TextField` base (label, hint, error, size, labelPosition, required, disabled, readOnly): `TextField` (text/email/password), `NumberField` (adds `prefix`, `unit`), `DateField`, `TimeField`, `PhoneField` (mask), `ZipField` (mask + `ZIP_MASKS`), `CreditCardField` (mask). They each have their own a1-web page and Storybook entry. Fields have no `placeholder` by design.
+> **Field family:** the text-input family is a set of individual components that share the `TextField` base (label, hint, error, size, labelPosition, required, disabled, readOnly): `TextField` (text/email/password), `SearchField` (leading search icon + trailing clear button), `NumberField` (adds `prefix`, `unit`), `DateField`, `TimeField`, `PhoneField` (mask), `ZipField` (mask + `ZIP_MASKS`), `CreditCardField` (mask). They each have their own a1-web page and Storybook entry. Fields have no `placeholder` by design.
+>
+> **SearchField props:** extends the `TextField` base. Renders a native `type="search"` input with a **leading search icon** (decorative) and a **trailing clear button** shown only when there's a value (native browser clear is suppressed). `onChange` (every keystroke), `onClear` (after the clear button empties the field), `onSearch(value)` (fired on Enter), `clearLabel` (accessible name for the clear button; defaults to the `field.clearSearch` label, "Clear search"). Controlled or uncontrolled — the clear button dispatches a native input event so controlled consumers' `onChange` fires too. For a compact search bar, pass `aria-label` and omit the visible `label`. CSS: `.a1-field--search` + `.a1-field--search-has-value` (logical padding, RTL-correct). React only; used by the a1-web Components sidebar filter.
 >
 > **Field autocomplete:** all field-family components forward `autoComplete` to the native input for browser/password-manager autofill (e.g. `"email"`, `"username"`, `"current-password"`, `"new-password"`, `"tel"`, `"postal-code"`, `"cc-number"`, `"off"`). The a1-web configurators seed sensible defaults (Text Field email → `email`, Phone → `tel`, Zip → `postal-code`, Credit Card → `cc-number`); always set an appropriate `autoComplete` on real forms so autofill works.
 >

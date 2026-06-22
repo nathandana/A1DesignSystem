@@ -39,6 +39,7 @@ export { PhoneField } from "./components/field/PhoneField.jsx";
 export { ZipField, ZIP_MASKS } from "./components/field/ZipField.jsx";
 export { CreditCardField } from "./components/field/CreditCardField.jsx";
 export { NumberField } from "./components/field/NumberField.jsx";
+export { SearchField } from "./components/field/SearchField.jsx";
 export { TimeField } from "./components/field/TimeField.jsx";
 export { TextareaField } from "./components/field/TextareaField.jsx";
 export { CheckboxGroup } from "./components/checkbox-group/CheckboxGroup.jsx";
