@@ -41,5 +41,8 @@
   "peerDependencies": {
     "react": ">=18"
   },
-  "types": "./src/index.d.ts"
+  "types": "./src/index.d.ts",
+  "devDependencies": {
+    "react-data-grid": "7.0.0-beta.59"
+  }
 }
