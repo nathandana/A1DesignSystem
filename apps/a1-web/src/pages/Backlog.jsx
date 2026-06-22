@@ -7,6 +7,7 @@ import {
   Card,
   ContextMenu,
   DataTable,
+  Dialog,
   Divider,
   Grid,
   Heading,
@@ -275,6 +276,7 @@ export function Backlog({ onNavigate }) {
   const [sort, setSort] = useState(() => (SORTERS[persisted.sort] ? persisted.sort : 'updated'))
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, ...(persisted.filters || {}) }))
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
+  const [filtersOpen, setFiltersOpen] = useState(false) // the filters panel (A1-154)
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
   const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
   const isSmall = useIsSmall() // xs/sm → tab-per-swimlane instead of a grid
@@ -296,6 +298,7 @@ export function Backlog({ onNavigate }) {
   }, [searched, filters, sort, searching])
 
   const activeFilterCount = countActiveFilters(filters, searching)
+  const boardFilterCount = countActiveFilters(filters, false) // the panel's dimensions only (no search)
   const clearFilters = () => { setFilters(DEFAULT_FILTERS); setQuery('') }
 
   // Persist the board's filters / sort / search so the view sticks across reloads (A1-154).
@@ -418,45 +421,22 @@ export function Backlog({ onNavigate }) {
 
           <TabPanel value="board">
             <Stack gap="md">
-              {/* Filters + sort */}
+              {/* Filters live in a panel (A1-154) — the board toolbar just triggers it with an
+                  active count and keeps the view controls (sort + swimlanes) inline. */}
               <Stack direction="row" gap="md" wrap align="end">
-                <Toolbar label="Type" aria-label="Filter by type">
-                  <ToolbarGroup
-                    aria-label="Type"
-                    showLabels
-                    value={filters.type}
-                    onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Priority" aria-label="Filter by priority">
-                  <ToolbarGroup
-                    aria-label="Priority"
-                    showLabels
-                    value={filters.priority}
-                    onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Size" aria-label="Filter by size">
-                  <ToolbarGroup
-                    aria-label="Size"
-                    showLabels
-                    value={filters.complexity}
-                    onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Scope" aria-label="Filter by scope">
-                  <ToolbarMenu
-                    aria-label="Scope"
-                    showLabel
-                    label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
-                    value={filters.scope}
-                    onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
-                    items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
-                  />
-                </Toolbar>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon="filter_list"
+                  onClick={() => setFiltersOpen(true)}
+                >
+                  Filters{boardFilterCount > 0 ? ` (${boardFilterCount})` : ''}
+                </Button>
+                {activeFilterCount > 0 && (
+                  <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
+                    Clear filters ({activeFilterCount})
+                  </Button>
+                )}
                 <Toolbar label="Sort by" aria-label="Sort tickets">
                   <ToolbarMenu
                     aria-label="Sort by"
@@ -467,32 +447,24 @@ export function Backlog({ onNavigate }) {
                     items={SORT_OPTIONS}
                   />
                 </Toolbar>
-
-              {/* Show / hide swimlanes — workflow lanes on by default, terminal
-                  (Won't fix / Duplicate) off; ordered important-first. */}
-              <Toolbar label="Swimlanes" aria-label="Show or hide swimlanes">
-                {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
-                  <ToolbarToggle
-                    key={s}
-                    icon={STATUS_ICON[s]}
-                    label={STATUS_LABELS[s]}
-                    showLabel={{ xs: false, md: true }}
-                    pressed={visibleLanes.has(s)}
-                    onChange={(pressed) => setVisibleLanes((prev) => {
-                      const next = new Set(prev)
-                      if (pressed) next.add(s); else next.delete(s)
-                      return next
-                    })}
-                  />
-                ))}
-              </Toolbar>
-
-              {/* Reset every active filter (and the search) in one click (A1-154). */}
-              {activeFilterCount > 0 && (
-                <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
-                  Clear filters ({activeFilterCount})
-                </Button>
-              )}
+                {/* Show / hide swimlanes — workflow lanes on by default, terminal
+                    (Won't fix / Duplicate) off; ordered important-first. */}
+                <Toolbar label="Swimlanes" aria-label="Show or hide swimlanes">
+                  {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
+                    <ToolbarToggle
+                      key={s}
+                      icon={STATUS_ICON[s]}
+                      label={STATUS_LABELS[s]}
+                      showLabel={{ xs: false, md: true }}
+                      pressed={visibleLanes.has(s)}
+                      onChange={(pressed) => setVisibleLanes((prev) => {
+                        const next = new Set(prev)
+                        if (pressed) next.add(s); else next.delete(s)
+                        return next
+                      })}
+                    />
+                  ))}
+                </Toolbar>
               </Stack>
 
 
@@ -580,6 +552,62 @@ export function Backlog({ onNavigate }) {
         </Tabs>
         </Stack>
       </Section>
+
+      {/* Filters panel (A1-154) — the board's Type / Priority / Size / Scope filters,
+          moved off the toolbar into a dialog opened by the "Filters" button. */}
+      <Dialog
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        title="Filters"
+        footer={
+          <>
+            {activeFilterCount > 0 && (
+              <Button variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>Clear filters</Button>
+            )}
+            <Button variant="secondary" onClick={() => setFiltersOpen(false)}>Done</Button>
+          </>
+        }
+      >
+        <Stack gap="lg">
+          <Toolbar label="Type" aria-label="Filter by type">
+            <ToolbarGroup
+              aria-label="Type"
+              showLabels
+              value={filters.type}
+              onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
+              options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
+            />
+          </Toolbar>
+          <Toolbar label="Priority" aria-label="Filter by priority">
+            <ToolbarGroup
+              aria-label="Priority"
+              showLabels
+              value={filters.priority}
+              onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
+              options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
+            />
+          </Toolbar>
+          <Toolbar label="Size" aria-label="Filter by size">
+            <ToolbarGroup
+              aria-label="Size"
+              showLabels
+              value={filters.complexity}
+              onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
+              options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
+            />
+          </Toolbar>
+          <Toolbar label="Scope" aria-label="Filter by scope">
+            <ToolbarMenu
+              aria-label="Scope"
+              showLabel
+              label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
+              value={filters.scope}
+              onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
+              items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
+            />
+          </Toolbar>
+        </Stack>
+      </Dialog>
 
       <TicketDetail
         item={selectedLive}
