@@ -12,7 +12,7 @@ import {
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { hasApiKey, setApiKey } from '../lib/aiImages.ts'
+import { formatUsage, hasApiKey, setApiKey } from '../lib/aiImages.ts'
 import { continueProjectChat, describeError } from '../lib/aiProjectBuilder.ts'
 
 /**
@@ -47,7 +47,7 @@ export function AiProjectDialog({ open, onClose, onCreated }) {
     setLoading(true)
     try {
       const res = await continueProjectChat({ history, userMessage: text })
-      setMessages((prev) => [...prev, { role: 'assistant', text: res.message }])
+      setMessages((prev) => [...prev, { role: 'assistant', text: res.message, usage: res.usage }])
       if (res.status === 'complete' && res.project) {
         setDone(true)
         setProjectJson(JSON.stringify(res.project, null, 2))
@@ -98,6 +98,9 @@ export function AiProjectDialog({ open, onClose, onCreated }) {
             {messages.map((m, i) => (
               <div key={i} className={`a1-web-chat__msg a1-web-chat__msg--${m.role}${m.error ? ' a1-web-chat__msg--error' : ''}`}>
                 <Paragraph size="sm">{m.text}</Paragraph>
+                {m.usage && !m.error && (
+                  <Paragraph size="xs" color="muted" className="a1-web-chat__usage">{formatUsage(m.usage)}</Paragraph>
+                )}
               </div>
             ))}
             {loading && (

@@ -21,7 +21,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { addRule, deleteRule, listAllRules, RULE_CATEGORIES, subscribeRules } from '../rules/ruleStore.ts'
 import { describeError, generateRule } from '../rules/aiRule.ts'
-import { hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
+import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { allComponents } from './components/utils.js'
 
 const COMPONENT_OPTIONS = (() => {
@@ -56,6 +56,7 @@ export function RuleEditor({ onNavigate }) {
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState('')
   const [aiResult, setAiResult] = useState(null)
+  const [aiUsage, setAiUsage] = useState(null)
 
   useEffect(() => subscribeRules(() => setRules(listAllRules())), [])
 
@@ -118,9 +119,11 @@ export function RuleEditor({ onNavigate }) {
 
   async function runGenerate() {
     if (!aiPrompt.trim()) return
-    setAiLoading(true); setAiError(''); setAiResult(null)
+    setAiLoading(true); setAiError(''); setAiResult(null); setAiUsage(null)
     try {
-      setAiResult(await generateRule(aiPrompt.trim(), aiHint.trim() || undefined))
+      const { rule, usage } = await generateRule(aiPrompt.trim(), aiHint.trim() || undefined)
+      setAiResult(rule)
+      setAiUsage(usage)
     } catch (err) {
       setAiError(describeError(err))
       if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
@@ -204,7 +207,7 @@ export function RuleEditor({ onNavigate }) {
           <Autocomplete label="Component" size="compact" allowCreate options={COMPONENT_OPTIONS} value={form.component} onChange={(v) => setField({ component: v })} />
           <TextareaField label="Requirement" rows="sm" value={form.requirement} onChange={(e) => setField({ requirement: e.target.value })} required />
           <TextareaField label="Do" rows="sm" value={form.do} onChange={(e) => setField({ do: e.target.value })} hint="A concrete example of following the rule" />
-          <TextareaField label="Don’t" rows="sm" value={form.dont} onChange={(e) => setField({ dont: e.target.value })} hint="A concrete example of breaking it" />
+          <TextareaField label="Don't" rows="sm" value={form.dont} onChange={(e) => setField({ dont: e.target.value })} hint="A concrete example of breaking it" />
           <Autocomplete label="Applies to" size="compact" multiple allowCreate options={CATEGORY_OPTIONS} value={form.appliesTo} onChange={(v) => setField({ appliesTo: v })} />
           <TextField label="Rule id" size="compact" value={form.id} onChange={(e) => setField({ id: e.target.value })} hint="Optional — generated from the component if blank" />
         </Stack>
@@ -237,7 +240,7 @@ export function RuleEditor({ onNavigate }) {
           </Stack>
         ) : (
           <Stack gap="sm">
-            <TextareaField label="Describe the rule" rows="sm" value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} hint="e.g. “tooltips should never be the only way to access important information”" />
+            <TextareaField label="Describe the rule" rows="sm" value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} hint="e.g. 'tooltips should never be the only way to access important information'" />
             <Autocomplete label="Component (optional)" size="compact" allowCreate options={COMPONENT_OPTIONS} value={aiHint} onChange={setAiHint} />
             {aiError && <Banner status="error" variant="inline" onDismiss={() => setAiError('')}>{aiError}</Banner>}
             {aiResult && (
@@ -247,8 +250,9 @@ export function RuleEditor({ onNavigate }) {
                   <Heading as="h3" size="sm">{aiResult.id}</Heading>
                   <Paragraph size="sm">{aiResult.requirement}</Paragraph>
                   {aiResult.do && <Paragraph size="sm" color="muted"><strong>Do:</strong> {aiResult.do}</Paragraph>}
-                  {aiResult.dont && <Paragraph size="sm" color="muted"><strong>Don’t:</strong> {aiResult.dont}</Paragraph>}
+                  {aiResult.dont && <Paragraph size="sm" color="muted"><strong>Don't:</strong> {aiResult.dont}</Paragraph>}
                   {aiResult.appliesTo?.length > 0 && <Paragraph size="xs" color="muted">Applies to: {aiResult.appliesTo.join(', ')}</Paragraph>}
+                  {aiUsage && <Paragraph size="xs" color="muted">{formatUsage(aiUsage)}</Paragraph>}
                 </Stack>
               </Card>
             )}
@@ -269,7 +273,7 @@ export function RuleEditor({ onNavigate }) {
           </>
         }
       >
-        <Paragraph>“{confirmDelete?.id}” will be removed.</Paragraph>
+        <Paragraph>'{confirmDelete?.id}' will be removed.</Paragraph>
       </Dialog>
       </Section>
     </>

@@ -12,7 +12,7 @@ import {
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { describeError, hasApiKey, setApiKey } from '../../../lib/aiImages.ts'
+import { describeError, formatUsage, hasApiKey, setApiKey } from '../../../lib/aiImages.ts'
 import { generateImagePrompt } from '../../../lib/aiImagePrompt.ts'
 
 /**
@@ -27,8 +27,9 @@ export function ImageGenerateDialog({ open, onClose, initialDescription = '', st
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [prompt, setPrompt] = useState('')
+  const [lastUsage, setLastUsage] = useState(null)
 
-  useEffect(() => { if (open) { setDescription(initialDescription); setPrompt(''); setError('') } }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (open) { setDescription(initialDescription); setPrompt(''); setError(''); setLastUsage(null) } }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function saveKey() {
     setApiKey(keyInput)
@@ -40,8 +41,9 @@ export function ImageGenerateDialog({ open, onClose, initialDescription = '', st
     setLoading(true)
     setError('')
     try {
-      const result = await generateImagePrompt({ description: description.trim(), styleContext })
-      setPrompt(result || 'Claude didn’t return a prompt. Try rephrasing.')
+      const { prompt: generated, usage } = await generateImagePrompt({ description: description.trim(), styleContext })
+      setPrompt(generated || "Claude didn’t return a prompt. Try rephrasing.")
+      setLastUsage(usage)
     } catch (err) {
       setError(describeError(err))
       if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
@@ -103,6 +105,7 @@ export function ImageGenerateDialog({ open, onClose, initialDescription = '', st
               <Stack gap="xs">
                 <Paragraph size="sm" color="muted">Copy this into your image generator:</Paragraph>
                 <Code variant="block" wrapping copyCode>{prompt}</Code>
+                {lastUsage && <Paragraph size="xs" color="muted">{formatUsage(lastUsage)}</Paragraph>}
               </Stack>
             )}
           </>

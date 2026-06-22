@@ -35,7 +35,7 @@ import { DEFAULT_RAMPS, RAMP_LABELS, RAMP_NAMES, RAMP_STOPS } from '../lib/theme
 import { compileThemeVars, inverseSemanticVars, rampFrom500, rampsFrom500, themeJsonString } from '../lib/themeCompile.ts'
 import { DEFAULT_FONT_SIZES, DEFAULT_FONT_WEIGHTS, DEFAULT_ICON_SETTINGS, DEFAULT_SEMANTIC_COLORS, DEFAULT_TEXT_COLORS, DEFAULT_TYPE_ADVANCED, DEFAULT_TYPE_STYLES, SCALE_STEPS, SEMANTIC_COLOR_GROUPS, getTheme, updateTheme } from '../lib/themeStore.ts'
 import { describeError, generateFontPairing, generateTheme } from '../lib/aiTheme.ts'
-import { hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
+import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
 import { useOpenCreateTicket } from '../backlog/BacklogContext'
@@ -367,6 +367,8 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   const [fontLoading, setFontLoading] = useState(false)
   const [fontNote, setFontNote] = useState('')
   const [fontError, setFontError] = useState('')
+  const [fontUsage, setFontUsage] = useState(null)
+  const [themeUsage, setThemeUsage] = useState(null)
   const [fontAiOpen, setFontAiOpen] = useState(false) // AI pairing is opt-in, behind a button
   const [showTypeDesc, setShowTypeDesc] = useState(true) // toggle the advanced-property descriptions
 
@@ -513,12 +515,13 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
 
   async function pairFonts() {
     if (!fontPrompt.trim()) return
-    setFontLoading(true); setFontError(''); setFontNote('')
+    setFontLoading(true); setFontError(''); setFontNote(''); setFontUsage(null)
     try {
       const f = await generateFontPairing(fontPrompt.trim())
       ;[f.display, f.heading, f.body].forEach(loadGoogleFont)
       patch({ fonts: { display: f.display, heading: f.heading, body: f.body } })
       setFontNote(f.rationale || '')
+      setFontUsage(f.usage)
     } catch (err) {
       setFontError(describeError(err))
       if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
@@ -527,7 +530,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
 
   async function generate() {
     if (!prompt.trim()) return
-    setLoading(true); setError('')
+    setLoading(true); setError(''); setThemeUsage(null)
     try {
       const t = await generateTheme(prompt.trim())
       patch({
@@ -537,6 +540,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
         fonts: { display: t.fonts.display, heading: t.fonts.heading, body: t.fonts.body },
         roundness: Math.max(0, Math.min(16, Math.round(t.roundness ?? 8))),
       })
+      setThemeUsage(t.usage)
     } catch (err) {
       setError(describeError(err))
       if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
@@ -843,6 +847,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
               <Stack gap="sm">
                 <TextField label="Describe the theme" size="compact" hint="e.g. “a warm, earthy theme for an artisan bakery”" value={prompt} onChange={(e) => setPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); generate() } }} />
                 <ButtonContainer><Button size="sm" icon="auto_awesome" loading={loading} disabled={!prompt.trim()} onClick={generate}>Generate theme</Button></ButtonContainer>
+                {themeUsage && !loading && <Paragraph size="xs" color="muted">{formatUsage(themeUsage)}</Paragraph>}
                 {error && <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>}
               </Stack>
             )}
@@ -1015,6 +1020,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
                   <TextField label="Describe the type" size="compact" hint="e.g. “elegant editorial, script display”" value={fontPrompt} onChange={(e) => setFontPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); pairFonts() } }} />
                   <ButtonContainer><Button size="sm" icon="auto_awesome" loading={fontLoading} disabled={!fontPrompt.trim()} onClick={pairFonts}>Pair fonts</Button></ButtonContainer>
                   {fontNote && <Paragraph size="xs" color="muted">{fontNote}</Paragraph>}
+                  {fontUsage && !fontLoading && <Paragraph size="xs" color="muted">{formatUsage(fontUsage)}</Paragraph>}
                   {fontError && <Banner status="error" variant="inline" onDismiss={() => setFontError('')}>{fontError}</Banner>}
                 </Stack>
               )}

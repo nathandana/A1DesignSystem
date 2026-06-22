@@ -19,17 +19,18 @@ export function VirtualTeamPanel() {
   const backlog = useBacklog()
   const [busy, setBusy] = useState(null) // persona id currently running
   const [progress, setProgress] = useState(null) // { done, total }
-  const [preview, setPreview] = useState(null) // { persona, summary }
-  const [result, setResult] = useState(null) // summary after apply
+  const [preview, setPreview] = useState(null) // { persona, summary, elapsedMs }
+  const [result, setResult] = useState(null) // summary after apply, with elapsedMs
 
   if (!backlog) return null
 
   async function handlePreview(persona) {
     setBusy(persona.id)
     setResult(null)
+    const t0 = performance.now()
     try {
       const summary = await backlog.reviewWithPersona(persona, { dryRun: true })
-      setPreview({ persona, summary })
+      setPreview({ persona, summary, elapsedMs: performance.now() - t0 })
     } finally {
       setBusy(null)
     }
@@ -40,12 +41,13 @@ export function VirtualTeamPanel() {
     const { persona } = preview
     setBusy(persona.id)
     setProgress({ done: 0, total: preview.summary.total })
+    const t0 = performance.now()
     try {
       const summary = await backlog.reviewWithPersona(persona, {
         onProgress: (done, total) => setProgress({ done, total }),
       })
       setPreview(null)
-      setResult(summary)
+      setResult({ ...summary, elapsedMs: performance.now() - t0 })
     } finally {
       setBusy(null)
       setProgress(null)
@@ -99,6 +101,9 @@ export function VirtualTeamPanel() {
             {result.moved > 0 && (
               <> Moved {result.moved} shipped ticket{result.moved === 1 ? '' : 's'} forward per the CHANGELOG.</>
             )}
+            {result.elapsedMs != null && (
+              <> · {(result.elapsedMs / 1000).toFixed(1)}s (local — no API tokens)</>
+            )}
           </Banner>
         )}
       </Stack>
@@ -108,19 +113,26 @@ export function VirtualTeamPanel() {
         onClose={busy ? undefined : () => setPreview(null)}
         title={preview ? `${preview.persona.name} — proposed review` : ''}
         footer={preview ? (
-          <ButtonContainer>
-            <Button variant="secondary" onClick={() => setPreview(null)} disabled={!!busy}>Cancel</Button>
-            <Button
-              icon="check"
-              loading={!!busy}
-              disabled={s.reviewed === 0 && s.moved === 0}
-              onClick={handleApply}
-            >
-              {busy
-                ? (progress ? `Applying… ${progress.done}/${progress.total}` : 'Applying…')
-                : `Apply to ${s.reviewed + s.moved} ticket${s.reviewed + s.moved === 1 ? '' : 's'}`}
-            </Button>
-          </ButtonContainer>
+          <Stack gap="xs">
+            {preview?.elapsedMs != null && (
+              <Paragraph size="xs" color="muted">
+                Preview: {(preview.elapsedMs / 1000).toFixed(1)}s (local — no API tokens)
+              </Paragraph>
+            )}
+            <ButtonContainer>
+              <Button variant="secondary" onClick={() => setPreview(null)} disabled={!!busy}>Cancel</Button>
+              <Button
+                icon="check"
+                loading={!!busy}
+                disabled={s.reviewed === 0 && s.moved === 0}
+                onClick={handleApply}
+              >
+                {busy
+                  ? (progress ? `Applying… ${progress.done}/${progress.total}` : 'Applying…')
+                  : `Apply to ${s.reviewed + s.moved} ticket${s.reviewed + s.moved === 1 ? '' : 's'}`}
+              </Button>
+            </ButtonContainer>
+          </Stack>
         ) : undefined}
       >
         {preview && (

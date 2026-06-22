@@ -83,11 +83,13 @@
 }
 
 /* Track — WebKit/Blink. Fill is drawn as a gradient up to --a1-slider-pct.
-   A subtle border outlines the whole channel; box-sizing keeps the height stable. */
+   The channel outline is an inset box-shadow rather than a border so it does NOT
+   inset the thumb's travel range — keeping the thumb centre exactly at
+   `thumb-size/2 + p*(100% - thumb-size)`, which is where the ticks/labels sit. */
 .a1-slider__input::-webkit-slider-runnable-track {
   box-sizing: border-box;
   block-size: var(--a1-slider-track-height);
-  border: var(--base-spacing-1) solid var(--a1-slider-track-border);
+  box-shadow: inset 0 0 0 var(--base-spacing-1) var(--a1-slider-track-border);
   border-radius: var(--base-radius-pill);
   background: linear-gradient(
     to right,
@@ -102,7 +104,7 @@
 .a1-slider__input::-moz-range-track {
   box-sizing: border-box;
   block-size: var(--a1-slider-track-height);
-  border: var(--base-spacing-1) solid var(--a1-slider-track-border);
+  box-shadow: inset 0 0 0 var(--base-spacing-1) var(--a1-slider-track-border);
   border-radius: var(--base-radius-pill);
   background: var(--a1-slider-track-color);
 }
@@ -112,10 +114,14 @@
   background: var(--a1-slider-fill-color);
 }
 
-/* Thumb — WebKit/Blink. margin-top centers it on the thinner track. */
+/* Thumb — WebKit/Blink. border-box so the ring border is drawn *inside*
+   thumb-size: the rendered width is exactly thumb-size (matching the tick/label
+   `thumbLeft(p)` calc, so they stay centred on the thumb) and the thumb sits
+   inside the track channel instead of bulging past it. margin-top centers it. */
 .a1-slider__input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
+  box-sizing: border-box;
   inline-size: var(--a1-slider-thumb-size);
   block-size: var(--a1-slider-thumb-size);
   margin-block-start: calc((var(--a1-slider-track-height) - var(--a1-slider-thumb-size)) / 2);
@@ -127,6 +133,7 @@
 
 /* Thumb — Firefox. */
 .a1-slider__input::-moz-range-thumb {
+  box-sizing: border-box;
   inline-size: var(--a1-slider-thumb-size);
   block-size: var(--a1-slider-thumb-size);
   border-radius: var(--base-radius-pill);
@@ -159,7 +166,7 @@
   block-size: var(--base-spacing-6);
   border-radius: var(--base-radius-pill);
   background: var(--semantic-color-border-default);
-  transform: translate(-60%, -33%);
+  transform: translate(-50%, -50%);
 }
 
 .a1-slider__tick[data-active] {

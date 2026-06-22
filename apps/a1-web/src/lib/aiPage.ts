@@ -18,7 +18,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import agentBrief from '../../../../packages/react/ai/a1-agent-brief.md?raw';
 import type { PageDefinition } from '../editor/pageTypes';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 // Whole-page structural editing is reasoning-heavy, so default to the most
 // capable widely-released Opus model rather than the lightweight icon/image one.
@@ -36,6 +36,7 @@ export interface PageEditResult {
   message: string;
   /** The full replacement page definition to commit to the canvas. */
   page: PageDefinition;
+  usage: AiUsage;
 }
 
 export function describeError(err: unknown): string {
@@ -132,6 +133,7 @@ export async function editPage(
 
   const currentJson = JSON.stringify(currentPage);
 
+  const t0 = performance.now();
   const stream = client.messages.stream({
     model: MODEL,
     max_tokens: 16000,
@@ -150,6 +152,7 @@ export async function editPage(
   } as Anthropic.MessageStreamParams);
 
   const final = await stream.finalMessage();
+  const elapsedMs = performance.now() - t0;
   const textBlock = final.content.find((b) => b.type === 'text');
   const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
 
@@ -170,5 +173,11 @@ export async function editPage(
       ? parsed.message.trim()
       : 'Updated the page.',
     page: parsed.page,
+    usage: {
+      inputTokens: final.usage.input_tokens,
+      outputTokens: final.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
   };
 }

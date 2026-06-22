@@ -12,7 +12,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import agentBrief from '../../../../packages/react/ai/a1-agent-brief.md?raw';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 // Sonnet 4.6 is a much cheaper run than Opus while still strong at multi-page
 // structured JSON. (Swap to 'claude-haiku-4-5' for the lowest cost, at some risk
@@ -28,6 +28,7 @@ export interface ProjectBuildResult {
   status: 'asking' | 'complete';
   message: string;
   project?: unknown;
+  usage: AiUsage;
 }
 
 export function describeError(err: unknown): string {
@@ -113,6 +114,7 @@ export async function continueProjectChat(
     { role: 'user', content: userMessage },
   ];
 
+  const t0 = performance.now();
   const stream = client.messages.stream({
     model: MODEL,
     // A complete project bundle can be large; give plenty of headroom so the JSON
@@ -124,6 +126,7 @@ export async function continueProjectChat(
   } as Anthropic.MessageStreamParams);
 
   const final = await stream.finalMessage();
+  const elapsedMs = performance.now() - t0;
   // A cut-off response yields invalid (unbalanced) JSON — report it clearly.
   if (final.stop_reason === 'max_tokens') throw new Error('TRUNCATED');
 
@@ -152,5 +155,11 @@ export async function continueProjectChat(
     status,
     message: typeof parsed.message === 'string' ? parsed.message : (status === 'complete' ? 'Project ready.' : '…'),
     project: status === 'complete' ? parsed.project : undefined,
+    usage: {
+      inputTokens: final.usage.input_tokens,
+      outputTokens: final.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
   };
 }

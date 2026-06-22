@@ -4,7 +4,7 @@
  * guidance, and applicable categories. Browser-side, shared API key.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { getApiKey } from '../lib/aiImages';
+import { type AiUsage, getApiKey } from '../lib/aiImages';
 import { RULE_CATEGORIES } from './ruleStore';
 
 const MODEL = 'claude-haiku-4-5';
@@ -45,12 +45,13 @@ const SCHEMA = {
   required: ['id', 'component', 'requirement', 'do', 'dont', 'appliesTo'],
 } as const;
 
-export async function generateRule(description: string, componentHint?: string): Promise<AiRuleResult> {
+export async function generateRule(description: string, componentHint?: string): Promise<{ rule: AiRuleResult; usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 700,
@@ -67,10 +68,14 @@ export async function generateRule(description: string, componentHint?: string):
     }],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
   const block = response.content.find((b) => b.type === 'text');
   const raw = block && 'text' in block ? block.text : '';
   try {
-    return JSON.parse(raw) as AiRuleResult;
+    return {
+      rule: JSON.parse(raw) as AiRuleResult,
+      usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens, elapsedMs, model: MODEL },
+    };
   } catch {
     throw new Error('BAD_JSON');
   }
