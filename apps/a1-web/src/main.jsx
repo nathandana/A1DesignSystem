@@ -1047,8 +1047,7 @@ function App() {
         {activePage === 'data' && (
           <DataSourcesView
             projects={projects}
-            onBackToProjects={() => navigate('editor')}
-            onNavigateHome={() => navigate('home')}
+            onNavigate={navigate}
           />
         )}
         {activePage === 'theme-editor' && (

@@ -36,7 +36,7 @@ function defaultColumns() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export function DataSourcesView({ projects = [], onNavigateHome, onBackToProjects }) {
+export function DataSourcesView({ projects = [], onNavigate }) {
   const ctx = useDataSources()
   const items = ctx?.items ?? []
   const [openId, setOpenId] = useState(null)
@@ -64,32 +64,35 @@ export function DataSourcesView({ projects = [], onNavigateHome, onBackToProject
   }, [ctx])
 
   return (
-    <Section padding="md" contentWidth="xl">
-      <Stack direction="column" gap="md">
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
               { label: 'Data sources' },
             ]}
           />
           {!open && (
-            <Stack direction="row" justify="between" align="center" wrap>
-              <Stack direction="column" gap="xs">
-                <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Data sources</Heading>
-                <Paragraph size="sm" color="muted">
-                  Reusable datasets you can edit, scope to projects, and bind into pages.
-                  {ctx ? (ctx.isCloud ? ' Synced to your account.' : ' Stored in this browser (sign in to sync).') : ''}
-                </Paragraph>
-              </Stack>
-              <Cluster gap="sm">
+            <>
+              <Heading as="h1" id="data-sources-heading" size={{ xs: 'lg', md: 'xxl' }}>
+                Data sources
+              </Heading>
+              <Paragraph size="sm" color="muted">
+                Reusable datasets you can edit, scope to projects, and bind into pages.
+                {ctx ? (ctx.isCloud ? ' Synced to your account.' : ' Stored in this browser (sign in to sync).') : ''}
+              </Paragraph>
+              <Stack direction="row" gap="xs" align="center" wrap>
+                <Button variant="secondary" icon="help" onClick={() => onNavigate?.('help')}>Help</Button>
                 <Button variant="secondary" icon="upload" onClick={() => setImportOpen(true)}>Import JSON</Button>
-                <Button variant="primary" icon="add" onClick={handleNew}>New dataset</Button>
-              </Cluster>
-            </Stack>
+                <Button icon="add" onClick={handleNew}>New dataset</Button>
+              </Stack>
+            </>
           )}
         </Stack>
+      </Section>
 
+      <Section padding="md" contentWidth="xl">
         {open ? (
           <DatasetEditor
             key={open.id}
@@ -101,7 +104,7 @@ export function DataSourcesView({ projects = [], onNavigateHome, onBackToProject
         ) : (
           <DatasetList items={items} loading={ctx?.loading} onOpen={setOpenId} onNew={handleNew} onAddSample={handleAddSample} />
         )}
-      </Stack>
+      </Section>
 
       <ImportDialog
         open={importOpen}
@@ -109,7 +112,7 @@ export function DataSourcesView({ projects = [], onNavigateHome, onBackToProject
         onClose={() => setImportOpen(false)}
         onImport={handleImport}
       />
-    </Section>
+    </>
   )
 }
 
