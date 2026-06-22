@@ -3,6 +3,7 @@ import {
   Banner,
   Breadcrumb,
   Button,
+  ButtonContainer,
   Card,
   ContextMenu,
   DataTable,
@@ -10,12 +11,12 @@ import {
   Grid,
   Heading,
   Icon,
-  IconButton,
   Link,
   MessageBadge,
   MessageEmptyState,
   Pagination,
   Paragraph,
+  SearchField,
   Section,
   Spacer,
   Stack,
@@ -23,7 +24,6 @@ import {
   TabList,
   TabPanel,
   Tabs,
-  TextField,
   Toolbar,
   ToolbarGroup,
   ToolbarMenu,
@@ -328,9 +328,17 @@ export function Backlog({ onNavigate }) {
               { label: 'Backlog' },
             ]}
           />
+          {/* Title row: page title with the backlog search pinned top-right. */}
           <Stack direction="row" gap="sm" align="center" justify="between" wrap>
             <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
-            <Button icon="add" onClick={() => backlog?.openCreate({ kind: 'general' })}>New ticket</Button>
+            <div style={{ width: 'min(22rem, 100%)' }}>
+              <SearchField
+                aria-label="Search backlog"
+                size="compact"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
           </Stack>
           <Stack direction="row" gap="xs" align="center" wrap>
             <Paragraph size="sm" color="muted">
@@ -340,6 +348,12 @@ export function Backlog({ onNavigate }) {
             <MessageBadge status="info" subtle size="sm">{counts.open} open</MessageBadge>
             <MessageBadge status="neutral" subtle size="sm">{counts.total} total</MessageBadge>
           </Stack>
+          {/* New ticket — a small secondary action below the description. */}
+          <ButtonContainer align="start">
+            <Button size="sm" icon="add" variant="secondary" onClick={() => backlog?.openCreate({ kind: 'general' })}>
+              New ticket
+            </Button>
+          </ButtonContainer>
           {backlog && !backlog.isCloud && (
             <Banner status="info" variant="inline">
               You’re not signed in — tickets are saved in this browser only. Sign in to share the
@@ -351,27 +365,13 @@ export function Backlog({ onNavigate }) {
 
       <Section padding="sm" contentWidth="2xl" aria-label="Backlog">
         <Stack gap="md">
-        {/* Smart search (A1-187) — ranks across ref, title, scope, labels, and description,
-            and understands field:value qualifiers. Applies to every tab. */}
-        <Stack gap="xs">
-          <Stack direction="row" gap="sm" align="end">
-            <TextField
-              label="Search backlog"
-              size="compact"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              hint="Text, an A1 number, or filters: type:bug · is:open · priority:p1 · status:in progress · scope:component"
-            />
-            {searching && (
-              <IconButton icon="close" aria-label="Clear search" variant="secondary" onClick={() => setQuery('')} />
-            )}
-          </Stack>
-          {searching && (
-            <Paragraph size="xs" color="muted">
-              {searched.length} result{searched.length === 1 ? '' : 's'} across the backlog
-            </Paragraph>
-          )}
-        </Stack>
+        {/* The backlog search lives in the page header (top-right). Here we only echo the
+            result count + the smart-search syntax hint while a query is active. */}
+        {searching && (
+          <Paragraph size="xs" color="muted">
+            {searched.length} result{searched.length === 1 ? '' : 's'} for “{query.trim()}” — search text, an A1 number, or filters like type:bug · is:open · priority:p1 · scope:component.
+          </Paragraph>
+        )}
 
         <Tabs value={tab} onChange={setTab}>
           <TabList>
