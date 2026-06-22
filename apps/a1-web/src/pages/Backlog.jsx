@@ -18,6 +18,7 @@ import {
   Paragraph,
   SearchField,
   Section,
+  SegmentedControl,
   Spacer,
   Stack,
   Tab,
@@ -61,6 +62,14 @@ const SORT_OPTIONS = [
   { value: 'votes', label: 'Most votes', icon: 'thumb_up' },
   { value: 'priority', label: 'Priority', icon: 'priority_high' },
   { value: 'number', label: 'Newest', icon: 'fiber_new' },
+]
+
+// Top-level views — the segmented control at the top of the filters panel (Virtual team is dev-only).
+const VIEW_OPTIONS = [
+  { value: 'board', label: 'Board', icon: 'view_kanban' },
+  { value: 'all', label: 'All tickets', icon: 'table_rows' },
+  { value: 'queue', label: 'My queue', icon: 'assignment_ind' },
+  ...(import.meta.env.DEV ? [{ value: 'team', label: 'Virtual team', icon: 'groups' }] : []),
 ]
 
 // How many cards a swimlane shows per page before paginating.
@@ -419,28 +428,22 @@ export function Backlog({ onNavigate }) {
 
       <Section padding="xs" aria-label="Backlog">
         <Stack gap="md">
-        {/* The backlog search lives in the page header (top-right). Here we only echo the
-            result count + the smart-search syntax hint while a query is active. */}
+        {/* The search lives in the right-hand panel; here we echo the result count +
+            the smart-search syntax hint while a query is active. */}
         {searching && (
           <Paragraph size="xs" color="muted">
             {searched.length} result{searched.length === 1 ? '' : 's'} for “{query.trim()}” — search text, an A1 number, or filters like type:bug · is:open · priority:p1 · scope:component.
           </Paragraph>
         )}
 
-        <Tabs value={tab} onChange={setTab}>
-          <TabList>
-            <Tab value="board">Board</Tab>
-            <Tab value="all">All tickets</Tab>
-            <Tab value="queue">My queue</Tab>
-            {import.meta.env.DEV && <Tab value="team" icon="groups">Virtual team</Tab>}
-          </TabList>
-
-          <TabPanel value="board">
+        {/* The view switcher (Board / All tickets / My queue / Virtual team) lives in the
+            right-hand panel now (A1) — here we just render the active view. */}
+        {tab === 'board' && (
             <Stack gap="md">
               {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar aria-label="Show or hide swimlanes" fullWidth>
+              <Toolbar aria-label="Show or hide swimlanes" label="Swimlanes">
                 {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
                   <ToolbarToggle
                     key={s}
@@ -503,52 +506,49 @@ export function Backlog({ onNavigate }) {
                 )
               })()}
             </Stack>
-          </TabPanel>
+        )}
 
-          <TabPanel value="all">
-            <AllTable items={searched} onOpen={open} />
-          </TabPanel>
+        {tab === 'all' && (
+          <AllTable items={searched} onOpen={open} />
+        )}
 
-          <TabPanel value="queue">
-            {!me ? (
-              <MessageEmptyState icon="person" title="Sign in for your queue" description="Your queue shows tickets you created or are assigned." />
-            ) : (
-              <Stack gap="lg">
-                <QueueGroup
-                  title="Awaiting your answer"
-                  icon="help"
-                  items={queue.awaiting}
-                  empty="No clarifying questions for you right now."
-                  onOpen={open}
-                />
-                <QueueGroup
-                  title="Assigned to you"
-                  icon="engineering"
-                  items={queue.assigned}
-                  empty="Nothing assigned to you yet."
-                  onOpen={open}
-                />
-                <QueueGroup
-                  title="Created by you"
-                  icon="edit_note"
-                  items={queue.mine}
-                  empty="You haven’t created any tickets yet."
-                  onOpen={open}
-                />
-              </Stack>
-            )}
-          </TabPanel>
+        {tab === 'queue' && (
+          !me ? (
+            <MessageEmptyState icon="person" title="Sign in for your queue" description="Your queue shows tickets you created or are assigned." />
+          ) : (
+            <Stack gap="lg">
+              <QueueGroup
+                title="Awaiting your answer"
+                icon="help"
+                items={queue.awaiting}
+                empty="No clarifying questions for you right now."
+                onOpen={open}
+              />
+              <QueueGroup
+                title="Assigned to you"
+                icon="engineering"
+                items={queue.assigned}
+                empty="Nothing assigned to you yet."
+                onOpen={open}
+              />
+              <QueueGroup
+                title="Created by you"
+                icon="edit_note"
+                items={queue.mine}
+                empty="You haven’t created any tickets yet."
+                onOpen={open}
+              />
+            </Stack>
+          )
+        )}
 
-          {import.meta.env.DEV && (
-            <TabPanel value="team">
-              <Stack gap="xl">
-                <VirtualTeamPanel />
-                <Divider />
-                <VirtualArchitectPanel />
-              </Stack>
-            </TabPanel>
-          )}
-        </Tabs>
+        {import.meta.env.DEV && tab === 'team' && (
+          <Stack gap="xl">
+            <VirtualTeamPanel />
+            <Divider />
+            <VirtualArchitectPanel />
+          </Stack>
+        )}
         </Stack>
       </Section>
 
@@ -573,6 +573,16 @@ export function Backlog({ onNavigate }) {
       {asideNode && createPortal(
         <div className="a1-web-config-aside__inner">
           <Stack gap="lg">
+            {/* View switcher (A1) — replaces the old top-level tabs. */}
+            <SegmentedControl
+              aria-label="Backlog view"
+              fullWidth
+              labelMode="selected"
+              options={VIEW_OPTIONS}
+              value={tab}
+              onChange={setTab}
+            />
+
             <SearchField
               aria-label="Search backlog"
               size="compact"
@@ -580,63 +590,68 @@ export function Backlog({ onNavigate }) {
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            <Divider space="none" />
+            {/* Sort + filters apply to the board view only. */}
+            {tab === 'board' && (
+              <>
+                <Divider space="none" />
 
-            <Stack direction="row" gap="xs" align="center">
-              <Heading as="h2" size="sm">Filters</Heading>
-              {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
-            </Stack>
+                <Stack direction="row" gap="xs" align="center">
+                  <Heading as="h2" size="sm">Filters</Heading>
+                  {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
+                </Stack>
 
-            <Toolbar label="Sort by" aria-label="Sort tickets">
-              <ToolbarGroup
-                aria-label="Sort by"
-                labelMode="selected"
-                value={sort}
-                onChange={setSort}
-                options={SORT_OPTIONS}
-              />
-            </Toolbar>
-            <Toolbar label="Type" aria-label="Filter by type">
-              <ToolbarGroup
-                aria-label="Type"
-                showLabels
-                value={filters.type}
-                onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
-                options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
-              />
-            </Toolbar>
-            <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
-              <ToolbarGroup
-                aria-label="Priority"
-                showLabels
-                value={filters.priority}
-                onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
-                options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
-              />
-            </Toolbar>
-            <Toolbar label="Size" aria-label="Filter by size" fullWidth>
-              <ToolbarGroup
-                aria-label="Size"
-                showLabels
-                value={filters.complexity}
-                onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
-                options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
-              />
-            </Toolbar>
-            <Toolbar label="Scope" aria-label="Filter by scope">
-              <ToolbarMenu
-                aria-label="Scope"
-                showLabel
-                label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
-                value={filters.scope}
-                onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
-                items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
-              />
-            </Toolbar>
-            {activeFilterCount > 0 && (
-              <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
-                Clear filters ({activeFilterCount})
-              </Button>
+                <Toolbar label="Sort by" aria-label="Sort tickets">
+                  <ToolbarGroup
+                    aria-label="Sort by"
+                    labelMode="selected"
+                    value={sort}
+                    onChange={setSort}
+                    options={SORT_OPTIONS}
+                  />
+                </Toolbar>
+                <Toolbar label="Type" aria-label="Filter by type">
+                  <ToolbarGroup
+                    aria-label="Type"
+                    showLabels
+                    value={filters.type}
+                    onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
+                    options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
+                  />
+                </Toolbar>
+                <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
+                  <ToolbarGroup
+                    aria-label="Priority"
+                    showLabels
+                    value={filters.priority}
+                    onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
+                    options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
+                  />
+                </Toolbar>
+                <Toolbar label="Size" aria-label="Filter by size" fullWidth>
+                  <ToolbarGroup
+                    aria-label="Size"
+                    showLabels
+                    value={filters.complexity}
+                    onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
+                    options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
+                  />
+                </Toolbar>
+                <Toolbar label="Scope" aria-label="Filter by scope">
+                  <ToolbarMenu
+                    aria-label="Scope"
+                    showLabel
+                    label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
+                    value={filters.scope}
+                    onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
+                    items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
+                  />
+                </Toolbar>
+                {activeFilterCount > 0 && (
+                  <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
+                    Clear filters ({activeFilterCount})
+                  </Button>
+                )}
+              </>
             )}
           </Stack>
 
