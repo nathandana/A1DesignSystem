@@ -202,6 +202,12 @@ export interface ComponentNode {
    * pulled forward, incompatibilities detected) even after ids are freshened.
    */
   patternNodeId?: string;
+  /**
+   * Data repeat (A1-94): the binding key of a dataset this node repeats over. The
+   * renderer renders one copy of the node per dataset row; `{{ key.column }}`
+   * bindings inside each copy resolve to that row. Absent on ordinary nodes.
+   */
+  repeat?: string;
   /** Nested child nodes. */
   children?: ComponentNode[];
 }

@@ -24,31 +24,54 @@ function humanize(key) {
  * Only data sources available to this page's project (global or scoped to it) show.
  * See `data/bindings.ts`.
  */
-export function EditorBindControls({ baseUpdate, projectId, contentLocked, lockedProps, onBind }) {
+export function EditorBindControls({ baseUpdate, projectId, contentLocked, lockedProps, onBind, repeat, onSetRepeat }) {
   const ctx = useDataSources()
   const datasets = (ctx?.items ?? []).filter((d) => datasetAvailableToProject(d, projectId))
-  if (!datasets.length || !baseUpdate) return null
+  if (!datasets.length) return null
 
   const targets = []
-  if (baseUpdate.contentFallback !== undefined && !contentLocked) {
+  if (baseUpdate?.contentFallback !== undefined && !contentLocked) {
     targets.push({ kind: 'content', label: 'Text', value: baseUpdate.contentFallback })
   }
-  for (const [k, v] of Object.entries(baseUpdate.props ?? {})) {
+  for (const [k, v] of Object.entries(baseUpdate?.props ?? {})) {
     if (typeof v === 'string' && BINDABLE_PROP_KEYS.has(k) && !lockedProps?.has?.(k)) {
       targets.push({ kind: 'prop', key: k, label: humanize(k), value: v })
     }
   }
-  if (!targets.length) return null
+  if (!targets.length && !onSetRepeat) return null
 
   return (
     <Stack gap="sm">
       <Divider space="xs" />
       <Stack gap="xs">
-        <Heading as="h3" size="xs">Bind to data</Heading>
+        <Heading as="h3" size="xs">Data</Heading>
         <Paragraph size="xs" color="muted">
-          Pull a value from a project data source into this element.
+          Repeat this element over a data source, or pull values into its fields.
         </Paragraph>
       </Stack>
+
+      {onSetRepeat && (
+        <Stack gap="xs">
+          <Paragraph size="sm">Repeat for each row</Paragraph>
+          <SelectField
+            aria-label="Repeat this element for each row of a data source"
+            size="compact"
+            value={repeat ?? ''}
+            onChange={(e) => onSetRepeat(e.target.value || null)}
+          >
+            <option value="">Don’t repeat</option>
+            {datasets.map((ds) => (
+              <option key={ds.id} value={datasetBindingKey(ds.name)}>{ds.name}</option>
+            ))}
+          </SelectField>
+          {repeat && (
+            <Paragraph size="xs" color="muted">
+              Renders once per row — edit the first copy; bindings inside use each row.
+            </Paragraph>
+          )}
+        </Stack>
+      )}
+
       {targets.map((t) => (
         <BindRow
           key={t.kind === 'content' ? '__content' : `prop:${t.key}`}

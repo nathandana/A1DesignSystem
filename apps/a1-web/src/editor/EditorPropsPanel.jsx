@@ -1746,6 +1746,7 @@ export function EditorPropsPanel({
   lockEnforced = false,
   lockAuthoring = false,
   onSetLock,
+  onSetNodeRepeat,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1902,6 +1903,8 @@ export function EditorPropsPanel({
       contentLocked={!!lock?.content}
       lockedProps={new Set(lock?.props ?? [])}
       onBind={handleBind}
+      repeat={node.repeat}
+      onSetRepeat={onSetNodeRepeat ? (key) => onSetNodeRepeat(node.id, key) : null}
     />
   ) : null
 

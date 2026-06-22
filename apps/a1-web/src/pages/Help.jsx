@@ -540,6 +540,31 @@ const HELP = [
           </Stack>
         ),
       },
+      {
+        id: 'repeat-over-data',
+        title: 'Repeating an element for each row',
+        keywords: 'repeat loop each row list cards auto build generate dataset data source rows record per row configure data',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Turn one element into a list driven by a dataset. Select an element (often a
+              <strong> Card</strong> or a <strong>Stack</strong>), then in the Configure panel’s
+              <strong> Data</strong> section set <strong>Repeat for each row</strong> to a data source.
+              It renders once per row.
+            </P>
+            <Bullets items={[
+              <>Bindings inside use the <strong>current row</strong> — a card bound to <Kbd>{'{{ users.name }}'}</Kbd> and <Kbd>{'{{ users.email }}'}</Kbd> becomes one card per user.</>,
+              <>On the canvas the <strong>first copy is editable</strong> (it’s the template — editing it changes them all); the rest are read-only. <strong>Preview</strong> shows every row.</>,
+              <>An explicit row index still wins inside a repeat (<Kbd>{'{{ users.name.0 }}'}</Kbd> always the first), which is handy for headers.</>,
+              <>Set it back to <strong>Don’t repeat</strong> to stop.</>,
+            ]} />
+            <P>
+              Put the repeating element inside a <strong>Grid</strong> or <strong>Stack</strong> to control how
+              the rows lay out.
+            </P>
+          </Stack>
+        ),
+      },
     ],
   },
 

@@ -12,7 +12,7 @@
  */
 import { Code, InlineEditable, Heading, HeadingMark, Paragraph, Section, Stack, useLabel } from '@gtivr4/a1-design-system-react';
 import type { ReactNode } from 'react';
-import { createElement, createContext, useContext, useMemo } from 'react';
+import { createElement, createContext, useContext, useMemo, Fragment } from 'react';
 import { EditorSelectionBoundary } from './EditorSelectionBoundary';
 import type { ComponentType as ReactComponentType } from 'react';
 import { componentRegistry } from './componentRegistry';
@@ -23,7 +23,7 @@ import { getActiveProjectId } from '../projects/projectStore';
 import { datasetAvailableToProject } from '../services/dataSources/types';
 import {
   buildDatasetMap, hasBinding, resolveBinding, resolveBindingsToString,
-  type DatasetMap,
+  type DatasetMap, type RowContext,
 } from '../data/bindings';
 import type {
   A11yDefinition,
@@ -101,7 +101,7 @@ interface EditorModeContextValue {
  * `{{ dataset.column }}` token in a prop or text content resolves at render. Empty
  * by default (no bindings resolve, tokens render literally). See `data/bindings.ts`.
  */
-const PageDataContext = createContext<{ datasetMap: DatasetMap }>({ datasetMap: {} });
+const PageDataContext = createContext<{ datasetMap: DatasetMap; rowContext: RowContext }>({ datasetMap: {}, rowContext: {} });
 
 const EditorModeContext = createContext<EditorModeContextValue>({
   enabled: false,
@@ -285,8 +285,9 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   const text = useResolvedContent(node.content);
   // Re-render when the image library hydrates so Figure refs resolve to real URLs.
   useImageLibraryVersion();
-  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = useContext(EditorModeContext);
-  const { datasetMap } = useContext(PageDataContext);
+  const editorCtx = useContext(EditorModeContext);
+  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = editorCtx;
+  const { datasetMap, rowContext } = useContext(PageDataContext);
   const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
 
@@ -300,6 +301,30 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
 
   if (!Component) {
     return <UnsupportedComponent type={node.type} />;
+  }
+
+  // Data repeat: render the node once per row of the bound dataset, each copy with
+  // that row as the active row for the `{{ key.column }}` bindings inside it. In the
+  // editor the first copy stays interactive (selecting/editing it targets the single
+  // template node); the rest render as read-only projections. In preview every copy
+  // is non-interactive. Falls through to a single render when the dataset is missing
+  // or empty, so the node stays selectable/configurable.
+  if (node.repeat && datasetMap[node.repeat] && (datasetMap[node.repeat].rows?.length ?? 0) > 0) {
+    const repeatKey = node.repeat;
+    const rows = datasetMap[repeatKey].rows;
+    const stripped: ComponentNode = { ...node, repeat: undefined };
+    return rows.map((_row, i) => {
+      const childRowContext = { ...rowContext, [repeatKey]: i };
+      const inner = (
+        <PageDataContext.Provider value={{ datasetMap, rowContext: childRowContext }}>
+          <RenderNode node={stripped} inPattern={inPattern} patternActive={patternActive} />
+        </PageDataContext.Provider>
+      );
+      // First copy interactive in the editor; the rest are read-only projections.
+      return (editorMode && i > 0)
+        ? <EditorModeContext.Provider key={`${node.id}__r${i}`} value={{ ...editorCtx, enabled: false }}>{inner}</EditorModeContext.Provider>
+        : <Fragment key={`${node.id}__r${i}`}>{inner}</Fragment>;
+    });
   }
 
   // TODO(actions): wire `node.actions` (navigate / openDialog / appAction /
@@ -321,7 +346,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // datasets. The raw token lives in node.content; the canvas shows the resolved
   // value (read-only inline — edit the binding in the Configure panel / Data tab).
   const textBound = typeof text === 'string' && hasBinding(text);
-  const boundText = textBound ? resolveBindingsToString(text, datasetMap) : text;
+  const boundText = textBound ? resolveBindingsToString(text, datasetMap, rowContext) : text;
 
   // In editor mode, plain text content is wrapped in InlineEditable (seamless) so
   // the user can click any heading, paragraph, or button label to edit it in
@@ -375,7 +400,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
   for (const k of Object.keys(resolvedProps)) {
     const v = resolvedProps[k];
-    if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap);
+    if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
   }
 
   // Child-item inline editing: components whose data lives in an array prop render
@@ -646,7 +671,7 @@ export function RenderPageDefinition({
 
   return (
     <EditorModeContext.Provider value={ctx}>
-      <PageDataContext.Provider value={{ datasetMap }}>
+      <PageDataContext.Provider value={{ datasetMap, rowContext: {} }}>
         <RenderLayout layout={definition.page.layout} />
       </PageDataContext.Provider>
     </EditorModeContext.Provider>

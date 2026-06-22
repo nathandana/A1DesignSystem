@@ -33,6 +33,7 @@ export function EditorAsidePanel({
   lockEnforced,
   lockAuthoring,
   onSetLock,
+  onSetNodeRepeat,
   // History tab
   historyEntries,
   historyIndex,
@@ -141,6 +142,7 @@ export function EditorAsidePanel({
               lockEnforced={lockEnforced}
               lockAuthoring={lockAuthoring}
               onSetLock={onSetLock}
+              onSetNodeRepeat={onSetNodeRepeat}
             />
           </div>
         )}

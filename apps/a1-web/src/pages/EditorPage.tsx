@@ -281,6 +281,17 @@ function setNodeLockInNode(node: ComponentNode, id: string, lock: ComponentNode[
   return { ...node, children: node.children.map((c) => setNodeLockInNode(c, id, lock)) };
 }
 
+function setNodeRepeatInNode(node: ComponentNode, id: string, repeat: string | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (repeat) next.repeat = repeat;
+    else delete next.repeat;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeRepeatInNode(c, id, repeat)) };
+}
+
 function freshId(): string {
   return `node-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -1287,6 +1298,12 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), `Updated lock on ${getNodeType(nodeId)}`);
   }
 
+  function handleSetNodeRepeat(nodeId: string, repeat: string | null) {
+    if (!parsedDefinition.ok) return;
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeRepeatInNode(node, nodeId, repeat));
+    history.commit(JSON.stringify(newDef, null, 2), repeat ? `Repeated ${getNodeType(nodeId)} over data` : `Stopped repeating ${getNodeType(nodeId)}`);
+  }
+
   function handleGroupAsStack(nodeId: string) {
     if (!parsedDefinition.ok) return;
     if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
@@ -1693,6 +1710,7 @@ export function EditorPage({
           lockEnforced={!isPattern}
           lockAuthoring={isPattern}
           onSetLock={handleSetNodeLock}
+          onSetNodeRepeat={handleSetNodeRepeat}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
           onHistoryJump={handleHistoryJump}

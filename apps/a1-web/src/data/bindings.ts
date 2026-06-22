@@ -38,14 +38,20 @@ export function hasBinding(value: unknown): boolean {
   return typeof value === 'string' && value.includes('{{') && value.includes('}}');
 }
 
+/**
+ * The active row index per dataset key, set when rendering inside a repeated node.
+ * A `{{ key.column }}` token with no explicit row uses `rowContext[key]` (else 0).
+ */
+export type RowContext = Record<string, number>;
+
 /** Resolve a single reference like `users.email` or `users.email.2`. */
-function resolveRef(map: DatasetMap, ref: string): unknown {
+function resolveRef(map: DatasetMap, ref: string, rowContext: RowContext): unknown {
   const parts = ref.split('.').map((p) => p.trim()).filter(Boolean);
   if (parts.length < 2) return undefined;
   const [dsKey, column, rowStr] = parts;
   const ds = map[dsKey];
   if (!ds) return undefined;
-  const rowIndex = rowStr !== undefined ? Number.parseInt(rowStr, 10) : 0;
+  const rowIndex = rowStr !== undefined ? Number.parseInt(rowStr, 10) : (rowContext[dsKey] ?? 0);
   if (Number.isNaN(rowIndex)) return undefined;
   const row = ds.rows[rowIndex];
   if (!row) return undefined;
@@ -58,22 +64,22 @@ function resolveRef(map: DatasetMap, ref: string): unknown {
  * Non-strings and strings without a token pass through unchanged. An unresolved
  * whole token returns the original string so the bad reference stays visible.
  */
-export function resolveBinding(value: unknown, map: DatasetMap): unknown {
+export function resolveBinding(value: unknown, map: DatasetMap, rowContext: RowContext = {}): unknown {
   if (typeof value !== 'string') return value;
   const whole = value.match(WHOLE);
   if (whole) {
-    const v = resolveRef(map, whole[1].trim());
+    const v = resolveRef(map, whole[1].trim(), rowContext);
     return v === undefined ? value : v;
   }
   if (!value.includes('{{')) return value;
   return value.replace(TOKEN, (_m, ref) => {
-    const v = resolveRef(map, String(ref).trim());
+    const v = resolveRef(map, String(ref).trim(), rowContext);
     return v === undefined || v === null ? '' : String(v);
   });
 }
 
 /** String resolve for text content (always returns a string). */
-export function resolveBindingsToString(value: string, map: DatasetMap): string {
-  const out = resolveBinding(value, map);
+export function resolveBindingsToString(value: string, map: DatasetMap, rowContext: RowContext = {}): string {
+  const out = resolveBinding(value, map, rowContext);
   return out === undefined || out === null ? '' : String(out);
 }
