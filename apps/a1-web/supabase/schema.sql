@@ -272,6 +272,35 @@ drop policy if exists "backlog_notifications: write" on public.backlog_notificat
 create policy "backlog_notifications: read"  on public.backlog_notifications for select to authenticated using (true);
 create policy "backlog_notifications: write" on public.backlog_notifications for all    to authenticated using (true) with check (true);
 
+-- ─── Data sources (datasets) ─────────────────────────────────────────────────
+-- Reusable datasets (A1-94): a named table of `columns` + `rows`, scoped to projects
+-- via `project_ids` (empty = global / every project, the image-library idiom), edited
+-- in the A1 DataGrid. Shared workspace like backlog: any signed-in user reads/writes.
+create table if not exists public.data_sources (
+  id               uuid        primary key default gen_random_uuid(),
+  name             text        not null default 'Untitled dataset',
+  description      text,
+  columns          jsonb       not null default '[]'::jsonb,  -- [{ key, name, type }]
+  rows             jsonb       not null default '[]'::jsonb,  -- [{ <columnKey>: value }]
+  project_ids      text[]      not null default '{}',         -- empty = available to every project
+  created_by       uuid        references auth.users(id) on delete set null,
+  created_by_email text,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+
+alter table public.data_sources enable row level security;
+drop policy if exists "data_sources: read"  on public.data_sources;
+drop policy if exists "data_sources: write" on public.data_sources;
+create policy "data_sources: read"  on public.data_sources for select to authenticated using (true);
+create policy "data_sources: write" on public.data_sources for all    to authenticated using (true) with check (true);
+
+drop trigger if exists data_sources_updated_at on public.data_sources;
+create trigger data_sources_updated_at
+  before update on public.data_sources
+  for each row execute function public.set_updated_at();
+
 -- Optional: enable Supabase Realtime so boards/badges update live without the poll
 -- fallback. Safe to skip — the client also polls. Ignore "already member" errors.
 -- alter publication supabase_realtime add table public.backlog_items, public.backlog_comments, public.backlog_notifications;
+-- alter publication supabase_realtime add table public.data_sources;

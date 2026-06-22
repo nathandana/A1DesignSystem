@@ -98,6 +98,8 @@ import { setSupabaseImageUser } from './lib/imageStore'
 import { setHistoryUser } from './services/historyDb'
 import { BacklogProvider } from './backlog/BacklogContext.jsx'
 import { useBacklog } from './backlog/BacklogContext.jsx'
+import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
+import { DataSourcesView } from './data/DataSourcesView.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -118,7 +120,7 @@ const RESOURCE_PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -131,6 +133,7 @@ const PAGE_TITLES = {
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   'image-library': 'Image library',
+  data: 'Data sources',
   'theme-editor': 'Theme',
   'rules': 'Rules',
   projects: 'Projects',
@@ -699,7 +702,7 @@ function App() {
     {
       id: 'editor',
       label: PAGE_TITLES.editor,
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'theme-editor' || activePage === 'rules',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
         {
           icon: 'folder',
@@ -735,6 +738,13 @@ function App() {
           href: getPath('image-library'),
           active: activePage === 'image-library',
           onClick: (e) => handleNavClick(e, 'image-library'),
+        },
+        {
+          icon: 'table_chart',
+          label: 'Data sources',
+          href: getPath('data'),
+          active: activePage === 'data',
+          onClick: (e) => handleNavClick(e, 'data'),
         },
         {
           icon: 'palette',
@@ -1034,6 +1044,13 @@ function App() {
             onNavigateHome={() => navigate('home')}
           />
         )}
+        {activePage === 'data' && (
+          <DataSourcesView
+            projects={projects}
+            onBackToProjects={() => navigate('editor')}
+            onNavigateHome={() => navigate('home')}
+          />
+        )}
         {activePage === 'theme-editor' && (
           !activeThemeId
             ? <ThemesList
@@ -1208,7 +1225,9 @@ const tree = (
   <AuthProvider>
     <AuthGate>
       <BacklogProvider>
-        <App />
+        <DataSourcesProvider>
+          <App />
+        </DataSourcesProvider>
       </BacklogProvider>
     </AuthGate>
   </AuthProvider>

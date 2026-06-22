@@ -465,6 +465,54 @@ const HELP = [
   },
 
   {
+    id: 'data-sources',
+    title: 'Data sources',
+    icon: 'table_chart',
+    articles: [
+      {
+        id: 'what-are-data-sources',
+        title: 'What data sources are',
+        keywords: 'data source dataset table rows columns datagrid grid spreadsheet store scope project import json users sample',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A <strong>data source</strong> is a reusable dataset — a named table of rows and
+              columns you can edit, scope to projects, and (in future) bind into pages. Open it
+              from the editor menu’s <Icon name="table_chart" size="sm" /> <strong>Data sources</strong> entry.
+            </P>
+            <Bullets items={[
+              <>Each dataset is edited in a spreadsheet-style <strong>grid</strong> — double-click a cell to change its value.</>,
+              <>Datasets are <strong>stored</strong> in your account when you’re signed in (shared workspace), or in this browser otherwise.</>,
+              <>A built-in <strong>Users</strong> sample (fake people with contact details) is added on first use so there’s something to try.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'edit-scope-import-data',
+        title: 'Editing, scoping & importing',
+        keywords: 'edit cell add row column delete scope project global specific import json replace autosave datagrid',
+        body: (
+          <Stack gap="sm">
+            <P>Open a dataset to edit it. Changes <strong>autosave</strong> as you work.</P>
+            <Bullets items={[
+              <><strong>Rows</strong> — double-click a cell to edit. <strong>Add row</strong> appends a row; tick rows and <strong>Delete</strong> to remove them.</>,
+              <><strong>Columns</strong> — in the Columns card, rename a column, set its type, remove it, or <strong>Add column</strong>.</>,
+              <><strong>Scope</strong> — leave a dataset available to <strong>all projects</strong> (the default), or turn on <strong>Limit to specific projects</strong> and pick which ones. (Some data, like users, is generic enough to stay global.)</>,
+              <><strong>Import JSON</strong> — paste a JSON array of objects (keys become columns) or values; <strong>Replace from JSON</strong> swaps a dataset’s data the same way.</>,
+            ]} />
+            <P>
+              Signed-in cloud storage needs the <Kbd>data_sources</Kbd> table created in Supabase
+              (run the schema in <Kbd>apps/a1-web/supabase/schema.sql</Kbd>). Until then the page works
+              locally in your browser.
+            </P>
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
     id: 'media',
     title: 'Media & AI',
     icon: 'image',
