@@ -6,7 +6,7 @@
  * their choice. Browser-side, sharing the same API key as the other AI helpers.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -19,12 +19,13 @@ export interface ImagePromptInput {
 
 export async function generateImagePrompt(
   { description, alt, styleContext }: ImagePromptInput,
-): Promise<string> {
+): Promise<{ prompt: string; usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 600,
@@ -43,6 +44,15 @@ export async function generateImagePrompt(
     }],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
   const block = response.content.find((b) => b.type === 'text');
-  return block && 'text' in block ? block.text.trim() : '';
+  return {
+    prompt: block && 'text' in block ? block.text.trim() : '',
+    usage: {
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
+  };
 }

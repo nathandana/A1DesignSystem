@@ -11,7 +11,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import iconRegistry from '../../../../system/icons/material-symbols.json';
 import iconUsageRaw from '../../../../system/icons/icon-usage.md?raw';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -80,13 +80,14 @@ const ICON_SCHEMA = {
  */
 export async function suggestIcons(
   { description, count = 3, avoid = [] }: { description: string; count?: number; avoid?: string[] },
-): Promise<IconSuggestion[]> {
+): Promise<{ icons: IconSuggestion[]; usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
   const avoidNote = avoid.length ? `\n\nDo NOT suggest any of these already-shown icons: ${avoid.join(', ')}.` : '';
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -99,6 +100,8 @@ export async function suggestIcons(
     // Over-request so we still have `count` after validation filtering.
     messages: [{ role: 'user', content: `Suggest ${count + 3} Material Symbols icons for: "${description}".${avoidNote}` }],
   } as Anthropic.MessageCreateParamsNonStreaming);
+
+  const elapsedMs = performance.now() - t0;
 
   const textBlock = response.content.find((b) => b.type === 'text');
   const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
@@ -120,5 +123,13 @@ export async function suggestIcons(
     out.push({ name, reason: String(item.reason ?? ''), guidance: iconGuidance(name) });
     if (out.length >= count) break;
   }
-  return out;
+  return {
+    icons: out,
+    usage: {
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
+  };
 }

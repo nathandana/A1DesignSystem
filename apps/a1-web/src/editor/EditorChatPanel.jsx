@@ -10,7 +10,7 @@ import {
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { hasApiKey, setApiKey } from '../lib/aiImages.ts'
+import { formatUsage, hasApiKey, setApiKey } from '../lib/aiImages.ts'
 import { describeError, editPage } from '../lib/aiPage.ts'
 
 /**
@@ -70,13 +70,13 @@ export function EditorChatPanel({ definition, onApplyDefinition, requestFocus = 
     setLoading(true)
 
     try {
-      const { message, page } = await editPage({
+      const { message, page, usage } = await editPage({
         instruction,
         currentPage: definition,
         history: priorTurns,
       })
       onApplyDefinition?.(page, `AI: ${instruction.length > 40 ? `${instruction.slice(0, 40)}…` : instruction}`)
-      setMessages((prev) => [...prev, { role: 'assistant', text: message }])
+      setMessages((prev) => [...prev, { role: 'assistant', text: message, usage }])
     } catch (err) {
       setMessages((prev) => [...prev, { role: 'assistant', text: describeError(err), error: true }])
       if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
@@ -148,6 +148,9 @@ export function EditorChatPanel({ definition, onApplyDefinition, requestFocus = 
             className={`a1-web-chat__msg a1-web-chat__msg--${m.role}${m.error ? ' a1-web-chat__msg--error' : ''}`}
           >
             <Paragraph size="sm">{m.text}</Paragraph>
+            {m.usage && !m.error && (
+              <Paragraph size="xs" color="muted" className="a1-web-chat__usage">{formatUsage(m.usage)}</Paragraph>
+            )}
           </div>
         ))}
         {loading && (

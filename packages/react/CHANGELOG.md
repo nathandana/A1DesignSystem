@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.22.0 — 2026-06-22
+
 ### Added
 
 - **Marshmallow theme — soft pillowy pastel with subtle neumorphism** — a new system theme (`system/themes/marshmallow/`, shipped via `packages/react/src/themes.css`, selector `.a1-theme-marshmallow`). Dusty-lavender accent on warm marshmallow-cream surfaces (a deliberately mid-light, not pure-white, surface so both the light highlight and the soft shadow read), reusing the crochet pastel status ramps. The **subtle 3D / neumorphic depth is achieved entirely through existing tokens**: buttons set `--component-button-box-shadow` (a gentle dual highlight + drop shadow, raised at rest), `--component-button-box-shadow-hover` (more lift), `--component-button-box-shadow-active` (**inset** — the button reads as pressed *into* the surface), and `--component-button-press-transform: translateY(1px)`; cards and raised surfaces use a soft dual `--semantic-shadow-xs`/`-sm`; `--semantic-shadow-md` and `--component-dialog-shadow` are softened. Generous rounding (`--base-radius-md/lg/xl`, button `14px`, card `18px`, dialog `20px`). Rounded type — **Varela Round** for display + headings (single 400 weight; hierarchy carried by size) and **Nunito** for body. The only component change is theme-agnostic and a **no-op for every existing theme**: `.a1-button--tertiary` now nulls its box-shadow tokens so ghost (transparent) buttons never carry the raised shadow (which would otherwise halo an invisible body). Added to the Storybook theme toolbar.
@@ -15,6 +17,7 @@
 
 ### Fixed
 
+- **Slider — detent ticks/handle alignment + thumb fits the channel** — the detent tick dots and labels drifted off the thumb centre (most visible at the track ends) and the thumb bulged *outside* the track channel. Two causes in `slider.css`: the thumb's 2px ring used default `content-box`, so its rendered width was `thumb-size + 4px` — wider than the `thumb-size/2 + p·(100% − thumb-size)` calc the ticks/labels use, shifting the thumb centre off them; and the track's 1px `border` inset the thumb's travel range. Fixes: the thumb pseudo-elements now use `box-sizing: border-box` (rendered width = `thumb-size`, ring drawn inside, thumb sits flush in the channel), the track channel outline is an **inset `box-shadow`** instead of a `border` (so it no longer insets travel), and the tick dot transform is `translate(-50%, -50%)`. The native thumb centre now equals the tick/label position at every value. CSS-only — no API change, all sizes/themes. (Will shift Slider visual-regression baselines.)
 - **Design-rule violations surfaced by the new lint gate** (A1-37) — `DataTable` avatar initials no longer uppercase the whole joined string (`charAt(0).toUpperCase()` per word — identical output, but compliant with the never-uppercase law); and raw colours in `page-nav.css` (active link `#fff` → `var(--semantic-color-text-inverse)`, separator shadow → `var(--semantic-shadow-sm)`), `token-select.css` (swatch hairlines → `var(--semantic-color-border-subtle)`), and `tokens/_shared.jsx` (demo swatch borders) now use tokens. These are now enforced by **`eslint-plugin-a1`** + the CSS gate (see the repo-level changelog / `packages/eslint-plugin-a1`).
 
 ## 0.21.0 — 2026-06-21

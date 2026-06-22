@@ -4,7 +4,7 @@
  * the theme editor compiles into the full theme. Browser-side, shared API key.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -86,12 +86,13 @@ const FONT_SCHEMA = {
  * pairing heuristics (contrast of classification, harmony of proportion). The
  * three may legitimately be the same family in different roles when that suits.
  */
-export async function generateFontPairing(description: string): Promise<AiFontPairing> {
+export async function generateFontPairing(description: string): Promise<AiFontPairing & { usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 512,
@@ -106,21 +107,23 @@ export async function generateFontPairing(description: string): Promise<AiFontPa
     messages: [{ role: 'user', content: `Pair display, heading, and body fonts for: "${description}".` }],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
   const block = response.content.find((b) => b.type === 'text');
   const raw = block && 'text' in block ? block.text : '';
   try {
-    return JSON.parse(raw) as AiFontPairing;
+    return { ...JSON.parse(raw) as AiFontPairing, usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens, elapsedMs, model: MODEL } };
   } catch {
     throw new Error('BAD_JSON');
   }
 }
 
-export async function generateTheme(description: string): Promise<AiThemeResult> {
+export async function generateTheme(description: string): Promise<AiThemeResult & { usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -134,10 +137,11 @@ export async function generateTheme(description: string): Promise<AiThemeResult>
     messages: [{ role: 'user', content: `Design a theme for: "${description}".` }],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
   const block = response.content.find((b) => b.type === 'text');
   const raw = block && 'text' in block ? block.text : '';
   try {
-    return JSON.parse(raw) as AiThemeResult;
+    return { ...JSON.parse(raw) as AiThemeResult, usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens, elapsedMs, model: MODEL } };
   } catch {
     throw new Error('BAD_JSON');
   }

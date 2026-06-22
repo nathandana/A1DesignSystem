@@ -39,6 +39,18 @@ export interface ImageSuggestion {
   caption: string;
 }
 
+export interface AiUsage {
+  inputTokens: number;
+  outputTokens: number;
+  elapsedMs: number;
+  model: string;
+}
+
+export function formatUsage({ inputTokens, outputTokens, elapsedMs }: AiUsage): string {
+  const secs = (elapsedMs / 1000).toFixed(1);
+  return `${secs}s · ${inputTokens.toLocaleString()} in / ${outputTokens.toLocaleString()} out tokens`;
+}
+
 export function getApiKey(): string | null {
   if (!AI_ENABLED) return null; // hard no-spend backstop when AI is disabled
   try { return localStorage.getItem(KEY_STORAGE); } catch { return null; }
@@ -127,7 +139,7 @@ export function describeError(err: unknown): string {
  */
 export async function suggestImages(
   { description, count = 3, avoid = [] }: { description: string; count?: number; avoid?: string[] },
-): Promise<ImageSuggestion[]> {
+): Promise<{ images: ImageSuggestion[]; usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
@@ -137,6 +149,7 @@ export async function suggestImages(
     ? `\n\nDo NOT suggest any of these already-shown images:\n${avoid.join('\n')}`
     : '';
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -151,6 +164,8 @@ export async function suggestImages(
     ],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
+
   const textBlock = response.content.find((b) => b.type === 'text');
   const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
   let parsed: { images?: unknown };
@@ -161,7 +176,7 @@ export async function suggestImages(
   }
 
   const images = Array.isArray(parsed.images) ? parsed.images : [];
-  return images
+  const result = images
     .map((im) => {
       const item = im as Record<string, unknown>;
       return {
@@ -172,4 +187,13 @@ export async function suggestImages(
     })
     .filter((im) => im.url)
     .slice(0, count);
+  return {
+    images: result,
+    usage: {
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
+  };
 }

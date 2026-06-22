@@ -5,7 +5,7 @@
  * Browser-side, sharing the same API key as the other AI helpers.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { getApiKey } from './aiImages';
+import { type AiUsage, getApiKey } from './aiImages';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -28,12 +28,13 @@ function activeThemeVibe(): string {
 
 export async function suggestImageStyle(
   { projectName, projectDescription }: { projectName?: string; projectDescription?: string },
-): Promise<string> {
+): Promise<{ style: string; usage: AiUsage }> {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('NO_API_KEY');
 
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  const t0 = performance.now();
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 500,
@@ -53,6 +54,15 @@ export async function suggestImageStyle(
     }],
   } as Anthropic.MessageCreateParamsNonStreaming);
 
+  const elapsedMs = performance.now() - t0;
   const block = response.content.find((b) => b.type === 'text');
-  return block && 'text' in block ? block.text.trim() : '';
+  return {
+    style: block && 'text' in block ? block.text.trim() : '',
+    usage: {
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      elapsedMs,
+      model: MODEL,
+    },
+  };
 }

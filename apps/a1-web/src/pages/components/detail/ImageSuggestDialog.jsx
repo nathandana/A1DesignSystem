@@ -15,6 +15,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import {
   describeError,
+  formatUsage,
   hasApiKey,
   setApiKey,
   suggestImages,
@@ -37,9 +38,10 @@ export function ImageSuggestDialog({ open, onClose, onApply, initialPrompt = '' 
   const [selected, setSelected] = useState(-1)
   const [broken, setBroken] = useState(() => new Set())
   const [caption, setCaption] = useState('')
+  const [lastUsage, setLastUsage] = useState(null)
 
   function reset() {
-    setResults([]); setSeen([]); setSelected(-1); setBroken(new Set()); setCaption(''); setError('')
+    setResults([]); setSeen([]); setSelected(-1); setBroken(new Set()); setCaption(''); setError(''); setLastUsage(null)
   }
 
   function handleClose() {
@@ -57,15 +59,16 @@ export function ImageSuggestDialog({ open, onClose, onApply, initialPrompt = '' 
     setError('')
     setSelected(-1)
     try {
-      const images = await suggestImages({
+      const { images, usage } = await suggestImages({
         description: prompt.trim(),
         count: 3,
         avoid: more ? seen : [],
       })
       if (!images.length) {
-        setError('Claude didn’t return any images. Try a different description.')
+        setError("Claude didn’t return any images. Try a different description.")
       }
       setResults(images)
+      setLastUsage(usage)
       setBroken(new Set())
       setSeen((prev) => Array.from(new Set([...prev, ...images.map((i) => i.url)])))
     } catch (err) {
@@ -163,6 +166,10 @@ export function ImageSuggestDialog({ open, onClose, onApply, initialPrompt = '' 
                 <CircularProgress size="sm" indeterminate aria-label="Finding images" />
                 <Paragraph size="sm" color="muted">Asking Claude for images…</Paragraph>
               </Stack>
+            )}
+
+            {!loading && lastUsage && (
+              <Paragraph size="xs" color="muted">{formatUsage(lastUsage)}</Paragraph>
             )}
 
             {!loading && results.length > 0 && (

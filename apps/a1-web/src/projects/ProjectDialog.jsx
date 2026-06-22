@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Banner, Button, ButtonContainer, Dialog, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { Banner, Button, ButtonContainer, Dialog, Paragraph, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
-import { describeError, AI_ENABLED } from '../lib/aiImages.ts'
+import { describeError, formatUsage, AI_ENABLED } from '../lib/aiImages.ts'
 import { suggestImageStyle } from '../lib/aiProjectStyle.ts'
 
 /**
@@ -18,6 +18,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
   const [imageStyle, setImageStyle] = useState(initial?.meta?.imageStyle ?? '')
   const [suggesting, setSuggesting] = useState(false)
   const [error, setError] = useState('')
+  const [styleUsage, setStyleUsage] = useState(null)
 
   const title = mode === 'create' ? 'New project' : 'Project settings'
   const submitLabel = mode === 'create' ? 'Create project' : 'Save changes'
@@ -26,8 +27,9 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
     setSuggesting(true)
     setError('')
     try {
-      const result = await suggestImageStyle({ projectName: name, projectDescription: description })
-      if (result) setImageStyle(result)
+      const { style, usage } = await suggestImageStyle({ projectName: name, projectDescription: description })
+      if (style) setImageStyle(style)
+      setStyleUsage(usage)
     } catch (err) {
       setError(describeError(err))
     } finally {
@@ -92,6 +94,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
               </Button>
             </ButtonContainer>
           )}
+          {AI_ENABLED && styleUsage && !suggesting && <Paragraph size="xs" color="muted">{formatUsage(styleUsage)}</Paragraph>}
           {AI_ENABLED && error && <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>}
         </Stack>
       </Stack>

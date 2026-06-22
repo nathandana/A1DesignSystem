@@ -11,7 +11,7 @@ import {
   Stack,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { describeError, hasApiKey, setApiKey } from '../../../lib/aiImages.ts'
+import { describeError, formatUsage, hasApiKey, setApiKey } from '../../../lib/aiImages.ts'
 import { suggestIcons } from '../../../lib/aiIcons.ts'
 
 /**
@@ -29,6 +29,7 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
   const [results, setResults] = useState([])
   const [seen, setSeen] = useState([])      // names shown so far (for "3 more")
   const [selected, setSelected] = useState('')
+  const [lastUsage, setLastUsage] = useState(null)
 
   function saveKey() {
     setApiKey(keyInput)
@@ -41,9 +42,10 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
     setError('')
     setSelected('')
     try {
-      const icons = await suggestIcons({ description: prompt.trim(), count: 3, avoid: more ? seen : [] })
-      if (!icons.length) setError('Claude didn’t return valid Material Symbols. Try a different description.')
+      const { icons, usage } = await suggestIcons({ description: prompt.trim(), count: 3, avoid: more ? seen : [] })
+      if (!icons.length) setError("Claude didn't return valid Material Symbols. Try a different description.")
       setResults(icons)
+      setLastUsage(usage)
       setSeen((prev) => Array.from(new Set([...prev, ...icons.map((i) => i.name)])))
     } catch (err) {
       setError(describeError(err))
@@ -77,7 +79,7 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
         {!keyReady ? (
           <Stack gap="sm">
             <Paragraph size="sm" color="muted">
-              Paste an Anthropic API key to enable AI icon search. It’s stored only in this browser
+              Paste an Anthropic API key to enable AI icon search. It's stored only in this browser
               (shared with AI image search). <Link href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Get a key</Link>.
             </Paragraph>
             <TextField
@@ -98,7 +100,7 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
               <TextField
                 label="Describe the icon you want"
                 size="compact"
-                hint="e.g. “shopping cart”, “settings”, “a warning”, “download”"
+                hint="e.g. 'shopping cart', 'settings', 'a warning', 'download'"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
               />
@@ -123,6 +125,10 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
               </Stack>
             )}
 
+            {!loading && lastUsage && (
+              <Paragraph size="xs" color="muted">{formatUsage(lastUsage)}</Paragraph>
+            )}
+
             {!loading && results.length > 0 && (
               <ChoiceGroup
                 label="Select an icon"
@@ -140,8 +146,8 @@ export function AiIconDialog({ open, onClose, onApply, initialPrompt = '' }) {
                   {selectedResult.guidance}
                 </Banner>
               ) : (
-                <Banner status="warn" variant="inline" title={`No guideline for “${selectedResult.name}”`}>
-                  This icon isn’t in the icon usage guidelines — double-check it reads clearly in this context.
+                <Banner status="warn" variant="inline" title={`No guideline for '${selectedResult.name}'`}>
+                  This icon isn't in the icon usage guidelines — double-check it reads clearly in this context.
                 </Banner>
               )
             )}
