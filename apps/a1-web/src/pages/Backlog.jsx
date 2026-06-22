@@ -74,6 +74,31 @@ function applyFilters(items, { type, priority, scope, complexity }) {
     && (scope === 'all' || it.scopeKind === scope))
 }
 
+// ── Filter persistence (A1-154) ───────────────────────────────────────────────
+// The board's filters, sort, and search persist across reloads so a working view
+// sticks. "Clear filters" resets them in one click.
+
+const DEFAULT_FILTERS = { type: 'all', priority: 'all', scope: 'all', complexity: 'all' }
+const FILTER_STORAGE_KEY = 'a1-backlog-filters'
+
+function loadFilterState() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(FILTER_STORAGE_KEY) || '{}')
+    return raw && typeof raw === 'object' ? raw : {}
+  } catch { return {} }
+}
+
+// How many filter dimensions (incl. the search) are currently narrowing the board.
+function countActiveFilters(filters, searching) {
+  let n = 0
+  if (filters.type !== 'all') n += 1
+  if (filters.priority !== 'all') n += 1
+  if (filters.complexity !== 'all') n += 1
+  if (filters.scope !== 'all') n += 1
+  if (searching) n += 1
+  return n
+}
+
 // ── Board card ───────────────────────────────────────────────────────────────
 
 // The whole card is a navigation control — click opens the ticket dialog; right-click
@@ -244,9 +269,11 @@ export function Backlog({ onNavigate }) {
   const backlog = useBacklog()
   const [tab, setTab] = useState('board')
   const [selected, setSelected] = useState(null)
-  const [query, setQuery] = useState('')
-  const [sort, setSort] = useState('updated')
-  const [filters, setFilters] = useState({ type: 'all', priority: 'all', scope: 'all', complexity: 'all' })
+  // Filters, sort, and search restore from the last session (A1-154).
+  const persisted = useMemo(loadFilterState, [])
+  const [query, setQuery] = useState(() => (typeof persisted.query === 'string' ? persisted.query : ''))
+  const [sort, setSort] = useState(() => (SORTERS[persisted.sort] ? persisted.sort : 'updated'))
+  const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, ...(persisted.filters || {}) }))
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
   const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
@@ -267,6 +294,14 @@ export function Backlog({ onNavigate }) {
     const base = applyFilters(searched, filters)
     return searching ? base : base.slice().sort(SORTERS[sort])
   }, [searched, filters, sort, searching])
+
+  const activeFilterCount = countActiveFilters(filters, searching)
+  const clearFilters = () => { setFilters(DEFAULT_FILTERS); setQuery('') }
+
+  // Persist the board's filters / sort / search so the view sticks across reloads (A1-154).
+  useEffect(() => {
+    try { localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({ filters, sort, query })) } catch { /* ignore */ }
+  }, [filters, sort, query])
 
   const byStatus = useMemo(() => {
     const map = {}
@@ -451,6 +486,13 @@ export function Backlog({ onNavigate }) {
                   />
                 ))}
               </Toolbar>
+
+              {/* Reset every active filter (and the search) in one click (A1-154). */}
+              {activeFilterCount > 0 && (
+                <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
+                  Clear filters ({activeFilterCount})
+                </Button>
+              )}
               </Stack>
 
 
