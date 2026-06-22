@@ -512,13 +512,18 @@ const HELP = [
       {
         id: 'bind-data-into-pages',
         title: 'Binding data into a page',
-        keywords: 'bind binding data token mustache curly braces dataset column value heading paragraph button prop dynamic editor data tab',
+        keywords: 'bind binding data token mustache curly braces dataset column value heading paragraph button prop dynamic editor data tab configure menu',
         body: (
           <Stack gap="sm">
             <P>
-              A component’s text or a text prop can pull a value from a dataset. Put a token like{' '}
-              <Kbd>{'{{ users.name }}'}</Kbd> in a heading, paragraph, button label, or text prop, and the
-              editor shows the dataset value on the canvas (and in preview).
+              A component’s text or a text prop can pull a value from a dataset. The easy way: select the
+              element, then in the <strong>Configure</strong> panel use the <strong>Bind to data</strong>
+              section — each bindable field (its Text, plus props like a link or image) has a menu of the
+              project’s data sources and their fields. Pick one to bind it; <strong>Clear</strong> unbinds.
+            </P>
+            <P>
+              Under the hood a binding is a token like <Kbd>{'{{ users.name }}'}</Kbd> — you can also type or
+              paste one directly into any text:
             </P>
             <Bullets items={[
               <>The name before the dot is the dataset’s <strong>key</strong> — its name lowercased (e.g. “Users” → <Kbd>users</Kbd>).</>,
@@ -527,10 +532,10 @@ const HELP = [
               <>An unknown reference is shown as-is (e.g. <Kbd>{'{{ users.nope }}'}</Kbd>) so you can spot the typo.</>,
             ]} />
             <P>
-              Open the editor’s <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right
-              panel) to see the project’s datasets and <strong>click any token to copy it</strong>, then paste it
-              in. Bound text is read-only on the canvas — edit the token from the Configure panel. Only datasets
-              available to the page’s project (global or scoped to it) can be bound.
+              The editor’s <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right panel)
+              lists the project’s datasets and lets you <strong>click any token to copy it</strong>. Bound text
+              shows the value read-only on the canvas — edit the binding from the Configure panel. Only data
+              sources available to the page’s project (global or scoped to it) can be bound.
             </P>
           </Stack>
         ),

@@ -56,6 +56,7 @@ import { Controls as StepTrackerControls } from '../pages/components/detail/step
 // Inputs
 import { Controls as TextFieldControls } from '../pages/components/detail/text-field.jsx'
 import { Controls as TextareaFieldControls } from '../pages/components/detail/textarea.jsx'
+import { EditorBindControls } from './EditorBindControls.jsx'
 import { Controls as SelectFieldControls } from '../pages/components/detail/select.jsx'
 import { Controls as NumberFieldControls } from '../pages/components/detail/number-field.jsx'
 import { Controls as DateFieldControls } from '../pages/components/detail/date-field.jsx'
@@ -1883,6 +1884,27 @@ export function EditorPropsPanel({
     </ConfigLockContext.Provider>
   )
 
+  // "Bind to data" section: reuse the node's current config→node conversion as the
+  // base, then override the chosen field with a `{{ key.column }}` token (or clear it).
+  const bindBaseUpdate = configToNodeUpdate[node.type]?.(config)
+  function handleBind(target, token) {
+    if (!bindBaseUpdate) return
+    if (target.kind === 'content') {
+      onNodePropsChange(node.id, bindBaseUpdate.props, token)
+    } else {
+      onNodePropsChange(node.id, { ...bindBaseUpdate.props, [target.key]: token }, bindBaseUpdate.contentFallback)
+    }
+  }
+  const BindSection = (!lockAuthoring && !fullyLocked) ? (
+    <EditorBindControls
+      baseUpdate={bindBaseUpdate}
+      projectId={projectId}
+      contentLocked={!!lock?.content}
+      lockedProps={new Set(lock?.props ?? [])}
+      onBind={handleBind}
+    />
+  ) : null
+
   return (
     <Stack gap="lg">
       {node.patternInstance ? (
@@ -1909,6 +1931,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
+      {BindSection}
       {ConvertSection}
     </Stack>
   )
