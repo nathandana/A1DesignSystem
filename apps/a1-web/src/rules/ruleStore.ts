@@ -17,6 +17,8 @@ export interface Rule {
   appliesTo: string[];     // categories: accessibility, layout, content, …
   source: 'builtin' | 'user';
   file?: string;           // built-in source file
+  /** How the rule is enforced on code (eslint-plugin-a1 / CSS gate), when it is. */
+  enforcement?: { eslint?: string; css?: boolean };
   createdAt?: number;
 }
 
@@ -39,6 +41,9 @@ function parseBuiltin(): Rule[] {
         appliesTo: Array.isArray(r.applies_to) ? r.applies_to : [],
         source: 'builtin',
         file,
+        enforcement: r.enforcement
+          ? { eslint: r.enforcement.eslint, css: r.enforcement.css === true }
+          : undefined,
       });
     }
   }

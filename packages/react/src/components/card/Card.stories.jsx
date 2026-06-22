@@ -66,8 +66,21 @@ const meta = {
       ],
       description: "3×3 placement of the hero badge",
     },
+    status: {
+      control: "select",
+      options: [undefined, "neutral", "info", "success", "warn", "error"],
+      description: "Coloured status stripe on the inline-start edge. Pair with statusLabel so meaning isn't colour-only.",
+    },
+    statusLabel: {
+      control: "text",
+      description: "Badge label shown at the top of the content, tinted to match status (only with status set)",
+    },
+    statusPulse: {
+      control: "boolean",
+      description: "Subtly pulse the status stripe to indicate in-progress work. Respects prefers-reduced-motion.",
+    },
   },
-  render: ({ bare, variant, icon, iconDisplay, heroColor, heroBadge, heroBadgeStatus, heroBadgePosition }) => (
+  render: ({ bare, variant, icon, iconDisplay, heroColor, heroBadge, heroBadgeStatus, heroBadgePosition, status, statusLabel, statusPulse }) => (
     <Card
       bare={bare}
       variant={variant}
@@ -78,6 +91,9 @@ const meta = {
       heroBadge={heroBadge || undefined}
       heroBadgeStatus={heroBadgeStatus}
       heroBadgePosition={heroBadgePosition}
+      status={status}
+      statusLabel={statusLabel || undefined}
+      statusPulse={statusPulse}
     >
       <Heading as="h3" size="sm" style={{ marginBottom: "8px" }}>Card title</Heading>
       <Paragraph color="muted">Supporting text describing the card content.</Paragraph>
@@ -309,4 +325,43 @@ export const Bare = {
       </div>
     </div>
   ),
+};
+
+/* ── Status side stripe ───────────────────────────────────────────────────── */
+
+const STATUS_CARDS = [
+  { status: "info", statusLabel: "New", body: "A freshly filed ticket awaiting triage." },
+  { status: "warn", statusLabel: "In progress", statusPulse: true, body: "Being worked on — the stripe pulses (static under reduced motion)." },
+  { status: "success", statusLabel: "Done", body: "Work complete and ready to release." },
+  { status: "error", statusLabel: "Blocked", body: "Stuck on a dependency or open question." },
+  { status: "neutral", statusLabel: "Archived", body: "Closed without action." },
+];
+
+export const Status = {
+  name: "Status stripe + badge",
+  parameters: { controls: { include: ["status", "statusLabel", "statusPulse"] } },
+  render: () => (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", alignItems: "flex-start" }}>
+      {STATUS_CARDS.map((c) => (
+        <Card
+          key={c.statusLabel}
+          status={c.status}
+          statusLabel={c.statusLabel}
+          statusPulse={c.statusPulse}
+          style={{ width: 260 }}
+        >
+          <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>Ticket title</Heading>
+          <Paragraph size="sm" color="muted">{c.body}</Paragraph>
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+/* ── In-progress (animated stripe) ────────────────────────────────────────── */
+
+export const StatusInProgress = {
+  name: "In progress (animated stripe)",
+  args: { status: "warn", statusLabel: "In progress", statusPulse: true },
+  parameters: { controls: { include: ["status", "statusLabel", "statusPulse"] } },
 };

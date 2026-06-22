@@ -62,6 +62,71 @@ button.a1-card--navigation {
   min-width: 0;
 }
 
+/* ─── Status side stripe + badge ────────────────────────────────────────────
+   A coloured bar hugging the card's inline-start edge that signals status, with
+   an optional MessageBadge. The bar is a clipped ::before pseudo-element so it
+   follows the rounded corners and adds no DOM. The colour comes from a per-status
+   modifier class (token → --a1-card-status-color). `--status-pulse` subtly fades
+   the stripe to indicate in-progress work, and is disabled under reduced motion.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.a1-card--has-status {
+  position: relative;
+  overflow: hidden;
+  /* Clear the stripe so content keeps an even inline-start gutter. */
+  padding-inline-start: calc(var(--component-card-padding) + var(--component-card-status-stripe-width));
+}
+
+.a1-card--has-status::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--component-card-status-stripe-width);
+  background: var(--a1-card-status-color, var(--semantic-color-text-muted));
+  pointer-events: none;
+}
+
+/* Per-status stripe colour. warn/success use a lighter ramp step (two steps lighter
+   than the status background) so a thin stripe still reads as amber/green rather than
+   the very dark background tone — see component.card.status.* in card.json. */
+.a1-card--status-neutral { --a1-card-status-color: var(--component-card-status-neutral); }
+.a1-card--status-info    { --a1-card-status-color: var(--component-card-status-info); }
+.a1-card--status-success { --a1-card-status-color: var(--component-card-status-success); }
+.a1-card--status-warn    { --a1-card-status-color: var(--component-card-status-warn); }
+.a1-card--status-error   { --a1-card-status-color: var(--component-card-status-error); }
+
+/* Subtle in-progress pulse on the stripe. */
+.a1-card--status-pulse::before {
+  animation: a1-card-status-pulse var(--component-card-status-pulse-duration) var(--semantic-motion-easing-standard) infinite;
+}
+
+@keyframes a1-card-status-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* Respect reduced-motion: keep the stripe static (no pulse). */
+@media (prefers-reduced-motion: reduce) {
+  .a1-card--status-pulse::before {
+    animation: none;
+  }
+}
+
+/* The badge sits at the top of the content, above the card body. */
+.a1-card__status-badge {
+  display: inline-flex;
+  margin-block-end: var(--base-spacing-8);
+}
+
+/* When the hero strip already occupies the inline-start edge at lg, drop the
+   extra status gutter so the two don't double up. */
+@container a1-card (min-width: 640px) {
+  .a1-card--has-status.a1-card--has-hero {
+    padding-inline-start: var(--component-card-padding);
+  }
+}
+
 /* ─── Hero icon — full-bleed header area (or left strip at lg) ─────────────
    Container query breakpoints: sm=320px, md=480px, lg=640px
    base/sm/md : coloured band spanning the full card width at the top

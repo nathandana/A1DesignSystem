@@ -1,0 +1,32 @@
+name: A1 Design-Rule Gate
+
+# Enforces the A1 design rules (system/rules/*.yaml) on real code via eslint-plugin-a1 + the
+# CSS guard. Production source violations fail the build; stories are warnings.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint — design rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: eslint-plugin-a1 rule tests
+        run: npm run lint:rules
+
+      - name: A1 design-rule gate (rule sync + ESLint + CSS)
+        run: npm run lint

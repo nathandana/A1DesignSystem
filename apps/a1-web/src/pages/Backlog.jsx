@@ -29,13 +29,15 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
+import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
 import {
   ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
 } from '../backlog/TicketBadges'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_LABELS,
   STATUS_FLOW, STATUS_ICON, STATUS_LABELS,
-  STATUS_TONE, STATUSES, TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
+  STATUS_STRIPE_PULSE, STATUS_STRIPE_TONE,
+  STATUSES, TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
 } from '../services/backlog/types'
 
 // ── Sorting / filtering helpers ──────────────────────────────────────────────
@@ -75,7 +77,13 @@ function applyFilters(items, { type, priority, scope, complexity }) {
 // content, so vote/assign/etc. live in the menu, not inline buttons).
 function BoardCard({ item, onOpen, onContextMenu }) {
   return (
-    <Card variant="navigation" onClick={() => onOpen(item)} onContextMenu={(e) => onContextMenu(item, e)}>
+    <Card
+      variant="navigation"
+      status={STATUS_STRIPE_TONE[item.status]}
+      statusPulse={!!STATUS_STRIPE_PULSE[item.status]}
+      onClick={() => onOpen(item)}
+      onContextMenu={(e) => onContextMenu(item, e)}
+    >
       <Stack gap="xs">
           <Paragraph as="span" size="xs" color="muted">{ticketRef(item.number)}</Paragraph>
         <Heading size="xs">{item.title}</Heading>
@@ -190,12 +198,12 @@ function DateTimeCell({ iso }) {
 }
 
 const TABLE_COLUMNS = [
-  { key: 'ref', label: 'ID', sortable: true, sortAccessor: (r) => r.number, width: '7rem' },
   { key: 'title', label: 'Title', sortable: true, sortAccessor: (r) => r.titleText },
-  { key: 'type', label: 'Type', width: '6rem' },
-  { key: 'status', label: 'Status', width: '7.5rem' },
-  { key: 'priority', label: 'Priority', sortable: true, sortAccessor: (r) => r.priorityRank, width: '5.5rem' },
-  { key: 'votes', label: 'Votes', type: 'number', sortable: true, width: '5rem' },
+    { key: 'ref', label: 'ID', sortable: true, sortAccessor: (r) => r.number, width: '5rem' },
+{ key: 'type', label: 'Type', width: '6rem' },
+  { key: 'status', label: 'Status', width: '6rem' },
+  { key: 'priority', label: 'Priority', sortable: true, sortAccessor: (r) => r.priorityRank, width: '6rem' },
+  { key: 'votes', label: 'Votes', type: 'number', sortable: true, width: '2rem' },
   { key: 'requester', label: 'Requested by' },
   { key: 'created', label: 'Created', sortable: true, sortAccessor: (r) => r.createdAt },
   { key: 'updated', label: 'Updated', sortable: true, sortAccessor: (r) => r.updatedAt },
@@ -206,8 +214,8 @@ function AllTable({ items, onOpen }) {
     id: it.id,
     number: it.number,
     // The ID is the link that opens the ticket (no separate Open button).
-    ref: <Link href="#" onClick={(e) => { e.preventDefault(); onOpen(it) }}>{ticketRef(it.number)}</Link>,
-    title: <strong>{it.title}</strong>,
+    ref: it.number,
+    title: <Link href="#" onClick={(e) => { e.preventDefault(); onOpen(it) }}><strong>{it.title}</strong></Link>,
     titleText: it.title,
     type: TYPE_LABELS[it.type],
     status: STATUS_LABELS[it.status],
@@ -344,6 +352,7 @@ export function Backlog({ onNavigate }) {
             <Tab value="board">Board</Tab>
             <Tab value="all">All tickets</Tab>
             <Tab value="queue">My queue</Tab>
+            {import.meta.env.DEV && <Tab value="team" icon="groups">Virtual team</Tab>}
           </TabList>
 
           <TabPanel value="board">
@@ -490,10 +499,21 @@ export function Backlog({ onNavigate }) {
               </Stack>
             )}
           </TabPanel>
+
+          {import.meta.env.DEV && (
+            <TabPanel value="team">
+              <VirtualTeamPanel />
+            </TabPanel>
+          )}
         </Tabs>
       </Section>
 
-      <TicketDetail item={selectedLive} open={!!selected} onClose={() => setSelected(null)} />
+      <TicketDetail
+        item={selectedLive}
+        open={!!selected}
+        onClose={() => setSelected(null)}
+        onOpenItem={(it) => setSelected(it)}
+      />
 
       <ContextMenu
         open={!!menu}
@@ -520,7 +540,7 @@ function QueueGroup({ title, icon, items, empty, onOpen }) {
       ) : (
         <Stack gap="xs">
           {items.map((it) => (
-            <Card key={it.id}>
+            <Card key={it.id} status={STATUS_STRIPE_TONE[it.status]} statusPulse={!!STATUS_STRIPE_PULSE[it.status]}>
               <Stack direction="row" gap="sm" align="center" justify="between" wrap>
                 <Stack gap="xs">
                   <Paragraph size="sm">{ticketRef(it.number)} · {it.title}</Paragraph>

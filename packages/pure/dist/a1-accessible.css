@@ -345,6 +345,13 @@
   --component-card-icon-size: 1.25rem;
   --component-card-padding: 1rem;
   --component-card-shadow: [object Object],[object Object];
+  --component-card-status-error: #dc2626;
+  --component-card-status-info: #2563eb;
+  --component-card-status-neutral: #64748b;
+  --component-card-status-pulse-duration: 1800ms;
+  --component-card-status-stripe-width: 0.25rem;
+  --component-card-status-success: #16a34a;
+  --component-card-status-warn: #d97706;
   --component-card-title-font-line-height: 1.25em;
   --component-card-title-font-size: 1.25rem;
   --component-card-title-font-weight: 700;
@@ -447,6 +454,9 @@
   --component-dialog-padding: 1.5rem;
   --component-dialog-shadow: [object Object],[object Object];
   --component-dialog-width: 35rem;
+  --component-dialog-width-lg: 45rem;
+  --component-dialog-width-sm: 27.5rem;
+  --component-dialog-width-xl: 57.5rem;
   --component-divider-size-lg: 0.25rem;
   --component-divider-size-md: 0.1875rem;
   --component-divider-size-sm: 0.125rem;
@@ -1066,6 +1076,12 @@
   --theme-a1-light-font-weight-body: 400;
   --theme-a1-light-font-weight-display: 900;
   --theme-a1-light-font-weight-heading: 700;
+  --theme-a1-marshmallow-font-family-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --theme-a1-marshmallow-font-family-display: 'Space Grotesk', 'Varela Round', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --theme-a1-marshmallow-font-family-heading: 'Space Grotesk', 'Varela Round', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --theme-a1-marshmallow-font-weight-body: 400;
+  --theme-a1-marshmallow-font-weight-display: 600;
+  --theme-a1-marshmallow-font-weight-heading: 500;
 }
 
 @media (prefers-color-scheme: dark) {

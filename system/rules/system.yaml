@@ -29,8 +29,25 @@ rules:
       - Paragraph
     requirement: Do not use uppercase transforms on content text.
     do: Write "Submit form" or "Recent activity" — sentence-case content reads clearly for all users.
-    dont: Apply text-transform uppercase or write ALL CAPS content, as screen readers may spell out individual characters.
+    dont: Apply text-transform uppercase or write all-caps content, as screen readers may spell out individual characters.
     applies_to:
       - content
       - typography
       - accessibility
+    enforcement:
+      eslint: no-uppercase-text
+      css: true
+
+  - id: system-tokens-only
+    components:
+      - System
+    requirement: Every visual value must come from a design token — never hardcode a raw colour, spacing, font, radius, shadow, or duration.
+    do: Reference a CSS custom property that maps to a Style Dictionary token, e.g. color of var(--semantic-color-action-background). If no token fits, add one to system/tokens/ first.
+    dont: Write a raw hex/rgb/hsl colour (or other raw value) in a style declaration, inline style, or component CSS. A raw fallback in var(--token, …) is allowed only for a token guaranteed to exist.
+    applies_to:
+      - css
+      - color
+      - consistency
+    enforcement:
+      eslint: no-raw-color
+      css: true

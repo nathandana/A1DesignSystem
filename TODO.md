@@ -107,6 +107,7 @@ _None._
 - [ ] **Button — distinct primary/tertiary variant icons** `P3 · XS` — the variant picker uses `star` (primary) vs `star_outline` (tertiary), which read similarly at small size; pick clearly distinct glyphs.
 - [ ] **Component list — A–Z view toggle** `P3 · S` — add a view control on the components list to show a flat A–Z list (no categories); persist the choice in localStorage. a1-web only.
 - [ ] **Card — subtle hero style** `P3 · S` — a lower-emphasis variant of the hero-card style. _Pairs with the Card image / badge-in-hero items._
+- [ ] **Card `status` — React Native parity** `P3 · S` — port the new web `status` / `statusLabel` / `statusPulse` (side stripe + badge + in-progress pulse, A1-188) to the React Native `Card`: an absolute inline-start stripe View, a badge, and an `Animated.loop` opacity pulse gated on `AccessibilityInfo.isReduceMotionEnabled` (+ listener). Validate on iOS + Android. _Web shipped React-only; RN was deferred because the pulse/reduced-motion needs on-device validation._
 - [ ] **Figure — overlay** `P3 · M` — an overlay on a Figure (e.g. a gradient scrim and/or content layered over the image). _Q: gradient scrim, text/caption overlay, or arbitrary content?_
 - [ ] **Image lightbox** `P3 · M` — click an image (Figure / image library) to open it full-screen in a dimmed overlay; Escape / click-out to close, optional zoom + prev/next across a set. Use the top layer per the z-index rules (Dialog/Popover). _Q: standalone DS component vs a Figure opt-in (`lightbox`)?_
 - [ ] **AI Chat component** `P3 · M` — a reusable AI chat surface with a **lighter overall tone** and a **loading bar for the "thinking" state**. _A reference image was attached but not captured here — re-share it (or save it into the repo) for the exact look._
@@ -142,7 +143,6 @@ _None._
 - [ ] **Preconfigured examples / sticker sheets** `P3 · M` — a tab of pre-built component recipes (common examples) with code snippets, like Storybook stories.
 - [ ] **In-app helper chatbot** `P3 · L` — an assistant that knows how the site works, can **navigate you to a page**, and help with a task. _Relates to the AI Chat component._
 - [ ] **Resizable editor panels** `P3 · M` — drag-resize the editor side panels.
-- [ ] **Help page screenshots** `P3 · S` — add screenshots to the Help pages.
 - [ ] **Video walkthroughs — prompt-to-MP4 pipeline** `P3 · L` — generate narrated video walkthroughs of features/flows from a prompt + a declarative spec. Pipeline:
   - **`walkthrough.yaml`** — the steps to demo (authored, or AI-generated from a prompt).
   - **Playwright runner** — opens the site, performs the steps, captures video/screenshots, and records event timings.

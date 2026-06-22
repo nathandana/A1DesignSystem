@@ -1,0 +1,6 @@
+# Never commit database dumps — they contain user data. Only README.md is tracked here.
+*.dump
+*.sql
+*.sql.gz
+*.gz
+*.tar

@@ -3,6 +3,7 @@ import {
   Banner,
   Button,
   ButtonContainer,
+  ChoiceGroup,
   Code,
   DefinitionList,
   Dialog,
@@ -12,12 +13,15 @@ import {
   Link,
   List,
   ListItem,
+  MessageBadge,
   Paragraph,
+  SelectField,
   Stack,
   Tab,
   TabList,
   TabPanel,
   Tabs,
+  TextField,
   TextareaField,
   Toolbar,
   ToolbarDivider,
@@ -25,39 +29,125 @@ import {
   ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
 import { resolveSrc } from '../lib/imageLibrary'
+import { getPersona } from '../services/backlog/personas'
 import {
-  COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, STATUS_ICON,
-  STATUS_LABELS, STATUSES, ticketRef,
+  COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_KINDS,
+  SCOPE_LABELS, STATUS_ICON, STATUS_LABELS, STATUSES, TYPE_ICON, TYPE_LABELS,
+  TYPES, ticketRef,
 } from '../services/backlog/types'
 import { useBacklog } from './BacklogContext'
-import {
-  ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
-} from './TicketBadges'
+import { TicketAiPrompt } from './TicketAiPrompt'
+import { TicketMergePanel } from './TicketMergePanel'
+import { TicketPersonaReview } from './TicketPersonaReview'
 
 function when(iso) {
   try { return new Date(iso).toLocaleString() } catch { return '' }
 }
+function reviewDate(iso) {
+  try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) } catch { return '' }
+}
 
 const KIND_ICON = { question: 'help', answer: 'reply', activity: 'history', comment: 'chat' }
+
+// Per-persona "reviewed" tags (Virtual Team). Each shows who reviewed and when.
+function ReviewTags({ reviews }) {
+  const entries = Object.entries(reviews || {})
+  if (!entries.length) return '—'
+  return (
+    <Stack direction="row" gap="xs" wrap>
+      {entries.map(([pid, r]) => {
+        const p = getPersona(pid)
+        return (
+          <MessageBadge key={pid} status="info" subtle size="sm" icon={p?.icon || 'smart_toy'}>
+            {(p?.role || pid)} · reviewed {reviewDate(r.at)}
+          </MessageBadge>
+        )
+      })}
+    </Stack>
+  )
+}
+
+// Sentinel option value for the free-text "Something else…" choice.
+const OTHER_VALUE = '__other__'
+
+// Inline multiple-choice mini-form for an unanswered persona question. The
+// requester picks an answer from a compact ChoiceGroup (radio tiles) — choosing
+// "Something else…" reveals a free-text field — then submits (A1-208: choice
+// groups for PO feedback, not a stack of buttons).
+function QuestionChoices({ options, allowOther, onAnswer }) {
+  const [selected, setSelected] = useState(null)
+  const [other, setOther] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  const isOther = selected === OTHER_VALUE
+  const choiceOptions = [
+    ...options.map((opt) => ({ value: opt, label: opt })),
+    ...(allowOther ? [{ value: OTHER_VALUE, label: 'Something else…', icon: 'edit' }] : []),
+  ]
+  const text = isOther ? other.trim() : selected
+  const canSubmit = !busy && !!selected && (!isOther || !!other.trim())
+
+  async function submit() {
+    if (!canSubmit) return
+    setBusy(true)
+    try { await onAnswer(text, isOther ? 'Other' : selected) } finally { setBusy(false) }
+  }
+
+  return (
+    <Stack gap="xs">
+      <ChoiceGroup
+        size="compact"
+        label="Your answer"
+        options={choiceOptions}
+        value={selected}
+        onChange={setSelected}
+      />
+      {isOther && (
+        <TextField
+          label="Other answer"
+          value={other}
+          onChange={(e) => setOther(e.target.value)}
+          autoComplete="off"
+        />
+      )}
+      <ButtonContainer align="start">
+        <Button size="sm" icon="reply" loading={busy} disabled={!canSubmit} onClick={submit}>
+          Submit answer
+        </Button>
+      </ButtonContainer>
+    </Stack>
+  )
+}
 
 // Status toolbar split: the common workflow stages sit inline; the rest live in a
 // "More" overflow menu so the bar stays compact.
 const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'done']
 const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
 
-function ThreadEntry({ entry }) {
+function ThreadEntry({ entry, answered, onAnswer }) {
   const isActivity = entry.kind === 'activity'
+  const persona = entry.meta?.persona // a virtual-team comment (e.g. the Product Owner)
+  const author = persona ? (entry.meta?.personaName || entry.userEmail) : (entry.userEmail || 'Someone')
+  const options = entry.kind === 'question' && Array.isArray(entry.meta?.options) ? entry.meta.options : null
   return (
     <Stack direction="row" gap="sm" align="start">
-      <Icon name={KIND_ICON[entry.kind] || 'chat'} size="sm" color="muted" />
+      <Icon name={persona ? 'smart_toy' : (KIND_ICON[entry.kind] || 'chat')} size="sm" color={persona ? 'accent' : 'muted'} />
       <Stack gap="xs">
         <Paragraph size="xs" color="muted">
-          {entry.userEmail || 'Someone'}
+          {author}
+          {persona && ' · virtual'}
           {entry.kind === 'question' && ' · asked the requester'}
           {entry.kind === 'answer' && ' · answered'}
           {' · '}{when(entry.createdAt)}
         </Paragraph>
         <Paragraph size="sm" color={isActivity ? 'muted' : undefined}>{entry.body}</Paragraph>
+        {options && !answered && onAnswer && (
+          <QuestionChoices
+            options={options}
+            allowOther={!!entry.meta?.allowOther}
+            onAnswer={(text, choice) => onAnswer(entry.id, text, choice)}
+          />
+        )}
       </Stack>
     </Stack>
   )
@@ -107,13 +197,90 @@ function TicketDescription({ text }) {
   )
 }
 
+// ── Inline-editable content fields (A1-208) ──────────────────────────────────
+// "Make all fields editable that can be." Title commits on blur (Enter confirms,
+// empty reverts); description toggles to a textarea with Save/Cancel so its
+// rendered-markdown view is preserved when not editing. Type, status, priority,
+// size and scope are edited via the toolbars/select in the Details tab and commit
+// immediately (matching the existing inline-triage pattern).
+
+function TitleField({ item, onSave }) {
+  const [value, setValue] = useState(item.title)
+  // Reseed when the ticket (or its title) changes — but not on every keystroke,
+  // since item.title only changes after a committed save.
+  useEffect(() => { setValue(item.title) }, [item.id, item.title])
+  function commit() {
+    const next = value.trim()
+    if (!next) { setValue(item.title); return } // titles can't be emptied
+    if (next !== item.title) onSave({ title: next })
+  }
+  return (
+    <TextField
+      label="Title"
+      required
+      value={value}
+      autoComplete="off"
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur() } }}
+    />
+  )
+}
+
+function DescriptionField({ item, onSave }) {
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(item.description ?? '')
+  const [busy, setBusy] = useState(false)
+  function start() { setValue(item.description ?? ''); setEditing(true) }
+  async function save() {
+    setBusy(true)
+    try {
+      await onSave({ description: value.trim() ? value : null })
+      setEditing(false)
+    } finally { setBusy(false) }
+  }
+  if (editing) {
+    return (
+      <Stack gap="xs">
+        <TextareaField
+          label="Description"
+          rows="md"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <ButtonContainer align="start">
+          <Button size="sm" icon="save" loading={busy} onClick={save}>Save description</Button>
+          <Button size="sm" variant="secondary" disabled={busy} onClick={() => setEditing(false)}>Cancel</Button>
+        </ButtonContainer>
+      </Stack>
+    )
+  }
+  return (
+    <Stack gap="xs">
+      <Paragraph as="span" size="xs" color="muted">Description</Paragraph>
+      {item.description
+        ? <TicketDescription text={item.description} />
+        : <Paragraph size="sm" color="muted">No description yet.</Paragraph>}
+      <ButtonContainer align="start">
+        <Button size="sm" variant="tertiary" icon="edit" onClick={start}>Edit description</Button>
+      </ButtonContainer>
+    </Stack>
+  )
+}
+
 /**
- * Full ticket view, split across two tabs: **Details** (description, metadata, inline
- * triage toolbars, attachments) and **Activity** (the comment / Q&A thread + activity
- * log). A maintainer can "Ask the requester" (routes a question into their queue); the
- * requester answers.
+ * Full ticket view, split across tabs (A1-207):
+ *  - **Details** — description, metadata, inline triage toolbars, attachments.
+ *  - **Comments** — the comment / Q&A thread + activity log. A maintainer can "Ask the
+ *    requester" (routes a question into their queue); the requester answers.
+ *  - **Linked tickets** — the similarity finder + merge-duplicates panel.
+ *  - **Build with AI** *(dev only)* — a copy-pasteable AI prompt built from the ticket.
+ *  - **Virtual PO** *(dev only)* — the local Virtual Team per-ticket review.
+ *
+ * The last two are gated behind `import.meta.env.DEV` (the persona engine is local-only;
+ * the AI prompt is a dev convenience) so they never appear in production.
  */
-export function TicketDetail({ item, open, onClose }) {
+export function TicketDetail({ item, open, onClose, onOpenItem }) {
   const backlog = useBacklog()
   const [thread, setThread] = useState([])
   const [draft, setDraft] = useState('')
@@ -133,6 +300,10 @@ export function TicketDetail({ item, open, onClose }) {
 
   if (!item) return null
 
+  const allItems = backlog?.items ?? []
+  // The ticket this one was merged into (when it's a duplicate).
+  const canonical = item.duplicateOf ? allItems.find((i) => i.id === item.duplicateOf) : null
+
   const reload = () => backlog?.loadComments(item.id).then(setThread)
   async function patch(p) { await backlog?.update(item, p) }
 
@@ -143,6 +314,23 @@ export function TicketDetail({ item, open, onClose }) {
     try {
       await backlog?.comment(item, kind, body)
       setDraft('')
+      await reload()
+    } finally { setBusy(false) }
+  }
+
+  // Which questions already have an answer (so their inline choice form is hidden).
+  const answeredIds = new Set(
+    thread.filter((c) => c.kind === 'answer' && c.meta?.answersCommentId).map((c) => c.meta.answersCommentId),
+  )
+  // Comment-tab badge counts only real messages (comments / questions / answers), not the
+  // activity log. The dev-only tabs (Build with AI, Virtual PO) wrap local-only tooling.
+  const commentCount = thread.filter((c) => c.kind !== 'activity').length
+  const isDev = import.meta.env.DEV
+  async function handleAnswer(questionId, body, choice) {
+    if (busy) return
+    setBusy(true)
+    try {
+      await backlog?.answer(item, questionId, body, choice)
       await reload()
     } finally { setBusy(false) }
   }
@@ -168,6 +356,7 @@ export function TicketDetail({ item, open, onClose }) {
     <Dialog
       open={open}
       onClose={onClose}
+      size="lg"
       title={`${ticketRef(item.number)} · ${item.title}`}
       footer={<Button variant="secondary" onClick={onClose}>Done</Button>}
     >
@@ -178,20 +367,48 @@ export function TicketDetail({ item, open, onClose }) {
           </Banner>
         )}
 
+        {item.duplicateOf && (
+          <Banner status="info" variant="inline">
+            <Stack direction="row" gap="xs" align="center" wrap>
+              <span>Merged as a duplicate{canonical ? ' of' : '.'}</span>
+              {canonical && (
+                <Link href="#" onClick={(e) => { e.preventDefault(); onOpenItem?.(canonical) }}>
+                  {ticketRef(canonical.number)} · {canonical.title}
+                </Link>
+              )}
+            </Stack>
+          </Banner>
+        )}
+
         {/* equalHeight keeps the panel area at the tallest tab's height, so switching
-            Details/Activity doesn't resize the dialog and move the footer. */}
-        <Tabs value={tab} onChange={setTab} equalHeight>
+            tabs doesn't resize the dialog and move the footer. size="compact" = small
+            tabs (A1-208), which suit the denser, wider ticket dialog. */}
+        <Tabs value={tab} onChange={setTab} equalHeight size="compact">
           <TabList>
-            <Tab value="details">Details</Tab>
-            <Tab value="activity">Activity</Tab>
+            <Tab value="details" icon="info">Details</Tab>
+            <Tab value="comments" icon="forum" count={commentCount || undefined}>Comments</Tab>
+            <Tab value="linked" icon="merge">Linked tickets</Tab>
+            {isDev && <Tab value="build" icon="smart_toy">Build with AI</Tab>}
+            {isDev && <Tab value="po" icon="reviews">Virtual PO</Tab>}
           </TabList>
 
           <TabPanel value="details">
             <Stack gap="md">
-              {item.description && <TicketDescription text={item.description} />}
+              {/* Editable content (A1-208): title + description */}
+              <TitleField item={item} onSave={patch} />
+              <DescriptionField item={item} onSave={patch} />
 
-              {/* Triage controls — toolbars */}
+              {/* Triage controls — toolbars (commit immediately) */}
               <Stack gap="sm">
+                <Toolbar label="Type" aria-label="Type">
+                  <ToolbarGroup
+                    aria-label="Type"
+                    showLabels
+                    value={item.type}
+                    onChange={(v) => v && patch({ type: v })}
+                    options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t], icon: TYPE_ICON[t] }))}
+                  />
+                </Toolbar>
                 <Toolbar label="Status" aria-label="Status">
                   <ToolbarGroup
                     aria-label="Status"
@@ -228,16 +445,22 @@ export function TicketDetail({ item, open, onClose }) {
                 </Toolbar>
               </Stack>
 
+              {/* Scope kind (commits immediately; a specific ref/label resets on kind change) */}
+              <SelectField
+                label="Scope"
+                size="compact"
+                value={item.scopeKind}
+                hint={item.scopeLabel ? `Currently scoped to ${item.scopeLabel}` : undefined}
+                onChange={(e) => patch({ scopeKind: e.target.value, scopeRef: null, scopeLabel: null })}
+              >
+                {SCOPE_KINDS.map((k) => <option key={k} value={k}>{SCOPE_LABELS[k]}</option>)}
+              </SelectField>
+
               <DefinitionList
                 direction="row"
                 labelWidth="fixed"
                 size="md"
                 items={[
-                  { label: 'Type', value: <TypeBadge type={item.type} /> },
-                  { label: 'Status', value: <StatusBadge status={item.status} /> },
-                  { label: 'Priority', value: item.priority ? <PriorityBadge priority={item.priority} /> : '—' },
-                  { label: 'Size', value: item.complexity ? <ComplexityBadge complexity={item.complexity} full /> : '—' },
-                  { label: 'Scope', value: item.scopeKind === 'general' ? 'General' : <ScopeBadge scopeKind={item.scopeKind} scopeLabel={item.scopeLabel} /> },
                   { label: 'Requested by', value: item.createdByEmail || 'Unknown' },
                   { label: 'Assignee', value: assigneeCell },
                   {
@@ -256,6 +479,9 @@ export function TicketDetail({ item, open, onClose }) {
                     ),
                   },
                   { label: 'Created', value: when(item.createdAt) },
+                  ...(Object.keys(item.reviews ?? {}).length
+                    ? [{ label: 'Reviews', value: <ReviewTags reviews={item.reviews} /> }]
+                    : []),
                 ]}
               />
 
@@ -268,14 +494,22 @@ export function TicketDetail({ item, open, onClose }) {
                   ))}
                 </Stack>
               )}
+
             </Stack>
           </TabPanel>
 
-          <TabPanel value="activity">
+          <TabPanel value="comments">
             <Stack gap="sm">
               {thread.length === 0
                 ? <Paragraph size="sm" color="muted">No comments yet.</Paragraph>
-                : thread.map((entry) => <ThreadEntry key={entry.id} entry={entry} />)}
+                : thread.map((entry) => (
+                  <ThreadEntry
+                    key={entry.id}
+                    entry={entry}
+                    answered={answeredIds.has(entry.id)}
+                    onAnswer={handleAnswer}
+                  />
+                ))}
 
               <TextareaField
                 label="Add to the thread"
@@ -300,6 +534,32 @@ export function TicketDetail({ item, open, onClose }) {
               </ButtonContainer>
             </Stack>
           </TabPanel>
+
+          <TabPanel value="linked">
+            {/* Renders the duplicate→canonical banner when this ticket is itself a
+                duplicate, otherwise the similarity finder + merge controls. */}
+            <TicketMergePanel
+              item={item}
+              items={allItems}
+              onMerge={(dup, canon) => backlog?.merge(dup, canon)}
+              onOpenItem={onOpenItem}
+            />
+          </TabPanel>
+
+          {isDev && (
+            <TabPanel value="build">
+              <TicketAiPrompt item={item} />
+            </TabPanel>
+          )}
+
+          {isDev && (
+            <TabPanel value="po">
+              <Stack gap="xs">
+                <Paragraph as="span" size="xs" color="muted">Virtual team (local) — evaluate this ticket; re-runs when it changes</Paragraph>
+                <TicketPersonaReview item={item} />
+              </Stack>
+            </TabPanel>
+          )}
         </Tabs>
       </Stack>
     </Dialog>

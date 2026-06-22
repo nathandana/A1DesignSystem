@@ -10,6 +10,8 @@ rules:
       - accessibility
       - interaction
       - semantic-html
+    enforcement:
+      eslint: no-nested-interactive-in-card
 
   - id: card-navigation-single-destination
     components:
@@ -39,7 +41,7 @@ rules:
       - Card
       - Grid
     requirement: A set of two or more sibling Cards (product tiles, feature cards, profiles) should be laid out in a Grid, not placed loosely in a Stack or Section.
-    do: Wrap repeated Cards in `<Grid columns={{ xs: 1, md: 3 }} gap="md">` so they form even rows that reflow responsively.
+    do: 'Wrap repeated Cards in `<Grid columns={{ xs: 1, md: 3 }} gap="md">` so they form even rows that reflow responsively.'
     dont: Drop several Cards directly into a Section or Stack where they stretch full-width or wrap unevenly.
     applies_to:
       - layout
@@ -56,3 +58,14 @@ rules:
       - layout
       - consistency
       - media
+
+  - id: card-status-not-color-only
+    components:
+      - Card
+    requirement: A Card's `status` must be conveyed by text, not by the colour stripe alone. Colour-only status fails WCAG 2.1 SC 1.4.1 Use of Color (Level A). If the status is shown only by colour, it is not WCAG compliant.
+    do: Whenever you set `status`, also display the status as text — pass `statusLabel` so the stripe is paired with a text badge, or make sure the status is named in visible text the card carries or sits within (a status badge in the card content, or a labelled column/lane the card belongs to, e.g. a Kanban board grouped by status). Treat the stripe and the `statusPulse` animation as decorative reinforcement of that text.
+    dont: Set `status` with no `statusLabel` and no other visible status text, so the colour stripe (or the pulse animation) is the only way to tell one status from another. Never rely on colour or motion alone to communicate status.
+    applies_to:
+      - accessibility
+      - content
+      - color

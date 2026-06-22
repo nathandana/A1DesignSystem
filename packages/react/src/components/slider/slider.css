@@ -4,9 +4,12 @@
 
 .a1-slider {
   /* Variant layer — every value resolves to a Style Dictionary token. */
-  --a1-slider-track-height: var(--base-spacing-8);
-  --a1-slider-thumb-size: var(--base-spacing-20);
-  --a1-slider-track-color: var(--semantic-color-border-subtle);
+  /* The track is tall enough to *contain* the thumb (the handle sits inside the
+     track, not over it) — a larger touch target with a subtle bordered channel. */
+  --a1-slider-track-height: var(--base-spacing-24);
+  --a1-slider-thumb-size: var(--base-spacing-24);
+  --a1-slider-track-color: var(--semantic-color-surface-raised);
+  --a1-slider-track-border: var(--semantic-color-border-default);
   --a1-slider-fill-color: var(--semantic-color-action-background);
   --a1-slider-thumb-color: var(--semantic-color-action-background);
   --a1-slider-thumb-ring: var(--semantic-color-surface-page);
@@ -25,9 +28,8 @@
 /* ── Sizes (match the field family: compact / default / comfortable) ─────────── */
 
 .a1-slider--compact {
-  /* Track + thumb are one step up from the smallest scale so the compact slider
-     stays grabbable; the label/detent text keeps the compact field-family size. */
-  --a1-slider-track-height: var(--base-spacing-8);
+  /* The track contains the thumb at every size (4px inset all round). */
+  --a1-slider-track-height: var(--base-spacing-20);
   --a1-slider-thumb-size: var(--base-spacing-20);
   --a1-slider-label-size: var(--semantic-font-size-form-label-compact);
   --a1-slider-label-weight: var(--component-field-compact-label-font-weight);
@@ -35,8 +37,8 @@
 }
 
 .a1-slider--comfortable {
-  --a1-slider-track-height: var(--base-spacing-12);
-  --a1-slider-thumb-size: var(--base-spacing-24);
+  --a1-slider-track-height: var(--base-spacing-32);
+  --a1-slider-thumb-size: var(--base-spacing-32);
   --a1-slider-label-size: var(--semantic-font-size-form-label-comfortable);
 }
 
@@ -63,7 +65,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  block-size: var(--a1-slider-thumb-size);
+  block-size: var(--a1-slider-track-height);
 }
 
 .a1-slider__input {
@@ -71,7 +73,7 @@
   appearance: none;
   margin: 0;
   inline-size: 100%;
-  block-size: var(--a1-slider-thumb-size);
+  block-size: var(--a1-slider-track-height);
   background: transparent;
   cursor: pointer;
 }
@@ -80,9 +82,12 @@
   outline: none;
 }
 
-/* Track — WebKit/Blink. Fill is drawn as a gradient up to --a1-slider-pct. */
+/* Track — WebKit/Blink. Fill is drawn as a gradient up to --a1-slider-pct.
+   A subtle border outlines the whole channel; box-sizing keeps the height stable. */
 .a1-slider__input::-webkit-slider-runnable-track {
+  box-sizing: border-box;
   block-size: var(--a1-slider-track-height);
+  border: var(--base-spacing-1) solid var(--a1-slider-track-border);
   border-radius: var(--base-radius-pill);
   background: linear-gradient(
     to right,
@@ -95,7 +100,9 @@
 
 /* Track — Firefox. */
 .a1-slider__input::-moz-range-track {
+  box-sizing: border-box;
   block-size: var(--a1-slider-track-height);
+  border: var(--base-spacing-1) solid var(--a1-slider-track-border);
   border-radius: var(--base-radius-pill);
   background: var(--a1-slider-track-color);
 }
@@ -148,11 +155,11 @@
 
 .a1-slider__tick {
   position: absolute;
-  inline-size: var(--base-spacing-4);
-  block-size: var(--base-spacing-4);
+  inline-size: var(--base-spacing-6);
+  block-size: var(--base-spacing-6);
   border-radius: var(--base-radius-pill);
   background: var(--semantic-color-border-default);
-  transform: translate(-50%, -50%);
+  transform: translate(-60%, -33%);
 }
 
 .a1-slider__tick[data-active] {

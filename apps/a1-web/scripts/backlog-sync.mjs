@@ -47,7 +47,7 @@ function getClient() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-function itemFromRow(r, comments) {
+function itemFromRow(r, comments, refById) {
   return {
     id: r.id,
     number: r.number,
@@ -63,6 +63,9 @@ function itemFromRow(r, comments) {
     scopeLabel: r.scope_label ?? null,
     assigneeEmail: r.assignee_email ?? null,
     awaitingRequester: !!r.awaiting_requester,
+    // Read-only link (set by the in-app merge): the ticket this one was merged into.
+    duplicateOf: r.duplicate_of ?? null,
+    duplicateOfRef: r.duplicate_of ? (refById?.get(r.duplicate_of) ?? null) : null,
     votes: r.vote_count ?? 0,
     createdByEmail: r.created_by_email ?? null,
     createdAt: r.created_at,
@@ -85,7 +88,8 @@ async function fetchAll(sb) {
     if (!byItem.has(c.item_id)) byItem.set(c.item_id, [])
     byItem.get(c.item_id).push(c)
   }
-  return (items || []).map((r) => itemFromRow(r, byItem.get(r.id)))
+  const refById = new Map((items || []).map((r) => [r.id, `A1-${r.number}`]))
+  return (items || []).map((r) => itemFromRow(r, byItem.get(r.id), refById))
 }
 
 function toMarkdown(tickets) {
@@ -111,6 +115,7 @@ function toMarkdown(tickets) {
       if (t.createdByEmail) meta.push(`by ${t.createdByEmail}`)
       meta.push(`${t.votes} votes`)
       if (t.awaitingRequester) meta.push('awaiting requester')
+      if (t.duplicateOfRef) meta.push(`duplicate of ${t.duplicateOfRef}`)
       lines.push(`_${meta.join(' · ')}_`, '')
       if (t.description) lines.push(t.description, '')
       const qs = t.comments.filter((c) => c.kind === 'question' || c.kind === 'answer')

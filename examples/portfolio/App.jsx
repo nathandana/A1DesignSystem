@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Cluster,
   IconButton,
   LabelsProvider,
   Link,
@@ -159,21 +160,26 @@ export function App() {
   );
 
   const footer = (
-    <div className="pf-footer">
+    <Stack
+      className="pf-footer"
+      direction={{ xs: "column", md: "row" }}
+      align="center"
+      justify="between"
+      gap="md"
+      wrap
+    >
       <Paragraph size="sm" color="muted">
         Nathan Dana
       </Paragraph>
-      <nav className="pf-footer-links" aria-label="Footer navigation">
+      <Cluster as="nav" aria-label="Footer navigation" gap={24} justify="center">
         <Link
           href={getRoutePath("resume")}
-         
           onClick={(event) => navigate("resume", event)}
         >
           Résumé
         </Link>
         <Link
           href="https://www.linkedin.com/in/midbrain"
-         
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -182,11 +188,11 @@ export function App() {
         <Link href="mailto:nathan.dana@gmail.com">
           nathan.dana@gmail.com
         </Link>
-      </nav>
+      </Cluster>
       <Paragraph size="sm" color="muted">
         © {new Date().getFullYear()} Nathan Dana
       </Paragraph>
-    </div>
+    </Stack>
   );
 
   return (

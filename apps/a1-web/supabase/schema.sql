@@ -173,9 +173,16 @@ create table if not exists public.backlog_items (
   duplicate_of       uuid        references public.backlog_items(id) on delete set null,
   attachment_refs    text[]      not null default '{}',                            -- a1img://<id> refs
   vote_count         integer     not null default 0,                               -- denormalized (trigger-kept)
+  reviews            jsonb       not null default '{}'::jsonb,                      -- virtual-team reviews, keyed by persona id: { "product-owner": { at, sig } }
   created_at         timestamptz not null default now(),
   updated_at         timestamptz not null default now()
 );
+-- Existing DBs: add the virtual-team review column.
+--   alter table public.backlog_items add column if not exists reviews jsonb not null default '{}'::jsonb;
+-- Existing DBs predating the merge / link feature (A1-161): ensure the duplicate-link
+-- column exists (it has shipped in the create-table above since the backlog launched, so
+-- only the very earliest DBs need this).
+--   alter table public.backlog_items add column if not exists duplicate_of uuid references public.backlog_items(id) on delete set null;
 
 create index if not exists backlog_items_status_idx   on public.backlog_items (status);
 create index if not exists backlog_items_created_idx   on public.backlog_items (created_by);

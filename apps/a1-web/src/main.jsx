@@ -147,6 +147,7 @@ const themeOptions = [
   { value: 'a1Heritage', label: 'Heritage' },
   { value: 'crochet', label: 'Crochet' },
   { value: 'aperture', label: 'Aperture' },
+  { value: 'marshmallow', label: 'Marshmallow' },
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
 ]
@@ -527,6 +528,7 @@ function App() {
     document.documentElement.classList.toggle('a1-theme-fresh', theme === 'fresh')
     document.documentElement.classList.toggle('a1-theme-crochet', theme === 'crochet')
     document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
+    document.documentElement.classList.toggle('a1-theme-marshmallow', theme === 'marshmallow')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)

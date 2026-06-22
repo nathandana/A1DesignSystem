@@ -36,6 +36,7 @@ const COLUMNS = [
   { key: 'component', label: 'Component', sortable: true },
   { key: 'requirement', label: 'Requirement', sortable: true },
   { key: 'appliesTo', label: 'Applies to' },
+  { key: 'enforced', label: 'Enforced' },
   { key: 'source', label: 'Source', sortable: true },
   { key: 'actions', label: '', type: 'actions' },
 ]
@@ -71,6 +72,7 @@ export function RuleEditor({ onNavigate }) {
     { key: 'component', label: 'Component', type: 'single', options: componentFilterOptions },
     { key: 'appliesToValues', label: 'Applies to', type: 'single', options: categoryFilterOptions },
     { key: 'sourceValue', label: 'Source', type: 'single', options: [{ value: 'builtin', label: 'Built-in' }, { value: 'user', label: 'Custom' }] },
+    { key: 'enforcedValue', label: 'Enforcement', type: 'single', options: [{ value: 'enforced', label: 'Enforced (lint)' }, { value: 'docs', label: 'Docs only' }] },
   ]
   const SEARCHABLE = [
     { key: 'component', label: 'Component' },
@@ -85,6 +87,14 @@ export function RuleEditor({ onNavigate }) {
     appliesTo: rule.appliesTo.join(', ') || '—',
     appliesToValues: rule.appliesTo, // array — for the "Applies to" filter
     sourceValue: rule.source,        // 'builtin' | 'user' — for the Source filter
+    enforcedValue: rule.enforcement ? 'enforced' : 'docs',
+    enforced: rule.enforcement ? (
+      <MessageBadge size="sm" subtle status="success" icon="gpp_good">
+        {rule.enforcement.css ? 'Lint + CSS' : 'Lint'}
+      </MessageBadge>
+    ) : (
+      <MessageBadge size="sm" subtle status="neutral">Docs</MessageBadge>
+    ),
     source: (
       <MessageBadge size="sm" subtle status={rule.source === 'user' ? 'info' : 'neutral'}>
         {rule.source === 'user' ? 'Custom' : 'Built-in'}

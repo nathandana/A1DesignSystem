@@ -1,0 +1,27 @@
+{
+  "name": "eslint-plugin-a1",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ESLint rules that enforce the A1 Design System design rules (system/rules/*.yaml) on real code.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "a1",
+    "design-system"
+  ],
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
+  "license": "MIT"
+}

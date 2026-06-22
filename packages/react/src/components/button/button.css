@@ -142,6 +142,13 @@
   --a1-button-border-hover: var(--component-button-tertiary-border-hover);
   --a1-button-border-pressed: var(--component-button-tertiary-border-pressed);
   --a1-button-border-width: var(--component-button-tertiary-border-width);
+  /* Ghost/tertiary buttons stay flat: a raised drop shadow would draw a halo
+     around the transparent body. Themes that opt buttons into a neumorphic
+     shadow (e.g. Marshmallow) only lift the solid variants. No-op for themes
+     that leave --component-button-box-shadow at its default of none. */
+  --component-button-box-shadow: none;
+  --component-button-box-shadow-hover: none;
+  --component-button-box-shadow-active: none;
 }
 
 .a1-button--destructive {

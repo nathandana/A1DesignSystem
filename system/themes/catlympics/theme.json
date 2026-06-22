@@ -160,49 +160,7 @@
       "--component-heading-font-weight-display": "var(--theme-a1-catlympics-font-weight-display)",
 
       "--a1-icon-font-family": "'Material Symbols Rounded'",
-      "--a1-icon-weight": "600"
-    },
-    ".a1-theme-catlympics.a1-theme-light, .a1-theme-light.a1-theme-catlympics, .a1-theme-catlympics.a1-theme-dark, .a1-theme-dark.a1-theme-catlympics": {
-      "color-scheme": "light",
-      "--semantic-color-text-default": "var(--base-color-neutral-900)",
-      "--semantic-color-text-muted": "var(--base-color-neutral-700)",
-      "--semantic-color-text-inverse": "var(--base-color-neutral-0)",
-      "--semantic-color-text-accent": "var(--base-color-accent-700)",
-      "--semantic-color-surface-page": "var(--base-color-neutral-0)",
-      "--semantic-color-surface-panel": "var(--base-color-neutral-50)",
-      "--semantic-color-surface-raised": "var(--base-color-neutral-100)",
-      "--semantic-color-border-subtle": "var(--base-color-neutral-200)",
-      "--semantic-color-border-default": "var(--base-color-neutral-300)",
-      "--semantic-color-border-strong": "var(--base-color-neutral-500)",
-      "--semantic-color-action-background": "var(--base-color-accent-500)",
-      "--semantic-color-action-background-hover": "var(--base-color-accent-400)",
-      "--semantic-color-action-background-pressed": "var(--base-color-accent-700)",
-      "--semantic-color-action-foreground": "var(--base-color-neutral-900)",
-      "--semantic-color-action-foreground-pressed": "var(--base-color-neutral-0)",
-      "--semantic-color-action-surface": "var(--base-color-accent-50)",
-      "--semantic-color-action-border": "var(--base-color-accent-300)",
-
-      "--component-button-primary-background": "var(--base-color-accent-400)",
-      "--component-button-primary-background-hover": "var(--base-color-accent-300)",
-      "--component-button-primary-background-pressed": "var(--base-color-accent-200)",
-      "--component-button-primary-foreground": "var(--base-color-accent-900)",
-      "--component-button-primary-foreground-hover": "var(--base-color-neutral-900)",
-      "--component-button-primary-foreground-pressed": "var(--base-color-neutral-900)",
-      "--component-button-primary-border": "var(--semantic-color-action-background)",
-      "--component-button-secondary-background": "var(--base-color-accent-50)",
-      "--component-button-secondary-background-hover": "var(--base-color-accent-100)",
-      "--component-button-secondary-background-pressed": "var(--base-color-accent-200)",
-      "--component-button-secondary-foreground": "var(--base-color-accent-800)",
-      "--component-button-secondary-foreground-hover": "var(--base-color-accent-700)",
-      "--component-button-secondary-foreground-pressed": "var(--base-color-accent-600)",
-      "--component-button-secondary-border": "var(--base-color-accent-800)",
-      "--component-button-tertiary-background": "var(--base-color-accent-50)",
-      "--component-button-tertiary-background-hover": "var(--base-color-accent-50)",
-      "--component-button-tertiary-background-pressed": "var(--base-color-accent-100)",
-      "--component-button-tertiary-foreground": "var(--base-color-accent-700)",
-      "--component-button-tertiary-foreground-hover": "var(--base-color-accent-700)",
-      "--component-button-tertiary-foreground-pressed": "var(--base-color-accent-800)",
-      "--component-button-tertiary-border": "var(--base-color-accent-50)",
+      "--a1-icon-weight": "600",
 
       "--a1-field-hover-background": "var(--base-color-neutral-50)",
       "--a1-field-hover-border-color": "var(--base-color-neutral-600)",
@@ -211,6 +169,9 @@
       "--a1-field-read-only-background": "var(--base-color-neutral-50)",
       "--a1-field-read-only-border-color": "var(--base-color-neutral-200)",
       "--a1-field-read-only-text": "var(--base-color-neutral-900)"
+    },
+    ".a1-theme-catlympics.a1-theme-dark, .a1-theme-dark.a1-theme-catlympics": {
+      "color-scheme": "light"
     }
   },
   "labels": {

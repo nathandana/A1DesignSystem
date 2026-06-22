@@ -15,6 +15,10 @@ const meta = {
       control: "inline-radio",
       options: [undefined, "success", "error", "warn", "info", "neutral"],
     },
+    size: {
+      control: "inline-radio",
+      options: ["sm", "md", "lg", "xl"],
+    },
   },
 };
 
@@ -157,6 +161,36 @@ export const WithRichContent = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
+    await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+export const Wide = {
+  name: "Wide (size=lg)",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open wide dialog</Button>
+        <Dialog
+          open={open}
+          size="lg"
+          onClose={() => setOpen(false)}
+          title="Ticket details"
+          footer={<Button variant="secondary" onClick={() => setOpen(false)}>Done</Button>}
+        >
+          <Paragraph color="muted">
+            Use a wider dialog for content-rich, multi-column, or tabbed layouts where the default
+            560px is too cramped — for example a record detail view with editable fields and
+            secondary panels. The width still caps at the viewport on small screens.
+          </Paragraph>
+        </Dialog>
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /open wide dialog/i }));
     await waitFor(() => within(document.body).getByRole("dialog"));
   },
 };

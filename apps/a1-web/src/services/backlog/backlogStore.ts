@@ -148,6 +148,68 @@ export async function updateItem(
   return updated;
 }
 
+// ── Merge / link (A1-161) ─────────────────────────────────────────────────────
+
+/**
+ * Merge `duplicate` into `canonical` — "join two similar tickets into one". The duplicate
+ * is closed (status `duplicate`, `duplicateOf` → canonical) and its thread, votes, and
+ * description move to the survivor so nothing is lost. Writes a clear activity note on
+ * both tickets and notifies the survivor's creator. Returns the closed duplicate.
+ */
+export async function mergeTickets(
+  duplicate: BacklogItem, canonical: BacklogItem,
+): Promise<BacklogItem | null> {
+  if (duplicate.id === canonical.id) return null;
+  const be = getBackend();
+  const dupRef = ticketRef(duplicate.number);
+  const canRef = ticketRef(canonical.number);
+
+  // 1) Move the discussion thread + votes onto the survivor.
+  await be.mergeItem(duplicate.id, canonical.id);
+
+  // 2) Preserve the duplicate's description as a comment so no agreed content is dropped.
+  const desc = (duplicate.description ?? '').trim();
+  if (desc) {
+    await be.addComment({
+      itemId: canonical.id, kind: 'comment',
+      body: `Merged from ${dupRef} — “${duplicate.title}”:\n\n${desc}`,
+      meta: { mergedFrom: duplicate.id, mergedFromRef: dupRef },
+      userId: actorId(), userEmail: currentUser?.email ?? null,
+    });
+  }
+
+  // 3) Activity note on the survivor.
+  await be.addComment({
+    itemId: canonical.id, kind: 'activity',
+    body: `Merged ${dupRef} (“${duplicate.title}”) into this ticket`,
+    meta: { field: 'merge', mergedFrom: duplicate.id, mergedFromRef: dupRef },
+    userId: actorId(), userEmail: currentUser?.email ?? null,
+  });
+
+  // 4) Close the duplicate (this logs the status change + notifies its stakeholders).
+  const closed = await updateItem(duplicate, {
+    status: 'duplicate', duplicateOf: canonical.id, awaitingRequester: false,
+  });
+
+  // 5) Activity note + link on the closed duplicate.
+  await be.addComment({
+    itemId: duplicate.id, kind: 'activity',
+    body: `Closed as a duplicate of ${canRef} (“${canonical.title}”)`,
+    meta: { field: 'merge', duplicateOf: canonical.id, duplicateOfRef: canRef },
+    userId: actorId(), userEmail: currentUser?.email ?? null,
+  });
+
+  // 6) Tell the survivor's creator that a ticket was merged into theirs.
+  if (canonical.createdBy && canonical.createdBy !== actorId()) {
+    await be.addNotifications([{
+      userId: canonical.createdBy, itemId: canonical.id, kind: 'comment',
+      body: `${actorEmail()} merged ${dupRef} into ${canRef}`,
+    }]);
+  }
+
+  return closed ?? duplicate;
+}
+
 // ── Comments / Q&A thread ─────────────────────────────────────────────────────
 
 export async function addComment(
@@ -181,6 +243,59 @@ export async function addComment(
     }
   }
   await be.addNotifications(notifs);
+  return comment;
+}
+
+/**
+ * Add a comment authored by a virtual-team persona (the Virtual Team feature). The
+ * comment is tagged in `meta` and carries the persona's virtual email so the UI can
+ * render it as the persona rather than the signed-in user. Questions still route to the
+ * requester's queue + notify them, exactly like a human-asked question.
+ */
+export async function addPersonaComment(
+  item: BacklogItem, kind: CommentKind, body: string,
+  persona: { id: string; name: string; email: string },
+  extraMeta?: Record<string, unknown>,
+): Promise<BacklogComment> {
+  const be = getBackend();
+  const comment = await be.addComment({
+    itemId: item.id, kind, body: body.trim(),
+    meta: { persona: persona.id, personaName: persona.name, ...(extraMeta ?? {}) },
+    userId: actorId(), userEmail: persona.email,
+  });
+  if (kind === 'question') {
+    await be.updateItem(item.id, { awaitingRequester: true });
+    if (item.createdBy && item.createdBy !== actorId()) {
+      await be.addNotifications([{
+        userId: item.createdBy, itemId: item.id, kind: 'question',
+        body: `${persona.name} asked a question on ${ticketRef(item.number)}`,
+      }]);
+    }
+  }
+  return comment;
+}
+
+/**
+ * Answer a specific question comment inline (e.g. a multiple-choice answer to a PO
+ * question). Links to the question via `meta.answersCommentId`, records the chosen
+ * option, clears the awaiting-answer flag, and notifies the assignee.
+ */
+export async function answerQuestion(
+  item: BacklogItem, questionId: string, body: string, choice?: string,
+): Promise<BacklogComment> {
+  const be = getBackend();
+  const comment = await be.addComment({
+    itemId: item.id, kind: 'answer', body: body.trim(),
+    meta: { answersCommentId: questionId, ...(choice ? { choice } : {}) },
+    userId: actorId(), userEmail: currentUser?.email ?? null,
+  });
+  await be.updateItem(item.id, { awaitingRequester: false });
+  if (item.assigneeId && item.assigneeId !== actorId()) {
+    await be.addNotifications([{
+      userId: item.assigneeId, itemId: item.id, kind: 'answer',
+      body: `${actorEmail()} answered on ${ticketRef(item.number)}`,
+    }]);
+  }
   return comment;
 }
 

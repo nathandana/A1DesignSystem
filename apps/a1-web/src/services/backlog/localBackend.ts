@@ -44,7 +44,9 @@ function nowIso(): string { return new Date().toISOString(); }
 export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBackend {
   return {
     async listItems() {
-      return read<BacklogItem[]>(ITEMS_KEY, []).slice().sort((a, b) => b.number - a.number);
+      return read<BacklogItem[]>(ITEMS_KEY, [])
+        .map((it) => ({ ...it, reviews: it.reviews ?? {} })) // default for items stored before reviews
+        .sort((a, b) => b.number - a.number);
     },
 
     async createItem(row: CreateItemRow) {
@@ -70,6 +72,7 @@ export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBa
         duplicateOf: null,
         attachmentRefs: row.attachmentRefs ?? [],
         voteCount: 0,
+        reviews: {},
         createdAt: ts,
         updatedAt: ts,
       };
@@ -93,6 +96,25 @@ export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBa
     async removeItem(id: string) {
       write(ITEMS_KEY, read<BacklogItem[]>(ITEMS_KEY, []).filter((i) => i.id !== id));
       write(COMMENTS_KEY, read<BacklogComment[]>(COMMENTS_KEY, []).filter((c) => c.itemId !== id));
+      notify();
+    },
+
+    async mergeItem(fromId: string, toId: string) {
+      // Move the human thread onto the survivor (keep the activity log on the duplicate).
+      const THREAD = new Set(['comment', 'question', 'answer']);
+      write(COMMENTS_KEY, read<BacklogComment[]>(COMMENTS_KEY, [])
+        .map((c) => (c.itemId === fromId && THREAD.has(c.kind) ? { ...c, itemId: toId } : c)));
+
+      // Combine votes (union of voters) and refresh the survivor's denormalized count.
+      const votes = read<Record<string, string[]>>(VOTES_KEY, {});
+      const fromVoters = votes[fromId] ?? [];
+      if (fromVoters.length) {
+        const merged = new Set([...(votes[toId] ?? []), ...fromVoters]);
+        votes[toId] = [...merged];
+        write(VOTES_KEY, votes);
+        const items = read<BacklogItem[]>(ITEMS_KEY, []);
+        write(ITEMS_KEY, items.map((it) => (it.id === toId ? { ...it, voteCount: merged.size } : it)));
+      }
       notify();
     },
 

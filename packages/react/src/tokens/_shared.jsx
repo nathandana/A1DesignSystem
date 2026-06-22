@@ -113,7 +113,7 @@ function ResolvedValue({ value }) {
         <span style={{
           display: "inline-block", width: "12px", height: "12px",
           borderRadius: "3px", background: value,
-          border: "1px solid rgba(0,0,0,0.12)", flexShrink: 0,
+          border: "1px solid var(--semantic-color-border-subtle)", flexShrink: 0,
         }} />
         <span style={{ color: "var(--semantic-color-text-muted)" }}>{value}</span>
       </span>
@@ -125,7 +125,7 @@ function ResolvedValue({ value }) {
         <span style={{
           display: "inline-block", width: "18px", height: "12px", borderRadius: "3px",
           background: "var(--semantic-color-surface-page)", boxShadow: value,
-          border: "1px solid rgba(0,0,0,0.06)", flexShrink: 0,
+          border: "1px solid var(--semantic-color-border-subtle)", flexShrink: 0,
         }} />
         <span style={{ color: "var(--semantic-color-text-muted)", maxWidth: "340px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {value}

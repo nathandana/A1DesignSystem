@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Banner,
   Button,
   ButtonContainer,
   Dialog,
   Figure,
+  Icon,
   IconButton,
+  MessageBadge,
   Paragraph,
   SegmentedControl,
   SelectField,
@@ -14,9 +16,10 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { addImage, resolveSrc, toImageRef } from '../lib/imageLibrary'
+import { findSimilar, similarityLabel, similarityTone } from '../services/backlog/similarity'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_KINDS,
-  SCOPE_LABELS, TYPE_LABELS, TYPES,
+  SCOPE_LABELS, TYPE_LABELS, TYPES, ticketRef,
 } from '../services/backlog/types'
 import { ScopeBadge } from './TicketBadges'
 
@@ -28,7 +31,7 @@ const TYPE_OPTIONS = TYPES.map((value) => ({ value, label: TYPE_LABELS[value] })
  * store and toasts the new A1-<n>. `scope` pre-fills (and locks) the scope when the
  * dialog is opened from a scoped surface (a component page, the editor, a theme…).
  */
-export function CreateTicketDialog({ open, scope, onClose, onSubmit }) {
+export function CreateTicketDialog({ open, scope, existingItems = [], onClose, onSubmit }) {
   const preScoped = !!(scope && scope.kind && scope.kind !== 'general')
 
   const [type, setType] = useState('feature')
@@ -48,6 +51,18 @@ export function CreateTicketDialog({ open, scope, onClose, onSubmit }) {
     setScopeKind(preScoped ? scope.kind : 'general')
     setAttachments([]); setBusy(false); setError('')
   }, [open, preScoped, scope])
+
+  // Catch likely duplicates as the user types — "lots are going to be similar or the same"
+  // (A1-161). Local finder, so it runs live with no API call. Needs a meaningful title.
+  const possibleDuplicates = useMemo(() => {
+    const t = title.trim()
+    if (t.length < 4 || !existingItems.length) return []
+    return findSimilar(
+      { title: t, description, type, scopeKind, scopeRef: scope?.ref ?? null, scopeLabel: scope?.label ?? null },
+      existingItems,
+      { limit: 3, threshold: 0.2 },
+    )
+  }, [title, description, type, scopeKind, scope?.ref, scope?.label, existingItems])
 
   async function handleFiles(e) {
     const files = Array.from(e.target.files || [])
@@ -120,6 +135,29 @@ export function CreateTicketDialog({ open, scope, onClose, onSubmit }) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        {possibleDuplicates.length > 0 && (
+          <Banner status="info" variant="inline">
+            <Stack gap="xs">
+              <Stack direction="row" gap="xs" align="center">
+                <Icon name="join_inner" size="sm" />
+                <Paragraph as="span" size="sm">
+                  This looks similar to existing tickets — already tracked? Consider voting on one instead.
+                </Paragraph>
+              </Stack>
+              <Stack gap="xs">
+                {possibleDuplicates.map(({ item, score }) => (
+                  <Stack key={item.id} direction="row" gap="xs" align="center" wrap>
+                    <MessageBadge status={similarityTone(score)} subtle size="sm" icon="join_inner">
+                      {similarityLabel(score)}
+                    </MessageBadge>
+                    <Paragraph as="span" size="sm">{ticketRef(item.number)} · {item.title}</Paragraph>
+                  </Stack>
+                ))}
+              </Stack>
+            </Stack>
+          </Banner>
+        )}
 
         <Stack direction="row" gap="md" wrap>
           <SelectField label="Suggested priority" size="compact" value={priority} onChange={(e) => setPriority(e.target.value)}>
