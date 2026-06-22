@@ -41,7 +41,7 @@ import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_LABELS,
   STATUS_FLOW, STATUS_ICON, STATUS_LABELS,
   STATUS_STRIPE_PULSE, STATUS_STRIPE_TONE,
-  STATUSES, TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
+  TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
 } from '../services/backlog/types'
 import { smartSearchBacklog } from '../services/backlog/search'
 
@@ -205,19 +205,6 @@ function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragSt
 // swap, not a casing transform on a word.
 const priorityShort = (p) => (p ? p.replace('p', 'P') : '—')
 
-// Filter controls (multi-select). Keyed to the label fields the cells display, so a
-// selected option's value matches the row value (DataTable filters by equality).
-const TABLE_FILTERS = [
-  { key: 'type', label: 'Type', type: 'multi', options: TYPES.map((t) => ({ value: TYPE_LABELS[t], label: TYPE_LABELS[t] })) },
-  { key: 'status', label: 'Status', type: 'multi', options: STATUSES.map((s) => ({ value: STATUS_LABELS[s], label: STATUS_LABELS[s] })) },
-  {
-    key: 'priority',
-    label: 'Priority',
-    type: 'multi',
-    options: [...PRIORITIES.map((p) => ({ value: priorityShort(p), label: PRIORITY_LABELS[p] })), { value: '—', label: 'No priority' }],
-  },
-]
-
 // Date on one line ("Jun 24, 2026"), time smaller + muted underneath.
 function DateTimeCell({ iso }) {
   if (!iso) return '—'
@@ -268,11 +255,10 @@ function AllTable({ items, onOpen }) {
     <DataTable
       columns={TABLE_COLUMNS}
       rows={rows}
-      filters={TABLE_FILTERS}
       defaultSort={{ key: 'ref', direction: 'desc' }}
       caption="All backlog tickets"
       emptyTitle="No matching tickets"
-      emptyDescription="Try clearing the search or filters."
+      emptyDescription="Adjust the filters in the panel, or create the first ticket."
       pageSize={10}
     />
   )
@@ -313,12 +299,15 @@ export function Backlog({ onNavigate }) {
   // Smart search ranks the whole backlog (A1-187); an empty query passes items through.
   const searched = useMemo(() => smartSearchBacklog(items, query), [items, query])
 
-  // Board: apply the filter toolbars on top of the search. When searching, keep the
-  // search's relevance order; otherwise use the chosen sort.
-  const filtered = useMemo(() => {
-    const base = applyFilters(searched, filters)
-    return searching ? base : base.slice().sort(SORTERS[sort])
-  }, [searched, filters, sort, searching])
+  // Search + the panel filters (Type/Priority/Size/Scope) — the shared set behind EVERY view
+  // (board, the all-tickets table, and my queue), so one panel drives them all.
+  const filteredItems = useMemo(() => applyFilters(searched, filters), [searched, filters])
+
+  // Board additionally applies the chosen sort (relevance order while searching).
+  const filtered = useMemo(
+    () => (searching ? filteredItems : filteredItems.slice().sort(SORTERS[sort])),
+    [filteredItems, sort, searching],
+  )
 
   const activeFilterCount = countActiveFilters(filters, searching)
   const boardFilterCount = countActiveFilters(filters, false) // the panel's dimensions only (no search)
@@ -338,12 +327,12 @@ export function Backlog({ onNavigate }) {
 
   const queue = useMemo(() => {
     if (!me) return { awaiting: [], mine: [], assigned: [] }
-    const base = searched // honour the active search
+    const base = filteredItems // honour the panel's search + filters
     const awaiting = base.filter((it) => it.awaitingRequester && it.createdBy === me.id)
     const mine = base.filter((it) => it.createdBy === me.id && !awaiting.includes(it))
     const assigned = base.filter((it) => it.assigneeId === me.id && it.createdBy !== me.id)
     return { awaiting, mine, assigned }
-  }, [searched, me])
+  }, [filteredItems, me])
 
   const open = (it) => setSelected(it)
   const vote = (it, v) => backlog?.vote(it, v)
@@ -509,7 +498,7 @@ export function Backlog({ onNavigate }) {
         )}
 
         {tab === 'all' && (
-          <AllTable items={searched} onOpen={open} />
+          <AllTable items={filteredItems} onOpen={open} />
         )}
 
         {tab === 'queue' && (
@@ -590,8 +579,10 @@ export function Backlog({ onNavigate }) {
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            {/* Sort + filters apply to the board view only. */}
-            {tab === 'board' && (
+            {/* Filters drive every ticket view (board, all-tickets, my queue); sort is
+                board-only (the table sorts by column, the queue is grouped). Hidden on the
+                dev-only Virtual team view, which isn't a ticket list. */}
+            {tab !== 'team' && (
               <>
                 <Divider space="none" />
 
@@ -600,15 +591,17 @@ export function Backlog({ onNavigate }) {
                   {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
                 </Stack>
 
-                <Toolbar label="Sort by" aria-label="Sort tickets">
-                  <ToolbarGroup
-                    aria-label="Sort by"
-                    labelMode="selected"
-                    value={sort}
-                    onChange={setSort}
-                    options={SORT_OPTIONS}
-                  />
-                </Toolbar>
+                {tab === 'board' && (
+                  <Toolbar label="Sort by" aria-label="Sort tickets">
+                    <ToolbarGroup
+                      aria-label="Sort by"
+                      labelMode="selected"
+                      value={sort}
+                      onChange={setSort}
+                      options={SORT_OPTIONS}
+                    />
+                  </Toolbar>
+                )}
                 <Toolbar label="Type" aria-label="Filter by type">
                   <ToolbarGroup
                     aria-label="Type"
