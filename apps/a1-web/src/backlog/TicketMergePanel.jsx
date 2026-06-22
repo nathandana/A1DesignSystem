@@ -53,18 +53,20 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
     ? items.find((i) => i.id === item.duplicateOf)
     : null
 
-  // AI-suggested similar, open tickets (skips self + already-merged + terminal).
+  const isLinked = (other) => (item.links ?? []).includes(other.id)
+
+  // AI-suggested similar, open tickets (skips self + already-merged + terminal + already
+  // linked — a linked ticket moves out of the suggestions and into the linked list above).
   const matches = useMemo(
-    () => (item.duplicateOf ? [] : findSimilar(item, items)),
+    () => (item.duplicateOf ? [] : findSimilar(item, items).filter((m) => !(item.links ?? []).includes(m.item.id))),
     [item, items],
   )
 
-  // Explicitly linked tickets (A1-218) — resolve the stored ids to tickets.
+  // Explicitly linked tickets (A1-218) — newest link first (it's appended to `links`).
   const linkedItems = useMemo(
-    () => (item.links ?? []).map((id) => items.find((i) => i.id === id)).filter(Boolean),
+    () => (item.links ?? []).slice().reverse().map((id) => items.find((i) => i.id === id)).filter(Boolean),
     [item.links, items],
   )
-  const isLinked = (other) => (item.links ?? []).includes(other.id)
 
   // Suggestion filter (A1-208): a toolbar lets the user narrow the suggested
   // tickets by type. Only offer the types actually present (plus "All"), and only
@@ -160,20 +162,23 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
         <Paragraph as="span" size="xs" color="muted">Linked &amp; similar tickets</Paragraph>
       </Stack>
 
-      {/* Explicitly linked tickets (A1-218) — related, both stay open. */}
+      {/* Explicitly linked tickets (A1-218) — related, both stay open. Each carries a
+          "Linked" status; the newest link sits at the top. */}
       {linkedItems.length > 0 && (
         <Stack gap="xs">
           <Paragraph as="span" size="xs" color="muted">Linked tickets</Paragraph>
           {linkedItems.map((l) => (
-            <Card key={l.id}>
-              <Stack direction="row" gap="sm" align="center" justify="between" wrap>
-                <Stack direction="row" gap="xs" align="center" wrap>
+            <Card key={l.id} status="info" statusLabel="Linked">
+              <Stack gap="xs">
+                <Stack direction="row" gap="sm" align="center" justify="between" wrap>
                   <Paragraph as="span" size="xs" color="muted">{ticketRef(l.number)}</Paragraph>
-                  <Paragraph size="sm">{l.title}</Paragraph>
+                  <Stack direction="row" gap="xs" wrap>
+                    <TypeBadge type={l.type} size="sm" />
+                    <StatusBadge status={l.status} size="sm" />
+                  </Stack>
                 </Stack>
-                <Stack direction="row" gap="xs" align="center" wrap>
-                  <TypeBadge type={l.type} size="sm" />
-                  <StatusBadge status={l.status} size="sm" />
+                <Paragraph size="sm">{l.title}</Paragraph>
+                <ButtonContainer align="start">
                   <IconButton
                     size="sm"
                     variant="secondary"
@@ -188,7 +193,7 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                     label={`Unlink ${ticketRef(l.number)}`}
                     onClick={() => onUnlink?.(item, l)}
                   />
-                </Stack>
+                </ButtonContainer>
               </Stack>
             </Card>
           ))}
