@@ -30,6 +30,7 @@ import {
 import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
 import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
+import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
 import {
   ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
 } from '../backlog/TicketBadges'
@@ -502,7 +503,11 @@ export function Backlog({ onNavigate }) {
 
           {import.meta.env.DEV && (
             <TabPanel value="team">
-              <VirtualTeamPanel />
+              <Stack gap="xl">
+                <VirtualTeamPanel />
+                <Divider />
+                <VirtualArchitectPanel />
+              </Stack>
             </TabPanel>
           )}
         </Tabs>
