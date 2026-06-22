@@ -10,6 +10,7 @@ import {
   Grid,
   Heading,
   Icon,
+  IconButton,
   Link,
   MessageBadge,
   MessageEmptyState,
@@ -22,6 +23,7 @@ import {
   TabList,
   TabPanel,
   Tabs,
+  TextField,
   Toolbar,
   ToolbarGroup,
   ToolbarMenu,
@@ -40,6 +42,7 @@ import {
   STATUS_STRIPE_PULSE, STATUS_STRIPE_TONE,
   STATUSES, TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
 } from '../services/backlog/types'
+import { smartSearchBacklog } from '../services/backlog/search'
 
 // ── Sorting / filtering helpers ──────────────────────────────────────────────
 
@@ -175,14 +178,6 @@ const TABLE_FILTERS = [
   },
 ]
 
-// Search title + requester. Normalise whitespace to underscores to match DataTable's
-// query normalisation (so multi-word searches match), and to avoid stringifying the
-// title cell's React node.
-const TABLE_SEARCH_COLUMNS = [
-  { key: 'title', label: 'Title', searchAccessor: (r) => String(r.titleText).replace(/\s+/g, '_') },
-  { key: 'requester', label: 'Requested by', searchAccessor: (r) => String(r.requester).replace(/\s+/g, '_') },
-]
-
 // Date on one line ("Jun 24, 2026"), time smaller + muted underneath.
 function DateTimeCell({ iso }) {
   if (!iso) return '—'
@@ -234,7 +229,6 @@ function AllTable({ items, onOpen }) {
       columns={TABLE_COLUMNS}
       rows={rows}
       filters={TABLE_FILTERS}
-      searchableColumns={TABLE_SEARCH_COLUMNS}
       defaultSort={{ key: 'ref', direction: 'desc' }}
       caption="All backlog tickets"
       emptyTitle="No matching tickets"
@@ -250,6 +244,7 @@ export function Backlog({ onNavigate }) {
   const backlog = useBacklog()
   const [tab, setTab] = useState('board')
   const [selected, setSelected] = useState(null)
+  const [query, setQuery] = useState('')
   const [sort, setSort] = useState('updated')
   const [filters, setFilters] = useState({ type: 'all', priority: 'all', scope: 'all', complexity: 'all' })
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
@@ -261,11 +256,17 @@ export function Backlog({ onNavigate }) {
   const items = backlog?.items ?? []
   const voteFor = backlog?.votedSet ?? new Set()
   const me = backlog?.user
+  const searching = !!query.trim()
 
-  const filtered = useMemo(
-    () => applyFilters(items, filters).slice().sort(SORTERS[sort]),
-    [items, filters, sort],
-  )
+  // Smart search ranks the whole backlog (A1-187); an empty query passes items through.
+  const searched = useMemo(() => smartSearchBacklog(items, query), [items, query])
+
+  // Board: apply the filter toolbars on top of the search. When searching, keep the
+  // search's relevance order; otherwise use the chosen sort.
+  const filtered = useMemo(() => {
+    const base = applyFilters(searched, filters)
+    return searching ? base : base.slice().sort(SORTERS[sort])
+  }, [searched, filters, sort, searching])
 
   const byStatus = useMemo(() => {
     const map = {}
@@ -276,11 +277,12 @@ export function Backlog({ onNavigate }) {
 
   const queue = useMemo(() => {
     if (!me) return { awaiting: [], mine: [], assigned: [] }
-    const awaiting = items.filter((it) => it.awaitingRequester && it.createdBy === me.id)
-    const mine = items.filter((it) => it.createdBy === me.id && !awaiting.includes(it))
-    const assigned = items.filter((it) => it.assigneeId === me.id && it.createdBy !== me.id)
+    const base = searched // honour the active search
+    const awaiting = base.filter((it) => it.awaitingRequester && it.createdBy === me.id)
+    const mine = base.filter((it) => it.createdBy === me.id && !awaiting.includes(it))
+    const assigned = base.filter((it) => it.assigneeId === me.id && it.createdBy !== me.id)
     return { awaiting, mine, assigned }
-  }, [items, me])
+  }, [searched, me])
 
   const open = (it) => setSelected(it)
   const vote = (it, v) => backlog?.vote(it, v)
@@ -348,6 +350,29 @@ export function Backlog({ onNavigate }) {
       </Section>
 
       <Section padding="sm" contentWidth="2xl" aria-label="Backlog">
+        <Stack gap="md">
+        {/* Smart search (A1-187) — ranks across ref, title, scope, labels, and description,
+            and understands field:value qualifiers. Applies to every tab. */}
+        <Stack gap="xs">
+          <Stack direction="row" gap="sm" align="end">
+            <TextField
+              label="Search backlog"
+              size="compact"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              hint="Text, an A1 number, or filters: type:bug · is:open · priority:p1 · status:in progress · scope:component"
+            />
+            {searching && (
+              <IconButton icon="close" aria-label="Clear search" variant="secondary" onClick={() => setQuery('')} />
+            )}
+          </Stack>
+          {searching && (
+            <Paragraph size="xs" color="muted">
+              {searched.length} result{searched.length === 1 ? '' : 's'} across the backlog
+            </Paragraph>
+          )}
+        </Stack>
+
         <Tabs value={tab} onChange={setTab}>
           <TabList>
             <Tab value="board">Board</Tab>
@@ -468,7 +493,7 @@ export function Backlog({ onNavigate }) {
           </TabPanel>
 
           <TabPanel value="all">
-            <AllTable items={items} onOpen={open} />
+            <AllTable items={searched} onOpen={open} />
           </TabPanel>
 
           <TabPanel value="queue">
@@ -511,6 +536,7 @@ export function Backlog({ onNavigate }) {
             </TabPanel>
           )}
         </Tabs>
+        </Stack>
       </Section>
 
       <TicketDetail
