@@ -509,6 +509,32 @@ const HELP = [
           </Stack>
         ),
       },
+      {
+        id: 'bind-data-into-pages',
+        title: 'Binding data into a page',
+        keywords: 'bind binding data token mustache curly braces dataset column value heading paragraph button prop dynamic editor data tab',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A component’s text or a text prop can pull a value from a dataset. Put a token like{' '}
+              <Kbd>{'{{ users.name }}'}</Kbd> in a heading, paragraph, button label, or text prop, and the
+              editor shows the dataset value on the canvas (and in preview).
+            </P>
+            <Bullets items={[
+              <>The name before the dot is the dataset’s <strong>key</strong> — its name lowercased (e.g. “Users” → <Kbd>users</Kbd>).</>,
+              <>The default is the <strong>first row</strong>; add an index for another: <Kbd>{'{{ users.name.2 }}'}</Kbd>.</>,
+              <>Mix text and tokens — <Kbd>{'Hi {{ users.name }}'}</Kbd> — or bind a whole value on its own.</>,
+              <>An unknown reference is shown as-is (e.g. <Kbd>{'{{ users.nope }}'}</Kbd>) so you can spot the typo.</>,
+            ]} />
+            <P>
+              Open the editor’s <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right
+              panel) to see the project’s datasets and <strong>click any token to copy it</strong>, then paste it
+              in. Bound text is read-only on the canvas — edit the token from the Configure panel. Only datasets
+              available to the page’s project (global or scoped to it) can be bound.
+            </P>
+          </Stack>
+        ),
+      },
     ],
   },
 

@@ -12,12 +12,19 @@
  */
 import { Code, InlineEditable, Heading, HeadingMark, Paragraph, Section, Stack, useLabel } from '@gtivr4/a1-design-system-react';
 import type { ReactNode } from 'react';
-import { createElement, createContext, useContext } from 'react';
+import { createElement, createContext, useContext, useMemo } from 'react';
 import { EditorSelectionBoundary } from './EditorSelectionBoundary';
 import type { ComponentType as ReactComponentType } from 'react';
 import { componentRegistry } from './componentRegistry';
 import { resolveSrc as resolveImageSrc } from '../lib/imageLibrary';
 import { useImageLibraryVersion } from './ImageLibraryContext';
+import { useDataSources } from '../data/DataSourcesContext.jsx';
+import { getActiveProjectId } from '../projects/projectStore';
+import { datasetAvailableToProject } from '../services/dataSources/types';
+import {
+  buildDatasetMap, hasBinding, resolveBinding, resolveBindingsToString,
+  type DatasetMap,
+} from '../data/bindings';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -88,6 +95,13 @@ interface EditorModeContextValue {
   onItemSelect: (nodeId: string, index: number) => void;
 }
 
+
+/**
+ * Provides the active project's datasets (keyed for binding) to every node so a
+ * `{{ dataset.column }}` token in a prop or text content resolves at render. Empty
+ * by default (no bindings resolve, tokens render literally). See `data/bindings.ts`.
+ */
+const PageDataContext = createContext<{ datasetMap: DatasetMap }>({ datasetMap: {} });
 
 const EditorModeContext = createContext<EditorModeContextValue>({
   enabled: false,
@@ -272,6 +286,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // Re-render when the image library hydrates so Figure refs resolve to real URLs.
   useImageLibraryVersion();
   const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = useContext(EditorModeContext);
+  const { datasetMap } = useContext(PageDataContext);
   const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
 
@@ -302,12 +317,20 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     ? inlineMarkdownToNodes(text)
     : null;
 
+  // Data-bound text ({{ dataset.column }}) resolves to a value from the project's
+  // datasets. The raw token lives in node.content; the canvas shows the resolved
+  // value (read-only inline — edit the binding in the Configure panel / Data tab).
+  const textBound = typeof text === 'string' && hasBinding(text);
+  const boundText = textBound ? resolveBindingsToString(text, datasetMap) : text;
+
   // In editor mode, plain text content is wrapped in InlineEditable (seamless) so
   // the user can click any heading, paragraph, or button label to edit it in
   // place. Seamless mode inherits all typography from the surrounding component.
   let textContent: ReactNode;
   if (text === undefined) {
     textContent = undefined;
+  } else if (textBound) {
+    textContent = isHeading ? decodeEntities(boundText) : boundText;
   } else if (editorMode && !contentLocked) {
     // Always editable in the editor — edit the raw text/markdown source. This must
     // come BEFORE the rich-render branches: content with marks or inline markdown
@@ -347,6 +370,13 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   }
 
   const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
+
+  // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
+  // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
+  for (const k of Object.keys(resolvedProps)) {
+    const v = resolvedProps[k];
+    if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap);
+  }
 
   // Child-item inline editing: components whose data lives in an array prop render
   // their text via InlineEditable in editor mode so each item can be edited on the
@@ -575,6 +605,15 @@ export function RenderPageDefinition({
   activeItem?: { nodeId: string; index: number } | null;
   onItemSelect?: (nodeId: string, index: number) => void;
 }) {
+  // Build the binding map from the datasets visible to this page's project (global +
+  // project-scoped), so `{{ dataset.column }}` tokens resolve on the canvas + preview.
+  const dataCtx = useDataSources();
+  const datasets = dataCtx?.items ?? [];
+  const datasetMap = useMemo(() => {
+    const projectId = getActiveProjectId();
+    return buildDatasetMap(datasets.filter((d) => datasetAvailableToProject(d, projectId)));
+  }, [datasets]);
+
   const noInfo = () => ({ isFirst: false, isLast: false, hasChildren: false });
   const ctx: EditorModeContextValue = {
     enabled: !!onContentChange,
@@ -607,7 +646,9 @@ export function RenderPageDefinition({
 
   return (
     <EditorModeContext.Provider value={ctx}>
-      <RenderLayout layout={definition.page.layout} />
+      <PageDataContext.Provider value={{ datasetMap }}>
+        <RenderLayout layout={definition.page.layout} />
+      </PageDataContext.Provider>
     </EditorModeContext.Provider>
   );
 }
