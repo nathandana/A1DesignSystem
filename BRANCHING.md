@@ -28,6 +28,10 @@ version line when their PRs merge to `main` one at a time.
 
 ## Flow for each ticket
 
+The branch is **not** closed out or merged the moment the work compiles. Finish, then
+**pause for refinement** — iterate on the branch until it's signed off — and only merge
+**after** an explicit OK.
+
 1. **Branch from `main`:**
    ```sh
    git checkout main && git pull
@@ -35,22 +39,26 @@ version line when their PRs merge to `main` one at a time.
    ```
 2. Do the work. Add the changelog entry under **`## Unreleased`** and a
    `components-maintenance.md` row — **but do not bump any `package.json` version** (that
-   happens on `release`).
-3. **Push the branch for review** (it becomes its own PR to `main`):
-   ```sh
-   git push -u origin <ticket-or-topic>
-   ```
-4. **Also integrate it into `release`** so you can test everything together locally:
-   ```sh
-   git checkout release
-   git merge --no-ff origin/<ticket-or-topic> -m "Integrate <ticket-or-topic> into release"
-   # resolve any changelog / maintenance-log conflicts (combine entries),
-   # bump the affected package.json version(s) + cut/extend the dated changelog
-   # section here on release, then rebuild so dist isn't a mix of per-branch builds:
-   rm -rf apps/a1-web/dist && npm run build --workspace=apps/a1-web
-   git add -A && git commit
-   git push origin release
-   ```
+   happens on `release`). Commit on the branch as you go.
+3. **Pause when done — do not push or merge yet.** Summarise what changed and hand it back
+   for review. Refine on the same branch (more commits) until it's finalised. The branch
+   stays local during this phase; nothing is integrated.
+4. **When finalised, ask before merging.** Only on an explicit OK:
+   - push the branch for review (its own PR to `main`):
+     ```sh
+     git push -u origin <ticket-or-topic>
+     ```
+   - integrate it into `release` so everything can be tested together:
+     ```sh
+     git checkout release
+     git merge --no-ff origin/<ticket-or-topic> -m "Integrate <ticket-or-topic> into release"
+     # resolve any changelog / maintenance-log conflicts (combine entries),
+     # bump the affected package.json version(s) + cut/extend the dated changelog
+     # section here on release, then rebuild so dist isn't a mix of per-branch builds:
+     rm -rf apps/a1-web/dist && npm run build --workspace=apps/a1-web
+     git add -A && git commit
+     git push origin release
+     ```
 5. **Check it locally** on `release`:
    ```sh
    git checkout release
