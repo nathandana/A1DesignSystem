@@ -95,6 +95,18 @@ export function BacklogProvider({ children }) {
     return res
   }, [refresh])
 
+  // Link / unlink two tickets as related (A1-218) — symmetric; both tickets stay open.
+  const link = useCallback(async (a, b) => {
+    await store.linkTickets(a, b)
+    await refresh()
+    setToast(`Linked ${ticketRef(a.number)} and ${ticketRef(b.number)}`)
+  }, [refresh])
+
+  const unlink = useCallback(async (a, b) => {
+    await store.unlinkTickets(a, b)
+    await refresh()
+  }, [refresh])
+
   const markRead = useCallback(async (ids) => {
     await store.markNotificationsRead(ids)
     await refresh()
@@ -126,10 +138,10 @@ export function BacklogProvider({ children }) {
     items, notifications, unreadCount, votedSet, loading,
     isCloud: store.isCloudBacklog(),
     user: me,
-    openCreate, create: handleCreate, update, comment, answer, vote, merge, markRead, loadComments, refresh,
+    openCreate, create: handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
     reviewWithPersona, reviewItem,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, comment, answer, vote, merge, markRead, loadComments, refresh, reviewWithPersona, reviewItem])
+    openCreate, handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem])
 
   return (
     <BacklogContext.Provider value={value}>

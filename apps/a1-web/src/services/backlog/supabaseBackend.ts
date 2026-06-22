@@ -37,6 +37,7 @@ function itemFromRow(r: any): BacklogItem {
     assigneeEmail: r.assignee_email ?? null,
     awaitingRequester: !!r.awaiting_requester,
     duplicateOf: r.duplicate_of ?? null,
+    links: r.links ?? [],
     attachmentRefs: r.attachment_refs ?? [],
     voteCount: r.vote_count ?? 0,
     reviews: r.reviews ?? {},
@@ -77,7 +78,7 @@ function rowFromPatch(patch: UpdateTicketPatch): Record<string, unknown> {
     priority: 'priority', complexity: 'complexity', scopeKind: 'scope_kind',
     scopeRef: 'scope_ref', scopeLabel: 'scope_label', assigneeId: 'assignee_id',
     assigneeEmail: 'assignee_email', awaitingRequester: 'awaiting_requester',
-    duplicateOf: 'duplicate_of', attachmentRefs: 'attachment_refs', reviews: 'reviews',
+    duplicateOf: 'duplicate_of', links: 'links', attachmentRefs: 'attachment_refs', reviews: 'reviews',
   };
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(patch)) {

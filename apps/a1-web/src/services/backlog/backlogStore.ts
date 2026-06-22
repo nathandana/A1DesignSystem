@@ -156,6 +156,29 @@ export async function updateItem(
  * description move to the survivor so nothing is lost. Writes a clear activity note on
  * both tickets and notifies the survivor's creator. Returns the closed duplicate.
  */
+/**
+ * Link two tickets as related (A1-218) — a symmetric link written to both sides' `links`
+ * arrays. Distinct from merging: both tickets stay open. No-op if they're the same or
+ * already linked.
+ */
+export async function linkTickets(a: BacklogItem, b: BacklogItem): Promise<void> {
+  if (a.id === b.id) return;
+  const be = getBackend();
+  if (!(a.links ?? []).includes(b.id)) {
+    await be.updateItem(a.id, { links: Array.from(new Set([...(a.links ?? []), b.id])) });
+  }
+  if (!(b.links ?? []).includes(a.id)) {
+    await be.updateItem(b.id, { links: Array.from(new Set([...(b.links ?? []), a.id])) });
+  }
+}
+
+/** Remove a link between two tickets (A1-218) — clears it from both sides. */
+export async function unlinkTickets(a: BacklogItem, b: BacklogItem): Promise<void> {
+  const be = getBackend();
+  await be.updateItem(a.id, { links: (a.links ?? []).filter((id) => id !== b.id) });
+  await be.updateItem(b.id, { links: (b.links ?? []).filter((id) => id !== a.id) });
+}
+
 export async function mergeTickets(
   duplicate: BacklogItem, canonical: BacklogItem,
 ): Promise<BacklogItem | null> {

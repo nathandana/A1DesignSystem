@@ -542,6 +542,8 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
               item={item}
               items={allItems}
               onMerge={(dup, canon) => backlog?.merge(dup, canon)}
+              onLink={(a, b) => backlog?.link(a, b)}
+              onUnlink={(a, b) => backlog?.unlink(a, b)}
               onOpenItem={onOpenItem}
             />
           </TabPanel>

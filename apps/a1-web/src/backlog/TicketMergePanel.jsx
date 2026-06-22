@@ -33,7 +33,7 @@ import { StatusBadge, TypeBadge } from './TicketBadges'
  *  - tickets were merged *into* this one → a short "merged in" list;
  *  - otherwise → AI-suggested similar tickets + a manual "merge by ID" fallback.
  */
-export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
+export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, onOpenItem }) {
   const [pending, setPending] = useState(null) // { other } — the ticket to merge with
   const [keep, setKeep] = useState('current') // which side survives
   const [busy, setBusy] = useState(false)
@@ -58,6 +58,13 @@ export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
     () => (item.duplicateOf ? [] : findSimilar(item, items)),
     [item, items],
   )
+
+  // Explicitly linked tickets (A1-218) — resolve the stored ids to tickets.
+  const linkedItems = useMemo(
+    () => (item.links ?? []).map((id) => items.find((i) => i.id === id)).filter(Boolean),
+    [item.links, items],
+  )
+  const isLinked = (other) => (item.links ?? []).includes(other.id)
 
   // Suggestion filter (A1-208): a toolbar lets the user narrow the suggested
   // tickets by type. Only offer the types actually present (plus "All"), and only
@@ -87,16 +94,28 @@ export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
     setPending({ other })
   }
 
-  function submitManual() {
+  // Resolve the "by ID" field to a ticket (or set an error and return null).
+  function resolveManual() {
     setManualError('')
     const m = manual.trim().match(/(\d+)/)
-    if (!m) { setManualError('Enter a ticket number, e.g. A1-42.'); return }
+    if (!m) { setManualError('Enter a ticket number, e.g. A1-42.'); return null }
     const num = Number(m[1])
-    if (num === item.number) { setManualError('That’s this ticket.'); return }
+    if (num === item.number) { setManualError('That’s this ticket.'); return null }
     const other = items.find((i) => i.number === num)
-    if (!other) { setManualError(`No ticket ${ticketRef(num)} found.`); return }
+    if (!other) { setManualError(`No ticket ${ticketRef(num)} found.`); return null }
+    return other
+  }
+  function mergeManual() {
+    const other = resolveManual()
+    if (!other) return
     setManual('')
     startMerge(other)
+  }
+  function linkManual() {
+    const other = resolveManual()
+    if (!other) return
+    setManual('')
+    onLink?.(item, other)
   }
 
   async function confirmMerge() {
@@ -140,6 +159,41 @@ export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
         <Icon name="merge" size="sm" color="muted" />
         <Paragraph as="span" size="xs" color="muted">Linked &amp; similar tickets</Paragraph>
       </Stack>
+
+      {/* Explicitly linked tickets (A1-218) — related, both stay open. */}
+      {linkedItems.length > 0 && (
+        <Stack gap="xs">
+          <Paragraph as="span" size="xs" color="muted">Linked tickets</Paragraph>
+          {linkedItems.map((l) => (
+            <Card key={l.id}>
+              <Stack direction="row" gap="sm" align="center" justify="between" wrap>
+                <Stack direction="row" gap="xs" align="center" wrap>
+                  <Paragraph as="span" size="xs" color="muted">{ticketRef(l.number)}</Paragraph>
+                  <Paragraph size="sm">{l.title}</Paragraph>
+                </Stack>
+                <Stack direction="row" gap="xs" align="center" wrap>
+                  <TypeBadge type={l.type} size="sm" />
+                  <StatusBadge status={l.status} size="sm" />
+                  <IconButton
+                    size="sm"
+                    variant="secondary"
+                    icon="open_in_new"
+                    label={`Open ${ticketRef(l.number)}`}
+                    onClick={() => onOpenItem?.(l)}
+                  />
+                  <IconButton
+                    size="sm"
+                    variant="tertiary"
+                    icon="link_off"
+                    label={`Unlink ${ticketRef(l.number)}`}
+                    onClick={() => onUnlink?.(item, l)}
+                  />
+                </Stack>
+              </Stack>
+            </Card>
+          ))}
+        </Stack>
+      )}
 
       {/* Tickets already merged into this one. */}
       {mergedIn.length > 0 && (
@@ -243,6 +297,15 @@ export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
                     label={`Open ${ticketRef(m.number)}`}
                     onClick={() => onOpenItem?.(m)}
                   />
+                  {!isLinked(m) && (
+                    <IconButton
+                      size="sm"
+                      variant="secondary"
+                      icon="link"
+                      label={`Link ${ticketRef(m.number)} to this ticket`}
+                      onClick={() => onLink?.(item, m)}
+                    />
+                  )}
                   <IconButton
                     size="sm"
                     variant="secondary"
@@ -281,23 +344,29 @@ export function TicketMergePanel({ item, items = [], onMerge, onOpenItem }) {
         aria-label="Suggested ticket actions"
         items={menu ? [
           { id: 'open', label: `Open ${ticketRef(menu.match.number)}`, icon: 'open_in_new', onClick: () => onOpenItem?.(menu.match) },
+          ...(isLinked(menu.match)
+            ? [{ id: 'unlink', label: 'Unlink', icon: 'link_off', onClick: () => onUnlink?.(item, menu.match) }]
+            : [{ id: 'link', label: 'Link to this ticket', icon: 'link', onClick: () => onLink?.(item, menu.match) }]),
           { id: 'merge', label: 'Merge into this ticket…', icon: 'merge', disabled: busy || pendingOther?.id === menu.match.id, onClick: () => startMerge(menu.match) },
           { type: 'divider', id: 'sep' },
           { id: 'copy', label: 'Copy reference', icon: 'content_copy', onClick: () => copyRef(menu.match) },
         ] : []}
       />
 
-      {/* Manual fallback — merge a ticket the finder didn't surface. */}
+      {/* Manual fallback — link or merge a ticket the finder didn't surface. */}
       <Stack direction="row" gap="xs" align="end" wrap>
         <TextField
-          label="Merge another ticket by ID"
+          label="Link or merge a ticket by ID"
           size="compact"
           value={manual}
           onChange={(e) => setManual(e.target.value)}
           error={manualError || undefined}
           autoComplete="off"
         />
-        <Button size="sm" variant="secondary" icon="merge" disabled={busy || !manual.trim()} onClick={submitManual}>
+        <Button size="sm" variant="secondary" icon="link" disabled={busy || !manual.trim()} onClick={linkManual}>
+          Link
+        </Button>
+        <Button size="sm" variant="secondary" icon="merge" disabled={busy || !manual.trim()} onClick={mergeManual}>
           Merge…
         </Button>
       </Stack>

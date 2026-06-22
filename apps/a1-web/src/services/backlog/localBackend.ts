@@ -45,7 +45,7 @@ export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBa
   return {
     async listItems() {
       return read<BacklogItem[]>(ITEMS_KEY, [])
-        .map((it) => ({ ...it, reviews: it.reviews ?? {} })) // default for items stored before reviews
+        .map((it) => ({ ...it, reviews: it.reviews ?? {}, links: it.links ?? [] })) // defaults for items stored before reviews/links
         .sort((a, b) => b.number - a.number);
     },
 
@@ -70,6 +70,7 @@ export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBa
         assigneeEmail: null,
         awaitingRequester: false,
         duplicateOf: null,
+        links: [],
         attachmentRefs: row.attachmentRefs ?? [],
         voteCount: 0,
         reviews: {},
