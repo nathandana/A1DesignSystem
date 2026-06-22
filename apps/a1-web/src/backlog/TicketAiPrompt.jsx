@@ -1,72 +1,121 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Button, ButtonContainer, Code, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
+import { useEffect, useState } from 'react'
+import { Button, ButtonContainer, CircularProgress, Code, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
-import {
-  COMPLEXITY_FULL, PRIORITY_LABELS, SCOPE_LABELS, STATUS_LABELS, TYPE_LABELS, ticketRef,
-} from '../services/backlog/types'
+import { buildTicketContext, buildPlanRequest, developPlanLocally, PLAN_SYSTEM } from '../services/backlog/devPlan'
+import { chooseModel, listLocalModels, localChat } from '../lib/localAi'
 
 /**
- * Builds a complete, copy-pasteable AI prompt from a ticket — its metadata, description,
- * and discussion (comments + the PO's questions and your answers) — so you can paste it
- * into a coding-agent chat. Rendered as an editable code block so you can tweak it first.
+ * "Build with AI" — turns a ticket into a **development plan** you can paste into a coding
+ * agent. Rather than just concatenating the ticket fields, it sends them to a **local** LLM
+ * (Ollama, via `lib/localAi.ts`) which writes a staff-developer plan — no Anthropic API, no
+ * credits. If no local model is reachable it falls back to a deterministic planner, so the
+ * tab always produces a real, editable plan. A "raw details" toggle still exposes the plain
+ * ticket text.
  */
-function buildPrompt(item, comments) {
-  const meta = [`Type: ${TYPE_LABELS[item.type]}`]
-  if (item.priority) meta.push(`Priority: ${PRIORITY_LABELS[item.priority]}`)
-  if (item.complexity) meta.push(`Size: ${COMPLEXITY_FULL[item.complexity]}`)
-  meta.push(`Status: ${STATUS_LABELS[item.status]}`)
-  meta.push(`Scope: ${item.scopeKind === 'general'
-    ? 'General'
-    : SCOPE_LABELS[item.scopeKind] + (item.scopeLabel ? ` — ${item.scopeLabel}` : '')}`)
 
-  const lines = [`Implement backlog ticket ${ticketRef(item.number)}: ${item.title}`, '', meta.join(' · '), '']
-  if (item.description?.trim()) lines.push('Description:', item.description.trim(), '')
-
-  const discussion = (comments || []).filter((c) => c.kind !== 'activity' && c.body?.trim())
-  if (discussion.length) {
-    lines.push('Discussion:')
-    for (const c of discussion) {
-      const who = c.meta?.personaName || c.userEmail || 'Someone'
-      const tag = c.kind === 'question' ? ' (question)' : c.kind === 'answer' ? ' (answer)' : ''
-      lines.push(`- ${who}${tag}: ${c.body.trim().replace(/\s*\n\s*/g, ' ')}`)
+// Produce a plan: prefer a local model, fall back to the deterministic planner.
+async function produce(item, comments) {
+  const models = await listLocalModels()
+  const model = chooseModel(models)
+  if (model) {
+    try {
+      const r = await localChat({ system: PLAN_SYSTEM, prompt: buildPlanRequest(item, comments), model })
+      if (r.text) {
+        return { plan: r.text, source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
+      }
+    } catch {
+      /* local runner errored — fall back below */
     }
-    lines.push('')
   }
-
-  lines.push(
-    'Implement this in the A1 Design System monorepo, following the project conventions '
-    + '(read CLAUDE.md / AGENTS.md and packages/react/ai/ — use A1 components + tokens, and update '
-    + 'Storybook stories, the a1-web configurator, and the changelogs as the rules require). '
-    + 'Work on a branch, then summarise what you changed.',
-  )
-  return lines.join('\n')
+  return { plan: developPlanLocally(item, comments), source: 'builtin', info: null }
 }
 
 export function TicketAiPrompt({ item }) {
   const backlog = useBacklog()
   const [comments, setComments] = useState(null) // null = loading
+  const [plan, setPlan] = useState('')
+  const [planning, setPlanning] = useState(false)
+  const [source, setSource] = useState(null) // 'local' | 'builtin'
+  const [info, setInfo] = useState(null) // { model, elapsedMs, outputTokens }
+  const [mode, setMode] = useState('plan') // 'plan' | 'raw'
   const [nonce, setNonce] = useState(0)
 
+  // Load the discussion thread for this ticket.
   useEffect(() => {
     let active = true
     setComments(null)
+    setPlan('')
+    setSource(null)
+    setInfo(null)
     backlog?.loadComments(item.id).then((rows) => { if (active) setComments(rows) })
     return () => { active = false }
-  }, [item.id, backlog, nonce])
+  }, [item.id, backlog])
 
-  const prompt = useMemo(() => buildPrompt(item, comments || []), [item, comments])
+  // Develop the plan once the thread is loaded (and on each Regenerate).
+  useEffect(() => {
+    if (comments === null) return undefined
+    let active = true
+    setPlanning(true)
+    produce(item, comments).then((res) => {
+      if (!active) return
+      setPlan(res.plan)
+      setSource(res.source)
+      setInfo(res.info)
+      setPlanning(false)
+    })
+    return () => { active = false }
+  }, [comments, item, nonce])
+
+  const rawDetails = comments === null ? '' : buildTicketContext(item, comments)
+  const shown = mode === 'plan' ? plan : rawDetails
 
   return (
     <Stack gap="sm">
       <Paragraph size="sm" color="muted">
-        A ready-to-paste prompt with everything about this ticket. Edit it if you like, then copy it into your AI chat to implement the ticket.
+        Sends this ticket to a local AI model (no API credits) to develop a plan you can paste into a
+        coding agent. Falls back to a built-in staff-developer planner when no local model is running.
+        Edit it before copying if you like.
       </Paragraph>
-      {comments === null
-        ? <Paragraph size="sm" color="muted">Assembling…</Paragraph>
-        : <Code variant="block" editable copyCode wrapping key={`${item.id}:${nonce}`}>{prompt}</Code>}
+
+      {comments === null || planning ? (
+        <Stack direction="row" gap="sm" align="center">
+          <CircularProgress size="sm" indeterminate aria-label="Developing a plan" />
+          <Paragraph size="sm" color="muted">
+            {comments === null ? 'Reading the ticket…' : 'Developing a plan locally…'}
+          </Paragraph>
+        </Stack>
+      ) : (
+        <>
+          {mode === 'plan' && source === 'local' && info && (
+            <Paragraph size="xs" color="muted">
+              Planned locally with {info.model} · {(info.elapsedMs / 1000).toFixed(1)}s
+              {info.outputTokens ? ` · ${info.outputTokens} local tokens` : ''} — no API credits.
+            </Paragraph>
+          )}
+          {mode === 'plan' && source === 'builtin' && (
+            <Paragraph size="xs" color="muted">
+              Planned with the built-in staff-developer planner. Start a local model (Ollama) and it will
+              write the plan instead — still no API credits.
+            </Paragraph>
+          )}
+          <Code variant="block" editable copyCode wrapping key={`${item.id}:${mode}:${nonce}:${source}`}>
+            {shown}
+          </Code>
+        </>
+      )}
+
       <ButtonContainer align="start">
-        <Button size="sm" variant="secondary" icon="refresh" onClick={() => setNonce((n) => n + 1)}>
-          Regenerate
+        <Button size="sm" variant="secondary" icon="refresh" loading={planning} onClick={() => setNonce((n) => n + 1)}>
+          Regenerate plan
+        </Button>
+        <Button
+          size="sm"
+          variant="tertiary"
+          icon={mode === 'plan' ? 'description' : 'auto_awesome'}
+          disabled={comments === null}
+          onClick={() => setMode((m) => (m === 'plan' ? 'raw' : 'plan'))}
+        >
+          {mode === 'plan' ? 'Show raw ticket details' : 'Show the plan'}
         </Button>
       </ButtonContainer>
     </Stack>
