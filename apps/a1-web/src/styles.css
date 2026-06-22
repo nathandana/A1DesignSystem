@@ -2174,3 +2174,15 @@ span.a1-web-sem-pick { display: inline-block; }
   inset-block-start: var(--base-spacing-2);
   inset-inline-end: var(--base-spacing-2);
 }
+
+/* Board swimlane (A1) — always a drop target for drag-to-restatus, so it keeps a
+   minimum height even when empty, and highlights while a card is dragged over it. */
+.a1-web-backlog-lane {
+  min-block-size: var(--base-spacing-64);
+}
+
+.a1-web-backlog-lane--drop {
+  outline: var(--base-spacing-2) dashed var(--semantic-color-action-background);
+  outline-offset: calc(-1 * var(--base-spacing-2));
+  background: var(--semantic-color-surface-raised);
+}

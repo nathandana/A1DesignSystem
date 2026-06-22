@@ -104,12 +104,14 @@ function countActiveFilters(filters, searching) {
 // The whole card is a navigation control — click opens the ticket dialog; right-click
 // opens a context menu of actions (rule 6a: a navigation card holds only static
 // content, so vote/assign/etc. live in the menu, not inline buttons).
-function BoardCard({ item, onOpen, onContextMenu }) {
+function BoardCard({ item, onOpen, onContextMenu, onDragStart }) {
   return (
     <Card
       variant="navigation"
       status={STATUS_STRIPE_TONE[item.status]}
       statusPulse={!!STATUS_STRIPE_PULSE[item.status]}
+      draggable={onDragStart ? true : undefined}
+      onDragStart={onDragStart ? (e) => onDragStart(e, item) : undefined}
       onClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu(item, e)}
     >
@@ -143,7 +145,7 @@ function useIsSmall() {
 
 // A lane's cards, paginated. Reused by the desktop grid (inside a Section) and the
 // xs/sm tabbed board (inside a TabPanel).
-function LaneCards({ items, onOpen, onContextMenu }) {
+function LaneCards({ items, onOpen, onContextMenu, onCardDragStart }) {
   const [page, setPage] = useState(1)
   const totalPages = Math.max(1, Math.ceil(items.length / LANE_PAGE_SIZE))
   const safePage = Math.min(page, totalPages) // clamp if items shrank
@@ -152,7 +154,7 @@ function LaneCards({ items, onOpen, onContextMenu }) {
     <Stack gap="sm">
       <Stack gap="sm">
         {visible.map((it) => (
-          <BoardCard key={it.id} item={it} onOpen={onOpen} onContextMenu={onContextMenu} />
+          <BoardCard key={it.id} item={it} onOpen={onOpen} onContextMenu={onContextMenu} onDragStart={onCardDragStart} />
         ))}
       </Stack>
       {totalPages > 1 && (
@@ -164,7 +166,7 @@ function LaneCards({ items, onOpen, onContextMenu }) {
 
 // A swimlane: an A1 Section (surface differentiates adjacent lanes) with a left
 // border acting as the vertical divider. Laid out in a zero-gap Grid (see Board).
-function BoardColumn({ status, items, index, onOpen, onContextMenu }) {
+function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragStart, onLaneDragOver, onLaneDragLeave, onLaneDrop, isDropTarget }) {
   return (
     <Section
       padding="xs"
@@ -172,13 +174,17 @@ function BoardColumn({ status, items, index, onOpen, onContextMenu }) {
       borderSides={index > 0 ? ['left'] : []}
       borderSize="xs"
       borderVariant="subtle"
+      className={`a1-web-backlog-lane${isDropTarget ? ' a1-web-backlog-lane--drop' : ''}`}
+      onDragOver={(e) => onLaneDragOver?.(e, status)}
+      onDragLeave={onLaneDragLeave}
+      onDrop={(e) => onLaneDrop?.(e, status)}
     >
       <Stack gap="sm">
         <Stack direction="row" gap="xs" align="center">
           <Heading as="h2" size="sm">{STATUS_LABELS[status]}</Heading>
                     <Heading as="h2" color='muted' size="xs">{items.length}</Heading>
         </Stack>
-        <LaneCards items={items} onOpen={onOpen} onContextMenu={onContextMenu} />
+        <LaneCards items={items} onOpen={onOpen} onContextMenu={onContextMenu} onCardDragStart={onCardDragStart} />
       </Stack>
     </Section>
   )
@@ -275,6 +281,7 @@ export function Backlog({ onNavigate }) {
   const [sort, setSort] = useState(() => (SORTERS[persisted.sort] ? persisted.sort : 'updated'))
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, ...(persisted.filters || {}) }))
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
+  const [dragOverStatus, setDragOverStatus] = useState(null) // swimlane being dragged over
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
   const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
   const isSmall = useIsSmall() // xs/sm → tab-per-swimlane instead of a grid
@@ -335,6 +342,24 @@ export function Backlog({ onNavigate }) {
 
   const openMenu = (it, e) => { e.preventDefault(); setMenu({ item: it, x: e.clientX, y: e.clientY }) }
 
+  // Drag a card onto another swimlane to change its status.
+  const handleCardDragStart = (e, item) => {
+    e.dataTransfer.setData('text/plain', item.id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+  const handleLaneDragOver = (e, status) => {
+    e.preventDefault() // allow the drop
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverStatus(status)
+  }
+  const handleLaneDrop = (e, status) => {
+    e.preventDefault()
+    setDragOverStatus(null)
+    const id = e.dataTransfer.getData('text/plain')
+    const item = items.find((i) => i.id === id)
+    if (item && item.status !== status) backlog?.update(item, { status })
+  }
+
   // Actions available on a ticket from the board's right-click context menu.
   const ticketMenuItems = (it) => {
     const isVoted = voteFor.has(it.id)
@@ -365,7 +390,7 @@ export function Backlog({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
+      <Section padding="xs" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
         <Stack direction="column" gap="xs">
           <Breadcrumb
             items={[
@@ -392,7 +417,7 @@ export function Backlog({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="2xl" aria-label="Backlog">
+      <Section padding="xs" aria-label="Backlog">
         <Stack gap="md">
         {/* The backlog search lives in the page header (top-right). Here we only echo the
             result count + the smart-search syntax hint while a query is active. */}
@@ -415,7 +440,7 @@ export function Backlog({ onNavigate }) {
               {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar label="Swimlanes" aria-label="Show or hide swimlanes">
+              <Toolbar aria-label="Show or hide swimlanes" fullWidth>
                 {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
                   <ToolbarToggle
                     key={s}
@@ -432,41 +457,51 @@ export function Backlog({ onNavigate }) {
                 ))}
               </Toolbar>
 
-              {filtered.length === 0 ? (
-                <MessageEmptyState icon="task_alt" title="No tickets match" description="Adjust the filters, or create the first ticket." />
-              ) : (
-                (() => {
-                  const lanes = [...STATUS_FLOW, ...TERMINAL_STATUSES].filter((s) => visibleLanes.has(s) && byStatus[s].length > 0)
-                  if (lanes.length === 0) {
-                    return <MessageEmptyState icon="visibility_off" title="All matching swimlanes are hidden" description="Turn a swimlane on above to see its tickets." />
-                  }
-                  // xs/sm: one tab per swimlane (a single scrollable column). md+: the grid.
-                  if (isSmall) {
-                    const activeSafe = lanes.includes(activeLane) ? activeLane : lanes[0]
-                    return (
-                      <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact" labelMode="selected">
-                        <TabList>
-                          {lanes.map((s) => (
-                            <Tab key={s} value={s} icon={STATUS_ICON[s]} count={byStatus[s].length}>{STATUS_LABELS[s]}</Tab>
-                          ))}
-                        </TabList>
-                        {lanes.map((s) => (
-                          <TabPanel key={s} value={s}>
-                            <LaneCards items={byStatus[s]} onOpen={open} onContextMenu={openMenu} />
-                          </TabPanel>
-                        ))}
-                      </Tabs>
-                    )
-                  }
+              {(() => {
+                // A swimlane shows whenever it's toggled on — never hidden because it's empty
+                // or filtered down. So the board is stable as you filter / drag cards across it.
+                const lanes = [...STATUS_FLOW, ...TERMINAL_STATUSES].filter((s) => visibleLanes.has(s))
+                if (lanes.length === 0) {
+                  return <MessageEmptyState icon="visibility_off" title="No swimlanes shown" description="Turn a swimlane on above to see its tickets." />
+                }
+                // xs/sm: one tab per swimlane (a single scrollable column). md+: the grid.
+                if (isSmall) {
+                  const activeSafe = lanes.includes(activeLane) ? activeLane : lanes[0]
                   return (
-                    <Grid columns={lanes.length} gap="none">
-                      {lanes.map((s, i) => (
-                        <BoardColumn key={s} status={s} items={byStatus[s]} index={i} onOpen={open} onContextMenu={openMenu} />
+                    <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact" labelMode="selected">
+                      <TabList>
+                        {lanes.map((s) => (
+                          <Tab key={s} value={s} icon={STATUS_ICON[s]} count={byStatus[s].length}>{STATUS_LABELS[s]}</Tab>
+                        ))}
+                      </TabList>
+                      {lanes.map((s) => (
+                        <TabPanel key={s} value={s}>
+                          <LaneCards items={byStatus[s]} onOpen={open} onContextMenu={openMenu} />
+                        </TabPanel>
                       ))}
-                    </Grid>
+                    </Tabs>
                   )
-                })()
-              )}
+                }
+                return (
+                  <Grid columns={lanes.length} gap="none">
+                    {lanes.map((s, i) => (
+                      <BoardColumn
+                        key={s}
+                        status={s}
+                        items={byStatus[s]}
+                        index={i}
+                        onOpen={open}
+                        onContextMenu={openMenu}
+                        onCardDragStart={handleCardDragStart}
+                        onLaneDragOver={handleLaneDragOver}
+                        onLaneDragLeave={() => setDragOverStatus(null)}
+                        onLaneDrop={handleLaneDrop}
+                        isDropTarget={dragOverStatus === s}
+                      />
+                    ))}
+                  </Grid>
+                )
+              })()}
             </Stack>
           </TabPanel>
 
