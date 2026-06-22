@@ -36,6 +36,7 @@ export const globalTypes = {
         { value: "a1Heritage",   title: "A1 Heritage" },
         { value: "a1Accessible", title: "A1 Accessible" },
         { value: "a1Fresh",      title: "Fresh" },
+        { value: "a1Marshmallow", title: "Marshmallow" },
       ],
       showName: true,
       dynamicTitle: true,
@@ -116,6 +117,7 @@ const withTheme = (Story) => {
     html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
     html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
     html.classList.toggle("a1-theme-fresh",      theme === "a1Fresh");
+    html.classList.toggle("a1-theme-marshmallow", theme === "a1Marshmallow");
     // Explicit light/dark: set the matching class and clear the other.
     // "system" clears both so the prefers-color-scheme media query takes over.
     html.classList.toggle("a1-theme-dark",  colorScheme === "dark");
@@ -130,6 +132,7 @@ const withTheme = (Story) => {
         "a1-theme-heritage",
         "a1-theme-accessible",
         "a1-theme-fresh",
+        "a1-theme-marshmallow",
         "a1-theme-dark",
         "a1-theme-light",
         "a1-reduce-motion",

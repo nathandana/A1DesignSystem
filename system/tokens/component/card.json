@@ -13,7 +13,20 @@
       "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" },
       "borderWidth": { "$type": "dimension", "$value": "{base.space.card.borderWidth}" },
       "iconSize":    { "$type": "dimension", "$value": "{base.spacing.20}" },
-      "iconOpticalSize": { "$type": "number", "$value": 20 }
+      "iconOpticalSize": { "$type": "number", "$value": 20 },
+      "statusStripe": {
+        "width": { "$type": "dimension", "$value": "{base.spacing.4}" }
+      },
+      "statusPulse": {
+        "duration": { "$type": "duration", "$value": "1800ms" }
+      },
+      "status": {
+        "neutral": { "$type": "color", "$value": "{semantic.color.text.muted}" },
+        "info":    { "$type": "color", "$value": "{semantic.color.status.info.background}" },
+        "success": { "$type": "color", "$value": "{base.color.success.500}" },
+        "warn":    { "$type": "color", "$value": "{base.color.warn.500}" },
+        "error":   { "$type": "color", "$value": "{semantic.color.status.error.background}" }
+      }
     }
   }
 }

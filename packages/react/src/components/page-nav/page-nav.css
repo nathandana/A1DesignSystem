@@ -111,7 +111,7 @@
     border-inline: none;
     border-block-start: none;
     /* Crisp shadow to separate from page content scrolling beneath */
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--semantic-shadow-sm);
   }
 
   /* Spacer height = progress bar (3px) + inner padding (8+8px) + pill row (~35px) */
@@ -159,7 +159,7 @@
 
   .a1-page-nav__link--active {
     background: var(--semantic-color-action-background);
-    color: #fff;
+    color: var(--semantic-color-text-inverse);
     border-color: var(--semantic-color-action-background);
   }
 }

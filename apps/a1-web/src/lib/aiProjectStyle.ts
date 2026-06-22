@@ -17,6 +17,7 @@ const THEME_VIBES: Record<string, string> = {
   heritage: 'classic, traditional, established brand; barely-rounded corners',
   fresh: 'bright and friendly; sky-blue accents, mint gradient, rounded; Nunito/Baskerville type',
   crochet: 'soft cozy pastels (dusty-rose, sage, periwinkle, apricot) on warm cream; expressive warm serifs; handmade/craft feel',
+  marshmallow: 'soft pillowy neumorphism in pastels — dusty-lavender accent on warm marshmallow-cream surfaces; gentle raised/inset 3D depth, generous rounding; rounded Varela Round + Nunito type',
 };
 
 function activeThemeVibe(): string {

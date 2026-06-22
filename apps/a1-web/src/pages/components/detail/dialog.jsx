@@ -25,11 +25,19 @@ function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
 }
 
+const SIZE_OPTIONS = [
+  { value: 'sm', label: 'Small' },
+  { value: 'md', label: 'Medium' },
+  { value: 'lg', label: 'Large' },
+  { value: 'xl', label: 'Extra large' },
+]
+
 function buildDialogSnippet(config) {
   const props = [
     'open={open}',
     config.showClose ? 'onClose={() => setOpen(false)}' : null,
     config.title ? `title="${escapeJsxString(config.title)}"` : null,
+    config.size && config.size !== 'md' ? `size="${config.size}"` : null,
     config.status ? `status="${config.status}"` : null,
     config.status && config.customIcon ? `icon="${config.icon || 'info'}"` : null,
     `footer={
@@ -55,6 +63,7 @@ function buildDialogSnippet(config) {
 export function getDefaultConfig() {
   return {
     title: 'Confirm action',
+    size: 'md',
     showClose: true,
     status: '',
     customIcon: false,
@@ -72,6 +81,7 @@ export function Preview({ config }) {
         open={open}
         onClose={config.showClose ? () => setOpen(false) : undefined}
         title={config.title || undefined}
+        size={config.size || undefined}
         status={config.status || undefined}
         icon={config.status && config.customIcon ? (config.icon || undefined) : undefined}
         footer={
@@ -99,6 +109,13 @@ export function Controls({ config, setConfig }) {
         size="compact"
         value={config.title}
         onChange={(event) => set({ title: event.target.value })}
+      />
+      <Choice prop="size"
+        label="Width"
+        value={config.size}
+        onChange={(size) => set({ size })}
+        options={SIZE_OPTIONS}
+        helper="Dialog width: Small (440px) for short confirmations, Medium (560px, default), Large (720px) and Extra large (920px) for wide, content-rich or tabbed dialogs. Every size caps at the viewport."
       />
       <Choice prop="status"
         label="Status"

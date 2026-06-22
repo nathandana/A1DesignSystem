@@ -36,6 +36,7 @@ export function Dialog({
   footer,
   status,
   icon,
+  size = "md",
   children,
   className = "",
   ...props
@@ -124,6 +125,7 @@ export function Dialog({
   const classes = [
     "a1-dialog",
     status && "a1-dialog--has-hero",
+    size && size !== "md" && `a1-dialog--${size}`,
     className,
   ].filter(Boolean).join(" ");
 

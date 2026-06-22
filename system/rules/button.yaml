@@ -27,6 +27,8 @@ rules:
     applies_to:
       - hierarchy
       - layout
+    enforcement:
+      eslint: single-primary-button
 
   - id: button-not-color-alone
     components:

@@ -34,6 +34,24 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
     | "top-start" | "top-center" | "top-end"
     | "middle-start" | "middle-center" | "middle-end"
     | "bottom-start" | "bottom-center" | "bottom-end";
+  /**
+   * Renders a coloured status stripe down the card's inline-start edge, coloured from the
+   * tokenized `component.card.status.*` palette (warn/success are two ramp steps lighter than
+   * the status background so a thin stripe still reads as amber/green).
+   *
+   * The stripe is decorative: status must NOT be conveyed by colour alone. Pair it with
+   * `statusLabel` (or status text the card carries or sits within) — see the
+   * `card-status-not-color-only` rule (WCAG 2.1 SC 1.4.1, Level A). Default: undefined (no stripe).
+   */
+  status?: "neutral" | "info" | "success" | "warn" | "error";
+  /** Optional badge label shown at the top of the card content, tinted to match `status`. Only renders when `status` is set. */
+  statusLabel?: React.ReactNode;
+  /**
+   * Subtly pulses the status stripe to signal in-progress / ongoing work. Respects
+   * `prefers-reduced-motion` (the stripe stays static). Only applies when `status` is set.
+   * Default: false.
+   */
+  statusPulse?: boolean;
   children?: React.ReactNode;
 }
 

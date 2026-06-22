@@ -16,6 +16,13 @@ export interface DialogProps extends React.DialogHTMLAttributes<HTMLDialogElemen
   status?: "success" | "error" | "warn" | "info" | "neutral";
   /** Override the icon shown in the hero area. Defaults to the status icon when `status` is set. */
   icon?: string;
+  /**
+   * Dialog width. "sm" (440px) for short confirmations, "md" (560px, default) for
+   * standard content, "lg" (720px) and "xl" (920px) for wide, content-rich dialogs
+   * (e.g. multi-tab detail views). Every size stays capped at the viewport width.
+   * Default: "md"
+   */
+  size?: "sm" | "md" | "lg" | "xl";
   children?: React.ReactNode;
 }
 

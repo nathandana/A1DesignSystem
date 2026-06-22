@@ -445,9 +445,8 @@ export function DataTable({
         const initials = String(value)
           .split(" ")
           .slice(0, 2)
-          .map((w) => w[0])
-          .join("")
-          .toUpperCase();
+          .map((w) => w.charAt(0).toUpperCase())
+          .join("");
         return (
           <span className="a1-data-table__avatar-cell">
             <span className="a1-data-table__avatar" aria-hidden="true">{initials}</span>

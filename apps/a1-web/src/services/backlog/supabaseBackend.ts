@@ -12,10 +12,10 @@ import type {
   BacklogComment, BacklogItem, BacklogNotification, BacklogUser, UpdateTicketPatch,
 } from './types';
 
-const ITEM_COLS =
-  'id,number,title,description,type,status,priority,complexity,scope_kind,scope_ref,scope_label,' +
-  'created_by,created_by_email,assignee_id,assignee_email,awaiting_requester,duplicate_of,' +
-  'attachment_refs,vote_count,created_at,updated_at';
+// Select all columns with `*` so an optional / just-added column (e.g. `reviews`, added
+// for the Virtual Team) never breaks reads on a DB that hasn't run that migration yet —
+// `itemFromRow` defaults any missing field. The full field list lives in `itemFromRow`.
+const ITEM_COLS = '*';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function itemFromRow(r: any): BacklogItem {
@@ -39,6 +39,7 @@ function itemFromRow(r: any): BacklogItem {
     duplicateOf: r.duplicate_of ?? null,
     attachmentRefs: r.attachment_refs ?? [],
     voteCount: r.vote_count ?? 0,
+    reviews: r.reviews ?? {},
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -76,7 +77,7 @@ function rowFromPatch(patch: UpdateTicketPatch): Record<string, unknown> {
     priority: 'priority', complexity: 'complexity', scopeKind: 'scope_kind',
     scopeRef: 'scope_ref', scopeLabel: 'scope_label', assigneeId: 'assignee_id',
     assigneeEmail: 'assignee_email', awaitingRequester: 'awaiting_requester',
-    duplicateOf: 'duplicate_of', attachmentRefs: 'attachment_refs',
+    duplicateOf: 'duplicate_of', attachmentRefs: 'attachment_refs', reviews: 'reviews',
   };
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(patch)) {
@@ -125,6 +126,28 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
     async removeItem(id: string) {
       const { error } = await sb.from('backlog_items').delete().eq('id', id);
       if (error) console.warn('[backlog] removeItem failed', error);
+    },
+
+    async mergeItem(fromId: string, toId: string) {
+      // Move the human thread onto the survivor; leave the activity log on the closed
+      // duplicate so its own history stays intact.
+      const { error: cErr } = await sb.from('backlog_comments')
+        .update({ item_id: toId })
+        .eq('item_id', fromId)
+        .in('kind', ['comment', 'question', 'answer']);
+      if (cErr) console.warn('[backlog] mergeItem comments failed', cErr);
+
+      // Combine votes: copy the duplicate's voters onto the survivor (ignoring anyone who
+      // already voted there). The vote-count trigger recomputes the survivor's total.
+      const { data: voters, error: vErr } = await sb.from('backlog_votes')
+        .select('user_id').eq('item_id', fromId);
+      if (vErr) { console.warn('[backlog] mergeItem votes read failed', vErr); return; }
+      if (voters && voters.length) {
+        const { error: upErr } = await sb.from('backlog_votes')
+          .upsert(voters.map((v: any) => ({ item_id: toId, user_id: v.user_id })),
+            { onConflict: 'item_id,user_id' });
+        if (upErr) console.warn('[backlog] mergeItem votes upsert failed', upErr);
+      }
     },
 
     async listComments(itemId: string) {

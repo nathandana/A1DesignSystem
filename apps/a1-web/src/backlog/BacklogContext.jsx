@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Snackbar } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
 import * as store from '../services/backlog/backlogStore'
+import { runPersona, runPersonaOnItem } from '../services/backlog/personas'
+import changelog from '../../CHANGELOG.md?raw'
 import { ticketRef } from '../services/backlog/types'
 import { CreateTicketDialog } from './CreateTicketDialog'
 
@@ -72,9 +74,25 @@ export function BacklogProvider({ children }) {
     return c
   }, [refresh])
 
+  // Answer a specific question inline (e.g. a multiple-choice answer to a PO question).
+  const answer = useCallback(async (item, questionId, body, choice) => {
+    const c = await store.answerQuestion(item, questionId, body, choice)
+    await refresh()
+    return c
+  }, [refresh])
+
   const vote = useCallback(async (item, voted) => {
     await store.setVote(item, voted)
     await refresh()
+  }, [refresh])
+
+  // Merge (join) two similar tickets into one — A1-161. The duplicate is closed and its
+  // thread/votes/description move to the canonical survivor.
+  const merge = useCallback(async (duplicate, canonical) => {
+    const res = await store.mergeTickets(duplicate, canonical)
+    await refresh()
+    setToast(`Merged ${ticketRef(duplicate.number)} into ${ticketRef(canonical.number)}`)
+    return res
   }, [refresh])
 
   const markRead = useCallback(async (ids) => {
@@ -84,6 +102,23 @@ export function BacklogProvider({ children }) {
 
   const loadComments = useCallback((itemId) => store.listComments(itemId), [])
 
+  // Virtual Team: run a persona over the backlog. Pass { dryRun: true } to preview
+  // without writing; a real run refreshes so the board reflects the changes. The CHANGELOG
+  // is supplied so the PO can move tickets that have shipped.
+  const reviewWithPersona = useCallback(async (persona, opts) => {
+    const summary = await runPersona(persona, { ...opts, changelog })
+    if (!opts?.dryRun) await refresh()
+    return summary
+  }, [refresh])
+
+  // Review a single ticket with a persona (the per-ticket review button), then refresh so
+  // the dialog reflects the new priority/size/tag/question. Passes the backlog for context.
+  const reviewItem = useCallback(async (persona, item) => {
+    const outcome = await runPersonaOnItem(persona, item, items)
+    await refresh()
+    return outcome
+  }, [refresh, items])
+
   const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications])
   const me = user ? { id: user.id, email: user.email } : null
 
@@ -91,9 +126,10 @@ export function BacklogProvider({ children }) {
     items, notifications, unreadCount, votedSet, loading,
     isCloud: store.isCloudBacklog(),
     user: me,
-    openCreate, create: handleCreate, update, comment, vote, markRead, loadComments, refresh,
+    openCreate, create: handleCreate, update, comment, answer, vote, merge, markRead, loadComments, refresh,
+    reviewWithPersona, reviewItem,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, comment, vote, markRead, loadComments, refresh])
+    openCreate, handleCreate, update, comment, answer, vote, merge, markRead, loadComments, refresh, reviewWithPersona, reviewItem])
 
   return (
     <BacklogContext.Provider value={value}>
@@ -101,6 +137,7 @@ export function BacklogProvider({ children }) {
       <CreateTicketDialog
         open={createOpen}
         scope={createScope}
+        existingItems={items}
         onClose={() => setCreateOpen(false)}
         onSubmit={handleCreate}
       />

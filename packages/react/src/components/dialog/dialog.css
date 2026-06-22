@@ -7,10 +7,17 @@
   background: var(--semantic-color-surface-page);
   box-shadow: var(--component-dialog-shadow);
   color: var(--semantic-color-text-default);
-  width: min(var(--component-dialog-width), calc(100vw - var(--base-spacing-64)));
+  width: min(var(--a1-dialog-width, var(--component-dialog-width)), calc(100vw - var(--base-spacing-64)));
   max-height: calc(100dvh - var(--base-spacing-64));
   overflow: hidden;
 }
+
+/* ─── Width sizes ─────────────────────────────────────────────────────────────
+   Default (no modifier) = medium (--component-dialog-width). The modifier classes
+   only swap the width variable, so they always stay capped at the viewport. */
+.a1-dialog--sm { --a1-dialog-width: var(--component-dialog-width-sm); }
+.a1-dialog--lg { --a1-dialog-width: var(--component-dialog-width-lg); }
+.a1-dialog--xl { --a1-dialog-width: var(--component-dialog-width-xl); }
 
 .a1-dialog[open] {
   /* CSS Grid instead of Flex: Safari collapses flex: 1 children when the

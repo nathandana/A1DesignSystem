@@ -10,7 +10,7 @@ import {
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, Lockable, statusOptions } from './configKit.jsx'
+import { Choice, Lockable, WithHelp, statusOptions } from './configKit.jsx'
 
 // 3×3 hero-badge placement → directional icons for the alignment-grid picker.
 const HERO_BADGE_POSITIONS = [
@@ -75,6 +75,9 @@ function buildCardSnippet(config) {
     config.iconDisplay === 'hero' ? propString('heroBadge', config.heroBadge, '') : null,
     config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgeStatus', config.heroBadgeStatus, 'neutral') : null,
     config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgePosition', config.heroBadgePosition, 'top-end') : null,
+    propString('status', config.status, ''),
+    config.status ? propString('statusLabel', config.statusLabel, '') : null,
+    config.status ? propBoolean('statusPulse', config.statusPulse, false) : null,
   ].filter(Boolean).join(' ')
 
   return `<Card${props ? ` ${props}` : ''}>
@@ -99,6 +102,9 @@ export function getDefaultConfig() {
     heroBadge: '',
     heroBadgeStatus: 'neutral',
     heroBadgePosition: 'top-end',
+    status: '',
+    statusLabel: 'In progress',
+    statusPulse: false,
   }
 }
 
@@ -117,6 +123,9 @@ export function Preview({ config }) {
       heroBadge={config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined}
       heroBadgeStatus={config.heroBadgeStatus}
       heroBadgePosition={config.heroBadgePosition}
+      status={config.status || undefined}
+      statusLabel={config.status && config.statusLabel ? config.statusLabel : undefined}
+      statusPulse={config.statusPulse}
     >
       <Stack gap="xs">
         <Heading as="h3" size="sm">{config.title || 'Card title'}</Heading>
@@ -227,6 +236,37 @@ export function Controls({ config, setConfig, pages }) {
               options={HERO_BADGE_POSITIONS.map((p) => ({ value: p.value, icon: p.icon, label: p.value.replace('-', ' ') }))}
             />
           </Toolbar>
+        </>
+      )}
+      <Choice prop="status"
+        label="Status stripe"
+        iconOnly
+        helper="Colours a stripe down the card's start edge to signal status. Pair it with a label so meaning isn't colour-only."
+        value={config.status}
+        onChange={(status) => setConfig((current) => ({ ...current, status }))}
+        options={statusOptions(['', 'neutral', 'info', 'success', 'warn', 'error'])}
+      />
+      {config.status && (
+        <>
+          <WithHelp helper="Badge shown at the top of the card, tinted to match the stripe. Leave blank for a stripe only.">
+            <TextField
+              label="Status label"
+              size="compact"
+              value={config.statusLabel}
+              onChange={(event) => setConfig((current) => ({ ...current, statusLabel: event.target.value }))}
+            />
+          </WithHelp>
+          <WithHelp helper="Subtly pulses the stripe to indicate in-progress work. Respects the reduced-motion OS setting (stays static).">
+            <Toolbar label="Animate stripe">
+              <ToolbarToggle
+                icon="sync"
+                label="Pulse (in progress)"
+                showLabel
+                pressed={config.statusPulse}
+                onChange={(statusPulse) => setConfig((current) => ({ ...current, statusPulse }))}
+              />
+            </Toolbar>
+          </WithHelp>
         </>
       )}
     </Stack>

@@ -13,6 +13,9 @@ const HERO_COLORS = {
 
 const VALID_ICON_DISPLAY = ["none", "default", "hero"];
 
+// Status side-stripe colours (mirrors MessageBadge status tones).
+const VALID_STATUS = ["neutral", "info", "success", "warn", "error"];
+
 // 3×3 placement of a hero badge: "{block}-{inline}" where block ∈ top|middle|bottom
 // and inline ∈ start|center|end.
 const VALID_HERO_BADGE_POSITIONS = [
@@ -32,6 +35,9 @@ export function Card({
   heroBadge,
   heroBadgeStatus = "neutral",
   heroBadgePosition = "top-end",
+  status,
+  statusLabel,
+  statusPulse = false,
   className = "",
   children,
   ...props
@@ -43,12 +49,18 @@ export function Card({
     ? iconDisplay
     : "none";
 
+  const resolvedStatus = VALID_STATUS.includes(status) ? status : null;
+  const hasStatusBadge = resolvedStatus && statusLabel != null && statusLabel !== "";
+
   const classes = [
     "a1-card",
     bare && "a1-card--bare",
     isNavigation && "a1-card--navigation",
     resolvedDisplay === "hero" && "a1-card--has-hero",
     resolvedDisplay === "default" && "a1-card--has-icon",
+    resolvedStatus && "a1-card--has-status",
+    resolvedStatus && `a1-card--status-${resolvedStatus}`,
+    resolvedStatus && statusPulse && "a1-card--status-pulse",
     className,
   ]
     .filter(Boolean)
@@ -82,7 +94,14 @@ export function Card({
             <Icon name={icon} />
           </span>
         )}
-        <div className="a1-card__content">{children}</div>
+        <div className="a1-card__content">
+          {hasStatusBadge && (
+            <span className="a1-card__status-badge">
+              <MessageBadge status={resolvedStatus} size="sm">{statusLabel}</MessageBadge>
+            </span>
+          )}
+          {children}
+        </div>
       </div>
     </Component>
   );

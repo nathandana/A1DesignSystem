@@ -46,6 +46,12 @@ export interface BacklogBackend {
   createItem(row: CreateItemRow): Promise<BacklogItem>;
   updateItem(id: string, patch: UpdateTicketPatch): Promise<BacklogItem | null>;
   removeItem(id: string): Promise<void>;
+  /**
+   * Merge ticket `fromId` into `toId`: move the discussion thread (comment / question /
+   * answer rows — never the activity log) and the votes onto the surviving ticket. The
+   * caller (store) handles the status / `duplicateOf` bookkeeping and the activity notes.
+   */
+  mergeItem(fromId: string, toId: string): Promise<void>;
   listComments(itemId: string): Promise<BacklogComment[]>;
   addComment(c: AddCommentRow): Promise<BacklogComment>;
   /** Item ids the current user has voted for. */

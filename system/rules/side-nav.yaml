@@ -5,8 +5,8 @@ rules:
       - SideNav
       - PageLayout
     requirement: At desktop (≥1025px) the sidebar must be sticky — it does not scroll with the page.
-    do: Place SideNav as a sibling to the page's main content area in a flex row. The component applies `position: sticky; top: 0; height: 100vh` automatically at lg/xl, keeping the sidebar pinned to the viewport top while the page scrolls.
-    dont: Wrap the SideNav in a container that has `overflow: hidden` or `overflow: auto` at desktop — this breaks sticky positioning. Do not apply `position: fixed` or `position: relative` overrides that interfere with stickiness.
+    do: 'Place SideNav as a sibling to the page''s main content area in a flex row. The component applies `position: sticky; top: 0; height: 100vh` automatically at lg/xl, keeping the sidebar pinned to the viewport top while the page scrolls.'
+    dont: 'Wrap the SideNav in a container that has `overflow: hidden` or `overflow: auto` at desktop — this breaks sticky positioning. Do not apply `position: fixed` or `position: relative` overrides that interfere with stickiness.'
     applies_to:
       - layout
       - responsive

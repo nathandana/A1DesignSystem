@@ -178,6 +178,7 @@ system/themes/{theme-name}/
 | `fresh` | `.a1-theme-fresh` | Sky-blue accents, Nunito/Baskerville type, mint gradient background |
 | `crochet` | `.a1-theme-crochet` | Soft cozy pastels (dusty-rose accent, sage/periwinkle/apricot) on warm cream surfaces; Fraunces (expressive warm serif) display, Libre Baskerville headings, Roboto Slab (slab serif) body |
 | `aperture` | `.a1-theme-aperture` | Modern, minimal, gallery-grade for a photography portfolio — near-monochrome graphite on clean whites (Apple/Audi inspired), refined Apple-blue info + Audi-red error; Pinyon Script (elegant script) display, Playfair Display (editorial serif) headings, Manrope (clean elegant sans) body; small radii |
+| `marshmallow` | `.a1-theme-marshmallow` | Soft, pillowy **subtle neumorphism** in pastels — dusty-lavender accent on warm marshmallow-cream surfaces, gentle raised/inset 3D shadows on buttons (raised at rest → inset when pressed) and cards, generous rounding; Varela Round (rounded) display & headings, Nunito (rounded) body. Achieved entirely through theme token overrides (`--component-button-box-shadow`/`-hover`/`-active`, `--component-button-press-transform`, `--semantic-shadow-*`) over warm-cream surfaces so both the light highlight and soft shadow read |
 
 ### Breakpoints
 

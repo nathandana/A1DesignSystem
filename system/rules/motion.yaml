@@ -87,7 +87,7 @@ rules:
 
   - id: motion-reduced-motion
     components: []
-    requirement: All animated behavior must respect the prefers-reduced-motion: reduce media query.
+    requirement: 'All animated behavior must respect the prefers-reduced-motion: reduce media query.'
     do: |
       Use the --semantic-motion-duration-* tokens for all transitions and animations.
       These tokens are automatically set to 0ms when reduced motion is active. For animations
