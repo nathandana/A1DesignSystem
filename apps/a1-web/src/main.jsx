@@ -807,6 +807,8 @@ function App() {
       ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
       : activePage === 'theme-editor' && activeThemeId
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
+      : activePage === 'backlog'
+      ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
   return (
@@ -1071,7 +1073,7 @@ function App() {
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}
         {isSmDown && asideEl && (
-          <BottomSheet className="a1-web-config-sheet" title="Configure" detents={[0.55, 0.95]} defaultDetent={0}>
+          <BottomSheet className="a1-web-config-sheet" title={activePage === 'backlog' ? 'Filters' : 'Configure'} detents={[0.55, 0.95]} defaultDetent={0}>
             {asideEl}
           </BottomSheet>
         )}
