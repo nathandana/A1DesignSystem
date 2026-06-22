@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  SearchField,
   SideNav,
-  TextField,
   TreeMenu,
 } from '@gtivr4/a1-design-system-react'
 import { componentCategories } from './data.js'
@@ -91,10 +91,9 @@ function ComponentTree({ activePage, onNavigate, search }) {
 export function ComponentsSidebar({ activePage, onNavigate, search, setSearch }) {
   return (
     <SideNav>
-      <TextField
+      <SearchField
         label="Search components"
         size="compact"
-        type="search"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />

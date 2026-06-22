@@ -13,6 +13,20 @@
           "ja": "必須",
           "zh": "必填"
         }
+      },
+      "clearSearch": {
+        "$type": "string",
+        "$value": "Clear search",
+        "$description": "Accessible label for the clear button inside a SearchField.",
+        "locale": {
+          "es": "Borrar búsqueda",
+          "fr": "Effacer la recherche",
+          "de": "Suche löschen",
+          "pt": "Limpar pesquisa",
+          "ja": "検索をクリア",
+          "zh": "清除搜索",
+          "ar": "مسح البحث"
+        }
       }
     }
   }

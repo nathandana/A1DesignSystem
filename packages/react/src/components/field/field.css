@@ -516,3 +516,48 @@
     margin-top: var(--a1-field-gap);
   }
 }
+
+/* ─── Search field — leading search icon + trailing clear button ─────────── */
+/* Icon and clear button sit inside the field control (position: relative); the input
+   keeps its own border/background and just gains inline padding so the value never
+   collides with them. Logical properties keep it RTL-correct. */
+
+/* Pill-shaped by default — overrides the field radius via the existing variable layer. */
+.a1-field--search {
+  --a1-field-border-radius: var(--base-radius-pill);
+}
+
+.a1-field--search .a1-field__search-icon {
+  position: absolute;
+  inset-inline-start: var(--a1-field-padding-inline);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: var(--semantic-color-text-muted);
+  pointer-events: none;  /* clicks pass through to the input */
+}
+
+.a1-field--search .a1-field__input {
+  padding-inline-start: calc(
+    var(--a1-field-padding-inline) + var(--base-spacing-20) + var(--base-spacing-8)
+  );
+}
+
+.a1-field--search .a1-field__search-clear {
+  position: absolute;
+  inset-inline-end: var(--base-spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Reserve inline-end room only while the clear button is shown. */
+.a1-field--search-has-value .a1-field__input {
+  padding-inline-end: calc(var(--a1-field-padding-inline) + var(--base-spacing-32));
+}
+
+/* Suppress the browser's native search clear — the A1 clear button replaces it. */
+.a1-field--search .a1-field__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}

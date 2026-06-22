@@ -25,6 +25,7 @@ import * as slider from './slider.jsx'
 import * as toolbar from './toolbar.jsx'
 import * as stickyActions from './sticky-actions.jsx'
 import * as textField from './text-field.jsx'
+import * as searchField from './search-field.jsx'
 import * as numberField from './number-field.jsx'
 import * as dateField from './date-field.jsx'
 import * as timeField from './time-field.jsx'
@@ -97,6 +98,7 @@ const REGISTRY = {
   toolbar,
   'sticky-actions': stickyActions,
   'text-field': textField,
+  'search-field': searchField,
   'number-field': numberField,
   'date-field': dateField,
   'time-field': timeField,
