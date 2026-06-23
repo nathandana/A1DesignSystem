@@ -331,6 +331,7 @@
   --component-button-small-height: 1.75rem;
   --component-button-small-icon-optical-size: 20;
   --component-button-small-icon-size: 1.25rem;
+  --component-button-small-padding-block: 0.25rem;
   --component-button-tertiary-background: #fcfbff;
   --component-button-tertiary-background-hover: #f5f3ff;
   --component-button-tertiary-background-pressed: #e8e4ff;

@@ -7,6 +7,7 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-06-23 | **Button small size fix** (A1-274) — `size="sm"` was rendering ~37px instead of 28px because the default `padding-block` (10px per side) overrides `min-height`. Added `component.button.small.paddingBlock` token (`{base.spacing.4}` = 4px); applied as `padding-block` in `.a1-button--sm` (React `button.css`) and `.a1-button-small` (`a1-base.css`, `a1-pure.css`). Tokens rebuilt. |
 | 2026-06-23 | **Spacing utility zero values** — `spacing.css`, `Spacing.stories.jsx`, the a1-web utility registry, and the Utilities foundation page now include explicit `0` reset values for padding, margin, and gap utilities (`a1-p*-0`, `a1-m*-0`, `a1-gap-0`). In the editor this is distinct from **None**, which removes the utility class. |
 | 2026-06-23 | **Utilities foundation category tabs** — the a1-web Utilities foundation page now uses A1 Tabs to group spacing, gap, width, screen-reader-only, and component-support content into separate category panels while preserving the existing demos and lookup tables. |
 | 2026-06-23 | **Utilities override component defaults** — spacing and width utility classes now use explicit override declarations, so editor-applied utilities win on the actual component root when a component already defines the same property (for example Card padding or Section min/max width). |

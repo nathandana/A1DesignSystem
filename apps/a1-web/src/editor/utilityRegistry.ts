@@ -23,6 +23,7 @@ export interface UtilityDefinition {
   classPrefix: string;
   values: readonly string[];
   commonValues: readonly string[];
+  helper: string;
 }
 
 export const SPACING_UTILITY_VALUES = [
@@ -33,16 +34,18 @@ export const GAP_UTILITY_VALUES = ['0', 'xs', 'sm', 'md', 'lg'] as const;
 export const MAX_WIDTH_UTILITY_VALUES = ['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full', 'none'] as const;
 export const MIN_WIDTH_UTILITY_VALUES = ['0', '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full'] as const;
 
+const MARGIN_HELPER = 'Prefer managing space between items with gap on the parent layout or a Spacer component. Use margin only when neither is available.';
+
 export const UTILITY_DEFINITIONS: Record<UtilityKey, UtilityDefinition> = {
-  padding: { key: 'padding', label: 'Padding', icon: 'padding', classPrefix: 'a1-p', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  paddingBlock: { key: 'paddingBlock', label: 'Padding block', icon: 'height', classPrefix: 'a1-py', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  paddingInline: { key: 'paddingInline', label: 'Padding inline', icon: 'width', classPrefix: 'a1-px', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  margin: { key: 'margin', label: 'Margin', icon: 'border_outer', classPrefix: 'a1-m', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  marginBlock: { key: 'marginBlock', label: 'Margin block', icon: 'unfold_more', classPrefix: 'a1-my', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  marginInline: { key: 'marginInline', label: 'Margin inline', icon: 'unfold_less', classPrefix: 'a1-mx', values: SPACING_UTILITY_VALUES, commonValues: ['0', '8', '16', '24', '32'] },
-  gap: { key: 'gap', label: 'Gap', icon: 'space_bar', classPrefix: 'a1-gap', values: GAP_UTILITY_VALUES, commonValues: ['0', 'xs', 'sm', 'md'] },
-  maxWidth: { key: 'maxWidth', label: 'Max width', icon: 'fit_width', classPrefix: 'a1-max-w', values: MAX_WIDTH_UTILITY_VALUES, commonValues: ['sm', 'md', 'lg', 'xl'] },
-  minWidth: { key: 'minWidth', label: 'Min width', icon: 'keyboard_tab', classPrefix: 'a1-min-w', values: MIN_WIDTH_UTILITY_VALUES, commonValues: ['0', 'sm', 'md', 'full'] },
+  padding:       { key: 'padding',       label: 'Padding',        icon: 'padding',      classPrefix: 'a1-p',     values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: 'Adds internal space on all four sides inside the component boundary.' },
+  paddingBlock:  { key: 'paddingBlock',  label: 'Padding block',  icon: 'height',       classPrefix: 'a1-py',    values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: 'Adds internal space above and below (block axis) inside the component.' },
+  paddingInline: { key: 'paddingInline', label: 'Padding inline', icon: 'width',        classPrefix: 'a1-px',    values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: 'Adds internal space to the left and right (inline axis) inside the component.' },
+  margin:        { key: 'margin',        label: 'Margin',         icon: 'border_outer', classPrefix: 'a1-m',     values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: MARGIN_HELPER },
+  marginBlock:   { key: 'marginBlock',   label: 'Margin block',   icon: 'unfold_more',  classPrefix: 'a1-my',    values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: MARGIN_HELPER },
+  marginInline:  { key: 'marginInline',  label: 'Margin inline',  icon: 'unfold_less',  classPrefix: 'a1-mx',    values: SPACING_UTILITY_VALUES,    commonValues: ['0', '8', '16', '24', '32'], helper: 'Adds external space to the left and right (inline axis) outside the component.' },
+  gap:           { key: 'gap',           label: 'Gap',            icon: 'space_bar',    classPrefix: 'a1-gap',   values: GAP_UTILITY_VALUES,        commonValues: ['0', 'xs', 'sm', 'md'],      helper: 'Sets the spacing between direct children of this layout component.' },
+  maxWidth:      { key: 'maxWidth',      label: 'Max width',      icon: 'fit_width',    classPrefix: 'a1-max-w', values: MAX_WIDTH_UTILITY_VALUES,   commonValues: ['sm', 'md', 'lg', 'xl'],     helper: 'Constrains how wide the component can grow. Useful for keeping text readable at large viewports.' },
+  minWidth:      { key: 'minWidth',      label: 'Min width',      icon: 'keyboard_tab', classPrefix: 'a1-min-w', values: MIN_WIDTH_UTILITY_VALUES,   commonValues: ['0', 'sm', 'md', 'full'],    helper: 'Sets the smallest width the component will shrink to.' },
 };
 
 export const CATALOG_COMPONENT_UTILITY_TYPES: Record<string, string> = {

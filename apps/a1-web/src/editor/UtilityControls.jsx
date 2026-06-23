@@ -1,11 +1,10 @@
 import {
   Accordion,
-  Paragraph,
   Stack,
   Toolbar,
   ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
-import { ConfigHelp } from '../pages/components/detail/configKit.jsx'
+import { WithHelp } from '../pages/components/detail/configKit.jsx'
 import { cleanUtilities, getAcceptedUtilitiesForComponent } from './utilityRegistry.ts'
 
 function utilityOptionLabel(value) {
@@ -60,28 +59,24 @@ export function UtilityControls({ type, utilities, onChange }) {
         {accepted.map((utility) => {
           const value = clean[utility.key] ?? ''
           return (
-            <Toolbar
-              key={utility.key}
-              label={utility.label}
-              aria-label={`${utility.label} utility`}
-              fullWidth
-            >
-              <ToolbarGroup
-                aria-label={utility.label}
-                value={value}
-                onChange={(value) => setUtility(utility.key, value)}
-                showLabels
-                overflow
-                options={utilityOptions(utility)}
-              />
-            </Toolbar>
+            <WithHelp key={utility.key} helper={utility.helper}>
+              <Toolbar
+                label={utility.label}
+                aria-label={`${utility.label} utility`}
+                fullWidth
+              >
+                <ToolbarGroup
+                  aria-label={utility.label}
+                  value={value}
+                  onChange={(value) => setUtility(utility.key, value)}
+                  showLabels
+                  overflow
+                  options={utilityOptions(utility)}
+                />
+              </Toolbar>
+            </WithHelp>
           )
         })}
-        <ConfigHelp>
-          <Paragraph size="xs" color="muted">
-            Utilities apply tokenized spacing and width classes only when this component accepts them.
-          </Paragraph>
-        </ConfigHelp>
       </Stack>
     </Accordion>
   )

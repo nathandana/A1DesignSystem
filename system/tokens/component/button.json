@@ -141,6 +141,7 @@
       },
       "small": {
         "height": { "$type": "dimension", "$value": "28px" },
+        "paddingBlock": { "$type": "dimension", "$value": "{base.spacing.4}" },
         "borderRadius": { "$type": "dimension", "$value": "{base.radius.sm}" },
         "iconSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
         "iconOpticalSize": { "$type": "number", "$value": 20 }

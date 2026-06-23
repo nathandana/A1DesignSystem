@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- **IconButton `sm` size aligned with Button `sm`** — `size="sm"` now renders at 28×28px with a 20px icon (opsz 20), matching Button's small height and icon size exactly. Previously it was 24×24px / 16px. Updated React CSS, `a1-pure.css`, and the component registry note.
+- **Button small size** (A1-274) — `size="sm"` buttons were no longer rendering at the correct 28px height after the label-wrapping change removed the old fixed `height` rule. The base `padding-block` (10px per side) was overriding the `min-height: 28px` and making small buttons ~37px tall. Added a `component.button.small.paddingBlock` token (4px) and applied it as `padding-block` in `.a1-button--sm` so the button height is correctly constrained. Same fix applied to `.a1-button-small` in `packages/pure/dist/a1-base.css` and `a1-pure.css`.
+
 ### Added
 
 - **Spacing utility zero values** — spacing utilities now include explicit reset classes for padding, margin, and gap: `a1-p-0`, `a1-p{t|b|l|r|x|y}-0`, `a1-m-0`, `a1-m{t|b|l|r|x|y}-0`, and `a1-gap-0`. These use `0 !important` so a utility can intentionally remove component default spacing.

@@ -195,7 +195,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **IconButton `as` / `href`:** Like Button, IconButton accepts `as` (default `"button"`). Pass `as="a"` with an `href` to render it as a navigation link while keeping the icon-button styling — use this for icon-only navigation. When `as="a"`, `disabled` maps to `aria-disabled` (the native `disabled` attribute does not apply to anchors). The a1-web Button, Link, IconButton, and (navigation) Card configurators expose a page-link selector that emits `as="a"` + `href` automatically.
 >
-> **IconButton `size`:** `"sm" | "md" (default) | "lg"`. `sm` is a **24×24px** target (the WCAG 2.2 AA minimum target size) with a 16px icon — for dense toolbars. `md` is the standard target. `lg` matches Button's large target (3.5rem) with a 32px icon. CSS: `a1-icon-button--small` / `--large` (React), `a1-icon-button-small` / `-large` (Pure).
+> **IconButton `size`:** `"sm" | "md" (default) | "lg"`. `sm` is a **28×28px** target with a 20px icon (opsz 20) — matches Button `sm` exactly, so they pair naturally in dense toolbars. `md` is the standard 40×40px target. `lg` matches Button's large target (3.5rem) with a 32px icon. CSS: `a1-icon-button--small` / `--large` (React), `a1-icon-button-small` / `-large` (Pure).
 
 ---
 
