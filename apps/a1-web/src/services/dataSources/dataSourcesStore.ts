@@ -10,6 +10,7 @@ import { createSupabaseBackend } from './supabaseBackend';
 import type {
   CreateDataSourceInput, DataSource, DataSourceUser, UpdateDataSourcePatch,
 } from './types';
+import { ensureRowIds } from './rowIds';
 
 let currentUser: DataSourceUser | null = null;
 let backend: DataSourceBackend | null = null;
@@ -49,7 +50,7 @@ export function createDataSource(input: CreateDataSourceInput): Promise<DataSour
     name: input.name.trim() || 'Untitled dataset',
     description: input.description?.trim() || null,
     columns: input.columns ?? [],
-    rows: input.rows ?? [],
+    rows: ensureRowIds(input.rows ?? []),
     projectIds: input.projectIds ?? [],
     createdBy: currentUser?.id ?? null,
     createdByEmail: currentUser?.email ?? null,
@@ -57,7 +58,9 @@ export function createDataSource(input: CreateDataSourceInput): Promise<DataSour
 }
 
 export function updateDataSource(id: string, patch: UpdateDataSourcePatch): Promise<DataSource | null> {
-  return getBackend().update(id, patch);
+  // Ensure new rows (added in the editor or imported) get a stable hidden id.
+  const next = patch.rows ? { ...patch, rows: ensureRowIds(patch.rows) } : patch;
+  return getBackend().update(id, next);
 }
 
 export function removeDataSource(id: string): Promise<void> {
