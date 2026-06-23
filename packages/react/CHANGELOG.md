@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.24.0 — 2026-06-23
+
 ### Added
 
 - **Spacing utility zero values** — spacing utilities now include explicit reset classes for padding, margin, and gap: `a1-p-0`, `a1-p{t|b|l|r|x|y}-0`, `a1-m-0`, `a1-m{t|b|l|r|x|y}-0`, and `a1-gap-0`. These use `0 !important` so a utility can intentionally remove component default spacing.

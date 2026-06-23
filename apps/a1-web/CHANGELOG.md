@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.13.0 — 2026-06-23
+
 - **Editor utilities — zero spacing values** — padding, margin, and gap utility controls now include `0` as an explicit reset value, distinct from **None** which removes the utility class.
 - **Utilities foundation — category tabs** — the Utilities page now groups its documentation into tabs for spacing, gap, width, screen-reader only, and component support so each utility category is easier to scan without a long vertical page.
 - **Component configurators — shared Utilities accordion** — every component detail Configure panel now gets the shared **Utilities** accordion when that component accepts tokenized utilities. The central panel stores selections on `config.utilities`, resolves the validated utility `className`, and passes it into the detail preview/snippet so utilities apply to the actual component root instead of a wrapper around it. Section uses the same central accordion placement as the rest of the catalog, avoiding the duplicate Utilities accordion while still applying utility classes to its real preview/snippet.
