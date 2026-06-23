@@ -54,6 +54,7 @@ import { PagePresence } from '../editor/PagePresence.jsx';
 import { toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
+import { cleanUtilities } from '../editor/utilityRegistry';
 import type { ComponentNode, ComponentProps, ComponentType, PageDefinition } from '../editor/pageTypes';
 import type { PatternNode } from '../patterns/patternTypes';
 
@@ -228,7 +229,13 @@ function patchDefinitionProps(def: PageDefinition, nodeId: string, props: Compon
 }
 
 function convertNodeType(node: ComponentNode, id: string, newType: ComponentType, newProps: ComponentProps): ComponentNode {
-  if (node.id === id) return { ...node, type: newType, props: newProps };
+  if (node.id === id) {
+    const next = { ...node, type: newType, props: newProps };
+    const utilities = cleanUtilities(newType, node.utilities);
+    if (utilities) next.utilities = utilities;
+    else delete next.utilities;
+    return next;
+  }
   if (!node.children) return node;
   return { ...node, children: node.children.map((c) => convertNodeType(c, id, newType, newProps)) };
 }
@@ -301,6 +308,18 @@ function setNodeCollectionsInNode(node: ComponentNode, id: string, collections: 
   }
   if (!node.children) return node;
   return { ...node, children: node.children.map((c) => setNodeCollectionsInNode(c, id, collections)) };
+}
+
+function setNodeUtilitiesInNode(node: ComponentNode, id: string, utilities: ComponentNode['utilities'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    const cleaned = cleanUtilities(node.type, utilities);
+    if (cleaned) next.utilities = cleaned;
+    else delete next.utilities;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeUtilitiesInNode(c, id, utilities)) };
 }
 
 function freshId(): string {
@@ -1323,6 +1342,13 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), collections ? `Filled ${getNodeType(nodeId)} from data` : `Cleared data fill on ${getNodeType(nodeId)}`);
   }
 
+  function handleSetNodeUtilities(nodeId: string, utilities: ComponentNode['utilities'] | null) {
+    if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeUtilitiesInNode(node, nodeId, utilities));
+    history.commit(JSON.stringify(newDef, null, 2), utilities ? `Updated ${getNodeType(nodeId)} utilities` : `Cleared ${getNodeType(nodeId)} utilities`);
+  }
+
   function handleGroupAsStack(nodeId: string) {
     if (!parsedDefinition.ok) return;
     if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
@@ -1731,6 +1757,7 @@ export function EditorPage({
           onSetLock={handleSetNodeLock}
           onSetNodeRepeat={handleSetNodeRepeat}
           onSetNodeCollections={handleSetNodeCollections}
+          onSetNodeUtilities={handleSetNodeUtilities}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
           onHistoryJump={handleHistoryJump}

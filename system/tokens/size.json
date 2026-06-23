@@ -1,12 +1,14 @@
 {
   "base": {
     "contentWidth": {
-      "xs":  { "$type": "dimension", "$value": "456px",  "$description": "Content max-width — narrow column (≈ short measure). Shared by Section contentWidth and the width utility." },
-      "sm":  { "$type": "dimension", "$value": "640px",  "$description": "Content max-width — small." },
-      "md":  { "$type": "dimension", "$value": "800px",  "$description": "Content max-width — medium (a comfortable reading measure)." },
-      "lg":  { "$type": "dimension", "$value": "960px",  "$description": "Content max-width — large." },
-      "xl":  { "$type": "dimension", "$value": "1120px", "$description": "Content max-width — extra large." },
-      "2xl": { "$type": "dimension", "$value": "1440px", "$description": "Content max-width — widest constrained content." }
+      "3xs": { "$type": "dimension", "$value": "80px",   "$description": "Content max-width — extra narrow utility width." },
+      "2xs": { "$type": "dimension", "$value": "160px",  "$description": "Content max-width — narrow utility width." },
+      "xs":  { "$type": "dimension", "$value": "240px",  "$description": "Content max-width — extra small." },
+      "sm":  { "$type": "dimension", "$value": "320px",  "$description": "Content max-width — small." },
+      "md":  { "$type": "dimension", "$value": "400px",  "$description": "Content max-width — medium." },
+      "lg":  { "$type": "dimension", "$value": "480px",  "$description": "Content max-width — large." },
+      "xl":  { "$type": "dimension", "$value": "640px",  "$description": "Content max-width — extra large." },
+      "2xl": { "$type": "dimension", "$value": "800px",  "$description": "Content max-width — widest constrained content." }
     }
   }
 }

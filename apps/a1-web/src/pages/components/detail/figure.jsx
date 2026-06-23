@@ -109,9 +109,10 @@ function propBoolean(name, value, defaultValue) {
   return value ? name : `${name}={false}`
 }
 
-function buildFigureSnippet(config) {
+function buildFigureSnippet(config, utilityClass = '') {
   const isCustom = config.customCrop
   const props = [
+    propString('className', utilityClass, ''),
     `src="${escapeJsxString(config.src || DEMO_SRC)}"`,
     `alt="${escapeJsxString(config.alt || '')}"`,
     config.caption ? `caption="${escapeJsxString(config.caption)}"` : null,
@@ -152,11 +153,12 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const isCustom = config.customCrop
   useImageLibraryVersion() // re-render when a library image hydrates
   return (
     <Figure
+      className={utilityClass || undefined}
       src={resolveSrc(config.src || DEMO_SRC)}
       alt={config.alt || ''}
       caption={config.captionSrOnly ? undefined : (config.caption || undefined)}
@@ -385,6 +387,6 @@ export function Controls({ config, setConfig, projectId }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildFigureSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildFigureSnippet(config, utilityClass)}</Code>
 }

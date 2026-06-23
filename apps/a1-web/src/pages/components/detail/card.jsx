@@ -57,14 +57,19 @@ function propString(name, value, defaultValue) {
   return `${name}="${String(value).replaceAll('"', '&quot;')}"`
 }
 
+function propClassName(value) {
+  return propString('className', value, '')
+}
+
 function propBoolean(name, value, defaultValue) {
   if (value === defaultValue) return null
   return `${name}={${value ? 'true' : 'false'}}`
 }
 
-function buildCardSnippet(config) {
+function buildCardSnippet(config, utilityClass = '') {
   const icon = config.iconDisplay === 'none' ? '' : config.icon
   const props = [
+    propClassName(utilityClass),
     propString('as', config.as, 'div'),
     propString('variant', config.variant, 'default'),
     config.variant === 'navigation' ? propString('href', config.href, '') : null,
@@ -108,11 +113,12 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const icon = config.iconDisplay === 'none' ? undefined : config.icon
 
   return (
     <Card
+      className={utilityClass || undefined}
       as={config.variant === 'navigation' ? undefined : config.as}
       variant={config.variant}
       href={config.variant === 'navigation' ? config.href : undefined}
@@ -273,6 +279,6 @@ export function Controls({ config, setConfig, pages }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildCardSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildCardSnippet(config, utilityClass)}</Code>
 }

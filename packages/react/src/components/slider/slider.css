@@ -44,7 +44,7 @@
 
 /* Subtle variant — neutral fill/thumb/active instead of the action colour. */
 .a1-slider--subtle {
-  --a1-slider-fill-color: var(--semantic-color-text-default);
+  --a1-slider-fill-color: var(--semantic-color-text-muted);
   --a1-slider-thumb-color: var(--semantic-color-text-default);
   --a1-slider-active-color: var(--semantic-color-text-default);
 }

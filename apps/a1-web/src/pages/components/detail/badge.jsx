@@ -23,8 +23,9 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
-function buildBadgeSnippet(config) {
+function buildBadgeSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.status !== 'neutral' ? `status="${config.status}"` : null,
     config.subtle ? 'subtle' : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
@@ -46,7 +47,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const icon = config.iconMode === 'none'
     ? null
     : config.iconMode === 'custom'
@@ -55,6 +56,7 @@ export function Preview({ config }) {
 
   return (
     <MessageBadge
+      className={utilityClass || undefined}
       status={config.status}
       subtle={config.subtle}
       size={config.size}
@@ -109,6 +111,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildBadgeSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildBadgeSnippet(config, utilityClass)}</Code>
 }

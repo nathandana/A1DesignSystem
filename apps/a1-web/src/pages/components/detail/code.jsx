@@ -58,9 +58,10 @@ function propExpression(name, value) {
   return `${name}={${JSON.stringify(value)}}`
 }
 
-function codeProps(config) {
+function codeProps(config, utilityClass = '') {
   const isInline = config.variant === 'inline'
   return [
+    propString('className', utilityClass, ''),
     propString('variant', config.variant, 'inline'),
     !isInline ? propBoolean('wrapping', config.wrapping) : null,
     !isInline ? propBoolean('editable', config.editable) : null,
@@ -76,9 +77,9 @@ function indentChildren(value) {
   return escapeJsxText(value).split('\n').map((line) => `  ${line}`).join('\n')
 }
 
-function buildCodeSnippet(config) {
+function buildCodeSnippet(config, utilityClass = '') {
   const children = config.children || sampleForVariant(config.variant)
-  const props = codeProps(config)
+  const props = codeProps(config, utilityClass)
   const propsStr = props ? ` ${props}` : ''
   const isCompactInline = config.variant === 'inline' && !children.includes('\n')
 
@@ -106,7 +107,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const children = config.children || sampleForVariant(config.variant)
   const copyText = config.copyText || undefined
 
@@ -114,7 +115,7 @@ export function Preview({ config }) {
     return (
       <Paragraph>
         Set the token value with{' '}
-        <Code>{children}</Code>
+        <Code className={utilityClass || undefined}>{children}</Code>
         {' '}in your CSS.
       </Paragraph>
     )
@@ -122,6 +123,7 @@ export function Preview({ config }) {
 
   return (
     <Code
+      className={utilityClass || undefined}
       variant={config.variant}
       wrapping={config.wrapping}
       editable={config.editable}
@@ -202,6 +204,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildCodeSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildCodeSnippet(config, utilityClass)}</Code>
 }

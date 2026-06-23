@@ -35,8 +35,9 @@ function propBoolean(name, value, defaultValue) {
   return `${name}={${value ? 'true' : 'false'}}`
 }
 
-function buildButtonContainerSnippet(config) {
+function buildButtonContainerSnippet(config, utilityClass = '') {
   const props = [
+    propString('className', utilityClass, ''),
     propString('align', config.align, 'start'),
     propString('size', config.size, ''),
     propBoolean('fillButtons', config.fillButtons, false),
@@ -59,9 +60,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <ButtonContainer
+      className={utilityClass || undefined}
       align={config.align}
       size={config.size || undefined}
       fillButtons={config.fillButtons}
@@ -107,6 +109,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildButtonContainerSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildButtonContainerSnippet(config, utilityClass)}</Code>
 }

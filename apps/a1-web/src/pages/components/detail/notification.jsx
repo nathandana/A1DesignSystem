@@ -73,8 +73,9 @@ function anchorSnippet(config) {
   />`
 }
 
-function buildNotificationSnippet(config) {
+function buildNotificationSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.content === 'count' ? `count={${numberValue(config.count, 0)}}` : null,
     config.content === 'label' ? `label="${escapeJsxString(config.label || 'New')}"` : null,
     config.content === 'dot' ? 'dot' : null,
@@ -103,9 +104,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Notification
+      className={utilityClass || undefined}
       count={config.content === 'count' ? numberValue(config.count, 0) : undefined}
       label={config.content === 'label' ? (config.label || 'New') : undefined}
       dot={config.content === 'dot'}
@@ -197,6 +199,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildNotificationSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildNotificationSnippet(config, utilityClass)}</Code>
 }

@@ -55,7 +55,7 @@ function toMenuItems(configItems, activeId, onActivate) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-function buildSnippet(configItems) {
+function buildSnippet(configItems, utilityClass = '') {
   const lines = configItems.map(item => {
     if (item.kind === 'divider') return `  { type: 'divider', id: '${item.id}' },`
     if (item.kind === 'group')   return `  { type: 'group', id: '${item.id}', label: '${esc(item.label)}' },`
@@ -78,7 +78,7 @@ function buildSnippet(configItems) {
 }}>
   <ContextMenu
     open={!!menu}
-    x={menu?.x ?? 0}
+    ${utilityClass ? `className="${esc(utilityClass)}"\n    ` : ''}x={menu?.x ?? 0}
     y={menu?.y ?? 0}
     onClose={() => setMenu(null)}
     items={[
@@ -91,7 +91,7 @@ ${lines}
 
 // ── Preview ───────────────────────────────────────────────────────────────────
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [menu, setMenu] = useState(null)
   const [activeId, setActiveId] = useState(null)
 
@@ -107,6 +107,7 @@ export function Preview({ config }) {
     >
       <ContextMenu
         open={!!menu}
+        className={utilityClass || undefined}
         x={menu?.x ?? 0}
         y={menu?.y ?? 0}
         items={menuItems}
@@ -244,6 +245,6 @@ export function Controls({ config, setConfig }) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-export function Snippet({ config }) {
-  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [])}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [], utilityClass)}</Code>
 }

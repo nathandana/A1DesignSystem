@@ -65,12 +65,13 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const items = normalizeItems(config.items)
 
   return (
     <div className={`a1-web-side-nav-preview a1-web-side-nav-preview--${config.placement}`}>
       <SideNav
+        className={utilityClass || undefined}
         placement={config.placement}
         collapsed={config.collapsed}
         collapseButtonPlacement={config.collapseButtonPlacement}
@@ -279,9 +280,10 @@ function snippetItem(item) {
   return `  <SideNavItem ${props} />`
 }
 
-function buildSideNavSnippet(config) {
+function buildSideNavSnippet(config, utilityClass = '') {
   const items = normalizeItems(config.items)
   const props = [
+    utilityClass ? `  className="${escapeJsString(utilityClass)}"` : null,
     propLine('placement', config.placement, 'start'),
     config.collapsed ? '  collapsed' : null,
     propLine('collapseButtonPlacement', config.collapseButtonPlacement, 'header'),
@@ -300,6 +302,6 @@ ${itemLines}
 </SideNav>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSideNavSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSideNavSnippet(config, utilityClass)}</Code>
 }

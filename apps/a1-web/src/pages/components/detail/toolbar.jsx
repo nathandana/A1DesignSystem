@@ -49,7 +49,7 @@ function newTool(type) {
   switch (type) {
     case 'button': return { id, type, icon: 'add', label: 'Button' }
     case 'menu': return { id, type, icon: 'expand_more', label: 'Menu', value: '', items: [{ id: uid(), label: 'Item 1', icon: '' }] }
-    case 'group': return { id, type, label: 'Group', value: '', options: [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
+    case 'group': return { id, type, label: 'Group', value: '', overflow: false, options: [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
     case 'divider': return { id, type }
     case 'toggle':
     default: return { id, type: 'toggle', icon: 'star', label: 'Toggle' }
@@ -61,7 +61,7 @@ function convertType(tool, type) {
   const base = { id: tool.id, type, label: tool.label, icon: tool.icon }
   if (type === 'divider') return { id: tool.id, type }
   if (type === 'menu') return { ...base, value: tool.value ?? '', items: tool.items ?? [{ id: uid(), label: 'Item 1', icon: '' }] }
-  if (type === 'group') return { ...base, value: tool.value ?? '', options: tool.options ?? [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
+  if (type === 'group') return { ...base, value: tool.value ?? '', overflow: !!tool.overflow, options: tool.options ?? [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
   if (type === 'toggle') return { ...base, pressed: !!tool.pressed }
   return base // button
 }
@@ -114,14 +114,14 @@ function renderTool(tool, { showLabels, disabled, activeId }) {
     case 'menu':
       return <ToolbarMenu key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} icon={tool.icon || undefined} label={tool.label} value={tool.value} items={toOptions(tool.items)} showLabel={showLabels} disabled={disabled} onChange={() => {}} />
     case 'group':
-      return <ToolbarGroup key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} value={tool.value} options={toOptions(tool.options)} showLabels={showLabels} disabled={disabled} onChange={() => {}} />
+      return <ToolbarGroup key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} value={tool.value} options={toOptions(tool.options)} overflow={!!tool.overflow} showLabels={showLabels} disabled={disabled} onChange={() => {}} />
     case 'toggle':
     default:
       return <ToolbarToggle key={tool.id} data-tool-id={dataId} className={className} icon={tool.icon || undefined} label={tool.label} showLabel={showLabels} pressed={!!tool.pressed} disabled={disabled} onChange={() => {}} />
   }
 }
 
-export function Preview({ config, setConfig }) {
+export function Preview({ config, setConfig, utilityClass = '' }) {
   const { tools = [], activeId, showToolbarLabel, label, showLabels, overlay, fullWidth, disabled } = config
   const selectable = typeof setConfig === 'function'
 
@@ -138,6 +138,7 @@ export function Preview({ config, setConfig }) {
   const bar = (
     <div className="a1-web-toolbar-canvas" onClickCapture={onClickCapture}>
       <Toolbar
+        className={utilityClass || undefined}
         aria-label="Toolbar"
         label={showToolbarLabel ? (label || 'Toolbar') : undefined}
         overlay={overlay}
@@ -213,6 +214,9 @@ function ToolEditor({ tool, canMoveLeft, canMoveRight, onMove, onRemove, onChang
       )}
       {tool.type === 'group' && (
         <TextField label="Accessible name" size="compact" value={tool.label ?? ''} onChange={(e) => onChange({ label: e.target.value })} />
+      )}
+      {tool.type === 'group' && (
+        <Toggle label="Overflow" value={!!tool.overflow} onChange={(overflow) => onChange({ overflow })} />
       )}
 
       {tool.type === 'menu' && (
@@ -308,15 +312,16 @@ function toolSnippet(tool, showLabels) {
     case 'divider': return '<ToolbarDivider />'
     case 'button': return `<ToolbarButton${icon}${label}${sl} onClick={handleClick} />`
     case 'menu': return `<ToolbarMenu${icon}${label} value={value} onChange={setValue}${sl} items={${serializeOptions(tool.items)}} />`
-    case 'group': return `<ToolbarGroup aria-label="${String(tool.label ?? '').replaceAll('"', '&quot;')}" value={value} onChange={setValue}${showLabels ? ' showLabels' : ''} options={${serializeOptions(tool.options)}} />`
+    case 'group': return `<ToolbarGroup aria-label="${String(tool.label ?? '').replaceAll('"', '&quot;')}" value={value} onChange={setValue}${showLabels ? ' showLabels' : ''}${tool.overflow ? ' overflow' : ''} options={${serializeOptions(tool.options)}} />`
     case 'toggle':
     default: return `<ToolbarToggle${icon}${label}${sl} pressed={pressed} onChange={setPressed} />`
   }
 }
 
-function buildToolbarSnippet(config) {
+function buildToolbarSnippet(config, utilityClass = '') {
   const { tools = [], showToolbarLabel, label, showLabels, overlay, fullWidth } = config
   const attrs = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     'aria-label="Toolbar"',
     showToolbarLabel && label ? `label="${String(label).replaceAll('"', '&quot;')}"` : null,
     overlay ? 'overlay' : null,
@@ -326,6 +331,6 @@ function buildToolbarSnippet(config) {
   return `<Toolbar ${attrs}>\n  ${body}\n</Toolbar>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildToolbarSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildToolbarSnippet(config, utilityClass)}</Code>
 }

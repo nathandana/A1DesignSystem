@@ -83,7 +83,7 @@
 }
 
 /* A stretched (non-grid) group distributes its own buttons across its share. */
-.a1-toolbar--full-width .a1-toolbar__group:not(.a1-toolbar__group--grid) > .a1-toolbar__button {
+.a1-toolbar--full-width .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-toolbar__button {
   flex: 1 1 0;
 }
 
@@ -205,15 +205,45 @@
 .a1-toolbar__group {
   display: inline-flex;
   align-items: center;
-  /* A wide single group wraps its own buttons rather than overflowing the bar. */
-  flex-wrap: wrap;
+  min-inline-size: 0;
+  position: relative;
   gap: var(--base-spacing-2);
 }
 
-.a1-toolbar__group--grid {
+.a1-toolbar__group-radios {
+  display: inline-flex;
+  align-items: center;
+  /* A wide single group wraps its own buttons rather than overflowing the bar. */
+  flex-wrap: wrap;
+  gap: var(--base-spacing-2);
+  min-inline-size: 0;
+}
+
+.a1-toolbar__group-radios--grid {
   display: grid;
   grid-template-columns: repeat(var(--a1-toolbar-grid-columns, 3), var(--a1-toolbar-item-size));
   gap: var(--base-spacing-2);
+}
+
+.a1-toolbar__group--overflow {
+  flex-wrap: nowrap;
+}
+
+.a1-toolbar__group--overflow .a1-toolbar__group-radios {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.a1-toolbar__measure {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: inline-flex;
+  gap: var(--base-spacing-2);
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* ── Divider ───────────────────────────────────────────────────────────────── */
@@ -226,4 +256,3 @@
   background: var(--semantic-color-border-default);
   border-radius: var(--base-radius-pill);
 }
-

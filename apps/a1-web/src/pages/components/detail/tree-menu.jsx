@@ -95,7 +95,7 @@ function stripPanelFlag(items) {
   }))
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [selectedId, setSelectedId] = useState(config.selectedId)
   const [expandedIds, setExpandedIds] = useState(config.expandedIds)
   const [localItems, setLocalItems] = useState(() => stripPanelFlag(config.items))
@@ -112,6 +112,7 @@ export function Preview({ config }) {
   return (
     <div style={{ maxWidth: 280 }}>
       <TreeMenu
+        className={utilityClass || undefined}
         items={localItems}
         selectedId={selectedId}
         onSelect={setSelectedId}
@@ -298,7 +299,7 @@ function itemToSnippet(item, depth) {
   return `${pad}{ id: '${escStr(item.id)}', label: '${escStr(item.label)}'${icon}${children} }`
 }
 
-export function Snippet({ config }) {
+export function Snippet({ config, utilityClass = '' }) {
   const items = stripPanelFlag(config.items)
   const itemLines = items.map((item) => itemToSnippet(item, 0)).join(',\n')
   const expandedLine = config.expandedIds?.length
@@ -306,6 +307,7 @@ export function Snippet({ config }) {
   const selectedLine = config.selectedId ? `\n  selectedId="${escStr(config.selectedId)}"` : ''
   const expandControlsLine = config.showExpandControls ? '\n  showExpandControls' : ''
   const draggableLine = config.draggable ? '\n  draggable\n  onMove={handleMove}' : ''
+  const classNameLine = utilityClass ? `\n  className="${escStr(utilityClass)}"` : ''
   const moveHelperPreamble = config.draggable ? `
 const [items, setItems] = useState(initialItems)
 
@@ -321,7 +323,7 @@ ${itemLines},
 
   return (
     <Code variant="block" wrapping copyCode>{`${moveHelperPreamble}<TreeMenu
-  items={items}${selectedLine}${expandedLine}${expandControlsLine}${draggableLine}
+  items={items}${classNameLine}${selectedLine}${expandedLine}${expandControlsLine}${draggableLine}
   onSelect={(id) => console.log('selected', id)}
   aria-label="Navigation"
 />`}</Code>

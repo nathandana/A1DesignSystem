@@ -19,6 +19,10 @@ function escapeJsString(value) {
     .replaceAll('\n', '\\n')
 }
 
+function escapeJsxString(value) {
+  return String(value ?? '').replaceAll('"', '&quot;')
+}
+
 function createOption(label) {
   return {
     id: `choice-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -40,7 +44,7 @@ export function createGroupModule({ Component, componentName, multiple }) {
     return chosen.length > 0 ? chosen[0] : undefined
   }
 
-  function Preview({ config }) {
+  function Preview({ config, utilityClass = '' }) {
     const options = normalizeOptions(config.options)
     const defaultValue = selectedIds(options)
     return (
@@ -54,6 +58,7 @@ export function createGroupModule({ Component, componentName, multiple }) {
         disabled={config.disabled}
         inline={config.inline}
         defaultValue={defaultValue}
+        className={utilityClass || undefined}
         options={options.map((opt) => ({
           value: opt.id,
           label: opt.label || 'Untitled',
@@ -180,7 +185,7 @@ export function createGroupModule({ Component, componentName, multiple }) {
     return `    { ${props} },`
   }
 
-  function buildSnippet(config) {
+  function buildSnippet(config, utilityClass = '') {
     const options = normalizeOptions(config.options)
     const defaultValue = selectedIds(options)
     const defaultValueStr = multiple
@@ -188,6 +193,7 @@ export function createGroupModule({ Component, componentName, multiple }) {
       : (defaultValue ? `'${escapeJsString(defaultValue)}'` : null)
 
     const props = [
+      utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
       config.label ? `label="${escapeJsString(config.label)}"` : null,
       config.hint ? `hint="${escapeJsString(config.hint)}"` : null,
       config.error ? `error="${escapeJsString(config.error)}"` : null,
@@ -201,8 +207,8 @@ export function createGroupModule({ Component, componentName, multiple }) {
     return `<${componentName}\n  ${props ? `${props}\n  ` : ''}options={[\n${options.map(optionSnippet).join('\n')}\n  ]}\n/>`
   }
 
-  function Snippet({ config }) {
-    return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+  function Snippet({ config, utilityClass = '' }) {
+    return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
   }
 
   function getDefaultConfig() {

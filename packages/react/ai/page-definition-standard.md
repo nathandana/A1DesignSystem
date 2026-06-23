@@ -17,6 +17,7 @@ Read this before authoring, editing, importing, or generating any page definitio
 4. **Names are a locked contract.** Component `type` values match the exported A1 React component names **exactly** (PascalCase). Do not normalise, alias, or lowercase them.
 5. **Fail safe.** An unknown/unregistered `type` renders a visible fallback that names the offending type — it never throws and never silently drops content.
 6. **Props must be real.** A node's `props` are passed straight through to the A1 component, so they must be valid props for that component (see "Props rules").
+7. **Utilities are separate from props.** Tokenized utility classes live in `utilities`, not `props.className`, and are applied only when the selected component type accepts that utility family.
 
 ---
 
@@ -75,6 +76,7 @@ The unit of the tree. One node = one A1 component instance.
   "id": "hero-title",
   "type": "Heading",
   "props": { "as": "h1", "id": "editor-hero-title", "type": "display", "size": { "xs": "lg", "md": "xl" } },
+  "utilities": { "maxWidth": "lg", "marginBlock": "24" },
   "content": { "textKey": "editor.example.hero.title", "fallback": "Build pages from structured JSON" },
   "a11y": { "labelledBy": "editor-hero-title" },
   "actions": { "onClick": { "type": "navigate", "target": "/components" } },
@@ -87,6 +89,7 @@ The unit of the tree. One node = one A1 component instance.
 | `id` | string | ✓ | Stable id — React key and future editor selection handle. Unique within the definition. |
 | `type` | `ComponentType` | ✓ | Registered A1 component name (exact). |
 | `props` | object | — | Forwarded verbatim to the component. Must be valid props. |
+| `utilities` | object | — | Tokenized utility selections, validated by component type. Current keys: `padding`, `paddingBlock`, `paddingInline`, `margin`, `marginBlock`, `marginInline`, `gap`, `maxWidth`, `minWidth`. |
 | `content` | `ContentDefinition` | — | Primary text (resolved via labels). |
 | `a11y` | `A11yDefinition` | — | Mapped to ARIA attributes. |
 | `actions` | `ActionMap` | — | Declared now, **not executed yet**. |
@@ -118,6 +121,7 @@ The renderer can only instantiate components in the registry. The current set:
 ## Props rules
 
 - `props` are spread onto the underlying A1 component, so **every key must be a real prop** of that component. Unknown keys leak onto the DOM and cause React warnings.
+- Do not put utility classes in `props.className`. Use the node-level `utilities` field so the editor can prevent invalid combinations (for example, `IconButton` does not accept `minWidth` or `maxWidth`, while `Button` does).
 - **Put layout intent on the component that owns it.** `PageLayout` is the app-shell wrapper and does **not** accept `contentWidth` / `padding` / `gap` — those belong on `Section` (which supports all three). A common mistake is putting page width/padding on the layout node; put them on a hero/content `Section` instead.
 - Responsive values use A1's inline object syntax directly in `props`, e.g. `"size": { "xs": "lg", "md": "xl" }` or `"direction": { "xs": "column", "md": "row" }`.
 - `Heading` has its own `type` prop (`"heading"` | `"display"`). This is independent of the node's `type` field — `node.type` selects the component; `node.props.type` configures it.

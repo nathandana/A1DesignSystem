@@ -64,8 +64,9 @@ function propLine(name, value, defaultValue) {
   return `${name}="${value}"`
 }
 
-function listProps(config) {
+function listProps(config, utilityClass = '') {
   return [
+    propLine('className', utilityClass, ''),
     propLine('as', elementFor(config.variant), 'ul'),
     config.variant === 'divider' ? propLine('variant', 'divider', '') : null,
     config.variant === 'icon' ? propLine('icon', config.icon, '') : null,
@@ -88,9 +89,9 @@ function buildItems(items, config, indent) {
     .join('\n')
 }
 
-function buildListSnippet(config) {
+function buildListSnippet(config, utilityClass = '') {
   const tree = parseTree(config.children)
-  const propsStr = listProps(config) ? ` ${listProps(config)}` : ''
+  const propsStr = listProps(config, utilityClass) ? ` ${listProps(config, utilityClass)}` : ''
   return `<List${propsStr}>\n${buildItems(tree, config, 1)}\n</List>`
 }
 
@@ -124,10 +125,11 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const icon = config.variant === 'icon' ? config.icon : undefined
   return (
     <List
+      className={utilityClass || undefined}
       as={elementFor(config.variant)}
       variant={config.variant}
       size={config.size}
@@ -185,6 +187,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildListSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildListSnippet(config, utilityClass)}</Code>
 }

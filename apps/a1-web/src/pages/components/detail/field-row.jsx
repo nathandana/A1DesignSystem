@@ -23,10 +23,10 @@ export function getDefaultConfig() {
   }
 }
 
-function RowFields({ example }) {
+function RowFields({ example, utilityClass = '' }) {
   if (example === 'address') {
     return (
-      <FieldRow>
+      <FieldRow className={utilityClass || undefined}>
         <TextField label="City" autoComplete="address-level2" />
         <SelectField label="State" autoComplete="address-level1" defaultValue="">
           <option value="">—</option>
@@ -39,17 +39,17 @@ function RowFields({ example }) {
     )
   }
   return (
-    <FieldRow>
+    <FieldRow className={utilityClass || undefined}>
       <TextField label="First name" autoComplete="given-name" />
       <TextField label="Last name" autoComplete="family-name" />
     </FieldRow>
   )
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Fieldset legend={config.legend || undefined} size={config.size}>
-      <RowFields example={config.example} />
+      <RowFields example={config.example} utilityClass={utilityClass} />
     </Fieldset>
   )
 }
@@ -70,12 +70,18 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-const ROW_SNIPPETS = {
-  name: `  <FieldRow>
+function fieldRowProps(utilityClass = '') {
+  return utilityClass ? ` className="${utilityClass.replaceAll('"', '&quot;')}"` : ''
+}
+
+function rowSnippet(example, utilityClass = '') {
+  const props = fieldRowProps(utilityClass)
+  const snippets = {
+    name: `  <FieldRow${props}>
     <TextField label="First name" autoComplete="given-name" />
     <TextField label="Last name" autoComplete="family-name" />
   </FieldRow>`,
-  address: `  <FieldRow>
+    address: `  <FieldRow${props}>
     <TextField label="City" autoComplete="address-level2" />
     <SelectField label="State" autoComplete="address-level1">
       <option value="">—</option>
@@ -85,19 +91,21 @@ const ROW_SNIPPETS = {
     </SelectField>
     <ZipField label="ZIP" autoComplete="postal-code" />
   </FieldRow>`,
+  }
+  return snippets[example] ?? snippets.name
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const props = [
     config.legend ? `legend="${config.legend.replaceAll('"', '&quot;')}"` : null,
     config.size !== 'default' ? `size="${config.size}"` : null,
   ].filter(Boolean).join(' ')
 
   return `<Fieldset${props ? ` ${props}` : ''}>
-${ROW_SNIPPETS[config.example] ?? ROW_SNIPPETS.name}
+${rowSnippet(config.example, utilityClass)}
 </Fieldset>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

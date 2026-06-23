@@ -2175,7 +2175,29 @@ span.a1-web-sem-pick { display: inline-block; }
   inset-inline-end: var(--base-spacing-2);
 }
 
-/* Board swimlane (A1) — always a drop target for drag-to-restatus, so it keeps a
+/* Board swimlanes: md+ uses a horizontal strip so lanes keep usable token-backed
+   widths without forcing page-level horizontal overflow. */
+.a1-web-backlog-board-strip {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block-end: var(--base-spacing-4);
+  scrollbar-width: thin;
+}
+
+.a1-web-backlog-board-strip:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+.a1-web-backlog-board-grid {
+  grid-template-columns: repeat(
+    var(--a1-grid-cols, 1),
+    minmax(var(--base-content-width-xs), var(--base-content-width-xs))
+  );
+}
+
+/* A swimlane is always a drop target for drag-to-restatus, so it keeps a
    minimum height even when empty, and highlights while a card is dragged over it. */
 .a1-web-backlog-lane {
   min-block-size: var(--base-spacing-64);

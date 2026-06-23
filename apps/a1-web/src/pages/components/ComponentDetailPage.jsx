@@ -66,6 +66,8 @@ import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
 import { CreateTicketButton } from '../../backlog/CreateTicketButton'
 import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail/ResponsivePreviewFrame.jsx'
+import { UtilityControls } from '../../editor/UtilityControls.jsx'
+import { cleanUtilities, utilityClassesFor, utilityTypeForCatalogComponent } from '../../editor/utilityRegistry.ts'
 import {
   getComponentPath,
   getRelatedComponents,
@@ -78,6 +80,10 @@ const PACKAGE_META = {
   React:  { icon: 'code',         desc: 'packages/react' },
   Native: { icon: 'phone_iphone', desc: 'packages/react-native' },
   Pure:   { icon: 'palette',      desc: 'packages/pure' },
+}
+
+function componentUtilityType(component) {
+  return utilityTypeForCatalogComponent(component.id, component.title)
 }
 
 function PackageSupportGrid({ packages }) {
@@ -1663,6 +1669,14 @@ function ConfigurationPanel({
   showHelp,
   onToggleHelp,
 }) {
+  const utilityType = componentUtilityType(component)
+  const setUtilities = (utilities) => {
+    setConfig((current) => ({
+      ...current,
+      utilities: cleanUtilities(utilityType, utilities),
+    }))
+  }
+
   return (
     <div className="a1-web-config-aside__inner">
       <div className="a1-web-config-panel">
@@ -1681,7 +1695,14 @@ function ConfigurationPanel({
             </div>
           )}
           <ConfigHelpContext.Provider value={{ showHelp }}>
-            <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+            <Stack gap="sm">
+              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+              <UtilityControls
+                type={utilityType}
+                utilities={config.utilities}
+                onChange={setUtilities}
+              />
+            </Stack>
           </ConfigHelpContext.Provider>
         </div>
         <div className="a1-web-config-panel__footer">
@@ -1776,6 +1797,8 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
+  const utilityType = componentUtilityType(component)
+  const utilityClass = utilityClassesFor(utilityType, config.utilities)
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
@@ -1850,7 +1873,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                 <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
                   {detail.bareDisplay ? (
                     <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                      <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+                      <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
                     </ContainerQueryPreviewFrame>
                   ) : (
                     <Section
@@ -1864,13 +1887,13 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
                       radius={displayConfig.radius}
                     >
                       <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                        <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+                        <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
                       </ContainerQueryPreviewFrame>
                     </Section>
                   )}
                 </ResponsivePreviewFrame>
                 <Divider lineStyle="dashed" space="lg" />
-                <detail.Snippet component={component} config={config} viewAs={viewAs} />
+                <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
               </Stack>
             </TabPanel>
 

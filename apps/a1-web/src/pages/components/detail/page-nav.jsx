@@ -54,7 +54,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   // Use the stable key as the id in the preview so duplicate labels can't
   // produce colliding section ids (PageNav keys its list by id). The readable
   // slug is shown in the snippet instead.
@@ -64,7 +64,7 @@ export function Preview({ config }) {
     level: section.level,
   }))
 
-  return <PageNav label={config.label || DEFAULT_LABEL} sections={sections} />
+  return <PageNav className={utilityClass || undefined} label={config.label || DEFAULT_LABEL} sections={sections} />
 }
 
 export function Controls({ config, setConfig }) {
@@ -189,19 +189,20 @@ function sectionSnippet(section) {
   return `    { ${props} },`
 }
 
-function buildPageNavSnippet(config) {
+function buildPageNavSnippet(config, utilityClass = '') {
   const sections = normalizeSections(config.sections)
   const labelProp = config.label && config.label !== DEFAULT_LABEL
     ? `\n  label="${escapeJsString(config.label)}"`
     : ''
+  const classNameProp = utilityClass ? `\n  className="${escapeJsString(utilityClass)}"` : ''
 
-  return `<PageNav${labelProp}
+  return `<PageNav${classNameProp}${labelProp}
   sections={[
 ${sections.map(sectionSnippet).join('\n')}
   ]}
 />`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildPageNavSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildPageNavSnippet(config, utilityClass)}</Code>
 }

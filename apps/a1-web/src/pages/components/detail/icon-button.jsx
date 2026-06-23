@@ -38,9 +38,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <IconButton
+      className={utilityClass || undefined}
       icon={config.icon || 'help'}
       label={config.label || 'Action'}
       variant={config.variant}
@@ -84,8 +85,9 @@ export function Controls({ config, setConfig, pages }) {
   )
 }
 
-function buildIconButtonSnippet(config) {
+function buildIconButtonSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.href ? 'as="a"' : null,
     `icon="${config.icon || 'help'}"`,
     `label="${String(config.label || 'Action').replaceAll('"', '&quot;')}"`,
@@ -98,6 +100,6 @@ function buildIconButtonSnippet(config) {
   return `<IconButton ${props} />`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildIconButtonSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildIconButtonSnippet(config, utilityClass)}</Code>
 }

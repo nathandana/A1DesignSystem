@@ -30,9 +30,10 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
-function buildSnackbarSnippet(config) {
+function buildSnackbarSnippet(config, utilityClass = '') {
   const snackbarProps = [
     'open={open}',
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.position !== 'bottom' ? `position="${config.position}"` : null,
     config.action ? `actionLabel="${escapeJsxString(config.actionLabel || 'Undo')}"` : null,
     config.action ? 'onAction={() => {\n    handleAction()\n    setOpen(false)\n  }}' : null,
@@ -61,7 +62,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -74,6 +75,7 @@ export function Preview({ config }) {
         Show snackbar
       </Button>
       <Snackbar
+        className={utilityClass || undefined}
         open={open}
         position={config.position}
         actionLabel={config.action ? (config.actionLabel || 'Undo') : undefined}
@@ -126,6 +128,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnackbarSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnackbarSnippet(config, utilityClass)}</Code>
 }

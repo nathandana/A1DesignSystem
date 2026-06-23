@@ -27,7 +27,7 @@ const DEFAULT_ITEMS = [
   { id: uid(), label: 'Settings', icon: 'settings',       active: false, badge: 0 },
 ]
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const itemsStr = config.items.map((item) => {
     const parts = [
       `id: "${item.id}"`,
@@ -40,6 +40,7 @@ function buildSnippet(config) {
   }).join('\n')
 
   const props = [
+    utilityClass ? `  className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.ariaLabel !== 'Primary navigation' ? `  aria-label="${config.ariaLabel}"` : null,
     `  items={[`,
     itemsStr,
@@ -56,7 +57,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const inResponsive = useInResponsivePreview()
   const items = config.items.map(({ id: _id, ...rest }) => ({
     ...rest,
@@ -72,7 +73,7 @@ export function Preview({ config }) {
         <Paragraph size="sm" color="muted" style={{ padding: 'var(--base-spacing-24)' }}>
           Pinned to the bottom of the device viewport.
         </Paragraph>
-        <BottomDrawer items={items} aria-label={config.ariaLabel} />
+        <BottomDrawer className={utilityClass || undefined} items={items} aria-label={config.ariaLabel} />
       </div>
     )
   }
@@ -88,7 +89,7 @@ export function Preview({ config }) {
       <Paragraph size="sm" color="muted" style={{ padding: 'var(--base-spacing-24)' }}>
         Pinned to the bottom of the viewport on mobile screens. Use the responsive preview to see it fixed to a device.
       </Paragraph>
-      <BottomDrawer items={items} aria-label={config.ariaLabel} />
+      <BottomDrawer className={utilityClass || undefined} items={items} aria-label={config.ariaLabel} />
     </div>
   )
 }
@@ -194,6 +195,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

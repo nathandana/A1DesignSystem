@@ -183,7 +183,7 @@ function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragSt
       borderSides={index > 0 ? ['left'] : []}
       borderSize="xs"
       borderVariant="subtle"
-      className={`a1-web-backlog-lane${isDropTarget ? ' a1-web-backlog-lane--drop' : ''}`}
+      className={`a1-web-backlog-lane a1-min-w-xs a1-max-w-xs${isDropTarget ? ' a1-web-backlog-lane--drop' : ''}`}
       onDragOver={(e) => onLaneDragOver?.(e, status)}
       onDragLeave={onLaneDragLeave}
       onDrop={(e) => onLaneDrop?.(e, status)}
@@ -475,23 +475,25 @@ export function Backlog({ onNavigate }) {
                   )
                 }
                 return (
-                  <Grid columns={lanes.length} gap="none">
-                    {lanes.map((s, i) => (
-                      <BoardColumn
-                        key={s}
-                        status={s}
-                        items={byStatus[s]}
-                        index={i}
-                        onOpen={open}
-                        onContextMenu={openMenu}
-                        onCardDragStart={handleCardDragStart}
-                        onLaneDragOver={handleLaneDragOver}
-                        onLaneDragLeave={() => setDragOverStatus(null)}
-                        onLaneDrop={handleLaneDrop}
-                        isDropTarget={dragOverStatus === s}
-                      />
-                    ))}
-                  </Grid>
+                  <div className="a1-web-backlog-board-strip" tabIndex={0} aria-label="Backlog swimlanes">
+                    <Grid columns={lanes.length} gap="none" className="a1-web-backlog-board-grid">
+                      {lanes.map((s, i) => (
+                        <BoardColumn
+                          key={s}
+                          status={s}
+                          items={byStatus[s]}
+                          index={i}
+                          onOpen={open}
+                          onContextMenu={openMenu}
+                          onCardDragStart={handleCardDragStart}
+                          onLaneDragOver={handleLaneDragOver}
+                          onLaneDragLeave={() => setDragOverStatus(null)}
+                          onLaneDrop={handleLaneDrop}
+                          isDropTarget={dragOverStatus === s}
+                        />
+                      ))}
+                    </Grid>
+                  </div>
                 )
               })()}
             </Stack>

@@ -27,12 +27,13 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
-function buildEmptyStateSnippet(config) {
+function buildEmptyStateSnippet(config, utilityClass = '') {
   const action = config.showAction
     ? `action={<Button variant="secondary">${escapeJsxText(config.actionLabel || 'Get started')}</Button>}`
     : null
 
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.scale !== 'section' ? `scale="${config.scale}"` : null,
     config.icon !== 'inbox' ? `icon="${config.icon || 'inbox'}"` : null,
     config.title ? `title="${escapeJsxString(config.title)}"` : null,
@@ -56,9 +57,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <MessageEmptyState
+      className={utilityClass || undefined}
       scale={config.scale}
       icon={config.icon || 'inbox'}
       title={config.title || undefined}
@@ -121,6 +123,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildEmptyStateSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildEmptyStateSnippet(config, utilityClass)}</Code>
 }

@@ -73,7 +73,7 @@ function snippetItem(item, isLast) {
   return `{ label: '${label}', href: '${escapeJsString(item.href || '#')}' }`
 }
 
-function buildBreadcrumbSnippet(config) {
+function buildBreadcrumbSnippet(config, utilityClass = '') {
   const items = normalizeItems(config.items)
   const itemLines = items
     .map((item, index) => `    ${snippetItem(item, index === items.length - 1)},`)
@@ -81,8 +81,9 @@ function buildBreadcrumbSnippet(config) {
   const backLabelProp = config.backLabel && config.backLabel !== 'Back'
     ? `\n  backLabel="${escapeJsxString(config.backLabel)}"`
     : ''
+  const classNameProp = utilityClass ? `\n  className="${escapeJsxString(utilityClass)}"` : ''
 
-  return `<Breadcrumb${backLabelProp}
+  return `<Breadcrumb${classNameProp}${backLabelProp}
   items={[
 ${itemLines}
   ]}
@@ -101,9 +102,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Breadcrumb
+      className={utilityClass || undefined}
       backLabel={config.backLabel || 'Back'}
       items={previewItems(config)}
     />
@@ -237,6 +239,6 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildBreadcrumbSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildBreadcrumbSnippet(config, utilityClass)}</Code>
 }
