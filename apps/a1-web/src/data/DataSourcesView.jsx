@@ -140,26 +140,41 @@ function DatasetList({ items, loading, onOpen, onNew, onAddSample }) {
       />
     )
   }
+  const unaddedSamples = SAMPLE_DATA_SOURCES.filter((s) => !items.some((d) => d.name === s.label))
   return (
-    <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
-      {items.map((ds) => (
-        <Card key={ds.id}>
-          <Stack direction="column" gap="sm">
-            <Stack direction="row" justify="between" align="center">
-              <Heading as="h2" size="md">{ds.name}</Heading>
-              <MessageBadge status="info" subtle size="sm" icon="folder_open">{datasetScopeLabel(ds)}</MessageBadge>
+    <Stack direction="column" gap="lg">
+      <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
+        {items.map((ds) => (
+          <Card key={ds.id}>
+            <Stack direction="column" gap="sm">
+              <Stack direction="row" justify="between" align="center">
+                <Heading as="h2" size="md">{ds.name}</Heading>
+                <MessageBadge status="info" subtle size="sm" icon="folder_open">{datasetScopeLabel(ds)}</MessageBadge>
+              </Stack>
+              {ds.description && <Paragraph size="sm" color="muted">{ds.description}</Paragraph>}
+              <Paragraph size="xs" color="muted">
+                {ds.rows.length} {ds.rows.length === 1 ? 'row' : 'rows'} · {ds.columns.length} {ds.columns.length === 1 ? 'column' : 'columns'}
+              </Paragraph>
+              <Cluster gap="sm">
+                <Button variant="secondary" size="sm" icon="edit" onClick={() => onOpen(ds.id)}>Edit</Button>
+              </Cluster>
             </Stack>
-            {ds.description && <Paragraph size="sm" color="muted">{ds.description}</Paragraph>}
-            <Paragraph size="xs" color="muted">
-              {ds.rows.length} {ds.rows.length === 1 ? 'row' : 'rows'} · {ds.columns.length} {ds.columns.length === 1 ? 'column' : 'columns'}
-            </Paragraph>
-            <Cluster gap="sm">
-              <Button variant="secondary" size="sm" icon="edit" onClick={() => onOpen(ds.id)}>Edit</Button>
-            </Cluster>
-          </Stack>
-        </Card>
-      ))}
-    </Grid>
+          </Card>
+        ))}
+      </Grid>
+      {unaddedSamples.length > 0 && (
+        <Stack direction="column" gap="sm">
+          <Paragraph size="sm" color="muted">Add a sample dataset</Paragraph>
+          <Cluster gap="sm">
+            {unaddedSamples.map((s) => (
+              <Button key={s.id} variant="secondary" size="sm" icon="add" onClick={() => onAddSample(s)}>
+                {s.label}
+              </Button>
+            ))}
+          </Cluster>
+        </Stack>
+      )}
+    </Stack>
   )
 }
 
