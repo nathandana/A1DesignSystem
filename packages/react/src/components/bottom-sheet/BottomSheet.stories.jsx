@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BottomSheet } from "./BottomSheet.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
@@ -62,6 +63,32 @@ export const Collapsed = {
         <Stack gap="md">
           {Array.from({ length: 10 }).map((_, i) => (
             <Paragraph key={i}>Detail {i + 1}</Paragraph>
+          ))}
+        </Stack>
+      </BottomSheet>
+    </div>
+  ),
+};
+
+export const DarkMode = {
+  name: "Dark mode",
+  decorators: [
+    (Story) => {
+      useEffect(() => {
+        document.documentElement.classList.add("a1-theme-dark");
+        return () => document.documentElement.classList.remove("a1-theme-dark");
+      }, []);
+      return <Story />;
+    },
+  ],
+  args: { title: "Filters", detents: [0.5, 0.92], defaultDetent: 1 },
+  render: (args) => (
+    <div style={{ minHeight: "100vh", background: "var(--semantic-color-surface-page)" }}>
+      <PageContent />
+      <BottomSheet {...args}>
+        <Stack gap="md">
+          {Array.from({ length: 15 }).map((_, i) => (
+            <Paragraph key={i}>Sheet content line {i + 1}</Paragraph>
           ))}
         </Stack>
       </BottomSheet>

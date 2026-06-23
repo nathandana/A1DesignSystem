@@ -108,12 +108,12 @@ function widthValue(s) {
   if (s === '0') return '0'
   if (s === 'full') return '100%'
   if (s === 'none') return 'none'
-  return tokens.base.contentWidth[s]
+  return tokens.base.width[s]
 }
 
 function widthToken(s) {
   if (s === '0' || s === 'full' || s === 'none') return '—'
-  return <TokenCode>{`--base-content-width-${s}`}</TokenCode>
+  return <TokenCode>{`--base-width-${s}`}</TokenCode>
 }
 
 const maxWidthRows = MAX_WIDTH_SIZES.map((s) => ({
@@ -144,7 +144,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
     <>
       <Section
         padding="xs"
-        contentWidth="2xl"
+        contentWidth="xl"
         surface="panel"
         borderSize="sm"
         borderVariant="accent"
@@ -171,7 +171,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="2xl">
+      <Section padding="sm" contentWidth="xl">
         <Tabs value={activeTab} onChange={setActiveTab} variant="line">
           <TabList>
             <Tab value="spacing">Spacing</Tab>
@@ -200,7 +200,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={spacingRows}
                 getRowId={(r) => r.id}
@@ -229,7 +229,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={gapRows}
                 getRowId={(r) => r.id}
@@ -245,9 +245,10 @@ export function UtilitiesFoundationPage({ onNavigate }) {
               <Heading as="h2" id="util-width-heading" size="lg">Width</Heading>
               <Paragraph size="sm" color="muted">
                 Constrain inline size. <Code variant="inline">a1-max-w-*</Code> caps the width;{' '}
-                <Code variant="inline">a1-min-w-*</Code> sets a floor. The <Code variant="inline">3xs…2xl</Code> scale is the
-                shared content-width utility scale; Section&rsquo;s <Code variant="inline">contentWidth</Code> uses the{' '}
-                <Code variant="inline">xs…2xl</Code> subset. Width utilities also include{' '}
+                <Code variant="inline">a1-min-w-*</Code> sets a floor. Values come from{' '}
+                <Code variant="inline">--base-width-*</Code> tokens (5rem–50rem) — a component-scale
+                separate from Section&rsquo;s <Code variant="inline">contentWidth</Code>, which uses the larger{' '}
+                <Code variant="inline">--base-content-width-*</Code> tokens (456px–1440px). Also includes{' '}
                 <Code variant="inline">full</Code> / <Code variant="inline">none</Code> /{' '}
                 <Code variant="inline">0</Code>. Logical <Code variant="inline">inline-size</Code> keeps it correct in RTL.
               </Paragraph>
@@ -259,7 +260,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={maxWidthRows}
                 getRowId={(r) => r.id}
@@ -267,7 +268,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 scrollable
                 caption="Max-width utility sizes"
               />
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={minWidthRows}
                 getRowId={(r) => r.id}
@@ -299,7 +300,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 These are the utility families exposed by the editor registry. The configurator shows common picks as
                 toolbar buttons and moves less-common values into an overflow menu.
               </Paragraph>
-              <DataTable
+              <DataTable zebra
                 columns={utilityFamilyColumns}
                 rows={utilityFamilyRows}
                 getRowId={(r) => r.id}
@@ -307,7 +308,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 scrollable
                 caption="Every utility family exposed by the editor utility registry"
               />
-              <DataTable
+              <DataTable zebra
                 columns={utilityLookupColumns}
                 rows={utilityLookupRows}
                 getRowId={(r) => r.id}

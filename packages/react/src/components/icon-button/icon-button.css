@@ -41,8 +41,9 @@
 /* 24×24px total — the WCAG 2.2 target-size (AA) minimum; for dense toolbars. */
 
 .a1-icon-button--small {
-  --a1-icon-button-size:      var(--base-spacing-24);
-  --a1-icon-button-icon-size: var(--base-spacing-16);
+  --a1-icon-button-size:      var(--component-button-small-height);
+  --a1-icon-button-icon-size: var(--component-button-small-icon-size);
+  --a1-icon-button-icon-opsz: var(--component-button-small-icon-optical-size);
 }
 
 /* ── Size: large ─────────────────────────────────────────────────────────── */

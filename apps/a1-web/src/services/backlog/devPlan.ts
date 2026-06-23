@@ -207,7 +207,9 @@ export function developPlanLocally(item: BacklogItem, comments: BacklogComment[]
   out.push(`Implement ${ref} in the A1 Design System monorepo.`, '');
 
   out.push('## Objective');
-  out.push(`Deliver: ${item.title}. ${metaLine(item)}.`, '');
+  out.push(`Deliver: ${item.title}. ${metaLine(item)}.`);
+  if (item.description?.trim()) out.push('', item.description.trim());
+  out.push('');
 
   out.push('## Scale & approach');
   out.push(SCALE_APPROACH[scale], '');

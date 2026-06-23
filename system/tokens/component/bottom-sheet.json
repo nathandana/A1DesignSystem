@@ -7,7 +7,9 @@
       "handleHeight":  { "$type": "dimension", "$value": "{base.spacing.4}" },
       "padding":       { "$type": "dimension", "$value": "{base.spacing.16}" },
       "background":    { "$type": "color", "$value": "{semantic.color.surface.card}" },
-      "zIndex":        { "$value": "200" }
+      "zIndex":        { "$value": "200" },
+      "marginInline":  { "$type": "dimension", "$value": "{base.spacing.16}", "$description": "Horizontal margin at xs — creates space between the sheet edges and the screen sides." },
+      "marginInlineSm": { "$type": "dimension", "$value": "{base.spacing.32}", "$description": "Horizontal margin at sm (481px+) — wider margin on larger phones." }
     }
   }
 }

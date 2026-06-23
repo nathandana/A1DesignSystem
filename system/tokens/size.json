@@ -1,14 +1,22 @@
 {
   "base": {
     "contentWidth": {
-      "3xs": { "$type": "dimension", "$value": "80px",   "$description": "Content max-width — extra narrow utility width." },
-      "2xs": { "$type": "dimension", "$value": "160px",  "$description": "Content max-width — narrow utility width." },
-      "xs":  { "$type": "dimension", "$value": "240px",  "$description": "Content max-width — extra small." },
-      "sm":  { "$type": "dimension", "$value": "320px",  "$description": "Content max-width — small." },
-      "md":  { "$type": "dimension", "$value": "400px",  "$description": "Content max-width — medium." },
-      "lg":  { "$type": "dimension", "$value": "480px",  "$description": "Content max-width — large." },
-      "xl":  { "$type": "dimension", "$value": "640px",  "$description": "Content max-width — extra large." },
-      "2xl": { "$type": "dimension", "$value": "800px",  "$description": "Content max-width — widest constrained content." }
+      "xs":  { "$type": "dimension", "$value": "456px",  "$description": "Content column max-width — narrow column (≈ short reading measure). Used by Section contentWidth='xs'." },
+      "sm":  { "$type": "dimension", "$value": "640px",  "$description": "Content column max-width — small." },
+      "md":  { "$type": "dimension", "$value": "800px",  "$description": "Content column max-width — medium (a comfortable reading measure)." },
+      "lg":  { "$type": "dimension", "$value": "960px",  "$description": "Content column max-width — large." },
+      "xl":  { "$type": "dimension", "$value": "1120px", "$description": "Content column max-width — extra large." },
+      "2xl": { "$type": "dimension", "$value": "1440px", "$description": "Content column max-width — widest constrained content." }
+    },
+    "width": {
+      "3xs": { "$type": "dimension", "$value": "80px",  "$description": "Component/utility min-max width — 5rem. For constraining small elements like icon buttons and compact controls." },
+      "2xs": { "$type": "dimension", "$value": "160px", "$description": "Component/utility min-max width — 10rem. For constraining narrow elements like number fields." },
+      "xs":  { "$type": "dimension", "$value": "240px", "$description": "Component/utility min-max width — 15rem. For constraining compact components and kanban-style columns." },
+      "sm":  { "$type": "dimension", "$value": "320px", "$description": "Component/utility min-max width — 20rem. For constraining narrow components." },
+      "md":  { "$type": "dimension", "$value": "400px", "$description": "Component/utility min-max width — 25rem. For constraining medium-width components." },
+      "lg":  { "$type": "dimension", "$value": "480px", "$description": "Component/utility min-max width — 30rem. For constraining wider components." },
+      "xl":  { "$type": "dimension", "$value": "640px", "$description": "Component/utility min-max width — 40rem. For constraining large components." },
+      "2xl": { "$type": "dimension", "$value": "800px", "$description": "Component/utility min-max width — 50rem. For constraining the widest component constraints." }
     }
   }
 }

@@ -2193,7 +2193,7 @@ span.a1-web-sem-pick { display: inline-block; }
 .a1-web-backlog-board-grid {
   grid-template-columns: repeat(
     var(--a1-grid-cols, 1),
-    minmax(var(--base-content-width-xs), var(--base-content-width-xs))
+    minmax(var(--base-width-xs), var(--base-width-xs))
   );
 }
 
