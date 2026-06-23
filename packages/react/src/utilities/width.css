@@ -2,34 +2,36 @@
    Constrain an element's inline size with a tokenised min/max width.
 
    Classes : a1-max-w-{size}  (max-inline-size)   a1-min-w-{size}  (min-inline-size)
-   Sizes   : 3xs 2xs xs sm md lg xl 2xl — the shared content-width utility scale.
-             Section's `contentWidth` uses the xs → 2xl subset.
+   Sizes   : 3xs 2xs xs sm md lg xl 2xl — the component/utility width scale
+             (base.width.* tokens, 80px–800px / 5rem–50rem).
+             Section's `contentWidth` uses the separate base.contentWidth.* scale
+             (456px–1440px) — not this utility scale.
              plus  full (100%)  ·  none (max only)  ·  0 (min only)
 
    Uses logical `inline-size` so the constraint is correct in both LTR and RTL.
-   Values come from the `--base-content-width-*` tokens — never hardcoded.
+   Values come from the `--base-width-*` tokens — never hardcoded.
 ─────────────────────────────────────────────────────────────────────────── */
 
 /* ── Max width ──────────────── */
-.a1-max-w-3xs  { max-inline-size: var(--base-content-width-3xs) !important; }
-.a1-max-w-2xs  { max-inline-size: var(--base-content-width-2xs) !important; }
-.a1-max-w-xs   { max-inline-size: var(--base-content-width-xs) !important;  }
-.a1-max-w-sm   { max-inline-size: var(--base-content-width-sm) !important;  }
-.a1-max-w-md   { max-inline-size: var(--base-content-width-md) !important;  }
-.a1-max-w-lg   { max-inline-size: var(--base-content-width-lg) !important;  }
-.a1-max-w-xl   { max-inline-size: var(--base-content-width-xl) !important;  }
-.a1-max-w-2xl  { max-inline-size: var(--base-content-width-2xl) !important; }
+.a1-max-w-3xs  { max-inline-size: var(--base-width-3xs) !important; }
+.a1-max-w-2xs  { max-inline-size: var(--base-width-2xs) !important; }
+.a1-max-w-xs   { max-inline-size: var(--base-width-xs) !important;  }
+.a1-max-w-sm   { max-inline-size: var(--base-width-sm) !important;  }
+.a1-max-w-md   { max-inline-size: var(--base-width-md) !important;  }
+.a1-max-w-lg   { max-inline-size: var(--base-width-lg) !important;  }
+.a1-max-w-xl   { max-inline-size: var(--base-width-xl) !important;  }
+.a1-max-w-2xl  { max-inline-size: var(--base-width-2xl) !important; }
 .a1-max-w-full { max-inline-size: 100% !important; }
 .a1-max-w-none { max-inline-size: none !important; }
 
 /* ── Min width ──────────────── */
 .a1-min-w-0    { min-inline-size: 0 !important; }
-.a1-min-w-3xs  { min-inline-size: var(--base-content-width-3xs) !important; }
-.a1-min-w-2xs  { min-inline-size: var(--base-content-width-2xs) !important; }
-.a1-min-w-xs   { min-inline-size: var(--base-content-width-xs) !important;  }
-.a1-min-w-sm   { min-inline-size: var(--base-content-width-sm) !important;  }
-.a1-min-w-md   { min-inline-size: var(--base-content-width-md) !important;  }
-.a1-min-w-lg   { min-inline-size: var(--base-content-width-lg) !important;  }
-.a1-min-w-xl   { min-inline-size: var(--base-content-width-xl) !important;  }
-.a1-min-w-2xl  { min-inline-size: var(--base-content-width-2xl) !important; }
+.a1-min-w-3xs  { min-inline-size: var(--base-width-3xs) !important; }
+.a1-min-w-2xs  { min-inline-size: var(--base-width-2xs) !important; }
+.a1-min-w-xs   { min-inline-size: var(--base-width-xs) !important;  }
+.a1-min-w-sm   { min-inline-size: var(--base-width-sm) !important;  }
+.a1-min-w-md   { min-inline-size: var(--base-width-md) !important;  }
+.a1-min-w-lg   { min-inline-size: var(--base-width-lg) !important;  }
+.a1-min-w-xl   { min-inline-size: var(--base-width-xl) !important;  }
+.a1-min-w-2xl  { min-inline-size: var(--base-width-2xl) !important; }
 .a1-min-w-full { min-inline-size: 100% !important; }

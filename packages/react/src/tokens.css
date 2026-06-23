@@ -116,14 +116,20 @@
   --base-shadow-300: 0px 4px 6px -1px rgba(6, 11, 20, 0.10), 0px 2px 4px -2px rgba(6, 11, 20, 0.06);
   --base-shadow-400: 0px 10px 15px -3px rgba(6, 11, 20, 0.10), 0px 4px 6px -4px rgba(6, 11, 20, 0.05);
   --base-shadow-500: 0px 20px 25px -5px rgba(6, 11, 20, 0.10), 0px 8px 10px -6px rgba(6, 11, 20, 0.04);
-  --base-content-width-3xs: 5rem; /** Content max-width — extra narrow utility width. */
-  --base-content-width-2xs: 10rem; /** Content max-width — narrow utility width. */
-  --base-content-width-xs: 15rem; /** Content max-width — extra small. */
-  --base-content-width-sm: 20rem; /** Content max-width — small. */
-  --base-content-width-md: 25rem; /** Content max-width — medium. */
-  --base-content-width-lg: 30rem; /** Content max-width — large. */
-  --base-content-width-xl: 40rem; /** Content max-width — extra large. */
-  --base-content-width-2xl: 50rem; /** Content max-width — widest constrained content. */
+  --base-content-width-xs: 28.5rem; /** Content column max-width — narrow column (≈ short reading measure). Used by Section contentWidth='xs'. */
+  --base-content-width-sm: 40rem; /** Content column max-width — small. */
+  --base-content-width-md: 50rem; /** Content column max-width — medium (a comfortable reading measure). */
+  --base-content-width-lg: 60rem; /** Content column max-width — large. */
+  --base-content-width-xl: 70rem; /** Content column max-width — extra large. */
+  --base-content-width-2xl: 90rem; /** Content column max-width — widest constrained content. */
+  --base-width-3xs: 5rem; /** Component/utility min-max width — 5rem. For constraining small elements like icon buttons and compact controls. */
+  --base-width-2xs: 10rem; /** Component/utility min-max width — 10rem. For constraining narrow elements like number fields. */
+  --base-width-xs: 15rem; /** Component/utility min-max width — 15rem. For constraining compact components and kanban-style columns. */
+  --base-width-sm: 20rem; /** Component/utility min-max width — 20rem. For constraining narrow components. */
+  --base-width-md: 25rem; /** Component/utility min-max width — 25rem. For constraining medium-width components. */
+  --base-width-lg: 30rem; /** Component/utility min-max width — 30rem. For constraining wider components. */
+  --base-width-xl: 40rem; /** Component/utility min-max width — 40rem. For constraining large components. */
+  --base-width-2xl: 50rem; /** Component/utility min-max width — 50rem. For constraining the widest component constraints. */
   --base-spacing-1: 1px;
   --base-spacing-2: 0.125rem;
   --base-spacing-4: 0.25rem;
