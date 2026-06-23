@@ -6,6 +6,7 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { Choice } from './configKit.jsx'
+import { useInResponsivePreview } from './responsivePreview.js'
 
 const DETENTS = [0.5, 0.92]
 
@@ -14,6 +15,39 @@ export function getDefaultConfig() {
 }
 
 export function Preview({ config, utilityClass = '' }) {
+  const inResponsivePreview = useInResponsivePreview()
+
+  const sheet = (
+    <BottomSheet
+      key={config.defaultDetent}
+      className={utilityClass || undefined}
+      title={config.title || undefined}
+      detents={DETENTS}
+      defaultDetent={config.defaultDetent}
+    >
+      <Stack gap="sm">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Paragraph key={i}>Scrollable content line {i + 1}</Paragraph>
+        ))}
+      </Stack>
+    </BottomSheet>
+  )
+
+  // In the responsive-preview iframe the BottomSheet can use its native
+  // position:fixed and pin naturally to the device viewport bottom. The
+  // bounded preview container is only needed in the "Fit" (non-iframe) view
+  // to stop the fixed sheet from escaping to the browser-window bottom.
+  if (inResponsivePreview) {
+    return (
+      <Stack gap="sm" style={{ padding: 'var(--base-spacing-16)' }}>
+        <Paragraph size="sm" color="muted">
+          Page content behind the sheet — no scrim, separated by a shadow. (xs and sm only.)
+        </Paragraph>
+        {sheet}
+      </Stack>
+    )
+  }
+
   return (
     <div className="a1-web-bottomsheet-preview">
       <Stack gap="sm" style={{ padding: 'var(--base-spacing-16)' }}>
@@ -21,19 +55,7 @@ export function Preview({ config, utilityClass = '' }) {
           Page content behind the sheet — no scrim, separated by a shadow. Drag the handle to resize. (xs and sm only.)
         </Paragraph>
       </Stack>
-      <BottomSheet
-        key={config.defaultDetent}
-        className={utilityClass || undefined}
-        title={config.title || undefined}
-        detents={DETENTS}
-        defaultDetent={config.defaultDetent}
-      >
-        <Stack gap="sm">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Paragraph key={i}>Scrollable content line {i + 1}</Paragraph>
-          ))}
-        </Stack>
-      </BottomSheet>
+      {sheet}
     </div>
   )
 }

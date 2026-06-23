@@ -368,6 +368,8 @@
   --component-bottom-sheet-padding: 1rem;
   --component-bottom-sheet-background: #ffffff;
   --component-bottom-sheet-z-index: 200;
+  --component-bottom-sheet-margin-inline: 1rem; /** Horizontal margin at xs — creates space between the sheet edges and the screen sides. */
+  --component-bottom-sheet-margin-inline-sm: 2rem; /** Horizontal margin at sm (481px+) — wider margin on larger phones. */
   --component-calendar-month-gap: 2rem;
   --component-calendar-heading-padding-block: 0.75rem;
   --component-calendar-heading-padding-block-compact: 0.5rem;

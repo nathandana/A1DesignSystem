@@ -282,6 +282,8 @@
   --component-bottom-sheet-handle-height: 0.25rem;
   --component-bottom-sheet-handle-width: 2.5rem;
   --component-bottom-sheet-header-height: 3.5rem;
+  --component-bottom-sheet-margin-inline: 1rem;
+  --component-bottom-sheet-margin-inline-sm: 2rem;
   --component-bottom-sheet-padding: 1rem;
   --component-bottom-sheet-z-index: 200;
   --component-button-border-radius: 0.375rem;

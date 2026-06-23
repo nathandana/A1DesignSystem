@@ -10,6 +10,8 @@
 
 ### Fixed
 
+- **BottomSheet — default margin inline** — the sheet now has a default `margin-inline` of `1rem` (16px) at xs and `2rem` (32px) at sm (481px+), driven by new `component.bottomSheet.marginInline` / `component.bottomSheet.marginInlineSm` tokens. The `inset-inline: 0` constraint still applies, so the sheet is 2×margin narrower than the viewport and offset from the screen sides on both breakpoints. Override with the `marginInline` utility class in the editor or by setting `--component-bottom-sheet-margin-inline` directly.
+- **BottomSheet — dark mode background** (A1-279) — `--component-bottom-sheet-background` is now overridden in all three dark-mode contexts (`.a1-inverse`, `@media (prefers-color-scheme: dark)`, `html.a1-theme-dark`) to `var(--semantic-color-surface-card)` so the sheet surface adapts to dark correctly instead of staying `#ffffff`. Added a `DarkMode` Storybook story.
 - **Utilities override component defaults** — spacing and width utilities now mark their declarations as explicit overrides, so applied utility classes win over component root defaults like Card padding or Section width constraints even when component CSS is loaded later in the cascade.
 
 ## 0.23.0 — 2026-06-22

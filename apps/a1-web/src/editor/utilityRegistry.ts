@@ -103,11 +103,16 @@ const WIDTH_COMPONENTS = new Set<ComponentType>([
 
 const NO_MARGIN_COMPONENTS = new Set<ComponentType>(['PageLayout', 'Slot', 'Outlet']);
 
+// Fixed/full-width components where only inline margin is meaningful.
+const MARGIN_INLINE_ONLY_COMPONENTS = new Set<ComponentType>(['BottomSheet']);
+
 export function getAcceptedUtilitiesForComponent(type: ComponentType | string): UtilityDefinition[] {
   const componentType = type as ComponentType;
   const utilities: UtilityKey[] = [];
 
-  if (!NO_MARGIN_COMPONENTS.has(componentType)) {
+  if (MARGIN_INLINE_ONLY_COMPONENTS.has(componentType)) {
+    utilities.push('marginInline');
+  } else if (!NO_MARGIN_COMPONENTS.has(componentType)) {
     utilities.push('margin', 'marginBlock', 'marginInline');
   }
 

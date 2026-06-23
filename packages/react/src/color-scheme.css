@@ -106,6 +106,7 @@ body {
   --component-button-tertiary-border:             var(--base-color-accent-900);
   --component-button-tertiary-border-hover:       var(--base-color-accent-800);
   --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+  --component-bottom-sheet-background: var(--semantic-color-surface-card);
   --a1-field-hover-background:       var(--base-color-neutral-800);
   --a1-field-hover-border-color:     var(--base-color-neutral-300);
   --a1-field-active-background:      var(--base-color-neutral-700);
@@ -186,6 +187,7 @@ body {
     --component-button-tertiary-border:             var(--base-color-accent-900);
     --component-button-tertiary-border-hover:       var(--base-color-accent-800);
     --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+    --component-bottom-sheet-background: var(--semantic-color-surface-card);
     --a1-field-hover-background:       var(--base-color-neutral-800);
     --a1-field-hover-border-color:     var(--base-color-neutral-300);
     --a1-field-active-background:      var(--base-color-neutral-700);
@@ -340,6 +342,7 @@ html.a1-theme-dark {
   --component-button-tertiary-border:             var(--base-color-accent-900);
   --component-button-tertiary-border-hover:       var(--base-color-accent-800);
   --component-button-tertiary-border-pressed:     var(--base-color-accent-700);
+  --component-bottom-sheet-background: var(--semantic-color-surface-card);
   --a1-field-hover-background:       var(--base-color-neutral-800);
   --a1-field-hover-border-color:     var(--base-color-neutral-300);
   --a1-field-active-background:      var(--base-color-neutral-700);

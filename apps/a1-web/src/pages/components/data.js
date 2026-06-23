@@ -138,7 +138,7 @@ export const componentCategories = [
       { id: 'dialog', icon: 'picture_in_picture', title: 'Dialog', body: 'Modal interactions with focus management.' },
       { id: 'menu', icon: 'menu', title: 'Menu', body: 'Anchored command and navigation menus.' },
       { id: 'context-menu', icon: 'more_vert', title: 'Context Menu', body: 'Right-click menu portaled to the document body.' },
-      { id: 'bottom-sheet', icon: 'swipe_up', title: 'Bottom Sheet', body: 'Fixed, scrim-less bottom panel with a draggable handle; xs and sm only.' },
+      { id: 'bottom-sheet', icon: 'swipe_up', title: 'Bottom Sheet', bareDisplay: true, body: 'Fixed, scrim-less bottom panel with a draggable handle; xs and sm only.' },
     ],
   },
   {

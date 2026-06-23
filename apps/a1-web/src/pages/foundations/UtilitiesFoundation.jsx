@@ -144,7 +144,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
     <>
       <Section
         padding="xs"
-        contentWidth="2xl"
+        contentWidth="xl"
         surface="panel"
         borderSize="sm"
         borderVariant="accent"
@@ -171,7 +171,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="sm" contentWidth="2xl">
+      <Section padding="sm" contentWidth="xl">
         <Tabs value={activeTab} onChange={setActiveTab} variant="line">
           <TabList>
             <Tab value="spacing">Spacing</Tab>
@@ -200,7 +200,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={spacingRows}
                 getRowId={(r) => r.id}
@@ -229,7 +229,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={gapRows}
                 getRowId={(r) => r.id}
@@ -260,7 +260,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                   </Stack>
                 ))}
               </Stack>
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={maxWidthRows}
                 getRowId={(r) => r.id}
@@ -268,7 +268,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 scrollable
                 caption="Max-width utility sizes"
               />
-              <DataTable
+              <DataTable zebra
                 columns={scaleColumns}
                 rows={minWidthRows}
                 getRowId={(r) => r.id}
@@ -300,7 +300,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 These are the utility families exposed by the editor registry. The configurator shows common picks as
                 toolbar buttons and moves less-common values into an overflow menu.
               </Paragraph>
-              <DataTable
+              <DataTable zebra
                 columns={utilityFamilyColumns}
                 rows={utilityFamilyRows}
                 getRowId={(r) => r.id}
@@ -308,7 +308,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
                 scrollable
                 caption="Every utility family exposed by the editor utility registry"
               />
-              <DataTable
+              <DataTable zebra
                 columns={utilityLookupColumns}
                 rows={utilityLookupRows}
                 getRowId={(r) => r.id}
