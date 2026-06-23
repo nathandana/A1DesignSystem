@@ -54,7 +54,44 @@ export function buildUsersSample(): CreateDataSourceInput {
   };
 }
 
+// ── Crocheted animals ─────────────────────────────────────────────────────────
+
+const CROCHET_COLUMNS: DataColumn[] = [
+  { key: 'name', name: 'Name', type: 'text' },
+  { key: 'description', name: 'Description', type: 'text' },
+  { key: 'hours', name: 'Hours spent making', type: 'number' },
+  { key: 'price', name: 'Price', type: 'number' },
+  { key: 'customizable', name: 'Customizable', type: 'boolean' },
+  { key: 'image', name: 'Image', type: 'text' },
+];
+
+// Low-res Unsplash photos (verified to load at w=400). Swap any URL in the grid.
+const img = (id: string) => `https://images.unsplash.com/photo-${id}?w=400&q=60&fm=jpg&fit=crop`;
+
+const CROCHET_ROWS: DataRow[] = [
+  { name: 'Clover the Bunny',   description: 'A floppy-eared bunny clutching a tiny carrot. Soft cotton yarn, safety eyes.',      hours: 9,  price: 38, customizable: true,  image: img('1753370230699-8e21227afeb6') },
+  { name: 'Pepper the Rabbit',  description: 'A grey-and-white rabbit with a fluffy pom-pom tail and poseable ears.',            hours: 11, price: 44, customizable: true,  image: img('1629019317873-3f603b269723') },
+  { name: 'Hazel the Fox',      description: 'A russet woodland fox with a cream chest and a bushy, wired tail.',                hours: 14, price: 52, customizable: false, image: img('1686151573986-03b5a79f22a5') },
+  { name: 'Rosie the Bunny',    description: 'A blush-pink bunny in a sitting pose — a popular nursery shelf-sitter.',           hours: 8,  price: 34, customizable: true,  image: img('1744371760034-fb60ebd2b198') },
+  { name: 'Bruno the Bear',     description: 'A chunky chocolate-brown teddy with a hand-stitched snout and jointed arms.',      hours: 16, price: 58, customizable: false, image: img('1626241803094-88edd8ae6453') },
+  { name: 'Honey the Bear',     description: 'A golden honey bear holding a little felt heart. Hypoallergenic stuffing.',        hours: 12, price: 46, customizable: true,  image: img('1627693685101-687bf0eb1222') },
+  { name: 'Olive the Owl',      description: 'A round, big-eyed owl in sage and oatmeal with appliqué wings.',                   hours: 6,  price: 28, customizable: true,  image: img('1686151271777-12efa81f65e0') },
+  { name: 'Pip the Penguin',    description: 'A pocket-sized penguin ornament with a tiny scarf — great as a gift topper.',      hours: 4,  price: 22, customizable: false, image: img('1682456138620-6076ac071b51') },
+];
+
+/** The "Crocheted animals" sample dataset — global (available to every project). */
+export function buildCrochetSample(): CreateDataSourceInput {
+  return {
+    name: 'Crocheted animals',
+    description: 'Handmade amigurumi with photos, hours, price, and a customizable flag — great for a product grid.',
+    columns: CROCHET_COLUMNS,
+    rows: CROCHET_ROWS,
+    projectIds: [], // global
+  };
+}
+
 /** All built-in samples offered in the UI. */
 export const SAMPLE_DATA_SOURCES: { id: string; label: string; build: () => CreateDataSourceInput }[] = [
   { id: 'users', label: 'Users', build: buildUsersSample },
+  { id: 'crochet', label: 'Crocheted animals', build: buildCrochetSample },
 ];

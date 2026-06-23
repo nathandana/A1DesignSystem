@@ -281,7 +281,7 @@ function setNodeLockInNode(node: ComponentNode, id: string, lock: ComponentNode[
   return { ...node, children: node.children.map((c) => setNodeLockInNode(c, id, lock)) };
 }
 
-function setNodeRepeatInNode(node: ComponentNode, id: string, repeat: string | null): ComponentNode {
+function setNodeRepeatInNode(node: ComponentNode, id: string, repeat: ComponentNode['repeat'] | null): ComponentNode {
   if (node.id === id) {
     const next = { ...node };
     if (repeat) next.repeat = repeat;
@@ -1298,7 +1298,7 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), `Updated lock on ${getNodeType(nodeId)}`);
   }
 
-  function handleSetNodeRepeat(nodeId: string, repeat: string | null) {
+  function handleSetNodeRepeat(nodeId: string, repeat: ComponentNode['repeat'] | null) {
     if (!parsedDefinition.ok) return;
     const newDef = patchRegions(parsedDefinition.value, (node) => setNodeRepeatInNode(node, nodeId, repeat));
     history.commit(JSON.stringify(newDef, null, 2), repeat ? `Repeated ${getNodeType(nodeId)} over data` : `Stopped repeating ${getNodeType(nodeId)}`);

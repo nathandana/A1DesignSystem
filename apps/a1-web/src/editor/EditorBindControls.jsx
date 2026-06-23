@@ -1,9 +1,10 @@
 import {
-  Stack, Heading, Paragraph, SelectField, Button, MessageBadge, Divider,
+  Stack, Heading, Paragraph, SelectField, NumberField, Switch, Button, MessageBadge, Divider,
 } from '@gtivr4/a1-design-system-react'
 import { useDataSources } from '../data/DataSourcesContext.jsx'
 import { datasetAvailableToProject } from '../services/dataSources/types'
 import { datasetBindingKey, hasBinding } from '../data/bindings'
+import { normalizeRepeat } from '../data/repeat'
 
 // Free-text string props worth binding to data — not enums like variant/size/status.
 const BINDABLE_PROP_KEYS = new Set([
@@ -28,6 +29,8 @@ export function EditorBindControls({ baseUpdate, projectId, contentLocked, locke
   const ctx = useDataSources()
   const datasets = (ctx?.items ?? []).filter((d) => datasetAvailableToProject(d, projectId))
   if (!datasets.length) return null
+
+  const rc = normalizeRepeat(repeat)
 
   const targets = []
   if (baseUpdate?.contentFallback !== undefined && !contentLocked) {
@@ -56,18 +59,36 @@ export function EditorBindControls({ baseUpdate, projectId, contentLocked, locke
           <SelectField
             aria-label="Repeat this element for each row of a data source"
             size="compact"
-            value={repeat ?? ''}
-            onChange={(e) => onSetRepeat(e.target.value || null)}
+            value={rc?.dataset ?? ''}
+            onChange={(e) => onSetRepeat(e.target.value ? { ...(rc ?? {}), dataset: e.target.value } : null)}
           >
             <option value="">Don’t repeat</option>
             {datasets.map((ds) => (
               <option key={ds.id} value={datasetBindingKey(ds.name)}>{ds.name}</option>
             ))}
           </SelectField>
-          {repeat && (
-            <Paragraph size="xs" color="muted">
-              Renders once per row — edit the first copy; bindings inside use each row.
-            </Paragraph>
+          {rc && (
+            <>
+              <NumberField
+                label="Show at most"
+                size="compact"
+                min={1}
+                value={rc.limit ?? ''}
+                hint="Leave blank for all rows"
+                onChange={(e) => {
+                  const v = e.target.value
+                  onSetRepeat({ ...rc, limit: v === '' ? null : Math.max(1, parseInt(v, 10) || 1) })
+                }}
+              />
+              <Switch
+                label="Pick rows at random"
+                checked={!!rc.random}
+                onChange={(on) => onSetRepeat({ ...rc, random: on })}
+              />
+              <Paragraph size="xs" color="muted">
+                Renders once per row — edit the first copy; bindings inside use each row.
+              </Paragraph>
+            </>
           )}
         </Stack>
       )}

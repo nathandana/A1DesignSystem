@@ -1904,7 +1904,7 @@ export function EditorPropsPanel({
       lockedProps={new Set(lock?.props ?? [])}
       onBind={handleBind}
       repeat={node.repeat}
-      onSetRepeat={onSetNodeRepeat ? (key) => onSetNodeRepeat(node.id, key) : null}
+      onSetRepeat={onSetNodeRepeat ? (cfg) => onSetNodeRepeat(node.id, cfg) : null}
     />
   ) : null
 

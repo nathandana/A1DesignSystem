@@ -554,6 +554,8 @@ const HELP = [
             </P>
             <Bullets items={[
               <>Bindings inside use the <strong>current row</strong> — a card bound to <Kbd>{'{{ users.name }}'}</Kbd> and <Kbd>{'{{ users.email }}'}</Kbd> becomes one card per user.</>,
+              <><strong>Show at most</strong> caps how many render (blank = all) — e.g. a “3 featured products” strip.</>,
+              <><strong>Pick rows at random</strong> shows a random selection instead of the first few. It’s stable (it won’t reshuffle on every edit) and differs per element.</>,
               <>On the canvas the <strong>first copy is editable</strong> (it’s the template — editing it changes them all); the rest are read-only. <strong>Preview</strong> shows every row.</>,
               <>An explicit row index still wins inside a repeat (<Kbd>{'{{ users.name.0 }}'}</Kbd> always the first), which is handy for headers.</>,
               <>Set it back to <strong>Don’t repeat</strong> to stop.</>,

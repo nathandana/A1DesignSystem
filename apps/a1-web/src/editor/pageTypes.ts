@@ -203,11 +203,13 @@ export interface ComponentNode {
    */
   patternNodeId?: string;
   /**
-   * Data repeat (A1-94): the binding key of a dataset this node repeats over. The
-   * renderer renders one copy of the node per dataset row; `{{ key.column }}`
-   * bindings inside each copy resolve to that row. Absent on ordinary nodes.
+   * Data repeat (A1-94): which dataset this node repeats over. The renderer renders
+   * one copy of the node per selected row; `{{ key.column }}` bindings inside each
+   * copy resolve to that row. The string form is the dataset binding key; the object
+   * form adds `limit` (max rows) and `random` (seeded random selection). Absent on
+   * ordinary nodes.
    */
-  repeat?: string;
+  repeat?: string | { dataset: string; limit?: number | null; random?: boolean };
   /** Nested child nodes. */
   children?: ComponentNode[];
 }

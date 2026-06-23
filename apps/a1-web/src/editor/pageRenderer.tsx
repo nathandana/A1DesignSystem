@@ -25,6 +25,7 @@ import {
   buildDatasetMap, hasBinding, resolveBinding, resolveBindingsToString,
   type DatasetMap, type RowContext,
 } from '../data/bindings';
+import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -309,21 +310,22 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // template node); the rest render as read-only projections. In preview every copy
   // is non-interactive. Falls through to a single render when the dataset is missing
   // or empty, so the node stays selectable/configurable.
-  if (node.repeat && datasetMap[node.repeat] && (datasetMap[node.repeat].rows?.length ?? 0) > 0) {
-    const repeatKey = node.repeat;
-    const rows = datasetMap[repeatKey].rows;
+  const repeatCfg = normalizeRepeat(node.repeat);
+  if (repeatCfg && datasetMap[repeatCfg.dataset] && (datasetMap[repeatCfg.dataset].rows?.length ?? 0) > 0) {
+    const repeatKey = repeatCfg.dataset;
+    const indices = pickRepeatIndices(datasetMap[repeatKey].rows.length, repeatCfg, node.id);
     const stripped: ComponentNode = { ...node, repeat: undefined };
-    return rows.map((_row, i) => {
-      const childRowContext = { ...rowContext, [repeatKey]: i };
+    return indices.map((rowIndex, copyNum) => {
+      const childRowContext = { ...rowContext, [repeatKey]: rowIndex };
       const inner = (
         <PageDataContext.Provider value={{ datasetMap, rowContext: childRowContext }}>
           <RenderNode node={stripped} inPattern={inPattern} patternActive={patternActive} />
         </PageDataContext.Provider>
       );
       // First copy interactive in the editor; the rest are read-only projections.
-      return (editorMode && i > 0)
-        ? <EditorModeContext.Provider key={`${node.id}__r${i}`} value={{ ...editorCtx, enabled: false }}>{inner}</EditorModeContext.Provider>
-        : <Fragment key={`${node.id}__r${i}`}>{inner}</Fragment>;
+      return (editorMode && copyNum > 0)
+        ? <EditorModeContext.Provider key={`${node.id}__r${copyNum}`} value={{ ...editorCtx, enabled: false }}>{inner}</EditorModeContext.Provider>
+        : <Fragment key={`${node.id}__r${copyNum}`}>{inner}</Fragment>;
     });
   }
 
