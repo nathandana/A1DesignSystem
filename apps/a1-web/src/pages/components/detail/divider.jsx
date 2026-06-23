@@ -42,9 +42,10 @@ function propExpression(name, value) {
   return `${name}={${JSON.stringify(value)}}`
 }
 
-function buildDividerSnippet(config) {
+function buildDividerSnippet(config, utilityClass = '') {
   const orientation = orientationValue(config)
   const props = [
+    propString('className', utilityClass, ''),
     config.orientationMode === 'responsive'
       ? propExpression('orientation', orientation)
       : propString('orientation', orientation, 'horizontal'),
@@ -88,7 +89,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const orientation = orientationValue(config)
   const isVertical = config.orientationMode === 'vertical' || config.orientation === 'vertical'
 
@@ -97,6 +98,7 @@ export function Preview({ config }) {
       <Stack direction={{ xs: 'column', md: 'row' }} gap="sm" align="stretch">
         <PreviewContent />
         <Divider
+          className={utilityClass || undefined}
           orientation={orientation}
           variant={config.variant}
           lineStyle={config.lineStyle}
@@ -113,6 +115,7 @@ export function Preview({ config }) {
     <Stack gap="sm">
       <PreviewContent />
       <Divider
+        className={utilityClass || undefined}
         orientation={orientation}
         variant={config.variant}
         lineStyle={config.lineStyle}
@@ -196,6 +199,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildDividerSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildDividerSnippet(config, utilityClass)}</Code>
 }

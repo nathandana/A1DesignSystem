@@ -28,6 +28,7 @@ import {
 import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
 import { collectionTargetFor, expandCollection } from '../data/collections';
 import { findRowIndexById } from '../services/dataSources/rowIds';
+import { utilityClassesFor } from './utilityRegistry';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -173,6 +174,11 @@ function a11yProps(a11y?: A11yDefinition): Record<string, string> {
   if (a11y.describedBy) props['aria-describedby'] = a11y.describedBy;
   if (a11y.role) props.role = a11y.role;
   return props;
+}
+
+function mergeClassNames(...classes: Array<unknown>): string | undefined {
+  const value = classes.filter((cls) => typeof cls === 'string' && cls.trim()).join(' ');
+  return value || undefined;
 }
 
 /**
@@ -406,6 +412,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   }
 
   const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
+  resolvedProps.className = mergeClassNames(resolvedProps.className, utilityClassesFor(node.type, node.utilities));
 
   // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).

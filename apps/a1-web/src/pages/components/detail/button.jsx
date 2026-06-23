@@ -68,6 +68,10 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
+function escapeJsxString(value) {
+  return String(value ?? '').replaceAll('"', '&quot;')
+}
+
 export function getDefaultConfig() {
   return {
     label: 'Save changes',
@@ -83,13 +87,14 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config, viewAs = 'react' }) {
+export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
   // The A1 design is identical across platforms, so the preview always renders
   // the React component — but only with the props the selected platform supports
   // (e.g. Native drops href, Pure drops full-width/loading).
   const s = support(viewAs)
   const el = config.split && s.split ? (
     <SplitButton
+      className={utilityClass || undefined}
       variant={config.variant}
       size={config.size}
       icon={config.icon || undefined}
@@ -102,6 +107,7 @@ export function Preview({ config, viewAs = 'react' }) {
     </SplitButton>
   ) : (
     <Button
+      className={utilityClass || undefined}
       variant={config.variant}
       size={config.size}
       href={s.href ? (config.href || undefined) : undefined}
@@ -185,8 +191,9 @@ export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
   )
 }
 
-function buildReactSnippet(config) {
+function buildReactSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.variant !== 'primary' ? `variant="${config.variant}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
     config.href ? `href="${config.href}"` : null,
@@ -227,8 +234,9 @@ const PURE_VARIANT_CLASS = {
 }
 const PURE_SIZE_CLASS = { sm: 'a1-button-small', lg: 'a1-button-large' }
 
-function buildPureSnippet(config) {
+function buildPureSnippet(config, utilityClass = '') {
   const classes = ['a1-button']
+  if (utilityClass) classes.push(utilityClass)
   if (config.variant !== 'primary' && PURE_VARIANT_CLASS[config.variant]) classes.push(PURE_VARIANT_CLASS[config.variant])
   if (PURE_SIZE_CLASS[config.size]) classes.push(PURE_SIZE_CLASS[config.size])
   const classAttr = classes.join(' ')
@@ -248,8 +256,9 @@ function buildPureSnippet(config) {
   return `<button class="${classAttr}" type="button"${disabledAttr}>${inner}</button>`
 }
 
-function buildSplitSnippet(config) {
+function buildSplitSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.variant !== 'primary' ? `variant="${config.variant}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
     config.icon ? `icon="${config.icon}"` : null,
@@ -271,12 +280,13 @@ function buildSplitSnippet(config) {
 </SplitButton>`
 }
 
-export function Snippet({ config, viewAs = 'react' }) {
+export function Snippet({ config, viewAs = 'react', utilityClass = '' }) {
   if (config.split && support(viewAs).split) {
-    return <Code variant="block" wrapping copyCode>{buildSplitSnippet(config)}</Code>
+    return <Code variant="block" wrapping copyCode>{buildSplitSnippet(config, utilityClass)}</Code>
   }
-  const build = viewAs === 'native' ? buildNativeSnippet
-    : viewAs === 'pure' ? buildPureSnippet
-      : buildReactSnippet
-  return <Code variant="block" wrapping copyCode>{build(config)}</Code>
+  if (viewAs === 'native') {
+    return <Code variant="block" wrapping copyCode>{buildNativeSnippet(config)}</Code>
+  }
+  const build = viewAs === 'pure' ? buildPureSnippet : buildReactSnippet
+  return <Code variant="block" wrapping copyCode>{build(config, utilityClass)}</Code>
 }

@@ -83,4 +83,11 @@ export const foundations = [
     body: 'Layering and stacking: the browser top layer (modals) vs. the numeric z-index scale (sticky, pinned, popover, modal, toast). Where each element lives, and why a higher number can’t beat a modal.',
     points: ['Top layer vs. z-index scale', 'The layer scale (100 → 1200)', 'Component audit and rules'],
   },
+  {
+    id: 'foundation-utilities',
+    title: 'Utilities',
+    icon: 'style',
+    body: 'Small, single-purpose class utilities for one-off adjustments — tokenised spacing (padding/margin/gap), min/max width, and screen-reader-only content. Reach for a layout component first; use a utility when no component covers the need.',
+    points: ['Spacing and gap classes', 'Min/max width classes', 'Screen-reader only'],
+  },
 ]

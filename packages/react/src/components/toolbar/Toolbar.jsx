@@ -1,5 +1,5 @@
 import "./toolbar.css";
-import { useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";
 import { Menu, MenuItem } from "../menu/Menu.jsx";
 
@@ -249,6 +249,7 @@ export function ToolbarGroup({
   onChange,
   options = [],
   columns,
+  overflow = false,
   showLabels = false,
   labelMode = "all",
   "aria-label": ariaLabel,
@@ -257,18 +258,39 @@ export function ToolbarGroup({
   ...rest
 }) {
   const btnRefs = useRef([]);
+  const groupRef = useRef(null);
+  const measureRefs = useRef([]);
+  const overflowMeasureRef = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(options.length);
   const grid = typeof columns === "number" && columns > 0;
-  const selectedIndex = options.findIndex((o) => o.value === value);
+  const overflowEnabled = overflow && !grid;
+  const orderedOptions = useMemo(() => (
+    overflowEnabled
+      ? options
+        .map((option, index) => ({ option, index }))
+        .sort((a, b) => {
+          const ap = Number.isFinite(a.option.overflowPriority) ? a.option.overflowPriority : Number.POSITIVE_INFINITY;
+          const bp = Number.isFinite(b.option.overflowPriority) ? b.option.overflowPriority : Number.POSITIVE_INFINITY;
+          return ap === bp ? a.index - b.index : ap - bp;
+        })
+        .map(({ option }) => option)
+      : options
+  ), [options, overflowEnabled]);
+  const visibleOptions = overflowEnabled ? orderedOptions.slice(0, visibleCount) : options;
+  const visibleValues = new Set(visibleOptions.map((option) => option.value));
+  const overflowOptions = overflowEnabled ? options.filter((option) => !visibleValues.has(option.value)) : [];
+  const visibleSelectedIndex = visibleOptions.findIndex((o) => o.value === value);
 
   function move(index, select = true) {
-    const n = options.length;
+    const n = visibleOptions.length;
+    if (!n) return;
     const idx = ((index % n) + n) % n;
     btnRefs.current[idx]?.focus();
-    if (select) onChange?.(options[idx].value);
+    if (select) onChange?.(visibleOptions[idx].value);
   }
 
   function handleKeyDown(e, i) {
-    const n = options.length;
+    const n = visibleOptions.length;
     let next = null;
     let clampVertical = false;
     switch (e.key) {
@@ -291,45 +313,149 @@ export function ToolbarGroup({
     }
   }
 
+  useLayoutEffect(() => {
+    if (!overflowEnabled) {
+      setVisibleCount(options.length);
+      return undefined;
+    }
+
+    function updateVisibleCount() {
+      const root = groupRef.current;
+      if (!root) return;
+
+      const available = root.clientWidth;
+      const widths = orderedOptions.map((_, i) => measureRefs.current[i]?.offsetWidth ?? 0);
+      const overflowWidth = overflowMeasureRef.current?.offsetWidth ?? 0;
+      const styles = getComputedStyle(root);
+      const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+      const allWidth = widths.reduce((sum, width) => sum + width, 0) + Math.max(0, widths.length - 1) * gap;
+
+      if (!available || allWidth <= available) {
+        setVisibleCount(orderedOptions.length);
+        return;
+      }
+
+      let used = 0;
+      let count = 0;
+      for (let i = 0; i < widths.length; i += 1) {
+        const nextUsed = used + widths[i] + (count > 0 ? gap : 0);
+        const needsOverflow = i < widths.length - 1;
+        const reserved = needsOverflow ? overflowWidth + gap : 0;
+        if (nextUsed + reserved > available) break;
+        used = nextUsed;
+        count += 1;
+      }
+      setVisibleCount(Math.max(0, Math.min(orderedOptions.length, count)));
+    }
+
+    updateVisibleCount();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(updateVisibleCount) : null;
+    if (observer && groupRef.current) observer.observe(groupRef.current);
+    window.addEventListener("resize", updateVisibleCount);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateVisibleCount);
+    };
+  }, [overflowEnabled, options, orderedOptions, showLabels, labelMode, value]);
+
   const style = grid ? { "--a1-toolbar-grid-columns": columns } : undefined;
+  const overflowActive = overflowOptions.some((opt) => opt.value === value);
+  const overflowLabel = overflowActive
+    ? (overflowOptions.find((opt) => opt.value === value)?.label ?? "More")
+    : "More";
 
   return (
     <div
-      role="radiogroup"
-      aria-label={ariaLabel}
-      className={cx("a1-toolbar__group", grid && "a1-toolbar__group--grid", className)}
+      ref={groupRef}
+      className={cx(
+        "a1-toolbar__group",
+        grid && "a1-toolbar__group--grid",
+        overflowEnabled && "a1-toolbar__group--overflow",
+        className,
+      )}
       style={style}
       {...rest}
     >
-      {options.map((opt, i) => {
-        const selected = i === selectedIndex;
-        // Roving tabindex: the selected option (or the first, when none is
-        // selected) is the single tab stop for the group.
-        const tabIndex = selected || (selectedIndex === -1 && i === 0) ? 0 : -1;
+      <div
+        role="radiogroup"
+        aria-label={ariaLabel}
+        className={cx("a1-toolbar__group-radios", grid && "a1-toolbar__group-radios--grid")}
+        style={style}
+      >
+        {visibleOptions.map((opt, i) => {
+          const selected = i === visibleSelectedIndex;
+          // Roving tabindex: the selected option (or the first, when none is
+          // selected) is the single tab stop for the group.
+          const tabIndex = selected || (visibleSelectedIndex === -1 && i === 0) ? 0 : -1;
         const optLabel = opt.label ?? String(opt.value);
         // `labelMode="selected"` shows the label only on the selected option;
         // the rest fall back to icon/swatch-only (and "none" to its icon).
-        const optShowLabel = labelMode === "selected" ? selected : showLabels;
-        const icon = opt.icon ?? (!labelAlwaysShown(optShowLabel) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
-        return (
+        const optShowLabel = typeof opt.showLabel === "boolean"
+          ? opt.showLabel
+          : labelMode === "selected" ? selected : showLabels;
+          const icon = opt.icon ?? (!labelAlwaysShown(optShowLabel) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
+          return (
+            <button
+              key={String(opt.value)}
+              ref={(el) => { btnRefs.current[i] = el; }}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              aria-label={toolAriaLabel(optShowLabel, optLabel)}
+              title={optLabel}
+              tabIndex={tabIndex}
+              disabled={disabled || opt.disabled}
+              className="a1-toolbar__button"
+              onClick={() => onChange?.(opt.value)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+            >
+              <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
+            </button>
+          );
+        })}
+      </div>
+      {overflowOptions.length ? (
+        <ToolbarMenu
+          icon="more_horiz"
+          label={overflowLabel}
+          value={overflowActive ? value : undefined}
+          onChange={onChange}
+          items={options}
+          disabled={disabled}
+          aria-label={ariaLabel ? `${ariaLabel} overflow` : "More options"}
+        />
+      ) : null}
+      {overflowEnabled ? (
+        <div className="a1-toolbar__measure" aria-hidden="true">
+          {orderedOptions.map((opt, i) => {
+            const selected = opt.value === value;
+            const optShowLabel = typeof opt.showLabel === "boolean"
+              ? opt.showLabel
+              : labelMode === "selected" ? selected : showLabels;
+            const icon = opt.icon ?? (!labelAlwaysShown(optShowLabel) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
+            return (
+              <button
+                key={String(opt.value)}
+                ref={(el) => { measureRefs.current[i] = el; }}
+                type="button"
+                className="a1-toolbar__button"
+                tabIndex={-1}
+              >
+                <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
+              </button>
+            );
+          })}
           <button
-            key={String(opt.value)}
-            ref={(el) => { btnRefs.current[i] = el; }}
+            ref={overflowMeasureRef}
             type="button"
-            role="radio"
-            aria-checked={selected}
-            aria-label={toolAriaLabel(optShowLabel, optLabel)}
-            title={optLabel}
-            tabIndex={tabIndex}
-            disabled={disabled || opt.disabled}
-            className="a1-toolbar__button"
-            onClick={() => onChange?.(opt.value)}
-            onKeyDown={(e) => handleKeyDown(e, i)}
+            className="a1-toolbar__button a1-toolbar__menu-button"
+            tabIndex={-1}
           >
-            <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
+            <ToolButtonContent icon="more_horiz" label="More" showLabel={false} />
+            <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
           </button>
-        );
-      })}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -13,7 +13,7 @@ export function getDefaultConfig() {
   return { title: 'Filters', defaultDetent: 1 }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <div className="a1-web-bottomsheet-preview">
       <Stack gap="sm" style={{ padding: 'var(--base-spacing-16)' }}>
@@ -23,6 +23,7 @@ export function Preview({ config }) {
       </Stack>
       <BottomSheet
         key={config.defaultDetent}
+        className={utilityClass || undefined}
         title={config.title || undefined}
         detents={DETENTS}
         defaultDetent={config.defaultDetent}
@@ -57,8 +58,9 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.title ? `title="${config.title.replaceAll('"', '&quot;')}"` : null,
     'detents={[0.5, 0.92]}',
     config.defaultDetent !== 1 ? `defaultDetent={${config.defaultDetent}}` : null,
@@ -66,6 +68,6 @@ function buildSnippet(config) {
   return `<BottomSheet\n  ${props}\n>\n  {/* scrollable content */}\n</BottomSheet>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

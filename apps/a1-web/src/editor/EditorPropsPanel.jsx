@@ -17,6 +17,7 @@ import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+import { UtilityControls } from './UtilityControls.jsx'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
@@ -1805,6 +1806,7 @@ export function EditorPropsPanel({
   onSetLock,
   onSetNodeRepeat,
   onSetNodeCollections,
+  onSetNodeUtilities,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1853,6 +1855,14 @@ export function EditorPropsPanel({
     </Stack>
   ) : null
 
+  const UtilitiesSection = (
+    <UtilityControls
+      type={node.type}
+      utilities={node.utilities}
+      onChange={(utilities) => onSetNodeUtilities?.(node.id, utilities)}
+    />
+  )
+
   if (!Controls) {
     return (
       <Stack gap="sm">
@@ -1862,6 +1872,7 @@ export function EditorPropsPanel({
         <Paragraph size="sm" color="muted">
           No configurator is registered for this component type.
         </Paragraph>
+        {UtilitiesSection}
         {ConvertSection}
       </Stack>
     )
@@ -2001,6 +2012,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
+      {!lockAuthoring && !fullyLocked && UtilitiesSection}
       {BindSection}
       {CollectionSection}
       {ConvertSection}

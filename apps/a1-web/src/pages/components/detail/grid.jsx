@@ -52,8 +52,9 @@ function columnsProp(columns) {
   return `columns={${columns}}`
 }
 
-function buildGridSnippet(config) {
+function buildGridSnippet(config, utilityClass = '') {
   const props = [
+    propString('className', utilityClass, ''),
     columnsProp(config.columns),
     propString('gap', config.gap, 'md'),
     propString('layout', config.layout, 'default'),
@@ -72,12 +73,13 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const count = Math.max(representativeColumns(config.columns) * 2, 4)
   const items = SAMPLE_ITEMS.slice(0, Math.min(count, SAMPLE_ITEMS.length))
 
   return (
     <Grid
+      className={utilityClass || undefined}
       columns={config.columns}
       gap={config.gap}
       layout={config.layout}
@@ -130,6 +132,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildGridSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildGridSnippet(config, utilityClass)}</Code>
 }

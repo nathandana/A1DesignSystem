@@ -73,11 +73,12 @@ export function getDefaultConfig() {
 }
 
 // Remounts on the single/multi switch so the value state resets to the right type.
-function AutocompletePreview({ config }) {
+function AutocompletePreview({ config, utilityClass = '' }) {
   const options = normalizeOptions(config.options)
   const [value, setValue] = useState(config.multiple ? [] : '')
   return (
     <Autocomplete
+      className={utilityClass || undefined}
       label={config.label || undefined}
       hint={config.hint || undefined}
       size={config.size}
@@ -97,8 +98,8 @@ function AutocompletePreview({ config }) {
   )
 }
 
-export function Preview({ config }) {
-  return <AutocompletePreview key={`${config.multiple ? 'multi' : 'single'}-${config.variant}`} config={config} />
+export function Preview({ config, utilityClass = '' }) {
+  return <AutocompletePreview key={`${config.multiple ? 'multi' : 'single'}-${config.variant}`} config={config} utilityClass={utilityClass} />
 }
 
 export function Controls({ config, setConfig, activeItemIndex = null, onSelectItem }) {
@@ -200,10 +201,11 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
   )
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const options = normalizeOptions(config.options)
   const isColor = config.variant === 'color'
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.label ? `label="${escapeJsxString(config.label)}"` : null,
     config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,
     config.size !== 'default' ? `size="${config.size}"` : null,
@@ -224,6 +226,6 @@ function buildSnippet(config) {
   return `<Autocomplete\n  ${props}\n  options={[\n${optionsStr}\n  ]}\n  value={value}\n  onChange={setValue}\n/>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

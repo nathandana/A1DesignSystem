@@ -105,6 +105,13 @@ export interface ToolbarGroupOption {
   icon?: string;
   /** A colour swatch (any CSS color) shown inside the option. */
   swatch?: string;
+  /** Override visible label rendering for this option. */
+  showLabel?: boolean;
+  /**
+   * Optional sort priority for visible buttons when `ToolbarGroup overflow` is on.
+   * Lower numbers stay visible first; the overflow menu still uses `options` order.
+   */
+  overflowPriority?: number;
   disabled?: boolean;
 }
 export interface ToolbarGroupProps {
@@ -114,6 +121,12 @@ export interface ToolbarGroupProps {
   options?: ToolbarGroupOption[];
   /** Lay the options out as a `columns`-wide grid (e.g. 3 for a 3×3 picker). */
   columns?: number;
+  /**
+   * When true on a non-grid group, keep as many options visible as fit in the
+   * available inline space and move the rest into an icon-only overflow menu.
+   * Options stay in their original order. Default: false
+   */
+  overflow?: boolean;
   /** Show option labels as text; boolean or a responsive breakpoint object. Default: false (icon-only) */
   showLabels?: ToolbarShowLabel;
   /**

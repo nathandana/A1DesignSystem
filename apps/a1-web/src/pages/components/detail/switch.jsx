@@ -28,12 +28,13 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Switch
       // Remount when the default-checked control flips so the preview reflects it
       // while still being interactive (uncontrolled toggle).
       key={config.checked ? 'on' : 'off'}
+      className={utilityClass || undefined}
       label={config.label || undefined}
       hint={config.hint || undefined}
       error={config.error || undefined}
@@ -87,8 +88,9 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-function buildSwitchSnippet(config) {
+function buildSwitchSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.label ? `label="${escapeJsxString(config.label)}"` : null,
     config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,
     config.error ? `error="${escapeJsxString(config.error)}"` : null,
@@ -101,6 +103,6 @@ function buildSwitchSnippet(config) {
   return `<Switch\n  ${props}\n/>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSwitchSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSwitchSnippet(config, utilityClass)}</Code>
 }

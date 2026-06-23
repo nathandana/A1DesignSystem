@@ -88,6 +88,14 @@
   --base-color-warn-700: #795209;
   --base-color-warn-800: #513807;
   --base-color-warn-900: #332305;
+  --base-content-width-2xl: 50rem;
+  --base-content-width-2xs: 10rem;
+  --base-content-width-3xs: 5rem;
+  --base-content-width-lg: 30rem;
+  --base-content-width-md: 25rem;
+  --base-content-width-sm: 20rem;
+  --base-content-width-xl: 40rem;
+  --base-content-width-xs: 15rem;
   --base-font-line-height-body: 1.5em;
   --base-font-line-height-display: 1.125em;
   --base-font-line-height-heading: 1.25em;

@@ -8,20 +8,21 @@ import { ConfigSlider, ResponsiveControl, responsiveProp } from './configKit.jsx
 
 const SIZE_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl']
 
-function buildSpacerSnippet(config) {
+function buildSpacerSnippet(config, utilityClass = '') {
   const size = responsiveProp('size', config.size, 'md')
-  return `<Spacer${size ? ` ${size}` : ''} />`
+  const className = utilityClass ? ` className="${utilityClass.replaceAll('"', '&quot;')}"` : ''
+  return `<Spacer${className}${size ? ` ${size}` : ''} />`
 }
 
 export function getDefaultConfig() {
   return { size: 'md' }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Stack direction="column" style={{ width: '100%' }}>
       <MessageBadge subtle>Block A</MessageBadge>
-      <Spacer size={config.size} />
+      <Spacer className={utilityClass || undefined} size={config.size} />
       <MessageBadge subtle>Block B</MessageBadge>
     </Stack>
   )
@@ -35,6 +36,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSpacerSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSpacerSnippet(config, utilityClass)}</Code>
 }

@@ -32,9 +32,10 @@ const SIZE_OPTIONS = [
   { value: 'xl', label: 'Extra large' },
 ]
 
-function buildDialogSnippet(config) {
+function buildDialogSnippet(config, utilityClass = '') {
   const props = [
     'open={open}',
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.showClose ? 'onClose={() => setOpen(false)}' : null,
     config.title ? `title="${escapeJsxString(config.title)}"` : null,
     config.size && config.size !== 'md' ? `size="${config.size}"` : null,
@@ -71,13 +72,14 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [open, setOpen] = useState(false)
 
   return (
     <Stack align="center">
       <Button onClick={() => setOpen(true)}>Open dialog</Button>
       <Dialog
+        className={utilityClass || undefined}
         open={open}
         onClose={config.showClose ? () => setOpen(false) : undefined}
         title={config.title || undefined}
@@ -150,6 +152,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildDialogSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildDialogSnippet(config, utilityClass)}</Code>
 }

@@ -89,11 +89,12 @@ function buildOptions(options) {
   }))
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const options = buildOptions(config.options)
   const firstEnabled = options.find((o) => !o.disabled)?.value
   return (
     <ChoiceGroup
+      className={utilityClass || undefined}
       label={config.label || undefined}
       hint={config.hint || undefined}
       error={config.error || undefined}
@@ -262,8 +263,9 @@ export function Controls({ config, setConfig, itemsMode = 'accordion' }) {
   )
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.label ? `label="${escapeJsxString(config.label)}"` : null,
     config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,
     config.error ? `error="${escapeJsxString(config.error)}"` : null,
@@ -292,6 +294,6 @@ function buildSnippet(config) {
   return `<ChoiceGroup\n  ${props}\n  options={[\n${optionLines}\n  ]}\n/>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

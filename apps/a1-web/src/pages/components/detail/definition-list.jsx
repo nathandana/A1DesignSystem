@@ -45,8 +45,9 @@ function esc(s) {
   return String(s ?? '').replaceAll('"', '&quot;')
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${esc(utilityClass)}"` : null,
     config.direction !== 'row' ? `direction="${config.direction}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
     config.direction === 'row' && config.labelWidth !== 'auto' ? `labelWidth="${config.labelWidth}"` : null,
@@ -89,13 +90,14 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const items = config.items.map(({ id: _id, href, value, ...rest }) => ({
     ...rest,
     value: href ? <Link href={href}>{value}</Link> : value,
   }))
   return (
     <DefinitionList
+      className={utilityClass || undefined}
       direction={config.direction}
       size={config.size}
       labelWidth={config.direction === 'row' ? config.labelWidth : undefined}
@@ -286,6 +288,6 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

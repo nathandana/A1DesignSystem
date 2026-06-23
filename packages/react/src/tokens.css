@@ -116,6 +116,14 @@
   --base-shadow-300: 0px 4px 6px -1px rgba(6, 11, 20, 0.10), 0px 2px 4px -2px rgba(6, 11, 20, 0.06);
   --base-shadow-400: 0px 10px 15px -3px rgba(6, 11, 20, 0.10), 0px 4px 6px -4px rgba(6, 11, 20, 0.05);
   --base-shadow-500: 0px 20px 25px -5px rgba(6, 11, 20, 0.10), 0px 8px 10px -6px rgba(6, 11, 20, 0.04);
+  --base-content-width-3xs: 5rem; /** Content max-width — extra narrow utility width. */
+  --base-content-width-2xs: 10rem; /** Content max-width — narrow utility width. */
+  --base-content-width-xs: 15rem; /** Content max-width — extra small. */
+  --base-content-width-sm: 20rem; /** Content max-width — small. */
+  --base-content-width-md: 25rem; /** Content max-width — medium. */
+  --base-content-width-lg: 30rem; /** Content max-width — large. */
+  --base-content-width-xl: 40rem; /** Content max-width — extra large. */
+  --base-content-width-2xl: 50rem; /** Content max-width — widest constrained content. */
   --base-spacing-1: 1px;
   --base-spacing-2: 0.125rem;
   --base-spacing-4: 0.25rem;
