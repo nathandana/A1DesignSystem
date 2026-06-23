@@ -1155,7 +1155,7 @@ export function EditorPage({
       patched = patchDefinitionContent(patched, nodeId, newContentFallback);
     }
     const newJson = JSON.stringify(patched, null, 2);
-    history.commit(newJson, `Updated ${getNodeType(nodeId)} properties`);
+    history.commitProp(newJson, `Edited ${getNodeType(nodeId)}`);
   }
 
   function handleNodeDelete(nodeId: string) {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Editor history — throttled prop commits** (A1-273) — changing a slider (or any prop in the configurator) no longer creates a history entry on every drag tick. The canvas updates live as before, but history records at most one entry per 10 seconds using a leading + trailing throttle, so the first and final values of a burst are both captured. Any hard action (delete, move, add) commits immediately and cancels any pending throttled entry. History entry labels for prop edits changed from "Updated X properties" to "Edited X" to reduce visual noise in the history panel.
+
 ## 0.12.0 — 2026-06-22
 
 - **Data-driven collections — fill a component's items/options from a dataset** (A1-94) — a component's array prop can now be generated from data instead of typed by hand. Select the element → Configure → **Fill … from data** → pick a data source and a **mode**: **Each row** (one entry per row, mapping columns → fields), **Each field of the item** (a `DefinitionList` of `{label, value}` for every column of the current item — "show all details"), or **Distinct values of a column** (one entry per unique value — an auto-growing `ChoiceGroup` of categories). Supported targets: **DefinitionList** `items`, **ChoiceGroup** / **Select** / **Autocomplete** `options`; row/distinct modes add a column→field map plus limit + random. Distinct on the active item's row-context, so it composes with **repeat** (one filled component per row) and **detail pages** (fields of the current item). Stored as `node.collections[prop]` (a node field, so configurator edits don't clobber it); the renderer expands it in `pageRenderer`. New `src/data/collections.ts` (registry + `expandCollection`) and `src/editor/EditorCollectionControls.jsx`.

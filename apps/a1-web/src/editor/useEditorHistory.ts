@@ -68,6 +68,12 @@ function saveHistory(storageKey: string, entries: HistoryEntry[], index: number)
   writeStored(storageKey, JSON.stringify({ entries: capped.entries, index: capped.index }))
 }
 
+// Max one history entry per this interval for continuous prop changes (e.g.
+// slider drags). Leading + trailing throttle: commits immediately on the first
+// change in a window, then once more with the latest value after the interval
+// elapses, so the final position is always captured.
+const PROP_THROTTLE_MS = 10_000
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 /**
@@ -83,6 +89,12 @@ export function useEditorHistory(
 ) {
   const onCommitRef = useRef(onCommit)
   onCommitRef.current = onCommit
+
+  // Throttle state for commitProp
+  const propTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const propLastRef = useRef<number>(0)
+  const propPendingRef = useRef<{ json: string; label: string } | null>(null)
+
   const [state, setState] = useState<HistoryState>(() => {
     const persisted = storageKey ? loadHistory(storageKey) : null
     if (persisted) {
@@ -147,9 +159,7 @@ export function useEditorHistory(
     setState(prev => ({ ...prev, workingJson: json }))
   }
 
-  // Commit a named snapshot. Truncates any undone future so the new entry is
-  // always the tip of the stack — standard linear undo behaviour.
-  function commit(json: string, label: string) {
+  function doCommit(json: string, label: string) {
     setState(prev => {
       const truncated = prev.entries.slice(0, prev.index + 1)
       const entry: HistoryEntry = { id: uid(), json, label, timestamp: Date.now() }
@@ -157,6 +167,53 @@ export function useEditorHistory(
       return { entries: capped.entries, index: capped.index, workingJson: json }
     })
     onCommitRef.current?.(json, label)
+  }
+
+  function clearPropsTimer() {
+    if (propTimerRef.current) { clearTimeout(propTimerRef.current); propTimerRef.current = null }
+    propPendingRef.current = null
+  }
+
+  // Commit a named snapshot. Truncates any undone future so the new entry is
+  // always the tip of the stack — standard linear undo behaviour.
+  // Also cancels any pending throttled prop commit so a hard action (delete,
+  // move, add) always takes precedence as the next history entry.
+  function commit(json: string, label: string) {
+    clearPropsTimer()
+    doCommit(json, label)
+  }
+
+  // Throttled commit for continuous prop changes (e.g. slider drags).
+  // Updates the canvas immediately via setWorking on every call; creates at
+  // most one history entry per PROP_THROTTLE_MS using a leading + trailing
+  // strategy so the first and final values in a burst are both recorded.
+  function commitProp(json: string, label: string) {
+    setState(prev => ({ ...prev, workingJson: json }))
+
+    const now = Date.now()
+    const sinceLastCommit = now - propLastRef.current
+
+    if (sinceLastCommit >= PROP_THROTTLE_MS) {
+      // Leading edge: enough time has passed — commit immediately and clear any timer.
+      if (propTimerRef.current) { clearTimeout(propTimerRef.current); propTimerRef.current = null }
+      propPendingRef.current = null
+      propLastRef.current = now
+      doCommit(json, label)
+    } else {
+      // Within the throttle window: record the latest value for the trailing commit.
+      propPendingRef.current = { json, label }
+      if (!propTimerRef.current) {
+        propTimerRef.current = setTimeout(() => {
+          propTimerRef.current = null
+          const p = propPendingRef.current
+          if (p) {
+            propPendingRef.current = null
+            propLastRef.current = Date.now()
+            doCommit(p.json, p.label)
+          }
+        }, PROP_THROTTLE_MS - sinceLastCommit)
+      }
+    }
   }
 
   function undo() {
@@ -231,6 +288,7 @@ export function useEditorHistory(
     canRedo: state.index < state.entries.length - 1,
     setWorking,
     commit,
+    commitProp,
     undo,
     redo,
     jump,
