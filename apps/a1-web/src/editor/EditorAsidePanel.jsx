@@ -34,6 +34,7 @@ export function EditorAsidePanel({
   lockAuthoring,
   onSetLock,
   onSetNodeRepeat,
+  onSetNodeCollections,
   // History tab
   historyEntries,
   historyIndex,
@@ -143,6 +144,7 @@ export function EditorAsidePanel({
               lockAuthoring={lockAuthoring}
               onSetLock={onSetLock}
               onSetNodeRepeat={onSetNodeRepeat}
+              onSetNodeCollections={onSetNodeCollections}
             />
           </div>
         )}

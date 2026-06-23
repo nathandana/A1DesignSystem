@@ -57,6 +57,7 @@ import { Controls as StepTrackerControls } from '../pages/components/detail/step
 import { Controls as TextFieldControls } from '../pages/components/detail/text-field.jsx'
 import { Controls as TextareaFieldControls } from '../pages/components/detail/textarea.jsx'
 import { EditorBindControls } from './EditorBindControls.jsx'
+import { EditorCollectionControls } from './EditorCollectionControls.jsx'
 import { useDataSources } from '../data/DataSourcesContext.jsx'
 import { datasetAvailableToProject } from '../services/dataSources/types'
 import { datasetBindingKey } from '../data/bindings'
@@ -1803,6 +1804,7 @@ export function EditorPropsPanel({
   lockAuthoring = false,
   onSetLock,
   onSetNodeRepeat,
+  onSetNodeCollections,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1964,6 +1966,14 @@ export function EditorPropsPanel({
       onSetRepeat={onSetNodeRepeat ? (cfg) => onSetNodeRepeat(node.id, cfg) : null}
     />
   ) : null
+  const CollectionSection = (!lockAuthoring && !fullyLocked) ? (
+    <EditorCollectionControls
+      nodeType={node.type}
+      collections={node.collections}
+      projectId={projectId}
+      onSetCollections={onSetNodeCollections ? (c) => onSetNodeCollections(node.id, c) : null}
+    />
+  ) : null
 
   return (
     <Stack gap="lg">
@@ -1992,6 +2002,7 @@ export function EditorPropsPanel({
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
       {BindSection}
+      {CollectionSection}
       {ConvertSection}
     </Stack>
   )

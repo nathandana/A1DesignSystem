@@ -568,6 +568,31 @@ const HELP = [
         ),
       },
       {
+        id: 'fill-from-data',
+        title: 'Filling items & options from data',
+        keywords: 'fill collection items options definition list choice group select autocomplete fields distinct categories filter data driven array',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Some components hold a list — a <strong>Definition List</strong>’s items, a <strong>Choice
+              Group</strong> / <strong>Select</strong>’s options. Instead of typing them, generate the list from
+              a dataset: select the component → Configure → <strong>Fill items/options from data</strong> → pick
+              a data source and a mode.
+            </P>
+            <Bullets items={[
+              <><strong>Each field of the item</strong> — a Definition List shows one <em>label / value</em> row per column of the current item. Great on a detail page to “show all details”.</>,
+              <><strong>Distinct values of a column</strong> — one entry per unique value, so a Choice Group becomes a category filter that <strong>grows automatically</strong> as you add categories.</>,
+              <><strong>Each row</strong> — one entry per row; map which column feeds each field (e.g. a Select of every product name).</>,
+            ]} />
+            <P>
+              Row and distinct modes also take <strong>Show at most</strong> and <strong>Pick at random</strong>.
+              This fills one component’s list — to repeat a whole element per row, use <strong>Repeat for each
+              row</strong> instead.
+            </P>
+          </Stack>
+        ),
+      },
+      {
         id: 'detail-pages',
         title: 'Detail pages (one page per item)',
         keywords: 'detail page item record link list grid template dynamic route slug id show details per item collection',

@@ -210,6 +210,21 @@ export interface ComponentNode {
    * ordinary nodes.
    */
   repeat?: string | { dataset: string; limit?: number | null; random?: boolean };
+  /**
+   * Data-driven collections (A1-94): fills a component's array prop (e.g.
+   * DefinitionList `items`, ChoiceGroup `options`) from a dataset, keyed by the prop
+   * name. Each binding picks a dataset + mode (`rows` / `fields` / `distinct`) + an
+   * optional column-to-field map. A node field (not props) so it survives configurator
+   * round-trips. Expanded by the renderer.
+   */
+  collections?: Record<string, {
+    dataset: string;
+    mode: 'rows' | 'fields' | 'distinct';
+    column?: string;
+    map?: Record<string, string>;
+    limit?: number | null;
+    random?: boolean;
+  }>;
   /** Nested child nodes. */
   children?: ComponentNode[];
 }

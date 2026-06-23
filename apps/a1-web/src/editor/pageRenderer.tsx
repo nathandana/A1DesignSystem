@@ -26,6 +26,7 @@ import {
   type DatasetMap, type RowContext,
 } from '../data/bindings';
 import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
+import { collectionTargetFor, expandCollection } from '../data/collections';
 import { findRowIndexById } from '../services/dataSources/rowIds';
 import type {
   A11yDefinition,
@@ -413,10 +414,19 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
   }
 
+  // Data-driven collections: fill an array prop (items/options) from a dataset.
+  if (node.collections) {
+    const target = collectionTargetFor(node.type);
+    const binding = target ? node.collections[target.prop] : undefined;
+    if (target && binding?.dataset && datasetMap[binding.dataset]) {
+      resolvedProps[target.prop] = expandCollection(binding, target, datasetMap, rowContext, node.id);
+    }
+  }
+
   // Child-item inline editing: components whose data lives in an array prop render
   // their text via InlineEditable in editor mode so each item can be edited on the
   // canvas. (DefinitionList first — its `items` accept ReactNode label/value.)
-  if (editorMode && !contentLocked && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
+  if (editorMode && !contentLocked && !node.collections?.items && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
     const itemText = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v));
     const activeIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null;
     // Wrap a field so clicking/focusing it selects the item (opens its config tab)

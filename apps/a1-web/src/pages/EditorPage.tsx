@@ -292,6 +292,17 @@ function setNodeRepeatInNode(node: ComponentNode, id: string, repeat: ComponentN
   return { ...node, children: node.children.map((c) => setNodeRepeatInNode(c, id, repeat)) };
 }
 
+function setNodeCollectionsInNode(node: ComponentNode, id: string, collections: ComponentNode['collections'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (collections && Object.keys(collections).length) next.collections = collections;
+    else delete next.collections;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeCollectionsInNode(c, id, collections)) };
+}
+
 function freshId(): string {
   return `node-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -1306,6 +1317,12 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), repeat ? `Repeated ${getNodeType(nodeId)} over data` : `Stopped repeating ${getNodeType(nodeId)}`);
   }
 
+  function handleSetNodeCollections(nodeId: string, collections: ComponentNode['collections'] | null) {
+    if (!parsedDefinition.ok) return;
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeCollectionsInNode(node, nodeId, collections));
+    history.commit(JSON.stringify(newDef, null, 2), collections ? `Filled ${getNodeType(nodeId)} from data` : `Cleared data fill on ${getNodeType(nodeId)}`);
+  }
+
   function handleGroupAsStack(nodeId: string) {
     if (!parsedDefinition.ok) return;
     if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
@@ -1713,6 +1730,7 @@ export function EditorPage({
           lockAuthoring={isPattern}
           onSetLock={handleSetNodeLock}
           onSetNodeRepeat={handleSetNodeRepeat}
+          onSetNodeCollections={handleSetNodeCollections}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
           onHistoryJump={handleHistoryJump}
