@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAuth } from '../lib/AuthContext.jsx'
 import * as store from '../services/dataSources/dataSourcesStore'
 import { buildUsersSample, hasSeededSamples, markSeededSamples } from '../services/dataSources/samples'
+import { rowsNeedIds } from '../services/dataSources/rowIds'
 
 /**
  * Holds the shared dataset list and the actions the Data page uses. Points the store
@@ -26,6 +27,7 @@ export function DataSourcesProvider({ children }) {
   }, [])
 
   const seededRef = useRef(false)
+  const backfilledRef = useRef(false)
 
   useEffect(() => {
     store.setDataSourceUser(user ?? null)
@@ -33,6 +35,19 @@ export function DataSourcesProvider({ children }) {
     let cancelled = false
     ;(async () => {
       await refresh()
+      // Backfill stable row ids on datasets created before ids existed, so detail-page
+      // links and `{{ key.__id }}` bindings work on them. One-time per session.
+      if (!cancelled && !backfilledRef.current) {
+        backfilledRef.current = true
+        try {
+          const current = await store.listDataSources()
+          const needing = current.filter((d) => rowsNeedIds(d.rows))
+          if (needing.length) {
+            for (const d of needing) await store.updateDataSource(d.id, { rows: d.rows })
+            if (!cancelled) await refresh()
+          }
+        } catch (err) { console.warn('[data-sources] id backfill skipped', err) }
+      }
       // One-time sample seed: when the workspace has no datasets yet, drop in the
       // built-in "Users" sample so the page isn't empty on first run. Guarded by a
       // per-browser flag so deleting the sample doesn't bring it back. Wrapped so a

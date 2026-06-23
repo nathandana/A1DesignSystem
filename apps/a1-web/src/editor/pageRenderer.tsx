@@ -26,6 +26,7 @@ import {
   type DatasetMap, type RowContext,
 } from '../data/bindings';
 import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
+import { findRowIndexById } from '../services/dataSources/rowIds';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -59,10 +60,17 @@ function pageIdFromHref(href: unknown): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+/** Extract the detail-page `item` id from an internal link href, or null. */
+function itemIdFromHref(href: unknown): string | null {
+  if (typeof href !== 'string') return null;
+  const match = href.match(/[?&]item=([^&]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 interface EditorModeContextValue {
   enabled: boolean;
-  /** Preview-only: navigate to another page by id when a link/button is clicked. */
-  onNavigate: ((pageId: string) => void) | null;
+  /** Preview-only: navigate to another page by id (with an optional detail `item`). */
+  onNavigate: ((pageId: string, opts?: { item?: string | null }) => void) | null;
   /** Ids of nodes marked as locked (pattern editor) — shown with a lock badge. */
   lockedNodeIds: Set<string>;
   /** When true, a node's own `lock` metadata is enforced (page editor): locked
@@ -481,9 +489,10 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   if (!editorMode && onNavigate) {
     const pageId = pageIdFromHref(resolvedProps.href);
     if (pageId) {
+      const item = itemIdFromHref(resolvedProps.href);
       resolvedProps.onClick = (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        onNavigate(pageId);
+        onNavigate(pageId, { item });
       };
     }
   }
@@ -579,6 +588,7 @@ function RenderLayout({ layout }: { layout: PageLayoutDefinition }) {
  */
 export function RenderPageDefinition({
   definition,
+  itemId,
   onNavigate,
   lockedNodeIds,
   enforceLocks = false,
@@ -606,7 +616,9 @@ export function RenderPageDefinition({
   onCreatePattern,
 }: {
   definition: PageDefinition;
-  onNavigate?: (pageId: string) => void;
+  /** Active detail-page item: the `__id` of the row to bind against (from the URL). */
+  itemId?: string | null;
+  onNavigate?: (pageId: string, opts?: { item?: string | null }) => void;
   lockedNodeIds?: Set<string>;
   enforceLocks?: boolean;
   activePatternRootId?: string | null;
@@ -641,6 +653,19 @@ export function RenderPageDefinition({
     return buildDatasetMap(datasets.filter((d) => datasetAvailableToProject(d, projectId)));
   }, [datasets]);
 
+  // Detail page: when the page is tagged to a dataset, resolve its bindings against
+  // one item — the row whose `__id` matches the `item` URL value (live) or the page's
+  // `detailPreviewId` (in the editor), falling back to the first row.
+  const rootRowContext = useMemo<RowContext>(() => {
+    const detailDataset = definition.page.detailDataset;
+    if (!detailDataset) return {};
+    const ds = datasetMap[detailDataset];
+    if (!ds) return {};
+    const activeItemId = itemId ?? definition.page.detailPreviewId ?? null;
+    const idx = activeItemId ? findRowIndexById(ds.rows, activeItemId) : -1;
+    return { [detailDataset]: idx >= 0 ? idx : 0 };
+  }, [definition.page, datasetMap, itemId]);
+
   const noInfo = () => ({ isFirst: false, isLast: false, hasChildren: false });
   const ctx: EditorModeContextValue = {
     enabled: !!onContentChange,
@@ -673,7 +698,7 @@ export function RenderPageDefinition({
 
   return (
     <EditorModeContext.Provider value={ctx}>
-      <PageDataContext.Provider value={{ datasetMap, rowContext: {} }}>
+      <PageDataContext.Provider value={{ datasetMap, rowContext: rootRowContext }}>
         <RenderLayout layout={definition.page.layout} />
       </PageDataContext.Provider>
     </EditorModeContext.Provider>

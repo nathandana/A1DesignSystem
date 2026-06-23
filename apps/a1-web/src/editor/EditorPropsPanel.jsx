@@ -57,6 +57,10 @@ import { Controls as StepTrackerControls } from '../pages/components/detail/step
 import { Controls as TextFieldControls } from '../pages/components/detail/text-field.jsx'
 import { Controls as TextareaFieldControls } from '../pages/components/detail/textarea.jsx'
 import { EditorBindControls } from './EditorBindControls.jsx'
+import { useDataSources } from '../data/DataSourcesContext.jsx'
+import { datasetAvailableToProject } from '../services/dataSources/types'
+import { datasetBindingKey } from '../data/bindings'
+import { ROW_ID_KEY } from '../services/dataSources/rowIds'
 import { Controls as SelectFieldControls } from '../pages/components/detail/select.jsx'
 import { Controls as NumberFieldControls } from '../pages/components/detail/number-field.jsx'
 import { Controls as DateFieldControls } from '../pages/components/detail/date-field.jsx'
@@ -1647,7 +1651,56 @@ function PatternScopeField({ patternId, projects }) {
   )
 }
 
-function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel, onPageMetadataChange, onDuplicatePage, onDeletePage, patternScope }) {
+// Detail-page settings: tag a page to a dataset so its bindings resolve to one item
+// (chosen by the ?item= URL value), plus pick which item to preview while designing.
+function PageDetailField({ projectId, page, onPageMetadataChange }) {
+  const ctx = useDataSources()
+  const datasets = (ctx?.items ?? []).filter((d) => datasetAvailableToProject(d, projectId))
+  if (!datasets.length) return null
+
+  const currentKey = page.detailDataset ?? ''
+  const dataset = datasets.find((d) => datasetBindingKey(d.name) === currentKey) ?? null
+  const rowLabel = (row, i) => {
+    const first = dataset?.columns?.[0]?.key
+    const label = first ? row[first] : null
+    return label != null && label !== '' ? String(label) : `Row ${i + 1}`
+  }
+
+  return (
+    <Stack gap="xs">
+      <Divider space="xs" />
+      <Paragraph size="xs" color="muted">Detail page</Paragraph>
+      <SelectField
+        label="Shows details for"
+        size="compact"
+        hint="Bindings on this page resolve to one item, chosen by the ?item= URL value."
+        value={currentKey}
+        onChange={(e) => onPageMetadataChange({ detailDataset: e.target.value || null, detailPreviewId: null })}
+      >
+        <option value="">Not a detail page</option>
+        {datasets.map((d) => (
+          <option key={d.id} value={datasetBindingKey(d.name)}>{d.name}</option>
+        ))}
+      </SelectField>
+      {dataset && (
+        <SelectField
+          label="Preview item"
+          size="compact"
+          hint="Which item to show while designing (the live page uses the URL)."
+          value={page.detailPreviewId ?? ''}
+          onChange={(e) => onPageMetadataChange({ detailPreviewId: e.target.value || null })}
+        >
+          <option value="">First item</option>
+          {dataset.rows.map((row, i) => (
+            <option key={row[ROW_ID_KEY] ?? i} value={row[ROW_ID_KEY] ?? ''}>{rowLabel(row, i)}</option>
+          ))}
+        </SelectField>
+      )}
+    </Stack>
+  )
+}
+
+function PageConfigForm({ definition, projectId, pageLevel, availableLevels, onSetPageLevel, onPageMetadataChange, onDuplicatePage, onDeletePage, patternScope }) {
   if (!definition) {
     return (
       <Paragraph size="sm" color="muted">
@@ -1682,6 +1735,9 @@ function PageConfigForm({ definition, pageLevel, availableLevels, onSetPageLevel
       />
       {patternScope && (
         <PatternScopeField patternId={patternScope.patternId} projects={patternScope.projects} />
+      )}
+      {!patternScope && (
+        <PageDetailField projectId={projectId} page={definition.page} onPageMetadataChange={onPageMetadataChange} />
       )}
       {onSetPageLevel && (
         <SelectField
@@ -1757,6 +1813,7 @@ export function EditorPropsPanel({
     return (
       <PageConfigForm
         definition={definition}
+        projectId={projectId}
         pageLevel={pageLevel}
         availableLevels={availableLevels}
         onSetPageLevel={onSetPageLevel}

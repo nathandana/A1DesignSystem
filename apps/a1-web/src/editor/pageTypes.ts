@@ -245,6 +245,14 @@ export interface PageMetadata {
   description?: string;
   /** Material Symbols icon name used for the page in project navigation. */
   icon?: string;
+  /**
+   * Detail page (A1-94): the binding key of a dataset this page shows details for.
+   * When set, the page resolves `{{ key.column }}` bindings against the row whose
+   * `__id` matches the `item` URL param (live), or `detailPreviewId` (in the editor).
+   */
+  detailDataset?: string;
+  /** The dataset row `__id` to preview in the editor while designing a detail page. */
+  detailPreviewId?: string;
 }
 
 /**

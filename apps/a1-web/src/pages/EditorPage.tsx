@@ -1057,7 +1057,7 @@ export function EditorPage({
     if (v !== 'edit') onSelectNode?.(null);
   }
 
-  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string }) {
+  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string; detailDataset?: string | null; detailPreviewId?: string | null }) {
     if (!parsedDefinition.ok) return;
     const page = parsedDefinition.value.page;
     const newPage = {
@@ -1065,6 +1065,8 @@ export function EditorPage({
       ...(patch.name !== undefined ? { name: patch.name } : {}),
       ...(patch.description !== undefined ? { description: patch.description || undefined } : {}),
       ...(patch.icon !== undefined ? { icon: patch.icon || undefined } : {}),
+      ...(patch.detailDataset !== undefined ? { detailDataset: patch.detailDataset || undefined } : {}),
+      ...(patch.detailPreviewId !== undefined ? { detailPreviewId: patch.detailPreviewId || undefined } : {}),
     };
     const newJson = JSON.stringify({ ...parsedDefinition.value, page: newPage }, null, 2);
     history.setWorking(newJson);

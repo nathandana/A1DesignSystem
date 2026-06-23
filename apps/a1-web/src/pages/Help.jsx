@@ -567,6 +567,29 @@ const HELP = [
           </Stack>
         ),
       },
+      {
+        id: 'detail-pages',
+        title: 'Detail pages (one page per item)',
+        keywords: 'detail page item record link list grid template dynamic route slug id show details per item collection',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Show the details of any item with a single <strong>detail page</strong> — not a page per record.
+              The list links each item to the same page, which reads the item from the URL.
+            </P>
+            <Bullets items={[
+              <><strong>Tag the page:</strong> with nothing selected, open <strong>Page settings</strong> → <strong>Shows details for</strong> and pick the dataset. Now every <Kbd>{'{{ dataset.field }}'}</Kbd> on the page resolves to one item.</>,
+              <><strong>Design against a real item:</strong> pick a <strong>Preview item</strong> so the page shows actual data while you build it.</>,
+              <><strong>Link from a list:</strong> on a page that repeats a Card over the dataset, set the card’s (or a button’s) link to the detail page. It automatically passes the current item, so each card opens its own details.</>,
+              <><strong>Preview it:</strong> open Preview, click an item in the list, and the detail page shows that item. The address carries <Kbd>?item=…</Kbd>, so the link is shareable.</>,
+            ]} />
+            <P>
+              Two pages — a list and a detail — cover a collection of any size. Each item is identified by a
+              stable hidden id, so links keep working even when you rename or reorder rows.
+            </P>
+          </Stack>
+        ),
+      },
     ],
   },
 
