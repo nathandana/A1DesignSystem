@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **New ticket dialog focuses the Title** (A1-281) — opening the "New ticket" dialog now puts the cursor in the **Title** field, so you can start typing straight away instead of clicking in first. Implemented in `CreateTicketDialog.jsx` with a ref focused in the open-effect (deferred a frame so it runs after the Dialog's `showModal()`), since the always-mounted dialog can't rely on React's mount-time `autoFocus`. No design-system component changed.
+- **New ticket dialog — focus the Title and submit on Enter** (A1-281) — opening the "New ticket" dialog now puts the cursor in the **Title** field, and pressing **Enter** there submits the ticket — so a quick bug/idea is just open → type → Enter, no mouse needed. Focus is a ref set in the open-effect (deferred a frame so it runs after the Dialog's `showModal()`), since the always-mounted dialog can't rely on React's mount-time `autoFocus`; Enter is an `onKeyDown` on the Title that calls the existing submit (which already guards an empty title / in-flight submit, and is skipped during IME composition). Description (a textarea) keeps Enter for newlines. `CreateTicketDialog.jsx` only — no design-system component changed.
 
 ## 0.12.0 — 2026-06-22
 

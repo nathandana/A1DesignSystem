@@ -131,6 +131,14 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter in the Title submits the ticket (handleSubmit guards empty/busy).
+            // Skip while an IME composition is active so confirming text doesn't submit.
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+              e.preventDefault()
+              handleSubmit()
+            }
+          }}
           autoComplete="off"
         />
 
