@@ -44,12 +44,17 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const fileRef = useRef(null)
+  const titleRef = useRef(null)
 
   useEffect(() => {
     if (!open) return
     setType('feature'); setTitle(''); setDescription(''); setPriority(''); setComplexity('')
     setScopeKind(preScoped ? scope.kind : 'general')
     setAttachments([]); setBusy(false); setError('')
+    // Focus the Title so you can start typing immediately (A1-281). Deferred to the
+    // next frame so it runs after the Dialog's showModal() has settled focus.
+    const raf = requestAnimationFrame(() => titleRef.current?.focus())
+    return () => cancelAnimationFrame(raf)
   }, [open, preScoped, scope])
 
   // Catch likely duplicates as the user types — "lots are going to be similar or the same"
@@ -121,6 +126,7 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
         </Stack>
 
         <TextField
+          ref={titleRef}
           label="Title"
           required
           value={title}

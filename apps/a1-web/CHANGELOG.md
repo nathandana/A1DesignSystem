@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **New ticket dialog focuses the Title** (A1-281) — opening the "New ticket" dialog now puts the cursor in the **Title** field, so you can start typing straight away instead of clicking in first. Implemented in `CreateTicketDialog.jsx` with a ref focused in the open-effect (deferred a frame so it runs after the Dialog's `showModal()`), since the always-mounted dialog can't rely on React's mount-time `autoFocus`. No design-system component changed.
+
 ## 0.12.0 — 2026-06-22
 
 - **Data-driven collections — fill a component's items/options from a dataset** (A1-94) — a component's array prop can now be generated from data instead of typed by hand. Select the element → Configure → **Fill … from data** → pick a data source and a **mode**: **Each row** (one entry per row, mapping columns → fields), **Each field of the item** (a `DefinitionList` of `{label, value}` for every column of the current item — "show all details"), or **Distinct values of a column** (one entry per unique value — an auto-growing `ChoiceGroup` of categories). Supported targets: **DefinitionList** `items`, **ChoiceGroup** / **Select** / **Autocomplete** `options`; row/distinct modes add a column→field map plus limit + random. Distinct on the active item's row-context, so it composes with **repeat** (one filled component per row) and **detail pages** (fields of the current item). Stored as `node.collections[prop]` (a node field, so configurator edits don't clobber it); the renderer expands it in `pageRenderer`. New `src/data/collections.ts` (registry + `expandCollection`) and `src/editor/EditorCollectionControls.jsx`.
