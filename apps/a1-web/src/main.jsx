@@ -645,6 +645,7 @@ function App() {
   const navItems = [
     {
       id: 'resources',
+      icon: 'menu_book',
       label: 'Resources',
       active: RESOURCE_PAGE_IDS.includes(activePage),
       items: RESOURCE_PAGE_IDS.map((id) => ({
@@ -656,6 +657,7 @@ function App() {
     },
     {
       id: 'foundations',
+      icon: 'foundation',
       label: PAGE_TITLES.foundations,
       active: activePage === 'foundations' || FOUNDATION_PAGE_IDS.includes(activePage),
       items: [
@@ -676,6 +678,7 @@ function App() {
     },
     {
       id: 'components',
+      icon: 'widgets',
       label: PAGE_TITLES.components,
       active: COMPONENT_ROUTE_IDS.includes(activePage),
       items: [
@@ -701,6 +704,7 @@ function App() {
     },
     {
       id: 'editor',
+      icon: 'design_services',
       label: PAGE_TITLES.editor,
       active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
