@@ -76,13 +76,20 @@ function screenIdFromUrl(): string | null {
   return new URLSearchParams(window.location.search).get('screen');
 }
 
+/** The `item` query param selects which dataset row a detail page binds against. */
+function itemIdFromUrl(): string | null {
+  return new URLSearchParams(window.location.search).get('item');
+}
+
 /** Build a shareable URL for a given screen id, preserving standalone mode and
- *  the owning project so the generated nav survives in-prototype navigation. */
-function urlForScreen(pageId: string): string {
+ *  the owning project so the generated nav survives in-prototype navigation. An
+ *  `item` is carried for detail-page links. */
+function urlForScreen(pageId: string, itemId?: string | null): string {
   const project = new URLSearchParams(window.location.search).get('project');
   const projectParam = project ? `&project=${encodeURIComponent(project)}` : '';
+  const itemParam = itemId ? `&item=${encodeURIComponent(itemId)}` : '';
   // Built manually so `standalone` stays a bare flag (no trailing "=").
-  return `${window.location.pathname}?page=editor-preview&standalone&screen=${encodeURIComponent(pageId)}${projectParam}`;
+  return `${window.location.pathname}?page=editor-preview&standalone&screen=${encodeURIComponent(pageId)}${projectParam}${itemParam}`;
 }
 
 export function EditorPreviewPage() {
@@ -106,6 +113,7 @@ export function EditorPreviewPage() {
     return readStored(SESSION_KEY);
   });
   const [screenId, setScreenId] = useState<string | null>(() => screenIdFromUrl());
+  const [itemId, setItemId] = useState<string | null>(() => itemIdFromUrl());
 
   // The owning project (from the launch URL) drives the auto-generated TopHeader.
   const projectId = useMemo(() => new URLSearchParams(window.location.search).get('project'), []);
@@ -117,13 +125,14 @@ export function EditorPreviewPage() {
 
   // Navigate to another prototype screen: swap the definition AND update the URL
   // so the address bar always holds a unique, shareable link to the current page.
-  const navigateToScreen = useCallback((pageId: string, pushHistory = true) => {
+  const navigateToScreen = useCallback((pageId: string, nextItemId: string | null = null, pushHistory = true) => {
     const json = resolvePageJson(pageId);
     if (!json) return;
     setCurrentJson(json);
     setScreenId(pageId);
+    setItemId(nextItemId);
     if (pushHistory) {
-      window.history.pushState({ screen: pageId }, '', urlForScreen(pageId));
+      window.history.pushState({ screen: pageId, item: nextItemId }, '', urlForScreen(pageId, nextItemId));
     }
   }, []);
 
@@ -131,7 +140,7 @@ export function EditorPreviewPage() {
   useEffect(() => {
     function onPop() {
       const screen = screenIdFromUrl();
-      if (screen) navigateToScreen(screen, false);
+      if (screen) navigateToScreen(screen, itemIdFromUrl(), false);
     }
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
@@ -205,7 +214,8 @@ export function EditorPreviewPage() {
       {fallbackHeader}
       <RenderPageDefinition
         definition={composed}
-        onNavigate={(pageId) => navigateToScreen(pageId)}
+        itemId={itemId}
+        onNavigate={(pageId, opts) => navigateToScreen(pageId, opts?.item ?? null)}
       />
     </>
   );

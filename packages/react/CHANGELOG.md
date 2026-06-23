@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.23.0 — 2026-06-22
+
+- **`DataGrid` — A1-themed editable data grid (experimental, Storybook-only)** (A1-94) — a thin wrapper around **react-data-grid** (Comcast, `7.0.0-beta.59`, a `devDependency` of `packages/react`) added to evaluate it as the editable **data editor** for the upcoming page-data / data-binding feature (an editable table for modifying dataset values, plus a JSON importer). `packages/react/src/components/data-grid/` (`DataGrid.jsx` + `data-grid.css` + `DataGrid.d.ts` + `DataGrid.stories.jsx`). The wrapper merges an `a1-data-grid` class onto react-data-grid's root and maps **every** `--rdg-*` theming variable to an A1 semantic/component token (surfaces, text, borders, selection/focus accents, font-size) plus `accent-color` / border-radius — react-data-grid scopes all its own CSS in `@layer rdg`, so the **unlayered** A1 rules win cleanly and the grid follows the active A1 theme. Re-exports `textEditor` (the default inline editor — use as a column `renderEditCell`) and `SelectColumn`. Four stories: `Editable` (live JSON of the edited model), `RowSelection`, `SortableResizable`, `ReadOnly`. **Deliberately not finished as a system component:** not exported from `src/index.js`, not added to the component registry, and **not wired into the a1-web configurator** — it ships in Storybook only so it can be test-driven before we commit to it for the data feature.
+
 ## 0.22.0 — 2026-06-22
 
 ### Added

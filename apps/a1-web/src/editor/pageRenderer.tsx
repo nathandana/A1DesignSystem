@@ -12,12 +12,22 @@
  */
 import { Code, InlineEditable, Heading, HeadingMark, Paragraph, Section, Stack, useLabel } from '@gtivr4/a1-design-system-react';
 import type { ReactNode } from 'react';
-import { createElement, createContext, useContext } from 'react';
+import { createElement, createContext, useContext, useMemo, Fragment } from 'react';
 import { EditorSelectionBoundary } from './EditorSelectionBoundary';
 import type { ComponentType as ReactComponentType } from 'react';
 import { componentRegistry } from './componentRegistry';
 import { resolveSrc as resolveImageSrc } from '../lib/imageLibrary';
 import { useImageLibraryVersion } from './ImageLibraryContext';
+import { useDataSources } from '../data/DataSourcesContext.jsx';
+import { getActiveProjectId } from '../projects/projectStore';
+import { datasetAvailableToProject } from '../services/dataSources/types';
+import {
+  buildDatasetMap, hasBinding, resolveBinding, resolveBindingsToString,
+  type DatasetMap, type RowContext,
+} from '../data/bindings';
+import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
+import { collectionTargetFor, expandCollection } from '../data/collections';
+import { findRowIndexById } from '../services/dataSources/rowIds';
 import type {
   A11yDefinition,
   ComponentNode,
@@ -51,10 +61,17 @@ function pageIdFromHref(href: unknown): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+/** Extract the detail-page `item` id from an internal link href, or null. */
+function itemIdFromHref(href: unknown): string | null {
+  if (typeof href !== 'string') return null;
+  const match = href.match(/[?&]item=([^&]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 interface EditorModeContextValue {
   enabled: boolean;
-  /** Preview-only: navigate to another page by id when a link/button is clicked. */
-  onNavigate: ((pageId: string) => void) | null;
+  /** Preview-only: navigate to another page by id (with an optional detail `item`). */
+  onNavigate: ((pageId: string, opts?: { item?: string | null }) => void) | null;
   /** Ids of nodes marked as locked (pattern editor) — shown with a lock badge. */
   lockedNodeIds: Set<string>;
   /** When true, a node's own `lock` metadata is enforced (page editor): locked
@@ -88,6 +105,13 @@ interface EditorModeContextValue {
   onItemSelect: (nodeId: string, index: number) => void;
 }
 
+
+/**
+ * Provides the active project's datasets (keyed for binding) to every node so a
+ * `{{ dataset.column }}` token in a prop or text content resolves at render. Empty
+ * by default (no bindings resolve, tokens render literally). See `data/bindings.ts`.
+ */
+const PageDataContext = createContext<{ datasetMap: DatasetMap; rowContext: RowContext }>({ datasetMap: {}, rowContext: {} });
 
 const EditorModeContext = createContext<EditorModeContextValue>({
   enabled: false,
@@ -271,7 +295,9 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   const text = useResolvedContent(node.content);
   // Re-render when the image library hydrates so Figure refs resolve to real URLs.
   useImageLibraryVersion();
-  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = useContext(EditorModeContext);
+  const editorCtx = useContext(EditorModeContext);
+  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = editorCtx;
+  const { datasetMap, rowContext } = useContext(PageDataContext);
   const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
 
@@ -285,6 +311,31 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
 
   if (!Component) {
     return <UnsupportedComponent type={node.type} />;
+  }
+
+  // Data repeat: render the node once per row of the bound dataset, each copy with
+  // that row as the active row for the `{{ key.column }}` bindings inside it. In the
+  // editor the first copy stays interactive (selecting/editing it targets the single
+  // template node); the rest render as read-only projections. In preview every copy
+  // is non-interactive. Falls through to a single render when the dataset is missing
+  // or empty, so the node stays selectable/configurable.
+  const repeatCfg = normalizeRepeat(node.repeat);
+  if (repeatCfg && datasetMap[repeatCfg.dataset] && (datasetMap[repeatCfg.dataset].rows?.length ?? 0) > 0) {
+    const repeatKey = repeatCfg.dataset;
+    const indices = pickRepeatIndices(datasetMap[repeatKey].rows.length, repeatCfg, node.id);
+    const stripped: ComponentNode = { ...node, repeat: undefined };
+    return indices.map((rowIndex, copyNum) => {
+      const childRowContext = { ...rowContext, [repeatKey]: rowIndex };
+      const inner = (
+        <PageDataContext.Provider value={{ datasetMap, rowContext: childRowContext }}>
+          <RenderNode node={stripped} inPattern={inPattern} patternActive={patternActive} />
+        </PageDataContext.Provider>
+      );
+      // First copy interactive in the editor; the rest are read-only projections.
+      return (editorMode && copyNum > 0)
+        ? <EditorModeContext.Provider key={`${node.id}__r${copyNum}`} value={{ ...editorCtx, enabled: false }}>{inner}</EditorModeContext.Provider>
+        : <Fragment key={`${node.id}__r${copyNum}`}>{inner}</Fragment>;
+    });
   }
 
   // TODO(actions): wire `node.actions` (navigate / openDialog / appAction /
@@ -302,12 +353,20 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     ? inlineMarkdownToNodes(text)
     : null;
 
+  // Data-bound text ({{ dataset.column }}) resolves to a value from the project's
+  // datasets. The raw token lives in node.content; the canvas shows the resolved
+  // value (read-only inline — edit the binding in the Configure panel / Data tab).
+  const textBound = typeof text === 'string' && hasBinding(text);
+  const boundText = textBound ? resolveBindingsToString(text, datasetMap, rowContext) : text;
+
   // In editor mode, plain text content is wrapped in InlineEditable (seamless) so
   // the user can click any heading, paragraph, or button label to edit it in
   // place. Seamless mode inherits all typography from the surrounding component.
   let textContent: ReactNode;
   if (text === undefined) {
     textContent = undefined;
+  } else if (textBound) {
+    textContent = isHeading ? decodeEntities(boundText) : boundText;
   } else if (editorMode && !contentLocked) {
     // Always editable in the editor — edit the raw text/markdown source. This must
     // come BEFORE the rich-render branches: content with marks or inline markdown
@@ -348,10 +407,26 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
 
   const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
 
+  // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
+  // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
+  for (const k of Object.keys(resolvedProps)) {
+    const v = resolvedProps[k];
+    if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
+  }
+
+  // Data-driven collections: fill an array prop (items/options) from a dataset.
+  if (node.collections) {
+    const target = collectionTargetFor(node.type);
+    const binding = target ? node.collections[target.prop] : undefined;
+    if (target && binding?.dataset && datasetMap[binding.dataset]) {
+      resolvedProps[target.prop] = expandCollection(binding, target, datasetMap, rowContext, node.id);
+    }
+  }
+
   // Child-item inline editing: components whose data lives in an array prop render
   // their text via InlineEditable in editor mode so each item can be edited on the
   // canvas. (DefinitionList first — its `items` accept ReactNode label/value.)
-  if (editorMode && !contentLocked && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
+  if (editorMode && !contentLocked && !node.collections?.items && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
     const itemText = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v));
     const activeIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null;
     // Wrap a field so clicking/focusing it selects the item (opens its config tab)
@@ -424,9 +499,10 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   if (!editorMode && onNavigate) {
     const pageId = pageIdFromHref(resolvedProps.href);
     if (pageId) {
+      const item = itemIdFromHref(resolvedProps.href);
       resolvedProps.onClick = (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        onNavigate(pageId);
+        onNavigate(pageId, { item });
       };
     }
   }
@@ -522,6 +598,7 @@ function RenderLayout({ layout }: { layout: PageLayoutDefinition }) {
  */
 export function RenderPageDefinition({
   definition,
+  itemId,
   onNavigate,
   lockedNodeIds,
   enforceLocks = false,
@@ -549,7 +626,9 @@ export function RenderPageDefinition({
   onCreatePattern,
 }: {
   definition: PageDefinition;
-  onNavigate?: (pageId: string) => void;
+  /** Active detail-page item: the `__id` of the row to bind against (from the URL). */
+  itemId?: string | null;
+  onNavigate?: (pageId: string, opts?: { item?: string | null }) => void;
   lockedNodeIds?: Set<string>;
   enforceLocks?: boolean;
   activePatternRootId?: string | null;
@@ -575,6 +654,28 @@ export function RenderPageDefinition({
   activeItem?: { nodeId: string; index: number } | null;
   onItemSelect?: (nodeId: string, index: number) => void;
 }) {
+  // Build the binding map from the datasets visible to this page's project (global +
+  // project-scoped), so `{{ dataset.column }}` tokens resolve on the canvas + preview.
+  const dataCtx = useDataSources();
+  const datasets = dataCtx?.items ?? [];
+  const datasetMap = useMemo(() => {
+    const projectId = getActiveProjectId();
+    return buildDatasetMap(datasets.filter((d) => datasetAvailableToProject(d, projectId)));
+  }, [datasets]);
+
+  // Detail page: when the page is tagged to a dataset, resolve its bindings against
+  // one item — the row whose `__id` matches the `item` URL value (live) or the page's
+  // `detailPreviewId` (in the editor), falling back to the first row.
+  const rootRowContext = useMemo<RowContext>(() => {
+    const detailDataset = definition.page.detailDataset;
+    if (!detailDataset) return {};
+    const ds = datasetMap[detailDataset];
+    if (!ds) return {};
+    const activeItemId = itemId ?? definition.page.detailPreviewId ?? null;
+    const idx = activeItemId ? findRowIndexById(ds.rows, activeItemId) : -1;
+    return { [detailDataset]: idx >= 0 ? idx : 0 };
+  }, [definition.page, datasetMap, itemId]);
+
   const noInfo = () => ({ isFirst: false, isLast: false, hasChildren: false });
   const ctx: EditorModeContextValue = {
     enabled: !!onContentChange,
@@ -607,7 +708,9 @@ export function RenderPageDefinition({
 
   return (
     <EditorModeContext.Provider value={ctx}>
-      <RenderLayout layout={definition.page.layout} />
+      <PageDataContext.Provider value={{ datasetMap, rowContext: rootRowContext }}>
+        <RenderLayout layout={definition.page.layout} />
+      </PageDataContext.Provider>
     </EditorModeContext.Provider>
   );
 }

@@ -202,6 +202,29 @@ export interface ComponentNode {
    * pulled forward, incompatibilities detected) even after ids are freshened.
    */
   patternNodeId?: string;
+  /**
+   * Data repeat (A1-94): which dataset this node repeats over. The renderer renders
+   * one copy of the node per selected row; `{{ key.column }}` bindings inside each
+   * copy resolve to that row. The string form is the dataset binding key; the object
+   * form adds `limit` (max rows) and `random` (seeded random selection). Absent on
+   * ordinary nodes.
+   */
+  repeat?: string | { dataset: string; limit?: number | null; random?: boolean };
+  /**
+   * Data-driven collections (A1-94): fills a component's array prop (e.g.
+   * DefinitionList `items`, ChoiceGroup `options`) from a dataset, keyed by the prop
+   * name. Each binding picks a dataset + mode (`rows` / `fields` / `distinct`) + an
+   * optional column-to-field map. A node field (not props) so it survives configurator
+   * round-trips. Expanded by the renderer.
+   */
+  collections?: Record<string, {
+    dataset: string;
+    mode: 'rows' | 'fields' | 'distinct';
+    column?: string;
+    map?: Record<string, string>;
+    limit?: number | null;
+    random?: boolean;
+  }>;
   /** Nested child nodes. */
   children?: ComponentNode[];
 }
@@ -237,6 +260,14 @@ export interface PageMetadata {
   description?: string;
   /** Material Symbols icon name used for the page in project navigation. */
   icon?: string;
+  /**
+   * Detail page (A1-94): the binding key of a dataset this page shows details for.
+   * When set, the page resolves `{{ key.column }}` bindings against the row whose
+   * `__id` matches the `item` URL param (live), or `detailPreviewId` (in the editor).
+   */
+  detailDataset?: string;
+  /** The dataset row `__id` to preview in the editor while designing a detail page. */
+  detailPreviewId?: string;
 }
 
 /**

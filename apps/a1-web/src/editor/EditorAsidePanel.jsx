@@ -6,6 +6,7 @@ import { EditorAddPanel } from './EditorAddPanel.jsx'
 import { EditorVersionsPanel } from './EditorVersionsPanel.jsx'
 import { EditorChatPanel } from './EditorChatPanel.jsx'
 import { EditorImagesPanel } from './EditorImagesPanel.jsx'
+import { EditorDataPanel } from './EditorDataPanel.jsx'
 import { AI_ENABLED } from '../lib/aiImages.ts'
 import { PatternLockControls } from '../patterns/PatternLockControls.jsx'
 
@@ -32,6 +33,8 @@ export function EditorAsidePanel({
   lockEnforced,
   lockAuthoring,
   onSetLock,
+  onSetNodeRepeat,
+  onSetNodeCollections,
   // History tab
   historyEntries,
   historyIndex,
@@ -91,6 +94,7 @@ export function EditorAsidePanel({
     { value: 'add-component', label: 'Component', icon: 'widgets' },
     { value: 'add-pattern', label: 'Pattern', icon: 'dashboard_customize' },
     { value: 'images', label: 'Images', icon: 'photo_library' },
+    { value: 'data', label: 'Data', icon: 'table_chart' },
     ...(AI_ENABLED ? [{ value: 'ai', label: 'AI', icon: 'auto_awesome' }] : []),
     { value: 'versions', label: 'Versions', icon: 'commit' },
     { value: 'history', label: 'History', icon: 'history' },
@@ -139,6 +143,8 @@ export function EditorAsidePanel({
               lockEnforced={lockEnforced}
               lockAuthoring={lockAuthoring}
               onSetLock={onSetLock}
+              onSetNodeRepeat={onSetNodeRepeat}
+              onSetNodeCollections={onSetNodeCollections}
             />
           </div>
         )}
@@ -167,6 +173,10 @@ export function EditorAsidePanel({
 
         {tab === 'images' && (
           <EditorImagesPanel projectId={projectId} />
+        )}
+
+        {tab === 'data' && (
+          <EditorDataPanel projectId={projectId} />
         )}
 
         {tab === 'ai' && (

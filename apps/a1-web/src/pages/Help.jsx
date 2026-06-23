@@ -465,6 +465,160 @@ const HELP = [
   },
 
   {
+    id: 'data-sources',
+    title: 'Data sources',
+    icon: 'table_chart',
+    articles: [
+      {
+        id: 'what-are-data-sources',
+        title: 'What data sources are',
+        keywords: 'data source dataset table rows columns datagrid grid spreadsheet store scope project import json users sample',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A <strong>data source</strong> is a reusable dataset — a named table of rows and
+              columns you can edit, scope to projects, and (in future) bind into pages. Open it
+              from the editor menu’s <Icon name="table_chart" size="sm" /> <strong>Data sources</strong> entry.
+            </P>
+            <Bullets items={[
+              <>Each dataset is edited in a spreadsheet-style <strong>grid</strong> — double-click a cell to change its value.</>,
+              <>Datasets are <strong>stored</strong> in your account when you’re signed in (shared workspace), or in this browser otherwise.</>,
+              <>A built-in <strong>Users</strong> sample (fake people with contact details) is added on first use so there’s something to try.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'edit-scope-import-data',
+        title: 'Editing, scoping & importing',
+        keywords: 'edit cell add row column delete scope project global specific import json replace autosave datagrid',
+        body: (
+          <Stack gap="sm">
+            <P>Open a dataset to edit it. Changes <strong>autosave</strong> as you work.</P>
+            <Bullets items={[
+              <><strong>Rows</strong> — double-click a cell to edit. <strong>Add row</strong> appends a row; tick rows and <strong>Delete</strong> to remove them.</>,
+              <><strong>Columns</strong> — in the Columns card, rename a column, set its type, remove it, or <strong>Add column</strong>.</>,
+              <><strong>Scope</strong> — leave a dataset available to <strong>all projects</strong> (the default), or turn on <strong>Limit to specific projects</strong> and pick which ones. (Some data, like users, is generic enough to stay global.)</>,
+              <><strong>Import JSON</strong> — paste a JSON array of objects (keys become columns) or values; <strong>Replace from JSON</strong> swaps a dataset’s data the same way.</>,
+            ]} />
+            <P>
+              Signed-in cloud storage needs the <Kbd>data_sources</Kbd> table created in Supabase
+              (run the schema in <Kbd>apps/a1-web/supabase/schema.sql</Kbd>). Until then the page works
+              locally in your browser.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'bind-data-into-pages',
+        title: 'Binding data into a page',
+        keywords: 'bind binding data token mustache curly braces dataset column value heading paragraph button prop dynamic editor data tab configure menu',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A component’s text or a text prop can pull a value from a dataset. The easy way: select the
+              element, then in the <strong>Configure</strong> panel use the <strong>Bind to data</strong>
+              section — each bindable field (its Text, plus props like a link or image) has a menu of the
+              project’s data sources and their fields. Pick one to bind it; <strong>Clear</strong> unbinds.
+            </P>
+            <P>
+              Under the hood a binding is a token like <Kbd>{'{{ users.name }}'}</Kbd> — you can also type or
+              paste one directly into any text:
+            </P>
+            <Bullets items={[
+              <>The name before the dot is the dataset’s <strong>key</strong> — its name lowercased (e.g. “Users” → <Kbd>users</Kbd>).</>,
+              <>The default is the <strong>first row</strong>; add an index for another: <Kbd>{'{{ users.name.2 }}'}</Kbd>.</>,
+              <>Mix text and tokens — <Kbd>{'Hi {{ users.name }}'}</Kbd> — or bind a whole value on its own.</>,
+              <>An unknown reference is shown as-is (e.g. <Kbd>{'{{ users.nope }}'}</Kbd>) so you can spot the typo.</>,
+            ]} />
+            <P>
+              The editor’s <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right panel)
+              lists the project’s datasets and lets you <strong>click any token to copy it</strong>. Bound text
+              shows the value read-only on the canvas — edit the binding from the Configure panel. Only data
+              sources available to the page’s project (global or scoped to it) can be bound.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'repeat-over-data',
+        title: 'Repeating an element for each row',
+        keywords: 'repeat loop each row list cards auto build generate dataset data source rows record per row configure data',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Turn one element into a list driven by a dataset. Select an element (often a
+              <strong> Card</strong> or a <strong>Stack</strong>), then in the Configure panel’s
+              <strong> Data</strong> section set <strong>Repeat for each row</strong> to a data source.
+              It renders once per row.
+            </P>
+            <Bullets items={[
+              <>Bindings inside use the <strong>current row</strong> — a card bound to <Kbd>{'{{ users.name }}'}</Kbd> and <Kbd>{'{{ users.email }}'}</Kbd> becomes one card per user.</>,
+              <><strong>Show at most</strong> caps how many render (blank = all) — e.g. a “3 featured products” strip.</>,
+              <><strong>Pick rows at random</strong> shows a random selection instead of the first few. It’s stable (it won’t reshuffle on every edit) and differs per element.</>,
+              <>On the canvas the <strong>first copy is editable</strong> (it’s the template — editing it changes them all); the rest are read-only. <strong>Preview</strong> shows every row.</>,
+              <>An explicit row index still wins inside a repeat (<Kbd>{'{{ users.name.0 }}'}</Kbd> always the first), which is handy for headers.</>,
+              <>Set it back to <strong>Don’t repeat</strong> to stop.</>,
+            ]} />
+            <P>
+              Put the repeating element inside a <strong>Grid</strong> or <strong>Stack</strong> to control how
+              the rows lay out.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'fill-from-data',
+        title: 'Filling items & options from data',
+        keywords: 'fill collection items options definition list choice group select autocomplete fields distinct categories filter data driven array',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Some components hold a list — a <strong>Definition List</strong>’s items, a <strong>Choice
+              Group</strong> / <strong>Select</strong>’s options. Instead of typing them, generate the list from
+              a dataset: select the component → Configure → <strong>Fill items/options from data</strong> → pick
+              a data source and a mode.
+            </P>
+            <Bullets items={[
+              <><strong>Each field of the item</strong> — a Definition List shows one <em>label / value</em> row per column of the current item. Great on a detail page to “show all details”.</>,
+              <><strong>Distinct values of a column</strong> — one entry per unique value, so a Choice Group becomes a category filter that <strong>grows automatically</strong> as you add categories.</>,
+              <><strong>Each row</strong> — one entry per row; map which column feeds each field (e.g. a Select of every product name).</>,
+            ]} />
+            <P>
+              Row and distinct modes also take <strong>Show at most</strong> and <strong>Pick at random</strong>.
+              This fills one component’s list — to repeat a whole element per row, use <strong>Repeat for each
+              row</strong> instead.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'detail-pages',
+        title: 'Detail pages (one page per item)',
+        keywords: 'detail page item record link list grid template dynamic route slug id show details per item collection',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Show the details of any item with a single <strong>detail page</strong> — not a page per record.
+              The list links each item to the same page, which reads the item from the URL.
+            </P>
+            <Bullets items={[
+              <><strong>Tag the page:</strong> with nothing selected, open <strong>Page settings</strong> → <strong>Shows details for</strong> and pick the dataset. Now every <Kbd>{'{{ dataset.field }}'}</Kbd> on the page resolves to one item.</>,
+              <><strong>Design against a real item:</strong> pick a <strong>Preview item</strong> so the page shows actual data while you build it.</>,
+              <><strong>Link from a list:</strong> on a page that repeats a Card over the dataset, set the card’s (or a button’s) link to the detail page. It automatically passes the current item, so each card opens its own details.</>,
+              <><strong>Preview it:</strong> open Preview, click an item in the list, and the detail page shows that item. The address carries <Kbd>?item=…</Kbd>, so the link is shareable.</>,
+            ]} />
+            <P>
+              Two pages — a list and a detail — cover a collection of any size. Each item is identified by a
+              stable hidden id, so links keep working even when you rename or reorder rows.
+            </P>
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
     id: 'media',
     title: 'Media & AI',
     icon: 'image',

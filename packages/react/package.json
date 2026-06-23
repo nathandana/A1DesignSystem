@@ -1,6 +1,6 @@
 {
   "name": "@gtivr4/a1-design-system-react",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "description": "React components for the A1 token-driven design system.",
   "type": "module",
   "main": "./src/index.js",
@@ -41,5 +41,8 @@
   "peerDependencies": {
     "react": ">=18"
   },
-  "types": "./src/index.d.ts"
+  "types": "./src/index.d.ts",
+  "devDependencies": {
+    "react-data-grid": "7.0.0-beta.59"
+  }
 }

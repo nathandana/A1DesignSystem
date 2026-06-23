@@ -1,0 +1,68 @@
+/*
+ * A1 theme for react-data-grid (see DataGrid.jsx — experimental, Storybook-only).
+ *
+ * react-data-grid puts ALL of its own styles inside `@layer rdg`, including the
+ * `--rdg-*` variable defaults. These rules are UNLAYERED, so they beat the
+ * library defaults in the cascade regardless of specificity — no `!important`
+ * and no hashed class names needed. Every value maps to an A1 token, so the grid
+ * tracks the active A1 theme (base / a1-light / accessible / heritage / …).
+ *
+ * The wrapper merges `a1-data-grid` onto react-data-grid's root element, so the
+ * `--rdg-*` custom properties are set on the same element the library sets its
+ * defaults on (required — a parent's value would be overridden by the library's
+ * own declaration on the root).
+ */
+
+.a1-data-grid {
+  /* Surfaces */
+  --rdg-background-color: var(--semantic-color-surface-field);
+  --rdg-header-background-color: var(--semantic-color-surface-raised);
+  --rdg-header-draggable-background-color: var(--semantic-color-surface-panel);
+  --rdg-row-hover-background-color: var(--semantic-color-surface-panel);
+  --rdg-row-selected-background-color: var(--semantic-color-action-surface);
+  --rdg-row-selected-hover-background-color: var(--semantic-color-action-surface);
+
+  /* Text */
+  --rdg-color: var(--semantic-color-text-default);
+  --rdg-font-size: var(--component-data-table-density-default-font-size);
+
+  /* Borders */
+  --rdg-border-color: var(--semantic-color-border-subtle);
+  --rdg-summary-border-color: var(--semantic-color-border-default);
+
+  /* Selection + focus accents (cell-selection outline, drag handle, checkboxes) */
+  --rdg-selection-color: var(--semantic-color-action-background);
+  --rdg-checkbox-focus-color: var(--component-field-focus-ring-color);
+
+  /* Chrome the library doesn't expose as a `--rdg-*` variable */
+  accent-color: var(--semantic-color-action-background);
+  border-color: var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  font-family: inherit;
+}
+
+/*
+ * The default inline text editor styles its <input> in `@layer rdg.TextEditor`
+ * with a hardcoded grey border / placeholder. Re-style it to match A1 fields.
+ * Scoped to text-like inputs so the row-selection checkboxes are untouched.
+ */
+.a1-data-grid input:not([type="checkbox"]):not([type="radio"]),
+.a1-data-grid textarea,
+.a1-data-grid select {
+  border: var(--component-field-border-width) solid var(--semantic-color-border-default);
+  color: var(--semantic-color-text-default);
+  background-color: var(--semantic-color-surface-field);
+}
+
+.a1-data-grid input:not([type="checkbox"]):not([type="radio"]):focus,
+.a1-data-grid textarea:focus,
+.a1-data-grid select:focus {
+  border-color: var(--semantic-color-action-background);
+  outline: none;
+}
+
+.a1-data-grid input::placeholder,
+.a1-data-grid textarea::placeholder {
+  color: var(--semantic-color-text-muted);
+  opacity: 1;
+}

@@ -281,6 +281,28 @@ function setNodeLockInNode(node: ComponentNode, id: string, lock: ComponentNode[
   return { ...node, children: node.children.map((c) => setNodeLockInNode(c, id, lock)) };
 }
 
+function setNodeRepeatInNode(node: ComponentNode, id: string, repeat: ComponentNode['repeat'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (repeat) next.repeat = repeat;
+    else delete next.repeat;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeRepeatInNode(c, id, repeat)) };
+}
+
+function setNodeCollectionsInNode(node: ComponentNode, id: string, collections: ComponentNode['collections'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (collections && Object.keys(collections).length) next.collections = collections;
+    else delete next.collections;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeCollectionsInNode(c, id, collections)) };
+}
+
 function freshId(): string {
   return `node-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -1046,7 +1068,7 @@ export function EditorPage({
     if (v !== 'edit') onSelectNode?.(null);
   }
 
-  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string }) {
+  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string; detailDataset?: string | null; detailPreviewId?: string | null }) {
     if (!parsedDefinition.ok) return;
     const page = parsedDefinition.value.page;
     const newPage = {
@@ -1054,6 +1076,8 @@ export function EditorPage({
       ...(patch.name !== undefined ? { name: patch.name } : {}),
       ...(patch.description !== undefined ? { description: patch.description || undefined } : {}),
       ...(patch.icon !== undefined ? { icon: patch.icon || undefined } : {}),
+      ...(patch.detailDataset !== undefined ? { detailDataset: patch.detailDataset || undefined } : {}),
+      ...(patch.detailPreviewId !== undefined ? { detailPreviewId: patch.detailPreviewId || undefined } : {}),
     };
     const newJson = JSON.stringify({ ...parsedDefinition.value, page: newPage }, null, 2);
     history.setWorking(newJson);
@@ -1285,6 +1309,18 @@ export function EditorPage({
     if (!parsedDefinition.ok) return;
     const newDef = patchRegions(parsedDefinition.value, (node) => setNodeLockInNode(node, nodeId, lock));
     history.commit(JSON.stringify(newDef, null, 2), `Updated lock on ${getNodeType(nodeId)}`);
+  }
+
+  function handleSetNodeRepeat(nodeId: string, repeat: ComponentNode['repeat'] | null) {
+    if (!parsedDefinition.ok) return;
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeRepeatInNode(node, nodeId, repeat));
+    history.commit(JSON.stringify(newDef, null, 2), repeat ? `Repeated ${getNodeType(nodeId)} over data` : `Stopped repeating ${getNodeType(nodeId)}`);
+  }
+
+  function handleSetNodeCollections(nodeId: string, collections: ComponentNode['collections'] | null) {
+    if (!parsedDefinition.ok) return;
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeCollectionsInNode(node, nodeId, collections));
+    history.commit(JSON.stringify(newDef, null, 2), collections ? `Filled ${getNodeType(nodeId)} from data` : `Cleared data fill on ${getNodeType(nodeId)}`);
   }
 
   function handleGroupAsStack(nodeId: string) {
@@ -1693,6 +1729,8 @@ export function EditorPage({
           lockEnforced={!isPattern}
           lockAuthoring={isPattern}
           onSetLock={handleSetNodeLock}
+          onSetNodeRepeat={handleSetNodeRepeat}
+          onSetNodeCollections={handleSetNodeCollections}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
           onHistoryJump={handleHistoryJump}
