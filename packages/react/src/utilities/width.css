@@ -1,0 +1,31 @@
+/* ─── Width utilities ─────────────────────────────────────────────────────────
+   Constrain an element's inline size with a tokenised min/max width.
+
+   Classes : a1-max-w-{size}  (max-inline-size)   a1-min-w-{size}  (min-inline-size)
+   Sizes   : xs  sm  md  lg  xl  2xl   — the shared content-width scale, identical to
+             Section's `contentWidth` (xs ≈ short measure → 2xl widest constrained).
+             plus  full (100%)  ·  none (max only)  ·  0 (min only)
+
+   Uses logical `inline-size` so the constraint is correct in both LTR and RTL.
+   Values come from the `--base-content-width-*` tokens — never hardcoded.
+─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Max width ──────────────── */
+.a1-max-w-xs   { max-inline-size: var(--base-content-width-xs);  }
+.a1-max-w-sm   { max-inline-size: var(--base-content-width-sm);  }
+.a1-max-w-md   { max-inline-size: var(--base-content-width-md);  }
+.a1-max-w-lg   { max-inline-size: var(--base-content-width-lg);  }
+.a1-max-w-xl   { max-inline-size: var(--base-content-width-xl);  }
+.a1-max-w-2xl  { max-inline-size: var(--base-content-width-2xl); }
+.a1-max-w-full { max-inline-size: 100%; }
+.a1-max-w-none { max-inline-size: none; }
+
+/* ── Min width ──────────────── */
+.a1-min-w-0    { min-inline-size: 0; }
+.a1-min-w-xs   { min-inline-size: var(--base-content-width-xs);  }
+.a1-min-w-sm   { min-inline-size: var(--base-content-width-sm);  }
+.a1-min-w-md   { min-inline-size: var(--base-content-width-md);  }
+.a1-min-w-lg   { min-inline-size: var(--base-content-width-lg);  }
+.a1-min-w-xl   { min-inline-size: var(--base-content-width-xl);  }
+.a1-min-w-2xl  { min-inline-size: var(--base-content-width-2xl); }
+.a1-min-w-full { min-inline-size: 100%; }

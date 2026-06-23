@@ -33,6 +33,7 @@
     "./breakpoints.css": "./src/breakpoints.css",
     "./color-scheme.css": "./src/color-scheme.css",
     "./utilities/spacing.css": "./src/utilities/spacing.css",
+    "./utilities/width.css": "./src/utilities/width.css",
     "./components/*": "./src/components/*"
   },
   "publishConfig": {

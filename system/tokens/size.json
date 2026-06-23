@@ -1,0 +1,12 @@
+{
+  "base": {
+    "contentWidth": {
+      "xs":  { "$type": "dimension", "$value": "456px",  "$description": "Content max-width — narrow column (≈ short measure). Shared by Section contentWidth and the width utility." },
+      "sm":  { "$type": "dimension", "$value": "640px",  "$description": "Content max-width — small." },
+      "md":  { "$type": "dimension", "$value": "800px",  "$description": "Content max-width — medium (a comfortable reading measure)." },
+      "lg":  { "$type": "dimension", "$value": "960px",  "$description": "Content max-width — large." },
+      "xl":  { "$type": "dimension", "$value": "1120px", "$description": "Content max-width — extra large." },
+      "2xl": { "$type": "dimension", "$value": "1440px", "$description": "Content max-width — widest constrained content." }
+    }
+  }
+}
