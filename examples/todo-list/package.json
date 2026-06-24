@@ -1,0 +1,12 @@
+{
+  "name": "todo-list",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && npm run dev:todo-list",
+    "build": "cd ../.. && npm run build:todo-list",
+    "preview": "cd ../.. && npm run preview:todo-list",
+    "netlify:build": "cd ../.. && npm ci && npm run build:todo-list"
+  }
+}
