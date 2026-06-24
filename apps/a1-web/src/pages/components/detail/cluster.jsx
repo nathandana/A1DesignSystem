@@ -23,8 +23,9 @@ function propString(name, value, defaultValue) {
   return `${name}="${value}"`
 }
 
-function buildClusterSnippet(config) {
+function buildClusterSnippet(config, utilityClass = '') {
   const props = [
+    propString('className', utilityClass, ''),
     propString('gap', config.gap, 8),
     propString('align', config.align, 'center'),
     propString('justify', config.justify, 'start'),
@@ -43,9 +44,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Cluster
+      className={utilityClass || undefined}
       gap={config.gap}
       align={config.align}
       justify={config.justify}
@@ -101,6 +103,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildClusterSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildClusterSnippet(config, utilityClass)}</Code>
 }

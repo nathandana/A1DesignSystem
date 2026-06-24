@@ -262,7 +262,7 @@ export function Features({ onNavigate }) {
               <Card
                 key={feature.title}
                 variant="navigation"
-                href={`/?page=${feature.page}`}
+                href={`/${feature.page}`}
                 icon={feature.icon}
                 heroColor="info"
                   iconDisplay="hero"
@@ -365,7 +365,7 @@ export function Features({ onNavigate }) {
               <Card
                 key={group.title}
                 variant="navigation"
-                href={`/?page=${group.page}`}
+                href={`/${group.page}`}
                 icon={group.icon}
                 onClick={(event) => handleNavigationCardClick(event, group.page)}
               >

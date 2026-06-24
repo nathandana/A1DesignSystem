@@ -15,6 +15,7 @@ import actionJson   from '../../../../../system/labels/action.json'
 import calendarJson from '../../../../../system/labels/calendar.json'
 import codeJson     from '../../../../../system/labels/code.json'
 import fieldJson    from '../../../../../system/labels/field.json'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 // ── Locale column definitions (canonical order) ──────────────────────────────
 
@@ -107,11 +108,7 @@ export function LabelsFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Labels' },
-            ]}
+            items={getFoundationBreadcrumbItems('Labels', onNavigate)}
           />
           <Heading as="h1" id="labels-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Labels

@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+## 0.25.0 — 2026-06-24
+
+### Added
+
+- **Canvas / Node / NodeConnector** (A1-312) — new experimental components for infinite pan/zoom node graphs. Compositional API: `Canvas` renders `Node` and `NodeConnector` children. `Node` supports `shape` (circle / square / squircle / rectangle), `color`, `subtle`, `size` (sm–xl), `sublabel`, `title` (native hover tooltip), `anchorSnap`, and custom `backgroundColor`/`foregroundColor`. `NodeConnector` supports `direction` (to / from / both / none), `variant` (solid / dashed / dotted), `weight`, `curved`, and `label`. `Canvas` props include `mode="edit"`, `draggableNodes` (drag without edit mode), `traceConnections` (click a node to highlight its ancestor + descendant connectors only), `gridSpacing` (visible grid lines), `showGrid`, `showControls`, `inverse`, `edgeStyle`, `snapToGrid`, and context-menu hooks. Token `--component-canvas-node-size`.
+
+### Fixed
+
+- **Button — default size renders semibold** — `component.button.font.weight` moved from medium (500) to semibold (600). The default (md) button never received the `.a1-button--md` class (it is only emitted for non-default sizes), so its intended semibold weight was dead CSS and it rendered at the base medium fallback; the token change makes the default render semibold to match the design. `sm` (medium) and `lg` (bold) are unaffected — they set their own weight via size modifiers.
+- **Card — status stripe pulse respects reduced motion** (A1-221) — the `statusPulse` keyframe animation is now opt-in via `@media (prefers-reduced-motion: no-preference)` instead of opt-out. This fixes two gaps: users who haven't set a system preference no longer get the animation by default, and the Storybook `.a1-reduce-motion` test class (which only collapsed semantic duration tokens) now also suppresses the pulse via an explicit `html.a1-reduce-motion .a1-card--status-pulse::before { animation: none }` rule.
+
+## 0.24.0 — 2026-06-23
+
+### Fixed
+
+- **IconButton `sm` size aligned with Button `sm`** — `size="sm"` now renders at 28×28px with a 20px icon (opsz 20), matching Button's small height and icon size exactly. Previously it was 24×24px / 16px. Updated React CSS, `a1-pure.css`, and the component registry note.
+- **Button small size** (A1-274) — `size="sm"` buttons were no longer rendering at the correct 28px height after the label-wrapping change removed the old fixed `height` rule. The base `padding-block` (10px per side) was overriding the `min-height: 28px` and making small buttons ~37px tall. Added a `component.button.small.paddingBlock` token (4px) and applied it as `padding-block` in `.a1-button--sm` so the button height is correctly constrained. Same fix applied to `.a1-button-small` in `packages/pure/dist/a1-base.css` and `a1-pure.css`.
+
+### Added
+
+- **Spacing utility zero values** — spacing utilities now include explicit reset classes for padding, margin, and gap: `a1-p-0`, `a1-p{t|b|l|r|x|y}-0`, `a1-m-0`, `a1-m{t|b|l|r|x|y}-0`, and `a1-gap-0`. These use `0 !important` so a utility can intentionally remove component default spacing.
+- **ToolbarGroup `overflow`** — non-grid `ToolbarGroup`s can now set `overflow` to keep as many options visible as fit in the available inline space and add an icon-only overflow menu (`more_horiz`) containing the full option list in the original option order. The group measures option widths with `ResizeObserver`; visible buttons can be prioritized with per-option `overflowPriority`, while all choices remain selectable/active from the menu. Options also gained `showLabel` to suppress visible text for individual items while keeping their accessible name. Added an `Overflow group` Storybook story. Used by a1-web utility controls so common utility values stay visible and every value remains available from overflow.
+- **Min/max width utility** (A1-282) — a new `./utilities/width.css` (mirrors `./utilities/spacing.css`) with tokenised inline-size constraints: **`a1-max-w-{3xs,2xs,xs,sm,md,lg,xl,2xl,full,none}`** and **`a1-min-w-{0,3xs,2xs,xs,sm,md,lg,xl,2xl,full}`**. The `3xs…2xl` scale uses a **separate `base.width.*` token path** (`--base-width-*`, 5rem–50rem / 80px–800px in `system/tokens/size.json`) distinct from Section's `contentWidth` scale (`--base-content-width-*`, 28.5rem–90rem). Uses logical `max-inline-size` / `min-inline-size` so the constraint is correct in RTL. Exported from the package; documented in a `Utilities/Width` Storybook story.
+
+### Fixed
+
+- **BottomSheet — default margin inline** — the sheet now has a default `margin-inline` of `1rem` (16px) at xs and `2rem` (32px) at sm (481px+), driven by new `component.bottomSheet.marginInline` / `component.bottomSheet.marginInlineSm` tokens. The `inset-inline: 0` constraint still applies, so the sheet is 2×margin narrower than the viewport and offset from the screen sides on both breakpoints. Override with the `marginInline` utility class in the editor or by setting `--component-bottom-sheet-margin-inline` directly.
+- **BottomSheet — dark mode background** (A1-279) — `--component-bottom-sheet-background` is now overridden in all three dark-mode contexts (`.a1-inverse`, `@media (prefers-color-scheme: dark)`, `html.a1-theme-dark`) to `var(--semantic-color-surface-card)` so the sheet surface adapts to dark correctly instead of staying `#ffffff`. Added a `DarkMode` Storybook story.
+- **Utilities override component defaults** — spacing and width utilities now mark their declarations as explicit overrides, so applied utility classes win over component root defaults like Card padding or Section width constraints even when component CSS is loaded later in the cascade.
+
 ## 0.23.0 — 2026-06-22
 
 - **`DataGrid` — A1-themed editable data grid (experimental, Storybook-only)** (A1-94) — a thin wrapper around **react-data-grid** (Comcast, `7.0.0-beta.59`, a `devDependency` of `packages/react`) added to evaluate it as the editable **data editor** for the upcoming page-data / data-binding feature (an editable table for modifying dataset values, plus a JSON importer). `packages/react/src/components/data-grid/` (`DataGrid.jsx` + `data-grid.css` + `DataGrid.d.ts` + `DataGrid.stories.jsx`). The wrapper merges an `a1-data-grid` class onto react-data-grid's root and maps **every** `--rdg-*` theming variable to an A1 semantic/component token (surfaces, text, borders, selection/focus accents, font-size) plus `accent-color` / border-radius — react-data-grid scopes all its own CSS in `@layer rdg`, so the **unlayered** A1 rules win cleanly and the grid follows the active A1 theme. Re-exports `textEditor` (the default inline editor — use as a column `renderEditCell`) and `SelectColumn`. Four stories: `Editable` (live JSON of the edited model), `RowSelection`, `SortableResizable`, `ReadOnly`. **Deliberately not finished as a system component:** not exported from `src/index.js`, not added to the component registry, and **not wired into the a1-web configurator** — it ships in Storybook only so it can be test-driven before we commit to it for the data feature.

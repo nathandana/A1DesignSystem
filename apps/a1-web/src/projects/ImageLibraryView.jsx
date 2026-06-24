@@ -304,7 +304,7 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
           <Breadcrumb
             items={[
               { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-              { label: 'Projects', href: '/?page=editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
+              { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
               { label: 'Image library' },
             ]}
           />

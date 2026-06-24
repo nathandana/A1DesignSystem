@@ -105,6 +105,51 @@ export function runPersonaOnItem(
   return reviewOne(persona, item, { dryRun: false, items });
 }
 
+/**
+ * Status-only cleanup: scan all open tickets against the CHANGELOG and move any that have
+ * shipped to their correct status (Done or Released). No priority/size/question changes.
+ * Used by the "Check status" button on the Virtual PO card.
+ */
+export async function runStatusCleanup(
+  persona: Persona,
+  opts: { dryRun?: boolean; changelog?: string; onProgress?: (done: number, total: number) => void } = {},
+): Promise<PersonaRunSummary> {
+  const dryRun = !!opts.dryRun
+  const items = await listItems()
+  const candidates = items.filter((i) => !isTerminal(i.status) && i.status !== 'released')
+  const shipped = shippedStatusByNumber(opts.changelog)
+
+  const summary: PersonaRunSummary = {
+    persona: persona.id, personaName: persona.name, dryRun,
+    total: candidates.length, skipped: 0, reviewed: 0, acted: 0,
+    reprioritized: 0, resized: 0, questions: 0, moved: 0, changes: [],
+  }
+
+  let done = 0
+  for (const item of candidates) {
+    done += 1
+    opts.onProgress?.(done, candidates.length)
+
+    const shippedTo = shipped.get(item.number)
+    if (shippedTo && FLOW.indexOf(shippedTo) > FLOW.indexOf(item.status)) {
+      summary.moved += 1
+      summary.changes.push({
+        ref: ticketRef(item.number), title: item.title,
+        priorityFrom: item.priority, statusFrom: item.status, status: shippedTo, questions: 0,
+      })
+      if (!dryRun) {
+        await updateItem(item, { status: shippedTo })
+        await addPersonaComment(item, 'comment',
+          `${persona.signature} ${ticketRef(item.number)} appears in the CHANGELOG — moved to ${STATUS_LABELS[shippedTo]}.`, persona)
+      }
+    } else {
+      summary.skipped += 1
+    }
+  }
+
+  return summary
+}
+
 export async function runPersona(
   persona: Persona,
   opts: { dryRun?: boolean; changelog?: string; onProgress?: (done: number, total: number) => void } = {},

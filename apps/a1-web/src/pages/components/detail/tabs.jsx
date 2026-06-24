@@ -114,13 +114,14 @@ function ItemEditor({ item, canRemove, onChange, onRemove }) {
   )
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const items = normalizeItems(config.items)
   const [active, setActive] = useState(items[0]?.id)
   const activeValue = items.some((item) => item.id === active) ? active : items[0]?.id
 
   return (
     <Tabs
+      className={utilityClass || undefined}
       value={activeValue}
       onChange={setActive}
       variant={config.variant}
@@ -292,9 +293,10 @@ function panelSnippet(item) {
   return `  <TabPanel value="${escapeJsString(item.id)}">${escapeJsString(item.label || 'Untitled')} panel content.</TabPanel>`
 }
 
-function buildTabsSnippet(config) {
+function buildTabsSnippet(config, utilityClass = '') {
   const items = normalizeItems(config.items)
   const tabsProps = [
+    utilityClass ? `className="${escapeJsString(utilityClass)}"` : null,
     `value={value}`,
     `onChange={setValue}`,
     config.variant !== 'line' ? `variant="${config.variant}"` : null,
@@ -315,6 +317,6 @@ ${panelLines}
 </Tabs>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildTabsSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildTabsSnippet(config, utilityClass)}</Code>
 }

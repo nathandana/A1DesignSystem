@@ -2,6 +2,7 @@ import "../build/css/tokens.css";
 import "../build/css/breakpoints.css";
 import "./themes.css";
 import "../packages/react/src/utilities/spacing.css";
+import "../packages/react/src/utilities/width.css";
 
 import { useEffect } from "react";
 import { useGlobals } from "storybook/preview-api";

@@ -31,18 +31,19 @@ function resolveNavMode(prop) {
 }
 
 // Split a flat items array into sections separated by { divider: true } markers.
+// A divider may carry an optional `label` string that is forwarded to MenuSection.
 function splitIntoSections(items) {
   const sections = [];
-  let current = [];
+  let current = { label: undefined, items: [] };
   for (const item of items) {
     if (item.divider) {
       sections.push(current);
-      current = [];
+      current = { label: item.label, items: [] };
     } else {
-      current.push(item);
+      current.items.push(item);
     }
   }
-  if (current.length > 0) sections.push(current);
+  if (current.items.length > 0) sections.push(current);
   return sections;
 }
 
@@ -219,8 +220,8 @@ function NavMenuItem({ item, onClose }) {
           }}
         >
           {sections.map((section, i) => (
-            <MenuSection key={i}>
-              {section.map((sub) => (
+            <MenuSection key={i} label={section.label}>
+              {section.items.map((sub) => (
                 <NavMenuItem key={sub.label} item={sub} onClose={onClose} />
               ))}
             </MenuSection>
@@ -342,8 +343,8 @@ function NavItem({ item, openId, onOpen, iconAbove }) {
             className="a1-menu--with-flyouts"
           >
             {sections.map((section, i) => (
-              <MenuSection key={i}>
-                {section.map((sub) => (
+              <MenuSection key={i} label={section.label}>
+                {section.items.map((sub) => (
                   <NavMenuItem
                     key={sub.label}
                     item={sub}
@@ -376,8 +377,8 @@ function NavItem({ item, openId, onOpen, iconAbove }) {
             className="a1-menu--with-flyouts"
           >
             {sections.map((section, i) => (
-              <MenuSection key={i}>
-                {section.map((sub) => (
+              <MenuSection key={i} label={section.label}>
+                {section.items.map((sub) => (
                   <NavMenuItem
                     key={sub.label}
                     item={sub}
@@ -495,8 +496,8 @@ function ActionMenu({ action, isOpen, onToggle }) {
           aria-label={action.label}
         >
           {sections.map((section, i) => (
-            <MenuSection key={i}>
-              {section.map((item, j) => {
+            <MenuSection key={i} label={section.label}>
+              {section.items.map((item, j) => {
                 if (item.isHeader) {
                   return (
                     <div key={j} className="a1-top-header__menu-identity">

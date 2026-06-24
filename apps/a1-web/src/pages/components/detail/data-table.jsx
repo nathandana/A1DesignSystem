@@ -76,8 +76,9 @@ function resolvedSize(configSize) {
   return configSize === 'responsive' ? undefined : configSize
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const lines = [
+    utilityClass ? `  className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.size !== 'responsive' ? `  size="${config.size}"` : null,
     config.zebra ? '  zebra' : null,
     config.scrollable ? '  scrollable' : null,
@@ -118,11 +119,12 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const columns = config.sortable ? SORTABLE_COLUMNS : BASE_COLUMNS
 
   return (
     <DataTable
+      className={utilityClass || undefined}
       caption={config.caption || 'Team members'}
       size={resolvedSize(config.size)}
       zebra={config.zebra}
@@ -226,6 +228,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

@@ -52,8 +52,9 @@ function propBoolean(name, value, defaultValue) {
   return value ? name : `${name}={false}`
 }
 
-function buildStackSnippet(config) {
+function buildStackSnippet(config, utilityClass = '') {
   const props = [
+    propValue('className', utilityClass, ''),
     propValue('as', config.as, 'div'),
     typeof config.direction === 'object' ? responsiveProp('direction', config.direction) : propValue('direction', config.direction, 'column'),
     propValue('gap', config.gap, 'md'),
@@ -86,12 +87,13 @@ const BLOCKS = [
   { label: '3', bg: 'var(--semantic-color-status-success-background)', color: 'var(--semantic-color-text-inverse)', w: '56px',  h: '56px' },
 ]
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const blocks = BLOCKS.slice(0, config.childCount ?? 3)
 
   return (
     <Stack
       as={config.as}
+      className={utilityClass || undefined}
       direction={config.direction}
       gap={config.gap || undefined}
       align={config.align}
@@ -178,6 +180,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildStackSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildStackSnippet(config, utilityClass)}</Code>
 }

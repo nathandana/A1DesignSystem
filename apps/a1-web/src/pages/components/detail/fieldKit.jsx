@@ -44,7 +44,7 @@ export function createFieldModule({
     }
   }
 
-  function Preview({ config }) {
+  function Preview({ config, utilityClass = '' }) {
     const extra = getExtraProps ? getExtraProps(config) : {}
     const field = (
       <Component
@@ -61,6 +61,7 @@ export function createFieldModule({
         readOnly={config.readOnly}
         autoComplete={config.autoComplete || undefined}
         defaultValue={config.value || undefined}
+        className={utilityClass || undefined}
         {...extra}
       />
     )
@@ -128,10 +129,11 @@ export function createFieldModule({
     )
   }
 
-  function Snippet({ config }) {
+  function Snippet({ config, utilityClass = '' }) {
     const extraSnippet = getExtraSnippetProps ? getExtraSnippetProps(config) : []
     const props = [
       ...extraSnippet,
+      utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
       config.label ? `label="${escapeJsxString(config.label)}"` : null,
       config.value ? `defaultValue="${escapeJsxString(config.value)}"` : null,
       config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,

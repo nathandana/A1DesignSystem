@@ -51,8 +51,9 @@ function childrenSnippet(config) {
   return null
 }
 
-function buildCircularProgressSnippet(config) {
+function buildCircularProgressSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.indeterminate ? null : `value={${numberValue(config.value, 0)}}`,
     numberValue(config.max, 100) !== 100 ? `max={${numberValue(config.max, 100)}}` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
@@ -81,9 +82,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <CircularProgress
+      className={utilityClass || undefined}
       value={numberValue(config.value, 0)}
       max={numberValue(config.max, 100)}
       size={config.size}
@@ -139,6 +141,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildCircularProgressSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildCircularProgressSnippet(config, utilityClass)}</Code>
 }

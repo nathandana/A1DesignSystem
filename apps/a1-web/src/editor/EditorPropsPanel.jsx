@@ -17,6 +17,7 @@ import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+import { UtilityControls } from './UtilityControls.jsx'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
@@ -170,6 +171,12 @@ export const propsToConfig = {
     icon: props?.icon ?? '',
     iconDisplay: props?.iconDisplay ?? (props?.icon ? 'default' : 'none'),
     heroColor: props?.heroColor ?? 'action',
+    heroBadge: props?.heroBadge ?? '',
+    heroBadgeStatus: props?.heroBadgeStatus ?? 'neutral',
+    heroBadgePosition: props?.heroBadgePosition ?? 'top-end',
+    status: props?.status ?? '',
+    statusLabel: props?.statusLabel ?? 'In progress',
+    statusPulse: props?.statusPulse ?? false,
   }),
 
   Bleed: (props) => ({
@@ -783,6 +790,12 @@ export const configToNodeUpdate = {
       icon: config.iconDisplay !== 'none' ? config.icon || undefined : undefined,
       iconDisplay: config.iconDisplay,
       heroColor: config.iconDisplay === 'hero' ? config.heroColor : undefined,
+      heroBadge: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined,
+      heroBadgeStatus: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgeStatus : undefined,
+      heroBadgePosition: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgePosition : undefined,
+      status: config.status || undefined,
+      statusLabel: config.status && config.statusLabel ? config.statusLabel : undefined,
+      statusPulse: config.status && config.statusPulse ? true : undefined,
     },
   }),
 
@@ -1805,6 +1818,7 @@ export function EditorPropsPanel({
   onSetLock,
   onSetNodeRepeat,
   onSetNodeCollections,
+  onSetNodeUtilities,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1828,7 +1842,7 @@ export function EditorPropsPanel({
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
-  const componentHref = `/?page=component-${node.type.toLowerCase()}`
+  const componentHref = `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
   const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
@@ -1853,6 +1867,14 @@ export function EditorPropsPanel({
     </Stack>
   ) : null
 
+  const UtilitiesSection = (
+    <UtilityControls
+      type={node.type}
+      utilities={node.utilities}
+      onChange={(utilities) => onSetNodeUtilities?.(node.id, utilities)}
+    />
+  )
+
   if (!Controls) {
     return (
       <Stack gap="sm">
@@ -1862,6 +1884,7 @@ export function EditorPropsPanel({
         <Paragraph size="sm" color="muted">
           No configurator is registered for this component type.
         </Paragraph>
+        {UtilitiesSection}
         {ConvertSection}
       </Stack>
     )
@@ -1982,7 +2005,7 @@ export function EditorPropsPanel({
           <Heading as="h3" size="xs" color="muted">{node.patternInstance.name}</Heading>
           <IconButton
             as="a"
-            href={`/?page=editor&pattern=${node.patternInstance.id}`}
+            href={`/editor?pattern=${node.patternInstance.id}`}
             icon="edit"
             size="sm"
             variant="tertiary"
@@ -2001,6 +2024,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
+      {!lockAuthoring && !fullyLocked && UtilitiesSection}
       {BindSection}
       {CollectionSection}
       {ConvertSection}

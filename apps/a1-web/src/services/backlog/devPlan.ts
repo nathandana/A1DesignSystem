@@ -207,7 +207,9 @@ export function developPlanLocally(item: BacklogItem, comments: BacklogComment[]
   out.push(`Implement ${ref} in the A1 Design System monorepo.`, '');
 
   out.push('## Objective');
-  out.push(`Deliver: ${item.title}. ${metaLine(item)}.`, '');
+  out.push(`Deliver: ${item.title}. ${metaLine(item)}.`);
+  if (item.description?.trim()) out.push('', item.description.trim());
+  out.push('');
 
   out.push('## Scale & approach');
   out.push(SCALE_APPROACH[scale], '');
@@ -236,7 +238,7 @@ export function developPlanLocally(item: BacklogItem, comments: BacklogComment[]
   out.push('## Conventions');
   out.push(
     'Follow CLAUDE.md and packages/react/ai/: A1 components + tokens only, sentence case, '
-    + 'semantic + accessible markup. Work on a branch and summarise what you changed.',
+    + 'semantic + accessible markup. Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
   );
 
   return out.join('\n');

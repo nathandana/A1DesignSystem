@@ -1,5 +1,12 @@
 export const foundations = [
   {
+    id: 'foundation-system-map',
+    title: 'System map',
+    icon: 'hub',
+    body: 'A live Canvas/Node visualization of how A1 fits together end to end: tokens as the root, themes/icons/labels/rules feeding the component library, and components composing into the pages, patterns, and projects of the a1-web editor.',
+    points: ['Tokens → packages → components', 'Components → pages & patterns', 'Click to trace, drag to arrange'],
+  },
+  {
     id: 'foundation-color',
     title: 'Color',
     icon: 'palette',
@@ -82,5 +89,12 @@ export const foundations = [
     icon: 'filter_none',
     body: 'Layering and stacking: the browser top layer (modals) vs. the numeric z-index scale (sticky, pinned, popover, modal, toast). Where each element lives, and why a higher number can’t beat a modal.',
     points: ['Top layer vs. z-index scale', 'The layer scale (100 → 1200)', 'Component audit and rules'],
+  },
+  {
+    id: 'foundation-utilities',
+    title: 'Utilities',
+    icon: 'style',
+    body: 'Small, single-purpose class utilities for one-off adjustments — tokenised spacing (padding/margin/gap), min/max width, and screen-reader-only content. Reach for a layout component first; use a utility when no component covers the need.',
+    points: ['Spacing and gap classes', 'Min/max width classes', 'Screen-reader only'],
   },
 ]

@@ -9,6 +9,8 @@ import * as link from './link.jsx'
 import * as breadcrumb from './breadcrumb.jsx'
 import * as buttonContainer from './button-container.jsx'
 import * as calendar from './calendar.jsx'
+import * as canvas from './canvas.jsx'
+import * as node from './node.jsx'
 import * as card from './card.jsx'
 import * as list from './list.jsx'
 import * as sideNav from './side-nav.jsx'
@@ -82,6 +84,8 @@ const REGISTRY = {
   breadcrumb,
   'button-container': buttonContainer,
   calendar,
+  canvas,
+  node,
   card,
   list,
   'side-nav': sideNav,

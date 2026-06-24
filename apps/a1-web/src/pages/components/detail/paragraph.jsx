@@ -33,9 +33,10 @@ function propLine(name, value, defaultValue) {
   return `  ${name}="${value}"`
 }
 
-function buildParagraphSnippet(config) {
+function buildParagraphSnippet(config, utilityClass = '') {
   const textWrap = config.textWrap ? 'balance' : undefined
   const props = [
+    propLine('className', utilityClass, ''),
     propLine('as', config.as, 'p'),
     config.size && typeof config.size === 'object' ? `  ${responsiveProp('size', config.size)}` : propLine('size', config.size, 'md'),
     propLine('color', config.color, 'default'),
@@ -60,10 +61,11 @@ export function getDefaultConfig(component) {
   }
 }
 
-export function Preview({ component, config }) {
+export function Preview({ component, config, utilityClass = '' }) {
   const textWrap = config.textWrap ? 'balance' : undefined
   return (
     <Paragraph
+      className={utilityClass || undefined}
       as={config.as}
       size={config.size}
       color={config.color}
@@ -134,6 +136,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildParagraphSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildParagraphSnippet(config, utilityClass)}</Code>
 }

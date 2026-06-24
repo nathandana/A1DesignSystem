@@ -325,7 +325,7 @@
         },
         "weight": {
           "$type": "fontWeight",
-          "$value": "{base.font.weight.medium}"
+          "$value": "{base.font.weight.semibold}"
         },
         "lineHeight": {
           "$type": "lineHeight",

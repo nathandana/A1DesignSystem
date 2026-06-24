@@ -158,7 +158,7 @@ create table if not exists public.backlog_items (
   type               text        not null default 'feature'
                        check (type in ('feature', 'bug', 'chore')),
   status             text        not null default 'new'
-                       check (status in ('new','triaged','accepted','in_progress','done','released','wont_fix','duplicate')),
+                       check (status in ('new','triaged','accepted','in_progress','done','released','wont_fix','duplicate','cancelled')),
   priority           text        check (priority in ('p0','p1','p2','p3')),       -- suggested; nullable
   complexity         text        check (complexity in ('xs','s','m','l','xl')),    -- suggested; nullable
   scope_kind         text        not null default 'general'

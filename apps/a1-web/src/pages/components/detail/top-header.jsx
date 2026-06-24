@@ -69,7 +69,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const navItems = normalizeNavItems(config.navItems).map((item) => ({
     id: item.id,
     label: item.label || 'Untitled',
@@ -90,6 +90,7 @@ export function Preview({ config }) {
   return (
     <div className="a1-web-top-header-preview">
       <TopHeader
+        className={utilityClass || undefined}
         logoText={config.logoText || undefined}
         navItems={navItems}
         actions={actions}
@@ -358,11 +359,12 @@ function actionSnippet(action) {
   return `    { ${props} },`
 }
 
-function buildTopHeaderSnippet(config) {
+function buildTopHeaderSnippet(config, utilityClass = '') {
   const navItems = normalizeNavItems(config.navItems)
   const actions = normalizeActions(config.actions)
 
   const props = [
+    utilityClass ? `  className="${escapeJsString(utilityClass)}"` : null,
     config.logoText ? `  logoText="${escapeJsString(config.logoText)}"` : null,
     config.navIconPosition && config.navIconPosition !== 'start'
       ? `  navIconPosition="${config.navIconPosition}"`
@@ -375,6 +377,6 @@ function buildTopHeaderSnippet(config) {
   return `<TopHeader\n${props}\n/>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildTopHeaderSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildTopHeaderSnippet(config, utilityClass)}</Code>
 }

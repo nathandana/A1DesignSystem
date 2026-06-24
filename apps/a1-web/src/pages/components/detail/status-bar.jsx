@@ -25,9 +25,10 @@ function numberValue(value, fallback) {
   return Number.isFinite(next) ? next : fallback
 }
 
-function buildStatusBarSnippet(config) {
+function buildStatusBarSnippet(config, utilityClass = '') {
   const hasLabel = Boolean(config.label)
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.indeterminate ? null : `value={${numberValue(config.value, 0)}}`,
     numberValue(config.max, 100) !== 100 ? `max={${numberValue(config.max, 100)}}` : null,
     hasLabel ? `label="${escapeJsxString(config.label)}"` : `aria-label="${escapeJsxString(config.ariaLabel || 'Progress')}"`,
@@ -51,10 +52,11 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <div className="a1-web-field-fill">
       <StatusBar
+        className={utilityClass || undefined}
         value={numberValue(config.value, 0)}
         max={numberValue(config.max, 100)}
         label={config.label || undefined}
@@ -117,6 +119,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildStatusBarSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildStatusBarSnippet(config, utilityClass)}</Code>
 }

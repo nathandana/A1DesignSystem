@@ -1,4 +1,5 @@
 const SIZES = [
+  { name: "0",   value: "0" },
   { name: "1",   value: "1px" },
   { name: "2",   value: "2px" },
   { name: "4",   value: "4px" },
@@ -26,6 +27,7 @@ const DIMENSIONS = [
 ];
 
 const GAP_SIZES = [
+  { name: "0", token: "—", value: "0" },
   { name: "xs", token: "--semantic-spacing-gap-xs", value: "8px" },
   { name: "sm", token: "--semantic-spacing-gap-sm", value: "12px" },
   { name: "md", token: "--semantic-spacing-gap-md", value: "16px" },
@@ -257,7 +259,7 @@ export const Demo = {
     const prop = property === "padding" ? "p" : "m";
     const dim = dimension === "all" ? "" : dimension;
     const cls = `a1-${prop}${dim}-${size}`;
-    const token = `--base-spacing-${size}`;
+    const token = size === "0" ? "none" : `--base-spacing-${size}`;
 
     return (
       <div style={{ padding: "var(--base-spacing-40)", display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>

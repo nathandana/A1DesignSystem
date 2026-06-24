@@ -187,7 +187,7 @@ export function EditorSelectionBoundary({
         id: 'edit-pattern',
         label: 'Edit pattern',
         icon: 'edit',
-        onClick: () => { window.location.href = `/?page=editor&pattern=${pattern.id}`; },
+        onClick: () => { window.location.href = `/editor?pattern=${pattern.id}`; },
       });
       if (onDetachPattern && pattern.nodeId) {
         const rootId = pattern.nodeId;

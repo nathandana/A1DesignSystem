@@ -184,7 +184,7 @@ export function ComponentTreePanel({
         id: 'edit-pattern',
         label: 'Edit pattern',
         icon: 'edit',
-        onClick: () => { window.location.href = `/?page=editor&pattern=${node.patternInstance.id}` },
+        onClick: () => { window.location.href = `/editor?pattern=${node.patternInstance.id}` },
       })
       items.push({
         id: 'detach-pattern',

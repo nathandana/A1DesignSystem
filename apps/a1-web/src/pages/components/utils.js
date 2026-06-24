@@ -31,7 +31,10 @@ export const allComponents = componentCategories.flatMap((category) =>
 )
 
 export function getComponentPath(id) {
-  return id === 'components' ? '/?page=components' : `/?page=${id}`
+  if (id === 'components') return '/components'
+  if (id.startsWith('components-')) return `/components/${id.slice('components-'.length)}`
+  if (id.startsWith('component-')) return `/components/${id.slice('component-'.length)}`
+  return `/${id}`
 }
 
 export function getRelatedComponents(component) {

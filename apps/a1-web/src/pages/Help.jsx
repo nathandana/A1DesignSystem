@@ -155,7 +155,7 @@ const HELP = [
               alt="The Projects list with each project shown as a card — icon, description, page count, and last-updated date."
               caption="Each project is a card on the Projects list — right-click one for rename, duplicate, or delete."
             />
-            <P>The <Link href="/?page=editor&project=proj-ember-oak" onClick={(e) => e.preventDefault()}>Ember &amp; Oak</Link> sample project is bundled as a complete worked example — explore it to see the features in context.</P>
+            <P>The <Link href="/editor?project=proj-ember-oak" onClick={(e) => e.preventDefault()}>Ember &amp; Oak</Link> sample project is bundled as a complete worked example — explore it to see the features in context.</P>
           </Stack>
         ),
       },

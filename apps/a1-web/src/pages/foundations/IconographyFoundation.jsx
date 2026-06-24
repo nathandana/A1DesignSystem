@@ -15,6 +15,7 @@ import {
 import tokens from '../../../../../build/json/tokens.json'
 import iconUsageMarkdown from '../../../../../system/icons/icon-usage.md?raw'
 import iconRegistry from '../../../../../system/icons/material-symbols.json'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -171,11 +172,7 @@ export function IconographyFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Iconography' },
-            ]}
+            items={getFoundationBreadcrumbItems('Iconography', onNavigate)}
           />
           <Heading as="h1" id="iconography-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Iconography

@@ -168,9 +168,10 @@ function tokenSnippet(token) {
   }
 }
 
-function buildInlineSnippet(config) {
+function buildInlineSnippet(config, utilityClass = '') {
   const tokens = parseInlineMarkdown(config.children || SAMPLE_MARKDOWN)
-  return `<Paragraph>\n  ${tokens.map(tokenSnippet).join('')}\n</Paragraph>`
+  const className = utilityClass ? ` className="${utilityClass.replaceAll('"', '&quot;')}"` : ''
+  return `<Paragraph${className}>\n  ${tokens.map(tokenSnippet).join('')}\n</Paragraph>`
 }
 
 export function getDefaultConfig() {
@@ -180,10 +181,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const tokens = parseInlineMarkdown(config.children || SAMPLE_MARKDOWN)
   return (
-    <Paragraph>
+    <Paragraph className={utilityClass || undefined}>
       {tokens.map(renderToken)}
     </Paragraph>
   )
@@ -220,6 +221,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildInlineSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildInlineSnippet(config, utilityClass)}</Code>
 }

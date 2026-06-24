@@ -35,12 +35,13 @@ export function EditorAsidePanel({
   onSetLock,
   onSetNodeRepeat,
   onSetNodeCollections,
+  onSetNodeUtilities,
   // History tab
   historyEntries,
   historyIndex,
-  onHistoryJump,
   onHistoryRestore,
   onHistoryRename,
+  onHistoryPreview,
   // Add tab
   addTarget,
   onCancelAdd,
@@ -145,6 +146,7 @@ export function EditorAsidePanel({
               onSetLock={onSetLock}
               onSetNodeRepeat={onSetNodeRepeat}
               onSetNodeCollections={onSetNodeCollections}
+              onSetNodeUtilities={onSetNodeUtilities}
             />
           </div>
         )}
@@ -205,9 +207,9 @@ export function EditorAsidePanel({
           <EditorHistoryPanel
             entries={historyEntries}
             currentIndex={historyIndex}
-            onJump={onHistoryJump}
             onRestore={onHistoryRestore}
             onRename={onHistoryRename}
+            onPreview={onHistoryPreview}
           />
         )}
       </Stack>

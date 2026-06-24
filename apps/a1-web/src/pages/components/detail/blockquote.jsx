@@ -29,8 +29,9 @@ function propLine(name, value, defaultValue) {
   return `  ${name}="${value}"`
 }
 
-function buildBlockquoteSnippet(config) {
+function buildBlockquoteSnippet(config, utilityClass = '') {
   const props = [
+    propLine('className', utilityClass, ''),
     propLine('variant', config.variant, 'border'),
     propLine('cite', config.cite, ''),
     propLine('citeUrl', config.citeUrl, ''),
@@ -49,9 +50,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Blockquote
+      className={utilityClass || undefined}
       variant={config.variant}
       cite={config.cite || undefined}
       citeUrl={config.citeUrl || undefined}
@@ -96,6 +98,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildBlockquoteSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildBlockquoteSnippet(config, utilityClass)}</Code>
 }

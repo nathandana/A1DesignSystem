@@ -102,6 +102,24 @@ export type ResponsiveDefinition<T> =
 export type ComponentProps = Record<string, unknown>;
 
 /**
+ * Tokenized utility classes applied by the editor outside the component prop API.
+ * The accepted keys are component-scoped by `utilityRegistry.ts`, so a component
+ * can opt into spacing, width, or future utility families without pretending
+ * those utilities are native component props.
+ */
+export interface UtilityDefinition {
+  padding?: string;
+  paddingBlock?: string;
+  paddingInline?: string;
+  margin?: string;
+  marginBlock?: string;
+  marginInline?: string;
+  gap?: string;
+  maxWidth?: string;
+  minWidth?: string;
+}
+
+/**
  * Text content for a node. Supports a localization key plus direct fallback
  * text. The renderer resolves `textKey` through the A1 labels helper and shows
  * `fallback` when no localized value is registered.
@@ -172,6 +190,8 @@ export interface ComponentNode {
   type: ComponentType;
   /** Props forwarded to the A1 component. */
   props?: ComponentProps;
+  /** Tokenized utility classes applied only when accepted by this component type. */
+  utilities?: UtilityDefinition;
   /**
    * Responsive prop overrides. Reserved — A1 props in `props` already accept
    * responsive objects inline, so this is for future editor ergonomics.

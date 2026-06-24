@@ -57,8 +57,10 @@ function findingDescription(finding, report) {
 
 export function VirtualArchitectPanel() {
   const backlog = useBacklog()
-  // The audit is pure + cheap, so compute it once; the main menu is read from live data.
-  const report = useMemo(() => auditNav(getMainMenu()), [])
+  // runKey increments on "Re-run" so useMemo produces a fresh audit of the live menu.
+  const [runKey, setRunKey] = useState(0)
+  const [lastRun, setLastRun] = useState(null)
+  const report = useMemo(() => auditNav(getMainMenu()), [runKey])
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('findings')
   const [busy, setBusy] = useState(null) // finding.id currently filing, or 'all'
@@ -88,6 +90,11 @@ export function VirtualArchitectPanel() {
       type: ticketTypeFor(finding),
       scope: { kind: 'app', label: report.navName },
     })
+  }
+
+  function handleRerun() {
+    setRunKey((k) => k + 1)
+    setLastRun(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
   }
 
   async function handleLogOne(finding) {
@@ -129,9 +136,15 @@ export function VirtualArchitectPanel() {
               </MessageBadge>
             ))}
           </Stack>
+          {lastRun && (
+            <Paragraph size="xs" color="muted">Last run at {lastRun}</Paragraph>
+          )}
           <ButtonContainer align="start">
             <Button size="sm" icon="account_tree" onClick={() => { setTab('findings'); setOpen(true) }}>
               Open report
+            </Button>
+            <Button size="sm" variant="secondary" icon="refresh" onClick={handleRerun}>
+              Re-run
             </Button>
           </ButtonContainer>
         </Stack>
@@ -142,7 +155,12 @@ export function VirtualArchitectPanel() {
         onClose={busy ? undefined : () => setOpen(false)}
         title={informationArchitect.name}
         size="lg"
-        footer={<Button variant="secondary" disabled={!!busy} onClick={() => setOpen(false)}>Close</Button>}
+        footer={
+          <ButtonContainer>
+            <Button variant="secondary" icon="refresh" disabled={!!busy} onClick={handleRerun}>Re-run</Button>
+            <Button variant="secondary" disabled={!!busy} onClick={() => setOpen(false)}>Close</Button>
+          </ButtonContainer>
+        }
       >
         <Tabs value={tab} onChange={setTab} equalHeight>
           <TabList>

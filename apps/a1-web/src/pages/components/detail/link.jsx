@@ -31,8 +31,9 @@ function propString(name, value, defaultValue) {
   return `${name}="${String(value).replaceAll('"', '&quot;')}"`
 }
 
-function buildLinkSnippet(config) {
+function buildLinkSnippet(config, utilityClass = '') {
   const props = [
+    propString('className', utilityClass, ''),
     propString('href', config.href, '#'),
     propString('size', config.size, ''),
     propString('weight', config.weight, ''),
@@ -55,12 +56,13 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const icon = config.showIcon ? config.icon : undefined
   return (
     <Paragraph>
       Learn more in the{' '}
       <Link
+        className={utilityClass || undefined}
         href={config.href || '#'}
         size={config.size || undefined}
         weight={config.weight || undefined}
@@ -122,6 +124,6 @@ export function Controls({ config, setConfig, pages }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildLinkSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildLinkSnippet(config, utilityClass)}</Code>
 }

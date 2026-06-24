@@ -15,8 +15,9 @@ function propNumber(name, value, defaultValue) {
   return `${name}={${Number(value)}}`
 }
 
-function buildCalendarSnippet(config) {
+function buildCalendarSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     config.variant === 'paginated' ? 'variant="paginated"' : null,
     'initialMonth={{ year: 2026, month: 6 }}',
     config.variant === 'scroll' ? propNumber('monthsToShow', config.monthsToShow, 2) : null,
@@ -38,9 +39,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Calendar
+      className={utilityClass || undefined}
       variant={config.variant}
       initialMonth={{ year: 2026, month: 6 }}
       monthsToShow={Number(config.monthsToShow) || 2}
@@ -97,6 +99,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildCalendarSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildCalendarSnippet(config, utilityClass)}</Code>
 }

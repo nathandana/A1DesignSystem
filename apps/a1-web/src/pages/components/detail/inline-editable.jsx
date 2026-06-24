@@ -36,7 +36,7 @@ export function getDefaultConfig() {
 // inline in the preview updates the Value control at the same time. Seamless
 // editing inherits all typography from the surrounding component, so the same
 // editable lives inside any text, heading, or button without resizing.
-export function Preview({ config, setConfig }) {
+export function Preview({ config, setConfig, utilityClass = '' }) {
   const value = config.value
   const handleChange = (next) => setConfig?.((current) => ({ ...current, value: next }))
 
@@ -46,6 +46,7 @@ export function Preview({ config, setConfig }) {
 
   const editable = (
     <InlineEditable
+      className={utilityClass || undefined}
       value={value}
       onChange={handleChange}
       multiline={config.multiline}
@@ -87,9 +88,10 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-function buildEditable(config, seamless, indent) {
+function buildEditable(config, seamless, indent, utilityClass = '') {
   const pad = ' '.repeat(indent)
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     'value={value}',
     'onChange={setValue}',
     config.multiline ? 'multiline' : null,
@@ -106,19 +108,19 @@ function buildEditable(config, seamless, indent) {
     : `${pad}<InlineEditable\n${props}\n${pad}>\n${pad}  {value}\n${pad}</InlineEditable>`
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   if (config.as === 'heading') {
-    return `<Heading as="h3" size="lg">\n${buildEditable(config, config.seamless, 2)}\n</Heading>`
+    return `<Heading as="h3" size="lg">\n${buildEditable(config, config.seamless, 2, utilityClass)}\n</Heading>`
   }
   if (config.as === 'paragraph') {
-    return `<Paragraph>\n${buildEditable(config, config.seamless, 2)}\n</Paragraph>`
+    return `<Paragraph>\n${buildEditable(config, config.seamless, 2, utilityClass)}\n</Paragraph>`
   }
   if (config.as === 'button') {
-    return `<span className="a1-button a1-button--primary">\n${buildEditable(config, true, 2)}\n</span>`
+    return `<span className="a1-button a1-button--primary">\n${buildEditable(config, true, 2, utilityClass)}\n</span>`
   }
-  return buildEditable(config, config.seamless, 0)
+  return buildEditable(config, config.seamless, 0, utilityClass)
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

@@ -1,0 +1,22 @@
+{
+  "name": "@gtivr4/a1-design-system-web",
+  "version": "0.1.0",
+  "description": "A1 Design System — Web Components (Lit-based, CSS-custom-property-driven)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./button": "./src/components/button/a1-button.js",
+    "./snackbar": "./src/components/snackbar/a1-snackbar.js"
+  },
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "lit": ">=3.0.0"
+  },
+  "devDependencies": {
+    "lit": "^3.2.1"
+  },
+  "keywords": ["design-system", "web-components", "lit", "a1"],
+  "license": "MIT"
+}

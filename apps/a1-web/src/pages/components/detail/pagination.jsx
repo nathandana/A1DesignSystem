@@ -15,8 +15,9 @@ function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
-function buildPaginationSnippet(config) {
+function buildPaginationSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     `page={page}`,
     `totalPages={${config.totalPages}}`,
     config.siblings !== 1 ? `siblings={${config.siblings}}` : null,
@@ -35,7 +36,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [page, setPage] = useState(3)
 
   useEffect(() => {
@@ -44,6 +45,7 @@ export function Preview({ config }) {
 
   return (
     <Pagination
+      className={utilityClass || undefined}
       page={page}
       totalPages={config.totalPages}
       siblings={config.siblings}
@@ -90,6 +92,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildPaginationSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildPaginationSnippet(config, utilityClass)}</Code>
 }

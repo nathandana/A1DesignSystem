@@ -38,7 +38,7 @@ export function PatternWorkspaceSidebar({
   function handlePatternSelect(id) {
     const [pid, nodeId] = id.split('::')
     if (pid !== patternId) {
-      window.location.href = `/?page=editor&pattern=${pid}`
+      window.location.href = `/editor?pattern=${pid}`
       return
     }
     // Already editing this pattern — selecting a structure node selects it on the
@@ -49,7 +49,7 @@ export function PatternWorkspaceSidebar({
   const header = (
     <Stack direction="column" gap="sm">
       <Stack direction="row" align="center" gap="xs">
-        <IconButton icon="arrow_back" label="Back to patterns" size="md" variant="tertiary" as="a" href="/?page=patterns" />
+        <IconButton icon="arrow_back" label="Back to patterns" size="md" variant="tertiary" as="a" href="/patterns" />
         <Heading as="h2" size="xs" className="a1-web-workspace-sidebar__title">{patternName}</Heading>
       </Stack>
       <SegmentedControl
