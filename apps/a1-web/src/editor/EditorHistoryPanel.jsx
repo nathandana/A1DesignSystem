@@ -71,9 +71,10 @@ function buildContextItems(onRename, onRestore) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, onRename }) {
+export function EditorHistoryPanel({ entries, currentIndex, onRestore, onRename, onPreview }) {
   const [ctxMenu, setCtxMenu] = useState(null)
   const [renamingId, setRenamingId] = useState(null)
+  const [previewId, setPreviewId] = useState(null)
 
   const groups = groupByDay(entries)
 
@@ -87,6 +88,18 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
     })
   }
 
+  function handleEntryClick(entry, isCurrent) {
+    if (renamingId === entry.id) return
+    if (isCurrent || previewId === entry.id) {
+      // Clicking current entry or the already-previewed entry cancels preview
+      setPreviewId(null)
+      onPreview?.(null)
+    } else {
+      setPreviewId(entry.id)
+      if (entry.json) onPreview?.(entry.json)
+    }
+  }
+
   function handleCommitRename(label) {
     if (renamingId) {
       onRename(renamingId, label)
@@ -97,7 +110,7 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
   const ctxItems = ctxMenu
     ? buildContextItems(
         () => { setRenamingId(ctxMenu.entryId); setCtxMenu(null) },
-        () => { onRestore(ctxMenu.entryId); setCtxMenu(null) },
+        () => { setPreviewId(null); onRestore(ctxMenu.entryId); setCtxMenu(null) },
       )
     : []
 
@@ -109,8 +122,16 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
     )
   }
 
+  const isPreviewing = !!previewId
+
   return (
     <>
+      {isPreviewing && (
+        <div className="a1-web-history-preview-notice" aria-live="polite">
+          <Icon name="history" size="xs" aria-hidden="true" />
+          <span>Previewing — click entry to exit</span>
+        </div>
+      )}
       <div className="a1-web-history-list">
         {groups.map(([day, items]) => (
           <div key={day} className="a1-web-history-group">
@@ -118,6 +139,7 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
 
             {items.map(({ entry, originalIndex }) => {
               const isCurrent = originalIndex === currentIndex
+              const isPreview = !isCurrent && entry.id === previewId && !!entry.json
               const isRenaming = renamingId === entry.id
               const time = new Date(entry.timestamp).toLocaleTimeString([], {
                 hour: '2-digit',
@@ -130,17 +152,19 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
                   type="button"
                   className={[
                     'a1-web-history-entry',
-                    isCurrent    && 'a1-web-history-entry--current',
-                    entry.primary && 'a1-web-history-entry--primary',
+                    isCurrent       && 'a1-web-history-entry--current',
+                    isPreview       && 'a1-web-history-entry--previewing',
+                    entry.primary   && 'a1-web-history-entry--primary',
+                    entry.restored  && 'a1-web-history-entry--restored',
                   ].filter(Boolean).join(' ')}
-                  onClick={() => !isRenaming && onJump(originalIndex)}
+                  onClick={() => handleEntryClick(entry, isCurrent)}
                   onDoubleClick={() => setRenamingId(entry.id)}
-                  onContextMenu={(e) => openCtxMenu(e, entry)}
-                  title="Click to restore · Double-click to rename · Right-click for options"
+                  onContextMenu={(e) => { if (!isCurrent && entry.json) { setPreviewId(entry.id); onPreview?.(entry.json) } openCtxMenu(e, entry) }}
+                  title={isCurrent ? 'Current version' : 'Click to preview · Right-click to restore or rename · Double-click to rename'}
                 >
-                  {entry.primary && (
+                  {(entry.restored || entry.primary) && (
                     <Icon
-                      name="bookmark"
+                      name={entry.restored ? 'restore' : 'bookmark'}
                       size="xs"
                       className="a1-web-history-entry__bookmark"
                       aria-hidden="true"
@@ -159,7 +183,7 @@ export function EditorHistoryPanel({ entries, currentIndex, onJump, onRestore, o
 
                   {!isRenaming && (
                     <span className="a1-web-history-entry__time">
-                      {entry.userEmail ? `${entry.userEmail.split('@')[0]} · ${time}` : time}
+                      {entry.userEmail ? `${entry.userEmail.slice(0, 4)} · ${time}` : time}
                     </span>
                   )}
                 </button>

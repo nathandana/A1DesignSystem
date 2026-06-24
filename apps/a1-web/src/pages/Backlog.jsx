@@ -4,9 +4,11 @@ import {
   Banner,
   Breadcrumb,
   Button,
+  ButtonContainer,
   Card,
   ContextMenu,
   DataTable,
+  Dialog,
   Divider,
   Grid,
   Heading,
@@ -73,7 +75,7 @@ const VIEW_OPTIONS = [
 ]
 
 // How many cards a swimlane shows per page before paginating.
-const LANE_PAGE_SIZE = 5
+const LANE_PAGE_SIZE = 8
 
 function applyFilters(items, { type, priority, scope, complexity }) {
   return items.filter((it) =>
@@ -124,9 +126,9 @@ function BoardCard({ item, onOpen, onContextMenu, onDragStart }) {
       onClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu(item, e)}
     >
-      <Stack gap="xs">
-          <Paragraph as="span" size="xs" color="muted">{ticketRef(item.number)}</Paragraph>
-        <Heading size="xs">{item.title}</Heading>
+      <Stack gap="none">
+          <Paragraph as="span" size="xs" color="muted" className="a1-m-0">{ticketRef(item.number)}</Paragraph>
+        <Heading size="xs" className="a1-m-0">{item.title}</Heading>
         <Divider/>
         <Stack direction="row" gap="xs" wrap>
           <TypeBadge type={item.type} /><PriorityBadge priority={item.priority} />
@@ -232,12 +234,24 @@ const TABLE_COLUMNS = [
   { key: 'updated', label: 'Updated', sortable: true, sortAccessor: (r) => r.updatedAt },
 ]
 
-function AllTable({ items, onOpen }) {
+function AllTable({ items, onOpen, onNavigate }) {
   const rows = items.map((it) => ({
     id: it.id,
     number: it.number,
-    // The ID is the link that opens the ticket (no separate Open button).
-    ref: it.number,
+    // The ID is a link to the ticket's standalone page; clicking the title opens the dialog.
+    ref: (
+      <Link
+        href={`/backlog/A1-${it.number}`}
+        onClick={(e) => {
+          if (!e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && e.button === 0) {
+            e.preventDefault()
+            onNavigate?.('backlog-ticket', { path: `/backlog/A1-${it.number}` })
+          }
+        }}
+      >
+        {ticketRef(it.number)}
+      </Link>
+    ),
     title: <Link href="#" onClick={(e) => { e.preventDefault(); onOpen(it) }}><strong>{it.title}</strong></Link>,
     titleText: it.title,
     type: TYPE_LABELS[it.type],
@@ -276,6 +290,7 @@ export function Backlog({ onNavigate }) {
   const [sort, setSort] = useState(() => (SORTERS[persisted.sort] ? persisted.sort : 'updated'))
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, ...(persisted.filters || {}) }))
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
+  const [deleteTarget, setDeleteTarget] = useState(null) // ticket pending delete confirmation
   const [dragOverStatus, setDragOverStatus] = useState(null) // swimlane being dragged over
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
   const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
@@ -363,6 +378,7 @@ export function Backlog({ onNavigate }) {
     const isVoted = voteFor.has(it.id)
     const entries = [
       { id: 'open', label: 'Open ticket', icon: 'open_in_new', onClick: () => open(it) },
+      { id: 'view-page', label: 'View ticket page', icon: 'article', onClick: () => onNavigate?.('backlog-ticket', { path: `/backlog/A1-${it.number}` }) },
       { type: 'divider', id: 'd1' },
       { id: 'vote', label: isVoted ? 'Remove your vote' : 'Vote', icon: isVoted ? 'thumb_down' : 'thumb_up', onClick: () => vote(it, !isVoted) },
     ]
@@ -374,6 +390,8 @@ export function Backlog({ onNavigate }) {
     entries.push(
       { type: 'divider', id: 'd2' },
       { id: 'copy', label: 'Copy ID', icon: 'content_copy', onClick: () => { try { navigator.clipboard?.writeText(ticketRef(it.number)) } catch { /* ignore */ } } },
+      { type: 'divider', id: 'd3' },
+      { id: 'delete', label: 'Delete ticket', icon: 'delete', variant: 'destructive', onClick: () => setDeleteTarget(it) },
     )
     return entries
   }
@@ -382,14 +400,15 @@ export function Backlog({ onNavigate }) {
   const selectedLive = selected ? items.find((i) => i.id === selected.id) || selected : null
 
   const counts = {
-    open: items.filter((i) => !['released', 'wont_fix', 'duplicate'].includes(i.status)).length,
+    open: items.filter((i) => !['released', 'wont_fix', 'duplicate', 'cancelled'].includes(i.status)).length,
     total: items.length,
   }
 
   return (
     <>
-      <Section padding="xs" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
+
+      <Section padding="xs" aria-label="Backlog">
+        <Stack direction="column" gap="none">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
@@ -397,14 +416,14 @@ export function Backlog({ onNavigate }) {
             ]}
           />
           {/* Search + New ticket now live in the right-hand panel (A1-154). */}
-          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
           <Stack direction="row" gap="xs" align="center" wrap>
-            <Paragraph size="sm" color="muted">
+          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
+            {/* <Paragraph size="sm" color="muted">
               A lightweight, shared ticket tracker. Suggest a priority, complexity and type; vote;
               and follow what’s in flight.
-            </Paragraph>
-            <MessageBadge status="info" subtle size="sm">{counts.open} open</MessageBadge>
-            <MessageBadge status="neutral" subtle size="sm">{counts.total} total</MessageBadge>
+            </Paragraph> */}
+            <MessageBadge status="info"  size="md">{counts.open} open</MessageBadge>
+            <MessageBadge status="neutral" subtle size="mdprefe">{counts.total} total</MessageBadge>
           </Stack>
           {backlog && !backlog.isCloud && (
             <Banner status="info" variant="inline">
@@ -413,14 +432,11 @@ export function Backlog({ onNavigate }) {
             </Banner>
           )}
         </Stack>
-      </Section>
-
-      <Section padding="xs" aria-label="Backlog">
         <Stack gap="md">
         {/* The search lives in the right-hand panel; here we echo the result count +
             the smart-search syntax hint while a query is active. */}
         {searching && (
-          <Paragraph size="xs" color="muted">
+          <Paragraph size="sm" color="muted">
             {searched.length} result{searched.length === 1 ? '' : 's'} for “{query.trim()}” — search text, an A1 number, or filters like type:bug · is:open · priority:p1 · scope:component.
           </Paragraph>
         )}
@@ -432,13 +448,13 @@ export function Backlog({ onNavigate }) {
               {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar aria-label="Show or hide swimlanes" label="Swimlanes">
+              <Toolbar aria-label="Show or hide swimlanes">
                 {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
                   <ToolbarToggle
                     key={s}
                     icon={STATUS_ICON[s]}
                     label={STATUS_LABELS[s]}
-                    showLabel={{ xs: false, md: true }}
+                    showLabel={{ xs: false, lg: true }}
                     pressed={visibleLanes.has(s)}
                     onChange={(pressed) => setVisibleLanes((prev) => {
                       const next = new Set(prev)
@@ -500,7 +516,7 @@ export function Backlog({ onNavigate }) {
         )}
 
         {tab === 'all' && (
-          <AllTable items={filteredItems} onOpen={open} />
+          <AllTable items={filteredItems} onOpen={open} onNavigate={onNavigate} />
         )}
 
         {tab === 'queue' && (
@@ -558,6 +574,22 @@ export function Backlog({ onNavigate }) {
         onClose={() => setMenu(null)}
         aria-label="Ticket actions"
       />
+
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Delete ticket"
+        footer={
+          <ButtonContainer>
+            <Button variant="secondary" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" icon="delete" onClick={async () => { await backlog?.remove(deleteTarget); setDeleteTarget(null) }}>Delete</Button>
+          </ButtonContainer>
+        }
+      >
+        <Paragraph>
+          Permanently delete {deleteTarget ? ticketRef(deleteTarget.number) : ''}? This cannot be undone.
+        </Paragraph>
+      </Dialog>
 
       {/* Filters panel (A1-154) — sort + Type/Priority/Size/Scope, rendered into the app's
           right-hand aside rail (a BottomSheet at xs/sm). Filters the board. */}

@@ -8,6 +8,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -96,11 +97,7 @@ export function ZIndexFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Z-index' },
-            ]}
+            items={getFoundationBreadcrumbItems('Z-index', onNavigate)}
           />
           <Heading as="h1" id="zindex-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Z-index &amp; layering

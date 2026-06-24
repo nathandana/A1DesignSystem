@@ -23,6 +23,7 @@ import { componentCategories } from '../components/data.js'
 import '../../../../../packages/react/src/utilities/spacing.css'
 import '../../../../../packages/react/src/utilities/width.css'
 import '../../../../../packages/react/src/utilities/sr-only.css'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -152,11 +153,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Utilities' },
-            ]}
+            items={getFoundationBreadcrumbItems('Utilities', onNavigate)}
           />
           <Heading as="h1" id="utilities-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Utilities

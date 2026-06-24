@@ -171,6 +171,12 @@ export const propsToConfig = {
     icon: props?.icon ?? '',
     iconDisplay: props?.iconDisplay ?? (props?.icon ? 'default' : 'none'),
     heroColor: props?.heroColor ?? 'action',
+    heroBadge: props?.heroBadge ?? '',
+    heroBadgeStatus: props?.heroBadgeStatus ?? 'neutral',
+    heroBadgePosition: props?.heroBadgePosition ?? 'top-end',
+    status: props?.status ?? '',
+    statusLabel: props?.statusLabel ?? 'In progress',
+    statusPulse: props?.statusPulse ?? false,
   }),
 
   Bleed: (props) => ({
@@ -784,6 +790,12 @@ export const configToNodeUpdate = {
       icon: config.iconDisplay !== 'none' ? config.icon || undefined : undefined,
       iconDisplay: config.iconDisplay,
       heroColor: config.iconDisplay === 'hero' ? config.heroColor : undefined,
+      heroBadge: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined,
+      heroBadgeStatus: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgeStatus : undefined,
+      heroBadgePosition: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgePosition : undefined,
+      status: config.status || undefined,
+      statusLabel: config.status && config.statusLabel ? config.statusLabel : undefined,
+      statusPulse: config.status && config.statusPulse ? true : undefined,
     },
   }),
 
@@ -1830,7 +1842,7 @@ export function EditorPropsPanel({
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
-  const componentHref = `/?page=component-${node.type.toLowerCase()}`
+  const componentHref = `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
   const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
@@ -1993,7 +2005,7 @@ export function EditorPropsPanel({
           <Heading as="h3" size="xs" color="muted">{node.patternInstance.name}</Heading>
           <IconButton
             as="a"
-            href={`/?page=editor&pattern=${node.patternInstance.id}`}
+            href={`/editor?pattern=${node.patternInstance.id}`}
             icon="edit"
             size="sm"
             variant="tertiary"

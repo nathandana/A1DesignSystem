@@ -1,3 +1,4 @@
+import { SystemMapFoundationPage } from './SystemMapFoundation.jsx'
 import { ColorFoundationPage } from './ColorFoundation.jsx'
 import { SizeFoundationPage } from './SizeFoundation.jsx'
 import { TypeScaleFoundationPage } from './TypeScaleFoundation.jsx'
@@ -14,6 +15,8 @@ import { UtilitiesFoundationPage } from './UtilitiesFoundation.jsx'
 
 export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
   switch (foundation?.id) {
+    case 'foundation-system-map':
+      return <SystemMapFoundationPage onNavigate={onNavigate} />
     case 'foundation-color':
       return (
         <ColorFoundationPage

@@ -41,6 +41,10 @@
   --a1-toolbar-border-color: var(--semantic-color-border-default);
 
   display: inline-flex;
+  /* Prevent a flex/grid parent from stretching the bar to full width when
+     there is no `.a1-toolbar-field` wrapper (i.e. no `label` prop). The
+     `fullWidth` modifier overrides this via its explicit `inline-size: 100%`. */
+  align-self: flex-start;
   align-items: center;
   /* Tools wrap onto new rows when they run out of width — never overflow the
      container and never scroll horizontally. */

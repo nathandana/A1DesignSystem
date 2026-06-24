@@ -1,5 +1,12 @@
 export const foundations = [
   {
+    id: 'foundation-system-map',
+    title: 'System map',
+    icon: 'hub',
+    body: 'A live Canvas/Node visualization of how A1 fits together end to end: tokens as the root, themes/icons/labels/rules feeding the component library, and components composing into the pages, patterns, and projects of the a1-web editor.',
+    points: ['Tokens → packages → components', 'Components → pages & patterns', 'Click to trace, drag to arrange'],
+  },
+  {
     id: 'foundation-color',
     title: 'Color',
     icon: 'palette',

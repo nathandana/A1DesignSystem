@@ -203,7 +203,7 @@
   --a1-icon-weight: 700;
   --a1-button-height: var(--component-button-large-height);
   --a1-button-font-size: var(--semantic-font-size-body-lg);
-  --a1-button-font-weight: var(--base-font-weight-extra-bold);
+  --a1-button-font-weight: var(--base-font-weight-bold);
   --a1-button-border-radius: var(--component-button-large-border-radius, var(--base-radius-lg));
   --a1-button-padding-inline: var(--base-spacing-20);
   --a1-button-icon-size: var(--component-button-icon-size);

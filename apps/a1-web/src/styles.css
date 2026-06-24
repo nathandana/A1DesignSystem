@@ -250,8 +250,46 @@ body {
   color: var(--semantic-color-action-foreground);
 }
 
+.a1-web-history-entry--previewing {
+  background: var(--semantic-color-surface-raised);
+  outline: 2px solid var(--semantic-color-action-background);
+  outline-offset: -2px;
+}
+
+.a1-web-history-entry--previewing:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-web-history-preview-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  padding-block: var(--base-spacing-6);
+  padding-inline: var(--base-spacing-8);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
 .a1-web-history-entry--primary .a1-web-history-entry__label {
   font-weight: var(--base-font-weight-medium);
+}
+
+.a1-web-history-entry--restored {
+  box-shadow: inset 2px 0 0 var(--semantic-color-info-background);
+}
+
+.a1-web-history-entry--restored .a1-web-history-entry__bookmark {
+  color: var(--semantic-color-info-background);
+}
+
+.a1-web-history-entry--restored .a1-web-history-entry__label {
+  font-style: italic;
+}
+
+.a1-web-history-entry--restored.a1-web-history-entry--current .a1-web-history-entry__bookmark {
+  color: var(--semantic-color-action-foreground);
 }
 
 /* Inline rename input */

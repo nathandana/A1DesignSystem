@@ -104,7 +104,7 @@ const WIDTH_COMPONENTS = new Set<ComponentType>([
   'BottomDrawer', 'PageNav', 'TreeMenu', ...LAYOUT_COMPONENTS,
 ]);
 
-const NO_MARGIN_COMPONENTS = new Set<ComponentType>(['PageLayout', 'Slot', 'Outlet']);
+const NO_MARGIN_COMPONENTS = new Set<string>(['PageLayout', 'Slot', 'Outlet', 'Node', 'Canvas', 'CanvasEdge', 'NodeConnector']);
 
 // Fixed/full-width components where only inline margin is meaningful.
 const MARGIN_INLINE_ONLY_COMPONENTS = new Set<ComponentType>(['BottomSheet']);

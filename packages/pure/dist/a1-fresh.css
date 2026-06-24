@@ -295,7 +295,7 @@
   --component-button-font-family: var(--theme-a1-fresh-font-family-body);
   --component-button-font-line-height: normal;
   --component-button-font-size: 1rem;
-  --component-button-font-weight: 500;
+  --component-button-font-weight: 600;
   --component-button-gap: 0.5rem;
   --component-button-icon-optical-size: 20;
   --component-button-icon-size: 1.25rem;
@@ -352,6 +352,7 @@
   --component-calendar-heading-padding-block: 0.75rem;
   --component-calendar-heading-padding-block-compact: 0.5rem;
   --component-calendar-month-gap: 2rem;
+  --component-canvas-node-size: 5rem;
   --component-card-body-font-line-height: 1.5em;
   --component-card-body-font-size: 1rem;
   --component-card-body-font-weight: 400;

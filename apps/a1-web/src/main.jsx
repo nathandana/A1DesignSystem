@@ -73,6 +73,7 @@ import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
+import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { About } from './pages/About.jsx'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
@@ -122,7 +123,7 @@ const RESOURCE_PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -143,6 +144,7 @@ const PAGE_TITLES = {
   accessibility: 'Accessibility',
   releases: 'Releases',
   backlog: 'Backlog',
+  'backlog-ticket': 'Backlog',
   about: 'About',
   account: 'Account',
 }
@@ -166,13 +168,49 @@ const colorSchemeOptions = [
 const VALID_THEMES = themeOptions.map((o) => o.value)
 const VALID_COLOR_MODES = colorSchemeOptions.map((o) => o.value)
 
-function getPage(search = window.location.search) {
-  const page = new URLSearchParams(search).get('page') || 'home'
-  return PAGES.includes(page) ? page : 'home'
+function getPage(search = window.location.search, pathname = window.location.pathname) {
+  // Path-based routing — read from the URL pathname first.
+  const path = pathname.replace(/^\/|\/$/g, '') // strip leading/trailing slash
+  if (!path) return 'home'
+
+  // /foundations → 'foundations', /foundations/color → 'foundation-color'
+  if (path === 'foundations') return 'foundations'
+  if (path.startsWith('foundations/')) {
+    const id = `foundation-${path.slice('foundations/'.length)}`
+    if (PAGES.includes(id)) return id
+    return 'foundations'
+  }
+
+  // /components → 'components', /components/layout → 'components-layout',
+  // /components/button → 'component-button'
+  if (path === 'components') return 'components'
+  if (path.startsWith('components/')) {
+    const suffix = path.slice('components/'.length)
+    if (PAGES.includes(`components-${suffix}`)) return `components-${suffix}`
+    if (PAGES.includes(`component-${suffix}`)) return `component-${suffix}`
+    return 'components'
+  }
+
+  // /backlog/A1-{n} → 'backlog-ticket'
+  if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
+
+  // Direct match: /backlog → 'backlog', /editor → 'editor', etc.
+  if (PAGES.includes(path)) return path
+
+  // Legacy fallback: honour ?page= query param so old bookmarks still work.
+  const paramPage = new URLSearchParams(search).get('page')
+  if (paramPage && PAGES.includes(paramPage)) return paramPage
+
+  return 'home'
 }
 
 function getPath(page) {
-  return page === 'home' ? '/' : `/?page=${page}`
+  if (!page || page === 'home') return '/'
+  if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
+  if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
+  if (page.startsWith('component-')) return `/components/${page.slice('component-'.length)}`
+  if (page === 'backlog-ticket') return '/backlog'
+  return `/${page}`
 }
 
 function isPlainLeftClick(e) {
@@ -452,7 +490,7 @@ function App() {
   function launchProjectPrototype(pageId) {
     const target = pageId ?? projectPages[0]?.id
     if (!target || !activeProjectId) return
-    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
+    const url = `/editor-preview?standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
@@ -492,9 +530,9 @@ function App() {
     window.location.reload()
   }
 
-  function navigate(page, { replace = false } = {}) {
+  function navigate(page, { replace = false, path: pathOverride = null } = {}) {
     const next = PAGES.includes(page) ? page : 'home'
-    const nextPath = getPath(next)
+    const nextPath = pathOverride ?? getPath(next)
     const currentPath = `${window.location.pathname}${window.location.search}`
     if (nextPath !== currentPath) {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
@@ -511,8 +549,19 @@ function App() {
   }
 
   useEffect(() => {
-    window.history.replaceState({ page: getPage() }, '', window.location.href)
-    setActivePage(getPage())
+    // Canonicalize the initial URL. Old ?page= bookmarks are preserved by getPage()'s
+    // legacy fallback, then replaced with the new path format here so the address bar
+    // updates without a page reload.
+    const page = getPage()
+    const search = new URLSearchParams(window.location.search)
+    search.delete('page')
+    const extra = search.toString()
+    // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
+    // preserve the current pathname rather than collapsing to the base page path.
+    const canonicalBase = page === 'backlog-ticket' ? window.location.pathname : getPath(page)
+    const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
+    window.history.replaceState({ page }, '', canonicalUrl)
+    setActivePage(page)
     const onPop = () => {
       setActivePage(getPage())
       const params = new URLSearchParams(window.location.search)
@@ -566,7 +615,7 @@ function App() {
   }, [editorDefinition?.page?.name, editorDefinition?.page?.description, editorDefinition?.page?.icon, activeProjectId, openPageId])
 
   // Keep the editor URL pointed at the active project + page
-  // (`?page=editor&project=<id>&doc=<id>`) so it is shareable. Each genuine
+  // (`/editor?project=<id>&doc=<id>`) so it is shareable. Each genuine
   // in-editor navigation (changing project or page) PUSHES a history entry so
   // the browser Back button steps through All Projects → project → page. The
   // very first sync after entering the editor (mount or resume from a stored
@@ -574,14 +623,14 @@ function App() {
   const editorUrlSynced = useRef(false)
   useEffect(() => {
     if (activePage !== 'editor') return
-    // Pattern authoring keeps its own `?page=editor&pattern=<id>` URL — don't
+    // Pattern authoring keeps its own `/editor?pattern=<id>` URL — don't
     // rewrite it to the project/page form (which would drop the pattern param).
     if (editorPatternId) return
     const params = new URLSearchParams()
-    params.set('page', 'editor')
     if (activeProjectId) params.set('project', activeProjectId)
     if (openPageId) params.set('doc', openPageId)
-    const next = `${window.location.pathname}?${params.toString()}`
+    const search = params.toString()
+    const next = search ? `/editor?${search}` : '/editor'
     if (`${window.location.pathname}${window.location.search}` === next) {
       editorUrlSynced.current = true
       return
@@ -602,12 +651,12 @@ function App() {
   useEffect(() => {
     if (activePage !== 'theme-editor') { themeUrlSynced.current = false; return }
     const params = new URLSearchParams()
-    params.set('page', 'theme-editor')
     if (activeThemeId) {
       params.set('theme', activeThemeId)
       params.set('cat', themeCategory)
     }
-    const next = `${window.location.pathname}?${params.toString()}`
+    const search = params.toString()
+    const next = search ? `/theme-editor?${search}` : '/theme-editor'
     if (`${window.location.pathname}${window.location.search}` === next) {
       themeUrlSynced.current = true
       return
@@ -644,6 +693,14 @@ function App() {
     document.title = activePage === 'home' ? title : `${title} — A1 Design System`
   }, [activePage])
 
+  const FOUNDATION_GROUPS = [
+    { label: 'Visualize', ids: ['foundation-system-map'] },
+    { label: 'Visual', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: 'Content', ids: ['foundation-iconography', 'foundation-labels'] },
+    { label: 'Layout', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
+    { label: 'Standards', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+  ]
+
   const navItems = [
     {
       id: 'resources',
@@ -667,13 +724,19 @@ function App() {
           href: getPath('foundations'),
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
-        { divider: true },
-        ...foundations.map((foundation) => ({
-          icon: foundation.icon,
-          label: foundation.title,
-          href: getPath(foundation.id),
-          onClick: (e) => handleNavClick(e, foundation.id),
-        })),
+        ...FOUNDATION_GROUPS.flatMap(({ label, ids }) => [
+          { divider: true, label },
+          ...ids
+            .map((id) => foundations.find((f) => f.id === id))
+            .filter(Boolean)
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((foundation) => ({
+              icon: foundation.icon,
+              label: foundation.title,
+              href: getPath(foundation.id),
+              onClick: (e) => handleNavClick(e, foundation.id),
+            })),
+        ]),
       ],
     },
     {
@@ -721,7 +784,7 @@ function App() {
             ...projects.map((project) => ({
               icon: project.icon || 'folder',
               label: project.name,
-              href: `/?page=editor&project=${project.id}`,
+              href: `/editor?project=${project.id}`,
               active: activePage === 'editor' && activeProjectId === project.id,
               onClick: (e) => handleProjectNav(e, project.id),
             })),
@@ -1086,6 +1149,7 @@ function App() {
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
+        {activePage === 'backlog-ticket' && <BacklogTicketPage key={window.location.pathname} onNavigate={navigate} />}
         {activePage === 'about' && <About onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its

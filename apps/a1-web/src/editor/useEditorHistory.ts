@@ -8,6 +8,8 @@ export type HistoryEntry = {
   timestamp: number
   /** True when the user has explicitly named this entry — shown prominently in history. */
   primary?: boolean
+  /** True when this entry was created by a restore action — styled distinctly in the panel. */
+  restored?: boolean
 }
 
 type HistoryState = {
@@ -217,6 +219,7 @@ export function useEditorHistory(
   }
 
   function undo() {
+    clearPropsTimer()
     setState(prev => {
       if (prev.index <= 0) return prev
       const idx = prev.index - 1
@@ -225,6 +228,7 @@ export function useEditorHistory(
   }
 
   function redo() {
+    clearPropsTimer()
     setState(prev => {
       if (prev.index >= prev.entries.length - 1) return prev
       const idx = prev.index + 1
@@ -233,6 +237,7 @@ export function useEditorHistory(
   }
 
   function jump(i: number) {
+    clearPropsTimer()
     setState(prev => {
       const idx = Math.max(0, Math.min(i, prev.entries.length - 1))
       return { ...prev, index: idx, workingJson: prev.entries[idx].json }
@@ -242,18 +247,16 @@ export function useEditorHistory(
   // Restore pushes the named entry to the top without truncating the existing
   // future — entries after the current index remain accessible.
   function restore(entryId: string) {
+    clearPropsTimer()
     setState(prev => {
       const source = prev.entries.find(e => e.id === entryId)
       if (!source) return prev
-      const time = new Date(source.timestamp).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
       const entry: HistoryEntry = {
         id: uid(),
         json: source.json,
-        label: `Restored from ${time}`,
+        label: `Restored: ${source.label}`,
         timestamp: Date.now(),
+        restored: true,
       }
       const capped = capHistory([...prev.entries, entry], prev.entries.length)
       return { entries: capped.entries, index: capped.index, workingJson: source.json }
@@ -263,6 +266,7 @@ export function useEditorHistory(
   // Discard the current history stack and start fresh from json.
   // Used when switching between versions so undo doesn't bleed across them.
   function reset(json: string, label = 'Version switch') {
+    clearPropsTimer()
     setState({
       entries: [{ id: uid(), json, label, timestamp: Date.now() }],
       index: 0,

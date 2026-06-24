@@ -5,6 +5,7 @@ import {
   ButtonContainer,
   Card,
   ContextMenu,
+  Grid,
   Icon,
   IconButton,
   Link,
@@ -167,36 +168,38 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
       {linkedItems.length > 0 && (
         <Stack gap="xs">
           <Paragraph as="span" size="xs" color="muted">Linked tickets</Paragraph>
-          {linkedItems.map((l) => (
-            <Card key={l.id} status="info" statusLabel="Linked">
-              <Stack gap="xs">
-                <Stack direction="row" gap="sm" align="center" justify="between" wrap>
-                  <Paragraph as="span" size="xs" color="muted">{ticketRef(l.number)}</Paragraph>
-                  <Stack direction="row" gap="xs" wrap>
-                    <TypeBadge type={l.type} size="sm" />
-                    <StatusBadge status={l.status} size="sm" />
+          <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="sm">
+            {linkedItems.map((l) => (
+              <Card key={l.id} status="info" statusLabel="Linked">
+                <Stack gap="xs">
+                  <Stack direction="row" gap="sm" align="center" justify="between" wrap>
+                    <Paragraph as="span" size="xs" color="muted">{ticketRef(l.number)}</Paragraph>
+                    <Stack direction="row" gap="xs" wrap>
+                      <TypeBadge type={l.type} size="sm" />
+                      <StatusBadge status={l.status} size="sm" />
+                    </Stack>
                   </Stack>
+                  <Paragraph size="sm">{l.title}</Paragraph>
+                  <ButtonContainer align="start">
+                    <IconButton
+                      size="sm"
+                      variant="secondary"
+                      icon="open_in_new"
+                      aria-label={`Open ${ticketRef(l.number)}`}
+                      onClick={() => onOpenItem?.(l)}
+                    />
+                    <IconButton
+                      size="sm"
+                      variant="tertiary"
+                      icon="link_off"
+                      aria-label={`Unlink ${ticketRef(l.number)}`}
+                      onClick={() => onUnlink?.(item, l)}
+                    />
+                  </ButtonContainer>
                 </Stack>
-                <Paragraph size="sm">{l.title}</Paragraph>
-                <ButtonContainer align="start">
-                  <IconButton
-                    size="sm"
-                    variant="secondary"
-                    icon="open_in_new"
-                    label={`Open ${ticketRef(l.number)}`}
-                    onClick={() => onOpenItem?.(l)}
-                  />
-                  <IconButton
-                    size="sm"
-                    variant="tertiary"
-                    icon="link_off"
-                    label={`Unlink ${ticketRef(l.number)}`}
-                    onClick={() => onUnlink?.(item, l)}
-                  />
-                </ButtonContainer>
-              </Stack>
-            </Card>
-          ))}
+              </Card>
+            ))}
+          </Grid>
         </Stack>
       )}
 

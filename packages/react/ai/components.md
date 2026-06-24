@@ -21,7 +21,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Menu level | Route ID | Label | Selected icon | Children |
 |------------|----------|-------|---------------|----------|
 | Overview | `components` | Components | `widgets` | Component categories |
-| Category | `components-layout` | Layout & Display | `dashboard` | Section, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container |
+| Category | `components-layout` | Layout & Display | `dashboard` | Section, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
 | Category | `components-actions` | Actions & Controls | `touch_app` | Button, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
 | Category | `components-navigation` | Navigation | `near_me` | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu |
@@ -29,7 +29,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
-| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
+| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
 - Category pages use `components-{category-id}`.
@@ -251,7 +251,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Banner | ✓ | ✓ | — |
 | Badge | ✓ | ✓ | — |
 | Notification | ✓ | — | — |
-| Snackbar | ✓ | ✓ | — |
+| Snackbar | ✓ | ✓ | ✓ |
 | Empty State | ✓ | ✓ | — |
 | Status Bar | ✓ | — | — |
 | Circular Progress | ✓ | — | ✓ |
@@ -421,6 +421,38 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **React props:** `variant` ("scroll" | "paginated", default "scroll"), `initialMonth` (Date or `{ year, month }`), `monthsToShow` (default 13, scroll only), `highlightToday` (default true), `dimPast` (default true), `todayButton` (default false, paginated only). Scroll variant renders months stacked vertically. Paginated shows one month at a time with prev/next buttons and month/year selects. Uses container queries for 3 density levels (≥ 480 px full, < 480 px medium, < 320 px compact). Supports RTL and locale-driven week-start via `LabelsProvider`.
 >
 > **Status:** Experimental — in `apps/a1-web/src/pages/components/data.js` as `calendar: 'experimental'`.
+
+---
+
+## Canvas
+
+| Component | React | Native | Pure |
+|-----------|:-----:|:------:|:----:|
+| Canvas | ✓ | — | — |
+| Node | ✓ | — | — |
+| CanvasEdge | ✓ | — | — |
+
+> **Compositional API — `Node` and `CanvasEdge` as children:**
+>
+> ```jsx
+> <Canvas aria-label="Graph">
+>   <Node id="a" x={100} y={100} label="Tokens" color="info" />
+>   <Node id="b" x={300} y={100} label="React" color="success" />
+>   <CanvasEdge id="e1" from="a" to="b" />
+> </Canvas>
+> ```
+>
+> **Canvas props:** `mode` (`"view"` default | `"edit"` — in edit mode nodes are draggable), `onNodeMove` (`(id, x, y) => void` — called when a node is dragged in edit mode), `onDeleteNode(id)` — called when "Delete" is chosen from a node's context menu (only shown in `edit` mode), `nodeMenuItems(id)` — returns `ContextMenuEntry[]` of custom items for a right-clicked node (shown before Delete), `canvasMenuItems` — extra items appended to the canvas right-click menu (below the built-in zoom/fit/reset items), `showGrid` (boolean, default true — dot grid overlay), `background` (`"panel"` default | `"page"` | `"raised"`), `inverse` (boolean, default false — applies the inverse surface and text color, mirroring Section's inverse prop; combine with any `background`), `showControls` (boolean, default true — zoom controls overlay), `edgeStyle` (`"straight"` default | `"curved"` — quadratic Bézier connectors; a per-edge `curved` boolean on `CanvasEdge` overrides this), `snapToGrid` (boolean, default false — rounds dragged node positions to 24px grid increments in edit mode), `defaultZoom` (number, default 1), `defaultPan` (`{ x, y }`, default `{ x: 0, y: 0 }`), `aria-label` (string, required). Pan: left-click drag, middle-click drag, or single-finger touch drag. Zoom: wheel toward cursor, or two-finger pinch. Controls: zoom in/out/fit-all/reset. Right-click canvas background → built-in zoom context menu. Right-click node → custom + delete items.
+>
+> **Node props:** `label` (required), `id?`, `x?`, `y?` (canvas-space px, center of node — needed when used inside Canvas for positioning and edge routing), `sublabel?`, `shape?` (`circle` default), `color?` (`neutral` default), `subtle?` (boolean). Standalone: renders inline at natural dimensions with no Canvas context needed. Inside Canvas: absolutely positioned; selection, drag, and context-menu callbacks are injected from `CanvasCtx`.
+>
+> **Node shapes:** `circle` (default, 80×80px) · `square` (80×80px, `--base-radius-md`) · `squircle` (80×80px, `--base-radius-xl`) · `rectangle` (128×56px). Edge routing correctly intersects circle circumference or rectangle boundary.
+>
+> **Node colors:** `neutral / info / success / warn / error / accent`. Add `subtle` for a tinted surface (uses `*-surface` tokens) instead of the full status background.
+>
+> **CanvasEdge props:** `id` (required), `from`, `to` (CanvasNode ids), `direction` (`"to"` default | `"from"` | `"both"` | `"none"`), `variant` (`"solid"` default | `"dashed"` | `"dotted"`), `weight` (`"normal"` default | `"heavy"`), `label?` (rendered at the midpoint), `curved?` (boolean — overrides the canvas-level `edgeStyle` for this specific edge). CanvasEdge is a descriptor: returns null and Canvas draws the SVG connector.
+>
+> **Status:** Experimental — React only. Node size is driven by `component.canvas.node.size` token (80px). Arrowhead markers use stable per-canvas-instance IDs (React `useId`) so multiple Canvas instances on the same page don't collide.
 
 ---
 

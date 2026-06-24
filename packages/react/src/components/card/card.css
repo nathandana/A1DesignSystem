@@ -96,21 +96,26 @@ button.a1-card--navigation {
 .a1-card--status-warn    { --a1-card-status-color: var(--component-card-status-warn); }
 .a1-card--status-error   { --a1-card-status-color: var(--component-card-status-error); }
 
-/* Subtle in-progress pulse on the stripe. */
-.a1-card--status-pulse::before {
-  animation: a1-card-status-pulse var(--component-card-status-pulse-duration) var(--semantic-motion-easing-standard) infinite;
-}
-
+/* Subtle in-progress pulse on the stripe — opt-in: only runs when the OS has not
+   requested reduced motion. Using no-preference (rather than reduce + animation: none)
+   defaults to no animation, so users who haven't set a preference aren't forced into
+   motion. The keyframes block is harmless outside the media query. */
 @keyframes a1-card-status-pulse {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.35; }
 }
 
-/* Respect reduced-motion: keep the stripe static (no pulse). */
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: no-preference) {
   .a1-card--status-pulse::before {
-    animation: none;
+    animation: a1-card-status-pulse var(--component-card-status-pulse-duration) var(--semantic-motion-easing-standard) infinite;
   }
+}
+
+/* The .a1-reduce-motion class collapses semantic duration tokens for testing
+   transitions but does not stop keyframe animations — add an explicit override
+   so Storybook reduced-motion simulation also suppresses the pulse. */
+html.a1-reduce-motion .a1-card--status-pulse::before {
+  animation: none;
 }
 
 /* The badge sits at the top of the content, above the card body. */

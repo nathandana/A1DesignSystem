@@ -713,9 +713,20 @@ export function EditorPage({
 
   // Map the cloud log into the History panel's entry shape (pages + patterns).
   const panelEntries = historyEnabled
-    ? cloudHistory.map((r) => ({ id: r.id, json: r.snapshot ?? '', label: r.label, timestamp: Date.parse(r.created_at), userEmail: r.user_email ?? undefined }))
+    ? cloudHistory.map((r) => ({ id: r.id, json: r.snapshot ?? '', label: r.label, timestamp: Date.parse(r.created_at), userEmail: r.user_email ?? undefined, restored: r.label.startsWith('Restored:') }))
     : history.entries;
   const panelIndex = historyEnabled ? panelEntries.length - 1 : history.index;
+
+  // Non-destructive preview: when set, the canvas shows this historical JSON
+  // without touching history.workingJson. Cleared on restore or history navigation.
+  const [previewJson, setPreviewJson] = useState<string | null>(null);
+  const historyIndexRef = useRef(history.index);
+  useEffect(() => {
+    if (history.index !== historyIndexRef.current) {
+      historyIndexRef.current = history.index;
+      setPreviewJson(null);
+    }
+  }, [history.index]);
 
   const [view, setView] = useState('edit');
   // "Code snippet" view sub-format: editable JSON, or read-only generated React.
@@ -912,11 +923,11 @@ export function EditorPage({
 
   const parsedDefinition = useMemo<ParseResult>(() => {
     try {
-      return { ok: true, value: JSON.parse(history.workingJson) as PageDefinition };
+      return { ok: true, value: JSON.parse(previewJson ?? history.workingJson) as PageDefinition };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
-  }, [history.workingJson]);
+  }, [previewJson, history.workingJson]);
 
   // Read-only React (JSX) rendition of the current definition.
   const reactCode = useMemo(
@@ -1101,6 +1112,10 @@ export function EditorPage({
     const newJson = JSON.stringify({ ...parsedDefinition.value, page: newPage }, null, 2);
     history.setWorking(newJson);
     commitDebounced(newJson, 'Updated page settings');
+  }
+
+  function handleHistoryPreview(json: string | null) {
+    setPreviewJson(json);
   }
 
   function handleHistoryRename(entryId: string, label: string) {
@@ -1554,17 +1569,25 @@ export function EditorPage({
   }
 
   function restoreCloudSnapshot(entry?: CloudHistoryEntry) {
-    if (entry?.snapshot) history.reset(entry.snapshot, entry.label);
-  }
-
-  function handleHistoryJump(i: number) {
-    if (historyEnabled) { restoreCloudSnapshot(cloudHistory[i]); onSelectNode?.(null); return; }
-    history.jump(i);
-    onSelectNode?.(null);
+    if (!entry?.snapshot) return;
+    const restoredLabel = `Restored: ${entry.label}`;
+    history.reset(entry.snapshot, restoredLabel);
+    // Push to the cloud log so the restore appears at the top of the history panel.
+    appendHistory({
+      entityType: historyEntityType,
+      entityId: historyEntityId as string,
+      label: restoredLabel,
+      snapshot: entry.snapshot,
+    }).then(refreshHistory);
   }
 
   function handleHistoryRestore(entryId: string) {
-    if (historyEnabled) { restoreCloudSnapshot(cloudHistory.find((e) => e.id === entryId)); onSelectNode?.(null); return; }
+    setPreviewJson(null); // restore replaces the preview permanently
+    if (historyEnabled) {
+      restoreCloudSnapshot(cloudHistory.find((e) => e.id === entryId));
+      onSelectNode?.(null);
+      return;
+    }
     history.restore(entryId);
     onSelectNode?.(null);
   }
@@ -1584,7 +1607,7 @@ export function EditorPage({
     // for — the current page, plus the project id so the prototype can build the
     // generated navigation from the project's page hierarchy.
     const projectParam = projectId ? `&project=${encodeURIComponent(projectId)}` : '';
-    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(exampleId)}${projectParam}`;
+    const url = `/editor-preview?standalone&screen=${encodeURIComponent(exampleId)}${projectParam}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -1663,7 +1686,7 @@ export function EditorPage({
         activePageId: exampleId,
         onNavigate: (id) => onNavigateToPage?.(id),
         hrefFor: (id) =>
-          `/?page=editor${projectId ? `&project=${encodeURIComponent(projectId)}` : ''}&doc=${encodeURIComponent(id)}`,
+          `/editor${projectId ? `?project=${encodeURIComponent(projectId)}&doc=${encodeURIComponent(id)}` : `?doc=${encodeURIComponent(id)}`}`,
       })
     : [];
 
@@ -1760,9 +1783,9 @@ export function EditorPage({
           onSetNodeUtilities={handleSetNodeUtilities}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
-          onHistoryJump={handleHistoryJump}
           onHistoryRestore={handleHistoryRestore}
           onHistoryRename={handleHistoryRename}
+          onHistoryPreview={handleHistoryPreview}
           onConvertNode={handleConvertNode}
           onDuplicatePage={onDuplicatePage}
           onDeletePage={onDeletePage}

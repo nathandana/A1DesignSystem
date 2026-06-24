@@ -23,11 +23,11 @@ export function Patterns({ onNavigate }) {
   const [confirmDelete, setConfirmDelete] = useState(null)
   const patterns = getAllPatterns()
 
-  function openPattern(id) { window.location.href = `/?page=editor&pattern=${id}` }
+  function openPattern(id) { window.location.href = `/editor?pattern=${id}` }
 
   function handleCreate() {
     const def = createBlankPattern()
-    window.location.href = `/?page=editor&pattern=${def.pattern.id}`
+    window.location.href = `/editor?pattern=${def.pattern.id}`
   }
 
   return (
@@ -81,7 +81,7 @@ export function Patterns({ onNavigate }) {
                 >
                   <Card
                     variant="navigation"
-                    href={`/?page=editor&pattern=${meta.id}`}
+                    href={`/editor?pattern=${meta.id}`}
                   >
                     <Stack direction="column" gap="sm">
                       <Heading as="h2" size="sm">{meta.name}</Heading>

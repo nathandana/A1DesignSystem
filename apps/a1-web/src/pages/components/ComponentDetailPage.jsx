@@ -69,6 +69,7 @@ import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail
 import { UtilityControls } from '../../editor/UtilityControls.jsx'
 import { cleanUtilities, utilityClassesFor, utilityTypeForCatalogComponent } from '../../editor/utilityRegistry.ts'
 import {
+  getBreadcrumbItems,
   getComponentPath,
   getRelatedComponents,
   getRulesForComponent,
@@ -1823,15 +1824,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
     return () => window.removeEventListener('resize', find)
   }, [tab, component.id])
 
-  const breadcrumbItems = [
-    { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateBreadcrumb(e, onNavigate, 'components') },
-  ]
-  if (category) {
-    breadcrumbItems.push({ label: category.title, href: getComponentPath(`components-${category.id}`), onClick: (e) => navigateBreadcrumb(e, onNavigate, `components-${category.id}`) })
-  }
-  if (component) {
-    breadcrumbItems.push({ label: component.title })
-  }
+  const breadcrumbItems = getBreadcrumbItems({ category, component }, onNavigate)
 
   return (
     <ComponentDocsShell>

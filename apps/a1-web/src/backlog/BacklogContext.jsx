@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Snackbar } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
 import * as store from '../services/backlog/backlogStore'
-import { runPersona, runPersonaOnItem } from '../services/backlog/personas'
+import { runPersona, runPersonaOnItem, runStatusCleanup } from '../services/backlog/personas'
 import changelog from '../../CHANGELOG.md?raw'
 import { ticketRef } from '../services/backlog/types'
 import { CreateTicketDialog } from './CreateTicketDialog'
@@ -107,6 +107,12 @@ export function BacklogProvider({ children }) {
     await refresh()
   }, [refresh])
 
+  const remove = useCallback(async (item) => {
+    await store.removeItem(item.id)
+    await refresh()
+    setToast(`Deleted ${ticketRef(item.number)} — ${item.title}`)
+  }, [refresh])
+
   const markRead = useCallback(async (ids) => {
     await store.markNotificationsRead(ids)
     await refresh()
@@ -119,6 +125,14 @@ export function BacklogProvider({ children }) {
   // is supplied so the PO can move tickets that have shipped.
   const reviewWithPersona = useCallback(async (persona, opts) => {
     const summary = await runPersona(persona, { ...opts, changelog })
+    if (!opts?.dryRun) await refresh()
+    return summary
+  }, [refresh])
+
+  // Status-only cleanup: move open tickets that appear in the CHANGELOG to done/released.
+  // No priority/size/question changes — just reconciles status against what's been shipped.
+  const cleanupStatus = useCallback(async (persona, opts) => {
+    const summary = await runStatusCleanup(persona, { ...opts, changelog })
     if (!opts?.dryRun) await refresh()
     return summary
   }, [refresh])
@@ -138,10 +152,10 @@ export function BacklogProvider({ children }) {
     items, notifications, unreadCount, votedSet, loading,
     isCloud: store.isCloudBacklog(),
     user: me,
-    openCreate, create: handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
-    reviewWithPersona, reviewItem,
+    openCreate, create: handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
+    reviewWithPersona, reviewItem, cleanupStatus,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem])
+    openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, cleanupStatus])
 
   return (
     <BacklogContext.Provider value={value}>

@@ -17,4 +17,4 @@ export function getPersona(id: string): Persona | undefined {
 export type {
   Persona, PersonaVerdict, PersonaQuestion, PersonaRunSummary, PersonaChange, PersonaItemOutcome,
 } from './types';
-export { runPersona, runPersonaOnItem } from './runPersona';
+export { runPersona, runPersonaOnItem, runStatusCleanup } from './runPersona';

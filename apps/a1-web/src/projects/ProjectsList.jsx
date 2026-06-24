@@ -143,7 +143,7 @@ export function ProjectsList({
               <Card
                 key={project.id}
                 variant="navigation"
-                href={`/?page=editor&project=${project.id}`}
+                href={`/editor?project=${project.id}`}
                 icon={project.icon}
                 iconDisplay="default"
                 onClick={(e) => {

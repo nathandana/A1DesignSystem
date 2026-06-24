@@ -1,0 +1,9 @@
+{
+  "component": {
+    "canvas": {
+      "node": {
+        "size": { "$type": "dimension", "$value": "80px" }
+      }
+    }
+  }
+}

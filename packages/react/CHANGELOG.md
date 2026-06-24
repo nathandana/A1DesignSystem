@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.25.0 — 2026-06-24
+
+### Added
+
+- **Canvas / Node / NodeConnector** (A1-312) — new experimental components for infinite pan/zoom node graphs. Compositional API: `Canvas` renders `Node` and `NodeConnector` children. `Node` supports `shape` (circle / square / squircle / rectangle), `color`, `subtle`, `size` (sm–xl), `sublabel`, `title` (native hover tooltip), `anchorSnap`, and custom `backgroundColor`/`foregroundColor`. `NodeConnector` supports `direction` (to / from / both / none), `variant` (solid / dashed / dotted), `weight`, `curved`, and `label`. `Canvas` props include `mode="edit"`, `draggableNodes` (drag without edit mode), `traceConnections` (click a node to highlight its ancestor + descendant connectors only), `gridSpacing` (visible grid lines), `showGrid`, `showControls`, `inverse`, `edgeStyle`, `snapToGrid`, and context-menu hooks. Token `--component-canvas-node-size`.
+
+### Fixed
+
+- **Button — default size renders semibold** — `component.button.font.weight` moved from medium (500) to semibold (600). The default (md) button never received the `.a1-button--md` class (it is only emitted for non-default sizes), so its intended semibold weight was dead CSS and it rendered at the base medium fallback; the token change makes the default render semibold to match the design. `sm` (medium) and `lg` (bold) are unaffected — they set their own weight via size modifiers.
+- **Card — status stripe pulse respects reduced motion** (A1-221) — the `statusPulse` keyframe animation is now opt-in via `@media (prefers-reduced-motion: no-preference)` instead of opt-out. This fixes two gaps: users who haven't set a system preference no longer get the animation by default, and the Storybook `.a1-reduce-motion` test class (which only collapsed semantic duration tokens) now also suppresses the pulse via an explicit `html.a1-reduce-motion .a1-card--status-pulse::before { animation: none }` rule.
+
 ## 0.24.0 — 2026-06-23
 
 ### Fixed

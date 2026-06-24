@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import {
   Button,
   Code,
@@ -36,16 +37,19 @@ export const viewAsModes = [
   { value: 'react', label: 'React' },
   { value: 'native', label: 'Native' },
   { value: 'pure', label: 'Pure' },
+  { value: 'web', label: 'Web' },
 ]
 
 // Which props each platform's Button supports. variant / size / icon /
 // iconPosition / disabled apply everywhere; these differ:
 // - Native (React Native) navigates via onPress, so there is no href.
 // - Pure (HTML/CSS) has no full-width or loading modifier.
+// - Web (web component) supports kebab-case attributes; no split button.
 const PROP_SUPPORT = {
-  react: { href: true, fullWidth: true, loading: true, split: true },
-  native: { href: false, fullWidth: true, loading: true, split: false },
-  pure: { href: true, fullWidth: false, loading: false, split: false },
+  react:  { href: true,  fullWidth: true,  loading: true,  split: true  },
+  native: { href: false, fullWidth: true,  loading: true,  split: false },
+  pure:   { href: true,  fullWidth: false, loading: false, split: false },
+  web:    { href: true,  fullWidth: true,  loading: true,  split: false },
 }
 
 function support(viewAs) {
@@ -82,7 +86,42 @@ export function getDefaultConfig() {
   }
 }
 
+// Lazily loads <a1-button> and renders the real Lit web component.
+// React 19 sets unknown props on custom elements as DOM properties; since all
+// A1Button Lit properties have reflect:true they also keep their attributes in
+// sync. CSS custom properties pierce the shadow DOM so theming just works.
+function WebButtonPreview({ config }) {
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    import('@gtivr4/a1-design-system-web/button').then(() => setReady(true))
+  }, [])
+
+  const inner = ready ? (
+    <a1-button
+      variant={config.variant}
+      size={config.size}
+      icon={config.icon || undefined}
+      iconPosition={config.iconPosition}
+      fullWidth={config.fullWidth}
+      loading={config.loading}
+      disabled={config.disabled}
+      href={config.href || undefined}
+    >
+      {config.label || 'Button'}
+    </a1-button>
+  ) : null
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', inlineSize: '100%' }}>
+      {inner}
+    </div>
+  )
+}
+
 export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
+  if (viewAs === 'web') return <WebButtonPreview config={config} />
+
   // The A1 design is identical across platforms, so the preview always renders
   // the React component — but only with the props the selected platform supports
   // (e.g. Native drops href, Pure drops full-width/loading).
@@ -275,12 +314,34 @@ function buildSplitSnippet(config, utilityClass = '') {
 </SplitButton>`
 }
 
+function buildWebSnippet(config) {
+  // Attributes are kebab-case (web standard); boolean attrs are present/absent.
+  const attrs = [
+    config.variant !== 'primary' ? `variant="${config.variant}"` : null,
+    config.size !== 'md' ? `size="${config.size}"` : null,
+    config.href ? `href="${config.href}"` : null,
+    config.icon ? `icon="${config.icon}"` : null,
+    config.icon && config.iconPosition !== 'start' ? `icon-position="${config.iconPosition}"` : null,
+    config.fullWidth ? 'full-width' : null,
+    config.loading ? 'loading' : null,
+    config.disabled ? 'disabled' : null,
+  ].filter(Boolean).join(' ')
+
+  const attrsStr = attrs ? ` ${attrs}` : ''
+  return `import '@gtivr4/a1-design-system-web/button'
+
+<a1-button${attrsStr}>${escapeJsxText(config.label || 'Button')}</a1-button>`
+}
+
 export function Snippet({ config, viewAs = 'react', utilityClass = '' }) {
   if (config.split && support(viewAs).split) {
     return <Code variant="block" wrapping copyCode>{buildSplitSnippet(config, utilityClass)}</Code>
   }
   if (viewAs === 'native') {
     return <Code variant="block" wrapping copyCode>{buildNativeSnippet(config)}</Code>
+  }
+  if (viewAs === 'web') {
+    return <Code variant="block" wrapping copyCode>{buildWebSnippet(config)}</Code>
   }
   const build = viewAs === 'pure' ? buildPureSnippet : buildReactSnippet
   return <Code variant="block" wrapping copyCode>{build(config, utilityClass)}</Code>

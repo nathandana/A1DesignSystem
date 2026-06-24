@@ -238,7 +238,7 @@ export function developPlanLocally(item: BacklogItem, comments: BacklogComment[]
   out.push('## Conventions');
   out.push(
     'Follow CLAUDE.md and packages/react/ai/: A1 components + tokens only, sentence case, '
-    + 'semantic + accessible markup. Work on a branch and summarise what you changed.',
+    + 'semantic + accessible markup. Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
   );
 
   return out.join('\n');

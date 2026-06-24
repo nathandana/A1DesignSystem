@@ -148,7 +148,6 @@
 
 .a1-button-small {
   --a1-button-height: var(--component-button-small-height);
-  padding-block: var(--component-button-small-padding-block);
   --a1-button-font-size: var(--semantic-font-size-body-sm);
   --a1-button-font-weight: var(--base-font-weight-medium);
   --a1-button-border-radius: var(--component-button-small-border-radius);
