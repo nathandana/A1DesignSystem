@@ -29,3 +29,7 @@ For build commands and key file locations:
 For the accessibility check policy and a11y commands:
 
 @packages/react/ai/a11y-policy.md
+
+For the color-token and theme architecture remediation plan:
+
+@packages/react/ai/color-token-remediation-plan.md
