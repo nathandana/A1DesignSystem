@@ -4,6 +4,16 @@
 
 Make color authoring, theming, color modes, inverse areas, and component consumption predictable from one canonical token model. Preserve current visual behavior during the migration, then simplify the architecture only after parity is proven.
 
+## Baseline Captured
+
+Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a clean `npm run test:qa` comparison.
+
+- 573 Storybook stories have matching committed screenshots in `visual-baselines/`.
+- 16 focused color-reference stories cover eight runtime themes in explicit light and dark modes, including inverse and nested-inverse boundaries.
+- The comparison run passed all 106 suites and 573 stories with zero visual regressions.
+- The accompanying axe scan recorded 15 serious contrast violations across 13 stories. The focused color references exposed existing failures in Aperture light, CatLympics light/dark, Crochet light, Fresh light/dark, Heritage dark, and Marshmallow light.
+- Figure stories use repository images so remote image responses cannot invalidate the reference.
+
 ## Current Findings
 
 1. Color values have parallel sources of truth:
@@ -48,7 +58,7 @@ Make color authoring, theming, color modes, inverse areas, and component consump
 
 1. Inventory every color custom property and classify it as base, semantic, component, brand, private runtime, or unknown.
 2. Inventory every component CSS color reference and record whether it uses base, semantic, component, or private variables.
-3. Generate a theme/mode/inverse matrix for base, a1-light, accessible, heritage, fresh, crochet, aperture, marshmallow, and catlympics.
+3. Maintain the Storybook visual-regression reference stories in `packages/react/src/ColorRegression.stories.jsx`. Their committed baselines cover representative surfaces, text, actions, statuses, and fields across base, accessible, aperture, catlympics, crochet, fresh, heritage, and marshmallow themes in explicit light, explicit dark, inverse, and nested-inverse contexts.
 4. Add build-time checks for unresolved aliases, unknown custom properties, duplicate token paths, and raw color values outside approved token source files.
 5. Add computed-style snapshots for representative components in light, dark, system-dark, accessible, inverse, and nested inverse contexts.
 
