@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { DARK_MODE_VARIABLES, resolveModeVariables } from "./color-modes.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const themesDir = join(__dirname, "themes");
@@ -157,55 +158,9 @@ function makeLightVars(themeId) {
 
 function makeDarkVars(themeId) {
   const lightVars = makeLightVars(themeId);
-  const neutral = (step) => lightVars[`--base-color-neutral-${step}`] ?? baseVars[`--base-color-neutral-${step}`];
-  const accent = (step) => lightVars[`--base-color-accent-${step}`] ?? baseVars[`--base-color-accent-${step}`];
-  const status = (name, step) => lightVars[`--base-color-${name}-${step}`] ?? baseVars[`--base-color-${name}-${step}`];
-
   return makeVars({
     ...lightVars,
-    "--semantic-color-surface-page": neutral(900),
-    "--semantic-color-surface-card": neutral(800),
-    "--semantic-color-surface-field": neutral(700),
-    "--semantic-color-surface-panel": neutral(800),
-    "--semantic-color-surface-raised": neutral(700),
-    "--semantic-color-text-default": neutral(50),
-    "--semantic-color-text-muted": neutral(300),
-    "--semantic-color-text-inverse": neutral(900),
-    "--semantic-color-text-accent": accent(300),
-    "--semantic-color-border-subtle": neutral(700),
-    "--semantic-color-border-default": neutral(600),
-    "--semantic-color-border-strong": neutral(400),
-    "--semantic-color-action-background": accent(400),
-    "--semantic-color-action-background-hover": accent(300),
-    "--semantic-color-action-background-pressed": accent(500),
-    "--semantic-color-action-foreground": accent(1000),
-    "--semantic-color-action-foreground-pressed": accent(1000),
-    "--semantic-color-action-surface": accent(900),
-    "--semantic-color-action-border": accent(500),
-    "--semantic-color-status-info-background": status("info", 400),
-    "--semantic-color-status-info-surface": status("info", 900),
-    "--semantic-color-status-info-border": status("info", 500),
-    "--semantic-color-status-info-foreground": status("info", 1000),
-    "--semantic-color-status-error-background": status("error", 400),
-    "--semantic-color-status-error-surface": status("error", 900),
-    "--semantic-color-status-error-border": status("error", 500),
-    "--semantic-color-status-error-foreground": neutral(900),
-    "--semantic-color-status-warn-background": status("warn", 400),
-    "--semantic-color-status-warn-surface": status("warn", 900),
-    "--semantic-color-status-warn-border": status("warn", 500),
-    "--semantic-color-status-warn-foreground": neutral(900),
-    "--semantic-color-status-success-background": status("success", 400),
-    "--semantic-color-status-success-surface": status("success", 900),
-    "--semantic-color-status-success-border": status("success", 500),
-    "--semantic-color-status-success-foreground": neutral(900),
-    "--component-button-primary-background": accent(200),
-    "--component-button-primary-background-pressed": accent(50),
-    "--component-button-primary-foreground": accent(900),
-    "--component-button-secondary-background": accent(900),
-    "--component-button-secondary-background-pressed": accent(700),
-    "--component-button-secondary-foreground": accent(200),
-    "--component-button-secondary-border": accent(200),
-    "--component-scrim-color": component.scrim.colorDark,
+    ...resolveModeVariables(DARK_MODE_VARIABLES, lightVars, baseVars),
   });
 }
 

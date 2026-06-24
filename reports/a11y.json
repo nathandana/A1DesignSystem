@@ -218,7 +218,7 @@
           "nodeCount": 5,
           "nodes": [
             {
-              "html": "<button class=\"a1-button a1-button--primary a1-button--sm\" type=\"button\">Primary</button>",
+              "html": "<button class=\"a1-button a1-button--primary a1-button--sm\" type=\"button\" data-color-contract=\"primary-button\">Primary</button>",
               "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #fff6ff, background color: #ff3fa6, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
             },
             {

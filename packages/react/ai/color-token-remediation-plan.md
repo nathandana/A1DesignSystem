@@ -14,6 +14,25 @@ Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a cl
 - The accompanying axe scan recorded 15 serious contrast violations across 13 stories. The focused color references exposed existing failures in Aperture light, CatLympics light/dark, Crochet light, Fresh light/dark, Heritage dark, and Marshmallow light.
 - Figure stories use repository images so remote image responses cannot invalidate the reference.
 
+## Implementation Status
+
+### Completed in the first remediation slice
+
+- Added `system/color-modes.mjs` as the shared light/dark alias contract for Pure CSS and React Native generation.
+- Removed the duplicated dark-mode maps from `scripts/build-html-css.mjs` and `system/build-themes.mjs`.
+- Added `npm run tokens:audit:check`, with a generated inventory at `packages/react/ai/color-token-audit.md`.
+- The audit blocks duplicate token paths, unresolved aliases, unknown color variables, invalid theme structure, and drift between React's explicit dark selector and the shared mode contract.
+- Added a computed-style contract for all 16 focused theme/mode stories at `tests/color/color-contract.json`, maintained with `tokens:contract:update` and checked with `tokens:contract:check`.
+- Fixed `InlineEditable` references to nonexistent radius and interaction-color variables; it now uses the established radius and field focus-ring tokens.
+- Rebuilt every target with no generated token/theme/Pure/Native output differences from centralizing the mode data.
+- Verified 573 Storybook stories with zero visual regressions. The 15 pre-existing contrast violations remain the known starting set.
+
+### Next migration slice
+
+- Move raw theme custom-property declarations from `theme.json` into structured token overrides.
+- Generate React's runtime light/dark/inverse value blocks from the shared contract while preserving its selector topology.
+- Replace the remaining direct base-color references identified by the audit, beginning with fields, links, notifications, and feedback components.
+
 ## Current Findings
 
 1. Color values have parallel sources of truth:
@@ -64,6 +83,8 @@ Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a cl
 
 Exit criterion: the current behavior is reproducible and failures identify the exact token, selector, theme, and mode.
 
+Status: **Complete.**
+
 ### Phase 1: Establish one structured color schema
 
 1. Define DTCG source files for:
@@ -78,6 +99,8 @@ Exit criterion: the current behavior is reproducible and failures identify the e
 5. Stop Style Dictionary from merging unrelated theme namespaces into the default runtime token output unless those namespaces are an intentional public artifact.
 
 Exit criterion: authored color values and aliases live in structured token files; `theme.json` contains metadata and selector configuration only.
+
+Status: **Not started.**
 
 ### Phase 2: Generate every runtime color map
 
@@ -94,6 +117,8 @@ Exit criterion: authored color values and aliases live in structured token files
 5. Add deterministic-output checks so generated files must be clean after a build.
 
 Exit criterion: changing one semantic mode mapping updates every platform output through one generator.
+
+Status: **In progress.** Pure CSS and React Native now share one mode contract; React selector generation remains.
 
 ### Phase 3: Normalize component token contracts
 

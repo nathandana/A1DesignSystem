@@ -62,12 +62,20 @@ system/tokens/**/*.json
         ↓  (Style Dictionary: npm run build:tokens)
 build/css/tokens.css              All raw tokens as :root custom properties
 build/json/tokens.json            All tokens as nested JSON (used by build scripts)
+system/color-modes.mjs            Shared light/dark semantic + component alias contract
         ↓  (scripts/build-html-css.mjs)
 packages/pure/dist/a1-light.css   Semantic + component tokens for the light theme
 packages/pure/dist/a1-pure.css    Hand-authored; @imports a1-light.css for tokens
         ↓  (system/build-themes.mjs)
 packages/react/src/themes.css         Theme selector overrides for React
 ```
+
+`system/color-modes.mjs` is the canonical authored relationship for environmental
+light/dark color roles used by generated Pure CSS and React Native theme colors.
+`packages/react/src/color-scheme.css` still owns runtime selector topology
+(`prefers-color-scheme`, explicit mode classes, contrast, and inverse boundaries);
+`npm run tokens:audit:check` verifies that its explicit dark block matches the
+shared contract until that selector CSS is generated in a later migration phase.
 
 ### Token format (DTCG)
 
@@ -114,6 +122,13 @@ Style Dictionary converts camelCase JSON keys to kebab-case CSS custom propertie
 4. Run `npm run build:tokens` to regenerate `build/`.
 5. Run `npm run build:html-css` to update `packages/pure/dist/a1-light.css`.
 6. Use the resulting CSS custom property in component CSS files.
+
+After changing color tokens, themes, mode aliases, or component color references:
+
+1. Run `npm run tokens:audit:check`.
+2. Run `npm run build:tokens`.
+3. With Storybook running, run `npm run tokens:contract:check`.
+4. Run `npm run test:qa` for visual and contrast regression coverage.
 
 ```json
 // system/tokens/component/my-component.json

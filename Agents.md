@@ -33,3 +33,7 @@ For the accessibility check policy and a11y commands:
 For the color-token and theme architecture remediation plan:
 
 @packages/react/ai/color-token-remediation-plan.md
+
+For the generated color-token inventory and migration findings:
+
+@packages/react/ai/color-token-audit.md

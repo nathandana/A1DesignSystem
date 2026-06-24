@@ -5,6 +5,11 @@
 ### Added
 
 - **`neutral.25` colour-ramp step** (`#f7fafe`) — a near-white step between `neutral.0` and `neutral.50`. `semantic.color.surface.page` now resolves to it, so the default themes (base, a1-light) render on a barely-tinted off-white page; white cards/fields read as raised surfaces against it. Branded themes keep their own page backgrounds.
+- **Color-token architecture guardrails** — added a shared light/dark mode contract used by Pure CSS and React Native generation, a blocking token/theme/CSS audit (`tokens:audit:check`), and computed-style contracts across all focused theme/mode/inverse fixtures (`tokens:contract:check`). The React runtime dark selector is checked against the shared contract while selector generation remains a later migration step.
+
+### Fixed
+
+- **InlineEditable focus and radius tokens** — replaced nonexistent `--base-border-radius-sm` and `--semantic-color-interactive-default` references with the established `--base-radius-sm` and field focus-ring tokens, restoring the intended visible focus treatment.
 
 ## 0.25.0 — 2026-06-24
 

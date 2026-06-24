@@ -24,6 +24,7 @@ export default meta;
 function ReferenceFixture() {
   return (
     <main
+      data-color-contract="root"
       style={{
         minBlockSize: "100vh",
         padding: "var(--base-spacing-32)",
@@ -73,7 +74,7 @@ function ReferenceFixture() {
                 hint="Hover, active, and read-only colors share this contract."
               />
               <Stack direction="row" gap="xs" wrap>
-                <Button size="sm">Primary</Button>
+                <Button size="sm" data-color-contract="primary-button">Primary</Button>
                 <Button size="sm" variant="secondary">Secondary</Button>
                 <Button size="sm" variant="tertiary">Tertiary</Button>
               </Stack>
@@ -90,7 +91,7 @@ function ReferenceFixture() {
           </Card>
 
           <Card>
-            <Inverse style={{ padding: "var(--base-spacing-24)" }}>
+            <Inverse data-color-contract="inverse" style={{ padding: "var(--base-spacing-24)" }}>
               <Stack gap="sm">
                 <Heading as="h2" size="sm">Inverse boundary</Heading>
                 <Paragraph size="sm" color="muted">
@@ -100,7 +101,7 @@ function ReferenceFixture() {
                   <Button size="sm">Primary</Button>
                   <Button size="sm" variant="secondary">Secondary</Button>
                 </Stack>
-                <Inverse style={{
+                <Inverse data-color-contract="nested-inverse" style={{
                   padding: "var(--base-spacing-16)",
                   borderRadius: "var(--base-radius-sm)",
                 }}>
