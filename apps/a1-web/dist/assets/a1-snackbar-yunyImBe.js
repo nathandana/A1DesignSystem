@@ -1,4 +1,4 @@
-import{a as e,i as t,t as n}from"./lit-Uu-RERKf.js";var r=[`bottom`,`bottom-left`,`bottom-right`,`top`,`top-left`,`top-right`],i=class extends n{static properties={open:{type:Boolean,reflect:!0},position:{type:String,reflect:!0},actionLabel:{type:String,attribute:`action-label`},dismissible:{type:Boolean,reflect:!0}};constructor(){super(),this.open=!1,this.position=`bottom`,this.actionLabel=``,this.dismissible=!0}static styles=e`
+import{a as e,i as t,t as n}from"./lit-CHgHXhaW.js";var r=[`bottom`,`bottom-left`,`bottom-right`,`top`,`top-left`,`top-right`],i=class extends n{static properties={open:{type:Boolean,reflect:!0},position:{type:String,reflect:!0},actionLabel:{type:String,attribute:`action-label`},dismissible:{type:Boolean,reflect:!0}};constructor(){super(),this.open=!1,this.position=`bottom`,this.actionLabel=``,this.dismissible=!0}static styles=e`
     /* ── Entry animation ──────────────────────────────────────────────────── */
     @keyframes a1-snackbar-in {
       from { opacity: 0; translate: 0 8px; }

@@ -2246,3 +2246,137 @@ span.a1-web-sem-pick { display: inline-block; }
   outline-offset: calc(-1 * var(--base-spacing-2));
   background: var(--semantic-color-surface-raised);
 }
+
+.a1-web-color-space-scene {
+  position: relative;
+  overflow: hidden;
+  block-size: var(--base-width-xl);
+  border-block: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-card);
+}
+
+.a1-web-color-space-scene canvas {
+  touch-action: none;
+}
+
+.a1-web-color-space-label {
+  display: inline-block;
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-4);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-card);
+  color: var(--semantic-color-text-default);
+  font-size: var(--base-font-size-scale-100);
+  box-shadow: var(--semantic-shadow-xs);
+  white-space: nowrap;
+}
+
+.a1-web-color-space-axis {
+  position: absolute;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--base-font-size-scale-100);
+  pointer-events: none;
+}
+
+.a1-web-color-space-axis--lightness {
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-start: var(--base-spacing-12);
+}
+
+.a1-web-color-space-axis--chroma {
+  inset-block-end: var(--base-spacing-12);
+  inset-inline-end: var(--base-spacing-12);
+}
+
+.a1-web-color-space-axis--hue {
+  inset-block-end: var(--base-spacing-12);
+  inset-inline-start: var(--base-spacing-12);
+}
+
+.a1-web-color-space-fallback {
+  padding: var(--base-spacing-24);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-web-color-space-selection {
+  display: flex;
+  gap: var(--base-spacing-12);
+  align-items: center;
+  padding: var(--base-spacing-12);
+  border-inline-start: var(--base-spacing-4) solid var(--semantic-color-action-background);
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-web-color-space-swatch {
+  flex: 0 0 var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-color-space-swatch);
+}
+
+.a1-web-color-alignment {
+  overflow-x: auto;
+  padding-block: var(--base-spacing-12);
+}
+
+.a1-web-color-alignment__scale,
+.a1-web-color-alignment__row {
+  display: grid;
+  grid-template-columns: var(--base-width-2xs) minmax(var(--base-width-md), 1fr) var(--base-spacing-64);
+  gap: var(--base-spacing-12);
+  align-items: center;
+  min-inline-size: var(--base-width-xl);
+}
+
+.a1-web-color-alignment__scale {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--base-font-size-scale-100);
+}
+
+.a1-web-color-alignment__scale > span:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+}
+
+.a1-web-color-alignment__row {
+  min-block-size: var(--base-spacing-40);
+  border-block-start: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-color-alignment__track {
+  position: relative;
+  block-size: var(--base-spacing-8);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-web-color-alignment__point {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--a1-color-lightness);
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-20);
+  border: var(--base-spacing-2) solid var(--semantic-color-surface-card);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-color-value);
+  box-shadow: var(--semantic-shadow-sm);
+  transform: translate(-50%, -50%);
+}
+
+.a1-web-color-alignment__missing {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--base-font-size-scale-100);
+}
+
+@media (max-width: 640px) {
+  .a1-web-color-space-scene {
+    block-size: var(--base-width-lg);
+  }
+
+  .a1-web-color-space-axis--hue {
+    display: none;
+  }
+}

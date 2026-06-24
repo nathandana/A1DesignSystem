@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- **`neutral.25` colour-ramp step** (`#f7fafe`) — a near-white step between `neutral.0` and `neutral.50`. `semantic.color.surface.page` now resolves to it, so the default themes (base, a1-light) render on a barely-tinted off-white page; white cards/fields read as raised surfaces against it. Branded themes keep their own page backgrounds.
+
 ## 0.25.0 — 2026-06-24
 
 ### Added

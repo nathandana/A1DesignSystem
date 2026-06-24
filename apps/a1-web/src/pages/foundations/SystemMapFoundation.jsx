@@ -13,58 +13,80 @@ import {
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 /**
- * System map — a Canvas/Node visualization of how A1 fits together: tokens are the
- * root, themes / icons / labels / rules contribute to the component library, and
- * components compose into the pages, patterns, and projects of the a1-web editor.
+ * System map — a Canvas/Node visualization of how A1 fits together: authored
+ * foundations flow through build tools into runtime CSS and packages, then
+ * components compose into the pages, patterns, and projects of a1-web.
  *
  * The graph is authored as explicit node + edge data (below) so every relationship
  * traces to something real in the repo — nothing is decorative.
  */
 
-// Layer → node color. Roles, not arbitrary hues: sources (accent/info), built
-// packages (success), the component hub (warn), everything downstream (neutral).
+// Layer → node color. Roles, not arbitrary hues: authored sources (accent/info),
+// generated outputs/packages (success), runtime/component hubs (warn), and
+// downstream compositions (neutral).
 const LAYER = {
-  tokens:     { x: 120,  color: 'accent'  },
-  system:     { x: 400,  color: 'info'    },
-  packages:   { x: 700,  color: 'success' },
-  components: { x: 1000, color: 'warn'    },
-  compose:    { x: 1290, color: 'neutral' },
-  app:        { x: 1580, color: 'neutral' },
+  tokens:     { color: 'accent'  },
+  system:     { color: 'info'    },
+  build:      { color: 'success' },
+  runtime:    { color: 'warn'    },
+  packages:   { color: 'success' },
+  components: { color: 'warn'    },
+  compose:    { color: 'neutral' },
+  app:        { color: 'neutral' },
 }
 
 // Every node: id, its layer, label, a one-line role, and the repo path (shown on hover).
 const NODES = [
-  // Token tiers — the root. base → semantic → component.
-  { id: 'base',      layer: 'tokens', label: 'Base',      sublabel: 'Raw values',          path: 'system/tokens (base.*)',            x: 120,  y: 250 },
-  { id: 'semantic',  layer: 'tokens', label: 'Semantic',  sublabel: 'Intent aliases',      path: 'system/tokens (semantic.*)',        x: 120,  y: 380 },
-  { id: 'comp-tok',  layer: 'tokens', label: 'Component', sublabel: 'Per-component tokens', path: 'system/tokens/component (component.*)', x: 120, y: 510 },
+  // Authored token tiers. Brand aliases are a compatibility/export layer over
+  // semantic + component tokens, not a fourth source-of-truth tier.
+  { id: 'base',      layer: 'tokens', label: 'Base',      sublabel: 'Raw ramps & values',   path: 'system/tokens (base.*)',               x: 100, y: 120 },
+  { id: 'semantic',  layer: 'tokens', label: 'Semantic',  sublabel: 'Intent aliases',       path: 'system/tokens (semantic.*)',           x: 100, y: 250 },
+  { id: 'comp-tok',  layer: 'tokens', label: 'Component', sublabel: 'Optional API aliases', path: 'system/tokens/component (component.*)', x: 100, y: 380 },
+  { id: 'brand',     layer: 'tokens', label: 'Brand A1',  sublabel: 'Export aliases',       path: 'system/tokens/color-ramp.json (brand.a1.*)', x: 100, y: 510 },
 
-  // System authoring — everything else under system/.
-  { id: 'themes',  layer: 'system', label: 'Themes', sublabel: '8 theme overrides',    path: 'system/themes',  x: 400, y: 150 },
-  { id: 'icons',   layer: 'system', label: 'Icons',  sublabel: 'Material Symbols',     path: 'system/icons',   x: 400, y: 300 },
-  { id: 'labels',  layer: 'system', label: 'Labels', sublabel: 'Localized strings',    path: 'system/labels',  x: 400, y: 430 },
-  { id: 'rules',   layer: 'system', label: 'Rules',  sublabel: 'Design rules (YAML)',  path: 'system/rules',   x: 400, y: 560 },
+  // System authoring has two theme inputs plus hand-authored runtime modes.
+  { id: 'theme-tokens', layer: 'system', label: 'Theme tokens', sublabel: 'Namespaced DTCG values', path: 'system/themes/*/tokens', x: 380, y: 80 },
+  { id: 'theme-selectors', layer: 'system', label: 'Theme selectors', sublabel: 'CSS variable overrides', path: 'system/themes/*/theme.json', x: 380, y: 210 },
+  { id: 'color-scheme', layer: 'system', label: 'Color scheme', sublabel: 'Dark, light & inverse', path: 'packages/react/src/color-scheme.css', x: 380, y: 340 },
+  { id: 'icons',   layer: 'system', label: 'Icons',  sublabel: 'Material Symbols',    path: 'system/icons',  x: 380, y: 470 },
+  { id: 'labels',  layer: 'system', label: 'Labels', sublabel: 'Localized strings',   path: 'system/labels', x: 380, y: 580 },
+  { id: 'rules',   layer: 'system', label: 'Rules',  sublabel: 'Design rules (YAML)', path: 'system/rules',  x: 380, y: 690 },
 
-  // Packages — the build targets. React is the source of truth; the rest replicate it.
-  { id: 'react',  layer: 'packages', label: 'React',          sublabel: 'Source of truth',  path: 'packages/react',           x: 700, y: 100 },
-  { id: 'pure',   layer: 'packages', label: 'Pure',           sublabel: 'HTML / CSS (BEM)', path: 'packages/pure',            x: 700, y: 210 },
-  { id: 'rn',     layer: 'packages', label: 'React Native',   sublabel: 'Native components', path: 'packages/react-native',   x: 700, y: 320 },
-  { id: 'wc',     layer: 'packages', label: 'Web Components',  sublabel: 'Lit-based',        path: 'packages/web-components',  x: 700, y: 430 },
-  { id: 'figma',  layer: 'packages', label: 'Figma',          sublabel: 'Code Connect',     path: 'packages/figma',           x: 700, y: 540 },
-  { id: 'eslint', layer: 'packages', label: 'ESLint plugin',  sublabel: 'Enforces rules',   path: 'packages/eslint-plugin-a1', x: 700, y: 650 },
+  // Build pipeline. Style Dictionary does not generate selector themes; the
+  // custom theme builder concatenates theme.json and copies token outputs.
+  { id: 'style-dictionary', layer: 'build', label: 'Style Dictionary', sublabel: 'Resolve & transform DTCG', path: 'sd.config.js', x: 680, y: 130, size: 'lg' },
+  { id: 'theme-builder', layer: 'build', label: 'Theme builder', sublabel: 'Concatenate selectors', path: 'system/build-themes.mjs', x: 680, y: 300 },
+  { id: 'html-build', layer: 'build', label: 'HTML/CSS build', sublabel: 'Generate Pure themes', path: 'scripts/build-html-css.mjs', x: 680, y: 470 },
+  { id: 'rules-build', layer: 'build', label: 'Rules build', sublabel: 'Generate lint rules', path: 'scripts/build-eslint-rules.mjs', x: 680, y: 640 },
+
+  // Runtime artifacts and cascade. Import order is tokens → themes → color scheme.
+  { id: 'tokens-css', layer: 'runtime', label: 'tokens.css', sublabel: ':root defaults', path: 'build/css/tokens.css → packages/react/src/tokens.css', x: 980, y: 80 },
+  { id: 'tokens-json', layer: 'runtime', label: 'tokens.json', sublabel: 'Resolved data', path: 'build/json/tokens.json', x: 980, y: 200 },
+  { id: 'themes-css', layer: 'runtime', label: 'themes.css', sublabel: 'Theme class overrides', path: 'packages/react/src/themes.css', x: 980, y: 320 },
+  { id: 'scheme-css', layer: 'runtime', label: 'color-scheme.css', sublabel: 'Mode cascade', path: 'packages/react/src/color-scheme.css', x: 980, y: 440 },
+  { id: 'runtime-classes', layer: 'runtime', label: 'Runtime classes', sublabel: 'Theme + mode on html', path: 'apps/a1-web/src/main.jsx', x: 980, y: 560 },
+  { id: 'inverse', layer: 'runtime', label: 'Inverse islands', sublabel: 'Inherited local token swap', path: '.a1-inverse / Section inverse / Inverse', x: 980, y: 680 },
+
+  // Packages — the build targets. React is the behavioral source of truth.
+  { id: 'react',  layer: 'packages', label: 'React',          sublabel: 'Source of truth',   path: 'packages/react',            x: 1280, y: 80 },
+  { id: 'pure',   layer: 'packages', label: 'Pure',           sublabel: 'HTML / CSS (BEM)',  path: 'packages/pure',             x: 1280, y: 200 },
+  { id: 'rn',     layer: 'packages', label: 'React Native',   sublabel: 'Generated colors',  path: 'packages/react-native',     x: 1280, y: 320 },
+  { id: 'wc',     layer: 'packages', label: 'Web Components', sublabel: 'Lit-based',         path: 'packages/web-components',   x: 1280, y: 440 },
+  { id: 'figma',  layer: 'packages', label: 'Figma',          sublabel: 'Code Connect',      path: 'packages/figma',            x: 1280, y: 560 },
+  { id: 'eslint', layer: 'packages', label: 'ESLint plugin',  sublabel: 'Enforces rules',    path: 'packages/eslint-plugin-a1', x: 1280, y: 680 },
 
   // The component library — the hub everything converges on.
-  { id: 'components', layer: 'components', label: 'Components', sublabel: '59 components', path: 'packages/react/src/components', x: 1000, y: 375, size: 'lg' },
+  { id: 'components', layer: 'components', label: 'Components', sublabel: 'Semantic + optional component tokens', path: 'packages/react/src/components', x: 1570, y: 360, size: 'lg' },
 
   // Compositions — the a1-web editor's content model.
-  { id: 'patterns', layer: 'compose', label: 'Patterns', sublabel: 'Governed compositions', path: 'apps/a1-web/src/patterns', x: 1290, y: 300 },
-  { id: 'pages',    layer: 'compose', label: 'Pages',    sublabel: 'Page definitions',      path: 'apps/a1-web/src/editor',  x: 1290, y: 450 },
+  { id: 'patterns', layer: 'compose', label: 'Patterns', sublabel: 'Governed compositions', path: 'apps/a1-web/src/patterns', x: 1850, y: 280 },
+  { id: 'pages',    layer: 'compose', label: 'Pages',    sublabel: 'Page definitions',      path: 'apps/a1-web/src/editor',  x: 1850, y: 440 },
 
   // App & consumers.
-  { id: 'datasets', layer: 'app', label: 'Datasets', sublabel: 'Data-driven content',         path: 'apps/a1-web/src/data',     x: 1580, y: 160 },
-  { id: 'projects', layer: 'app', label: 'Projects', sublabel: 'Pages + patterns + themes',   path: 'apps/a1-web/src/projects', x: 1580, y: 320 },
-  { id: 'a1-web',   layer: 'app', label: 'a1-web',   sublabel: 'The editor app',              path: 'apps/a1-web',              x: 1580, y: 470, size: 'lg' },
-  { id: 'examples', layer: 'app', label: 'Examples', sublabel: 'Demo sites',                  path: 'examples/',                x: 1580, y: 630 },
+  { id: 'datasets', layer: 'app', label: 'Datasets', sublabel: 'Data-driven content',       path: 'apps/a1-web/src/data',     x: 2130, y: 150 },
+  { id: 'projects', layer: 'app', label: 'Projects', sublabel: 'Pages + patterns + themes', path: 'apps/a1-web/src/projects', x: 2130, y: 310 },
+  { id: 'a1-web',   layer: 'app', label: 'a1-web',   sublabel: 'Runtime class switching',   path: 'apps/a1-web',              x: 2130, y: 470, size: 'lg' },
+  { id: 'examples', layer: 'app', label: 'Examples', sublabel: 'Demo sites',                path: 'examples/',                x: 2130, y: 650 },
 ]
 
 // Edges. 'spine' = builds into (solid). 'feeds' = contributes to / governs / maps (dashed).
@@ -72,20 +94,44 @@ const EDGES = [
   // Token tier chain
   { from: 'base', to: 'semantic', kind: 'spine' },
   { from: 'semantic', to: 'comp-tok', kind: 'spine' },
+  { from: 'semantic', to: 'brand', kind: 'feeds' },
+  { from: 'comp-tok', to: 'brand', kind: 'feeds' },
 
-  // Tokens are consumed by every package (via the Style Dictionary build)
-  { from: 'comp-tok', to: 'react', kind: 'spine' },
-  { from: 'comp-tok', to: 'pure', kind: 'feeds' },
-  { from: 'comp-tok', to: 'rn', kind: 'feeds' },
-  { from: 'comp-tok', to: 'wc', kind: 'feeds' },
+  // DTCG sources flow through Style Dictionary.
+  { from: 'base', to: 'style-dictionary', kind: 'spine' },
+  { from: 'semantic', to: 'style-dictionary', kind: 'spine' },
+  { from: 'comp-tok', to: 'style-dictionary', kind: 'spine' },
+  { from: 'brand', to: 'style-dictionary', kind: 'feeds' },
+  { from: 'theme-tokens', to: 'style-dictionary', kind: 'feeds' },
+  { from: 'style-dictionary', to: 'tokens-css', kind: 'spine' },
+  { from: 'style-dictionary', to: 'tokens-json', kind: 'spine' },
 
-  // Themes derive from the base ramps and ship as theme CSS in the packages
-  { from: 'base', to: 'themes', kind: 'feeds' },
-  { from: 'themes', to: 'react', kind: 'feeds' },
-  { from: 'themes', to: 'pure', kind: 'feeds' },
+  // Selector themes bypass Style Dictionary and are emitted by the custom builder.
+  { from: 'theme-selectors', to: 'theme-builder', kind: 'spine' },
+  { from: 'tokens-css', to: 'theme-builder', kind: 'feeds' },
+  { from: 'theme-builder', to: 'themes-css', kind: 'spine' },
+  { from: 'color-scheme', to: 'scheme-css', kind: 'spine' },
+
+  // Pure and Native have additional generated paths from the same resolved data.
+  { from: 'tokens-json', to: 'html-build', kind: 'feeds' },
+  { from: 'theme-selectors', to: 'html-build', kind: 'feeds' },
+  { from: 'html-build', to: 'pure', kind: 'spine' },
+  { from: 'tokens-json', to: 'rn', kind: 'feeds' },
+
+  // Runtime cascade and class activation.
+  { from: 'tokens-css', to: 'react', kind: 'spine' },
+  { from: 'themes-css', to: 'react', kind: 'feeds' },
+  { from: 'scheme-css', to: 'react', kind: 'feeds' },
+  { from: 'runtime-classes', to: 'themes-css', kind: 'feeds' },
+  { from: 'runtime-classes', to: 'scheme-css', kind: 'feeds' },
+  { from: 'scheme-css', to: 'inverse', kind: 'spine' },
+  { from: 'inverse', to: 'components', kind: 'feeds' },
+  { from: 'runtime-classes', to: 'a1-web', kind: 'feeds' },
+  { from: 'tokens-css', to: 'wc', kind: 'feeds' },
 
   // Rules generate the ESLint plugin and govern the components
-  { from: 'rules', to: 'eslint', kind: 'feeds' },
+  { from: 'rules', to: 'rules-build', kind: 'spine' },
+  { from: 'rules-build', to: 'eslint', kind: 'spine' },
   { from: 'rules', to: 'components', kind: 'feeds' },
 
   // The component library lives in React; labels + icons feed it; Figma maps it
@@ -105,7 +151,7 @@ const EDGES = [
   // Pages + patterns roll up into projects, which the editor app manages
   { from: 'pages', to: 'projects', kind: 'spine' },
   { from: 'patterns', to: 'projects', kind: 'spine' },
-  { from: 'themes', to: 'projects', kind: 'feeds' },
+  { from: 'runtime-classes', to: 'projects', kind: 'feeds' },
   { from: 'projects', to: 'a1-web', kind: 'spine' },
 
   // Packages also power the standalone example sites
@@ -114,10 +160,10 @@ const EDGES = [
 ]
 
 const LEGEND = [
-  { color: 'accent', label: 'Token tiers (the root)' },
-  { color: 'info',   label: 'System authoring' },
-  { color: 'success', label: 'Packages' },
-  { color: 'warn',   label: 'Component library' },
+  { color: 'accent', label: 'Authored token tiers' },
+  { color: 'info',   label: 'Other authored foundations' },
+  { color: 'success', label: 'Build outputs & packages' },
+  { color: 'warn',   label: 'Runtime cascade & components' },
   { color: 'muted',  label: 'Compositions & app' },
 ]
 
@@ -149,12 +195,12 @@ export function SystemMapFoundationPage({ onNavigate }) {
             System map
           </Heading>
           <Paragraph size="sm" color="muted">
-            How A1 fits together, end to end. Design tokens are the root — base values
-            alias up to semantic roles and then component tokens. Themes, icons, labels,
-            and rules contribute to the component library, which composes into the pages,
-            patterns, and projects of the a1-web editor. Token-to-package edges run through
-            the Style Dictionary build. Click any node to trace what it connects to; drag
-            to rearrange; right-click the canvas to fit or reset.
+            How A1 fits together, end to end. Authored DTCG tokens pass through Style
+            Dictionary into root CSS variables and resolved JSON. Theme selector overrides
+            use a separate builder, while dark, light, contrast, and inverse behavior lives
+            in hand-authored color-scheme CSS. At runtime, classes on the document and local
+            inverse islands change the inherited variable set consumed by components.
+            Click any node to trace its path; drag to rearrange; right-click to fit or reset.
           </Paragraph>
         </Stack>
       </Section>
@@ -179,14 +225,14 @@ export function SystemMapFoundationPage({ onNavigate }) {
             </Stack>
           </Stack>
 
-          <div style={{ height: 680 }}>
+          <div style={{ height: 760 }}>
             <Canvas
               showGrid
               showControls
               traceConnections
               draggableNodes
               onNodeMove={(id, x, y) => setPositions((prev) => ({ ...prev, [id]: { x, y } }))}
-              defaultZoom={0.62}
+              defaultZoom={0.48}
               defaultPan={{ x: 24, y: 24 }}
               aria-label="A1 system architecture graph"
             >

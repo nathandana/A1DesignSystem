@@ -36,6 +36,7 @@ import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
 import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
 import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
+import { VirtualDesignerPanel } from '../backlog/VirtualDesignerPanel'
 import {
   ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
 } from '../backlog/TicketBadges'
@@ -554,6 +555,8 @@ export function Backlog({ onNavigate }) {
             <VirtualTeamPanel />
             <Divider />
             <VirtualArchitectPanel />
+            <Divider />
+            <VirtualDesignerPanel />
           </Stack>
         )}
         </Stack>

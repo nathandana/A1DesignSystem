@@ -4,6 +4,7 @@ import {
   DataTable,
   Grid,
   Heading,
+  Icon,
   Paragraph,
   Section,
   Stack,
@@ -69,9 +70,9 @@ function OverviewTable({ onNavigate }) {
 
 export function ComponentsOverviewPage({ onNavigate }) {
   const overviewStats = [
-    { label: 'Components', value: allComponents.length },
-    { label: 'Categories', value: new Set(allComponents.map((component) => component.categoryId)).size },
-    { label: 'Rule files', value: ruleSourceFiles.length },
+    { label: 'Components', value: allComponents.length, icon: 'widgets' },
+    { label: 'Categories', value: new Set(allComponents.map((component) => component.categoryId)).size, icon: 'folder' },
+    { label: 'Rule files', value: ruleSourceFiles.length, icon: 'rule' },
   ]
 
   return (
@@ -95,14 +96,21 @@ export function ComponentsOverviewPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="md" aria-labelledby="component-inventory-heading">
         <Grid columns={{ xs: 1, sm: 3 }} gap="md">
           {overviewStats.map((stat) => (
-            <Card key={stat.label}>
-              <Stack direction="column" gap="xs">
-                <Heading as="h2" size="xl" type='display'>{stat.value}</Heading>
-                <Paragraph size="sm" color="muted">{stat.label}</Paragraph>
+            <Card className="a1-p-8" key={stat.label}>
+              <Stack direction="row" gap="sm" align='baseline'>
+                <Heading as="h2" size="lg" type='display'>{stat.value}</Heading>
+                <Paragraph size="md" color="muted">{stat.label}</Paragraph>
               </Stack>
             </Card>
+
+
+
           ))}
+
+
+
         </Grid>
+
 
         <OverviewTable onNavigate={onNavigate} />
       </Section>

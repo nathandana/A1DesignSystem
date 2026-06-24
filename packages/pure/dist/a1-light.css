@@ -56,6 +56,7 @@
   --base-color-neutral-100: #e1e8f3;
   --base-color-neutral-1000: #000000;
   --base-color-neutral-200: #c8d2e0;
+  --base-color-neutral-25: #f7fafe;
   --base-color-neutral-300: #a6b2c4;
   --base-color-neutral-400: #8290a5;
   --base-color-neutral-50: #f0f6fe;
@@ -702,7 +703,7 @@
   --component-step-tracker-dot-color: #64748b;
   --component-step-tracker-dot-size: 0.5rem;
   --component-step-tracker-gap: 0.375rem;
-  --component-sticky-actions-background: #ffffff;
+  --component-sticky-actions-background: #f7fafe;
   --component-sticky-actions-border-width: 1px;
   --component-sticky-actions-gap: 0.75rem;
   --component-sticky-actions-padding-block: 1rem;
@@ -816,7 +817,7 @@
   --semantic-color-surface-card: #ffffff;
   --semantic-color-surface-field: #ffffff;
   --semantic-color-surface-inverse: #060b14;
-  --semantic-color-surface-page: #ffffff;
+  --semantic-color-surface-page: #f7fafe;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;
   --semantic-color-text-accent: #7c3aed;
@@ -1055,7 +1056,7 @@
   --theme-a1-light-color-status-warn-border: #e59f68;
   --theme-a1-light-color-status-warn-foreground: #fffbf8;
   --theme-a1-light-color-status-warn-surface: #fff3ea;
-  --theme-a1-light-color-surface-page: #ffffff;
+  --theme-a1-light-color-surface-page: #f7fafe;
   --theme-a1-light-color-surface-panel: #f0f6fe;
   --theme-a1-light-color-surface-raised: #e1e8f3;
   --theme-a1-light-color-text-default: #060b14;
@@ -1285,7 +1286,7 @@
   --semantic-color-status-warn-surface: #fff3ea;
   --semantic-color-surface-card: #ffffff;
   --semantic-color-surface-field: #ffffff;
-  --semantic-color-surface-page: #ffffff;
+  --semantic-color-surface-page: #f7fafe;
   --semantic-color-surface-panel: #f0f6fe;
   --semantic-color-surface-raised: #e1e8f3;
   --semantic-color-text-accent: #7c3aed;

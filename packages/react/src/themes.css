@@ -247,6 +247,7 @@ html.a1-theme-aperture {
 html.a1-theme-catlympics {
   color-scheme: light;
   --base-color-neutral-0: #fffdfb;
+  --base-color-neutral-25: #fffaf7;
   --base-color-neutral-50: #fff7f2;
   --base-color-neutral-100: #fff0e7;
   --base-color-neutral-200: #fce0d0;
@@ -697,6 +698,7 @@ html.a1-theme-fresh {
 
 html.a1-theme-heritage {
   --base-color-neutral-0: #fffdf8;
+  --base-color-neutral-25: #fcf8f1;
   --base-color-neutral-50: #f8f3ea;
   --base-color-neutral-100: #eee5d8;
   --base-color-neutral-200: #dccfbd;
@@ -843,6 +845,7 @@ html.a1-theme-heritage {
 
 html.a1-theme-marshmallow {
   --base-color-neutral-0: #fcfcfc;
+  --base-color-neutral-25: #f4f3f2;
   --base-color-neutral-50: #ece9e8;
   --base-color-neutral-100: #dcd6d4;
   --base-color-neutral-200: #cbc3bf;

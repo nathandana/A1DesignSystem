@@ -6,6 +6,10 @@
           "$type": "color",
           "$value": "#ffffff"
         },
+        "25": {
+          "$type": "color",
+          "$value": "#f7fafe"
+        },
         "50": {
           "$type": "color",
           "$value": "#f0f6fe"
@@ -376,7 +380,7 @@
       "surface": {
         "page": {
           "$type": "color",
-          "$value": "{base.color.neutral.0}"
+          "$value": "{base.color.neutral.25}"
         },
         "card": {
           "$type": "color",

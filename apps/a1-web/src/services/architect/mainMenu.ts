@@ -47,7 +47,7 @@ const EDITOR: NavNode = {
 };
 
 const FOUNDATION_GROUPS = [
-  { label: 'Visualize', ids: ['foundation-system-map'] },
+  { label: 'Visualize', ids: ['foundation-color-visualization', 'foundation-system-map'] },
   { label: 'Visual', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
   { label: 'Content', ids: ['foundation-iconography', 'foundation-labels'] },
   { label: 'Layout', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },

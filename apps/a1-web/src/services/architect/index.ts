@@ -8,6 +8,9 @@
 export { informationArchitect, auditNav } from './architect';
 export { getMainMenu } from './mainMenu';
 export { HEURISTICS } from './heuristics';
+// Target enumeration and project nav model for the panel's target picker.
+export { listArchitectTargets, projectNavModel } from './projectModel';
+export type { ArchitectTarget } from './projectModel';
 export type {
   ArchitectProfile, ArchitectReport, Finding, Heuristic, NavModel, NavNode, Severity,
 } from './types';

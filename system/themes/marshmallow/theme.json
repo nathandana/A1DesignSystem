@@ -4,6 +4,7 @@
   "selectors": {
     ".a1-theme-marshmallow": {
        "--base-color-neutral-0": "#fcfcfc",
+      "--base-color-neutral-25": "#f4f3f2",
       "--base-color-neutral-50": "#ece9e8",
       "--base-color-neutral-100": "#dcd6d4",
       "--base-color-neutral-200": "#cbc3bf",

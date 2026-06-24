@@ -5,6 +5,7 @@
     ".a1-theme-catlympics": {
       "color-scheme": "light",
       "--base-color-neutral-0": "#fffdfb",
+      "--base-color-neutral-25": "#fffaf7",
       "--base-color-neutral-50": "#fff7f2",
       "--base-color-neutral-100": "#fff0e7",
       "--base-color-neutral-200": "#fce0d0",

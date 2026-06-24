@@ -694,7 +694,7 @@ function App() {
   }, [activePage])
 
   const FOUNDATION_GROUPS = [
-    { label: 'Visualize', ids: ['foundation-system-map'] },
+    { label: 'Visualize', ids: ['foundation-color-visualization', 'foundation-system-map'] },
     { label: 'Visual', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
     { label: 'Content', ids: ['foundation-iconography', 'foundation-labels'] },
     { label: 'Layout', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
@@ -884,6 +884,8 @@ function App() {
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
       : activePage === 'backlog'
       ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside" />
+      : activePage === 'foundation-color-visualization'
+      ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
   return (
