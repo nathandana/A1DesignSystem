@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Banner, Button, ButtonContainer, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
 import { PERSONAS } from '../services/backlog/personas'
-import { COMPLEXITY_LABELS, PRIORITY_LABELS } from '../services/backlog/types'
+import { COMPLEXITY_LABELS, PRIORITY_LABELS, TYPE_LABELS } from '../services/backlog/types'
 
 /**
  * Per-ticket Virtual Team review. A button per persona (currently the Product Owner)
- * evaluates *this* ticket — setting priority/size, asking clarifying questions, and stamping
+ * evaluates *this* ticket — setting type/priority/size, asking clarifying questions, and stamping
  * the review tag. It re-evaluates when the ticket has changed since the last review, and
  * reports "nothing changed" otherwise. Render gated behind `import.meta.env.DEV`.
  */
@@ -20,11 +20,12 @@ function Outcome({ persona, result }) {
   if (!result.acted) {
     return (
       <Paragraph size="sm" color="muted">
-        {persona.role}: reviewed — priority &amp; size already match. {result.rationale}
+        {persona.role}: reviewed — type, priority, and size already match. {result.rationale}
       </Paragraph>
     )
   }
   const bits = []
+  if (result.type) bits.push(`type → ${TYPE_LABELS[result.type]}`)
   if (result.priority) bits.push(`priority → ${PRIORITY_LABELS[result.priority]}`)
   if (result.complexity) bits.push(`size → ${COMPLEXITY_LABELS[result.complexity]}`)
   if (result.questions) bits.push(`${result.questions} question${result.questions > 1 ? 's' : ''} asked`)

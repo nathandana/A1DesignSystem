@@ -10,6 +10,7 @@ export function Inverse({
   return (
     <Component
       className={["a1-inverse", className].filter(Boolean).join(" ")}
+      data-a1-color-scope="inverse"
       {...props}
     >
       {children}

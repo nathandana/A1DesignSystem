@@ -44,8 +44,8 @@
 /* ── Variants ───────────────────────────────────────────────────────────── */
 
 .a1-notification--neutral {
-  --a1-notification-background: var(--base-color-neutral-600);
-  --a1-notification-foreground: var(--base-color-neutral-0);
+  --a1-notification-background: var(--component-notification-neutral-background);
+  --a1-notification-foreground: var(--component-notification-neutral-foreground);
 }
 
 .a1-notification--error {

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a1-design-system.local/schemas/theme.schema.json",
+  "title": "A1 theme",
+  "type": "object",
+  "required": ["name", "description", "selectors"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selectors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["selector"],
+        "additionalProperties": false,
+        "properties": {
+          "selector": {
+            "type": "string",
+            "minLength": 1
+          },
+          "overrides": {
+            "type": "string",
+            "pattern": "\\.json$"
+          },
+          "styles": {
+            "type": "string",
+            "pattern": "\\.json$"
+          }
+        },
+        "anyOf": [
+          {
+            "required": ["overrides"]
+          },
+          {
+            "required": ["styles"]
+          }
+        ]
+      }
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

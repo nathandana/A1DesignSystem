@@ -111,10 +111,10 @@ export function Home({ onNavigate }) {
           </Heading>
 </Stack>
           <Paragraph size={{ xs: 'md', md: 'lg', lg: 'lg' }} align="center">
-A1 is a rules based design system. Everything has a clear source of truth. It has a robust component library, a rules engine, a full web site editor and many more features. It’s so knowledgeable that you can design with it directly and follow your enterprise rules, or use AI. Even AI won’t mess this up.
+            A1 is a rules based <s>design</s> eco system. Rooted in a singular and clear source of truth. Explore components in multiple tech stacks, create custom themes, build entire projects with buit in data. Use <strong>AI tools to assist, not drift</strong>.
           </Paragraph>
 
-          <ButtonContainer align="center" size="lg">
+          <ButtonContainer align="center">
             <Button
               variant="primary"
               icon="arrow_forward"
@@ -122,6 +122,14 @@ A1 is a rules based design system. Everything has a clear source of truth. It ha
               onClick={() => onNavigate('editor')}
             >
               Open the editor
+            </Button>
+            <Button
+              variant="secondary"
+              icon="arrow_forward"
+              iconPosition="end"
+              onClick={() => onNavigate('backlog')}
+            >
+              View backlog
             </Button>
             <Button
               variant="secondary"

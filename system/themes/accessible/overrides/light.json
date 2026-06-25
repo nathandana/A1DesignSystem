@@ -1,0 +1,20 @@
+{
+  "tokens": {
+    "semantic": {
+      "color": {
+        "status": {
+          "success": {
+            "background": {
+              "$type": "color",
+              "$value": "{base.color.success.700}"
+            },
+            "foreground": {
+              "$type": "color",
+              "$value": "{base.color.success.0}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

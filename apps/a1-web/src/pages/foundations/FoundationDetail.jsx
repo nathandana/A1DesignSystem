@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { SystemMapFoundationPage } from './SystemMapFoundation.jsx'
 import { ColorFoundationPage } from './ColorFoundation.jsx'
 import { SizeFoundationPage } from './SizeFoundation.jsx'
@@ -13,10 +14,26 @@ import { PropConventionsFoundationPage } from './PropConventionsFoundation.jsx'
 import { ZIndexFoundationPage } from './ZIndexFoundation.jsx'
 import { UtilitiesFoundationPage } from './UtilitiesFoundation.jsx'
 
+const ColorVisualizationFoundationPage = lazy(() => (
+  import('./ColorVisualizationFoundation.jsx').then((module) => ({
+    default: module.ColorVisualizationFoundationPage,
+  }))
+))
+
 export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
   switch (foundation?.id) {
     case 'foundation-system-map':
       return <SystemMapFoundationPage onNavigate={onNavigate} />
+    case 'foundation-color-visualization':
+      return (
+        <Suspense fallback={null}>
+          <ColorVisualizationFoundationPage
+            onNavigate={onNavigate}
+            theme={theme}
+            colorMode={colorMode}
+          />
+        </Suspense>
+      )
     case 'foundation-color':
       return (
         <ColorFoundationPage

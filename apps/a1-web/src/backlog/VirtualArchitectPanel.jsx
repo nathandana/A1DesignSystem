@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import {
   Banner, Button, ButtonContainer, Card, Dialog, Divider, Heading, Icon,
-  MessageBadge, MessageEmptyState, Paragraph, Stack, Tab, TabList, TabPanel, Tabs,
+  MessageBadge, MessageEmptyState, Paragraph, SelectField, Stack, Tab, TabList, TabPanel, Tabs,
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
 import { StatusBadge } from './TicketBadges'
-import { auditNav, getMainMenu, informationArchitect } from '../services/architect'
+import { useFindingDecisions } from './useFindingDecisions'
+import { auditNav, getMainMenu, informationArchitect, listArchitectTargets, projectNavModel } from '../services/architect'
 import { ticketRef } from '../services/backlog/types'
 
 /**
@@ -35,8 +36,8 @@ const ARCHITECT_MARKER = 'Virtual Information Architect'
 
 // Findings the architect can file as work — praise is informational only.
 const isActionable = (f) => f.severity !== 'praise'
-// Map severity → ticket type: a broken law is a bug; everything else is housekeeping.
-const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'chore')
+// Map severity → ticket type: a broken law is a bug; improvements are features.
+const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'feature')
 // Stable, per-finding signature embedded in the ticket so re-runs recognise it.
 const findingSig = (navId, finding) => `${navId}::${finding.id}`
 
@@ -60,10 +61,21 @@ export function VirtualArchitectPanel() {
   // runKey increments on "Re-run" so useMemo produces a fresh audit of the live menu.
   const [runKey, setRunKey] = useState(0)
   const [lastRun, setLastRun] = useState(null)
-  const report = useMemo(() => auditNav(getMainMenu()), [runKey])
+  const [target, setTarget] = useState('menu')
+
+  const architectTargets = useMemo(() => listArchitectTargets(), [runKey])
+
+  const report = useMemo(() => {
+    if (target.startsWith('project:')) {
+      const projectId = target.slice(8)
+      return auditNav(projectNavModel(projectId))
+    }
+    return auditNav(getMainMenu())
+  }, [runKey, target, architectTargets])
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('findings')
   const [busy, setBusy] = useState(null) // finding.id currently filing, or 'all'
+  const decisions = useFindingDecisions('architect')
 
   if (!backlog) return null
 
@@ -80,15 +92,21 @@ export function VirtualArchitectPanel() {
   }
 
   const actionable = report.findings.filter(isActionable)
-  const unfiled = actionable.filter((f) => !filedRef(f))
+  // "File all" skips findings already filed or declined.
+  const unfiled = actionable.filter((f) => !filedRef(f) && !decisions.isDeclined(findingSig(report.navId, f)))
 
   async function logTicket(finding) {
     if (filedRef(finding)) return null // already on the backlog — don't repeat
+    const isProjectTarget = target.startsWith('project:')
+    const tgt = architectTargets.find((t) => t.value === target)
+    const scope = isProjectTarget
+      ? { kind: 'project', label: tgt?.label ?? report.navName, ref: tgt?.projectId }
+      : { kind: 'app', label: report.navName }
     return backlog.create({
       title: `${report.navName} IA — ${finding.title}`,
       description: findingDescription(finding, report),
       type: ticketTypeFor(finding),
-      scope: { kind: 'app', label: report.navName },
+      scope,
     })
   }
 
@@ -121,6 +139,13 @@ export function VirtualArchitectPanel() {
         <MessageBadge status="warn" subtle size="sm">Dev only</MessageBadge>
       </Stack>
       <Paragraph size="sm" color="muted">{informationArchitect.blurb}</Paragraph>
+
+      {/* Target picker */}
+      <SelectField label="Audit target" size="compact" value={target} onChange={(e) => setTarget(e.target.value)}>
+        {architectTargets.map((t) => (
+          <option key={t.value} value={t.value}>{t.label}</option>
+        ))}
+      </SelectField>
 
       {/* Launcher card — opens the report dialog */}
       <Card>
@@ -196,6 +221,8 @@ export function VirtualArchitectPanel() {
                 {report.findings.map((f) => {
                   const ui = SEVERITY_UI[f.severity]
                   const ref = filedRef(f)
+                  const sig = findingSig(report.navId, f)
+                  const declined = decisions.isDeclined(sig)
                   return (
                     <Card key={f.id} status={ui.status} statusLabel={ui.label}>
                       <Stack gap="xs">
@@ -217,6 +244,16 @@ export function VirtualArchitectPanel() {
                               <Icon name="check_circle" color="success" size="sm" />
                               <Paragraph size="xs" color="muted">Filed as {ref}</Paragraph>
                             </Stack>
+                          ) : declined ? (
+                            <Stack direction="row" gap="xs" align="center" wrap>
+                              <Icon name="block" color="muted" size="sm" />
+                              <Paragraph size="xs" color="muted">
+                                Declined{decisions.commentFor(sig) ? ` — ${decisions.commentFor(sig)}` : ''}
+                              </Paragraph>
+                              <Button size="sm" variant="tertiary" icon="undo" onClick={() => decisions.undo(sig)}>
+                                Undo
+                              </Button>
+                            </Stack>
                           ) : (
                             <ButtonContainer align="start">
                               <Button
@@ -228,6 +265,15 @@ export function VirtualArchitectPanel() {
                                 onClick={() => handleLogOne(f)}
                               >
                                 File as ticket
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="tertiary"
+                                icon="block"
+                                disabled={!!busy}
+                                onClick={() => decisions.start(sig, f.title)}
+                              >
+                                Decline
                               </Button>
                             </ButtonContainer>
                           )
@@ -273,6 +319,8 @@ export function VirtualArchitectPanel() {
           </TabPanel>
         </Tabs>
       </Dialog>
+
+      {decisions.dialog}
     </Stack>
   )
 }

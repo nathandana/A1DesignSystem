@@ -1,14 +1,340 @@
 {
-  "generated": "2026-06-19",
-  "status": "pass",
-  "totalScanned": 522,
-  "totalViolations": 0,
-  "storiesAffected": 0,
+  "generated": "2026-06-25",
+  "status": "fail",
+  "totalScanned": 573,
+  "totalViolations": 15,
+  "storiesAffected": 13,
   "counts": {
     "critical": 0,
-    "serious": 0,
+    "serious": 15,
     "moderate": 0,
     "minor": 0
   },
-  "stories": []
+  "stories": [
+    {
+      "id": "components-canvas--colors",
+      "title": "Components/Canvas",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-canvas__node-label\">Warn</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.09 (foreground color: #fffbf8, background color: #d97706, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "components-canvas--context-menu-and-snap",
+      "title": "Components/Canvas",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-canvas__node-label\">Storybook</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.09 (foreground color: #fffbf8, background color: #d97706, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        },
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "description": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/nested-interactive?application=playwright",
+          "nodeCount": 5,
+          "nodes": [
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"Design Tokens\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--neutral a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 272px; top: 128px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"React\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--info a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 128px; top: 296px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"React Native\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--accent a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 272px; top: 296px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"HTML / CSS\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--success a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 416px; top: 296px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"Storybook\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--warn a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 272px; top: 464px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "components-canvas--default",
+      "title": "Components/Canvas",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-canvas__node-label\">Storybook</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.09 (foreground color: #fffbf8, background color: #d97706, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "components-canvas--edit-mode",
+      "title": "Components/Canvas",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-canvas__node-label\">Storybook</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.09 (foreground color: #fffbf8, background color: #d97706, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        },
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "description": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/nested-interactive?application=playwright",
+          "nodeCount": 5,
+          "nodes": [
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"Design Tokens\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--neutral a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 260px; top: 120px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"React\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--info a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 120px; top: 300px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"React Native\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--accent a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 260px; top: 300px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"HTML / CSS\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--success a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 400px; top: 300px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            },
+            {
+              "html": "<div role=\"button\" tabindex=\"0\" aria-label=\"Storybook\" class=\"a1-canvas__node a1-canvas__node--circle a1-canvas__node--warn a1-canvas__node--md a1-canvas__node--editable\" style=\"left: 260px; top: 470px; width: 80px; height: 80px;\">",
+              "failureSummary": "Fix any of the following:\n  Element has focusable descendants"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "components-canvas--shapes",
+      "title": "Components/Canvas",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-canvas__node-label\">Rectangle</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.09 (foreground color: #fffbf8, background color: #d97706, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--aperture-light",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--info a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">info</span>Info</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.19 (foreground color: #0071e3, background color: #eaf3fe, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--cat-lympics-dark",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 2,
+          "nodes": [
+            {
+              "html": "<button class=\"a1-button a1-button--primary a1-button--sm\" type=\"button\">Primary</button>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #fff6ff, background color: #ff3fa6, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "html": "<button class=\"a1-button a1-button--secondary a1-button--sm\" type=\"button\">Secondary</button>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.88 (foreground color: #e03595, background color: #fff6ff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--cat-lympics-light",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 5,
+          "nodes": [
+            {
+              "html": "<button class=\"a1-button a1-button--primary a1-button--sm\" type=\"button\" data-color-contract=\"primary-button\">Primary</button>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #fff6ff, background color: #ff3fa6, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "html": "<button class=\"a1-button a1-button--secondary a1-button--sm\" type=\"button\">Secondary</button>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.88 (foreground color: #e03595, background color: #fff6ff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "html": "<button class=\"a1-button a1-button--tertiary a1-button--sm\" type=\"button\">Tertiary</button>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.88 (foreground color: #e03595, background color: #fff6ff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--warn a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">warning</span>Warning</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.85 (foreground color: #d07e00, background color: #fff3d6, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "html": "<span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">warning</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.85 (foreground color: #d07e00, background color: #fff3d6, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--crochet-light",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--info a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">info</span>Info</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.11 (foreground color: #5e73b0, background color: #eff2fb, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--fresh-dark",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<p class=\"a1-paragraph a1-paragraph--sm a1-paragraph--muted\">Muted supporting text.</p>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.17 (foreground color: #a6b2c4, background color: #046756, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--fresh-light",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--warn a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">warning</span>Warning</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.05 (foreground color: #a26e0c, background color: #fdf5e2, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--heritage-dark",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--success a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">check_circle</span>Success</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.39 (foreground color: #448653, background color: #041108, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "foundations-color-regression--marshmallow-light",
+      "title": "Foundations/Color regression",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "html": "<span class=\"a1-message-badge a1-message-badge--info a1-message-badge--subtle a1-message-badge--sm\"><span class=\"a1-icon material-symbols-outlined\" aria-hidden=\"true\">info</span>Info</span>",
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.11 (foreground color: #5e73b0, background color: #eff2fb, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

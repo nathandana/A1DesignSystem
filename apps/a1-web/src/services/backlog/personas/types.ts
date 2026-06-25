@@ -2,13 +2,13 @@
  * Virtual team — local, deterministic "personas" that review the backlog like a real
  * team would, WITHOUT any API calls (no model credits spent). Each persona is its own
  * well-defined module: a pure `evaluate(item)` that turns a ticket's own fields into a
- * verdict (priority, size, clarifying questions, rationale). The runner applies those
+ * verdict (type, priority, size, clarifying questions, rationale). The runner applies those
  * verdicts to the store, attributing comments to the persona.
  *
  * Add a persona by writing a module that exports a `Persona` and registering it in
  * `index.ts`. The runner and the dev-only Virtual Team panel are generic over personas.
  */
-import type { BacklogItem, Complexity, Priority, TicketStatus } from '../types';
+import type { BacklogItem, Complexity, Priority, TicketStatus, TicketType } from '../types';
 
 /**
  * A clarifying question a persona asks. When `options` are present the ticket shows a
@@ -32,6 +32,8 @@ export interface PersonaContext {
 
 /** What a persona proposes for a single ticket. `null` from evaluate() = skip the ticket. */
 export interface PersonaVerdict {
+  /** Proposed ticket type (applied only when it differs). */
+  type?: TicketType;
   /** Proposed priority (applied only when it differs from the ticket's current value). */
   priority?: Priority | null;
   /** Proposed size/complexity (applied only when it differs). */
@@ -57,6 +59,8 @@ export interface Persona {
   blurb: string;
   /** Prefix for the persona's review notes, e.g. "PO review —". */
   signature: string;
+  /** Increment when review policy changes so existing tickets are deliberately reassessed. */
+  revision?: number;
   /** Evaluation from the ticket's fields (+ optional backlog context). Return null to skip. */
   evaluate(item: BacklogItem, context?: PersonaContext): PersonaVerdict | null;
 }
@@ -65,6 +69,8 @@ export interface Persona {
 export interface PersonaChange {
   ref: string;
   title: string;
+  typeFrom?: TicketType;
+  type?: TicketType;
   priorityFrom: Priority | null;
   priority?: Priority | null;
   complexity?: Complexity | null;
@@ -78,8 +84,10 @@ export interface PersonaChange {
 export interface PersonaItemOutcome {
   /** `unchanged` = already reviewed, nothing changed since; `declined` = persona skipped it. */
   reason: 'reviewed' | 'unchanged' | 'declined';
-  /** The persona changed priority/size or asked a question. */
+  /** The persona changed type/priority/size or asked a question. */
   acted: boolean;
+  type?: TicketType;
+  typeFrom: TicketType;
   priority?: Priority | null;
   priorityFrom: Priority | null;
   complexity?: Complexity | null;
@@ -99,6 +107,7 @@ export interface PersonaRunSummary {
   reviewed: number;
   /** Of the reviewed, those the persona changed or questioned. */
   acted: number;
+  retyped: number;
   reprioritized: number;
   resized: number;
   questions: number;

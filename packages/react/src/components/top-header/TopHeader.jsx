@@ -482,6 +482,8 @@ function ActionMenu({ action, isOpen, onToggle }) {
         <IconButton
           icon={action.icon}
           label={action.label}
+          variant={action.active ? "secondary" : undefined}
+          aria-current={action.active ? "page" : undefined}
           aria-expanded={hasItems ? isOpen : undefined}
           aria-haspopup={hasItems ? "menu" : undefined}
           onClick={hasItems ? onToggle : action.onClick}

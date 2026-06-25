@@ -140,7 +140,11 @@ export function Section({
   ].filter(Boolean).join(" ");
 
   return (
-    <Component className={classes.join(" ")} {...props}>
+    <Component
+      className={classes.join(" ")}
+      {...(inverse ? { "data-a1-color-scope": "inverse" } : {})}
+      {...props}
+    >
       {resolvedContentWidth ? (
         <div className={innerClasses}>
           {children}

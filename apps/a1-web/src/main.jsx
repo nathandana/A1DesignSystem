@@ -74,6 +74,7 @@ import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
+import { VirtualTeam } from './pages/VirtualTeam.jsx'
 import { About } from './pages/About.jsx'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
@@ -111,24 +112,25 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'help', 'backlog', 'accessibility', 'releases', 'about']
-const RESOURCE_PAGE_ICONS = {
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'accessibility', 'releases', 'about']
+const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
   help: 'help',
   backlog: 'task_alt',
+  'virtual-team': 'groups',
   accessibility: 'accessibility',
   releases: 'new_releases',
   about: 'info',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   features: 'Features',
-  'get-started': 'Get Started',
+  'get-started': 'Get started',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -144,6 +146,7 @@ const PAGE_TITLES = {
   accessibility: 'Accessibility',
   releases: 'Releases',
   backlog: 'Backlog',
+  'virtual-team': 'Virtual team',
   'backlog-ticket': 'Backlog',
   about: 'About',
   account: 'Account',
@@ -694,24 +697,26 @@ function App() {
   }, [activePage])
 
   const FOUNDATION_GROUPS = [
-    { label: 'Visualize', ids: ['foundation-system-map'] },
-    { label: 'Visual', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-    { label: 'Content', ids: ['foundation-iconography', 'foundation-labels'] },
-    { label: 'Layout', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
-    { label: 'Standards', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+    { label: 'Visualize', icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: 'Visual', icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: 'Content', icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
+    { label: 'Layout', icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
+    { label: 'Standards', icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
   ]
 
   const navItems = [
     {
-      id: 'resources',
-      label: 'Resources',
-      active: RESOURCE_PAGE_IDS.includes(activePage),
-      items: RESOURCE_PAGE_IDS.map((id) => ({
-        icon: RESOURCE_PAGE_ICONS[id],
-        label: PAGE_TITLES[id],
-        href: getPath(id),
-        onClick: (e) => handleNavClick(e, id),
-      })),
+      id: 'explore',
+      label: 'Explore',
+      active: EXPLORE_PAGE_IDS.includes(activePage),
+      items: [...EXPLORE_PAGE_IDS]
+        .sort((a, b) => PAGE_TITLES[a].localeCompare(PAGE_TITLES[b]))
+        .map((id) => ({
+          icon: PAGE_ICONS[id],
+          label: PAGE_TITLES[id],
+          href: getPath(id),
+          onClick: (e) => handleNavClick(e, id),
+        })),
     },
     {
       id: 'foundations',
@@ -724,9 +729,11 @@ function App() {
           href: getPath('foundations'),
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
-        ...FOUNDATION_GROUPS.flatMap(({ label, ids }) => [
-          { divider: true, label },
-          ...ids
+        { divider: true },
+        ...FOUNDATION_GROUPS.map(({ label, icon, ids }) => ({
+          icon,
+          label,
+          items: ids
             .map((id) => foundations.find((f) => f.id === id))
             .filter(Boolean)
             .sort((a, b) => a.title.localeCompare(b.title))
@@ -736,7 +743,7 @@ function App() {
               href: getPath(foundation.id),
               onClick: (e) => handleNavClick(e, foundation.id),
             })),
-        ]),
+        })),
       ],
     },
     {
@@ -766,7 +773,7 @@ function App() {
     },
     {
       id: 'editor',
-      label: PAGE_TITLES.editor,
+      label: 'Editors',
       active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
         {
@@ -834,14 +841,15 @@ function App() {
       id: 'new-ticket',
       icon: 'flag',
       iconOnly: true,
-      label: 'Report a bug or request a feature',
+      label: 'Create a ticket',
       onClick: () => backlog?.openCreate({ kind: 'general' }),
     },
     {
       id: 'backlog-queue',
-      icon: 'notifications',
+      icon: 'checklist',
       iconOnly: true,
       label: 'Your backlog queue',
+      active: activePage === 'backlog',
       badge: backlog?.unreadCount || undefined,
       onClick: () => {
         if (backlog?.unreadCount) {
@@ -850,6 +858,22 @@ function App() {
         navigate('backlog')
       },
     },
+    {
+      id: 'help',
+      icon: PAGE_ICONS.help,
+      iconOnly: true,
+      label: 'Help',
+      active: activePage === 'help',
+      onClick: () => navigate('help'),
+    },
+    ...(import.meta.env.DEV ? [{
+      id: 'virtual-team',
+      icon: PAGE_ICONS['virtual-team'],
+      iconOnly: true,
+      label: 'Virtual team',
+      active: activePage === 'virtual-team',
+      onClick: () => navigate('virtual-team'),
+    }] : []),
     {
       id: 'settings',
       icon: 'settings',
@@ -884,6 +908,8 @@ function App() {
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
       : activePage === 'backlog'
       ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside" />
+      : activePage === 'foundation-color-visualization'
+      ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
   return (
@@ -1149,6 +1175,7 @@ function App() {
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
+        {import.meta.env.DEV && activePage === 'virtual-team' && <VirtualTeam onNavigate={navigate} />}
         {activePage === 'backlog-ticket' && <BacklogTicketPage key={window.location.pathname} onNavigate={navigate} />}
         {activePage === 'about' && <About onNavigate={navigate} />}
 

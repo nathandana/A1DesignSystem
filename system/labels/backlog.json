@@ -61,11 +61,11 @@
         "$description": "Backlog ticket type: something is broken.",
         "locale": { "es": "Error", "fr": "Bogue", "de": "Fehler", "pt": "Erro", "ja": "バグ", "zh": "缺陷", "ar": "خلل" }
       },
-      "typeChore": {
+      "typeEpic": {
         "$type": "string",
-        "$value": "Chore",
-        "$description": "Backlog ticket type: maintenance or housekeeping work.",
-        "locale": { "es": "Tarea", "fr": "Tâche", "de": "Aufgabe", "pt": "Tarefa", "ja": "雑務", "zh": "杂务", "ar": "مهمة" }
+        "$value": "Epic",
+        "$description": "Backlog ticket type: a large outcome delivered through multiple slices.",
+        "locale": { "es": "Épica", "fr": "Épopée", "de": "Epic", "pt": "Épico", "ja": "エピック", "zh": "史诗", "ar": "ملحمة" }
       },
       "priorityCritical": {
         "$type": "string",
@@ -99,9 +99,9 @@
       },
       "reportOrRequest": {
         "$type": "string",
-        "$value": "Report a bug or request a feature",
+        "$value": "Create a ticket",
         "$description": "Action label for the create-ticket affordance shown across the app.",
-        "locale": { "es": "Informar de un error o solicitar una función", "fr": "Signaler un bogue ou demander une fonctionnalité", "de": "Fehler melden oder Funktion anfragen", "pt": "Relatar um erro ou solicitar um recurso", "ja": "バグを報告または機能をリクエスト", "zh": "报告缺陷或请求功能", "ar": "أبلغ عن خلل أو اطلب ميزة" }
+        "locale": { "es": "Crear un ticket", "fr": "Créer un ticket", "de": "Ticket erstellen", "pt": "Criar um ticket", "ja": "チケットを作成", "zh": "创建工单", "ar": "أنشئ تذكرة" }
       },
       "vote": {
         "$type": "string",

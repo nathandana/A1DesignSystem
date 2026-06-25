@@ -18,17 +18,17 @@
 /* Dark mode and inverse — bright light blue for contrast on dark backgrounds */
 .a1-theme-dark .a1-link,
 .a1-inverse .a1-link {
-  color: var(--base-color-info-100);
+  color: var(--component-link-inverse-color);
 }
 
 .a1-theme-dark .a1-link:hover,
 .a1-inverse .a1-link:hover {
-  color: var(--base-color-info-50);
+  color: var(--component-link-inverse-color-hover);
 }
 
 .a1-theme-dark .a1-link:active,
 .a1-inverse .a1-link:active {
-  color: var(--base-color-info-200);
+  color: var(--component-link-inverse-color-pressed);
 }
 
 /* Dark on inverse restores light-mode values */

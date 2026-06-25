@@ -1205,7 +1205,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <ToolbarDivider />
             <ToolbarButton
               icon="flag"
-              label="Report a bug or request a feature"
+              label="Create a ticket"
               onClick={() => openTicket({ kind: 'theme', ref: themeId, label: theme.name })}
             />
           </Toolbar>

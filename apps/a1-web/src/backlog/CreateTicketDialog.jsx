@@ -26,7 +26,7 @@ import { ScopeBadge } from './TicketBadges'
 const TYPE_OPTIONS = TYPES.map((value) => ({ value, label: TYPE_LABELS[value] }))
 
 /**
- * The shared "Report a bug / request a feature" form. Presentational: it owns the
+ * The shared create-ticket form. Presentational: it owns the
  * form state and calls `onSubmit(input)` — the BacklogProvider wires that to the
  * store and toasts the new A1-<n>. `scope` pre-fills (and locks) the scope when the
  * dialog is opened from a scoped surface (a component page, the editor, a theme…).

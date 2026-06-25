@@ -6,6 +6,9 @@
 |------|---------|
 | Token + theme + html-css rebuild | `npm run build:tokens && npm run build:html-css` |
 | Theme rebuild only | `npm run build:themes` |
+| Color-token inventory + validation | `npm run tokens:audit:check` |
+| Update computed color contract | `npm run tokens:contract:update` |
+| Check computed color contract | `npm run tokens:contract:check` |
 | Full QA (axe + visual + report) | `npm run test:qa` |
 | Update visual baselines | `npm run test:qa:update` |
 | Storybook dev | `npm run storybook` |

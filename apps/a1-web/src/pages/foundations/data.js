@@ -7,6 +7,13 @@ export const foundations = [
     points: ['Tokens → packages → components', 'Components → pages & patterns', 'Click to trace, drag to arrange'],
   },
   {
+    id: 'foundation-color-visualization',
+    title: 'Color visualization',
+    icon: 'view_in_ar',
+    body: 'A 3D OKLCH view of the primitive color ramps, with lightness, chroma, hue, gamut, ramp diagnostics, and cross-ramp step alignment.',
+    points: ['3D token space', 'Ramp diagnostics', 'Step alignment'],
+  },
+  {
     id: 'foundation-color',
     title: 'Color',
     icon: 'palette',

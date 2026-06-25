@@ -2,8 +2,8 @@
  * Run accessibility checks only for components changed in the current git diff.
  *
  * Detects changed component names by examining modified files under
- * packages/react/src/components/. For each changed component, runs
- * test-storybook filtered to that component's stories.
+ * packages/react/src/components/. For each changed component, runs the focused
+ * axe wrapper against matching Storybook story IDs.
  *
  * Expects Storybook to be running on http://localhost:6006.
  */
@@ -37,7 +37,7 @@ for (const component of changed) {
   console.log(`\n── Checking: ${component} ──────────────────────────\n`);
   try {
     execSync(
-      `test-storybook --url http://localhost:6006 --testTimeout=60000 --testNamePattern "${component}"`,
+      `node scripts/a11y/run-component.mjs "${component}"`,
       { stdio: "inherit" }
     );
   } catch {

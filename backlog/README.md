@@ -5,7 +5,7 @@ ticket tracker) and the repo, so an agent or dev can triage, enrich, and impleme
 
 The Backlog UI lives at `?page=backlog` in a1-web. Anyone signed in can file a ticket (the global
 "flag" button in the header, or the pre-scoped button in the editor / component pages / theme editor),
-suggest a priority, complexity, and type (bug / feature / chore), vote, and discuss. Tickets carry a
+suggest a priority, complexity, and type (bug / feature / epic), vote, and discuss. Tickets carry a
 human ref **`A1-<n>`** and move through: `new → triaged → accepted → in_progress → done → released`
 (plus terminal `wont_fix` / `duplicate`).
 
@@ -20,6 +20,10 @@ SUPABASE_SERVICE_ROLE_KEY=<service role key from Supabase → Project Settings �
 ```
 
 (The schema must already be applied — run `apps/a1-web/supabase/schema.sql` in the Supabase SQL editor.)
+
+For an existing workspace upgrading to the A1-164 ticket types, run
+`apps/a1-web/supabase/migrations/20260625_a1_164_ticket_types.sql`. It converts existing
+Chores to Features and updates the database constraint to accept Epics.
 
 ## Workflow
 
