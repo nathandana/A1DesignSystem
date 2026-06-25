@@ -657,6 +657,26 @@ const HELP = [
         ),
       },
       {
+        id: 'custom-icons',
+        title: 'Custom icons',
+        keywords: 'custom icons svg upload font project scope validate 24 path engine icon editor',
+        body: (
+          <Stack gap="sm">
+            <P>Open <strong>Custom icons</strong> from the Editors menu to add original SVG artwork and make it available to component icon fields.</P>
+            <Steps items={[
+              'Choose an SVG and give it a snake_case name.',
+              'Select the projects that may use it, or leave every project unchecked to make it global.',
+              'When validation passes, add it to the browser-built custom icon font.',
+              'Use the icon as custom:name in an icon field. Unprefixed names continue to use Material Symbols.',
+            ]} />
+            <Banner status="info" variant="inline" title="SVG specification">
+              Custom artwork must use a 0 0 24 24 viewBox and one or more filled paths. Convert strokes to outlines first. Scripts, external resources, transforms, styles, and unsupported SVG elements are rejected.
+            </Banner>
+            <P color="muted">Custom icons and their generated font stay in this browser. The active project loads global icons plus icons assigned to that project.</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'ai-images',
         title: 'AI image finder',
         keywords: 'ai image finder unsplash claude api key describe suggestions thumbnails caption generate',
@@ -940,7 +960,7 @@ const HELP = [
       {
         id: 'virtual-team',
         title: 'Virtual team',
-        keywords: 'virtual team product owner designer information architect review audit dev development',
+        keywords: 'virtual team product owner designer information architect data dataset binding review audit dev development',
         body: (
           <Stack gap="sm">
             <P>
@@ -952,6 +972,7 @@ const HELP = [
               'Product Owner — reviews ticket type, priority, size, business value, and shipped status.',
               'Information Architect — audits navigation structures and can file actionable findings.',
               'Designer — audits tokens, pages, projects, and release notes for design-quality findings.',
+              'Virtual data — matches project templates to available datasets, previews repeat and field bindings, and applies them through editor history.',
             ]} />
           </Stack>
         ),

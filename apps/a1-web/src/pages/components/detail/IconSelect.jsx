@@ -1,8 +1,14 @@
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Autocomplete, IconButton } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
 import { AI_ENABLED } from '../../../lib/aiImages.ts'
+import {
+  customIconMatchesProject,
+  listCustomIcons,
+  subscribeCustomIconStore,
+} from '../../../lib/customIconStore.ts'
+import { getActiveProjectId } from '../../../projects/projectStore.ts'
 
 // Friendlier names for a few Material Symbols category ids; the rest are
 // sentence-cased from the id.
@@ -18,7 +24,7 @@ function categoryLabel(id) {
 // Grouped icon options, built once: every Material Symbol mapped to
 // `{ value, label, icon, group }` and sorted by category then name so the
 // Autocomplete renders one heading per category.
-const ICON_OPTIONS = iconRegistry.icons
+const MATERIAL_ICON_OPTIONS = iconRegistry.icons
   .map((icon) => {
     const cat = Array.isArray(icon.categories) ? icon.categories[0] : icon.categories
     return { value: icon.name, label: icon.name, icon: icon.name, group: categoryLabel(cat) }
@@ -52,7 +58,30 @@ export function IconSelect({
 }) {
   const [aiOpen, setAiOpen] = useState(false)
   const [hint, setHint] = useState('')
+  const [customIcons, setCustomIcons] = useState([])
   const wrapRef = useRef(null)
+
+  useEffect(() => {
+    let active = true
+    const reload = () => listCustomIcons().then((icons) => {
+      if (!active) return
+      const projectId = getActiveProjectId()
+      setCustomIcons(icons.filter((icon) => customIconMatchesProject(icon, projectId)))
+    })
+    reload()
+    const unsubscribe = subscribeCustomIconStore(reload)
+    return () => { active = false; unsubscribe() }
+  }, [])
+
+  const iconOptions = useMemo(() => [
+    ...customIcons.map((icon) => ({
+      value: `custom:${icon.name}`,
+      label: icon.name,
+      icon: `custom:${icon.name}`,
+      group: 'Custom icons',
+    })),
+    ...MATERIAL_ICON_OPTIONS,
+  ], [customIcons])
 
   function openAi() {
     setHint((promptHint && promptHint.trim()) || deriveHint(wrapRef.current))
@@ -68,7 +97,7 @@ export function IconSelect({
             size={size}
             value={value ?? ''}
             onChange={(name) => onChange?.(name)}
-            options={ICON_OPTIONS}
+            options={iconOptions}
             maxVisible={200}
             emptyText="No icons match"
             aria-label={label}

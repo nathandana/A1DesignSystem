@@ -178,7 +178,7 @@ export function IconographyFoundationPage({ onNavigate }) {
             Iconography
           </Heading>
           <Paragraph size="sm" color="muted">
-            A1 uses Material Symbols Outlined exclusively. Icons are passed by ligature name through the <code className="a1-web-token-code">icon</code> prop or rendered via the <code className="a1-web-token-code">Icon</code> component.
+            A1 uses Material Symbols Outlined for built-in icons and browser-built fonts for project-scoped custom icons. Pass a Material ligature name or a <code className="a1-web-token-code">custom:name</code> reference through an icon prop or the <code className="a1-web-token-code">Icon</code> component.
           </Paragraph>
         </Stack>
       </Section>

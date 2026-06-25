@@ -112,7 +112,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 
 ---
 
-## 4. Component registry (all 59) — type · container · role · key props
+## 4. Component registry (all 60) — type · container · role · key props
 
 `C` = container (accepts `children`). Sizes/values are defined in §5. Props listed are the common ones; see `components.md` for the full set.
 
@@ -130,6 +130,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `Spacer` | — | Fixed gap. | `size` (xs–xxl) |
 | `ButtonContainer` | C | Responsive row of action buttons. | `align` (start/center/end), `fillButtons` (bool) |
 | `Slot` | C | Constrained "blank area" (pattern authoring). | `label`, `allow` (type[]), `allowPatterns` (id[]), `min`, `max`, `columns`, `gap` |
+| `Outlet` | C | Shared project-layout insertion point for page content. | `name` |
 | `Divider` | — | Visual separator. | `orientation`, `variant` (subtle/strong/accent), `lineStyle` (solid/dashed/dotted), `size`, `space` |
 | `Figure` | — | Image with optional caption. | `src` (req), `alt`, `caption`, `radius`, `size` (3xs–xxl), `align`, `aspectRatio` (**colon form**: `16:9`/`4:3`/`3:2`/`1:1`/`2:3`/`3:4`/`9:16`/`21:9`), `crop` |
 | `Icon` | — | Material Symbol. | `name` (req — see §5 icons), `size` (xs–xl/jumbo), `color`, `fill` (bool) |
@@ -190,7 +191,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `PageNav` | — | In-page section nav. | `label`, `sections` (`{id,label,level}[]`) |
 | `TreeMenu` | — | Hierarchical tree. | `items`, `selectedId`, `showExpandControls` |
 | `Pagination` | — | Pager. | `page`, `pageCount`, `onPageChange` |
-| `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`), `direction` (row/column), `size`, `labelWidth` |
+| `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`; `label` is required and renders the term; do not use `term`), `direction` (row/column), `size`, `labelWidth` |
 | `DataTable` | — | Table. | `columns` (`{key,label}[]`), `rows` (objects keyed by each column `key`, include a unique `id`), `size` (**`comfortable`/`default`/`compact`** — not sm/md/lg; omit for auto), `notices` |
 | `Calendar` | — | Calendar (experimental). | `variant`, `initialMonth`, `selectable` |
 
@@ -209,7 +210,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 - **Section `surface`**: `page`, `panel`, `raised`, `card`. **`align`**: `none`, `start`, `center`, `end`.
 - **Button `variant`**: `primary`, `secondary`, `tertiary`, `destructive`, `success`. **`size`**: `sm`, `md`, `lg`.
 - **Responsive**: any prop may take a breakpoint object using `xs, sm, md, lg, xl`, e.g. `"columns": { "xs": 1, "md": 3 }`, `"direction": { "xs": "column", "md": "row" }`.
-- **Icons** (`Icon.name`, `*.icon`): Material Symbols Outlined names (snake_case), e.g. `home`, `add`, `search`, `settings`, `arrow_forward`, `check_circle`, `download`, `rocket_launch`. Only real Material Symbols names render.
+- **Icons** (`Icon.name`, `*.icon`): use Material Symbols Outlined names (snake_case), e.g. `home`, `add`, `search`, `settings`, `arrow_forward`, `check_circle`, `download`, `rocket_launch`. Project definitions may also use `custom:<snake_case_name>` when that custom icon is registered for the project.
 
 ---
 

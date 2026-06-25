@@ -131,7 +131,7 @@ function DatasetList({ items, loading, onOpen, onNew, onAddSample }) {
           <Cluster gap="sm" justify="center">
             <Button variant="primary" icon="add" onClick={onNew}>New dataset</Button>
             {SAMPLE_DATA_SOURCES.map((s) => (
-              <Button key={s.id} variant="secondary" icon="group" onClick={() => onAddSample(s)}>
+              <Button key={s.id} variant="secondary" icon={s.icon} onClick={() => onAddSample(s)}>
                 Add sample: {s.label}
               </Button>
             ))}
@@ -167,7 +167,7 @@ function DatasetList({ items, loading, onOpen, onNew, onAddSample }) {
           <Paragraph size="sm" color="muted">Add a sample dataset</Paragraph>
           <Cluster gap="sm">
             {unaddedSamples.map((s) => (
-              <Button key={s.id} variant="secondary" size="sm" icon="add" onClick={() => onAddSample(s)}>
+              <Button key={s.id} variant="secondary" size="sm" icon={s.icon} onClick={() => onAddSample(s)}>
                 {s.label}
               </Button>
             ))}

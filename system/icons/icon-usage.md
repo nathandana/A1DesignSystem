@@ -2,18 +2,18 @@
 
 This file is the system-level source of truth for which icon to use in common interface situations. It is written for AI agents and humans building A1 interfaces.
 
-Use `system/icons/material-symbols.json` as the definitive list of available icon names. Use this file to choose the right icon for a scenario.
+Use `system/icons/material-symbols.json` as the definitive list of built-in icon names. Project-scoped custom icons use the `custom:<name>` namespace and are managed in a1-web.
 
 Theme-specific products may override these choices later with a theme-local icon usage file, but the system default below is the baseline. If a theme override exists, keep the same scenario intent and document the replacement icon there.
 
 ## Rules
 
-1. Use Material Symbols names in snake_case in web and React code.
+1. Use Material Symbols names in snake_case for built-in icons. Use `custom:<snake_case_name>` only for icons registered in the active project font.
 2. React Native MaterialIcons may require hyphen-case for the same concept, for example `arrow-forward` instead of `arrow_forward`.
 3. Icons are decorative unless the icon-only control has no visible text. Icon-only buttons must have a specific accessible label.
 4. Use the clearest action icon for the actual action. Do not use a generic icon when a specific one exists.
 5. Add new rows to the usage lookup as icons are introduced in product or documentation work.
-6. Do not add icons that are not present in `system/icons/material-symbols.json`.
+6. Do not invent unprefixed names that are absent from `system/icons/material-symbols.json`. Add original SVG artwork through the Custom icons editor instead.
 
 ## Usage Lookup
 

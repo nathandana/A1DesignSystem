@@ -27,6 +27,7 @@ export { Heading, HeadingMark } from "./components/heading/Heading.jsx";
 export { List, ListItem } from "./components/list/List.jsx";
 export { Inset } from "./components/inset/Inset.jsx";
 export { Icon } from "./components/icon/Icon.jsx";
+export { registerCustomIconFont, clearCustomIconFont } from "./components/icon/customIconRegistry.js";
 export { Link } from "./components/link/Link.jsx";
 export { Paragraph } from "./components/paragraph/Paragraph.jsx";
 export { Banner } from "./components/banner/Banner.jsx";
