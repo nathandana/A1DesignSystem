@@ -12,7 +12,7 @@ import type { AddNotificationRow, BacklogBackend } from './backend';
 import { createLocalBackend } from './localBackend';
 import { createSupabaseBackend } from './supabaseBackend';
 import {
-  COMPLEXITY_LABELS, PRIORITY_LABELS, STATUS_LABELS, ticketRef,
+  COMPLEXITY_LABELS, PRIORITY_LABELS, STATUS_LABELS, TYPE_LABELS, normalizeTicketType, ticketRef,
 } from './types';
 import type {
   BacklogComment, BacklogItem, BacklogNotification, BacklogUser, CommentKind,
@@ -70,7 +70,7 @@ export async function createItem(input: CreateTicketInput): Promise<BacklogItem>
   return getBackend().createItem({
     title: input.title.trim(),
     description: input.description?.trim() || null,
-    type: input.type ?? 'feature',
+    type: normalizeTicketType(input.type),
     priority: input.priority ?? null,
     complexity: input.complexity ?? null,
     scopeKind: input.scope?.kind ?? 'general',
@@ -114,6 +114,12 @@ export async function updateItem(
       notifs.push({ userId: r.id, itemId: prev.id, kind: 'status',
         body: `${ref} moved to ${STATUS_LABELS[updated.status]}` });
     }
+  }
+  if (patch.type && patch.type !== prev.type) {
+    activity.push({
+      body: `Type: ${TYPE_LABELS[prev.type]} → ${TYPE_LABELS[updated.type]}`,
+      meta: { field: 'type', from: prev.type, to: updated.type },
+    });
   }
   if ('priority' in patch && patch.priority !== prev.priority) {
     activity.push({

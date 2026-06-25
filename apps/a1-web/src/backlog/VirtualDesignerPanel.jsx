@@ -43,8 +43,8 @@ const DESIGNER_MARKER = 'Virtual Designer'
 
 // Findings the designer can file as work — praise is informational only.
 const isActionable = (f) => f.severity !== 'praise'
-// Map severity → ticket type: a broken scale is a bug; refinements are housekeeping.
-const ticketTypeFor = (f) => (f.severity === 'critical' || f.severity === 'warning' ? 'bug' : 'chore')
+// Map severity → ticket type: broken behavior is a bug; refinements are features.
+const ticketTypeFor = (f) => (f.severity === 'critical' || f.severity === 'warning' ? 'bug' : 'feature')
 // Stable, per-finding signature embedded in the ticket so re-runs recognise it.
 const findingSig = (modelId, finding) => `${modelId}::${finding.id}`
 

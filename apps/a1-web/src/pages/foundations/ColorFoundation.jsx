@@ -45,13 +45,6 @@ const componentColorColumns = [
   { key: 'value', label: 'Current value' },
 ]
 
-const brandColorColumns = [
-  { key: 'swatch', label: 'Applied', width: 'var(--base-spacing-96)' },
-  { key: 'group', label: 'Group', sortable: true },
-  { key: 'token', label: 'Token', sortable: true, sortAccessor: (row) => row.tokenText },
-  { key: 'value', label: 'Current value' },
-]
-
 // ── Utilities ────────────────────────────────────────────────────────────────
 
 function toKebab(value) {
@@ -347,18 +340,6 @@ const componentColorRows = flattenColorTokens(tokens.component, ['component'])
     value: token.value,
   }))
 
-const brandColorRows = flattenColorTokens(tokens.brand.a1, ['brand', 'a1'])
-  .map((token) => ({
-    id: token.name,
-    swatch: <ColorSwatch cssVar={token.cssVar} />,
-    group: token.path[2],
-    token: <TokenCode>{token.cssVar}</TokenCode>,
-    tokenText: token.cssVar,
-    cssVar: token.cssVar,
-    fallbackValue: token.value,
-    value: token.value,
-  }))
-
 // ── Filter + search definitions ───────────────────────────────────────────────
 
 const PRIMITIVE_FILTER_DEFS = [
@@ -409,19 +390,6 @@ const COMPONENT_SEARCH_COLS = [
   { key: 'tokenText', label: 'Token' },
 ]
 
-const BRAND_FILTER_DEFS = [
-  {
-    key: 'group',
-    label: 'Group',
-    type: 'multi',
-    options: [...new Set(brandColorRows.map((r) => r.group))].sort().map((v) => ({ value: v, label: v })),
-  },
-]
-const BRAND_SEARCH_COLS = [
-  { key: 'group', label: 'Group' },
-  { key: 'tokenText', label: 'Token' },
-]
-
 // ── Component ────────────────────────────────────────────────────────────────
 
 export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
@@ -440,14 +408,9 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
   const [compSearchCol, setCompSearchCol] = useState('')
   const [compView, setCompView] = useState('table')
 
-  const [brandFilters, setBrandFilters] = useState({})
-  const [brandSearch, setBrandSearch] = useState('')
-  const [brandSearchCol, setBrandSearchCol] = useState('')
-
   const resolvedPrimitiveRows = useResolvedColorRows(primitiveColorRows, theme, colorMode)
   const resolvedSemanticRows = useResolvedColorRows(semanticColorRows, theme, colorMode)
   const resolvedComponentRows = useResolvedColorRows(componentColorRows, theme, colorMode)
-  const resolvedBrandRows = useResolvedColorRows(brandColorRows, theme, colorMode)
 
   const filteredPrimitiveRows = applyFiltersAndSearch(
     resolvedPrimitiveRows, PRIMITIVE_FILTER_DEFS, PRIMITIVE_SEARCH_COLS,
@@ -461,11 +424,6 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
     resolvedComponentRows, COMPONENT_FILTER_DEFS, COMPONENT_SEARCH_COLS,
     compFilters, compSearch, compSearchCol
   )
-  const filteredBrandRows = applyFiltersAndSearch(
-    resolvedBrandRows, BRAND_FILTER_DEFS, BRAND_SEARCH_COLS,
-    brandFilters, brandSearch, brandSearchCol
-  )
-
   return (
     <>
       <Section
@@ -502,7 +460,6 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
               <Tab value="primitives" icon="gradient">Primitives</Tab>
               <Tab value="semantic" icon="category">Semantic</Tab>
               <Tab value="component" icon="widgets">Component</Tab>
-              <Tab value="brand" icon="palette">Brand</Tab>
             </TabList>
 
             <TabPanel value="primitives">
@@ -604,31 +561,6 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
               </Stack>
             </TabPanel>
 
-            <TabPanel value="brand">
-              <Stack gap="md">
-                <DataTableFilters
-                  filters={BRAND_FILTER_DEFS}
-                  value={brandFilters}
-                  onChange={setBrandFilters}
-                  searchValue={brandSearch}
-                  onSearchChange={setBrandSearch}
-                  searchColumn={brandSearchCol}
-                  onSearchColumnChange={setBrandSearchCol}
-                  searchableColumns={BRAND_SEARCH_COLS}
-                />
-                <DataTable
-                  columns={brandColorColumns}
-                  rows={filteredBrandRows}
-                  getRowId={(row) => row.id}
-                  size="compact"
-                  scrollable
-                  caption="Brand color tokens"
-                  emptyTitle="No matching tokens"
-                  emptyDescription="Try adjusting your search or clearing some filters."
-                  emptyIcon="palette"
-                />
-              </Stack>
-            </TabPanel>
           </Tabs>
         </Stack>
       </Section>

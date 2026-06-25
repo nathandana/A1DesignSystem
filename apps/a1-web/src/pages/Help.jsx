@@ -112,11 +112,11 @@ const HELP = [
               alt="The editor Projects list: the top navigation with Editor selected, a Projects heading, New project and Image library buttons, and cards for the A1 Showcase and Ember & Oak sample projects."
               caption="The Projects list — your home base, with the bundled sample projects and a New project button."
             />
-            <P>The top-nav <strong>Editor</strong> menu also lists every project for a one-click jump straight into it.</P>
+            <P>The top-nav <strong>Editors</strong> menu also lists every project for a one-click jump straight into it.</P>
             <Shot
               name="open-editor-menu"
-              alt="The top-navigation Editor menu open, showing Projects, Patterns, Image library, Theme, and Rules. The Projects item expands to a one-click list of every project."
-              caption="The top-nav Editor menu — Projects expands to every project for a one-click jump."
+              alt="The top-navigation Editors menu open, showing Projects, Patterns, Image library, Theme, and Rules. The Projects item expands to a one-click list of every project."
+              caption="The top-nav Editors menu — Projects expands to every project for a one-click jump."
             />
           </Stack>
         ),
@@ -847,8 +847,8 @@ const HELP = [
     articles: [
       {
         id: 'file-a-ticket',
-        title: 'Report a bug or request a feature',
-        keywords: 'backlog ticket bug feature request report feedback flag create issue jira',
+        title: 'Create a ticket',
+        keywords: 'backlog ticket bug feature epic request report feedback flag create issue jira',
         body: (
           <Stack gap="sm">
             <P>
@@ -858,12 +858,12 @@ const HELP = [
             </P>
             <P>Each ticket lets you choose a type and suggest a priority and complexity:</P>
             <Bullets items={[
-              'Type — Bug, Feature, or Chore.',
+              'Type — Bug, Feature, or Epic.',
               'Priority — P0 (critical) to P3 (someday). A suggestion; a maintainer confirms it.',
               'Complexity — XS to XL.',
               'Screenshots — attach images straight from the form.',
             ]} />
-            <P>Open the <strong>Backlog</strong> page (Resources menu) to see everything.</P>
+            <P>Open the <strong>Backlog</strong> page from the notification button in the top header to see everything.</P>
           </Stack>
         ),
       },
@@ -934,6 +934,25 @@ const HELP = [
             <P color="muted">
               Needs SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in apps/a1-web/.env. See backlog/README.md.
             </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'virtual-team',
+        title: 'Virtual team',
+        keywords: 'virtual team product owner designer information architect review audit dev development',
+        body: (
+          <Stack gap="sm">
+            <P>
+              In development builds, open <strong>Virtual team</strong> from its icon button in the top header.
+              Each team member has its own card with actions for previewing recommendations,
+              re-running a review, applying backlog changes, or filing findings as tickets.
+            </P>
+            <Bullets items={[
+              'Product Owner — reviews ticket type, priority, size, business value, and shipped status.',
+              'Information Architect — audits navigation structures and can file actionable findings.',
+              'Designer — audits tokens, pages, projects, and release notes for design-quality findings.',
+            ]} />
           </Stack>
         ),
       },
@@ -1057,7 +1076,7 @@ export function Help({ onNavigate }) {
               </Stack>
             </GridItem>
             <GridItem span={{ xs: 1, lg: 1 }}>
-              <PageNav sections={sections} label="Help topics" />
+              <PageNav sections={sections} label="Help topics" style={{ '--a1-page-nav-top': 'var(--component-top-header-height)' }} />
             </GridItem>
           </Grid>
         )}

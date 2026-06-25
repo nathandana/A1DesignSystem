@@ -4,7 +4,7 @@
  * This mirrors the top-level `navItems` built in `main.jsx` (TopHeader). The dynamic parts —
  * Foundations and Components — are read from the same source data the real menu uses
  * (`foundations`, `componentCategories`), so they never drift. The small static parts
- * (Resources, Editor) are reproduced here as a snapshot; if those menu sections change in
+ * (Explore, Editors) are reproduced here as a snapshot; if those menu sections change in
  * `main.jsx`, update this model to match.
  */
 import { componentCategories } from '../../pages/components/data.js';
@@ -15,25 +15,22 @@ interface FoundationLike { id: string; title: string; icon?: string }
 interface ComponentLike { id: string; title: string }
 interface CategoryLike { id: string; title: string; icon?: string; components: ComponentLike[] }
 
-/** Resources group — snapshot of RESOURCE_PAGE_IDS / ICONS / PAGE_TITLES in main.jsx. */
-const RESOURCES: NavNode = {
-  id: 'resources',
-  label: 'Resources',
+const EXPLORE: NavNode = {
+  id: 'explore',
+  label: 'Explore',
   children: [
-    { id: 'features', label: 'Features', icon: 'star', href: '/features' },
-    { id: 'get-started', label: 'Get Started', icon: 'rocket_launch', href: '/get-started' },
-    { id: 'help', label: 'Help', icon: 'help', href: '/help' },
-    { id: 'backlog', label: 'Backlog', icon: 'task_alt', href: '/backlog' },
-    { id: 'accessibility', label: 'Accessibility', icon: 'accessibility', href: '/accessibility' },
-    { id: 'releases', label: 'Releases', icon: 'new_releases', href: '/releases' },
     { id: 'about', label: 'About', icon: 'info', href: '/about' },
+    { id: 'accessibility', label: 'Accessibility', icon: 'accessibility', href: '/accessibility' },
+    { id: 'features', label: 'Features', icon: 'star', href: '/features' },
+    { id: 'get-started', label: 'Get started', icon: 'rocket_launch', href: '/get-started' },
+    { id: 'releases', label: 'Releases', icon: 'new_releases', href: '/releases' },
   ],
 };
 
 /** Editor group — snapshot of the Editor submenu in main.jsx (user projects omitted). */
 const EDITOR: NavNode = {
   id: 'editor',
-  label: 'Editor',
+  label: 'Editors',
   children: [
     {
       id: 'projects', label: 'Projects', icon: 'folder',
@@ -47,11 +44,11 @@ const EDITOR: NavNode = {
 };
 
 const FOUNDATION_GROUPS = [
-  { label: 'Visualize', ids: ['foundation-color-visualization', 'foundation-system-map'] },
-  { label: 'Visual', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-  { label: 'Content', ids: ['foundation-iconography', 'foundation-labels'] },
-  { label: 'Layout', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
-  { label: 'Standards', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+  { label: 'Visualize', icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+  { label: 'Visual', icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+  { label: 'Content', icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
+  { label: 'Layout', icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
+  { label: 'Standards', icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
 ];
 
 function foundationsGroup(): NavNode {
@@ -61,8 +58,9 @@ function foundationsGroup(): NavNode {
     label: 'Foundations',
     children: [
       { id: 'foundations', label: 'Overview', icon: 'foundation', href: '/foundations' },
-      ...FOUNDATION_GROUPS.map(({ label, ids }) => ({
+      ...FOUNDATION_GROUPS.map(({ label, icon, ids }) => ({
         label,
+        icon,
         children: ids
           .map((id) => byId[id])
           .filter(Boolean)
@@ -96,6 +94,11 @@ export function getMainMenu(): NavModel {
   return {
     id: 'main-menu',
     name: 'Main menu',
-    items: [RESOURCES, foundationsGroup(), componentsGroup(), EDITOR],
+    items: [
+      EXPLORE,
+      foundationsGroup(),
+      componentsGroup(),
+      EDITOR,
+    ],
   };
 }

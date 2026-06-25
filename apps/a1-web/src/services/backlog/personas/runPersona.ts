@@ -17,9 +17,9 @@
 import { addPersonaComment, listComments, listItems, updateItem } from '../backlogStore';
 import {
   COMPLEXITY_LABELS, PRIORITY_LABELS, STATUS_FLOW, STATUS_LABELS,
-  isTerminal, reviewSignature, ticketRef,
+  TYPE_LABELS, isTerminal, reviewSignature, ticketRef,
 } from '../types';
-import type { BacklogItem, Complexity, Priority, UpdateTicketPatch } from '../types';
+import type { BacklogItem, Complexity, Priority, TicketType, UpdateTicketPatch } from '../types';
 import type {
   Persona, PersonaItemOutcome, PersonaQuestion, PersonaRunSummary, PersonaVerdict,
 } from './types';
@@ -29,9 +29,10 @@ const FLOW = STATUS_FLOW as readonly string[];
 
 function composeNote(
   persona: Persona, verdict: PersonaVerdict,
-  patch: { priority?: Priority | null; complexity?: Complexity | null }, asked: number,
+  patch: { type?: TicketType; priority?: Priority | null; complexity?: Complexity | null }, asked: number,
 ): string {
   const facts: string[] = [];
+  if (patch.type) facts.push(`type → ${TYPE_LABELS[patch.type]}`);
   if (patch.priority) facts.push(`priority → ${PRIORITY_LABELS[patch.priority]}`);
   if (patch.complexity) facts.push(`size → ${COMPLEXITY_LABELS[patch.complexity]}`);
   let note = `${persona.signature} ${verdict.rationale}`;
@@ -50,17 +51,30 @@ export async function reviewOne(
   opts: { dryRun?: boolean; items?: BacklogItem[] } = {},
 ): Promise<PersonaItemOutcome> {
   const dryRun = !!opts.dryRun;
-  const base = { acted: false, priorityFrom: item.priority, questions: 0, rationale: '' };
+  const base = {
+    acted: false,
+    typeFrom: item.type,
+    priorityFrom: item.priority,
+    questions: 0,
+    rationale: '',
+  };
 
-  const sig = reviewSignature(item);
+  const policyRevision = persona.revision ?? 1;
+  const sig = `${reviewSignature(item)}:${policyRevision}`;
   if (item.reviews?.[persona.id]?.sig === sig) return { ...base, reason: 'unchanged' };
 
   const verdict = persona.evaluate(item, { items: opts.items ?? [] });
   if (!verdict) return { ...base, reason: 'declined' };
 
-  const patch: UpdateTicketPatch = { reviews: { ...(item.reviews ?? {}), [persona.id]: { at: new Date().toISOString(), sig } } };
+  const patch: UpdateTicketPatch = {};
+  if (verdict.type && verdict.type !== item.type) patch.type = verdict.type;
   if (verdict.priority && verdict.priority !== item.priority) patch.priority = verdict.priority;
   if (verdict.complexity && verdict.complexity !== item.complexity) patch.complexity = verdict.complexity;
+  const reviewedSig = `${reviewSignature({ ...item, ...patch })}:${policyRevision}`;
+  patch.reviews = {
+    ...(item.reviews ?? {}),
+    [persona.id]: { at: new Date().toISOString(), sig: reviewedSig },
+  };
 
   // Pick questions the persona hasn't already asked (don't repeat — match by stable key or
   // by exact text in the thread). Only when the ticket isn't already awaiting an answer.
@@ -76,10 +90,11 @@ export async function reviewOne(
     }
     willAsk = verdict.questions.filter((q) => !askedKeys.has(q.key) && !askedTexts.has(q.text.trim())).slice(0, 2);
   }
-  const acted = 'priority' in patch || 'complexity' in patch || willAsk.length > 0;
+  const acted = 'type' in patch || 'priority' in patch || 'complexity' in patch || willAsk.length > 0;
 
   const outcome: PersonaItemOutcome = {
     reason: 'reviewed', acted,
+    type: patch.type, typeFrom: item.type,
     priority: patch.priority, priorityFrom: item.priority, complexity: patch.complexity,
     questions: willAsk.length, rationale: verdict.rationale,
   };
@@ -122,7 +137,7 @@ export async function runStatusCleanup(
   const summary: PersonaRunSummary = {
     persona: persona.id, personaName: persona.name, dryRun,
     total: candidates.length, skipped: 0, reviewed: 0, acted: 0,
-    reprioritized: 0, resized: 0, questions: 0, moved: 0, changes: [],
+    retyped: 0, reprioritized: 0, resized: 0, questions: 0, moved: 0, changes: [],
   }
 
   let done = 0
@@ -162,7 +177,7 @@ export async function runPersona(
   const summary: PersonaRunSummary = {
     persona: persona.id, personaName: persona.name, dryRun,
     total: candidates.length, skipped: 0, reviewed: 0, acted: 0,
-    reprioritized: 0, resized: 0, questions: 0, moved: 0, changes: [],
+    retyped: 0, reprioritized: 0, resized: 0, questions: 0, moved: 0, changes: [],
   };
 
   let done = 0;
@@ -192,11 +207,13 @@ export async function runPersona(
     if (!o.acted) continue;
 
     summary.acted += 1;
+    if (o.type) summary.retyped += 1;
     if (o.priority) summary.reprioritized += 1;
     if (o.complexity) summary.resized += 1;
     summary.questions += o.questions;
     summary.changes.push({
       ref: ticketRef(item.number), title: item.title,
+      typeFrom: o.typeFrom, type: o.type,
       priorityFrom: o.priorityFrom, priority: o.priority, complexity: o.complexity, questions: o.questions,
     });
   }

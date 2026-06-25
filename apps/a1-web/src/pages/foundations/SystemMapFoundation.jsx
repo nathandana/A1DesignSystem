@@ -37,25 +37,24 @@ const LAYER = {
 
 // Every node: id, its layer, label, a one-line role, and the repo path (shown on hover).
 const NODES = [
-  // Authored token tiers. Brand aliases are a compatibility/export layer over
-  // semantic + component tokens, not a fourth source-of-truth tier.
+  // Authored token tiers.
   { id: 'base',      layer: 'tokens', label: 'Base',      sublabel: 'Raw ramps & values',   path: 'system/tokens (base.*)',               x: 100, y: 120 },
   { id: 'semantic',  layer: 'tokens', label: 'Semantic',  sublabel: 'Intent aliases',       path: 'system/tokens (semantic.*)',           x: 100, y: 250 },
   { id: 'comp-tok',  layer: 'tokens', label: 'Component', sublabel: 'Optional API aliases', path: 'system/tokens/component (component.*)', x: 100, y: 380 },
-  { id: 'brand',     layer: 'tokens', label: 'Brand A1',  sublabel: 'Export aliases',       path: 'system/tokens/color-ramp.json (brand.a1.*)', x: 100, y: 510 },
 
-  // System authoring has two theme inputs plus hand-authored runtime modes.
-  { id: 'theme-tokens', layer: 'system', label: 'Theme tokens', sublabel: 'Namespaced DTCG values', path: 'system/themes/*/tokens', x: 380, y: 80 },
-  { id: 'theme-selectors', layer: 'system', label: 'Theme selectors', sublabel: 'CSS variable overrides', path: 'system/themes/*/theme.json', x: 380, y: 210 },
-  { id: 'color-scheme', layer: 'system', label: 'Color scheme', sublabel: 'Dark, light & inverse', path: 'packages/react/src/color-scheme.css', x: 380, y: 340 },
+  // Theme metadata is separate from structured token overrides. Shared mode
+  // values drive the generated selector topology for each runtime target.
+  { id: 'theme-overrides', layer: 'system', label: 'Theme overrides', sublabel: 'Structured token values', path: 'system/themes/*/overrides', x: 380, y: 80 },
+  { id: 'theme-config', layer: 'system', label: 'Theme config', sublabel: 'Metadata + selectors', path: 'system/themes/*/theme.json', x: 380, y: 210 },
+  { id: 'color-scheme', layer: 'system', label: 'Mode contract', sublabel: 'Shared light & dark roles', path: 'system/color-modes.mjs', x: 380, y: 340 },
   { id: 'icons',   layer: 'system', label: 'Icons',  sublabel: 'Material Symbols',    path: 'system/icons',  x: 380, y: 470 },
   { id: 'labels',  layer: 'system', label: 'Labels', sublabel: 'Localized strings',   path: 'system/labels', x: 380, y: 580 },
   { id: 'rules',   layer: 'system', label: 'Rules',  sublabel: 'Design rules (YAML)', path: 'system/rules',  x: 380, y: 690 },
 
-  // Build pipeline. Style Dictionary does not generate selector themes; the
-  // custom theme builder concatenates theme.json and copies token outputs.
+  // Build pipeline. Style Dictionary resolves only canonical tokens. The
+  // custom theme loader validates metadata and structured override files.
   { id: 'style-dictionary', layer: 'build', label: 'Style Dictionary', sublabel: 'Resolve & transform DTCG', path: 'sd.config.js', x: 680, y: 130, size: 'lg' },
-  { id: 'theme-builder', layer: 'build', label: 'Theme builder', sublabel: 'Concatenate selectors', path: 'system/build-themes.mjs', x: 680, y: 300 },
+  { id: 'theme-builder', layer: 'build', label: 'Theme builder', sublabel: 'Validate + emit selectors', path: 'system/theme-config.mjs → system/build-themes.mjs', x: 680, y: 300 },
   { id: 'html-build', layer: 'build', label: 'HTML/CSS build', sublabel: 'Generate Pure themes', path: 'scripts/build-html-css.mjs', x: 680, y: 470 },
   { id: 'rules-build', layer: 'build', label: 'Rules build', sublabel: 'Generate lint rules', path: 'scripts/build-eslint-rules.mjs', x: 680, y: 640 },
 
@@ -63,9 +62,9 @@ const NODES = [
   { id: 'tokens-css', layer: 'runtime', label: 'tokens.css', sublabel: ':root defaults', path: 'build/css/tokens.css → packages/react/src/tokens.css', x: 980, y: 80 },
   { id: 'tokens-json', layer: 'runtime', label: 'tokens.json', sublabel: 'Resolved data', path: 'build/json/tokens.json', x: 980, y: 200 },
   { id: 'themes-css', layer: 'runtime', label: 'themes.css', sublabel: 'Theme class overrides', path: 'packages/react/src/themes.css', x: 980, y: 320 },
-  { id: 'scheme-css', layer: 'runtime', label: 'color-scheme.css', sublabel: 'Mode cascade', path: 'packages/react/src/color-scheme.css', x: 980, y: 440 },
+  { id: 'scheme-css', layer: 'runtime', label: 'Color scheme CSS', sublabel: 'Generated modes + static rules', path: 'packages/react/src/color-scheme-{modes,static}.css', x: 980, y: 440 },
   { id: 'runtime-classes', layer: 'runtime', label: 'Runtime classes', sublabel: 'Theme + mode on html', path: 'apps/a1-web/src/main.jsx', x: 980, y: 560 },
-  { id: 'inverse', layer: 'runtime', label: 'Inverse islands', sublabel: 'Inherited local token swap', path: '.a1-inverse / Section inverse / Inverse', x: 980, y: 680 },
+  { id: 'inverse', layer: 'runtime', label: 'Inverse islands', sublabel: 'Opposite document mode', path: '.a1-inverse / [data-a1-color-scope="inverse"]', x: 980, y: 680 },
 
   // Packages — the build targets. React is the behavioral source of truth.
   { id: 'react',  layer: 'packages', label: 'React',          sublabel: 'Source of truth',   path: 'packages/react',            x: 1280, y: 80 },
@@ -94,29 +93,30 @@ const EDGES = [
   // Token tier chain
   { from: 'base', to: 'semantic', kind: 'spine' },
   { from: 'semantic', to: 'comp-tok', kind: 'spine' },
-  { from: 'semantic', to: 'brand', kind: 'feeds' },
-  { from: 'comp-tok', to: 'brand', kind: 'feeds' },
 
   // DTCG sources flow through Style Dictionary.
   { from: 'base', to: 'style-dictionary', kind: 'spine' },
   { from: 'semantic', to: 'style-dictionary', kind: 'spine' },
   { from: 'comp-tok', to: 'style-dictionary', kind: 'spine' },
-  { from: 'brand', to: 'style-dictionary', kind: 'feeds' },
-  { from: 'theme-tokens', to: 'style-dictionary', kind: 'feeds' },
   { from: 'style-dictionary', to: 'tokens-css', kind: 'spine' },
   { from: 'style-dictionary', to: 'tokens-json', kind: 'spine' },
 
-  // Selector themes bypass Style Dictionary and are emitted by the custom builder.
-  { from: 'theme-selectors', to: 'theme-builder', kind: 'spine' },
-  { from: 'tokens-css', to: 'theme-builder', kind: 'feeds' },
+  // Structured theme values bypass Style Dictionary and are emitted by the
+  // shared validated theme loader.
+  { from: 'theme-overrides', to: 'theme-builder', kind: 'spine' },
+  { from: 'theme-config', to: 'theme-builder', kind: 'feeds' },
+  { from: 'tokens-json', to: 'theme-builder', kind: 'feeds' },
+  { from: 'color-scheme', to: 'theme-builder', kind: 'spine' },
   { from: 'theme-builder', to: 'themes-css', kind: 'spine' },
-  { from: 'color-scheme', to: 'scheme-css', kind: 'spine' },
+  { from: 'theme-builder', to: 'scheme-css', kind: 'spine' },
 
   // Pure and Native have additional generated paths from the same resolved data.
   { from: 'tokens-json', to: 'html-build', kind: 'feeds' },
-  { from: 'theme-selectors', to: 'html-build', kind: 'feeds' },
+  { from: 'theme-overrides', to: 'html-build', kind: 'feeds' },
+  { from: 'theme-config', to: 'html-build', kind: 'feeds' },
   { from: 'html-build', to: 'pure', kind: 'spine' },
   { from: 'tokens-json', to: 'rn', kind: 'feeds' },
+  { from: 'theme-builder', to: 'rn', kind: 'feeds' },
 
   // Runtime cascade and class activation.
   { from: 'tokens-css', to: 'react', kind: 'spine' },
@@ -196,10 +196,12 @@ export function SystemMapFoundationPage({ onNavigate }) {
           </Heading>
           <Paragraph size="sm" color="muted">
             How A1 fits together, end to end. Authored DTCG tokens pass through Style
-            Dictionary into root CSS variables and resolved JSON. Theme selector overrides
-            use a separate builder, while dark, light, contrast, and inverse behavior lives
-            in hand-authored color-scheme CSS. At runtime, classes on the document and local
-            inverse islands change the inherited variable set consumed by components.
+            Dictionary into root CSS variables and resolved JSON. Structured theme overrides
+            and selector metadata pass through a shared validator before React, Pure, and
+            Native outputs are generated. Light, dark, system-preference, and inverse
+            selectors are generated from one mode contract; static color-scheme CSS contains
+            only the remaining resets and exceptional rules. At runtime, document classes
+            and local inverse islands change the inherited variable set consumed by components.
             Click any node to trace its path; drag to rearrange; right-click to fit or reset.
           </Paragraph>
         </Stack>

@@ -34,9 +34,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
-import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
-import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
-import { VirtualDesignerPanel } from '../backlog/VirtualDesignerPanel'
 import {
   ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
 } from '../backlog/TicketBadges'
@@ -67,12 +64,11 @@ const SORT_OPTIONS = [
   { value: 'number', label: 'Newest', icon: 'fiber_new' },
 ]
 
-// Top-level views — the segmented control at the top of the filters panel (Virtual team is dev-only).
+// Top-level ticket views shown in the right-side filter panel.
 const VIEW_OPTIONS = [
   { value: 'board', label: 'Board', icon: 'view_kanban' },
   { value: 'all', label: 'All tickets', icon: 'table_rows' },
   { value: 'queue', label: 'My queue', icon: 'assignment_ind' },
-  ...(import.meta.env.DEV ? [{ value: 'team', label: 'Virtual team', icon: 'groups' }] : []),
 ]
 
 // How many cards a swimlane shows per page before paginating.
@@ -442,7 +438,7 @@ export function Backlog({ onNavigate }) {
           </Paragraph>
         )}
 
-        {/* The view switcher (Board / All tickets / My queue / Virtual team) lives in the
+        {/* The view switcher (Board / All tickets / My queue) lives in the
             right-hand panel now (A1) — here we just render the active view. */}
         {tab === 'board' && (
             <Stack gap="md">
@@ -550,15 +546,6 @@ export function Backlog({ onNavigate }) {
           )
         )}
 
-        {import.meta.env.DEV && tab === 'team' && (
-          <Stack gap="xl">
-            <VirtualTeamPanel />
-            <Divider />
-            <VirtualArchitectPanel />
-            <Divider />
-            <VirtualDesignerPanel />
-          </Stack>
-        )}
         </Stack>
       </Section>
 
@@ -616,73 +603,70 @@ export function Backlog({ onNavigate }) {
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            {/* Filters drive every ticket view (board, all-tickets, my queue); sort is
-                board-only (the table sorts by column, the queue is grouped). Hidden on the
-                dev-only Virtual team view, which isn't a ticket list. */}
-            {tab !== 'team' && (
-              <>
-                <Divider space="none" />
+            {/* Filters drive every ticket view; sort is board-only because the table
+                sorts by column and the queue is grouped. */}
+            <>
+              <Divider space="none" />
 
-                <Stack direction="row" gap="xs" align="center">
-                  <Heading as="h2" size="sm">Filters</Heading>
-                  {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
-                </Stack>
+              <Stack direction="row" gap="xs" align="center">
+                <Heading as="h2" size="sm">Filters</Heading>
+                {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
+              </Stack>
 
-                {tab === 'board' && (
-                  <Toolbar label="Sort by" aria-label="Sort tickets">
-                    <ToolbarGroup
-                      aria-label="Sort by"
-                      labelMode="selected"
-                      value={sort}
-                      onChange={setSort}
-                      options={SORT_OPTIONS}
-                    />
-                  </Toolbar>
-                )}
-                <Toolbar label="Type" aria-label="Filter by type">
+              {tab === 'board' && (
+                <Toolbar label="Sort by" aria-label="Sort tickets">
                   <ToolbarGroup
-                    aria-label="Type"
-                    showLabels
-                    value={filters.type}
-                    onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
+                    aria-label="Sort by"
+                    labelMode="selected"
+                    value={sort}
+                    onChange={setSort}
+                    options={SORT_OPTIONS}
                   />
                 </Toolbar>
-                <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
-                  <ToolbarGroup
-                    aria-label="Priority"
-                    showLabels
-                    value={filters.priority}
-                    onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Size" aria-label="Filter by size" fullWidth>
-                  <ToolbarGroup
-                    aria-label="Size"
-                    showLabels
-                    value={filters.complexity}
-                    onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Scope" aria-label="Filter by scope">
-                  <ToolbarMenu
-                    aria-label="Scope"
-                    showLabel
-                    label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
-                    value={filters.scope}
-                    onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
-                    items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
-                  />
-                </Toolbar>
-                {activeFilterCount > 0 && (
-                  <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
-                    Clear filters ({activeFilterCount})
-                  </Button>
-                )}
-              </>
-            )}
+              )}
+              <Toolbar label="Type" aria-label="Filter by type">
+                <ToolbarGroup
+                  aria-label="Type"
+                  showLabels
+                  value={filters.type}
+                  onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
+                  options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
+                />
+              </Toolbar>
+              <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
+                <ToolbarGroup
+                  aria-label="Priority"
+                  showLabels
+                  value={filters.priority}
+                  onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
+                  options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
+                />
+              </Toolbar>
+              <Toolbar label="Size" aria-label="Filter by size" fullWidth>
+                <ToolbarGroup
+                  aria-label="Size"
+                  showLabels
+                  value={filters.complexity}
+                  onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
+                  options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
+                />
+              </Toolbar>
+              <Toolbar label="Scope" aria-label="Filter by scope">
+                <ToolbarMenu
+                  aria-label="Scope"
+                  showLabel
+                  label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
+                  value={filters.scope}
+                  onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
+                  items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
+                />
+              </Toolbar>
+              {activeFilterCount > 0 && (
+                <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
+                  Clear filters ({activeFilterCount})
+                </Button>
+              )}
+            </>
           </Stack>
 
           {/* New ticket — pinned to the bottom of the panel as a sticky footer. */}

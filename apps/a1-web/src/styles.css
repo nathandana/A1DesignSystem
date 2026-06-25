@@ -997,7 +997,7 @@ body {
 
 .a1-web-token-code {
   overflow-wrap: anywhere;
-  font-family: var(--theme-a1-light-font-family-mono);
+  font-family: var(--base-font-family-mono);
   font-size: var(--semantic-font-size-body-xs);
   color: var(--semantic-color-text-muted);
 }

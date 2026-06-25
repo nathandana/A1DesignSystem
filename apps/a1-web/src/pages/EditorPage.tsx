@@ -1872,7 +1872,7 @@ export function EditorPage({
             />
             <ToolbarButton
               icon="flag"
-              label="Report a bug or request a feature"
+              label="Create a ticket"
               onClick={() => openTicket({
                 kind: isPattern ? 'pattern' : 'project',
                 ref: isPattern ? patternId : null,
