@@ -4,6 +4,7 @@
  * one-click "Add sample" in the empty state. All data is obviously fake.
  */
 import type { CreateDataSourceInput, DataColumn, DataRow } from './types';
+import { buildVehiclesSample } from './vehiclesSample';
 
 const SEEDED_FLAG = 'a1-data-sources-seeded';
 
@@ -91,7 +92,13 @@ export function buildCrochetSample(): CreateDataSourceInput {
 }
 
 /** All built-in samples offered in the UI. */
-export const SAMPLE_DATA_SOURCES: { id: string; label: string; build: () => CreateDataSourceInput }[] = [
-  { id: 'users', label: 'Users', build: buildUsersSample },
-  { id: 'crochet', label: 'Crocheted animals', build: buildCrochetSample },
+export const SAMPLE_DATA_SOURCES: {
+  id: string;
+  label: string;
+  icon: string;
+  build: () => CreateDataSourceInput;
+}[] = [
+  { id: 'users', label: 'Users', icon: 'group', build: buildUsersSample },
+  { id: 'crochet', label: 'Crocheted animals', icon: 'toys', build: buildCrochetSample },
+  { id: 'vehicles', label: 'Vehicles', icon: 'directions_car', build: buildVehiclesSample },
 ];

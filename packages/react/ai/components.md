@@ -394,7 +394,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Icon color tokens:** Status colors (`success`, `error`, `warn`, `info`) map to semantic status background tokens. Use `inverse` on dark surfaces. Omit `color` entirely to inherit the current text color from the parent.
 >
-> **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined). Size classes: `.a1-icon-xs|sm|lg|xl|jumbo|xjumbo`. Color classes: `.a1-icon-muted|accent|inverse|success|error|warn|info`. Filled variant: `.a1-icon-filled`.
+> **React Icon names:** unprefixed names render from Material Symbols Outlined. `custom:<snake_case_name>` renders from the browser-registered custom icon font for the active project. a1-web validates 24×24 filled-path SVGs and registers the generated font; consumers outside a1-web can call `registerCustomIconFont({ fontUrl, mappings, fontFamily })`. **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined). Size classes: `.a1-icon-xs|sm|lg|xl|jumbo|xjumbo`. Color classes: `.a1-icon-muted|accent|inverse|success|error|warn|info`. Filled variant: `.a1-icon-filled`.
 
 ---
 

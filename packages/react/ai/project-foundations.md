@@ -379,11 +379,11 @@ Agents must not add English-only UI labels unless the label is explicitly intern
 
 ## Icon System
 
-Icons are defined at the system level in `system/icons/material-symbols.json`. This file is the source of truth for icon names accepted by A1 components, Storybook controls, and documentation surfaces.
+Material icons are defined at the system level in `system/icons/material-symbols.json`. Project-scoped custom icons are stored by a1-web in IndexedDB, compiled into a browser font, and registered with the React `Icon` runtime.
 
 ### Current source
 
-The registry currently uses Google Fonts Material Symbols metadata for the Material Symbols Outlined family. Future custom A1 icons should replace or extend this single registry instead of creating package-local icon lists.
+Unprefixed icon names use Google Fonts Material Symbols Outlined. Custom icon names use the explicit `custom:<snake_case_name>` namespace so they cannot silently shadow Material glyphs. The active project font contains global icons plus icons assigned to that project.
 
 ### Adding or removing icons
 
@@ -391,3 +391,7 @@ The registry currently uses Google Fonts Material Symbols metadata for the Mater
 2. Keep each icon entry stable with at least `name` and `categories`.
 3. Update any Storybook stories, app pages, examples, and changelogs affected by the icon change.
 4. Do not add local hardcoded icon option arrays in components or docs; import from the system registry or a shared helper that reads it.
+
+### Adding project icons
+
+Use a1-web’s **Editors → Custom icons** page. SVGs must use a `0 0 24 24` viewBox and filled paths; scripts, external resources, transforms, strokes, styles, and unsupported elements are rejected. Validation, storage, font compilation, and registration all happen in the browser.

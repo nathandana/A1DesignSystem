@@ -172,7 +172,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 - All visual properties come from CSS custom properties in the component's `.css` file — not inline styles.
 - Component props use camelCase. CSS modifier classes use kebab-case.
 - Size prop values: `"sm"`, `"md"`, `"lg"` for most components; `"compact"`, `"default"`, `"comfortable"` for field-family components.
-- All icons use Material Symbols Outlined via the `Icon` component — no inline SVGs.
+- Icons render through the `Icon` component. Unprefixed names use Material Symbols Outlined; browser-registered project icons use `custom:<name>`. Do not render inline SVGs in product components.
 - Components must be accessible: keyboard navigable, screen reader labeled, WCAG AA color contrast.
 
 ### `packages/pure`
@@ -195,7 +195,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 - No inline styles except for demonstration of CSS custom property overrides.
 - All markup uses `a1-*` class names — no bare element styling.
 - No placeholder attributes on form fields in demos.
-- No SVG icons — use Material Symbols via `<span class="a1-icon" aria-hidden="true">name</span>`.
+- No inline SVG icons — use the icon component or the corresponding icon-font class.
 - Always add `aria-hidden="true"` to icons; always add `aria-label` to icon buttons.
 - The `<body>` element must have `class="a1-body"` on every demo page.
 - Code snippets shown on each page must exactly match the demo markup — they are the canonical usage example.
@@ -233,7 +233,7 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Stability**
 11. **Stable public contracts.** Component prop APIs, token structures, label paths, and content schemas are contracts consumed by other packages and agents. Do not rename, restructure, or remove them without coordinating all consumers.
-12. **Icons are Material Symbols.** No inline SVGs in components or examples. Always use `<span class="a1-icon" aria-hidden="true">name</span>` or the `<Icon>` component.
+12. **Icons use the shared icon runtime.** No inline SVGs in components or examples. Use `<Icon>` with a Material Symbols name or a registered `custom:<name>` project icon.
 
 **Operations**
 13. **Build before testing.** After any token or theme change, run `npm run build:tokens && npm run build:html-css` before testing, committing, or declaring the work done.

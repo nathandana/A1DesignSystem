@@ -667,6 +667,18 @@ body {
   }
 }
 
+.a1-web-visually-hidden {
+  position: absolute;
+  inline-size: var(--base-spacing-1);
+  block-size: var(--base-spacing-1);
+  padding: 0;
+  margin: calc(var(--base-spacing-1) * -1);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .a1-web-components-shell__main {
   min-width: 0;
   max-inline-size: var(--component-section-content-width-xl);

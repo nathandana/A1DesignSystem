@@ -29,6 +29,7 @@ export { Heading, HeadingMark } from "./components/heading/Heading";
 export { List, ListItem } from "./components/list/List";
 export { Inset } from "./components/inset/Inset";
 export { Icon } from "./components/icon/Icon";
+export { registerCustomIconFont, clearCustomIconFont } from "./components/icon/Icon";
 export { Link } from "./components/link/Link";
 export { Paragraph } from "./components/paragraph/Paragraph";
 export { Banner } from "./components/banner/Banner";

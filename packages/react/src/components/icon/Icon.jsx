@@ -1,4 +1,10 @@
+import { useSyncExternalStore } from "react";
 import "./icon.css";
+import {
+  getCustomIcon,
+  getCustomIconVersion,
+  subscribeCustomIcons,
+} from "./customIconRegistry.js";
 
 const SIZE_MAP = {
   xs: "a1-icon-xs",
@@ -31,6 +37,9 @@ export function Icon({
   style,
   ...props
 }) {
+  useSyncExternalStore(subscribeCustomIcons, getCustomIconVersion, () => 0);
+  const isCustom = String(name ?? "").startsWith("custom:");
+  const custom = isCustom ? getCustomIcon(name) : null;
   const vars = {
     ...(weight != null && { "--a1-icon-weight": weight }),
     ...(grade != null && { "--a1-icon-grade": grade }),
@@ -40,7 +49,7 @@ export function Icon({
 
   const classes = [
     "a1-icon",
-    "material-symbols-outlined",
+    isCustom ? "a1-icon-custom" : "material-symbols-outlined",
     SIZE_MAP[size],
     COLOR_MAP[color],
     className,
@@ -51,11 +60,15 @@ export function Icon({
   return (
     <span
       className={classes}
-      style={{ ...vars, ...style }}
+      style={{
+        ...vars,
+        ...(custom && { "--a1-custom-icon-font-family": custom.family }),
+        ...style,
+      }}
       aria-hidden="true"
       {...props}
     >
-      {name}
+      {isCustom ? (custom?.character ?? "") : name}
     </span>
   );
 }

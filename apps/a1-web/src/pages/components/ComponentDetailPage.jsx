@@ -1575,7 +1575,7 @@ const COMPONENT_PROPS = {
 
   // ── Media ─────────────────────────────────────────────────────────────────
   icon: [
-    { id: 'name',        name: 'name',        type: 'string',  description: 'Material Symbols icon name, e.g. "check_circle", "home". Required.' },
+    { id: 'name',        name: 'name',        type: 'string',  description: 'Material Symbols name, e.g. "home", or a registered project icon as "custom:name". Required.' },
     { id: 'fill',        name: 'fill',        type: 'boolean', description: 'Fill the icon shape. Default: false.' },
     { id: 'weight',      name: 'weight',      type: 'number',  description: 'Variable font weight axis (100–700). Default set via CSS token.' },
     { id: 'grade',       name: 'grade',       type: 'number',  description: 'Grade axis — adjusts visual weight without changing size (-25–200). Default set via CSS token.' },

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Material Symbols icon name (e.g. "check_circle", "home", "arrow_back") */
+  /** Material Symbols name, or a registered custom icon as `custom:<name>`. */
   name: string;
   /**
    * Icon size. "md" (default) inherits font-size from the parent.
@@ -33,3 +33,14 @@ export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export declare function Icon(props: IconProps): React.ReactElement;
+
+export interface CustomIconFontRegistration {
+  fontUrl: string;
+  mappings: Record<string, number>;
+  fontFamily?: string;
+}
+
+/** Register a browser-built custom icon font for the current application scope. */
+export declare function registerCustomIconFont(registration: CustomIconFontRegistration): void;
+/** Clear the active custom icon font and mappings. */
+export declare function clearCustomIconFont(): void;
