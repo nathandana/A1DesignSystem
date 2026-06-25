@@ -127,7 +127,7 @@ export const componentCategories = [
     body: 'Visual primitives for media, symbols, and supporting imagery.',
     components: [
       { id: 'figure', icon: 'image', title: 'Figure', body: 'Images or media with accessible captions.' },
-      { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols wrapper with A1 sizing and color.' },
+      { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols and registered custom-font wrapper with A1 sizing and color.' },
     ],
   },
   {

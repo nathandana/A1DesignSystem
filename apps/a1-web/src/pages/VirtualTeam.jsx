@@ -8,10 +8,12 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
+import { VirtualDataPanel } from '../backlog/VirtualDataPanel'
 import { VirtualDesignerPanel } from '../backlog/VirtualDesignerPanel'
+import { VirtualIconPanel } from '../backlog/VirtualIconPanel'
 import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
 
-export function VirtualTeam({ onNavigate }) {
+export function VirtualTeam({ onNavigate, onOpenProject }) {
   return (
     <>
       <Section
@@ -34,17 +36,19 @@ export function VirtualTeam({ onNavigate }) {
             <MessageBadge status="warn" subtle size="sm">Dev only</MessageBadge>
           </Stack>
           <Paragraph size="sm" color="muted">
-            Local, deterministic reviewers for product, information architecture, and design.
+            Local teammates for product, information architecture, design, and project data.
             Preview their recommendations before applying changes or filing tickets.
           </Paragraph>
         </Stack>
       </Section>
 
       <Section padding="md" contentWidth="xl" aria-label="Virtual team members">
-        <Grid columns={{ xs: 1, lg: 2, xl: 3 }} gap="md" alignItems="start">
+        <Grid columns={{ xs: 1, lg: 2 }} gap="md" alignItems="start">
           <VirtualTeamPanel />
           <VirtualArchitectPanel />
           <VirtualDesignerPanel />
+          <VirtualDataPanel onOpenProject={onOpenProject} />
+          <VirtualIconPanel />
         </Grid>
       </Section>
     </>

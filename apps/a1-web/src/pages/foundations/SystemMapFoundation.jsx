@@ -47,7 +47,7 @@ const NODES = [
   { id: 'theme-overrides', layer: 'system', label: 'Theme overrides', sublabel: 'Structured token values', path: 'system/themes/*/overrides', x: 380, y: 80 },
   { id: 'theme-config', layer: 'system', label: 'Theme config', sublabel: 'Metadata + selectors', path: 'system/themes/*/theme.json', x: 380, y: 210 },
   { id: 'color-scheme', layer: 'system', label: 'Mode contract', sublabel: 'Shared light & dark roles', path: 'system/color-modes.mjs', x: 380, y: 340 },
-  { id: 'icons',   layer: 'system', label: 'Icons',  sublabel: 'Material Symbols',    path: 'system/icons',  x: 380, y: 470 },
+  { id: 'icons',   layer: 'system', label: 'Icons',  sublabel: 'Material + project fonts', path: 'system/icons', x: 380, y: 470 },
   { id: 'labels',  layer: 'system', label: 'Labels', sublabel: 'Localized strings',   path: 'system/labels', x: 380, y: 580 },
   { id: 'rules',   layer: 'system', label: 'Rules',  sublabel: 'Design rules (YAML)', path: 'system/rules',  x: 380, y: 690 },
 

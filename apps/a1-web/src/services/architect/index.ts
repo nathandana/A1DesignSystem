@@ -15,3 +15,6 @@ export type {
   ArchitectProfile, ArchitectReport, Finding, Heuristic, NavModel, NavNode, Severity,
 } from './types';
 export { SEVERITY_ORDER } from './types';
+// Optional Ollama AI layer.
+export { runArchitectAi } from './architectAi';
+export type { AiObservation, ArchitectAiResult, RenameProposal } from './architectAi';

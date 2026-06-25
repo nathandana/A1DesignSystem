@@ -10,6 +10,13 @@
     "opsz" var(--a1-icon-opsz, var(--base-icon-optical-size));
 }
 
+.a1-icon-custom {
+  font-family: var(--a1-custom-icon-font-family, 'A1 Custom Icons');
+  font-variation-settings: normal;
+  font-style: normal;
+  font-weight: normal;
+}
+
 /* ─── Sizes ───────────────────────────────────────────────────────────────── */
 
 .a1-icon-xs    { --a1-icon-size: var(--base-spacing-16); --a1-icon-opsz: 20; }

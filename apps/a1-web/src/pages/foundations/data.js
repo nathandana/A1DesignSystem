@@ -59,8 +59,8 @@ export const foundations = [
     id: 'foundation-iconography',
     title: 'Iconography',
     icon: 'interests',
-    body: 'Material Symbols usage, icon sizing, optical size, weight, fill, and the rules for passing icon names into components.',
-    points: ['Material Symbols', 'Icon name props', 'Optical sizing'],
+    body: 'Material Symbols and project-scoped custom fonts, icon sizing, optical size, weight, fill, and the rules for passing icon names into components.',
+    points: ['Material Symbols', 'Custom icon fonts', 'Icon name props'],
   },
   {
     id: 'foundation-accessibility',

@@ -26,6 +26,13 @@ import {
   RESTAURANT_PROJECT_ID,
   RESTAURANT_SEED_FLAG,
 } from './sampleRestaurant';
+import {
+  vehicleProject,
+  vehiclePages,
+  vehicleContent,
+  VEHICLE_PROJECT_ID,
+  VEHICLE_PROJECT_SEED_FLAG,
+} from './sampleVehicles';
 
 export interface Project {
   id: string;
@@ -471,6 +478,45 @@ export function resolvePageJson(pageId: string): string | null {
   return null;
 }
 
+/**
+ * Commit a page definition outside the mounted editor while preserving its undo
+ * history. Used by local virtual teammates that preview a project-wide change
+ * before applying it. The next editor open sees this entry as the current state.
+ */
+export function commitPageJson(pageId: string, json: string, label: string): void {
+  const current = resolvePageJson(pageId);
+  if (current === json) return;
+
+  type Entry = { id: string; json: string; label: string; timestamp: number };
+  let entries: Entry[] = [];
+  let index = -1;
+
+  try {
+    const raw = readStored(historyKey(pageId));
+    if (raw) {
+      const parsed = JSON.parse(raw) as { entries?: Entry[]; index?: number };
+      if (Array.isArray(parsed.entries) && parsed.entries.length) {
+        entries = parsed.entries;
+        index = typeof parsed.index === 'number'
+          ? Math.max(0, Math.min(parsed.index, entries.length - 1))
+          : entries.length - 1;
+      }
+    }
+  } catch { /* start a fresh history below */ }
+
+  if (!entries.length && current) {
+    entries = [{ id: uid('h'), json: current, label: 'Initial state', timestamp: Date.now() }];
+    index = 0;
+  }
+
+  const next = [
+    ...entries.slice(0, index + 1),
+    { id: uid('h'), json, label: label.trim() || 'Updated page', timestamp: Date.now() },
+  ];
+  const capped = next.slice(-50);
+  writeStored(historyKey(pageId), JSON.stringify({ entries: capped, index: capped.length - 1 }));
+}
+
 // ── Backup export / import ─────────────────────────────────────────────────────
 
 /** Serialise every project and its pages' latest JSON into one plain-text
@@ -828,31 +874,52 @@ let sampleSeeded = false;
 function ensureSampleProjects(): void {
   if (sampleSeeded) return;
   sampleSeeded = true;
-  try {
-    if (localStorage.getItem(RESTAURANT_SEED_FLAG)) return;
-  } catch {
-    return;
+
+  const samples = [
+    {
+      flag: RESTAURANT_SEED_FLAG,
+      projectId: RESTAURANT_PROJECT_ID,
+      project: restaurantProject,
+      pages: restaurantPages,
+      content: restaurantContent,
+    },
+    {
+      flag: VEHICLE_PROJECT_SEED_FLAG,
+      projectId: VEHICLE_PROJECT_ID,
+      project: vehicleProject,
+      pages: vehiclePages,
+      content: vehicleContent,
+    },
+  ];
+
+  for (const sample of samples) {
+    try {
+      if (localStorage.getItem(sample.flag)) continue;
+    } catch {
+      continue;
+    }
+
+    // (Re)write each sample page's content to the latest bundled definition,
+    // clearing stale edit history so the refreshed Base content wins.
+    for (const page of sample.pages) {
+      const content = sample.content[page.id];
+      if (!content) continue;
+      const versionId = uid('v');
+      writeStored(
+        versionsKey(page.id),
+        JSON.stringify({ versions: [{ id: versionId, label: 'Base', json: JSON.stringify(content, null, 2) }], activeVersionId: versionId }),
+      );
+      try { localStorage.removeItem(historyKey(page.id)); } catch { /* ignore */ }
+    }
+
+    const projects = loadProjectsRaw();
+    writeStored(pagesKey(sample.projectId), JSON.stringify(sample.pages));
+    if (!projects.some((project) => project.id === sample.projectId)) {
+      const now = Date.now();
+      saveProjects([...projects, { ...sample.project, createdAt: now, updatedAt: now }]);
+    }
+    try { localStorage.setItem(sample.flag, '1'); } catch { /* ignore */ }
   }
-  // (Re)write each sample page's content to the latest bundled definition, and
-  // clear any stale edit history so the refreshed Base content is what loads
-  // (resolvePageJson / EditorPage prefer history over versions).
-  for (const page of restaurantPages) {
-    const content = restaurantContent[page.id];
-    if (!content) continue;
-    const versionId = uid('v');
-    writeStored(
-      versionsKey(page.id),
-      JSON.stringify({ versions: [{ id: versionId, label: 'Base', json: JSON.stringify(content, null, 2) }], activeVersionId: versionId }),
-    );
-    try { localStorage.removeItem(historyKey(page.id)); } catch { /* ignore */ }
-  }
-  const projects = loadProjectsRaw();
-  writeStored(pagesKey(RESTAURANT_PROJECT_ID), JSON.stringify(restaurantPages));
-  if (!projects.some((p) => p.id === RESTAURANT_PROJECT_ID)) {
-    const now = Date.now();
-    saveProjects([...projects, { ...restaurantProject, createdAt: now, updatedAt: now }]);
-  }
-  try { localStorage.setItem(RESTAURANT_SEED_FLAG, '1'); } catch { /* ignore */ }
 }
 
 // ── One-time migration ────────────────────────────────────────────────────────

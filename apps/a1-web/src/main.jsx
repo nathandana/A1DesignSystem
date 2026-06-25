@@ -82,6 +82,7 @@ import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
 import { AllPagesView } from './projects/AllPagesView.jsx'
 import { ImageLibraryView } from './projects/ImageLibraryView.jsx'
+import { CustomIconsView } from './projects/CustomIconsView.jsx'
 import { ThemeEditor } from './pages/ThemeEditor.jsx'
 import { ThemesList } from './pages/ThemesList.jsx'
 import { RuleEditor } from './pages/RuleEditor.jsx'
@@ -89,6 +90,7 @@ import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
 import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
+import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { suppressHistoryFlush } from './editor/storage.ts'
@@ -125,7 +127,7 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -138,6 +140,7 @@ const PAGE_TITLES = {
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   'image-library': 'Image library',
+  'custom-icons': 'Custom icons',
   data: 'Data sources',
   'theme-editor': 'Theme',
   'rules': 'Rules',
@@ -774,7 +777,7 @@ function App() {
     {
       id: 'editor',
       label: 'Editors',
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
       items: [
         {
           icon: 'folder',
@@ -810,6 +813,13 @@ function App() {
           href: getPath('image-library'),
           active: activePage === 'image-library',
           onClick: (e) => handleNavClick(e, 'image-library'),
+        },
+        {
+          icon: 'font_download',
+          label: 'Custom icons',
+          href: getPath('custom-icons'),
+          active: activePage === 'custom-icons',
+          onClick: (e) => handleNavClick(e, 'custom-icons'),
         },
         {
           icon: 'table_chart',
@@ -892,7 +902,9 @@ function App() {
   if (IS_STANDALONE) {
     return (
       <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
-        {activePage === 'editor-preview' ? <EditorPreviewPage /> : null}
+        <CustomIconFontProvider projectId={activeProjectId}>
+          {activePage === 'editor-preview' ? <EditorPreviewPage /> : null}
+        </CustomIconFontProvider>
       </LabelsProvider>
     )
   }
@@ -914,6 +926,7 @@ function App() {
 
   return (
     <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
+      <CustomIconFontProvider projectId={activeProjectId} includeAll={activePage === 'custom-icons'}>
       <ImageLibraryProvider>
       <PageLayout
         className="a1-web-page-layout"
@@ -1137,6 +1150,12 @@ function App() {
             onNavigateHome={() => navigate('home')}
           />
         )}
+        {activePage === 'custom-icons' && (
+          <CustomIconsView
+            projects={projects}
+            onNavigate={navigate}
+          />
+        )}
         {activePage === 'data' && (
           <DataSourcesView
             projects={projects}
@@ -1175,7 +1194,9 @@ function App() {
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
-        {import.meta.env.DEV && activePage === 'virtual-team' && <VirtualTeam onNavigate={navigate} />}
+        {import.meta.env.DEV && activePage === 'virtual-team' && (
+          <VirtualTeam onNavigate={navigate} onOpenProject={openProject} />
+        )}
         {activePage === 'backlog-ticket' && <BacklogTicketPage key={window.location.pathname} onNavigate={navigate} />}
         {activePage === 'about' && <About onNavigate={navigate} />}
 
@@ -1308,6 +1329,7 @@ function App() {
         {editorMessage}
       </Snackbar>
       </ImageLibraryProvider>
+      </CustomIconFontProvider>
     </LabelsProvider>
   )
 }

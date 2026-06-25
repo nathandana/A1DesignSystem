@@ -121,7 +121,7 @@ export function Home({ onNavigate }) {
               iconPosition="end"
               onClick={() => onNavigate('editor')}
             >
-              Open the editor
+              Build a project
             </Button>
             <Button
               variant="secondary"
