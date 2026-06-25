@@ -12,6 +12,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import iconRegistry from '../../../../system/icons/material-symbols.json';
 import iconUsageRaw from '../../../../system/icons/icon-usage.md?raw';
 import { type AiUsage, getApiKey } from './aiImages';
+import { validateCustomIconSvg } from './customIconFont';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -130,6 +131,155 @@ export async function suggestIcons(
       outputTokens: response.usage.output_tokens,
       elapsedMs,
       model: MODEL,
+    },
+  };
+}
+
+// ── Virtual Icon Designer ────────────────────────────────────────────────────
+
+/** One AI-generated custom icon design. */
+export interface DesignedIcon {
+  name: string;
+  reason: string;
+  /** Raw path "d" attribute strings returned by Claude. */
+  paths: string[];
+  /** True when validateCustomIconSvg() accepted it. */
+  valid: boolean;
+  /** Sanitised SVG markup (only set when valid). */
+  svg?: string;
+  /** Validation error message (only set when invalid). */
+  error?: string;
+}
+
+const DESIGN_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    icons: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          name: {
+            type: 'string',
+            description:
+              'snake_case icon name, e.g. cloud_check or gear_sparkle. Must match /^[a-z][a-z0-9_]*$/.',
+          },
+          reason: {
+            type: 'string',
+            description: 'One sentence describing the visual design and why it fits the concept.',
+          },
+          paths: {
+            type: 'array',
+            items: { type: 'string' },
+            description:
+              'SVG path "d" attribute values. Use absolute commands only (M L C Q A Z). All paths must close with Z. Coordinate space: 0–24; keep shapes within 2–22 for optical margin.',
+          },
+        },
+        required: ['name', 'reason', 'paths'],
+      },
+    },
+  },
+  required: ['icons'],
+} as const;
+
+const DESIGN_SYSTEM_PROMPT = `You are a precision icon designer creating Material Symbols Outlined-style icons for a 24×24 SVG grid.
+
+RULES — follow exactly:
+• ViewBox is 0 0 24 24. Keep all shapes within x:2–22, y:2–22.
+• Paths use fill="currentColor". No stroke. No transforms. No groups.
+• Commands: absolute only — M (moveto), L (lineto), C (cubic), Q (quadratic), A (arc), Z (close). Every sub-path must end with Z.
+• Outline style: draw the silhouette of a 2-unit-thick line stroke as a closed filled shape — like an outlined font glyph.
+• Shapes must be visually centered and optically balanced in the 24×24 grid.
+• Keep paths simple — prefer L and A over complex C curves where geometry allows.
+
+REFERENCE PATHS (correct style):
+• Outlined circle: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+• Outlined home: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" (filled solid — also acceptable)
+
+Provide distinct design variations for the requested concept. Each icon must be independently recognisable.`;
+
+/**
+ * Ask Claude to generate original SVG icon designs for a concept.
+ * Returns DesignedIcon[] — each is validated with validateCustomIconSvg().
+ * Invalid designs are included with valid: false so the UI can show them
+ * with an error and let the user re-prompt.
+ */
+export async function designIcons(
+  { description, count = 3 }: { description: string; count?: number },
+): Promise<{ icons: DesignedIcon[]; usage: AiUsage }> {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('NO_API_KEY');
+
+  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+
+  const t0 = performance.now();
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    system: DESIGN_SYSTEM_PROMPT,
+    output_config: { format: { type: 'json_schema', schema: DESIGN_SCHEMA } },
+    messages: [{
+      role: 'user',
+      content: `Design ${count + 1} distinct icon variations for: "${description}". Each should represent the concept differently.`,
+    }],
+  } as Anthropic.MessageCreateParamsNonStreaming);
+
+  const elapsedMs = performance.now() - t0;
+
+  const textBlock = response.content.find((b) => b.type === 'text');
+  const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
+  let parsed: { icons?: unknown };
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error('Could not read the response — try again.');
+  }
+
+  const rawIcons = Array.isArray(parsed.icons) ? parsed.icons : [];
+  const icons: DesignedIcon[] = [];
+
+  for (const it of rawIcons) {
+    const item = it as Record<string, unknown>;
+    const name = String(item.name ?? '').trim() || 'icon';
+    const reason = String(item.reason ?? '');
+    const pathArr = (Array.isArray(item.paths) ? item.paths : []) as string[];
+
+    const svgText =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">` +
+      pathArr.map((d) => `<path d="${d}" fill="currentColor"/>`).join('') +
+      `</svg>`;
+
+    try {
+      const validated = validateCustomIconSvg(svgText, name);
+      icons.push({
+        name: validated.name || name,
+        reason,
+        paths: validated.paths,
+        valid: true,
+        svg: validated.svg,
+      });
+    } catch (err) {
+      icons.push({
+        name,
+        reason,
+        paths: pathArr,
+        valid: false,
+        error: err instanceof Error ? err.message : 'Invalid SVG',
+      });
+    }
+
+    if (icons.length >= count + 1) break;
+  }
+
+  return {
+    icons,
+    usage: {
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      elapsedMs,
+      model: 'claude-sonnet-4-6',
     },
   };
 }
