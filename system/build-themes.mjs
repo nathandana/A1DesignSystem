@@ -1,11 +1,14 @@
-import { existsSync, readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { DARK_MODE_VARIABLES, resolveModeVariables } from "./color-modes.mjs";
+import { DARK_MODE_VARIABLES, LIGHT_MODE_DECLARATIONS, resolveModeVariables } from "./color-modes.mjs";
+import { readThemes } from "./theme-config.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const themesDir = join(__dirname, "themes");
 const outFile = join(__dirname, "../packages/react/src/themes.css");
+const modesOutFile = join(__dirname, "../packages/react/src/color-scheme-modes.css");
+const colorSchemeStaticFile = join(__dirname, "../packages/react/src/color-scheme-static.css");
+const colorSchemeOutFile = join(__dirname, "../packages/react/src/color-scheme.css");
 const tokenFile = join(__dirname, "../build/json/tokens.json");
 const tokensCssSrc = join(__dirname, "../build/css/tokens.css");
 const tokensCssDest = join(__dirname, "../packages/react/src/tokens.css");
@@ -21,32 +24,20 @@ const nativeSpacingJsOutFile = join(nativeOutDir, "spacing.js");
 
 const BAR = "─".repeat(60);
 
-const files = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => ({
-    id: entry.name,
-    file: join(themesDir, entry.name, "theme.json"),
-  }))
-  .filter(({ file }) => existsSync(file))
-  .sort((a, b) => {
-    if (a.id === "base") return -1;
-    if (b.id === "base") return 1;
-    return a.id.localeCompare(b.id);
-  });
+const themes = readThemes();
 
 let css = `/* Generated from system theme folders — do not edit directly.\n`;
 css += `   To update: edit the JSON files, then run: npm run build:themes */\n`;
 
-for (const { id, file } of files) {
-  const theme = JSON.parse(readFileSync(file, "utf8"));
-  const name = theme.name ?? id;
+for (const theme of themes) {
+  const name = theme.name ?? theme.id;
 
   css += `\n/* ${BAR}\n`;
   css += `   ${name}\n`;
   if (theme.description) css += `   ${theme.description}\n`;
   css += `   ${BAR} */\n\n`;
 
-  for (const [selector, properties] of Object.entries(theme.selectors ?? {})) {
+  for (const { selector, declarations: properties } of theme.selectors) {
     const cssSelector = selector
       .split(",")
       .map((s) => {
@@ -64,7 +55,114 @@ for (const { id, file } of files) {
 }
 
 writeFileSync(outFile, css);
-console.log(`✔︎ themes.css  (${files.length} theme file${files.length !== 1 ? "s" : ""})`);
+console.log(`✔︎ themes.css  (${themes.length} theme file${themes.length !== 1 ? "s" : ""})`);
+
+// ─── color-scheme-modes.css ───────────────────────────────────────────────────
+// Generated from DARK_MODE_VARIABLES and LIGHT_MODE_DECLARATIONS in color-modes.mjs.
+// Produces the full set of light/dark/inverse/system selector blocks consumed by React.
+
+function cssBlock(entries, indent = "  ") {
+  return Object.entries(entries)
+    .map(([k, v]) => `${indent}${k}: ${v};`)
+    .join("\n");
+}
+
+const DARK = cssBlock(DARK_MODE_VARIABLES);
+const LIGHT = cssBlock(LIGHT_MODE_DECLARATIONS);
+const DARK4 = cssBlock(DARK_MODE_VARIABLES, "    ");
+const LIGHT4 = cssBlock(LIGHT_MODE_DECLARATIONS, "    ");
+
+let modesCss = `/* Generated from system/color-modes.mjs — do not edit directly.
+   To update: edit DARK_MODE_VARIABLES / LIGHT_MODE_DECLARATIONS, then run: npm run build:themes */
+
+/* ─── .a1-inverse: dark island on a light page ─────────────────────────────
+   On a light page: .a1-inverse = dark.
+   On a dark page (.a1-theme-dark or prefers-dark): overridden by the rules below.
+   Specificity (0,1,0) — intentionally lower than the dark class overrides. */
+
+.a1-inverse {
+  color-scheme: dark;
+${DARK}
+}
+
+/* ─── System dark mode (OS-level preference) ────────────────────────────────
+   Activates when the OS prefers dark and no explicit class overrides it.
+   .a1-inverse restore comes after the standalone .a1-inverse rule above,
+   so same-specificity later-source-order wins and correctly flips it to light. */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+${DARK4}
+  }
+
+  /* .a1-inverse inside a system-dark page inverts back to light */
+  .a1-inverse {
+    color-scheme: light;
+${LIGHT4}
+  }
+}
+
+/* ─── Explicit dark (.a1-theme-dark on <html>) ──────────────────────────────
+   Placed after the media query so the explicit class always wins. */
+
+html.a1-theme-dark {
+  color-scheme: dark;
+${DARK}
+}
+
+/* ─── Light restore inside a dark context ───────────────────────────────────
+   .a1-inverse or .a1-theme-light nested under .a1-theme-dark.
+   Specificity (0,2,1) beats standalone .a1-inverse (0,1,0) and
+   the system dark @media .a1-inverse block (0,1,0 within the query). */
+
+html.a1-theme-dark .a1-inverse,
+html.a1-theme-dark .a1-theme-light {
+  color-scheme: light;
+${LIGHT}
+}
+
+/* ─── Explicit light (.a1-theme-light on <html>) ────────────────────────────
+   Forces light mode regardless of OS preference.
+   Specificity (0,1,1) beats @media dark :root (0,1,0 within the query). */
+
+html.a1-theme-light {
+  color-scheme: light;
+${LIGHT}
+}
+
+/* ─── Dark island inside explicit light (.a1-theme-light .a1-inverse) ───────
+   When .a1-theme-light is on <html> and OS prefers dark, the system @media
+   block (0,1,0) would flip .a1-inverse to light. This rule (0,2,1) overrides
+   that and keeps .a1-inverse sections dark under an explicit light page. */
+
+html.a1-theme-light .a1-inverse {
+  color-scheme: dark;
+${DARK}
+}
+`;
+
+writeFileSync(modesOutFile, modesCss);
+console.log("✔︎ color-scheme-modes.css");
+
+if (!existsSync(colorSchemeStaticFile)) {
+  throw new Error("packages/react/src/color-scheme-static.css not found.");
+}
+
+const staticCss = readFileSync(colorSchemeStaticFile, "utf8").trimEnd();
+const bundledColorSchemeCss = `/* Generated color-scheme entry point — do not edit directly.
+   Sources:
+   - color-scheme-static.css: hand-authored resets and exceptional rules
+   - color-scheme-modes.css: generated light/dark/inverse/system selectors
+   To update: edit the appropriate source, then run: npm run build:themes */
+
+${staticCss}
+
+${modesCss.trimEnd()}
+`;
+
+writeFileSync(colorSchemeOutFile, bundledColorSchemeCss);
+console.log("✔︎ color-scheme.css  (self-contained bundle)");
 
 if (existsSync(tokensCssSrc)) {
   copyFileSync(tokensCssSrc, tokensCssDest);
@@ -88,15 +186,12 @@ if (!existsSync(tokenFile)) {
 const tokens = JSON.parse(readFileSync(tokenFile, "utf8"));
 const baseTokens = tokens.base.color;
 const baseSemantic = tokens.semantic.color;
-const baseTheme = tokens.theme.a1Light;
 const component = tokens.component;
-const themeFilesById = Object.fromEntries(files.map(({ id, file }) => [id, file]));
+const themesById = Object.fromEntries(themes.map((theme) => [theme.id, theme]));
 
 function readThemeVars(id) {
-  const file = themeFilesById[id];
-  if (!file) return {};
-  const theme = JSON.parse(readFileSync(file, "utf8"));
-  const selector = Object.values(theme.selectors ?? {})[0] ?? {};
+  const theme = themesById[id];
+  const selector = theme?.selectors[0]?.declarations ?? {};
   return Object.fromEntries(
     Object.entries(selector)
       .filter(([key]) => key.startsWith("--"))
@@ -120,12 +215,7 @@ function flattenTokenObject(object, prefix = [], out = {}) {
   return out;
 }
 
-const baseVars = {
-  ...flattenTokenObject({ base: { color: baseTokens } }),
-  ...flattenTokenObject({ semantic: { color: baseSemantic } }),
-  ...flattenTokenObject({ component }),
-  ...flattenTokenObject({ theme: { a1: { light: baseTheme } } }),
-};
+const baseVars = flattenTokenObject(tokens);
 
 function resolveValue(value, vars) {
   if (typeof value !== "string") return value;
@@ -280,12 +370,13 @@ function lineHeightMultiplier(value) {
 
 const semanticFont = tokens.semantic.font;
 const baseFont = tokens.base.font;
-const themeFont = tokens.theme;
-const baseBodyMd = pxToNumber(themeFont.a1Light.font.size.body.md);
+const baseBodyMd = pxToNumber(semanticFont.size.body.md);
 const fontScaleBonus = (themeId) => {
-  const theme = themeFont[themeId];
-  if (!theme?.font?.size?.body?.md) return 0;
-  return Number((pxToNumber(theme.font.size.body.md) / baseBodyMd - 1).toFixed(6));
+  if (themeId === "base") return 0;
+  const vars = makeLightVars(themeId);
+  const value = vars["--semantic-font-size-body-md"];
+  if (!value) return 0;
+  return Number((pxToNumber(resolveValue(value, vars)) / baseBodyMd - 1).toFixed(6));
 };
 
 const nativeTypographyTokens = {
@@ -296,9 +387,9 @@ const nativeTypographyTokens = {
     xl: pxToNumber(baseFont.size.user.xl) / 16,
   },
   themeScaleBonus: {
-    base: fontScaleBonus("a1Light"),
-    accessible: fontScaleBonus("a1Accessible"),
-    heritage: fontScaleBonus("a1Heritage"),
+    base: fontScaleBonus("base"),
+    accessible: fontScaleBonus("accessible"),
+    heritage: fontScaleBonus("heritage"),
   },
   heading: {
     fontWeight: fontWeight(semanticFont.weight.heading),

@@ -73,7 +73,7 @@
 /* ── Gradient wash ─────────────────────────────────────────────────────────── */
 
 .a1-section--gradient-accent    { --a1-section-gradient-color: var(--semantic-color-action-background); }
-.a1-section--gradient-highlight { --a1-section-gradient-color: var(--base-color-highlited-200); }
+.a1-section--gradient-highlight { --a1-section-gradient-color: var(--component-section-gradient-highlight); }
 .a1-section--gradient-info      { --a1-section-gradient-color: var(--semantic-color-status-info-background); }
 .a1-section--gradient-success   { --a1-section-gradient-color: var(--semantic-color-status-success-background); }
 .a1-section--gradient-warn      { --a1-section-gradient-color: var(--semantic-color-status-warn-background); }

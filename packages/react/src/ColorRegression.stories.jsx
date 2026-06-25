@@ -108,7 +108,7 @@ function ReferenceFixture() {
                   <Stack gap="xs">
                     <Heading as="h3" size="xs">Nested inverse</Heading>
                     <Paragraph size="xs" color="muted">
-                      The second boundary returns to the original scheme.
+                      Nested boundaries remain opposite the document mode.
                     </Paragraph>
                   </Stack>
                 </Inverse>

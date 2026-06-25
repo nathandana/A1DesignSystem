@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { DARK_MODE_VARIABLES, LIGHT_MODE_VARIABLES } from "../system/color-modes.mjs";
+import { readTheme } from "../system/theme-config.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, "..");
@@ -55,11 +56,10 @@ function flattenTokens(object, prefix = [], out = {}) {
 function readThemeOverrides(themeFile) {
   if (!existsSync(themeFile)) return {};
 
-  const theme = JSON.parse(readFileSync(themeFile, "utf8"));
-  const selectors = theme.selectors ?? {};
+  const theme = readTheme(themeFile);
   const overrides = {};
 
-  for (const declarations of Object.values(selectors)) {
+  for (const { declarations } of theme.selectors) {
     for (const [key, value] of Object.entries(declarations ?? {})) {
       if (key.startsWith("--")) overrides[key] = value;
     }

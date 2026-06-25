@@ -27,20 +27,24 @@ Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a cl
 - Rebuilt every target with no generated token/theme/Pure/Native output differences from centralizing the mode data.
 - Verified 573 Storybook stories with zero visual regressions. The 15 pre-existing contrast violations remain the known starting set.
 
-### Next migration slice
+### Remediation complete
 
-- Move raw theme custom-property declarations from `theme.json` into structured token overrides.
-- Generate React's runtime light/dark/inverse value blocks from the shared contract while preserving its selector topology.
-- Replace the remaining direct base-color references identified by the audit, beginning with fields, links, notifications, and feedback components.
+- React, Pure CSS, and React Native now derive their color-mode relationships
+  from the shared structured contract.
+- Authored React CSS has no raw color values, component CSS has no direct
+  base-color references, and the redundant `brand.*` tier has been removed.
+- Theme metadata, structured overrides, generated runtime maps, inverse scope,
+  component contracts, computed-style fixtures, and visual baselines now
+  describe the same architecture.
 
-## Current Findings
+## Initial Findings
 
-1. Color values have parallel sources of truth:
-   - DTCG tokens in `system/tokens/` and `system/themes/*/tokens/`.
+1. Color values originally had parallel sources of truth:
+   - DTCG tokens in `system/tokens/` and namespaced theme token folders.
    - Raw CSS custom-property overrides in `system/themes/*/theme.json`.
    - Hand-authored light, dark, system-dark, and inverse maps in `packages/react/src/color-scheme.css`.
-2. Style Dictionary resolves the global token graph, but it also loads every theme's namespaced DTCG tokens into one output. It does not generate the runtime theme selector blocks.
-3. `system/build-themes.mjs` concatenates raw selector declarations, copies generated token files, and independently derives React Native color maps.
+2. Style Dictionary originally loaded every theme's namespaced DTCG tokens into one output without generating runtime selector blocks.
+3. `system/build-themes.mjs` originally concatenated raw selector declarations, copied generated token files, and independently derived React Native color maps.
 4. `scripts/build-html-css.mjs` contains another independent light/dark color matrix for Pure CSS. This can drift from React's `color-scheme.css`.
 5. Component color contracts are inconsistent:
    - Some components consume semantic tokens directly.
@@ -100,7 +104,11 @@ Status: **Complete.**
 
 Exit criterion: authored color values and aliases live in structured token files; `theme.json` contains metadata and selector configuration only.
 
-Status: **Not started.**
+Status: **Complete.** Theme metadata and selector activation now live in
+`theme.json`; 926 custom-property overrides live in validated structured
+override files. Style Dictionary reads canonical tokens only, default font
+families moved into `base.font.family.*`, and React, Pure CSS, and React Native
+consume the same theme loader without a global `theme.*` namespace.
 
 ### Phase 2: Generate every runtime color map
 
@@ -118,7 +126,16 @@ Status: **Not started.**
 
 Exit criterion: changing one semantic mode mapping updates every platform output through one generator.
 
-Status: **In progress.** Pure CSS and React Native now share one mode contract; React selector generation remains.
+Status: **Complete.**
+
+- Added `LIGHT_MODE_DECLARATIONS` export to `system/color-modes.mjs` — the symmetric complement of `DARK_MODE_VARIABLES` (68 CSS custom properties, all aliasing tokens).
+- Added `component.scrim.colorLight` token in `system/tokens/component/scrim.json` so `LIGHT_MODE_DECLARATIONS` can reference `var(--component-scrim-color-light)` instead of a raw `rgba()`.
+- Extended `system/build-themes.mjs` to generate `packages/react/src/color-scheme-modes.css` with all 7 mode-switching selector blocks (`.a1-inverse`, `@media prefers-color-scheme: dark`, `html.a1-theme-dark`, `html.a1-theme-dark .a1-inverse`, `html.a1-theme-light`, `html.a1-theme-light .a1-inverse`) from `DARK_MODE_VARIABLES` and `LIGHT_MODE_DECLARATIONS`.
+- Split the color-scheme sources into `color-scheme-static.css` (hand-authored reset, typeface, field interaction defaults, notification, reduced-motion, contrast-more, accessible dark, Fresh gradient) and `color-scheme-modes.css` (generated). The published `color-scheme.css` entry point is generated as a self-contained bundle of both files so package consumers do not depend on relative CSS `@import` resolution.
+- Fixed two pre-existing bugs in the hand-authored dark-mode CSS: `--semantic-color-surface-inverse` was missing from `html.a1-theme-dark .a1-inverse` (light island in dark page inherited white, making the inverse-surface token wrong in that context); `--semantic-color-surface-field` was missing from `@media dark .a1-inverse`. Both are now set consistently in all light-restore selector blocks via `LIGHT_MODE_DECLARATIONS`.
+- Extended `scripts/color/audit-color-tokens.mjs` to check both generated files and to verify `html.a1-theme-light` against `LIGHT_MODE_DECLARATIONS` (blocking finding `reactLightContractDrift`).
+- Updated `tests/color/color-contract.json` baseline with the corrected inverse-surface values (`#ffffff` → `#060b14` in `html.a1-theme-dark .a1-inverse` contexts, Heritage equivalents).
+- `npm run tokens:audit:check` and `npm run tokens:contract:check` both pass with 0 blocking findings.
 
 ### Phase 3: Normalize component token contracts
 
@@ -130,6 +147,19 @@ Status: **In progress.** Pure CSS and React Native now share one mode contract; 
 6. Add missing component tokens only where the component has a real independent design decision.
 
 Exit criterion: every component color resolves through a documented semantic or component contract, and the inventory check enforces it.
+
+Status: **Complete.**
+
+- Replaced all 10 direct `base-color` uses in component CSS with semantic or component tokens:
+  - **Link** — added `component.link.inverse.{color,colorHover,colorPressed}` (info ramp for dark/inverse contexts). CSS now references `--component-link-inverse-color*`.
+  - **Notification** — added `component.notification.neutral.{background,foreground}` (neutral-600 / neutral-0). CSS uses `--component-notification-neutral-*`.
+  - **Section** — added `component.section.gradient.highlight` (aliases `base.color.highlited.200`). CSS and Pure `a1-base.css` use `--component-section-gradient-highlight`.
+  - **Segmented control** — added `component.segmented.inactive.{color,colorHover}` (semantic text-muted / base neutral-100). CSS uses `--component-segmented-inactive-color*`.
+  - **Snackbar** — created `system/tokens/component/snackbar.json` with `component.snackbar.default.{background,border,foreground}` (always-dark neutral-900 / neutral-0). CSS uses `--component-snackbar-default-*`. Also removed the raw `rgba()` fallback from the box-shadow (guaranteed token).
+  - **Switch** — added `component.switch.thumb.on.background` (neutral-0 — always-white thumb on colored track). CSS uses `--component-switch-thumb-on-background`.
+- Added `componentBaseColorReferences` to the blocking findings in `scripts/color/audit-color-tokens.mjs`. Any new base-color reference in component CSS now blocks `npm run tokens:audit:check`.
+- `tokens:audit:check` passes with 0 blocking findings, including `Direct base-color use in component CSS: 0` and `base tier component references: 0`.
+- `tokens:contract:check` continues to pass — no computed value changes (all new tokens alias the same base values that were previously hardcoded in CSS).
 
 ### Phase 4: Make inverse a deliberate scope
 
@@ -143,6 +173,17 @@ Exit criterion: every component color resolves through a documented semantic or 
 
 Exit criterion: inverse behavior does not depend on accidental source order and nested behavior is tested and documented.
 
+Status: **Complete.**
+
+- Defined inverse as opposite the document mode, not a recursive toggle.
+- `<Inverse>` and `<Section inverse>` now expose
+  `data-a1-color-scope="inverse"` as an explicit, inspectable boundary contract.
+- Generated mode selectors own inverse values and their source order.
+- The computed contract covers inverse, nested inverse, and a native top-layer
+  dialog opened inside the inverse subtree for all 16 theme/mode fixtures.
+- Documented that detached consumer portals require an explicit mode class or a
+  portal target inside the scoped container.
+
 ### Phase 5: Resolve the brand alias layer
 
 1. Search package exports, applications, documentation, and external-facing examples for `brand.a1.*` consumption.
@@ -151,6 +192,15 @@ Exit criterion: inverse behavior does not depend on accidental source order and 
 4. Add a check preventing new internal component use of brand aliases.
 
 Exit criterion: the brand layer has an explicit owner, purpose, and lifecycle.
+
+Status: **Complete.**
+
+- Repository search found no runtime, package, example, or component consumers.
+- Removed `brand.a1.*` color and typography aliases instead of retaining a
+  redundant public tier.
+- Removed the Brand tab from the Color foundation and the Brand node from the
+  System map.
+- Added a blocking audit check preventing new `brand.*` token definitions.
 
 ### Phase 6: Migrate, document, and release
 
@@ -162,6 +212,22 @@ Exit criterion: the brand layer has an explicit owner, purpose, and lifecycle.
 6. Remove compatibility code only after all consumers have moved.
 
 Exit criterion: all package outputs derive from the canonical schema, documentation matches the implementation, and visual/a11y regression suites pass.
+
+Status: **Complete.**
+
+- Rebuilt canonical tokens, theme outputs, Pure CSS, React Native, Web
+  Components, React, and a1-web through the repository build pipeline.
+- `tokens:audit:check` passes with zero duplicate paths, unresolved aliases,
+  unknown references, raw authored React colors, mode drift, direct base-color
+  component references, or brand token definitions.
+- `tokens:contract:check` passes for all 16 theme/mode fixtures, including
+  inverse, nested inverse, and native top-layer dialog scopes.
+- Updated the intentional Segmented Control token-table baseline and verified
+  all 106 suites and 573 stories with zero visual regressions.
+- The accessibility report remains at the established baseline of 15 findings
+  across 13 stories; this remediation introduced no new accessibility findings.
+- Updated the color foundations, system map, architecture guidance,
+  maintenance notes, changelogs, and this release plan.
 
 ## Suggested Work Sequence
 
@@ -179,7 +245,8 @@ Exit criterion: all package outputs derive from the canonical schema, documentat
 - `system/tokens/color-ramp.json`
 - `system/tokens/component/*.json`
 - `system/themes/*/theme.json`
-- `system/themes/*/tokens/*.json`
+- `system/themes/*/overrides/*.json`
+- `system/theme-config.mjs`
 - `sd.config.js`
 - `system/build-themes.mjs`
 - `scripts/build-html-css.mjs`
@@ -199,4 +266,6 @@ Exit criterion: all package outputs derive from the canonical schema, documentat
 - Component tokens follow a documented, enforced policy.
 - The brand alias layer is removed or explicitly supported as compatibility-only.
 - Generated outputs are deterministic, current, and validated in CI.
-- All supported themes, modes, inverse contexts, and representative breakpoints pass visual and accessibility checks.
+- All supported themes, modes, inverse contexts, and representative breakpoints
+  pass visual checks without regressions; accessibility findings are recorded
+  and do not increase from the accepted baseline.

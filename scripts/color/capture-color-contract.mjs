@@ -74,6 +74,7 @@ async function readScope(page, selector) {
   return page.locator(selector).evaluate((element, names) => {
     const style = getComputedStyle(element);
     return {
+      colorScope: element.getAttribute("data-a1-color-scope"),
       variables: Object.fromEntries(names.map((name) => [name, style.getPropertyValue(name).trim()])),
       computed: {
         backgroundColor: style.backgroundColor,
@@ -82,6 +83,29 @@ async function readScope(page, selector) {
         outlineColor: style.outlineColor,
       },
     };
+  }, variables);
+}
+
+async function readInverseDialog(page) {
+  return page.locator('[data-color-contract="inverse"]').evaluate((inverse, names) => {
+    const dialog = document.createElement("dialog");
+    dialog.setAttribute("data-a1-color-scope", "inverse");
+    inverse.append(dialog);
+    dialog.showModal();
+    const style = getComputedStyle(dialog);
+    const result = {
+      colorScope: dialog.getAttribute("data-a1-color-scope"),
+      variables: Object.fromEntries(names.map((name) => [name, style.getPropertyValue(name).trim()])),
+      computed: {
+        backgroundColor: style.backgroundColor,
+        borderColor: style.borderColor,
+        color: style.color,
+        outlineColor: style.outlineColor,
+      },
+    };
+    dialog.close();
+    dialog.remove();
+    return result;
   }, variables);
 }
 
@@ -105,6 +129,7 @@ async function capture() {
         root: await readScope(page, '[data-color-contract="root"]'),
         inverse: await readScope(page, '[data-color-contract="inverse"]'),
         nestedInverse: await readScope(page, '[data-color-contract="nested-inverse"]'),
+        inverseDialog: await readInverseDialog(page),
         primaryButton: await readScope(page, '[data-color-contract="primary-button"]'),
         field: await readScope(page, ".a1-field"),
       };

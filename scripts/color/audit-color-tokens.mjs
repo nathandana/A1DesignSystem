@@ -8,7 +8,8 @@ import {
 } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { DARK_MODE_VARIABLES } from "../../system/color-modes.mjs";
+import { DARK_MODE_VARIABLES, LIGHT_MODE_DECLARATIONS } from "../../system/color-modes.mjs";
+import { readThemes } from "../../system/theme-config.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const checkOnly = process.argv.includes("--check");
@@ -16,7 +17,10 @@ const reportFile = join(root, "packages/react/ai/color-token-audit.md");
 const tokenRoot = join(root, "system/tokens");
 const themeRoot = join(root, "system/themes");
 const componentCssRoot = join(root, "packages/react/src/components");
-const colorSchemeFile = join(root, "packages/react/src/color-scheme.css");
+const colorSchemeStaticFile = join(root, "packages/react/src/color-scheme-static.css");
+const colorSchemeModesFile = join(root, "packages/react/src/color-scheme-modes.css");
+// Keep the entry-point path for backward compat; raw-color scan uses static + modes directly.
+const colorSchemeFile = colorSchemeStaticFile;
 
 function walk(dir, predicate, out = []) {
   if (!existsSync(dir)) return out;
@@ -116,8 +120,7 @@ function selectorDeclarations(text, selector) {
 }
 
 const tokenFiles = walk(tokenRoot, (file) => file.endsWith(".json"));
-const themeTokenFiles = walk(themeRoot, (file) => file.includes("/tokens/") && file.endsWith(".json"));
-const tokens = [...tokenFiles, ...themeTokenFiles].flatMap((file) => {
+const tokens = tokenFiles.flatMap((file) => {
   const source = JSON.parse(readFileSync(file, "utf8"));
   return flattenTokens(source, file);
 });
@@ -175,8 +178,9 @@ const componentUsage = Object.groupBy(componentReferences, (reference) => classi
 const rawColors = [];
 const authoredCssFiles = [
   ...walk(componentCssRoot, (file) => file.endsWith(".css")),
-  colorSchemeFile,
-];
+  colorSchemeStaticFile,
+  colorSchemeModesFile,
+].filter(existsSync);
 for (const file of authoredCssFiles) {
   const text = readFileSync(file, "utf8");
   for (const match of text.matchAll(/#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)/gi)) {
@@ -193,27 +197,34 @@ for (const file of authoredCssFiles) {
 const themeFiles = walk(themeRoot, (file) => file.endsWith("theme.json"));
 const themeSchemaErrors = [];
 let rawThemeOverrideCount = 0;
+let structuredThemeOverrideCount = 0;
 for (const file of themeFiles) {
   const theme = JSON.parse(readFileSync(file, "utf8"));
   if (!theme.name || typeof theme.name !== "string") {
     themeSchemaErrors.push(`${relative(root, file)}: missing string name`);
   }
-  if (!theme.selectors || typeof theme.selectors !== "object" || Array.isArray(theme.selectors)) {
-    themeSchemaErrors.push(`${relative(root, file)}: selectors must be an object`);
-    continue;
-  }
-  for (const [selector, properties] of Object.entries(theme.selectors)) {
-    if (!selector.trim()) themeSchemaErrors.push(`${relative(root, file)}: empty selector`);
-    if (!properties || typeof properties !== "object" || Array.isArray(properties)) {
-      themeSchemaErrors.push(`${relative(root, file)}: ${selector} declarations must be an object`);
-      continue;
-    }
-    rawThemeOverrideCount += Object.keys(properties).filter((name) => name.startsWith("--")).length;
+  if (!Array.isArray(theme.selectors)) {
+    themeSchemaErrors.push(`${relative(root, file)}: selectors must be an array`);
   }
 }
+try {
+  const themes = readThemes();
+  structuredThemeOverrideCount = themes.reduce(
+    (total, theme) => total + theme.selectors.reduce(
+      (selectorTotal, entry) => selectorTotal
+        + Object.keys(entry.declarations).filter((name) => name.startsWith("--")).length,
+      0,
+    ),
+    0,
+  );
+} catch (error) {
+  themeSchemaErrors.push(error.message);
+}
 
-const colorSchemeText = readFileSync(colorSchemeFile, "utf8");
-const reactDark = selectorDeclarations(colorSchemeText, "html.a1-theme-dark");
+const colorSchemeModesText = existsSync(colorSchemeModesFile)
+  ? readFileSync(colorSchemeModesFile, "utf8")
+  : "";
+const reactDark = selectorDeclarations(colorSchemeModesText, "html.a1-theme-dark");
 const darkContractDrift = [];
 for (const [name, expected] of Object.entries(DARK_MODE_VARIABLES)) {
   if (reactDark[name] !== expected) {
@@ -224,6 +235,22 @@ for (const [name, expected] of Object.entries(DARK_MODE_VARIABLES)) {
     });
   }
 }
+const reactLight = selectorDeclarations(colorSchemeModesText, "html.a1-theme-light");
+const lightContractDrift = [];
+for (const [name, expected] of Object.entries(LIGHT_MODE_DECLARATIONS)) {
+  if (reactLight[name] !== expected) {
+    lightContractDrift.push({
+      name,
+      expected,
+      actual: reactLight[name] ?? "missing",
+    });
+  }
+}
+
+const componentBaseColorRefs = [...new Set(
+  (componentUsage.base ?? []).map((ref) => `${ref.file}:${ref.line}`),
+)];
+const brandTokenDefinitions = tokens.filter((token) => token.path.startsWith("brand."));
 
 const blocking = {
   duplicateTokenPaths: duplicates.length,
@@ -231,6 +258,9 @@ const blocking = {
   unknownCssReferences: unknownReferences.length,
   themeSchemaErrors: themeSchemaErrors.length,
   reactDarkContractDrift: darkContractDrift.length,
+  reactLightContractDrift: lightContractDrift.length,
+  componentBaseColorReferences: componentBaseColorRefs.length,
+  brandTokenDefinitions: brandTokenDefinitions.length,
 };
 
 const usageRows = ["base", "semantic", "component", "brand", "private", "unknown"]
@@ -251,10 +281,14 @@ Generated by \`npm run tokens:audit\`.
 | Unresolved token aliases | ${unresolvedAliases.length} |
 | Theme files | ${themeFiles.length} |
 | Raw theme custom-property overrides | ${rawThemeOverrideCount} |
+| Structured theme custom-property overrides | ${structuredThemeOverrideCount} |
 | Component CSS color references | ${componentReferences.length} |
 | Unknown CSS custom-property references | ${unknownReferences.length} |
 | Raw colors in authored React CSS | ${rawColors.length} |
 | React dark-mode contract differences | ${darkContractDrift.length} |
+| React light-mode contract differences | ${lightContractDrift.length} |
+| Direct base-color use in component CSS | ${componentBaseColorRefs.length} |
+| Brand compatibility token definitions | ${brandTokenDefinitions.length} |
 
 ## Component CSS Usage
 
@@ -283,6 +317,18 @@ ${themeSchemaErrors.length ? themeSchemaErrors.map((item) => `- ${item}`).join("
 ### React dark-mode contract
 
 ${darkContractDrift.length ? darkContractDrift.map((item) => `- \`${item.name}\`: expected \`${item.expected}\`, found \`${item.actual}\``).join("\n") : "_Matches the shared mode contract._"}
+
+### React light-mode contract
+
+${lightContractDrift.length ? lightContractDrift.map((item) => `- \`${item.name}\`: expected \`${item.expected}\`, found \`${item.actual}\``).join("\n") : "_Matches the shared mode contract._"}
+
+### Direct base-color use in component CSS (blocking from Phase 3)
+
+${componentBaseColorRefs.length ? componentBaseColorRefs.map((item) => `- \`${item}\``).join("\n") : "_None — all component color references resolve through semantic or component tokens._"}
+
+### Brand compatibility token definitions
+
+${brandTokenDefinitions.length ? brandTokenDefinitions.map((item) => `- \`${item.path}\` at \`${item.file}\``).join("\n") : "_None — the unused brand alias tier has been removed._"}
 
 ## Migration Findings
 

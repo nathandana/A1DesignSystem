@@ -75,8 +75,8 @@ export const InCard = {
 };
 
 /**
- * Inverse sections nest: a second `Inverse` inside the first flips back to the original
- * scheme. This works at any depth and across any theme.
+ * An inverse boundary is relative to the document mode, not its nearest inverse
+ * ancestor. Nested boundaries therefore remain in the same inverse scheme.
  */
 export const NestedInverse = {
   name: "Nested inverse",
@@ -107,7 +107,7 @@ export const NestedInverse = {
           marginTop: "var(--base-spacing-16)",
           borderRadius: "var(--base-radius-md)",
         }}>
-          <Paragraph size="xs" color="muted" style={{ marginBottom: "var(--base-spacing-4)" }}>Double-inverse (original scheme)</Paragraph>
+          <Paragraph size="xs" color="muted" style={{ marginBottom: "var(--base-spacing-4)" }}>Nested inverse (same inverse scheme)</Paragraph>
           <SampleContent />
         </Inverse>
       </Inverse>

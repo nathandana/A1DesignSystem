@@ -116,10 +116,7 @@ const JSON_TRANSFORMS = [
 ];
 
 export default {
-  source: [
-    "system/tokens/**/*.json",
-    "system/themes/*/tokens/**/*.json",
-  ],
+  source: ["system/tokens/**/*.json"],
   hooks: {
     formats: {
       "custom/breakpoints-css": breakpointsCssFormat,
