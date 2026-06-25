@@ -1,7 +1,9 @@
 import { Figure } from "./Figure.jsx";
+import sampleLandscape from "../../../../../examples/portfolio/img/scenic-large.jpg";
+import samplePortrait from "../../../../../examples/portfolio/img/PortraitOfMyFather.jpg";
 
-const SAMPLE_IMG = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80";
-const SAMPLE_PORTRAIT = "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80";
+const SAMPLE_IMG = sampleLandscape;
+const SAMPLE_PORTRAIT = samplePortrait;
 
 const meta = {
   title: "Components/Media/Figure",

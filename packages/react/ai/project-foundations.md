@@ -62,12 +62,34 @@ system/tokens/**/*.json
         ↓  (Style Dictionary: npm run build:tokens)
 build/css/tokens.css              All raw tokens as :root custom properties
 build/json/tokens.json            All tokens as nested JSON (used by build scripts)
+system/color-modes.mjs            Shared light/dark semantic + component alias contract
         ↓  (scripts/build-html-css.mjs)
 packages/pure/dist/a1-light.css   Semantic + component tokens for the light theme
 packages/pure/dist/a1-pure.css    Hand-authored; @imports a1-light.css for tokens
         ↓  (system/build-themes.mjs)
 packages/react/src/themes.css         Theme selector overrides for React
 ```
+
+`system/color-modes.mjs` is the canonical authored relationship for environmental
+light/dark color roles. `system/build-themes.mjs` generates React's explicit,
+system-preference, and inverse selector blocks into `color-scheme-modes.css`;
+Pure CSS and React Native consume the same mode contract. Hand-authored reset,
+contrast, and theme-specific structural CSS lives in `color-scheme-static.css`.
+`npm run tokens:audit:check` verifies generated light and dark selector parity.
+
+### Inverse scope contract
+
+`<Inverse>` and `<Section inverse>` apply `.a1-inverse` plus
+`data-a1-color-scope="inverse"`. An inverse scope is opposite the document mode:
+dark on a light document and light on a dark document. It is not a recursive
+toggle. A nested inverse remains in the same inverse scheme as its nearest
+inverse ancestor. Use an explicit `.a1-theme-light` or `.a1-theme-dark` boundary
+when a nested region must force a particular mode.
+
+Native top-layer elements such as `<dialog>` retain inherited variables because
+they remain descendants in the DOM. A consumer-created portal moved outside the
+inverse DOM subtree does not inherit the scope automatically and must carry an
+explicit mode class or render inside the scoped dialog/container.
 
 ### Token format (DTCG)
 
@@ -115,6 +137,13 @@ Style Dictionary converts camelCase JSON keys to kebab-case CSS custom propertie
 5. Run `npm run build:html-css` to update `packages/pure/dist/a1-light.css`.
 6. Use the resulting CSS custom property in component CSS files.
 
+After changing color tokens, themes, mode aliases, or component color references:
+
+1. Run `npm run tokens:audit:check`.
+2. Run `npm run build:tokens`.
+3. With Storybook running, run `npm run tokens:contract:check`.
+4. Run `npm run test:qa` for visual and contrast regression coverage.
+
 ```json
 // system/tokens/component/my-component.json
 {
@@ -139,33 +168,65 @@ A theme is a set of CSS selector overrides that replace semantic and component t
 
 ```
 system/themes/{theme-name}/
-├── theme.json          Required — name, description, selectors map
-└── tokens/             Optional — additional token overrides in DTCG format
-    └── *.json
+├── theme.json          Required — metadata and selector activation config
+├── overrides/          Structured DTCG token overrides
+│   └── default.json
+└── styles/             Optional non-token selector declarations
+    └── default.json
 ```
 
 `theme.json` schema:
 
 ```json
 {
+  "$schema": "../theme.schema.json",
   "name": "Accessible",
   "description": "High-contrast accessible variant.",
-  "selectors": {
-    "[data-theme='accessible']": {
-      "--semantic-color-action-background": "#005CE8"
+  "selectors": [
+    {
+      "selector": ".a1-theme-accessible",
+      "overrides": "overrides/default.json"
+    }
+  ]
+}
+```
+
+Override files use canonical token paths and DTCG leaves:
+
+```json
+{
+  "tokens": {
+    "semantic": {
+      "color": {
+        "action": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          }
+        }
+      }
     }
   }
 }
 ```
 
+`system/theme-config.mjs` validates every referenced file, confirms canonical
+paths and types, and converts token aliases into CSS custom-property references.
+Intentional private/runtime exceptions live in an explicit `customProperties`
+object in the override file. `theme.json` must not contain authored values.
+Style Dictionary reads only `system/tokens/`; theme overrides are consumed by
+the React, Pure CSS, and React Native build scripts without entering the global
+token namespace.
+
 ### Adding a theme
 
-1. Create `system/themes/{name}/theme.json` with `name`, `description`, and `selectors`.
-2. The selector is the CSS selector that activates the theme (e.g. `[data-theme='my-theme']` or `.a1-theme-my-theme`).
-3. Only override tokens that differ from the base theme — do not duplicate unchanged values.
-4. Run `npm run build:themes` to write `packages/react/src/themes.css` and the html-css dist files.
-5. Document the theme in the appropriate example pages.
-6. Validate all existing components under the new theme at every supported breakpoint — do not assume they will look correct without checking.
+1. Create `system/themes/{name}/theme.json` with `name`, `description`, and selector entries.
+2. Put token changes in `overrides/*.json`; keep authored values out of `theme.json`.
+3. The selector is the CSS selector that activates the theme (e.g. `[data-theme='my-theme']` or `.a1-theme-my-theme`).
+4. Only override tokens that differ from the base theme — do not duplicate unchanged values.
+5. Run `npm run build:tokens` to validate and regenerate all platform outputs.
+6. Document the theme in the appropriate example pages.
+7. Validate all existing components under the new theme at every supported breakpoint — do not assume they will look correct without checking.
 
 ### Supported themes
 

@@ -156,7 +156,7 @@ create table if not exists public.backlog_items (
   title              text        not null,
   description        text,
   type               text        not null default 'feature'
-                       check (type in ('feature', 'bug', 'chore')),
+                       check (type in ('feature', 'bug', 'epic')),
   status             text        not null default 'new'
                        check (status in ('new','triaged','accepted','in_progress','done','released','wont_fix','duplicate','cancelled')),
   priority           text        check (priority in ('p0','p1','p2','p3')),       -- suggested; nullable
@@ -178,6 +178,12 @@ create table if not exists public.backlog_items (
   created_at         timestamptz not null default now(),
   updated_at         timestamptz not null default now()
 );
+
+-- A1-164: migrate existing workspaces from chore to epic vocabulary.
+update public.backlog_items set type = 'feature' where type = 'chore';
+alter table public.backlog_items drop constraint if exists backlog_items_type_check;
+alter table public.backlog_items add constraint backlog_items_type_check
+  check (type in ('feature', 'bug', 'epic'));
 -- Existing DBs: add the virtual-team review column.
 --   alter table public.backlog_items add column if not exists reviews jsonb not null default '{}'::jsonb;
 -- Existing DBs: add the linked-tickets column (A1-218).

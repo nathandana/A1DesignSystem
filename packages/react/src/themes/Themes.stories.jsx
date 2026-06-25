@@ -1,8 +1,12 @@
 import { useGlobals } from "storybook/preview-api";
 import a1LightTheme from "../../../../system/themes/a1-light/theme.json";
 import accessibleTheme from "../../../../system/themes/accessible/theme.json";
+import accessibleDefault from "../../../../system/themes/accessible/overrides/default.json";
+import accessibleLight from "../../../../system/themes/accessible/overrides/light.json";
 import heritageTheme from "../../../../system/themes/heritage/theme.json";
+import heritageDefault from "../../../../system/themes/heritage/overrides/default.json";
 import freshTheme from "../../../../system/themes/fresh/theme.json";
+import freshDefault from "../../../../system/themes/fresh/overrides/default.json";
 
 export default {
   title: "Foundations/Themes",
@@ -37,6 +41,44 @@ function resolve(raw, rootVars) {
 
 function isColor(v) {
   return /^#[0-9a-f]{3,8}$/i.test(v) || /^rgba?\(/.test(v) || /^hsl/.test(v);
+}
+
+function tokenPathToCssName(path) {
+  return `--${path
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/\./g, "-")
+    .toLowerCase()}`;
+}
+
+function tokenValueToCss(value) {
+  if (typeof value !== "string") return String(value);
+  return value.replace(/\{([^}]+)\}/g, (_, path) => `var(${tokenPathToCssName(path)})`);
+}
+
+function flattenOverrideTokens(node, path = [], out = {}) {
+  if (!node || typeof node !== "object" || Array.isArray(node)) return out;
+  if (Object.hasOwn(node, "$value")) {
+    out[tokenPathToCssName(path.join("."))] = tokenValueToCss(node.$value);
+    return out;
+  }
+  for (const [key, value] of Object.entries(node)) {
+    if (!key.startsWith("$")) flattenOverrideTokens(value, [...path, key], out);
+  }
+  return out;
+}
+
+function selectorOverrides(theme, overrideFiles) {
+  return (theme.selectors ?? []).map((entry) => {
+    const source = overrideFiles[entry.overrides] ?? {};
+    const properties = {
+      ...flattenOverrideTokens(source.tokens ?? {}),
+      ...Object.fromEntries(
+        Object.entries(source.customProperties ?? {})
+          .map(([name, token]) => [name, tokenValueToCss(token.$value)]),
+      ),
+    };
+    return [entry.selector, properties];
+  });
 }
 
 // ─── Visual primitives ────────────────────────────────────────────────────────
@@ -233,11 +275,11 @@ function LivePreview() {
 
 // ─── Per-theme story layout ───────────────────────────────────────────────────
 
-function ThemeStory({ theme, className, globals }) {
+function ThemeStory({ theme, className, globals, overrideFiles = {} }) {
   const isDark = globals?.colorScheme === "dark";
 
   const rootVars = getRootVars();
-  const selectors = Object.entries(theme.selectors ?? {});
+  const selectors = selectorOverrides(theme, overrideFiles);
   const overrideCount = selectors.reduce((n, [, props]) => n + Object.keys(props).length, 0);
 
   // Apply the theme class AND, when dark mode is active, a1-theme-dark on the
@@ -337,7 +379,17 @@ export const Accessible = {
   name: "Accessible",
   render: () => {
     const [globals] = useGlobals();
-    return <ThemeStory theme={accessibleTheme} className="a1-theme-accessible" globals={globals} />;
+    return (
+      <ThemeStory
+        theme={accessibleTheme}
+        className="a1-theme-accessible"
+        globals={globals}
+        overrideFiles={{
+          "overrides/default.json": accessibleDefault,
+          "overrides/light.json": accessibleLight,
+        }}
+      />
+    );
   },
 };
 
@@ -345,7 +397,14 @@ export const Heritage = {
   name: "Heritage",
   render: () => {
     const [globals] = useGlobals();
-    return <ThemeStory theme={heritageTheme} className="a1-theme-heritage" globals={globals} />;
+    return (
+      <ThemeStory
+        theme={heritageTheme}
+        className="a1-theme-heritage"
+        globals={globals}
+        overrideFiles={{ "overrides/default.json": heritageDefault }}
+      />
+    );
   },
 };
 
@@ -353,6 +412,13 @@ export const Fresh = {
   name: "Fresh",
   render: () => {
     const [globals] = useGlobals();
-    return <ThemeStory theme={freshTheme} className="a1-theme-fresh" globals={globals} />;
+    return (
+      <ThemeStory
+        theme={freshTheme}
+        className="a1-theme-fresh"
+        globals={globals}
+        overrideFiles={{ "overrides/default.json": freshDefault }}
+      />
+    );
   },
 };

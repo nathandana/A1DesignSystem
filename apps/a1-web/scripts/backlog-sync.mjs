@@ -33,6 +33,7 @@ const STATUS_LABELS = {
   done: 'Done', released: 'Released', wont_fix: "Won't fix", duplicate: 'Duplicate', cancelled: 'Cancelled',
 }
 const PRIORITY_RANK = { p0: 0, p1: 1, p2: 2, p3: 3 }
+const normalizeType = (value) => (value === 'bug' || value === 'epic' ? value : 'feature')
 // Fields the agent may edit in tickets.json and have pushed back.
 const EDITABLE = ['title', 'description', 'type', 'status', 'priority', 'complexity', 'scopeKind', 'scopeRef', 'scopeLabel']
 
@@ -54,7 +55,7 @@ function itemFromRow(r, comments, refById) {
     ref: `A1-${r.number}`,
     title: r.title,
     description: r.description ?? '',
-    type: r.type,
+    type: normalizeType(r.type),
     status: r.status,
     priority: r.priority ?? null,
     complexity: r.complexity ?? null,
@@ -154,9 +155,10 @@ async function push(sb) {
 
     const patch = {}
     for (const field of EDITABLE) {
-      if (t[field] !== undefined && t[field] !== db[field]) {
+      const value = field === 'type' ? normalizeType(t[field]) : t[field]
+      if (value !== undefined && value !== db[field]) {
         const col = field.replace(/[A-Z]/g, (m) => `_${m.toLowerCase()}`) // camelCase → snake_case
-        patch[col] = t[field] === '' && field === 'description' ? null : t[field]
+        patch[col] = value === '' && field === 'description' ? null : value
       }
     }
     if (Object.keys(patch).length) {

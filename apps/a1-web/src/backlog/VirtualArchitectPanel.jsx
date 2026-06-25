@@ -36,8 +36,8 @@ const ARCHITECT_MARKER = 'Virtual Information Architect'
 
 // Findings the architect can file as work — praise is informational only.
 const isActionable = (f) => f.severity !== 'praise'
-// Map severity → ticket type: a broken law is a bug; everything else is housekeeping.
-const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'chore')
+// Map severity → ticket type: a broken law is a bug; improvements are features.
+const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'feature')
 // Stable, per-finding signature embedded in the ticket so re-runs recognise it.
 const findingSig = (navId, finding) => `${navId}::${finding.id}`
 

@@ -99,11 +99,13 @@
 /* ── Responsive — fixed pill bar at top of viewport ─────────────────────── */
 /* The card lifts out of the aside and pins to the top of the screen.         */
 /* A spacer div below it reserves the equivalent height in the flow.          */
+/* Set --a1-page-nav-top to the sticky header height (e.g. var(--component-top-header-height)) */
+/* to push the bar below a sticky TopHeader.                                  */
 
 @media (max-width: 768px) {
   .a1-page-nav.a1-card {
     position: fixed;
-    top: 0;
+    top: var(--a1-page-nav-top, 0);
     left: 0;
     right: 0;
     z-index: 200;

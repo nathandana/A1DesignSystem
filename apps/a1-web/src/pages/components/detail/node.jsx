@@ -350,7 +350,7 @@ export function Controls({ config, setConfig }) {
       {colorDot && (
         <span style={{
           display: 'inline-block', width: 10, height: 10, borderRadius: '50%',
-          background: colorDot, flexShrink: 0, border: '1px solid rgba(0,0,0,0.15)',
+          background: colorDot, flexShrink: 0, border: '1px solid var(--semantic-color-border-subtle)',
         }} />
       )}
       <span style={{
@@ -442,7 +442,7 @@ export function Controls({ config, setConfig }) {
                 detents={SIZE_DETENTS}
                 value={sizeToIndex(selectedNode.size ?? 'md')}
                 onChange={(i) => updateNode(selectedNode.id, { size: SIZE_VALUES[i] })}
-                formatValue={(i) => SIZE_VALUES[i]?.toUpperCase() ?? 'MD'}
+                formatValue={(i) => SIZE_VALUES[i] ?? 'md'}
                 size="compact"
               />
 

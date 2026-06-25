@@ -151,12 +151,14 @@ function steps(item: BacklogItem): string[] {
     ];
   }
 
-  if (item.type === 'chore') {
+  if (item.type === 'epic') {
     return [
-      'Make the targeted change, keeping the diff minimal and tokenised.',
-      'Run the build and lint; confirm nothing regressed.',
+      'Define the user outcome and the boundaries of the epic before choosing implementation details.',
+      'Break the epic into independently valuable slices and identify the thinnest end-to-end slice to ship first.',
+      'Record dependencies, sequencing, and acceptance criteria for the remaining slices.',
+      'Implement and verify only the first agreed slice in this ticket; file or link follow-up tickets for the rest.',
       ...(ripples ? ['Run build:tokens && build:html-css (and build:themes for a theme) and re-check consumers.'] : []),
-      'Add a changelog entry if the change is user- or developer-visible.',
+      'Update the relevant documentation and changelog for the shipped slice.',
     ];
   }
 

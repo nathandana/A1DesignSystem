@@ -63,9 +63,16 @@ export function BacklogProvider({ children }) {
   }, [refresh])
 
   const update = useCallback(async (prev, patch) => {
-    const next = await store.updateItem(prev, patch)
-    await refresh()
-    return next
+    try {
+      const next = await store.updateItem(prev, patch)
+      await refresh()
+      if (next) setToast(`Updated ${ticketRef(next.number)} — ${next.title}`)
+      return next
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : 'Could not update the ticket.')
+      await refresh()
+      return null
+    }
   }, [refresh])
 
   const comment = useCallback(async (item, kind, body) => {
@@ -138,7 +145,7 @@ export function BacklogProvider({ children }) {
   }, [refresh])
 
   // Review a single ticket with a persona (the per-ticket review button), then refresh so
-  // the dialog reflects the new priority/size/tag/question. Passes the backlog for context.
+  // the dialog reflects the new type/priority/size/tag/question. Passes the backlog for context.
   const reviewItem = useCallback(async (persona, item) => {
     const outcome = await runPersonaOnItem(persona, item, items)
     await refresh()

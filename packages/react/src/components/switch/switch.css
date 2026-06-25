@@ -190,7 +190,7 @@
 }
 
 .a1-switch__track--on::before {
-  background-color: var(--base-color-neutral-0);
+  background-color: var(--component-switch-thumb-on-background);
   transform: translateX(calc(var(--a1-sw-track-width) - var(--a1-sw-track-height)));
 }
 

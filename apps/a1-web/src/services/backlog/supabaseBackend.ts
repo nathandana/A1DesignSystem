@@ -11,6 +11,7 @@ import type {
 import type {
   BacklogComment, BacklogItem, BacklogNotification, BacklogUser, UpdateTicketPatch,
 } from './types';
+import { normalizeTicketType } from './types';
 
 // Select all columns with `*` so an optional / just-added column (e.g. `reviews`, added
 // for the Virtual Team) never breaks reads on a DB that hasn't run that migration yet —
@@ -24,7 +25,7 @@ function itemFromRow(r: any): BacklogItem {
     number: r.number,
     title: r.title,
     description: r.description ?? null,
-    type: r.type,
+    type: normalizeTicketType(r.type),
     status: r.status,
     priority: r.priority ?? null,
     complexity: r.complexity ?? null,
@@ -120,7 +121,15 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
     async updateItem(id: string, patch: UpdateTicketPatch) {
       const { data, error } = await sb
         .from('backlog_items').update(rowFromPatch(patch)).eq('id', id).select(ITEM_COLS).single();
-      if (error) { console.warn('[backlog] updateItem failed', error); return null; }
+      if (error) {
+        console.warn('[backlog] updateItem failed', error);
+        if (patch.type === 'epic' && /check constraint|backlog_items_type_check/i.test(error.message)) {
+          throw new Error(
+            'Epic is not enabled in this Supabase workspace yet. Run apps/a1-web/supabase/migrations/20260625_a1_164_ticket_types.sql in the Supabase SQL editor.',
+          );
+        }
+        throw new Error(error.message || 'Could not update the ticket.');
+      }
       return itemFromRow(data);
     },
 

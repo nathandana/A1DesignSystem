@@ -1,0 +1,5 @@
+{
+  "background": "var(--semantic-color-surface-page, #ffffff)",
+  "color": "var(--semantic-color-text-default)",
+  "transition": "background var(--semantic-motion-duration-fast, 0.1s), color var(--semantic-motion-duration-fast, 0.1s)"
+}

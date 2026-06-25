@@ -1,0 +1,304 @@
+/* Base design system CSS — hand-authored. Do not generate from system/themes/.
+   Mode-switching (light/dark/inverse) is in color-scheme-modes.css (generated). */
+
+/* ─── Global box model reset ────────────────────────────────────────────────
+   Declared here so the design system is self-contained: border and padding are
+   always included within declared sizes regardless of any host-app reset. */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ─── Root typeface ──────────────────────────────────────────────────────────
+   Apply the design system body font to the document so unscoped elements
+   inherit the correct typeface without requiring any A1 component to be
+   rendered first. Without this, the browser default (serif) is used until a
+   component's own CSS loads. */
+
+body {
+  font-family: var(--component-paragraph-font-family);
+}
+
+/* ─── Form field interaction tokens — light mode defaults ────────────────────
+   Single source of truth for hover, active, and read-only states across all
+   form field components. Overridden in dark-mode contexts in color-scheme-modes.css.
+   Components reference --a1-field-* directly; never --component-field-*. */
+
+:root {
+  --a1-field-hover-background:       var(--base-color-neutral-50);
+  --a1-field-hover-border-color:     var(--base-color-neutral-600);
+  --a1-field-active-background:      var(--base-color-neutral-100);
+  --a1-field-active-border-color:    var(--base-color-neutral-700);
+  --a1-field-read-only-background:   var(--base-color-info-50);
+  --a1-field-read-only-border-color: var(--base-color-info-200);
+  --a1-field-read-only-text:         var(--base-color-info-1000);
+}
+
+/* ─── Notification — dark mode overrides ────────────────────────────────────
+   Default notification needs a higher-contrast background on dark surfaces. */
+
+html.a1-theme-dark .a1-notification--default,
+.a1-inverse .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-500);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}
+
+html.a1-theme-dark .a1-inverse .a1-notification--default,
+html.a1-theme-dark .a1-theme-light .a1-notification--default {
+  --a1-notification-background: var(--base-color-neutral-600);
+  --a1-notification-foreground: var(--base-color-neutral-0);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────
+   When OS requests reduced motion, collapse all duration tokens to 0ms so any
+   CSS transition built on tokens becomes instant. .a1-reduce-motion mirrors
+   this for Storybook preview and testing without changing OS settings. */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --semantic-motion-duration-quick:  0ms;
+    --semantic-motion-duration-fast:   0ms;
+    --semantic-motion-duration-normal: 0ms;
+    --semantic-motion-duration-slow:   0ms;
+    --semantic-motion-duration-slower:  0ms;
+    --semantic-motion-duration-slowest: 0ms;
+  }
+}
+
+html.a1-reduce-motion {
+  --semantic-motion-duration-quick:   0ms;
+  --semantic-motion-duration-fast:    0ms;
+  --semantic-motion-duration-normal:  0ms;
+  --semantic-motion-duration-slow:    0ms;
+  --semantic-motion-duration-slower:  0ms;
+  --semantic-motion-duration-slowest: 0ms;
+}
+
+/* ─── Contrast: more ─────────────────────────────────────────────────────────
+   Responds to the OS prefers-contrast: more preference.
+   .a1-contrast-more mirrors it for Storybook and explicit simulation.
+   The compound dark-mode rule uses specificity (0,2,0) to override the
+   individual (0,1,0) class rules when both dark and more-contrast are active. */
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Interactive elements — one step deeper in the ramp */
+    --semantic-color-action-background:         var(--base-color-accent-600);
+    --semantic-color-action-background-hover:   var(--base-color-accent-700);
+    --semantic-color-action-background-pressed: var(--base-color-accent-900);
+    --semantic-color-action-surface:            var(--base-color-accent-100);
+    --semantic-color-action-border:             var(--base-color-accent-400);
+    --semantic-color-text-accent:               var(--base-color-accent-600);
+    --semantic-color-text-muted:                var(--base-color-neutral-700);
+
+    /* Component button backgrounds and borders (hardcoded in tokens.css; must be explicit) */
+    --component-button-primary-background:         var(--base-color-accent-600);
+    --component-button-primary-background-hover:   var(--base-color-accent-700);
+    --component-button-primary-background-pressed: var(--base-color-accent-900);
+    --component-button-primary-border:             var(--base-color-accent-600);
+    --component-button-secondary-border:           var(--base-color-accent-600);
+    --component-button-secondary-border-hover:     var(--base-color-accent-700);
+    --component-button-secondary-border-pressed:   var(--base-color-accent-800);
+    --component-button-tertiary-border:            var(--base-color-neutral-300);
+    --component-button-tertiary-border-hover:      var(--base-color-neutral-400);
+    --component-button-tertiary-border-pressed:    var(--base-color-neutral-400);
+
+    /* Borders — one step more visible */
+    --semantic-color-border-subtle:  var(--base-color-neutral-300);
+    --semantic-color-border-default: var(--base-color-neutral-400);
+    --semantic-color-border-strong:  var(--base-color-neutral-600);
+
+    /* Border widths — +1px on interactive and structural components */
+    --component-button-secondary-border-width:       2px;
+    --component-button-tertiary-border-width:        2px;
+    --component-card-border-width:                   2px;
+    --component-data-table-border-width:             2px;
+    --component-dialog-border-width:                 2px;
+    --component-dialog-footer-border-width:          2px;
+    --component-field-border-width:                  2px;
+    --component-menu-border-width:                   2px;
+    --component-message-banner-border-width:         2px;
+    --component-message-badge-border-width:          2px;
+    --component-pagination-border-width:             2px;
+    --component-segmented-border-width:              2px;
+    --component-side-nav-border-width:               2px;
+    --component-tab-border-width:                    2px;
+    --component-top-header-border-width:             2px;
+  }
+
+  /* Dark mode + system more-contrast: step toward lighter (higher contrast on dark bg) */
+  html.a1-theme-dark {
+    --semantic-color-action-background:         var(--base-color-accent-300);
+    --semantic-color-action-background-hover:   var(--base-color-accent-200);
+    --semantic-color-action-background-pressed: var(--base-color-accent-400);
+    --semantic-color-action-surface:            var(--base-color-accent-800);
+    --semantic-color-action-border:             var(--base-color-accent-400);
+    --semantic-color-text-accent:               var(--base-color-accent-200);
+    --semantic-color-text-muted:                var(--base-color-neutral-200);
+    --component-button-primary-background:         var(--base-color-accent-100);
+    --component-button-primary-background-hover:   var(--base-color-accent-50);
+    --component-button-primary-background-pressed: var(--base-color-accent-200);
+    --component-button-primary-border:             var(--base-color-accent-100);
+    --semantic-color-border-subtle:             var(--base-color-neutral-600);
+    --semantic-color-border-default:            var(--base-color-neutral-500);
+    --semantic-color-border-strong:             var(--base-color-neutral-300);
+  }
+}
+
+/* Explicit simulation class — mirrors the @media block above */
+html.a1-contrast-more {
+  --semantic-color-action-background:         var(--base-color-accent-600);
+  --semantic-color-action-background-hover:   var(--base-color-accent-700);
+  --semantic-color-action-background-pressed: var(--base-color-accent-900);
+  --semantic-color-action-surface:            var(--base-color-accent-100);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-600);
+  --semantic-color-text-muted:                var(--base-color-neutral-700);
+  --component-button-primary-background:         var(--base-color-accent-600);
+  --component-button-primary-background-hover:   var(--base-color-accent-700);
+  --component-button-primary-background-pressed: var(--base-color-accent-900);
+  --component-button-primary-border:             var(--base-color-accent-600);
+  --component-button-secondary-border:           var(--base-color-accent-600);
+  --component-button-secondary-border-hover:     var(--base-color-accent-700);
+  --component-button-secondary-border-pressed:   var(--base-color-accent-800);
+  --component-button-tertiary-border:            var(--base-color-neutral-300);
+  --component-button-tertiary-border-hover:      var(--base-color-neutral-400);
+  --component-button-tertiary-border-pressed:    var(--base-color-neutral-400);
+  --semantic-color-border-subtle:  var(--base-color-neutral-300);
+  --semantic-color-border-default: var(--base-color-neutral-400);
+  --semantic-color-border-strong:  var(--base-color-neutral-600);
+  --component-button-secondary-border-width:       2px;
+  --component-button-tertiary-border-width:        2px;
+  --component-card-border-width:                   2px;
+  --component-data-table-border-width:             2px;
+  --component-dialog-border-width:                 2px;
+  --component-dialog-footer-border-width:          2px;
+  --component-field-border-width:                  2px;
+  --component-menu-border-width:                   2px;
+  --component-message-banner-border-width:         2px;
+  --component-message-badge-border-width:          2px;
+  --component-pagination-border-width:             2px;
+  --component-segmented-border-width:              2px;
+  --component-side-nav-border-width:               2px;
+  --component-tab-border-width:                    2px;
+  --component-top-header-border-width:             2px;
+}
+
+/* Dark mode + explicit more-contrast — (0,2,1) beats individual class rules */
+html.a1-theme-dark.a1-contrast-more,
+html.a1-contrast-more.a1-theme-dark {
+  --semantic-color-action-background:         var(--base-color-accent-300);
+  --semantic-color-action-background-hover:   var(--base-color-accent-200);
+  --semantic-color-action-background-pressed: var(--base-color-accent-400);
+  --semantic-color-action-surface:            var(--base-color-accent-800);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-200);
+  --semantic-color-text-muted:                var(--base-color-neutral-200);
+  --component-button-primary-background:         var(--base-color-accent-100);
+  --component-button-primary-background-hover:   var(--base-color-accent-50);
+  --component-button-primary-background-pressed: var(--base-color-accent-200);
+  --component-button-primary-border:             var(--base-color-accent-100);
+  --semantic-color-border-subtle:             var(--base-color-neutral-600);
+  --semantic-color-border-default:            var(--base-color-neutral-500);
+  --semantic-color-border-strong:             var(--base-color-neutral-300);
+}
+
+/* Contrast-more inside inverse sections — light mode context (dark inverse bg).
+   One step lighter for higher contrast against the dark surface. (0,2,0). */
+
+html.a1-contrast-more .a1-inverse {
+  --semantic-color-action-background:         var(--base-color-accent-300);
+  --semantic-color-action-background-hover:   var(--base-color-accent-200);
+  --semantic-color-action-background-pressed: var(--base-color-accent-400);
+  --semantic-color-action-border:             var(--base-color-accent-300);
+  --semantic-color-text-accent:               var(--base-color-accent-200);
+  --semantic-color-text-muted:                var(--base-color-neutral-200);
+  --component-button-primary-background:         var(--base-color-accent-100);
+  --component-button-primary-background-hover:   var(--base-color-accent-50);
+  --component-button-primary-background-pressed: var(--base-color-accent-200);
+  --component-button-primary-border:             var(--base-color-accent-100);
+}
+
+/* Dark mode + contrast-more inside inverse sections — the inverse is now LIGHT,
+   so contrast direction flips: one step darker, same as light-mode contrast-more.
+   Specificity (0,3,0) beats .a1-contrast-more .a1-inverse above. */
+
+html.a1-theme-dark.a1-contrast-more .a1-inverse,
+html.a1-contrast-more.a1-theme-dark .a1-inverse {
+  --semantic-color-action-background:         var(--base-color-accent-600);
+  --semantic-color-action-background-hover:   var(--base-color-accent-700);
+  --semantic-color-action-background-pressed: var(--base-color-accent-900);
+  --semantic-color-action-border:             var(--base-color-accent-400);
+  --semantic-color-text-accent:               var(--base-color-accent-600);
+  --semantic-color-text-muted:                var(--base-color-neutral-700);
+  --component-button-primary-background:         var(--base-color-accent-600);
+  --component-button-primary-background-hover:   var(--base-color-accent-700);
+  --component-button-primary-background-pressed: var(--base-color-accent-900);
+  --component-button-primary-border:             var(--base-color-accent-600);
+  --semantic-color-border-subtle:  var(--base-color-neutral-300);
+  --semantic-color-border-default: var(--base-color-neutral-400);
+  --semantic-color-border-strong:  var(--base-color-neutral-600);
+}
+
+/* ─── Accessible theme — dark mode border override ───────────────────────────
+   Specificity (0,2,0) beats individual .a1-theme-accessible and .a1-theme-dark
+   rules (0,1,0 each), ensuring accessible borders stay two steps lighter than
+   the dark-mode defaults (neutral-700→500 and neutral-600→400). */
+
+html.a1-theme-accessible.a1-theme-dark,
+html.a1-theme-dark.a1-theme-accessible {
+  --semantic-color-border-subtle:  var(--base-color-neutral-500);
+  --semantic-color-border-default: var(--base-color-neutral-400);
+}
+
+/* ─── Fresh theme — gradient on body, surface tokens on html ─────────────────
+   Light mode: mint gradient. Dark mode: dark teal gradient.
+   CSS custom properties stay on html so they inherit throughout the document.
+   background-image targets body so it doesn't paint behind the html scroll area.
+   The dark surface hex values are intentional Fresh-specific color decisions
+   not present in the base color ramp; they anchor the teal gradient in dark mode. */
+
+html.a1-theme-fresh body {
+  background-image: linear-gradient(
+    207.43deg,
+    var(--a1-theme-fresh-gradient-start) 0%,
+    var(--a1-theme-fresh-gradient-end) 57.44%
+  );
+  background-attachment: fixed;
+  background-color: var(--semantic-color-surface-page);
+}
+
+/* Dark mode surface tokens — stay on html for inheritance (0,2,1 beats html.a1-theme-dark 0,1,1) */
+html.a1-theme-fresh.a1-theme-dark,
+html.a1-theme-dark.a1-theme-fresh {
+  --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
+  --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
+  --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+}
+
+html.a1-theme-fresh.a1-theme-dark body,
+html.a1-theme-dark.a1-theme-fresh body {
+  background-image: linear-gradient(
+    207.43deg,
+    var(--a1-theme-fresh-dark-surface-panel) 0%,
+    var(--a1-theme-fresh-dark-surface-page) 57.44%
+  );
+  background-color: var(--a1-theme-fresh-dark-surface-page);
+}
+
+@media (prefers-color-scheme: dark) {
+  html.a1-theme-fresh {
+    --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
+    --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
+    --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+  }
+
+  html.a1-theme-fresh body {
+    background-image: linear-gradient(
+      207.43deg,
+      var(--a1-theme-fresh-dark-surface-panel) 0%,
+      var(--a1-theme-fresh-dark-surface-page) 57.44%
+    );
+    background-color: var(--a1-theme-fresh-dark-surface-page);
+  }
+}
