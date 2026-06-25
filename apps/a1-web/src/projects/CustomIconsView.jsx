@@ -26,8 +26,7 @@ import {
   updateCustomIcon,
 } from '../lib/customIconStore.ts'
 import { validateCustomIconSvg } from '../lib/customIconFont.ts'
-import { aiEnabled } from '../lib/aiImages.ts'
-import { VirtualIconDesigner } from './VirtualIconDesigner.jsx'
+import { VirtualIconDesignerDialog } from './VirtualIconDesignerDialog.jsx'
 
 function scopeLabel(icon, projects) {
   if (!icon.projectIds.length) return 'All projects'
@@ -152,8 +151,8 @@ export function CustomIconsView({ projects = [], onNavigate }) {
   }
 
   return (
-    <Section padding="lg" contentWidth="xl">
-      <Stack gap="lg">
+    <>
+      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
         <Stack gap="sm">
           <Breadcrumb
             items={[
@@ -169,9 +168,9 @@ export function CustomIconsView({ projects = [], onNavigate }) {
               </Paragraph>
             </Stack>
             <Stack direction="row" gap="sm" wrap>
-              {aiEnabled() && (
+              {import.meta.env.DEV && (
                 <Button
-                  icon="auto_awesome"
+                  icon="draw"
                   variant="secondary"
                   onClick={() => setDesignerOpen(true)}
                 >
@@ -182,68 +181,73 @@ export function CustomIconsView({ projects = [], onNavigate }) {
             </Stack>
           </Stack>
         </Stack>
+      </Section>
 
-        {error && !uploadOpen && (
-          <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>
-        )}
+      <Section padding="sm" contentWidth="xl">
+        <Stack gap="lg">
+          {error && !uploadOpen && (
+            <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>
+          )}
 
-        <Toolbar aria-label="Filter custom icons">
-          <ToolbarMenu
-            icon="filter_list"
-            label="Project"
-            value={filter}
-            items={filterItems}
-            onChange={setFilter}
-            aria-label="Filter by project"
-          />
-        </Toolbar>
+          <Toolbar aria-label="Filter custom icons">
+            <ToolbarMenu
+              icon="filter_list"
+              label="Filter by project"
+              showLabel
+              value={filter}
+              items={filterItems}
+              onChange={setFilter}
+              aria-label="Filter by project"
+            />
+          </Toolbar>
 
-        {visibleIcons.length ? (
-          <Grid columns={{ xs: 1, sm: 2, lg: 3, xl: 4 }} gap="md">
-            {visibleIcons.map((icon) => (
-              <Card key={icon.id}>
-                <Stack gap="md">
-                  <Stack direction="row" gap="md" align="center">
-                    <Icon name={`custom:${icon.name}`} size="xl" />
-                    <Stack gap="xs">
-                      <Heading as="h2" size="sm">{icon.name}</Heading>
-                      <Paragraph size="xs" color="muted">custom:{icon.name}</Paragraph>
+          {visibleIcons.length ? (
+            <Grid columns={{ xs: 1, sm: 2, lg: 3, xl: 4 }} gap="md">
+              {visibleIcons.map((icon) => (
+                <Card key={icon.id}>
+                  <Stack gap="md">
+                    <Stack direction="row" gap="md" align="center">
+                      <Icon name={`custom:${icon.name}`} size="xl" />
+                      <Stack gap="xs">
+                        <Heading as="h2" size="sm">{icon.name}</Heading>
+                        <Paragraph size="xs" color="muted">custom:{icon.name}</Paragraph>
+                      </Stack>
+                    </Stack>
+                    <MessageBadge status="neutral" icon={icon.projectIds.length ? 'folder' : 'public'}>
+                      {scopeLabel(icon, projects)}
+                    </MessageBadge>
+                    <Stack direction="row" gap="sm" wrap>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        icon="edit"
+                        onClick={() => setEditing({ ...icon, projectIds: [...icon.projectIds] })}
+                      >
+                        Edit scope
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        icon="delete"
+                        onClick={() => setDeleting(icon)}
+                      >
+                        Delete
+                      </Button>
                     </Stack>
                   </Stack>
-                  <MessageBadge status="neutral" icon={icon.projectIds.length ? 'folder' : 'public'}>
-                    {scopeLabel(icon, projects)}
-                  </MessageBadge>
-                  <Stack direction="row" gap="sm" wrap>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      icon="edit"
-                      onClick={() => setEditing({ ...icon, projectIds: [...icon.projectIds] })}
-                    >
-                      Edit scope
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      icon="delete"
-                      onClick={() => setDeleting(icon)}
-                    >
-                      Delete
-                    </Button>
-                  </Stack>
-                </Stack>
-              </Card>
-            ))}
-          </Grid>
-        ) : (
-          <MessageEmptyState
-            icon="font_download"
-            title="No custom icons in this scope"
-            description="Change the project filter or add an SVG icon."
-            action={<Button icon="add" onClick={openUpload}>Add custom icon</Button>}
-          />
-        )}
-      </Stack>
+                </Card>
+              ))}
+            </Grid>
+          ) : (
+            <MessageEmptyState
+              icon="font_download"
+              title="No custom icons in this scope"
+              description="Change the project filter or add an SVG icon."
+              action={<Button icon="add" onClick={openUpload}>Add custom icon</Button>}
+            />
+          )}
+        </Stack>
+      </Section>
 
       <Dialog
         open={uploadOpen}
@@ -323,7 +327,7 @@ export function CustomIconsView({ projects = [], onNavigate }) {
         )}
       </Dialog>
 
-      <VirtualIconDesigner
+      <VirtualIconDesignerDialog
         open={designerOpen}
         onClose={() => setDesignerOpen(false)}
         projects={projects}
@@ -345,6 +349,6 @@ export function CustomIconsView({ projects = [], onNavigate }) {
           custom:{deleting?.name} will be removed. Existing component references will no longer render it.
         </Paragraph>
       </Dialog>
-    </Section>
+    </>
   )
 }

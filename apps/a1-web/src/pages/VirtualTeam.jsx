@@ -10,6 +10,7 @@ import {
 import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
 import { VirtualDataPanel } from '../backlog/VirtualDataPanel'
 import { VirtualDesignerPanel } from '../backlog/VirtualDesignerPanel'
+import { VirtualIconPanel } from '../backlog/VirtualIconPanel'
 import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
 
 export function VirtualTeam({ onNavigate, onOpenProject }) {
@@ -47,6 +48,7 @@ export function VirtualTeam({ onNavigate, onOpenProject }) {
           <VirtualArchitectPanel />
           <VirtualDesignerPanel />
           <VirtualDataPanel onOpenProject={onOpenProject} />
+          <VirtualIconPanel />
         </Grid>
       </Section>
     </>
