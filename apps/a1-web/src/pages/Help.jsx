@@ -147,7 +147,7 @@ const HELP = [
           <Stack gap="sm">
             <P>Each project is a card showing its icon, description, page count, and last-updated date.</P>
             <Bullets items={[
-              <><strong>Open</strong> — click the card’s Open button (or right-click → Open).</>,
+              <><strong>Open</strong> — click the card's Open button (or right-click → Open).</>,
               <><strong>Rename / Duplicate / Delete</strong> — right-click a card for the options menu. Delete asks for confirmation and removes the project and its pages.</>,
             ]} />
             <Shot
@@ -163,7 +163,7 @@ const HELP = [
         id: 'project-isolation',
         title: 'Projects are isolated',
         keywords: 'isolation isolated separate scope links page link selector cross project',
-        body: <P>A project’s pages, navigation, and in-page links only ever reference pages <em>within the same project</em>. When you link a Button or Link to a page, only that project’s pages appear in the selector.</P>,
+        body: <P>A project's pages, navigation, and in-page links only ever reference pages <em>within the same project</em>. When you link a Button or Link to a page, only that project's pages appear in the selector.</P>,
       },
     ],
   },
@@ -179,7 +179,7 @@ const HELP = [
         keywords: 'page tree sidebar pages tab add edit duplicate delete page right click context menu',
         body: (
           <Stack gap="sm">
-            <P>Inside a project, the sidebar’s <strong>Pages</strong> tab lists every page. Right-click a page (or use <strong>Add page</strong> in the footer) to:</P>
+            <P>Inside a project, the sidebar's <strong>Pages</strong> tab lists every page. Right-click a page (or use <strong>Add page</strong> in the footer) to:</P>
             <Bullets items={[
               <><strong>Add subpage</strong> / <strong>Add page below</strong></>,
               <><strong>Edit</strong> — selects the page so you can change its metadata</>,
@@ -201,8 +201,8 @@ const HELP = [
         keywords: 'hierarchy level depth nest drag drop reparent parent child 1 2 3 reorder',
         body: (
           <Stack gap="sm">
-            <P><strong>Drag and drop</strong> pages in the tree to nest them. A page’s <strong>level</strong> is its depth in the tree (1 = top level), capped at 3 — the hierarchy is the source of truth.</P>
-            <P>You can also set the level directly: select a page and change <strong>Level</strong> in its metadata; it re-parents to match. Levels that aren’t reachable from a page’s position are disabled.</P>
+            <P><strong>Drag and drop</strong> pages in the tree to nest them. A page's <strong>level</strong> is its depth in the tree (1 = top level), capped at 3 — the hierarchy is the source of truth.</P>
+            <P>You can also set the level directly: select a page and change <strong>Level</strong> in its metadata; it re-parents to match. Levels that aren't reachable from a page's position are disabled.</P>
           </Stack>
         ),
       },
@@ -210,7 +210,7 @@ const HELP = [
         id: 'page-metadata',
         title: 'Page metadata: title, icon, description, level',
         keywords: 'page metadata title icon description level edit settings name',
-        body: <P>With a page open and nothing selected on the canvas, the <strong>Configure</strong> panel shows the page settings: <strong>title</strong>, <strong>icon</strong>, <strong>description</strong>, and <strong>level</strong>. These drive the page’s entry in the auto-generated navigation.</P>,
+        body: <P>With a page open and nothing selected on the canvas, the <strong>Configure</strong> panel shows the page settings: <strong>title</strong>, <strong>icon</strong>, <strong>description</strong>, and <strong>level</strong>. These drive the page's entry in the auto-generated navigation.</P>,
       },
       {
         id: 'auto-nav',
@@ -232,7 +232,7 @@ const HELP = [
         id: 'all-pages',
         title: 'See all pages',
         keywords: 'all pages overview grid open breadcrumb edit delete project',
-        body: <P>A project’s home view lists every page as a card (with its level), so you can browse and open any page. A breadcrumb (Home › Projects › Project) and project-level <strong>Edit</strong> / <strong>Delete</strong> actions sit at the top.</P>,
+        body: <P>A project's home view lists every page as a card (with its level), so you can browse and open any page. A breadcrumb (Home › Projects › Project) and project-level <strong>Edit</strong> / <strong>Delete</strong> actions sit at the top.</P>,
       },
       {
         id: 'linking',
@@ -303,7 +303,7 @@ const HELP = [
             <P>Add components in a few ways:</P>
             <Bullets items={[
               <>The <strong>Add</strong> tab in the right panel — pick from the catalog; it inserts at the current target.</>,
-              <>The <strong>+ Add component</strong> button in the Layers footer, or a container’s <strong>+</strong> on the canvas.</>,
+              <>The <strong>+ Add component</strong> button in the Layers footer, or a container's <strong>+</strong> on the canvas.</>,
               <>Right-click an element → <strong>Add inside</strong> / <strong>Add below</strong>.</>,
               <>Drag a component from the Add panel onto the canvas.</>,
             ]} />
@@ -320,7 +320,7 @@ const HELP = [
               <><strong>Reorder / re-nest</strong> — drag elements in the Layers tree.</>,
               <><strong>Move up / down</strong> — <Kbd>{`${ALT}↑`}</Kbd> / <Kbd>{`${ALT}↓`}</Kbd> among siblings.</>,
               <><strong>Group as Stack</strong> — <Kbd>{`${MOD}G`}</Kbd> wraps the selection in a Stack.</>,
-              <><strong>Ungroup</strong> — <Kbd>{`${MOD}${SHIFT}G`}</Kbd> promotes a container’s children into its parent.</>,
+              <><strong>Ungroup</strong> — <Kbd>{`${MOD}${SHIFT}G`}</Kbd> promotes a container's children into its parent.</>,
             ]} />
           </Stack>
         ),
@@ -337,6 +337,416 @@ const HELP = [
               <><strong>Convert to</strong> — the context menu offers compatible types to switch a component into (e.g. Heading → Paragraph), carrying over what props match.</>,
             ]} />
             <P>Both the <strong>canvas right-click menu</strong> and the <strong>Layers tree menu</strong> offer these actions.</P>
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'layout',
+    title: 'Layout components',
+    icon: 'dashboard',
+    articles: [
+      {
+        id: 'section-component',
+        title: 'Section: page regions and surfaces',
+        keywords: 'section page region surface panel raised background padding contentWidth border gradient full width container inverse dark hero',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Section</strong> is the page-region component — it fills the full available
+              width and handles surface colour, padding, content width, borders, and gradients. Place
+              it as a direct child of the page, not inside a Card or another layout component.
+            </P>
+            <Bullets items={[
+              <><strong>surface</strong> — "page" (default), "panel" (slightly raised), or "raised". These map to semantic colour tokens and adapt automatically across themes.</>,
+              <><strong>padding</strong> — controls the inset from the Section edge to its content (none / xs / sm / md / lg / xl / xxl).</>,
+              <><strong>contentWidth</strong> — constrains the inner content column to a max-width (xs → 2xl) while keeping the background full-bleed. Match this value to StickyActions for visual alignment.</>,
+              <><strong>gradient</strong> — adds a decorative gradient overlay on the surface. Pairs well with "raised" for a hero section.</>,
+              <><strong>borderSize / borderSides / borderVariant</strong> — add a subtle, strong, or accent border on any sides. Common use: <Kbd>borderSides={['bottom']}</Kbd> to separate a page header area.</>,
+              <><strong>inverse</strong> — flips to the inverse (typically dark) surface. Use instead of hardcoding a dark background colour.</>,
+            ]} />
+            <Banner status="info" variant="inline" title="Section spans the full viewport">
+              Never wrap a Section inside a Card, Grid, or Stack — it breaks the full-bleed background
+              and padding model. Section goes directly on the page as a top-level region.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'stack-grid-component',
+        title: 'Stack and Grid: arranging content',
+        keywords: 'stack grid direction row column gap wrap responsive columns align justify layout horizontal vertical flex arrange spacing',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Stack</strong> and <strong>Grid</strong> are the two layout workhorses — use
+              them before writing any custom flex or grid CSS.
+            </P>
+            <Heading as="h3" size="xs">Stack</Heading>
+            <Bullets items={[
+              <><strong>direction</strong> — "column" (default) stacks vertically; "row" places children side by side. Pass a responsive object (<Kbd>{'{ xs: "column", md: "row" }'}</Kbd>) to switch at a breakpoint.</>,
+              <><strong>gap</strong> — space between children (none / xs / sm / md / lg / xl / xxl). Always use gap; never add margins between stacked items.</>,
+              <><strong>align</strong> — cross-axis alignment (start, center, end, stretch).</>,
+              <><strong>justify</strong> — main-axis alignment (start, center, end, between, around). "between" spreads children to opposite ends.</>,
+              <><strong>wrap</strong> (boolean) — lets row children wrap onto new lines instead of overflowing.</>,
+            ]} />
+            <Heading as="h3" size="xs">Grid</Heading>
+            <Bullets items={[
+              <><strong>columns</strong> — number of equal columns, or a responsive object (<Kbd>{'{ xs: 1, sm: 2, lg: 3 }'}</Kbd>).</>,
+              <><strong>gap</strong> — the gutter between cells.</>,
+              <><strong>GridItem span</strong> — a child can span multiple columns: <Kbd>{'<GridItem span={{ xs: 1, lg: 2 }}>'}</Kbd>.</>,
+            ]} />
+            <P color="muted">
+              Use Stack for one axis (column or row). Use Grid for equal-width columns or two-dimensional layouts.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'card-component',
+        title: 'Card: bounded content units',
+        keywords: 'card variant surface icon hero navigation link clickable status pulse badge tile product profile grid item bounded elevation',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Card</strong> is for small, repeated, bounded content units — product tiles,
+              profile summaries, navigation destinations. It is not a Section; never use it to wrap
+              a full-width layout area.
+            </P>
+            <Bullets items={[
+              <><strong>icon</strong> — renders a small tokenized icon block above the card content. Use this prop instead of a custom icon span.</>,
+              <><strong>heroIcon</strong> — a full-bleed colored header area, good for illustrated category cards.</>,
+              <><strong>variant="navigation"</strong> — makes the whole card a clickable link or button. Do not put any interactive elements (buttons, links, inputs) inside a navigation card — only static content.</>,
+              <><strong>status / statusLabel / statusPulse</strong> — adds a colored side stripe with an optional badge label and optional pulse animation. Always pair the stripe with a visible label to meet color-independence requirements (WCAG 1.4.1).</>,
+            ]} />
+            <Banner status="warn" variant="inline" title="No cards inside cards">
+              Nesting Cards creates conflicting elevation and interaction boundaries. Use Stack or Inset inside a Card for grouped sub-items.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'sticky-actions-button-container',
+        title: 'StickyActions and ButtonContainer',
+        keywords: 'sticky actions button container bar footer responsive fill align wrap action row form wizard checkout nav contentWidth',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>StickyActions</strong> is a fixed bar at the bottom of the viewport for
+              form navigation, wizard steps, or checkout flows. Always place a
+              <strong> ButtonContainer</strong> inside it — never bare buttons directly.
+            </P>
+            <Bullets items={[
+              <><strong>contentWidth</strong> on StickyActions — constrains the inner buttons to the same max-width as the page content. Match it to the Section above for visual alignment.</>,
+              <>Don't combine StickyActions with a BottomDrawer (navigation bar) on the same screen — they both occupy the bottom of the viewport and will overlap.</>,
+              <>An invisible spacer is rendered automatically in document flow so content doesn't get hidden behind the bar — no manual padding needed.</>,
+            ]} />
+            <P>
+              <strong>ButtonContainer</strong> can also be used standalone for any button group — it handles responsive stacking, fill behavior, and alignment.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'bleed-inset-spacer',
+        title: 'Bleed, Inset & Spacer',
+        keywords: 'bleed inset spacer overflow edge padding utility whitespace layout fine tune margin',
+        body: (
+          <Stack gap="sm">
+            <Bullets items={[
+              <><strong>Bleed</strong> — makes content overflow its parent's padding to reach the edge. Use for full-width images inside a padded Card, or a full-bleed banner inside a Section that also has contentWidth.</>,
+              <><strong>Inset</strong> — adds padding inside a container without changing its surface. Creates an inset content zone, e.g. an indented code block inside a card.</>,
+              <><strong>Spacer</strong> — inserts explicit whitespace between siblings. Prefer gap on Stack/Grid for regular spacing; use Spacer only for one-off adjustments that can't be expressed as gap.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'typography',
+    title: 'Typography & content',
+    icon: 'title',
+    articles: [
+      {
+        id: 'headings-level-size',
+        title: 'Headings: semantic level and visual size',
+        keywords: 'heading level semantic size h1 h2 h3 h4 h5 h6 visual scale hierarchy font accessible screen reader sentence case',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Heading separates the <em>semantic level</em> (what screen readers and search engines
+              see) from the <em>visual size</em> (how big it looks). Use both props:
+            </P>
+            <Bullets items={[
+              <><strong>as</strong> — the HTML element: h1 through h6. Use one h1 per page, h2 for major sections, h3 for sub-sections. Follow document order for accessibility.</>,
+              <><strong>size</strong> — visual scale: xs / sm / md / lg / xl / xxl / display / hero. Pick the size that looks right regardless of the level. A sidebar sub-heading might use <Kbd>as="h3" size="xs"</Kbd>; a hero headline uses <Kbd>as="h1" size="hero"</Kbd>.</>,
+            ]} />
+            <Bullets items={[
+              'Write headings in sentence case — "Create your account", not "Create Your Account".',
+              'Never apply uppercase text transforms; screen readers may spell individual letters.',
+              'Never change font-weight on hover or focus states — it causes layout reflow as the element resizes.',
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'paragraph-list-blockquote',
+        title: 'Paragraph, List & Blockquote',
+        keywords: 'paragraph list ordered unordered bullet numbered blockquote quote text body copy size color muted accent',
+        body: (
+          <Stack gap="sm">
+            <P><strong>Paragraph</strong> is the standard body-text block. Key props:</P>
+            <Bullets items={[
+              <><strong>size</strong> — xs / sm / md (default) / lg / xl. Use <Kbd>size="xs"</Kbd> or <Kbd>size="sm"</Kbd> for captions, helper text, and metadata. Use <Kbd>size="lg"</Kbd> or <Kbd>size="xl"</Kbd> for lead paragraphs.</>,
+              <><strong>color</strong> — "muted" (secondary text), "accent", "inverse" (dark surfaces), or a status color. Omit for the default text color.</>,
+              <><strong>as</strong> — renders as any block element (p, div, span, li, etc.).</>,
+            ]} />
+            <P><strong>List</strong> renders sequential or unordered content. Use <Kbd>as="ol" variant="ordered"</Kbd> for numbered steps and <Kbd>as="ul" variant="unordered"</Kbd> for bullet points. Each item is a <Kbd>ListItem</Kbd> child. Don't use List for navigation links — use the nav components instead.</P>
+            <P><strong>Blockquote</strong> is for pull quotes and testimonials, with a decorative left border and an optional attribution line below the quote.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'code-divider-inline',
+        title: 'Code, Divider & Inline text',
+        keywords: 'code block inline pre snippet kbd mark bold italic strike divider horizontal rule separator orientation variant',
+        body: (
+          <Stack gap="sm">
+            <P><strong>Code</strong> has two variants:</P>
+            <Bullets items={[
+              <><Kbd>variant="inline"</Kbd> — a short monospace span inside body text.</>,
+              <><Kbd>variant="block"</Kbd> — a scrollable pre/code block. Add <Kbd>copyCode</Kbd> for a one-click copy button, or <Kbd>editable</Kbd> to render it as a user-editable textarea.</>,
+            ]} />
+            <P><strong>Divider</strong> separates content areas. Key props:</P>
+            <Bullets items={[
+              <><Kbd>variant</Kbd> — "subtle" (default), "strong", or "accent" (the brand action colour).</>,
+              <><Kbd>orientation</Kbd> — "horizontal" or "vertical". Use vertical for inline separators inside a row.</>,
+              <><Kbd>lineStyle</Kbd> — "solid", "dashed", or "dotted".</>,
+              <><Kbd>space</Kbd> — adds margin above and below the divider (none / xs / sm / md / lg / xl).</>,
+            ]} />
+            <P><strong>Inline</strong> provides semantic inline wrappers: mark (highlight), kbd (keyboard key), s (strikethrough), strong, and em. In the editor, apply these via inline markdown shortcuts in a Paragraph.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'inline-markdown',
+        title: 'Inline markdown in paragraphs',
+        keywords: 'markdown inline bold italic strike mark code editor paragraph edit text shorthand keyboard shortcut',
+        body: (
+          <Stack gap="sm">
+            <P>When editing a Paragraph on the canvas, apply inline styles using markdown shortcuts:</P>
+            <DefinitionList
+              size="sm"
+              labelWidth="fixed"
+              items={[
+                { label: '**text**', value: 'Bold' },
+                { label: '*text*', value: 'Italic' },
+                { label: '~~text~~', value: 'Strikethrough' },
+                { label: '==text==', value: 'Highlight (mark)' },
+                { label: '`text`', value: 'Inline code' },
+              ]}
+            />
+            <P>
+              Type the closing marker to apply the style. The markdown is stored in the page JSON and rendered as the corresponding Inline component on the canvas and in the prototype.
+            </P>
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'navigation-components',
+    title: 'Navigation components',
+    icon: 'near_me',
+    articles: [
+      {
+        id: 'tabs-component',
+        title: 'Tabs: five layout variants',
+        keywords: 'tabs line pills folder segment progress stepper wizard step form filter switch variant panel active selected step tracker',
+        body: (
+          <Stack gap="sm">
+            <P>Tabs has five variants — choose the one that matches the use case:</P>
+            <DefinitionList
+              size="sm"
+              items={[
+                { label: 'line', value: 'Standard horizontal navigation tabs. The default.' },
+                { label: 'pills', value: 'Pill-style filter or view-switcher buttons.' },
+                { label: 'segment', value: 'Compact segmented control, identical to SegmentedControl.' },
+                { label: 'progress', value: 'Step-by-step wizard or multi-step form. Each Tab accepts a status prop ("completed", "error", "warning") to show step state. This is the correct component for any stepper, wizard, or progress indicator — do not build a custom one.' },
+                { label: 'folder', value: 'Browser-tab / folder-style navigation.' },
+              ]}
+            />
+            <Bullets items={[
+              <>Add <Kbd>equalHeight</Kbd> when Tabs are inside a Dialog so the dialog doesn't resize as the user switches between panels.</>,
+              <>Add <Kbd>labelMode="selected"</Kbd> to show the label only on the active tab — useful at narrow widths when every tab has an icon.</>,
+              'The line variant scrolls internally when tabs overflow — it never widens its container or forces a horizontal page scroll.',
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'topheader-sidenav',
+        title: 'TopHeader and SideNav',
+        keywords: 'topheader top header sidenav side nav sidebar desktop mobile overlay sticky navigation brand logo dropdown responsive',
+        body: (
+          <Stack gap="sm">
+            <P>Use one primary navigation pattern per screen — TopHeader or SideNav, not both at the same breakpoint.</P>
+            <Heading as="h3" size="xs">TopHeader</Heading>
+            <Bullets items={[
+              'Auto-generated from the page hierarchy in the editor — no manual configuration needed.',
+              'Level-1 pages become nav items; level-2 appear in dropdown menus; level-3 nest one level deeper.',
+              <>Control icon position with <Kbd>navIconPosition</Kbd>: "above", "start", or "hidden". Use a responsive object to change at breakpoints.</>,
+              'Pair with BottomDrawer for mobile: hide BottomDrawer at sm+ and hide TopHeader nav at xs.',
+            ]} />
+            <Heading as="h3" size="xs">SideNav</Heading>
+            <Bullets items={[
+              'Sticky on desktop (≥1025px) — position: sticky, top: 0, height: 100vh. Never wrap it in a container with overflow: hidden.',
+              'Fixed overlay on mobile (≤1024px) — slides in; controlled via open / onClose props.',
+              'Header and footer slots stay visible while the item list scrolls independently.',
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'breadcrumb-pagenav',
+        title: 'Breadcrumb and PageNav',
+        keywords: 'breadcrumb page nav in-page anchor scroll wayfinding location hierarchy current position sidebar nav',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Breadcrumb</strong> shows location in the page hierarchy — typically at the
+              top of a detail page or deep content area. Each item has a label and optional href;
+              the last item has no link (it's the current page).
+            </P>
+            <P>
+              <strong>PageNav</strong> is an in-page navigation sidebar: a list of anchor links
+              that tracks which section is in view and highlights the current one. Use it for long
+              pages with multiple named sections — like the Help page you're reading now (the section
+              list on the right is a PageNav).
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'bottom-drawer',
+        title: 'BottomDrawer: mobile tab bar',
+        keywords: 'bottom drawer nav bar mobile xs phone tab icon label badge active disabled navigation app tab bar',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>BottomDrawer</strong> is a mobile-first navigation tab bar — up to five items
+              pinned at the bottom of the viewport, each with an icon, label, and optional badge.
+              Show it only at xs (phone width) and hide it at sm+ where TopHeader provides full nav.
+            </P>
+            <Bullets items={[
+              'Use the same items array as TopHeader for consistency.',
+              "Don't combine BottomDrawer with StickyActions on the same screen — both occupy the bottom viewport edge.",
+              'Badge values above 99 automatically render as "99+".',
+            ]} />
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'inputs-forms',
+    title: 'Inputs & forms',
+    icon: 'edit_note',
+    articles: [
+      {
+        id: 'field-family',
+        title: 'The field family',
+        keywords: 'field text email password number date time phone zip credit card search input form label hint error required disabled readonly size comfortable compact placeholder',
+        body: (
+          <Stack gap="sm">
+            <P>
+              All text-input components share a common base — <strong>TextField</strong>,
+              <strong> NumberField</strong>, <strong>DateField</strong>, <strong>TimeField</strong>,
+              <strong> PhoneField</strong>, <strong>ZipField</strong>, <strong>CreditCardField</strong>,
+              and <strong>SearchField</strong>. They all accept:
+            </P>
+            <Bullets items={[
+              <><strong>label</strong> — always provide a visible label. Fields have no placeholder by design.</>,
+              <><strong>hint</strong> — helper text shown below the field.</>,
+              <><strong>error</strong> — an error message; also sets the field's error state visually.</>,
+              <><strong>required</strong> — marks the field as required and adds the required indicator.</>,
+              <><strong>size</strong> — "compact", "default", or "comfortable" (not sm/md/lg — the field family uses density names).</>,
+              <><strong>labelPosition</strong> — "above" (default) or "before" (inline-start side, good for compact forms).</>,
+              <><strong>readOnly / disabled</strong> — readOnly for "can't change right now"; disabled for "not applicable".</>,
+              <><strong>autoComplete</strong> — always set for real forms: "email", "current-password", "tel", "postal-code", "cc-number", etc.</>,
+            ]} />
+            <Banner status="info" variant="inline" title="No placeholders">
+              A1 fields have no placeholder by design. The visible label is always present so users never lose context while typing.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'select-choices',
+        title: 'Select, RadioGroup, CheckboxGroup & ChoiceGroup',
+        keywords: 'select dropdown option checkbox group radio choice group multiple single tile inlineIcon sections comfortable compact',
+        body: (
+          <Stack gap="sm">
+            <P><strong>Select</strong> — a native dropdown for picking one option from a long list. Use when options are known and stable.</P>
+            <P><strong>RadioGroup</strong> — mutually exclusive radio buttons in a fieldset + legend. Best for 2–6 options where seeing all choices at once matters.</P>
+            <P><strong>CheckboxGroup</strong> — multiple-selection checkboxes. Use when the user can pick zero or more items from a bounded set.</P>
+            <P><strong>ChoiceGroup</strong> — tile-based single or multi-select. Key props:</P>
+            <Bullets items={[
+              <><Kbd>multiple</Kbd> — false = radio tiles, true = checkbox tiles.</>,
+              <><Kbd>columns</Kbd> — fixed number or responsive breakpoint object.</>,
+              <><Kbd>inlineIcon</Kbd> — places the icon to the left of the label instead of above it, for a denser tile layout.</>,
+              <><Kbd>sections</Kbd> — group options under labeled sub-sections with dividers between them.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'fieldset-fieldrow',
+        title: 'Fieldset and FieldRow',
+        keywords: 'fieldset legend group field row inline side by side first last name city state zip columns form layout labelPosition group related',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Fieldset</strong> wraps related fields with a <code>{'<fieldset>'}</code> +
+              <code>{' <legend>'}</code>. Pass <Kbd>labelPosition</Kbd> on the Fieldset to apply it
+              to every child field. Use for grouped inputs like an address block or a set of contact
+              fields.
+            </P>
+            <P>
+              <strong>FieldRow</strong> lays related fields side by side in equal-width columns.
+              Put it inside a Fieldset to group inline fields like First name / Last name or City / State / ZIP.
+              It stacks to a single column at xs/sm automatically. Never hand-roll a flex row for
+              fields — use FieldRow.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'autocomplete-component',
+        title: 'Autocomplete',
+        keywords: 'autocomplete combobox type ahead suggestions dropdown multi chip create group icon option filter search select large list',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Autocomplete</strong> is a type-ahead combobox — it shows a filtered list of
+              options as the user types. Key props:
+            </P>
+            <Bullets items={[
+              <><Kbd>options</Kbd> — a flat array of strings or <Kbd>{'{ value, label, icon?, swatch?, group? }'}</Kbd> objects.</>,
+              <><Kbd>multiple</Kbd> — selected values render as removable chips inside the field.</>,
+              <><Kbd>allowCreate</Kbd> — shows an "Add …" option for values not in the list. Pair with <Kbd>onCreate</Kbd> to handle the new value.</>,
+              <><Kbd>group</Kbd> on options — groups options under sticky headings in the dropdown. Pre-sort options by group.</>,
+              <><Kbd>maxVisible</Kbd> — caps how many options render for very large lists.</>,
+            ]} />
+            <P color="muted">
+              For a short list of known options, use Select or RadioGroup instead. Autocomplete suits long lists (50+ options) or when users might not know the exact option name.
+            </P>
           </Stack>
         ),
       },
@@ -361,12 +771,12 @@ const HELP = [
             ]} />
             <Bullets items={[
               'Only visual props travel (variant, size, color, padding, gap, surface, gradient, radius, align…). Content, links, data, and state are left alone.',
-              'It captures the whole subtree: paste a styled Card and its heading/paragraph/button styles transfer to another Card’s children too — every matching element by type.',
-              'It captures each element’s effective style, including defaults, so the target ends up looking exactly like the source (not a partial blend).',
+              "It captures the whole subtree: paste a styled Card and its heading/paragraph/button styles transfer to another Card's children too — every matching element by type.",
+              "It captures each element's effective style, including defaults, so the target ends up looking exactly like the source (not a partial blend).",
               'If nothing matches, a snackbar explains why.',
             ]} />
             <Banner status="info" variant="inline" title="Why ⌥ and not ⇧">
-              The shortcuts use Option/Alt because the browser reserves ⌘⇧C for “Inspect Element”.
+              The shortcuts use Option/Alt because the browser reserves ⌘⇧C for "Inspect Element".
             </Banner>
           </Stack>
         ),
@@ -406,7 +816,7 @@ const HELP = [
         body: (
           <Stack gap="sm">
             <P>A <strong>pattern</strong> is a reusable, governed composition — a saved group of components (a header, a card, a callout) that you insert into pages as <strong>linked instances</strong>. Edit the pattern once and every instance updates.</P>
-            <P>That’s different from <strong>Copy pattern</strong> (in Reuse &amp; restyling), which is a one-time <em>style</em> transfer with no ongoing link. Patterns keep a live link and can lock parts so they stay consistent everywhere they’re used.</P>
+            <P>That's different from <strong>Copy pattern</strong> (in Reuse &amp; restyling), which is a one-time <em>style</em> transfer with no ongoing link. Patterns keep a live link and can lock parts so they stay consistent everywhere they're used.</P>
           </Stack>
         ),
       },
@@ -436,7 +846,7 @@ const HELP = [
         keywords: 'use insert pattern add panel drag instance update linked detach unlink loose nodes',
         body: (
           <Stack gap="sm">
-            <P>With a page open, the <strong>Add</strong> tab’s <strong>Patterns</strong> section lists the patterns available to the project — click or drag one onto the canvas to insert an instance.</P>
+            <P>With a page open, the <strong>Add</strong> tab's <strong>Patterns</strong> section lists the patterns available to the project — click or drag one onto the canvas to insert an instance.</P>
             <Bullets items={[
               'Editing the pattern updates every instance automatically.',
               <>To break the link on one instance, right-click it → <strong>Detach pattern</strong>; it becomes ordinary, fully-editable nodes.</>,
@@ -452,12 +862,12 @@ const HELP = [
           <Stack gap="sm">
             <P>When you author a pattern you decide what instances can change:</P>
             <Bullets items={[
-              <><strong>Lock a component</strong> so it can’t be moved, deleted, or converted in instances.</>,
+              <><strong>Lock a component</strong> so it can't be moved, deleted, or converted in instances.</>,
               <><strong>Lock content</strong> so its text is fixed.</>,
-              <><strong>Lock individual properties</strong> (the lock icon next to a control) so they’re read-only in instances.</>,
+              <><strong>Lock individual properties</strong> (the lock icon next to a control) so they're read-only in instances.</>,
             ]} />
-            <P>Locked parts appear disabled in an instance’s Configure panel and re-sync to the pattern’s values whenever the pattern changes. Add a <strong>Slot</strong> to a pattern to leave a labelled fill-in area where instance users can add their own (optionally restricted) content.</P>
-            <P>On the Patterns page, each pattern’s <strong>scope</strong> shows whether it’s available to all projects or limited to specific ones.</P>
+            <P>Locked parts appear disabled in an instance's Configure panel and re-sync to the pattern's values whenever the pattern changes. Add a <strong>Slot</strong> to a pattern to leave a labelled fill-in area where instance users can add their own (optionally restricted) content.</P>
+            <P>On the Patterns page, each pattern's <strong>scope</strong> shows whether it's available to all projects or limited to specific ones.</P>
           </Stack>
         ),
       },
@@ -478,12 +888,12 @@ const HELP = [
             <P>
               A <strong>data source</strong> is a reusable dataset — a named table of rows and
               columns you can edit, scope to projects, and (in future) bind into pages. Open it
-              from the editor menu’s <Icon name="table_chart" size="sm" /> <strong>Data sources</strong> entry.
+              from the editor menu's <Icon name="table_chart" size="sm" /> <strong>Data sources</strong> entry.
             </P>
             <Bullets items={[
               <>Each dataset is edited in a spreadsheet-style <strong>grid</strong> — double-click a cell to change its value.</>,
-              <>Datasets are <strong>stored</strong> in your account when you’re signed in (shared workspace), or in this browser otherwise.</>,
-              <>A built-in <strong>Users</strong> sample (fake people with contact details) is added on first use so there’s something to try.</>,
+              <>Datasets are <strong>stored</strong> in your account when you're signed in (shared workspace), or in this browser otherwise.</>,
+              <>A built-in <strong>Users</strong> sample (fake people with contact details) is added on first use so there's something to try.</>,
             ]} />
           </Stack>
         ),
@@ -499,7 +909,7 @@ const HELP = [
               <><strong>Rows</strong> — double-click a cell to edit. <strong>Add row</strong> appends a row; tick rows and <strong>Delete</strong> to remove them.</>,
               <><strong>Columns</strong> — in the Columns card, rename a column, set its type, remove it, or <strong>Add column</strong>.</>,
               <><strong>Scope</strong> — leave a dataset available to <strong>all projects</strong> (the default), or turn on <strong>Limit to specific projects</strong> and pick which ones. (Some data, like users, is generic enough to stay global.)</>,
-              <><strong>Import JSON</strong> — paste a JSON array of objects (keys become columns) or values; <strong>Replace from JSON</strong> swaps a dataset’s data the same way.</>,
+              <><strong>Import JSON</strong> — paste a JSON array of objects (keys become columns) or values; <strong>Replace from JSON</strong> swaps a dataset's data the same way.</>,
             ]} />
             <P>
               Signed-in cloud storage needs the <Kbd>data_sources</Kbd> table created in Supabase
@@ -516,26 +926,26 @@ const HELP = [
         body: (
           <Stack gap="sm">
             <P>
-              A component’s text or a text prop can pull a value from a dataset. The easy way: select the
+              A component's text or a text prop can pull a value from a dataset. The easy way: select the
               element, then in the <strong>Configure</strong> panel use the <strong>Bind to data</strong>
               section — each bindable field (its Text, plus props like a link or image) has a menu of the
-              project’s data sources and their fields. Pick one to bind it; <strong>Clear</strong> unbinds.
+              project's data sources and their fields. Pick one to bind it; <strong>Clear</strong> unbinds.
             </P>
             <P>
               Under the hood a binding is a token like <Kbd>{'{{ users.name }}'}</Kbd> — you can also type or
               paste one directly into any text:
             </P>
             <Bullets items={[
-              <>The name before the dot is the dataset’s <strong>key</strong> — its name lowercased (e.g. “Users” → <Kbd>users</Kbd>).</>,
+              <>The name before the dot is the dataset's <strong>key</strong> — its name lowercased (e.g. "Users" → <Kbd>users</Kbd>).</>,
               <>The default is the <strong>first row</strong>; add an index for another: <Kbd>{'{{ users.name.2 }}'}</Kbd>.</>,
               <>Mix text and tokens — <Kbd>{'Hi {{ users.name }}'}</Kbd> — or bind a whole value on its own.</>,
               <>An unknown reference is shown as-is (e.g. <Kbd>{'{{ users.nope }}'}</Kbd>) so you can spot the typo.</>,
             ]} />
             <P>
-              The editor’s <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right panel)
-              lists the project’s datasets and lets you <strong>click any token to copy it</strong>. Bound text
+              The editor's <strong>Data</strong> tab (<Icon name="table_chart" size="sm" /> in the right panel)
+              lists the project's datasets and lets you <strong>click any token to copy it</strong>. Bound text
               shows the value read-only on the canvas — edit the binding from the Configure panel. Only data
-              sources available to the page’s project (global or scoped to it) can be bound.
+              sources available to the page's project (global or scoped to it) can be bound.
             </P>
           </Stack>
         ),
@@ -548,17 +958,17 @@ const HELP = [
           <Stack gap="sm">
             <P>
               Turn one element into a list driven by a dataset. Select an element (often a
-              <strong> Card</strong> or a <strong>Stack</strong>), then in the Configure panel’s
+              <strong> Card</strong> or a <strong>Stack</strong>), then in the Configure panel's
               <strong> Data</strong> section set <strong>Repeat for each row</strong> to a data source.
               It renders once per row.
             </P>
             <Bullets items={[
               <>Bindings inside use the <strong>current row</strong> — a card bound to <Kbd>{'{{ users.name }}'}</Kbd> and <Kbd>{'{{ users.email }}'}</Kbd> becomes one card per user.</>,
-              <><strong>Show at most</strong> caps how many render (blank = all) — e.g. a “3 featured products” strip.</>,
-              <><strong>Pick rows at random</strong> shows a random selection instead of the first few. It’s stable (it won’t reshuffle on every edit) and differs per element.</>,
-              <>On the canvas the <strong>first copy is editable</strong> (it’s the template — editing it changes them all); the rest are read-only. <strong>Preview</strong> shows every row.</>,
+              <><strong>Show at most</strong> caps how many render (blank = all) — e.g. a "3 featured products" strip.</>,
+              <><strong>Pick rows at random</strong> shows a random selection instead of the first few. It's stable (it won't reshuffle on every edit) and differs per element.</>,
+              <>On the canvas the <strong>first copy is editable</strong> (it's the template — editing it changes them all); the rest are read-only. <strong>Preview</strong> shows every row.</>,
               <>An explicit row index still wins inside a repeat (<Kbd>{'{{ users.name.0 }}'}</Kbd> always the first), which is handy for headers.</>,
-              <>Set it back to <strong>Don’t repeat</strong> to stop.</>,
+              <>Set it back to <strong>Don't repeat</strong> to stop.</>,
             ]} />
             <P>
               Put the repeating element inside a <strong>Grid</strong> or <strong>Stack</strong> to control how
@@ -574,19 +984,19 @@ const HELP = [
         body: (
           <Stack gap="sm">
             <P>
-              Some components hold a list — a <strong>Definition List</strong>’s items, a <strong>Choice
-              Group</strong> / <strong>Select</strong>’s options. Instead of typing them, generate the list from
+              Some components hold a list — a <strong>Definition List</strong>'s items, a <strong>Choice
+              Group</strong> / <strong>Select</strong>'s options. Instead of typing them, generate the list from
               a dataset: select the component → Configure → <strong>Fill items/options from data</strong> → pick
               a data source and a mode.
             </P>
             <Bullets items={[
-              <><strong>Each field of the item</strong> — a Definition List shows one <em>label / value</em> row per column of the current item. Great on a detail page to “show all details”.</>,
+              <><strong>Each field of the item</strong> — a Definition List shows one <em>label / value</em> row per column of the current item. Great on a detail page to "show all details".</>,
               <><strong>Distinct values of a column</strong> — one entry per unique value, so a Choice Group becomes a category filter that <strong>grows automatically</strong> as you add categories.</>,
               <><strong>Each row</strong> — one entry per row; map which column feeds each field (e.g. a Select of every product name).</>,
             ]} />
             <P>
               Row and distinct modes also take <strong>Show at most</strong> and <strong>Pick at random</strong>.
-              This fills one component’s list — to repeat a whole element per row, use <strong>Repeat for each
+              This fills one component's list — to repeat a whole element per row, use <strong>Repeat for each
               row</strong> instead.
             </P>
           </Stack>
@@ -605,7 +1015,7 @@ const HELP = [
             <Bullets items={[
               <><strong>Tag the page:</strong> with nothing selected, open <strong>Page settings</strong> → <strong>Shows details for</strong> and pick the dataset. Now every <Kbd>{'{{ dataset.field }}'}</Kbd> on the page resolves to one item.</>,
               <><strong>Design against a real item:</strong> pick a <strong>Preview item</strong> so the page shows actual data while you build it.</>,
-              <><strong>Link from a list:</strong> on a page that repeats a Card over the dataset, set the card’s (or a button’s) link to the detail page. It automatically passes the current item, so each card opens its own details.</>,
+              <><strong>Link from a list:</strong> on a page that repeats a Card over the dataset, set the card's (or a button's) link to the detail page. It automatically passes the current item, so each card opens its own details.</>,
               <><strong>Preview it:</strong> open Preview, click an item in the list, and the detail page shows that item. The address carries <Kbd>?item=…</Kbd>, so the link is shareable.</>,
             ]} />
             <P>
@@ -651,7 +1061,7 @@ const HELP = [
               'Rename or delete images from the library page — deletes leave a missing image on any Figure that used them.',
             ]} />
             <Banner status="info" variant="inline" title="Where images live">
-              When you’re signed in, images upload to the shared cloud workspace alongside your projects. Signed out (or with no backend configured), the library lives only in this browser (IndexedDB) and stays on this device.
+              When you're signed in, images upload to the shared cloud workspace alongside your projects. Signed out (or with no backend configured), the library lives only in this browser (IndexedDB) and stays on this device.
             </Banner>
           </Stack>
         ),
@@ -682,14 +1092,14 @@ const HELP = [
         keywords: 'ai image finder unsplash claude api key describe suggestions thumbnails caption generate',
         body: (
           <Stack gap="sm">
-            <P>Next to a Figure’s <strong>Image URL</strong>, the <Icon name="auto_awesome" size="sm" /> button opens an AI image finder.</P>
+            <P>Next to a Figure's <strong>Image URL</strong>, the <Icon name="auto_awesome" size="sm" /> button opens an AI image finder.</P>
             <Steps items={[
               'Describe the image you want.',
               'Claude returns three Unsplash thumbnails — select one, ask for three more, or re-prompt.',
               'Add an optional caption and apply it to the Figure.',
             ]} />
             <Banner status="warn" variant="inline" title="API key">
-              You provide an Anthropic API key the first time; it’s stored only in this browser. Fine for local prototyping — don’t use this pattern in a public production build (proxy the call through a backend there).
+              You provide an Anthropic API key the first time; it's stored only in this browser. Fine for local prototyping — don't use this pattern in a public production build (proxy the call through a backend there).
             </Banner>
           </Stack>
         ),
@@ -702,7 +1112,7 @@ const HELP = [
           <Stack gap="sm">
             <P>Wherever a component has an <strong>Icon</strong> field in the Configure panel, the <Icon name="auto_awesome" size="sm" /> <strong>Find an icon with AI</strong> button beside it opens the AI icon finder.</P>
             <Steps items={[
-              'Describe the icon you want — e.g. “download arrow” or “lock”.',
+              'Describe the icon you want — e.g. "download arrow" or "lock".',
               'Claude returns three Material Symbols options; pick one, ask for three more, or re-prompt.',
             ]} />
             <P color="muted">Uses the same in-browser Anthropic API key as the other AI tools.</P>
@@ -715,18 +1125,258 @@ const HELP = [
         keywords: 'ai page editor chat claude describe change whole page json generate modify instruction undo opus make with ai add page split button',
         body: (
           <Stack gap="sm">
-            <P>The <strong>AI</strong> tab in the right-hand panel lets you edit the whole page by describing the change in plain language. Claude is sent the current page plus A1’s component and format reference, so it knows which components, props, and values are allowed.</P>
+            <P>The <strong>AI</strong> tab in the right-hand panel lets you edit the whole page by describing the change in plain language. Claude is sent the current page plus A1's component and format reference, so it knows which components, props, and values are allowed.</P>
             <P>To start a brand-new page this way, open the <strong>Add page</strong> split button (the caret) in the Pages sidebar footer and choose <strong>Make with AI</strong> — it creates the page and drops you straight into the AI tab with the prompt focused.</P>
             <Steps items={[
-              'Open the AI tab and type an instruction — e.g. “Add a hero section with a heading and a primary call-to-action”, or “Turn the three cards into a grid”.',
+              'Open the AI tab and type an instruction — e.g. "Add a hero section with a heading and a primary call-to-action", or "Turn the three cards into a grid".',
               'Press Enter (Shift+Enter for a new line). Claude returns a short summary and the updated page.',
               'The change is applied to the canvas automatically as a single step — press Cmd/Ctrl+Z to undo the whole edit.',
             ]} />
-            <P>It’s conversational — follow-ups like “now make the heading larger” build on the previous turn, and it always works from the live canvas (so manual edits in between are respected).</P>
+            <P>It's conversational — follow-ups like "now make the heading larger" build on the previous turn, and it always works from the live canvas (so manual edits in between are respected).</P>
             <Banner status="warn" variant="inline" title="API key">
-              Uses the same in-browser Anthropic API key as the AI image and icon tools, stored only in this browser. Fine for local prototyping — don’t ship the in-browser key to a public production build.
+              Uses the same in-browser Anthropic API key as the AI image and icon tools, stored only in this browser. Fine for local prototyping — don't ship the in-browser key to a public production build.
             </Banner>
           </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'themes',
+    title: 'Themes',
+    icon: 'palette',
+    articles: [
+      {
+        id: 'what-are-themes',
+        title: 'What themes are',
+        keywords: 'theme token override css color surface typography font brand design system visual style selector preset custom',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A theme is a set of design token overrides that changes the visual appearance of every
+              component without touching layout or structure. All visual values — colors, typography,
+              spacing, shadows, border radii — come from design tokens. A theme replaces any subset
+              of those tokens with different values via a CSS selector.
+            </P>
+            <P>Token resolution order (last wins):</P>
+            <Bullets items={[
+              'Base tokens — raw values (a specific hex, a pixel size).',
+              'Semantic tokens — intent-based aliases ("action background", "error text").',
+              'Component tokens — component-specific references to semantic tokens.',
+              'Theme overrides — replaces any of the above for this theme only.',
+            ]} />
+            <P color="muted">
+              This is why a Button looks different in every theme without any changes to its code — it reads a token, and the theme decides what that token resolves to.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'built-in-themes',
+        title: 'Built-in themes',
+        keywords: 'built in light accessible heritage fresh crochet aperture marshmallow high contrast preset brand visual overview font',
+        body: (
+          <Stack gap="sm">
+            <P>A1 ships with these fully tokenized visual styles:</P>
+            <DefinitionList
+              size="sm"
+              items={[
+                { label: 'A1 light', value: 'The standard light theme — clean, neutral, professional. The default.' },
+                { label: 'Accessible', value: 'High-contrast variant with increased color contrast ratios throughout.' },
+                { label: 'Heritage', value: 'Legacy brand palette for teams migrating from an older design system.' },
+                { label: 'Fresh', value: 'Sky-blue accents, Nunito / Baskerville typography, mint gradient background. Upbeat and modern.' },
+                { label: 'Crochet', value: 'Soft pastels (dusty-rose, sage, periwinkle) on warm cream. Fraunces expressive display, Libre Baskerville headings, Roboto Slab body.' },
+                { label: 'Aperture', value: 'Minimal gallery-grade for photography. Near-monochrome graphite on clean white, small radii. Pinyon Script display, Playfair Display headings, Manrope body.' },
+                { label: 'Marshmallow', value: 'Soft neumorphism in pastels — raised/inset shadows on buttons and cards, generous rounding. Varela Round display and headings, Nunito body.' },
+              ]}
+            />
+          </Stack>
+        ),
+      },
+      {
+        id: 'switching-themes',
+        title: 'Switching the active theme',
+        keywords: 'switch theme apply change active preview theme selector editor toolbar palette activate workspace',
+        body: (
+          <Stack gap="sm">
+            <P>
+              From the Editors menu, open <strong>Theme</strong>. The theme selector at the top
+              changes the active theme for the editor canvas and the prototype — it applies to the
+              entire workspace.
+            </P>
+            <P>
+              The Theme page previews every built-in theme as a card showing its colors, fonts, and
+              surface style. Click one to activate it, or use the selector at the top.
+            </P>
+            <P color="muted">
+              The active theme syncs across devices when signed in and applies to the prototype
+              that visitors see when you share the URL.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'theme-editor',
+        title: 'The theme editor: customising tokens',
+        keywords: 'theme editor token override customize colour font radius shadow surface semantic component brand preview apply reset create duplicate',
+        body: (
+          <Stack gap="sm">
+            <P>
+              On the Theme page, choose <strong>Edit theme</strong> to open the token override
+              editor. Changes are stored as workspace overrides on top of the selected base theme
+              and sync to the cloud like everything else.
+            </P>
+            <P>Token categories you can override:</P>
+            <Bullets items={[
+              <><strong>Color</strong> — semantic surface, text, and action colours, and individual palette ramp steps.</>,
+              <><strong>Typography</strong> — font families (display, heading, body), sizes, weights, and line heights.</>,
+              <><strong>Spacing & radius</strong> — the base spacing scale and border-radius values.</>,
+              <><strong>Shadow & motion</strong> — shadow depth and animation duration/easing.</>,
+            ]} />
+            <P>The canvas updates live as you change values. <strong>Reset to default</strong> removes all overrides for the active theme.</P>
+            <Banner status="info" variant="inline" title="Starting a new visual style">
+              Duplicate an existing theme first — this gives you all the base values to start from.
+              Only override the tokens that need to differ; everything else is inherited.
+            </Banner>
+          </Stack>
+        ),
+      },
+    ],
+  },
+
+  {
+    id: 'labels',
+    title: 'Labels & translations',
+    icon: 'translate',
+    articles: [
+      {
+        id: 'what-are-labels',
+        title: 'What labels are',
+        keywords: 'labels translations localisation locale strings UI copy button text calendar month weekday i18n system workspace project three tier',
+        body: (
+          <Stack gap="sm">
+            <P>
+              <strong>Labels</strong> are the localizable UI strings used by system components —
+              month names in the Calendar, "Clear search" in a Search Field, "Pause" in a Status Bar,
+              and any other text that needs to be translated or customized. They are separate from
+              design tokens: tokens carry visual values; labels carry text.
+            </P>
+            <P>Labels resolve through three tiers, in order:</P>
+            <Bullets items={[
+              <><strong>System defaults</strong> — built into A1's component library. Always present; cover every component string in English and seven languages.</>,
+              <><strong>Workspace overrides</strong> — strings added or changed in the Label editor, applied across the whole workspace.</>,
+              <><strong>Project overrides</strong> — strings overridden for one specific project. Win over workspace and system values for pages in that project.</>,
+            ]} />
+            <P>
+              Open the <strong>Label editor</strong> from the Editors menu to manage all three tiers.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'label-all-tab',
+        title: 'All labels: viewing and editing system strings',
+        keywords: 'all labels tab system strings view edit override badge custom source calendar field action search clear translate context menu right click grid row',
+        body: (
+          <Stack gap="sm">
+            <P>
+              The <strong>All labels</strong> tab shows every system label alongside any workspace
+              overrides in one combined, editable grid. Each row is a label key, its English source,
+              and one column per enabled language.
+            </P>
+            <Bullets items={[
+              'System labels (unchanged) show no badge.',
+              <>Overridden labels show an <MessageBadge status="info" subtle size="sm" icon={null}>Override</MessageBadge> badge — your value replaces the system default.</>,
+              <>Labels you added show a <MessageBadge status="neutral" subtle size="sm" icon={null}>Custom</MessageBadge> badge.</>,
+            ]} />
+            <P>Double-click any cell to edit it inline. Editing a system label automatically creates a workspace override.</P>
+            <P>Right-click a row for options:</P>
+            <Bullets items={[
+              <><strong>Re-translate</strong> — fills empty locale columns from the English value using auto-translation.</>,
+              <><strong>Remove override</strong> (overridden rows) — removes your workspace value, reverting to the system default.</>,
+              <><strong>Delete</strong> (custom rows) — permanently removes a label you added.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'label-workspace-tab',
+        title: 'Workspace labels: custom strings and overrides',
+        keywords: 'workspace labels custom add translate auto translation locales languages english missing fill all workspace tab add label key value delete select',
+        body: (
+          <Stack gap="sm">
+            <P>
+              The <strong>Workspace</strong> tab shows only the labels you've added or changed — not
+              the unmodified system defaults. This is the delta your workspace adds on top of the
+              component library.
+            </P>
+            <Steps items={[
+              <>Click <strong>Add label</strong>. Give it a dot-notation key (e.g. <Kbd>hero.title</Kbd> or <Kbd>navigation.back</Kbd>), an English value, and choose whether to auto-translate on create.</>,
+              'Double-click any cell to edit a value inline.',
+              <>Click <strong>Translate all missing</strong> to fill every empty locale cell across all workspace labels in one batch, or right-click a row → <strong>Re-translate</strong> to fill just that row.</>,
+              'Select rows with the checkbox column and use the toolbar to delete multiple labels at once.',
+            ]} />
+            <P>
+              The <strong>Languages</strong> button opens the language panel. Enable or disable any of the eight supported locales (English, Spanish, French, German, Portuguese, Japanese, Chinese, Arabic). Arabic uses right-to-left text direction in the editor grid.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'label-project-tab',
+        title: 'Project-specific label overrides',
+        keywords: 'project overrides label per project specific button text heading string locale translation isolated customize brand campaign',
+        body: (
+          <Stack gap="sm">
+            <P>
+              The <strong>Project</strong> tab overrides labels for the currently active project
+              only. A project override wins over workspace overrides and system defaults — perfect
+              for brand-specific copy, campaign strings, or a project in a different language.
+            </P>
+            <Steps items={[
+              'Make sure a project is open in the editor — the tab shows the project name.',
+              <>Click <strong>Add override</strong>. Search for a label key (all system and workspace keys are listed), then fill in the translated values.</>,
+              'Double-click any cell to edit an existing override.',
+              'Right-click a row to re-translate it or delete it.',
+            ]} />
+            <P color="muted">Project overrides are stored on the project and removed when the project is deleted.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'label-translation',
+        title: 'Auto-translation',
+        keywords: 'translate auto translation mymemory api locale fill missing right click re-translate batch missing spanish french german japanese chinese arabic',
+        body: (
+          <Stack gap="sm">
+            <P>
+              The label editor uses the free <strong>MyMemory</strong> translation API to fill
+              missing locale values from the English source string. No API key needed.
+            </P>
+            <Bullets items={[
+              <>The <strong>Translate all missing</strong> button (Workspace tab) fills every empty cell across all workspace labels in one pass.</>,
+              <>Right-click any row → <strong>Re-translate</strong> to fill that row's empty locales. Cells that already have a value are left untouched.</>,
+              <>The <strong>Auto-translate on create</strong> option fills all enabled locales immediately when you add a new label.</>,
+            ]} />
+            <Banner status="info" variant="inline" title="Translation quality">
+              Machine translation is a starting point. Review translations before shipping to production, especially for Arabic (RTL), Japanese, and Chinese where nuance matters most.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'label-export',
+        title: 'Exporting labels',
+        keywords: 'export labels json download backup file workspace custom overrides labels.json',
+        body: (
+          <P>
+            The <strong>Export JSON</strong> button on the Label editor downloads all workspace
+            labels (custom labels and overrides) as a <Kbd>labels.json</Kbd> file. Use it as a
+            backup, to hand off translations to a localisation service, or to commit them alongside
+            the codebase. The format is the same DTCG-style structure used internally, so it can be
+            re-imported or referenced directly in code.
+          </P>
         ),
       },
     ],
@@ -791,7 +1441,7 @@ const HELP = [
         keywords: 'save storage localstorage autosave persist browser local device cloud sync sign in account',
         body: (
           <Stack gap="sm">
-            <P>There’s no save button — every change is saved automatically as you work. Where it lives depends on whether you’re signed in:</P>
+            <P>There's no save button — every change is saved automatically as you work. Where it lives depends on whether you're signed in:</P>
             <Bullets items={[
               <><strong>Signed in</strong> — projects, pages, patterns, and themes sync to a shared cloud workspace in near-real-time, so your work is available on any device you sign in from.</>,
               <><strong>Signed out (or no account configured)</strong> — everything is saved in this browser only; it persists across reloads but stays on this device.</>,
@@ -809,10 +1459,10 @@ const HELP = [
             <Bullets items={[
               'Changes sync automatically across devices and are visible to everyone signed in.',
               'Edits are attributed — the History panel shows who changed what, with restore.',
-              <>The Account page’s <strong>Import local data</strong> action pushes anything stored only in this browser up to the shared workspace.</>,
+              <>The Account page's <strong>Import local data</strong> action pushes anything stored only in this browser up to the shared workspace.</>,
             ]} />
             <Banner status="info" variant="inline" title="Not signed in?">
-              Without an account (or when no backend is configured) the editor runs fully offline against this browser’s local storage — every feature still works, but your work stays on this device. Use Export to move it elsewhere.
+              Without an account (or when no backend is configured) the editor runs fully offline against this browser's local storage — every feature still works, but your work stays on this device. Use Export to move it elsewhere.
             </Banner>
           </Stack>
         ),
@@ -822,6 +1472,72 @@ const HELP = [
         title: 'Export & import (backup)',
         keywords: 'export import backup download upload file projects pages restore transfer',
         body: <P>From <strong>Settings → Editor</strong>, <strong>Export all pages</strong> downloads every project and page as one text file; <strong>Import pages</strong> restores them. Use it as a backup or to move work to another browser or machine.</P>,
+      },
+    ],
+  },
+
+  {
+    id: 'settings',
+    title: 'Settings',
+    icon: 'settings',
+    articles: [
+      {
+        id: 'settings-overview',
+        title: 'Settings overview',
+        keywords: 'settings page account locale export import ai api key preferences configuration editor tabs',
+        body: (
+          <Stack gap="sm">
+            <P>Open <strong>Settings</strong> from the top navigation. The settings page has three tabs:</P>
+            <Bullets items={[
+              <><strong>Account</strong> — sign in and out. When signed in, all workspace data (projects, pages, patterns, themes, labels, images) syncs to the cloud automatically.</>,
+              <><strong>Editor</strong> — export all pages to a backup file, or import pages from a file to restore or migrate work. Also shows the current locale preference.</>,
+              <><strong>AI</strong> — enter your Anthropic API key for the AI image finder, AI icon finder, and AI page editor.</>,
+            ]} />
+          </Stack>
+        ),
+      },
+      {
+        id: 'ai-api-key',
+        title: 'Setting up your AI API key',
+        keywords: 'anthropic api key claude ai image finder icon finder page editor setup settings enter first time local browser',
+        body: (
+          <Stack gap="sm">
+            <P>The AI features (image finder, icon finder, and page chat editor) require an Anthropic API key. To set one up:</P>
+            <Steps items={[
+              <>Open <strong>Settings → AI</strong>.</>,
+              'Paste your Anthropic API key. It is stored only in this browser — never sent to any server.',
+              'The AI features activate as soon as the key is saved.',
+            ]} />
+            <Banner status="warn" variant="inline" title="Browser-only storage">
+              The key lives in this browser's local storage. It won't work in other browsers or incognito sessions unless you re-enter it. Each team member enters their own key.
+            </Banner>
+            <Banner status="info" variant="inline" title="Getting a key">
+              Sign in at console.anthropic.com, go to API keys, and create a new key. AI feature usage is billed to your Anthropic account at standard API rates.
+            </Banner>
+          </Stack>
+        ),
+      },
+      {
+        id: 'accessibility-report',
+        title: 'Accessibility report',
+        keywords: 'accessibility a11y report axe wcag contrast violations audit check score review components page a11y',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Open <strong>Accessibility</strong> from the top nav to see the automated
+              accessibility audit for the A1 component library. The report runs axe-core against
+              every component story and shows WCAG 2.0 / 2.1 / 2.2 Levels A and AA results.
+            </P>
+            <Bullets items={[
+              'Each finding shows the affected component, the WCAG rule violated, and how to fix it.',
+              'Color contrast issues are highlighted separately from structural violations.',
+              'Use the report to identify which components need attention before shipping a project.',
+            ]} />
+            <P color="muted">
+              Automated tools catch roughly 30–57% of accessibility issues. Screen reader announcement quality, cognitive factors, and complex interactions always require manual review.
+            </P>
+          </Stack>
+        ),
       },
     ],
   },
@@ -925,8 +1641,8 @@ const HELP = [
             <Bullets items={[
               'Each suggestion shows how similar it is and why (shared terms, same scope).',
               'Merge… — join the two into one: choose which ticket to keep; the other is closed as a duplicate.',
-              'The kept ticket absorbs the other’s comments, votes, and description — nothing is lost.',
-              'Know the duplicate already? Use “Merge another ticket by ID” to link it directly.',
+              "The kept ticket absorbs the other's comments, votes, and description — nothing is lost.",
+              'Know the duplicate already? Use "Merge another ticket by ID" to link it directly.',
               'When you file a new ticket, possible duplicates are flagged so you can vote instead.',
             ]} />
             <P color="muted">
@@ -1061,7 +1777,7 @@ export function Help({ onNavigate }) {
 
         {searching && (
           <Paragraph size="sm" color="muted">
-            {resultCount} {resultCount === 1 ? 'result' : 'results'} for “{query.trim()}”
+            {resultCount} {resultCount === 1 ? 'result' : 'results'} for "{query.trim()}"
           </Paragraph>
         )}
 
@@ -1069,7 +1785,7 @@ export function Help({ onNavigate }) {
           <MessageEmptyState
             icon="search_off"
             title="No matching help"
-            description="Try a different word — e.g. “drag”, “prototype”, “shortcut”, or a component name."
+            description={'Try a different word — e.g. "drag", "prototype", "shortcut", or a component name.'}
             action={<Button variant="secondary" onClick={() => setQuery('')}>Clear search</Button>}
           />
         ) : (

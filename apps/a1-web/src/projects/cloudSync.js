@@ -4,16 +4,19 @@ import { exportAllText, importAllText } from './projectStore'
 import { onStorageWrite, suspendStorageNotify } from '../editor/storage'
 import { exportUserPatterns, importUserPatterns, subscribePatterns } from '../patterns/patternStore'
 import { exportThemes, importThemes, subscribeThemes } from '../lib/themeStore'
+import { hydrateLabels, importLabels } from '../labels/labelStore.js'
 
 // Cloud sync for all editor data — a single SHARED workspace: every signed-in user
 // reads and writes the same bundle. On sign-in the shared bundle is pulled into
 // local storage (or the shared row is seeded from local if empty), then local
 // changes are pushed back — debounced — whenever projects, patterns, or themes
-// change. A Supabase **realtime** subscription re-pulls automatically when any other
-// client writes, so changes propagate live without a reload. The bundle is one JSON
-// envelope in the `shared_state.data` text column:
+// change. A Supabase **realtime** subscription re-pulls automatically when any
+// other client writes, so changes propagate live without a reload. The bundle is one
+// JSON envelope in the `shared_state.data` text column:
 //   { __a1bundle, projects: <exportAllText text>, patterns: [...], themes: [...] }
 // Images are not in the envelope — they sync separately via Supabase Storage.
+// Labels now live in their own `workspace_labels` Supabase row. Legacy bundle
+// imports still hydrate labels when an older shared_state row contains them.
 // Last-write-wins across users (the whole envelope is replaced on each push).
 // Dormant unless Supabase is configured and a user is signed in.
 
@@ -41,6 +44,9 @@ function importEnvelope(text) {
     if (typeof bundle.projects === 'string') importAllText(bundle.projects)
     importUserPatterns(bundle.patterns)
     importThemes(bundle.themes)
+    // Legacy: labels lived in the shared_state bundle before the dedicated
+    // workspace_labels table. Import once so the new label store can upsert them.
+    if (bundle.labels) importLabels(bundle.labels)
   } else {
     importAllText(text) // legacy: projects-only
   }
@@ -95,6 +101,7 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
       lastSyncedData = envelope
       await saveSharedData(envelope)
     }
+    await hydrateLabels()
   } catch (e) {
     console.warn('[cloudSync] pull failed', e)
   }

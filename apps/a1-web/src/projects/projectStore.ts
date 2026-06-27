@@ -41,6 +41,8 @@ export interface Project {
   icon?: string;
   /** Free-form project metadata (e.g. SEO `metaTitle` / `metaDescription`). */
   meta?: Record<string, string>;
+  /** Per-project label overrides. Key = dot-notation label path; value = map of locale code → translation string. */
+  labelOverrides?: Record<string, Record<string, string>>;
   createdAt: number;
   updatedAt: number;
 }

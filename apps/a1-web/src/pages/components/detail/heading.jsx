@@ -395,7 +395,7 @@ export function Preview({ component, config, setConfig, utilityClass = '' }) {
   return <EditableHeading component={component} config={config} setConfig={setConfig} utilityClass={utilityClass} />
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, textAction = null }) {
   const sizeOptions = HEADING_SIZE_OPTIONS[config.type] ?? HEADING_SIZE_OPTIONS.heading
   const markState = getMarkState(config.children)
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
@@ -408,15 +408,17 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-<TextareaField
-        label="Text"
-        rows="sm"
-        
-        hint="==text== highlights · __text__ underlines"
-        size="compact"
-        value={htmlToMarkdown(config.children)}
-        onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
-      />
+      <Stack direction="row" gap="xs" align="end">
+        <TextareaField
+          label="Text"
+          rows="sm"
+          hint="==text== highlights · __text__ underlines"
+          size="compact"
+          value={htmlToMarkdown(config.children)}
+          onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
+        />
+        {textAction}
+      </Stack>
       <Lockable prop="type"><Toolbar label="Type">
         <ToolbarGroup
           aria-label="Type"

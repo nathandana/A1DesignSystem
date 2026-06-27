@@ -78,16 +78,19 @@ export function Preview({ component, config, utilityClass = '' }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, textAction = null }) {
   return (
     <Stack gap="lg">
-      <TextareaField
-        label="Text"
-        size="compact"
-        rows={5}
-        value={config.children}
-        onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
-      />
+      <Stack direction="row" gap="xs" align="end">
+        <TextareaField
+          label="Text"
+          size="compact"
+          rows={5}
+          value={config.children}
+          onChange={(event) => setConfig((current) => ({ ...current, children: event.target.value }))}
+        />
+        {textAction}
+      </Stack>
       <Choice prop="as"
         label="As"
         size="compact"

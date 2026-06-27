@@ -4,7 +4,7 @@ import '../../../packages/react/src/color-scheme.css'
 import '../../../packages/react/src/utilities/spacing.css'
 import '../../../packages/react/src/utilities/width.css'
 import { createRoot } from 'react-dom/client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BottomSheet,
   Button,
@@ -30,8 +30,17 @@ import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
 import statusBarLabels from '../../../system/labels/status-bar.json'
+import {
+  getLabels,
+  hydrateLabels,
+  subscribeLabels,
+  subscribeRemoteLabels,
+  buildLabelsObject,
+  buildProjectLabelsObject,
+  deepMergeLabels,
+} from './labels/labelStore.js'
 
-const allLabels = {
+const SYSTEM_LABELS = {
   label: {
     ...actionLabels.label,
     ...backlogLabels.label,
@@ -106,6 +115,7 @@ import { BacklogProvider } from './backlog/BacklogContext.jsx'
 import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
+import { LabelEditor } from './pages/LabelEditor.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -124,10 +134,11 @@ const PAGE_ICONS = {
   accessibility: 'accessibility',
   releases: 'new_releases',
   about: 'info',
+  'label-editor': 'translate',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -144,6 +155,7 @@ const PAGE_TITLES = {
   data: 'Data sources',
   'theme-editor': 'Theme',
   'rules': 'Rules',
+  'label-editor': 'Label editor',
   projects: 'Projects',
   help: 'Help',
   accessibility: 'Accessibility',
@@ -310,6 +322,32 @@ function App() {
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
 
+  // ── Reactive label resolution: system defaults → workspace overrides → project overrides ──
+  const [workspaceLabelsObj, setWorkspaceLabelsObj] = useState(() =>
+    buildLabelsObject(getLabels().items)
+  )
+  useEffect(() => {
+    const unsubscribeLocal = subscribeLabels((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    hydrateLabels().then((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    const unsubscribeRemote = subscribeRemoteLabels()
+    return () => {
+      unsubscribeLocal()
+      unsubscribeRemote()
+    }
+  }, [])
+  const allLabels = useMemo(() => {
+    const projectLabels = activeProject?.labelOverrides
+      ? buildProjectLabelsObject(activeProject.labelOverrides)
+      : { label: {} }
+    return {
+      label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabelsObj.label, projectLabels.label),
+    }
+  }, [workspaceLabelsObj, activeProject])
+
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
   function definitionForPage(pageId) {
@@ -414,6 +452,11 @@ function App() {
 
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleUpdateProjectLabels(projectId, labelOverrides) {
+    projectStore.updateProject(projectId, { labelOverrides })
     refreshProjects()
   }
 
@@ -777,7 +820,7 @@ function App() {
     {
       id: 'editor',
       label: 'Editors',
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor',
       items: [
         {
           icon: 'folder',
@@ -841,6 +884,13 @@ function App() {
           href: getPath('rules'),
           active: activePage === 'rules',
           onClick: (e) => handleNavClick(e, 'rules'),
+        },
+        {
+          icon: 'translate',
+          label: 'Labels',
+          href: getPath('label-editor'),
+          active: activePage === 'label-editor',
+          onClick: (e) => handleNavClick(e, 'label-editor'),
         },
       ],
     },
@@ -1160,6 +1210,14 @@ function App() {
           <DataSourcesView
             projects={projects}
             onNavigate={navigate}
+          />
+        )}
+        {activePage === 'label-editor' && (
+          <LabelEditor
+            onNavigate={navigate}
+            projects={projects}
+            activeProjectId={activeProjectId}
+            onUpdateProjectLabels={handleUpdateProjectLabels}
           />
         )}
         {activePage === 'theme-editor' && (

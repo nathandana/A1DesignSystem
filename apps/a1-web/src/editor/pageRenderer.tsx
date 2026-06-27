@@ -92,6 +92,7 @@ interface EditorModeContextValue {
   onConvertNode: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
   onCopyPattern: (nodeId: string) => void;
   onPastePattern: (nodeId: string) => void;
+  onChooseTextLabel: (nodeId: string) => void;
   getNodeProps: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild: (nodeId: string) => void;
@@ -132,6 +133,7 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   onConvertNode: () => {},
   onCopyPattern: () => {},
   onPastePattern: () => {},
+  onChooseTextLabel: () => {},
   getNodeProps: () => undefined,
   getNodeInfo: () => ({ isFirst: false, isLast: false, hasChildren: false }),
   onRequestAddChild: () => {},
@@ -299,10 +301,13 @@ function inlineMarkdownToNodes(text: string): ReactNode[] | null {
 function RenderNode({ node, inPattern = false, patternActive = false }: { node: ComponentNode; inPattern?: boolean; patternActive?: boolean }) {
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
+  const labelKey = typeof node.props?.labelKey === 'string' ? node.props.labelKey : '';
+  const labelFallback = typeof node.props?.label === 'string' ? node.props.label : undefined;
+  const resolvedLabel = useLabel(labelKey, labelFallback ?? '');
   // Re-render when the image library hydrates so Figure refs resolve to real URLs.
   useImageLibraryVersion();
   const editorCtx = useContext(EditorModeContext);
-  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = editorCtx;
+  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, onChooseTextLabel, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = editorCtx;
   const { datasetMap, rowContext } = useContext(PageDataContext);
   const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
@@ -413,6 +418,8 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
 
   const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
   resolvedProps.className = mergeClassNames(resolvedProps.className, utilityClassesFor(node.type, node.utilities));
+  delete resolvedProps.labelKey;
+  if (labelKey) resolvedProps.label = resolvedLabel;
 
   // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
@@ -557,6 +564,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
       onConvertNode={onConvertNode}
       onCopyPattern={onCopyPattern}
       onPastePattern={onPastePattern}
+      onChooseTextLabel={onChooseTextLabel}
       getNodeProps={getNodeProps}
       getNodeInfo={getNodeInfo}
       isContainer={isContainer}
@@ -622,6 +630,7 @@ export function RenderPageDefinition({
   onConvertNode,
   onCopyPattern,
   onPastePattern,
+  onChooseTextLabel,
   getNodeProps,
   getNodeInfo,
   onRequestAddChild,
@@ -651,6 +660,7 @@ export function RenderPageDefinition({
   onConvertNode?: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
   onCopyPattern?: (nodeId: string) => void;
   onPastePattern?: (nodeId: string) => void;
+  onChooseTextLabel?: (nodeId: string) => void;
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo?: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   onRequestAddChild?: (nodeId: string) => void;
@@ -702,6 +712,7 @@ export function RenderPageDefinition({
     onConvertNode: onConvertNode ?? (() => {}),
     onCopyPattern: onCopyPattern ?? (() => {}),
     onPastePattern: onPastePattern ?? (() => {}),
+    onChooseTextLabel: onChooseTextLabel ?? (() => {}),
     getNodeProps: getNodeProps ?? (() => undefined),
     getNodeInfo: getNodeInfo ?? noInfo,
     onRequestAddChild: onRequestAddChild ?? (() => {}),

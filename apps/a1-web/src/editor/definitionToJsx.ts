@@ -35,10 +35,14 @@ function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition
 
 function propsWithUtilityClass(node: ComponentNode): ComponentProps | undefined {
   const utilityClass = utilityClassesFor(node.type, node.utilities);
-  if (!utilityClass) return node.props;
+  const props = node.props ? { ...node.props } : undefined;
+  if (props && (node.type === 'TextField' || node.type === 'TextareaField')) {
+    delete props.labelKey;
+  }
+  if (!utilityClass) return props;
   return {
-    ...(node.props ?? {}),
-    className: [node.props?.className, utilityClass].filter(Boolean).join(' '),
+    ...(props ?? {}),
+    className: [props?.className, utilityClass].filter(Boolean).join(' '),
   };
 }
 
