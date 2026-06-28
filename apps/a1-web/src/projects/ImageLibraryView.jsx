@@ -481,7 +481,7 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
         {galleryView === 'categories' && (
           <Stack gap="sm">
             <Stack direction="row" gap="xs" align="end">
-              <div className="a1-web-field-grow">
+              <Stack grow>
                 <TextField
                   label="Add a category"
                   size="default"
@@ -490,7 +490,7 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
                   onChange={(e) => setNewCat(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCat() } }}
                 />
-              </div>
+              </Stack>
               <Button size="sm" variant='secondary' icon="add" disabled={!newCat.trim()} onClick={addCat}>Add</Button>
             </Stack>
             {categoryRows.length === 0 ? (

@@ -73,6 +73,7 @@ export function Stack({
   align = "stretch",
   justify = "start",
   wrap = false,
+  grow = false,
   className = "",
   style: styleProp,
   children,
@@ -94,7 +95,7 @@ export function Stack({
   };
 
   return (
-    <Component className={["a1-stack", className].filter(Boolean).join(" ")} style={style} {...props}>
+    <Component className={["a1-stack", grow && "a1-stack--grow", className].filter(Boolean).join(" ")} style={style} {...props}>
       {children}
     </Component>
   );

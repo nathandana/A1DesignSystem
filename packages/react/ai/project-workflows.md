@@ -6,6 +6,16 @@ This file covers implementation rules and change workflows. Read it with `packag
 
 ## Style and CSS Rules
 
+### The law: fix styling through component props, not custom CSS
+
+**When something looks wrong — wrong spacing, wrong gap, wrong alignment, wrong surface colour — the answer is always a component prop, not a new CSS rule.** Before writing any CSS to fix a perceived styling issue:
+
+1. Check whether the component has a prop that controls the property (`gap`, `padding`, `surface`, `align`, `size`, etc.).
+2. Check whether a layout wrapper (`Stack`, `Grid`, `Section`, `Inset`) is missing or needs a different prop value.
+3. Check whether the token that drives the property is the wrong one — fix it at the token level, not by overriding in local CSS.
+
+Writing a local CSS rule that patches a visual issue without using the component prop is a violation of the design contract. It creates invisible overrides that break when themes change, that future agents will not find, and that prevent the system from working as designed. **If no prop exists for the property you need, add the prop to the component — do not patch it in consuming CSS.**
+
 ### The law: layout components before custom CSS
 
 **Before writing any `display`, `flex`, `grid`, `gap`, `align-items`, or `justify-content` CSS, check whether a layout component already covers the pattern:**
@@ -209,6 +219,7 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 **System first**
 1. **Use A1 before building custom.** Components, tokens, patterns, and utilities exist for a reason. Reaching for a custom solution without exhausting system options is a violation of the design contract.
 1a. **Layout components before custom CSS.** Before writing `display`, `flex`, `grid`, `gap`, or alignment CSS, check `Stack`, `Grid`, `Cluster`, `Section`, and `Card` first. Custom layout CSS is only justified when no layout component covers the pattern. See the "Layout components before custom CSS" table in [Style and CSS Rules](#style-and-css-rules).
+1b. **Fix styling through component props, not local CSS.** When something looks wrong, the answer is a component prop or the correct layout wrapper — not a new CSS rule. Writing local CSS to patch a spacing, gap, alignment, or colour issue is forbidden. If the component lacks the prop you need, add the prop. See "The law: fix styling through component props, not custom CSS" in [Style and CSS Rules](#style-and-css-rules).
 
 **Values and tokens**
 2. **All values from tokens.** No hardcoded colors, sizes, spacing, font values, durations, or radii in any CSS or component file. If the token does not exist, add it — do not work around it.

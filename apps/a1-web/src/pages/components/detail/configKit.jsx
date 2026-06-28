@@ -161,7 +161,7 @@ export function FieldState({ label = 'State', items, onChange, helper }) {
   if (lockCtx.authoring && lockCtx.onSetLockedProps) {
     return (
       <WithHelp helper={helper}>
-        <div className={`a1-web-tool-authoring${anyLocked ? ' is-locked' : ''}`}>
+        <Stack direction="row" gap="xs" align="center" className={anyLocked ? 'a1-web-tool-authoring--locked' : undefined}>
           <div className="a1-web-tool-authoring__control">{toolbar}</div>
           <IconButton
             icon={anyLocked ? 'lock' : 'lock_open'}
@@ -170,7 +170,7 @@ export function FieldState({ label = 'State', items, onChange, helper }) {
             aria-label={anyLocked ? 'Unlock these properties' : 'Lock these properties'}
             onClick={() => applyLockToggle(lockCtx, keys, !anyLocked)}
           />
-        </div>
+        </Stack>
       </WithHelp>
     )
   }

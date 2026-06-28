@@ -2,7 +2,9 @@ import { Stack } from "./Stack.jsx";
 import { Button } from "../button/Button.jsx";
 import { Card } from "../card/Card.jsx";
 import { Heading } from "../heading/Heading.jsx";
+import { IconButton } from "../icon-button/IconButton.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
+import { TextField } from "../text-field/TextField.jsx";
 
 const meta = {
   title: "Components/Structure/Stack",
@@ -28,6 +30,7 @@ const meta = {
       options: ["start", "center", "end", "between", "around", "evenly"],
     },
     wrap: { control: "boolean" },
+    grow: { control: "boolean" },
   },
 };
 
@@ -85,6 +88,20 @@ export const GapScale = {
         </Card>
       ))}
     </>
+  ),
+};
+
+export const GrowInRow = {
+  name: "Grow — field beside button",
+  render: () => (
+    <Card shadow="xs" style={{ maxWidth: 560 }}>
+      <Stack direction="row" gap="xs" align="end">
+        <Stack grow>
+          <TextField label="Search" />
+        </Stack>
+        <IconButton icon="search" aria-label="Search" />
+      </Stack>
+    </Card>
   ),
 };
 

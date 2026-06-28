@@ -1739,8 +1739,7 @@ function ConfigurationPanel({
 function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
   const set = (patch) => setDisplayConfig((current) => ({ ...current, ...patch }))
   return (
-    <div className="a1-web-display-bar">
-      <Toolbar aria-label="Display options">
+    <Toolbar aria-label="Display options">
         <ToolbarMenu
           aria-label="Responsive view"
           label="Responsive view"
@@ -1770,7 +1769,6 @@ function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
           />
         )}
       </Toolbar>
-    </div>
   )
 }
 

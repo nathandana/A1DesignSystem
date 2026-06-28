@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button, Figure, MessageBadge, MessageEmptyState, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
+import { Button, Figure, Grid, MessageBadge, MessageEmptyState, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import {
   addImage,
   getObjectUrl,
@@ -70,7 +70,7 @@ export function EditorImagesPanel({ projectId }) {
           Upload
         </Button>
       </Stack>
-      <div className="a1-web-img-panel-grid">
+      <Grid columns={3} gap="xs">
         {images.map((img) => (
           <div
             key={img.id}
@@ -98,7 +98,7 @@ export function EditorImagesPanel({ projectId }) {
             )}
           </div>
         ))}
-      </div>
+      </Grid>
     </Stack>
   )
 }

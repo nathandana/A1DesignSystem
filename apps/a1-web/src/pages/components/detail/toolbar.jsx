@@ -176,9 +176,9 @@ function OptionListEditor({ label, options = [], onChange }) {
       {options.map((o, i) => (
         <Stack key={o.id} gap="xs" className="a1-web-tool-option">
           <Stack direction="row" gap="xs" align="end">
-            <div className="a1-web-field-grow">
+            <Stack grow>
               <TextField label="Label" size="compact" value={o.label ?? ''} onChange={(e) => update(i, { label: e.target.value })} />
-            </div>
+            </Stack>
             <IconButton icon="delete" size="sm" variant="destructive" aria-label="Remove option" disabled={options.length <= 1} onClick={() => remove(i)} />
           </Stack>
           <IconSelect label="Icon" size="compact" value={o.icon || ''} onChange={(icon) => update(i, { icon })} />
