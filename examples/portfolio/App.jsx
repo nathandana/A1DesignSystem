@@ -22,7 +22,6 @@ import { TestimonialsPage } from "./pages/TestimonialsPage.jsx";
 import { AboutPage } from "./pages/AboutPage.jsx";
 import { ContactPage } from "./pages/ContactPage.jsx";
 import "./styles.css";
-import "../../packages/react/src/utilities/spacing.css";
 
 export function App() {
   const [activePage, setActivePage] = useState(() => getPageFromLocation());
@@ -197,14 +196,17 @@ export function App() {
 
   return (
     <LabelsProvider locale="en" labels={actionLabels}>
-      <PageLayout stickyHeader sidebar={sidebar} header={mobileHeader} footer={footer}>
-        {activePage === "home" && <HomePage navigate={navigate} />}
-        {activePage === "process" && <ProcessPage navigate={navigate} />}
-        {activeStudy && <activeStudy.component />}
-        {activePage === "resume" && <ResumePage />}
-        {activePage === "testimonials" && <TestimonialsPage />}
-        {activePage === "about" && <AboutPage navigate={navigate} />}
-        {activePage === "contact" && <ContactPage />}
+      <PageLayout className="pf-page-shell" stickyHeader sidebar={sidebar} header={mobileHeader}>
+        <div className="pf-content-wrapper">
+          {activePage === "home" && <HomePage navigate={navigate} />}
+          {activePage === "process" && <ProcessPage navigate={navigate} />}
+          {activeStudy && <activeStudy.component />}
+          {activePage === "resume" && <ResumePage />}
+          {activePage === "testimonials" && <TestimonialsPage />}
+          {activePage === "about" && <AboutPage navigate={navigate} />}
+          {activePage === "contact" && <ContactPage />}
+          {footer}
+        </div>
       </PageLayout>
     </LabelsProvider>
   );

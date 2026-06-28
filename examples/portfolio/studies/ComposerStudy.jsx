@@ -22,7 +22,7 @@ export function ComposerStudy() {
     >
       <Section as="div" padding="lg" contentWidth="md">
 
-        <Figure src="img/composer-main.png" alt="Composer CMS" marginBottom="lg" />
+        <Figure src="/img/composer-main.png" alt="Composer CMS" marginBottom="lg" />
 
         <Paragraph size="lg">
           I served as the lead designer on a cross-functional product squad alongside product managers, engineers, and analysts. Our mission was to stay one to two quarters ahead of development by proactively shaping the product backlog—evaluating epics, analyzing existing implementations, conducting user research, and delivering mockups that would guide future development.
@@ -33,7 +33,7 @@ export function ComposerStudy() {
           Composer is a core internal tool that enables car dealerships—and internal staff—to manage their websites. Tasks range from basic content updates to configuring complex site preferences. However, the tool had received minimal investment over the years, resulting in a clunky, unintuitive experience heavily reliant on hover states and overlay dialogs. It was ripe for modernization.
         </Paragraph>
         <Figure
-          src="img/composer-current.png"
+          src="/img/composer-current.png"
           alt="Current State of Composer Interface"
           caption="The current interface largely relies on hover states and overlays."
           marginTop="lg"
@@ -63,13 +63,13 @@ export function ComposerStudy() {
           To deeply understand the current pain points, I led an intensive two-day round of user interviews and observations. This included group interviews with four internal departments, task-specific roundtable discussions, and 1:1 shadow sessions to observe real-time behaviors and friction. These sessions uncovered dozens of opportunities for streamlining workflows. For example, simple preference toggles were implemented with dropdowns—even for binary true/false values. Replacing these with checkboxes reduced the number of clicks and improved scannability.
         </Paragraph>
         <Figure
-          src="img/composer-edit.png"
+          src="/img/composer-edit.png"
           alt="Composer in Edit Mode"
           marginTop="lg"
           marginBottom="lg"
         />
         <Figure
-          src="img/composer-library.png"
+          src="/img/composer-library.png"
           alt="Composer Library"
           marginBottom="lg"
         />
@@ -87,19 +87,19 @@ export function ComposerStudy() {
         <Figure
         size="sm"
         align="center"
-          src="img/third-party-home.png"
+          src="/img/third-party-home.png"
           alt="Current Third Party Integration Home"
           caption='Currently, the "tool" is just a list of integrations.'
           marginTop="lg"
           marginBottom="lg"
         />
         <Figure
-          src="img/new-third-party-default.png"
+          src="/img/new-third-party-default.png"
           alt="Proposed Third Party Tool"
           marginBottom="lg"
         />
         <Figure
-          src="img/new-third-party-screen.png"
+          src="/img/new-third-party-screen.png"
           alt="Proposed Third Party Tool with Documentation"
           marginBottom="lg"
         />

@@ -10,7 +10,7 @@
 .a1-link:active { color: var(--component-link-color-pressed); }
 
 .a1-link:focus-visible {
-  outline: var(--component-link-focus-ring-width) solid currentColor;
+  outline: var(--component-link-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-link-focus-ring-offset);
   border-radius: var(--component-link-focus-ring-radius);
 }

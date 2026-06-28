@@ -2,6 +2,7 @@ import {
   Banner,
   Breadcrumb,
   Card,
+  DataTable,
   Grid,
   Heading,
   Icon,
@@ -11,6 +12,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import reportData from '../../../../reports/a11y.json'
+import componentReportData from './componentA11ySummary.generated.json'
 import { useT } from '../labels/useT.js'
 
 const CODE_STYLE = {
@@ -109,6 +111,82 @@ function ViolationCard({ story, t }) {
   )
 }
 
+function ComponentScanSection({ t }) {
+  const failingComponents = componentReportData.components.filter((component) => component.violationCount > 0)
+  const componentRows = componentReportData.components.map((component) => ({
+    ...component,
+    status: component.violationCount > 0 ? t('app.accessibility.needsReview', 'Needs review') : t('app.accessibility.statusPass', 'Pass'),
+  }))
+
+  return (
+    <Section padding="lg" contentWidth="lg" aria-labelledby="component-scan-heading">
+      <Stack gap="lg">
+        <Stack direction="column" gap="sm">
+          <Stack direction="row" gap="xs" align="center" wrap>
+            <MessageBadge
+              icon={componentReportData.totalViolations > 0 ? 'warning' : 'check_circle'}
+              status={componentReportData.totalViolations > 0 ? 'warn' : 'success'}
+            >
+              {componentReportData.totalViolations > 0
+                ? t('app.accessibility.componentScanWarnings', 'Component scan warnings')
+                : t('app.accessibility.componentScanPass', 'Component scan passed')}
+            </MessageBadge>
+            <Paragraph size="sm" color="muted">
+              {t('app.accessibility.lastScanned', 'Last scanned:')} {componentReportData.generatedAt}
+            </Paragraph>
+          </Stack>
+          <Heading as="h2" id="component-scan-heading" size={{ xs: 'md', md: 'lg' }}>
+            {t('app.accessibility.componentScanTitle', 'Component accessibility scan')}
+          </Heading>
+          <Paragraph size="md" color="muted" style={{ maxInlineSize: '680px', textWrap: 'pretty' }}>
+            {t('app.accessibility.componentScanDescription', 'A focused axe pass across Storybook component stories, grouped by component. This complements the global report and gives component owners a quick per-component status.')}
+          </Paragraph>
+        </Stack>
+
+        <Grid columns={{ xs: 2, sm: 4 }} gap="sm">
+          <StatCard value={componentReportData.componentCount} label={t('app.accessibility.componentGroups', 'Component groups')} />
+          <StatCard value={componentReportData.scannedStories} label={t('app.accessibility.storiesScanned', 'Stories scanned')} />
+          <StatCard value={failingComponents.length} label={t('app.accessibility.componentsAffected', 'Components affected')} highlight />
+          <StatCard value={componentReportData.totalViolations} label={t('app.accessibility.totalViolations', 'Total violations')} highlight />
+        </Grid>
+
+        <DataTable
+          caption={t('app.accessibility.componentScanTableCaption', 'Component accessibility scan results')}
+          columns={[
+            { key: 'component', label: t('app.accessibility.component', 'Component'), sortable: true },
+            { key: 'storyCount', label: t('app.accessibility.stories', 'Stories'), sortable: true, width: '120px' },
+            { key: 'violationCount', label: t('app.accessibility.violations', 'Violations'), sortable: true, width: '130px' },
+            { key: 'status', label: t('app.accessibility.status', 'Status'), sortable: true, width: '150px' },
+          ]}
+          rows={componentRows}
+          getRowId={(row) => row.component}
+          defaultSort={{ key: 'component', direction: 'asc' }}
+          searchableColumns={[
+            { key: 'component', label: t('app.accessibility.component', 'Component') },
+            { key: 'status', label: t('app.accessibility.status', 'Status') },
+          ]}
+          filters={[
+            {
+              key: 'status',
+              label: t('app.accessibility.status', 'Status'),
+              type: 'single',
+              options: [
+                { value: t('app.accessibility.statusPass', 'Pass'), label: t('app.accessibility.statusPass', 'Pass') },
+                { value: t('app.accessibility.needsReview', 'Needs review'), label: t('app.accessibility.needsReview', 'Needs review') },
+              ],
+            },
+          ]}
+          zebra
+          scrollable
+          emptyTitle={t('app.accessibility.noMatchingComponents', 'No matching components')}
+          emptyDescription={t('app.accessibility.noMatchingComponentsDescription', 'Adjust the search or status filter.')}
+          emptyIcon="search"
+        />
+      </Stack>
+    </Section>
+  )
+}
+
 export function Accessibility({ onNavigate }) {
   const t = useT()
   const { generated, status, totalScanned, totalViolations, storiesAffected, counts, stories } = reportData
@@ -197,6 +275,8 @@ export function Accessibility({ onNavigate }) {
         </Section>
       )}
 
+      <ComponentScanSection t={t} />
+
       {/* ── Manual review checklist ── */}
       <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="manual-heading">
         <Stack gap="lg">
@@ -238,6 +318,7 @@ export function Accessibility({ onNavigate }) {
             {[
               { cmd: 'npm run test:qa',               desc: t('app.accessibility.cmdFullSuite', 'Full axe scan + visual regression + report') },
               { cmd: 'npm run a11y:component <name>',  desc: t('app.accessibility.cmdFocused', 'Focused check for one component')            },
+              { cmd: 'reports/component-a11y.md',       desc: t('app.accessibility.cmdComponentReport', 'Latest grouped component scan summary') },
               { cmd: 'npm run a11y:playwright',         desc: t('app.accessibility.cmdKeyboard', 'Keyboard interaction tests only')            },
             ].map(({ cmd, desc }) => (
               <Card key={cmd} shadow="xs">

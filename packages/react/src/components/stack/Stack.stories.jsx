@@ -4,7 +4,7 @@ import { Card } from "../card/Card.jsx";
 import { Heading } from "../heading/Heading.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
-import { TextField } from "../text-field/TextField.jsx";
+import { TextField } from "../field/TextField.jsx";
 
 const meta = {
   title: "Components/Structure/Stack",

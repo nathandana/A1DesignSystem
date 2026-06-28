@@ -18,8 +18,7 @@ export function ContactPage() {
           Contact me
         </Heading>
         <Paragraph size="lg" color="muted">
-          Open to new opportunities and collaborations. The best way to reach
-          me is by email.
+          Open to new opportunities and collaborations. The best way to reach me is by email.
         </Paragraph>
         <Divider space="xl" size="md" variant="accent" />
         <List variant="icon" size="xl">

@@ -1,384 +1,475 @@
 import {
   Blockquote,
+  Divider,
   Figure,
   Heading,
   List,
   ListItem,
-  MessageBadge,
   Paragraph,
   Section,
   Spacer,
-  Stack,
 } from "../../../packages/react/src/index.js";
 import { CaseStudyLayout } from "../pages/CaseStudyLayout.jsx";
-
-const principles = [
-  {
-    number: "01.",
-    title: "Start with priority, not layout",
-    body: "A1 encourages the creation of a priority guide before jumping into page composition. The system pushes the designer or AI to define what matters most before deciding where things go — preventing pages from becoming a collection of well-styled components without a clear user path.",
-    questions: [
-      "What is the primary user goal?",
-      "What action should be most prominent?",
-      "What information is required before that action?",
-      "What can be secondary, collapsed, deferred, or removed?",
-    ],
-  },
-  {
-    number: "02.",
-    title: "Make hierarchy explicit",
-    body: "A1 treats hierarchy as both an information problem and a visual problem. The system defines how hierarchy should be expressed through heading structure, spacing, component grouping, color emphasis, typography scale, action priority, surface depth, and content density — giving AI clearer criteria for evaluating whether an interface is understandable, not just visually balanced.",
-    questions: null,
-  },
-  {
-    number: "03.",
-    title: "Design for predictable rhythm",
-    body: "Vertical rhythm is treated as a system-level concern, not a page-by-page styling choice. A1 uses spacing rules to create consistency across sections, cards, forms, lists, and page layouts. The goal is to make interfaces feel intentional while reducing the number of arbitrary spacing decisions.",
-    questions: null,
-  },
-  {
-    number: "04.",
-    title: "Use color with purpose",
-    body: "A1 avoids decorative color usage as the default. Color is assigned meaning through defined roles: accent, surface, border, text, status, interaction, and emphasis. The system supports theme variation while maintaining contrast, accessibility, and semantic clarity.",
-    questions: null,
-  },
-  {
-    number: "05.",
-    title: "Accessibility is a system rule, not a final review",
-    body: "Accessibility is built into the component and interaction model from the start. A1 considers semantic HTML expectations, focus states, keyboard behavior, color contrast, touch targets, error messaging, form labeling, and reduced ambiguity between disabled and read-only states. The system assumes that an interface is not complete unless it is usable.",
-    questions: null,
-  },
-  {
-    number: "06.",
-    title: "AI output must be challenged",
-    body: "A1 does not treat AI-generated work as automatically correct. It creates a review model for identifying when AI has produced something that looks complete but fails under closer inspection — checking hierarchy, component accuracy, action priority, responsive behavior, interaction states, semantic markup, accessibility, and scalability.",
-    questions: null,
-  },
-];
 
 export function A1Study() {
   return (
     <CaseStudyLayout
-      title="A1 Design System"
-      tags={["Design Systems", "AI Design"]}
+      title="A1"
+      tags={["Design Systems", "AI Design", "Design Engineering"]}
       meta={[
         { label: "Year", value: "2026" },
         { label: "Type", value: "Personal project" },
         { label: "Role", value: "Principal AI Designer" },
       ]}
     >
-      {/* ── Overview ─────────────────────────────────────────────────────── */}
       <Section as="div" padding="sm" contentWidth="md">
         <Paragraph size="lg">
-          A1 Design System is an experimental, AI-first design system built to
-          explore how structured design rules, reusable components, accessibility
-          standards, and tokenized theming can work together to produce
-          higher-quality digital products faster.
-        </Paragraph>
-        <Paragraph size="lg">
-          The goal was not simply to create another component library. The goal
-          was to create a system that could guide both humans and AI toward
-          better decisions: clearer hierarchy, stronger accessibility, more
-          consistent layouts, predictable interaction patterns, and
-          production-ready interface logic.
-        </Paragraph>
-        <Paragraph size="lg">
-          As AI tools become increasingly capable of generating complete
-          interfaces, the role of a design system changes. A traditional system
-          helps designers and developers work consistently. An AI-first system
-          must do more: it must provide enough structure for AI to generate
-          usable, accessible, brand-aligned experiences without inventing
-          patterns, ignoring hierarchy, or producing visually polished but
-          functionally weak output. A1 Design System was created around that
-          challenge.
+          An AI-native product design platform built to explore what happens
+          when design systems are created for AI as much as they are for
+          designers and developers.
         </Paragraph>
 
-      <Figure
-        src="img/a1/portfolio-home.png"
-        alt="The A1 Design System portfolio homepage showing the sidebar navigation, hero section, and case study cards"
-        caption="The portfolio itself is built entirely with A1 components — every layout, heading, button, and section comes from the system."
-        marginTop="lg"
-        marginBottom="lg"
-        
-      />
-      </Section>
-
-      {/* ── The Challenge ────────────────────────────────────────────────── */}
-      <Section as="div" padding="sm" surface="raised" contentWidth="md" inverse>
-        <Heading as="h2" size="lg" margin="md">The Challenge</Heading>
-        <Paragraph size="lg">
-          AI can generate interfaces quickly, but speed alone creates risk.
-          Without strong rules, AI-generated UI often looks convincing while
-          failing in important ways:
-        </Paragraph>
-        <List variant="unordered" size="lg">
-          <ListItem>Weak information hierarchy</ListItem>
-          <ListItem>Inconsistent spacing and rhythm</ListItem>
-          <ListItem>Misused components</ListItem>
-          <ListItem>Poor accessibility decisions</ListItem>
-          <ListItem>Unclear interaction states</ListItem>
-          <ListItem>Invented visual patterns</ListItem>
-          <ListItem>Incomplete responsive behavior</ListItem>
-          <ListItem>Components that look finished but are not scalable</ListItem>
-        </List>
-        <Spacer size="sm" />
-        <Blockquote variant="border">
-          What does a design system need to become when AI is part of the design and development workflow?
-        </Blockquote>
-        <Paragraph size="lg">
-          For a design system to work in an AI-assisted process, it needs to be
-          more explicit than a traditional component library. It cannot rely on
-          taste, intuition, or tribal knowledge. It needs documented rules that
-          AI can understand, apply, and be evaluated against.
-        </Paragraph>
-      </Section>
-
-      {/* ── My Role ──────────────────────────────────────────────────────── */}
-      <Section as="div" padding="md" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">My Role</Heading>
-        <Paragraph size="lg">
-          I led the concept, structure, design direction, and system logic for
-          A1 Design System. This work combines UX architecture, design systems,
-          accessibility, visual design, front-end implementation, product
-          strategy, and AI direction.
-        </Paragraph>
-        <List variant="unordered" size="lg">
-          <ListItem>Defining the system principles</ListItem>
-          <ListItem>Creating rules for hierarchy, rhythm, color, spacing, and component usage</ListItem>
-          <ListItem>Establishing token structures for theme flexibility</ListItem>
-          <ListItem>Designing and building reusable component patterns</ListItem>
-          <ListItem>Writing prompts and guidance to help AI use the system correctly</ListItem>
-          <ListItem>Testing the system against different product types and themes</ListItem>
-          <ListItem>Evaluating AI-generated output for usability, accessibility, scalability, and visual quality</ListItem>
-        </List>
-      </Section>
-
-      {/* ── Design Philosophy ────────────────────────────────────────────── */}
-      <Section as="div" padding="sm" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">Design Philosophy</Heading>
         <Blockquote variant="feature">
-          AI performs better when the rules are clearer.
+          AI does not need prettier components. It needs better structure.
         </Blockquote>
-        <Paragraph size="lg">
-          Design systems have always been about rules. The difference now is
-          that those rules need to be usable by both people and machines. A1
-          treats the design system as a shared operating model — defining not
-          just what components exist, but how they should behave, when they
-          should be used, how they should scale, and how they should support
-          user goals.
-        </Paragraph>
+
         <Figure
-          src="img/a1/storybook-heading-display.png"
-          alt="Storybook showing the A1 display type scale from sm through xJumbo"
-          caption="The display type scale — sm through xJumbo — gives AI and designers a defined set of size options, each with semantic meaning and clear visual weight."
+          src="/img/a1/portfolio-home.png"
+          alt="A1 portfolio homepage showing the navigation, hero section, and case study cards"
+          caption="The A1 portfolio is built with the system itself: tokens, components, layouts, and content rules all working together."
           marginTop="lg"
           marginBottom="lg"
-          radius="sm"
-          size="lg"
-          align="center"
-          imgStyle={{ border: "1px solid var(--semantic-color-border-subtle)" }}
         />
       </Section>
 
-      {/* ── Principles ───────────────────────────────────────────────────── */}
-      {principles.map(({ number, title, body, questions }, i) => (
-        <Section
-          key={number}
-          as="div"
-          padding="lg"
-          gap="xs"
-          contentWidth="md"
-          surface={i % 2 !== 0 ? "panel" : undefined}
-        >
-          <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-            <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>
-              {number}
-            </Heading>
-            <Stack gap="md">
-              <Heading type="display" size={{ xs: "lg", md: "xl" }}>{title}</Heading>
-              <Paragraph size="lg" color="muted">{body}</Paragraph>
-              {questions && (
-                <List variant="unordered">
-                  {questions.map((q) => <ListItem key={q}>{q}</ListItem>)}
-                </List>
-              )}
-            </Stack>
-          </Stack>
-        </Section>
-      ))}
-
-      {/* ── System Structure ─────────────────────────────────────────────── */}
-      <Section as="div" padding="md" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">System Structure</Heading>
-        <Paragraph size="lg">
-          A1 Design System includes several major layers that work together as
-          an integrated system rather than isolated artifacts.
-        </Paragraph>
-
-        <Heading as="h3" size="lg" margin="md">Design Tokens</Heading>
-        <Paragraph size="lg">
-          Tokens define the visual foundation — color, typography, spacing,
-          radius, border, elevation, and motion — down to component-level
-          values. The token structure supports theming without requiring every
-          component to be redesigned, allowing the system to shift visual
-          personality while retaining predictable behavior.
-        </Paragraph>
-
-        <Heading as="h3" size="lg" margin="md">Components</Heading>
-        <Paragraph size="lg">
-          Components are designed to be reusable, composable, and rule-bound.
-          Rather than treating them as isolated visual assets, A1 defines each
-          component by purpose, behavior, anatomy, states, and usage guidance —
-          including accessibility requirements, content rules, responsive
-          behavior, and AI usage guidance.
-        </Paragraph>
-        <Figure
-          src="img/a1/storybook-blockquote.png"
-          alt="Storybook documentation showing all seven Blockquote variants: border, filled, feature, minimal, accent, pull, and ruled"
-          caption="The Blockquote component with seven distinct variants — each with defined usage rules for when and how to use it. Components document behavior, not just appearance."
-          marginTop="lg"
-          marginBottom="lg"
-          radius="sm"
-          size="lg"
-          align="center"
-          imgStyle={{ border: "1px solid var(--semantic-color-border-subtle)" }}
-        />
-
-        <Heading as="h3" size="lg" margin="md">Patterns</Heading>
-        <Paragraph size="lg">
-          Patterns describe how components work together to solve common
-          interface problems: forms, data tables, filtering, cards, empty
-          states, navigation, page headers, settings panels, and progressive
-          disclosure. Patterns are especially important for AI because they
-          reduce invention — instead of asking AI to "design a page," the
-          system gives it known structures to assemble from.
-        </Paragraph>
-        <Figure
-          src="img/a1/storybook-grid.png"
-          alt="Storybook showing the bento grid pattern with responsive card tiles at varying spans"
-          caption="The bento grid pattern — composable card layouts with responsive column and row spans, assembled entirely from system components with no custom CSS."
-          marginTop="lg"
-          marginBottom="lg"
-          radius="sm"
-          imgStyle={{ border: "1px solid var(--semantic-color-border-subtle)" }}
-        />
-
-        <Heading as="h3" size="lg" margin="md">Themes</Heading>
-        <Paragraph size="lg">
-          A1 supports multiple visual themes to test whether the system remains
-          stable across different brand expressions — adjusting color ramps,
-          typography pairings, border radius, density, and surface treatment.
-          The purpose of theming is not only visual variety: it also tests
-          whether the system's underlying rules are strong enough to survive
-          aesthetic change.
-        </Paragraph>
-      </Section>
-
-      {/* ── AI Prompt Guidance ───────────────────────────────────────────── */}
-      <Section as="div" padding="md" surface="panel" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">AI Prompt Guidance</Heading>
-        <Paragraph size="lg">
-          A1 includes promptable rules that shift AI from a visual generator
-          into a design collaborator that can be directed, corrected, and
-          evaluated. These rules direct AI to:
-        </Paragraph>
-        <List variant="unordered" size="lg">
-          <ListItem>Follow the design system and use existing components only</ListItem>
-          <ListItem>Avoid inventing new patterns</ListItem>
-          <ListItem>Create priority guides before layout</ListItem>
-          <ListItem>Respect spacing and hierarchy rules</ListItem>
-          <ListItem>Use semantic structure and include accessibility considerations</ListItem>
-          <ListItem>Account for responsive behavior</ListItem>
-          <ListItem>Explain design decisions against system principles</ListItem>
-        </List>
-        <Spacer size="sm" />
-        <Heading as="h3" size="lg" margin="md">Example Workflow</Heading>
-        <Paragraph size="lg">
-          A typical A1 workflow starts with a product scenario, then a priority
-          guide to establish content-first structure before any visual design
-          begins. AI is then directed to use system rules, components, and
-          layout patterns — with the output evaluated against A1 standards
-          rather than accepted as-is. Successful solutions are documented as
-          reusable patterns or prompt templates within the system.
-        </Paragraph>
-        <Blockquote variant="pull">
-          Create a SaaS analytics dashboard for a product operations team using the existing A1 components and theme.
-        </Blockquote>
-        <Paragraph size="lg">
-          Before generating any layout, the process begins by defining the order
-          of importance: current system health, critical alerts, key performance
-          metrics, trend analysis, secondary filters, supporting details. This
-          creates a content-first structure that drives every subsequent
-          decision.
-        </Paragraph>
-      </Section>
-
-      {/* ── What Made This Different ─────────────────────────────────────── */}
-      <Section as="div" padding="md" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">What Made This Different</Heading>
-        <Paragraph size="lg">
-          Most design systems are built for designers and developers. A1 was
-          built for designers, developers, and AI. That required a different
-          level of specificity.
-        </Paragraph>
-        <Paragraph size="lg">
-          Instead of documenting only what a component looks like, A1 documents
-          how decisions should be made. It gives AI the constraints it needs to
-          produce better work and gives humans the review criteria needed to
-          judge that work accurately. This turns the design system into an
-          active design partner rather than a passive library.
-        </Paragraph>
-
-      <Figure
-        src="img/a1/storybook-section-stacked.png"
-        alt="Storybook showing three stacked Section bands: inverse dark, default white, and panel light — each with heading, paragraph, and button content"
-        caption="The Section component's surface system — inverse, default, and panel — creates visual rhythm across page bands while automatically adapting to the active theme."
-        marginTop="lg"
-        marginBottom="lg"
-      />
-      </Section>
-
-      {/* ── Outcomes ─────────────────────────────────────────────────────── */}
       <Section as="div" padding="sm" surface="raised" contentWidth="md" inverse>
-        <Heading as="h2" size="lg" margin="md">Outcomes</Heading>
+        <Heading as="h2" size="lg" margin="md">
+          The Question
+        </Heading>
+
         <Paragraph size="lg">
-          A1 Design System demonstrates how AI can be used to accelerate design
-          and development without abandoning quality standards. The system helps:
+          AI can generate interfaces in seconds. But speed is not the problem.
+          Quality is.
         </Paragraph>
+<Spacer size="sm" />
         <List variant="unordered" size="lg">
-          <ListItem>Generate product concepts faster</ListItem>
-          <ListItem>Maintain visual and structural consistency</ListItem>
-          <ListItem>Reduce arbitrary design decisions</ListItem>
-          <ListItem>Improve accessibility from the start</ListItem>
-          <ListItem>Test themes across realistic product scenarios</ListItem>
-          <ListItem>Create reusable prompts and patterns</ListItem>
-          <ListItem>Evaluate AI-generated work more rigorously</ListItem>
-          <ListItem>Bridge the gap between design intent and working software</ListItem>
+          <ListItem>Weak hierarchy</ListItem>
+          <ListItem>Invented patterns</ListItem>
+          <ListItem>Inconsistent spacing</ListItem>
+          <ListItem>Poor accessibility</ListItem>
+          <ListItem>Components that do not scale</ListItem>
+          <ListItem>Interfaces that look finished but are not production ready</ListItem>
         </List>
+
         <Spacer size="sm" />
+
         <Blockquote variant="border">
-          AI does not replace design systems. It increases the need for them.
+          What if a design system was built for AI as much as it was built for
+          designers and developers?
+        </Blockquote>
+
+        <Paragraph size="lg">
+          That question became A1: a structured product design platform where
+          every layer of the system gives both people and AI clearer decisions
+          to work from.
+        </Paragraph>
+      </Section>
+
+      <Section as="div" padding="md" contentWidth="md">
+        <Heading as="h2" size="xl" margin="md">
+          The Big Idea
+        </Heading>
+
+        <Paragraph size="lg">
+          Most design systems document components. A1 documents decisions.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          Tokens, components, patterns, page layouts, labels, icons,
+          documentation, and AI guidance all share the same source of truth.
+        </Paragraph>
+
+        <List variant="unordered" size="lg">
+          <ListItem>Design defines intent</ListItem>
+          <ListItem>Code enforces structure</ListItem>
+          <ListItem>Documentation explains usage</ListItem>
+          <ListItem>AI follows rules instead of inventing them</ListItem>
+        </List>
+
+        <Blockquote variant="feature">
+          The goal is not to generate more UI. The goal is to generate better
+          decisions.
         </Blockquote>
       </Section>
 
-      {/* ── Reflection ───────────────────────────────────────────────────── */}
+      <Section as="div" padding="md" contentWidth="md" gap="sm" surface="panel">
+        <Heading as="h2" size="xl" margin="md">
+          Core Principles
+        </Heading>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Structure over convention
+        </Heading>
+        <Paragraph size="lg">
+          If a decision matters, define it. A1 replaces tribal knowledge with
+          explicit rules that people and AI can both apply.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Metadata is a feature
+        </Heading>
+        <Paragraph size="lg">
+          AI cannot reason about information that does not exist. Components,
+          patterns, labels, and layouts all need enough meaning to be understood,
+          reused, and evaluated.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Constraints create speed
+        </Heading>
+        <Paragraph size="lg">
+          Removing arbitrary decisions makes teams faster. It also gives AI
+          fewer opportunities to invent inconsistent solutions.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          One definition
+        </Heading>
+        <Paragraph size="lg">
+          Design, code, documentation, and AI should consume the same system
+          logic instead of maintaining separate interpretations.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          AI output must be challenged
+        </Heading>
+        <Paragraph size="lg">
+          A1 does not treat AI-generated work as automatically correct. It gives
+          humans the criteria to review hierarchy, accessibility, component
+          usage, interaction states, responsiveness, and scalability.
+        </Paragraph>
+      </Section>
+
+      <Section as="div" padding="md" contentWidth="md" surface="panel">
+        <Heading as="h2" size="xl" margin="md">
+          Feature Stories
+        </Heading>
+
+        <Paragraph size="lg">
+          Each feature in A1 started with a real problem I have encountered
+          while building design systems and product platforms.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Custom Icons
+        </Heading>
+
+        <Paragraph size="lg">
+          Adding a single icon should not require weeks of coordination. But in
+          many systems, design and engineering use different icon libraries, and
+          every new icon becomes a manual request.
+        </Paragraph>
+<Spacer size="sm" />
+
+        <List variant="unordered" size="lg">
+          <ListItem>Shared icon definitions</ListItem>
+          <ListItem>Figma and React stay synchronized</ListItem>
+          <ListItem>Automatic packaging</ListItem>
+          <ListItem>Consistent naming</ListItem>
+          <ListItem>No design/development drift</ListItem>
+        </List>
+
+        <Paragraph size="lg">
+          Next: AI-generated icons, semantic search, and usage analytics.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Patterns
+        </Heading>
+
+        <Paragraph size="lg">
+          Every company rebuilds the same screens: settings, search, dashboards,
+          tables, forms, and filters. Six teams create six implementations, and
+          small differences become long-term design debt.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          A1 treats patterns as reusable product assets instead of static
+          examples. AI assembles proven solutions rather than inventing new
+          ones.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          Next: pattern recommendations, analytics, and organization-wide
+          pattern libraries.
+        </Paragraph>
+
+        <Figure
+          src="/img/a1/storybook-grid.png"
+          alt="Storybook showing the A1 bento grid pattern with responsive card tiles"
+          caption="Patterns define how components work together, giving AI known structures to assemble from."
+          marginTop="lg"
+          marginBottom="lg"
+          radius="sm"
+          imgStyle={{ border: "1px solid var(--semantic-color-border-subtle)" }}
+        />
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          JSON Page Architecture
+        </Heading>
+
+        <Paragraph size="lg">
+          Components prevent visual drift. They do not prevent page drift.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          A1 pages are assembled from structured JSON with defined slots,
+          boundaries, and rules. Instead of asking AI to design a dashboard from
+          scratch, the system gives it validated page structures to work within.
+        </Paragraph>
+
+<Spacer size="sm" />
+        <List variant="unordered" size="lg">
+          <ListItem>Better accessibility</ListItem>
+          <ListItem>Predictable layouts</ListItem>
+          <ListItem>Easier maintenance</ListItem>
+          <ListItem>Faster implementation</ListItem>
+          <ListItem>Higher-quality AI output</ListItem>
+        </List>
+
+        <Paragraph size="lg">
+          Next: AI-generated pages, automatic design reviews, and heuristic
+          scoring.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Labels and Localization
+        </Heading>
+
+        <Paragraph size="lg">
+          Most applications treat text as something added late. That creates
+          duplicated copy, inconsistent terminology, and painful localization.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          A1 turns labels into reusable product assets: one definition, shared
+          everywhere, designed for translation from the beginning.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          Next: context-aware translation, terminology governance, and
+          AI-assisted copy management.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Figma to Code and Code to Figma
+        </Heading>
+
+        <Paragraph size="lg">
+          The biggest problem with design handoff is not code generation. It is
+          inconsistency. Figma allows almost anything. Production systems cannot.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          I built a Figma plugin that rebuilds pages into strict,
+          machine-readable structures before export. Once the design follows the
+          system rules, exporting to production-ready code becomes much more
+          direct.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          The result is rapid prototyping with real components, not visual
+          approximations.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          Next: bidirectional synchronization and implementation validation.
+        </Paragraph>
+
+        <Divider />
+
+        <Heading as="h3" size="lg" margin="md">
+          Embedded Backlog
+        </Heading>
+
+        <Paragraph size="lg">
+          Ideas happen everywhere. Most disappear before they reach Jira.
+        </Paragraph>
+
+        <Paragraph size="lg">
+          A1 includes a lightweight backlog inside the product itself. While
+          building, I could log bugs, capture ideas, and create epics without
+          leaving the system.
+        </Paragraph>
+<Spacer size="sm" />
+
+        <List variant="unordered" size="lg">
+          <ListItem>Log bugs immediately</ListItem>
+          <ListItem>Capture ideas in seconds</ListItem>
+          <ListItem>Create epics from anywhere</ListItem>
+          <ListItem>Stay focused instead of switching tools</ListItem>
+        </List>
+
+        <Paragraph size="lg">
+          Next: AI clustering, duplicate detection, and automatic
+          prioritization.
+        </Paragraph>
+      </Section>
+
+      <Section as="div" padding="md" surface="page" contentWidth="md">
+        <Heading as="h2" size="xl" margin="md">
+          Building Blocks
+        </Heading>
+
+        <Paragraph size="lg">
+          A1 works because the pieces are connected. Tokens, components,
+          patterns, and prompts are not separate artifacts. They are layers of
+          the same system.
+        </Paragraph>
+
+        <Heading as="h3" size="lg" margin="md">
+          Tokens
+        </Heading>
+        <Paragraph size="lg">
+          Tokens define color, typography, spacing, radius, border, elevation,
+          and motion. The structure supports theming while keeping behavior
+          predictable.
+        </Paragraph>
+
+        <Heading as="h3" size="lg" margin="md">
+          Components
+        </Heading>
+        <Paragraph size="lg">
+          Components define purpose, anatomy, states, behavior, accessibility
+          expectations, responsive rules, and AI usage guidance.
+        </Paragraph>
+
+        <Figure
+          src="/img/a1/storybook-blockquote.png"
+          alt="Storybook documentation showing A1 Blockquote variants"
+          caption="Components document behavior, not just appearance."
+          marginTop="lg"
+          marginBottom="lg"
+          radius="sm"
+          size="lg"
+          align="center"
+          imgStyle={{ border: "1px solid var(--semantic-color-border-subtle)" }}
+        />
+
+        <Heading as="h3" size="lg" margin="md">
+          Themes
+        </Heading>
+        <Paragraph size="lg">
+          Themes test whether the system survives aesthetic change. Color,
+          typography, radius, density, and surface treatment can shift while the
+          underlying rules remain stable.
+        </Paragraph>
+
+        <Figure
+          src="/img/a1/storybook-section-stacked.png"
+          alt="Storybook showing stacked Section bands with inverse, default, and panel surfaces"
+          caption="The surface system creates page rhythm while adapting to the active theme."
+          marginTop="lg"
+          marginBottom="lg"
+        />
+      </Section>
+
+      <Section as="div" padding="sm" surface="raised" contentWidth="md" inverse>
+        <Heading as="h2" size="lg" margin="md">
+          Why This Matters
+        </Heading>
+
+        <Paragraph size="lg">
+          A1 is not really about building another design system. It is about
+          designing a system that AI can participate in safely.
+        </Paragraph>
+<Spacer size="sm" />
+
+        <List variant="unordered" size="lg">
+          <ListItem>Icons should not take weeks</ListItem>
+          <ListItem>Patterns should not be reinvented</ListItem>
+          <ListItem>Translations should not be an afterthought</ListItem>
+          <ListItem>Pages should not drift from approved structures</ListItem>
+          <ListItem>Documentation should not become stale</ListItem>
+        </List>
+
+        <Spacer size="sm" />
+
+        <Blockquote variant="border">
+          The future is not design-first or engineering-first. It is
+          structure-first.
+        </Blockquote>
+      </Section>
+
       <Section as="div" padding="md" contentWidth="md">
-        <Heading as="h2" size="xl" margin="md">Reflection</Heading>
+        <Heading as="h2" size="xl" margin="md">
+          What I Learned
+        </Heading>
+
+        <Blockquote variant="feature">
+          Designing software requires using the software.
+        </Blockquote>
+
         <Paragraph size="lg">
-          AI changes the speed of design, but it does not remove the need for
-          judgment. A strong design system gives AI something to follow. A
-          strong designer knows when the result is working, when it is merely
-          impressive, and when it needs to be challenged.
+          Designing in code creates immediate feedback. Ideas are tested instead
+          of imagined. Rules evolve through practice instead of documentation
+          alone.
         </Paragraph>
+
         <Paragraph size="lg">
-          A1 Design System is an exploration of that future: a system where
-          rules, components, accessibility, product thinking, and AI direction
-          work together to produce better digital experiences. The value is not
-          just faster output. The value is faster output with stronger judgment
-          behind it.
+          Some rules in A1 come from years of design systems experience. Some
+          come from industry best practices. Some simply break ties so teams and
+          AI can move forward consistently.
         </Paragraph>
-        <Blockquote variant="feature" cite="On AI-first design systems">
-          AI performs better when the rules are clearer. And better rules make everyone — human or machine — more effective.
+
+        <Paragraph size="lg">
+          The important part is not that every rule is perfect. The important part is that every important decision has a definition.
+        </Paragraph>
+      </Section>
+
+      <Section as="div" padding="md" contentWidth="md" surface="panel">
+        <Heading as="h2" size="xl" margin="md">
+          Outcome
+        </Heading>
+
+        <Paragraph size="lg">
+          A1 began as an experiment in AI-assisted design systems. It became an
+          exploration of what happens when every layer of product development
+          shares the same language.
+        </Paragraph>
+
+        <List variant="unordered" size="lg">
+          <ListItem>Tokens</ListItem>
+          <ListItem>Components</ListItem>
+          <ListItem>Patterns</ListItem>
+          <ListItem>Pages</ListItem>
+          <ListItem>Documentation</ListItem>
+          <ListItem>AI guidance</ListItem>
+        </List>
+
+        <Blockquote variant="feature" cite="A1 Design System">
+          The teams that succeed will not simply have better AI. They will have
+          better systems for AI to reason about.
         </Blockquote>
       </Section>
     </CaseStudyLayout>

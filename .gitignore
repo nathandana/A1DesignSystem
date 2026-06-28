@@ -1,5 +1,7 @@
 .tools/
 node_modules/
+.netlify/
+**/.netlify/
 
 # Local env files — may hold secrets (Supabase keys, etc.). Never commit.
 # Ignore every .env variant but keep the committed .env.example template.

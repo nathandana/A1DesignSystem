@@ -23,7 +23,7 @@ export function TransformStudy() {
     >
       <Section as="div" padding="sm" contentWidth="md">
 
-        <Figure src="img/transform/transform_cover.png" alt="Transform Design System" marginBottom="lg" />
+        <Figure src="/img/transform/transform_cover.png" alt="Transform Design System" marginBottom="lg" />
 
         <Paragraph size="lg">
           I led the creation and evolution of Transform, an internal design system that streamlined TruCare Cloud. TruCare Cloud is an enterprise application that facilitates the insurance authorization process, has extensive work management, creates long term service and support requests and more. Used daily by 20,000 employees at Centene, a Fortune 25 enterprise, it directly impacts the health and well-being of tens of millions of Americans.
@@ -57,7 +57,7 @@ export function TransformStudy() {
           With the growing complexity of Transform, we hired a development lead to manage technical architecture and grow the team. At peak, Transform was supported by an 11-person cross-functional team: myself as lead, two UX designers, a development lead, four developers, a product owner, a business analyst, and a scrum master. Together, we ran full agile sprints, refined our processes, and built the collaborative infrastructure that made the system sustainable at scale.
         </Paragraph>
         <Figure
-          src="img/transform/timeline.png"
+          src="/img/transform/timeline.png"
           alt="Timeline of Transform's development"
           imgStyle={{ backgroundColor: "white" }}
           marginTop="lg"
@@ -112,7 +112,7 @@ export function TransformStudy() {
           By designing and building the pattern library in-house, using Transform, we were able to be our own users. This allowed for improvements in designer and developer experiences, and allowed us to better support our customers.
         </Paragraph>
         <Figure
-          src="img/transform/pattern-library.png"
+          src="/img/transform/pattern-library.png"
           alt="Image of the Pattern Library Application interface"
           caption="The Pattern library allows users to explore configurations of components, read release notes, gather and share code snippets, and so much more, built with Transform so as a team we used our own system."
           marginTop="lg"
@@ -132,7 +132,7 @@ export function TransformStudy() {
           When we started, there was no formal accessibility support team in place. These efforts culminated in achieving WCAG 2.2 AA compliance across the full component library, passing rigorous internal audits and meeting enterprise benchmarks. By embedding accessibility into our design and development processes from the start, we not only raised the quality bar for Transform but set the standard that would later inform Fondue and other enterprise projects at Centene.
         </Paragraph>
         <Figure
-          src="img/transform-expansion.png"
+          src="/img/transform-expansion.png"
           alt="Image of the Transform Design System expansion panel"
           caption="The expansion panel component utilizes slot features to allow for flexible content and layout, reducing detach rates, while allowing for considerable flexibility and exploration."
           marginTop="lg"
@@ -149,7 +149,7 @@ export function TransformStudy() {
           Throughout the development and scaling of Transform, one of the key takeaways was that design systems are fundamentally about relationships. In areas where I was able to build strong relationships—with developers, product managers, and other stakeholders—we saw significant success in adoption and expansion. Teams that trusted the system were more likely to integrate it into their workflows, which led to consistent, high-quality user experiences.
         </Paragraph>
         <Figure
-          src="img/transform/changelog.png"
+          src="/img/transform/changelog.png"
           alt="Changelog Example"
           caption="Mirroring best practices from the development process was one way I ensured we treated even the design library as a product. By creating a changelog, we were able to communicate changes and updates to the system, something I've adopted for other systems."
           marginTop="lg"
@@ -168,7 +168,7 @@ export function TransformStudy() {
         <Figure
         size="md"
         align="center"
-          src="img/transform/cards_doc.png"
+          src="/img/transform/cards_doc.png"
           alt="Card Documentation Example"
           caption="The card component documentation is an example of how we documented the components in a way that was easy to understand and implement. This was a key part of our strategy to drive adoption and ensure consistency across the product."
           marginTop="lg"
@@ -185,7 +185,7 @@ export function TransformStudy() {
         <Figure
         size="md"
         align="center"
-          src="img/transform-expansion-testframe.png"
+          src="/img/transform-expansion-testframe.png"
           alt="Image of the Transform Design System expansion test frame"
           caption="Test frames ensured we didn't push out components that were not fully tested. This was a key part of our strategy to ensure quality and consistency across the product."
           marginTop="lg"

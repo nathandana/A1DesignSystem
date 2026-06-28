@@ -34,7 +34,7 @@ export function MemberMenuStudy() {
         </Blockquote>
 
         <Figure
-          src="img/mega-menu-final.png"
+          src="/img/mega-menu-final.png"
           alt="Image of the Member Menu interface"
           caption="The final design for Member Menu is a responsive flyout. It gives power users the ability to switch between recent members and navigate directly to in-progress work or critical paths for that member."
           marginTop="lg"
