@@ -23,6 +23,7 @@ export function EditorAsidePanel({
   availableLevels,
   onSetPageLevel,
   onNodePropsChange,
+  onNodeContentKeyChange,
   activeItem,
   onItemSelect,
   onPageMetadataChange,
@@ -134,6 +135,7 @@ export function EditorAsidePanel({
               availableLevels={availableLevels}
               onSetPageLevel={onSetPageLevel}
               onNodePropsChange={onNodePropsChange}
+              onNodeContentKeyChange={onNodeContentKeyChange}
               activeItem={activeItem}
               onItemSelect={onItemSelect}
               onPageMetadataChange={onPageMetadataChange}

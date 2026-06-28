@@ -132,7 +132,7 @@
 }
 
 .a1-side-nav-item:focus-visible {
-  outline: var(--component-side-nav-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline: var(--component-side-nav-item-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-side-nav-item-focus-ring-offset);
 }
 

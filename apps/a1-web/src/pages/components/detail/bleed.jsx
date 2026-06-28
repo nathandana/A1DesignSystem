@@ -33,7 +33,12 @@ export function Preview({ config, utilityClass = '' }) {
             color: 'var(--semantic-color-text-inverse)',
           }}
         >
-          <Paragraph size="sm">Bleed content — reaches past the inset.</Paragraph>
+          <Paragraph
+            size="sm"
+            style={{ '--a1-paragraph-color': 'var(--semantic-color-text-inverse)' }}
+          >
+            Bleed content — reaches past the inset.
+          </Paragraph>
         </div>
       </Bleed>
     </Card>

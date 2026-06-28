@@ -43,7 +43,7 @@
 }
 
 .a1-top-header__hamburger:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
+  outline: 2px solid var(--component-button-focus-ring);
   outline-offset: 1px;
 }
 
@@ -130,7 +130,7 @@
 }
 
 .a1-top-header__nav-link:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
+  outline: 2px solid var(--component-button-focus-ring);
   outline-offset: -2px;
 }
 
@@ -205,7 +205,7 @@
 
 .a1-top-header__flyout-trigger:focus-visible {
   background: var(--semantic-color-surface-raised);
-  outline: var(--component-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline: var(--component-menu-item-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-menu-item-focus-ring-offset);
 }
 
@@ -267,6 +267,14 @@
 }
 
 /* ── Action button + badge ────────────────────────────────────────────────── */
+
+.a1-top-header__action-divider {
+  width: 1px;
+  align-self: stretch;
+  margin-block: var(--base-spacing-8);
+  background: var(--semantic-color-border-subtle);
+  flex-shrink: 0;
+}
 
 .a1-top-header__action {
   position: relative;

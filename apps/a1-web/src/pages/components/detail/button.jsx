@@ -163,16 +163,19 @@ export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
   )
 }
 
-export function Controls({ config, setConfig, pages, viewAs = 'react' }) {
+export function Controls({ config, setConfig, pages, viewAs = 'react', textAction = null }) {
   const s = support(viewAs)
   return (
     <Stack gap="lg">
-      <TextField
-        label="Label"
-        size="compact"
-        value={config.label}
-        onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
-      />
+      <Stack direction="row" gap="xs" align="end">
+        <TextField
+          label="Label"
+          size="compact"
+          value={config.label}
+          onChange={(event) => setConfig((current) => ({ ...current, label: event.target.value }))}
+        />
+        {textAction}
+      </Stack>
       <Choice prop="variant"
         label="Variant"
         labelMode="selected"

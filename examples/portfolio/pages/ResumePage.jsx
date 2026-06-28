@@ -27,6 +27,8 @@ export function ResumePage() {
           <Link href="mailto:nathan.dana@gmail.com">nathan.dana@gmail.com</Link>
           <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
           <Link href="http://linkedin.com/in/midbrain" target="_blank" rel="noopener noreferrer">linkedin.com/in/midbrain</Link>
+          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
+          <Link href="http://nathandana.a1design.app" target="_blank" rel="noopener noreferrer">nathandana.a1design.app</Link>
         </Stack>
       </Section>
 
@@ -160,6 +162,7 @@ export function ResumePage() {
                 "ChatGPT",
                 "Codex",
                 "Claude Code",
+                "Cursor",
                 "Co-pilot",
               ].map((s) => <ListItem key={s}>{s}</ListItem>)}
             </List>

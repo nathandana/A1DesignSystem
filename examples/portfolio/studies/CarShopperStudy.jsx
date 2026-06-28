@@ -20,7 +20,7 @@ export function CarShopperStudy() {
     >
       <Section as="div" padding="lg" contentWidth="md">
 
-        <Figure src="img/desktop-vdp.png" alt="Car Shopper UX" marginBottom="lg" />
+        <Figure src="/img/desktop-vdp.png" alt="Car Shopper UX" marginBottom="lg" />
 
         <Paragraph size="lg">
           During my tenure at Dealer.com, nothing has been more important than the user experience design of the car shopper. At the core of the company, this is what we do—make it easy for consumers to find a vehicle of interest and communicate that to the dealership.
@@ -44,7 +44,7 @@ export function CarShopperStudy() {
         </Paragraph>
         <Figure
         size="sm"
-          src="img/vdp.png"
+          src="/img/vdp.png"
           alt="Vehicle Details Page"
           imgStyle={{ border: "1px solid #ccc", borderRadius: "4px" }}
           marginTop="lg"
@@ -57,7 +57,7 @@ export function CarShopperStudy() {
         </Paragraph>
         <Figure
         size="md"
-          src="img/vdp-mobile.png"
+          src="/img/vdp-mobile.png"
           alt="Mobile Vehicle Details Page"
           marginTop="lg"
           marginBottom="lg"
@@ -70,7 +70,7 @@ export function CarShopperStudy() {
         <Figure
         size="md"
         align="center"
-          src="img/srp.png"
+          src="/img/srp.png"
           alt="Search Results Page"
           marginTop="lg"
           marginBottom="lg"
@@ -86,7 +86,7 @@ export function CarShopperStudy() {
         <Figure
         size="md"
         align="center"
-          src="img/srp-card-package.gif"
+          src="/img/srp-card-package.gif"
           alt="Animation showing two instances for user testing of the results page"
           marginTop="lg"
           marginBottom="lg"
@@ -94,7 +94,7 @@ export function CarShopperStudy() {
         <Figure
         size="md"
         align="center"
-          src="img/srp-mobile-filter.png"
+          src="/img/srp-mobile-filter.png"
           alt="Mobile filtering"
           marginBottom="lg"
         />
@@ -114,7 +114,7 @@ export function CarShopperStudy() {
           Sometimes the best ideas are the ones you repurpose. The above concept spun off of a site I was browsing that utilized a panel-based approach, as opposed to pages. I quickly saw the potential for a more linear flow of information from left to right. This would allow users to move from listings to details and back without having to load singular pages.
         </Paragraph>
         <Figure
-          src="img/VLP-Panel.gif"
+          src="/img/VLP-Panel.gif"
           alt="Experimental Vehicle Listing Page with panel-based approach"
           imgStyle={{ width: "320px" }}
           marginTop="lg"

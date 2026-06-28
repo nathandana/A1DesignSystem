@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Autocomplete, IconButton } from '@gtivr4/a1-design-system-react'
+import { Autocomplete, IconButton, Stack } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
 import { AI_ENABLED } from '../../../lib/aiImages.ts'
@@ -91,7 +91,7 @@ export function IconSelect({
   return (
     <>
       <div className="a1-web-icon-select" ref={wrapRef}>
-        <div className="a1-web-icon-select__field">
+        <Stack grow>
           <Autocomplete
             label={label}
             size={size}
@@ -102,7 +102,7 @@ export function IconSelect({
             emptyText="No icons match"
             aria-label={label}
           />
-        </div>
+        </Stack>
         {AI_ENABLED && (
           <IconButton
             icon="auto_awesome"

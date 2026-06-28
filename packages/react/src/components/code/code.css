@@ -75,8 +75,8 @@
 
 .a1-code-block__textarea:focus-visible {
   outline: none;
-  border-color: var(--semantic-color-action-background);
-  box-shadow: 0 0 0 var(--component-card-border-width) var(--semantic-color-action-background);
+  border-color: var(--component-button-focus-ring);
+  box-shadow: 0 0 0 var(--component-card-border-width) var(--component-button-focus-ring);
 }
 
 .a1-code-block__textarea--wrapping {

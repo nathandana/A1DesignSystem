@@ -95,7 +95,7 @@
 }
 
 .a1-canvas__node:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
+  outline: 2px solid var(--component-button-focus-ring);
   outline-offset: 3px;
 }
 
@@ -235,7 +235,7 @@
 }
 
 .a1-canvas__ctrl:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
+  outline: 2px solid var(--component-button-focus-ring);
   outline-offset: 1px;
 }
 
@@ -289,7 +289,7 @@
               background var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard);
 }
 .a1-canvas__node-connect:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
+  outline: 2px solid var(--component-button-focus-ring);
   outline-offset: 2px;
 }
 .a1-canvas__node:hover .a1-canvas__node-connect,

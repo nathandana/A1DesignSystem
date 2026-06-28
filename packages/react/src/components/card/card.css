@@ -42,7 +42,7 @@ button.a1-card--navigation {
 }
 
 .a1-card--navigation:focus-visible {
-  outline: var(--component-button-focus-ring-width) solid var(--semantic-color-action-background);
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--base-spacing-2);
 }
 

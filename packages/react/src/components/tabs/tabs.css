@@ -114,7 +114,7 @@
 }
 
 .a1-tab:focus-visible {
-  outline: var(--component-tab-focus-ring-width) solid var(--semantic-color-action-background);
+  outline: var(--component-tab-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-tab-focus-ring-offset);
   border-radius: var(--base-radius-control);
 }

@@ -318,7 +318,7 @@
   --component-button-tertiary-border-hover: #f5f3ff;
   --component-button-tertiary-border-pressed: #e8e4ff;
   --component-button-tertiary-border-width: 1px;
-  --component-button-focus-ring: #b5a0ff;
+  --component-button-focus-ring: #5916b5;
   --component-button-border-radius: 0.375rem;
   --component-button-pill-border-radius: 624.9375rem;
   --component-button-padding-block: 0.625rem;
@@ -516,7 +516,7 @@
   --component-field-required-border-width: 0.5rem;
   --component-field-error-border-width: 0.125rem;
   --component-field-label-font-weight: 600;
-  --component-field-focus-ring-color: #b5a0ff;
+  --component-field-focus-ring-color: #5916b5;
   --component-field-focus-ring-width: 0.1875rem;
   --component-field-focus-ring-offset: 0.125rem;
   --component-field-hover-background: #f0f6fe;

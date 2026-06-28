@@ -30,21 +30,6 @@ export function ComponentCategoryPage({ category, onNavigate }) {
       </Stack>
 </Section>
     <Section padding="sm" contentWidth="xl" aria-labelledby={`${category.id}-category-heading`}>
-    <Section   padding="xs"
-  surface="raised"
-  gap="sm"
-  borderSize="md"
-  borderStyle="dashed"
-  radius="lg">
-
-        <Heading as="h3" size="md">Description and general rules</Heading>
-        <Paragraph size="sm" color="muted">
-          Placeholder for category-level guidance, decision rules, shared anatomy, and usage patterns that apply across {category.title.toLowerCase()} components.
-        </Paragraph>
-</Section>
-</Section>
-    <Section padding="sm" contentWidth='xl'>
-
       <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
         {category.components.map((component) => (
           <Card

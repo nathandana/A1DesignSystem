@@ -4,7 +4,7 @@ import '../../../packages/react/src/color-scheme.css'
 import '../../../packages/react/src/utilities/spacing.css'
 import '../../../packages/react/src/utilities/width.css'
 import { createRoot } from 'react-dom/client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BottomSheet,
   Button,
@@ -24,15 +24,26 @@ import {
   Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
+import appLabels       from '../../../system/labels/app.json'
 import actionLabels    from '../../../system/labels/action.json'
 import backlogLabels   from '../../../system/labels/backlog.json'
 import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
 import statusBarLabels from '../../../system/labels/status-bar.json'
+import {
+  getLabels,
+  hydrateLabels,
+  subscribeLabels,
+  subscribeRemoteLabels,
+  buildLabelsObject,
+  buildProjectLabelsObject,
+  deepMergeLabels,
+} from './labels/labelStore.js'
 
-const allLabels = {
+const SYSTEM_LABELS = {
   label: {
+    ...appLabels.label,
     ...actionLabels.label,
     ...backlogLabels.label,
     ...calendarLabels.label,
@@ -95,6 +106,7 @@ import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { suppressHistoryFlush } from './editor/storage.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
+import { TProvider } from './labels/useT.js'
 import { supabaseConfigured } from './lib/supabase.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
@@ -106,6 +118,7 @@ import { BacklogProvider } from './backlog/BacklogContext.jsx'
 import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
+import { LabelEditor } from './pages/LabelEditor.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -124,10 +137,11 @@ const PAGE_ICONS = {
   accessibility: 'accessibility',
   releases: 'new_releases',
   about: 'info',
+  'label-editor': 'translate',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -144,6 +158,7 @@ const PAGE_TITLES = {
   data: 'Data sources',
   'theme-editor': 'Theme',
   'rules': 'Rules',
+  'label-editor': 'Label editor',
   projects: 'Projects',
   help: 'Help',
   accessibility: 'Accessibility',
@@ -166,9 +181,9 @@ const themeOptions = [
 ]
 
 const colorSchemeOptions = [
-  { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode' },
-  { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode' },
-  { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode' },
+  { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode', labelKey: 'app.settings.lightMode' },
+  { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode', labelKey: 'app.settings.darkMode' },
+  { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode', labelKey: 'app.settings.systemMode' },
 ]
 
 const VALID_THEMES = themeOptions.map((o) => o.value)
@@ -223,6 +238,45 @@ function isPlainLeftClick(e) {
   return e.button === 0 && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey
 }
 
+const PAGE_TITLE_LABEL_KEYS = {
+  home: 'app.page.home',
+  features: 'app.page.features',
+  'get-started': 'app.page.getStarted',
+  foundations: 'app.nav.foundations',
+  components: 'app.nav.components',
+  patterns: 'app.page.patterns',
+  editor: 'app.page.editor',
+  'editor-preview': 'app.page.editorPreview',
+  'image-library': 'app.page.imageLibrary',
+  'custom-icons': 'app.page.customIcons',
+  data: 'app.page.dataSources',
+  'theme-editor': 'app.page.theme',
+  rules: 'app.page.rules',
+  'label-editor': 'app.page.labels',
+  projects: 'app.page.projects',
+  help: 'app.page.help',
+  accessibility: 'app.page.accessibility',
+  releases: 'app.page.releases',
+  backlog: 'app.page.backlog',
+  'virtual-team': 'app.page.virtualTeam',
+  'backlog-ticket': 'app.page.backlog',
+  about: 'app.page.about',
+  account: 'app.page.account',
+}
+
+function resolveLabel(labels, locale, key, fallback) {
+  if (!key || !labels) return fallback ?? key
+  const parts = key.split('.')
+  let node = labels.label
+  for (const part of parts) {
+    if (node == null || typeof node !== 'object') return fallback ?? key
+    node = node[part]
+  }
+  if (node == null) return fallback ?? key
+  if (locale && node.locale?.[locale] != null) return node.locale[locale]
+  return node.$value ?? fallback ?? key
+}
+
 
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
@@ -248,7 +302,8 @@ function App() {
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const { user: authUser } = useAuth()
+  const settingsAnchorRef = useRef(null)
+  const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState('configure')
@@ -309,6 +364,35 @@ function App() {
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  // ── Reactive label resolution: system defaults → workspace overrides → project overrides ──
+  const [workspaceLabelsObj, setWorkspaceLabelsObj] = useState(() =>
+    buildLabelsObject(getLabels().items)
+  )
+  useEffect(() => {
+    const unsubscribeLocal = subscribeLabels((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    hydrateLabels().then((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    const unsubscribeRemote = subscribeRemoteLabels()
+    return () => {
+      unsubscribeLocal()
+      unsubscribeRemote()
+    }
+  }, [])
+  const allLabels = useMemo(() => {
+    const projectLabels = activeProject?.labelOverrides
+      ? buildProjectLabelsObject(activeProject.labelOverrides)
+      : { label: {} }
+    return {
+      label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabelsObj.label, projectLabels.label),
+    }
+  }, [workspaceLabelsObj, activeProject])
+  const labelLocale = locale === 'en' ? null : locale
+  const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
+  const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
 
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
@@ -414,6 +498,11 @@ function App() {
 
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleUpdateProjectLabels(projectId, labelOverrides) {
+    projectStore.updateProject(projectId, { labelOverrides })
     refreshProjects()
   }
 
@@ -695,40 +784,40 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const title = PAGE_TITLES[activePage] ?? activePage
+    const title = pageTitle(activePage)
     document.title = activePage === 'home' ? title : `${title} — A1 Design System`
-  }, [activePage])
+  }, [activePage, locale, allLabels])
 
   const FOUNDATION_GROUPS = [
-    { label: 'Visualize', icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
-    { label: 'Visual', icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-    { label: 'Content', icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
-    { label: 'Layout', icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
-    { label: 'Standards', icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
+    { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
+    { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
   ]
 
   const navItems = [
     {
       id: 'explore',
-      label: 'Explore',
+      label: t('app.nav.explore', 'Explore'),
       active: EXPLORE_PAGE_IDS.includes(activePage),
       items: [...EXPLORE_PAGE_IDS]
-        .sort((a, b) => PAGE_TITLES[a].localeCompare(PAGE_TITLES[b]))
+        .sort((a, b) => pageTitle(a).localeCompare(pageTitle(b)))
         .map((id) => ({
           icon: PAGE_ICONS[id],
-          label: PAGE_TITLES[id],
+          label: pageTitle(id),
           href: getPath(id),
           onClick: (e) => handleNavClick(e, id),
         })),
     },
     {
       id: 'foundations',
-      label: PAGE_TITLES.foundations,
+      label: pageTitle('foundations'),
       active: activePage === 'foundations' || FOUNDATION_PAGE_IDS.includes(activePage),
       items: [
         {
           icon: 'foundation',
-          label: 'Overview',
+          label: t('app.nav.overview', 'Overview'),
           href: getPath('foundations'),
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
@@ -751,12 +840,12 @@ function App() {
     },
     {
       id: 'components',
-      label: PAGE_TITLES.components,
+      label: pageTitle('components'),
       active: COMPONENT_ROUTE_IDS.includes(activePage),
       items: [
         {
           icon: 'widgets',
-          label: 'Overview',
+          label: t('app.nav.overview', 'Overview'),
           href: getPath('components'),
           onClick: (e) => handleNavClick(e, 'components'),
         },
@@ -776,17 +865,17 @@ function App() {
     },
     {
       id: 'editor',
-      label: 'Editors',
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
+      label: t('app.nav.editors', 'Editors'),
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor',
       items: [
         {
           icon: 'folder',
-          label: 'Projects',
+          label: pageTitle('projects'),
           active: activePage === 'editor',
           items: [
             {
               icon: 'grid_view',
-              label: 'All projects',
+              label: t('app.nav.allProjects', 'All projects'),
               href: getPath('editor'),
               onClick: handleEditorNav,
             },
@@ -802,45 +891,52 @@ function App() {
         },
         {
           icon: 'dashboard_customize',
-          label: 'Patterns',
+          label: pageTitle('patterns'),
           href: getPath('patterns'),
           active: activePage === 'patterns',
           onClick: (e) => handleNavClick(e, 'patterns'),
         },
         {
           icon: 'photo_library',
-          label: 'Image library',
+          label: pageTitle('image-library'),
           href: getPath('image-library'),
           active: activePage === 'image-library',
           onClick: (e) => handleNavClick(e, 'image-library'),
         },
         {
           icon: 'font_download',
-          label: 'Custom icons',
+          label: pageTitle('custom-icons'),
           href: getPath('custom-icons'),
           active: activePage === 'custom-icons',
           onClick: (e) => handleNavClick(e, 'custom-icons'),
         },
         {
           icon: 'table_chart',
-          label: 'Data sources',
+          label: pageTitle('data'),
           href: getPath('data'),
           active: activePage === 'data',
           onClick: (e) => handleNavClick(e, 'data'),
         },
         {
           icon: 'palette',
-          label: 'Theme',
+          label: pageTitle('theme-editor'),
           href: getPath('theme-editor'),
           active: activePage === 'theme-editor',
           onClick: (e) => handleNavClick(e, 'theme-editor'),
         },
         {
           icon: 'gavel',
-          label: 'Rules',
+          label: pageTitle('rules'),
           href: getPath('rules'),
           active: activePage === 'rules',
           onClick: (e) => handleNavClick(e, 'rules'),
+        },
+        {
+          icon: 'translate',
+          label: pageTitle('label-editor'),
+          href: getPath('label-editor'),
+          active: activePage === 'label-editor',
+          onClick: (e) => handleNavClick(e, 'label-editor'),
         },
       ],
     },
@@ -848,17 +944,10 @@ function App() {
 
   const actions = [
     {
-      id: 'new-ticket',
-      icon: 'flag',
-      iconOnly: true,
-      label: 'Create a ticket',
-      onClick: () => backlog?.openCreate({ kind: 'general' }),
-    },
-    {
       id: 'backlog-queue',
       icon: 'checklist',
       iconOnly: true,
-      label: 'Your backlog queue',
+      label: t('app.action.yourBacklogQueue', 'Your backlog queue'),
       active: activePage === 'backlog',
       badge: backlog?.unreadCount || undefined,
       onClick: () => {
@@ -872,7 +961,7 @@ function App() {
       id: 'help',
       icon: PAGE_ICONS.help,
       iconOnly: true,
-      label: 'Help',
+      label: pageTitle('help'),
       active: activePage === 'help',
       onClick: () => navigate('help'),
     },
@@ -880,16 +969,64 @@ function App() {
       id: 'virtual-team',
       icon: PAGE_ICONS['virtual-team'],
       iconOnly: true,
-      label: 'Virtual team',
+      label: pageTitle('virtual-team'),
       active: activePage === 'virtual-team',
       onClick: () => navigate('virtual-team'),
+    }] : []),
+    { id: 'action-divider', divider: true },
+    {
+      id: 'new-ticket',
+      icon: 'flag',
+      iconOnly: true,
+      label: t('app.action.createTicket', 'Create a ticket'),
+      onClick: () => backlog?.openCreate({ kind: 'general' }),
+    },
+    ...(supabaseConfigured ? [{
+      id: 'user',
+      icon: 'account_circle',
+      iconOnly: true,
+      label: authUser ? authUser.email : t('app.page.account', 'Account'),
+      items: [
+        ...(authUser ? [{
+          id: 'user-header',
+          isHeader: true,
+          label: authUser.email,
+          description: t('app.page.account', 'Account'),
+        }] : []),
+        { divider: true },
+        {
+          id: 'user-account',
+          icon: 'manage_accounts',
+          label: t('app.page.account', 'Account'),
+          onClick: () => navigate('account'),
+        },
+        ...(authUser ? [
+          { divider: true },
+          {
+            id: 'user-signout',
+            icon: 'logout',
+            label: t('app.action.signOut', 'Sign out'),
+            onClick: () => signOut(),
+          },
+        ] : [
+          {
+            id: 'user-signin',
+            icon: 'login',
+            label: t('app.action.signIn', 'Sign in'),
+            onClick: () => navigate('account'),
+          },
+        ]),
+      ],
     }] : []),
     {
       id: 'settings',
       icon: 'settings',
       iconOnly: true,
-      label: 'Settings',
-      onClick: () => setSettingsOpen(true),
+      label: t('app.action.settings', 'Settings'),
+      onClick: (event) => {
+        settingsAnchorRef.current = event.currentTarget
+        setSettingsOpen(true)
+      },
     },
   ]
 
@@ -901,11 +1038,13 @@ function App() {
 
   if (IS_STANDALONE) {
     return (
-      <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
+      <TProvider value={t}>
+      <LabelsProvider locale={labelLocale} labels={allLabels}>
         <CustomIconFontProvider projectId={activeProjectId}>
           {activePage === 'editor-preview' ? <EditorPreviewPage /> : null}
         </CustomIconFontProvider>
       </LabelsProvider>
+      </TProvider>
     )
   }
 
@@ -925,7 +1064,8 @@ function App() {
       : getComponentsAside({ activePage, detailTab })
 
   return (
-    <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
+    <TProvider value={t}>
+    <LabelsProvider locale={labelLocale} labels={allLabels}>
       <CustomIconFontProvider projectId={activeProjectId} includeAll={activePage === 'custom-icons'}>
       <ImageLibraryProvider>
       <PageLayout
@@ -997,7 +1137,7 @@ function App() {
           <IconButton
             className="a1-web-sidebar-toggle"
             icon="view_sidebar"
-            label="Open sidebar"
+            label={t('app.action.openSidebar', 'Open sidebar')}
             size='sm'
             variant="secondary"
             onClick={() => setSidebarOpen(true)}
@@ -1162,6 +1302,14 @@ function App() {
             onNavigate={navigate}
           />
         )}
+        {activePage === 'label-editor' && (
+          <LabelEditor
+            onNavigate={navigate}
+            projects={projects}
+            activeProjectId={activeProjectId}
+            onUpdateProjectLabels={handleUpdateProjectLabels}
+          />
+        )}
         {activePage === 'theme-editor' && (
           !activeThemeId
             ? <ThemesList
@@ -1203,30 +1351,17 @@ function App() {
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}
         {isSmDown && asideEl && (
-          <BottomSheet className="a1-web-config-sheet" title={activePage === 'backlog' ? 'Filters' : 'Configure'} detents={[0.55, 0.95]} defaultDetent={0}>
+          <BottomSheet className="a1-web-config-sheet" title={activePage === 'backlog' ? t('app.action.filters', 'Filters') : t('app.action.configure', 'Configure')} detents={[0.55, 0.95]} defaultDetent={0}>
             {asideEl}
           </BottomSheet>
         )}
       </PageLayout>
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
-        {supabaseConfigured && (
-          <MenuSection label="Account">
-            <Button
-              variant="secondary"
-              size="sm"
-              fullWidth
-              icon="account_circle"
-              onClick={() => { setSettingsOpen(false); navigate('account') }}
-            >
-              {authUser ? authUser.email : 'Sign in'}
-            </Button>
-          </MenuSection>
-        )}
-        <MenuSection label="Theme">
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
+        <MenuSection label={t('app.page.theme', 'Theme')}>
           {themeOptions.length > 5 ? (
             <SelectField
-              aria-label="Theme"
+              aria-label={t('app.page.theme', 'Theme')}
               size="compact"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
@@ -1241,37 +1376,40 @@ function App() {
               value={theme}
               onChange={setTheme}
               size="compact"
-              aria-label="Theme"
+              aria-label={t('app.page.theme', 'Theme')}
             />
           )}
         </MenuSection>
-        <MenuSection label="Color scheme">
+        <MenuSection label={t('app.settings.colorScheme', 'Color scheme')}>
           <SegmentedControl
-            options={colorSchemeOptions}
+            options={colorSchemeOptions.map((option) => ({
+              ...option,
+              ariaLabel: t(option.labelKey, option.ariaLabel),
+            }))}
             value={colorMode}
             onChange={setColorMode}
-            aria-label="Color scheme"
+            aria-label={t('app.settings.colorScheme', 'Color scheme')}
             size="sm"
             fullWidth
           />
         </MenuSection>
-        <MenuSection label="Accessibility">
+        <MenuSection label={t('app.page.accessibility', 'Accessibility')}>
           <Switch
-            label="Reduce motion"
+            label={t('app.settings.reduceMotion', 'Reduce motion')}
             checked={reducedMotion}
             onChange={setReducedMotion}
             size="compact"
           />
           <Switch
-            label="Increase contrast"
+            label={t('app.settings.increaseContrast', 'Increase contrast')}
             checked={contrastMore}
             onChange={setContrastMore}
             size="compact"
           />
         </MenuSection>
-        <MenuSection label={<>Locale <span className="a1-web-alpha-badge">Alpha</span></>}>
+        <MenuSection label={<>{t('app.settings.locale', 'Locale')} <span className="a1-web-alpha-badge">{t('app.settings.alpha', 'Alpha')}</span></>}>
           <SelectField
-            aria-label="Locale"
+            aria-label={t('app.settings.locale', 'Locale')}
             size="compact"
             value={locale}
             onChange={(e) => setLocale(e.target.value)}
@@ -1281,7 +1419,7 @@ function App() {
             ))}
           </SelectField>
         </MenuSection>
-        <MenuSection label="Editor">
+        <MenuSection label={t('app.page.editor', 'Editor')}>
           <Button
             variant="secondary"
             size="sm"
@@ -1289,7 +1427,7 @@ function App() {
             fullWidth
             onClick={handleExportAll}
           >
-            Export all pages
+            {t('app.action.exportAllPages', 'Export all pages')}
           </Button>
           <Button
             variant="secondary"
@@ -1298,7 +1436,7 @@ function App() {
             fullWidth
             onClick={() => importInputRef.current?.click()}
           >
-            Import pages
+            {t('app.action.importPages', 'Import pages')}
           </Button>
           <input
             ref={importInputRef}
@@ -1320,7 +1458,7 @@ function App() {
               setLocale('en')
             }}
           >
-            Reset to defaults
+            {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
       </Menu>
@@ -1331,6 +1469,7 @@ function App() {
       </ImageLibraryProvider>
       </CustomIconFontProvider>
     </LabelsProvider>
+    </TProvider>
   )
 }
 

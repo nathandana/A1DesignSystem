@@ -217,11 +217,14 @@ export function Node({ id, x, y, label, sublabel, title, shape = 'circle', color
     ? { left: x - w / 2, top: y - h / 2, width: w, height: h, ...customColorVars }
     : { width: w, height: h, position: 'relative', ...customColorVars }
 
+  const hasConnectControl = inCanvas && isEditing
+  const nodeRole = hasConnectControl ? 'group' : 'button'
+
   return (
     <div
-      role="button"
-      tabIndex={0}
-      aria-pressed={selected || undefined}
+      role={nodeRole}
+      tabIndex={hasConnectControl ? undefined : 0}
+      aria-pressed={!hasConnectControl && selected ? true : undefined}
       aria-label={label}
       title={title}
       className={classes}

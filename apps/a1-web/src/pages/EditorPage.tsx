@@ -33,6 +33,7 @@ import { buildProjectNav, type ProjectNavItem } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
+import { LabelLookupDialog } from '../editor/LabelLookupDialog.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
@@ -189,10 +190,21 @@ type ParseResult =
 
 // ── Immutable tree patchers ───────────────────────────────────────────────────
 
-function updateNodeFallback(node: ComponentNode, id: string, fallback: string): ComponentNode {
-  if (node.id === id) return { ...node, content: { ...node.content!, fallback } };
+function updateNodeContent(
+  node: ComponentNode,
+  id: string,
+  patch: { fallback?: string; textKey?: string | null },
+): ComponentNode {
+  if (node.id === id) {
+    const nextContent = {
+      ...(node.content ?? { fallback: '' }),
+      ...(patch.fallback !== undefined ? { fallback: patch.fallback } : {}),
+      ...(patch.textKey !== undefined ? { textKey: patch.textKey || undefined } : {}),
+    };
+    return { ...node, content: nextContent };
+  }
   if (!node.children) return node;
-  return { ...node, children: node.children.map((c) => updateNodeFallback(c, id, fallback)) };
+  return { ...node, children: node.children.map((c) => updateNodeContent(c, id, patch)) };
 }
 
 function updateNodeProps(node: ComponentNode, id: string, props: ComponentProps): ComponentNode {
@@ -221,7 +233,14 @@ function patchRegions(
 }
 
 function patchDefinitionContent(def: PageDefinition, nodeId: string, fallback: string) {
-  return patchRegions(def, (node) => updateNodeFallback(node, nodeId, fallback));
+  return patchRegions(def, (node) => updateNodeContent(node, nodeId, { fallback }));
+}
+
+function patchDefinitionContentKey(def: PageDefinition, nodeId: string, textKey: string | null, fallback?: string) {
+  return patchRegions(def, (node) => updateNodeContent(node, nodeId, {
+    textKey,
+    ...(fallback !== undefined ? { fallback } : {}),
+  }));
 }
 
 function patchDefinitionProps(def: PageDefinition, nodeId: string, props: ComponentProps) {
@@ -737,6 +756,7 @@ export function EditorPage({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [labelLookupNodeId, setLabelLookupNodeId] = useState<string | null>(null);
   const [notice, setNotice] = useState(''); // transient one-line snackbar (copy/paste pattern)
   // The child item being edited (e.g. a DefinitionList item) — shared by the
   // canvas (outline) and the configurator (active tab).
@@ -1098,7 +1118,13 @@ export function EditorPage({
     if (v !== 'edit') onSelectNode?.(null);
   }
 
-  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string; detailDataset?: string | null; detailPreviewId?: string | null }) {
+  function handlePageMetadataChange(patch: {
+    name?: string;
+    description?: string;
+    icon?: string;
+    detailDataset?: string | null;
+    detailPreviewId?: string | null;
+  }) {
     if (!parsedDefinition.ok) return;
     const page = parsedDefinition.value.page;
     const newPage = {
@@ -1135,6 +1161,18 @@ export function EditorPage({
     commitDebounced(newJson, `Edited ${getNodeType(nodeId)} text`);
   }
 
+  function handleContentKeyChange(nodeId: string, textKey: string | null, fallback?: string) {
+    if (!parsedDefinition.ok) return;
+    const lock = getNodeLock(nodeId);
+    if (lock?.node || lock?.content) return;
+    const newJson = JSON.stringify(
+      patchDefinitionContentKey(parsedDefinition.value, nodeId, textKey, fallback),
+      null,
+      2,
+    );
+    history.commitProp(newJson, `Edited ${getNodeType(nodeId)} label key`);
+  }
+
   // Inline-edit a child item's text field (e.g. a DefinitionList item's label or
   // value) on the canvas, writing back into the node's `items` array prop.
   function handleItemTextChange(nodeId: string, index: number, field: string, value: string) {
@@ -1169,7 +1207,12 @@ export function EditorPage({
     if (nodeId !== selectedNodeId) onSelectNode?.(nodeId);
   }
 
-  function handleNodePropsChange(nodeId: string, newProps: ComponentProps, newContentFallback?: string) {
+  function handleNodePropsChange(
+    nodeId: string,
+    newProps: ComponentProps,
+    newContentFallback?: string,
+    newContentTextKey?: string | null,
+  ) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
     if (lock?.node) { notifyLocked(); return; } // fully locked — ignore all edits
@@ -1185,7 +1228,9 @@ export function EditorPage({
       }
     }
     let patched = patchDefinitionProps(parsedDefinition.value, nodeId, props);
-    if (newContentFallback !== undefined && !lock?.content) {
+    if (newContentTextKey !== undefined && !lock?.content) {
+      patched = patchDefinitionContentKey(patched, nodeId, newContentTextKey, newContentFallback);
+    } else if (newContentFallback !== undefined && !lock?.content) {
       patched = patchDefinitionContent(patched, nodeId, newContentFallback);
     }
     const newJson = JSON.stringify(patched, null, 2);
@@ -1733,6 +1778,7 @@ export function EditorPage({
   const activePatternRootId = parsedDefinition.ok && selectedNodeId
     ? (findActivePatternRoot(parsedDefinition.value.page.layout.regions.flatMap((r) => r.nodes), selectedNodeId) ?? null)
     : null;
+  const labelLookupNode = labelLookupNodeId ? getNode(labelLookupNodeId) : null;
 
   // When the Add target is a Slot, tell the Add panel what it accepts so it only
   // offers the allowed components / patterns (and signals when it's full).
@@ -1771,6 +1817,7 @@ export function EditorPage({
           availableLevels={availableLevels}
           onSetPageLevel={onSetPageLevel}
           onNodePropsChange={handleNodePropsChange}
+          onNodeContentKeyChange={handleContentKeyChange}
           activeItem={activeItem}
           onItemSelect={handleItemSelect}
           onPageMetadataChange={handlePageMetadataChange}
@@ -1897,18 +1944,17 @@ export function EditorPage({
           <Stack direction="row" align="center" gap="sm">
             <PagePresence pageId={exampleId} />
             {!isPattern && versions.length > 1 && (
-              <div className="a1-web-version-switcher">
-                <SelectField
-                  size="compact"
-                  aria-label="Active version"
-                  value={activeVersionId}
-                  onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
-                >
-                  {versions.map((v) => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </SelectField>
-              </div>
+              <SelectField
+                size="compact"
+                aria-label="Active version"
+                value={activeVersionId}
+                style={{ maxInlineSize: '10rem' }}
+                onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
+              >
+                {versions.map((v) => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </SelectField>
             )}
           </Stack>
         </Stack>
@@ -1940,6 +1986,7 @@ export function EditorPage({
                 onConvertNode={handleConvertNode}
                 onCopyPattern={handleCopyPattern}
                 onPastePattern={handlePastePattern}
+                onChooseTextLabel={setLabelLookupNodeId}
                 getNodeProps={getNodeProps}
                 getNodeInfo={getNodeInfoFn}
                 onRequestAddChild={handleRequestAddChild}
@@ -2026,6 +2073,16 @@ export function EditorPage({
       <Snackbar open={!!notice} onClose={() => setNotice('')}>
         {notice}
       </Snackbar>
+
+      <LabelLookupDialog
+        open={!!labelLookupNodeId}
+        value={labelLookupNode?.content?.textKey ?? ''}
+        onClose={() => setLabelLookupNodeId(null)}
+        onChange={(textKey, option) => {
+          if (labelLookupNodeId) handleContentKeyChange(labelLookupNodeId, textKey, option?.value);
+          setLabelLookupNodeId(null);
+        }}
+      />
 
       <EditorShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </>

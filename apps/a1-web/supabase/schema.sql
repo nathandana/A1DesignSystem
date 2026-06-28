@@ -38,6 +38,31 @@ create trigger shared_state_updated_at
   before update on public.shared_state
   for each row execute function public.set_updated_at();
 
+-- ─── Workspace labels (shared) ───────────────────────────────────────────────
+-- A single row (id = 1) stores workspace-level label overrides and custom labels:
+-- { locales: string[], items: [{ key, en, es, ... }] }. Project-specific label
+-- overrides remain part of the project model. The client keeps a local cache for
+-- offline/dev mode, but this table is the Supabase source of truth when signed in.
+
+create table if not exists public.workspace_labels (
+  id         int         primary key default 1,
+  data       jsonb       not null default '{"locales":["en","es","fr","de","pt","ja","zh","ar"],"items":[]}'::jsonb,
+  updated_at timestamptz not null default now(),
+  constraint workspace_labels_singleton check (id = 1)
+);
+
+alter table public.workspace_labels enable row level security;
+
+drop policy if exists "workspace_labels: read"  on public.workspace_labels;
+drop policy if exists "workspace_labels: write" on public.workspace_labels;
+create policy "workspace_labels: read"  on public.workspace_labels for select to authenticated using (true);
+create policy "workspace_labels: write" on public.workspace_labels for all    to authenticated using (true) with check (true);
+
+drop trigger if exists workspace_labels_updated_at on public.workspace_labels;
+create trigger workspace_labels_updated_at
+  before update on public.workspace_labels
+  for each row execute function public.set_updated_at();
+
 -- Migrate the most-recent per-user bundle into the shared row, then retire the
 -- old per-user table. Guarded so a fresh project (no user_projects) just skips it.
 do $$

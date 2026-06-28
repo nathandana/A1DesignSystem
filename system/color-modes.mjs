@@ -176,7 +176,7 @@ export const LIGHT_MODE_DECLARATIONS = {
   "--semantic-color-status-warn-background": "var(--base-color-warn-500)",
   "--semantic-color-status-warn-surface":    "var(--base-color-warn-50)",
   "--semantic-color-status-warn-border":     "var(--base-color-warn-300)",
-  "--semantic-color-status-warn-foreground": "var(--base-color-warn-0)",
+  "--semantic-color-status-warn-foreground": "var(--base-color-neutral-900)",
   "--semantic-color-status-warn-text":  "var(--base-color-warn-600)",
   "--semantic-color-status-error-text": "var(--base-color-error-600)",
   "--semantic-color-status-success-background": "var(--base-color-success-600)",

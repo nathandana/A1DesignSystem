@@ -1,0 +1,364 @@
+{
+  "generatedAt": "2026-06-28T20:27:28.761Z",
+  "baseUrl": "http://127.0.0.1:6016",
+  "scannedStories": 479,
+  "componentCount": 71,
+  "totalViolations": 0,
+  "components": [
+    {
+      "component": "Actions/Split Button",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Actions/StickyActions",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Canvas",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Card",
+      "storyCount": 11,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Dialog",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Grid",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Inverse",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Page Layout",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Containers/Section",
+      "storyCount": 14,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Accordion",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Button",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Button Container",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Icon Button",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Link",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Pagination",
+      "storyCount": 4,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Segmented Control",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Slider",
+      "storyCount": 11,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Tabs",
+      "storyCount": 15,
+      "violationCount": 0
+    },
+    {
+      "component": "Controls/Toolbar",
+      "storyCount": 12,
+      "violationCount": 0
+    },
+    {
+      "component": "Data/Calendar",
+      "storyCount": 12,
+      "violationCount": 0
+    },
+    {
+      "component": "Data/Definition List",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "DataGrid (experimental)",
+      "storyCount": 4,
+      "violationCount": 0
+    },
+    {
+      "component": "DataTable",
+      "storyCount": 15,
+      "violationCount": 0
+    },
+    {
+      "component": "Feedback/Circular Progress",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Feedback/Status Bar",
+      "storyCount": 8,
+      "violationCount": 0
+    },
+    {
+      "component": "Feedback/Step Tracker",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Checkbox Group",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Credit Card Field",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Date Field",
+      "storyCount": 4,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Field Row",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Fieldset",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Inline Editable",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Number Field",
+      "storyCount": 8,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Phone Field",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Radio Group",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Search Field",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Select",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Switch",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Text Field",
+      "storyCount": 8,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Textarea",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/Time Field",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Forms/ZIP Field",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Inputs/Autocomplete",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Inputs/Choice Group",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Inputs/TokenSelect",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Media/Figure",
+      "storyCount": 9,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/_MessageBanner",
+      "storyCount": 1,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Badge",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Banner",
+      "storyCount": 13,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Blockquote",
+      "storyCount": 4,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Empty State",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Notification",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Messaging/Snackbar",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/BottomDrawer",
+      "storyCount": 4,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/Breadcrumb",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/Menu",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/PageNav",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/SideNav",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Navigation/TopHeader",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Overlay/BottomSheet",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Bleed",
+      "storyCount": 2,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Cluster",
+      "storyCount": 2,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Divider",
+      "storyCount": 6,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Inset",
+      "storyCount": 2,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Spacer",
+      "storyCount": 3,
+      "violationCount": 0
+    },
+    {
+      "component": "Structure/Stack",
+      "storyCount": 5,
+      "violationCount": 0
+    },
+    {
+      "component": "Typography/Code",
+      "storyCount": 7,
+      "violationCount": 0
+    },
+    {
+      "component": "Typography/Heading",
+      "storyCount": 9,
+      "violationCount": 0
+    },
+    {
+      "component": "Typography/Inline",
+      "storyCount": 23,
+      "violationCount": 0
+    },
+    {
+      "component": "Typography/List",
+      "storyCount": 10,
+      "violationCount": 0
+    },
+    {
+      "component": "Typography/Paragraph",
+      "storyCount": 6,
+      "violationCount": 0
+    }
+  ]
+}

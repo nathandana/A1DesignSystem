@@ -643,7 +643,7 @@
       },
       "focusRing": {
         "$type": "color",
-        "$value": "{base.color.accent.300}"
+        "$value": "{base.color.accent.600}"
       }
     }
   }

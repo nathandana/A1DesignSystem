@@ -111,14 +111,14 @@ function DetentItemEditor({ detent, canRemove, onChange, onRemove }) {
           value={detent.value}
           onChange={(e) => onChange({ value: Number(e.target.value) || 0 })}
         />
-        <div className="a1-web-field-grow">
+        <Stack grow>
           <TextField
             label="Label"
             size="compact"
             value={detent.label ?? ''}
             onChange={(e) => onChange({ label: e.target.value })}
           />
-        </div>
+        </Stack>
       </Stack>
       <Choice
         label="Display as"
