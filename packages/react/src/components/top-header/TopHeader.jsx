@@ -680,16 +680,18 @@ export function TopHeader({
         )}
 
         <div className="a1-top-header__end">
-          {actions.map((action) => (
-            <ActionMenu
-              key={action.id}
-              action={action}
-              isOpen={openAction === action.id}
-              onToggle={() =>
-                setOpenAction(openAction === action.id ? null : action.id)
-              }
-            />
-          ))}
+          {actions.map((action) =>
+            action.divider
+              ? <div key={action.id} className="a1-top-header__action-divider" aria-hidden="true" />
+              : <ActionMenu
+                  key={action.id}
+                  action={action}
+                  isOpen={openAction === action.id}
+                  onToggle={() =>
+                    setOpenAction(openAction === action.id ? null : action.id)
+                  }
+                />
+          )}
           {loginButton && (
             <div className="a1-top-header__login">
               <Button

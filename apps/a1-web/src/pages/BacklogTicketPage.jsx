@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useT } from '../labels/useT'
 import {
   Banner,
   Breadcrumb,
@@ -41,6 +42,7 @@ function when(iso) {
 }
 
 export function BacklogTicketPage({ onNavigate }) {
+  const t = useT()
   const ticketNumber = useMemo(() => {
     const m = window.location.pathname.match(/\/backlog\/A1-(\d+)/i)
     return m ? Number(m[1]) : null
@@ -66,8 +68,8 @@ export function BacklogTicketPage({ onNavigate }) {
   }, [item?.id, backlog])
 
   const breadcrumb = [
-    { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-    { label: 'Backlog', href: '/backlog', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('backlog') } },
+    { label: t('label.app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+    { label: t('label.app.page.backlog', 'Backlog'), href: '/backlog', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('backlog') } },
     { label: ticketNumber ? `A1-${ticketNumber}` : 'Ticket' },
   ]
 
@@ -76,7 +78,7 @@ export function BacklogTicketPage({ onNavigate }) {
       <Section padding="md" contentWidth="xl">
         <Stack gap="md">
           <Breadcrumb items={breadcrumb} />
-          <Paragraph size="sm" color="muted">Loading…</Paragraph>
+          <Paragraph size="sm" color="muted">{t('label.app.backlog.loading', 'Loading…')}</Paragraph>
         </Stack>
       </Section>
     )
@@ -87,16 +89,18 @@ export function BacklogTicketPage({ onNavigate }) {
       <Section padding="md" contentWidth="xl">
         <Stack gap="md">
           <Breadcrumb items={breadcrumb} />
-          <Heading as="h1" size="xl">Ticket not found</Heading>
+          <Heading as="h1" size="xl">{t('label.app.backlog.notFound', 'Ticket not found')}</Heading>
           <Paragraph size="sm" color="muted">
-            {ticketNumber ? `A1-${ticketNumber} doesn't exist or hasn't loaded yet.` : 'No ticket number found in the URL.'}
+            {ticketNumber
+              ? `A1-${ticketNumber} ${t('label.app.backlog.notFoundDetail', "doesn't exist or hasn't loaded yet.")}`
+              : t('label.app.backlog.noTicketNumber', 'No ticket number found in the URL.')}
           </Paragraph>
           <ButtonContainer align="start">
             <Button
               variant="secondary" icon="arrow_back" as="a" href="/backlog"
               onClick={(e) => { e.preventDefault(); onNavigate?.('backlog') }}
             >
-              Back to backlog
+              {t('label.app.backlog.backToBacklog', 'Back to backlog')}
             </Button>
           </ButtonContainer>
         </Stack>
@@ -143,14 +147,14 @@ export function BacklogTicketPage({ onNavigate }) {
 
   const assigneeCell = (
     <Stack direction="row" gap="xs" align="center" wrap>
-      <span>{item.assigneeEmail || 'Unassigned'}</span>
+      <span>{item.assigneeEmail || t('label.app.backlog.unassigned', 'Unassigned')}</span>
       {me && (
         <>
           <span aria-hidden="true">·</span>
           {item.assigneeId ? (
-            <Link href="#" onClick={(e) => { e.preventDefault(); patch({ assigneeId: null, assigneeEmail: null }) }}>Unassign</Link>
+            <Link href="#" onClick={(e) => { e.preventDefault(); patch({ assigneeId: null, assigneeEmail: null }) }}>{t('label.app.backlog.unassign', 'Unassign')}</Link>
           ) : (
-            <Link href="#" onClick={(e) => { e.preventDefault(); patch({ assigneeId: me.id, assigneeEmail: me.email }) }}>Assign to me</Link>
+            <Link href="#" onClick={(e) => { e.preventDefault(); patch({ assigneeId: me.id, assigneeEmail: me.email }) }}>{t('label.app.backlog.assignToMe', 'Assign to me')}</Link>
           )}
         </>
       )}
@@ -182,13 +186,13 @@ export function BacklogTicketPage({ onNavigate }) {
           <Stack gap="xs">
             {item.awaitingRequester && (
               <Banner status="warn" variant="inline">
-                Awaiting the requester's answer to a clarifying question.
+                {t('label.app.backlog.awaitingRequester', "Awaiting the requester's answer to a clarifying question.")}
               </Banner>
             )}
             {item.duplicateOf && (
               <Banner status="info" variant="inline">
                 <Stack direction="row" gap="xs" align="center" wrap>
-                  <span>Merged as a duplicate{canonical ? ' of' : '.'}</span>
+                  <span>{t('label.app.backlog.mergedAsDuplicate', 'Merged as a duplicate')}{canonical ? ` ${t('label.app.backlog.mergedAsDuplicateOf', 'of')}` : '.'}</span>
                   {canonical && (
                     <Link
                       href={`/backlog/A1-${canonical.number}`}
@@ -207,25 +211,25 @@ export function BacklogTicketPage({ onNavigate }) {
       {/* ── Details ────────────────────────────────────────────────────── */}
       <Section padding="md" contentWidth="xl">
         <Stack gap="lg">
-          <Heading as="h2" size="lg">Details</Heading>
+          <Heading as="h2" size="lg">{t('label.app.backlog.details', 'Details')}</Heading>
 
           <TitleField item={item} onSave={patch} />
           <DescriptionField item={item} onSave={patch} />
 
           <Stack gap="sm">
-            <Toolbar label="Type" aria-label="Type">
+            <Toolbar label={t('label.app.backlog.toolbarType', 'Type')} aria-label={t('label.app.backlog.toolbarType', 'Type')}>
               <ToolbarGroup
-                aria-label="Type"
+                aria-label={t('label.app.backlog.toolbarType', 'Type')}
                 showLabels
                 value={item.type}
                 onChange={(v) => v && patch({ type: v })}
-                options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t], icon: TYPE_ICON[t] }))}
+                options={TYPES.map((type) => ({ value: type, label: TYPE_LABELS[type], icon: TYPE_ICON[type] }))}
               />
             </Toolbar>
 
-            <Toolbar label="Status" aria-label="Status">
+            <Toolbar label={t('label.app.backlog.toolbarStatus', 'Status')} aria-label={t('label.app.backlog.toolbarStatus', 'Status')}>
               <ToolbarGroup
-                aria-label="Status"
+                aria-label={t('label.app.backlog.toolbarStatus', 'Status')}
                 showLabels
                 value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
                 onChange={(v) => v && patch({ status: v })}
@@ -233,37 +237,37 @@ export function BacklogTicketPage({ onNavigate }) {
               />
               <ToolbarDivider />
               <ToolbarMenu
-                aria-label="More statuses"
-                label={OVERFLOW_STATUSES.includes(item.status) ? STATUS_LABELS[item.status] : 'More'}
+                aria-label={t('label.app.backlog.toolbarMoreStatuses', 'More statuses')}
+                label={OVERFLOW_STATUSES.includes(item.status) ? STATUS_LABELS[item.status] : t('label.app.backlog.toolbarMoreLabel', 'More')}
                 value={item.status}
                 onChange={(v) => patch({ status: v })}
                 items={OVERFLOW_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
               />
             </Toolbar>
 
-            <Toolbar label="Priority & size" aria-label="Priority and size">
+            <Toolbar label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')} aria-label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}>
               <ToolbarGroup
-                aria-label="Priority"
+                aria-label={t('label.app.backlog.toolbarPriority', 'Priority')}
                 showLabels
                 value={item.priority || ''}
                 onChange={(v) => patch({ priority: v || null })}
-                options={[{ value: '', label: 'None' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
+                options={[{ value: '', label: t('label.app.backlog.toolbarNone', 'None') }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
               />
               <ToolbarDivider />
               <ToolbarGroup
-                aria-label="Size"
+                aria-label={t('label.app.backlog.toolbarSize', 'Size')}
                 showLabels
                 value={item.complexity || ''}
                 onChange={(v) => patch({ complexity: v || null })}
-                options={[{ value: '', label: 'None' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
+                options={[{ value: '', label: t('label.app.backlog.toolbarNone', 'None') }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
               />
             </Toolbar>
           </Stack>
 
           <SelectField
-            label="Scope"
+            label={t('label.app.backlog.scopeLabel', 'Scope')}
             value={item.scopeKind}
-            hint={item.scopeLabel ? `Currently scoped to ${item.scopeLabel}` : undefined}
+            hint={item.scopeLabel ? `${t('label.app.backlog.scopeCurrentlyHint', 'Currently scoped to')} ${item.scopeLabel}` : undefined}
             onChange={(e) => patch({ scopeKind: e.target.value, scopeRef: null, scopeLabel: null })}
           >
             {SCOPE_KINDS.map((k) => <option key={k} value={k}>{SCOPE_LABELS[k]}</option>)}
@@ -274,10 +278,10 @@ export function BacklogTicketPage({ onNavigate }) {
             labelWidth="fixed"
             size="md"
             items={[
-              { label: 'Requested by', value: item.createdByEmail || 'Unknown' },
-              { label: 'Assignee', value: assigneeCell },
+              { label: t('label.app.backlog.requestedBy', 'Requested by'), value: item.createdByEmail || t('label.app.backlog.unknownRequester', 'Unknown') },
+              { label: t('label.app.backlog.assignee', 'Assignee'), value: assigneeCell },
               {
-                label: 'Votes',
+                label: t('label.app.backlog.votes', 'Votes'),
                 value: (
                   <Stack direction="row" gap="xs" align="center">
                     <Paragraph as="span" size="sm">{item.voteCount}</Paragraph>
@@ -285,16 +289,16 @@ export function BacklogTicketPage({ onNavigate }) {
                       size="sm"
                       variant={voted ? 'secondary' : 'primary'}
                       icon={voted ? 'thumb_down' : 'thumb_up'}
-                      aria-label={voted ? 'Remove your vote' : 'Vote for this ticket'}
+                      aria-label={voted ? t('label.app.backlog.removeVote', 'Remove your vote') : t('label.app.backlog.voteForTicket', 'Vote for this ticket')}
                       onClick={() => backlog?.vote(item, !voted)}
                     />
                   </Stack>
                 ),
               },
-              { label: 'Created', value: when(item.createdAt) },
-              { label: 'Updated', value: when(item.updatedAt) },
+              { label: t('label.app.backlog.created', 'Created'), value: when(item.createdAt) },
+              { label: t('label.app.backlog.updated', 'Updated'), value: when(item.updatedAt) },
               ...(Object.keys(item.reviews ?? {}).length
-                ? [{ label: 'Reviews', value: <ReviewTags reviews={item.reviews} /> }]
+                ? [{ label: t('label.app.backlog.reviews', 'Reviews'), value: <ReviewTags reviews={item.reviews} /> }]
                 : []),
             ]}
           />
@@ -303,7 +307,7 @@ export function BacklogTicketPage({ onNavigate }) {
             <Stack direction="row" gap="sm" wrap>
               {item.attachmentRefs.map((ref) => (
                 <a key={ref} href={resolveSrc(ref)} target="_blank" rel="noreferrer">
-                  <Figure src={resolveSrc(ref)} alt="Attachment" size="xs" radius="sm" aspectRatio="1:1" />
+                  <Figure src={resolveSrc(ref)} alt={t('label.app.backlog.attachmentAlt', 'Attachment')} size="xs" radius="sm" aspectRatio="1:1" />
                 </a>
               ))}
             </Stack>
@@ -311,7 +315,7 @@ export function BacklogTicketPage({ onNavigate }) {
 
           <ButtonContainer align="start">
             <Button variant="destructive" icon="delete" onClick={() => setConfirmDelete(true)}>
-              Delete ticket
+              {t('label.app.backlog.deleteTicket', 'Delete ticket')}
             </Button>
           </ButtonContainer>
         </Stack>
@@ -320,10 +324,10 @@ export function BacklogTicketPage({ onNavigate }) {
       {/* ── Activity ───────────────────────────────────────────────────── */}
       <Section padding="md" surface="panel" contentWidth="xl">
         <Stack gap="md">
-          <Heading as="h2" size="lg">Activity</Heading>
+          <Heading as="h2" size="lg">{t('label.app.backlog.activity', 'Activity')}</Heading>
 
           {thread.length === 0
-            ? <Paragraph size="sm" color="muted">No activity yet.</Paragraph>
+            ? <Paragraph size="sm" color="muted">{t('label.app.backlog.noActivity', 'No activity yet.')}</Paragraph>
             : thread.map((entry) => (
               <ThreadEntry
                 key={entry.id}
@@ -334,23 +338,23 @@ export function BacklogTicketPage({ onNavigate }) {
             ))}
 
           <TextareaField
-            label="Add a comment"
+            label={t('label.app.backlog.addComment', 'Add a comment')}
             rows="sm"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
           />
           <ButtonContainer>
             <Button icon="send" loading={busy} disabled={!draft.trim()} onClick={() => post('comment')}>
-              Comment
+              {t('label.app.backlog.comment', 'Comment')}
             </Button>
             {!isCreator && (
               <Button variant="secondary" icon="help" disabled={busy || !draft.trim()} onClick={() => post('question')}>
-                Ask the requester
+                {t('label.app.backlog.askRequester', 'Ask the requester')}
               </Button>
             )}
             {isCreator && item.awaitingRequester && (
               <Button variant="secondary" icon="reply" disabled={busy || !draft.trim()} onClick={() => post('answer')}>
-                Answer
+                {t('label.app.backlog.answer', 'Answer')}
               </Button>
             )}
           </ButtonContainer>
@@ -360,7 +364,7 @@ export function BacklogTicketPage({ onNavigate }) {
       {/* ── Linked tickets ─────────────────────────────────────────────── */}
       <Section padding="md" contentWidth="xl">
         <Stack gap="md">
-          <Heading as="h2" size="lg">Linked tickets</Heading>
+          <Heading as="h2" size="lg">{t('label.app.backlog.linkedTickets', 'Linked tickets')}</Heading>
           <TicketMergePanel
             item={item}
             items={allItems}
@@ -376,7 +380,7 @@ export function BacklogTicketPage({ onNavigate }) {
       {import.meta.env.DEV && (
         <Section padding="md" surface="panel" contentWidth="xl">
           <Stack gap="md">
-            <Heading as="h2" size="lg">Build with AI</Heading>
+            <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
             <TicketAiPrompt item={item} />
           </Stack>
         </Section>
@@ -386,8 +390,8 @@ export function BacklogTicketPage({ onNavigate }) {
       {import.meta.env.DEV && (
         <Section padding="md" contentWidth="xl">
           <Stack gap="md">
-            <Heading as="h2" size="lg">Virtual PO</Heading>
-            <Paragraph size="sm" color="muted">Local, deterministic review — no API credits.</Paragraph>
+            <Heading as="h2" size="lg">{t('label.app.backlog.virtualPo', 'Virtual PO')}</Heading>
+            <Paragraph size="sm" color="muted">{t('label.app.backlog.virtualPoDescription', 'Local, deterministic review — no API credits.')}</Paragraph>
             <TicketPersonaReview item={item} />
           </Stack>
         </Section>
@@ -397,15 +401,15 @@ export function BacklogTicketPage({ onNavigate }) {
       <Dialog
         open={confirmDelete}
         onClose={() => setConfirmDelete(false)}
-        title={`Delete ${ticketRef(item.number)}`}
+        title={`${t('label.app.backlog.deleteDialogConfirm', 'Delete')} ${ticketRef(item.number)}`}
         footer={
           <ButtonContainer>
-            <Button variant="secondary" onClick={() => setConfirmDelete(false)}>Cancel</Button>
-            <Button variant="destructive" icon="delete" onClick={handleDelete}>Delete</Button>
+            <Button variant="secondary" onClick={() => setConfirmDelete(false)}>{t('label.app.backlog.deleteDialogCancel', 'Cancel')}</Button>
+            <Button variant="destructive" icon="delete" onClick={handleDelete}>{t('label.app.backlog.deleteDialogConfirm', 'Delete')}</Button>
           </ButtonContainer>
         }
       >
-        <Paragraph>Permanently delete {ticketRef(item.number)}? This cannot be undone.</Paragraph>
+        <Paragraph>{t('label.app.backlog.deleteDialogBody', 'Permanently delete')} {ticketRef(item.number)}{t('label.app.backlog.deleteDialogBodySuffix', '? This cannot be undone.')}</Paragraph>
       </Dialog>
     </>
   )

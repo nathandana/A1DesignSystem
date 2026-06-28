@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Banner, Button, ButtonContainer, DataTable, Dialog, IconButton, Menu, MenuItem, MenuSection, MessageEmptyState, Paragraph, Stack, TextField } from '@gtivr4/a1-design-system-react'
 import { getLabels, hydrateLabels, saveLabels, subscribeLabels } from '../labels/labelStore.js'
+import appJson from '../../../../system/labels/app.json'
 import actionJson from '../../../../system/labels/action.json'
 import backlogJson from '../../../../system/labels/backlog.json'
 import calendarJson from '../../../../system/labels/calendar.json'
@@ -30,12 +31,13 @@ function flattenSystemLabels(obj, prefix = '') {
 }
 
 const SYSTEM_LABEL_OPTIONS = [
-  ...flattenSystemLabels(actionJson.label, 'action'),
-  ...flattenSystemLabels(backlogJson.label, 'backlog'),
-  ...flattenSystemLabels(calendarJson.label, 'calendar'),
-  ...flattenSystemLabels(codeJson.label, 'code'),
-  ...flattenSystemLabels(fieldJson.label, 'field'),
-  ...flattenSystemLabels(statusBarJson.label, 'statusBar'),
+  ...flattenSystemLabels(appJson.label.app, 'app'),
+  ...flattenSystemLabels(actionJson.label.action, 'action'),
+  ...flattenSystemLabels(backlogJson.label.backlog, 'backlog'),
+  ...flattenSystemLabels(calendarJson.label.calendar, 'calendar'),
+  ...flattenSystemLabels(codeJson.label.code, 'code'),
+  ...flattenSystemLabels(fieldJson.label.field, 'field'),
+  ...flattenSystemLabels(statusBarJson.label.statusBar, 'statusBar'),
 ]
 
 const TRANSLATE_LANG = { zh: 'zh-CN' }

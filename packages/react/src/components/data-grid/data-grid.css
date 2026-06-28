@@ -35,10 +35,62 @@
   --rdg-checkbox-focus-color: var(--component-field-focus-ring-color);
 
   /* Chrome the library doesn't expose as a `--rdg-*` variable */
-  accent-color: var(--semantic-color-action-background);
   border-color: var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-md);
   font-family: inherit;
+}
+
+/*
+ * Row-selection checkboxes — replicate A1 CheckboxGroup appearance so they
+ * match the system style instead of the browser native dark square.
+ */
+.a1-data-grid .rdg-checkbox-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--component-checkbox-group-compact-box-size);
+  height: var(--component-checkbox-group-compact-box-size);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-xs);
+  background-color: var(--semantic-color-surface-field);
+  cursor: pointer;
+  vertical-align: middle;
+  transition:
+    border-color     var(--semantic-motion-duration-fast),
+    background-color var(--semantic-motion-duration-fast);
+}
+
+.a1-data-grid .rdg-checkbox-input:checked {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23fafcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--component-checkbox-group-icon-size);
+}
+
+.a1-data-grid .rdg-checkbox-input:indeterminate {
+  background-color: var(--semantic-color-status-info-background);
+  border-color: var(--semantic-color-status-info-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%23fafcff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--component-checkbox-group-icon-size);
+}
+
+.a1-data-grid .rdg-checkbox-input:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+.a1-data-grid .rdg-checkbox-input:disabled {
+  background-color: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+  cursor: not-allowed;
+}
+
+.a1-data-grid .rdg-checkbox-input:checked:disabled {
+  background-color: var(--semantic-color-border-default);
+  border-color: var(--semantic-color-border-default);
 }
 
 /*
