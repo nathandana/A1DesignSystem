@@ -35,7 +35,7 @@
 }
 
 .a1-pagination__item:focus-visible {
-  outline: var(--component-pagination-focus-ring-width) solid var(--semantic-color-action-background);
+  outline: var(--component-pagination-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-pagination-focus-ring-offset);
 }
 

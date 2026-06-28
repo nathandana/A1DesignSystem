@@ -5,7 +5,6 @@ export function CaseStudyCard({ study, navigate }) {
   return (
     <Card
       as="a"
-      shadow="sm"
       className="pf-study-card"
       href={getRoutePath(study.id)}
       onClick={(event) => navigate(study.id, event)}

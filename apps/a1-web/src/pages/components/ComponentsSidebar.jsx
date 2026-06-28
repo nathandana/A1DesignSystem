@@ -89,14 +89,17 @@ function ComponentTree({ activePage, onNavigate, search }) {
 }
 
 export function ComponentsSidebar({ activePage, onNavigate, search, setSearch }) {
+  const searchField = (
+    <SearchField
+      aria-label="Search components"
+      size="compact"
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
+  )
+
   return (
-    <SideNav>
-      <SearchField
-        label="Search components"
-        size="compact"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
+    <SideNav className="a1-web-components-tree" header={searchField}>
       <ComponentTree activePage={activePage} onNavigate={onNavigate} search={search} />
     </SideNav>
   )

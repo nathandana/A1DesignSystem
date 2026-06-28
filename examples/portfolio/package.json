@@ -1,0 +1,9 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build . --outDir dist && cp -R img dist/img",
+    "netlify:build": "npm run build"
+  }
+}

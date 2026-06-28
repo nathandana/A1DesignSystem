@@ -302,6 +302,7 @@ function App() {
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
@@ -1022,7 +1023,10 @@ function App() {
       icon: 'settings',
       iconOnly: true,
       label: t('app.action.settings', 'Settings'),
-      onClick: () => setSettingsOpen(true),
+      onClick: (event) => {
+        settingsAnchorRef.current = event.currentTarget
+        setSettingsOpen(true)
+      },
     },
   ]
 
@@ -1353,7 +1357,7 @@ function App() {
         )}
       </PageLayout>
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
         <MenuSection label={t('app.page.theme', 'Theme')}>
           {themeOptions.length > 5 ? (
             <SelectField

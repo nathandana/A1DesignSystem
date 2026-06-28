@@ -24,7 +24,7 @@ export function FondueStudy() {
       <Section as="div" padding="lg" contentWidth="md">
 
         <Figure
-          src="img/fondue-logo.png"
+          src="/img/fondue-logo.png"
           alt="Fondue Design System"
           imgStyle={{ backgroundColor: "white", objectFit: "contain", maxHeight: "200px" }}
           marginBottom="lg"
@@ -66,7 +66,7 @@ export function FondueStudy() {
           I conducted internal audits, created accessibility checklists, and developed training programs for designers to ensure that accessibility considerations were at the forefront of the design process. These efforts resulted in components that were not only more inclusive but also easier for designers to implement, ensuring that accessibility became an integral part of the system rather than an afterthought.
         </Paragraph>
         <Figure
-          src="img/fondue-ally.png"
+          src="/img/fondue-ally.png"
           alt="Examples of accessibility theme tests in Fondue"
           caption="Each component is accompanied by a set of accessibility overlays. These mimic grayscale, low vision and blurry vision. They ensure we pay attention to critical accessibility issues like color contrast and text size, as well as build empathy."
           marginTop="lg"
@@ -84,14 +84,14 @@ export function FondueStudy() {
           Additionally, by fostering a culture of knowledge sharing, I ensured that designers and developers had the resources they needed to collaborate more effectively. Regular feedback loops and shared learnings helped ensure that the system continued to improve and evolve to meet the needs of the teams using it.
         </Paragraph>
         <Figure
-          src="img/fondue-template.png"
+          src="/img/fondue-template.png"
           alt="Examples of page templates in Fondue"
           caption="The page template component was sorely missing from the system when I joined. Each design was using slightly different spacing, breakpoints etc, despite documentation. Codifying as a component ensured that all teams were using the same template, and that it was easy to implement."
           marginTop="lg"
           marginBottom="lg"
         />
         <Figure
-          src="img/fondont.png"
+          src="/img/fondont.png"
           alt="Image of FonDos and FonDon'ts documentation"
           caption="Guidelines in Fondue are known as FonDos and FonDon'ts. They showcase examples of what to do and what not to do when using the design system."
           imgStyle={{ backgroundColor: "white" }}
