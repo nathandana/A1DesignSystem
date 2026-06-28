@@ -11,49 +11,134 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { useT } from '../labels/useT.js'
+import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
+import { componentCategories as registryCategories } from './components/data.js'
+
+function parseTokenDefinitionCount(audit) {
+  return audit.match(/\| Token definitions \|\s*(\d+)\s*\|/)?.[1] ?? '0'
+}
+
+const componentCount = registryCategories.reduce((count, category) => count + category.components.length, 0)
+const categoryCount = registryCategories.length
+const tokenCount = parseTokenDefinitionCount(colorTokenAudit)
+
+const HOME_CATEGORY_LABEL_KEYS = {
+  layout: 'app.home.catLayout',
+  typography: 'app.home.catTypography',
+  actions: 'app.home.catActions',
+  navigation: 'app.home.catNavigation',
+  inputs: 'app.home.catInputs',
+  feedback: 'app.home.catFeedback',
+  'media-iconography': 'app.home.catMediaIconography',
+  overlay: 'app.home.catOverlay',
+  data: 'app.home.catData',
+}
 
 export function Home({ onNavigate }) {
   const t = useT()
 
   const stats = [
-    { value: '60+', label: t('app.home.statComponents', 'Components') },
-    { value: '4', label: t('app.home.statPlatforms', 'Platforms') },
-    { value: '4', label: t('app.home.statThemes', 'Themes') },
-    { value: '200+', label: t('app.home.statTokens', 'Tokens') },
+    { value: String(componentCount), label: t('app.home.statComponents', 'Components') },
+    { value: '4', label: t('app.home.statPlatforms', 'Packages') },
+    { value: '9', label: t('app.home.statThemes', 'Themes') },
+    { value: tokenCount, label: t('app.home.statTokens', 'Tokens') },
   ]
 
   const features = [
     {
-      icon: 'token',
-      title: t('app.home.featureTokenTitle', 'Token-driven'),
-      body: t('app.home.featureTokenBody', 'Every color, spacing unit, typography value, and radius traces to a Style Dictionary token. No raw values anywhere in the system.'),
+      icon: 'widgets',
+      title: t('app.home.featureTokenTitle', 'Registry-backed'),
+      body: t('app.home.featureTokenBody', 'Every visible component is defined from the registry, with category pages, live configurators, rules, properties, and accessibility reports.'),
     },
     {
-      icon: 'hub',
-      title: t('app.home.featureMultiTitle', 'Multi-platform'),
-      body: t('app.home.featureMultiBody', 'React, HTML/CSS, and React Native share the same token foundations. Design once — express consistently across every surface.'),
+      icon: 'edit_square',
+      title: t('app.home.featureMultiTitle', 'Editor-ready'),
+      body: t('app.home.featureMultiBody', 'Build projects from A1 components, patterns, datasets, image libraries, and label-driven content without leaving the app.'),
     },
     {
       icon: 'auto_awesome',
-      title: t('app.home.featureAiTitle', 'AI-ready'),
-      body: t('app.home.featureAiBody', 'Structured tokens and component rules give agents clear, machine-readable constraints for consistent, on-brand output.'),
+      title: t('app.home.featureAiTitle', 'Governed AI workflows'),
+      body: t('app.home.featureAiBody', 'Local AI helpers and structured rules help propose components, generate data-aware pages, and file backlog work without inventing patterns.'),
     },
     {
       icon: 'accessibility_new',
-      title: t('app.home.featureA11yTitle', 'Accessible'),
-      body: t('app.home.featureA11yBody', 'WCAG AA contrast, keyboard navigation, and screen reader labels are built into every component — not retrofitted.'),
+      title: t('app.home.featureA11yTitle', 'Automated quality'),
+      body: t('app.home.featureA11yBody', 'Component reports cover contrast, target size, keyboard behavior, screen reader expectations, WCAG mappings, and Storybook axe scans.'),
     },
   ]
 
-  const componentCategories = [
-    { icon: 'text_fields', label: t('app.home.catTypography', 'Typography'), count: 6 },
-    { icon: 'navigation', label: t('app.home.catNavigation', 'Navigation'), count: 6 },
-    { icon: 'smart_button', label: t('app.home.catActions', 'Actions'), count: 4 },
-    { icon: 'edit', label: t('app.home.catInputs', 'Inputs'), count: 9 },
-    { icon: 'notifications', label: t('app.home.catFeedback', 'Feedback'), count: 6 },
-    { icon: 'grid_view', label: t('app.home.catLayout', 'Layout'), count: 11 },
-    { icon: 'table_chart', label: t('app.home.catData', 'Data'), count: 2 },
-    { icon: 'layers', label: t('app.home.catOverlay', 'Overlay'), count: 2 },
+  const componentCategories = registryCategories.map((category) => ({
+    icon: category.icon,
+    label: t(HOME_CATEGORY_LABEL_KEYS[category.id] ?? `app.home.cat.${category.id}`, category.title),
+    count: category.components.length,
+    page: `components-${category.id}`,
+  }))
+
+  const tools = [
+    {
+      id: 'projects',
+      page: 'projects',
+      icon: 'folder',
+      title: t('app.home.toolProjectsTitle', 'Projects'),
+      body: t('app.home.toolProjectsBody', "The flagship product: create and edit governed projects through a JSON page model that can't move outside the rules."),
+      aiReady: true,
+    },
+    {
+      id: 'patterns',
+      page: 'patterns',
+      icon: 'dashboard_customize',
+      title: t('app.home.toolPatternsTitle', 'Patterns'),
+      body: t('app.home.toolPatternsBody', 'Commonly defined patterns that can be shared within or across projects.'),
+    },
+    {
+      id: 'image-library',
+      page: 'image-library',
+      icon: 'photo_library',
+      title: t('app.home.toolImageLibraryTitle', 'Image library'),
+      body: t('app.home.toolImageLibraryBody', 'Lightweight digital asset management for project images and reusable media.'),
+      aiReady: true,
+    },
+    {
+      id: 'custom-icons',
+      page: 'custom-icons',
+      icon: 'font_download',
+      title: t('app.home.toolIconsTitle', 'Icons'),
+      body: t('app.home.toolIconsBody', 'Quick custom icons with upload, validation, and font generation.'),
+      aiReady: true,
+    },
+    {
+      id: 'data',
+      page: 'data',
+      icon: 'table_chart',
+      title: t('app.home.toolDataSourcesTitle', 'Data sources'),
+      body: t('app.home.toolDataSourcesBody', 'Plug-and-play datasets, custom or out of the box, for binding pages to real content.'),
+      aiReady: true,
+    },
+    {
+      id: 'theme-editor',
+      page: 'theme-editor',
+      icon: 'palette',
+      title: t('app.home.toolThemeEditorTitle', 'Theme editor'),
+      body: t('app.home.toolThemeEditorBody', 'Custom themes with a few clicks, from color ramps to typography and semantic roles.'),
+      aiReady: true,
+      alpha: true,
+    },
+    {
+      id: 'rules',
+      page: 'rules',
+      icon: 'gavel',
+      title: t('app.home.toolRulesTitle', 'Rules engine'),
+      body: t('app.home.toolRulesBody', 'Define UI, component, accessibility, and workflow rules for humans and agents to follow.'),
+      aiReady: true,
+    },
+    {
+      id: 'label-editor',
+      page: 'label-editor',
+      icon: 'translate',
+      title: t('app.home.toolLabelsTitle', 'Labels'),
+      body: t('app.home.toolLabelsBody', 'Shared labels and translations for reusable, locale-ready interface text.'),
+      aiReady: true,
+    },
   ]
 
   const platforms = [
@@ -75,13 +160,24 @@ export function Home({ onNavigate }) {
       body: t('app.home.platformNativeBody', 'Token-driven mobile components that share the same design language as the web packages.'),
       tag: 'packages/react-native',
     },
+    {
+      icon: 'integration_instructions',
+      title: 'Web Components',
+      body: t('app.home.platformWebComponentsBody', 'Standards-based custom elements for framework-agnostic surfaces that still share A1 tokens and interaction rules.'),
+      tag: 'packages/web-components',
+    },
   ]
 
   const themes = [
     { name: 'Base', desc: t('app.home.themeBaseDesc', 'The global token baseline — active on every page by default.'), selector: ':root' },
     { name: 'A1 Light', desc: t('app.home.themeA1LightDesc', 'Standard brand expression. Clean and production-ready.'), selector: "data-theme='a1-light'" },
     { name: 'Accessible', desc: t('app.home.themeAccessibleDesc', 'High-contrast variant for elevated readability.'), selector: "data-theme='accessible'" },
+    { name: 'Aperture', desc: t('app.home.themeApertureDesc', 'A crisp editorial theme with cool action colour and neutral surfaces.'), selector: "data-theme='aperture'" },
+    { name: 'CatLympics', desc: t('app.home.themeCatlympicsDesc', 'A playful event palette with bright pink action colour and high-energy contrast.'), selector: "data-theme='catlympics'" },
+    { name: 'Crochet', desc: t('app.home.themeCrochetDesc', 'A soft craft palette with warm surfaces, gentle accents, and expressive type.'), selector: "data-theme='crochet'" },
+    { name: 'Fresh', desc: t('app.home.themeFreshDesc', 'A bright green-blue theme for fresh, friendly product surfaces.'), selector: "data-theme='fresh'" },
     { name: 'Heritage', desc: t('app.home.themeHeritageDesc', 'Legacy brand palette for backward-compatible surfaces.'), selector: "data-theme='heritage'" },
+    { name: 'Marshmallow', desc: t('app.home.themeMarshmallowDesc', 'A pillowy pastel theme with soft depth and rounded controls.'), selector: "data-theme='marshmallow'" },
   ]
 
   return (
@@ -111,8 +207,7 @@ export function Home({ onNavigate }) {
             A1:Design
           </Heading>
           <Heading
-            as="h1"
-            id="hero-heading"
+            as="p"
             type="display"
             align="center"
             size={{ xs: 'xl', md: 'xxl' }}
@@ -122,7 +217,7 @@ export function Home({ onNavigate }) {
           </Heading>
 </Stack>
           <Paragraph size={{ xs: 'md', md: 'lg', lg: 'lg' }} align="center">
-            {t('app.home.heroParagraph', 'A1 is a rules based eco system. Rooted in a singular and clear source of truth. Explore components in multiple tech stacks, create custom themes, build entire projects with built in data. Use AI tools to assist, not drift.')}
+            {t('app.home.heroParagraph', 'A1 is a rules-based design system and product workspace. Explore the live component registry, build projects with patterns and datasets, manage labels, review accessibility reports, and use AI helpers inside clear system guardrails.')}
           </Paragraph>
 
           <ButtonContainer align="center">
@@ -130,19 +225,21 @@ export function Home({ onNavigate }) {
               variant="primary"
               icon="arrow_forward"
               iconPosition="end"
+              size='lg'
               onClick={() => onNavigate('editor')}
             >
               {t('app.home.buildProject', 'Build a project')}
             </Button>
-            <Button
+            {/* <Button
               variant="secondary"
               icon="arrow_forward"
               iconPosition="end"
               onClick={() => onNavigate('backlog')}
             >
               {t('app.home.viewBacklog', 'View backlog')}
-            </Button>
+            </Button> */}
             <Button
+              size='lg'
               variant="secondary"
               icon="widgets"
               iconPosition="start"
@@ -179,10 +276,10 @@ export function Home({ onNavigate }) {
               {t('app.home.howItWorksBadge', 'How it works')}
             </MessageBadge>
             <Heading as="h2" type="display" id="features-heading" size={{ xs: 'lg', md: 'xl' }}>
-              {t('app.home.featuresHeading', 'Four foundations. One system.')}
+              {t('app.home.featuresHeading', 'Current capabilities. One system.')}
             </Heading>
             <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
-              {t('app.home.featuresParagraph', 'A1 is built on four principles that work together to keep every platform, every agent, and every contributor aligned.')}
+              {t('app.home.featuresParagraph', 'A1 brings the component registry, editor workflows, labels, accessibility reporting, and AI guardrails into one governed workspace.')}
             </Paragraph>
           </Stack>
 
@@ -203,6 +300,55 @@ export function Home({ onNavigate }) {
         </Stack>
       </Section>
 
+      {/* ── Tools ── */}
+      <Section padding="lg" contentWidth="lg" surface="raised" aria-labelledby="tools-heading">
+        <Stack gap="lg">
+          <Stack direction="column" gap="sm">
+            <MessageBadge icon="apps">
+              {t('app.home.toolsBadge', 'Tools')}
+            </MessageBadge>
+            <Heading as="h2" type="display" id="tools-heading" size={{ xs: 'lg', md: 'xl' }}>
+              {t('app.home.toolsHeading', 'Tools for making governed systems')}
+            </Heading>
+            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
+              {t('app.home.toolsParagraph', 'A1 combines project editing, shared assets, data, themes, labels, and rules so teams can build with structure instead of starting from a blank page.')}
+            </Paragraph>
+          </Stack>
+
+          <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="md">
+            {tools.map((tool) => (
+              <Card
+                key={tool.id}
+                variant="navigation"
+                icon={tool.icon}
+                onClick={() => onNavigate(tool.page)}
+              >
+                <Stack direction="column" gap="sm">
+                  <Stack direction="row" gap="xs" wrap align="center">
+                    {tool.aiReady && (
+                      <MessageBadge size="sm" subtle icon="auto_awesome">
+                        {t('app.home.aiReadyBadge', 'AI ready')}
+                      </MessageBadge>
+                    )}
+                    {tool.alpha && (
+                      <MessageBadge size="sm" status="info" subtle>
+                        {t('app.home.alphaBadge', 'Alpha')}
+                      </MessageBadge>
+                    )}
+                  </Stack>
+                  <Heading as="h3" size="sm">
+                    {tool.title}
+                  </Heading>
+                  <Paragraph size="sm" color="muted">
+                    {tool.body}
+                  </Paragraph>
+                </Stack>
+              </Card>
+            ))}
+          </Grid>
+        </Stack>
+      </Section>
+
       {/* ── Component categories ── */}
       <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="components-heading">
         <Stack gap="lg">
@@ -211,10 +357,10 @@ export function Home({ onNavigate }) {
               {t('app.home.componentsBadge', 'Components')}
             </MessageBadge>
             <Heading as="h2" type="display" id="components-heading" size={{ xs: 'lg', md: 'xl' }}>
-              {t('app.home.componentsCatHeading', '40+ components, eight categories.')}
+              {t('app.home.componentsCatHeading', 'Components by category')}
             </Heading>
             <Paragraph size="lg" color="muted">
-              {t('app.home.componentsCatParagraph', 'From typography primitives to complex data tables — everything fully tokenized, accessible, and responsive.')}
+              {componentCount} {t('app.home.catComponentCount', 'components')} · {categoryCount} {t('app.home.catCategoryCount', 'categories')}. {t('app.home.componentsCatParagraph', 'From typography primitives to complex data tables — everything is tokenized, accessible, responsive, and connected to the live component docs.')}
             </Paragraph>
           </Stack>
 
@@ -224,7 +370,7 @@ export function Home({ onNavigate }) {
                 key={cat.label}
                 variant="navigation"
                 icon={cat.icon}
-                onClick={() => onNavigate('components')}
+                onClick={() => onNavigate(cat.page)}
               >
                 <Heading as="h3" size="xs">
                   {cat.label}
@@ -239,7 +385,7 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Platforms ── */}
-      <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="platforms-heading" inverse>
+      <Section padding="lg" contentWidth="lg" surface="page" aria-labelledby="platforms-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge subtle icon="devices">
@@ -249,11 +395,11 @@ export function Home({ onNavigate }) {
               {t('app.home.platformsHeading', 'One token source. Every surface.')}
             </Heading>
             <Paragraph size="lg" color="muted">
-              {t('app.home.platformsParagraph', 'The same token foundations power web, HTML, and mobile. No duplication, no drift.')}
+              {t('app.home.platformsParagraph', 'The same token foundations power React, pure HTML/CSS, React Native, and Web Components package output. No duplication, no drift.')}
             </Paragraph>
           </Stack>
 
-          <Grid columns={{ xs: 1, sm: 3 }} gap="md">
+          <Grid columns={{ xs: 1, sm: 2 }} gap="md">
             {platforms.map((platform) => (
               <Card key={platform.title} shadow="sm" icon={platform.icon}>
                 <Stack direction="column" gap="sm">
@@ -272,21 +418,21 @@ export function Home({ onNavigate }) {
       </Section>
 
       {/* ── Themes ── */}
-      <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="themes-heading">
+      {/* <Section padding="lg" contentWidth="lg" surface="panel" aria-labelledby="themes-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge subtle icon="palette">
               {t('app.home.themesBadge', 'Themes')}
             </MessageBadge>
             <Heading as="h2" id="themes-heading" size={{ xs: 'lg', md: 'xl' }}>
-              {t('app.home.themesHeading', 'Four themes. Zero rework.')}
+              {t('app.home.themesHeading', 'Nine themes. Zero rework.')}
             </Heading>
-            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
-              {t('app.home.themesParagraph', 'Switch between light, accessible, and heritage themes by changing a single data attribute. Components respond automatically.')}
+            <Paragraph size="lg" color="muted">
+              {t('app.home.themesParagraph', 'Switch themes or color mode by changing the active theme selector. Components respond automatically through shared tokens.')}
             </Paragraph>
           </Stack>
 
-          <Grid columns={{ xs: 1, sm: 2, md: 4 }} gap="md">
+          <Grid columns={{ xs: 1, sm: 2, md: 3 }} gap="md">
             {themes.map((theme) => (
               <Card key={theme.name} shadow="xs">
                 <Stack direction="column" gap="xs">
@@ -302,13 +448,14 @@ export function Home({ onNavigate }) {
             ))}
           </Grid>
         </Stack>
-      </Section>
+      </Section> */}
 
       {/* ── CTA ── */}
       <Section
         padding="lg"
+        inverse
         gradient="accent"
-        gradientPosition="top-right"
+        gradientPosition="top"
         contentWidth="lg"
         align="center"
         aria-labelledby="cta-heading"
