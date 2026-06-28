@@ -4,6 +4,7 @@ import {
   Card,
   Grid,
   Heading,
+  Inset,
   MessageBadge,
   Paragraph,
   Section,
@@ -156,14 +157,16 @@ export function Home({ onNavigate }) {
       <Section padding="sm" surface="raised" contentWidth="lg" align="center" aria-label={t('app.home.statsLabel', 'System statistics')}>
         <Grid columns={{ xs: 2, sm: 4 }} gap="md">
           {stats.map((stat) => (
-            <Stack key={stat.label} direction="column" gap={4} align="center" className="a1-web-stat">
-              <Heading as="p" type="display" size={{ xs: 'md', md: 'lg', lg: 'xl' }}>
-                {stat.value}
-              </Heading>
-              <Paragraph size={{ xs: 'sm', md: 'md', lg: 'lg' }} color="muted">
-                <strong>{stat.label}</strong>
-              </Paragraph>
-            </Stack>
+            <Inset key={stat.label} block={16} inline={0}>
+              <Stack direction="column" gap={4} align="center">
+                <Heading as="p" type="display" size={{ xs: 'md', md: 'lg', lg: 'xl' }}>
+                  {stat.value}
+                </Heading>
+                <Paragraph size={{ xs: 'sm', md: 'md', lg: 'lg' }} color="muted">
+                  <strong>{stat.label}</strong>
+                </Paragraph>
+              </Stack>
+            </Inset>
           ))}
         </Grid>
       </Section>
@@ -178,7 +181,7 @@ export function Home({ onNavigate }) {
             <Heading as="h2" type="display" id="features-heading" size={{ xs: 'lg', md: 'xl' }}>
               {t('app.home.featuresHeading', 'Four foundations. One system.')}
             </Heading>
-            <Paragraph size="lg" color="muted" className="a1-web-section-body">
+            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
               {t('app.home.featuresParagraph', 'A1 is built on four principles that work together to keep every platform, every agent, and every contributor aligned.')}
             </Paragraph>
           </Stack>
@@ -278,7 +281,7 @@ export function Home({ onNavigate }) {
             <Heading as="h2" id="themes-heading" size={{ xs: 'lg', md: 'xl' }}>
               {t('app.home.themesHeading', 'Four themes. Zero rework.')}
             </Heading>
-            <Paragraph size="lg" color="muted" className="a1-web-section-body">
+            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
               {t('app.home.themesParagraph', 'Switch between light, accessible, and heritage themes by changing a single data attribute. Components respond automatically.')}
             </Paragraph>
           </Stack>

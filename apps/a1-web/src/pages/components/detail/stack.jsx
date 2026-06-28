@@ -61,6 +61,7 @@ function buildStackSnippet(config, utilityClass = '') {
     propValue('align', config.align, 'start'),
     typeof config.justify === 'object' ? responsiveProp('justify', config.justify) : propValue('justify', config.justify, 'start'),
     propBoolean('wrap', config.wrap, false),
+    propBoolean('grow', config.grow, false),
   ].filter(Boolean).join('\n  ')
 
   return `<Stack${props ? `\n  ${props}\n` : ''}>
@@ -76,6 +77,7 @@ export function getDefaultConfig() {
     align: 'start',
     justify: 'start',
     wrap: false,
+    grow: false,
     childCount: 3,
   }
 }
@@ -99,6 +101,7 @@ export function Preview({ config, utilityClass = '' }) {
       align={config.align}
       justify={config.justify}
       wrap={config.wrap}
+      grow={config.grow}
       style={{ width: '100%', minHeight: '160px' }}
     >
       {blocks.map((b) => (
@@ -160,6 +163,7 @@ export function Controls({ config, setConfig }) {
               <>
                 <ToolbarDivider />
                 <ToolbarToggle icon="wrap_text" label="Wrap" pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
+                <ToolbarToggle icon="expand" label="Grow" pressed={config.grow} onChange={(grow) => set({ grow })} helper="Makes this Stack fill available space in a parent flex row (flex: 1 1 auto)." />
               </>
             )}
           </Toolbar>

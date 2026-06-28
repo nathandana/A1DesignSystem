@@ -1944,18 +1944,17 @@ export function EditorPage({
           <Stack direction="row" align="center" gap="sm">
             <PagePresence pageId={exampleId} />
             {!isPattern && versions.length > 1 && (
-              <div className="a1-web-version-switcher">
-                <SelectField
-                  size="compact"
-                  aria-label="Active version"
-                  value={activeVersionId}
-                  onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
-                >
-                  {versions.map((v) => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </SelectField>
-              </div>
+              <SelectField
+                size="compact"
+                aria-label="Active version"
+                value={activeVersionId}
+                style={{ maxInlineSize: '10rem' }}
+                onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
+              >
+                {versions.map((v) => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </SelectField>
             )}
           </Stack>
         </Stack>

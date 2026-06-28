@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ContextMenu, Icon, Paragraph } from '@gtivr4/a1-design-system-react'
+import { ContextMenu, Icon, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 
 // ── Date grouping ─────────────────────────────────────────────────────────────
 
@@ -132,9 +132,9 @@ export function EditorHistoryPanel({ entries, currentIndex, onRestore, onRename,
           <span>Previewing — click entry to exit</span>
         </div>
       )}
-      <div className="a1-web-history-list">
+      <Stack direction="column" gap="md">
         {groups.map(([day, items]) => (
-          <div key={day} className="a1-web-history-group">
+          <Stack key={day} direction="column" gap={2}>
             <span className="a1-web-history-group__label">{day}</span>
 
             {items.map(({ entry, originalIndex }) => {
@@ -189,9 +189,9 @@ export function EditorHistoryPanel({ entries, currentIndex, onRestore, onRename,
                 </button>
               )
             })}
-          </div>
+          </Stack>
         ))}
-      </div>
+      </Stack>
 
       <ContextMenu
         open={!!ctxMenu}
