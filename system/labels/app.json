@@ -3428,7 +3428,7 @@
         },
         "heroParagraph": {
           "$type": "string",
-          "$value": "A1 is a rules based eco system. Rooted in a singular and clear source of truth. Explore components in multiple tech stacks, create custom themes, build entire projects with built in data. Use AI tools to assist, not drift.",
+          "$value": "A1 is a rules-based design system and product workspace. Explore the live component registry, build projects with patterns and datasets, manage labels, review accessibility reports, and use AI helpers inside clear system guardrails.",
           "$description": "Introductory paragraph in the hero section of the Home page describing the A1 design system.",
           "locale": {
             "es": "A1 es un ecosistema basado en reglas. Arraigado en una única y clara fuente de verdad. Explora componentes en múltiples pilas tecnológicas, crea temas personalizados, construye proyectos completos con datos integrados. Usa herramientas de IA para asistir, no para desviarse.",
@@ -3512,7 +3512,7 @@
         },
         "statPlatforms": {
           "$type": "string",
-          "$value": "Platforms",
+          "$value": "Packages",
           "$description": "Label beneath the platform count stat on the Home page stats strip.",
           "locale": {
             "es": "Plataformas",
@@ -3568,7 +3568,7 @@
         },
         "featuresHeading": {
           "$type": "string",
-          "$value": "Four foundations. One system.",
+          "$value": "Current capabilities. One system.",
           "$description": "Section heading for the features block on the Home page.",
           "locale": {
             "es": "Cuatro fundamentos. Un sistema.",
@@ -3582,7 +3582,7 @@
         },
         "featuresParagraph": {
           "$type": "string",
-          "$value": "A1 is built on four principles that work together to keep every platform, every agent, and every contributor aligned.",
+          "$value": "A1 brings the component registry, editor workflows, labels, accessibility reporting, and AI guardrails into one governed workspace.",
           "$description": "Introductory paragraph beneath the features section heading on the Home page.",
           "locale": {
             "es": "A1 está construido sobre cuatro principios que funcionan juntos para mantener alineadas todas las plataformas, todos los agentes y todos los contribuidores.",
@@ -3596,8 +3596,8 @@
         },
         "featureTokenTitle": {
           "$type": "string",
-          "$value": "Token-driven",
-          "$description": "Title of the 'Token-driven' feature card on the Home page.",
+          "$value": "Registry-backed",
+          "$description": "Title of the registry-backed feature card on the Home page.",
           "locale": {
             "es": "Basado en tokens",
             "fr": "Piloté par jetons",
@@ -3610,8 +3610,8 @@
         },
         "featureTokenBody": {
           "$type": "string",
-          "$value": "Every color, spacing unit, typography value, and radius traces to a Style Dictionary token. No raw values anywhere in the system.",
-          "$description": "Body text of the 'Token-driven' feature card on the Home page.",
+          "$value": "Every visible component is defined from the registry, with category pages, live configurators, rules, properties, and accessibility reports.",
+          "$description": "Body text of the registry-backed feature card on the Home page.",
           "locale": {
             "es": "Cada color, unidad de espaciado, valor tipográfico y radio se remonta a un token de Style Dictionary. Sin valores directos en ninguna parte del sistema.",
             "fr": "Chaque couleur, unité d'espacement, valeur typographique et rayon est lié à un jeton Style Dictionary. Aucune valeur brute nulle part dans le système.",
@@ -3624,8 +3624,8 @@
         },
         "featureMultiTitle": {
           "$type": "string",
-          "$value": "Multi-platform",
-          "$description": "Title of the 'Multi-platform' feature card on the Home page.",
+          "$value": "Editor-ready",
+          "$description": "Title of the editor-ready feature card on the Home page.",
           "locale": {
             "es": "Multiplataforma",
             "fr": "Multi-plateforme",
@@ -3638,8 +3638,8 @@
         },
         "featureMultiBody": {
           "$type": "string",
-          "$value": "React, HTML/CSS, and React Native share the same token foundations. Design once — express consistently across every surface.",
-          "$description": "Body text of the 'Multi-platform' feature card on the Home page.",
+          "$value": "Build projects from A1 components, patterns, datasets, image libraries, and label-driven content without leaving the app.",
+          "$description": "Body text of the editor-ready feature card on the Home page.",
           "locale": {
             "es": "React, HTML/CSS y React Native comparten las mismas bases de tokens. Diseña una vez, expresa de forma coherente en todas las superficies.",
             "fr": "React, HTML/CSS et React Native partagent les mêmes bases de jetons. Concevez une fois — exprimez-vous de manière cohérente sur chaque surface.",
@@ -3652,8 +3652,8 @@
         },
         "featureAiTitle": {
           "$type": "string",
-          "$value": "AI-ready",
-          "$description": "Title of the 'AI-ready' feature card on the Home page.",
+          "$value": "Governed AI workflows",
+          "$description": "Title of the governed AI workflows feature card on the Home page.",
           "locale": {
             "es": "Listo para IA",
             "fr": "Prêt pour l'IA",
@@ -3666,8 +3666,8 @@
         },
         "featureAiBody": {
           "$type": "string",
-          "$value": "Structured tokens and component rules give agents clear, machine-readable constraints for consistent, on-brand output.",
-          "$description": "Body text of the 'AI-ready' feature card on the Home page.",
+          "$value": "Local AI helpers and structured rules help propose components, generate data-aware pages, and file backlog work without inventing patterns.",
+          "$description": "Body text of the governed AI workflows feature card on the Home page.",
           "locale": {
             "es": "Los tokens estructurados y las reglas de componentes dan a los agentes restricciones claras y legibles por máquinas para una salida coherente y acorde a la marca.",
             "fr": "Les jetons structurés et les règles de composants donnent aux agents des contraintes claires et lisibles par machine pour une sortie cohérente et conforme à la marque.",
@@ -3680,8 +3680,8 @@
         },
         "featureA11yTitle": {
           "$type": "string",
-          "$value": "Accessible",
-          "$description": "Title of the 'Accessible' feature card on the Home page.",
+          "$value": "Automated quality",
+          "$description": "Title of the automated quality feature card on the Home page.",
           "locale": {
             "es": "Accesible",
             "fr": "Accessible",
@@ -3694,8 +3694,8 @@
         },
         "featureA11yBody": {
           "$type": "string",
-          "$value": "WCAG AA contrast, keyboard navigation, and screen reader labels are built into every component — not retrofitted.",
-          "$description": "Body text of the 'Accessible' feature card on the Home page.",
+          "$value": "Component reports cover contrast, target size, keyboard behavior, screen reader expectations, WCAG mappings, and Storybook axe scans.",
+          "$description": "Body text of the automated quality feature card on the Home page.",
           "locale": {
             "es": "El contraste WCAG AA, la navegación por teclado y las etiquetas para lectores de pantalla están integrados en cada componente, no añadidos posteriormente.",
             "fr": "Le contraste WCAG AA, la navigation au clavier et les étiquettes pour les lecteurs d'écran sont intégrés dans chaque composant, pas ajoutés a posteriori.",
@@ -3705,6 +3705,111 @@
             "zh": "WCAG AA 对比度、键盘导航和屏幕阅读器标签内置于每个组件中——而非事后添加。",
             "ar": "تباين WCAG AA والتنقل بلوحة المفاتيح وتسميات قارئ الشاشة مدمجة في كل مكوّن — وليست إضافةً لاحقة."
           }
+        },
+        "toolsBadge": {
+          "$type": "string",
+          "$value": "Tools",
+          "$description": "Badge label above the tools section heading on the Home page."
+        },
+        "toolsHeading": {
+          "$type": "string",
+          "$value": "Tools for making governed systems",
+          "$description": "Section heading for the tools block on the Home page."
+        },
+        "toolsParagraph": {
+          "$type": "string",
+          "$value": "A1 combines project editing, shared assets, data, themes, labels, and rules so teams can build with structure instead of starting from a blank page.",
+          "$description": "Introductory paragraph beneath the tools section heading on the Home page."
+        },
+        "aiReadyBadge": {
+          "$type": "string",
+          "$value": "AI ready",
+          "$description": "Badge label marking Home page tools that are ready for AI-assisted workflows."
+        },
+        "alphaBadge": {
+          "$type": "string",
+          "$value": "Alpha",
+          "$description": "Badge label marking Home page tools that are still alpha."
+        },
+        "toolProjectsTitle": {
+          "$type": "string",
+          "$value": "Projects",
+          "$description": "Title of the Projects tool card on the Home page."
+        },
+        "toolProjectsBody": {
+          "$type": "string",
+          "$value": "The flagship product: create and edit governed projects through a JSON page model that can't move outside the rules.",
+          "$description": "Body text of the Projects tool card on the Home page."
+        },
+        "toolPatternsTitle": {
+          "$type": "string",
+          "$value": "Patterns",
+          "$description": "Title of the Patterns tool card on the Home page."
+        },
+        "toolPatternsBody": {
+          "$type": "string",
+          "$value": "Commonly defined patterns that can be shared within or across projects.",
+          "$description": "Body text of the Patterns tool card on the Home page."
+        },
+        "toolImageLibraryTitle": {
+          "$type": "string",
+          "$value": "Image library",
+          "$description": "Title of the Image library tool card on the Home page."
+        },
+        "toolImageLibraryBody": {
+          "$type": "string",
+          "$value": "Lightweight digital asset management for project images and reusable media.",
+          "$description": "Body text of the Image library tool card on the Home page."
+        },
+        "toolIconsTitle": {
+          "$type": "string",
+          "$value": "Icons",
+          "$description": "Title of the Icons tool card on the Home page."
+        },
+        "toolIconsBody": {
+          "$type": "string",
+          "$value": "Quick custom icons with upload, validation, and font generation.",
+          "$description": "Body text of the Icons tool card on the Home page."
+        },
+        "toolDataSourcesTitle": {
+          "$type": "string",
+          "$value": "Data sources",
+          "$description": "Title of the Data sources tool card on the Home page."
+        },
+        "toolDataSourcesBody": {
+          "$type": "string",
+          "$value": "Plug-and-play datasets, custom or out of the box, for binding pages to real content.",
+          "$description": "Body text of the Data sources tool card on the Home page."
+        },
+        "toolThemeEditorTitle": {
+          "$type": "string",
+          "$value": "Theme editor",
+          "$description": "Title of the Theme editor tool card on the Home page."
+        },
+        "toolThemeEditorBody": {
+          "$type": "string",
+          "$value": "Custom themes with a few clicks, from color ramps to typography and semantic roles.",
+          "$description": "Body text of the Theme editor tool card on the Home page."
+        },
+        "toolRulesTitle": {
+          "$type": "string",
+          "$value": "Rules engine",
+          "$description": "Title of the Rules engine tool card on the Home page."
+        },
+        "toolRulesBody": {
+          "$type": "string",
+          "$value": "Define UI, component, accessibility, and workflow rules for humans and agents to follow.",
+          "$description": "Body text of the Rules engine tool card on the Home page."
+        },
+        "toolLabelsTitle": {
+          "$type": "string",
+          "$value": "Labels",
+          "$description": "Title of the Labels tool card on the Home page."
+        },
+        "toolLabelsBody": {
+          "$type": "string",
+          "$value": "Shared labels and translations for reusable, locale-ready interface text.",
+          "$description": "Body text of the Labels tool card on the Home page."
         },
         "componentsBadge": {
           "$type": "string",
@@ -3722,7 +3827,7 @@
         },
         "componentsCatHeading": {
           "$type": "string",
-          "$value": "40+ components, eight categories.",
+          "$value": "Components by category",
           "$description": "Section heading for the component categories grid on the Home page.",
           "locale": {
             "es": "Más de 40 componentes, ocho categorías.",
@@ -3736,7 +3841,7 @@
         },
         "componentsCatParagraph": {
           "$type": "string",
-          "$value": "From typography primitives to complex data tables — everything fully tokenized, accessible, and responsive.",
+          "$value": "From typography primitives to complex data tables — everything is tokenized, accessible, responsive, and connected to the live component docs.",
           "$description": "Paragraph beneath the component categories heading on the Home page.",
           "locale": {
             "es": "Desde primitivos tipográficos hasta tablas de datos complejas: todo completamente tokenizado, accesible y responsivo.",
@@ -3778,7 +3883,7 @@
         },
         "catActions": {
           "$type": "string",
-          "$value": "Actions",
+          "$value": "Actions & Controls",
           "$description": "Component category label in the Home page category grid.",
           "locale": {
             "es": "Acciones",
@@ -3806,7 +3911,7 @@
         },
         "catFeedback": {
           "$type": "string",
-          "$value": "Feedback",
+          "$value": "Feedback & Messaging",
           "$description": "Component category label in the Home page category grid.",
           "locale": {
             "es": "Retroalimentación",
@@ -3820,7 +3925,7 @@
         },
         "catLayout": {
           "$type": "string",
-          "$value": "Layout",
+          "$value": "Layout & Display",
           "$description": "Component category label in the Home page category grid.",
           "locale": {
             "es": "Diseño",
@@ -3844,6 +3949,20 @@
             "ja": "データ",
             "zh": "数据",
             "ar": "البيانات"
+          }
+        },
+        "catMediaIconography": {
+          "$type": "string",
+          "$value": "Media and iconography",
+          "$description": "Component category label in the Home page category grid.",
+          "locale": {
+            "es": "Medios e iconografía",
+            "fr": "Médias et iconographie",
+            "de": "Medien und Ikonografie",
+            "pt": "Mídia e iconografia",
+            "ja": "メディアとアイコン",
+            "zh": "媒体和图标",
+            "ar": "الوسائط والأيقونات"
           }
         },
         "catOverlay": {
@@ -3872,6 +3991,20 @@
             "ja": "コンポーネント",
             "zh": "个组件",
             "ar": "مكونات"
+          }
+        },
+        "catCategoryCount": {
+          "$type": "string",
+          "$value": "categories",
+          "$description": "Unit word appended after the category count in the Home page component summary.",
+          "locale": {
+            "es": "categorías",
+            "fr": "catégories",
+            "de": "Kategorien",
+            "pt": "categorias",
+            "ja": "カテゴリ",
+            "zh": "个类别",
+            "ar": "فئات"
           }
         },
         "platformsBadge": {
@@ -3904,7 +4037,7 @@
         },
         "platformsParagraph": {
           "$type": "string",
-          "$value": "The same token foundations power web, HTML, and mobile. No duplication, no drift.",
+          "$value": "The same token foundations power React, pure HTML/CSS, React Native, and Web Components package output. No duplication, no drift.",
           "$description": "Paragraph beneath the platforms heading on the Home page.",
           "locale": {
             "es": "Las mismas bases de tokens impulsan web, HTML y móvil. Sin duplicación, sin desviaciones.",
@@ -3958,6 +4091,20 @@
             "ar": "مكونات جوّال مدفوعة بالرموز، تشترك في نفس لغة التصميم مع حزم الويب."
           }
         },
+        "platformWebComponentsBody": {
+          "$type": "string",
+          "$value": "Standards-based custom elements for framework-agnostic surfaces that still share A1 tokens and interaction rules.",
+          "$description": "Body text for the Web Components platform card on the Home page.",
+          "locale": {
+            "es": "Elementos personalizados basados en estándares para superficies independientes del framework que siguen compartiendo tokens y reglas de interacción de A1.",
+            "fr": "Éléments personnalisés basés sur les standards pour des surfaces indépendantes du framework qui partagent toujours les jetons et règles d'interaction A1.",
+            "de": "Standardbasierte Custom Elements für frameworkunabhängige Oberflächen, die weiterhin A1-Tokens und Interaktionsregeln teilen.",
+            "pt": "Elementos personalizados baseados em padrões para superfícies independentes de framework que ainda compartilham tokens e regras de interação da A1.",
+            "ja": "A1のトークンとインタラクションルールを共有しながら、フレームワークに依存しない画面で使える標準ベースのカスタム要素。",
+            "zh": "基于标准的自定义元素，适用于不依赖框架的界面，同时仍共享 A1 令牌和交互规则。",
+            "ar": "عناصر مخصصة مبنية على المعايير لواجهات لا تعتمد على إطار عمل، مع استمرار مشاركة رموز A1 وقواعد التفاعل."
+          }
+        },
         "themesBadge": {
           "$type": "string",
           "$value": "Themes",
@@ -3974,7 +4121,7 @@
         },
         "themesHeading": {
           "$type": "string",
-          "$value": "Four themes. Zero rework.",
+          "$value": "Nine themes. Zero rework.",
           "$description": "Section heading for the themes block on the Home page.",
           "locale": {
             "es": "Cuatro temas. Cero reelaboración.",
@@ -3988,7 +4135,7 @@
         },
         "themesParagraph": {
           "$type": "string",
-          "$value": "Switch between light, accessible, and heritage themes by changing a single data attribute. Components respond automatically.",
+          "$value": "Switch themes or color mode by changing the active theme selector. Components respond automatically through shared tokens.",
           "$description": "Paragraph beneath the themes heading on the Home page.",
           "locale": {
             "es": "Cambia entre los temas claro, accesible y heritage cambiando un solo atributo de datos. Los componentes responden automáticamente.",

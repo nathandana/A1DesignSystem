@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
+
+- **Home tools section** — added a Tools section to the home page for Projects, Patterns, Image library, Icons, Data sources, Theme editor, Rules engine, and Labels. Tool cards navigate directly to their workspace pages and mark AI-ready surfaces, with Theme editor also flagged as Alpha.
+
+- **Home and Features page refresh** — updated the home page capability copy and stats so component, category, theme, package, and token counts reflect the current registry/generated token output. The component category cards now derive their labels, icons, counts, and navigation targets from the live component registry, and the Features page summary uses the same current counts.
+
 - **Canvas accessibility cleanup** — fixed the remaining Storybook accessibility report failures by correcting light-mode warn status foreground contrast and removing nested interactive semantics from editable Canvas nodes. The generated `reports/a11y.json` now passes with 0 violations across 575 stories.
 
 - **Automated accessibility report data** — added a token-derived component accessibility report generator (`npm run a11y:reports`, with `npm run a11y:reports:check`) and wired the Button Accessibility tab to generated contrast and target-size data instead of hand-maintained rows. In the browser, the Button report now resolves the active CSS variables and recalculates when theme or color mode changes, with generated default-token rows as the build-time fallback. A new scheduled GitHub workflow regenerates the fallback report data weekly and opens a PR when token changes alter the computed values.
