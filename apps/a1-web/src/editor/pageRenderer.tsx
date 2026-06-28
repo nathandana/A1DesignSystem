@@ -51,6 +51,27 @@ const TEXT_PROP_BY_TYPE: Record<string, string> = {
   Fieldset: 'legend',
 };
 
+const VOID_CHILD_TYPES = new Set([
+  'TextField',
+  'TextareaField',
+  'SelectField',
+  'NumberField',
+  'DateField',
+  'TimeField',
+  'PhoneField',
+  'ZipField',
+  'CreditCardField',
+  'Switch',
+  'Slider',
+  'Calendar',
+  'Icon',
+  'IconButton',
+  'DataTable',
+  'StatusBar',
+  'CircularProgress',
+  'SegmentedControl',
+]);
+
 
 /**
  * Extract a page id from an internal link href of the form `/?page={id}`.
@@ -409,8 +430,8 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   const childList: ReactNode[] = [];
   // For text-prop components (e.g. Fieldset) the text is assigned to a prop
   // below, not rendered as a child; everything else renders text as children.
-  if (!textProp && textContent !== undefined) childList.push(textContent);
-  if (node.children?.length) {
+  if (!textProp && !VOID_CHILD_TYPES.has(node.type) && textContent !== undefined) childList.push(textContent);
+  if (!VOID_CHILD_TYPES.has(node.type) && node.children?.length) {
     node.children.forEach((child) => childList.push(
       <RenderNode key={child.id} node={child} inPattern={childInPattern} patternActive={childPatternActive} />,
     ));
