@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
+
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
 
 - **Home tools section** — added a Tools section to the home page for Projects, Patterns, Image library, Icons, Data sources, Theme editor, Rules engine, and Labels. Tool cards navigate directly to their workspace pages and mark AI-ready surfaces, with Theme editor also flagged as Alpha.
