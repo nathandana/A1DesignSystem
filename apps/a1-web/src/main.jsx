@@ -798,6 +798,14 @@ function App() {
 
   const navItems = [
     {
+      id: 'home',
+      // label: pageTitle('home'),
+      icon: 'home',
+      active: activePage === 'home',
+      href: getPath('home'),
+      onClick: (e) => handleNavClick(e, 'home'),
+    },
+    {
       id: 'explore',
       label: t('app.nav.explore', 'Explore'),
       active: EXPLORE_PAGE_IDS.includes(activePage),
