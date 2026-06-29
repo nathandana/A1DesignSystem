@@ -27,9 +27,9 @@ import {
   MessageEmptyState,
   PageNav,
   Paragraph,
+  SearchField,
   Section,
   Stack,
-  TextField,
 } from '@gtivr4/a1-design-system-react'
 import { MOD, ALT, SHIFT, DEL } from '../editor/shortcuts.ts'
 
@@ -1553,11 +1553,25 @@ const HELP = [
         keywords: 'keyboard shortcuts keys hotkeys undo redo delete duplicate group ungroup move copy paste pattern cmd ctrl',
         body: (
           <Stack gap="sm">
-            <P>Press <Kbd>{`${MOD}K`}</Kbd> any time in the editor to see this list.</P>
+            <P>Global shortcuts work outside text fields. Editor shortcuts apply while editing a page or pattern.</P>
             <DefinitionList
               size="sm"
               labelWidth="fixed"
               items={[
+                { label: 'Global search', value: `${MOD}K or /` },
+                { label: 'Main content', value: `${ALT}M or G then M` },
+                { label: 'Go home', value: 'G then H' },
+                { label: 'Go to Components', value: 'G then C' },
+                { label: 'Go to Foundations', value: 'G then F' },
+                { label: 'Go to Editor', value: 'G then E' },
+                { label: 'Go to Patterns', value: 'G then P' },
+                { label: 'Go to Backlog', value: 'G then B' },
+                { label: 'Go to Rules', value: 'G then R' },
+                { label: 'Go to Labels', value: 'G then L' },
+                { label: 'Go to Data sources', value: 'G then D' },
+                { label: 'Go to Theme editor', value: 'G then T' },
+                { label: 'Go to Accessibility', value: 'G then A' },
+                { label: 'Go to Help', value: '?' },
                 { label: 'Undo', value: `${MOD}Z` },
                 { label: 'Redo', value: `${MOD}${SHIFT}Z` },
                 { label: 'Delete element', value: DEL },
@@ -1568,7 +1582,7 @@ const HELP = [
                 { label: 'Move element down', value: `${ALT}↓` },
                 { label: 'Copy pattern (style)', value: `${MOD}${ALT}C` },
                 { label: 'Paste pattern (style)', value: `${MOD}${ALT}V` },
-                { label: 'Keyboard shortcuts', value: `${MOD}K` },
+                { label: 'Show all shortcuts', value: `${MOD}/` },
               ]}
             />
           </Stack>
@@ -1762,12 +1776,12 @@ export function Help({ onNavigate }) {
           <Paragraph size="sm" color="muted">
             How everything works.
           </Paragraph>
-          <TextField
+          <SearchField
             label="Search help"
-            type="search"
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onClear={() => setQuery('')}
           />
         </Stack>
       </Section>

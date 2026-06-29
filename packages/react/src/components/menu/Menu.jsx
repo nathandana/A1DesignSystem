@@ -40,6 +40,8 @@ export function Menu({
   onClose,
   anchorRef,
   "aria-label": ariaLabel,
+  trapFocus = true,
+  modalOnMobile = true,
   className = "",
   children,
 }) {
@@ -109,7 +111,7 @@ export function Menu({
     const el = ref.current;
     if (!el) return;
 
-    const shouldModal = window.matchMedia(xsQuery).matches;
+    const shouldModal = modalOnMobile && window.matchMedia(xsQuery).matches;
     if (el.open && modalRef.current === shouldModal) {
       updatePosition();
       return;
@@ -126,7 +128,7 @@ export function Menu({
     requestAnimationFrame(() => {
       getFocusableElements(el)[0]?.focus();
     });
-  }, [updatePosition]);
+  }, [modalOnMobile, updatePosition]);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -145,7 +147,7 @@ export function Menu({
   }, [anchorRef, open, openDialog]);
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open || !trapFocus) return undefined;
 
     const onViewportChange = () => openDialog();
     const onScroll = () => updatePosition();
@@ -209,7 +211,7 @@ export function Menu({
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onClose, open]);
+  }, [onClose, open, trapFocus]);
 
   useEffect(() => {
     if (!open) return undefined;

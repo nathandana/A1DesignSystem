@@ -13,6 +13,7 @@ import {
   LabelsProvider,
   Link,
   Menu,
+  MenuItem,
   MenuSection,
   PageLayout,
   Paragraph,
@@ -80,6 +81,7 @@ import {
 } from './pages/Components.jsx'
 import { Patterns } from './pages/Patterns.jsx'
 import { patternToDefinition } from './patterns/patternDocument.js'
+import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
@@ -97,6 +99,7 @@ import { CustomIconsView } from './projects/CustomIconsView.jsx'
 import { ThemeEditor } from './pages/ThemeEditor.jsx'
 import { ThemesList } from './pages/ThemesList.jsx'
 import { RuleEditor } from './pages/RuleEditor.jsx'
+import { listAllRules, subscribeRules } from './rules/ruleStore.ts'
 import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
@@ -119,6 +122,7 @@ import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
 import { LabelEditor } from './pages/LabelEditor.jsx'
+import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -301,6 +305,9 @@ function App() {
   const [systemColorScheme, setSystemColorScheme] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
+  const [skipMenuOpen, setSkipMenuOpen] = useState(false)
+  const skipMenuAnchorRef = useRef(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
@@ -359,11 +366,27 @@ function App() {
   // Bump on theme-store changes so the sidebar theme name stays live after a rename.
   const [, setThemesVersion] = useState(0)
   useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
+  const [patternsVersion, setPatternsVersion] = useState(0)
+  useEffect(() => subscribePatterns(() => setPatternsVersion((v) => v + 1)), [])
+  const [rulesVersion, setRulesVersion] = useState(0)
+  useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
   const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  useEffect(() => {
+    if (!skipMenuOpen) return undefined
+    const closeSkipMenu = (event) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      setSkipMenuOpen(false)
+      skipMenuAnchorRef.current?.focus()
+    }
+    window.addEventListener('keydown', closeSkipMenu, true)
+    return () => window.removeEventListener('keydown', closeSkipMenu, true)
+  }, [skipMenuOpen])
 
   // ── Reactive label resolution: system defaults → workspace overrides → project overrides ──
   const [workspaceLabelsObj, setWorkspaceLabelsObj] = useState(() =>
@@ -393,6 +416,161 @@ function App() {
   const labelLocale = locale === 'en' ? null : locale
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+
+  const globalSearchEntries = useMemo(() => {
+    const entries = []
+    const addPage = (id, description, keywords = []) => {
+      entries.push({
+        id: `page-${id}`,
+        title: pageTitle(id),
+        category: 'Pages',
+        description,
+        icon: PAGE_ICONS[id] || 'article',
+        keywords: [id, PAGE_TITLES[id], ...keywords],
+        onSelect: () => navigate(id),
+      })
+    }
+
+    addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
+    addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
+    addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
+    addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
+    addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
+    addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
+    addPage('editor', 'Create and edit projects with the governed JSON page model.', ['projects', 'pages', 'builder'])
+    addPage('image-library', 'Manage reusable image assets for projects.', ['assets', 'media', 'dam'])
+    addPage('custom-icons', 'Create and manage custom project icons.', ['symbols', 'iconography'])
+    addPage('data', 'Plug and play data sets for projects.', ['datasets', 'sources'])
+    addPage('theme-editor', 'Create and adjust custom themes.', ['color', 'tokens', 'brand'])
+    addPage('rules', 'Define and review UI, component, and product rules.', ['governance', 'standards'])
+    addPage('label-editor', 'Shared labels and translations.', ['locale', 'copy', 'language'])
+    addPage('backlog', 'Plan, prioritize, and review A1 work.', ['tickets', 'issues', 'roadmap'])
+    addPage('help', 'Guidance for using A1.', ['docs', 'support'])
+    addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
+    addPage('releases', 'Release notes and shipped changes.', ['changelog', 'updates'])
+    addPage('about', 'About A1 Design System.', ['system'])
+    if (import.meta.env.DEV) addPage('virtual-team', 'Local review assistants for backlog and design work.', ['ai', 'persona'])
+
+    foundations.forEach((foundation) => {
+      entries.push({
+        id: `foundation-${foundation.id}`,
+        title: foundation.title,
+        category: 'Foundations',
+        description: foundation.body,
+        icon: foundation.icon,
+        keywords: [foundation.id, 'foundation', 'token', 'standard'],
+        onSelect: () => navigate(foundation.id),
+      })
+    })
+
+    componentCategories.forEach((category) => {
+      entries.push({
+        id: `component-category-${category.id}`,
+        title: category.title,
+        category: 'Component categories',
+        description: category.body,
+        icon: category.icon,
+        keywords: [category.id, 'components'],
+        onSelect: () => navigate(`components-${category.id}`),
+      })
+      category.components.forEach((component) => {
+        entries.push({
+          id: `component-${component.id}`,
+          title: component.title,
+          category: 'Components',
+          description: component.body,
+          icon: component.icon,
+          keywords: [
+            component.id,
+            category.title,
+            category.id,
+            component.id === 'button' ? 'cta call to action submit action' : '',
+            component.id === 'data-table' ? 'grid table rows columns spreadsheet list' : '',
+            component.id === 'search-field' ? 'find query lookup' : '',
+          ],
+          onSelect: () => navigate(`component-${component.id}`),
+        })
+      })
+    })
+
+    projects.forEach((project) => {
+      entries.push({
+        id: `project-${project.id}`,
+        title: project.name,
+        category: 'Projects',
+        description: project.description || 'Project workspace.',
+        icon: project.icon || 'folder',
+        keywords: ['project', project.name, project.description],
+        onSelect: () => openProject(project.id),
+      })
+      projectStore.loadPages(project.id).forEach((page) => {
+        entries.push({
+          id: `project-page-${project.id}-${page.id}`,
+          title: page.title || 'Untitled',
+          category: 'Project pages',
+          description: project.name,
+          icon: page.icon || 'article',
+          keywords: ['page', 'screen', 'editor', project.name, page.description],
+          onSelect: () => {
+            openProject(project.id)
+            handleOpenPage(page.id)
+          },
+        })
+      })
+    })
+
+    getAllPatterns().forEach((pattern) => {
+      entries.push({
+        id: `pattern-${pattern.pattern.id}`,
+        title: pattern.pattern.name,
+        category: 'Patterns',
+        description: pattern.pattern.description || 'Reusable pattern.',
+        icon: 'dashboard_customize',
+        keywords: ['pattern', pattern.pattern.category, pattern.pattern.name],
+        onSelect: () => navigate('patterns'),
+      })
+    })
+
+    listAllRules().forEach((rule) => {
+      entries.push({
+        id: `rule-${rule.id}`,
+        title: rule.requirement,
+        category: 'Rules',
+        description: rule.component,
+        icon: 'gavel',
+        badge: rule.source === 'builtin' ? 'Built-in' : 'User rule',
+        keywords: ['rule', rule.component, rule.do, rule.dont, ...(rule.appliesTo || [])],
+        onSelect: () => navigate('rules'),
+      })
+    })
+
+    getLabels().items.forEach((label) => {
+      entries.push({
+        id: `label-${label.key}`,
+        title: label.key,
+        category: 'Labels',
+        description: label.en || 'Workspace label.',
+        icon: 'translate',
+        keywords: ['label', 'translation', 'locale', ...Object.values(label).filter((value) => typeof value === 'string')],
+        onSelect: () => navigate('label-editor'),
+      })
+    })
+
+    backlog?.items?.forEach((item) => {
+      entries.push({
+        id: `ticket-${item.id}`,
+        title: `A1-${item.number} ${item.title}`,
+        category: 'Backlog',
+        description: item.description || item.status,
+        icon: 'task_alt',
+        badge: item.priority,
+        keywords: ['ticket', 'issue', 'backlog', item.type, item.status, item.size, item.scope],
+        onSelect: () => navigate('backlog-ticket', { path: `/backlog/A1-${item.number}` }),
+      })
+    })
+
+    return entries
+  }, [backlog?.items, locale, patternsVersion, projects, rulesVersion, allLabels])
 
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
@@ -637,6 +815,11 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }
 
+  function focusMainContent() {
+    const main = document.querySelector('.a1-page-layout__main-scroll')
+    if (main instanceof HTMLElement) main.focus()
+  }
+
   function handleNavClick(e, page) {
     if (!isPlainLeftClick(e)) return
     e.preventDefault()
@@ -689,6 +872,107 @@ function App() {
   useEffect(() => { localStorage.setItem('a1-web-reduced-motion', reducedMotion) }, [reducedMotion])
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
   useEffect(() => { localStorage.setItem('a1-web-locale', locale) }, [locale])
+
+  useEffect(() => {
+    let goTimer = null
+    let awaitingGoTarget = false
+    const goTargets = {
+      a: 'accessibility',
+      b: 'backlog',
+      c: 'components',
+      d: 'data',
+      e: 'editor',
+      f: 'foundations',
+      h: 'home',
+      l: 'label-editor',
+      p: 'patterns',
+      r: 'rules',
+      t: 'theme-editor',
+    }
+
+    const clearGoTarget = () => {
+      awaitingGoTarget = false
+      if (goTimer) window.clearTimeout(goTimer)
+      goTimer = null
+    }
+
+    const handleGlobalShortcut = (event) => {
+      if (event.defaultPrevented) return
+      const target = event.target
+      const isTyping = target instanceof HTMLElement && (
+        target.isContentEditable
+        || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+      )
+      if (isTyping) {
+        clearGoTarget()
+        return
+      }
+
+      const opensCommandSearch = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'
+      const opensShortcutMenu = (event.metaKey || event.ctrlKey) && event.key === '/'
+      const opensSlashSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === '/'
+      if (opensShortcutMenu) {
+        event.preventDefault()
+        clearGoTarget()
+        setSkipMenuOpen((open) => {
+          if (!open) window.requestAnimationFrame(() => skipMenuAnchorRef.current?.focus())
+          return !open
+        })
+        return
+      }
+
+      if (opensCommandSearch || opensSlashSearch) {
+        event.preventDefault()
+        clearGoTarget()
+        setGlobalSearchOpen(true)
+        return
+      }
+
+      if (event.altKey && !event.metaKey && !event.ctrlKey && event.key.toLowerCase() === 'm') {
+        event.preventDefault()
+        clearGoTarget()
+        focusMainContent()
+        return
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '?') {
+        event.preventDefault()
+        clearGoTarget()
+        navigate('help')
+        return
+      }
+
+      if (awaitingGoTarget) {
+        const targetPage = goTargets[event.key.toLowerCase()]
+        if (targetPage) {
+          event.preventDefault()
+          clearGoTarget()
+          navigate(targetPage)
+          return
+        }
+        if (event.key.toLowerCase() === 'm') {
+          event.preventDefault()
+          clearGoTarget()
+          focusMainContent()
+          return
+        }
+        clearGoTarget()
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key.toLowerCase() === 'g') {
+        event.preventDefault()
+        awaitingGoTarget = true
+        if (goTimer) window.clearTimeout(goTimer)
+        goTimer = window.setTimeout(clearGoTarget, 1500)
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalShortcut)
+    return () => {
+      clearGoTarget()
+      window.removeEventListener('keydown', handleGlobalShortcut)
+    }
+  }, [])
 
   // Mirror the open page's definition metadata (name/description/icon) into its
   // project page record so the page tree and generated nav stay in sync as you
@@ -799,11 +1083,12 @@ function App() {
   const navItems = [
     {
       id: 'home',
-      // label: pageTitle('home'),
+      label: pageTitle('home'),
       icon: 'home',
       active: activePage === 'home',
       href: getPath('home'),
       onClick: (e) => handleNavClick(e, 'home'),
+      mobileOnly: true,
     },
     {
       id: 'explore',
@@ -952,6 +1237,13 @@ function App() {
 
   const actions = [
     {
+      id: 'global-search',
+      icon: 'search',
+      iconOnly: true,
+      label: t('app.action.globalSearch', 'Search A1'),
+      onClick: () => setGlobalSearchOpen(true),
+    },
+    {
       id: 'backlog-queue',
       icon: 'checklist',
       iconOnly: true,
@@ -1071,11 +1363,91 @@ function App() {
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
+  function runSkipMenuAction(action) {
+    setSkipMenuOpen(false)
+    action?.()
+  }
+
   return (
     <TProvider value={t}>
     <LabelsProvider locale={labelLocale} labels={allLabels}>
       <CustomIconFontProvider projectId={activeProjectId} includeAll={activePage === 'custom-icons'}>
       <ImageLibraryProvider>
+      <button
+        ref={skipMenuAnchorRef}
+        type="button"
+        className="a1-web-skip-menu-trigger"
+        data-open={skipMenuOpen ? 'true' : undefined}
+        aria-haspopup="menu"
+        aria-expanded={skipMenuOpen ? 'true' : 'false'}
+        aria-label="Keyboard menu. Shortcut: Cmd or Ctrl plus slash"
+        title="Shortcut: Cmd/Ctrl+/"
+        onFocus={() => setSkipMenuOpen(true)}
+        onClick={() => setSkipMenuOpen((open) => !open)}
+      >
+        Keyboard menu
+      </button>
+      <Menu
+        className="a1-web-keyboard-menu"
+        open={skipMenuOpen}
+        onClose={() => setSkipMenuOpen(false)}
+        anchorRef={skipMenuAnchorRef}
+        aria-label="Keyboard shortcuts"
+        trapFocus={false}
+        modalOnMobile={false}
+      >
+        <MenuSection label="Jump">
+          <MenuItem icon="keyboard_return" shortcut="Shortcut: Alt+M" onClick={() => runSkipMenuAction(focusMainContent)}>
+            Skip to main content
+          </MenuItem>
+          <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
+            Search A1
+          </MenuItem>
+          <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
+            Show all shortcuts
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Primary pages">
+          <MenuItem icon="home" shortcut="Shortcut: G then H" onClick={() => runSkipMenuAction(() => navigate('home'))}>
+            Home
+          </MenuItem>
+          <MenuItem icon="category" shortcut="Shortcut: G then C" onClick={() => runSkipMenuAction(() => navigate('components'))}>
+            Components
+          </MenuItem>
+          <MenuItem icon="foundation" shortcut="Shortcut: G then F" onClick={() => runSkipMenuAction(() => navigate('foundations'))}>
+            Foundations
+          </MenuItem>
+          <MenuItem icon="edit" shortcut="Shortcut: G then E" onClick={() => runSkipMenuAction(() => navigate('editor'))}>
+            Editor
+          </MenuItem>
+          <MenuItem icon="view_quilt" shortcut="Shortcut: G then P" onClick={() => runSkipMenuAction(() => navigate('patterns'))}>
+            Patterns
+          </MenuItem>
+          <MenuItem icon="task_alt" shortcut="Shortcut: G then B" onClick={() => runSkipMenuAction(() => navigate('backlog'))}>
+            Backlog
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Tools and help">
+          <MenuItem icon="rule" shortcut="Shortcut: G then R" onClick={() => runSkipMenuAction(() => navigate('rules'))}>
+            Rules
+          </MenuItem>
+          <MenuItem icon="translate" shortcut="Shortcut: G then L" onClick={() => runSkipMenuAction(() => navigate('label-editor'))}>
+            Labels
+          </MenuItem>
+          <MenuItem icon="database" shortcut="Shortcut: G then D" onClick={() => runSkipMenuAction(() => navigate('data'))}>
+            Data sources
+          </MenuItem>
+          <MenuItem icon="palette" shortcut="Shortcut: G then T" onClick={() => runSkipMenuAction(() => navigate('theme-editor'))}>
+            Theme editor
+          </MenuItem>
+          <MenuItem icon="accessibility" shortcut="Shortcut: G then A" onClick={() => runSkipMenuAction(() => navigate('accessibility'))}>
+            Accessibility
+          </MenuItem>
+          <MenuItem icon="help" shortcut="Shortcut: ?" onClick={() => runSkipMenuAction(() => navigate('help'))}>
+            Help
+          </MenuItem>
+        </MenuSection>
+      </Menu>
       <PageLayout
         className="a1-web-page-layout"
         stickyHeader
@@ -1364,6 +1736,12 @@ function App() {
           </BottomSheet>
         )}
       </PageLayout>
+
+      <GlobalSearchDialog
+        open={globalSearchOpen}
+        entries={globalSearchEntries}
+        onClose={() => setGlobalSearchOpen(false)}
+      />
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
         <MenuSection label={t('app.page.theme', 'Theme')}>

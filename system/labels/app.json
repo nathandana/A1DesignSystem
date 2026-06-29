@@ -370,6 +370,20 @@
         }
       },
       "action": {
+        "globalSearch": {
+          "$type": "string",
+          "$value": "Search A1",
+          "$description": "Header action that opens global search.",
+          "locale": {
+            "es": "Buscar en A1",
+            "fr": "Rechercher dans A1",
+            "de": "A1 durchsuchen",
+            "pt": "Pesquisar no A1",
+            "ja": "A1を検索",
+            "zh": "搜索 A1",
+            "ar": "البحث في A1"
+          }
+        },
         "createTicket": {
           "$type": "string",
           "$value": "Create a ticket",

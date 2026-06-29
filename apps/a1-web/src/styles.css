@@ -10,6 +10,49 @@ body {
   overflow: hidden;
 }
 
+.a1-web-skip-menu-trigger {
+  position: fixed;
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-start: var(--base-spacing-12);
+  z-index: var(--component-menu-z-index, 1000);
+  opacity: 0;
+  transform: translateY(calc(-100% - var(--base-spacing-12)));
+  transition:
+    opacity var(--semantic-motion-duration-fast) var(--semantic-motion-easing-enter),
+    transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-enter);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-12);
+  border: var(--base-border-width-sm) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-panel);
+  box-shadow: var(--component-card-shadow);
+  color: var(--semantic-color-text-default);
+  font: inherit;
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-medium);
+  cursor: pointer;
+}
+
+.a1-web-skip-menu-trigger:focus,
+.a1-web-skip-menu-trigger:focus-visible,
+.a1-web-skip-menu-trigger[data-open="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.a1-web-skip-menu-trigger:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-web-keyboard-menu {
+  inline-size: min(32rem, calc(100vw - var(--base-spacing-24)));
+}
+
+.a1-reduce-motion .a1-web-skip-menu-trigger {
+  transition: none;
+}
+
 /* ── Editor ── */
 
 /* Editor sidebar — tab switcher placed in the SideNav header slot */

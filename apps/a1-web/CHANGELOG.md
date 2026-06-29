@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Global search** (A1-265) — added a header search action and `/` plus `Cmd/Ctrl+K` shortcuts that open a dedicated scrim-backed search overlay. The search input floats over the scrim, opens focused at comfortable size, and only reveals the separate results panel once a query is entered. Results are grouped across pages, foundations, component categories, components, projects, project pages, patterns, rules, workspace labels, and backlog tickets, with related-term and mistyping tolerance for queries such as "CTA" → Button and "grid" → Grid/Data Table.
+
+- **Global keyboard shortcuts** — added an Amazon-style first-tab keyboard navigation trigger backed by the A1 `Menu` component, with grouped actions for main content, search, primary pages, tools, and Help. App-level shortcuts now support keyboard-only navigation: `Cmd/Ctrl+/` shows all shortcuts, `Alt+M` or `g m` focuses the main content area, `?` opens Help, and `g` chords navigate to high-use pages (`g h` Home, `g c` Components, `g f` Foundations, `g e` Editor, `g p` Patterns, `g b` Backlog, `g r` Rules, `g l` Labels, `g d` Data sources, `g t` Theme editor, `g a` Accessibility). Shortcuts ignore text-entry fields and defer to page-specific handlers when a page has already handled the key event.
+
 - **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
 
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
