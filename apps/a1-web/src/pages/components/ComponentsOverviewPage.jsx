@@ -3,10 +3,8 @@ import {
   DataTable,
   Grid,
   Heading,
-  Icon,
-  Paragraph,
   Section,
-  Stack,
+  Stat,
 } from '@gtivr4/a1-design-system-react'
 import { PageTitleArea } from '../PageTitleArea.jsx'
 import { ruleSourceFiles } from './data.js'
@@ -87,21 +85,19 @@ export function ComponentsOverviewPage({ onNavigate }) {
         description="Full list of documented components, route targets, update dates, and package availability."
       />
       <Section padding="sm" contentWidth="xl" gap="md" aria-labelledby="component-inventory-heading">
-        <Grid columns={{ xs: 1, sm: 3 }} gap="md">
+        <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="md">
           {overviewStats.map((stat) => (
             <Card className="a1-p-8" key={stat.label}>
-              <Stack direction="row" gap="sm" align='baseline'>
-                <Heading as="h2" size="lg" type='display'>{stat.value}</Heading>
-                <Paragraph size="md" color="muted">{stat.label}</Paragraph>
-              </Stack>
+              <Stat title={stat.label} value={stat.value} icon={stat.icon} size="lg" />
             </Card>
-
-
-
           ))}
-
-
-
+          <Card
+            variant="navigation"
+            href={getComponentPath('kitchen-sink')}
+            onClick={(e) => navigateCard(e, onNavigate, 'kitchen-sink')}
+          >
+            <Heading as="h2" size="xs">Kitchen sink page</Heading>
+          </Card>
         </Grid>
 
 

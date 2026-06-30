@@ -81,6 +81,11 @@
 /* ─── Label row ───────────────────────────────────────────────────────────── */
 
 .a1-switch__row {
+  /* Contain the absolutely-positioned sr-only input so it stays pinned to the
+     switch. Without this, the input resolves against a distant positioned
+     ancestor; focusing it on click then scrolls that far-off location into view,
+     jumping the page. */
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--a1-sw-row-gap);

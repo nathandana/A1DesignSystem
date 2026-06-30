@@ -1,0 +1,33 @@
+{
+  "component": {
+    "stat": {
+      "gap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "titleGap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "valueGap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "metaGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "titleFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+      "titleFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
+      "valueFontFamily": { "$type": "fontFamily", "$value": "{base.font.family.display}" },
+      "valueFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.extraBold}" },
+      "valueFontSize": {
+        "xs": { "$type": "dimension", "$value": "{semantic.font.size.heading.xs}" },
+        "sm": { "$type": "dimension", "$value": "{semantic.font.size.display.sm}" },
+        "md": { "$type": "dimension", "$value": "{semantic.font.size.display.md}" },
+        "lg": { "$type": "dimension", "$value": "{semantic.font.size.display.lg}" },
+        "xl": { "$type": "dimension", "$value": "{semantic.font.size.display.xxl}" }
+      },
+      "valueLineHeight": { "$type": "lineHeight", "$value": "{semantic.font.lineHeight.display}" },
+      "affixFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+      "affixFontSize": {
+        "xs": { "$type": "dimension", "$value": "{semantic.font.size.body.md}" },
+        "sm": { "$type": "dimension", "$value": "{semantic.font.size.heading.xs}" },
+        "md": { "$type": "dimension", "$value": "{semantic.font.size.heading.sm}" },
+        "lg": { "$type": "dimension", "$value": "{semantic.font.size.heading.md}" },
+        "xl": { "$type": "dimension", "$value": "{semantic.font.size.heading.xl}" }
+      },
+      "descriptionFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+      "iconSize": { "$type": "dimension", "$value": "{base.spacing.20}" },
+      "iconOpticalSize": { "$type": "number", "$value": 20 }
+    }
+  }
+}

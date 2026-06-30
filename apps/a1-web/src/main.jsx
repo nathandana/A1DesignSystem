@@ -90,6 +90,7 @@ import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
 import { About } from './pages/About.jsx'
+import { KitchenSink } from './pages/KitchenSink.jsx'
 import { Blog } from './pages/Blog.jsx'
 import { BlogArticle } from './pages/BlogArticle.jsx'
 import { BLOG_POSTS } from './pages/blogPosts.js'
@@ -146,11 +147,12 @@ const PAGE_ICONS = {
   accessibility: 'accessibility',
   releases: 'new_releases',
   about: 'info',
+  'kitchen-sink': 'dashboard_customize',
   'label-editor': 'translate',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -178,6 +180,7 @@ const PAGE_TITLES = {
   'virtual-team': 'Virtual team',
   'backlog-ticket': 'Backlog',
   about: 'About',
+  'kitchen-sink': 'Kitchen sink',
   account: 'Account',
 }
 
@@ -507,6 +510,7 @@ function App() {
     addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
     addPage('releases', 'Release notes and shipped changes.', ['changelog', 'updates'])
     addPage('about', 'About A1 Design System.', ['system'])
+    addPage('kitchen-sink', 'A single page previewing as many A1 components as possible.', ['gallery', 'showcase', 'sticker sheet', 'preview', 'all components'])
     if (import.meta.env.DEV) addPage('virtual-team', 'Local review assistants for backlog and design work.', ['ai', 'persona'])
 
     foundations.forEach((foundation) => {
@@ -1183,13 +1187,19 @@ function App() {
     {
       id: 'components',
       label: pageTitle('components'),
-      active: COMPONENT_ROUTE_IDS.includes(activePage),
+      active: COMPONENT_ROUTE_IDS.includes(activePage) || activePage === 'kitchen-sink',
       items: [
         {
           icon: 'widgets',
           label: t('app.nav.overview', 'Overview'),
           href: getPath('components'),
           onClick: (e) => handleNavClick(e, 'components'),
+        },
+        {
+          icon: PAGE_ICONS['kitchen-sink'],
+          label: pageTitle('kitchen-sink'),
+          href: getPath('kitchen-sink'),
+          onClick: (e) => handleNavClick(e, 'kitchen-sink'),
         },
         { divider: true },
         ...componentCategories.map((category) => ({
@@ -1728,6 +1738,7 @@ function App() {
         )}
         {activePage === 'backlog-ticket' && <BacklogTicketPage key={window.location.pathname} onNavigate={navigate} />}
         {activePage === 'about' && <About onNavigate={navigate} />}
+        {activePage === 'kitchen-sink' && <KitchenSink onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}
