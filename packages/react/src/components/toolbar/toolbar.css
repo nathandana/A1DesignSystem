@@ -35,10 +35,11 @@
   --a1-toolbar-hover-bg: color-mix(in srgb, var(--semantic-color-text-default) 8%, transparent);
   --a1-toolbar-selected-bg: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
   --a1-toolbar-selected-fg: var(--semantic-color-text-default);
-  /* No boundary by default; the accessible theme and high-contrast modes raise
-     it so the bar is clearly delimited against the page surface. */
-  --a1-toolbar-border-width: 0;
-  --a1-toolbar-border-color: var(--semantic-color-border-default);
+  /* A hairline subtle border by default gives the bar definition against the
+     page surface. The accessible theme and high-contrast modes step it up to a
+     thicker, stronger border so it is clearly delimited at high contrast. */
+  --a1-toolbar-border-width: var(--component-divider-size-xs);
+  --a1-toolbar-border-color: var(--semantic-color-border-subtle);
 
   display: inline-flex;
   align-items: center;
@@ -53,21 +54,26 @@
   border-radius: var(--base-radius-md);
 }
 
-/* Accessible theme: add a clear boundary at high contrast. */
-[data-theme='accessible'] .a1-toolbar {
+/* Accessible theme: thicken the border and step the colour up to the stronger
+   default border for a clearly delimited boundary at high contrast. The theme
+   is activated by `.a1-theme-accessible` on <html> (see themes.css). */
+.a1-theme-accessible .a1-toolbar {
   --a1-toolbar-border-width: var(--component-divider-size-sm);
+  --a1-toolbar-border-color: var(--semantic-color-border-default);
 }
 
-/* OS high-contrast / forced-colors: add the same boundary. */
+/* OS high-contrast / forced-colors: apply the same stronger boundary. */
 @media (prefers-contrast: more) {
   .a1-toolbar {
     --a1-toolbar-border-width: var(--component-divider-size-sm);
+    --a1-toolbar-border-color: var(--semantic-color-border-default);
   }
 }
 
 @media (forced-colors: active) {
   .a1-toolbar {
     --a1-toolbar-border-width: var(--component-divider-size-sm);
+    --a1-toolbar-border-color: var(--semantic-color-border-default);
   }
 }
 
