@@ -17,8 +17,10 @@ export interface ToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Accessible name for the toolbar (ignored when `label` is set). */
   "aria-label"?: string;
   /**
-   * Optional visible caption rendered above the bar, styled to match the compact
-   * ChoiceGroup label. When set it also provides the toolbar's accessible name.
+   * Optional visible caption rendered above the bar. Tied to the same tokens as a
+   * compact form label (size, weight, colour) so it's styled identically to a
+   * field/legend label beside it. When set it also provides the toolbar's
+   * accessible name.
    */
   label?: React.ReactNode;
   /**

@@ -149,8 +149,9 @@ function ToolbarOverflow({ children, label = "More tools" }) {
  * configurator. Compose it from the `Toolbar*` sub-components, separating tools
  * with `<ToolbarDivider />`.
  *
- * Pass `label` to render an optional caption above the bar — styled to match the
- * compact ChoiceGroup label so toolbars sit naturally alongside form controls.
+ * Pass `label` to render an optional caption above the bar — tied to the same
+ * tokens as a compact form label (size, weight, colour) so a Toolbar caption is
+ * styled identically to a field/legend label sitting beside it.
  * Pass `overlay` to lift the bar into a floating, elevated surface (shadow +
  * border) for a toolbar that hovers over page content — e.g. a selection
  * formatting bar. The consumer positions the overlay (the bar itself does not

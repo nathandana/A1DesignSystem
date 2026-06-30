@@ -55,6 +55,7 @@
 ### Changed
 
 - **Toolbar — subtle border by default** (A1-220) — `Toolbar` now carries a **hairline subtle border** (`--component-divider-size-xs` width, `--semantic-color-border-subtle` colour) by default for better definition against the page surface. The **accessible theme** and OS **high-contrast** (`prefers-contrast: more` / `forced-colors`) step the border up to the thicker `--component-divider-size-sm` width and the stronger `--semantic-color-border-default` colour for a clearly delimited boundary when more contrast is needed. CSS-variable only (`--a1-toolbar-border-width` / `-color`) — no API change; the `overlay` variant keeps its own card-on-page border.
+- **Toolbar label — tied to form-label tokens** (A1-165) — the Toolbar's visible `label` caption now uses the **same tokens as a compact form label**: `--semantic-font-size-form-label-compact` for size and `--component-field-compact-label-font-weight` for weight (colour was already `--semantic-color-text-default`, matching field labels). Previously it used `--semantic-font-size-body-xs` (same value) with the *default* field-label weight (600) — an inconsistent compact-size / default-weight mix. The caption now renders identically to a compact `Field` / `Fieldset` legend label sitting beside it (12px / weight 500 / text-default). CSS-only; no API change.
 
 ## 0.23.0 — 2026-06-22
 
