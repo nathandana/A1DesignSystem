@@ -11,12 +11,14 @@
    toggle rounds its inline-end corners, so together they read as one pill. */
 .a1-split-button__main {
   --a1-button-border-radius: var(--component-button-border-radius) 0 0 var(--component-button-border-radius);
+  border-inline-end-width: 0;
 }
 
 .a1-split-button__toggle {
   --a1-button-border-radius: 0 var(--component-button-border-radius) var(--component-button-border-radius) 0;
   /* A snug caret target rather than a full text button's inline padding. */
   --a1-button-padding-inline: var(--base-spacing-8);
+  border-inline-start-width: 0;
   position: relative;
 }
 

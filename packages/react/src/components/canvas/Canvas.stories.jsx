@@ -17,6 +17,11 @@ export default {
       options: ['view', 'edit'],
     },
     showGrid: { control: 'boolean' },
+    gridType: {
+      control: 'inline-radio',
+      options: ['lines', 'dots'],
+    },
+    gridSpacing: { control: { type: 'number', min: 1, max: 64, step: 1 } },
     showControls: { control: 'boolean' },
     defaultZoom: { control: { type: 'number', min: 0.1, max: 4, step: 0.1 } },
   },
@@ -44,6 +49,8 @@ export const Default = {
     background: 'panel',
     mode: 'view',
     showGrid: true,
+    gridType: 'lines',
+    gridSpacing: 16,
     showControls: true,
     'aria-label': 'A1 Design System architecture',
   },
@@ -159,6 +166,26 @@ export const NoGrid = {
       </Canvas>
     </div>
   ),
+}
+
+export const DotGrid = {
+  render: () => (
+    <div style={{ width: '100%', height: '400px' }}>
+      <Canvas gridType="dots" gridSpacing={16} defaultPan={{ x: 60, y: 40 }} aria-label="Canvas with dot grid">
+        <Node id="tokens"    x={300} y={160} label="Design Tokens"  color="neutral" />
+        <Node id="react"     x={160} y={340} label="React"           color="info" />
+        <Node id="native"    x={300} y={340} label="React Native"    color="accent" />
+        <Node id="pure"      x={440} y={340} label="HTML / CSS"      color="success" />
+        <Node id="storybook" x={300} y={510} label="Storybook"       color="warn" />
+        <CanvasEdge id="e1" from="tokens" to="react"     direction="to" />
+        <CanvasEdge id="e2" from="tokens" to="native"    direction="to" />
+        <CanvasEdge id="e3" from="tokens" to="pure"      direction="to" />
+        <CanvasEdge id="e4" from="react"  to="storybook" direction="to" variant="dashed" />
+        <CanvasEdge id="e5" from="pure"   to="storybook" direction="to" variant="dashed" />
+      </Canvas>
+    </div>
+  ),
+  parameters: { docs: { description: { story: 'Dot grid: one token-coloured dot is drawn every gridSpacing pixels in both directions.' } } },
 }
 
 // Context menu + snap to grid in edit mode

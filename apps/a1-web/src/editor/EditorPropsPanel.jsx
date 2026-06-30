@@ -912,7 +912,7 @@ export const configToNodeUpdate = {
       src: config.src || undefined,
       alt: config.alt || undefined,
       caption: config.captionSrOnly ? undefined : (config.caption || undefined),
-      radius: config.radius && config.radius !== 'none' ? config.radius : undefined,
+      radius: config.radius || 'none',
       size: config.size || undefined,
       align: config.align && config.align !== 'none' ? config.align : undefined,
       aspectRatio: !config.customCrop && config.aspectRatio ? config.aspectRatio : undefined,
@@ -1812,6 +1812,11 @@ function PageConfigForm({ definition, projectId, pageLevel, availableLevels, onS
       {patternScope && (
         <PatternScopeField patternId={patternScope.patternId} projects={patternScope.projects} />
       )}
+      {patternScope?.sourceHref && (
+        <Link href={patternScope.sourceHref} weight="semibold">
+          {patternScope.sourceLabel || 'Back to source page'}
+        </Link>
+      )}
       {!patternScope && (
         <PageDetailField projectId={projectId} page={definition.page} onPageMetadataChange={onPageMetadataChange} />
       )}
@@ -1873,6 +1878,7 @@ export function EditorPropsPanel({
   onItemSelect,
   onPageMetadataChange,
   onConvertNode,
+  onCreatePattern,
   onDuplicatePage,
   onDeletePage,
   patternScope = null,
@@ -2116,6 +2122,19 @@ export function EditorPropsPanel({
       {BindSection}
       {CollectionSection}
       {ConvertSection}
+      {!lockAuthoring && onCreatePattern && (
+        <>
+          <Divider space="xs" />
+          <Button
+            variant="secondary"
+            icon="dashboard_customize"
+            fullWidth
+            onClick={() => onCreatePattern(node.id)}
+          >
+            Create pattern from selection
+          </Button>
+        </>
+      )}
     </Stack>
   )
 }

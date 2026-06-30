@@ -1,0 +1,416 @@
+@import "../shared.css";
+
+:root {
+  --dayflow-accent: var(--base-color-accent-600);
+  --dayflow-accent-soft: var(--base-color-accent-100);
+  --dayflow-ink: var(--semantic-color-text-default);
+  --dayflow-muted: var(--semantic-color-text-muted);
+  --dayflow-line: var(--semantic-color-border-subtle);
+  --dayflow-panel: var(--semantic-color-surface-panel);
+  --dayflow-priority-high: var(--semantic-color-status-error-text);
+  --dayflow-priority-high-bg: var(--semantic-color-status-error-background);
+  --dayflow-priority-medium: var(--semantic-color-status-warning-text);
+  --dayflow-priority-medium-bg: var(--semantic-color-status-warning-background);
+  --dayflow-priority-low: var(--semantic-color-text-muted);
+  --dayflow-priority-low-bg: var(--semantic-color-surface-panel);
+}
+
+body {
+  font-family: var(--theme-a1-accessible-font-family-body, "Atkinson Hyperlegible", Inter, sans-serif);
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--base-color-accent-500) 10%, transparent), transparent 40%),
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--base-color-accent-400) 8%, transparent), transparent 35%),
+    var(--semantic-color-surface-page);
+}
+
+.dayflow-app {
+  width: min(1200px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+
+.dayflow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dayflow-line);
+}
+
+.dayflow-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 160px;
+}
+
+.dayflow-header__logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--dayflow-accent), #40916c);
+  color: white;
+  font-size: 1.1rem;
+}
+
+.dayflow-header__title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.dayflow-header__tagline {
+  margin: 0;
+  color: var(--dayflow-muted);
+  font-size: 0.8rem;
+}
+
+.dayflow-header__nav {
+  flex: 1;
+  max-width: 420px;
+}
+
+.dayflow-page-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dayflow-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.dayflow-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dayflow-metrics__item {
+  text-align: center;
+}
+
+.dayflow-leave-by {
+  border-left: 4px solid var(--dayflow-accent);
+  background: linear-gradient(90deg, rgba(45, 106, 79, 0.08), transparent);
+}
+
+.dayflow-leave-by--heavy {
+  border-left-color: var(--semantic-color-status-error-text);
+}
+
+.dayflow-leave-by--moderate {
+  border-left-color: var(--semantic-color-status-warning-text);
+}
+
+.dayflow-leave-by__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dayflow-ai-summary {
+  background: linear-gradient(135deg, rgba(45, 106, 79, 0.12), rgba(64, 145, 108, 0.06));
+}
+
+.dayflow-ai-summary__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--dayflow-accent-soft);
+  color: var(--dayflow-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.dayflow-insight__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dayflow-insight--warning {
+  border-left: 3px solid var(--semantic-color-status-warning-text);
+}
+
+.dayflow-insight--traffic {
+  border-left: 3px solid var(--semantic-color-status-error-text);
+}
+
+.dayflow-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 12px;
+}
+
+.dayflow-timeline__item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+}
+
+.dayflow-timeline__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 18px;
+}
+
+.dayflow-timeline__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dayflow-accent);
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px var(--dayflow-line);
+}
+
+.dayflow-timeline__dot--drive {
+  background: #40916c;
+}
+
+.dayflow-timeline__line {
+  flex: 1;
+  width: 2px;
+  min-height: 24px;
+  background: var(--dayflow-line);
+  margin-top: 4px;
+}
+
+.dayflow-timeline__card {
+  margin-bottom: 12px;
+}
+
+.dayflow-timeline__header {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+}
+
+.dayflow-timeline__icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--dayflow-accent-soft);
+  color: var(--dayflow-accent);
+}
+
+.dayflow-priority--high {
+  --dayflow-priority-color: var(--dayflow-priority-high);
+  --dayflow-priority-surface: var(--dayflow-priority-high-bg);
+}
+
+.dayflow-priority--medium {
+  --dayflow-priority-color: var(--dayflow-priority-medium);
+  --dayflow-priority-surface: var(--dayflow-priority-medium-bg);
+}
+
+.dayflow-priority--low {
+  --dayflow-priority-color: var(--dayflow-priority-low);
+  --dayflow-priority-surface: var(--dayflow-priority-low-bg);
+}
+
+.dayflow-errand-card {
+  border-left: 4px solid var(--dayflow-priority-color, var(--dayflow-line));
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--dayflow-priority-surface, var(--dayflow-panel)) 24%, transparent),
+    transparent 55%
+  );
+}
+
+.dayflow-errand-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dayflow-errand-card__title-row,
+.dayflow-timeline__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dayflow-priority-marker {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dayflow-priority-color) 16%, transparent);
+  color: var(--dayflow-priority-color);
+}
+
+.dayflow-timeline__card.dayflow-priority--high,
+.dayflow-timeline__card.dayflow-priority--medium,
+.dayflow-timeline__card.dayflow-priority--low {
+  border-left: 3px solid var(--dayflow-priority-color);
+}
+
+.dayflow-timeline__icon-wrap.dayflow-priority--high,
+.dayflow-timeline__icon-wrap.dayflow-priority--medium,
+.dayflow-timeline__icon-wrap.dayflow-priority--low {
+  background: color-mix(in srgb, var(--dayflow-priority-color) 14%, transparent);
+  color: var(--dayflow-priority-color);
+}
+
+.dayflow-calendar-card__row,
+.dayflow-errand-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dayflow-calendar-card__info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dayflow-calendar-card__swatch {
+  width: 12px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.dayflow-tablist-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dayflow-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Add errand — bottom sheet on mobile, dialog on tablet+ */
+.dayflow-errand-overlay__handle {
+  display: none;
+}
+
+.dayflow-errand-overlay__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--base-spacing-16);
+}
+
+.dayflow-errand-overlay__title {
+  flex: 1;
+  margin: 0;
+}
+
+.dayflow-errand-overlay__body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .dayflow-errand-overlay.a1-dialog {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    max-height: min(92dvh, 100%);
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: calc(var(--component-dialog-padding) + env(safe-area-inset-bottom, 0px));
+    animation: dayflow-sheet-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dayflow-errand-overlay__handle {
+    display: block;
+    width: 2.5rem;
+    height: 0.3rem;
+    margin: 0 auto var(--base-spacing-12);
+    border-radius: 999px;
+    background: var(--semantic-color-border-default);
+  }
+
+  .dayflow-errand-overlay__header {
+    padding-top: 0;
+  }
+}
+
+@media (min-width: 641px) {
+  .dayflow-errand-overlay.a1-dialog {
+    width: min(36rem, calc(100vw - var(--base-spacing-64)));
+    max-height: calc(100dvh - var(--base-spacing-64));
+    animation: dayflow-dialog-in 0.22s ease-out;
+  }
+
+  .dayflow-errand-overlay__handle {
+    display: none;
+  }
+}
+
+@keyframes dayflow-sheet-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0.6;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dayflow-dialog-in {
+  from {
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .dayflow-dashboard-grid,
+  .dayflow-metrics,
+  .dayflow-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dayflow-header {
+    flex-wrap: wrap;
+  }
+
+  .dayflow-header__nav {
+    order: 3;
+    max-width: none;
+    width: 100%;
+  }
+
+  .dayflow-page-header {
+    flex-direction: column;
+  }
+}

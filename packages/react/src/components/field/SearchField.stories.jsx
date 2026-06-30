@@ -104,6 +104,7 @@ export const States = {
       <SearchField {...args} label="Default" hint="Search by keyword or A1 number." />
       <SearchField {...args} label="With a value" defaultValue="slider" hint="Clear button appears on the right." />
       <SearchField {...args} label="Error" defaultValue="???" error="No results — try a different term." />
+      <SearchField {...args} label="Read-only" defaultValue="archived" readOnly hint="No clear button is shown." />
       <SearchField {...args} label="Disabled" defaultValue="archived" disabled />
     </div>
   ),

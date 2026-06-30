@@ -52,17 +52,17 @@ export const Sizes = {
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)", maxWidth: 480 }}>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" }}>Comfortable</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-12)" }}>Comfortable</p>
         <TextField size="comfortable" label="Full name" hint="As it appears on your ID." />
       </div>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" }}>Default</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-12)" }}>Default</p>
         <TextField size="default" label="Full name" hint="As it appears on your ID." />
       </div>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" }}>Compact</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-12)" }}>Compact</p>
         <TextField size="compact" label="Full name" hint="As it appears on your ID." />
       </div>
 
@@ -100,7 +100,7 @@ export const LabelPosition = {
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-32)", maxWidth: 560 }}>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-16)" }}>Above</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-16)" }}>Above</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
           <TextField {...args} labelPosition="above" label="First name" />
           <TextField {...args} labelPosition="above" label="Last name" />
@@ -109,7 +109,7 @@ export const LabelPosition = {
       </div>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-16)" }}>Side</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-16)" }}>Side</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
           <TextField {...args} labelPosition="before" label="First name" />
           <TextField {...args} labelPosition="before" label="Last name" />
@@ -146,7 +146,7 @@ export const RequiredBadge = {
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-24)", maxWidth: 480 }}>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" }}>Comfortable — badge</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-12)" }}>Comfortable — badge</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
           <TextField size="comfortable" label="Full name" hint="As it appears on your ID." required />
           <TextField size="comfortable" label="Email address" hint="We'll use this to contact you." required />
@@ -154,7 +154,7 @@ export const RequiredBadge = {
       </div>
 
       <div>
-        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-12)" }}>Default — asterisk</p>
+        <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-12)" }}>Default — asterisk</p>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)" }}>
           <TextField size="default" label="Full name" hint="As it appears on your ID." required />
           <TextField size="compact" label="Email address" required />
@@ -183,7 +183,7 @@ export const SizesAndStates = {
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-40)" }}>
         {sizes.map(size => (
           <div key={size}>
-            <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--base-spacing-16)" }}>{size}</p>
+            <p style={{ fontFamily: "var(--component-paragraph-font-family)", fontSize: "var(--semantic-font-size-body-xs)", fontWeight: 600, color: "var(--semantic-color-text-muted)", letterSpacing: 0, marginBottom: "var(--base-spacing-16)" }}>{size}</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--base-spacing-16)" }}>
               {fields.map(f => (
                 <div key={f.label} style={{ flex: "1 1 180px", minWidth: 0 }}>
@@ -207,6 +207,31 @@ export const Autocomplete = {
     <form style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)", maxWidth: 360 }}>
       <TextField label="Email address" type="email" autoComplete="email" hint="Browsers and password managers will offer to autofill this." />
       <TextField label="Password" type="password" autoComplete="current-password" />
+    </form>
+  ),
+};
+
+export const ReadOnlyAutofillGuard = {
+  name: "Read-only autofill guard",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <form style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)", maxWidth: 360 }}>
+      <TextField
+        label="Account email"
+        type="email"
+        value="jane.smith@example.com"
+        autoComplete="email"
+        readOnly
+        hint="Read-only fields ignore autofill and keep their existing value."
+        onChange={() => {}}
+      />
+      <TextField
+        label="Username"
+        value="jsmith"
+        autoComplete="username"
+        readOnly
+        onChange={() => {}}
+      />
     </form>
   ),
 };

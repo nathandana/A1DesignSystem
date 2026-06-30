@@ -146,71 +146,18 @@
   padding: var(--base-spacing-8) var(--base-spacing-16) var(--base-spacing-16);
 }
 
-/* ── Search field — matches compact TextField exactly ────────────────────── */
+/* ── Search field ───────────────────────────────────────────────────────── */
 
 .a1-dt-filters__search-wrap {
-  position: relative;
   display: flex;
   align-items: center;
-  /* Compact field geometry */
-  height: var(--component-field-compact-height);
-  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
-  border-radius: var(--component-field-compact-border-radius);
-  background: var(--semantic-color-surface-page);
-  min-width: 200px;
-  overflow: hidden;
-  transition:
-    border-color var(--semantic-motion-duration-fast),
-    background var(--semantic-motion-duration-fast);
+  gap: var(--base-spacing-6);
+  min-inline-size: 200px;
 }
 
-.a1-dt-filters__search-wrap:hover:not(:focus-within) {
-  background: var(--a1-field-hover-background);
-  border-color: var(--a1-field-hover-border-color);
-}
-
-.a1-dt-filters__search-wrap:focus-within {
-  border-color: var(--semantic-color-action-background);
-  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
-  outline-offset: var(--component-field-focus-ring-offset);
-}
-
-/* Search icon — 16px matches chevron-size-compact */
-.a1-dt-filters__search-icon {
-  position: absolute;
-  left: var(--component-field-compact-padding-inline);
-  font-size: var(--component-field-chevron-size-compact);
-  color: var(--semantic-color-text-muted);
-  pointer-events: none;
-  flex-shrink: 0;
-}
-
-/* Input — fills remaining space; no individual border/outline */
-.a1-dt-filters__search-input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  border: none;
-  background: transparent;
-  /* Left padding = field padding-inline + icon + gap (4px) */
-  padding-inline-start: calc(
-    var(--component-field-compact-padding-inline) +
-    var(--component-field-chevron-size-compact) +
-    var(--component-field-compact-gap)
-  );
-  padding-inline-end: var(--component-field-compact-padding-inline);
-  font-family: var(--component-paragraph-font-family);
-  font-size: var(--semantic-font-size-body-sm);
-  font-weight: var(--base-font-weight-regular);
-  color: var(--semantic-color-text-default);
-  outline: none;
-}
-
-.a1-dt-filters__search-input::-webkit-search-cancel-button { display: none; }
-
-.a1-dt-filters__search-input::placeholder {
-  color: var(--semantic-color-text-muted);
-  font-weight: var(--base-font-weight-regular);
+.a1-dt-filters__search-field {
+  flex: 1 1 200px;
+  min-inline-size: 0;
 }
 
 /* ── Scope selector (right side of search) ───────────────────────────────── */
@@ -219,16 +166,15 @@
   position: relative;
   display: flex;
   align-items: center;
-  align-self: stretch;
   flex-shrink: 0;
-  border-inline-start: var(--component-field-border-width) solid var(--semantic-color-border-subtle);
 }
 
 .a1-dt-filters__scope-select {
   appearance: none;
   -webkit-appearance: none;
-  height: 100%;
-  border: none;
+  block-size: var(--component-field-compact-height);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--component-field-compact-border-radius);
   background: var(--semantic-color-surface-panel);
   /* Right padding accommodates the chevron icon */
   padding-inline-start: var(--component-field-compact-padding-inline);
@@ -239,6 +185,17 @@
   cursor: pointer;
   max-width: 120px;
   outline: none;
+}
+
+.a1-dt-filters__scope-select:hover {
+  background: var(--a1-field-hover-background);
+  border-color: var(--a1-field-hover-border-color);
+}
+
+.a1-dt-filters__scope-select:focus-visible {
+  border-color: var(--semantic-color-action-background);
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
 }
 
 /* Chevron for scope select */
@@ -255,5 +212,9 @@
   .a1-dt-filters__search-wrap {
     flex: 1 1 100%;
     min-width: 0;
+  }
+
+  .a1-dt-filters__search-field {
+    flex-basis: 100%;
   }
 }

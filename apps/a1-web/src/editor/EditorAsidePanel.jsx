@@ -28,6 +28,7 @@ export function EditorAsidePanel({
   onItemSelect,
   onPageMetadataChange,
   onConvertNode,
+  onCreatePattern,
   onDuplicatePage,
   onDeletePage,
   patternScope,
@@ -141,6 +142,7 @@ export function EditorAsidePanel({
               onPageMetadataChange={onPageMetadataChange}
               patternScope={patternScope}
               onConvertNode={onConvertNode}
+              onCreatePattern={onCreatePattern}
               onDuplicatePage={onDuplicatePage}
               onDeletePage={onDeletePage}
               lockEnforced={lockEnforced}

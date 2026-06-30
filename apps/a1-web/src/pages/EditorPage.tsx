@@ -617,6 +617,8 @@ export function EditorPage({
   exampleId = 'default',
   documentKind = 'page',
   patternId = null,
+  patternSourceHref = null,
+  patternSourceLabel = null,
   pages = [],
   projects = [],
   projectId = null,
@@ -651,6 +653,9 @@ export function EditorPage({
   documentKind?: 'page' | 'pattern' | 'layout';
   /** The pattern id when documentKind === 'pattern' (used for save + lock authoring). */
   patternId?: string | null;
+  /** Optional link back to the page where this pattern was created from. */
+  patternSourceHref?: string | null;
+  patternSourceLabel?: string | null;
   pages?: { id: string; label: string }[];
   /** All projects — used to scope a pattern to specific projects. */
   projects?: { id: string; name: string }[];
@@ -1381,6 +1386,13 @@ export function EditorPage({
     replaceNodeEverywhere(nodeId, instance, 'Created pattern from selection');
     onSelectNode?.(instance.id);
     setNotice('Created pattern from selection');
+    const params = new URLSearchParams({ pattern: id });
+    if (projectId) params.set('sourceProject', projectId);
+    if (exampleId) params.set('sourceDoc', exampleId);
+    params.set('sourceNode', instance.id);
+    window.setTimeout(() => {
+      window.location.href = `/editor?${params.toString()}`;
+    }, 0);
   }
 
   // Pattern authoring: set lock metadata on a node (governs instances of the pattern).
@@ -1821,7 +1833,7 @@ export function EditorPage({
           activeItem={activeItem}
           onItemSelect={handleItemSelect}
           onPageMetadataChange={handlePageMetadataChange}
-          patternScope={isPattern && patternId ? { patternId, projects } : null}
+          patternScope={isPattern && patternId ? { patternId, projects, sourceHref: patternSourceHref, sourceLabel: patternSourceLabel } : null}
           lockEnforced={!isPattern}
           lockAuthoring={isPattern}
           onSetLock={handleSetNodeLock}
@@ -1834,6 +1846,7 @@ export function EditorPage({
           onHistoryRename={handleHistoryRename}
           onHistoryPreview={handleHistoryPreview}
           onConvertNode={handleConvertNode}
+          onCreatePattern={isPattern ? undefined : handleCreatePatternFromNode}
           onDuplicatePage={onDuplicatePage}
           onDeletePage={onDeletePage}
           addTarget={addTarget}

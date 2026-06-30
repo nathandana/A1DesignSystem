@@ -1,0 +1,78 @@
+:root {
+  font-family: var(--semantic-font-family-body, "Inter", system-ui, sans-serif);
+}
+
+body {
+  background: var(--semantic-color-surface-sunken, #f4f4f5);
+  color: var(--semantic-color-text-default, #18181b);
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.todo-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-spacing-gap-xs, 4px);
+}
+
+.todo-header__subtitle {
+  margin: 0;
+}
+
+/* ── Page shell: a centered, readable column ───────────────────── */
+.todo-shell {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-block: var(--semantic-spacing-gap-lg, 24px);
+}
+
+.todo-summary {
+  margin: 0;
+}
+
+/* ── Composer ───────────────────────────────────────────────────── */
+.todo-composer__field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ── List ───────────────────────────────────────────────────────── */
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-item {
+  padding-block: var(--semantic-spacing-gap-sm, 8px);
+  border-bottom: 1px solid var(--semantic-color-border-subtle, #e4e4e7);
+}
+
+.todo-item:first-child {
+  padding-top: 0;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.todo-item__checkbox {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.todo-item__edit-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.todo-item__actions {
+  flex: 0 0 auto;
+}
+
+/* Strike through the label of a completed task. */
+.todo-item--done .a1-checkbox-item__label {
+  text-decoration: line-through;
+  color: var(--semantic-color-text-muted, #71717a);
+}

@@ -282,8 +282,167 @@ select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Start page ──────────────────────────────────────────────────────────── */
+.cl-shell--start .cl-start-hero {
+  border-radius: 0 0 2rem 2rem;
+}
+
+.cl-start-hero__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.cl-start-hero__scene {
+  flex: 1;
+  min-width: 0;
+  width: min(100%, 560px);
+}
+
+.cl-scene {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 20px 60px rgba(26, 15, 7, 0.12);
+}
+
+.cl-scene__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cl-scene__curtain-cat {
+  animation: cl-scene-climb 2.4s ease-in-out infinite;
+  transform-origin: 100px 250px;
+}
+
+.cl-scene__wall-cat {
+  animation: cl-scene-bounce 1.8s ease-in-out infinite;
+  transform-origin: 520px 120px;
+}
+
+.cl-scene__counter-cat {
+  animation: cl-scene-wiggle 2s ease-in-out infinite;
+  transform-origin: 340px 230px;
+}
+
+.cl-scene__wake-cat {
+  animation: cl-scene-poke 1.6s ease-in-out infinite;
+  transform-origin: 286px 240px;
+}
+
+.cl-scene__alarm {
+  animation: cl-scene-float 2.2s ease-in-out infinite;
+}
+
+@keyframes cl-scene-climb {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes cl-scene-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(-14px) rotate(-4deg); }
+  70% { transform: translateY(-6px) rotate(2deg); }
+}
+
+@keyframes cl-scene-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes cl-scene-poke {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
+@keyframes cl-scene-float {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-4px); opacity: 0.75; }
+}
+
+.cl-start-section-heading {
+  max-width: 42rem;
+}
+
+.cl-start-cta {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 143, 200, 0.18) 0%, transparent 42%),
+    var(--semantic-color-surface-panel);
+}
+
+/* ── Login page ──────────────────────────────────────────────────────────── */
+.cl-login-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: 2rem;
+  align-items: start;
+}
+
+.cl-login-panel {
+  max-width: 28rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.cl-login-header {
+  margin-block-end: 1.5rem;
+}
+
+.cl-login-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.cl-login-footer {
+  text-align: center;
+}
+
+.cl-login-aside {
+  position: sticky;
+  top: 2rem;
+}
+
+.cl-login-aside__card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid var(--semantic-color-border-subtle);
+  box-shadow: 0 20px 60px rgba(26, 15, 7, 0.08);
+}
+
+.cl-login-aside__tag {
+  color: var(--semantic-color-text-accent);
+}
+
+.cl-login-aside__cat {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+}
+
+.cl-login-aside__cat .cat-preview__wrap {
+  width: min(100%, 200px);
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
+  .cl-login-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cl-login-aside {
+    position: static;
+    order: -1;
+  }
+
+  .cl-login-aside__cat {
+    min-height: 180px;
+  }
   .cl-form-card {
     width: 100%;
   }

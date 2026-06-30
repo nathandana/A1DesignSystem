@@ -13,6 +13,7 @@ export interface TextareaFieldProps extends Omit<React.TextareaHTMLAttributes<HT
   labelPosition?: "above" | "before";
   required?: boolean;
   disabled?: boolean;
+  /** Prevents user edits and suppresses browser/password-manager autofill. */
   readOnly?: boolean;
   /**
    * Initial visible row height. Pass a number for exact rows or a size token.

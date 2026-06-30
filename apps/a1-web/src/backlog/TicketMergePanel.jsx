@@ -180,22 +180,20 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                     </Stack>
                   </Stack>
                   <Paragraph size="sm">{l.title}</Paragraph>
-                  <ButtonContainer align="start">
+                  <Stack direction="row" gap="xs" align="center" wrap>
                     <IconButton
-                      size="sm"
                       variant="secondary"
                       icon="open_in_new"
-                      aria-label={`Open ${ticketRef(l.number)}`}
+                      label={`Open ${ticketRef(l.number)}`}
                       onClick={() => onOpenItem?.(l)}
                     />
                     <IconButton
-                      size="sm"
                       variant="tertiary"
                       icon="link_off"
-                      aria-label={`Unlink ${ticketRef(l.number)}`}
+                      label={`Unlink ${ticketRef(l.number)}`}
                       onClick={() => onUnlink?.(item, l)}
                     />
-                  </ButtonContainer>
+                  </Stack>
                 </Stack>
               </Card>
             ))}
@@ -297,9 +295,8 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                   <Paragraph as="span" size="xs" color="muted">{reasons.join(' · ')}</Paragraph>
                 )}
                 {/* Compact icon-button actions; right-click the card for the full menu (A1-208). */}
-                <ButtonContainer align="start">
+                <Stack direction="row" gap="xs" align="center" wrap>
                   <IconButton
-                    size="sm"
                     variant="secondary"
                     icon="open_in_new"
                     label={`Open ${ticketRef(m.number)}`}
@@ -307,7 +304,6 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                   />
                   {!isLinked(m) && (
                     <IconButton
-                      size="sm"
                       variant="secondary"
                       icon="link"
                       label={`Link ${ticketRef(m.number)} to this ticket`}
@@ -315,7 +311,6 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                     />
                   )}
                   <IconButton
-                    size="sm"
                     variant="secondary"
                     icon="merge"
                     label={`Merge ${ticketRef(m.number)} into this ticket`}
@@ -323,7 +318,6 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                     onClick={() => startMerge(m)}
                   />
                   <IconButton
-                    size="sm"
                     variant="tertiary"
                     icon="more_vert"
                     label={`More actions for ${ticketRef(m.number)}`}
@@ -332,7 +326,7 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                       setMenu({ x: r.left, y: r.bottom, match: m })
                     }}
                   />
-                </ButtonContainer>
+                </Stack>
               </Stack>
             </Card>
           ))}

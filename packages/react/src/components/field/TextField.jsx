@@ -1,4 +1,4 @@
-import { useId, forwardRef, useContext } from "react";
+import { useId, useLayoutEffect, useRef, useCallback, forwardRef, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
@@ -20,6 +20,12 @@ export const TextField = forwardRef(function TextField({
   className = "",
   placeholder: _removed,
   inputOverlay,
+  autoComplete,
+  value,
+  defaultValue,
+  onBeforeInput,
+  onInput,
+  onChange,
   ...props
 }, ref) {
   const ctx     = useContext(FieldsetContext);
@@ -46,6 +52,43 @@ export const TextField = forwardRef(function TextField({
     .filter(Boolean).join(" ") || undefined;
 
   const requiredText = useLabel("field.required", "Required");
+  const inputRef = useRef(null);
+  const readOnlyValueRef = useRef("");
+
+  const mergedRef = useCallback((el) => {
+    inputRef.current = el;
+    if (typeof ref === "function") ref(el);
+    else if (ref) ref.current = el;
+  }, [ref]);
+
+  useLayoutEffect(() => {
+    if (readOnly && inputRef.current) readOnlyValueRef.current = inputRef.current.value;
+  }, [readOnly, value, defaultValue]);
+
+  function restoreReadOnlyValue(e) {
+    if (!readOnly) return false;
+    const input = e.currentTarget;
+    if (input.value !== readOnlyValueRef.current) input.value = readOnlyValueRef.current;
+    return true;
+  }
+
+  function handleBeforeInput(e) {
+    if (readOnly) {
+      e.preventDefault();
+      return;
+    }
+    onBeforeInput?.(e);
+  }
+
+  function handleInput(e) {
+    if (restoreReadOnlyValue(e)) return;
+    onInput?.(e);
+  }
+
+  function handleChange(e) {
+    if (restoreReadOnlyValue(e)) return;
+    onChange?.(e);
+  }
 
   return (
     <div className={classes}>
@@ -61,15 +104,25 @@ export const TextField = forwardRef(function TextField({
       )}
       <div className="a1-field__control">
         <input
-          ref={ref}
+          ref={mergedRef}
           id={id}
           className="a1-field__input"
           required={required}
           disabled={disabled}
-          readOnly={readOnly}
           aria-describedby={describedBy}
           aria-invalid={error ? "true" : undefined}
           {...props}
+          value={value}
+          defaultValue={defaultValue}
+          readOnly={readOnly}
+          autoComplete={readOnly ? "off" : autoComplete}
+          data-1p-ignore={readOnly ? "true" : props["data-1p-ignore"]}
+          data-bwignore={readOnly ? "true" : props["data-bwignore"]}
+          data-lpignore={readOnly ? "true" : props["data-lpignore"]}
+          data-form-type={readOnly ? "other" : props["data-form-type"]}
+          onBeforeInput={handleBeforeInput}
+          onInput={handleInput}
+          onChange={handleChange}
         />
         {inputOverlay}
       </div>

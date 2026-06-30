@@ -319,6 +319,7 @@ export function Canvas({
   edgeStyle = 'straight',
   snapToGrid = false,
   gridSpacing = 16,
+  gridType = 'lines',
   defaultZoom = 1,
   defaultPan,
   highlightConnections = false,
@@ -670,7 +671,15 @@ export function Canvas({
   ].filter(Boolean).join(' ')
   const vpTransform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`
   const gTransform = `translate(${pan.x} ${pan.y}) scale(${zoom})`
-  const gridPx = gridSpacing * zoom
+  const resolvedGridSpacing = Number.isFinite(Number(gridSpacing)) && Number(gridSpacing) > 0
+    ? Number(gridSpacing)
+    : GRID_SPACING
+  const gridPx = resolvedGridSpacing * zoom
+  const gridStyle = {
+    '--a1-canvas-grid-size': `${gridPx}px`,
+    '--a1-canvas-grid-x': `${pan.x % gridPx}px`,
+    '--a1-canvas-grid-y': `${pan.y % gridPx}px`,
+  }
   const hasNodes = Object.keys(nodeMap).length > 0
 
   return (
@@ -699,21 +708,14 @@ export function Canvas({
         {...rest}
       >
         {showGrid && (
-          <svg className="a1-canvas__grid" aria-hidden="true">
-            <defs>
-              <pattern
-                id={`${uid}-grid`}
-                width={gridPx}
-                height={gridPx}
-                x={pan.x % gridPx}
-                y={pan.y % gridPx}
-              >
-                <path d={`M ${gridPx} 0 L 0 0 L 0 ${gridPx}`}
-                  fill="none" className="a1-canvas__grid-line" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill={`url(#${uid}-grid)`} />
-          </svg>
+          <div
+            className={[
+              'a1-canvas__grid',
+              gridType === 'dots' ? 'a1-canvas__grid--dots' : 'a1-canvas__grid--lines',
+            ].join(' ')}
+            style={gridStyle}
+            aria-hidden="true"
+          />
         )}
 
         {/* Edge SVG layer — drawn in canvas-space coordinates */}

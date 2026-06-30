@@ -12,6 +12,8 @@
 
 .a1-icon-custom {
   font-family: var(--a1-custom-icon-font-family, 'A1 Custom Icons');
+  font-feature-settings: "liga";
+  text-rendering: optimizeLegibility;
   font-variation-settings: normal;
   font-style: normal;
   font-weight: normal;

@@ -1,0 +1,12 @@
+{
+  "name": "dayflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && npm run dev:dayflow",
+    "build": "cd ../.. && npm run build:dayflow",
+    "preview": "cd ../.. && npm run preview:dayflow",
+    "netlify:build": "cd ../.. && npm ci && npm run build:dayflow"
+  }
+}

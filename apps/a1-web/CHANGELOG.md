@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
+
+- **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.
+
+- **Editor — pattern creation flow** (A1-231) — creating a pattern from a selected page element is now available from the right-side Configure panel. The flow replaces the source element with a linked pattern instance, then opens the new pattern in the editor so its name and details can be filled in immediately, with a back link to the source page shown in the pattern details.
+
+- **Backlog — remembered swimlanes** — the board now saves which swimlanes are shown in local storage alongside the existing backlog search, sort, and filter preferences, so hidden or restored lanes persist across reloads.
+
+- **Backlog — next and previous ticket review** (A1-243) — the ticket detail dialog footer now has left-aligned previous and next icon buttons so reviewers can move through the current backlog view without closing the dialog. The sequence follows the active view: board order, all-tickets order, or the grouped queue order.
+
+- **Editor — Figure radius editing** (A1-346) — fixed Figure radius changes in the editor, including changing an existing rounded image back to None. The editor now writes `radius="none"` explicitly instead of dropping the prop, so merged node updates clear prior rounded values correctly.
+
+- **Rules editor — editable rules and examples** (A1-57) — every rule in the Rules table can now be edited. Editing a built-in rule saves a local override with the same rule id, so the bundled source stays intact while the editable local version appears in the table. The rule dialog also supports illustrative examples: add code snippets, upload images, or paste an image into the examples area; image examples are stored through the existing local image library. The table shows an Examples column with compact code/image previews.
+
+- **Backlog — paste images into tickets** (A1-160) — ticket creation and editing dialogs now accept pasted images anywhere inside the dialog. Pasted images use the existing local image library storage path, are added to the ticket's screenshot attachments, announce success with a polite status message, and leave normal text paste alone unless the clipboard contains an image. The ticket edit dialog also gained removable screenshot thumbnails so attachments can be managed after creation. Help updated.
+
 - **Stat — component page + configurator** (A1-375) — the `Stat` component now has a live a1-web component page under the **Data** category (`/components/stat`), with a Configure panel (title, value, format, size, align, advanced number-format options, and a status badge), an accurate code snippet, Properties/Rules/Accessibility tabs, and the standard package/status/related-component registry entries (React-only, experimental).
 
 - **Kitchen sink page** (A1-343) — added a single `/kitchen-sink` page that previews as many A1 components as possible in one scrollable view, grouped by category (typography, actions and controls, inputs, feedback and messaging, layout and media, navigation and data). Built entirely from exported A1 components and layout primitives (`Section`/`Stack`/`Grid`/`Card`) with no custom styling, so it doubles as a quick cross-theme/cross-breakpoint smoke test. Linked from the Explore menu and global search (keywords: gallery, showcase, sticker sheet, preview).

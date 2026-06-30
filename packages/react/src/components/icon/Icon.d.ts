@@ -36,11 +36,12 @@ export declare function Icon(props: IconProps): React.ReactElement;
 
 export interface CustomIconFontRegistration {
   fontUrl: string;
-  mappings: Record<string, number>;
+  /** Custom icon name mappings. Values are ligature names; numeric codepoints are accepted for legacy fonts. */
+  mappings: Record<string, string | number>;
   fontFamily?: string;
 }
 
-/** Register a browser-built custom icon font for the current application scope. */
+/** Register a browser-built custom icon ligature font for the current application scope. */
 export declare function registerCustomIconFont(registration: CustomIconFontRegistration): void;
 /** Clear the active custom icon font and mappings. */
 export declare function clearCustomIconFont(): void;

@@ -15,12 +15,13 @@ import {
   TextareaField,
   TextField,
 } from '@gtivr4/a1-design-system-react'
-import { addImage, resolveSrc, toImageRef } from '../lib/imageLibrary'
+import { resolveSrc } from '../lib/imageLibrary'
 import { findSimilar, similarityLabel, similarityTone } from '../services/backlog/similarity'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_KINDS,
   SCOPE_LABELS, TYPE_LABELS, TYPES, ticketRef,
 } from '../services/backlog/types'
+import { attachImageFiles, attachmentStatus, imageFilesFromClipboard } from './imageAttachments'
 import { ScopeBadge } from './TicketBadges'
 
 const TYPE_OPTIONS = TYPES.map((value) => ({ value, label: TYPE_LABELS[value] }))
@@ -43,6 +44,7 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
   const [attachments, setAttachments] = useState([]) // a1img:// refs
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [attachmentMessage, setAttachmentMessage] = useState('')
   const fileRef = useRef(null)
   const titleRef = useRef(null)
 
@@ -50,7 +52,7 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
     if (!open) return
     setType('feature'); setTitle(''); setDescription(''); setPriority(''); setComplexity('')
     setScopeKind(preScoped ? scope.kind : 'general')
-    setAttachments([]); setBusy(false); setError('')
+    setAttachments([]); setBusy(false); setError(''); setAttachmentMessage('')
     // Focus the Title so you can start typing immediately (A1-281). Deferred to the
     // next frame so it runs after the Dialog's showModal() has settled focus.
     const raf = requestAnimationFrame(() => titleRef.current?.focus())
@@ -69,17 +71,29 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
     )
   }, [title, description, type, scopeKind, scope?.ref, scope?.label, existingItems])
 
-  async function handleFiles(e) {
-    const files = Array.from(e.target.files || [])
-    if (fileRef.current) fileRef.current.value = ''
-    for (const file of files) {
-      try {
-        const meta = await addImage(file)
-        setAttachments((prev) => [...prev, toImageRef(meta.id)])
-      } catch {
-        setError('Could not attach an image.')
-      }
+  async function addAttachments(files, source = 'file') {
+    try {
+      setError('')
+      const refs = await attachImageFiles(files)
+      if (!refs.length) return
+      setAttachments((prev) => [...prev, ...refs])
+      setAttachmentMessage(attachmentStatus(refs.length, source))
+    } catch {
+      setAttachmentMessage('')
+      setError('Could not attach an image.')
     }
+  }
+
+  async function handleFiles(e) {
+    await addAttachments(e.target.files, 'file')
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  function handlePaste(e) {
+    const files = imageFilesFromClipboard(e.clipboardData)
+    if (!files.length) return
+    e.preventDefault()
+    addAttachments(files, 'paste')
   }
 
   async function handleSubmit() {
@@ -117,7 +131,7 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
         </ButtonContainer>
       )}
     >
-      <Stack gap="md">
+      <Stack gap="md" onPaste={handlePaste}>
         {error && <Banner status="error" variant="inline">{error}</Banner>}
 
         <Stack gap="xs">
@@ -197,6 +211,12 @@ export function CreateTicketDialog({ open, scope, existingItems = [], onClose, o
 
         <Stack gap="xs">
           <Paragraph as="span" size="xs" color="muted">Screenshots</Paragraph>
+          <Paragraph size="sm" color="muted">
+            Paste an image anywhere in this dialog, or add a screenshot from a file.
+          </Paragraph>
+          {attachmentMessage && (
+            <Paragraph size="sm" color="muted" aria-live="polite">{attachmentMessage}</Paragraph>
+          )}
           {attachments.length > 0 && (
             <Stack direction="row" gap="sm" wrap>
               {attachments.map((ref) => (
