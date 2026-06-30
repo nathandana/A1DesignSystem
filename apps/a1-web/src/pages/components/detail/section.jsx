@@ -14,6 +14,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Choice, ResponsiveControl, responsiveProp, WithHelp } from './configKit.jsx'
 import { Lockable } from './configKit.jsx'
+import { utilityClassesFor } from '../../../editor/utilityRegistry.ts'
 
 const BORDER_SIDES = ['top', 'right', 'bottom', 'left']
 
@@ -62,7 +63,7 @@ const HEIGHT_ITEMS = labelItems(['', 'hero', 'screen'])
 const GRADIENT_ITEMS = [
   { value: '', label: 'None' },
   { value: 'accent', label: 'Accent', swatch: 'var(--semantic-color-action-background)' },
-  { value: 'highlight', label: 'Highlight', swatch: 'var(--base-color-highlited-200)' },
+  { value: 'highlight', label: 'Highlight', swatch: 'var(--base-color-highlighted-200)' },
   { value: 'info', label: 'Info', swatch: 'var(--semantic-color-status-info-background)' },
   { value: 'success', label: 'Success', swatch: 'var(--semantic-color-status-success-background)' },
   { value: 'warn', label: 'Warn', swatch: 'var(--semantic-color-status-warn-background)' },
@@ -114,7 +115,12 @@ function propBoolean(name, value, defaultValue) {
   return value ? name : `${name}={false}`
 }
 
-function buildSectionSnippet(config) {
+function propClassName(value) {
+  if (!value) return null
+  return `className="${escapeJsxString(value)}"`
+}
+
+function buildSectionSnippet(config, utilityClass = utilityClassesFor('Section', config.utilities)) {
   const props = [
     propString('as', config.as, 'section'),
     typeof config.padding === 'object' ? responsiveProp('padding', config.padding) : propString('padding', config.padding, 'md'),
@@ -134,6 +140,7 @@ function buildSectionSnippet(config) {
       : null,
     propString('radius', config.radius, 'none'),
     propBoolean('inverse', config.inverse, false),
+    propClassName(utilityClass),
   ].filter(Boolean).join('\n  ')
 
   return `<Section${props ? `\n  ${props}\n` : ' '}/>`
@@ -156,10 +163,11 @@ export function getDefaultConfig() {
     borderSides: ['top', 'right', 'bottom', 'left'],
     radius: 'none',
     inverse: false,
+    utilities: undefined,
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = utilityClassesFor('Section', config.utilities) }) {
   return (
     <Section
       as={config.as}
@@ -177,6 +185,7 @@ export function Preview({ config }) {
       borderSides={config.borderSides}
       radius={config.radius}
       inverse={config.inverse}
+      className={utilityClass || undefined}
     >
       <Heading as="h2" size="xl">
         Build with the system
@@ -312,6 +321,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSectionSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = utilityClassesFor('Section', config.utilities) }) {
+  return <Code variant="block" wrapping copyCode>{buildSectionSnippet(config, utilityClass)}</Code>
 }

@@ -26,9 +26,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Fieldset
+      className={utilityClass || undefined}
       legend={config.legend || undefined}
       size={config.size}
       labelPosition={config.labelPosition}
@@ -66,8 +67,9 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-function buildSnippet(config) {
+function buildSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.legend ? `legend="${escapeJsxString(config.legend)}"` : null,
     config.size !== 'default' ? `size="${config.size}"` : null,
     config.labelPosition !== 'above' ? `labelPosition="${config.labelPosition}"` : null,
@@ -82,6 +84,6 @@ function buildSnippet(config) {
 </Fieldset>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

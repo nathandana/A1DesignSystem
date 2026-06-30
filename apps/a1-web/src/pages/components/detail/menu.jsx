@@ -81,7 +81,7 @@ function renderItems(configItems, onClose) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-function buildSnippet(configItems) {
+function buildSnippet(configItems, utilityClass = '') {
   const lines = configItems.map((item) => {
     if (item.kind === 'divider') return `  <Divider />`
     if (item.kind === 'section') return `  <MenuSection label="${esc(item.label || 'Section')}">`
@@ -102,7 +102,7 @@ const anchorRef = useRef(null)
   </Button>
   <Menu
     open={open}
-    onClose={() => setOpen(false)}
+    ${utilityClass ? `className="${esc(utilityClass)}"\n    ` : ''}onClose={() => setOpen(false)}
     anchorRef={anchorRef}
     aria-label="Actions"
   >
@@ -113,7 +113,7 @@ ${lines}
 
 // ── Preview ───────────────────────────────────────────────────────────────────
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const [open, setOpen] = useState(false)
   const anchorRef = useRef(null)
 
@@ -124,6 +124,7 @@ export function Preview({ config }) {
       </Button>
       <Menu
         open={open}
+        className={utilityClass || undefined}
         onClose={() => setOpen(false)}
         anchorRef={anchorRef}
         aria-label="Actions"
@@ -256,6 +257,6 @@ export function Controls({ config, setConfig }) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-export function Snippet({ config }) {
-  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [])}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [], utilityClass)}</Code>
 }

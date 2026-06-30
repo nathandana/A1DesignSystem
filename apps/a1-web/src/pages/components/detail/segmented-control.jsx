@@ -66,13 +66,14 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const options = normalizeOptions(config.options)
   const [value, setValue] = useState(options[0]?.id)
   const activeValue = options.some((opt) => opt.id === value) ? value : options[0]?.id
 
   return (
     <SegmentedControl
+      className={utilityClass || undefined}
       value={activeValue}
       onChange={setValue}
       size={config.size}
@@ -210,9 +211,10 @@ function optionSnippet(option) {
   return `    { ${props} },`
 }
 
-function buildSegmentedSnippet(config) {
+function buildSegmentedSnippet(config, utilityClass = '') {
   const options = normalizeOptions(config.options)
   const props = [
+    utilityClass ? `className="${escapeJsString(utilityClass)}"` : null,
     `value={value}`,
     `onChange={setValue}`,
     config.size !== 'md' ? `size="${config.size}"` : null,
@@ -227,6 +229,6 @@ ${options.map(optionSnippet).join('\n')}
 />`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSegmentedSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSegmentedSnippet(config, utilityClass)}</Code>
 }

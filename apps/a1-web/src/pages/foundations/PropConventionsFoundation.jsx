@@ -7,6 +7,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function Code({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -226,11 +227,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Prop conventions' },
-            ]}
+            items={getFoundationBreadcrumbItems('Prop conventions', onNavigate)}
           />
           <Heading as="h1" id="prop-conventions-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Prop conventions

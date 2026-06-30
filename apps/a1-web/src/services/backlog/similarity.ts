@@ -40,7 +40,7 @@ const STOPWORDS = new Set([
   'you', 'they', 'he', 'she', 'them', 'our', 'your', 'their', 'my', 'me', 'us', 'add',
   'added', 'adds', 'new', 'use', 'uses', 'using', 'used', 'make', 'makes', 'need',
   'needs', 'want', 'when', 'what', 'which', 'who', 'where', 'how', 'why', 'some', 'any',
-  'all', 'one', 'two', 'more', 'ticket', 'tickets', 'feature', 'bug', 'chore', 'please',
+  'all', 'one', 'two', 'more', 'ticket', 'tickets', 'feature', 'bug', 'epic', 'chore', 'please',
   'also', 'etc', 'via', 'per', 'set', 'so', 'just', 'like', 'than', 'too', 'very',
 ]);
 

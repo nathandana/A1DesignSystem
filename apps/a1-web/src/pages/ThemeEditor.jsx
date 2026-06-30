@@ -11,6 +11,7 @@ import {
   DataTable,
   DefinitionList,
   Divider,
+  Grid,
   Heading,
   Icon,
   IconButton,
@@ -235,11 +236,11 @@ function ColorRow({ label, value, model, onChange }) {
   }
 
   return (
-    <div className="a1-web-theme-color-row">
+    <Stack direction="row" gap="xs" align="center">
       <input type="color" className="a1-web-theme-swatch" value={hex} aria-label={`${label} colour`} onChange={(e) => onChange(e.target.value)} />
-      <span className="a1-web-theme-color-name">{label}</span>
+      <Stack grow as="span">{label}</Stack>
       {fields}
-    </div>
+    </Stack>
   )
 }
 
@@ -568,15 +569,15 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   if (cat === 'color' && sub) {
     const ramp = theme.ramps[sub] ?? {}
     specific = (
-      <div className="a1-web-ramp-strip">
+      <Stack direction="row" gap="xs" wrap>
         {RAMP_STOPS.map((stop) => (
-          <div key={stop} className="a1-web-ramp-stop">
+          <Stack key={stop} direction="column" gap={2} style={{ inlineSize: '5rem' }}>
             <span className="a1-web-ramp-chip" style={{ background: ramp[stop] }} />
             <span className="a1-web-ramp-stop-num">{stop}</span>
             <span className="a1-web-ramp-stop-hex">{ramp[stop]}</span>
-          </div>
+          </Stack>
         ))}
-      </div>
+      </Stack>
     )
   } else if (cat === 'color') {
     const rows = RAMP_NAMES.flatMap((rampName) =>
@@ -595,15 +596,15 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
         {RAMP_NAMES.map((rampName) => (
           <Stack key={rampName} gap="xs">
             <Heading as="h2" size="sm">{RAMP_LABELS[rampName]}</Heading>
-            <div className="a1-web-ramp-strip">
+            <Stack direction="row" gap="xs" wrap>
               {RAMP_STOPS.map((stop) => (
-                <div key={stop} className="a1-web-ramp-stop">
+                <Stack key={stop} direction="column" gap={2} style={{ inlineSize: '5rem' }}>
                   <span className="a1-web-ramp-chip" style={{ background: theme.ramps[rampName]?.[stop] }} />
                   <span className="a1-web-ramp-stop-num">{stop}</span>
                   <span className="a1-web-ramp-stop-hex">{theme.ramps[rampName]?.[stop]}</span>
-                </div>
+                </Stack>
               ))}
-            </div>
+            </Stack>
           </Stack>
         ))}
       </Stack>
@@ -636,13 +637,13 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <Heading as="h2" size="sm">Text colours</Heading>
             <Paragraph size="xs" color="muted">The predefined text colours — shared across all type; edit them in the right panel.</Paragraph>
             {TEXT_COLOR_FIELDS.map(({ name, label }) => (
-              <div key={name} className="a1-web-theme-color-row">
+              <Stack key={name} direction="row" gap="xs" align="center">
                 <span className="a1-web-theme-cell-swatch" style={{ background: textColors[name] }} aria-hidden="true" />
-                <span className="a1-web-theme-color-name">{label}</span>
+                <Stack grow as="span">{label}</Stack>
                 <span className={`a1-web-type-color-sample${name === 'inverse' ? ' a1-web-type-color-sample--inverse' : ''}`} style={{ color: textColors[name], fontFamily: roleFont, fontWeight: weights[role] }}>
                   {ROLE_LABEL[role]} sample
                 </span>
-              </div>
+              </Stack>
             ))}
           </Stack>
         </Stack>
@@ -699,7 +700,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     specific = (
       <Stack gap="lg">
         <Paragraph size="sm" color="muted">Map each semantic colour to a value from the ramp, for the <strong>standard</strong> page and for <strong>inverse</strong> (dark) islands. <strong>Click a component</strong> below to filter the right panel to just the colours it uses; click it again to clear.</Paragraph>
-        <div className="a1-web-sem-grid">
+        <Grid columns={{ xs: 1, lg: 2 }} gap="md">
           <div className="a1-web-sem-panel" style={vars}>
             <Stack gap="md">
               <Paragraph size="xs" color="muted">Standard</Paragraph>
@@ -712,7 +713,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
               <SemShowcase onPick={setSelectedComp} selected={selectedComp} />
             </Stack>
           </div>
-        </div>
+        </Grid>
         <Stack gap="sm">
           <Heading as="h2" size="xs">Contrast report</Heading>
           <Paragraph size="xs" color="muted">Live WCAG contrast of the preview pairings. <MessageBadge size="sm" status="success">≥ 4.5</MessageBadge> passes AA for normal text, <MessageBadge size="sm" status="warn">≥ 3</MessageBadge> AA large only, <MessageBadge size="sm" status="error">&lt; 3</MessageBadge> fails.</Paragraph>
@@ -1205,7 +1206,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <ToolbarDivider />
             <ToolbarButton
               icon="flag"
-              label="Report a bug or request a feature"
+              label="Create a ticket"
               onClick={() => openTicket({ kind: 'theme', ref: themeId, label: theme.name })}
             />
           </Toolbar>

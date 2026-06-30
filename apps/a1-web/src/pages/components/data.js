@@ -29,6 +29,7 @@ export const componentCategories = [
       { id: 'spacer', icon: 'space_bar', title: 'Spacer', body: 'Explicit responsive spacing blocks.' },
       { id: 'page-layout', icon: 'space_dashboard', title: 'Page Layout', body: 'Header, sidebar, aside, main, and footer app shell layout.' },
       { id: 'button-container', icon: 'view_week', title: 'Button Container', body: 'Responsive action grouping and alignment.' },
+      { id: 'canvas', icon: 'polyline', title: 'Canvas', body: 'Infinite pan/zoom canvas for visualizing node graphs with labeled circles, shapes, and directional connectors.' },
     ],
   },
   {
@@ -126,7 +127,7 @@ export const componentCategories = [
     body: 'Visual primitives for media, symbols, and supporting imagery.',
     components: [
       { id: 'figure', icon: 'image', title: 'Figure', body: 'Images or media with accessible captions.' },
-      { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols wrapper with A1 sizing and color.' },
+      { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols and registered custom-font wrapper with A1 sizing and color.' },
     ],
   },
   {
@@ -138,7 +139,7 @@ export const componentCategories = [
       { id: 'dialog', icon: 'picture_in_picture', title: 'Dialog', body: 'Modal interactions with focus management.' },
       { id: 'menu', icon: 'menu', title: 'Menu', body: 'Anchored command and navigation menus.' },
       { id: 'context-menu', icon: 'more_vert', title: 'Context Menu', body: 'Right-click menu portaled to the document body.' },
-      { id: 'bottom-sheet', icon: 'swipe_up', title: 'Bottom Sheet', body: 'Fixed, scrim-less bottom panel with a draggable handle; xs and sm only.' },
+      { id: 'bottom-sheet', icon: 'swipe_up', title: 'Bottom Sheet', bareDisplay: true, body: 'Fixed, scrim-less bottom panel with a draggable handle; xs and sm only.' },
     ],
   },
   {
@@ -151,6 +152,7 @@ export const componentCategories = [
       { id: 'definition-list', icon: 'format_list_numbered', title: 'Definition List', body: 'Semantic label/value pairs for metadata, summaries, and details.' },
       { id: 'pagination', icon: 'last_page', title: 'Pagination', body: 'Paged navigation for long result sets.' },
       { id: 'calendar', icon: 'calendar_month', title: 'Calendar', body: 'Month-grid date browser with scroll and paginated variants, localised labels, today highlight, and past-day dimming.' },
+      { id: 'node',     icon: 'circle',         title: 'Node',     body: 'Standalone labeled shape component — circle, square, squircle, or rectangle — used directly or inside a Canvas.' },
     ],
   },
 ]
@@ -220,6 +222,7 @@ export const PACKAGE_COVERAGE = {
   spacer:             ['React'],
   'page-layout':      ['React'],
   'button-container': ['React', 'Native'],
+  canvas:             ['React'],
   figure:             ['React', 'Pure'],
   dialog:             ['React', 'Native'],
   menu:               ['React'],
@@ -228,6 +231,7 @@ export const PACKAGE_COVERAGE = {
   'definition-list':  ['React', 'Pure'],
   pagination:         ['React', 'Native'],
   calendar:           ['React'],
+  node:               ['React'],
   icon:               ['React', 'Pure'],
   accordion:          ['React', 'Pure'],
 }
@@ -300,6 +304,8 @@ export const COMPONENT_STATUS = {
   'definition-list':   'beta',
   pagination:          'beta',
   calendar:            'experimental',
+  canvas:              'experimental',
+  node:                'experimental',
   icon:                'beta',
   accordion:           'beta',
 }
@@ -378,6 +384,7 @@ export const COMPONENT_RELATED = {
   'definition-list':   ['data-table', 'heading', 'icon-button'],
   pagination:          ['data-table'],
   calendar:            ['data-table', 'definition-list', 'date-field', 'pagination'],
+  canvas:              ['data-table', 'card', 'dialog'],
   icon:                ['icon-button', 'badge'],
   accordion:           ['tabs', 'section'],
 }

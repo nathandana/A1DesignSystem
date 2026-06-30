@@ -1,0 +1,139 @@
+{
+  "toolbar": [
+    {
+      "id": "toolbar-overflow",
+      "slug": "overview",
+      "title": "Overflow",
+      "description": "A dense editor toolbar that keeps high-priority writing controls visible and moves the rest into More when space runs out.",
+      "badge": "Responsive",
+      "preview": {
+        "width": "280px"
+      },
+      "config": {
+        "tools": [
+          { "id": "undo", "type": "button", "icon": "undo", "label": "Undo" },
+          { "id": "redo", "type": "button", "icon": "redo", "label": "Redo" },
+          { "id": "history-divider", "type": "divider" },
+          {
+            "id": "style",
+            "type": "menu",
+            "icon": "text_fields",
+            "label": "Style",
+            "value": "paragraph",
+            "items": [
+              { "id": "paragraph", "label": "Paragraph", "icon": "notes" },
+              { "id": "heading-one", "label": "Heading 1", "icon": "title" },
+              { "id": "heading-two", "label": "Heading 2", "icon": "format_h2" },
+              { "id": "quote", "label": "Quote", "icon": "format_quote" },
+              { "id": "code", "label": "Code", "icon": "code" }
+            ]
+          },
+          {
+            "id": "font",
+            "type": "menu",
+            "icon": "font_download",
+            "label": "Font",
+            "value": "system",
+            "items": [
+              { "id": "system", "label": "System" },
+              { "id": "serif", "label": "Serif" },
+              { "id": "mono", "label": "Monospace" }
+            ]
+          },
+          {
+            "id": "size",
+            "type": "menu",
+            "icon": "format_size",
+            "label": "Size",
+            "value": "16",
+            "items": [
+              { "id": "12", "label": "12 px" },
+              { "id": "14", "label": "14 px" },
+              { "id": "16", "label": "16 px" },
+              { "id": "20", "label": "20 px" },
+              { "id": "24", "label": "24 px" }
+            ]
+          },
+          { "id": "text-divider", "type": "divider" },
+          { "id": "bold", "type": "toggle", "icon": "format_bold", "label": "Bold", "pressed": true },
+          { "id": "italic", "type": "toggle", "icon": "format_italic", "label": "Italic" },
+          { "id": "underline", "type": "toggle", "icon": "format_underlined", "label": "Underline" },
+          { "id": "strikethrough", "type": "toggle", "icon": "strikethrough_s", "label": "Strikethrough" },
+          { "id": "color-divider", "type": "divider" },
+          {
+            "id": "text-color",
+            "type": "menu",
+            "icon": "format_color_text",
+            "label": "Text color",
+            "value": "default",
+            "items": [
+              { "id": "default", "label": "Default" },
+              { "id": "accent", "label": "Accent" },
+              { "id": "muted", "label": "Muted" },
+              { "id": "danger", "label": "Danger" }
+            ]
+          },
+          {
+            "id": "highlight",
+            "type": "menu",
+            "icon": "format_color_fill",
+            "label": "Highlight",
+            "value": "none",
+            "items": [
+              { "id": "none", "label": "None" },
+              { "id": "yellow", "label": "Yellow" },
+              { "id": "green", "label": "Green" },
+              { "id": "blue", "label": "Blue" }
+            ]
+          },
+          { "id": "paragraph-divider", "type": "divider" },
+          {
+            "id": "align",
+            "type": "group",
+            "label": "Alignment",
+            "value": "left",
+            "options": [
+              { "id": "left", "label": "Left", "icon": "format_align_left" },
+              { "id": "center", "label": "Center", "icon": "format_align_center" },
+              { "id": "right", "label": "Right", "icon": "format_align_right" },
+              { "id": "justify", "label": "Justify", "icon": "format_align_justify" }
+            ]
+          },
+          {
+            "id": "list",
+            "type": "group",
+            "label": "List",
+            "value": "bullets",
+            "options": [
+              { "id": "bullets", "label": "Bullets", "icon": "format_list_bulleted" },
+              { "id": "numbers", "label": "Numbers", "icon": "format_list_numbered" },
+              { "id": "checklist", "label": "Checklist", "icon": "checklist" }
+            ]
+          },
+          { "id": "outdent", "type": "button", "icon": "format_indent_decrease", "label": "Decrease indent" },
+          { "id": "indent", "type": "button", "icon": "format_indent_increase", "label": "Increase indent" },
+          { "id": "insert-divider", "type": "divider" },
+          { "id": "link", "type": "button", "icon": "link", "label": "Insert link" },
+          { "id": "image", "type": "button", "icon": "image", "label": "Insert image" },
+          { "id": "table", "type": "button", "icon": "table", "label": "Insert table" },
+          { "id": "code-block", "type": "button", "icon": "code_blocks", "label": "Code block" },
+          { "id": "clear", "type": "button", "icon": "format_clear", "label": "Clear formatting" }
+        ],
+        "activeId": null,
+        "showToolbarLabel": false,
+        "label": "Formatting",
+        "showLabels": false,
+        "overlay": false,
+        "fullWidth": true,
+        "overflow": true,
+        "disabled": false,
+        "previewMode": "preview"
+      },
+      "display": {
+        "padding": "md",
+        "inverse": false,
+        "viewport": "fit"
+      }
+    }
+  ]
+}

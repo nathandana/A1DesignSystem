@@ -17,6 +17,8 @@ import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+import { UtilityControls } from './UtilityControls.jsx'
+import { LabelLookupButton } from './LabelLookupDialog.jsx'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
@@ -96,6 +98,24 @@ import { Controls as DataTableControls, getDefaultConfig as dataTableDefaults } 
 import { Controls as PageNavControls, getDefaultConfig as pageNavDefaults } from '../pages/components/detail/page-nav.jsx'
 import { Controls as TreeMenuControls, getDefaultConfig as treeMenuDefaults } from '../pages/components/detail/tree-menu.jsx'
 
+const TEXT_LABEL_CONFIG_FIELD_BY_TYPE = {
+  Heading: 'children',
+  Paragraph: 'children',
+  Button: 'label',
+}
+
+function formatTextLabelMarker(key) {
+  const normalized = String(key ?? '').trim()
+  return normalized ? `<<${normalized}>>` : ''
+}
+
+function escapeTextLabelHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+}
+
 // ── Node lookup ───────────────────────────────────────────────────────────────
 
 function findInNodes(nodes, id) {
@@ -170,6 +190,12 @@ export const propsToConfig = {
     icon: props?.icon ?? '',
     iconDisplay: props?.iconDisplay ?? (props?.icon ? 'default' : 'none'),
     heroColor: props?.heroColor ?? 'action',
+    heroBadge: props?.heroBadge ?? '',
+    heroBadgeStatus: props?.heroBadgeStatus ?? 'neutral',
+    heroBadgePosition: props?.heroBadgePosition ?? 'top-end',
+    status: props?.status ?? '',
+    statusLabel: props?.statusLabel ?? 'In progress',
+    statusPulse: props?.statusPulse ?? false,
   }),
 
   Bleed: (props) => ({
@@ -387,6 +413,7 @@ export const propsToConfig = {
   // Inputs
   TextField: (props) => ({
     label: props?.label ?? 'Label',
+    labelKey: props?.labelKey ?? '',
     type: props?.type ?? 'text',
     hint: props?.hint ?? '',
     error: props?.error ?? '',
@@ -401,6 +428,7 @@ export const propsToConfig = {
 
   TextareaField: (props) => ({
     label: props?.label ?? 'Label',
+    labelKey: props?.labelKey ?? '',
     hint: props?.hint ?? '',
     error: props?.error ?? '',
     value: '',
@@ -783,6 +811,12 @@ export const configToNodeUpdate = {
       icon: config.iconDisplay !== 'none' ? config.icon || undefined : undefined,
       iconDisplay: config.iconDisplay,
       heroColor: config.iconDisplay === 'hero' ? config.heroColor : undefined,
+      heroBadge: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined,
+      heroBadgeStatus: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgeStatus : undefined,
+      heroBadgePosition: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgePosition : undefined,
+      status: config.status || undefined,
+      statusLabel: config.status && config.statusLabel ? config.statusLabel : undefined,
+      statusPulse: config.status && config.statusPulse ? true : undefined,
     },
   }),
 
@@ -1024,6 +1058,7 @@ export const configToNodeUpdate = {
   TextField: (config) => ({
     props: {
       label: config.label || undefined,
+      labelKey: config.labelKey || undefined,
       type: config.type,
       hint: config.hint || undefined,
       error: config.error || undefined,
@@ -1039,6 +1074,7 @@ export const configToNodeUpdate = {
   TextareaField: (config) => ({
     props: {
       label: config.label || undefined,
+      labelKey: config.labelKey || undefined,
       hint: config.hint || undefined,
       error: config.error || undefined,
       size: config.size,
@@ -1561,6 +1597,45 @@ function ListItemControls({ config, setConfig }) {
   )
 }
 
+function LabelKeyControl({ config, setConfig }) {
+  const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
+  return (
+    <Stack direction="row" gap="xs" align="end">
+      <TextField
+        label="Label key"
+        hint="Optional localization key. The field label above is used as the fallback."
+        size="compact"
+        value={config.labelKey ?? ''}
+        onChange={(event) => set({ labelKey: event.target.value.trim() })}
+      />
+      <LabelLookupButton
+        value={config.labelKey ?? ''}
+        sourceText={config.label ?? ''}
+        suggestedKeyPrefix="field"
+        onChange={(labelKey, option) => set({ labelKey, label: option?.value || config.label })}
+      />
+    </Stack>
+  )
+}
+
+function TextFieldEditorControls({ config, setConfig }) {
+  return (
+    <Stack gap="lg">
+      <TextFieldControls config={config} setConfig={setConfig} />
+      <LabelKeyControl config={config} setConfig={setConfig} />
+    </Stack>
+  )
+}
+
+function TextareaFieldEditorControls({ config, setConfig }) {
+  return (
+    <Stack gap="lg">
+      <TextareaFieldControls config={config} setConfig={setConfig} />
+      <LabelKeyControl config={config} setConfig={setConfig} />
+    </Stack>
+  )
+}
+
 const CONTROLS_BY_TYPE = {
   // Layout
   Section: SectionControls,
@@ -1594,8 +1669,8 @@ const CONTROLS_BY_TYPE = {
   CircularProgress: CircularProgressControls,
   StepTracker: StepTrackerControls,
   // Inputs
-  TextField: TextFieldControls,
-  TextareaField: TextareaFieldControls,
+  TextField: TextFieldEditorControls,
+  TextareaField: TextareaFieldEditorControls,
   SelectField: SelectFieldControls,
   NumberField: NumberFieldControls,
   DateField: DateFieldControls,
@@ -1793,6 +1868,7 @@ export function EditorPropsPanel({
   availableLevels,
   onSetPageLevel,
   onNodePropsChange,
+  onNodeContentKeyChange,
   activeItem,
   onItemSelect,
   onPageMetadataChange,
@@ -1805,6 +1881,7 @@ export function EditorPropsPanel({
   onSetLock,
   onSetNodeRepeat,
   onSetNodeCollections,
+  onSetNodeUtilities,
 }) {
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
@@ -1828,7 +1905,7 @@ export function EditorPropsPanel({
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
-  const componentHref = `/?page=component-${node.type.toLowerCase()}`
+  const componentHref = `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
   const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
@@ -1853,6 +1930,14 @@ export function EditorPropsPanel({
     </Stack>
   ) : null
 
+  const UtilitiesSection = (
+    <UtilityControls
+      type={node.type}
+      utilities={node.utilities}
+      onChange={(utilities) => onSetNodeUtilities?.(node.id, utilities)}
+    />
+  )
+
   if (!Controls) {
     return (
       <Stack gap="sm">
@@ -1862,12 +1947,22 @@ export function EditorPropsPanel({
         <Paragraph size="sm" color="muted">
           No configurator is registered for this component type.
         </Paragraph>
+        {UtilitiesSection}
         {ConvertSection}
       </Stack>
     )
   }
 
-  const baseConfig = propsToConfig[node.type](node.props, node.content)
+  const textLabelField = TEXT_LABEL_CONFIG_FIELD_BY_TYPE[node.type]
+  const textLabelKey = textLabelField ? String(node.content?.textKey ?? '').trim() : ''
+  const textLabelMarker = formatTextLabelMarker(textLabelKey)
+  const textLabelConfigValue = node.type === 'Heading'
+    ? escapeTextLabelHtml(textLabelMarker)
+    : textLabelMarker
+  const rawBaseConfig = propsToConfig[node.type](node.props, node.content)
+  const baseConfig = textLabelMarker
+    ? { ...rawBaseConfig, [textLabelField]: textLabelConfigValue }
+    : rawBaseConfig
   // Merge locally-held accordion state on top of the node-derived config so
   // expanded option editors stay open across re-renders.
   const config = 'openItems' in baseConfig
@@ -1892,7 +1987,12 @@ export function EditorPropsPanel({
     const convert = configToNodeUpdate[node.type]
     if (!convert) return
     const { props: newProps, contentFallback } = convert(next)
-    onNodePropsChange(node.id, newProps, contentFallback)
+    const labelMarkerUnchanged = !!textLabelMarker && next[textLabelField] === textLabelConfigValue
+    const nextContentFallback = labelMarkerUnchanged
+      ? (node.content?.fallback ?? '')
+      : contentFallback
+    const nextContentKey = textLabelMarker && !labelMarkerUnchanged ? null : undefined
+    onNodePropsChange(node.id, newProps, nextContentFallback, nextContentKey)
   }
 
   // Pattern-instance governance: when enforcing locks, a fully-locked element's
@@ -1912,6 +2012,16 @@ export function EditorPropsPanel({
   ) : null
 
   const activeItemIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null
+  const textKeyAction = textLabelField ? (
+    <LabelLookupButton
+      value={node.content?.textKey ?? ''}
+      label="Look up text label"
+      sourceText={node.content?.fallback ?? ''}
+      suggestedKeyPrefix={node.type.toLowerCase()}
+      onChange={(textKey, option) => onNodeContentKeyChange?.(node.id, textKey, option?.value)}
+    />
+  ) : null
+
   const controls = (
     <Controls
       config={config}
@@ -1920,6 +2030,7 @@ export function EditorPropsPanel({
       projectId={projectId}
       activeItemIndex={activeItemIndex}
       onSelectItem={(index) => onItemSelect?.(node.id, index)}
+      textAction={textKeyAction}
     />
   )
   // Provide the lock state so each configurator control outlines itself when the
@@ -1982,7 +2093,7 @@ export function EditorPropsPanel({
           <Heading as="h3" size="xs" color="muted">{node.patternInstance.name}</Heading>
           <IconButton
             as="a"
-            href={`/?page=editor&pattern=${node.patternInstance.id}`}
+            href={`/editor?pattern=${node.patternInstance.id}`}
             icon="edit"
             size="sm"
             variant="tertiary"
@@ -2001,6 +2112,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
+      {!lockAuthoring && !fullyLocked && UtilitiesSection}
       {BindSection}
       {CollectionSection}
       {ConvertSection}

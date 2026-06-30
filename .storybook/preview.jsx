@@ -2,6 +2,7 @@ import "../build/css/tokens.css";
 import "../build/css/breakpoints.css";
 import "./themes.css";
 import "../packages/react/src/utilities/spacing.css";
+import "../packages/react/src/utilities/width.css";
 
 import { useEffect } from "react";
 import { useGlobals } from "storybook/preview-api";
@@ -35,6 +36,9 @@ export const globalTypes = {
         { value: "a1Light",      title: "Base" },
         { value: "a1Heritage",   title: "A1 Heritage" },
         { value: "a1Accessible", title: "A1 Accessible" },
+        { value: "a1Aperture",   title: "Aperture" },
+        { value: "a1CatLympics", title: "CatLympics" },
+        { value: "a1Crochet",    title: "Crochet" },
         { value: "a1Fresh",      title: "Fresh" },
         { value: "a1Marshmallow", title: "Marshmallow" },
       ],
@@ -116,6 +120,9 @@ const withTheme = (Story) => {
     const html = document.documentElement;
     html.classList.toggle("a1-theme-heritage",  theme === "a1Heritage");
     html.classList.toggle("a1-theme-accessible", theme === "a1Accessible");
+    html.classList.toggle("a1-theme-aperture", theme === "a1Aperture");
+    html.classList.toggle("a1-theme-catlympics", theme === "a1CatLympics");
+    html.classList.toggle("a1-theme-crochet", theme === "a1Crochet");
     html.classList.toggle("a1-theme-fresh",      theme === "a1Fresh");
     html.classList.toggle("a1-theme-marshmallow", theme === "a1Marshmallow");
     // Explicit light/dark: set the matching class and clear the other.
@@ -131,6 +138,9 @@ const withTheme = (Story) => {
       html.classList.remove(
         "a1-theme-heritage",
         "a1-theme-accessible",
+        "a1-theme-aperture",
+        "a1-theme-catlympics",
+        "a1-theme-crochet",
         "a1-theme-fresh",
         "a1-theme-marshmallow",
         "a1-theme-dark",

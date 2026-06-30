@@ -5,22 +5,24 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
 import { PERSONAS } from '../services/backlog/personas'
-import { COMPLEXITY_LABELS, PRIORITY_LABELS, STATUS_LABELS } from '../services/backlog/types'
+import {
+  COMPLEXITY_LABELS, PRIORITY_LABELS, STATUS_LABELS, TYPE_LABELS,
+} from '../services/backlog/types'
 
 /**
  * Dev-only "Virtual team" control. Each persona is a local, deterministic model (no API
  * credits) that reviews the whole backlog. Clicking a persona runs a **dry run** first and
- * shows what it would change; Apply writes priority/size changes + clarifying questions,
+ * shows what it would change; Apply writes type/priority/size changes + clarifying questions,
  * attributed to the persona. Render it gated behind `import.meta.env.DEV` so it never ships.
  */
 const PREVIEW_LIMIT = 40
 
 export function VirtualTeamPanel() {
   const backlog = useBacklog()
-  const [busy, setBusy] = useState(null) // persona id currently running
+  const [busy, setBusy] = useState(null) // key currently running: persona.id, `cleanup-${id}`, or 'apply'
   const [progress, setProgress] = useState(null) // { done, total }
-  const [preview, setPreview] = useState(null) // { persona, summary, elapsedMs }
-  const [result, setResult] = useState(null) // summary after apply, with elapsedMs
+  const [preview, setPreview] = useState(null) // { persona, summary, elapsedMs, mode: 'review'|'cleanup' }
+  const [result, setResult] = useState(null) // summary after apply, with elapsedMs + mode
 
   if (!backlog) return null
 
@@ -30,7 +32,19 @@ export function VirtualTeamPanel() {
     const t0 = performance.now()
     try {
       const summary = await backlog.reviewWithPersona(persona, { dryRun: true })
-      setPreview({ persona, summary, elapsedMs: performance.now() - t0 })
+      setPreview({ persona, summary, elapsedMs: performance.now() - t0, mode: 'review' })
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  async function handleCleanupPreview(persona) {
+    setBusy(`cleanup-${persona.id}`)
+    setResult(null)
+    const t0 = performance.now()
+    try {
+      const summary = await backlog.cleanupStatus(persona, { dryRun: true })
+      setPreview({ persona, summary, elapsedMs: performance.now() - t0, mode: 'cleanup' })
     } finally {
       setBusy(null)
     }
@@ -38,16 +52,17 @@ export function VirtualTeamPanel() {
 
   async function handleApply() {
     if (!preview) return
-    const { persona } = preview
-    setBusy(persona.id)
+    const { persona, mode } = preview
+    setBusy('apply')
     setProgress({ done: 0, total: preview.summary.total })
     const t0 = performance.now()
     try {
-      const summary = await backlog.reviewWithPersona(persona, {
+      const fn = mode === 'cleanup' ? backlog.cleanupStatus : backlog.reviewWithPersona
+      const summary = await fn(persona, {
         onProgress: (done, total) => setProgress({ done, total }),
       })
       setPreview(null)
-      setResult({ ...summary, elapsedMs: performance.now() - t0 })
+      setResult({ ...summary, elapsedMs: performance.now() - t0, mode })
     } finally {
       setBusy(null)
       setProgress(null)
@@ -55,12 +70,13 @@ export function VirtualTeamPanel() {
   }
 
   const s = preview?.summary
+  const isCleanup = preview?.mode === 'cleanup'
+  const applyCount = isCleanup ? (s?.moved ?? 0) : ((s?.reviewed ?? 0) + (s?.moved ?? 0))
 
   return (
     <>
       <Stack gap="sm">
-        {/* The "Virtual team" title + groups icon come from the enclosing tab; here we just
-            flag that it's dev-only and explain what it does. */}
+        {/* The page provides the shared title; this panel owns the Product Owner card. */}
         <Stack direction="row" gap="xs" align="center" wrap>
           <MessageBadge status="warn" subtle size="sm">Dev only</MessageBadge>
         </Stack>
@@ -69,7 +85,7 @@ export function VirtualTeamPanel() {
           Hidden in production builds. Each runs a preview first; Apply writes changes attributed to the persona.
         </Paragraph>
 
-        <Grid columns={{ xs: 1, md: 2 }} gap="sm">
+        <Grid columns={1} gap="sm">
           {PERSONAS.map((p) => (
             <Card key={p.id}>
               <Stack gap="xs">
@@ -79,9 +95,14 @@ export function VirtualTeamPanel() {
                 </Stack>
                 <Paragraph size="sm" color="muted">{p.blurb}</Paragraph>
                 <ButtonContainer align="start">
-                  <Button size="sm" icon="reviews" loading={busy === p.id && !preview} onClick={() => handlePreview(p)}>
+                  <Button size="sm" icon="reviews" loading={busy === p.id} onClick={() => handlePreview(p)}>
                     Review backlog
                   </Button>
+                  {p.id === 'product-owner' && (
+                    <Button size="sm" variant="secondary" icon="fact_check" loading={busy === `cleanup-${p.id}`} onClick={() => handleCleanupPreview(p)}>
+                      Check status
+                    </Button>
+                  )}
                 </ButtonContainer>
               </Stack>
             </Card>
@@ -92,14 +113,25 @@ export function VirtualTeamPanel() {
           <Banner
             status="success"
             variant="inline"
-            title={`${result.personaName} reviewed the backlog`}
+            title={result.mode === 'cleanup'
+              ? `${result.personaName} — status cleanup complete`
+              : `${result.personaName} reviewed the backlog`}
             onDismiss={() => setResult(null)}
           >
-            Reviewed {result.reviewed} ticket{result.reviewed === 1 ? '' : 's'} ({result.skipped} already up to date)
-            {' '}— acted on {result.acted}: {result.reprioritized} reprioritized, {result.resized} resized,
-            {' '}{result.questions} clarifying question{result.questions === 1 ? '' : 's'} asked.
-            {result.moved > 0 && (
-              <> Moved {result.moved} shipped ticket{result.moved === 1 ? '' : 's'} forward per the CHANGELOG.</>
+            {result.mode === 'cleanup' ? (
+              <>
+                Moved {result.moved} ticket{result.moved === 1 ? '' : 's'} to match the CHANGELOG
+                {' '}({result.skipped} already at the correct status).
+              </>
+            ) : (
+              <>
+                Reviewed {result.reviewed} ticket{result.reviewed === 1 ? '' : 's'} ({result.skipped} already up to date)
+                {' '}— acted on {result.acted}: {result.retyped} retyped, {result.reprioritized} reprioritized, {result.resized} resized,
+                {' '}{result.questions} clarifying question{result.questions === 1 ? '' : 's'} asked.
+                {result.moved > 0 && (
+                  <> Moved {result.moved} shipped ticket{result.moved === 1 ? '' : 's'} forward per the CHANGELOG.</>
+                )}
+              </>
             )}
             {result.elapsedMs != null && (
               <> · {(result.elapsedMs / 1000).toFixed(1)}s (local — no API tokens)</>
@@ -111,7 +143,11 @@ export function VirtualTeamPanel() {
       <Dialog
         open={!!preview}
         onClose={busy ? undefined : () => setPreview(null)}
-        title={preview ? `${preview.persona.name} — proposed review` : ''}
+        title={preview
+          ? isCleanup
+            ? `${preview.persona.name} — status cleanup`
+            : `${preview.persona.name} — proposed review`
+          : ''}
         footer={preview ? (
           <Stack gap="xs">
             {preview?.elapsedMs != null && (
@@ -120,16 +156,18 @@ export function VirtualTeamPanel() {
               </Paragraph>
             )}
             <ButtonContainer>
-              <Button variant="secondary" onClick={() => setPreview(null)} disabled={!!busy}>Cancel</Button>
+              <Button variant="secondary" onClick={() => setPreview(null)} disabled={busy === 'apply'}>Cancel</Button>
               <Button
                 icon="check"
-                loading={!!busy}
-                disabled={s.reviewed === 0 && s.moved === 0}
+                loading={busy === 'apply'}
+                disabled={applyCount === 0}
                 onClick={handleApply}
               >
-                {busy
+                {busy === 'apply'
                   ? (progress ? `Applying… ${progress.done}/${progress.total}` : 'Applying…')
-                  : `Apply to ${s.reviewed + s.moved} ticket${s.reviewed + s.moved === 1 ? '' : 's'}`}
+                  : isCleanup
+                    ? (applyCount === 0 ? 'Nothing to update' : `Update ${applyCount} ticket${applyCount === 1 ? '' : 's'}`)
+                    : `Apply to ${applyCount} ticket${applyCount === 1 ? '' : 's'}`}
               </Button>
             </ButtonContainer>
           </Stack>
@@ -137,28 +175,39 @@ export function VirtualTeamPanel() {
       >
         {preview && (
           <Stack gap="sm">
-            <Paragraph size="sm">
-              Of <strong>{s.total}</strong> open tickets, <strong>{s.skipped}</strong> are already reviewed and unchanged.
-              {' '}The {preview.persona.role} would (re)review <strong>{s.reviewed}</strong> and act on{' '}
-              <strong>{s.acted}</strong> — {s.reprioritized} reprioritized, {s.resized} resized,
-              {' '}{s.questions} clarifying question{s.questions === 1 ? '' : 's'}.
-              {s.moved > 0 && (
-                <> It would also move <strong>{s.moved}</strong> shipped ticket{s.moved === 1 ? '' : 's'} forward per the CHANGELOG.</>
-              )}
-            </Paragraph>
-            {s.acted === 0 && s.moved === 0 ? (
+            {isCleanup ? (
+              <Paragraph size="sm">
+                Scanned <strong>{s.total}</strong> open tickets against the CHANGELOG.
+                {s.moved > 0
+                  ? <> Found <strong>{s.moved}</strong> that can be moved to their correct status.</>
+                  : <> All tickets are already at the correct status — nothing to update.</>}
+              </Paragraph>
+            ) : (
+              <Paragraph size="sm">
+                Of <strong>{s.total}</strong> open tickets, <strong>{s.skipped}</strong> are already reviewed and unchanged.
+                {' '}The {preview.persona.role} would (re)review <strong>{s.reviewed}</strong> and act on{' '}
+                <strong>{s.acted}</strong> — {s.retyped} retyped, {s.reprioritized} reprioritized, {s.resized} resized,
+                {' '}{s.questions} clarifying question{s.questions === 1 ? '' : 's'}.
+                {s.moved > 0 && (
+                  <> It would also move <strong>{s.moved}</strong> shipped ticket{s.moved === 1 ? '' : 's'} forward per the CHANGELOG.</>
+                )}
+              </Paragraph>
+            )}
+            {applyCount === 0 && !isCleanup && (
               <Paragraph size="sm" color="muted">
                 {s.reviewed === 0
                   ? 'Everything is already reviewed and up to date — nothing to do.'
                   : `Reviewed ${s.reviewed}, but nothing needs changing — they already match the ${preview.persona.role}'s view. Apply to record the review tag.`}
               </Paragraph>
-            ) : (
+            )}
+            {s.changes.length > 0 && (
               <>
                 <List size="sm">
                   {s.changes.slice(0, PREVIEW_LIMIT).map((c) => (
                     <ListItem key={c.ref}>
                       <strong>{c.ref}</strong> {c.title}
-                      {c.status ? <> · shipped → {STATUS_LABELS[c.status]}</> : null}
+                      {c.status ? <> · {STATUS_LABELS[c.statusFrom ?? c.status]} → {STATUS_LABELS[c.status]}</> : null}
+                      {c.type ? <> · {TYPE_LABELS[c.typeFrom ?? c.type]} → {TYPE_LABELS[c.type]}</> : null}
                       {c.priority ? <> · {c.priorityFrom ? PRIORITY_LABELS[c.priorityFrom] : '—'} → {PRIORITY_LABELS[c.priority]}</> : null}
                       {c.complexity ? <> · size {COMPLEXITY_LABELS[c.complexity]}</> : null}
                       {c.questions > 0 ? <> · {c.questions} question{c.questions === 1 ? '' : 's'}</> : null}

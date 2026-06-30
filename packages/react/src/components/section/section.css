@@ -73,7 +73,7 @@
 /* ── Gradient wash ─────────────────────────────────────────────────────────── */
 
 .a1-section--gradient-accent    { --a1-section-gradient-color: var(--semantic-color-action-background); }
-.a1-section--gradient-highlight { --a1-section-gradient-color: var(--base-color-highlited-200); }
+.a1-section--gradient-highlight { --a1-section-gradient-color: var(--component-section-gradient-highlight); }
 .a1-section--gradient-info      { --a1-section-gradient-color: var(--semantic-color-status-info-background); }
 .a1-section--gradient-success   { --a1-section-gradient-color: var(--semantic-color-status-success-background); }
 .a1-section--gradient-warn      { --a1-section-gradient-color: var(--semantic-color-status-warn-background); }
@@ -154,12 +154,13 @@
   box-sizing: border-box;
 }
 
-.a1-section__inner--xs  { max-width: 28.5rem; }
-.a1-section__inner--sm  { max-width: 40rem;  }
-.a1-section__inner--md  { max-width: 50rem;  }
-.a1-section__inner--lg  { max-width: 60rem;  }
-.a1-section__inner--xl  { max-width: 70rem;  }
-.a1-section__inner--2xl { max-width: 90rem;  }
+/* Shared content-width scale (= the a1-max-w-* width utility), tokenised. */
+.a1-section__inner--xs  { max-width: var(--base-content-width-xs);  }
+.a1-section__inner--sm  { max-width: var(--base-content-width-sm);  }
+.a1-section__inner--md  { max-width: var(--base-content-width-md);  }
+.a1-section__inner--lg  { max-width: var(--base-content-width-lg);  }
+.a1-section__inner--xl  { max-width: var(--base-content-width-xl);  }
+.a1-section__inner--2xl { max-width: var(--base-content-width-2xl); }
 
 /* ── Alignment ─────────────────────────────────────────────────────────────── */
 /*

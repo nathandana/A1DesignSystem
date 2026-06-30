@@ -5,7 +5,7 @@
         "highlight": {
           "backgroundColor": {
             "$type": "color",
-            "$value": "{base.color.highlited.200}"
+            "$value": "{base.color.highlighted.200}"
           },
           "foregroundColor": {
             "$type": "color",

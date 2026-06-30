@@ -8,6 +8,8 @@ export type HistoryEntry = {
   timestamp: number
   /** True when the user has explicitly named this entry — shown prominently in history. */
   primary?: boolean
+  /** True when this entry was created by a restore action — styled distinctly in the panel. */
+  restored?: boolean
 }
 
 type HistoryState = {
@@ -68,6 +70,12 @@ function saveHistory(storageKey: string, entries: HistoryEntry[], index: number)
   writeStored(storageKey, JSON.stringify({ entries: capped.entries, index: capped.index }))
 }
 
+// Max one history entry per this interval for continuous prop changes (e.g.
+// slider drags). Leading + trailing throttle: commits immediately on the first
+// change in a window, then once more with the latest value after the interval
+// elapses, so the final position is always captured.
+const PROP_THROTTLE_MS = 10_000
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 /**
@@ -83,6 +91,12 @@ export function useEditorHistory(
 ) {
   const onCommitRef = useRef(onCommit)
   onCommitRef.current = onCommit
+
+  // Throttle state for commitProp
+  const propTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const propLastRef = useRef<number>(0)
+  const propPendingRef = useRef<{ json: string; label: string } | null>(null)
+
   const [state, setState] = useState<HistoryState>(() => {
     const persisted = storageKey ? loadHistory(storageKey) : null
     if (persisted) {
@@ -147,9 +161,7 @@ export function useEditorHistory(
     setState(prev => ({ ...prev, workingJson: json }))
   }
 
-  // Commit a named snapshot. Truncates any undone future so the new entry is
-  // always the tip of the stack — standard linear undo behaviour.
-  function commit(json: string, label: string) {
+  function doCommit(json: string, label: string) {
     setState(prev => {
       const truncated = prev.entries.slice(0, prev.index + 1)
       const entry: HistoryEntry = { id: uid(), json, label, timestamp: Date.now() }
@@ -159,7 +171,55 @@ export function useEditorHistory(
     onCommitRef.current?.(json, label)
   }
 
+  function clearPropsTimer() {
+    if (propTimerRef.current) { clearTimeout(propTimerRef.current); propTimerRef.current = null }
+    propPendingRef.current = null
+  }
+
+  // Commit a named snapshot. Truncates any undone future so the new entry is
+  // always the tip of the stack — standard linear undo behaviour.
+  // Also cancels any pending throttled prop commit so a hard action (delete,
+  // move, add) always takes precedence as the next history entry.
+  function commit(json: string, label: string) {
+    clearPropsTimer()
+    doCommit(json, label)
+  }
+
+  // Throttled commit for continuous prop changes (e.g. slider drags).
+  // Updates the canvas immediately via setWorking on every call; creates at
+  // most one history entry per PROP_THROTTLE_MS using a leading + trailing
+  // strategy so the first and final values in a burst are both recorded.
+  function commitProp(json: string, label: string) {
+    setState(prev => ({ ...prev, workingJson: json }))
+
+    const now = Date.now()
+    const sinceLastCommit = now - propLastRef.current
+
+    if (sinceLastCommit >= PROP_THROTTLE_MS) {
+      // Leading edge: enough time has passed — commit immediately and clear any timer.
+      if (propTimerRef.current) { clearTimeout(propTimerRef.current); propTimerRef.current = null }
+      propPendingRef.current = null
+      propLastRef.current = now
+      doCommit(json, label)
+    } else {
+      // Within the throttle window: record the latest value for the trailing commit.
+      propPendingRef.current = { json, label }
+      if (!propTimerRef.current) {
+        propTimerRef.current = setTimeout(() => {
+          propTimerRef.current = null
+          const p = propPendingRef.current
+          if (p) {
+            propPendingRef.current = null
+            propLastRef.current = Date.now()
+            doCommit(p.json, p.label)
+          }
+        }, PROP_THROTTLE_MS - sinceLastCommit)
+      }
+    }
+  }
+
   function undo() {
+    clearPropsTimer()
     setState(prev => {
       if (prev.index <= 0) return prev
       const idx = prev.index - 1
@@ -168,6 +228,7 @@ export function useEditorHistory(
   }
 
   function redo() {
+    clearPropsTimer()
     setState(prev => {
       if (prev.index >= prev.entries.length - 1) return prev
       const idx = prev.index + 1
@@ -176,6 +237,7 @@ export function useEditorHistory(
   }
 
   function jump(i: number) {
+    clearPropsTimer()
     setState(prev => {
       const idx = Math.max(0, Math.min(i, prev.entries.length - 1))
       return { ...prev, index: idx, workingJson: prev.entries[idx].json }
@@ -185,18 +247,16 @@ export function useEditorHistory(
   // Restore pushes the named entry to the top without truncating the existing
   // future — entries after the current index remain accessible.
   function restore(entryId: string) {
+    clearPropsTimer()
     setState(prev => {
       const source = prev.entries.find(e => e.id === entryId)
       if (!source) return prev
-      const time = new Date(source.timestamp).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
       const entry: HistoryEntry = {
         id: uid(),
         json: source.json,
-        label: `Restored from ${time}`,
+        label: `Restored: ${source.label}`,
         timestamp: Date.now(),
+        restored: true,
       }
       const capped = capHistory([...prev.entries, entry], prev.entries.length)
       return { entries: capped.entries, index: capped.index, workingJson: source.json }
@@ -206,6 +266,7 @@ export function useEditorHistory(
   // Discard the current history stack and start fresh from json.
   // Used when switching between versions so undo doesn't bleed across them.
   function reset(json: string, label = 'Version switch') {
+    clearPropsTimer()
     setState({
       entries: [{ id: uid(), json, label, timestamp: Date.now() }],
       index: 0,
@@ -231,6 +292,7 @@ export function useEditorHistory(
     canRedo: state.index < state.entries.length - 1,
     setWorking,
     commit,
+    commitProp,
     undo,
     redo,
     jump,

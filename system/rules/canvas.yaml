@@ -1,0 +1,18 @@
+component: canvas
+version: 1.0.0
+rules:
+  - id: canvas-node-size-from-token
+    description: Node dimensions must come from component tokens, not hardcoded values.
+    enforcement: advisory
+
+  - id: canvas-no-nested-canvas
+    description: Do not place a Canvas inside another Canvas.
+    enforcement: error
+
+  - id: canvas-edit-needs-callback
+    description: When mode="edit", provide an onNodesChange callback to persist dragged positions.
+    enforcement: advisory
+
+  - id: canvas-accessible-label
+    description: Always provide an aria-label on Canvas describing the graph's purpose.
+    enforcement: error

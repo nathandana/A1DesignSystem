@@ -12,6 +12,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import iconRegistry from '../../../../system/icons/material-symbols.json';
 import iconUsageRaw from '../../../../system/icons/icon-usage.md?raw';
 import { type AiUsage, getApiKey } from './aiImages';
+import { validateCustomIconSvg } from './customIconFont';
 
 const MODEL = 'claude-haiku-4-5';
 
@@ -133,3 +134,107 @@ export async function suggestIcons(
     },
   };
 }
+
+// ── Icon designer ─────────────────────────────────────────────────────────────
+
+export interface DesignedIcon {
+  name: string;
+  reason: string;
+  paths: string[];
+  valid: boolean;
+  svg?: string;
+  error?: string;
+}
+
+const DESIGN_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    icons: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          name: { type: 'string', description: 'snake_case icon name, e.g. cloud_check.' },
+          reason: { type: 'string', description: 'One sentence describing the design.' },
+          paths: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'SVG path "d" values. Absolute commands only (M L C Q A Z). Every path must close with Z.',
+          },
+        },
+        required: ['name', 'reason', 'paths'],
+      },
+    },
+  },
+  required: ['icons'],
+} as const;
+
+const DESIGN_SYSTEM_PROMPT = `You are a precision icon designer creating Material Symbols Outlined-style icons for a 24×24 SVG grid.
+
+RULES — follow exactly:
+• ViewBox is 0 0 24 24. Keep all shapes within x:2–22, y:2–22 for optical margin.
+• Paths use fill="currentColor". No stroke. No transforms. No groups.
+• Absolute commands only — M L C Q A Z. Every sub-path must end with Z.
+• Outlined style: draw a ~2-unit-thick outline silhouette, like a Material Symbol glyph.
+• Keep shapes visually centered and balanced in the 24×24 grid.
+
+REFERENCE (correct style):
+• Outlined circle: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8Z"
+
+Provide distinct design variations. Each icon must be independently recognisable.`;
+
+/** Ask Claude to design SVG icons for a concept. Each result is validated. */
+export async function designIcons(
+  { description, count = 3 }: { description: string; count?: number },
+): Promise<{ icons: DesignedIcon[]; usage: AiUsage }> {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('NO_API_KEY');
+
+  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+  const t0 = performance.now();
+
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    system: DESIGN_SYSTEM_PROMPT,
+    output_config: { format: { type: 'json_schema', schema: DESIGN_SCHEMA } },
+    messages: [{
+      role: 'user',
+      content: `Design ${count + 1} distinct icon variations for: "${description}". Each should represent the concept differently.`,
+    }],
+  } as Anthropic.MessageCreateParamsNonStreaming);
+
+  const elapsedMs = performance.now() - t0;
+  const textBlock = response.content.find((b) => b.type === 'text');
+  const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
+
+  let parsed: { icons?: unknown };
+  try { parsed = JSON.parse(raw); } catch { throw new Error('Could not read the response — try again.'); }
+
+  const icons: DesignedIcon[] = [];
+  for (const it of (Array.isArray(parsed.icons) ? parsed.icons : [])) {
+    const item = it as Record<string, unknown>;
+    const name = String(item.name ?? '').trim() || 'icon';
+    const reason = String(item.reason ?? '');
+    const pathArr = (Array.isArray(item.paths) ? item.paths : []) as string[];
+    const svgText =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">` +
+      pathArr.map((d) => `<path d="${d}" fill="currentColor"/>`).join('') +
+      `</svg>`;
+    try {
+      const v = validateCustomIconSvg(svgText, name);
+      icons.push({ name: v.name || name, reason, paths: v.paths, valid: true, svg: v.svg });
+    } catch (err) {
+      icons.push({ name, reason, paths: pathArr, valid: false, error: err instanceof Error ? err.message : 'Invalid SVG' });
+    }
+    if (icons.length >= count) break;
+  }
+
+  return {
+    icons,
+    usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens, elapsedMs, model: 'claude-sonnet-4-6' },
+  };
+}
+

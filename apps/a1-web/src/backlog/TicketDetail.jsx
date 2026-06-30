@@ -50,7 +50,7 @@ function reviewDate(iso) {
 const KIND_ICON = { question: 'help', answer: 'reply', activity: 'history', comment: 'chat' }
 
 // Per-persona "reviewed" tags (Virtual Team). Each shows who reviewed and when.
-function ReviewTags({ reviews }) {
+export function ReviewTags({ reviews }) {
   const entries = Object.entries(reviews || {})
   if (!entries.length) return '—'
   return (
@@ -121,10 +121,10 @@ function QuestionChoices({ options, allowOther, onAnswer }) {
 
 // Status toolbar split: the common workflow stages sit inline; the rest live in a
 // "More" overflow menu so the bar stays compact.
-const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'done']
-const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
+export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done']
+export const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
 
-function ThreadEntry({ entry, answered, onAnswer }) {
+export function ThreadEntry({ entry, answered, onAnswer }) {
   const isActivity = entry.kind === 'activity'
   const persona = entry.meta?.persona // a virtual-team comment (e.g. the Product Owner)
   const author = persona ? (entry.meta?.personaName || entry.userEmail) : (entry.userEmail || 'Someone')
@@ -204,7 +204,7 @@ function TicketDescription({ text }) {
 // size and scope are edited via the toolbars/select in the Details tab and commit
 // immediately (matching the existing inline-triage pattern).
 
-function TitleField({ item, onSave }) {
+export function TitleField({ item, onSave }) {
   const [value, setValue] = useState(item.title)
   // Reseed when the ticket (or its title) changes — but not on every keystroke,
   // since item.title only changes after a committed save.
@@ -227,7 +227,7 @@ function TitleField({ item, onSave }) {
   )
 }
 
-function DescriptionField({ item, onSave }) {
+export function DescriptionField({ item, onSave }) {
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(item.description ?? '')
   const [busy, setBusy] = useState(false)
@@ -286,6 +286,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
   const [draft, setDraft] = useState('')
   const [busy, setBusy] = useState(false)
   const [tab, setTab] = useState('details')
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const me = backlog?.user
   const voted = item ? backlog?.votedSet?.has(item.id) : false
@@ -352,13 +353,25 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
     </Stack>
   )
 
+  async function handleDelete() {
+    await backlog?.remove(item)
+    setConfirmDelete(false)
+    onClose()
+  }
+
   return (
+    <>
     <Dialog
       open={open}
       onClose={onClose}
       size="lg"
       title={`${ticketRef(item.number)} · ${item.title}`}
-      footer={<Button variant="secondary" onClick={onClose}>Done</Button>}
+      footer={
+        <Stack direction="row" gap="md" align="center" justify="between" wrap>
+          <Link href={`/backlog/A1-${item.number}`} size="sm">View as page</Link>
+          <Button variant="secondary" onClick={onClose}>Done</Button>
+        </Stack>
+      }
     >
       <Stack gap="md">
         {item.awaitingRequester && (
@@ -495,6 +508,12 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
                 </Stack>
               )}
 
+              <ButtonContainer align="start">
+                <Button size="sm" variant="destructive" icon="delete" onClick={() => setConfirmDelete(true)}>
+                  Delete ticket
+                </Button>
+              </ButtonContainer>
+
             </Stack>
           </TabPanel>
 
@@ -565,5 +584,22 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
         </Tabs>
       </Stack>
     </Dialog>
+
+    <Dialog
+      open={confirmDelete}
+      onClose={() => setConfirmDelete(false)}
+      title="Delete ticket"
+      footer={
+        <ButtonContainer>
+          <Button variant="secondary" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button variant="destructive" icon="delete" onClick={handleDelete}>Delete</Button>
+        </ButtonContainer>
+      }
+    >
+      <Paragraph>
+        Permanently delete {ticketRef(item.number)}? This cannot be undone.
+      </Paragraph>
+    </Dialog>
+    </>
   )
 }

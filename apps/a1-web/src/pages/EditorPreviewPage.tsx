@@ -89,7 +89,7 @@ function urlForScreen(pageId: string, itemId?: string | null): string {
   const projectParam = project ? `&project=${encodeURIComponent(project)}` : '';
   const itemParam = itemId ? `&item=${encodeURIComponent(itemId)}` : '';
   // Built manually so `standalone` stays a bare flag (no trailing "=").
-  return `${window.location.pathname}?page=editor-preview&standalone&screen=${encodeURIComponent(pageId)}${projectParam}${itemParam}`;
+  return `/editor-preview?standalone&screen=${encodeURIComponent(pageId)}${projectParam}${itemParam}`;
 }
 
 export function EditorPreviewPage() {

@@ -62,6 +62,10 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
+function escapeJsxString(value) {
+  return String(value ?? '').replaceAll('"', '&quot;')
+}
+
 // ── Heading-mark (HeadingMark) helpers ─────────────────────────────────────────
 
 const UNDERLINE_STYLES = ['swoop', 'wave', 'sketch']
@@ -180,9 +184,10 @@ function htmlToJsx(html) {
   return out
 }
 
-function buildHeadingSnippet(config) {
+function buildHeadingSnippet(config, utilityClass = '') {
   const textWrap = config.textWrap ? 'balance' : undefined
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.as !== 'h2' ? `as="${config.as}"` : null,
     config.type !== 'heading' ? `type="${config.type}"` : null,
     config.size && typeof config.size === 'object' ? responsiveProp('size', config.size) : (config.size ? `size="${config.size}"` : null),
@@ -211,7 +216,7 @@ export function getDefaultConfig(component) {
 
 // ── Editable preview ───────────────────────────────────────────────────────────
 
-function EditableHeading({ component, config, setConfig }) {
+function EditableHeading({ component, config, setConfig, utilityClass = '' }) {
   const wrapperRef = useRef(null)
   const [toolbar, setToolbar] = useState(null) // { left, top } | null
   const textWrap = config.textWrap ? 'balance' : undefined
@@ -321,6 +326,7 @@ function EditableHeading({ component, config, setConfig }) {
   return (
     <div ref={wrapperRef} className="a1-web-editable-heading">
       <Heading
+        className={utilityClass || undefined}
         as={config.as}
         type={config.type}
         size={config.size}
@@ -368,12 +374,13 @@ function EditableHeading({ component, config, setConfig }) {
   )
 }
 
-export function Preview({ component, config, setConfig }) {
+export function Preview({ component, config, setConfig, utilityClass = '' }) {
   // Read-only fallback when no setConfig is provided.
   if (!setConfig) {
     const textWrap = config.textWrap ? 'balance' : undefined
     return (
       <Heading
+        className={utilityClass || undefined}
         as={config.as}
         type={config.type}
         size={config.size}
@@ -385,10 +392,10 @@ export function Preview({ component, config, setConfig }) {
       />
     )
   }
-  return <EditableHeading component={component} config={config} setConfig={setConfig} />
+  return <EditableHeading component={component} config={config} setConfig={setConfig} utilityClass={utilityClass} />
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, textAction = null }) {
   const sizeOptions = HEADING_SIZE_OPTIONS[config.type] ?? HEADING_SIZE_OPTIONS.heading
   const markState = getMarkState(config.children)
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
@@ -401,15 +408,17 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
-<TextareaField
-        label="Text"
-        rows="sm"
-        
-        hint="==text== highlights · __text__ underlines"
-        size="compact"
-        value={htmlToMarkdown(config.children)}
-        onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
-      />
+      <Stack direction="row" gap="xs" align="end">
+        <TextareaField
+          label="Text"
+          rows="sm"
+          hint="==text== highlights · __text__ underlines"
+          size="compact"
+          value={htmlToMarkdown(config.children)}
+          onChange={(event) => set({ children: markdownToHtml(event.target.value) })}
+        />
+        {textAction}
+      </Stack>
       <Lockable prop="type"><Toolbar label="Type">
         <ToolbarGroup
           aria-label="Type"
@@ -484,6 +493,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildHeadingSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildHeadingSnippet(config, utilityClass)}</Code>
 }

@@ -66,6 +66,7 @@ One node = one A1 component instance.
   "id": "hero-title",                              // required, unique in the definition
   "type": "Heading",                                // required, exact A1 component name
   "props": { "as": "h1", "size": { "xs": "lg", "md": "xl" } },
+  "utilities": { "maxWidth": "lg", "marginBlock": "24" },
   "content": { "fallback": "Build pages from JSON", "textKey": "home.hero.title" },
   "a11y": { "labelledBy": "hero-title" },
   "actions": { "onClick": { "type": "navigate", "target": "/about" } },
@@ -78,6 +79,7 @@ One node = one A1 component instance.
 | `id` | ✓ | Unique, stable. |
 | `type` | ✓ | Exact PascalCase A1 name from the registry (§4). Unknown → safe visible fallback. |
 | `props` | — | Forwarded verbatim to the component — **must be real props** (§4/§5). |
+| `utilities` | — | Tokenized utility selections, validated by component type. Current keys: `padding`, `paddingBlock`, `paddingInline`, `margin`, `marginBlock`, `marginInline`, `gap`, `maxWidth`, `minWidth`. Use this instead of raw `className` for utility classes; e.g. `IconButton` rejects min/max width but `Button` can accept it. |
 | `content` | — | Primary text: `{ fallback (required), textKey? }`. Resolved via labels; `fallback` always shown if no label. |
 | `a11y` | — | `{ label→aria-label, labelledBy→aria-labelledby, describedBy→aria-describedby, role }`. |
 | `actions` | — | Declared, **not executed yet** (`navigate`/`openDialog`/`appAction`/`submitForm`/`externalLink` + `target`). Keep shape stable. |
@@ -92,24 +94,25 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 1. **A1 components only.** Every `type` is a registered A1 component. Never use HTML tags (`div`, `p`, `span`) as a `type`.
 2. **Exact names.** `type` matches the exported component name exactly (PascalCase): `Heading`, `MessageBadge`, `TextField`. Don't lowercase/alias.
 3. **Real props only.** Unknown prop keys leak to the DOM and warn. Use the props in §4/§5.
-4. **Tokens, not raw values.** Use the scale values (`gap: "md"`, `size: "lg"`, `color: "muted"`) — never raw px/hex/rem in props. There is no `style` escape hatch in the definition.
-5. **Semantic structure.** A heading is a `Heading`, an action is a `Button`, navigation is a `Link`. Pick the component by meaning, not looks.
-6. **Never uppercase.** Author text in sentence case ("Create account"). Never ALL-CAPS content.
-7. **Layout via layout components.** Use `Section`/`Stack`/`Grid`/`Card`, not ad-hoc wrappers. Put width/padding/gap on `Section` (see §5).
-8. **Accessibility.** Icon-only buttons need `props["aria-label"]` (or `a11y.label`). Label form regions; don't rely on color alone.
-9. **One primary action per area.** Only one `Button variant="primary"` per form/dialog/group.
+4. **Utilities use `utilities`, not fake props.** One-off tokenized width/spacing adjustments go in `utilities`; do not emit raw `className` utility strings unless you are preserving an existing class.
+5. **Tokens, not raw values.** Use the scale values (`gap: "md"`, `size: "lg"`, `color: "muted"`) — never raw px/hex/rem in props. There is no `style` escape hatch in the definition.
+6. **Semantic structure.** A heading is a `Heading`, an action is a `Button`, navigation is a `Link`. Pick the component by meaning, not looks.
+7. **Never uppercase.** Author text in sentence case ("Create account"). Never ALL-CAPS content.
+8. **Layout via layout components.** Use `Section`/`Stack`/`Grid`/`Card`, not ad-hoc wrappers. Put width/padding/gap on `Section` (see §5).
+9. **Accessibility.** Icon-only buttons need `props["aria-label"]` (or `a11y.label`). Label form regions; don't rely on color alone.
+10. **One primary action per area.** Only one `Button variant="primary"` per form/dialog/group.
 
 ### Consistency rules (projects & layout) — these keep generated pages coherent
 
-10. **No per-page nav in a project.** A **project bundle** auto-generates the `TopHeader` from the page hierarchy. **Do not** add a `TopHeader` node to a project's pages — it duplicates the generated header. (A single standalone page may include one.)
-11. **Section padding is consistent and non-zero.** Every primary (top-level) `Section` should have **non-zero `padding`** (don't leave it off or `none`), and **neighboring top-level sections should use the same `padding`** so the page has an even rhythm. Vary `surface`/`gap` for contrast, not padding.
+11. **No per-page nav in a project.** A **project bundle** auto-generates the `TopHeader` from the page hierarchy. **Do not** add a `TopHeader` node to a project's pages — it duplicates the generated header. (A single standalone page may include one.)
+12. **Section padding is consistent and non-zero.** Every primary (top-level) `Section` should have **non-zero `padding`** (don't leave it off or `none`), and **neighboring top-level sections should use the same `padding`** so the page has an even rhythm. Vary `surface`/`gap` for contrast, not padding.
 12. **Primary sections set a `contentWidth`.** A `Section` used as a page's outer element should almost always set `contentWidth` (e.g. `lg`/`xl`/`2xl`) so content doesn't span the full viewport. Use the same `contentWidth` for sibling sections that should align.
 13. **Cards live in a Grid.** Two or more sibling `Card`s should be wrapped in a `Grid` (e.g. `columns: { xs: 1, md: 3 }`), not loose in a `Stack`/`Section`.
 14. **Card images use a valid, consistent `aspectRatio`.** A `Figure` inside a `Card` should set `aspectRatio` to one of the **token values** — `"16:9" "4:3" "3:2" "1:1" "2:3" "3:4" "9:16" "21:9"` (note the colon, **not** `"4 / 3"`) — and all cards in a grid should use the **same** ratio.
 
 ---
 
-## 4. Component registry (all 59) — type · container · role · key props
+## 4. Component registry (all 60) — type · container · role · key props
 
 `C` = container (accepts `children`). Sizes/values are defined in §5. Props listed are the common ones; see `components.md` for the full set.
 
@@ -127,6 +130,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `Spacer` | — | Fixed gap. | `size` (xs–xxl) |
 | `ButtonContainer` | C | Responsive row of action buttons. | `align` (start/center/end), `fillButtons` (bool) |
 | `Slot` | C | Constrained "blank area" (pattern authoring). | `label`, `allow` (type[]), `allowPatterns` (id[]), `min`, `max`, `columns`, `gap` |
+| `Outlet` | C | Shared project-layout insertion point for page content. | `name` |
 | `Divider` | — | Visual separator. | `orientation`, `variant` (subtle/strong/accent), `lineStyle` (solid/dashed/dotted), `size`, `space` |
 | `Figure` | — | Image with optional caption. | `src` (req), `alt`, `caption`, `radius`, `size` (3xs–xxl), `align`, `aspectRatio` (**colon form**: `16:9`/`4:3`/`3:2`/`1:1`/`2:3`/`3:4`/`9:16`/`21:9`), `crop` |
 | `Icon` | — | Material Symbol. | `name` (req — see §5 icons), `size` (xs–xl/jumbo), `color`, `fill` (bool) |
@@ -187,7 +191,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `PageNav` | — | In-page section nav. | `label`, `sections` (`{id,label,level}[]`) |
 | `TreeMenu` | — | Hierarchical tree. | `items`, `selectedId`, `showExpandControls` |
 | `Pagination` | — | Pager. | `page`, `pageCount`, `onPageChange` |
-| `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`), `direction` (row/column), `size`, `labelWidth` |
+| `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`; `label` is required and renders the term; do not use `term`), `direction` (row/column), `size`, `labelWidth` |
 | `DataTable` | — | Table. | `columns` (`{key,label}[]`), `rows` (objects keyed by each column `key`, include a unique `id`), `size` (**`comfortable`/`default`/`compact`** — not sm/md/lg; omit for auto), `notices` |
 | `Calendar` | — | Calendar (experimental). | `variant`, `initialMonth`, `selectable` |
 
@@ -206,7 +210,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 - **Section `surface`**: `page`, `panel`, `raised`, `card`. **`align`**: `none`, `start`, `center`, `end`.
 - **Button `variant`**: `primary`, `secondary`, `tertiary`, `destructive`, `success`. **`size`**: `sm`, `md`, `lg`.
 - **Responsive**: any prop may take a breakpoint object using `xs, sm, md, lg, xl`, e.g. `"columns": { "xs": 1, "md": 3 }`, `"direction": { "xs": "column", "md": "row" }`.
-- **Icons** (`Icon.name`, `*.icon`): Material Symbols Outlined names (snake_case), e.g. `home`, `add`, `search`, `settings`, `arrow_forward`, `check_circle`, `download`, `rocket_launch`. Only real Material Symbols names render.
+- **Icons** (`Icon.name`, `*.icon`): use Material Symbols Outlined names (snake_case), e.g. `home`, `add`, `search`, `settings`, `arrow_forward`, `check_circle`, `download`, `rocket_launch`. Project definitions may also use `custom:<snake_case_name>` when that custom icon is registered for the project.
 
 ---
 

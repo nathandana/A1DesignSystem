@@ -33,6 +33,13 @@ export interface ToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
    * `fit-content` wide. Default: false
    */
   fullWidth?: boolean;
+  /**
+   * Keep tools on one row and move trailing direct children into a More menu
+   * when the toolbar is narrower than its contents. Default: false
+   */
+  overflow?: boolean;
+  /** Accessible name and tooltip for the toolbar-level overflow trigger. Default: "More tools" */
+  overflowLabel?: string;
   children?: React.ReactNode;
 }
 /** A compact container grouping related editing controls on one subtle surface. */
@@ -94,6 +101,19 @@ export interface ToolbarMenuProps {
   disabled?: boolean;
   "aria-label"?: string;
   className?: string;
+  /**
+   * Internal — render the items inline as a labelled menu section instead of a
+   * trigger button. Set by the Toolbar when this menu is moved into the overflow
+   * menu, so its items appear in that menu rather than opening a nested submenu.
+   * @internal
+   */
+  inline?: boolean;
+  /**
+   * Internal — called after an inline item is chosen (used to close the parent
+   * overflow menu).
+   * @internal
+   */
+  onInlineSelect?: () => void;
 }
 /** A toolbar button that opens a dropdown Menu of choices (e.g. list types). */
 export declare function ToolbarMenu(props: ToolbarMenuProps): React.ReactElement;
@@ -105,6 +125,13 @@ export interface ToolbarGroupOption {
   icon?: string;
   /** A colour swatch (any CSS color) shown inside the option. */
   swatch?: string;
+  /** Override visible label rendering for this option. */
+  showLabel?: boolean;
+  /**
+   * Optional sort priority for visible buttons when `ToolbarGroup overflow` is on.
+   * Lower numbers stay visible first; the overflow menu still uses `options` order.
+   */
+  overflowPriority?: number;
   disabled?: boolean;
 }
 export interface ToolbarGroupProps {
@@ -114,6 +141,12 @@ export interface ToolbarGroupProps {
   options?: ToolbarGroupOption[];
   /** Lay the options out as a `columns`-wide grid (e.g. 3 for a 3×3 picker). */
   columns?: number;
+  /**
+   * When true on a non-grid group, keep as many options visible as fit in the
+   * available inline space and move the rest into an icon-only overflow menu.
+   * Options stay in their original order. Default: false
+   */
+  overflow?: boolean;
   /** Show option labels as text; boolean or a responsive breakpoint object. Default: false (icon-only) */
   showLabels?: ToolbarShowLabel;
   /**

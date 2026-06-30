@@ -53,7 +53,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--base-color-highlited-300);
+  background: var(--base-color-highlighted-300);
   box-shadow: 0 0 0 10px rgba(255, 241, 141, 0.2);
 }
 

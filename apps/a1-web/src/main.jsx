@@ -1,8 +1,10 @@
 import '../../../build/css/tokens.css'
 import '../../../packages/react/src/themes.css'
 import '../../../packages/react/src/color-scheme.css'
+import '../../../packages/react/src/utilities/spacing.css'
+import '../../../packages/react/src/utilities/width.css'
 import { createRoot } from 'react-dom/client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BottomSheet,
   Button,
@@ -11,6 +13,7 @@ import {
   LabelsProvider,
   Link,
   Menu,
+  MenuItem,
   MenuSection,
   PageLayout,
   Paragraph,
@@ -22,15 +25,26 @@ import {
   Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
+import appLabels       from '../../../system/labels/app.json'
 import actionLabels    from '../../../system/labels/action.json'
 import backlogLabels   from '../../../system/labels/backlog.json'
 import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
 import statusBarLabels from '../../../system/labels/status-bar.json'
+import {
+  getLabels,
+  hydrateLabels,
+  subscribeLabels,
+  subscribeRemoteLabels,
+  buildLabelsObject,
+  buildProjectLabelsObject,
+  deepMergeLabels,
+} from './labels/labelStore.js'
 
-const allLabels = {
+const SYSTEM_LABELS = {
   label: {
+    ...appLabels.label,
     ...actionLabels.label,
     ...backlogLabels.label,
     ...calendarLabels.label,
@@ -64,31 +78,41 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  getComponentExampleBySlug,
 } from './pages/Components.jsx'
 import { Patterns } from './pages/Patterns.jsx'
 import { patternToDefinition } from './patterns/patternDocument.js'
+import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
+import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
+import { VirtualTeam } from './pages/VirtualTeam.jsx'
 import { About } from './pages/About.jsx'
+import { Blog } from './pages/Blog.jsx'
+import { BlogArticle } from './pages/BlogArticle.jsx'
+import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
 import { AllPagesView } from './projects/AllPagesView.jsx'
-import { ImageLibraryView } from './projects/ImageLibraryView.jsx'
+import { ImageLibraryView } from './image-library/ImageLibraryView.jsx'
+import { CustomIconsView } from './projects/CustomIconsView.jsx'
 import { ThemeEditor } from './pages/ThemeEditor.jsx'
 import { ThemesList } from './pages/ThemesList.jsx'
 import { RuleEditor } from './pages/RuleEditor.jsx'
+import { listAllRules, subscribeRules } from './rules/ruleStore.ts'
 import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
 import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
+import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
-import { suppressHistoryFlush } from './editor/storage.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
+import { TProvider } from './labels/useT.js'
 import { supabaseConfigured } from './lib/supabase.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
@@ -100,6 +124,8 @@ import { BacklogProvider } from './backlog/BacklogContext.jsx'
 import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
+import { LabelEditor } from './pages/LabelEditor.jsx'
+import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -108,24 +134,30 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const RESOURCE_PAGE_IDS = ['features', 'get-started', 'help', 'backlog', 'accessibility', 'releases', 'about']
-const RESOURCE_PAGE_ICONS = {
+const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
+  blog: 'article',
   help: 'help',
   backlog: 'task_alt',
+  'virtual-team': 'groups',
   accessibility: 'accessibility',
   releases: 'new_releases',
   about: 'info',
+  'label-editor': 'translate',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'data', 'theme-editor', 'rules', 'projects', 'help', 'accessibility', 'releases', 'backlog', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   features: 'Features',
-  'get-started': 'Get Started',
+  'get-started': 'Get started',
+  blog: 'Blog',
+  'blog-article': 'Search, shortcuts, and walkthroughs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -133,14 +165,18 @@ const PAGE_TITLES = {
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   'image-library': 'Image library',
+  'custom-icons': 'Custom icons',
   data: 'Data sources',
   'theme-editor': 'Theme',
   'rules': 'Rules',
+  'label-editor': 'Label editor',
   projects: 'Projects',
   help: 'Help',
   accessibility: 'Accessibility',
   releases: 'Releases',
   backlog: 'Backlog',
+  'virtual-team': 'Virtual team',
+  'backlog-ticket': 'Backlog',
   about: 'About',
   account: 'Account',
 }
@@ -154,27 +190,142 @@ const themeOptions = [
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
 ]
+const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
 
 const colorSchemeOptions = [
-  { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode' },
-  { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode' },
-  { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode' },
+  { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode', labelKey: 'app.settings.lightMode' },
+  { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode', labelKey: 'app.settings.darkMode' },
+  { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode', labelKey: 'app.settings.systemMode' },
 ]
 
 const VALID_THEMES = themeOptions.map((o) => o.value)
 const VALID_COLOR_MODES = colorSchemeOptions.map((o) => o.value)
 
-function getPage(search = window.location.search) {
-  const page = new URLSearchParams(search).get('page') || 'home'
-  return PAGES.includes(page) ? page : 'home'
+function getComponentExampleTab(pathname = window.location.pathname) {
+  const path = pathname.split(/[?#]/)[0].replace(/^\/|\/$/g, '')
+  const parts = path.split('/')
+  if (parts[0] !== 'components' || parts.length < 3) return null
+  const [, componentId, exampleSlug] = parts
+  const example = getComponentExampleBySlug(componentId, exampleSlug)
+  return example ? `example:${example.id}` : null
+}
+
+function getPage(search = window.location.search, pathname = window.location.pathname) {
+  // Path-based routing — read from the URL pathname first.
+  const path = pathname.replace(/^\/|\/$/g, '') // strip leading/trailing slash
+  if (!path) return 'home'
+  if (path === 'blog') return 'blog'
+  if (path.startsWith('blog/')) return 'blog-article'
+
+  // /foundations → 'foundations', /foundations/color → 'foundation-color'
+  if (path === 'foundations') return 'foundations'
+  if (path.startsWith('foundations/')) {
+    const id = `foundation-${path.slice('foundations/'.length)}`
+    if (PAGES.includes(id)) return id
+    return 'foundations'
+  }
+
+  // /components → 'components', /components/layout → 'components-layout',
+  // /components/button → 'component-button'
+  if (path === 'components') return 'components'
+  if (path.startsWith('components/')) {
+    const suffix = path.slice('components/'.length)
+    const [componentId, exampleSlug] = suffix.split('/')
+    if (componentId && exampleSlug && getComponentExampleBySlug(componentId, exampleSlug)) {
+      const id = `component-${componentId}`
+      if (PAGES.includes(id)) return id
+    }
+    if (PAGES.includes(`components-${suffix}`)) return `components-${suffix}`
+    if (PAGES.includes(`component-${suffix}`)) return `component-${suffix}`
+    return 'components'
+  }
+
+  // /backlog/A1-{n} → 'backlog-ticket'
+  if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
+
+  // Direct match: /backlog → 'backlog', /editor → 'editor', etc.
+  if (PAGES.includes(path)) return path
+
+  // Legacy fallback: honour ?page= query param so old bookmarks still work.
+  const paramPage = new URLSearchParams(search).get('page')
+  if (paramPage && PAGES.includes(paramPage)) return paramPage
+
+  return 'home'
 }
 
 function getPath(page) {
-  return page === 'home' ? '/' : `/?page=${page}`
+  if (!page || page === 'home') return '/'
+  if (page === 'blog-article') return `/blog/${BLOG_ARTICLE_SLUG}`
+  if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
+  if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
+  if (page.startsWith('component-')) return `/components/${page.slice('component-'.length)}`
+  if (page === 'backlog-ticket') return '/backlog'
+  return `/${page}`
 }
 
 function isPlainLeftClick(e) {
   return e.button === 0 && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey
+}
+
+function isVisibleFocusableSearch(el) {
+  if (!(el instanceof HTMLElement)) return false
+  if (el.matches('[disabled], [aria-disabled="true"]')) return false
+  if (el.getAttribute('tabindex') === '-1') return false
+  const style = window.getComputedStyle(el)
+  if (style.display === 'none' || style.visibility === 'hidden') return false
+  const rect = el.getBoundingClientRect()
+  return rect.width > 0 && rect.height > 0
+}
+
+function focusPageSearchTarget() {
+  const candidates = Array.from(document.querySelectorAll('[data-a1-page-search]'))
+  const target = candidates.find(isVisibleFocusableSearch)
+  if (!target) return false
+  target.focus({ preventScroll: true })
+  target.select?.()
+  target.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+  return true
+}
+
+const PAGE_TITLE_LABEL_KEYS = {
+  home: 'app.page.home',
+  features: 'app.page.features',
+  'get-started': 'app.page.getStarted',
+  blog: 'app.page.blog',
+  'blog-article': 'app.page.blogArticle',
+  foundations: 'app.nav.foundations',
+  components: 'app.nav.components',
+  patterns: 'app.page.patterns',
+  editor: 'app.page.editor',
+  'editor-preview': 'app.page.editorPreview',
+  'image-library': 'app.page.imageLibrary',
+  'custom-icons': 'app.page.customIcons',
+  data: 'app.page.dataSources',
+  'theme-editor': 'app.page.theme',
+  rules: 'app.page.rules',
+  'label-editor': 'app.page.labels',
+  projects: 'app.page.projects',
+  help: 'app.page.help',
+  accessibility: 'app.page.accessibility',
+  releases: 'app.page.releases',
+  backlog: 'app.page.backlog',
+  'virtual-team': 'app.page.virtualTeam',
+  'backlog-ticket': 'app.page.backlog',
+  about: 'app.page.about',
+  account: 'app.page.account',
+}
+
+function resolveLabel(labels, locale, key, fallback) {
+  if (!key || !labels) return fallback ?? key
+  const parts = key.split('.')
+  let node = labels.label
+  for (const part of parts) {
+    if (node == null || typeof node !== 'object') return fallback ?? key
+    node = node[part]
+  }
+  if (node == null) return fallback ?? key
+  if (locale && node.locale?.[locale] != null) return node.locale[locale]
+  return node.$value ?? fallback ?? key
 }
 
 
@@ -201,11 +352,15 @@ function App() {
   const [systemColorScheme, setSystemColorScheme] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
+  const [skipMenuOpen, setSkipMenuOpen] = useState(false)
+  const skipMenuAnchorRef = useRef(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const { user: authUser } = useAuth()
+  const settingsAnchorRef = useRef(null)
+  const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
-  const [detailTab, setDetailTab] = useState('configure')
+  const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
   // ── Projects state ─────────────────────────────────────────────────────────
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
@@ -258,11 +413,222 @@ function App() {
   // Bump on theme-store changes so the sidebar theme name stays live after a rename.
   const [, setThemesVersion] = useState(0)
   useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
+  const [patternsVersion, setPatternsVersion] = useState(0)
+  useEffect(() => subscribePatterns(() => setPatternsVersion((v) => v + 1)), [])
+  const [rulesVersion, setRulesVersion] = useState(0)
+  useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
-  const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  useEffect(() => {
+    if (!skipMenuOpen) return undefined
+    const closeSkipMenu = (event) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      setSkipMenuOpen(false)
+      skipMenuAnchorRef.current?.focus()
+    }
+    window.addEventListener('keydown', closeSkipMenu, true)
+    return () => window.removeEventListener('keydown', closeSkipMenu, true)
+  }, [skipMenuOpen])
+
+  // ── Reactive label resolution: system defaults → workspace overrides → project overrides ──
+  const [workspaceLabelsObj, setWorkspaceLabelsObj] = useState(() =>
+    buildLabelsObject(getLabels().items)
+  )
+  useEffect(() => {
+    const unsubscribeLocal = subscribeLabels((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    hydrateLabels().then((incoming) => {
+      setWorkspaceLabelsObj(buildLabelsObject(incoming.items))
+    })
+    const unsubscribeRemote = subscribeRemoteLabels()
+    return () => {
+      unsubscribeLocal()
+      unsubscribeRemote()
+    }
+  }, [])
+  const allLabels = useMemo(() => {
+    const projectLabels = activeProject?.labelOverrides
+      ? buildProjectLabelsObject(activeProject.labelOverrides)
+      : { label: {} }
+    return {
+      label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabelsObj.label, projectLabels.label),
+    }
+  }, [workspaceLabelsObj, activeProject])
+  const labelLocale = locale === 'en' ? null : locale
+  const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
+  const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+
+  const globalSearchEntries = useMemo(() => {
+    const entries = []
+    const addPage = (id, description, keywords = []) => {
+      entries.push({
+        id: `page-${id}`,
+        title: pageTitle(id),
+        category: 'Pages',
+        description,
+        icon: PAGE_ICONS[id] || 'article',
+        keywords: [id, PAGE_TITLES[id], ...keywords],
+        onSelect: () => navigate(id),
+      })
+    }
+
+    addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
+    addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
+    addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
+    addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
+    BLOG_POSTS.forEach((post) => {
+      entries.push({
+        id: `blog-${post.slug}`,
+        title: post.title,
+        category: 'Blog',
+        description: post.description,
+        icon: 'article',
+        keywords: ['blog', 'newsletter', 'release', post.version, ...(post.keywords || [])],
+        onSelect: () => navigate('blog-article', { path: `/blog/${post.slug}` }),
+      })
+    })
+    addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
+    addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
+    addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
+    addPage('editor', 'Create and edit projects with the governed JSON page model.', ['projects', 'pages', 'builder'])
+    addPage('image-library', 'Manage reusable image assets for projects.', ['assets', 'media', 'dam'])
+    addPage('custom-icons', 'Create and manage custom project icons.', ['symbols', 'iconography'])
+    addPage('data', 'Plug and play data sets for projects.', ['datasets', 'sources'])
+    addPage('theme-editor', 'Create and adjust custom themes.', ['color', 'tokens', 'brand'])
+    addPage('rules', 'Define and review UI, component, and product rules.', ['governance', 'standards'])
+    addPage('label-editor', 'Shared labels and translations.', ['locale', 'copy', 'language'])
+    addPage('backlog', 'Plan, prioritize, and review A1 work.', ['tickets', 'issues', 'roadmap'])
+    addPage('help', 'Guidance for using A1.', ['docs', 'support'])
+    addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
+    addPage('releases', 'Release notes and shipped changes.', ['changelog', 'updates'])
+    addPage('about', 'About A1 Design System.', ['system'])
+    if (import.meta.env.DEV) addPage('virtual-team', 'Local review assistants for backlog and design work.', ['ai', 'persona'])
+
+    foundations.forEach((foundation) => {
+      entries.push({
+        id: `foundation-${foundation.id}`,
+        title: foundation.title,
+        category: 'Foundations',
+        description: foundation.body,
+        icon: foundation.icon,
+        keywords: [foundation.id, 'foundation', 'token', 'standard'],
+        onSelect: () => navigate(foundation.id),
+      })
+    })
+
+    componentCategories.forEach((category) => {
+      entries.push({
+        id: `component-category-${category.id}`,
+        title: category.title,
+        category: 'Component categories',
+        description: category.body,
+        icon: category.icon,
+        keywords: [category.id, 'components'],
+        onSelect: () => navigate(`components-${category.id}`),
+      })
+      category.components.forEach((component) => {
+        entries.push({
+          id: `component-${component.id}`,
+          title: component.title,
+          category: 'Components',
+          description: component.body,
+          icon: component.icon,
+          keywords: [
+            component.id,
+            category.title,
+            category.id,
+            component.id === 'button' ? 'cta call to action submit action' : '',
+            component.id === 'data-table' ? 'grid table rows columns spreadsheet list' : '',
+            component.id === 'search-field' ? 'find query lookup' : '',
+          ],
+          onSelect: () => navigate(`component-${component.id}`),
+        })
+      })
+    })
+
+    projects.forEach((project) => {
+      entries.push({
+        id: `project-${project.id}`,
+        title: project.name,
+        category: 'Projects',
+        description: project.description || 'Project workspace.',
+        icon: project.icon || 'folder',
+        keywords: ['project', project.name, project.description],
+        onSelect: () => openProject(project.id),
+      })
+      projectStore.loadPages(project.id).forEach((page) => {
+        entries.push({
+          id: `project-page-${project.id}-${page.id}`,
+          title: page.title || 'Untitled',
+          category: 'Project pages',
+          description: project.name,
+          icon: page.icon || 'article',
+          keywords: ['page', 'screen', 'editor', project.name, page.description],
+          onSelect: () => {
+            openProject(project.id)
+            handleOpenPage(page.id)
+          },
+        })
+      })
+    })
+
+    getAllPatterns().forEach((pattern) => {
+      entries.push({
+        id: `pattern-${pattern.pattern.id}`,
+        title: pattern.pattern.name,
+        category: 'Patterns',
+        description: pattern.pattern.description || 'Reusable pattern.',
+        icon: 'dashboard_customize',
+        keywords: ['pattern', pattern.pattern.category, pattern.pattern.name],
+        onSelect: () => navigate('patterns'),
+      })
+    })
+
+    listAllRules().forEach((rule) => {
+      entries.push({
+        id: `rule-${rule.id}`,
+        title: rule.requirement,
+        category: 'Rules',
+        description: rule.component,
+        icon: 'gavel',
+        badge: rule.source === 'builtin' ? 'Built-in' : 'User rule',
+        keywords: ['rule', rule.component, rule.do, rule.dont, ...(rule.appliesTo || [])],
+        onSelect: () => navigate('rules'),
+      })
+    })
+
+    getLabels().items.forEach((label) => {
+      entries.push({
+        id: `label-${label.key}`,
+        title: label.key,
+        category: 'Labels',
+        description: label.en || 'Workspace label.',
+        icon: 'translate',
+        keywords: ['label', 'translation', 'locale', ...Object.values(label).filter((value) => typeof value === 'string')],
+        onSelect: () => navigate('label-editor'),
+      })
+    })
+
+    backlog?.items?.forEach((item) => {
+      entries.push({
+        id: `ticket-${item.id}`,
+        title: `A1-${item.number} ${item.title}`,
+        category: 'Backlog',
+        description: item.description || item.status,
+        icon: 'task_alt',
+        badge: item.priority,
+        keywords: ['ticket', 'issue', 'backlog', item.type, item.status, item.size, item.scope],
+        onSelect: () => navigate('backlog-ticket', { path: `/backlog/A1-${item.number}` }),
+      })
+    })
+
+    return entries
+  }, [backlog?.items, locale, patternsVersion, projects, rulesVersion, allLabels])
 
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
@@ -371,6 +737,11 @@ function App() {
     refreshProjects()
   }
 
+  function handleUpdateProjectLabels(projectId, labelOverrides) {
+    projectStore.updateProject(projectId, { labelOverrides })
+    refreshProjects()
+  }
+
   function handleDuplicateProject(id) {
     projectStore.duplicateProject(id)
     refreshProjects()
@@ -450,56 +821,39 @@ function App() {
   function launchProjectPrototype(pageId) {
     const target = pageId ?? projectPages[0]?.id
     if (!target || !activeProjectId) return
-    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
+    const url = `/editor-preview?standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  // Export every project (and its pages' latest JSON) as one plain-text backup
-  // file, so nothing is lost if local storage is cleared.
-  function handleExportAll() {
-    const content = projectStore.exportAllText()
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `a1-editor-projects-${new Date().toISOString().slice(0, 10)}.txt`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
+  function resetRouteScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
+    requestAnimationFrame(() => {
+      const main = document.querySelector('.a1-page-layout__main-scroll')
+      if (main instanceof HTMLElement) {
+        main.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      }
+    })
   }
 
-  // Restore projects + pages from an "Export all" file, then reload so the editor
-  // picks everything up cleanly. Suppress the open page's history flush first so
-  // its stale in-memory state can't clobber the freshly-imported content.
-  async function handleImportFile(event) {
-    const file = event.target.files?.[0]
-    event.target.value = '' // allow re-importing the same file later
-    if (!file) return
-
-    let text = ''
-    try { text = await file.text() } catch { setEditorMessage('Could not read that file.'); return }
-
-    const { projects: importedProjects } = projectStore.importAllText(text)
-    if (importedProjects === 0) {
-      setEditorMessage('No projects found in that file.')
-      return
-    }
-
-    suppressHistoryFlush()
-    window.location.reload()
-  }
-
-  function navigate(page, { replace = false } = {}) {
+  function navigate(page, { replace = false, path: pathOverride = null } = {}) {
     const next = PAGES.includes(page) ? page : 'home'
-    const nextPath = getPath(next)
+    const nextPath = pathOverride ?? getPath(next)
     const currentPath = `${window.location.pathname}${window.location.search}`
     if (nextPath !== currentPath) {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
     }
     setActivePage(next)
+    if (next.startsWith('component-')) {
+      setDetailTab(getComponentExampleTab(nextPath) ?? 'configure')
+    }
     setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: 'auto' })
+    resetRouteScroll()
+  }
+
+  function focusMainContent() {
+    const main = document.querySelector('.a1-page-layout__main-scroll')
+    if (main instanceof HTMLElement) main.focus()
   }
 
   function handleNavClick(e, page) {
@@ -509,10 +863,25 @@ function App() {
   }
 
   useEffect(() => {
-    window.history.replaceState({ page: getPage() }, '', window.location.href)
-    setActivePage(getPage())
+    // Canonicalize the initial URL. Old ?page= bookmarks are preserved by getPage()'s
+    // legacy fallback, then replaced with the new path format here so the address bar
+    // updates without a page reload.
+    const page = getPage()
+    const search = new URLSearchParams(window.location.search)
+    search.delete('page')
+    const extra = search.toString()
+    // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
+    // preserve the current pathname rather than collapsing to the base page path.
+    const canonicalBase = page === 'backlog-ticket' || getComponentExampleTab()
+      ? window.location.pathname
+      : getPath(page)
+    const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
+    window.history.replaceState({ page }, '', canonicalUrl)
+    setActivePage(page)
+    setDetailTab(getComponentExampleTab() ?? 'configure')
     const onPop = () => {
       setActivePage(getPage())
+      setDetailTab(getComponentExampleTab() ?? 'configure')
       const params = new URLSearchParams(window.location.search)
       const proj = params.get('project') || null
       setActiveProjectId(proj)
@@ -544,6 +913,116 @@ function App() {
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
   useEffect(() => { localStorage.setItem('a1-web-locale', locale) }, [locale])
 
+  useEffect(() => {
+    let goTimer = null
+    let awaitingGoTarget = false
+    const goTargets = {
+      a: 'accessibility',
+      b: 'backlog',
+      c: 'components',
+      d: 'data',
+      e: 'editor',
+      f: 'foundations',
+      h: 'home',
+      l: 'label-editor',
+      p: 'patterns',
+      r: 'rules',
+      t: 'theme-editor',
+    }
+
+    const clearGoTarget = () => {
+      awaitingGoTarget = false
+      if (goTimer) window.clearTimeout(goTimer)
+      goTimer = null
+    }
+
+    const handleGlobalShortcut = (event) => {
+      if (event.defaultPrevented) return
+      const target = event.target
+      const isTyping = target instanceof HTMLElement && (
+        target.isContentEditable
+        || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+      )
+      if (isTyping) {
+        clearGoTarget()
+        return
+      }
+
+      const opensCommandSearch = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'
+      const opensShortcutMenu = (event.metaKey || event.ctrlKey) && event.key === '/'
+      const opensSlashSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === '/'
+      const opensPageSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === "'"
+      if (opensShortcutMenu) {
+        event.preventDefault()
+        clearGoTarget()
+        setSkipMenuOpen((open) => {
+          if (!open) window.requestAnimationFrame(() => skipMenuAnchorRef.current?.focus())
+          return !open
+        })
+        return
+      }
+
+      if (opensPageSearch) {
+        if (focusPageSearchTarget()) {
+          event.preventDefault()
+          clearGoTarget()
+        }
+        return
+      }
+
+      if (opensCommandSearch || opensSlashSearch) {
+        event.preventDefault()
+        clearGoTarget()
+        setGlobalSearchOpen(true)
+        return
+      }
+
+      if (event.altKey && !event.metaKey && !event.ctrlKey && event.key.toLowerCase() === 'm') {
+        event.preventDefault()
+        clearGoTarget()
+        focusMainContent()
+        return
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '?') {
+        event.preventDefault()
+        clearGoTarget()
+        navigate('help')
+        return
+      }
+
+      if (awaitingGoTarget) {
+        const targetPage = goTargets[event.key.toLowerCase()]
+        if (targetPage) {
+          event.preventDefault()
+          clearGoTarget()
+          navigate(targetPage)
+          return
+        }
+        if (event.key.toLowerCase() === 'm') {
+          event.preventDefault()
+          clearGoTarget()
+          focusMainContent()
+          return
+        }
+        clearGoTarget()
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key.toLowerCase() === 'g') {
+        event.preventDefault()
+        awaitingGoTarget = true
+        if (goTimer) window.clearTimeout(goTimer)
+        goTimer = window.setTimeout(clearGoTarget, 1500)
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalShortcut)
+    return () => {
+      clearGoTarget()
+      window.removeEventListener('keydown', handleGlobalShortcut)
+    }
+  }, [])
+
   // Mirror the open page's definition metadata (name/description/icon) into its
   // project page record so the page tree and generated nav stay in sync as you
   // edit. Hierarchy (parentId/order) is owned by the tree, not the definition.
@@ -564,7 +1043,7 @@ function App() {
   }, [editorDefinition?.page?.name, editorDefinition?.page?.description, editorDefinition?.page?.icon, activeProjectId, openPageId])
 
   // Keep the editor URL pointed at the active project + page
-  // (`?page=editor&project=<id>&doc=<id>`) so it is shareable. Each genuine
+  // (`/editor?project=<id>&doc=<id>`) so it is shareable. Each genuine
   // in-editor navigation (changing project or page) PUSHES a history entry so
   // the browser Back button steps through All Projects → project → page. The
   // very first sync after entering the editor (mount or resume from a stored
@@ -572,14 +1051,14 @@ function App() {
   const editorUrlSynced = useRef(false)
   useEffect(() => {
     if (activePage !== 'editor') return
-    // Pattern authoring keeps its own `?page=editor&pattern=<id>` URL — don't
+    // Pattern authoring keeps its own `/editor?pattern=<id>` URL — don't
     // rewrite it to the project/page form (which would drop the pattern param).
     if (editorPatternId) return
     const params = new URLSearchParams()
-    params.set('page', 'editor')
     if (activeProjectId) params.set('project', activeProjectId)
     if (openPageId) params.set('doc', openPageId)
-    const next = `${window.location.pathname}?${params.toString()}`
+    const search = params.toString()
+    const next = search ? `/editor?${search}` : '/editor'
     if (`${window.location.pathname}${window.location.search}` === next) {
       editorUrlSynced.current = true
       return
@@ -600,12 +1079,12 @@ function App() {
   useEffect(() => {
     if (activePage !== 'theme-editor') { themeUrlSynced.current = false; return }
     const params = new URLSearchParams()
-    params.set('page', 'theme-editor')
     if (activeThemeId) {
       params.set('theme', activeThemeId)
       params.set('cat', themeCategory)
     }
-    const next = `${window.location.pathname}?${params.toString()}`
+    const search = params.toString()
+    const next = search ? `/theme-editor?${search}` : '/theme-editor'
     if (`${window.location.pathname}${window.location.search}` === next) {
       themeUrlSynced.current = true
       return
@@ -638,50 +1117,77 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const title = PAGE_TITLES[activePage] ?? activePage
+    const title = pageTitle(activePage)
     document.title = activePage === 'home' ? title : `${title} — A1 Design System`
-  }, [activePage])
+  }, [activePage, locale, allLabels])
+
+  const FOUNDATION_GROUPS = [
+    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
+    { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
+    { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+  ]
 
   const navItems = [
     {
-      id: 'resources',
-      label: 'Resources',
-      active: RESOURCE_PAGE_IDS.includes(activePage),
-      items: RESOURCE_PAGE_IDS.map((id) => ({
-        icon: RESOURCE_PAGE_ICONS[id],
-        label: PAGE_TITLES[id],
-        href: getPath(id),
-        onClick: (e) => handleNavClick(e, id),
-      })),
+      id: 'home',
+      label: pageTitle('home'),
+      icon: 'home',
+      active: activePage === 'home',
+      href: getPath('home'),
+      onClick: (e) => handleNavClick(e, 'home'),
+      mobileOnly: true,
+    },
+    {
+      id: 'explore',
+      label: t('app.nav.explore', 'Explore'),
+      active: EXPLORE_PAGE_IDS.includes(activePage) || activePage === 'blog-article',
+      items: [...EXPLORE_PAGE_IDS]
+        .sort((a, b) => pageTitle(a).localeCompare(pageTitle(b)))
+        .map((id) => ({
+          icon: PAGE_ICONS[id],
+          label: pageTitle(id),
+          href: getPath(id),
+          onClick: (e) => handleNavClick(e, id),
+        })),
     },
     {
       id: 'foundations',
-      label: PAGE_TITLES.foundations,
+      label: pageTitle('foundations'),
       active: activePage === 'foundations' || FOUNDATION_PAGE_IDS.includes(activePage),
       items: [
         {
           icon: 'foundation',
-          label: 'Overview',
+          label: t('app.nav.overview', 'Overview'),
           href: getPath('foundations'),
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
         { divider: true },
-        ...foundations.map((foundation) => ({
-          icon: foundation.icon,
-          label: foundation.title,
-          href: getPath(foundation.id),
-          onClick: (e) => handleNavClick(e, foundation.id),
+        ...FOUNDATION_GROUPS.map(({ label, icon, ids }) => ({
+          icon,
+          label,
+          items: ids
+            .map((id) => foundations.find((f) => f.id === id))
+            .filter(Boolean)
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((foundation) => ({
+              icon: foundation.icon,
+              label: foundation.title,
+              href: getPath(foundation.id),
+              onClick: (e) => handleNavClick(e, foundation.id),
+            })),
         })),
       ],
     },
     {
       id: 'components',
-      label: PAGE_TITLES.components,
+      label: pageTitle('components'),
       active: COMPONENT_ROUTE_IDS.includes(activePage),
       items: [
         {
           icon: 'widgets',
-          label: 'Overview',
+          label: t('app.nav.overview', 'Overview'),
           href: getPath('components'),
           onClick: (e) => handleNavClick(e, 'components'),
         },
@@ -701,17 +1207,17 @@ function App() {
     },
     {
       id: 'editor',
-      label: PAGE_TITLES.editor,
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules',
+      label: t('app.nav.editors', 'Editors'),
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor',
       items: [
         {
           icon: 'folder',
-          label: 'Projects',
+          label: pageTitle('projects'),
           active: activePage === 'editor',
           items: [
             {
               icon: 'grid_view',
-              label: 'All projects',
+              label: t('app.nav.allProjects', 'All projects'),
               href: getPath('editor'),
               onClick: handleEditorNav,
             },
@@ -719,7 +1225,7 @@ function App() {
             ...projects.map((project) => ({
               icon: project.icon || 'folder',
               label: project.name,
-              href: `/?page=editor&project=${project.id}`,
+              href: `/editor?project=${project.id}`,
               active: activePage === 'editor' && activeProjectId === project.id,
               onClick: (e) => handleProjectNav(e, project.id),
             })),
@@ -727,38 +1233,52 @@ function App() {
         },
         {
           icon: 'dashboard_customize',
-          label: 'Patterns',
+          label: pageTitle('patterns'),
           href: getPath('patterns'),
           active: activePage === 'patterns',
           onClick: (e) => handleNavClick(e, 'patterns'),
         },
         {
           icon: 'photo_library',
-          label: 'Image library',
+          label: pageTitle('image-library'),
           href: getPath('image-library'),
           active: activePage === 'image-library',
           onClick: (e) => handleNavClick(e, 'image-library'),
         },
         {
+          icon: 'font_download',
+          label: pageTitle('custom-icons'),
+          href: getPath('custom-icons'),
+          active: activePage === 'custom-icons',
+          onClick: (e) => handleNavClick(e, 'custom-icons'),
+        },
+        {
           icon: 'table_chart',
-          label: 'Data sources',
+          label: pageTitle('data'),
           href: getPath('data'),
           active: activePage === 'data',
           onClick: (e) => handleNavClick(e, 'data'),
         },
         {
           icon: 'palette',
-          label: 'Theme',
+          label: pageTitle('theme-editor'),
           href: getPath('theme-editor'),
           active: activePage === 'theme-editor',
           onClick: (e) => handleNavClick(e, 'theme-editor'),
         },
         {
           icon: 'gavel',
-          label: 'Rules',
+          label: pageTitle('rules'),
           href: getPath('rules'),
           active: activePage === 'rules',
           onClick: (e) => handleNavClick(e, 'rules'),
+        },
+        {
+          icon: 'translate',
+          label: pageTitle('label-editor'),
+          href: getPath('label-editor'),
+          active: activePage === 'label-editor',
+          onClick: (e) => handleNavClick(e, 'label-editor'),
         },
       ],
     },
@@ -766,31 +1286,37 @@ function App() {
 
   const actions = [
     {
+      id: 'global-search',
+      icon: 'search',
+      iconOnly: true,
+      label: t('app.action.globalSearch', 'Search A1'),
+      onClick: () => setGlobalSearchOpen(true),
+    },
+    {
+      id: 'help',
+      icon: PAGE_ICONS.help,
+      iconOnly: true,
+      label: pageTitle('help'),
+      active: activePage === 'help',
+      onClick: () => navigate('help'),
+    },
+    { id: 'action-divider', divider: true },
+    {
       id: 'new-ticket',
       icon: 'flag',
       iconOnly: true,
-      label: 'Report a bug or request a feature',
+      label: t('app.action.createTicket', 'Create a ticket'),
       onClick: () => backlog?.openCreate({ kind: 'general' }),
-    },
-    {
-      id: 'backlog-queue',
-      icon: 'notifications',
-      iconOnly: true,
-      label: 'Your backlog queue',
-      badge: backlog?.unreadCount || undefined,
-      onClick: () => {
-        if (backlog?.unreadCount) {
-          backlog.markRead(backlog.notifications.filter((n) => !n.read).map((n) => n.id))
-        }
-        navigate('backlog')
-      },
     },
     {
       id: 'settings',
       icon: 'settings',
       iconOnly: true,
-      label: 'Settings',
-      onClick: () => setSettingsOpen(true),
+      label: t('app.action.settings', 'Settings'),
+      onClick: (event) => {
+        settingsAnchorRef.current = event.currentTarget
+        setSettingsOpen(true)
+      },
     },
   ]
 
@@ -802,9 +1328,13 @@ function App() {
 
   if (IS_STANDALONE) {
     return (
-      <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
-        {activePage === 'editor-preview' ? <EditorPreviewPage /> : null}
+      <TProvider value={t}>
+      <LabelsProvider locale={labelLocale} labels={allLabels}>
+        <CustomIconFontProvider projectId={activeProjectId}>
+          {activePage === 'editor-preview' ? <EditorPreviewPage /> : null}
+        </CustomIconFontProvider>
       </LabelsProvider>
+      </TProvider>
     )
   }
 
@@ -819,11 +1349,98 @@ function App() {
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
       : activePage === 'backlog'
       ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside" />
+      : activePage === 'foundation-color-visualization'
+      ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
+  function runSkipMenuAction(action) {
+    setSkipMenuOpen(false)
+    action?.()
+  }
+
   return (
-    <LabelsProvider locale={locale === 'en' ? null : locale} labels={allLabels}>
+    <TProvider value={t}>
+    <LabelsProvider locale={labelLocale} labels={allLabels}>
+      <CustomIconFontProvider projectId={activeProjectId} includeAll={activePage === 'custom-icons'}>
       <ImageLibraryProvider>
+      <button
+        ref={skipMenuAnchorRef}
+        type="button"
+        className="a1-web-skip-menu-trigger"
+        data-open={skipMenuOpen ? 'true' : undefined}
+        aria-haspopup="menu"
+        aria-expanded={skipMenuOpen ? 'true' : 'false'}
+        aria-label="Keyboard menu. Shortcut: Cmd or Ctrl plus slash"
+        title="Shortcut: Cmd/Ctrl+/"
+        onFocus={() => setSkipMenuOpen(true)}
+        onClick={() => setSkipMenuOpen((open) => !open)}
+      >
+        Keyboard menu
+      </button>
+      <Menu
+        className="a1-web-keyboard-menu"
+        open={skipMenuOpen}
+        onClose={() => setSkipMenuOpen(false)}
+        anchorRef={skipMenuAnchorRef}
+        aria-label="Keyboard shortcuts"
+        trapFocus={false}
+        modalOnMobile={false}
+      >
+        <MenuSection label="Jump">
+          <MenuItem icon="keyboard_return" shortcut="Shortcut: Alt+M" onClick={() => runSkipMenuAction(focusMainContent)}>
+            Skip to main content
+          </MenuItem>
+          <MenuItem icon="manage_search" shortcut="Shortcut: '" onClick={() => runSkipMenuAction(focusPageSearchTarget)}>
+            Page search
+          </MenuItem>
+          <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
+            Search A1
+          </MenuItem>
+          <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
+            Show all shortcuts
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Primary pages">
+          <MenuItem icon="home" shortcut="Shortcut: G then H" onClick={() => runSkipMenuAction(() => navigate('home'))}>
+            Home
+          </MenuItem>
+          <MenuItem icon="category" shortcut="Shortcut: G then C" onClick={() => runSkipMenuAction(() => navigate('components'))}>
+            Components
+          </MenuItem>
+          <MenuItem icon="foundation" shortcut="Shortcut: G then F" onClick={() => runSkipMenuAction(() => navigate('foundations'))}>
+            Foundations
+          </MenuItem>
+          <MenuItem icon="edit" shortcut="Shortcut: G then E" onClick={() => runSkipMenuAction(() => navigate('editor'))}>
+            Editor
+          </MenuItem>
+          <MenuItem icon="view_quilt" shortcut="Shortcut: G then P" onClick={() => runSkipMenuAction(() => navigate('patterns'))}>
+            Patterns
+          </MenuItem>
+          <MenuItem icon="task_alt" shortcut="Shortcut: G then B" onClick={() => runSkipMenuAction(() => navigate('backlog'))}>
+            Backlog
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Tools and help">
+          <MenuItem icon="rule" shortcut="Shortcut: G then R" onClick={() => runSkipMenuAction(() => navigate('rules'))}>
+            Rules
+          </MenuItem>
+          <MenuItem icon="translate" shortcut="Shortcut: G then L" onClick={() => runSkipMenuAction(() => navigate('label-editor'))}>
+            Labels
+          </MenuItem>
+          <MenuItem icon="database" shortcut="Shortcut: G then D" onClick={() => runSkipMenuAction(() => navigate('data'))}>
+            Data sources
+          </MenuItem>
+          <MenuItem icon="palette" shortcut="Shortcut: G then T" onClick={() => runSkipMenuAction(() => navigate('theme-editor'))}>
+            Theme editor
+          </MenuItem>
+          <MenuItem icon="accessibility" shortcut="Shortcut: G then A" onClick={() => runSkipMenuAction(() => navigate('accessibility'))}>
+            Accessibility
+          </MenuItem>
+          <MenuItem icon="help" shortcut="Shortcut: ?" onClick={() => runSkipMenuAction(() => navigate('help'))}>
+            Help
+          </MenuItem>
+        </MenuSection>
+      </Menu>
       <PageLayout
         className="a1-web-page-layout"
         stickyHeader
@@ -875,7 +1492,14 @@ function App() {
                 onBackToThemes={() => setActiveThemeId(null)}
               />
             : COMPONENT_ROUTE_IDS.includes(activePage)
-            ? getComponentsSidebar({ activePage, onNavigate: navigate, search: componentSearch, setSearch: setComponentSearch })
+            ? getComponentsSidebar({
+                activePage,
+                detailTab,
+                onNavigate: navigate,
+                onSelectDetailTab: setDetailTab,
+                search: componentSearch,
+                setSearch: setComponentSearch,
+              })
             : undefined
         }
         aside={isSmDown ? undefined : asideEl}
@@ -893,7 +1517,7 @@ function App() {
           <IconButton
             className="a1-web-sidebar-toggle"
             icon="view_sidebar"
-            label="Open sidebar"
+            label={t('app.action.openSidebar', 'Open sidebar')}
             size='sm'
             variant="secondary"
             onClick={() => setSidebarOpen(true)}
@@ -902,6 +1526,8 @@ function App() {
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
+        {activePage === 'blog' && <Blog onNavigate={navigate} />}
+        {activePage === 'blog-article' && <BlogArticle onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail
@@ -1042,14 +1668,27 @@ function App() {
         {activePage === 'image-library' && (
           <ImageLibraryView
             projects={projects}
-            onBackToProjects={() => navigate('editor')}
             onNavigateHome={() => navigate('home')}
+          />
+        )}
+        {activePage === 'custom-icons' && (
+          <CustomIconsView
+            projects={projects}
+            onNavigate={navigate}
           />
         )}
         {activePage === 'data' && (
           <DataSourcesView
             projects={projects}
             onNavigate={navigate}
+          />
+        )}
+        {activePage === 'label-editor' && (
+          <LabelEditor
+            onNavigate={navigate}
+            projects={projects}
+            activeProjectId={activeProjectId}
+            onUpdateProjectLabels={handleUpdateProjectLabels}
           />
         )}
         {activePage === 'theme-editor' && (
@@ -1084,80 +1723,80 @@ function App() {
         {activePage === 'help' && <Help onNavigate={navigate} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
+        {import.meta.env.DEV && activePage === 'virtual-team' && (
+          <VirtualTeam onNavigate={navigate} onOpenProject={openProject} />
+        )}
+        {activePage === 'backlog-ticket' && <BacklogTicketPage key={window.location.pathname} onNavigate={navigate} />}
         {activePage === 'about' && <About onNavigate={navigate} />}
 
         {/* xs/sm: the config panel as a bottom sheet. Rendered last so its
             in-flow spacer reserves space at the bottom, not the top. */}
         {isSmDown && asideEl && (
-          <BottomSheet className="a1-web-config-sheet" title={activePage === 'backlog' ? 'Filters' : 'Configure'} detents={[0.55, 0.95]} defaultDetent={0}>
+          <BottomSheet className="a1-web-config-sheet" title={activePage === 'backlog' ? t('app.action.filters', 'Filters') : t('app.action.configure', 'Configure')} detents={[0.55, 0.95]} defaultDetent={0}>
             {asideEl}
           </BottomSheet>
         )}
       </PageLayout>
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} aria-label="Settings">
-        {supabaseConfigured && (
-          <MenuSection label="Account">
-            <Button
-              variant="secondary"
-              size="sm"
-              fullWidth
-              icon="account_circle"
-              onClick={() => { setSettingsOpen(false); navigate('account') }}
-            >
-              {authUser ? authUser.email : 'Sign in'}
-            </Button>
-          </MenuSection>
-        )}
-        <MenuSection label="Theme">
-          {themeOptions.length > 5 ? (
+      <GlobalSearchDialog
+        open={globalSearchOpen}
+        entries={globalSearchEntries}
+        onClose={() => setGlobalSearchOpen(false)}
+      />
+
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
+        <MenuSection label={t('app.page.theme', 'Theme')}>
+          {settingsThemeOptions.length > 5 ? (
             <SelectField
-              aria-label="Theme"
+              aria-label={t('app.page.theme', 'Theme')}
               size="compact"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
             >
-              {themeOptions.map((opt) => (
+              {settingsThemeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </SelectField>
           ) : (
             <RadioGroup
-              options={themeOptions}
+              options={settingsThemeOptions}
               value={theme}
               onChange={setTheme}
               size="compact"
-              aria-label="Theme"
+              aria-label={t('app.page.theme', 'Theme')}
             />
           )}
         </MenuSection>
-        <MenuSection label="Color scheme">
+        <MenuSection label={t('app.settings.colorScheme', 'Color scheme')}>
           <SegmentedControl
-            options={colorSchemeOptions}
+            options={colorSchemeOptions.map((option) => ({
+              ...option,
+              ariaLabel: t(option.labelKey, option.ariaLabel),
+            }))}
             value={colorMode}
             onChange={setColorMode}
-            aria-label="Color scheme"
+            aria-label={t('app.settings.colorScheme', 'Color scheme')}
             size="sm"
             fullWidth
           />
         </MenuSection>
-        <MenuSection label="Accessibility">
+        <MenuSection label={t('app.page.accessibility', 'Accessibility')}>
           <Switch
-            label="Reduce motion"
+            label={t('app.settings.reduceMotion', 'Reduce motion')}
             checked={reducedMotion}
             onChange={setReducedMotion}
             size="compact"
           />
           <Switch
-            label="Increase contrast"
+            label={t('app.settings.increaseContrast', 'Increase contrast')}
             checked={contrastMore}
             onChange={setContrastMore}
             size="compact"
           />
         </MenuSection>
-        <MenuSection label={<>Locale <span className="a1-web-alpha-badge">Alpha</span></>}>
+        <MenuSection label={<>{t('app.settings.locale', 'Locale')} <span className="a1-web-alpha-badge">{t('app.settings.alpha', 'Alpha')}</span></>}>
           <SelectField
-            aria-label="Locale"
+            aria-label={t('app.settings.locale', 'Locale')}
             size="compact"
             value={locale}
             onChange={(e) => setLocale(e.target.value)}
@@ -1166,33 +1805,6 @@ function App() {
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </SelectField>
-        </MenuSection>
-        <MenuSection label="Editor">
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="download"
-            fullWidth
-            onClick={handleExportAll}
-          >
-            Export all pages
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="upload"
-            fullWidth
-            onClick={() => importInputRef.current?.click()}
-          >
-            Import pages
-          </Button>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept=".txt,text/plain"
-            hidden
-            onChange={handleImportFile}
-          />
         </MenuSection>
         <MenuSection>
           <Button
@@ -1206,16 +1818,39 @@ function App() {
               setLocale('en')
             }}
           >
-            Reset to defaults
+            {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
+        {supabaseConfigured && (
+          <MenuSection label={t('app.page.account', 'Account')}>
+            {authUser && (
+              <MenuItem icon="account_circle" onClick={() => navigate('account')}>
+                {authUser.email}
+              </MenuItem>
+            )}
+            <MenuItem icon="manage_accounts" onClick={() => navigate('account')}>
+              {t('app.page.account', 'Account')}
+            </MenuItem>
+            {authUser ? (
+              <MenuItem icon="logout" onClick={() => signOut()}>
+                {t('app.action.signOut', 'Sign out')}
+              </MenuItem>
+            ) : (
+              <MenuItem icon="login" onClick={() => navigate('account')}>
+                {t('app.action.signIn', 'Sign in')}
+              </MenuItem>
+            )}
+          </MenuSection>
+        )}
       </Menu>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
         {editorMessage}
       </Snackbar>
       </ImageLibraryProvider>
+      </CustomIconFontProvider>
     </LabelsProvider>
+    </TProvider>
   )
 }
 

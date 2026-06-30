@@ -182,6 +182,7 @@ export function DataTableFilters({
       <input
         type="search"
         className="a1-dt-filters__search-input"
+        data-a1-page-search=""
         value={searchValue}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search…"

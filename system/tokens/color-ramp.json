@@ -6,6 +6,10 @@
           "$type": "color",
           "$value": "#ffffff"
         },
+        "25": {
+          "$type": "color",
+          "$value": "#f7fafe"
+        },
         "50": {
           "$type": "color",
           "$value": "#f0f6fe"
@@ -101,7 +105,7 @@
           "$value": "#010003"
         }
       },
-      "highlited": {
+      "highlighted": {
         "0": {
           "$type": "color",
           "$value": "#fffef2"
@@ -376,7 +380,7 @@
       "surface": {
         "page": {
           "$type": "color",
-          "$value": "{base.color.neutral.0}"
+          "$value": "{base.color.neutral.25}"
         },
         "card": {
           "$type": "color",
@@ -639,153 +643,7 @@
       },
       "focusRing": {
         "$type": "color",
-        "$value": "{base.color.accent.300}"
-      }
-    }
-  },
-  "brand": {
-    "a1": {
-      "color": {
-        "primary": {
-          "$type": "color",
-          "$value": "{semantic.color.action.background}"
-        },
-        "neutral": {
-          "$type": "color",
-          "$value": "{base.color.neutral.500}"
-        },
-        "accent": {
-          "$type": "color",
-          "$value": "{base.color.accent.500}"
-        },
-        "info": {
-          "$type": "color",
-          "$value": "{base.color.info.500}"
-        },
-        "error": {
-          "$type": "color",
-          "$value": "{base.color.error.500}"
-        },
-        "warn": {
-          "$type": "color",
-          "$value": "{base.color.warn.500}"
-        },
-        "success": {
-          "$type": "color",
-          "$value": "{base.color.success.500}"
-        }
-      },
-      "button": {
-        "primary": {
-          "background": {
-            "$type": "color",
-            "$value": "{component.button.primary.background}"
-          },
-          "backgroundHover": {
-            "$type": "color",
-            "$value": "{component.button.primary.backgroundHover}"
-          },
-          "backgroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.primary.backgroundPressed}"
-          },
-          "foreground": {
-            "$type": "color",
-            "$value": "{component.button.primary.foreground}"
-          },
-          "foregroundHover": {
-            "$type": "color",
-            "$value": "{component.button.primary.foregroundHover}"
-          },
-          "foregroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.primary.foregroundPressed}"
-          },
-          "border": {
-            "$type": "color",
-            "$value": "{component.button.primary.border}"
-          }
-        },
-        "secondary": {
-          "background": {
-            "$type": "color",
-            "$value": "{component.button.secondary.background}"
-          },
-          "backgroundHover": {
-            "$type": "color",
-            "$value": "{component.button.secondary.backgroundHover}"
-          },
-          "backgroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.secondary.backgroundPressed}"
-          },
-          "foreground": {
-            "$type": "color",
-            "$value": "{component.button.secondary.foreground}"
-          },
-          "foregroundHover": {
-            "$type": "color",
-            "$value": "{component.button.secondary.foregroundHover}"
-          },
-          "foregroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.secondary.foregroundPressed}"
-          },
-          "border": {
-            "$type": "color",
-            "$value": "{component.button.secondary.border}"
-          },
-          "borderHover": {
-            "$type": "color",
-            "$value": "{component.button.secondary.borderHover}"
-          },
-          "borderPressed": {
-            "$type": "color",
-            "$value": "{component.button.secondary.borderPressed}"
-          }
-        },
-        "tertiary": {
-          "background": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.background}"
-          },
-          "backgroundHover": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.backgroundHover}"
-          },
-          "backgroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.backgroundPressed}"
-          },
-          "foreground": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.foreground}"
-          },
-          "foregroundHover": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.foregroundHover}"
-          },
-          "foregroundPressed": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.foregroundPressed}"
-          },
-          "border": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.border}"
-          },
-          "borderHover": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.borderHover}"
-          },
-          "borderPressed": {
-            "$type": "color",
-            "$value": "{component.button.tertiary.borderPressed}"
-          }
-        },
-        "focusRing": {
-          "$type": "color",
-          "$value": "{component.button.focusRing}"
-        }
+        "$value": "{base.color.accent.600}"
       }
     }
   }

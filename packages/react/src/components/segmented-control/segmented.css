@@ -49,7 +49,7 @@
 }
 
 .a1-segment:focus-visible {
-  outline: var(--component-segmented-focus-ring-width) solid var(--semantic-color-action-background);
+  outline: var(--component-segmented-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-segmented-focus-ring-offset);
 }
 
@@ -103,12 +103,12 @@
 
 .a1-theme-dark .a1-segment:not([aria-checked="true"]),
 .a1-inverse .a1-segment:not([aria-checked="true"]) {
-  color: var(--base-color-neutral-300);
+  color: var(--component-segmented-inactive-color);
 }
 
 .a1-theme-dark .a1-segment:hover:not([aria-checked="true"]),
 .a1-inverse .a1-segment:hover:not([aria-checked="true"]) {
-  color: var(--base-color-neutral-100);
+  color: var(--component-segmented-inactive-color-hover);
 }
 
 /* ─── Full width ──────────────────────────────────────────────────────────── */

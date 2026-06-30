@@ -9,8 +9,8 @@ export const NATIVE_THEME_COLORS = {
     "cardRadius": 8,
     "navItemRadius": 6,
     "light": {
-      "pageBg": "#ffffff",
-      "surfaceBg": "#ffffff",
+      "pageBg": "#f7fafe",
+      "surfaceBg": "#f7fafe",
       "panelBg": "#f0f6fe",
       "raisedBg": "#e1e8f3",
       "borderSubtle": "#c8d2e0",
@@ -130,8 +130,8 @@ export const NATIVE_THEME_COLORS = {
     "cardRadius": 8,
     "navItemRadius": 6,
     "light": {
-      "pageBg": "#ffffff",
-      "surfaceBg": "#ffffff",
+      "pageBg": "#f7fafe",
+      "surfaceBg": "#f7fafe",
       "panelBg": "#f0f6fe",
       "raisedBg": "#e1e8f3",
       "borderSubtle": "#c8d2e0",

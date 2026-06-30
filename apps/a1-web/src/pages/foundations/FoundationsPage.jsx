@@ -59,7 +59,7 @@ export function Foundations({ onNavigate }) {
               <Card
                 key={foundation.id}
                 variant="navigation"
-                href={`/?page=${foundation.id}`}
+                href={`/foundations/${foundation.id.slice('foundation-'.length)}`}
                 icon={foundation.icon}
                 onClick={(event) => {
                   event.preventDefault()

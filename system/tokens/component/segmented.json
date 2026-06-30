@@ -13,7 +13,11 @@
       "fontWeightDefault":     { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
       "fontWeightActive":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
       "focusRingWidth":        { "$type": "dimension",  "$value": "2px" },
-      "focusRingOffset":       { "$value": "-2px" }
+      "focusRingOffset": { "$value": "-2px" },
+      "inactive": {
+        "color":      { "$type": "color", "$value": "{semantic.color.text.muted}" },
+        "colorHover": { "$type": "color", "$value": "{base.color.neutral.100}" }
+      }
     }
   }
 }

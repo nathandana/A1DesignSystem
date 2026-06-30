@@ -11,6 +11,7 @@ import type {
 import type {
   BacklogComment, BacklogItem, BacklogNotification, BacklogUser, UpdateTicketPatch,
 } from './types';
+import { normalizeTicketType } from './types';
 
 const ITEMS_KEY = 'a1-backlog-items';
 const COMMENTS_KEY = 'a1-backlog-comments';
@@ -45,7 +46,12 @@ export function createLocalBackend(getUser: () => BacklogUser | null): BacklogBa
   return {
     async listItems() {
       return read<BacklogItem[]>(ITEMS_KEY, [])
-        .map((it) => ({ ...it, reviews: it.reviews ?? {}, links: it.links ?? [] })) // defaults for items stored before reviews/links
+        .map((it) => ({
+          ...it,
+          type: normalizeTicketType(it.type),
+          reviews: it.reviews ?? {},
+          links: it.links ?? [],
+        })) // defaults for items stored before current fields/vocabularies
         .sort((a, b) => b.number - a.number);
     },
 

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { IconButton } from '@gtivr4/a1-design-system-react'
+import { IconButton, Stack } from '@gtivr4/a1-design-system-react'
 
 /**
  * Config-panel lock state.
@@ -52,7 +52,7 @@ export function Lockable({ prop, locked, children }) {
   // stays editable (the author edits freely).
   if (ctx.authoring && ctx.onSetLockedProps && prop != null) {
     return (
-      <div className={`a1-web-tool-authoring${isLocked ? ' is-locked' : ''}`}>
+      <Stack direction="row" gap="xs" align="center" className={isLocked ? 'a1-web-tool-authoring--locked' : undefined}>
         <div className="a1-web-tool-authoring__control">{children}</div>
         <IconButton
           icon={isLocked ? 'lock' : 'lock_open'}
@@ -61,7 +61,7 @@ export function Lockable({ prop, locked, children }) {
           aria-label={isLocked ? 'Unlock this property' : 'Lock this property'}
           onClick={() => applyLockToggle(ctx, [prop])}
         />
-      </div>
+      </Stack>
     )
   }
 

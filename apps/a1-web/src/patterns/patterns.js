@@ -1,16 +1,103 @@
 /**
  * Pattern registry. Each entry is a `PatternDefinition` (see `patternTypes.ts`):
- * a reusable, governed composition of A1 components. For now this holds a single
- * example — a page header — that the Patterns page renders. Future patterns
- * (footers, scenario cards, whole pages) and a pattern editor will read and write
- * this same shape.
+ * a reusable, governed composition of A1 components. These are the built-in A1
+ * patterns that the editor can insert, govern, and reuse.
  */
 
 /**
- * Page header — breadcrumb, title, supporting text, and a primary/secondary
- * action pair. The layout, surface, and structure are locked so every page
- * header looks the same; the title, description, breadcrumb, and action labels
- * stay editable per page.
+ * Page title area — the standard top band for a1-web pages: breadcrumb, title,
+ * short supporting text, and page actions on a panel surface with an accent
+ * bottom rule. The surface, spacing, and title/action layout are locked; the
+ * breadcrumb, title, description, and action labels stay editable per page.
+ *
+ * @type {import('./patternTypes').PatternDefinition}
+ */
+const pageTitleAreaPattern = {
+  schemaVersion: '1.0',
+  pattern: {
+    id: 'page-title-area',
+    name: 'Page title area',
+    description:
+      'The standard title band for an a1-web page: breadcrumb, page title, a short supporting description, and optional page actions. The panel surface, accent bottom rule, spacing, and title/action layout are locked so page tops stay consistent; breadcrumb items, title, description, and action labels are editable.',
+    category: 'header',
+    tags: ['layout', 'header', 'navigation', 'actions'],
+    nodes: [
+      {
+        id: 'pta-section',
+        type: 'Section',
+        props: {
+          as: 'header',
+          padding: 'xs',
+          surface: 'panel',
+          borderSize: 'sm',
+          borderVariant: 'accent',
+          borderSides: 'bottom',
+          contentWidth: 'xl',
+        },
+        // The whole header is structural and its surface/spacing/border are governed.
+        lock: { node: true, props: ['as', 'padding', 'surface', 'borderSize', 'borderVariant', 'borderSides', 'contentWidth'] },
+        children: [
+          {
+            id: 'pta-stack',
+            type: 'Stack',
+            props: { direction: 'column', gap: 'xs' },
+            lock: { node: true, props: ['direction', 'gap'] },
+            children: [
+              {
+                id: 'pta-breadcrumb',
+                type: 'Breadcrumb',
+                props: {
+                  items: [
+                    { id: 'home', label: 'Home', href: '/' },
+                    { id: 'current', label: 'Page title' },
+                  ],
+                },
+              },
+              {
+                id: 'pta-title',
+                type: 'Heading',
+                props: { as: 'h1', size: { xs: 'lg', md: 'xxl' } },
+                lock: { props: ['as', 'size'] },
+                content: { fallback: 'Page title' },
+              },
+              {
+                id: 'pta-description',
+                type: 'Paragraph',
+                props: { size: 'sm', color: 'muted' },
+                lock: { props: ['size', 'color'] },
+                content: { fallback: 'A short description tells people what this page is for.' },
+              },
+              {
+                id: 'pta-actions',
+                type: 'Stack',
+                props: { direction: 'row', gap: 'xs', align: 'center', wrap: true },
+                lock: { node: true, props: ['direction', 'gap', 'align', 'wrap'] },
+                children: [
+                  {
+                    id: 'pta-secondary-action',
+                    type: 'Button',
+                    props: { variant: 'secondary', icon: 'help' },
+                    content: { fallback: 'Help' },
+                  },
+                  {
+                    id: 'pta-primary-action',
+                    type: 'Button',
+                    props: { variant: 'primary', icon: 'add' },
+                    content: { fallback: 'New pattern' },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+}
+
+/**
+ * Page header — a larger page-opening composition that embeds the standard page
+ * title area and reserves a locked Slot below it for introductory content.
  *
  * @type {import('./patternTypes').PatternDefinition}
  */
@@ -20,92 +107,23 @@ const pageHeaderPattern = {
     id: 'page-header',
     name: 'Page header',
     description:
-      'The standard header for a content page: breadcrumb, title, a short supporting description, and a primary/secondary action pair. The section surface, padding, border, and the row/title/action layout are locked so headers stay consistent; the title, description, breadcrumb, and button labels are editable per page.',
+      'A full page-opening header that starts with the shared Page title area and adds a governed blank area for introductory content. The title area remains consistent through the nested pattern; the content slot is restricted to sections and cards.',
     category: 'header',
-    tags: ['layout', 'header', 'navigation', 'actions'],
+    tags: ['layout', 'header', 'navigation', 'actions', 'slot'],
     nodes: [
+      { id: 'ph-title-area', type: 'PatternRef', patternId: 'page-title-area' },
       {
-        id: 'ph-section',
-        type: 'Section',
+        id: 'ph-intro-slot',
+        type: 'Slot',
         props: {
-          as: 'header',
-          padding: 'lg',
-          surface: 'panel',
+          label: 'Add header content here',
+          allow: ['Section', 'Card'],
+          min: 0,
+          max: 2,
+          columns: 2,
           gap: 'md',
-          borderSize: 'sm',
-          borderVariant: 'subtle',
-          borderSides: ['bottom'],
-          contentWidth: 'xl',
         },
-        // The whole header is structural and its surface/spacing/border are governed.
-        lock: { node: true, props: ['as', 'padding', 'surface', 'gap', 'borderSize', 'borderVariant', 'borderSides'] },
-        children: [
-          {
-            id: 'ph-row',
-            type: 'Stack',
-            // Titles on the start, actions on the end; stacks on small viewports.
-            props: {
-              direction: { xs: 'column', md: 'row' },
-              justify: 'between',
-              align: { xs: 'start', md: 'end' },
-              gap: 'md',
-            },
-            lock: { node: true, props: ['direction', 'justify', 'align'] },
-            children: [
-              {
-                id: 'ph-titles',
-                type: 'Stack',
-                props: { direction: 'column', gap: 'xs' },
-                lock: { props: ['direction'] },
-                children: [
-                  {
-                    id: 'ph-breadcrumb',
-                    type: 'Breadcrumb',
-                    props: {
-                      items: [
-                        { id: 'home', label: 'Home', href: '/' },
-                        { id: 'section', label: 'Reports', href: '/reports' },
-                        { id: 'current', label: 'Quarterly summary' },
-                      ],
-                    },
-                  },
-                  {
-                    id: 'ph-title',
-                    type: 'Heading',
-                    props: { as: 'h1', size: 'xl' },
-                    content: { fallback: 'Quarterly summary' },
-                  },
-                  {
-                    id: 'ph-description',
-                    type: 'Paragraph',
-                    props: { color: 'muted' },
-                    content: { fallback: 'Review performance across the last quarter and export the figures your team needs.' },
-                  },
-                ],
-              },
-              {
-                id: 'ph-actions',
-                type: 'ButtonContainer',
-                props: { align: 'end' },
-                lock: { node: true, props: ['align'] },
-                children: [
-                  {
-                    id: 'ph-secondary',
-                    type: 'Button',
-                    props: { variant: 'secondary', icon: 'download' },
-                    content: { fallback: 'Export' },
-                  },
-                  {
-                    id: 'ph-primary',
-                    type: 'Button',
-                    props: { variant: 'primary', icon: 'add' },
-                    content: { fallback: 'New report' },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+        lock: { props: ['label', 'allow', 'min', 'max', 'columns'] },
       },
     ],
   },
@@ -337,6 +355,7 @@ const cardShowcasePattern = {
 
 /** All available patterns, in display order. */
 export const PATTERNS = [
+  pageTitleAreaPattern,
   pageHeaderPattern,
   overviewCardPattern,
   threeCardLockupPattern,

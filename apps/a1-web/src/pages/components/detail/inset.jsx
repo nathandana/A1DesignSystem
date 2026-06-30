@@ -12,21 +12,22 @@ function optionLabel(value) {
   return String(value)
 }
 
-function buildInsetSnippet(config) {
+function buildInsetSnippet(config, utilityClass = '') {
+  const className = utilityClass ? ` className="${utilityClass.replaceAll('"', '&quot;')}"` : ''
   const spaceStr = config.space !== 16 ? ` space={${config.space}}` : ''
-  return `<Inset${spaceStr}>\n  {/* children */}\n</Inset>`
+  return `<Inset${className}${spaceStr}>\n  {/* children */}\n</Inset>`
 }
 
 export function getDefaultConfig() {
   return { space: 16 }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Card>
       {/* The inset content sits on a contrasting surface (like the Bleed demo) so
           the uniform padding reads as a visible gap to the card edge. */}
-      <Inset space={config.space}>
+      <Inset className={utilityClass || undefined} space={config.space}>
         <div
           style={{
             background: 'var(--semantic-color-action-background)',
@@ -58,6 +59,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildInsetSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildInsetSnippet(config, utilityClass)}</Code>
 }

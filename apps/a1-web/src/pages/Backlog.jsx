@@ -4,9 +4,11 @@ import {
   Banner,
   Breadcrumb,
   Button,
+  ButtonContainer,
   Card,
   ContextMenu,
   DataTable,
+  Dialog,
   Divider,
   Grid,
   Heading,
@@ -32,8 +34,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
-import { VirtualTeamPanel } from '../backlog/VirtualTeamPanel'
-import { VirtualArchitectPanel } from '../backlog/VirtualArchitectPanel'
 import {
   ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
 } from '../backlog/TicketBadges'
@@ -44,6 +44,7 @@ import {
   TERMINAL_STATUSES, TYPES, TYPE_LABELS, ticketRef,
 } from '../services/backlog/types'
 import { smartSearchBacklog } from '../services/backlog/search'
+import { useT } from '../labels/useT'
 
 // ── Sorting / filtering helpers ──────────────────────────────────────────────
 
@@ -57,23 +58,22 @@ const SORTERS = {
     (PRIORITY_RANK[a.priority] ?? 9) - (PRIORITY_RANK[b.priority] ?? 9) || b.number - a.number,
 }
 
-const SORT_OPTIONS = [
-  { value: 'updated', label: 'Recently updated', icon: 'history' },
-  { value: 'votes', label: 'Most votes', icon: 'thumb_up' },
-  { value: 'priority', label: 'Priority', icon: 'priority_high' },
-  { value: 'number', label: 'Newest', icon: 'fiber_new' },
+const makeSortOptions = (t) => [
+  { value: 'updated', label: t('app.backlog.sortRecentlyUpdated', 'Recently updated'), icon: 'history' },
+  { value: 'votes', label: t('app.backlog.sortMostVotes', 'Most votes'), icon: 'thumb_up' },
+  { value: 'priority', label: t('app.backlog.toolbarPriority', 'Priority'), icon: 'priority_high' },
+  { value: 'number', label: t('app.backlog.sortNewest', 'Newest'), icon: 'fiber_new' },
 ]
 
-// Top-level views — the segmented control at the top of the filters panel (Virtual team is dev-only).
-const VIEW_OPTIONS = [
-  { value: 'board', label: 'Board', icon: 'view_kanban' },
-  { value: 'all', label: 'All tickets', icon: 'table_rows' },
-  { value: 'queue', label: 'My queue', icon: 'assignment_ind' },
-  ...(import.meta.env.DEV ? [{ value: 'team', label: 'Virtual team', icon: 'groups' }] : []),
+// Top-level ticket views shown in the right-side filter panel.
+const makeViewOptions = (t) => [
+  { value: 'board', label: t('app.backlog.viewBoard', 'Board'), icon: 'view_kanban' },
+  { value: 'all', label: t('app.backlog.viewAllTickets', 'All tickets'), icon: 'table_rows' },
+  { value: 'queue', label: t('app.backlog.viewMyQueue', 'My queue'), icon: 'assignment_ind' },
 ]
 
 // How many cards a swimlane shows per page before paginating.
-const LANE_PAGE_SIZE = 5
+const LANE_PAGE_SIZE = 8
 
 function applyFilters(items, { type, priority, scope, complexity }) {
   return items.filter((it) =>
@@ -124,9 +124,9 @@ function BoardCard({ item, onOpen, onContextMenu, onDragStart }) {
       onClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu(item, e)}
     >
-      <Stack gap="xs">
-          <Paragraph as="span" size="xs" color="muted">{ticketRef(item.number)}</Paragraph>
-        <Heading size="xs">{item.title}</Heading>
+      <Stack gap="none">
+          <Paragraph as="span" size="xs" color="muted" className="a1-m-0">{ticketRef(item.number)}</Paragraph>
+        <Heading size="xs" className="a1-m-0">{item.title}</Heading>
         <Divider/>
         <Stack direction="row" gap="xs" wrap>
           <TypeBadge type={item.type} /><PriorityBadge priority={item.priority} />
@@ -183,7 +183,7 @@ function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragSt
       borderSides={index > 0 ? ['left'] : []}
       borderSize="xs"
       borderVariant="subtle"
-      className={`a1-web-backlog-lane${isDropTarget ? ' a1-web-backlog-lane--drop' : ''}`}
+      className={`a1-web-backlog-lane a1-min-w-xs a1-max-w-xs${isDropTarget ? ' a1-web-backlog-lane--drop' : ''}`}
       onDragOver={(e) => onLaneDragOver?.(e, status)}
       onDragLeave={onLaneDragLeave}
       onDrop={(e) => onLaneDrop?.(e, status)}
@@ -220,24 +220,36 @@ function DateTimeCell({ iso }) {
   )
 }
 
-const TABLE_COLUMNS = [
-  { key: 'title', label: 'Title', sortable: true, sortAccessor: (r) => r.titleText },
-    { key: 'ref', label: 'ID', sortable: true, sortAccessor: (r) => r.number, width: '5rem' },
-{ key: 'type', label: 'Type', width: '6rem' },
-  { key: 'status', label: 'Status', width: '6rem' },
-  { key: 'priority', label: 'Priority', sortable: true, sortAccessor: (r) => r.priorityRank, width: '6rem' },
-  { key: 'votes', label: 'Votes', type: 'number', sortable: true, width: '2rem' },
-  { key: 'requester', label: 'Requested by' },
-  { key: 'created', label: 'Created', sortable: true, sortAccessor: (r) => r.createdAt },
-  { key: 'updated', label: 'Updated', sortable: true, sortAccessor: (r) => r.updatedAt },
+const makeTableColumns = (t) => [
+  { key: 'title', label: t('app.backlog.columnTitle', 'Title'), sortable: true, sortAccessor: (r) => r.titleText },
+  { key: 'ref', label: t('app.backlog.columnId', 'ID'), sortable: true, sortAccessor: (r) => r.number, width: '5rem' },
+  { key: 'type', label: t('app.backlog.toolbarType', 'Type'), width: '6rem' },
+  { key: 'status', label: t('app.backlog.toolbarStatus', 'Status'), width: '6rem' },
+  { key: 'priority', label: t('app.backlog.toolbarPriority', 'Priority'), sortable: true, sortAccessor: (r) => r.priorityRank, width: '6rem' },
+  { key: 'votes', label: t('app.backlog.votes', 'Votes'), type: 'number', sortable: true, width: '2rem' },
+  { key: 'requester', label: t('app.backlog.requestedBy', 'Requested by') },
+  { key: 'created', label: t('app.backlog.created', 'Created'), sortable: true, sortAccessor: (r) => r.createdAt },
+  { key: 'updated', label: t('app.backlog.updated', 'Updated'), sortable: true, sortAccessor: (r) => r.updatedAt },
 ]
 
-function AllTable({ items, onOpen }) {
+function AllTable({ items, onOpen, onNavigate, t }) {
   const rows = items.map((it) => ({
     id: it.id,
     number: it.number,
-    // The ID is the link that opens the ticket (no separate Open button).
-    ref: it.number,
+    // The ID is a link to the ticket's standalone page; clicking the title opens the dialog.
+    ref: (
+      <Link
+        href={`/backlog/A1-${it.number}`}
+        onClick={(e) => {
+          if (!e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && e.button === 0) {
+            e.preventDefault()
+            onNavigate?.('backlog-ticket', { path: `/backlog/A1-${it.number}` })
+          }
+        }}
+      >
+        {ticketRef(it.number)}
+      </Link>
+    ),
     title: <Link href="#" onClick={(e) => { e.preventDefault(); onOpen(it) }}><strong>{it.title}</strong></Link>,
     titleText: it.title,
     type: TYPE_LABELS[it.type],
@@ -253,12 +265,12 @@ function AllTable({ items, onOpen }) {
   }))
   return (
     <DataTable
-      columns={TABLE_COLUMNS}
+      columns={makeTableColumns(t)}
       rows={rows}
       defaultSort={{ key: 'ref', direction: 'desc' }}
-      caption="All backlog tickets"
-      emptyTitle="No matching tickets"
-      emptyDescription="Adjust the filters in the panel, or create the first ticket."
+      caption={t('app.backlog.tableCaption', 'All backlog tickets')}
+      emptyTitle={t('app.backlog.tableEmptyTitle', 'No matching tickets')}
+      emptyDescription={t('app.backlog.tableEmptyDesc', 'Adjust the filters in the panel, or create the first ticket.')}
       pageSize={10}
     />
   )
@@ -267,6 +279,7 @@ function AllTable({ items, onOpen }) {
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export function Backlog({ onNavigate }) {
+  const t = useT()
   const backlog = useBacklog()
   const [tab, setTab] = useState('board')
   const [selected, setSelected] = useState(null)
@@ -276,6 +289,7 @@ export function Backlog({ onNavigate }) {
   const [sort, setSort] = useState(() => (SORTERS[persisted.sort] ? persisted.sort : 'updated'))
   const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, ...(persisted.filters || {}) }))
   const [menu, setMenu] = useState(null) // right-click context menu: { item, x, y } | null
+  const [deleteTarget, setDeleteTarget] = useState(null) // ticket pending delete confirmation
   const [dragOverStatus, setDragOverStatus] = useState(null) // swimlane being dragged over
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
   const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
@@ -362,18 +376,21 @@ export function Backlog({ onNavigate }) {
   const ticketMenuItems = (it) => {
     const isVoted = voteFor.has(it.id)
     const entries = [
-      { id: 'open', label: 'Open ticket', icon: 'open_in_new', onClick: () => open(it) },
+      { id: 'open', label: t('app.backlog.menuOpenTicket', 'Open ticket'), icon: 'open_in_new', onClick: () => open(it) },
+      { id: 'view-page', label: t('app.backlog.menuViewPage', 'View ticket page'), icon: 'article', onClick: () => onNavigate?.('backlog-ticket', { path: `/backlog/A1-${it.number}` }) },
       { type: 'divider', id: 'd1' },
-      { id: 'vote', label: isVoted ? 'Remove your vote' : 'Vote', icon: isVoted ? 'thumb_down' : 'thumb_up', onClick: () => vote(it, !isVoted) },
+      { id: 'vote', label: isVoted ? t('app.backlog.removeVote', 'Remove your vote') : t('app.backlog.menuVote', 'Vote'), icon: isVoted ? 'thumb_down' : 'thumb_up', onClick: () => vote(it, !isVoted) },
     ]
     if (me) {
       entries.push(it.assigneeId === me.id
-        ? { id: 'unassign', label: 'Unassign me', icon: 'person_remove', onClick: () => backlog?.update(it, { assigneeId: null, assigneeEmail: null }) }
-        : { id: 'assign', label: 'Assign to me', icon: 'person_add', onClick: () => backlog?.update(it, { assigneeId: me.id, assigneeEmail: me.email }) })
+        ? { id: 'unassign', label: t('app.backlog.menuUnassignMe', 'Unassign me'), icon: 'person_remove', onClick: () => backlog?.update(it, { assigneeId: null, assigneeEmail: null }) }
+        : { id: 'assign', label: t('app.backlog.assignToMe', 'Assign to me'), icon: 'person_add', onClick: () => backlog?.update(it, { assigneeId: me.id, assigneeEmail: me.email }) })
     }
     entries.push(
       { type: 'divider', id: 'd2' },
-      { id: 'copy', label: 'Copy ID', icon: 'content_copy', onClick: () => { try { navigator.clipboard?.writeText(ticketRef(it.number)) } catch { /* ignore */ } } },
+      { id: 'copy', label: t('app.backlog.menuCopyId', 'Copy ID'), icon: 'content_copy', onClick: () => { try { navigator.clipboard?.writeText(ticketRef(it.number)) } catch { /* ignore */ } } },
+      { type: 'divider', id: 'd3' },
+      { id: 'delete', label: t('app.backlog.deleteTicket', 'Delete ticket'), icon: 'delete', variant: 'destructive', onClick: () => setDeleteTarget(it) },
     )
     return entries
   }
@@ -382,63 +399,60 @@ export function Backlog({ onNavigate }) {
   const selectedLive = selected ? items.find((i) => i.id === selected.id) || selected : null
 
   const counts = {
-    open: items.filter((i) => !['released', 'wont_fix', 'duplicate'].includes(i.status)).length,
+    open: items.filter((i) => !['released', 'wont_fix', 'duplicate', 'cancelled'].includes(i.status)).length,
     total: items.length,
   }
 
   return (
     <>
-      <Section padding="xs" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
+
+      <Section padding="xs" aria-label={t('app.page.backlog', 'Backlog')}>
+        <Stack direction="column" gap="none">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Backlog' },
+              { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+              { label: t('app.page.backlog', 'Backlog') },
             ]}
           />
           {/* Search + New ticket now live in the right-hand panel (A1-154). */}
-          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Backlog</Heading>
           <Stack direction="row" gap="xs" align="center" wrap>
-            <Paragraph size="sm" color="muted">
+          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>{t('app.page.backlog', 'Backlog')}</Heading>
+            {/* <Paragraph size="sm" color="muted">
               A lightweight, shared ticket tracker. Suggest a priority, complexity and type; vote;
-              and follow what’s in flight.
-            </Paragraph>
-            <MessageBadge status="info" subtle size="sm">{counts.open} open</MessageBadge>
-            <MessageBadge status="neutral" subtle size="sm">{counts.total} total</MessageBadge>
+              and follow what's in flight.
+            </Paragraph> */}
+            <MessageBadge status="info"  size="md">{counts.open} open</MessageBadge>
+            <MessageBadge status="neutral" subtle size="mdprefe">{counts.total} total</MessageBadge>
           </Stack>
           {backlog && !backlog.isCloud && (
             <Banner status="info" variant="inline">
-              You’re not signed in — tickets are saved in this browser only. Sign in to share the
-              backlog with the team.
+              {t('app.backlog.notSignedInBanner', "You're not signed in — tickets are saved in this browser only. Sign in to share the backlog with the team.")}
             </Banner>
           )}
         </Stack>
-      </Section>
-
-      <Section padding="xs" aria-label="Backlog">
         <Stack gap="md">
         {/* The search lives in the right-hand panel; here we echo the result count +
             the smart-search syntax hint while a query is active. */}
         {searching && (
-          <Paragraph size="xs" color="muted">
-            {searched.length} result{searched.length === 1 ? '' : 's'} for “{query.trim()}” — search text, an A1 number, or filters like type:bug · is:open · priority:p1 · scope:component.
+          <Paragraph size="sm" color="muted">
+            {searched.length} result{searched.length === 1 ? '' : 's'} for {'"'}{query.trim()}{'"'} {'—'} {t('app.backlog.searchHint', 'search text, an A1 number, or filters like type:bug · is:open · priority:p1 · scope:component')}.
           </Paragraph>
         )}
 
-        {/* The view switcher (Board / All tickets / My queue / Virtual team) lives in the
+        {/* The view switcher (Board / All tickets / My queue) lives in the
             right-hand panel now (A1) — here we just render the active view. */}
         {tab === 'board' && (
             <Stack gap="md">
               {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar aria-label="Show or hide swimlanes" label="Swimlanes">
+              <Toolbar aria-label={t('app.backlog.swimlanesToolbarLabel', 'Show or hide swimlanes')}>
                 {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
                   <ToolbarToggle
                     key={s}
                     icon={STATUS_ICON[s]}
                     label={STATUS_LABELS[s]}
-                    showLabel={{ xs: false, md: true }}
+                    showLabel={{ xs: false, lg: true }}
                     pressed={visibleLanes.has(s)}
                     onChange={(pressed) => setVisibleLanes((prev) => {
                       const next = new Set(prev)
@@ -454,7 +468,7 @@ export function Backlog({ onNavigate }) {
                 // or filtered down. So the board is stable as you filter / drag cards across it.
                 const lanes = [...STATUS_FLOW, ...TERMINAL_STATUSES].filter((s) => visibleLanes.has(s))
                 if (lanes.length === 0) {
-                  return <MessageEmptyState icon="visibility_off" title="No swimlanes shown" description="Turn a swimlane on above to see its tickets." />
+                  return <MessageEmptyState icon="visibility_off" title={t('app.backlog.noLanesTitle', 'No swimlanes shown')} description={t('app.backlog.noLanesDesc', 'Turn a swimlane on above to see its tickets.')} />
                 }
                 // xs/sm: one tab per swimlane (a single scrollable column). md+: the grid.
                 if (isSmall) {
@@ -475,69 +489,67 @@ export function Backlog({ onNavigate }) {
                   )
                 }
                 return (
-                  <Grid columns={lanes.length} gap="none">
-                    {lanes.map((s, i) => (
-                      <BoardColumn
-                        key={s}
-                        status={s}
-                        items={byStatus[s]}
-                        index={i}
-                        onOpen={open}
-                        onContextMenu={openMenu}
-                        onCardDragStart={handleCardDragStart}
-                        onLaneDragOver={handleLaneDragOver}
-                        onLaneDragLeave={() => setDragOverStatus(null)}
-                        onLaneDrop={handleLaneDrop}
-                        isDropTarget={dragOverStatus === s}
-                      />
-                    ))}
-                  </Grid>
+                  <div className="a1-web-backlog-board-strip" tabIndex={0} aria-label={t('app.backlog.boardAreaLabel', 'Backlog swimlanes')}>
+                    <Grid columns={lanes.length} gap="none" className="a1-web-backlog-board-grid">
+                      {lanes.map((s, i) => (
+                        <BoardColumn
+                          key={s}
+                          status={s}
+                          items={byStatus[s]}
+                          index={i}
+                          onOpen={open}
+                          onContextMenu={openMenu}
+                          onCardDragStart={handleCardDragStart}
+                          onLaneDragOver={handleLaneDragOver}
+                          onLaneDragLeave={() => setDragOverStatus(null)}
+                          onLaneDrop={handleLaneDrop}
+                          isDropTarget={dragOverStatus === s}
+                        />
+                      ))}
+                    </Grid>
+                  </div>
                 )
               })()}
             </Stack>
         )}
 
         {tab === 'all' && (
-          <AllTable items={filteredItems} onOpen={open} />
+          <AllTable items={filteredItems} onOpen={open} onNavigate={onNavigate} t={t} />
         )}
 
         {tab === 'queue' && (
           !me ? (
-            <MessageEmptyState icon="person" title="Sign in for your queue" description="Your queue shows tickets you created or are assigned." />
+            <MessageEmptyState icon="person" title={t('app.backlog.signInForQueueTitle', 'Sign in for your queue')} description={t('app.backlog.signInForQueueDesc', 'Your queue shows tickets you created or are assigned.')} />
           ) : (
             <Stack gap="lg">
               <QueueGroup
-                title="Awaiting your answer"
+                title={t('app.backlog.queueAwaiting', 'Awaiting your answer')}
                 icon="help"
                 items={queue.awaiting}
-                empty="No clarifying questions for you right now."
+                empty={t('app.backlog.queueAwaitingEmpty', 'No clarifying questions for you right now.')}
+                openLabel={t('app.backlog.queueOpen', 'Open')}
                 onOpen={open}
               />
               <QueueGroup
-                title="Assigned to you"
+                title={t('app.backlog.queueAssigned', 'Assigned to you')}
                 icon="engineering"
                 items={queue.assigned}
-                empty="Nothing assigned to you yet."
+                empty={t('app.backlog.queueAssignedEmpty', 'Nothing assigned to you yet.')}
+                openLabel={t('app.backlog.queueOpen', 'Open')}
                 onOpen={open}
               />
               <QueueGroup
-                title="Created by you"
+                title={t('app.backlog.queueCreated', 'Created by you')}
                 icon="edit_note"
                 items={queue.mine}
-                empty="You haven’t created any tickets yet."
+                empty={t('app.backlog.queueCreatedEmpty', "You haven't created any tickets yet.")}
+                openLabel={t('app.backlog.queueOpen', 'Open')}
                 onOpen={open}
               />
             </Stack>
           )
         )}
 
-        {import.meta.env.DEV && tab === 'team' && (
-          <Stack gap="xl">
-            <VirtualTeamPanel />
-            <Divider />
-            <VirtualArchitectPanel />
-          </Stack>
-        )}
         </Stack>
       </Section>
 
@@ -554,8 +566,24 @@ export function Backlog({ onNavigate }) {
         y={menu?.y ?? 0}
         items={menu ? ticketMenuItems(menu.item) : []}
         onClose={() => setMenu(null)}
-        aria-label="Ticket actions"
+        aria-label={t('app.backlog.contextMenuLabel', 'Ticket actions')}
       />
+
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title={t('app.backlog.deleteTicket', 'Delete ticket')}
+        footer={
+          <ButtonContainer>
+            <Button variant="secondary" onClick={() => setDeleteTarget(null)}>{t('app.backlog.deleteDialogCancel', 'Cancel')}</Button>
+            <Button variant="destructive" icon="delete" onClick={async () => { await backlog?.remove(deleteTarget); setDeleteTarget(null) }}>{t('app.backlog.deleteDialogConfirm', 'Delete')}</Button>
+          </ButtonContainer>
+        }
+      >
+        <Paragraph>
+          {t('app.backlog.deleteDialogBody', 'Permanently delete')} {deleteTarget ? ticketRef(deleteTarget.number) : ''}{t('app.backlog.deleteDialogBodySuffix', '? This cannot be undone.')}
+        </Paragraph>
+      </Dialog>
 
       {/* Filters panel (A1-154) — sort + Type/Priority/Size/Scope, rendered into the app's
           right-hand aside rail (a BottomSheet at xs/sm). Filters the board. */}
@@ -564,94 +592,92 @@ export function Backlog({ onNavigate }) {
           <Stack gap="lg">
             {/* View switcher (A1) — replaces the old top-level tabs. */}
             <SegmentedControl
-              aria-label="Backlog view"
+              aria-label={t('app.backlog.viewLabel', 'Backlog view')}
               fullWidth
               labelMode="selected"
-              options={VIEW_OPTIONS}
+              options={makeViewOptions(t)}
               value={tab}
               onChange={setTab}
             />
 
             <SearchField
-              aria-label="Search backlog"
+              data-a1-page-search=""
+              aria-label={t('app.backlog.searchLabel', 'Search backlog')}
               size="compact"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
 
-            {/* Filters drive every ticket view (board, all-tickets, my queue); sort is
-                board-only (the table sorts by column, the queue is grouped). Hidden on the
-                dev-only Virtual team view, which isn't a ticket list. */}
-            {tab !== 'team' && (
-              <>
-                <Divider space="none" />
+            {/* Filters drive every ticket view; sort is board-only because the table
+                sorts by column and the queue is grouped. */}
+            <>
+              <Divider space="none" />
 
-                <Stack direction="row" gap="xs" align="center">
-                  <Heading as="h2" size="sm">Filters</Heading>
-                  {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
-                </Stack>
+              <Stack direction="row" gap="xs" align="center">
+                <Heading as="h2" size="sm">{t('app.action.filters', 'Filters')}</Heading>
+                {boardFilterCount > 0 && <MessageBadge status="info" subtle size="sm">{boardFilterCount}</MessageBadge>}
+              </Stack>
 
-                {tab === 'board' && (
-                  <Toolbar label="Sort by" aria-label="Sort tickets">
-                    <ToolbarGroup
-                      aria-label="Sort by"
-                      labelMode="selected"
-                      value={sort}
-                      onChange={setSort}
-                      options={SORT_OPTIONS}
-                    />
-                  </Toolbar>
-                )}
-                <Toolbar label="Type" aria-label="Filter by type">
+              {tab === 'board' && (
+                <Toolbar label={t('app.backlog.sortByLabel', 'Sort by')} aria-label={t('app.backlog.sortToolbarLabel', 'Sort tickets')}>
                   <ToolbarGroup
-                    aria-label="Type"
-                    showLabels
-                    value={filters.type}
-                    onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t] }))]}
+                    aria-label={t('app.backlog.sortByLabel', 'Sort by')}
+                    labelMode="selected"
+                    value={sort}
+                    onChange={setSort}
+                    options={makeSortOptions(t)}
                   />
                 </Toolbar>
-                <Toolbar label="Priority" aria-label="Filter by priority" fullWidth>
-                  <ToolbarGroup
-                    aria-label="Priority"
-                    showLabels
-                    value={filters.priority}
-                    onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Size" aria-label="Filter by size" fullWidth>
-                  <ToolbarGroup
-                    aria-label="Size"
-                    showLabels
-                    value={filters.complexity}
-                    onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
-                    options={[{ value: 'all', label: 'All' }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
-                  />
-                </Toolbar>
-                <Toolbar label="Scope" aria-label="Filter by scope">
-                  <ToolbarMenu
-                    aria-label="Scope"
-                    showLabel
-                    label={filters.scope === 'all' ? 'All scopes' : SCOPE_LABELS[filters.scope]}
-                    value={filters.scope}
-                    onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
-                    items={[{ value: 'all', label: 'All scopes' }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
-                  />
-                </Toolbar>
-                {activeFilterCount > 0 && (
-                  <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
-                    Clear filters ({activeFilterCount})
-                  </Button>
-                )}
-              </>
-            )}
+              )}
+              <Toolbar label={t('app.backlog.toolbarType', 'Type')} aria-label={t('app.backlog.filterTypePanelLabel', 'Filter by type')}>
+                <ToolbarGroup
+                  aria-label={t('app.backlog.toolbarType', 'Type')}
+                  showLabels
+                  value={filters.type}
+                  onChange={(v) => setFilters((f) => ({ ...f, type: v }))}
+                  options={[{ value: 'all', label: t('app.backlog.filterAllOption', 'All') }, ...TYPES.map((tp) => ({ value: tp, label: TYPE_LABELS[tp] }))]}
+                />
+              </Toolbar>
+              <Toolbar label={t('app.backlog.toolbarPriority', 'Priority')} aria-label={t('app.backlog.filterPriorityPanelLabel', 'Filter by priority')} fullWidth>
+                <ToolbarGroup
+                  aria-label={t('app.backlog.toolbarPriority', 'Priority')}
+                  showLabels
+                  value={filters.priority}
+                  onChange={(v) => setFilters((f) => ({ ...f, priority: v }))}
+                  options={[{ value: 'all', label: t('app.backlog.filterAllOption', 'All') }, ...PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABELS[p].split(' · ')[0] }))]}
+                />
+              </Toolbar>
+              <Toolbar label={t('app.backlog.toolbarSize', 'Size')} aria-label={t('app.backlog.filterSizePanelLabel', 'Filter by size')} fullWidth>
+                <ToolbarGroup
+                  aria-label={t('app.backlog.toolbarSize', 'Size')}
+                  showLabels
+                  value={filters.complexity}
+                  onChange={(v) => setFilters((f) => ({ ...f, complexity: v }))}
+                  options={[{ value: 'all', label: t('app.backlog.filterAllOption', 'All') }, ...COMPLEXITIES.map((c) => ({ value: c, label: COMPLEXITY_LABELS[c] }))]}
+                />
+              </Toolbar>
+              <Toolbar label={t('app.backlog.scopeLabel', 'Scope')} aria-label={t('app.backlog.filterScopePanelLabel', 'Filter by scope')}>
+                <ToolbarMenu
+                  aria-label={t('app.backlog.scopeLabel', 'Scope')}
+                  showLabel
+                  label={filters.scope === 'all' ? t('app.backlog.filterAllScopes', 'All scopes') : SCOPE_LABELS[filters.scope]}
+                  value={filters.scope}
+                  onChange={(v) => setFilters((f) => ({ ...f, scope: v }))}
+                  items={[{ value: 'all', label: t('app.backlog.filterAllScopes', 'All scopes') }, ...scopeOptions.map((s) => ({ value: s, label: SCOPE_LABELS[s] }))]}
+                />
+              </Toolbar>
+              {activeFilterCount > 0 && (
+                <Button size="sm" variant="tertiary" icon="filter_alt_off" onClick={clearFilters}>
+                  {t('app.backlog.clearFilters', 'Clear filters')} ({activeFilterCount})
+                </Button>
+              )}
+            </>
           </Stack>
 
           {/* New ticket — pinned to the bottom of the panel as a sticky footer. */}
           <div className="a1-web-config-panel__footer">
             <Button fullWidth icon="add" onClick={() => backlog?.openCreate({ kind: 'general' })}>
-              New ticket
+              {t('app.backlog.newTicket', 'New ticket')}
             </Button>
           </div>
         </div>,
@@ -661,7 +687,7 @@ export function Backlog({ onNavigate }) {
   )
 }
 
-function QueueGroup({ title, icon, items, empty, onOpen }) {
+function QueueGroup({ title, icon, items, empty, openLabel, onOpen }) {
   return (
     <Stack gap="sm">
       <Stack direction="row" gap="xs" align="center">
@@ -684,7 +710,7 @@ function QueueGroup({ title, icon, items, empty, onOpen }) {
                     <ScopeBadge scopeKind={it.scopeKind} scopeLabel={it.scopeLabel} />
                   </Stack>
                 </Stack>
-                <Button size="sm" variant="secondary" icon="open_in_new" onClick={() => onOpen(it)}>Open</Button>
+                <Button size="sm" variant="secondary" icon="open_in_new" onClick={() => onOpen(it)}>{openLabel ?? 'Open'}</Button>
               </Stack>
             </Card>
           ))}

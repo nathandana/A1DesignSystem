@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -11,6 +10,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { version } from '../../package.json'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Surfaces of the app, surfaced as navigation cards.
 const EXPLORE = [
@@ -18,7 +18,7 @@ const EXPLORE = [
   { id: 'components', icon: 'widgets', title: 'Components', body: 'Browse every component with a live configurator, properties, rules, and copy-paste code.' },
   { id: 'editor', icon: 'edit_square', title: 'Editor', body: 'Compose pages from A1 components on a canvas, then preview, prototype, and export.' },
   { id: 'theme-editor', icon: 'format_paint', title: 'Themes', body: 'Author themes from approved colour ramps and type, and apply them across the system.' },
-  { id: 'backlog', icon: 'task_alt', title: 'Backlog', body: 'A shared, lightweight ticket tracker — report a bug or request a feature from anywhere.' },
+  { id: 'backlog', icon: 'task_alt', title: 'Backlog', body: 'A shared, lightweight ticket tracker — create bugs, features, and epics from anywhere.' },
   { id: 'accessibility', icon: 'accessibility', title: 'Accessibility', body: 'The live a11y report — every component is checked for keyboard, contrast, and ARIA.' },
 ]
 
@@ -33,23 +33,15 @@ const PRINCIPLES = [
 export function About({ onNavigate }) {
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'About' },
-            ]}
-          />
-          <Stack direction="row" gap="sm" align="center" wrap>
-            <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>About A1</Heading>
-            <MessageBadge status="info" subtle size="sm">Version {version}</MessageBadge>
-          </Stack>
-          <Paragraph size="md" color="muted">
-            A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'About' },
+        ]}
+        title="About A1"
+        titleAccessory={<MessageBadge status="info" >Version {version}</MessageBadge>}
+        description="A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it."
+      />
 
       <Section padding="md" contentWidth="xl">
         <Stack gap="lg">

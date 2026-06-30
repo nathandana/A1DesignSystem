@@ -5,6 +5,7 @@
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
+  margin-inline: var(--component-bottom-sheet-margin-inline);
   z-index: var(--component-bottom-sheet-z-index, 200);
 
   display: flex;
@@ -65,7 +66,7 @@
 }
 
 .a1-bottom-sheet__handle:focus-visible {
-  outline: var(--component-button-focus-ring-width, 2px) solid var(--semantic-color-text-accent);
+  outline: var(--component-button-focus-ring-width, 2px) solid var(--component-button-focus-ring);
   outline-offset: var(--base-spacing-4);
 }
 
@@ -104,6 +105,12 @@
 }
 
 /* ── xs + sm only ──────────────────────────────────────────────────────────── */
+
+@media (--bp-sm-up) {
+  .a1-bottom-sheet {
+    margin-inline: var(--component-bottom-sheet-margin-inline-sm);
+  }
+}
 
 @media (--bp-md-up) {
   .a1-bottom-sheet,

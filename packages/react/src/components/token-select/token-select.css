@@ -64,7 +64,7 @@
 }
 
 .a1-token-item:focus-visible {
-  outline: var(--component-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline: var(--component-menu-item-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-menu-item-focus-ring-offset);
 }
 

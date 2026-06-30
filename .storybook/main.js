@@ -5,7 +5,18 @@ const config = {
   framework: {
     name: "@storybook/react-vite",
     options: {}
-  }
+  },
+  viteFinal: async (config) => ({
+    ...config,
+    server: {
+      ...config.server,
+      allowedHosts: [
+        ...(Array.isArray(config.server?.allowedHosts) ? config.server.allowedHosts : []),
+        "localhost",
+        "127.0.0.1",
+      ],
+    },
+  }),
 };
 
 export default config;

@@ -4,6 +4,7 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  getComponentExampleBySlug,
   getComponentEntry,
 } from './utils.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
@@ -13,7 +14,7 @@ import { ComponentsOverviewPage } from './ComponentsOverviewPage.jsx'
 import { ComponentsSidebar } from './ComponentsSidebar.jsx'
 
 export { componentCategories }
-export { componentCategoryPageIds, componentPageIds, componentPageTitles }
+export { componentCategoryPageIds, componentPageIds, componentPageTitles, getComponentExampleBySlug }
 
 export function Components({ activePage = 'components', onNavigate, detailTab = 'configure', setDetailTab }) {
   const { category, component } = getComponentEntry(activePage)
@@ -44,11 +45,13 @@ export function Components({ activePage = 'components', onNavigate, detailTab = 
   )
 }
 
-export function getComponentsSidebar({ activePage, onNavigate, search, setSearch }) {
+export function getComponentsSidebar({ activePage, detailTab, onNavigate, onSelectDetailTab, search, setSearch }) {
   return (
     <ComponentsSidebar
       activePage={activePage}
+      detailTab={detailTab}
       onNavigate={onNavigate}
+      onSelectDetailTab={onSelectDetailTab}
       search={search}
       setSearch={setSearch}
     />
@@ -59,6 +62,7 @@ export function getComponentsSidebar({ activePage, onNavigate, search, setSearch
    PageLayout aside slot. Only present on a component detail page's Configure
    tab. ComponentDetailPage portals the controls into this element. */
 export function getComponentsAside({ activePage, detailTab }) {
-  if (!componentPageIds.includes(activePage) || detailTab !== 'configure') return null
+  const showsConfigurator = detailTab === 'configure' || detailTab?.startsWith('example:')
+  if (!componentPageIds.includes(activePage) || !showsConfigurator) return null
   return <div id="a1-web-config-aside-slot" className="a1-web-config-aside" />
 }

@@ -15,6 +15,7 @@ import {
 import tokens from '../../../../../build/json/tokens.json'
 import iconUsageMarkdown from '../../../../../system/icons/icon-usage.md?raw'
 import iconRegistry from '../../../../../system/icons/material-symbols.json'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -171,17 +172,13 @@ export function IconographyFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Iconography' },
-            ]}
+            items={getFoundationBreadcrumbItems('Iconography', onNavigate)}
           />
           <Heading as="h1" id="iconography-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Iconography
           </Heading>
           <Paragraph size="sm" color="muted">
-            A1 uses Material Symbols Outlined exclusively. Icons are passed by ligature name through the <code className="a1-web-token-code">icon</code> prop or rendered via the <code className="a1-web-token-code">Icon</code> component.
+            A1 uses Material Symbols Outlined for built-in icons and browser-built fonts for project-scoped custom icons. Pass a Material ligature name or a <code className="a1-web-token-code">custom:name</code> reference through an icon prop or the <code className="a1-web-token-code">Icon</code> component.
           </Paragraph>
         </Stack>
       </Section>

@@ -45,6 +45,19 @@ const SIZE_OPTIONS = [
   { value: "xl", label: "XL" },
 ];
 
+const SPACING_OPTIONS = [
+  { value: "", label: "None" },
+  { value: "4", label: "4" },
+  { value: "8", label: "8" },
+  { value: "12", label: "12" },
+  { value: "16", label: "16" },
+  { value: "20", label: "20" },
+  { value: "24", label: "24" },
+  { value: "32", label: "32" },
+  { value: "40", label: "40" },
+  { value: "64", label: "64" },
+];
+
 const LIST_OPTIONS = [
   { value: "none", label: "None", icon: "format_clear" },
   { value: "bulleted", label: "Bulleted list", icon: "format_list_bulleted" },
@@ -236,6 +249,36 @@ export const FullWidth = {
       </div>
     );
   },
+};
+
+export const OverflowGroup = {
+  name: "Overflow group",
+  render: () => {
+    const [space, setSpace] = useState("16");
+    return (
+      <div style={{ inlineSize: "260px" }}>
+        <Toolbar aria-label="Padding" fullWidth>
+          <ToolbarGroup
+            aria-label="Padding"
+            value={space}
+            onChange={setSpace}
+            showLabels
+            overflow
+            options={SPACING_OPTIONS}
+          />
+        </Toolbar>
+      </div>
+    );
+  },
+};
+
+export const OverflowToolbar = {
+  name: "Overflow toolbar",
+  render: () => (
+    <div style={{ inlineSize: "280px" }}>
+      <TextEditorBar fullWidth overflow />
+    </div>
+  ),
 };
 
 export const Overlay = {

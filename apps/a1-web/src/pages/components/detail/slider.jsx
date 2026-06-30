@@ -63,7 +63,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const isDetents = config.mode === 'detents'
   const detents = isDetents ? config.detents : undefined
   const mid = detents?.length ? detents[Math.floor((detents.length - 1) / 2)].value : 40
@@ -73,6 +73,7 @@ export function Preview({ config }) {
       <Slider
         // Remount when structural options change so the uncontrolled preview reflects them.
         key={`${config.mode}-${config.valuePosition}-${config.showValue}-${config.disabled}-${JSON.stringify(detents)}`}
+        className={utilityClass || undefined}
         label={config.label || 'Slider'}
         size={config.size}
         variant={config.variant}
@@ -110,14 +111,14 @@ function DetentItemEditor({ detent, canRemove, onChange, onRemove }) {
           value={detent.value}
           onChange={(e) => onChange({ value: Number(e.target.value) || 0 })}
         />
-        <div className="a1-web-field-grow">
+        <Stack grow>
           <TextField
             label="Label"
             size="compact"
             value={detent.label ?? ''}
             onChange={(e) => onChange({ label: e.target.value })}
           />
-        </div>
+        </Stack>
       </Stack>
       <Choice
         label="Display as"
@@ -250,12 +251,13 @@ function serializeDetents(detents) {
   return `[\n${rows},\n  ]`
 }
 
-function buildSliderSnippet(config) {
+function buildSliderSnippet(config, utilityClass = '') {
   const isDetents = config.mode === 'detents'
   const mid = isDetents && config.detents.length
     ? config.detents[Math.floor((config.detents.length - 1) / 2)].value
     : 40
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     `label="${escapeJsxString(config.label || 'Slider')}"`,
     config.size && config.size !== 'default' ? `size="${config.size}"` : null,
     config.variant && config.variant !== 'default' ? `variant="${config.variant}"` : null,
@@ -273,6 +275,6 @@ function buildSliderSnippet(config) {
   return `<Slider\n  ${props}\n/>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSliderSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSliderSnippet(config, utilityClass)}</Code>
 }

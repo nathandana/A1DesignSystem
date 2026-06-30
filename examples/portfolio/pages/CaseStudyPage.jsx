@@ -101,7 +101,7 @@ export function CaseStudyPage({ study }) {
 
         {/* Impact card */}
         {study.impact && (
-          <Card shadow="xs">
+          <Card>
             <Heading as="h2" size="md" margin="md">Impact</Heading>
             <List variant="unordered" size="lg">
               {study.impact.map((item, i) => (

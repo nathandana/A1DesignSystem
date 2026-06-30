@@ -10,6 +10,15 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
+import { componentCategories } from './components/data.js'
+
+function parseTokenDefinitionCount(audit) {
+  return audit.match(/\| Token definitions \|\s*(\d+)\s*\|/)?.[1] ?? '0'
+}
+
+const componentCount = componentCategories.reduce((count, category) => count + category.components.length, 0)
+const tokenCount = parseTokenDefinitionCount(colorTokenAudit)
 
 const topLevelFeatures = [
   {
@@ -189,10 +198,10 @@ const builtWithTools = [
 ]
 
 const capabilityStats = [
-  { value: '40+', label: 'Components' },
-  { value: '3', label: 'Packages' },
-  { value: '4', label: 'Themes' },
-  { value: '0', label: 'Custom values' },
+  { value: String(componentCount), label: 'Components' },
+  { value: '4', label: 'Packages' },
+  { value: '9', label: 'Themes' },
+  { value: tokenCount, label: 'Tokens' },
 ]
 
 export function Features({ onNavigate }) {
@@ -262,7 +271,7 @@ export function Features({ onNavigate }) {
               <Card
                 key={feature.title}
                 variant="navigation"
-                href={`/?page=${feature.page}`}
+                href={`/${feature.page}`}
                 icon={feature.icon}
                 heroColor="info"
                   iconDisplay="hero"
@@ -365,7 +374,7 @@ export function Features({ onNavigate }) {
               <Card
                 key={group.title}
                 variant="navigation"
-                href={`/?page=${group.page}`}
+                href={`/${group.page}`}
                 icon={group.icon}
                 onClick={(event) => handleNavigationCardClick(event, group.page)}
               >

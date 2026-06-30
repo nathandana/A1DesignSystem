@@ -10,21 +10,22 @@ import { Choice } from './configKit.jsx'
 
 const SPACE_OPTIONS = [4, 8, 12, 16, 24, 32, 40]
 
-function buildBleedSnippet(config) {
-  return `<Bleed${config.space !== 16 ? ` space={${config.space}}` : ''}>\n  {/* content that reaches past its inset container */}\n</Bleed>`
+function buildBleedSnippet(config, utilityClass = '') {
+  const className = utilityClass ? ` className="${utilityClass.replaceAll('"', '&quot;')}"` : ''
+  return `<Bleed${className}${config.space !== 16 ? ` space={${config.space}}` : ''}>\n  {/* content that reaches past its inset container */}\n</Bleed>`
 }
 
 export function getDefaultConfig() {
   return { space: 16 }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Card>
       <Inset space={config.space}>
         <Paragraph size="sm" color="muted">Inset content — padded normally.</Paragraph>
       </Inset>
-      <Bleed space={config.space}>
+      <Bleed className={utilityClass || undefined} space={config.space}>
         <div
           style={{
             background: 'var(--semantic-color-action-background)',
@@ -32,7 +33,12 @@ export function Preview({ config }) {
             color: 'var(--semantic-color-text-inverse)',
           }}
         >
-          <Paragraph size="sm">Bleed content — reaches past the inset.</Paragraph>
+          <Paragraph
+            size="sm"
+            style={{ '--a1-paragraph-color': 'var(--semantic-color-text-inverse)' }}
+          >
+            Bleed content — reaches past the inset.
+          </Paragraph>
         </div>
       </Bleed>
     </Card>
@@ -56,6 +62,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildBleedSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildBleedSnippet(config, utilityClass)}</Code>
 }

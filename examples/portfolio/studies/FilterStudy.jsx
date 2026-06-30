@@ -20,7 +20,7 @@ export function FilterStudy() {
     >
       <Section as="div" padding="lg" contentWidth="md">
 
-        <Figure src="img/filter-group.png" alt="Filter Component interface" marginBottom="lg" />
+        <Figure src="/img/filter-group.png" alt="Filter Component interface" marginBottom="lg" />
 
         <Paragraph size="lg">
           TruCare Cloud is a data-dense platform where nearly every workflow relies on interacting with large datasets—especially through tables. But across teams, filtering had become a pain point. Each group had built their own version of filters, often inconsistent and fragile. As the UX architect on the design system, I recognized the opportunity to create a single, reusable filtering component—one powerful enough to support healthcare data, and flexible enough for widespread use.
@@ -35,7 +35,7 @@ export function FilterStudy() {
         </Blockquote>
 
         <Figure
-          src="img/filter-group.png"
+          src="/img/filter-group.png"
           alt="Image of the Filter Component interface"
           caption="The current filter group is a bar-oriented interface that allows users to filter data in a table. It is responsive and highly configurable."
           marginTop="lg"
@@ -47,7 +47,7 @@ export function FilterStudy() {
         </Paragraph>
 
         <Figure
-          src="img/filter-panel.png"
+          src="/img/filter-panel.png"
           alt="Image of the Filter Panel Interface"
           caption="The filter panel shares all of the same logic, but allows for more advanced filtering and flexibility in placement. Additional filters can easily be added with no limits."
           marginTop="lg"

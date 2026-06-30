@@ -15,8 +15,9 @@ function propString(name, value, defaultValue) {
   return `${name}="${value}"`
 }
 
-function buildIconSnippet(config) {
+function buildIconSnippet(config, utilityClass = '') {
   const props = [
+    propString('className', utilityClass, ''),
     `name="${config.name || 'star'}"`,
     propString('size', config.size, ''),
     propString('color', config.color, ''),
@@ -35,9 +36,10 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <Icon
+      className={utilityClass || undefined}
       name={config.name || 'star'}
       size={config.size || undefined}
       color={config.color || undefined}
@@ -72,6 +74,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildIconSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildIconSnippet(config, utilityClass)}</Code>
 }

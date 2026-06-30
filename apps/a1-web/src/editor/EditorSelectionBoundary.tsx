@@ -72,6 +72,7 @@ interface EditorSelectionBoundaryProps {
   onConvertNode?: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
   onCopyPattern?: (nodeId: string) => void;
   onPastePattern?: (nodeId: string) => void;
+  onChooseTextLabel?: (nodeId: string) => void;
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo: (id: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   isContainer?: boolean;
@@ -99,6 +100,7 @@ export function EditorSelectionBoundary({
   onConvertNode,
   onCopyPattern,
   onPastePattern,
+  onChooseTextLabel,
   getNodeProps,
   getNodeInfo,
   isContainer,
@@ -187,7 +189,7 @@ export function EditorSelectionBoundary({
         id: 'edit-pattern',
         label: 'Edit pattern',
         icon: 'edit',
-        onClick: () => { window.location.href = `/?page=editor&pattern=${pattern.id}`; },
+        onClick: () => { window.location.href = `/editor?pattern=${pattern.id}`; },
       });
       if (onDetachPattern && pattern.nodeId) {
         const rootId = pattern.nodeId;
@@ -213,6 +215,16 @@ export function EditorSelectionBoundary({
         });
       });
       items.push({ type: 'divider', id: 'divider-select' });
+    }
+
+    if (onChooseTextLabel && (target.type === 'Heading' || target.type === 'Paragraph' || target.type === 'Button')) {
+      items.push({
+        id: 'choose-text-label',
+        label: 'Choose text label',
+        icon: 'manage_search',
+        onClick: () => onChooseTextLabel(target.id),
+      });
+      items.push({ type: 'divider', id: 'divider-label' });
     }
 
     items.push({

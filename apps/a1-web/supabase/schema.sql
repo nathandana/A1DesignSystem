@@ -38,6 +38,31 @@ create trigger shared_state_updated_at
   before update on public.shared_state
   for each row execute function public.set_updated_at();
 
+-- ─── Workspace labels (shared) ───────────────────────────────────────────────
+-- A single row (id = 1) stores workspace-level label overrides and custom labels:
+-- { locales: string[], items: [{ key, en, es, ... }] }. Project-specific label
+-- overrides remain part of the project model. The client keeps a local cache for
+-- offline/dev mode, but this table is the Supabase source of truth when signed in.
+
+create table if not exists public.workspace_labels (
+  id         int         primary key default 1,
+  data       jsonb       not null default '{"locales":["en","es","fr","de","pt","ja","zh","ar"],"items":[]}'::jsonb,
+  updated_at timestamptz not null default now(),
+  constraint workspace_labels_singleton check (id = 1)
+);
+
+alter table public.workspace_labels enable row level security;
+
+drop policy if exists "workspace_labels: read"  on public.workspace_labels;
+drop policy if exists "workspace_labels: write" on public.workspace_labels;
+create policy "workspace_labels: read"  on public.workspace_labels for select to authenticated using (true);
+create policy "workspace_labels: write" on public.workspace_labels for all    to authenticated using (true) with check (true);
+
+drop trigger if exists workspace_labels_updated_at on public.workspace_labels;
+create trigger workspace_labels_updated_at
+  before update on public.workspace_labels
+  for each row execute function public.set_updated_at();
+
 -- Migrate the most-recent per-user bundle into the shared row, then retire the
 -- old per-user table. Guarded so a fresh project (no user_projects) just skips it.
 do $$
@@ -156,9 +181,9 @@ create table if not exists public.backlog_items (
   title              text        not null,
   description        text,
   type               text        not null default 'feature'
-                       check (type in ('feature', 'bug', 'chore')),
+                       check (type in ('feature', 'bug', 'epic')),
   status             text        not null default 'new'
-                       check (status in ('new','triaged','accepted','in_progress','done','released','wont_fix','duplicate')),
+                       check (status in ('new','triaged','accepted','in_progress','paused','done','released','wont_fix','duplicate','cancelled')),
   priority           text        check (priority in ('p0','p1','p2','p3')),       -- suggested; nullable
   complexity         text        check (complexity in ('xs','s','m','l','xl')),    -- suggested; nullable
   scope_kind         text        not null default 'general'
@@ -178,10 +203,20 @@ create table if not exists public.backlog_items (
   created_at         timestamptz not null default now(),
   updated_at         timestamptz not null default now()
 );
+
+-- A1-164: migrate existing workspaces from chore to epic vocabulary.
+update public.backlog_items set type = 'feature' where type = 'chore';
+alter table public.backlog_items drop constraint if exists backlog_items_type_check;
+alter table public.backlog_items add constraint backlog_items_type_check
+  check (type in ('feature', 'bug', 'epic'));
 -- Existing DBs: add the virtual-team review column.
 --   alter table public.backlog_items add column if not exists reviews jsonb not null default '{}'::jsonb;
 -- Existing DBs: add the linked-tickets column (A1-218).
 --   alter table public.backlog_items add column if not exists links jsonb not null default '[]'::jsonb;
+-- Existing DBs: add the paused workflow status.
+--   alter table public.backlog_items drop constraint if exists backlog_items_status_check;
+--   alter table public.backlog_items add constraint backlog_items_status_check
+--     check (status in ('new','triaged','accepted','in_progress','paused','done','released','wont_fix','duplicate','cancelled'));
 -- Existing DBs predating the merge / link feature (A1-161): ensure the duplicate-link
 -- column exists (it has shipped in the create-table above since the backlog launched, so
 -- only the very earliest DBs need this).

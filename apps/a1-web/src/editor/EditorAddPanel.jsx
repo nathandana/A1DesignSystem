@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   Accordion,
+  Grid,
   Icon,
   Paragraph,
   Stack,
@@ -159,7 +160,9 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
   }
 
   const renderItem = view === 'list' ? renderRow : renderCard
-  const containerClass = view === 'list' ? 'a1-web-add-panel-list' : 'a1-web-add-panel-grid'
+  const wrapItems = (items) => view === 'list'
+    ? <Stack direction="column" gap={4}>{items}</Stack>
+    : <Grid columns={3} gap="sm">{items}</Grid>
 
   // Patterns (page editor only) — reusable compositions inserted as fresh,
   // editable copies. Click-to-add; respects the search and the grid/list view.
@@ -291,7 +294,7 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
 
       {patternEntries.length > 0 && visiblePatterns.length > 0 && (
         <Accordion label="Patterns" defaultOpen size="sm">
-          <div className={containerClass}>{visiblePatterns.map(renderPattern)}</div>
+          {wrapItems(visiblePatterns.map(renderPattern))}
         </Accordion>
       )}
 
@@ -309,12 +312,12 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
               defaultOpen={!!query || category.id === 'layout'}
               size="sm"
             >
-              <div className={containerClass}>{category.items.map(renderItem)}</div>
+              {wrapItems(category.items.map(renderItem))}
             </Accordion>
           ))
         : visibleFlatItems.length > 0 && (
             <div style={{ padding: '0' }}>
-              <div className={containerClass}>{visibleFlatItems.map(renderItem)}</div>
+              {wrapItems(visibleFlatItems.map(renderItem))}
             </div>
           ))}
     </Stack>

@@ -9,6 +9,10 @@ export interface MenuProps {
   anchorRef?: React.RefObject<HTMLElement>;
   /** Accessible label for the menu `dialog` element */
   "aria-label"?: string;
+  /** Whether Tab navigation is trapped inside the menu while open. Defaults to true. */
+  trapFocus?: boolean;
+  /** Whether the menu opens as a modal dialog on narrow viewports. Defaults to true. */
+  modalOnMobile?: boolean;
   /** Additional CSS class names for the menu dialog */
   className?: string;
   children?: React.ReactNode;

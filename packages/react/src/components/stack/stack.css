@@ -8,6 +8,11 @@
   min-width: 0;
 }
 
+.a1-stack--grow {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
 @media (--bp-sm-up) {
   .a1-stack {
     --a1-stack-direction-responsive: var(--a1-stack-direction-sm, var(--a1-stack-direction, column));

@@ -4,7 +4,9 @@ import {
   SideNav,
   TreeMenu,
 } from '@gtivr4/a1-design-system-react'
+import componentExamples from './componentExamples.json'
 import { componentCategories } from './data.js'
+import { getComponentExamplePath } from './utils.js'
 
 // The category id that owns the given active page, if any.
 function activeCategoryId(activePage) {
@@ -16,8 +18,20 @@ function activeCategoryId(activePage) {
   return category ? `components-${category.id}` : null
 }
 
-function ComponentTree({ activePage, onNavigate, search }) {
+function exampleIdFromDetailTab(detailTab) {
+  return detailTab?.startsWith('example:') ? detailTab.slice('example:'.length) : null
+}
+
+function exampleTreeId(componentPageId, exampleId) {
+  return `${componentPageId}::example::${exampleId}`
+}
+
+function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, search }) {
   const query = search.trim().toLowerCase()
+  const activeExampleId = exampleIdFromDetailTab(detailTab)
+  const selectedId = activePage.startsWith('component-') && activeExampleId
+    ? exampleTreeId(activePage, activeExampleId)
+    : activePage
 
   const visibleCategories = useMemo(
     () =>
@@ -45,11 +59,24 @@ function ComponentTree({ activePage, onNavigate, search }) {
         id: `components-${category.id}`,
         label: category.title,
         icon: category.icon,
-        children: category.components.map((component) => ({
-          id: `component-${component.id}`,
-          label: component.title,
-          icon: component.icon,
-        })),
+        children: category.components.map((component) => {
+          const examples = componentExamples[component.id] ?? []
+          const componentPageId = `component-${component.id}`
+          return {
+            id: componentPageId,
+            label: component.title,
+            icon: component.icon,
+            ...(examples.length
+              ? {
+                  children: examples.map((example) => ({
+                    id: exampleTreeId(componentPageId, example.id),
+                    label: example.title,
+                    icon: 'view_carousel',
+                  })),
+                }
+              : null),
+          }
+        }),
       })),
     ],
     [visibleCategories],
@@ -73,31 +100,60 @@ function ComponentTree({ activePage, onNavigate, search }) {
     // Not searching: make sure the active page's category is open (additive —
     // never collapse what the user opened).
     const active = activeCategoryId(activePage)
-    if (active) setExpandedIds((prev) => (prev.includes(active) ? prev : [...prev, active]))
-  }, [query, activePage, visibleCategories])
+    const activeComponent = activePage.startsWith('component-') ? activePage : null
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (active) next.add(active)
+      if (activeComponent && exampleIdFromDetailTab(detailTab)) next.add(activeComponent)
+      return [...next]
+    })
+  }, [query, activePage, detailTab, visibleCategories])
+
+  function handleSelect(id) {
+    if (id.includes('::example::')) {
+      const [componentId, exampleId] = id.split('::example::')
+      onSelectDetailTab?.(`example:${exampleId}`)
+      onNavigate?.(componentId, {
+        path: getComponentExamplePath(componentId.slice('component-'.length), exampleId),
+      })
+      return
+    }
+    if (id.startsWith('component-')) onSelectDetailTab?.('configure')
+    onNavigate?.(id)
+  }
 
   return (
     <TreeMenu
       aria-label="Component tree"
       items={items}
-      selectedId={activePage}
-      onSelect={(id) => onNavigate?.(id)}
+      selectedId={selectedId}
+      onSelect={handleSelect}
       expandedIds={expandedIds}
       onExpandedChange={setExpandedIds}
     />
   )
 }
 
-export function ComponentsSidebar({ activePage, onNavigate, search, setSearch }) {
+export function ComponentsSidebar({ activePage, detailTab, onNavigate, onSelectDetailTab, search, setSearch }) {
+  const searchField = (
+    <SearchField
+      data-a1-page-search=""
+      aria-label="Search components"
+      size="compact"
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
+  )
+
   return (
-    <SideNav>
-      <SearchField
-        label="Search components"
-        size="compact"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
+    <SideNav className="a1-web-components-tree" header={searchField}>
+      <ComponentTree
+        activePage={activePage}
+        detailTab={detailTab}
+        onNavigate={onNavigate}
+        onSelectDetailTab={onSelectDetailTab}
+        search={search}
       />
-      <ComponentTree activePage={activePage} onNavigate={onNavigate} search={search} />
     </SideNav>
   )
 }

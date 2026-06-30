@@ -1,0 +1,321 @@
+/* Canvas — infinite pan/zoom surface for node graphs */
+
+.a1-canvas {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  outline: none;
+  user-select: none;
+  touch-action: none;
+}
+
+.a1-canvas--page    { background: var(--semantic-color-surface-page); }
+.a1-canvas--panel   { background: var(--semantic-color-surface-panel); }
+.a1-canvas--raised  { background: var(--semantic-color-surface-raised); }
+.a1-canvas--inverse { background: var(--semantic-color-surface-inverse); color: var(--semantic-color-text-inverse); }
+
+/* Grid dot overlay */
+.a1-canvas__grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.a1-canvas__grid-line {
+  stroke: var(--semantic-color-border-subtle);
+}
+
+/* Edge SVG layer */
+.a1-canvas__edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.a1-canvas__edge {
+  stroke: var(--semantic-color-border-default);
+  stroke-width: 1.5;
+  fill: none;
+}
+.a1-canvas__edge--heavy {
+  stroke-width: 3;
+}
+.a1-canvas__edge--selected {
+  stroke: var(--semantic-color-action-background);
+  stroke-width: 2;
+}
+.a1-canvas__edge--connection {
+  stroke: var(--semantic-color-action-background);
+}
+.a1-canvas__edge--dimmed {
+  opacity: 0.15;
+}
+.a1-canvas__arrow {
+  fill: var(--semantic-color-border-default);
+}
+.a1-canvas__edge-label {
+  fill: var(--semantic-color-text-muted);
+  font-size: 11px;
+  font-family: inherit;
+  pointer-events: none;
+}
+
+/* Viewport — the scaled/translated layer that contains nodes */
+.a1-canvas__viewport {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Nodes */
+.a1-canvas__node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-2);
+  padding-block: var(--base-spacing-4);
+  padding-inline: var(--base-spacing-8);
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+  pointer-events: auto;
+  border: 2px solid var(--a1-canvas-node-border, var(--semantic-color-border-subtle));
+  background: var(--a1-canvas-node-bg, var(--semantic-color-surface-panel));
+  color: var(--a1-canvas-node-fg, var(--semantic-color-text-default));
+  transition:
+    box-shadow var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard);
+}
+
+.a1-canvas__node:focus-visible {
+  outline: 2px solid var(--component-button-focus-ring);
+  outline-offset: 3px;
+}
+
+/* Shapes */
+.a1-canvas__node--circle   { border-radius: var(--base-radius-pill); }
+.a1-canvas__node--square   { border-radius: var(--base-radius-md); }
+.a1-canvas__node--squircle { border-radius: var(--base-radius-xl); }
+.a1-canvas__node--rectangle { border-radius: var(--base-radius-md); }
+
+/* Selected ring */
+.a1-canvas__node--selected {
+  box-shadow: 0 0 0 3px var(--semantic-color-action-background);
+}
+
+/* Edit mode — drag cursor */
+.a1-canvas__node--editable { cursor: grab; }
+.a1-canvas__node--editable:active { cursor: grabbing; }
+
+/* Color variants */
+.a1-canvas__node--neutral {
+  --a1-canvas-node-bg: var(--semantic-color-surface-panel);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-border-subtle);
+}
+.a1-canvas__node--info {
+  --a1-canvas-node-bg: var(--semantic-color-status-info-background);
+  --a1-canvas-node-fg: var(--semantic-color-status-info-foreground);
+  --a1-canvas-node-border: var(--semantic-color-status-info-border);
+}
+.a1-canvas__node--success {
+  --a1-canvas-node-bg: var(--semantic-color-status-success-background);
+  --a1-canvas-node-fg: var(--semantic-color-status-success-foreground);
+  --a1-canvas-node-border: var(--semantic-color-status-success-border);
+}
+.a1-canvas__node--warn {
+  --a1-canvas-node-bg: var(--semantic-color-status-warn-background);
+  --a1-canvas-node-fg: var(--semantic-color-status-warn-foreground);
+  --a1-canvas-node-border: var(--semantic-color-status-warn-border);
+}
+.a1-canvas__node--error {
+  --a1-canvas-node-bg: var(--semantic-color-status-error-background);
+  --a1-canvas-node-fg: var(--semantic-color-status-error-foreground);
+  --a1-canvas-node-border: var(--semantic-color-status-error-border);
+}
+.a1-canvas__node--accent {
+  --a1-canvas-node-bg: var(--semantic-color-action-background);
+  --a1-canvas-node-fg: var(--semantic-color-action-foreground);
+  --a1-canvas-node-border: var(--semantic-color-action-background);
+}
+
+/* Subtle variants — surface tint instead of full background */
+.a1-canvas__node--subtle.a1-canvas__node--neutral {
+  --a1-canvas-node-bg: var(--semantic-color-surface-page);
+  --a1-canvas-node-border: var(--semantic-color-border-subtle);
+}
+.a1-canvas__node--subtle.a1-canvas__node--info {
+  --a1-canvas-node-bg: var(--semantic-color-status-info-surface);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-status-info-border);
+}
+.a1-canvas__node--subtle.a1-canvas__node--success {
+  --a1-canvas-node-bg: var(--semantic-color-status-success-surface);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-status-success-border);
+}
+.a1-canvas__node--subtle.a1-canvas__node--warn {
+  --a1-canvas-node-bg: var(--semantic-color-status-warn-surface);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-status-warn-border);
+}
+.a1-canvas__node--subtle.a1-canvas__node--error {
+  --a1-canvas-node-bg: var(--semantic-color-status-error-surface);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-status-error-border);
+}
+.a1-canvas__node--subtle.a1-canvas__node--accent {
+  --a1-canvas-node-bg: var(--semantic-color-action-surface);
+  --a1-canvas-node-fg: var(--semantic-color-text-default);
+  --a1-canvas-node-border: var(--semantic-color-action-border);
+}
+
+/* Node labels */
+.a1-canvas__node-label {
+  font-size: var(--a1-canvas-node-font-size, var(--semantic-font-size-body-sm));
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.a1-canvas__node-sublabel {
+  font-size: var(--semantic-font-size-body-xs);
+  opacity: 0.75;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Zoom controls overlay */
+.a1-canvas__controls {
+  position: absolute;
+  bottom: var(--base-spacing-16);
+  right: var(--base-spacing-16);
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-2);
+  background: var(--semantic-color-surface-card);
+  border: 1px solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  padding: var(--base-spacing-4);
+  box-shadow: var(--semantic-shadow-sm);
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.a1-canvas__ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--base-radius-sm);
+  cursor: pointer;
+  color: var(--semantic-color-text-default);
+  padding: 0;
+  transition: background var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard);
+}
+
+.a1-canvas__ctrl:hover {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-canvas__ctrl:focus-visible {
+  outline: 2px solid var(--component-button-focus-ring);
+  outline-offset: 1px;
+}
+
+.a1-canvas__zoom-pct {
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+  min-width: 36px;
+  text-align: center;
+}
+
+/* Node sizes */
+.a1-canvas__node--sm { --a1-canvas-node-font-size: var(--semantic-font-size-body-xs); }
+/* md is the default — no override needed */
+.a1-canvas__node--lg { --a1-canvas-node-font-size: var(--semantic-font-size-body-md); }
+.a1-canvas__node--xl { --a1-canvas-node-font-size: var(--semantic-font-size-body-lg); }
+
+/* More lines at larger sizes — xl removes the clamp entirely */
+.a1-canvas__node--lg .a1-canvas__node-label { -webkit-line-clamp: 5; }
+.a1-canvas__node--xl .a1-canvas__node-label { -webkit-line-clamp: unset; }
+
+/* Edit mode — draw connector */
+.a1-canvas--connecting { cursor: crosshair; }
+.a1-canvas--connecting .a1-canvas__node { cursor: cell; }
+
+.a1-canvas__node--connect-source {
+  box-shadow: 0 0 0 3px var(--semantic-color-action-background);
+}
+.a1-canvas__node--connect-target:hover {
+  box-shadow: 0 0 0 2px var(--semantic-color-action-background);
+}
+
+/* Connect button — small icon button positioned at the bottom-right corner of the node */
+.a1-canvas__node-connect {
+  position: absolute;
+  inset-block-end: -10px;
+  inset-inline-end: -10px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--base-radius-pill);
+  border: 1.5px solid var(--semantic-color-action-background);
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-action-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  padding: 0;
+  z-index: 1;
+  transition: opacity var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard),
+              background var(--semantic-motion-duration-quick) var(--semantic-motion-easing-standard);
+}
+.a1-canvas__node-connect:focus-visible {
+  outline: 2px solid var(--component-button-focus-ring);
+  outline-offset: 2px;
+}
+.a1-canvas__node:hover .a1-canvas__node-connect,
+.a1-canvas__node--connect-source .a1-canvas__node-connect {
+  opacity: 1;
+}
+.a1-canvas__node-connect:hover {
+  background: var(--semantic-color-action-surface);
+}
+.a1-canvas__node-connect .a1-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Ghost connector shown while drawing a new edge */
+.a1-canvas__edge--ghost {
+  stroke: var(--semantic-color-action-background);
+  stroke-width: 1.5;
+  stroke-dasharray: 6, 4;
+  opacity: 0.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-canvas__node,
+  .a1-canvas__ctrl,
+  .a1-canvas__node-connect {
+    transition: none;
+  }
+}

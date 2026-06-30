@@ -6,17 +6,13 @@
  * The Help page renders them via the `Shot` component, which shows the device-appropriate
  * image. Re-run any time to refresh so the walkthrough never drifts from the live UI.
  *
- * Needs a running a1-web server. The normal dev server works when you're signed in; for an
- * ungated capture run a "smoke" server with empty Supabase env so the auth gate is skipped
- * and the bundled "Ember & Oak" sample project is seeded:
+ * Needs a running a1-web server. Localhost is ungated even when Supabase env vars
+ * are present, so the normal dev server works for capture:
  *
- *   cd apps/a1-web
- *   printf 'VITE_SUPABASE_URL=\nVITE_SUPABASE_ANON_KEY=\n' > .env.smoke.local
- *   npx vite --mode smoke --port 5188 --strictPort --host 127.0.0.1 &
- *   node scripts/help-screenshots.mjs http://127.0.0.1:5188
- *   rm .env.smoke.local           # cleanup (it's gitignored)
+ *   npm run dev:a1-web
+ *   node apps/a1-web/scripts/help-screenshots.mjs http://127.0.0.1:5177
  *
- * Usage: node scripts/help-screenshots.mjs [baseUrl]   (default http://127.0.0.1:5188)
+ * Usage: node scripts/help-screenshots.mjs [baseUrl]   (default http://127.0.0.1:5177)
  */
 import pw from 'playwright'
 import { mkdirSync } from 'node:fs'
@@ -24,7 +20,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const { chromium } = pw
-const baseUrl = (process.argv[2] || process.env.A1_BASE_URL || 'http://127.0.0.1:5188').replace(/\/$/, '')
+const baseUrl = (process.argv[2] || process.env.A1_BASE_URL || 'http://127.0.0.1:5177').replace(/\/$/, '')
 const outDir = resolve(dirname(fileURLToPath(import.meta.url)), '../public/help')
 mkdirSync(outDir, { recursive: true })
 

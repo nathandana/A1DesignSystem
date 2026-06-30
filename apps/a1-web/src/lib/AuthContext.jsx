@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase, supabaseConfigured } from './supabase.js'
+import { authRequired, supabase, supabaseConfigured } from './supabase.js'
 
 // Mirrors the downTracker (Weight) Supabase auth pattern. When Supabase isn't
 // configured the provider resolves to a signed-out, no-op state so the rest of
@@ -58,12 +58,12 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, configured: supabaseConfigured, signUp, signIn, signOut, resetPassword, deleteAccount }}>
+    <AuthContext.Provider value={{ user, loading, configured: supabaseConfigured, authRequired, signUp, signIn, signOut, resetPassword, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
 export function useAuth() {
-  return useContext(AuthContext) ?? { user: null, loading: false, configured: false }
+  return useContext(AuthContext) ?? { user: null, loading: false, configured: false, authRequired: false }
 }

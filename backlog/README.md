@@ -5,8 +5,8 @@ ticket tracker) and the repo, so an agent or dev can triage, enrich, and impleme
 
 The Backlog UI lives at `?page=backlog` in a1-web. Anyone signed in can file a ticket (the global
 "flag" button in the header, or the pre-scoped button in the editor / component pages / theme editor),
-suggest a priority, complexity, and type (bug / feature / chore), vote, and discuss. Tickets carry a
-human ref **`A1-<n>`** and move through: `new → triaged → accepted → in_progress → done → released`
+suggest a priority, complexity, and type (bug / feature / epic), vote, and discuss. Tickets carry a
+human ref **`A1-<n>`** and move through: `new → triaged → accepted → in_progress → paused → done → released`
 (plus terminal `wont_fix` / `duplicate`).
 
 ## Setup (one-time)
@@ -20,6 +20,10 @@ SUPABASE_SERVICE_ROLE_KEY=<service role key from Supabase → Project Settings �
 ```
 
 (The schema must already be applied — run `apps/a1-web/supabase/schema.sql` in the Supabase SQL editor.)
+
+For an existing workspace upgrading to the A1-164 ticket types, run
+`apps/a1-web/supabase/migrations/20260625_a1_164_ticket_types.sql`. It converts existing
+Chores to Features and updates the database constraint to accept Epics.
 
 ## Workflow
 
@@ -42,7 +46,7 @@ npm run backlog:push     # apply the edits back to Supabase, then re-pull
 A typical pass: `pull`, read `BACKLOG.md`, then for each `new` ticket — set a `priority` and
 `complexity`, sharpen the `description`, add a `newComment` with any clarifying question, and move it to
 `triaged` (or `accepted` once it's ready to build). Pick up `accepted` tickets to implement; move them
-to `in_progress`, then `done`, and `released` once shipped. `push` when finished.
+to `in_progress`, `paused` when work is intentionally on hold, then `done`, and `released` once shipped. `push` when finished.
 
 When you ship a ticket, **reference its `A1-<n>` in the changelog entry** — put `(A1-<n>)` right after
 the entry's bold lead title (e.g. `- **Help page — PageNav** (A1-106) — …`) in the affected

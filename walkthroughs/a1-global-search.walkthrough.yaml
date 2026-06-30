@@ -1,0 +1,61 @@
+id: a1-global-search
+title: Search for a component
+baseUrl: http://127.0.0.1:5177
+viewport:
+  width: 1280
+  height: 720
+recordVideo: true
+steps:
+  - id: homepage
+    title: Homepage
+    cueMs: 0
+    narration: To search the app, simply select the search icon in the header
+    goto: /
+    waitForText: A1
+
+  - id: search-icon
+    title: Cursor over the search icon
+    cueMs: 1500
+    narration: or use the slash key shortcut.
+    hover:
+      role: button
+      name: Search A1
+    wait: 500
+
+  - id: search-open
+    title: Search open
+    cueMs: 4300
+    narration: Here we will quickly get to the Button component
+    click:
+      role: button
+      name: Search A1
+    waitForSelector: .a1-global-search-dialog__field input
+
+  - id: search-but
+    title: Search with "But"
+    cueMs: 7400
+    narration: by typing Button.
+    fill:
+      selector: .a1-global-search-dialog__field input
+      value: But
+    waitForText: Button
+
+  - id: search-button
+    title: Search with "Button"
+    cueMs: 8600
+    narration: The first match is automatically selected,
+    fill:
+      selector: .a1-global-search-dialog__field input
+      value: Button
+    waitForText: Button
+    callouts:
+      - target: .a1-global-search-dialog__result--selected
+        label: First result selected
+        description: Hit enter, click, or tap the matching result.
+
+  - id: button-component-page
+    title: The Button component page
+    cueMs: 12600
+    narration: so you can hit enter, or click or touch the matching result.
+    press: Enter
+    waitForText: Button

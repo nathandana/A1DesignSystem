@@ -32,6 +32,13 @@ export interface StackProps extends React.HTMLAttributes<HTMLElement> {
   justify?: Justify | Partial<Record<Breakpoints, Justify>>;
   /** Allow children to wrap. Default: false */
   wrap?: boolean;
+  /**
+   * Make this Stack grow to fill available space in a parent flex container
+   * (flex: 1 1 auto; min-inline-size: 0). Use when this Stack is one child
+   * in a row alongside fixed-width siblings (e.g. a field beside a button).
+   * Default: false
+   */
+  grow?: boolean;
   children?: React.ReactNode;
 }
 

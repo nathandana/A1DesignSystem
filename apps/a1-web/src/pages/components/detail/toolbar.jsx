@@ -5,6 +5,7 @@ import {
   Heading,
   IconButton,
   Paragraph,
+  SplitButton,
   Stack,
   TextField,
   Toolbar,
@@ -30,6 +31,10 @@ const TYPE_OPTIONS = [
   { value: 'divider', label: 'Divider' },
 ]
 const TYPE_LABELS = Object.fromEntries(TYPE_OPTIONS.map((o) => [o.value, o.label]))
+const PREVIEW_MODE_OPTIONS = [
+  { value: 'edit', label: 'Edit' },
+  { value: 'preview', label: 'Preview' },
+]
 
 // Material Symbols representing each tool type in the "Add tool" menu.
 const ADD_ITEMS = [
@@ -49,7 +54,7 @@ function newTool(type) {
   switch (type) {
     case 'button': return { id, type, icon: 'add', label: 'Button' }
     case 'menu': return { id, type, icon: 'expand_more', label: 'Menu', value: '', items: [{ id: uid(), label: 'Item 1', icon: '' }] }
-    case 'group': return { id, type, label: 'Group', value: '', options: [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
+    case 'group': return { id, type, label: 'Group', value: '', overflow: false, options: [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
     case 'divider': return { id, type }
     case 'toggle':
     default: return { id, type: 'toggle', icon: 'star', label: 'Toggle' }
@@ -61,7 +66,7 @@ function convertType(tool, type) {
   const base = { id: tool.id, type, label: tool.label, icon: tool.icon }
   if (type === 'divider') return { id: tool.id, type }
   if (type === 'menu') return { ...base, value: tool.value ?? '', items: tool.items ?? [{ id: uid(), label: 'Item 1', icon: '' }] }
-  if (type === 'group') return { ...base, value: tool.value ?? '', options: tool.options ?? [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
+  if (type === 'group') return { ...base, value: tool.value ?? '', overflow: !!tool.overflow, options: tool.options ?? [{ id: uid(), label: 'One', icon: '' }, { id: uid(), label: 'Two', icon: '' }] }
   if (type === 'toggle') return { ...base, pressed: !!tool.pressed }
   return base // button
 }
@@ -90,7 +95,9 @@ export function getDefaultConfig() {
     showLabels: false,
     overlay: false,
     fullWidth: false,
+    overflow: false,
     disabled: false,
+    previewMode: 'edit',
   }
 }
 
@@ -99,11 +106,10 @@ function toOptions(list) {
   return (list ?? []).map((o) => ({ value: o.id, label: o.label || o.id, icon: o.icon || undefined }))
 }
 
-// Render a single tool as its real A1 component. Each carries `data-tool-id` so a
-// single capture handler on the canvas can select it, and the selected tool gets
-// an outline class. The tools' own callbacks are no-ops here — the canvas is for
-// selection, not live interaction.
-function renderTool(tool, { showLabels, disabled, activeId }) {
+// Render a single tool as its real A1 component. In edit mode each carries
+// `data-tool-id` so a capture handler can select it. In preview mode controls
+// update their own state so the toolbar can be tried without selecting tools.
+function renderTool(tool, { showLabels, disabled, activeId, previewing, onToolChange }) {
   const className = tool.id === activeId ? 'a1-web-tool--selected' : undefined
   const dataId = tool.id
   switch (tool.type) {
@@ -112,18 +118,26 @@ function renderTool(tool, { showLabels, disabled, activeId }) {
     case 'button':
       return <ToolbarButton key={tool.id} data-tool-id={dataId} className={className} icon={tool.icon || undefined} label={tool.label} showLabel={showLabels} disabled={disabled} onClick={() => {}} />
     case 'menu':
-      return <ToolbarMenu key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} icon={tool.icon || undefined} label={tool.label} value={tool.value} items={toOptions(tool.items)} showLabel={showLabels} disabled={disabled} onChange={() => {}} />
+      return <ToolbarMenu key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} icon={tool.icon || undefined} label={tool.label} value={tool.value} items={toOptions(tool.items)} showLabel={showLabels} disabled={disabled} onChange={(value) => previewing && onToolChange(tool.id, { value })} />
     case 'group':
-      return <ToolbarGroup key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} value={tool.value} options={toOptions(tool.options)} showLabels={showLabels} disabled={disabled} onChange={() => {}} />
+      return <ToolbarGroup key={tool.id} data-tool-id={dataId} className={className} aria-label={tool.label} value={tool.value} options={toOptions(tool.options)} overflow={!!tool.overflow} showLabels={showLabels} disabled={disabled} onChange={(value) => previewing && onToolChange(tool.id, { value })} />
     case 'toggle':
     default:
-      return <ToolbarToggle key={tool.id} data-tool-id={dataId} className={className} icon={tool.icon || undefined} label={tool.label} showLabel={showLabels} pressed={!!tool.pressed} disabled={disabled} onChange={() => {}} />
+      return <ToolbarToggle key={tool.id} data-tool-id={dataId} className={className} icon={tool.icon || undefined} label={tool.label} showLabel={showLabels} pressed={!!tool.pressed} disabled={disabled} onChange={(pressed) => previewing && onToolChange(tool.id, { pressed })} />
   }
 }
 
-export function Preview({ config, setConfig }) {
-  const { tools = [], activeId, showToolbarLabel, label, showLabels, overlay, fullWidth, disabled } = config
-  const selectable = typeof setConfig === 'function'
+export function Preview({ config, setConfig, utilityClass = '' }) {
+  const { tools = [], activeId, showToolbarLabel, label, showLabels, overlay, fullWidth, overflow, disabled, previewMode = 'edit' } = config
+  const previewing = previewMode === 'preview'
+  const selectable = typeof setConfig === 'function' && !previewing
+  const onToolChange = (id, patch) => {
+    if (typeof setConfig !== 'function') return
+    setConfig((current) => ({
+      ...current,
+      tools: (current.tools ?? []).map((tool) => (tool.id === id ? { ...tool, ...patch } : tool)),
+    }))
+  }
 
   const onClickCapture = selectable
     ? (e) => {
@@ -138,12 +152,14 @@ export function Preview({ config, setConfig }) {
   const bar = (
     <div className="a1-web-toolbar-canvas" onClickCapture={onClickCapture}>
       <Toolbar
+        className={utilityClass || undefined}
         aria-label="Toolbar"
         label={showToolbarLabel ? (label || 'Toolbar') : undefined}
         overlay={overlay}
         fullWidth={fullWidth}
+        overflow={overflow}
       >
-        {tools.map((tool) => renderTool(tool, { showLabels, disabled, activeId }))}
+        {tools.map((tool) => renderTool(tool, { showLabels, disabled, activeId, previewing, onToolChange }))}
       </Toolbar>
     </div>
   )
@@ -154,8 +170,7 @@ export function Preview({ config, setConfig }) {
         <Stack gap="sm">
           <Heading as="h3" size="sm">Tasting menu</Heading>
           <Paragraph>
-            An overlay toolbar floats on its own elevated surface above page content. Click any tool
-            in the bar to configure it in the panel.
+            An overlay toolbar floats on its own elevated surface above page content.
           </Paragraph>
         </Stack>
         <div className="a1-web-toolbar-overlay-demo__bar">{bar}</div>
@@ -175,9 +190,9 @@ function OptionListEditor({ label, options = [], onChange }) {
       {options.map((o, i) => (
         <Stack key={o.id} gap="xs" className="a1-web-tool-option">
           <Stack direction="row" gap="xs" align="end">
-            <div className="a1-web-field-grow">
+            <Stack grow>
               <TextField label="Label" size="compact" value={o.label ?? ''} onChange={(e) => update(i, { label: e.target.value })} />
-            </div>
+            </Stack>
             <IconButton icon="delete" size="sm" variant="destructive" aria-label="Remove option" disabled={options.length <= 1} onClick={() => remove(i)} />
           </Stack>
           <IconSelect label="Icon" size="compact" value={o.icon || ''} onChange={(icon) => update(i, { icon })} />
@@ -213,6 +228,9 @@ function ToolEditor({ tool, canMoveLeft, canMoveRight, onMove, onRemove, onChang
       )}
       {tool.type === 'group' && (
         <TextField label="Accessible name" size="compact" value={tool.label ?? ''} onChange={(e) => onChange({ label: e.target.value })} />
+      )}
+      {tool.type === 'group' && (
+        <Toggle label="Overflow" value={!!tool.overflow} onChange={(overflow) => onChange({ overflow })} />
       )}
 
       {tool.type === 'menu' && (
@@ -257,10 +275,17 @@ export function Controls({ config, setConfig }) {
         items={[
           { key: 'showLabels', label: 'Tool labels', icon: 'text_fields', value: config.showLabels },
           { key: 'fullWidth', label: 'Full width', icon: 'width_full', value: config.fullWidth },
+          { key: 'overflow', label: 'Overflow', icon: 'more_horiz', value: config.overflow },
           { key: 'overlay', label: 'Overlay', icon: 'layers', value: config.overlay },
           { key: 'disabled', label: 'Disabled', icon: 'block', value: config.disabled },
         ]}
         onChange={set}
+      />
+      <Choice
+        label="Preview mode"
+        value={config.previewMode ?? 'edit'}
+        onChange={(previewMode) => set({ previewMode })}
+        options={PREVIEW_MODE_OPTIONS}
       />
       <Toggle label="Toolbar label" value={config.showToolbarLabel} onChange={(showToolbarLabel) => set({ showToolbarLabel })} />
       {config.showToolbarLabel && (
@@ -272,7 +297,22 @@ export function Controls({ config, setConfig }) {
       <Stack gap="sm">
         <Stack direction="row" align="center" justify="between">
           <Paragraph size="sm" color="muted">{active ? 'Selected tool' : 'Tools'}</Paragraph>
-          <ToolbarMenu aria-label="Add tool" icon="add" label="Add" showLabel value="" onChange={addTool} items={ADD_ITEMS} />
+          <SplitButton
+            icon="add"
+            size="sm"
+            variant="secondary"
+            menuLabel="Add tool"
+            toggleLabel="Choose tool type"
+            onClick={() => addTool('toggle')}
+            actions={ADD_ITEMS.map((item) => ({
+              id: item.value,
+              label: item.label,
+              icon: item.icon,
+              onClick: () => addTool(item.value),
+            }))}
+          >
+            Add
+          </SplitButton>
         </Stack>
         {active ? (
           <ToolEditor
@@ -284,7 +324,11 @@ export function Controls({ config, setConfig }) {
             onChange={(patch) => updateTool(active.id, patch)}
           />
         ) : (
-          <Paragraph size="sm" color="muted">Click a tool in the preview to edit it.</Paragraph>
+          <Paragraph size="sm" color="muted">
+            {config.previewMode === 'preview'
+              ? 'Switch to Edit mode to select and configure individual tools.'
+              : 'Click a tool in the preview to edit it.'}
+          </Paragraph>
         )}
       </Stack>
     </Stack>
@@ -308,24 +352,26 @@ function toolSnippet(tool, showLabels) {
     case 'divider': return '<ToolbarDivider />'
     case 'button': return `<ToolbarButton${icon}${label}${sl} onClick={handleClick} />`
     case 'menu': return `<ToolbarMenu${icon}${label} value={value} onChange={setValue}${sl} items={${serializeOptions(tool.items)}} />`
-    case 'group': return `<ToolbarGroup aria-label="${String(tool.label ?? '').replaceAll('"', '&quot;')}" value={value} onChange={setValue}${showLabels ? ' showLabels' : ''} options={${serializeOptions(tool.options)}} />`
+    case 'group': return `<ToolbarGroup aria-label="${String(tool.label ?? '').replaceAll('"', '&quot;')}" value={value} onChange={setValue}${showLabels ? ' showLabels' : ''}${tool.overflow ? ' overflow' : ''} options={${serializeOptions(tool.options)}} />`
     case 'toggle':
     default: return `<ToolbarToggle${icon}${label}${sl} pressed={pressed} onChange={setPressed} />`
   }
 }
 
-function buildToolbarSnippet(config) {
-  const { tools = [], showToolbarLabel, label, showLabels, overlay, fullWidth } = config
+function buildToolbarSnippet(config, utilityClass = '') {
+  const { tools = [], showToolbarLabel, label, showLabels, overlay, fullWidth, overflow } = config
   const attrs = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     'aria-label="Toolbar"',
     showToolbarLabel && label ? `label="${String(label).replaceAll('"', '&quot;')}"` : null,
     overlay ? 'overlay' : null,
     fullWidth ? 'fullWidth' : null,
+    overflow ? 'overflow' : null,
   ].filter(Boolean).join(' ')
   const body = tools.map((t) => toolSnippet(t, showLabels)).join('\n  ')
   return `<Toolbar ${attrs}>\n  ${body}\n</Toolbar>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildToolbarSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildToolbarSnippet(config, utilityClass)}</Code>
 }

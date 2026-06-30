@@ -13,8 +13,9 @@ function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
 }
 
-function buildAccordionSnippet(config) {
+function buildAccordionSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     `label="${escapeJsxString(config.label || 'Accordion heading')}"`,
     config.subtext ? `subtext="${escapeJsxString(config.subtext)}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
@@ -37,11 +38,12 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     // key forces re-mount when defaultOpen changes so the accordion reflects the new initial state
     <Accordion
       key={String(config.defaultOpen)}
+      className={utilityClass || undefined}
       label={config.label || 'Accordion heading'}
       subtext={config.subtext || undefined}
       size={config.size}
@@ -87,6 +89,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildAccordionSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildAccordionSnippet(config, utilityClass)}</Code>
 }

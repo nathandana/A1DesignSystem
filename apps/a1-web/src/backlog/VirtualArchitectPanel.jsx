@@ -1,28 +1,32 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Banner, Button, ButtonContainer, Card, Dialog, Divider, Heading, Icon,
-  MessageBadge, MessageEmptyState, Paragraph, Stack, Tab, TabList, TabPanel, Tabs,
+  MessageBadge, MessageEmptyState, Paragraph, SelectField, Stack, Tab, TabList, TabPanel, Tabs,
 } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
 import { StatusBadge } from './TicketBadges'
-import { auditNav, getMainMenu, informationArchitect } from '../services/architect'
+import { useFindingDecisions } from './useFindingDecisions'
+import {
+  auditNav,
+  getMainMenu,
+  informationArchitect,
+  listArchitectTargets,
+  projectNavModel,
+  runArchitectAi,
+} from '../services/architect'
 import { ticketRef } from '../services/backlog/types'
 
 /**
- * Dev-only "Virtual Information Architect" — a local, deterministic IA reviewer (no API
- * credits). It audits a navigation model (the a1-web main menu) against IA/UX heuristics
- * and reports findings grouped by concern. The architect is read-only — it advises, it
- * doesn't make changes — but a developer can **file any actionable finding as a backlog
- * ticket**. The report runs in a dialog with a **History** tab of everything it has filed.
+ * Dev-only "Virtual Information Architect" — a local IA reviewer backed by two layers:
  *
- * De-duplication is persistent: each filed ticket carries the finding's stable ref in its
- * description, so a finding already on the backlog shows as "filed" (and is skipped by
- * "file all") even after a reload — the architect never logs the same issue twice.
+ *  1. **Deterministic heuristics** — 13 IA/UX rules that always run offline.
+ *  2. **Ollama AI layer** — when a local model is available, enriches heuristic findings with
+ *     concrete rename proposals and adds 1–3 contextual observations the rules cannot express.
  *
- * Render gated behind `import.meta.env.DEV` so it never ships.
+ * Both layers are read-only: the architect advises, it never mutates anything. Developers can
+ * file any finding (heuristic or AI) as a backlog ticket. De-duplication is persistent.
  */
 
-// Severity → Card status stripe + badge tone + label.
 const SEVERITY_UI = {
   critical: { status: 'error', label: 'Critical', badge: 'error' },
   warning: { status: 'warn', label: 'Warning', badge: 'warn' },
@@ -30,14 +34,10 @@ const SEVERITY_UI = {
   praise: { status: 'success', label: 'Working well', badge: 'success' },
 }
 
-// Prose marker (any architect-filed ticket carries it → powers the History tab).
 const ARCHITECT_MARKER = 'Virtual Information Architect'
 
-// Findings the architect can file as work — praise is informational only.
 const isActionable = (f) => f.severity !== 'praise'
-// Map severity → ticket type: a broken law is a bug; everything else is housekeeping.
-const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'chore')
-// Stable, per-finding signature embedded in the ticket so re-runs recognise it.
+const ticketTypeFor = (f) => (f.severity === 'critical' ? 'bug' : 'feature')
 const findingSig = (navId, finding) => `${navId}::${finding.id}`
 
 function findingDescription(finding, report) {
@@ -55,22 +55,69 @@ function findingDescription(finding, report) {
   return lines.join('\n')
 }
 
+function aiRunDetail(ai) {
+  if (!ai || ai.engine !== 'model') return null
+  const secs = `${(ai.elapsedMs / 1000).toFixed(1)}s`
+  const tokens = (ai.promptTokens != null || ai.outputTokens != null)
+    ? ` · ${ai.promptTokens ?? 0} in / ${ai.outputTokens ?? 0} out tokens`
+    : ''
+  return `${ai.model} · ${secs}${tokens} · local`
+}
+
 export function VirtualArchitectPanel() {
   const backlog = useBacklog()
-  // The audit is pure + cheap, so compute it once; the main menu is read from live data.
-  const report = useMemo(() => auditNav(getMainMenu()), [])
+  const [runKey, setRunKey] = useState(0)
+  const [lastRun, setLastRun] = useState(null)
+  const [target, setTarget] = useState('menu')
+
+  // AI state
+  const [aiResult, setAiResult] = useState(null)
+  const [aiBusy, setAiBusy] = useState(false)
+  const aiCancelRef = useRef(false)
+
+  const architectTargets = useMemo(() => listArchitectTargets(), [runKey])
+
+  // Split navModel from report so the AI effect can depend on navModel alone.
+  const navModel = useMemo(() => {
+    if (target.startsWith('project:')) {
+      return projectNavModel(target.slice(8))
+    }
+    return getMainMenu()
+  }, [runKey, target, architectTargets])
+
+  const report = useMemo(() => auditNav(navModel), [navModel])
+
+  // Run Ollama in the background whenever the nav model changes.
+  useEffect(() => {
+    aiCancelRef.current = false
+    setAiResult(null)
+    setAiBusy(true)
+    runArchitectAi(navModel, report.findings)
+      .then((result) => {
+        if (aiCancelRef.current) return
+        setAiResult(result.engine === 'none' ? null : result)
+        setAiBusy(false)
+      })
+      .catch(() => { if (!aiCancelRef.current) setAiBusy(false) })
+    return () => { aiCancelRef.current = true }
+  }, [navModel]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('findings')
-  const [busy, setBusy] = useState(null) // finding.id currently filing, or 'all'
+  const [busy, setBusy] = useState(null)       // heuristic: finding.id | 'all' | null
+  const [aiFileBusy, setAiFileBusy] = useState(null) // AI: obs.id | 'all' | null
+  const decisions = useFindingDecisions('architect')
+  const aiDecisions = useFindingDecisions('architect-ai')
 
   if (!backlog) return null
 
   const items = backlog.items ?? []
-  // Persistent: every ticket the architect has ever filed (newest first).
   const history = items
     .filter((it) => (it.description || '').includes(ARCHITECT_MARKER))
     .sort((a, b) => b.number - a.number)
-  // Map a finding's signature → the ticket that already records it, so we never repeat.
+
+  // ── Heuristic finding helpers ───────────────────────────────────────────────
+
   const filedRef = (finding) => {
     const sig = findingSig(report.navId, finding)
     const hit = items.find((it) => (it.description || '').includes(sig))
@@ -78,29 +125,91 @@ export function VirtualArchitectPanel() {
   }
 
   const actionable = report.findings.filter(isActionable)
-  const unfiled = actionable.filter((f) => !filedRef(f))
+  const unfiled = actionable.filter(
+    (f) => !filedRef(f) && !decisions.isDeclined(findingSig(report.navId, f)),
+  )
 
   async function logTicket(finding) {
-    if (filedRef(finding)) return null // already on the backlog — don't repeat
+    if (filedRef(finding)) return null
+    const tgt = architectTargets.find((t) => t.value === target)
+    const isProject = target.startsWith('project:')
+    const scope = isProject
+      ? { kind: 'project', label: tgt?.label ?? report.navName, ref: tgt?.projectId }
+      : { kind: 'app', label: report.navName }
     return backlog.create({
       title: `${report.navName} IA — ${finding.title}`,
       description: findingDescription(finding, report),
       type: ticketTypeFor(finding),
-      scope: { kind: 'app', label: report.navName },
+      scope,
     })
   }
 
   async function handleLogOne(finding) {
-    setBusy(finding.id)
-    try { await logTicket(finding) } finally { setBusy(null) }
+    setBusy(finding.id); try { await logTicket(finding) } finally { setBusy(null) }
   }
 
   async function handleLogAll() {
-    setBusy('all')
-    try {
-      for (const f of unfiled) await logTicket(f) // sequential so refs stay ordered
-    } finally { setBusy(null) }
+    setBusy('all'); try { for (const f of unfiled) await logTicket(f) } finally { setBusy(null) }
   }
+
+  // ── AI observation helpers ──────────────────────────────────────────────────
+
+  const aiObservations = aiResult?.observations ?? []
+  const aiObsSig = (obs) => `ai::${report.navId}::${obs.id}`
+  const aiObsRef = (obs) => {
+    const sig = aiObsSig(obs)
+    const hit = items.find((it) => (it.description || '').includes(sig))
+    return hit ? ticketRef(hit.number) : null
+  }
+  const aiUnfiled = aiObservations.filter(
+    (obs) => !aiObsRef(obs) && !aiDecisions.isDeclined(aiObsSig(obs)),
+  )
+
+  // Rename suggestions that match a finding's flagged nodes.
+  const renamesFor = (nodes = []) => {
+    if (!aiResult?.renames) return []
+    return aiResult.renames.filter((r) => nodes.includes(r.from))
+  }
+
+  async function logAiTicket(obs) {
+    if (aiObsRef(obs)) return null
+    const sig = aiObsSig(obs)
+    const lines = [
+      `**AI observation** — ${obs.detail}`,
+      ...(obs.suggestion ? ['', `**Suggestion:** ${obs.suggestion}`] : []),
+      '',
+      `_Filed by the ${ARCHITECT_MARKER} (AI layer, ${aiResult?.model ?? 'local model'}) from an audit of the ${report.navName} — ref \`${sig}\`._`,
+    ]
+    const tgt = architectTargets.find((t) => t.value === target)
+    const isProject = target.startsWith('project:')
+    const scope = isProject
+      ? { kind: 'project', label: tgt?.label ?? report.navName, ref: tgt?.projectId }
+      : { kind: 'app', label: report.navName }
+    return backlog.create({
+      title: `${report.navName} IA — ${obs.title}`,
+      description: lines.join('\n'),
+      type: 'feature',
+      scope,
+    })
+  }
+
+  async function handleAiLogOne(obs) {
+    setAiFileBusy(obs.id); try { await logAiTicket(obs) } finally { setAiFileBusy(null) }
+  }
+
+  async function handleAiLogAll() {
+    setAiFileBusy('all')
+    try { for (const obs of aiUnfiled) await logAiTicket(obs) } finally { setAiFileBusy(null) }
+  }
+
+  // ── Misc ────────────────────────────────────────────────────────────────────
+
+  function handleRerun() {
+    setRunKey((k) => k + 1)
+    setLastRun(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
+  }
+
+  const anyBusy = !!(busy || aiFileBusy)
 
   const summary = Object.entries(report.counts)
     .filter(([, n]) => n > 0)
@@ -115,7 +224,17 @@ export function VirtualArchitectPanel() {
       </Stack>
       <Paragraph size="sm" color="muted">{informationArchitect.blurb}</Paragraph>
 
-      {/* Launcher card — opens the report dialog */}
+      <SelectField
+        label="Audit target"
+        size="compact"
+        value={target}
+        onChange={(e) => setTarget(e.target.value)}
+      >
+        {architectTargets.map((t) => (
+          <option key={t.value} value={t.value}>{t.label}</option>
+        ))}
+      </SelectField>
+
       <Card>
         <Stack gap="sm">
           <Stack direction="row" gap="sm" align="center" wrap>
@@ -128,10 +247,22 @@ export function VirtualArchitectPanel() {
                 {SEVERITY_UI[sev].label}: {n}
               </MessageBadge>
             ))}
+            {aiBusy && (
+              <MessageBadge status="neutral" subtle size="sm">AI running…</MessageBadge>
+            )}
+            {aiResult && !aiBusy && (
+              <MessageBadge status="info" subtle size="sm">AI enhanced</MessageBadge>
+            )}
           </Stack>
+          {lastRun && (
+            <Paragraph size="xs" color="muted">Last run at {lastRun}</Paragraph>
+          )}
           <ButtonContainer align="start">
             <Button size="sm" icon="account_tree" onClick={() => { setTab('findings'); setOpen(true) }}>
               Open report
+            </Button>
+            <Button size="sm" variant="secondary" icon="refresh" onClick={handleRerun}>
+              Re-run
             </Button>
           </ButtonContainer>
         </Stack>
@@ -139,10 +270,15 @@ export function VirtualArchitectPanel() {
 
       <Dialog
         open={open}
-        onClose={busy ? undefined : () => setOpen(false)}
+        onClose={anyBusy ? undefined : () => setOpen(false)}
         title={informationArchitect.name}
         size="lg"
-        footer={<Button variant="secondary" disabled={!!busy} onClick={() => setOpen(false)}>Close</Button>}
+        footer={
+          <ButtonContainer>
+            <Button variant="secondary" icon="refresh" disabled={anyBusy} onClick={handleRerun}>Re-run</Button>
+            <Button variant="secondary" disabled={anyBusy} onClick={() => setOpen(false)}>Close</Button>
+          </ButtonContainer>
+        }
       >
         <Tabs value={tab} onChange={setTab} equalHeight>
           <TabList>
@@ -156,14 +292,21 @@ export function VirtualArchitectPanel() {
               <Stack gap="xs">
                 <Paragraph size="sm" color="muted">
                   {report.topLevelCount} top-level groups · max depth {report.maxDepth} · {report.nodeCount} items examined
+                  {aiResult && ` · AI: ${aiResult.renames.length} rename${aiResult.renames.length !== 1 ? 's' : ''}, ${aiResult.observations.length} observation${aiResult.observations.length !== 1 ? 's' : ''}`}
                 </Paragraph>
+                {aiBusy && (
+                  <Paragraph size="xs" color="muted">AI analysis in progress (Ollama)…</Paragraph>
+                )}
+                {aiResult && !aiBusy && (
+                  <Paragraph size="xs" color="muted">{aiRunDetail(aiResult)}</Paragraph>
+                )}
                 {actionable.length > 0 && (
                   <ButtonContainer align="start">
                     <Button
                       size="sm"
                       icon="playlist_add"
                       loading={busy === 'all'}
-                      disabled={unfiled.length === 0 || !!busy}
+                      disabled={unfiled.length === 0 || anyBusy}
                       onClick={handleLogAll}
                     >
                       {unfiled.length === 0
@@ -174,10 +317,14 @@ export function VirtualArchitectPanel() {
                 )}
               </Stack>
 
+              {/* Heuristic finding cards */}
               <Stack gap="sm">
                 {report.findings.map((f) => {
                   const ui = SEVERITY_UI[f.severity]
                   const ref = filedRef(f)
+                  const sig = findingSig(report.navId, f)
+                  const declined = decisions.isDeclined(sig)
+                  const renames = renamesFor(f.nodes)
                   return (
                     <Card key={f.id} status={ui.status} statusLabel={ui.label}>
                       <Stack gap="xs">
@@ -192,12 +339,31 @@ export function VirtualArchitectPanel() {
                         {f.nodes?.length > 0 && (
                           <Paragraph size="xs" color="muted">Affects: {f.nodes.join(', ')}</Paragraph>
                         )}
+                        {/* AI rename suggestions for this finding's flagged labels */}
+                        {renames.map((r) => (
+                          <Stack key={r.from} direction="row" gap="xs" align="center">
+                            <Icon name="smart_toy" size="sm" color="accent" />
+                            <Paragraph size="xs">
+                              <strong>AI:</strong> "{r.from}" → "{r.to}" — {r.reason}
+                            </Paragraph>
+                          </Stack>
+                        ))}
                         <Paragraph size="xs" color="muted">{f.heuristic} — {f.principle}</Paragraph>
                         {isActionable(f) && (
                           ref ? (
                             <Stack direction="row" gap="xs" align="center">
                               <Icon name="check_circle" color="success" size="sm" />
                               <Paragraph size="xs" color="muted">Filed as {ref}</Paragraph>
+                            </Stack>
+                          ) : declined ? (
+                            <Stack direction="row" gap="xs" align="center" wrap>
+                              <Icon name="block" color="muted" size="sm" />
+                              <Paragraph size="xs" color="muted">
+                                Declined{decisions.commentFor(sig) ? ` — ${decisions.commentFor(sig)}` : ''}
+                              </Paragraph>
+                              <Button size="sm" variant="tertiary" icon="undo" onClick={() => decisions.undo(sig)}>
+                                Undo
+                              </Button>
                             </Stack>
                           ) : (
                             <ButtonContainer align="start">
@@ -206,10 +372,19 @@ export function VirtualArchitectPanel() {
                                 variant="secondary"
                                 icon="add_task"
                                 loading={busy === f.id}
-                                disabled={!!busy}
+                                disabled={anyBusy}
                                 onClick={() => handleLogOne(f)}
                               >
                                 File as ticket
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="tertiary"
+                                icon="block"
+                                disabled={anyBusy}
+                                onClick={() => decisions.start(sig, f.title)}
+                              >
+                                Decline
                               </Button>
                             </ButtonContainer>
                           )
@@ -220,10 +395,89 @@ export function VirtualArchitectPanel() {
                 })}
               </Stack>
 
+              {/* AI observations — only shown when Ollama contributed */}
+              {aiObservations.length > 0 && (
+                <Stack gap="sm">
+                  <Divider space="xs" />
+                  <Stack direction="row" gap="xs" align="center" wrap>
+                    <Icon name="smart_toy" size="sm" color="accent" />
+                    <Heading as="h4" size="xs">AI observations</Heading>
+                    <MessageBadge status="neutral" subtle size="sm">{aiResult?.model}</MessageBadge>
+                    {aiUnfiled.length > 0 && (
+                      <Button
+                        size="sm"
+                        variant="tertiary"
+                        icon="playlist_add"
+                        loading={aiFileBusy === 'all'}
+                        disabled={anyBusy}
+                        onClick={handleAiLogAll}
+                      >
+                        File {aiUnfiled.length}
+                      </Button>
+                    )}
+                  </Stack>
+                  {aiObservations.map((obs) => {
+                    const ref = aiObsRef(obs)
+                    const sig = aiObsSig(obs)
+                    const declined = aiDecisions.isDeclined(sig)
+                    return (
+                      <Card key={obs.id} status="info" statusLabel="AI">
+                        <Stack gap="xs">
+                          <Heading as="h4" size="xs">{obs.title}</Heading>
+                          <Paragraph size="sm">{obs.detail}</Paragraph>
+                          {obs.suggestion && (
+                            <Paragraph size="sm"><strong>Suggestion:</strong> {obs.suggestion}</Paragraph>
+                          )}
+                          {ref ? (
+                            <Stack direction="row" gap="xs" align="center">
+                              <Icon name="check_circle" color="success" size="sm" />
+                              <Paragraph size="xs" color="muted">Filed as {ref}</Paragraph>
+                            </Stack>
+                          ) : declined ? (
+                            <Stack direction="row" gap="xs" align="center" wrap>
+                              <Icon name="block" color="muted" size="sm" />
+                              <Paragraph size="xs" color="muted">
+                                Declined{aiDecisions.commentFor(sig) ? ` — ${aiDecisions.commentFor(sig)}` : ''}
+                              </Paragraph>
+                              <Button size="sm" variant="tertiary" icon="undo" onClick={() => aiDecisions.undo(sig)}>
+                                Undo
+                              </Button>
+                            </Stack>
+                          ) : (
+                            <ButtonContainer align="start">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                icon="add_task"
+                                loading={aiFileBusy === obs.id}
+                                disabled={anyBusy}
+                                onClick={() => handleAiLogOne(obs)}
+                              >
+                                File as ticket
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="tertiary"
+                                icon="block"
+                                disabled={anyBusy}
+                                onClick={() => aiDecisions.start(sig, obs.title)}
+                              >
+                                Decline
+                              </Button>
+                            </ButtonContainer>
+                          )}
+                        </Stack>
+                      </Card>
+                    )
+                  })}
+                </Stack>
+              )}
+
               <Banner status="info" variant="inline" title="Architects advise, they don't build">
-                These are recommendations from IA/UX heuristics, not automatic changes. File the ones
-                you agree with; the Virtual Product Owner will prioritise and size them like any other
-                ticket. A finding already on the backlog is shown as filed and never logged twice.
+                These are recommendations from IA/UX heuristics and optional AI analysis, not
+                automatic changes. File the ones you agree with; the Virtual Product Owner will
+                prioritise and size them like any other ticket. A finding already on the backlog is
+                shown as filed and never logged twice.
               </Banner>
             </Stack>
           </TabPanel>
@@ -255,6 +509,9 @@ export function VirtualArchitectPanel() {
           </TabPanel>
         </Tabs>
       </Dialog>
+
+      {decisions.dialog}
+      {aiDecisions.dialog}
     </Stack>
   )
 }

@@ -7,7 +7,7 @@ const KIND_ICON = { added: '+', removed: '−', changed: '●' }
 function DiffList({ diffs }) {
   if (!diffs.length) return <Paragraph size="xs" color="muted">No differences from base.</Paragraph>
   return (
-    <div className="a1-web-diff-list">
+    <Stack direction="column" gap={6}>
       {diffs.map((entry) => (
         <div key={entry.nodeId} className={`a1-web-diff-entry a1-web-diff-entry--${entry.kind}`}>
           <span className="a1-web-diff-kind" aria-hidden="true">{KIND_ICON[entry.kind]}</span>
@@ -33,7 +33,7 @@ function DiffList({ diffs }) {
           </div>
         </div>
       ))}
-    </div>
+    </Stack>
   )
 }
 

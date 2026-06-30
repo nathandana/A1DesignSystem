@@ -2,7 +2,7 @@
  * Virtual Product Owner — a deterministic, local stand-in for a PO's judgement (no API).
  *
  * Its job is business value: it reads each ticket's text/type/scope/votes (and the rest of
- * the backlog for context) and sets a priority and size from impact + urgency signals, then
+ * the backlog for context) and sets type, priority, and size from impact + urgency signals, then
  * offers a *bank* of clarifying questions a PO would ask. The runner picks the most useful
  * ones the PO hasn't already asked (each question carries a stable `key`), so it varies its
  * questions and never repeats one you've answered. All heuristic — fully offline.
@@ -48,7 +48,7 @@ function buildQuestions(item: BacklogItem, text: string, context?: PersonaContex
   const desc = (item.description ?? '').trim();
 
   // Business value — the headline, as a quick multiple-choice. Asked once.
-  if (item.type !== 'chore' && !RX.value.test(text)) {
+  if (!RX.value.test(text)) {
     q.push({
       key: 'value',
       text: 'What business value does this deliver — and who feels the pain if we skip it?',
@@ -83,7 +83,7 @@ function buildQuestions(item: BacklogItem, text: string, context?: PersonaContex
   }
 
   // Who's it for.
-  if (item.type === 'feature' && !RX.persona.test(text)) {
+  if ((item.type === 'feature' || item.type === 'epic') && !RX.persona.test(text)) {
     q.push({ key: 'users', text: "Who's the primary user here, and what job are they trying to get done?" });
   }
 
@@ -93,7 +93,7 @@ function buildQuestions(item: BacklogItem, text: string, context?: PersonaContex
   }
 
   // Success signal.
-  if (item.type === 'feature' && !RX.metric.test(text)) {
+  if ((item.type === 'feature' || item.type === 'epic') && !RX.metric.test(text)) {
     q.push({ key: 'success', text: 'How will we know it worked — what behaviour, signal, or metric should move?' });
   }
 
@@ -116,8 +116,9 @@ export const productOwner: Persona = {
   role: 'Product Owner',
   email: 'product-owner@a1.virtual',
   icon: 'workspace_premium',
-  blurb: 'Maximises business value — sets priority and size from impact, and asks varied, scope-aware questions (never the same one twice).',
+  blurb: 'Maximises business value — promotes large work to epics, sets priority and size, and asks varied, scope-aware questions.',
   signature: 'PO review —',
+  revision: 2,
 
   evaluate(item: BacklogItem, context?: PersonaContext): PersonaVerdict | null {
     const text = `${item.title}\n${item.description ?? ''}`.toLowerCase();
@@ -131,7 +132,7 @@ export const productOwner: Persona = {
     } else {
       let score = 0;
       if (item.type === 'bug') { score += 2; reasons.push('a defect'); }
-      if (item.type === 'chore') score -= 1;
+      if (item.type === 'epic') { score += 1; reasons.push('a strategic epic'); }
       const hv = Math.min(countMatches(text, RX.highValue), 3);
       if (hv) score += hv;
       if (RX.userFacing.test(text)) { score += 1; reasons.push('user-facing'); }
@@ -146,6 +147,7 @@ export const productOwner: Persona = {
 
     // ── Size: rough effort ──────────────────────────────────────────────────
     let sizeScore = 0;
+    if (item.type === 'epic') sizeScore += 2;
     sizeScore += countMatches(text, RX.large) * 2;
     sizeScore -= countMatches(text, RX.small) * 2;
     const descLen = (item.description ?? '').length;
@@ -153,14 +155,21 @@ export const productOwner: Persona = {
     const parts = (text.match(/\band\b|;|\bthen\b|\+/g) || []).length;
     if (parts >= 6) sizeScore += 1;
     if (['app', 'package', 'project'].includes(item.scopeKind)) sizeScore += 1;
-    const complexity: Complexity =
+    let complexity: Complexity =
       sizeScore >= 4 ? 'xl' : sizeScore >= 2 ? 'l' : sizeScore >= 0 ? 'm' : sizeScore >= -2 ? 's' : 'xs';
+    // Respect an existing explicit large estimate, and keep epics large by definition.
+    if (item.complexity === 'l' || item.complexity === 'xl') complexity = item.complexity;
+    if (item.type === 'epic' && complexity !== 'l' && complexity !== 'xl') complexity = 'l';
 
     const rationale = reasons.length
       ? `${cap(reasons.slice(0, 3).join(', '))}.`
       : 'Looks reasonably scoped; setting a baseline priority and size.';
 
     // Return the full ordered question bank; the runner asks the unasked top few.
-    return { priority, complexity, questions: buildQuestions(item, text, context), rationale };
+    const type = item.type === 'feature' && (complexity === 'l' || complexity === 'xl')
+      ? 'epic'
+      : undefined;
+
+    return { type, priority, complexity, questions: buildQuestions(item, text, context), rationale };
   },
 };

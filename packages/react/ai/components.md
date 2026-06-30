@@ -21,7 +21,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Menu level | Route ID | Label | Selected icon | Children |
 |------------|----------|-------|---------------|----------|
 | Overview | `components` | Components | `widgets` | Component categories |
-| Category | `components-layout` | Layout & Display | `dashboard` | Section, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container |
+| Category | `components-layout` | Layout & Display | `dashboard` | Section, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
 | Category | `components-actions` | Actions & Controls | `touch_app` | Button, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
 | Category | `components-navigation` | Navigation | `near_me` | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu |
@@ -29,7 +29,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
-| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar |
+| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
 - Category pages use `components-{category-id}`.
@@ -161,10 +161,10 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Slider props:** `value` / `defaultValue` / `onChange(value)` (number; in detent mode the value is a detent's value), `min` (0), `max` (100), `step` (1) for continuous mode; `detents` (optional — `number[]` or `{ value, label?, icon? }[]`; the thumb snaps between detents, the keyboard moves one detent at a time, and labels render under the track, e.g. None/XS/SM/MD/LG. A detent's `icon` (Material Symbols name) renders in the label row **instead of** its text label — provide a `label` too so screen readers and the value bubble have a text alternative); `label` (a **visible field label** rendered above the control and associated via `htmlFor` — also the accessible name; sized to match the field family per `size`. Use `aria-label`/`aria-labelledby` for an invisible name); `size` ("compact" | "default" | "comfortable", default "default" — mirrors the **field family** so a Slider sits naturally beside fields; scales the label, detent labels, track, and thumb); `variant` ("default" | "subtle", default "default" — "subtle" shows the selection (fill, thumb, active detent) in **neutrals** instead of the action colour); `showValue` (boolean, default true — the floating value bubble shown while dragging/focused); `valuePosition` ("above" | "below", default "above" — flips to stay in the viewport); `formatValue(value)` (custom bubble + `aria-valuetext`); `bubbleLabel` (an alternate **value-bubble** label — a node, or `(value, detent) => node`; **visual only**, `aria-valuetext` is unchanged; falls back to the current bubble content when omitted — used to spell a size out in the bubble, e.g. "Small", while the detent under the track stays "SM"); `disabled`; `name` (form value). Built on a native `<input type="range">` so keyboard (arrows, Home/End, Page Up/Down), focus, touch, and form semantics work out of the box; the value is announced via `aria-valuetext`. The value bubble is anchored by progress (and its caret tracks the thumb) so it never spills past the control edges at the extremes. React only. Sample use: editor size/padding controls, or the Section configurator's Content width (compact, with a detent per size). **Visual model:** the thumb (handle) sits **inside** the track — the track is as tall as the thumb (it contains the handle rather than the handle riding on a thin rail) and carries a subtle 1px border, so the whole track is the touch target. Sizes scale together per `size`. Token-only (`--a1-slider-track-height` / `-thumb-size` / `-track-border`); no prop change.
 >
-> **Toolbar:** a compact container that groups related editing controls on one subtle surface — think a text-editor toolbar, or the controls in the component configurator (it's denser than a ChoiceGroup; ChoiceGroup is retained for full-size selectors). Compositional API — exports `Toolbar` plus tool sub-components, separated by `<ToolbarDivider />`. Toolbar props: `aria-label` (used when there's no visible label), `label` (optional visible caption rendered above the bar — a small label one step below the compact form-label size; also supplies the accessible name via `aria-labelledby`), `overlay` (boolean, default false — lifts the bar onto a floating, elevated surface (shadow + border) for a toolbar that hovers over page content, e.g. a selection formatting bar; the consumer positions it), `fullWidth` (boolean, default false — by default the bar is `fit-content` wide; when true it fills its container and the tools grow to share the available width, dividers keeping their natural size). The bar carries a **hairline subtle border** by default (A1-220) for definition against the page surface, and steps that border up to a thicker, stronger boundary in the **accessible theme** and under OS **high-contrast** (`prefers-contrast: more` / `forced-colors`) so it stays clearly delimited. Sub-components:
+> **Toolbar:** a compact container that groups related editing controls on one subtle surface — think a text-editor toolbar, or the controls in the component configurator (it's denser than a ChoiceGroup; ChoiceGroup is retained for full-size selectors). Compositional API — exports `Toolbar` plus tool sub-components, separated by `<ToolbarDivider />`. Toolbar props: `aria-label` (used when there's no visible label), `label` (optional visible caption rendered above the bar — a small label one step below the compact form-label size; also supplies the accessible name via `aria-labelledby`), `overlay` (boolean, default false — lifts the bar onto a floating, elevated surface (shadow + border) for a toolbar that hovers over page content, e.g. a selection formatting bar; the consumer positions it), `fullWidth` (boolean, default false — by default the bar is `fit-content` wide; when true it fills its container and the tools grow to share the available width, dividers keeping their natural size), `overflow` (boolean, default false — keeps the toolbar on one row and moves trailing direct children into a More menu when the toolbar is narrower than its contents; when a `ToolbarMenu` overflows, **its items render inline in the More menu as a labelled section** rather than opening a nested menu-from-a-menu — original order is preserved, the active selection stays marked, and choosing an inline item closes the More menu), and `overflowLabel` (accessible name/tooltip for that More trigger). Use Toolbar-level `overflow` for a whole bar that needs to stay one row; use `ToolbarGroup overflow` when only one group has many options. The bar carries a **hairline subtle border** by default (A1-220) for definition against the page surface, and steps that border up to a thicker, stronger boundary in the **accessible theme** and under OS **high-contrast** (`prefers-contrast: more` / `forced-colors`) so it stays clearly delimited. Sub-components:
 > - **`ToolbarToggle`** — two-state toggle button (`icon`, `swatch`, `label`, `pressed`, `onChange(pressed)`, `showLabel`, `disabled`). `aria-pressed`.
 > - **`ToolbarButton`** — plain action button (`icon`, `swatch`, `label`, `onClick`, `showLabel`, `disabled`).
-> - **`ToolbarGroup`** — single-select button group with **radio semantics** (`role="radiogroup"`, roving tabindex, arrow-key navigation): `value`, `onChange(value)`, `options` (`{ value, label?, icon?, swatch?, disabled? }[]`), `showLabels` (default false = icon-only), `labelMode` (`"all"` default \| `"selected"` — `"selected"` shows the label only on the currently selected option; the rest render icon/swatch-only and a `"none"`/empty value falls back to the standard none icon, while non-selected options keep an `aria-label`. Use it for a swatch/variant picker where only the chosen option is named, e.g. Section surface/gradient and Button/IconButton variant), `columns` (set it for a grid — e.g. `columns={3}` for a 3×3 crop-direction picker, far smaller than a ChoiceGroup), `aria-label`. An option with value `"none"`/`""`/`null` and no `icon` gets the standard none icon in icon-only mode.
+> - **`ToolbarGroup`** — single-select button group with **radio semantics** (`role="radiogroup"`, roving tabindex, arrow-key navigation): `value`, `onChange(value)`, `options` (`{ value, label?, icon?, swatch?, showLabel?, overflowPriority?, disabled? }[]`), `showLabels` (default false = icon-only), `labelMode` (`"all"` default \| `"selected"` — `"selected"` shows the label only on the currently selected option; the rest render icon/swatch-only and a `"none"`/empty value falls back to the standard none icon, while non-selected options keep an `aria-label`. Use it for a swatch/variant picker where only the chosen option is named, e.g. Section surface/gradient and Button/IconButton variant), `columns` (set it for a grid — e.g. `columns={3}` for a 3×3 crop-direction picker, far smaller than a ChoiceGroup), `overflow` (boolean, default false — non-grid groups measure available inline space and add an icon-only overflow menu at the end containing the full option list in original `options` order; visible buttons may be prioritised with per-option `overflowPriority`), `aria-label`. An option with value `"none"`/`""`/`null` and no `icon` gets the standard none icon in icon-only mode.
 > - **`ToolbarMenu`** — a button that opens a dropdown `Menu` of choices (e.g. a text-size picker showing t-shirt sizes, or a list-type picker: none / bulleted / numbered / checklist): `icon`, `label`, `value`, `onChange(value)`, `items` (`{ value, label?, icon?, disabled? }[]`), `showLabel`, `disabled`, `aria-label`. Carries a caret to signal it opens a menu; `aria-haspopup="menu"` + `aria-expanded`; the active item is marked, and the button shows the active item's icon when no explicit `icon` is given. Use this instead of a native select so the dropdown matches the rest of the system. (There is **no `ToolbarSelect`** — use `ToolbarMenu`.)
 > - **`ToolbarDivider`** — vertical separator between tools.
 > - **`TOOLBAR_NONE_ICON`** — the exported standard "none" icon name (`block`).
@@ -195,7 +195,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **IconButton `as` / `href`:** Like Button, IconButton accepts `as` (default `"button"`). Pass `as="a"` with an `href` to render it as a navigation link while keeping the icon-button styling — use this for icon-only navigation. When `as="a"`, `disabled` maps to `aria-disabled` (the native `disabled` attribute does not apply to anchors). The a1-web Button, Link, IconButton, and (navigation) Card configurators expose a page-link selector that emits `as="a"` + `href` automatically.
 >
-> **IconButton `size`:** `"sm" | "md" (default) | "lg"`. `sm` is a **24×24px** target (the WCAG 2.2 AA minimum target size) with a 16px icon — for dense toolbars. `md` is the standard target. `lg` matches Button's large target (3.5rem) with a 32px icon. CSS: `a1-icon-button--small` / `--large` (React), `a1-icon-button-small` / `-large` (Pure).
+> **IconButton `size`:** `"sm" | "md" (default) | "lg"`. `sm` is a **28×28px** target with a 20px icon (opsz 20) — matches Button `sm` exactly, so they pair naturally in dense toolbars. `md` is the standard 40×40px target. `lg` matches Button's large target (3.5rem) with a 32px icon. CSS: `a1-icon-button--small` / `--large` (React), `a1-icon-button-small` / `-large` (Pure).
 
 ---
 
@@ -251,7 +251,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Banner | ✓ | ✓ | — |
 | Badge | ✓ | ✓ | — |
 | Notification | ✓ | — | — |
-| Snackbar | ✓ | ✓ | — |
+| Snackbar | ✓ | ✓ | ✓ |
 | Empty State | ✓ | ✓ | — |
 | Status Bar | ✓ | — | — |
 | Circular Progress | ✓ | — | ✓ |
@@ -394,7 +394,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Icon color tokens:** Status colors (`success`, `error`, `warn`, `info`) map to semantic status background tokens. Use `inverse` on dark surfaces. Omit `color` entirely to inherit the current text color from the parent.
 >
-> **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined). Size classes: `.a1-icon-xs|sm|lg|xl|jumbo|xjumbo`. Color classes: `.a1-icon-muted|accent|inverse|success|error|warn|info`. Filled variant: `.a1-icon-filled`.
+> **React Icon names:** unprefixed names render from Material Symbols Outlined. `custom:<snake_case_name>` renders from the browser-registered custom icon font for the active project. a1-web validates 24×24 filled-path SVGs and registers the generated font; consumers outside a1-web can call `registerCustomIconFont({ fontUrl, mappings, fontFamily })`. **Pure notes:** Icon uses `.a1-icon` (Material Symbols Outlined). Size classes: `.a1-icon-xs|sm|lg|xl|jumbo|xjumbo`. Color classes: `.a1-icon-muted|accent|inverse|success|error|warn|info`. Filled variant: `.a1-icon-filled`.
 
 ---
 
@@ -421,6 +421,38 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **React props:** `variant` ("scroll" | "paginated", default "scroll"), `initialMonth` (Date or `{ year, month }`), `monthsToShow` (default 13, scroll only), `highlightToday` (default true), `dimPast` (default true), `todayButton` (default false, paginated only). Scroll variant renders months stacked vertically. Paginated shows one month at a time with prev/next buttons and month/year selects. Uses container queries for 3 density levels (≥ 480 px full, < 480 px medium, < 320 px compact). Supports RTL and locale-driven week-start via `LabelsProvider`.
 >
 > **Status:** Experimental — in `apps/a1-web/src/pages/components/data.js` as `calendar: 'experimental'`.
+
+---
+
+## Canvas
+
+| Component | React | Native | Pure |
+|-----------|:-----:|:------:|:----:|
+| Canvas | ✓ | — | — |
+| Node | ✓ | — | — |
+| CanvasEdge | ✓ | — | — |
+
+> **Compositional API — `Node` and `CanvasEdge` as children:**
+>
+> ```jsx
+> <Canvas aria-label="Graph">
+>   <Node id="a" x={100} y={100} label="Tokens" color="info" />
+>   <Node id="b" x={300} y={100} label="React" color="success" />
+>   <CanvasEdge id="e1" from="a" to="b" />
+> </Canvas>
+> ```
+>
+> **Canvas props:** `mode` (`"view"` default | `"edit"` — in edit mode nodes are draggable), `onNodeMove` (`(id, x, y) => void` — called when a node is dragged in edit mode), `onDeleteNode(id)` — called when "Delete" is chosen from a node's context menu (only shown in `edit` mode), `nodeMenuItems(id)` — returns `ContextMenuEntry[]` of custom items for a right-clicked node (shown before Delete), `canvasMenuItems` — extra items appended to the canvas right-click menu (below the built-in zoom/fit/reset items), `showGrid` (boolean, default true — dot grid overlay), `background` (`"panel"` default | `"page"` | `"raised"`), `inverse` (boolean, default false — applies the inverse surface and text color, mirroring Section's inverse prop; combine with any `background`), `showControls` (boolean, default true — zoom controls overlay), `edgeStyle` (`"straight"` default | `"curved"` — quadratic Bézier connectors; a per-edge `curved` boolean on `CanvasEdge` overrides this), `snapToGrid` (boolean, default false — rounds dragged node positions to 24px grid increments in edit mode), `defaultZoom` (number, default 1), `defaultPan` (`{ x, y }`, default `{ x: 0, y: 0 }`), `aria-label` (string, required). Pan: left-click drag, middle-click drag, or single-finger touch drag. Zoom: wheel toward cursor, or two-finger pinch. Controls: zoom in/out/fit-all/reset. Right-click canvas background → built-in zoom context menu. Right-click node → custom + delete items.
+>
+> **Node props:** `label` (required), `id?`, `x?`, `y?` (canvas-space px, center of node — needed when used inside Canvas for positioning and edge routing), `sublabel?`, `shape?` (`circle` default), `color?` (`neutral` default), `subtle?` (boolean). Standalone: renders inline at natural dimensions with no Canvas context needed. Inside Canvas: absolutely positioned; selection, drag, and context-menu callbacks are injected from `CanvasCtx`.
+>
+> **Node shapes:** `circle` (default, 80×80px) · `square` (80×80px, `--base-radius-md`) · `squircle` (80×80px, `--base-radius-xl`) · `rectangle` (128×56px). Edge routing correctly intersects circle circumference or rectangle boundary.
+>
+> **Node colors:** `neutral / info / success / warn / error / accent`. Add `subtle` for a tinted surface (uses `*-surface` tokens) instead of the full status background.
+>
+> **CanvasEdge props:** `id` (required), `from`, `to` (CanvasNode ids), `direction` (`"to"` default | `"from"` | `"both"` | `"none"`), `variant` (`"solid"` default | `"dashed"` | `"dotted"`), `weight` (`"normal"` default | `"heavy"`), `label?` (rendered at the midpoint), `curved?` (boolean — overrides the canvas-level `edgeStyle` for this specific edge). CanvasEdge is a descriptor: returns null and Canvas draws the SVG connector.
+>
+> **Status:** Experimental — React only. Node size is driven by `component.canvas.node.size` token (80px). Arrowhead markers use stable per-canvas-instance IDs (React `useId`) so multiple Canvas instances on the same page don't collide.
 
 ---
 

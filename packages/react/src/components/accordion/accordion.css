@@ -64,7 +64,7 @@
 }
 
 .a1-accordion__trigger:focus-visible {
-  outline: var(--component-accordion-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline: var(--component-accordion-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-accordion-focus-ring-offset);
 }
 

@@ -17,6 +17,7 @@ Read this before authoring, editing, importing, or generating any page definitio
 4. **Names are a locked contract.** Component `type` values match the exported A1 React component names **exactly** (PascalCase). Do not normalise, alias, or lowercase them.
 5. **Fail safe.** An unknown/unregistered `type` renders a visible fallback that names the offending type — it never throws and never silently drops content.
 6. **Props must be real.** A node's `props` are passed straight through to the A1 component, so they must be valid props for that component (see "Props rules").
+7. **Utilities are separate from props.** Tokenized utility classes live in `utilities`, not `props.className`, and are applied only when the selected component type accepts that utility family.
 
 ---
 
@@ -75,6 +76,7 @@ The unit of the tree. One node = one A1 component instance.
   "id": "hero-title",
   "type": "Heading",
   "props": { "as": "h1", "id": "editor-hero-title", "type": "display", "size": { "xs": "lg", "md": "xl" } },
+  "utilities": { "maxWidth": "lg", "marginBlock": "24" },
   "content": { "textKey": "editor.example.hero.title", "fallback": "Build pages from structured JSON" },
   "a11y": { "labelledBy": "editor-hero-title" },
   "actions": { "onClick": { "type": "navigate", "target": "/components" } },
@@ -87,6 +89,7 @@ The unit of the tree. One node = one A1 component instance.
 | `id` | string | ✓ | Stable id — React key and future editor selection handle. Unique within the definition. |
 | `type` | `ComponentType` | ✓ | Registered A1 component name (exact). |
 | `props` | object | — | Forwarded verbatim to the component. Must be valid props. |
+| `utilities` | object | — | Tokenized utility selections, validated by component type. Current keys: `padding`, `paddingBlock`, `paddingInline`, `margin`, `marginBlock`, `marginInline`, `gap`, `maxWidth`, `minWidth`. |
 | `content` | `ContentDefinition` | — | Primary text (resolved via labels). |
 | `a11y` | `A11yDefinition` | — | Mapped to ARIA attributes. |
 | `actions` | `ActionMap` | — | Declared now, **not executed yet**. |
@@ -95,21 +98,36 @@ The unit of the tree. One node = one A1 component instance.
 
 ---
 
-## Component registry (locked)
+## Component registry (locked names, code-owned membership)
 
-The renderer can only instantiate components in the registry. The current set:
+The renderer can instantiate only the component names declared by `ComponentType`
+in `pageTypes.ts` and mapped in `componentRegistry.ts`. The names are a locked JSON
+contract, but the membership is not frozen at the original proof-of-concept set.
 
-| `type` | A1 component | Typical role |
-|--------|--------------|--------------|
-| `PageLayout` | `PageLayout` | Top-level layout container. |
-| `Section` | `Section` | Page region: padding, surface, gradient, width, gap, border. |
-| `Stack` | `Stack` | Linear layout (column/row), gap, alignment. |
-| `Heading` | `Heading` | Headings (`as` sets the level). |
-| `Paragraph` | `Paragraph` | Body text. |
-| `Button` | `Button` | Actions. |
-| `Card` | `Card` | Bounded content units. |
+**The two code files are authoritative.** This table is a human-readable snapshot of
+the current 60 registered types; if it differs from either code file, follow the code
+and update this document in the same change.
 
-**To add a component:** add its name to `ComponentType` in `pageTypes.ts` **and** register the real component in `componentRegistry.ts` (the registry is typed `Record<ComponentType, …>`, so both must stay in sync). Never register a raw HTML tag.
+| Group | Registered `type` values |
+|-------|--------------------------|
+| Layout | `PageLayout`, `Section`, `Stack`, `Grid`, `Cluster`, `Card`, `Bleed`, `Inset`, `Spacer`, `ButtonContainer` |
+| Typography and media | `Heading`, `Paragraph`, `Blockquote`, `Code`, `Divider`, `List`, `ListItem`, `Icon`, `Figure` |
+| Actions and controls | `Link`, `Button`, `IconButton`, `Switch`, `SegmentedControl`, `Slider`, `Toolbar`, `Tabs`, `StickyActions`, `Accordion` |
+| Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker` |
+| Form inputs | `TextField`, `TextareaField`, `SelectField`, `NumberField`, `DateField`, `TimeField`, `PhoneField`, `ZipField`, `CreditCardField`, `Fieldset`, `FieldRow`, `CheckboxGroup`, `RadioGroup`, `ChoiceGroup` |
+| Data and navigation | `DefinitionList`, `Pagination`, `Calendar`, `Breadcrumb`, `TopHeader`, `BottomDrawer`, `PageNav`, `TreeMenu`, `DataTable` |
+| Pattern and project composition | `Slot`, `Outlet` |
+
+Most entries map directly to the exported A1 React component with the same name.
+`Tabs`, `Toolbar`, `TreeMenu`, and `DataTable` use editor adapters that translate
+serializable props into their compositional A1 APIs. `Slot` and `Outlet` are
+editor-owned composition adapters. They are still registered types and should be
+used instead of hand-rolled wrappers when their semantics fit.
+
+**To add a component:** add its name to `ComponentType` in `pageTypes.ts` **and**
+register the real component or editor adapter in `componentRegistry.ts` (the
+registry is typed `Record<ComponentType, …>`, so both must stay in sync). Update
+this table and `a1-agent-brief.md` in the same change. Never register a raw HTML tag.
 
 **Unknown types:** any `type` not in the registry renders `UnsupportedComponent` — a `role="alert"` block built from A1 components that names the offending type. This is by design; do not "fix" it by adding HTML fallbacks.
 
@@ -118,10 +136,59 @@ The renderer can only instantiate components in the registry. The current set:
 ## Props rules
 
 - `props` are spread onto the underlying A1 component, so **every key must be a real prop** of that component. Unknown keys leak onto the DOM and cause React warnings.
+- Do not put utility classes in `props.className`. Use the node-level `utilities` field so the editor can prevent invalid combinations (for example, `IconButton` does not accept `minWidth` or `maxWidth`, while `Button` does).
 - **Put layout intent on the component that owns it.** `PageLayout` is the app-shell wrapper and does **not** accept `contentWidth` / `padding` / `gap` — those belong on `Section` (which supports all three). A common mistake is putting page width/padding on the layout node; put them on a hero/content `Section` instead.
+- **Constrain primary sections.** A `Section` used as a page's top-level outer
+  element should almost always set `contentWidth` (commonly `lg`, `xl`, or `2xl`)
+  so its content does not span the full viewport on wide screens. Use the same
+  value on sibling sections whose content should align. Omit it only when
+  edge-to-edge inner content is intentional, such as a full-width visualization
+  or other immersive surface; a full-width section background does not require
+  full-width content.
 - Responsive values use A1's inline object syntax directly in `props`, e.g. `"size": { "xs": "lg", "md": "xl" }` or `"direction": { "xs": "column", "md": "row" }`.
 - `Heading` has its own `type` prop (`"heading"` | `"display"`). This is independent of the node's `type` field — `node.type` selects the component; `node.props.type` configures it.
-- Only registered components are available, so multi-column rows use `Stack` with `direction: "row"` (there is no `Grid` in the current registry).
+- Use `Grid` for multi-column layouts and repeated card collections. Use `Stack`
+  for one-dimensional flow, alignment, and wrapping. Do not recreate grid behavior
+  with rows of nested `Stack`s when `Grid` expresses the structure directly.
+
+### Structured prop shapes
+
+Some registered components receive serializable item arrays rather than child
+component nodes. Follow the component's public type and the editor's saved shape;
+do not infer keys from the rendered HTML semantics.
+
+`DefinitionList.props.items` uses `label`, not `term`:
+
+```jsonc
+{
+  "type": "DefinitionList",
+  "props": {
+    "items": [
+      { "label": "Account ID", "value": "A1-849204" },
+      { "label": "Plan", "value": "Enterprise" }
+    ]
+  }
+}
+```
+
+The canonical page-definition item shape is:
+
+```ts
+{
+  id?: string | number;
+  label: string; // required; rendered in <dt>
+  value?: string | number; // rendered in <dd>
+  copyValue?: boolean;
+  copyText?: string;
+  copyLabel?: string;
+  copiedLabel?: string;
+  valueHeadingProps?: object;
+}
+```
+
+The React component also accepts `children` as an alternate value source, but
+page-definition JSON should use `value`; the editor reads and writes `label` /
+`value`. A `term` key is unsupported and would leave the `<dt>` empty.
 
 ---
 
@@ -141,6 +208,9 @@ Text lives in `content`, never inline in the renderer.
 - The renderer resolves `textKey` through **`useLabel`** (the existing A1 labels system). If the key is registered (and a locale is active) the localized value is used; otherwise it returns `fallback`.
 - `fallback` is always required so a node renders meaningful text even with no labels registered.
 - A node with `content` and `children` renders `content` first, then `children`.
+- Text required by a structured prop API, such as a `DefinitionList` item's
+  `label` and `value`, remains inside that prop object rather than becoming
+  separate component nodes.
 
 ---
 
@@ -185,7 +255,7 @@ Optional `params` (object) carries extra data for the future handler.
 PageLayout
 └─ region "main"
    ├─ Section (hero)       → Stack → Heading + Paragraph + Button
-   └─ Section (two cards)  → Heading + Stack(row) → Card + Card
+   └─ Section (two cards)  → Heading + Grid → Card + Card
 ```
 
 See `apps/a1-web/src/editor/examples/editorExamplePage.ts` for the full, current example.
@@ -198,6 +268,9 @@ See `apps/a1-web/src/editor/examples/editorExamplePage.ts` for the full, current
 - **Do** give every node a unique, stable `id`.
 - **Do** put all text in `content` with a `fallback`; resolve via `useLabel`.
 - **Do** put layout/width/padding/gap on `Section`, not `PageLayout`.
+- **Do** check `pageTypes.ts` and `componentRegistry.ts` before building a
+  workaround; components such as `Grid`, `Figure`, `DefinitionList`, `Pagination`,
+  `Accordion`, `MessageBadge`, and the field family are already registered.
 - **Do** use only registered components; extend the registry deliberately (and update `ComponentType`).
 - **Don't** use HTML tag names (`div`, `p`, `span`) as `type`.
 - **Don't** pass props a component doesn't support.

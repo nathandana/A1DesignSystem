@@ -13,6 +13,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
+import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
   return <code className="a1-web-token-code">{children}</code>
@@ -120,11 +121,7 @@ export function TypeScaleFoundationPage({ onNavigate }) {
       >
         <Stack direction="column" gap="xs">
           <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { href: '?page=foundations', label: 'Foundations', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('foundations') } },
-              { label: 'Type scale' },
-            ]}
+            items={getFoundationBreadcrumbItems('Type scale', onNavigate)}
           />
           <Heading as="h1" id="type-scale-heading" size={{ xs: 'lg', md: 'xxl' }}>
             Type scale

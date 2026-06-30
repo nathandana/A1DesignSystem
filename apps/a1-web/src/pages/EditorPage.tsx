@@ -33,6 +33,7 @@ import { buildProjectNav, type ProjectNavItem } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
+import { LabelLookupDialog } from '../editor/LabelLookupDialog.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
@@ -54,6 +55,7 @@ import { PagePresence } from '../editor/PagePresence.jsx';
 import { toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
+import { cleanUtilities } from '../editor/utilityRegistry';
 import type { ComponentNode, ComponentProps, ComponentType, PageDefinition } from '../editor/pageTypes';
 import type { PatternNode } from '../patterns/patternTypes';
 
@@ -188,10 +190,21 @@ type ParseResult =
 
 // ── Immutable tree patchers ───────────────────────────────────────────────────
 
-function updateNodeFallback(node: ComponentNode, id: string, fallback: string): ComponentNode {
-  if (node.id === id) return { ...node, content: { ...node.content!, fallback } };
+function updateNodeContent(
+  node: ComponentNode,
+  id: string,
+  patch: { fallback?: string; textKey?: string | null },
+): ComponentNode {
+  if (node.id === id) {
+    const nextContent = {
+      ...(node.content ?? { fallback: '' }),
+      ...(patch.fallback !== undefined ? { fallback: patch.fallback } : {}),
+      ...(patch.textKey !== undefined ? { textKey: patch.textKey || undefined } : {}),
+    };
+    return { ...node, content: nextContent };
+  }
   if (!node.children) return node;
-  return { ...node, children: node.children.map((c) => updateNodeFallback(c, id, fallback)) };
+  return { ...node, children: node.children.map((c) => updateNodeContent(c, id, patch)) };
 }
 
 function updateNodeProps(node: ComponentNode, id: string, props: ComponentProps): ComponentNode {
@@ -220,7 +233,14 @@ function patchRegions(
 }
 
 function patchDefinitionContent(def: PageDefinition, nodeId: string, fallback: string) {
-  return patchRegions(def, (node) => updateNodeFallback(node, nodeId, fallback));
+  return patchRegions(def, (node) => updateNodeContent(node, nodeId, { fallback }));
+}
+
+function patchDefinitionContentKey(def: PageDefinition, nodeId: string, textKey: string | null, fallback?: string) {
+  return patchRegions(def, (node) => updateNodeContent(node, nodeId, {
+    textKey,
+    ...(fallback !== undefined ? { fallback } : {}),
+  }));
 }
 
 function patchDefinitionProps(def: PageDefinition, nodeId: string, props: ComponentProps) {
@@ -228,7 +248,13 @@ function patchDefinitionProps(def: PageDefinition, nodeId: string, props: Compon
 }
 
 function convertNodeType(node: ComponentNode, id: string, newType: ComponentType, newProps: ComponentProps): ComponentNode {
-  if (node.id === id) return { ...node, type: newType, props: newProps };
+  if (node.id === id) {
+    const next = { ...node, type: newType, props: newProps };
+    const utilities = cleanUtilities(newType, node.utilities);
+    if (utilities) next.utilities = utilities;
+    else delete next.utilities;
+    return next;
+  }
   if (!node.children) return node;
   return { ...node, children: node.children.map((c) => convertNodeType(c, id, newType, newProps)) };
 }
@@ -301,6 +327,18 @@ function setNodeCollectionsInNode(node: ComponentNode, id: string, collections: 
   }
   if (!node.children) return node;
   return { ...node, children: node.children.map((c) => setNodeCollectionsInNode(c, id, collections)) };
+}
+
+function setNodeUtilitiesInNode(node: ComponentNode, id: string, utilities: ComponentNode['utilities'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    const cleaned = cleanUtilities(node.type, utilities);
+    if (cleaned) next.utilities = cleaned;
+    else delete next.utilities;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeUtilitiesInNode(c, id, utilities)) };
 }
 
 function freshId(): string {
@@ -694,9 +732,20 @@ export function EditorPage({
 
   // Map the cloud log into the History panel's entry shape (pages + patterns).
   const panelEntries = historyEnabled
-    ? cloudHistory.map((r) => ({ id: r.id, json: r.snapshot ?? '', label: r.label, timestamp: Date.parse(r.created_at), userEmail: r.user_email ?? undefined }))
+    ? cloudHistory.map((r) => ({ id: r.id, json: r.snapshot ?? '', label: r.label, timestamp: Date.parse(r.created_at), userEmail: r.user_email ?? undefined, restored: r.label.startsWith('Restored:') }))
     : history.entries;
   const panelIndex = historyEnabled ? panelEntries.length - 1 : history.index;
+
+  // Non-destructive preview: when set, the canvas shows this historical JSON
+  // without touching history.workingJson. Cleared on restore or history navigation.
+  const [previewJson, setPreviewJson] = useState<string | null>(null);
+  const historyIndexRef = useRef(history.index);
+  useEffect(() => {
+    if (history.index !== historyIndexRef.current) {
+      historyIndexRef.current = history.index;
+      setPreviewJson(null);
+    }
+  }, [history.index]);
 
   const [view, setView] = useState('edit');
   // "Code snippet" view sub-format: editable JSON, or read-only generated React.
@@ -707,6 +756,7 @@ export function EditorPage({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [labelLookupNodeId, setLabelLookupNodeId] = useState<string | null>(null);
   const [notice, setNotice] = useState(''); // transient one-line snackbar (copy/paste pattern)
   // The child item being edited (e.g. a DefinitionList item) — shared by the
   // canvas (outline) and the configurator (active tab).
@@ -893,11 +943,11 @@ export function EditorPage({
 
   const parsedDefinition = useMemo<ParseResult>(() => {
     try {
-      return { ok: true, value: JSON.parse(history.workingJson) as PageDefinition };
+      return { ok: true, value: JSON.parse(previewJson ?? history.workingJson) as PageDefinition };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
-  }, [history.workingJson]);
+  }, [previewJson, history.workingJson]);
 
   // Read-only React (JSX) rendition of the current definition.
   const reactCode = useMemo(
@@ -1068,7 +1118,13 @@ export function EditorPage({
     if (v !== 'edit') onSelectNode?.(null);
   }
 
-  function handlePageMetadataChange(patch: { name?: string; description?: string; icon?: string; detailDataset?: string | null; detailPreviewId?: string | null }) {
+  function handlePageMetadataChange(patch: {
+    name?: string;
+    description?: string;
+    icon?: string;
+    detailDataset?: string | null;
+    detailPreviewId?: string | null;
+  }) {
     if (!parsedDefinition.ok) return;
     const page = parsedDefinition.value.page;
     const newPage = {
@@ -1082,6 +1138,10 @@ export function EditorPage({
     const newJson = JSON.stringify({ ...parsedDefinition.value, page: newPage }, null, 2);
     history.setWorking(newJson);
     commitDebounced(newJson, 'Updated page settings');
+  }
+
+  function handleHistoryPreview(json: string | null) {
+    setPreviewJson(json);
   }
 
   function handleHistoryRename(entryId: string, label: string) {
@@ -1099,6 +1159,18 @@ export function EditorPage({
     );
     history.setWorking(newJson);
     commitDebounced(newJson, `Edited ${getNodeType(nodeId)} text`);
+  }
+
+  function handleContentKeyChange(nodeId: string, textKey: string | null, fallback?: string) {
+    if (!parsedDefinition.ok) return;
+    const lock = getNodeLock(nodeId);
+    if (lock?.node || lock?.content) return;
+    const newJson = JSON.stringify(
+      patchDefinitionContentKey(parsedDefinition.value, nodeId, textKey, fallback),
+      null,
+      2,
+    );
+    history.commitProp(newJson, `Edited ${getNodeType(nodeId)} label key`);
   }
 
   // Inline-edit a child item's text field (e.g. a DefinitionList item's label or
@@ -1135,7 +1207,12 @@ export function EditorPage({
     if (nodeId !== selectedNodeId) onSelectNode?.(nodeId);
   }
 
-  function handleNodePropsChange(nodeId: string, newProps: ComponentProps, newContentFallback?: string) {
+  function handleNodePropsChange(
+    nodeId: string,
+    newProps: ComponentProps,
+    newContentFallback?: string,
+    newContentTextKey?: string | null,
+  ) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
     if (lock?.node) { notifyLocked(); return; } // fully locked — ignore all edits
@@ -1151,11 +1228,13 @@ export function EditorPage({
       }
     }
     let patched = patchDefinitionProps(parsedDefinition.value, nodeId, props);
-    if (newContentFallback !== undefined && !lock?.content) {
+    if (newContentTextKey !== undefined && !lock?.content) {
+      patched = patchDefinitionContentKey(patched, nodeId, newContentTextKey, newContentFallback);
+    } else if (newContentFallback !== undefined && !lock?.content) {
       patched = patchDefinitionContent(patched, nodeId, newContentFallback);
     }
     const newJson = JSON.stringify(patched, null, 2);
-    history.commit(newJson, `Updated ${getNodeType(nodeId)} properties`);
+    history.commitProp(newJson, `Edited ${getNodeType(nodeId)}`);
   }
 
   function handleNodeDelete(nodeId: string) {
@@ -1321,6 +1400,13 @@ export function EditorPage({
     if (!parsedDefinition.ok) return;
     const newDef = patchRegions(parsedDefinition.value, (node) => setNodeCollectionsInNode(node, nodeId, collections));
     history.commit(JSON.stringify(newDef, null, 2), collections ? `Filled ${getNodeType(nodeId)} from data` : `Cleared data fill on ${getNodeType(nodeId)}`);
+  }
+
+  function handleSetNodeUtilities(nodeId: string, utilities: ComponentNode['utilities'] | null) {
+    if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeUtilitiesInNode(node, nodeId, utilities));
+    history.commit(JSON.stringify(newDef, null, 2), utilities ? `Updated ${getNodeType(nodeId)} utilities` : `Cleared ${getNodeType(nodeId)} utilities`);
   }
 
   function handleGroupAsStack(nodeId: string) {
@@ -1528,17 +1614,25 @@ export function EditorPage({
   }
 
   function restoreCloudSnapshot(entry?: CloudHistoryEntry) {
-    if (entry?.snapshot) history.reset(entry.snapshot, entry.label);
-  }
-
-  function handleHistoryJump(i: number) {
-    if (historyEnabled) { restoreCloudSnapshot(cloudHistory[i]); onSelectNode?.(null); return; }
-    history.jump(i);
-    onSelectNode?.(null);
+    if (!entry?.snapshot) return;
+    const restoredLabel = `Restored: ${entry.label}`;
+    history.reset(entry.snapshot, restoredLabel);
+    // Push to the cloud log so the restore appears at the top of the history panel.
+    appendHistory({
+      entityType: historyEntityType,
+      entityId: historyEntityId as string,
+      label: restoredLabel,
+      snapshot: entry.snapshot,
+    }).then(refreshHistory);
   }
 
   function handleHistoryRestore(entryId: string) {
-    if (historyEnabled) { restoreCloudSnapshot(cloudHistory.find((e) => e.id === entryId)); onSelectNode?.(null); return; }
+    setPreviewJson(null); // restore replaces the preview permanently
+    if (historyEnabled) {
+      restoreCloudSnapshot(cloudHistory.find((e) => e.id === entryId));
+      onSelectNode?.(null);
+      return;
+    }
     history.restore(entryId);
     onSelectNode?.(null);
   }
@@ -1558,7 +1652,7 @@ export function EditorPage({
     // for — the current page, plus the project id so the prototype can build the
     // generated navigation from the project's page hierarchy.
     const projectParam = projectId ? `&project=${encodeURIComponent(projectId)}` : '';
-    const url = `/?page=editor-preview&standalone&screen=${encodeURIComponent(exampleId)}${projectParam}`;
+    const url = `/editor-preview?standalone&screen=${encodeURIComponent(exampleId)}${projectParam}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -1637,7 +1731,7 @@ export function EditorPage({
         activePageId: exampleId,
         onNavigate: (id) => onNavigateToPage?.(id),
         hrefFor: (id) =>
-          `/?page=editor${projectId ? `&project=${encodeURIComponent(projectId)}` : ''}&doc=${encodeURIComponent(id)}`,
+          `/editor${projectId ? `?project=${encodeURIComponent(projectId)}&doc=${encodeURIComponent(id)}` : `?doc=${encodeURIComponent(id)}`}`,
       })
     : [];
 
@@ -1684,6 +1778,7 @@ export function EditorPage({
   const activePatternRootId = parsedDefinition.ok && selectedNodeId
     ? (findActivePatternRoot(parsedDefinition.value.page.layout.regions.flatMap((r) => r.nodes), selectedNodeId) ?? null)
     : null;
+  const labelLookupNode = labelLookupNodeId ? getNode(labelLookupNodeId) : null;
 
   // When the Add target is a Slot, tell the Add panel what it accepts so it only
   // offers the allowed components / patterns (and signals when it's full).
@@ -1722,6 +1817,7 @@ export function EditorPage({
           availableLevels={availableLevels}
           onSetPageLevel={onSetPageLevel}
           onNodePropsChange={handleNodePropsChange}
+          onNodeContentKeyChange={handleContentKeyChange}
           activeItem={activeItem}
           onItemSelect={handleItemSelect}
           onPageMetadataChange={handlePageMetadataChange}
@@ -1731,11 +1827,12 @@ export function EditorPage({
           onSetLock={handleSetNodeLock}
           onSetNodeRepeat={handleSetNodeRepeat}
           onSetNodeCollections={handleSetNodeCollections}
+          onSetNodeUtilities={handleSetNodeUtilities}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
-          onHistoryJump={handleHistoryJump}
           onHistoryRestore={handleHistoryRestore}
           onHistoryRename={handleHistoryRename}
+          onHistoryPreview={handleHistoryPreview}
           onConvertNode={handleConvertNode}
           onDuplicatePage={onDuplicatePage}
           onDeletePage={onDeletePage}
@@ -1822,7 +1919,7 @@ export function EditorPage({
             />
             <ToolbarButton
               icon="flag"
-              label="Report a bug or request a feature"
+              label="Create a ticket"
               onClick={() => openTicket({
                 kind: isPattern ? 'pattern' : 'project',
                 ref: isPattern ? patternId : null,
@@ -1847,18 +1944,17 @@ export function EditorPage({
           <Stack direction="row" align="center" gap="sm">
             <PagePresence pageId={exampleId} />
             {!isPattern && versions.length > 1 && (
-              <div className="a1-web-version-switcher">
-                <SelectField
-                  size="compact"
-                  aria-label="Active version"
-                  value={activeVersionId}
-                  onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
-                >
-                  {versions.map((v) => (
-                    <option key={v.id} value={v.id}>{v.label}</option>
-                  ))}
-                </SelectField>
-              </div>
+              <SelectField
+                size="compact"
+                aria-label="Active version"
+                value={activeVersionId}
+                style={{ maxInlineSize: '10rem' }}
+                onChange={(e) => handleSwitchVersion((e.target as HTMLSelectElement).value)}
+              >
+                {versions.map((v) => (
+                  <option key={v.id} value={v.id}>{v.label}</option>
+                ))}
+              </SelectField>
             )}
           </Stack>
         </Stack>
@@ -1890,6 +1986,7 @@ export function EditorPage({
                 onConvertNode={handleConvertNode}
                 onCopyPattern={handleCopyPattern}
                 onPastePattern={handlePastePattern}
+                onChooseTextLabel={setLabelLookupNodeId}
                 getNodeProps={getNodeProps}
                 getNodeInfo={getNodeInfoFn}
                 onRequestAddChild={handleRequestAddChild}
@@ -1976,6 +2073,16 @@ export function EditorPage({
       <Snackbar open={!!notice} onClose={() => setNotice('')}>
         {notice}
       </Snackbar>
+
+      <LabelLookupDialog
+        open={!!labelLookupNodeId}
+        value={labelLookupNode?.content?.textKey ?? ''}
+        onClose={() => setLabelLookupNodeId(null)}
+        onChange={(textKey, option) => {
+          if (labelLookupNodeId) handleContentKeyChange(labelLookupNodeId, textKey, option?.value);
+          setLabelLookupNodeId(null);
+        }}
+      />
 
       <EditorShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </>

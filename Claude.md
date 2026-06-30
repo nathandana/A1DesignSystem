@@ -29,3 +29,7 @@ For build commands and key file locations:
 For the accessibility check policy and a11y commands:
 
 @packages/react/ai/a11y-policy.md
+
+For Figma component authoring rules — variable bindings, component property conventions, and per-component gaps:
+
+@packages/react/ai/figma-workflow.md

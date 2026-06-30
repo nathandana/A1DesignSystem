@@ -89,7 +89,7 @@
 }
 
 .a1-menu-item:focus-visible {
-  outline: var(--component-menu-item-focus-ring-width) solid var(--semantic-color-text-accent);
+  outline: var(--component-menu-item-focus-ring-width) solid var(--component-button-focus-ring);
   outline-offset: var(--component-menu-item-focus-ring-offset);
 }
 
@@ -120,7 +120,7 @@
 }
 
 .a1-menu-item--active:focus-visible {
-  outline-color: var(--semantic-color-action-foreground);
+  outline-color: var(--component-button-focus-ring);
 }
 
 .a1-menu-item--active .a1-menu-item__icon {

@@ -18,8 +18,9 @@ function numberValue(value, fallback) {
   return Number.isFinite(next) ? next : fallback
 }
 
-function buildStepTrackerSnippet(config) {
+function buildStepTrackerSnippet(config, utilityClass = '') {
   const props = [
+    utilityClass ? `className="${utilityClass.replaceAll('"', '&quot;')}"` : null,
     `steps={${numberValue(config.steps, 5)}}`,
     numberValue(config.currentStep, 1) !== 1 ? `currentStep={${numberValue(config.currentStep, 1)}}` : null,
     config.align !== 'left' ? `align="${config.align}"` : null,
@@ -36,10 +37,11 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   return (
     <div className="a1-web-field-fill">
       <StepTracker
+        className={utilityClass || undefined}
         steps={numberValue(config.steps, 5)}
         currentStep={numberValue(config.currentStep, 1)}
         align={config.align}
@@ -78,6 +80,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildStepTrackerSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildStepTrackerSnippet(config, utilityClass)}</Code>
 }

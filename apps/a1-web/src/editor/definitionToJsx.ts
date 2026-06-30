@@ -5,6 +5,7 @@
  * commented children rather than mapped onto named slots).
  */
 import type { A11yDefinition, ComponentNode, ComponentProps, PageDefinition } from './pageTypes';
+import { utilityClassesFor } from './utilityRegistry';
 
 function escapeAttr(value: string): string {
   return value.replace(/"/g, '&quot;');
@@ -32,8 +33,21 @@ function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition
   return tokens.length ? ` ${tokens.join(' ')}` : '';
 }
 
+function propsWithUtilityClass(node: ComponentNode): ComponentProps | undefined {
+  const utilityClass = utilityClassesFor(node.type, node.utilities);
+  const props = node.props ? { ...node.props } : undefined;
+  if (props && (node.type === 'TextField' || node.type === 'TextareaField')) {
+    delete props.labelKey;
+  }
+  if (!utilityClass) return props;
+  return {
+    ...(props ?? {}),
+    className: [props?.className, utilityClass].filter(Boolean).join(' '),
+  };
+}
+
 function serializeNode(node: ComponentNode, indent: string): string {
-  const open = `${indent}<${node.type}${serializeProps(node.props, node.a11y)}`;
+  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y)}`;
   const text = node.content?.fallback;
   const children = node.children ?? [];
 

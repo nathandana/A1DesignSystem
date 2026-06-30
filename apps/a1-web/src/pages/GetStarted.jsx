@@ -81,6 +81,55 @@ export function ExamplePage() {
 }`,
   },
   {
+    value: 'web-components',
+    label: 'Web components',
+    icon: 'web',
+    badge: '@gtivr4/a1-design-system-web',
+    intro: 'Use the Web Components package for framework-agnostic pages and apps that can load custom elements but do not use React.',
+    install: [
+      'Install the package and its Lit peer dependency: npm install @gtivr4/a1-design-system-web lit',
+      'Load A1 token and theme CSS in the host page before rendering custom elements.',
+      'Import only the elements you use, such as @gtivr4/a1-design-system-web/button or @gtivr4/a1-design-system-web/snackbar.',
+      'Use custom-element attributes for configuration, for example variant, size, icon, icon-position, full-width, open, position, and action-label.',
+      'Listen for custom events from interactive elements, such as a1-action and a1-close on a1-snackbar.',
+    ],
+    contextFiles: [
+      'packages/web-components/package.json',
+      'packages/web-components/src/index.js',
+      'packages/web-components/src/components/button/a1-button.js',
+      'packages/web-components/src/components/snackbar/a1-snackbar.js',
+      'packages/react/ai/project-context.md',
+      'packages/react/ai/components.md',
+    ],
+    prompt: `Use the A1 Web Components package. Before coding, read packages/web-components/package.json, packages/web-components/src/index.js, packages/web-components/src/components/button/a1-button.js, packages/web-components/src/components/snackbar/a1-snackbar.js, packages/react/ai/project-context.md, and packages/react/ai/components.md. Use registered custom elements and documented attributes instead of custom markup. Load A1 token and theme CSS in the host document so CSS custom properties resolve through shadow DOM. Do not hardcode colors, spacing, typography, radius, shadows, or motion values. Use a1-action and a1-close events for snackbar behavior.`,
+    code: `<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./a1-light.css">
+
+<script type="module">
+  import '@gtivr4/a1-design-system-web/button'
+  import '@gtivr4/a1-design-system-web/snackbar'
+
+  const snackbar = document.querySelector('#save-snackbar')
+  document.querySelector('#save-button').addEventListener('click', () => {
+    snackbar.open = true
+  })
+  snackbar.addEventListener('a1-action', () => {
+    snackbar.open = false
+  })
+  snackbar.addEventListener('a1-close', () => {
+    snackbar.open = false
+  })
+</script>
+
+<a1-button id="save-button" icon="save">
+  Save changes
+</a1-button>
+
+<a1-snackbar id="save-snackbar" position="bottom-right" action-label="Undo">
+  Saved changes.
+</a1-snackbar>`,
+  },
+  {
     value: 'react-native',
     label: 'React Native',
     icon: 'phone_iphone',

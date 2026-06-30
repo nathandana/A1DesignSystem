@@ -1,5 +1,7 @@
 .tools/
 node_modules/
+.netlify/
+**/.netlify/
 
 # Local env files — may hold secrets (Supabase keys, etc.). Never commit.
 # Ignore every .env variant but keep the committed .env.example template.
@@ -21,6 +23,9 @@ reports/*
 test-results/
 # Storybook build output — generated per run, not committed
 storybook-static/
+# Walkthrough capture/narration artifacts — generated per run, not committed
+walkthroughs/artifacts/
+walkthroughs/narration/
 # visual-baselines/ is intentionally tracked (via Git LFS)
 .design-sync/sb-reference/
 .design-sync/learnings/

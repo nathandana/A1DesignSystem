@@ -52,14 +52,16 @@ function propBoolean(name, value, defaultValue) {
   return value ? name : `${name}={false}`
 }
 
-function buildStackSnippet(config) {
+function buildStackSnippet(config, utilityClass = '') {
   const props = [
+    propValue('className', utilityClass, ''),
     propValue('as', config.as, 'div'),
     typeof config.direction === 'object' ? responsiveProp('direction', config.direction) : propValue('direction', config.direction, 'column'),
     propValue('gap', config.gap, 'md'),
     propValue('align', config.align, 'start'),
     typeof config.justify === 'object' ? responsiveProp('justify', config.justify) : propValue('justify', config.justify, 'start'),
     propBoolean('wrap', config.wrap, false),
+    propBoolean('grow', config.grow, false),
   ].filter(Boolean).join('\n  ')
 
   return `<Stack${props ? `\n  ${props}\n` : ''}>
@@ -75,6 +77,7 @@ export function getDefaultConfig() {
     align: 'start',
     justify: 'start',
     wrap: false,
+    grow: false,
     childCount: 3,
   }
 }
@@ -86,17 +89,19 @@ const BLOCKS = [
   { label: '3', bg: 'var(--semantic-color-status-success-background)', color: 'var(--semantic-color-text-inverse)', w: '56px',  h: '56px' },
 ]
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const blocks = BLOCKS.slice(0, config.childCount ?? 3)
 
   return (
     <Stack
       as={config.as}
+      className={utilityClass || undefined}
       direction={config.direction}
       gap={config.gap || undefined}
       align={config.align}
       justify={config.justify}
       wrap={config.wrap}
+      grow={config.grow}
       style={{ width: '100%', minHeight: '160px' }}
     >
       {blocks.map((b) => (
@@ -158,6 +163,7 @@ export function Controls({ config, setConfig }) {
               <>
                 <ToolbarDivider />
                 <ToolbarToggle icon="wrap_text" label="Wrap" pressed={config.wrap} onChange={(wrap) => set({ wrap })} />
+                <ToolbarToggle icon="expand" label="Grow" pressed={config.grow} onChange={(grow) => set({ grow })} helper="Makes this Stack fill available space in a parent flex row (flex: 1 1 auto)." />
               </>
             )}
           </Toolbar>
@@ -178,6 +184,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildStackSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildStackSnippet(config, utilityClass)}</Code>
 }

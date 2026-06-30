@@ -5,6 +5,7 @@ import {
   componentCategories,
   ruleSourceFiles,
 } from './data.js'
+import componentExamples from './componentExamples.json'
 
 export const componentCategoryPageIds = componentCategories.map((category) => `components-${category.id}`)
 export const componentPageIds = componentCategories.flatMap((category) =>
@@ -31,7 +32,24 @@ export const allComponents = componentCategories.flatMap((category) =>
 )
 
 export function getComponentPath(id) {
-  return id === 'components' ? '/?page=components' : `/?page=${id}`
+  if (id === 'components') return '/components'
+  if (id.startsWith('components-')) return `/components/${id.slice('components-'.length)}`
+  if (id.startsWith('component-')) return `/components/${id.slice('component-'.length)}`
+  return `/${id}`
+}
+
+export function getComponentExampleSlug(example) {
+  return example?.slug ?? example?.id
+}
+
+export function getComponentExamplePath(componentId, exampleId) {
+  const example = (componentExamples[componentId] ?? []).find((item) => item.id === exampleId)
+  if (!example) return getComponentPath(`component-${componentId}`)
+  return `/components/${componentId}/${getComponentExampleSlug(example)}`
+}
+
+export function getComponentExampleBySlug(componentId, slug) {
+  return (componentExamples[componentId] ?? []).find((example) => getComponentExampleSlug(example) === slug) ?? null
 }
 
 export function getRelatedComponents(component) {

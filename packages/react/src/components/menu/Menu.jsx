@@ -23,6 +23,16 @@ function getFocusableElements(container) {
   });
 }
 
+function usableAnchor(element) {
+  if (!element || typeof element.getBoundingClientRect !== "function") return null;
+  const tagName = element.tagName?.toLowerCase?.();
+  // Safari can leave focus on <body> when an icon button opens a non-modal
+  // dialog. Treating body/html/dialog as anchors pins the menu to the document
+  // and prevents outside-click close because body contains every target.
+  if (tagName === "body" || tagName === "html" || tagName === "dialog") return null;
+  return element.getClientRects?.().length > 0 ? element : null;
+}
+
 /* ── Menu ────────────────────────────────────────────────────────────────── */
 
 export function Menu({
@@ -30,6 +40,8 @@ export function Menu({
   onClose,
   anchorRef,
   "aria-label": ariaLabel,
+  trapFocus = true,
+  modalOnMobile = true,
   className = "",
   children,
 }) {
@@ -48,7 +60,7 @@ export function Menu({
       return;
     }
 
-    const anchor = anchorRef?.current ?? fallbackAnchorRef.current;
+    const anchor = usableAnchor(anchorRef?.current) ?? usableAnchor(fallbackAnchorRef.current);
     const anchorRect = anchor?.getBoundingClientRect?.();
     const menuRect = el.getBoundingClientRect();
     const width = menuRect.width || 260;
@@ -99,7 +111,7 @@ export function Menu({
     const el = ref.current;
     if (!el) return;
 
-    const shouldModal = window.matchMedia(xsQuery).matches;
+    const shouldModal = modalOnMobile && window.matchMedia(xsQuery).matches;
     if (el.open && modalRef.current === shouldModal) {
       updatePosition();
       return;
@@ -116,14 +128,14 @@ export function Menu({
     requestAnimationFrame(() => {
       getFocusableElements(el)[0]?.focus();
     });
-  }, [updatePosition]);
+  }, [modalOnMobile, updatePosition]);
 
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     if (open) {
-      fallbackAnchorRef.current = anchorRef?.current ?? document.activeElement;
+      fallbackAnchorRef.current = usableAnchor(anchorRef?.current) ?? usableAnchor(document.activeElement);
       openDialog();
     } else if (el.open) {
       el.close();
@@ -135,7 +147,7 @@ export function Menu({
   }, [anchorRef, open, openDialog]);
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open || !trapFocus) return undefined;
 
     const onViewportChange = () => openDialog();
     const onScroll = () => updatePosition();
@@ -199,14 +211,14 @@ export function Menu({
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onClose, open]);
+  }, [onClose, open, trapFocus]);
 
   useEffect(() => {
     if (!open) return undefined;
 
     const onPointerDown = (e) => {
       const el = ref.current;
-      const anchor = anchorRef?.current ?? fallbackAnchorRef.current;
+      const anchor = usableAnchor(anchorRef?.current) ?? usableAnchor(fallbackAnchorRef.current);
       if (!el || modalRef.current) return;
       if (el.contains(e.target) || anchor?.contains?.(e.target)) return;
       onClose?.();

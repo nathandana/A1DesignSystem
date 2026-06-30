@@ -163,6 +163,12 @@ export function combinePageIntoLayout(
 
   return {
     ...layoutDef,
-    page: { ...layoutDef.page, layout: { ...layoutDef.page.layout, regions } },
+    page: {
+      // The shared layout owns the rendered shell, but the content page must
+      // retain its identity and data-detail metadata. In particular,
+      // `detailDataset` / `detailPreviewId` drive the renderer's row context.
+      ...pageDef.page,
+      layout: { ...layoutDef.page.layout, regions },
+    },
   } as PageDefinition;
 }

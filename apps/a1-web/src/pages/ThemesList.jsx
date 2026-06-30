@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useT } from '../labels/useT.js'
 import {
-  Breadcrumb,
   Button,
-  ButtonContainer,
   Card,
   ContextMenu,
   Dialog,
@@ -14,10 +13,12 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { createTheme, deleteTheme, duplicateTheme, listThemes, subscribeThemes } from '../lib/themeStore.ts'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 const CHIP_RAMPS = ['accent', 'info', 'success', 'warn', 'error']
 
 export function ThemesList({ onOpenTheme, onNavigateHome }) {
+  const t = useT()
   const [themes, setThemes] = useState(() => listThemes())
   const [menu, setMenu] = useState(null) // { theme, x, y }
   const [confirmDelete, setConfirmDelete] = useState(null)
@@ -31,21 +32,16 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: 'Theme' },
-          ]}
-        />
-          <Heading as="h1" id="themes-heading" size={{ xs: 'lg', md: 'xxl' }}>Theme</Heading>
-          <Paragraph size="sm" color="muted">Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.</Paragraph>
-          <ButtonContainer align='left'>
-          <Button icon="add" onClick={newTheme}>New theme</Button>
-          </ButtonContainer>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="themes-heading"
+        breadcrumbItems={[
+          { label: t('app.theme.breadcrumbHome', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+          { label: t('app.page.theme', 'Theme') },
+        ]}
+        title={t('app.page.theme', 'Theme')}
+        description={t('app.theme.pageDescription', 'Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.')}
+        actions={<Button icon="add" onClick={newTheme}>{t('app.theme.newTheme', 'New theme')}</Button>}
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="themes-heading">
         <Stack direction="column" gap="md">
@@ -53,9 +49,9 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
         {themes.length === 0 ? (
           <MessageEmptyState
             icon="palette"
-            title="No themes yet"
-            description="Create your first theme to start designing."
-            action={<Button icon="add" onClick={newTheme}>New theme</Button>}
+            title={t('app.theme.emptyTitle', 'No themes yet')}
+            description={t('app.theme.emptyDescription', 'Create your first theme to start designing.')}
+            action={<Button icon="add" onClick={newTheme}>{t('app.theme.newTheme', 'New theme')}</Button>}
           />
         ) : (
           <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
@@ -87,28 +83,28 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
         x={menu?.x ?? 0}
         y={menu?.y ?? 0}
         onClose={() => setMenu(null)}
-        aria-label="Theme actions"
+        aria-label={t('app.theme.contextMenuLabel', 'Theme actions')}
         items={menu ? [
-          { id: 'open', label: 'Open', icon: 'edit', onClick: () => { onOpenTheme?.(menu.theme.id); setMenu(null) } },
-          { id: 'dup', label: 'Duplicate', icon: 'content_copy', onClick: () => { duplicateTheme(menu.theme.id); setMenu(null) } },
+          { id: 'open', label: t('app.theme.menuOpen', 'Open'), icon: 'edit', onClick: () => { onOpenTheme?.(menu.theme.id); setMenu(null) } },
+          { id: 'dup', label: t('app.theme.menuDuplicate', 'Duplicate'), icon: 'content_copy', onClick: () => { duplicateTheme(menu.theme.id); setMenu(null) } },
           { type: 'divider', id: 'd1' },
-          { id: 'del', label: 'Delete', icon: 'delete', variant: 'destructive', onClick: () => { setConfirmDelete(menu.theme); setMenu(null) } },
+          { id: 'del', label: t('app.theme.menuDelete', 'Delete'), icon: 'delete', variant: 'destructive', onClick: () => { setConfirmDelete(menu.theme); setMenu(null) } },
         ] : []}
       />
 
       <Dialog
         open={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
-        title="Delete theme?"
+        title={t('app.theme.deleteTitle', 'Delete theme?')}
         status="warn"
         footer={
           <>
-            <Button variant="secondary" onClick={() => setConfirmDelete(null)}>Cancel</Button>
-            <Button variant="destructive" icon="delete" onClick={() => { deleteTheme(confirmDelete.id); setConfirmDelete(null) }}>Delete</Button>
+            <Button variant="secondary" onClick={() => setConfirmDelete(null)}>{t('app.theme.deleteCancel', 'Cancel')}</Button>
+            <Button variant="destructive" icon="delete" onClick={() => { deleteTheme(confirmDelete.id); setConfirmDelete(null) }}>{t('app.theme.menuDelete', 'Delete')}</Button>
           </>
         }
       >
-        <Paragraph>“{confirmDelete?.name}” will be removed.</Paragraph>
+        <Paragraph>"{confirmDelete?.name}" {t('app.theme.deleteConfirmSuffix', 'will be removed.')}</Paragraph>
       </Dialog>
       </Section>
     </>

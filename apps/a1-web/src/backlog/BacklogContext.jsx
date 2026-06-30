@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Snackbar } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
 import * as store from '../services/backlog/backlogStore'
-import { runPersona, runPersonaOnItem } from '../services/backlog/personas'
+import { runPersona, runPersonaOnItem, runStatusCleanup } from '../services/backlog/personas'
 import changelog from '../../CHANGELOG.md?raw'
 import { ticketRef } from '../services/backlog/types'
 import { CreateTicketDialog } from './CreateTicketDialog'
@@ -63,9 +63,16 @@ export function BacklogProvider({ children }) {
   }, [refresh])
 
   const update = useCallback(async (prev, patch) => {
-    const next = await store.updateItem(prev, patch)
-    await refresh()
-    return next
+    try {
+      const next = await store.updateItem(prev, patch)
+      await refresh()
+      if (next) setToast(`Updated ${ticketRef(next.number)} — ${next.title}`)
+      return next
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : 'Could not update the ticket.')
+      await refresh()
+      return null
+    }
   }, [refresh])
 
   const comment = useCallback(async (item, kind, body) => {
@@ -107,6 +114,12 @@ export function BacklogProvider({ children }) {
     await refresh()
   }, [refresh])
 
+  const remove = useCallback(async (item) => {
+    await store.removeItem(item.id)
+    await refresh()
+    setToast(`Deleted ${ticketRef(item.number)} — ${item.title}`)
+  }, [refresh])
+
   const markRead = useCallback(async (ids) => {
     await store.markNotificationsRead(ids)
     await refresh()
@@ -123,8 +136,16 @@ export function BacklogProvider({ children }) {
     return summary
   }, [refresh])
 
+  // Status-only cleanup: move open tickets that appear in the CHANGELOG to done/released.
+  // No priority/size/question changes — just reconciles status against what's been shipped.
+  const cleanupStatus = useCallback(async (persona, opts) => {
+    const summary = await runStatusCleanup(persona, { ...opts, changelog })
+    if (!opts?.dryRun) await refresh()
+    return summary
+  }, [refresh])
+
   // Review a single ticket with a persona (the per-ticket review button), then refresh so
-  // the dialog reflects the new priority/size/tag/question. Passes the backlog for context.
+  // the dialog reflects the new type/priority/size/tag/question. Passes the backlog for context.
   const reviewItem = useCallback(async (persona, item) => {
     const outcome = await runPersonaOnItem(persona, item, items)
     await refresh()
@@ -138,10 +159,10 @@ export function BacklogProvider({ children }) {
     items, notifications, unreadCount, votedSet, loading,
     isCloud: store.isCloudBacklog(),
     user: me,
-    openCreate, create: handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
-    reviewWithPersona, reviewItem,
+    openCreate, create: handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
+    reviewWithPersona, reviewItem, cleanupStatus,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem])
+    openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, cleanupStatus])
 
   return (
     <BacklogContext.Provider value={value}>

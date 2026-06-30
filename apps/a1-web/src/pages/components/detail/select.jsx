@@ -51,10 +51,11 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, utilityClass = '' }) {
   const options = normalizeOptions(config.options)
   return (
     <SelectField
+      className={utilityClass || undefined}
       label={config.label || undefined}
       hint={config.hint || undefined}
       error={config.error || undefined}
@@ -170,9 +171,10 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-function buildSelectSnippet(config) {
+function buildSelectSnippet(config, utilityClass = '') {
   const options = normalizeOptions(config.options)
   const props = [
+    utilityClass ? `className="${escapeJsxString(utilityClass)}"` : null,
     config.label ? `label="${escapeJsxString(config.label)}"` : null,
     config.hint ? `hint="${escapeJsxString(config.hint)}"` : null,
     config.error ? `error="${escapeJsxString(config.error)}"` : null,
@@ -189,6 +191,6 @@ function buildSelectSnippet(config) {
   return `<SelectField\n  ${props}\n>\n${optionLines}\n</SelectField>`
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildSelectSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildSelectSnippet(config, utilityClass)}</Code>
 }

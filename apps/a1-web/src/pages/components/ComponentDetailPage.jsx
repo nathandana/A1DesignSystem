@@ -66,18 +66,27 @@ import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
 import { CreateTicketButton } from '../../backlog/CreateTicketButton'
 import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail/ResponsivePreviewFrame.jsx'
+import { UtilityControls } from '../../editor/UtilityControls.jsx'
+import { cleanUtilities, utilityClassesFor, utilityTypeForCatalogComponent } from '../../editor/utilityRegistry.ts'
 import {
+  getBreadcrumbItems,
   getComponentPath,
   getRelatedComponents,
   getRulesForComponent,
   navigateCard,
   navigateBreadcrumb,
 } from './utils.js'
+import { GENERATED_PROP_TABLES } from './generatedPropTables.js'
+import { BUTTON_CONTRAST_ROWS, BUTTON_TARGET_SIZE_ROWS } from './accessibilityReports.generated.js'
 
 const PACKAGE_META = {
   React:  { icon: 'code',         desc: 'packages/react' },
   Native: { icon: 'phone_iphone', desc: 'packages/react-native' },
   Pure:   { icon: 'palette',      desc: 'packages/pure' },
+}
+
+function componentUtilityType(component) {
+  return utilityTypeForCatalogComponent(component.id, component.title)
 }
 
 function PackageSupportGrid({ packages }) {
@@ -1568,7 +1577,7 @@ const COMPONENT_PROPS = {
 
   // ── Media ─────────────────────────────────────────────────────────────────
   icon: [
-    { id: 'name',        name: 'name',        type: 'string',  description: 'Material Symbols icon name, e.g. "check_circle", "home". Required.' },
+    { id: 'name',        name: 'name',        type: 'string',  description: 'Material Symbols name, e.g. "home", or a registered project icon as "custom:name". Required.' },
     { id: 'fill',        name: 'fill',        type: 'boolean', description: 'Fill the icon shape. Default: false.' },
     { id: 'weight',      name: 'weight',      type: 'number',  description: 'Variable font weight axis (100–700). Default set via CSS token.' },
     { id: 'grade',       name: 'grade',       type: 'number',  description: 'Grade axis — adjusts visual weight without changing size (-25–200). Default set via CSS token.' },
@@ -1640,13 +1649,1194 @@ const PADDING_ITEMS = [
   { value: 'lg', label: 'LG' },
 ]
 
+const VISIBLE_DETAIL_TABS = new Set(['configure', 'rules', 'properties', 'accessibility'])
+const EXAMPLE_TAB_PREFIX = 'example:'
+const GENERATED_PROP_ALIASES = {
+  'date-field': 'text-field',
+  'time-field': 'text-field',
+  'phone-field': 'text-field',
+  'zip-field': 'text-field',
+  'credit-card-field': 'text-field',
+}
+
+function visibleDetailTab(tab) {
+  if (tab?.startsWith(EXAMPLE_TAB_PREFIX)) return 'examples'
+  return VISIBLE_DETAIL_TABS.has(tab) ? tab : 'configure'
+}
+
+function exampleIdFromTab(tab) {
+  return tab?.startsWith(EXAMPLE_TAB_PREFIX) ? tab.slice(EXAMPLE_TAB_PREFIX.length) : null
+}
+
+function cloneExampleConfig(config) {
+  return JSON.parse(JSON.stringify(config ?? {}))
+}
+
+function examplePreviewStyle(example) {
+  const width = example?.preview?.width
+  return width ? { '--a1-web-example-preview-width': width } : undefined
+}
+
 function normalizePropTables(component) {
+  const generatedAlias = GENERATED_PROP_ALIASES[component.id]
+  const generatedEntry = GENERATED_PROP_TABLES[component.id] ?? GENERATED_PROP_TABLES[generatedAlias]
+  if (generatedEntry?.length) {
+    return generatedEntry.map((table, index) => ({
+      ...table,
+      title: generatedAlias && index === 0 ? component.title : table.title,
+    }))
+  }
+
   const entry = COMPONENT_PROPS[component.id]
   if (!entry) return [{ title: null, rows: FALLBACK_PROP_ROWS }]
   // Multi-table format: array of { title, rows }
   if (entry[0]?.rows !== undefined) return entry
   // Single-table format: flat row array — wrap with component title
   return [{ title: component.title, rows: entry }]
+}
+
+const BUTTON_KEYBOARD_ROWS = [
+  { id: 'tab', key: 'Tab', expected: 'Moves focus to the next enabled Button in DOM order.', status: 'Required' },
+  { id: 'shift-tab', key: 'Shift + Tab', expected: 'Moves focus to the previous enabled focusable control.', status: 'Required' },
+  { id: 'enter', key: 'Enter', expected: 'Activates a native button or link button once.', status: 'Required' },
+  { id: 'space', key: 'Space', expected: 'Activates a native button once on keyup; page should not scroll.', status: 'Required' },
+  { id: 'escape', key: 'Escape', expected: 'No Button behavior by itself; parent overlays may handle dismissal.', status: 'Contextual' },
+  { id: 'loading', key: 'Loading state', expected: 'Button becomes inert, exposes aria-busy, and prevents duplicate activation.', status: 'Required' },
+]
+
+const BUTTON_WCAG_ROWS = [
+  { id: '111', guideline: '1.1.1 Non-text content', level: 'A', evidence: 'Decorative icons are hidden or paired with a visible text label. Icon-only use belongs to IconButton with an accessible label.' },
+  { id: '141', guideline: '1.4.1 Use of color', level: 'A', evidence: 'Intent variants are not enough on their own; destructive/success actions need meaningful text.' },
+  { id: '143', guideline: '1.4.3 Contrast minimum', level: 'AA', evidence: 'Text variants target at least 4.5:1 against their rendered surface.' },
+  { id: '1411', guideline: '1.4.11 Non-text contrast', level: 'AA', evidence: 'Borders, focus rings, and spinner affordances target at least 3:1 against adjacent colors.' },
+  { id: '211', guideline: '2.1.1 Keyboard', level: 'A', evidence: 'Native button and anchor semantics preserve keyboard activation without custom handlers.' },
+  { id: '243', guideline: '2.4.3 Focus order', level: 'A', evidence: 'Buttons follow DOM order; full-width and icon variants do not change focus sequence.' },
+  { id: '247', guideline: '2.4.7 Focus visible', level: 'AA', evidence: 'Focus-visible ring remains present across variants, sizes, and inverse surfaces.' },
+  { id: '2411', guideline: '2.4.11 Focus appearance', level: 'AA', evidence: 'Focus indicator area, thickness, and contrast are tested as part of the release gate.' },
+  { id: '253', guideline: '2.5.3 Label in name', level: 'A', evidence: 'Visible label text is included in the accessible name.' },
+  { id: '255', guideline: '2.5.5 Target size', level: 'AAA / advisory', evidence: 'Generated target-size rows record the minimum visual block size for each Button size. Small and medium require spacing, equivalent-target, or inline-layout justification; large meets 44 px by token.' },
+  { id: '412', guideline: '4.1.2 Name, role, value', level: 'A', evidence: 'Button renders native role and state; loading exposes aria-busy and inert behavior.' },
+]
+
+const BUTTON_TEST_ROWS = [
+  { id: 'axe', area: 'Automated axe', coverage: 'React stories, page preview, inverse surface', owner: 'CI / changed component run', result: 'No violations expected' },
+  { id: 'contrast', area: 'Token contrast', coverage: 'All variants, disabled, focus, inverse', owner: 'Design system audit', result: 'Ratios recorded before release' },
+  { id: 'keyboard', area: 'Keyboard manual', coverage: 'Tab, Shift+Tab, Enter, Space, loading, disabled', owner: 'Reviewer', result: 'Pass required' },
+  { id: 'screen-reader', area: 'Screen reader smoke', coverage: 'VoiceOver Safari, NVDA Firefox, JAWS Chrome', owner: 'Reviewer', result: 'Name, role, busy, disabled announced' },
+  { id: 'zoom', area: 'Zoom and reflow', coverage: '200% and 400%, xs to xl', owner: 'Reviewer', result: 'No clipped labels or hidden focus' },
+  { id: 'motion', area: 'Reduced motion', coverage: 'Spinner and state transitions', owner: 'Reviewer', result: 'No essential info conveyed by motion alone' },
+]
+
+const BUTTON_CONTRAST_SPECS = [
+  {
+    id: 'primary',
+    surface: 'Primary',
+    foreground: 'Primary foreground',
+    background: 'Primary background',
+    foregroundToken: 'component-button-primary-foreground',
+    backgroundToken: 'component-button-primary-background',
+  },
+  {
+    id: 'secondary',
+    surface: 'Secondary',
+    foreground: 'Secondary foreground',
+    background: 'Secondary background',
+    foregroundToken: 'component-button-secondary-foreground',
+    backgroundToken: 'component-button-secondary-background',
+  },
+  {
+    id: 'tertiary',
+    surface: 'Tertiary',
+    foreground: 'Tertiary foreground',
+    background: 'Tertiary background',
+    foregroundToken: 'component-button-tertiary-foreground',
+    backgroundToken: 'component-button-tertiary-background',
+  },
+  {
+    id: 'destructive',
+    surface: 'Destructive',
+    foreground: 'Error foreground',
+    background: 'Error background',
+    foregroundToken: 'semantic-color-status-error-foreground',
+    backgroundToken: 'semantic-color-status-error-background',
+  },
+  {
+    id: 'success',
+    surface: 'Success',
+    foreground: 'Success foreground',
+    background: 'Success background',
+    foregroundToken: 'semantic-color-status-success-foreground',
+    backgroundToken: 'semantic-color-status-success-background',
+  },
+]
+
+const BUTTON_TARGET_SIZE_SPECS = [
+  {
+    id: 'small',
+    size: 'Small',
+    tokenName: '--component-button-small-height',
+    token: 'component-button-small-height',
+    usage: 'Dense toolbars, compact tables, and repeated low-risk actions.',
+  },
+  {
+    id: 'medium',
+    size: 'Medium',
+    tokenName: '--component-button-min-height',
+    token: 'component-button-min-height',
+    usage: 'Default application actions.',
+  },
+  {
+    id: 'large',
+    size: 'Large',
+    tokenName: '--component-button-large-height',
+    token: 'component-button-large-height',
+    usage: 'Primary calls to action and touch-forward layouts.',
+  },
+]
+
+const FORM_COMPONENT_IDS = new Set([
+  'text-field',
+  'search-field',
+  'number-field',
+  'date-field',
+  'time-field',
+  'phone-field',
+  'zip-field',
+  'credit-card-field',
+  'textarea',
+  'select',
+  'autocomplete',
+  'checkbox-group',
+  'radio-group',
+  'choice-group',
+  'fieldset',
+  'field-row',
+  'inline-editable',
+])
+
+const NAVIGATION_COMPONENT_IDS = new Set([
+  'breadcrumb',
+  'side-nav',
+  'top-header',
+  'bottom-drawer',
+  'page-nav',
+  'tree-menu',
+  'tabs',
+  'pagination',
+  'calendar',
+  'link',
+])
+
+const OVERLAY_COMPONENT_IDS = new Set(['dialog', 'menu', 'context-menu', 'bottom-sheet'])
+
+const INTERACTIVE_COMPONENT_IDS = new Set([
+  'button',
+  'icon-button',
+  'switch',
+  'segmented-control',
+  'slider',
+  'toolbar',
+  'sticky-actions',
+  'accordion',
+  'tabs',
+  'link',
+  'data-table',
+  'calendar',
+  'canvas',
+  'node',
+  ...FORM_COMPONENT_IDS,
+  ...NAVIGATION_COMPONENT_IDS,
+  ...OVERLAY_COMPONENT_IDS,
+])
+
+const TARGET_SIZE_TOKEN_SPECS = {
+  'icon-button': [
+    { id: 'default', size: 'Default', tokenName: '--component-icon-button-size', token: 'component-icon-button-size', usage: 'Icon-only action target.' },
+  ],
+  switch: [
+    { id: 'compact-track', size: 'Compact track', tokenName: '--component-switch-compact-track-height', token: 'component-switch-compact-track-height', usage: 'Compact switch visual track; row padding and label area must supply the full target.' },
+    { id: 'default-track', size: 'Default track', tokenName: '--component-switch-track-height', token: 'component-switch-track-height', usage: 'Default switch visual track; row padding and label area must supply the full target.' },
+    { id: 'comfortable-track', size: 'Comfortable track', tokenName: '--component-switch-comfortable-track-height', token: 'component-switch-comfortable-track-height', usage: 'Comfortable switch visual track; row padding and label area must supply the full target.' },
+  ],
+  accordion: [
+    { id: 'small', size: 'Small trigger', tokenName: '--component-accordion-trigger-height-sm', token: 'component-accordion-trigger-height-sm', usage: 'Compact disclosure trigger.' },
+    { id: 'medium', size: 'Medium trigger', tokenName: '--component-accordion-trigger-height-md', token: 'component-accordion-trigger-height-md', usage: 'Default disclosure trigger.' },
+    { id: 'large', size: 'Large trigger', tokenName: '--component-accordion-trigger-height-lg', token: 'component-accordion-trigger-height-lg', usage: 'Touch-forward disclosure trigger.' },
+  ],
+  pagination: [
+    { id: 'small', size: 'Small item', tokenName: '--component-pagination-item-size-sm', token: 'component-pagination-item-size-sm', usage: 'Dense pagination item.' },
+    { id: 'default', size: 'Default item', tokenName: '--component-pagination-item-size', token: 'component-pagination-item-size', usage: 'Default pagination item.' },
+  ],
+  'side-nav': [
+    { id: 'item', size: 'Navigation item', tokenName: '--component-side-nav-item-height', token: 'component-side-nav-item-height', usage: 'Nested side navigation item.' },
+  ],
+  'tree-menu': [
+    { id: 'item', size: 'Tree item', tokenName: '--component-tree-menu-item-height', token: 'component-tree-menu-item-height', usage: 'Nested tree menu item.' },
+  ],
+}
+
+for (const id of ['text-field', 'search-field', 'number-field', 'date-field', 'time-field', 'phone-field', 'zip-field', 'credit-card-field', 'select', 'autocomplete']) {
+  TARGET_SIZE_TOKEN_SPECS[id] = [
+    { id: 'compact', size: 'Compact field', tokenName: '--component-field-compact-height', token: 'component-field-compact-height', usage: 'Dense forms, filters, and compact editor controls.' },
+    { id: 'default', size: 'Default field', tokenName: '--component-field-default-height', token: 'component-field-default-height', usage: 'Default form control target.' },
+    { id: 'comfortable', size: 'Comfortable field', tokenName: '--component-field-comfortable-height', token: 'component-field-comfortable-height', usage: 'Touch-forward and spacious form control target.' },
+  ]
+}
+
+function componentA11yKind(component) {
+  if (FORM_COMPONENT_IDS.has(component.id)) return 'Input'
+  if (NAVIGATION_COMPONENT_IDS.has(component.id)) return 'Navigation'
+  if (OVERLAY_COMPONENT_IDS.has(component.id)) return 'Overlay'
+  if (INTERACTIVE_COMPONENT_IDS.has(component.id)) return 'Interactive'
+  return 'Content'
+}
+
+function componentRequiresKeyboard(component) {
+  return INTERACTIVE_COMPONENT_IDS.has(component.id)
+}
+
+function componentScreenReaderExpectations(component) {
+  if (FORM_COMPONENT_IDS.has(component.id)) {
+    return [
+      'Expose a programmatic label, description, validation state, and error message relationship.',
+      'Keep required, disabled, read-only, invalid, and busy state announcements aligned with the visual state.',
+      'Do not use placeholder text as the only label or instruction.',
+      'Group related controls with fieldset semantics where the user needs shared context.',
+    ]
+  }
+
+  if (OVERLAY_COMPONENT_IDS.has(component.id)) {
+    return [
+      'Expose the overlay name and role, and keep focus inside modal overlays until dismissed.',
+      'Return focus to the trigger when the overlay closes.',
+      'Make dismissal behavior available by keyboard and pointer without trapping users.',
+      'Ensure portaled content remains correctly ordered for assistive technology.',
+    ]
+  }
+
+  if (NAVIGATION_COMPONENT_IDS.has(component.id)) {
+    return [
+      'Expose navigation landmarks or list semantics when the component represents a navigation region.',
+      'Announce the current item with aria-current or an equivalent selected state.',
+      'Keep visible labels in the accessible names for every link or command.',
+      'Preserve logical DOM order across responsive layouts and overflow menus.',
+    ]
+  }
+
+  if (INTERACTIVE_COMPONENT_IDS.has(component.id)) {
+    return [
+      'Expose a clear accessible name, role, and state for every interactive part.',
+      'Keep disabled, selected, expanded, pressed, and busy states programmatically available.',
+      'Use native elements where possible before adding custom keyboard behavior.',
+      'Do not rely on icon shape, color, or position as the only state indicator.',
+    ]
+  }
+
+  return [
+    'Preserve semantic HTML so assistive technology can understand the content structure.',
+    'Keep text content readable at zoom and across responsive breakpoints.',
+    'Do not convey meaning with color, spacing, or decoration alone.',
+    'Ensure any nested interactive content follows the owning component contract.',
+  ]
+}
+
+function componentKeyboardRows(component) {
+  if (!componentRequiresKeyboard(component)) {
+    return [
+      { id: 'read', key: 'Reading order', expected: 'Content follows DOM order and remains understandable without pointer interaction.', status: 'Required' },
+      { id: 'skip', key: 'Tab', expected: 'No focus stop is added unless the component contains an interactive child.', status: 'Required' },
+    ]
+  }
+
+  const rows = [
+    { id: 'tab', key: 'Tab', expected: 'Moves focus to the next enabled interactive element in DOM order.', status: 'Required' },
+    { id: 'shift-tab', key: 'Shift + Tab', expected: 'Moves focus to the previous enabled interactive element.', status: 'Required' },
+    { id: 'enter', key: 'Enter', expected: 'Activates the focused action or confirms the focused control where applicable.', status: 'Required' },
+    { id: 'space', key: 'Space', expected: 'Activates button-like controls, toggles switches, or selects options without scrolling the page.', status: 'Required' },
+  ]
+
+  if (['accordion', 'tabs', 'segmented-control', 'radio-group', 'slider', 'menu', 'context-menu', 'tree-menu', 'side-nav', 'data-table', 'calendar'].includes(component.id)) {
+    rows.push({ id: 'arrows', key: 'Arrow keys', expected: 'Moves within the composite control according to the component pattern.', status: 'Required' })
+  }
+
+  if (OVERLAY_COMPONENT_IDS.has(component.id) || ['menu', 'context-menu', 'bottom-sheet'].includes(component.id)) {
+    rows.push({ id: 'escape', key: 'Escape', expected: 'Dismisses the active overlay and returns focus to the trigger.', status: 'Required' })
+  }
+
+  if (component.id === 'slider') {
+    rows.push({ id: 'home-end', key: 'Home / End', expected: 'Moves to the minimum or maximum value.', status: 'Required' })
+  }
+
+  return rows
+}
+
+function componentWcagRows(component) {
+  const rows = [
+    { id: '141', guideline: '1.4.1 Use of color', level: 'A', evidence: 'State and meaning must not rely on color alone.' },
+    { id: '143', guideline: '1.4.3 Contrast minimum', level: 'AA', evidence: 'Text and icon labels must meet contrast against their active surface.' },
+    { id: '1411', guideline: '1.4.11 Non-text contrast', level: 'AA', evidence: 'Focus indicators, boundaries, controls, and state marks must meet non-text contrast.' },
+    { id: '144', guideline: '1.4.4 Resize text', level: 'AA', evidence: 'Content must remain usable at 200% zoom without clipping or overlap.' },
+  ]
+
+  if (componentRequiresKeyboard(component)) {
+    rows.push(
+      { id: '211', guideline: '2.1.1 Keyboard', level: 'A', evidence: 'Every interactive operation must be available from the keyboard.' },
+      { id: '243', guideline: '2.4.3 Focus order', level: 'A', evidence: 'Focus follows the visual and DOM task order.' },
+      { id: '247', guideline: '2.4.7 Focus visible', level: 'AA', evidence: 'Focus remains visible in every state, theme, and surface.' },
+      { id: '2411', guideline: '2.4.11 Focus appearance', level: 'AA', evidence: 'Focus indicator contrast and area are verified for the active token set.' },
+      { id: '258', guideline: '2.5.8 Target size', level: 'AA', evidence: 'Interactive targets meet 24 px or document a valid exception.' },
+      { id: '412', guideline: '4.1.2 Name, role, value', level: 'A', evidence: 'Name, role, value, and state are exposed and updated programmatically.' },
+    )
+  }
+
+  if (FORM_COMPONENT_IDS.has(component.id)) {
+    rows.push(
+      { id: '131', guideline: '1.3.1 Info and relationships', level: 'A', evidence: 'Labels, groups, hints, and errors are programmatically related.' },
+      { id: '332', guideline: '3.3.2 Labels or instructions', level: 'A', evidence: 'Required inputs and format requirements are visible and accessible.' },
+      { id: '333', guideline: '3.3.3 Error suggestion', level: 'AA', evidence: 'Validation explains how to recover when possible.' },
+    )
+  }
+
+  if (NAVIGATION_COMPONENT_IDS.has(component.id)) {
+    rows.push({ id: '244', guideline: '2.4.4 Link purpose', level: 'A', evidence: 'Each destination or command is clear from its label and context.' })
+  }
+
+  return rows
+}
+
+function componentTestRows(component) {
+  const rows = [
+    { id: 'axe', area: 'Automated axe', coverage: `${component.title} stories and component page preview`, owner: 'CI / changed component run', result: 'No violations expected' },
+    { id: 'contrast', area: 'Token contrast', coverage: 'Active theme, color mode, focus indicator, text and action colors', owner: 'Design system audit', result: 'Ratios reviewed before release' },
+    { id: 'zoom', area: 'Zoom and reflow', coverage: '200% and 400%, xs to xl', owner: 'Reviewer', result: 'No clipped labels, controls, or focus indicators' },
+  ]
+
+  if (componentRequiresKeyboard(component)) {
+    rows.push(
+      { id: 'keyboard', area: 'Keyboard manual', coverage: 'Tab order, activation, escape behavior, composite navigation', owner: 'Reviewer', result: 'Pass required' },
+      { id: 'screen-reader', area: 'Screen reader smoke', coverage: 'VoiceOver Safari, NVDA Firefox, JAWS Chrome where practical', owner: 'Reviewer', result: 'Name, role, value, and state announced correctly' },
+      { id: 'target', area: 'Target size', coverage: 'Default, compact, dense, and responsive variants', owner: 'Reviewer', result: '24 px AA minimum or documented exception' },
+    )
+  }
+
+  return rows
+}
+
+function componentChecklistItems(component) {
+  const items = [
+    `${component.title} works in base, a1-light, accessible, heritage, dark, and light modes.`,
+    'Visible focus is present and not clipped by parent overflow.',
+    'Meaning does not depend on color alone.',
+    'Text remains readable and non-overlapping at supported breakpoints.',
+  ]
+
+  if (componentRequiresKeyboard(component)) {
+    items.push('Keyboard operation matches the documented component pattern.')
+    items.push('Pointer-only behavior has a keyboard equivalent.')
+  }
+
+  if (FORM_COMPONENT_IDS.has(component.id)) {
+    items.push('Label, hint, required, invalid, and error relationships are programmatic.')
+  }
+
+  if (OVERLAY_COMPONENT_IDS.has(component.id)) {
+    items.push('Focus moves into the overlay, remains contained where modal, and returns to the trigger.')
+  }
+
+  if (NAVIGATION_COMPONENT_IDS.has(component.id)) {
+    items.push('Current page, selected item, and expanded state are exposed without relying on visual styling alone.')
+  }
+
+  return items
+}
+
+function parseCssColor(value) {
+  const clean = String(value || '').trim()
+  if (!clean) throw new Error('Missing color value')
+  if (clean.startsWith('#')) {
+    const hex = clean.slice(1)
+    if (/^[0-9a-f]{3}$/i.test(hex)) {
+      return hex.split('').map((part) => parseInt(`${part}${part}`, 16))
+    }
+    if (/^[0-9a-f]{6}$/i.test(hex)) {
+      return [0, 2, 4].map((index) => parseInt(hex.slice(index, index + 2), 16))
+    }
+  }
+
+  const rgbMatch = clean.match(/^rgba?\((.+)\)$/i)
+  if (rgbMatch) {
+    const parts = rgbMatch[1]
+      .replaceAll(',', ' ')
+      .replace(/\s*\/\s*/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+    return parts.slice(0, 3).map((part) => {
+      if (part.endsWith('%')) return Math.round((Number(part.slice(0, -1)) / 100) * 255)
+      return Number(part)
+    })
+  }
+
+  const srgbMatch = clean.match(/^color\(srgb\s+(.+)\)$/i)
+  if (srgbMatch) {
+    return srgbMatch[1]
+      .replace(/\s*\/\s*[\d.]+%?$/, '')
+      .split(/\s+/)
+      .slice(0, 3)
+      .map((part) => Math.round(Number(part) * 255))
+  }
+
+  throw new Error(`Unsupported color value: ${clean}`)
+}
+
+function rgbToHex(rgb) {
+  return `#${rgb.map((value) => Math.round(value).toString(16).padStart(2, '0')).join('')}`
+}
+
+function blendRgb(foreground, background, alpha) {
+  return foreground.map((value, index) => value * alpha + background[index] * (1 - alpha))
+}
+
+function channelToLinear(value) {
+  const normalized = value / 255
+  return normalized <= 0.03928
+    ? normalized / 12.92
+    : ((normalized + 0.055) / 1.055) ** 2.4
+}
+
+function colorLuminance(rgb) {
+  const [r, g, b] = rgb.map(channelToLinear)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrastRatio(foreground, background) {
+  const fg = colorLuminance(foreground)
+  const bg = colorLuminance(background)
+  const lighter = Math.max(fg, bg)
+  const darker = Math.min(fg, bg)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function ratioLabel(value) {
+  return `${value.toFixed(2)}:1`
+}
+
+function textContrastStatus(value, disabled = false) {
+  if (disabled) return 'Exempt'
+  if (value >= 7) return 'Pass AA / AAA'
+  if (value >= 4.5) return 'Pass AA'
+  return 'Needs review'
+}
+
+function nonTextContrastStatus(value) {
+  return value >= 3 ? 'Pass 2.4.11' : 'Needs review'
+}
+
+function targetStatus(value, minimum) {
+  return value >= minimum ? 'Pass' : 'Needs exception'
+}
+
+function pxLabel(value) {
+  return `${Number(value.toFixed(2))} px`
+}
+
+function resolveTokenColor(measurer, tokenName) {
+  measurer.style.color = `var(--${tokenName})`
+  return parseCssColor(getComputedStyle(measurer).color)
+}
+
+function resolveTokenLengthPx(measurer, tokenName) {
+  measurer.style.inlineSize = `var(--${tokenName})`
+  const px = Number.parseFloat(getComputedStyle(measurer).inlineSize)
+  if (!Number.isFinite(px)) throw new Error(`Could not resolve --${tokenName}`)
+  return px
+}
+
+function liveButtonContrastRows() {
+  const measurer = document.createElement('span')
+  measurer.style.position = 'fixed'
+  measurer.style.inset = '0 auto auto 0'
+  measurer.style.visibility = 'hidden'
+  measurer.style.pointerEvents = 'none'
+  document.body.append(measurer)
+
+  try {
+    const page = resolveTokenColor(measurer, 'semantic-color-surface-page')
+    const disabledOpacity = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--component-button-disabled-opacity')) || 0.55
+    const rows = BUTTON_CONTRAST_SPECS.map((spec) => {
+      const foreground = resolveTokenColor(measurer, spec.foregroundToken)
+      const background = resolveTokenColor(measurer, spec.backgroundToken)
+      const ratio = contrastRatio(foreground, background)
+      return {
+        id: spec.id,
+        surface: spec.surface,
+        foreground: spec.foreground,
+        background: spec.background,
+        foregroundToken: `var(--${spec.foregroundToken})`,
+        backgroundToken: `var(--${spec.backgroundToken})`,
+        ratio: ratioLabel(ratio),
+        wcag: textContrastStatus(ratio),
+        notes: `Computed from ${rgbToHex(foreground)} over ${rgbToHex(background)} in the current theme and mode.`,
+      }
+    })
+
+    const disabledForeground = blendRgb(resolveTokenColor(measurer, 'component-button-primary-foreground'), page, disabledOpacity)
+    const disabledBackground = blendRgb(resolveTokenColor(measurer, 'component-button-primary-background'), page, disabledOpacity)
+    const disabledRatio = contrastRatio(disabledForeground, disabledBackground)
+    rows.push({
+      id: 'disabled',
+      surface: 'Disabled primary',
+      foreground: `Primary foreground at ${Math.round(disabledOpacity * 100)}% opacity`,
+      background: `Primary background at ${Math.round(disabledOpacity * 100)}% opacity`,
+      foregroundToken: rgbToHex(disabledForeground),
+      backgroundToken: rgbToHex(disabledBackground),
+      ratio: ratioLabel(disabledRatio),
+      wcag: textContrastStatus(disabledRatio, true),
+      notes: `Computed from the full primary button composited at disabled opacity over ${rgbToHex(page)} in the current theme and mode.`,
+    })
+
+    const focus = resolveTokenColor(measurer, 'component-button-focus-ring')
+    const focusRatio = contrastRatio(focus, page)
+    rows.push({
+      id: 'focus',
+      surface: 'Focus ring',
+      foreground: 'Shared focus ring',
+      background: 'Page surface',
+      foregroundToken: 'var(--component-button-focus-ring)',
+      backgroundToken: 'var(--semantic-color-surface-page)',
+      ratio: ratioLabel(focusRatio),
+      wcag: nonTextContrastStatus(focusRatio),
+      notes: `Computed from ${rgbToHex(focus)} over ${rgbToHex(page)} in the current theme and mode.`,
+    })
+
+    return rows
+  } finally {
+    measurer.remove()
+  }
+}
+
+function liveButtonTargetSizeRows() {
+  const measurer = document.createElement('span')
+  measurer.style.position = 'fixed'
+  measurer.style.visibility = 'hidden'
+  measurer.style.pointerEvents = 'none'
+  document.body.append(measurer)
+
+  try {
+    return BUTTON_TARGET_SIZE_SPECS.map((spec) => {
+      const blockSize = resolveTokenLengthPx(measurer, spec.token)
+      const wcag255 = targetStatus(blockSize, 44)
+      return {
+        id: spec.id,
+        size: spec.size,
+        measuredToken: spec.tokenName,
+        minimumBlockSize: pxLabel(blockSize),
+        wcag258: targetStatus(blockSize, 24),
+        wcag255,
+        usage: spec.usage,
+        notes: wcag255 === 'Pass'
+          ? 'Meets the 44 px block-size target before any adjacent spacing is counted; inline size remains content-dependent.'
+          : 'Below the 44 px AAA target by visual block size; use only where spacing, equivalent target, or inline layout exceptions are satisfied.',
+      }
+    })
+  } finally {
+    measurer.remove()
+  }
+}
+
+function resolveLiveButtonReportRows() {
+  if (typeof document === 'undefined' || !document.body) {
+    return { contrastRows: BUTTON_CONTRAST_ROWS, targetSizeRows: BUTTON_TARGET_SIZE_ROWS }
+  }
+
+  try {
+    return {
+      contrastRows: liveButtonContrastRows(),
+      targetSizeRows: liveButtonTargetSizeRows(),
+    }
+  } catch {
+    return { contrastRows: BUTTON_CONTRAST_ROWS, targetSizeRows: BUTTON_TARGET_SIZE_ROWS }
+  }
+}
+
+function useLiveButtonReportRows() {
+  const [rows, setRows] = useState(resolveLiveButtonReportRows)
+
+  useEffect(() => {
+    let frame = null
+    const update = () => {
+      if (frame) cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        frame = null
+        setRows(resolveLiveButtonReportRows())
+      })
+    }
+
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme', 'data-color-mode'] })
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style', 'data-theme', 'data-color-mode'] })
+    window.addEventListener('storage', update)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('storage', update)
+    }
+  }, [])
+
+  return rows
+}
+
+function liveComponentContrastRows(component) {
+  const measurer = document.createElement('span')
+  measurer.style.position = 'fixed'
+  measurer.style.inset = '0 auto auto 0'
+  measurer.style.visibility = 'hidden'
+  measurer.style.pointerEvents = 'none'
+  document.body.append(measurer)
+
+  try {
+    const page = resolveTokenColor(measurer, 'semantic-color-surface-page')
+    const rows = []
+
+    const addTextRow = ({ id, surface, foreground, background, foregroundToken, backgroundToken = 'semantic-color-surface-page', status = textContrastStatus }) => {
+      const fg = resolveTokenColor(measurer, foregroundToken)
+      const bg = resolveTokenColor(measurer, backgroundToken)
+      const ratio = contrastRatio(fg, bg)
+      rows.push({
+        id,
+        surface,
+        foreground,
+        background,
+        foregroundToken: `var(--${foregroundToken})`,
+        backgroundToken: `var(--${backgroundToken})`,
+        ratio: ratioLabel(ratio),
+        wcag: status(ratio),
+        notes: `Computed from ${rgbToHex(fg)} over ${rgbToHex(bg)} in the current theme and mode.`,
+      })
+    }
+
+    addTextRow({
+      id: 'text-default',
+      surface: 'Default text',
+      foreground: 'Text default',
+      background: 'Page surface',
+      foregroundToken: 'semantic-color-text-default',
+    })
+    addTextRow({
+      id: 'text-muted',
+      surface: 'Muted text',
+      foreground: 'Text muted',
+      background: 'Page surface',
+      foregroundToken: 'semantic-color-text-muted',
+    })
+
+    if (componentRequiresKeyboard(component) || NAVIGATION_COMPONENT_IDS.has(component.id)) {
+      addTextRow({
+        id: 'action',
+        surface: 'Action color',
+        foreground: 'Action background',
+        background: 'Page surface',
+        foregroundToken: 'semantic-color-action-background',
+      })
+    }
+
+    if (FORM_COMPONENT_IDS.has(component.id)) {
+      addTextRow({
+        id: 'error-text',
+        surface: 'Error text',
+        foreground: 'Error text',
+        background: 'Page surface',
+        foregroundToken: 'semantic-color-status-error-text',
+      })
+    }
+
+    const focusToken = FORM_COMPONENT_IDS.has(component.id)
+      ? 'component-field-focus-ring-color'
+      : 'component-button-focus-ring'
+    const focus = resolveTokenColor(measurer, focusToken)
+    const focusRatio = contrastRatio(focus, page)
+    rows.push({
+      id: 'focus',
+      surface: 'Focus indicator',
+      foreground: FORM_COMPONENT_IDS.has(component.id) ? 'Field focus ring' : 'Shared focus ring',
+      background: 'Page surface',
+      foregroundToken: `var(--${focusToken})`,
+      backgroundToken: 'var(--semantic-color-surface-page)',
+      ratio: ratioLabel(focusRatio),
+      wcag: nonTextContrastStatus(focusRatio),
+      notes: `Computed from ${rgbToHex(focus)} over ${rgbToHex(page)} in the current theme and mode.`,
+    })
+
+    return rows
+  } finally {
+    measurer.remove()
+  }
+}
+
+function liveComponentTargetSizeRows(component) {
+  const specs = TARGET_SIZE_TOKEN_SPECS[component.id] || []
+  if (!specs.length) return []
+
+  const measurer = document.createElement('span')
+  measurer.style.position = 'fixed'
+  measurer.style.visibility = 'hidden'
+  measurer.style.pointerEvents = 'none'
+  document.body.append(measurer)
+
+  try {
+    return specs.map((spec) => {
+      const blockSize = resolveTokenLengthPx(measurer, spec.token)
+      const wcag255 = targetStatus(blockSize, 44)
+      return {
+        id: spec.id,
+        size: spec.size,
+        measuredToken: spec.tokenName,
+        minimumBlockSize: pxLabel(blockSize),
+        wcag258: targetStatus(blockSize, 24),
+        wcag255,
+        usage: spec.usage,
+        notes: wcag255 === 'Pass'
+          ? 'Meets the 44 px block-size target before adjacent spacing is counted.'
+          : 'Below the 44 px AAA target by visual block size; verify spacing, equivalent-target, or inline-layout exceptions.',
+      }
+    })
+  } finally {
+    measurer.remove()
+  }
+}
+
+function resolveLiveComponentReportRows(component) {
+  if (typeof document === 'undefined' || !document.body) {
+    return { contrastRows: [], targetSizeRows: [] }
+  }
+
+  try {
+    return {
+      contrastRows: liveComponentContrastRows(component),
+      targetSizeRows: liveComponentTargetSizeRows(component),
+    }
+  } catch {
+    return { contrastRows: [], targetSizeRows: [] }
+  }
+}
+
+function useLiveComponentReportRows(component) {
+  const [rows, setRows] = useState(() => resolveLiveComponentReportRows(component))
+
+  useEffect(() => {
+    let frame = null
+    const update = () => {
+      if (frame) cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        frame = null
+        setRows(resolveLiveComponentReportRows(component))
+      })
+    }
+
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme', 'data-color-mode'] })
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style', 'data-theme', 'data-color-mode'] })
+    window.addEventListener('storage', update)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('storage', update)
+    }
+  }, [component])
+
+  return rows
+}
+
+function ContrastSample({ foreground, background, foregroundToken, backgroundToken }) {
+  return (
+    <span
+      aria-label={`${foreground} over ${background}`}
+      title={`${foreground} over ${background}`}
+      style={{
+        display: 'inline-grid',
+        placeItems: 'center',
+        inlineSize: 'var(--base-spacing-40)',
+        blockSize: 'var(--base-spacing-40)',
+        borderRadius: 'var(--base-radius-sm)',
+        border: '1px solid var(--semantic-color-border-subtle)',
+        background: backgroundToken,
+        color: foregroundToken,
+        fontFamily: 'var(--semantic-font-family-heading)',
+        fontSize: 'var(--semantic-font-size-heading-sm)',
+        fontWeight: 'var(--base-font-weight-bold)',
+        lineHeight: 1,
+      }}
+    >
+      A
+    </span>
+  )
+}
+
+function ComponentAccessibilityReport({ component }) {
+  const { contrastRows: liveContrastRows, targetSizeRows } = useLiveComponentReportRows(component)
+  const contrastRows = liveContrastRows.map((row) => ({
+    ...row,
+    sample: (
+      <ContrastSample
+        foreground={row.foreground}
+        background={row.background}
+        foregroundToken={row.foregroundToken}
+        backgroundToken={row.backgroundToken}
+      />
+    ),
+  }))
+  const kind = componentA11yKind(component)
+  const keyboardRows = componentKeyboardRows(component)
+  const wcagRows = componentWcagRows(component)
+  const testRows = componentTestRows(component)
+  const checklistItems = componentChecklistItems(component)
+  const expectations = componentScreenReaderExpectations(component)
+
+  return (
+    <Stack gap="xl">
+      <Stack direction="column" gap="sm">
+        <Stack direction={{ xs: 'column', md: 'row' }} justify="between" align="start" gap="sm">
+          <Stack direction="column" gap="xs">
+            <Heading as="h3" size="md">{component.title} accessibility report</Heading>
+            <Paragraph size="sm" color="muted">
+              Report scaffold for {component.title}, covering active-theme token checks, keyboard behavior, assistive technology expectations, WCAG mapping, manual verification, and release gates.
+            </Paragraph>
+          </Stack>
+          <MessageBadge status={componentRequiresKeyboard(component) ? 'info' : 'neutral'} icon={componentRequiresKeyboard(component) ? 'keyboard' : 'article'}>
+            {kind}
+          </MessageBadge>
+        </Stack>
+        <Banner status="info" variant="inline">
+          Contrast and known target-size values resolve from the active theme and color mode. Component-specific automation can replace these scaffold rows as each report matures.
+        </Banner>
+      </Stack>
+
+      <Grid columns={{ xs: 1, md: 3 }} gap="sm">
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status="info" icon="contrast">Live tokens</MessageBadge>
+            <Heading as="h4" size="xs">Active theme</Heading>
+            <Paragraph size="sm" color="muted">Contrast rows recalculate from the current CSS cascade when theme or mode changes.</Paragraph>
+          </Stack>
+        </Card>
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status={componentRequiresKeyboard(component) ? 'warn' : 'neutral'} icon={componentRequiresKeyboard(component) ? 'keyboard' : 'notes'}>
+              {componentRequiresKeyboard(component) ? 'Manual gate' : 'Semantic gate'}
+            </MessageBadge>
+            <Heading as="h4" size="xs">{componentRequiresKeyboard(component) ? 'Interaction' : 'Structure'}</Heading>
+            <Paragraph size="sm" color="muted">
+              {componentRequiresKeyboard(component)
+                ? 'Keyboard and screen reader behavior still need manual verification.'
+                : 'Semantic structure and reading order remain the primary checks.'}
+            </Paragraph>
+          </Stack>
+        </Card>
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status={targetSizeRows.length ? 'info' : 'neutral'} icon="touch_app">
+              {targetSizeRows.length ? 'Measured tokens' : 'Manual target'}
+            </MessageBadge>
+            <Heading as="h4" size="xs">Target size</Heading>
+            <Paragraph size="sm" color="muted">
+              {targetSizeRows.length
+                ? 'Known tokenized control heights are included below.'
+                : 'No direct target-size token is mapped yet; measure rendered controls during review.'}
+            </Paragraph>
+          </Stack>
+        </Card>
+      </Grid>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Color contrast</Heading>
+        <DataTable
+          caption={`${component.title} color contrast report`}
+          columns={[
+            { key: 'sample', label: 'Sample', width: '72px' },
+            { key: 'surface', label: 'Surface', sortable: true, width: '150px' },
+            { key: 'foreground', label: 'Foreground', width: '180px' },
+            { key: 'background', label: 'Background', width: '180px' },
+            { key: 'ratio', label: 'Ratio', width: '90px' },
+            { key: 'wcag', label: 'WCAG', width: '130px' },
+            { key: 'notes', label: 'Notes' },
+          ]}
+          rows={contrastRows}
+          zebra
+          scrollable
+          emptyTitle="No contrast rows"
+          emptyDescription="This report could not resolve the active token values."
+          emptyIcon="contrast"
+        />
+      </Stack>
+
+      {targetSizeRows.length > 0 && (
+        <Stack gap="sm">
+          <Heading as="h3" size="sm">Target size</Heading>
+          <Paragraph size="sm" color="muted">
+            WCAG 2.5.8 is the AA 24 by 24 CSS pixel minimum. WCAG 2.5.5 is the AAA 44 by 44 CSS pixel target. These rows report known tokenized block-size values; inline size and spacing still need rendered review.
+          </Paragraph>
+          <DataTable
+            caption={`${component.title} target size report`}
+            columns={[
+              { key: 'size', label: 'Size', sortable: true, width: '150px' },
+              { key: 'measuredToken', label: 'Measured token', width: '240px' },
+              { key: 'minimumBlockSize', label: 'Minimum block size', width: '160px' },
+              { key: 'wcag258', label: '2.5.8 AA', width: '130px' },
+              { key: 'wcag255', label: '2.5.5 AAA', width: '150px' },
+              { key: 'usage', label: 'Intended usage' },
+              { key: 'notes', label: 'Notes' },
+            ]}
+            rows={targetSizeRows}
+            zebra
+            scrollable
+          />
+        </Stack>
+      )}
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Keyboard controls</Heading>
+        <DataTable
+          caption={`${component.title} keyboard controls`}
+          columns={[
+            { key: 'key', label: 'Input', width: '140px' },
+            { key: 'expected', label: 'Expected behavior' },
+            { key: 'status', label: 'Status', width: '110px' },
+          ]}
+          rows={keyboardRows}
+          zebra
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Screen reader expectations</Heading>
+        <List icon="record_voice_over" size="sm" color="muted">
+          {expectations.map((item) => <ListItem key={item}>{item}</ListItem>)}
+        </List>
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Relevant WCAG guidelines</Heading>
+        <DataTable
+          caption={`${component.title} WCAG guideline mapping`}
+          columns={[
+            { key: 'guideline', label: 'Guideline', sortable: true, width: '220px' },
+            { key: 'level', label: 'Level', width: '80px' },
+            { key: 'evidence', label: 'Evidence required' },
+          ]}
+          rows={wcagRows}
+          zebra
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Test matrix</Heading>
+        <DataTable
+          caption={`${component.title} accessibility test matrix`}
+          columns={[
+            { key: 'area', label: 'Area', width: '160px' },
+            { key: 'coverage', label: 'Coverage' },
+            { key: 'owner', label: 'Owner', width: '150px' },
+            { key: 'result', label: 'Expected result', width: '170px' },
+          ]}
+          rows={testRows}
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Manual checklist</Heading>
+        <List icon="check_circle" size="sm" color="muted">
+          {checklistItems.map((item) => <ListItem key={item}>{item}</ListItem>)}
+        </List>
+      </Stack>
+    </Stack>
+  )
+}
+
+function ButtonAccessibilityReport() {
+  const { contrastRows: liveContrastRows, targetSizeRows } = useLiveButtonReportRows()
+  const contrastRows = liveContrastRows.map((row) => ({
+    ...row,
+    sample: (
+      <ContrastSample
+        foreground={row.foreground}
+        background={row.background}
+        foregroundToken={row.foregroundToken}
+        backgroundToken={row.backgroundToken}
+      />
+    ),
+  }))
+
+  return (
+    <Stack gap="xl">
+      <Stack direction="column" gap="sm">
+        <Stack direction={{ xs: 'column', md: 'row' }} justify="between" align="start" gap="sm">
+          <Stack direction="column" gap="xs">
+            <Heading as="h3" size="md">Button accessibility report</Heading>
+            <Paragraph size="sm" color="muted">
+              Showcase report for the Button component, covering automated checks, manual verification, keyboard behavior, assistive technology expectations, contrast, WCAG mapping, and release gates.
+            </Paragraph>
+          </Stack>
+          <MessageBadge status="success" icon="verified">Reference format</MessageBadge>
+        </Stack>
+        <Banner status="info" variant="inline">
+          Use this as the target shape for future component accessibility tabs. Contrast and target-size values resolve from the active theme and color mode, with generated default-token values as a build-time fallback.
+        </Banner>
+      </Stack>
+
+      <Grid columns={{ xs: 1, md: 3 }} gap="sm">
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status="success" icon="check_circle">Pass target</MessageBadge>
+            <Heading as="h4" size="xs">Current summary</Heading>
+            <Paragraph size="sm" color="muted">Native semantics, visible focus, keyboard activation, and loading state are covered by the component contract.</Paragraph>
+          </Stack>
+        </Card>
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status="warn" icon="rule">Needs evidence</MessageBadge>
+            <Heading as="h4" size="xs">Theme coverage</Heading>
+            <Paragraph size="sm" color="muted">Contrast ratios must be recorded across base, a1-light, accessible, heritage, inverse, and high-contrast modes.</Paragraph>
+          </Stack>
+        </Card>
+        <Card shadow="xs">
+          <Stack direction="column" gap="xs">
+            <MessageBadge status="info" icon="keyboard">Manual gate</MessageBadge>
+            <Heading as="h4" size="xs">Reviewer pass</Heading>
+            <Paragraph size="sm" color="muted">Keyboard, screen reader, zoom, target size, and reduced-motion checks remain required even when automation passes.</Paragraph>
+          </Stack>
+        </Card>
+      </Grid>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Color contrast</Heading>
+        <DataTable
+          caption="Button color contrast report"
+          columns={[
+            { key: 'sample', label: 'Sample', width: '72px' },
+            { key: 'surface', label: 'Surface', sortable: true, width: '150px' },
+            { key: 'foreground', label: 'Foreground', width: '180px' },
+            { key: 'background', label: 'Background', width: '180px' },
+            { key: 'ratio', label: 'Ratio', width: '90px' },
+            { key: 'wcag', label: 'WCAG', width: '130px' },
+            { key: 'notes', label: 'Notes' },
+          ]}
+          rows={contrastRows}
+          zebra
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Keyboard controls</Heading>
+        <DataTable
+          caption="Button keyboard controls"
+          size="comfortable"
+          columns={[
+            { key: 'key', label: 'Input', width: '140px' },
+            { key: 'expected', label: 'Expected behavior' },
+            { key: 'status', label: 'Status', width: '110px' },
+          ]}
+          rows={BUTTON_KEYBOARD_ROWS}
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Screen reader expectations</Heading>
+        <List icon="record_voice_over" size="sm" color="muted">
+          <ListItem>Accessible name comes from visible button text; icon names must not replace text labels.</ListItem>
+          <ListItem>Native button announces as “button”; link buttons announce as links only when navigation is intended.</ListItem>
+          <ListItem>Disabled native buttons are removed from normal activation; non-button render targets use `aria-disabled` when inert.</ListItem>
+          <ListItem>Loading buttons expose `aria-busy="true"` and prevent duplicate submission.</ListItem>
+          <ListItem>Spinner is decorative and hidden from assistive technology.</ListItem>
+          <ListItem>SplitButton menu actions must each have a clear accessible name and deterministic focus return.</ListItem>
+        </List>
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Target size</Heading>
+        <Paragraph size="sm" color="muted">
+          WCAG 2.5.5 is the AAA 44 by 44 CSS pixel target. WCAG 2.5.8 is the AA 24 by 24 CSS pixel minimum. Button width is content-dependent, so these generated rows report the tokenized minimum block size and flag where reviewer evidence is still required.
+        </Paragraph>
+        <DataTable
+          caption="Button target size report"
+          columns={[
+            { key: 'size', label: 'Size', sortable: true, width: '110px' },
+            { key: 'measuredToken', label: 'Measured token', width: '220px' },
+            { key: 'minimumBlockSize', label: 'Minimum block size', width: '160px' },
+            { key: 'wcag258', label: '2.5.8 AA', width: '130px' },
+            { key: 'wcag255', label: '2.5.5 AAA', width: '150px' },
+            { key: 'usage', label: 'Intended usage' },
+            { key: 'notes', label: 'Notes' },
+          ]}
+          rows={targetSizeRows}
+          zebra
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Relevant WCAG guidelines</Heading>
+        <DataTable
+          caption="Button WCAG guideline mapping"
+          columns={[
+            { key: 'guideline', label: 'Guideline', sortable: true, width: '220px' },
+            { key: 'level', label: 'Level', width: '80px' },
+            { key: 'evidence', label: 'Evidence required' },
+          ]}
+          rows={BUTTON_WCAG_ROWS}
+          zebra
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Test matrix</Heading>
+        <DataTable
+          caption="Button accessibility test matrix"
+          columns={[
+            { key: 'area', label: 'Area', width: '160px' },
+            { key: 'coverage', label: 'Coverage' },
+            { key: 'owner', label: 'Owner', width: '150px' },
+            { key: 'result', label: 'Expected result', width: '170px' },
+          ]}
+          rows={BUTTON_TEST_ROWS}
+          scrollable
+        />
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Manual checklist</Heading>
+        <List icon="check_circle" size="sm" color="muted">
+          <ListItem>Confirm one primary action per decision area; secondary actions are visually and semantically lower priority.</ListItem>
+          <ListItem>Confirm labels are action-oriented, unique in context, and include visible text in the accessible name.</ListItem>
+          <ListItem>Confirm destructive buttons describe the object or outcome, for example “Delete project”.</ListItem>
+          <ListItem>Confirm small buttons appear only where target spacing remains adequate.</ListItem>
+          <ListItem>Confirm focus ring is visible against page, panel, raised, inverse, and image-adjacent surfaces.</ListItem>
+          <ListItem>Confirm loading state is announced and cannot submit twice.</ListItem>
+          <ListItem>Confirm disabled state is not the only way to explain why an action is unavailable.</ListItem>
+        </List>
+      </Stack>
+
+      <Stack gap="sm">
+        <Heading as="h3" size="sm">Implementation notes</Heading>
+        <Code variant="block" wrapping copyCode>{`<Button type="button">Save changes</Button>
+<Button variant="destructive" aria-describedby="delete-help">Delete project</Button>
+<Button loading aria-live="polite">Saving</Button>`}</Code>
+        <Paragraph size="sm" color="muted">
+          Prefer native button semantics for in-page actions and link semantics only for navigation. Avoid icon-only Button usage; use IconButton when the visual label is intentionally absent.
+        </Paragraph>
+      </Stack>
+    </Stack>
+  )
+}
+
+function AccessibilityPanel({ component }) {
+  if (component.id === 'button') return <ButtonAccessibilityReport />
+  return <ComponentAccessibilityReport component={component} />
 }
 
 /* The component configuration controls. Rendered into the PageLayout aside slot
@@ -1663,6 +2853,14 @@ function ConfigurationPanel({
   showHelp,
   onToggleHelp,
 }) {
+  const utilityType = componentUtilityType(component)
+  const setUtilities = (utilities) => {
+    setConfig((current) => ({
+      ...current,
+      utilities: cleanUtilities(utilityType, utilities),
+    }))
+  }
+
   return (
     <div className="a1-web-config-aside__inner">
       <div className="a1-web-config-panel">
@@ -1681,7 +2879,14 @@ function ConfigurationPanel({
             </div>
           )}
           <ConfigHelpContext.Provider value={{ showHelp }}>
-            <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+            <Stack gap="sm">
+              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+              <UtilityControls
+                type={utilityType}
+                utilities={config.utilities}
+                onChange={setUtilities}
+              />
+            </Stack>
           </ConfigHelpContext.Provider>
         </div>
         <div className="a1-web-config-panel__footer">
@@ -1717,8 +2922,7 @@ function ConfigurationPanel({
 function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
   const set = (patch) => setDisplayConfig((current) => ({ ...current, ...patch }))
   return (
-    <div className="a1-web-display-bar">
-      <Toolbar aria-label="Display options">
+    <Toolbar aria-label="Display options">
         <ToolbarMenu
           aria-label="Responsive view"
           label="Responsive view"
@@ -1748,13 +2952,73 @@ function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
           />
         )}
       </Toolbar>
-    </div>
+  )
+}
+
+function ComponentConfigureSurface({
+  component,
+  detail,
+  config,
+  setConfig,
+  displayConfig,
+  setDisplayConfig,
+  viewAs,
+  utilityClass,
+  example,
+}) {
+  const preview = (
+    <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
+      {detail.bareDisplay ? (
+        <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+          <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+        </ContainerQueryPreviewFrame>
+      ) : (
+        <Section
+          align={displayConfig.align}
+          padding={displayConfig.padding}
+          inverse={displayConfig.inverse}
+          gap="lg"
+          borderSize={displayConfig.borderSize}
+          borderStyle={displayConfig.borderStyle}
+          borderVariant={displayConfig.borderVariant}
+          radius={displayConfig.radius}
+        >
+          <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+            <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+          </ContainerQueryPreviewFrame>
+        </Section>
+      )}
+    </ResponsivePreviewFrame>
+  )
+
+  return (
+    <Stack gap="sm">
+      <DisplayToolbar
+        displayConfig={displayConfig}
+        setDisplayConfig={setDisplayConfig}
+        bareDisplay={detail.bareDisplay}
+      />
+      {example?.preview?.width ? (
+        <div className="a1-web-example-preview-scroll">
+          <div className="a1-web-example-preview" style={examplePreviewStyle(example)}>
+            {preview}
+          </div>
+        </div>
+      ) : preview}
+      <Divider lineStyle="dashed" space="lg" />
+      <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
+    </Stack>
   )
 }
 
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const detail = getDetailModule(component.id)
+  const examples = detail.examples ?? []
+  const requestedExampleId = exampleIdFromTab(tab)
+  const isExamplePage = Boolean(requestedExampleId)
+  const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
+  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExampleId ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
   const [viewAs, setViewAs] = useState('react')
@@ -1776,9 +3040,14 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
+  const utilityType = componentUtilityType(component)
+  const utilityClass = utilityClassesFor(utilityType, config.utilities)
+  const selectedExample = examples.find((example) => example.id === selectedExampleId)
+  const activeExample = selectedExample ?? examples[0]
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
+    setSelectedExampleId(requestedExampleId ?? examples[0]?.id ?? null)
     setViewAs('react')
     // Re-apply the per-component display alignment default (center for
     // natural-width components, none for flexible ones) on navigation.
@@ -1786,7 +3055,40 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
 
+  useEffect(() => {
+    if (requestedExampleId && examples.some((example) => example.id === requestedExampleId)) {
+      setSelectedExampleId(requestedExampleId)
+    }
+  }, [examples, requestedExampleId])
+
+  useEffect(() => {
+    if (activeTab !== 'examples' && !isExamplePage) return
+    const example = activeExample
+    if (!example) return
+    setConfig((current) => ({
+      ...current,
+      ...cloneExampleConfig(example.config),
+    }))
+    if (example.display) {
+      setDisplayConfig((current) => ({ ...current, ...example.display }))
+    }
+  }, [activeTab, activeExample, component.id, isExamplePage])
+
+  useEffect(() => {
+    if (activeTab !== tab && !tab?.startsWith(EXAMPLE_TAB_PREFIX)) onTabChange?.(activeTab)
+  }, [activeTab, onTabChange, tab])
+
   function resetConfig() {
+    if (isExamplePage && activeExample) {
+      setConfig((current) => ({
+        ...current,
+        ...cloneExampleConfig(activeExample.config),
+      }))
+      if (activeExample.display) {
+        setDisplayConfig((current) => ({ ...current, ...activeExample.display }))
+      }
+      return
+    }
     setConfig(detail.getDefaultConfig(component, category))
   }
 
@@ -1794,21 +3096,26 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   // The slot is rendered by the app shell only on the Configure tab.
   useLayoutEffect(() => {
     // Re-acquire on resize too: at xs/sm the slot moves into a BottomSheet.
-    const find = () => setAsideNode(tab === 'configure' ? document.getElementById('a1-web-config-aside-slot') : null)
+    const find = () => setAsideNode(activeTab === 'configure' ? document.getElementById('a1-web-config-aside-slot') : null)
     find()
     window.addEventListener('resize', find)
     return () => window.removeEventListener('resize', find)
-  }, [tab, component.id])
+  }, [activeTab, component.id])
 
-  const breadcrumbItems = [
-    { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateBreadcrumb(e, onNavigate, 'components') },
-  ]
-  if (category) {
-    breadcrumbItems.push({ label: category.title, href: getComponentPath(`components-${category.id}`), onClick: (e) => navigateBreadcrumb(e, onNavigate, `components-${category.id}`) })
-  }
-  if (component) {
-    breadcrumbItems.push({ label: component.title })
-  }
+  const breadcrumbItems = isExamplePage && activeExample
+    ? [
+        ...getBreadcrumbItems({ category, component }, onNavigate).map((item, index, items) =>
+          index === items.length - 1
+            ? {
+                href: getComponentPath(`component-${component.id}`),
+                label: component.title,
+                onClick: (event) => navigateBreadcrumb(event, onNavigate, `component-${component.id}`),
+              }
+            : item,
+        ),
+        { label: activeExample.title },
+      ]
+    : getBreadcrumbItems({ category, component }, onNavigate)
 
   return (
     <ComponentDocsShell>
@@ -1831,47 +3138,43 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
           <Breadcrumb items={breadcrumbItems} />
         </Section>
         <Section padding="xs" surface='page' direction="column" gap="xs">
-          <Tabs value={tab} onChange={onTabChange} size="compact">
+          {isExamplePage && activeExample ? (
+            <Stack gap="lg">
+              <Stack gap="xs">
+                <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>{activeExample.title}</Heading>
+                <Paragraph size="sm" color="muted">{activeExample.description}</Paragraph>
+              </Stack>
+              <ComponentConfigureSurface
+                component={component}
+                detail={detail}
+                config={config}
+                setConfig={setConfig}
+                displayConfig={displayConfig}
+                setDisplayConfig={setDisplayConfig}
+                viewAs={viewAs}
+                utilityClass={utilityClass}
+                example={activeExample}
+              />
+            </Stack>
+          ) : (
+            <Tabs value={activeTab} onChange={onTabChange} size="compact">
             <TabList>
               <Tab value="configure">Configure</Tab>
-              <Tab value="overview">Overview</Tab>
-              <Tab value="anatomy">Anatomy</Tab>
               <Tab value="rules">Rules</Tab>
               <Tab value="properties">Properties</Tab>
               <Tab value="accessibility">Accessibility</Tab>
             </TabList>
             <TabPanel value="configure">
-              <Stack gap="sm">
-                <DisplayToolbar
-                  displayConfig={displayConfig}
-                  setDisplayConfig={setDisplayConfig}
-                  bareDisplay={detail.bareDisplay}
-                />
-                <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
-                  {detail.bareDisplay ? (
-                    <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                      <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
-                    </ContainerQueryPreviewFrame>
-                  ) : (
-                    <Section
-                      align={displayConfig.align}
-                      padding={displayConfig.padding}
-                      inverse={displayConfig.inverse}
-                      gap="lg"
-                      borderSize={displayConfig.borderSize}
-                      borderStyle={displayConfig.borderStyle}
-                      borderVariant={displayConfig.borderVariant}
-                      radius={displayConfig.radius}
-                    >
-                      <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                        <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
-                      </ContainerQueryPreviewFrame>
-                    </Section>
-                  )}
-                </ResponsivePreviewFrame>
-                <Divider lineStyle="dashed" space="lg" />
-                <detail.Snippet component={component} config={config} viewAs={viewAs} />
-              </Stack>
+              <ComponentConfigureSurface
+                component={component}
+                detail={detail}
+                config={config}
+                setConfig={setConfig}
+                displayConfig={displayConfig}
+                setDisplayConfig={setDisplayConfig}
+                viewAs={viewAs}
+                utilityClass={utilityClass}
+              />
             </TabPanel>
 
             <TabPanel value="overview">
@@ -1945,15 +3248,11 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             </TabPanel>
 
             <TabPanel value="accessibility">
-              <div className="a1-web-components-placeholder">
-                <Heading as="h3" size="md">Accessibility report</Heading>
-                <Paragraph size="sm" color="muted">
-                  Future area for automated accessibility results, manual checks, keyboard behavior, and screen reader notes.
-                </Paragraph>
-              </div>
+              <AccessibilityPanel component={component} />
             </TabPanel>
           </Tabs>
-          </Section>
+          )}
+        </Section>
     </ComponentDocsShell>
   )
 }

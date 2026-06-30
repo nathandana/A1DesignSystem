@@ -1,0 +1,11 @@
+{
+  "component": {
+    "snackbar": {
+      "default": {
+        "background": { "$type": "color", "$value": "{base.color.neutral.900}" },
+        "border":     { "$type": "color", "$value": "{base.color.neutral.900}" },
+        "foreground": { "$type": "color", "$value": "{base.color.neutral.0}" }
+      }
+    }
+  }
+}

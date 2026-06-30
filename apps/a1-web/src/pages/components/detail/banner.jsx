@@ -61,9 +61,10 @@ function dateSnippet(config) {
   return `date={{ month: "${month}", day: "${day}" }}`
 }
 
-function buildBannerSnippet(config) {
+function buildBannerSnippet(config, utilityClass = '') {
   const isCalendar = config.variant === 'calendar'
   const props = [
+    propString('className', utilityClass, ''),
     propString('variant', config.variant, 'inline'),
     propString('status', config.status, 'neutral'),
     isCalendar ? propString('eyebrow', config.eyebrow, '') : null,
@@ -97,7 +98,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config, setConfig }) {
+export function Preview({ config, setConfig, utilityClass = '' }) {
   if (config.dismissed && config.dismissible) {
     return (
       <Stack gap="sm">
@@ -118,6 +119,7 @@ export function Preview({ config, setConfig }) {
 
   return (
     <Banner
+      className={utilityClass || undefined}
       variant={config.variant}
       status={config.status}
       eyebrow={isCalendar ? (config.eyebrow || undefined) : undefined}
@@ -243,6 +245,6 @@ export function Controls({ config, setConfig }) {
   )
 }
 
-export function Snippet({ config }) {
-  return <Code variant="block" wrapping copyCode>{buildBannerSnippet(config)}</Code>
+export function Snippet({ config, utilityClass = '' }) {
+  return <Code variant="block" wrapping copyCode>{buildBannerSnippet(config, utilityClass)}</Code>
 }

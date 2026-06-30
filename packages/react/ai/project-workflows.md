@@ -6,6 +6,16 @@ This file covers implementation rules and change workflows. Read it with `packag
 
 ## Style and CSS Rules
 
+### The law: fix styling through component props, not custom CSS
+
+**When something looks wrong — wrong spacing, wrong gap, wrong alignment, wrong surface colour — the answer is always a component prop, not a new CSS rule.** Before writing any CSS to fix a perceived styling issue:
+
+1. Check whether the component has a prop that controls the property (`gap`, `padding`, `surface`, `align`, `size`, etc.).
+2. Check whether a layout wrapper (`Stack`, `Grid`, `Section`, `Inset`) is missing or needs a different prop value.
+3. Check whether the token that drives the property is the wrong one — fix it at the token level, not by overriding in local CSS.
+
+Writing a local CSS rule that patches a visual issue without using the component prop is a violation of the design contract. It creates invisible overrides that break when themes change, that future agents will not find, and that prevent the system from working as designed. **If no prop exists for the property you need, add the prop to the component — do not patch it in consuming CSS.**
+
 ### The law: layout components before custom CSS
 
 **Before writing any `display`, `flex`, `grid`, `gap`, `align-items`, or `justify-content` CSS, check whether a layout component already covers the pattern:**
@@ -172,7 +182,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 - All visual properties come from CSS custom properties in the component's `.css` file — not inline styles.
 - Component props use camelCase. CSS modifier classes use kebab-case.
 - Size prop values: `"sm"`, `"md"`, `"lg"` for most components; `"compact"`, `"default"`, `"comfortable"` for field-family components.
-- All icons use Material Symbols Outlined via the `Icon` component — no inline SVGs.
+- Icons render through the `Icon` component. Unprefixed names use Material Symbols Outlined; browser-registered project icons use `custom:<name>`. Do not render inline SVGs in product components.
 - Components must be accessible: keyboard navigable, screen reader labeled, WCAG AA color contrast.
 
 ### `packages/pure`
@@ -195,7 +205,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 - No inline styles except for demonstration of CSS custom property overrides.
 - All markup uses `a1-*` class names — no bare element styling.
 - No placeholder attributes on form fields in demos.
-- No SVG icons — use Material Symbols via `<span class="a1-icon" aria-hidden="true">name</span>`.
+- No inline SVG icons — use the icon component or the corresponding icon-font class.
 - Always add `aria-hidden="true"` to icons; always add `aria-label` to icon buttons.
 - The `<body>` element must have `class="a1-body"` on every demo page.
 - Code snippets shown on each page must exactly match the demo markup — they are the canonical usage example.
@@ -209,6 +219,7 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 **System first**
 1. **Use A1 before building custom.** Components, tokens, patterns, and utilities exist for a reason. Reaching for a custom solution without exhausting system options is a violation of the design contract.
 1a. **Layout components before custom CSS.** Before writing `display`, `flex`, `grid`, `gap`, or alignment CSS, check `Stack`, `Grid`, `Cluster`, `Section`, and `Card` first. Custom layout CSS is only justified when no layout component covers the pattern. See the "Layout components before custom CSS" table in [Style and CSS Rules](#style-and-css-rules).
+1b. **Fix styling through component props, not local CSS.** When something looks wrong, the answer is a component prop or the correct layout wrapper — not a new CSS rule. Writing local CSS to patch a spacing, gap, alignment, or colour issue is forbidden. If the component lacks the prop you need, add the prop. See "The law: fix styling through component props, not custom CSS" in [Style and CSS Rules](#style-and-css-rules).
 
 **Values and tokens**
 2. **All values from tokens.** No hardcoded colors, sizes, spacing, font values, durations, or radii in any CSS or component file. If the token does not exist, add it — do not work around it.
@@ -233,7 +244,7 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Stability**
 11. **Stable public contracts.** Component prop APIs, token structures, label paths, and content schemas are contracts consumed by other packages and agents. Do not rename, restructure, or remove them without coordinating all consumers.
-12. **Icons are Material Symbols.** No inline SVGs in components or examples. Always use `<span class="a1-icon" aria-hidden="true">name</span>` or the `<Icon>` component.
+12. **Icons use the shared icon runtime.** No inline SVGs in components or examples. Use `<Icon>` with a Material Symbols name or a registered `custom:<name>` project icon.
 
 **Operations**
 13. **Build before testing.** After any token or theme change, run `npm run build:tokens && npm run build:html-css` before testing, committing, or declaring the work done.
