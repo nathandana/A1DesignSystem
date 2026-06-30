@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+- **Label editor — context menus** — all three grids in the Label editor (All labels, Workspace overrides, Project overrides) now support right-click context menus. Right-clicking any row shows a Re-translate action (re-runs the MyMemory auto-translation for all enabled locales, replacing existing translations) and a destructive Delete action that removes the override row and deselects it. The menus use the A1 `ContextMenu` component and are consistent with the existing right-click patterns in the Editor.
+
+- **Help page — extensive label, layout, typography, navigation, inputs, themes, and settings articles** — added ~30 new articles across 7 new categories: Layout & Display (Section, Stack/Grid, Card, StickyActions/ButtonContainer, Bleed/Inset/Spacer), Typography (Headings, Paragraph/List/Blockquote, Code/Divider/Inline, inline markdown), Navigation components (Tabs variants, TopHeader/SideNav, Breadcrumb/PageNav, BottomDrawer), Inputs & Forms (field family, Select/RadioGroup/CheckboxGroup/ChoiceGroup, Fieldset/FieldRow, Autocomplete), Themes (what themes are, built-in themes, switching themes, theme editor), Labels & translations (what labels are, All/Workspace/Project tabs, auto-translation, exporting), and Settings (overview, AI API key, accessibility report).
+
+- **Blog page** — added `/blog` as an Explore destination for release newsletters, demos, and walkthroughs. The first featured newsletter embeds the generated global search walkthrough MP4 from the local video pipeline, links to a dedicated schema-rendered article page at `/blog/search-shortcuts-and-walkthroughs`, and the page includes an archive pattern for future release writeups.
+
+- **Blog homepage** — simplified the Blog index into searchable bare article cards with a Figure, title, short description, metadata badges, and a direct Read article link.
+
+- **Blog release archive** — expanded the Blog with newsletter articles for every recorded release era plus an origin story for the start of A1 web. Blog articles now share a data source, render from reusable page-definition content, support `/blog/{slug}` URLs, and use existing screenshots where they fit the release story.
+
+- **Blog article depth** — made release articles longer and more user-focused. Article sections now support multiple paragraphs, add reader-oriented context about why each release matters in daily A1 use, and include a “What to try next” section so new feature writeups feel more like product newsletters than short changelog excerpts.
+
+- **Blog article navigation** — in-app route changes now reset the A1 main scroll container as well as the window scroll position, so opening a blog article from the Blog index starts at the top of the article instead of preserving the archive scroll.
+
+- **Navigation — Backlog under Explore** — moved Backlog out of the icon-only header actions and into the standard Explore menu list so it behaves like the other informational/product-planning destinations.
+
+- **Navigation — Virtual Team under Explore** — moved the dev-only Virtual Team entry out of the icon-only header actions and into the standard Explore menu list when running in dev mode.
+
+- **Navigation — account controls in Settings** — consolidated the separate user/account header menu into the Settings menu. When Supabase auth is configured, Settings now contains Account, sign-in, and sign-out actions alongside theme, locale, accessibility, and editor preferences.
+
+- **Settings menu cleanup** — hid Crochet and Marshmallow from the Settings theme picker, moved Account controls to the end of the Settings menu, and removed the Editor export/import actions from Settings.
+
+- **Local auth gate bypass** — a1-web now requires full-page sign-in only on live/non-local deployments when Supabase is configured. Localhost, `127.0.0.1`, `::1`, and file-based runs stay ungated even with Supabase env vars present, so local development, Help screenshots, and walkthrough capture can use the normal dev server without creating a smoke env. Supabase-backed sync remains available locally when signed in.
+
+- **Video walkthrough pipeline** (A1-107) — added the first prompt-to-MP4 vertical slice for reproducible feature walkthroughs. Authored `walkthroughs/*.walkthrough.yaml` specs now drive a Playwright capture runner (`npm run walkthrough:capture`) that records browser video, screenshots, event timings, and a Remotion input manifest. Added `npm run walkthrough:prompt` for starter specs from a prompt, `npm run walkthrough:narration` for narration scripts / estimated word timings / SRT captions / optional macOS local voiceover, and `npm run walkthrough:render` to render a narration-paced MP4 with Remotion. `npm run walkthrough:demo` runs the sample capture, voiceover, and MP4 render end to end.
+
+- **Global search** (A1-265) — added a header search action and `/` plus `Cmd/Ctrl+K` shortcuts that open a dedicated scrim-backed search overlay. The search input floats over the scrim, opens focused at comfortable size, and only reveals the separate results panel once a query is entered. Results are grouped across pages, foundations, component categories, components, projects, project pages, patterns, rules, workspace labels, and backlog tickets, with related-term and mistyping tolerance for queries such as "CTA" → Button and "grid" → Grid/Data Table.
+
+- **Global keyboard shortcuts** — added an Amazon-style first-tab keyboard navigation trigger backed by the A1 `Menu` component, with grouped actions for main content, search, primary pages, tools, and Help. App-level shortcuts now support keyboard-only navigation: `Cmd/Ctrl+/` shows all shortcuts, `Alt+M` or `g m` focuses the main content area, `?` opens Help, and `g` chords navigate to high-use pages (`g h` Home, `g c` Components, `g f` Foundations, `g e` Editor, `g p` Patterns, `g b` Backlog, `g r` Rules, `g l` Labels, `g d` Data sources, `g t` Theme editor, `g a` Accessibility). Shortcuts ignore text-entry fields and defer to page-specific handlers when a page has already handled the key event.
+
+- **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
+
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
 
 - **Home tools section** — added a Tools section to the home page for Projects, Patterns, Image library, Icons, Data sources, Theme editor, Rules engine, and Labels. Tool cards navigate directly to their workspace pages and mark AI-ready surfaces, with Theme editor also flagged as Alpha.

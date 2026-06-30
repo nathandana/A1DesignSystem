@@ -1,0 +1,206 @@
+.a1-global-search-dialog {
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  inline-size: min(var(--base-content-width-md), calc(100vw - var(--base-spacing-32)));
+  max-block-size: calc(100dvh - var(--base-spacing-64));
+  margin: var(--base-spacing-32) auto auto;
+  overflow: visible;
+}
+
+.a1-global-search-dialog[open] {
+  display: block;
+}
+
+.a1-global-search-dialog::backdrop {
+  background: var(--component-scrim-color);
+  backdrop-filter: blur(var(--component-scrim-blur));
+  animation: a1-global-search-scrim-in var(--semantic-motion-duration-fast) var(--semantic-motion-easing-enter);
+}
+
+.a1-global-search-dialog--closing::backdrop {
+  animation: a1-global-search-scrim-out var(--semantic-motion-duration-fast) var(--semantic-motion-easing-exit) forwards;
+}
+
+.a1-global-search-dialog__layout {
+  inline-size: 100%;
+}
+
+.a1-global-search-dialog__field {
+  inline-size: 100%;
+  filter: drop-shadow(var(--component-card-shadow));
+  animation: a1-global-search-slide-in var(--semantic-motion-duration-fast) var(--semantic-motion-easing-enter);
+}
+
+.a1-global-search-dialog__results {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-block-size: calc(100dvh - var(--base-spacing-192));
+  overflow: auto;
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--component-card-border-radius);
+  background: var(--semantic-color-surface-raised);
+  box-shadow: var(--component-card-shadow);
+}
+
+.a1-global-search-dialog--closing .a1-global-search-dialog__field {
+  animation: a1-global-search-slide-out var(--semantic-motion-duration-fast) var(--semantic-motion-easing-exit) forwards;
+}
+
+.a1-global-search-dialog--closing .a1-global-search-dialog__results {
+  animation: a1-global-search-fade-out var(--semantic-motion-duration-fast) var(--semantic-motion-easing-exit) forwards;
+}
+
+.a1-global-search-dialog__result {
+  display: grid;
+  gap: var(--base-spacing-4);
+  inline-size: 100%;
+  padding: var(--base-spacing-8);
+  border: 0;
+  border-radius: var(--base-radius-sm);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.a1-global-search-dialog__result:hover {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-global-search-dialog__result--selected {
+  background: var(--semantic-color-action-surface);
+}
+
+.a1-global-search-dialog__result--selected .a1-global-search-dialog__result-title {
+  color: var(--semantic-color-action-background-hover);
+}
+
+.a1-global-search-dialog__result:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-global-search-dialog__result-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  min-inline-size: 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-global-search-dialog__result-title {
+  color: var(--semantic-color-action-background);
+  font-family: var(--component-heading-font-family-heading);
+  font-size: var(--semantic-font-size-heading-xs);
+  font-weight: var(--component-heading-font-weight-heading);
+  line-height: var(--component-heading-font-line-height-heading);
+}
+
+.a1-global-search-dialog__result-description {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+@media (--bp-xs) {
+  .a1-global-search-dialog {
+    inline-size: calc(100vw - var(--base-spacing-24));
+    margin-block-start: var(--base-spacing-24);
+  }
+
+  .a1-global-search-dialog__results {
+    max-block-size: calc(100dvh - var(--base-spacing-128));
+    padding: var(--base-spacing-12);
+  }
+}
+
+@keyframes a1-global-search-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--base-spacing-64)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes a1-global-search-slide-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--base-spacing-64)));
+  }
+}
+
+@keyframes a1-global-search-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes a1-global-search-scrim-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(var(--component-scrim-blur));
+  }
+}
+
+@keyframes a1-global-search-scrim-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(var(--component-scrim-blur));
+  }
+
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
+.a1-reduce-motion .a1-global-search-dialog__field {
+  animation: none;
+}
+
+.a1-reduce-motion .a1-global-search-dialog__results {
+  animation: none;
+}
+
+.a1-reduce-motion .a1-global-search-dialog::backdrop {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-global-search-dialog__field {
+    animation: none;
+  }
+
+  .a1-global-search-dialog__results {
+    animation: none;
+  }
+
+  .a1-global-search-dialog::backdrop {
+    animation: none;
+  }
+}

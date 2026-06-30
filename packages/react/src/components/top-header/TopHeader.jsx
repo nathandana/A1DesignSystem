@@ -666,7 +666,7 @@ export function TopHeader({
         {navItems.length > 0 && (
           <nav className="a1-top-header__nav" aria-label="Main navigation">
             <ul className="a1-top-header__nav-list" role="list">
-              {navItems.map((item) => (
+              {navItems.filter((item) => !item.mobileOnly).map((item) => (
                 <NavItem
                   key={item.id}
                   item={item}

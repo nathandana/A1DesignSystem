@@ -37,3 +37,7 @@ For the color-token and theme architecture remediation plan:
 For the generated color-token inventory and migration findings:
 
 @packages/react/ai/color-token-audit.md
+
+For the prompt-to-video walkthrough capture pipeline:
+
+@packages/react/ai/walkthrough-pipeline.md

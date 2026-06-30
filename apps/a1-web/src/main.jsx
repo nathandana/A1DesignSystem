@@ -13,6 +13,7 @@ import {
   LabelsProvider,
   Link,
   Menu,
+  MenuItem,
   MenuSection,
   PageLayout,
   Paragraph,
@@ -80,6 +81,7 @@ import {
 } from './pages/Components.jsx'
 import { Patterns } from './pages/Patterns.jsx'
 import { patternToDefinition } from './patterns/patternDocument.js'
+import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
 import { Releases } from './pages/Releases.jsx'
@@ -87,6 +89,9 @@ import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
 import { About } from './pages/About.jsx'
+import { Blog } from './pages/Blog.jsx'
+import { BlogArticle } from './pages/BlogArticle.jsx'
+import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
@@ -97,6 +102,7 @@ import { CustomIconsView } from './projects/CustomIconsView.jsx'
 import { ThemeEditor } from './pages/ThemeEditor.jsx'
 import { ThemesList } from './pages/ThemesList.jsx'
 import { RuleEditor } from './pages/RuleEditor.jsx'
+import { listAllRules, subscribeRules } from './rules/ruleStore.ts'
 import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
@@ -104,7 +110,6 @@ import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
-import { suppressHistoryFlush } from './editor/storage.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { supabaseConfigured } from './lib/supabase.js'
@@ -119,6 +124,7 @@ import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
 import { LabelEditor } from './pages/LabelEditor.jsx'
+import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import './styles.css'
@@ -127,10 +133,12 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const EXPLORE_PAGE_IDS = ['features', 'get-started', 'accessibility', 'releases', 'about']
+const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
+  blog: 'article',
   help: 'help',
   backlog: 'task_alt',
   'virtual-team': 'groups',
@@ -141,12 +149,14 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   features: 'Features',
   'get-started': 'Get started',
+  blog: 'Blog',
+  'blog-article': 'Search, shortcuts, and walkthroughs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -179,6 +189,7 @@ const themeOptions = [
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
 ]
+const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
 
 const colorSchemeOptions = [
   { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode', labelKey: 'app.settings.lightMode' },
@@ -193,6 +204,8 @@ function getPage(search = window.location.search, pathname = window.location.pat
   // Path-based routing — read from the URL pathname first.
   const path = pathname.replace(/^\/|\/$/g, '') // strip leading/trailing slash
   if (!path) return 'home'
+  if (path === 'blog') return 'blog'
+  if (path.startsWith('blog/')) return 'blog-article'
 
   // /foundations → 'foundations', /foundations/color → 'foundation-color'
   if (path === 'foundations') return 'foundations'
@@ -227,6 +240,7 @@ function getPage(search = window.location.search, pathname = window.location.pat
 
 function getPath(page) {
   if (!page || page === 'home') return '/'
+  if (page === 'blog-article') return `/blog/${BLOG_ARTICLE_SLUG}`
   if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
   if (page.startsWith('component-')) return `/components/${page.slice('component-'.length)}`
@@ -242,6 +256,8 @@ const PAGE_TITLE_LABEL_KEYS = {
   home: 'app.page.home',
   features: 'app.page.features',
   'get-started': 'app.page.getStarted',
+  blog: 'app.page.blog',
+  'blog-article': 'app.page.blogArticle',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
   patterns: 'app.page.patterns',
@@ -301,6 +317,9 @@ function App() {
   const [systemColorScheme, setSystemColorScheme] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
+  const [skipMenuOpen, setSkipMenuOpen] = useState(false)
+  const skipMenuAnchorRef = useRef(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
@@ -359,11 +378,26 @@ function App() {
   // Bump on theme-store changes so the sidebar theme name stays live after a rename.
   const [, setThemesVersion] = useState(0)
   useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
+  const [patternsVersion, setPatternsVersion] = useState(0)
+  useEffect(() => subscribePatterns(() => setPatternsVersion((v) => v + 1)), [])
+  const [rulesVersion, setRulesVersion] = useState(0)
+  useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
-  const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  useEffect(() => {
+    if (!skipMenuOpen) return undefined
+    const closeSkipMenu = (event) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      setSkipMenuOpen(false)
+      skipMenuAnchorRef.current?.focus()
+    }
+    window.addEventListener('keydown', closeSkipMenu, true)
+    return () => window.removeEventListener('keydown', closeSkipMenu, true)
+  }, [skipMenuOpen])
 
   // ── Reactive label resolution: system defaults → workspace overrides → project overrides ──
   const [workspaceLabelsObj, setWorkspaceLabelsObj] = useState(() =>
@@ -393,6 +427,173 @@ function App() {
   const labelLocale = locale === 'en' ? null : locale
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+
+  const globalSearchEntries = useMemo(() => {
+    const entries = []
+    const addPage = (id, description, keywords = []) => {
+      entries.push({
+        id: `page-${id}`,
+        title: pageTitle(id),
+        category: 'Pages',
+        description,
+        icon: PAGE_ICONS[id] || 'article',
+        keywords: [id, PAGE_TITLES[id], ...keywords],
+        onSelect: () => navigate(id),
+      })
+    }
+
+    addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
+    addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
+    addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
+    addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
+    BLOG_POSTS.forEach((post) => {
+      entries.push({
+        id: `blog-${post.slug}`,
+        title: post.title,
+        category: 'Blog',
+        description: post.description,
+        icon: 'article',
+        keywords: ['blog', 'newsletter', 'release', post.version, ...(post.keywords || [])],
+        onSelect: () => navigate('blog-article', { path: `/blog/${post.slug}` }),
+      })
+    })
+    addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
+    addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
+    addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
+    addPage('editor', 'Create and edit projects with the governed JSON page model.', ['projects', 'pages', 'builder'])
+    addPage('image-library', 'Manage reusable image assets for projects.', ['assets', 'media', 'dam'])
+    addPage('custom-icons', 'Create and manage custom project icons.', ['symbols', 'iconography'])
+    addPage('data', 'Plug and play data sets for projects.', ['datasets', 'sources'])
+    addPage('theme-editor', 'Create and adjust custom themes.', ['color', 'tokens', 'brand'])
+    addPage('rules', 'Define and review UI, component, and product rules.', ['governance', 'standards'])
+    addPage('label-editor', 'Shared labels and translations.', ['locale', 'copy', 'language'])
+    addPage('backlog', 'Plan, prioritize, and review A1 work.', ['tickets', 'issues', 'roadmap'])
+    addPage('help', 'Guidance for using A1.', ['docs', 'support'])
+    addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
+    addPage('releases', 'Release notes and shipped changes.', ['changelog', 'updates'])
+    addPage('about', 'About A1 Design System.', ['system'])
+    if (import.meta.env.DEV) addPage('virtual-team', 'Local review assistants for backlog and design work.', ['ai', 'persona'])
+
+    foundations.forEach((foundation) => {
+      entries.push({
+        id: `foundation-${foundation.id}`,
+        title: foundation.title,
+        category: 'Foundations',
+        description: foundation.body,
+        icon: foundation.icon,
+        keywords: [foundation.id, 'foundation', 'token', 'standard'],
+        onSelect: () => navigate(foundation.id),
+      })
+    })
+
+    componentCategories.forEach((category) => {
+      entries.push({
+        id: `component-category-${category.id}`,
+        title: category.title,
+        category: 'Component categories',
+        description: category.body,
+        icon: category.icon,
+        keywords: [category.id, 'components'],
+        onSelect: () => navigate(`components-${category.id}`),
+      })
+      category.components.forEach((component) => {
+        entries.push({
+          id: `component-${component.id}`,
+          title: component.title,
+          category: 'Components',
+          description: component.body,
+          icon: component.icon,
+          keywords: [
+            component.id,
+            category.title,
+            category.id,
+            component.id === 'button' ? 'cta call to action submit action' : '',
+            component.id === 'data-table' ? 'grid table rows columns spreadsheet list' : '',
+            component.id === 'search-field' ? 'find query lookup' : '',
+          ],
+          onSelect: () => navigate(`component-${component.id}`),
+        })
+      })
+    })
+
+    projects.forEach((project) => {
+      entries.push({
+        id: `project-${project.id}`,
+        title: project.name,
+        category: 'Projects',
+        description: project.description || 'Project workspace.',
+        icon: project.icon || 'folder',
+        keywords: ['project', project.name, project.description],
+        onSelect: () => openProject(project.id),
+      })
+      projectStore.loadPages(project.id).forEach((page) => {
+        entries.push({
+          id: `project-page-${project.id}-${page.id}`,
+          title: page.title || 'Untitled',
+          category: 'Project pages',
+          description: project.name,
+          icon: page.icon || 'article',
+          keywords: ['page', 'screen', 'editor', project.name, page.description],
+          onSelect: () => {
+            openProject(project.id)
+            handleOpenPage(page.id)
+          },
+        })
+      })
+    })
+
+    getAllPatterns().forEach((pattern) => {
+      entries.push({
+        id: `pattern-${pattern.pattern.id}`,
+        title: pattern.pattern.name,
+        category: 'Patterns',
+        description: pattern.pattern.description || 'Reusable pattern.',
+        icon: 'dashboard_customize',
+        keywords: ['pattern', pattern.pattern.category, pattern.pattern.name],
+        onSelect: () => navigate('patterns'),
+      })
+    })
+
+    listAllRules().forEach((rule) => {
+      entries.push({
+        id: `rule-${rule.id}`,
+        title: rule.requirement,
+        category: 'Rules',
+        description: rule.component,
+        icon: 'gavel',
+        badge: rule.source === 'builtin' ? 'Built-in' : 'User rule',
+        keywords: ['rule', rule.component, rule.do, rule.dont, ...(rule.appliesTo || [])],
+        onSelect: () => navigate('rules'),
+      })
+    })
+
+    getLabels().items.forEach((label) => {
+      entries.push({
+        id: `label-${label.key}`,
+        title: label.key,
+        category: 'Labels',
+        description: label.en || 'Workspace label.',
+        icon: 'translate',
+        keywords: ['label', 'translation', 'locale', ...Object.values(label).filter((value) => typeof value === 'string')],
+        onSelect: () => navigate('label-editor'),
+      })
+    })
+
+    backlog?.items?.forEach((item) => {
+      entries.push({
+        id: `ticket-${item.id}`,
+        title: `A1-${item.number} ${item.title}`,
+        category: 'Backlog',
+        description: item.description || item.status,
+        icon: 'task_alt',
+        badge: item.priority,
+        keywords: ['ticket', 'issue', 'backlog', item.type, item.status, item.size, item.scope],
+        onSelect: () => navigate('backlog-ticket', { path: `/backlog/A1-${item.number}` }),
+      })
+    })
+
+    return entries
+  }, [backlog?.items, locale, patternsVersion, projects, rulesVersion, allLabels])
 
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
@@ -589,40 +790,15 @@ function App() {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  // Export every project (and its pages' latest JSON) as one plain-text backup
-  // file, so nothing is lost if local storage is cleared.
-  function handleExportAll() {
-    const content = projectStore.exportAllText()
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `a1-editor-projects-${new Date().toISOString().slice(0, 10)}.txt`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-  }
+  function resetRouteScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
 
-  // Restore projects + pages from an "Export all" file, then reload so the editor
-  // picks everything up cleanly. Suppress the open page's history flush first so
-  // its stale in-memory state can't clobber the freshly-imported content.
-  async function handleImportFile(event) {
-    const file = event.target.files?.[0]
-    event.target.value = '' // allow re-importing the same file later
-    if (!file) return
-
-    let text = ''
-    try { text = await file.text() } catch { setEditorMessage('Could not read that file.'); return }
-
-    const { projects: importedProjects } = projectStore.importAllText(text)
-    if (importedProjects === 0) {
-      setEditorMessage('No projects found in that file.')
-      return
-    }
-
-    suppressHistoryFlush()
-    window.location.reload()
+    requestAnimationFrame(() => {
+      const main = document.querySelector('.a1-page-layout__main-scroll')
+      if (main instanceof HTMLElement) {
+        main.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      }
+    })
   }
 
   function navigate(page, { replace = false, path: pathOverride = null } = {}) {
@@ -634,7 +810,12 @@ function App() {
     }
     setActivePage(next)
     setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: 'auto' })
+    resetRouteScroll()
+  }
+
+  function focusMainContent() {
+    const main = document.querySelector('.a1-page-layout__main-scroll')
+    if (main instanceof HTMLElement) main.focus()
   }
 
   function handleNavClick(e, page) {
@@ -689,6 +870,107 @@ function App() {
   useEffect(() => { localStorage.setItem('a1-web-reduced-motion', reducedMotion) }, [reducedMotion])
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
   useEffect(() => { localStorage.setItem('a1-web-locale', locale) }, [locale])
+
+  useEffect(() => {
+    let goTimer = null
+    let awaitingGoTarget = false
+    const goTargets = {
+      a: 'accessibility',
+      b: 'backlog',
+      c: 'components',
+      d: 'data',
+      e: 'editor',
+      f: 'foundations',
+      h: 'home',
+      l: 'label-editor',
+      p: 'patterns',
+      r: 'rules',
+      t: 'theme-editor',
+    }
+
+    const clearGoTarget = () => {
+      awaitingGoTarget = false
+      if (goTimer) window.clearTimeout(goTimer)
+      goTimer = null
+    }
+
+    const handleGlobalShortcut = (event) => {
+      if (event.defaultPrevented) return
+      const target = event.target
+      const isTyping = target instanceof HTMLElement && (
+        target.isContentEditable
+        || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+      )
+      if (isTyping) {
+        clearGoTarget()
+        return
+      }
+
+      const opensCommandSearch = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'
+      const opensShortcutMenu = (event.metaKey || event.ctrlKey) && event.key === '/'
+      const opensSlashSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === '/'
+      if (opensShortcutMenu) {
+        event.preventDefault()
+        clearGoTarget()
+        setSkipMenuOpen((open) => {
+          if (!open) window.requestAnimationFrame(() => skipMenuAnchorRef.current?.focus())
+          return !open
+        })
+        return
+      }
+
+      if (opensCommandSearch || opensSlashSearch) {
+        event.preventDefault()
+        clearGoTarget()
+        setGlobalSearchOpen(true)
+        return
+      }
+
+      if (event.altKey && !event.metaKey && !event.ctrlKey && event.key.toLowerCase() === 'm') {
+        event.preventDefault()
+        clearGoTarget()
+        focusMainContent()
+        return
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '?') {
+        event.preventDefault()
+        clearGoTarget()
+        navigate('help')
+        return
+      }
+
+      if (awaitingGoTarget) {
+        const targetPage = goTargets[event.key.toLowerCase()]
+        if (targetPage) {
+          event.preventDefault()
+          clearGoTarget()
+          navigate(targetPage)
+          return
+        }
+        if (event.key.toLowerCase() === 'm') {
+          event.preventDefault()
+          clearGoTarget()
+          focusMainContent()
+          return
+        }
+        clearGoTarget()
+      }
+
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key.toLowerCase() === 'g') {
+        event.preventDefault()
+        awaitingGoTarget = true
+        if (goTimer) window.clearTimeout(goTimer)
+        goTimer = window.setTimeout(clearGoTarget, 1500)
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalShortcut)
+    return () => {
+      clearGoTarget()
+      window.removeEventListener('keydown', handleGlobalShortcut)
+    }
+  }, [])
 
   // Mirror the open page's definition metadata (name/description/icon) into its
   // project page record so the page tree and generated nav stay in sync as you
@@ -798,9 +1080,18 @@ function App() {
 
   const navItems = [
     {
+      id: 'home',
+      label: pageTitle('home'),
+      icon: 'home',
+      active: activePage === 'home',
+      href: getPath('home'),
+      onClick: (e) => handleNavClick(e, 'home'),
+      mobileOnly: true,
+    },
+    {
       id: 'explore',
       label: t('app.nav.explore', 'Explore'),
-      active: EXPLORE_PAGE_IDS.includes(activePage),
+      active: EXPLORE_PAGE_IDS.includes(activePage) || activePage === 'blog-article',
       items: [...EXPLORE_PAGE_IDS]
         .sort((a, b) => pageTitle(a).localeCompare(pageTitle(b)))
         .map((id) => ({
@@ -944,18 +1235,11 @@ function App() {
 
   const actions = [
     {
-      id: 'backlog-queue',
-      icon: 'checklist',
+      id: 'global-search',
+      icon: 'search',
       iconOnly: true,
-      label: t('app.action.yourBacklogQueue', 'Your backlog queue'),
-      active: activePage === 'backlog',
-      badge: backlog?.unreadCount || undefined,
-      onClick: () => {
-        if (backlog?.unreadCount) {
-          backlog.markRead(backlog.notifications.filter((n) => !n.read).map((n) => n.id))
-        }
-        navigate('backlog')
-      },
+      label: t('app.action.globalSearch', 'Search A1'),
+      onClick: () => setGlobalSearchOpen(true),
     },
     {
       id: 'help',
@@ -965,14 +1249,6 @@ function App() {
       active: activePage === 'help',
       onClick: () => navigate('help'),
     },
-    ...(import.meta.env.DEV ? [{
-      id: 'virtual-team',
-      icon: PAGE_ICONS['virtual-team'],
-      iconOnly: true,
-      label: pageTitle('virtual-team'),
-      active: activePage === 'virtual-team',
-      onClick: () => navigate('virtual-team'),
-    }] : []),
     { id: 'action-divider', divider: true },
     {
       id: 'new-ticket',
@@ -981,43 +1257,6 @@ function App() {
       label: t('app.action.createTicket', 'Create a ticket'),
       onClick: () => backlog?.openCreate({ kind: 'general' }),
     },
-    ...(supabaseConfigured ? [{
-      id: 'user',
-      icon: 'account_circle',
-      iconOnly: true,
-      label: authUser ? authUser.email : t('app.page.account', 'Account'),
-      items: [
-        ...(authUser ? [{
-          id: 'user-header',
-          isHeader: true,
-          label: authUser.email,
-          description: t('app.page.account', 'Account'),
-        }] : []),
-        { divider: true },
-        {
-          id: 'user-account',
-          icon: 'manage_accounts',
-          label: t('app.page.account', 'Account'),
-          onClick: () => navigate('account'),
-        },
-        ...(authUser ? [
-          { divider: true },
-          {
-            id: 'user-signout',
-            icon: 'logout',
-            label: t('app.action.signOut', 'Sign out'),
-            onClick: () => signOut(),
-          },
-        ] : [
-          {
-            id: 'user-signin',
-            icon: 'login',
-            label: t('app.action.signIn', 'Sign in'),
-            onClick: () => navigate('account'),
-          },
-        ]),
-      ],
-    }] : []),
     {
       id: 'settings',
       icon: 'settings',
@@ -1063,11 +1302,91 @@ function App() {
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
 
+  function runSkipMenuAction(action) {
+    setSkipMenuOpen(false)
+    action?.()
+  }
+
   return (
     <TProvider value={t}>
     <LabelsProvider locale={labelLocale} labels={allLabels}>
       <CustomIconFontProvider projectId={activeProjectId} includeAll={activePage === 'custom-icons'}>
       <ImageLibraryProvider>
+      <button
+        ref={skipMenuAnchorRef}
+        type="button"
+        className="a1-web-skip-menu-trigger"
+        data-open={skipMenuOpen ? 'true' : undefined}
+        aria-haspopup="menu"
+        aria-expanded={skipMenuOpen ? 'true' : 'false'}
+        aria-label="Keyboard menu. Shortcut: Cmd or Ctrl plus slash"
+        title="Shortcut: Cmd/Ctrl+/"
+        onFocus={() => setSkipMenuOpen(true)}
+        onClick={() => setSkipMenuOpen((open) => !open)}
+      >
+        Keyboard menu
+      </button>
+      <Menu
+        className="a1-web-keyboard-menu"
+        open={skipMenuOpen}
+        onClose={() => setSkipMenuOpen(false)}
+        anchorRef={skipMenuAnchorRef}
+        aria-label="Keyboard shortcuts"
+        trapFocus={false}
+        modalOnMobile={false}
+      >
+        <MenuSection label="Jump">
+          <MenuItem icon="keyboard_return" shortcut="Shortcut: Alt+M" onClick={() => runSkipMenuAction(focusMainContent)}>
+            Skip to main content
+          </MenuItem>
+          <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
+            Search A1
+          </MenuItem>
+          <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
+            Show all shortcuts
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Primary pages">
+          <MenuItem icon="home" shortcut="Shortcut: G then H" onClick={() => runSkipMenuAction(() => navigate('home'))}>
+            Home
+          </MenuItem>
+          <MenuItem icon="category" shortcut="Shortcut: G then C" onClick={() => runSkipMenuAction(() => navigate('components'))}>
+            Components
+          </MenuItem>
+          <MenuItem icon="foundation" shortcut="Shortcut: G then F" onClick={() => runSkipMenuAction(() => navigate('foundations'))}>
+            Foundations
+          </MenuItem>
+          <MenuItem icon="edit" shortcut="Shortcut: G then E" onClick={() => runSkipMenuAction(() => navigate('editor'))}>
+            Editor
+          </MenuItem>
+          <MenuItem icon="view_quilt" shortcut="Shortcut: G then P" onClick={() => runSkipMenuAction(() => navigate('patterns'))}>
+            Patterns
+          </MenuItem>
+          <MenuItem icon="task_alt" shortcut="Shortcut: G then B" onClick={() => runSkipMenuAction(() => navigate('backlog'))}>
+            Backlog
+          </MenuItem>
+        </MenuSection>
+        <MenuSection label="Tools and help">
+          <MenuItem icon="rule" shortcut="Shortcut: G then R" onClick={() => runSkipMenuAction(() => navigate('rules'))}>
+            Rules
+          </MenuItem>
+          <MenuItem icon="translate" shortcut="Shortcut: G then L" onClick={() => runSkipMenuAction(() => navigate('label-editor'))}>
+            Labels
+          </MenuItem>
+          <MenuItem icon="database" shortcut="Shortcut: G then D" onClick={() => runSkipMenuAction(() => navigate('data'))}>
+            Data sources
+          </MenuItem>
+          <MenuItem icon="palette" shortcut="Shortcut: G then T" onClick={() => runSkipMenuAction(() => navigate('theme-editor'))}>
+            Theme editor
+          </MenuItem>
+          <MenuItem icon="accessibility" shortcut="Shortcut: G then A" onClick={() => runSkipMenuAction(() => navigate('accessibility'))}>
+            Accessibility
+          </MenuItem>
+          <MenuItem icon="help" shortcut="Shortcut: ?" onClick={() => runSkipMenuAction(() => navigate('help'))}>
+            Help
+          </MenuItem>
+        </MenuSection>
+      </Menu>
       <PageLayout
         className="a1-web-page-layout"
         stickyHeader
@@ -1146,6 +1465,8 @@ function App() {
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
+        {activePage === 'blog' && <Blog onNavigate={navigate} />}
+        {activePage === 'blog-article' && <BlogArticle onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail
@@ -1357,22 +1678,28 @@ function App() {
         )}
       </PageLayout>
 
+      <GlobalSearchDialog
+        open={globalSearchOpen}
+        entries={globalSearchEntries}
+        onClose={() => setGlobalSearchOpen(false)}
+      />
+
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
         <MenuSection label={t('app.page.theme', 'Theme')}>
-          {themeOptions.length > 5 ? (
+          {settingsThemeOptions.length > 5 ? (
             <SelectField
               aria-label={t('app.page.theme', 'Theme')}
               size="compact"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
             >
-              {themeOptions.map((opt) => (
+              {settingsThemeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </SelectField>
           ) : (
             <RadioGroup
-              options={themeOptions}
+              options={settingsThemeOptions}
               value={theme}
               onChange={setTheme}
               size="compact"
@@ -1419,33 +1746,6 @@ function App() {
             ))}
           </SelectField>
         </MenuSection>
-        <MenuSection label={t('app.page.editor', 'Editor')}>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="download"
-            fullWidth
-            onClick={handleExportAll}
-          >
-            {t('app.action.exportAllPages', 'Export all pages')}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="upload"
-            fullWidth
-            onClick={() => importInputRef.current?.click()}
-          >
-            {t('app.action.importPages', 'Import pages')}
-          </Button>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept=".txt,text/plain"
-            hidden
-            onChange={handleImportFile}
-          />
-        </MenuSection>
         <MenuSection>
           <Button
             variant="secondary"
@@ -1461,6 +1761,27 @@ function App() {
             {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
+        {supabaseConfigured && (
+          <MenuSection label={t('app.page.account', 'Account')}>
+            {authUser && (
+              <MenuItem icon="account_circle" onClick={() => navigate('account')}>
+                {authUser.email}
+              </MenuItem>
+            )}
+            <MenuItem icon="manage_accounts" onClick={() => navigate('account')}>
+              {t('app.page.account', 'Account')}
+            </MenuItem>
+            {authUser ? (
+              <MenuItem icon="logout" onClick={() => signOut()}>
+                {t('app.action.signOut', 'Sign out')}
+              </MenuItem>
+            ) : (
+              <MenuItem icon="login" onClick={() => navigate('account')}>
+                {t('app.action.signIn', 'Sign in')}
+              </MenuItem>
+            )}
+          </MenuSection>
+        )}
       </Menu>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
