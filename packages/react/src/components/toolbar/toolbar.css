@@ -18,9 +18,11 @@
 
 .a1-toolbar-field__label {
   font-family: var(--component-paragraph-font-family);
-  /* The smallest body step. */
-  font-size: var(--semantic-font-size-body-xs);
-  font-weight: var(--component-field-label-font-weight);
+  /* Tied to the same tokens as a compact form label (size, weight, colour) so a
+     Toolbar caption is styled identically to a field/legend label beside it —
+     especially its colour. (A1-165) */
+  font-size: var(--semantic-font-size-form-label-compact);
+  font-weight: var(--component-field-compact-label-font-weight);
   color: var(--semantic-color-text-default);
   line-height: var(--semantic-font-line-height-body);
 }
