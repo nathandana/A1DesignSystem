@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
+
 - **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.
 
 - **Editor — pattern creation flow** (A1-231) — creating a pattern from a selected page element is now available from the right-side Configure panel. The flow replaces the source element with a linked pattern instance, then opens the new pattern in the editor so its name and details can be filled in immediately, with a back link to the source page shown in the pattern details.

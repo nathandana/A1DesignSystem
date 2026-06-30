@@ -7,6 +7,7 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-06-30 | **SplitButton secondary styling** (A1-380): removed the adjoining internal borders between the main action and caret toggle so secondary split buttons render as one shared pill outline with the existing hairline divider, rather than showing a doubled seam. CSS-only; no API change. |
 | 2026-06-30 | **a1-web Backlog consistent ticket card variants** (A1-353): board and queue backlog views now share one ticket card pattern with view variants. Queue cards use the same badge metadata structure and a default-size `IconButton` for opening a ticket. No design-system component API changed. |
 | 2026-06-30 | **Form fields read-only autofill guard** (A1-51): `TextField` and `TextareaField` now force autocomplete off in read-only mode, add common password-manager ignore hints, and restore the existing value if an autofill/input event attempts to mutate the control. `SearchField` also hides its clear button while read-only. Storybook read-only/autofill examples updated. |
 | 2026-06-30 | **a1-web Editor pattern creation flow** (A1-231): selected page elements can now be turned into patterns from the right-side Configure panel. The source element is replaced with a linked pattern instance, then the app opens the new pattern editor with a back link to the source page. No design-system component API changed. |
