@@ -1,0 +1,665 @@
+@import "../../../build/css/tokens.css";
+@import "../../../packages/react/src/themes.css";
+@import "../../../packages/react/src/color-scheme.css";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  block-size: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  color: var(--semantic-color-text-default);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--semantic-color-status-info-background), transparent 70%), transparent 28rem),
+    var(--semantic-color-surface-page);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.careguide-shell {
+  --careguide-accent-soft: color-mix(in srgb, var(--semantic-color-action-background), transparent 88%);
+  --careguide-success-soft: color-mix(in srgb, var(--semantic-color-status-success-background), transparent 86%);
+  --careguide-warn-soft: color-mix(in srgb, var(--semantic-color-status-warn-background), transparent 84%);
+}
+
+.careguide-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--base-spacing-20);
+  inline-size: 100%;
+  padding: var(--base-spacing-12) var(--base-spacing-24);
+  border-block-end: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), transparent 8%);
+  backdrop-filter: blur(18px);
+}
+
+.careguide-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-10);
+  color: var(--semantic-color-text-default);
+  text-decoration: none;
+}
+
+.careguide-logo__mark {
+  display: grid;
+  place-items: center;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border-radius: var(--base-radius-lg);
+  color: var(--semantic-color-action-foreground);
+  background:
+    linear-gradient(135deg, var(--semantic-color-action-background), var(--semantic-color-status-info-background));
+  font-weight: var(--base-font-weight-bold);
+  letter-spacing: 0.02em;
+}
+
+.careguide-logo strong,
+.careguide-logo small {
+  display: block;
+}
+
+.careguide-logo small,
+.careguide-header__member span,
+.careguide-provider-card__eyebrow,
+.careguide-provider-card__facts,
+.careguide-rx-row span,
+.careguide-rx-row small,
+.careguide-thread-list span,
+.careguide-document-list small,
+.careguide-member-row small,
+.careguide-task-card small,
+.careguide-task-item small,
+.careguide-account-card span,
+.careguide-auth-card span,
+.careguide-progress p {
+  color: var(--semantic-color-text-muted);
+}
+
+.careguide-nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--base-spacing-4);
+  min-inline-size: 0;
+}
+
+.careguide-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-6);
+  padding: var(--base-spacing-8) var(--base-spacing-12);
+  border-radius: var(--base-radius-xl);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.careguide-nav__link:hover,
+.careguide-nav__link--active {
+  color: var(--semantic-color-text-default);
+  background: var(--careguide-accent-soft);
+}
+
+.careguide-nav__link .a1-icon {
+  font-size: 1.15em;
+}
+
+.careguide-nav__link > span {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-20);
+  border-radius: 999px;
+  color: var(--semantic-color-action-foreground);
+  background: var(--semantic-color-status-warn-background);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.careguide-header__member {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  text-align: end;
+}
+
+.careguide-header__member strong,
+.careguide-header__member span {
+  display: block;
+}
+
+.careguide-hero {
+  overflow: hidden;
+  border-block-end: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+}
+
+.careguide-hero__content {
+  display: grid;
+  align-content: center;
+  gap: var(--base-spacing-20);
+  min-block-size: 23rem;
+}
+
+.careguide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-10);
+  align-items: center;
+}
+
+.careguide-actions--stack {
+  align-items: stretch;
+}
+
+.careguide-actions--stack .a1-button {
+  justify-content: center;
+}
+
+.careguide-kicker {
+  display: block;
+  color: var(--semantic-color-text-accent);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.careguide-id-card {
+  position: relative;
+  align-self: center;
+  padding: var(--base-spacing-24);
+  overflow: hidden;
+  color: var(--semantic-color-text-inverse);
+  background:
+    linear-gradient(145deg, #063b52, #0b6f7c 52%, #2b8a5f),
+    var(--semantic-color-surface-inverse);
+  box-shadow: var(--semantic-shadow-lg);
+}
+
+.careguide-id-card::after {
+  position: absolute;
+  inset-block-start: -35%;
+  inset-inline-end: -10%;
+  inline-size: 15rem;
+  block-size: 15rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  content: "";
+}
+
+.careguide-id-card__top,
+.careguide-id-card__actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-12);
+}
+
+.careguide-id-card__top {
+  align-items: flex-start;
+  margin-block-end: var(--base-spacing-28);
+}
+
+.careguide-id-card dl,
+.careguide-claim-detail dl {
+  display: grid;
+  gap: var(--base-spacing-12);
+  margin: 0;
+}
+
+.careguide-id-card dl {
+  position: relative;
+  z-index: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-block-end: var(--base-spacing-24);
+}
+
+.careguide-id-card dt,
+.careguide-claim-detail dt {
+  color: color-mix(in srgb, currentColor, transparent 38%);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.careguide-id-card dd,
+.careguide-claim-detail dd {
+  margin: 0;
+  font-weight: var(--base-font-weight-bold);
+}
+
+.careguide-id-card .careguide-kicker,
+.careguide-id-card .a1-heading {
+  color: inherit;
+}
+
+.careguide-id-card .a1-button--secondary,
+.careguide-id-card .a1-button--tertiary {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: white;
+}
+
+.careguide-stat-card .a1-card__content,
+.careguide-benefit-card .a1-card__content,
+.careguide-account-card .a1-card__content {
+  display: grid;
+  gap: var(--base-spacing-8);
+}
+
+.careguide-stat-card strong {
+  font-size: var(--semantic-font-size-heading-xs);
+  line-height: var(--semantic-font-line-height-heading);
+}
+
+.careguide-card-section {
+  padding: var(--base-spacing-24);
+}
+
+.careguide-section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+  align-items: flex-start;
+  margin-block-end: var(--base-spacing-20);
+}
+
+.careguide-progress {
+  display: grid;
+  gap: var(--base-spacing-8);
+}
+
+.careguide-progress__header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.careguide-progress__track {
+  overflow: hidden;
+  block-size: var(--base-spacing-10);
+  border-radius: 999px;
+  background: var(--semantic-color-surface-raised);
+}
+
+.careguide-progress__track span {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, var(--semantic-color-action-background), var(--semantic-color-status-success-background));
+}
+
+.careguide-progress p {
+  margin: 0;
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.careguide-task-list,
+.careguide-task-board,
+.careguide-member-list,
+.careguide-route-list,
+.careguide-thread-list,
+.careguide-document-list,
+.careguide-rx-list,
+.careguide-completed-list {
+  display: grid;
+  gap: var(--base-spacing-12);
+}
+
+.careguide-task-item,
+.careguide-task-card,
+.careguide-member-row,
+.careguide-rx-row,
+.careguide-auth-card,
+.careguide-route-list div,
+.careguide-thread-list div {
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: color-mix(in srgb, var(--semantic-color-surface-panel), transparent 18%);
+}
+
+.careguide-task-item {
+  display: flex;
+  gap: var(--base-spacing-10);
+  align-items: flex-start;
+  padding: var(--base-spacing-12);
+  cursor: pointer;
+}
+
+.careguide-task-item strong,
+.careguide-task-item small,
+.careguide-task-card strong,
+.careguide-task-card small,
+.careguide-document-list strong,
+.careguide-document-list small {
+  display: block;
+}
+
+.careguide-benefit-card {
+  min-block-size: 100%;
+}
+
+.careguide-benefit-card strong {
+  font-size: var(--semantic-font-size-heading-xs);
+}
+
+.careguide-page {
+  display: grid;
+  gap: var(--base-spacing-24);
+}
+
+.careguide-page-title {
+  display: grid;
+  gap: var(--base-spacing-8);
+  max-inline-size: 52rem;
+}
+
+.careguide-definition-grid > div,
+.careguide-account-card {
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+}
+
+.careguide-definition-grid span,
+.careguide-definition-grid strong,
+.careguide-account-card strong,
+.careguide-account-card span {
+  display: block;
+}
+
+.careguide-definition-grid span {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.careguide-definition-grid strong,
+.careguide-account-card strong {
+  margin-block-start: var(--base-spacing-4);
+}
+
+.careguide-account-card strong {
+  font-size: var(--semantic-font-size-heading-sm);
+}
+
+.careguide-divider {
+  block-size: var(--component-card-border-width);
+  margin-block: var(--base-spacing-20);
+  background: var(--semantic-color-border-subtle);
+}
+
+.careguide-member-row {
+  display: flex;
+  gap: var(--base-spacing-12);
+  align-items: center;
+  padding: var(--base-spacing-12);
+}
+
+.careguide-member-row > span {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border-radius: 50%;
+  color: var(--semantic-color-action-foreground);
+  background: var(--semantic-color-action-background);
+  font-weight: var(--base-font-weight-bold);
+}
+
+.careguide-member-row strong,
+.careguide-member-row small {
+  display: block;
+}
+
+.careguide-auth-card {
+  display: grid;
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-16);
+}
+
+.careguide-auth-card p {
+  margin: 0;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.careguide-search-panel {
+  padding: var(--base-spacing-20);
+}
+
+.careguide-search-panel .a1-field__control {
+  position: relative;
+}
+
+.careguide-search-panel .a1-field__control > .a1-icon {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--base-spacing-12);
+  color: var(--semantic-color-text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.careguide-provider-card {
+  padding: var(--base-spacing-20);
+}
+
+.careguide-provider-card__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--base-spacing-16);
+}
+
+.careguide-provider-card__eyebrow,
+.careguide-provider-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-8);
+  align-items: center;
+}
+
+.careguide-provider-card__facts {
+  margin-block: var(--base-spacing-12);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.careguide-provider-card__facts span {
+  display: inline-flex;
+  gap: var(--base-spacing-4);
+  align-items: center;
+}
+
+.careguide-provider-card__actions {
+  display: grid;
+  align-content: start;
+  gap: var(--base-spacing-8);
+  min-inline-size: 9rem;
+}
+
+.careguide-map-card {
+  position: sticky;
+  inset-block-start: var(--base-spacing-24);
+}
+
+.careguide-route-list div {
+  display: grid;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-16);
+}
+
+.careguide-route-list .a1-icon {
+  color: var(--semantic-color-text-accent);
+  font-size: 2rem;
+}
+
+.careguide-claim-detail {
+  display: grid;
+  align-content: start;
+  gap: var(--base-spacing-16);
+  padding: var(--base-spacing-24);
+}
+
+.careguide-claim-detail dl {
+  padding: var(--base-spacing-16);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-raised);
+}
+
+.careguide-claim-detail dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-12);
+}
+
+.careguide-task-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--base-spacing-12);
+  padding: var(--base-spacing-16);
+  cursor: pointer;
+}
+
+.careguide-task-card--done {
+  opacity: 0.68;
+  background: var(--careguide-success-soft);
+}
+
+.careguide-task-card--done strong {
+  text-decoration: line-through;
+}
+
+.careguide-task-card__content {
+  display: grid;
+  gap: var(--base-spacing-6);
+}
+
+.careguide-task-card__content > span {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--base-spacing-12);
+}
+
+.careguide-task-card p {
+  margin: 0;
+  color: var(--semantic-color-text-muted);
+}
+
+.careguide-completed-list span {
+  display: inline-flex;
+  gap: var(--base-spacing-6);
+  color: var(--semantic-color-text-muted);
+}
+
+.careguide-message-form {
+  display: grid;
+  gap: var(--base-spacing-16);
+}
+
+.careguide-thread-list div {
+  display: grid;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-14);
+}
+
+.careguide-document-list .a1-link {
+  justify-content: flex-start;
+  padding: var(--base-spacing-12);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  text-decoration: none;
+}
+
+.careguide-rx-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--base-spacing-16);
+  align-items: center;
+  padding: var(--base-spacing-16);
+}
+
+.careguide-rx-row > div {
+  display: grid;
+  gap: var(--base-spacing-4);
+}
+
+.careguide-rx-row > div:last-child {
+  justify-items: end;
+  text-align: end;
+}
+
+@media (max-width: 1040px) {
+  .careguide-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .careguide-nav {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-block-end: var(--base-spacing-4);
+  }
+
+  .careguide-header__member {
+    text-align: end;
+  }
+}
+
+@media (max-width: 720px) {
+  .careguide-header {
+    padding: var(--base-spacing-10) var(--base-spacing-14);
+  }
+
+  .careguide-header__member div {
+    display: none;
+  }
+
+  .careguide-nav__link {
+    padding: var(--base-spacing-8) var(--base-spacing-10);
+  }
+
+  .careguide-hero__content {
+    min-block-size: auto;
+  }
+
+  .careguide-id-card dl,
+  .careguide-provider-card__main,
+  .careguide-rx-row,
+  .careguide-claim-detail dl > div,
+  .careguide-section-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .careguide-provider-card__actions,
+  .careguide-rx-row > div:last-child {
+    justify-items: stretch;
+    text-align: start;
+  }
+
+  .careguide-section-heading {
+    display: grid;
+  }
+
+  .careguide-id-card__top,
+  .careguide-id-card__actions {
+    flex-direction: column;
+  }
+}
