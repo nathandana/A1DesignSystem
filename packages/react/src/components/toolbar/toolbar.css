@@ -50,6 +50,7 @@
      container and never scroll horizontally. */
   flex-wrap: wrap;
   max-inline-size: 100%;
+  position: relative;
   gap: var(--base-spacing-2);
   padding: var(--base-spacing-2);
   background: var(--a1-toolbar-bg);
@@ -82,12 +83,12 @@
 }
 
 /* Tools grow to share the available space; dividers keep their natural size. */
-.a1-toolbar--full-width > :not(.a1-toolbar__divider) {
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) > :not(.a1-toolbar__divider):not(.a1-toolbar__measure) {
   flex: 1 1 0;
 }
 
 /* A stretched (non-grid) group distributes its own buttons across its share. */
-.a1-toolbar--full-width .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-toolbar__button {
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-toolbar__button {
   flex: 1 1 0;
 }
 
@@ -199,6 +200,75 @@
   inline-size: auto;
 }
 
+.a1-toolbar--overflow {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.a1-toolbar--overflow > :not(.a1-toolbar__measure) {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar--overflow .a1-toolbar__group-radios {
+  flex-wrap: nowrap;
+}
+
+.a1-toolbar__overflow-button {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar__overflow-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--base-spacing-2);
+  min-inline-size: var(--base-width-2xs);
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__button,
+.a1-toolbar__overflow-panel > .a1-toolbar__menu-button {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__divider {
+  flex: 1 0 100%;
+  align-self: stretch;
+  inline-size: auto;
+  min-block-size: var(--component-divider-size-xs);
+  block-size: var(--component-divider-size-xs);
+  margin-block: var(--base-spacing-2);
+  margin-inline: 0;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__group {
+  flex: 0 1 auto;
+  max-inline-size: 100%;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__group .a1-toolbar__group-radios {
+  flex-wrap: wrap;
+}
+
+/* Inline overflow menu item (a ToolbarMenu rendered inside the More menu). The
+   selected item uses the Toolbar's subtler selected treatment — default text on
+   a darker neutral fill — rather than the bold action-background MenuItem
+   highlight, so it reads like the rest of the toolbar. */
+.a1-toolbar__overflow-item.a1-menu-item--active,
+.a1-toolbar__overflow-item.a1-menu-item--active:hover,
+.a1-toolbar__overflow-item.a1-menu-item--active:active {
+  color: var(--semantic-color-text-default);
+  background: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+}
+
+.a1-toolbar__overflow-item.a1-menu-item--active:hover {
+  background: color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+}
+
+.a1-toolbar__overflow-item.a1-menu-item--active .a1-menu-item__icon {
+  color: var(--semantic-color-text-default);
+}
+
 .a1-toolbar__caret {
   /* Pull the caret tight to the icon/label so the menu button stays compact. */
   margin-inline-start: calc(-1 * var(--base-spacing-2));
@@ -248,6 +318,10 @@
   visibility: hidden;
   pointer-events: none;
   z-index: -1;
+}
+
+.a1-toolbar__measure-item {
+  display: inline-flex;
 }
 
 /* ── Divider ───────────────────────────────────────────────────────────────── */

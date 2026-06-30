@@ -28,14 +28,23 @@ export function resolvePatternNodes(nodes, getPattern, seen = new Set()) {
  * Walk a pattern tree and summarise its governance: how many components and
  * properties are locked, and how many editable text fields remain.
  */
-export function summarizeLocks(nodes) {
+export function summarizeLocks(nodes, getPattern, seen = new Set()) {
   let lockedComponents = 0
   let lockedProps = 0
   let editableFields = 0
 
   const walk = (list) => {
     for (const node of list) {
-      if (node.type === 'PatternRef') continue
+      if (node.type === 'PatternRef') {
+        if (!getPattern || !node.patternId || seen.has(node.patternId)) continue
+        const ref = getPattern(node.patternId)
+        if (!ref) continue
+        const next = summarizeLocks(ref.pattern.nodes, getPattern, new Set(seen).add(node.patternId))
+        lockedComponents += next.lockedComponents
+        lockedProps += next.lockedProps
+        editableFields += next.editableFields
+        continue
+      }
       if (node.lock?.node) lockedComponents += 1
       lockedProps += node.lock?.props?.length ?? 0
       if (node.content && !node.lock?.content) editableFields += 1

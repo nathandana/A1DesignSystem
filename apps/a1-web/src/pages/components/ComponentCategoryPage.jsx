@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -8,27 +7,23 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { LAST_UPDATED } from './data.js'
 import { getComponentPath, navigateCard } from './utils.js'
 
 export function ComponentCategoryPage({ category, onNavigate }) {
   return (
     <>
-    <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-      <Stack direction="column" gap="xs">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
-            { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateCard(e, onNavigate, 'components') },
-            { label: category.title },
-          ]}
-        />
-        <Heading as="h1" id={`${category.id}-category-heading`} size={{ xs: 'lg', md: 'xxl' }}>
-          {category.title}
-        </Heading>
-        <Paragraph size="sm" color="muted">{category.body}</Paragraph>
-      </Stack>
-</Section>
+    <PageTitleArea
+      headingId={`${category.id}-category-heading`}
+      breadcrumbItems={[
+        { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
+        { label: 'Components', href: getComponentPath('components'), onClick: (e) => navigateCard(e, onNavigate, 'components') },
+        { label: category.title },
+      ]}
+      title={category.title}
+      description={category.body}
+    />
     <Section padding="sm" contentWidth="xl" aria-labelledby={`${category.id}-category-heading`}>
       <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
         {category.components.map((component) => (

@@ -153,7 +153,7 @@ Status: **Complete.**
 - Replaced all 10 direct `base-color` uses in component CSS with semantic or component tokens:
   - **Link** — added `component.link.inverse.{color,colorHover,colorPressed}` (info ramp for dark/inverse contexts). CSS now references `--component-link-inverse-color*`.
   - **Notification** — added `component.notification.neutral.{background,foreground}` (neutral-600 / neutral-0). CSS uses `--component-notification-neutral-*`.
-  - **Section** — added `component.section.gradient.highlight` (aliases `base.color.highlited.200`). CSS and Pure `a1-base.css` use `--component-section-gradient-highlight`.
+  - **Section** — added `component.section.gradient.highlight` (aliases `base.color.highlighted.200`). CSS and Pure `a1-base.css` use `--component-section-gradient-highlight`.
   - **Segmented control** — added `component.segmented.inactive.{color,colorHover}` (semantic text-muted / base neutral-100). CSS uses `--component-segmented-inactive-color*`.
   - **Snackbar** — created `system/tokens/component/snackbar.json` with `component.snackbar.default.{background,border,foreground}` (always-dark neutral-900 / neutral-0). CSS uses `--component-snackbar-default-*`. Also removed the raw `rgba()` fallback from the box-shadow (guaranteed token).
   - **Switch** — added `component.switch.thumb.on.background` (neutral-0 — always-white thumb on colored track). CSS uses `--component-switch-thumb-on-background`.

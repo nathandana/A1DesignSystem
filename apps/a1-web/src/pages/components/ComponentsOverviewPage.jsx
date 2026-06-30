@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   DataTable,
   Grid,
@@ -9,6 +8,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { ruleSourceFiles } from './data.js'
 import { allComponents, getComponentPath, navigateCard } from './utils.js'
 
@@ -77,22 +77,15 @@ export function ComponentsOverviewPage({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
-              { label: 'Components' },
-            ]}
-          />
-          <Heading as="h1" id="component-inventory-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Component inventory
-          </Heading>
-          <Paragraph size="sm" color="muted" className="a1-web-section-body">
-            Full list of documented components, route targets, update dates, and package availability.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="component-inventory-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => navigateCard(e, onNavigate, 'home') },
+          { label: 'Components' },
+        ]}
+        title="Component inventory"
+        description="Full list of documented components, route targets, update dates, and package availability."
+      />
       <Section padding="sm" contentWidth="xl" gap="md" aria-labelledby="component-inventory-heading">
         <Grid columns={{ xs: 1, sm: 3 }} gap="md">
           {overviewStats.map((stat) => (

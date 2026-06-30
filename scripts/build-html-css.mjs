@@ -576,7 +576,7 @@ function componentCss() {
 
 .a1-section-gradient-highlight,
 .a1-section--gradient-highlight {
-  --a1-section-gradient-color: var(--base-color-highlited-200);
+  --a1-section-gradient-color: var(--component-section-gradient-highlight);
 }
 
 .a1-section-gradient-info,

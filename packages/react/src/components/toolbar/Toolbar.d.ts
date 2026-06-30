@@ -33,6 +33,13 @@ export interface ToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
    * `fit-content` wide. Default: false
    */
   fullWidth?: boolean;
+  /**
+   * Keep tools on one row and move trailing direct children into a More menu
+   * when the toolbar is narrower than its contents. Default: false
+   */
+  overflow?: boolean;
+  /** Accessible name and tooltip for the toolbar-level overflow trigger. Default: "More tools" */
+  overflowLabel?: string;
   children?: React.ReactNode;
 }
 /** A compact container grouping related editing controls on one subtle surface. */
@@ -94,6 +101,19 @@ export interface ToolbarMenuProps {
   disabled?: boolean;
   "aria-label"?: string;
   className?: string;
+  /**
+   * Internal — render the items inline as a labelled menu section instead of a
+   * trigger button. Set by the Toolbar when this menu is moved into the overflow
+   * menu, so its items appear in that menu rather than opening a nested submenu.
+   * @internal
+   */
+  inline?: boolean;
+  /**
+   * Internal — called after an inline item is chosen (used to close the parent
+   * overflow menu).
+   * @internal
+   */
+  onInlineSelect?: () => void;
 }
 /** A toolbar button that opens a dropdown Menu of choices (e.g. list types). */
 export declare function ToolbarMenu(props: ToolbarMenuProps): React.ReactElement;

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   Autocomplete,
   Banner,
-  Breadcrumb,
   Button,
   ButtonContainer,
   Card,
@@ -24,6 +23,7 @@ import { describeError, generateRule } from '../rules/aiRule.ts'
 import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { allComponents } from './components/utils.js'
 import { useT } from '../labels/useT.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 const COMPONENT_OPTIONS = (() => {
   const set = new Set(['General', 'Typography', ...allComponents.map((c) => c.title)])
@@ -159,19 +159,15 @@ export function RuleEditor({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-        <Breadcrumb
-          items={[
-            { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-            { label: t('app.page.rules', 'Rules') },
-          ]}
-        />
-          <Heading as="h1" id="rules-heading" size={{ xs: 'lg', md: 'xxl' }}>{t('app.page.rules', 'Rules')}</Heading>
-          <Paragraph size="sm" color="muted">
-              {t('app.rules.description', 'Every design rule in the system')} — {rules.length} {t('app.rules.descriptionTotal', 'total')}{userCount ? `, ${userCount} ${t('app.rules.descriptionCustom', 'custom')}` : ''}.
-            </Paragraph>
-          {AI_ENABLED ? (
+      <PageTitleArea
+        headingId="rules-heading"
+        breadcrumbItems={[
+          { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: t('app.page.rules', 'Rules') },
+        ]}
+        title={t('app.page.rules', 'Rules')}
+        description={`${t('app.rules.description', 'Every design rule in the system')} — ${rules.length} ${t('app.rules.descriptionTotal', 'total')}${userCount ? `, ${userCount} ${t('app.rules.descriptionCustom', 'custom')}` : ''}.`}
+        actions={AI_ENABLED ? (
             <SplitButton
               icon="add"
               onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}
@@ -184,8 +180,7 @@ export function RuleEditor({ onNavigate }) {
           ) : (
             <Button icon="add" onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}>{t('app.rules.newRule', 'New rule')}</Button>
           )}
-        </Stack>
-      </Section>
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="rules-heading">
         <Stack direction="column" gap="lg">

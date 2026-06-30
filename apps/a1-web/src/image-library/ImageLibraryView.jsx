@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Autocomplete,
   Banner,
-  Breadcrumb,
   Button,
   ButtonContainer,
   CheckboxGroup,
@@ -11,7 +10,6 @@ import {
   Dialog,
   Figure,
   Grid,
-  Heading,
   Icon,
   IconButton,
   MessageBadge,
@@ -28,6 +26,7 @@ import {
   ToolbarDivider,
   ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import {
   addImage,
   deleteImage,
@@ -82,7 +81,7 @@ function formatDate(ms) {
  * manage them. Figures reference these images via the Figure configurator's
  * "Choose from library" picker. Reached from the editor home and the Editor menu.
  */
-export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHome }) {
+export function ImageLibraryView({ projects = [], onNavigateHome }) {
   const version = useImageLibraryVersion()
   const [images, setImages] = useState([])
   const [error, setError] = useState('')
@@ -299,22 +298,15 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-              { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
-              { label: 'Image library' },
-            ]}
-          />
-          <Heading as="h1" id="image-library-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Image library
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Upload images to use in Figures. They’re stored locally in this browser and shared
-            across every project.
-          </Paragraph>
+      <PageTitleArea
+        headingId="image-library-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+          { label: 'Image library' },
+        ]}
+        title="Image library"
+        description="Upload images to use in Figures. They’re stored locally in this browser and shared across every project."
+        actions={(
           <SplitButton
             icon="upload"
             loading={busy}
@@ -327,8 +319,8 @@ export function ImageLibraryView({ projects = [], onBackToProjects, onNavigateHo
           >
             Upload images
           </SplitButton>
-        </Stack>
-      </Section>
+        )}
+      />
 
       <Section padding="sm" aria-labelledby="image-library-heading" contentWidth="xl">
         <Stack direction="column" gap="md">

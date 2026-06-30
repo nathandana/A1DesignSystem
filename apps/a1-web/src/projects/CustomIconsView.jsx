@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Banner,
-  Breadcrumb,
   Button,
   Card,
   CheckboxGroup,
@@ -18,6 +17,7 @@ import {
   Toolbar,
   ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import {
   addCustomIcon,
   deleteCustomIcon,
@@ -152,22 +152,15 @@ export function CustomIconsView({ projects = [], onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack gap="sm">
-          <Breadcrumb
-            items={[
-              { label: 'Home', onClick: () => onNavigate?.('home') },
-              { label: 'Custom icons', current: true },
-            ]}
-          />
-          <Stack direction="row" gap="md" align="center" justify="between" wrap>
-            <Stack gap="xs">
-              <Heading as="h1" size="xl">Custom icons</Heading>
-              <Paragraph color="muted">
-                Validate SVG artwork, build a browser font, and scope icons to projects.
-              </Paragraph>
-            </Stack>
-            <Stack direction="row" gap="sm" wrap>
+      <PageTitleArea
+        breadcrumbItems={[
+          { label: 'Home', onClick: () => onNavigate?.('home') },
+          { label: 'Custom icons', current: true },
+        ]}
+        title="Custom icons"
+        description="Validate SVG artwork, build a browser font, and scope icons to projects."
+        actions={(
+          <>
               {import.meta.env.DEV && (
                 <Button
                   icon="draw"
@@ -178,10 +171,9 @@ export function CustomIconsView({ projects = [], onNavigate }) {
                 </Button>
               )}
               <Button icon="add" onClick={openUpload}>Add custom icon</Button>
-            </Stack>
-          </Stack>
-        </Stack>
-      </Section>
+          </>
+        )}
+      />
 
       <Section padding="sm" contentWidth="xl">
         <Stack gap="lg">

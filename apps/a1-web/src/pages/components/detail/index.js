@@ -69,6 +69,7 @@ import * as dataTable from './data-table.jsx'
 import * as pagination from './pagination.jsx'
 import * as icon from './icon.jsx'
 import * as accordion from './accordion.jsx'
+import componentExamples from '../componentExamples.json'
 
 // Registry of per-component detail modules. A component only needs an entry when
 // it requires bespoke preview, controls, snippet, or default config. Anything
@@ -159,5 +160,8 @@ export function getDetailModule(componentId) {
     // Platforms the component can be viewed/coded as (React / Native / Pure).
     // Present only on modules that opt in; drives the page's "View as" toolbar.
     viewAsModes: specific.viewAsModes ?? null,
+    // Lightweight JSON-backed preconfigured examples/sticker sheets. Selecting
+    // one applies its config to the same live configurator state.
+    examples: specific.examples ?? componentExamples[componentId] ?? [],
   }
 }

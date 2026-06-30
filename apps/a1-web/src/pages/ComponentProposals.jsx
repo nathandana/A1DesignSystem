@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   Autocomplete,
   Banner,
-  Breadcrumb,
   Button,
   ButtonContainer,
   Card,
@@ -22,6 +21,7 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
+import { PageTitleArea } from './PageTitleArea.jsx'
 import { definitionToJsx } from '../editor/definitionToJsx.ts'
 import { chooseModel, listLocalModels, localChat } from '../lib/localAi.ts'
 import { allComponents } from './components/utils.js'
@@ -830,23 +830,16 @@ export function ComponentProposals({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (event) => { event?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Component proposals' },
-            ]}
-          />
-          <Heading as="h1" id="component-proposals-heading" size={{ xs: 'lg', md: 'xxl' }}>Component proposals</Heading>
-          <Paragraph size="sm" color="muted">
-            Describe a component or property change, generate a governed draft, and move it through proposal review before release.
-          </Paragraph>
-          <ButtonContainer>
-            <Button icon="add" onClick={openNewDialog}>New component</Button>
-          </ButtonContainer>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="component-proposals-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (event) => { event?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Component proposals' },
+        ]}
+        title="Component proposals"
+        description="Describe a component or property change, generate a governed draft, and move it through proposal review before release."
+        actions={<Button icon="add" onClick={openNewDialog}>New component</Button>}
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="component-proposals-heading">
         <Stack direction="column" gap="lg">

@@ -1,6 +1,5 @@
 import {
   Banner,
-  Breadcrumb,
   Card,
   DataTable,
   Grid,
@@ -14,6 +13,7 @@ import {
 import reportData from '../../../../reports/a11y.json'
 import componentReportData from './componentA11ySummary.generated.json'
 import { useT } from '../labels/useT.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 const CODE_STYLE = {
   fontFamily: 'var(--component-inline-font-family-mono, monospace)',
@@ -196,29 +196,23 @@ export function Accessibility({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: t('app.accessibility.pageTitle', 'Accessibility report') },
-            ]}
-          />
-          <Heading as="h1" id="a11y-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            {t('app.accessibility.pageTitle', 'Accessibility report')}
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            {t('app.accessibility.pageDescription', 'Automated WCAG 2.0 / 2.1 / 2.2 Level A & AA checks run against every Storybook story in the default theme using axe-core via the Storybook test runner.')}
-          </Paragraph>
-          <Stack direction="row" gap="xs" align="center" wrap>
-            <MessageBadge icon={meta.icon} size="sm" status={meta.status}>{meta.label}</MessageBadge>
-            <Paragraph size="sm" color="muted">{t('app.accessibility.lastScanned', 'Last scanned:')} {generated}</Paragraph>
-          </Stack>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="a11y-heading"
+        breadcrumbItems={[
+          { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: t('app.accessibility.pageTitle', 'Accessibility report') },
+        ]}
+        title={t('app.accessibility.pageTitle', 'Accessibility report')}
+        description={t('app.accessibility.pageDescription', 'Automated WCAG 2.0 / 2.1 / 2.2 Level A & AA checks run against every Storybook story in the default theme using axe-core via the Storybook test runner.')}
+      >
+      </PageTitleArea>
 
       {/* ── Summary stats ── */}
-      <Section padding="sm" contentWidth="lg" surface="raised" aria-label={t('app.accessibility.reportSummaryLabel', 'Report summary')}>
+      <Section padding="sm" contentWidth="lg" surface="raised" aria-label={t('app.accessibility.reportSummaryLabel', 'Report summary')} gap="sm"> 
+        <Stack direction="row" gap="xs" align="center" wrap>
+            <MessageBadge icon={meta.icon} size="sm" status={meta.status}>{meta.label}</MessageBadge>
+            <Paragraph size="sm" color="muted">{t('app.accessibility.lastScanned', 'Last scanned:')} {generated}</Paragraph>
+        </Stack>
         <Grid columns={{ xs: 2, sm: 3, md: 6 }} gap="sm">
           <StatCard value={totalScanned}                    label={t('app.accessibility.storiesScanned', 'Stories scanned')}  />
           <StatCard value={storiesAffected}                 label={t('app.accessibility.storiesAffected', 'Stories affected')} highlight />

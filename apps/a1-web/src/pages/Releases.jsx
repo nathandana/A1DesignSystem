@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  Breadcrumb,
   Card,
   Code,
   Heading,
@@ -15,6 +14,7 @@ import {
   Tabs,
 } from '@gtivr4/a1-design-system-react'
 import changelogMarkdown from '../../CHANGELOG.md?raw'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 function createReleaseId(title) {
   return title
@@ -160,44 +160,29 @@ export function Releases({ onNavigate }) {
 
   if (releases.length === 0) {
     return (
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Releases' },
-            ]}
-          />
-          <Heading as="h1" id="releases-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Releases
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            No published releases are listed in the changelog yet.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="releases-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Releases' },
+        ]}
+        title="Releases"
+        description="No published releases are listed in the changelog yet."
+      />
     )
   }
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Releases' },
-            ]}
-          />
-          <Heading as="h1" id="releases-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Releases
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Published changes from the A1 web changelog. Each release tab is generated from
-            <Code variant="inline">apps/a1-web/CHANGELOG.md</Code>.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="releases-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Releases' },
+        ]}
+        title="Releases"
+        description={<>Published changes from the A1 web changelog. Each release tab is generated from <Code variant="inline">apps/a1-web/CHANGELOG.md</Code>.</>}
+      />
 
       <Section padding="sm" contentWidth="md" aria-label="Release notes">
         <Tabs value={activeRelease} onChange={setActiveRelease}>

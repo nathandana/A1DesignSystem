@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
   Banner,
-  Breadcrumb,
   Button,
   ButtonContainer,
   Card,
@@ -18,6 +17,7 @@ import { loadProjects } from '../projects/projectStore'
 import { migrateLocalImagesToCloud } from '../lib/imageLibrary'
 import { getStorageStatus } from '../lib/storageStatus'
 import { useT } from '../labels/useT.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Account page built from A1 components. Invite-only: sign-in only (no public
 // sign-up — the whole app is gated by AuthGate). Signed in: account info, a
@@ -88,17 +88,15 @@ export function AccountPage({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="md" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: t('app.page.account', 'Account') },
-            ]}
-          />
-          <Heading as="h1" id="account-heading" size={{ xs: 'lg', md: 'xxl' }}>{t('app.page.account', 'Account')}</Heading>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="account-heading"
+        contentWidth="md"
+        breadcrumbItems={[
+          { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: t('app.page.account', 'Account') },
+        ]}
+        title={t('app.page.account', 'Account')}
+      />
 
       <Section padding="sm" contentWidth="xs" aria-labelledby="account-heading">
         {!configured ? (

@@ -601,6 +601,7 @@ export function Backlog({ onNavigate }) {
             />
 
             <SearchField
+              data-a1-page-search=""
               aria-label={t('app.backlog.searchLabel', 'Search backlog')}
               size="compact"
               value={query}

@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -11,6 +10,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { version } from '../../package.json'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Surfaces of the app, surfaced as navigation cards.
 const EXPLORE = [
@@ -33,23 +33,15 @@ const PRINCIPLES = [
 export function About({ onNavigate }) {
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'About' },
-            ]}
-          />
-          <Stack direction="row" gap="sm" align="center" wrap>
-            <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>About A1</Heading>
-            <MessageBadge status="info" subtle size="sm">Version {version}</MessageBadge>
-          </Stack>
-          <Paragraph size="md" color="muted">
-            A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'About' },
+        ]}
+        title="About A1"
+        titleAccessory={<MessageBadge status="info" >Version {version}</MessageBadge>}
+        description="A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it."
+      />
 
       <Section padding="md" contentWidth="xl">
         <Stack gap="lg">

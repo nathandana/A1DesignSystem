@@ -25,6 +25,12 @@
         "$description": "Backlog ticket status: actively being worked on.",
         "locale": { "es": "En curso", "fr": "En cours", "de": "In Arbeit", "pt": "Em andamento", "ja": "進行中", "zh": "进行中", "ar": "قيد التنفيذ" }
       },
+      "statusPaused": {
+        "$type": "string",
+        "$value": "Paused",
+        "$description": "Backlog ticket status: work is intentionally on hold.",
+        "locale": { "es": "Pausado", "fr": "En pause", "de": "Pausiert", "pt": "Pausado", "ja": "一時停止", "zh": "已暂停", "ar": "متوقف مؤقتًا" }
+      },
       "statusDone": {
         "$type": "string",
         "$value": "Done",

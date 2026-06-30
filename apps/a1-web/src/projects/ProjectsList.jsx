@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  Breadcrumb,
   Button,
   Card,
   ContextMenu,
@@ -14,6 +13,7 @@ import {
   SplitButton,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { ProjectImportDialog } from './ProjectImportDialog.jsx'
 import { AiProjectDialog } from './AiProjectDialog.jsx'
@@ -80,21 +80,16 @@ export function ProjectsList({
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-              { label: 'Projects' },
-            ]}
-          />
-          <Heading as="h1" id="projects-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Projects
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Each project is an isolated set of pages with its own auto-generated navigation.
-          </Paragraph>
-          <Stack direction="row" gap="xs" align="center" wrap>
+      <PageTitleArea
+        headingId="projects-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+          { label: 'Projects' },
+        ]}
+        title="Projects"
+        description="Each project is an isolated set of pages with its own auto-generated navigation."
+        actions={(
+          <>
             <Button variant="secondary" icon="help" onClick={() => onOpenHelp?.()}>
               Help
             </Button>
@@ -123,9 +118,9 @@ export function ProjectsList({
             ) : (
               <Button icon="add" onClick={() => setDialog({ mode: 'create' })}>New project</Button>
             )}
-          </Stack>
-        </Stack>
-      </Section>
+          </>
+        )}
+      />
 
       <Section padding="sm" aria-labelledby="projects-heading" contentWidth="xl">
         <Stack direction="column" gap="sm">

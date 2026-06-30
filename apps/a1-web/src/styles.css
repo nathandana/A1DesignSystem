@@ -627,6 +627,23 @@ body {
   background-size: var(--base-spacing-24) var(--base-spacing-24);
 }
 
+.a1-web-example-preview-scroll {
+  box-sizing: border-box;
+  inline-size: 100%;
+  overflow-x: auto;
+  padding: var(--base-spacing-12);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-web-example-preview {
+  box-sizing: border-box;
+  inline-size: var(--a1-web-example-preview-width, 100%);
+  max-inline-size: 100%;
+  margin-inline: auto;
+}
+
 .a1-web-container-query-preview-scroll {
   box-sizing: border-box;
   inline-size: 100%;

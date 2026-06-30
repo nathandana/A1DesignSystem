@@ -1650,6 +1650,7 @@ const PADDING_ITEMS = [
 ]
 
 const VISIBLE_DETAIL_TABS = new Set(['configure', 'rules', 'properties', 'accessibility'])
+const EXAMPLE_TAB_PREFIX = 'example:'
 const GENERATED_PROP_ALIASES = {
   'date-field': 'text-field',
   'time-field': 'text-field',
@@ -1659,7 +1660,21 @@ const GENERATED_PROP_ALIASES = {
 }
 
 function visibleDetailTab(tab) {
+  if (tab?.startsWith(EXAMPLE_TAB_PREFIX)) return 'examples'
   return VISIBLE_DETAIL_TABS.has(tab) ? tab : 'configure'
+}
+
+function exampleIdFromTab(tab) {
+  return tab?.startsWith(EXAMPLE_TAB_PREFIX) ? tab.slice(EXAMPLE_TAB_PREFIX.length) : null
+}
+
+function cloneExampleConfig(config) {
+  return JSON.parse(JSON.stringify(config ?? {}))
+}
+
+function examplePreviewStyle(example) {
+  const width = example?.preview?.width
+  return width ? { '--a1-web-example-preview-width': width } : undefined
 }
 
 function normalizePropTables(component) {
@@ -2940,10 +2955,70 @@ function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
   )
 }
 
+function ComponentConfigureSurface({
+  component,
+  detail,
+  config,
+  setConfig,
+  displayConfig,
+  setDisplayConfig,
+  viewAs,
+  utilityClass,
+  example,
+}) {
+  const preview = (
+    <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
+      {detail.bareDisplay ? (
+        <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+          <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+        </ContainerQueryPreviewFrame>
+      ) : (
+        <Section
+          align={displayConfig.align}
+          padding={displayConfig.padding}
+          inverse={displayConfig.inverse}
+          gap="lg"
+          borderSize={displayConfig.borderSize}
+          borderStyle={displayConfig.borderStyle}
+          borderVariant={displayConfig.borderVariant}
+          radius={displayConfig.radius}
+        >
+          <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
+            <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+          </ContainerQueryPreviewFrame>
+        </Section>
+      )}
+    </ResponsivePreviewFrame>
+  )
+
+  return (
+    <Stack gap="sm">
+      <DisplayToolbar
+        displayConfig={displayConfig}
+        setDisplayConfig={setDisplayConfig}
+        bareDisplay={detail.bareDisplay}
+      />
+      {example?.preview?.width ? (
+        <div className="a1-web-example-preview-scroll">
+          <div className="a1-web-example-preview" style={examplePreviewStyle(example)}>
+            {preview}
+          </div>
+        </div>
+      ) : preview}
+      <Divider lineStyle="dashed" space="lg" />
+      <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
+    </Stack>
+  )
+}
+
 export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
   const detail = getDetailModule(component.id)
-  const activeTab = visibleDetailTab(tab)
+  const examples = detail.examples ?? []
+  const requestedExampleId = exampleIdFromTab(tab)
+  const isExamplePage = Boolean(requestedExampleId)
+  const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
+  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExampleId ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
   const [viewAs, setViewAs] = useState('react')
@@ -2967,9 +3042,12 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   const relatedComponents = getRelatedComponents(component)
   const utilityType = componentUtilityType(component)
   const utilityClass = utilityClassesFor(utilityType, config.utilities)
+  const selectedExample = examples.find((example) => example.id === selectedExampleId)
+  const activeExample = selectedExample ?? examples[0]
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
+    setSelectedExampleId(requestedExampleId ?? examples[0]?.id ?? null)
     setViewAs('react')
     // Re-apply the per-component display alignment default (center for
     // natural-width components, none for flexible ones) on navigation.
@@ -2978,10 +3056,39 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
   }, [component.id, component.title, category.icon])
 
   useEffect(() => {
-    if (activeTab !== tab) onTabChange?.(activeTab)
+    if (requestedExampleId && examples.some((example) => example.id === requestedExampleId)) {
+      setSelectedExampleId(requestedExampleId)
+    }
+  }, [examples, requestedExampleId])
+
+  useEffect(() => {
+    if (activeTab !== 'examples' && !isExamplePage) return
+    const example = activeExample
+    if (!example) return
+    setConfig((current) => ({
+      ...current,
+      ...cloneExampleConfig(example.config),
+    }))
+    if (example.display) {
+      setDisplayConfig((current) => ({ ...current, ...example.display }))
+    }
+  }, [activeTab, activeExample, component.id, isExamplePage])
+
+  useEffect(() => {
+    if (activeTab !== tab && !tab?.startsWith(EXAMPLE_TAB_PREFIX)) onTabChange?.(activeTab)
   }, [activeTab, onTabChange, tab])
 
   function resetConfig() {
+    if (isExamplePage && activeExample) {
+      setConfig((current) => ({
+        ...current,
+        ...cloneExampleConfig(activeExample.config),
+      }))
+      if (activeExample.display) {
+        setDisplayConfig((current) => ({ ...current, ...activeExample.display }))
+      }
+      return
+    }
     setConfig(detail.getDefaultConfig(component, category))
   }
 
@@ -2995,7 +3102,20 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
     return () => window.removeEventListener('resize', find)
   }, [activeTab, component.id])
 
-  const breadcrumbItems = getBreadcrumbItems({ category, component }, onNavigate)
+  const breadcrumbItems = isExamplePage && activeExample
+    ? [
+        ...getBreadcrumbItems({ category, component }, onNavigate).map((item, index, items) =>
+          index === items.length - 1
+            ? {
+                href: getComponentPath(`component-${component.id}`),
+                label: component.title,
+                onClick: (event) => navigateBreadcrumb(event, onNavigate, `component-${component.id}`),
+              }
+            : item,
+        ),
+        { label: activeExample.title },
+      ]
+    : getBreadcrumbItems({ category, component }, onNavigate)
 
   return (
     <ComponentDocsShell>
@@ -3018,7 +3138,26 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
           <Breadcrumb items={breadcrumbItems} />
         </Section>
         <Section padding="xs" surface='page' direction="column" gap="xs">
-          <Tabs value={activeTab} onChange={onTabChange} size="compact">
+          {isExamplePage && activeExample ? (
+            <Stack gap="lg">
+              <Stack gap="xs">
+                <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>{activeExample.title}</Heading>
+                <Paragraph size="sm" color="muted">{activeExample.description}</Paragraph>
+              </Stack>
+              <ComponentConfigureSurface
+                component={component}
+                detail={detail}
+                config={config}
+                setConfig={setConfig}
+                displayConfig={displayConfig}
+                setDisplayConfig={setDisplayConfig}
+                viewAs={viewAs}
+                utilityClass={utilityClass}
+                example={activeExample}
+              />
+            </Stack>
+          ) : (
+            <Tabs value={activeTab} onChange={onTabChange} size="compact">
             <TabList>
               <Tab value="configure">Configure</Tab>
               <Tab value="rules">Rules</Tab>
@@ -3026,37 +3165,16 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <Tab value="accessibility">Accessibility</Tab>
             </TabList>
             <TabPanel value="configure">
-              <Stack gap="sm">
-                <DisplayToolbar
-                  displayConfig={displayConfig}
-                  setDisplayConfig={setDisplayConfig}
-                  bareDisplay={detail.bareDisplay}
-                />
-                <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
-                  {detail.bareDisplay ? (
-                    <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                      <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
-                    </ContainerQueryPreviewFrame>
-                  ) : (
-                    <Section
-                      align={displayConfig.align}
-                      padding={displayConfig.padding}
-                      inverse={displayConfig.inverse}
-                      gap="lg"
-                      borderSize={displayConfig.borderSize}
-                      borderStyle={displayConfig.borderStyle}
-                      borderVariant={displayConfig.borderVariant}
-                      radius={displayConfig.radius}
-                    >
-                      <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-                        <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
-                      </ContainerQueryPreviewFrame>
-                    </Section>
-                  )}
-                </ResponsivePreviewFrame>
-                <Divider lineStyle="dashed" space="lg" />
-                <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
-              </Stack>
+              <ComponentConfigureSurface
+                component={component}
+                detail={detail}
+                config={config}
+                setConfig={setConfig}
+                displayConfig={displayConfig}
+                setDisplayConfig={setDisplayConfig}
+                viewAs={viewAs}
+                utilityClass={utilityClass}
+              />
             </TabPanel>
 
             <TabPanel value="overview">
@@ -3133,7 +3251,8 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
               <AccessibilityPanel component={component} />
             </TabPanel>
           </Tabs>
-          </Section>
+          )}
+        </Section>
     </ComponentDocsShell>
   )
 }

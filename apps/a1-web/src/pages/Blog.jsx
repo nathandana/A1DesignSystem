@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  Breadcrumb,
   Card,
   Figure,
   Grid,
@@ -9,10 +8,10 @@ import {
   Paragraph,
   SearchField,
   Section,
-  Spacer,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { BLOG_POSTS } from './blogPosts.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 function matchesPost(post, query) {
   const normalized = query.trim().toLowerCase()
@@ -72,27 +71,22 @@ export function Blog({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Blog' },
-            ]}
-          />
-          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>Blog</Heading>
-          <Paragraph size="md" color="muted">
-            Release newsletters, demos, and walkthroughs from the A1 product and design system.
-          </Paragraph>
-        </Stack>
-        <Spacer></Spacer>
+      <PageTitleArea
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Blog' },
+        ]}
+        title="Blog"
+        description="Release newsletters, demos, and walkthroughs from the A1 product and design system."
+      >
         <SearchField
+          data-a1-page-search=""
           placeholder="Search releases, demos, or topics"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onClear={() => setQuery('')}
         />
-      </Section>
+      </PageTitleArea>
 
       <Section padding="md" contentWidth="xl">
         <Stack direction="column" gap="lg">

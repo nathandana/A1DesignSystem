@@ -4,6 +4,7 @@
 
 ### Added
 
+- **Toolbar overflow pattern** (A1-354) — `Toolbar` now accepts `overflow` and `overflowLabel`. When enabled, the toolbar keeps direct tools on one row, measures the available inline space, and moves trailing tools into a More menu when the toolbar is narrower than its contents. Added an `Overflow toolbar` Storybook story and exposed the setting in the a1-web Toolbar configurator. Use this for whole-bar responsiveness; keep `ToolbarGroup overflow` for collapsing options inside one group.
 - **Icon — registered custom fonts** — `Icon` now resolves `custom:<name>` values through a runtime custom-font registry while preserving Material Symbols for every unprefixed name. Exported `registerCustomIconFont()` and `clearCustomIconFont()` allow browser applications to register a generated font URL and name-to-codepoint map.
 - **`neutral.25` colour-ramp step** (`#f7fafe`) — a near-white step between `neutral.0` and `neutral.50`. `semantic.color.surface.page` now resolves to it, so the default themes (base, a1-light) render on a barely-tinted off-white page; white cards/fields read as raised surfaces against it. Branded themes keep their own page backgrounds.
 - **Color-token architecture guardrails** — added a shared light/dark mode contract used by React, Pure CSS, and React Native generation, a blocking token/theme/CSS audit (`tokens:audit:check`), and computed-style contracts across all focused theme/mode/inverse fixtures (`tokens:contract:check`). The audit now prevents duplicate paths, unresolved aliases, unknown references, raw authored React colors, mode-contract drift, direct base-color use in component CSS, and new `brand.*` definitions.
@@ -15,6 +16,10 @@
 
 ### Fixed
 
+- **Toolbar overflow — no menu-from-a-menu** (A1-354) — when a `ToolbarMenu` is moved into the toolbar's More menu, its choices now render **inline** inside that menu as a labelled section (preserving the active selection and original order) instead of as a button that opens a second, nested submenu. Choosing an inline item applies the value and closes the More menu. The selected inline item uses the Toolbar's subtler selected treatment (default text on a darker neutral fill) rather than the bold action-background `MenuItem` highlight, so it matches the rest of the bar.
+- **Toolbar overflow panel layout** — the More panel now wraps overflowed tools into horizontal grouped rows, with dividers acting as full-width group breaks, instead of forcing every direct toolbar child into a vertical stack.
+- **Color ramps** (A1-371) — fixed the highlighted color-ramp token spelling to `base.color.highlighted` / `--base-color-highlighted-*`, and updated the heading/section highlight aliases.
+- **DataTable search shortcut targeting** — the built-in DataTable search input now carries the standard page-search marker used by a1-web, so app-level `/` search focus can land in table search controls without any consumer prop changes.
 - **InlineEditable focus and radius tokens** — replaced nonexistent `--base-border-radius-sm` and `--semantic-color-interactive-default` references with the established `--base-radius-sm` and field focus-ring tokens, restoring the intended visible focus treatment.
 
 ## 0.25.0 — 2026-06-24

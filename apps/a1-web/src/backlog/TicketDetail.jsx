@@ -121,7 +121,7 @@ function QuestionChoices({ options, allowOther, onAnswer }) {
 
 // Status toolbar split: the common workflow stages sit inline; the rest live in a
 // "More" overflow menu so the bar stays compact.
-export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'done']
+export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done']
 export const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
 
 export function ThreadEntry({ entry, answered, onAnswer }) {

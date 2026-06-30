@@ -63,7 +63,7 @@ const HEIGHT_ITEMS = labelItems(['', 'hero', 'screen'])
 const GRADIENT_ITEMS = [
   { value: '', label: 'None' },
   { value: 'accent', label: 'Accent', swatch: 'var(--semantic-color-action-background)' },
-  { value: 'highlight', label: 'Highlight', swatch: 'var(--base-color-highlited-200)' },
+  { value: 'highlight', label: 'Highlight', swatch: 'var(--base-color-highlighted-200)' },
   { value: 'info', label: 'Info', swatch: 'var(--semantic-color-status-info-background)' },
   { value: 'success', label: 'Success', swatch: 'var(--semantic-color-status-success-background)' },
   { value: 'warn', label: 'Warn', swatch: 'var(--semantic-color-status-warn-background)' },

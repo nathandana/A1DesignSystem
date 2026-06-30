@@ -27,10 +27,10 @@ const OUT_DIR = resolve(REPO_ROOT, 'backlog')
 const JSON_PATH = resolve(OUT_DIR, 'tickets.json')
 const MD_PATH = resolve(OUT_DIR, 'BACKLOG.md')
 
-const STATUS_ORDER = ['new', 'triaged', 'accepted', 'in_progress', 'done', 'released', 'wont_fix', 'duplicate', 'cancelled']
+const STATUS_ORDER = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done', 'released', 'wont_fix', 'duplicate', 'cancelled']
 const STATUS_LABELS = {
   new: 'New', triaged: 'Triaged', accepted: 'Accepted', in_progress: 'In progress',
-  done: 'Done', released: 'Released', wont_fix: "Won't fix", duplicate: 'Duplicate', cancelled: 'Cancelled',
+  paused: 'Paused', done: 'Done', released: 'Released', wont_fix: "Won't fix", duplicate: 'Duplicate', cancelled: 'Cancelled',
 }
 const PRIORITY_RANK = { p0: 0, p1: 1, p2: 2, p3: 3 }
 const normalizeType = (value) => (value === 'bug' || value === 'epic' ? value : 'feature')

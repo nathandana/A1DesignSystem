@@ -1,19 +1,18 @@
-[10:36:30.532] [INFO] storybook v10.4.2
-[10:36:31.735] [DEBUG] Getting package.json info for /Users/nathandana/Sites/A1DesignSystem/package.json...
-[10:36:31.992] [DEBUG] Serving static files from .storybook/public at /
-[10:36:31.992] [INFO] Starting...
-[10:36:32.434] [DEBUG] Starting preview..
-[10:36:32.484] [DEBUG] Using tsconfig paths for react-docgen
-[10:36:32.549] [INFO] Vite Re-optimizing dependencies because vite config has changed
-[10:36:32.589] [DEBUG] Change detection enabled.
-[10:36:32.589] [DEBUG] Change detection: snapshotting Vite resolve config (restart required if vite.config.ts changes)
-[10:36:32.589] [DEBUG] Change detection: ignored 12 regex alias(es); related modules tracked as opaque-leaf.
-[10:36:32.589] [DEBUG] ChangeDetectionResolverFactory: skipped regex aliases [/^@storybook\/global$/, /^storybook\/test$/, /^storybook\/actions$/, /^storybook\/preview-api$/, /^storybook\/internal\/channels$/, /^storybook\/internal\/client-logger$/, /^storybook\/internal\/core-events$/, /^storybook\/internal\/preview-errors$/, /^storybook\/internal\/types$/, /^storybook\/internal\/preview-api$/, /^\/?@vite\/env/, /^\/?@vite\/client/]
-[10:36:32.613] [ERROR] [38;2;241;97;97mError: listen EADDRINUSE: address already in use 127.0.0.1:6006[39m
+[10:22:53.690] [INFO] storybook v10.4.2
+[10:22:54.285] [DEBUG] Getting package.json info for /Users/nathandana/Sites/A1DesignSystem/package.json...
+[10:22:54.518] [DEBUG] Serving static files from .storybook/public at /
+[10:22:54.518] [INFO] Starting...
+[10:22:55.033] [DEBUG] Starting preview..
+[10:22:55.055] [DEBUG] Using tsconfig paths for react-docgen
+[10:22:55.150] [DEBUG] Change detection enabled.
+[10:22:55.151] [DEBUG] Change detection: snapshotting Vite resolve config (restart required if vite.config.ts changes)
+[10:22:55.151] [DEBUG] Change detection: ignored 12 regex alias(es); related modules tracked as opaque-leaf.
+[10:22:55.151] [DEBUG] ChangeDetectionResolverFactory: skipped regex aliases [/^@storybook\/global$/, /^storybook\/test$/, /^storybook\/actions$/, /^storybook\/preview-api$/, /^storybook\/internal\/channels$/, /^storybook\/internal\/client-logger$/, /^storybook\/internal\/core-events$/, /^storybook\/internal\/preview-errors$/, /^storybook\/internal\/types$/, /^storybook\/internal\/preview-api$/, /^\/?@vite\/env/, /^\/?@vite\/client/]
+[10:22:55.168] [ERROR] [38;2;241;97;97mError: listen EADDRINUSE: address already in use 127.0.0.1:6006[39m
     at Server.setupListenHandle [as _listen2] (node:net:2008:16)
     at listenInCluster (node:net:2065:12)
     at node:net:2274:7
     at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
-[10:36:32.614] [WARN] Broken build, fix the error above.
+[10:22:55.169] [WARN] Broken build, fix the error above.
 You may need to refresh the browser.
-[10:36:32.667] [DEBUG] Change detection graph built: 80 stories, 220 deps tracked, 75ms
+[10:22:55.259] [DEBUG] Change detection graph built: 106 stories, 289 deps tracked, 106ms

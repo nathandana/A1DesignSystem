@@ -527,6 +527,7 @@ export function LabelEditor({ onNavigate }) {
           )}
 
           <SearchField
+            data-a1-page-search=""
             aria-label={t('app.labelEditor.searchAriaLabel', 'Search labels')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}

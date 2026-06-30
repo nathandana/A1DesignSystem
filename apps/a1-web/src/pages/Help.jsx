@@ -10,7 +10,6 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   Accordion,
   Banner,
-  Breadcrumb,
   Button,
   ButtonContainer,
   Code,
@@ -32,6 +31,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { MOD, ALT, SHIFT, DEL } from '../editor/shortcuts.ts'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Small helpers for article bodies ------------------------------------------------
 
@@ -1049,7 +1049,7 @@ const HELP = [
         keywords: 'image library upload local images figure indexeddb store browser drag drop photo picker',
         body: (
           <Stack gap="sm">
-            <P>The <strong>Image library</strong> (open it from the Editor menu or the <Icon name="photo_library" size="sm" /> button on the Projects home) holds images you upload, shared across every project.</P>
+            <P>The standalone <strong>Image library</strong> holds images you upload, shared across every project. Open it from the Editor menu, the Home tools section, or the <Icon name="photo_library" size="sm" /> button on the Projects home.</P>
             <Shot
               name="image-library"
               alt="The Image library page with an upload area and the uploaded images, reusable across every project."
@@ -1558,6 +1558,7 @@ const HELP = [
               size="sm"
               labelWidth="fixed"
               items={[
+                { label: 'Page search', value: "'" },
                 { label: 'Global search', value: `${MOD}K or /` },
                 { label: 'Main content', value: `${ALT}M or G then M` },
                 { label: 'Go home', value: 'G then H' },
@@ -1620,7 +1621,7 @@ const HELP = [
       {
         id: 'backlog-board',
         title: 'The board, statuses, and your queue',
-        keywords: 'backlog board status queue vote upvote assign triage workflow new triaged accepted in progress done released',
+        keywords: 'backlog board status queue vote upvote assign triage workflow new triaged accepted in progress paused done released',
         body: (
           <Stack gap="sm">
             <P>Tickets move through a workflow you can see on the <strong>Board</strong> tab:</P>
@@ -1762,29 +1763,24 @@ export function Help({ onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Help' },
-            ]}
-          />
-          <Heading as="h1" id="help-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Help
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            How everything works.
-          </Paragraph>
+      <PageTitleArea
+        headingId="help-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Help' },
+        ]}
+        title="Help"
+        description="How everything works."
+      >
           <SearchField
+            data-a1-page-search=""
             label="Search help"
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onClear={() => setQuery('')}
           />
-        </Stack>
-      </Section>
+      </PageTitleArea>
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="help-heading">
         <Stack direction="column" gap="lg">

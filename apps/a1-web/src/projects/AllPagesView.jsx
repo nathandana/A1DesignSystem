@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  Breadcrumb,
   Button,
   Canvas,
   Card,
@@ -17,6 +16,7 @@ import {
   SegmentedControl,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { exportProjectJson, resolvePageJson } from './projectStore'
 
@@ -155,22 +155,17 @@ export function AllPagesView({
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-              { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
-              { label: project?.name ?? 'Project' },
-            ]}
-          />
-          <Heading as="h1" id="all-pages-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            {project?.name ?? 'Project'}
-          </Heading>
-          {project?.description && (
-            <Paragraph size="sm" color="muted">{project.description}</Paragraph>
-          )}
-          <Stack direction="row" gap="xs" align="center" wrap>
+      <PageTitleArea
+        headingId="all-pages-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+          { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
+          { label: project?.name ?? 'Project' },
+        ]}
+        title={project?.name ?? 'Project'}
+        description={project?.description}
+        actions={(
+          <>
             <Button variant="secondary" size='sm' icon="edit" onClick={() => setEditOpen(true)}>Edit</Button>
             {onEditLayout && (
               <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
@@ -183,9 +178,9 @@ export function AllPagesView({
               </Button>
             )}
             <Button icon="add" onClick={() => onAddPage?.({})} size='sm'>Add page</Button>
-          </Stack>
-        </Stack>
-      </Section>
+          </>
+        )}
+      />
 
       <Section padding="sm" aria-labelledby="all-pages-heading" contentWidth="xl">
         <Stack direction="column" gap="lg">

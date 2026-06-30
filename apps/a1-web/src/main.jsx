@@ -78,6 +78,7 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  getComponentExampleBySlug,
 } from './pages/Components.jsx'
 import { Patterns } from './pages/Patterns.jsx'
 import { patternToDefinition } from './patterns/patternDocument.js'
@@ -97,7 +98,7 @@ import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
 import { AllPagesView } from './projects/AllPagesView.jsx'
-import { ImageLibraryView } from './projects/ImageLibraryView.jsx'
+import { ImageLibraryView } from './image-library/ImageLibraryView.jsx'
 import { CustomIconsView } from './projects/CustomIconsView.jsx'
 import { ThemeEditor } from './pages/ThemeEditor.jsx'
 import { ThemesList } from './pages/ThemesList.jsx'
@@ -200,6 +201,15 @@ const colorSchemeOptions = [
 const VALID_THEMES = themeOptions.map((o) => o.value)
 const VALID_COLOR_MODES = colorSchemeOptions.map((o) => o.value)
 
+function getComponentExampleTab(pathname = window.location.pathname) {
+  const path = pathname.split(/[?#]/)[0].replace(/^\/|\/$/g, '')
+  const parts = path.split('/')
+  if (parts[0] !== 'components' || parts.length < 3) return null
+  const [, componentId, exampleSlug] = parts
+  const example = getComponentExampleBySlug(componentId, exampleSlug)
+  return example ? `example:${example.id}` : null
+}
+
 function getPage(search = window.location.search, pathname = window.location.pathname) {
   // Path-based routing — read from the URL pathname first.
   const path = pathname.replace(/^\/|\/$/g, '') // strip leading/trailing slash
@@ -220,6 +230,11 @@ function getPage(search = window.location.search, pathname = window.location.pat
   if (path === 'components') return 'components'
   if (path.startsWith('components/')) {
     const suffix = path.slice('components/'.length)
+    const [componentId, exampleSlug] = suffix.split('/')
+    if (componentId && exampleSlug && getComponentExampleBySlug(componentId, exampleSlug)) {
+      const id = `component-${componentId}`
+      if (PAGES.includes(id)) return id
+    }
     if (PAGES.includes(`components-${suffix}`)) return `components-${suffix}`
     if (PAGES.includes(`component-${suffix}`)) return `component-${suffix}`
     return 'components'
@@ -250,6 +265,26 @@ function getPath(page) {
 
 function isPlainLeftClick(e) {
   return e.button === 0 && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey
+}
+
+function isVisibleFocusableSearch(el) {
+  if (!(el instanceof HTMLElement)) return false
+  if (el.matches('[disabled], [aria-disabled="true"]')) return false
+  if (el.getAttribute('tabindex') === '-1') return false
+  const style = window.getComputedStyle(el)
+  if (style.display === 'none' || style.visibility === 'hidden') return false
+  const rect = el.getBoundingClientRect()
+  return rect.width > 0 && rect.height > 0
+}
+
+function focusPageSearchTarget() {
+  const candidates = Array.from(document.querySelectorAll('[data-a1-page-search]'))
+  const target = candidates.find(isVisibleFocusableSearch)
+  if (!target) return false
+  target.focus({ preventScroll: true })
+  target.select?.()
+  target.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+  return true
 }
 
 const PAGE_TITLE_LABEL_KEYS = {
@@ -325,7 +360,7 @@ function App() {
   const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
-  const [detailTab, setDetailTab] = useState('configure')
+  const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
   // ── Projects state ─────────────────────────────────────────────────────────
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
@@ -809,6 +844,9 @@ function App() {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
     }
     setActivePage(next)
+    if (next.startsWith('component-')) {
+      setDetailTab(getComponentExampleTab(nextPath) ?? 'configure')
+    }
     setSidebarOpen(false)
     resetRouteScroll()
   }
@@ -834,12 +872,16 @@ function App() {
     const extra = search.toString()
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
-    const canonicalBase = page === 'backlog-ticket' ? window.location.pathname : getPath(page)
+    const canonicalBase = page === 'backlog-ticket' || getComponentExampleTab()
+      ? window.location.pathname
+      : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
     window.history.replaceState({ page }, '', canonicalUrl)
     setActivePage(page)
+    setDetailTab(getComponentExampleTab() ?? 'configure')
     const onPop = () => {
       setActivePage(getPage())
+      setDetailTab(getComponentExampleTab() ?? 'configure')
       const params = new URLSearchParams(window.location.search)
       const proj = params.get('project') || null
       setActiveProjectId(proj)
@@ -909,6 +951,7 @@ function App() {
       const opensCommandSearch = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'
       const opensShortcutMenu = (event.metaKey || event.ctrlKey) && event.key === '/'
       const opensSlashSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === '/'
+      const opensPageSearch = !event.metaKey && !event.ctrlKey && !event.altKey && event.key === "'"
       if (opensShortcutMenu) {
         event.preventDefault()
         clearGoTarget()
@@ -916,6 +959,14 @@ function App() {
           if (!open) window.requestAnimationFrame(() => skipMenuAnchorRef.current?.focus())
           return !open
         })
+        return
+      }
+
+      if (opensPageSearch) {
+        if (focusPageSearchTarget()) {
+          event.preventDefault()
+          clearGoTarget()
+        }
         return
       }
 
@@ -1339,6 +1390,9 @@ function App() {
           <MenuItem icon="keyboard_return" shortcut="Shortcut: Alt+M" onClick={() => runSkipMenuAction(focusMainContent)}>
             Skip to main content
           </MenuItem>
+          <MenuItem icon="manage_search" shortcut="Shortcut: '" onClick={() => runSkipMenuAction(focusPageSearchTarget)}>
+            Page search
+          </MenuItem>
           <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
             Search A1
           </MenuItem>
@@ -1438,7 +1492,14 @@ function App() {
                 onBackToThemes={() => setActiveThemeId(null)}
               />
             : COMPONENT_ROUTE_IDS.includes(activePage)
-            ? getComponentsSidebar({ activePage, onNavigate: navigate, search: componentSearch, setSearch: setComponentSearch })
+            ? getComponentsSidebar({
+                activePage,
+                detailTab,
+                onNavigate: navigate,
+                onSelectDetailTab: setDetailTab,
+                search: componentSearch,
+                setSearch: setComponentSearch,
+              })
             : undefined
         }
         aside={isSmDown ? undefined : asideEl}
@@ -1607,7 +1668,6 @@ function App() {
         {activePage === 'image-library' && (
           <ImageLibraryView
             projects={projects}
-            onBackToProjects={() => navigate('editor')}
             onNavigateHome={() => navigate('home')}
           />
         )}

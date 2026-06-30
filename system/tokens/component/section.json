@@ -2,7 +2,7 @@
   "component": {
     "section": {
       "gradient": {
-        "highlight": { "$type": "color", "$value": "{base.color.highlited.200}" },
+        "highlight": { "$type": "color", "$value": "{base.color.highlighted.200}" },
         "edgeWidth": {
           "$type": "dimension",
           "$value": "78%"

@@ -272,6 +272,15 @@ export const OverflowGroup = {
   },
 };
 
+export const OverflowToolbar = {
+  name: "Overflow toolbar",
+  render: () => (
+    <div style={{ inlineSize: "280px" }}>
+      <TextEditorBar fullWidth overflow />
+    </div>
+  ),
+};
+
 export const Overlay = {
   name: "Overlay — floating bar over content",
   render: () => (

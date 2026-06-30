@@ -105,7 +105,7 @@
           "$value": "#010003"
         }
       },
-      "highlited": {
+      "highlighted": {
         "0": {
           "$type": "color",
           "$value": "#fffef2"

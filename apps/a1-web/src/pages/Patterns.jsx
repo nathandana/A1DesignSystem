@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Breadcrumb,
   Button,
   Card,
   ContextMenu,
@@ -14,7 +13,9 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { useT } from '../labels/useT.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 import { summarizeLocks } from '../patterns/resolvePattern.js'
+import { getPattern } from '../patterns/patterns.js'
 import { createBlankPattern, deletePattern, duplicatePattern, getAllPatterns, isUserPattern } from '../patterns/patternStore.js'
 
 export function Patterns({ onNavigate }) {
@@ -34,30 +35,25 @@ export function Patterns({ onNavigate }) {
 
   return (
     <>
-    <Section padding='xs' contentWidth='xl' surface="panel" borderSize='sm' borderVariant='accent' borderSides='bottom'>
-              <Stack direction="column" gap="xs">
-<Breadcrumb
-          items={[
-            { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-            { label: t('app.page.patterns', 'Patterns') },
-          ]}
-        />
-            <Heading as="h1" id="patterns-heading"  size={{ xs: 'lg', md: 'xxl' }}>
-              {t('app.page.patterns', 'Patterns')}
-            </Heading>
-            <Paragraph size="sm" color="muted">
-              {t('app.patterns.subtitle', 'Reusable, governed compositions — a page header, a footer, or a standardized card. Open one to edit it and lock the parts that should stay consistent.')}
-            </Paragraph>
-          <Stack direction="row" gap="xs" align="center" wrap>
-            <Button variant="secondary" icon="help" onClick={() => onNavigate?.('help')}>
-              {t('app.page.help', 'Help')}
-            </Button>
-            <Button icon="add" onClick={handleCreate}>
-              {t('app.patterns.newPattern', 'New pattern')}
-            </Button>
-          </Stack>
-        </Stack>
-    </Section>
+    <PageTitleArea
+      headingId="patterns-heading"
+      breadcrumbItems={[
+        { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+        { label: t('app.page.patterns', 'Patterns') },
+      ]}
+      title={t('app.page.patterns', 'Patterns')}
+      description={t('app.patterns.subtitle', 'Reusable, governed compositions — a page header, a footer, or a standardized card. Open one to edit it and lock the parts that should stay consistent.')}
+      actions={(
+        <>
+          <Button variant="secondary" icon="help" onClick={() => onNavigate?.('help')}>
+            {t('app.page.help', 'Help')}
+          </Button>
+          <Button icon="add" onClick={handleCreate}>
+            {t('app.patterns.newPattern', 'New pattern')}
+          </Button>
+        </>
+      )}
+    />
     <Section padding="sm" aria-labelledby="patterns-heading" contentWidth="xl">
       <Stack direction="column" gap="sm">
         <Stack direction="row" align="start" justify="between" wrap gap="md">
@@ -74,7 +70,7 @@ export function Patterns({ onNavigate }) {
           <Grid columns={{ xs: 1, md: 2, lg: 3 }} gap="md">
             {patterns.map((pattern) => {
               const meta = pattern.pattern
-              const { lockedComponents, lockedProps, editableFields } = summarizeLocks(meta.nodes)
+              const { lockedComponents, lockedProps, editableFields } = summarizeLocks(meta.nodes, getPattern)
               const scopeValue = meta.projectIds?.length
                 ? `${meta.projectIds.length} ${t('app.patterns.scopeProject', 'project')}${meta.projectIds.length > 1 ? t('app.patterns.scopeProjectsPlural', 's') : ''}`
                 : t('app.patterns.scopeAll', 'All projects')

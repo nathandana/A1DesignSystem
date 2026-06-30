@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useT } from '../labels/useT.js'
 import {
-  Breadcrumb,
   Button,
-  ButtonContainer,
   Card,
   ContextMenu,
   Dialog,
@@ -15,6 +13,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { createTheme, deleteTheme, duplicateTheme, listThemes, subscribeThemes } from '../lib/themeStore.ts'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 const CHIP_RAMPS = ['accent', 'info', 'success', 'warn', 'error']
 
@@ -33,21 +32,16 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-        <Breadcrumb
-          items={[
-            { label: t('app.theme.breadcrumbHome', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
-            { label: t('app.page.theme', 'Theme') },
-          ]}
-        />
-          <Heading as="h1" id="themes-heading" size={{ xs: 'lg', md: 'xxl' }}>{t('app.page.theme', 'Theme')}</Heading>
-          <Paragraph size="sm" color="muted">{t('app.theme.pageDescription', 'Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.')}</Paragraph>
-          <ButtonContainer align='left'>
-          <Button icon="add" onClick={newTheme}>{t('app.theme.newTheme', 'New theme')}</Button>
-          </ButtonContainer>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="themes-heading"
+        breadcrumbItems={[
+          { label: t('app.theme.breadcrumbHome', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
+          { label: t('app.page.theme', 'Theme') },
+        ]}
+        title={t('app.page.theme', 'Theme')}
+        description={t('app.theme.pageDescription', 'Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.')}
+        actions={<Button icon="add" onClick={newTheme}>{t('app.theme.newTheme', 'New theme')}</Button>}
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="themes-heading">
         <Stack direction="column" gap="md">

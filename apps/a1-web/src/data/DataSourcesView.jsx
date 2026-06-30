@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Section, Stack, Cluster, Grid, Heading, Paragraph, Breadcrumb, Button, IconButton,
+  Section, Stack, Cluster, Grid, Heading, Paragraph, Button, IconButton,
   Card, MessageBadge, MessageEmptyState, TextField, TextareaField, SelectField,
   Switch, Autocomplete, Dialog, Banner,
 } from '@gtivr4/a1-design-system-react'
@@ -9,6 +9,7 @@ import { useDataSources } from './DataSourcesContext.jsx'
 import { datasetScopeLabel, COLUMN_TYPES } from '../services/dataSources/types'
 import { parseDataSourceJson } from '../services/dataSources/importJson'
 import { SAMPLE_DATA_SOURCES } from '../services/dataSources/samples'
+import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 
 // ── Row-id helpers ──────────────────────────────────────────────────────────
 // react-data-grid needs a stable row key. We tag each grid row with a synthetic
@@ -65,34 +66,26 @@ export function DataSourcesView({ projects = [], onNavigate }) {
 
   return (
     <>
-      <Section padding="xs" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="accent" borderSides="bottom">
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Data sources' },
-            ]}
-          />
-          {!open && (
+      {!open && (
+        <PageTitleArea
+          headingId="data-sources-heading"
+          breadcrumbItems={[
+            { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+            { label: 'Data sources' },
+          ]}
+          title="Data sources"
+          description={`Reusable datasets you can edit, scope to projects, and bind into pages.${ctx ? (ctx.isCloud ? ' Synced to your account.' : ' Stored in this browser (sign in to sync).') : ''}`}
+          actions={(
             <>
-              <Heading as="h1" id="data-sources-heading" size={{ xs: 'lg', md: 'xxl' }}>
-                Data sources
-              </Heading>
-              <Paragraph size="sm" color="muted">
-                Reusable datasets you can edit, scope to projects, and bind into pages.
-                {ctx ? (ctx.isCloud ? ' Synced to your account.' : ' Stored in this browser (sign in to sync).') : ''}
-              </Paragraph>
-              <Stack direction="row" gap="xs" align="center" wrap>
-                <Button variant="secondary" icon="help" onClick={() => onNavigate?.('help')}>Help</Button>
-                <Button variant="secondary" icon="upload" onClick={() => setImportOpen(true)}>Import JSON</Button>
-                <Button icon="add" onClick={handleNew}>New dataset</Button>
-              </Stack>
+              <Button variant="secondary" icon="help" onClick={() => onNavigate?.('help')}>Help</Button>
+              <Button variant="secondary" icon="upload" onClick={() => setImportOpen(true)}>Import JSON</Button>
+              <Button icon="add" onClick={handleNew}>New dataset</Button>
             </>
           )}
-        </Stack>
-      </Section>
+        />
+      )}
 
-      <Section padding="md" contentWidth="xl">
+      <Section padding="md" contentWidth="xl" aria-labelledby={!open ? 'data-sources-heading' : undefined}>
         {open ? (
           <DatasetEditor
             key={open.id}
