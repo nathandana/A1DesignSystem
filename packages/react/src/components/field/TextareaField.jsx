@@ -1,4 +1,4 @@
-import { useId, useState, forwardRef, useContext } from "react";
+import { useId, useState, useLayoutEffect, useRef, useCallback, forwardRef, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
@@ -30,6 +30,9 @@ export const TextareaField = forwardRef(function TextareaField({
   showCount    = false,
   value,
   defaultValue,
+  autoComplete,
+  onBeforeInput,
+  onInput,
   onChange,
   ...props
 }, ref) {
@@ -52,7 +55,41 @@ export const TextareaField = forwardRef(function TextareaField({
   const count         = value != null ? String(value).length : internalCount;
   const showCharCount = showCount || maxLength != null;
 
+  const textareaRef = useRef(null);
+  const readOnlyValueRef = useRef("");
+
+  const mergedRef = useCallback((el) => {
+    textareaRef.current = el;
+    if (typeof ref === "function") ref(el);
+    else if (ref) ref.current = el;
+  }, [ref]);
+
+  useLayoutEffect(() => {
+    if (readOnly && textareaRef.current) readOnlyValueRef.current = textareaRef.current.value;
+  }, [readOnly, value, defaultValue]);
+
+  function restoreReadOnlyValue(e) {
+    if (!readOnly) return false;
+    const textarea = e.currentTarget;
+    if (textarea.value !== readOnlyValueRef.current) textarea.value = readOnlyValueRef.current;
+    return true;
+  }
+
+  function handleBeforeInput(e) {
+    if (readOnly) {
+      e.preventDefault();
+      return;
+    }
+    onBeforeInput?.(e);
+  }
+
+  function handleInput(e) {
+    if (restoreReadOnlyValue(e)) return;
+    onInput?.(e);
+  }
+
   function handleChange(e) {
+    if (restoreReadOnlyValue(e)) return;
     if (value == null) setInternalCount(e.target.value.length);
     onChange?.(e);
   }
@@ -114,20 +151,27 @@ export const TextareaField = forwardRef(function TextareaField({
       )}
       <div className="a1-field__control">
         <textarea
-          ref={ref}
+          ref={mergedRef}
           id={id}
           className="a1-field__textarea"
           rows={resolvedRows}
           maxLength={maxLength}
           required={required}
           disabled={disabled}
-          readOnly={readOnly}
           aria-describedby={describedBy}
           aria-invalid={error ? "true" : undefined}
+          {...props}
           value={value}
           defaultValue={defaultValue}
+          readOnly={readOnly}
+          autoComplete={readOnly ? "off" : autoComplete}
+          data-1p-ignore={readOnly ? "true" : props["data-1p-ignore"]}
+          data-bwignore={readOnly ? "true" : props["data-bwignore"]}
+          data-lpignore={readOnly ? "true" : props["data-lpignore"]}
+          data-form-type={readOnly ? "other" : props["data-form-type"]}
+          onBeforeInput={handleBeforeInput}
+          onInput={handleInput}
           onChange={handleChange}
-          {...props}
         />
       </div>
       {hasFooter && (

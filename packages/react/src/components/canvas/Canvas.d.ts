@@ -35,6 +35,9 @@ export type CanvasMode = 'view' | 'edit'
 /** Canvas-level edge rendering style */
 export type CanvasEdgeStyle = 'straight' | 'curved' | 'elbow'
 
+/** Visual grid pattern */
+export type CanvasGridType = 'lines' | 'dots'
+
 /**
  * Props for the `Node` component.
  *
@@ -187,8 +190,14 @@ export interface CanvasProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-
    * (appended below the built-in zoom / fit / reset items).
    */
   canvasMenuItems?: Array<{ id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void } | { type: 'divider'; id: string }>
-  /** Show the dot grid (default `true`) */
+  /** Show the visual grid (default `true`) */
   showGrid?: boolean
+  /**
+   * Visual grid pattern (default `"lines"`).
+   * - `"lines"` — horizontal and vertical rules every `gridSpacing` pixels.
+   * - `"dots"` — one dot every `gridSpacing` pixels in both directions.
+   */
+  gridType?: CanvasGridType
   /**
    * Background surface token (default `"panel"`).
    * - `"panel"` — standard panel surface.

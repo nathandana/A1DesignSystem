@@ -44,9 +44,12 @@ export function clearCustomIconFont() {
 
 export function getCustomIcon(name) {
   const key = String(name ?? "");
-  const codepoint = icons.get(key) ?? icons.get(key.replace(/^custom:/, ""));
-  if (codepoint == null) return null;
-  return { character: String.fromCodePoint(codepoint), family };
+  const value = icons.get(key) ?? icons.get(key.replace(/^custom:/, ""));
+  if (value == null) return null;
+  const character = typeof value === "number"
+    ? String.fromCodePoint(value)
+    : String(value).replace(/^custom:/, "");
+  return { character, family };
 }
 
 export function subscribeCustomIcons(listener) {

@@ -11,7 +11,7 @@ export interface ValidatedCustomIcon {
 
 export interface CustomIconFontBuild {
   buffer: ArrayBuffer;
-  mappings: Record<string, number>;
+  mappings: Record<string, string>;
   fontFamily: string;
 }
 
@@ -25,6 +25,7 @@ const FORBIDDEN_ATTRIBUTES = new Set([
   'xlink:href',
 ]);
 const MAX_SVG_BYTES = 64 * 1024;
+const LIGATURE_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789_'.split('');
 
 function cleanName(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, '_');
@@ -149,6 +150,19 @@ function buildGlyphPath(paths: string[]): opentype.Path {
 }
 
 export function buildCustomIconFont(icons: CustomIconRecord[]): CustomIconFontBuild {
+  const characterGlyphs = LIGATURE_CHARS.map((character) => new opentype.Glyph({
+    name: character === '_' ? 'underscore' : character,
+    unicode: character.codePointAt(0),
+    advanceWidth: 0,
+    path: new opentype.Path(),
+  }));
+  const characterGlyphIndex = new Map(characterGlyphs.map((glyph, index) => [LIGATURE_CHARS[index], index + 1]));
+  const iconGlyphs = icons.map((icon) => new opentype.Glyph({
+    name: icon.name,
+    unicode: icon.codepoint,
+    advanceWidth: 1000,
+    path: buildGlyphPath(icon.paths),
+  }));
   const glyphs = [
     new opentype.Glyph({
       name: '.notdef',
@@ -156,12 +170,8 @@ export function buildCustomIconFont(icons: CustomIconRecord[]): CustomIconFontBu
       advanceWidth: 1000,
       path: new opentype.Path(),
     }),
-    ...icons.map((icon) => new opentype.Glyph({
-      name: icon.name,
-      unicode: icon.codepoint,
-      advanceWidth: 1000,
-      path: buildGlyphPath(icon.paths),
-    })),
+    ...characterGlyphs,
+    ...iconGlyphs,
   ];
   const font = new opentype.Font({
     familyName: FONT_FAMILY,
@@ -171,11 +181,20 @@ export function buildCustomIconFont(icons: CustomIconRecord[]): CustomIconFontBu
     descender: -150,
     glyphs,
   });
+  icons.forEach((icon, iconIndex) => {
+    const sub = [...icon.name].map((character) => characterGlyphIndex.get(character)).filter((index): index is number => typeof index === 'number');
+    if (sub.length === icon.name.length) {
+      font.substitution.addLigature('liga', {
+        sub,
+        by: 1 + characterGlyphs.length + iconIndex,
+      });
+    }
+  });
   const buffer = font.toArrayBuffer();
   opentype.parse(buffer);
   return {
     buffer,
     fontFamily: FONT_FAMILY,
-    mappings: Object.fromEntries(icons.map((icon) => [`custom:${icon.name}`, icon.codepoint])),
+    mappings: Object.fromEntries(icons.map((icon) => [`custom:${icon.name}`, icon.name])),
   };
 }

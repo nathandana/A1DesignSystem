@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { SelectField } from "../field/SelectField.jsx";
 import { Icon } from "../icon/Icon.jsx";
+import { IconButton } from "../icon-button/IconButton.jsx";
 import { Link } from "../link/Link.jsx";
 import { MessageBadge, MessageEmptyState } from "../message/Message.jsx";
 import { Pagination } from "../pagination/Pagination.jsx";
@@ -502,17 +503,29 @@ export function DataTable({
         return (
           <span className="a1-data-table__actions">
             {actions.filter(Boolean).map((action, index) => (
-              <Button
-                key={`${action.label ?? action.icon ?? "action"}-${index}`}
-                variant="tertiary"
-                size="sm"
-                icon={action.icon}
-                iconPosition={action.iconPosition ?? "start"}
-                disabled={action.disabled}
-                onClick={action.onClick}
-              >
-                {action.label}
-              </Button>
+              action.iconOnly ? (
+                <IconButton
+                  key={`${action.label ?? action.icon ?? "action"}-${index}`}
+                  variant={action.variant ?? "tertiary"}
+                  size="sm"
+                  icon={action.icon}
+                  label={action.label}
+                  disabled={action.disabled}
+                  onClick={action.onClick}
+                />
+              ) : (
+                <Button
+                  key={`${action.label ?? action.icon ?? "action"}-${index}`}
+                  variant={action.variant ?? "tertiary"}
+                  size="sm"
+                  icon={action.icon}
+                  iconPosition={action.iconPosition ?? "start"}
+                  disabled={action.disabled}
+                  onClick={action.onClick}
+                >
+                  {action.label}
+                </Button>
+              )
             ))}
           </span>
         );

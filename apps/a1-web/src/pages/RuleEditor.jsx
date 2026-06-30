@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Autocomplete,
   Banner,
   Button,
   ButtonContainer,
   Card,
+  Code,
   DataTable,
   Dialog,
+  Figure,
   Heading,
+  IconButton,
   Link,
   MessageBadge,
   MessageEmptyState,
@@ -21,6 +24,7 @@ import {
 import { addRule, deleteRule, listAllRules, RULE_CATEGORIES, subscribeRules } from '../rules/ruleStore.ts'
 import { describeError, generateRule } from '../rules/aiRule.ts'
 import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
+import { addImage, resolveSrc, toImageRef } from '../lib/imageLibrary.ts'
 import { allComponents } from './components/utils.js'
 import { useT } from '../labels/useT.js'
 import { PageTitleArea } from './PageTitleArea.jsx'
@@ -31,14 +35,42 @@ const COMPONENT_OPTIONS = (() => {
 })()
 const CATEGORY_OPTIONS = RULE_CATEGORIES.map((c) => ({ value: c, label: c }))
 
-const EMPTY_FORM = { id: '', component: '', requirement: '', do: '', dont: '', appliesTo: [] }
+const EMPTY_FORM = { id: '', component: '', requirement: '', do: '', dont: '', appliesTo: [], examples: [] }
+
+function exampleId() {
+  return `example_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
+}
+
+function imageFilesFromClipboard(clipboardData) {
+  const files = []
+  const seen = new Set()
+
+  function addFile(file) {
+    if (!file?.type?.startsWith('image/')) return
+    const key = `${file.name}:${file.type}:${file.size}:${file.lastModified}`
+    if (seen.has(key)) return
+    seen.add(key)
+    files.push(file)
+  }
+
+  Array.from(clipboardData?.items || []).forEach((item) => {
+    if (item.kind === 'file' && item.type?.startsWith('image/')) {
+      addFile(item.getAsFile())
+    }
+  })
+  Array.from(clipboardData?.files || []).forEach(addFile)
+  return files
+}
 
 export function RuleEditor({ onNavigate }) {
   const t = useT()
   const [rules, setRules] = useState(() => listAllRules())
   const [newOpen, setNewOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
+  const [editingRule, setEditingRule] = useState(null)
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const imageInputRef = useRef(null)
+  const [exampleMessage, setExampleMessage] = useState('')
 
   // AI dialog
   const [aiOpen, setAiOpen] = useState(false)
@@ -66,6 +98,7 @@ export function RuleEditor({ onNavigate }) {
   const colComponent = t('app.rules.colComponent', 'Component')
   const colRequirement = t('app.rules.colRequirement', 'Requirement')
   const colAppliesTo = t('app.rules.colAppliesTo', 'Applies to')
+  const colExamples = t('app.rules.colExamples', 'Examples')
   const colEnforced = t('app.rules.colEnforced', 'Enforced')
   const colSource = t('app.rules.colSource', 'Source')
 
@@ -73,6 +106,7 @@ export function RuleEditor({ onNavigate }) {
     { key: 'component', label: colComponent, sortable: true },
     { key: 'requirement', label: colRequirement, sortable: true },
     { key: 'appliesTo', label: colAppliesTo },
+    { key: 'examples', label: colExamples },
     { key: 'enforced', label: colEnforced },
     { key: 'source', label: colSource, sortable: true },
     { key: 'actions', label: '', type: 'actions' },
@@ -101,6 +135,27 @@ export function RuleEditor({ onNavigate }) {
     component: rule.component,
     requirement: rule.requirement,
     appliesTo: rule.appliesTo.join(', ') || '—',
+    examples: rule.examples?.length ? (
+      <Stack direction="row" gap="xs" wrap>
+        {rule.examples.slice(0, 3).map((example) => (
+          example.type === 'image' ? (
+            <Figure
+              key={example.id}
+              src={resolveSrc(example.imageRef)}
+              alt={example.alt || example.label || 'Rule example'}
+              size="3xs"
+              radius="sm"
+              aspectRatio="1:1"
+            />
+          ) : (
+            <Code key={example.id} variant="inline">{example.label || 'Code'}</Code>
+          )
+        ))}
+        {rule.examples.length > 3 && (
+          <MessageBadge size="sm" subtle>+{rule.examples.length - 3}</MessageBadge>
+        )}
+      </Stack>
+    ) : '—',
     appliesToValues: rule.appliesTo, // array — for the "Applies to" filter
     sourceValue: rule.source,        // 'builtin' | 'user' — for the Source filter
     enforcedValue: rule.enforcement ? 'enforced' : 'docs',
@@ -120,18 +175,106 @@ export function RuleEditor({ onNavigate }) {
           : t('app.rules.sourceBuiltin', 'Built-in')}
       </MessageBadge>
     ),
-    actions: rule.source === 'user'
-      ? [{ label: t('app.rules.rowActionDelete', 'Delete'), icon: 'delete', onClick: () => setConfirmDelete(rule) }]
-      : [],
+    actions: [
+      { label: t('app.rules.rowActionEdit', 'Edit'), icon: 'edit', iconOnly: true, onClick: () => openRuleDialog(rule) },
+      ...(rule.source === 'user'
+        ? [{ label: t('app.rules.rowActionDelete', 'Delete'), icon: 'delete', iconOnly: true, variant: 'destructive', onClick: () => setConfirmDelete(rule) }]
+        : []),
+    ],
   }))
 
   const setField = (patch) => setForm((f) => ({ ...f, ...patch }))
 
-  function saveNewRule() {
+  function openRuleDialog(rule = null) {
+    setEditingRule(rule)
+    setExampleMessage('')
+    setForm(rule ? {
+      id: rule.id,
+      component: rule.component,
+      requirement: rule.requirement,
+      do: rule.do ?? '',
+      dont: rule.dont ?? '',
+      appliesTo: rule.appliesTo ?? [],
+      examples: (rule.examples ?? []).map((example) => ({ ...example })),
+    } : EMPTY_FORM)
+    setNewOpen(true)
+  }
+
+  function closeRuleDialog() {
+    setNewOpen(false)
+    setEditingRule(null)
+    setForm(EMPTY_FORM)
+    setExampleMessage('')
+  }
+
+  function updateExample(id, patch) {
+    setForm((current) => ({
+      ...current,
+      examples: (current.examples ?? []).map((example) => (
+        example.id === id ? { ...example, ...patch } : example
+      )),
+    }))
+  }
+
+  function removeExample(id) {
+    setForm((current) => ({
+      ...current,
+      examples: (current.examples ?? []).filter((example) => example.id !== id),
+    }))
+  }
+
+  function addCodeExample() {
+    setForm((current) => ({
+      ...current,
+      examples: [
+        ...(current.examples ?? []),
+        { id: exampleId(), type: 'code', label: '', code: '' },
+      ],
+    }))
+  }
+
+  async function addImageExamples(files) {
+    const imageFiles = Array.from(files || []).filter((file) => file?.type?.startsWith('image/'))
+    if (!imageFiles.length) return
+    try {
+      const uploaded = []
+      for (const file of imageFiles) {
+        const meta = await addImage(file)
+        uploaded.push({
+          id: exampleId(),
+          type: 'image',
+          label: file.name.replace(/\.[^.]+$/, ''),
+          imageRef: toImageRef(meta.id),
+          alt: '',
+        })
+      }
+      setForm((current) => ({ ...current, examples: [...(current.examples ?? []), ...uploaded] }))
+      const label = uploaded.length === 1 ? 'image example' : 'image examples'
+      setExampleMessage(`Added ${uploaded.length} ${label}.`)
+    } catch {
+      setExampleMessage(t('app.rules.examplesImageError', 'Could not add the image example.'))
+    }
+  }
+
+  async function handleExampleFiles(event) {
+    try {
+      await addImageExamples(event.target.files)
+    } finally {
+      if (imageInputRef.current) imageInputRef.current.value = ''
+    }
+  }
+
+  async function handleExamplesPaste(event) {
+    const files = imageFilesFromClipboard(event.clipboardData)
+    if (!files.length) return
+    event.preventDefault()
+    await addImageExamples(files)
+  }
+
+  function saveRule() {
     if (!form.requirement.trim()) return
     addRule(form)
-    setForm(EMPTY_FORM)
-    setNewOpen(false)
+    closeRuleDialog()
   }
 
   function saveKey() { setApiKey(keyInput); if (keyInput.trim()) setKeyReady(true) }
@@ -170,7 +313,7 @@ export function RuleEditor({ onNavigate }) {
         actions={AI_ENABLED ? (
             <SplitButton
               icon="add"
-              onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}
+              onClick={() => openRuleDialog()}
               menuLabel={t('app.rules.moreWaysToAdd', 'More ways to add a rule')}
               toggleLabel={t('app.rules.moreWaysToAdd', 'More ways to add a rule')}
               actions={[{ id: 'ai', label: t('app.rules.generateWithAi', 'Generate with AI'), icon: 'auto_awesome', onClick: () => setAiOpen(true) }]}
@@ -178,7 +321,7 @@ export function RuleEditor({ onNavigate }) {
               {t('app.rules.newRule', 'New rule')}
             </SplitButton>
           ) : (
-            <Button icon="add" onClick={() => { setForm(EMPTY_FORM); setNewOpen(true) }}>{t('app.rules.newRule', 'New rule')}</Button>
+            <Button icon="add" onClick={() => openRuleDialog()}>{t('app.rules.newRule', 'New rule')}</Button>
           )}
       />
 
@@ -190,7 +333,7 @@ export function RuleEditor({ onNavigate }) {
             icon="gavel"
             title={t('app.rules.emptyTitle', 'No rules yet')}
             description={t('app.rules.emptyDescription', 'Add a rule by hand or with AI.')}
-            action={<Button icon="add" onClick={() => setNewOpen(true)}>{t('app.rules.newRule', 'New rule')}</Button>}
+            action={<Button icon="add" onClick={() => openRuleDialog()}>{t('app.rules.newRule', 'New rule')}</Button>}
           />
         ) : (
           <DataTable
@@ -213,12 +356,14 @@ export function RuleEditor({ onNavigate }) {
       {/* New / edit rule */}
       <Dialog
         open={newOpen}
-        onClose={() => setNewOpen(false)}
-        title={t('app.rules.dialogNewTitle', 'New rule')}
+        onClose={closeRuleDialog}
+        title={editingRule ? t('app.rules.dialogEditTitle', 'Edit rule') : t('app.rules.dialogNewTitle', 'New rule')}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setNewOpen(false)}>{t('app.rules.dialogCancel', 'Cancel')}</Button>
-            <Button icon="check" disabled={!form.requirement.trim()} onClick={saveNewRule}>{t('app.rules.dialogAddRule', 'Add rule')}</Button>
+            <Button variant="secondary" onClick={closeRuleDialog}>{t('app.rules.dialogCancel', 'Cancel')}</Button>
+            <Button icon="check" disabled={!form.requirement.trim()} onClick={saveRule}>
+              {editingRule ? t('app.rules.dialogSaveRule', 'Save rule') : t('app.rules.dialogAddRule', 'Add rule')}
+            </Button>
           </>
         }
       >
@@ -227,8 +372,85 @@ export function RuleEditor({ onNavigate }) {
           <TextareaField label={t('app.rules.formRequirement', 'Requirement')} rows="sm" value={form.requirement} onChange={(e) => setField({ requirement: e.target.value })} required />
           <TextareaField label={t('app.rules.formDo', 'Do')} rows="sm" value={form.do} onChange={(e) => setField({ do: e.target.value })} hint={t('app.rules.formDoHint', 'A concrete example of following the rule')} />
           <TextareaField label={t('app.rules.formDont', "Don't")} rows="sm" value={form.dont} onChange={(e) => setField({ dont: e.target.value })} hint={t('app.rules.formDontHint', 'A concrete example of breaking it')} />
+          <Stack gap="xs" onPaste={handleExamplesPaste}>
+            <Stack direction="row" gap="sm" align="center" justify="between" wrap>
+              <Paragraph as="span" size="xs" color="muted">{t('app.rules.examplesLabel', 'Examples')}</Paragraph>
+              <ButtonContainer align="end">
+                <Button size="sm" variant="secondary" icon="code" onClick={addCodeExample}>{t('app.rules.examplesAddCode', 'Add code')}</Button>
+                <Button size="sm" variant="secondary" icon="image" onClick={() => imageInputRef.current?.click()}>{t('app.rules.examplesAddImage', 'Add image')}</Button>
+              </ButtonContainer>
+            </Stack>
+            <Paragraph size="sm" color="muted">{t('app.rules.examplesHint', 'Add short code examples or paste an image here to upload it.')}</Paragraph>
+            <input ref={imageInputRef} type="file" accept="image/*" multiple hidden onChange={handleExampleFiles} />
+            {exampleMessage && <Paragraph size="sm" color="muted" aria-live="polite">{exampleMessage}</Paragraph>}
+            {form.examples?.length ? (
+              <Stack gap="sm">
+                {form.examples.map((example, index) => (
+                  <Card key={example.id}>
+                    <Stack gap="sm">
+                      <Stack direction="row" gap="sm" align="center" justify="between">
+                        <MessageBadge size="sm" subtle icon={example.type === 'image' ? 'image' : 'code'}>
+                          {example.type === 'image'
+                            ? t('app.rules.examplesImageTitle', 'Image example')
+                            : t('app.rules.examplesCodeTitle', 'Code example')} {index + 1}
+                        </MessageBadge>
+                        <IconButton
+                          icon="delete"
+                          label={t('app.rules.examplesRemove', 'Remove example')}
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removeExample(example.id)}
+                        />
+                      </Stack>
+                      <TextField
+                        label={t('app.rules.examplesFieldLabel', 'Label')}
+                        size="compact"
+                        value={example.label ?? ''}
+                        onChange={(e) => updateExample(example.id, { label: e.target.value })}
+                      />
+                      {example.type === 'image' ? (
+                        <>
+                          <Figure
+                            src={resolveSrc(example.imageRef)}
+                            alt={example.alt || example.label || 'Rule example'}
+                            size="xs"
+                            radius="sm"
+                            aspectRatio="16:9"
+                          />
+                          <TextField
+                            label={t('app.rules.examplesAltLabel', 'Alt text')}
+                            size="compact"
+                            value={example.alt ?? ''}
+                            onChange={(e) => updateExample(example.id, { alt: e.target.value })}
+                          />
+                        </>
+                      ) : (
+                        <TextareaField
+                          label={t('app.rules.examplesCodeLabel', 'Code')}
+                          rows="sm"
+                          value={example.code}
+                          onChange={(e) => updateExample(example.id, { code: e.target.value })}
+                        />
+                      )}
+                    </Stack>
+                  </Card>
+                ))}
+              </Stack>
+            ) : (
+              <Paragraph size="sm" color="muted">{t('app.rules.examplesEmpty', 'No examples yet.')}</Paragraph>
+            )}
+          </Stack>
           <Autocomplete label={t('app.rules.formAppliesTo', 'Applies to')} size="compact" multiple allowCreate options={CATEGORY_OPTIONS} value={form.appliesTo} onChange={(v) => setField({ appliesTo: v })} />
-          <TextField label={t('app.rules.formRuleId', 'Rule id')} size="compact" value={form.id} onChange={(e) => setField({ id: e.target.value })} hint={t('app.rules.formRuleIdHint', 'Optional — generated from the component if blank')} />
+          <TextField
+            label={t('app.rules.formRuleId', 'Rule id')}
+            size="compact"
+            value={form.id}
+            onChange={(e) => setField({ id: e.target.value })}
+            disabled={!!editingRule}
+            hint={editingRule
+              ? t('app.rules.formRuleIdEditHint', 'Rule id stays fixed while editing.')
+              : t('app.rules.formRuleIdHint', 'Optional — generated from the component if blank')}
+          />
         </Stack>
       </Dialog>
 

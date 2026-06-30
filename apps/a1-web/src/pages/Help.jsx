@@ -1612,7 +1612,7 @@ const HELP = [
               'Type — Bug, Feature, or Epic.',
               'Priority — P0 (critical) to P3 (someday). A suggestion; a maintainer confirms it.',
               'Complexity — XS to XL.',
-              'Screenshots — attach images straight from the form.',
+              'Screenshots — attach images from the form, or paste an image anywhere in the create or edit ticket dialog.',
             ]} />
             <P>Open the <strong>Backlog</strong> page from the notification button in the top header to see everything.</P>
           </Stack>

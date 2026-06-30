@@ -28,6 +28,7 @@ export function getDefaultConfig() {
     background: 'panel',
     inverse: false,
     showGrid: true,
+    gridType: 'lines',
     gridSpacing: '16',
     showControls: true,
     mode: 'view',
@@ -40,6 +41,7 @@ function buildSnippet(config) {
     config.background !== 'panel' ? `background="${config.background}"` : null,
     config.inverse ? 'inverse' : null,
     !config.showGrid ? 'showGrid={false}' : null,
+    config.showGrid && config.gridType !== 'lines' ? `gridType="${config.gridType}"` : null,
     config.showGrid && config.gridSpacing !== '16' ? `gridSpacing={${config.gridSpacing}}` : null,
     !config.showControls ? 'showControls={false}' : null,
     config.mode === 'edit' ? 'mode="edit"' : null,
@@ -77,6 +79,7 @@ export function Preview({ config }) {
         background={config.background}
         inverse={config.inverse}
         showGrid={config.showGrid}
+        gridType={config.gridType}
         gridSpacing={Number(config.gridSpacing)}
         showControls={config.showControls}
         snapToGrid={config.snapToGrid}
@@ -125,6 +128,10 @@ export function Controls({ config, setConfig }) {
       <Choice prop="mode" label="Mode" value={config.mode} onChange={(mode) => set({ mode })} options={[
         { value: 'view', label: 'View' },
         { value: 'edit', label: 'Edit' },
+      ]} />
+      <Choice prop="gridType" label="Grid type" value={config.gridType} onChange={(gridType) => set({ gridType })} options={[
+        { value: 'lines', label: 'Lines', icon: 'grid_4x4' },
+        { value: 'dots', label: 'Dots', icon: 'grain' },
       ]} />
       <Choice prop="gridSpacing" label="Grid" value={config.gridSpacing} onChange={(gridSpacing) => set({ gridSpacing })} options={[
         { value: '1',  label: '1px' },

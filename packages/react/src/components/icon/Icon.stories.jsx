@@ -66,7 +66,7 @@ export const CustomFont = {
       registerCustomIconFont({
         fontUrl: ENGINE_STORY_FONT,
         fontFamily: "A1 Custom Icons Story",
-        mappings: { "custom:engine": 0xe001 },
+        mappings: { "custom:engine": "engine" },
       });
       return clearCustomIconFont;
     }, []);

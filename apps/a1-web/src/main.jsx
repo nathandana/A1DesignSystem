@@ -381,7 +381,18 @@ function App() {
 
   // Pattern authoring reuses the main editor: `?page=editor&pattern=<id>` opens a
   // pattern as a document (no project context). Derived from the URL each render.
-  const editorPatternId = activePage === 'editor' ? new URLSearchParams(window.location.search).get('pattern') : null
+  const editorSearchParams = new URLSearchParams(window.location.search)
+  const editorPatternId = activePage === 'editor' ? editorSearchParams.get('pattern') : null
+  const patternSourceProjectId = editorPatternId ? editorSearchParams.get('sourceProject') : null
+  const patternSourceDocId = editorPatternId ? editorSearchParams.get('sourceDoc') : null
+  const patternSourceNodeId = editorPatternId ? editorSearchParams.get('sourceNode') : null
+  const patternSourceHref = patternSourceDocId
+    ? `/editor?${new URLSearchParams({
+        ...(patternSourceProjectId ? { project: patternSourceProjectId } : {}),
+        doc: patternSourceDocId,
+        ...(patternSourceNodeId ? { sourceNode: patternSourceNodeId } : {}),
+      }).toString()}`
+    : null
 
   const [editorView, setEditorView] = useState('edit')
   const [editorDirty, setEditorDirty] = useState(false)
@@ -1569,6 +1580,8 @@ function App() {
               key={`pattern-${editorPatternId}`}
               documentKind="pattern"
               patternId={editorPatternId}
+              patternSourceHref={patternSourceHref}
+              patternSourceLabel={patternSourceHref ? 'Back to source page' : null}
               projects={projects}
               exampleId={`pattern-${editorPatternId}`}
               definition={patternDef}

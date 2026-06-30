@@ -23,6 +23,7 @@ export const SearchField = forwardRef(function SearchField({
   onKeyDown,
   clearLabel,
   disabled = false,
+  readOnly = false,
   className = "",
   ...props
 }, forwardedRef) {
@@ -71,7 +72,7 @@ export const SearchField = forwardRef(function SearchField({
       <span className="a1-field__search-icon" aria-hidden="true">
         <Icon name="search" size="sm" color="muted" />
       </span>
-      {hasValue && !disabled && (
+      {hasValue && !disabled && !readOnly && (
         <IconButton
           className="a1-field__search-clear"
           icon="close"
@@ -89,6 +90,7 @@ export const SearchField = forwardRef(function SearchField({
       ref={mergedRef}
       type="search"
       disabled={disabled}
+      readOnly={readOnly}
       className={["a1-field--search", hasValue && "a1-field--search-has-value", className]
         .filter(Boolean).join(" ")}
       inputOverlay={overlay}

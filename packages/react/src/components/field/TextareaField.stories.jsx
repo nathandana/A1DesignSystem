@@ -43,8 +43,7 @@ const LABEL = {
   fontSize: "var(--semantic-font-size-body-xs)",
   fontWeight: 600,
   color: "var(--semantic-color-text-muted)",
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
+  letterSpacing: 0,
   marginBottom: "var(--base-spacing-12)",
 };
 
@@ -131,7 +130,7 @@ export const States = {
       <TextareaField {...args} label="Default"   rows="sm" hint="Hint text provides additional context." />
       <TextareaField {...args} label="Required"  rows="sm" required hint="This field must be completed." />
       <TextareaField {...args} label="Error"     rows="sm" defaultValue="Bad input" error="Your message must be at least 20 characters." />
-      <TextareaField {...args} label="Read-only" rows="sm" value="This content cannot be edited." readOnly onChange={() => {}} />
+      <TextareaField {...args} label="Read-only" rows="sm" value="This content cannot be edited." autoComplete="street-address" readOnly onChange={() => {}} />
       <TextareaField {...args} label="Disabled"  rows="sm" disabled hint="Not available right now." />
     </div>
   ),

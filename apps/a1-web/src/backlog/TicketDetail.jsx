@@ -36,6 +36,7 @@ import {
   TYPES, ticketRef,
 } from '../services/backlog/types'
 import { useBacklog } from './BacklogContext'
+import { attachImageFiles, attachmentStatus, imageFilesFromClipboard } from './imageAttachments'
 import { TicketAiPrompt } from './TicketAiPrompt'
 import { TicketMergePanel } from './TicketMergePanel'
 import { TicketPersonaReview } from './TicketPersonaReview'
@@ -280,13 +281,15 @@ export function DescriptionField({ item, onSave }) {
  * The last two are gated behind `import.meta.env.DEV` (the persona engine is local-only;
  * the AI prompt is a dev convenience) so they never appear in production.
  */
-export function TicketDetail({ item, open, onClose, onOpenItem }) {
+export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, nextItem, onPreviousItem, onNextItem }) {
   const backlog = useBacklog()
   const [thread, setThread] = useState([])
   const [draft, setDraft] = useState('')
   const [busy, setBusy] = useState(false)
   const [tab, setTab] = useState('details')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [attachmentMessage, setAttachmentMessage] = useState('')
+  const [attachmentError, setAttachmentError] = useState('')
 
   const me = backlog?.user
   const voted = item ? backlog?.votedSet?.has(item.id) : false
@@ -299,14 +302,45 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
     return () => { active = false }
   }, [open, item, backlog])
 
+  useEffect(() => {
+    if (!open || !item) return
+    setAttachmentMessage('')
+    setAttachmentError('')
+  }, [open, item?.id])
+
   if (!item) return null
 
   const allItems = backlog?.items ?? []
+  const attachments = item.attachmentRefs ?? []
   // The ticket this one was merged into (when it's a duplicate).
   const canonical = item.duplicateOf ? allItems.find((i) => i.id === item.duplicateOf) : null
 
   const reload = () => backlog?.loadComments(item.id).then(setThread)
   async function patch(p) { await backlog?.update(item, p) }
+
+  async function addAttachments(files, source = 'paste') {
+    try {
+      setAttachmentError('')
+      const refs = await attachImageFiles(files)
+      if (!refs.length) return
+      await patch({ attachmentRefs: [...attachments, ...refs] })
+      setAttachmentMessage(attachmentStatus(refs.length, source))
+    } catch {
+      setAttachmentMessage('')
+      setAttachmentError('Could not attach an image.')
+    }
+  }
+
+  function handlePaste(e) {
+    const files = imageFilesFromClipboard(e.clipboardData)
+    if (!files.length) return
+    e.preventDefault()
+    addAttachments(files, 'paste')
+  }
+
+  function removeAttachment(ref) {
+    patch({ attachmentRefs: attachments.filter((r) => r !== ref) })
+  }
 
   async function post(kind) {
     const body = draft.trim()
@@ -368,12 +402,28 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
       title={`${ticketRef(item.number)} · ${item.title}`}
       footer={
         <Stack direction="row" gap="md" align="center" justify="between" wrap>
-          <Link href={`/backlog/A1-${item.number}`} size="sm">View as page</Link>
+          <Stack direction="row" gap="xs" align="center" wrap>
+            <IconButton
+              icon="chevron_left"
+              label={previousItem ? `Previous ticket, ${ticketRef(previousItem.number)}` : 'Previous ticket'}
+              variant="secondary"
+              disabled={!previousItem}
+              onClick={onPreviousItem}
+            />
+            <IconButton
+              icon="chevron_right"
+              label={nextItem ? `Next ticket, ${ticketRef(nextItem.number)}` : 'Next ticket'}
+              variant="secondary"
+              disabled={!nextItem}
+              onClick={onNextItem}
+            />
+            <Link href={`/backlog/A1-${item.number}`} size="sm" weight="semibold">View as page</Link>
+          </Stack>
           <Button variant="secondary" onClick={onClose}>Done</Button>
         </Stack>
       }
     >
-      <Stack gap="md">
+      <Stack gap="md" onPaste={handlePaste}>
         {item.awaitingRequester && (
           <Banner status="warn" variant="inline">
             Awaiting the requester’s answer to a clarifying question.
@@ -498,15 +548,36 @@ export function TicketDetail({ item, open, onClose, onOpenItem }) {
                 ]}
               />
 
-              {item.attachmentRefs?.length > 0 && (
-                <Stack direction="row" gap="sm" wrap>
-                  {item.attachmentRefs.map((ref) => (
-                    <a key={ref} href={resolveSrc(ref)} target="_blank" rel="noreferrer">
-                      <Figure src={resolveSrc(ref)} alt="Attachment" size="xs" radius="sm" aspectRatio="1:1" />
-                    </a>
-                  ))}
-                </Stack>
-              )}
+              <Stack gap="xs">
+                <Paragraph as="span" size="xs" color="muted">Screenshots</Paragraph>
+                <Paragraph size="sm" color="muted">
+                  Paste an image anywhere in this dialog to attach it to the ticket.
+                </Paragraph>
+                {attachmentError && <Banner status="error" variant="inline">{attachmentError}</Banner>}
+                {attachmentMessage && (
+                  <Paragraph size="sm" color="muted" aria-live="polite">{attachmentMessage}</Paragraph>
+                )}
+                {attachments.length > 0 ? (
+                  <Stack direction="row" gap="sm" wrap>
+                    {attachments.map((ref) => (
+                      <div key={ref} className="a1-backlog-attach">
+                        <a href={resolveSrc(ref)} target="_blank" rel="noreferrer" aria-label="Open attachment">
+                          <Figure src={resolveSrc(ref)} alt="Attachment" size="xs" radius="sm" aspectRatio="1:1" />
+                        </a>
+                        <IconButton
+                          size="sm"
+                          variant="secondary"
+                          icon="close"
+                          aria-label="Remove attachment"
+                          onClick={() => removeAttachment(ref)}
+                        />
+                      </div>
+                    ))}
+                  </Stack>
+                ) : (
+                  <Paragraph size="sm" color="muted">No screenshots yet.</Paragraph>
+                )}
+              </Stack>
 
               <ButtonContainer align="start">
                 <Button size="sm" variant="destructive" icon="delete" onClick={() => setConfirmDelete(true)}>

@@ -1,7 +1,7 @@
 /**
  * Rules: the built-in design rules (parsed from the bundled `system/rules/*.yaml`)
- * plus user-authored rules stored locally in this browser. Built-in rules are
- * read-only; user rules can be added (by hand or via AI) and deleted. Device-local.
+ * plus user-authored rules stored locally in this browser. Built-in rules can
+ * be locally overridden by saving a user rule with the same id. Device-local.
  */
 import { parse as parseYaml } from 'yaml';
 import { ruleSourceFiles } from '../pages/components/data.js';
@@ -14,6 +14,7 @@ export interface Rule {
   requirement: string;     // the rule itself
   do?: string;
   dont?: string;
+  examples?: RuleExample[];
   appliesTo: string[];     // categories: accessibility, layout, content, …
   source: 'builtin' | 'user';
   file?: string;           // built-in source file
@@ -21,6 +22,10 @@ export interface Rule {
   enforcement?: { eslint?: string; css?: boolean };
   createdAt?: number;
 }
+
+export type RuleExample =
+  | { id: string; type: 'code'; label?: string; code: string }
+  | { id: string; type: 'image'; label?: string; imageRef: string; alt?: string };
 
 // ── Built-in rules (parsed once from the bundled YAML) ────────────────────────
 
@@ -38,6 +43,7 @@ function parseBuiltin(): Rule[] {
         requirement: r.requirement ?? r.description ?? '',
         do: r.do,
         dont: r.dont,
+        examples: Array.isArray(r.examples) ? r.examples : undefined,
         appliesTo: Array.isArray(r.applies_to) ? r.applies_to : [],
         source: 'builtin',
         file,
@@ -85,7 +91,11 @@ export function listUserRules(): Rule[] {
 
 export function listBuiltinRules(): Rule[] { return builtinRules; }
 
-export function listAllRules(): Rule[] { return [...listUserRules(), ...builtinRules]; }
+export function listAllRules(): Rule[] {
+  const userRules = listUserRules();
+  const overridden = new Set(userRules.map((rule) => rule.id));
+  return [...userRules, ...builtinRules.filter((rule) => !overridden.has(rule.id))];
+}
 
 export function addRule(partial: Omit<Rule, 'source'> & { id?: string }): Rule {
   const rule: Rule = {
@@ -94,12 +104,38 @@ export function addRule(partial: Omit<Rule, 'source'> & { id?: string }): Rule {
     requirement: partial.requirement?.trim() || '',
     do: partial.do?.trim() || undefined,
     dont: partial.dont?.trim() || undefined,
+    examples: normalizeExamples(partial.examples),
     appliesTo: partial.appliesTo ?? [],
     source: 'user',
     createdAt: Date.now(),
   };
   writeUser([rule, ...readUser().filter((r) => r.id !== rule.id)]);
   return rule;
+}
+
+function normalizeExamples(examples: RuleExample[] | undefined): RuleExample[] | undefined {
+  const normalized = (examples ?? []).map((example) => {
+    if (example.type === 'image') {
+      return {
+        id: example.id || uid(),
+        type: 'image' as const,
+        label: example.label?.trim() || undefined,
+        imageRef: example.imageRef,
+        alt: example.alt?.trim() || undefined,
+      };
+    }
+    return {
+      id: example.id || uid(),
+      type: 'code' as const,
+      label: example.label?.trim() || undefined,
+      code: example.code.trim(),
+    };
+  }).filter((example) => (
+    example.type === 'image'
+      ? !!example.imageRef
+      : !!example.code
+  ));
+  return normalized.length ? normalized : undefined;
 }
 
 export function deleteRule(id: string): void {

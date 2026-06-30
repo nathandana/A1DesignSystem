@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { Icon } from "../icon/Icon.jsx";
+import { SearchField } from "../field/SearchField.jsx";
 import { Menu, MenuSection, MenuItem } from "../menu/Menu.jsx";
 import "./data-table-filters.css";
 
@@ -157,6 +158,7 @@ export function DataTableFilters({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef(null);
+  const searchNameId = useId();
 
   const hasSearch = Boolean(onSearchChange);
 
@@ -178,14 +180,22 @@ export function DataTableFilters({
 
   const searchField = hasSearch && (
     <div className="a1-dt-filters__search-wrap">
-      <Icon name="search" className="a1-dt-filters__search-icon" />
-      <input
-        type="search"
-        className="a1-dt-filters__search-input"
+      <SearchField
+        className="a1-dt-filters__search-field"
+        size="compact"
         data-a1-page-search=""
+        data-1p-ignore="true"
+        data-bwignore="true"
+        data-form-type="other"
+        data-lpignore="true"
+        name={`a1-dt-query-${searchNameId}`}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="none"
+        spellCheck={false}
         value={searchValue}
         onChange={(e) => onSearchChange(e.target.value)}
-        placeholder="Search…"
+        onClear={() => onSearchChange("")}
         aria-label={searchColumn
           ? `Search in ${searchableColumns?.find((c) => c.key === searchColumn)?.label ?? searchColumn}`
           : "Search all fields"}

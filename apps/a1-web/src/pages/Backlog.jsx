@@ -13,6 +13,7 @@ import {
   Grid,
   Heading,
   Icon,
+  IconButton,
   Link,
   MessageBadge,
   MessageEmptyState,
@@ -97,6 +98,14 @@ function loadFilterState() {
   } catch { return {} }
 }
 
+function loadVisibleLanes(persisted) {
+  const valid = new Set([...STATUS_FLOW, ...TERMINAL_STATUSES])
+  const stored = Array.isArray(persisted?.visibleLanes)
+    ? persisted.visibleLanes.filter((status) => valid.has(status))
+    : []
+  return new Set(stored.length ? stored : STATUS_FLOW)
+}
+
 // How many filter dimensions (incl. the search) are currently narrowing the board.
 function countActiveFilters(filters, searching) {
   let n = 0
@@ -108,31 +117,48 @@ function countActiveFilters(filters, searching) {
   return n
 }
 
-// ── Board card ───────────────────────────────────────────────────────────────
+// ── Ticket card ──────────────────────────────────────────────────────────────
 
 // The whole card is a navigation control — click opens the ticket dialog; right-click
 // opens a context menu of actions (rule 6a: a navigation card holds only static
 // content, so vote/assign/etc. live in the menu, not inline buttons).
-function BoardCard({ item, onOpen, onContextMenu, onDragStart }) {
+function TicketCard({ item, variant = 'board', onOpen, onContextMenu, onDragStart, actionLabel }) {
+  const isQueue = variant === 'queue'
+  const cardProps = isQueue
+    ? { status: STATUS_STRIPE_TONE[item.status], statusPulse: !!STATUS_STRIPE_PULSE[item.status] }
+    : {
+        variant: 'navigation',
+        status: STATUS_STRIPE_TONE[item.status],
+        statusPulse: !!STATUS_STRIPE_PULSE[item.status],
+        draggable: onDragStart ? true : undefined,
+        onDragStart: onDragStart ? (e) => onDragStart(e, item) : undefined,
+        onClick: () => onOpen(item),
+        onContextMenu: onContextMenu ? (e) => onContextMenu(item, e) : undefined,
+      }
+
   return (
-    <Card
-      variant="navigation"
-      status={STATUS_STRIPE_TONE[item.status]}
-      statusPulse={!!STATUS_STRIPE_PULSE[item.status]}
-      draggable={onDragStart ? true : undefined}
-      onDragStart={onDragStart ? (e) => onDragStart(e, item) : undefined}
-      onClick={() => onOpen(item)}
-      onContextMenu={(e) => onContextMenu(item, e)}
-    >
-      <Stack gap="none">
+    <Card {...cardProps}>
+      <Stack direction={isQueue ? 'row' : 'column'} gap={isQueue ? 'sm' : 'none'} align={isQueue ? 'center' : undefined} justify={isQueue ? 'between' : undefined} wrap={isQueue}>
+        <Stack gap={isQueue ? 'xs' : 'none'}>
           <Paragraph as="span" size="xs" color="muted" className="a1-m-0">{ticketRef(item.number)}</Paragraph>
-        <Heading size="xs" className="a1-m-0">{item.title}</Heading>
-        <Divider/>
-        <Stack direction="row" gap="xs" wrap>
-          <TypeBadge type={item.type} /><PriorityBadge priority={item.priority} />
-          <ComplexityBadge complexity={item.complexity} />
-          <ScopeBadge scopeKind={item.scopeKind} scopeLabel={item.scopeLabel} />
+          <Heading size="xs" className="a1-m-0">{item.title}</Heading>
+          {!isQueue && <Divider />}
+          <Stack direction="row" gap="xs" wrap>
+            {isQueue && <StatusBadge status={item.status} />}
+            <TypeBadge type={item.type} />
+            <PriorityBadge priority={item.priority} />
+            <ComplexityBadge complexity={item.complexity} />
+            <ScopeBadge scopeKind={item.scopeKind} scopeLabel={item.scopeLabel} />
+          </Stack>
         </Stack>
+        {isQueue && (
+          <IconButton
+            icon="open_in_new"
+            label={actionLabel}
+            variant="secondary"
+            onClick={() => onOpen(item)}
+          />
+        )}
       </Stack>
     </Card>
   )
@@ -163,7 +189,7 @@ function LaneCards({ items, onOpen, onContextMenu, onCardDragStart }) {
     <Stack gap="sm">
       <Stack gap="sm">
         {visible.map((it) => (
-          <BoardCard key={it.id} item={it} onOpen={onOpen} onContextMenu={onContextMenu} onDragStart={onCardDragStart} />
+          <TicketCard key={it.id} item={it} onOpen={onOpen} onContextMenu={onContextMenu} onDragStart={onCardDragStart} />
         ))}
       </Stack>
       {totalPages > 1 && (
@@ -292,7 +318,7 @@ export function Backlog({ onNavigate }) {
   const [deleteTarget, setDeleteTarget] = useState(null) // ticket pending delete confirmation
   const [dragOverStatus, setDragOverStatus] = useState(null) // swimlane being dragged over
   // Visible swimlanes — workflow lanes on by default, terminal ones (Won't fix / Duplicate) off.
-  const [visibleLanes, setVisibleLanes] = useState(() => new Set(STATUS_FLOW))
+  const [visibleLanes, setVisibleLanes] = useState(() => loadVisibleLanes(persisted))
   const isSmall = useIsSmall() // xs/sm → tab-per-swimlane instead of a grid
   const [activeLane, setActiveLane] = useState(null) // active tab on the small board
   // The filters render into the app's right-hand aside rail (A1-154) — the same slot the
@@ -329,8 +355,8 @@ export function Backlog({ onNavigate }) {
 
   // Persist the board's filters / sort / search so the view sticks across reloads (A1-154).
   useEffect(() => {
-    try { localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({ filters, sort, query })) } catch { /* ignore */ }
-  }, [filters, sort, query])
+    try { localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({ filters, sort, query, visibleLanes: [...visibleLanes] })) } catch { /* ignore */ }
+  }, [filters, sort, query, visibleLanes])
 
   const byStatus = useMemo(() => {
     const map = {}
@@ -347,6 +373,12 @@ export function Backlog({ onNavigate }) {
     const assigned = base.filter((it) => it.assigneeId === me.id && it.createdBy !== me.id)
     return { awaiting, mine, assigned }
   }, [filteredItems, me])
+
+  const reviewItems = useMemo(() => {
+    if (tab === 'queue') return [...queue.awaiting, ...queue.assigned, ...queue.mine]
+    if (tab === 'all') return filteredItems.slice().sort(SORTERS.number)
+    return filtered
+  }, [filtered, filteredItems, queue, tab])
 
   const open = (it) => setSelected(it)
   const vote = (it, v) => backlog?.vote(it, v)
@@ -397,6 +429,11 @@ export function Backlog({ onNavigate }) {
 
   // Keep the open detail dialog in sync with refreshed data.
   const selectedLive = selected ? items.find((i) => i.id === selected.id) || selected : null
+  const selectedReviewIndex = selectedLive ? reviewItems.findIndex((it) => it.id === selectedLive.id) : -1
+  const previousReviewItem = selectedReviewIndex > 0 ? reviewItems[selectedReviewIndex - 1] : null
+  const nextReviewItem = selectedReviewIndex >= 0 && selectedReviewIndex < reviewItems.length - 1
+    ? reviewItems[selectedReviewIndex + 1]
+    : null
 
   const counts = {
     open: items.filter((i) => !['released', 'wont_fix', 'duplicate', 'cancelled'].includes(i.status)).length,
@@ -558,6 +595,10 @@ export function Backlog({ onNavigate }) {
         open={!!selected}
         onClose={() => setSelected(null)}
         onOpenItem={(it) => setSelected(it)}
+        previousItem={previousReviewItem}
+        nextItem={nextReviewItem}
+        onPreviousItem={previousReviewItem ? () => setSelected(previousReviewItem) : undefined}
+        onNextItem={nextReviewItem ? () => setSelected(nextReviewItem) : undefined}
       />
 
       <ContextMenu
@@ -700,19 +741,13 @@ function QueueGroup({ title, icon, items, empty, openLabel, onOpen }) {
       ) : (
         <Stack gap="xs">
           {items.map((it) => (
-            <Card key={it.id} status={STATUS_STRIPE_TONE[it.status]} statusPulse={!!STATUS_STRIPE_PULSE[it.status]}>
-              <Stack direction="row" gap="sm" align="center" justify="between" wrap>
-                <Stack gap="xs">
-                  <Paragraph size="sm">{ticketRef(it.number)} · {it.title}</Paragraph>
-                  <Stack direction="row" gap="xs" wrap>
-                    <StatusBadge status={it.status} />
-                    <PriorityBadge priority={it.priority} />
-                    <ScopeBadge scopeKind={it.scopeKind} scopeLabel={it.scopeLabel} />
-                  </Stack>
-                </Stack>
-                <Button size="sm" variant="secondary" icon="open_in_new" onClick={() => onOpen(it)}>{openLabel ?? 'Open'}</Button>
-              </Stack>
-            </Card>
+            <TicketCard
+              key={it.id}
+              item={it}
+              variant="queue"
+              onOpen={onOpen}
+              actionLabel={`${openLabel ?? 'Open'} ${ticketRef(it.number)}`}
+            />
           ))}
         </Stack>
       )}
