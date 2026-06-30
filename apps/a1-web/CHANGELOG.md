@@ -16,6 +16,14 @@
 
 - **Blog article navigation** — in-app route changes now reset the A1 main scroll container as well as the window scroll position, so opening a blog article from the Blog index starts at the top of the article instead of preserving the archive scroll.
 
+- **Navigation — Backlog under Explore** — moved Backlog out of the icon-only header actions and into the standard Explore menu list so it behaves like the other informational/product-planning destinations.
+
+- **Navigation — Virtual Team under Explore** — moved the dev-only Virtual Team entry out of the icon-only header actions and into the standard Explore menu list when running in dev mode.
+
+- **Navigation — account controls in Settings** — consolidated the separate user/account header menu into the Settings menu. When Supabase auth is configured, Settings now contains Account, sign-in, and sign-out actions alongside theme, locale, accessibility, and editor preferences.
+
+- **Settings menu cleanup** — hid Crochet and Marshmallow from the Settings theme picker, moved Account controls to the end of the Settings menu, and removed the Editor export/import actions from Settings.
+
 - **Local auth gate bypass** — a1-web now requires full-page sign-in only on live/non-local deployments when Supabase is configured. Localhost, `127.0.0.1`, `::1`, and file-based runs stay ungated even with Supabase env vars present, so local development, Help screenshots, and walkthrough capture can use the normal dev server without creating a smoke env. Supabase-backed sync remains available locally when signed in.
 
 - **Video walkthrough pipeline** (A1-107) — added the first prompt-to-MP4 vertical slice for reproducible feature walkthroughs. Authored `walkthroughs/*.walkthrough.yaml` specs now drive a Playwright capture runner (`npm run walkthrough:capture`) that records browser video, screenshots, event timings, and a Remotion input manifest. Added `npm run walkthrough:prompt` for starter specs from a prompt, `npm run walkthrough:narration` for narration scripts / estimated word timings / SRT captions / optional macOS local voiceover, and `npm run walkthrough:render` to render a narration-paced MP4 with Remotion. `npm run walkthrough:demo` runs the sample capture, voiceover, and MP4 render end to end.

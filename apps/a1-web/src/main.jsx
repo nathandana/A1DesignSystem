@@ -110,7 +110,6 @@ import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
-import { suppressHistoryFlush } from './editor/storage.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { supabaseConfigured } from './lib/supabase.js'
@@ -135,7 +134,7 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'accessibility', 'releases', 'about']
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
@@ -190,6 +189,7 @@ const themeOptions = [
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
 ]
+const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
 
 const colorSchemeOptions = [
   { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode', labelKey: 'app.settings.lightMode' },
@@ -383,7 +383,6 @@ function App() {
   const [rulesVersion, setRulesVersion] = useState(0)
   useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
-  const importInputRef = useRef(null)
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
@@ -789,42 +788,6 @@ function App() {
     if (!target || !activeProjectId) return
     const url = `/editor-preview?standalone&screen=${encodeURIComponent(target)}&project=${encodeURIComponent(activeProjectId)}`
     window.open(url, '_blank', 'noopener,noreferrer')
-  }
-
-  // Export every project (and its pages' latest JSON) as one plain-text backup
-  // file, so nothing is lost if local storage is cleared.
-  function handleExportAll() {
-    const content = projectStore.exportAllText()
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `a1-editor-projects-${new Date().toISOString().slice(0, 10)}.txt`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-  }
-
-  // Restore projects + pages from an "Export all" file, then reload so the editor
-  // picks everything up cleanly. Suppress the open page's history flush first so
-  // its stale in-memory state can't clobber the freshly-imported content.
-  async function handleImportFile(event) {
-    const file = event.target.files?.[0]
-    event.target.value = '' // allow re-importing the same file later
-    if (!file) return
-
-    let text = ''
-    try { text = await file.text() } catch { setEditorMessage('Could not read that file.'); return }
-
-    const { projects: importedProjects } = projectStore.importAllText(text)
-    if (importedProjects === 0) {
-      setEditorMessage('No projects found in that file.')
-      return
-    }
-
-    suppressHistoryFlush()
-    window.location.reload()
   }
 
   function resetRouteScroll() {
@@ -1279,20 +1242,6 @@ function App() {
       onClick: () => setGlobalSearchOpen(true),
     },
     {
-      id: 'backlog-queue',
-      icon: 'checklist',
-      iconOnly: true,
-      label: t('app.action.yourBacklogQueue', 'Your backlog queue'),
-      active: activePage === 'backlog',
-      badge: backlog?.unreadCount || undefined,
-      onClick: () => {
-        if (backlog?.unreadCount) {
-          backlog.markRead(backlog.notifications.filter((n) => !n.read).map((n) => n.id))
-        }
-        navigate('backlog')
-      },
-    },
-    {
       id: 'help',
       icon: PAGE_ICONS.help,
       iconOnly: true,
@@ -1300,14 +1249,6 @@ function App() {
       active: activePage === 'help',
       onClick: () => navigate('help'),
     },
-    ...(import.meta.env.DEV ? [{
-      id: 'virtual-team',
-      icon: PAGE_ICONS['virtual-team'],
-      iconOnly: true,
-      label: pageTitle('virtual-team'),
-      active: activePage === 'virtual-team',
-      onClick: () => navigate('virtual-team'),
-    }] : []),
     { id: 'action-divider', divider: true },
     {
       id: 'new-ticket',
@@ -1316,43 +1257,6 @@ function App() {
       label: t('app.action.createTicket', 'Create a ticket'),
       onClick: () => backlog?.openCreate({ kind: 'general' }),
     },
-    ...(supabaseConfigured ? [{
-      id: 'user',
-      icon: 'account_circle',
-      iconOnly: true,
-      label: authUser ? authUser.email : t('app.page.account', 'Account'),
-      items: [
-        ...(authUser ? [{
-          id: 'user-header',
-          isHeader: true,
-          label: authUser.email,
-          description: t('app.page.account', 'Account'),
-        }] : []),
-        { divider: true },
-        {
-          id: 'user-account',
-          icon: 'manage_accounts',
-          label: t('app.page.account', 'Account'),
-          onClick: () => navigate('account'),
-        },
-        ...(authUser ? [
-          { divider: true },
-          {
-            id: 'user-signout',
-            icon: 'logout',
-            label: t('app.action.signOut', 'Sign out'),
-            onClick: () => signOut(),
-          },
-        ] : [
-          {
-            id: 'user-signin',
-            icon: 'login',
-            label: t('app.action.signIn', 'Sign in'),
-            onClick: () => navigate('account'),
-          },
-        ]),
-      ],
-    }] : []),
     {
       id: 'settings',
       icon: 'settings',
@@ -1782,20 +1686,20 @@ function App() {
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
         <MenuSection label={t('app.page.theme', 'Theme')}>
-          {themeOptions.length > 5 ? (
+          {settingsThemeOptions.length > 5 ? (
             <SelectField
               aria-label={t('app.page.theme', 'Theme')}
               size="compact"
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
             >
-              {themeOptions.map((opt) => (
+              {settingsThemeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </SelectField>
           ) : (
             <RadioGroup
-              options={themeOptions}
+              options={settingsThemeOptions}
               value={theme}
               onChange={setTheme}
               size="compact"
@@ -1842,33 +1746,6 @@ function App() {
             ))}
           </SelectField>
         </MenuSection>
-        <MenuSection label={t('app.page.editor', 'Editor')}>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="download"
-            fullWidth
-            onClick={handleExportAll}
-          >
-            {t('app.action.exportAllPages', 'Export all pages')}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon="upload"
-            fullWidth
-            onClick={() => importInputRef.current?.click()}
-          >
-            {t('app.action.importPages', 'Import pages')}
-          </Button>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept=".txt,text/plain"
-            hidden
-            onChange={handleImportFile}
-          />
-        </MenuSection>
         <MenuSection>
           <Button
             variant="secondary"
@@ -1884,6 +1761,27 @@ function App() {
             {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
+        {supabaseConfigured && (
+          <MenuSection label={t('app.page.account', 'Account')}>
+            {authUser && (
+              <MenuItem icon="account_circle" onClick={() => navigate('account')}>
+                {authUser.email}
+              </MenuItem>
+            )}
+            <MenuItem icon="manage_accounts" onClick={() => navigate('account')}>
+              {t('app.page.account', 'Account')}
+            </MenuItem>
+            {authUser ? (
+              <MenuItem icon="logout" onClick={() => signOut()}>
+                {t('app.action.signOut', 'Sign out')}
+              </MenuItem>
+            ) : (
+              <MenuItem icon="login" onClick={() => navigate('account')}>
+                {t('app.action.signIn', 'Sign in')}
+              </MenuItem>
+            )}
+          </MenuSection>
+        )}
       </Menu>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
