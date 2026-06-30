@@ -1145,6 +1145,7 @@ function App() {
     },
     {
       id: 'explore',
+      icon: 'menu_book',
       label: t('app.nav.explore', 'Explore'),
       active: EXPLORE_PAGE_IDS.includes(activePage) || activePage === 'blog-article',
       items: [...EXPLORE_PAGE_IDS]
@@ -1158,6 +1159,7 @@ function App() {
     },
     {
       id: 'foundations',
+      icon: 'foundation',
       label: pageTitle('foundations'),
       active: activePage === 'foundations' || FOUNDATION_PAGE_IDS.includes(activePage),
       items: [
@@ -1186,6 +1188,7 @@ function App() {
     },
     {
       id: 'components',
+      icon: 'widgets',
       label: pageTitle('components'),
       active: COMPONENT_ROUTE_IDS.includes(activePage) || activePage === 'kitchen-sink',
       items: [
@@ -1217,6 +1220,7 @@ function App() {
     },
     {
       id: 'editor',
+      icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
       active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor',
       items: [
