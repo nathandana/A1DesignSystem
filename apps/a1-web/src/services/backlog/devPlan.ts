@@ -37,13 +37,26 @@ function openQuestions(comments: BacklogComment[]): string[] {
 }
 
 /** The ticket as plain text: title, metadata, description, and the discussion thread. */
-export function buildTicketContext(item: BacklogItem, comments: BacklogComment[] = []): string {
+export function buildTicketContext(
+  item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
+): string {
   const lines = [
     `${ticketRef(item.number)}: ${item.title}`,
     metaLine(item),
     '',
   ];
   if (item.description?.trim()) lines.push('Description:', item.description.trim(), '');
+
+  if (linked.length) {
+    lines.push('Linked tickets (related work — check whether they share scope or should ship together):');
+    for (const l of linked) {
+      const desc = l.description?.trim()
+        ? ` — ${l.description.trim().replace(/\s*\n\s*/g, ' ').slice(0, 160)}`
+        : '';
+      lines.push(`- ${ticketRef(l.number)} (${TYPE_LABELS[l.type]}, ${STATUS_LABELS[l.status]}): ${l.title}${desc}`);
+    }
+    lines.push('');
+  }
 
   const discussion = comments.filter((c) => c.kind !== 'activity' && c.body?.trim());
   if (discussion.length) {
@@ -85,8 +98,10 @@ export const PLAN_SYSTEM = [
 ].join('\n');
 
 /** The user message for the local AI: the ticket context, framed as a request to plan it. */
-export function buildPlanRequest(item: BacklogItem, comments: BacklogComment[] = []): string {
-  return `Plan the work for this ticket.\n\n${buildTicketContext(item, comments)}`;
+export function buildPlanRequest(
+  item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
+): string {
+  return `Plan the work for this ticket.\n\n${buildTicketContext(item, comments, linked)}`;
 }
 
 // ── Deterministic fallback planner ──────────────────────────────────────────────
@@ -199,7 +214,9 @@ function doneWhen(item: BacklogItem): string[] {
  * Build a development plan from the ticket alone — deterministic, offline, no model. Used as
  * the fallback when no local LLM is reachable so the tab always yields a real, usable plan.
  */
-export function developPlanLocally(item: BacklogItem, comments: BacklogComment[] = []): string {
+export function developPlanLocally(
+  item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
+): string {
   const scale = assessScale(item);
   const open = openQuestions(comments);
   const ref = ticketRef(item.number);
@@ -224,6 +241,13 @@ export function developPlanLocally(item: BacklogItem, comments: BacklogComment[]
     out.push('- None outstanding — the ticket and discussion settle the scope. Flag anything ambiguous as you go.');
   }
   out.push('');
+
+  if (linked.length) {
+    out.push('## Linked tickets');
+    out.push('Related tickets — check whether they share scope or should ship together, and keep them consistent:');
+    for (const l of linked) out.push(`- ${ticketRef(l.number)} (${STATUS_LABELS[l.status]}): ${l.title}`);
+    out.push('');
+  }
 
   out.push('## Plan');
   steps(item).forEach((s, i) => out.push(`${i + 1}. ${s}`));

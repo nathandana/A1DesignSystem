@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button, ButtonContainer, CircularProgress, Code, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
 import { buildTicketContext, buildPlanRequest, developPlanLocally, PLAN_SYSTEM } from '../services/backlog/devPlan'
@@ -14,12 +14,12 @@ import { chooseModel, listLocalModels, localChat } from '../lib/localAi'
  */
 
 // Produce a plan: prefer a local model, fall back to the deterministic planner.
-async function produce(item, comments) {
+async function produce(item, comments, linked) {
   const models = await listLocalModels()
   const model = chooseModel(models)
   if (model) {
     try {
-      const r = await localChat({ system: PLAN_SYSTEM, prompt: buildPlanRequest(item, comments), model })
+      const r = await localChat({ system: PLAN_SYSTEM, prompt: buildPlanRequest(item, comments, linked), model })
       if (r.text) {
         return { plan: r.text, source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
       }
@@ -27,7 +27,7 @@ async function produce(item, comments) {
       /* local runner errored — fall back below */
     }
   }
-  return { plan: developPlanLocally(item, comments), source: 'builtin', info: null }
+  return { plan: developPlanLocally(item, comments, linked), source: 'builtin', info: null }
 }
 
 export function TicketAiPrompt({ item }) {
@@ -39,6 +39,13 @@ export function TicketAiPrompt({ item }) {
   const [info, setInfo] = useState(null) // { model, elapsedMs, outputTokens }
   const [mode, setMode] = useState('plan') // 'plan' | 'raw'
   const [nonce, setNonce] = useState(0)
+
+  // The tickets linked to this one (A1-218) become context for the plan (A1-283) so
+  // related/should-ship-together work isn't planned in isolation.
+  const linked = useMemo(() => {
+    const ids = new Set(item.links ?? [])
+    return ids.size ? (backlog?.items ?? []).filter((i) => ids.has(i.id)) : []
+  }, [item.links, backlog?.items])
 
   // Load the discussion thread for this ticket.
   useEffect(() => {
@@ -56,7 +63,7 @@ export function TicketAiPrompt({ item }) {
     if (comments === null) return undefined
     let active = true
     setPlanning(true)
-    produce(item, comments).then((res) => {
+    produce(item, comments, linked).then((res) => {
       if (!active) return
       setPlan(res.plan)
       setSource(res.source)
@@ -64,9 +71,9 @@ export function TicketAiPrompt({ item }) {
       setPlanning(false)
     })
     return () => { active = false }
-  }, [comments, item, nonce])
+  }, [comments, item, linked, nonce])
 
-  const rawDetails = comments === null ? '' : buildTicketContext(item, comments)
+  const rawDetails = comments === null ? '' : buildTicketContext(item, comments, linked)
   const shown = mode === 'plan' ? plan : rawDetails
 
   return (
