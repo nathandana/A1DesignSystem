@@ -85,12 +85,12 @@ function SignInScreen() {
   )
 }
 
-// Gate the whole app behind sign-in whenever Supabase is configured. With no
-// Supabase config the app is local-only and ungated (passes through). While the
-// session is resolving, show a spinner to avoid flashing the sign-in screen.
+// Gate the whole app behind sign-in only on live deployments. Local development
+// can still use Supabase-backed sync when env vars are present, but remains
+// ungated for demos, QA captures, and walkthrough generation.
 export function AuthGate({ children }) {
-  const { user, loading, configured } = useAuth()
-  if (!configured) return children
+  const { user, loading, authRequired } = useAuth()
+  if (!authRequired) return children
   if (loading) {
     return (
       <div style={centerScreen}>

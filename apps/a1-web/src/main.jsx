@@ -89,6 +89,9 @@ import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
 import { About } from './pages/About.jsx'
+import { Blog } from './pages/Blog.jsx'
+import { BlogArticle } from './pages/BlogArticle.jsx'
+import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
@@ -131,10 +134,12 @@ import './styles.css'
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
-const EXPLORE_PAGE_IDS = ['features', 'get-started', 'accessibility', 'releases', 'about']
+const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'accessibility', 'releases', 'about']
 const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
+  blog: 'article',
   help: 'help',
   backlog: 'task_alt',
   'virtual-team': 'groups',
@@ -145,12 +150,14 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
+const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   features: 'Features',
   'get-started': 'Get started',
+  blog: 'Blog',
+  'blog-article': 'Search, shortcuts, and walkthroughs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -197,6 +204,8 @@ function getPage(search = window.location.search, pathname = window.location.pat
   // Path-based routing — read from the URL pathname first.
   const path = pathname.replace(/^\/|\/$/g, '') // strip leading/trailing slash
   if (!path) return 'home'
+  if (path === 'blog') return 'blog'
+  if (path.startsWith('blog/')) return 'blog-article'
 
   // /foundations → 'foundations', /foundations/color → 'foundation-color'
   if (path === 'foundations') return 'foundations'
@@ -231,6 +240,7 @@ function getPage(search = window.location.search, pathname = window.location.pat
 
 function getPath(page) {
   if (!page || page === 'home') return '/'
+  if (page === 'blog-article') return `/blog/${BLOG_ARTICLE_SLUG}`
   if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
   if (page.startsWith('component-')) return `/components/${page.slice('component-'.length)}`
@@ -246,6 +256,8 @@ const PAGE_TITLE_LABEL_KEYS = {
   home: 'app.page.home',
   features: 'app.page.features',
   'get-started': 'app.page.getStarted',
+  blog: 'app.page.blog',
+  'blog-article': 'app.page.blogArticle',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
   patterns: 'app.page.patterns',
@@ -434,6 +446,18 @@ function App() {
     addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
     addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
+    addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
+    BLOG_POSTS.forEach((post) => {
+      entries.push({
+        id: `blog-${post.slug}`,
+        title: post.title,
+        category: 'Blog',
+        description: post.description,
+        icon: 'article',
+        keywords: ['blog', 'newsletter', 'release', post.version, ...(post.keywords || [])],
+        onSelect: () => navigate('blog-article', { path: `/blog/${post.slug}` }),
+      })
+    })
     addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
     addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
     addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
@@ -803,6 +827,17 @@ function App() {
     window.location.reload()
   }
 
+  function resetRouteScroll() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
+    requestAnimationFrame(() => {
+      const main = document.querySelector('.a1-page-layout__main-scroll')
+      if (main instanceof HTMLElement) {
+        main.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      }
+    })
+  }
+
   function navigate(page, { replace = false, path: pathOverride = null } = {}) {
     const next = PAGES.includes(page) ? page : 'home'
     const nextPath = pathOverride ?? getPath(next)
@@ -812,7 +847,7 @@ function App() {
     }
     setActivePage(next)
     setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: 'auto' })
+    resetRouteScroll()
   }
 
   function focusMainContent() {
@@ -1093,7 +1128,7 @@ function App() {
     {
       id: 'explore',
       label: t('app.nav.explore', 'Explore'),
-      active: EXPLORE_PAGE_IDS.includes(activePage),
+      active: EXPLORE_PAGE_IDS.includes(activePage) || activePage === 'blog-article',
       items: [...EXPLORE_PAGE_IDS]
         .sort((a, b) => pageTitle(a).localeCompare(pageTitle(b)))
         .map((id) => ({
@@ -1526,6 +1561,8 @@ function App() {
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
+        {activePage === 'blog' && <Blog onNavigate={navigate} />}
+        {activePage === 'blog-article' && <BlogArticle onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail

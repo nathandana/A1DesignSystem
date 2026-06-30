@@ -2046,6 +2046,21 @@ span.a1-web-sem-pick { display: inline-block; }
   font-size: var(--base-font-size-scale-100);
 }
 
+.a1-web-blog-video {
+  overflow: hidden;
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-raised);
+  box-shadow: var(--semantic-shadow-sm);
+}
+
+.a1-web-blog-video video {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--semantic-color-surface-inverse);
+}
+
 @media (max-width: 640px) {
   .a1-web-color-space-scene {
     block-size: var(--base-width-lg);
