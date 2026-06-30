@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Stat — component page + configurator** (A1-375) — the `Stat` component now has a live a1-web component page under the **Data** category (`/components/stat`), with a Configure panel (title, value, format, size, align, advanced number-format options, and a status badge), an accurate code snippet, Properties/Rules/Accessibility tabs, and the standard package/status/related-component registry entries (React-only, experimental).
+
 - **Kitchen sink page** (A1-343) — added a single `/kitchen-sink` page that previews as many A1 components as possible in one scrollable view, grouped by category (typography, actions and controls, inputs, feedback and messaging, layout and media, navigation and data). Built entirely from exported A1 components and layout primitives (`Section`/`Stack`/`Grid`/`Card`) with no custom styling, so it doubles as a quick cross-theme/cross-breakpoint smoke test. Linked from the Explore menu and global search (keywords: gallery, showcase, sticker sheet, preview).
 
 - **Component examples / sticker sheets** (A1-102) — added focused example child pages to component detail pages, backed by lightweight JSON definitions. Examples apply preconfigured component configs into the live configurator state, show a preview and generated snippet, can constrain their preview width for narrow-container examples, and have direct routes such as `/components/toolbar/overview`. Added Overflow under Toolbar as the first example with a denser WYSIWYG-style editor toolbar.

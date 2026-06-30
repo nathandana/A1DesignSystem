@@ -29,7 +29,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
-| Category | `components-data` | Data | `table_chart` | Data Table, Definition List, Pagination, Calendar, Node |
+| Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
 - Category pages use `components-{category-id}`.
@@ -369,7 +369,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Definition List | ✓ | — | ✓ |
 | Pagination | ✓ | ✓ | — |
 
-> **Stat props (A1-375):** `title` (metric label, shown above the value with an optional `icon`), `value` (number or node — numbers are formatted), `prefix` / `suffix` (e.g. a currency symbol or unit), `description` (supporting context below the value), `icon` (Material Symbols name beside the title), `badge` + `badgeStatus` ("neutral" | "info" | "success" | "warn" | "error", default "neutral") / `badgeSubtle` (default true) / `badgeSize` ("sm" | "md" | "lg", default "sm") / `badgeIcon` (override, `null` to suppress), `format` ("none" | "number" | "percent", default "number" — `percent` appends `%` without multiplying), `size` ("xs" | "sm" | "md" | "lg" | "xl", default "md"), `align` ("start" | "center" | "end", default "start"), `locale` / `precision` / `groupSeparator` (`false` disables grouping) / `decimalSeparator` for numeric formatting, `as` (element, default `"div"`). A single highlighted metric — big tokenized value with a muted label, optional supporting text and status badge. Token-driven via `system/tokens/component/stat.json` (`--component-stat-*`). React only.
+> **Stat props (A1-375):** `title` (metric label, shown above the value with an optional `icon`), `value` (number or node — numbers are formatted), `prefix` / `suffix` (e.g. a currency symbol or unit), `description` (supporting context below the value), `icon` (Material Symbols name beside the title), `badge` + `badgeStatus` ("neutral" | "info" | "success" | "warn" | "error", default "neutral") / `badgeSubtle` (default true) / `badgeSize` ("sm" | "md" | "lg", default "sm") / `badgeIcon` (override, `null` to suppress), `format` ("none" | "number" | "percent", default "number" — `percent` appends `%` without multiplying), `size` ("xs" | "sm" | "md" | "lg" | "xl", default "md"), `align` ("start" | "center" | "end", default "start"), `locale` / `precision` / `groupSeparator` (`false` disables grouping) / `decimalSeparator` for numeric formatting, `as` (element, default `"div"`). A single highlighted metric — big tokenized value with a muted label, optional supporting text and status badge. Token-driven via `system/tokens/component/stat.json` (`--component-stat-*`). React only; has an a1-web component page + live configurator under the **Data** category (`/components/stat`).
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
 
