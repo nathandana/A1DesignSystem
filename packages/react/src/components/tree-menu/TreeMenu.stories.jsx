@@ -311,3 +311,44 @@ export const DeepNesting = {
     />
   ),
 };
+
+// ── Inline rename ─────────────────────────────────────────────────────────────
+
+function renameItem(items, id, label) {
+  return items.map((item) => {
+    if (item.id === id) return { ...item, label };
+    if (item.children?.length) return { ...item, children: renameItem(item.children, id, label) };
+    return item;
+  });
+}
+
+function RenamableWrapper() {
+  const [items, setItems] = useState(DRAGGABLE_ITEMS);
+  const [selectedId, setSelectedId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+
+  return (
+    <div style={{ width: 280 }}>
+      <p style={{ margin: '0 0 12px', color: 'var(--semantic-color-text-muted)', fontSize: 14 }}>
+        Double-click an item (or press F2, or right-click) to rename it inline. Enter or blur commits; Escape cancels.
+      </p>
+      <TreeMenu
+        items={items}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+        defaultExpandedIds={['hero', 'content', 'card-grid']}
+        editingId={editingId}
+        onRenameStart={setEditingId}
+        onItemContextMenu={(id) => setEditingId(id)}
+        onRenameCommit={(id, label) => { setItems((prev) => renameItem(prev, id, label)); setEditingId(null); }}
+        onRenameCancel={() => setEditingId(null)}
+        aria-label="Page structure"
+      />
+    </div>
+  );
+}
+
+export const Renamable = {
+  name: 'Inline rename',
+  render: () => <RenamableWrapper />,
+};

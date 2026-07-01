@@ -326,6 +326,17 @@ const HELP = [
         ),
       },
       {
+        id: 'rename-layers',
+        title: 'Renaming elements',
+        keywords: 'rename name label layers tree double click F2 custom inline edit',
+        body: (
+          <Stack gap="sm">
+            <P>Rename any element in the <strong>Layers</strong> tree — <strong>double-click</strong> its label, press <Kbd>F2</Kbd>, or right-click → <strong>Rename</strong>. <Kbd>Enter</Kbd> or click-away commits; <Kbd>Esc</Kbd> cancels.</P>
+            <P>The custom name overrides the auto-derived label (pattern name → text content → component type). Clearing it restores the automatic label. Renames are normal history steps, so undo works.</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'duplicate-delete-convert',
         title: 'Duplicate, delete & convert',
         keywords: 'duplicate delete convert change type remove copy element context menu',

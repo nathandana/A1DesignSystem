@@ -680,7 +680,7 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string } | { type: 'rename'; nodeId: string; name: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
@@ -1009,6 +1009,7 @@ export function EditorPage({
     else if (pendingAction.type === 'paste-pattern') handlePastePattern(pendingAction.nodeId);
     else if (pendingAction.type === 'detach') handleDetachPattern(pendingAction.nodeId);
     else if (pendingAction.type === 'create-pattern') handleCreatePatternFromNode(pendingAction.nodeId);
+    else if (pendingAction.type === 'rename') handleRenameNode(pendingAction.nodeId, pendingAction.name);
     onPendingActionDone?.();
   }, [pendingAction]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1320,6 +1321,18 @@ export function EditorPage({
     if (!parsedDefinition.ok) return;
     const newDef = duplicateDefinitionNode(parsedDefinition.value, nodeId);
     history.commit(JSON.stringify(newDef, null, 2), `Duplicated ${getNodeType(nodeId)}`);
+  }
+
+  // Give a layers-tree node a custom display name (set via inline rename). An
+  // empty name clears the override so the auto-derived label returns.
+  function handleRenameNode(nodeId: string, name: string) {
+    const node = findNodeAnywhere(nodeId);
+    if (!node) return;
+    const trimmed = name.trim();
+    const next: ComponentNode = { ...node };
+    if (trimmed) next.name = trimmed;
+    else delete next.name;
+    replaceNodeEverywhere(nodeId, next, trimmed ? `Renamed to ${trimmed}` : `Cleared name`);
   }
 
   // Reconcile this page's pattern instances against their current patterns:

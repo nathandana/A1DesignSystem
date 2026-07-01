@@ -188,6 +188,12 @@ export interface ComponentNode {
   id: string;
   /** A1 component name. Must exist in the component registry, or the renderer shows a fallback. */
   type: ComponentType;
+  /**
+   * Custom display name for the editor's layers tree (set via inline rename).
+   * Overrides the auto-derived label (pattern name → text content → type).
+   * Editor metadata only — the renderer ignores it.
+   */
+  name?: string;
   /** Props forwarded to the A1 component. */
   props?: ComponentProps;
   /** Tokenized utility classes applied only when accepted by this component type. */

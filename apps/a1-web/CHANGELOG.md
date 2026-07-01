@@ -6,6 +6,10 @@
 
 - **Settings — sign-in option** — the Settings menu now always includes an Account section. Signed-out users see a Sign in action that opens the Account page; signed-in users see their email, Account, and Sign out actions.
 
+- **Projects — editable project definition JSON** — the project "definition" dialog now shows the JSON bundle in a scrollable, editable code snippet (a fixed-height, resizable editor) instead of a read-only collapsible block. Edits update what **Copy code** copies, so the bundle can be tweaked before pasting into the importer; the stored project is unchanged.
+
+- **Editor — rename items in the Layers tree** (A1-22) — right-click a node in the editor's Layers tree and choose **Rename**, **double-click** its label, or press **F2** to edit its name inline (Enter or click-away commits, Escape cancels). The custom name is stored on the node (`node.name`) and overrides the auto-derived label (pattern name → text content → component type); clearing it restores the auto label. Built on the design-system `TreeMenu`'s new inline-rename support, recorded as a normal undoable editor change.
+
 - **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
 
 - **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.

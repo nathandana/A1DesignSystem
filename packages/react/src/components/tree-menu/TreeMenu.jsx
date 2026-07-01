@@ -23,6 +23,10 @@ const TreeCtx = createContext({
   onDragLeave: () => {},
   onDrop: () => {},
   onDragEnd: () => {},
+  editingId: null,
+  onRenameStart: () => {},
+  onRenameCommit: () => {},
+  onRenameCancel: () => {},
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -80,6 +84,45 @@ function getDescendantIds(items, targetId, result = []) {
   return result;
 }
 
+// ── Inline rename input ───────────────────────────────────────────────────────
+// Replaces the label while an item is being renamed. Enter commits, Escape
+// cancels, blur commits — mirroring the rest of the editor's inline renames.
+
+function RenameInput({ defaultValue, onCommit, onCancel }) {
+  const [value, setValue] = useState(defaultValue);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+    ref.current?.select();
+  }, []);
+
+  function commit() {
+    const trimmed = value.trim();
+    onCommit(trimmed || defaultValue);
+  }
+
+  function handleKeyDown(e) {
+    // Don't let the tree's roving-tabindex / arrow navigation steal the keys.
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+  }
+
+  return (
+    <input
+      ref={ref}
+      className="a1-tree-menu__rename-input"
+      value={value}
+      aria-label="Rename item"
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={commit}
+      onKeyDown={handleKeyDown}
+      onClick={(e) => e.stopPropagation()}
+    />
+  );
+}
+
 // ── TreeItem ──────────────────────────────────────────────────────────────────
 
 function TreeItem({ item, depth }) {
@@ -87,6 +130,7 @@ function TreeItem({ item, depth }) {
     selectedId, rovingId, onSelect, expandedIds, onToggle, onRoving, onHoverChange, onItemContextMenu, nodeRefs,
     isDraggable, dragState, forbiddenIds,
     onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
+    editingId, onRenameStart, onRenameCommit, onRenameCancel,
   } = useContext(TreeCtx);
   const uid = useId();
   const groupId = `${uid}-group`;
@@ -98,6 +142,7 @@ function TreeItem({ item, depth }) {
   const isExpanded = expandedIds.has(item.id);
   const isSelected = item.id === selectedId;
   const isRoving = item.id === rovingId;
+  const isEditing = item.id === editingId;
   const isForbidden = forbiddenIds.has(item.id);
   const isDragging = dragState?.draggingId === item.id;
   const isOver = !isForbidden && dragState?.overId === item.id;
@@ -132,6 +177,15 @@ function TreeItem({ item, depth }) {
 
   function handleFocus() {
     onRoving(item.id);
+  }
+
+  // Double-click on the label requests an inline rename (the consumer enters
+  // edit mode by setting `editingId`). F2 offers the same from the keyboard.
+  function handleDoubleClick(e) {
+    if (item.disabled) return;
+    e.preventDefault();
+    e.stopPropagation();
+    onRenameStart(item.id);
   }
 
   // ── Drag handlers ──────────────────────────────────────────────────────────
@@ -199,7 +253,7 @@ function TreeItem({ item, depth }) {
           isOver && dropPosition === 'after'  && 'a1-tree-menu__row--drop-after',
         ].filter(Boolean).join(' ')}
         style={{ '--a1-tree-depth': depth }}
-        draggable={isDraggable && !item.disabled}
+        draggable={isDraggable && !item.disabled && !isEditing}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -222,30 +276,46 @@ function TreeItem({ item, depth }) {
           <span className="a1-tree-menu__toggle-spacer" aria-hidden="true" />
         )}
 
-        {/* Select trigger */}
-        <Component
-          data-tree-id={item.id}
-          className={[
-            'a1-tree-menu__label-btn',
-            item.disabled && 'a1-tree-menu__label-btn--disabled',
-          ].filter(Boolean).join(' ')}
-          tabIndex={isRoving ? 0 : -1}
-          ref={(el) => {
-            if (el) nodeRefs.current.set(item.id, el);
-            else nodeRefs.current.delete(item.id);
-          }}
-          onClick={handleSelect}
-          onFocus={handleFocus}
-          onMouseEnter={() => !item.disabled && onHoverChange(item.id)}
-          onMouseLeave={() => onHoverChange(null)}
-          onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onItemContextMenu(item.id, e); }}
-          {...extraProps}
-        >
-          {item.icon && (
-            <Icon name={item.icon} className="a1-tree-menu__icon" aria-hidden="true" />
-          )}
-          <span className="a1-tree-menu__label">{item.label}</span>
-        </Component>
+        {/* Editing: an inline input replaces the select trigger so we never
+            nest an input inside the label <button> (invalid + click-stealing). */}
+        {isEditing ? (
+          <div className="a1-tree-menu__label-btn a1-tree-menu__label-btn--editing">
+            {item.icon && (
+              <Icon name={item.icon} className="a1-tree-menu__icon" aria-hidden="true" />
+            )}
+            <RenameInput
+              defaultValue={item.label}
+              onCommit={(label) => onRenameCommit(item.id, label)}
+              onCancel={onRenameCancel}
+            />
+          </div>
+        ) : (
+          /* Select trigger */
+          <Component
+            data-tree-id={item.id}
+            className={[
+              'a1-tree-menu__label-btn',
+              item.disabled && 'a1-tree-menu__label-btn--disabled',
+            ].filter(Boolean).join(' ')}
+            tabIndex={isRoving ? 0 : -1}
+            ref={(el) => {
+              if (el) nodeRefs.current.set(item.id, el);
+              else nodeRefs.current.delete(item.id);
+            }}
+            onClick={handleSelect}
+            onDoubleClick={handleDoubleClick}
+            onFocus={handleFocus}
+            onMouseEnter={() => !item.disabled && onHoverChange(item.id)}
+            onMouseLeave={() => onHoverChange(null)}
+            onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onItemContextMenu(item.id, e); }}
+            {...extraProps}
+          >
+            {item.icon && (
+              <Icon name={item.icon} className="a1-tree-menu__icon" aria-hidden="true" />
+            )}
+            <span className="a1-tree-menu__label">{item.label}</span>
+          </Component>
+        )}
       </div>
 
       {hasChildren && (
@@ -282,6 +352,10 @@ export function TreeMenu({
   onItemContextMenu,
   draggable = false,
   onMove,
+  editingId = null,
+  onRenameStart,
+  onRenameCommit,
+  onRenameCancel,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   className = '',
@@ -440,6 +514,15 @@ export function TreeMenu({
         }
         break;
       }
+      case 'F2': {
+        // Keyboard counterpart of double-click-to-rename.
+        e.preventDefault();
+        if (currentIndex >= 0) {
+          const cur = visible[currentIndex];
+          if (!cur.disabled) onRenameStart?.(cur.id);
+        }
+        break;
+      }
     }
   }
 
@@ -464,6 +547,10 @@ export function TreeMenu({
         onDragLeave: handleDragLeave,
         onDrop: handleDrop,
         onDragEnd: handleDragEnd,
+        editingId,
+        onRenameStart: onRenameStart ?? (() => {}),
+        onRenameCommit: onRenameCommit ?? (() => {}),
+        onRenameCancel: onRenameCancel ?? (() => {}),
       }}
     >
       <ul

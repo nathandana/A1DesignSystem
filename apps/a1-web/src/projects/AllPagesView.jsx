@@ -260,7 +260,7 @@ export function AllPagesView({
             The whole project as a JSON bundle — every page and its definition. This is the same
             shape the project importer accepts, so it round-trips.
           </Paragraph>
-          <Code variant="block" copyCode wrapping collapsible collapsedLines={20}>{projectJson}</Code>
+          <Code variant="block" copyCode editable wrapping rows={18} aria-label="Project definition JSON">{projectJson}</Code>
         </Stack>
       </Dialog>
 
