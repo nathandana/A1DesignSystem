@@ -114,7 +114,6 @@ import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
-import { supabaseConfigured } from './lib/supabase.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
@@ -1566,6 +1565,7 @@ function App() {
           <Components
             activePage={activePage}
             onNavigate={navigate}
+            projectId={activeProjectId}
             search={componentSearch}
             setSearch={setComponentSearch}
             detailTab={detailTab}
@@ -1849,27 +1849,24 @@ function App() {
             {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
-        {supabaseConfigured && (
-          <MenuSection label={t('app.page.account', 'Account')}>
-            {authUser && (
-              <MenuItem icon="account_circle" onClick={() => navigate('account')}>
-                {authUser.email}
-              </MenuItem>
-            )}
-            <MenuItem icon="manage_accounts" onClick={() => navigate('account')}>
-              {t('app.page.account', 'Account')}
+        <MenuSection label={t('app.page.account', 'Account')}>
+          {authUser && (
+            <MenuItem icon="account_circle" onClick={() => { setSettingsOpen(false); navigate('account') }}>
+              {authUser.email}
             </MenuItem>
-            {authUser ? (
-              <MenuItem icon="logout" onClick={() => signOut()}>
-                {t('app.action.signOut', 'Sign out')}
-              </MenuItem>
-            ) : (
-              <MenuItem icon="login" onClick={() => navigate('account')}>
-                {t('app.action.signIn', 'Sign in')}
-              </MenuItem>
-            )}
-          </MenuSection>
-        )}
+          )}
+          <MenuItem
+            icon={authUser ? 'manage_accounts' : 'login'}
+            onClick={() => { setSettingsOpen(false); navigate('account') }}
+          >
+            {authUser ? t('app.page.account', 'Account') : t('app.action.signIn', 'Sign in')}
+          </MenuItem>
+          {authUser && (
+            <MenuItem icon="logout" onClick={() => { setSettingsOpen(false); signOut() }}>
+              {t('app.action.signOut', 'Sign out')}
+            </MenuItem>
+          )}
+        </MenuSection>
       </Menu>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>

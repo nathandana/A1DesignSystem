@@ -1,11 +1,15 @@
+import { useState } from 'react'
 import {
   Accordion,
   Code,
   Heading,
+  IconButton,
+  MessageBadge,
   Paragraph,
   Section,
   Slider,
   Stack,
+  TextField,
   Toolbar,
   ToolbarButton,
   ToolbarDivider,
@@ -15,6 +19,9 @@ import {
 import { Choice, ResponsiveControl, responsiveProp, WithHelp } from './configKit.jsx'
 import { Lockable } from './configKit.jsx'
 import { utilityClassesFor } from '../../../editor/utilityRegistry.ts'
+import { ImageLibraryDialog } from './ImageLibraryDialog.jsx'
+import { isImageRef, resolveSrc } from '../../../lib/imageLibrary.ts'
+import { useImageLibraryVersion } from '../../../editor/ImageLibraryContext.jsx'
 
 const BORDER_SIDES = ['top', 'right', 'bottom', 'left']
 
@@ -101,6 +108,31 @@ const GRADIENT_POSITION_ITEMS = ['top-left', 'top', 'top-right', 'left', 'center
   (value) => ({ value, label: optionLabel(value), icon: GRADIENT_POSITION_ICONS[value] }),
 )
 
+// Background image controls. Fit is labelled; position is the same 3×3 focal
+// grid the Figure crop uses (arrows point at the focal edge kept in view).
+const BG_FIT_ITEMS = labelItems(['cover', 'contain', 'tile'])
+const BG_POSITION_ICONS = {
+  center: 'center_focus_strong',
+  top: 'north',
+  'top-right': 'north_east',
+  right: 'east',
+  'bottom-right': 'south_east',
+  bottom: 'south',
+  'bottom-left': 'south_west',
+  left: 'west',
+  'top-left': 'north_west',
+}
+const BG_POSITION_ITEMS = ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'].map(
+  (value) => ({ value, label: optionLabel(value), icon: BG_POSITION_ICONS[value] }),
+)
+const BG_OVERLAY_ITEMS = [
+  { value: '', label: 'None' },
+  { value: 'darken', label: 'Darken', swatch: 'var(--component-section-background-overlay-darken)' },
+  { value: 'lighten', label: 'Lighten', swatch: 'var(--component-section-background-overlay-lighten)' },
+]
+const BG_OVERLAY_STRENGTH_VALUES = ['sm', 'md', 'lg']
+const BG_OVERLAY_STRENGTH_DETENTS = sliderDetents(BG_OVERLAY_STRENGTH_VALUES)
+
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
 }
@@ -129,8 +161,16 @@ function buildSectionSnippet(config, utilityClass = utilityClassesFor('Section',
     propString('contentWidth', config.contentWidth, ''),
     propString('height', config.height, ''),
     typeof config.align === 'object' ? responsiveProp('align', config.align) : propString('align', config.align, ''),
-    propString('gradient', config.gradient, ''),
-    config.gradient ? propString('gradientPosition', config.gradientPosition, 'center') : null,
+    // Gradient is suppressed by the component while a background image is set.
+    config.backgroundImage ? null : propString('gradient', config.gradient, ''),
+    !config.backgroundImage && config.gradient ? propString('gradientPosition', config.gradientPosition, 'center') : null,
+    propString('backgroundImage', config.backgroundImage, ''),
+    config.backgroundImage ? propString('backgroundFit', config.backgroundFit, 'cover') : null,
+    config.backgroundImage ? propString('backgroundPosition', config.backgroundPosition, 'center') : null,
+    config.backgroundImage ? propString('backgroundOverlay', config.backgroundOverlay, '') : null,
+    config.backgroundImage && config.backgroundOverlay
+      ? propString('backgroundOverlayStrength', config.backgroundOverlayStrength, 'md')
+      : null,
     propString('borderSize', config.borderSize, ''),
     propString('borderStyle', config.borderStyle, 'solid'),
     propString('borderVariant', config.borderVariant, 'subtle'),
@@ -157,6 +197,11 @@ export function getDefaultConfig() {
     align: '',
     gradient: '',
     gradientPosition: 'center',
+    backgroundImage: '',
+    backgroundFit: 'cover',
+    backgroundPosition: 'center',
+    backgroundOverlay: '',
+    backgroundOverlayStrength: 'md',
     borderSize: '',
     borderStyle: 'solid',
     borderVariant: 'subtle',
@@ -168,6 +213,7 @@ export function getDefaultConfig() {
 }
 
 export function Preview({ config, utilityClass = utilityClassesFor('Section', config.utilities) }) {
+  useImageLibraryVersion() // re-render when a library image hydrates
   return (
     <Section
       as={config.as}
@@ -179,6 +225,11 @@ export function Preview({ config, utilityClass = utilityClassesFor('Section', co
       align={config.align || undefined}
       gradient={config.gradient || undefined}
       gradientPosition={config.gradient ? config.gradientPosition : undefined}
+      backgroundImage={config.backgroundImage ? resolveSrc(config.backgroundImage) : undefined}
+      backgroundFit={config.backgroundImage ? config.backgroundFit : undefined}
+      backgroundPosition={config.backgroundImage ? config.backgroundPosition : undefined}
+      backgroundOverlay={(config.backgroundImage && config.backgroundOverlay) || undefined}
+      backgroundOverlayStrength={config.backgroundImage && config.backgroundOverlay ? config.backgroundOverlayStrength : undefined}
       borderSize={config.borderSize || undefined}
       borderStyle={config.borderStyle}
       borderVariant={config.borderVariant}
@@ -213,7 +264,7 @@ function DetentSlider({ label, values, detents, value, onChange, prop }) {
   )
 }
 
-export function Controls({ config, setConfig }) {
+export function Controls({ config, setConfig, projectId }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   const toggleSide = (side) =>
     set({
@@ -221,6 +272,12 @@ export function Controls({ config, setConfig }) {
         ? config.borderSides.filter((s) => s !== side)
         : BORDER_SIDES.filter((s) => s === side || config.borderSides.includes(s)),
     })
+
+  // Background image source (library ref or URL) — mirrors the Figure configurator.
+  const [libraryOpen, setLibraryOpen] = useState(false)
+  const [urlMode, setUrlMode] = useState(false)
+  const fromLibrary = isImageRef(config.backgroundImage)
+  const showUrlField = !fromLibrary && (urlMode || !!config.backgroundImage)
 
   // Collapsed-state summaries of the applied properties per accordion.
   const sizingSummary = summarize([
@@ -231,7 +288,9 @@ export function Controls({ config, setConfig }) {
   const backgroundSummary = summarize([
     config.inverse && 'Inverse',
     config.surface && `${optionLabel(config.surface)} surface`,
-    config.gradient && `${optionLabel(config.gradient)} gradient`,
+    !config.backgroundImage && config.gradient && `${optionLabel(config.gradient)} gradient`,
+    config.backgroundImage && `Image (${optionLabel(config.backgroundFit)})`,
+    config.backgroundImage && config.backgroundOverlay && `${optionLabel(config.backgroundOverlay)} overlay`,
   ])
   const borderSummary = summarize([
     config.borderSize && `${optionLabel(config.borderSize)} ${config.borderVariant} border`,
@@ -264,16 +323,85 @@ export function Controls({ config, setConfig }) {
               <ToolbarToggle icon="invert_colors" label="Inverse" pressed={config.inverse} onChange={(inverse) => set({ inverse })} />
             </Toolbar></Lockable>
           </WithHelp>
-          <Choice prop="gradient" label="Gradient" labelMode="selected"
-            helper="Applies a tokenized gradient wash over the surface in the chosen tone."
-            value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
-          {config.gradient ? (
+          {config.backgroundImage ? null : (
+            <Choice prop="gradient" label="Gradient" labelMode="selected"
+              helper="Applies a tokenized gradient wash over the surface in the chosen tone. Hidden while a background image is set — the image takes precedence."
+              value={config.gradient} onChange={(gradient) => set({ gradient })} options={GRADIENT_ITEMS} />
+          )}
+          {!config.backgroundImage && config.gradient ? (
             <Lockable prop="gradientPosition"><Toolbar label="Gradient position">
               <ToolbarGroup aria-label="Gradient position" columns={3} value={config.gradientPosition} onChange={(gradientPosition) => set({ gradientPosition })} options={GRADIENT_POSITION_ITEMS} />
             </Toolbar></Lockable>
           ) : null}
+
+          <Stack gap="sm">
+            <WithHelp helper="A decorative image behind the section content, cropped to cover by default. Background images are invisible to screen readers — use a Figure for content-bearing images.">
+              <Lockable prop="backgroundImage"><Toolbar label="Background image">
+                <ToolbarButton icon="photo_library" label="Add from library" onClick={() => { setUrlMode(false); setLibraryOpen(true) }} />
+                <ToolbarToggle
+                  icon="link"
+                  label="Add from URL"
+                  pressed={showUrlField}
+                  onChange={(pressed) => {
+                    if (pressed) { if (fromLibrary) set({ backgroundImage: '' }); setUrlMode(true) }
+                    else { setUrlMode(false); if (!isImageRef(config.backgroundImage)) set({ backgroundImage: '' }) }
+                  }}
+                />
+                {config.backgroundImage ? (
+                  <>
+                    <ToolbarDivider />
+                    <ToolbarButton icon="close" label="Clear image" onClick={() => { setUrlMode(false); set({ backgroundImage: '' }) }} />
+                  </>
+                ) : null}
+              </Toolbar></Lockable>
+            </WithHelp>
+
+            {fromLibrary && (
+              <Stack direction="row" gap="xs" align="center">
+                <MessageBadge size="sm" status="info" icon="photo_library">From library</MessageBadge>
+                <IconButton icon="swap_horiz" label="Choose a different library image" size="sm" variant="tertiary" onClick={() => setLibraryOpen(true)} />
+              </Stack>
+            )}
+
+            {showUrlField && (
+              <TextField
+                label="Image URL"
+                size="compact"
+                type="url"
+                autoComplete="off"
+                value={fromLibrary ? '' : (config.backgroundImage ?? '')}
+                onChange={(event) => set({ backgroundImage: event.target.value })}
+              />
+            )}
+          </Stack>
+
+          {config.backgroundImage ? (
+            <>
+              <Choice prop="backgroundFit" label="Image fit"
+                helper="Cover crops the image to fill the band; contain letterboxes the whole image; tile repeats it at natural size."
+                value={config.backgroundFit} onChange={(backgroundFit) => set({ backgroundFit })} options={BG_FIT_ITEMS} />
+              <Choice prop="backgroundPosition" label="Image position" iconOnly columns={3}
+                helper="The focal point kept in view when the image is cropped or anchored."
+                value={config.backgroundPosition} onChange={(backgroundPosition) => set({ backgroundPosition })} options={BG_POSITION_ITEMS} />
+              <Choice prop="backgroundOverlay" label="Overlay" labelMode="selected"
+                helper="A scrim between the image and the content that darkens or lightens the image for contrast. Pair darken with Inverse so the section text switches to the light-on-dark scheme."
+                value={config.backgroundOverlay} onChange={(backgroundOverlay) => set({ backgroundOverlay })} options={BG_OVERLAY_ITEMS} />
+              {config.backgroundOverlay ? (
+                <WithHelp helper="How strongly the overlay tints the image (sm → lg).">
+                  <DetentSlider label="Overlay strength" prop="backgroundOverlayStrength" values={BG_OVERLAY_STRENGTH_VALUES} detents={BG_OVERLAY_STRENGTH_DETENTS} value={config.backgroundOverlayStrength} onChange={(backgroundOverlayStrength) => set({ backgroundOverlayStrength })} />
+                </WithHelp>
+              ) : null}
+            </>
+          ) : null}
         </Stack>
       </Accordion>
+
+      <ImageLibraryDialog
+        open={libraryOpen}
+        projectId={projectId}
+        onClose={() => setLibraryOpen(false)}
+        onApply={({ ref }) => set({ backgroundImage: ref })}
+      />
 
       <Accordion label="Border" size="sm" subtext={borderSummary} divider>
         <Stack gap="md">

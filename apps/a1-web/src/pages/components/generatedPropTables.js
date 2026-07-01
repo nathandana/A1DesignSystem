@@ -3485,6 +3485,36 @@ export const GENERATED_PROP_TABLES = {
           "description": "Gradient origin. Default: \"center\""
         },
         {
+          "id": "backgroundImage",
+          "name": "backgroundImage",
+          "type": "string",
+          "description": "URL of a decorative background image, layered between the overlay scrim and the surface colour. Background images are invisible to assistive technology — use Figure for content-bearing images. Takes precedence over gradient."
+        },
+        {
+          "id": "backgroundFit",
+          "name": "backgroundFit",
+          "type": "\"cover\" | \"contain\" | \"tile\"",
+          "description": "How the background image fills the section: \"cover\" crops to fill, \"contain\" letterboxes the whole image, \"tile\" repeats it at natural size. Default: \"cover\""
+        },
+        {
+          "id": "backgroundPosition",
+          "name": "backgroundPosition",
+          "type": "\"center\" | \"top\" | \"bottom\" | \"left\" | \"right\" | \"top-left\" | \"top-right\" | \"bottom-left\" | \"bottom-right\"",
+          "description": "Focal point kept in view when the image is cropped or anchored. Default: \"center\""
+        },
+        {
+          "id": "backgroundOverlay",
+          "name": "backgroundOverlay",
+          "type": "\"darken\" | \"lighten\"",
+          "description": "Scrim drawn over the background image so content above keeps WCAG contrast — \"darken\" for light/inverse text, \"lighten\" for dark text. Pair \"darken\" with the inverse prop."
+        },
+        {
+          "id": "backgroundOverlayStrength",
+          "name": "backgroundOverlayStrength",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "description": "Strength of the overlay scrim (requires backgroundOverlay). Default: \"md\""
+        },
+        {
           "id": "inverse",
           "name": "inverse",
           "type": "boolean",

@@ -153,6 +153,11 @@ export const propsToConfig = {
     align: props?.align ?? '',
     gradient: props?.gradient ?? '',
     gradientPosition: props?.gradientPosition ?? 'center',
+    backgroundImage: props?.backgroundImage ?? '',
+    backgroundFit: props?.backgroundFit ?? 'cover',
+    backgroundPosition: props?.backgroundPosition ?? 'center',
+    backgroundOverlay: props?.backgroundOverlay ?? '',
+    backgroundOverlayStrength: props?.backgroundOverlayStrength ?? 'md',
     borderSize: props?.borderSize ?? '',
     borderStyle: props?.borderStyle ?? 'solid',
     borderVariant: props?.borderVariant ?? 'subtle',
@@ -760,8 +765,19 @@ export const configToNodeUpdate = {
       contentWidth: config.contentWidth || undefined,
       height: config.height || undefined,
       align: config.align || undefined,
-      gradient: config.gradient || undefined,
-      gradientPosition: config.gradient ? config.gradientPosition : undefined,
+      // A background image takes precedence over the gradient wash (the component
+      // suppresses the gradient while an image is set), so don't persist gradient
+      // props alongside a background image.
+      gradient: config.backgroundImage ? undefined : config.gradient || undefined,
+      gradientPosition: !config.backgroundImage && config.gradient ? config.gradientPosition : undefined,
+      backgroundImage: config.backgroundImage || undefined,
+      backgroundFit: config.backgroundImage && config.backgroundFit !== 'cover' ? config.backgroundFit : undefined,
+      backgroundPosition: config.backgroundImage && config.backgroundPosition !== 'center' ? config.backgroundPosition : undefined,
+      backgroundOverlay: config.backgroundImage ? config.backgroundOverlay || undefined : undefined,
+      backgroundOverlayStrength:
+        config.backgroundImage && config.backgroundOverlay && config.backgroundOverlayStrength !== 'md'
+          ? config.backgroundOverlayStrength
+          : undefined,
       borderSize: config.borderSize || undefined,
       borderStyle: config.borderStyle,
       borderVariant: config.borderVariant,

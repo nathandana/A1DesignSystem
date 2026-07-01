@@ -603,6 +603,11 @@
   --component-scrim-color: rgba(15, 0, 42, 0.6);
   --component-scrim-color-dark: rgba(181, 160, 255, 0.6);
   --component-scrim-color-light: rgba(15, 0, 42, 0.6);
+  --component-section-background-overlay-darken: #060b14;
+  --component-section-background-overlay-lighten: #ffffff;
+  --component-section-background-overlay-strength-lg: 65;
+  --component-section-background-overlay-strength-md: 45;
+  --component-section-background-overlay-strength-sm: 25;
   --component-section-gradient-center-height: 76%;
   --component-section-gradient-center-width: 68%;
   --component-section-gradient-edge-height: 62%;

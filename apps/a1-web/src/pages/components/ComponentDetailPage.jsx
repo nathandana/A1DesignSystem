@@ -2852,6 +2852,7 @@ function ConfigurationPanel({
   viewAsModes,
   showHelp,
   onToggleHelp,
+  projectId,
 }) {
   const utilityType = componentUtilityType(component)
   const setUtilities = (utilities) => {
@@ -2880,7 +2881,7 @@ function ConfigurationPanel({
           )}
           <ConfigHelpContext.Provider value={{ showHelp }}>
             <Stack gap="sm">
-              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} projectId={projectId} />
               <UtilityControls
                 type={utilityType}
                 utilities={config.utilities}
@@ -3011,7 +3012,7 @@ function ComponentConfigureSurface({
   )
 }
 
-export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
+export function ComponentDetailPage({ component, category, onNavigate, projectId = null, tab = 'overview', onTabChange }) {
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
   const requestedExampleId = exampleIdFromTab(tab)
@@ -3131,6 +3132,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             viewAsModes={detail.viewAsModes}
             showHelp={showHelp}
             onToggleHelp={setShowHelp}
+            projectId={projectId}
           />,
           asideNode,
         )}

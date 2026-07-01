@@ -702,6 +702,11 @@
   --component-section-gradient-strength: 24;
   --component-section-gradient-strength-inverse: 18;
   --component-section-gradient-fade: 72;
+  --component-section-background-overlay-darken: #060b14;
+  --component-section-background-overlay-lighten: #ffffff;
+  --component-section-background-overlay-strength-sm: 25;
+  --component-section-background-overlay-strength-md: 45;
+  --component-section-background-overlay-strength-lg: 65;
   --component-segmented-padding: 0.1875rem;
   --component-segmented-gap: 0.125rem;
   --component-segmented-segment-padding-block: 0.25rem;

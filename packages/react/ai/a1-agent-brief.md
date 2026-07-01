@@ -120,7 +120,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | type | C | role | key props |
 |------|:-:|------|-----------|
 | `PageLayout` | C | App-shell layout (top of `page.layout`). **Does not** take width/padding/gap — put those on `Section`. | (slots managed by layout) |
-| `Section` | C | Page region: surface, padding, width, gap, border, alignment. | `padding` (none–xl), `gap` (xs–xxl), `contentWidth` (xs–2xl), `surface` (page/panel/raised), `align` (none/start/center/end), `inverse` (bool), `gradient`, `height` (auto/screen/hero), `as`, `borderSize`/`borderStyle`/`borderVariant`/`borderSides`, `radius` |
+| `Section` | C | Page region: surface, padding, width, gap, border, alignment, background image. | `padding` (none–xl), `gap` (xs–xxl), `contentWidth` (xs–2xl), `surface` (page/panel/raised), `align` (none/start/center/end), `inverse` (bool), `gradient`, `height` (auto/screen/hero), `as`, `borderSize`/`borderStyle`/`borderVariant`/`borderSides`, `radius`, `backgroundImage` (URL, decorative; suppresses `gradient`), `backgroundFit` (cover/contain/tile), `backgroundPosition` (9 focal points), `backgroundOverlay` (darken/lighten — always add one under text; pair darken with `inverse`), `backgroundOverlayStrength` (sm/md/lg) |
 | `Stack` | C | Linear layout. | `direction` (column/row, responsive), `gap` (xs–xxl), `align`, `justify`, `wrap` (bool), `as` |
 | `Grid` | C | Multi-column grid. | `columns` (number or `{xs,md,…}`), `gap`, `rowGap`, `columnGap` |
 | `Cluster` | C | Wrapping row of items (deprecated — prefer `Stack direction="row" wrap`). | `gap`, `align`, `justify` |
@@ -208,6 +208,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 - **`color`** (text/icon): `default`, `muted`, `accent`, `inverse`, `success`, `error`, `warn`, `info`.
 - **`status`** (Banner/MessageBadge/etc.): `neutral`, `info`, `success`, `warn`, `error`.
 - **Section `surface`**: `page`, `panel`, `raised`, `card`. **`align`**: `none`, `start`, `center`, `end`.
+- **Section background image**: `backgroundFit`: `cover` (default), `contain`, `tile`. `backgroundPosition`: `center` (default), `top`, `bottom`, `left`, `right`, `top-left`, `top-right`, `bottom-left`, `bottom-right`. `backgroundOverlay`: `darken`, `lighten` (`backgroundOverlayStrength`: `sm`, `md` default, `lg`). A section with text over a `backgroundImage` must set a `backgroundOverlay` — `darken` + `inverse: true` for light text, `lighten` for dark text.
 - **Button `variant`**: `primary`, `secondary`, `tertiary`, `destructive`, `success`. **`size`**: `sm`, `md`, `lg`.
 - **Responsive**: any prop may take a breakpoint object using `xs, sm, md, lg, xl`, e.g. `"columns": { "xs": 1, "md": 3 }`, `"direction": { "xs": "column", "md": "row" }`.
 - **Icons** (`Icon.name`, `*.icon`): use Material Symbols Outlined names (snake_case), e.g. `home`, `add`, `search`, `settings`, `arrow_forward`, `check_circle`, `download`, `rocket_launch`. Project definitions may also use `custom:<snake_case_name>` when that custom icon is registered for the project.

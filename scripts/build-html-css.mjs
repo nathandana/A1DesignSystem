@@ -670,6 +670,85 @@ function componentCss() {
     var(--a1-section-surface, var(--semantic-color-surface-page));
 }
 
+/* Background image: overlay scrim → image → surface colour. Set the image via
+   an inline custom property on the section element:
+   style="--a1-section-bg-image: url('...')". Do not combine with a gradient
+   class — the image owns the background stack. */
+.a1-section.a1-section-bg-image,
+.a1-section.a1-section--has-bg-image {
+  --a1-section-bg-size: cover;
+  --a1-section-bg-position: center;
+  --a1-section-bg-repeat: no-repeat;
+  --a1-section-bg-overlay: transparent;
+  --a1-section-bg-overlay-strength: var(--component-section-background-overlay-strength-md);
+  background-image:
+    linear-gradient(var(--a1-section-bg-overlay), var(--a1-section-bg-overlay)),
+    var(--a1-section-bg-image);
+  background-size: auto, var(--a1-section-bg-size);
+  background-position: center, var(--a1-section-bg-position);
+  background-repeat: no-repeat, var(--a1-section-bg-repeat);
+  background-color: var(--a1-section-background, var(--a1-section-surface, transparent));
+}
+
+/* Fit: cover (default) crops to fill; contain letterboxes; tile repeats at natural size. */
+.a1-section-bg-fit-contain,
+.a1-section--bg-fit-contain {
+  --a1-section-bg-size: contain;
+}
+
+.a1-section-bg-fit-tile,
+.a1-section--bg-fit-tile {
+  --a1-section-bg-size: auto;
+  --a1-section-bg-repeat: repeat;
+}
+
+/* Focal point kept in view when the image is cropped or anchored. */
+.a1-section-bg-pos-top, .a1-section--bg-pos-top { --a1-section-bg-position: top center; }
+.a1-section-bg-pos-bottom, .a1-section--bg-pos-bottom { --a1-section-bg-position: bottom center; }
+.a1-section-bg-pos-left, .a1-section--bg-pos-left { --a1-section-bg-position: left center; }
+.a1-section-bg-pos-right, .a1-section--bg-pos-right { --a1-section-bg-position: right center; }
+.a1-section-bg-pos-top-left, .a1-section--bg-pos-top-left { --a1-section-bg-position: top left; }
+.a1-section-bg-pos-top-right, .a1-section--bg-pos-top-right { --a1-section-bg-position: top right; }
+.a1-section-bg-pos-bottom-left, .a1-section--bg-pos-bottom-left { --a1-section-bg-position: bottom left; }
+.a1-section-bg-pos-bottom-right, .a1-section--bg-pos-bottom-right { --a1-section-bg-position: bottom right; }
+
+/* Overlay scrim: darkens or lightens the image so content above keeps contrast. */
+.a1-section-bg-overlay-darken,
+.a1-section-bg-overlay-lighten,
+.a1-section--bg-overlay-darken,
+.a1-section--bg-overlay-lighten {
+  --a1-section-bg-overlay: color-mix(
+    in srgb,
+    var(--a1-section-bg-overlay-color) calc(var(--a1-section-bg-overlay-strength) * 1%),
+    transparent
+  );
+}
+
+.a1-section-bg-overlay-darken,
+.a1-section--bg-overlay-darken {
+  --a1-section-bg-overlay-color: var(--component-section-background-overlay-darken);
+}
+
+.a1-section-bg-overlay-lighten,
+.a1-section--bg-overlay-lighten {
+  --a1-section-bg-overlay-color: var(--component-section-background-overlay-lighten);
+}
+
+.a1-section-bg-overlay-strength-sm,
+.a1-section--bg-overlay-strength-sm {
+  --a1-section-bg-overlay-strength: var(--component-section-background-overlay-strength-sm);
+}
+
+.a1-section-bg-overlay-strength-md,
+.a1-section--bg-overlay-strength-md {
+  --a1-section-bg-overlay-strength: var(--component-section-background-overlay-strength-md);
+}
+
+.a1-section-bg-overlay-strength-lg,
+.a1-section--bg-overlay-strength-lg {
+  --a1-section-bg-overlay-strength: var(--component-section-background-overlay-strength-lg);
+}
+
 @media (max-width: 1024px) {
   .a1-section-padding-sm,
   .a1-section--padding-sm {

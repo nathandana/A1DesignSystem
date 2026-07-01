@@ -189,7 +189,7 @@ When a component receives structured JSON data (e.g. navigation items, table row
 
 - The `dist/` directory is partially generated and partially hand-authored:
   - `a1-light.css`, `a1-accessible.css`, `a1-heritage.css` — **generated** by `scripts/build-html-css.mjs`. Do not edit directly.
-  - `a1-base.css` — **hand-authored** BEM classes. Edit directly.
+  - `a1-base.css` — **generated** by `scripts/build-html-css.mjs` (the `componentCss()` template). Do not edit the dist file — edit the CSS template inside the script and rebuild, or `npm run build:html-css` will silently overwrite your change.
   - `a1-pure.css` — **hand-authored** scoped classes. Edit directly.
 - All CSS values must reference `var(--token-name)` — verified against `a1-light.css`.
 - No raw number fallbacks in `var()` unless the token is guaranteed to exist. Prefer dropping the fallback entirely once verified.

@@ -38,7 +38,7 @@ Always run `npm run build:tokens && npm run build:html-css` after any change to 
 | Token source files | `system/tokens/` |
 | Theme source files | `system/themes/` |
 | React components | `packages/react/src/components/{name}/` |
-| Hand-authored BEM classes | `packages/pure/dist/a1-base.css` |
+| BEM classes (generated — edit `componentCss()` in `scripts/build-html-css.mjs`) | `packages/pure/dist/a1-base.css` |
 | Hand-authored pure classes | `packages/pure/dist/a1-pure.css` |
 | Pure example site | `examples/a1-pure/` |
 | Color scheme switching (dark mode, inverse) | `packages/react/src/color-scheme.css` |

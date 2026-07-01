@@ -15,10 +15,31 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   surface?: "page" | "panel" | "raised";
   /** Gap between direct children */
   gap?: "xs" | "sm" | "md" | "lg" | "xl";
-  /** Gradient overlay colour */
+  /** Gradient overlay colour. Suppressed while `backgroundImage` is set. */
   gradient?: "accent" | "highlight" | "info" | "success" | "warn";
   /** Gradient origin. Default: "center" */
   gradientPosition?: "top" | "top-right" | "right" | "bottom-right" | "bottom" | "bottom-left" | "left" | "top-left" | "center";
+  /**
+   * URL of a decorative background image, layered between the overlay scrim and
+   * the surface colour. Background images are invisible to assistive technology —
+   * use `Figure` for content-bearing images. Takes precedence over `gradient`.
+   */
+  backgroundImage?: string;
+  /**
+   * How the background image fills the section: "cover" crops to fill, "contain"
+   * letterboxes the whole image, "tile" repeats it at natural size. Default: "cover"
+   */
+  backgroundFit?: "cover" | "contain" | "tile";
+  /** Focal point kept in view when the image is cropped or anchored. Default: "center" */
+  backgroundPosition?: "center" | "top" | "bottom" | "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  /**
+   * Scrim drawn over the background image so content above keeps WCAG contrast —
+   * "darken" for light/inverse text, "lighten" for dark text. Pair "darken" with
+   * the `inverse` prop so the section's own text switches to the inverse scheme.
+   */
+  backgroundOverlay?: "darken" | "lighten";
+  /** Strength of the overlay scrim (requires `backgroundOverlay`). Default: "md" */
+  backgroundOverlayStrength?: "sm" | "md" | "lg";
   /** Apply inverse (dark) colour scheme to this section */
   inverse?: boolean;
   /** Constrain inner content to a max-width and centre it */

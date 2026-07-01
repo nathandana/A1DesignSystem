@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Section configurator — background image** (A1-345) — the Section page's Background panel now configures the new background-image props: pick an image from the active project library or a URL, set the fit (cover / contain / tile), choose the focal point on a 3×3 grid, and add a darken/lighten contrast overlay with a strength slider. The gradient controls hide while an image is set (the component gives the image precedence) and the emitted code snippet includes the new props.
+
+- **Settings — sign-in option** — the Settings menu now always includes an Account section. Signed-out users see a Sign in action that opens the Account page; signed-in users see their email, Account, and Sign out actions.
+
 - **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
 
 - **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.

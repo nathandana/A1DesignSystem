@@ -351,7 +351,7 @@ const HELP = [
       {
         id: 'section-component',
         title: 'Section: page regions and surfaces',
-        keywords: 'section page region surface panel raised background padding contentWidth border gradient full width container inverse dark hero',
+        keywords: 'section page region surface panel raised background padding contentWidth border gradient full width container inverse dark hero image overlay darken lighten tile cover',
         body: (
           <Stack gap="sm">
             <P>
@@ -364,6 +364,7 @@ const HELP = [
               <><strong>padding</strong> — controls the inset from the Section edge to its content (none / xs / sm / md / lg / xl / xxl).</>,
               <><strong>contentWidth</strong> — constrains the inner content column to a max-width (xs → 2xl) while keeping the background full-bleed. Match this value to StickyActions for visual alignment.</>,
               <><strong>gradient</strong> — adds a decorative gradient overlay on the surface. Pairs well with "raised" for a hero section.</>,
+              <><strong>backgroundImage</strong> — a decorative image behind the content, with <strong>backgroundFit</strong> (cover / contain / tile) and <strong>backgroundPosition</strong> (focal point). Always add a <strong>backgroundOverlay</strong> (darken or lighten, with sm / md / lg strength) under text — pair darken with inverse so the text flips to the light-on-dark scheme. Takes precedence over gradient.</>,
               <><strong>borderSize / borderSides / borderVariant</strong> — add a subtle, strong, or accent border on any sides. Common use: <Kbd>borderSides={['bottom']}</Kbd> to separate a page header area.</>,
               <><strong>inverse</strong> — flips to the inverse (typically dark) surface. Use instead of hardcoding a dark background colour.</>,
             ]} />
