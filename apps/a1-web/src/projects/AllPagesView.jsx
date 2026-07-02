@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
 import {
+  ActionTile,
+  ActionTiles,
   Button,
   Canvas,
-  Card,
   Code,
   Dialog,
-  Grid,
-  Heading,
   MessageBadge,
   MessageEmptyState,
   Node,
@@ -182,7 +181,7 @@ export function AllPagesView({
         )}
       />
 
-      <Section padding="sm" aria-labelledby="all-pages-heading" contentWidth="xl">
+      <Section padding="sm" aria-labelledby="all-pages-heading" contentWidth="md">
         <Stack direction="column" gap="lg">
 
         {flat.length === 0 ? (
@@ -207,33 +206,29 @@ export function AllPagesView({
             </Stack>
 
             {viewMode === 'list' ? (
-              <Grid columns={{ xs: 1, sm: 2, lg: 1 }} gap="md">
+              <ActionTiles layout="stack" iconLayout="side" aria-label="Project pages">
                 {flat.map(({ page, level }) => (
-                  <Card
+                  <ActionTile
                     key={page.id}
-                    variant="navigation"
+                    as="a"
                     href={`/editor?project=${project?.id}&doc=${page.id}`}
                     icon={page.icon || 'description'}
-                    iconDisplay="default"
+                    title={(
+                      <Stack direction="row" gap="xs" align="center">
+                        <span>{page.title || 'Untitled'}</span>
+                        <MessageBadge size="sm" subtle icon={null}>L{level}</MessageBadge>
+                      </Stack>
+                    )}
+                    subtitle={page.description}
                     onClick={(e) => {
                       if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
                         e.preventDefault()
                         onOpenPage?.(page.id)
                       }
                     }}
-                  >
-                    <Stack direction="column" gap="xs">
-                      <Stack direction="row" gap="xs" align="center">
-                        <Heading as="h2" size="sm">{page.title || 'Untitled'}</Heading>
-                        <MessageBadge size="sm" subtle icon={null}>L{level}</MessageBadge>
-                      </Stack>
-                      {page.description && (
-                        <Paragraph size="sm" color="muted">{page.description}</Paragraph>
-                      )}
-                    </Stack>
-                  </Card>
+                  />
                 ))}
-              </Grid>
+              </ActionTiles>
             ) : (
               <ProjectNodeGraph pages={pages} onOpenPage={onOpenPage} />
             )}

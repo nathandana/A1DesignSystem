@@ -14,9 +14,21 @@
  * work — the underlying Preview manages its own internal state.
  */
 import { DataTable, Grid, Icon, Paragraph, Section, Stack } from '@gtivr4/a1-design-system-react';
+import { Preview as ActionTilesPreview } from '../pages/components/detail/action-tile.jsx';
+import { Preview as ChipPreview } from '../pages/components/detail/chip.jsx';
+import { Preview as BottomSheetPreview } from '../pages/components/detail/bottom-sheet.jsx';
+import { Preview as CanvasPreview } from '../pages/components/detail/canvas.jsx';
+import { Preview as ContextMenuPreview } from '../pages/components/detail/context-menu.jsx';
 import { Preview as TabsPreview } from '../pages/components/detail/tabs.jsx';
 import { Preview as ToolbarPreview } from '../pages/components/detail/toolbar.jsx';
 import { Preview as DataTablePreview } from '../pages/components/detail/data-table.jsx';
+import { Preview as DialogPreview } from '../pages/components/detail/dialog.jsx';
+import { Preview as InlinePreview } from '../pages/components/detail/inline.jsx';
+import { Preview as MenuPreview } from '../pages/components/detail/menu.jsx';
+import { Preview as NotificationPreview } from '../pages/components/detail/notification.jsx';
+import { Preview as PageLayoutPreview } from '../pages/components/detail/page-layout.jsx';
+import { Preview as SideNavPreview } from '../pages/components/detail/side-nav.jsx';
+import { Preview as SnackbarPreview } from '../pages/components/detail/snackbar.jsx';
 import { Preview as TreeMenuPreview } from '../pages/components/detail/tree-menu.jsx';
 import { getAllPatterns } from '../patterns/patternStore.js';
 
@@ -46,6 +58,18 @@ function makeAdapter(Preview) {
 export const EditorTabs = makeAdapter(TabsPreview);
 export const EditorToolbar = makeAdapter(ToolbarPreview);
 export const EditorTreeMenu = makeAdapter(TreeMenuPreview);
+export const EditorActionTiles = makeAdapter(ActionTilesPreview);
+export const EditorChipGroup = makeAdapter(ChipPreview);
+export const EditorBottomSheet = makeAdapter(BottomSheetPreview);
+export const EditorCanvas = makeAdapter(CanvasPreview);
+export const EditorContextMenu = makeAdapter(ContextMenuPreview);
+export const EditorDialog = makeAdapter(DialogPreview);
+export const EditorInline = makeAdapter(InlinePreview);
+export const EditorMenu = makeAdapter(MenuPreview);
+export const EditorNotification = makeAdapter(NotificationPreview);
+export const EditorPageLayout = makeAdapter(PageLayoutPreview);
+export const EditorSideNav = makeAdapter(SideNavPreview);
+export const EditorSnackbar = makeAdapter(SnackbarPreview);
 
 // DataTable: when the node supplies real `columns` (+ `rows`) — as a page
 // definition does — render the real DataTable so the supplied data shows.

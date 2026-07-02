@@ -19,6 +19,7 @@ import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 import { UtilityControls } from './UtilityControls.jsx'
 import { LabelLookupButton } from './LabelLookupDialog.jsx'
+import { ALL_CATALOG_ENTRIES } from './componentCatalog.ts'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
@@ -57,6 +58,7 @@ import { Controls as StepTrackerControls } from '../pages/components/detail/step
 
 // Inputs
 import { Controls as TextFieldControls } from '../pages/components/detail/text-field.jsx'
+import { Controls as SearchFieldControls } from '../pages/components/detail/search-field.jsx'
 import { Controls as TextareaFieldControls } from '../pages/components/detail/textarea.jsx'
 import { EditorBindControls } from './EditorBindControls.jsx'
 import { EditorCollectionControls } from './EditorCollectionControls.jsx'
@@ -91,6 +93,8 @@ import { Controls as StickyActionsControls } from '../pages/components/detail/st
 import { Controls as AccordionControls } from '../pages/components/detail/accordion.jsx'
 
 // Actions & controls / data (added editor support)
+import { Controls as ActionTilesControls, getDefaultConfig as actionTilesDefaults } from '../pages/components/detail/action-tile.jsx'
+import { Controls as ChipControls, getDefaultConfig as chipDefaults } from '../pages/components/detail/chip.jsx'
 import { Controls as SliderControls, getDefaultConfig as sliderDefaults } from '../pages/components/detail/slider.jsx'
 import { Controls as TabsControls, getDefaultConfig as tabsDefaults } from '../pages/components/detail/tabs.jsx'
 import { Controls as ToolbarControls, getDefaultConfig as toolbarDefaults } from '../pages/components/detail/toolbar.jsx'
@@ -431,6 +435,21 @@ export const propsToConfig = {
     readOnly: props?.readOnly ?? false,
   }),
 
+  SearchField: (props) => ({
+    label: props?.label ?? 'Search',
+    labelKey: props?.labelKey ?? '',
+    hint: props?.hint ?? '',
+    error: props?.error ?? '',
+    value: props?.value ?? props?.defaultValue ?? '',
+    size: props?.size ?? 'default',
+    labelPosition: props?.labelPosition ?? 'above',
+    autoComplete: props?.autoComplete ?? '',
+    required: props?.required ?? false,
+    disabled: props?.disabled ?? false,
+    readOnly: props?.readOnly ?? false,
+    clearLabel: props?.clearLabel ?? '',
+  }),
+
   TextareaField: (props) => ({
     label: props?.label ?? 'Label',
     labelKey: props?.labelKey ?? '',
@@ -719,6 +738,10 @@ export const propsToConfig = {
       disabled: props?.disabled ?? false,
     }
   },
+
+  ActionTiles: (props) => ({ ...actionTilesDefaults(), ...(props ?? {}) }),
+
+  ChipGroup: (props) => ({ ...chipDefaults(), ...(props ?? {}) }),
 
   Tabs: (props) => ({ ...tabsDefaults(), ...(props ?? {}), openItems: [] }),
 
@@ -1087,6 +1110,23 @@ export const configToNodeUpdate = {
     },
   }),
 
+  SearchField: (config) => ({
+    props: {
+      label: config.label || undefined,
+      labelKey: config.labelKey || undefined,
+      hint: config.hint || undefined,
+      error: config.error || undefined,
+      defaultValue: config.value || undefined,
+      clearLabel: config.clearLabel || undefined,
+      size: config.size,
+      labelPosition: config.labelPosition,
+      autoComplete: config.autoComplete || undefined,
+      required: config.required || undefined,
+      disabled: config.disabled || undefined,
+      readOnly: config.readOnly || undefined,
+    },
+  }),
+
   TextareaField: (config) => ({
     props: {
       label: config.label || undefined,
@@ -1380,6 +1420,10 @@ export const configToNodeUpdate = {
 
   // Config-as-props adapters: the node's props ARE the configurator config (the
   // editor adapters in editorComponents.jsx render the matching detail Preview).
+  ActionTiles: (config) => ({ props: { ...config } }),
+
+  ChipGroup: (config) => ({ props: { ...config } }),
+
   Tabs: (config) => {
     const { openItems: _openItems, ...rest } = config
     return { props: rest }
@@ -1508,11 +1552,10 @@ function FieldRowEditorControls() {
 // A Slot is a constrained "blank area" in a pattern: configure the placeholder
 // label and which component types and/or patterns instances may drop into it.
 // Leaving both lists empty makes the slot accept anything.
-const SLOT_COMPONENT_OPTIONS = [
-  'Card', 'Button', 'IconButton', 'Link', 'Heading', 'Paragraph', 'Blockquote',
-  'Figure', 'Icon', 'MessageBadge', 'DefinitionList', 'Banner', 'List',
-  'Stack', 'Grid', 'Section',
-]
+const SLOT_COMPONENT_OPTIONS = ALL_CATALOG_ENTRIES
+  .filter((entry) => !['Slot', 'Outlet'].includes(entry.type))
+  .map((entry) => ({ label: entry.label, value: entry.type }))
+  .sort((a, b) => a.label.localeCompare(b.label))
 
 function SlotEditorControls({ config, setConfig }) {
   const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
@@ -1576,7 +1619,7 @@ function SlotEditorControls({ config, setConfig }) {
           hint="Leave empty to accept any component."
           value={allow}
           onChange={(next) => set({ allow: next })}
-          options={SLOT_COMPONENT_OPTIONS.map((type) => ({ label: type, value: type }))}
+          options={SLOT_COMPONENT_OPTIONS}
         />
       )}
       {authoring && patterns.length > 0 && (
@@ -1686,6 +1729,7 @@ const CONTROLS_BY_TYPE = {
   StepTracker: StepTrackerControls,
   // Inputs
   TextField: TextFieldEditorControls,
+  SearchField: SearchFieldControls,
   TextareaField: TextareaFieldEditorControls,
   SelectField: SelectFieldControls,
   NumberField: NumberFieldControls,
@@ -1711,6 +1755,8 @@ const CONTROLS_BY_TYPE = {
   Accordion: AccordionControls,
 
   // Actions & controls / data (added editor support)
+  ActionTiles: ActionTilesControls,
+  ChipGroup: ChipControls,
   Slider: SliderControls,
   Tabs: TabsControls,
   Toolbar: ToolbarControls,

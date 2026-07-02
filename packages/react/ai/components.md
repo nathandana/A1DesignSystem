@@ -24,7 +24,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Overview | `components` | Components | `widgets` | Component categories |
 | Category | `components-layout` | Layout & Display | `dashboard` | Section, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas |
 | Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
-| Category | `components-actions` | Actions & Controls | `touch_app` | Button, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
+| Category | `components-actions` | Actions & Controls | `touch_app` | Button, Action Tiles, Chip, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
 | Category | `components-navigation` | Navigation | `near_me` | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu |
 | Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
@@ -145,6 +145,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 |-----------|:-----:|:------:|:----:|:--------------:|
 | Button | ✓ | ✓ | ✓ | ✓ |
 | Split Button | ✓ | — | — | — |
+| Action Tiles | ✓ | — | — | — |
+| Chip | ✓ | — | — | — |
 | Icon Button | ✓ | ✓ | ✓ | — |
 | Switch | ✓ | — | — | — |
 | Segmented Control | ✓ | — | — | — |
@@ -153,6 +155,10 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Sticky Actions | ✓ | — | — | — |
 
 > **Menu grouping:** **Accordion**, **Tabs**, and **Link** are also menu-grouped under **Actions & Controls**; their coverage rows and notes live in their implementation-family sections ([Disclosure / Accordion](#disclosure--accordion), [Navigation](#navigation)). **Split Button** has no separate menu page — it is surfaced via the Button page's **Split (menu)** toggle.
+>
+> **ActionTiles props (A1-389):** `layout` (`"grid" | "stack"`, default `"grid"`), `gap` (boolean, default `true`), `iconLayout` (`"auto" | "top" | "side" | "none"`, default `"auto"`), and `children` (one or more `<ActionTile />` elements; a single child is valid). `ActionTile` accepts `icon`, `title`, `subtitle`, optional `accessory`, optional `footer`, and optional `as` / `href` for whole-tile navigation or button semantics. The component no longer exposes a body slot or manual size prop: spacing, icon size, and heading scale respond to each tile's container width instead. `iconLayout="auto"` stacks the icon above the text on narrow containers and shifts it beside the copy on wider ones; `iconLayout="none"` hides icons at the group level. Interactive tiles use the same blue border treatment as navigation Card, do not carry a shadow, and automatically drop nested accessory/footer controls so interactive elements are never nested inside an interactive tile. Token-driven via `system/tokens/component/action-tile.json` (`--component-action-tile-*`). React only; has an a1-web component page + live configurator under **Actions & Controls** (`/components/action-tile`).
+>
+> **Chip props (A1-390):** `ChipGroup` owns chip rows and selection: `selectionMode` (`"none" | "single" | "multiple"`, default `"none"`), `value` / `defaultValue`, `onChange`, `wrap` (boolean, default `true`), `size` (`"sm" | "md" | "lg"`, default `"md"`), `label`, and `children`. `Chip` accepts `icon`, `title` or children, `selected`, `disabled`, `size`, `as` / `href` for navigation chips, and `menu` / `menuLabel` for filter chips that open an A1 `Menu`. Use `selectionMode="single"` or `"multiple"` for selectable filter chip rows, `selectionMode="none"` for navigation and menu-trigger rows, and `wrap={false}` only for intentionally one-line chip toolbars. React only; has an a1-web component page + live configurator under **Actions & Controls** (`/components/chip`).
 >
 > **SplitButton props:** `children` (main label), `onClick` (main action), `variant` / `size` / `icon` / `iconPosition` / `loading` / `disabled` (shared with Button — both targets), `actions` (`{ id, label, icon?, disabled?, onClick? }[]` shown in the dropdown `Menu`), `menuLabel`, `toggleLabel`. The main button runs the default action; the caret toggle on its inline-end opens the menu (`aria-haspopup="menu"` + `aria-expanded`). Composes the A1 `Button` + `Menu`; the two targets share one pill outline with a hairline divider. React only.
 >

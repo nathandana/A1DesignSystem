@@ -67,6 +67,30 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'Canvas',
+        label: 'Canvas',
+        icon: 'polyline',
+        description: 'Infinite pan/zoom canvas for node graphs',
+        defaultNode: {
+          type: 'Canvas',
+          props: {
+            nodes: [
+              { id: 'tokens', label: 'Design tokens', shape: 'circle', color: 'neutral', size: 'md', x: 300, y: 120 },
+              { id: 'react', label: 'React', shape: 'circle', color: 'info', size: 'md', x: 140, y: 270 },
+              { id: 'native', label: 'React Native', shape: 'circle', color: 'accent', size: 'md', x: 460, y: 270 },
+            ],
+            edges: [
+              { id: 'e1', from: 'tokens', to: 'react', direction: 'to', variant: 'solid', weight: 'normal' },
+              { id: 'e2', from: 'tokens', to: 'native', direction: 'to', variant: 'solid', weight: 'normal' },
+            ],
+            edgeStyle: 'straight',
+            selectedId: 'tokens',
+            selectedType: 'node',
+            activeTab: 'nodes',
+          },
+        },
+      },
+      {
         type: 'Card',
         label: 'Card',
         icon: 'article',
@@ -126,6 +150,16 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
               content: { fallback: 'Save changes' },
             },
           ],
+        },
+      },
+      {
+        type: 'PageLayout',
+        label: 'Page layout',
+        icon: 'space_dashboard',
+        description: 'Header, sidebar, aside, main, and footer app shell',
+        defaultNode: {
+          type: 'PageLayout',
+          props: { sidebarPlacement: 'start', asidePlacement: 'end', stickyHeader: false, viewportHeight: false },
         },
       },
       {
@@ -200,6 +234,19 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'Inline',
+        label: 'Inline',
+        icon: 'format_size',
+        description: 'Semantic inline text treatments',
+        defaultNode: {
+          type: 'Inline',
+          props: {
+            inlineElement: 'all',
+            children: 'Example paragraph with **bold**, *italic*, `code`, ==marked text==, and [kbd:⌘K].',
+          },
+        },
+      },
+      {
         type: 'List',
         label: 'List',
         icon: 'format_list_bulleted',
@@ -255,6 +302,46 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           type: 'Button',
           props: { variant: 'primary' },
           content: { fallback: 'Button' },
+        },
+      },
+      {
+        type: 'ActionTiles',
+        label: 'Action tiles',
+        icon: 'apps',
+        description: 'Grouped icon-led action surfaces',
+        defaultNode: {
+          type: 'ActionTiles',
+          props: {
+            layout: 'grid',
+            gap: true,
+            iconLayout: 'top',
+            columns: { xs: 3, sm: 3, md: 3, lg: 3, xl: 3 },
+            interactive: true,
+            items: [
+              { id: 'patterns', icon: 'palette', title: 'Patterns', subtitle: '', accessoryKind: 'none', footerMode: 'none' },
+              { id: 'images', icon: 'imagesmode', title: 'Image library', subtitle: '', accessoryKind: 'none', footerMode: 'none' },
+              { id: 'quick', icon: 'bolt', title: 'Quick actions', subtitle: '', accessoryKind: 'none', footerMode: 'none' },
+            ],
+          },
+        },
+      },
+      {
+        type: 'ChipGroup',
+        label: 'Chip',
+        icon: 'label',
+        description: 'Compact selectable chip group',
+        defaultNode: {
+          type: 'ChipGroup',
+          props: {
+            behavior: 'multiple',
+            size: 'md',
+            wrap: true,
+            items: [
+              { id: 'design', title: 'Design', icon: 'palette', href: '#design' },
+              { id: 'code', title: 'Code', icon: 'code', href: '#code' },
+              { id: 'docs', title: 'Docs', icon: 'article', href: '#docs' },
+            ],
+          },
         },
       },
       {
@@ -399,6 +486,26 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'Notification',
+        label: 'Notification',
+        icon: 'notifications',
+        description: 'Compact count and status indicator',
+        defaultNode: {
+          type: 'Notification',
+          props: { anchor: 'icon', anchorIcon: 'notifications', anchorLabel: 'Notifications', content: 'count', count: 12, label: 'New', status: 'neutral', position: 'top-right', max: 99 },
+        },
+      },
+      {
+        type: 'Snackbar',
+        label: 'Snackbar',
+        icon: 'notification_important',
+        description: 'Transient confirmation or alert message',
+        defaultNode: {
+          type: 'Snackbar',
+          props: { children: 'Saved changes.', position: 'bottom', action: true, actionLabel: 'Undo', dismissible: true },
+        },
+      },
+      {
         type: 'StatusBar',
         label: 'Status bar',
         icon: 'linear_scale',
@@ -444,6 +551,16 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         defaultNode: {
           type: 'TextField',
           props: { label: 'Email address', type: 'email', size: 'default' },
+        },
+      },
+      {
+        type: 'SearchField',
+        label: 'Search field',
+        icon: 'search',
+        description: 'Search input with leading icon and clear button',
+        defaultNode: {
+          type: 'SearchField',
+          props: { label: 'Search', defaultValue: '', clearLabel: 'Clear search', size: 'default' },
         },
       },
       {
@@ -514,6 +631,29 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         defaultNode: {
           type: 'SelectField',
           props: { label: 'Country', size: 'default' },
+        },
+      },
+      {
+        type: 'Autocomplete',
+        label: 'Autocomplete',
+        icon: 'manage_search',
+        description: 'Filtering combobox with optional multi-select',
+        defaultNode: {
+          type: 'Autocomplete',
+          props: {
+            label: 'Favorite fruit',
+            hint: 'Type to filter',
+            size: 'default',
+            variant: 'default',
+            multiple: false,
+            allowCreate: false,
+            options: [
+              { value: 'apple', label: 'Apple' },
+              { value: 'banana', label: 'Banana' },
+              { value: 'cherry', label: 'Cherry' },
+              { value: 'mango', label: 'Mango' },
+            ],
+          },
         },
       },
       {
@@ -608,6 +748,20 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           ],
         },
       },
+      {
+        type: 'InlineEditable',
+        label: 'Inline editable',
+        icon: 'edit',
+        description: 'Editable text that stays in reading context',
+        defaultNode: {
+          type: 'InlineEditable',
+          props: {
+            value: 'Editable text',
+            placeholder: 'Add text',
+            'aria-label': 'Edit text',
+          },
+        },
+      },
     ],
   },
   {
@@ -631,6 +785,23 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
               { label: 'Plan', value: 'Enterprise' },
               { label: 'Renewal', value: 'June 30, 2026' },
             ],
+          },
+        },
+      },
+      {
+        type: 'Stat',
+        label: 'Stat',
+        icon: 'analytics',
+        description: 'Single metric display with context',
+        defaultNode: {
+          type: 'Stat',
+          props: {
+            title: 'Active projects',
+            value: 1284,
+            description: 'Across all workspaces',
+            format: 'number',
+            size: 'md',
+            align: 'start',
           },
         },
       },
@@ -679,6 +850,24 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
           props: { variant: 'paginated', monthsToShow: 1 },
         },
       },
+      {
+        type: 'Node',
+        label: 'Node',
+        icon: 'circle',
+        description: 'Standalone labeled shape component',
+        defaultNode: {
+          type: 'Node',
+          props: {
+            id: 'node',
+            label: 'Node',
+            sublabel: 'Label',
+            shape: 'circle',
+            color: 'accent',
+            size: 'md',
+            subtle: false,
+          },
+        },
+      },
     ],
   },
   {
@@ -699,6 +888,29 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
               { id: 'products', label: 'Products', href: '/products' },
               { id: 'current', label: 'Current page' },
             ],
+          },
+        },
+      },
+      {
+        type: 'SideNav',
+        label: 'Side nav',
+        icon: 'view_sidebar',
+        description: 'Responsive nested navigation for app shells',
+        defaultNode: {
+          type: 'SideNav',
+          props: {
+            header: 'A1 Console',
+            items: [
+              { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', badge: '', active: true },
+              { id: 'projects', label: 'Projects', icon: 'folder', badge: '4', active: false },
+              { id: 'settings', label: 'Settings', icon: 'settings', badge: '', active: false },
+            ],
+            collapsed: false,
+            collapseButtonPlacement: 'header',
+            placement: 'start',
+            footerLabel: 'Sign out',
+            footerIcon: 'logout',
+            openItems: ['dashboard'],
           },
         },
       },
@@ -809,6 +1021,67 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
     ],
   },
   {
+    id: 'overlay',
+    label: 'Overlay',
+    icon: 'web_asset',
+    entries: [
+      {
+        type: 'Dialog',
+        label: 'Dialog',
+        icon: 'picture_in_picture',
+        description: 'Modal interaction with focus management',
+        defaultNode: {
+          type: 'Dialog',
+          props: { title: 'Confirm action', size: 'md', showClose: true, status: '', customIcon: false, icon: 'check_circle' },
+        },
+      },
+      {
+        type: 'Menu',
+        label: 'Menu',
+        icon: 'menu',
+        description: 'Anchored command and navigation menu',
+        defaultNode: {
+          type: 'Menu',
+          props: {
+            items: [
+              { id: 'edit', kind: 'item', label: 'Edit', icon: 'edit', shortcut: '', destructive: false },
+              { id: 'duplicate', kind: 'item', label: 'Duplicate', icon: 'content_copy', shortcut: '', destructive: false },
+              { id: 'divider', kind: 'divider' },
+              { id: 'delete', kind: 'item', label: 'Delete', icon: 'delete', shortcut: '', destructive: true },
+            ],
+          },
+        },
+      },
+      {
+        type: 'ContextMenu',
+        label: 'Context menu',
+        icon: 'more_vert',
+        description: 'Right-click command menu',
+        defaultNode: {
+          type: 'ContextMenu',
+          props: {
+            items: [
+              { id: 'open', kind: 'item', label: 'Open', icon: 'folder_open', shortcut: '', destructive: false },
+              { id: 'rename', kind: 'item', label: 'Rename', icon: 'edit', shortcut: 'F2', destructive: false },
+              { id: 'divider', kind: 'divider' },
+              { id: 'delete', kind: 'item', label: 'Delete', icon: 'delete', shortcut: '', destructive: true },
+            ],
+          },
+        },
+      },
+      {
+        type: 'BottomSheet',
+        label: 'Bottom sheet',
+        icon: 'swipe_up',
+        description: 'Fixed bottom panel with draggable handle',
+        defaultNode: {
+          type: 'BottomSheet',
+          props: { title: 'Filters', defaultDetent: 1 },
+        },
+      },
+    ],
+  },
+  {
     id: 'disclosure',
     label: 'Disclosure',
     icon: 'unfold_more',
@@ -833,6 +1106,8 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
 // these maps to resolve each component id back to its addable catalog entry.
 
 const TYPE_TO_ID_ALIASES: Record<string, string> = {
+  ActionTiles: 'action-tile',
+  ChipGroup: 'chip',
   MessageBadge: 'badge',
   MessageEmptyState: 'empty-state',
   SelectField: 'select',
@@ -863,11 +1138,11 @@ export const COMMON_COMPONENT_IDS = new Set<string>([
   // Typography
   'heading', 'paragraph', 'list', 'divider',
   // Actions & controls
-  'button', 'link', 'icon-button', 'accordion', 'tabs',
+  'button', 'action-tile', 'chip', 'link', 'icon-button', 'accordion', 'tabs',
   // Navigation
   'breadcrumb', 'top-header',
   // Inputs
-  'text-field', 'textarea', 'select', 'checkbox-group', 'radio-group',
+  'text-field', 'search-field', 'textarea', 'select', 'checkbox-group', 'radio-group',
   // Feedback & messaging
   'banner', 'badge',
   // Media and iconography

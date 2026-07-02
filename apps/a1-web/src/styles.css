@@ -49,6 +49,66 @@ body {
   inline-size: min(32rem, calc(100vw - var(--base-spacing-24)));
 }
 
+.a1-web-help-assistant-menu {
+  inline-size: min(34rem, calc(100vw - var(--base-spacing-24)));
+}
+
+.a1-web-help-assistant {
+  padding: var(--base-spacing-12);
+}
+
+.a1-web-help-assistant__answer {
+  padding: var(--base-spacing-10);
+  border: var(--base-border-width-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-web-help-assistant__starter,
+.a1-web-help-assistant__match {
+  display: flex;
+  inline-size: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--base-spacing-4);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-10);
+  border: var(--base-border-width-sm) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font: inherit;
+  font-size: var(--semantic-font-size-body-sm);
+  text-align: start;
+  cursor: pointer;
+}
+
+.a1-web-help-assistant__starter:hover,
+.a1-web-help-assistant__match:hover {
+  background: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-default);
+}
+
+.a1-web-help-assistant__starter:focus-visible,
+.a1-web-help-assistant__match:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-web-help-assistant__match-category {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-web-help-assistant__match-title {
+  font-weight: var(--base-font-weight-medium);
+}
+
+.a1-web-help-assistant__match-summary {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
 .a1-reduce-motion .a1-web-skip-menu-trigger {
   transition: none;
 }
@@ -314,8 +374,8 @@ body {
   box-shadow: inset 0 0 0 3px var(--semantic-color-action-background) !important;
 }
 
-/* Catalog card dragging state */
-.a1-web-add-panel-card[data-dragging='true'] {
+/* Catalog ActionTile dragging state */
+.a1-web-add-panel-tile[data-dragging='true'] {
   opacity: 0.5;
   cursor: grabbing;
 }
@@ -975,34 +1035,13 @@ body {
 /* ── Add component panel ────────────────────────────────────────────────────── */
 
 
-.a1-web-add-panel-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--base-spacing-4);
-  padding: var(--base-spacing-12) var(--base-spacing-8);
-  background: var(--semantic-color-surface-page);
-  border: 1px solid var(--semantic-color-border-subtle);
-  border-radius: var(--base-radius-md);
-  cursor: pointer;
-  color: var(--semantic-color-text-default);
-  transition: background var(--base-duration-fast, 120ms), border-color var(--base-duration-fast, 120ms);
-  text-align: center;
+.a1-web-add-panel-tiles {
+  gap: var(--base-spacing-8);
 }
 
-.a1-web-add-panel-card:hover {
-  background: var(--semantic-color-surface-raised);
-  border-color: var(--semantic-color-border-strong);
-}
-
-.a1-web-add-panel-card:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
-  outline-offset: 2px;
-}
-
-.a1-web-add-panel-label {
-  font-size: var(--semantic-font-size-body-xs);
-  line-height: 1.2;
+.a1-web-add-panel-tile.a1-action-tile {
+  min-block-size: var(--base-spacing-64);
+  padding: var(--base-spacing-8);
 }
 
 /* Pattern editor — self-contained canvas + aside layout */
@@ -1253,57 +1292,6 @@ body {
 }
 
 
-.a1-web-add-panel-row {
-  display: flex;
-  align-items: center;
-  gap: var(--base-spacing-8);
-  padding: var(--base-spacing-8);
-  background: var(--semantic-color-surface-page);
-  border: 1px solid var(--semantic-color-border-subtle);
-  border-radius: var(--base-radius-md);
-  cursor: pointer;
-  color: var(--semantic-color-text-default);
-  text-align: start;
-  transition: background var(--base-duration-fast, 120ms), border-color var(--base-duration-fast, 120ms);
-}
-
-.a1-web-add-panel-row:hover {
-  background: var(--semantic-color-surface-raised);
-  border-color: var(--semantic-color-border-strong);
-}
-
-.a1-web-add-panel-row:focus-visible {
-  outline: 2px solid var(--semantic-color-action-background);
-  outline-offset: 2px;
-}
-
-.a1-web-add-panel-row[data-dragging='true'] {
-  opacity: 0.5;
-}
-
-.a1-web-add-panel-row-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--base-spacing-2);
-  min-width: 0;
-}
-
-.a1-web-add-panel-row-label {
-  font-size: var(--semantic-font-size-body-xs);
-  line-height: 1.2;
-}
-
-.a1-web-add-panel-row-desc {
-  font-size: var(--semantic-font-size-body-2xs);
-  line-height: 1.3;
-  color: var(--semantic-color-text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
 
 /* ── Canvas "Add component inside" button ───────────────────────────────────── */
 

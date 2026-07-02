@@ -1,4 +1,6 @@
 import buttonRules from '../../../../../system/rules/button.yaml?raw'
+import actionTileRules from '../../../../../system/rules/action-tile.yaml?raw'
+import chipRules from '../../../../../system/rules/chip.yaml?raw'
 import cardRules from '../../../../../system/rules/card.yaml?raw'
 import pageLayoutRules from '../../../../../system/rules/page-layout.yaml?raw'
 import sideNavRules from '../../../../../system/rules/side-nav.yaml?raw'
@@ -54,6 +56,8 @@ export const componentCategories = [
     body: 'Controls that trigger commands, choices, mode changes, disclosure, and navigation between views.',
     components: [
       { id: 'button', icon: 'smart_button', title: 'Button', body: 'Primary, secondary, tertiary, destructive, and success actions.' },
+      { id: 'action-tile', icon: 'apps', title: 'Action Tiles', body: 'Grouped icon-led action surfaces with grid or stack layouts and optional gap.' },
+      { id: 'chip', icon: 'label', title: 'Chip', body: 'Compact filters, selectable tags, menu triggers, and navigation chips.' },
       { id: 'icon-button', icon: 'touch_app', title: 'Icon Button', body: 'Compact icon-only actions with accessible labels.' },
       { id: 'switch', icon: 'toggle_on', title: 'Switch', body: 'Binary on/off settings and preferences.' },
       { id: 'segmented-control', icon: 'splitscreen', title: 'Segmented Control', body: 'Small sets of mutually exclusive choices.' },
@@ -255,6 +259,8 @@ export const PACKAGE_COVERAGE = {
   'page-nav':         ['React'],
   'tree-menu':        ['React'],
   button:             ['React', 'Native', 'Pure', 'Web Components'],
+  'action-tile':      ['React'],
+  chip:               ['React'],
   'icon-button':      ['React', 'Native', 'Pure'],
   switch:             ['React'],
   'segmented-control':['React'],
@@ -330,6 +336,8 @@ export const COMPONENT_STATUS = {
   'page-nav':          'beta',
   'tree-menu':         'beta',
   button:              'beta',
+  'action-tile':       'experimental',
+  chip:                'experimental',
   'icon-button':       'beta',
   switch:              'beta',
   'segmented-control': 'beta',
@@ -410,6 +418,8 @@ export const COMPONENT_RELATED = {
   'page-nav':          ['tabs', 'breadcrumb'],
   'tree-menu':         ['side-nav', 'accordion', 'menu'],
   button:              ['icon-button', 'button-container', 'link'],
+  'action-tile':       ['card', 'button', 'switch'],
+  chip:                ['button', 'menu', 'segmented-control'],
   'icon-button':       ['button', 'icon'],
   switch:              ['checkbox-group', 'radio-group', 'segmented-control'],
   'segmented-control': ['tabs', 'switch', 'slider'],
@@ -467,6 +477,8 @@ export const COMPONENT_RELATED = {
 
 export const ruleSourceFiles = [
   { file: 'system/rules/button.yaml', raw: buttonRules },
+  { file: 'system/rules/action-tile.yaml', raw: actionTileRules },
+  { file: 'system/rules/chip.yaml', raw: chipRules },
   { file: 'system/rules/card.yaml', raw: cardRules },
   { file: 'system/rules/page-layout.yaml', raw: pageLayoutRules },
   { file: 'system/rules/side-nav.yaml', raw: sideNavRules },

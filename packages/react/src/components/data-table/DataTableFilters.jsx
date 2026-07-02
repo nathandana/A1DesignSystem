@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
+import { Chip, ChipGroup } from "../chip/Chip.jsx";
 import { Icon } from "../icon/Icon.jsx";
 import { SearchField } from "../field/SearchField.jsx";
 import { Menu, MenuSection, MenuItem } from "../menu/Menu.jsx";
@@ -50,15 +51,12 @@ function checkIcon(checked) { return checked ? "check_box"            : "check_b
 // ── FilterChip (desktop only) ─────────────────────────────────────────────────
 
 function FilterChip({ filter, selected, onSet }) {
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef(null);
-
   const isMulti  = filter.type === "multi";
   const arr      = isMulti ? (Array.isArray(selected) ? selected : []) : null;
   const sublabel = getSublabel(filter, selected);
   const isActive = isFilterActive(filter, selected);
 
-  function handleOption(optValue) {
+  function handleOption(optValue, close) {
     if (isMulti) {
       const next = arr.includes(optValue)
         ? arr.filter((v) => v !== optValue)
@@ -67,81 +65,61 @@ function FilterChip({ filter, selected, onSet }) {
       // keep open so user can pick multiple
     } else {
       onSet(selected === optValue ? "" : optValue);
-      setOpen(false); // close after single pick
+      close();
     }
   }
 
+  const chipTitle = sublabel ? `${filter.label}: ${sublabel}` : filter.label;
+
   return (
     <div className="a1-dt-filters__chip-wrap">
-      <button
-        ref={anchorRef}
-        type="button"
-        className={[
-          "a1-dt-filters__chip",
-          isActive && "a1-dt-filters__chip--active",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-haspopup="listbox"
-      >
-        <span>{filter.label}</span>
-        {sublabel && (
+      <Chip
+        selected={isActive}
+        icon="filter_list"
+        menuLabel={filter.label}
+        menu={({ close }) => (
           <>
-            <span className="a1-dt-filters__chip-sep" aria-hidden="true">:</span>
-            <span className="a1-dt-filters__chip-value">{sublabel}</span>
+            {!isMulti && (
+              <MenuItem
+                key="__all__"
+                icon={radioIcon(!selected)}
+                className={!selected ? "a1-dt-filters__item--on" : ""}
+                onClick={() => { onSet(""); close(); }}
+              >
+                All
+              </MenuItem>
+            )}
+            {filter.options.map((opt) => {
+              const checked = isMulti ? arr.includes(opt.value) : selected === opt.value;
+              const icon    = isMulti ? checkIcon(checked) : radioIcon(checked);
+              return (
+                <MenuItem
+                  key={opt.value}
+                  icon={icon}
+                  className={checked ? "a1-dt-filters__item--on" : ""}
+                  onClick={() => handleOption(opt.value, close)}
+                >
+                  {opt.label}
+                </MenuItem>
+              );
+            })}
+            {isMulti && isActive && (
+              <div className="a1-dt-filters__menu-clear">
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  icon="close"
+                  onClick={() => { onSet([]); close(); }}
+                >
+                  Clear
+                </Button>
+              </div>
+            )}
           </>
         )}
-        <Icon
-          name={open ? "expand_less" : "expand_more"}
-          className="a1-dt-filters__chip-icon"
-        />
-      </button>
-
-      <Menu
-        open={open}
-        anchorRef={anchorRef}
-        onClose={() => setOpen(false)}
-        aria-label={filter.label}
       >
-        {!isMulti && (
-          <MenuItem
-            key="__all__"
-            icon={radioIcon(!selected)}
-            className={!selected ? "a1-dt-filters__item--on" : ""}
-            onClick={() => { onSet(""); setOpen(false); }}
-          >
-            All
-          </MenuItem>
-        )}
-        {filter.options.map((opt) => {
-          const checked = isMulti ? arr.includes(opt.value) : selected === opt.value;
-          const icon    = isMulti ? checkIcon(checked) : radioIcon(checked);
-          return (
-            <MenuItem
-              key={opt.value}
-              icon={icon}
-              className={checked ? "a1-dt-filters__item--on" : ""}
-              onClick={() => handleOption(opt.value)}
-            >
-              {opt.label}
-            </MenuItem>
-          );
-        })}
-        {isMulti && isActive && (
-          <div className="a1-dt-filters__menu-clear">
-            <Button
-              variant="tertiary"
-              size="sm"
-              icon="close"
-              onClick={() => { onSet([]); setOpen(false); }}
-            >
-              Clear
-            </Button>
-          </div>
-        )}
-      </Menu>
+        {chipTitle}
+      </Chip>
     </div>
   );
 }
@@ -243,7 +221,7 @@ export function DataTableFilters({
         {filters.length > 0 && (
           <>
             <span className="a1-dt-filters__label">Filters</span>
-            <div className="a1-dt-filters__chips">
+            <ChipGroup className="a1-dt-filters__chips" selectionMode="none">
               {filters.map((f) => (
                 <FilterChip
                   key={f.key}
@@ -252,7 +230,7 @@ export function DataTableFilters({
                   onSet={(v) => set(f.key, v)}
                 />
               ))}
-            </div>
+            </ChipGroup>
           </>
         )}
 

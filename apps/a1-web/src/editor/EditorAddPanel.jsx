@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   Accordion,
-  Grid,
-  Icon,
+  ActionTile,
+  ActionTiles,
   Paragraph,
   Stack,
   TextField,
@@ -124,7 +124,6 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
   // Drag/click handlers shared by the card and row renderers.
   function itemHandlers(item) {
     return {
-      title: item.description,
       draggable: true,
       onDragStart: (e) => {
         e.dataTransfer.setData('a1-catalog-type', item.entry.type)
@@ -136,33 +135,32 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
     }
   }
 
-  function renderCard(item) {
+  function renderTile(item) {
+    const handlers = itemHandlers(item)
     return (
-      <button key={item.id} className="a1-web-add-panel-card" type="button" {...itemHandlers(item)}>
-        <Icon name={item.icon} size="sm" aria-hidden="true" />
-        <span className="a1-web-add-panel-label">{item.label}</span>
-      </button>
+      <ActionTile
+        key={item.id}
+        as="button"
+        icon={item.icon}
+        title={item.label}
+        subtitle={view === 'list' ? item.description : undefined}
+        className="a1-web-add-panel-tile"
+        {...handlers}
+      />
     )
   }
 
-  function renderRow(item) {
-    return (
-      <button key={item.id} className="a1-web-add-panel-row" type="button" {...itemHandlers(item)}>
-        <Icon name={item.icon} size="sm" aria-hidden="true" />
-        <span className="a1-web-add-panel-row-text">
-          <span className="a1-web-add-panel-row-label">{item.label}</span>
-          {item.description && (
-            <span className="a1-web-add-panel-row-desc">{item.description}</span>
-          )}
-        </span>
-      </button>
-    )
-  }
-
-  const renderItem = view === 'list' ? renderRow : renderCard
-  const wrapItems = (items) => view === 'list'
-    ? <Stack direction="column" gap={4}>{items}</Stack>
-    : <Grid columns={3} gap="sm">{items}</Grid>
+  const wrapItems = (items) => (
+    <ActionTiles
+      layout={view === 'list' ? 'stack' : 'grid'}
+      columns={view === 'list' ? undefined : 3}
+      gap
+      iconLayout={view === 'list' ? 'side' : 'top'}
+      className="a1-web-add-panel-tiles"
+    >
+      {items}
+    </ActionTiles>
+  )
 
   // Patterns (page editor only) — reusable compositions inserted as fresh,
   // editable copies. Click-to-add; respects the search and the grid/list view.
@@ -178,7 +176,6 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
     // Patterns drag onto the canvas through the same channel as components,
     // encoded as `pattern:<id>` so the drop handlers can tell them apart.
     const handlers = {
-      title: p.description,
       draggable: true,
       onDragStart: (e) => {
         e.dataTransfer.setData('a1-catalog-type', `pattern:${p.id}`)
@@ -188,22 +185,16 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
       onDragEnd: (e) => e.currentTarget.removeAttribute('data-dragging'),
       onClick: () => onAddPattern?.(p.id),
     }
-    if (view === 'list') {
-      return (
-        <button key={p.id} className="a1-web-add-panel-row" type="button" {...handlers}>
-          <Icon name={icon} size="sm" aria-hidden="true" />
-          <span className="a1-web-add-panel-row-text">
-            <span className="a1-web-add-panel-row-label">{p.label}</span>
-            {p.description && <span className="a1-web-add-panel-row-desc">{p.description}</span>}
-          </span>
-        </button>
-      )
-    }
     return (
-      <button key={p.id} className="a1-web-add-panel-card" type="button" {...handlers}>
-        <Icon name={icon} size="sm" aria-hidden="true" />
-        <span className="a1-web-add-panel-label">{p.label}</span>
-      </button>
+      <ActionTile
+        key={p.id}
+        as="button"
+        icon={icon}
+        title={p.label}
+        subtitle={view === 'list' ? p.description : undefined}
+        className="a1-web-add-panel-tile"
+        {...handlers}
+      />
     )
   }
 
@@ -312,12 +303,12 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
               defaultOpen={!!query || category.id === 'layout'}
               size="sm"
             >
-              {wrapItems(category.items.map(renderItem))}
+              {wrapItems(category.items.map(renderTile))}
             </Accordion>
           ))
         : visibleFlatItems.length > 0 && (
             <div style={{ padding: '0' }}>
-              {wrapItems(visibleFlatItems.map(renderItem))}
+              {wrapItems(visibleFlatItems.map(renderTile))}
             </div>
           ))}
     </Stack>

@@ -1,6 +1,12 @@
 .a1-icon {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
   font-size: var(--a1-icon-size, inherit);
   line-height: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: ltr;
   user-select: none;
   display: inline-flex;
   align-items: center;

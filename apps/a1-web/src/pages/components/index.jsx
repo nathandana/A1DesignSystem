@@ -4,6 +4,8 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  componentRouteSlug,
+  componentIdFromRouteSlug,
   getComponentExampleBySlug,
   getComponentEntry,
 } from './utils.js'
@@ -14,7 +16,14 @@ import { ComponentsOverviewPage } from './ComponentsOverviewPage.jsx'
 import { ComponentsSidebar } from './ComponentsSidebar.jsx'
 
 export { componentCategories }
-export { componentCategoryPageIds, componentPageIds, componentPageTitles, getComponentExampleBySlug }
+export {
+  componentCategoryPageIds,
+  componentPageIds,
+  componentPageTitles,
+  componentRouteSlug,
+  componentIdFromRouteSlug,
+  getComponentExampleBySlug,
+}
 
 export function Components({ activePage = 'components', onNavigate, projectId = null, detailTab = 'configure', setDetailTab }) {
   const { category, component } = getComponentEntry(activePage)

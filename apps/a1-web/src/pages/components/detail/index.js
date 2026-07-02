@@ -20,6 +20,8 @@ import * as bottomSheet from './bottom-sheet.jsx'
 import * as tabs from './tabs.jsx'
 import * as pageNav from './page-nav.jsx'
 import * as button from './button.jsx'
+import * as actionTile from './action-tile.jsx'
+import * as chip from './chip.jsx'
 import * as iconButton from './icon-button.jsx'
 import * as switchControl from './switch.jsx'
 import * as segmentedControl from './segmented-control.jsx'
@@ -97,6 +99,8 @@ const REGISTRY = {
   tabs,
   'page-nav': pageNav,
   button,
+  'action-tile': actionTile,
+  chip,
   'icon-button': iconButton,
   switch: switchControl,
   'segmented-control': segmentedControl,

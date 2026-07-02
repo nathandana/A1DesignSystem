@@ -24,6 +24,7 @@ const TYPE_ICONS = {
   Figure:           'image',
   Link:             'link',
   Button:           'smart_button',
+  ChipGroup:        'label',
   IconButton:       'radio_button_checked',
   Switch:           'toggle_on',
   SegmentedControl: 'linear_scale',

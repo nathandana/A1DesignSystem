@@ -1,0 +1,20 @@
+{
+  "component": {
+    "chip": {
+      "gap":                 { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "groupGap":            { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "paddingBlock":        { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "paddingInline":       { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "borderRadius":        { "$type": "dimension", "$value": "{base.radius.pill}" },
+      "borderWidth":         { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "fontWeight":          { "$type": "number", "$value": 500 },
+      "iconSize":            { "$value": "1.25em" },
+      "focusRingWidth":      { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "focusRingOffset":     { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "smPaddingBlock":      { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "smPaddingInline":     { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "lgPaddingBlock":      { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "lgPaddingInline":     { "$type": "dimension", "$value": "{base.spacing.16}" }
+    }
+  }
+}

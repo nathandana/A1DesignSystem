@@ -48,65 +48,12 @@
 /* ── Chip row ────────────────────────────────────────────────────────────── */
 
 .a1-dt-filters__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--base-spacing-6);
   margin-inline-start: var(--base-spacing-6);
 }
-
-/* ── Chip + clear button wrapper ─────────────────────────────────────────── */
 
 .a1-dt-filters__chip-wrap {
   display: flex;
   align-items: stretch;
-}
-
-/* ── Filter chip button ──────────────────────────────────────────────────── */
-
-.a1-dt-filters__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--base-spacing-4);
-  padding: var(--base-spacing-6) var(--base-spacing-12);
-  border: 1px solid var(--semantic-color-border-default);
-  border-radius: 9999px;
-  background: transparent;
-  font-family: var(--component-paragraph-font-family);
-  font-size: var(--semantic-font-size-body-sm);
-  color: var(--semantic-color-text-default);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 100ms ease, border-color 100ms ease;
-}
-
-.a1-dt-filters__chip:hover {
-  background: var(--semantic-color-surface-raised);
-}
-
-.a1-dt-filters__chip:focus-visible {
-  outline: 2px solid var(--component-button-focus-ring);
-  outline-offset: 2px;
-}
-
-/* Active state — a value is selected */
-.a1-dt-filters__chip--active {
-  border-color: var(--semantic-color-action-background);
-  color: var(--semantic-color-action-background);
-}
-
-.a1-dt-filters__chip-sep {
-  color: var(--semantic-color-text-muted);
-  font-weight: 400;
-}
-
-.a1-dt-filters__chip-value {
-  font-weight: 500;
-}
-
-.a1-dt-filters__chip-icon {
-  font-size: var(--component-menu-item-icon-size);
-  flex-shrink: 0;
-  margin-inline-start: -2px;
 }
 
 /* ── Radio / checkbox icon color in open menu ────────────────────────────── */

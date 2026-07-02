@@ -2968,9 +2968,11 @@ function ComponentConfigureSurface({
   utilityClass,
   example,
 }) {
+  const framedPreview = example?.preview?.frame !== false
+  const barePreview = detail.bareDisplay || !framedPreview
   const preview = (
     <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
-      {detail.bareDisplay ? (
+      {barePreview ? (
         <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
           <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
         </ContainerQueryPreviewFrame>
@@ -2998,7 +3000,7 @@ function ComponentConfigureSurface({
       <DisplayToolbar
         displayConfig={displayConfig}
         setDisplayConfig={setDisplayConfig}
-        bareDisplay={detail.bareDisplay}
+        bareDisplay={barePreview}
       />
       {example?.preview?.width ? (
         <div className="a1-web-example-preview-scroll">

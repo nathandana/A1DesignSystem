@@ -11,7 +11,13 @@ import { PageTitleArea } from '../PageTitleArea.jsx'
 import { LAST_UPDATED } from './data.js'
 import { getComponentPath, navigateCard } from './utils.js'
 
+function sortByTitle(a, b) {
+  return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+}
+
 export function ComponentCategoryPage({ category, onNavigate }) {
+  const components = [...category.components].sort(sortByTitle)
+
   return (
     <>
     <PageTitleArea
@@ -26,7 +32,7 @@ export function ComponentCategoryPage({ category, onNavigate }) {
     />
     <Section padding="sm" contentWidth="xl" aria-labelledby={`${category.id}-category-heading`}>
       <Grid columns={{ xs: 1, sm: 2, lg: 3 }} gap="md">
-        {category.components.map((component) => (
+        {components.map((component) => (
           <Card
             key={component.id}
             variant="navigation"

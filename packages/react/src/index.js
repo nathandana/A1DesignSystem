@@ -15,6 +15,8 @@ export { StepTracker } from "./components/step-tracker/StepTracker.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";
 export { IconButton } from "./components/icon-button/IconButton.jsx";
 export { Button } from "./components/button/Button.jsx";
+export { ActionTiles, ActionTile } from "./components/action-tile/ActionTile.jsx";
+export { Chip, ChipGroup } from "./components/chip/Chip.jsx";
 export { SplitButton } from "./components/split-button/SplitButton.jsx";
 export { ButtonContainer } from "./components/button-container/ButtonContainer.jsx";
 export { Card } from "./components/card/Card.jsx";

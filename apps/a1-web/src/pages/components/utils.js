@@ -171,10 +171,26 @@ export const allComponents = componentCategories.flatMap((category) =>
   })
 )
 
+const COMPONENT_ROUTE_SLUGS = {
+  'action-tile': 'action-tiles',
+}
+
+const COMPONENT_IDS_BY_ROUTE_SLUG = Object.fromEntries(
+  Object.entries(COMPONENT_ROUTE_SLUGS).map(([id, slug]) => [slug, id]),
+)
+
+export function componentRouteSlug(componentId) {
+  return COMPONENT_ROUTE_SLUGS[componentId] ?? componentId
+}
+
+export function componentIdFromRouteSlug(slug) {
+  return COMPONENT_IDS_BY_ROUTE_SLUG[slug] ?? slug
+}
+
 export function getComponentPath(id) {
   if (id === 'components') return '/components'
   if (id.startsWith('components-')) return `/components/${id.slice('components-'.length)}`
-  if (id.startsWith('component-')) return `/components/${id.slice('component-'.length)}`
+  if (id.startsWith('component-')) return `/components/${componentRouteSlug(id.slice('component-'.length))}`
   return `/${id}`
 }
 
@@ -183,13 +199,15 @@ export function getComponentExampleSlug(example) {
 }
 
 export function getComponentExamplePath(componentId, exampleId) {
-  const example = (componentExamples[componentId] ?? []).find((item) => item.id === exampleId)
-  if (!example) return getComponentPath(`component-${componentId}`)
-  return `/components/${componentId}/${getComponentExampleSlug(example)}`
+  const resolvedComponentId = componentIdFromRouteSlug(componentId)
+  const example = (componentExamples[resolvedComponentId] ?? []).find((item) => item.id === exampleId)
+  if (!example) return getComponentPath(`component-${resolvedComponentId}`)
+  return `/components/${componentRouteSlug(resolvedComponentId)}/${getComponentExampleSlug(example)}`
 }
 
 export function getComponentExampleBySlug(componentId, slug) {
-  return (componentExamples[componentId] ?? []).find((example) => getComponentExampleSlug(example) === slug) ?? null
+  const resolvedComponentId = componentIdFromRouteSlug(componentId)
+  return (componentExamples[resolvedComponentId] ?? []).find((example) => getComponentExampleSlug(example) === slug) ?? null
 }
 
 export function getRelatedComponents(component) {
