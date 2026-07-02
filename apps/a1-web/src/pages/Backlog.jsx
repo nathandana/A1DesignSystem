@@ -205,6 +205,60 @@ function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragSt
 // swap, not a casing transform on a word.
 const priorityShort = (p) => (p ? p.replace('p', 'P') : '—')
 
+const BACKLOG_CSV_COLUMNS = [
+  { header: 'ID', value: (it) => ticketRef(it.number) },
+  { header: 'Number', value: (it) => it.number },
+  { header: 'Title', value: (it) => it.title },
+  { header: 'Description', value: (it) => it.description },
+  { header: 'Type', value: (it) => TYPE_LABELS[it.type] },
+  { header: 'Status', value: (it) => STATUS_LABELS[it.status] },
+  { header: 'Priority', value: (it) => (it.priority ? PRIORITY_LABELS[it.priority] : '') },
+  { header: 'Size', value: (it) => (it.complexity ? COMPLEXITY_LABELS[it.complexity] : '') },
+  {
+    header: 'Scope',
+    value: (it) => `${SCOPE_LABELS[it.scopeKind] ?? it.scopeKind}${it.scopeLabel ? `: ${it.scopeLabel}` : ''}`,
+  },
+  { header: 'Scope ref', value: (it) => it.scopeRef },
+  { header: 'Requested by', value: (it) => it.createdByEmail },
+  { header: 'Assignee', value: (it) => it.assigneeEmail },
+  { header: 'Votes', value: (it) => it.voteCount },
+  { header: 'Awaiting requester', value: (it) => (it.awaitingRequester ? 'Yes' : 'No') },
+  { header: 'Duplicate of', value: (it, context) => (it.duplicateOf ? context.refById.get(it.duplicateOf) || it.duplicateOf : '') },
+  { header: 'Linked tickets', value: (it, context) => (it.links || []).map((id) => context.refById.get(id) || id).join(', ') },
+  { header: 'Attachments', value: (it) => (it.attachmentRefs || []).join(', ') },
+  { header: 'Created', value: (it) => it.createdAt },
+  { header: 'Updated', value: (it) => it.updatedAt },
+]
+
+function csvCell(value) {
+  const text = value == null ? '' : String(value)
+  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text
+}
+
+function buildBacklogCsv(items) {
+  const rows = items.slice().sort((a, b) => a.number - b.number)
+  const context = { refById: new Map(rows.map((it) => [it.id, ticketRef(it.number)])) }
+  return [
+    BACKLOG_CSV_COLUMNS.map((column) => csvCell(column.header)).join(','),
+    ...rows.map((it) => BACKLOG_CSV_COLUMNS
+      .map((column) => csvCell(column.value(it, context)))
+      .join(',')),
+  ].join('\r\n')
+}
+
+function downloadBacklogCsv(items) {
+  const csv = buildBacklogCsv(items)
+  const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `a1-backlog-${new Date().toISOString().slice(0, 10)}.csv`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), 0)
+}
+
 // Date on one line ("Jun 24, 2026"), time smaller + muted underneath.
 function DateTimeCell({ iso }) {
   if (!iso) return '—'
@@ -271,7 +325,9 @@ function AllTable({ items, onOpen, onNavigate, t }) {
       caption={t('app.backlog.tableCaption', 'All backlog tickets')}
       emptyTitle={t('app.backlog.tableEmptyTitle', 'No matching tickets')}
       emptyDescription={t('app.backlog.tableEmptyDesc', 'Adjust the filters in the panel, or create the first ticket.')}
-      pageSize={10}
+      defaultPageSize={10}
+      pageSizeOptions={[10, 25, 50]}
+      scrollable
     />
   )
 }
@@ -675,9 +731,20 @@ export function Backlog({ onNavigate }) {
 
           {/* New ticket — pinned to the bottom of the panel as a sticky footer. */}
           <div className="a1-web-config-panel__footer">
-            <Button fullWidth icon="add" onClick={() => backlog?.openCreate({ kind: 'general' })}>
-              {t('app.backlog.newTicket', 'New ticket')}
-            </Button>
+            <ButtonContainer>
+              <Button
+                fullWidth
+                variant="secondary"
+                icon="download"
+                disabled={items.length === 0}
+                onClick={() => downloadBacklogCsv(items)}
+              >
+                {t('app.backlog.exportCsv', 'Export CSV')}
+              </Button>
+              <Button fullWidth icon="add" onClick={() => backlog?.openCreate({ kind: 'general' })}>
+                {t('app.backlog.newTicket', 'New ticket')}
+              </Button>
+            </ButtonContainer>
           </div>
         </div>,
         asideNode,

@@ -80,9 +80,10 @@ import { GENERATED_PROP_TABLES } from './generatedPropTables.js'
 import { BUTTON_CONTRAST_ROWS, BUTTON_TARGET_SIZE_ROWS } from './accessibilityReports.generated.js'
 
 const PACKAGE_META = {
-  React:  { icon: 'code',         desc: 'packages/react' },
-  Native: { icon: 'phone_iphone', desc: 'packages/react-native' },
-  Pure:   { icon: 'palette',      desc: 'packages/pure' },
+  React:            { icon: 'code',         desc: 'packages/react' },
+  Native:           { icon: 'phone_iphone', desc: 'packages/react-native' },
+  Pure:             { icon: 'palette',      desc: 'packages/pure' },
+  'Web Components': { icon: 'web_asset',    desc: 'packages/web-components' },
 }
 
 function componentUtilityType(component) {
@@ -91,7 +92,7 @@ function componentUtilityType(component) {
 
 function PackageSupportGrid({ packages }) {
   return (
-    <Grid columns={3} gap="sm">
+    <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="sm">
       {PACKAGE_COLUMNS.map((pkg) => {
         const supported = packages.includes(pkg)
         const meta = PACKAGE_META[pkg]

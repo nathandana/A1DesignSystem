@@ -147,6 +147,7 @@ export function ResumePage() {
               {[
                 "Figma",
                 "Storybook",
+                "VSCode",
                 "Jira, Confluence",
                 "SCSS, Pug, jQuery",
                 "VSCode",

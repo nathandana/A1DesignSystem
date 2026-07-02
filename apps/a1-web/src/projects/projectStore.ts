@@ -118,11 +118,8 @@ export function getProjectImageStyle(id: string | null | undefined): string | un
 
 /** Delete a project and (optionally) every page's stored content. */
 export function deleteProject(id: string, { purgeContent = true } = {}): Project[] {
-  if (purgeContent) {
-    for (const page of loadPages(id)) purgePageContent(page.id);
-  }
-  try { localStorage.removeItem(pagesKey(id)); } catch { /* ignore */ }
-  const projects = loadProjects().filter((p) => p.id !== id);
+  purgeProjectStorage(id, { purgeContent });
+  const projects = loadProjectsRaw().filter((p) => p.id !== id);
   saveProjects(projects);
   return projects;
 }
@@ -455,6 +452,16 @@ function purgePageContent(pageId: string): void {
   } catch { /* ignore */ }
 }
 
+function purgeProjectStorage(id: string, { purgeContent = true } = {}): void {
+  if (purgeContent) {
+    for (const page of loadPages(id)) purgePageContent(page.id);
+  }
+  try {
+    localStorage.removeItem(pagesKey(id));
+    localStorage.removeItem(layoutKey(id));
+  } catch { /* ignore */ }
+}
+
 /** Resolve a page's latest JSON from its history, then versions, then a built-in
  *  example, then a blank page. (A lean local copy of EditorPreviewPage's resolver
  *  so the store needn't import the heavy preview page.) */
@@ -543,17 +550,28 @@ export function exportAllText(): string {
 }
 
 /** Inverse of {@link exportAllText}: recreate projects, pages, and page content
- *  from a backup file (upserting by id). Returns the counts imported. */
-export function importAllText(text: string): { projects: number; pages: number } {
+ *  from a backup file. Manual imports upsert by id; cloud hydration passes
+ *  `replaceProjects` so projects missing from the shared bundle are removed
+ *  locally instead of being merged back in after deletion. */
+export function importAllText(
+  text: string,
+  { replaceProjects = false }: { replaceProjects?: boolean } = {},
+): { projects: number; pages: number } {
   const projMatches = [...text.matchAll(/^##### PROJECT (.*) #####$/gm)];
   if (!projMatches.length) return { projects: 0, pages: 0 };
 
-  const byId = new Map<string, Project>(loadProjectsRaw().map((p) => [p.id, p]));
+  const existingProjects = loadProjectsRaw();
+  const existingPages = replaceProjects
+    ? new Map(existingProjects.map((project) => [project.id, loadPages(project.id)]))
+    : new Map<string, ProjectPage[]>();
+  const importedProjectIds = new Set<string>();
+  const byId = new Map<string, Project>(replaceProjects ? [] : existingProjects.map((p) => [p.id, p]));
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
     let meta: { id: string; name?: string; description?: string; icon?: string };
     try { meta = JSON.parse(pm[1]); } catch { return; }
+    importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
     const bodyEnd = i + 1 < projMatches.length ? (projMatches[i + 1].index ?? text.length) : text.length;
     const body = text.slice(bodyStart, bodyEnd);
@@ -582,8 +600,15 @@ export function importAllText(text: string): { projects: number; pages: number }
       pageCount += 1;
     });
 
+    if (replaceProjects) {
+      const importedPageIds = new Set(pages.map((page) => page.id));
+      for (const oldPage of existingPages.get(meta.id) ?? []) {
+        if (!importedPageIds.has(oldPage.id)) purgePageContent(oldPage.id);
+      }
+    }
+
     const now = Date.now();
-    const existing = byId.get(meta.id);
+    const existing = existingProjects.find((project) => project.id === meta.id);
     byId.set(meta.id, {
       id: meta.id,
       name: meta.name || existing?.name || 'Imported project',
@@ -594,6 +619,13 @@ export function importAllText(text: string): { projects: number; pages: number }
     });
     writeStored(pagesKey(meta.id), JSON.stringify(reindex(pages)));
   });
+
+  if (replaceProjects) {
+    for (const project of existingProjects) {
+      if (!importedProjectIds.has(project.id)) purgeProjectStorage(project.id);
+    }
+    if (!importedProjectIds.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
+  }
 
   saveProjects([...byId.values()]);
   return { projects: projMatches.length, pages: pageCount };

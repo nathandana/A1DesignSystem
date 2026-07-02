@@ -97,9 +97,22 @@ const FILTER_DEFS = [
   },
 ];
 
+function normalizeStorySearch(value) {
+  return String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
 const SEARCH_COLS = [
   { key: "name",       label: "Name" },
-  { key: "role",       label: "Role" },
+  {
+    key: "role",
+    label: "Role",
+    searchMatcher: (row, query) => {
+      const normalizedQuery = normalizeStorySearch(query);
+      const role = normalizeStorySearch(row.role);
+      if (role.includes(normalizedQuery)) return true;
+      return normalizedQuery === "tester" && role.includes("qa engineer");
+    },
+  },
   { key: "department", label: "Department" },
 ];
 
@@ -110,11 +123,14 @@ export const Configurable = {
     size:             undefined,
     zebra:            false,
     scrollable:       false,
+    mobileLayout:     "cards",
     caption:          "",
     emptyTitle:       "No results",
     emptyDescription: "",
     emptyIcon:        "inbox",
     pageSize:         undefined,
+    defaultPageSize:  undefined,
+    pageSizeOptions:  [],
     rowCount:         8,
   },
   argTypes: {
@@ -125,11 +141,14 @@ export const Configurable = {
     },
     zebra:            { control: "boolean" },
     scrollable:       { control: "boolean", description: "Enable horizontal scrolling when content overflows" },
+    mobileLayout:     { control: "select", options: ["cards", "table"], description: "Mobile presentation below 640px" },
     caption:          { control: "text" },
     emptyTitle:       { control: "text" },
     emptyDescription: { control: "text" },
     emptyIcon:        { ...requiredIconArgType("Empty state icon name") },
-    pageSize:         { control: "number", description: "Rows per page for built-in client-side pagination" },
+    pageSize:         { control: "number", description: "Controlled rows per page for built-in client-side pagination" },
+    defaultPageSize:  { control: "number", description: "Initial rows per page for uncontrolled built-in pagination" },
+    pageSizeOptions:  { control: "object", description: "Rows-per-page choices shown in the pagination footer" },
     rowCount: {
       control: { type: "range", min: 0, max: 20 },
       description: "Rows to display — set to 0 to preview the empty state",
@@ -458,23 +477,32 @@ const PROP_ROWS = [
   { name: <CodeValue>rows</CodeValue>, type: <CodeValue>Record&lt;string,any&gt;[]</CodeValue>, defaultVal: <CodeValue muted>[]</CodeValue>, description: "Row data — keys must match column keys" },
   { name: <CodeValue>sort</CodeValue>, type: <CodeValue>{'{ key: string, direction: "asc"|"desc" }'}</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Controlled sort state" },
   { name: <CodeValue>defaultSort</CodeValue>, type: <CodeValue>{'{ key: string, direction: "asc"|"desc" }'}</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Initial sort state for uncontrolled tables" },
-  { name: <CodeValue>onSortChange</CodeValue>, type: <CodeValue>(sort: Sort | null) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when a sortable header or mobile sort select changes" },
+  { name: <CodeValue>onSortChange</CodeValue>, type: <CodeValue>(sort: Sort | null) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when a sortable header, standalone mobile sort control, or mobile Sort & filter menu changes" },
+  { name: <CodeValue>columns[].filterable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Generates a filter definition from the column's unique values when explicit filters are not provided" },
+  { name: <CodeValue>columns[].searchable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Includes this column in the built-in search control" },
+  { name: <CodeValue>columns[].editable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Renders text-like cells with InlineEditable when onCellChange is provided" },
+  { name: <CodeValue>columns[].renderCell</CodeValue>, type: <CodeValue>{'({ value, row, column, rowIndex }) => ReactNode'}</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Custom cell renderer slot for a column" },
   { name: <CodeValue>selectable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Adds row selection checkboxes and a select-all header control" },
   { name: <CodeValue>selectedRowIds</CodeValue>, type: <CodeValue>Array&lt;string|number&gt;</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Controlled selected row ids" },
   { name: <CodeValue>defaultSelectedRowIds</CodeValue>, type: <CodeValue>Array&lt;string|number&gt;</CodeValue>, defaultVal: <CodeValue muted>[]</CodeValue>, description: "Initial selected row ids for uncontrolled tables" },
   { name: <CodeValue>onSelectedRowIdsChange</CodeValue>, type: <CodeValue>(ids: string[]) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when row selection changes" },
   { name: <CodeValue>onDeleteSelected</CodeValue>, type: <CodeValue>(rows: Row[], ids: string[]) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Shows a destructive Delete bulk action and calls back with selected rows and ids" },
+  { name: <CodeValue>onCellChange</CodeValue>, type: <CodeValue>(row, columnKey, value, rowIndex) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when an inline-editable cell changes" },
   { name: <CodeValue>getRowId</CodeValue>, type: <CodeValue>(row, index) =&gt; string|number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Returns each row's stable id. Defaults to id, key, name, then index" },
   { name: <CodeValue>size</CodeValue>, type: <CodeValue>"compact"|"default"|"comfortable"</CodeValue>, defaultVal: <CodeValue muted>auto</CodeValue>, description: 'Cell spacing density. Omit to auto-select from container width.' },
   { name: <CodeValue>zebra</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Alternate row background shading" },
   { name: <CodeValue>scrollable</CodeValue>, type: <CodeValue>boolean</CodeValue>, defaultVal: <CodeValue muted>false</CodeValue>, description: "Enable horizontal overflow scrolling" },
+  { name: <CodeValue>mobileLayout</CodeValue>, type: <CodeValue>"cards"|"table"</CodeValue>, defaultVal: <CodeValue muted>"cards"</CodeValue>, description: "Controls the mobile presentation: Card-like definition lists or preserved table layout with horizontal scroll" },
   { name: <CodeValue>caption</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Accessible table caption (renders above header)" },
   { name: <CodeValue>page</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Current page (1-indexed). Enables pagination footer" },
   { name: <CodeValue>defaultPage</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>1</CodeValue>, description: "Initial page for uncontrolled pagination" },
   { name: <CodeValue>pageSize</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Rows per page for built-in client-side pagination" },
+  { name: <CodeValue>defaultPageSize</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Initial rows per page for uncontrolled built-in pagination" },
+  { name: <CodeValue>pageSizeOptions</CodeValue>, type: <CodeValue>number[]</CodeValue>, defaultVal: <CodeValue muted>[]</CodeValue>, description: "Shows a Rows per page selector in the pagination footer" },
   { name: <CodeValue>totalPages</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total number of pages" },
   { name: <CodeValue>totalRows</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total row count across all pages (for footer text)" },
   { name: <CodeValue>onPageChange</CodeValue>, type: <CodeValue>(page: number) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when the user changes page" },
+  { name: <CodeValue>onPageSizeChange</CodeValue>, type: <CodeValue>(pageSize: number) =&gt; void</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Called when the user changes rows per page" },
   { name: <CodeValue>emptyTitle</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>"No results"</CodeValue>, description: "Heading shown when rows is empty" },
   { name: <CodeValue>emptyDescription</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Body text in the empty state" },
   { name: <CodeValue>emptyIcon</CodeValue>, type: <CodeValue>string</CodeValue>, defaultVal: <CodeValue muted>"inbox"</CodeValue>, description: "Material symbol name for the empty state icon" },
@@ -494,7 +522,7 @@ export const Documentation = {
               <Heading as="h1" size="lg" style={{ marginBottom: 8 }}>DataTable</Heading>
               <Paragraph size="lg" color="muted">
                 Displays tabular data with configurable density, sorting, filtering, pagination,
-                and responsive card-flip layout for narrow viewports.
+                and responsive card or table layouts for narrow viewports.
               </Paragraph>
             </div>
 
@@ -578,15 +606,23 @@ export const Documentation = {
             <section id="dt-responsive">
               <Heading as="h2" size="xs" style={{ marginBottom: 8 }}>Responsive</Heading>
               <Paragraph style={{ marginBottom: 20 }}>
-                Below 640px, each row flips to a labeled card layout using CSS <code style={{ fontFamily: "monospace" }}>display: block</code> and <code style={{ fontFamily: "monospace" }}>data-label</code> attributes.
-                No JavaScript required. Horizontal scrolling is off by default — enable it with <code style={{ fontFamily: "monospace" }}>scrollable</code> for tables that must preserve column widths.
+                Below 640px, each row defaults to a Card-like definition list. Set <code style={{ fontFamily: "monospace" }}>mobileLayout="table"</code> to preserve
+                the table layout and allow horizontal scrolling when column relationships matter more than stacked cards.
               </Paragraph>
               <Card style={{ padding: 16, background: "var(--semantic-color-surface-panel)" }}>
                 <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "var(--semantic-color-text-muted)", marginBottom: 12 }}>
-                  Card-flip preview (simulated at 400px max-width)
+                  Card preview (simulated at 400px max-width)
                 </p>
                 <div style={{ maxWidth: 400 }}>
                   <DataTable columns={COLUMNS.slice(0, 4)} rows={ALL_ROWS.slice(0, 3)} />
+                </div>
+              </Card>
+              <Card style={{ padding: 16, background: "var(--semantic-color-surface-panel)", marginTop: 16 }}>
+                <p style={{ fontFamily: "sans-serif", fontSize: 12, color: "var(--semantic-color-text-muted)", marginBottom: 12 }}>
+                  Mobile table preview (simulated at 400px max-width)
+                </p>
+                <div style={{ maxWidth: 400 }}>
+                  <DataTable columns={COLUMNS.slice(0, 4)} rows={ALL_ROWS.slice(0, 3)} mobileLayout="table" />
                 </div>
               </Card>
             </section>

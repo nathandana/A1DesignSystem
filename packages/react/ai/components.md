@@ -9,6 +9,7 @@
 | **React** | `packages/react/src/components/{name}/` |
 | **Native** | `packages/react-native/src/components/{Name}/` |
 | **Pure** | `packages/pure/dist/a1-pure.css` — scoped HTML/CSS classes |
+| **Web Components** | `packages/web-components/src/components/{name}/a1-{name}.js` — Lit custom elements |
 
 ✓ = implemented  · — = not yet implemented
 
@@ -41,15 +42,15 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 ## Typography
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Heading | ✓ | ✓ | ✓ |
-| Paragraph | ✓ | ✓ | ✓ |
-| Blockquote | ✓ | ✓ | ✓ |
-| List | ✓ | ✓ | ✓ |
-| Code | ✓ | — | — |
-| Divider | ✓ | — | ✓ |
-| Inline (kbd, mark, and semantic inline text) | ✓ | — | ✓ |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Heading | ✓ | ✓ | ✓ | — |
+| Paragraph | ✓ | ✓ | ✓ | — |
+| Blockquote | ✓ | ✓ | ✓ | — |
+| List | ✓ | ✓ | ✓ | — |
+| Code | ✓ | — | — | — |
+| Divider | ✓ | — | ✓ | — |
+| Inline (kbd, mark, and semantic inline text) | ✓ | — | ✓ | — |
 
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
@@ -92,16 +93,16 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Navigation
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Link | ✓ | ✓ | ✓ |
-| Breadcrumb | ✓ | — | — |
-| Side Nav | ✓ | ✓ | — |
-| Top Header | ✓ | — | ✓ |
-| Bottom Drawer | ✓ | — | ✓ |
-| Tabs | ✓ | — | — |
-| Page Nav | ✓ | — | — |
-| Tree Menu | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Link | ✓ | ✓ | ✓ | — |
+| Breadcrumb | ✓ | — | — | — |
+| Side Nav | ✓ | ✓ | — | — |
+| Top Header | ✓ | — | ✓ | — |
+| Bottom Drawer | ✓ | — | ✓ | — |
+| Tabs | ✓ | — | — | — |
+| Page Nav | ✓ | — | — | — |
+| Tree Menu | ✓ | — | — | — |
 
 > **Tree Menu props:** `items` (`TreeItem[]` — `{ id, label, icon?, href?, disabled?, children? }[]`), `selectedId` (string | null), `onSelect` (callback), `defaultExpandedIds` (string[], uncontrolled), `expandedIds` (string[], controlled), `onExpandedChange` (callback), `showExpandControls` (boolean, default false — renders "Expand all" / "Collapse all" buttons above the tree), `onHoverChange` (callback, fires with id on mouseenter and null on mouseleave), `draggable` (boolean, default false — enables drag-and-drop reordering and reparenting), `onMove` (`({ draggedId, targetId, position: 'before' | 'into' | 'after' }) => void` — called when the user drops an item; the consumer is responsible for updating the `items` array), `aria-label` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Supports unlimited nesting depth. Expand/collapse (`add_box` / `indeterminate_check_box`) is independent from selection: clicking the toggle icon only expands/collapses the branch; clicking the label selects the node. Keyboard: Arrow Right expands or descends into a branch; Arrow Left collapses or moves to parent; Home/End jump to first/last visible node; Enter/Space selects only. Selected state uses the full action background (`--semantic-color-action-background`) for a clear, unambiguous highlight. Roving tabindex keeps one item in the tab sequence at a time. **Drag-and-drop:** when `draggable` is true, each row becomes a drag source and drop target. Dragging over the top 30% of a row shows a "drop before" indicator; over the bottom 30% shows "drop after"; over the middle 40% of a branch node shows "drop into" (reparent). Collapsed branches auto-expand after 600 ms when held over. An item cannot be dropped onto itself or any of its descendants.
 
@@ -140,16 +141,16 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Actions & Controls** also includes **Tabs** and **Link** (see [Navigation](#navigation)) and **Accordion** (see [Disclosure / Accordion](#disclosure--accordion)); their coverage rows stay in those implementation-family sections.
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Button | ✓ | ✓ | ✓ |
-| Split Button | ✓ | — | — |
-| Icon Button | ✓ | ✓ | ✓ |
-| Switch | ✓ | — | — |
-| Segmented Control | ✓ | — | — |
-| Slider | ✓ | — | — |
-| Toolbar | ✓ | — | — |
-| Sticky Actions | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Button | ✓ | ✓ | ✓ | ✓ |
+| Split Button | ✓ | — | — | — |
+| Icon Button | ✓ | ✓ | ✓ | — |
+| Switch | ✓ | — | — | — |
+| Segmented Control | ✓ | — | — | — |
+| Slider | ✓ | — | — | — |
+| Toolbar | ✓ | — | — | — |
+| Sticky Actions | ✓ | — | — | — |
 
 > **Menu grouping:** **Accordion**, **Tabs**, and **Link** are also menu-grouped under **Actions & Controls**; their coverage rows and notes live in their implementation-family sections ([Disclosure / Accordion](#disclosure--accordion), [Navigation](#navigation)). **Split Button** has no separate menu page — it is surfaced via the Button page's **Split (menu)** toggle.
 >
@@ -201,26 +202,26 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Inputs
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Text Field (text, email, password) | ✓ | — | ✓ |
-| Search Field | ✓ | — | — |
-| Number Field | ✓ | — | — |
-| Date Field | ✓ | — | — |
-| Time Field | ✓ | — | — |
-| Phone Field | ✓ | — | — |
-| Zip Field | ✓ | — | — |
-| Credit Card Field | ✓ | — | — |
-| Textarea | ✓ | — | ✓ |
-| Select | ✓ | — | ✓ |
-| Checkbox Group | ✓ | — | ✓ |
-| Choice Group | ✓ | — | — |
-| Radio Group | ✓ | — | ✓ |
-| Fieldset | ✓ | — | ✓ |
-| Field Row | ✓ | — | — |
-| Switch (input) | ✓ | — | — |
-| Inline Editable | ✓ | — | — |
-| Autocomplete | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Text Field (text, email, password) | ✓ | — | ✓ | — |
+| Search Field | ✓ | — | — | — |
+| Number Field | ✓ | — | — | — |
+| Date Field | ✓ | — | — | — |
+| Time Field | ✓ | — | — | — |
+| Phone Field | ✓ | — | — | — |
+| Zip Field | ✓ | — | — | — |
+| Credit Card Field | ✓ | — | — | — |
+| Textarea | ✓ | — | ✓ | — |
+| Select | ✓ | — | ✓ | — |
+| Checkbox Group | ✓ | — | ✓ | — |
+| Choice Group | ✓ | — | — | — |
+| Radio Group | ✓ | — | ✓ | — |
+| Fieldset | ✓ | — | ✓ | — |
+| Field Row | ✓ | — | — | — |
+| Switch (input) | ✓ | — | — | — |
+| Inline Editable | ✓ | — | — | — |
+| Autocomplete | ✓ | — | — | — |
 
 > **Autocomplete props:** `options` (`(string | { value, label, swatch?, icon?, group? })[]`), `value` (string in single mode, `string[]` in multi), `onChange`, `multiple` (boolean, default false — renders removable chips), `allowCreate` (boolean, default false — offers an "Add …" option for a value not in the list) + `onCreate(value)`, `variant` ("default" | "color", default "default" — `"color"` renders a colour swatch beside each option, chip, and the selected value; each option's swatch is its `swatch` or, in colour mode, its `value`. Pair with `allowCreate` for a "pick from the palette or type a hex" colour field), `label`, `hint`, `error`, `size` ("compact" | "default" | "comfortable", matches the field family), `required`, `disabled`, `emptyText`, `createLabel(query)`, `maxVisible` (number — cap how many options render for very large lists; excess is hidden behind a "keep typing" footer), `moreText(shown)`, `aria-label`. **Option `icon`** renders a Material Symbols glyph beside the option / chip / selected value (e.g. an icon picker). **Option `group`** turns on grouped rendering: when any option has a `group`, the listbox shows a **sticky heading** before each group's options and orders results by each group's first appearance (pass options pre-sorted by group). The dropdown listbox portals to `document.body` (fixed-positioned, tracks the control) so it is never clipped inside an Accordion or other overflow container. ARIA combobox/listbox pattern: input `role="combobox"` with `aria-expanded`/`aria-activedescendant`; keyboard Arrow Up/Down to navigate, Enter to select, Escape to close, Backspace to remove the last chip (multi). Used by the a1-web image library for category tagging and the configurator **icon picker** (grouped by Material Symbols category). React only.
 
@@ -246,16 +247,16 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Feedback & Messaging
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Banner | ✓ | ✓ | — |
-| Badge | ✓ | ✓ | — |
-| Notification | ✓ | — | — |
-| Snackbar | ✓ | ✓ | ✓ |
-| Empty State | ✓ | ✓ | — |
-| Status Bar | ✓ | — | — |
-| Circular Progress | ✓ | — | ✓ |
-| Step Tracker | ✓ | — | ✓ |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Banner | ✓ | ✓ | — | — |
+| Badge | ✓ | ✓ | — | — |
+| Notification | ✓ | — | — | — |
+| Snackbar | ✓ | ✓ | — | ✓ |
+| Empty State | ✓ | ✓ | — | — |
+| Status Bar | ✓ | — | — | — |
+| Circular Progress | ✓ | — | ✓ | — |
+| Step Tracker | ✓ | — | ✓ | — |
 
 > **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices. `"calendar"` — an event/date callout: a tokenized date block (`date` prop) replaces the status icon, an `eyebrow` overline sits above a larger `title`, and `action`/`onDismiss` still work. `date` accepts a `Date`, an ISO string, or `{ month, day }`; `status` still tints the date block. Month names render in sentence case (never uppercased). Uses `role="group"` instead of `role="alert"` since a date callout isn't an alert.
 >
@@ -297,18 +298,18 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Layout & Display**. Figure's coverage row stays in this table (implementation family) but it is **menu-grouped under [Media and iconography](#media-and-iconography)** — see the menu hierarchy table.
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Section | ✓ | ✓ | ✓ |
-| Card | ✓ | ✓ | — |
-| Stack | ✓ | — | — |
-| Grid | ✓ | — | — |
-| Bleed | ✓ | — | — |
-| Inset | ✓ | — | — |
-| Spacer | ✓ | — | — |
-| Page Layout | ✓ | — | — |
-| Button Container | ✓ | ✓ | — |
-| Figure | ✓ | — | ✓ |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Section | ✓ | ✓ | ✓ | — |
+| Card | ✓ | ✓ | — | — |
+| Stack | ✓ | — | — | — |
+| Grid | ✓ | — | — | — |
+| Bleed | ✓ | — | — | — |
+| Inset | ✓ | — | — | — |
+| Spacer | ✓ | — | — | — |
+| Page Layout | ✓ | — | — | — |
+| Button Container | ✓ | ✓ | — | — |
+| Figure | ✓ | — | ✓ | — |
 
 > **Pure notes:** Section uses `.a1-section`. Footer uses `.a1-footer`. Figure uses `.a1-figure` with `.a1-figure-ratio-16-9` / `.a1-figure-ratio-1-1` for fixed ratios and `.a1-figure-crop-{top|bottom|left|right|top-left|top-right|bottom-left|bottom-right}` for the crop focal point (sets `--a1-figure-crop`).
 >
@@ -337,12 +338,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Overlay
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Dialog | ✓ | ✓ | — |
-| Menu | ✓ | — | — |
-| Context Menu | ✓ | — | — |
-| Bottom Sheet | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Dialog | ✓ | ✓ | — | — |
+| Menu | ✓ | — | — | — |
+| Context Menu | ✓ | — | — | — |
+| Bottom Sheet | ✓ | — | — | — |
 
 > **BottomSheet props:** `title` (string — the first line shown in the header; the only thing visible when collapsed), `detents` (`number[]` — expanded heights as viewport-height fractions 0–1, smallest first; default `[0.5, 0.92]`), `detent` (number — controlled snap index; **0 = collapsed**, then one index per `detents` entry), `defaultDetent` (number, default 1), `onDetentChange` (`(index) => void`). A **fixed** panel attached to the bottom of the viewport that overlays content with **no scrim** — separation is via an upward **shadow**. A **drag handle** in the header resizes it: drag down to **collapse** (header / first line of the title only), drag up to **snap** to a detent; a tap toggles collapsed ↔ largest detent; keyboard Arrow Up/Down step detents, Enter/Space toggles. Content **scrolls internally**; there is **no footer**. The component renders an invisible in-flow **spacer** sized to the collapsed footprint so page content can always scroll clear of the sheet (mount it as the last child of the scroll container). **Only rendered at xs and sm** (`@media (--bp-md-up) { display: none }`). React only. CSS-variable architecture (`--a1-bottom-sheet-*`) over `system/tokens/component/bottom-sheet.json`.
 
@@ -362,13 +363,15 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Data
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Data Table | ✓ | — | ✓ |
-| Definition List | ✓ | — | ✓ |
-| Pagination | ✓ | ✓ | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Data Table | ✓ | — | ✓ | — |
+| Definition List | ✓ | — | ✓ | — |
+| Pagination | ✓ | ✓ | — | — |
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
+
+> **DataTable search matching:** `searchableColumns` entries and searchable column definitions may include `searchMatcher(row, query) => boolean` to opt into alias, fuzzy, or domain-specific matching while keeping the built-in search UI. If no matcher is supplied, DataTable continues to use the column's `searchAccessor` / cell value substring match.
 
 > **DataTable column `type="image"`:** renders a small fixed-size thumbnail (`.a1-data-table__thumb`, ~2.5rem, `object-fit: cover`; ~2rem at compact). The cell value is an image URL string or `{ src, alt }`; an empty/missing value renders a dashed placeholder. Used by the a1-web image library's table view.
 >
@@ -384,13 +387,14 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Media and iconography
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Icon | ✓ | — | ✓ |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Icon | ✓ | — | ✓ | — |
 
 > **Icon props:** `name` (string, required), `size` ("xs" | "sm" | "md" | "lg" | "xl" | "jumbo" | "xJumbo", default "md" = inherits from parent), `color` ("muted" | "accent" | "inverse" | "success" | "error" | "warn" | "info", default = inherits current text color), `weight` (font variation 100–700), `grade` (-50–200), `opticalSize` (20|24|40|48), `fill` (boolean).
 >
 > **Icon size px values:** xs=16, sm=20, md=inherit/~24, lg=32, xl=40, jumbo=64, xJumbo=96. Size classes also set `--a1-icon-opsz` automatically for sharp rendering at that scale.
+> Icons reserve a fixed 1em square and clip overflow so Material Symbols ligature fallback text cannot expand layout while the icon font is loading.
 >
 > **Icon color tokens:** Status colors (`success`, `error`, `warn`, `info`) map to semantic status background tokens. Use `inverse` on dark surfaces. Omit `color` entirely to inherit the current text color from the parent.
 >
@@ -402,9 +406,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Implementation-family section. **Accordion is menu-grouped under [Actions & Controls](#actions--controls)** — the "Disclosure" menu category was retired.
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Accordion (React) / Disclosure (pure) | ✓ | — | ✓ |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Accordion (React) / Disclosure (pure) | ✓ | — | ✓ | — |
 
 > **Naming note:** The React package calls this component "Accordion". The Pure package implements the same concept using the native `<details>` / `<summary>` elements with `.a1-details`.
 >
@@ -414,9 +418,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Calendar
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Calendar | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Calendar | ✓ | — | — | — |
 
 > **React props:** `variant` ("scroll" | "paginated", default "scroll"), `initialMonth` (Date or `{ year, month }`), `monthsToShow` (default 13, scroll only), `highlightToday` (default true), `dimPast` (default true), `todayButton` (default false, paginated only). Scroll variant renders months stacked vertically. Paginated shows one month at a time with prev/next buttons and month/year selects. Uses container queries for 3 density levels (≥ 480 px full, < 480 px medium, < 320 px compact). Supports RTL and locale-driven week-start via `LabelsProvider`.
 >
@@ -426,11 +430,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Canvas
 
-| Component | React | Native | Pure |
-|-----------|:-----:|:------:|:----:|
-| Canvas | ✓ | — | — |
-| Node | ✓ | — | — |
-| CanvasEdge | ✓ | — | — |
+| Component | React | Native | Pure | Web Components |
+|-----------|:-----:|:------:|:----:|:--------------:|
+| Canvas | ✓ | — | — | — |
+| Node | ✓ | — | — | — |
+| CanvasEdge | ✓ | — | — | — |
 
 > **Compositional API — `Node` and `CanvasEdge` as children:**
 >

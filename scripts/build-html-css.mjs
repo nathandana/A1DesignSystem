@@ -981,6 +981,12 @@ function componentCss() {
   color: currentColor;
   font-size: var(--a1-icon-size, var(--component-icon-button-icon-size));
   line-height: 1;
+  overflow: hidden;
+  flex-shrink: 0;
+  white-space: nowrap;
+  vertical-align: -0.125em;
+  text-align: center;
+  direction: ltr;
 }
 
 .a1-icon-button {

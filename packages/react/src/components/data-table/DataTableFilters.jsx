@@ -19,7 +19,10 @@ import "./data-table-filters.css";
  * onSearchChange?: (text: string) => void
  * searchColumn?: string          — key of column being searched; "" = all
  * onSearchColumnChange?: (key: string) => void
- * searchableColumns?: Array<{ key: string, label: string }>
+ * searchableColumns?: Array<{ key: string, label: string, searchAccessor?, searchMatcher? }>
+ * sortOptions?: Array<{ key: string, label: string }>
+ * sortValue?: string              — "" or `${key}:asc|desc`
+ * onSortValueChange?: (value: string) => void
  */
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -153,15 +156,25 @@ export function DataTableFilters({
   searchColumn = "",
   onSearchColumnChange,
   searchableColumns,
+  sortOptions = [],
+  sortValue = "",
+  onSortValueChange,
   className = "",
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef(null);
 
   const hasSearch = Boolean(onSearchChange);
+  const hasSort = sortOptions.length > 0 && Boolean(onSortValueChange);
+  const hasMobileMenu = filters.length > 0 || hasSort;
+  const mobileMenuLabel = hasSort && filters.length > 0
+    ? "Sort & filter"
+    : hasSort ? "Sort" : "Filters";
 
   const activeCount = filters.filter((f) => isFilterActive(f, value[f.key])).length;
-  const hasActive   = activeCount > 0 || Boolean(searchValue);
+  const activeMobileCount = activeCount + (sortValue ? 1 : 0);
+  const hasActive = activeCount > 0 || Boolean(searchValue);
+  const hasMobileActive = hasActive || Boolean(sortValue);
 
   function set(key, val) {
     onChange?.({ ...value, [key]: val });
@@ -172,6 +185,7 @@ export function DataTableFilters({
     filters.forEach((f) => { cleared[f.key] = f.type === "multi" ? [] : ""; });
     onChange?.(cleared);
     onSearchChange?.("");
+    onSortValueChange?.("");
   }
 
   // ── Search field (shared between desktop and mobile) ──────────────────────
@@ -242,40 +256,70 @@ export function DataTableFilters({
       <div className="a1-dt-filters__mobile">
         {searchField}
 
-        {filters.length > 0 && (
+        {hasMobileMenu && (
           <div ref={mobileTriggerRef} className="a1-dt-filters__mobile-trigger">
             <Button
               variant="secondary"
               size="sm"
-              icon="filter_list"
+              icon={hasSort && filters.length > 0 ? "tune" : hasSort ? "sort" : "filter_list"}
               onClick={() => setMobileOpen(true)}
             >
-              Filters
-              {activeCount > 0 && (
+              {mobileMenuLabel}
+              {activeMobileCount > 0 && (
                 <span
                   className="a1-dt-filters__mobile-count"
-                  aria-label={`${activeCount} active`}
+                  aria-label={`${activeMobileCount} active`}
                 >
-                  {activeCount}
+                  {activeMobileCount}
                 </span>
               )}
             </Button>
           </div>
         )}
 
-        {hasActive && (
+        {hasMobileActive && (
           <Button variant="secondary" size="sm" onClick={clearAll}>
             Clear all
           </Button>
         )}
 
-        {filters.length > 0 && (
+        {hasMobileMenu && (
           <Menu
             open={mobileOpen}
             anchorRef={mobileTriggerRef}
             onClose={() => setMobileOpen(false)}
-            aria-label="Filters"
+            aria-label={mobileMenuLabel}
           >
+            {hasSort && (
+              <MenuSection label="Sort">
+                <MenuItem
+                  icon={radioIcon(!sortValue)}
+                  className={!sortValue ? "a1-dt-filters__item--on" : ""}
+                  onClick={() => onSortValueChange("")}
+                >
+                  No sorting
+                </MenuItem>
+                {sortOptions.flatMap((option) => [
+                  <MenuItem
+                    key={`${option.key}:asc`}
+                    icon={radioIcon(sortValue === `${option.key}:asc`)}
+                    className={sortValue === `${option.key}:asc` ? "a1-dt-filters__item--on" : ""}
+                    onClick={() => onSortValueChange(`${option.key}:asc`)}
+                  >
+                    {option.label} ascending
+                  </MenuItem>,
+                  <MenuItem
+                    key={`${option.key}:desc`}
+                    icon={radioIcon(sortValue === `${option.key}:desc`)}
+                    className={sortValue === `${option.key}:desc` ? "a1-dt-filters__item--on" : ""}
+                    onClick={() => onSortValueChange(`${option.key}:desc`)}
+                  >
+                    {option.label} descending
+                  </MenuItem>,
+                ])}
+              </MenuSection>
+            )}
+
             {filters.map((f) => {
               const isMulti = f.type === "multi";
               const val     = value[f.key];
@@ -320,7 +364,7 @@ export function DataTableFilters({
               );
             })}
 
-            {hasActive && (
+            {hasMobileActive && (
               <div className="a1-dt-filters__menu-clear">
                 <Button
                   variant="tertiary"
