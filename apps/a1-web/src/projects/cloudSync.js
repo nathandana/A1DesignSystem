@@ -41,14 +41,14 @@ function importEnvelope(text) {
     if (parsed && parsed.__a1bundle) bundle = parsed
   } catch { /* not JSON — a legacy plain-text projects export */ }
   if (bundle) {
-    if (typeof bundle.projects === 'string') importAllText(bundle.projects)
+    if (typeof bundle.projects === 'string') importAllText(bundle.projects, { replaceProjects: true })
     importUserPatterns(bundle.patterns)
     importThemes(bundle.themes)
     // Legacy: labels lived in the shared_state bundle before the dedicated
     // workspace_labels table. Import once so the new label store can upsert them.
     if (bundle.labels) importLabels(bundle.labels)
   } else {
-    importAllText(text) // legacy: projects-only
+    importAllText(text, { replaceProjects: true }) // legacy: projects-only
   }
 }
 

@@ -2,11 +2,36 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   SearchField,
   SideNav,
+  Stack,
+  Toolbar,
+  ToolbarToggle,
   TreeMenu,
 } from '@gtivr4/a1-design-system-react'
 import componentExamples from './componentExamples.json'
 import { componentCategories } from './data.js'
-import { getComponentExamplePath } from './utils.js'
+import { allComponents, getComponentExamplePath, scoreComponentSearch } from './utils.js'
+
+const COMPONENTS_SIDEBAR_VIEW_KEY = 'a1-components-sidebar-view'
+const COMPONENTS_SIDEBAR_VIEWS = new Set(['tree', 'az'])
+
+function readStoredView() {
+  if (typeof window === 'undefined') return 'tree'
+  try {
+    const stored = window.localStorage.getItem(COMPONENTS_SIDEBAR_VIEW_KEY)
+    return COMPONENTS_SIDEBAR_VIEWS.has(stored) ? stored : 'tree'
+  } catch {
+    return 'tree'
+  }
+}
+
+function storeView(view) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(COMPONENTS_SIDEBAR_VIEW_KEY, view)
+  } catch {
+    // Ignore storage failures; the toggle still works for the current session.
+  }
+}
 
 // The category id that owns the given active page, if any.
 function activeCategoryId(activePage) {
@@ -26,60 +51,99 @@ function exampleTreeId(componentPageId, exampleId) {
   return `${componentPageId}::example::${exampleId}`
 }
 
-function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, search }) {
-  const query = search.trim().toLowerCase()
+function sortComponentsByTitle(components) {
+  return [...components].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
+}
+
+function getSearchMatches(query) {
+  return allComponents
+    .map((component, index) => ({ component, index, score: scoreComponentSearch(component, query) }))
+    .filter((entry) => entry.score > 0)
+}
+
+function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, search, view }) {
+  const query = search.trim()
   const activeExampleId = exampleIdFromDetailTab(detailTab)
   const selectedId = activePage.startsWith('component-') && activeExampleId
     ? exampleTreeId(activePage, activeExampleId)
     : activePage
 
   const visibleCategories = useMemo(
-    () =>
-      componentCategories
-        .map((category) => ({
-          ...category,
-          components: category.components.filter(
-            (component) =>
-              !query ||
-              component.title.toLowerCase().includes(query) ||
-              component.body.toLowerCase().includes(query) ||
-              category.title.toLowerCase().includes(query),
-          ),
-        }))
-        .filter((category) => !query || category.components.length > 0),
+    () => {
+      if (!query) return componentCategories
+
+      return componentCategories
+        .map((category, categoryIndex) => {
+          const components = allComponents
+            .filter((component) => component.categoryId === category.id)
+            .map((component, index) => ({ component, index, score: scoreComponentSearch(component, query) }))
+            .filter((entry) => entry.score > 0)
+            .sort((a, b) => b.score - a.score || a.index - b.index)
+            .map((entry) => entry.component)
+
+          return {
+            ...category,
+            categoryIndex,
+            searchScore: components.reduce((best, component) => Math.max(best, scoreComponentSearch(component, query)), 0),
+            components,
+          }
+        })
+        .filter((category) => category.components.length > 0)
+        .sort((a, b) => b.searchScore - a.searchScore || a.categoryIndex - b.categoryIndex)
+    },
     [query],
   )
+
+  const visibleAzComponents = useMemo(() => {
+    const components = query
+      ? getSearchMatches(query).map((entry) => entry.component)
+      : allComponents
+    return sortComponentsByTitle(components)
+  }, [query])
 
   // TreeMenu item model: "All Components" + one branch per category whose
   // children are the components in it.
   const items = useMemo(
-    () => [
-      { id: 'components', label: 'All Components', icon: 'widgets' },
-      ...visibleCategories.map((category) => ({
-        id: `components-${category.id}`,
-        label: category.title,
-        icon: category.icon,
-        children: category.components.map((component) => {
-          const examples = componentExamples[component.id] ?? []
-          const componentPageId = `component-${component.id}`
-          return {
-            id: componentPageId,
+    () => {
+      if (view === 'az') {
+        return [
+          { id: 'components', label: 'All Components', icon: 'widgets' },
+          ...visibleAzComponents.map((component) => ({
+            id: `component-${component.id}`,
             label: component.title,
             icon: component.icon,
-            ...(examples.length
-              ? {
-                  children: examples.map((example) => ({
-                    id: exampleTreeId(componentPageId, example.id),
-                    label: example.title,
-                    icon: 'view_carousel',
-                  })),
-                }
-              : null),
-          }
-        }),
-      })),
-    ],
-    [visibleCategories],
+          })),
+        ]
+      }
+
+      return [
+        { id: 'components', label: 'All Components', icon: 'widgets' },
+        ...visibleCategories.map((category) => ({
+          id: `components-${category.id}`,
+          label: category.title,
+          icon: category.icon,
+          children: category.components.map((component) => {
+            const examples = componentExamples[component.id] ?? []
+            const componentPageId = `component-${component.id}`
+            return {
+              id: componentPageId,
+              label: component.title,
+              icon: component.icon,
+              ...(examples.length
+                ? {
+                    children: examples.map((example) => ({
+                      id: exampleTreeId(componentPageId, example.id),
+                      label: example.title,
+                      icon: 'view_carousel',
+                    })),
+                  }
+                : null),
+            }
+          }),
+        })),
+      ]
+    },
+    [view, visibleAzComponents, visibleCategories],
   )
 
   // Expanded branches are controlled so we can auto-open categories that match a
@@ -135,14 +199,31 @@ function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, s
 }
 
 export function ComponentsSidebar({ activePage, detailTab, onNavigate, onSelectDetailTab, search, setSearch }) {
+  const [view, setView] = useState(readStoredView)
+  const azEnabled = view === 'az'
+
+  useEffect(() => {
+    storeView(view)
+  }, [view])
+
   const searchField = (
-    <SearchField
-      data-a1-page-search=""
-      aria-label="Search components"
-      size="compact"
-      value={search}
-      onChange={(event) => setSearch(event.target.value)}
-    />
+    <Stack direction="row" gap="xs" align="end">
+      <SearchField
+        data-a1-page-search=""
+        aria-label="Search components"
+        size="compact"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
+      <Toolbar aria-label="Component list view">
+        <ToolbarToggle
+          icon="sort_by_alpha"
+          label="A-Z"
+          pressed={azEnabled}
+          onChange={(pressed) => setView(pressed ? 'az' : 'tree')}
+        />
+      </Toolbar>
+    </Stack>
   )
 
   return (
@@ -153,6 +234,7 @@ export function ComponentsSidebar({ activePage, detailTab, onNavigate, onSelectD
         onNavigate={onNavigate}
         onSelectDetailTab={onSelectDetailTab}
         search={search}
+        view={view}
       />
     </SideNav>
   )

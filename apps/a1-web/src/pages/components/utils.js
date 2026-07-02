@@ -1,4 +1,5 @@
 import {
+  COMPONENT_SEARCH_KEYWORDS,
   COMPONENT_RELATED,
   PACKAGE_COVERAGE,
   LAST_UPDATED,
@@ -6,6 +7,138 @@ import {
   ruleSourceFiles,
 } from './data.js'
 import componentExamples from './componentExamples.json'
+
+function normalizeSearchTerm(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
+}
+
+function compactSearchTerm(value) {
+  return normalizeSearchTerm(value).replace(/\s+/g, '')
+}
+
+function uniqueTerms(terms) {
+  return [...new Set(terms.map(normalizeSearchTerm).filter(Boolean))]
+}
+
+function oneEditVariants(term) {
+  const compact = compactSearchTerm(term)
+  if (compact.length < 4 || compact.length > 18) return []
+
+  const variants = new Set()
+  for (let index = 0; index < compact.length; index += 1) {
+    variants.add(`${compact.slice(0, index)}${compact.slice(index + 1)}`)
+  }
+  for (let index = 0; index < compact.length - 1; index += 1) {
+    variants.add(`${compact.slice(0, index)}${compact[index + 1]}${compact[index]}${compact.slice(index + 2)}`)
+  }
+  variants.delete(compact)
+  return [...variants]
+}
+
+function expandSearchTerms(terms) {
+  const normalized = uniqueTerms(terms)
+  return uniqueTerms([
+    ...normalized,
+    ...normalized.map(compactSearchTerm),
+    ...normalized.map((term) => term.replace(/\s+/g, '_')),
+    ...normalized.flatMap((term) => normalizeSearchTerm(term).split(' ')),
+    ...normalized.flatMap(oneEditVariants),
+  ])
+}
+
+function levenshtein(a, b) {
+  const left = compactSearchTerm(a)
+  const right = compactSearchTerm(b)
+  if (!left || !right) return Number.POSITIVE_INFINITY
+  if (left === right) return 0
+  if (Math.abs(left.length - right.length) > 2) return Number.POSITIVE_INFINITY
+
+  const previous = Array.from({ length: right.length + 1 }, (_, index) => index)
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    const current = [leftIndex]
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const cost = left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1
+      current[rightIndex] = Math.min(
+        current[rightIndex - 1] + 1,
+        previous[rightIndex] + 1,
+        previous[rightIndex - 1] + cost,
+      )
+    }
+    previous.splice(0, previous.length, ...current)
+  }
+  return previous[right.length]
+}
+
+function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyScore = 0) {
+  const normalizedQuery = normalizeSearchTerm(query)
+  const compactQuery = compactSearchTerm(query)
+  if (!normalizedQuery) return 0
+
+  return terms.reduce((best, term) => {
+    const normalizedTerm = normalizeSearchTerm(term)
+    const compactTerm = compactSearchTerm(term)
+    if (!normalizedTerm) return best
+    if (normalizedTerm === normalizedQuery || compactTerm === compactQuery) return Math.max(best, exactScore)
+    if (normalizedTerm.startsWith(normalizedQuery) || compactTerm.startsWith(compactQuery)) return Math.max(best, startsScore)
+    if (normalizedTerm.includes(normalizedQuery) || compactTerm.includes(compactQuery)) return Math.max(best, includesScore)
+
+    if (fuzzyScore > 0) {
+      const distance = levenshtein(normalizedQuery, normalizedTerm)
+      if (distance === 1) return Math.max(best, fuzzyScore)
+      if (distance === 2 && compactQuery.length >= 6) return Math.max(best, Math.max(1, fuzzyScore - 120))
+    }
+
+    return best
+  }, 0)
+}
+
+export function getComponentSearchKeywords(component) {
+  return COMPONENT_SEARCH_KEYWORDS[component.id] ?? []
+}
+
+export function getComponentSearchText(component) {
+  const terms = [
+    component.id,
+    component.title,
+    component.body,
+    component.categoryTitle,
+    component.categoryId,
+    ...(component.packages ?? []),
+    ...getComponentSearchKeywords(component),
+  ]
+  return expandSearchTerms(terms).join(' ')
+}
+
+export function scoreComponentSearch(component, query) {
+  const normalizedQuery = normalizeSearchTerm(query)
+  if (!normalizedQuery) return 0
+
+  const titleTerms = [component.title, component.id]
+  const keywordTerms = getComponentSearchKeywords(component)
+  const contextTerms = [component.body, component.categoryTitle, component.categoryId, ...(component.packages ?? [])]
+
+  return Math.max(
+    scoreTerms(normalizedQuery, titleTerms, 1000, 900, 820, 780),
+    scoreTerms(normalizedQuery, keywordTerms, 680, 620, 540, 460),
+    scoreTerms(normalizedQuery, contextTerms, 420, 360, 300, 0),
+  )
+}
+
+export function rankComponentsForSearch(components, query) {
+  const normalizedQuery = normalizeSearchTerm(query)
+  if (!normalizedQuery) return components
+  return components
+    .map((component, index) => ({ component, index, score: scoreComponentSearch(component, normalizedQuery) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map((entry) => entry.component)
+}
 
 export const componentCategoryPageIds = componentCategories.map((category) => `components-${category.id}`)
 export const componentPageIds = componentCategories.flatMap((category) =>
@@ -21,14 +154,21 @@ export const componentPageTitles = {
 }
 
 export const allComponents = componentCategories.flatMap((category) =>
-  category.components.map((component) => ({
-    ...component,
-    categoryId: category.id,
-    categoryTitle: category.title,
-    categoryIcon: category.icon,
-    updated: LAST_UPDATED,
-    packages: PACKAGE_COVERAGE[component.id] ?? ['React'],
-  }))
+  category.components.map((component) => {
+    const enriched = {
+      ...component,
+      categoryId: category.id,
+      categoryTitle: category.title,
+      categoryIcon: category.icon,
+      updated: LAST_UPDATED,
+      packages: PACKAGE_COVERAGE[component.id] ?? ['React'],
+    }
+    return {
+      ...enriched,
+      searchKeywords: getComponentSearchKeywords(enriched),
+      searchText: getComponentSearchText(enriched),
+    }
+  })
 )
 
 export function getComponentPath(id) {

@@ -6,11 +6,20 @@ import {
   Section,
   Stat,
 } from '@gtivr4/a1-design-system-react'
+import { useMemo, useState } from 'react'
 import { PageTitleArea } from '../PageTitleArea.jsx'
 import { ruleSourceFiles } from './data.js'
-import { allComponents, getComponentPath, navigateCard } from './utils.js'
+import { allComponents, getComponentPath, navigateCard, rankComponentsForSearch, scoreComponentSearch } from './utils.js'
 
 function OverviewTable({ onNavigate }) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sort, setSort] = useState({ key: 'category', direction: 'asc' })
+  const hasSearch = searchQuery.trim().length > 0
+  const rankedComponents = useMemo(
+    () => (hasSearch ? rankComponentsForSearch(allComponents, searchQuery) : allComponents),
+    [hasSearch, searchQuery],
+  )
+
   const columns = [
     { key: 'component', label: 'Component', type: 'link', sortable: true, sortAccessor: (row) => row.component.label },
     { key: 'category', label: 'Category', sortable: true },
@@ -19,7 +28,7 @@ function OverviewTable({ onNavigate }) {
     // { key: 'actions', label: 'Open', type: 'actions' },
   ]
 
-  const rows = allComponents.map((component) => ({
+  const rows = rankedComponents.map((component) => ({
     id: component.id,
     component: {
       href: getComponentPath(`component-${component.id}`),
@@ -30,6 +39,7 @@ function OverviewTable({ onNavigate }) {
     updated: component.updated,
     packages: component.packages.join(', '),
     packageValues: component.packages, // array — for the Package filter
+    smartSearch: component.searchText,
     actions: [{
       label: 'Open',
       icon: 'open_in_new',
@@ -52,9 +62,20 @@ function OverviewTable({ onNavigate }) {
       // size="compact"
       zebra
       scrollable
-      defaultSort={{ key: 'category', direction: 'asc' }}
+      sort={hasSearch ? null : sort}
+      onSortChange={setSort}
+      searchValue={searchQuery}
+      onSearchChange={setSearchQuery}
       searchableColumns={[
-        { key: 'component', label: 'Component', searchAccessor: (row) => row.component.label },
+        {
+          key: 'smartSearch',
+          label: 'Component',
+          searchAccessor: (row) => row.smartSearch,
+          searchMatcher: (row, query) => {
+            const component = allComponents.find((item) => item.id === row.id)
+            return component ? scoreComponentSearch(component, query) > 0 : false
+          },
+        },
         { key: 'category', label: 'Category' },
         { key: 'packages', label: 'Packages' },
       ]}

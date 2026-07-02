@@ -78,6 +78,32 @@
 
 - **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
 
+- **A1-349 — Project deletion persistence** — fixed deleted Projects coming back after cloud sync by making shared project hydration replace the local project set instead of merge-only upserting. Project deletion now also clears the project's page-list and shared-layout storage without triggering sample seeding during the delete path.
+
+- **Backlog CSV export** — added an Export CSV action to the Backlog panel that downloads the entire backlog, independent of the current view, filters, table pagination, or sort.
+
+- **Icon font loading stability** — constrained A1 icon ligatures to a fixed 1em square with clipped overflow so Material Symbols do not briefly expand layout while the icon font loads.
+
+- **Components sidebar A-Z view** — added an unlabeled icon toolbar toggle beside the Components sidebar search so builders can switch between the grouped category tree and a flat A-Z component list while keeping smart search active. The selected view persists per browser in localStorage.
+
+- **Components smart search** — added curated component aliases, keyword matching, and misspelling tolerance to the Components sidebar and all-components table. Searches like `CTA` surface Button, while searches like `grid` keep Grid first and also include Data Table as a related match.
+
+- **DataTable custom search matcher** — added optional `searchMatcher` support for DataTable searchable columns so consumers can layer aliases, fuzzy matching, or domain-specific search behavior onto the built-in filter UI.
+
+- **Search Field clear action sizing** — adjusted the SearchField trailing clear button spacing so the icon button stays inside the compact field border, reserves matching input text space, and scales up in comfortable fields.
+
+- **Components package coverage** — added Web Components to the Components overview package list and component detail support grid, with Button and Snackbar marked as available from `packages/web-components`.
+
+- **DataTable mobile layout** — added a `mobileLayout` prop and configurator control so mobile tables can either render as Card-like definition-list rows or preserve the table layout with horizontal scroll. The default card mode now uses Card surface, border, radius, and shadow tokens and removes per-field divider lines.
+
+- **DataTable mobile sort and filter menu** — when a DataTable has filters or search controls, the mobile sort control now moves into the same menu as filters as a **Sort & filter** action instead of rendering as a separate stacked field.
+
+- **DataTable editor slice** — added real column configuration to the a1-web DataTable configurator: add, delete, select, and reorder columns; edit column labels; choose a column component; and set sortable, filterable, search-by, and inline-editable behavior per column. The shared React DataTable now supports column-generated filters, column-scoped search, custom `renderCell` slots, and `onCellChange` for inline editable cells.
+
+- **DataTable — page-size control and contained overflow** — added `defaultPageSize`, `pageSizeOptions`, and `onPageSizeChange` so tables can expose a Rows per page selector in the pagination footer. DataTable wrappers now contain horizontal overflow, the component configurator can preview page-size choices, and the Backlog All tickets table opts into horizontal scrolling with 10 / 25 / 50 row choices.
+
+- **DataTable configurator cleanup** — combined Density and Appearance into one Display toolbar with a divider between density and visual toggles, grouped Display, Features, and Caption into a default-open Table accordion, moved selection controls into the Features toolbar, moved empty-state controls into a collapsed accordion, and restored the shared preview Padding and Inverse controls.
+
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
 
 - **Home tools section** — added a Tools section to the home page for Projects, Patterns, Image library, Icons, Data sources, Theme editor, Rules engine, and Labels. Tool cards navigate directly to their workspace pages and mark AI-ready surfaces, with Theme editor also flagged as Alpha.

@@ -1647,6 +1647,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "No description in the package type declaration."
         },
         {
+          "id": "searchMatcher",
+          "name": "searchMatcher",
+          "type": "(row: Record<string, unknown>, query: string) => boolean",
+          "description": "Custom matcher for built-in search. Return true when this row should match the normalized query."
+        },
+        {
           "id": "statusMap",
           "name": "statusMap",
           "type": "Record<string, \"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\">",
@@ -1862,8 +1868,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "searchableColumns",
           "name": "searchableColumns",
-          "type": "Array<{ key: string; label: string }>",
-          "description": "No description in the package type declaration."
+          "type": "Array<{ key: string; label: string; searchAccessor?: (row: Record<string, unknown>) => unknown; searchMatcher?: (row: Record<string, unknown>, query: string) => boolean }>",
+          "description": "Searchable columns can provide a custom matcher for built-in search."
         },
         {
           "id": "selectable",

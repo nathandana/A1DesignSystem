@@ -9,6 +9,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--base-spacing-16);
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .a1-data-table-sort {
@@ -42,6 +44,9 @@
 /* ── Scroll container ────────────────────────────────────────────────────── */
 
 .a1-data-table-scroll {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-x: hidden;
   border: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-card-border-radius);
 }
@@ -337,8 +342,20 @@
   white-space: nowrap;
 }
 
-/* ── Responsive — card-flip pattern ──────────────────────────────────────── */
-/* Each row becomes a labeled card. thead is visually hidden (still accessible). */
+.a1-data-table-footer__controls {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: var(--base-spacing-12);
+  flex-wrap: wrap;
+}
+
+.a1-data-table__mobile-card-row {
+  display: none;
+}
+
+/* ── Responsive — mobile cards or preserved table ───────────────────────── */
+/* Default mobile layout renders each row as a Card-like definition list. */
 
 @media (max-width: 640px) {
   .a1-data-table-bulk-actions {
@@ -350,25 +367,28 @@
     display: block;
   }
 
-  .a1-data-table-scroll {
+  .a1-data-table-wrapper--mobile-table .a1-data-table-scroll {
+    overflow-x: auto;
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table-scroll {
     border: none;
     border-radius: 0;
   }
 
-  .a1-data-table-scroll--scrollable {
-    overflow-x: visible; /* card layout doesn't need horizontal scroll */
+  .a1-data-table-wrapper--mobile-cards .a1-data-table-scroll--scrollable {
+    overflow-x: visible;
   }
 
-  .a1-data-table,
-  .a1-data-table thead,
-  .a1-data-table tbody,
-  .a1-data-table tr,
-  .a1-data-table td {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table thead,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table tbody,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table tr,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table td {
     display: block;
   }
 
-  /* Visually hide header row but keep it accessible for screen readers */
-  .a1-data-table thead tr {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table thead tr {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -380,72 +400,135 @@
     border: 0;
   }
 
-  .a1-data-table tbody tr {
-    border: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
+  .a1-data-table-wrapper--mobile-cards .a1-data-table .a1-data-table__desktop-row {
+    display: none;
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__mobile-card-row {
+    display: block;
+    margin-block-end: var(--base-spacing-12);
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__mobile-card-row:last-child {
+    margin-block-end: 0;
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__mobile-card-cell {
+    padding: 0;
+    border: 0;
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__mobile-card-cell::before {
+    display: none;
+  }
+
+  .a1-data-table__mobile-card {
+    box-sizing: border-box;
+    inline-size: 100%;
+    background: var(--semantic-color-surface-card);
+    border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
     border-radius: var(--component-card-border-radius);
-    margin-bottom: var(--base-spacing-12);
-    overflow: hidden;
+    padding: var(--component-card-padding);
+    box-shadow: var(--semantic-shadow-sm);
+    color: var(--semantic-color-text-default);
   }
 
-  .a1-data-table tbody tr:last-child {
-    margin-bottom: 0;
+  .a1-data-table__mobile-card[data-selected="true"] {
+    background: var(--semantic-color-surface-panel);
   }
 
-  .a1-data-table td {
+  .a1-data-table__mobile-card[data-selectable-row="true"] {
+    cursor: pointer;
+  }
+
+  .a1-data-table__mobile-card[data-selectable-row="true"]:hover {
+    background: var(--semantic-color-action-surface);
+  }
+
+  .a1-data-table__mobile-card[data-selectable-row="true"]:active {
+    box-shadow: var(--semantic-shadow-xs);
+  }
+
+  .a1-data-table__mobile-definition-list {
+    margin: 0;
     display: flex;
-    align-items: center;
-    gap: var(--base-spacing-12);
-    border-bottom: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
-    padding: var(--component-data-table-density-default-cell-padding-block)
-      var(--component-data-table-density-default-cell-padding-inline);
+    flex-direction: column;
+    gap: var(--component-definition-list-row-gap-md);
+    font-family: var(--component-paragraph-font-family);
+    color: var(--semantic-color-text-default);
   }
 
-  .a1-data-table td > :not(.a1-data-table__avatar-cell):not(.a1-data-table__actions) {
+  .a1-data-table__mobile-definition-item {
+    display: grid;
+    grid-template-columns: clamp(
+      var(--component-definition-list-label-width-min),
+      var(--component-definition-list-label-width-preferred),
+      var(--component-definition-list-label-width-max)
+    ) minmax(0, 1fr);
+    column-gap: var(--component-definition-list-column-gap-md);
+    align-items: start;
+    min-inline-size: 0;
+  }
+
+  .a1-data-table__mobile-definition-label,
+  .a1-data-table__mobile-definition-value {
+    min-inline-size: 0;
+    margin: 0;
+    font-size: var(--semantic-font-size-body-md);
+    line-height: var(--semantic-font-line-height-body);
+  }
+
+  .a1-data-table__mobile-definition-label {
+    font-weight: var(--component-data-table-header-font-weight);
+    color: var(--semantic-color-text-muted);
+  }
+
+  .a1-data-table__mobile-definition-value {
+    color: var(--semantic-color-text-default);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--component-definition-list-copy-gap);
+  }
+
+  .a1-data-table__mobile-definition-value[data-align="end"],
+  .a1-data-table__mobile-definition-value[data-align="center"] {
+    justify-content: flex-start;
+    text-align: start;
+  }
+
+  .a1-data-table__mobile-definition-value > :not(.a1-data-table__avatar-cell):not(.a1-data-table__actions) {
     min-width: 0;
   }
 
-  .a1-data-table__actions {
+  .a1-data-table__mobile-definition-value .a1-data-table__actions {
     flex-wrap: wrap;
     justify-content: flex-start;
   }
 
-  .a1-data-table td:last-child {
-    border-bottom: none;
-  }
-
-  .a1-data-table__select-cell {
-    width: auto;
-  }
-
-  /* Column label shown before each cell value */
-  .a1-data-table td::before {
-    content: attr(data-label);
-    flex-shrink: 0;
-    min-width: 110px;
-    font-weight: var(--component-data-table-header-font-weight);
-    font-size: var(--semantic-font-size-body-sm);
-    color: var(--semantic-color-text-muted);
-  }
-
-  /* Numeric/end-aligned cells reset to start in card mode */
-  .a1-data-table td[data-align="end"] {
-    text-align: start;
-  }
-
-  /* Zebra has no meaning in card mode */
-  .a1-data-table--zebra tbody tr:nth-child(even) td {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--zebra tbody tr:nth-child(even) td {
     background: transparent;
   }
 
-  /* Density variants: compact cell padding in mobile */
-  .a1-data-table--compact td {
-    padding: var(--component-data-table-density-compact-cell-padding-block)
-      var(--component-data-table-density-compact-cell-padding-inline);
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--compact .a1-data-table__mobile-card {
+    padding: var(--base-spacing-12);
   }
 
-  .a1-data-table--comfortable td {
-    padding: var(--component-data-table-density-comfortable-cell-padding-block)
-      var(--component-data-table-density-comfortable-cell-padding-inline);
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--compact .a1-data-table__mobile-definition-list {
+    gap: var(--component-definition-list-row-gap-sm);
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--compact .a1-data-table__mobile-definition-label,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--compact .a1-data-table__mobile-definition-value {
+    font-size: var(--semantic-font-size-body-sm);
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--comfortable .a1-data-table__mobile-definition-list {
+    gap: var(--component-definition-list-row-gap-lg);
+  }
+
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--comfortable .a1-data-table__mobile-definition-label,
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--comfortable .a1-data-table__mobile-definition-value {
+    font-size: var(--semantic-font-size-body-lg);
   }
 
   .a1-data-table-footer {
@@ -455,12 +538,12 @@
 
   /* Notice rows span the full card width — suppress the column-label ::before
      and reset td to block so the content fills edge-to-edge. */
-  .a1-data-table__notice-row td {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__notice-row td {
     display: block;
     padding: 0;
   }
 
-  .a1-data-table__notice-row td::before {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table__notice-row td::before {
     display: none;
   }
 }

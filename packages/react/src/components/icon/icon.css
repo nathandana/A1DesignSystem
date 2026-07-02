@@ -2,6 +2,17 @@
   font-size: var(--a1-icon-size, inherit);
   line-height: 1;
   user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1em;
+  block-size: 1em;
+  overflow: hidden;
+  flex-shrink: 0;
+  white-space: nowrap;
+  vertical-align: -0.125em;
+  text-align: center;
+  direction: ltr;
   font-family: var(--a1-icon-font-family, 'Material Symbols Outlined');
   font-variation-settings:
     "FILL" var(--a1-icon-fill, 0),
