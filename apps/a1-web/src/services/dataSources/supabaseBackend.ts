@@ -82,7 +82,6 @@ export function createSupabaseBackend(getUser: () => DataSourceUser | null): Dat
 
     subscribe(cb: () => void) {
       let channel: ReturnType<typeof sb.channel> | null = null;
-      let poll: ReturnType<typeof setInterval> | null = null;
       (async () => {
         try {
           const { data } = await sb.auth.getSession();
@@ -93,10 +92,11 @@ export function createSupabaseBackend(getUser: () => DataSourceUser | null): Dat
           .on('postgres_changes', { event: '*', schema: 'public', table: 'data_sources' }, cb)
           .subscribe();
       })();
-      poll = setInterval(cb, 8000);
+      // Live updates arrive via the Realtime channel above. The old 8s poll fallback
+      // was removed (it re-ran select('*') including the full rows JSON each tick —
+      // heavy egress); use the Account "Sync now" action to refresh manually.
       return () => {
         if (channel) sb.removeChannel(channel);
-        if (poll) clearInterval(poll);
       };
     },
   };

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Snackbar } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
+import { registerSyncSource } from '../lib/manualSync.js'
 import * as store from '../services/backlog/backlogStore'
 import { runPersona, runPersonaOnItem, runStatusCleanup } from '../services/backlog/personas'
 import changelog from '../../CHANGELOG.md?raw'
@@ -47,7 +48,8 @@ export function BacklogProvider({ children }) {
     setLoading(true)
     refresh()
     const unsub = store.subscribe(refresh)
-    return unsub
+    const unregister = registerSyncSource('backlog', refresh)
+    return () => { unsub(); unregister() }
   }, [user?.id, refresh]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const openCreate = useCallback((scope) => {

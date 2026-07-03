@@ -228,7 +228,6 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
 
     subscribe(cb: () => void) {
       let channel: ReturnType<typeof sb.channel> | null = null;
-      let poll: ReturnType<typeof setInterval> | null = null;
       (async () => {
         try {
           const { data } = await sb.auth.getSession();
@@ -241,11 +240,11 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
           .on('postgres_changes', { event: '*', schema: 'public', table: 'backlog_notifications' }, cb)
           .subscribe();
       })();
-      // Fallback so changes still land if Realtime isn't enabled on the tables.
-      poll = setInterval(cb, 8000);
+      // Live updates arrive via the Realtime channel above. The old 8s poll fallback
+      // was removed (it re-ran select('*') on every table each tick — heavy egress);
+      // use the Account "Sync now" action to refresh manually.
       return () => {
         if (channel) sb.removeChannel(channel);
-        if (poll) clearInterval(poll);
       };
     },
   };

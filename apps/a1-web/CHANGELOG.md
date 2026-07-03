@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Cloud sync — removed background polling, added "Sync now"** — the four 8-second Supabase polls (shared workspace envelope, workspace labels, backlog, and data sources) were removed. They re-downloaded whole tables/blobs every tick regardless of whether anything changed and were the dominant source of uncached egress. Live updates still arrive via the existing Supabase **Realtime** subscriptions; a new **Sync now** action on the Account page pulls the latest projects, patterns, themes, labels, backlog, and data sources on demand for the rare case Realtime hasn't delivered.
+
 - **Chip component** (A1-390) — added Chip under **Actions & Controls** with a live configurator for selectable, menu-trigger, and navigation chip groups. The editor Add panel can insert a configured ChipGroup, and DataTable filters now render with the shared Chip component.
 
 - **Editor add catalog — complete component coverage** — the page and pattern editor Add panel now includes every component from the Components registry. Missing entries such as Search Field, Action Tiles, Page Layout, Canvas, Side Nav, Autocomplete, Inline Editable, Notification, Snackbar, Dialog, Menu, Context Menu, Bottom Sheet, Stat, and Node now have addable templates and render through the editor registry. Search Field is also included in the default Common set.
