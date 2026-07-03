@@ -24,6 +24,7 @@ const TYPE_ICONS = {
   Figure:           'image',
   Link:             'link',
   Button:           'smart_button',
+  ChipGroup:        'label',
   IconButton:       'radio_button_checked',
   Switch:           'toggle_on',
   SegmentedControl: 'linear_scale',
@@ -52,13 +53,15 @@ const CONTAINER_TYPES = new Set([
 
 function nodeToTreeItem(node) {
   const text = node.content?.fallback
-  // A pattern instance shows the pattern's name + a pattern icon, not the base
-  // component type/structure.
-  const label = node.patternInstance
-    ? node.patternInstance.name
-    : text
-      ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
-      : node.type
+  // A custom name (set via inline rename) wins. Otherwise a pattern instance
+  // shows the pattern's name; then the text content; then the component type.
+  const label = node.name
+    ? node.name
+    : node.patternInstance
+      ? node.patternInstance.name
+      : text
+        ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
+        : node.type
   const isContainer = CONTAINER_TYPES.has(node.type)
   return {
     id: node.id,
@@ -115,6 +118,7 @@ export function ComponentTreePanel({
 }) {
   const [expandedIds, setExpandedIds] = useState([])
   const [treeCtxMenu, setTreeCtxMenu] = useState(null) // { id, x, y }
+  const [editingId, setEditingId] = useState(null) // id of the node being renamed inline
 
   const treeItems = definitionToTreeItems(definition)
 
@@ -153,6 +157,19 @@ export function ComponentTreePanel({
 
   function handleItemContextMenu(id, e) {
     setTreeCtxMenu({ id, x: e.clientX, y: e.clientY })
+  }
+
+  function handleRenameCommit(id, label) {
+    setEditingId(null)
+    const node = findNode(id)
+    // The label shown is derived; only persist a custom name when the user
+    // actually changed it away from the current display label.
+    const currentLabel = node ? nodeToTreeItem(node).label : null
+    if (label !== currentLabel) onNodeAction?.({ type: 'rename', nodeId: id, name: label })
+  }
+
+  function handleRenameCancel() {
+    setEditingId(null)
   }
 
   function findNodeById(nodes, id) {
@@ -194,6 +211,17 @@ export function ComponentTreePanel({
       })
       items.push({ type: 'divider', id: 'div-edit-pattern' })
     }
+
+    items.push({
+      id: 'rename',
+      label: 'Rename',
+      icon: 'edit',
+      onClick: () => {
+        setTreeCtxMenu(null)
+        setEditingId(id)
+      },
+    })
+    items.push({ type: 'divider', id: 'div-rename' })
 
     if (isContainer) {
       items.push({
@@ -327,6 +355,10 @@ export function ComponentTreePanel({
                 showExpandControls
                 draggable={!!onNodeMove}
                 onMove={onNodeMove}
+                editingId={editingId}
+                onRenameStart={setEditingId}
+                onRenameCommit={handleRenameCommit}
+                onRenameCancel={handleRenameCancel}
                 aria-label="Page structure"
               />
             )

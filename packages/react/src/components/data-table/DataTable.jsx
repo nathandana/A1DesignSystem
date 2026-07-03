@@ -3,6 +3,7 @@ import { Button } from "../button/Button.jsx";
 import { SelectField } from "../field/SelectField.jsx";
 import { Icon } from "../icon/Icon.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
+import { InlineEditable } from "../inline-editable/InlineEditable.jsx";
 import { Link } from "../link/Link.jsx";
 import { MessageBadge, MessageEmptyState } from "../message/Message.jsx";
 import { Pagination } from "../pagination/Pagination.jsx";
@@ -17,7 +18,13 @@ import "./data-table.css";
  *   align?: "start" | "center" | "end",
  *   width?: string,
  *   sortable?: boolean,
+ *   filterable?: boolean,
+ *   searchable?: boolean,
+ *   editable?: boolean,
  *   sortAccessor?: (row: Record<string, any>) => any,
+ *   searchAccessor?: (row: Record<string, any>) => any,
+ *   searchMatcher?: (row: Record<string, any>, query: string) => boolean,
+ *   renderCell?: ({ value, row, column, rowIndex }) => ReactNode,
  *   statusMap?: Record<string, "neutral"|"info"|"success"|"warn"|"error">,
  *   currencySymbol?: string,
  * }>
@@ -25,6 +32,9 @@ import "./data-table.css";
  * getRowId?: (row: Record<string, any>, index: number) => string | number
  * size?: "comfortable" | "default" | "compact"
  *   omit (default) — switches between densities automatically based on available container width
+ * mobileLayout?: "cards" | "table"
+ *   cards (default) — renders each row as a definition-list card below 640px
+ *   table — preserves the table layout on mobile and enables horizontal scroll
  */
 
 // Estimated minimum content width per column type at a "neutral" padding level
@@ -116,22 +126,67 @@ function normalizeFilterValue(filters, value = {}) {
   }, {});
 }
 
+function comparableValue(value) {
+  if (value == null) return "";
+  if (typeof value === "object") {
+    if ("label" in value) return String(value.label ?? "");
+    if ("name" in value) return String(value.name ?? "");
+    if ("title" in value) return String(value.title ?? "");
+  }
+  return String(value);
+}
+
 function filterMatches(rowValue, selectedValue, type) {
   if (type === "multi") {
     const selected = Array.isArray(selectedValue) ? selectedValue : [];
     if (selected.length === 0) return true;
-    if (Array.isArray(rowValue)) return selected.some((value) => rowValue.includes(value));
-    return selected.includes(rowValue);
+    if (Array.isArray(rowValue)) return selected.some((value) => rowValue.map(comparableValue).includes(value));
+    return selected.includes(comparableValue(rowValue));
   }
 
   if (!selectedValue) return true;
-  if (Array.isArray(rowValue)) return rowValue.includes(selectedValue);
-  return rowValue === selectedValue;
+  if (Array.isArray(rowValue)) return rowValue.map(comparableValue).includes(selectedValue);
+  return comparableValue(rowValue) === selectedValue;
 }
 
 function getSearchValue(row, column) {
   if (typeof column.searchAccessor === "function") return column.searchAccessor(row);
-  return row[column.key];
+  return comparableValue(row[column.key]);
+}
+
+function searchMatches(row, column, query) {
+  if (typeof column.searchMatcher === "function") return column.searchMatcher(row, query);
+  return String(getSearchValue(row, column) ?? "").toLowerCase().includes(query);
+}
+
+function buildColumnFilters(columns, rows) {
+  return columns
+    .filter((column) => column.filterable)
+    .map((column) => {
+      const values = new Set();
+      rows.forEach((row) => {
+        const value = row[column.key];
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            const comparable = comparableValue(item);
+            if (comparable) values.add(comparable);
+          });
+          return;
+        }
+        const comparable = comparableValue(value);
+        if (comparable) values.add(comparable);
+      });
+      return {
+        key: column.key,
+        label: column.label,
+        type: column.filterType ?? "multi",
+        options: [...values].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).map((value) => ({
+          value,
+          label: value,
+        })),
+      };
+    })
+    .filter((filter) => filter.options.length > 0);
 }
 
 function applyFiltersAndSearch(rows, filters, filterValue, searchValue, searchColumn, searchableColumns, columns) {
@@ -153,17 +208,15 @@ function applyFiltersAndSearch(rows, filters, filterValue, searchValue, searchCo
   return result.filter((row) => {
     if (searchColumn) {
       const column = searchColumns.find((item) => item.key === searchColumn) ?? { key: searchColumn };
-      return String(getSearchValue(row, column) ?? "").toLowerCase().includes(query);
+      return searchMatches(row, column, query);
     }
 
-    return searchColumns.some((column) =>
-      String(getSearchValue(row, column) ?? "").toLowerCase().includes(query)
-    );
+    return searchColumns.some((column) => searchMatches(row, column, query));
   });
 }
 
 function isInteractiveColumn(col) {
-  return col.type === "link" || col.type === "actions";
+  return col.type === "link" || col.type === "actions" || col.editable;
 }
 
 function hasInteractiveValue(value) {
@@ -203,9 +256,12 @@ export function DataTable({
   page,
   defaultPage = 1,
   pageSize,
+  defaultPageSize,
+  pageSizeOptions = [],
   totalPages,
   totalRows,
   onPageChange,
+  onPageSizeChange,
   sort,
   defaultSort,
   onSortChange,
@@ -221,10 +277,12 @@ export function DataTable({
   onSearchColumnChange,
   searchableColumns,
   selectable = false,
+  mobileLayout = "cards",
   selectedRowIds,
   defaultSelectedRowIds = [],
   onSelectedRowIdsChange,
   onDeleteSelected,
+  onCellChange,
   getRowId = defaultGetRowId,
   emptyTitle = "No results",
   emptyDescription,
@@ -236,6 +294,7 @@ export function DataTable({
   const [autoDensity, setAutoDensity] = useState("default");
   const [internalSort, setInternalSort] = useState(() => normalizeSort(defaultSort));
   const [internalPage, setInternalPage] = useState(defaultPage);
+  const [internalPageSize, setInternalPageSize] = useState(() => pageSize ?? defaultPageSize);
   const [internalFilterValue, setInternalFilterValue] = useState(() => normalizeFilterValue(filters, defaultFilterValue));
   const [internalSearchValue, setInternalSearchValue] = useState(defaultSearchValue);
   const [internalSearchColumn, setInternalSearchColumn] = useState(defaultSearchColumn);
@@ -244,22 +303,39 @@ export function DataTable({
   const isAuto = size === undefined;
   const isSortControlled = sort !== undefined;
   const isPageControlled = page !== undefined;
+  const isPageSizeControlled = pageSize !== undefined && onPageSizeChange !== undefined;
   const isFilterControlled = filterValue !== undefined;
   const isSearchControlled = searchValue !== undefined;
   const isSearchColumnControlled = searchColumn !== undefined;
   const isSelectionControlled = selectedRowIds !== undefined;
+  const resolvedFilters = filters.length > 0 ? filters : buildColumnFilters(columns, rows);
+  const resolvedSearchableColumns = searchableColumns?.length > 0
+    ? searchableColumns
+    : columns.filter((column) => column.searchable).map((column) => ({
+      key: column.key,
+      label: column.label,
+      searchAccessor: column.searchAccessor,
+      searchMatcher: column.searchMatcher,
+    }));
   const activeDensity = isAuto ? autoDensity : size;
+  const resolvedMobileLayout = mobileLayout === "table" ? "table" : "cards";
   const activeSort = isSortControlled ? normalizeSort(sort) : internalSort;
   const activePage = isPageControlled ? page : internalPage;
+  const activePageSize = isPageSizeControlled ? pageSize : internalPageSize;
   const activeFilterValue = isFilterControlled
-    ? normalizeFilterValue(filters, filterValue)
-    : normalizeFilterValue(filters, internalFilterValue);
+    ? normalizeFilterValue(resolvedFilters, filterValue)
+    : normalizeFilterValue(resolvedFilters, internalFilterValue);
   const activeSearchValue = isSearchControlled ? searchValue : internalSearchValue;
   const activeSearchColumn = isSearchColumnControlled ? searchColumn : internalSearchColumn;
   const activeSelectedRowIds = isSelectionControlled
     ? normalizeRowIds(selectedRowIds)
     : internalSelectedRowIds;
   const selectedRowIdSet = new Set(activeSelectedRowIds);
+  const pageSizeChoices = [...new Set(
+    [activePageSize, ...pageSizeOptions]
+      .map((value) => Number(value))
+      .filter((value) => Number.isFinite(value) && value > 0)
+  )].sort((a, b) => a - b);
 
   // Compute the density that best fits the current container width
   useEffect(() => {
@@ -283,6 +359,11 @@ export function DataTable({
     return () => ro.disconnect();
   }, [isAuto, columns]);
 
+  useEffect(() => {
+    if (isPageSizeControlled || pageSize === undefined) return;
+    setInternalPageSize(pageSize);
+  }, [isPageSizeControlled, pageSize]);
+
   // ── Derived values ──────────────────────────────────────────────────────
 
   const tableClass = [
@@ -294,13 +375,20 @@ export function DataTable({
     .filter(Boolean)
     .join(" ");
 
+  const wrapperClass = [
+    "a1-data-table-wrapper",
+    `a1-data-table-wrapper--mobile-${resolvedMobileLayout}`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const filteredRows = applyFiltersAndSearch(
     rows,
-    filters,
+    resolvedFilters,
     activeFilterValue,
     activeSearchValue,
     activeSearchColumn,
-    searchableColumns,
+    resolvedSearchableColumns,
     columns
   );
   const sortableColumns = columns.filter((col) => col.sortable);
@@ -313,19 +401,19 @@ export function DataTable({
       return activeSort.direction === "desc" ? -result : result;
     })
     : filteredRows;
-  const hasInternalPagination = Number.isFinite(pageSize) && pageSize > 0;
+  const hasInternalPagination = Number.isFinite(activePageSize) && activePageSize > 0;
   const resolvedTotalPages = hasInternalPagination
-    ? Math.max(1, Math.ceil(sortedRows.length / pageSize))
+    ? Math.max(1, Math.ceil(sortedRows.length / activePageSize))
     : totalPages;
   const clampedPage = resolvedTotalPages != null
     ? Math.min(Math.max(activePage ?? 1, 1), resolvedTotalPages)
     : activePage;
   const paginatedRows = hasInternalPagination
-    ? sortedRows.slice((clampedPage - 1) * pageSize, clampedPage * pageSize)
+    ? sortedRows.slice((clampedPage - 1) * activePageSize, clampedPage * activePageSize)
     : sortedRows;
   const showPagination = resolvedTotalPages != null && resolvedTotalPages > 1;
   const rowStart = hasInternalPagination
-    ? (paginatedRows.length > 0 ? (clampedPage - 1) * pageSize + 1 : 0)
+    ? (paginatedRows.length > 0 ? (clampedPage - 1) * activePageSize + 1 : 0)
     : (page != null ? (page - 1) * filteredRows.length + 1 : 1);
   const rowEnd = hasInternalPagination
     ? (paginatedRows.length > 0 ? rowStart + paginatedRows.length - 1 : 0)
@@ -335,8 +423,8 @@ export function DataTable({
     : (totalRows ?? (showPagination ? totalPages * filteredRows.length : filteredRows.length));
   const visibleRowEntries = paginatedRows.map((row, index) => ({
     row,
-    index: hasInternalPagination ? (clampedPage - 1) * pageSize + index : index,
-    id: String(getRowId(row, hasInternalPagination ? (clampedPage - 1) * pageSize + index : index)),
+    index: hasInternalPagination ? (clampedPage - 1) * activePageSize + index : index,
+    id: String(getRowId(row, hasInternalPagination ? (clampedPage - 1) * activePageSize + index : index)),
     supportsRowClickSelection: selectable && !columns.some((col) =>
       isInteractiveColumn(col) && hasInteractiveValue(row[col.key])
     ),
@@ -345,6 +433,11 @@ export function DataTable({
     .filter((entry) => selectedRowIdSet.has(entry.id))
     .map((entry) => entry.row);
   const selectedCount = activeSelectedRowIds.length;
+  const hasFilterControls = resolvedFilters.length > 0
+    || resolvedSearchableColumns.length > 0
+    || onSearchChange
+    || searchValue !== undefined;
+  const activeSortValue = activeSort ? `${activeSort.key}:${activeSort.direction}` : "";
   const allVisibleSelected = visibleRowEntries.length > 0
     && visibleRowEntries.every((entry) => selectedRowIdSet.has(entry.id));
   const someVisibleSelected = visibleRowEntries.some((entry) => selectedRowIdSet.has(entry.id));
@@ -361,6 +454,13 @@ export function DataTable({
     updatePage(1);
   }
 
+  function updatePageSize(nextPageSize) {
+    const normalized = Math.max(1, Number(nextPageSize) || 1);
+    if (!isPageSizeControlled) setInternalPageSize(normalized);
+    onPageSizeChange?.(normalized);
+    updatePage(1);
+  }
+
   function updateSort(nextSort) {
     if (!isSortControlled) setInternalSort(nextSort);
     onSortChange?.(nextSort);
@@ -368,7 +468,7 @@ export function DataTable({
   }
 
   function updateFilterValue(nextValue) {
-    const normalized = normalizeFilterValue(filters, nextValue);
+    const normalized = normalizeFilterValue(resolvedFilters, nextValue);
     if (!isFilterControlled) setInternalFilterValue(normalized);
     onFilterChange?.(normalized);
     resetPage();
@@ -400,7 +500,10 @@ export function DataTable({
   }
 
   function handleMobileSortChange(event) {
-    const value = event.target.value;
+    updateMobileSortValue(event.target.value);
+  }
+
+  function updateMobileSortValue(value) {
     if (!value) {
       updateSort(null);
       return;
@@ -432,13 +535,30 @@ export function DataTable({
 
   function handleRowClick(rowId, supportsRowClickSelection, event) {
     if (!supportsRowClickSelection) return;
-    if (event.target.closest("a, button, input, select, textarea, label")) return;
+    if (event.target.closest("a, button, input, select, textarea, label, [contenteditable='true'], [role='textbox']")) return;
     toggleRowSelected(rowId, !selectedRowIdSet.has(rowId));
   }
 
   // ── Cell rendering ──────────────────────────────────────────────────────
 
-  function renderCell(col, value) {
+  function renderCell(col, value, row, rowIndex) {
+    if (typeof col.renderCell === "function") {
+      return col.renderCell({ value, row, column: col, rowIndex });
+    }
+
+    if (col.editable && typeof onCellChange === "function") {
+      return (
+        <InlineEditable
+          seamless
+          multiline={col.multiline}
+          value={value == null ? "" : String(value)}
+          placeholder={col.placeholder ?? "Empty"}
+          aria-label={`Edit ${col.label}`}
+          onChange={(nextValue) => onCellChange(row, col.key, nextValue, rowIndex)}
+        />
+      );
+    }
+
     if (value == null || value === "") return "—";
 
     switch (col.type) {
@@ -483,7 +603,7 @@ export function DataTable({
       case "link": {
         const config = typeof value === "object"
           ? value
-          : { href: value, label: value };
+          : { href: "#", label: value };
         const href = config.href ?? "#";
         return (
           <Link
@@ -502,8 +622,9 @@ export function DataTable({
         const actions = Array.isArray(value) ? value : [value];
         return (
           <span className="a1-data-table__actions">
-            {actions.filter(Boolean).map((action, index) => (
-              action.iconOnly ? (
+            {actions.filter(Boolean).map((item, index) => {
+              const action = typeof item === "object" ? item : { label: String(item) };
+              return action.iconOnly ? (
                 <IconButton
                   key={`${action.label ?? action.icon ?? "action"}-${index}`}
                   variant={action.variant ?? "tertiary"}
@@ -525,8 +646,8 @@ export function DataTable({
                 >
                   {action.label}
                 </Button>
-              )
-            ))}
+              );
+            })}
           </span>
         );
       }
@@ -568,20 +689,61 @@ export function DataTable({
     return activeSort.direction === "desc" ? "descending" : "ascending";
   }
 
+  function renderMobileCard({ row, rowIndex, rowId, isSelected, supportsRowClickSelection, noticeColSpan }) {
+    return (
+      <tr className="a1-data-table__mobile-card-row" aria-hidden={resolvedMobileLayout === "table" ? "true" : undefined}>
+        <td className="a1-data-table__mobile-card-cell" colSpan={noticeColSpan}>
+          <div
+            className="a1-data-table__mobile-card"
+            data-selected={isSelected ? "true" : undefined}
+            data-selectable-row={supportsRowClickSelection ? "true" : undefined}
+            onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
+          >
+            <dl className="a1-data-table__mobile-definition-list">
+              {selectable && (
+                <div className="a1-data-table__mobile-definition-item">
+                  <dt className="a1-data-table__mobile-definition-label">Select</dt>
+                  <dd className="a1-data-table__mobile-definition-value">
+                    <SelectionCheckbox
+                      checked={isSelected}
+                      label={`Select row ${rowIndex + 1}`}
+                      onChange={(checked) => toggleRowSelected(rowId, checked)}
+                    />
+                  </dd>
+                </div>
+              )}
+              {columns.map((col) => (
+                <div className="a1-data-table__mobile-definition-item" key={col.key}>
+                  <dt className="a1-data-table__mobile-definition-label">{col.label}</dt>
+                  <dd className="a1-data-table__mobile-definition-value" data-align={getAlign(col)}>
+                    {renderCell(col, row[col.key], row, rowIndex)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </td>
+      </tr>
+    );
+  }
+
   // ── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <div ref={wrapperRef} className="a1-data-table-wrapper" {...props}>
-      {(filters.length > 0 || searchableColumns?.length > 0 || onSearchChange || searchValue !== undefined) && (
+    <div ref={wrapperRef} className={wrapperClass} {...props}>
+      {hasFilterControls && (
         <DataTableFilters
-          filters={filters}
+          filters={resolvedFilters}
           value={activeFilterValue}
           onChange={updateFilterValue}
           searchValue={activeSearchValue}
-          onSearchChange={onSearchChange != null || searchValue !== undefined || searchableColumns?.length > 0 ? updateSearchValue : undefined}
+          onSearchChange={onSearchChange != null || searchValue !== undefined || resolvedSearchableColumns.length > 0 ? updateSearchValue : undefined}
           searchColumn={activeSearchColumn}
           onSearchColumnChange={updateSearchColumn}
-          searchableColumns={searchableColumns}
+          searchableColumns={resolvedSearchableColumns}
+          sortOptions={sortableColumns.map((column) => ({ key: column.key, label: column.label }))}
+          sortValue={activeSortValue}
+          onSortValueChange={sortableColumns.length > 0 ? updateMobileSortValue : undefined}
         />
       )}
       {selectable && selectedCount > 0 && (
@@ -610,7 +772,7 @@ export function DataTable({
           </div>
         </div>
       )}
-      {sortableColumns.length > 0 && (
+      {sortableColumns.length > 0 && !hasFilterControls && (
         <div className="a1-data-table-sort">
           <SelectField
             label="Sort"
@@ -702,6 +864,7 @@ export function DataTable({
                         </tr>
                       ))}
                       <tr
+                        className="a1-data-table__desktop-row"
                         data-selected={isSelected ? "true" : undefined}
                         data-selectable-row={supportsRowClickSelection ? "true" : undefined}
                         onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
@@ -724,10 +887,11 @@ export function DataTable({
                             data-label={col.label}
                             data-align={getAlign(col)}
                           >
-                            {renderCell(col, row[col.key])}
+                            {renderCell(col, row[col.key], row, rowIndex)}
                           </td>
                         ))}
                       </tr>
+                      {renderMobileCard({ row, rowIndex, rowId, isSelected, supportsRowClickSelection, noticeColSpan })}
                     </Fragment>
                   );
                 });
@@ -745,12 +909,26 @@ export function DataTable({
               : `${filteredRows.length} ${filteredRows.length === 1 ? "result" : "results"}`}
           </span>
           {showPagination && (
-            <Pagination
-              page={clampedPage}
-              totalPages={resolvedTotalPages}
-              onChange={updatePage}
-              size="sm"
-            />
+            <div className="a1-data-table-footer__controls">
+              {pageSizeChoices.length > 1 && (
+                <SelectField
+                  label="Rows per page"
+                  size="compact"
+                  value={String(activePageSize)}
+                  onChange={(event) => updatePageSize(event.target.value)}
+                >
+                  {pageSizeChoices.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </SelectField>
+              )}
+              <Pagination
+                page={clampedPage}
+                totalPages={resolvedTotalPages}
+                onChange={updatePage}
+                size="sm"
+              />
+            </div>
           )}
         </div>
       )}

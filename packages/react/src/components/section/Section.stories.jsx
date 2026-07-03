@@ -4,6 +4,8 @@ import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Button } from "../button/Button.jsx";
 import { ButtonContainer } from "../button-container/ButtonContainer.jsx";
 import { MessageBadge } from "../message/Message.jsx";
+import sampleScenic from "../../../../../examples/portfolio/img/YosemiteTunnel.jpg";
+import sampleTile from "../../../../../examples/portfolio/img/cover-small.jpg";
 
 const meta = {
   title: "Components/Containers/Section",
@@ -40,6 +42,33 @@ const meta = {
         "top-left",
         "center",
       ],
+    },
+    backgroundImage: { control: "text" },
+    backgroundFit: {
+      control: "inline-radio",
+      options: ["cover", "contain", "tile"],
+    },
+    backgroundPosition: {
+      control: "select",
+      options: [
+        "center",
+        "top",
+        "bottom",
+        "left",
+        "right",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right",
+      ],
+    },
+    backgroundOverlay: {
+      control: "inline-radio",
+      options: ["darken", "lighten", undefined],
+    },
+    backgroundOverlayStrength: {
+      control: "inline-radio",
+      options: ["sm", "md", "lg"],
     },
     contentWidth: {
       control: "select",
@@ -223,7 +252,7 @@ export const Gap = {
       {["xs", "sm", "md", "lg", "xl"].map((gap) => (
         <Section key={gap} padding="md" surface="panel" gap={gap}>
           <MessageBadge subtle>{gap}</MessageBadge>
-          <Heading as="h2" size="xl">{gap.toUpperCase()} section gap</Heading>
+          <Heading as="h2" size="xl">{gap.charAt(0).toUpperCase() + gap.slice(1)} section gap</Heading>
           <Paragraph size="lg" color="muted">
             Section can apply a token-backed t-shirt gap between direct children.
           </Paragraph>
@@ -305,6 +334,79 @@ export const GradientPositions = {
           </Paragraph>
         </Section>
       ))}
+    </>
+  ),
+};
+
+export const BackgroundImage = {
+  name: "Background image",
+  render: () => (
+    <Section
+      padding="lg"
+      contentWidth="lg"
+      backgroundImage={sampleScenic}
+      backgroundOverlay="darken"
+      inverse
+    >
+      <SampleContent
+        badge={{ icon: "image", label: "Background image · darken overlay" }}
+        heading="A full-bleed image band"
+        body="The image sits behind normal section content, cropped to cover by default. The darken overlay keeps light text readable — pair it with the inverse prop so the section's own text uses the inverse scheme."
+      />
+    </Section>
+  ),
+};
+
+export const BackgroundOverlays = {
+  name: "Background overlays",
+  render: () => (
+    <>
+      {[
+        { overlay: undefined, strength: undefined, inverse: false, label: "No overlay", body: "Without a scrim, text contrast depends entirely on the image. Only safe for very quiet imagery." },
+        { overlay: "darken", strength: "sm", inverse: true, label: "Darken · sm", body: "A light scrim for images that are already dark." },
+        { overlay: "darken", strength: "md", inverse: true, label: "Darken · md", body: "The default strength — reliable contrast for inverse text over most photography." },
+        { overlay: "darken", strength: "lg", inverse: true, label: "Darken · lg", body: "A heavy scrim when the image is bright or busy." },
+        { overlay: "lighten", strength: "md", inverse: false, label: "Lighten · md", body: "Lighten overlays keep the default dark text readable instead." },
+        { overlay: "lighten", strength: "lg", inverse: false, label: "Lighten · lg", body: "The strongest lighten scrim washes the image back to a tinted texture." },
+      ].map(({ overlay, strength, inverse, label, body }) => (
+        <Section
+          key={label}
+          padding="md"
+          backgroundImage={sampleScenic}
+          backgroundOverlay={overlay}
+          backgroundOverlayStrength={strength}
+          inverse={inverse}
+        >
+          <MessageBadge subtle>{label}</MessageBadge>
+          <Heading as="h2" size="xl">{label}</Heading>
+          <Paragraph size="lg">{body}</Paragraph>
+        </Section>
+      ))}
+    </>
+  ),
+};
+
+export const BackgroundFitAndPosition = {
+  name: "Background fit & position",
+  render: () => (
+    <>
+      <Section padding="lg" backgroundImage={sampleScenic} backgroundPosition="top" backgroundOverlay="darken" backgroundOverlayStrength="sm" inverse>
+        <MessageBadge subtle>cover · top</MessageBadge>
+        <Heading as="h2" size="xl">Cover with a top focal point</Heading>
+        <Paragraph size="lg">Cover crops the image to fill the band; the position prop keeps the chosen edge in view.</Paragraph>
+      </Section>
+
+      <Section padding="lg" backgroundImage={sampleScenic} backgroundFit="contain" backgroundPosition="right" surface="panel">
+        <MessageBadge subtle>contain · right</MessageBadge>
+        <Heading as="h2" size="xl">Contain anchors the whole image</Heading>
+        <Paragraph size="lg">Contain letterboxes the full image inside the band; the surface colour shows through the empty space.</Paragraph>
+      </Section>
+
+      <Section padding="lg" backgroundImage={sampleTile} backgroundFit="tile" backgroundOverlay="lighten" backgroundOverlayStrength="lg">
+        <MessageBadge subtle>tile · lighten overlay</MessageBadge>
+        <Heading as="h2" size="xl">Tile repeats at natural size</Heading>
+        <Paragraph size="lg">Tiling suits textures and patterns. A strong lighten overlay turns a busy repeat into a quiet backdrop for dark text.</Paragraph>
+      </Section>
     </>
   ),
 };

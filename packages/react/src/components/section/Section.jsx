@@ -20,6 +20,20 @@ const VALID_GRADIENT_POSITIONS = [
 const VALID_CONTENT_WIDTHS = ["xs", "sm", "md", "lg", "xl", "2xl"];
 const VALID_HEIGHTS = ["screen", "hero"];
 const VALID_ALIGNMENTS = ["left", "center", "right"];
+const VALID_BG_FITS = ["cover", "contain", "tile"];
+const VALID_BG_POSITIONS = [
+  "center",
+  "top",
+  "bottom",
+  "left",
+  "right",
+  "top-left",
+  "top-right",
+  "bottom-left",
+  "bottom-right",
+];
+const VALID_BG_OVERLAYS = ["darken", "lighten"];
+const VALID_BG_OVERLAY_STRENGTHS = ["sm", "md", "lg"];
 const VALID_BORDER_SIZES = ["xs", "sm", "md", "lg"];
 const VALID_BORDER_STYLES = ["solid", "dashed", "dotted"];
 const VALID_BORDER_VARIANTS = ["subtle", "strong", "accent"];
@@ -43,6 +57,11 @@ export function Section({
   gap,
   gradient,
   gradientPosition = "center",
+  backgroundImage,
+  backgroundFit = "cover",
+  backgroundPosition = "center",
+  backgroundOverlay,
+  backgroundOverlayStrength = "md",
   inverse = false,
   contentWidth,
   height,
@@ -53,11 +72,13 @@ export function Section({
   borderSides,
   radius,
   className = "",
+  style,
   children,
   ...props
 }) {
   const classes = ["a1-section"];
   const resolvedContentWidth = VALID_CONTENT_WIDTHS.includes(contentWidth) ? contentWidth : null;
+  const hasBgImage = typeof backgroundImage === "string" && backgroundImage.length > 0;
 
   if (typeof padding === "string") {
     if (VALID_PADDING.includes(padding)) {
@@ -80,12 +101,34 @@ export function Section({
     classes.push(`a1-section--gap-${gap}`);
   }
 
-  if (gradient && VALID_GRADIENTS.includes(gradient)) {
+  // A background image and the gradient wash both own the background stack —
+  // the image wins and the gradient is suppressed while one is set.
+  if (!hasBgImage && gradient && VALID_GRADIENTS.includes(gradient)) {
     classes.push(`a1-section--gradient-${gradient}`);
+
+    if (VALID_GRADIENT_POSITIONS.includes(gradientPosition)) {
+      classes.push(`a1-section--gradient-${gradientPosition}`);
+    }
   }
 
-  if (gradient && VALID_GRADIENT_POSITIONS.includes(gradientPosition)) {
-    classes.push(`a1-section--gradient-${gradientPosition}`);
+  if (hasBgImage) {
+    classes.push("a1-section--has-bg-image");
+
+    if (backgroundFit !== "cover" && VALID_BG_FITS.includes(backgroundFit)) {
+      classes.push(`a1-section--bg-fit-${backgroundFit}`);
+    }
+
+    if (backgroundPosition !== "center" && VALID_BG_POSITIONS.includes(backgroundPosition)) {
+      classes.push(`a1-section--bg-pos-${backgroundPosition}`);
+    }
+
+    if (backgroundOverlay && VALID_BG_OVERLAYS.includes(backgroundOverlay)) {
+      classes.push(`a1-section--bg-overlay-${backgroundOverlay}`);
+
+      if (VALID_BG_OVERLAY_STRENGTHS.includes(backgroundOverlayStrength)) {
+        classes.push(`a1-section--bg-overlay-strength-${backgroundOverlayStrength}`);
+      }
+    }
   }
 
   if (height && VALID_HEIGHTS.includes(height)) {
@@ -139,9 +182,16 @@ export function Section({
     gap && VALID_GAPS.includes(gap) && `a1-section--gap-${gap}`,
   ].filter(Boolean).join(" ");
 
+  // The image URL is data, not a style decision — it travels to the CSS via a
+  // custom property (same pattern as Figure's cropRect and CircularProgress).
+  const mergedStyle = hasBgImage
+    ? { "--a1-section-bg-image": `url("${backgroundImage.replaceAll('"', '\\"')}")`, ...style }
+    : style;
+
   return (
     <Component
       className={classes.join(" ")}
+      style={mergedStyle}
       {...(inverse ? { "data-a1-color-scope": "inverse" } : {})}
       {...props}
     >

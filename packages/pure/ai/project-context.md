@@ -9,7 +9,7 @@ This package provides two CSS distributions that implement the A1 design system 
 | `a1-light.css` | Generated | Semantic + component tokens for the light theme |
 | `a1-accessible.css` | Generated | Token overrides for the accessible theme |
 | `a1-heritage.css` | Generated | Token overrides for the heritage theme |
-| `a1-base.css` | Hand-authored | Full BEM component classes for general use |
+| `a1-base.css` | Generated | Full BEM component classes for general use — authored as the `componentCss()` template inside `scripts/build-html-css.mjs`; edit the script, not this file |
 | `a1-pure.css` | Hand-authored | Scoped `a1-*` classes; `@import`s `a1-light.css` for tokens |
 | `index.html` | Hand-authored | Quick-reference demo of all base classes |
 

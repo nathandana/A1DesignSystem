@@ -51,6 +51,7 @@ export const UTILITY_DEFINITIONS: Record<UtilityKey, UtilityDefinition> = {
 export const CATALOG_COMPONENT_UTILITY_TYPES: Record<string, string> = {
   'page-layout': 'PageLayout',
   'button-container': 'ButtonContainer',
+  chip: 'ChipGroup',
   'icon-button': 'IconButton',
   'segmented-control': 'SegmentedControl',
   'sticky-actions': 'StickyActions',
@@ -99,7 +100,7 @@ const WIDTH_COMPONENTS = new Set<ComponentType>([
   'List', 'Divider', 'StatusBar', 'CircularProgress', 'DefinitionList', 'DataTable',
   'TextField', 'TextareaField', 'SelectField', 'NumberField', 'DateField', 'TimeField',
   'PhoneField', 'ZipField', 'CreditCardField', 'CheckboxGroup', 'RadioGroup',
-  'ChoiceGroup', 'Slider', 'SegmentedControl', 'Switch', 'Banner', 'MessageBadge',
+  'ChoiceGroup', 'ChipGroup', 'Slider', 'SegmentedControl', 'Switch', 'Banner', 'MessageBadge',
   'MessageEmptyState', 'Pagination', 'Calendar', 'Breadcrumb', 'TopHeader',
   'BottomDrawer', 'PageNav', 'TreeMenu', ...LAYOUT_COMPONENTS,
 ]);

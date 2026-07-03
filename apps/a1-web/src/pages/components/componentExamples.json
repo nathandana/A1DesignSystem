@@ -1,4 +1,145 @@
 {
+  "action-tile": [
+    {
+      "id": "action-tiles-settings",
+      "slug": "settings-group",
+      "title": "Settings group",
+      "description": "A stacked, non-interactive settings group with mixed accessory controls including a switch, button, and overflow action.",
+      "badge": "Configuration",
+      "preview": {
+        "width": "420px",
+        "frame": false
+      },
+      "config": {
+        "layout": "stack",
+        "columns": 1,
+        "gap": false,
+        "iconLayout": "side",
+        "interactive": false,
+        "items": [
+          {
+            "id": "notifications",
+            "icon": "notifications",
+            "title": "Notifications",
+            "subtitle": "Alert people when files change.",
+            "accessoryKind": "switch",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "theme",
+            "icon": "palette",
+            "title": "Theme",
+            "subtitle": "Set the active workspace appearance.",
+            "accessoryKind": "button",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "privacy",
+            "icon": "lock",
+            "title": "Privacy",
+            "subtitle": "Control sharing, previews, and exports.",
+            "accessoryKind": "menu",
+            "menuValue": "",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "sync",
+            "icon": "sync",
+            "title": "Sync",
+            "subtitle": "Keep workspace changes available offline.",
+            "accessoryKind": "switch",
+            "switchOn": false,
+            "footerMode": "none"
+          },
+          {
+            "id": "billing",
+            "icon": "credit_card",
+            "title": "Billing",
+            "subtitle": "Review invoices and plan details.",
+            "accessoryKind": "button",
+            "switchOn": true,
+            "footerMode": "none"
+          }
+        ]
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    },
+    {
+      "id": "action-tiles-categories",
+      "slug": "category-list",
+      "title": "Category list",
+      "description": "An interactive stacked list of five categories with left-aligned icons and supporting copy.",
+      "badge": "Configuration",
+      "preview": {
+        "width": "420px",
+        "frame": false
+      },
+      "config": {
+        "layout": "stack",
+        "columns": 1,
+        "gap": false,
+        "iconLayout": "side",
+        "interactive": true,
+        "items": [
+          {
+            "id": "scissors",
+            "icon": "content_cut",
+            "title": "Scissors",
+            "subtitle": "Kitchen > Junk Drawer",
+            "accessoryKind": "none",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "ski-gloves",
+            "icon": "downhill_skiing",
+            "title": "Ski gloves",
+            "subtitle": "Upstairs Closet > Blue Bin > Winter",
+            "accessoryKind": "none",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "tree-stand",
+            "icon": "park",
+            "title": "Tree stand",
+            "subtitle": "Basement > Holiday Decor Bin",
+            "accessoryKind": "none",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "camp-stove",
+            "icon": "outdoor_grill",
+            "title": "Camp stove",
+            "subtitle": "Garage > Camping Shelf",
+            "accessoryKind": "none",
+            "switchOn": true,
+            "footerMode": "none"
+          },
+          {
+            "id": "bike-pump",
+            "icon": "pedal_bike",
+            "title": "Bike pump",
+            "subtitle": "Mudroom > Sports Hooks",
+            "accessoryKind": "none",
+            "switchOn": true,
+            "footerMode": "none"
+          }
+        ]
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
   "toolbar": [
     {
       "id": "toolbar-overflow",

@@ -10,6 +10,18 @@ export default {
   esbuild: {
     jsxImportSource: 'react'
   },
+  resolve: {
+    alias: [
+      {
+        find: /^@gtivr4\/a1-design-system-react\/(.+)$/,
+        replacement: resolve(repoRoot, 'packages/react/src/$1')
+      },
+      {
+        find: '@gtivr4/a1-design-system-react',
+        replacement: resolve(repoRoot, 'packages/react/src/index.js')
+      }
+    ]
+  },
   server: {
     fs: {
       allow: [repoRoot]

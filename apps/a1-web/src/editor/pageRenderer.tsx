@@ -528,6 +528,11 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     resolvedProps.src = resolveImageSrc(resolvedProps.src);
   }
 
+  // A Section's decorative backgroundImage may likewise be a library ref.
+  if (node.type === 'Section' && typeof resolvedProps.backgroundImage === 'string') {
+    resolvedProps.backgroundImage = resolveImageSrc(resolvedProps.backgroundImage);
+  }
+
   // In preview (not editor) mode, wire intra-prototype navigation directly to the
   // component's onClick so it works regardless of whether the element rendered as
   // an <a> or a <button>. This is deterministic — no document-level interception.

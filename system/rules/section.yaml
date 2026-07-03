@@ -30,3 +30,23 @@ rules:
     applies_to:
       - layout
       - consistency
+
+  - id: section-background-image-contrast
+    components:
+      - Section
+    requirement: A Section with a `backgroundImage` that carries text or interactive content must guarantee WCAG AA contrast over the image — photography alone is never a reliable text background.
+    do: Pair `backgroundImage` with a `backgroundOverlay` — `darken` plus the `inverse` prop for light text, or `lighten` for the default dark text — and raise `backgroundOverlayStrength` until contrast holds over the busiest area of the image.
+    dont: Place headings, paragraphs, or buttons directly over an un-scrimmed background image, or rely on one lucky quiet corner of the photo for readability.
+    applies_to:
+      - accessibility
+      - color
+
+  - id: section-background-image-decorative
+    components:
+      - Section
+    requirement: Section background images are decorative only — they are invisible to assistive technology and must not carry meaning.
+    do: Use `Figure` (with alt text) when the image is content the user needs; keep `backgroundImage` for texture, atmosphere, and hero backdrops.
+    dont: Put an infographic, product shot, or any meaning-bearing image in `backgroundImage` where screen-reader users cannot perceive it.
+    applies_to:
+      - accessibility
+      - content

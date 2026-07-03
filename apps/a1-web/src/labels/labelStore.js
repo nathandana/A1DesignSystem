@@ -1,4 +1,5 @@
 import { supabase, supabaseConfigured } from '../lib/supabase.js'
+import { registerSyncSource } from '../lib/manualSync.js'
 
 const STORAGE_KEY = 'a1-labels-v1'
 const SUPABASE_TABLE = 'workspace_labels'
@@ -12,7 +13,6 @@ const DEFAULT_DATA = {
 let remoteReady = false
 let lastSerialized = ''
 let realtimeChannel = null
-let realtimePoll = null
 let realtimeSubscribers = 0
 
 function normalize(data) {
@@ -183,17 +183,22 @@ export function subscribeRemoteLabels() {
         .subscribe()
     })()
   }
-  if (!realtimePoll) {
-    realtimePoll = setInterval(() => {
-      pullRemote().catch(() => { /* offline */ })
-    }, 8000)
-  }
+  // Live updates arrive via the Realtime channel above. The old 8s poll was
+  // removed — it re-downloaded the full labels blob every tick. The Account
+  // "Sync now" action pulls manually via the registered source below.
+  const unregister = registerSyncSource('labels', syncRemoteLabels)
   return () => {
+    unregister()
     realtimeSubscribers = Math.max(0, realtimeSubscribers - 1)
     if (realtimeSubscribers > 0) return
     if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null }
-    if (realtimePoll) { clearInterval(realtimePoll); realtimePoll = null }
   }
+}
+
+/** Manually pull the workspace labels once (replaces the old 8s poll). */
+export async function syncRemoteLabels() {
+  if (!supabaseConfigured) return
+  try { await pullRemote() } catch { /* offline */ }
 }
 
 // ── Label object builders ────────────────────────────────────────────────────

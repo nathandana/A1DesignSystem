@@ -219,6 +219,11 @@ TEXT component properties (documentation only — appear in Design panel but do 
 | `borderVariant` | `BorderVariant` | `"subtle"` | `subtle \| strong \| accent` |
 | `borderSides` | `BorderSides` | `"all"` | `"all"` or subset of `["top", "right", "bottom", "left"]` |
 | `radius` | `Radius` | `""` | `none \| sm \| md \| lg \| xl` |
+| `backgroundImage` | `BackgroundImage` | `""` | image URL (decorative background; suppresses `gradient`) |
+| `backgroundFit` | `BackgroundFit` | `"cover"` | `cover \| contain \| tile` |
+| `backgroundPosition` | `BackgroundPosition` | `"center"` | `center \| top \| bottom \| left \| right \| top-left \| top-right \| bottom-left \| bottom-right` |
+| `backgroundOverlay` | `BackgroundOverlay` | `""` | `darken \| lighten` |
+| `backgroundOverlayStrength` | `BackgroundOverlayStrength` | `"md"` | `sm \| md \| lg` |
 
 Gaps — props that cannot currently be represented visually in Figma:
 
@@ -228,6 +233,7 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `height="screen"` | Full-viewport height cannot be expressed as a static Figma frame height |
 | `border*` (visual) | Border appearance requires many more variants — deferred |
 | `radius` (visual) | Corner radius requires more variants — deferred |
+| `background*` (visual) | A designer can approximate with an IMAGE fill + a translucent overlay rectangle, but fit/tile/overlay-strength cannot be bound to tokens — documented as TEXT properties only |
 | `responsive objects` | `padding={{ xs: 'sm', lg: 'lg' }}` and `align={{ xs: 'left', lg: 'center' }}` — Figma has no breakpoint-driven property switching |
 | `className` / `style` / `ref` / `aria-*` / `id` | Not applicable in Figma |
 

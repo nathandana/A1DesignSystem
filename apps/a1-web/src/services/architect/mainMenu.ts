@@ -15,6 +15,14 @@ interface FoundationLike { id: string; title: string; icon?: string }
 interface ComponentLike { id: string; title: string }
 interface CategoryLike { id: string; title: string; icon?: string; components: ComponentLike[] }
 
+const COMPONENT_ROUTE_SLUGS: Record<string, string> = {
+  'action-tile': 'action-tiles',
+};
+
+function componentRouteSlug(componentId: string): string {
+  return COMPONENT_ROUTE_SLUGS[componentId] ?? componentId;
+}
+
 const EXPLORE: NavNode = {
   id: 'explore',
   label: 'Explore',
@@ -83,7 +91,7 @@ function componentsGroup(): NavNode {
         icon: cat.icon,
         href: `/components/${cat.id}`,
         // Leaf component items carry no icon in the real menu — kept faithful here.
-        children: cat.components.map((c) => ({ id: c.id, label: c.title, href: `/components/${c.id}` })),
+        children: cat.components.map((c) => ({ id: c.id, label: c.title, href: `/components/${componentRouteSlug(c.id)}` })),
       })),
     ],
   };

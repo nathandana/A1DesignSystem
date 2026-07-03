@@ -2,6 +2,96 @@
 // Update by regenerating this file when package prop declarations change.
 
 export const GENERATED_PROP_TABLES = {
+  "action-tile": [
+    {
+      "title": "ActionTileItem",
+      "rows": [
+        {
+          "id": "as",
+          "name": "as",
+          "type": "React.ElementType",
+          "description": "Underlying element for this tile item. Default: \"a\" when href is set, otherwise \"div\"."
+        },
+        {
+          "id": "href",
+          "name": "href",
+          "type": "string",
+          "description": "Link destination when rendering this tile item as an anchor."
+        },
+        {
+          "id": "icon",
+          "name": "icon",
+          "type": "string",
+          "description": "Material Symbols icon shown in the tile lead slot."
+        },
+        {
+          "id": "title",
+          "name": "title",
+          "type": "React.ReactNode",
+          "description": "Primary tile label."
+        },
+        {
+          "id": "subtitle",
+          "name": "subtitle",
+          "type": "React.ReactNode",
+          "description": "Supporting tile text under the title."
+        },
+        {
+          "id": "accessory",
+          "name": "accessory",
+          "type": "React.ReactNode",
+          "description": "Optional trailing slot for controls or metadata. Removed automatically when the tile item is interactive."
+        },
+        {
+          "id": "footer",
+          "name": "footer",
+          "type": "React.ReactNode",
+          "description": "Optional lower slot for additional actions or metadata. Removed automatically when the tile item is interactive."
+        },
+        {
+          "id": "iconLayout",
+          "name": "iconLayout",
+          "type": "\"auto\" | \"top\" | \"side\" | \"none\"",
+          "description": "Icon placement for this tile when not controlled by the parent group. Use \"none\" to hide icons. Default: \"auto\""
+        }
+      ]
+    },
+    {
+      "title": "ActionTiles",
+      "rows": [
+        {
+          "id": "layout",
+          "name": "layout",
+          "type": "\"grid\" | \"stack\"",
+          "description": "Group layout. Default: \"grid\""
+        },
+        {
+          "id": "columns",
+          "name": "columns",
+          "type": "number | Partial<Record<Breakpoints, number>>",
+          "description": "Number of columns in grid layout. Pass a number for a fixed count, or a responsive object."
+        },
+        {
+          "id": "gap",
+          "name": "gap",
+          "type": "boolean",
+          "description": "Toggle the space between items. Default: true"
+        },
+        {
+          "id": "iconLayout",
+          "name": "iconLayout",
+          "type": "\"auto\" | \"top\" | \"side\" | \"none\"",
+          "description": "Icon placement applied to child ActionTile items. Use \"none\" to hide icons. Default: \"auto\""
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Child ActionTile elements. Use one child when only one tile is needed."
+        }
+      ]
+    }
+  ],
   "accordion": [
     {
       "title": "Accordion",
@@ -65,6 +155,120 @@ export const GENERATED_PROP_TABLES = {
           "name": "children",
           "type": "React.ReactNode",
           "description": "No description in the package type declaration."
+        }
+      ]
+    }
+  ],
+  "chip": [
+    {
+      "title": "Chip",
+      "rows": [
+        {
+          "id": "as",
+          "name": "as",
+          "type": "React.ElementType",
+          "description": "Element or component to render as. Defaults to \"button\", or \"a\" when href is provided."
+        },
+        {
+          "id": "href",
+          "name": "href",
+          "type": "string",
+          "description": "Link target for navigation chips."
+        },
+        {
+          "id": "icon",
+          "name": "icon",
+          "type": "string",
+          "description": "Material Symbols icon name shown before the title."
+        },
+        {
+          "id": "title",
+          "name": "title",
+          "type": "React.ReactNode",
+          "description": "Short visible chip title. Children are used when title is omitted."
+        },
+        {
+          "id": "selected",
+          "name": "selected",
+          "type": "boolean",
+          "description": "Visual selected state. Usually controlled by ChipGroup. Default: false"
+        },
+        {
+          "id": "disabled",
+          "name": "disabled",
+          "type": "boolean",
+          "description": "Disable the chip. Default: false"
+        },
+        {
+          "id": "size",
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "description": "Size. Default: \"md\""
+        },
+        {
+          "id": "menu",
+          "name": "menu",
+          "type": "React.ReactNode | ((api: { close: () => void }) => React.ReactNode)",
+          "description": "Menu content shown from this chip. Use for filter chips that open option menus."
+        },
+        {
+          "id": "menuLabel",
+          "name": "menuLabel",
+          "type": "string",
+          "description": "Accessible label for the opened menu. Defaults to the chip title when it is a string."
+        }
+      ]
+    },
+    {
+      "title": "ChipGroup",
+      "rows": [
+        {
+          "id": "selectionMode",
+          "name": "selectionMode",
+          "type": "\"none\" | \"single\" | \"multiple\"",
+          "description": "Selection behavior. Use \"none\" for navigation/menu chip rows. Default: \"none\""
+        },
+        {
+          "id": "value",
+          "name": "value",
+          "type": "string | string[]",
+          "description": "Controlled selection value. String for single mode, string[] for multiple mode."
+        },
+        {
+          "id": "defaultValue",
+          "name": "defaultValue",
+          "type": "string | string[]",
+          "description": "Initial uncontrolled selection value. String for single mode, string[] for multiple mode."
+        },
+        {
+          "id": "onChange",
+          "name": "onChange",
+          "type": "(value: string | string[]) => void",
+          "description": "Called with the next selected value."
+        },
+        {
+          "id": "wrap",
+          "name": "wrap",
+          "type": "boolean",
+          "description": "Allow chips to wrap onto multiple lines. Default: true"
+        },
+        {
+          "id": "size",
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "description": "Size applied to child chips that do not set their own size. Default: \"md\""
+        },
+        {
+          "id": "label",
+          "name": "label",
+          "type": "React.ReactNode",
+          "description": "Optional visible group label."
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Child Chip elements."
         }
       ]
     }
@@ -1647,6 +1851,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "No description in the package type declaration."
         },
         {
+          "id": "searchMatcher",
+          "name": "searchMatcher",
+          "type": "(row: Record<string, unknown>, query: string) => boolean",
+          "description": "Custom matcher for built-in search. Return true when this row should match the normalized query."
+        },
+        {
           "id": "statusMap",
           "name": "statusMap",
           "type": "Record<string, \"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\">",
@@ -1862,8 +2072,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "searchableColumns",
           "name": "searchableColumns",
-          "type": "Array<{ key: string; label: string }>",
-          "description": "No description in the package type declaration."
+          "type": "Array<{ key: string; label: string; searchAccessor?: (row: Record<string, unknown>) => unknown; searchMatcher?: (row: Record<string, unknown>, query: string) => boolean }>",
+          "description": "Searchable columns can provide a custom matcher for built-in search."
         },
         {
           "id": "selectable",
@@ -3483,6 +3693,36 @@ export const GENERATED_PROP_TABLES = {
           "name": "gradientPosition",
           "type": "\"top\" | \"top-right\" | \"right\" | \"bottom-right\" | \"bottom\" | \"bottom-left\" | \"left\" | \"top-left\" | \"center\"",
           "description": "Gradient origin. Default: \"center\""
+        },
+        {
+          "id": "backgroundImage",
+          "name": "backgroundImage",
+          "type": "string",
+          "description": "URL of a decorative background image, layered between the overlay scrim and the surface colour. Background images are invisible to assistive technology — use Figure for content-bearing images. Takes precedence over gradient."
+        },
+        {
+          "id": "backgroundFit",
+          "name": "backgroundFit",
+          "type": "\"cover\" | \"contain\" | \"tile\"",
+          "description": "How the background image fills the section: \"cover\" crops to fill, \"contain\" letterboxes the whole image, \"tile\" repeats it at natural size. Default: \"cover\""
+        },
+        {
+          "id": "backgroundPosition",
+          "name": "backgroundPosition",
+          "type": "\"center\" | \"top\" | \"bottom\" | \"left\" | \"right\" | \"top-left\" | \"top-right\" | \"bottom-left\" | \"bottom-right\"",
+          "description": "Focal point kept in view when the image is cropped or anchored. Default: \"center\""
+        },
+        {
+          "id": "backgroundOverlay",
+          "name": "backgroundOverlay",
+          "type": "\"darken\" | \"lighten\"",
+          "description": "Scrim drawn over the background image so content above keeps WCAG contrast — \"darken\" for light/inverse text, \"lighten\" for dark text. Pair \"darken\" with the inverse prop."
+        },
+        {
+          "id": "backgroundOverlayStrength",
+          "name": "backgroundOverlayStrength",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "description": "Strength of the overlay scrim (requires backgroundOverlay). Default: \"md\""
         },
         {
           "id": "inverse",

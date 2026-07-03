@@ -26,6 +26,7 @@ export type ComponentType =
   | 'Stack'
   | 'Grid'
   | 'Cluster'
+  | 'Canvas'
   | 'Card'
   | 'Bleed'
   | 'Inset'
@@ -36,42 +37,57 @@ export type ComponentType =
   | 'Blockquote'
   | 'Code'
   | 'Divider'
+  | 'Inline'
   | 'List'
   | 'ListItem'
   | 'Icon'
   | 'Figure'
   | 'Link'
   | 'Button'
+  | 'ActionTiles'
+  | 'ChipGroup'
   | 'IconButton'
   | 'Switch'
   | 'SegmentedControl'
   | 'Banner'
   | 'MessageBadge'
   | 'MessageEmptyState'
+  | 'Notification'
+  | 'Snackbar'
   | 'StatusBar'
   | 'CircularProgress'
   | 'StepTracker'
   | 'TextField'
+  | 'SearchField'
   | 'TextareaField'
   | 'SelectField'
+  | 'Autocomplete'
   | 'NumberField'
   | 'DateField'
   | 'TimeField'
   | 'PhoneField'
   | 'ZipField'
   | 'CreditCardField'
+  | 'InlineEditable'
   | 'Fieldset'
   | 'CheckboxGroup'
   | 'RadioGroup'
   | 'ChoiceGroup'
+  | 'Stat'
   | 'DefinitionList'
   | 'Pagination'
   | 'Calendar'
+  | 'Node'
   | 'Breadcrumb'
+  | 'SideNav'
   | 'TopHeader'
   | 'BottomDrawer'
+  | 'BottomSheet'
   | 'StickyActions'
   | 'Accordion'
+  | 'Dialog'
+  | 'Menu'
+  | 'ContextMenu'
   | 'Slider'
   | 'Toolbar'
   | 'Tabs'
@@ -188,6 +204,12 @@ export interface ComponentNode {
   id: string;
   /** A1 component name. Must exist in the component registry, or the renderer shows a fallback. */
   type: ComponentType;
+  /**
+   * Custom display name for the editor's layers tree (set via inline rename).
+   * Overrides the auto-derived label (pattern name → text content → type).
+   * Editor metadata only — the renderer ignores it.
+   */
+  name?: string;
   /** Props forwarded to the A1 component. */
   props?: ComponentProps;
   /** Tokenized utility classes applied only when accepted by this component type. */

@@ -31,6 +31,22 @@
           "$type": "number",
           "$value": 72
         }
+      },
+      "backgroundOverlay": {
+        "darken": { "$type": "color", "$value": "{base.color.neutral.900}" },
+        "lighten": { "$type": "color", "$value": "{base.color.neutral.0}" },
+        "strengthSm": {
+          "$type": "number",
+          "$value": 25
+        },
+        "strengthMd": {
+          "$type": "number",
+          "$value": 45
+        },
+        "strengthLg": {
+          "$type": "number",
+          "$value": 65
+        }
       }
     }
   }

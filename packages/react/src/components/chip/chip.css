@@ -1,0 +1,117 @@
+.a1-chip-group {
+  min-inline-size: 0;
+}
+
+.a1-chip-group__label {
+  display: block;
+  margin-block-end: var(--base-spacing-6);
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--component-field-compact-label-font-weight);
+}
+
+.a1-chip-group__items {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--component-chip-group-gap);
+  min-inline-size: 0;
+}
+
+.a1-chip-group--nowrap .a1-chip-group__items {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.a1-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--component-chip-gap);
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--component-chip-padding-block) var(--component-chip-padding-inline);
+  border: var(--component-chip-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--component-chip-border-radius);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--component-chip-font-weight);
+  line-height: var(--semantic-font-line-height-body);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+button.a1-chip {
+  appearance: none;
+}
+
+.a1-chip:hover {
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-chip:active {
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-chip:focus-visible {
+  outline: var(--component-chip-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-chip-focus-ring-offset);
+}
+
+.a1-chip--selected {
+  border-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-action-background);
+}
+
+.a1-chip--selected:hover {
+  border-color: var(--semantic-color-action-background-hover);
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-action-background-hover);
+}
+
+.a1-chip--disabled,
+.a1-chip:disabled,
+.a1-chip[aria-disabled="true"] {
+  opacity: var(--component-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.a1-chip--disabled:hover,
+.a1-chip:disabled:hover,
+.a1-chip[aria-disabled="true"]:hover {
+  background: transparent;
+}
+
+.a1-chip--sm {
+  padding: var(--component-chip-sm-padding-block) var(--component-chip-sm-padding-inline);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-chip--lg {
+  padding: var(--component-chip-lg-padding-block) var(--component-chip-lg-padding-inline);
+  font-size: var(--semantic-font-size-body-md);
+}
+
+.a1-chip__icon,
+.a1-chip__chevron {
+  flex-shrink: 0;
+  font-size: var(--component-chip-icon-size);
+}
+
+.a1-chip__title {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

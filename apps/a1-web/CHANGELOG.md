@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- **Cloud sync — removed background polling, added "Sync now"** — the four 8-second Supabase polls (shared workspace envelope, workspace labels, backlog, and data sources) were removed. They re-downloaded whole tables/blobs every tick regardless of whether anything changed and were the dominant source of uncached egress. Live updates still arrive via the existing Supabase **Realtime** subscriptions; a new **Sync now** action on the Account page pulls the latest projects, patterns, themes, labels, backlog, and data sources on demand for the rare case Realtime hasn't delivered.
+
+- **Chip component** (A1-390) — added Chip under **Actions & Controls** with a live configurator for selectable, menu-trigger, and navigation chip groups. The editor Add panel can insert a configured ChipGroup, and DataTable filters now render with the shared Chip component.
+
+- **Editor add catalog — complete component coverage** — the page and pattern editor Add panel now includes every component from the Components registry. Missing entries such as Search Field, Action Tiles, Page Layout, Canvas, Side Nav, Autocomplete, Inline Editable, Notification, Snackbar, Dialog, Menu, Context Menu, Bottom Sheet, Stat, and Node now have addable templates and render through the editor registry. Search Field is also included in the default Common set.
+
+- **Action Tiles** (A1-389) — added the new grouped `ActionTiles` component to the Components section under **Actions & Controls** with a live configurator, generated prop table, rules tab, Storybook examples, and package/status/related-component metadata. The component now uses container-based sizing, a tighter no-shadow surface, no body slot, group layouts for grid or stack, gap on/off, and the same blue interactive border treatment as navigation Card. Interactive tiles show a configurator note and automatically remove nested accessory/footer controls.
+
+- **Help shortcut** — the global `?` shortcut now opens the Help assistant menu instead of routing straight to the full Help page.
+
+- **Help chat bot** (A1-157) — the top-header Help icon now opens a lightweight local help assistant instead of jumping straight to the Help page. Users can ask plain-language questions, get immediate answers sourced from the canonical Help content model, review matched Help topics, and jump into the full Help page with the assistant’s query prefilled. The first slice is intentionally non-AI: local ranking over Help content only, with a clean service seam for a future AI-backed answerer.
+
+- **Help page — canonical data model** (A1-338) — moved the Help content into a dedicated `src/help/helpContent.jsx` module backed by a shared help-model normalizer. The page now renders from that canonical object, while the same source also exports an AI-friendly plain-text catalog (`HELP_AI_CONTENT`) and normalized keyword/search metadata for future consumers. New Help articles should now be added to the shared help-content model instead of embedding content directly in the page component.
+
+- **Color foundations — 25 ramp step** (A1-342) — base color ramp tables and the OKLCH visualization now include the new `25` step for every color ramp.
+
+- **Section configurator — background image** (A1-345) — the Section page's Background panel now configures the new background-image props: pick an image from the active project library or a URL, set the fit (cover / contain / tile), choose the focal point on a 3×3 grid, and add a darken/lighten contrast overlay with a strength slider. The gradient controls hide while an image is set (the component gives the image precedence) and the emitted code snippet includes the new props.
+
+- **Settings — sign-in option** — the Settings menu now always includes an Account section. Signed-out users see a Sign in action that opens the Account page; signed-in users see their email, Account, and Sign out actions.
+
+- **Projects — editable project definition JSON** — the project "definition" dialog now shows the JSON bundle in a scrollable, editable code snippet (a fixed-height, resizable editor) instead of a read-only collapsible block. Edits update what **Copy code** copies, so the bundle can be tweaked before pasting into the importer; the stored project is unchanged.
+
+- **Editor — rename items in the Layers tree** (A1-22) — right-click a node in the editor's Layers tree and choose **Rename**, **double-click** its label, or press **F2** to edit its name inline (Enter or click-away commits, Escape cancels). The custom name is stored on the node (`node.name`) and overrides the auto-derived label (pattern name → text content → component type); clearing it restores the auto label. Built on the design-system `TreeMenu`'s new inline-rename support, recorded as a normal undoable editor change.
+
 - **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
 
 - **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.
@@ -73,6 +97,32 @@
 - **Global keyboard shortcuts** — added an Amazon-style first-tab keyboard navigation trigger backed by the A1 `Menu` component, with grouped actions for main content, search, primary pages, tools, and Help. App-level shortcuts now support keyboard-only navigation: `Cmd/Ctrl+/` shows all shortcuts, `Alt+M` or `g m` focuses the main content area, `?` opens Help, and `g` chords navigate to high-use pages (`g h` Home, `g c` Components, `g f` Foundations, `g e` Editor, `g p` Patterns, `g b` Backlog, `g r` Rules, `g l` Labels, `g d` Data sources, `g t` Theme editor, `g a` Accessibility). Shortcuts ignore text-entry fields and defer to page-specific handlers when a page has already handled the key event.
 
 - **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
+
+- **A1-349 — Project deletion persistence** — fixed deleted Projects coming back after cloud sync by making shared project hydration replace the local project set instead of merge-only upserting. Project deletion now also clears the project's page-list and shared-layout storage without triggering sample seeding during the delete path.
+
+- **Backlog CSV export** — added an Export CSV action to the Backlog panel that downloads the entire backlog, independent of the current view, filters, table pagination, or sort.
+
+- **Icon font loading stability** — constrained A1 icon ligatures to a fixed 1em square with clipped overflow so Material Symbols do not briefly expand layout while the icon font loads.
+
+- **Components sidebar A-Z view** — added an unlabeled icon toolbar toggle beside the Components sidebar search so builders can switch between the grouped category tree and a flat A-Z component list while keeping smart search active. The selected view persists per browser in localStorage.
+
+- **Components smart search** — added curated component aliases, keyword matching, and misspelling tolerance to the Components sidebar and all-components table. Searches like `CTA` surface Button, while searches like `grid` keep Grid first and also include Data Table as a related match.
+
+- **DataTable custom search matcher** — added optional `searchMatcher` support for DataTable searchable columns so consumers can layer aliases, fuzzy matching, or domain-specific search behavior onto the built-in filter UI.
+
+- **Search Field clear action sizing** — adjusted the SearchField trailing clear button spacing so the icon button stays inside the compact field border, reserves matching input text space, and scales up in comfortable fields.
+
+- **Components package coverage** — added Web Components to the Components overview package list and component detail support grid, with Button and Snackbar marked as available from `packages/web-components`.
+
+- **DataTable mobile layout** — added a `mobileLayout` prop and configurator control so mobile tables can either render as Card-like definition-list rows or preserve the table layout with horizontal scroll. The default card mode now uses Card surface, border, radius, and shadow tokens and removes per-field divider lines.
+
+- **DataTable mobile sort and filter menu** — when a DataTable has filters or search controls, the mobile sort control now moves into the same menu as filters as a **Sort & filter** action instead of rendering as a separate stacked field.
+
+- **DataTable editor slice** — added real column configuration to the a1-web DataTable configurator: add, delete, select, and reorder columns; edit column labels; choose a column component; and set sortable, filterable, search-by, and inline-editable behavior per column. The shared React DataTable now supports column-generated filters, column-scoped search, custom `renderCell` slots, and `onCellChange` for inline editable cells.
+
+- **DataTable — page-size control and contained overflow** — added `defaultPageSize`, `pageSizeOptions`, and `onPageSizeChange` so tables can expose a Rows per page selector in the pagination footer. DataTable wrappers now contain horizontal overflow, the component configurator can preview page-size choices, and the Backlog All tickets table opts into horizontal scrolling with 10 / 25 / 50 row choices.
+
+- **DataTable configurator cleanup** — combined Density and Appearance into one Display toolbar with a divider between density and visual toggles, grouped Display, Features, and Caption into a default-open Table accordion, moved selection controls into the Features toolbar, moved empty-state controls into a collapsed accordion, and restored the shared preview Padding and Inverse controls.
 
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
 

@@ -78,6 +78,8 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  componentRouteSlug,
+  componentIdFromRouteSlug,
   getComponentExampleBySlug,
 } from './pages/Components.jsx'
 import { Patterns } from './pages/Patterns.jsx'
@@ -95,6 +97,7 @@ import { Blog } from './pages/Blog.jsx'
 import { BlogArticle } from './pages/BlogArticle.jsx'
 import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
+import { HelpAssistantMenu } from './help/HelpAssistantMenu.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
@@ -114,7 +117,6 @@ import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
-import { supabaseConfigured } from './lib/supabase.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
@@ -208,7 +210,8 @@ function getComponentExampleTab(pathname = window.location.pathname) {
   const path = pathname.split(/[?#]/)[0].replace(/^\/|\/$/g, '')
   const parts = path.split('/')
   if (parts[0] !== 'components' || parts.length < 3) return null
-  const [, componentId, exampleSlug] = parts
+  const [, componentSlug, exampleSlug] = parts
+  const componentId = componentIdFromRouteSlug(componentSlug)
   const example = getComponentExampleBySlug(componentId, exampleSlug)
   return example ? `example:${example.id}` : null
 }
@@ -233,13 +236,14 @@ function getPage(search = window.location.search, pathname = window.location.pat
   if (path === 'components') return 'components'
   if (path.startsWith('components/')) {
     const suffix = path.slice('components/'.length)
-    const [componentId, exampleSlug] = suffix.split('/')
-    if (componentId && exampleSlug && getComponentExampleBySlug(componentId, exampleSlug)) {
+    const [componentSlug, exampleSlug] = suffix.split('/')
+    const componentId = componentIdFromRouteSlug(componentSlug)
+    if (componentSlug && exampleSlug && getComponentExampleBySlug(componentId, exampleSlug)) {
       const id = `component-${componentId}`
       if (PAGES.includes(id)) return id
     }
     if (PAGES.includes(`components-${suffix}`)) return `components-${suffix}`
-    if (PAGES.includes(`component-${suffix}`)) return `component-${suffix}`
+    if (PAGES.includes(`component-${componentId}`)) return `component-${componentId}`
     return 'components'
   }
 
@@ -261,7 +265,7 @@ function getPath(page) {
   if (page === 'blog-article') return `/blog/${BLOG_ARTICLE_SLUG}`
   if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
-  if (page.startsWith('component-')) return `/components/${page.slice('component-'.length)}`
+  if (page.startsWith('component-')) return `/components/${componentRouteSlug(page.slice('component-'.length))}`
   if (page === 'backlog-ticket') return '/backlog'
   return `/${page}`
 }
@@ -356,6 +360,9 @@ function App() {
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   )
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
+  const [helpAssistantOpen, setHelpAssistantOpen] = useState(false)
+  const helpAssistantAnchorRef = useRef(null)
+  const [helpQuery, setHelpQuery] = useState(() => new URLSearchParams(window.location.search).get('q') || '')
   const [skipMenuOpen, setSkipMenuOpen] = useState(false)
   const skipMenuAnchorRef = useRef(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -866,6 +873,21 @@ function App() {
     resetRouteScroll()
   }
 
+  function openHelpPage(query = '') {
+    const nextQuery = String(query ?? '').trim()
+    setHelpQuery(nextQuery)
+    const nextPath = nextQuery ? `/help?q=${encodeURIComponent(nextQuery)}` : '/help'
+    navigate('help', { path: nextPath })
+  }
+
+  function openHelpAssistant(anchor = null) {
+    helpAssistantAnchorRef.current = anchor
+      ?? document.querySelector('.a1-web-app-header button[aria-label="Help"]')
+      ?? document.querySelector('.a1-web-app-header a[aria-label="Help"]')
+      ?? null
+    setHelpAssistantOpen(true)
+  }
+
   function focusMainContent() {
     const main = document.querySelector('.a1-page-layout__main-scroll')
     if (main instanceof HTMLElement) main.focus()
@@ -894,9 +916,10 @@ function App() {
     window.history.replaceState({ page }, '', canonicalUrl)
     setActivePage(page)
     setDetailTab(getComponentExampleTab() ?? 'configure')
-    const onPop = () => {
+      const onPop = () => {
       setActivePage(getPage())
       setDetailTab(getComponentExampleTab() ?? 'configure')
+      setHelpQuery(new URLSearchParams(window.location.search).get('q') || '')
       const params = new URLSearchParams(window.location.search)
       const proj = params.get('project') || null
       setActiveProjectId(proj)
@@ -1002,7 +1025,7 @@ function App() {
       if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '?') {
         event.preventDefault()
         clearGoTarget()
-        navigate('help')
+        openHelpAssistant()
         return
       }
 
@@ -1323,7 +1346,9 @@ function App() {
       iconOnly: true,
       label: pageTitle('help'),
       active: activePage === 'help',
-      onClick: () => navigate('help'),
+      onClick: (event) => {
+        openHelpAssistant(event.currentTarget)
+      },
     },
     { id: 'action-divider', divider: true },
     {
@@ -1461,7 +1486,7 @@ function App() {
           <MenuItem icon="accessibility" shortcut="Shortcut: G then A" onClick={() => runSkipMenuAction(() => navigate('accessibility'))}>
             Accessibility
           </MenuItem>
-          <MenuItem icon="help" shortcut="Shortcut: ?" onClick={() => runSkipMenuAction(() => navigate('help'))}>
+          <MenuItem icon="help" shortcut="Shortcut: ?" onClick={() => runSkipMenuAction(() => openHelpAssistant())}>
             Help
           </MenuItem>
         </MenuSection>
@@ -1566,6 +1591,7 @@ function App() {
           <Components
             activePage={activePage}
             onNavigate={navigate}
+            projectId={activeProjectId}
             search={componentSearch}
             setSearch={setComponentSearch}
             detailTab={detailTab}
@@ -1619,7 +1645,7 @@ function App() {
               onImportProject={handleImportProject}
               onOpenImageLibrary={() => navigate('image-library')}
               onNavigateHome={() => navigate('home')}
-              onOpenHelp={() => navigate('help')}
+              onOpenHelp={() => openHelpPage()}
             />
           ) : openPageId === projectStore.LAYOUT_DOC_ID ? (
             <EditorPage
@@ -1742,12 +1768,12 @@ function App() {
             onImportProject={handleImportProject}
             onOpenImageLibrary={() => navigate('image-library')}
             onNavigateHome={() => navigate('home')}
-            onOpenHelp={() => navigate('help')}
+            onOpenHelp={() => openHelpPage()}
           />
         )}
         {activePage === 'account' && <AccountPage onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
-        {activePage === 'help' && <Help onNavigate={navigate} />}
+        {activePage === 'help' && <Help onNavigate={navigate} initialQuery={helpQuery} />}
         {activePage === 'releases' && <Releases onNavigate={navigate} />}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
         {import.meta.env.DEV && activePage === 'virtual-team' && (
@@ -1770,6 +1796,13 @@ function App() {
         open={globalSearchOpen}
         entries={globalSearchEntries}
         onClose={() => setGlobalSearchOpen(false)}
+      />
+
+      <HelpAssistantMenu
+        open={helpAssistantOpen}
+        anchorRef={helpAssistantAnchorRef}
+        onClose={() => setHelpAssistantOpen(false)}
+        onOpenHelp={openHelpPage}
       />
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
@@ -1849,27 +1882,24 @@ function App() {
             {t('app.action.resetToDefaults', 'Reset to defaults')}
           </Button>
         </MenuSection>
-        {supabaseConfigured && (
-          <MenuSection label={t('app.page.account', 'Account')}>
-            {authUser && (
-              <MenuItem icon="account_circle" onClick={() => navigate('account')}>
-                {authUser.email}
-              </MenuItem>
-            )}
-            <MenuItem icon="manage_accounts" onClick={() => navigate('account')}>
-              {t('app.page.account', 'Account')}
+        <MenuSection label={t('app.page.account', 'Account')}>
+          {authUser && (
+            <MenuItem icon="account_circle" onClick={() => { setSettingsOpen(false); navigate('account') }}>
+              {authUser.email}
             </MenuItem>
-            {authUser ? (
-              <MenuItem icon="logout" onClick={() => signOut()}>
-                {t('app.action.signOut', 'Sign out')}
-              </MenuItem>
-            ) : (
-              <MenuItem icon="login" onClick={() => navigate('account')}>
-                {t('app.action.signIn', 'Sign in')}
-              </MenuItem>
-            )}
-          </MenuSection>
-        )}
+          )}
+          <MenuItem
+            icon={authUser ? 'manage_accounts' : 'login'}
+            onClick={() => { setSettingsOpen(false); navigate('account') }}
+          >
+            {authUser ? t('app.page.account', 'Account') : t('app.action.signIn', 'Sign in')}
+          </MenuItem>
+          {authUser && (
+            <MenuItem icon="logout" onClick={() => { setSettingsOpen(false); signOut() }}>
+              {t('app.action.signOut', 'Sign out')}
+            </MenuItem>
+          )}
+        </MenuSection>
       </Menu>
 
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>

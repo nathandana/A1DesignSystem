@@ -1,0 +1,23 @@
+component: ActionTiles
+rules:
+  - id: action-tile-interactive-no-nested-interactive
+    components:
+      - ActionTiles
+    requirement: Do not place interactive descendants inside an ActionTiles item when that tile item is itself interactive.
+    do: Use a non-interactive ActionTiles item when it contains switches, buttons, menus, links, or other controls. Reserve clickable tile items for a single destination or command.
+    dont: Render the whole tile as a button or link and also place nested controls inside it.
+    applies_to:
+      - accessibility
+      - interaction
+      - semantic-html
+
+  - id: action-tile-single-primary-action
+    components:
+      - ActionTiles
+    requirement: An interactive ActionTiles item should represent one clear primary action or destination.
+    do: Keep the title, subtitle, icon, and supporting slots aligned around one action such as opening settings, jumping to a workflow, or toggling a focused preference.
+    dont: Mix unrelated actions in one tile or use the tile chrome as a generic content card.
+    applies_to:
+      - content
+      - interaction
+      - usability

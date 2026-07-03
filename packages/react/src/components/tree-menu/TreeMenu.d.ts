@@ -44,6 +44,26 @@ export interface TreeMenuProps {
    * - `position: "into"` — make the dragged item the last child of the target (branch nodes only).
    */
   onMove?: (params: { draggedId: string; targetId: string; position: 'before' | 'into' | 'after' }) => void;
+  /**
+   * ID of the item currently being renamed inline. When set, that item's label
+   * is replaced by a text input seeded with its label (auto-focused/selected).
+   * Drag is suspended for the item while it is being edited.
+   */
+  editingId?: string | null;
+  /**
+   * Called when the user requests an inline rename — by double-clicking an
+   * item's label or pressing F2 on the focused item. Set `editingId` in
+   * response to enter edit mode. Disabled items never fire it.
+   */
+  onRenameStart?: (id: string) => void;
+  /**
+   * Called when an inline rename is confirmed (Enter or blur) with the item id
+   * and the new label. An empty/whitespace value falls back to the original
+   * label. Pair with `editingId` to drive the editing state.
+   */
+  onRenameCommit?: (id: string, label: string) => void;
+  /** Called when an inline rename is cancelled (Escape). */
+  onRenameCancel?: () => void;
   /** Accessible name for the tree. Required when no visible label references the tree. */
   'aria-label'?: string;
   /** ID of an element that labels the tree. */

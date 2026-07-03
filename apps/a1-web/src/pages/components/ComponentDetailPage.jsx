@@ -80,9 +80,10 @@ import { GENERATED_PROP_TABLES } from './generatedPropTables.js'
 import { BUTTON_CONTRAST_ROWS, BUTTON_TARGET_SIZE_ROWS } from './accessibilityReports.generated.js'
 
 const PACKAGE_META = {
-  React:  { icon: 'code',         desc: 'packages/react' },
-  Native: { icon: 'phone_iphone', desc: 'packages/react-native' },
-  Pure:   { icon: 'palette',      desc: 'packages/pure' },
+  React:            { icon: 'code',         desc: 'packages/react' },
+  Native:           { icon: 'phone_iphone', desc: 'packages/react-native' },
+  Pure:             { icon: 'palette',      desc: 'packages/pure' },
+  'Web Components': { icon: 'web_asset',    desc: 'packages/web-components' },
 }
 
 function componentUtilityType(component) {
@@ -91,7 +92,7 @@ function componentUtilityType(component) {
 
 function PackageSupportGrid({ packages }) {
   return (
-    <Grid columns={3} gap="sm">
+    <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="sm">
       {PACKAGE_COLUMNS.map((pkg) => {
         const supported = packages.includes(pkg)
         const meta = PACKAGE_META[pkg]
@@ -2852,6 +2853,7 @@ function ConfigurationPanel({
   viewAsModes,
   showHelp,
   onToggleHelp,
+  projectId,
 }) {
   const utilityType = componentUtilityType(component)
   const setUtilities = (utilities) => {
@@ -2880,7 +2882,7 @@ function ConfigurationPanel({
           )}
           <ConfigHelpContext.Provider value={{ showHelp }}>
             <Stack gap="sm">
-              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} />
+              <Controls component={component} config={config} setConfig={setConfig} viewAs={viewAs} projectId={projectId} />
               <UtilityControls
                 type={utilityType}
                 utilities={config.utilities}
@@ -2966,9 +2968,11 @@ function ComponentConfigureSurface({
   utilityClass,
   example,
 }) {
+  const framedPreview = example?.preview?.frame !== false
+  const barePreview = detail.bareDisplay || !framedPreview
   const preview = (
     <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
-      {detail.bareDisplay ? (
+      {barePreview ? (
         <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
           <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
         </ContainerQueryPreviewFrame>
@@ -2996,7 +3000,7 @@ function ComponentConfigureSurface({
       <DisplayToolbar
         displayConfig={displayConfig}
         setDisplayConfig={setDisplayConfig}
-        bareDisplay={detail.bareDisplay}
+        bareDisplay={barePreview}
       />
       {example?.preview?.width ? (
         <div className="a1-web-example-preview-scroll">
@@ -3011,7 +3015,7 @@ function ComponentConfigureSurface({
   )
 }
 
-export function ComponentDetailPage({ component, category, onNavigate, tab = 'overview', onTabChange }) {
+export function ComponentDetailPage({ component, category, onNavigate, projectId = null, tab = 'overview', onTabChange }) {
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
   const requestedExampleId = exampleIdFromTab(tab)
@@ -3131,6 +3135,7 @@ export function ComponentDetailPage({ component, category, onNavigate, tab = 'ov
             viewAsModes={detail.viewAsModes}
             showHelp={showHelp}
             onToggleHelp={setShowHelp}
+            projectId={projectId}
           />,
           asideNode,
         )}

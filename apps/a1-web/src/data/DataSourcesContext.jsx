@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from '../lib/AuthContext.jsx'
+import { registerSyncSource } from '../lib/manualSync.js'
 import * as store from '../services/dataSources/dataSourcesStore'
 import { buildUsersSample, hasSeededSamples, markSeededSamples } from '../services/dataSources/samples'
 import { rowsNeedIds } from '../services/dataSources/rowIds'
@@ -67,7 +68,8 @@ export function DataSourcesProvider({ children }) {
       }
     })()
     const unsub = store.subscribe(refresh)
-    return () => { cancelled = true; unsub() }
+    const unregister = registerSyncSource('dataSources', refresh)
+    return () => { cancelled = true; unsub(); unregister() }
   }, [user?.id, refresh]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const create = useCallback(async (input) => {

@@ -525,6 +525,7 @@
 /* Pill-shaped by default — overrides the field radius via the existing variable layer. */
 .a1-field--search {
   --a1-field-border-radius: var(--base-radius-pill);
+  --a1-field-search-clear-size: var(--component-button-small-height);
 }
 
 .a1-field--search .a1-field__search-icon {
@@ -546,14 +547,24 @@
 
 .a1-field--search .a1-field__search-clear {
   position: absolute;
-  inset-inline-end: var(--base-spacing-4);
+  inset-inline-end: var(--a1-field-padding-inline);
   top: 50%;
   transform: translateY(-50%);
 }
 
+.a1-field--comfortable.a1-field--search .a1-field__search-clear {
+  --a1-icon-button-size: var(--component-icon-button-size);
+  --a1-icon-button-icon-size: var(--component-icon-button-icon-size);
+  --a1-icon-button-icon-opsz: var(--component-icon-button-icon-optical-size);
+}
+
+.a1-field--comfortable.a1-field--search {
+  --a1-field-search-clear-size: var(--component-icon-button-size);
+}
+
 /* Reserve inline-end room only while the clear button is shown. */
 .a1-field--search-has-value .a1-field__input {
-  padding-inline-end: calc(var(--a1-field-padding-inline) + var(--base-spacing-32));
+  padding-inline-end: calc(var(--a1-field-padding-inline) + var(--a1-field-search-clear-size) + var(--base-spacing-8));
 }
 
 /* Suppress the browser's native search clear — the A1 clear button replaces it. */

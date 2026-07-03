@@ -4,6 +4,8 @@ import {
   componentCategoryPageIds,
   componentPageIds,
   componentPageTitles,
+  componentRouteSlug,
+  componentIdFromRouteSlug,
   getComponentExampleBySlug,
   getComponentEntry,
 } from './utils.js'
@@ -14,9 +16,16 @@ import { ComponentsOverviewPage } from './ComponentsOverviewPage.jsx'
 import { ComponentsSidebar } from './ComponentsSidebar.jsx'
 
 export { componentCategories }
-export { componentCategoryPageIds, componentPageIds, componentPageTitles, getComponentExampleBySlug }
+export {
+  componentCategoryPageIds,
+  componentPageIds,
+  componentPageTitles,
+  componentRouteSlug,
+  componentIdFromRouteSlug,
+  getComponentExampleBySlug,
+}
 
-export function Components({ activePage = 'components', onNavigate, detailTab = 'configure', setDetailTab }) {
+export function Components({ activePage = 'components', onNavigate, projectId = null, detailTab = 'configure', setDetailTab }) {
   const { category, component } = getComponentEntry(activePage)
   const currentComponent = component
     ? allComponents.find((item) => item.id === component.id) ?? component
@@ -29,6 +38,7 @@ export function Components({ activePage = 'components', onNavigate, detailTab = 
           component={currentComponent}
           category={category}
           onNavigate={onNavigate}
+          projectId={projectId}
           tab={detailTab}
           onTabChange={setDetailTab}
         />

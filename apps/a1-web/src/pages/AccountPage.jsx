@@ -13,6 +13,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { pushLocalData } from '../projects/cloudSync.js'
+import { runManualSync } from '../lib/manualSync.js'
 import { loadProjects } from '../projects/projectStore'
 import { migrateLocalImagesToCloud } from '../lib/imageLibrary'
 import { getStorageStatus } from '../lib/storageStatus'
@@ -31,16 +32,17 @@ export function AccountPage({ onNavigate }) {
   const [status, setStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [pushing, setPushing] = useState(false)
+  const [syncing, setSyncing] = useState(false)
   const [storage, setStorage] = useState(null)
 
   // Load where each data category lives whenever a user is present, and refresh
-  // after a push so counts/locations stay accurate.
+  // after a push or a manual sync so counts/locations stay accurate.
   useEffect(() => {
     if (!user) { setStorage(null); return }
     let active = true
     getStorageStatus(true).then((s) => { if (active) setStorage(s) })
     return () => { active = false }
-  }, [user, pushing])
+  }, [user, pushing, syncing])
 
   async function handlePushLocal() {
     setPushing(true); setStatus(null)
@@ -64,6 +66,18 @@ export function AccountPage({ onNavigate }) {
       setStatus({ status: 'error', message: e.message })
     }
     setPushing(false)
+  }
+
+  async function handleSyncNow() {
+    setSyncing(true); setStatus(null)
+    try {
+      await runManualSync()
+      // Toggling `syncing` off (below) re-runs the storage-status effect.
+      setStatus({ status: 'success', message: t('app.account.syncNowDone', 'Synced with the shared workspace.') })
+    } catch (e) {
+      setStatus({ status: 'error', message: e.message })
+    }
+    setSyncing(false)
   }
 
   async function submit() {
@@ -119,6 +133,16 @@ export function AccountPage({ onNavigate }) {
                 ))}
               </Stack>
             )}
+
+            <Stack gap="xs">
+              <Heading as="h2" size="sm">{t('app.account.syncNow', 'Sync now')}</Heading>
+              <Paragraph size="sm" color="muted">
+                {t('app.account.syncNowHint', "Pull the latest projects, patterns, themes, labels, backlog, and data sources from the shared workspace. Changes normally arrive live; use this if something looks out of date.")}
+              </Paragraph>
+              <Button variant="secondary" icon="cloud_sync" loading={syncing} onClick={handleSyncNow}>
+                {t('app.account.syncNow', 'Sync now')}
+              </Button>
+            </Stack>
 
             <Stack gap="xs">
               <Heading as="h2" size="sm">{t('app.account.importLocalData', 'Import local data')}</Heading>

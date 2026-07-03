@@ -1,0 +1,23 @@
+component: chip
+status: experimental
+rules:
+  - id: chip-label-short
+    severity: warn
+    description: Chip labels should be short enough to scan in a wrapped row.
+    guidance: Use a one- to three-word title. Move explanatory text into the surrounding content or menu, not into the chip.
+  - id: chip-selection-group-semantics
+    severity: error
+    description: Selectable chips must be rendered inside a ChipGroup with a declared selection mode.
+    guidance: Use selectionMode="single" for one active filter, selectionMode="multiple" for additive filters, and selectionMode="none" for navigation or menu-trigger chips.
+  - id: chip-navigation-anchor
+    severity: error
+    description: Navigation chips must use anchor semantics.
+    guidance: Pass href or as="a" for chips that navigate. Do not use a button for navigation.
+  - id: chip-menu-trigger
+    severity: error
+    description: Filter chips that open a menu must expose menu trigger state.
+    guidance: Use the Chip menu prop or compose Chip with Menu so the trigger has aria-haspopup="menu" and aria-expanded.
+  - id: chip-wrap-choice
+    severity: info
+    description: Chip rows should explicitly decide whether they wrap.
+    guidance: Use ChipGroup wrap for content/filter rows and wrap={false} for compact toolbars that intentionally scroll or stay on one line.

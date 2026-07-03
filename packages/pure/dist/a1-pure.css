@@ -559,8 +559,16 @@ abbr[title] { text-decoration: underline dotted; cursor: help; }
   font-size: inherit;
   line-height: 1;
   color: inherit;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1em;
+  block-size: 1em;
+  overflow: hidden;
+  flex-shrink: 0;
   white-space: nowrap;
+  vertical-align: -0.125em;
+  text-align: center;
   direction: ltr;
   user-select: none;
   -webkit-font-smoothing: antialiased;

@@ -1,0 +1,51 @@
+{
+  "component": {
+    "actionTile": {
+      "borderWidth": { "$type": "dimension", "$value": "{component.card.borderWidth}" },
+      "borderRadius": { "$type": "dimension", "$value": "{component.card.borderRadius}" },
+      "padding": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.20}" }
+      },
+      "gap": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.16}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.20}" }
+      },
+      "headerGap": { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "copyGap": { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "footerGap": { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "minHeight": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.64}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.96}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.128}" }
+      },
+      "iconBoxSize": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.40}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.48}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.64}" }
+      },
+      "iconSize": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.40}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.48}" }
+      },
+      "iconRadius": { "$type": "dimension", "$value": "{base.radius.control}" },
+      "iconOpticalSize": {
+        "sm": { "$type": "number", "$value": 32 },
+        "md": { "$type": "number", "$value": 40 },
+        "lg": { "$type": "number", "$value": 48 }
+      },
+      "titleFontSize": {
+        "sm": { "$type": "dimension", "$value": "{semantic.font.size.body.xs}" },
+        "md": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+        "lg": { "$type": "dimension", "$value": "{semantic.font.size.body.md}" }
+      },
+      "titleFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+      "subtitleFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.xs}" },
+      "focusRingWidth": { "$type": "dimension", "$value": "{component.button.focusRingWidth}" },
+      "focusRing": { "$type": "color", "$value": "{component.button.focusRing}" }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { onStorageWrite, suspendStorageNotify } from '../editor/storage'
 import { exportUserPatterns, importUserPatterns, subscribePatterns } from '../patterns/patternStore'
 import { exportThemes, importThemes, subscribeThemes } from '../lib/themeStore'
 import { hydrateLabels, importLabels } from '../labels/labelStore.js'
+import { registerSyncSource } from '../lib/manualSync.js'
 
 // Cloud sync for all editor data — a single SHARED workspace: every signed-in user
 // reads and writes the same bundle. On sign-in the shared bundle is pulled into
@@ -41,14 +42,14 @@ function importEnvelope(text) {
     if (parsed && parsed.__a1bundle) bundle = parsed
   } catch { /* not JSON — a legacy plain-text projects export */ }
   if (bundle) {
-    if (typeof bundle.projects === 'string') importAllText(bundle.projects)
+    if (typeof bundle.projects === 'string') importAllText(bundle.projects, { replaceProjects: true })
     importUserPatterns(bundle.patterns)
     importThemes(bundle.themes)
     // Legacy: labels lived in the shared_state bundle before the dedicated
     // workspace_labels table. Import once so the new label store can upsert them.
     if (bundle.labels) importLabels(bundle.labels)
   } else {
-    importAllText(text) // legacy: projects-only
+    importAllText(text, { replaceProjects: true }) // legacy: projects-only
   }
 }
 
@@ -57,9 +58,7 @@ let pushTimer = null
 let unsubscribers = []
 let suspendPush = false
 let channel = null
-let pollTimer = null
 let onHydratedCb = null
-const POLL_MS = 8000
 // The envelope string we last pulled or pushed — used to ignore our own realtime
 // echo and skip redundant re-hydrates.
 let lastSyncedData = null
@@ -122,19 +121,17 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
       )
       .subscribe()
   }
-  // Reliable fallback: poll the shared row so changes propagate even if Realtime
-  // isn't enabled on the table (or its auth doesn't resolve). hydrateFromRemote
-  // skips when nothing changed, so this is cheap.
-  if (!pollTimer) {
-    pollTimer = setInterval(() => {
-      fetchSharedData().then(hydrateFromRemote).catch(() => { /* offline */ })
-    }, POLL_MS)
-  }
+  // Live updates arrive via the Realtime channel above. The old 8s poll fallback
+  // was removed — it re-downloaded the whole workspace envelope every tick and was
+  // the main source of uncached egress. Use syncNow() (Account → "Sync now") to
+  // pull manually when Realtime isn't delivering.
   // Push local changes (debounced) when projects/pages, patterns, or themes change.
   if (!unsubscribers.length) {
     unsubscribers.push(onStorageWrite(schedulePush))
     unsubscribers.push(subscribePatterns(schedulePush))
     unsubscribers.push(subscribeThemes(schedulePush))
+    // Let the Account "Sync now" action pull the shared workspace on demand.
+    unsubscribers.push(registerSyncSource('cloud', syncNow))
   }
 }
 
@@ -153,9 +150,22 @@ export function stopCloudSync() {
   unsubscribers.forEach((u) => u())
   unsubscribers = []
   if (pushTimer) { clearTimeout(pushTimer); pushTimer = null }
-  if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
   if (channel) { supabase.removeChannel(channel); channel = null }
   lastSyncedData = null
+}
+
+/**
+ * Manually pull the shared workspace envelope once and hydrate if it changed.
+ * Replaces the old 8s poll — call from the Account "Sync now" action. Resolves
+ * true when a remote change was applied, false when already up to date. No-op
+ * (resolves false) unless Supabase is configured and a user is signed in.
+ */
+export async function syncNow() {
+  if (!supabaseConfigured || !currentUserId) return false
+  const before = lastSyncedData
+  const remote = await fetchSharedData()
+  hydrateFromRemote(remote)
+  return lastSyncedData !== before
 }
 
 function schedulePush() {

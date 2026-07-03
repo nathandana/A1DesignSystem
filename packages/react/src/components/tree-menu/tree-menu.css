@@ -252,3 +252,34 @@
   background: color-mix(in srgb, var(--semantic-color-action-background) 12%, transparent);
   box-shadow: inset 0 0 0 2px var(--semantic-color-action-background);
 }
+
+/* ── Inline rename ─────────────────────────────────────────────────────────── */
+/* The editing container reuses the label-btn layout (icon + label slot) but is a
+   plain div, since a text input cannot be nested inside the label <button>. */
+.a1-tree-menu__label-btn--editing {
+  cursor: text;
+}
+
+.a1-tree-menu__rename-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding-block: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-4);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-field);
+  /* Not `inherit`: the selected row sets inverse text, which would be
+     unreadable on the field surface. Pair the field surface with the
+     field family's text colour instead. */
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family, inherit);
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: var(--component-tree-menu-item-line-height);
+}
+
+.a1-tree-menu__rename-input:focus-visible {
+  outline: none;
+  border-color: var(--semantic-color-border-strong);
+  box-shadow: 0 0 0 var(--component-field-focus-ring-width) var(--component-field-focus-ring-color);
+}
