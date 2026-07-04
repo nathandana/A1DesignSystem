@@ -1,7 +1,8 @@
 {
   "name": "@gtivr4/a1-design-system-react",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "description": "React components for the A1 token-driven design system.",
+  "license": "UNLICENSED",
   "type": "module",
   "main": "./src/index.js",
   "keywords": [
@@ -10,19 +11,31 @@
     "tokens",
     "components"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathandana/A1DesignSystem.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/nathandana/A1DesignSystem/issues"
+  },
+  "homepage": "https://a1design.app",
   "sideEffects": [
     "**/*.css"
   ],
   "files": [
     "README.md",
+    "CHANGELOG.md",
     "guidelines/**/*.md",
     "src/**/*.css",
     "src/**/*.d.ts",
     "src/**/*.jsx",
-    "src/index.js",
+    "src/**/*.js",
     "!src/**/*.stories.jsx",
     "!src/tokens/**",
     "!src/rules/**",
+    "!src/storybook/**",
+    "!src/components/data-grid/**",
     "!src/Breakpoints.stories.jsx",
     "!src/Colors.stories.jsx"
   ],
@@ -34,6 +47,7 @@
     "./color-scheme.css": "./src/color-scheme.css",
     "./utilities/spacing.css": "./src/utilities/spacing.css",
     "./utilities/width.css": "./src/utilities/width.css",
+    "./utilities/sr-only.css": "./src/utilities/sr-only.css",
     "./components/*": "./src/components/*"
   },
   "publishConfig": {

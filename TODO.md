@@ -35,6 +35,7 @@ _None._
 
 ## P2 — Medium
 
+- [ ] **SideNav — embedded/panel variant** `P2 · M` — SideNav hardcodes app-shell behaviour on desktop (`position: sticky`, `height: 100vh`), so embedding it as an in-page panel (e.g. a settings screen's local nav) requires consumer CSS overrides. Add a supported variant/prop (e.g. `embedded`) that opts out of sticky/full-height and sizes to its container. _From the consumer-integration audit (2026-07-03); full component checklist applies (stories, configurator, changelogs)._
 - [ ] **TopHeader configurator — child / flyout nav items** `P2 · M` — the a1-web TopHeader configurator only edits **flat** links; it can't add a **parent with children** (the dropdown/flyout) or mark a child active. Add child-item editing so flyouts (and the selected-parent state) are demonstrable in the configurator, not just in Storybook / the editor's auto-generated project nav.
 - [ ] **Fix left sidebar collapse** `P2 · S` — the collapse/expand behaviour of the left sidebar is broken. _Q: which sidebar — the editor workspace sidebar (Pages/Layers) or the main site SideNav? Repro + expected behaviour._
 - [ ] **Complete component Properties tables + prop reconciliation** `P2 · L` — follow-up to the coverage audit (first pass done). Finding: **67** components have a configurator but only **56** have a dedicated Properties table (~11 fall back to generic). Write the **missing Properties tables**, reconcile each component's **root + child props** across the MD registry / configurator / Properties tab / Storybook, and flag which components lack **Pure / Native** coverage.
@@ -104,6 +105,8 @@ _None._
 
 ## P3 — Low / someday
 
+- [ ] **Unify `onChange` signatures (breaking — hold for 1.0)** `P3 · L` — field-family components pass the DOM event while selection controls pass the value (and Switch passes `(checked, event)`). Consumer audit flagged the inconsistency. Documented as an explicit convention in `packages/react/guidelines/components.md` (2026-07-03); actual unification is a breaking change across every consumer + configurator — batch it with the next major. _Q: unify on `(value, event)`?_
+- [ ] **Generate react package type declarations at publish** `P3 · M` — `src/index.d.ts` and the per-component `.d.ts` files are hand-maintained and drifted badly (20 missing exports, 9 missing files — fixed by hand 2026-07-03; `npm run pack:check` now blocks index-level drift). Longer term, generate declarations from the JSX (tsc `allowJs` + JSDoc, or migrate sources) so per-component prop drift can't recur.
 - [ ] **Button — distinct primary/tertiary variant icons** `P3 · XS` — the variant picker uses `star` (primary) vs `star_outline` (tertiary), which read similarly at small size; pick clearly distinct glyphs.
 - [ ] **Component list — A–Z view toggle** `P3 · S` — add a view control on the components list to show a flat A–Z list (no categories); persist the choice in localStorage. a1-web only.
 - [ ] **Card — subtle hero style** `P3 · S` — a lower-emphasis variant of the hero-card style. _Pairs with the Card image / badge-in-hero items._

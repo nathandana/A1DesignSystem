@@ -19,6 +19,17 @@ export interface SnackbarProps {
   /** ARIA role. Default: "status" (aria-live="polite"). */
   role?: string;
   className?: string;
+  /**
+   * @deprecated Accepted but ignored. Snackbar has a single visual style; use
+   * `Banner` for persistent status-coloured messages. Will be removed in a
+   * future major version.
+   */
+  variant?: string;
+  /**
+   * @deprecated Accepted but ignored. The inverse treatment is applied
+   * internally. Will be removed in a future major version.
+   */
+  inverse?: boolean;
 }
 
 export declare function Snackbar(props: SnackbarProps): React.ReactElement | null;

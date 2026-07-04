@@ -18,4 +18,9 @@ export interface ClusterProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
+/**
+ * @deprecated Cluster is deprecated and will be removed in the next major
+ * version. Use `<Stack direction="row" wrap gap="...">` instead — Stack covers
+ * the wrapping-row pattern with the semantic gap scale.
+ */
 export declare function Cluster(props: ClusterProps): React.ReactElement;

@@ -9,6 +9,7 @@
 | Color-token inventory + validation | `npm run tokens:audit:check` |
 | Update computed color contract | `npm run tokens:contract:update` |
 | Check computed color contract | `npm run tokens:contract:check` |
+| Verify react npm tarball (imports, entry points, guidelines sync) | `npm run pack:check` |
 | Full QA (axe + visual + report) | `npm run test:qa` |
 | Update visual baselines | `npm run test:qa:update` |
 | Storybook dev | `npm run storybook` |
