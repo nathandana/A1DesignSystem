@@ -93,6 +93,7 @@ export const PLAN_SYSTEM = [
   '- Plan (numbered, ordered, concrete steps)',
   '- Likely files & areas',
   '- Done when (acceptance criteria, including docs / stories / configurator / changelog as applicable)',
+  '- Final CSS review (justify custom styling/CSS, what belongs in the design system, what needed better guidance, and what CSS was legitimate)',
   '',
   'Write it as direct instructions a coding agent can follow. No preamble, no sign-off.',
 ].join('\n');
@@ -207,6 +208,7 @@ function doneWhen(item: BacklogItem): string[] {
   }
   done.push('Verified across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl); accessibility holds.');
   done.push('No hardcoded values — everything traces to a token; sentence case throughout.');
+  done.push('Final CSS review is complete: justify any custom styling/CSS written, identify what should move into the design system, note where better guidance was needed, and call out any legitimate local CSS.');
   return done;
 }
 
@@ -259,6 +261,13 @@ export function developPlanLocally(
 
   out.push('## Done when');
   for (const d of doneWhen(item)) out.push(`- ${d}`);
+  out.push('');
+
+  out.push('## Final CSS review');
+  out.push('- For anything done in this session, justify any custom styling or CSS written.');
+  out.push('- Identify what should be included in the design system.');
+  out.push('- Identify what should have had better system guidance.');
+  out.push('- Identify what, if anything, was legitimate local CSS that needed to be written.');
   out.push('');
 
   out.push('## Conventions');

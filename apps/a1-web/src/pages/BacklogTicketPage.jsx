@@ -376,15 +376,13 @@ export function BacklogTicketPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      {/* ── Build with AI (dev only) ───────────────────────────────────── */}
-      {import.meta.env.DEV && (
-        <Section padding="md" surface="panel" contentWidth="xl">
-          <Stack gap="md">
-            <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
-            <TicketAiPrompt item={item} />
-          </Stack>
-        </Section>
-      )}
+      {/* ── Build with AI ──────────────────────────────────────────────── */}
+      <Section padding="md" surface="panel" contentWidth="xl">
+        <Stack gap="md">
+          <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
+          <TicketAiPrompt item={item} />
+        </Stack>
+      </Section>
 
       {/* ── Virtual PO (dev only) ──────────────────────────────────────── */}
       {import.meta.env.DEV && (

@@ -1,8 +1,7 @@
 /**
- * Local AI client — talks to a **local** LLM runner (Ollama's HTTP API) so dev-only
- * features can use a model on your own machine, with **no Anthropic API calls and no
- * credits spent**. Used by the Backlog "Build with AI" tab to turn a ticket into a
- * development plan.
+ * Local AI client — talks to a **local** LLM runner (Ollama's HTTP API) so optional AI-assisted
+ * features can use a model on your own machine, with **no Anthropic API calls and no credits
+ * spent**. Used by the Backlog "Build with AI" tab to turn a ticket into a development plan.
  *
  * Everything degrades gracefully: if no local runner is reachable (or it errors), callers
  * fall back to the deterministic planner. Nothing here is required for the app to work.
