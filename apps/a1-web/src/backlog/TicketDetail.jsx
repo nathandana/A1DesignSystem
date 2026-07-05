@@ -26,7 +26,6 @@ import {
   Toolbar,
   ToolbarDivider,
   ToolbarGroup,
-  ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
 import { resolveSrc } from '../lib/imageLibrary'
 import { getPersona } from '../services/backlog/personas'
@@ -120,8 +119,7 @@ function QuestionChoices({ options, allowOther, onAnswer }) {
   )
 }
 
-// Status toolbar split: the common workflow stages sit inline; the rest live in a
-// "More" overflow menu so the bar stays compact.
+// Common workflow stages stay visible first when the status toolbar overflows.
 export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done']
 export const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
 
@@ -473,22 +471,19 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
                     options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t], icon: TYPE_ICON[t] }))}
                   />
                 </Toolbar>
-                <Toolbar label="Status" aria-label="Status" fullWidth overflow overflowLabel="More status tools">
+                <Toolbar label="Status" aria-label="Status" fullWidth>
                   <ToolbarGroup
                     aria-label="Status"
                     overflow
                     showLabels
-                    value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
-                    onChange={(v) => v && patch({ status: v })}
-                    options={PRIMARY_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
-                  />
-                  <ToolbarDivider />
-                  <ToolbarMenu
-                    aria-label="More statuses"
-                    label={OVERFLOW_STATUSES.includes(item.status) ? STATUS_LABELS[item.status] : 'More'}
                     value={item.status}
-                    onChange={(v) => patch({ status: v })}
-                    items={OVERFLOW_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
+                    onChange={(v) => v && patch({ status: v })}
+                    options={STATUSES.map((s) => ({
+                      value: s,
+                      label: STATUS_LABELS[s],
+                      icon: STATUS_ICON[s],
+                      overflowPriority: PRIMARY_STATUSES.includes(s) ? PRIMARY_STATUSES.indexOf(s) : 100 + OVERFLOW_STATUSES.indexOf(s),
+                    }))}
                   />
                 </Toolbar>
                 <Toolbar label="Priority & size" aria-label="Priority and size" fullWidth overflow overflowLabel="More priority and size tools">
