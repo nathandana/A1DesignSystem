@@ -1046,6 +1046,15 @@ function App() {
         return
       }
 
+      // "!" opens the "New ticket" dialog from anywhere (A1-393). The dialog is
+      // owned by BacklogProvider above <App />, so openCreate works app-wide.
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '!') {
+        event.preventDefault()
+        clearGoTarget()
+        backlog?.openCreate({ kind: 'general' })
+        return
+      }
+
       if (awaitingGoTarget) {
         const targetPage = goTargets[event.key.toLowerCase()]
         if (targetPage) {
@@ -1469,6 +1478,9 @@ function App() {
           </MenuItem>
           <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
             Search A1
+          </MenuItem>
+          <MenuItem icon="add_task" shortcut="Shortcut: !" onClick={() => runSkipMenuAction(() => backlog?.openCreate({ kind: 'general' }))}>
+            New ticket
           </MenuItem>
           <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
             Show all shortcuts
