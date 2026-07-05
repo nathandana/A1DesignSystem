@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 0.24.0 — 2026-07-05
+
 - **Merging tickets now merges descriptions** (A1-400) — when two backlog tickets are merged, the duplicate's description is now folded into the **surviving ticket's description** (which the merge dialog already promises) instead of only being dropped into the comment thread. If the survivor has no description it adopts the duplicate's verbatim; when both have one, the duplicate's is appended under a clear `Merged from A1-N — "title":` heading so no agreed content is lost. Re-merging the same content is idempotent (it won't duplicate the body).
 
 - **Snackbars visible in dark mode** (A1-313) — snackbars now render as a light toast on the dark app background (and a dark toast in light mode) instead of a dark toast that was hard to see against a dark page. The fix is in the design-system Snackbar (React + Web Component); no app-side change was needed.
@@ -26,11 +30,17 @@
 
 - **Projects page — responsive action toolbar** — the Projects (editor home) header actions now stay useful at every width. The secondary actions (Help, Image library, Upload JSON) moved into a `Toolbar` with `overflow`: they show with labels from the `md` breakpoint up, collapse to icon-only below, and move into a "More actions" menu when even the icons don't fit — so the primary **New project** button (kept as a full `SplitButton`/`Button` beside the toolbar) is always visible instead of wrapping to a second row on small screens. Icon-only tools keep their accessible names.
 
+## 0.23.0 — 2026-07-04
+
 - **Shortcut for new ticket** (A1-393) — pressing **`!`** anywhere in the app opens the **New ticket** dialog (unscoped, `kind: 'general'`), matching the existing global-shortcut pattern (like `?` for Help). It's guarded against firing while typing in an input, textarea, or select, and is listed in the "Show all shortcuts" menu (Jump section) as **New ticket · Shortcut: !**. Works app-wide because the create-ticket dialog is owned by `BacklogProvider` above the app.
 
 - **Priority Guide editor + Wireframe themes** — a new **Priority guides** editor under **Editors** (`/priority-guide`) brings the priority-guide workflow into a1-web: create content-first alignment docs (problem, audience, user/business goals, and a priority-ranked content hierarchy with groups), edit fields inline, reorder items by drag or arrows, and edit the live JSON two-way. Guides seed from the four bundled examples, persist locally, and **cloud-sync** as part of the shared workspace envelope alongside projects/patterns/themes. A guide can be **attached to a project + page** and **converted to a real A1 page** (round-trippable — the source guide is stashed in `page.meta` so "convert from page" is lossless), then previewed as a **wireframe**. Two new deliberately un-designed themes back this: **Wireframe** (`.a1-theme-wireframe`) — black/grey/white only, no shadows, zero-radius, monospace — and **Wireframe (redacted)** (`.a1-theme-wireframe-redacted`) — the same, but with copy replaced by solid grey bars (one per line) so reviewers read structure and density, not words. Both are selectable in Settings → Theme; the editor's **Preview wireframe** / **Preview redacted** buttons open the converted page standalone under the chosen theme (via a new `?theme=` param on the editor preview).
 
+## 0.22.0 — 2026-07-03
+
 - **Cloud sync — removed background polling, added "Sync now"** — the four 8-second Supabase polls (shared workspace envelope, workspace labels, backlog, and data sources) were removed. They re-downloaded whole tables/blobs every tick regardless of whether anything changed and were the dominant source of uncached egress. Live updates still arrive via the existing Supabase **Realtime** subscriptions; a new **Sync now** action on the Account page pulls the latest projects, patterns, themes, labels, backlog, and data sources on demand for the rare case Realtime hasn't delivered.
+
+## 0.21.0 — 2026-07-02
 
 - **Chip component** (A1-390) — added Chip under **Actions & Controls** with a live configurator for selectable, menu-trigger, and navigation chip groups. The editor Add panel can insert a configured ChipGroup, and DataTable filters now render with the shared Chip component.
 
@@ -46,6 +56,34 @@
 
 - **Color foundations — 25 ramp step** (A1-342) — base color ramp tables and the OKLCH visualization now include the new `25` step for every color ramp.
 
+- **A1-349 — Project deletion persistence** — fixed deleted Projects coming back after cloud sync by making shared project hydration replace the local project set instead of merge-only upserting. Project deletion now also clears the project's page-list and shared-layout storage without triggering sample seeding during the delete path.
+
+- **Backlog CSV export** — added an Export CSV action to the Backlog panel that downloads the entire backlog, independent of the current view, filters, table pagination, or sort.
+
+- **Icon font loading stability** — constrained A1 icon ligatures to a fixed 1em square with clipped overflow so Material Symbols do not briefly expand layout while the icon font loads.
+
+- **Components sidebar A-Z view** — added an unlabeled icon toolbar toggle beside the Components sidebar search so builders can switch between the grouped category tree and a flat A-Z component list while keeping smart search active. The selected view persists per browser in localStorage.
+
+- **Components smart search** — added curated component aliases, keyword matching, and misspelling tolerance to the Components sidebar and all-components table. Searches like `CTA` surface Button, while searches like `grid` keep Grid first and also include Data Table as a related match.
+
+- **DataTable custom search matcher** — added optional `searchMatcher` support for DataTable searchable columns so consumers can layer aliases, fuzzy matching, or domain-specific search behavior onto the built-in filter UI.
+
+- **Search Field clear action sizing** — adjusted the SearchField trailing clear button spacing so the icon button stays inside the compact field border, reserves matching input text space, and scales up in comfortable fields.
+
+- **Components package coverage** — added Web Components to the Components overview package list and component detail support grid, with Button and Snackbar marked as available from `packages/web-components`.
+
+- **DataTable mobile layout** — added a `mobileLayout` prop and configurator control so mobile tables can either render as Card-like definition-list rows or preserve the table layout with horizontal scroll. The default card mode now uses Card surface, border, radius, and shadow tokens and removes per-field divider lines.
+
+- **DataTable mobile sort and filter menu** — when a DataTable has filters or search controls, the mobile sort control now moves into the same menu as filters as a **Sort & filter** action instead of rendering as a separate stacked field.
+
+- **DataTable editor slice** — added real column configuration to the a1-web DataTable configurator: add, delete, select, and reorder columns; edit column labels; choose a column component; and set sortable, filterable, search-by, and inline-editable behavior per column. The shared React DataTable now supports column-generated filters, column-scoped search, custom `renderCell` slots, and `onCellChange` for inline editable cells.
+
+- **DataTable — page-size control and contained overflow** — added `defaultPageSize`, `pageSizeOptions`, and `onPageSizeChange` so tables can expose a Rows per page selector in the pagination footer. DataTable wrappers now contain horizontal overflow, the component configurator can preview page-size choices, and the Backlog All tickets table opts into horizontal scrolling with 10 / 25 / 50 row choices.
+
+- **DataTable configurator cleanup** — combined Density and Appearance into one Display toolbar with a divider between density and visual toggles, grouped Display, Features, and Caption into a default-open Table accordion, moved selection controls into the Features toolbar, moved empty-state controls into a collapsed accordion, and restored the shared preview Padding and Inverse controls.
+
+## 0.20.0 — 2026-07-01
+
 - **Section configurator — background image** (A1-345) — the Section page's Background panel now configures the new background-image props: pick an image from the active project library or a URL, set the fit (cover / contain / tile), choose the focal point on a 3×3 grid, and add a darken/lighten contrast overlay with a strength slider. The gradient controls hide while an image is set (the component gives the image precedence) and the emitted code snippet includes the new props.
 
 - **Settings — sign-in option** — the Settings menu now always includes an Account section. Signed-out users see a Sign in action that opens the Account page; signed-in users see their email, Account, and Sign out actions.
@@ -53,6 +91,8 @@
 - **Projects — editable project definition JSON** — the project "definition" dialog now shows the JSON bundle in a scrollable, editable code snippet (a fixed-height, resizable editor) instead of a read-only collapsible block. Edits update what **Copy code** copies, so the bundle can be tweaked before pasting into the importer; the stored project is unchanged.
 
 - **Editor — rename items in the Layers tree** (A1-22) — right-click a node in the editor's Layers tree and choose **Rename**, **double-click** its label, or press **F2** to edit its name inline (Enter or click-away commits, Escape cancels). The custom name is stored on the node (`node.name`) and overrides the auto-derived label (pattern name → text content → component type); clearing it restores the auto label. Built on the design-system `TreeMenu`'s new inline-rename support, recorded as a normal undoable editor change.
+
+## 0.19.0 — 2026-06-30
 
 - **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
 
@@ -94,6 +134,8 @@
 
 - **Backlog — Paused swimlane** — added Paused as a first-class workflow status between In progress and Done. The board shows it as a default swimlane, ticket status controls can set it, local backlog sync groups it, and Supabase validation accepts `paused`.
 
+## 0.18.0 — 2026-06-29
+
 - **Label editor — context menus** — all three grids in the Label editor (All labels, Workspace overrides, Project overrides) now support right-click context menus. Right-clicking any row shows a Re-translate action (re-runs the MyMemory auto-translation for all enabled locales, replacing existing translations) and a destructive Delete action that removes the override row and deselects it. The menus use the A1 `ContextMenu` component and are consistent with the existing right-click patterns in the Editor.
 
 - **Help page — extensive label, layout, typography, navigation, inputs, themes, and settings articles** — added ~30 new articles across 7 new categories: Layout & Display (Section, Stack/Grid, Card, StickyActions/ButtonContainer, Bleed/Inset/Spacer), Typography (Headings, Paragraph/List/Blockquote, Code/Divider/Inline, inline markdown), Navigation components (Tabs variants, TopHeader/SideNav, Breadcrumb/PageNav, BottomDrawer), Inputs & Forms (field family, Select/RadioGroup/CheckboxGroup/ChoiceGroup, Fieldset/FieldRow, Autocomplete), Themes (what themes are, built-in themes, switching themes, theme editor), Labels & translations (what labels are, All/Workspace/Project tabs, auto-translation, exporting), and Settings (overview, AI API key, accessibility report).
@@ -126,31 +168,7 @@
 
 - **Home link in mobile navigation** (A1-372) — Added a Home link as the first item in the mobile navigation drawer. On mobile, the hamburger menu now includes a Home entry (icon: `home`) so users can return to the home screen without closing the menu and tapping the logo. The item also appears in the desktop nav bar as a plain link alongside the existing dropdown nav items.
 
-- **A1-349 — Project deletion persistence** — fixed deleted Projects coming back after cloud sync by making shared project hydration replace the local project set instead of merge-only upserting. Project deletion now also clears the project's page-list and shared-layout storage without triggering sample seeding during the delete path.
-
-- **Backlog CSV export** — added an Export CSV action to the Backlog panel that downloads the entire backlog, independent of the current view, filters, table pagination, or sort.
-
-- **Icon font loading stability** — constrained A1 icon ligatures to a fixed 1em square with clipped overflow so Material Symbols do not briefly expand layout while the icon font loads.
-
-- **Components sidebar A-Z view** — added an unlabeled icon toolbar toggle beside the Components sidebar search so builders can switch between the grouped category tree and a flat A-Z component list while keeping smart search active. The selected view persists per browser in localStorage.
-
-- **Components smart search** — added curated component aliases, keyword matching, and misspelling tolerance to the Components sidebar and all-components table. Searches like `CTA` surface Button, while searches like `grid` keep Grid first and also include Data Table as a related match.
-
-- **DataTable custom search matcher** — added optional `searchMatcher` support for DataTable searchable columns so consumers can layer aliases, fuzzy matching, or domain-specific search behavior onto the built-in filter UI.
-
-- **Search Field clear action sizing** — adjusted the SearchField trailing clear button spacing so the icon button stays inside the compact field border, reserves matching input text space, and scales up in comfortable fields.
-
-- **Components package coverage** — added Web Components to the Components overview package list and component detail support grid, with Button and Snackbar marked as available from `packages/web-components`.
-
-- **DataTable mobile layout** — added a `mobileLayout` prop and configurator control so mobile tables can either render as Card-like definition-list rows or preserve the table layout with horizontal scroll. The default card mode now uses Card surface, border, radius, and shadow tokens and removes per-field divider lines.
-
-- **DataTable mobile sort and filter menu** — when a DataTable has filters or search controls, the mobile sort control now moves into the same menu as filters as a **Sort & filter** action instead of rendering as a separate stacked field.
-
-- **DataTable editor slice** — added real column configuration to the a1-web DataTable configurator: add, delete, select, and reorder columns; edit column labels; choose a column component; and set sortable, filterable, search-by, and inline-editable behavior per column. The shared React DataTable now supports column-generated filters, column-scoped search, custom `renderCell` slots, and `onCellChange` for inline editable cells.
-
-- **DataTable — page-size control and contained overflow** — added `defaultPageSize`, `pageSizeOptions`, and `onPageSizeChange` so tables can expose a Rows per page selector in the pagination footer. DataTable wrappers now contain horizontal overflow, the component configurator can preview page-size choices, and the Backlog All tickets table opts into horizontal scrolling with 10 / 25 / 50 row choices.
-
-- **DataTable configurator cleanup** — combined Density and Appearance into one Display toolbar with a divider between density and visual toggles, grouped Display, Features, and Caption into a default-open Table accordion, moved selection controls into the Features toolbar, moved empty-state controls into a collapsed accordion, and restored the shared preview Padding and Inverse controls.
+## 0.17.0 — 2026-06-28
 
 - **Home platforms** — added the Web Components platform card with its own localized description, updated the package count to four, and set the platform cards to a 2x2 grid on tablet and wider viewports.
 
@@ -175,6 +193,8 @@
 - **Menu — Safari fallback anchor fix** — fixed unanchored menus in Safari and explicitly anchored the app Settings menu to its icon button. `Menu` no longer treats `body`, `html`, or another `dialog` as a fallback anchor when focus is not on the triggering button; this keeps the menu from appearing at the bottom-left of the viewport, positions Settings below its trigger, and restores outside-click dismissal.
 
 - **Component proposals workspace** (A1-326) — added a dormant a1-web workspace for the first vertical slice of in-app component creation; it is intentionally hidden from navigation and routing for now. The workspace lets designers describe a new component or an existing component-property change, generate a governed draft with metadata (status, creator, visibility, description, problem, prompt, dates, and update history), preview it through the existing A1 page-definition renderer, inspect/copy generated buildable React component source, edit the generated JSON in developer mode, and move it through draft → proposal → review → accepted → released. Draft generation uses a local Ollama model when available and falls back to the built-in deterministic generator when no local model is reachable or the model returns invalid JSON. Proposals are stored locally for this slice; package publishing, project insertion, and re-exposing the page remain follow-ups.
+
+## 0.16.0 — 2026-06-27
 
 - **CSS audit pass 2 — Stack/Grid/Inset replacements and dead CSS removal** (A1-295) — removed a further 382 lines from `styles.css` (net). Replaced custom flex/grid wrapper classes with `Stack`, `Grid`, and `Inset` component props across EditorAddPanel, EditorHistoryPanel, EditorImagesPanel, EditorVersionsPanel, EditorPage, ThemeEditor, ComponentDetailPage, configLock, configKit, IconSelect, ImageLibraryView, and Home; deleted confirmed dead CSS for `a1-web-aside-panel`, `a1-web-theme-grid/controls/preview/sidebar`, `a1-web-history-panel/history/__item`, `a1-web-tag-chip`, `a1-web-type-size-input`, and others with no JSX consumers. Added `Stack grow` prop to the design system (`flex: 1 1 auto; min-inline-size: 0`) so a field beside a button no longer needs a wrapper div or utility class — eliminates the need for `a1-web-field-grow` and `a1-web-icon-select__field`. Updated agent context (`project-workflows.md`) with an explicit rule: fix styling through component props, not local CSS.
 
