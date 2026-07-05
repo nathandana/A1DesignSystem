@@ -29,7 +29,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
-| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
+| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu, Tooltip |
 | Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
@@ -354,6 +354,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Dialog | ✓ | ✓ | — | — |
 | Menu | ✓ | — | — | — |
 | Context Menu | ✓ | — | — | — |
+| Tooltip | ✓ | — | ✓ | — |
 | Bottom Sheet | ✓ | — | — | — |
 
 > **Menu label styling:** `MenuSection` labels use compact muted menu chrome. When fields or choice groups are embedded inside a `Menu` (for settings-style panels), their labels and legends are overridden to the same compact muted treatment so full-form label emphasis does not appear inside menu panels. The controls themselves keep their component sizing and behavior.
@@ -363,6 +364,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **ContextMenu props:** `open` (boolean, default false), `x` (number — viewport x position, typically `event.clientX`), `y` (number — viewport y position, typically `event.clientY`), `items` (`ContextMenuEntry[]`), `onClose` (() => void — called on outside click or Escape), `aria-label` (string, default "Context menu"). Items are typed: `{ type?: 'item'; id; label; icon?; shortcut?; variant?: 'default' | 'destructive'; active?; disabled?; onClick? }` | `{ type: 'divider'; id }` | `{ type: 'group'; id; label }`. Portals to `document.body`. Keyboard: Escape closes, Arrow Up/Down navigates items, Home/End jump to first/last, Enter activates. Closes on outside mousedown. The position is clamped to stay within the viewport.
 >
 > **ContextMenu usage:** Mount the component once in the host element alongside the triggering content. Set `open`, `x`, and `y` from the `onContextMenu` handler on the container element. Do not use a separate trigger button — ContextMenu is always triggered by a right-click (contextmenu event).
+
+> **Tooltip props:** `content` (ReactNode — short, non-interactive message), `children` (trigger element), `placement` (`"top" | "right" | "bottom" | "left"`, default `"top"`), `delay` (milliseconds, default 400, clamped 0–1500), `disabled` (boolean), `className` (tooltip surface class). Tooltip opens on hover and keyboard focus, closes on pointer leave, blur, or Escape, portals to `document.body`, and sets `role="tooltip"` plus `aria-describedby` on the trigger when open. Placement is a preference; the surface clamps to the viewport. Use Tooltip only for brief supporting context — do not put interactive controls or essential task instructions inside it.
 
 > **Dialog props:** `open` (boolean), `onClose` (optional — called on **Escape**, the **close button**, or a **backdrop click** (clicking outside the dialog box); omit to hide the close button entirely and make the dialog non-dismissable), `title` (optional), `footer` (ReactNode), `status` ("success" | "error" | "warn" | "info" | "neutral" — renders a full-bleed colored hero band at the top with a status icon), `icon` (string — overrides the default status icon when `status` is set).
 >

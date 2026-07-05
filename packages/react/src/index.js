@@ -25,6 +25,7 @@ export { Code } from "./components/code/Code.jsx";
 export { DefinitionList } from "./components/definition-list/DefinitionList.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
 export { Divider } from "./components/divider/Divider.jsx";
+export { Tooltip } from "./components/tooltip/Tooltip.jsx";
 export { InlineEditable } from "./components/inline-editable/InlineEditable.jsx";
 export { Heading, HeadingMark } from "./components/heading/Heading.jsx";
 export { List, ListItem } from "./components/list/List.jsx";

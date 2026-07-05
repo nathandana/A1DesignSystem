@@ -5223,5 +5223,48 @@ export const GENERATED_PROP_TABLES = {
         }
       ]
     }
+  ],
+  "tooltip": [
+    {
+      "title": "Tooltip",
+      "rows": [
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Element or text that receives hover/focus listeners."
+        },
+        {
+          "id": "content",
+          "name": "content",
+          "type": "React.ReactNode",
+          "description": "Tooltip message. Keep it short and non-interactive."
+        },
+        {
+          "id": "placement",
+          "name": "placement",
+          "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+          "description": "Preferred tooltip placement. The rendered position is clamped to the viewport. Default: \"top\"."
+        },
+        {
+          "id": "delay",
+          "name": "delay",
+          "type": "number",
+          "description": "Delay in milliseconds before showing the tooltip. Clamped from 0 to 1500. Default: 400."
+        },
+        {
+          "id": "disabled",
+          "name": "disabled",
+          "type": "boolean",
+          "description": "Prevents the tooltip from opening."
+        },
+        {
+          "id": "className",
+          "name": "className",
+          "type": "string",
+          "description": "Optional class applied to the tooltip surface."
+        }
+      ]
+    }
   ]
 }

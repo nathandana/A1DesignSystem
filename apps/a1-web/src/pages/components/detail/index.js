@@ -59,6 +59,7 @@ import * as section from './section.jsx'
 import * as stack from './stack.jsx'
 import * as treeMenu from './tree-menu.jsx'
 import * as contextMenu from './context-menu.jsx'
+import * as tooltip from './tooltip.jsx'
 import * as cluster from './cluster.jsx'
 import * as grid from './grid.jsx'
 import * as bleed from './bleed.jsx'
@@ -138,6 +139,7 @@ const REGISTRY = {
   stack,
   'tree-menu': treeMenu,
   'context-menu': contextMenu,
+  tooltip,
   cluster,
   grid,
   bleed,

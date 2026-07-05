@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Tooltip — component page + configurator** (A1-378) — added Tooltip to the Overlay category with a live Configure panel for content, trigger type, placement, delay, and disabled state. The page includes generated React/Pure snippets, rules, properties, accessibility guidance, package coverage, status, and related-component registry entries.
+
 - **Release notes package coverage** — the Releases page now includes package release notes. Release sources switch with a chip filter in the sidebar independent of Simplified/Detailed mode, versions remain in the TreeMenu, React has simplified package notes, and the Simplified/Detailed control now lives in the page header constrained to the same width as the release notes.
 
 - **Backlog swimlane controls** — the Backlog board now hides the swimlane visibility toolbar when the board switches to the small-screen tab layout, and the larger-breakpoint toolbar uses the shared Toolbar overflow behavior so swimlane toggles stay on one row.
