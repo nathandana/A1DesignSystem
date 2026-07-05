@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
+
 ### Fixed
 
 - **BottomSheet — mobile height respects TopHeader** — the expanded sheet is now capped to the viewport area below the sticky TopHeader by default, using `--component-top-header-height` plus the safe-area inset. Consumers without a top header can override `--a1-bottom-sheet-block-start-offset`.
