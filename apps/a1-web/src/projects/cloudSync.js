@@ -4,6 +4,7 @@ import { exportAllText, importAllText } from './projectStore'
 import { onStorageWrite, suspendStorageNotify } from '../editor/storage'
 import { exportUserPatterns, importUserPatterns, subscribePatterns } from '../patterns/patternStore'
 import { exportThemes, importThemes, subscribeThemes } from '../lib/themeStore'
+import { exportGuides, importGuides, subscribeGuides } from '../priorityGuide/priorityGuideStore.ts'
 import { hydrateLabels, importLabels } from '../labels/labelStore.js'
 import { registerSyncSource } from '../lib/manualSync.js'
 
@@ -14,7 +15,7 @@ import { registerSyncSource } from '../lib/manualSync.js'
 // change. A Supabase **realtime** subscription re-pulls automatically when any
 // other client writes, so changes propagate live without a reload. The bundle is one
 // JSON envelope in the `shared_state.data` text column:
-//   { __a1bundle, projects: <exportAllText text>, patterns: [...], themes: [...] }
+//   { __a1bundle, projects: <exportAllText text>, patterns: [...], themes: [...], guides: [...] }
 // Images are not in the envelope — they sync separately via Supabase Storage.
 // Labels now live in their own `workspace_labels` Supabase row. Legacy bundle
 // imports still hydrate labels when an older shared_state row contains them.
@@ -30,6 +31,7 @@ function exportEnvelope() {
     projects: exportAllText(),
     patterns: exportUserPatterns(),
     themes: exportThemes(),
+    guides: exportGuides(),
   })
 }
 
@@ -45,6 +47,9 @@ function importEnvelope(text) {
     if (typeof bundle.projects === 'string') importAllText(bundle.projects, { replaceProjects: true })
     importUserPatterns(bundle.patterns)
     importThemes(bundle.themes)
+    // Priority guides — additive/optional; an older bundle without `guides`
+    // leaves the local guides untouched.
+    if (bundle.guides !== undefined) importGuides(bundle.guides)
     // Legacy: labels lived in the shared_state bundle before the dedicated
     // workspace_labels table. Import once so the new label store can upsert them.
     if (bundle.labels) importLabels(bundle.labels)
@@ -130,6 +135,7 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
     unsubscribers.push(onStorageWrite(schedulePush))
     unsubscribers.push(subscribePatterns(schedulePush))
     unsubscribers.push(subscribeThemes(schedulePush))
+    unsubscribers.push(subscribeGuides(schedulePush))
     // Let the Account "Sync now" action pull the shared workspace on demand.
     unsubscribers.push(registerSyncSource('cloud', syncNow))
   }

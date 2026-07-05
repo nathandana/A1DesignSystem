@@ -101,6 +101,9 @@ export function EditorPreviewPage() {
     document.body.style.blockSize = 'auto';
     document.documentElement.style.blockSize = 'auto';
   }, []);
+  // An optional `?theme=` param (e.g. the Priority Guide editor's "Preview as
+  // wireframe") is applied by the app's authoritative theme effect in main.jsx,
+  // which seeds its `theme` state from the param when running standalone.
 
   // Initial screen: a `screen` URL param wins (shareable/bookmarkable deep link);
   // otherwise fall back to the last-launched working JSON in localStorage.

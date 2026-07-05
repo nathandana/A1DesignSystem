@@ -1,0 +1,13 @@
+{
+  "$schema": "../theme.schema.json",
+  "name": "Wireframe",
+  "description": "A deliberately un-designed low-fidelity theme — black, grey and white only, no colour, no shadows, and sharp (zero-radius) corners, in a monospace stack. Every status collapses to grey so nothing reads as branded or finished. Use it to review structure and content hierarchy before any visual design, or to convert a Priority Guide into a wireframe. Apply class=\"a1-theme-wireframe\" to <html>.",
+  "selectors": [
+    {
+      "selector": ".a1-theme-wireframe",
+      "overrides": "overrides/default.json",
+      "styles": "styles/default.json"
+    }
+  ],
+  "labels": {}
+}

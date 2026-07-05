@@ -10,7 +10,7 @@
       "itemFocusRingWidth": { "$type": "dimension", "$value": "{base.space.button.focusRingWidth}" },
       "itemFocusRingOffset": { "$type": "dimension", "$value": "-2px" },
       "itemDisabledOpacity": { "$type": "opacity", "$value": 0.4 },
-      "itemIconSize": { "$type": "dimension", "$value": "18px" },
+      "itemIconSize": { "$type": "dimension", "$value": "20px" },
       "mobileMaxHeight": { "$value": "80dvh" }
     }
   }
