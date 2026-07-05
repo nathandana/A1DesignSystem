@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-No unreleased changes.
+- **Tree Menu collapsed configurator** (A1-377) — the Tree Menu component page now exposes the `variant` prop and opens in collapsed mode so the root-icon menu flyout is visible immediately, with helper text, Properties coverage, generated snippet output, and editor/Add-panel round-tripping for `variant="collapsed"`.
 
 ## 0.24.0 — 2026-07-05
 

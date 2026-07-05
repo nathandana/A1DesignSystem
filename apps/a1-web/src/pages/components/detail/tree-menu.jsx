@@ -5,12 +5,17 @@ import {
   Code,
   Divider,
   Stack,
-  Switch,
   TextField,
   TreeMenu,
 } from '@gtivr4/a1-design-system-react'
+import { Choice } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
+
+const VARIANT_OPTIONS = [
+  { label: 'Expanded', value: 'expanded', icon: 'account_tree' },
+  { label: 'Collapsed', value: 'collapsed', icon: 'view_sidebar' },
+]
 
 function uid() {
   return `tree-item-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
@@ -24,6 +29,7 @@ function escStr(v) {
 
 export function getDefaultConfig() {
   return {
+    variant: 'collapsed',
     selectedId: 'invoices',
     expandedIds: ['account', 'billing'],
     showExpandControls: false,
@@ -110,10 +116,11 @@ export function Preview({ config, utilityClass = '' }) {
   }
 
   return (
-    <div style={{ maxWidth: 280 }}>
+    <div style={{ maxWidth: config.variant === 'collapsed' ? 'max-content' : 280 }}>
       <TreeMenu
         className={utilityClass || undefined}
         items={localItems}
+        variant={config.variant}
         selectedId={selectedId}
         onSelect={setSelectedId}
         expandedIds={expandedIds}
@@ -247,6 +254,16 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
+      <Choice
+        prop="variant"
+        label="Variant"
+        labelMode="selected"
+        helper="Expanded shows the full hierarchy. Collapsed shows root icons and opens each parent's children in a menu flyout."
+        value={config.variant}
+        onChange={(variant) => setConfig((c) => ({ ...c, variant }))}
+        options={VARIANT_OPTIONS}
+      />
+
       <TextField
         label="Selected item ID"
         hint="Set the initially selected item."
@@ -255,16 +272,20 @@ export function Controls({ config, setConfig }) {
         onChange={(e) => setConfig((c) => ({ ...c, selectedId: e.target.value }))}
       />
 
-      <Switch
+      <Toggle
+        prop="showExpandControls"
         label="Show expand controls"
-        checked={config.showExpandControls}
-        onChange={(checked) => setConfig((c) => ({ ...c, showExpandControls: checked }))}
+        helper="Adds expand or collapse controls above the expanded tree, or inside a collapsed parent flyout."
+        value={config.showExpandControls}
+        onChange={(showExpandControls) => setConfig((c) => ({ ...c, showExpandControls }))}
       />
 
-      <Switch
+      <Toggle
+        prop="draggable"
         label="Draggable"
-        checked={config.draggable ?? false}
-        onChange={(checked) => setConfig((c) => ({ ...c, draggable: checked }))}
+        helper="Enables drag-and-drop reordering for tree rows. Root icon reordering is not exposed in collapsed mode."
+        value={config.draggable ?? false}
+        onChange={(draggable) => setConfig((c) => ({ ...c, draggable }))}
       />
 
       <Divider />
@@ -304,6 +325,7 @@ export function Snippet({ config, utilityClass = '' }) {
   const itemLines = items.map((item) => itemToSnippet(item, 0)).join(',\n')
   const expandedLine = config.expandedIds?.length
     ? `\n  defaultExpandedIds={['${config.expandedIds.join("', '")}']}` : ''
+  const variantLine = config.variant === 'collapsed' ? '\n  variant="collapsed"' : ''
   const selectedLine = config.selectedId ? `\n  selectedId="${escStr(config.selectedId)}"` : ''
   const expandControlsLine = config.showExpandControls ? '\n  showExpandControls' : ''
   const draggableLine = config.draggable ? '\n  draggable\n  onMove={handleMove}' : ''
@@ -323,7 +345,7 @@ ${itemLines},
 
   return (
     <Code variant="block" wrapping copyCode>{`${moveHelperPreamble}<TreeMenu
-  items={items}${classNameLine}${selectedLine}${expandedLine}${expandControlsLine}${draggableLine}
+  items={items}${classNameLine}${variantLine}${selectedLine}${expandedLine}${expandControlsLine}${draggableLine}
   onSelect={(id) => console.log('selected', id)}
   aria-label="Navigation"
 />`}</Code>

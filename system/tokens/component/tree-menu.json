@@ -11,7 +11,11 @@
         "chevronSize":     { "$type": "dimension", "$value": "16px" },
         "lineHeight":      { "$value": "1.5" },
         "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
-        "focusRingOffset": { "$value": "-2px" }
+        "focusRingOffset": { "$value": "-2px" },
+        "disabledOpacity": { "$type": "opacity", "$value": 0.4 }
+      },
+      "collapsed": {
+        "itemSize": { "$type": "dimension", "$value": "{base.spacing.40}" }
       }
     }
   }

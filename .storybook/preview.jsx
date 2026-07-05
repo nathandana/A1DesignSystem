@@ -12,6 +12,7 @@ import calendarJson  from "../system/labels/calendar.json";
 import codeJson      from "../system/labels/code.json";
 import fieldJson     from "../system/labels/field.json";
 import statusBarJson from "../system/labels/status-bar.json";
+import treeMenuJson  from "../system/labels/tree-menu.json";
 
 const allLabels = {
   label: {
@@ -20,6 +21,7 @@ const allLabels = {
     ...codeJson.label,
     ...fieldJson.label,
     ...statusBarJson.label,
+    ...treeMenuJson.label,
   },
 };
 
