@@ -26,7 +26,6 @@ import {
   Toolbar,
   ToolbarDivider,
   ToolbarGroup,
-  ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
 import { resolveSrc } from '../lib/imageLibrary'
 import { getPersona } from '../services/backlog/personas'
@@ -120,8 +119,7 @@ function QuestionChoices({ options, allowOther, onAnswer }) {
   )
 }
 
-// Status toolbar split: the common workflow stages sit inline; the rest live in a
-// "More" overflow menu so the bar stays compact.
+// Common workflow stages stay visible first when the status toolbar overflows.
 export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done']
 export const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
 
@@ -275,11 +273,11 @@ export function DescriptionField({ item, onSave }) {
  *  - **Comments** — the comment / Q&A thread + activity log. A maintainer can "Ask the
  *    requester" (routes a question into their queue); the requester answers.
  *  - **Linked tickets** — the similarity finder + merge-duplicates panel.
- *  - **Build with AI** *(dev only)* — a copy-pasteable AI prompt built from the ticket.
+ *  - **Build with AI** — a copy-pasteable implementation plan built from the ticket.
  *  - **Virtual PO** *(dev only)* — the local Virtual Team per-ticket review.
  *
- * The last two are gated behind `import.meta.env.DEV` (the persona engine is local-only;
- * the AI prompt is a dev convenience) so they never appear in production.
+ * Virtual PO is gated behind `import.meta.env.DEV` because the persona engine is local-only.
+ * Build with AI is production-visible and falls back to the built-in planner when local AI is unavailable.
  */
 export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, nextItem, onPreviousItem, onNextItem }) {
   const backlog = useBacklog()
@@ -358,7 +356,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
     thread.filter((c) => c.kind === 'answer' && c.meta?.answersCommentId).map((c) => c.meta.answersCommentId),
   )
   // Comment-tab badge counts only real messages (comments / questions / answers), not the
-  // activity log. The dev-only tabs (Build with AI, Virtual PO) wrap local-only tooling.
+  // activity log. Virtual PO wraps local-only tooling.
   const commentCount = thread.filter((c) => c.kind !== 'activity').length
   const isDev = import.meta.env.DEV
   async function handleAnswer(questionId, body, choice) {
@@ -451,7 +449,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
             <Tab value="details" icon="info">Details</Tab>
             <Tab value="comments" icon="forum" count={commentCount || undefined}>Comments</Tab>
             <Tab value="linked" icon="merge">Linked tickets</Tab>
-            {isDev && <Tab value="build" icon="smart_toy">Build with AI</Tab>}
+            <Tab value="build" icon="smart_toy">Build with AI</Tab>
             {isDev && <Tab value="po" icon="reviews">Virtual PO</Tab>}
           </TabList>
 
@@ -463,35 +461,35 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
 
               {/* Triage controls — toolbars (commit immediately) */}
               <Stack gap="sm">
-                <Toolbar label="Type" aria-label="Type">
+                <Toolbar label="Type" aria-label="Type" fullWidth>
                   <ToolbarGroup
                     aria-label="Type"
+                    overflow
                     showLabels
                     value={item.type}
                     onChange={(v) => v && patch({ type: v })}
                     options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t], icon: TYPE_ICON[t] }))}
                   />
                 </Toolbar>
-                <Toolbar label="Status" aria-label="Status">
+                <Toolbar label="Status" aria-label="Status" fullWidth>
                   <ToolbarGroup
                     aria-label="Status"
+                    overflow
                     showLabels
-                    value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
-                    onChange={(v) => v && patch({ status: v })}
-                    options={PRIMARY_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
-                  />
-                  <ToolbarDivider />
-                  <ToolbarMenu
-                    aria-label="More statuses"
-                    label={OVERFLOW_STATUSES.includes(item.status) ? STATUS_LABELS[item.status] : 'More'}
                     value={item.status}
-                    onChange={(v) => patch({ status: v })}
-                    items={OVERFLOW_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
+                    onChange={(v) => v && patch({ status: v })}
+                    options={STATUSES.map((s) => ({
+                      value: s,
+                      label: STATUS_LABELS[s],
+                      icon: STATUS_ICON[s],
+                      overflowPriority: PRIMARY_STATUSES.includes(s) ? PRIMARY_STATUSES.indexOf(s) : 100 + OVERFLOW_STATUSES.indexOf(s),
+                    }))}
                   />
                 </Toolbar>
-                <Toolbar label="Priority & size" aria-label="Priority and size">
+                <Toolbar label="Priority & size" aria-label="Priority and size" fullWidth overflow overflowLabel="More priority and size tools">
                   <ToolbarGroup
                     aria-label="Priority"
+                    overflow
                     showLabels
                     value={item.priority || ''}
                     onChange={(v) => patch({ priority: v || null })}
@@ -500,6 +498,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
                   <ToolbarDivider />
                   <ToolbarGroup
                     aria-label="Size"
+                    overflow
                     showLabels
                     value={item.complexity || ''}
                     onChange={(v) => patch({ complexity: v || null })}
@@ -638,11 +637,9 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
             />
           </TabPanel>
 
-          {isDev && (
-            <TabPanel value="build">
-              <TicketAiPrompt item={item} />
-            </TabPanel>
-          )}
+          <TabPanel value="build">
+            <TicketAiPrompt item={item} />
+          </TabPanel>
 
           {isDev && (
             <TabPanel value="po">

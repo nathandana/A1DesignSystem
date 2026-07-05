@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export interface TextareaFieldProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "rows"> {
+export interface TextareaFieldProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "rows" | "placeholder"> {
   /** Visible label text */
   label?: string;
   /** Helper text shown below the field */

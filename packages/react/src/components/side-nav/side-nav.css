@@ -22,7 +22,11 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  /* Top-align so the close/collapse buttons sit level with the first line of a
+     multi-row header (e.g. a title above a Pages/Layers switch) rather than
+     floating centred against the taller header content. With a single-row header
+     this is identical to centring. */
+  align-items: flex-start;
   gap: var(--base-spacing-4);
   padding: var(--base-spacing-8) var(--base-spacing-8) var(--base-spacing-8) var(--base-spacing-12);
   border-block-end: var(--component-side-nav-border-width) solid var(--semantic-color-border-subtle);

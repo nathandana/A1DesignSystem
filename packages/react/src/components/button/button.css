@@ -85,24 +85,12 @@
   pointer-events: none;
 }
 
-.a1-button__spinner {
-  inline-size: var(--component-button-icon-size);
-  block-size: var(--component-button-icon-size);
+.a1-button .a1-button__spinner {
+  --a1-cp-size: var(--a1-button-icon-size, var(--component-button-icon-size));
+  --a1-cp-fill: currentColor;
+  --a1-cp-track: transparent;
+
   flex-shrink: 0;
-  border: var(--base-spacing-2) solid currentColor;
-  border-top-color: transparent;
-  border-radius: var(--base-radius-pill);
-  animation: a1-button-spin var(--semantic-motion-duration-slowest) linear infinite;
-}
-
-@keyframes a1-button-spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .a1-button__spinner {
-    animation-duration: calc(var(--semantic-motion-duration-slowest) * 3);
-  }
 }
 
 .a1-button--primary {

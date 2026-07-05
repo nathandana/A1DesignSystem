@@ -1,0 +1,13 @@
+{
+  "$schema": "../theme.schema.json",
+  "name": "Wireframe (redacted)",
+  "description": "The Wireframe theme with copy redacted — text is replaced by solid grey bars so reviewers focus purely on layout, hierarchy, and density rather than reading the words. Same black/grey/white, no-shadow, zero-radius, monospace foundation as Wireframe; the redaction is layered on by apps/a1-web wireframe-redacted.css. Apply class=\"a1-theme-wireframe-redacted\" to <html>.",
+  "selectors": [
+    {
+      "selector": ".a1-theme-wireframe-redacted",
+      "overrides": "overrides/default.json",
+      "styles": "styles/default.json"
+    }
+  ],
+  "labels": {}
+}

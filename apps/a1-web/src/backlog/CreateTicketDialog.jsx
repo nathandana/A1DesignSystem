@@ -29,8 +29,9 @@ const TYPE_OPTIONS = TYPES.map((value) => ({ value, label: TYPE_LABELS[value] })
 /**
  * The shared create-ticket form. Presentational: it owns the
  * form state and calls `onSubmit(input)` — the BacklogProvider wires that to the
- * store and toasts the new A1-<n>. `scope` pre-fills (and locks) the scope when the
- * dialog is opened from a scoped surface (a component page, the editor, a theme…).
+ * store and toasts the new A1-<n> with an open action. `scope` pre-fills (and
+ * locks) the scope when the dialog is opened from a scoped surface (a component
+ * page, the editor, a theme…).
  */
 export function CreateTicketDialog({ open, scope, existingItems = [], onClose, onSubmit }) {
   const preScoped = !!(scope && scope.kind && scope.kind !== 'general')

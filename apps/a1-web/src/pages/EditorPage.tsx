@@ -14,6 +14,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Code,
+  IconButton,
   MessageBadge,
   Paragraph,
   Section,
@@ -646,6 +647,8 @@ export function EditorPage({
   onPendingActionDone,
   pendingConvert = null,
   onPendingConvertDone,
+  sidebarOpen = false,
+  onOpenSidebar,
 }: {
   definition?: PageDefinition;
   exampleId?: string;
@@ -684,6 +687,10 @@ export function EditorPage({
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
+  /** Whether the app-shell workspace sidebar (Pages/Layers) is open. */
+  sidebarOpen?: boolean;
+  /** Open that sidebar — the toggle lives inline in the editor toolbar at ≤lg. */
+  onOpenSidebar?: () => void;
 }) {
   const canonicalJson = useMemo(() => JSON.stringify(definition, null, 2), [definition]);
 
@@ -1884,12 +1891,27 @@ export function EditorPage({
     <>
       <Section padding="xs" surface="panel" borderSize="xs"
   borderSides={['bottom']}>
-        <Stack direction="row" align="center" justify="between">
-          <Toolbar aria-label="Editor">
-            <ToolbarGroup
-              aria-label="Editor view"
-              showLabels
-              value={view}
+        <Stack direction="row" align="center" justify="between" gap="sm">
+          <Stack direction="row" align="center" gap="sm">
+            {/* Workspace sidebar (Pages/Layers) toggle — inline at the start of the
+                toolbar row. Only shown when the sidebar can be opened (≤lg, where
+                it's an overlay) and is currently closed; when open, the panel's own
+                header carries the toggle (main.jsx). CSS gates the ≤lg visibility. */}
+            {onOpenSidebar && !sidebarOpen && (
+              <IconButton
+                className="a1-web-editor-sidebar-toggle"
+                icon="view_sidebar"
+                label="Open sidebar"
+                size="sm"
+                variant="secondary"
+                onClick={onOpenSidebar}
+              />
+            )}
+            <Toolbar aria-label="Editor" overflow overflowLabel="More tools">
+              <ToolbarGroup
+                aria-label="Editor view"
+                showLabels
+                value={view}
               onChange={(v) => handleViewChange(v as string)}
               options={[
                 { value: 'edit', label: 'Edit', icon: 'edit' },
@@ -1966,7 +1988,8 @@ export function EditorPage({
                 onClick={handleExpandPreview}
               />
             )}
-          </Toolbar>
+            </Toolbar>
+          </Stack>
           <Stack direction="row" align="center" gap="sm">
             <PagePresence pageId={exampleId} />
             {!isPattern && versions.length > 1 && (

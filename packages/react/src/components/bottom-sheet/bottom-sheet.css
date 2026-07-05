@@ -11,7 +11,11 @@
   display: flex;
   flex-direction: column;
   block-size: var(--a1-bottom-sheet-height, var(--component-bottom-sheet-header-height, 3.5rem));
-  max-block-size: 96dvh;
+  max-block-size: calc(
+    100dvh
+    - var(--a1-bottom-sheet-block-start-offset, var(--component-top-header-height, 0px))
+    - env(safe-area-inset-top, 0px)
+  );
   min-block-size: var(--component-bottom-sheet-header-height, 3.5rem);
 
   background: var(--component-bottom-sheet-background, var(--semantic-color-surface-card));

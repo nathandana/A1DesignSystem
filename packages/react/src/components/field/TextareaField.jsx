@@ -2,6 +2,7 @@ import { useId, useState, useLayoutEffect, useRef, useCallback, forwardRef, useC
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
+import { warnPlaceholderIgnored } from "./placeholderWarning.js";
 import "./field.css";
 import "./textarea-field.css";
 
@@ -31,6 +32,7 @@ export const TextareaField = forwardRef(function TextareaField({
   value,
   defaultValue,
   autoComplete,
+  placeholder: _removed,
   onBeforeInput,
   onInput,
   onChange,
@@ -41,6 +43,8 @@ export const TextareaField = forwardRef(function TextareaField({
   const id     = providedId ?? autoId;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
+
+  if (_removed !== undefined) warnPlaceholderIgnored("TextareaField");
 
   const resolvedSize     = SIZES.includes(size)           ? size          : (ctx?.size          ?? "default");
   const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : (ctx?.labelPosition ?? "above");

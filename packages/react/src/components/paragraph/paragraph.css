@@ -5,6 +5,7 @@
   font-weight: var(--a1-paragraph-weight, var(--component-paragraph-font-weight));
   line-height: var(--component-paragraph-font-line-height);
   color: var(--a1-paragraph-color, var(--semantic-color-text-default));
+  overflow-wrap: anywhere;
 }
 
 @media (--bp-sm-up) {

@@ -25,7 +25,8 @@ export function BacklogProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [createScope, setCreateScope] = useState(null) // null = closed
   const [createOpen, setCreateOpen] = useState(false)
-  const [toast, setToast] = useState('')
+  const [toast, setToast] = useState(null)
+  const labelResolverRef = useRef((_key, fallback) => fallback)
   const reqId = useRef(0)
 
   const refresh = useCallback(async () => {
@@ -60,7 +61,11 @@ export function BacklogProvider({ children }) {
   const handleCreate = useCallback(async (input) => {
     const item = await store.createItem(input)
     await refresh()
-    setToast(`Created ${ticketRef(item.number)} — ${item.title}`)
+    setToast({
+      message: `Created ${ticketRef(item.number)} — ${item.title}`,
+      href: `/backlog/${ticketRef(item.number)}`,
+      actionLabel: labelResolverRef.current('app.backlog.menuOpenTicket', 'Open ticket'),
+    })
     return item
   }, [refresh])
 
@@ -68,10 +73,10 @@ export function BacklogProvider({ children }) {
     try {
       const next = await store.updateItem(prev, patch)
       await refresh()
-      if (next) setToast(`Updated ${ticketRef(next.number)} — ${next.title}`)
+      if (next) setToast({ message: `Updated ${ticketRef(next.number)} — ${next.title}` })
       return next
     } catch (error) {
-      setToast(error instanceof Error ? error.message : 'Could not update the ticket.')
+      setToast({ message: error instanceof Error ? error.message : 'Could not update the ticket.' })
       await refresh()
       return null
     }
@@ -100,7 +105,7 @@ export function BacklogProvider({ children }) {
   const merge = useCallback(async (duplicate, canonical) => {
     const res = await store.mergeTickets(duplicate, canonical)
     await refresh()
-    setToast(`Merged ${ticketRef(duplicate.number)} into ${ticketRef(canonical.number)}`)
+    setToast({ message: `Merged ${ticketRef(duplicate.number)} into ${ticketRef(canonical.number)}` })
     return res
   }, [refresh])
 
@@ -108,7 +113,7 @@ export function BacklogProvider({ children }) {
   const link = useCallback(async (a, b) => {
     await store.linkTickets(a, b)
     await refresh()
-    setToast(`Linked ${ticketRef(a.number)} and ${ticketRef(b.number)}`)
+    setToast({ message: `Linked ${ticketRef(a.number)} and ${ticketRef(b.number)}` })
   }, [refresh])
 
   const unlink = useCallback(async (a, b) => {
@@ -119,7 +124,7 @@ export function BacklogProvider({ children }) {
   const remove = useCallback(async (item) => {
     await store.removeItem(item.id)
     await refresh()
-    setToast(`Deleted ${ticketRef(item.number)} — ${item.title}`)
+    setToast({ message: `Deleted ${ticketRef(item.number)} — ${item.title}` })
   }, [refresh])
 
   const markRead = useCallback(async (ids) => {
@@ -128,6 +133,24 @@ export function BacklogProvider({ children }) {
   }, [refresh])
 
   const loadComments = useCallback((itemId) => store.listComments(itemId), [])
+
+  const setLabelResolver = useCallback((resolver) => {
+    labelResolverRef.current = typeof resolver === 'function'
+      ? resolver
+      : ((_key, fallback) => fallback)
+  }, [])
+
+  const openToastTicket = useCallback(() => {
+    if (!toast?.href) return
+    if (window.location.pathname !== toast.href) {
+      window.history.pushState({ page: 'backlog-ticket' }, '', toast.href)
+    }
+    const event = typeof PopStateEvent === 'function'
+      ? new PopStateEvent('popstate', { state: { page: 'backlog-ticket' } })
+      : new Event('popstate')
+    window.dispatchEvent(event)
+    setToast(null)
+  }, [toast?.href])
 
   // Virtual Team: run a persona over the backlog. Pass { dryRun: true } to preview
   // without writing; a real run refreshes so the board reflects the changes. The CHANGELOG
@@ -162,9 +185,9 @@ export function BacklogProvider({ children }) {
     isCloud: store.isCloudBacklog(),
     user: me,
     openCreate, create: handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
-    reviewWithPersona, reviewItem, cleanupStatus,
+    reviewWithPersona, reviewItem, cleanupStatus, setLabelResolver,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, cleanupStatus])
+    openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, cleanupStatus, setLabelResolver])
 
   return (
     <BacklogContext.Provider value={value}>
@@ -176,7 +199,15 @@ export function BacklogProvider({ children }) {
         onClose={() => setCreateOpen(false)}
         onSubmit={handleCreate}
       />
-      <Snackbar open={!!toast} position="bottom" onClose={() => setToast('')}>{toast}</Snackbar>
+      <Snackbar
+        open={!!toast}
+        position="bottom"
+        actionLabel={toast?.actionLabel}
+        onAction={toast?.href ? openToastTicket : undefined}
+        onClose={() => setToast(null)}
+      >
+        {toast?.message}
+      </Snackbar>
     </BacklogContext.Provider>
   )
 }

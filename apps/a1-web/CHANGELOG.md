@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+- **Merging tickets now merges descriptions** (A1-400) — when two backlog tickets are merged, the duplicate's description is now folded into the **surviving ticket's description** (which the merge dialog already promises) instead of only being dropped into the comment thread. If the survivor has no description it adopts the duplicate's verbatim; when both have one, the duplicate's is appended under a clear `Merged from A1-N — "title":` heading so no agreed content is lost. Re-merging the same content is idempotent (it won't duplicate the body).
+
+- **Snackbars visible in dark mode** (A1-313) — snackbars now render as a light toast on the dark app background (and a dark toast in light mode) instead of a dark toast that was hard to see against a dark page. The fix is in the design-system Snackbar (React + Web Component); no app-side change was needed.
+
+- **Snackbar configurator — multiple and timed dismiss** (A1-313) — the Snackbar component page now exposes single vs. multiple preview modes, stack count, dismissible state, and an Auto dismiss control that emits React `autoHideDuration`, Web Component `auto-hide-duration`, and React Native `duration` snippets.
+
+- **Backlog ticket creation snackbar** (A1-179) — creating a ticket now shows the existing snackbar with the translated **Open ticket** action that routes directly to the new ticket page.
+
+- **Build with AI standards review** — expanded generated development plans with a required Final standards review covering custom styling, component usage, tokens, accessibility, interactions, content, state handling, architecture, responsive behavior, test coverage, and standards debt. Plans now also require user-facing copy to be added to `system/labels/` with supported locale translations and consumed through the label resolver. Local-AI plans append the canonical checklist if the model omits it.
+
+- **Build with AI component inference** — the built-in planner now recognizes component names in general-scope ticket titles/descriptions, so tickets such as "Multiple Snackbars" plan against the component package, Storybook, a1-web configurator, docs, and changelogs instead of producing an app-only plan.
+
+- **Releases page horizontal scroll** (A1-398) — release-note content now benefits from shared typography wrapping, so long inline changelog fragments stay inside the release panels at narrow widths.
+
+- **Backlog ticket mobile toolbars** — ticket triage toolbars now use the shared Toolbar overflow behavior in both the ticket dialog and standalone ticket page, keeping type, status, priority, and size controls on one mobile row with excess options moved into More menus.
+
+- **Backlog — Build with AI in production** — the ticket detail page now shows Build with AI in production builds instead of limiting it to local dev. It still prefers a local Ollama model when reachable, but falls back to the built-in planner so deployed users can generate a ticket plan without browser API keys or local setup.
+
+- **Button loading spinner reuse** (A1-308) — the design-system Button loading state now reuses the shared Circular Progress component instead of a custom spinner, keeping the same Button API and loading behaviour while removing duplicate UI.
+
+- **Supabase backup workflow preflight** (A1-245) — fixed manual backup runs reporting "No jobs were run" by normalizing the dispatch trigger, updating the workflow to the current GitHub Actions runtime pattern, and adding a first-step configuration check so missing backup secrets fail as an actionable job error instead of an empty run.
+
+- **Projects page — responsive action toolbar** — the Projects (editor home) header actions now stay useful at every width. The secondary actions (Help, Image library, Upload JSON) moved into a `Toolbar` with `overflow`: they show with labels from the `md` breakpoint up, collapse to icon-only below, and move into a "More actions" menu when even the icons don't fit — so the primary **New project** button (kept as a full `SplitButton`/`Button` beside the toolbar) is always visible instead of wrapping to a second row on small screens. Icon-only tools keep their accessible names.
+
+- **Shortcut for new ticket** (A1-393) — pressing **`!`** anywhere in the app opens the **New ticket** dialog (unscoped, `kind: 'general'`), matching the existing global-shortcut pattern (like `?` for Help). It's guarded against firing while typing in an input, textarea, or select, and is listed in the "Show all shortcuts" menu (Jump section) as **New ticket · Shortcut: !**. Works app-wide because the create-ticket dialog is owned by `BacklogProvider` above the app.
+
+- **Priority Guide editor + Wireframe themes** — a new **Priority guides** editor under **Editors** (`/priority-guide`) brings the priority-guide workflow into a1-web: create content-first alignment docs (problem, audience, user/business goals, and a priority-ranked content hierarchy with groups), edit fields inline, reorder items by drag or arrows, and edit the live JSON two-way. Guides seed from the four bundled examples, persist locally, and **cloud-sync** as part of the shared workspace envelope alongside projects/patterns/themes. A guide can be **attached to a project + page** and **converted to a real A1 page** (round-trippable — the source guide is stashed in `page.meta` so "convert from page" is lossless), then previewed as a **wireframe**. Two new deliberately un-designed themes back this: **Wireframe** (`.a1-theme-wireframe`) — black/grey/white only, no shadows, zero-radius, monospace — and **Wireframe (redacted)** (`.a1-theme-wireframe-redacted`) — the same, but with copy replaced by solid grey bars (one per line) so reviewers read structure and density, not words. Both are selectable in Settings → Theme; the editor's **Preview wireframe** / **Preview redacted** buttons open the converted page standalone under the chosen theme (via a new `?theme=` param on the editor preview).
+
 - **Cloud sync — removed background polling, added "Sync now"** — the four 8-second Supabase polls (shared workspace envelope, workspace labels, backlog, and data sources) were removed. They re-downloaded whole tables/blobs every tick regardless of whether anything changed and were the dominant source of uncached egress. Live updates still arrive via the existing Supabase **Realtime** subscriptions; a new **Sync now** action on the Account page pulls the latest projects, patterns, themes, labels, backlog, and data sources on demand for the rare case Realtime hasn't delivered.
 
 - **Chip component** (A1-390) — added Chip under **Actions & Controls** with a live configurator for selectable, menu-trigger, and navigation chip groups. The editor Add panel can insert a configured ChipGroup, and DataTable filters now render with the shared Chip component.

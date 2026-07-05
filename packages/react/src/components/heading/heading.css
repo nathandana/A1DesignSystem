@@ -5,6 +5,7 @@
   font-weight: var(--a1-heading-weight);
   line-height: var(--a1-heading-line-height);
   color: var(--a1-heading-color, var(--semantic-color-text-default));
+  overflow-wrap: anywhere;
 }
 
 @media (--bp-sm-up) {

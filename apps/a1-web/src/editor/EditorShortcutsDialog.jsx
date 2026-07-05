@@ -42,14 +42,16 @@ export function EditorShortcutsDialog({ open, onClose }) {
         {SHORTCUT_GROUPS.map(({ label, items }) => (
           <Stack key={label} direction="column" gap="xs">
             <Paragraph size="sm" color="muted">{label}</Paragraph>
-            <div className="a1-web-shortcuts-table">
+            <Stack direction="column" gap="xs">
               {items.map(({ label: itemLabel, keys }) => (
-                <div key={itemLabel} className="a1-web-shortcuts-row">
-                  <span className="a1-web-shortcuts-label">{itemLabel}</span>
-                  <kbd className="a1-web-shortcuts-keys">{keys}</kbd>
-                </div>
+                <Stack key={itemLabel} direction="row" justify="between" align="center" gap="md">
+                  <Paragraph size="sm">{itemLabel}</Paragraph>
+                  {/* The design-system keyboard-key styling (.a1-kbd from the
+                      Inline component) renders each shortcut as a proper key cap. */}
+                  <kbd className="a1-kbd">{keys}</kbd>
+                </Stack>
               ))}
-            </div>
+            </Stack>
           </Stack>
         ))}
       </Stack>

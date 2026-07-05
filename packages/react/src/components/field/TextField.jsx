@@ -2,6 +2,7 @@ import { useId, useLayoutEffect, useRef, useCallback, forwardRef, useContext } f
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
+import { warnPlaceholderIgnored } from "./placeholderWarning.js";
 import "./field.css";
 
 const SIZES           = ["comfortable", "default", "compact"];
@@ -33,6 +34,8 @@ export const TextField = forwardRef(function TextField({
   const id      = providedId ?? autoId;
   const hintId  = `${id}-hint`;
   const errorId = `${id}-error`;
+
+  if (_removed !== undefined) warnPlaceholderIgnored("TextField");
 
   const resolvedSize     = SIZES.includes(size)           ? size          : (ctx?.size          ?? "default");
   const resolvedPosition = LABEL_POSITIONS.includes(labelPosition) ? labelPosition : (ctx?.labelPosition ?? "above");

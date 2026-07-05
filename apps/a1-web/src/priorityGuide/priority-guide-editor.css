@@ -1,0 +1,104 @@
+/* Priority Guide editor — layout scaffolding for the a1-web editor page.
+ * Visual values come from A1 tokens; this file only wires up the two-pane grid,
+ * the ranked-item rows, and the annotation/aside affordances that A1 layout
+ * components don't cover directly. All classes are a1- prefixed. */
+
+/* Convert/preview toolbar: destination selectors + action buttons on one row,
+ * wrapping to stacked groups when there isn't room — so button labels never
+ * squeeze onto two lines. */
+.a1-pg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+}
+
+.a1-pg-toolbar__destination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--base-spacing-12);
+}
+
+.a1-pg-toolbar__destination > * {
+  min-inline-size: 12rem;
+}
+
+.a1-pg-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(20rem, 32%, 30rem);
+  gap: var(--base-spacing-24);
+  align-items: start;
+}
+
+@media (max-width: 64rem) {
+  .a1-pg-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .a1-pg-editor__aside {
+    position: static;
+  }
+}
+
+.a1-pg-editor__aside {
+  position: sticky;
+  top: var(--base-spacing-16);
+}
+
+/* Ranked item row: the priority number + the item body. */
+.a1-pg-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--base-spacing-16);
+  align-items: start;
+}
+
+.a1-pg-item__rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--base-spacing-32);
+  min-block-size: var(--base-spacing-32);
+  padding-inline: var(--base-spacing-8);
+  border: var(--base-border-width-thin, 1px) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-sm);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.a1-pg-item__body {
+  min-inline-size: 0;
+}
+
+/* Annotation aside — a muted, bordered note block. */
+.a1-pg-annotations {
+  margin-block-start: var(--base-spacing-8);
+  padding-inline-start: var(--base-spacing-12);
+  border-inline-start: var(--base-border-width-thick, 2px) solid var(--semantic-color-border-subtle);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-pg-annotations__item + .a1-pg-annotations__item {
+  margin-block-start: var(--base-spacing-4);
+}
+
+/* Group children indentation. */
+.a1-pg-group__children {
+  margin-inline-start: var(--base-spacing-24);
+  padding-inline-start: var(--base-spacing-16);
+  border-inline-start: var(--base-border-width-thin, 1px) dashed var(--semantic-color-border-subtle);
+}
+
+/* Guide-list cards grid. */
+.a1-pg-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--base-spacing-16);
+}
+
+.a1-pg-item__drag-over {
+  outline: var(--base-border-width-thick, 2px) dashed var(--semantic-color-action-background);
+  outline-offset: var(--base-spacing-4);
+}

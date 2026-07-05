@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, ButtonContainer, CircularProgress, Code, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
-import { buildTicketContext, buildPlanRequest, developPlanLocally, PLAN_SYSTEM } from '../services/backlog/devPlan'
+import { buildTicketContext, buildPlanRequest, developPlanLocally, ensureFinalStandardsReview, PLAN_SYSTEM } from '../services/backlog/devPlan'
 import { chooseModel, listLocalModels, localChat } from '../lib/localAi'
 
 /**
  * "Build with AI" — turns a ticket into a **development plan** you can paste into a coding
  * agent. Rather than just concatenating the ticket fields, it sends them to a **local** LLM
- * (Ollama, via `lib/localAi.ts`) which writes a staff-developer plan — no Anthropic API, no
- * credits. If no local model is reachable it falls back to a deterministic planner, so the
+ * (Ollama, via `lib/localAi.ts`) when available. If no local model is reachable it falls back to a
+ * deterministic planner, so the production tab still works without API keys, browser secrets, or
  * tab always produces a real, editable plan. A "raw details" toggle still exposes the plain
  * ticket text.
  */
@@ -21,7 +21,7 @@ async function produce(item, comments, linked) {
     try {
       const r = await localChat({ system: PLAN_SYSTEM, prompt: buildPlanRequest(item, comments, linked), model })
       if (r.text) {
-        return { plan: r.text, source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
+        return { plan: ensureFinalStandardsReview(r.text), source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
       }
     } catch {
       /* local runner errored — fall back below */
@@ -79,9 +79,8 @@ export function TicketAiPrompt({ item }) {
   return (
     <Stack gap="sm">
       <Paragraph size="sm" color="muted">
-        Sends this ticket to a local AI model (no API credits) to develop a plan you can paste into a
-        coding agent. Falls back to a built-in staff-developer planner when no local model is running.
-        Edit it before copying if you like.
+        Develops a plan you can paste into a coding agent. Uses a local AI model when one is reachable,
+        and falls back to a built-in staff-developer planner when not. Edit it before copying if you like.
       </Paragraph>
 
       {comments === null || planning ? (

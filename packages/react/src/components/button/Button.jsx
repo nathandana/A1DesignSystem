@@ -1,4 +1,5 @@
 import "./button.css";
+import { CircularProgress } from "../circular-progress/CircularProgress.jsx";
 import { Icon } from "../icon/Icon.jsx";
 
 const variants = ["primary", "secondary", "tertiary", "destructive", "success"];
@@ -37,8 +38,18 @@ export function Button({
     .join(" ");
 
   const iconEl = icon ? <Icon name={icon} className="a1-button__icon" /> : null;
-  // While loading, a spinner replaces the icon and the button becomes inert.
-  const spinnerEl = loading ? <span className="a1-button__spinner" aria-hidden="true" /> : null;
+  // While loading, CircularProgress replaces the icon and the button becomes inert.
+  const spinnerEl = loading
+    ? (
+        <CircularProgress
+          className="a1-button__spinner"
+          size="xs"
+          indeterminate
+          role="presentation"
+          aria-hidden="true"
+        />
+      )
+    : null;
 
   return (
     <Component

@@ -3,6 +3,7 @@ import '../../../packages/react/src/themes.css'
 import '../../../packages/react/src/color-scheme.css'
 import '../../../packages/react/src/utilities/spacing.css'
 import '../../../packages/react/src/utilities/width.css'
+import './priorityGuide/wireframe-redacted.css'
 import { createRoot } from 'react-dom/client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -128,6 +129,7 @@ import { useBacklog } from './backlog/BacklogContext.jsx'
 import { DataSourcesProvider } from './data/DataSourcesContext.jsx'
 import { DataSourcesView } from './data/DataSourcesView.jsx'
 import { LabelEditor } from './pages/LabelEditor.jsx'
+import { PriorityGuideEditor } from './pages/PriorityGuideEditor.jsx'
 import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
@@ -154,7 +156,7 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -174,6 +176,7 @@ const PAGE_TITLES = {
   'theme-editor': 'Theme',
   'rules': 'Rules',
   'label-editor': 'Label editor',
+  'priority-guide': 'Priority guides',
   projects: 'Projects',
   help: 'Help',
   accessibility: 'Accessibility',
@@ -194,6 +197,8 @@ const themeOptions = [
   { value: 'marshmallow', label: 'Marshmallow' },
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
+  { value: 'wireframe', label: 'Wireframe' },
+  { value: 'wireframe-redacted', label: 'Wireframe (redacted)' },
 ]
 const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
 
@@ -311,6 +316,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'theme-editor': 'app.page.theme',
   rules: 'app.page.rules',
   'label-editor': 'app.page.labels',
+  'priority-guide': 'app.page.priorityGuide',
   projects: 'app.page.projects',
   help: 'app.page.help',
   accessibility: 'app.page.accessibility',
@@ -339,6 +345,13 @@ function resolveLabel(labels, locale, key, fallback) {
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
   const [theme, setTheme] = useState(() => {
+    // A standalone preview may force a theme via `?theme=` (e.g. the Priority
+    // Guide editor's "Preview as wireframe"). It wins so the single authoritative
+    // theme effect applies it — without fighting a second class toggle.
+    if (IS_STANDALONE) {
+      const forced = new URLSearchParams(window.location.search).get('theme')
+      if (VALID_THEMES.includes(forced)) return forced
+    }
     const stored = localStorage.getItem('a1-web-theme')
     return VALID_THEMES.includes(stored) ? stored : 'a1Light'
   })
@@ -483,6 +496,11 @@ function App() {
   const labelLocale = locale === 'en' ? null : locale
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+
+  useEffect(() => {
+    backlog?.setLabelResolver?.(t)
+    return () => backlog?.setLabelResolver?.(null)
+  }, [backlog?.setLabelResolver, t])
 
   const globalSearchEntries = useMemo(() => {
     const entries = []
@@ -939,13 +957,17 @@ function App() {
     document.documentElement.classList.toggle('a1-theme-crochet', theme === 'crochet')
     document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
     document.documentElement.classList.toggle('a1-theme-marshmallow', theme === 'marshmallow')
+    document.documentElement.classList.toggle('a1-theme-wireframe', theme === 'wireframe')
+    document.documentElement.classList.toggle('a1-theme-wireframe-redacted', theme === 'wireframe-redacted')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
     document.documentElement.classList.toggle('a1-contrast-more', contrastMore)
   }, [theme, resolvedColorScheme, colorMode, reducedMotion, contrastMore])
 
-  useEffect(() => { localStorage.setItem('a1-web-theme', theme) }, [theme])
+  // Don't persist a standalone preview's forced theme — it must not leak into the
+  // main app window's stored preference.
+  useEffect(() => { if (!IS_STANDALONE) localStorage.setItem('a1-web-theme', theme) }, [theme])
   useEffect(() => { localStorage.setItem('a1-web-color-mode', colorMode) }, [colorMode])
   useEffect(() => { localStorage.setItem('a1-web-reduced-motion', reducedMotion) }, [reducedMotion])
   useEffect(() => { localStorage.setItem('a1-web-contrast-more', contrastMore) }, [contrastMore])
@@ -1026,6 +1048,15 @@ function App() {
         event.preventDefault()
         clearGoTarget()
         openHelpAssistant()
+        return
+      }
+
+      // "!" opens the "New ticket" dialog from anywhere (A1-393). The dialog is
+      // owned by BacklogProvider above <App />, so openCreate works app-wide.
+      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '!') {
+        event.preventDefault()
+        clearGoTarget()
+        backlog?.openCreate({ kind: 'general' })
         return
       }
 
@@ -1256,7 +1287,7 @@ function App() {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
       items: [
         {
           icon: 'folder',
@@ -1327,6 +1358,13 @@ function App() {
           href: getPath('label-editor'),
           active: activePage === 'label-editor',
           onClick: (e) => handleNavClick(e, 'label-editor'),
+        },
+        {
+          icon: 'list_alt',
+          label: pageTitle('priority-guide'),
+          href: getPath('priority-guide'),
+          active: activePage === 'priority-guide',
+          onClick: (e) => handleNavClick(e, 'priority-guide'),
         },
       ],
     },
@@ -1446,6 +1484,9 @@ function App() {
           <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
             Search A1
           </MenuItem>
+          <MenuItem icon="add_task" shortcut="Shortcut: !" onClick={() => runSkipMenuAction(() => backlog?.openCreate({ kind: 'general' }))}>
+            New ticket
+          </MenuItem>
           <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
             Show all shortcuts
           </MenuItem>
@@ -1563,7 +1604,10 @@ function App() {
           />
         }
       >
-        {((activePage === 'editor' && (editorPatternId || activeProject)) || (activePage === 'theme-editor' && activeThemeId)) && (
+        {/* The editor renders its own sidebar toggle inline in its toolbar row
+            (see EditorPage's onOpenSidebar); the theme editor still uses this
+            content-column toggle. */}
+        {activePage === 'theme-editor' && activeThemeId && (
           <IconButton
             className="a1-web-sidebar-toggle"
             icon="view_sidebar"
@@ -1624,6 +1668,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           ) : (
             <Section padding="lg" gap="sm">
@@ -1669,6 +1715,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           ) : !openPageId || !projectPages.some((p) => p.id === openPageId) ? (
             <AllPagesView
@@ -1714,6 +1762,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           )
         )}
@@ -1743,6 +1793,9 @@ function App() {
             activeProjectId={activeProjectId}
             onUpdateProjectLabels={handleUpdateProjectLabels}
           />
+        )}
+        {activePage === 'priority-guide' && (
+          <PriorityGuideEditor onNavigate={navigate} />
         )}
         {activePage === 'theme-editor' && (
           !activeThemeId

@@ -429,6 +429,19 @@ body {
   }
 }
 
+/* Editor's inline sidebar toggle — the same ≤lg-only visibility, but it lives
+   inside the editor toolbar row so it needs no margin. At lg+ the persistent
+   sidebar is always visible, so the toggle is hidden. */
+.a1-web-editor-sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .a1-web-editor-sidebar-toggle {
+    display: inline-flex;
+  }
+}
+
 /* Config panel inside the xs/sm BottomSheet: fill its width, drop the rail
    chrome (fixed width, side border, full-height min). */
 .a1-web-config-sheet .a1-web-config-aside {
@@ -1755,6 +1768,20 @@ body {
 
 /* Inline pick targets (link, muted, badges) shouldn't break text flow. */
 span.a1-web-sem-pick { display: inline-block; }
+
+/* Keyboard key styling — mirrors the A1 Inline component's `kbd` rule
+   (packages/react/src/components/inline/inline.css), which a1-web doesn't
+   import globally. Used by the editor's Keyboard shortcuts dialog. */
+.a1-kbd {
+  padding-block: var(--component-inline-padding-block);
+  padding-inline: var(--component-inline-kbd-padding-inline);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-default);
+  border-radius: var(--component-inline-border-radius);
+  background: var(--semantic-color-surface-raised);
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  white-space: nowrap;
+}
 
 /* Theme editor right rail: a single flex-column child of the (row) aside slot,
    stacking the Config/History tabs above the active panel. */

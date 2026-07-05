@@ -72,6 +72,73 @@ export function buildTicketContext(
 
 // ── Local-AI system prompt ──────────────────────────────────────────────────────
 
+const FINAL_STANDARDS_REVIEW_SECTION = [
+  '## Final standards review',
+  'For anything done in this session, justify any deviation from the existing system.',
+  '',
+  '1. Custom styling',
+  '- List any custom CSS, inline styles, one-off classes, or layout rules added.',
+  '- Explain why each was necessary.',
+  '- Identify what should become a design system token, component prop, pattern, or utility.',
+  '- Identify what needed better design system guidance.',
+  '- Identify what was legitimate local styling.',
+  '',
+  '2. Component usage',
+  '- Confirm existing design system components were used wherever possible.',
+  '- Call out any local component that duplicates an existing system component.',
+  '- Identify any props, variants, or behaviours that should belong in the design system.',
+  '- Note inconsistent naming, sizing, spacing, states, or composition.',
+  '',
+  '3. Tokens and values',
+  '- List hardcoded colors, spacing, radii, shadows, font sizes, z-indexes, breakpoints, durations, or easing values.',
+  '- Explain why each hardcoded value was used.',
+  '- Identify which values should be replaced with tokens.',
+  '- Identify missing tokens or unclear token guidance.',
+  '',
+  '4. Accessibility',
+  '- Justify any custom interaction pattern.',
+  '- Confirm keyboard behavior, focus states, labels, roles, ARIA usage, contrast, reduced motion, and touch target size.',
+  '- Identify where the design system should provide stronger accessibility defaults or examples.',
+  '',
+  '5. Interaction patterns',
+  '- List any new behavior for menus, dialogs, drag/drop, tabs, forms, notifications, loading, empty states, or errors.',
+  '- Decide whether that behavior should already exist as a system pattern.',
+  '- Confirm consistency with similar flows elsewhere.',
+  '',
+  '6. Content and terminology',
+  '- List new labels, helper text, error messages, empty states, or status language.',
+  '- Confirm all user-facing copy was added to system/labels/ with translations for es, fr, de, pt, ja, zh, and ar, and consumed through the label resolver.',
+  '- Confirm consistency with product voice and existing terminology.',
+  '- Identify copy patterns that should be standardized.',
+  '',
+  '7. Data and state handling',
+  '- List new loading, error, empty, success, disabled, optimistic, or offline states.',
+  '- Confirm those states are handled consistently.',
+  '- Identify states where the design system should define visual or behavioral guidance.',
+  '',
+  '8. Architecture and code standards',
+  '- List new utilities, hooks, helpers, types, or abstractions.',
+  '- Confirm they match existing project patterns.',
+  '- Call out duplicated logic.',
+  '- Identify complexity that should be simplified or promoted to a shared layer.',
+  '',
+  '9. Responsive behavior',
+  '- Explain any custom responsive rules.',
+  '- Confirm mobile, tablet, desktop, overflow, wrapping, truncation, and zoom behavior.',
+  '- Identify where the system needs clearer responsive guidance.',
+  '',
+  '10. Test coverage',
+  '- List behavior that changed.',
+  '- List what was tested.',
+  '- List what was not tested and why.',
+  '- Identify design system contracts or regression tests that should exist but do not.',
+  '',
+  '11. Standards debt created',
+  '- List intentional shortcuts.',
+  '- List places where the implementation works but may not match system standards.',
+  '- For each item, recommend: fix now, document, promote to system, or accept as local.',
+].join('\n');
+
 export const PLAN_SYSTEM = [
   'You are a pragmatic staff software engineer planning one ticket in the A1 Design System —',
   'a token-driven, multi-package monorepo: a React component library in packages/react, Style',
@@ -81,6 +148,10 @@ export const PLAN_SYSTEM = [
   '- Use existing A1 components, patterns, and tokens before anything custom; never hardcode',
   '  colours, spacing, type, radii, or motion — every value traces to a Style Dictionary token.',
   '- Semantic, accessible HTML (keyboard, focus, ARIA, WCAG AA); sentence case, never uppercase.',
+  '- Any user-facing label, helper text, status, error, empty-state, or action copy must be',
+  '  added to the label system in system/labels/ with English $value, $description, and',
+  '  supported locale translations (es, fr, de, pt, ja, zh, ar), then consumed through the',
+  '  label resolver instead of hardcoded text.',
   '- When a component API/variant/state changes, update its Storybook stories, the a1-web',
   '  configurator, and the relevant changelogs in the SAME change.',
   '- Validate across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl).',
@@ -93,6 +164,10 @@ export const PLAN_SYSTEM = [
   '- Plan (numbered, ordered, concrete steps)',
   '- Likely files & areas',
   '- Done when (acceptance criteria, including docs / stories / configurator / changelog as applicable)',
+  '- Final standards review (for anything done in the session, justify any deviation from the existing system; cover custom styling, component usage, tokens and values, accessibility, interaction patterns, content and terminology, data and state handling, architecture and code standards, responsive behavior, test coverage, and standards debt created)',
+  '',
+  'The Final standards review section must use this exact checklist:',
+  FINAL_STANDARDS_REVIEW_SECTION,
   '',
   'Write it as direct instructions a coding agent can follow. No preamble, no sign-off.',
 ].join('\n');
@@ -104,9 +179,32 @@ export function buildPlanRequest(
   return `Plan the work for this ticket.\n\n${buildTicketContext(item, comments, linked)}`;
 }
 
+export function ensureFinalStandardsReview(plan: string): string {
+  if (/^##\s+Final standards review\b/im.test(plan)) return plan;
+  return `${plan.trim()}\n\n${FINAL_STANDARDS_REVIEW_SECTION}`;
+}
+
 // ── Deterministic fallback planner ──────────────────────────────────────────────
 
 type Scale = 'small' | 'medium' | 'large';
+
+interface ComponentTarget {
+  id: string;
+  label: string;
+}
+
+const COMPONENT_TARGETS: Array<ComponentTarget & { aliases: string[] }> = [
+  { id: 'snackbar', label: 'Snackbar', aliases: ['snackbar', 'snackbars', 'snack bar', 'snack bars'] },
+  { id: 'banner', label: 'Banner', aliases: ['banner', 'banners'] },
+  { id: 'notification', label: 'Notification', aliases: ['notification', 'notifications'] },
+  { id: 'card', label: 'Card', aliases: ['card', 'cards'] },
+  { id: 'section', label: 'Section', aliases: ['section', 'sections'] },
+  { id: 'stack', label: 'Stack', aliases: ['stack', 'stacks'] },
+  { id: 'button', label: 'Button', aliases: ['button', 'buttons'] },
+  { id: 'tabs', label: 'Tabs', aliases: ['tabs', 'tab'] },
+  { id: 'dialog', label: 'Dialog', aliases: ['dialog', 'dialogs', 'modal', 'modals'] },
+  { id: 'menu', label: 'Menu', aliases: ['menu', 'menus'] },
+];
 
 function assessScale(item: BacklogItem): Scale {
   if (item.complexity === 'xs' || item.complexity === 's') return 'small';
@@ -126,8 +224,43 @@ const SCALE_APPROACH: Record<Scale, string> = {
   large: 'Large — slice it. Identify the thinnest vertical slice that ships value first, then layer the rest behind it.',
 };
 
+function kebab(value: string): string {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function textForInference(item: BacklogItem): string {
+  return `${item.title} ${item.description ?? ''} ${item.scopeLabel ?? ''}`.toLowerCase();
+}
+
+function inferComponentTarget(item: BacklogItem): ComponentTarget | null {
+  if (item.scopeKind === 'component') {
+    const label = item.scopeLabel?.trim() || item.title.trim() || 'Component';
+    return { id: kebab(item.scopeRef || label), label };
+  }
+
+  const text = textForInference(item);
+  return COMPONENT_TARGETS.find((target) => target.aliases.some((alias) => {
+    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escaped}\\b`, 'i').test(text);
+  })) ?? null;
+}
+
+function needsBestPracticeResearch(item: BacklogItem): boolean {
+  return /\b(best practices?|lookup|look up|research|determine|decide|explore)\b/i.test(`${item.title} ${item.description ?? ''}`);
+}
+
 /** Where the work likely lives, from the ticket's scope. */
 function fileAreas(item: BacklogItem): string[] {
+  const componentTarget = inferComponentTarget(item);
+  if (componentTarget) {
+    return [
+      `packages/react/src/components/${componentTarget.id}/ (JSX + CSS variable architecture + d.ts + Storybook stories)`,
+      `apps/a1-web/src/pages/components/detail/${componentTarget.id}.jsx and ComponentDetailPage property rows/config coverage`,
+      `Matching package implementations if this component is shipped outside React (React Native / Web Components / Pure as applicable)`,
+      `packages/react/ai/components.md, component rules/docs, and relevant changelogs`,
+    ];
+  }
+
   const name = item.scopeLabel ? item.scopeLabel.toLowerCase().replace(/\s+/g, '-') : '<name>';
   switch (item.scopeKind) {
     case 'component':
@@ -153,8 +286,14 @@ function fileAreas(item: BacklogItem): string[] {
 
 /** Ordered steps tailored to the ticket type + scope. */
 function steps(item: BacklogItem): string[] {
-  const isComponent = item.scopeKind === 'component';
+  const componentTarget = inferComponentTarget(item);
+  const isComponent = !!componentTarget;
   const ripples = item.scopeKind === 'theme' || item.scopeKind === 'foundation';
+  const componentLabel = componentTarget?.label ?? 'the component';
+  const componentPath = componentTarget?.id ?? '<name>';
+  const researchStep = needsBestPracticeResearch(item)
+    ? [`Research current ${componentLabel} best practices and document the chosen interaction model before coding.`]
+    : [];
 
   if (item.type === 'bug') {
     return [
@@ -180,11 +319,13 @@ function steps(item: BacklogItem): string[] {
   // feature
   if (isComponent) {
     return [
-      'Confirm the public API (props, variants, sizes, states) — design it as a small, stable contract.',
-      'Add or extend component tokens in system/tokens/component/<name>.json if needed; run build:tokens.',
-      'Implement in packages/react/src/components/<name>/ using the CSS-variable architecture (no hardcoded values).',
-      'Add Storybook stories for every variant/size/state, across all themes.',
-      'Wire the a1-web configurator: a control + Properties row + switch-linked helper text + a correct code snippet.',
+      ...researchStep,
+      `Confirm the ${componentLabel} public API and interaction model (props, variants, positions, stacking/queueing, dismissal, timing, and accessibility announcements) as a small, stable contract.`,
+      `Add or extend component tokens in system/tokens/component/${componentPath}.json if new separation, shadow, border, spacing, or motion values are needed; run build:tokens.`,
+      `Implement in packages/react/src/components/${componentPath}/ using the CSS-variable architecture (no hardcoded values).`,
+      `Add Storybook stories for single and multiple ${componentLabel} examples, including dark/inverse mode and narrow viewports.`,
+      'Wire the a1-web configurator: controls + Properties rows + switch-linked helper text + a correct code snippet.',
+      'Add any user-facing copy to system/labels/ with English descriptions and supported locale translations, then consume it through the label resolver.',
       'Update the changelog(s) and packages/react/ai/components.md; validate themes, breakpoints, and accessibility.',
     ];
   }
@@ -193,6 +334,7 @@ function steps(item: BacklogItem): string[] {
     'Pin down the exact surface (page/component) and the user need it serves.',
     'Build it from existing A1 components + tokens — custom UI is a last resort, documented if unavoidable.',
     'Keep semantics and accessibility correct (keyboard, focus, ARIA, contrast).',
+    'Add any new user-facing copy to system/labels/ with supported locale translations, then consume it through the label resolver.',
     ...(ripples ? ['Rebuild tokens/themes and re-check every consumer.'] : []),
     'Update the changelog(s); validate across themes and breakpoints.',
   ];
@@ -200,14 +342,21 @@ function steps(item: BacklogItem): string[] {
 
 function doneWhen(item: BacklogItem): string[] {
   const done = ['The ticket\'s stated outcome is met with the smallest clean change.'];
-  if (item.scopeKind === 'component') {
+  if (inferComponentTarget(item)) {
     done.push('Stories, the a1-web configurator, the changelog, and components.md are all updated in the same change.');
   } else {
     done.push('The relevant changelog is updated; docs/configurator updated if anything user-facing changed.');
   }
   done.push('Verified across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl); accessibility holds.');
   done.push('No hardcoded values — everything traces to a token; sentence case throughout.');
+  done.push('Any new user-facing labels are in system/labels/ with English descriptions and translations for es, fr, de, pt, ja, zh, and ar.');
+  done.push('Final standards review is complete: justify any deviation from the existing system and identify what should be fixed, documented, promoted to the system, or accepted as local.');
   return done;
+}
+
+function appendFinalStandardsReview(out: string[]): void {
+  out.push(...FINAL_STANDARDS_REVIEW_SECTION.split('\n'));
+  out.push('');
 }
 
 /**
@@ -261,10 +410,13 @@ export function developPlanLocally(
   for (const d of doneWhen(item)) out.push(`- ${d}`);
   out.push('');
 
+  appendFinalStandardsReview(out);
+
   out.push('## Conventions');
   out.push(
     'Follow CLAUDE.md and packages/react/ai/: A1 components + tokens only, sentence case, '
-    + 'semantic + accessible markup. Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
+    + 'semantic + accessible markup, and user-facing labels through system/labels/ with translations. '
+    + 'Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
   );
 
   return out.join('\n');

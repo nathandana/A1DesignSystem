@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "priority-guide.schema.json",
+  "title": "Priority Guide",
+  "description": "A content-first alignment document that captures the user goal, business goal, and prioritized content hierarchy for a page or screen — before layout or visual design begins. Use this format to align teams, brief AI tools, and export a shared working spec.",
+  "type": "object",
+  "required": ["id", "title", "context", "problemStatement", "audience", "userGoal", "businessGoal", "items"],
+  "additionalProperties": false,
+  "definitions": {
+    "guideItem": {
+      "type": "object",
+      "required": ["title", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["item"],
+          "description": "Optional item marker. Omit or set to item for normal elements."
+        },
+        "type": {
+          "type": "string",
+          "description": "Content category label that names the role this element plays on the page.",
+          "examples": ["Critical reassurance", "Primary action", "Decision driver", "Alert", "Timeline", "Follow-up"]
+        },
+        "componentType": {
+          "type": "string",
+          "description": "Suggested UI component or pattern. Not prescriptive — use to give the team a starting point.",
+          "examples": ["Heading", "Button", "Checklist", "Alert", "Timeline", "Card", "Details", "Paragraph"]
+        },
+        "title": {
+          "type": "string",
+          "description": "The element headline or label — written as real content, not a placeholder."
+        },
+        "content": {
+          "type": "string",
+          "description": "Description of what this element contains, communicates, or does. Use real words, not lorem ipsum."
+        },
+        "annotations": {
+          "type": "array",
+          "description": "Side notes that explain why the element exists, how it behaves, what it links to, or what conditions affect it.",
+          "items": { "type": "string" }
+        },
+        "links": {
+          "type": "array",
+          "description": "Related pages, documents, components, or flows this element connects to.",
+          "items": { "type": "string" }
+        },
+        "linkedGuideId": {
+          "type": "string",
+          "description": "Optional guide id this button or link should navigate to in a flow."
+        }
+      }
+    },
+    "guideGroup": {
+      "type": "object",
+      "required": ["kind", "componentType", "title", "content", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["group"],
+          "description": "Marks this top-level item as a one-level group."
+        },
+        "type": {
+          "type": "string",
+          "description": "Content category label that names the role this group plays on the page."
+        },
+        "componentType": {
+          "type": "string",
+          "enum": ["Section", "Card", "Button container"],
+          "description": "Container class component used to frame the group."
+        },
+        "title": {
+          "type": "string",
+          "description": "Group title."
+        },
+        "content": {
+          "type": "string",
+          "description": "What the group contains or why the children belong together."
+        },
+        "annotations": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "children": {
+          "type": "array",
+          "description": "One-level child items. Groups cannot contain nested groups.",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/guideItem" }
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique slug identifier. Lowercase, hyphen-separated. Used for routing and file naming.",
+      "pattern": "^[a-z0-9-]+$",
+      "examples": ["clinic-intake", "library-workshop"]
+    },
+    "title": {
+      "type": "string",
+      "description": "Full name of the page or screen this guide covers.",
+      "examples": ["Community clinic intake page", "Public library workshop page"]
+    },
+    "tab": {
+      "type": "string",
+      "description": "Short display label used in the editor tab list. Optional — defaults to title if omitted.",
+      "examples": ["Clinic intake", "Library event"]
+    },
+    "icon": {
+      "type": "string",
+      "description": "Material Symbols icon name for the editor sidebar. Optional.",
+      "examples": ["medical_information", "local_library", "report", "terrain"]
+    },
+    "context": {
+      "type": "string",
+      "description": "Product area, user flow, or page type that frames this guide.",
+      "examples": ["Public service appointment flow", "Community event detail page", "Operations dashboard workflow"]
+    },
+    "problemStatement": {
+      "type": "string",
+      "description": "The core problem this page must solve for the user. Should name what fails or breaks down without the page, not what the page does."
+    },
+    "audience": {
+      "type": "string",
+      "description": "Who is using this page, their context, and what they already know or expect."
+    },
+    "userGoal": {
+      "type": "string",
+      "description": "What the user needs to understand, decide, or do. One clear outcome."
+    },
+    "businessGoal": {
+      "type": "string",
+      "description": "What the organization needs this page to accomplish alongside the user goal."
+    },
+    "contextDetails": {
+      "type": "array",
+      "description": "Structured context fields beyond the core brief. Typically includes decision needed, out of scope, and contributors — but any label is valid.",
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Field label.",
+            "examples": ["Decision needed", "Out of scope", "Contributors", "Launch date", "Success metric"]
+          },
+          "value": {
+            "type": "string",
+            "description": "Field value."
+          },
+          "checkable": {
+            "type": "boolean",
+            "description": "When true, the content value is treated as a trackable decision that can be marked done. Use for 'Decision needed' fields."
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Whether this decision has been resolved. Only meaningful when checkable is true."
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "description": "Prioritized content elements for this page, ordered from most to least critical (index 0 = highest priority). Each item represents one content block, action, or functional element the page must include.",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/guideItem" },
+          { "$ref": "#/definitions/guideGroup" }
+        ]
+      }
+    }
+  }
+}

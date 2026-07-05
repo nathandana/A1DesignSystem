@@ -6,9 +6,12 @@ name: Supabase backup
 # "Session pooler"), with the DB password. See backups/README.md.
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '17 7 * * *' # every day at 07:17 UTC
-  workflow_dispatch: {} # allow manual runs
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 permissions:
   contents: read
@@ -19,13 +22,25 @@ concurrency:
 
 jobs:
   backup:
+    name: Back up Supabase database
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       BACKUP_DIR: ${{ runner.temp }}/backups
       BACKUP_KEEP_DAYS: '0' # ephemeral runner — don't prune
       HAS_S3: ${{ secrets.BACKUP_S3_BUCKET != '' && secrets.AWS_ACCESS_KEY_ID != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      - name: Validate backup configuration
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_BACKUP_TARGETS: ${{ secrets.SUPABASE_BACKUP_TARGETS }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ] && [ -z "$SUPABASE_BACKUP_TARGETS" ]; then
+            echo "::error::Set SUPABASE_DB_URL or SUPABASE_BACKUP_TARGETS in repository Actions secrets before running the backup workflow."
+            exit 1
+          fi
 
       - name: Install pg_dump (PostgreSQL client 17)
         run: |
@@ -34,7 +49,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
 
