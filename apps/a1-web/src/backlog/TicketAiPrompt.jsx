@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button, ButtonContainer, CircularProgress, Code, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { useBacklog } from './BacklogContext'
-import { buildTicketContext, buildPlanRequest, developPlanLocally, PLAN_SYSTEM } from '../services/backlog/devPlan'
+import { buildTicketContext, buildPlanRequest, developPlanLocally, ensureFinalStandardsReview, PLAN_SYSTEM } from '../services/backlog/devPlan'
 import { chooseModel, listLocalModels, localChat } from '../lib/localAi'
 
 /**
@@ -21,7 +21,7 @@ async function produce(item, comments, linked) {
     try {
       const r = await localChat({ system: PLAN_SYSTEM, prompt: buildPlanRequest(item, comments, linked), model })
       if (r.text) {
-        return { plan: r.text, source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
+        return { plan: ensureFinalStandardsReview(r.text), source: 'local', info: { model: r.model, elapsedMs: r.elapsedMs, outputTokens: r.outputTokens } }
       }
     } catch {
       /* local runner errored — fall back below */

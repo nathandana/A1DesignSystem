@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Build with AI standards review** — expanded generated development plans with a required Final standards review covering custom styling, component usage, tokens, accessibility, interactions, content, state handling, architecture, responsive behavior, test coverage, and standards debt. Local-AI plans now append the canonical checklist if the model omits it.
+
+- **Build with AI component inference** — the built-in planner now recognizes component names in general-scope ticket titles/descriptions, so tickets such as "Multiple Snackbars" plan against the component package, Storybook, a1-web configurator, docs, and changelogs instead of producing an app-only plan.
+
 - **Releases page horizontal scroll** (A1-398) — release-note content now benefits from shared typography wrapping, so long inline changelog fragments stay inside the release panels at narrow widths.
 
 - **Backlog ticket mobile toolbars** — ticket triage toolbars now use the shared Toolbar overflow behavior in both the ticket dialog and standalone ticket page, keeping type, status, priority, and size controls on one mobile row with excess options moved into More menus.
