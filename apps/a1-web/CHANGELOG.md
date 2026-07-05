@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Merging tickets now merges descriptions** (A1-400) — when two backlog tickets are merged, the duplicate's description is now folded into the **surviving ticket's description** (which the merge dialog already promises) instead of only being dropped into the comment thread. If the survivor has no description it adopts the duplicate's verbatim; when both have one, the duplicate's is appended under a clear `Merged from A1-N — "title":` heading so no agreed content is lost. Re-merging the same content is idempotent (it won't duplicate the body).
+
 - **Split Button styling** (A1-380) — fixed the Button configurator's React SplitButton preview so secondary split buttons show a single shared outline with the intended divider instead of a doubled border seam.
 
 - **Backlog — consistent ticket card variants** (A1-353) — the board and queue views now share one ticket card pattern with view variants. Queue tickets use the same metadata/badge structure as board cards and a default-size icon button for the open action.
