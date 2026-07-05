@@ -1,0 +1,34 @@
+component: Tooltip
+rules:
+  - id: tooltip-short-non-interactive-content
+    components:
+      - Tooltip
+    requirement: Tooltip content must be short, descriptive, and non-interactive.
+    do: Use a Tooltip for brief supporting context, such as naming an icon-only action or clarifying a disabled-looking affordance.
+    dont: Put buttons, links, form fields, menus, lengthy instructions, or essential task content inside a Tooltip.
+    applies_to:
+      - accessibility
+      - content
+      - interaction
+
+  - id: tooltip-not-only-path-to-information
+    components:
+      - Tooltip
+    requirement: Do not make Tooltip the only way to understand or complete a task.
+    do: Keep visible labels, helper text, validation messages, and page instructions available without hovering.
+    dont: Hide required instructions, error recovery, pricing, legal text, or other essential information only inside a Tooltip.
+    applies_to:
+      - accessibility
+      - usability
+      - content
+
+  - id: tooltip-trigger-keyboard-accessible
+    components:
+      - Tooltip
+    requirement: Tooltip triggers must be keyboard focusable when the tooltip carries useful information.
+    do: Wrap a focusable control such as Button, IconButton, Link, or an element with a valid interactive role and keyboard handling.
+    dont: Attach a Tooltip to static text or decorative icons when keyboard and screen-reader users need the tooltip content.
+    applies_to:
+      - accessibility
+      - keyboard
+      - semantic-html

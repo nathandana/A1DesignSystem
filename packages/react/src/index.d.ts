@@ -24,6 +24,7 @@ export { Code } from "./components/code/Code";
 export { DefinitionList } from "./components/definition-list/DefinitionList";
 export { Dialog } from "./components/dialog/Dialog";
 export { Divider } from "./components/divider/Divider";
+export { Tooltip } from "./components/tooltip/Tooltip";
 export { InlineEditable } from "./components/inline-editable/InlineEditable";
 export { Heading, HeadingMark } from "./components/heading/Heading";
 export { List, ListItem } from "./components/list/List";

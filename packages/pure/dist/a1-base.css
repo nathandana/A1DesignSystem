@@ -1238,6 +1238,75 @@
   background: var(--semantic-color-surface-page);
 }
 
+.a1-tooltip {
+  --a1-tooltip-background: var(--component-tooltip-background);
+  --a1-tooltip-border-color: var(--component-tooltip-border-color);
+  --a1-tooltip-foreground: var(--component-tooltip-foreground);
+
+  position: fixed;
+  z-index: var(--component-tooltip-z-index);
+  max-inline-size: var(--component-tooltip-max-width);
+  padding-block: var(--component-tooltip-padding-block);
+  padding-inline: var(--component-tooltip-padding-inline);
+  border: var(--component-tooltip-border-width) solid var(--a1-tooltip-border-color);
+  border-radius: var(--component-tooltip-border-radius);
+  background: var(--a1-tooltip-background);
+  box-shadow: var(--component-tooltip-shadow);
+  color: var(--a1-tooltip-foreground);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-tooltip-font-size);
+  line-height: var(--component-tooltip-line-height);
+  pointer-events: none;
+}
+
+.a1-tooltip::after {
+  position: absolute;
+  inline-size: var(--component-tooltip-arrow-size);
+  block-size: var(--component-tooltip-arrow-size);
+  background: var(--a1-tooltip-background);
+  border: solid var(--a1-tooltip-border-color);
+  border-width: 0 var(--component-tooltip-border-width) var(--component-tooltip-border-width) 0;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.a1-tooltip--top::after {
+  inset-block-end: calc(var(--component-tooltip-arrow-size) / -2);
+  inset-inline-start: calc(50% - var(--component-tooltip-arrow-size) / 2);
+}
+
+.a1-tooltip--right::after {
+  inset-block-start: calc(50% - var(--component-tooltip-arrow-size) / 2);
+  inset-inline-start: calc(var(--component-tooltip-arrow-size) / -2);
+  transform: rotate(135deg);
+}
+
+.a1-tooltip--bottom::after {
+  inset-block-start: calc(var(--component-tooltip-arrow-size) / -2);
+  inset-inline-start: calc(50% - var(--component-tooltip-arrow-size) / 2);
+  transform: rotate(225deg);
+}
+
+.a1-tooltip--left::after {
+  inset-block-start: calc(50% - var(--component-tooltip-arrow-size) / 2);
+  inset-inline-end: calc(var(--component-tooltip-arrow-size) / -2);
+  transform: rotate(315deg);
+}
+
+html.a1-theme-dark .a1-tooltip {
+  --a1-tooltip-background: var(--semantic-color-surface-inverse);
+  --a1-tooltip-border-color: var(--semantic-color-surface-inverse);
+  --a1-tooltip-foreground: var(--semantic-color-text-inverse);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.a1-theme-light):not(.a1-theme-dark) .a1-tooltip {
+    --a1-tooltip-background: var(--semantic-color-surface-inverse);
+    --a1-tooltip-border-color: var(--semantic-color-surface-inverse);
+    --a1-tooltip-foreground: var(--semantic-color-text-inverse);
+  }
+}
+
 .a1-system-banner {
   padding-block: var(--component-message-banner-padding);
   padding-inline: var(--base-spacing-24);

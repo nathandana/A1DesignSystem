@@ -1,0 +1,24 @@
+{
+  "component": {
+    "tooltip": {
+      "background":     { "$type": "color",     "$value": "{semantic.color.surface.inverse}" },
+      "foreground":     { "$type": "color",     "$value": "{semantic.color.text.inverse}" },
+      "borderColor":    { "$type": "color",     "$value": "{semantic.color.surface.inverse}" },
+      "borderWidth":    { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "borderRadius":   { "$type": "dimension", "$value": "{base.radius.md}" },
+      "paddingBlock":   { "$type": "dimension", "$value": "{base.spacing.6}" },
+      "paddingInline":  { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "offset":         { "$type": "dimension", "$value": "5rem" },
+      "viewportOffset": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "arrowSize":      { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "maxWidth":       { "$type": "dimension", "$value": "20rem" },
+      "fontSize":       { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+      "lineHeight":     { "$type": "lineHeight", "$value": "{semantic.font.lineHeight.body}" },
+      "shadow":         { "$type": "shadow",    "$value": "{semantic.shadow.md}" },
+      "zIndex":         { "$value": "1000" },
+      "delayDefault":   { "$value": "400" },
+      "delayMin":       { "$value": "0" },
+      "delayMax":       { "$value": "1500" }
+    }
+  }
+}

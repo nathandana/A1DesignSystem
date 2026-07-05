@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Tooltip — component page + configurator** (A1-378) — added Tooltip to the Overlay category with a live Configure panel for content, placement, delay, and disabled state. The page includes generated React/Pure snippets, rules, properties, accessibility guidance, package coverage, status, and related-component registry entries.
+
 - **Stat — component page + configurator** (A1-375) — the `Stat` component now has a live a1-web component page under the **Data** category (`/components/stat`), with a Configure panel (title, value, format, size, align, advanced number-format options, and a status badge), an accurate code snippet, Properties/Rules/Accessibility tabs, and the standard package/status/related-component registry entries (React-only, experimental).
 
 - **Kitchen sink page** (A1-343) — added a single `/kitchen-sink` page that previews as many A1 components as possible in one scrollable view, grouped by category (typography, actions and controls, inputs, feedback and messaging, layout and media, navigation and data). Built entirely from exported A1 components and layout primitives (`Section`/`Stack`/`Grid`/`Card`) with no custom styling, so it doubles as a quick cross-theme/cross-breakpoint smoke test. Linked from the Explore menu and global search (keywords: gallery, showcase, sticker sheet, preview).

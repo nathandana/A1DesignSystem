@@ -8,6 +8,7 @@ import circularProgressRules from '../../../../../system/rules/circular-progress
 import stepTrackerRules from '../../../../../system/rules/step-tracker.yaml?raw'
 import toolbarRules from '../../../../../system/rules/toolbar.yaml?raw'
 import sectionRules from '../../../../../system/rules/section.yaml?raw'
+import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 
 export const LAST_UPDATED = '2026-06-17'
 export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure']
@@ -139,6 +140,7 @@ export const componentCategories = [
       { id: 'dialog', icon: 'picture_in_picture', title: 'Dialog', body: 'Modal interactions with focus management.' },
       { id: 'menu', icon: 'menu', title: 'Menu', body: 'Anchored command and navigation menus.' },
       { id: 'context-menu', icon: 'more_vert', title: 'Context Menu', body: 'Right-click menu portaled to the document body.' },
+      { id: 'tooltip', icon: 'tooltip', title: 'Tooltip', body: 'Brief, non-interactive context shown on hover or focus.' },
       { id: 'bottom-sheet', icon: 'swipe_up', title: 'Bottom Sheet', bareDisplay: true, body: 'Fixed, scrim-less bottom panel with a draggable handle; xs and sm only.' },
     ],
   },
@@ -228,6 +230,7 @@ export const PACKAGE_COVERAGE = {
   dialog:             ['React', 'Native'],
   menu:               ['React'],
   'context-menu':     ['React'],
+  tooltip:            ['React', 'Pure'],
   'data-table':       ['React', 'Pure'],
   stat:               ['React'],
   'definition-list':  ['React', 'Pure'],
@@ -302,6 +305,7 @@ export const COMPONENT_STATUS = {
   dialog:              'beta',
   menu:                'beta',
   'context-menu':      'beta',
+  tooltip:             'beta',
   'data-table':        'beta',
   stat:                'experimental',
   'definition-list':   'beta',
@@ -378,9 +382,10 @@ export const COMPONENT_RELATED = {
   'page-layout':       ['section', 'side-nav', 'top-header'],
   'button-container':  ['button', 'stack'],
   figure:              ['card', 'section'],
-  dialog:              ['menu', 'button'],
-  menu:                ['dialog', 'context-menu', 'button'],
-  'context-menu':      ['menu', 'dialog'],
+  dialog:              ['menu', 'button', 'tooltip'],
+  menu:                ['dialog', 'context-menu', 'button', 'tooltip'],
+  'context-menu':      ['menu', 'dialog', 'tooltip'],
+  tooltip:             ['icon-button', 'button', 'menu'],
   'circular-progress': ['status-bar', 'badge', 'icon'],
   'step-tracker':      ['tabs', 'status-bar', 'circular-progress'],
   'data-table':        ['definition-list', 'pagination', 'section'],
@@ -404,4 +409,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/step-tracker.yaml', raw: stepTrackerRules },
   { file: 'system/rules/toolbar.yaml', raw: toolbarRules },
   { file: 'system/rules/section.yaml', raw: sectionRules },
+  { file: 'system/rules/tooltip.yaml', raw: tooltipRules },
 ]
