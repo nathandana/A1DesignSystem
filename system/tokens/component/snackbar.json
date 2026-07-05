@@ -1,10 +1,20 @@
 {
   "component": {
     "snackbar": {
+      "zIndex":        { "$type": "number",    "$value": 1100 },
+      "maxWidth":      { "$type": "dimension", "$value": "420px", "$description": "Maximum width for a snackbar surface." },
+      "minHeight":     { "$type": "dimension", "$value": "{base.spacing.56}" },
+      "paddingBlock":  { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "paddingInline": { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "borderWidth":   { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "gap":           { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "viewportOffset":       { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "viewportOffsetMobile": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "stackGap":             { "$type": "dimension", "$value": "{base.spacing.8}" },
       "default": {
-        "background": { "$type": "color", "$value": "{base.color.neutral.900}" },
-        "border":     { "$type": "color", "$value": "{base.color.neutral.900}" },
-        "foreground": { "$type": "color", "$value": "{base.color.neutral.0}" }
+        "background": { "$type": "color", "$value": "{base.color.neutral.900}", "$description": "Fallback snackbar surface used when the snackbar is rendered outside the inverse color scope. In normal use the snackbar reads --semantic-color-surface-page inside its own .a1-inverse scope, so the surface flips: dark on a light document, light on a dark document." },
+        "border":     { "$type": "color", "$value": "{base.color.neutral.900}", "$description": "Fallback snackbar border, matched to the fallback surface." },
+        "foreground": { "$type": "color", "$value": "{base.color.neutral.0}", "$description": "Fallback snackbar text used when rendered outside the inverse scope." }
       }
     }
   }

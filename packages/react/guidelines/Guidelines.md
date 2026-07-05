@@ -87,7 +87,7 @@ export, by category:
 - **Actions & controls:** `Button` `SplitButton` `IconButton` `ActionTiles` `ActionTile` `Chip` `ChipGroup` `Switch` `SegmentedControl` `Slider` `Toolbar` `ToolbarToggle` `ToolbarButton` `ToolbarGroup` `ToolbarMenu` `ToolbarDivider` `TOOLBAR_NONE_ICON` `Accordion` `Tabs` `TabList` `Tab` `TabPanel` `Link`
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`
 - **Inputs:** `TextField` `SearchField` `NumberField` `DateField` `TimeField` `PhoneField` `ZipField` `ZIP_MASKS` `CreditCardField` `TextareaField` `SelectField` `Autocomplete` `CheckboxGroup` `RadioGroup` `ChoiceGroup` `Fieldset` `FieldRow` `InlineEditable` `TokenSelect`
-- **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `StatusBar` `CircularProgress` `StepTracker` `Stat`
+- **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `SnackbarStack` `StatusBar` `CircularProgress` `StepTracker` `Stat`
 - **Overlay:** `Dialog` `Menu` `MenuSection` `MenuItem` `ContextMenu`
 - **Data:** `DataTable` `DataTableFilters` `DefinitionList` `Calendar` `Canvas` `Node` `CanvasEdge` `NodeConnector`
 - **Icons:** `Icon` `registerCustomIconFont` `clearCustomIconFont`

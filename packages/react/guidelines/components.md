@@ -130,7 +130,8 @@ Set a real `autoComplete` value on editable fields in real forms (`"email"`,
 | `MessageBadge` | `status="neutral\|info\|success\|warn\|error"`, `subtle` (boolean — not `variant="subtle"`), `size`, `icon` | Always pair color with a text label. Not clickable. |
 | `MessageEmptyState` | `scale="page\|section\|card"`, `icon`, `title`, `description`, `action` | |
 | `Notification` | `count`, `label`, `dot`, `position`, `max` | Count/dot badge overlay. |
-| `Snackbar` | `open`, `position`, `actionLabel` + `onAction`, `onClose` | Brief non-blocking feedback only; it doesn't trap focus. Errors requiring action → Dialog or Banner. |
+| `Snackbar` | `open`, `position`, `actionLabel` + `onAction`, `onClose`, `autoHideDuration`, `dismissible` | Brief non-blocking feedback only; timed dismiss pauses while hovered/focused. It doesn't trap focus. Errors requiring action → Dialog or Banner. |
+| `SnackbarStack` | `items`, `position` | React-only host for short, intentional multiple-snackbar stacks; put newest items first and keep durable history elsewhere. |
 | `StatusBar` | `value`, `max`, `size`, `labelPosition`, `indeterminate` | Linear progress. |
 | `CircularProgress` | `value`, `max`, `size="xs\|sm\|md\|lg"`, `indeterminate`, children centered in ring | Pass `aria-label`. |
 | `StepTracker` | steps with status | Compact step indicator (see also `Tabs variant="progress"` for interactive wizards). |
