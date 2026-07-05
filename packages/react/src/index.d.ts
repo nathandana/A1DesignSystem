@@ -11,7 +11,7 @@ export { PageNav } from "./components/page-nav/PageNav";
 export { Blockquote } from "./components/blockquote/Blockquote";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb";
 export { Notification } from "./components/notification/Notification";
-export { Snackbar } from "./components/snackbar/Snackbar";
+export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar";
 export { StatusBar } from "./components/status-bar/StatusBar";
 export { Stat } from "./components/stat/Stat";
 export { CircularProgress } from "./components/circular-progress/CircularProgress";

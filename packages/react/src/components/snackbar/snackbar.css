@@ -1,7 +1,7 @@
 @keyframes a1-snackbar-in {
   from {
     opacity: 0;
-    translate: 0 8px;
+    translate: 0 var(--component-snackbar-gap);
   }
   to {
     opacity: 1;
@@ -9,22 +9,44 @@
   }
 }
 
+@keyframes a1-snackbar-out-bottom {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: 0 calc(100% + var(--component-snackbar-viewport-offset));
+  }
+}
+
+@keyframes a1-snackbar-out-top {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: 0 calc(-100% - var(--component-snackbar-viewport-offset));
+  }
+}
+
 .a1-snackbar {
   position: fixed;
-  z-index: var(--component-snackbar-z-index, 1100);
+  z-index: var(--component-snackbar-z-index);
   box-sizing: border-box;
-  width: min(420px, calc(100vw - var(--base-spacing-32)));
-  min-height: 56px;
-  padding: var(--base-spacing-12) var(--base-spacing-24);
-  border: 1px solid var(--a1-snackbar-border);
+  width: min(var(--component-snackbar-max-width), calc(100vw - (var(--component-snackbar-viewport-offset) * 2)));
+  min-height: var(--component-snackbar-min-height);
+  padding: var(--component-snackbar-padding-block) var(--component-snackbar-padding-inline);
+  border: var(--component-snackbar-border-width) solid var(--a1-snackbar-border);
   border-radius: var(--component-card-border-radius);
   background: var(--a1-snackbar-background);
   color: var(--a1-snackbar-foreground);
   box-shadow: var(--semantic-shadow-lg);
   display: flex;
   align-items: center;
-  gap: var(--base-spacing-8);
-  animation: a1-snackbar-in var(--semantic-motion-duration-standard, 200ms) var(--semantic-motion-easing-standard, ease-out) both;
+  gap: var(--component-snackbar-gap);
+  animation: a1-snackbar-in var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,23 +64,34 @@
 .a1-snackbar--bottom,
 .a1-snackbar--bottom-left,
 .a1-snackbar--bottom-right {
-  bottom: var(--base-spacing-24);
+  bottom: var(--component-snackbar-viewport-offset);
 }
 
 .a1-snackbar--top,
 .a1-snackbar--top-left,
 .a1-snackbar--top-right {
-  top: var(--base-spacing-24);
+  top: var(--component-snackbar-viewport-offset);
 }
 
 .a1-snackbar--bottom-left,
 .a1-snackbar--top-left {
-  left: var(--base-spacing-24);
+  left: var(--component-snackbar-viewport-offset);
 }
 
 .a1-snackbar--bottom-right,
 .a1-snackbar--top-right {
-  right: var(--base-spacing-24);
+  right: var(--component-snackbar-viewport-offset);
+}
+
+.a1-snackbar--closing {
+  pointer-events: none;
+  animation-name: a1-snackbar-out-bottom;
+}
+
+.a1-snackbar--top.a1-snackbar--closing,
+.a1-snackbar--top-left.a1-snackbar--closing,
+.a1-snackbar--top-right.a1-snackbar--closing {
+  animation-name: a1-snackbar-out-top;
 }
 
 .a1-snackbar__content {
@@ -66,20 +99,71 @@
   flex: 1;
 }
 
+/* The snackbar carries `.a1-inverse` (set in Snackbar.jsx), so these semantic
+   tokens resolve inside the inverse scope — the surface is the opposite of the
+   document mode: dark on a light page, light on a dark page. This keeps the
+   toast clearly visible in dark mode. The `--component-snackbar-default-*`
+   tokens are the fallback for a snackbar rendered outside the inverse scope. */
 .a1-snackbar.a1-snackbar--default {
-  --a1-snackbar-background: var(--component-snackbar-default-background);
-  --a1-snackbar-border: var(--component-snackbar-default-border);
-  --a1-snackbar-foreground: var(--component-snackbar-default-foreground);
+  --a1-snackbar-background: var(--semantic-color-surface-page, var(--component-snackbar-default-background));
+  --a1-snackbar-border: var(--semantic-color-surface-page, var(--component-snackbar-default-border));
+  --a1-snackbar-foreground: var(--semantic-color-text-default, var(--component-snackbar-default-foreground));
 
   background: var(--a1-snackbar-background);
   border-color: var(--a1-snackbar-border);
   color: var(--a1-snackbar-foreground);
 }
 
-@media (max-width: 720px) {
+.a1-snackbar--stacked {
+  position: static;
+  inline-size: 100%;
+  transform: none;
+  pointer-events: auto;
+}
+
+.a1-snackbar-stack {
+  position: fixed;
+  z-index: var(--component-snackbar-z-index);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-snackbar-stack-gap);
+  width: min(var(--component-snackbar-max-width), calc(100vw - (var(--component-snackbar-viewport-offset) * 2)));
+  pointer-events: none;
+}
+
+.a1-snackbar-stack--bottom,
+.a1-snackbar-stack--top {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.a1-snackbar-stack--bottom,
+.a1-snackbar-stack--bottom-left,
+.a1-snackbar-stack--bottom-right {
+  bottom: var(--component-snackbar-viewport-offset);
+}
+
+.a1-snackbar-stack--top,
+.a1-snackbar-stack--top-left,
+.a1-snackbar-stack--top-right {
+  top: var(--component-snackbar-viewport-offset);
+}
+
+.a1-snackbar-stack--bottom-left,
+.a1-snackbar-stack--top-left {
+  left: var(--component-snackbar-viewport-offset);
+}
+
+.a1-snackbar-stack--bottom-right,
+.a1-snackbar-stack--top-right {
+  right: var(--component-snackbar-viewport-offset);
+}
+
+@media (--bp-sm-down) {
   .a1-snackbar {
-    right: var(--base-spacing-16);
-    left: var(--base-spacing-16);
+    right: var(--component-snackbar-viewport-offset-mobile);
+    left: var(--component-snackbar-viewport-offset-mobile);
     width: auto;
     transform: none;
   }
@@ -87,12 +171,31 @@
   .a1-snackbar--bottom,
   .a1-snackbar--bottom-left,
   .a1-snackbar--bottom-right {
-    bottom: var(--base-spacing-16);
+    bottom: var(--component-snackbar-viewport-offset-mobile);
   }
 
   .a1-snackbar--top,
   .a1-snackbar--top-left,
   .a1-snackbar--top-right {
-    top: var(--base-spacing-16);
+    top: var(--component-snackbar-viewport-offset-mobile);
+  }
+
+  .a1-snackbar-stack {
+    right: var(--component-snackbar-viewport-offset-mobile);
+    left: var(--component-snackbar-viewport-offset-mobile);
+    width: auto;
+    transform: none;
+  }
+
+  .a1-snackbar-stack--bottom,
+  .a1-snackbar-stack--bottom-left,
+  .a1-snackbar-stack--bottom-right {
+    bottom: var(--component-snackbar-viewport-offset-mobile);
+  }
+
+  .a1-snackbar-stack--top,
+  .a1-snackbar-stack--top-left,
+  .a1-snackbar-stack--top-right {
+    top: var(--component-snackbar-viewport-offset-mobile);
   }
 }

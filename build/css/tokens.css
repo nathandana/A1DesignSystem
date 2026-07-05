@@ -793,9 +793,19 @@
   --component-side-nav-item-font-line-height: 1.5;
   --component-side-nav-item-active-font-weight: 500;
   --component-side-nav-item-chevron-size: 1.125rem;
-  --component-snackbar-default-background: #060b14;
-  --component-snackbar-default-border: #060b14;
-  --component-snackbar-default-foreground: #ffffff;
+  --component-snackbar-z-index: 1100;
+  --component-snackbar-max-width: 26.25rem; /** Maximum width for a snackbar surface. */
+  --component-snackbar-min-height: 3.5rem;
+  --component-snackbar-padding-block: 0.75rem;
+  --component-snackbar-padding-inline: 1.5rem;
+  --component-snackbar-border-width: 1px;
+  --component-snackbar-gap: 0.5rem;
+  --component-snackbar-viewport-offset: 1.5rem;
+  --component-snackbar-viewport-offset-mobile: 1rem;
+  --component-snackbar-stack-gap: 0.5rem;
+  --component-snackbar-default-background: #060b14; /** Fallback snackbar surface used when the snackbar is rendered outside the inverse color scope. In normal use the snackbar reads --semantic-color-surface-page inside its own .a1-inverse scope, so the surface flips: dark on a light document, light on a dark document. */
+  --component-snackbar-default-border: #060b14; /** Fallback snackbar border, matched to the fallback surface. */
+  --component-snackbar-default-foreground: #ffffff; /** Fallback snackbar text used when rendered outside the inverse scope. */
   --component-stat-gap: 0.375rem;
   --component-stat-title-gap: 0.375rem;
   --component-stat-value-gap: 0.375rem;

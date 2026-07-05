@@ -259,6 +259,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Badge | ✓ | ✓ | — | — |
 | Notification | ✓ | — | — | — |
 | Snackbar | ✓ | ✓ | — | ✓ |
+| SnackbarStack | ✓ | — | — | — |
 | Empty State | ✓ | ✓ | — | — |
 | Status Bar | ✓ | — | — | — |
 | Circular Progress | ✓ | — | ✓ | — |
@@ -290,7 +291,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Use badges sparingly:** Badging every attribute on a page dilutes their signal value. Apply badges only to information that benefits from quick visual scanning.
 >
-> **Snackbar props:** `open` (boolean, required — renders nothing when false), `position` ("bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right", default "bottom"), `actionLabel` + `onAction` (both required to show the action button — omit either to hide it), `onClose` (renders a dismiss IconButton when provided), `children` (message content). Snackbar has one default visual style and applies its inverse treatment internally for child controls; use Banner for persistent status-coloured messages.
+> **Snackbar props:** `open` (boolean, required — renders nothing when false), `position` ("bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right", default "bottom"), `actionLabel` + `onAction` (both required to show the action button — omit either to hide it), `onClose` (called when dismissed or auto-hidden), `dismissible` (boolean, default true — shows the dismiss IconButton when `onClose` is provided), `autoHideDuration` (React, milliseconds before calling `onClose`; omit or pass 0 to disable; pauses while hovered or focused), Web Component `auto-hide-duration` (milliseconds before firing `a1-close`; 0 disables), React Native `duration` (milliseconds before `onDismiss`; 0 disables), and `children` (message content). Snackbar has one default visual style and applies its inverse treatment internally for child controls; use Banner for persistent status-coloured messages.
+>
+> **SnackbarStack:** React exports `SnackbarStack` for intentional multiple-snackbar displays. It fixes one stack container at the chosen `position` and renders each item as a static Snackbar with the existing border and shadow separation. Pass items in visual order; put the newest first for toast-like stacks. Keep stacks short and move durable history into a notification center or page.
 >
 > **Snackbar accessibility:** Uses `role="status"` and `aria-live="polite"` by default. Do not override `role` unless you have a specific reason.
 >

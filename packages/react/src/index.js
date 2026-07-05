@@ -7,7 +7,7 @@ export { PageNav } from "./components/page-nav/PageNav.jsx";
 export { Blockquote } from "./components/blockquote/Blockquote.jsx";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb.jsx";
 export { Notification } from "./components/notification/Notification.jsx";
-export { Snackbar } from "./components/snackbar/Snackbar.jsx";
+export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar.jsx";
 export { StatusBar } from "./components/status-bar/StatusBar.jsx";
 export { Stat } from "./components/stat/Stat.jsx";
 export { CircularProgress } from "./components/circular-progress/CircularProgress.jsx";

@@ -2,11 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- **Snackbar stacking and timed dismiss** (A1-313) — React `Snackbar` now supports `autoHideDuration` for opt-in timed dismissal that pauses while hovered or focused, animates off screen before closing, and exports `SnackbarStack` for short, intentional multiple-snackbar displays using the existing snackbar surface, border, and shadow separation. The Web Component mirrors timed dismissal with `auto-hide-duration` and the same close animation; React Native already exposes the equivalent `duration` prop.
+
 ### Changed
 
 - **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
 
 ### Fixed
+
+- **Snackbar visibility in dark mode** (A1-313) — the default Snackbar surface now inverts with the document colour scheme, so it is a dark toast on a light page (unchanged) and a **light** toast on a dark page instead of a dark toast that disappears against a dark background. The React surface reads `--semantic-color-surface-page` / `--semantic-color-text-default` inside the snackbar's own `.a1-inverse` scope; the Web Component mirrors the same inversion in its shadow styles (flipping to the light neutral ramp under `prefers-color-scheme: dark` and `.a1-theme-dark`), and its action/close controls follow the flipped foreground. The fixed `--component-snackbar-default-*` tokens remain as the out-of-scope fallback.
 
 - **Typography overflow wrapping** (A1-398) — Paragraph, Heading, and List item content now allow emergency wrapping for long unbroken prose fragments such as paths, props, and token names, preventing text from creating horizontal page overflow in narrow containers. The matching HTML/CSS typography classes were aligned.
 

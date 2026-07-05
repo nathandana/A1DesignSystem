@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../button/Button.jsx";
-import { Snackbar } from "./Snackbar.jsx";
+import { Snackbar, SnackbarStack } from "./Snackbar.jsx";
 
 export default {
   title: "Components/Messaging/Snackbar",
@@ -12,7 +12,10 @@ export default {
       options: ["bottom", "bottom-left", "bottom-right", "top", "top-left", "top-right"],
     },
     actionLabel: { control: "text" },
+    autoHideDuration: { control: "number" },
+    dismissible: { control: "boolean" },
     children: { control: "text" },
+    stacked: { table: { disable: true } },
   },
 };
 
@@ -21,10 +24,12 @@ export const Configurable = {
     open: true,
     children: "Guide deleted.",
     actionLabel: "Undo",
+    autoHideDuration: 0,
+    dismissible: true,
     position: "bottom",
   },
   render: (args) => (
-    <div style={{ minHeight: 120 }}>
+    <div style={{ minHeight: "var(--base-spacing-128)" }}>
       <Snackbar {...args} onAction={() => {}} onClose={() => {}} />
     </div>
   ),
@@ -36,7 +41,7 @@ export const Demo = {
   render: () => {
     const [open, setOpen] = useState(false);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)", alignItems: "flex-start", minHeight: 200 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-16)", alignItems: "flex-start", minHeight: "var(--base-spacing-192)" }}>
         <Button variant="primary" onClick={() => setOpen(true)} disabled={open}>
           Delete guide
         </Button>
@@ -45,6 +50,7 @@ export const Demo = {
           actionLabel="Undo"
           onAction={() => setOpen(false)}
           onClose={() => setOpen(false)}
+          autoHideDuration={6000}
         >
           Guide deleted.
         </Snackbar>
@@ -57,7 +63,7 @@ export const Positions = {
   name: "Positions",
   parameters: { controls: { include: [] } },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)", maxWidth: 420 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)", maxWidth: "var(--component-snackbar-max-width)" }}>
       {["bottom", "bottom-left", "bottom-right", "top", "top-left", "top-right"].map((position) => (
         <Snackbar
           key={position}
@@ -71,4 +77,40 @@ export const Positions = {
       ))}
     </div>
   ),
+};
+
+export const Multiple = {
+  name: "Multiple snackbars",
+  parameters: { controls: { include: [] } },
+  render: () => {
+    const [items, setItems] = useState([
+      { id: "sync", message: "Saved changes.", actionLabel: "Undo" },
+      { id: "publish", message: "Published to the team." },
+    ]);
+    const add = () => {
+      const id = Date.now();
+      setItems((current) => [
+        { id, message: `Queued update ${current.length + 1}.`, actionLabel: "View" },
+        ...current,
+      ]);
+    };
+    const dismiss = (id) => setItems((current) => current.filter((item) => item.id !== id));
+
+    return (
+      <div style={{ minHeight: "var(--base-spacing-192)" }}>
+        <Button variant="primary" onClick={add}>
+          Add snackbar
+        </Button>
+        <SnackbarStack
+          position="bottom-right"
+          items={items.map((item) => ({
+            ...item,
+            onAction: () => dismiss(item.id),
+            onClose: () => dismiss(item.id),
+            autoHideDuration: 7000,
+          }))}
+        />
+      </div>
+    );
+  },
 };

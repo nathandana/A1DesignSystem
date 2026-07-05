@@ -1289,7 +1289,10 @@ const COMPONENT_PROPS = {
     { id: 'actionLabel', name: 'actionLabel', type: 'string',    description: 'Label for the inline action button (e.g. "Undo").' },
     { id: 'onAction',    name: 'onAction',    type: '() => void', description: 'Called when the action button is clicked.' },
     { id: 'onClose',     name: 'onClose',     type: '() => void', description: 'Called when the snackbar auto-dismisses or is closed.' },
+    { id: 'dismissible', name: 'dismissible', type: 'boolean',    description: 'Show the close icon button when onClose is provided. Default: true.' },
+    { id: 'autoHideDuration', name: 'autoHideDuration', type: 'number', description: 'Milliseconds before calling onClose. Omit or pass 0 to disable; pauses while hovered or focused.' },
     { id: 'position',    name: 'position',    type: '"bottom" | "bottom-left" | "bottom-right" | "top" | "top-left" | "top-right"', description: 'Screen position. Default: "bottom".' },
+    { id: 'SnackbarStack', name: 'SnackbarStack', type: 'component', description: 'Optional React host for rendering several snackbars in a separated vertical stack.' },
   ],
   'empty-state': [
     { id: 'scale',       name: 'scale',       type: '"page" | "section" | "card"', description: 'Visual scale matching the container. page = largest (h1), section = medium (h2), card = compact (h3). Default: "section".' },

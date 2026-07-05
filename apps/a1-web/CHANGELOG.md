@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Snackbars visible in dark mode** (A1-313) — snackbars now render as a light toast on the dark app background (and a dark toast in light mode) instead of a dark toast that was hard to see against a dark page. The fix is in the design-system Snackbar (React + Web Component); no app-side change was needed.
+
+- **Snackbar configurator — multiple and timed dismiss** (A1-313) — the Snackbar component page now exposes single vs. multiple preview modes, stack count, dismissible state, and an Auto dismiss control that emits React `autoHideDuration`, Web Component `auto-hide-duration`, and React Native `duration` snippets.
+
 - **Backlog ticket creation snackbar** (A1-179) — creating a ticket now shows the existing snackbar with the translated **Open ticket** action that routes directly to the new ticket page.
 
 - **Build with AI standards review** — expanded generated development plans with a required Final standards review covering custom styling, component usage, tokens, accessibility, interactions, content, state handling, architecture, responsive behavior, test coverage, and standards debt. Plans now also require user-facing copy to be added to `system/labels/` with supported locale translations and consumed through the label resolver. Local-AI plans append the canonical checklist if the model omits it.
