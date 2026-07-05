@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Backlog ticket mobile toolbars** — ticket triage toolbars now use the shared Toolbar overflow behavior in both the ticket dialog and standalone ticket page, keeping type, status, priority, and size controls on one mobile row with excess options moved into More menus.
+
 - **Backlog — Build with AI in production** — the ticket detail page now shows Build with AI in production builds instead of limiting it to local dev. It still prefers a local Ollama model when reachable, but falls back to the built-in planner so deployed users can generate a ticket plan without browser API keys or local setup.
 
 - **Shortcut for new ticket** (A1-393) — pressing **`!`** anywhere in the app opens the **New ticket** dialog (unscoped, `kind: 'general'`), matching the existing global-shortcut pattern (like `?` for Help). It's guarded against firing while typing in an input, textarea, or select, and is listed in the "Show all shortcuts" menu (Jump section) as **New ticket · Shortcut: !**. Works app-wide because the create-ticket dialog is owned by `BacklogProvider` above the app.

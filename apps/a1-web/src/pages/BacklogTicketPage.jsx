@@ -217,9 +217,10 @@ export function BacklogTicketPage({ onNavigate }) {
           <DescriptionField item={item} onSave={patch} />
 
           <Stack gap="sm">
-            <Toolbar label={t('label.app.backlog.toolbarType', 'Type')} aria-label={t('label.app.backlog.toolbarType', 'Type')}>
+            <Toolbar label={t('label.app.backlog.toolbarType', 'Type')} aria-label={t('label.app.backlog.toolbarType', 'Type')} fullWidth>
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarType', 'Type')}
+                overflow
                 showLabels
                 value={item.type}
                 onChange={(v) => v && patch({ type: v })}
@@ -227,9 +228,16 @@ export function BacklogTicketPage({ onNavigate }) {
               />
             </Toolbar>
 
-            <Toolbar label={t('label.app.backlog.toolbarStatus', 'Status')} aria-label={t('label.app.backlog.toolbarStatus', 'Status')}>
+            <Toolbar
+              label={t('label.app.backlog.toolbarStatus', 'Status')}
+              aria-label={t('label.app.backlog.toolbarStatus', 'Status')}
+              fullWidth
+              overflow
+              overflowLabel={t('label.app.backlog.toolbarMoreStatusTools', 'More status tools')}
+            >
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarStatus', 'Status')}
+                overflow
                 showLabels
                 value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
                 onChange={(v) => v && patch({ status: v })}
@@ -245,9 +253,16 @@ export function BacklogTicketPage({ onNavigate }) {
               />
             </Toolbar>
 
-            <Toolbar label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')} aria-label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}>
+            <Toolbar
+              label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}
+              aria-label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}
+              fullWidth
+              overflow
+              overflowLabel={t('label.app.backlog.toolbarMorePrioritySizeTools', 'More priority and size tools')}
+            >
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarPriority', 'Priority')}
+                overflow
                 showLabels
                 value={item.priority || ''}
                 onChange={(v) => patch({ priority: v || null })}
@@ -256,6 +271,7 @@ export function BacklogTicketPage({ onNavigate }) {
               <ToolbarDivider />
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarSize', 'Size')}
+                overflow
                 showLabels
                 value={item.complexity || ''}
                 onChange={(v) => patch({ complexity: v || null })}

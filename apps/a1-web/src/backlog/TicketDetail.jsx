@@ -463,18 +463,20 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
 
               {/* Triage controls — toolbars (commit immediately) */}
               <Stack gap="sm">
-                <Toolbar label="Type" aria-label="Type">
+                <Toolbar label="Type" aria-label="Type" fullWidth>
                   <ToolbarGroup
                     aria-label="Type"
+                    overflow
                     showLabels
                     value={item.type}
                     onChange={(v) => v && patch({ type: v })}
                     options={TYPES.map((t) => ({ value: t, label: TYPE_LABELS[t], icon: TYPE_ICON[t] }))}
                   />
                 </Toolbar>
-                <Toolbar label="Status" aria-label="Status">
+                <Toolbar label="Status" aria-label="Status" fullWidth overflow overflowLabel="More status tools">
                   <ToolbarGroup
                     aria-label="Status"
+                    overflow
                     showLabels
                     value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
                     onChange={(v) => v && patch({ status: v })}
@@ -489,9 +491,10 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
                     items={OVERFLOW_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
                   />
                 </Toolbar>
-                <Toolbar label="Priority & size" aria-label="Priority and size">
+                <Toolbar label="Priority & size" aria-label="Priority and size" fullWidth overflow overflowLabel="More priority and size tools">
                   <ToolbarGroup
                     aria-label="Priority"
+                    overflow
                     showLabels
                     value={item.priority || ''}
                     onChange={(v) => patch({ priority: v || null })}
@@ -500,6 +503,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
                   <ToolbarDivider />
                   <ToolbarGroup
                     aria-label="Size"
+                    overflow
                     showLabels
                     value={item.complexity || ''}
                     onChange={(v) => patch({ complexity: v || null })}
