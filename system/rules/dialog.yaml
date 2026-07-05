@@ -1,0 +1,12 @@
+component: Dialog
+rules:
+  - id: dialog-vertical-scroll-only
+    components:
+      - Dialog
+    requirement: Dialog content must scroll vertically only; dialogs must not expose horizontal scrolling.
+    do: Let the shared Dialog body own vertical scrolling, and make wide child content responsive, wrapping, clipped, or internally overflow-managed by the child component.
+    dont: Add horizontal scrolling to the Dialog body or rely on a child that forces the dialog wider than the viewport; fix the child layout or use that child's own governed overflow pattern instead.
+    applies_to:
+      - layout
+      - responsive
+      - accessibility

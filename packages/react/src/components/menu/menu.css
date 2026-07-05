@@ -51,8 +51,21 @@
   padding: var(--base-spacing-4) var(--base-spacing-8);
   color: var(--semantic-color-text-muted);
   font-size: var(--semantic-font-size-body-xs);
-  font-weight: var(--component-menu-section-label-font-weight);
+  font-weight: var(--base-font-weight-semibold);
   overflow-wrap: anywhere;
+}
+
+/* Embedded controls inside a menu should read like menu chrome, not full-form
+   headings. Keep the controls themselves unchanged; only their labels compress
+   to the menu section-label treatment. */
+.a1-menu :is(
+  .a1-field__label,
+  .a1-choice-group__legend,
+  .a1-choice-group__section-label
+) {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-semibold);
 }
 
 /* ── MenuItem ────────────────────────────────────────────────────────────── */
@@ -71,7 +84,7 @@
   background: transparent;
   color: var(--semantic-color-text-default);
   font-family: var(--semantic-font-family-body);
-  font-size: var(--semantic-font-size-body-sm);
+  font-size: var(--semantic-font-size-body-md);
   font-weight: var(--component-menu-item-font-weight);
   line-height: var(--component-menu-item-line-height);
   text-align: start;

@@ -19,7 +19,6 @@ import {
   Toolbar,
   ToolbarDivider,
   ToolbarGroup,
-  ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
 import { resolveSrc } from '../lib/imageLibrary'
 import { ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge } from '../backlog/TicketBadges'
@@ -33,7 +32,7 @@ import { TicketPersonaReview } from '../backlog/TicketPersonaReview'
 import { useBacklog } from '../backlog/BacklogContext'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS,
-  SCOPE_KINDS, SCOPE_LABELS, STATUS_ICON, STATUS_LABELS,
+  SCOPE_KINDS, SCOPE_LABELS, STATUS_ICON, STATUS_LABELS, STATUSES,
   TYPES, TYPE_ICON, TYPE_LABELS, ticketRef,
 } from '../services/backlog/types'
 
@@ -217,9 +216,10 @@ export function BacklogTicketPage({ onNavigate }) {
           <DescriptionField item={item} onSave={patch} />
 
           <Stack gap="sm">
-            <Toolbar label={t('label.app.backlog.toolbarType', 'Type')} aria-label={t('label.app.backlog.toolbarType', 'Type')}>
+            <Toolbar label={t('label.app.backlog.toolbarType', 'Type')} aria-label={t('label.app.backlog.toolbarType', 'Type')} fullWidth>
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarType', 'Type')}
+                overflow
                 showLabels
                 value={item.type}
                 onChange={(v) => v && patch({ type: v })}
@@ -227,27 +227,36 @@ export function BacklogTicketPage({ onNavigate }) {
               />
             </Toolbar>
 
-            <Toolbar label={t('label.app.backlog.toolbarStatus', 'Status')} aria-label={t('label.app.backlog.toolbarStatus', 'Status')}>
+            <Toolbar
+              label={t('label.app.backlog.toolbarStatus', 'Status')}
+              aria-label={t('label.app.backlog.toolbarStatus', 'Status')}
+              fullWidth
+            >
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarStatus', 'Status')}
+                overflow
                 showLabels
-                value={PRIMARY_STATUSES.includes(item.status) ? item.status : ''}
-                onChange={(v) => v && patch({ status: v })}
-                options={PRIMARY_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
-              />
-              <ToolbarDivider />
-              <ToolbarMenu
-                aria-label={t('label.app.backlog.toolbarMoreStatuses', 'More statuses')}
-                label={OVERFLOW_STATUSES.includes(item.status) ? STATUS_LABELS[item.status] : t('label.app.backlog.toolbarMoreLabel', 'More')}
                 value={item.status}
-                onChange={(v) => patch({ status: v })}
-                items={OVERFLOW_STATUSES.map((s) => ({ value: s, label: STATUS_LABELS[s], icon: STATUS_ICON[s] }))}
+                onChange={(v) => v && patch({ status: v })}
+                options={STATUSES.map((s) => ({
+                  value: s,
+                  label: STATUS_LABELS[s],
+                  icon: STATUS_ICON[s],
+                  overflowPriority: PRIMARY_STATUSES.includes(s) ? PRIMARY_STATUSES.indexOf(s) : 100 + OVERFLOW_STATUSES.indexOf(s),
+                }))}
               />
             </Toolbar>
 
-            <Toolbar label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')} aria-label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}>
+            <Toolbar
+              label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}
+              aria-label={t('label.app.backlog.toolbarPriorityAndSize', 'Priority & size')}
+              fullWidth
+              overflow
+              overflowLabel={t('label.app.backlog.toolbarMorePrioritySizeTools', 'More priority and size tools')}
+            >
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarPriority', 'Priority')}
+                overflow
                 showLabels
                 value={item.priority || ''}
                 onChange={(v) => patch({ priority: v || null })}
@@ -256,6 +265,7 @@ export function BacklogTicketPage({ onNavigate }) {
               <ToolbarDivider />
               <ToolbarGroup
                 aria-label={t('label.app.backlog.toolbarSize', 'Size')}
+                overflow
                 showLabels
                 value={item.complexity || ''}
                 onChange={(v) => patch({ complexity: v || null })}
@@ -376,15 +386,13 @@ export function BacklogTicketPage({ onNavigate }) {
         </Stack>
       </Section>
 
-      {/* ── Build with AI (dev only) ───────────────────────────────────── */}
-      {import.meta.env.DEV && (
-        <Section padding="md" surface="panel" contentWidth="xl">
-          <Stack gap="md">
-            <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
-            <TicketAiPrompt item={item} />
-          </Stack>
-        </Section>
-      )}
+      {/* ── Build with AI ──────────────────────────────────────────────── */}
+      <Section padding="md" surface="panel" contentWidth="xl">
+        <Stack gap="md">
+          <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
+          <TicketAiPrompt item={item} />
+        </Stack>
+      </Section>
 
       {/* ── Virtual PO (dev only) ──────────────────────────────────────── */}
       {import.meta.env.DEV && (

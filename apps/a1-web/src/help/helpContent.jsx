@@ -1700,6 +1700,58 @@ const RAW_HELP = [
       },
     ],
   },
+  {
+    id: 'priority-guides',
+    title: 'Priority guides',
+    icon: 'list_alt',
+    articles: [
+      {
+        id: 'what-is-priority-guide',
+        title: 'What a priority guide is',
+        keywords: 'priority guide content first alignment problem audience goal wireframe brief',
+        body: (
+          <Stack gap="sm">
+            <P>
+              A <strong>priority guide</strong> is a content-first alignment doc for one page:
+              the problem it must solve, who it's for, the user and business goals, and a
+              <strong> priority-ranked list of content</strong> (most-critical first) — before any
+              layout or visual design. Open it from <strong>Editors → Priority guides</strong>.
+            </P>
+            <P>
+              Each item names a role and a suggested component (Heading, Button, Checklist…),
+              and items can be grouped into a Section, Card, or Button container. Edit fields
+              inline, reorder by dragging or the up/down arrows, and edit the raw JSON two-way
+              in the side panel.
+            </P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'convert-guide-to-page',
+        title: 'Converting a guide to a page or wireframe',
+        keywords: 'convert page wireframe redacted preview project attach round trip theme',
+        body: (
+          <Stack gap="sm">
+            <P>
+              Attach a guide to a <strong>project</strong> (and optionally a specific page) using
+              the selectors above the guide, then:
+            </P>
+            <Bullets items={[
+              <><strong>Convert to page</strong> — writes the guide into a real A1 page (creating one if none is attached). It maps groups to Sections/Cards/Button containers and items to Headings, Paragraphs, Buttons, and Lists, in priority order.</>,
+              <><strong>Preview wireframe</strong> — opens that page in a standalone preview under the <strong>Wireframe</strong> theme (black/grey/white, no shadows, monospace), so you review structure without visual-design noise.</>,
+              <><strong>Preview redacted</strong> — the same, under <strong>Wireframe (redacted)</strong>, which replaces the copy with solid grey bars so you read layout and density, not the words.</>,
+            ]} />
+            <P>
+              Conversion is round-trippable: the source guide is stored on the page, so a page
+              made from a guide can be turned back into a guide without losing the problem,
+              audience, goals, or annotations. Guides sync across your signed-in devices along
+              with projects, patterns, and themes.
+            </P>
+          </Stack>
+        ),
+      },
+    ],
+  },
 ]
 
 export const HELP_CONTENT = buildHelpCategories(RAW_HELP)

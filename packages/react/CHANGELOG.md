@@ -1,5 +1,21 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## Unreleased
+
+### Changed
+
+- **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
+
+### Fixed
+
+- **Typography overflow wrapping** (A1-398) — Paragraph, Heading, and List item content now allow emergency wrapping for long unbroken prose fragments such as paths, props, and token names, preventing text from creating horizontal page overflow in narrow containers. The matching HTML/CSS typography classes were aligned.
+
+- **Dialog vertical-only scrolling** (A1-397) — dialog bodies now clip horizontal overflow and keep their inline size shrinkable, so wide child content no longer creates horizontal scrolling in dialogs while vertical scrolling continues to work.
+
+- **Menu embedded labels** — menu section labels and labels from embedded field/choice controls now use the same compact muted treatment inside `.a1-menu`, so settings-style menus do not render full-form label emphasis in a compact menu panel.
+
+- **BottomSheet — mobile height respects TopHeader** — the expanded sheet is now capped to the viewport area below the sticky TopHeader by default, using `--component-top-header-height` plus the safe-area inset. Consumers without a top header can override `--a1-bottom-sheet-block-start-offset`.
+
 ## 0.26.0 — 2026-07-04
 
 ### Added
