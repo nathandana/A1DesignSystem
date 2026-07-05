@@ -1599,7 +1599,10 @@ function App() {
           />
         }
       >
-        {((activePage === 'editor' && (editorPatternId || activeProject)) || (activePage === 'theme-editor' && activeThemeId)) && (
+        {/* The editor renders its own sidebar toggle inline in its toolbar row
+            (see EditorPage's onOpenSidebar); the theme editor still uses this
+            content-column toggle. */}
+        {activePage === 'theme-editor' && activeThemeId && (
           <IconButton
             className="a1-web-sidebar-toggle"
             icon="view_sidebar"
@@ -1660,6 +1663,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           ) : (
             <Section padding="lg" gap="sm">
@@ -1705,6 +1710,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           ) : !openPageId || !projectPages.some((p) => p.id === openPageId) ? (
             <AllPagesView
@@ -1750,6 +1757,8 @@ function App() {
               addTarget={editorAddTarget}
               onCancelAdd={() => setEditorAddTarget(null)}
               onRequestAdd={setEditorAddTarget}
+              sidebarOpen={sidebarOpen}
+              onOpenSidebar={() => setSidebarOpen(true)}
             />
           )
         )}

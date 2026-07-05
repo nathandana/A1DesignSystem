@@ -12,6 +12,8 @@ import {
   Section,
   SplitButton,
   Stack,
+  Toolbar,
+  ToolbarButton,
 } from '@gtivr4/a1-design-system-react'
 import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
@@ -89,20 +91,35 @@ export function ProjectsList({
         title="Projects"
         description="Each project is an isolated set of pages with its own auto-generated navigation."
         actions={(
-          <>
-            <Button variant="secondary" icon="help" onClick={() => onOpenHelp?.()}>
-              Help
-            </Button>
-            {onOpenImageLibrary && (
-              <Button variant="secondary" icon="photo_library" onClick={() => onOpenImageLibrary()}>
-                Image library
-              </Button>
-            )}
-            {onImportProject && (
-              <Button variant="secondary" icon="upload" onClick={() => setImporting(true)}>
-                Upload JSON
-              </Button>
-            )}
+          <Stack direction="row" gap="sm" align="center">
+            {/* Secondary actions collapse into a "More" menu on narrow screens so
+                the primary "New project" CTA stays visible at every width. Labels
+                show from md up; below that the tools are icon-only, and any that
+                don't fit move into the overflow menu. */}
+            <Toolbar aria-label="Project actions" overflow overflowLabel="More actions">
+              <ToolbarButton
+                icon="help"
+                label="Help"
+                showLabel={{ xs: false, md: true }}
+                onClick={() => onOpenHelp?.()}
+              />
+              {onOpenImageLibrary && (
+                <ToolbarButton
+                  icon="photo_library"
+                  label="Image library"
+                  showLabel={{ xs: false, md: true }}
+                  onClick={() => onOpenImageLibrary()}
+                />
+              )}
+              {onImportProject && (
+                <ToolbarButton
+                  icon="upload"
+                  label="Upload JSON"
+                  showLabel={{ xs: false, md: true }}
+                  onClick={() => setImporting(true)}
+                />
+              )}
+            </Toolbar>
             {AI_ENABLED ? (
               <SplitButton
                 icon="add"
@@ -118,7 +135,7 @@ export function ProjectsList({
             ) : (
               <Button icon="add" onClick={() => setDialog({ mode: 'create' })}>New project</Button>
             )}
-          </>
+          </Stack>
         )}
       />
 
