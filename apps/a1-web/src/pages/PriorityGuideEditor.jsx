@@ -475,7 +475,6 @@ function GuideEditorView({ guide, projects, onBack, onChange, onConvert, onConve
           <ButtonContainer>
             <Button variant="secondary" icon="dashboard" onClick={() => onConvert(guide)}>Convert to page</Button>
             <Button variant="primary" icon="grid_view" onClick={() => onConvertPreview(guide, 'wireframe')}>Preview wireframe</Button>
-            <Button variant="tertiary" icon="notes" onClick={() => onConvertPreview(guide, 'wireframe-redacted')}>Preview redacted</Button>
           </ButtonContainer>
         </div>
       </Stack>

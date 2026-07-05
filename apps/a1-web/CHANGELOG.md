@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **Release notes package coverage** — the Releases page now includes package release notes. Release sources switch with a chip filter in the sidebar independent of Simplified/Detailed mode, versions remain in the TreeMenu, React has simplified package notes, and the Simplified/Detailed control now lives in the page header constrained to the same width as the release notes.
+
+- **Backlog swimlane controls** — the Backlog board now hides the swimlane visibility toolbar when the board switches to the small-screen tab layout, and the larger-breakpoint toolbar uses the shared Toolbar overflow behavior so swimlane toggles stay on one row.
+
+- **Backlog filter rail placement** — the Backlog view/search/filter rail now appears on the left side of the page at non-mobile breakpoints as a fixed-width sidebar with the correct right border, matching navigation-oriented pages while keeping the small-screen BottomSheet behavior.
+
+- **Release notes public version** (A1-407) — the Releases page now follows the component-pages pattern: release versions live in a left-side TreeMenu with search, while the main pane renders each release-note item as its own card. Searching now shows all matching releases at once, separated by release version, with matching text marked inline. The release sidebar stays expanded on large breakpoints and opens from a page button on smaller breakpoints. Simplified notes come from curated public sources; Detailed switches to the full changelog.
+
+- **Release notes search and markdown rendering** — added a search field to the Releases page so users can filter release tabs and release-note entries from the changelog. Release-note text now renders common inline Markdown such as bold, italic, inline code, and links as markup instead of showing raw syntax. The new search labels are sourced from `system/labels/app.json` with supported translations.
+
+- **Wireframe redacted theme removed** (A1-403) — removed the Wireframe (redacted) theme, its Priority Guide preview action, settings theme option, and app redaction stylesheet. Priority Guide previews now use the standard Wireframe theme only.
+
 - **Tree Menu collapsed configurator** (A1-377) — the Tree Menu component page now exposes the `variant` prop and opens in collapsed mode so the root-icon menu flyout is visible immediately, with helper text, Properties coverage, generated snippet output, and editor/Add-panel round-tripping for `variant="collapsed"`.
 
 ## 0.24.0 — 2026-07-05
@@ -34,7 +46,7 @@
 
 - **Shortcut for new ticket** (A1-393) — pressing **`!`** anywhere in the app opens the **New ticket** dialog (unscoped, `kind: 'general'`), matching the existing global-shortcut pattern (like `?` for Help). It's guarded against firing while typing in an input, textarea, or select, and is listed in the "Show all shortcuts" menu (Jump section) as **New ticket · Shortcut: !**. Works app-wide because the create-ticket dialog is owned by `BacklogProvider` above the app.
 
-- **Priority Guide editor + Wireframe themes** — a new **Priority guides** editor under **Editors** (`/priority-guide`) brings the priority-guide workflow into a1-web: create content-first alignment docs (problem, audience, user/business goals, and a priority-ranked content hierarchy with groups), edit fields inline, reorder items by drag or arrows, and edit the live JSON two-way. Guides seed from the four bundled examples, persist locally, and **cloud-sync** as part of the shared workspace envelope alongside projects/patterns/themes. A guide can be **attached to a project + page** and **converted to a real A1 page** (round-trippable — the source guide is stashed in `page.meta` so "convert from page" is lossless), then previewed as a **wireframe**. Two new deliberately un-designed themes back this: **Wireframe** (`.a1-theme-wireframe`) — black/grey/white only, no shadows, zero-radius, monospace — and **Wireframe (redacted)** (`.a1-theme-wireframe-redacted`) — the same, but with copy replaced by solid grey bars (one per line) so reviewers read structure and density, not words. Both are selectable in Settings → Theme; the editor's **Preview wireframe** / **Preview redacted** buttons open the converted page standalone under the chosen theme (via a new `?theme=` param on the editor preview).
+- **Priority Guide editor + Wireframe theme** — a new **Priority guides** editor under **Editors** (`/priority-guide`) brings the priority-guide workflow into a1-web: create content-first alignment docs (problem, audience, user/business goals, and a priority-ranked content hierarchy with groups), edit fields inline, reorder items by drag or arrows, and edit the live JSON two-way. Guides seed from the four bundled examples, persist locally, and **cloud-sync** as part of the shared workspace envelope alongside projects/patterns/themes. A guide can be **attached to a project + page** and **converted to a real A1 page** (round-trippable — the source guide is stashed in `page.meta` so "convert from page" is lossless), then previewed as a **wireframe**. The deliberately un-designed **Wireframe** theme (`.a1-theme-wireframe`) is black/grey/white only, no shadows, zero-radius, and monospace, so reviewers can focus on structure before visual design. It is selectable in Settings → Theme; the editor's **Preview wireframe** button opens the converted page standalone under that theme (via a new `?theme=` param on the editor preview).
 
 ## 0.22.0 — 2026-07-03
 

@@ -524,7 +524,7 @@ export function Backlog({ onNavigate }) {
           )}
         </Stack>
         <Stack gap="md">
-        {/* The search lives in the right-hand panel; here we echo the result count +
+        {/* The search lives in the left-side panel; here we echo the result count +
             the smart-search syntax hint while a query is active. */}
         {searching && (
           <Paragraph size="sm" color="muted">
@@ -533,28 +533,34 @@ export function Backlog({ onNavigate }) {
         )}
 
         {/* The view switcher (Board / All tickets / My queue) lives in the
-            right-hand panel now (A1) — here we just render the active view. */}
+            left-side panel now (A1) — here we just render the active view. */}
         {tab === 'board' && (
             <Stack gap="md">
-              {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
+              {/* Sort + the Type/Priority/Size/Scope filters live in the page's left-side
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar aria-label={t('app.backlog.swimlanesToolbarLabel', 'Show or hide swimlanes')}>
-                {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
-                  <ToolbarToggle
-                    key={s}
-                    icon={STATUS_ICON[s]}
-                    label={STATUS_LABELS[s]}
-                    showLabel={{ xs: false, lg: true }}
-                    pressed={visibleLanes.has(s)}
-                    onChange={(pressed) => setVisibleLanes((prev) => {
-                      const next = new Set(prev)
-                      if (pressed) next.add(s); else next.delete(s)
-                      return next
-                    })}
-                  />
-                ))}
-              </Toolbar>
+              {!isSmall && (
+                <Toolbar
+                  aria-label={t('app.backlog.swimlanesToolbarLabel', 'Show or hide swimlanes')}
+                  overflow
+                  overflowLabel={t('app.backlog.moreSwimlanes', 'More swimlanes')}
+                >
+                  {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
+                    <ToolbarToggle
+                      key={s}
+                      icon={STATUS_ICON[s]}
+                      label={STATUS_LABELS[s]}
+                      showLabel={{ xs: false, lg: true }}
+                      pressed={visibleLanes.has(s)}
+                      onChange={(pressed) => setVisibleLanes((prev) => {
+                        const next = new Set(prev)
+                        if (pressed) next.add(s); else next.delete(s)
+                        return next
+                      })}
+                    />
+                  ))}
+                </Toolbar>
+              )}
 
               {(() => {
                 // A swimlane shows whenever it's toggled on — never hidden because it's empty
@@ -683,7 +689,7 @@ export function Backlog({ onNavigate }) {
       </Dialog>
 
       {/* Filters panel (A1-154) — sort + Type/Priority/Size/Scope, rendered into the app's
-          right-hand aside rail (a BottomSheet at xs/sm). Filters the board. */}
+          left aside rail (a BottomSheet at xs/sm). Filters the board. */}
       {asideNode && createPortal(
         <div className="a1-web-config-aside__inner">
           <Stack gap="lg">

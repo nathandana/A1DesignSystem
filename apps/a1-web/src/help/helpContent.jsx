@@ -1729,7 +1729,7 @@ const RAW_HELP = [
       {
         id: 'convert-guide-to-page',
         title: 'Converting a guide to a page or wireframe',
-        keywords: 'convert page wireframe redacted preview project attach round trip theme',
+        keywords: 'convert page wireframe preview project attach round trip theme',
         body: (
           <Stack gap="sm">
             <P>
@@ -1739,7 +1739,6 @@ const RAW_HELP = [
             <Bullets items={[
               <><strong>Convert to page</strong> — writes the guide into a real A1 page (creating one if none is attached). It maps groups to Sections/Cards/Button containers and items to Headings, Paragraphs, Buttons, and Lists, in priority order.</>,
               <><strong>Preview wireframe</strong> — opens that page in a standalone preview under the <strong>Wireframe</strong> theme (black/grey/white, no shadows, monospace), so you review structure without visual-design noise.</>,
-              <><strong>Preview redacted</strong> — the same, under <strong>Wireframe (redacted)</strong>, which replaces the copy with solid grey bars so you read layout and density, not the words.</>,
             ]} />
             <P>
               Conversion is round-trippable: the source guide is stored on the page, so a page

@@ -448,6 +448,7 @@ body {
   inline-size: 100%;
   min-block-size: 0;
   border-inline-start: none;
+  border-inline-end: none;
   background: transparent;
 }
 
@@ -502,6 +503,11 @@ body {
   min-height: 100%;
   background: var(--semantic-color-surface-panel);
   border-inline-start: 1px solid var(--semantic-color-border-subtle);
+}
+
+.a1-web-config-aside--start {
+  border-inline-start: none;
+  border-inline-end: 1px solid var(--semantic-color-border-subtle);
 }
 
 .a1-web-config-aside__inner {
@@ -658,6 +664,7 @@ body {
   .a1-web-config-aside {
     width: 100%;
     border-inline-start: none;
+    border-inline-end: none;
     border-block-start: 1px solid var(--semantic-color-border-subtle);
   }
 }

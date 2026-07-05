@@ -10,6 +10,8 @@
 
 ### Changed
 
+- **Wireframe redacted theme removed** (A1-403) — removed the `wireframe-redacted` theme source and generated `.a1-theme-wireframe-redacted` output. Use the standard `wireframe` theme for Priority Guide structure previews.
+
 - **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
 
 ### Fixed
