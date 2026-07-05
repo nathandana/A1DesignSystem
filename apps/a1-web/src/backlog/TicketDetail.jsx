@@ -273,11 +273,11 @@ export function DescriptionField({ item, onSave }) {
  *  - **Comments** — the comment / Q&A thread + activity log. A maintainer can "Ask the
  *    requester" (routes a question into their queue); the requester answers.
  *  - **Linked tickets** — the similarity finder + merge-duplicates panel.
- *  - **Build with AI** *(dev only)* — a copy-pasteable AI prompt built from the ticket.
+ *  - **Build with AI** — a copy-pasteable implementation plan built from the ticket.
  *  - **Virtual PO** *(dev only)* — the local Virtual Team per-ticket review.
  *
- * The last two are gated behind `import.meta.env.DEV` (the persona engine is local-only;
- * the AI prompt is a dev convenience) so they never appear in production.
+ * Virtual PO is gated behind `import.meta.env.DEV` because the persona engine is local-only.
+ * Build with AI is production-visible and falls back to the built-in planner when local AI is unavailable.
  */
 export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, nextItem, onPreviousItem, onNextItem }) {
   const backlog = useBacklog()
@@ -356,7 +356,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
     thread.filter((c) => c.kind === 'answer' && c.meta?.answersCommentId).map((c) => c.meta.answersCommentId),
   )
   // Comment-tab badge counts only real messages (comments / questions / answers), not the
-  // activity log. The dev-only tabs (Build with AI, Virtual PO) wrap local-only tooling.
+  // activity log. Virtual PO wraps local-only tooling.
   const commentCount = thread.filter((c) => c.kind !== 'activity').length
   const isDev = import.meta.env.DEV
   async function handleAnswer(questionId, body, choice) {
@@ -449,7 +449,7 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
             <Tab value="details" icon="info">Details</Tab>
             <Tab value="comments" icon="forum" count={commentCount || undefined}>Comments</Tab>
             <Tab value="linked" icon="merge">Linked tickets</Tab>
-            {isDev && <Tab value="build" icon="smart_toy">Build with AI</Tab>}
+            <Tab value="build" icon="smart_toy">Build with AI</Tab>
             {isDev && <Tab value="po" icon="reviews">Virtual PO</Tab>}
           </TabList>
 
@@ -637,11 +637,9 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
             />
           </TabPanel>
 
-          {isDev && (
-            <TabPanel value="build">
-              <TicketAiPrompt item={item} />
-            </TabPanel>
-          )}
+          <TabPanel value="build">
+            <TicketAiPrompt item={item} />
+          </TabPanel>
 
           {isDev && (
             <TabPanel value="po">
