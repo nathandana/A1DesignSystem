@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Merging tickets now merges descriptions** (A1-400) — when two backlog tickets are merged, the duplicate's description is now folded into the **surviving ticket's description** (which the merge dialog already promises) instead of only being dropped into the comment thread. If the survivor has no description it adopts the duplicate's verbatim; when both have one, the duplicate's is appended under a clear `Merged from A1-N — "title":` heading so no agreed content is lost. Re-merging the same content is idempotent (it won't duplicate the body).
+
 - **Snackbars visible in dark mode** (A1-313) — snackbars now render as a light toast on the dark app background (and a dark toast in light mode) instead of a dark toast that was hard to see against a dark page. The fix is in the design-system Snackbar (React + Web Component); no app-side change was needed.
 
 - **Snackbar configurator — multiple and timed dismiss** (A1-313) — the Snackbar component page now exposes single vs. multiple preview modes, stack count, dismissible state, and an Auto dismiss control that emits React `autoHideDuration`, Web Component `auto-hide-duration`, and React Native `duration` snippets.

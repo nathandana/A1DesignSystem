@@ -196,15 +196,26 @@ export async function mergeTickets(
   // 1) Move the discussion thread + votes onto the survivor.
   await be.mergeItem(duplicate.id, canonical.id);
 
-  // 2) Preserve the duplicate's description as a comment so no agreed content is dropped.
-  const desc = (duplicate.description ?? '').trim();
-  if (desc) {
-    await be.addComment({
-      itemId: canonical.id, kind: 'comment',
-      body: `Merged from ${dupRef} — “${duplicate.title}”:\n\n${desc}`,
-      meta: { mergedFrom: duplicate.id, mergedFromRef: dupRef },
-      userId: actorId(), userEmail: currentUser?.email ?? null,
-    });
+  // 2) Merge the duplicate's description into the survivor's description so the agreed
+  //    content lives on the surviving ticket, not just in the thread (A1-400). If the
+  //    survivor has no description it adopts the duplicate's verbatim; when both have one,
+  //    the duplicate's is appended under a clear provenance heading so neither is lost.
+  const dupDesc = (duplicate.description ?? '').trim();
+  if (dupDesc) {
+    const canDesc = (canonical.description ?? '').trim();
+    const mergedBlock = `Merged from ${dupRef} — “${duplicate.title}”:\n\n${dupDesc}`;
+    let nextDesc: string;
+    if (!canDesc) {
+      nextDesc = dupDesc;
+    } else if (canDesc.includes(dupDesc)) {
+      nextDesc = canDesc; // already contains the duplicate's content — don't duplicate on re-merge
+    } else {
+      nextDesc = `${canDesc}\n\n${mergedBlock}`;
+    }
+    if (nextDesc !== canDesc) {
+      const updatedCanonical = await be.updateItem(canonical.id, { description: nextDesc });
+      if (updatedCanonical) canonical = updatedCanonical;
+    }
   }
 
   // 3) Activity note on the survivor.
