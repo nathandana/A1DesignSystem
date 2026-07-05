@@ -363,6 +363,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **Dialog props:** `open` (boolean), `onClose` (optional — called on **Escape**, the **close button**, or a **backdrop click** (clicking outside the dialog box); omit to hide the close button entirely and make the dialog non-dismissable), `title` (optional), `footer` (ReactNode), `status` ("success" | "error" | "warn" | "info" | "neutral" — renders a full-bleed colored hero band at the top with a status icon), `icon` (string — overrides the default status icon when `status` is set).
 >
+> **Dialog scrolling rule (`dialog-vertical-scroll-only`):** Dialog bodies scroll **vertically only**. Do not add horizontal scrolling to a dialog or let a child force the dialog wider than the viewport. Wide child content must wrap, shrink, clip, or use its own governed overflow behavior (for example Toolbar overflow), while the Dialog keeps a single vertical scroll axis. See `system/rules/dialog.yaml`.
+>
 > **Dismissal:** A dialog is *dismissable* when `onClose` is provided — it then closes on Escape, the close button, **and a backdrop click**. Backdrop dismissal requires the press *and* release to both land outside the dialog box, so selecting text and dragging past the edge won't close it. Omit `onClose` for a non-dismissable dialog (none of these dismiss it).
 >
 > **Dialog status variant:** When `status` is set, a full-bleed colored hero area appears above the title row with a centered icon. Uses the same semantic status background tokens as Card's heroColor. Default icons: success=`check_circle`, error=`error`, warn=`warning`, info=`info`, neutral=`info`. Pass `icon` to override.
