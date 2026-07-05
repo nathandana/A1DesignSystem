@@ -5138,6 +5138,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "Tree data. Supports any depth of nesting."
         },
         {
+          "id": "variant",
+          "name": "variant",
+          "type": "'expanded' | 'collapsed'",
+          "description": "Presentation mode. \"expanded\" renders the full tree. \"collapsed\" renders root items as icon-only triggers and shows each branch's children in an A1 Menu flyout. Default: \"expanded\"."
+        },
+        {
           "id": "selectedId",
           "name": "selectedId",
           "type": "string | null",

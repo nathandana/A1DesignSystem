@@ -33,6 +33,7 @@ import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
 import statusBarLabels from '../../../system/labels/status-bar.json'
+import treeMenuLabels  from '../../../system/labels/tree-menu.json'
 import {
   getLabels,
   hydrateLabels,
@@ -52,6 +53,7 @@ const SYSTEM_LABELS = {
     ...codeLabels.label,
     ...fieldLabels.label,
     ...statusBarLabels.label,
+    ...treeMenuLabels.label,
   },
 }
 

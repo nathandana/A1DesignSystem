@@ -1,0 +1,34 @@
+{
+  "label": {
+    "treeMenu": {
+      "openMenu": {
+        "$type": "string",
+        "$value": "Open {label} menu",
+        "$description": "Accessible label for a collapsed TreeMenu parent icon that opens a child menu flyout. {label} is the parent item label.",
+        "locale": {
+          "es": "Abrir el menú de {label}",
+          "fr": "Ouvrir le menu {label}",
+          "de": "Menü {label} öffnen",
+          "pt": "Abrir menu de {label}",
+          "ja": "{label}メニューを開く",
+          "zh": "打开{label}菜单",
+          "ar": "فتح قائمة {label}"
+        }
+      },
+      "flyoutLabel": {
+        "$type": "string",
+        "$value": "{label} menu",
+        "$description": "Accessible label for the collapsed TreeMenu flyout that contains a parent item's children. {label} is the parent item label.",
+        "locale": {
+          "es": "Menú de {label}",
+          "fr": "Menu {label}",
+          "de": "Menü {label}",
+          "pt": "Menu de {label}",
+          "ja": "{label}メニュー",
+          "zh": "{label}菜单",
+          "ar": "قائمة {label}"
+        }
+      }
+    }
+  }
+}

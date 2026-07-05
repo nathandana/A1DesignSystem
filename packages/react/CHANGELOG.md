@@ -4,6 +4,8 @@
 
 ### Added
 
+- **TreeMenu collapsed variant** (A1-377) — `TreeMenu` now supports `variant="collapsed"`: root items render as icon-only triggers and each branch opens its children in an anchored A1 `Menu` flyout. Leaf root items still select or navigate directly, selected descendants highlight their root icon, collapsed root icons match expanded item icon size and color, and keyboard users can rove root icons with Arrow Up/Down/Home/End, open with Arrow Right, and close with Arrow Left. Added tokenized collapsed sizing, localized flyout labels, and collapsed Storybook coverage.
+
 - **Snackbar stacking and timed dismiss** (A1-313) — React `Snackbar` now supports `autoHideDuration` for opt-in timed dismissal that pauses while hovered or focused, animates off screen before closing, and exports `SnackbarStack` for short, intentional multiple-snackbar displays using the existing snackbar surface, border, and shadow separation. The Web Component mirrors timed dismissal with `auto-hide-duration` and the same close animation; React Native already exposes the equivalent `duration` prop.
 
 ### Changed

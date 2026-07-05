@@ -993,6 +993,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         defaultNode: {
           type: 'TreeMenu',
           props: {
+            variant: 'expanded',
             selectedId: 'invoices',
             expandedIds: ['account', 'billing'],
             showExpandControls: false,

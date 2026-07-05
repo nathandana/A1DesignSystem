@@ -18,6 +18,12 @@ export interface TreeItem {
 export interface TreeMenuProps {
   /** Tree data. Supports any depth of nesting. */
   items: TreeItem[];
+  /**
+   * Presentation mode. "expanded" renders the full tree. "collapsed" renders
+   * root items as icon-only triggers and shows each branch's children in an A1
+   * Menu flyout. Default: "expanded".
+   */
+  variant?: 'expanded' | 'collapsed';
   /** ID of the currently selected item (controlled). */
   selectedId?: string | null;
   /** Called with the id of the item the user activates. */

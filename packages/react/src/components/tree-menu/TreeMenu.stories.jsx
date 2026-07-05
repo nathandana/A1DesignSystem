@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Section } from '../section/Section.jsx';
 import { TreeMenu } from './TreeMenu.jsx';
 
 const FILE_TREE = [
@@ -133,6 +134,7 @@ export default {
   },
   argTypes: {
     selectedId:          { control: 'text' },
+    variant:             { control: 'inline-radio', options: ['expanded', 'collapsed'] },
     showExpandControls:  { control: 'boolean' },
     draggable:           { control: 'boolean' },
     defaultExpandedIds:  { control: false },
@@ -144,15 +146,18 @@ export default {
   },
 };
 
-function Controlled({ items, defaultExpanded = [], defaultSelected = null, showExpandControls = false }) {
+function Controlled({ items, defaultExpanded = [], defaultSelected = null, showExpandControls = false, variant = 'expanded' }) {
   const [selectedId, setSelectedId] = useState(defaultSelected);
+  const [expandedIds, setExpandedIds] = useState(defaultExpanded);
   return (
-    <div style={{ width: 260 }}>
+    <div style={variant === 'collapsed' ? { inlineSize: 'max-content' } : { width: 260 }}>
       <TreeMenu
         items={items}
+        variant={variant}
         selectedId={selectedId}
         onSelect={setSelectedId}
-        defaultExpandedIds={defaultExpanded}
+        expandedIds={expandedIds}
+        onExpandedChange={setExpandedIds}
         showExpandControls={showExpandControls}
         aria-label="Navigation"
       />
@@ -217,6 +222,58 @@ export const WithExpandControls = {
       showExpandControls
       aria-label="Navigation"
     />
+  ),
+};
+
+export const CollapsedSingleParent = {
+  name: 'Collapsed — single parent',
+  render: () => (
+    <Controlled
+      items={[NAV_TREE[1]]}
+      variant="collapsed"
+      defaultExpanded={['components', 'typography']}
+      defaultSelected="heading"
+    />
+  ),
+};
+
+export const CollapsedMultipleParents = {
+  name: 'Collapsed — multiple parents',
+  render: () => (
+    <Controlled
+      items={NAV_TREE}
+      variant="collapsed"
+      defaultExpanded={['components', 'typography']}
+      defaultSelected="heading"
+    />
+  ),
+};
+
+export const CollapsedInverse = {
+  name: 'Collapsed — inverse',
+  render: () => (
+    <Section inverse padding="md" surface="raised">
+      <Controlled
+        items={NAV_TREE}
+        variant="collapsed"
+        defaultExpanded={['components', 'typography']}
+        defaultSelected="heading"
+      />
+    </Section>
+  ),
+};
+
+export const CollapsedNarrow = {
+  name: 'Collapsed — narrow',
+  render: () => (
+    <div style={{ inlineSize: 'var(--base-spacing-64)' }}>
+      <Controlled
+        items={NAV_TREE}
+        variant="collapsed"
+        defaultExpanded={['components', 'typography']}
+        defaultSelected="heading"
+      />
+    </div>
   ),
 };
 
