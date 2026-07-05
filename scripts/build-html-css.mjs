@@ -313,6 +313,7 @@ function componentCss() {
   font-size: var(--a1-heading-size, var(--semantic-font-size-heading-md));
   font-weight: var(--component-heading-font-weight-heading);
   line-height: var(--component-heading-font-line-height-heading);
+  overflow-wrap: anywhere;
 }
 
 .a1-display {
@@ -376,6 +377,7 @@ function componentCss() {
   font-size: var(--a1-paragraph-size, var(--semantic-font-size-body-md));
   font-weight: var(--component-paragraph-font-weight, var(--semantic-font-weight-body));
   line-height: var(--semantic-font-line-height-body);
+  overflow-wrap: anywhere;
 }
 
 .a1-paragraph-muted {
@@ -879,6 +881,7 @@ function componentCss() {
   font-family: var(--component-paragraph-font-family, var(--component-button-font-family));
   font-size: var(--a1-list-font-size, var(--semantic-font-size-body-md));
   line-height: var(--semantic-font-line-height-body);
+  overflow-wrap: anywhere;
 }
 
 .a1-list li + li {

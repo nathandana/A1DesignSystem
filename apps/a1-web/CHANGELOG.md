@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Releases page horizontal scroll** (A1-398) — release-note content now benefits from shared typography wrapping, so long inline changelog fragments stay inside the release panels at narrow widths.
+
 - **Backlog ticket mobile toolbars** — ticket triage toolbars now use the shared Toolbar overflow behavior in both the ticket dialog and standalone ticket page, keeping type, status, priority, and size controls on one mobile row with excess options moved into More menus.
 
 - **Backlog — Build with AI in production** — the ticket detail page now shows Build with AI in production builds instead of limiting it to local dev. It still prefers a local Ollama model when reachable, but falls back to the built-in planner so deployed users can generate a ticket plan without browser API keys or local setup.
