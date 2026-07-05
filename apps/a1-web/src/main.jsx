@@ -497,6 +497,11 @@ function App() {
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
 
+  useEffect(() => {
+    backlog?.setLabelResolver?.(t)
+    return () => backlog?.setLabelResolver?.(null)
+  }, [backlog?.setLabelResolver, t])
+
   const globalSearchEntries = useMemo(() => {
     const entries = []
     const addPage = (id, description, keywords = []) => {

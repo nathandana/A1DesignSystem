@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- **Build with AI standards review** — expanded generated development plans with a required Final standards review covering custom styling, component usage, tokens, accessibility, interactions, content, state handling, architecture, responsive behavior, test coverage, and standards debt. Local-AI plans now append the canonical checklist if the model omits it.
+- **Backlog ticket creation snackbar** (A1-179) — creating a ticket now shows the existing snackbar with the translated **Open ticket** action that routes directly to the new ticket page.
+
+- **Build with AI standards review** — expanded generated development plans with a required Final standards review covering custom styling, component usage, tokens, accessibility, interactions, content, state handling, architecture, responsive behavior, test coverage, and standards debt. Plans now also require user-facing copy to be added to `system/labels/` with supported locale translations and consumed through the label resolver. Local-AI plans append the canonical checklist if the model omits it.
 
 - **Build with AI component inference** — the built-in planner now recognizes component names in general-scope ticket titles/descriptions, so tickets such as "Multiple Snackbars" plan against the component package, Storybook, a1-web configurator, docs, and changelogs instead of producing an app-only plan.
 

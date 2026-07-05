@@ -107,6 +107,7 @@ const FINAL_STANDARDS_REVIEW_SECTION = [
   '',
   '6. Content and terminology',
   '- List new labels, helper text, error messages, empty states, or status language.',
+  '- Confirm all user-facing copy was added to system/labels/ with translations for es, fr, de, pt, ja, zh, and ar, and consumed through the label resolver.',
   '- Confirm consistency with product voice and existing terminology.',
   '- Identify copy patterns that should be standardized.',
   '',
@@ -147,6 +148,10 @@ export const PLAN_SYSTEM = [
   '- Use existing A1 components, patterns, and tokens before anything custom; never hardcode',
   '  colours, spacing, type, radii, or motion — every value traces to a Style Dictionary token.',
   '- Semantic, accessible HTML (keyboard, focus, ARIA, WCAG AA); sentence case, never uppercase.',
+  '- Any user-facing label, helper text, status, error, empty-state, or action copy must be',
+  '  added to the label system in system/labels/ with English $value, $description, and',
+  '  supported locale translations (es, fr, de, pt, ja, zh, ar), then consumed through the',
+  '  label resolver instead of hardcoded text.',
   '- When a component API/variant/state changes, update its Storybook stories, the a1-web',
   '  configurator, and the relevant changelogs in the SAME change.',
   '- Validate across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl).',
@@ -320,6 +325,7 @@ function steps(item: BacklogItem): string[] {
       `Implement in packages/react/src/components/${componentPath}/ using the CSS-variable architecture (no hardcoded values).`,
       `Add Storybook stories for single and multiple ${componentLabel} examples, including dark/inverse mode and narrow viewports.`,
       'Wire the a1-web configurator: controls + Properties rows + switch-linked helper text + a correct code snippet.',
+      'Add any user-facing copy to system/labels/ with English descriptions and supported locale translations, then consume it through the label resolver.',
       'Update the changelog(s) and packages/react/ai/components.md; validate themes, breakpoints, and accessibility.',
     ];
   }
@@ -328,6 +334,7 @@ function steps(item: BacklogItem): string[] {
     'Pin down the exact surface (page/component) and the user need it serves.',
     'Build it from existing A1 components + tokens — custom UI is a last resort, documented if unavoidable.',
     'Keep semantics and accessibility correct (keyboard, focus, ARIA, contrast).',
+    'Add any new user-facing copy to system/labels/ with supported locale translations, then consume it through the label resolver.',
     ...(ripples ? ['Rebuild tokens/themes and re-check every consumer.'] : []),
     'Update the changelog(s); validate across themes and breakpoints.',
   ];
@@ -342,6 +349,7 @@ function doneWhen(item: BacklogItem): string[] {
   }
   done.push('Verified across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl); accessibility holds.');
   done.push('No hardcoded values — everything traces to a token; sentence case throughout.');
+  done.push('Any new user-facing labels are in system/labels/ with English descriptions and translations for es, fr, de, pt, ja, zh, and ar.');
   done.push('Final standards review is complete: justify any deviation from the existing system and identify what should be fixed, documented, promoted to the system, or accepted as local.');
   return done;
 }
@@ -407,7 +415,8 @@ export function developPlanLocally(
   out.push('## Conventions');
   out.push(
     'Follow CLAUDE.md and packages/react/ai/: A1 components + tokens only, sentence case, '
-    + 'semantic + accessible markup. Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
+    + 'semantic + accessible markup, and user-facing labels through system/labels/ with translations. '
+    + 'Work on a branch and summarise what you changed . Dont commit the branch so it can be reviewed.',
   );
 
   return out.join('\n');

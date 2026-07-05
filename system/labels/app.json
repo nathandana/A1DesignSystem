@@ -2263,7 +2263,7 @@
         "menuOpenTicket": {
           "$type": "string",
           "$value": "Open ticket",
-          "$description": "Context menu item that opens the ticket detail dialog on the Backlog board.",
+          "$description": "Action label that opens a backlog ticket from a context menu, queue item, or creation snackbar.",
           "locale": {
             "es": "Abrir ticket",
             "fr": "Ouvrir le ticket",
