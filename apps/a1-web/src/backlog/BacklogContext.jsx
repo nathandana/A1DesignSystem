@@ -3,6 +3,7 @@ import { Snackbar } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { registerSyncSource } from '../lib/manualSync.js'
 import * as store from '../services/backlog/backlogStore'
+import { ensureFigmaComponentTickets } from '../services/backlog/figmaComponentTickets.js'
 import { runPersona, runPersonaOnItem, runStatusCleanup } from '../services/backlog/personas'
 import changelog from '../../CHANGELOG.md?raw'
 import { ticketRef } from '../services/backlog/types'
@@ -28,6 +29,7 @@ export function BacklogProvider({ children }) {
   const [toast, setToast] = useState(null)
   const labelResolverRef = useRef((_key, fallback) => fallback)
   const reqId = useRef(0)
+  const figmaSeededRef = useRef(new Set())
 
   const refresh = useCallback(async () => {
     const id = ++reqId.current
@@ -52,6 +54,24 @@ export function BacklogProvider({ children }) {
     const unregister = registerSyncSource('backlog', refresh)
     return () => { unsub(); unregister() }
   }, [user?.id, refresh]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (loading) return
+    const seedKey = `${store.isCloudBacklog() ? 'cloud' : 'local'}:${user?.id ?? 'anonymous'}`
+    if (figmaSeededRef.current.has(seedKey)) return
+    figmaSeededRef.current.add(seedKey)
+    let cancelled = false
+    async function seedFigmaTickets() {
+      try {
+        const changed = await ensureFigmaComponentTickets(items, store.createItem, store.updateItem)
+        if (!cancelled && changed > 0) await refresh()
+      } catch (error) {
+        console.warn('[backlog] could not seed Figma component tickets', error)
+      }
+    }
+    seedFigmaTickets()
+    return () => { cancelled = true }
+  }, [items, loading, refresh, user?.id])
 
   const openCreate = useCallback((scope) => {
     setCreateScope(scope || { kind: 'general' })

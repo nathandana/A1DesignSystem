@@ -84,6 +84,7 @@ const PACKAGE_META = {
   Native:           { icon: 'phone_iphone', desc: 'packages/react-native' },
   Pure:             { icon: 'palette',      desc: 'packages/pure' },
   'Web Components': { icon: 'web_asset',    desc: 'packages/web-components' },
+  Figma:            { icon: 'design_services', desc: 'packages/figma' },
 }
 
 function componentUtilityType(component) {
@@ -92,7 +93,7 @@ function componentUtilityType(component) {
 
 function PackageSupportGrid({ packages }) {
   return (
-    <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="sm">
+    <Grid columns={{ xs: 1, sm: 2, lg: 5 }} gap="sm">
       {PACKAGE_COLUMNS.map((pkg) => {
         const supported = packages.includes(pkg)
         const meta = PACKAGE_META[pkg]

@@ -14,7 +14,7 @@ import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 
 export const LAST_UPDATED = '2026-06-17'
-export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure', 'Web Components']
+export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure', 'Web Components', 'Figma']
 
 // Mirrors the "A1 Web menu hierarchy" section in packages/react/ai/components.md.
 export const componentCategories = [
@@ -263,7 +263,7 @@ export const PACKAGE_COVERAGE = {
   tabs:               ['React'],
   'page-nav':         ['React'],
   'tree-menu':        ['React'],
-  button:             ['React', 'Native', 'Pure', 'Web Components'],
+  button:             ['React', 'Native', 'Pure', 'Web Components', 'Figma'],
   'action-tile':      ['React'],
   chip:               ['React'],
   'icon-button':      ['React', 'Native', 'Pure'],
