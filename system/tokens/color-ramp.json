@@ -501,7 +501,7 @@
           },
           "border": {
             "$type": "color",
-            "$value": "{base.color.error.300}"
+            "$value": "{base.color.error.400}"
           },
           "foreground": {
             "$type": "color",

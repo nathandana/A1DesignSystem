@@ -91,7 +91,7 @@
   border-width: var(--component-field-error-border-width);
   border-color: var(--semantic-color-status-error-border);
   border-left-width: var(--a1-field-accent-border-width);
-  border-left-color: var(--semantic-color-status-error-background);
+  border-left-color: var(--semantic-color-status-error-border);
   padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
 }
 

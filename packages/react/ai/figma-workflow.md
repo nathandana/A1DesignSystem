@@ -2,7 +2,7 @@
 
 This file governs all agent work that creates or updates components in the A1 Figma file. Read it before touching any Figma component, variable collection, or page.
 
-**Figma file:** `U2VJz2CLoNwrZ0lxM8vkMv`
+**Figma file:** `zFjqo3SwHbkXwtCOoQCVMA`
 
 ---
 
@@ -21,6 +21,7 @@ This file governs all agent work that creates or updates components in the A1 Fi
 | **Color** | Semantic + primitive color tokens | All fills, strokes, shadow colors |
 | **Spacing** | `gap/*` and `radius/*` FLOAT tokens | Padding, item spacing, corner radius |
 | **Primitives** | Raw `accent/*`, `neutral/*` color ramp + base radius | Accent color segments (e.g. breakpoint bar), radius scale |
+| **Field** | Text Field exact FLOAT tokens | Field heights, padding, gaps, border widths, focus dimensions, accent widths, side-label widths |
 | **Breakpoints** | `min`, `max`, `canvas` FLOAT tokens × 5 modes | Frame width binding for responsive previews |
 | **Gap** | `value` FLOAT token × 6 modes (none/xs/sm/md/lg/xl) | Controls `itemSpacing` on auto-layout slot frames; apply mode to switch Section content gap |
 | **ContentWidth** | `max` FLOAT token × 6 modes (xs/sm/md/lg/xl/2xl) | Controls `_content` inner frame width; apply mode to constrain Section content area |
@@ -69,6 +70,7 @@ node.fills = bf('text/default');
 Available text style names follow the pattern `{Category}/{Size}`:
 - Body: `Body/XS`, `Body/SM`, `Body/MD`, `Body/LG`, `Body/XL`
 - Label: `Label/XS`, `Label/SM`, `Label/MD`, `Label/LG`
+- Field label: `Field/Label/SM`, `Field/Label/MD`, `Field/Label/LG`
 - Heading: `Heading/XS`, `Heading/SM`, `Heading/MD`, `Heading/LG`, `Heading/XL`, `Heading/XXL`
 - Display: `Display/SM`, `Display/MD`, `Display/LG`, `Display/XL`, `Display/XXL`, `Display/Jumbo`, `Display/XJumbo`
 
@@ -224,6 +226,50 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `icon` Code Connect mapping | The template emits `smart_button` when an icon is visible; icon instance names should stay aligned to the React icon registry for exact output |
 | Figma asset default | Figma insert/search default is `secondary` + `md`; React's runtime default remains `primary` + `md` |
 
+### Text Field
+
+**Component structure:** `Text Field` component set on the Text Field page (`node 148:1360`) with variants for size and visual state. Component properties expose the visible label, input value, hint text, error text, required badge text, and label/hint visibility toggles. Documentation/example frames live beside it (`node 148:1361`).
+
+**Figma default:** The first/default variant is `Size=default, State=default`, matching React's runtime `size="default"` and showing the default label-above presentation.
+
+**Color modes:** Text Field uses the shared Color collection for all fills and strokes, including field-facing Color aliases (`color/field/hover/*`, `color/field/readOnly/*`, `color/field/focusRing`, `color/field/focusBorder`) and status text (`color/status/error/text`) with Light/Dark values. Do not add a Text Field theme variant; dark mode is controlled by switching the Color collection mode on the frame/page.
+
+**Validation board:** `Text Field React screenshot + Figma overlay` (`node 184:1334`) contains a1-web React screenshots for all 21 size/state combinations with live Figma Text Field instances overlaid. Use it before marking future Text Field visual-token edits complete.
+
+**Typography:** Input values use the generic Body styles, with compact `Value`, `Hint`, and `Error` layers one step smaller (`body/xs`) to match the React compact field scale. Labels use `Field/Label/SM`, `Field/Label/MD`, and `Field/Label/LG` so compact/default/comfortable field labels match the React weights.
+
+**Error border:** Error input strokes and the side accent both bind to `color/status/error/border`. Do not bind the side accent to `color/status/error/background`; React keeps the full error outline one colour.
+
+Variant properties:
+
+| React prop | Figma representation | Valid values |
+|------------|---------------------|--------------|
+| `size` | Variant `Size` | `comfortable` \| `default` \| `compact` |
+| `required`, `error`, `readOnly`, `disabled` | Variant `State` | `default` \| `hover` \| `focus` \| `required` \| `error` \| `readOnly` \| `disabled` |
+
+Component properties:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `label` | `Label` | TEXT | Visible field label |
+| `defaultValue` / `value` | `Value` | TEXT | Visual input value; Code Connect emits `defaultValue` |
+| `hint` | `Hint` + `Show hint` | TEXT + BOOLEAN | Helper text in non-error states; `Show hint=false` hides the hint and Code Connect omits `hint` |
+| `error` | `Error` | TEXT | Error text when `State=error` |
+| `label` presence | `Show label` | BOOLEAN | Hides the visible label and Code Connect omits `label` |
+| comfortable `required` marker | `Required label` | TEXT | The comfortable required state uses a small subtle info badge; default/compact use an asterisk |
+
+Gaps — props that cannot currently be represented visually in Figma:
+
+| React prop | Gap reason |
+|------------|------------|
+| `labelPosition` | React still supports `above` and `before`, but the Figma Text Field component currently represents the label-above pattern only. |
+| `type` | Runtime/native input behavior. `text`, `email`, and `password` are documented in React/a1-web; the Figma component shows the shared text-field surface. |
+| `autoComplete` | Browser/password-manager behavior, not visual |
+| `inputOverlay` | Extension slot used by specialized fields; not part of the base Text Field Figma v1 |
+| Independent boolean combinations | Figma uses aggregate `State` to avoid invalid combinations such as `disabled` + `error` + `readOnly`; Code Connect emits the matching React prop for the selected state |
+| `hover`, `focus` visual states | Included as Figma states for inspection/prototyping; Code Connect emits no React prop for them |
+| `onChange`, `onInput`, `onBeforeInput`, `className`, `style`, `ref`, `aria-*`, `id`, native input passthrough props | Runtime-only props |
+
 ### Section
 
 **Component structure:** `Section` > `Section Slot` (SLOT, FILL width) > `_content` (FRAME, FIXED width bound to ContentWidth).
@@ -281,10 +327,9 @@ Gaps — props that cannot currently be represented visually in Figma:
 
 | Page name | Purpose |
 |-----------|---------|
-| Page 1 *(default)* | Working / scratch space |
-| Typography | All 22 text styles with pangram examples and color swatches |
-| Breakpoints | Proportional viewport scale bar + breakpoint detail cards |
-| Components | Component set library — Section and future components |
+| Button | Button component set and related documentation |
+| Text Field | Text Field component set and related documentation |
+| Icons | Material Symbols icon component sets used by component properties |
 
 ---
 
@@ -296,6 +341,7 @@ Gaps — props that cannot currently be represented visually in Figma:
 | Spacing | FLOAT | Default | `gap/xs–xl`, `radius/sm–lg` |
 | Primitives | mixed | Default | Base color ramp + primitive radius values |
 | Button | mixed | Value | Button component variables. Color variables alias to Color collection roles (for example `button/secondary/background` → `color/button/secondary/background`); size/radius/spacing variables alias to primitive tokens. |
+| Field | FLOAT | Value | Text Field component variables for exact React heights, padding, gaps, border widths, focus dimensions, accent widths, and side-label widths. Field-specific interaction colours live in the shared Color collection as `color/field/*` aliases so light/dark mode is switched once through Color. |
 | Breakpoints | FLOAT | xs / sm / md / lg / xl | `min`, `max`, `canvas` — bind `canvas` to a frame's width then switch modes |
 | Gap | FLOAT | none / xs / sm / md / lg / xl | `value` (GAP scope) — bind to an auto-layout frame's `itemSpacing`; switch modes to change gap |
 | ContentWidth | FLOAT | xs / sm / md / lg / xl / 2xl | `max` (WIDTH_HEIGHT scope) — bind to a FIXED-width inner frame; switch modes to constrain content area |

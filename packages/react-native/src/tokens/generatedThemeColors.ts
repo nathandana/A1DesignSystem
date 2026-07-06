@@ -61,7 +61,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffbfa",
           "subtleBg": "#fff2f0",
           "subtleFg": "#dc2626",
-          "subtleBorder": "#ff8b7e"
+          "subtleBorder": "#ea574d"
         }
       }
     },
@@ -182,7 +182,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffbfa",
           "subtleBg": "#fff2f0",
           "subtleFg": "#dc2626",
-          "subtleBorder": "#ff8b7e"
+          "subtleBorder": "#ea574d"
         }
       }
     },
@@ -303,7 +303,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffaf7",
           "subtleBg": "#fbeee7",
           "subtleFg": "#9f3f32",
-          "subtleBorder": "#d98b78"
+          "subtleBorder": "#c25f4d"
         }
       }
     },

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Figma Text Field component** (A1-959) — Text Field is now marked available in the Components inventory's Figma coverage, matching the new A1 Figma component set (`node 148:1360`) and repo-side Code Connect template. The Figma asset covers size, label position, visual states, label/value/hint/error text properties, and light/dark token bindings; runtime-only field props remain documented as Figma gaps.
+
 - **Backlog data table filters** — the All tickets DataTable view now has table-local filter chips for Type, Status, Priority, Size, and Scope. These stack with the shared Backlog panel search/filters and keep the visible table cells formatted while matching on hidden row filter values.
 
 - **Backlog Figma component tickets** — the Backlog now automatically creates one M-size component-scoped ticket for every component or registry-only component row that is not yet marked available in Figma, and repairs existing generated tickets when evaluated priority/size changes. Ticket priority is set by design criticality: P0 for foundational primitives/core controls, P1 for common app structure/forms/feedback, P2 for specialized components, and P3 for experimental or niche rows. Each ticket includes first-pass requirements for creating a complete Figma component, and the seeding is idempotent by `figma:<component-id>` scope so reloads do not duplicate work.

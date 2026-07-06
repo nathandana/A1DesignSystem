@@ -11,3 +11,11 @@ This folder holds repo-side Code Connect templates for A1 Figma components.
 The live Code Connect MCP mapping could not be created in this session because Figma returned the Organization or Enterprise plan requirement for Code Connect. The template is still checked in so the mapping is ready to publish once the component is available from a team library with a supported seat.
 
 The Button template maps the Figma `Variant`, `Size`, `State`, `Label`, `Show icon`, `Icon`, and `IconPosition` properties to the React Button API. Figma-only visual states (`hover`, `focus`, `pressed`) do not emit React props. The icon prop currently emits `smart_button` when an icon is visible; standardizing icon instance names to React icon registry names will make this output exact.
+
+## Text Field
+
+- Figma component set: `https://www.figma.com/design/zFjqo3SwHbkXwtCOoQCVMA/A1-Design-System?node-id=148-1360`
+- React source: `packages/react/src/components/field/TextField.jsx`
+- Template: `TextField.figma.ts`
+
+The Text Field template maps the Figma `Size`, `LabelPosition`, `State`, `Label`, `Value`, `Hint`, and `Error` properties to the React `TextField` API. The aggregate Figma `State` emits `required`, `disabled`, `readOnly`, or `error` props where applicable; Figma-only `hover` and `focus` states do not emit React props. Runtime-only props such as `type`, `autoComplete`, `inputOverlay`, event handlers, and accessibility attributes remain omitted.

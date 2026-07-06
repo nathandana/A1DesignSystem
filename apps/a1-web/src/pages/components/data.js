@@ -272,7 +272,7 @@ export const PACKAGE_COVERAGE = {
   slider:             ['React'],
   toolbar:            ['React'],
   'sticky-actions':   ['React'],
-  'text-field':       ['React', 'Pure'],
+  'text-field':       ['React', 'Pure', 'Figma'],
   'search-field':     ['React'],
   'number-field':     ['React'],
   'date-field':       ['React'],

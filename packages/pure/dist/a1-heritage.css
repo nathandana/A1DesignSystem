@@ -913,7 +913,7 @@
   --semantic-color-border-strong: var(--base-color-neutral-500);
   --semantic-color-border-subtle: var(--base-color-neutral-200);
   --semantic-color-status-error-background: var(--base-color-error-500);
-  --semantic-color-status-error-border: var(--base-color-error-300);
+  --semantic-color-status-error-border: var(--base-color-error-400);
   --semantic-color-status-error-foreground: var(--base-color-error-0);
   --semantic-color-status-error-surface: var(--base-color-error-50);
   --semantic-color-status-error-text: #660005;
@@ -1221,7 +1221,7 @@
   --semantic-color-border-strong: var(--base-color-neutral-500);
   --semantic-color-border-subtle: var(--base-color-neutral-200);
   --semantic-color-status-error-background: var(--base-color-error-500);
-  --semantic-color-status-error-border: var(--base-color-error-300);
+  --semantic-color-status-error-border: var(--base-color-error-400);
   --semantic-color-status-error-foreground: var(--base-color-error-0);
   --semantic-color-status-error-surface: var(--base-color-error-50);
   --semantic-color-status-info-background: #2563eb;

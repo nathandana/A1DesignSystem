@@ -231,7 +231,7 @@
   --semantic-color-status-info-foreground: #fafcff;
   --semantic-color-status-error-background: #dc2626;
   --semantic-color-status-error-surface: #fff2f0;
-  --semantic-color-status-error-border: #ff8b7e;
+  --semantic-color-status-error-border: #ea574d;
   --semantic-color-status-error-foreground: #fffbfa;
   --semantic-color-status-error-text: #660005; /** Error-colored text or icon on a neutral surface. Darker than background to meet 4.5:1. */
   --semantic-color-status-warn-background: #4f2700;

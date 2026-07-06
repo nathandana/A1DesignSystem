@@ -6,6 +6,8 @@
 
 - **Figma Button component** (A1-419) — created the Button component set in the A1 Figma file with token-bound variants for `variant`, `size`, interactive state, and icon position, plus label/icon component properties, focus/loading visual states, prototype interactions, documentation/examples, and a repo-side Code Connect template for the React `Button` API. The Figma asset search default is intentionally secondary/md. Button color variables now alias through the shared Color collection so dark mode is switched only once, destructive/success hover and pressed states have component color roles, dark-mode primary Button background uses accent-300, and Button labels use size-specific text styles that match React font weights.
 
+- **Figma Text Field component** (A1-959) — created the Text Field component set in the A1 Figma file with token-bound `Size` and visual `State` variants plus editable `Label`, `Value`, `Hint`, `Error`, and `Required label` text properties, `Show label` / `Show hint` toggles, documentation/example frames, field-specific Color aliases for light/dark interaction states, Field FLOAT variables for exact React dimensions, semibold Field label text styles, and a repo-side Code Connect template for the React `TextField` API. The Figma v1 component intentionally represents the label-above pattern only; React's `labelPosition="before"` remains a documented mapping gap.
+
 - **Overlay component** (A1-417) — added a tokenized React `Overlay` for rare full-screen status moments such as game results, major completion states, and blocking announcements. It uses native modal dialog semantics with focus containment, translated dismiss labeling, status color treatments (`neutral`, `info`, `success`, `warn`, `error`), default or custom large icons, title/body copy, action and child slots, and a darker scrim-like transparent backdrop with responsive full-screen layout. Added component tokens, rules, TypeScript declarations, Storybook stories, and package exports.
 
 - **Tooltip component** (A1-378) — added a tokenized React `Tooltip` overlay for short, non-interactive hover/focus help. It supports `content`, `placement` (`top` / `right` / `bottom` / `left`), `delay` (clamped 0–1500 ms, default 400 ms), `disabled`, and `className`, opens on hover and keyboard focus, closes on blur, pointer leave, or Escape, portals to `document.body`, and connects the trigger via `aria-describedby` while open. The surface includes a tokenized arrow, entry/exit motion that respects reduced motion, dark-mode inversion, and Storybook/configurator examples for Button, IconButton, and Link triggers. Added component tokens, rules, Storybook stories, and Pure CSS surface classes.
@@ -16,11 +18,17 @@
 
 ### Changed
 
+- **Error border token** — `--semantic-color-status-error-border` now resolves one ramp step darker in light/default themes (`error.400` instead of `error.300`), giving field error outlines and other error borders a stronger visible edge while preserving existing dark-mode aliases.
+
 - **Wireframe redacted theme removed** (A1-403) — removed the `wireframe-redacted` theme source and generated `.a1-theme-wireframe-redacted` output. Use the standard `wireframe` theme for Priority Guide structure previews.
 
 - **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
 
 ### Fixed
+
+- **Field error border colour** — TextField and Textarea error states now use the same `--semantic-color-status-error-border` token for the side accent and the rest of the border, keeping the error outline visually consistent.
+
+- **Figma Text Field compact typography** (A1-959) — compact Text Field value, hint, and error layers now use the smaller body text style so Figma compact variants match the React component scale.
 
 - **Snackbar visibility in dark mode** (A1-313) — the default Snackbar surface now inverts with the document colour scheme, so it is a dark toast on a light page (unchanged) and a **light** toast on a dark page instead of a dark toast that disappears against a dark background. The React surface reads `--semantic-color-surface-page` / `--semantic-color-text-default` inside the snackbar's own `.a1-inverse` scope; the Web Component mirrors the same inversion in its shadow styles (flipping to the light neutral ramp under `prefers-color-scheme: dark` and `.a1-theme-dark`), and its action/close controls follow the flipped foreground. The fixed `--component-snackbar-default-*` tokens remain as the out-of-scope fallback.
 

@@ -229,7 +229,7 @@
     --semantic-color-status-info-foreground: var(--base-color-info-0);
     --semantic-color-status-error-background: var(--base-color-error-500);
     --semantic-color-status-error-surface: var(--base-color-error-50);
-    --semantic-color-status-error-border: var(--base-color-error-300);
+    --semantic-color-status-error-border: var(--base-color-error-400);
     --semantic-color-status-error-foreground: var(--base-color-error-0);
     --semantic-color-status-warn-background: var(--base-color-warn-500);
     --semantic-color-status-warn-surface: var(--base-color-warn-50);
@@ -426,7 +426,7 @@ html.a1-theme-dark .a1-theme-light {
   --semantic-color-status-info-foreground: var(--base-color-info-0);
   --semantic-color-status-error-background: var(--base-color-error-500);
   --semantic-color-status-error-surface: var(--base-color-error-50);
-  --semantic-color-status-error-border: var(--base-color-error-300);
+  --semantic-color-status-error-border: var(--base-color-error-400);
   --semantic-color-status-error-foreground: var(--base-color-error-0);
   --semantic-color-status-warn-background: var(--base-color-warn-500);
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
@@ -523,7 +523,7 @@ html.a1-theme-light {
   --semantic-color-status-info-foreground: var(--base-color-info-0);
   --semantic-color-status-error-background: var(--base-color-error-500);
   --semantic-color-status-error-surface: var(--base-color-error-50);
-  --semantic-color-status-error-border: var(--base-color-error-300);
+  --semantic-color-status-error-border: var(--base-color-error-400);
   --semantic-color-status-error-foreground: var(--base-color-error-0);
   --semantic-color-status-warn-background: var(--base-color-warn-500);
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
