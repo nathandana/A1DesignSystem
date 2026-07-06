@@ -278,6 +278,15 @@
   --component-bottom-sheet-z-index: 200;
   --component-button-border-radius: 0.375rem;
   --component-button-border-width: 0;
+  --component-button-destructive-background: #dc2626;
+  --component-button-destructive-background-hover: color-mix(in srgb, #dc2626, black 16%);
+  --component-button-destructive-background-pressed: color-mix(in srgb, #dc2626, black 32%);
+  --component-button-destructive-border: #dc2626;
+  --component-button-destructive-border-hover: #dc2626;
+  --component-button-destructive-border-pressed: #dc2626;
+  --component-button-destructive-foreground: #fffbfa;
+  --component-button-destructive-foreground-hover: #fffbfa;
+  --component-button-destructive-foreground-pressed: #fffbfa;
   --component-button-disabled-opacity: 0.55;
   --component-button-focus-ring: var(--base-color-accent-300);
   --component-button-focus-ring-offset: 0.125rem;
@@ -322,6 +331,15 @@
   --component-button-small-icon-optical-size: 20;
   --component-button-small-icon-size: 1.25rem;
   --component-button-small-padding-block: 0.25rem;
+  --component-button-success-background: #003f17;
+  --component-button-success-background-hover: color-mix(in srgb, #003f17, black 16%);
+  --component-button-success-background-pressed: color-mix(in srgb, #003f17, black 32%);
+  --component-button-success-border: #003f17;
+  --component-button-success-border-hover: #003f17;
+  --component-button-success-border-pressed: #003f17;
+  --component-button-success-foreground: #f5fff6;
+  --component-button-success-foreground-hover: #f5fff6;
+  --component-button-success-foreground-pressed: #f5fff6;
   --component-button-tertiary-background: transparent;
   --component-button-tertiary-background-hover: var(--base-color-accent-50);
   --component-button-tertiary-background-pressed: var(--base-color-accent-100);
@@ -989,10 +1007,19 @@
 @media (prefers-color-scheme: dark) {
   :root:not(.a1-theme-light) {
     color-scheme: dark;
-  --component-button-primary-background: var(--base-color-accent-200);
+  --component-button-destructive-background: var(--semantic-color-status-error-background);
+  --component-button-destructive-background-hover: color-mix(in srgb, var(--semantic-color-status-error-background), black 16%);
+  --component-button-destructive-background-pressed: color-mix(in srgb, var(--semantic-color-status-error-background), black 32%);
+  --component-button-destructive-border: var(--semantic-color-status-error-background);
+  --component-button-destructive-border-hover: var(--semantic-color-status-error-background);
+  --component-button-destructive-border-pressed: var(--semantic-color-status-error-background);
+  --component-button-destructive-foreground: var(--semantic-color-status-error-foreground);
+  --component-button-destructive-foreground-hover: var(--semantic-color-status-error-foreground);
+  --component-button-destructive-foreground-pressed: var(--semantic-color-status-error-foreground);
+  --component-button-primary-background: var(--base-color-accent-300);
   --component-button-primary-background-hover: var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);
-  --component-button-primary-border: var(--base-color-accent-200);
+  --component-button-primary-border: var(--base-color-accent-300);
   --component-button-primary-foreground: var(--base-color-accent-900);
   --component-button-primary-foreground-hover: var(--base-color-accent-800);
   --component-button-primary-foreground-pressed: var(--base-color-accent-700);
@@ -1005,6 +1032,15 @@
   --component-button-secondary-foreground: var(--base-color-accent-200);
   --component-button-secondary-foreground-hover: var(--base-color-accent-100);
   --component-button-secondary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-success-background: var(--semantic-color-status-success-background);
+  --component-button-success-background-hover: color-mix(in srgb, var(--semantic-color-status-success-background), black 16%);
+  --component-button-success-background-pressed: color-mix(in srgb, var(--semantic-color-status-success-background), black 32%);
+  --component-button-success-border: var(--semantic-color-status-success-background);
+  --component-button-success-border-hover: var(--semantic-color-status-success-background);
+  --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-button-success-foreground: var(--semantic-color-status-success-foreground);
+  --component-button-success-foreground-hover: var(--semantic-color-status-success-foreground);
+  --component-button-success-foreground-pressed: var(--semantic-color-status-success-foreground);
   --component-button-tertiary-background: var(--base-color-accent-900);
   --component-button-tertiary-background-hover: var(--base-color-accent-800);
   --component-button-tertiary-background-pressed: var(--base-color-accent-700);
@@ -1054,10 +1090,19 @@
 
 .a1-theme-dark {
   color-scheme: dark;
-  --component-button-primary-background: var(--base-color-accent-200);
+  --component-button-destructive-background: var(--semantic-color-status-error-background);
+  --component-button-destructive-background-hover: color-mix(in srgb, var(--semantic-color-status-error-background), black 16%);
+  --component-button-destructive-background-pressed: color-mix(in srgb, var(--semantic-color-status-error-background), black 32%);
+  --component-button-destructive-border: var(--semantic-color-status-error-background);
+  --component-button-destructive-border-hover: var(--semantic-color-status-error-background);
+  --component-button-destructive-border-pressed: var(--semantic-color-status-error-background);
+  --component-button-destructive-foreground: var(--semantic-color-status-error-foreground);
+  --component-button-destructive-foreground-hover: var(--semantic-color-status-error-foreground);
+  --component-button-destructive-foreground-pressed: var(--semantic-color-status-error-foreground);
+  --component-button-primary-background: var(--base-color-accent-300);
   --component-button-primary-background-hover: var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);
-  --component-button-primary-border: var(--base-color-accent-200);
+  --component-button-primary-border: var(--base-color-accent-300);
   --component-button-primary-foreground: var(--base-color-accent-900);
   --component-button-primary-foreground-hover: var(--base-color-accent-800);
   --component-button-primary-foreground-pressed: var(--base-color-accent-700);
@@ -1070,6 +1115,15 @@
   --component-button-secondary-foreground: var(--base-color-accent-200);
   --component-button-secondary-foreground-hover: var(--base-color-accent-100);
   --component-button-secondary-foreground-pressed: var(--base-color-accent-50);
+  --component-button-success-background: var(--semantic-color-status-success-background);
+  --component-button-success-background-hover: color-mix(in srgb, var(--semantic-color-status-success-background), black 16%);
+  --component-button-success-background-pressed: color-mix(in srgb, var(--semantic-color-status-success-background), black 32%);
+  --component-button-success-border: var(--semantic-color-status-success-background);
+  --component-button-success-border-hover: var(--semantic-color-status-success-background);
+  --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-button-success-foreground: var(--semantic-color-status-success-foreground);
+  --component-button-success-foreground-hover: var(--semantic-color-status-success-foreground);
+  --component-button-success-foreground-pressed: var(--semantic-color-status-success-foreground);
   --component-button-tertiary-background: var(--base-color-accent-900);
   --component-button-tertiary-background-hover: var(--base-color-accent-800);
   --component-button-tertiary-background-pressed: var(--base-color-accent-700);
@@ -1118,6 +1172,15 @@
 
 .a1-theme-light {
   color-scheme: light;
+  --component-button-destructive-background: #dc2626;
+  --component-button-destructive-background-hover: color-mix(in srgb, #dc2626, black 16%);
+  --component-button-destructive-background-pressed: color-mix(in srgb, #dc2626, black 32%);
+  --component-button-destructive-border: #dc2626;
+  --component-button-destructive-border-hover: #dc2626;
+  --component-button-destructive-border-pressed: #dc2626;
+  --component-button-destructive-foreground: #fffbfa;
+  --component-button-destructive-foreground-hover: #fffbfa;
+  --component-button-destructive-foreground-pressed: #fffbfa;
   --component-button-primary-background: var(--semantic-color-action-background);
   --component-button-primary-background-hover: var(--semantic-color-action-background-hover);
   --component-button-primary-background-pressed: var(--semantic-color-action-background-pressed);
@@ -1134,6 +1197,15 @@
   --component-button-secondary-foreground: var(--base-color-accent-600);
   --component-button-secondary-foreground-hover: var(--base-color-accent-700);
   --component-button-secondary-foreground-pressed: var(--base-color-accent-800);
+  --component-button-success-background: #003f17;
+  --component-button-success-background-hover: color-mix(in srgb, #003f17, black 16%);
+  --component-button-success-background-pressed: color-mix(in srgb, #003f17, black 32%);
+  --component-button-success-border: #003f17;
+  --component-button-success-border-hover: #003f17;
+  --component-button-success-border-pressed: #003f17;
+  --component-button-success-foreground: #f5fff6;
+  --component-button-success-foreground-hover: #f5fff6;
+  --component-button-success-foreground-pressed: #f5fff6;
   --component-button-tertiary-background: transparent;
   --component-button-tertiary-background-hover: var(--base-color-accent-50);
   --component-button-tertiary-background-pressed: var(--base-color-accent-100);

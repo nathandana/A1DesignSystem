@@ -140,28 +140,28 @@
 }
 
 .a1-button--destructive {
-  --a1-button-background: var(--semantic-color-status-error-background);
-  --a1-button-background-hover: color-mix(in srgb, var(--semantic-color-status-error-background), black 16%);
-  --a1-button-background-pressed: color-mix(in srgb, var(--semantic-color-status-error-background), black 32%);
-  --a1-button-foreground: var(--semantic-color-status-error-foreground);
-  --a1-button-foreground-hover: var(--semantic-color-status-error-foreground);
-  --a1-button-foreground-pressed: var(--semantic-color-status-error-foreground);
-  --a1-button-border: var(--semantic-color-status-error-background);
-  --a1-button-border-hover: var(--semantic-color-status-error-background);
-  --a1-button-border-pressed: var(--semantic-color-status-error-background);
+  --a1-button-background: var(--component-button-destructive-background);
+  --a1-button-background-hover: var(--component-button-destructive-background-hover);
+  --a1-button-background-pressed: var(--component-button-destructive-background-pressed);
+  --a1-button-foreground: var(--component-button-destructive-foreground);
+  --a1-button-foreground-hover: var(--component-button-destructive-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-destructive-foreground-pressed);
+  --a1-button-border: var(--component-button-destructive-border);
+  --a1-button-border-hover: var(--component-button-destructive-border-hover);
+  --a1-button-border-pressed: var(--component-button-destructive-border-pressed);
   --a1-button-border-width: var(--component-button-primary-border-width);
 }
 
 .a1-button--success {
-  --a1-button-background: var(--semantic-color-status-success-background);
-  --a1-button-background-hover: color-mix(in srgb, var(--semantic-color-status-success-background), black 16%);
-  --a1-button-background-pressed: color-mix(in srgb, var(--semantic-color-status-success-background), black 32%);
-  --a1-button-foreground: var(--semantic-color-status-success-foreground);
-  --a1-button-foreground-hover: var(--semantic-color-status-success-foreground);
-  --a1-button-foreground-pressed: var(--semantic-color-status-success-foreground);
-  --a1-button-border: var(--semantic-color-status-success-background);
-  --a1-button-border-hover: var(--semantic-color-status-success-background);
-  --a1-button-border-pressed: var(--semantic-color-status-success-background);
+  --a1-button-background: var(--component-button-success-background);
+  --a1-button-background-hover: var(--component-button-success-background-hover);
+  --a1-button-background-pressed: var(--component-button-success-background-pressed);
+  --a1-button-foreground: var(--component-button-success-foreground);
+  --a1-button-foreground-hover: var(--component-button-success-foreground-hover);
+  --a1-button-foreground-pressed: var(--component-button-success-foreground-pressed);
+  --a1-button-border: var(--component-button-success-border);
+  --a1-button-border-hover: var(--component-button-success-border-hover);
+  --a1-button-border-pressed: var(--component-button-success-border-pressed);
   --a1-button-border-width: var(--component-button-primary-border-width);
 }
 

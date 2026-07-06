@@ -186,6 +186,44 @@ Always `parent.appendChild(child)` **before** setting `child.layoutSizingHorizon
 
 This table is the canonical record of props that exist in React but cannot be represented (or are not yet represented) in Figma. Update it as components are built.
 
+### Button
+
+**Component structure:** `Button` component set with variants for visual styling, size, interactive state, and icon placement. Component properties expose label text, icon visibility, and an icon instance swap.
+
+**Figma default:** The component set is ordered so Figma asset search inserts `Variant=secondary, Size=md, State=default, IconPosition=start`. This intentionally differs from React's runtime defaults (`variant="primary"`, `size="md"`) so designers start with the standard secondary button in Figma while Code Connect still emits `variant="secondary"` for that instance.
+
+**Color modes:** Button color variables are a single-mode component layer that alias into `color/button/*` variables in the shared Color collection. Do not add a Dark mode to the Button collection. Dark mode is controlled once by switching the Color collection mode on a containing frame or page, matching the React CSS custom-property contract.
+
+**Typography:** Button labels use Button-specific Figma text styles that mirror React size modifiers: `Button/sm` = Inter Medium 14, `Button/md` = Inter Semi Bold 16, and `Button/lg` = Inter Bold 18. Do not bind Button labels to the generic body text styles; their font weights are intentionally different.
+
+Variant properties:
+
+| React prop | Figma representation | Valid values |
+|------------|---------------------|--------------|
+| `variant` | Variant `Variant` | `primary` \| `secondary` \| `tertiary` \| `destructive` \| `success` |
+| `size` | Variant `Size` | `sm` \| `md` \| `lg` |
+| `disabled`, `loading` | Variant `State` | `default` \| `hover` \| `focus` \| `pressed` \| `disabled` \| `loading` |
+| `iconPosition` | Variant `IconPosition` | `start` \| `end` |
+
+Component properties:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `children` | `Label` | TEXT | Button label text |
+| `icon` | `Show icon` + `Icon` | BOOLEAN + INSTANCE_SWAP | `Show icon` controls visibility; `Icon` swaps the visual icon instance |
+
+Gaps — props that cannot currently be represented visually in Figma:
+
+| React prop | Gap reason |
+|------------|------------|
+| `as`, `href`, `type` | Runtime semantic/navigation choices, not visual Figma states |
+| `fullWidth` | Represented by resizing behavior on the instance, not a component variant |
+| `onClick`, `className`, `style`, `ref`, `aria-*`, `id` | Runtime-only props |
+| `hover`, `focus`, `pressed` visual states | Included as Figma states for inspection/prototyping; Code Connect emits no React prop for them |
+| `loading` motion | Figma shows the spinner statically; React owns the indeterminate motion and `aria-busy` behavior |
+| `icon` Code Connect mapping | The template emits `smart_button` when an icon is visible; icon instance names should stay aligned to the React icon registry for exact output |
+| Figma asset default | Figma insert/search default is `secondary` + `md`; React's runtime default remains `primary` + `md` |
+
 ### Section
 
 **Component structure:** `Section` > `Section Slot` (SLOT, FILL width) > `_content` (FRAME, FIXED width bound to ContentWidth).
@@ -254,9 +292,10 @@ Gaps — props that cannot currently be represented visually in Figma:
 
 | Collection name | Type | Modes | Key variables |
 |-----------------|------|-------|---------------|
-| Color | COLOR | Default | All semantic color tokens (`surface/*`, `text/*`, `border/*`, `action/*`) + primitive ramp (`accent/*`, `neutral/*`) |
+| Color | COLOR | Light / Dark | All semantic color tokens (`surface/*`, `text/*`, `border/*`, `action/*`) + component-facing color aliases such as `color/button/*` |
 | Spacing | FLOAT | Default | `gap/xs–xl`, `radius/sm–lg` |
 | Primitives | mixed | Default | Base color ramp + primitive radius values |
+| Button | mixed | Value | Button component variables. Color variables alias to Color collection roles (for example `button/secondary/background` → `color/button/secondary/background`); size/radius/spacing variables alias to primitive tokens. |
 | Breakpoints | FLOAT | xs / sm / md / lg / xl | `min`, `max`, `canvas` — bind `canvas` to a frame's width then switch modes |
 | Gap | FLOAT | none / xs / sm / md / lg / xl | `value` (GAP scope) — bind to an auto-layout frame's `itemSpacing`; switch modes to change gap |
 | ContentWidth | FLOAT | xs / sm / md / lg / xl / 2xl | `max` (WIDTH_HEIGHT scope) — bind to a FIXED-width inner frame; switch modes to constrain content area |
