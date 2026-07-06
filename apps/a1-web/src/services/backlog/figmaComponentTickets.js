@@ -56,13 +56,20 @@ const PRIORITY_BY_COMPONENT = {
   'bottom-sheet': 'p3',
 }
 
+const PRIORITY_LABEL = {
+  p0: 'P0',
+  p1: 'P1',
+  p2: 'P2',
+  p3: 'P3',
+}
+
 function componentPriority(component) {
   return PRIORITY_BY_COMPONENT[component.id] ?? 'p2'
 }
 
 function ticketDescription(component) {
   const visibleInA1Web = allComponents.some((item) => item.id === component.id)
-  const priority = componentPriority(component).toUpperCase()
+  const priority = PRIORITY_LABEL[componentPriority(component)] ?? 'P2'
   return `## Objective
 Create the ${component.title} component in the A1 Figma design system file and update coverage so Figma is marked implemented only after the asset is usable.
 
