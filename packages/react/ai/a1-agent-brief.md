@@ -189,7 +189,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `TopHeader` | — | Top nav bar. | `logo`, `navItems`, `navIconPosition` |
 | `BottomDrawer` | — | Bottom nav (≤5). | `items` (`{id,label,icon,href?}[]`), `aria-label` (req) |
 | `PageNav` | — | In-page section nav. | `label`, `sections` (`{id,label,level}[]`) |
-| `TreeMenu` | — | Hierarchical tree. | `items`, `selectedId`, `showExpandControls` |
+| `TreeMenu` | — | Hierarchical tree. | `items`, `variant` (`expanded`/`collapsed`), `selectedId`, `showExpandControls` |
 | `Pagination` | — | Pager. | `page`, `pageCount`, `onPageChange` |
 | `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`; `label` is required and renders the term; do not use `term`), `direction` (row/column), `size`, `labelWidth` |
 | `DataTable` | — | Table. | `columns` (`{key,label}[]`), `rows` (objects keyed by each column `key`, include a unique `id`), `size` (**`comfortable`/`default`/`compact`** — not sm/md/lg; omit for auto), `notices` |

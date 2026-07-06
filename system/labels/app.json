@@ -312,6 +312,258 @@
             "ar": "الإصدارات"
           }
         },
+        "releaseSearchLabel": {
+          "$type": "string",
+          "$value": "Search release notes",
+          "$description": "Accessible label for the release notes search field.",
+          "locale": {
+            "es": "Buscar notas de la versión",
+            "fr": "Rechercher dans les notes de version",
+            "de": "Versionshinweise durchsuchen",
+            "pt": "Pesquisar notas da versão",
+            "ja": "リリースノートを検索",
+            "zh": "搜索发行说明",
+            "ar": "البحث في ملاحظات الإصدار"
+          }
+        },
+        "releaseViewLabel": {
+          "$type": "string",
+          "$value": "Release notes version",
+          "$description": "Accessible label for the release notes version segmented control.",
+          "locale": {
+            "es": "Versión de las notas de la versión",
+            "fr": "Version des notes de version",
+            "de": "Version der Versionshinweise",
+            "pt": "Versão das notas da versão",
+            "ja": "リリースノートの種類",
+            "zh": "发行说明版本",
+            "ar": "إصدار ملاحظات الإصدار"
+          }
+        },
+        "releaseSimplifiedLabel": {
+          "$type": "string",
+          "$value": "Simplified",
+          "$description": "Segmented control option for public simplified release notes.",
+          "locale": {
+            "es": "Simplificada",
+            "fr": "Simplifiée",
+            "de": "Vereinfacht",
+            "pt": "Simplificada",
+            "ja": "簡易版",
+            "zh": "简化版",
+            "ar": "مبسطة"
+          }
+        },
+        "releaseDetailedLabel": {
+          "$type": "string",
+          "$value": "Detailed",
+          "$description": "Segmented control option for detailed release notes.",
+          "locale": {
+            "es": "Detallada",
+            "fr": "Détaillée",
+            "de": "Detailliert",
+            "pt": "Detalhada",
+            "ja": "詳細版",
+            "zh": "详细版",
+            "ar": "مفصلة"
+          }
+        },
+        "releasePackageFilterLabel": {
+          "$type": "string",
+          "$value": "Package",
+          "$description": "Visible label for the release notes package/source chip filter.",
+          "locale": {
+            "es": "Paquete",
+            "fr": "Package",
+            "de": "Paket",
+            "pt": "Pacote",
+            "ja": "パッケージ",
+            "zh": "包",
+            "ar": "الحزمة"
+          }
+        },
+        "releaseTreeLabel": {
+          "$type": "string",
+          "$value": "Release versions",
+          "$description": "Accessible label for the release version tree navigation.",
+          "locale": {
+            "es": "Versiones",
+            "fr": "Versions",
+            "de": "Versionen",
+            "pt": "Versões",
+            "ja": "リリースバージョン",
+            "zh": "发行版本",
+            "ar": "إصدارات النسخ"
+          }
+        },
+        "releaseAppLabel": {
+          "$type": "string",
+          "$value": "A1 web",
+          "$description": "Tree group label for the a1-web app release notes.",
+          "locale": {
+            "es": "A1 web",
+            "fr": "A1 web",
+            "de": "A1 web",
+            "pt": "A1 web",
+            "ja": "A1 web",
+            "zh": "A1 web",
+            "ar": "A1 web"
+          }
+        },
+        "releaseReactPackageLabel": {
+          "$type": "string",
+          "$value": "React package",
+          "$description": "Tree group label for the React package release notes.",
+          "locale": {
+            "es": "Paquete React",
+            "fr": "Package React",
+            "de": "React-Paket",
+            "pt": "Pacote React",
+            "ja": "React パッケージ",
+            "zh": "React 包",
+            "ar": "حزمة React"
+          }
+        },
+        "releaseReactNativePackageLabel": {
+          "$type": "string",
+          "$value": "React Native package",
+          "$description": "Tab label for the React Native package release notes.",
+          "locale": {
+            "es": "Paquete React Native",
+            "fr": "Package React Native",
+            "de": "React-Native-Paket",
+            "pt": "Pacote React Native",
+            "ja": "React Native パッケージ",
+            "zh": "React Native 包",
+            "ar": "حزمة React Native"
+          }
+        },
+        "releaseWebComponentsPackageLabel": {
+          "$type": "string",
+          "$value": "Web Components package",
+          "$description": "Tab label for the Web Components package release notes.",
+          "locale": {
+            "es": "Paquete Web Components",
+            "fr": "Package Web Components",
+            "de": "Web-Components-Paket",
+            "pt": "Pacote Web Components",
+            "ja": "Web Components パッケージ",
+            "zh": "Web Components 包",
+            "ar": "حزمة Web Components"
+          }
+        },
+        "releasePurePackageLabel": {
+          "$type": "string",
+          "$value": "Pure CSS package",
+          "$description": "Tab label for the Pure CSS package release notes.",
+          "locale": {
+            "es": "Paquete Pure CSS",
+            "fr": "Package Pure CSS",
+            "de": "Pure-CSS-Paket",
+            "pt": "Pacote Pure CSS",
+            "ja": "Pure CSS パッケージ",
+            "zh": "Pure CSS 包",
+            "ar": "حزمة Pure CSS"
+          }
+        },
+        "releaseEslintPluginPackageLabel": {
+          "$type": "string",
+          "$value": "ESLint plugin",
+          "$description": "Tab label for the ESLint plugin release notes.",
+          "locale": {
+            "es": "Plugin de ESLint",
+            "fr": "Plugin ESLint",
+            "de": "ESLint-Plugin",
+            "pt": "Plugin ESLint",
+            "ja": "ESLint プラグイン",
+            "zh": "ESLint 插件",
+            "ar": "مكوّن ESLint الإضافي"
+          }
+        },
+        "releaseOpenNavLabel": {
+          "$type": "string",
+          "$value": "Browse releases",
+          "$description": "Button label that opens release navigation on smaller breakpoints.",
+          "locale": {
+            "es": "Explorar versiones",
+            "fr": "Parcourir les versions",
+            "de": "Versionen durchsuchen",
+            "pt": "Explorar versões",
+            "ja": "リリースを参照",
+            "zh": "浏览版本",
+            "ar": "استعراض الإصدارات"
+          }
+        },
+        "releasePublicDescription": {
+          "$type": "string",
+          "$value": "Public summaries of A1 product and design-system changes, written for people using the system.",
+          "$description": "Description for the public release notes page.",
+          "locale": {
+            "es": "Resúmenes públicos de cambios del producto A1 y del sistema de diseño, escritos para quienes usan el sistema.",
+            "fr": "Résumés publics des changements du produit A1 et du système de design, rédigés pour les personnes qui utilisent le système.",
+            "de": "Öffentliche Zusammenfassungen der Änderungen am A1-Produkt und Designsystem, geschrieben für Menschen, die das System nutzen.",
+            "pt": "Resumos públicos das mudanças do produto A1 e do sistema de design, escritos para quem usa o sistema.",
+            "ja": "A1 製品とデザインシステムの変更を、システム利用者向けにまとめた公開サマリーです。",
+            "zh": "面向系统使用者的 A1 产品和设计系统变更公开摘要。",
+            "ar": "ملخصات عامة لتغييرات منتج A1 ونظام التصميم، مكتوبة للأشخاص الذين يستخدمون النظام."
+          }
+        },
+        "releaseDetailedDescription": {
+          "$type": "string",
+          "$value": "Detailed release notes with implementation and maintenance context.",
+          "$description": "Description for the detailed release notes view.",
+          "locale": {
+            "es": "Notas de la versión detalladas con contexto de implementación y mantenimiento.",
+            "fr": "Notes de version détaillées avec un contexte de mise en œuvre et de maintenance.",
+            "de": "Detaillierte Versionshinweise mit Implementierungs- und Wartungskontext.",
+            "pt": "Notas da versão detalhadas com contexto de implementação e manutenção.",
+            "ja": "実装とメンテナンスの背景を含む詳細なリリースノートです。",
+            "zh": "包含实现和维护背景的详细发行说明。",
+            "ar": "ملاحظات إصدار مفصلة مع سياق التنفيذ والصيانة."
+          }
+        },
+        "releasePublicEmptyDescription": {
+          "$type": "string",
+          "$value": "No public release notes are available yet.",
+          "$description": "Description shown when there are no public release notes.",
+          "locale": {
+            "es": "Aún no hay notas de versión públicas disponibles.",
+            "fr": "Aucune note de version publique n’est encore disponible.",
+            "de": "Es sind noch keine öffentlichen Versionshinweise verfügbar.",
+            "pt": "Ainda não há notas de versão públicas disponíveis.",
+            "ja": "公開リリースノートはまだありません。",
+            "zh": "尚无公开发行说明。",
+            "ar": "لا توجد ملاحظات إصدار عامة متاحة بعد."
+          }
+        },
+        "releaseSearchEmptyTitle": {
+          "$type": "string",
+          "$value": "No release notes found",
+          "$description": "Heading shown when release notes search returns no matches.",
+          "locale": {
+            "es": "No se encontraron notas de la versión",
+            "fr": "Aucune note de version trouvée",
+            "de": "Keine Versionshinweise gefunden",
+            "pt": "Nenhuma nota da versão encontrada",
+            "ja": "リリースノートが見つかりません",
+            "zh": "未找到发行说明",
+            "ar": "لم يتم العثور على ملاحظات إصدار"
+          }
+        },
+        "releaseSearchEmptyBody": {
+          "$type": "string",
+          "$value": "No release notes match \"{query}\".",
+          "$description": "Body text shown when release notes search returns no matches. {query} is the user's search text.",
+          "locale": {
+            "es": "Ninguna nota de la versión coincide con \"{query}\".",
+            "fr": "Aucune note de version ne correspond à « {query} ».",
+            "de": "Keine Versionshinweise stimmen mit „{query}“ überein.",
+            "pt": "Nenhuma nota da versão corresponde a \"{query}\".",
+            "ja": "「{query}」に一致するリリースノートはありません。",
+            "zh": "没有发行说明匹配“{query}”。",
+            "ar": "لا توجد ملاحظات إصدار تطابق \"{query}\"."
+          }
+        },
         "backlog": {
           "$type": "string",
           "$value": "Backlog",
@@ -2342,6 +2594,20 @@
             "ja": "スイムレーンの表示/非表示",
             "zh": "显示或隐藏泳道",
             "ar": "عرض أو إخفاء مسارات السباحة"
+          }
+        },
+        "moreSwimlanes": {
+          "$type": "string",
+          "$value": "More swimlanes",
+          "$description": "Accessible label for the Backlog swimlane toolbar overflow menu.",
+          "locale": {
+            "es": "Más carriles",
+            "fr": "Plus de couloirs",
+            "de": "Weitere Swimlanes",
+            "pt": "Mais raias",
+            "ja": "その他のスイムレーン",
+            "zh": "更多泳道",
+            "ar": "المزيد من المسارات"
           }
         },
         "boardAreaLabel": {

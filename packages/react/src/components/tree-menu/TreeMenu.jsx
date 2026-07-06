@@ -1,6 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Icon } from '../icon/Icon.jsx';
+import { useLabel } from '../labels/Labels.jsx';
+import { Menu } from '../menu/Menu.jsx';
 import './tree-menu.css';
+
+const TREE_MENU_VARIANTS = ['expanded', 'collapsed'];
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
@@ -68,6 +72,28 @@ function collectAllIds(items, result = []) {
     if (item.children?.length) collectAllIds(item.children, result);
   }
   return result;
+}
+
+function findItem(items, targetId) {
+  if (!targetId) return null;
+  for (const item of items) {
+    if (item.id === targetId) return item;
+    if (item.children?.length) {
+      const found = findItem(item.children, targetId);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function itemContainsId(item, targetId) {
+  if (!targetId) return false;
+  if (item.id === targetId) return true;
+  return item.children?.some((child) => itemContainsId(child, targetId)) ?? false;
+}
+
+function formatLabelTemplate(template, label) {
+  return String(template).replaceAll('{label}', label);
 }
 
 // Returns all descendant IDs of the item with targetId (not including itself).
@@ -338,10 +364,236 @@ function TreeItem({ item, depth }) {
   );
 }
 
+// ── Collapsed root rail ──────────────────────────────────────────────────────
+
+function CollapsedTreeMenu({
+  items,
+  selectedId,
+  onSelect,
+  expandedIds,
+  setExpanded,
+  showExpandControls,
+  onHoverChange,
+  onItemContextMenu,
+  draggable,
+  onMove,
+  editingId,
+  onRenameStart,
+  onRenameCommit,
+  onRenameCancel,
+  ariaLabel,
+  ariaLabelledBy,
+  className,
+  rovingId,
+  setRovingId,
+}) {
+  const [openId, setOpenId] = useState(null);
+  const triggerRefs = useRef(new Map());
+  const openMenuLabel = useLabel('treeMenu.openMenu', 'Open {label} menu');
+  const flyoutLabel = useLabel('treeMenu.flyoutLabel', '{label} menu');
+
+  const activeRovingId = items.some((item) => item.id === rovingId)
+    ? rovingId
+    : items[0]?.id ?? null;
+  const openItem = items.find((item) => item.id === openId) ?? null;
+  const openAnchorRef = useMemo(() => ({
+    get current() {
+      return triggerRefs.current.get(openId) ?? null;
+    },
+  }), [openId]);
+
+  useEffect(() => {
+    if (openId && !items.some((item) => item.id === openId && item.children?.length)) {
+      setOpenId(null);
+    }
+  }, [items, openId]);
+
+  function focusRoot(id) {
+    setRovingId(id);
+    requestAnimationFrame(() => triggerRefs.current.get(id)?.focus());
+  }
+
+  function closeMenu({ restoreFocus = true } = {}) {
+    const previousOpenId = openId;
+    setOpenId(null);
+    if (restoreFocus && previousOpenId) {
+      requestAnimationFrame(() => triggerRefs.current.get(previousOpenId)?.focus());
+    }
+  }
+
+  function handleTriggerClick(item, event) {
+    if (item.disabled) {
+      event.preventDefault();
+      return;
+    }
+
+    setRovingId(item.id);
+
+    if (item.children?.length) {
+      event.preventDefault();
+      setOpenId((current) => current === item.id ? null : item.id);
+      return;
+    }
+
+    closeMenu({ restoreFocus: false });
+    onSelect?.(item.id);
+  }
+
+  function handleFlyoutSelect(id) {
+    onSelect?.(id);
+    closeMenu();
+  }
+
+  function handleKeyDown(event) {
+    const currentId = event.target.closest('[data-tree-root-id]')?.dataset?.treeRootId;
+    const currentIndex = currentId ? items.findIndex((item) => item.id === currentId) : -1;
+    if (currentIndex < 0) return;
+
+    switch (event.key) {
+      case 'ArrowDown': {
+        event.preventDefault();
+        const next = items[currentIndex + 1] ?? items[0];
+        if (next) focusRoot(next.id);
+        break;
+      }
+      case 'ArrowUp': {
+        event.preventDefault();
+        const previous = items[currentIndex - 1] ?? items[items.length - 1];
+        if (previous) focusRoot(previous.id);
+        break;
+      }
+      case 'Home': {
+        event.preventDefault();
+        if (items[0]) focusRoot(items[0].id);
+        break;
+      }
+      case 'End': {
+        event.preventDefault();
+        const last = items[items.length - 1];
+        if (last) focusRoot(last.id);
+        break;
+      }
+      case 'ArrowRight': {
+        const current = items[currentIndex];
+        if (current?.children?.length && !current.disabled) {
+          event.preventDefault();
+          setOpenId(current.id);
+        }
+        break;
+      }
+      case 'ArrowLeft': {
+        if (openId) {
+          event.preventDefault();
+          closeMenu();
+        }
+        break;
+      }
+    }
+  }
+
+  const flyoutExpandedIds = Array.from(expandedIds);
+  const flyoutAriaLabel = openItem
+    ? formatLabelTemplate(flyoutLabel, openItem.label)
+    : undefined;
+
+  return (
+    <>
+      <ul
+        role="list"
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        className={['a1-tree-menu', 'a1-tree-menu--collapsed', className].filter(Boolean).join(' ')}
+        onKeyDown={handleKeyDown}
+      >
+        {items.map((item) => {
+          const hasChildren = !!item.children?.length;
+          const isOpen = openId === item.id;
+          const isSelected = item.id === selectedId;
+          const isActive = isSelected || itemContainsId(item, selectedId);
+          const isRoving = item.id === activeRovingId;
+          const Component = item.href && !hasChildren ? 'a' : 'button';
+          const iconName = item.icon || (hasChildren ? 'folder' : 'radio_button_unchecked');
+          const label = hasChildren
+            ? formatLabelTemplate(openMenuLabel, item.label)
+            : item.label;
+
+          return (
+            <li key={item.id} className="a1-tree-menu__collapsed-item">
+              <Component
+                ref={(element) => {
+                  if (element) triggerRefs.current.set(item.id, element);
+                  else triggerRefs.current.delete(item.id);
+                }}
+                data-tree-root-id={item.id}
+                className={[
+                  'a1-tree-menu__collapsed-trigger',
+                  isActive && 'a1-tree-menu__collapsed-trigger--active',
+                ].filter(Boolean).join(' ')}
+                type={Component === 'button' ? 'button' : undefined}
+                href={Component === 'a' && !item.disabled ? item.href : undefined}
+                disabled={Component === 'button' ? item.disabled : undefined}
+                aria-label={label}
+                title={label}
+                aria-haspopup={hasChildren ? 'menu' : undefined}
+                aria-expanded={hasChildren ? isOpen : undefined}
+                aria-disabled={Component === 'a' && item.disabled ? true : undefined}
+                aria-current={isSelected && item.href ? 'page' : undefined}
+                tabIndex={item.disabled ? -1 : (isRoving ? 0 : -1)}
+                onClick={(event) => handleTriggerClick(item, event)}
+                onFocus={() => setRovingId(item.id)}
+                onMouseEnter={() => !item.disabled && onHoverChange?.(item.id)}
+                onMouseLeave={() => onHoverChange?.(null)}
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onItemContextMenu?.(item.id, event);
+                }}
+              >
+                <Icon name={iconName} className="a1-tree-menu__collapsed-icon" aria-hidden="true" />
+              </Component>
+            </li>
+          );
+        })}
+      </ul>
+
+      <Menu
+        open={!!openItem?.children?.length}
+        onClose={closeMenu}
+        anchorRef={openAnchorRef}
+        aria-label={flyoutAriaLabel}
+        className="a1-tree-menu__collapsed-flyout"
+      >
+        {openItem?.children?.length ? (
+          <TreeMenu
+            items={openItem.children}
+            selectedId={selectedId}
+            onSelect={handleFlyoutSelect}
+            expandedIds={flyoutExpandedIds}
+            onExpandedChange={(ids) => setExpanded(new Set(ids))}
+            showExpandControls={showExpandControls}
+            onHoverChange={onHoverChange}
+            onItemContextMenu={onItemContextMenu}
+            draggable={draggable}
+            onMove={onMove}
+            editingId={editingId}
+            onRenameStart={onRenameStart}
+            onRenameCommit={onRenameCommit}
+            onRenameCancel={onRenameCancel}
+            aria-label={flyoutAriaLabel}
+            className="a1-tree-menu__collapsed-flyout-tree"
+            variant="expanded"
+          />
+        ) : null}
+      </Menu>
+    </>
+  );
+}
+
 // ── TreeMenu ──────────────────────────────────────────────────────────────────
 
 export function TreeMenu({
   items = [],
+  variant = 'expanded',
   selectedId = null,
   onSelect,
   defaultExpandedIds = [],
@@ -360,6 +612,7 @@ export function TreeMenu({
   'aria-labelledby': ariaLabelledBy,
   className = '',
 }) {
+  const resolvedVariant = TREE_MENU_VARIANTS.includes(variant) ? variant : 'expanded';
   const isControlled = controlledExpandedIds !== undefined;
 
   const [uncontrolledExpandedIds, setUncontrolledExpandedIds] = useState(
@@ -370,7 +623,7 @@ export function TreeMenu({
     : uncontrolledExpandedIds;
 
   const [rovingId, setRovingId] = useState(
-    () => selectedId ?? items[0]?.id ?? null
+    () => findItem(items, selectedId)?.id ?? items[0]?.id ?? null
   );
 
   const [dragState, setDragState] = useState(null);
@@ -526,11 +779,39 @@ export function TreeMenu({
     }
   }
 
+  const activeRovingId = findItem(items, rovingId)?.id ?? items[0]?.id ?? null;
+
+  if (resolvedVariant === 'collapsed') {
+    return (
+      <CollapsedTreeMenu
+        items={items}
+        selectedId={selectedId}
+        onSelect={onSelect}
+        expandedIds={expandedIds}
+        setExpanded={setExpanded}
+        showExpandControls={showExpandControls}
+        onHoverChange={onHoverChange ?? (() => {})}
+        onItemContextMenu={onItemContextMenu ?? (() => {})}
+        draggable={draggable}
+        onMove={onMove}
+        editingId={editingId}
+        onRenameStart={onRenameStart ?? (() => {})}
+        onRenameCommit={onRenameCommit ?? (() => {})}
+        onRenameCancel={onRenameCancel ?? (() => {})}
+        ariaLabel={ariaLabel}
+        ariaLabelledBy={ariaLabelledBy}
+        className={className}
+        rovingId={activeRovingId}
+        setRovingId={setRovingId}
+      />
+    );
+  }
+
   const tree = (
     <TreeCtx.Provider
       value={{
         selectedId,
-        rovingId: rovingId ?? items[0]?.id ?? null,
+        rovingId: activeRovingId,
         onSelect: onSelect ?? (() => {}),
         expandedIds,
         onToggle,

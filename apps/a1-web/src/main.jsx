@@ -3,7 +3,6 @@ import '../../../packages/react/src/themes.css'
 import '../../../packages/react/src/color-scheme.css'
 import '../../../packages/react/src/utilities/spacing.css'
 import '../../../packages/react/src/utilities/width.css'
-import './priorityGuide/wireframe-redacted.css'
 import { createRoot } from 'react-dom/client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -33,6 +32,7 @@ import calendarLabels  from '../../../system/labels/calendar.json'
 import codeLabels      from '../../../system/labels/code.json'
 import fieldLabels     from '../../../system/labels/field.json'
 import statusBarLabels from '../../../system/labels/status-bar.json'
+import treeMenuLabels  from '../../../system/labels/tree-menu.json'
 import {
   getLabels,
   hydrateLabels,
@@ -52,6 +52,7 @@ const SYSTEM_LABELS = {
     ...codeLabels.label,
     ...fieldLabels.label,
     ...statusBarLabels.label,
+    ...treeMenuLabels.label,
   },
 }
 
@@ -88,7 +89,7 @@ import { patternToDefinition } from './patterns/patternDocument.js'
 import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
 import { Accessibility } from './pages/Accessibility.jsx'
-import { Releases } from './pages/Releases.jsx'
+import { Releases, ReleasesSidebar } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
@@ -198,7 +199,6 @@ const themeOptions = [
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
   { value: 'wireframe', label: 'Wireframe' },
-  { value: 'wireframe-redacted', label: 'Wireframe (redacted)' },
 ]
 const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
 
@@ -384,6 +384,10 @@ function App() {
   const backlog = useBacklog()
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
+  const [releaseMode, setReleaseMode] = useState('simplified')
+  const [releaseSource, setReleaseSource] = useState('a1-web')
+  const [releaseSearch, setReleaseSearch] = useState('')
+  const [selectedReleaseId, setSelectedReleaseId] = useState(null)
   // ── Projects state ─────────────────────────────────────────────────────────
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
@@ -958,7 +962,6 @@ function App() {
     document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
     document.documentElement.classList.toggle('a1-theme-marshmallow', theme === 'marshmallow')
     document.documentElement.classList.toggle('a1-theme-wireframe', theme === 'wireframe')
-    document.documentElement.classList.toggle('a1-theme-wireframe-redacted', theme === 'wireframe-redacted')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
@@ -1428,15 +1431,16 @@ function App() {
 
   const patternDef = editorPatternId ? patternToDefinition(editorPatternId) : null
 
-  // The right-side config panel (editor / theme / component configurators). At
-  // md+ it's the PageLayout aside rail; at xs/sm it moves into a BottomSheet.
+  // Config/filter panels. At md+ they use the PageLayout aside rail; at xs/sm
+  // they move into a BottomSheet. Backlog places its filter rail on the start
+  // side so it reads like navigation rather than a right-side configurator.
   const asideEl =
     (activePage === 'editor' && editorPatternId) || (activePage === 'editor' && activeProject && openPageId)
       ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
       : activePage === 'theme-editor' && activeThemeId
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
       : activePage === 'backlog'
-      ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside" />
+      ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside a1-web-config-aside--start" />
       : activePage === 'foundation-color-visualization'
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
@@ -1582,6 +1586,20 @@ function App() {
                 onSelectCategory={setThemeCategory}
                 onBackToThemes={() => setActiveThemeId(null)}
               />
+            : activePage === 'backlog' && !isSmDown
+            ? asideEl
+            : activePage === 'releases'
+            ? <ReleasesSidebar
+                mode={releaseMode}
+                sourceId={releaseSource}
+                onSourceChange={setReleaseSource}
+                search={releaseSearch}
+                onSearchChange={setReleaseSearch}
+                selectedReleaseId={selectedReleaseId}
+                onSelectRelease={(id) => { setSelectedReleaseId(id); setSidebarOpen(false) }}
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+              />
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({
                 activePage,
@@ -1593,7 +1611,7 @@ function App() {
               })
             : undefined
         }
-        aside={isSmDown ? undefined : asideEl}
+        aside={isSmDown || activePage === 'backlog' ? undefined : asideEl}
         header={
           <TopHeader
             className="a1-web-app-header"
@@ -1827,7 +1845,19 @@ function App() {
         {activePage === 'account' && <AccountPage onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} initialQuery={helpQuery} />}
-        {activePage === 'releases' && <Releases onNavigate={navigate} />}
+        {activePage === 'releases' && (
+          <Releases
+            onNavigate={navigate}
+            mode={releaseMode}
+            onModeChange={setReleaseMode}
+            sourceId={releaseSource}
+            onSourceChange={setReleaseSource}
+            search={releaseSearch}
+            selectedReleaseId={selectedReleaseId}
+            onSelectRelease={setSelectedReleaseId}
+            onOpenSidebar={() => setSidebarOpen(true)}
+          />
+        )}
         {activePage === 'backlog' && <Backlog onNavigate={navigate} />}
         {import.meta.env.DEV && activePage === 'virtual-team' && (
           <VirtualTeam onNavigate={navigate} onOpenProject={openProject} />

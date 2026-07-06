@@ -74,9 +74,93 @@
 /* ── Disabled row ─────────────────────────────────────────────────────────── */
 
 .a1-tree-menu__row--disabled {
-  opacity: 0.4;
+  opacity: var(--component-tree-menu-item-disabled-opacity);
   cursor: not-allowed;
   pointer-events: none;
+}
+
+/* ── Collapsed root rail ─────────────────────────────────────────────────── */
+
+.a1-tree-menu--collapsed {
+  inline-size: max-content;
+  align-items: center;
+  gap: var(--base-spacing-4);
+}
+
+.a1-tree-menu__collapsed-item {
+  display: block;
+}
+
+.a1-tree-menu__collapsed-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--component-tree-menu-collapsed-item-size);
+  block-size: var(--component-tree-menu-collapsed-item-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--component-tree-menu-item-border-radius);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    color      var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-tree-menu__collapsed-trigger:hover {
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-default) 6%);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tree-menu__collapsed-trigger:active,
+.a1-tree-menu__collapsed-trigger[aria-expanded="true"] {
+  background: color-mix(in srgb, transparent, var(--semantic-color-text-default) 10%);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tree-menu__collapsed-trigger--active {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-tree-menu__collapsed-trigger--active:hover,
+.a1-tree-menu__collapsed-trigger--active[aria-expanded="true"] {
+  background: var(--semantic-color-action-background-hover);
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-tree-menu__collapsed-trigger--active:active {
+  background: var(--semantic-color-action-background-pressed);
+}
+
+.a1-tree-menu__collapsed-trigger:disabled,
+.a1-tree-menu__collapsed-trigger[aria-disabled="true"] {
+  opacity: var(--component-tree-menu-item-disabled-opacity);
+  cursor: not-allowed;
+}
+
+.a1-tree-menu__collapsed-trigger:disabled:hover,
+.a1-tree-menu__collapsed-trigger[aria-disabled="true"]:hover {
+  background: transparent;
+  color: var(--semantic-color-text-default);
+}
+
+.a1-tree-menu__collapsed-trigger:focus-visible {
+  outline: var(--component-tree-menu-item-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-tree-menu-item-focus-ring-offset);
+}
+
+.a1-tree-menu__collapsed-icon,
+.a1-tree-menu__icon {
+  flex-shrink: 0;
+  font-size: var(--component-tree-menu-item-icon-size);
+}
+
+.a1-tree-menu__collapsed-flyout .a1-tree-menu {
+  min-inline-size: 0;
 }
 
 /* ── Toggle button (expand / collapse — branch nodes only) ────────────────── */
@@ -160,13 +244,6 @@
 
 .a1-tree-menu__label-btn--disabled {
   cursor: not-allowed;
-}
-
-/* ── Icon ─────────────────────────────────────────────────────────────────── */
-
-.a1-tree-menu__icon {
-  flex-shrink: 0;
-  font-size: var(--component-tree-menu-item-icon-size);
 }
 
 /* ── Label text ───────────────────────────────────────────────────────────── */

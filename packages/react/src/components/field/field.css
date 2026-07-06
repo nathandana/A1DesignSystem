@@ -206,7 +206,7 @@
   border-width: var(--component-field-error-border-width);
   border-color: var(--semantic-color-status-error-border);
   border-left-width: var(--a1-field-accent-border-width);
-  border-left-color: var(--semantic-color-status-error-background);
+  border-left-color: var(--semantic-color-status-error-border);
   padding-left: calc(var(--a1-field-padding-inline) - var(--a1-field-accent-compensation));
 }
 
@@ -351,7 +351,7 @@
 .a1-field--error.a1-field--has-unit .a1-field__control {
   border-color: var(--semantic-color-status-error-border);
   border-left-width: var(--a1-field-accent-border-width);
-  border-left-color: var(--semantic-color-status-error-background);
+  border-left-color: var(--semantic-color-status-error-border);
 }
 
 .a1-field--error.a1-field--has-prefix .a1-field__control:focus-within,
@@ -471,7 +471,7 @@
 }
 
 .a1-field__message--error {
-  color: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-text);
 }
 
 /* ─── Before label layout ───────────────────────────────────────────────────── */

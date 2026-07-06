@@ -501,7 +501,7 @@
           },
           "border": {
             "$type": "color",
-            "$value": "{base.color.error.300}"
+            "$value": "{base.color.error.400}"
           },
           "foreground": {
             "$type": "color",
@@ -663,6 +663,82 @@
         "borderPressed": {
           "$type": "color",
           "$value": "{base.color.accent.100}"
+        }
+      },
+      "destructive": {
+        "background": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.background}"
+        },
+        "backgroundHover": {
+          "$type": "color",
+          "$value": "color-mix(in srgb, {semantic.color.status.error.background}, black 16%)"
+        },
+        "backgroundPressed": {
+          "$type": "color",
+          "$value": "color-mix(in srgb, {semantic.color.status.error.background}, black 32%)"
+        },
+        "foreground": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.foreground}"
+        },
+        "foregroundHover": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.foreground}"
+        },
+        "foregroundPressed": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.foreground}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.background}"
+        },
+        "borderHover": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.background}"
+        },
+        "borderPressed": {
+          "$type": "color",
+          "$value": "{semantic.color.status.error.background}"
+        }
+      },
+      "success": {
+        "background": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.background}"
+        },
+        "backgroundHover": {
+          "$type": "color",
+          "$value": "color-mix(in srgb, {semantic.color.status.success.background}, black 16%)"
+        },
+        "backgroundPressed": {
+          "$type": "color",
+          "$value": "color-mix(in srgb, {semantic.color.status.success.background}, black 32%)"
+        },
+        "foreground": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.foreground}"
+        },
+        "foregroundHover": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.foreground}"
+        },
+        "foregroundPressed": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.foreground}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.background}"
+        },
+        "borderHover": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.background}"
+        },
+        "borderPressed": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.background}"
         }
       },
       "focusRing": {

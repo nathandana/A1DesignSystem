@@ -3246,6 +3246,67 @@ export const GENERATED_PROP_TABLES = {
       ]
     }
   ],
+  "overlay": [
+    {
+      "title": "Overlay",
+      "rows": [
+        {
+          "id": "open",
+          "name": "open",
+          "type": "boolean",
+          "description": "Whether the full-screen overlay is open. Default: false"
+        },
+        {
+          "id": "onClose",
+          "name": "onClose",
+          "type": "() => void",
+          "description": "Called when the user dismisses the overlay with Escape or the close button. Omit for an intentionally blocking overlay."
+        },
+        {
+          "id": "status",
+          "name": "status",
+          "type": "\"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\"",
+          "description": "Status colour treatment. Default: \"info\""
+        },
+        {
+          "id": "icon",
+          "name": "icon",
+          "type": "string | null",
+          "description": "Icon name shown above the message. Defaults to the status icon. Pass null to hide the icon."
+        },
+        {
+          "id": "title",
+          "name": "title",
+          "type": "React.ReactNode",
+          "description": "Primary heading for the overlay. Used as the accessible label when no aria label is provided."
+        },
+        {
+          "id": "body",
+          "name": "body",
+          "type": "React.ReactNode",
+          "description": "Body copy shown below the title. Used as the accessible description when no aria description is provided."
+        },
+        {
+          "id": "actions",
+          "name": "actions",
+          "type": "React.ReactNode",
+          "description": "Action buttons or links shown below the message."
+        },
+        {
+          "id": "dismissLabel",
+          "name": "dismissLabel",
+          "type": "string",
+          "description": "Accessible label for the close button. Defaults to the overlay dismiss system label."
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Additional content shown below body copy and above actions."
+        }
+      ]
+    }
+  ],
   "notification": [
     {
       "title": "Notification",
@@ -5138,6 +5199,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "Tree data. Supports any depth of nesting."
         },
         {
+          "id": "variant",
+          "name": "variant",
+          "type": "'expanded' | 'collapsed'",
+          "description": "Presentation mode. \"expanded\" renders the full tree. \"collapsed\" renders root items as icon-only triggers and shows each branch's children in an A1 Menu flyout. Default: \"expanded\"."
+        },
+        {
           "id": "selectedId",
           "name": "selectedId",
           "type": "string | null",
@@ -5214,6 +5281,49 @@ export const GENERATED_PROP_TABLES = {
           "name": "className",
           "type": "string",
           "description": "No description in the package type declaration."
+        }
+      ]
+    }
+  ],
+  "tooltip": [
+    {
+      "title": "Tooltip",
+      "rows": [
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Element or text that receives hover/focus listeners."
+        },
+        {
+          "id": "content",
+          "name": "content",
+          "type": "React.ReactNode",
+          "description": "Tooltip message. Keep it short and non-interactive."
+        },
+        {
+          "id": "placement",
+          "name": "placement",
+          "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+          "description": "Preferred tooltip placement. The rendered position is clamped to the viewport. Default: \"top\"."
+        },
+        {
+          "id": "delay",
+          "name": "delay",
+          "type": "number",
+          "description": "Delay in milliseconds before showing the tooltip. Clamped from 0 to 1500. Default: 400."
+        },
+        {
+          "id": "disabled",
+          "name": "disabled",
+          "type": "boolean",
+          "description": "Prevents the tooltip from opening."
+        },
+        {
+          "id": "className",
+          "name": "className",
+          "type": "string",
+          "description": "Optional class applied to the tooltip surface."
         }
       ]
     }

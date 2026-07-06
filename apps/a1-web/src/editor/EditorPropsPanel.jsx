@@ -1433,6 +1433,7 @@ export const configToNodeUpdate = {
 
   TreeMenu: (config) => ({
     props: {
+      variant: config.variant,
       selectedId: config.selectedId,
       expandedIds: config.expandedIds,
       showExpandControls: config.showExpandControls,

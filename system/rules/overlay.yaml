@@ -1,0 +1,21 @@
+component: Overlay
+status: beta
+rules:
+  - id: overlay-use-for-major-state
+    level: guidance
+    text: Use Overlay for full-screen, high-emphasis status moments only, such as a game result, critical completion state, or blocking announcement. Prefer Banner, Snackbar, Notification, or Dialog for routine messages.
+  - id: overlay-title-required
+    level: required
+    text: Provide a concise title. The title is used as the modal dialog's accessible label when no explicit aria label is supplied.
+  - id: overlay-dismissible
+    level: required
+    text: Provide an onClose handler whenever users should be able to dismiss the overlay. When onClose is omitted, the overlay becomes intentionally blocking and Escape is prevented.
+  - id: overlay-status-not-color-only
+    level: required
+    text: Do not rely on status color alone. Pair the status with an icon, title, and body copy that communicate the state.
+  - id: overlay-actions-limited
+    level: guidance
+    text: Keep actions focused. Use one primary action plus an optional secondary action; move complex choices into a regular Dialog or page.
+  - id: overlay-contrast
+    level: required
+    text: Keep foreground content and actions readable against the status overlay in light, dark, accessible, and heritage themes.

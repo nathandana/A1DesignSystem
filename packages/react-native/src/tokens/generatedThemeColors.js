@@ -61,7 +61,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffbfa",
           "subtleBg": "#fff2f0",
           "subtleFg": "#dc2626",
-          "subtleBorder": "#ff8b7e"
+          "subtleBorder": "#ea574d"
         }
       }
     },
@@ -76,7 +76,7 @@ export const NATIVE_THEME_COLORS = {
       "textAccent": "#b5a0ff",
       "accentSurface": "#0f002a",
       "pressedBg": "#151d29",
-      "buttonPrimaryBg": "#d2c8ff",
+      "buttonPrimaryBg": "#b5a0ff",
       "buttonPrimaryFg": "#0f002a",
       "buttonPrimaryBgPressed": "#f5f3ff",
       "buttonSecondaryBg": "#0f002a",
@@ -182,7 +182,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffbfa",
           "subtleBg": "#fff2f0",
           "subtleFg": "#dc2626",
-          "subtleBorder": "#ff8b7e"
+          "subtleBorder": "#ea574d"
         }
       }
     },
@@ -197,7 +197,7 @@ export const NATIVE_THEME_COLORS = {
       "textAccent": "#b5a0ff",
       "accentSurface": "#0f002a",
       "pressedBg": "#151d29",
-      "buttonPrimaryBg": "#d2c8ff",
+      "buttonPrimaryBg": "#b5a0ff",
       "buttonPrimaryFg": "#0f002a",
       "buttonPrimaryBgPressed": "#f5f3ff",
       "buttonSecondaryBg": "#0f002a",
@@ -303,7 +303,7 @@ export const NATIVE_THEME_COLORS = {
           "fg": "#fffaf7",
           "subtleBg": "#fbeee7",
           "subtleFg": "#9f3f32",
-          "subtleBorder": "#d98b78"
+          "subtleBorder": "#c25f4d"
         }
       }
     },
@@ -318,7 +318,7 @@ export const NATIVE_THEME_COLORS = {
       "textAccent": "#68bdae",
       "accentSurface": "#001412",
       "pressedBg": "#251b13",
-      "buttonPrimaryBg": "#9ed9cf",
+      "buttonPrimaryBg": "#68bdae",
       "buttonPrimaryFg": "#001412",
       "buttonPrimaryBgPressed": "#e6f7f3",
       "buttonSecondaryBg": "#001412",

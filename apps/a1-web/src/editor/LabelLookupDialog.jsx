@@ -7,7 +7,9 @@ import backlogJson from '../../../../system/labels/backlog.json'
 import calendarJson from '../../../../system/labels/calendar.json'
 import codeJson from '../../../../system/labels/code.json'
 import fieldJson from '../../../../system/labels/field.json'
+import overlayJson from '../../../../system/labels/overlay.json'
 import statusBarJson from '../../../../system/labels/status-bar.json'
+import treeMenuJson from '../../../../system/labels/tree-menu.json'
 
 function flattenSystemLabels(obj, prefix = '') {
   const out = []
@@ -37,7 +39,9 @@ const SYSTEM_LABEL_OPTIONS = [
   ...flattenSystemLabels(calendarJson.label.calendar, 'calendar'),
   ...flattenSystemLabels(codeJson.label.code, 'code'),
   ...flattenSystemLabels(fieldJson.label.field, 'field'),
+  ...flattenSystemLabels(overlayJson.label.overlay, 'overlay'),
   ...flattenSystemLabels(statusBarJson.label.statusBar, 'statusBar'),
+  ...flattenSystemLabels(treeMenuJson.label.treeMenu, 'treeMenu'),
 ]
 
 const TRANSLATE_LANG = { zh: 'zh-CN' }
@@ -311,7 +315,7 @@ function AddLabelDialog({ open, sourceText = '', suggestedKeyPrefix = 'content',
             {locales.filter((locale) => locale !== 'en').map((locale) => (
               <TextField
                 key={locale}
-                label={locale.toUpperCase()}
+                label={locale}
                 value={values[locale] ?? ''}
                 onChange={(event) => setValues((current) => ({ ...current, [locale]: event.target.value }))}
               />

@@ -312,6 +312,47 @@ const makeTableColumns = (t) => [
   { key: 'updated', label: t('app.backlog.updated', 'Updated'), sortable: true, sortAccessor: (r) => r.updatedAt },
 ]
 
+const TABLE_UNSET_FILTER = '__unset__'
+
+const makeTableFilters = (t) => [
+  {
+    key: 'typeFilter',
+    label: t('app.backlog.toolbarType', 'Type'),
+    type: 'multi',
+    options: TYPES.map((value) => ({ value, label: TYPE_LABELS[value] })),
+  },
+  {
+    key: 'statusFilter',
+    label: t('app.backlog.toolbarStatus', 'Status'),
+    type: 'multi',
+    options: [...STATUS_FLOW, ...TERMINAL_STATUSES].map((value) => ({ value, label: STATUS_LABELS[value] })),
+  },
+  {
+    key: 'priorityFilter',
+    label: t('app.backlog.toolbarPriority', 'Priority'),
+    type: 'multi',
+    options: [
+      ...PRIORITIES.map((value) => ({ value, label: PRIORITY_LABELS[value] })),
+      { value: TABLE_UNSET_FILTER, label: t('app.backlog.filterNoPriority', 'No priority') },
+    ],
+  },
+  {
+    key: 'complexityFilter',
+    label: t('app.backlog.toolbarSize', 'Size'),
+    type: 'multi',
+    options: [
+      ...COMPLEXITIES.map((value) => ({ value, label: COMPLEXITY_LABELS[value] })),
+      { value: TABLE_UNSET_FILTER, label: t('app.backlog.filterNoSize', 'No size') },
+    ],
+  },
+  {
+    key: 'scopeFilter',
+    label: t('app.backlog.scopeLabel', 'Scope'),
+    type: 'multi',
+    options: Object.keys(SCOPE_LABELS).map((value) => ({ value, label: SCOPE_LABELS[value] })),
+  },
+]
+
 function AllTable({ items, onOpen, onNavigate, t }) {
   const rows = items.map((it) => ({
     id: it.id,
@@ -333,9 +374,14 @@ function AllTable({ items, onOpen, onNavigate, t }) {
     title: <Link href="#" onClick={(e) => { e.preventDefault(); onOpen(it) }}><strong>{it.title}</strong></Link>,
     titleText: it.title,
     type: TYPE_LABELS[it.type],
+    typeFilter: it.type,
     status: STATUS_LABELS[it.status],
+    statusFilter: it.status,
     priority: priorityShort(it.priority),
+    priorityFilter: it.priority || TABLE_UNSET_FILTER,
     priorityRank: PRIORITY_RANK[it.priority] ?? 9,
+    complexityFilter: it.complexity || TABLE_UNSET_FILTER,
+    scopeFilter: it.scopeKind,
     votes: it.voteCount,
     requester: it.createdByEmail || '—',
     created: <DateTimeCell iso={it.createdAt} />,
@@ -348,6 +394,7 @@ function AllTable({ items, onOpen, onNavigate, t }) {
       columns={makeTableColumns(t)}
       rows={rows}
       defaultSort={{ key: 'ref', direction: 'desc' }}
+      filters={makeTableFilters(t)}
       caption={t('app.backlog.tableCaption', 'All backlog tickets')}
       emptyTitle={t('app.backlog.tableEmptyTitle', 'No matching tickets')}
       emptyDescription={t('app.backlog.tableEmptyDesc', 'Adjust the filters in the panel, or create the first ticket.')}
@@ -524,7 +571,7 @@ export function Backlog({ onNavigate }) {
           )}
         </Stack>
         <Stack gap="md">
-        {/* The search lives in the right-hand panel; here we echo the result count +
+        {/* The search lives in the left-side panel; here we echo the result count +
             the smart-search syntax hint while a query is active. */}
         {searching && (
           <Paragraph size="sm" color="muted">
@@ -533,28 +580,34 @@ export function Backlog({ onNavigate }) {
         )}
 
         {/* The view switcher (Board / All tickets / My queue) lives in the
-            right-hand panel now (A1) — here we just render the active view. */}
+            left-side panel now (A1) — here we just render the active view. */}
         {tab === 'board' && (
             <Stack gap="md">
-              {/* Sort + the Type/Priority/Size/Scope filters live in the page's right-hand
+              {/* Sort + the Type/Priority/Size/Scope filters live in the page's left-side
                   panel (A1-154, portaled into the app aside rail). Here we keep only the
                   swimlane view toggles and the board itself. */}
-              <Toolbar aria-label={t('app.backlog.swimlanesToolbarLabel', 'Show or hide swimlanes')}>
-                {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
-                  <ToolbarToggle
-                    key={s}
-                    icon={STATUS_ICON[s]}
-                    label={STATUS_LABELS[s]}
-                    showLabel={{ xs: false, lg: true }}
-                    pressed={visibleLanes.has(s)}
-                    onChange={(pressed) => setVisibleLanes((prev) => {
-                      const next = new Set(prev)
-                      if (pressed) next.add(s); else next.delete(s)
-                      return next
-                    })}
-                  />
-                ))}
-              </Toolbar>
+              {!isSmall && (
+                <Toolbar
+                  aria-label={t('app.backlog.swimlanesToolbarLabel', 'Show or hide swimlanes')}
+                  overflow
+                  overflowLabel={t('app.backlog.moreSwimlanes', 'More swimlanes')}
+                >
+                  {[...STATUS_FLOW, ...TERMINAL_STATUSES].map((s) => (
+                    <ToolbarToggle
+                      key={s}
+                      icon={STATUS_ICON[s]}
+                      label={STATUS_LABELS[s]}
+                      showLabel={{ xs: false, lg: true }}
+                      pressed={visibleLanes.has(s)}
+                      onChange={(pressed) => setVisibleLanes((prev) => {
+                        const next = new Set(prev)
+                        if (pressed) next.add(s); else next.delete(s)
+                        return next
+                      })}
+                    />
+                  ))}
+                </Toolbar>
+              )}
 
               {(() => {
                 // A swimlane shows whenever it's toggled on — never hidden because it's empty
@@ -683,7 +736,7 @@ export function Backlog({ onNavigate }) {
       </Dialog>
 
       {/* Filters panel (A1-154) — sort + Type/Priority/Size/Scope, rendered into the app's
-          right-hand aside rail (a BottomSheet at xs/sm). Filters the board. */}
+          left aside rail (a BottomSheet at xs/sm). Filters the board. */}
       {asideNode && createPortal(
         <div className="a1-web-config-aside__inner">
           <Stack gap="lg">

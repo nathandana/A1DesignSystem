@@ -10,6 +10,7 @@
 | **Native** | `packages/react-native/src/components/{Name}/` |
 | **Pure** | `packages/pure/dist/a1-pure.css` — scoped HTML/CSS classes |
 | **Web Components** | `packages/web-components/src/components/{name}/a1-{name}.js` — Lit custom elements |
+| **Figma** | Component exists in the A1 Figma design system file and is documented in `packages/react/ai/figma-workflow.md`; repo-side Code Connect templates live in `packages/figma/code-connect/` when available. |
 
 ✓ = implemented  · — = not yet implemented
 
@@ -29,7 +30,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
-| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu |
+| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Overlay, Menu, Context Menu, Tooltip |
 | Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
@@ -42,15 +43,15 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 ## Typography
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Heading | ✓ | ✓ | ✓ | — |
-| Paragraph | ✓ | ✓ | ✓ | — |
-| Blockquote | ✓ | ✓ | ✓ | — |
-| List | ✓ | ✓ | ✓ | — |
-| Code | ✓ | — | — | — |
-| Divider | ✓ | — | ✓ | — |
-| Inline (kbd, mark, and semantic inline text) | ✓ | — | ✓ | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Heading | ✓ | ✓ | ✓ | — | — |
+| Paragraph | ✓ | ✓ | ✓ | — | — |
+| Blockquote | ✓ | ✓ | ✓ | — | — |
+| List | ✓ | ✓ | ✓ | — | — |
+| Code | ✓ | — | — | — | — |
+| Divider | ✓ | — | ✓ | — | — |
+| Inline (kbd, mark, and semantic inline text) | ✓ | — | ✓ | — | — |
 
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
@@ -93,18 +94,18 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Navigation
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Link | ✓ | ✓ | ✓ | — |
-| Breadcrumb | ✓ | — | — | — |
-| Side Nav | ✓ | ✓ | — | — |
-| Top Header | ✓ | — | ✓ | — |
-| Bottom Drawer | ✓ | — | ✓ | — |
-| Tabs | ✓ | — | — | — |
-| Page Nav | ✓ | — | — | — |
-| Tree Menu | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Link | ✓ | ✓ | ✓ | — | — |
+| Breadcrumb | ✓ | — | — | — | — |
+| Side Nav | ✓ | ✓ | — | — | — |
+| Top Header | ✓ | — | ✓ | — | — |
+| Bottom Drawer | ✓ | — | ✓ | — | — |
+| Tabs | ✓ | — | — | — | — |
+| Page Nav | ✓ | — | — | — | — |
+| Tree Menu | ✓ | — | — | — | — |
 
-> **Tree Menu props:** `items` (`TreeItem[]` — `{ id, label, icon?, href?, disabled?, children? }[]`), `selectedId` (string | null), `onSelect` (callback), `defaultExpandedIds` (string[], uncontrolled), `expandedIds` (string[], controlled), `onExpandedChange` (callback), `showExpandControls` (boolean, default false — renders "Expand all" / "Collapse all" buttons above the tree), `onHoverChange` (callback, fires with id on mouseenter and null on mouseleave), `draggable` (boolean, default false — enables drag-and-drop reordering and reparenting), `onMove` (`({ draggedId, targetId, position: 'before' | 'into' | 'after' }) => void` — called when the user drops an item; the consumer is responsible for updating the `items` array), `editingId` (string | null — the id of the item being **renamed inline**; when set, that item's label is replaced by an auto-focused/selected text input and drag is suspended for it), `onRenameStart` (`(id) => void` — fired when the user requests a rename by **double-clicking** an item's label or pressing **F2** on the focused item; set `editingId` in response. Disabled items never fire it), `onRenameCommit` (`(id, label) => void` — fired on Enter or blur; an empty/whitespace value falls back to the original label), `onRenameCancel` (`() => void` — fired on Escape), `aria-label` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Supports unlimited nesting depth. Expand/collapse (`add_box` / `indeterminate_check_box`) is independent from selection: clicking the toggle icon only expands/collapses the branch; clicking the label selects the node. Keyboard: Arrow Right expands or descends into a branch; Arrow Left collapses or moves to parent; Home/End jump to first/last visible node; Enter/Space selects only. Selected state uses the full action background (`--semantic-color-action-background`) for a clear, unambiguous highlight. Roving tabindex keeps one item in the tab sequence at a time. **Drag-and-drop:** when `draggable` is true, each row becomes a drag source and drop target. Dragging over the top 30% of a row shows a "drop before" indicator; over the bottom 30% shows "drop after"; over the middle 40% of a branch node shows "drop into" (reparent). Collapsed branches auto-expand after 600 ms when held over. An item cannot be dropped onto itself or any of its descendants. **Inline rename (A1-22):** the rename UI is consumer-driven — the consumer decides when to enter edit mode (e.g. from a context-menu "Rename" item, or from `onRenameStart` on double-click / F2) by setting `editingId`, then owns the `items` update in `onRenameCommit`. The input is a real `<input aria-label="Rename item">` styled as an A1 field (focus ring); Enter/blur commits, Escape cancels, and its keydown is stopped so the tree's arrow/Enter navigation doesn't fire while editing. The a1-web editor uses this for the Layers tree, persisting a custom `node.name` that overrides the auto-derived label.
+> **Tree Menu props:** `items` (`TreeItem[]` — `{ id, label, icon?, href?, disabled?, children? }[]`), `variant` (`"expanded"` | `"collapsed"`, default `"expanded"` — collapsed renders root items as icon-only triggers and opens each branch's children in an A1 `Menu` flyout; leaf roots still select/navigate directly), `selectedId` (string | null), `onSelect` (callback), `defaultExpandedIds` (string[], uncontrolled), `expandedIds` (string[], controlled), `onExpandedChange` (callback), `showExpandControls` (boolean, default false — renders "Expand all" / "Collapse all" buttons above the expanded tree or inside a collapsed parent flyout), `onHoverChange` (callback, fires with id on mouseenter and null on mouseleave), `draggable` (boolean, default false — enables drag-and-drop reordering and reparenting), `onMove` (`({ draggedId, targetId, position: 'before' | 'into' | 'after' }) => void` — called when the user drops an item; the consumer is responsible for updating the `items` array), `editingId` (string | null — the id of the item being **renamed inline**; when set, that item's label is replaced by an auto-focused/selected text input and drag is suspended for it), `onRenameStart` (`(id) => void` — fired when the user requests a rename by **double-clicking** an item's label or pressing **F2** on the focused item; set `editingId` in response. Disabled items never fire it), `onRenameCommit` (`(id, label) => void` — fired on Enter or blur; an empty/whitespace value falls back to the original label), `onRenameCancel` (`() => void` — fired on Escape), `aria-label` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Supports unlimited nesting depth. Expand/collapse (`add_box` / `indeterminate_check_box`) is independent from selection: clicking the toggle icon only expands/collapses the branch; clicking the label selects the node. Keyboard in expanded mode: Arrow Right expands or descends into a branch; Arrow Left collapses or moves to parent; Home/End jump to first/last visible node; Enter/Space selects only. Keyboard in collapsed mode: Arrow Up/Down/Home/End rove between root icons; Arrow Right opens a branch flyout; Arrow Left closes it; Enter/Space use the focused root trigger. Selected state uses the full action background (`--semantic-color-action-background`) for a clear, unambiguous highlight; in collapsed mode a root icon is active when it or one of its descendants is selected. Roving tabindex keeps one item in the tab sequence at a time. **Drag-and-drop:** when `draggable` is true, each expanded row becomes a drag source and drop target. Dragging over the top 30% of a row shows a "drop before" indicator; over the bottom 30% shows "drop after"; over the middle 40% of a branch node shows "drop into" (reparent). Collapsed branches auto-expand after 600 ms when held over. An item cannot be dropped onto itself or any of its descendants. **Inline rename (A1-22):** the rename UI is consumer-driven — the consumer decides when to enter edit mode (e.g. from a context-menu "Rename" item, or from `onRenameStart` on double-click / F2) by setting `editingId`, then owns the `items` update in `onRenameCommit`. The input is a real `<input aria-label="Rename item">` styled as an A1 field (focus ring); Enter/blur commits, Escape cancels, and its keydown is stopped so the tree's arrow/Enter navigation doesn't fire while editing. The a1-web editor uses this for the Layers tree, persisting a custom `node.name` that overrides the auto-derived label.
 
 > **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`. Bottom Drawer uses `.a1-bottom-drawer`.
 >
@@ -141,18 +142,18 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Actions & Controls** also includes **Tabs** and **Link** (see [Navigation](#navigation)) and **Accordion** (see [Disclosure / Accordion](#disclosure--accordion)); their coverage rows stay in those implementation-family sections.
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Button | ✓ | ✓ | ✓ | ✓ |
-| Split Button | ✓ | — | — | — |
-| Action Tiles | ✓ | — | — | — |
-| Chip | ✓ | — | — | — |
-| Icon Button | ✓ | ✓ | ✓ | — |
-| Switch | ✓ | — | — | — |
-| Segmented Control | ✓ | — | — | — |
-| Slider | ✓ | — | — | — |
-| Toolbar | ✓ | — | — | — |
-| Sticky Actions | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Button | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Split Button | ✓ | — | — | — | — |
+| Action Tiles | ✓ | — | — | — | — |
+| Chip | ✓ | — | — | — | — |
+| Icon Button | ✓ | ✓ | ✓ | — | — |
+| Switch | ✓ | — | — | — | — |
+| Segmented Control | ✓ | — | — | — | — |
+| Slider | ✓ | — | — | — | — |
+| Toolbar | ✓ | — | — | — | — |
+| Sticky Actions | ✓ | — | — | — | — |
 
 > **Menu grouping:** **Accordion**, **Tabs**, and **Link** are also menu-grouped under **Actions & Controls**; their coverage rows and notes live in their implementation-family sections ([Disclosure / Accordion](#disclosure--accordion), [Navigation](#navigation)). **Split Button** has no separate menu page — it is surfaced via the Button page's **Split (menu)** toggle.
 >
@@ -163,6 +164,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **SplitButton props:** `children` (main label), `onClick` (main action), `variant` / `size` / `icon` / `iconPosition` / `loading` / `disabled` (shared with Button — both targets), `actions` (`{ id, label, icon?, disabled?, onClick? }[]` shown in the dropdown `Menu`), `menuLabel`, `toggleLabel`. The main button runs the default action; the caret toggle on its inline-end opens the menu (`aria-haspopup="menu"` + `aria-expanded`). Composes the A1 `Button` + `Menu`; the two targets share one pill outline with a hairline divider. React only.
 >
 > **Button label wrapping:** A long Button label wraps onto multiple lines (centered) and grows the button height; a single line keeps the standard target height via `min-height`. (Removed the fixed `height`/`max-height` + `white-space: nowrap`.)
+>
+> **Figma Button component:** A1-419 created the Figma component set in the A1 Design System file on the Button page (`node 123:701`) with `Variant`, `Size`, `State`, and `IconPosition` axes plus `Label`, `Show icon`, and `Icon` component properties. Figma asset search/insert intentionally defaults to `secondary` + `md`; React's runtime default remains `primary` + `md`. Button color variables are single-mode aliases to the Color collection's `color/button/*` roles so light/dark mode is switched only once through Color, including destructive/success hover and pressed states. Button labels use dedicated Figma text styles by size (`Button/sm`, `Button/md`, `Button/lg`) to match React font weights. See `packages/react/ai/figma-workflow.md` for the React-to-Figma mapping gaps and `packages/figma/code-connect/Button.figma.ts` for the Code Connect template.
 >
 > **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`.
 >
@@ -208,28 +211,30 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Inputs
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Text Field (text, email, password) | ✓ | — | ✓ | — |
-| Search Field | ✓ | — | — | — |
-| Number Field | ✓ | — | — | — |
-| Date Field | ✓ | — | — | — |
-| Time Field | ✓ | — | — | — |
-| Phone Field | ✓ | — | — | — |
-| Zip Field | ✓ | — | — | — |
-| Credit Card Field | ✓ | — | — | — |
-| Textarea | ✓ | — | ✓ | — |
-| Select | ✓ | — | ✓ | — |
-| Checkbox Group | ✓ | — | ✓ | — |
-| Choice Group | ✓ | — | — | — |
-| Radio Group | ✓ | — | ✓ | — |
-| Fieldset | ✓ | — | ✓ | — |
-| Field Row | ✓ | — | — | — |
-| Switch (input) | ✓ | — | — | — |
-| Inline Editable | ✓ | — | — | — |
-| Autocomplete | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Text Field (text, email, password) | ✓ | — | ✓ | — | ✓ |
+| Search Field | ✓ | — | — | — | — |
+| Number Field | ✓ | — | — | — | — |
+| Date Field | ✓ | — | — | — | — |
+| Time Field | ✓ | — | — | — | — |
+| Phone Field | ✓ | — | — | — | — |
+| Zip Field | ✓ | — | — | — | — |
+| Credit Card Field | ✓ | — | — | — | — |
+| Textarea | ✓ | — | ✓ | — | — |
+| Select | ✓ | — | ✓ | — | — |
+| Checkbox Group | ✓ | — | ✓ | — | — |
+| Choice Group | ✓ | — | — | — | — |
+| Radio Group | ✓ | — | ✓ | — | — |
+| Fieldset | ✓ | — | ✓ | — | — |
+| Field Row | ✓ | — | — | — | — |
+| Switch (input) | ✓ | — | — | — | — |
+| Inline Editable | ✓ | — | — | — | — |
+| Autocomplete | ✓ | — | — | — | — |
 
 > **Autocomplete props:** `options` (`(string | { value, label, swatch?, icon?, group? })[]`), `value` (string in single mode, `string[]` in multi), `onChange`, `multiple` (boolean, default false — renders removable chips), `allowCreate` (boolean, default false — offers an "Add …" option for a value not in the list) + `onCreate(value)`, `variant` ("default" | "color", default "default" — `"color"` renders a colour swatch beside each option, chip, and the selected value; each option's swatch is its `swatch` or, in colour mode, its `value`. Pair with `allowCreate` for a "pick from the palette or type a hex" colour field), `label`, `hint`, `error`, `size` ("compact" | "default" | "comfortable", matches the field family), `required`, `disabled`, `emptyText`, `createLabel(query)`, `maxVisible` (number — cap how many options render for very large lists; excess is hidden behind a "keep typing" footer), `moreText(shown)`, `aria-label`. **Option `icon`** renders a Material Symbols glyph beside the option / chip / selected value (e.g. an icon picker). **Option `group`** turns on grouped rendering: when any option has a `group`, the listbox shows a **sticky heading** before each group's options and orders results by each group's first appearance (pass options pre-sorted by group). The dropdown listbox portals to `document.body` (fixed-positioned, tracks the control) so it is never clipped inside an Accordion or other overflow container. ARIA combobox/listbox pattern: input `role="combobox"` with `aria-expanded`/`aria-activedescendant`; keyboard Arrow Up/Down to navigate, Enter to select, Escape to close, Backspace to remove the last chip (multi). Used by the a1-web image library for category tagging and the configurator **icon picker** (grouped by Material Symbols category). React only.
+
+> **Figma Text Field component:** A1-959 created the Text Field component set in the A1 Design System file on the Text Field page (`node 148:1360`) with `Size`, `LabelPosition`, and aggregate `State` variants plus `Label`, `Value`, `Hint`, and `Error` text properties. Field-specific hover/read-only/focus colors are Color collection aliases with Light/Dark values; exact field dimensions live in the Field FLOAT collection; label text uses Field label styles where React requires semibold weight. Code Connect template: `packages/figma/code-connect/TextField.figma.ts`. Runtime-only props (`type`, `autoComplete`, `inputOverlay`, events, native input passthrough, `aria-*`, `id`, `className`, `style`, `ref`) are documented as Figma gaps in `packages/react/ai/figma-workflow.md`.
 
 > **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
 >
@@ -253,17 +258,17 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Feedback & Messaging
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Banner | ✓ | ✓ | — | — |
-| Badge | ✓ | ✓ | — | — |
-| Notification | ✓ | — | — | — |
-| Snackbar | ✓ | ✓ | — | ✓ |
-| SnackbarStack | ✓ | — | — | — |
-| Empty State | ✓ | ✓ | — | — |
-| Status Bar | ✓ | — | — | — |
-| Circular Progress | ✓ | — | ✓ | — |
-| Step Tracker | ✓ | — | ✓ | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Banner | ✓ | ✓ | — | — | — |
+| Badge | ✓ | ✓ | — | — | — |
+| Notification | ✓ | — | — | — | — |
+| Snackbar | ✓ | ✓ | — | ✓ | — |
+| SnackbarStack | ✓ | — | — | — | — |
+| Empty State | ✓ | ✓ | — | — | — |
+| Status Bar | ✓ | — | — | — | — |
+| Circular Progress | ✓ | — | ✓ | — | — |
+| Step Tracker | ✓ | — | ✓ | — | — |
 
 > **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices. `"calendar"` — an event/date callout: a tokenized date block (`date` prop) replaces the status icon, an `eyebrow` overline sits above a larger `title`, and `action`/`onDismiss` still work. `date` accepts a `Date`, an ISO string, or `{ month, day }`; `status` still tints the date block. Month names render in sentence case (never uppercased). Uses `role="group"` instead of `role="alert"` since a date callout isn't an alert.
 >
@@ -307,18 +312,18 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Layout & Display**. Figure's coverage row stays in this table (implementation family) but it is **menu-grouped under [Media and iconography](#media-and-iconography)** — see the menu hierarchy table.
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Section | ✓ | ✓ | ✓ | — |
-| Card | ✓ | ✓ | — | — |
-| Stack | ✓ | — | — | — |
-| Grid | ✓ | — | — | — |
-| Bleed | ✓ | — | — | — |
-| Inset | ✓ | — | — | — |
-| Spacer | ✓ | — | — | — |
-| Page Layout | ✓ | — | — | — |
-| Button Container | ✓ | ✓ | — | — |
-| Figure | ✓ | — | ✓ | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Section | ✓ | ✓ | ✓ | — | — |
+| Card | ✓ | ✓ | — | — | — |
+| Stack | ✓ | — | — | — | — |
+| Grid | ✓ | — | — | — | — |
+| Bleed | ✓ | — | — | — | — |
+| Inset | ✓ | — | — | — | — |
+| Spacer | ✓ | — | — | — | — |
+| Page Layout | ✓ | — | — | — | — |
+| Button Container | ✓ | ✓ | — | — | — |
+| Figure | ✓ | — | ✓ | — | — |
 
 > **Pure notes:** Section uses `.a1-section`. Footer uses `.a1-footer`. Figure uses `.a1-figure` with `.a1-figure-ratio-16-9` / `.a1-figure-ratio-1-1` for fixed ratios and `.a1-figure-crop-{top|bottom|left|right|top-left|top-right|bottom-left|bottom-right}` for the crop focal point (sets `--a1-figure-crop`).
 >
@@ -349,20 +354,26 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Overlay
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Dialog | ✓ | ✓ | — | — |
-| Menu | ✓ | — | — | — |
-| Context Menu | ✓ | — | — | — |
-| Bottom Sheet | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Dialog | ✓ | ✓ | — | — | — |
+| Overlay | ✓ | — | — | — | — |
+| Menu | ✓ | — | — | — | — |
+| Context Menu | ✓ | — | — | — | — |
+| Tooltip | ✓ | — | ✓ | — | — |
+| Bottom Sheet | ✓ | — | — | — | — |
 
 > **Menu label styling:** `MenuSection` labels use compact muted menu chrome. When fields or choice groups are embedded inside a `Menu` (for settings-style panels), their labels and legends are overridden to the same compact muted treatment so full-form label emphasis does not appear inside menu panels. The controls themselves keep their component sizing and behavior.
+
+> **Overlay props (A1-417):** `open` (boolean), `onClose` (optional — when provided, renders the close button and handles Escape), `status` (`"neutral" | "info" | "success" | "warn" | "error"`, default `"info"`), `icon` (string | null — defaults to the status icon; pass `null` to hide), `title` (ReactNode — primary heading and default accessible label), `body` (ReactNode — supporting copy and default accessible description), `actions` (ReactNode — usually one primary action plus optional secondary), `dismissLabel` (string — close button accessible label, default from `system/labels/overlay.json`), and `children` (additional supporting content). Overlay is a full-screen native-dialog surface for rare, high-emphasis status moments such as game results, major completion states, or blocking announcements. Prefer Dialog, Banner, Snackbar, or Notification for routine feedback.
 
 > **BottomSheet props:** `title` (string — the first line shown in the header; the only thing visible when collapsed), `detents` (`number[]` — expanded heights as viewport-height fractions 0–1, smallest first; default `[0.5, 0.92]`), `detent` (number — controlled snap index; **0 = collapsed**, then one index per `detents` entry), `defaultDetent` (number, default 1), `onDetentChange` (`(index) => void`). A **fixed** panel attached to the bottom of the viewport that overlays content with **no scrim** — separation is via an upward **shadow**. A **drag handle** in the header resizes it: drag down to **collapse** (header / first line of the title only), drag up to **snap** to a detent; a tap toggles collapsed ↔ largest detent; keyboard Arrow Up/Down step detents, Enter/Space toggles. Content **scrolls internally**; there is **no footer**. Expanded height is capped below sticky top chrome by default using `--component-top-header-height`; consumers without a TopHeader can override `--a1-bottom-sheet-block-start-offset`. The component renders an invisible in-flow **spacer** sized to the collapsed footprint so page content can always scroll clear of the sheet (mount it as the last child of the scroll container). **Only rendered at xs and sm** (`@media (--bp-md-up) { display: none }`). React only. CSS-variable architecture (`--a1-bottom-sheet-*`) over `system/tokens/component/bottom-sheet.json`.
 
 > **ContextMenu props:** `open` (boolean, default false), `x` (number — viewport x position, typically `event.clientX`), `y` (number — viewport y position, typically `event.clientY`), `items` (`ContextMenuEntry[]`), `onClose` (() => void — called on outside click or Escape), `aria-label` (string, default "Context menu"). Items are typed: `{ type?: 'item'; id; label; icon?; shortcut?; variant?: 'default' | 'destructive'; active?; disabled?; onClick? }` | `{ type: 'divider'; id }` | `{ type: 'group'; id; label }`. Portals to `document.body`. Keyboard: Escape closes, Arrow Up/Down navigates items, Home/End jump to first/last, Enter activates. Closes on outside mousedown. The position is clamped to stay within the viewport.
 >
 > **ContextMenu usage:** Mount the component once in the host element alongside the triggering content. Set `open`, `x`, and `y` from the `onContextMenu` handler on the container element. Do not use a separate trigger button — ContextMenu is always triggered by a right-click (contextmenu event).
+
+> **Tooltip props:** `content` (ReactNode — short, non-interactive message), `children` (trigger element), `placement` (`"top" | "right" | "bottom" | "left"`, default `"top"`), `delay` (milliseconds, default 400, clamped 0–1500), `disabled` (boolean), `className` (tooltip surface class). Tooltip opens on hover and keyboard focus, closes on pointer leave, blur, or Escape, portals to `document.body`, and sets `role="tooltip"` plus `aria-describedby` on the trigger when open. Placement is a preference; the surface clamps to the viewport. Use Tooltip only for brief supporting context — do not put interactive controls or essential task instructions inside it.
 
 > **Dialog props:** `open` (boolean), `onClose` (optional — called on **Escape**, the **close button**, or a **backdrop click** (clicking outside the dialog box); omit to hide the close button entirely and make the dialog non-dismissable), `title` (optional), `footer` (ReactNode), `status` ("success" | "error" | "warn" | "info" | "neutral" — renders a full-bleed colored hero band at the top with a status icon), `icon` (string — overrides the default status icon when `status` is set).
 >
@@ -378,12 +389,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Data
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Data Table | ✓ | — | ✓ | — |
-| Stat | ✓ | — | — | — |
-| Definition List | ✓ | — | ✓ | — |
-| Pagination | ✓ | ✓ | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Data Table | ✓ | — | ✓ | — | — |
+| Stat | ✓ | — | — | — | — |
+| Definition List | ✓ | — | ✓ | — | — |
+| Pagination | ✓ | ✓ | — | — | — |
 
 > **Stat props (A1-375):** `title` (metric label, shown above the value with an optional `icon`), `value` (number or node — numbers are formatted), `prefix` / `suffix` (e.g. a currency symbol or unit), `description` (supporting context below the value), `icon` (Material Symbols name beside the title), `badge` + `badgeStatus` ("neutral" | "info" | "success" | "warn" | "error", default "neutral") / `badgeSubtle` (default true) / `badgeSize` ("sm" | "md" | "lg", default "sm") / `badgeIcon` (override, `null` to suppress), `format` ("none" | "number" | "percent", default "number" — `percent` appends `%` without multiplying), `size` ("xs" | "sm" | "md" | "lg" | "xl", default "md"), `align` ("start" | "center" | "end", default "start"), `locale` / `precision` / `groupSeparator` (`false` disables grouping) / `decimalSeparator` for numeric formatting, `as` (element, default `"div"`). A single highlighted metric — big tokenized value with a muted label, optional supporting text and status badge. Token-driven via `system/tokens/component/stat.json` (`--component-stat-*`). React only; has an a1-web component page + live configurator under the **Data** category (`/components/stat`).
 
@@ -405,9 +416,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Media and iconography
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Icon | ✓ | — | ✓ | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Icon | ✓ | — | ✓ | — | — |
 
 > **Icon props:** `name` (string, required), `size` ("xs" | "sm" | "md" | "lg" | "xl" | "jumbo" | "xJumbo", default "md" = inherits from parent), `color` ("muted" | "accent" | "inverse" | "success" | "error" | "warn" | "info", default = inherits current text color), `weight` (font variation 100–700), `grade` (-50–200), `opticalSize` (20|24|40|48), `fill` (boolean).
 >
@@ -424,9 +435,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Implementation-family section. **Accordion is menu-grouped under [Actions & Controls](#actions--controls)** — the "Disclosure" menu category was retired.
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Accordion (React) / Disclosure (pure) | ✓ | — | ✓ | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Accordion (React) / Disclosure (pure) | ✓ | — | ✓ | — | — |
 
 > **Naming note:** The React package calls this component "Accordion". The Pure package implements the same concept using the native `<details>` / `<summary>` elements with `.a1-details`.
 >
@@ -436,9 +447,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Calendar
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Calendar | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Calendar | ✓ | — | — | — | — |
 
 > **React props:** `variant` ("scroll" | "paginated", default "scroll"), `initialMonth` (Date or `{ year, month }`), `monthsToShow` (default 13, scroll only), `highlightToday` (default true), `dimPast` (default true), `todayButton` (default false, paginated only). Scroll variant renders months stacked vertically. Paginated shows one month at a time with prev/next buttons and month/year selects. Uses container queries for 3 density levels (≥ 480 px full, < 480 px medium, < 320 px compact). Supports RTL and locale-driven week-start via `LabelsProvider`.
 >
@@ -448,11 +459,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Canvas
 
-| Component | React | Native | Pure | Web Components |
-|-----------|:-----:|:------:|:----:|:--------------:|
-| Canvas | ✓ | — | — | — |
-| Node | ✓ | — | — | — |
-| CanvasEdge | ✓ | — | — | — |
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Canvas | ✓ | — | — | — | — |
+| Node | ✓ | — | — | — | — |
+| CanvasEdge | ✓ | — | — | — | — |
 
 > **Compositional API — `Node` and `CanvasEdge` as children:**
 >
