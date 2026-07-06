@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 0.26.0 — 2026-07-06
+
 - **Presentation walkthrough** (A1-1434) — added a focused `/presentation` deck page under Explore. The page hides the normal app chrome, presents the A1/AI/software-creator story as a six-slide direct-markup deck with alternating demo placeholders and speaker notes, supports Arrow key slide navigation, closes with Escape, and fits the deck inside the viewport without page scrolling.
 
 ## 0.25.0 — 2026-07-06
