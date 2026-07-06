@@ -1,0 +1,20 @@
+{
+  "label": {
+    "overlay": {
+      "dismiss": {
+        "$type": "string",
+        "$value": "Dismiss overlay",
+        "$description": "Accessible label for the Overlay close button.",
+        "locale": {
+          "es": "Descartar superposición",
+          "fr": "Fermer la superposition",
+          "de": "Überlagerung schließen",
+          "pt": "Dispensar sobreposição",
+          "ja": "オーバーレイを閉じる",
+          "zh": "关闭覆盖层",
+          "ar": "إغلاق الطبقة"
+        }
+      }
+    }
+  }
+}

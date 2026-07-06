@@ -142,8 +142,10 @@ Set a real `autoComplete` value on editable fields in real forms (`"email"`,
 | Component | Key props | Notes |
 |---|---|---|
 | `Dialog` | `open`, `onClose`, `title`, `footer`, `status`, `icon` | Native `<dialog>` top layer. Providing `onClose` makes it dismissable (Escape, close button, backdrop click); omit it for non-dismissable. |
+| `Overlay` | `open`, `onClose`, `status`, `icon`, `title`, `body`, `actions`, `dismissLabel` | Full-screen native-dialog status overlay for rare high-emphasis moments. Prefer Dialog, Banner, or Snackbar for routine feedback. |
 | `Menu` / `MenuSection` / `MenuItem` | `open`, `onClose`, `aria-label`; item: `icon`, `href`, `variant`, `onClick` | Dropdown menu. |
 | `ContextMenu` | `open`, `x`, `y`, `items`, `onClose` | Right-click menu — mount once, position from `onContextMenu` event; no trigger button. |
+| `Tooltip` | `content`, `children`, `placement`, `delay`, `disabled` | Brief non-interactive hover/focus context. |
 
 ## Data
 

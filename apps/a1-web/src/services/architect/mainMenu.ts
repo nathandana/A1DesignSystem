@@ -17,6 +17,7 @@ interface CategoryLike { id: string; title: string; icon?: string; components: C
 
 const COMPONENT_ROUTE_SLUGS: Record<string, string> = {
   'action-tile': 'action-tiles',
+  overlay: 'overlay-component',
 };
 
 function componentRouteSlug(componentId: string): string {

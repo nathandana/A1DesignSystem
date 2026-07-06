@@ -1,0 +1,35 @@
+{
+  "component": {
+    "overlay": {
+      "paddingBlock":        { "$type": "dimension", "$value": "{base.spacing.96}" },
+      "paddingInline":       { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "paddingBlockCompact": { "$type": "dimension", "$value": "{base.spacing.48}" },
+      "paddingInlineCompact": { "$type": "dimension", "$value": "{base.spacing.20}" },
+      "contentMaxWidth":     { "$type": "dimension", "$value": "{base.contentWidth.sm}" },
+      "gap":                 { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "bodyGap":             { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "actionsGap":          { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "iconSize":            { "$type": "dimension", "$value": "{base.spacing.96}" },
+      "iconOpticalSize":     { "$value": "96" },
+      "iconSizeCompact":     { "$type": "dimension", "$value": "{base.spacing.64}" },
+      "iconOpticalSizeCompact": { "$value": "64" },
+      "titleFontSize":       { "$type": "dimension", "$value": "{semantic.font.size.display.jumbo}" },
+      "bodyFontSize":        { "$type": "dimension", "$value": "{semantic.font.size.body.lg}" },
+      "backdropColor":       { "$value": "rgba(6, 11, 20, 0.24)" },
+      "backdropColorInactive": { "$value": "rgba(6, 11, 20, 0)" },
+      "backdropBlur":        { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "backdropBlurInactive": { "$type": "dimension", "$value": "0px" },
+      "backgroundStrength":  { "$value": "78%" },
+      "backgroundStrengthInactive": { "$value": "0%" },
+      "motionDuration":      { "$value": "{semantic.motion.duration.normal}" },
+      "closeInset":          { "$type": "dimension", "$value": "{base.spacing.24}" },
+      "closeSize":           { "$type": "dimension", "$value": "{base.spacing.48}" },
+      "closeIconSize":       { "$type": "dimension", "$value": "{base.spacing.32}" },
+      "closeIconOpticalSize": { "$value": "32" },
+      "closeBorderStrength":  { "$value": "60%" },
+      "closeBackgroundStrength": { "$value": "44%" },
+      "closeHoverStrength":   { "$value": "14%" },
+      "zIndex":              { "$value": "1200" }
+    }
+  }
+}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Overlay — component page + configurator** (A1-417) — added Overlay to the Overlay category with a live Configure panel for status, title, body, default/custom/no icon, action count, close-button dismissal, and extra content. The page includes generated React snippets, rules, properties, package coverage, status, and related-component registry entries.
+
 - **Tooltip — component page + configurator** (A1-378) — added Tooltip to the Overlay category with a live Configure panel for content, trigger type, placement, delay, and disabled state. The page includes generated React/Pure snippets, rules, properties, accessibility guidance, package coverage, status, and related-component registry entries.
 
 - **Release notes package coverage** — the Releases page now includes package release notes. Release sources switch with a chip filter in the sidebar independent of Simplified/Detailed mode, versions remain in the TreeMenu, React has simplified package notes, and the Simplified/Detailed control now lives in the page header constrained to the same width as the release notes.

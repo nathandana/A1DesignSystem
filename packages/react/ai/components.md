@@ -29,7 +29,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
-| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Menu, Context Menu, Tooltip |
+| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Overlay, Menu, Context Menu, Tooltip |
 | Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar, Node |
 
 **Routing rules:**
@@ -352,12 +352,15 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 | Component | React | Native | Pure | Web Components |
 |-----------|:-----:|:------:|:----:|:--------------:|
 | Dialog | ✓ | ✓ | — | — |
+| Overlay | ✓ | — | — | — |
 | Menu | ✓ | — | — | — |
 | Context Menu | ✓ | — | — | — |
 | Tooltip | ✓ | — | ✓ | — |
 | Bottom Sheet | ✓ | — | — | — |
 
 > **Menu label styling:** `MenuSection` labels use compact muted menu chrome. When fields or choice groups are embedded inside a `Menu` (for settings-style panels), their labels and legends are overridden to the same compact muted treatment so full-form label emphasis does not appear inside menu panels. The controls themselves keep their component sizing and behavior.
+
+> **Overlay props (A1-417):** `open` (boolean), `onClose` (optional — when provided, renders the close button and handles Escape), `status` (`"neutral" | "info" | "success" | "warn" | "error"`, default `"info"`), `icon` (string | null — defaults to the status icon; pass `null` to hide), `title` (ReactNode — primary heading and default accessible label), `body` (ReactNode — supporting copy and default accessible description), `actions` (ReactNode — usually one primary action plus optional secondary), `dismissLabel` (string — close button accessible label, default from `system/labels/overlay.json`), and `children` (additional supporting content). Overlay is a full-screen native-dialog surface for rare, high-emphasis status moments such as game results, major completion states, or blocking announcements. Prefer Dialog, Banner, Snackbar, or Notification for routine feedback.
 
 > **BottomSheet props:** `title` (string — the first line shown in the header; the only thing visible when collapsed), `detents` (`number[]` — expanded heights as viewport-height fractions 0–1, smallest first; default `[0.5, 0.92]`), `detent` (number — controlled snap index; **0 = collapsed**, then one index per `detents` entry), `defaultDetent` (number, default 1), `onDetentChange` (`(index) => void`). A **fixed** panel attached to the bottom of the viewport that overlays content with **no scrim** — separation is via an upward **shadow**. A **drag handle** in the header resizes it: drag down to **collapse** (header / first line of the title only), drag up to **snap** to a detent; a tap toggles collapsed ↔ largest detent; keyboard Arrow Up/Down step detents, Enter/Space toggles. Content **scrolls internally**; there is **no footer**. Expanded height is capped below sticky top chrome by default using `--component-top-header-height`; consumers without a TopHeader can override `--a1-bottom-sheet-block-start-offset`. The component renders an invisible in-flow **spacer** sized to the collapsed footprint so page content can always scroll clear of the sheet (mount it as the last child of the scroll container). **Only rendered at xs and sm** (`@media (--bp-md-up) { display: none }`). React only. CSS-variable architecture (`--a1-bottom-sheet-*`) over `system/tokens/component/bottom-sheet.json`.
 
