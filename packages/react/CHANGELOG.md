@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 0.27.0 — 2026-07-06
+
 ### Added
 
 - **Figma Button component** (A1-419) — created the Button component set in the A1 Figma file with token-bound variants for `variant`, `size`, interactive state, and icon position, plus label/icon component properties, focus/loading visual states, prototype interactions, documentation/examples, and a repo-side Code Connect template for the React `Button` API. The Figma asset search default is intentionally secondary/md. Button color variables now alias through the shared Color collection so dark mode is switched only once, destructive/success hover and pressed states have component color roles, dark-mode primary Button background uses accent-300, and Button labels use size-specific text styles that match React font weights.

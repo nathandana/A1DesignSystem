@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+No unreleased changes.
+
+## 0.25.0 — 2026-07-06
+
 - **Figma Text Field component** (A1-959) — Text Field is now marked available in the Components inventory's Figma coverage, matching the new A1 Figma component set (`node 148:1360`) and repo-side Code Connect template. The Figma asset covers size, label position, visual states, label/value/hint/error text properties, and light/dark token bindings; runtime-only field props remain documented as Figma gaps.
 
 - **Backlog data table filters** — the All tickets DataTable view now has table-local filter chips for Type, Status, Priority, Size, and Scope. These stack with the shared Backlog panel search/filters and keep the visible table cells formatted while matching on hidden row filter values.

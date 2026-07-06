@@ -1,10 +1,16 @@
 {
   "name": "@gtivr4/a1-design-system-react-native",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React Native components for the A1 Design System.",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "keywords": ["design-system", "react-native", "ios", "components", "tokens"],
+  "keywords": [
+    "design-system",
+    "react-native",
+    "ios",
+    "components",
+    "tokens"
+  ],
   "files": [
     "src/**/*.ts",
     "src/**/*.tsx",
