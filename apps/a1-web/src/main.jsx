@@ -71,6 +71,7 @@ const VALID_LOCALES = localeOptions.map((o) => o.value)
 import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
+import { Presentation } from './pages/Presentation.jsx'
 import { FoundationDetail, Foundations, foundations } from './pages/foundations'
 import {
   Components,
@@ -141,10 +142,11 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['features', 'get-started', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   features: 'star',
   'get-started': 'rocket_launch',
+  presentation: 'slideshow',
   blog: 'article',
   help: 'help',
   backlog: 'task_alt',
@@ -157,12 +159,13 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   features: 'Features',
   'get-started': 'Get started',
+  presentation: 'Presentation',
   blog: 'Blog',
   'blog-article': 'Search, shortcuts, and walkthroughs',
   foundations: 'Foundations',
@@ -523,6 +526,7 @@ function App() {
     addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
     addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
+    addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
     addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
     BLOG_POSTS.forEach((post) => {
       entries.push({
@@ -1448,6 +1452,16 @@ function App() {
   function runSkipMenuAction(action) {
     setSkipMenuOpen(false)
     action?.()
+  }
+
+  if (activePage === 'presentation') {
+    return (
+      <TProvider value={t}>
+        <LabelsProvider locale={labelLocale} labels={allLabels}>
+          <Presentation onNavigate={navigate} />
+        </LabelsProvider>
+      </TProvider>
+    )
   }
 
   return (
