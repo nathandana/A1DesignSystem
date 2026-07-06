@@ -1,0 +1,151 @@
+.a1-web-presentation {
+  position: fixed;
+  inset: 0;
+  block-size: 100dvh;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.a1-web-presentation > .a1-section__inner {
+  block-size: 100%;
+  max-block-size: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(var(--base-spacing-8), 2vh, var(--base-spacing-24));
+  overflow: hidden;
+}
+
+.a1-web-presentation__actions .a1-sticky-actions__inner {
+  align-items: flex-end;
+}
+
+.a1-web-presentation__actions .a1-step-tracker {
+  inline-size: min(100%, 36rem);
+  flex-wrap: wrap;
+}
+
+.a1-web-presentation__stage {
+  block-size: 100%;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.a1-web-presentation__slide {
+  inline-size: min(100%, 56rem);
+  min-block-size: 0;
+  min-inline-size: 0;
+  animation: a1-web-presentation-forward var(--semantic-motion-duration-slow) var(--semantic-motion-easing-expressive) both;
+}
+
+.a1-web-presentation__slide-content {
+  max-block-size: 100%;
+  min-block-size: 0;
+  align-items: center;
+  overflow: hidden;
+}
+
+.a1-web-presentation__slide .a1-card {
+  inline-size: min(100%, 48rem);
+  max-block-size: 100%;
+  overflow: hidden;
+}
+
+.a1-web-presentation__content-card .a1-card__content {
+  padding-block: clamp(var(--base-spacing-16), 2.4vh, var(--base-spacing-32));
+}
+
+.a1-web-presentation__content-card .a1-card__hero {
+  padding-block: clamp(var(--base-spacing-16), 2.5vh, var(--base-spacing-24));
+}
+
+.a1-web-presentation__notes {
+  max-inline-size: 52rem;
+  align-items: center;
+  text-align: center;
+}
+
+.a1-web-presentation__notes .a1-paragraph {
+  line-height: 1.35;
+}
+
+.a1-web-presentation__slide[data-direction="back"] {
+  animation-name: a1-web-presentation-back;
+}
+
+@media (max-height: 720px) {
+  .a1-web-presentation {
+    padding: var(--base-spacing-16);
+  }
+
+  .a1-web-presentation > .a1-section__inner {
+    gap: var(--base-spacing-8);
+  }
+
+  .a1-web-presentation__slide-content {
+    gap: var(--base-spacing-8);
+  }
+
+  .a1-web-presentation__content-card .a1-card__body {
+    padding-block: var(--base-spacing-16);
+  }
+}
+
+@media (max-width: 600px) {
+  .a1-web-presentation {
+    padding: var(--base-spacing-16);
+  }
+
+  .a1-web-presentation__slide-content {
+    gap: var(--base-spacing-4);
+  }
+
+  .a1-web-presentation__content-card .a1-card__content {
+    padding-block: var(--base-spacing-12);
+  }
+
+  .a1-web-presentation__content-card .a1-card__hero {
+    padding-block: var(--base-spacing-12);
+  }
+
+  .a1-web-presentation__notes {
+    gap: var(--base-spacing-2);
+  }
+
+  .a1-web-presentation__notes .a1-paragraph {
+    font-size: var(--semantic-font-size-body-2xs);
+    line-height: 1.25;
+  }
+
+  .a1-web-presentation__actions .a1-step-tracker {
+    inline-size: 100%;
+  }
+}
+
+@keyframes a1-web-presentation-forward {
+  from {
+    opacity: 0;
+    transform: translateX(var(--base-spacing-24)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes a1-web-presentation-back {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--base-spacing-24) * -1)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-web-presentation__slide {
+    transition: none;
+    animation: none;
+  }
+}

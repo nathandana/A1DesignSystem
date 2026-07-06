@@ -4,6 +4,10 @@
 
 No unreleased changes.
 
+## 0.26.0 — 2026-07-06
+
+- **Presentation walkthrough** (A1-1434) — added a focused `/presentation` deck page under Explore. The page hides the normal app chrome, presents the A1/AI/software-creator story as a six-slide direct-markup deck with alternating demo placeholders and speaker notes, supports Arrow key slide navigation, closes with Escape, and fits the deck inside the viewport without page scrolling.
+
 ## 0.25.0 — 2026-07-06
 
 - **Figma Text Field component** (A1-959) — Text Field is now marked available in the Components inventory's Figma coverage, matching the new A1 Figma component set (`node 148:1360`) and repo-side Code Connect template. The Figma asset covers size, label position, visual states, label/value/hint/error text properties, and light/dark token bindings; runtime-only field props remain documented as Figma gaps.
