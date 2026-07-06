@@ -11,6 +11,7 @@ import stepTrackerRules from '../../../../../system/rules/step-tracker.yaml?raw'
 import toolbarRules from '../../../../../system/rules/toolbar.yaml?raw'
 import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
+import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 
 export const LAST_UPDATED = '2026-06-17'
 export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure', 'Web Components']
@@ -142,6 +143,7 @@ export const componentCategories = [
     body: 'Layered UI surfaces for dialogs and anchored menus.',
     components: [
       { id: 'dialog', icon: 'picture_in_picture', title: 'Dialog', body: 'Modal interactions with focus management.' },
+      { id: 'overlay', icon: 'fullscreen', title: 'Overlay', body: 'Full-screen status overlay for bold messages and modal announcements.' },
       { id: 'menu', icon: 'menu', title: 'Menu', body: 'Anchored command and navigation menus.' },
       { id: 'context-menu', icon: 'more_vert', title: 'Context Menu', body: 'Right-click menu portaled to the document body.' },
       { id: 'tooltip', icon: 'tooltip', title: 'Tooltip', body: 'Brief, non-interactive context shown on hover or focus.' },
@@ -233,6 +235,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   canvas: ['diagram', 'node graph', 'flow', 'map', 'whiteboard'],
   figure: ['image', 'media', 'caption', 'photo'],
   dialog: ['modal', 'popup', 'confirmation dialog', 'window'],
+  overlay: ['full screen dialog', 'modal overlay', 'game notification', 'status overlay', 'completion message'],
   menu: ['dropdown menu', 'popover menu', 'commands'],
   'context-menu': ['right click', 'shortcut menu', 'more menu'],
   'bottom-sheet': ['sheet', 'mobile panel', 'bottom panel'],
@@ -306,6 +309,7 @@ export const PACKAGE_COVERAGE = {
   canvas:             ['React'],
   figure:             ['React', 'Pure'],
   dialog:             ['React', 'Native'],
+  overlay:            ['React'],
   menu:               ['React'],
   'context-menu':     ['React'],
   tooltip:            ['React', 'Pure'],
@@ -383,6 +387,7 @@ export const COMPONENT_STATUS = {
   'button-container':  'beta',
   figure:              'beta',
   dialog:              'beta',
+  overlay:             'beta',
   menu:                'beta',
   'context-menu':      'beta',
   tooltip:             'beta',
@@ -464,7 +469,8 @@ export const COMPONENT_RELATED = {
   'page-layout':       ['section', 'side-nav', 'top-header'],
   'button-container':  ['button', 'stack'],
   figure:              ['card', 'section'],
-  dialog:              ['menu', 'button', 'tooltip'],
+  dialog:              ['overlay', 'menu', 'button', 'tooltip'],
+  overlay:             ['dialog', 'banner', 'snackbar'],
   menu:                ['dialog', 'context-menu', 'button', 'tooltip'],
   'context-menu':      ['menu', 'dialog', 'tooltip'],
   tooltip:             ['icon-button', 'button', 'menu'],
@@ -494,4 +500,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/toolbar.yaml', raw: toolbarRules },
   { file: 'system/rules/section.yaml', raw: sectionRules },
   { file: 'system/rules/tooltip.yaml', raw: tooltipRules },
+  { file: 'system/rules/overlay.yaml', raw: overlayRules },
 ]

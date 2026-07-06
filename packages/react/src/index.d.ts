@@ -29,6 +29,7 @@ export { Code } from "./components/code/Code";
 export { DefinitionList } from "./components/definition-list/DefinitionList";
 export { Dialog } from "./components/dialog/Dialog";
 export { Divider } from "./components/divider/Divider";
+export { Overlay } from "./components/overlay/Overlay";
 export { Tooltip } from "./components/tooltip/Tooltip";
 export { InlineEditable } from "./components/inline-editable/InlineEditable";
 export { Heading, HeadingMark } from "./components/heading/Heading";

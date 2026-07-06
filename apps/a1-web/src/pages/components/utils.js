@@ -173,6 +173,7 @@ export const allComponents = componentCategories.flatMap((category) =>
 
 const COMPONENT_ROUTE_SLUGS = {
   'action-tile': 'action-tiles',
+  overlay: 'overlay-component',
 }
 
 const COMPONENT_IDS_BY_ROUTE_SLUG = Object.fromEntries(

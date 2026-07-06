@@ -1,0 +1,194 @@
+.a1-overlay {
+  --a1-overlay-background: var(--semantic-color-status-info-background);
+  --a1-overlay-foreground: var(--semantic-color-status-info-foreground);
+  --a1-overlay-border: var(--semantic-color-status-info-border);
+  --a1-overlay-current-background-strength: var(--component-overlay-background-strength-inactive);
+  --a1-overlay-current-backdrop-blur: var(--component-overlay-backdrop-blur-inactive);
+  --a1-overlay-current-backdrop-color: var(--component-overlay-backdrop-color-inactive);
+
+  box-sizing: border-box;
+  z-index: var(--component-overlay-z-index);
+  inline-size: 100vw;
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  border: 0;
+  padding-block: var(--component-overlay-padding-block);
+  padding-inline: var(--component-overlay-padding-inline);
+  background: color-mix(in srgb, var(--a1-overlay-background) var(--a1-overlay-current-background-strength), transparent);
+  color: var(--a1-overlay-foreground);
+  -webkit-backdrop-filter: blur(var(--a1-overlay-current-backdrop-blur));
+  backdrop-filter: blur(var(--a1-overlay-current-backdrop-blur));
+  opacity: 0;
+  overflow: auto;
+  transition:
+    opacity var(--component-overlay-motion-duration) var(--semantic-motion-easing-standard),
+    background var(--component-overlay-motion-duration) var(--semantic-motion-easing-standard),
+    backdrop-filter var(--component-overlay-motion-duration) var(--semantic-motion-easing-standard);
+}
+
+.a1-overlay[open] {
+  display: grid;
+  place-items: center;
+}
+
+.a1-overlay--open {
+  --a1-overlay-current-background-strength: var(--component-overlay-background-strength);
+  --a1-overlay-current-backdrop-blur: var(--component-overlay-backdrop-blur);
+  --a1-overlay-current-backdrop-color: var(--component-overlay-backdrop-color);
+
+  opacity: 1;
+}
+
+.a1-overlay::backdrop {
+  background: var(--a1-overlay-current-backdrop-color);
+  -webkit-backdrop-filter: blur(var(--a1-overlay-current-backdrop-blur));
+  backdrop-filter: blur(var(--a1-overlay-current-backdrop-blur));
+  transition:
+    background var(--component-overlay-motion-duration) var(--semantic-motion-easing-standard),
+    backdrop-filter var(--component-overlay-motion-duration) var(--semantic-motion-easing-standard);
+}
+
+.a1-overlay--neutral {
+  --a1-overlay-background: var(--semantic-color-surface-inverse);
+  --a1-overlay-foreground: var(--semantic-color-text-inverse);
+  --a1-overlay-border: var(--semantic-color-border-strong);
+}
+
+.a1-overlay--success {
+  --a1-overlay-background: var(--semantic-color-status-success-background);
+  --a1-overlay-foreground: var(--semantic-color-status-success-foreground);
+  --a1-overlay-border: var(--semantic-color-status-success-border);
+}
+
+.a1-overlay--warn {
+  --a1-overlay-background: var(--semantic-color-status-warn-background);
+  --a1-overlay-foreground: var(--semantic-color-status-warn-foreground);
+  --a1-overlay-border: var(--semantic-color-status-warn-border);
+}
+
+.a1-overlay--error {
+  --a1-overlay-background: var(--semantic-color-status-error-background);
+  --a1-overlay-foreground: var(--semantic-color-status-error-foreground);
+  --a1-overlay-border: var(--semantic-color-status-error-border);
+}
+
+.a1-overlay__content {
+  inline-size: min(100%, var(--component-overlay-content-max-width));
+  display: grid;
+  justify-items: center;
+  gap: var(--component-overlay-gap);
+  text-align: center;
+}
+
+.a1-overlay__icon {
+  display: inline-flex;
+  color: var(--a1-overlay-foreground);
+}
+
+.a1-overlay__icon .a1-icon {
+  font-size: var(--component-overlay-icon-size);
+  --a1-icon-opsz: var(--component-overlay-icon-optical-size);
+  --a1-icon-weight: var(--base-font-weight-bold);
+}
+
+.a1-overlay__copy {
+  display: grid;
+  justify-items: center;
+  gap: var(--component-overlay-body-gap);
+}
+
+.a1-overlay__title {
+  margin: 0;
+  color: var(--a1-overlay-foreground);
+  font-family: var(--component-heading-font-family-display);
+  font-size: var(--component-overlay-title-font-size);
+  font-weight: var(--component-heading-font-weight-display);
+  line-height: var(--component-heading-font-line-height-display);
+}
+
+.a1-overlay__body,
+.a1-overlay__extra {
+  color: var(--a1-overlay-foreground);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-overlay-body-font-size);
+  line-height: var(--component-paragraph-font-line-height);
+}
+
+.a1-overlay__body > *,
+.a1-overlay__extra > * {
+  margin-block: 0;
+}
+
+.a1-overlay__actions {
+  inline-size: 100%;
+  min-inline-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--component-overlay-actions-gap);
+}
+
+.a1-overlay__actions > .a1-button-container {
+  flex: 1 1 100%;
+}
+
+.a1-overlay__actions .a1-button {
+  --component-button-focus-ring: var(--a1-overlay-foreground);
+}
+
+.a1-overlay__close {
+  position: fixed;
+  inset-block-start: var(--component-overlay-close-inset);
+  inset-inline-end: var(--component-overlay-close-inset);
+  inline-size: var(--component-overlay-close-size);
+  block-size: var(--component-overlay-close-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--base-spacing-1) solid color-mix(in srgb, var(--a1-overlay-foreground) var(--component-overlay-close-border-strength), transparent);
+  border-radius: var(--base-radius-pill);
+  padding: 0;
+  background: color-mix(in srgb, var(--a1-overlay-background) var(--component-overlay-close-background-strength), transparent);
+  color: var(--a1-overlay-foreground);
+  cursor: pointer;
+}
+
+.a1-overlay__close:hover {
+  background: color-mix(in srgb, var(--a1-overlay-foreground) var(--component-overlay-close-hover-strength), transparent);
+}
+
+.a1-overlay__close:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--a1-overlay-foreground);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-overlay__close .a1-icon {
+  font-size: var(--component-overlay-close-icon-size);
+  --a1-icon-opsz: var(--component-overlay-close-icon-optical-size);
+}
+
+@media (--bp-sm-down) {
+  .a1-overlay {
+    padding-block: var(--component-overlay-padding-block-compact);
+    padding-inline: var(--component-overlay-padding-inline-compact);
+  }
+
+  .a1-overlay__title {
+    font-size: var(--semantic-font-size-display-xxl);
+  }
+
+  .a1-overlay__icon .a1-icon {
+    font-size: var(--component-overlay-icon-size-compact);
+    --a1-icon-opsz: var(--component-overlay-icon-optical-size-compact);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-overlay,
+  .a1-overlay::backdrop {
+    transition: none;
+  }
+}

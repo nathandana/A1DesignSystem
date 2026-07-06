@@ -3246,6 +3246,67 @@ export const GENERATED_PROP_TABLES = {
       ]
     }
   ],
+  "overlay": [
+    {
+      "title": "Overlay",
+      "rows": [
+        {
+          "id": "open",
+          "name": "open",
+          "type": "boolean",
+          "description": "Whether the full-screen overlay is open. Default: false"
+        },
+        {
+          "id": "onClose",
+          "name": "onClose",
+          "type": "() => void",
+          "description": "Called when the user dismisses the overlay with Escape or the close button. Omit for an intentionally blocking overlay."
+        },
+        {
+          "id": "status",
+          "name": "status",
+          "type": "\"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\"",
+          "description": "Status colour treatment. Default: \"info\""
+        },
+        {
+          "id": "icon",
+          "name": "icon",
+          "type": "string | null",
+          "description": "Icon name shown above the message. Defaults to the status icon. Pass null to hide the icon."
+        },
+        {
+          "id": "title",
+          "name": "title",
+          "type": "React.ReactNode",
+          "description": "Primary heading for the overlay. Used as the accessible label when no aria label is provided."
+        },
+        {
+          "id": "body",
+          "name": "body",
+          "type": "React.ReactNode",
+          "description": "Body copy shown below the title. Used as the accessible description when no aria description is provided."
+        },
+        {
+          "id": "actions",
+          "name": "actions",
+          "type": "React.ReactNode",
+          "description": "Action buttons or links shown below the message."
+        },
+        {
+          "id": "dismissLabel",
+          "name": "dismissLabel",
+          "type": "string",
+          "description": "Accessible label for the close button. Defaults to the overlay dismiss system label."
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "React.ReactNode",
+          "description": "Additional content shown below body copy and above actions."
+        }
+      ]
+    }
+  ],
   "notification": [
     {
       "title": "Notification",
