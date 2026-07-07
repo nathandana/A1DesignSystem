@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.28.0 — 2026-07-07
+
 - **Project themes** — Projects can now store an optional project-scoped theme. The project settings dialog exposes the theme selector, project cards show the chosen theme, import/export/cloud sync preserve it, and the editor canvas plus launched prototypes apply the theme locally to the project page instead of changing the whole a1-web app shell.
 
 - **Card configurator** — added hero separator controls for hero-icon Cards, using the same shaped separator vocabulary as Section Separator while labelling the control simply as **Separator**.
