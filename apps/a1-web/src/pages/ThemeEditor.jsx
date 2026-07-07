@@ -32,11 +32,9 @@ import {
   ToolbarDivider,
   ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
-import { DEFAULT_RAMPS, RAMP_LABELS, RAMP_NAMES, RAMP_STOPS } from '../lib/themeColors.ts'
-import { compileThemeVars, inverseSemanticVars, rampFrom500, rampsFrom500, themeJsonString } from '../lib/themeCompile.ts'
+import { RAMP_LABELS, RAMP_NAMES, RAMP_STOPS } from '../lib/themeColors.ts'
+import { compileThemeVars, inverseSemanticVars, rampFrom500 } from '../lib/themeCompile.ts'
 import { DEFAULT_FONT_SIZES, DEFAULT_FONT_WEIGHTS, DEFAULT_ICON_SETTINGS, DEFAULT_SEMANTIC_COLORS, DEFAULT_TEXT_COLORS, DEFAULT_TYPE_ADVANCED, DEFAULT_TYPE_STYLES, SCALE_STEPS, SEMANTIC_COLOR_GROUPS, getTheme, updateTheme } from '../lib/themeStore.ts'
-import { describeError, generateFontPairing, generateTheme } from '../lib/aiTheme.ts'
-import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.ts'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
 import { useOpenCreateTicket } from '../backlog/BacklogContext'
@@ -177,7 +175,7 @@ const PATCH_LABELS = {
 }
 function describePatch(partial) {
   const keys = Object.keys(partial || {})
-  if (keys.length > 1) return 'Generate with AI'
+  if (keys.length > 1) return 'Edit theme'
   return PATCH_LABELS[keys[0]] ?? 'Edit'
 }
 function histEntry(theme, label) {
@@ -331,7 +329,7 @@ function SemShowcase({ onPick, selected }) {
   )
 }
 
-export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToThemes }) {
+export function ThemeEditor({ themeId, category = 'color', onSelectCategory, onBackToThemes }) {
   // Edit history: a stack of theme snapshots + a cursor. `theme` is the snapshot
   // at the cursor; patch pushes, undo/redo/jump move the cursor.
   const [history, setHistory] = useState(() => {
@@ -348,15 +346,12 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   const canUndo = history.cursor > 0
   const canRedo = history.cursor < history.entries.length - 1
 
-  const [prompt, setPrompt] = useState('')
-  const [keyReady, setKeyReady] = useState(() => hasApiKey())
-  const [keyInput, setKeyInput] = useState('')
   const [applied, setApplied] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const [view, setView] = useState('specific') // 'specific' = category controls; 'preview' = style tile
   const [colorView, setColorView] = useState('swatches') // Colour page: 'swatches' (default) | 'table'
   const [colorModel, setColorModel] = useState('hex') // ramp editing model: hex | rgb | hsl
+  const [jsonDraft, setJsonDraft] = useState('')
+  const [jsonError, setJsonError] = useState('')
   const [selectedComp, setSelectedComp] = useState(null) // semantic page: filter tokens to a clicked component
   const [samples, setSamples] = useState({
     display: 'The quiet morning light',
@@ -364,13 +359,6 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     body: 'Body copy carries the reading. The quick brown fox jumps over the lazy dog — enough words to feel the rhythm and weight of the body face against the headings and display above.',
   })
   const setSample = (slot, v) => setSamples((s) => ({ ...s, [slot]: v }))
-  const [fontPrompt, setFontPrompt] = useState('')
-  const [fontLoading, setFontLoading] = useState(false)
-  const [fontNote, setFontNote] = useState('')
-  const [fontError, setFontError] = useState('')
-  const [fontUsage, setFontUsage] = useState(null)
-  const [themeUsage, setThemeUsage] = useState(null)
-  const [fontAiOpen, setFontAiOpen] = useState(false) // AI pairing is opt-in, behind a button
   const [showTypeDesc, setShowTypeDesc] = useState(true) // toggle the advanced-property descriptions
 
   // Deep-merge stored values with defaults so themes saved before a field
@@ -439,7 +427,19 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   const vars = useMemo(() => (spec ? compileThemeVars(spec) : {}), [spec])
   // Inverse preview vars: compiled (standard) vars with the inverse semantic overrides applied.
   const inverseVars = useMemo(() => ({ ...vars, ...inverseSemanticVars(semanticColors) }), [vars, semanticColors])
-  const jsonString = useMemo(() => (spec ? themeJsonString(spec, { name: theme.name, description: theme.description }) : ''), [spec, theme])
+  const jsonString = useMemo(() => (theme ? JSON.stringify({
+    name: theme.name,
+    description: theme.description,
+    ramps: theme.ramps,
+    fonts: theme.fonts,
+    fontWeights: weights,
+    typeStyles,
+    fontSizes,
+    textColors,
+    semanticColors,
+    icon: iconSettings,
+    roundness: theme.roundness,
+  }, null, 2) : ''), [theme]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [asideNode, setAsideNode] = useState(null)
   useLayoutEffect(() => {
@@ -452,6 +452,10 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   }, [category])
 
   useEffect(() => { if (theme) Object.values(theme.fonts).forEach(loadGoogleFont) }, [theme])
+  useEffect(() => {
+    setJsonDraft(jsonString)
+    setJsonError('')
+  }, [jsonString])
   useEffect(() => {
     const root = document.documentElement
     if (applied) Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v))
@@ -499,6 +503,22 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   function setSemanticColor(key, mode, ref) {
     patch({ semanticColors: { ...semanticColors, [key]: { ...semanticColors[key], [mode]: ref } } })
   }
+  function applyJsonDraft() {
+    try {
+      const parsed = JSON.parse(jsonDraft)
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Theme JSON must be an object.')
+      const allowed = ['name', 'description', 'ramps', 'fonts', 'fontWeights', 'typeStyles', 'fontSizes', 'textColors', 'semanticColors', 'icon', 'roundness']
+      const partial = {}
+      for (const key of allowed) {
+        if (Object.prototype.hasOwnProperty.call(parsed, key)) partial[key] = parsed[key]
+      }
+      if (!Object.keys(partial).length) throw new Error('Theme JSON does not include any editable theme fields.')
+      patch(partial, 'Edit JSON')
+      setJsonError('')
+    } catch (err) {
+      setJsonError(err instanceof Error ? err.message : 'Theme JSON could not be parsed.')
+    }
+  }
   // Resolve a ramp ref ("accent:500") or hex to an actual hex from the theme ramps.
   function resolveRef(ref) {
     if (!ref) return null
@@ -512,42 +532,6 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     if (!fg || !bg) return null
     try { return wcagContrast(fg, bg) } catch { return null }
   }
-  function saveKey() { setApiKey(keyInput); if (keyInput.trim()) setKeyReady(true) }
-
-  async function pairFonts() {
-    if (!fontPrompt.trim()) return
-    setFontLoading(true); setFontError(''); setFontNote(''); setFontUsage(null)
-    try {
-      const f = await generateFontPairing(fontPrompt.trim())
-      ;[f.display, f.heading, f.body].forEach(loadGoogleFont)
-      patch({ fonts: { display: f.display, heading: f.heading, body: f.body } })
-      setFontNote(f.rationale || '')
-      setFontUsage(f.usage)
-    } catch (err) {
-      setFontError(describeError(err))
-      if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
-    } finally { setFontLoading(false) }
-  }
-
-  async function generate() {
-    if (!prompt.trim()) return
-    setLoading(true); setError(''); setThemeUsage(null)
-    try {
-      const t = await generateTheme(prompt.trim())
-      patch({
-        name: t.name || theme.name,
-        description: t.description || theme.description,
-        ramps: rampsFrom500({ ...DEFAULT_RAMPS, ...t.ramps }),
-        fonts: { display: t.fonts.display, heading: t.fonts.heading, body: t.fonts.body },
-        roundness: Math.max(0, Math.min(16, Math.round(t.roundness ?? 8))),
-      })
-      setThemeUsage(t.usage)
-    } catch (err) {
-      setError(describeError(err))
-      if (err instanceof Error && err.message === 'NO_API_KEY') setKeyReady(false)
-    } finally { setLoading(false) }
-  }
-
   if (!theme) {
     return (
       // Update to an Empty State component
@@ -804,9 +788,17 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
   } else if (cat === 'code') {
     specific = (
       <Stack gap="md">
+        <Stack gap="xs">
+          <Heading as="h2" size="sm">Theme JSON</Heading>
+          <Paragraph size="sm" color="muted">Edit the saved theme contract, then apply it back to the theme.</Paragraph>
+        </Stack>
         <Switch label="Apply live to this app" checked={applied} onChange={setApplied} />
-        <Paragraph size="sm" color="muted">Copy this into <code>system/themes/&lt;name&gt;/theme.json</code>, then run <code>npm run build:tokens</code>.</Paragraph>
-        <Code variant="block" wrapping copyCode>{jsonString}</Code>
+        <Code variant="block" wrapping copyCode editable onChangeValue={setJsonDraft}>{jsonDraft}</Code>
+        {jsonError && <Banner status="error" variant="inline" onDismiss={() => setJsonError('')}>{jsonError}</Banner>}
+        <ButtonContainer>
+          <Button icon="check" onClick={applyJsonDraft}>Apply JSON</Button>
+          <Button variant="secondary" icon="restart_alt" onClick={() => { setJsonDraft(jsonString); setJsonError('') }}>Reset JSON</Button>
+        </ButtonContainer>
       </Stack>
     )
   }
@@ -835,26 +827,6 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
     aside = (
       <div className="a1-web-config-aside__inner">
         <Stack gap="lg">
-          {AI_ENABLED && (<>
-          <div>
-            <Heading as="h2" size="sm">Generate with AI</Heading>
-            {!keyReady ? (
-              <Stack gap="sm">
-                <Paragraph size="sm" color="muted">Paste an Anthropic API key (stored only in this browser). <Link href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Get a key</Link>.</Paragraph>
-                <TextField label="Anthropic API key" type="password" size="compact" autoComplete="off" value={keyInput} onChange={(e) => setKeyInput(e.target.value)} />
-                <ButtonContainer><Button size="sm" disabled={!keyInput.trim()} onClick={saveKey}>Save key</Button></ButtonContainer>
-              </Stack>
-            ) : (
-              <Stack gap="sm">
-                <TextField label="Describe the theme" size="compact" hint="e.g. “a warm, earthy theme for an artisan bakery”" value={prompt} onChange={(e) => setPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); generate() } }} />
-                <ButtonContainer><Button size="sm" icon="auto_awesome" loading={loading} disabled={!prompt.trim()} onClick={generate}>Generate theme</Button></ButtonContainer>
-                {themeUsage && !loading && <Paragraph size="xs" color="muted">{formatUsage(themeUsage)}</Paragraph>}
-                {error && <Banner status="error" variant="inline" onDismiss={() => setError('')}>{error}</Banner>}
-              </Stack>
-            )}
-          </div>
-          <Divider space="none" />
-          </>)}
           <Stack gap="sm">
             <Heading as="h2" size="sm">Ramps</Heading>
             <Paragraph size="xs" color="muted">Set each ramp’s mid (-500). Open a ramp in the sidebar to edit individual values.</Paragraph>
@@ -995,39 +967,8 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
         <Stack gap="lg">
           <Stack gap="sm">
             <Heading as="h2" size="sm">Typography</Heading>
-            <Paragraph size="xs" color="muted">Open Display, Heading, or Body in the sidebar to edit each role’s font, weight, scale, and advanced properties. Or pair a full set with AI.</Paragraph>
+            <Paragraph size="xs" color="muted">Open Display, Heading, or Body in the sidebar to edit each role’s font, weight, scale, and advanced properties.</Paragraph>
           </Stack>
-          {AI_ENABLED && (<>
-          <Divider space="none" />
-          {!fontAiOpen ? (
-            <ButtonContainer>
-              <Button size="sm" variant="secondary" icon="auto_awesome" onClick={() => setFontAiOpen(true)}>Pair with AI</Button>
-            </ButtonContainer>
-          ) : (
-            <Stack gap="sm">
-              <Stack direction="row" align="center" justify="between" gap="sm">
-                <Heading as="h2" size="sm">Pair with AI</Heading>
-                <IconButton icon="close" size="sm" variant="tertiary" label="Close AI pairing" onClick={() => setFontAiOpen(false)} />
-              </Stack>
-              {!keyReady ? (
-                <Stack gap="sm">
-                  <Paragraph size="sm" color="muted">Paste an Anthropic API key (stored only in this browser). <Link href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Get a key</Link>.</Paragraph>
-                  <TextField label="Anthropic API key" type="password" size="compact" autoComplete="off" value={keyInput} onChange={(e) => setKeyInput(e.target.value)} />
-                  <ButtonContainer><Button size="sm" disabled={!keyInput.trim()} onClick={saveKey}>Save key</Button></ButtonContainer>
-                </Stack>
-              ) : (
-                <Stack gap="sm">
-                  <Paragraph size="xs" color="muted">Describe a mood or brand and Claude searches Google Fonts for a compatible display/heading/body trio.</Paragraph>
-                  <TextField label="Describe the type" size="compact" hint="e.g. “elegant editorial, script display”" value={fontPrompt} onChange={(e) => setFontPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); pairFonts() } }} />
-                  <ButtonContainer><Button size="sm" icon="auto_awesome" loading={fontLoading} disabled={!fontPrompt.trim()} onClick={pairFonts}>Pair fonts</Button></ButtonContainer>
-                  {fontNote && <Paragraph size="xs" color="muted">{fontNote}</Paragraph>}
-                  {fontUsage && !fontLoading && <Paragraph size="xs" color="muted">{formatUsage(fontUsage)}</Paragraph>}
-                  {fontError && <Banner status="error" variant="inline" onDismiss={() => setFontError('')}>{fontError}</Banner>}
-                </Stack>
-              )}
-            </Stack>
-          )}
-          </>)}
         </Stack>
       </div>
     )
@@ -1153,7 +1094,7 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
         { value: 'preview', label: 'Preview', icon: 'visibility' },
       ]
     : [
-        { value: 'specific', label: 'Specific', icon: 'tune' },
+        { value: 'specific', label: cat === 'code' ? 'JSON' : 'Specific', icon: cat === 'code' ? 'code' : 'tune' },
         { value: 'preview', label: 'Preview', icon: 'visibility' },
       ]
   const viewValue = isColorMain ? (view === 'preview' ? 'preview' : colorView) : view
@@ -1203,6 +1144,16 @@ export function ThemeEditor({ themeId, category = 'color', onNavigate, onBackToT
             <ToolbarButton icon="redo" label="Redo" disabled={!canRedo} onClick={redo} />
             <ToolbarDivider />
             <ToolbarGroup aria-label="View" value={viewValue} onChange={onViewChange} showLabels options={viewOptions} />
+            <ToolbarDivider />
+            <ToolbarButton
+              icon="code"
+              label="View JSON"
+              disabled={category === 'code'}
+              onClick={() => {
+                setView('specific')
+                onSelectCategory?.('code')
+              }}
+            />
             <ToolbarDivider />
             <ToolbarButton
               icon="flag"

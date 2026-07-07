@@ -4,6 +4,8 @@
 
 ### Added
 
+- **BarChart per-bar colors** — `BarChart` rows can now override the series color per datum with tokenized `tone` fields, explicit `fill`, or series-key-specific fields such as `latencyTone` / `latencyFill` for grouped and stacked bars.
+
 - **Recharts chart components** — added Recharts 3.9.2 and React-only A1 wrappers for `LineChart`, `BarChart`, `AreaChart`, `ComposedChart`, `PieChart`, `ScatterChart`, `RadarChart`, `RadialBarChart`, `FunnelChart`, `TreemapChart`, `SankeyChart`, and `SunburstChart`, with the generic `Chart` export retained for Cartesian compatibility. Chart styling is governed by A1 component tokens for axes, polar grids, legends, tooltips, focus rings, chart heights, line weight, area opacity, and semantic/status series tones; Recharts animation is disabled by default so chart motion does not bypass A1 motion tokens. Added TypeScript declarations, Storybook stories, package exports, rules, and a1-web/editor registration.
 
 ## 0.27.0 — 2026-07-06

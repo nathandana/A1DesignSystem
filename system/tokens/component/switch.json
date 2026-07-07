@@ -14,8 +14,15 @@
       "messageErrorFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
       "accessibleIconSize": { "$value": "60%" },
       "thumb": {
+        "background": { "$type": "color", "$value": "{semantic.color.status.info.background}" },
         "on": {
           "background": { "$type": "color", "$value": "{base.color.neutral.0}" }
+        }
+      },
+      "track": {
+        "on": {
+          "background": { "$type": "color", "$value": "{semantic.color.status.info.background}" },
+          "border": { "$type": "color", "$value": "{semantic.color.status.info.background}" }
         }
       },
 

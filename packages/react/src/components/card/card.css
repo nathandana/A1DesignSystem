@@ -154,7 +154,7 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
   margin-inline: calc(-1 * var(--component-card-padding));
   margin-bottom: var(--component-card-padding);
   padding: var(--base-spacing-32) 0;
-  background: var(--a1-card-hero-bg, var(--semantic-color-action-background));
+  background: var(--a1-card-hero-bg, var(--component-card-hero-background));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +183,7 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
 /* Higher specificity (0,2,0) beats .a1-icon (0,1,0) so font-size is not overridden by inherit */
 .a1-card__hero > .a1-icon {
   font-size: var(--base-spacing-64);
-  color: var(--semantic-color-text-inverse);
+  color: var(--component-card-hero-foreground);
 }
 
 /* lg ≥ 640px — hero becomes a left strip, full card height; icon 3 steps larger (128px) */
@@ -242,8 +242,8 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
   width: var(--a1-card-icon-box);
   height: var(--a1-card-icon-box);
   border-radius: var(--base-radius-control);
-  background: var(--semantic-color-action-surface);
-  color: var(--semantic-color-action-background);
+  background: var(--component-card-icon-background);
+  color: var(--component-card-icon-foreground);
   margin-bottom: var(--base-spacing-12);
   flex-shrink: 0;
   --a1-icon-opsz: var(--component-card-icon-optical-size);

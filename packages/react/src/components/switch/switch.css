@@ -172,7 +172,7 @@
   width: var(--a1-sw-thumb);
   height: var(--a1-sw-thumb);
   border-radius: 50%;
-  background-color: var(--semantic-color-status-info-background);
+  background-color: var(--component-switch-thumb-background);
   box-shadow: var(--component-switch-thumb-shadow);
   transform: translateX(0);
   transition:
@@ -190,8 +190,8 @@
 /* ─── Checked ─────────────────────────────────────────────────────────────── */
 
 .a1-switch__track--on {
-  background-color: var(--semantic-color-status-info-background);
-  border-color: var(--semantic-color-status-info-background);
+  background-color: var(--component-switch-track-on-background);
+  border-color: var(--component-switch-track-on-border);
 }
 
 .a1-switch__track--on::before {

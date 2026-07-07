@@ -201,6 +201,7 @@ const themeOptions = [
   { value: 'a1Heritage', label: 'Heritage' },
   { value: 'crochet', label: 'Crochet' },
   { value: 'aperture', label: 'Aperture' },
+  { value: 'kong', label: 'Kong' },
   { value: 'marshmallow', label: 'Marshmallow' },
   { value: 'a1Accessible', label: 'Accessible' },
   { value: 'fresh', label: 'Fresh' },
@@ -969,6 +970,7 @@ function App() {
     document.documentElement.classList.toggle('a1-theme-fresh', theme === 'fresh')
     document.documentElement.classList.toggle('a1-theme-crochet', theme === 'crochet')
     document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
+    document.documentElement.classList.toggle('a1-theme-kong', theme === 'kong')
     document.documentElement.classList.toggle('a1-theme-marshmallow', theme === 'marshmallow')
     document.documentElement.classList.toggle('a1-theme-wireframe', theme === 'wireframe')
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
@@ -1844,7 +1846,7 @@ function App() {
             : <ThemeEditor
                 themeId={activeThemeId}
                 category={themeCategory}
-                onNavigate={navigate}
+                onSelectCategory={setThemeCategory}
                 onBackToThemes={() => setActiveThemeId(null)}
               />
         )}

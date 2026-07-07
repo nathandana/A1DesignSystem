@@ -1,5 +1,19 @@
 # A1 Web Changelog
 
+## Unreleased
+
+- **Chart examples** — added an NFL scorigami Scatter Chart child example that uses real score-frequency data from NFL Scorigami and renders it as a pannable A1 Canvas matrix.
+
+- **Chart examples** — added read-only Bar Chart and Area Chart child example pages for operational status cards: a compact live-updating API Gateway card, a live API incident-recovery scenario, a wider Authentication API uptime timeline, and an API Monitoring Area Chart card, all built only from A1 components without custom CSS. Charts now support `height="xs"` for tiny embedded chart surfaces.
+
+- **Home dashboard link** — replaced the large dashboard promo card below the Home stats strip with a simple link-icon text link to the System dashboard.
+
+- **Components sidebar search autofill guard** — the Components navigation search now opts out of browser/password-manager autofill with a stable app-specific field name, preventing profile data from being injected when navigating to Menu and Context Menu pages.
+
+- **Theme editor JSON view** — added a direct **View JSON** toolbar action for open themes, renamed the sidebar category from Code to JSON, made the saved theme JSON editable/applyable from the editor, and removed the theme-generation AI panels and copy from the Theme editor surfaces.
+
+- **Kong theme** — added a selectable Kong system theme with a concrete neutral ramp from `#717A74`, electric chartreuse accent ramp from `#BEFF00`, Funnel Sans typography, `neutral-50`/`neutral-800` page surfaces, pill-shaped Button/Text Field/Icon Button controls, accent-outline secondary buttons, black Card/Action Tile icons in light mode, theme-aware TopHeader logo color, primary-style selected Chips, black-track Switches with chartreuse handles, black Slider thumbs and detent labels, chartreuse selected Tabs/Pagination/TreeMenu states with pale hover and flipped active colors, and a black-backed accent heading treatment for light-mode legibility.
+
 ## 0.27.0 — 2026-07-07
 
 - **Explore dashboard** — added a `/dashboard` Explore page with Recharts-powered cards for backlog health, component coverage, token volume, system flow, rules, and labels, plus a Home callout under the initial stats strip.

@@ -36,7 +36,7 @@ const meta = {
   argTypes: {
     height: {
       control: "inline-radio",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg"],
     },
     stacked: { control: "boolean" },
     showGrid: { control: "boolean" },

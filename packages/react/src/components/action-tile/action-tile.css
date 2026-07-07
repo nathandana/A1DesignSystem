@@ -181,8 +181,8 @@ button.a1-action-tile--interactive {
   justify-content: center;
   inline-size: var(--component-action-tile-icon-box-size-sm);
   block-size: var(--component-action-tile-icon-box-size-sm);
-  background: transparent;
-  color: var(--semantic-color-action-background);
+  background: var(--component-action-tile-icon-background);
+  color: var(--component-action-tile-icon-foreground);
   flex-shrink: 0;
   --a1-icon-opsz: var(--component-action-tile-icon-optical-size-sm);
 }

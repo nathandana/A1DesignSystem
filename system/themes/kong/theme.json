@@ -1,0 +1,20 @@
+{
+  "$schema": "../theme.schema.json",
+  "name": "Kong",
+  "description": "Kong-inspired theme with concrete neutrals, electric chartreuse action colour, and Funnel Sans typography. Apply class=\"a1-theme-kong\" to <html>.",
+  "selectors": [
+    {
+      "selector": ".a1-theme-kong",
+      "overrides": "overrides/default.json"
+    },
+    {
+      "selector": "html.a1-theme-dark.a1-theme-kong, html.a1-theme-kong.a1-theme-dark, html.a1-theme-light.a1-theme-kong .a1-inverse, html.a1-theme-kong.a1-theme-light .a1-inverse",
+      "overrides": "overrides/mode.json"
+    },
+    {
+      "selector": "html.a1-theme-dark.a1-theme-kong .a1-inverse, html.a1-theme-kong.a1-theme-dark .a1-inverse",
+      "overrides": "overrides/default.json"
+    }
+  ],
+  "labels": {}
+}

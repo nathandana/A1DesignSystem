@@ -844,6 +844,264 @@ html.a1-theme-heritage {
 
 
 /* ────────────────────────────────────────────────────────────
+   Kong
+   Kong-inspired theme with concrete neutrals, electric chartreuse action colour, and Funnel Sans typography. Apply class="a1-theme-kong" to <html>.
+   ──────────────────────────────────────────────────────────── */
+
+html.a1-theme-kong {
+  --base-color-neutral-0: #fcfcfc;
+  --base-color-neutral-50: #e7e9e8;
+  --base-color-neutral-100: #d3d6d4;
+  --base-color-neutral-200: #bec3bf;
+  --base-color-neutral-300: #a7aeaa;
+  --base-color-neutral-400: #909892;
+  --base-color-neutral-500: #717A74;
+  --base-color-neutral-600: #49504b;
+  --base-color-neutral-700: #2e3330;
+  --base-color-neutral-800: #171b19;
+  --base-color-neutral-900: #060706;
+  --base-color-neutral-1000: #000000;
+  --base-color-accent-0: #fbfcfa;
+  --base-color-accent-25: #f7ffef;
+  --base-color-accent-50: #f1ffe0;
+  --base-color-accent-100: #e9ffcb;
+  --base-color-accent-200: #e1ffb5;
+  --base-color-accent-300: #d8ff9b;
+  --base-color-accent-400: #ceff76;
+  --base-color-accent-500: #BEFF00;
+  --base-color-accent-600: #b2ef00;
+  --base-color-accent-700: #516f00;
+  --base-color-accent-800: #2c3e00;
+  --base-color-accent-900: #0d1600;
+  --base-color-accent-1000: #000000;
+  --base-font-family-body: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --base-font-family-heading: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --base-font-family-display: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --semantic-color-surface-page: var(--base-color-neutral-50);
+  --component-button-border-radius: var(--base-radius-pill);
+  --component-button-primary-background: var(--base-color-accent-500);
+  --component-button-primary-background-hover: var(--base-color-accent-0);
+  --component-button-primary-background-pressed: var(--base-color-accent-1000);
+  --component-button-primary-foreground: var(--base-color-accent-1000);
+  --component-button-primary-foreground-hover: var(--base-color-accent-1000);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-primary-border: var(--base-color-accent-500);
+  --component-button-secondary-background: var(--base-color-accent-0);
+  --component-button-secondary-background-hover: var(--base-color-accent-0);
+  --component-button-secondary-background-pressed: var(--base-color-accent-1000);
+  --component-button-secondary-foreground: var(--base-color-accent-800);
+  --component-button-secondary-foreground-hover: var(--base-color-accent-800);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-secondary-border: var(--base-color-accent-500);
+  --component-button-secondary-border-hover: var(--base-color-accent-500);
+  --component-button-secondary-border-pressed: var(--base-color-accent-1000);
+  --component-button-tertiary-foreground: var(--base-color-accent-800);
+  --component-button-tertiary-foreground-hover: var(--base-color-accent-900);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-1000);
+  --component-button-font-family: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-button-small-border-radius: var(--base-radius-pill);
+  --component-paragraph-font-family: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-heading-accent-background-color: var(--base-color-accent-1000);
+  --component-heading-accent-foreground-color: var(--base-color-accent-500);
+  --component-heading-accent-padding-block: 0.08em;
+  --component-heading-accent-padding-inline: 0.22em;
+  --component-heading-accent-border-radius: var(--base-radius-sm);
+  --component-heading-font-family-heading: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-heading-font-family-display: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-field-comfortable-border-radius: var(--base-radius-pill);
+  --component-field-default-border-radius: var(--base-radius-pill);
+  --component-field-compact-border-radius: var(--base-radius-pill);
+  --component-icon-button-border-radius: var(--base-radius-pill);
+  --component-card-icon-background: var(--base-color-accent-0);
+  --component-card-icon-foreground: var(--base-color-accent-1000);
+  --component-card-hero-background: var(--base-color-accent-500);
+  --component-card-hero-foreground: var(--base-color-accent-1000);
+  --component-action-tile-icon-foreground: var(--base-color-accent-1000);
+  --component-chip-selected-background: var(--component-button-primary-background);
+  --component-chip-selected-background-hover: var(--component-button-primary-background-hover);
+  --component-chip-selected-background-pressed: var(--component-button-primary-background-pressed);
+  --component-chip-selected-border: var(--component-button-primary-border);
+  --component-chip-selected-border-hover: var(--component-button-primary-background-hover);
+  --component-chip-selected-border-pressed: var(--component-button-primary-background-pressed);
+  --component-chip-selected-foreground: var(--component-button-primary-foreground);
+  --component-chip-selected-foreground-hover: var(--component-button-primary-foreground-hover);
+  --component-chip-selected-foreground-pressed: var(--component-button-primary-foreground-pressed);
+  --component-switch-track-on-background: var(--base-color-accent-1000);
+  --component-switch-track-on-border: var(--base-color-accent-1000);
+  --component-switch-thumb-background: var(--base-color-accent-500);
+  --component-switch-thumb-on-background: var(--base-color-accent-500);
+  --component-slider-active-color: var(--base-color-accent-1000);
+  --component-slider-thumb-color: var(--base-color-accent-1000);
+  --component-top-header-logo-foreground: var(--base-color-accent-1000);
+  --component-tab-selected-background: var(--base-color-accent-500);
+  --component-tab-selected-background-hover: var(--base-color-accent-0);
+  --component-tab-selected-background-pressed: var(--base-color-accent-1000);
+  --component-tab-selected-foreground: var(--base-color-accent-1000);
+  --component-tab-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-tab-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-pagination-selected-background: var(--base-color-accent-500);
+  --component-pagination-selected-background-hover: var(--base-color-accent-0);
+  --component-pagination-selected-background-pressed: var(--base-color-accent-1000);
+  --component-pagination-selected-border: var(--base-color-accent-500);
+  --component-pagination-selected-border-hover: var(--base-color-accent-0);
+  --component-pagination-selected-border-pressed: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-tree-menu-item-selected-background: var(--base-color-accent-500);
+  --component-tree-menu-item-selected-background-hover: var(--base-color-accent-0);
+  --component-tree-menu-item-selected-background-pressed: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-button-large-border-radius: var(--base-radius-pill);
+}
+
+html.a1-theme-dark.a1-theme-kong, html.a1-theme-kong.a1-theme-dark, html.a1-theme-light.a1-theme-kong .a1-inverse, html.a1-theme-kong.a1-theme-light .a1-inverse {
+  --semantic-color-surface-page: var(--base-color-neutral-800);
+  --component-button-primary-background: var(--base-color-accent-500);
+  --component-button-primary-background-hover: var(--base-color-accent-0);
+  --component-button-primary-background-pressed: var(--base-color-accent-1000);
+  --component-button-primary-foreground: var(--base-color-accent-1000);
+  --component-button-primary-foreground-hover: var(--base-color-accent-1000);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-primary-border: var(--base-color-accent-500);
+  --component-button-secondary-background: var(--base-color-accent-0);
+  --component-button-secondary-background-hover: var(--base-color-accent-0);
+  --component-button-secondary-background-pressed: var(--base-color-accent-1000);
+  --component-button-secondary-foreground: var(--base-color-accent-800);
+  --component-button-secondary-foreground-hover: var(--base-color-accent-800);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-secondary-border: var(--base-color-accent-500);
+  --component-button-secondary-border-hover: var(--base-color-accent-500);
+  --component-button-secondary-border-pressed: var(--base-color-accent-1000);
+  --component-button-tertiary-foreground: var(--base-color-accent-400);
+  --component-button-tertiary-foreground-hover: var(--base-color-accent-300);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-200);
+  --component-link-inverse-color: var(--base-color-accent-500);
+  --component-link-inverse-color-hover: var(--base-color-accent-400);
+  --component-link-inverse-color-pressed: var(--base-color-accent-600);
+  --component-action-tile-icon-foreground: var(--base-color-accent-500);
+  --component-switch-track-on-background: var(--base-color-accent-1000);
+  --component-switch-track-on-border: var(--base-color-accent-1000);
+  --component-switch-thumb-background: var(--base-color-accent-500);
+  --component-switch-thumb-on-background: var(--base-color-accent-500);
+  --component-slider-active-color: var(--base-color-accent-1000);
+  --component-slider-thumb-color: var(--base-color-accent-1000);
+  --component-top-header-logo-foreground: var(--base-color-accent-500);
+}
+
+html.a1-theme-dark.a1-theme-kong .a1-inverse, html.a1-theme-kong.a1-theme-dark .a1-inverse {
+  --base-color-neutral-0: #fcfcfc;
+  --base-color-neutral-50: #e7e9e8;
+  --base-color-neutral-100: #d3d6d4;
+  --base-color-neutral-200: #bec3bf;
+  --base-color-neutral-300: #a7aeaa;
+  --base-color-neutral-400: #909892;
+  --base-color-neutral-500: #717A74;
+  --base-color-neutral-600: #49504b;
+  --base-color-neutral-700: #2e3330;
+  --base-color-neutral-800: #171b19;
+  --base-color-neutral-900: #060706;
+  --base-color-neutral-1000: #000000;
+  --base-color-accent-0: #fbfcfa;
+  --base-color-accent-25: #f7ffef;
+  --base-color-accent-50: #f1ffe0;
+  --base-color-accent-100: #e9ffcb;
+  --base-color-accent-200: #e1ffb5;
+  --base-color-accent-300: #d8ff9b;
+  --base-color-accent-400: #ceff76;
+  --base-color-accent-500: #BEFF00;
+  --base-color-accent-600: #b2ef00;
+  --base-color-accent-700: #516f00;
+  --base-color-accent-800: #2c3e00;
+  --base-color-accent-900: #0d1600;
+  --base-color-accent-1000: #000000;
+  --base-font-family-body: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --base-font-family-heading: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --base-font-family-display: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --semantic-color-surface-page: var(--base-color-neutral-50);
+  --component-button-border-radius: var(--base-radius-pill);
+  --component-button-primary-background: var(--base-color-accent-500);
+  --component-button-primary-background-hover: var(--base-color-accent-0);
+  --component-button-primary-background-pressed: var(--base-color-accent-1000);
+  --component-button-primary-foreground: var(--base-color-accent-1000);
+  --component-button-primary-foreground-hover: var(--base-color-accent-1000);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-primary-border: var(--base-color-accent-500);
+  --component-button-secondary-background: var(--base-color-accent-0);
+  --component-button-secondary-background-hover: var(--base-color-accent-0);
+  --component-button-secondary-background-pressed: var(--base-color-accent-1000);
+  --component-button-secondary-foreground: var(--base-color-accent-800);
+  --component-button-secondary-foreground-hover: var(--base-color-accent-800);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-secondary-border: var(--base-color-accent-500);
+  --component-button-secondary-border-hover: var(--base-color-accent-500);
+  --component-button-secondary-border-pressed: var(--base-color-accent-1000);
+  --component-button-tertiary-foreground: var(--base-color-accent-800);
+  --component-button-tertiary-foreground-hover: var(--base-color-accent-900);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-1000);
+  --component-button-font-family: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-button-small-border-radius: var(--base-radius-pill);
+  --component-paragraph-font-family: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-heading-accent-background-color: var(--base-color-accent-1000);
+  --component-heading-accent-foreground-color: var(--base-color-accent-500);
+  --component-heading-accent-padding-block: 0.08em;
+  --component-heading-accent-padding-inline: 0.22em;
+  --component-heading-accent-border-radius: var(--base-radius-sm);
+  --component-heading-font-family-heading: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-heading-font-family-display: 'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --component-field-comfortable-border-radius: var(--base-radius-pill);
+  --component-field-default-border-radius: var(--base-radius-pill);
+  --component-field-compact-border-radius: var(--base-radius-pill);
+  --component-icon-button-border-radius: var(--base-radius-pill);
+  --component-card-icon-background: var(--base-color-accent-0);
+  --component-card-icon-foreground: var(--base-color-accent-1000);
+  --component-card-hero-background: var(--base-color-accent-500);
+  --component-card-hero-foreground: var(--base-color-accent-1000);
+  --component-action-tile-icon-foreground: var(--base-color-accent-1000);
+  --component-chip-selected-background: var(--component-button-primary-background);
+  --component-chip-selected-background-hover: var(--component-button-primary-background-hover);
+  --component-chip-selected-background-pressed: var(--component-button-primary-background-pressed);
+  --component-chip-selected-border: var(--component-button-primary-border);
+  --component-chip-selected-border-hover: var(--component-button-primary-background-hover);
+  --component-chip-selected-border-pressed: var(--component-button-primary-background-pressed);
+  --component-chip-selected-foreground: var(--component-button-primary-foreground);
+  --component-chip-selected-foreground-hover: var(--component-button-primary-foreground-hover);
+  --component-chip-selected-foreground-pressed: var(--component-button-primary-foreground-pressed);
+  --component-switch-track-on-background: var(--base-color-accent-1000);
+  --component-switch-track-on-border: var(--base-color-accent-1000);
+  --component-switch-thumb-background: var(--base-color-accent-500);
+  --component-switch-thumb-on-background: var(--base-color-accent-500);
+  --component-slider-active-color: var(--base-color-accent-1000);
+  --component-slider-thumb-color: var(--base-color-accent-1000);
+  --component-top-header-logo-foreground: var(--base-color-accent-1000);
+  --component-tab-selected-background: var(--base-color-accent-500);
+  --component-tab-selected-background-hover: var(--base-color-accent-0);
+  --component-tab-selected-background-pressed: var(--base-color-accent-1000);
+  --component-tab-selected-foreground: var(--base-color-accent-1000);
+  --component-tab-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-tab-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-pagination-selected-background: var(--base-color-accent-500);
+  --component-pagination-selected-background-hover: var(--base-color-accent-0);
+  --component-pagination-selected-background-pressed: var(--base-color-accent-1000);
+  --component-pagination-selected-border: var(--base-color-accent-500);
+  --component-pagination-selected-border-hover: var(--base-color-accent-0);
+  --component-pagination-selected-border-pressed: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-pagination-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-tree-menu-item-selected-background: var(--base-color-accent-500);
+  --component-tree-menu-item-selected-background-hover: var(--base-color-accent-0);
+  --component-tree-menu-item-selected-background-pressed: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground-hover: var(--base-color-accent-1000);
+  --component-tree-menu-item-selected-foreground-pressed: var(--base-color-accent-500);
+  --component-button-large-border-radius: var(--base-radius-pill);
+}
+
+
+/* ────────────────────────────────────────────────────────────
    Marshmallow
    A soft, pillowy pastel theme with subtle neumorphic depth — dusty-lavender accents on warm marshmallow-cream surfaces, gentle raised/inset 3D shadows (and recessed wells) on buttons, cards, fields, switch & segmented controls, generous rounding, and Space Grotesk display & headings with Nunito body. Apply class="a1-theme-marshmallow" to <html>.
    ──────────────────────────────────────────────────────────── */
@@ -1540,6 +1798,30 @@ html.a1-theme-heritage.a1-theme-light {
   --component-button-tertiary-border: var(--base-color-neutral-0);
   --component-button-tertiary-border-hover: var(--base-color-accent-50);
   --component-button-tertiary-border-pressed: var(--base-color-accent-100);
+}
+
+html.a1-theme-light.a1-theme-kong,
+html.a1-theme-kong.a1-theme-light {
+  --semantic-color-surface-page: var(--base-color-neutral-50);
+  --component-button-primary-background: var(--base-color-accent-500);
+  --component-button-primary-background-hover: var(--base-color-accent-0);
+  --component-button-primary-background-pressed: var(--base-color-accent-1000);
+  --component-button-primary-foreground: var(--base-color-accent-1000);
+  --component-button-primary-foreground-hover: var(--base-color-accent-1000);
+  --component-button-primary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-primary-border: var(--base-color-accent-500);
+  --component-button-secondary-background: var(--base-color-accent-0);
+  --component-button-secondary-background-hover: var(--base-color-accent-0);
+  --component-button-secondary-background-pressed: var(--base-color-accent-1000);
+  --component-button-secondary-foreground: var(--base-color-accent-800);
+  --component-button-secondary-foreground-hover: var(--base-color-accent-800);
+  --component-button-secondary-foreground-pressed: var(--base-color-accent-500);
+  --component-button-secondary-border: var(--base-color-accent-500);
+  --component-button-secondary-border-hover: var(--base-color-accent-500);
+  --component-button-secondary-border-pressed: var(--base-color-accent-1000);
+  --component-button-tertiary-foreground: var(--base-color-accent-800);
+  --component-button-tertiary-foreground-hover: var(--base-color-accent-900);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-1000);
 }
 
 html.a1-theme-light.a1-theme-marshmallow,

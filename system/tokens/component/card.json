@@ -14,6 +14,14 @@
       "borderWidth": { "$type": "dimension", "$value": "{base.space.card.borderWidth}" },
       "iconSize":    { "$type": "dimension", "$value": "{base.spacing.20}" },
       "iconOpticalSize": { "$type": "number", "$value": 20 },
+      "icon": {
+        "background": { "$type": "color", "$value": "{semantic.color.action.surface}" },
+        "foreground": { "$type": "color", "$value": "{semantic.color.action.background}" }
+      },
+      "hero": {
+        "background": { "$type": "color", "$value": "{semantic.color.action.background}" },
+        "foreground": { "$type": "color", "$value": "{semantic.color.action.foreground}" }
+      },
       "statusStripe": {
         "width": { "$type": "dimension", "$value": "{base.spacing.4}" }
       },

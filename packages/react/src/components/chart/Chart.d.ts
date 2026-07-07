@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export type ChartType = "line" | "bar" | "area" | "composed";
-export type ChartHeight = "sm" | "md" | "lg";
+export type ChartHeight = "xs" | "sm" | "md" | "lg";
 export type ChartVariant = "default" | "subtle";
 export type ChartCurve = "linear" | "monotone" | "natural" | "step";
 export type ChartSeriesType = "line" | "bar" | "area";
@@ -80,7 +80,7 @@ export interface ChartCommonProps extends Omit<React.HTMLAttributes<HTMLElement>
 }
 
 export interface CartesianChartProps extends ChartCommonProps {
-  /** Data rows passed to Recharts. */
+  /** Data rows passed to Recharts. Bar rows may set tone/fill, or `${seriesKey}Tone` / `${seriesKey}Fill` for per-series bar colors. */
   data?: Array<Record<string, unknown>>;
   /** Row key used for the x axis. Default: "name" */
   xKey?: string;

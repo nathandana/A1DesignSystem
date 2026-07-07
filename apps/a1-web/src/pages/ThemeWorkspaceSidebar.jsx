@@ -6,7 +6,7 @@ import { useT } from '../labels/useT.js'
  * The theme editor sidebar while a theme is open: a SideNav (same shell as the
  * project editor) whose header carries a back link to the Themes list and the
  * theme name, and whose body is the category tree (Color — with a child per
- * ramp — Typography, Shape, Code).
+ * ramp — Typography, Shape, JSON).
  */
 export function ThemeWorkspaceSidebar({ themeName, category, onSelectCategory, onBackToThemes, open, onClose }) {
   const t = useT()
@@ -48,7 +48,7 @@ export function ThemeWorkspaceSidebar({ themeName, category, onSelectCategory, o
           },
           { id: 'shape', label: t('app.theme.categoryShape', 'Shape'), icon: 'rounded_corner' },
           { id: 'icons', label: t('app.theme.categoryIcons', 'Icons'), icon: 'interests' },
-          { id: 'code', label: t('app.theme.categoryCode', 'Code'), icon: 'code' },
+          { id: 'code', label: t('app.theme.categoryCode', 'JSON'), icon: 'code' },
         ]}
       />
     </SideNav>

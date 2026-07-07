@@ -1,6 +1,28 @@
 {
   "component": {
     "heading": {
+      "accent": {
+        "backgroundColor": {
+          "$type": "color",
+          "$value": "transparent"
+        },
+        "foregroundColor": {
+          "$type": "color",
+          "$value": "{semantic.color.text.accent}"
+        },
+        "paddingBlock": {
+          "$type": "dimension",
+          "$value": "0"
+        },
+        "paddingInline": {
+          "$type": "dimension",
+          "$value": "0"
+        },
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "0"
+        }
+      },
       "mark": {
         "highlight": {
           "backgroundColor": {

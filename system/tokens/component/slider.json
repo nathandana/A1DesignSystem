@@ -1,0 +1,10 @@
+{
+  "component": {
+    "slider": {
+      "activeColor": { "$type": "color", "$value": "{semantic.color.text.accent}" },
+      "thumb": {
+        "color": { "$type": "color", "$value": "{semantic.color.action.background}" }
+      }
+    }
+  }
+}

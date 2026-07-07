@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   BarChart,
-  Button,
-  ButtonContainer,
   Card,
   FunnelChart,
   Grid,
+  GridItem,
   Heading,
-  LineChart,
+  MessageBadge,
   Paragraph,
   PieChart,
   RadarChart,
@@ -48,6 +47,36 @@ import {
 import { PageTitleArea } from './PageTitleArea.jsx'
 
 const TONES = ['accent', 'info', 'success', 'warn', 'error']
+const SYSTEM_SIGNALS = [
+  {
+    key: 'components',
+    label: 'Components',
+    tone: 'accent',
+    color: 'var(--semantic-color-action-background)',
+    icon: 'widgets',
+  },
+  {
+    key: 'tokens',
+    label: 'Tokens',
+    tone: 'info',
+    color: 'var(--semantic-color-status-info-background)',
+    icon: 'token',
+  },
+  {
+    key: 'rules',
+    label: 'Rules',
+    tone: 'success',
+    color: 'var(--semantic-color-status-success-background)',
+    icon: 'gavel',
+  },
+  {
+    key: 'labels',
+    label: 'Labels',
+    tone: 'warn',
+    color: 'var(--semantic-color-status-warn-background)',
+    icon: 'translate',
+  },
+]
 const SYSTEM_LABEL_SOURCES = [
   { name: 'App', data: appLabels },
   { name: 'Action', data: actionLabels },
@@ -136,64 +165,107 @@ function compactLabel(value) {
     .replace(/^\w/, (letter) => letter.toUpperCase())
 }
 
-function MetricRow({ children }) {
-  return (
-    <Grid columns={{ xs: 2, md: 4 }} gap="sm">
-      {children}
-    </Grid>
-  )
-}
-
-function Metric({ label, value, icon, status = 'neutral' }) {
-  return (
-    <Card bare status={status}>
-      <Stat title={label} value={value} icon={icon} size="sm" />
-    </Card>
-  )
-}
-
-function CardAction({ page, onNavigate, children = 'View details' }) {
-  return (
-    <ButtonContainer>
-      <Button variant="secondary" size="sm" icon="arrow_forward" iconPosition="end" onClick={() => onNavigate(page)}>
-        {children}
-      </Button>
-    </ButtonContainer>
-  )
-}
-
-function DashboardCard({ title, description, view, onViewChange, options, actionPage, onNavigate, children, metrics }) {
+function DashboardCard({ title, description, view, onViewChange, options, children }) {
   return (
     <Card>
-      <Stack gap="md">
+      <Stack gap="lg">
         <Stack direction={{ xs: 'column', md: 'row' }} gap="sm" justify={{ md: 'between' }} align="start">
           <Stack gap="xs">
             <Heading as="h2" size="md">{title}</Heading>
-            <Paragraph size="sm" color="muted">{description}</Paragraph>
+            {description ? <Paragraph size="sm" color="muted">{description}</Paragraph> : null}
           </Stack>
-          <SegmentedControl
-            aria-label={`${title} view`}
-            size="sm"
-            labelMode="selected"
-            options={options}
-            value={view}
-            onChange={onViewChange}
-          />
+          {options?.length ? (
+            <SegmentedControl
+              aria-label={`${title} view`}
+              size="sm"
+              labelMode="selected"
+              options={options}
+              value={view}
+              onChange={onViewChange}
+            />
+          ) : null}
         </Stack>
-        {metrics}
         {children}
-        <CardAction page={actionPage} onNavigate={onNavigate} />
       </Stack>
     </Card>
   )
 }
 
-function BacklogCard({ items, loading, onNavigate }) {
+function BigStatCard({ label, value, icon, color, description }) {
+  return (
+    <Card status="neutral" style={color ? { '--a1-card-status-color': color } : undefined}>
+      <Stack gap="sm">
+        <Stat title={label} value={value} icon={icon} size="xl" />
+        {description ? <Paragraph size="sm" color="muted">{description}</Paragraph> : null}
+      </Stack>
+    </Card>
+  )
+}
+
+function SystemPulseCard({ componentCount, rules, tokenCount, labels }) {
+  const systemRows = [
+    {
+      name: 'A1',
+      components: componentCount,
+      tokens: tokenCount,
+      rules: rules.length,
+      labels: labels.total,
+    },
+  ]
+
+  return (
+    <Card status="info">
+      <Stack gap="lg">
+        <Stack direction={{ xs: 'column', md: 'row' }} gap="md" justify={{ md: 'between' }} align="start">
+          <Stack gap="xs">
+            <MessageBadge status="info" size="lg" subtle icon={null}>
+              System pulse
+            </MessageBadge>
+            <Heading as="h2" size="lg">A1 operating pulse</Heading>
+            <Paragraph color="muted">Actual design-system volume across components, rules, tokens, and labels.</Paragraph>
+          </Stack>
+        </Stack>
+
+        <BarChart
+          data={systemRows}
+          xKey="name"
+          series={SYSTEM_SIGNALS.map(({ key, label, tone }) => ({ key, label, tone }))}
+          height="md"
+          showLegend
+          showGrid={false}
+          showYAxis={false}
+          aria-label="A1 system volume across components, tokens, rules, and labels"
+        />
+      </Stack>
+    </Card>
+  )
+}
+
+function TokenFlowCard() {
+  const leaves = useMemo(() => flattenTokenLeaves(tokens), [])
+  const tierRows = rowsFromCounts(countBy(leaves, (item) => compactLabel(item.path[0] ?? 'Other')))
+
+  return (
+    <DashboardCard
+      title="Token tiers"
+      description="Actual token volume by source tier."
+    >
+      <BarChart
+        data={tierRows}
+        xKey="name"
+        series={[{ key: 'value', label: 'Tokens', tone: 'info' }]}
+        height="sm"
+        showLegend={false}
+        showGrid={false}
+        showYAxis={false}
+        aria-label="Actual token volume by source tier"
+      />
+    </DashboardCard>
+  )
+}
+
+function BacklogCard({ items }) {
   const [view, setView] = useState('status')
-  const activeStatuses = new Set([...STATUS_FLOW, 'paused'])
-  const activeItems = items.filter((item) => !TERMINAL_STATUSES.includes(item.status))
-  const completed = items.filter((item) => item.status === 'done' || item.status === 'released').length
-  const progress = percent(completed, items.length)
   const statusRows = orderedRows([...STATUS_FLOW, ...TERMINAL_STATUSES], countBy(items, (item) => item.status), STATUS_LABELS)
   const priorityRows = orderedRows(PRIORITIES, countBy(items, (item) => item.priority ?? 'Unprioritized'), PRIORITY_LABELS)
   const scopeRows = rowsFromCounts(countBy(items, (item) => item.scopeKind), {})
@@ -219,23 +291,13 @@ function BacklogCard({ items, loading, onNavigate }) {
         { value: 'scope', label: 'Category', icon: 'category' },
         { value: 'type', label: 'Type', icon: 'label' },
       ]}
-      actionPage="backlog"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="Tickets" value={loading ? '...' : items.length} icon="confirmation_number" />
-          <Metric label="Active" value={activeItems.filter((item) => activeStatuses.has(item.status)).length} icon="autorenew" status="info" />
-          <Metric label="Done" value={completed} icon="done_all" status="success" />
-          <Metric label="Percent done" value={`${progress}%`} icon="percent" status={progress > 60 ? 'success' : 'warn'} />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
   )
 }
 
-function ComponentsCard({ onNavigate }) {
+function ComponentsCard() {
   const [view, setView] = useState('category')
   const components = componentCategories.flatMap((category) => (
     category.components.map((component) => ({ ...component, category: category.title, categoryId: category.id }))
@@ -273,23 +335,13 @@ function ComponentsCard({ onNavigate }) {
         { value: 'package', label: 'Package', icon: 'inventory_2' },
         { value: 'status', label: 'Status', icon: 'science' },
       ]}
-      actionPage="components"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="Components" value={components.length} icon="widgets" />
-          <Metric label="Categories" value={componentCategories.length} icon="folder" />
-          <Metric label="React coverage" value={`${percent(components.filter((component) => (PACKAGE_COVERAGE[component.id] ?? []).includes('React')).length, components.length)}%`} icon="code" status="success" />
-          <Metric label="Figma ready" value={components.filter((component) => (PACKAGE_COVERAGE[component.id] ?? []).includes('Figma')).length} icon="design_services" status="info" />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
   )
 }
 
-function TokensCard({ onNavigate }) {
+function TokensCard() {
   const [view, setView] = useState('tier')
   const leaves = useMemo(() => flattenTokenLeaves(tokens), [])
   const tierRows = rowsFromCounts(countBy(leaves, (item) => compactLabel(item.path[0] ?? 'Other')))
@@ -312,23 +364,13 @@ function TokensCard({ onNavigate }) {
         { value: 'kind', label: 'Kind', icon: 'data_object' },
         { value: 'component', label: 'Component', icon: 'widgets' },
       ]}
-      actionPage="foundations"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="Tokens" value={number(leaves.length)} icon="token" />
-          <Metric label="Component" value={leaves.filter((item) => item.path[0] === 'component').length} icon="widgets" status="info" />
-          <Metric label="Semantic" value={leaves.filter((item) => item.path[0] === 'semantic').length} icon="hub" status="success" />
-          <Metric label="Base" value={leaves.filter((item) => item.path[0] === 'base').length} icon="foundation" />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
   )
 }
 
-function SystemMapCard({ items, rules, labels, tokenCount, onNavigate }) {
+function SystemMapCard({ items, rules, labels, tokenCount }) {
   const [view, setView] = useState('flow')
   const componentCount = componentCategories.reduce((total, category) => total + category.components.length, 0)
   const released = items.filter((item) => item.status === 'done' || item.status === 'released').length
@@ -383,23 +425,13 @@ function SystemMapCard({ items, rules, labels, tokenCount, onNavigate }) {
         { value: 'health', label: 'Health', icon: 'monitor_heart' },
         { value: 'volume', label: 'Volume', icon: 'donut_large' },
       ]}
-      actionPage="foundation-system-map"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="System areas" value={6} icon="account_tree" />
-          <Metric label="Active work" value={active} icon="autorenew" status="info" />
-          <Metric label="Done work" value={released} icon="done_all" status="success" />
-          <Metric label="Health" value={`${percent(released, items.length)}%`} icon="monitor_heart" status="warn" />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
   )
 }
 
-function RulesCard({ rules, onNavigate }) {
+function RulesCard({ rules }) {
   const [view, setView] = useState('applies')
   const appliesRows = rowsFromCounts(countBy(rules.flatMap((rule) => rule.appliesTo.length ? rule.appliesTo : ['General']), (item) => compactLabel(item))).slice(0, 8)
   const componentRows = rowsFromCounts(countBy(rules, (rule) => rule.component)).slice(0, 10)
@@ -426,23 +458,13 @@ function RulesCard({ rules, onNavigate }) {
         { value: 'component', label: 'Component', icon: 'widgets' },
         { value: 'enforcement', label: 'Enforcement', icon: 'verified' },
       ]}
-      actionPage="rules"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="Rules" value={rules.length} icon="gavel" />
-          <Metric label="Built in" value={rules.filter((rule) => rule.source === 'builtin').length} icon="verified" status="success" />
-          <Metric label="ESLint" value={rules.filter((rule) => rule.enforcement?.eslint).length} icon="code" status="info" />
-          <Metric label="CSS gate" value={rules.filter((rule) => rule.enforcement?.css).length} icon="css" status="warn" />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
   )
 }
 
-function LabelsCard({ labels, onNavigate }) {
+function LabelsCard({ labels }) {
   const [view, setView] = useState('source')
   const sourceRows = [
     ...SYSTEM_LABEL_SOURCES.map((source, index) => ({
@@ -475,16 +497,6 @@ function LabelsCard({ labels, onNavigate }) {
         { value: 'locale', label: 'Locale', icon: 'language' },
         { value: 'workspace', label: 'Workspace', icon: 'edit_note' },
       ]}
-      actionPage="label-editor"
-      onNavigate={onNavigate}
-      metrics={(
-        <MetricRow>
-          <Metric label="System labels" value={labels.system} icon="translate" status="success" />
-          <Metric label="Workspace" value={labels.workspace} icon="edit_note" status="info" />
-          <Metric label="Locales" value={labels.locales} icon="language" />
-          <Metric label="Translations" value={labels.localeEntries} icon="public" status="warn" />
-        </MetricRow>
-      )}
     >
       {chart}
     </DashboardCard>
@@ -515,8 +527,6 @@ export function SystemDashboard({ onNavigate }) {
 
   const items = backlog?.items ?? []
   const componentCount = componentCategories.reduce((total, category) => total + category.components.length, 0)
-  const released = items.filter((item) => item.status === 'done' || item.status === 'released').length
-  const progress = percent(released, items.length)
 
   return (
     <>
@@ -529,27 +539,57 @@ export function SystemDashboard({ onNavigate }) {
         description="A live operating view of A1: backlog health, component coverage, token volume, system flow, rules, and labels. Switch each card to inspect a different lens, then jump into the source area for details."
         headingId="dashboard-heading"
       />
-      <Section padding="xs" surface='raised' contentWidth="md" aria-labelledby="dashboard-heading">
-        <MetricRow>
-          <Metric label="Backlog done" value={`${progress}%`} icon="task_alt" status={progress > 60 ? 'success' : 'warn'} />
-          <Metric label="Components" value={componentCount} icon="widgets" status="info" />
-          <Metric label="Tokens" value={number(tokenCount)} icon="token" />
-          <Metric label="Rules" value={rules.length} icon="gavel" status="success" />
-        </MetricRow>
-        </Section>
-
       <Section padding="sm" contentWidth="xxl" aria-labelledby="dashboard-heading">
-      <Stack gap="lg">
+        <Grid columns={{ xs: 1, lg: 4 }} gap="md" alignItems="stretch">
+          <GridItem span={{ xs: 'full', lg: 3 }}>
+            <SystemPulseCard componentCount={componentCount} rules={rules} tokenCount={tokenCount} labels={labelSummary} />
+          </GridItem>
+          <GridItem span={{ xs: 'full', lg: 1 }}>
+            <Stack gap="md">
+              <BigStatCard
+                label="Components"
+                value={componentCount}
+                icon={SYSTEM_SIGNALS[0].icon}
+                color={SYSTEM_SIGNALS[0].color}
+                description={`${componentCategories.length} categories`}
+              />
+              <BigStatCard
+                label="Tokens"
+                value={number(tokenCount)}
+                icon={SYSTEM_SIGNALS[1].icon}
+                color={SYSTEM_SIGNALS[1].color}
+                description="Generated tokens"
+              />
+              <BigStatCard
+                label="Rules"
+                value={rules.length}
+                icon={SYSTEM_SIGNALS[2].icon}
+                color={SYSTEM_SIGNALS[2].color}
+                description="Governance checks"
+              />
+              <BigStatCard
+                label="Labels"
+                value={labelSummary.total}
+                icon={SYSTEM_SIGNALS[3].icon}
+                color={SYSTEM_SIGNALS[3].color}
+                description={`${labelSummary.locales} locales`}
+              />
+            </Stack>
+          </GridItem>
 
-        <Grid columns={{ xs: 1, md: 2, xl: 3 }} gap="md" alignItems="stretch">
-          <BacklogCard items={items} loading={backlog?.loading} onNavigate={onNavigate} />
-          <ComponentsCard onNavigate={onNavigate} />
-          <TokensCard onNavigate={onNavigate} />
-          <SystemMapCard items={items} rules={rules} labels={labelSummary} tokenCount={tokenCount} onNavigate={onNavigate} />
-          <RulesCard rules={rules} onNavigate={onNavigate} />
-          <LabelsCard labels={labelSummary} onNavigate={onNavigate} />
+          <GridItem span={{ xs: 'full', lg: 2 }}>
+            <SystemMapCard items={items} rules={rules} labels={labelSummary} tokenCount={tokenCount} />
+          </GridItem>
+          <GridItem span={{ xs: 'full', lg: 2 }}>
+            <ComponentsCard />
+          </GridItem>
+          <GridItem span={{ xs: 'full', lg: 2 }}>
+            <TokenFlowCard />
+          </GridItem>
+          <GridItem span={{ xs: 'full', lg: 2 }}>
+            <BacklogCard items={items} />
+          </GridItem>
         </Grid>
-      </Stack>
       </Section>
     </>
   )

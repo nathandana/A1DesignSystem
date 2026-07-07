@@ -367,6 +367,20 @@ function defaultDisplayAlign(component, category) {
   return componentHasNaturalWidth(component, category) ? 'center' : ''
 }
 
+function defaultDisplayConfig(component, category) {
+  return {
+    align: defaultDisplayAlign(component, category),
+    padding: 'md',
+    inverse: false,
+    containerQuery: 'auto',
+    viewport: 'fit',
+    borderSize: 'xs',
+    borderStyle: 'solid',
+    borderVariant: 'subtle',
+    radius: 'md',
+  }
+}
+
 function AnatomyComponentPreview({ component }) {
   const [nestedTab, setNestedTab] = useState('overview')
   const [segment, setSegment] = useState('one')
@@ -3023,28 +3037,22 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
   const requestedExampleId = exampleIdFromTab(tab)
-  const isExamplePage = Boolean(requestedExampleId)
+  const requestedExample = requestedExampleId
+    ? examples.find((example) => example.id === requestedExampleId)
+    : null
+  const isExamplePage = Boolean(requestedExample)
   const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
-  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExampleId ?? examples[0]?.id ?? null)
+  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExample?.id ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
   const [viewAs, setViewAs] = useState('react')
   // Per-property helper text under each control. Off by default; toggled from the
   // config panel footer and shared with every control via ConfigHelpContext.
   const [showHelp, setShowHelp] = useState(false)
-  const [displayConfig, setDisplayConfig] = useState({
-    align: defaultDisplayAlign(component, category),
-    padding: 'md',
-    inverse: false,
-    containerQuery: 'auto',
-    viewport: 'fit',
-    borderSize: 'xs',
-    borderStyle: 'solid',
-    borderVariant: 'subtle',
-    radius: 'md',
-  })
+  const [displayConfig, setDisplayConfig] = useState(() => defaultDisplayConfig(component, category))
   const [asideNode, setAsideNode] = useState(null)
+  const wasExamplePage = useRef(isExamplePage)
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -3055,19 +3063,30 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
-    setSelectedExampleId(requestedExampleId ?? examples[0]?.id ?? null)
+    setSelectedExampleId(requestedExample?.id ?? examples[0]?.id ?? null)
     setViewAs('react')
     // Re-apply the per-component display alignment default (center for
     // natural-width components, none for flexible ones) on navigation.
-    setDisplayConfig((current) => ({ ...current, align: defaultDisplayAlign(component, category) }))
+    setDisplayConfig(defaultDisplayConfig(component, category))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
 
   useEffect(() => {
-    if (requestedExampleId && examples.some((example) => example.id === requestedExampleId)) {
-      setSelectedExampleId(requestedExampleId)
+    if (requestedExample) {
+      setSelectedExampleId(requestedExample.id)
+    } else if (requestedExampleId) {
+      onTabChange?.('configure')
     }
-  }, [examples, requestedExampleId])
+  }, [onTabChange, requestedExample, requestedExampleId])
+
+  useEffect(() => {
+    if (wasExamplePage.current && !isExamplePage) {
+      setConfig(detail.getDefaultConfig(component, category))
+      setDisplayConfig(defaultDisplayConfig(component, category))
+    }
+    wasExamplePage.current = isExamplePage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExamplePage, component.id])
 
   useEffect(() => {
     if (activeTab !== 'examples' && !isExamplePage) return
@@ -3098,6 +3117,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
       return
     }
     setConfig(detail.getDefaultConfig(component, category))
+    setDisplayConfig(defaultDisplayConfig(component, category))
   }
 
   // Mount the configuration panel into the PageLayout aside slot (right rail).

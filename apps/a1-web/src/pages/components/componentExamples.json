@@ -140,6 +140,517 @@
       }
     }
   ],
+  "line-chart": [
+    {
+      "id": "line-chart-crypto-market-cards",
+      "slug": "crypto-market-cards",
+      "title": "Crypto market cards",
+      "description": "Stacked market cards with a compact LineChart trend, exchange-pair rows, status badges, and small progress meters.",
+      "badge": "Market example",
+      "configurable": false,
+      "preview": {
+        "width": "520px",
+        "frame": false
+      },
+      "config": {
+        "example": "crypto-market-cards",
+        "chartType": "line",
+        "title": "BTC / USD",
+        "description": "Market-card composition with a compact tokenized line chart.",
+        "xKey": "time",
+        "height": "xs",
+        "curve": "monotone",
+        "showGrid": false,
+        "showLegend": false,
+        "showTooltip": false,
+        "showXAxis": false,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "btc",
+        "revenueLabel": "BTC / USD",
+        "revenueTone": "error",
+        "showExpenses": false,
+        "showForecast": false
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    },
+    {
+      "id": "line-chart-match-timeline",
+      "slug": "match-timeline",
+      "title": "Match timeline",
+      "description": "A sports momentum card using LineChart to show home and away pressure over match time.",
+      "badge": "Sports example",
+      "configurable": false,
+      "preview": {
+        "width": "760px",
+        "frame": false
+      },
+      "config": {
+        "example": "match-timeline",
+        "chartType": "line",
+        "title": "Match timeline & momentum",
+        "description": "USA and Belgium pressure across match time.",
+        "xKey": "minute",
+        "height": "sm",
+        "curve": "natural",
+        "showGrid": true,
+        "showLegend": true,
+        "showTooltip": true,
+        "showXAxis": true,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "usa",
+        "revenueLabel": "USA momentum",
+        "revenueTone": "info",
+        "showExpenses": true,
+        "expensesKey": "belgium",
+        "expensesLabel": "Belgium momentum",
+        "expensesTone": "error",
+        "showForecast": false
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
+  "area-chart": [
+    {
+      "id": "area-chart-api-monitoring",
+      "slug": "api-monitoring",
+      "title": "API monitoring",
+      "description": "A compact monitoring card with stacked AreaChart traffic, cache, and error trends plus operational metrics.",
+      "badge": "Monitoring example",
+      "configurable": false,
+      "preview": {
+        "width": "680px",
+        "frame": false
+      },
+      "config": {
+        "example": "api-monitoring",
+        "chartType": "area",
+        "title": "API Monitoring",
+        "description": "Gateway traffic · Last 24 hours",
+        "xKey": "time",
+        "height": "sm",
+        "curve": "monotone",
+        "stacked": true,
+        "showGrid": false,
+        "showLegend": true,
+        "showTooltip": true,
+        "showXAxis": true,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "requests",
+        "revenueLabel": "Requests",
+        "revenueTone": "accent",
+        "showExpenses": true,
+        "expensesKey": "cache",
+        "expensesLabel": "Cache hits",
+        "expensesTone": "success",
+        "showForecast": true,
+        "forecastKey": "errors",
+        "forecastLabel": "Errors",
+        "forecastTone": "error",
+        "data": [
+          {
+            "time": "00:00",
+            "requests": 42,
+            "cache": 28,
+            "errors": 2
+          },
+          {
+            "time": "02:00",
+            "requests": 48,
+            "cache": 32,
+            "errors": 1
+          },
+          {
+            "time": "04:00",
+            "requests": 44,
+            "cache": 34,
+            "errors": 1
+          },
+          {
+            "time": "06:00",
+            "requests": 61,
+            "cache": 42,
+            "errors": 3
+          },
+          {
+            "time": "08:00",
+            "requests": 78,
+            "cache": 55,
+            "errors": 4
+          },
+          {
+            "time": "10:00",
+            "requests": 86,
+            "cache": 63,
+            "errors": 2
+          },
+          {
+            "time": "12:00",
+            "requests": 92,
+            "cache": 68,
+            "errors": 2
+          },
+          {
+            "time": "14:00",
+            "requests": 88,
+            "cache": 64,
+            "errors": 5
+          },
+          {
+            "time": "16:00",
+            "requests": 96,
+            "cache": 72,
+            "errors": 3
+          },
+          {
+            "time": "18:00",
+            "requests": 84,
+            "cache": 61,
+            "errors": 2
+          },
+          {
+            "time": "20:00",
+            "requests": 70,
+            "cache": 49,
+            "errors": 1
+          },
+          {
+            "time": "22:00",
+            "requests": 56,
+            "cache": 38,
+            "errors": 1
+          }
+        ]
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    },
+    {
+      "id": "area-chart-service-metrics-card",
+      "slug": "service-metrics-card",
+      "title": "Service metrics card",
+      "description": "A dark service telemetry card with three compact AreaChart panels for requests, errors, and latency.",
+      "badge": "Telemetry example",
+      "configurable": false,
+      "preview": {
+        "width": "680px",
+        "frame": false
+      },
+      "config": {
+        "example": "service-metrics-card",
+        "chartType": "area",
+        "title": "SalesForce service metrics",
+        "description": "Connected service telemetry with compact trend panels.",
+        "xKey": "tick",
+        "height": "xs",
+        "curve": "monotone",
+        "showGrid": false,
+        "showLegend": false,
+        "showTooltip": false,
+        "showXAxis": false,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "value",
+        "revenueLabel": "Metric trend",
+        "revenueTone": "info",
+        "showExpenses": false,
+        "showForecast": false
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
+  "radial-bar-chart": [
+    {
+      "id": "radial-bar-chart-revenue-rings",
+      "slug": "revenue-rings",
+      "title": "Revenue rings",
+      "description": "A dark revenue summary card with concentric radial progress and monthly/yearly value callouts.",
+      "badge": "Revenue example",
+      "configurable": false,
+      "preview": {
+        "width": "620px",
+        "frame": false
+      },
+      "config": {
+        "example": "revenue-rings",
+        "chartType": "radial-bar",
+        "title": "Revenue rings",
+        "description": "Monthly and yearly progress as radial bars.",
+        "height": "sm",
+        "showLegend": false,
+        "showTooltip": true,
+        "nameKey": "name",
+        "valueKey": "value"
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
+  "scatter-chart": [
+    {
+      "id": "scatter-chart-nfl-scorigami",
+      "slug": "nfl-scorigami",
+      "title": "NFL scorigami frequency",
+      "description": "A pannable Canvas matrix of real NFL final scores, showing how often each winning and losing score combination has happened.",
+      "badge": "Sports data",
+      "configurable": false,
+      "preview": {
+        "width": "760px",
+        "frame": false
+      },
+      "config": {
+        "example": "nfl-scorigami",
+        "chartType": "scatter",
+        "title": "NFL scorigami frequency",
+        "description": "Winning score on the horizontal axis and losing or tied score on the vertical axis.",
+        "xKey": "win",
+        "yKey": "lose",
+        "zKey": "count",
+        "height": "md",
+        "showGrid": true,
+        "showLegend": false,
+        "showTooltip": true,
+        "showXAxis": true,
+        "showYAxis": true,
+        "showEnterprise": true,
+        "enterpriseTone": "accent",
+        "enterpriseLabel": "Score frequency",
+        "showMidmarket": false
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
+  "bar-chart": [
+    {
+      "id": "bar-chart-live-api-incident",
+      "slug": "live-api-incident",
+      "title": "Live API incident recovery",
+      "description": "A compact operational card whose BarChart cycles from healthy latency into warning, then error, and resolves back to success.",
+      "badge": "Scenario",
+      "configurable": false,
+      "preview": {
+        "width": "360px",
+        "frame": false
+      },
+      "config": {
+        "example": "live-api-incident",
+        "chartType": "bar",
+        "title": "Incident recovery latency",
+        "description": "Virtual live-updating gateway traffic with recovery.",
+        "xKey": "tick",
+        "height": "xs",
+        "showGrid": false,
+        "showLegend": false,
+        "showTooltip": false,
+        "showXAxis": false,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "ms",
+        "revenueLabel": "Latency",
+        "revenueTone": "warn",
+        "showExpenses": false,
+        "showForecast": false,
+        "data": [
+          {
+            "tick": "1",
+            "ms": 38
+          },
+          {
+            "tick": "2",
+            "ms": 42
+          },
+          {
+            "tick": "3",
+            "ms": 45
+          },
+          {
+            "tick": "4",
+            "ms": 41
+          },
+          {
+            "tick": "5",
+            "ms": 39
+          },
+          {
+            "tick": "6",
+            "ms": 44
+          },
+          {
+            "tick": "7",
+            "ms": 48
+          },
+          {
+            "tick": "8",
+            "ms": 52
+          },
+          {
+            "tick": "9",
+            "ms": 57
+          },
+          {
+            "tick": "10",
+            "ms": 65
+          },
+          {
+            "tick": "11",
+            "ms": 78
+          },
+          {
+            "tick": "12",
+            "ms": 86
+          },
+          {
+            "tick": "13",
+            "ms": 94
+          },
+          {
+            "tick": "14",
+            "ms": 108
+          },
+          {
+            "tick": "15",
+            "ms": 122
+          },
+          {
+            "tick": "16",
+            "ms": 116
+          },
+          {
+            "tick": "17",
+            "ms": 92
+          },
+          {
+            "tick": "18",
+            "ms": 62
+          }
+        ]
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    },
+    {
+      "id": "bar-chart-row-tones",
+      "slug": "row-tones",
+      "title": "Per-row tones",
+      "description": "A single-series BarChart where each data row supplies its own A1 tone.",
+      "badge": "Color example",
+      "preview": {
+        "width": "560px"
+      },
+      "config": {
+        "chartType": "bar",
+        "title": "Queue by status",
+        "description": "Each bar uses the row's tokenized tone instead of the series default.",
+        "xKey": "status",
+        "height": "sm",
+        "showGrid": true,
+        "showLegend": false,
+        "showTooltip": true,
+        "showXAxis": true,
+        "showYAxis": true,
+        "showRevenue": true,
+        "revenueKey": "tickets",
+        "revenueLabel": "Tickets",
+        "revenueTone": "neutral",
+        "showExpenses": false,
+        "showForecast": false,
+        "data": [
+          {
+            "status": "New",
+            "tickets": 24,
+            "tone": "neutral"
+          },
+          {
+            "status": "Triaged",
+            "tickets": 72,
+            "tone": "info"
+          },
+          {
+            "status": "In progress",
+            "tickets": 44,
+            "tone": "accent"
+          },
+          {
+            "status": "Blocked",
+            "tickets": 12,
+            "tone": "warn"
+          },
+          {
+            "status": "Error",
+            "tickets": 6,
+            "tone": "error"
+          },
+          {
+            "status": "Done",
+            "tickets": 58,
+            "tone": "success"
+          }
+        ]
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    },
+    {
+      "id": "bar-chart-uptime-timeline",
+      "slug": "uptime-timeline",
+      "title": "Uptime timeline",
+      "description": "A wider service-health card with dense daily bars, incident marks, latency, uptime, and a metrics link.",
+      "badge": "Status example",
+      "configurable": false,
+      "preview": {
+        "width": "760px",
+        "frame": false
+      },
+      "config": {
+        "example": "uptime-timeline",
+        "chartType": "bar",
+        "title": "Authentication API v2",
+        "description": "RESTFUL ENDPOINT · US-EAST-1",
+        "xKey": "day",
+        "height": "xs",
+        "showGrid": false,
+        "showLegend": false,
+        "showTooltip": false,
+        "showXAxis": false,
+        "showYAxis": false,
+        "showRevenue": true,
+        "revenueKey": "healthy",
+        "revenueLabel": "Healthy",
+        "revenueTone": "success",
+        "showExpenses": true,
+        "expensesKey": "incident",
+        "expensesLabel": "Incident",
+        "expensesTone": "error",
+        "showForecast": false
+      },
+      "display": {
+        "padding": "md",
+        "viewport": "fit"
+      }
+    }
+  ],
   "toolbar": [
     {
       "id": "toolbar-overflow",
@@ -152,9 +663,22 @@
       },
       "config": {
         "tools": [
-          { "id": "undo", "type": "button", "icon": "undo", "label": "Undo" },
-          { "id": "redo", "type": "button", "icon": "redo", "label": "Redo" },
-          { "id": "history-divider", "type": "divider" },
+          {
+            "id": "undo",
+            "type": "button",
+            "icon": "undo",
+            "label": "Undo"
+          },
+          {
+            "id": "redo",
+            "type": "button",
+            "icon": "redo",
+            "label": "Redo"
+          },
+          {
+            "id": "history-divider",
+            "type": "divider"
+          },
           {
             "id": "style",
             "type": "menu",
@@ -162,11 +686,31 @@
             "label": "Style",
             "value": "paragraph",
             "items": [
-              { "id": "paragraph", "label": "Paragraph", "icon": "notes" },
-              { "id": "heading-one", "label": "Heading 1", "icon": "title" },
-              { "id": "heading-two", "label": "Heading 2", "icon": "format_h2" },
-              { "id": "quote", "label": "Quote", "icon": "format_quote" },
-              { "id": "code", "label": "Code", "icon": "code" }
+              {
+                "id": "paragraph",
+                "label": "Paragraph",
+                "icon": "notes"
+              },
+              {
+                "id": "heading-one",
+                "label": "Heading 1",
+                "icon": "title"
+              },
+              {
+                "id": "heading-two",
+                "label": "Heading 2",
+                "icon": "format_h2"
+              },
+              {
+                "id": "quote",
+                "label": "Quote",
+                "icon": "format_quote"
+              },
+              {
+                "id": "code",
+                "label": "Code",
+                "icon": "code"
+              }
             ]
           },
           {
@@ -176,9 +720,18 @@
             "label": "Font",
             "value": "system",
             "items": [
-              { "id": "system", "label": "System" },
-              { "id": "serif", "label": "Serif" },
-              { "id": "mono", "label": "Monospace" }
+              {
+                "id": "system",
+                "label": "System"
+              },
+              {
+                "id": "serif",
+                "label": "Serif"
+              },
+              {
+                "id": "mono",
+                "label": "Monospace"
+              }
             ]
           },
           {
@@ -188,19 +741,61 @@
             "label": "Size",
             "value": "16",
             "items": [
-              { "id": "12", "label": "12 px" },
-              { "id": "14", "label": "14 px" },
-              { "id": "16", "label": "16 px" },
-              { "id": "20", "label": "20 px" },
-              { "id": "24", "label": "24 px" }
+              {
+                "id": "12",
+                "label": "12 px"
+              },
+              {
+                "id": "14",
+                "label": "14 px"
+              },
+              {
+                "id": "16",
+                "label": "16 px"
+              },
+              {
+                "id": "20",
+                "label": "20 px"
+              },
+              {
+                "id": "24",
+                "label": "24 px"
+              }
             ]
           },
-          { "id": "text-divider", "type": "divider" },
-          { "id": "bold", "type": "toggle", "icon": "format_bold", "label": "Bold", "pressed": true },
-          { "id": "italic", "type": "toggle", "icon": "format_italic", "label": "Italic" },
-          { "id": "underline", "type": "toggle", "icon": "format_underlined", "label": "Underline" },
-          { "id": "strikethrough", "type": "toggle", "icon": "strikethrough_s", "label": "Strikethrough" },
-          { "id": "color-divider", "type": "divider" },
+          {
+            "id": "text-divider",
+            "type": "divider"
+          },
+          {
+            "id": "bold",
+            "type": "toggle",
+            "icon": "format_bold",
+            "label": "Bold",
+            "pressed": true
+          },
+          {
+            "id": "italic",
+            "type": "toggle",
+            "icon": "format_italic",
+            "label": "Italic"
+          },
+          {
+            "id": "underline",
+            "type": "toggle",
+            "icon": "format_underlined",
+            "label": "Underline"
+          },
+          {
+            "id": "strikethrough",
+            "type": "toggle",
+            "icon": "strikethrough_s",
+            "label": "Strikethrough"
+          },
+          {
+            "id": "color-divider",
+            "type": "divider"
+          },
           {
             "id": "text-color",
             "type": "menu",
@@ -208,10 +803,22 @@
             "label": "Text color",
             "value": "default",
             "items": [
-              { "id": "default", "label": "Default" },
-              { "id": "accent", "label": "Accent" },
-              { "id": "muted", "label": "Muted" },
-              { "id": "danger", "label": "Danger" }
+              {
+                "id": "default",
+                "label": "Default"
+              },
+              {
+                "id": "accent",
+                "label": "Accent"
+              },
+              {
+                "id": "muted",
+                "label": "Muted"
+              },
+              {
+                "id": "danger",
+                "label": "Danger"
+              }
             ]
           },
           {
@@ -221,23 +828,54 @@
             "label": "Highlight",
             "value": "none",
             "items": [
-              { "id": "none", "label": "None" },
-              { "id": "yellow", "label": "Yellow" },
-              { "id": "green", "label": "Green" },
-              { "id": "blue", "label": "Blue" }
+              {
+                "id": "none",
+                "label": "None"
+              },
+              {
+                "id": "yellow",
+                "label": "Yellow"
+              },
+              {
+                "id": "green",
+                "label": "Green"
+              },
+              {
+                "id": "blue",
+                "label": "Blue"
+              }
             ]
           },
-          { "id": "paragraph-divider", "type": "divider" },
+          {
+            "id": "paragraph-divider",
+            "type": "divider"
+          },
           {
             "id": "align",
             "type": "group",
             "label": "Alignment",
             "value": "left",
             "options": [
-              { "id": "left", "label": "Left", "icon": "format_align_left" },
-              { "id": "center", "label": "Center", "icon": "format_align_center" },
-              { "id": "right", "label": "Right", "icon": "format_align_right" },
-              { "id": "justify", "label": "Justify", "icon": "format_align_justify" }
+              {
+                "id": "left",
+                "label": "Left",
+                "icon": "format_align_left"
+              },
+              {
+                "id": "center",
+                "label": "Center",
+                "icon": "format_align_center"
+              },
+              {
+                "id": "right",
+                "label": "Right",
+                "icon": "format_align_right"
+              },
+              {
+                "id": "justify",
+                "label": "Justify",
+                "icon": "format_align_justify"
+              }
             ]
           },
           {
@@ -246,19 +884,69 @@
             "label": "List",
             "value": "bullets",
             "options": [
-              { "id": "bullets", "label": "Bullets", "icon": "format_list_bulleted" },
-              { "id": "numbers", "label": "Numbers", "icon": "format_list_numbered" },
-              { "id": "checklist", "label": "Checklist", "icon": "checklist" }
+              {
+                "id": "bullets",
+                "label": "Bullets",
+                "icon": "format_list_bulleted"
+              },
+              {
+                "id": "numbers",
+                "label": "Numbers",
+                "icon": "format_list_numbered"
+              },
+              {
+                "id": "checklist",
+                "label": "Checklist",
+                "icon": "checklist"
+              }
             ]
           },
-          { "id": "outdent", "type": "button", "icon": "format_indent_decrease", "label": "Decrease indent" },
-          { "id": "indent", "type": "button", "icon": "format_indent_increase", "label": "Increase indent" },
-          { "id": "insert-divider", "type": "divider" },
-          { "id": "link", "type": "button", "icon": "link", "label": "Insert link" },
-          { "id": "image", "type": "button", "icon": "image", "label": "Insert image" },
-          { "id": "table", "type": "button", "icon": "table", "label": "Insert table" },
-          { "id": "code-block", "type": "button", "icon": "code_blocks", "label": "Code block" },
-          { "id": "clear", "type": "button", "icon": "format_clear", "label": "Clear formatting" }
+          {
+            "id": "outdent",
+            "type": "button",
+            "icon": "format_indent_decrease",
+            "label": "Decrease indent"
+          },
+          {
+            "id": "indent",
+            "type": "button",
+            "icon": "format_indent_increase",
+            "label": "Increase indent"
+          },
+          {
+            "id": "insert-divider",
+            "type": "divider"
+          },
+          {
+            "id": "link",
+            "type": "button",
+            "icon": "link",
+            "label": "Insert link"
+          },
+          {
+            "id": "image",
+            "type": "button",
+            "icon": "image",
+            "label": "Insert image"
+          },
+          {
+            "id": "table",
+            "type": "button",
+            "icon": "table",
+            "label": "Insert table"
+          },
+          {
+            "id": "code-block",
+            "type": "button",
+            "icon": "code_blocks",
+            "label": "Code block"
+          },
+          {
+            "id": "clear",
+            "type": "button",
+            "icon": "format_clear",
+            "label": "Clear formatting"
+          }
         ],
         "activeId": null,
         "showToolbarLabel": false,

@@ -2,6 +2,7 @@ import { componentCategories } from './data.js'
 import {
   allComponents,
   componentCategoryPageIds,
+  componentExamples,
   componentPageIds,
   componentPageTitles,
   componentRouteSlug,
@@ -73,6 +74,12 @@ export function getComponentsSidebar({ activePage, detailTab, onNavigate, onSele
    tab. ComponentDetailPage portals the controls into this element. */
 export function getComponentsAside({ activePage, detailTab }) {
   const showsConfigurator = detailTab === 'configure' || detailTab?.startsWith('example:')
+  const exampleId = detailTab?.startsWith('example:') ? detailTab.slice('example:'.length) : null
+  const componentId = activePage?.startsWith('component-') ? activePage.slice('component-'.length) : null
+  const example = exampleId && componentId
+    ? (componentExamples[componentId] ?? []).find((item) => item.id === exampleId)
+    : null
+  if (example?.configurable === false) return null
   if (!componentPageIds.includes(activePage) || !showsConfigurator) return null
   return <div id="a1-web-config-aside-slot" className="a1-web-config-aside" />
 }

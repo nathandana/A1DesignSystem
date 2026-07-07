@@ -156,8 +156,18 @@
 }
 
 .a1-tab[aria-selected="true"] .a1-tab__count {
-  background: color-mix(in srgb, var(--semantic-color-action-background) 12%, transparent);
-  color: var(--semantic-color-action-background);
+  background: color-mix(in srgb, var(--component-tab-selected-foreground) 24%, transparent);
+  color: var(--component-tab-selected-foreground);
+}
+
+.a1-tab[aria-selected="true"]:hover .a1-tab__count {
+  background: color-mix(in srgb, var(--component-tab-selected-foreground-hover) 24%, transparent);
+  color: var(--component-tab-selected-foreground-hover);
+}
+
+.a1-tab[aria-selected="true"]:active .a1-tab__count {
+  background: color-mix(in srgb, var(--component-tab-selected-foreground-pressed) 24%, transparent);
+  color: var(--component-tab-selected-foreground-pressed);
 }
 
 /* ── Line tab ───────────────────────────────────────────────────────────── */
@@ -177,9 +187,22 @@
 }
 
 .a1-tab--line[aria-selected="true"] {
-  color: var(--semantic-color-action-background);
-  border-bottom-color: var(--semantic-color-action-background);
+  color: var(--component-tab-selected-foreground);
+  background: var(--component-tab-selected-background);
+  border-bottom-color: var(--component-tab-selected-background);
   cursor: default;
+}
+
+.a1-tab--line[aria-selected="true"]:hover {
+  color: var(--component-tab-selected-foreground-hover);
+  background: var(--component-tab-selected-background-hover);
+  border-bottom-color: var(--component-tab-selected-background-hover);
+}
+
+.a1-tab--line[aria-selected="true"]:active {
+  color: var(--component-tab-selected-foreground-pressed);
+  background: var(--component-tab-selected-background-pressed);
+  border-bottom-color: var(--component-tab-selected-background-pressed);
 }
 
 /* ── Folder tab ─────────────────────────────────────────────────────────── */
@@ -265,14 +288,34 @@
 }
 
 .a1-tab--pills[aria-selected="true"] {
-  color: var(--semantic-color-action-foreground);
-  background: var(--semantic-color-action-background);
+  color: var(--component-tab-selected-foreground);
+  background: var(--component-tab-selected-background);
   cursor: default;
 }
 
+.a1-tab--pills[aria-selected="true"]:hover {
+  color: var(--component-tab-selected-foreground-hover);
+  background: var(--component-tab-selected-background-hover);
+}
+
+.a1-tab--pills[aria-selected="true"]:active {
+  color: var(--component-tab-selected-foreground-pressed);
+  background: var(--component-tab-selected-background-pressed);
+}
+
 .a1-tab--pills[aria-selected="true"] .a1-tab__count {
-  background: color-mix(in srgb, var(--semantic-color-action-foreground) 24%, transparent);
-  color: var(--semantic-color-action-foreground);
+  background: color-mix(in srgb, var(--component-tab-selected-foreground) 24%, transparent);
+  color: var(--component-tab-selected-foreground);
+}
+
+.a1-tab--pills[aria-selected="true"]:hover .a1-tab__count {
+  background: color-mix(in srgb, var(--component-tab-selected-foreground-hover) 24%, transparent);
+  color: var(--component-tab-selected-foreground-hover);
+}
+
+.a1-tab--pills[aria-selected="true"]:active .a1-tab__count {
+  background: color-mix(in srgb, var(--component-tab-selected-foreground-pressed) 24%, transparent);
+  color: var(--component-tab-selected-foreground-pressed);
 }
 
 /* ── Segment variant (mirrors SegmentedControl) ─────────────────────────── */
@@ -304,10 +347,20 @@
 }
 
 .a1-tab--segment[aria-selected="true"] {
-  color: var(--semantic-color-text-default);
-  background: var(--semantic-color-surface-page);
+  color: var(--component-tab-selected-foreground);
+  background: var(--component-tab-selected-background);
   box-shadow: var(--semantic-shadow-xs);
   cursor: default;
+}
+
+.a1-tab--segment[aria-selected="true"]:hover {
+  color: var(--component-tab-selected-foreground-hover);
+  background: var(--component-tab-selected-background-hover);
+}
+
+.a1-tab--segment[aria-selected="true"]:active {
+  color: var(--component-tab-selected-foreground-pressed);
+  background: var(--component-tab-selected-background-pressed);
 }
 
 /* ── Progress variant ───────────────────────────────────────────────────── */

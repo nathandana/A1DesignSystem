@@ -40,11 +40,23 @@
 }
 
 .a1-pagination__item[aria-current="page"] {
-  background: var(--semantic-color-action-background);
-  border-color: var(--semantic-color-action-background);
-  color: var(--semantic-color-action-foreground);
+  background: var(--component-pagination-selected-background);
+  border-color: var(--component-pagination-selected-border);
+  color: var(--component-pagination-selected-foreground);
   font-weight: var(--component-pagination-font-weight-active);
   cursor: default;
+}
+
+.a1-pagination__item[aria-current="page"]:hover {
+  background: var(--component-pagination-selected-background-hover);
+  border-color: var(--component-pagination-selected-border-hover);
+  color: var(--component-pagination-selected-foreground-hover);
+}
+
+.a1-pagination__item[aria-current="page"]:active {
+  background: var(--component-pagination-selected-background-pressed);
+  border-color: var(--component-pagination-selected-border-pressed);
+  color: var(--component-pagination-selected-foreground-pressed);
 }
 
 .a1-pagination__item:disabled {

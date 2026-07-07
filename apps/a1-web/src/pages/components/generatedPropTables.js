@@ -6,7 +6,7 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "LineChart",
       "rows": [
-        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts. Bar rows may set `tone` / `fill`, or `${seriesKey}Tone` / `${seriesKey}Fill` for per-series bar colors." },
         { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for the x axis. Default: \"name\"" },
         { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for y values. If omitted, numeric row keys are inferred from the first data row." },
         { "id": "title", "name": "title", "type": "React.ReactNode", "description": "Optional visible chart title. Also labels the chart for assistive technology." },
