@@ -274,6 +274,8 @@ html.a1-theme-dark.a1-theme-fresh {
   --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
   --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
   --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+  --semantic-color-text-default:   var(--base-color-neutral-50);
+  --semantic-color-text-muted:     var(--base-color-neutral-100);
 }
 
 html.a1-theme-fresh.a1-theme-dark body,
@@ -291,6 +293,8 @@ html.a1-theme-dark.a1-theme-fresh body {
     --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
     --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
     --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+    --semantic-color-text-default:   var(--base-color-neutral-50);
+    --semantic-color-text-muted:     var(--base-color-neutral-100);
   }
 
   html.a1-theme-fresh body {
@@ -301,4 +305,14 @@ html.a1-theme-dark.a1-theme-fresh body {
     );
     background-color: var(--a1-theme-fresh-dark-surface-page);
   }
+}
+
+html.a1-theme-fresh.a1-theme-light body,
+html.a1-theme-light.a1-theme-fresh body {
+  background-image: linear-gradient(
+    207.43deg,
+    var(--a1-theme-fresh-gradient-start) 0%,
+    var(--a1-theme-fresh-gradient-end) 57.44%
+  );
+  background-color: var(--semantic-color-surface-page);
 }

@@ -2,6 +2,319 @@
 // Update by regenerating this file when package prop declarations change.
 
 export const GENERATED_PROP_TABLES = {
+  "line-chart": [
+    {
+      "title": "LineChart",
+      "rows": [
+        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+        { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for the x axis. Default: \"name\"" },
+        { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for y values. If omitted, numeric row keys are inferred from the first data row." },
+        { "id": "title", "name": "title", "type": "React.ReactNode", "description": "Optional visible chart title. Also labels the chart for assistive technology." },
+        { "id": "description", "name": "description", "type": "React.ReactNode", "description": "Optional visible chart description. Also describes the chart for assistive technology." },
+        { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+        { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+        { "id": "curve", "name": "curve", "type": "\"linear\" | \"monotone\" | \"natural\" | \"step\"", "description": "Curve used for line series. Default: \"monotone\"" },
+        { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show Cartesian grid lines. Default: true" },
+        { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+        { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" },
+        { "id": "showXAxis", "name": "showXAxis", "type": "boolean", "description": "Show the x axis. Default: true" },
+        { "id": "showYAxis", "name": "showYAxis", "type": "boolean", "description": "Show the y axis. Default: true" }
+      ]
+    }
+  ],
+  "bar-chart": [
+    {
+      "title": "BarChart",
+      "rows": [
+        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+        { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for the x axis. Default: \"name\"" },
+        { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for y values. If omitted, numeric row keys are inferred from the first data row." },
+        { "id": "stacked", "name": "stacked", "type": "boolean", "description": "Stack bar series together when no per-series stackId is supplied. Default: false" },
+        { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+        { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+        { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show Cartesian grid lines. Default: true" },
+        { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+        { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" },
+        { "id": "showXAxis", "name": "showXAxis", "type": "boolean", "description": "Show the x axis. Default: true" },
+        { "id": "showYAxis", "name": "showYAxis", "type": "boolean", "description": "Show the y axis. Default: true" }
+      ]
+    }
+  ],
+  "area-chart": [
+    {
+      "title": "AreaChart",
+      "rows": [
+        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+        { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for the x axis. Default: \"name\"" },
+        { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for y values. If omitted, numeric row keys are inferred from the first data row." },
+        { "id": "curve", "name": "curve", "type": "\"linear\" | \"monotone\" | \"natural\" | \"step\"", "description": "Curve used for area series. Default: \"monotone\"" },
+        { "id": "stacked", "name": "stacked", "type": "boolean", "description": "Stack area series together when no per-series stackId is supplied. Default: false" },
+        { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+        { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+        { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show Cartesian grid lines. Default: true" },
+        { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+        { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" },
+        { "id": "showXAxis", "name": "showXAxis", "type": "boolean", "description": "Show the x axis. Default: true" },
+        { "id": "showYAxis", "name": "showYAxis", "type": "boolean", "description": "Show the y axis. Default: true" }
+      ]
+    }
+  ],
+  "composed-chart": [
+    {
+      "title": "ComposedChart",
+      "rows": [
+        { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+        { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for the x axis. Default: \"name\"" },
+        { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for y values. Each series can set type to line, bar, or area." },
+        { "id": "curve", "name": "curve", "type": "\"linear\" | \"monotone\" | \"natural\" | \"step\"", "description": "Curve used for line and area series. Default: \"monotone\"" },
+        { "id": "stacked", "name": "stacked", "type": "boolean", "description": "Stack bar and area series together when no per-series stackId is supplied. Default: false" },
+        { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+        { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+        { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show Cartesian grid lines. Default: true" },
+        { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+        { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" },
+        { "id": "showXAxis", "name": "showXAxis", "type": "boolean", "description": "Show the x axis. Default: true" },
+        { "id": "showYAxis", "name": "showYAxis", "type": "boolean", "description": "Show the y axis. Default: true" }
+      ]
+    }
+  ],
+  "pie-chart": [
+    { "title": "PieChart", "rows": [
+      { "id": "data", "name": "data", "type": "CategoricalChartDatum[]", "description": "Data items passed to Recharts." },
+      { "id": "nameKey", "name": "nameKey", "type": "string", "description": "Row key used for item labels. Default: \"name\"" },
+      { "id": "valueKey", "name": "valueKey", "type": "string", "description": "Row key used for item values. Default: \"value\"" },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "scatter-chart": [
+    { "title": "ScatterChart", "rows": [
+      { "id": "series", "name": "series", "type": "ScatterChartSeries[]", "description": "Scatter series definitions. If omitted, chart-level data renders as one series." },
+      { "id": "xKey", "name": "xKey", "type": "string", "description": "Row key used for x values. Default: \"x\"" },
+      { "id": "yKey", "name": "yKey", "type": "string", "description": "Row key used for y values. Default: \"y\"" },
+      { "id": "zKey", "name": "zKey", "type": "string", "description": "Optional row key used for z values." },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show Cartesian grid lines. Default: true" },
+      { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "radar-chart": [
+    { "title": "RadarChart", "rows": [
+      { "id": "data", "name": "data", "type": "Array<Record<string, unknown>>", "description": "Data rows passed to Recharts." },
+      { "id": "axisKey", "name": "axisKey", "type": "string", "description": "Row key used for the polar angle axis. Default: \"name\"" },
+      { "id": "series", "name": "series", "type": "ChartSeries[]", "description": "Series definitions for radar values. If omitted, numeric row keys are inferred from the first data row." },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showGrid", "name": "showGrid", "type": "boolean", "description": "Show polar grid rings. Default: true" },
+      { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+      { "id": "showAngleAxis", "name": "showAngleAxis", "type": "boolean", "description": "Show the angle axis. Default: true" },
+      { "id": "showRadiusAxis", "name": "showRadiusAxis", "type": "boolean", "description": "Show the radius axis. Default: true" }
+    ] }
+  ],
+  "radial-bar-chart": [
+    { "title": "RadialBarChart", "rows": [
+      { "id": "data", "name": "data", "type": "CategoricalChartDatum[]", "description": "Data items passed to Recharts." },
+      { "id": "nameKey", "name": "nameKey", "type": "string", "description": "Row key used for item labels. Default: \"name\"" },
+      { "id": "valueKey", "name": "valueKey", "type": "string", "description": "Row key used for item values. Default: \"value\"" },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "funnel-chart": [
+    { "title": "FunnelChart", "rows": [
+      { "id": "data", "name": "data", "type": "CategoricalChartDatum[]", "description": "Data items passed to Recharts." },
+      { "id": "nameKey", "name": "nameKey", "type": "string", "description": "Row key used for item labels. Default: \"name\"" },
+      { "id": "valueKey", "name": "valueKey", "type": "string", "description": "Row key used for item values. Default: \"value\"" },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showLegend", "name": "showLegend", "type": "boolean", "description": "Show the legend. Default: true" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "treemap-chart": [
+    { "title": "TreemapChart", "rows": [
+      { "id": "data", "name": "data", "type": "HierarchicalChartDatum[]", "description": "Hierarchical data items passed to Recharts." },
+      { "id": "nameKey", "name": "nameKey", "type": "string", "description": "Row key used for node labels. Default: \"name\"" },
+      { "id": "valueKey", "name": "valueKey", "type": "string", "description": "Row key used for node values. Default: \"value\"" },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "sankey-chart": [
+    { "title": "SankeyChart", "rows": [
+      { "id": "data", "name": "data", "type": "SankeyChartData", "description": "Sankey nodes and links. Links reference node indexes." },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "sunburst-chart": [
+    { "title": "SunburstChart", "rows": [
+      { "id": "data", "name": "data", "type": "HierarchicalChartDatum", "description": "Hierarchical root node passed to Recharts." },
+      { "id": "nameKey", "name": "nameKey", "type": "string", "description": "Row key used for node labels. Default: \"name\"" },
+      { "id": "valueKey", "name": "valueKey", "type": "string", "description": "Row key used for node values. Default: \"value\"" },
+      { "id": "height", "name": "height", "type": "\"sm\" | \"md\" | \"lg\"", "description": "Tokenized chart height. Default: \"md\"" },
+      { "id": "variant", "name": "variant", "type": "\"default\" | \"subtle\"", "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\"" },
+      { "id": "showTooltip", "name": "showTooltip", "type": "boolean", "description": "Show hover/focus tooltip content. Default: true" }
+    ] }
+  ],
+  "chart": [
+    {
+      "title": "ChartSeries",
+      "rows": [
+        {
+          "id": "key",
+          "name": "key",
+          "type": "string",
+          "description": "Row key for the numeric value this series renders."
+        },
+        {
+          "id": "label",
+          "name": "label",
+          "type": "string",
+          "description": "Visible label used in legends and tooltips. Defaults to key."
+        },
+        {
+          "id": "type",
+          "name": "type",
+          "type": "\"line\" | \"bar\" | \"area\"",
+          "description": "Series renderer used when Chart type is \"composed\". Default: \"line\""
+        },
+        {
+          "id": "tone",
+          "name": "tone",
+          "type": "\"accent\" | \"info\" | \"success\" | \"warn\" | \"error\" | \"neutral\"",
+          "description": "A1 tokenized series colour. Defaults by series order."
+        },
+        {
+          "id": "hidden",
+          "name": "hidden",
+          "type": "boolean",
+          "description": "Hide this series without removing it from the data contract. Default: false"
+        },
+        {
+          "id": "stackId",
+          "name": "stackId",
+          "type": "string | number",
+          "description": "Stack id for bar or area series. When Chart stacked is true, a default stack id is used."
+        }
+      ]
+    },
+    {
+      "title": "Chart",
+      "rows": [
+        {
+          "id": "data",
+          "name": "data",
+          "type": "Array<Record<string, unknown>>",
+          "description": "Data rows passed to Recharts."
+        },
+        {
+          "id": "xKey",
+          "name": "xKey",
+          "type": "string",
+          "description": "Row key used for the x axis. Default: \"name\""
+        },
+        {
+          "id": "series",
+          "name": "series",
+          "type": "ChartSeries[]",
+          "description": "Series definitions for y values. If omitted, numeric row keys are inferred from the first data row."
+        },
+        {
+          "id": "type",
+          "name": "type",
+          "type": "\"line\" | \"bar\" | \"area\" | \"composed\"",
+          "description": "Base chart renderer. Use \"composed\" to mix series-level types. Default: \"line\""
+        },
+        {
+          "id": "title",
+          "name": "title",
+          "type": "React.ReactNode",
+          "description": "Optional visible chart title. Also labels the chart for assistive technology."
+        },
+        {
+          "id": "description",
+          "name": "description",
+          "type": "React.ReactNode",
+          "description": "Optional visible chart description. Also describes the chart for assistive technology."
+        },
+        {
+          "id": "height",
+          "name": "height",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "description": "Tokenized chart height. Default: \"md\""
+        },
+        {
+          "id": "variant",
+          "name": "variant",
+          "type": "\"default\" | \"subtle\"",
+          "description": "Color treatment for series tones. \"subtle\" softens the same semantic tones. Default: \"default\""
+        },
+        {
+          "id": "curve",
+          "name": "curve",
+          "type": "\"linear\" | \"monotone\" | \"natural\" | \"step\"",
+          "description": "Curve used for line and area series. Default: \"monotone\""
+        },
+        {
+          "id": "stacked",
+          "name": "stacked",
+          "type": "boolean",
+          "description": "Stack bar and area series together when no per-series stackId is supplied. Default: false"
+        },
+        {
+          "id": "showGrid",
+          "name": "showGrid",
+          "type": "boolean",
+          "description": "Show Cartesian grid lines. Default: true"
+        },
+        {
+          "id": "showLegend",
+          "name": "showLegend",
+          "type": "boolean",
+          "description": "Show the legend. Default: true"
+        },
+        {
+          "id": "showTooltip",
+          "name": "showTooltip",
+          "type": "boolean",
+          "description": "Show hover/focus tooltip content. Default: true"
+        },
+        {
+          "id": "showXAxis",
+          "name": "showXAxis",
+          "type": "boolean",
+          "description": "Show the x axis. Default: true"
+        },
+        {
+          "id": "showYAxis",
+          "name": "showYAxis",
+          "type": "boolean",
+          "description": "Show the y axis. Default: true"
+        },
+        {
+          "id": "formatValue",
+          "name": "formatValue",
+          "type": "(value: unknown, seriesKey?: string | number, row?: Record<string, unknown>) => React.ReactNode",
+          "description": "Format tooltip values and y-axis ticks."
+        },
+        {
+          "id": "formatLabel",
+          "name": "formatLabel",
+          "type": "(value: unknown) => React.ReactNode",
+          "description": "Format tooltip labels for the x-axis value."
+        }
+      ]
+    }
+  ],
   "action-tile": [
     {
       "title": "ActionTileItem",

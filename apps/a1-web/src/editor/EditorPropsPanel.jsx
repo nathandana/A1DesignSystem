@@ -98,6 +98,7 @@ import { Controls as ChipControls, getDefaultConfig as chipDefaults } from '../p
 import { Controls as SliderControls, getDefaultConfig as sliderDefaults } from '../pages/components/detail/slider.jsx'
 import { Controls as TabsControls, getDefaultConfig as tabsDefaults } from '../pages/components/detail/tabs.jsx'
 import { Controls as ToolbarControls, getDefaultConfig as toolbarDefaults } from '../pages/components/detail/toolbar.jsx'
+import { Controls as ChartControls, chartPropsFromConfig, configFromChartProps } from '../pages/components/detail/chart.jsx'
 import { Controls as DataTableControls, getDefaultConfig as dataTableDefaults } from '../pages/components/detail/data-table.jsx'
 import { Controls as PageNavControls, getDefaultConfig as pageNavDefaults } from '../pages/components/detail/page-nav.jsx'
 import { Controls as TreeMenuControls, getDefaultConfig as treeMenuDefaults } from '../pages/components/detail/tree-menu.jsx'
@@ -761,6 +762,18 @@ export const propsToConfig = {
   FieldRow: () => ({}),
 
   // Data
+  LineChart: (props) => configFromChartProps('line', props),
+  BarChart: (props) => configFromChartProps('bar', props),
+  AreaChart: (props) => configFromChartProps('area', props),
+  ComposedChart: (props) => configFromChartProps('composed', props),
+  PieChart: (props) => configFromChartProps('pie', props),
+  ScatterChart: (props) => configFromChartProps('scatter', props),
+  RadarChart: (props) => configFromChartProps('radar', props),
+  RadialBarChart: (props) => configFromChartProps('radial-bar', props),
+  FunnelChart: (props) => configFromChartProps('funnel', props),
+  TreemapChart: (props) => configFromChartProps('treemap', props),
+  SankeyChart: (props) => configFromChartProps('sankey', props),
+  SunburstChart: (props) => configFromChartProps('sunburst', props),
   DataTable: (props) => ({ ...dataTableDefaults(), ...(props ?? {}) }),
 
   // Pattern authoring — a constrained blank area.
@@ -1443,6 +1456,18 @@ export const configToNodeUpdate = {
   }),
 
   DataTable: (config) => ({ props: { ...config } }),
+  LineChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  BarChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  AreaChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  ComposedChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  PieChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  ScatterChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  RadarChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  RadialBarChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  FunnelChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  TreemapChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  SankeyChart: (config) => ({ props: chartPropsFromConfig(config) }),
+  SunburstChart: (config) => ({ props: chartPropsFromConfig(config) }),
 
   // Pattern authoring — a constrained blank area.
   Slot: (config) => ({
@@ -1744,6 +1769,18 @@ const CONTROLS_BY_TYPE = {
   RadioGroup: RadioGroupControls,
   ChoiceGroup: ChoiceGroupEditorControls,
   // Data
+  LineChart: ChartControls,
+  BarChart: ChartControls,
+  AreaChart: ChartControls,
+  ComposedChart: ChartControls,
+  PieChart: ChartControls,
+  ScatterChart: ChartControls,
+  RadarChart: ChartControls,
+  RadialBarChart: ChartControls,
+  FunnelChart: ChartControls,
+  TreemapChart: ChartControls,
+  SankeyChart: ChartControls,
+  SunburstChart: ChartControls,
   DefinitionList: DefinitionListControls,
   Pagination: PaginationControls,
   Calendar: CalendarControls,

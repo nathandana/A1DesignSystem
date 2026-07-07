@@ -1,0 +1,93 @@
+component: Recharts charts
+description: Recharts-backed chart wrappers styled by A1 design tokens.
+
+rules:
+  - id: chart-use-a1-wrapper
+    components:
+      - Chart
+      - LineChart
+      - BarChart
+      - AreaChart
+      - ComposedChart
+      - PieChart
+      - ScatterChart
+      - RadarChart
+      - RadialBarChart
+      - FunnelChart
+      - TreemapChart
+      - SankeyChart
+      - SunburstChart
+    requirement: Use the A1 Recharts wrappers for chart surfaces.
+    do: Render data visualizations through the named A1 chart wrapper that matches the visualization type so axes, polar grids, legends, tooltips, focus, and series colors stay tokenized.
+    dont: Import Recharts directly in product UI when the required visualization can be represented by an A1 chart component.
+    applies_to:
+      - data-display
+      - tokens
+      - consistency
+
+  - id: chart-title-or-accessible-name
+    components:
+      - Chart
+      - LineChart
+      - BarChart
+      - AreaChart
+      - ComposedChart
+      - PieChart
+      - ScatterChart
+      - RadarChart
+      - RadialBarChart
+      - FunnelChart
+      - TreemapChart
+      - SankeyChart
+      - SunburstChart
+    requirement: Every chart needs a clear title or accessible name.
+    do: Provide `title` for visible context, or pass `aria-label` when the surrounding heading already names the chart.
+    dont: Ship an unlabeled chart that screen-reader users cannot identify.
+    applies_to:
+      - accessibility
+      - semantics
+
+  - id: chart-not-color-only
+    components:
+      - Chart
+      - LineChart
+      - BarChart
+      - AreaChart
+      - ComposedChart
+      - PieChart
+      - ScatterChart
+      - RadarChart
+      - RadialBarChart
+      - FunnelChart
+      - TreemapChart
+      - SankeyChart
+      - SunburstChart
+    requirement: Series colors must be paired with text labels.
+    do: Keep the legend or tooltip enabled, use clear series labels, and provide surrounding text for any critical takeaway.
+    dont: Rely on color alone to communicate which series is meaningful, successful, risky, or failing.
+    applies_to:
+      - accessibility
+      - data-display
+      - color
+
+  - id: chart-tokenized-series-tones
+    components:
+      - Chart
+      - LineChart
+      - BarChart
+      - AreaChart
+      - ComposedChart
+      - PieChart
+      - ScatterChart
+      - RadarChart
+      - RadialBarChart
+      - FunnelChart
+      - TreemapChart
+      - SankeyChart
+      - SunburstChart
+    requirement: Use the built-in tokenized series tones.
+    do: Choose `tone` values from accent, info, success, warn, error, and neutral when defining series or categorical data items.
+    dont: Pass arbitrary hex, rgb, hsl, or brand colors directly to Recharts series, cells, nodes, or links in A1 UI.
+    applies_to:
+      - tokens
+      - theming

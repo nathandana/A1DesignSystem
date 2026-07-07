@@ -10,6 +10,21 @@ export { Notification } from "./components/notification/Notification.jsx";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar.jsx";
 export { StatusBar } from "./components/status-bar/StatusBar.jsx";
 export { Stat } from "./components/stat/Stat.jsx";
+export {
+  AreaChart,
+  BarChart,
+  Chart,
+  ComposedChart,
+  FunnelChart,
+  LineChart,
+  PieChart,
+  RadarChart,
+  RadialBarChart,
+  SankeyChart,
+  ScatterChart,
+  SunburstChart,
+  TreemapChart,
+} from "./components/chart/Chart.jsx";
 export { CircularProgress } from "./components/circular-progress/CircularProgress.jsx";
 export { StepTracker } from "./components/step-tracker/StepTracker.jsx";
 export { Bleed } from "./components/bleed/Bleed.jsx";

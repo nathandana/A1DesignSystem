@@ -147,6 +147,24 @@ Set a real `autoComplete` value on editable fields in real forms (`"email"`,
 | `ContextMenu` | `open`, `x`, `y`, `items`, `onClose` | Right-click menu — mount once, position from `onContextMenu` event; no trigger button. |
 | `Tooltip` | `content`, `children`, `placement`, `delay`, `disabled` | Brief non-interactive hover/focus context. |
 
+## Recharts
+
+| Component | Key props | Notes |
+|---|---|---|
+| `LineChart` | `data`, `xKey`, `series`, `height`, `curve`, `showGrid`, `showLegend`, `showTooltip` | React-only Recharts trend chart. Series use A1 tokenized tones (`accent`, `info`, `success`, `warn`, `error`, `neutral`) instead of arbitrary colors. |
+| `BarChart` | `data`, `xKey`, `series`, `height`, `stacked`, `showGrid`, `showLegend`, `showTooltip` | React-only Recharts comparison chart. Use `stacked` only when stacked totals are meaningful. |
+| `AreaChart` | `data`, `xKey`, `series`, `height`, `curve`, `stacked`, `showGrid`, `showLegend`, `showTooltip` | React-only Recharts area chart for cumulative or banded trends. |
+| `ComposedChart` | `data`, `xKey`, `series` with per-series `type`, `height`, `curve`, `showGrid`, `showLegend`, `showTooltip` | Mix line, bar, and area series when one axis needs multiple encodings. |
+| `PieChart` / `RadialBarChart` / `FunnelChart` | `data`, `nameKey`, `valueKey`, `height`, `showLegend`, `showTooltip` | Categorical charts. Data items may set a tokenized `tone`; do not pass raw colors. |
+| `ScatterChart` | `series`, `data`, `xKey`, `yKey`, `zKey`, `height`, `showGrid`, `showLegend`, `showTooltip` | Numeric correlation plot. Prefer explicit `series` when comparing groups. |
+| `RadarChart` | `data`, `axisKey`, `series`, `height`, `showGrid`, `showLegend`, `showTooltip` | Polar multivariate profile chart. Keep labels short enough to fit the plotted area. |
+| `TreemapChart` / `SunburstChart` | `data`, `nameKey`, `valueKey`, `height`, `showTooltip` | Hierarchy charts for nested part-to-whole relationships. |
+| `SankeyChart` | `data={{ nodes, links }}`, `height`, `showTooltip` | Flow chart where links reference node indexes. |
+| `Chart` | `type="line\|bar\|area\|composed"` plus Cartesian chart props | Compatibility wrapper for Cartesian charts. Prefer the named chart exports in new UI. |
+
+Provide a visible `title` or an accessible `aria-label`, and keep a legend,
+tooltip, or surrounding text so meaning is not communicated by color alone.
+
 ## Data
 
 | Component | Key props | Notes |

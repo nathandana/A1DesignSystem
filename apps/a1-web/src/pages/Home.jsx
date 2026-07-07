@@ -31,6 +31,7 @@ const HOME_CATEGORY_LABEL_KEYS = {
   feedback: 'app.home.catFeedback',
   'media-iconography': 'app.home.catMediaIconography',
   overlay: 'app.home.catOverlay',
+  'data-viz': 'app.home.catDataViz',
   data: 'app.home.catData',
 }
 
@@ -252,20 +253,37 @@ export function Home({ onNavigate }) {
 
       {/* ── Stats strip ── */}
       <Section padding="sm" surface="raised" contentWidth="lg" align="center" aria-label={t('app.home.statsLabel', 'System statistics')}>
-        <Grid columns={{ xs: 2, sm: 4 }} gap="md">
-          {stats.map((stat) => (
-            <Inset key={stat.label} block={16} inline={0}>
-              <Stack direction="column" gap={4} align="center">
-                <Heading as="p" type="display" size={{ xs: 'md', md: 'lg', lg: 'xl' }}>
-                  {stat.value}
+        <Stack gap="md">
+          <Grid columns={{ xs: 2, sm: 4 }} gap="md">
+            {stats.map((stat) => (
+              <Inset key={stat.label} block={16} inline={0}>
+                <Stack direction="column" gap={4} align="center">
+                  <Heading as="p" type="display" size={{ xs: 'md', md: 'lg', lg: 'xl' }}>
+                    {stat.value}
+                  </Heading>
+                  <Paragraph size={{ xs: 'sm', md: 'md', lg: 'lg' }} color="muted">
+                    <strong>{stat.label}</strong>
+                  </Paragraph>
+                </Stack>
+              </Inset>
+            ))}
+          </Grid>
+          <Card variant="navigation" icon="monitoring" onClick={() => onNavigate('dashboard')}>
+            <Stack direction={{ xs: 'column', md: 'row' }} gap="sm" align="center" justify={{ md: 'between' }}>
+              <Stack gap="xs">
+                <Heading as="h2" size="md">
+                  {t('app.home.dashboardTitle', 'Open the system dashboard')}
                 </Heading>
-                <Paragraph size={{ xs: 'sm', md: 'md', lg: 'lg' }} color="muted">
-                  <strong>{stat.label}</strong>
+                <Paragraph size="sm" color="muted">
+                  {t('app.home.dashboardBody', 'Explore A1 health, backlog progress, component coverage, token volume, rules, labels, and system flow in one Recharts-powered view.')}
                 </Paragraph>
               </Stack>
-            </Inset>
-          ))}
-        </Grid>
+              <MessageBadge icon="arrow_forward" subtle>
+                {t('app.home.dashboardBadge', 'Dashboard')}
+              </MessageBadge>
+            </Stack>
+          </Card>
+        </Stack>
       </Section>
 
       {/* ── Features ── */}

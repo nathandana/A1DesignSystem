@@ -1,0 +1,263 @@
+/* ─── Chart ────────────────────────────────────────────────────────────────── */
+
+.a1-chart {
+  --a1-chart-height: var(--component-chart-height-md);
+  --component-chart-axis-tick-color: var(--semantic-color-text-muted);
+  --component-chart-axis-line-color: var(--semantic-color-border-subtle);
+  --component-chart-grid-color: var(--semantic-color-border-subtle);
+  --component-chart-cursor-color: var(--semantic-color-border-strong);
+  --component-chart-legend-color: var(--semantic-color-text-muted);
+  --component-chart-tooltip-background: var(--semantic-color-surface-card);
+  --component-chart-tooltip-foreground: var(--semantic-color-text-default);
+  --component-chart-tooltip-muted: var(--semantic-color-text-muted);
+  --component-chart-tooltip-border-color: var(--semantic-color-border-subtle);
+  --component-chart-series-accent: var(--semantic-color-action-background);
+  --component-chart-series-info: var(--semantic-color-status-info-background);
+  --component-chart-series-success: var(--semantic-color-status-success-background);
+  --component-chart-series-warn: var(--semantic-color-status-warn-background);
+  --component-chart-series-error: var(--semantic-color-status-error-background);
+  --component-chart-series-neutral: var(--semantic-color-text-muted);
+  --component-chart-fill-label-color: var(--semantic-color-text-inverse);
+
+  box-sizing: border-box;
+  min-inline-size: 0;
+  inline-size: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-chart-gap);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+}
+
+.a1-chart--height-sm {
+  --a1-chart-height: var(--component-chart-height-sm);
+}
+
+.a1-chart--height-lg {
+  --a1-chart-height: var(--component-chart-height-lg);
+}
+
+.a1-chart--variant-subtle {
+  --component-chart-series-accent: var(--semantic-color-action-border);
+  --component-chart-series-info: var(--semantic-color-status-info-border);
+  --component-chart-series-success: var(--semantic-color-status-success-border);
+  --component-chart-series-warn: var(--semantic-color-status-warn-border);
+  --component-chart-series-error: var(--semantic-color-status-error-border);
+  --component-chart-series-neutral: var(--semantic-color-surface-raised);
+  --component-chart-cursor-color: var(--semantic-color-border-subtle);
+  --component-chart-fill-label-color: var(--semantic-color-text-default);
+  --component-chart-area-fill-opacity: 1;
+}
+
+.a1-inverse .a1-chart--variant-subtle,
+html.a1-theme-dark .a1-chart--variant-subtle {
+  --component-chart-series-accent: var(--semantic-color-action-surface);
+  --component-chart-series-info: var(--semantic-color-status-info-surface);
+  --component-chart-series-success: var(--semantic-color-status-success-surface);
+  --component-chart-series-warn: var(--semantic-color-status-warn-surface);
+  --component-chart-series-error: var(--semantic-color-status-error-surface);
+}
+
+html.a1-theme-dark .a1-inverse .a1-chart--variant-subtle {
+  --component-chart-series-accent: var(--semantic-color-action-border);
+  --component-chart-series-info: var(--semantic-color-status-info-border);
+  --component-chart-series-success: var(--semantic-color-status-success-border);
+  --component-chart-series-warn: var(--semantic-color-status-warn-border);
+  --component-chart-series-error: var(--semantic-color-status-error-border);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.a1-theme-light) .a1-chart--variant-subtle {
+    --component-chart-series-accent: var(--semantic-color-action-surface);
+    --component-chart-series-info: var(--semantic-color-status-info-surface);
+    --component-chart-series-success: var(--semantic-color-status-success-surface);
+    --component-chart-series-warn: var(--semantic-color-status-warn-surface);
+    --component-chart-series-error: var(--semantic-color-status-error-surface);
+  }
+
+  html:not(.a1-theme-light) .a1-inverse .a1-chart--variant-subtle {
+    --component-chart-series-accent: var(--semantic-color-action-border);
+    --component-chart-series-info: var(--semantic-color-status-info-border);
+    --component-chart-series-success: var(--semantic-color-status-success-border);
+    --component-chart-series-warn: var(--semantic-color-status-warn-border);
+    --component-chart-series-error: var(--semantic-color-status-error-border);
+  }
+}
+
+.a1-chart__caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-chart-caption-gap);
+  min-inline-size: 0;
+}
+
+.a1-chart__title {
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-heading-font-family-heading);
+  font-size: var(--component-chart-title-font-size);
+  font-weight: var(--component-chart-title-font-weight);
+  line-height: var(--semantic-font-line-height-heading);
+  overflow-wrap: anywhere;
+}
+
+.a1-chart__description {
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-description-font-size);
+  font-weight: var(--semantic-font-weight-body);
+  line-height: var(--semantic-font-line-height-body);
+  overflow-wrap: anywhere;
+}
+
+.a1-chart__plot {
+  min-inline-size: 0;
+  inline-size: 100%;
+  block-size: var(--a1-chart-height);
+}
+
+.a1-chart .recharts-wrapper {
+  outline: none;
+}
+
+.a1-chart .recharts-surface {
+  max-inline-size: 100%;
+  outline: none;
+}
+
+.a1-chart__sunburst {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.a1-chart__sunburst .recharts-text {
+  fill: var(--component-chart-fill-label-color);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-legend-font-size);
+  font-weight: var(--base-font-weight-semibold);
+  pointer-events: none;
+}
+
+.a1-chart .recharts-wrapper:focus-visible,
+.a1-chart .recharts-surface:focus-visible {
+  outline: var(--component-chart-focus-ring-width) solid var(--component-chart-focus-ring);
+  outline-offset: var(--component-chart-focus-ring-offset);
+  border-radius: var(--component-chart-border-radius);
+}
+
+.a1-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--component-chart-axis-tick-color);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-axis-font-size);
+  font-weight: var(--semantic-font-weight-body);
+}
+
+.a1-chart .recharts-cartesian-axis-line,
+.a1-chart .recharts-cartesian-axis-tick-line {
+  stroke: var(--component-chart-axis-line-color);
+}
+
+.a1-chart .recharts-cartesian-grid line {
+  stroke: var(--component-chart-grid-color);
+}
+
+.a1-chart .recharts-polar-grid-angle line,
+.a1-chart .recharts-polar-grid-concentric path {
+  stroke: var(--component-chart-grid-color);
+}
+
+.a1-chart .recharts-line-curve,
+.a1-chart .recharts-area-curve {
+  stroke-width: var(--component-chart-line-stroke-width);
+}
+
+.a1-chart .recharts-area-area {
+  fill-opacity: var(--component-chart-area-fill-opacity);
+}
+
+.a1-chart .recharts-legend-wrapper {
+  color: var(--component-chart-legend-color);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-legend-font-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-chart__legend-label {
+  color: var(--component-chart-legend-color);
+}
+
+.a1-chart__treemap-label,
+.a1-chart__sankey-label {
+  fill: var(--component-chart-tooltip-foreground);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-legend-font-size);
+  font-weight: var(--semantic-font-weight-body);
+  pointer-events: none;
+}
+
+.a1-chart__treemap-label {
+  fill: var(--component-chart-fill-label-color);
+}
+
+.a1-chart .recharts-funnel-trapezoid path,
+.a1-chart .recharts-trapezoid {
+  opacity: 1;
+  fill-opacity: 1;
+}
+
+.a1-chart__tooltip {
+  max-inline-size: var(--component-chart-tooltip-max-width);
+  padding: var(--component-chart-tooltip-padding-block) var(--component-chart-tooltip-padding-inline);
+  border: var(--component-chart-tooltip-border-width) solid var(--component-chart-tooltip-border-color);
+  border-radius: var(--component-chart-border-radius);
+  background: var(--component-chart-tooltip-background);
+  color: var(--component-chart-tooltip-foreground);
+  box-shadow: var(--component-chart-tooltip-shadow);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--component-chart-tooltip-font-size);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-chart__tooltip-label {
+  color: var(--component-chart-tooltip-foreground);
+  font-weight: var(--base-font-weight-semibold);
+}
+
+.a1-chart__tooltip-list {
+  list-style: none;
+  display: grid;
+  gap: var(--component-chart-tooltip-item-gap);
+  padding: 0;
+  margin: var(--component-chart-tooltip-list-gap) 0 0;
+}
+
+.a1-chart__tooltip-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--component-chart-tooltip-item-gap);
+  min-inline-size: 0;
+}
+
+.a1-chart__tooltip-swatch {
+  inline-size: var(--component-chart-tooltip-swatch-size);
+  block-size: var(--component-chart-tooltip-swatch-size);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-chart-tooltip-swatch-color, var(--component-chart-series-accent));
+}
+
+.a1-chart__tooltip-name,
+.a1-chart__tooltip-value {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.a1-chart__tooltip-name {
+  color: var(--component-chart-tooltip-muted);
+}
+
+.a1-chart__tooltip-value {
+  color: var(--component-chart-tooltip-foreground);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}

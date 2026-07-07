@@ -1,0 +1,59 @@
+{
+  "component": {
+    "chart": {
+      "gap": { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "captionGap": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "borderRadius": { "$type": "dimension", "$value": "{base.radius.md}" },
+
+      "height": {
+        "sm": { "$type": "dimension", "$value": "{base.spacing.192}" },
+        "md": { "$type": "dimension", "$value": "{base.width.sm}" },
+        "lg": { "$type": "dimension", "$value": "{base.width.lg}" }
+      },
+
+      "titleFontSize": { "$type": "dimension", "$value": "{semantic.font.size.heading.xs}" },
+      "titleFontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.bold}" },
+      "descriptionFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+      "axisFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.xs}" },
+      "axisTickColor": { "$type": "color", "$value": "{semantic.color.text.muted}" },
+      "axisLineColor": { "$type": "color", "$value": "{semantic.color.border.subtle}" },
+      "gridColor": { "$type": "color", "$value": "{semantic.color.border.subtle}" },
+      "cursorColor": { "$type": "color", "$value": "{semantic.color.border.strong}" },
+
+      "legendFontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+      "legendColor": { "$type": "color", "$value": "{semantic.color.text.muted}" },
+
+      "lineStrokeWidth": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "areaFillOpacity": { "$type": "number", "$value": 0.16 },
+
+      "series": {
+        "accent": { "$type": "color", "$value": "{semantic.color.action.background}" },
+        "info": { "$type": "color", "$value": "{semantic.color.status.info.background}" },
+        "success": { "$type": "color", "$value": "{semantic.color.status.success.background}" },
+        "warn": { "$type": "color", "$value": "{semantic.color.status.warn.background}" },
+        "error": { "$type": "color", "$value": "{semantic.color.status.error.background}" },
+        "neutral": { "$type": "color", "$value": "{semantic.color.text.muted}" }
+      },
+
+      "tooltip": {
+        "background": { "$type": "color", "$value": "{semantic.color.surface.card}" },
+        "foreground": { "$type": "color", "$value": "{semantic.color.text.default}" },
+        "muted": { "$type": "color", "$value": "{semantic.color.text.muted}" },
+        "borderColor": { "$type": "color", "$value": "{semantic.color.border.subtle}" },
+        "borderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" },
+        "paddingBlock": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "maxWidth": { "$type": "dimension", "$value": "{base.width.sm}" },
+        "fontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+        "shadow": { "$type": "shadow", "$value": "{semantic.shadow.md}" },
+        "listGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "itemGap": { "$type": "dimension", "$value": "{base.spacing.8}" },
+        "swatchSize": { "$type": "dimension", "$value": "{base.spacing.8}" }
+      },
+
+      "focusRing": { "$type": "color", "$value": "{component.button.focusRing}" },
+      "focusRingWidth": { "$type": "dimension", "$value": "{component.button.focusRingWidth}" },
+      "focusRingOffset": { "$type": "dimension", "$value": "{component.button.focusRingOffset}" }
+    }
+  }
+}

@@ -26,6 +26,32 @@ const BAR = "─".repeat(60);
 
 const themes = readThemes();
 
+function cssBlock(entries, indent = "  ") {
+  return Object.entries(entries)
+    .map(([k, v]) => `${indent}${k}: ${v};`)
+    .join("\n");
+}
+
+function explicitLightThemeRestoreCss() {
+  const blocks = [];
+  for (const theme of themes) {
+    for (const { selector, declarations } of theme.selectors) {
+      const trimmed = selector.trim();
+      if (!/^\.a1-theme-[\w-]+$/.test(trimmed)) continue;
+      const className = trimmed.slice(1);
+      const entries = Object.entries(declarations).filter(
+        ([prop, value]) => value !== "" && Object.prototype.hasOwnProperty.call(LIGHT_MODE_DECLARATIONS, prop)
+      );
+      if (!entries.length) continue;
+      blocks.push(`html.a1-theme-light.${className},
+html.${className}.a1-theme-light {
+${cssBlock(Object.fromEntries(entries))}
+}`);
+    }
+  }
+  return blocks.join("\n\n");
+}
+
 let css = `/* Generated from system theme folders — do not edit directly.\n`;
 css += `   To update: edit the JSON files, then run: npm run build:themes */\n`;
 
@@ -54,18 +80,21 @@ for (const theme of themes) {
   }
 }
 
+const themeLightRestoreCss = explicitLightThemeRestoreCss();
+if (themeLightRestoreCss) {
+  css += `\n/* ${BAR}\n`;
+  css += `   Explicit light restores\n`;
+  css += `   Reapply selected theme declarations that the generic light-mode selector can overwrite.\n`;
+  css += `   ${BAR} */\n\n`;
+  css += `${themeLightRestoreCss}\n\n`;
+}
+
 writeFileSync(outFile, css);
 console.log(`✔︎ themes.css  (${themes.length} theme file${themes.length !== 1 ? "s" : ""})`);
 
 // ─── color-scheme-modes.css ───────────────────────────────────────────────────
 // Generated from DARK_MODE_VARIABLES and LIGHT_MODE_DECLARATIONS in color-modes.mjs.
 // Produces the full set of light/dark/inverse/system selector blocks consumed by React.
-
-function cssBlock(entries, indent = "  ") {
-  return Object.entries(entries)
-    .map(([k, v]) => `${indent}${k}: ${v};`)
-    .join("\n");
-}
 
 const DARK = cssBlock(DARK_MODE_VARIABLES);
 const LIGHT = cssBlock(LIGHT_MODE_DECLARATIONS);
@@ -74,6 +103,16 @@ const LIGHT4 = cssBlock(LIGHT_MODE_DECLARATIONS, "    ");
 
 let modesCss = `/* Generated from system/color-modes.mjs — do not edit directly.
    To update: edit DARK_MODE_VARIABLES / LIGHT_MODE_DECLARATIONS, then run: npm run build:themes */
+
+/* ─── System light mode baseline ───────────────────────────────────────────
+   Applies the same light-mode contract used by explicit light when the OS is
+   light. Theme selectors have higher specificity, and the system dark media
+   query below overrides this when the OS prefers dark. */
+
+:root {
+  color-scheme: light;
+${LIGHT}
+}
 
 /* ─── .a1-inverse: dark island on a light page ─────────────────────────────
    On a light page: .a1-inverse = dark.

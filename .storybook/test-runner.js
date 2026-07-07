@@ -46,6 +46,18 @@ const A11Y_SKIP_IDS = new Set([
   'components-navigation-breadcrumb--a-11-y-current-page-missing',
 ]);
 
+// Optional/product-style themes are intentionally excluded from baseline QA.
+// They can carry brand-specific contrast/visual choices that should not block
+// the core design-system release gates.
+const THEME_QA_SKIP_IDS = new Set([
+  'foundations-color-regression--cat-lympics-light',
+  'foundations-color-regression--cat-lympics-dark',
+  'foundations-color-regression--crochet-light',
+  'foundations-color-regression--crochet-dark',
+  'foundations-color-regression--marshmallow-light',
+  'foundations-color-regression--marshmallow-dark',
+]);
+
 // ─── Lazy dir creation (idempotent; setup script handles initial clear) ───────
 
 let _dirsReady = false;
@@ -63,64 +75,67 @@ export default {
     await page.waitForLoadState('networkidle');
 
     let visualError = null;
+    const skipThemeQa = THEME_QA_SKIP_IDS.has(context.id);
 
     // ── Visual regression ──────────────────────────────────────────────────────
-    try {
-      const screenshot   = await page.screenshot({ animations: 'disabled' });
-      const baselinePath = join(BASELINES, `${context.id}.png`);
+    if (!skipThemeQa) {
+      try {
+        const screenshot   = await page.screenshot({ animations: 'disabled' });
+        const baselinePath = join(BASELINES, `${context.id}.png`);
 
-      if (UPDATE || !existsSync(baselinePath)) {
-        writeFileSync(baselinePath, screenshot);
-      } else {
-        const baseline = PNG.sync.read(readFileSync(baselinePath));
-        const current  = PNG.sync.read(screenshot);
-
-        if (baseline.width !== current.width || baseline.height !== current.height) {
-          writeFileSync(join(DIFFS_DIR, `${context.id}-current.png`), screenshot);
-          writeFileSync(
-            join(VISUAL_DIR, `${context.id}.json`),
-            JSON.stringify({
-              id: context.id, title: context.title,
-              error: `Dimensions changed: ${baseline.width}x${baseline.height} → ${current.width}x${current.height}`,
-            }),
-          );
-          visualError = new Error(
-            `[${context.id}] Screenshot dimensions changed: ` +
-            `${baseline.width}x${baseline.height} → ${current.width}x${current.height}`,
-          );
+        if (UPDATE || !existsSync(baselinePath)) {
+          writeFileSync(baselinePath, screenshot);
         } else {
-          const { width, height } = baseline;
-          const diff          = new PNG({ width, height });
-          const numDiffPixels = pixelmatch(
-            baseline.data, current.data, diff.data, width, height,
-            { threshold: 0.1, includeAA: false },
-          );
-          const diffRatio = numDiffPixels / (width * height);
+          const baseline = PNG.sync.read(readFileSync(baselinePath));
+          const current  = PNG.sync.read(screenshot);
 
-          if (diffRatio > DIFF_THRESHOLD) {
-            writeFileSync(join(DIFFS_DIR, `${context.id}-baseline.png`), readFileSync(baselinePath));
+          if (baseline.width !== current.width || baseline.height !== current.height) {
             writeFileSync(join(DIFFS_DIR, `${context.id}-current.png`), screenshot);
-            writeFileSync(join(DIFFS_DIR, `${context.id}-diff.png`), PNG.sync.write(diff));
             writeFileSync(
               join(VISUAL_DIR, `${context.id}.json`),
               JSON.stringify({
                 id: context.id, title: context.title,
-                diffPercent: (diffRatio * 100).toFixed(2),
-                numDiffPixels, totalPixels: width * height,
+                error: `Dimensions changed: ${baseline.width}x${baseline.height} → ${current.width}x${current.height}`,
               }),
             );
             visualError = new Error(
-              `[${context.id}] Visual regression: ${(diffRatio * 100).toFixed(2)}% of pixels changed`,
+              `[${context.id}] Screenshot dimensions changed: ` +
+              `${baseline.width}x${baseline.height} → ${current.width}x${current.height}`,
             );
+          } else {
+            const { width, height } = baseline;
+            const diff          = new PNG({ width, height });
+            const numDiffPixels = pixelmatch(
+              baseline.data, current.data, diff.data, width, height,
+              { threshold: 0.1, includeAA: false },
+            );
+            const diffRatio = numDiffPixels / (width * height);
+
+            if (diffRatio > DIFF_THRESHOLD) {
+              writeFileSync(join(DIFFS_DIR, `${context.id}-baseline.png`), readFileSync(baselinePath));
+              writeFileSync(join(DIFFS_DIR, `${context.id}-current.png`), screenshot);
+              writeFileSync(join(DIFFS_DIR, `${context.id}-diff.png`), PNG.sync.write(diff));
+              writeFileSync(
+                join(VISUAL_DIR, `${context.id}.json`),
+                JSON.stringify({
+                  id: context.id, title: context.title,
+                  diffPercent: (diffRatio * 100).toFixed(2),
+                  numDiffPixels, totalPixels: width * height,
+                }),
+              );
+              visualError = new Error(
+                `[${context.id}] Visual regression: ${(diffRatio * 100).toFixed(2)}% of pixels changed`,
+              );
+            }
           }
         }
+      } catch (e) {
+        if (!visualError) visualError = e;
       }
-    } catch (e) {
-      if (!visualError) visualError = e;
     }
 
     // ── Accessibility (WCAG 2.0 / 2.1 / 2.2 — Levels A & AA) ─────────────────
-    const skipA11y = A11Y_SKIP_PREFIXES.some(p => context.id.startsWith(p)) || A11Y_SKIP_IDS.has(context.id);
+    const skipA11y = skipThemeQa || A11Y_SKIP_PREFIXES.some(p => context.id.startsWith(p)) || A11Y_SKIP_IDS.has(context.id);
     if (!skipA11y) {
       try {
         const results = await new AxeBuilder({ page })

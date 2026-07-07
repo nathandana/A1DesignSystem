@@ -2,12 +2,29 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const STORY_DEFAULT    = "http://localhost:6006/iframe.html?id=components-containers-dialog--default&viewMode=story";
-const STORY_WITH_FOOTER = "http://localhost:6006/iframe.html?id=components-containers-dialog--with-footer-actions&viewMode=story";
+const STORY_WITH_FOOTER = "http://localhost:6006/iframe.html?id=components-containers-dialog--with-footer&viewMode=story";
+
+async function openDialog(page) {
+  if (await page.locator("dialog[open]").isVisible().catch(() => false)) return;
+  await page.getByRole("button", { name: "Open dialog" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+}
+
+async function closeDialog(page) {
+  if (!(await page.locator("dialog[open]").isVisible().catch(() => false))) return;
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+}
+
+async function resetDialog(page, storyUrl) {
+  await page.goto(storyUrl);
+  await page.waitForLoadState("networkidle");
+  await closeDialog(page);
+}
 
 test.describe("Dialog — accessibility", () => {
   test("has no axe violations when closed", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
     const results = await new AxeBuilder({ page })
       .include("#storybook-root")
@@ -18,11 +35,9 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("has no axe violations when open", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await openDialog(page);
 
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
@@ -32,10 +47,9 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("dialog has accessible name via title", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
+    await openDialog(page);
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
     // Title text is present inside the dialog
@@ -43,8 +57,7 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("focus moves into dialog on open", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
     const trigger = page.getByRole("button", { name: "Open dialog" });
     await trigger.click();
@@ -59,8 +72,7 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("Escape closes dialog and returns focus to trigger", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
     const trigger = page.getByRole("button", { name: "Open dialog" });
     await trigger.click();
@@ -72,11 +84,9 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("Tab wraps focus at end of dialog — does not escape to page", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await openDialog(page);
 
     // Tab through every focusable element inside the dialog and one more to wrap
     for (let i = 0; i < 5; i++) {
@@ -91,11 +101,9 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("Shift+Tab wraps focus at start of dialog", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await openDialog(page);
 
     await page.keyboard.press("Shift+Tab");
 
@@ -107,16 +115,14 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("close button has accessible name", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
+    await openDialog(page);
     await expect(page.getByRole("button", { name: "Close dialog" })).toBeVisible();
   });
 
   test("clicking close button closes dialog and returns focus to trigger", async ({ page }) => {
-    await page.goto(STORY_DEFAULT);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_DEFAULT);
 
     const trigger = page.getByRole("button", { name: "Open dialog" });
     await trigger.click();
@@ -128,11 +134,9 @@ test.describe("Dialog — accessibility", () => {
   });
 
   test("footer action buttons are keyboard-reachable", async ({ page }) => {
-    await page.goto(STORY_WITH_FOOTER);
-    await page.waitForLoadState("networkidle");
+    await resetDialog(page, STORY_WITH_FOOTER);
 
-    await page.getByRole("button", { name: "Open dialog" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await openDialog(page);
 
     await expect(page.getByRole("button", { name: "Confirm" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Cancel" })).toBeVisible();
