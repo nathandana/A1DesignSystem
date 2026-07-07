@@ -1,6 +1,6 @@
 # @gtivr4/a1-design-system-react Changelog
 
-## Unreleased
+## 0.28.0 — 2026-07-07
 
 ### Added
 
@@ -31,6 +31,8 @@
 - **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
 
 ### Fixed
+
+- **StickyActions dark-mode background** — `--component-sticky-actions-background` now participates in the generated light/dark color-mode contract and aliases the active page surface, so fixed action bars no longer stay on the light surface in system or explicit dark mode.
 
 - **System light and explicit light now share the same color contract** (A1-1436) — generated color-scheme CSS now emits a `:root` light-mode baseline from `LIGHT_MODE_DECLARATIONS`, so Auto/System mode on a light OS resolves status, action, surface, and component aliases the same way as forced Light mode. Theme-specific light declarations are also restored when `.a1-theme-light` is combined with a theme class, so forcing Light no longer flattens themed page/panel/action aliases back to generic A1 light values. Fresh also restores its light mint body gradient under explicit light even when the OS prefers dark.
 

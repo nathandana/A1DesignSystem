@@ -1090,6 +1090,7 @@
   --component-button-tertiary-foreground: var(--base-color-accent-200);
   --component-button-tertiary-foreground-hover: var(--base-color-accent-100);
   --component-button-tertiary-foreground-pressed: var(--base-color-accent-50);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --semantic-color-action-background: var(--base-color-accent-400);
   --semantic-color-action-background-hover: var(--base-color-accent-300);
   --semantic-color-action-background-pressed: var(--base-color-accent-500);
@@ -1108,14 +1109,17 @@
   --semantic-color-status-info-border: var(--base-color-info-500);
   --semantic-color-status-info-foreground: var(--base-color-info-1000);
   --semantic-color-status-info-surface: var(--base-color-info-900);
+  --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-success-background: var(--base-color-success-400);
   --semantic-color-status-success-border: var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
   --semantic-color-status-success-surface: var(--base-color-success-900);
+  --semantic-color-status-success-text: var(--base-color-success-300);
   --semantic-color-status-warn-background: var(--base-color-warn-400);
   --semantic-color-status-warn-border: var(--base-color-warn-500);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
+  --semantic-color-status-warn-text: var(--base-color-warn-300);
   --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-field: var(--base-color-neutral-700);
   --semantic-color-surface-page: var(--base-color-neutral-900);
@@ -1173,6 +1177,7 @@
   --component-button-tertiary-foreground: var(--base-color-accent-200);
   --component-button-tertiary-foreground-hover: var(--base-color-accent-100);
   --component-button-tertiary-foreground-pressed: var(--base-color-accent-50);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --semantic-color-action-background: var(--base-color-accent-400);
   --semantic-color-action-background-hover: var(--base-color-accent-300);
   --semantic-color-action-background-pressed: var(--base-color-accent-500);
@@ -1191,14 +1196,17 @@
   --semantic-color-status-info-border: var(--base-color-info-500);
   --semantic-color-status-info-foreground: var(--base-color-info-1000);
   --semantic-color-status-info-surface: var(--base-color-info-900);
+  --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-success-background: var(--base-color-success-400);
   --semantic-color-status-success-border: var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
   --semantic-color-status-success-surface: var(--base-color-success-900);
+  --semantic-color-status-success-text: var(--base-color-success-300);
   --semantic-color-status-warn-background: var(--base-color-warn-400);
   --semantic-color-status-warn-border: var(--base-color-warn-500);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
   --semantic-color-status-warn-surface: var(--base-color-warn-900);
+  --semantic-color-status-warn-text: var(--base-color-warn-300);
   --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-field: var(--base-color-neutral-700);
   --semantic-color-surface-page: var(--base-color-neutral-900);
@@ -1255,6 +1263,7 @@
   --component-button-tertiary-foreground: var(--base-color-accent-600);
   --component-button-tertiary-foreground-hover: var(--base-color-accent-700);
   --component-button-tertiary-foreground-pressed: var(--base-color-accent-800);
+  --component-sticky-actions-background: #f7fafe;
   --semantic-color-action-background: var(--base-color-accent-500);
   --semantic-color-action-background-hover: var(--base-color-accent-600);
   --semantic-color-action-background-pressed: var(--base-color-accent-700);
@@ -1281,6 +1290,7 @@
   --semantic-color-status-warn-border: var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-warn-0);
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
+  --semantic-color-status-warn-text: #4f2700;
   --semantic-color-surface-card: var(--base-color-neutral-0);
   --semantic-color-surface-field: var(--base-color-neutral-0);
   --semantic-color-surface-page: #D7FFF8;

@@ -280,6 +280,8 @@ html.a1-theme-dark.a1-theme-fresh {
   --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
   --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
   --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+  --semantic-color-text-default:   var(--base-color-neutral-50);
+  --semantic-color-text-muted:     var(--base-color-neutral-100);
 }
 
 html.a1-theme-fresh.a1-theme-dark body,
@@ -297,6 +299,8 @@ html.a1-theme-dark.a1-theme-fresh body {
     --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
     --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
     --semantic-color-surface-raised: var(--a1-theme-fresh-dark-surface-raised);
+    --semantic-color-text-default:   var(--base-color-neutral-50);
+    --semantic-color-text-muted:     var(--base-color-neutral-100);
   }
 
   html.a1-theme-fresh body {
@@ -353,6 +357,7 @@ html.a1-theme-light.a1-theme-fresh body {
   --semantic-color-status-info-surface: var(--base-color-info-50);
   --semantic-color-status-info-border: var(--base-color-info-300);
   --semantic-color-status-info-foreground: var(--base-color-info-0);
+  --semantic-color-status-info-text: var(--base-color-info-600);
   --semantic-color-status-error-background: var(--base-color-error-500);
   --semantic-color-status-error-surface: var(--base-color-error-50);
   --semantic-color-status-error-border: var(--base-color-error-400);
@@ -361,12 +366,13 @@ html.a1-theme-light.a1-theme-fresh body {
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
   --semantic-color-status-warn-border: var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
-  --semantic-color-status-warn-text: var(--base-color-warn-600);
+  --semantic-color-status-warn-text: var(--base-color-warn-700);
   --semantic-color-status-error-text: var(--base-color-error-600);
   --semantic-color-status-success-background: var(--base-color-success-600);
   --semantic-color-status-success-surface: var(--base-color-success-50);
   --semantic-color-status-success-border: var(--base-color-success-300);
   --semantic-color-status-success-foreground: var(--base-color-success-0);
+  --semantic-color-status-success-text: var(--base-color-success-600);
   --component-scrim-color: var(--component-scrim-color-light);
   --component-button-primary-background: var(--base-color-accent-500);
   --component-button-primary-background-hover: var(--base-color-accent-600);
@@ -411,6 +417,7 @@ html.a1-theme-light.a1-theme-fresh body {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --a1-field-hover-background: var(--base-color-neutral-50);
   --a1-field-hover-border-color: var(--base-color-neutral-600);
   --a1-field-active-background: var(--base-color-neutral-100);
@@ -451,6 +458,7 @@ html.a1-theme-light.a1-theme-fresh body {
   --semantic-color-status-info-surface: var(--base-color-info-900);
   --semantic-color-status-info-border: var(--base-color-info-500);
   --semantic-color-status-info-foreground: var(--base-color-info-1000);
+  --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-error-background: var(--base-color-error-400);
   --semantic-color-status-error-surface: var(--base-color-error-900);
   --semantic-color-status-error-border: var(--base-color-error-500);
@@ -465,6 +473,7 @@ html.a1-theme-light.a1-theme-fresh body {
   --semantic-color-status-success-surface: var(--base-color-success-900);
   --semantic-color-status-success-border: var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-success-text: var(--base-color-success-300);
   --component-button-primary-background: var(--base-color-accent-300);
   --component-button-primary-background-hover: var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);
@@ -508,6 +517,7 @@ html.a1-theme-light.a1-theme-fresh body {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --component-bottom-sheet-background: var(--semantic-color-surface-card);
   --component-scrim-color: var(--component-scrim-color-dark);
   --a1-field-hover-background: var(--base-color-neutral-800);
@@ -551,6 +561,7 @@ html.a1-theme-light.a1-theme-fresh body {
     --semantic-color-status-info-surface: var(--base-color-info-900);
     --semantic-color-status-info-border: var(--base-color-info-500);
     --semantic-color-status-info-foreground: var(--base-color-info-1000);
+    --semantic-color-status-info-text: var(--base-color-info-300);
     --semantic-color-status-error-background: var(--base-color-error-400);
     --semantic-color-status-error-surface: var(--base-color-error-900);
     --semantic-color-status-error-border: var(--base-color-error-500);
@@ -565,6 +576,7 @@ html.a1-theme-light.a1-theme-fresh body {
     --semantic-color-status-success-surface: var(--base-color-success-900);
     --semantic-color-status-success-border: var(--base-color-success-500);
     --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+    --semantic-color-status-success-text: var(--base-color-success-300);
     --component-button-primary-background: var(--base-color-accent-300);
     --component-button-primary-background-hover: var(--base-color-accent-100);
     --component-button-primary-background-pressed: var(--base-color-accent-50);
@@ -608,6 +620,7 @@ html.a1-theme-light.a1-theme-fresh body {
     --component-button-success-border: var(--semantic-color-status-success-background);
     --component-button-success-border-hover: var(--semantic-color-status-success-background);
     --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+    --component-sticky-actions-background: var(--semantic-color-surface-page);
     --component-bottom-sheet-background: var(--semantic-color-surface-card);
     --component-scrim-color: var(--component-scrim-color-dark);
     --a1-field-hover-background: var(--base-color-neutral-800);
@@ -646,6 +659,7 @@ html.a1-theme-light.a1-theme-fresh body {
     --semantic-color-status-info-surface: var(--base-color-info-50);
     --semantic-color-status-info-border: var(--base-color-info-300);
     --semantic-color-status-info-foreground: var(--base-color-info-0);
+    --semantic-color-status-info-text: var(--base-color-info-600);
     --semantic-color-status-error-background: var(--base-color-error-500);
     --semantic-color-status-error-surface: var(--base-color-error-50);
     --semantic-color-status-error-border: var(--base-color-error-400);
@@ -654,12 +668,13 @@ html.a1-theme-light.a1-theme-fresh body {
     --semantic-color-status-warn-surface: var(--base-color-warn-50);
     --semantic-color-status-warn-border: var(--base-color-warn-300);
     --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
-    --semantic-color-status-warn-text: var(--base-color-warn-600);
+    --semantic-color-status-warn-text: var(--base-color-warn-700);
     --semantic-color-status-error-text: var(--base-color-error-600);
     --semantic-color-status-success-background: var(--base-color-success-600);
     --semantic-color-status-success-surface: var(--base-color-success-50);
     --semantic-color-status-success-border: var(--base-color-success-300);
     --semantic-color-status-success-foreground: var(--base-color-success-0);
+    --semantic-color-status-success-text: var(--base-color-success-600);
     --component-scrim-color: var(--component-scrim-color-light);
     --component-button-primary-background: var(--base-color-accent-500);
     --component-button-primary-background-hover: var(--base-color-accent-600);
@@ -704,6 +719,7 @@ html.a1-theme-light.a1-theme-fresh body {
     --component-button-success-border: var(--semantic-color-status-success-background);
     --component-button-success-border-hover: var(--semantic-color-status-success-background);
     --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+    --component-sticky-actions-background: var(--semantic-color-surface-page);
     --a1-field-hover-background: var(--base-color-neutral-50);
     --a1-field-hover-border-color: var(--base-color-neutral-600);
     --a1-field-active-background: var(--base-color-neutral-100);
@@ -743,6 +759,7 @@ html.a1-theme-dark {
   --semantic-color-status-info-surface: var(--base-color-info-900);
   --semantic-color-status-info-border: var(--base-color-info-500);
   --semantic-color-status-info-foreground: var(--base-color-info-1000);
+  --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-error-background: var(--base-color-error-400);
   --semantic-color-status-error-surface: var(--base-color-error-900);
   --semantic-color-status-error-border: var(--base-color-error-500);
@@ -757,6 +774,7 @@ html.a1-theme-dark {
   --semantic-color-status-success-surface: var(--base-color-success-900);
   --semantic-color-status-success-border: var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-success-text: var(--base-color-success-300);
   --component-button-primary-background: var(--base-color-accent-300);
   --component-button-primary-background-hover: var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);
@@ -800,6 +818,7 @@ html.a1-theme-dark {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --component-bottom-sheet-background: var(--semantic-color-surface-card);
   --component-scrim-color: var(--component-scrim-color-dark);
   --a1-field-hover-background: var(--base-color-neutral-800);
@@ -843,6 +862,7 @@ html.a1-theme-dark .a1-theme-light {
   --semantic-color-status-info-surface: var(--base-color-info-50);
   --semantic-color-status-info-border: var(--base-color-info-300);
   --semantic-color-status-info-foreground: var(--base-color-info-0);
+  --semantic-color-status-info-text: var(--base-color-info-600);
   --semantic-color-status-error-background: var(--base-color-error-500);
   --semantic-color-status-error-surface: var(--base-color-error-50);
   --semantic-color-status-error-border: var(--base-color-error-400);
@@ -851,12 +871,13 @@ html.a1-theme-dark .a1-theme-light {
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
   --semantic-color-status-warn-border: var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
-  --semantic-color-status-warn-text: var(--base-color-warn-600);
+  --semantic-color-status-warn-text: var(--base-color-warn-700);
   --semantic-color-status-error-text: var(--base-color-error-600);
   --semantic-color-status-success-background: var(--base-color-success-600);
   --semantic-color-status-success-surface: var(--base-color-success-50);
   --semantic-color-status-success-border: var(--base-color-success-300);
   --semantic-color-status-success-foreground: var(--base-color-success-0);
+  --semantic-color-status-success-text: var(--base-color-success-600);
   --component-scrim-color: var(--component-scrim-color-light);
   --component-button-primary-background: var(--base-color-accent-500);
   --component-button-primary-background-hover: var(--base-color-accent-600);
@@ -901,6 +922,7 @@ html.a1-theme-dark .a1-theme-light {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --a1-field-hover-background: var(--base-color-neutral-50);
   --a1-field-hover-border-color: var(--base-color-neutral-600);
   --a1-field-active-background: var(--base-color-neutral-100);
@@ -940,6 +962,7 @@ html.a1-theme-light {
   --semantic-color-status-info-surface: var(--base-color-info-50);
   --semantic-color-status-info-border: var(--base-color-info-300);
   --semantic-color-status-info-foreground: var(--base-color-info-0);
+  --semantic-color-status-info-text: var(--base-color-info-600);
   --semantic-color-status-error-background: var(--base-color-error-500);
   --semantic-color-status-error-surface: var(--base-color-error-50);
   --semantic-color-status-error-border: var(--base-color-error-400);
@@ -948,12 +971,13 @@ html.a1-theme-light {
   --semantic-color-status-warn-surface: var(--base-color-warn-50);
   --semantic-color-status-warn-border: var(--base-color-warn-300);
   --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
-  --semantic-color-status-warn-text: var(--base-color-warn-600);
+  --semantic-color-status-warn-text: var(--base-color-warn-700);
   --semantic-color-status-error-text: var(--base-color-error-600);
   --semantic-color-status-success-background: var(--base-color-success-600);
   --semantic-color-status-success-surface: var(--base-color-success-50);
   --semantic-color-status-success-border: var(--base-color-success-300);
   --semantic-color-status-success-foreground: var(--base-color-success-0);
+  --semantic-color-status-success-text: var(--base-color-success-600);
   --component-scrim-color: var(--component-scrim-color-light);
   --component-button-primary-background: var(--base-color-accent-500);
   --component-button-primary-background-hover: var(--base-color-accent-600);
@@ -998,6 +1022,7 @@ html.a1-theme-light {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --a1-field-hover-background: var(--base-color-neutral-50);
   --a1-field-hover-border-color: var(--base-color-neutral-600);
   --a1-field-active-background: var(--base-color-neutral-100);
@@ -1038,6 +1063,7 @@ html.a1-theme-light .a1-inverse {
   --semantic-color-status-info-surface: var(--base-color-info-900);
   --semantic-color-status-info-border: var(--base-color-info-500);
   --semantic-color-status-info-foreground: var(--base-color-info-1000);
+  --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-error-background: var(--base-color-error-400);
   --semantic-color-status-error-surface: var(--base-color-error-900);
   --semantic-color-status-error-border: var(--base-color-error-500);
@@ -1052,6 +1078,7 @@ html.a1-theme-light .a1-inverse {
   --semantic-color-status-success-surface: var(--base-color-success-900);
   --semantic-color-status-success-border: var(--base-color-success-500);
   --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-success-text: var(--base-color-success-300);
   --component-button-primary-background: var(--base-color-accent-300);
   --component-button-primary-background-hover: var(--base-color-accent-100);
   --component-button-primary-background-pressed: var(--base-color-accent-50);
@@ -1095,6 +1122,7 @@ html.a1-theme-light .a1-inverse {
   --component-button-success-border: var(--semantic-color-status-success-background);
   --component-button-success-border-hover: var(--semantic-color-status-success-background);
   --component-button-success-border-pressed: var(--semantic-color-status-success-background);
+  --component-sticky-actions-background: var(--semantic-color-surface-page);
   --component-bottom-sheet-background: var(--semantic-color-surface-card);
   --component-scrim-color: var(--component-scrim-color-dark);
   --a1-field-hover-background: var(--base-color-neutral-800);

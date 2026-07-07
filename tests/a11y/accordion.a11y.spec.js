@@ -93,7 +93,7 @@ test.describe("Accordion — accessibility", () => {
     await page.waitForLoadState("networkidle");
 
     // The disabled story renders an Accordion with disabled=true
-    const disabledTrigger = page.locator(".a1-accordion--disabled .a1-accordion__trigger");
+    const disabledTrigger = page.getByRole("button", { name: "Disabled item" });
     await expect(disabledTrigger).toBeDisabled();
   });
 

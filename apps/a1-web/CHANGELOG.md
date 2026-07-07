@@ -1,6 +1,6 @@
 # A1 Web Changelog
 
-## Unreleased
+## 0.27.0 — 2026-07-07
 
 - **Explore dashboard** — added a `/dashboard` Explore page with Recharts-powered cards for backlog health, component coverage, token volume, system flow, rules, and labels, plus a Home callout under the initial stats strip.
 

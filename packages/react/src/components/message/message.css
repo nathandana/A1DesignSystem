@@ -113,14 +113,14 @@
   --a1-badge-bg:            var(--semantic-color-status-info-background);
   --a1-badge-fg:            var(--semantic-color-status-info-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-info-surface);
-  --a1-badge-subtle-fg:     var(--semantic-color-status-info-background);
+  --a1-badge-subtle-fg:     var(--semantic-color-status-info-text);
   --a1-badge-subtle-border: var(--semantic-color-status-info-border);
 }
 .a1-message-badge--success {
   --a1-badge-bg:            var(--semantic-color-status-success-background);
   --a1-badge-fg:            var(--semantic-color-status-success-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-success-surface);
-  --a1-badge-subtle-fg:     var(--semantic-color-status-success-background);
+  --a1-badge-subtle-fg:     var(--semantic-color-status-success-text);
   --a1-badge-subtle-border: var(--semantic-color-status-success-border);
 }
 .a1-message-badge--warn {
