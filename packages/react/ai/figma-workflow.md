@@ -21,6 +21,7 @@ This file governs all agent work that creates or updates components in the A1 Fi
 | **Color** | Semantic + primitive color tokens | All fills, strokes, shadow colors |
 | **Spacing** | `gap/*` and `radius/*` FLOAT tokens | Padding, item spacing, corner radius |
 | **Primitives** | Raw `accent/*`, `neutral/*` color ramp + base radius | Accent color segments (e.g. breakpoint bar), radius scale |
+| **Components** | Shared component FLOAT tokens | Cross-component and component-specific dimensions such as Menu shell/item sizing and Dialog widths/footer borders |
 | **Field** | Text Field exact FLOAT tokens | Field heights, padding, gaps, border widths, focus dimensions, accent widths, side-label widths |
 | **Breakpoints** | `min`, `max`, `canvas` FLOAT tokens × 5 modes | Frame width binding for responsive previews |
 | **Gap** | `value` FLOAT token × 6 modes (none/xs/sm/md/lg/xl) | Controls `itemSpacing` on auto-layout slot frames; apply mode to switch Section content gap |
@@ -270,6 +271,87 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `hover`, `focus` visual states | Included as Figma states for inspection/prototyping; Code Connect emits no React prop for them |
 | `onChange`, `onInput`, `onBeforeInput`, `className`, `style`, `ref`, `aria-*`, `id`, native input passthrough props | Runtime-only props |
 
+### Menu
+
+**Component structure:** `Menu` is a single shell component on the Menu page (`node 218:1177`) and `Menu Item` is a separate child component set (`node 218:1176`). Menu owns the panel surface, section label, and `_items` slot frame. Menu Item owns row content and state variants. Do not rebuild MenuItem internals inside Menu.
+
+**Figma default:** Menu inserts as a standard open desktop menu shell with five Menu Item slot instances. Menu Item inserts as `State=default`.
+
+**Color modes:** Menu uses the shared Color collection for all fills and strokes (`surface/panel`, `surface/page`, `border/subtle`, `text/*`, `action/*`, `status/error/*`, `button/focusRing`). Do not add a Menu theme variant; dark mode is controlled by switching the Color collection mode on a containing frame or page.
+
+**Typography:** Menu Item labels use `Body/MD`, shortcuts use `Body/XS`, and Menu section labels use `Menu/Section label` (Inter Semi Bold 12) to match the React `body-xs` semibold menu chrome.
+
+Variant properties:
+
+| Component | React prop / state | Figma representation | Valid values |
+|-----------|--------------------|---------------------|--------------|
+| Menu Item | `active`, `disabled`, `variant="destructive"` and visual inspection states | Variant `State` | `default` \| `hover` \| `focus` \| `pressed` \| `active` \| `disabled` \| `destructive` |
+
+Component properties:
+
+Menu:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `Menu["aria-label"]` | `Aria label` | TEXT | Code Connect emits `aria-label` on `<Menu>` |
+| `MenuSection label` | `Section label` + `Show section label` | TEXT + BOOLEAN | Controls the section label above the `_items` slot frame |
+| slotted child rows | `Item slot 1–5` + `Show item slot 1–5` | INSTANCE_SWAP + BOOLEAN | Slots should contain Menu Item instances; swap/hide rows rather than duplicating item internals |
+
+Menu Item:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `MenuItem children` | `Label` | TEXT | Visual item label and Code Connect children |
+| `MenuItem icon` | `Icon` + `Show icon` | INSTANCE_SWAP + BOOLEAN | Nested icon vectors must be rebound to the state-specific foreground variable after swaps |
+| `MenuItem shortcut` | `Shortcut` + `Show shortcut` | TEXT + BOOLEAN | Omits `shortcut` when the toggle is off |
+
+Gaps — props and behaviors that cannot currently be represented visually in Figma:
+
+| React prop / behavior | Gap reason |
+|-----------------------|------------|
+| `open`, `onClose`, `anchorRef`, viewport positioning | Runtime dialog positioning and state management |
+| `trapFocus`, `modalOnMobile`, Escape/outside-click dismissal | Runtime accessibility behavior; Figma shows the open surface only |
+| `children` as arbitrary composition | Figma v1 uses five documented Menu Item slots; arbitrary row count is represented by duplicating/replacing Menu Item instances in the `_items` slot frame |
+| `href`, `onClick`, `className`, `style`, `ref`, additional `aria-*` | Runtime-only props |
+| Icon exact Code Connect output | Figma icon instance swaps are visual; the repo template emits `more_vert` by default and `delete` for destructive until icon instance names can be read reliably |
+| `hover`, `focus`, `pressed` | Included as Figma visual states for inspection/prototyping; Code Connect emits no React prop for them |
+
+### Dialog
+
+**Component structure:** `Dialog` component set on the Dialog page (`node 228:1628`) with variants for size and status. `Dialog Hero Icon` is a separate child component set (`node 228:1013`) used by status hero variants. The Dialog body and footer are named `_body` and `_footer` slot frames so richer content can replace the placeholder text/buttons without rebuilding the shell.
+
+**Figma default:** The first/default variant is `Size=md, Status=none`, matching React's runtime `size="md"` and no-status presentation.
+
+**Color modes:** Dialog uses the shared Color collection for panel surface, borders, page backdrop, status hero fills, inverse hero icons, and focus/close icon colour. Do not add a Dialog theme variant; dark mode is controlled by switching the Color collection mode on a containing frame or page.
+
+**Layout:** The component set uses grid auto layout because Dialog has multiple variants. Individual dialog variants and their internal sections use auto layout only; variants must not be absolutely positioned. Use `_body` and `_footer` as composition slots rather than duplicating arbitrary child layers across variants.
+
+Variant properties:
+
+| React prop | Figma representation | Valid values |
+|------------|---------------------|--------------|
+| `size` | Variant `Size` | `sm` \| `md` \| `lg` \| `xl` |
+| `status` | Variant `Status` | `none` \| `success` \| `error` \| `warn` \| `info` \| `neutral` |
+
+Component properties:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `title` | `Title` | TEXT | Header title text |
+| `children` | `Body` + `_body` | TEXT + slot frame | `Body` covers the default simple text case; replace `_body` contents for forms, tabs, or composed content |
+| `footer` | `Show footer` + `_footer` | BOOLEAN + slot frame | Shows/hides the footer area; replace `_footer` contents with Button instances for specific actions |
+| `onClose` presence | `Show close` | BOOLEAN | Shows/hides the close icon affordance; Code Connect emits a placeholder `onClose` when visible |
+
+Gaps — props and behaviors that cannot currently be represented visually in Figma:
+
+| React prop / behavior | Gap reason |
+|-----------------------|------------|
+| `open` | Figma represents the visible/open dialog only; state management is runtime-owned |
+| `onClose` callback semantics, Escape, backdrop click, focus trap, focus restore | Native-dialog runtime behavior; Figma only shows the resulting affordance |
+| `icon` | React can override the status hero icon; Figma v1 uses the default icon tied to `Status` through `Dialog Hero Icon` |
+| `children` / `footer` as arbitrary React nodes | Represented by named slot frames, not by a complete React AST |
+| `className`, `style`, `ref`, `aria-*`, `id`, native dialog attributes | Runtime-only props |
+
 ### Section
 
 **Component structure:** `Section` > `Section Slot` (SLOT, FILL width) > `_content` (FRAME, FIXED width bound to ContentWidth).
@@ -329,6 +411,8 @@ Gaps — props that cannot currently be represented visually in Figma:
 |-----------|---------|
 | Button | Button component set and related documentation |
 | Text Field | Text Field component set and related documentation |
+| Dialog | Dialog component set and related documentation |
+| Menu | Menu component set and related documentation |
 | Icons | Material Symbols icon component sets used by component properties |
 
 ---
@@ -340,6 +424,7 @@ Gaps — props that cannot currently be represented visually in Figma:
 | Color | COLOR | Light / Dark | All semantic color tokens (`surface/*`, `text/*`, `border/*`, `action/*`) + component-facing color aliases such as `color/button/*` |
 | Spacing | FLOAT | Default | `gap/xs–xl`, `radius/sm–lg` |
 | Primitives | mixed | Default | Base color ramp + primitive radius values |
+| Components | mixed | Value | Shared component variables including Menu shell/item dimensions and Dialog width/padding/radius/footer-border dimensions. |
 | Button | mixed | Value | Button component variables. Color variables alias to Color collection roles (for example `button/secondary/background` → `color/button/secondary/background`); size/radius/spacing variables alias to primitive tokens. |
 | Field | FLOAT | Value | Text Field component variables for exact React heights, padding, gaps, border widths, focus dimensions, accent widths, and side-label widths. Field-specific interaction colours live in the shared Color collection as `color/field/*` aliases so light/dark mode is switched once through Color. |
 | Breakpoints | FLOAT | xs / sm / md / lg / xl | `min`, `max`, `canvas` — bind `canvas` to a frame's width then switch modes |

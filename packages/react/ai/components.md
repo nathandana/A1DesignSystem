@@ -31,7 +31,8 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
 | Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
 | Category | `components-overlay` | Overlay | `web_asset` | Dialog, Overlay, Menu, Context Menu, Tooltip |
-| Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar, Node |
+| Category | `components-data-viz` | Data Viz | `query_stats` | Node, Line Chart, Bar Chart, Area Chart, Composed Chart, Pie Chart, Scatter Chart, Radar Chart, Radial Bar Chart, Funnel Chart, Treemap Chart, Sankey Chart, Sunburst Chart |
+| Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar |
 
 **Routing rules:**
 - Category pages use `components-{category-id}`.
@@ -356,14 +357,18 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Component | React | Native | Pure | Web Components | Figma |
 |-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Dialog | ✓ | ✓ | — | — | — |
+| Dialog | ✓ | ✓ | — | — | ✓ |
 | Overlay | ✓ | — | — | — | — |
-| Menu | ✓ | — | — | — | — |
+| Menu | ✓ | — | — | — | ✓ |
 | Context Menu | ✓ | — | — | — | — |
 | Tooltip | ✓ | — | ✓ | — | — |
 | Bottom Sheet | ✓ | — | — | — | — |
 
 > **Menu label styling:** `MenuSection` labels use compact muted menu chrome. When fields or choice groups are embedded inside a `Menu` (for settings-style panels), their labels and legends are overridden to the same compact muted treatment so full-form label emphasis does not appear inside menu panels. The controls themselves keep their component sizing and behavior.
+>
+> **Figma Dialog component:** A1-1418 created the Dialog component set in the A1 Design System file on the Dialog page (`node 228:1628`) plus a `Dialog Hero Icon` child component set (`node 228:1013`). Dialog uses grid auto layout only because it has multiple variants: `Size` (`sm`, `md`, `lg`, `xl`) × `Status` (`none`, `success`, `error`, `warn`, `info`, `neutral`), ordered so the Figma default is `Size=md, Status=none` to match React. Component properties expose `Title`, `Body`, `Show close`, and `Show footer`; `_body` and `_footer` frames act as editable composition slots. Status hero icons and surfaces bind to shared Color variables, width/padding/radius/footer-border dimensions bind to Components collection Dialog variables, and row/column labels are locked documentation chrome. Code Connect template: `packages/figma/code-connect/Dialog.figma.ts`. Runtime-only behavior (`open` state, native `<dialog>`, Escape/backdrop dismissal, focus trap, `onClose` callback semantics, `icon` override, refs, and arbitrary native dialog attributes) is documented as a Figma gap in `packages/react/ai/figma-workflow.md`.
+>
+> **Figma Menu component:** A1-1420 created the Menu shell component in the A1 Design System file on the Menu page (`node 218:1177`) plus a separate Menu Item child component set (`node 218:1176`). Menu is a single vertical auto-layout shell with a section label and `_items` slot frame; it is not a grid/variant set. Menu Item owns the `State` axis (`default`, `hover`, `focus`, `pressed`, `active`, `disabled`, `destructive`) plus editable `Label`, `Shortcut`, `Show icon`, `Show shortcut`, and `Icon` instance-swap properties. The Menu Item set uses grid auto layout with 64px padding on a page-surface fill, locked auto-layout row/column labels, Components collection Menu FLOAT variables, shared Color collection bindings, variable-bound icon vectors, and a dark-mode validation frame. Code Connect templates: `packages/figma/code-connect/Menu.figma.ts` and `packages/figma/code-connect/MenuItem.figma.ts`. Runtime-only behavior (`open`, `onClose`, `anchorRef`, viewport positioning, focus trap, mobile modal mode, `href`, event handlers, refs, arbitrary children beyond documented slots) is documented as a Figma gap in `packages/react/ai/figma-workflow.md`.
 
 > **Overlay props (A1-417):** `open` (boolean), `onClose` (optional — when provided, renders the close button and handles Escape), `status` (`"neutral" | "info" | "success" | "warn" | "error"`, default `"info"`), `icon` (string | null — defaults to the status icon; pass `null` to hide), `title` (ReactNode — primary heading and default accessible label), `body` (ReactNode — supporting copy and default accessible description), `actions` (ReactNode — usually one primary action plus optional secondary), `dismissLabel` (string — close button accessible label, default from `system/labels/overlay.json`), and `children` (additional supporting content). Overlay is a full-screen native-dialog surface for rare, high-emphasis status moments such as game results, major completion states, or blocking announcements. Prefer Dialog, Banner, Snackbar, or Notification for routine feedback.
 
@@ -386,6 +391,30 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **No close button:** Omit `onClose` to hide the dismiss button. In this case the dialog can only be closed programmatically or via footer actions. Still handle the Escape key — pass an `onClose` or add your own cancel listener if keyboard dismissal matters.
 
 ---
+
+## Data Viz
+
+| Component | React | Native | Pure | Web Components | Figma |
+|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
+| Node | ✓ | — | — | — | — |
+| Line Chart | ✓ | — | — | — | — |
+| Bar Chart | ✓ | — | — | — | — |
+| Area Chart | ✓ | — | — | — | — |
+| Composed Chart | ✓ | — | — | — | — |
+| Pie Chart | ✓ | — | — | — | — |
+| Scatter Chart | ✓ | — | — | — | — |
+| Radar Chart | ✓ | — | — | — | — |
+| Radial Bar Chart | ✓ | — | — | — | — |
+| Funnel Chart | ✓ | — | — | — | — |
+| Treemap Chart | ✓ | — | — | — | — |
+| Sankey Chart | ✓ | — | — | — | — |
+| Sunburst Chart | ✓ | — | — | — | — |
+
+> **Recharts component props:** `LineChart`, `BarChart`, `AreaChart`, and `ComposedChart` share Cartesian props (`data`, `xKey`, `series`, `height`, `curve` where relevant, `stacked` where relevant, grid/axis/legend/tooltip toggles). `PieChart`, `RadialBarChart`, and `FunnelChart` use categorical `data`, `nameKey`, `valueKey`, legend, and tooltip props. `ScatterChart` uses `xKey`, `yKey`, optional `zKey`, and scatter `series`. `RadarChart` uses `axisKey`, `series`, polar grid/axis toggles, legend, and tooltip props. `TreemapChart`, `SankeyChart`, and `SunburstChart` use hierarchy/flow data with tooltip support. The compatibility `Chart` export remains for generic Cartesian rendering, but a1-web surfaces each Recharts type as its own component page under **Data Viz** (`/components/line-chart`, `/components/pie-chart`, etc.).
+>
+> **Recharts styling rules:** All wrappers use A1 chart tokens (`system/tokens/component/chart.json`, `--component-chart-*`) for title/description, plot height, axes, polar grid, tooltip, legend, focus ring, area opacity, line weight, and semantic/status series tones. Series and categorical items use the built-in tone set (`accent`, `info`, `success`, `warn`, `error`, `neutral`) rather than arbitrary colors. Recharts animation is disabled wherever the library exposes an animation prop, so chart motion does not bypass A1 motion tokens. Always provide a visible `title` or accessible `aria-label`, and keep legend/tooltip or surrounding text so meaning is not communicated by color alone.
+>
+> **Status:** Experimental — in `apps/a1-web/src/pages/components/data.js` as `line-chart`, `bar-chart`, `area-chart`, `composed-chart`, `pie-chart`, `scatter-chart`, `radar-chart`, `radial-bar-chart`, `funnel-chart`, `treemap-chart`, `sankey-chart`, and `sunburst-chart`.
 
 ## Data
 

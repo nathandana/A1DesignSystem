@@ -17,6 +17,7 @@ import { normalizeTicketType } from './types';
 // for the Virtual Team) never breaks reads on a DB that hasn't run that migration yet —
 // `itemFromRow` defaults any missing field. The full field list lives in `itemFromRow`.
 const ITEM_COLS = '*';
+const ITEM_PAGE_SIZE = 1000;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function itemFromRow(r: any): BacklogItem {
@@ -94,10 +95,23 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
 
   return {
     async listItems() {
-      const { data, error } = await sb
-        .from('backlog_items').select(ITEM_COLS).order('number', { ascending: false });
-      if (error) { console.warn('[backlog] listItems failed', error); return []; }
-      return (data ?? []).map(itemFromRow);
+      const rows: any[] = [];
+
+      // Supabase/PostgREST caps un-ranged selects at 1000 rows by default. Page
+      // explicitly so older/released tickets remain visible as the backlog grows.
+      for (let from = 0; ; from += ITEM_PAGE_SIZE) {
+        const { data, error } = await sb
+          .from('backlog_items')
+          .select(ITEM_COLS)
+          .order('number', { ascending: false })
+          .order('id', { ascending: true })
+          .range(from, from + ITEM_PAGE_SIZE - 1);
+        if (error) { console.warn('[backlog] listItems failed', error); return []; }
+        rows.push(...(data ?? []));
+        if (!data || data.length < ITEM_PAGE_SIZE) break;
+      }
+
+      return rows.map(itemFromRow);
     },
 
     async createItem(row: CreateItemRow) {

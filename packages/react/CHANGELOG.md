@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-No unreleased changes.
+### Added
+
+- **Recharts chart components** — added Recharts 3.9.2 and React-only A1 wrappers for `LineChart`, `BarChart`, `AreaChart`, `ComposedChart`, `PieChart`, `ScatterChart`, `RadarChart`, `RadialBarChart`, `FunnelChart`, `TreemapChart`, `SankeyChart`, and `SunburstChart`, with the generic `Chart` export retained for Cartesian compatibility. Chart styling is governed by A1 component tokens for axes, polar grids, legends, tooltips, focus rings, chart heights, line weight, area opacity, and semantic/status series tones; Recharts animation is disabled by default so chart motion does not bypass A1 motion tokens. Added TypeScript declarations, Storybook stories, package exports, rules, and a1-web/editor registration.
 
 ## 0.27.0 — 2026-07-06
 
@@ -29,6 +31,8 @@ No unreleased changes.
 - **Button loading spinner** (A1-308) — Button now composes the shared `CircularProgress` component for its `loading` indicator instead of maintaining a custom spinner. The loading state keeps the same public API, icon-slot sizing, inert behavior, and `aria-busy` treatment while reusing the governed progress implementation.
 
 ### Fixed
+
+- **System light and explicit light now share the same color contract** (A1-1436) — generated color-scheme CSS now emits a `:root` light-mode baseline from `LIGHT_MODE_DECLARATIONS`, so Auto/System mode on a light OS resolves status, action, surface, and component aliases the same way as forced Light mode. Theme-specific light declarations are also restored when `.a1-theme-light` is combined with a theme class, so forcing Light no longer flattens themed page/panel/action aliases back to generic A1 light values. Fresh also restores its light mint body gradient under explicit light even when the OS prefers dark.
 
 - **Field error border colour** — TextField and Textarea error states now use the same `--semantic-color-status-error-border` token for the side accent and the rest of the border, keeping the error outline visually consistent.
 

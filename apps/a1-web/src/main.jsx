@@ -72,6 +72,7 @@ import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
 import { Presentation } from './pages/Presentation.jsx'
+import { SystemDashboard } from './pages/SystemDashboard.jsx'
 import { FoundationDetail, Foundations, foundations } from './pages/foundations'
 import {
   Components,
@@ -142,8 +143,9 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
+  dashboard: 'monitoring',
   features: 'star',
   'get-started': 'rocket_launch',
   presentation: 'slideshow',
@@ -159,10 +161,11 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
+  dashboard: 'Dashboard',
   features: 'Features',
   'get-started': 'Get started',
   presentation: 'Presentation',
@@ -304,6 +307,7 @@ function focusPageSearchTarget() {
 
 const PAGE_TITLE_LABEL_KEYS = {
   home: 'app.page.home',
+  dashboard: 'app.page.dashboard',
   features: 'app.page.features',
   'get-started': 'app.page.getStarted',
   blog: 'app.page.blog',
@@ -524,6 +528,7 @@ function App() {
     }
 
     addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
+    addPage('dashboard', 'Live dashboard for A1 health, backlog, components, tokens, rules, labels, and system flow.', ['health', 'metrics', 'charts', 'data viz', 'counts'])
     addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
     addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
@@ -1650,6 +1655,7 @@ function App() {
           />
         )}
         {activePage === 'home' && <Home onNavigate={navigate} />}
+        {activePage === 'dashboard' && <SystemDashboard onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
