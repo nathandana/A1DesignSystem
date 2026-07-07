@@ -30,6 +30,106 @@ export interface CatalogCategory {
   entries: CatalogEntry[];
 }
 
+const chartData = [
+  { month: 'Jan', revenue: 32, expenses: 18, forecast: 26 },
+  { month: 'Feb', revenue: 40, expenses: 22, forecast: 30 },
+  { month: 'Mar', revenue: 36, expenses: 24, forecast: 34 },
+  { month: 'Apr', revenue: 48, expenses: 28, forecast: 39 },
+  { month: 'May', revenue: 56, expenses: 32, forecast: 45 },
+  { month: 'Jun', revenue: 64, expenses: 36, forecast: 52 },
+];
+
+const chartSeries = [
+  { key: 'revenue', label: 'Revenue', tone: 'accent' },
+  { key: 'expenses', label: 'Expenses', tone: 'warn' },
+  { key: 'forecast', label: 'Forecast', tone: 'info' },
+];
+
+const categoryData = [
+  { name: 'Organic', value: 420, tone: 'accent' },
+  { name: 'Referral', value: 280, tone: 'info' },
+  { name: 'Partner', value: 190, tone: 'success' },
+  { name: 'Paid', value: 120, tone: 'warn' },
+  { name: 'Other', value: 80, tone: 'neutral' },
+];
+
+const scatterSeries = [
+  {
+    key: 'enterprise',
+    label: 'Enterprise',
+    tone: 'accent',
+    data: [
+      { x: 42, y: 64, z: 18 },
+      { x: 58, y: 72, z: 24 },
+      { x: 67, y: 82, z: 28 },
+      { x: 76, y: 86, z: 34 },
+    ],
+  },
+  {
+    key: 'midmarket',
+    label: 'Midmarket',
+    tone: 'info',
+    data: [
+      { x: 30, y: 48, z: 16 },
+      { x: 44, y: 58, z: 20 },
+      { x: 56, y: 62, z: 22 },
+      { x: 70, y: 74, z: 26 },
+    ],
+  },
+];
+
+const radarData = [
+  { capability: 'Reach', current: 76, target: 88 },
+  { capability: 'Quality', current: 82, target: 90 },
+  { capability: 'Speed', current: 68, target: 84 },
+  { capability: 'Retention', current: 72, target: 86 },
+  { capability: 'Expansion', current: 64, target: 80 },
+];
+
+const radarSeries = [
+  { key: 'current', label: 'Current', tone: 'accent' },
+  { key: 'target', label: 'Target', tone: 'info' },
+];
+
+const hierarchyData = [
+  {
+    name: 'Acquisition',
+    children: [
+      { name: 'Organic', value: 420 },
+      { name: 'Paid', value: 180 },
+      { name: 'Partner', value: 240 },
+    ],
+  },
+  {
+    name: 'Product',
+    children: [
+      { name: 'Core', value: 360 },
+      { name: 'Add-ons', value: 170 },
+      { name: 'Services', value: 120 },
+    ],
+  },
+];
+
+const sunburstData = {
+  name: 'Products',
+  children: [
+    { name: 'Platform', children: [{ name: 'Core', value: 360 }, { name: 'Automation', value: 180 }] },
+    { name: 'Services', children: [{ name: 'Strategy', value: 140 }, { name: 'Support', value: 220 }] },
+  ],
+};
+
+const sankeyData = {
+  nodes: [{ name: 'Visit' }, { name: 'Trial' }, { name: 'Demo' }, { name: 'Active' }, { name: 'Lost' }],
+  links: [
+    { source: 0, target: 1, value: 340 },
+    { source: 0, target: 2, value: 220 },
+    { source: 1, target: 3, value: 190 },
+    { source: 1, target: 4, value: 150 },
+    { source: 2, target: 3, value: 140 },
+    { source: 2, target: 4, value: 80 },
+  ],
+};
+
 export const COMPONENT_CATALOG: CatalogCategory[] = [
   {
     id: 'layout',
@@ -765,6 +865,229 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
     ],
   },
   {
+    id: 'data-viz',
+    label: 'Data Viz',
+    icon: 'query_stats',
+    entries: [
+      {
+        type: 'Node',
+        label: 'Node',
+        icon: 'circle',
+        description: 'Standalone labeled shape component',
+        defaultNode: {
+          type: 'Node',
+          props: {
+            id: 'node',
+            label: 'Node',
+            sublabel: 'Label',
+            shape: 'circle',
+            color: 'accent',
+            size: 'md',
+            subtle: false,
+          },
+        },
+      },
+      {
+        type: 'LineChart',
+        label: 'Line chart',
+        icon: 'show_chart',
+        description: 'Trend chart for ordered data',
+        defaultNode: {
+          type: 'LineChart',
+          props: {
+            title: 'Monthly performance',
+            description: 'Revenue, expenses, and forecast for the first half of the year.',
+            data: chartData,
+            xKey: 'month',
+            series: chartSeries,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'BarChart',
+        label: 'Bar chart',
+        icon: 'bar_chart',
+        description: 'Grouped or stacked category comparison',
+        defaultNode: {
+          type: 'BarChart',
+          props: {
+            title: 'Quarterly pipeline',
+            description: 'Open and committed pipeline by month.',
+            data: chartData,
+            xKey: 'month',
+            series: chartSeries.slice(0, 2),
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'AreaChart',
+        label: 'Area chart',
+        icon: 'area_chart',
+        description: 'Cumulative or banded trend chart',
+        defaultNode: {
+          type: 'AreaChart',
+          props: {
+            title: 'Capacity allocation',
+            description: 'Stacked area chart using A1 semantic series tones.',
+            data: chartData,
+            xKey: 'month',
+            series: chartSeries,
+            stacked: true,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'ComposedChart',
+        label: 'Composed chart',
+        icon: 'stacked_line_chart',
+        description: 'Mixed line, bar, and area series',
+        defaultNode: {
+          type: 'ComposedChart',
+          props: {
+            title: 'Plan against actuals',
+            description: 'Bars show revenue and expenses; the line shows forecast.',
+            data: chartData,
+            xKey: 'month',
+            series: [
+              { key: 'revenue', label: 'Revenue', type: 'bar', tone: 'accent' },
+              { key: 'expenses', label: 'Expenses', type: 'bar', tone: 'warn' },
+              { key: 'forecast', label: 'Forecast', type: 'line', tone: 'info' },
+            ],
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'PieChart',
+        label: 'Pie chart',
+        icon: 'pie_chart',
+        description: 'Categorical share chart',
+        defaultNode: {
+          type: 'PieChart',
+          props: {
+            title: 'Traffic mix',
+            description: 'Channel share grouped by source.',
+            data: categoryData,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'ScatterChart',
+        label: 'Scatter chart',
+        icon: 'scatter_plot',
+        description: 'Numeric correlation plot',
+        defaultNode: {
+          type: 'ScatterChart',
+          props: {
+            title: 'Opportunity quality',
+            description: 'Deal value compared with confidence score.',
+            xKey: 'x',
+            yKey: 'y',
+            zKey: 'z',
+            series: scatterSeries,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'RadarChart',
+        label: 'Radar chart',
+        icon: 'radar',
+        description: 'Multivariate profile chart',
+        defaultNode: {
+          type: 'RadarChart',
+          props: {
+            title: 'Capability profile',
+            description: 'Current and target scores by capability.',
+            data: radarData,
+            axisKey: 'capability',
+            series: radarSeries,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'RadialBarChart',
+        label: 'Radial bar chart',
+        icon: 'donut_large',
+        description: 'Circular progress comparison',
+        defaultNode: {
+          type: 'RadialBarChart',
+          props: {
+            title: 'Goal progress',
+            description: 'Progress by team against the same target.',
+            data: categoryData,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'FunnelChart',
+        label: 'Funnel chart',
+        icon: 'filter_alt',
+        description: 'Stage conversion chart',
+        defaultNode: {
+          type: 'FunnelChart',
+          props: {
+            title: 'Conversion funnel',
+            description: 'Prospects remaining at each lifecycle stage.',
+            data: categoryData,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'TreemapChart',
+        label: 'Treemap chart',
+        icon: 'view_quilt',
+        description: 'Nested part-to-whole chart',
+        defaultNode: {
+          type: 'TreemapChart',
+          props: {
+            title: 'Portfolio allocation',
+            description: 'Nested allocation by business area.',
+            data: hierarchyData,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'SankeyChart',
+        label: 'Sankey chart',
+        icon: 'schema',
+        description: 'Proportional flow diagram',
+        defaultNode: {
+          type: 'SankeyChart',
+          props: {
+            title: 'User journey flow',
+            description: 'Movement between acquisition, product, and outcome stages.',
+            data: sankeyData,
+            height: 'md',
+          },
+        },
+      },
+      {
+        type: 'SunburstChart',
+        label: 'Sunburst chart',
+        icon: 'wb_twilight',
+        description: 'Radial hierarchy chart',
+        defaultNode: {
+          type: 'SunburstChart',
+          props: {
+            title: 'Product taxonomy',
+            description: 'Hierarchical share across product families.',
+            data: sunburstData,
+            height: 'md',
+          },
+        },
+      },
+    ],
+  },
+  {
     id: 'data',
     label: 'Data',
     icon: 'table_chart',
@@ -848,24 +1171,6 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         defaultNode: {
           type: 'Calendar',
           props: { variant: 'paginated', monthsToShow: 1 },
-        },
-      },
-      {
-        type: 'Node',
-        label: 'Node',
-        icon: 'circle',
-        description: 'Standalone labeled shape component',
-        defaultNode: {
-          type: 'Node',
-          props: {
-            id: 'node',
-            label: 'Node',
-            sublabel: 'Label',
-            shape: 'circle',
-            color: 'accent',
-            size: 'md',
-            subtle: false,
-          },
         },
       },
     ],

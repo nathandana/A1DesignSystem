@@ -71,6 +71,7 @@ import * as dialog from './dialog.jsx'
 import * as overlay from './overlay.jsx'
 import * as menu from './menu.jsx'
 import * as dataTable from './data-table.jsx'
+import * as chart from './chart.jsx'
 import * as pagination from './pagination.jsx'
 import * as icon from './icon.jsx'
 import * as accordion from './accordion.jsx'
@@ -152,6 +153,18 @@ const REGISTRY = {
   overlay,
   menu,
   'data-table': dataTable,
+  'line-chart': chart.lineChartDetail,
+  'bar-chart': chart.barChartDetail,
+  'area-chart': chart.areaChartDetail,
+  'composed-chart': chart.composedChartDetail,
+  'pie-chart': chart.pieChartDetail,
+  'scatter-chart': chart.scatterChartDetail,
+  'radar-chart': chart.radarChartDetail,
+  'radial-bar-chart': chart.radialBarChartDetail,
+  'funnel-chart': chart.funnelChartDetail,
+  'treemap-chart': chart.treemapChartDetail,
+  'sankey-chart': chart.sankeyChartDetail,
+  'sunburst-chart': chart.sunburstChartDetail,
   pagination,
   icon,
   accordion,

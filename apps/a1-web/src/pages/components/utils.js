@@ -1,6 +1,7 @@
 import {
   COMPONENT_SEARCH_KEYWORDS,
   COMPONENT_RELATED,
+  COMPONENT_LAST_UPDATED,
   PACKAGE_COVERAGE,
   LAST_UPDATED,
   componentCategories,
@@ -160,7 +161,7 @@ export const allComponents = componentCategories.flatMap((category) =>
       categoryId: category.id,
       categoryTitle: category.title,
       categoryIcon: category.icon,
-      updated: LAST_UPDATED,
+      updated: COMPONENT_LAST_UPDATED[component.id] ?? LAST_UPDATED,
       packages: PACKAGE_COVERAGE[component.id] ?? ['React'],
     }
     return {

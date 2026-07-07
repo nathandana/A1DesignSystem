@@ -2,7 +2,23 @@
 
 ## Unreleased
 
-No unreleased changes.
+- **Explore dashboard** — added a `/dashboard` Explore page with Recharts-powered cards for backlog health, component coverage, token volume, system flow, rules, and labels, plus a Home callout under the initial stats strip.
+
+- **Backlog Figma-ticket seeding no longer churns timestamps** — generated Figma component tickets still seed when missing and repair priority/size metadata, but existing ticket descriptions are no longer rewritten automatically on app load. This prevents guidance-template changes from making the Backlog look reset by stamping many generated tickets as updated today.
+
+- **Backlog cloud reads include every ticket** — Supabase backlog reads now page through all `backlog_items` rows instead of stopping at PostgREST's 1000-row default. Older and released tickets stay visible even after generated-ticket bursts increase the total backlog size, and the duplicate Figma component tickets created by the truncated read were cleaned up in the live backlog.
+
+- **Theme light mode matches System light** (A1-1436) — System mode on a light OS now uses the same generated light color contract as forced Light mode, so dashboard chart/status colors and themed surfaces match instead of drifting to older root token values. Selecting Light in Settings still preserves theme-specific light surfaces and forces light mode when the OS prefers dark.
+
+- **Components overview last-updated dates** — the Components overview table now uses component-specific `Last updated` dates based on documented component work instead of assigning the same fallback date to every row.
+
+- **Data Viz category + chart configurators** — added a dedicated Data Viz component category with Node plus separate pages for line, bar, area, composed, pie, scatter, radar, radial bar, funnel, treemap, Sankey, and sunburst charts. Each chart page has a live Configure panel, generated React snippet, generated prop table entry, rules coverage, package/status metadata, related components, editor Add catalog support, page-renderer registration, and selected-node editor controls.
+
+- **Figma Dialog component** (A1-1418) — Dialog is now marked available in the Components inventory's Figma coverage, matching the new A1 Figma Dialog component set (`node 228:1628`), `Dialog Hero Icon` child component set (`node 228:1013`), and repo-side Code Connect template. The Figma asset covers size/status variants, editable title/body content, close/footer toggles, body/footer composition slots, shared token bindings, and documents native dialog behavior as runtime-only gaps.
+
+- **Backlog Figma component ticket guidance** — generated "Create Figma component" tickets now read the shared `FIGMA_COMPONENT_GUIDELINES.md` and include concise component-specific guidance when new tickets are seeded. Existing generated ticket descriptions are not rewritten automatically, so normal app loads do not churn ticket timestamps.
+
+- **Figma Menu component** (A1-1420) — Menu is now marked available in the Components inventory's Figma coverage, matching the new A1 Figma Menu shell component (`node 218:1177`), Menu Item child component set (`node 218:1176`), and repo-side Code Connect templates. The Figma asset keeps Menu as a slotted shell, lets Menu Item own default/hover/focus/pressed/active/disabled/destructive states, binds icon vectors to state-aware color variables, and documents runtime positioning/dismissal behavior as Figma gaps.
 
 ## 0.26.0 — 2026-07-06
 

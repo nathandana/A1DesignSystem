@@ -18,7 +18,7 @@
 
 /* Grid overlay */
 .a1-canvas__grid {
-  --a1-canvas-grid-color: color-mix(in srgb, var(--semantic-color-border-default) 80%, transparent);
+  --a1-canvas-grid-color: color-mix(in srgb, var(--semantic-color-border-subtle) 38%, transparent);
   position: absolute;
   inset: 0;
   width: 100%;

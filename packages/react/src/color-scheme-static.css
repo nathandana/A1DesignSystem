@@ -302,3 +302,13 @@ html.a1-theme-dark.a1-theme-fresh body {
     background-color: var(--a1-theme-fresh-dark-surface-page);
   }
 }
+
+html.a1-theme-fresh.a1-theme-light body,
+html.a1-theme-light.a1-theme-fresh body {
+  background-image: linear-gradient(
+    207.43deg,
+    var(--a1-theme-fresh-gradient-start) 0%,
+    var(--a1-theme-fresh-gradient-end) 57.44%
+  );
+  background-color: var(--semantic-color-surface-page);
+}
