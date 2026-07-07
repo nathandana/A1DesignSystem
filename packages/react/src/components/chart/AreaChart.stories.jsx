@@ -38,7 +38,7 @@ const meta = {
   argTypes: {
     height: {
       control: "inline-radio",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg"],
     },
     curve: {
       control: "inline-radio",

@@ -4,6 +4,7 @@
       "height":        { "$value": "64px" },
       "paddingInline": { "$type": "dimension", "$value": "{base.spacing.24}" },
       "borderWidth":   { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "logoForeground": { "$type": "color", "$value": "{semantic.color.text.default}" },
       "zIndex":        { "$value": "100" }
     }
   }

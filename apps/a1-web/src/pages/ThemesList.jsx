@@ -39,7 +39,7 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
           { label: t('app.page.theme', 'Theme') },
         ]}
         title={t('app.page.theme', 'Theme')}
-        description={t('app.theme.pageDescription', 'Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.')}
+        description={t('app.theme.pageDescription', 'Build a theme by hand — colours, type, and shape. Open one to edit it.')}
         actions={<Button icon="add" onClick={newTheme}>{t('app.theme.newTheme', 'New theme')}</Button>}
       />
 

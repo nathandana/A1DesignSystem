@@ -210,7 +210,13 @@ export function ComponentsSidebar({ activePage, detailTab, onNavigate, onSelectD
     <Stack direction="row" gap="xs" align="end">
       <SearchField
         data-a1-page-search=""
+        data-1p-ignore="true"
+        data-bwignore="true"
+        data-form-type="other"
+        data-lpignore="true"
         aria-label="Search components"
+        autoComplete="off"
+        name="a1-components-sidebar-search"
         size="compact"
         value={search}
         onChange={(event) => setSearch(event.target.value)}

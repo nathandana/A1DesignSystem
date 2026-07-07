@@ -10,6 +10,12 @@
         "iconSize":        { "$type": "dimension", "$value": "18px" },
         "chevronSize":     { "$type": "dimension", "$value": "16px" },
         "lineHeight":      { "$value": "1.5" },
+        "selectedBackground": { "$type": "color", "$value": "{semantic.color.action.background}" },
+        "selectedBackgroundHover": { "$type": "color", "$value": "{semantic.color.action.backgroundHover}" },
+        "selectedBackgroundPressed": { "$type": "color", "$value": "{semantic.color.action.backgroundPressed}" },
+        "selectedForeground": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
+        "selectedForegroundHover": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
+        "selectedForegroundPressed": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
         "focusRingWidth":  { "$type": "dimension", "$value": "2px" },
         "focusRingOffset": { "$value": "-2px" },
         "disabledOpacity": { "$type": "opacity", "$value": 0.4 }

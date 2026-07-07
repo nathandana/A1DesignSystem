@@ -9,6 +9,15 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   href?: string;
   /** Remove the card border and background. Default: false */
   bare?: boolean;
+  /**
+   * Card surface treatment. `"default"` uses the standard card surface;
+   * `"accent"` uses the stronger action/accent background step (darker in light
+   * mode, lighter in dark mode), applies the primary-action foreground as its
+   * local text context, and disables status stripe rendering because the two
+   * treatments compete.
+   * Default: "default"
+   */
+  surface?: "default" | "accent";
   /** Material Symbols icon name. Used by `iconDisplay` to render the icon. */
   icon?: string;
   /**
@@ -25,6 +34,10 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
    * Default: "action"
    */
   heroColor?: "action" | "neutral" | "info" | "success" | "warn" | "error" | (string & {});
+  /** Add a shaped separator between the hero icon area and the card content. Only applies when `iconDisplay="hero"`. Default: false */
+  heroSeparator?: boolean;
+  /** Separator shape used when `heroSeparator` is true. Default: "wave" */
+  heroSeparatorShape?: "wave" | "swell" | "curve" | "slope" | "peak" | "valley" | "ribbon";
   /** Badge label overlaid on the hero (only renders when `iconDisplay="hero"`). */
   heroBadge?: React.ReactNode;
   /** Status colour of the hero badge. Default: "neutral" */
@@ -37,7 +50,9 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Renders a coloured status stripe down the card's inline-start edge, coloured from the
    * tokenized `component.card.status.*` palette (warn/success are two ramp steps lighter than
-   * the status background so a thin stripe still reads as amber/green).
+   * the status background so the status frame still reads as amber/green). The full card border
+   * matches the status colour, and the inline-start stripe is at least 8px wide or the card
+   * radius, whichever is larger.
    *
    * The stripe is decorative: status must NOT be conveyed by colour alone. Pair it with
    * `statusLabel` (or status text the card carries or sits within) — see the

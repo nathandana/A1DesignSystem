@@ -30,6 +30,10 @@
   font-family: var(--component-paragraph-font-family);
 }
 
+.a1-chart--height-xs {
+  --a1-chart-height: var(--component-chart-height-xs);
+}
+
 .a1-chart--height-sm {
   --a1-chart-height: var(--component-chart-height-sm);
 }

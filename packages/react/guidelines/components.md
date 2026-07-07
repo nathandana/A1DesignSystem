@@ -45,7 +45,8 @@ accepted and ignored.
 | `Cluster` | `gap`, `align` | Wrapping inline row for groups of small elements. |
 | `Grid` / `GridItem` | `columns` (number or `{ xs, sm, md, lg, xl }`), `gap`; `span`, `rowSpan` on `GridItem` | Responsive CSS grid. |
 | `Section` | `surface="page\|panel\|raised"`, `padding`, `gap`, `contentWidth`, `inverse`, `gradient`, `height="screen\|hero"`, `align`, `radius`, `border*`, `background*` | Page-level region: heroes, content rows, full-width zones. Place as a direct child of `<main>` — never wrap it in Stack/Grid/Card. |
-| `Card` | `variant` (`"navigation"` makes the whole card a link — pass `href`), `icon`, `heroIcon`, `status`, `statusLabel`, `statusPulse` | Small repeated content unit (tile, summary, grid item). **Not** a page wrapper — see rules below. |
+| `SectionSeparator` | `topSurface`, `bottomSurface`, `inverse`, `topInverse`, `bottomInverse`, `shape`, `size`, `border`, `borderSize`, `borderVariant` | Organic responsive divider between adjacent full-width Sections. Use it between surfaces; do not place content inside it. |
+| `Card` | `surface="default\|accent"`, `variant` (`"navigation"` makes the whole card a link — pass `href`), `icon`, `heroIcon`, `heroSeparator`, `heroSeparatorShape`, `status`, `statusLabel`, `statusPulse` | Small repeated content unit (tile, summary, grid item). Accent surface disables status. **Not** a page wrapper — see rules below. |
 | `Inset` | `space`, `block`, `inline`, `as` | Padding wrapper. |
 | `Bleed` | spacing token or boolean | Negative-margin breakout inside a constrained column. |
 | `Spacer` | `size` | Explicit empty space block. |

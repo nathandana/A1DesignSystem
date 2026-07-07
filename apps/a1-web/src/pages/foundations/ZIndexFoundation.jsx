@@ -1,6 +1,5 @@
 import {
   Banner,
-  Breadcrumb,
   Heading,
   List,
   ListItem,
@@ -8,6 +7,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -87,30 +87,16 @@ const auditRows = [
 export function ZIndexFoundationPage({ onNavigate }) {
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Z-index', onNavigate)}
-          />
-          <Heading as="h1" id="zindex-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Z-index &amp; layering
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            A1 stacks overlays with two distinct mechanisms — the browser top layer and a numeric z-index scale. Mixing them is the usual cause of “my menu is behind the dialog” bugs, so decide which layer an element belongs to before assigning any z-index.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="zindex-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Z-index', onNavigate)}
+        title="Z-index &amp; layering"
+        description="A1 stacks overlays with two distinct mechanisms — the browser top layer and a numeric z-index scale. Mixing them is the usual cause of “my menu is behind the dialog” bugs, so decide which layer an element belongs to before assigning any z-index."
+      />
 
       <Section padding="sm" contentWidth="xl" gap="lg">
         <Stack gap="md">
-          <Heading as="h2" size="md">1. The browser top layer (modals)</Heading>
+          <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>1. The browser top layer (modals)</Heading>
           <Paragraph color="muted" size="sm">
             <TokenCode>Dialog</TokenCode> renders a native <TokenCode>&lt;dialog&gt;</TokenCode> opened with <TokenCode>showModal()</TokenCode>, which the browser paints in the <strong>top layer</strong> — above the entire normal stacking context, regardless of any z-index. No z-index, however large, can place a normal-layer element above an open modal dialog.
           </Paragraph>
@@ -120,7 +106,7 @@ export function ZIndexFoundationPage({ onNavigate }) {
         </Stack>
 
         <Stack gap="md">
-          <Heading as="h2" size="md">2. The z-index scale (everything else)</Heading>
+          <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>2. The z-index scale (everything else)</Heading>
           <Paragraph color="muted" size="sm">
             For elements in the normal layer — sticky chrome, pinned furniture, non-modal popovers, toasts that never overlap a modal — use this single ordered scale. Never invent values between the bands. The tokens are the target; if one doesn’t exist yet, add it to <TokenCode>system/tokens/</TokenCode> (semantic tier).
           </Paragraph>
@@ -128,12 +114,12 @@ export function ZIndexFoundationPage({ onNavigate }) {
         </Stack>
 
         <Stack gap="md">
-          <Heading as="h2" size="md">Current state (audit)</Heading>
+          <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>Current state (audit)</Heading>
           <SimpleTable columns={auditColumns} rows={auditRows} />
         </Stack>
 
         <Stack gap="md">
-          <Heading as="h2" size="md">Rules</Heading>
+          <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>Rules</Heading>
           <List as="ol">
             <ListItem><strong>One scale.</strong> Every normal-layer z-index references a layer token; no ad-hoc numbers between bands.</ListItem>
             <ListItem><strong>Top layer for anything that must beat a modal.</strong> Menus, context menus, tooltips, and toasts that can appear over a Dialog use the Popover API or render inside the dialog — z-index alone will not work.</ListItem>

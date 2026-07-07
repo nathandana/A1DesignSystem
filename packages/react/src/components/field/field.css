@@ -17,7 +17,7 @@
 
   /* interaction — hover/active/readonly values come from :root in color-scheme.css */
   --a1-field-background:            var(--semantic-color-surface-field);
-  --a1-field-border-color:          var(--semantic-color-border-strong);
+  --a1-field-border-color:          var(--component-field-border-color);
   --a1-field-focus-ring-color:      var(--component-field-focus-ring-color);
   --a1-field-focus-ring-width:      var(--component-field-focus-ring-width);
   --a1-field-focus-ring-offset:     var(--component-field-focus-ring-offset);
@@ -64,7 +64,7 @@
   --a1-field-height:         var(--component-field-compact-height);
   --a1-field-padding-inline: var(--component-field-compact-padding-inline);
   --a1-field-gap:            var(--component-field-compact-gap);
-  --a1-field-border-radius:  var(--base-radius-sm);
+  --a1-field-border-radius:  var(--component-field-compact-border-radius);
   --a1-field-font-size:      var(--semantic-font-size-body-sm);
   --a1-field-label-size:     var(--semantic-font-size-form-label-compact);
   --a1-field-label-weight:   var(--component-field-compact-label-font-weight);
@@ -123,9 +123,11 @@
   background: var(--a1-field-background);
   border: var(--component-field-border-width) solid var(--a1-field-border-color);
   border-radius: var(--a1-field-border-radius);
+  box-shadow: var(--component-field-shadow);
   transition:
     border-color var(--semantic-motion-duration-fast),
-    background var(--semantic-motion-duration-fast);
+    background var(--semantic-motion-duration-fast),
+    box-shadow var(--semantic-motion-duration-fast);
   -webkit-appearance: none;
   appearance: none;
 }
@@ -298,9 +300,11 @@
   background: var(--a1-field-background);
   border: var(--component-field-border-width) solid var(--a1-field-border-color);
   border-radius: var(--a1-field-border-radius);
+  box-shadow: var(--component-field-shadow);
   transition:
     border-color var(--semantic-motion-duration-fast),
-    background var(--semantic-motion-duration-fast);
+    background var(--semantic-motion-duration-fast),
+    box-shadow var(--semantic-motion-duration-fast);
   overflow: hidden;
 }
 

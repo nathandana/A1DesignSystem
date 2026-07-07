@@ -1,0 +1,520 @@
+{
+  "tokens": {
+    "base": {
+      "color": {
+        "neutral": {
+          "0": {
+            "$type": "color",
+            "$value": "#fcfcfc"
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#e7e9e8"
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#d3d6d4"
+          },
+          "200": {
+            "$type": "color",
+            "$value": "#bec3bf"
+          },
+          "300": {
+            "$type": "color",
+            "$value": "#a7aeaa"
+          },
+          "400": {
+            "$type": "color",
+            "$value": "#909892"
+          },
+          "500": {
+            "$type": "color",
+            "$value": "#717A74"
+          },
+          "600": {
+            "$type": "color",
+            "$value": "#49504b"
+          },
+          "700": {
+            "$type": "color",
+            "$value": "#2e3330"
+          },
+          "800": {
+            "$type": "color",
+            "$value": "#171b19"
+          },
+          "900": {
+            "$type": "color",
+            "$value": "#060706"
+          },
+          "1000": {
+            "$type": "color",
+            "$value": "#000000"
+          }
+        },
+        "accent": {
+          "0": {
+            "$type": "color",
+            "$value": "#fbfcfa"
+          },
+          "25": {
+            "$type": "color",
+            "$value": "#f7ffef"
+          },
+          "50": {
+            "$type": "color",
+            "$value": "#f1ffe0"
+          },
+          "100": {
+            "$type": "color",
+            "$value": "#e9ffcb"
+          },
+          "200": {
+            "$type": "color",
+            "$value": "#e1ffb5"
+          },
+          "300": {
+            "$type": "color",
+            "$value": "#d8ff9b"
+          },
+          "400": {
+            "$type": "color",
+            "$value": "#ceff76"
+          },
+          "500": {
+            "$type": "color",
+            "$value": "#BEFF00"
+          },
+          "600": {
+            "$type": "color",
+            "$value": "#b2ef00"
+          },
+          "700": {
+            "$type": "color",
+            "$value": "#516f00"
+          },
+          "800": {
+            "$type": "color",
+            "$value": "#2c3e00"
+          },
+          "900": {
+            "$type": "color",
+            "$value": "#0d1600"
+          },
+          "1000": {
+            "$type": "color",
+            "$value": "#000000"
+          }
+        }
+      },
+      "font": {
+        "family": {
+          "body": {
+            "$type": "fontFamily",
+            "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          },
+          "heading": {
+            "$type": "fontFamily",
+            "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          },
+          "display": {
+            "$type": "fontFamily",
+            "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          }
+        }
+      }
+    },
+    "semantic": {
+      "color": {
+        "surface": {
+          "page": {
+            "$type": "color",
+            "$value": "{base.color.neutral.50}"
+          }
+        }
+      }
+    },
+    "component": {
+      "button": {
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "{base.radius.pill}"
+        },
+        "primary": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "foregroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          }
+        },
+        "secondary": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "backgroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "backgroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.800}"
+          },
+          "foregroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.800}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "border": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "borderHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "borderPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        },
+        "tertiary": {
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.800}"
+          },
+          "foregroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.900}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        },
+        "font": {
+          "family": {
+            "$type": "fontFamily",
+            "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          }
+        },
+        "small": {
+          "borderRadius": {
+            "$type": "dimension",
+            "$value": "{base.radius.pill}"
+          }
+        }
+      },
+      "paragraph": {
+        "font": {
+          "family": {
+            "$type": "fontFamily",
+            "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          }
+        }
+      },
+      "heading": {
+        "accent": {
+          "backgroundColor": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "foregroundColor": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "paddingBlock": {
+            "$type": "dimension",
+            "$value": "0.08em"
+          },
+          "paddingInline": {
+            "$type": "dimension",
+            "$value": "0.22em"
+          },
+          "borderRadius": {
+            "$type": "dimension",
+            "$value": "{base.radius.sm}"
+          }
+        },
+        "font": {
+          "family": {
+            "heading": {
+              "$type": "fontFamily",
+              "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+            },
+            "display": {
+              "$type": "fontFamily",
+              "$value": "'Funnel Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+            }
+          }
+        }
+      },
+      "field": {
+        "comfortable": {
+          "borderRadius": {
+            "$type": "dimension",
+            "$value": "{base.radius.pill}"
+          }
+        },
+        "default": {
+          "borderRadius": {
+            "$type": "dimension",
+            "$value": "{base.radius.pill}"
+          }
+        },
+        "compact": {
+          "borderRadius": {
+            "$type": "dimension",
+            "$value": "{base.radius.pill}"
+          }
+        }
+      },
+      "iconButton": {
+        "borderRadius": {
+          "$type": "dimension",
+          "$value": "{base.radius.pill}"
+        }
+      },
+      "card": {
+        "icon": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        },
+        "hero": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        }
+      },
+      "actionTile": {
+        "icon": {
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        }
+      },
+      "chip": {
+        "selectedBackground": {
+          "$type": "color",
+          "$value": "{component.button.primary.background}"
+        },
+        "selectedBackgroundHover": {
+          "$type": "color",
+          "$value": "{component.button.primary.backgroundHover}"
+        },
+        "selectedBackgroundPressed": {
+          "$type": "color",
+          "$value": "{component.button.primary.backgroundPressed}"
+        },
+        "selectedBorder": {
+          "$type": "color",
+          "$value": "{component.button.primary.border}"
+        },
+        "selectedBorderHover": {
+          "$type": "color",
+          "$value": "{component.button.primary.backgroundHover}"
+        },
+        "selectedBorderPressed": {
+          "$type": "color",
+          "$value": "{component.button.primary.backgroundPressed}"
+        },
+        "selectedForeground": {
+          "$type": "color",
+          "$value": "{component.button.primary.foreground}"
+        },
+        "selectedForegroundHover": {
+          "$type": "color",
+          "$value": "{component.button.primary.foregroundHover}"
+        },
+        "selectedForegroundPressed": {
+          "$type": "color",
+          "$value": "{component.button.primary.foregroundPressed}"
+        }
+      },
+      "switch": {
+        "track": {
+          "on": {
+            "background": {
+              "$type": "color",
+              "$value": "{base.color.accent.1000}"
+            },
+            "border": {
+              "$type": "color",
+              "$value": "{base.color.accent.1000}"
+            }
+          }
+        },
+        "thumb": {
+          "background": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "on": {
+            "background": {
+              "$type": "color",
+              "$value": "{base.color.accent.500}"
+            }
+          }
+        }
+      },
+      "slider": {
+        "activeColor": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "thumb": {
+          "color": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          }
+        }
+      },
+      "topHeader": {
+        "logoForeground": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        }
+      },
+      "tab": {
+        "selectedBackground": {
+          "$type": "color",
+          "$value": "{base.color.accent.500}"
+        },
+        "selectedBackgroundHover": {
+          "$type": "color",
+          "$value": "{base.color.accent.0}"
+        },
+        "selectedBackgroundPressed": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForeground": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForegroundHover": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForegroundPressed": {
+          "$type": "color",
+          "$value": "{base.color.accent.500}"
+        }
+      },
+      "pagination": {
+        "selectedBackground": {
+          "$type": "color",
+          "$value": "{base.color.accent.500}"
+        },
+        "selectedBackgroundHover": {
+          "$type": "color",
+          "$value": "{base.color.accent.0}"
+        },
+        "selectedBackgroundPressed": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedBorder": {
+          "$type": "color",
+          "$value": "{base.color.accent.500}"
+        },
+        "selectedBorderHover": {
+          "$type": "color",
+          "$value": "{base.color.accent.0}"
+        },
+        "selectedBorderPressed": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForeground": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForegroundHover": {
+          "$type": "color",
+          "$value": "{base.color.accent.1000}"
+        },
+        "selectedForegroundPressed": {
+          "$type": "color",
+          "$value": "{base.color.accent.500}"
+        }
+      },
+      "treeMenu": {
+        "item": {
+          "selectedBackground": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          },
+          "selectedBackgroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "selectedBackgroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "selectedForeground": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "selectedForegroundHover": {
+            "$type": "color",
+            "$value": "{base.color.accent.1000}"
+          },
+          "selectedForegroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.500}"
+          }
+        }
+      }
+    }
+  },
+  "customProperties": {
+    "--component-button-large-border-radius": {
+      "$type": "dimension",
+      "$value": "{base.radius.pill}"
+    }
+  }
+}

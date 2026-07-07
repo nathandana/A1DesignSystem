@@ -79,11 +79,11 @@ export const typographyTokens = {
       "sizes": {
         "sm": {
           "fontSize": 14,
-          "fontWeight": "600"
+          "fontWeight": "700"
         },
         "md": {
           "fontSize": 16,
-          "fontWeight": "600"
+          "fontWeight": "700"
         },
         "lg": {
           "fontSize": 18,

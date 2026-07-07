@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -12,6 +11,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
 import { componentCategories } from './components/data.js'
+import { PageTitleArea } from './PageTitleArea.jsx'
 
 function parseTokenDefinitionCount(audit) {
   return audit.match(/\| Token definitions \|\s*(\d+)\s*\|/)?.[1] ?? '0'
@@ -214,35 +214,17 @@ export function Features({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Features' },
-            ]}
-          />
-          <Heading
-            as="h1"
-            id="features-page-heading"
-            size={{ xs: 'lg', md: 'xxl' }}
-          >
-            Everything A1 does
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            A1 is more than a component kit. It is a token-governed system for building consistent interfaces across web, mobile, static HTML, and AI-generated work.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="features-page-heading"
+        breadcrumbItems={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Features' },
+        ]}
+        title="Everything A1 does"
+        description="A1 is more than a component kit. It is a token-governed system for building consistent interfaces across web, mobile, static HTML, and AI-generated work."
+      />
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="top-features-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="top-features-heading">
         <Stack gap="lg">
           <Grid columns={{ xs: 2, sm: 4 }} gap="md">
             {capabilityStats.map((stat) => (
@@ -299,7 +281,7 @@ export function Features({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="md" surface="panel" contentWidth="lg" aria-labelledby="tech-stack-heading">
+      <Section padding="sm" surface="panel" contentWidth="xl" aria-labelledby="tech-stack-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <Heading as="h2" id="tech-stack-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
@@ -329,7 +311,7 @@ export function Features({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="lg" contentWidth="lg" aria-labelledby="built-with-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="built-with-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <MessageBadge icon="construction">Built with</MessageBadge>
@@ -358,7 +340,7 @@ export function Features({ onNavigate }) {
         </Stack>
       </Section>
 
-      <Section padding="md" surface="raised" contentWidth="lg" aria-labelledby="minor-features-heading">
+      <Section padding="sm" surface="raised" contentWidth="xl" aria-labelledby="minor-features-heading">
         <Stack gap="lg">
           <Stack direction="column" gap="sm">
             <Heading as="h2" id="minor-features-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
@@ -382,7 +364,7 @@ export function Features({ onNavigate }) {
                   <Heading as="h3" size="md">
                     {group.title}
                   </Heading>
-                  <List icon="arrow_right" size="sm" color="muted">
+                  <List icon="arrow_right" size="md" color="muted">
                     {group.features.map((feature) => (
                       <ListItem key={feature}>{feature}</ListItem>
                     ))}

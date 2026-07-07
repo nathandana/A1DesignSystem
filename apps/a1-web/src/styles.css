@@ -388,6 +388,13 @@ body {
   contain: layout;
 }
 
+.a1-project-theme-scope {
+  min-block-size: 100%;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+}
+
 /* Canvas floor — drop zone below all page content; expands when catalog drag enters */
 .a1-web-canvas-floor {
   min-block-size: var(--base-spacing-48);
@@ -408,10 +415,33 @@ body {
   gap: var(--base-spacing-8);
   font-weight: 800;
   font-size: var(--semantic-font-size-body-md);
+  color: var(--component-top-header-logo-foreground);
 }
 
 .a1-web-logo__mark {
-  color: var(--semantic-color-text-accent);
+  color: var(--component-top-header-logo-foreground);
+}
+
+html.a1-theme-dark .a1-top-header .a1-web-logo,
+html.a1-theme-dark .a1-top-header .a1-web-logo__mark {
+  color: var(--semantic-color-text-default);
+}
+
+html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo,
+html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo__mark {
+  color: var(--base-color-accent-500);
+}
+
+html.a1-theme-dark .a1-top-header .a1-web-logo svg {
+  color: var(--semantic-color-text-default);
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
+  color: var(--base-color-accent-500);
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 

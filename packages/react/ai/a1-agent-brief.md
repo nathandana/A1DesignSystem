@@ -37,6 +37,7 @@ This single file is everything an agent needs to **generate valid A1 page-defini
   "name": "Marketing site",
   "description": "Optional.",
   "icon": "rocket_launch",          // optional Material Symbol
+  "theme": "kong",                  // optional project-scoped theme key
   "pages": [
     {
       "id": "home",                  // optional key; used only to wire parentId
@@ -54,6 +55,7 @@ This single file is everything an agent needs to **generate valid A1 page-defini
 - The uploader also accepts a **bare page definition** (shape A) and wraps it as a one-page project.
 - `definition` may be the object (preferred) or a JSON string. Omit it for a blank page.
 - A page's **level** (1–3) is derived from the `parentId` chain; it auto-generates a TopHeader nav.
+- `theme` applies only to this project's editor canvas and launched prototype pages. It does not change the a1-web app shell theme.
 
 ---
 

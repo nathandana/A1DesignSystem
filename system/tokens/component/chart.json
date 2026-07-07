@@ -6,6 +6,7 @@
       "borderRadius": { "$type": "dimension", "$value": "{base.radius.md}" },
 
       "height": {
+        "xs": { "$type": "dimension", "$value": "{base.spacing.96}" },
         "sm": { "$type": "dimension", "$value": "{base.spacing.192}" },
         "md": { "$type": "dimension", "$value": "{base.width.sm}" },
         "lg": { "$type": "dimension", "$value": "{base.width.lg}" }

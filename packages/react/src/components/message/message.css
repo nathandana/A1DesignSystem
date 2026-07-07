@@ -90,7 +90,7 @@
   --a1-badge-fg:            var(--semantic-color-text-inverse);
   --a1-badge-subtle-bg:     var(--semantic-color-surface-raised);
   --a1-badge-subtle-fg:     var(--semantic-color-text-muted);
-  --a1-badge-subtle-border: var(--semantic-color-border-default);
+  --a1-badge-subtle-border: var(--component-message-badge-subtle-border-neutral);
 
   display: inline-flex;
   width: fit-content;
@@ -114,28 +114,28 @@
   --a1-badge-fg:            var(--semantic-color-status-info-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-info-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-info-text);
-  --a1-badge-subtle-border: var(--semantic-color-status-info-border);
+  --a1-badge-subtle-border: var(--component-message-badge-subtle-border-info);
 }
 .a1-message-badge--success {
   --a1-badge-bg:            var(--semantic-color-status-success-background);
   --a1-badge-fg:            var(--semantic-color-status-success-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-success-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-success-text);
-  --a1-badge-subtle-border: var(--semantic-color-status-success-border);
+  --a1-badge-subtle-border: var(--component-message-badge-subtle-border-success);
 }
 .a1-message-badge--warn {
   --a1-badge-bg:            var(--base-color-warn-200);
   --a1-badge-fg:            var(--base-color-neutral-900);
   --a1-badge-subtle-bg:     var(--semantic-color-status-warn-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-warn-text);
-  --a1-badge-subtle-border: var(--semantic-color-status-warn-border);
+  --a1-badge-subtle-border: var(--component-message-badge-subtle-border-warn);
 }
 .a1-message-badge--error {
   --a1-badge-bg:            var(--semantic-color-status-error-background);
   --a1-badge-fg:            var(--semantic-color-status-error-foreground);
   --a1-badge-subtle-bg:     var(--semantic-color-status-error-surface);
   --a1-badge-subtle-fg:     var(--semantic-color-status-error-text);
-  --a1-badge-subtle-border: var(--semantic-color-status-error-border);
+  --a1-badge-subtle-border: var(--component-message-badge-subtle-border-error);
 }
 
 /* subtle — overrides to the surface/outlined style for whichever status is active */

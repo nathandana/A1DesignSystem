@@ -54,7 +54,7 @@
   align-items: center;
   flex-shrink: 0;
   text-decoration: none;
-  color: var(--semantic-color-text-default);
+  color: var(--component-top-header-logo-foreground);
   font-family: var(--component-paragraph-font-family);
   font-size: var(--semantic-font-size-heading-sm);
   font-weight: var(--semantic-font-weight-display);

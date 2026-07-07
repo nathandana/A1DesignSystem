@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   Grid,
   Heading,
@@ -10,38 +9,21 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { foundations } from './data.js'
 
 export function Foundations({ onNavigate }) {
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Foundations' },
-            ]}
-          />
-          <Heading
-            as="h1"
-            id="foundations-heading"
-            size={{ xs: 'lg', md: 'xxl' }}
-          >
-            Foundations
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Foundations define the shared language for color, size, type, shape, motion, elevation, icons, and accessibility across every package.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="foundations-heading"
+        breadcrumbItems={[
+          { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Foundations' },
+        ]}
+        title="Foundations"
+        description="Foundations define the shared language for color, size, type, shape, motion, elevation, icons, and accessibility across every package."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="foundation-list-heading">
         <Stack gap="lg">

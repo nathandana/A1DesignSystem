@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   DataTable,
   Heading,
   Paragraph,
@@ -7,6 +6,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -40,26 +40,12 @@ const radiusRows = Object.entries(tokens.base.radius).map(([name, value]) => ({
 export function ShapeFoundationPage({ onNavigate }) {
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Shape', onNavigate)}
-          />
-          <Heading as="h1" id="shape-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Shape
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Radius, container shape, control shape, and the geometric rules that make components feel consistent — from subtle rounding on controls to the expressive curves on cards and dialogs.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="shape-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Shape', onNavigate)}
+        title="Shape"
+        description="Radius, container shape, control shape, and the geometric rules that make components feel consistent — from subtle rounding on controls to the expressive curves on cards and dialogs."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="shape-token-heading">
         <Stack gap="lg">

@@ -57,6 +57,7 @@ import { toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
 import { cleanUtilities } from '../editor/utilityRegistry';
+import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
 import type { ComponentNode, ComponentProps, ComponentType, PageDefinition } from '../editor/pageTypes';
 import type { PatternNode } from '../patterns/patternTypes';
 
@@ -624,6 +625,9 @@ export function EditorPage({
   projects = [],
   projectId = null,
   projectName,
+  projectTheme,
+  colorMode = 'system',
+  resolvedColorScheme = 'light',
   projectPages = [],
   onNavigateToPage,
   composeWithAi = false,
@@ -664,6 +668,9 @@ export function EditorPage({
   projects?: { id: string; name: string }[];
   projectId?: string | null;
   projectName?: string;
+  projectTheme?: string;
+  colorMode?: string;
+  resolvedColorScheme?: string;
   projectPages?: ProjectPage[];
   onNavigateToPage?: (id: string) => void;
   composeWithAi?: boolean;
@@ -2010,73 +2017,85 @@ export function EditorPage({
       </Section>
 
       <Section padding="none" className="a1-web-canvas-scope">
-        {view === 'edit' && (layoutChrome?.before
-          ? <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
-          : generatedHeader)}
-        {view === 'edit' && (
-          parsedDefinition.ok ? (
-            <>
-              <RenderPageDefinition
-                definition={parsedDefinition.value}
-                enforceLocks={!isPattern}
-                activePatternRootId={activePatternRootId}
-                selectedNodeId={selectedNodeId}
-                onNodeSelect={onSelectNode}
-                onContentChange={handleContentChange}
-                onItemTextChange={handleItemTextChange}
-                activeItem={activeItem}
-                onItemSelect={handleItemSelect}
-                onNodeDelete={handleNodeDelete}
-                onMoveUp={handleMoveUp}
-                onMoveDown={handleMoveDown}
-                onUngroup={handleUngroup}
-                onDuplicateNode={handleDuplicateNode}
-                onGroupAsStack={handleGroupAsStack}
-                onConvertNode={handleConvertNode}
-                onCopyPattern={handleCopyPattern}
-                onPastePattern={handlePastePattern}
-                onChooseTextLabel={setLabelLookupNodeId}
-                getNodeProps={getNodeProps}
-                getNodeInfo={getNodeInfoFn}
-                onRequestAddChild={handleRequestAddChild}
-                onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
-                onDetachPattern={handleDetachPattern}
-                onCreatePattern={handleCreatePatternFromNode}
-              />
-              <div
-                className="a1-web-canvas-floor"
-                onDragOver={(e) => {
-                  if (e.dataTransfer.types.includes('a1-catalog-type')) {
+        <ProjectThemeScope
+          theme={isPattern ? undefined : projectTheme}
+          colorMode={colorMode}
+          resolvedColorScheme={resolvedColorScheme}
+        >
+          {view === 'edit' && (layoutChrome?.before
+            ? <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
+            : generatedHeader)}
+          {view === 'edit' && (
+            parsedDefinition.ok ? (
+              <>
+                <RenderPageDefinition
+                  definition={parsedDefinition.value}
+                  enforceLocks={!isPattern}
+                  activePatternRootId={activePatternRootId}
+                  selectedNodeId={selectedNodeId}
+                  onNodeSelect={onSelectNode}
+                  onContentChange={handleContentChange}
+                  onItemTextChange={handleItemTextChange}
+                  activeItem={activeItem}
+                  onItemSelect={handleItemSelect}
+                  onNodeDelete={handleNodeDelete}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                  onUngroup={handleUngroup}
+                  onDuplicateNode={handleDuplicateNode}
+                  onGroupAsStack={handleGroupAsStack}
+                  onConvertNode={handleConvertNode}
+                  onCopyPattern={handleCopyPattern}
+                  onPastePattern={handlePastePattern}
+                  onChooseTextLabel={setLabelLookupNodeId}
+                  getNodeProps={getNodeProps}
+                  getNodeInfo={getNodeInfoFn}
+                  onRequestAddChild={handleRequestAddChild}
+                  onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+                  onDetachPattern={handleDetachPattern}
+                  onCreatePattern={handleCreatePatternFromNode}
+                />
+                <div
+                  className="a1-web-canvas-floor"
+                  onDragOver={(e) => {
+                    if (e.dataTransfer.types.includes('a1-catalog-type')) {
+                      e.preventDefault();
+                      e.currentTarget.setAttribute('data-active', 'true');
+                    }
+                  }}
+                  onDragLeave={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      e.currentTarget.removeAttribute('data-active');
+                    }
+                  }}
+                  onDrop={(e) => {
+                    const catalogType = e.dataTransfer.getData('a1-catalog-type');
+                    if (!catalogType) return;
                     e.preventDefault();
-                    e.currentTarget.setAttribute('data-active', 'true');
-                  }
-                }}
-                onDragLeave={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
                     e.currentTarget.removeAttribute('data-active');
-                  }
-                }}
-                onDrop={(e) => {
-                  const catalogType = e.dataTransfer.getData('a1-catalog-type');
-                  if (!catalogType) return;
-                  e.preventDefault();
-                  e.currentTarget.removeAttribute('data-active');
-                  handleCatalogDrop(catalogType, null, 'after');
-                }}
-              />
-              {layoutChrome?.after && (
-                <RenderPageDefinition definition={layoutChrome.after} onNavigate={(id) => onNavigateToPage?.(id)} />
-              )}
-            </>
-          ) : parseError
-        )}
+                    handleCatalogDrop(catalogType, null, 'after');
+                  }}
+                />
+                {layoutChrome?.after && (
+                  <RenderPageDefinition definition={layoutChrome.after} onNavigate={(id) => onNavigateToPage?.(id)} />
+                )}
+              </>
+            ) : parseError
+          )}
+        </ProjectThemeScope>
 
         {view === 'preview' && (
           parsedDefinition.ok ? (
             <ResponsivePreviewFrame {...(viewportSize(previewViewport) ?? {})}>
-              {composedPreviewDef
-                ? <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
-                : <>{generatedHeader}<RenderPageDefinition definition={parsedDefinition.value} /></>}
+              <ProjectThemeScope
+                theme={isPattern ? undefined : projectTheme}
+                colorMode={colorMode}
+                resolvedColorScheme={resolvedColorScheme}
+              >
+                {composedPreviewDef
+                  ? <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
+                  : <>{generatedHeader}<RenderPageDefinition definition={parsedDefinition.value} /></>}
+              </ProjectThemeScope>
             </ResponsivePreviewFrame>
           ) : parseError
         )}

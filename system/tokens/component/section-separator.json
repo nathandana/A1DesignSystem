@@ -1,0 +1,28 @@
+{
+  "component": {
+    "sectionSeparator": {
+      "height": {
+        "xs": {
+          "min": { "$type": "dimension", "$value": "{base.spacing.16}" },
+          "max": { "$type": "dimension", "$value": "{base.spacing.24}" }
+        },
+        "sm": {
+          "min": { "$type": "dimension", "$value": "{base.spacing.24}" },
+          "max": { "$type": "dimension", "$value": "{base.spacing.40}" }
+        },
+        "md": {
+          "min": { "$type": "dimension", "$value": "{base.spacing.40}" },
+          "max": { "$type": "dimension", "$value": "{base.spacing.64}" }
+        },
+        "lg": {
+          "min": { "$type": "dimension", "$value": "{base.spacing.64}" },
+          "max": { "$type": "dimension", "$value": "{base.spacing.96}" }
+        },
+        "xl": {
+          "min": { "$type": "dimension", "$value": "{base.spacing.64}" },
+          "max": { "$type": "dimension", "$value": "{base.spacing.128}" }
+        }
+      }
+    }
+  }
+}

@@ -1187,7 +1187,7 @@ const HELP = [
       {
         id: 'built-in-themes',
         title: 'Built-in themes',
-        keywords: 'built in light accessible heritage fresh crochet aperture marshmallow high contrast preset brand visual overview font',
+        keywords: 'built in light accessible heritage fresh crochet aperture kong marshmallow high contrast preset brand visual overview font',
         body: (
           <Stack gap="sm">
             <P>A1 ships with these fully tokenized visual styles:</P>
@@ -1200,6 +1200,7 @@ const HELP = [
                 { label: 'Fresh', value: 'Sky-blue accents, Nunito / Baskerville typography, mint gradient background. Upbeat and modern.' },
                 { label: 'Crochet', value: 'Soft pastels (dusty-rose, sage, periwinkle) on warm cream. Fraunces expressive display, Libre Baskerville headings, Roboto Slab body.' },
                 { label: 'Aperture', value: 'Minimal gallery-grade for photography. Near-monochrome graphite on clean white, small radii. Pinyon Script display, Playfair Display headings, Manrope body.' },
+                { label: 'Kong', value: 'Concrete neutrals, electric chartreuse accents, Funnel Sans typography, and pill-shaped form/control styling.' },
                 { label: 'Marshmallow', value: 'Soft neumorphism in pastels — raised/inset shadows on buttons and cards, generous rounding. Varela Round display and headings, Nunito body.' },
               ]}
             />

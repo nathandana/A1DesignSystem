@@ -1,7 +1,6 @@
 import { Html, Line, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import {
-  Breadcrumb,
   DataTable,
   Heading,
   MessageBadge,
@@ -22,6 +21,7 @@ import { createPortal } from 'react-dom'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 const toOklch = converter('oklch')
@@ -477,7 +477,7 @@ function RampDiagnostics({ ramp, selectedPoint }) {
 
   return (
     <Stack gap="md">
-      <Heading as="h2" size="lg">{ramp.name} ramp</Heading>
+      <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>{ramp.name} ramp</Heading>
       <DataTable
         columns={[
           { key: 'metric', label: 'Metric' },
@@ -600,24 +600,12 @@ export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode 
         />,
         asideNode,
       )}
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb items={getFoundationBreadcrumbItems('Color visualization', onNavigate)} />
-          <Heading as="h1" id="color-visualization-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Color visualization
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Inspect A1 color ramps in OKLCH space. Height represents lightness, distance from the center represents chroma, and rotation represents hue.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="color-visualization-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Color visualization', onNavigate)}
+        title="Color visualization"
+        description="Inspect A1 color ramps in OKLCH space. Height represents lightness, distance from the center represents chroma, and rotation represents hue."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="color-visualization-heading">
         <Tabs value={activeTab} onChange={setActiveTab} variant="line">

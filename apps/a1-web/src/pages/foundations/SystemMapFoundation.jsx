@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  Breadcrumb,
   Canvas,
   Heading,
   Icon,
@@ -10,6 +9,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 /**
@@ -181,31 +181,12 @@ export function SystemMapFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb items={getFoundationBreadcrumbItems('System map', onNavigate)} />
-          <Heading as="h1" id="system-map-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            System map
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            How A1 fits together, end to end. Authored DTCG tokens pass through Style
-            Dictionary into root CSS variables and resolved JSON. Structured theme overrides
-            and selector metadata pass through a shared validator before React, Pure, and
-            Native outputs are generated. Light, dark, system-preference, and inverse
-            selectors are generated from one mode contract; static color-scheme CSS contains
-            only the remaining resets and exceptional rules. At runtime, document classes
-            and local inverse islands change the inherited variable set consumed by components.
-            Click any node to trace its path; drag to rearrange; right-click to fit or reset.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="system-map-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('System map', onNavigate)}
+        title="System map"
+        description="How A1 fits together, end to end. Authored DTCG tokens pass through Style Dictionary into root CSS variables and resolved JSON. Structured theme overrides and selector metadata pass through a shared validator before React, Pure, and Native outputs are generated. Light, dark, system-preference, and inverse selectors are generated from one mode contract; static color-scheme CSS contains only the remaining resets and exceptional rules. At runtime, document classes and local inverse islands change the inherited variable set consumed by components. Click any node to trace its path; drag to rearrange; right-click to fit or reset."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="system-map-heading">
         <Stack gap="md">

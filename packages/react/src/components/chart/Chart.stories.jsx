@@ -46,7 +46,7 @@ const meta = {
     },
     height: {
       control: "inline-radio",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg"],
     },
     curve: {
       control: "inline-radio",
@@ -130,6 +130,7 @@ export const InCards = {
 export const Heights = {
   render: () => (
     <Stack gap="lg">
+      <Chart data={monthlyData} xKey="month" series={sampleSeries.slice(0, 1)} title="Extra small" height="xs" />
       <Chart data={monthlyData} xKey="month" series={sampleSeries.slice(0, 1)} title="Small" height="sm" />
       <Chart data={monthlyData} xKey="month" series={sampleSeries.slice(0, 1)} title="Medium" height="md" />
       <Chart data={monthlyData} xKey="month" series={sampleSeries.slice(0, 1)} title="Large" height="lg" />

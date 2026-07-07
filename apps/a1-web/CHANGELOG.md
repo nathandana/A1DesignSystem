@@ -1,5 +1,45 @@
 # A1 Web Changelog
 
+## Unreleased
+
+## 0.28.0 — 2026-07-07
+
+- **Project themes** — Projects can now store an optional project-scoped theme. The project settings dialog exposes the theme selector, project cards show the chosen theme, import/export/cloud sync preserve it, and the editor canvas plus launched prototypes apply the theme locally to the project page instead of changing the whole a1-web app shell.
+
+- **Card configurator** — added hero separator controls for hero-icon Cards, using the same shaped separator vocabulary as Section Separator while labelling the control simply as **Separator**.
+
+- **Card configurator** — added the new Card `surface="accent"` control with surface swatches, contrast helper text, and automatic disabling of status stripe options while the accent surface is active.
+
+- **Section Separator component** — added a React `SectionSeparator` for organic responsive transitions between Section surfaces, including per-side surface/inverse controls, multiple curve shapes, optional curve-border highlighting, Storybook coverage, and an a1-web Layout & Display configurator.
+
+- **Theme settings** — hid Lumen from the a1-web Settings theme picker while keeping the theme available in the codebase for direct theme previews and development checks.
+
+- **Features page title** — converted the Features page header to the shared `PageTitleArea` local component for consistent breadcrumb, title, and description treatment.
+
+- **Toolbar tooltips** — Toolbar buttons, toggles, menus, overflow controls, and icon-only group options now use the A1 Tooltip component with a short delay instead of native `title` attributes.
+
+- **Accessibility report stats** — converted the report summary metric cards to use the shared `Stat` component with icons suppressed.
+
+- **Lumen Data Tables** — decoupled Data Table corner radius from Card radius and reduced Lumen table corners by one radius step so dense table surfaces read cleaner while dimensional cards keep their larger rounded shape.
+
+- **Lumen theme** — added an organic dimensional theme with light/dark mode support, deep blue-violet dark surfaces, lighter airy light surfaces, a brighter blue primary action color, rounded Baloo 2 headlines, Nunito body text, cyan/violet/rose color accents, rounded dimensional cards and controls, 3px dimensional card borders with subtle blue navigation-card borders, stronger layered card/button glow shadows, larger standard Tabs on a softer subtle border, subtler blue-outlined secondary Buttons, brighter tertiary Button/IconButton text, softer MessageBadge and Field borders, higher-contrast Card icons, and subtle page gradients/textures inspired by glassy dashboard interfaces.
+
+- **Control polish** — increased Button font weight one step across all sizes, aligned Toolbar item radii to the toolbar bar radius, gave Segmented Control and Tabs segment strips the same subtle border treatment as Toolbar, fixed Segmented Control `size` so sm/md/lg visibly change the control height, and increased compact field border radius one step.
+
+- **Accessibility foundation page** — switched the page header to the shared `PageTitleArea` local component so the foundation title treatment matches the rest of a1-web.
+
+- **Chart examples** — added an NFL scorigami Scatter Chart child example that uses real score-frequency data from NFL Scorigami and renders it as a pannable A1 Canvas matrix.
+
+- **Chart examples** — added read-only Bar Chart and Area Chart child example pages for operational status cards: a compact live-updating API Gateway card, a live API incident-recovery scenario, a wider Authentication API uptime timeline, and an API Monitoring Area Chart card, all built only from A1 components without custom CSS. Charts now support `height="xs"` for tiny embedded chart surfaces.
+
+- **Home dashboard link** — replaced the large dashboard promo card below the Home stats strip with a simple link-icon text link to the System dashboard.
+
+- **Components sidebar search autofill guard** — the Components navigation search now opts out of browser/password-manager autofill with a stable app-specific field name, preventing profile data from being injected when navigating to Menu and Context Menu pages.
+
+- **Theme editor JSON view** — added a direct **View JSON** toolbar action for open themes, renamed the sidebar category from Code to JSON, made the saved theme JSON editable/applyable from the editor, and removed the theme-generation AI panels and copy from the Theme editor surfaces.
+
+- **Kong theme** — added a selectable Kong system theme with a concrete neutral ramp from `#717A74`, electric chartreuse accent ramp from `#BEFF00`, Funnel Sans typography, `neutral-50`/`neutral-800` page surfaces, pill-shaped Button/Text Field/Icon Button controls, accent-outline secondary buttons, black Card/Action Tile icons in light mode, theme-aware TopHeader logo color, primary-style selected Chips, black-track Switches with chartreuse handles, black Slider thumbs and detent labels, chartreuse selected Tabs/Pagination/TreeMenu states with pale hover and flipped active colors, and a black-backed accent heading treatment for light-mode legibility.
+
 ## 0.27.0 — 2026-07-07
 
 - **Explore dashboard** — added a `/dashboard` Explore page with Recharts-powered cards for backlog health, component coverage, token volume, system flow, rules, and labels, plus a Home callout under the initial stats strip.

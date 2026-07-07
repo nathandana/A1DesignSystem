@@ -136,6 +136,7 @@ import { PriorityGuideEditor } from './pages/PriorityGuideEditor.jsx'
 import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
+import { themeClassName, themeOptions, settingsThemeOptions, settingsThemeValues, VALID_THEMES } from './lib/appThemes.ts'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -196,25 +197,12 @@ const PAGE_TITLES = {
   account: 'Account',
 }
 
-const themeOptions = [
-  { value: 'a1Light', label: 'Default' },
-  { value: 'a1Heritage', label: 'Heritage' },
-  { value: 'crochet', label: 'Crochet' },
-  { value: 'aperture', label: 'Aperture' },
-  { value: 'marshmallow', label: 'Marshmallow' },
-  { value: 'a1Accessible', label: 'Accessible' },
-  { value: 'fresh', label: 'Fresh' },
-  { value: 'wireframe', label: 'Wireframe' },
-]
-const settingsThemeOptions = themeOptions.filter((option) => !['crochet', 'marshmallow'].includes(option.value))
-
 const colorSchemeOptions = [
   { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode', labelKey: 'app.settings.lightMode' },
   { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode', labelKey: 'app.settings.darkMode' },
   { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode', labelKey: 'app.settings.systemMode' },
 ]
 
-const VALID_THEMES = themeOptions.map((o) => o.value)
 const VALID_COLOR_MODES = colorSchemeOptions.map((o) => o.value)
 
 function getComponentExampleTab(pathname = window.location.pathname) {
@@ -360,7 +348,7 @@ function App() {
       if (VALID_THEMES.includes(forced)) return forced
     }
     const stored = localStorage.getItem('a1-web-theme')
-    return VALID_THEMES.includes(stored) ? stored : 'a1Light'
+    return settingsThemeValues.includes(stored) ? stored : 'a1Light'
   })
   const [colorMode, setColorMode] = useState(() => {
     const stored = localStorage.getItem('a1-web-color-mode')
@@ -964,13 +952,10 @@ function App() {
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('a1-theme-heritage', theme === 'a1Heritage')
-    document.documentElement.classList.toggle('a1-theme-accessible', theme === 'a1Accessible')
-    document.documentElement.classList.toggle('a1-theme-fresh', theme === 'fresh')
-    document.documentElement.classList.toggle('a1-theme-crochet', theme === 'crochet')
-    document.documentElement.classList.toggle('a1-theme-aperture', theme === 'aperture')
-    document.documentElement.classList.toggle('a1-theme-marshmallow', theme === 'marshmallow')
-    document.documentElement.classList.toggle('a1-theme-wireframe', theme === 'wireframe')
+    const themeClasses = themeOptions.map((option) => themeClassName(option.value)).filter(Boolean)
+    for (const className of themeClasses) {
+      document.documentElement.classList.toggle(className, className === themeClassName(theme))
+    }
     document.documentElement.classList.toggle('a1-theme-dark', resolvedColorScheme === 'dark')
     document.documentElement.classList.toggle('a1-theme-light', colorMode === 'light')
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
@@ -1739,6 +1724,9 @@ function App() {
               documentKind="layout"
               projectId={activeProjectId}
               projectName={activeProject.name}
+              projectTheme={activeProject.theme}
+              colorMode={colorMode}
+              resolvedColorScheme={resolvedColorScheme}
               selectedNodeId={editorSelectedNodeId}
               onSelectNode={setEditorSelectedNodeId}
               onViewChange={setEditorView}
@@ -1777,6 +1765,9 @@ function App() {
               pages={projectPages.map((p) => ({ id: p.id, label: p.title }))}
               projectId={activeProjectId}
               projectName={activeProject.name}
+              projectTheme={activeProject.theme}
+              colorMode={colorMode}
+              resolvedColorScheme={resolvedColorScheme}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
               composeWithAi={openPageId === aiComposePageId}
@@ -1844,7 +1835,7 @@ function App() {
             : <ThemeEditor
                 themeId={activeThemeId}
                 category={themeCategory}
-                onNavigate={navigate}
+                onSelectCategory={setThemeCategory}
                 onBackToThemes={() => setActiveThemeId(null)}
               />
         )}

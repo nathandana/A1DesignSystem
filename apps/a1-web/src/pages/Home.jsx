@@ -5,6 +5,7 @@ import {
   Grid,
   Heading,
   Inset,
+  Link,
   MessageBadge,
   Paragraph,
   Section,
@@ -268,21 +269,20 @@ export function Home({ onNavigate }) {
               </Inset>
             ))}
           </Grid>
-          <Card variant="navigation" icon="monitoring" onClick={() => onNavigate('dashboard')}>
-            <Stack direction={{ xs: 'column', md: 'row' }} gap="sm" align="center" justify={{ md: 'between' }}>
-              <Stack gap="xs">
-                <Heading as="h2" size="md">
-                  {t('app.home.dashboardTitle', 'Open the system dashboard')}
-                </Heading>
-                <Paragraph size="sm" color="muted">
-                  {t('app.home.dashboardBody', 'Explore A1 health, backlog progress, component coverage, token volume, rules, labels, and system flow in one Recharts-powered view.')}
-                </Paragraph>
-              </Stack>
-              <MessageBadge icon="arrow_forward" subtle>
-                {t('app.home.dashboardBadge', 'Dashboard')}
-              </MessageBadge>
-            </Stack>
-          </Card>
+          <Stack align="center">
+            <Link
+              href="#"
+              icon="link"
+              size="lg"
+              weight="semibold"
+              onClick={(event) => {
+                event.preventDefault()
+                onNavigate('dashboard')
+              }}
+            >
+              {t('app.home.dashboardLink', 'System dashboard')}
+            </Link>
+          </Stack>
         </Stack>
       </Section>
 

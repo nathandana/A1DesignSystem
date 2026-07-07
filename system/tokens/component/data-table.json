@@ -2,6 +2,7 @@
   "component": {
     "dataTable": {
       "borderWidth":           { "$type": "dimension",  "$value": "{base.spacing.1}" },
+      "borderRadius":          { "$type": "dimension",  "$value": "{component.card.borderRadius}" },
       "headerFontWeight":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
       "focusRingWidth":        { "$type": "dimension",  "$value": "2px" },
       "focusRingOffset":       { "$type": "dimension",  "$value": "-1px" },

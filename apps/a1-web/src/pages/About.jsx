@@ -43,7 +43,7 @@ export function About({ onNavigate }) {
         description="A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it."
       />
 
-      <Section padding="md" contentWidth="xl">
+      <Section padding="sm" contentWidth="xl">
         <Stack gap="lg">
           <Stack gap="sm">
             <Heading as="h2" size="lg">What A1 is</Heading>

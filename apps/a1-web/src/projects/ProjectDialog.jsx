@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Banner, Button, ButtonContainer, Dialog, Paragraph, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { Banner, Button, ButtonContainer, Dialog, Paragraph, SelectField, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { describeError, formatUsage, AI_ENABLED } from '../lib/aiImages.ts'
 import { suggestImageStyle } from '../lib/aiProjectStyle.ts'
+import { themeOptions } from '../lib/appThemes.ts'
 
 /**
  * Create / rename a project. Shared by the Projects list and a project's home
@@ -15,6 +16,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
   const [name, setName] = useState(initial?.name ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [icon, setIcon] = useState(initial?.icon ?? 'folder')
+  const [theme, setTheme] = useState(initial?.theme ?? 'a1Light')
   const [imageStyle, setImageStyle] = useState(initial?.meta?.imageStyle ?? '')
   const [suggesting, setSuggesting] = useState(false)
   const [error, setError] = useState('')
@@ -42,6 +44,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
       name: name.trim(),
       description: description.trim(),
       icon,
+      theme: theme === 'a1Light' ? undefined : theme,
       meta: { ...(initial?.meta ?? {}), imageStyle: imageStyle.trim() || undefined },
     })
   }
@@ -72,6 +75,15 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
           onChange={(e) => setDescription(e.target.value)}
         />
         <IconSelect label="Icon" size="default" value={icon} onChange={setIcon} />
+        <SelectField
+          label="Project theme"
+          value={theme}
+          onChange={(e) => setTheme(e.target.value)}
+        >
+          {themeOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </SelectField>
 
         <Stack gap="xs">
           <TextareaField

@@ -9,6 +9,8 @@ import {
 } from './data.js'
 import componentExamples from './componentExamples.json'
 
+export { componentExamples }
+
 function normalizeSearchTerm(value) {
   return String(value ?? '')
     .toLowerCase()

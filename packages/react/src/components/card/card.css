@@ -2,11 +2,12 @@
   container: a1-card / inline-size;
   box-sizing: border-box;
   inline-size: 100%;
+  --a1-card-surface-color: var(--semantic-color-surface-card);
   background: var(--semantic-color-surface-card);
-  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border: var(--component-card-border-width) solid var(--component-card-border-color, var(--semantic-color-border-subtle));
   border-radius: var(--component-card-border-radius);
   padding: var(--component-card-padding);
-  box-shadow: var(--semantic-shadow-sm);
+  box-shadow: var(--component-card-shadow, var(--semantic-shadow-sm));
   color: var(--semantic-color-text-default);
 }
 
@@ -17,7 +18,7 @@
   inline-size: 100%;
   text-align: start;
   text-decoration: none;
-  border-color: var(--semantic-color-text-accent);
+  border-color: var(--component-card-navigation-border-color);
   cursor: pointer;
   transition:
     background var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
@@ -32,12 +33,12 @@ button.a1-card--navigation {
 
 .a1-card--navigation:hover {
   background: var(--semantic-color-action-surface);
-  border-color: var(--semantic-color-action-background);
+  border-color: var(--component-card-navigation-border-color-hover);
 }
 
 .a1-card--navigation:active {
   background: var(--semantic-color-surface-panel);
-  border-color: var(--semantic-color-action-background);
+  border-color: var(--component-card-navigation-border-color-pressed);
   box-shadow: var(--semantic-shadow-xs);
 }
 
@@ -56,25 +57,52 @@ button.a1-card--navigation {
   padding: 0;
 }
 
+/* Accent surface — intentionally simple for now. Child components and explicit
+   text colours may need manual contrast review on this strong surface. */
+.a1-card--surface-accent {
+  --a1-card-accent-foreground: var(--component-button-primary-foreground, var(--semantic-color-action-foreground));
+  --semantic-color-text-default: var(--a1-card-accent-foreground);
+  --semantic-color-text-muted: color-mix(in srgb, var(--a1-card-accent-foreground) 82%, transparent);
+  --semantic-color-text-accent: var(--a1-card-accent-foreground);
+  --semantic-color-border-subtle: color-mix(in srgb, var(--a1-card-accent-foreground) 38%, transparent);
+  --semantic-color-border-default: color-mix(in srgb, var(--a1-card-accent-foreground) 52%, transparent);
+  --component-link-color: var(--a1-card-accent-foreground);
+  --component-link-color-hover: var(--a1-card-accent-foreground);
+  --component-card-icon-background: color-mix(in srgb, var(--a1-card-accent-foreground) 18%, transparent);
+  --component-card-icon-foreground: var(--a1-card-accent-foreground);
+  --a1-card-surface-color: var(--semantic-color-action-background-hover);
+  background: var(--semantic-color-action-background-hover);
+  border-color: var(--semantic-color-action-background-hover);
+  box-shadow: var(--component-card-accent-shadow, var(--component-card-shadow, var(--semantic-shadow-sm)));
+  color: var(--a1-card-accent-foreground);
+}
+
 /* ─── Content wrapper ─────────────────────────────────────────────────────── */
 
 .a1-card__content {
   min-width: 0;
 }
 
-/* ─── Status side stripe + badge ────────────────────────────────────────────
-   A coloured bar hugging the card's inline-start edge that signals status, with
-   an optional MessageBadge. The bar is a clipped ::before pseudo-element so it
-   follows the rounded corners and adds no DOM. The colour comes from a per-status
-   modifier class (token → --a1-card-status-color). `--status-pulse` subtly fades
-   the stripe to indicate in-progress work, and is disabled under reduced motion.
+/* ─── Status frame + badge ──────────────────────────────────────────────────
+   A coloured full-card border and inline-start stripe that signal status, with
+   an optional MessageBadge. The stripe is a clipped ::before pseudo-element so
+   it follows the rounded corners and adds no DOM. The colour comes from a
+   per-status modifier class (token → --a1-card-status-color). `--status-pulse`
+   subtly fades the stripe to indicate in-progress work, and is disabled under
+   reduced motion.
    ─────────────────────────────────────────────────────────────────────────── */
 
 .a1-card--has-status {
   position: relative;
   overflow: hidden;
+  --a1-card-status-stripe-width: max(
+    var(--base-spacing-8),
+    var(--component-card-border-radius),
+    var(--component-card-status-stripe-width)
+  );
+  border-color: var(--a1-card-status-color, var(--semantic-color-text-muted));
   /* Clear the stripe so content keeps an even inline-start gutter. */
-  padding-inline-start: calc(var(--component-card-padding) + var(--component-card-status-stripe-width));
+  padding-inline-start: calc(var(--component-card-padding) + var(--a1-card-status-stripe-width));
 }
 
 .a1-card--has-status::before {
@@ -82,14 +110,14 @@ button.a1-card--navigation {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  inline-size: var(--component-card-status-stripe-width);
+  inline-size: var(--a1-card-status-stripe-width);
   background: var(--a1-card-status-color, var(--semantic-color-text-muted));
   pointer-events: none;
 }
 
-/* Per-status stripe colour. warn/success use a lighter ramp step (two steps lighter
-   than the status background) so a thin stripe still reads as amber/green rather than
-   the very dark background tone — see component.card.status.* in card.json. */
+/* Per-status colour. warn/success use a lighter ramp step (two steps lighter than
+   the status background) so the frame still reads as amber/green rather than the
+   very dark background tone — see component.card.status.* in card.json. */
 .a1-card--status-neutral { --a1-card-status-color: var(--component-card-status-neutral); }
 .a1-card--status-info    { --a1-card-status-color: var(--component-card-status-info); }
 .a1-card--status-success { --a1-card-status-color: var(--component-card-status-success); }
@@ -154,7 +182,7 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
   margin-inline: calc(-1 * var(--component-card-padding));
   margin-bottom: var(--component-card-padding);
   padding: var(--base-spacing-32) 0;
-  background: var(--a1-card-hero-bg, var(--semantic-color-action-background));
+  background: var(--a1-card-hero-bg, var(--component-card-hero-background));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +211,36 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
 /* Higher specificity (0,2,0) beats .a1-icon (0,1,0) so font-size is not overridden by inherit */
 .a1-card__hero > .a1-icon {
   font-size: var(--base-spacing-64);
-  color: var(--semantic-color-text-inverse);
+  color: var(--component-card-hero-foreground);
+}
+
+.a1-card__hero-separator {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -1px;
+  z-index: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--base-spacing-40);
+  color: var(--a1-card-surface-color);
+  pointer-events: none;
+}
+
+.a1-card__hero-separator-path {
+  fill: currentColor;
+}
+
+.a1-card__hero-separator-path--inline {
+  display: none;
+}
+
+.a1-card__hero > .a1-icon,
+.a1-card__hero-badge {
+  position: relative;
+}
+
+.a1-card__hero > .a1-icon {
+  z-index: 1;
 }
 
 /* lg ≥ 640px — hero becomes a left strip, full card height; icon 3 steps larger (128px) */
@@ -211,6 +268,22 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
 
   .a1-card__hero > .a1-icon {
     font-size: var(--base-spacing-128);
+  }
+
+  .a1-card__hero-separator {
+    inset-block: 0;
+    inset-inline-start: auto;
+    inset-inline-end: -1px;
+    inline-size: var(--base-spacing-40);
+    block-size: 100%;
+  }
+
+  .a1-card__hero-separator-path--block {
+    display: none;
+  }
+
+  .a1-card__hero-separator-path--inline {
+    display: block;
   }
 
   .a1-card--has-hero .a1-card__content {
@@ -242,8 +315,8 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
   width: var(--a1-card-icon-box);
   height: var(--a1-card-icon-box);
   border-radius: var(--base-radius-control);
-  background: var(--semantic-color-action-surface);
-  color: var(--semantic-color-action-background);
+  background: var(--component-card-icon-background);
+  color: var(--component-card-icon-foreground);
   margin-bottom: var(--base-spacing-12);
   flex-shrink: 0;
   --a1-icon-opsz: var(--component-card-icon-optical-size);

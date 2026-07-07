@@ -32,6 +32,10 @@
         "lg": { "$type": "dimension", "$value": "{base.spacing.48}" }
       },
       "iconRadius": { "$type": "dimension", "$value": "{base.radius.control}" },
+      "icon": {
+        "background": { "$type": "color", "$value": "transparent" },
+        "foreground": { "$type": "color", "$value": "{semantic.color.action.background}" }
+      },
       "iconOpticalSize": {
         "sm": { "$type": "number", "$value": 32 },
         "md": { "$type": "number", "$value": 40 },

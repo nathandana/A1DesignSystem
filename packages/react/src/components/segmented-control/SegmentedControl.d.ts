@@ -17,7 +17,7 @@ export interface SegmentedControlProps extends React.HTMLAttributes<HTMLDivEleme
   /** Stretch to fill the container width. Default: false */
   fullWidth?: boolean;
   /** Height scale. Default: "md" */
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "default";
   /**
    * Label display. `"all"` (default) shows every option's label. `"selected"`
    * shows the label only on the selected option; the rest render icon-only

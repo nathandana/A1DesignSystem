@@ -70,15 +70,21 @@ button.a1-chip {
 }
 
 .a1-chip--selected {
-  border-color: var(--semantic-color-action-background);
-  background: var(--semantic-color-action-surface);
-  color: var(--semantic-color-action-background);
+  border-color: var(--component-chip-selected-border);
+  background: var(--component-chip-selected-background);
+  color: var(--component-chip-selected-foreground);
 }
 
 .a1-chip--selected:hover {
-  border-color: var(--semantic-color-action-background-hover);
-  background: var(--semantic-color-action-surface);
-  color: var(--semantic-color-action-background-hover);
+  border-color: var(--component-chip-selected-border-hover);
+  background: var(--component-chip-selected-background-hover);
+  color: var(--component-chip-selected-foreground-hover);
+}
+
+.a1-chip--selected:active {
+  border-color: var(--component-chip-selected-border-pressed);
+  background: var(--component-chip-selected-background-pressed);
+  color: var(--component-chip-selected-foreground-pressed);
 }
 
 .a1-chip--disabled,

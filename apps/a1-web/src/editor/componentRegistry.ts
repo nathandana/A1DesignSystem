@@ -64,6 +64,7 @@ import {
   ScatterChart,
   SearchField,
   Section,
+  SectionSeparator,
   SegmentedControl,
   SelectField,
   Slider,
@@ -109,6 +110,7 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   // Layout
   PageLayout: EditorPageLayout,
   Section,
+  SectionSeparator,
   Stack,
   Grid,
   Cluster,

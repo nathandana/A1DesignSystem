@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Breadcrumb,
   DataTable,
   Heading,
   Paragraph,
@@ -15,6 +14,7 @@ import actionJson   from '../../../../../system/labels/action.json'
 import calendarJson from '../../../../../system/labels/calendar.json'
 import codeJson     from '../../../../../system/labels/code.json'
 import fieldJson    from '../../../../../system/labels/field.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 // ── Locale column definitions (canonical order) ──────────────────────────────
@@ -98,26 +98,12 @@ export function LabelsFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Labels', onNavigate)}
-          />
-          <Heading as="h1" id="labels-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Labels
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Localised UI strings used by A1 components. Every user-facing string is a named label with a default English value and optional per-locale translations. Use the locale selector in Settings to preview translations across the site.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="labels-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Labels', onNavigate)}
+        title="Labels"
+        description="Localised UI strings used by A1 components. Every user-facing string is a named label with a default English value and optional per-locale translations. Use the locale selector in Settings to preview translations across the site."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="labels-browser-heading">
 

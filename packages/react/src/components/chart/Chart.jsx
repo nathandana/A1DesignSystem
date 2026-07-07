@@ -35,7 +35,7 @@ import {
 import "./chart.css";
 
 const CARTESIAN_TYPES = ["line", "bar", "area", "composed"];
-const HEIGHTS = ["sm", "md", "lg"];
+const HEIGHTS = ["xs", "sm", "md", "lg"];
 const VARIANTS = ["default", "subtle"];
 const CURVES = ["linear", "monotone", "natural", "step"];
 const SERIES_TYPES = ["line", "bar", "area"];
@@ -114,6 +114,21 @@ function colorForIndex(index) {
 
 function datumColor(datum, index) {
   return SERIES_TONES.includes(datum?.tone) ? seriesColor(datum.tone) : colorForIndex(index);
+}
+
+function toneColor(tone) {
+  return SERIES_TONES.includes(tone) ? seriesColor(tone) : null;
+}
+
+function explicitColor(color) {
+  return typeof color === "string" && color.length > 0 ? color : null;
+}
+
+function barColorForDatum(datum, series, fallback) {
+  if (!datum || typeof datum !== "object") return fallback;
+  const keyedFill = datum[`${series.key}Fill`];
+  const keyedTone = datum[`${series.key}Tone`];
+  return explicitColor(keyedFill) ?? toneColor(keyedTone) ?? explicitColor(datum.fill) ?? toneColor(datum.tone) ?? fallback;
 }
 
 function withCategoricalFills(data) {
@@ -350,7 +365,7 @@ function ChartResponsive({ children }) {
   );
 }
 
-function renderSeries(series, index, chartType, curve, stacked) {
+function renderSeries(series, index, chartType, curve, stacked, data) {
   const renderedType = resolveSeriesType(chartType, series.type);
   const color = seriesColor(series.tone);
   const commonProps = {
@@ -366,7 +381,14 @@ function renderSeries(series, index, chartType, curve, stacked) {
         {...commonProps}
         fill={color}
         stackId={getStackId(series, stacked)}
-      />
+      >
+        {data.map((datum, datumIndex) => (
+          <Cell
+            key={`${series.key}-${datumIndex}`}
+            fill={barColorForDatum(datum, series, color)}
+          />
+        ))}
+      </Bar>
     );
   }
 
@@ -477,7 +499,7 @@ function CartesianChart({
             )}
             {showTooltip && <ChartTooltipElement formatLabel={formatLabel} formatValue={formatValue} />}
             {showLegend && <Legend iconType="circle" formatter={LegendLabel} />}
-            {resolvedSeries.map((item, index) => renderSeries(item, index, resolvedType, resolvedCurve, stacked))}
+            {resolvedSeries.map((item, index) => renderSeries(item, index, resolvedType, resolvedCurve, stacked, data))}
           </ChartComponent>
         </ChartResponsive>
       )}

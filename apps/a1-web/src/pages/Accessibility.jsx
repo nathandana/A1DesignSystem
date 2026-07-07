@@ -9,6 +9,7 @@ import {
   Paragraph,
   Section,
   Stack,
+  Stat,
 } from '@gtivr4/a1-design-system-react'
 import reportData from '../../../../reports/a11y.json'
 import componentReportData from './componentA11ySummary.generated.json'
@@ -66,14 +67,17 @@ function useManualItems(t) {
 }
 
 function StatCard({ value, label, highlight }) {
+  const isHighlighted = highlight && Number(value) > 0
   return (
     <Card shadow="xs">
-      <Stack direction="column" gap="xs">
-        <Heading as="p" type="display" size="lg" color={highlight && Number(value) > 0 ? 'error' : undefined}>
-          {value}
-        </Heading>
-        <Paragraph size="sm" color="muted">{label}</Paragraph>
-      </Stack>
+      <Stat
+        value={value}
+        description={label}
+        size="lg"
+        icon={null}
+        format="none"
+        style={isHighlighted ? { color: 'var(--semantic-color-status-error-text)' } : undefined}
+      />
     </Card>
   )
 }
@@ -119,7 +123,7 @@ function ComponentScanSection({ t }) {
   }))
 
   return (
-    <Section padding="lg" contentWidth="lg" aria-labelledby="component-scan-heading">
+    <Section padding="sm" contentWidth="xl" aria-labelledby="component-scan-heading">
       <Stack gap="lg">
         <Stack direction="column" gap="sm">
           <Stack direction="row" gap="xs" align="center" wrap>
@@ -208,7 +212,7 @@ export function Accessibility({ onNavigate }) {
       </PageTitleArea>
 
       {/* ── Summary stats ── */}
-      <Section padding="sm" contentWidth="lg" surface="raised" aria-label={t('app.accessibility.reportSummaryLabel', 'Report summary')} gap="sm"> 
+      <Section padding="sm" contentWidth="xl" surface="raised" aria-label={t('app.accessibility.reportSummaryLabel', 'Report summary')} gap="sm">
         <Stack direction="row" gap="xs" align="center" wrap>
             <MessageBadge icon={meta.icon} size="sm" status={meta.status}>{meta.label}</MessageBadge>
             <Paragraph size="sm" color="muted">{t('app.accessibility.lastScanned', 'Last scanned:')} {generated}</Paragraph>

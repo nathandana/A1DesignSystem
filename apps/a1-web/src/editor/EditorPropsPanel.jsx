@@ -23,6 +23,7 @@ import { ALL_CATALOG_ENTRIES } from './componentCatalog.ts'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
+import { Controls as SectionSeparatorControls } from '../pages/components/detail/section-separator.jsx'
 import { Controls as StackControls } from '../pages/components/detail/stack.jsx'
 import { Controls as GridControls } from '../pages/components/detail/grid.jsx'
 import { Controls as ClusterControls } from '../pages/components/detail/cluster.jsx'
@@ -169,6 +170,19 @@ export const propsToConfig = {
     borderSides: Array.isArray(props?.borderSides) ? props.borderSides : ['top', 'right', 'bottom', 'left'],
     radius: props?.radius ?? 'none',
     inverse: props?.inverse ?? false,
+  }),
+
+  SectionSeparator: (props) => ({
+    topSurface: props?.topSurface ?? 'page',
+    bottomSurface: props?.bottomSurface ?? 'panel',
+    topInverse: props?.topInverse ?? props?.inverse ?? false,
+    bottomInverse: props?.bottomInverse ?? props?.inverse ?? false,
+    shape: props?.shape ?? 'wave',
+    size: props?.size ?? 'md',
+    border: props?.border ?? false,
+    borderSize: props?.borderSize ?? 'xs',
+    borderVariant: props?.borderVariant ?? 'subtle',
+    decorative: props?.decorative ?? true,
   }),
 
   Stack: (props) => ({
@@ -823,6 +837,21 @@ export const configToNodeUpdate = {
           : undefined,
       radius: config.radius,
       inverse: config.inverse || undefined,
+    },
+  }),
+
+  SectionSeparator: (config) => ({
+    props: {
+      topSurface: config.topSurface !== 'page' ? config.topSurface : undefined,
+      bottomSurface: config.bottomSurface !== 'panel' ? config.bottomSurface : undefined,
+      topInverse: config.topInverse || undefined,
+      bottomInverse: config.bottomInverse || undefined,
+      shape: config.shape !== 'wave' ? config.shape : undefined,
+      size: config.size !== 'md' ? config.size : undefined,
+      border: config.border || undefined,
+      borderSize: config.border ? config.borderSize : undefined,
+      borderVariant: config.border ? config.borderVariant : undefined,
+      decorative: config.decorative === false ? false : undefined,
     },
   }),
 
@@ -1724,6 +1753,7 @@ function TextareaFieldEditorControls({ config, setConfig }) {
 const CONTROLS_BY_TYPE = {
   // Layout
   Section: SectionControls,
+  SectionSeparator: SectionSeparatorControls,
   Stack: StackControls,
   Grid: GridControls,
   Cluster: ClusterControls,

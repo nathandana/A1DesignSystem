@@ -75,7 +75,25 @@
 
 /* Color modifiers */
 .a1-heading--muted   { --a1-heading-color: var(--semantic-color-text-muted); }
-.a1-heading--accent  { --a1-heading-color: var(--semantic-color-text-accent); }
+.a1-heading--accent  {
+  --a1-heading-color: var(--component-heading-accent-foreground-color, var(--semantic-color-text-accent));
+  display: table;
+  max-inline-size: 100%;
+  padding:
+    var(--component-heading-accent-padding-block, 0)
+    var(--component-heading-accent-padding-inline, 0);
+  border-radius: var(--component-heading-accent-border-radius, 0);
+  background: var(--component-heading-accent-background-color, transparent);
+}
+
+.a1-heading--accent.a1-heading--align-center {
+  margin-inline: auto;
+}
+
+.a1-heading--accent.a1-heading--align-right,
+.a1-heading--accent.a1-heading--align-end {
+  margin-inline-start: auto;
+}
 
 /* Margin modifiers — em units scale with the heading's own font size */
 .a1-heading--margin-sm { margin-bottom: 0.25em; }

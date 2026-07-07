@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Card,
   DataTable,
   Grid,
@@ -13,6 +12,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -101,28 +101,14 @@ const WCAG_PRINCIPLES = [
 export function AccessibilityFoundationPage({ onNavigate }) {
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Accessibility', onNavigate)}
-          />
-          <Heading as="h1" id="a11y-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Accessibility
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Contrast, focus states, semantic markup, keyboard interaction, and screen reader labels. Accessibility is designed into every component — not bolted on afterward.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="a11y-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Accessibility', onNavigate)}
+        title="Accessibility"
+        description="Contrast, focus states, semantic markup, keyboard interaction, and screen reader labels. Accessibility is designed into every component — not bolted on afterward."
+      />
 
-      <Section padding="sm" contentWidth="lg" aria-labelledby="a11y-principles-heading">
+      <Section padding="sm" contentWidth="xl" aria-labelledby="a11y-principles-heading">
         <Stack gap="xl">
 
           <Stack gap="lg">

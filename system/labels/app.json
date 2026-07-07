@@ -1188,16 +1188,16 @@
         },
         "categoryCode": {
           "$type": "string",
-          "$value": "Code",
-          "$description": "Label for the Code category in the theme workspace sidebar tree.",
+          "$value": "JSON",
+          "$description": "Label for the JSON category in the theme workspace sidebar tree.",
           "locale": {
-            "es": "Código",
-            "fr": "Code",
-            "de": "Code",
-            "pt": "Código",
-            "ja": "コード",
-            "zh": "代码",
-            "ar": "الكود"
+            "es": "JSON",
+            "fr": "JSON",
+            "de": "JSON",
+            "pt": "JSON",
+            "ja": "JSON",
+            "zh": "JSON",
+            "ar": "JSON"
           }
         },
         "breadcrumbHome": {
@@ -1216,16 +1216,16 @@
         },
         "pageDescription": {
           "$type": "string",
-          "$value": "Build a theme with AI or by hand — colours, type, and shape. Open one to edit it.",
+          "$value": "Build a theme by hand — colours, type, and shape. Open one to edit it.",
           "$description": "Subtitle shown below the Theme page heading explaining what themes are and how to start.",
           "locale": {
-            "es": "Crea un tema con IA o a mano — colores, tipografía y forma. Abre uno para editarlo.",
-            "fr": "Créez un thème avec l'IA ou manuellement — couleurs, typographie et forme. Ouvrez-en un pour le modifier.",
-            "de": "Erstelle ein Theme mit KI oder manuell — Farben, Schrift und Form. Öffne eines, um es zu bearbeiten.",
-            "pt": "Crie um tema com IA ou à mão — cores, tipografia e forma. Abra um para editá-lo.",
-            "ja": "AIまたは手動でテーマを作成できます — 色、書体、形状。編集するには開いてください。",
-            "zh": "使用 AI 或手动构建主题——颜色、字体和形状。打开一个进行编辑。",
-            "ar": "أنشئ سمة باستخدام الذكاء الاصطناعي أو يدويًا — الألوان والخط والشكل. افتح سمة لتحريرها."
+            "es": "Crea un tema a mano — colores, tipografía y forma. Abre uno para editarlo.",
+            "fr": "Créez un thème manuellement — couleurs, typographie et forme. Ouvrez-en un pour le modifier.",
+            "de": "Erstelle ein Theme manuell — Farben, Schrift und Form. Öffne eines, um es zu bearbeiten.",
+            "pt": "Crie um tema à mão — cores, tipografia e forma. Abra um para editá-lo.",
+            "ja": "手動でテーマを作成できます — 色、書体、形状。編集するには開いてください。",
+            "zh": "手动构建主题——颜色、字体和形状。打开一个进行编辑。",
+            "ar": "أنشئ سمة يدويًا — الألوان والخط والشكل. افتح سمة لتحريرها."
           }
         },
         "newTheme": {
@@ -3830,6 +3830,20 @@
             "ja": "トークン",
             "zh": "令牌",
             "ar": "الرموز"
+          }
+        },
+        "dashboardLink": {
+          "$type": "string",
+          "$value": "System dashboard",
+          "$description": "Text link below the Home page stats strip that navigates to the system dashboard.",
+          "locale": {
+            "es": "Panel del sistema",
+            "fr": "Tableau de bord du système",
+            "de": "System-Dashboard",
+            "pt": "Painel do sistema",
+            "ja": "システムダッシュボード",
+            "zh": "系统仪表板",
+            "ar": "لوحة معلومات النظام"
           }
         },
         "howItWorksBadge": {

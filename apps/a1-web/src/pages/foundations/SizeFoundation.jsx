@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   DataTable,
   DataTableFilters,
   Heading,
@@ -13,6 +12,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -101,26 +101,12 @@ export function SizeFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Size', onNavigate)}
-          />
-          <Heading as="h1" id="size-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Size
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Spacing, dimensions, density, component sizing, and layout rhythm. Every spacing value in A1 traces back to a base spacing token — nothing is hardcoded.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="size-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Size', onNavigate)}
+        title="Size"
+        description="Spacing, dimensions, density, component sizing, and layout rhythm. Every spacing value in A1 traces back to a base spacing token — nothing is hardcoded."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="size-token-heading">
         <Stack gap="lg">

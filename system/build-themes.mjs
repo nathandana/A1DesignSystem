@@ -52,6 +52,32 @@ ${cssBlock(Object.fromEntries(entries))}
   return blocks.join("\n\n");
 }
 
+function normalizeThemeSelector(selector) {
+  return selector
+    .split(",")
+    .map((s) => {
+      const t = s.trim();
+      return t.startsWith(".a1-theme-") ? `html${t}` : t;
+    })
+    .join(", ");
+}
+
+function complexThemeRestoreCss() {
+  const blocks = [];
+  for (const theme of themes) {
+    for (const { selector, declarations } of theme.selectors) {
+      const trimmed = selector.trim();
+      if (/^\.a1-theme-[\w-]+$/.test(trimmed)) continue;
+      const entries = Object.entries(declarations).filter(([, value]) => value !== "");
+      if (!entries.length) continue;
+      blocks.push(`${normalizeThemeSelector(selector)} {
+${cssBlock(Object.fromEntries(entries))}
+}`);
+    }
+  }
+  return blocks.join("\n\n");
+}
+
 let css = `/* Generated from system theme folders — do not edit directly.\n`;
 css += `   To update: edit the JSON files, then run: npm run build:themes */\n`;
 
@@ -64,13 +90,7 @@ for (const theme of themes) {
   css += `   ${BAR} */\n\n`;
 
   for (const { selector, declarations: properties } of theme.selectors) {
-    const cssSelector = selector
-      .split(",")
-      .map((s) => {
-        const t = s.trim();
-        return t.startsWith(".a1-theme-") ? `html${t}` : t;
-      })
-      .join(", ");
+    const cssSelector = normalizeThemeSelector(selector);
     css += `${cssSelector} {\n`;
     for (const [prop, value] of Object.entries(properties)) {
       if (value === "") continue;
@@ -180,6 +200,19 @@ html.a1-theme-light .a1-inverse {
 ${DARK}
 }
 `;
+
+const themeModeRestoreCss = [themeLightRestoreCss, complexThemeRestoreCss()].filter(Boolean).join("\n\n");
+if (themeModeRestoreCss) {
+  modesCss += `
+
+/* ─── Theme restores after mode selectors ──────────────────────────────────
+   Reapply selected theme declarations that the generic color-mode selectors
+   can overwrite. This block belongs in color-scheme.css because a1-web imports
+   that file after themes.css. */
+
+${themeModeRestoreCss}
+`;
+}
 
 writeFileSync(modesOutFile, modesCss);
 console.log("✔︎ color-scheme-modes.css");

@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Heading,
   Paragraph,
   Section,
@@ -10,6 +9,7 @@ import {
   Tabs,
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -132,26 +132,12 @@ export function BreakpointsFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Responsive', onNavigate)}
-          />
-          <Heading as="h1" id="responsive-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Responsive
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            A1 uses two breakpoint systems. Viewport breakpoints (media queries) control page-level layout. Container query breakpoints control how individual components adapt to their own rendered width. Both use the same T-shirt-size labels — xs through xl — at values appropriate to each context.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="responsive-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Responsive', onNavigate)}
+        title="Responsive"
+        description="A1 uses two breakpoint systems. Viewport breakpoints (media queries) control page-level layout. Container query breakpoints control how individual components adapt to their own rendered width. Both use the same T-shirt-size labels — xs through xl — at values appropriate to each context."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="responsive-heading">
         <Tabs value={activeTab} onChange={setActiveTab}>
@@ -163,7 +149,7 @@ export function BreakpointsFoundationPage({ onNavigate }) {
           <TabPanel value="viewport">
             <Stack gap="md">
               <Stack gap="xs">
-                <Heading as="h2" size="md">Viewport breakpoints</Heading>
+                <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>Viewport breakpoints</Heading>
                 <Paragraph color="muted" size="sm">
                   Used in media queries for page-level layout decisions. Defined as tokens in <TokenCode>system/tokens/breakpoint.json</TokenCode>. Components must be validated at all five breakpoints.
                 </Paragraph>
@@ -175,7 +161,7 @@ export function BreakpointsFoundationPage({ onNavigate }) {
           <TabPanel value="container">
             <Stack gap="md">
               <Stack gap="xs">
-                <Heading as="h2" size="md">Container query breakpoints</Heading>
+                <Heading as="h2" size={{ xs: 'lg', md: 'xl' }}>Container query breakpoints</Heading>
                 <Paragraph color="muted" size="sm">
                   Used inside <TokenCode>@container</TokenCode> rules so components adapt to their own width, not the viewport. Values are hardcoded numbers — CSS custom properties cannot be used inside <TokenCode>@container</TokenCode> conditions. Always use these standard sizes for new components.
                 </Paragraph>

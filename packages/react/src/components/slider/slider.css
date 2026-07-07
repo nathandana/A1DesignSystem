@@ -11,9 +11,9 @@
   --a1-slider-track-color: var(--semantic-color-surface-raised);
   --a1-slider-track-border: var(--semantic-color-border-default);
   --a1-slider-fill-color: var(--semantic-color-action-background);
-  --a1-slider-thumb-color: var(--semantic-color-action-background);
+  --a1-slider-thumb-color: var(--component-slider-thumb-color);
   --a1-slider-thumb-ring: var(--semantic-color-surface-page);
-  --a1-slider-active-color: var(--semantic-color-text-accent);
+  --a1-slider-active-color: var(--component-slider-active-color);
   /* Label + detent sizing mirror the field family so a Slider matches fields. */
   --a1-slider-label-size: var(--semantic-font-size-form-label-default);
   --a1-slider-label-weight: var(--component-field-label-font-weight);

@@ -59,16 +59,18 @@
 /* ── Selected row ─────────────────────────────────────────────────────────── */
 
 .a1-tree-menu__row--selected {
-  background: var(--semantic-color-action-background);
-  color: var(--semantic-color-action-foreground);
+  background: var(--component-tree-menu-item-selected-background);
+  color: var(--component-tree-menu-item-selected-foreground);
 }
 
 .a1-tree-menu__row--selected:hover {
-  background: var(--semantic-color-action-background-hover);
+  background: var(--component-tree-menu-item-selected-background-hover);
+  color: var(--component-tree-menu-item-selected-foreground-hover);
 }
 
 .a1-tree-menu__row--selected:active {
-  background: var(--semantic-color-action-background-pressed);
+  background: var(--component-tree-menu-item-selected-background-pressed);
+  color: var(--component-tree-menu-item-selected-foreground-pressed);
 }
 
 /* ── Disabled row ─────────────────────────────────────────────────────────── */
@@ -122,18 +124,19 @@
 }
 
 .a1-tree-menu__collapsed-trigger--active {
-  background: var(--semantic-color-action-background);
-  color: var(--semantic-color-action-foreground);
+  background: var(--component-tree-menu-item-selected-background);
+  color: var(--component-tree-menu-item-selected-foreground);
 }
 
 .a1-tree-menu__collapsed-trigger--active:hover,
 .a1-tree-menu__collapsed-trigger--active[aria-expanded="true"] {
-  background: var(--semantic-color-action-background-hover);
-  color: var(--semantic-color-action-foreground);
+  background: var(--component-tree-menu-item-selected-background-hover);
+  color: var(--component-tree-menu-item-selected-foreground-hover);
 }
 
 .a1-tree-menu__collapsed-trigger--active:active {
-  background: var(--semantic-color-action-background-pressed);
+  background: var(--component-tree-menu-item-selected-background-pressed);
+  color: var(--component-tree-menu-item-selected-foreground-pressed);
 }
 
 .a1-tree-menu__collapsed-trigger:disabled,

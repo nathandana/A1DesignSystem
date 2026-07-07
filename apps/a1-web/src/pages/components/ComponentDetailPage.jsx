@@ -367,6 +367,20 @@ function defaultDisplayAlign(component, category) {
   return componentHasNaturalWidth(component, category) ? 'center' : ''
 }
 
+function defaultDisplayConfig(component, category) {
+  return {
+    align: defaultDisplayAlign(component, category),
+    padding: 'md',
+    inverse: false,
+    containerQuery: 'auto',
+    viewport: 'fit',
+    borderSize: 'xs',
+    borderStyle: 'solid',
+    borderVariant: 'subtle',
+    radius: 'md',
+  }
+}
+
 function AnatomyComponentPreview({ component }) {
   const [nestedTab, setNestedTab] = useState('overview')
   const [segment, setSegment] = useState('one')
@@ -1342,15 +1356,31 @@ const COMPONENT_PROPS = {
     { id: 'radius',           name: 'radius',           type: '"none" | "sm" | "md" | "lg" | "xl"', description: 'Border radius scale. Default: "none".' },
     { id: 'children',         name: 'children',         type: 'ReactNode',   description: 'Section content.' },
   ],
+  'section-separator': [
+    { id: 'topSurface',     name: 'topSurface',     type: '"page" | "panel" | "raised"', description: 'Surface color above the organic edge. Default: "page".' },
+    { id: 'bottomSurface',  name: 'bottomSurface',  type: '"page" | "panel" | "raised"', description: 'Surface color below the organic edge. Default: "panel".' },
+    { id: 'inverse',        name: 'inverse',        type: 'boolean', description: 'Resolve both surfaces in the inverse colour scope. Default: false.' },
+    { id: 'topInverse',     name: 'topInverse',     type: 'boolean', description: 'Advanced: resolve only the top surface in the inverse colour scope. Default: false.' },
+    { id: 'bottomInverse',  name: 'bottomInverse',  type: 'boolean', description: 'Advanced: resolve only the bottom surface in the inverse colour scope. Default: false.' },
+    { id: 'shape',          name: 'shape',          type: '"wave" | "swell" | "curve" | "slope" | "peak" | "valley" | "ribbon"', description: 'Organic edge shape. Default: "wave".' },
+    { id: 'size',           name: 'size',           type: '"xs" | "sm" | "md" | "lg" | "xl"', description: 'Responsive separator height scale. Default: "md".' },
+    { id: 'border',         name: 'border',         type: 'boolean', description: 'Draw a highlighted line along the organic edge. Default: false.' },
+    { id: 'borderSize',     name: 'borderSize',     type: '"xs" | "sm" | "md" | "lg"', description: 'Border thickness. Uses the same size tokens as Divider. Default: "xs".' },
+    { id: 'borderVariant',  name: 'borderVariant',  type: '"subtle" | "strong" | "accent"', description: 'Border color tone. Uses the same variants as Divider. Default: "subtle".' },
+    { id: 'decorative',     name: 'decorative',     type: 'boolean', description: 'When true, renders as presentation and is hidden from assistive technology. Default: true.' },
+  ],
   card: [
     { id: 'as',          name: 'as',          type: 'ElementType',  description: 'Underlying HTML element. Default: "div".' },
     { id: 'variant',     name: 'variant',     type: '"default" | "navigation"', description: 'Navigation cards make the entire card interactive. Do not place nested interactive elements inside navigation cards. Default: "default".' },
     { id: 'href',        name: 'href',        type: 'string',       description: 'Destination URL for navigation cards. Renders as an anchor by default when set.' },
     { id: 'bare',        name: 'bare',        type: 'boolean',      description: 'Remove the card border and background. Default: false.' },
+    { id: 'surface',     name: 'surface',     type: '"default" | "accent"', description: 'Card surface treatment. "accent" uses the stronger action/accent background step, applies primary-action foreground text tokens, and disables status stripe rendering. Default: "default".' },
     { id: 'icon',        name: 'icon',        type: 'string',       description: 'Material Symbols icon name. Rendered according to iconDisplay.' },
     { id: 'iconDisplay', name: 'iconDisplay', type: '"none" | "default" | "hero"', description: '"default" = small icon block above content; "hero" = full-bleed coloured header. Default: "default" when icon is set.' },
     { id: 'heroColor',   name: 'heroColor',   type: '"action" | "neutral" | "info" | "success" | "warn" | "error" | string', description: 'Background colour of the hero block. Default: "action".' },
-    { id: 'status',      name: 'status',      type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Coloured status stripe down the card’s inline-start edge (MessageBadge tones). Pair with statusLabel so meaning isn’t colour-only. Default: none.' },
+    { id: 'heroSeparator', name: 'heroSeparator', type: 'boolean', description: 'Adds a shaped separator between the hero icon area and content. Only applies with iconDisplay="hero". Default: false.' },
+    { id: 'heroSeparatorShape', name: 'heroSeparatorShape', type: '"wave" | "swell" | "curve" | "slope" | "peak" | "valley" | "ribbon"', description: 'Hero separator shape. Default: "wave".' },
+    { id: 'status',      name: 'status',      type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Coloured status frame with matching border and inline-start stripe. Ignored when surface="accent". Pair with statusLabel so meaning isn’t colour-only. Default: none.' },
     { id: 'statusLabel', name: 'statusLabel', type: 'ReactNode',    description: 'Badge label at the top of the content, tinted to match status. Only renders when status is set.' },
     { id: 'statusPulse', name: 'statusPulse', type: 'boolean',      description: 'Subtly pulses the status stripe to signal in-progress work. Respects prefers-reduced-motion. Default: false.' },
     { id: 'children',    name: 'children',    type: 'ReactNode',    description: 'Card content.' },
@@ -3023,28 +3053,22 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
   const requestedExampleId = exampleIdFromTab(tab)
-  const isExamplePage = Boolean(requestedExampleId)
+  const requestedExample = requestedExampleId
+    ? examples.find((example) => example.id === requestedExampleId)
+    : null
+  const isExamplePage = Boolean(requestedExample)
   const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
-  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExampleId ?? examples[0]?.id ?? null)
+  const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExample?.id ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
   const [viewAs, setViewAs] = useState('react')
   // Per-property helper text under each control. Off by default; toggled from the
   // config panel footer and shared with every control via ConfigHelpContext.
   const [showHelp, setShowHelp] = useState(false)
-  const [displayConfig, setDisplayConfig] = useState({
-    align: defaultDisplayAlign(component, category),
-    padding: 'md',
-    inverse: false,
-    containerQuery: 'auto',
-    viewport: 'fit',
-    borderSize: 'xs',
-    borderStyle: 'solid',
-    borderVariant: 'subtle',
-    radius: 'md',
-  })
+  const [displayConfig, setDisplayConfig] = useState(() => defaultDisplayConfig(component, category))
   const [asideNode, setAsideNode] = useState(null)
+  const wasExamplePage = useRef(isExamplePage)
   const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
   const relatedComponents = getRelatedComponents(component)
@@ -3055,19 +3079,30 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
   useEffect(() => {
     setConfig(detail.getDefaultConfig(component, category))
-    setSelectedExampleId(requestedExampleId ?? examples[0]?.id ?? null)
+    setSelectedExampleId(requestedExample?.id ?? examples[0]?.id ?? null)
     setViewAs('react')
     // Re-apply the per-component display alignment default (center for
     // natural-width components, none for flexible ones) on navigation.
-    setDisplayConfig((current) => ({ ...current, align: defaultDisplayAlign(component, category) }))
+    setDisplayConfig(defaultDisplayConfig(component, category))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [component.id, component.title, category.icon])
 
   useEffect(() => {
-    if (requestedExampleId && examples.some((example) => example.id === requestedExampleId)) {
-      setSelectedExampleId(requestedExampleId)
+    if (requestedExample) {
+      setSelectedExampleId(requestedExample.id)
+    } else if (requestedExampleId) {
+      onTabChange?.('configure')
     }
-  }, [examples, requestedExampleId])
+  }, [onTabChange, requestedExample, requestedExampleId])
+
+  useEffect(() => {
+    if (wasExamplePage.current && !isExamplePage) {
+      setConfig(detail.getDefaultConfig(component, category))
+      setDisplayConfig(defaultDisplayConfig(component, category))
+    }
+    wasExamplePage.current = isExamplePage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExamplePage, component.id])
 
   useEffect(() => {
     if (activeTab !== 'examples' && !isExamplePage) return
@@ -3098,6 +3133,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
       return
     }
     setConfig(detail.getDefaultConfig(component, category))
+    setDisplayConfig(defaultDisplayConfig(component, category))
   }
 
   // Mount the configuration panel into the PageLayout aside slot (right rail).
