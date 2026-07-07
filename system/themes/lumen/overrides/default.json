@@ -1,0 +1,384 @@
+{
+  "tokens": {
+    "base": {
+      "color": {
+        "neutral": {
+          "0": { "$type": "color", "$value": "#F8FBFF" },
+          "25": { "$type": "color", "$value": "#EEF4FF" },
+          "50": { "$type": "color", "$value": "#DDE8FA" },
+          "100": { "$type": "color", "$value": "#C8D7F0" },
+          "200": { "$type": "color", "$value": "#AFC2E6" },
+          "300": { "$type": "color", "$value": "#8EA3CC" },
+          "400": { "$type": "color", "$value": "#6B80AD" },
+          "500": { "$type": "color", "$value": "#4C5E86" },
+          "600": { "$type": "color", "$value": "#334164" },
+          "700": { "$type": "color", "$value": "#202C4F" },
+          "800": { "$type": "color", "$value": "#121F3D" },
+          "900": { "$type": "color", "$value": "#07122C" },
+          "1000": { "$type": "color", "$value": "#050916" }
+        },
+        "accent": {
+          "0": { "$type": "color", "$value": "#FBF9FF" },
+          "25": { "$type": "color", "$value": "#F4F0FF" },
+          "50": { "$type": "color", "$value": "#ECE5FF" },
+          "100": { "$type": "color", "$value": "#D9CBFF" },
+          "200": { "$type": "color", "$value": "#BBA5FF" },
+          "300": { "$type": "color", "$value": "#9C7AFF" },
+          "400": { "$type": "color", "$value": "#8057F0" },
+          "500": { "$type": "color", "$value": "#6848D9" },
+          "600": { "$type": "color", "$value": "#5135B5" },
+          "700": { "$type": "color", "$value": "#3B2489" },
+          "800": { "$type": "color", "$value": "#27195A" },
+          "900": { "$type": "color", "$value": "#160E34" },
+          "1000": { "$type": "color", "$value": "#080512" }
+        },
+        "info": {
+          "0": { "$type": "color", "$value": "#F7FDFF" },
+          "25": { "$type": "color", "$value": "#ECFBFF" },
+          "50": { "$type": "color", "$value": "#DDF8FF" },
+          "100": { "$type": "color", "$value": "#B9F0FF" },
+          "200": { "$type": "color", "$value": "#82E3FF" },
+          "300": { "$type": "color", "$value": "#4CCEFF" },
+          "400": { "$type": "color", "$value": "#1EA7FF" },
+          "500": { "$type": "color", "$value": "#0B7FE8" },
+          "600": { "$type": "color", "$value": "#075FBF" },
+          "700": { "$type": "color", "$value": "#084C82" },
+          "800": { "$type": "color", "$value": "#06345A" },
+          "900": { "$type": "color", "$value": "#041F36" },
+          "1000": { "$type": "color", "$value": "#020F1B" }
+        },
+        "success": {
+          "0": { "$type": "color", "$value": "#F5FEFC" },
+          "25": { "$type": "color", "$value": "#E9FCF6" },
+          "50": { "$type": "color", "$value": "#D2F7EC" },
+          "100": { "$type": "color", "$value": "#A9ECD8" },
+          "200": { "$type": "color", "$value": "#75DBBC" },
+          "300": { "$type": "color", "$value": "#45C79F" },
+          "400": { "$type": "color", "$value": "#28AB83" },
+          "500": { "$type": "color", "$value": "#168967" },
+          "600": { "$type": "color", "$value": "#0F684F" },
+          "700": { "$type": "color", "$value": "#0A4B39" },
+          "800": { "$type": "color", "$value": "#063326" },
+          "900": { "$type": "color", "$value": "#041F17" },
+          "1000": { "$type": "color", "$value": "#020F0B" }
+        },
+        "warn": {
+          "0": { "$type": "color", "$value": "#FFFCF7" },
+          "25": { "$type": "color", "$value": "#FFF7EA" },
+          "50": { "$type": "color", "$value": "#FFEFD3" },
+          "100": { "$type": "color", "$value": "#FFDDA8" },
+          "200": { "$type": "color", "$value": "#FFC16D" },
+          "300": { "$type": "color", "$value": "#F9A63F" },
+          "400": { "$type": "color", "$value": "#DF8420" },
+          "500": { "$type": "color", "$value": "#B86414" },
+          "600": { "$type": "color", "$value": "#8F4B0E" },
+          "700": { "$type": "color", "$value": "#67350A" },
+          "800": { "$type": "color", "$value": "#452306" },
+          "900": { "$type": "color", "$value": "#291403" },
+          "1000": { "$type": "color", "$value": "#140901" }
+        },
+        "error": {
+          "0": { "$type": "color", "$value": "#FFF8FB" },
+          "25": { "$type": "color", "$value": "#FFF0F7" },
+          "50": { "$type": "color", "$value": "#FFE2EF" },
+          "100": { "$type": "color", "$value": "#FFC2DD" },
+          "200": { "$type": "color", "$value": "#FF8FBC" },
+          "300": { "$type": "color", "$value": "#F75F9C" },
+          "400": { "$type": "color", "$value": "#E23E80" },
+          "500": { "$type": "color", "$value": "#BD2765" },
+          "600": { "$type": "color", "$value": "#951B4E" },
+          "700": { "$type": "color", "$value": "#6F1339" },
+          "800": { "$type": "color", "$value": "#4A0C25" },
+          "900": { "$type": "color", "$value": "#2A0614" },
+          "1000": { "$type": "color", "$value": "#140309" }
+        },
+        "highlighted": {
+          "0": { "$type": "color", "$value": "#FFFBF4" },
+          "25": { "$type": "color", "$value": "#FFF4DD" },
+          "50": { "$type": "color", "$value": "#FFE8BA" },
+          "100": { "$type": "color", "$value": "#FFD483" },
+          "200": { "$type": "color", "$value": "#FFB74A" },
+          "300": { "$type": "color", "$value": "#F69422" },
+          "400": { "$type": "color", "$value": "#D87412" },
+          "500": { "$type": "color", "$value": "#B2570B" },
+          "600": { "$type": "color", "$value": "#894006" },
+          "700": { "$type": "color", "$value": "#622D04" },
+          "800": { "$type": "color", "$value": "#421E03" },
+          "900": { "$type": "color", "$value": "#271101" },
+          "1000": { "$type": "color", "$value": "#130800" }
+        }
+      },
+      "font": {
+        "family": {
+          "body": {
+            "$type": "fontFamily",
+            "$value": "'Nunito', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          },
+          "heading": {
+            "$type": "fontFamily",
+            "$value": "'Baloo 2', 'Nunito', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          },
+          "display": {
+            "$type": "fontFamily",
+            "$value": "'Baloo 2', 'Nunito', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          }
+        }
+      },
+      "radius": {
+        "md": { "$type": "dimension", "$value": "0.875rem" },
+        "lg": { "$type": "dimension", "$value": "1.25rem" },
+        "xl": { "$type": "dimension", "$value": "1.75rem" },
+        "control": { "$type": "dimension", "$value": "0.9rem" }
+      }
+    },
+    "semantic": {
+      "shadow": {
+        "xs": {
+          "$type": "shadow",
+          "$value": "0 10px 26px -20px rgba(0, 8, 24, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.12)"
+        },
+        "sm": {
+          "$type": "shadow",
+          "$value": "0 18px 42px -20px rgba(0, 8, 24, 0.78), inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.14)"
+        },
+        "md": {
+          "$type": "shadow",
+          "$value": "0 28px 68px -28px rgba(0, 8, 24, 0.84), inset 0 1px 0 rgba(255, 255, 255, 0.16)"
+        },
+        "lg": {
+          "$type": "shadow",
+          "$value": "0 38px 84px -32px rgba(0, 8, 24, 0.88), 0 0 42px -18px rgba(30, 167, 255, 0.38)"
+        },
+        "xl": {
+          "$type": "shadow",
+          "$value": "0 48px 110px -36px rgba(0, 8, 24, 0.92), 0 0 58px -20px rgba(76, 206, 255, 0.36)"
+        }
+      },
+      "color": {
+        "text": {
+          "default": { "$type": "color", "$value": "{base.color.neutral.25}" },
+          "muted": { "$type": "color", "$value": "{base.color.neutral.200}" },
+          "inverse": { "$type": "color", "$value": "{base.color.neutral.900}" },
+          "accent": { "$type": "color", "$value": "{base.color.info.200}" }
+        },
+        "surface": {
+          "page": { "$type": "color", "$value": "{base.color.neutral.900}" },
+          "card": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.800}, {base.color.info.900} 14%)" },
+          "field": { "$type": "color", "$value": "{base.color.neutral.700}" },
+          "panel": { "$type": "color", "$value": "{base.color.neutral.800}" },
+          "raised": { "$type": "color", "$value": "{base.color.neutral.700}" },
+          "inverse": { "$type": "color", "$value": "{base.color.neutral.50}" }
+        },
+        "border": {
+          "subtle": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.100}, transparent 82%)" },
+          "default": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.100}, transparent 48%)" },
+          "strong": { "$type": "color", "$value": "{base.color.neutral.100}" }
+        },
+        "action": {
+          "background": { "$type": "color", "$value": "{base.color.info.400}" },
+          "backgroundHover": { "$type": "color", "$value": "{base.color.info.300}" },
+          "backgroundPressed": { "$type": "color", "$value": "{base.color.info.500}" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.1000}" },
+          "foregroundPressed": { "$type": "color", "$value": "{base.color.info.1000}" },
+          "surface": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.400}, transparent 78%)" },
+          "border": { "$type": "color", "$value": "{base.color.info.300}" }
+        },
+        "status": {
+          "info": {
+            "background": { "$type": "color", "$value": "{base.color.accent.300}" },
+            "surface": { "$type": "color", "$value": "color-mix(in srgb, {base.color.accent.400}, transparent 78%)" },
+            "border": { "$type": "color", "$value": "{base.color.accent.300}" },
+            "foreground": { "$type": "color", "$value": "{base.color.accent.1000}" }
+          },
+          "success": {
+            "background": { "$type": "color", "$value": "{base.color.success.300}" },
+            "surface": { "$type": "color", "$value": "color-mix(in srgb, {base.color.success.400}, transparent 80%)" },
+            "border": { "$type": "color", "$value": "{base.color.success.300}" },
+            "foreground": { "$type": "color", "$value": "{base.color.success.1000}" }
+          },
+          "warn": {
+            "background": { "$type": "color", "$value": "{base.color.warn.300}" },
+            "surface": { "$type": "color", "$value": "color-mix(in srgb, {base.color.warn.400}, transparent 82%)" },
+            "border": { "$type": "color", "$value": "{base.color.warn.300}" },
+            "foreground": { "$type": "color", "$value": "{base.color.warn.1000}" },
+            "text": { "$type": "color", "$value": "{base.color.warn.100}" }
+          },
+          "error": {
+            "background": { "$type": "color", "$value": "{base.color.error.300}" },
+            "surface": { "$type": "color", "$value": "color-mix(in srgb, {base.color.error.400}, transparent 82%)" },
+            "border": { "$type": "color", "$value": "{base.color.error.300}" },
+            "foreground": { "$type": "color", "$value": "{base.color.error.1000}" },
+            "text": { "$type": "color", "$value": "{base.color.error.100}" }
+          }
+        }
+      }
+    },
+    "component": {
+      "button": {
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" },
+        "font": {
+          "family": {
+            "$type": "fontFamily",
+            "$value": "{base.font.family.body}"
+          }
+        },
+        "focusRing": { "$type": "color", "$value": "{base.color.accent.300}" },
+        "primary": {
+          "background": { "$type": "color", "$value": "{semantic.color.action.background}" },
+          "backgroundHover": { "$type": "color", "$value": "{semantic.color.action.backgroundHover}" },
+          "backgroundPressed": { "$type": "color", "$value": "{semantic.color.action.backgroundPressed}" },
+          "foreground": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
+          "foregroundHover": { "$type": "color", "$value": "{semantic.color.action.foreground}" },
+          "foregroundPressed": { "$type": "color", "$value": "{semantic.color.action.foregroundPressed}" },
+          "border": { "$type": "color", "$value": "{semantic.color.action.background}" }
+        },
+        "secondary": {
+          "background": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.800}, transparent 8%)" },
+          "backgroundHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 86%)" },
+          "backgroundPressed": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 76%)" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.100}" },
+          "foregroundHover": { "$type": "color", "$value": "{base.color.info.50}" },
+          "foregroundPressed": { "$type": "color", "$value": "{base.color.info.25}" },
+          "border": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.300}, transparent 36%)" },
+          "borderHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.200}, transparent 24%)" },
+          "borderPressed": { "$type": "color", "$value": "{base.color.info.200}" },
+          "boxShadow": {
+            "$type": "shadow",
+            "$value": "0 12px 28px -24px rgba(0, 8, 24, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.10), inset 0 0 0 1px rgba(76, 206, 255, 0.08)"
+          },
+          "boxShadowHover": {
+            "$type": "shadow",
+            "$value": "0 16px 34px -24px color-mix(in srgb, {base.color.info.400}, transparent 48%), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(76, 206, 255, 0.12)"
+          },
+          "boxShadowActive": {
+            "$type": "shadow",
+            "$value": "0 8px 20px -18px color-mix(in srgb, {base.color.info.500}, transparent 40%), inset 0 2px 6px rgba(0, 8, 24, 0.34)"
+          }
+        },
+        "tertiary": {
+          "background": { "$type": "color", "$value": "transparent" },
+          "backgroundHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.400}, transparent 82%)" },
+          "backgroundPressed": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.400}, transparent 70%)" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.300}" },
+          "foregroundHover": { "$type": "color", "$value": "{base.color.info.200}" },
+          "foregroundPressed": { "$type": "color", "$value": "{base.color.info.400}" },
+          "border": { "$type": "color", "$value": "transparent" },
+          "borderHover": { "$type": "color", "$value": "transparent" },
+          "borderPressed": { "$type": "color", "$value": "transparent" }
+        }
+      },
+      "card": {
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.xl}" },
+        "borderWidth": { "$type": "dimension", "$value": "3px" },
+        "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.0}, transparent 88%)" },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "0 4px 8px 2px rgba(0, 0, 0, 0.40), 0 1px 6px 2px #04112E inset"
+        },
+        "icon": {
+          "background": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.400}, transparent 68%)" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.50}" }
+        },
+        "hero": {
+          "background": { "$type": "color", "$value": "{base.color.info.400}" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.1000}" }
+        },
+        "navigation": {
+          "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.300}, transparent 58%)" },
+          "borderColorHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.300}, transparent 34%)" },
+          "borderColorPressed": { "$type": "color", "$value": "{base.color.info.300}" }
+        }
+      },
+      "dataTable": {
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" }
+      },
+      "tab": {
+        "paddingBlock": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "fontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.md}" },
+        "indicatorSize": { "$type": "dimension", "$value": "3px" }
+      },
+      "paragraph": {
+        "font": {
+          "family": {
+            "$type": "fontFamily",
+            "$value": "{base.font.family.body}"
+          }
+        }
+      },
+      "heading": {
+        "font": {
+          "family": {
+            "heading": {
+              "$type": "fontFamily",
+              "$value": "{base.font.family.heading}"
+            },
+            "display": {
+              "$type": "fontFamily",
+              "$value": "{base.font.family.display}"
+            }
+          }
+        }
+      },
+      "field": {
+        "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.100}, transparent 82%)" },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "0 14px 28px -24px rgba(0, 8, 24, 0.82), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 8, 24, 0.26)"
+        },
+        "hoverBackground": { "$type": "color", "$value": "{base.color.neutral.700}" },
+        "activeBackground": { "$type": "color", "$value": "{base.color.neutral.700}" },
+        "hoverBorderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.300}, transparent 34%)" },
+        "activeBorderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.accent.300}, transparent 24%)" },
+        "readOnlyBackground": { "$type": "color", "$value": "{base.color.neutral.800}" },
+        "readOnlyBorderColor": { "$type": "color", "$value": "{base.color.neutral.500}" },
+        "readOnlyText": { "$type": "color", "$value": "{base.color.neutral.100}" },
+        "comfortable": { "borderRadius": { "$type": "dimension", "$value": "{base.radius.xl}" } },
+        "default": { "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" } },
+        "compact": { "borderRadius": { "$type": "dimension", "$value": "{base.radius.md}" } }
+      },
+      "message": {
+        "badge": {
+          "subtleBorderNeutral": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.100}, transparent 62%)" },
+          "subtleBorderInfo": { "$type": "color", "$value": "color-mix(in srgb, {base.color.accent.400}, transparent 30%)" },
+          "subtleBorderSuccess": { "$type": "color", "$value": "color-mix(in srgb, {base.color.success.400}, transparent 30%)" },
+          "subtleBorderWarn": { "$type": "color", "$value": "color-mix(in srgb, {base.color.warn.400}, transparent 30%)" },
+          "subtleBorderError": { "$type": "color", "$value": "color-mix(in srgb, {base.color.error.400}, transparent 30%)" }
+        }
+      },
+      "iconButton": {
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" }
+      },
+      "topHeader": {
+        "logoForeground": { "$type": "color", "$value": "{base.color.info.200}" }
+      },
+      "chart": {
+        "series": {
+          "accent": { "$type": "color", "$value": "{base.color.info.400}" },
+          "info": { "$type": "color", "$value": "{base.color.accent.300}" },
+          "success": { "$type": "color", "$value": "{base.color.success.300}" },
+          "warn": { "$type": "color", "$value": "{base.color.warn.300}" },
+          "error": { "$type": "color", "$value": "{base.color.error.300}" }
+        }
+      }
+    }
+  },
+  "customProperties": {
+    "--component-button-box-shadow": {
+      "$type": "shadow",
+      "$value": "0 18px 36px -22px color-mix(in srgb, {base.color.info.400}, transparent 30%), inset 0 1px 0 color-mix(in srgb, {base.color.neutral.0}, transparent 72%)"
+    },
+    "--component-button-box-shadow-hover": {
+      "$type": "shadow",
+      "$value": "0 24px 46px -22px color-mix(in srgb, {base.color.info.300}, transparent 20%), inset 0 1px 0 color-mix(in srgb, {base.color.neutral.0}, transparent 62%)"
+    },
+    "--component-button-box-shadow-active": {
+      "$type": "shadow",
+      "$value": "0 10px 24px -18px color-mix(in srgb, {base.color.info.500}, transparent 24%), inset 0 2px 6px color-mix(in srgb, {base.color.info.1000}, transparent 74%)"
+    },
+    "--component-card-accent-shadow": {
+      "$type": "shadow",
+      "$value": "0 4px 8px 2px rgba(0, 0, 0, 0.34), 0 1px 2px 0 rgba(4, 17, 46, 0.32) inset"
+    }
+  }
+}

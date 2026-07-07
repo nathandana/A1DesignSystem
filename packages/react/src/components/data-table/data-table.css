@@ -24,7 +24,7 @@
   gap: var(--base-spacing-12);
   padding: var(--base-spacing-8) var(--base-spacing-12);
   border: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
-  border-radius: var(--component-card-border-radius);
+  border-radius: var(--component-data-table-border-radius);
   background: var(--semantic-color-surface-panel);
 }
 
@@ -48,7 +48,7 @@
   max-inline-size: 100%;
   overflow-x: hidden;
   border: var(--component-data-table-border-width) solid var(--semantic-color-border-subtle);
-  border-radius: var(--component-card-border-radius);
+  border-radius: var(--component-data-table-border-radius);
 }
 
 /* Opt-in horizontal scroll — add scrollable prop to DataTable */
@@ -97,11 +97,11 @@
 }
 
 .a1-data-table th:first-child {
-  border-start-start-radius: calc(var(--component-card-border-radius) - 1px);
+  border-start-start-radius: calc(var(--component-data-table-border-radius) - 1px);
 }
 
 .a1-data-table th:last-child {
-  border-start-end-radius: calc(var(--component-card-border-radius) - 1px);
+  border-start-end-radius: calc(var(--component-data-table-border-radius) - 1px);
 }
 
 .a1-data-table__select-header,
@@ -427,7 +427,7 @@
     inline-size: 100%;
     background: var(--semantic-color-surface-card);
     border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
-    border-radius: var(--component-card-border-radius);
+    border-radius: var(--component-data-table-border-radius);
     padding: var(--component-card-padding);
     box-shadow: var(--semantic-shadow-sm);
     color: var(--semantic-color-text-default);

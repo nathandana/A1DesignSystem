@@ -2,6 +2,8 @@
   "component": {
     "field": {
       "borderWidth":         { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "borderColor":         { "$type": "color",     "$value": "{semantic.color.border.strong}" },
+      "shadow":              { "$type": "shadow",    "$value": "none" },
       "requiredBorderWidth": { "$type": "dimension", "$value": "8px" },
       "errorBorderWidth":    { "$type": "dimension", "$value": "2px" },
       "labelFontWeight":     { "$type": "number",    "$value": 600 },
@@ -35,7 +37,7 @@
         "height":        { "$type": "dimension", "$value": "32px" },
         "paddingInline": { "$type": "dimension", "$value": "{base.spacing.8}" },
         "gap":           { "$type": "dimension", "$value": "{base.spacing.4}" },
-        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.sm}" }
+        "borderRadius":  { "$type": "dimension", "$value": "{base.radius.md}" }
       },
 
       "chevronSize":            { "$type": "dimension",  "$value": "{base.spacing.20}" },

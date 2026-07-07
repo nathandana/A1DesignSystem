@@ -39,6 +39,8 @@ export interface Project {
   name: string;
   description?: string;
   icon?: string;
+  /** Optional project-level theme applied to project pages/prototypes only. */
+  theme?: string;
   /** Free-form project metadata (e.g. SEO `metaTitle` / `metaDescription`). */
   meta?: Record<string, string>;
   /** Per-project label overrides. Key = dot-notation label path; value = map of locale code → translation string. */
@@ -86,13 +88,14 @@ export function saveProjects(projects: Project[]): void {
   writeStored(PROJECTS_KEY, JSON.stringify(projects));
 }
 
-export function createProject(input: { name: string; description?: string; icon?: string }): Project {
+export function createProject(input: { name: string; description?: string; icon?: string; theme?: string }): Project {
   const now = Date.now();
   const project: Project = {
     id: uid('proj'),
     name: input.name.trim() || 'Untitled project',
     description: input.description?.trim() || undefined,
     icon: input.icon || 'folder',
+    theme: input.theme || undefined,
     createdAt: now,
     updatedAt: now,
   };
@@ -128,7 +131,7 @@ export function deleteProject(id: string, { purgeContent = true } = {}): Project
 export function duplicateProject(id: string): Project | null {
   const source = loadProjects().find((p) => p.id === id);
   if (!source) return null;
-  const copy = createProject({ name: `${source.name} copy`, description: source.description, icon: source.icon });
+  const copy = createProject({ name: `${source.name} copy`, description: source.description, icon: source.icon, theme: source.theme });
   const idMap = new Map<string, string>();
   const srcPages = loadPages(id);
   srcPages.forEach((p) => idMap.set(p.id, uid('page')));
@@ -540,7 +543,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder' })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '' })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -569,7 +572,7 @@ export function importAllText(
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -614,6 +617,7 @@ export function importAllText(
       name: meta.name || existing?.name || 'Imported project',
       description: meta.description || existing?.description || undefined,
       icon: meta.icon || existing?.icon || 'folder',
+      theme: meta.theme || existing?.theme || undefined,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     });
@@ -645,6 +649,7 @@ interface NormalizedImport {
   name: string;
   description?: string;
   icon?: string;
+  theme?: string;
   pages: NormalizedImportPage[];
 }
 
@@ -676,6 +681,7 @@ function normalizeImport(data: any): NormalizedImport | null {
       name: (typeof data.name === 'string' && data.name.trim()) || 'Imported project',
       description: typeof data.description === 'string' ? data.description : undefined,
       icon: typeof data.icon === 'string' ? data.icon : undefined,
+      theme: typeof data.theme === 'string' ? data.theme : undefined,
       pages: data.pages.map((p: any, i: number): NormalizedImportPage => ({
         key: (typeof p?.id === 'string' && p.id) || `#${i}`,
         title: (typeof p?.title === 'string' && p.title.trim()) || `Page ${i + 1}`,
@@ -830,7 +836,7 @@ export function importProjectJson(data: unknown): Project {
   const norm = normalizeImport(data);
   if (!norm) throw new Error('Invalid project JSON.');
 
-  const project = createProject({ name: norm.name, description: norm.description, icon: norm.icon });
+  const project = createProject({ name: norm.name, description: norm.description, icon: norm.icon, theme: norm.theme });
 
   const keyToId = new Map<string, string>();
   norm.pages.forEach((p) => keyToId.set(p.key, uid('page')));
@@ -860,6 +866,7 @@ export function exportProjectJson(projectId: string): string | null {
     name: project.name,
     description: project.description,
     icon: project.icon,
+    theme: project.theme,
     pages: loadPages(projectId).map((pg) => {
       const json = resolvePageJson(pg.id);
       let definition: unknown;

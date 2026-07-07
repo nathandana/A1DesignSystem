@@ -82,7 +82,7 @@ The full catalog — each component's key props, variants, and usage rules — i
 in `components.md`. **Check it before creating any UI element.** Every named
 export, by category:
 
-- **Layout:** `Section` `Card` `Stack` `Cluster` `Grid` `GridItem` `Bleed` `Inset` `Spacer` `Inverse` `PageLayout` `ButtonContainer` `StickyActions` `Figure`
+- **Layout:** `Section` `SectionSeparator` `Card` `Stack` `Cluster` `Grid` `GridItem` `Bleed` `Inset` `Spacer` `Inverse` `PageLayout` `ButtonContainer` `StickyActions` `Figure`
 - **Typography:** `Heading` `HeadingMark` `Paragraph` `Blockquote` `List` `ListItem` `Code` `Divider`
 - **Actions & controls:** `Button` `SplitButton` `IconButton` `ActionTiles` `ActionTile` `Chip` `ChipGroup` `Switch` `SegmentedControl` `Slider` `Toolbar` `ToolbarToggle` `ToolbarButton` `ToolbarGroup` `ToolbarMenu` `ToolbarDivider` `TOOLBAR_NONE_ICON` `Accordion` `Tabs` `TabList` `Tab` `TabPanel` `Link`
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`

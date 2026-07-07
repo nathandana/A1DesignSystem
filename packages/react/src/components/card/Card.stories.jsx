@@ -8,6 +8,7 @@ import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { iconArgType } from "../../storybook/icon-controls.js";
 
 const HERO_COLORS = ["action", "neutral", "info", "success", "warn", "error"];
+const HERO_SEPARATOR_SHAPES = ["wave", "swell", "curve", "slope", "peak", "valley", "ribbon"];
 
 const meta = {
   title: "Components/Containers/Card",
@@ -17,9 +18,12 @@ const meta = {
   args: {
     bare: false,
     variant: "default",
+    surface: "default",
     icon: undefined,
     iconDisplay: "default",
     heroColor: "action",
+    heroSeparator: false,
+    heroSeparatorShape: "wave",
   },
   argTypes: {
     as: {
@@ -35,6 +39,11 @@ const meta = {
       control: "boolean",
       description: "Removes all visual chrome and padding",
     },
+    surface: {
+      control: "inline-radio",
+      options: ["default", "accent"],
+      description: "Card surface treatment. Accent uses the action background and disables status stripe rendering.",
+    },
     icon: {
       ...iconArgType("Material Symbols icon name"),
     },
@@ -47,6 +56,15 @@ const meta = {
       control: "select",
       options: HERO_COLORS,
       description: "Background colour of the hero area (only used when iconDisplay=\"hero\")",
+    },
+    heroSeparator: {
+      control: "boolean",
+      description: "Add a shaped separator between the hero area and content (only used when iconDisplay=\"hero\")",
+    },
+    heroSeparatorShape: {
+      control: "select",
+      options: HERO_SEPARATOR_SHAPES,
+      description: "Separator shape",
     },
     heroBadge: {
       control: "text",
@@ -80,14 +98,17 @@ const meta = {
       description: "Subtly pulse the status stripe to indicate in-progress work. Respects prefers-reduced-motion.",
     },
   },
-  render: ({ bare, variant, icon, iconDisplay, heroColor, heroBadge, heroBadgeStatus, heroBadgePosition, status, statusLabel, statusPulse }) => (
+  render: ({ bare, variant, surface, icon, iconDisplay, heroColor, heroSeparator, heroSeparatorShape, heroBadge, heroBadgeStatus, heroBadgePosition, status, statusLabel, statusPulse }) => (
     <Card
       bare={bare}
       variant={variant}
+      surface={surface}
       href={variant === "navigation" ? "#" : undefined}
       icon={icon}
       iconDisplay={iconDisplay}
       heroColor={heroColor}
+      heroSeparator={heroSeparator}
+      heroSeparatorShape={heroSeparatorShape}
       heroBadge={heroBadge || undefined}
       heroBadgeStatus={heroBadgeStatus}
       heroBadgePosition={heroBadgePosition}
@@ -193,6 +214,29 @@ export const HeroIcon = {
         <Card key={label} icon={icon} iconDisplay="hero" heroColor={heroColor} style={{ width: 240 }}>
           <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{label}</Heading>
           <Paragraph size="sm" color="muted">{body}</Paragraph>
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+export const HeroSeparator = {
+  name: "Hero separator",
+  parameters: { controls: { include: ["heroSeparator", "heroSeparatorShape"] } },
+  render: () => (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", alignItems: "flex-start" }}>
+      {HERO_SEPARATOR_SHAPES.slice(0, 4).map((shape) => (
+        <Card
+          key={shape}
+          icon="auto_awesome"
+          iconDisplay="hero"
+          heroColor="action"
+          heroSeparator
+          heroSeparatorShape={shape}
+          style={{ width: 280 }}
+        >
+          <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{shape}</Heading>
+          <Paragraph size="sm" color="muted">The shaped edge separates the hero field from card content.</Paragraph>
         </Card>
       ))}
     </div>
@@ -324,6 +368,19 @@ export const Bare = {
         </Card>
       </div>
     </div>
+  ),
+};
+
+export const AccentSurface = {
+  name: "Accent surface",
+  parameters: { controls: { include: ["surface"] } },
+  render: () => (
+    <Card surface="accent" style={{ width: 320 }}>
+      <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>Accent card</Heading>
+      <Paragraph size="sm">
+        A strong accent surface is available, but nested content still needs contrast review.
+      </Paragraph>
+    </Card>
   ),
 };
 

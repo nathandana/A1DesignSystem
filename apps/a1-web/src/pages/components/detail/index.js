@@ -56,6 +56,7 @@ import * as circularProgress from './circular-progress.jsx'
 import * as stepTracker from './step-tracker.jsx'
 import * as definitionList from './definition-list.jsx'
 import * as section from './section.jsx'
+import * as sectionSeparator from './section-separator.jsx'
 import * as stack from './stack.jsx'
 import * as treeMenu from './tree-menu.jsx'
 import * as contextMenu from './context-menu.jsx'
@@ -138,6 +139,7 @@ const REGISTRY = {
   'step-tracker': stepTracker,
   'definition-list': definitionList,
   section,
+  'section-separator': sectionSeparator,
   stack,
   'tree-menu': treeMenu,
   'context-menu': contextMenu,

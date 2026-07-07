@@ -1498,6 +1498,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "Remove the card border and background. Default: false"
         },
         {
+          "id": "surface",
+          "name": "surface",
+          "type": "\"default\" | \"accent\"",
+          "description": "Card surface treatment. `\"default\"` uses the standard card surface; `\"accent\"` uses the stronger action/accent background step, applies the primary-action foreground as its local text context, and disables status stripe rendering because the two treatments compete. Default: \"default\""
+        },
+        {
           "id": "icon",
           "name": "icon",
           "type": "string",
@@ -1514,6 +1520,18 @@ export const GENERATED_PROP_TABLES = {
           "name": "heroColor",
           "type": "\"action\" | \"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\" | (string & {})",
           "description": "Background colour of the hero block when `iconDisplay=\"hero\"`. Accepts a semantic colour role or any valid CSS colour value. Default: \"action\""
+        },
+        {
+          "id": "heroSeparator",
+          "name": "heroSeparator",
+          "type": "boolean",
+          "description": "Add a shaped separator between the hero icon area and the card content. Only applies when `iconDisplay=\"hero\"`. Default: false"
+        },
+        {
+          "id": "heroSeparatorShape",
+          "name": "heroSeparatorShape",
+          "type": "\"wave\" | \"swell\" | \"curve\" | \"slope\" | \"peak\" | \"valley\" | \"ribbon\"",
+          "description": "Separator shape used when `heroSeparator` is true. Default: \"wave\""
         },
         {
           "id": "heroBadge",
@@ -1537,7 +1555,7 @@ export const GENERATED_PROP_TABLES = {
           "id": "status",
           "name": "status",
           "type": "\"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\"",
-          "description": "Renders a coloured status stripe down the card's inline-start edge, coloured from the tokenized `component.card.status.*` palette (warn/success are two ramp steps lighter than the status background so a thin stripe still reads as amber/green). The stripe is decorative: status must NOT be conveyed by colour alone. Pair it with `statusLabel` (or status text the card carries or sits within) — see the `card-status-not-color-only` rule (WCAG 2.1 SC 1.4.1, Level A). Default: undefined (no stripe)."
+          "description": "Renders a coloured status frame: the full card border matches the status colour and the inline-start stripe is at least 8px wide or the card radius, whichever is larger. Ignored when `surface=\"accent\"`. The status treatment is decorative: status must NOT be conveyed by colour alone. Pair it with `statusLabel` (or status text the card carries or sits within) — see the `card-status-not-color-only` rule (WCAG 2.1 SC 1.4.1, Level A). Default: undefined (no stripe)."
         },
         {
           "id": "statusLabel",

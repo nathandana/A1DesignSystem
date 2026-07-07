@@ -19,6 +19,7 @@ import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { ProjectImportDialog } from './ProjectImportDialog.jsx'
 import { AiProjectDialog } from './AiProjectDialog.jsx'
+import { themeOptions } from '../lib/appThemes.ts'
 import { AI_ENABLED } from '../lib/aiImages.ts'
 import { exportProjectJson, loadPages } from './projectStore.ts'
 
@@ -79,6 +80,7 @@ export function ProjectsList({
   }
 
   const ctxProject = ctxMenu ? projects.find((p) => p.id === ctxMenu.id) : null
+  const themeLabel = (value) => themeOptions.find((option) => option.value === value)?.label ?? 'Default'
 
   return (
     <>
@@ -178,6 +180,7 @@ export function ProjectsList({
                     size="sm"
                     items={[
                       { label: 'Pages', value: String(counts[project.id] ?? 0) },
+                      { label: 'Theme', value: themeLabel(project.theme) },
                       ...(project.updatedAt
                         ? [{ label: 'Updated', value: formatDate(project.updatedAt) }]
                         : []),

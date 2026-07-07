@@ -23,6 +23,7 @@
 export type ComponentType =
   | 'PageLayout'
   | 'Section'
+  | 'SectionSeparator'
   | 'Stack'
   | 'Grid'
   | 'Cluster'

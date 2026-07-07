@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Button,
   ButtonContainer,
   Canvas,
@@ -21,6 +20,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useEffect, useMemo, useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 const primitiveColorColumns = [
@@ -426,31 +426,12 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
   )
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Color', onNavigate)}
-          />
-          <Heading
-            as="h1"
-            id="color-foundation-heading"
-            size={{ xs: 'lg', md: 'xxl' }}
-          >
-            Color
-          </Heading>
-
-          <Paragraph size="sm" color="muted">
-            Inspect the generated color system and see how token values are applied across primitives, semantic roles, and component-specific color tokens. Use the settings menu to switch the active theme and color mode.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="color-foundation-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Color', onNavigate)}
+        title="Color"
+        description="Inspect the generated color system and see how token values are applied across primitives, semantic roles, and component-specific color tokens. Use the settings menu to switch the active theme and color mode."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="color-token-browser-heading">
         <Stack gap="lg">

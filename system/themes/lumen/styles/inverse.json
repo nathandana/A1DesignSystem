@@ -1,0 +1,5 @@
+{
+  "color-scheme": "light",
+  "background-color": "var(--semantic-color-surface-page)",
+  "background-image": "radial-gradient(circle at 16% 10%, color-mix(in srgb, var(--base-color-info-300) 18%, transparent) 0 14rem, transparent 24rem), radial-gradient(circle at 86% 12%, color-mix(in srgb, var(--base-color-accent-300) 16%, transparent) 0 12rem, transparent 24rem), linear-gradient(135deg, var(--base-color-neutral-50), var(--base-color-neutral-100))"
+}

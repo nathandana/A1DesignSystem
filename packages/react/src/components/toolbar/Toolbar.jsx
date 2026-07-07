@@ -2,9 +2,11 @@ import "./toolbar.css";
 import { Children, cloneElement, isValidElement, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";
 import { Menu, MenuItem, MenuSection } from "../menu/Menu.jsx";
+import { Tooltip } from "../tooltip/Tooltip.jsx";
 
 /** Standard icon for a "none" selection (no alignment, no size, …). */
 export const TOOLBAR_NONE_ICON = "block";
+const TOOLBAR_TOOLTIP_DELAY = 700;
 
 const BREAKPOINTS = ["xs", "sm", "md", "lg", "xl"];
 
@@ -49,6 +51,18 @@ function labelVisibilityClasses(showLabel) {
  */
 function toolAriaLabel(showLabel, label) {
   return labelAlwaysShown(showLabel) ? undefined : label;
+}
+
+function ToolTooltip({ content, disabled = false, showLabel = false, children }) {
+  return (
+    <Tooltip
+      content={content}
+      delay={TOOLBAR_TOOLTIP_DELAY}
+      disabled={disabled || labelAlwaysShown(showLabel)}
+    >
+      {children}
+    </Tooltip>
+  );
 }
 
 function isToolbarDividerElement(child) {
@@ -103,19 +117,20 @@ function ToolbarOverflow({ children, label = "More tools" }) {
 
   return (
     <>
-      <button
-        ref={btnRef}
-        type="button"
-        className="a1-toolbar__button a1-toolbar__menu-button a1-toolbar__overflow-button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={label}
-        title={label}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <ToolButtonContent icon="more_horiz" label={label} showLabel={false} />
-        <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
-      </button>
+      <ToolTooltip content={label}>
+        <button
+          ref={btnRef}
+          type="button"
+          className="a1-toolbar__button a1-toolbar__menu-button a1-toolbar__overflow-button"
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={label}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <ToolButtonContent icon="more_horiz" label={label} showLabel={false} />
+          <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
+        </button>
+      </ToolTooltip>
       <Menu open={open} onClose={close} anchorRef={btnRef} aria-label={label}>
         {runs.map((run, i) =>
           run.kind === "menu" ? (
@@ -313,18 +328,19 @@ export function ToolbarToggle({
   ...rest
 }) {
   return (
-    <button
-      type="button"
-      className={cx("a1-toolbar__button", className)}
-      aria-pressed={pressed}
-      aria-label={toolAriaLabel(showLabel, label)}
-      title={label}
-      disabled={disabled}
-      onClick={() => onChange?.(!pressed)}
-      {...rest}
-    >
-      <ToolButtonContent icon={icon} label={label} showLabel={showLabel} swatch={swatch} />
-    </button>
+    <ToolTooltip content={label} disabled={disabled} showLabel={showLabel}>
+      <button
+        type="button"
+        className={cx("a1-toolbar__button", className)}
+        aria-pressed={pressed}
+        aria-label={toolAriaLabel(showLabel, label)}
+        disabled={disabled}
+        onClick={() => onChange?.(!pressed)}
+        {...rest}
+      >
+        <ToolButtonContent icon={icon} label={label} showLabel={showLabel} swatch={swatch} />
+      </button>
+    </ToolTooltip>
   );
 }
 
@@ -340,17 +356,18 @@ export function ToolbarButton({
   ...rest
 }) {
   return (
-    <button
-      type="button"
-      className={cx("a1-toolbar__button", className)}
-      aria-label={toolAriaLabel(showLabel, label)}
-      title={label}
-      disabled={disabled}
-      onClick={onClick}
-      {...rest}
-    >
-      <ToolButtonContent icon={icon} label={label} showLabel={showLabel} swatch={swatch} />
-    </button>
+    <ToolTooltip content={label} disabled={disabled} showLabel={showLabel}>
+      <button
+        type="button"
+        className={cx("a1-toolbar__button", className)}
+        aria-label={toolAriaLabel(showLabel, label)}
+        disabled={disabled}
+        onClick={onClick}
+        {...rest}
+      >
+        <ToolButtonContent icon={icon} label={label} showLabel={showLabel} swatch={swatch} />
+      </button>
+    </ToolTooltip>
   );
 }
 
@@ -407,21 +424,22 @@ export function ToolbarMenu({
 
   return (
     <>
-      <button
-        ref={btnRef}
-        type="button"
-        className={cx("a1-toolbar__button", "a1-toolbar__menu-button", className)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={ariaLabel ?? toolAriaLabel(showLabel, label)}
-        title={label}
-        disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
-        {...rest}
-      >
-        <ToolButtonContent icon={buttonIcon} label={label} showLabel={showLabel} />
-        <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
-      </button>
+      <ToolTooltip content={label} disabled={disabled} showLabel={showLabel}>
+        <button
+          ref={btnRef}
+          type="button"
+          className={cx("a1-toolbar__button", "a1-toolbar__menu-button", className)}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={ariaLabel ?? toolAriaLabel(showLabel, label)}
+          disabled={disabled}
+          onClick={() => setOpen((o) => !o)}
+          {...rest}
+        >
+          <ToolButtonContent icon={buttonIcon} label={label} showLabel={showLabel} />
+          <Icon name="arrow_drop_down" size="sm" className="a1-toolbar__caret" />
+        </button>
+      </ToolTooltip>
       <Menu open={open} onClose={() => setOpen(false)} anchorRef={btnRef} aria-label={name}>
         {items.map((it) => (
           <MenuItem
@@ -596,22 +614,22 @@ export function ToolbarGroup({
           : labelMode === "selected" ? selected : showLabels;
           const icon = opt.icon ?? (!labelAlwaysShown(optShowLabel) && isNoneValue(opt.value) ? TOOLBAR_NONE_ICON : undefined);
           return (
-            <button
-              key={String(opt.value)}
-              ref={(el) => { btnRefs.current[i] = el; }}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              aria-label={toolAriaLabel(optShowLabel, optLabel)}
-              title={optLabel}
-              tabIndex={tabIndex}
-              disabled={disabled || opt.disabled}
-              className="a1-toolbar__button"
-              onClick={() => onChange?.(opt.value)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-            >
-              <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
-            </button>
+            <ToolTooltip key={String(opt.value)} content={optLabel} disabled={disabled || opt.disabled} showLabel={optShowLabel}>
+              <button
+                ref={(el) => { btnRefs.current[i] = el; }}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                aria-label={toolAriaLabel(optShowLabel, optLabel)}
+                tabIndex={tabIndex}
+                disabled={disabled || opt.disabled}
+                className="a1-toolbar__button"
+                onClick={() => onChange?.(opt.value)}
+                onKeyDown={(e) => handleKeyDown(e, i)}
+              >
+                <ToolButtonContent icon={icon} label={opt.label} showLabel={optShowLabel} swatch={opt.swatch} />
+              </button>
+            </ToolTooltip>
           );
         })}
       </div>

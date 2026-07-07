@@ -12,6 +12,7 @@
       "padding": { "$type": "dimension", "$value": "{base.space.card.padding}" },
       "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" },
       "borderWidth": { "$type": "dimension", "$value": "{base.space.card.borderWidth}" },
+      "borderColor": { "$type": "color", "$value": "{semantic.color.border.subtle}" },
       "iconSize":    { "$type": "dimension", "$value": "{base.spacing.20}" },
       "iconOpticalSize": { "$type": "number", "$value": 20 },
       "icon": {
@@ -21,6 +22,11 @@
       "hero": {
         "background": { "$type": "color", "$value": "{semantic.color.action.background}" },
         "foreground": { "$type": "color", "$value": "{semantic.color.action.foreground}" }
+      },
+      "navigation": {
+        "borderColor": { "$type": "color", "$value": "{semantic.color.text.accent}" },
+        "borderColorHover": { "$type": "color", "$value": "{semantic.color.action.background}" },
+        "borderColorPressed": { "$type": "color", "$value": "{semantic.color.action.background}" }
       },
       "statusStripe": {
         "width": { "$type": "dimension", "$value": "{base.spacing.4}" }

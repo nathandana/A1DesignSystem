@@ -4,6 +4,12 @@
 
 ### Added
 
+- **SectionSeparator component** — added a React `SectionSeparator` layout component for organic responsive transitions between neighboring `Section` surfaces. It supports independent `topSurface` / `bottomSurface`, per-side inverse scopes, seven SVG path shapes, responsive height sizes, and optional Divider-token border highlighting that follows the curve.
+
+- **Card accent surface** — added `surface="accent"` to Card for a strong action-colour surface. Accent cards use the stronger action background step, apply the primary-action foreground as their local text context, disable status stripe rendering because the two treatments compete, and consumers should still verify contrast for complex nested controls or explicit colour props.
+
+- **Card hero separator** — hero-icon Cards now support `heroSeparator` and `heroSeparatorShape` for a shaped SVG edge between the hero icon area and content. The separator fills with the Card content surface and flips from horizontal to vertical when the hero becomes a left strip.
+
 - **BarChart per-bar colors** — `BarChart` rows can now override the series color per datum with tokenized `tone` fields, explicit `fill`, or series-key-specific fields such as `latencyTone` / `latencyFill` for grouped and stacked bars.
 
 - **Recharts chart components** — added Recharts 3.9.2 and React-only A1 wrappers for `LineChart`, `BarChart`, `AreaChart`, `ComposedChart`, `PieChart`, `ScatterChart`, `RadarChart`, `RadialBarChart`, `FunnelChart`, `TreemapChart`, `SankeyChart`, and `SunburstChart`, with the generic `Chart` export retained for Cartesian compatibility. Chart styling is governed by A1 component tokens for axes, polar grids, legends, tooltips, focus rings, chart heights, line weight, area opacity, and semantic/status series tones; Recharts animation is disabled by default so chart motion does not bypass A1 motion tokens. Added TypeScript declarations, Storybook stories, package exports, rules, and a1-web/editor registration.
@@ -25,6 +31,8 @@
 - **Snackbar stacking and timed dismiss** (A1-313) — React `Snackbar` now supports `autoHideDuration` for opt-in timed dismissal that pauses while hovered or focused, animates off screen before closing, and exports `SnackbarStack` for short, intentional multiple-snackbar displays using the existing snackbar surface, border, and shadow separation. The Web Component mirrors timed dismissal with `auto-hide-duration` and the same close animation; React Native already exposes the equivalent `duration` prop.
 
 ### Changed
+
+- **Card status frame** — status Cards now tint the full card border to match the status stripe and size the inline-start stripe to at least 8px or the card radius, whichever is larger, so rounded corners no longer read as a doubled border.
 
 - **Error border token** — `--semantic-color-status-error-border` now resolves one ramp step darker in light/default themes (`error.400` instead of `error.300`), giving field error outlines and other error borders a stronger visible edge while preserving existing dark-mode aliases.
 

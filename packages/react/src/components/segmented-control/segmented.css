@@ -1,14 +1,44 @@
 /* ─── Segmented control ───────────────────────────────────────────────────── */
 
 .a1-segmented {
+  --a1-segmented-height: var(--component-segmented-height-md);
+
   box-sizing: border-box;
   display: inline-flex;
   align-items: stretch;
   background: var(--semantic-color-surface-raised);
-  border: var(--component-segmented-border-width) solid var(--semantic-color-border-default);
+  border: var(--component-segmented-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-control);
   padding: var(--component-segmented-padding);
   gap: var(--component-segmented-gap);
+}
+
+.a1-theme-accessible .a1-segmented {
+  border-color: var(--semantic-color-border-default);
+}
+
+@media (prefers-contrast: more) {
+  .a1-segmented {
+    border-color: var(--semantic-color-border-default);
+  }
+}
+
+@media (forced-colors: active) {
+  .a1-segmented {
+    border-color: var(--semantic-color-border-default);
+  }
+}
+
+.a1-segmented--sm {
+  --a1-segmented-height: var(--component-segmented-height-sm);
+}
+
+.a1-segmented--md {
+  --a1-segmented-height: var(--component-segmented-height-md);
+}
+
+.a1-segmented--lg {
+  --a1-segmented-height: var(--component-segmented-height-lg);
 }
 
 .a1-segmented--full-width {
@@ -25,6 +55,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--base-spacing-8);
+  min-block-size: var(--a1-segmented-height);
   border: none;
   /* Inner radius sits flush inside the container */
   border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));

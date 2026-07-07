@@ -1,0 +1,109 @@
+{
+  "tokens": {
+    "semantic": {
+      "color": {
+        "text": {
+          "default": { "$type": "color", "$value": "{base.color.neutral.900}" },
+          "muted": { "$type": "color", "$value": "{base.color.neutral.600}" },
+          "inverse": { "$type": "color", "$value": "{base.color.neutral.25}" },
+          "accent": { "$type": "color", "$value": "{base.color.info.700}" }
+        },
+        "surface": {
+          "page": { "$type": "color", "$value": "{base.color.neutral.25}" },
+          "card": { "$type": "color", "$value": "{base.color.neutral.0}" },
+          "field": { "$type": "color", "$value": "{base.color.neutral.0}" },
+          "panel": { "$type": "color", "$value": "{base.color.neutral.100}" },
+          "raised": { "$type": "color", "$value": "{base.color.neutral.200}" },
+          "inverse": { "$type": "color", "$value": "{base.color.neutral.900}" }
+        },
+        "border": {
+          "subtle": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.900}, transparent 88%)" },
+          "default": { "$type": "color", "$value": "{base.color.neutral.300}" },
+          "strong": { "$type": "color", "$value": "{base.color.neutral.500}" }
+        }
+      }
+    },
+    "component": {
+      "card": {
+        "borderWidth": { "$type": "dimension", "$value": "3px" },
+        "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.900}, transparent 88%)" },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "0 4px 8px 2px rgba(0, 0, 0, 0.10), 0 1px 3px 3px rgba(105, 139, 169, 0.40) inset"
+        },
+        "icon": {
+          "background": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.400}, transparent 82%)" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.800}" }
+        },
+        "navigation": {
+          "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 62%)" },
+          "borderColorHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 42%)" },
+          "borderColorPressed": { "$type": "color", "$value": "{base.color.info.600}" }
+        }
+      },
+      "dataTable": {
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" }
+      },
+      "tab": {
+        "paddingBlock": { "$type": "dimension", "$value": "{base.spacing.12}" },
+        "paddingInline": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "fontSize": { "$type": "dimension", "$value": "{semantic.font.size.body.md}" },
+        "indicatorSize": { "$type": "dimension", "$value": "3px" }
+      },
+      "button": {
+        "secondary": {
+          "background": { "$type": "color", "$value": "{base.color.neutral.0}" },
+          "backgroundHover": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.100}, transparent 68%)" },
+          "backgroundPressed": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.100}, transparent 52%)" },
+          "foreground": { "$type": "color", "$value": "{base.color.info.700}" },
+          "foregroundHover": { "$type": "color", "$value": "{base.color.info.800}" },
+          "foregroundPressed": { "$type": "color", "$value": "{base.color.info.900}" },
+          "border": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 34%)" },
+          "borderHover": { "$type": "color", "$value": "{base.color.info.500}" },
+          "borderPressed": { "$type": "color", "$value": "{base.color.info.600}" },
+          "boxShadow": {
+            "$type": "shadow",
+            "$value": "0 12px 28px -24px rgba(32, 44, 79, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.88), inset 0 0 0 1px rgba(30, 167, 255, 0.06)"
+          },
+          "boxShadowHover": {
+            "$type": "shadow",
+            "$value": "0 16px 34px -24px color-mix(in srgb, {base.color.info.500}, transparent 66%), inset 0 1px 0 rgba(255, 255, 255, 0.94), inset 0 0 0 1px rgba(30, 167, 255, 0.10)"
+          },
+          "boxShadowActive": {
+            "$type": "shadow",
+            "$value": "0 8px 20px -18px color-mix(in srgb, {base.color.info.600}, transparent 70%), inset 0 2px 6px rgba(32, 44, 79, 0.12)"
+          }
+        },
+        "tertiary": {
+          "foreground": { "$type": "color", "$value": "{base.color.info.600}" },
+          "foregroundHover": { "$type": "color", "$value": "{base.color.info.500}" },
+          "foregroundPressed": { "$type": "color", "$value": "{base.color.info.700}" }
+        }
+      },
+      "field": {
+        "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.500}, transparent 52%)" },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "0 14px 28px -24px rgba(32, 44, 79, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.82), inset 0 -1px 0 rgba(32, 44, 79, 0.08)"
+        },
+        "hoverBorderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.info.500}, transparent 44%)" },
+        "activeBorderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.accent.500}, transparent 34%)" }
+      },
+      "message": {
+        "badge": {
+          "subtleBorderNeutral": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.500}, transparent 46%)" },
+          "subtleBorderInfo": { "$type": "color", "$value": "color-mix(in srgb, {base.color.accent.600}, transparent 28%)" },
+          "subtleBorderSuccess": { "$type": "color", "$value": "color-mix(in srgb, {base.color.success.600}, transparent 28%)" },
+          "subtleBorderWarn": { "$type": "color", "$value": "color-mix(in srgb, {base.color.warn.600}, transparent 28%)" },
+          "subtleBorderError": { "$type": "color", "$value": "color-mix(in srgb, {base.color.error.600}, transparent 28%)" }
+        }
+      }
+    }
+  },
+  "customProperties": {
+    "--component-card-accent-shadow": {
+      "$type": "shadow",
+      "$value": "0 4px 8px 2px rgba(32, 44, 79, 0.14), 0 1px 2px 0 rgba(175, 194, 230, 0.20) inset"
+    }
+  }
+}

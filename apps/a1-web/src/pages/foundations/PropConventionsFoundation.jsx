@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   DataTable,
   Heading,
   MessageBadge,
@@ -7,6 +6,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function Code({ children }) {
@@ -217,31 +217,17 @@ const ISSUE_ROWS = [
 export function PropConventionsFoundationPage({ onNavigate }) {
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Prop conventions', onNavigate)}
-          />
-          <Heading as="h1" id="prop-conventions-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Prop conventions
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Shared prop names and value sets used consistently across A1 components. When building or extending a component, use these contracts — do not introduce synonyms or alternative scales.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="prop-conventions-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Prop conventions', onNavigate)}
+        title="Prop conventions"
+        description="Shared prop names and value sets used consistently across A1 components. When building or extending a component, use these contracts — do not introduce synonyms or alternative scales."
+      />
 
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="size-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="size-heading" size="md">Size</Heading>
+            <Heading as="h2" id="size-heading" size={{ xs: 'lg', md: 'xl' }}>Size</Heading>
             <Paragraph size="sm" color="muted">
               Three overlapping scales depending on component family. Do not mix them — a field-family component uses compact/default/comfortable, not sm/md/lg.
             </Paragraph>
@@ -253,7 +239,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="status-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="status-heading" size="md">Status</Heading>
+            <Heading as="h2" id="status-heading" size={{ xs: 'lg', md: 'xl' }}>Status</Heading>
             <Paragraph size="sm" color="muted">
               The five status values are a closed set. Use status, not variant, when the prop controls a contextual state. Note: Tab incorrectly uses "warning" — this is a known inconsistency.
             </Paragraph>
@@ -265,7 +251,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="variant-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="variant-heading" size="md">Variant</Heading>
+            <Heading as="h2" id="variant-heading" size={{ xs: 'lg', md: 'xl' }}>Variant</Heading>
             <Paragraph size="sm" color="muted">
               variant controls the primary structural or visual style of a component — not its status. The action-verb scale below is shared by Button and IconButton.
             </Paragraph>
@@ -277,7 +263,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="align-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="align-heading" size="md">Alignment and distribution</Heading>
+            <Heading as="h2" id="align-heading" size={{ xs: 'lg', md: 'xl' }}>Alignment and distribution</Heading>
             <Paragraph size="sm" color="muted">
               Layout components use logical values (start/end) for RTL safety. Typography components use directional values (left/right) because text alignment is always directional — this is intentional, not an error.
             </Paragraph>
@@ -289,7 +275,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="placement-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="placement-heading" size="md">Placement and position</Heading>
+            <Heading as="h2" id="placement-heading" size={{ xs: 'lg', md: 'xl' }}>Placement and position</Heading>
             <Paragraph size="sm" color="muted">
               Use logical values (start/end) for inline-axis positions. Physical positions (top/bottom/left/right) are only used when describing absolute screen coordinates such as toast placement.
             </Paragraph>
@@ -301,7 +287,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="spacing-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="spacing-heading" size="md">Spacing</Heading>
+            <Heading as="h2" id="spacing-heading" size={{ xs: 'lg', md: 'xl' }}>Spacing</Heading>
             <Paragraph size="sm" color="muted">
               Two parallel gap scales: semantic T-shirt names and raw numeric token values. Both map to the same underlying token grid. Use semantic names where a component supports them.
             </Paragraph>
@@ -313,7 +299,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="state-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="state-heading" size="md">Controlled state</Heading>
+            <Heading as="h2" id="state-heading" size={{ xs: 'lg', md: 'xl' }}>Controlled state</Heading>
             <Paragraph size="sm" color="muted">
               All stateful components use the same controlled/uncontrolled contract. Provide value + onChange for controlled mode; defaultValue only for uncontrolled. Never provide both value and defaultValue.
             </Paragraph>
@@ -325,7 +311,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="responsive-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="responsive-heading" size="md">Responsive props</Heading>
+            <Heading as="h2" id="responsive-heading" size={{ xs: 'lg', md: 'xl' }}>Responsive props</Heading>
             <Paragraph size="sm" color="muted">
               Props that accept a breakpoint object follow one pattern. The object keys are the five viewport breakpoints; the values are whatever the scalar type of the prop is. Omitted breakpoints inherit the previous value.
             </Paragraph>
@@ -337,7 +323,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="form-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="form-heading" size="md">Form input props</Heading>
+            <Heading as="h2" id="form-heading" size={{ xs: 'lg', md: 'xl' }}>Form input props</Heading>
             <Paragraph size="sm" color="muted">
               All form input components share this set of structural props. Use them consistently — never invent synonyms such as "errorMessage" or "helpText".
             </Paragraph>
@@ -349,7 +335,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="polymorphic-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="polymorphic-heading" size="md">Polymorphic rendering</Heading>
+            <Heading as="h2" id="polymorphic-heading" size={{ xs: 'lg', md: 'xl' }}>Polymorphic rendering</Heading>
             <Paragraph size="sm" color="muted">
               Layout and typography components accept an as prop to change the rendered HTML element. This preserves styling while keeping semantics correct.
             </Paragraph>
@@ -361,7 +347,7 @@ export function PropConventionsFoundationPage({ onNavigate }) {
       <Section padding="sm" contentWidth="xl" gap="lg" aria-labelledby="issues-heading">
         <Stack gap="lg">
           <Stack gap="xs">
-            <Heading as="h2" id="issues-heading" size="md">Known inconsistencies</Heading>
+            <Heading as="h2" id="issues-heading" size={{ xs: 'lg', md: 'xl' }}>Known inconsistencies</Heading>
             <Paragraph size="sm" color="muted">
               The following deviations from the conventions above exist in the current component set. Breaking items must be resolved in the next major version. Items marked "rename needed" or "audit needed" should be tracked and addressed.
             </Paragraph>

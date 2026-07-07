@@ -30,6 +30,9 @@
 .a1-toolbar {
   /* Variant layer — every value resolves to a Style Dictionary token. */
   --a1-toolbar-item-size: var(--base-spacing-32);
+  --a1-toolbar-padding: var(--base-spacing-2);
+  --a1-toolbar-radius: var(--base-radius-md);
+  --a1-toolbar-tool-radius: max(0px, calc(var(--a1-toolbar-radius) - var(--a1-toolbar-padding)));
   --a1-toolbar-bg: var(--semantic-color-surface-raised);
   /* Unselected tools sit back in muted text; the selected tool steps forward
      with default text on a darker neutral background — low-contrast, neutral. */
@@ -55,10 +58,10 @@
   max-inline-size: 100%;
   position: relative;
   gap: var(--base-spacing-2);
-  padding: var(--base-spacing-2);
+  padding: var(--a1-toolbar-padding);
   background: var(--a1-toolbar-bg);
   border: var(--a1-toolbar-border-width) solid var(--a1-toolbar-border-color);
-  border-radius: var(--base-radius-md);
+  border-radius: var(--a1-toolbar-radius);
 }
 
 /* Accessible theme: thicken the border and step the colour up to the stronger
@@ -95,9 +98,21 @@
   flex: 1 1 0;
 }
 
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
+}
+
 /* A stretched (non-grid) group distributes its own buttons across its share. */
 .a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-toolbar__button {
   flex: 1 1 0;
+}
+
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-tooltip__trigger {
+  flex: 1 1 0;
+}
+
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
 }
 
 /* ── Overlay (floating, elevated bar over page content) ────────────────────── */
@@ -119,7 +134,7 @@
   padding-inline: var(--base-spacing-6);
   margin: 0;
   border: none;
-  border-radius: var(--base-radius-sm);
+  border-radius: var(--a1-toolbar-tool-radius);
   background: transparent;
   color: var(--a1-toolbar-fg);
   font-family: var(--component-paragraph-font-family);
@@ -160,6 +175,18 @@
 .a1-toolbar__button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.a1-toolbar > .a1-tooltip__trigger,
+.a1-toolbar__group-radios > .a1-tooltip__trigger,
+.a1-toolbar__overflow-panel > .a1-tooltip__trigger {
+  flex: 0 0 auto;
+  min-inline-size: 0;
+}
+
+.a1-toolbar__group-radios--grid > .a1-tooltip__trigger,
+.a1-toolbar__group-radios--grid > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
 }
 
 .a1-toolbar__label {
@@ -235,7 +262,8 @@
 }
 
 .a1-toolbar__overflow-panel > .a1-toolbar__button,
-.a1-toolbar__overflow-panel > .a1-toolbar__menu-button {
+.a1-toolbar__overflow-panel > .a1-toolbar__menu-button,
+.a1-toolbar__overflow-panel > .a1-tooltip__trigger {
   flex: 0 0 auto;
 }
 

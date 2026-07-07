@@ -388,6 +388,13 @@ body {
   contain: layout;
 }
 
+.a1-project-theme-scope {
+  min-block-size: 100%;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+}
+
 /* Canvas floor — drop zone below all page content; expands when catalog drag enters */
 .a1-web-canvas-floor {
   min-block-size: var(--base-spacing-48);

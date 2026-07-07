@@ -6,6 +6,7 @@ import { decompress, readStored } from '../editor/storage';
 import { buildProjectNav } from '../projects/projectNav';
 import { loadPages, loadProjects, loadProjectLayout } from '../projects/projectStore';
 import { combinePageIntoLayout } from '../projects/projectLayout';
+import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
 import type { PageDefinition } from '../editor/pageTypes';
 
 const SESSION_KEY = 'a1-editor-preview';
@@ -117,14 +118,39 @@ export function EditorPreviewPage() {
   });
   const [screenId, setScreenId] = useState<string | null>(() => screenIdFromUrl());
   const [itemId, setItemId] = useState<string | null>(() => itemIdFromUrl());
+  const [systemColorScheme, setSystemColorScheme] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
+  const colorMode = useMemo(() => {
+    try {
+      const stored = localStorage.getItem('a1-web-color-mode');
+      return ['light', 'dark', 'system'].includes(stored ?? '') ? stored! : 'system';
+    } catch {
+      return 'system';
+    }
+  }, []);
+  const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode;
 
   // The owning project (from the launch URL) drives the auto-generated TopHeader.
   const projectId = useMemo(() => new URLSearchParams(window.location.search).get('project'), []);
   const projectPages = useMemo(() => (projectId ? loadPages(projectId) : []), [projectId]);
-  const projectName = useMemo(
-    () => (projectId ? loadProjects().find((p) => p.id === projectId)?.name : undefined),
+  const project = useMemo(
+    () => (projectId ? loadProjects().find((p) => p.id === projectId) : undefined),
     [projectId],
   );
+  const projectName = useMemo(
+    () => project?.name,
+    [project],
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    const update = (event: MediaQueryListEvent) => setSystemColorScheme(event.matches ? 'dark' : 'light');
+    setSystemColorScheme(query.matches ? 'dark' : 'light');
+    query.addEventListener?.('change', update);
+    return () => query.removeEventListener?.('change', update);
+  }, []);
 
   // Navigate to another prototype screen: swap the definition AND update the URL
   // so the address bar always holds a unique, shareable link to the current page.
@@ -201,25 +227,33 @@ export function EditorPreviewPage() {
 
   if (!composed) {
     return (
-      <>
+      <ProjectThemeScope
+        theme={project?.theme}
+        colorMode={colorMode}
+        resolvedColorScheme={resolvedColorScheme}
+      >
         {fallbackHeader}
         <Section padding="md">
           <Paragraph size="sm" color="muted">
             No page definition found. Open this preview from the Editor page.
           </Paragraph>
         </Section>
-      </>
+      </ProjectThemeScope>
     );
   }
 
   return (
-    <>
+    <ProjectThemeScope
+      theme={project?.theme}
+      colorMode={colorMode}
+      resolvedColorScheme={resolvedColorScheme}
+    >
       {fallbackHeader}
       <RenderPageDefinition
         definition={composed}
         itemId={itemId}
         onNavigate={(pageId, opts) => navigateToScreen(pageId, opts?.item ?? null)}
       />
-    </>
+    </ProjectThemeScope>
   );
 }

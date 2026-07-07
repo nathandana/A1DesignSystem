@@ -41,6 +41,24 @@ Read this before authoring, editing, importing, or generating any page definitio
 }
 ```
 
+## Project bundle shape
+
+The Projects uploader also accepts a multi-page bundle:
+
+```jsonc
+{
+  "name": "Marketing site",
+  "description": "Optional.",
+  "icon": "rocket_launch",
+  "theme": "kong",
+  "pages": [
+    { "id": "home", "title": "Home", "parentId": null, "definition": { /* page definition */ } }
+  ]
+}
+```
+
+`theme` is optional project metadata. It scopes the selected theme to this project's editor canvas and launched prototype pages only; it must not be applied to the whole a1-web application shell.
+
 | Field | Type | Required | Notes |
 |-------|------|:--------:|-------|
 | `schemaVersion` | string (semver) | ✓ | Version of this standard the definition targets. |

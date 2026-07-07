@@ -15,6 +15,7 @@ export function SegmentedControl({
   ...props
 }) {
   const items = options.map(normalize);
+  const resolvedSize = size === "default" ? "md" : size;
 
   const handleKeyDown = (e) => {
     const els = Array.from(e.currentTarget.querySelectorAll('[role="radio"]'));
@@ -44,7 +45,7 @@ export function SegmentedControl({
       role="radiogroup"
       className={[
         "a1-segmented",
-        size && `a1-segmented--${size}`,
+        resolvedSize && `a1-segmented--${resolvedSize}`,
         fullWidth && "a1-segmented--full-width",
       ]
         .filter(Boolean)

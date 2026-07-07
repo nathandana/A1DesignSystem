@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Breadcrumb,
   DataTable,
   Heading,
   Icon,
@@ -15,6 +14,7 @@ import {
 import tokens from '../../../../../build/json/tokens.json'
 import iconUsageMarkdown from '../../../../../system/icons/icon-usage.md?raw'
 import iconRegistry from '../../../../../system/icons/material-symbols.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -162,28 +162,18 @@ export function IconographyFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Iconography', onNavigate)}
-          />
-          <Heading as="h1" id="iconography-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Iconography
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            A1 uses Material Symbols Outlined for built-in icons and browser-built fonts for project-scoped custom icons. Pass a Material ligature name or a <code className="a1-web-token-code">custom:name</code> reference through an icon prop or the <code className="a1-web-token-code">Icon</code> component.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="iconography-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Iconography', onNavigate)}
+        title="Iconography"
+        description={(
+          <>
+            A1 uses Material Symbols Outlined for built-in icons and browser-built fonts for project-scoped custom icons. Pass a Material ligature name or a <Code>custom:name</Code> reference through an icon prop or the <Code>Icon</Code> component.
+          </>
+        )}
+      />
 
-      <Section padding="none" contentWidth="xl" aria-label="Iconography details">
+      <Section padding="sm" contentWidth="xl" aria-label="Iconography details">
         <Stack gap="lg">
           <Tabs value={activeTab} onChange={setActiveTab}>
             <TabList>

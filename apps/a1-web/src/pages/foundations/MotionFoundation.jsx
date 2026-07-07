@@ -1,5 +1,4 @@
 import {
-  Breadcrumb,
   Button,
   Card,
   DataTable,
@@ -16,6 +15,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -147,26 +147,12 @@ export function MotionFoundationPage({ onNavigate }) {
           animation-duration: var(--semantic-motion-duration-instant);
         }
       `}</style>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Motion', onNavigate)}
-          />
-          <Heading as="h1" id="motion-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Motion
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Duration, easing, and reduced-motion behavior. Every transition in the system uses a semantic motion token — no hardcoded milliseconds or cubic-bezier strings in component CSS.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="motion-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Motion', onNavigate)}
+        title="Motion"
+        description="Duration, easing, and reduced-motion behavior. Every transition in the system uses a semantic motion token — no hardcoded milliseconds or cubic-bezier strings in component CSS."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="motion-token-heading">
         <Stack gap="lg">
@@ -203,7 +189,7 @@ export function MotionFoundationPage({ onNavigate }) {
               <Stack gap="lg">
                 <Stack direction="column" gap="xs">
                   <Stack gap="xs">
-                    <Heading as="h2" id="motion-examples-heading" size="lg">
+                    <Heading as="h2" id="motion-examples-heading" size={{ xs: 'lg', md: 'xl' }}>
                       Motion examples
                     </Heading>
                     <Paragraph size="sm" color="muted">

@@ -147,6 +147,24 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'SectionSeparator',
+        label: 'Section separator',
+        icon: 'waves',
+        description: 'Responsive shaped transition between neighboring section surfaces',
+        defaultNode: {
+          type: 'SectionSeparator',
+          props: {
+            topSurface: 'panel',
+            bottomSurface: 'raised',
+            shape: 'wave',
+            size: 'md',
+            border: true,
+            borderSize: 'sm',
+            borderVariant: 'accent',
+          },
+        },
+      },
+      {
         type: 'Stack',
         label: 'Stack',
         icon: 'view_agenda',

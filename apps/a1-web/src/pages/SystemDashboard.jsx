@@ -195,8 +195,8 @@ function BigStatCard({ label, value, icon, color, description }) {
   return (
     <Card status="neutral" style={color ? { '--a1-card-status-color': color } : undefined}>
       <Stack gap="sm">
-        <Stat title={label} value={value} icon={icon} size="xl" />
-        {description ? <Paragraph size="sm" color="muted">{description}</Paragraph> : null}
+        <Stat title={label} value={value} icon={icon} size="lg" />
+
       </Stack>
     </Card>
   )

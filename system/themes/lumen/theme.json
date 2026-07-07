@@ -1,0 +1,28 @@
+{
+  "$schema": "../theme.schema.json",
+  "name": "Lumen",
+  "description": "Organic dimensional theme inspired by soft glassy crypto dashboards: deep blue-violet surfaces, cyan/violet/rose color pops, rounded cards, layered shadows, gradients, and subtle page texture. Apply class=\"a1-theme-lumen\" to <html>.",
+  "selectors": [
+    {
+      "selector": "html.a1-theme-lumen",
+      "overrides": "overrides/default.json",
+      "styles": "styles/default.json"
+    },
+    {
+      "selector": "html.a1-theme-lumen:not(.a1-theme-dark), html.a1-theme-light.a1-theme-lumen, html.a1-theme-lumen.a1-theme-light",
+      "overrides": "overrides/inverse.json",
+      "styles": "styles/inverse.json"
+    },
+    {
+      "selector": "html.a1-theme-dark.a1-theme-lumen, html.a1-theme-lumen.a1-theme-dark, html.a1-theme-lumen:not(.a1-theme-dark) .a1-inverse, html.a1-theme-light.a1-theme-lumen .a1-inverse, html.a1-theme-lumen.a1-theme-light .a1-inverse",
+      "overrides": "overrides/default.json",
+      "styles": "styles/default.json"
+    },
+    {
+      "selector": "html.a1-theme-dark.a1-theme-lumen .a1-inverse, html.a1-theme-lumen.a1-theme-dark .a1-inverse",
+      "overrides": "overrides/inverse.json",
+      "styles": "styles/inverse.json"
+    }
+  ],
+  "labels": {}
+}

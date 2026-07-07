@@ -83,6 +83,18 @@
         "borderWidth": {
           "$type": "dimension",
           "$value": "1px"
+        },
+        "boxShadow": {
+          "$type": "shadow",
+          "$value": "var(--component-button-box-shadow, none)"
+        },
+        "boxShadowHover": {
+          "$type": "shadow",
+          "$value": "var(--component-button-box-shadow-hover, var(--component-button-secondary-box-shadow))"
+        },
+        "boxShadowActive": {
+          "$type": "shadow",
+          "$value": "var(--component-button-box-shadow-active, var(--component-button-secondary-box-shadow))"
         }
       },
       "tertiary": {

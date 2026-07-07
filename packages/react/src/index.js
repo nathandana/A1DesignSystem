@@ -86,6 +86,7 @@ export { Tabs, TabList, Tab, TabPanel } from "./components/tabs/Tabs.jsx";
 export { Grid, GridItem } from "./components/grid/Grid.jsx";
 export { Inverse } from "./components/inverse/Inverse.jsx";
 export { Section } from "./components/section/Section.jsx";
+export { SectionSeparator } from "./components/section-separator/SectionSeparator.jsx";
 export { Stack } from "./components/stack/Stack.jsx";
 export { PageLayout } from "./components/page-layout/PageLayout.jsx";
 export { LabelsProvider, useLabel } from "./components/labels/Labels.jsx";

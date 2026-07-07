@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Breadcrumb,
   Code,
   DataTable,
   Heading,
@@ -23,6 +22,7 @@ import { componentCategories } from '../components/data.js'
 import '../../../../../packages/react/src/utilities/spacing.css'
 import '../../../../../packages/react/src/utilities/width.css'
 import '../../../../../packages/react/src/utilities/sr-only.css'
+import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -143,30 +143,16 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={getFoundationBreadcrumbItems('Utilities', onNavigate)}
-          />
-          <Heading as="h1" id="utilities-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Utilities
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Small, single-purpose class utilities for one-off adjustments — every value traces to a token.
-            Reach for a layout component (<Code variant="inline">Stack</Code>, <Code variant="inline">Grid</Code>,
-            {' '}<Code variant="inline">Section</Code>) first; use a utility only when no component covers the need.
-            Import each stylesheet you use, e.g.{' '}
-            <Code variant="inline">{"import '@gtivr4/a1-design-system-react/utilities/width.css'"}</Code>.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitleArea
+        headingId="utilities-heading"
+        breadcrumbItems={getFoundationBreadcrumbItems('Utilities', onNavigate)}
+        title="Utilities"
+        description={(
+          <>
+            Small, single-purpose class utilities for one-off adjustments — every value traces to a token. Reach for a layout component (<Code>Stack</Code>, <Code>Grid</Code>, <Code>Section</Code>) first; use a utility only when no component covers the need. Import each stylesheet you use, e.g. <Code>{"import '@gtivr4/a1-design-system-react/utilities/width.css'"}</Code>.
+          </>
+        )}
+      />
 
       <Section padding="sm" contentWidth="xl">
         <Tabs value={activeTab} onChange={setActiveTab} variant="line">
@@ -180,7 +166,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
           <TabPanel value="spacing">
             <Stack gap="md" aria-labelledby="util-spacing-heading">
-              <Heading as="h2" id="util-spacing-heading" size="lg">Spacing</Heading>
+              <Heading as="h2" id="util-spacing-heading" size={{ xs: 'lg', md: 'xl' }}>Spacing</Heading>
               <Paragraph size="sm" color="muted">
                 Padding and margin on the base spacing scale. Pattern{' '}
                 <Code variant="inline">{'a1-{p|m}{side?}-{size}'}</Code> — <Code variant="inline">p</Code> (padding) or{' '}
@@ -210,7 +196,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
           <TabPanel value="gap">
             <Stack gap="md" aria-labelledby="util-gap-heading">
-              <Heading as="h2" id="util-gap-heading" size="lg">Gap</Heading>
+              <Heading as="h2" id="util-gap-heading" size={{ xs: 'lg', md: 'xl' }}>Gap</Heading>
               <Paragraph size="sm" color="muted">
                 Gap utilities apply to flex or grid containers when a component-level gap prop is not available.
                 Values map to semantic spacing roles rather than raw base spacing numbers.
@@ -239,7 +225,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
           <TabPanel value="width">
             <Stack gap="md" aria-labelledby="util-width-heading">
-              <Heading as="h2" id="util-width-heading" size="lg">Width</Heading>
+              <Heading as="h2" id="util-width-heading" size={{ xs: 'lg', md: 'xl' }}>Width</Heading>
               <Paragraph size="sm" color="muted">
                 Constrain inline size. <Code variant="inline">a1-max-w-*</Code> caps the width;{' '}
                 <Code variant="inline">a1-min-w-*</Code> sets a floor. Values come from{' '}
@@ -278,7 +264,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
           <TabPanel value="screen-reader">
             <Stack gap="md" aria-labelledby="util-sronly-heading">
-              <Heading as="h2" id="util-sronly-heading" size="lg">Screen-reader only</Heading>
+              <Heading as="h2" id="util-sronly-heading" size={{ xs: 'lg', md: 'xl' }}>Screen-reader only</Heading>
               <Paragraph size="sm" color="muted">
                 <Code variant="inline">a1-sr-only</Code> hides content visually while keeping it available to assistive
                 technology — for a label, heading, or status that sighted users already get from context.
@@ -292,7 +278,7 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
           <TabPanel value="support">
             <Stack gap="md" aria-labelledby="util-family-heading">
-              <Heading as="h2" id="util-family-heading" size="lg">Component support</Heading>
+              <Heading as="h2" id="util-family-heading" size={{ xs: 'lg', md: 'xl' }}>Component support</Heading>
               <Paragraph size="sm" color="muted">
                 These are the utility families exposed by the editor registry. The configurator shows common picks as
                 toolbar buttons and moves less-common values into an overflow menu.

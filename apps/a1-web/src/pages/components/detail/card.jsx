@@ -28,9 +28,14 @@ import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
 const AS_OPTIONS = ['div', 'article', 'section']
+const SURFACE_OPTIONS = [
+  { label: 'Default', value: 'default', swatch: 'var(--semantic-color-surface-card)' },
+  { label: 'Accent', value: 'accent', swatch: 'var(--semantic-color-action-background-hover)' },
+]
 // None first and the standard circle-slash none icon; None is the default.
 const ICON_DISPLAY_OPTIONS = ['none', 'default', 'hero']
 const HERO_COLOR_OPTIONS = ['action', 'neutral', 'info', 'success', 'warn', 'error']
+const HERO_SEPARATOR_SHAPES = ['wave', 'swell', 'curve', 'slope', 'peak', 'valley', 'ribbon']
 const NONE_ICON = 'block'
 
 function optionLabel(value) {
@@ -72,17 +77,20 @@ function buildCardSnippet(config, utilityClass = '') {
     propClassName(utilityClass),
     propString('as', config.as, 'div'),
     propString('variant', config.variant, 'default'),
+    propString('surface', config.surface, 'default'),
     config.variant === 'navigation' ? propString('href', config.href, '') : null,
     propBoolean('bare', config.bare, false),
     propString('icon', icon, ''),
     propString('iconDisplay', icon ? config.iconDisplay : 'none', icon ? 'default' : 'none'),
     config.iconDisplay === 'hero' ? propString('heroColor', config.heroColor, 'action') : null,
+    config.iconDisplay === 'hero' ? propBoolean('heroSeparator', config.heroSeparator, false) : null,
+    config.iconDisplay === 'hero' && config.heroSeparator ? propString('heroSeparatorShape', config.heroSeparatorShape, 'wave') : null,
     config.iconDisplay === 'hero' ? propString('heroBadge', config.heroBadge, '') : null,
     config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgeStatus', config.heroBadgeStatus, 'neutral') : null,
     config.iconDisplay === 'hero' && config.heroBadge ? propString('heroBadgePosition', config.heroBadgePosition, 'top-end') : null,
-    propString('status', config.status, ''),
-    config.status ? propString('statusLabel', config.statusLabel, '') : null,
-    config.status ? propBoolean('statusPulse', config.statusPulse, false) : null,
+    config.surface === 'default' ? propString('status', config.status, '') : null,
+    config.surface === 'default' && config.status ? propString('statusLabel', config.statusLabel, '') : null,
+    config.surface === 'default' && config.status ? propBoolean('statusPulse', config.statusPulse, false) : null,
   ].filter(Boolean).join(' ')
 
   return `<Card${props ? ` ${props}` : ''}>
@@ -99,11 +107,14 @@ export function getDefaultConfig() {
     title: 'Responsive card',
     body: 'The icon treatment adapts as the card container crosses standard query widths.',
     variant: 'default',
+    surface: 'default',
     href: '#',
     bare: false,
     icon: 'dashboard',
     iconDisplay: 'none',
     heroColor: 'action',
+    heroSeparator: false,
+    heroSeparatorShape: 'wave',
     heroBadge: '',
     heroBadgeStatus: 'neutral',
     heroBadgePosition: 'top-end',
@@ -121,17 +132,20 @@ export function Preview({ config, utilityClass = '' }) {
       className={utilityClass || undefined}
       as={config.variant === 'navigation' ? undefined : config.as}
       variant={config.variant}
+      surface={config.surface}
       href={config.variant === 'navigation' ? config.href : undefined}
       bare={config.bare}
       icon={icon}
       iconDisplay={config.iconDisplay}
       heroColor={config.heroColor}
+      heroSeparator={config.iconDisplay === 'hero' ? config.heroSeparator : false}
+      heroSeparatorShape={config.heroSeparatorShape}
       heroBadge={config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined}
       heroBadgeStatus={config.heroBadgeStatus}
       heroBadgePosition={config.heroBadgePosition}
-      status={config.status || undefined}
-      statusLabel={config.status && config.statusLabel ? config.statusLabel : undefined}
-      statusPulse={config.statusPulse}
+      status={config.surface === 'default' ? config.status || undefined : undefined}
+      statusLabel={config.surface === 'default' && config.status && config.statusLabel ? config.statusLabel : undefined}
+      statusPulse={config.surface === 'default' ? config.statusPulse : false}
     >
       <Stack gap="xs">
         <Heading as="h3" size="sm">{config.title || 'Card title'}</Heading>
@@ -172,6 +186,23 @@ export function Controls({ config, setConfig, pages }) {
         <ToolbarDivider />
         <ToolbarToggle icon="crop_free" label="Bare" pressed={config.bare} onChange={(bare) => setConfig((current) => ({ ...current, bare }))} />
       </Toolbar></Lockable>
+      <Choice prop="surface"
+        label="Surface"
+        size="compact"
+        hideIndicator
+        columns={2}
+        helper={config.surface === 'accent'
+          ? 'Accent surface disables status stripe options and applies the primary-action foreground locally. Still check complex nested controls and explicit colour props for contrast.'
+          : undefined}
+        value={config.surface}
+        onChange={(surface) => setConfig((current) => ({
+          ...current,
+          surface,
+          status: surface === 'accent' ? '' : current.status,
+          statusPulse: surface === 'accent' ? false : current.statusPulse,
+        }))}
+        options={SURFACE_OPTIONS}
+      />
       {config.variant !== 'navigation' && (
         <Choice prop="as"
           label="Element"
@@ -216,6 +247,28 @@ export function Controls({ config, setConfig, pages }) {
         />
       )}
       {config.iconDisplay === 'hero' && (
+        <Toolbar label="Hero separator">
+          <ToolbarToggle
+            icon="water"
+            label="Separator"
+            showLabel
+            pressed={config.heroSeparator}
+            onChange={(heroSeparator) => setConfig((current) => ({ ...current, heroSeparator }))}
+          />
+        </Toolbar>
+      )}
+      {config.iconDisplay === 'hero' && config.heroSeparator && (
+        <Choice prop="heroSeparatorShape"
+          label="Separator shape"
+          size="compact"
+          hideIndicator
+          columns={2}
+          value={config.heroSeparatorShape}
+          onChange={(heroSeparatorShape) => setConfig((current) => ({ ...current, heroSeparatorShape }))}
+          options={HERO_SEPARATOR_SHAPES.map((shape) => ({ label: optionLabel(shape), value: shape }))}
+        />
+      )}
+      {config.iconDisplay === 'hero' && (
         <TextField
           label="Hero badge"
           size="compact"
@@ -244,15 +297,17 @@ export function Controls({ config, setConfig, pages }) {
           </Toolbar>
         </>
       )}
-      <Choice prop="status"
-        label="Status stripe"
-        iconOnly
-        helper="Colours a stripe down the card's start edge to signal status. Pair it with a label so meaning isn't colour-only."
-        value={config.status}
-        onChange={(status) => setConfig((current) => ({ ...current, status }))}
-        options={statusOptions(['', 'neutral', 'info', 'success', 'warn', 'error'])}
-      />
-      {config.status && (
+      {config.surface === 'default' && (
+        <Choice prop="status"
+          label="Status stripe"
+          iconOnly
+          helper="Colours a stripe down the card's start edge to signal status. Pair it with a label so meaning isn't colour-only."
+          value={config.status}
+          onChange={(status) => setConfig((current) => ({ ...current, status }))}
+          options={statusOptions(['', 'neutral', 'info', 'success', 'warn', 'error'])}
+        />
+      )}
+      {config.surface === 'default' && config.status && (
         <>
           <WithHelp helper="Badge shown at the top of the card, tinted to match the stripe. Leave blank for a stripe only.">
             <TextField

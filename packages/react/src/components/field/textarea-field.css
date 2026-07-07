@@ -28,9 +28,11 @@
   background: var(--a1-field-background);
   border: var(--component-field-border-width) solid var(--a1-field-border-color);
   border-radius: var(--a1-field-border-radius);
+  box-shadow: var(--component-field-shadow);
   transition:
     border-color var(--semantic-motion-duration-fast),
-    background   var(--semantic-motion-duration-fast);
+    background   var(--semantic-motion-duration-fast),
+    box-shadow   var(--semantic-motion-duration-fast);
   -webkit-appearance: none;
   appearance: none;
   resize: vertical;
