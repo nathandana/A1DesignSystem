@@ -1948,7 +1948,7 @@ html.a1-theme-lumen {
   --component-button-tertiary-border: transparent;
   --component-button-tertiary-border-hover: transparent;
   --component-button-tertiary-border-pressed: transparent;
-  --component-card-border-radius: var(--base-radius-xl);
+  --component-card-border-radius: var(--base-radius-lg);
   --component-card-border-width: 3px;
   --component-card-border-color: color-mix(in srgb, var(--base-color-neutral-0), transparent 88%);
   --component-card-shadow: 0 4px 8px 2px rgba(0, 0, 0, 0.40), 0 1px 6px 2px #04112E inset;
@@ -2230,7 +2230,7 @@ html.a1-theme-dark.a1-theme-lumen, html.a1-theme-lumen.a1-theme-dark, html.a1-th
   --component-button-tertiary-border: transparent;
   --component-button-tertiary-border-hover: transparent;
   --component-button-tertiary-border-pressed: transparent;
-  --component-card-border-radius: var(--base-radius-xl);
+  --component-card-border-radius: var(--base-radius-lg);
   --component-card-border-width: 3px;
   --component-card-border-color: color-mix(in srgb, var(--base-color-neutral-0), transparent 88%);
   --component-card-shadow: 0 4px 8px 2px rgba(0, 0, 0, 0.40), 0 1px 6px 2px #04112E inset;

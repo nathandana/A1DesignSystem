@@ -8,9 +8,12 @@ import {
   DefinitionList,
   Dialog,
   Figure,
+  Grid,
+  GridItem,
   Heading,
   IconButton,
   Link,
+  PageNav,
   Paragraph,
   Section,
   SelectField,
@@ -160,6 +163,15 @@ export function BacklogTicketPage({ onNavigate }) {
     </Stack>
   )
 
+  // In-page navigation: one entry per body section (Virtual PO is dev-only).
+  const navSections = [
+    { id: 'ticket-details', label: t('label.app.backlog.details', 'Details') },
+    { id: 'ticket-activity', label: t('label.app.backlog.activity', 'Activity') },
+    { id: 'ticket-linked', label: t('label.app.backlog.linkedTickets', 'Linked tickets') },
+    { id: 'ticket-build', label: t('label.app.backlog.buildWithAi', 'Build with AI') },
+    ...(import.meta.env.DEV ? [{ id: 'ticket-virtual-po', label: t('label.app.backlog.virtualPo', 'Virtual PO') }] : []),
+  ]
+
   return (
     <>
       {/* ── Header ─────────────────────────────────────────────────────── */}
@@ -207,8 +219,14 @@ export function BacklogTicketPage({ onNavigate }) {
         </Section>
       )}
 
-      {/* ── Details ────────────────────────────────────────────────────── */}
+      {/* ── Body: sections (left) + in-page navigation (right, sticky) ──── */}
       <Section padding="md" contentWidth="xl">
+        <Grid columns={{ xs: 1, lg: 4 }} gap="lg">
+          <GridItem span={{ xs: 1, lg: 3 }}>
+            <Stack gap="lg">
+
+      {/* ── Details ────────────────────────────────────────────────────── */}
+      <Section id="ticket-details" padding="md">
         <Stack gap="lg">
           <Heading as="h2" size="lg">{t('label.app.backlog.details', 'Details')}</Heading>
 
@@ -332,7 +350,7 @@ export function BacklogTicketPage({ onNavigate }) {
       </Section>
 
       {/* ── Activity ───────────────────────────────────────────────────── */}
-      <Section padding="md" surface="panel" contentWidth="xl">
+      <Section id="ticket-activity" padding="md" surface="panel" radius="md">
         <Stack gap="md">
           <Heading as="h2" size="lg">{t('label.app.backlog.activity', 'Activity')}</Heading>
 
@@ -372,7 +390,7 @@ export function BacklogTicketPage({ onNavigate }) {
       </Section>
 
       {/* ── Linked tickets ─────────────────────────────────────────────── */}
-      <Section padding="md" contentWidth="xl">
+      <Section id="ticket-linked" padding="md">
         <Stack gap="md">
           <Heading as="h2" size="lg">{t('label.app.backlog.linkedTickets', 'Linked tickets')}</Heading>
           <TicketMergePanel
@@ -387,7 +405,7 @@ export function BacklogTicketPage({ onNavigate }) {
       </Section>
 
       {/* ── Build with AI ──────────────────────────────────────────────── */}
-      <Section padding="md" surface="panel" contentWidth="xl">
+      <Section id="ticket-build" padding="md" surface="panel" radius="md">
         <Stack gap="md">
           <Heading as="h2" size="lg">{t('label.app.backlog.buildWithAi', 'Build with AI')}</Heading>
           <TicketAiPrompt item={item} />
@@ -396,7 +414,7 @@ export function BacklogTicketPage({ onNavigate }) {
 
       {/* ── Virtual PO (dev only) ──────────────────────────────────────── */}
       {import.meta.env.DEV && (
-        <Section padding="md" contentWidth="xl">
+        <Section id="ticket-virtual-po" padding="md">
           <Stack gap="md">
             <Heading as="h2" size="lg">{t('label.app.backlog.virtualPo', 'Virtual PO')}</Heading>
             <Paragraph size="sm" color="muted">{t('label.app.backlog.virtualPoDescription', 'Local, deterministic review — no API credits.')}</Paragraph>
@@ -404,6 +422,18 @@ export function BacklogTicketPage({ onNavigate }) {
           </Stack>
         </Section>
       )}
+
+            </Stack>
+          </GridItem>
+          <GridItem span={{ xs: 1, lg: 1 }}>
+            <PageNav
+              sections={navSections}
+              label={t('label.app.backlog.onThisPage', 'On this page')}
+              style={{ '--a1-page-nav-top': 'var(--component-top-header-height)' }}
+            />
+          </GridItem>
+        </Grid>
+      </Section>
 
       {/* ── Delete confirmation ────────────────────────────────────────── */}
       <Dialog

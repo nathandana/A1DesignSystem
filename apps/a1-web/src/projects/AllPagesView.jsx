@@ -17,7 +17,8 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
-import { exportProjectJson, resolvePageJson } from './projectStore'
+import { getPublishedProjectPath, exportProjectJson, resolvePageJson } from './projectStore'
+import { useT } from '../labels/useT.js'
 
 /** Flatten the page tree into document order, tagging each with its level. */
 function flattenPages(pages) {
@@ -139,18 +140,31 @@ export function AllPagesView({
   onOpenPage,
   onAddPage,
   onLaunchPrototype,
+  onPublishProject,
+  onUnpublishProject,
   onEditLayout,
   onRenameProject,
   onDeleteProject,
   onNavigateHome,
   onBackToProjects,
 }) {
+  const t = useT()
   const flat = flattenPages(pages)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [jsonOpen, setJsonOpen] = useState(false)
+  const [publishOpen, setPublishOpen] = useState(false)
   const [viewMode, setViewMode] = useState('list')
   const projectJson = jsonOpen ? (exportProjectJson(project?.id) ?? '{}') : ''
+  const publishedPath = project?.published ? getPublishedProjectPath(project) : ''
+  const publishedUrl = publishedPath && typeof window !== 'undefined'
+    ? `${window.location.origin}${publishedPath}`
+    : ''
+
+  function openPublishDialog() {
+    if (project?.id && !project.published) onPublishProject?.(project.id)
+    setPublishOpen(true)
+  }
 
   return (
     <>
@@ -169,12 +183,24 @@ export function AllPagesView({
             {onEditLayout && (
               <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
             )}
-            <Button variant="secondary" icon="delete"  size='sm' onClick={() => setConfirmDelete(true)}>Delete</Button>
+            <Button variant="secondary" icon="archive"  size='sm' onClick={() => setConfirmDelete(true)}>Archive</Button>
             <Button variant="secondary" icon="data_object" size='sm' onClick={() => setJsonOpen(true)}>JSON</Button>
             {flat.length > 0 && (
-              <Button variant="secondary" icon="open_in_new" size='sm' onClick={onLaunchPrototype}>
-                Launch
-              </Button>
+              <>
+                <Button
+                  variant="secondary"
+                  icon={project?.published ? 'public' : 'publish'}
+                  size='sm'
+                  onClick={openPublishDialog}
+                >
+                  {project?.published
+                    ? t('label.app.projects.publishedProjectAction', 'Published')
+                    : t('label.app.projects.publishProjectAction', 'Publish')}
+                </Button>
+                <Button variant="secondary" icon="open_in_new" size='sm' onClick={onLaunchPrototype}>
+                  Launch
+                </Button>
+              </>
             )}
             <Button icon="add" onClick={() => onAddPage?.({})} size='sm'>Add page</Button>
           </>
@@ -260,26 +286,79 @@ export function AllPagesView({
       </Dialog>
 
       <Dialog
+        open={publishOpen}
+        onClose={() => setPublishOpen(false)}
+        title={project?.published
+          ? t('label.app.projects.publishedDialogTitle', 'Project published')
+          : t('label.app.projects.publishDialogTitle', 'Publish project')}
+        footer={(
+          <>
+            {project?.published ? (
+              <>
+                <Button
+                  variant="secondary"
+                  icon="visibility_off"
+                  onClick={() => project?.id && onUnpublishProject?.(project.id)}
+                >
+                  {t('label.app.projects.unpublishProject', 'Unpublish')}
+                </Button>
+                <Button as="a" href={publishedPath} target="_blank" rel="noreferrer" icon="open_in_new">
+                  {t('label.app.projects.openPublishedProject', 'Open published page')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="secondary" onClick={() => setPublishOpen(false)}>
+                  {t('label.app.projects.publishCancel', 'Cancel')}
+                </Button>
+                <Button icon="publish" onClick={() => project?.id && onPublishProject?.(project.id)}>
+                  {t('label.app.projects.publishProjectConfirm', 'Publish project')}
+                </Button>
+              </>
+            )}
+          </>
+        )}
+      >
+        <Stack direction="column" gap="sm">
+          <Paragraph size="sm" color="muted">
+            {project?.published
+              ? t('label.app.projects.publishedDialogDescription', 'This project is available as a standalone prototype at this URL.')
+              : t('label.app.projects.publishDialogDescription', 'Publish this project to create a stable A1 preview URL for this workspace. This does not deploy the project to a public host.')}
+          </Paragraph>
+          {project?.published && (
+            <>
+              <MessageBadge status="success" subtle size="sm" icon="public">
+                {t('label.app.projects.publishedStatus', 'Published')}
+              </MessageBadge>
+              <Code variant="block" copyCode wrapping aria-label={t('label.app.projects.publishedUrlLabel', 'Published URL')}>
+                {publishedUrl}
+              </Code>
+            </>
+          )}
+        </Stack>
+      </Dialog>
+
+      <Dialog
         open={confirmDelete}
         onClose={() => setConfirmDelete(false)}
         status="warn"
-        title="Delete project?"
+        title="Archive project?"
         footer={
           <>
             <Button variant="secondary" onClick={() => setConfirmDelete(false)}>Cancel</Button>
             <Button
-              variant="destructive"
-              icon="delete"
+              variant="primary"
+              icon="archive"
               onClick={() => { setConfirmDelete(false); onDeleteProject?.(project.id) }}
             >
-              Delete project
+              Archive project
             </Button>
           </>
         }
       >
         <Paragraph>
-          “{project?.name}” and its {pages.length} page{pages.length === 1 ? '' : 's'} will be permanently
-          deleted. This can’t be undone.
+          “{project?.name}” and its {pages.length} page{pages.length === 1 ? '' : 's'} will be hidden from your
+          projects. You can restore it anytime from Archived.
         </Paragraph>
       </Dialog>
       </Section>

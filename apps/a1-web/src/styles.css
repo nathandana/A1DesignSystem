@@ -347,6 +347,17 @@ body {
   transition: outline-color 120ms ease;
 }
 
+/* SectionSeparator ships with pointer-events: none on its root — it's a
+   decorative divider between full-width sections and must not intercept clicks in
+   a rendered page. On the editor canvas that also blocks selection: the click
+   passes through, so the node never enters the event path and only the layers
+   tree can select it. Re-enable pointer events for the selectable editor node.
+   `data-editor-node` is present only in edit mode, so rendered pages are
+   unaffected. */
+[data-editor-node].a1-section-separator {
+  pointer-events: auto;
+}
+
 /* Hover: dashed accent outline — signals "you can select this".
    Also applied via data-editor-hover when the tree menu item is hovered. */
 [data-editor-node]:hover,

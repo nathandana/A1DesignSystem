@@ -63,6 +63,19 @@ function getMenuFocusableElements(container) {
   });
 }
 
+function renderMenuHeader(item, helpers) {
+  if (!item.menuHeader) return null;
+  const content = typeof item.menuHeader === "function"
+    ? item.menuHeader(helpers)
+    : item.menuHeader;
+  if (content === null || content === undefined || content === false) return null;
+  return (
+    <div className="a1-top-header__menu-header">
+      {content}
+    </div>
+  );
+}
+
 function NavMenuItem({ item, onClose }) {
   const [open, setOpen] = useState(false);
   const [flyoutPlacement, setFlyoutPlacement] = useState("end");
@@ -71,11 +84,15 @@ function NavMenuItem({ item, onClose }) {
   const hasFlyout = item.items?.length > 0;
   const sections = hasFlyout ? splitIntoSections(item.items) : [];
   const Trigger = item.href ? "a" : "button";
+  const closeAll = () => {
+    setOpen(false);
+    onClose?.();
+  };
 
   const triggerProps = item.href
     ? {
         href: item.href,
-        onClick: (event) => { item.onClick?.(event); onClose?.(); },
+        onClick: (event) => { item.onClick?.(event); closeAll(); },
       }
     : {
         type: "button",
@@ -132,7 +149,7 @@ function NavMenuItem({ item, onClose }) {
         icon={item.icon}
         href={item.href}
         active={!!item.active}
-        onClick={(event) => { item.onClick?.(event); onClose?.(); }}
+        onClick={(event) => { item.onClick?.(event); closeAll(); }}
       >
         {item.label}
       </MenuItem>
@@ -219,10 +236,11 @@ function NavMenuItem({ item, onClose }) {
             }
           }}
         >
+          {renderMenuHeader(item, { onClose: closeAll })}
           {sections.map((section, i) => (
             <MenuSection key={i} label={section.label}>
               {section.items.map((sub) => (
-                <NavMenuItem key={sub.label} item={sub} onClose={onClose} />
+                <NavMenuItem key={sub.label} item={sub} onClose={closeAll} />
               ))}
             </MenuSection>
           ))}
@@ -342,6 +360,7 @@ function NavItem({ item, openId, onOpen, iconAbove }) {
             aria-label={`${item.label} submenu`}
             className="a1-menu--with-flyouts"
           >
+            {renderMenuHeader(item, { onClose: () => onOpen(null) })}
             {sections.map((section, i) => (
               <MenuSection key={i} label={section.label}>
                 {section.items.map((sub) => (
@@ -376,6 +395,7 @@ function NavItem({ item, openId, onOpen, iconAbove }) {
             aria-label={`${item.label} submenu`}
             className="a1-menu--with-flyouts"
           >
+            {renderMenuHeader(item, { onClose: () => onOpen(null) })}
             {sections.map((section, i) => (
               <MenuSection key={i} label={section.label}>
                 {section.items.map((sub) => (
@@ -447,6 +467,7 @@ function MobileDrawerItem({ item, onClose }) {
             onClick={(event) => { item.onClick?.(event); onClose(); }}
           />
         )}
+        {renderMenuHeader(item, { onClose })}
         {children.map((sub) => (
           <MobileDrawerItem key={sub.label} item={sub} onClose={onClose} />
         ))}
@@ -557,6 +578,7 @@ function MobileDrawer({ navItems, onClose }) {
               open={openSubId === item.id}
               onOpenChange={(next) => setOpenSubId(next ? item.id : null)}
             >
+              {renderMenuHeader(item, { onClose })}
               {getMobileSubItems(item).map((sub) => (
                 <MobileDrawerItem key={sub.label} item={sub} onClose={onClose} />
               ))}

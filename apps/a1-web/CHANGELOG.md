@@ -2,6 +2,42 @@
 
 ## Unreleased
 
+- **Project page routing** (A1-386) — project `TopHeader` logos now stay inside the project instead of linking to the A1 home page. Published prototypes route the logo to `/p/{slug}`, standalone previews route it to the project’s first page, and editor project chrome routes it to the project home. If a project’s saved shared layout is missing a `TopHeader`, a generated project header is shown so project navigation does not disappear.
+
+- **Presentation primary slides only** — the Presentation page now hides speaker notes and demo placeholder slides so the walkthrough shows only the primary content cards. The note/demo content remains in the source and can be restored by toggling the local presentation flags.
+
+- **Project publishing** (A1-1933) — project home now has a **Publish** action that creates a stable workspace preview URL (`/p/{slug}`) for the project. Published URLs open as standalone project prototypes, start on the first page, keep navigation under the published path, and can be unpublished without deleting project content.
+
+- **Ticket page — in-page navigation** (A1-399) — the backlog ticket detail page now has an in-page navigation (`PageNav`) so you can jump straight to a section — Details, Activity, Linked tickets, Build with AI (and Virtual PO in dev). It's a sticky sidebar on desktop with a reading-progress indicator and active-section highlighting, and a fixed pill bar on mobile. New localized `label.app.backlog.onThisPage` ("On this page") drives the nav heading.
+
+- **Editor screen reader report** (A1-383) — the page editor now has a **Screen reader report** toolbar action for project pages. It opens a heuristic outline of the current page structure, likely announcements, control labels, heading levels, image-alt handling, and review/issues so unlabeled icon buttons and similar problems are easier to catch before manual assistive-technology testing.
+
+- **Backlog ticket screenshots** (A1-411) — images pasted or uploaded into tickets are now stored as ticket-only attachments instead of appearing in the reusable Image library. Existing ticket attachments continue to render.
+
+- **Vite warning cleanup** (A1-401) — the a1-web production build now filters the known Anthropic SDK browser-externalization warning for explicit browser-side API-key usage and raises the chunk warning threshold to the current app-shell size, so accepted production builds finish without non-actionable warning noise.
+
+- **Projects — sidebar navigation option** — a project can now use a left **sidebar (SideNav + a TreeMenu of the page hierarchy)** as its primary navigation instead of the auto top header. Choose it in project settings under **Primary navigation → Sidebar (tree menu)**. In the prototype the sidebar is real app-shell chrome (`PageLayout` + `SideNav` + `TreeMenu`) wired to navigation; the tree auto-expands the active page's ancestors. (Top header remains the default.)
+
+- **Projects — archive instead of delete** — deleting a project now **archives** it: it's hidden from your projects list but kept and fully restorable, so it reliably disappears (a hard delete could reappear via sample re-seeding or cloud sync). An **Archived** section on the Projects page lists archived projects with **Restore** and a separate **Delete permanently**. The archived flag (and a project's nav style) now survive the projects export/import round-trip used by cloud sync, so an archived project no longer reappears after syncing.
+
+- **Components main-menu search** (A1-408) — the top-nav Components menu now includes a compact search field. Typing filters the menu to ranked component matches, and pressing Enter opens the top match so components are reachable faster from other routes.
+
+- **Backlog linked-ticket menu** (A1-410) — the similar-ticket overflow menu no longer repeats the visible Open, Link, and Merge controls; it now keeps only the secondary Copy reference action.
+
+- **Lumen Card radius** — reduced Lumen Card corners by one token step so dimensional cards read a little sharper while keeping the theme's rounded shape language.
+
+- **Patterns — instance panel + lock fixes** — selecting a multi-root pattern instance's outer wrapper now shows just the pattern banner (Edit pattern / Detach), not Stack layout controls — it's a host for the pattern, not a component to configure. And a **structural lock** ("Lock component — can't remove, move, or replace") no longer disables editing the element's *unlocked* properties or text on instances; only locked properties and locked text are read-only. This includes the write handlers — editing an unlocked property or text on a structurally-locked instance node now actually persists (previously the control looked editable but the change was silently dropped), so text and property overrides are respected.
+
+- **Patterns — edits propagate to every instance (governed)** — editing a pattern now updates every placed instance across all pages and projects automatically on save. It's a governed merge: **structure** (added/removed/reordered components) and **locked** properties/text follow the pattern, while **unlocked** properties you set on an individual instance are preserved (never overwritten — lock a property if you want it to always follow the pattern). Selecting a placed instance shows a **pattern banner** (name, description, Edit pattern, Detach) above its configurator, so you can still edit the unlocked properties while the locked ones show read-only.
+
+- **Editor — no autofill in config fields** — the editor's Configure/Data panels no longer trigger browser or password-manager autofill (it was offering your email/address into config fields like a Stat "Description"). Every field the panel renders, now and after tab/accordion changes, gets `autocomplete="off"` plus the common password-manager ignore hints.
+
+- **Editor — SectionSeparator selectable on canvas** — clicking a Section Separator on the editor canvas now selects it (previously only the layers tree could). Its decorative root uses `pointer-events: none` so it never intercepts clicks in a rendered page; the editor now re-enables pointer events for the selectable node only.
+
+- **Editor configurators — full audit** — every registered, addable component now has a working configurator in the project/pattern editor's Configure panel. Wired up the 13 that previously showed **"No configurator is registered for this component type"**: Stat, Autocomplete, Inline editable, Inline, Dialog, Menu, Context menu, Snackbar, Notification, Side nav, Bottom sheet, Canvas, and a focused single-Node configurator. Also fixed the **Card** configurator, which wasn't exposing **Surface** (or the hero separator options) in the editor — those now round-trip. Data-bound `Stat` values (`{{ dataset.column }}`) survive editing instead of being blanked.
+
+- **ApiGrid data-source samples** — added the five ApiGrid API-management dashboard datasets (`ApiGrid APIs`, `ApiGrid consumers`, `ApiGrid activity`, `ApiGrid traffic`, `ApiGrid request logs`) as built-in Data-source samples, transcribed from the ApiGrid design handoff. They appear as one-click **Add sample** datasets on the Data sources page and can be bound into pages (binding keys `apigrid_apis`, `apigrid_consumers`, `apigrid_activity`, `apigrid_traffic`, `apigrid_request_logs`).
+
 ## 0.28.0 — 2026-07-07
 
 - **Project themes** — Projects can now store an optional project-scoped theme. The project settings dialog exposes the theme selector, project cards show the chosen theme, import/export/cloud sync preserve it, and the editor canvas plus launched prototypes apply the theme locally to the project page instead of changing the whole a1-web app shell.

@@ -25,6 +25,9 @@ const BLANK_PIXEL =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 const MAX_DIMENSION = 2000;
+// Reserved metadata marker: kept in `categories` so all existing image backends
+// persist it without a schema change, but filtered from the visible library list.
+const TICKET_ATTACHMENT_CATEGORY = '__a1_internal_ticket_attachment';
 
 /** A freeform crop rectangle as fractions (0–1) of the natural image. */
 export interface CropRect {
@@ -57,6 +60,10 @@ export interface ImageMeta {
   projectIds: string[];
   /** User-defined category tags. */
   categories: string[];
+}
+
+interface AddImageOptions {
+  hiddenFromLibrary?: boolean;
 }
 
 function uid(): string {
@@ -223,8 +230,12 @@ function normalize(meta: ImageMeta): ImageMeta {
   };
 }
 
+function isVisibleLibraryImage(meta: ImageMeta): boolean {
+  return !(meta.categories ?? []).includes(TICKET_ATTACHMENT_CATEGORY);
+}
+
 /** Add an uploaded file to the library; returns its metadata. */
-export async function addImage(file: File): Promise<ImageMeta> {
+export async function addImage(file: File, options: AddImageOptions = {}): Promise<ImageMeta> {
   const { blob, width, height, type } = await processFile(file);
   const now = Date.now();
   const meta: ImageMeta = {
@@ -237,7 +248,7 @@ export async function addImage(file: File): Promise<ImageMeta> {
     createdAt: now,
     updatedAt: now,
     projectIds: [],
-    categories: [],
+    categories: options.hiddenFromLibrary ? [TICKET_ATTACHMENT_CATEGORY] : [],
   };
   const backend = await getBackend();
   await backend.save(meta, blob);
@@ -250,7 +261,10 @@ export async function addImage(file: File): Promise<ImageMeta> {
 export async function listImages(): Promise<ImageMeta[]> {
   try {
     const backend = await getBackend();
-    return (await backend.list()).map(normalize).sort((a, b) => b.createdAt - a.createdAt);
+    return (await backend.list())
+      .map(normalize)
+      .filter(isVisibleLibraryImage)
+      .sort((a, b) => b.createdAt - a.createdAt);
   } catch {
     return [];
   }

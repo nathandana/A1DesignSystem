@@ -110,6 +110,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`. Bottom Drawer uses `.a1-bottom-drawer`.
 >
+> **TopHeader nav menu header:** each `navItems` entry may pass `menuHeader` (`ReactNode` or `({ onClose }) => ReactNode`) to render compact custom content above that item's submenu sections. Use this for governed menu chrome such as a `SearchField`; call `onClose()` after submit-style navigation so the menu closes cleanly. Keep interactive content short and built from A1 components.
+>
 > **BottomDrawer props:** `items` (`{ id, label, icon, href?, onClick?, active?, badge?, disabled? }[]`, max 5), `aria-label` (string, required), `className` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Badge values are capped at 99+. Shares `--a1-nav-stacked-icon-size`, `--a1-nav-stacked-label-size`, and `--a1-nav-stacked-gap` CSS custom properties with TopHeader icon-above mode for visual consistency.
 >
 > **BottomDrawer + TopHeader responsive pattern:** Use `navIconPosition={{ xs: "hidden", sm: "above", lg: "start" }}` on TopHeader and a CSS media query `@media (min-width: 481px) { .a1-bottom-drawer { display: none } }` to show the BottomDrawer only at xs. Both use the same items configuration.

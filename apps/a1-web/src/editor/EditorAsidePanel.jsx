@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Divider, Section, SegmentedControl, Stack } from '@gtivr4/a1-design-system-react'
 import { EditorPropsPanel, findNodeInDefinition } from './EditorPropsPanel.jsx'
+import { useSuppressAutofill } from './useSuppressAutofill.js'
 import { EditorHistoryPanel } from './EditorHistoryPanel.jsx'
 import { EditorAddPanel } from './EditorAddPanel.jsx'
 import { EditorVersionsPanel } from './EditorVersionsPanel.jsx'
@@ -29,6 +30,7 @@ export function EditorAsidePanel({
   onPageMetadataChange,
   onConvertNode,
   onCreatePattern,
+  onDetachPattern,
   onDuplicatePage,
   onDeletePage,
   patternScope,
@@ -63,6 +65,11 @@ export function EditorAsidePanel({
   const [tab, setTab] = useState('configure')
   // One-shot request to focus the chat input, set when "Make with AI" opens a page.
   const [chatFocusRequest, setChatFocusRequest] = useState(false)
+  // The editor panels are internal tooling — turn off browser/password-manager
+  // autofill for every field they render (it otherwise offers your email/address
+  // into config fields like a Stat "Description"). Covers later-mounting fields.
+  const fieldsRef = useRef(null)
+  useSuppressAutofill(fieldsRef)
 
   // Auto-switch to the (component) Add tab when a target is set from canvas/tree.
   useEffect(() => {
@@ -105,6 +112,7 @@ export function EditorAsidePanel({
 
   return (
     <Section padding="xs">
+      <div ref={fieldsRef}>
       <Stack gap="sm">
         <SegmentedControl
           options={tabOptions}
@@ -143,6 +151,7 @@ export function EditorAsidePanel({
               patternScope={patternScope}
               onConvertNode={onConvertNode}
               onCreatePattern={onCreatePattern}
+              onDetachPattern={onDetachPattern}
               onDuplicatePage={onDuplicatePage}
               onDeletePage={onDeletePage}
               lockEnforced={lockEnforced}
@@ -217,6 +226,7 @@ export function EditorAsidePanel({
           />
         )}
       </Stack>
+      </div>
     </Section>
   )
 }

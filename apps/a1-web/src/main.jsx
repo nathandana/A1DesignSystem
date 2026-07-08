@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Section,
   SegmentedControl,
+  SearchField,
   SelectField,
   Snackbar,
   Switch,
@@ -86,6 +87,7 @@ import {
   componentIdFromRouteSlug,
   getComponentExampleBySlug,
 } from './pages/Components.jsx'
+import { allComponents, rankComponentsForSearch } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
 import { patternToDefinition } from './patterns/patternDocument.js'
 import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
@@ -141,6 +143,7 @@ import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
+  || /^\/p(?:\/|$)/.test(window.location.pathname)
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
@@ -248,6 +251,9 @@ function getPage(search = window.location.search, pathname = window.location.pat
 
   // /backlog/A1-{n} → 'backlog-ticket'
   if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
+
+  // /p/{published-project-slug}[/page-id] → standalone published prototype
+  if (/^p\/[^/]+(?:\/[^/]+)?$/.test(path)) return 'editor-preview'
 
   // Direct match: /backlog → 'backlog', /editor → 'editor', etc.
   if (PAGES.includes(path)) return path
@@ -377,6 +383,7 @@ function App() {
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
+  const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
   const [releaseMode, setReleaseMode] = useState('simplified')
@@ -387,6 +394,7 @@ function App() {
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
   const [projects, setProjects] = useState(() => projectStore.loadProjects())
+  const [archivedProjects, setArchivedProjects] = useState(() => projectStore.loadArchivedProjects())
   const [activeProjectId, setActiveProjectId] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     return params.get('project') || projectStore.getActiveProjectId() || null
@@ -685,6 +693,7 @@ function App() {
 
   function refreshProjects() {
     setProjects(projectStore.loadProjects())
+    setArchivedProjects(projectStore.loadArchivedProjects())
   }
 
   // Cloud sync: on sign-in pull the user's projects into local storage (then
@@ -788,7 +797,21 @@ function App() {
     refreshProjects()
   }
 
+  // "Delete" is a soft delete: archive the project (hidden from the list, restorable)
+  // rather than removing it, so it reliably disappears and can be recovered.
   function handleDeleteProject(id) {
+    projectStore.archiveProject(id)
+    refreshProjects()
+    if (activeProjectId === id) handleBackToProjects()
+  }
+
+  function handleRestoreProject(id) {
+    projectStore.unarchiveProject(id)
+    refreshProjects()
+  }
+
+  // Permanent delete — only offered for already-archived projects.
+  function handleDeleteProjectPermanent(id) {
     projectStore.deleteProject(id)
     refreshProjects()
     if (activeProjectId === id) handleBackToProjects()
@@ -866,6 +889,16 @@ function App() {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
+  function handlePublishProject(id) {
+    projectStore.publishProject(id)
+    refreshProjects()
+  }
+
+  function handleUnpublishProject(id) {
+    projectStore.unpublishProject(id)
+    refreshProjects()
+  }
+
   function resetRouteScroll() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
 
@@ -918,6 +951,22 @@ function App() {
     navigate(page)
   }
 
+  function handleComponentMenuNav(e, page) {
+    const shouldClearSearch = isPlainLeftClick(e)
+    handleNavClick(e, page)
+    if (shouldClearSearch) setComponentMenuSearch('')
+  }
+
+  function handleComponentMenuSearchSubmit(value, onClose) {
+    const query = String(value ?? '').trim()
+    if (!query) return
+    const first = rankComponentsForSearch(allComponents, query)[0]
+    if (!first) return
+    navigate(`component-${first.id}`)
+    setComponentMenuSearch('')
+    onClose?.()
+  }
+
   useEffect(() => {
     // Canonicalize the initial URL. Old ?page= bookmarks are preserved by getPage()'s
     // legacy fallback, then replaced with the new path format here so the address bar
@@ -928,7 +977,8 @@ function App() {
     const extra = search.toString()
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
-    const canonicalBase = page === 'backlog-ticket' || getComponentExampleTab()
+    const isPublishedPreview = page === 'editor-preview' && /^\/p(?:\/|$)/.test(window.location.pathname)
+    const canonicalBase = page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab()
       ? window.location.pathname
       : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
@@ -1195,6 +1245,72 @@ function App() {
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
   ]
 
+  const componentMenuSearchQuery = componentMenuSearch.trim()
+  const componentMenuSearchLabel = t('app.nav.searchComponents', 'Search components')
+  const componentMenuMatches = useMemo(
+    () => componentMenuSearchQuery
+      ? rankComponentsForSearch(allComponents, componentMenuSearchQuery).slice(0, 12)
+      : [],
+    [componentMenuSearchQuery],
+  )
+  const componentMenuItems = componentMenuSearchQuery
+    ? [
+        {
+          icon: 'widgets',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('components'),
+          onClick: (e) => handleComponentMenuNav(e, 'components'),
+        },
+        {
+          icon: PAGE_ICONS['kitchen-sink'],
+          label: pageTitle('kitchen-sink'),
+          href: getPath('kitchen-sink'),
+          onClick: (e) => handleComponentMenuNav(e, 'kitchen-sink'),
+        },
+        ...(componentMenuMatches.length ? [{ divider: true }] : []),
+        ...componentMenuMatches.map((component) => {
+          const page = `component-${component.id}`
+          return {
+            icon: component.icon,
+            label: component.title,
+            href: getPath(page),
+            active: activePage === page,
+            onClick: (e) => handleComponentMenuNav(e, page),
+          }
+        }),
+      ]
+    : [
+        {
+          icon: 'widgets',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('components'),
+          onClick: (e) => handleNavClick(e, 'components'),
+        },
+        {
+          icon: PAGE_ICONS['kitchen-sink'],
+          label: pageTitle('kitchen-sink'),
+          href: getPath('kitchen-sink'),
+          onClick: (e) => handleNavClick(e, 'kitchen-sink'),
+        },
+        { divider: true },
+        ...componentCategories.map((category) => ({
+          icon: category.icon,
+          label: category.title,
+          href: getPath(`components-${category.id}`),
+          active: activePage === `components-${category.id}`,
+          onClick: (e) => handleNavClick(e, `components-${category.id}`),
+          items: category.components.map((component) => {
+            const page = `component-${component.id}`
+            return {
+              label: component.title,
+              href: getPath(page),
+              active: activePage === page,
+              onClick: (e) => handleNavClick(e, page),
+            }
+          }),
+        })),
+      ]
+
   const navItems = [
     {
       id: 'home',
@@ -1253,32 +1369,25 @@ function App() {
       icon: 'widgets',
       label: pageTitle('components'),
       active: COMPONENT_ROUTE_IDS.includes(activePage) || activePage === 'kitchen-sink',
-      items: [
-        {
-          icon: 'widgets',
-          label: t('app.nav.overview', 'Overview'),
-          href: getPath('components'),
-          onClick: (e) => handleNavClick(e, 'components'),
-        },
-        {
-          icon: PAGE_ICONS['kitchen-sink'],
-          label: pageTitle('kitchen-sink'),
-          href: getPath('kitchen-sink'),
-          onClick: (e) => handleNavClick(e, 'kitchen-sink'),
-        },
-        { divider: true },
-        ...componentCategories.map((category) => ({
-          icon: category.icon,
-          label: category.title,
-          href: getPath(`components-${category.id}`),
-          onClick: (e) => handleNavClick(e, `components-${category.id}`),
-          items: category.components.map((component) => ({
-            label: component.title,
-            href: getPath(`component-${component.id}`),
-            onClick: (e) => handleNavClick(e, `component-${component.id}`),
-          })),
-        })),
-      ],
+      menuHeader: ({ onClose }) => (
+        <SearchField
+          data-1p-ignore="true"
+          data-bwignore="true"
+          data-form-type="other"
+          data-lpignore="true"
+          aria-label={componentMenuSearchLabel}
+          autoComplete="off"
+          autoCapitalize="none"
+          autoCorrect="off"
+          name="a1-components-main-menu-search"
+          size="compact"
+          spellCheck={false}
+          value={componentMenuSearch}
+          onChange={(event) => setComponentMenuSearch(event.target.value)}
+          onSearch={(value) => handleComponentMenuSearchSubmit(value, onClose)}
+        />
+      ),
+      items: componentMenuItems,
     },
     {
       id: 'editor',
@@ -1711,6 +1820,9 @@ function App() {
               onRenameProject={handleRenameProject}
               onDuplicateProject={handleDuplicateProject}
               onDeleteProject={handleDeleteProject}
+              archivedProjects={archivedProjects}
+              onRestoreProject={handleRestoreProject}
+              onDeleteProjectPermanent={handleDeleteProjectPermanent}
               onImportProject={handleImportProject}
               onOpenImageLibrary={() => navigate('image-library')}
               onNavigateHome={() => navigate('home')}
@@ -1752,6 +1864,8 @@ function App() {
               onOpenPage={handleOpenPage}
               onAddPage={handleAddPage}
               onLaunchPrototype={() => launchProjectPrototype()}
+              onPublishProject={handlePublishProject}
+              onUnpublishProject={handleUnpublishProject}
               onRenameProject={handleRenameProject}
               onDeleteProject={handleDeleteProject}
               onNavigateHome={() => navigate('home')}
@@ -1847,6 +1961,9 @@ function App() {
             onRenameProject={handleRenameProject}
             onDuplicateProject={handleDuplicateProject}
             onDeleteProject={handleDeleteProject}
+            archivedProjects={archivedProjects}
+            onRestoreProject={handleRestoreProject}
+            onDeleteProjectPermanent={handleDeleteProjectPermanent}
             onImportProject={handleImportProject}
             onOpenImageLibrary={() => navigate('image-library')}
             onNavigateHome={() => navigate('home')}

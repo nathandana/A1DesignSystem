@@ -6,6 +6,18 @@ import postcssCustomMedia from 'postcss-custom-media'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const repoRoot = resolve(__dirname, '../..')
 
+const isAnthropicSdkBrowserExternalizationWarning = (warning) => {
+  const message = typeof warning === 'string' ? warning : warning?.message ?? ''
+  const plugin = typeof warning === 'string' ? undefined : warning?.plugin
+
+  return (
+    (!plugin || plugin === 'rolldown:vite-resolve') &&
+    message.includes('has been externalized for browser compatibility') &&
+    message.includes('@anthropic-ai/sdk/') &&
+    /Module "node:(?:fs|path)"/.test(message)
+  )
+}
+
 export default {
   esbuild: {
     jsxImportSource: 'react'
@@ -38,6 +50,16 @@ export default {
     }
   },
   build: {
-    outDir: 'dist'
+    outDir: 'dist',
+    chunkSizeWarningLimit: 5000,
+    rollupOptions: {
+      onwarn(warning, defaultHandler) {
+        if (isAnthropicSdkBrowserExternalizationWarning(warning)) {
+          return
+        }
+
+        defaultHandler(warning)
+      }
+    }
   }
 }

@@ -11,8 +11,8 @@
  * the node, so it is held in local state here.
  */
 import { useContext, useState } from 'react'
-import { Button, CheckboxGroup, ChoiceGroup, Divider, Heading, Icon, IconButton, Link, NumberField, Paragraph, SelectField, Stack, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
-import { getAllPatterns, getPatternProjects, setPatternProjects } from '../patterns/patternStore.js'
+import { Button, CheckboxGroup, ChoiceGroup, Divider, Heading, Icon, IconButton, Link, MessageBadge, NumberField, Paragraph, SelectField, Stack, Switch, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
+import { getAllPatterns, getPatternProjects, loadPattern, setPatternProjects } from '../patterns/patternStore.js'
 import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
@@ -104,6 +104,23 @@ import { Controls as DataTableControls, getDefaultConfig as dataTableDefaults } 
 import { Controls as PageNavControls, getDefaultConfig as pageNavDefaults } from '../pages/components/detail/page-nav.jsx'
 import { Controls as TreeMenuControls, getDefaultConfig as treeMenuDefaults } from '../pages/components/detail/tree-menu.jsx'
 
+// Previously unbridged into the project/pattern editor — wired up so every
+// registered, addable component has a working configurator (no "No configurator
+// is registered" fallback). Real components (Stat/Autocomplete/InlineEditable)
+// get explicit prop mappings below; the rest are config-as-props editor adapters.
+import { Controls as StatControls, getDefaultConfig as statDefaults } from '../pages/components/detail/stat.jsx'
+import { Controls as AutocompleteControls, getDefaultConfig as autocompleteDefaults } from '../pages/components/detail/autocomplete.jsx'
+import { Controls as InlineEditableControls } from '../pages/components/detail/inline-editable.jsx'
+import { Controls as InlineControls, getDefaultConfig as inlineDefaults } from '../pages/components/detail/inline.jsx'
+import { Controls as DialogControls, getDefaultConfig as dialogDefaults } from '../pages/components/detail/dialog.jsx'
+import { Controls as MenuControls, getDefaultConfig as menuDefaults } from '../pages/components/detail/menu.jsx'
+import { Controls as ContextMenuControls, getDefaultConfig as contextMenuDefaults } from '../pages/components/detail/context-menu.jsx'
+import { Controls as SnackbarControls, getDefaultConfig as snackbarDefaults } from '../pages/components/detail/snackbar.jsx'
+import { Controls as NotificationControls, getDefaultConfig as notificationDefaults } from '../pages/components/detail/notification.jsx'
+import { Controls as SideNavControls, getDefaultConfig as sideNavDefaults } from '../pages/components/detail/side-nav.jsx'
+import { Controls as BottomSheetControls, getDefaultConfig as bottomSheetDefaults } from '../pages/components/detail/bottom-sheet.jsx'
+import { Controls as CanvasControls, getDefaultConfig as canvasDefaults } from '../pages/components/detail/canvas.jsx'
+
 const TEXT_LABEL_CONFIG_FIELD_BY_TYPE = {
   Heading: 'children',
   Paragraph: 'children',
@@ -141,6 +158,58 @@ export function findNodeInDefinition(definition, id) {
     if (found) return found
   }
   return null
+}
+
+// Nearest pattern-instance root (self or ancestor) that encloses node `id`, so
+// selecting any part of a placed instance resolves to the instance it belongs to.
+function findEnclosingPatternInstanceNode(definition, id) {
+  let result = null
+  const walk = (nodes, ancestorRoot) => {
+    for (const node of nodes) {
+      const root = node.patternInstance ? node : ancestorRoot
+      if (node.id === id) { result = root ?? null; return true }
+      if (node.children && walk(node.children, root)) return true
+    }
+    return false
+  }
+  for (const region of definition.page.layout.regions) {
+    if (walk(region.nodes, null)) break
+  }
+  return result
+}
+
+// Banner shown above the configurator when a pattern instance (or any node inside
+// one) is selected. Locked props/text follow the pattern (shown read-only via the
+// lock mechanism); unlocked props stay editable per instance and are preserved when
+// the pattern changes (governed sync — see propagatePattern.js).
+function PatternInstanceBanner({ instanceRoot, onDetach, hostOnly = false, showDivider = true }) {
+  const instance = instanceRoot.patternInstance
+  const description = loadPattern(instance.id)?.pattern?.description
+  return (
+    <Stack gap="sm">
+      <Stack gap="xs">
+        <MessageBadge status="info" subtle size="sm" icon="dashboard_customize">Pattern instance</MessageBadge>
+        <Heading as="h3" size="sm">{instance.name}</Heading>
+        {description && <Paragraph size="sm" color="muted">{description}</Paragraph>}
+      </Stack>
+      <Paragraph size="sm" color="muted">
+        {hostOnly
+          ? `A placed instance of the “${instance.name}” pattern. Select a component inside it to edit its unlocked properties, or edit the pattern to change every instance.`
+          : `Locked properties follow the “${instance.name}” pattern (read-only). Edit the unlocked properties below — your changes are kept when the pattern updates.`}
+      </Paragraph>
+      <Stack direction="row" gap="sm" wrap>
+        <Button as="a" href={`/editor?pattern=${instance.id}`} variant="secondary" size="sm" icon="edit">
+          Edit pattern
+        </Button>
+        {onDetach && (
+          <Button variant="tertiary" size="sm" icon="link_off" onClick={onDetach}>
+            Detach
+          </Button>
+        )}
+      </Stack>
+      {showDivider && <Divider space="xs" />}
+    </Stack>
+  )
 }
 
 // ── Config bridges: node → Controls config ────────────────────────────────────
@@ -209,11 +278,14 @@ export const propsToConfig = {
   Card: (props) => ({
     as: props?.as ?? 'div',
     variant: props?.variant ?? 'default',
+    surface: props?.surface ?? 'default',
     href: props?.href ?? '#',
     bare: props?.bare ?? false,
     icon: props?.icon ?? '',
     iconDisplay: props?.iconDisplay ?? (props?.icon ? 'default' : 'none'),
     heroColor: props?.heroColor ?? 'action',
+    heroSeparator: props?.heroSeparator ?? false,
+    heroSeparatorShape: props?.heroSeparatorShape ?? 'wave',
     heroBadge: props?.heroBadge ?? '',
     heroBadgeStatus: props?.heroBadgeStatus ?? 'neutral',
     heroBadgePosition: props?.heroBadgePosition ?? 'top-end',
@@ -800,6 +872,91 @@ export const propsToConfig = {
     columns: props?.columns,
     gap: props?.gap,
   }),
+
+  // ── Newly bridged types ─────────────────────────────────────────────────────
+  // Stat renders as the real component, so config's derived keys (showIcon /
+  // showBadge / badgeIconMode / string value) are reconstructed from real props.
+  Stat: (props) => {
+    const badgeIcon = props?.badgeIcon
+    return {
+      title: props?.title ?? statDefaults().title,
+      value: props?.value != null ? String(props.value) : '',
+      prefix: props?.prefix ?? '',
+      suffix: props?.suffix ?? '',
+      description: props?.description ?? '',
+      showIcon: props?.icon != null && props?.icon !== '',
+      icon: props?.icon || 'analytics',
+      showBadge: props?.badge != null && props?.badge !== '',
+      badge: props?.badge || '12% up',
+      badgeStatus: props?.badgeStatus ?? 'neutral',
+      badgeSubtle: props?.badgeSubtle ?? true,
+      badgeSize: props?.badgeSize ?? 'sm',
+      badgeIconMode: badgeIcon === null ? 'none' : (badgeIcon ? 'custom' : 'default'),
+      badgeIcon: typeof badgeIcon === 'string' ? badgeIcon : 'trending_up',
+      format: props?.format ?? 'number',
+      size: props?.size ?? 'md',
+      align: props?.align ?? 'start',
+      precision: props?.precision != null ? String(props.precision) : '',
+    }
+  },
+
+  // Autocomplete renders as the real component; the configurator keys options by
+  // `id`, the component by `value` — map between them.
+  Autocomplete: (props) => ({
+    label: props?.label ?? 'Favorite fruit',
+    hint: props?.hint ?? '',
+    size: props?.size ?? 'default',
+    variant: props?.variant ?? 'default',
+    multiple: props?.multiple ?? false,
+    allowCreate: props?.allowCreate ?? false,
+    required: props?.required ?? false,
+    disabled: props?.disabled ?? false,
+    options: Array.isArray(props?.options) && props.options.length
+      ? props.options.map((o) => (typeof o === 'string'
+          ? { id: o, label: o }
+          : {
+              id: o.value ?? o.id ?? o.label,
+              label: o.label ?? String(o.value ?? ''),
+              ...(o.swatch ? { swatch: o.swatch } : {}),
+              ...(o.icon ? { icon: o.icon } : {}),
+              ...(o.group ? { group: o.group } : {}),
+            }))
+      : autocompleteDefaults().options,
+  }),
+
+  // InlineEditable's `as` (wrapping element) is a preview-only concept — the real
+  // component has no `as` prop — so it's held in config but not written to props.
+  InlineEditable: (props) => ({
+    value: props?.value ?? 'A1 design system',
+    placeholder: props?.placeholder ?? '',
+    as: 'text',
+    multiline: props?.multiline ?? false,
+    disabled: props?.disabled ?? false,
+    seamless: props?.seamless ?? false,
+    ariaLabel: props?.['aria-label'] ?? 'Edit title',
+  }),
+
+  // Standalone Node — its own single-node props (the graph editor lives in Canvas).
+  Node: (props) => ({
+    label: props?.label ?? 'Node',
+    sublabel: props?.sublabel ?? '',
+    shape: props?.shape ?? 'circle',
+    color: props?.color ?? 'accent',
+    subtle: props?.subtle ?? false,
+  }),
+
+  // Config-as-props editor adapters: the node's props ARE the configurator config,
+  // rendered by the matching editor adapter's detail Preview.
+  Inline: (props) => ({ ...inlineDefaults(), ...(props ?? {}) }),
+  Dialog: (props) => ({ ...dialogDefaults(), ...(props ?? {}) }),
+  Menu: (props) => ({ ...menuDefaults(), ...(props ?? {}) }),
+  ContextMenu: (props) => ({ ...contextMenuDefaults(), ...(props ?? {}) }),
+  Snackbar: (props) => ({ ...snackbarDefaults(), ...(props ?? {}) }),
+  Notification: (props) => ({ ...notificationDefaults(), ...(props ?? {}) }),
+  BottomSheet: (props) => ({ ...bottomSheetDefaults(), ...(props ?? {}) }),
+  Canvas: (props) => ({ ...canvasDefaults(), ...(props ?? {}) }),
+  // SideNav's item list uses local accordion (openItems) state, kept off the node.
+  SideNav: (props) => ({ ...sideNavDefaults(), ...(props ?? {}), openItems: [] }),
 }
 
 // ── Config bridges: Controls config → node update ─────────────────────────────
@@ -883,23 +1040,31 @@ export const configToNodeUpdate = {
     },
   }),
 
-  Card: (config) => ({
-    props: {
-      as: config.variant === 'navigation' ? undefined : config.as,
-      variant: config.variant,
-      href: config.variant === 'navigation' ? config.href : undefined,
-      bare: config.bare || undefined,
-      icon: config.iconDisplay !== 'none' ? config.icon || undefined : undefined,
-      iconDisplay: config.iconDisplay,
-      heroColor: config.iconDisplay === 'hero' ? config.heroColor : undefined,
-      heroBadge: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadge : undefined,
-      heroBadgeStatus: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgeStatus : undefined,
-      heroBadgePosition: config.iconDisplay === 'hero' && config.heroBadge ? config.heroBadgePosition : undefined,
-      status: config.status || undefined,
-      statusLabel: config.status && config.statusLabel ? config.statusLabel : undefined,
-      statusPulse: config.status && config.statusPulse ? true : undefined,
-    },
-  }),
+  Card: (config) => {
+    const accent = config.surface === 'accent'
+    const hero = config.iconDisplay === 'hero'
+    return {
+      props: {
+        as: config.variant === 'navigation' ? undefined : config.as,
+        variant: config.variant,
+        surface: config.surface && config.surface !== 'default' ? config.surface : undefined,
+        href: config.variant === 'navigation' ? config.href : undefined,
+        bare: config.bare || undefined,
+        icon: config.iconDisplay !== 'none' ? config.icon || undefined : undefined,
+        iconDisplay: config.iconDisplay,
+        heroColor: hero ? config.heroColor : undefined,
+        heroSeparator: hero && config.heroSeparator ? true : undefined,
+        heroSeparatorShape: hero && config.heroSeparator && config.heroSeparatorShape !== 'wave' ? config.heroSeparatorShape : undefined,
+        heroBadge: hero && config.heroBadge ? config.heroBadge : undefined,
+        heroBadgeStatus: hero && config.heroBadge ? config.heroBadgeStatus : undefined,
+        heroBadgePosition: hero && config.heroBadge ? config.heroBadgePosition : undefined,
+        // Accent surface disables the status stripe (they compete visually).
+        status: !accent && config.status ? config.status : undefined,
+        statusLabel: !accent && config.status && config.statusLabel ? config.statusLabel : undefined,
+        statusPulse: !accent && config.status && config.statusPulse ? true : undefined,
+      },
+    }
+  },
 
   Bleed: (config) => ({
     props: { space: config.space },
@@ -1525,6 +1690,94 @@ export const configToNodeUpdate = {
       })),
     },
   }),
+
+  // ── Newly bridged types ─────────────────────────────────────────────────────
+  // Stat renders as the real component — mirror the detail Preview's mapping.
+  Stat: (config) => {
+    const format = config.format || 'number'
+    // Preserve a data-binding token ("{{ ds.col }}") rather than coercing it to NaN.
+    const bound = typeof config.value === 'string' && config.value.includes('{{')
+    const value = format === 'none' || bound ? config.value : Number(config.value || 0)
+    return {
+      props: {
+        title: config.title || undefined,
+        value,
+        prefix: config.prefix || undefined,
+        suffix: config.suffix || undefined,
+        description: config.description || undefined,
+        icon: config.showIcon ? (config.icon || 'analytics') : undefined,
+        badge: config.showBadge ? (config.badge || 'Healthy') : undefined,
+        badgeStatus: config.showBadge && config.badgeStatus && config.badgeStatus !== 'neutral' ? config.badgeStatus : undefined,
+        badgeSubtle: config.showBadge && config.badgeSubtle === false ? false : undefined,
+        badgeSize: config.showBadge && config.badgeSize && config.badgeSize !== 'sm' ? config.badgeSize : undefined,
+        badgeIcon: config.showBadge
+          ? (config.badgeIconMode === 'none' ? null : config.badgeIconMode === 'custom' ? (config.badgeIcon || 'info') : undefined)
+          : undefined,
+        format: format !== 'number' ? format : undefined,
+        size: config.size && config.size !== 'md' ? config.size : undefined,
+        align: config.align && config.align !== 'start' ? config.align : undefined,
+        precision: format !== 'none' && !bound && config.precision !== '' && config.precision != null ? Number(config.precision) : undefined,
+      },
+    }
+  },
+
+  // Autocomplete — map config options ({id}) back to component options ({value}).
+  Autocomplete: (config) => ({
+    props: {
+      label: config.label || undefined,
+      hint: config.hint || undefined,
+      size: config.size && config.size !== 'default' ? config.size : undefined,
+      variant: config.variant && config.variant !== 'default' ? config.variant : undefined,
+      multiple: config.multiple || undefined,
+      allowCreate: config.allowCreate || undefined,
+      required: config.required || undefined,
+      disabled: config.disabled || undefined,
+      options: (config.options ?? []).map((o) => ({
+        value: o.id,
+        label: o.label,
+        ...(o.swatch ? { swatch: o.swatch } : {}),
+        ...(o.icon ? { icon: o.icon } : {}),
+        ...(o.group ? { group: o.group } : {}),
+      })),
+    },
+  }),
+
+  // InlineEditable — `as` is preview-only; rename ariaLabel → aria-label.
+  InlineEditable: (config) => ({
+    props: {
+      value: config.value || undefined,
+      placeholder: config.placeholder || undefined,
+      multiline: config.multiline || undefined,
+      disabled: config.disabled || undefined,
+      seamless: config.seamless || undefined,
+      'aria-label': config.ariaLabel || undefined,
+    },
+  }),
+
+  // Standalone Node — its own single-node props.
+  Node: (config) => ({
+    props: {
+      label: config.label || 'Node',
+      sublabel: config.sublabel || undefined,
+      shape: config.shape && config.shape !== 'circle' ? config.shape : undefined,
+      color: config.color && config.color !== 'neutral' ? config.color : undefined,
+      subtle: config.subtle || undefined,
+    },
+  }),
+
+  // Config-as-props editor adapters: store the whole config as the node's props.
+  Inline: (config) => ({ props: { ...config } }),
+  Dialog: (config) => ({ props: { ...config } }),
+  Menu: (config) => ({ props: { ...config } }),
+  ContextMenu: (config) => ({ props: { ...config } }),
+  Snackbar: (config) => ({ props: { ...config } }),
+  Notification: (config) => ({ props: { ...config } }),
+  BottomSheet: (config) => ({ props: { ...config } }),
+  Canvas: (config) => ({ props: { ...config } }),
+  SideNav: (config) => {
+    const { openItems: _openItems, ...rest } = config
+    return { props: rest }
+  },
 }
 
 // ── Conversion map: type → possible target types ──────────────────────────────
@@ -1711,6 +1964,56 @@ function ListItemControls({ config, setConfig }) {
   )
 }
 
+// Standalone Node (a single labeled shape). The shared `node.jsx` configurator
+// edits a whole node/edge graph (used inside Canvas), so a single Node gets this
+// focused configurator for its own real props instead.
+const NODE_SHAPE_OPTIONS = ['circle', 'square', 'squircle', 'rectangle']
+const NODE_COLOR_OPTIONS = ['neutral', 'info', 'success', 'warn', 'error', 'accent']
+
+function NodeControls({ config, setConfig }) {
+  const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
+  const label = (v) => v.charAt(0).toUpperCase() + v.slice(1)
+  return (
+    <Stack gap="lg">
+      <TextField
+        label="Label"
+        size="compact"
+        value={config.label ?? ''}
+        onChange={(e) => set({ label: e.target.value })}
+      />
+      <TextField
+        label="Sublabel"
+        size="compact"
+        value={config.sublabel ?? ''}
+        onChange={(e) => set({ sublabel: e.target.value })}
+      />
+      <ChoiceGroup
+        label="Shape"
+        size="compact"
+        hideIndicator
+        columns={2}
+        value={config.shape}
+        onChange={(shape) => set({ shape })}
+        options={NODE_SHAPE_OPTIONS.map((opt) => ({ label: label(opt), value: opt }))}
+      />
+      <ChoiceGroup
+        label="Color"
+        size="compact"
+        hideIndicator
+        columns={3}
+        value={config.color}
+        onChange={(color) => set({ color })}
+        options={NODE_COLOR_OPTIONS.map((opt) => ({ label: label(opt), value: opt }))}
+      />
+      <Switch
+        label="Subtle"
+        checked={!!config.subtle}
+        onChange={(subtle) => set({ subtle })}
+      />
+    </Stack>
+  )
+}
+
 function LabelKeyControl({ config, setConfig }) {
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
   return (
@@ -1837,6 +2140,21 @@ const CONTROLS_BY_TYPE = {
   // Inline Controls (no separate configurator file)
   List: ListEditorControls,
   ListItem: ListItemControls,
+  Node: NodeControls,
+
+  // Newly bridged into the editor (previously showed "No configurator registered")
+  Stat: StatControls,
+  Autocomplete: AutocompleteControls,
+  InlineEditable: InlineEditableControls,
+  Inline: InlineControls,
+  Dialog: DialogControls,
+  Menu: MenuControls,
+  ContextMenu: ContextMenuControls,
+  Snackbar: SnackbarControls,
+  Notification: NotificationControls,
+  SideNav: SideNavControls,
+  BottomSheet: BottomSheetControls,
+  Canvas: CanvasControls,
 }
 
 // ── Page metadata form (shown when no node is selected) ───────────────────────
@@ -2009,6 +2327,7 @@ export function EditorPropsPanel({
   onPageMetadataChange,
   onConvertNode,
   onCreatePattern,
+  onDetachPattern,
   onDuplicatePage,
   onDeletePage,
   patternScope = null,
@@ -2037,6 +2356,33 @@ export function EditorPropsPanel({
         onDeletePage={onDeletePage}
         patternScope={patternScope}
       />
+    )
+  }
+
+  // When the selected node is a placed pattern instance (or inside one), a banner
+  // above the configurator identifies the pattern and offers Edit pattern / Detach.
+  // The configurator itself still renders: locked props/text are read-only (via the
+  // lock mechanism) and unlocked props stay editable per instance. Not in the pattern
+  // authoring editor, where these are the pattern's own nodes (no `patternInstance`).
+  const instanceRoot = lockAuthoring
+    ? null
+    : (node.patternInstance ? node : findEnclosingPatternInstanceNode(definition, node.id))
+
+  // A multi-root pattern instantiates its roots inside an auto-generated wrapper
+  // (a Stack with `patternInstance` but no `patternNodeId`). That wrapper is just a
+  // host for the pattern, not a component to configure — show only the pattern banner
+  // (no Stack controls). Its children (the real pattern nodes) still configure normally.
+  const isPatternHost = !!node.patternInstance && !node.patternNodeId
+  if (isPatternHost) {
+    return (
+      <Stack gap="lg">
+        <PatternInstanceBanner
+          instanceRoot={node}
+          hostOnly
+          showDivider={false}
+          onDetach={onDetachPattern ? () => onDetachPattern(node.id) : null}
+        />
+      </Stack>
     )
   }
 
@@ -2131,18 +2477,20 @@ export function EditorPropsPanel({
     onNodePropsChange(node.id, newProps, nextContentFallback, nextContentKey)
   }
 
-  // Pattern-instance governance: when enforcing locks, a fully-locked element's
-  // controls are disabled; partially-locked elements show which parts are locked.
+  // Pattern-instance governance: locked *properties* and locked *text* render
+  // read-only; a *structural* lock (`lock.node` — "can't remove, move, or replace")
+  // is enforced structurally (delete/move/convert), and intentionally does NOT
+  // disable editing the element's unlocked properties or text.
   const lock = lockEnforced ? node.lock : undefined
-  const fullyLocked = !!lock?.node
+  const structuralLock = !!lock?.node
   const lockedParts = [...(lock?.props ?? []), ...(lock?.content ? ['text'] : [])]
-  const lockNote = lock ? (
+  const lockNote = lock && (lockedParts.length || structuralLock) ? (
     <Stack direction="row" gap="xs" align="center">
       <Icon name="lock" size="sm" color="muted" aria-hidden="true" />
       <Paragraph size="sm" color="muted">
-        {fullyLocked
-          ? 'Locked by its pattern'
-          : `Locked by pattern: ${lockedParts.join(', ')}`}
+        {lockedParts.length
+          ? `Locked by pattern: ${lockedParts.join(', ')}`
+          : 'Locked by pattern: can’t be removed, moved, or replaced'}
       </Paragraph>
     </Stack>
   ) : null
@@ -2170,8 +2518,9 @@ export function EditorPropsPanel({
     />
   )
   // Provide the lock state so each configurator control outlines itself when the
-  // property it edits is locked (red outline + lock badge). A fully-locked element
-  // is additionally dimmed + pointer-disabled (accordions still toggle).
+  // property it edits is locked (red outline + lock badge). `fullyLocked` stays
+  // false in enforcing mode: only individually-locked props (and locked text) are
+  // read-only — a structural lock alone leaves the element's config editable.
   const lockValue = lockAuthoring
     ? {
         lockedProps: new Set(node.lock?.props ?? []),
@@ -2181,13 +2530,13 @@ export function EditorPropsPanel({
       }
     : {
         lockedProps: new Set(lock?.props ?? []),
-        fullyLocked: !!lock?.node,
+        fullyLocked: false,
         authoring: false,
         onSetLockedProps: null,
       }
   const lockedControls = (
     <ConfigLockContext.Provider value={lockValue}>
-      {(!lockAuthoring && fullyLocked) ? <div className="a1-web-config-locked">{controls}</div> : controls}
+      {controls}
     </ConfigLockContext.Provider>
   )
 
@@ -2202,7 +2551,7 @@ export function EditorPropsPanel({
       onNodePropsChange(node.id, { ...bindBaseUpdate.props, [target.key]: token }, bindBaseUpdate.contentFallback)
     }
   }
-  const BindSection = (!lockAuthoring && !fullyLocked) ? (
+  const BindSection = !lockAuthoring ? (
     <EditorBindControls
       baseUpdate={bindBaseUpdate}
       projectId={projectId}
@@ -2213,7 +2562,7 @@ export function EditorPropsPanel({
       onSetRepeat={onSetNodeRepeat ? (cfg) => onSetNodeRepeat(node.id, cfg) : null}
     />
   ) : null
-  const CollectionSection = (!lockAuthoring && !fullyLocked) ? (
+  const CollectionSection = !lockAuthoring ? (
     <EditorCollectionControls
       nodeType={node.type}
       collections={node.collections}
@@ -2224,18 +2573,11 @@ export function EditorPropsPanel({
 
   return (
     <Stack gap="lg">
-      {node.patternInstance ? (
-        <Stack direction="row" align="center" justify="between" gap="sm">
-          <Heading as="h3" size="xs" color="muted">{node.patternInstance.name}</Heading>
-          <IconButton
-            as="a"
-            href={`/editor?pattern=${node.patternInstance.id}`}
-            icon="edit"
-            size="sm"
-            variant="tertiary"
-            aria-label="Edit pattern"
-          />
-        </Stack>
+      {instanceRoot ? (
+        <PatternInstanceBanner
+          instanceRoot={instanceRoot}
+          onDetach={onDetachPattern ? () => onDetachPattern(instanceRoot.id) : null}
+        />
       ) : (
         <Heading as="h3" size="xs" color="muted">
           <Link href={componentHref}>{node.type}</Link>
@@ -2248,7 +2590,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
-      {!lockAuthoring && !fullyLocked && UtilitiesSection}
+      {!lockAuthoring && UtilitiesSection}
       {BindSection}
       {CollectionSection}
       {ConvertSection}

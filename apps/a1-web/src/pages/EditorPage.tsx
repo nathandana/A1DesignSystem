@@ -36,6 +36,8 @@ import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
 import { LabelLookupDialog } from '../editor/LabelLookupDialog.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
+import { ScreenReaderReportDialog } from '../editor/ScreenReaderReportDialog.jsx';
+import { useT } from '../labels/useT.js';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
 import { isMac } from '../editor/shortcuts.ts';
@@ -49,12 +51,13 @@ import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatal
 import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
+import { propagatePatternToInstances } from '../patterns/propagatePattern.js';
 import { loadProjectLayout, saveProjectLayout, resolvePageJson } from '../projects/projectStore';
 import { onRemoteHydrate } from '../projects/cloudSync.js';
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb';
 import { PagePresence } from '../editor/PagePresence.jsx';
 import { toImageRef } from '../lib/imageLibrary';
-import { combinePageIntoLayout, splitLayoutAtOutlet } from '../projects/projectLayout';
+import { combinePageIntoLayout, definitionContainsNodeType, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
 import { cleanUtilities } from '../editor/utilityRegistry';
 import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
@@ -699,6 +702,7 @@ export function EditorPage({
   /** Open that sidebar — the toggle lives inline in the editor toolbar at ≤lg. */
   onOpenSidebar?: () => void;
 }) {
+  const t = useT();
   const canonicalJson = useMemo(() => JSON.stringify(definition, null, 2), [definition]);
 
   // Pattern-authoring mode: persist to the pattern store, author locks (don't
@@ -773,6 +777,7 @@ export function EditorPage({
   const [previewViewport, setPreviewViewport] = useState('fit');
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [screenReaderReportOpen, setScreenReaderReportOpen] = useState(false);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [labelLookupNodeId, setLabelLookupNodeId] = useState<string | null>(null);
@@ -824,15 +829,19 @@ export function EditorPage({
           const nodes = def.page.layout.regions.flatMap((r) => r.nodes);
           const current = loadPattern(patternId);
           if (current) {
+            const nextName = def.page.name ?? current.pattern.name;
             savePattern({
               ...current,
               pattern: {
                 ...current.pattern,
-                name: def.page.name ?? current.pattern.name,
+                name: nextName,
                 description: def.page.description ?? current.pattern.description,
                 nodes,
               },
             });
+            // Full-sync: rebuild every instance of this pattern on every page/project
+            // so pattern edits propagate immediately (they show on next page open).
+            propagatePatternToInstances(patternId, `Synced pattern: ${nextName}`);
           }
         } catch { /* ignore malformed working json */ }
         return;
@@ -1172,7 +1181,7 @@ export function EditorPage({
   function handleContentChange(nodeId: string, newFallback: string) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
-    if (lock?.node || lock?.content) return; // locked text is not editable
+    if (lock?.content) return; // only a text-content lock blocks text — not a structural lock
     const newJson = JSON.stringify(
       patchDefinitionContent(parsedDefinition.value, nodeId, newFallback),
       null, 2,
@@ -1184,7 +1193,7 @@ export function EditorPage({
   function handleContentKeyChange(nodeId: string, textKey: string | null, fallback?: string) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
-    if (lock?.node || lock?.content) return;
+    if (lock?.content) return; // only a text-content lock blocks text — not a structural lock
     const newJson = JSON.stringify(
       patchDefinitionContentKey(parsedDefinition.value, nodeId, textKey, fallback),
       null,
@@ -1198,7 +1207,7 @@ export function EditorPage({
   function handleItemTextChange(nodeId: string, index: number, field: string, value: string) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
-    if (lock?.node || lock?.content) return;
+    if (lock?.content) return; // only a text-content lock blocks text — not a structural lock
     const patchNode = (node: ComponentNode): ComponentNode => {
       if (node.id === nodeId) {
         const items = Array.isArray(node.props?.items)
@@ -1235,7 +1244,8 @@ export function EditorPage({
   ) {
     if (!parsedDefinition.ok) return;
     const lock = getNodeLock(nodeId);
-    if (lock?.node) { notifyLocked(); return; } // fully locked — ignore all edits
+    // A structural lock (lock.node) doesn't lock config: unlocked props/text stay
+    // editable; locked props are reverted below and locked text is skipped.
 
     let props = newProps;
     // Locked props are read-only: restore their current values so any change reverts.
@@ -1773,11 +1783,13 @@ export function EditorPage({
           `/editor${projectId ? `?project=${encodeURIComponent(projectId)}&doc=${encodeURIComponent(id)}` : `?doc=${encodeURIComponent(id)}`}`,
       })
     : [];
+  const projectHomeHref = projectId ? `/editor?project=${encodeURIComponent(projectId)}` : '/editor';
 
   const generatedHeader = projectNavItems.length ? (
     <TopHeader
       className="a1-web-generated-header"
       logo={projectName ? <span className="a1-web-logo">{projectName}</span> : undefined}
+      logoHref={projectHomeHref}
       navItems={projectNavItems}
     />
   ) : null;
@@ -1789,17 +1801,29 @@ export function EditorPage({
     if (documentKind !== 'page' || !projectId) return null;
     try { return JSON.parse(loadProjectLayout(projectId)) as PageDefinition; } catch { return null; }
   }, [documentKind, projectId]);
+  const sharedLayoutHasTopHeader = definitionContainsNodeType(sharedLayoutDef, 'TopHeader');
+  const shouldRenderGeneratedHeader = projectNavItems.length > 0 && (!sharedLayoutDef || !sharedLayoutHasTopHeader);
 
   const layoutChrome = useMemo(
-    () => (sharedLayoutDef ? splitLayoutAtOutlet(sharedLayoutDef, { navItems: projectNavItems, logoFallback: projectName ?? '' }) : null),
-    [sharedLayoutDef, projectNavItems, projectName],
+    () => (sharedLayoutDef
+      ? splitLayoutAtOutlet(sharedLayoutDef, {
+          navItems: projectNavItems,
+          logoFallback: projectName ?? '',
+          logoHref: projectHomeHref,
+        })
+      : null),
+    [sharedLayoutDef, projectNavItems, projectName, projectHomeHref],
   );
 
   const composedPreviewDef = useMemo(
     () => (sharedLayoutDef && parsedDefinition.ok
-      ? combinePageIntoLayout(sharedLayoutDef, parsedDefinition.value, { navItems: projectNavItems, logoFallback: projectName ?? '' })
+      ? combinePageIntoLayout(sharedLayoutDef, parsedDefinition.value, {
+          navItems: projectNavItems,
+          logoFallback: projectName ?? '',
+          logoHref: projectHomeHref,
+        })
       : null),
-    [sharedLayoutDef, parsedDefinition, projectNavItems, projectName],
+    [sharedLayoutDef, parsedDefinition, projectNavItems, projectName, projectHomeHref],
   );
 
   // Only patterns available to the active project (unrestricted, or scoped to it).
@@ -1874,6 +1898,7 @@ export function EditorPage({
           onHistoryPreview={handleHistoryPreview}
           onConvertNode={handleConvertNode}
           onCreatePattern={isPattern ? undefined : handleCreatePatternFromNode}
+          onDetachPattern={isPattern ? undefined : handleDetachPattern}
           onDuplicatePage={onDuplicatePage}
           onDeletePage={onDeletePage}
           addTarget={addTarget}
@@ -1972,6 +1997,14 @@ export function EditorPage({
               label="Keyboard shortcuts"
               onClick={() => setShortcutsOpen(true)}
             />
+            {!isPattern && !isLayout && (
+              <ToolbarButton
+                icon="record_voice_over"
+                label={t('app.editor.screenReaderReportAction', 'Screen reader report')}
+                disabled={!parsedDefinition.ok}
+                onClick={() => setScreenReaderReportOpen(true)}
+              />
+            )}
             <ToolbarButton
               icon="flag"
               label="Create a ticket"
@@ -2022,9 +2055,10 @@ export function EditorPage({
           colorMode={colorMode}
           resolvedColorScheme={resolvedColorScheme}
         >
-          {view === 'edit' && (layoutChrome?.before
-            ? <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
-            : generatedHeader)}
+          {view === 'edit' && shouldRenderGeneratedHeader && generatedHeader}
+          {view === 'edit' && layoutChrome?.before && (
+            <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
+          )}
           {view === 'edit' && (
             parsedDefinition.ok ? (
               <>
@@ -2093,7 +2127,12 @@ export function EditorPage({
                 resolvedColorScheme={resolvedColorScheme}
               >
                 {composedPreviewDef
-                  ? <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
+                  ? (
+                    <>
+                      {shouldRenderGeneratedHeader && generatedHeader}
+                      <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
+                    </>
+                  )
                   : <>{generatedHeader}<RenderPageDefinition definition={parsedDefinition.value} /></>}
               </ProjectThemeScope>
             </ResponsivePreviewFrame>
@@ -2153,6 +2192,12 @@ export function EditorPage({
       />
 
       <EditorShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
+
+      <ScreenReaderReportDialog
+        open={screenReaderReportOpen}
+        onClose={() => setScreenReaderReportOpen(false)}
+        definition={parsedDefinition.ok ? parsedDefinition.value : null}
+      />
     </>
   );
 }

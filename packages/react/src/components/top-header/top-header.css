@@ -255,6 +255,20 @@
   inset-inline-end: 100%;
 }
 
+/* ── Menu header content ─────────────────────────────────────────────────── */
+
+.a1-top-header__menu-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing-6);
+  min-width: 0;
+  padding: var(--base-spacing-4) var(--base-spacing-4) var(--base-spacing-8);
+}
+
+.a1-top-header__menu-header .a1-field {
+  width: 100%;
+}
+
 /* ── Right-side end zone ──────────────────────────────────────────────────── */
 
 .a1-top-header__end {

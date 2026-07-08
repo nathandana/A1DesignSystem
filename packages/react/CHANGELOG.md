@@ -4,6 +4,8 @@
 
 ### Added
 
+- **TopHeader searchable submenu slot** (A1-408) — nav items can now render a compact `menuHeader` above their submenu sections. The slot accepts a React node or `({ onClose }) => ReactNode`, so consumers can place governed controls such as `SearchField` inside a menu and close it after submit-style navigation. Added Storybook coverage for a searchable submenu.
+
 - **SectionSeparator component** — added a React `SectionSeparator` layout component for organic responsive transitions between neighboring `Section` surfaces. It supports independent `topSurface` / `bottomSurface`, per-side inverse scopes, seven SVG path shapes, responsive height sizes, and optional Divider-token border highlighting that follows the curve.
 
 - **Card accent surface** — added `surface="accent"` to Card for a strong action-colour surface. Accent cards use the stronger action background step, apply the primary-action foreground as their local text context, disable status stripe rendering because the two treatments compete, and consumers should still verify contrast for complex nested controls or explicit colour props.

@@ -44,6 +44,20 @@
             "ar": "المكونات"
           }
         },
+        "searchComponents": {
+          "$type": "string",
+          "$value": "Search components",
+          "$description": "Accessible label for the search field inside the main Components navigation menu.",
+          "locale": {
+            "es": "Buscar componentes",
+            "fr": "Rechercher des composants",
+            "de": "Komponenten suchen",
+            "pt": "Pesquisar componentes",
+            "ja": "コンポーネントを検索",
+            "zh": "搜索组件",
+            "ar": "البحث في المكونات"
+          }
+        },
         "editors": {
           "$type": "string",
           "$value": "Editors",
@@ -1837,6 +1851,174 @@
             "zh": "即将推出。",
             "ar": "قريبًا."
           }
+        },
+        "publishProjectAction": {
+          "$type": "string",
+          "$value": "Publish",
+          "$description": "Project home action that publishes a project to a stable standalone preview URL.",
+          "locale": {
+            "es": "Publicar",
+            "fr": "Publier",
+            "de": "Veröffentlichen",
+            "pt": "Publicar",
+            "ja": "公開",
+            "zh": "发布",
+            "ar": "نشر"
+          }
+        },
+        "publishedProjectAction": {
+          "$type": "string",
+          "$value": "Published",
+          "$description": "Project home action label shown when a project already has a published preview URL.",
+          "locale": {
+            "es": "Publicado",
+            "fr": "Publié",
+            "de": "Veröffentlicht",
+            "pt": "Publicado",
+            "ja": "公開済み",
+            "zh": "已发布",
+            "ar": "منشور"
+          }
+        },
+        "publishDialogTitle": {
+          "$type": "string",
+          "$value": "Publish project",
+          "$description": "Dialog title before a project has been published.",
+          "locale": {
+            "es": "Publicar proyecto",
+            "fr": "Publier le projet",
+            "de": "Projekt veröffentlichen",
+            "pt": "Publicar projeto",
+            "ja": "プロジェクトを公開",
+            "zh": "发布项目",
+            "ar": "نشر المشروع"
+          }
+        },
+        "publishedDialogTitle": {
+          "$type": "string",
+          "$value": "Project published",
+          "$description": "Dialog title after a project has a published preview URL.",
+          "locale": {
+            "es": "Proyecto publicado",
+            "fr": "Projet publié",
+            "de": "Projekt veröffentlicht",
+            "pt": "Projeto publicado",
+            "ja": "プロジェクトは公開済み",
+            "zh": "项目已发布",
+            "ar": "تم نشر المشروع"
+          }
+        },
+        "publishDialogDescription": {
+          "$type": "string",
+          "$value": "Publish this project to create a stable A1 preview URL for this workspace. This does not deploy the project to a public host.",
+          "$description": "Dialog body explaining the scope of publishing before the project has a published URL.",
+          "locale": {
+            "es": "Publica este proyecto para crear una URL estable de vista previa de A1 para este espacio de trabajo. Esto no despliega el proyecto en un host público.",
+            "fr": "Publiez ce projet pour créer une URL d'aperçu A1 stable pour cet espace de travail. Cela ne déploie pas le projet sur un hébergeur public.",
+            "de": "Veröffentliche dieses Projekt, um eine stabile A1-Vorschau-URL für diesen Arbeitsbereich zu erstellen. Dadurch wird das Projekt nicht auf einem öffentlichen Host bereitgestellt.",
+            "pt": "Publique este projeto para criar uma URL estável de prévia A1 para este workspace. Isso não implanta o projeto em um host público.",
+            "ja": "このプロジェクトを公開して、このワークスペース用の安定した A1 プレビュー URL を作成します。プロジェクトを公開ホストへデプロイするものではありません。",
+            "zh": "发布此项目，为此工作区创建稳定的 A1 预览 URL。这不会将项目部署到公共主机。",
+            "ar": "انشر هذا المشروع لإنشاء عنوان URL ثابت لمعاينة A1 في مساحة العمل هذه. لا يؤدي ذلك إلى نشر المشروع على مضيف عام."
+          }
+        },
+        "publishedDialogDescription": {
+          "$type": "string",
+          "$value": "This project is available as a standalone prototype at this URL.",
+          "$description": "Dialog body shown after a project has a published URL.",
+          "locale": {
+            "es": "Este proyecto está disponible como prototipo independiente en esta URL.",
+            "fr": "Ce projet est disponible comme prototype autonome à cette URL.",
+            "de": "Dieses Projekt ist unter dieser URL als eigenständiger Prototyp verfügbar.",
+            "pt": "Este projeto está disponível como protótipo independente nesta URL.",
+            "ja": "このプロジェクトは、この URL でスタンドアロンのプロトタイプとして利用できます。",
+            "zh": "此项目可通过此 URL 作为独立原型访问。",
+            "ar": "يتوفر هذا المشروع كنموذج أولي مستقل على عنوان URL هذا."
+          }
+        },
+        "publishedStatus": {
+          "$type": "string",
+          "$value": "Published",
+          "$description": "Success badge label in the project publish dialog.",
+          "locale": {
+            "es": "Publicado",
+            "fr": "Publié",
+            "de": "Veröffentlicht",
+            "pt": "Publicado",
+            "ja": "公開済み",
+            "zh": "已发布",
+            "ar": "منشور"
+          }
+        },
+        "publishedUrlLabel": {
+          "$type": "string",
+          "$value": "Published URL",
+          "$description": "Accessible label for the copyable published project URL.",
+          "locale": {
+            "es": "URL publicada",
+            "fr": "URL publiée",
+            "de": "Veröffentlichte URL",
+            "pt": "URL publicada",
+            "ja": "公開 URL",
+            "zh": "已发布 URL",
+            "ar": "عنوان URL المنشور"
+          }
+        },
+        "publishProjectConfirm": {
+          "$type": "string",
+          "$value": "Publish project",
+          "$description": "Primary dialog button that publishes the project.",
+          "locale": {
+            "es": "Publicar proyecto",
+            "fr": "Publier le projet",
+            "de": "Projekt veröffentlichen",
+            "pt": "Publicar projeto",
+            "ja": "プロジェクトを公開",
+            "zh": "发布项目",
+            "ar": "نشر المشروع"
+          }
+        },
+        "openPublishedProject": {
+          "$type": "string",
+          "$value": "Open published page",
+          "$description": "Button label that opens the published project URL in a new tab.",
+          "locale": {
+            "es": "Abrir página publicada",
+            "fr": "Ouvrir la page publiée",
+            "de": "Veröffentlichte Seite öffnen",
+            "pt": "Abrir página publicada",
+            "ja": "公開ページを開く",
+            "zh": "打开已发布页面",
+            "ar": "فتح الصفحة المنشورة"
+          }
+        },
+        "unpublishProject": {
+          "$type": "string",
+          "$value": "Unpublish",
+          "$description": "Secondary dialog button that removes a project's published URL.",
+          "locale": {
+            "es": "Anular publicación",
+            "fr": "Dépublier",
+            "de": "Veröffentlichung zurücknehmen",
+            "pt": "Cancelar publicação",
+            "ja": "公開を停止",
+            "zh": "取消发布",
+            "ar": "إلغاء النشر"
+          }
+        },
+        "publishCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Secondary dialog button that closes the publish dialog without publishing.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
         }
       },
       "backlog": {
@@ -1922,6 +2104,20 @@
             "ja": "詳細",
             "zh": "详情",
             "ar": "التفاصيل"
+          }
+        },
+        "onThisPage": {
+          "$type": "string",
+          "$value": "On this page",
+          "$description": "Heading and accessible label for the in-page section navigation (PageNav) on the ticket detail page.",
+          "locale": {
+            "es": "En esta página",
+            "fr": "Sur cette page",
+            "de": "Auf dieser Seite",
+            "pt": "Nesta página",
+            "ja": "このページの内容",
+            "zh": "本页内容",
+            "ar": "في هذه الصفحة"
           }
         },
         "awaitingRequester": {
@@ -3126,6 +3322,344 @@
             "ja": "自分のキュー",
             "zh": "我的队列",
             "ar": "قائمتي"
+          }
+        }
+      },
+      "editor": {
+        "screenReaderReportAction": {
+          "$type": "string",
+          "$value": "Screen reader report",
+          "$description": "Toolbar action label in the page editor that opens the screen reader report dialog.",
+          "locale": {
+            "es": "Informe de lector de pantalla",
+            "fr": "Rapport lecteur d'écran",
+            "de": "Screenreader-Bericht",
+            "pt": "Relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポート",
+            "zh": "屏幕阅读器报告",
+            "ar": "تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportTitle": {
+          "$type": "string",
+          "$value": "Screen reader report",
+          "$description": "Dialog title for the page editor screen reader report.",
+          "locale": {
+            "es": "Informe de lector de pantalla",
+            "fr": "Rapport lecteur d'écran",
+            "de": "Screenreader-Bericht",
+            "pt": "Relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポート",
+            "zh": "屏幕阅读器报告",
+            "ar": "تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportDescription": {
+          "$type": "string",
+          "$value": "A heuristic outline of the current page structure and the labels most screen readers are likely to announce. Use it to catch unlabeled icon buttons, missing field labels, heading jumps, and image-alt issues before manual assistive-technology testing.",
+          "$description": "Introductory description in the page editor screen reader report dialog.",
+          "locale": {
+            "es": "Un esquema heurístico de la estructura de la página actual y las etiquetas que la mayoría de lectores de pantalla probablemente anunciarán. Úsalo para detectar botones de solo icono sin etiqueta, campos sin etiqueta, saltos de encabezado y problemas de texto alternativo antes de probar con tecnología de asistencia.",
+            "fr": "Un aperçu heuristique de la structure de la page actuelle et des libellés que la plupart des lecteurs d'écran annonceront probablement. Utilisez-le pour repérer les boutons icône sans libellé, les champs non libellés, les sauts de titres et les problèmes de texte alternatif avant les tests avec technologie d'assistance.",
+            "de": "Eine heuristische Übersicht der aktuellen Seitenstruktur und der Bezeichnungen, die die meisten Screenreader wahrscheinlich ansagen. Nutze sie, um unbeschriftete Icon-Buttons, fehlende Feldlabels, Sprünge in der Überschriftenstruktur und Alt-Text-Probleme vor manuellen Tests mit assistiver Technologie zu finden.",
+            "pt": "Um resumo heurístico da estrutura da página atual e dos rótulos que a maioria dos leitores de tela provavelmente anunciará. Use para encontrar botões só com ícone sem rótulo, campos sem rótulo, saltos de cabeçalho e problemas de texto alternativo antes dos testes manuais com tecnologia assistiva.",
+            "ja": "現在のページ構造と、多くのスクリーンリーダーが読み上げる可能性が高いラベルのヒューリスティックな概要です。支援技術で手動テストする前に、ラベルのないアイコンボタン、フィールドラベルの欠落、見出しレベルの飛び、画像の代替テキストの問題を見つけるために使います。",
+            "zh": "当前页面结构以及大多数屏幕阅读器可能朗读的标签的启发式概要。用于在手动辅助技术测试前发现未标记的图标按钮、缺失的字段标签、标题跳级和图片替代文本问题。",
+            "ar": "مخطط إرشادي لبنية الصفحة الحالية والتسميات التي يُرجح أن تعلنها معظم قارئات الشاشة. استخدمه لاكتشاف أزرار الأيقونات غير المسماة، وتسميات الحقول المفقودة، وقفزات العناوين، ومشكلات النص البديل للصور قبل الاختبار اليدوي بتقنيات المساعدة."
+          }
+        },
+        "screenReaderReportScopeTitle": {
+          "$type": "string",
+          "$value": "Manual verification still matters",
+          "$description": "Banner heading in the screen reader report explaining the limits of the heuristic report.",
+          "locale": {
+            "es": "La verificación manual sigue importando",
+            "fr": "La vérification manuelle reste nécessaire",
+            "de": "Manuelle Prüfung bleibt wichtig",
+            "pt": "A verificação manual ainda importa",
+            "ja": "手動確認は引き続き重要です",
+            "zh": "仍需手动验证",
+            "ar": "لا يزال التحقق اليدوي مهمًا"
+          }
+        },
+        "screenReaderReportScopeBody": {
+          "$type": "string",
+          "$value": "This report reads the page definition, not a live screen reader transcript. Confirm focus order, dynamic announcements, and final wording in VoiceOver, NVDA, or another assistive technology before release.",
+          "$description": "Banner body in the screen reader report explaining that the report is heuristic.",
+          "locale": {
+            "es": "Este informe lee la definición de la página, no una transcripción real de un lector de pantalla. Confirma el orden de foco, los anuncios dinámicos y el texto final en VoiceOver, NVDA u otra tecnología de asistencia antes del lanzamiento.",
+            "fr": "Ce rapport lit la définition de la page, pas une transcription réelle de lecteur d'écran. Vérifiez l'ordre de focus, les annonces dynamiques et le libellé final dans VoiceOver, NVDA ou une autre technologie d'assistance avant la sortie.",
+            "de": "Dieser Bericht liest die Seitendefinition, kein Live-Transkript eines Screenreaders. Prüfe Fokusreihenfolge, dynamische Ansagen und finale Formulierungen vor der Veröffentlichung in VoiceOver, NVDA oder einer anderen assistiven Technologie.",
+            "pt": "Este relatório lê a definição da página, não uma transcrição real de leitor de tela. Confirme a ordem de foco, os anúncios dinâmicos e o texto final no VoiceOver, NVDA ou outra tecnologia assistiva antes do lançamento.",
+            "ja": "このレポートはライブのスクリーンリーダー記録ではなく、ページ定義を読み取ります。リリース前に VoiceOver、NVDA、または別の支援技術でフォーカス順序、動的な通知、最終的な文言を確認してください。",
+            "zh": "此报告读取页面定义，而不是实时屏幕阅读器记录。发布前请在 VoiceOver、NVDA 或其他辅助技术中确认焦点顺序、动态公告和最终文案。",
+            "ar": "يقرأ هذا التقرير تعريف الصفحة، وليس نصًا حيًا من قارئ شاشة. تحقق من ترتيب التركيز، والإعلانات الديناميكية، والصياغة النهائية في VoiceOver أو NVDA أو أي تقنية مساعدة أخرى قبل الإصدار."
+          }
+        },
+        "screenReaderReportSummaryLabel": {
+          "$type": "string",
+          "$value": "Screen reader report summary",
+          "$description": "Accessible label for the summary stats in the screen reader report dialog.",
+          "locale": {
+            "es": "Resumen del informe de lector de pantalla",
+            "fr": "Résumé du rapport lecteur d'écran",
+            "de": "Zusammenfassung des Screenreader-Berichts",
+            "pt": "Resumo do relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポートの概要",
+            "zh": "屏幕阅读器报告摘要",
+            "ar": "ملخص تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportItemsReviewed": {
+          "$type": "string",
+          "$value": "Items reviewed",
+          "$description": "Stat label for the number of page nodes reviewed in the screen reader report.",
+          "locale": {
+            "es": "Elementos revisados",
+            "fr": "Éléments examinés",
+            "de": "Geprüfte Elemente",
+            "pt": "Itens revisados",
+            "ja": "確認した項目",
+            "zh": "已检查项",
+            "ar": "العناصر المراجعة"
+          }
+        },
+        "screenReaderReportHeadings": {
+          "$type": "string",
+          "$value": "Headings",
+          "$description": "Stat label for the heading count in the screen reader report.",
+          "locale": {
+            "es": "Encabezados",
+            "fr": "Titres",
+            "de": "Überschriften",
+            "pt": "Cabeçalhos",
+            "ja": "見出し",
+            "zh": "标题",
+            "ar": "العناوين"
+          }
+        },
+        "screenReaderReportControls": {
+          "$type": "string",
+          "$value": "Controls",
+          "$description": "Stat label for the interactive control count in the screen reader report.",
+          "locale": {
+            "es": "Controles",
+            "fr": "Contrôles",
+            "de": "Steuerelemente",
+            "pt": "Controles",
+            "ja": "コントロール",
+            "zh": "控件",
+            "ar": "عناصر التحكم"
+          }
+        },
+        "screenReaderReportIssues": {
+          "$type": "string",
+          "$value": "Issues",
+          "$description": "Stat label for combined issues and review items in the screen reader report.",
+          "locale": {
+            "es": "Problemas",
+            "fr": "Problèmes",
+            "de": "Probleme",
+            "pt": "Problemas",
+            "ja": "問題",
+            "zh": "问题",
+            "ar": "المشكلات"
+          }
+        },
+        "screenReaderReportStructureHeading": {
+          "$type": "string",
+          "$value": "Reading structure",
+          "$description": "Section heading above the structure table in the screen reader report dialog.",
+          "locale": {
+            "es": "Estructura de lectura",
+            "fr": "Structure de lecture",
+            "de": "Lesestruktur",
+            "pt": "Estrutura de leitura",
+            "ja": "読み上げ構造",
+            "zh": "朗读结构",
+            "ar": "بنية القراءة"
+          }
+        },
+        "screenReaderReportTableCaption": {
+          "$type": "string",
+          "$value": "Screen reader structure report",
+          "$description": "Table caption for the screen reader report DataTable.",
+          "locale": {
+            "es": "Informe de estructura para lector de pantalla",
+            "fr": "Rapport de structure pour lecteur d'écran",
+            "de": "Strukturbericht fuer Screenreader",
+            "pt": "Relatório de estrutura para leitor de tela",
+            "ja": "スクリーンリーダー構造レポート",
+            "zh": "屏幕阅读器结构报告",
+            "ar": "تقرير بنية قارئ الشاشة"
+          }
+        },
+        "screenReaderReportColumnDepth": {
+          "$type": "string",
+          "$value": "Level",
+          "$description": "Column heading for nesting level in the screen reader report table.",
+          "locale": {
+            "es": "Nivel",
+            "fr": "Niveau",
+            "de": "Ebene",
+            "pt": "Nível",
+            "ja": "レベル",
+            "zh": "层级",
+            "ar": "المستوى"
+          }
+        },
+        "screenReaderReportColumnElement": {
+          "$type": "string",
+          "$value": "Element",
+          "$description": "Column heading for component element in the screen reader report table.",
+          "locale": {
+            "es": "Elemento",
+            "fr": "Élément",
+            "de": "Element",
+            "pt": "Elemento",
+            "ja": "要素",
+            "zh": "元素",
+            "ar": "العنصر"
+          }
+        },
+        "screenReaderReportColumnRole": {
+          "$type": "string",
+          "$value": "Role",
+          "$description": "Column heading for role in the screen reader report table.",
+          "locale": {
+            "es": "Rol",
+            "fr": "Rôle",
+            "de": "Rolle",
+            "pt": "Função",
+            "ja": "ロール",
+            "zh": "角色",
+            "ar": "الدور"
+          }
+        },
+        "screenReaderReportColumnAnnouncement": {
+          "$type": "string",
+          "$value": "Likely announcement",
+          "$description": "Column heading for likely screen reader announcement in the report table.",
+          "locale": {
+            "es": "Anuncio probable",
+            "fr": "Annonce probable",
+            "de": "Wahrscheinliche Ansage",
+            "pt": "Anúncio provável",
+            "ja": "想定される読み上げ",
+            "zh": "可能朗读内容",
+            "ar": "الإعلان المحتمل"
+          }
+        },
+        "screenReaderReportColumnStatus": {
+          "$type": "string",
+          "$value": "Status",
+          "$description": "Column heading for status in the screen reader report table.",
+          "locale": {
+            "es": "Estado",
+            "fr": "Statut",
+            "de": "Status",
+            "pt": "Status",
+            "ja": "ステータス",
+            "zh": "状态",
+            "ar": "الحالة"
+          }
+        },
+        "screenReaderReportColumnNotes": {
+          "$type": "string",
+          "$value": "Notes",
+          "$description": "Column heading for notes in the screen reader report table.",
+          "locale": {
+            "es": "Notas",
+            "fr": "Notes",
+            "de": "Notizen",
+            "pt": "Notas",
+            "ja": "メモ",
+            "zh": "备注",
+            "ar": "ملاحظات"
+          }
+        },
+        "screenReaderReportStatusOk": {
+          "$type": "string",
+          "$value": "Pass",
+          "$description": "Status badge label for items that appear acceptable in the screen reader report.",
+          "locale": {
+            "es": "Aprobado",
+            "fr": "Réussi",
+            "de": "Bestanden",
+            "pt": "Aprovado",
+            "ja": "合格",
+            "zh": "通过",
+            "ar": "ناجح"
+          }
+        },
+        "screenReaderReportStatusReview": {
+          "$type": "string",
+          "$value": "Review",
+          "$description": "Status badge label for items that need manual review in the screen reader report.",
+          "locale": {
+            "es": "Revisar",
+            "fr": "À vérifier",
+            "de": "Prüfen",
+            "pt": "Revisar",
+            "ja": "要確認",
+            "zh": "需检查",
+            "ar": "مراجعة"
+          }
+        },
+        "screenReaderReportStatusIssue": {
+          "$type": "string",
+          "$value": "Issue",
+          "$description": "Status badge label for items with likely screen reader issues in the report.",
+          "locale": {
+            "es": "Problema",
+            "fr": "Problème",
+            "de": "Problem",
+            "pt": "Problema",
+            "ja": "問題",
+            "zh": "问题",
+            "ar": "مشكلة"
+          }
+        },
+        "screenReaderReportNoRowsTitle": {
+          "$type": "string",
+          "$value": "No readable items",
+          "$description": "Empty state title for the screen reader report table when no component nodes are present.",
+          "locale": {
+            "es": "Sin elementos legibles",
+            "fr": "Aucun élément lisible",
+            "de": "Keine lesbaren Elemente",
+            "pt": "Nenhum item legível",
+            "ja": "読み上げ可能な項目がありません",
+            "zh": "没有可朗读项",
+            "ar": "لا توجد عناصر قابلة للقراءة"
+          }
+        },
+        "screenReaderReportNoRowsDescription": {
+          "$type": "string",
+          "$value": "This page does not have any component nodes to inspect.",
+          "$description": "Empty state description for the screen reader report table.",
+          "locale": {
+            "es": "Esta página no tiene nodos de componente para inspeccionar.",
+            "fr": "Cette page ne contient aucun noeud de composant à inspecter.",
+            "de": "Diese Seite enthält keine Komponenten-Knoten zum Prüfen.",
+            "pt": "Esta página não tem nós de componente para inspecionar.",
+            "ja": "このページには検査するコンポーネントノードがありません。",
+            "zh": "此页面没有可检查的组件节点。",
+            "ar": "لا تحتوي هذه الصفحة على عُقد مكونات لفحصها."
+          }
+        },
+        "screenReaderReportClose": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Button label for closing the screen reader report dialog.",
+          "locale": {
+            "es": "Cerrar",
+            "fr": "Fermer",
+            "de": "Schließen",
+            "pt": "Fechar",
+            "ja": "閉じる",
+            "zh": "关闭",
+            "ar": "إغلاق"
           }
         }
       },

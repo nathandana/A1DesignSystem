@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Paragraph, Section, TopHeader } from '@gtivr4/a1-design-system-react';
+import { PageLayout, Paragraph, Section, SideNav, TopHeader, TreeMenu } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
 import { EDITOR_EXAMPLES, BLANK_PAGE } from '../editor/examples/index.ts';
 import { decompress, readStored } from '../editor/storage';
-import { buildProjectNav } from '../projects/projectNav';
-import { loadPages, loadProjects, loadProjectLayout } from '../projects/projectStore';
-import { combinePageIntoLayout } from '../projects/projectLayout';
+import { buildProjectNav, buildProjectTree } from '../projects/projectNav';
+import {
+  getPublishedProjectBySlug,
+  getPublishedProjectPath,
+  loadPages,
+  loadProjects,
+  loadProjectLayout,
+} from '../projects/projectStore';
+import { combinePageIntoLayout, definitionContainsNodeType } from '../projects/projectLayout';
 import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
 import type { PageDefinition } from '../editor/pageTypes';
 
@@ -73,8 +79,32 @@ export function resolvePageJson(pageId: string): string | null {
 }
 
 /** The `screen` query param identifies which prototype page is being viewed. */
+function publishedRouteFromUrl(): { slug: string; pageId: string | null } | null {
+  const parts = window.location.pathname.replace(/^\/|\/$/g, '').split('/');
+  if (parts[0] !== 'p' || !parts[1]) return null;
+  return {
+    slug: decodeURIComponent(parts[1]),
+    pageId: parts[2] ? decodeURIComponent(parts[2]) : null,
+  };
+}
+
+function projectIdFromUrl(): string | null {
+  const queryProject = new URLSearchParams(window.location.search).get('project');
+  if (queryProject) return queryProject;
+  const published = publishedRouteFromUrl();
+  return published ? getPublishedProjectBySlug(published.slug)?.id ?? null : null;
+}
+
 function screenIdFromUrl(): string | null {
-  return new URLSearchParams(window.location.search).get('screen');
+  const queryScreen = new URLSearchParams(window.location.search).get('screen');
+  if (queryScreen) return queryScreen;
+
+  const published = publishedRouteFromUrl();
+  if (!published) return null;
+  if (published.pageId) return published.pageId;
+
+  const project = getPublishedProjectBySlug(published.slug);
+  return project ? loadPages(project.id)[0]?.id ?? null : null;
 }
 
 /** The `item` query param selects which dataset row a detail page binds against. */
@@ -86,6 +116,13 @@ function itemIdFromUrl(): string | null {
  *  the owning project so the generated nav survives in-prototype navigation. An
  *  `item` is carried for detail-page links. */
 function urlForScreen(pageId: string, itemId?: string | null): string {
+  const published = publishedRouteFromUrl();
+  if (published) {
+    const project = getPublishedProjectBySlug(published.slug);
+    const path = project ? getPublishedProjectPath(project, pageId) : '';
+    if (path) return itemId ? `${path}?item=${encodeURIComponent(itemId)}` : path;
+  }
+
   const project = new URLSearchParams(window.location.search).get('project');
   const projectParam = project ? `&project=${encodeURIComponent(project)}` : '';
   const itemParam = itemId ? `&item=${encodeURIComponent(itemId)}` : '';
@@ -132,7 +169,7 @@ export function EditorPreviewPage() {
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode;
 
   // The owning project (from the launch URL) drives the auto-generated TopHeader.
-  const projectId = useMemo(() => new URLSearchParams(window.location.search).get('project'), []);
+  const projectId = useMemo(() => projectIdFromUrl(), []);
   const projectPages = useMemo(() => (projectId ? loadPages(projectId) : []), [projectId]);
   const project = useMemo(
     () => (projectId ? loadProjects().find((p) => p.id === projectId) : undefined),
@@ -206,21 +243,40 @@ export function EditorPreviewPage() {
     [projectPages, screenId, navigateToScreen, urlForScreen],
   );
 
+  // Sidebar navigation (SideNav + TreeMenu) is opt-in per project (`navStyle`).
+  const useSidebarNav = project?.navStyle === 'sidebar' && projectPages.length > 0;
+  const tree = useMemo(
+    () => (useSidebarNav ? buildProjectTree(projectPages, screenId) : null),
+    [useSidebarNav, projectPages, screenId],
+  );
+
   // The project's shared layout (editable chrome) wraps every page: the page is
   // composed into it by replacing the Outlet. Falls back to the bare auto header
   // for a standalone (no-project) preview.
   const layoutDef = useMemo(() => (projectId ? parseDef(loadProjectLayout(projectId)) : null), [projectId]);
+  const layoutHasTopHeader = definitionContainsNodeType(layoutDef, 'TopHeader');
+  const firstProjectPageId = projectPages[0]?.id ?? null;
+  const projectHomeHref = firstProjectPageId
+    ? (publishedRouteFromUrl() && project ? getPublishedProjectPath(project) : urlForScreen(firstProjectPageId))
+    : undefined;
 
   const composed = useMemo(() => {
     if (!definition) return null;
-    if (layoutDef) return combinePageIntoLayout(layoutDef, definition, { navItems, logoFallback: projectName ?? '' });
+    if (layoutDef) {
+      return combinePageIntoLayout(layoutDef, definition, {
+        navItems,
+        logoFallback: projectName ?? '',
+        logoHref: projectHomeHref,
+      });
+    }
     return definition;
-  }, [definition, layoutDef, navItems, projectName]);
+  }, [definition, layoutDef, navItems, projectName, projectHomeHref]);
 
-  const fallbackHeader = !layoutDef && projectPages.length ? (
+  const fallbackHeader = !useSidebarNav && projectPages.length && (!layoutDef || !layoutHasTopHeader) ? (
     <TopHeader
       className="a1-web-generated-header"
       logo={projectName ? <span className="a1-web-logo">{projectName}</span> : undefined}
+      logoHref={projectHomeHref}
       navItems={navItems ?? []}
     />
   ) : null;
@@ -238,6 +294,40 @@ export function EditorPreviewPage() {
             No page definition found. Open this preview from the Editor page.
           </Paragraph>
         </Section>
+      </ProjectThemeScope>
+    );
+  }
+
+  // Sidebar navigation: real app-shell chrome (PageLayout + SideNav + TreeMenu)
+  // wired directly to navigation — the page renders in the main area (the sidebar
+  // is the chrome, so the shared TopHeader/footer layout isn't applied here).
+  if (useSidebarNav && tree && definition) {
+    return (
+      <ProjectThemeScope
+        theme={project?.theme}
+        colorMode={colorMode}
+        resolvedColorScheme={resolvedColorScheme}
+      >
+        <PageLayout
+          viewportHeight
+          sidebar={(
+            <SideNav header={projectName || 'Project'}>
+              <TreeMenu
+                items={tree.items}
+                selectedId={screenId}
+                onSelect={(pageId) => navigateToScreen(pageId)}
+                defaultExpandedIds={tree.expandedIds}
+                aria-label="Project pages"
+              />
+            </SideNav>
+          )}
+        >
+          <RenderPageDefinition
+            definition={definition}
+            itemId={itemId}
+            onNavigate={(pageId, opts) => navigateToScreen(pageId, opts?.item ?? null)}
+          />
+        </PageLayout>
       </ProjectThemeScope>
     );
   }

@@ -41,7 +41,7 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
   const [manual, setManual] = useState('')
   const [manualError, setManualError] = useState('')
   const [typeFilter, setTypeFilter] = useState('all') // suggestion filter (A1-208)
-  const [menu, setMenu] = useState(null) // right-click context menu: { x, y, match }
+  const [menu, setMenu] = useState(null) // copy-reference menu: { x, y, match }
 
   // Tickets that were merged into this one (this ticket is the survivor).
   const mergedIn = useMemo(
@@ -294,7 +294,7 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
                 {reasons.length > 0 && (
                   <Paragraph as="span" size="xs" color="muted">{reasons.join(' · ')}</Paragraph>
                 )}
-                {/* Compact icon-button actions; right-click the card for the full menu (A1-208). */}
+                {/* Compact icon-button actions; the overflow keeps only secondary actions. */}
                 <Stack direction="row" gap="xs" align="center" wrap>
                   <IconButton
                     variant="secondary"
@@ -337,7 +337,7 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
         )
       )}
 
-      {/* Right-click (or ⋮) actions for a suggested ticket (A1-208). */}
+      {/* Right-click (or ⋮) secondary actions for a suggested ticket. */}
       <ContextMenu
         open={!!menu}
         x={menu?.x ?? 0}
@@ -345,12 +345,6 @@ export function TicketMergePanel({ item, items = [], onMerge, onLink, onUnlink, 
         onClose={() => setMenu(null)}
         aria-label="Suggested ticket actions"
         items={menu ? [
-          { id: 'open', label: `Open ${ticketRef(menu.match.number)}`, icon: 'open_in_new', onClick: () => onOpenItem?.(menu.match) },
-          ...(isLinked(menu.match)
-            ? [{ id: 'unlink', label: 'Unlink', icon: 'link_off', onClick: () => onUnlink?.(item, menu.match) }]
-            : [{ id: 'link', label: 'Link to this ticket', icon: 'link', onClick: () => onLink?.(item, menu.match) }]),
-          { id: 'merge', label: 'Merge into this ticket…', icon: 'merge', disabled: busy || pendingOther?.id === menu.match.id, onClick: () => startMerge(menu.match) },
-          { type: 'divider', id: 'sep' },
           { id: 'copy', label: 'Copy reference', icon: 'content_copy', onClick: () => copyRef(menu.match) },
         ] : []}
       />

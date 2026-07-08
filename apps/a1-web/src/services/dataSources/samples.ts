@@ -5,6 +5,7 @@
  */
 import type { CreateDataSourceInput, DataColumn, DataRow } from './types';
 import { buildVehiclesSample } from './vehiclesSample';
+import { APIGRID_SAMPLE_BUILDERS } from './apigridSamples';
 
 const SEEDED_FLAG = 'a1-data-sources-seeded';
 
@@ -101,4 +102,6 @@ export const SAMPLE_DATA_SOURCES: {
   { id: 'users', label: 'Users', icon: 'group', build: buildUsersSample },
   { id: 'crochet', label: 'Crocheted animals', icon: 'toys', build: buildCrochetSample },
   { id: 'vehicles', label: 'Vehicles', icon: 'directions_car', build: buildVehiclesSample },
+  // ApiGrid API-management dashboard datasets (apis, consumers, activity, traffic, logs).
+  ...APIGRID_SAMPLE_BUILDERS,
 ];

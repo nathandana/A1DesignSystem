@@ -45,6 +45,17 @@ export interface Project {
   meta?: Record<string, string>;
   /** Per-project label overrides. Key = dot-notation label path; value = map of locale code → translation string. */
   labelOverrides?: Record<string, Record<string, string>>;
+  /** Archived projects are hidden from the projects list (soft delete). Restorable. */
+  archived?: boolean;
+  /** Primary navigation style for the project's prototype: an auto TopHeader
+   *  (default) or a left sidebar (SideNav + TreeMenu from the page hierarchy). */
+  navStyle?: 'header' | 'sidebar';
+  /** Stable standalone prototype path metadata. Local/workspace publish only. */
+  published?: {
+    slug: string;
+    publishedAt: number;
+    updatedAt: number;
+  };
   createdAt: number;
   updatedAt: number;
 }
@@ -71,6 +82,28 @@ function uid(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    || 'project';
+}
+
+function uniquePublishedSlug(projects: Project[], projectId: string, name: string): string {
+  const base = slugify(name);
+  const used = new Set(
+    projects
+      .filter((project) => project.id !== projectId)
+      .map((project) => project.published?.slug)
+      .filter((slug): slug is string => !!slug),
+  );
+  if (!used.has(base)) return base;
+  let suffix = 2;
+  while (used.has(`${base}-${suffix}`)) suffix += 1;
+  return `${base}-${suffix}`;
+}
+
 // ── Projects ────────────────────────────────────────────────────────────────
 
 export function loadProjects(): Project[] {
@@ -78,17 +111,40 @@ export function loadProjects(): Project[] {
   ensureSampleProjects();
   try {
     const raw = readStored(PROJECTS_KEY);
-    return raw ? (JSON.parse(raw) as Project[]) : [];
+    // Archived projects are soft-deleted — hidden from the active list.
+    return raw ? (JSON.parse(raw) as Project[]).filter((p) => !p.archived) : [];
   } catch {
     return [];
   }
+}
+
+/** Every archived (soft-deleted) project, for the "Archived" list. */
+export function loadArchivedProjects(): Project[] {
+  return loadProjectsRaw().filter((p) => p.archived);
+}
+
+/** Soft-delete a project: hide it from the active list, keep its data. Restorable. */
+export function archiveProject(id: string): void {
+  const projects = loadProjectsRaw().map((p) =>
+    p.id === id ? { ...p, archived: true, updatedAt: Date.now() } : p);
+  saveProjects(projects);
+}
+
+/** Restore an archived project back to the active list. */
+export function unarchiveProject(id: string): void {
+  const projects = loadProjectsRaw().map((p) => {
+    if (p.id !== id) return p;
+    const { archived: _archived, ...rest } = p;
+    return { ...rest, updatedAt: Date.now() };
+  });
+  saveProjects(projects);
 }
 
 export function saveProjects(projects: Project[]): void {
   writeStored(PROJECTS_KEY, JSON.stringify(projects));
 }
 
-export function createProject(input: { name: string; description?: string; icon?: string; theme?: string }): Project {
+export function createProject(input: { name: string; description?: string; icon?: string; theme?: string; navStyle?: 'header' | 'sidebar' }): Project {
   const now = Date.now();
   const project: Project = {
     id: uid('proj'),
@@ -96,21 +152,67 @@ export function createProject(input: { name: string; description?: string; icon?
     description: input.description?.trim() || undefined,
     icon: input.icon || 'folder',
     theme: input.theme || undefined,
+    navStyle: input.navStyle && input.navStyle !== 'header' ? input.navStyle : undefined,
     createdAt: now,
     updatedAt: now,
   };
-  const projects = loadProjects();
+  // Use the raw list (incl. archived) so a create never drops archived projects.
+  const projects = loadProjectsRaw();
   saveProjects([...projects, project]);
   savePages(project.id, []);
   return project;
 }
 
 export function updateProject(id: string, patch: Partial<Omit<Project, 'id' | 'createdAt'>>): Project[] {
-  const projects = loadProjects().map((p) =>
+  // Raw list so updates preserve archived projects (and can target one).
+  const projects = loadProjectsRaw().map((p) =>
     p.id === id ? { ...p, ...patch, updatedAt: Date.now() } : p,
   );
   saveProjects(projects);
   return projects;
+}
+
+/** Publish a project to a stable local/workspace prototype URL (`/p/{slug}`). */
+export function publishProject(id: string): Project[] {
+  const projects = loadProjectsRaw();
+  const now = Date.now();
+  const next = projects.map((project) => {
+    if (project.id !== id) return project;
+    const slug = project.published?.slug ?? uniquePublishedSlug(projects, project.id, project.name);
+    return {
+      ...project,
+      published: {
+        slug,
+        publishedAt: project.published?.publishedAt ?? now,
+        updatedAt: now,
+      },
+      updatedAt: now,
+    };
+  });
+  saveProjects(next);
+  return next;
+}
+
+/** Remove the stable published URL while keeping project content intact. */
+export function unpublishProject(id: string): Project[] {
+  const projects = loadProjectsRaw().map((project) => {
+    if (project.id !== id) return project;
+    const { published: _published, ...rest } = project;
+    return { ...rest, updatedAt: Date.now() };
+  });
+  saveProjects(projects);
+  return projects;
+}
+
+export function getPublishedProjectBySlug(slug: string | null | undefined): Project | null {
+  if (!slug) return null;
+  return loadProjects().find((project) => project.published?.slug === slug) ?? null;
+}
+
+export function getPublishedProjectPath(project: Project, pageId?: string | null): string {
+  const slug = project.published?.slug;
+  if (!slug) return '';
+  return `/p/${encodeURIComponent(slug)}${pageId ? `/${encodeURIComponent(pageId)}` : ''}`;
 }
 
 /** The project's image & illustration style note (used to seed AI image prompts). */
@@ -535,7 +637,8 @@ export function commitPageJson(pageId: string, json: string, label: string): voi
  *  backup. Page/project metadata is JSON-encoded on marker lines so the importer
  *  can round-trip it exactly. */
 export function exportAllText(): string {
-  const projects = loadProjects();
+  // Include archived projects so a backup/sync never loses them.
+  const projects = loadProjectsRaw();
   const parts: string[] = [
     'A1 Editor — projects export',
     `Generated: ${new Date().toISOString()}`,
@@ -543,7 +646,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '' })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, navStyle: proj.navStyle ?? '', published: proj.published ?? null })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -572,7 +675,7 @@ export function importAllText(
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; navStyle?: string; published?: Project['published'] | null };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -618,6 +721,11 @@ export function importAllText(
       description: meta.description || existing?.description || undefined,
       icon: meta.icon || existing?.icon || 'folder',
       theme: meta.theme || existing?.theme || undefined,
+      // Preserve soft-delete + nav style across export/import (and cloud sync),
+      // else an archived project reappears on the next hydrate.
+      archived: meta.archived ?? existing?.archived ?? undefined,
+      navStyle: (meta.navStyle as Project['navStyle']) || existing?.navStyle || undefined,
+      published: meta.published ?? existing?.published ?? undefined,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     });

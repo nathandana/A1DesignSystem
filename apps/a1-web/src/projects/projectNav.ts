@@ -103,3 +103,42 @@ export function buildProjectNav(pages: ProjectPage[], opts: ProjectNavOptions): 
     };
   });
 }
+
+// ── Sidebar navigation (SideNav + TreeMenu) ─────────────────────────────────────
+
+/** A TreeMenu item derived from a project page. */
+export interface ProjectTreeItem {
+  id: string;
+  label: string;
+  icon?: string;
+  children?: ProjectTreeItem[];
+}
+
+/**
+ * Build the `TreeMenu` items for a project's sidebar navigation from its page
+ * hierarchy, plus the ids to expand so the active page's ancestors are open.
+ * Navigation is driven by TreeMenu's `onSelect(id)` (id = page id), so no hrefs
+ * are needed here.
+ */
+export function buildProjectTree(
+  pages: ProjectPage[],
+  activePageId?: string | null,
+): { items: ProjectTreeItem[]; expandedIds: string[] } {
+  const build = (parentId: string | null): ProjectTreeItem[] =>
+    childrenOf(pages, parentId).map((p) => {
+      const kids = build(p.id);
+      return {
+        id: p.id,
+        label: p.title || 'Untitled',
+        ...(p.icon ? { icon: p.icon } : {}),
+        ...(kids.length ? { children: kids } : {}),
+      };
+    });
+
+  const parentOf = new Map(pages.map((p) => [p.id, p.parentId]));
+  const expandedIds: string[] = [];
+  let cur = activePageId ? parentOf.get(activePageId) ?? null : null;
+  while (cur) { expandedIds.push(cur); cur = parentOf.get(cur) ?? null; }
+
+  return { items: build(null), expandedIds };
+}

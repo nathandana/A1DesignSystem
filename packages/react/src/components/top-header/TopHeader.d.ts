@@ -10,6 +10,8 @@ export interface TopHeaderNavItem {
   /** Render the desktop nav item as an icon-only affordance with `label` as the accessible name. */
   iconOnly?: boolean;
   active?: boolean;
+  /** Optional custom content rendered above this item's submenu sections. */
+  menuHeader?: React.ReactNode | ((helpers: { onClose: () => void }) => React.ReactNode);
   /** Secondary line shown in dropdown/submenu entries. */
   description?: string;
   /** Nested items — renders the entry as a dropdown submenu. */

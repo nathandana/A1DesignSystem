@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import {
+  Accordion,
   Button,
   Card,
   ContextMenu,
@@ -7,6 +8,7 @@ import {
   Dialog,
   Grid,
   Heading,
+  MessageBadge,
   MessageEmptyState,
   Paragraph,
   Section,
@@ -50,11 +52,14 @@ function formatDate(ts) {
 
 export function ProjectsList({
   projects = [],
+  archivedProjects = [],
   onOpenProject,
   onCreateProject,
   onRenameProject,
   onDuplicateProject,
   onDeleteProject,
+  onRestoreProject,
+  onDeleteProjectPermanent,
   onImportProject,
   onOpenImageLibrary,
   onNavigateHome,
@@ -64,7 +69,8 @@ export function ProjectsList({
   const [importing, setImporting] = useState(false) // upload-from-JSON dialog
   const [aiOpen, setAiOpen] = useState(false) // create-with-AI chat dialog
   const [ctxMenu, setCtxMenu] = useState(null)  // { id, x, y }
-  const [confirmDelete, setConfirmDelete] = useState(null) // project
+  const [confirmDelete, setConfirmDelete] = useState(null) // project (archive)
+  const [confirmPermanent, setConfirmPermanent] = useState(null) // archived project (permanent delete)
 
   // Page counts are cheap localStorage reads; recompute when the project set changes.
   const counts = useMemo(() => {
@@ -191,6 +197,31 @@ export function ProjectsList({
             ))}
           </Grid>
         )}
+
+        {archivedProjects.length > 0 && (
+          <Accordion label={`Archived (${archivedProjects.length})`} divider>
+            <Stack direction="column" gap="sm">
+              {archivedProjects.map((project) => (
+                <Card key={project.id}>
+                  <Stack direction="row" gap="sm" align="center" justify="between" wrap>
+                    <Stack direction="row" gap="sm" align="center">
+                      <MessageBadge status="neutral" subtle size="sm" icon="archive">Archived</MessageBadge>
+                      <Heading as="h3" size="sm">{project.name}</Heading>
+                    </Stack>
+                    <Stack direction="row" gap="xs" wrap>
+                      <Button variant="secondary" size="sm" icon="unarchive" onClick={() => onRestoreProject?.(project.id)}>
+                        Restore
+                      </Button>
+                      <Button variant="tertiary" size="sm" icon="delete" onClick={() => setConfirmPermanent(project)}>
+                        Delete
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+          </Accordion>
+        )}
       </Stack>
 
       <ContextMenu
@@ -205,7 +236,7 @@ export function ProjectsList({
           { id: 'duplicate', label: 'Duplicate', icon: 'content_copy', onClick: () => onDuplicateProject(ctxProject.id) },
           { id: 'download', label: 'Download as JSON', icon: 'download', onClick: () => downloadProjectJson(ctxProject) },
           { type: 'divider', id: 'div' },
-          { id: 'delete', label: 'Delete…', icon: 'delete', variant: 'destructive', onClick: () => setConfirmDelete(ctxProject) },
+          { id: 'archive', label: 'Archive…', icon: 'archive', onClick: () => setConfirmDelete(ctxProject) },
         ] : []}
       />
 
@@ -239,24 +270,47 @@ export function ProjectsList({
         open={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
         status="warn"
-        title="Delete project?"
+        title="Archive project?"
         footer={
           <>
             <Button variant="secondary" onClick={() => setConfirmDelete(null)}>Cancel</Button>
             <Button
-              variant="destructive"
-              icon="delete"
+              variant="primary"
+              icon="archive"
               onClick={() => { onDeleteProject(confirmDelete.id); setConfirmDelete(null) }}
             >
-              Delete project
+              Archive project
             </Button>
           </>
         }
       >
         <Paragraph>
-          “{confirmDelete?.name}” and its {counts[confirmDelete?.id] ?? 0} page(s) will be permanently deleted.
-          This can’t be undone.
+          “{confirmDelete?.name}” and its {counts[confirmDelete?.id] ?? 0} page(s) will be hidden from your
+          projects. You can restore it anytime from Archived.
         </Paragraph>
+        </Dialog>
+
+        <Dialog
+          open={!!confirmPermanent}
+          onClose={() => setConfirmPermanent(null)}
+          status="error"
+          title="Delete permanently?"
+          footer={
+            <>
+              <Button variant="secondary" onClick={() => setConfirmPermanent(null)}>Cancel</Button>
+              <Button
+                variant="destructive"
+                icon="delete"
+                onClick={() => { onDeleteProjectPermanent?.(confirmPermanent.id); setConfirmPermanent(null) }}
+              >
+                Delete permanently
+              </Button>
+            </>
+          }
+        >
+          <Paragraph>
+            “{confirmPermanent?.name}” and all its pages will be permanently deleted. This can’t be undone.
+          </Paragraph>
         </Dialog>
       </Section>
     </>

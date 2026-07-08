@@ -9,6 +9,16 @@ import type { ComponentNode, PageDefinition } from '../editor/pageTypes';
 
 export const LAYOUT_DOC_ID = '__layout__';
 
+function nodesContainType(nodes: ComponentNode[], type: string): boolean {
+  return nodes.some((node) => (
+    node.type === type || (node.children?.length ? nodesContainType(node.children, type) : false)
+  ));
+}
+
+export function definitionContainsNodeType(definition: PageDefinition | null | undefined, type: string): boolean {
+  return !!definition?.page.layout.regions.some((region) => nodesContainType(region.nodes, type));
+}
+
 /** The default shared layout: a TopHeader, the page Outlet, and a simple footer.
  *  Nav items are injected from the page hierarchy at render time, so the header's
  *  editable props are the logo and icon position. */
@@ -61,6 +71,7 @@ function substitute(
   pageNodes: ComponentNode[],
   navItems: unknown,
   logoFallback: string,
+  logoHref: string | undefined,
 ): [ComponentNode[], boolean] {
   let replaced = false;
   const out: ComponentNode[] = [];
@@ -77,12 +88,13 @@ function substitute(
         props: {
           ...node.props,
           ...(navItems != null ? { navItems } : {}),
+          ...(logoHref ? { logoHref } : {}),
           ...(node.props?.logo == null || node.props?.logo === '' ? { logo: logoFallback } : {}),
         },
       };
     }
     if (next.children?.length) {
-      const [kids, didReplace] = substitute(next.children, pageNodes, navItems, logoFallback);
+      const [kids, didReplace] = substitute(next.children, pageNodes, navItems, logoFallback, logoHref);
       if (didReplace) replaced = true;
       next = { ...next, children: kids };
     }
@@ -92,7 +104,12 @@ function substitute(
 }
 
 // Inject the auto nav + logo onto any TopHeader in a subtree (read-only chrome).
-function decorateHeaders(node: ComponentNode, navItems: unknown, logoFallback: string): ComponentNode {
+function decorateHeaders(
+  node: ComponentNode,
+  navItems: unknown,
+  logoFallback: string,
+  logoHref: string | undefined,
+): ComponentNode {
   let next = node;
   if (node.type === 'TopHeader') {
     next = {
@@ -100,11 +117,14 @@ function decorateHeaders(node: ComponentNode, navItems: unknown, logoFallback: s
       props: {
         ...node.props,
         ...(navItems != null ? { navItems } : {}),
+        ...(logoHref ? { logoHref } : {}),
         ...(node.props?.logo == null || node.props?.logo === '' ? { logo: logoFallback } : {}),
       },
     };
   }
-  if (next.children?.length) next = { ...next, children: next.children.map((c) => decorateHeaders(c, navItems, logoFallback)) };
+  if (next.children?.length) {
+    next = { ...next, children: next.children.map((c) => decorateHeaders(c, navItems, logoFallback, logoHref)) };
+  }
   return next;
 }
 
@@ -124,11 +144,11 @@ function nodesToDefinition(nodes: ComponentNode[], name = 'Layout'): PageDefinit
  */
 export function splitLayoutAtOutlet(
   layoutDef: PageDefinition,
-  { navItems, logoFallback = '' }: { navItems?: unknown; logoFallback?: string } = {},
+  { navItems, logoFallback = '', logoHref }: { navItems?: unknown; logoFallback?: string; logoHref?: string } = {},
 ): { before: PageDefinition | null; after: PageDefinition | null } {
   const region = layoutDef.page.layout.regions[0];
   if (!region) return { before: null, after: null };
-  const nodes = region.nodes.map((n) => decorateHeaders(n, navItems, logoFallback));
+  const nodes = region.nodes.map((n) => decorateHeaders(n, navItems, logoFallback, logoHref));
   const idx = nodes.findIndex((n) => n.type === 'Outlet');
   if (idx === -1) return { before: nodes.length ? nodesToDefinition(nodes) : null, after: null };
   const before = nodes.slice(0, idx);
@@ -148,11 +168,11 @@ export function splitLayoutAtOutlet(
 export function combinePageIntoLayout(
   layoutDef: PageDefinition,
   pageDef: PageDefinition,
-  { navItems, logoFallback = '' }: { navItems?: unknown; logoFallback?: string } = {},
+  { navItems, logoFallback = '', logoHref }: { navItems?: unknown; logoFallback?: string; logoHref?: string } = {},
 ): PageDefinition {
   const pageNodes = pageDef.page.layout.regions.flatMap((r) => r.nodes);
   const regions = layoutDef.page.layout.regions.map((region) => {
-    const [nodes] = substitute(region.nodes, pageNodes, navItems, logoFallback);
+    const [nodes] = substitute(region.nodes, pageNodes, navItems, logoFallback, logoHref);
     return { ...region, nodes };
   });
   // Guarantee the page renders even if the layout has no Outlet.
