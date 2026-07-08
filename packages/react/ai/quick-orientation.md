@@ -24,6 +24,7 @@ Use the root scripts for bookmarkable local URLs. They all use `--strictPort`, s
 |----------|---------|-----|
 | Examples index | `npm run dev` | `http://127.0.0.1:5176/` |
 | a1-web | `npm run dev:a1-web` | `http://127.0.0.1:5177/` |
+| a1-web Codex bridge | `npm run codex:bridge:a1-web` | `http://127.0.0.1:4317/` |
 | Storybook | `npm run storybook` | `http://127.0.0.1:6006/` |
 | Priority Guide | `npm run dev:priority-guide` | `http://127.0.0.1:5178/examples/priority-guide/` |
 | Cat Stack Cafe | `npm run dev:cat-stack-cafe` | `http://127.0.0.1:5179/examples/cat-stack-cafe/` |

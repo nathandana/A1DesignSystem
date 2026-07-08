@@ -3661,6 +3661,734 @@
             "zh": "关闭",
             "ar": "إغلاق"
           }
+        },
+        "configureTab": {
+          "$type": "string",
+          "$value": "Configure",
+          "$description": "Editor side panel tab for configuring the selected component.",
+          "locale": {
+            "es": "Configurar",
+            "fr": "Configurer",
+            "de": "Konfigurieren",
+            "pt": "Configurar",
+            "ja": "設定",
+            "zh": "配置",
+            "ar": "تكوين"
+          }
+        },
+        "componentTab": {
+          "$type": "string",
+          "$value": "Component",
+          "$description": "Editor side panel tab for adding components.",
+          "locale": {
+            "es": "Componente",
+            "fr": "Composant",
+            "de": "Komponente",
+            "pt": "Componente",
+            "ja": "コンポーネント",
+            "zh": "组件",
+            "ar": "مكوّن"
+          }
+        },
+        "patternTab": {
+          "$type": "string",
+          "$value": "Pattern",
+          "$description": "Editor side panel tab for adding patterns.",
+          "locale": {
+            "es": "Patrón",
+            "fr": "Modèle",
+            "de": "Muster",
+            "pt": "Padrão",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "نمط"
+          }
+        },
+        "imagesTab": {
+          "$type": "string",
+          "$value": "Images",
+          "$description": "Editor side panel tab for image library controls.",
+          "locale": {
+            "es": "Imágenes",
+            "fr": "Images",
+            "de": "Bilder",
+            "pt": "Imagens",
+            "ja": "画像",
+            "zh": "图片",
+            "ar": "الصور"
+          }
+        },
+        "dataTab": {
+          "$type": "string",
+          "$value": "Data",
+          "$description": "Editor side panel tab for page data controls.",
+          "locale": {
+            "es": "Datos",
+            "fr": "Données",
+            "de": "Daten",
+            "pt": "Dados",
+            "ja": "データ",
+            "zh": "数据",
+            "ar": "البيانات"
+          }
+        },
+        "versionsTab": {
+          "$type": "string",
+          "$value": "Versions",
+          "$description": "Editor side panel tab for page versions.",
+          "locale": {
+            "es": "Versiones",
+            "fr": "Versions",
+            "de": "Versionen",
+            "pt": "Versões",
+            "ja": "バージョン",
+            "zh": "版本",
+            "ar": "الإصدارات"
+          }
+        },
+        "historyTab": {
+          "$type": "string",
+          "$value": "History",
+          "$description": "Editor side panel tab for edit history.",
+          "locale": {
+            "es": "Historial",
+            "fr": "Historique",
+            "de": "Verlauf",
+            "pt": "Histórico",
+            "ja": "履歴",
+            "zh": "历史记录",
+            "ar": "السجل"
+          }
+        },
+        "codexTab": {
+          "$type": "string",
+          "$value": "Codex",
+          "$description": "Editor side panel tab for local Codex review.",
+          "locale": {
+            "es": "Codex",
+            "fr": "Codex",
+            "de": "Codex",
+            "pt": "Codex",
+            "ja": "Codex",
+            "zh": "Codex",
+            "ar": "Codex"
+          }
+        },
+        "codexDescription": {
+          "$type": "string",
+          "$value": "Review the current page JSON with your local Codex CLI through a localhost bridge. The bridge runs Codex in read-only sandbox mode and returns findings to this panel.",
+          "$description": "Introductory description for the editor Codex review panel.",
+          "locale": {
+            "es": "Revisa el JSON de la página actual con tu CLI local de Codex mediante un puente localhost. El puente ejecuta Codex en modo de solo lectura y devuelve los hallazgos a este panel.",
+            "fr": "Passez en revue le JSON de la page actuelle avec votre CLI Codex local via un pont localhost. Le pont exécute Codex en mode bac à sable lecture seule et renvoie les constats dans ce panneau.",
+            "de": "Prüfe das JSON der aktuellen Seite mit deiner lokalen Codex-CLI über eine localhost-Brücke. Die Brücke führt Codex im schreibgeschützten Sandbox-Modus aus und zeigt die Ergebnisse in diesem Bereich.",
+            "pt": "Revise o JSON da página atual com a CLI local do Codex por uma ponte localhost. A ponte executa o Codex em modo de sandbox somente leitura e retorna os achados para este painel.",
+            "ja": "localhost ブリッジ経由でローカルの Codex CLI を使い、現在のページ JSON をレビューします。ブリッジは Codex を読み取り専用サンドボックスで実行し、結果をこのパネルに返します。",
+            "zh": "通过 localhost 桥接使用本地 Codex CLI 审查当前页面 JSON。桥接会以只读沙盒模式运行 Codex，并将发现返回到此面板。",
+            "ar": "راجع JSON للصفحة الحالية باستخدام واجهة Codex المحلية عبر جسر localhost. يشغّل الجسر Codex في وضع صندوق رمل للقراءة فقط ويعيد النتائج إلى هذه اللوحة."
+          }
+        },
+        "codexBridgeHostLabel": {
+          "$type": "string",
+          "$value": "Bridge host",
+          "$description": "Field label for the local Codex bridge host URL.",
+          "locale": {
+            "es": "Host del puente",
+            "fr": "Hôte du pont",
+            "de": "Bridge-Host",
+            "pt": "Host da ponte",
+            "ja": "ブリッジホスト",
+            "zh": "桥接主机",
+            "ar": "مضيف الجسر"
+          }
+        },
+        "codexSaveBridgeHost": {
+          "$type": "string",
+          "$value": "Save bridge",
+          "$description": "Button label for saving the local Codex bridge host URL.",
+          "locale": {
+            "es": "Guardar puente",
+            "fr": "Enregistrer le pont",
+            "de": "Bridge speichern",
+            "pt": "Salvar ponte",
+            "ja": "ブリッジを保存",
+            "zh": "保存桥接",
+            "ar": "حفظ الجسر"
+          }
+        },
+        "codexCheckBridge": {
+          "$type": "string",
+          "$value": "Check bridge",
+          "$description": "Button label for checking local Codex bridge connectivity.",
+          "locale": {
+            "es": "Comprobar puente",
+            "fr": "Vérifier le pont",
+            "de": "Bridge prüfen",
+            "pt": "Verificar ponte",
+            "ja": "ブリッジを確認",
+            "zh": "检查桥接",
+            "ar": "فحص الجسر"
+          }
+        },
+        "codexBridgeReady": {
+          "$type": "string",
+          "$value": "Codex bridge is reachable.",
+          "$description": "Success message shown when the local Codex bridge health check passes.",
+          "locale": {
+            "es": "Se puede acceder al puente de Codex.",
+            "fr": "Le pont Codex est joignable.",
+            "de": "Die Codex-Bridge ist erreichbar.",
+            "pt": "A ponte do Codex está acessível.",
+            "ja": "Codex ブリッジに接続できます。",
+            "zh": "Codex 桥接可访问。",
+            "ar": "يمكن الوصول إلى جسر Codex."
+          }
+        },
+        "codexBridgeMissing": {
+          "$type": "string",
+          "$value": "Start the local bridge with npm run codex:bridge:a1-web, then check again.",
+          "$description": "Warning shown when the local Codex bridge is not reachable.",
+          "locale": {
+            "es": "Inicia el puente local con npm run codex:bridge:a1-web y vuelve a comprobar.",
+            "fr": "Démarrez le pont local avec npm run codex:bridge:a1-web, puis vérifiez à nouveau.",
+            "de": "Starte die lokale Bridge mit npm run codex:bridge:a1-web und prüfe erneut.",
+            "pt": "Inicie a ponte local com npm run codex:bridge:a1-web e verifique novamente.",
+            "ja": "npm run codex:bridge:a1-web でローカルブリッジを起動してから、もう一度確認してください。",
+            "zh": "使用 npm run codex:bridge:a1-web 启动本地桥接，然后重新检查。",
+            "ar": "ابدأ الجسر المحلي باستخدام npm run codex:bridge:a1-web ثم افحص مرة أخرى."
+          }
+        },
+        "codexDefinitionMissing": {
+          "$type": "string",
+          "$value": "Fix the page JSON before running a Codex review.",
+          "$description": "Warning shown when the current page JSON cannot be reviewed.",
+          "locale": {
+            "es": "Corrige el JSON de la página antes de ejecutar una revisión de Codex.",
+            "fr": "Corrigez le JSON de la page avant de lancer une revue Codex.",
+            "de": "Korrigiere das Seiten-JSON, bevor du eine Codex-Prüfung ausführst.",
+            "pt": "Corrija o JSON da página antes de executar uma revisão do Codex.",
+            "ja": "Codex レビューを実行する前にページ JSON を修正してください。",
+            "zh": "运行 Codex 审查前请先修复页面 JSON。",
+            "ar": "أصلح JSON الصفحة قبل تشغيل مراجعة Codex."
+          }
+        },
+        "codexInstructionLabel": {
+          "$type": "string",
+          "$value": "Review focus",
+          "$description": "Textarea label for optional instructions sent to the Codex page review.",
+          "locale": {
+            "es": "Enfoque de revisión",
+            "fr": "Point de revue",
+            "de": "Prüffokus",
+            "pt": "Foco da revisão",
+            "ja": "レビューの焦点",
+            "zh": "审查重点",
+            "ar": "محور المراجعة"
+          }
+        },
+        "codexReviewAction": {
+          "$type": "string",
+          "$value": "Review page",
+          "$description": "Button label that starts a local Codex page review.",
+          "locale": {
+            "es": "Revisar página",
+            "fr": "Réviser la page",
+            "de": "Seite prüfen",
+            "pt": "Revisar página",
+            "ja": "ページをレビュー",
+            "zh": "审查页面",
+            "ar": "مراجعة الصفحة"
+          }
+        },
+        "codexReviewMeta": {
+          "$type": "string",
+          "$value": "Reviewed locally with Codex in read-only mode.",
+          "$description": "Status text shown above Codex review results.",
+          "locale": {
+            "es": "Revisado localmente con Codex en modo de solo lectura.",
+            "fr": "Révisé localement avec Codex en mode lecture seule.",
+            "de": "Lokal mit Codex im schreibgeschützten Modus geprüft.",
+            "pt": "Revisado localmente com Codex em modo somente leitura.",
+            "ja": "Codex の読み取り専用モードでローカルレビュー済み。",
+            "zh": "已使用 Codex 只读模式在本地审查。",
+            "ar": "تمت المراجعة محليًا باستخدام Codex في وضع القراءة فقط."
+          }
+        },
+        "codexTokenUsage": {
+          "$type": "string",
+          "$value": "{total} tokens ({input} in / {output} out).",
+          "$description": "Token usage summary for a completed local Codex request.",
+          "locale": {
+            "es": "{total} tokens ({input} entrada / {output} salida).",
+            "fr": "{total} jetons ({input} en entrée / {output} en sortie).",
+            "de": "{total} Tokens ({input} rein / {output} raus).",
+            "pt": "{total} tokens ({input} entrada / {output} saída).",
+            "ja": "{total} トークン（入力 {input} / 出力 {output}）。",
+            "zh": "{total} 个词元（{input} 输入 / {output} 输出）。",
+            "ar": "{total} رمزًا ({input} إدخال / {output} إخراج)."
+          }
+        },
+        "codexTokenUsageUnavailable": {
+          "$type": "string",
+          "$value": "Token usage was not reported for this turn.",
+          "$description": "Fallback token usage text when Codex JSON events do not include token counts.",
+          "locale": {
+            "es": "No se informó el uso de tokens para este turno.",
+            "fr": "L’utilisation des jetons n’a pas été signalée pour ce tour.",
+            "de": "Für diesen Durchlauf wurde keine Token-Nutzung gemeldet.",
+            "pt": "O uso de tokens não foi informado para este turno.",
+            "ja": "このターンのトークン使用量は報告されませんでした。",
+            "zh": "此轮未报告词元用量。",
+            "ar": "لم يتم الإبلاغ عن استخدام الرموز لهذه الجولة."
+          }
+        },
+        "codexSummaryHeading": {
+          "$type": "string",
+          "$value": "Summary",
+          "$description": "Heading above the Codex review summary.",
+          "locale": {
+            "es": "Resumen",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "pt": "Resumo",
+            "ja": "概要",
+            "zh": "摘要",
+            "ar": "ملخص"
+          }
+        },
+        "codexFindingsHeading": {
+          "$type": "string",
+          "$value": "Findings",
+          "$description": "Heading above Codex review findings.",
+          "locale": {
+            "es": "Hallazgos",
+            "fr": "Constats",
+            "de": "Ergebnisse",
+            "pt": "Achados",
+            "ja": "検出事項",
+            "zh": "发现",
+            "ar": "النتائج"
+          }
+        },
+        "codexNodeLabel": {
+          "$type": "string",
+          "$value": "Node",
+          "$description": "Label shown before a page node id in Codex review findings.",
+          "locale": {
+            "es": "Nodo",
+            "fr": "Noeud",
+            "de": "Knoten",
+            "pt": "Nó",
+            "ja": "ノード",
+            "zh": "节点",
+            "ar": "العقدة"
+          }
+        },
+        "codexNoFindings": {
+          "$type": "string",
+          "$value": "Codex did not report any violations.",
+          "$description": "Empty success message when Codex review returns no violations.",
+          "locale": {
+            "es": "Codex no informó ninguna infracción.",
+            "fr": "Codex n'a signalé aucune violation.",
+            "de": "Codex hat keine Verstöße gemeldet.",
+            "pt": "O Codex não relatou violações.",
+            "ja": "Codex は違反を報告しませんでした。",
+            "zh": "Codex 未报告任何违规。",
+            "ar": "لم يبلغ Codex عن أي مخالفات."
+          }
+        },
+        "codexSeverityInfo": {
+          "$type": "string",
+          "$value": "Info",
+          "$description": "Codex review severity label for informational findings.",
+          "locale": {
+            "es": "Información",
+            "fr": "Info",
+            "de": "Info",
+            "pt": "Informação",
+            "ja": "情報",
+            "zh": "信息",
+            "ar": "معلومات"
+          }
+        },
+        "codexSeverityWarn": {
+          "$type": "string",
+          "$value": "Warning",
+          "$description": "Codex review severity label for warning findings.",
+          "locale": {
+            "es": "Advertencia",
+            "fr": "Avertissement",
+            "de": "Warnung",
+            "pt": "Aviso",
+            "ja": "警告",
+            "zh": "警告",
+            "ar": "تحذير"
+          }
+        },
+        "codexSeverityError": {
+          "$type": "string",
+          "$value": "Error",
+          "$description": "Codex review severity label for error findings.",
+          "locale": {
+            "es": "Error",
+            "fr": "Erreur",
+            "de": "Fehler",
+            "pt": "Erro",
+            "ja": "エラー",
+            "zh": "错误",
+            "ar": "خطأ"
+          }
+        },
+        "codexGuidanceHeading": {
+          "$type": "string",
+          "$value": "Potential system guidance",
+          "$description": "Heading above possible new system guidance from a Codex review.",
+          "locale": {
+            "es": "Posible guía del sistema",
+            "fr": "Orientation système potentielle",
+            "de": "Mögliche Systemleitlinien",
+            "pt": "Possível orientação do sistema",
+            "ja": "システムガイダンス候補",
+            "zh": "潜在系统指南",
+            "ar": "إرشادات نظام محتملة"
+          }
+        },
+        "codexErrorTimeout": {
+          "$type": "string",
+          "$value": "Codex did not finish before the request timed out.",
+          "$description": "Error shown when a local Codex review request times out.",
+          "locale": {
+            "es": "Codex no terminó antes de que se agotara el tiempo de la solicitud.",
+            "fr": "Codex n'a pas terminé avant l'expiration de la requête.",
+            "de": "Codex wurde vor Ablauf der Anfragezeit nicht fertig.",
+            "pt": "O Codex não terminou antes do tempo limite da solicitação.",
+            "ja": "リクエストがタイムアウトする前に Codex が完了しませんでした。",
+            "zh": "请求超时前 Codex 未完成。",
+            "ar": "لم ينته Codex قبل انتهاء مهلة الطلب."
+          }
+        },
+        "codexErrorBridgeUnavailable": {
+          "$type": "string",
+          "$value": "The Codex bridge is not reachable. Start it locally, then try again.",
+          "$description": "Error shown when the browser cannot reach the local Codex bridge.",
+          "locale": {
+            "es": "No se puede acceder al puente de Codex. Inícialo localmente y vuelve a intentarlo.",
+            "fr": "Le pont Codex n'est pas joignable. Démarrez-le localement, puis réessayez.",
+            "de": "Die Codex-Bridge ist nicht erreichbar. Starte sie lokal und versuche es erneut.",
+            "pt": "A ponte do Codex não está acessível. Inicie localmente e tente novamente.",
+            "ja": "Codex ブリッジに接続できません。ローカルで起動してから再試行してください。",
+            "zh": "无法访问 Codex 桥接。请在本地启动后重试。",
+            "ar": "لا يمكن الوصول إلى جسر Codex. ابدأه محليًا ثم حاول مرة أخرى."
+          }
+        },
+        "codexErrorGeneric": {
+          "$type": "string",
+          "$value": "Codex could not complete the review. Check the bridge terminal for details.",
+          "$description": "Generic error shown when a local Codex review fails.",
+          "locale": {
+            "es": "Codex no pudo completar la revisión. Consulta la terminal del puente para ver detalles.",
+            "fr": "Codex n'a pas pu terminer la revue. Consultez le terminal du pont pour les détails.",
+            "de": "Codex konnte die Prüfung nicht abschließen. Details findest du im Bridge-Terminal.",
+            "pt": "O Codex não conseguiu concluir a revisão. Confira o terminal da ponte para detalhes.",
+            "ja": "Codex がレビューを完了できませんでした。詳細はブリッジのターミナルを確認してください。",
+            "zh": "Codex 无法完成审查。请查看桥接终端了解详情。",
+            "ar": "تعذر على Codex إكمال المراجعة. تحقق من طرفية الجسر للحصول على التفاصيل."
+          }
+        },
+        "iconAiTitle": {
+          "$type": "string",
+          "$value": "Find an icon with AI",
+          "$description": "Dialog title for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscar un icono con IA",
+            "fr": "Trouver une icône avec l’IA",
+            "de": "Icon mit KI finden",
+            "pt": "Encontrar um ícone com IA",
+            "ja": "AI でアイコンを探す",
+            "zh": "用 AI 查找图标",
+            "ar": "العثور على أيقونة بالذكاء الاصطناعي"
+          }
+        },
+        "iconAiDescription": {
+          "$type": "string",
+          "$value": "Describe the intent and A1 will ask your local Codex bridge for matching built-in and project custom icons. Returned names are validated before they appear here.",
+          "$description": "Introductory description for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Describe la intención y A1 pedirá al puente local de Codex iconos integrados y personalizados del proyecto que coincidan. Los nombres devueltos se validan antes de mostrarse aquí.",
+            "fr": "Décrivez l’intention et A1 demandera au pont Codex local des icônes intégrées et personnalisées du projet correspondantes. Les noms renvoyés sont validés avant d’apparaître ici.",
+            "de": "Beschreibe die Absicht, und A1 fragt die lokale Codex-Bridge nach passenden integrierten und projektspezifischen Icons. Zurückgegebene Namen werden vor der Anzeige validiert.",
+            "pt": "Descreva a intenção e o A1 pedirá à ponte local do Codex ícones integrados e personalizados do projeto correspondentes. Os nomes retornados são validados antes de aparecerem aqui.",
+            "ja": "意図を説明すると、A1 がローカル Codex ブリッジに一致する組み込みアイコンとプロジェクトのカスタムアイコンを尋ねます。返された名前は、ここに表示される前に検証されます。",
+            "zh": "描述意图后，A1 会询问本地 Codex 桥接以匹配内置图标和项目自定义图标。返回的名称会先验证，然后才会显示在此处。",
+            "ar": "صف الهدف وسيطلب A1 من جسر Codex المحلي أيقونات مدمجة ومخصصة للمشروع مطابقة. يتم التحقق من الأسماء المُعادة قبل ظهورها هنا."
+          }
+        },
+        "iconAiBridgeReady": {
+          "$type": "string",
+          "$value": "Codex bridge is running.",
+          "$description": "Success banner shown when the local Codex bridge is reachable from the icon finder.",
+          "locale": {
+            "es": "El puente de Codex está en ejecución.",
+            "fr": "Le pont Codex est en cours d’exécution.",
+            "de": "Die Codex-Bridge läuft.",
+            "pt": "A ponte do Codex está em execução.",
+            "ja": "Codex ブリッジが実行中です。",
+            "zh": "Codex 桥接正在运行。",
+            "ar": "جسر Codex قيد التشغيل."
+          }
+        },
+        "iconAiBridgeMissing": {
+          "$type": "string",
+          "$value": "Codex bridge is not running. Start it with npm run codex:bridge:a1-web.",
+          "$description": "Warning banner shown when the local Codex bridge is not reachable from the icon finder.",
+          "locale": {
+            "es": "El puente de Codex no está en ejecución. Inícialo con npm run codex:bridge:a1-web.",
+            "fr": "Le pont Codex n’est pas en cours d’exécution. Démarrez-le avec npm run codex:bridge:a1-web.",
+            "de": "Die Codex-Bridge läuft nicht. Starte sie mit npm run codex:bridge:a1-web.",
+            "pt": "A ponte do Codex não está em execução. Inicie com npm run codex:bridge:a1-web.",
+            "ja": "Codex ブリッジが実行されていません。npm run codex:bridge:a1-web で起動してください。",
+            "zh": "Codex 桥接未运行。请使用 npm run codex:bridge:a1-web 启动。",
+            "ar": "جسر Codex لا يعمل. ابدأه باستخدام npm run codex:bridge:a1-web."
+          }
+        },
+        "iconAiPromptLabel": {
+          "$type": "string",
+          "$value": "Describe the icon you want",
+          "$description": "Field label for the Codex-backed icon finder prompt.",
+          "locale": {
+            "es": "Describe el icono que quieres",
+            "fr": "Décrivez l’icône souhaitée",
+            "de": "Beschreibe das gewünschte Icon",
+            "pt": "Descreva o ícone desejado",
+            "ja": "欲しいアイコンを説明",
+            "zh": "描述你想要的图标",
+            "ar": "صف الأيقونة التي تريدها"
+          }
+        },
+        "iconAiPromptHint": {
+          "$type": "string",
+          "$value": "e.g. shopping cart, settings, a warning, download",
+          "$description": "Helper hint for the Codex-backed icon finder prompt field.",
+          "locale": {
+            "es": "p. ej., carrito de compra, configuración, una advertencia, descargar",
+            "fr": "p. ex. panier, paramètres, avertissement, télécharger",
+            "de": "z. B. Einkaufswagen, Einstellungen, Warnung, Download",
+            "pt": "ex.: carrinho de compras, configurações, um aviso, download",
+            "ja": "例: ショッピングカート、設定、警告、ダウンロード",
+            "zh": "例如：购物车、设置、警告、下载",
+            "ar": "مثلاً: عربة تسوق، إعدادات، تحذير، تنزيل"
+          }
+        },
+        "iconAiFind": {
+          "$type": "string",
+          "$value": "Find icons",
+          "$description": "Button label to run the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscar iconos",
+            "fr": "Trouver des icônes",
+            "de": "Icons finden",
+            "pt": "Encontrar ícones",
+            "ja": "アイコンを探す",
+            "zh": "查找图标",
+            "ar": "العثور على أيقونات"
+          }
+        },
+        "iconAiSearchAgain": {
+          "$type": "string",
+          "$value": "Search again",
+          "$description": "Button label to rerun the icon finder.",
+          "locale": {
+            "es": "Buscar de nuevo",
+            "fr": "Relancer la recherche",
+            "de": "Erneut suchen",
+            "pt": "Pesquisar novamente",
+            "ja": "再検索",
+            "zh": "再次搜索",
+            "ar": "البحث مرة أخرى"
+          }
+        },
+        "iconAiMore": {
+          "$type": "string",
+          "$value": "Show 3 more",
+          "$description": "Button label to request more icon suggestions.",
+          "locale": {
+            "es": "Mostrar 3 más",
+            "fr": "Afficher 3 de plus",
+            "de": "3 weitere anzeigen",
+            "pt": "Mostrar mais 3",
+            "ja": "さらに 3 件表示",
+            "zh": "再显示 3 个",
+            "ar": "عرض 3 أخرى"
+          }
+        },
+        "iconAiFinding": {
+          "$type": "string",
+          "$value": "Finding icons",
+          "$description": "Loading status for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscando iconos",
+            "fr": "Recherche d’icônes",
+            "de": "Icons werden gesucht",
+            "pt": "Encontrando ícones",
+            "ja": "アイコンを検索中",
+            "zh": "正在查找图标",
+            "ar": "جارٍ العثور على الأيقونات"
+          }
+        },
+        "iconAiSelectLabel": {
+          "$type": "string",
+          "$value": "Select an icon",
+          "$description": "Choice group label for icon finder results.",
+          "locale": {
+            "es": "Selecciona un icono",
+            "fr": "Sélectionner une icône",
+            "de": "Icon auswählen",
+            "pt": "Selecionar um ícone",
+            "ja": "アイコンを選択",
+            "zh": "选择图标",
+            "ar": "اختر أيقونة"
+          }
+        },
+        "iconAiApply": {
+          "$type": "string",
+          "$value": "Apply icon",
+          "$description": "Button label to apply the selected icon.",
+          "locale": {
+            "es": "Aplicar icono",
+            "fr": "Appliquer l’icône",
+            "de": "Icon anwenden",
+            "pt": "Aplicar ícone",
+            "ja": "アイコンを適用",
+            "zh": "应用图标",
+            "ar": "تطبيق الأيقونة"
+          }
+        },
+        "iconAiCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button label to close the icon finder without applying an icon.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "iconAiUsageCodex": {
+          "$type": "string",
+          "$value": "Suggested locally through Codex in {seconds}s.",
+          "$description": "Usage line shown when the icon finder used the local Codex bridge.",
+          "locale": {
+            "es": "Sugerido localmente mediante Codex en {seconds}s.",
+            "fr": "Suggéré localement via Codex en {seconds}s.",
+            "de": "Lokal über Codex in {seconds}s vorgeschlagen.",
+            "pt": "Sugerido localmente pelo Codex em {seconds}s.",
+            "ja": "Codex 経由でローカルに {seconds} 秒で提案されました。",
+            "zh": "已通过 Codex 在本地用 {seconds} 秒建议。",
+            "ar": "اقتُرح محليًا عبر Codex خلال {seconds}ث."
+          }
+        },
+        "iconAiUsageFallback": {
+          "$type": "string",
+          "$value": "Used local registry matching.",
+          "$description": "Legacy usage line shown when the icon finder used deterministic registry matching.",
+          "locale": {
+            "es": "Se usó coincidencia local del registro.",
+            "fr": "Correspondance locale du registre utilisée.",
+            "de": "Lokale Registry-Treffer verwendet.",
+            "pt": "Foi usada correspondência local do registro.",
+            "ja": "ローカルレジストリ照合を使用しました。",
+            "zh": "已使用本地图标注册表匹配。",
+            "ar": "استُخدمت مطابقة السجل المحلية."
+          }
+        },
+        "iconAiUsageFallbackAfterModel": {
+          "$type": "string",
+          "$value": "Used registry matching after Codex returned no usable icon names.",
+          "$description": "Legacy usage line shown when fallback matching produced the results.",
+          "locale": {
+            "es": "Se usó coincidencia del registro después de que Codex no devolviera nombres de iconos utilizables.",
+            "fr": "Correspondance du registre utilisée après que Codex n’a renvoyé aucun nom d’icône utilisable.",
+            "de": "Registry-Treffer verwendet, nachdem Codex keine nutzbaren Icon-Namen zurückgegeben hat.",
+            "pt": "Foi usada correspondência do registro depois que o Codex não retornou nomes de ícones utilizáveis.",
+            "ja": "Codex が使用可能なアイコン名を返さなかったため、レジストリ照合を使用しました。",
+            "zh": "Codex 未返回可用图标名称后，已使用注册表匹配。",
+            "ar": "استُخدمت مطابقة السجل بعد أن لم يُرجع Codex أسماء أيقونات قابلة للاستخدام."
+          }
+        },
+        "iconAiNoResults": {
+          "$type": "string",
+          "$value": "No matching built-in or custom icons were found. Try a different description.",
+          "$description": "Error shown when no icon suggestions can be produced.",
+          "locale": {
+            "es": "No se encontraron iconos integrados ni personalizados coincidentes. Prueba con otra descripción.",
+            "fr": "Aucune icône intégrée ou personnalisée correspondante n’a été trouvée. Essayez une autre description.",
+            "de": "Keine passenden integrierten oder benutzerdefinierten Icons gefunden. Versuche eine andere Beschreibung.",
+            "pt": "Nenhum ícone integrado ou personalizado correspondente foi encontrado. Tente outra descrição.",
+            "ja": "一致する組み込みアイコンまたはカスタムアイコンが見つかりませんでした。別の説明を試してください。",
+            "zh": "未找到匹配的内置或自定义图标。请尝试其他描述。",
+            "ar": "لم يتم العثور على أيقونات مدمجة أو مخصصة مطابقة. جرّب وصفًا مختلفًا."
+          }
+        },
+        "iconAiErrorGeneric": {
+          "$type": "string",
+          "$value": "Could not find icons. Start the Codex bridge locally and try again.",
+          "$description": "Generic error shown when the Codex-backed icon finder fails.",
+          "locale": {
+            "es": "No se pudieron buscar iconos. Inicia el puente de Codex localmente e inténtalo de nuevo.",
+            "fr": "Impossible de trouver des icônes. Démarrez le pont Codex localement et réessayez.",
+            "de": "Icons konnten nicht gefunden werden. Starte die Codex-Bridge lokal und versuche es erneut.",
+            "pt": "Não foi possível encontrar ícones. Inicie a ponte do Codex localmente e tente novamente.",
+            "ja": "アイコンを見つけられませんでした。Codex ブリッジをローカルで起動して再試行してください。",
+            "zh": "无法查找图标。请在本地启动 Codex 桥接后重试。",
+            "ar": "تعذر العثور على أيقونات. ابدأ جسر Codex محليًا وحاول مرة أخرى."
+          }
+        },
+        "iconAiGuidelineTitle": {
+          "$type": "string",
+          "$value": "Guideline",
+          "$description": "Title prefix for icon usage guidance shown after selecting an icon.",
+          "locale": {
+            "es": "Guía",
+            "fr": "Directive",
+            "de": "Richtlinie",
+            "pt": "Diretriz",
+            "ja": "ガイドライン",
+            "zh": "指南",
+            "ar": "إرشاد"
+          }
+        },
+        "iconAiNoGuidelineTitle": {
+          "$type": "string",
+          "$value": "No guideline for this icon",
+          "$description": "Warning title when a selected icon has no usage guideline.",
+          "locale": {
+            "es": "Sin guía para este icono",
+            "fr": "Aucune directive pour cette icône",
+            "de": "Keine Richtlinie für dieses Icon",
+            "pt": "Sem diretriz para este ícone",
+            "ja": "このアイコンのガイドラインはありません",
+            "zh": "此图标没有指南",
+            "ar": "لا توجد إرشادات لهذه الأيقونة"
+          }
+        },
+        "iconAiNoGuidelineBody": {
+          "$type": "string",
+          "$value": "This icon is not in the icon usage guidelines. Double-check that it reads clearly in this context.",
+          "$description": "Warning body when a selected icon has no usage guideline.",
+          "locale": {
+            "es": "Este icono no está en las guías de uso de iconos. Comprueba que se entienda claramente en este contexto.",
+            "fr": "Cette icône ne figure pas dans les directives d’utilisation. Vérifiez qu’elle est claire dans ce contexte.",
+            "de": "Dieses Icon steht nicht in den Icon-Nutzungsrichtlinien. Prüfe, ob es in diesem Kontext eindeutig lesbar ist.",
+            "pt": "Este ícone não está nas diretrizes de uso de ícones. Confirme se ele é claro neste contexto.",
+            "ja": "このアイコンはアイコン使用ガイドラインにありません。この文脈で明確に伝わるか確認してください。",
+            "zh": "此图标不在图标使用指南中。请确认它在此上下文中表达清晰。",
+            "ar": "هذه الأيقونة غير موجودة في إرشادات استخدام الأيقونات. تحقق من أنها واضحة في هذا السياق."
+          }
         }
       },
       "accessibility": {

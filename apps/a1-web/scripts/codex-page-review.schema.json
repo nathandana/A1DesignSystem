@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "summary": {
+      "type": "string",
+      "description": "Concise summary of the page review."
+    },
+    "violations": {
+      "type": "array",
+      "description": "Design-system, accessibility, schema, or content issues found in the page definition.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warn", "error"]
+          },
+          "rule": {
+            "type": "string",
+            "description": "Short rule or principle name."
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "Affected page node id, or an empty string when the finding is page-level."
+          },
+          "message": {
+            "type": "string",
+            "description": "What is wrong or worth reviewing."
+          },
+          "suggestedFix": {
+            "type": "string",
+            "description": "Specific next step to resolve the finding."
+          }
+        },
+        "required": ["severity", "rule", "nodeId", "message", "suggestedFix"]
+      }
+    },
+    "shouldBecomeGuidance": {
+      "type": "array",
+      "description": "Potential new system guidance learned from this review.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["summary", "violations", "shouldBecomeGuidance"]
+}

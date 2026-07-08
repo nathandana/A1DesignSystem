@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Autocomplete, IconButton, Stack } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
-import { AI_ENABLED } from '../../../lib/aiImages.ts'
 import {
   customIconMatchesProject,
   listCustomIcons,
@@ -103,25 +102,22 @@ export function IconSelect({
             aria-label={label}
           />
         </Stack>
-        {AI_ENABLED && (
-          <IconButton
-            icon="auto_awesome"
-            size={size === 'compact' ? 'sm' : 'md'}
-            variant="secondary"
-            aria-label="Find an icon with AI"
-            onClick={openAi}
-          />
-        )}
-      </div>
-      {AI_ENABLED && (
-        <AiIconDialog
-          key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
-          open={aiOpen}
-          initialPrompt={hint}
-          onClose={() => setAiOpen(false)}
-          onApply={(name) => onChange?.(name)}
+        <IconButton
+          icon="auto_awesome"
+          size={size === 'compact' ? 'sm' : 'md'}
+          variant="secondary"
+          aria-label="Find an icon with AI"
+          onClick={openAi}
         />
-      )}
+      </div>
+      <AiIconDialog
+        key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
+        open={aiOpen}
+        initialPrompt={hint}
+        customIcons={customIcons.map((icon) => ({ name: icon.name }))}
+        onClose={() => setAiOpen(false)}
+        onApply={(name) => onChange?.(name)}
+      />
     </>
   )
 }

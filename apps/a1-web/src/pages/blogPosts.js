@@ -1,5 +1,48 @@
 export const BLOG_POSTS = [
   {
+    id: 'local-ai-icon-finder',
+    slug: 'local-ai-icon-finder',
+    title: 'Local Codex icon finding in the editor',
+    kicker: 'Feature note',
+    date: 'Jul 8, 2026',
+    version: 'A1-409 follow-up',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with the configuration panel open.',
+    description: 'How the icon picker now uses the local Codex bridge to suggest real built-in and project custom icons without requiring a browser API key.',
+    keywords: ['icons', 'custom icons', 'ai', 'codex', 'local bridge', 'tokens', 'material symbols', 'editor', 'api'],
+    subtitle: 'The editor can now help choose icons from plain-language intent while keeping selection local, validated, token-reported, and easy to replace with an API-backed service later.',
+    sections: [
+      {
+        title: 'Where to use it',
+        body: [
+          'Use Find an icon with AI anywhere the editor shows an Icon field in the Configure panel. It is meant for everyday component work: button icons, card icons, navigation affordances, empty states, status panels, and small action controls where the right built-in or project custom icon is hard to remember by name.',
+          'The flow is intentionally narrow. You describe the intent, A1 asks the local Codex bridge for candidate built-in and active-project custom icons, validates every returned name against the local registries, and shows the icon usage guidance for Material Symbols when one exists. The result also reports elapsed time and token usage when Codex exposes it in the JSON event stream.',
+        ],
+      },
+      {
+        title: 'Why local helps',
+        body: [
+          'Local Codex icon search is low-risk AI: Codex is not generating production UI, changing page structure, or creating arbitrary artwork. It is ranking a known set of allowed icon names. That makes it a good place to use local assistance because the design-system contract still owns the result.',
+          'The biggest benefits are speed, traceability, and safety. Designers can ask for “secure checkout”, “download report”, or “empty inbox” instead of scanning two thousand icon names. The browser does not need an API key for this flow, Codex runs behind the localhost bridge, token usage is surfaced after each ask when available, and invalid or invented icon names are filtered out before they ever reach the component.',
+        ],
+      },
+      {
+        title: 'What it cannot do',
+        body: [
+          'The finder cannot guarantee the perfect semantic choice. It can suggest plausible icons, but a human still needs to check whether the symbol matches the action, label, tone, and accessibility context. It also cannot make a missing Material Symbol or custom icon exist; if the concept needs bespoke artwork, create it in the custom icon workflow first.',
+          'Codex can still return names that are close but not valid, or the bridge may be offline. A1 handles this by requiring structured output at the bridge and validating every name in the browser. It cannot guarantee the perfect semantic choice, and it cannot replace human review of whether the symbol matches the action, label, tone, and accessibility context.',
+        ],
+      },
+      {
+        title: 'Can this become a standard API feature?',
+        body: [
+          'Nothing about this method prevents a standard API-backed approach. The useful boundary is already in the app: the UI asks for candidates, the bridge/service returns icon names plus reasons and usage, and the registry validator decides what can be displayed. A server-side API version could keep the same response shape while swapping the local Codex bridge for a hosted model call.',
+          'The main differences would be operational, not architectural: API auth moves to a backend, rate limits and cost controls become explicit, and token accounting comes directly from the provider response instead of Codex JSON events. The same validation, guidance lookup, “show more” avoidance list, and editor apply flow would still work.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'search-shortcuts-and-walkthroughs',
     slug: 'search-shortcuts-and-walkthroughs',
     title: 'Search, shortcuts, and walkthroughs',

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Local Codex icon finder** — the editor's **Find an icon with AI** flow now uses the local Codex bridge instead of requiring a browser Anthropic API key or a separate local model runner. Icon suggestions are validated against the Material Symbols registry plus active-project custom icons, include icon-usage guidance when available, and report elapsed time plus token usage when Codex exposes it. Added a blog article explaining when to use the feature, its benefits, limits, and API-backed extension path.
+
+- **Local Codex review** (A1-409) — added a local-only Codex proof of concept for the page editor. Run `npm run codex:bridge:a1-web` to start a localhost Node bridge that calls `codex exec --json --sandbox read-only --cd <repo>` with a structured page-review schema. The editor sidebar now includes a **Codex** tab that checks the bridge, sends the current page definition for review, and renders returned findings without exposing shell execution to the browser.
+
 - **Project page routing** (A1-386) — project `TopHeader` logos now stay inside the project instead of linking to the A1 home page. Published prototypes route the logo to `/p/{slug}`, standalone previews route it to the project’s first page, and editor project chrome routes it to the project home. If a project’s saved shared layout is missing a `TopHeader`, a generated project header is shown so project navigation does not disappear.
 
 - **Presentation primary slides only** — the Presentation page now hides speaker notes and demo placeholder slides so the walkthrough shows only the primary content cards. The note/demo content remains in the source and can be restored by toggling the local presentation flags.

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "icons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "A real Material Symbols Outlined icon name in snake_case, or a supplied project custom icon as custom:name."
+          },
+          "reason": {
+            "type": "string",
+            "description": "One short sentence explaining why this icon fits the request."
+          }
+        },
+        "required": ["name", "reason"]
+      }
+    }
+  },
+  "required": ["icons"]
+}

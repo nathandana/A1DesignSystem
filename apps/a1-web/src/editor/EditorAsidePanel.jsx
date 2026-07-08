@@ -6,10 +6,12 @@ import { EditorHistoryPanel } from './EditorHistoryPanel.jsx'
 import { EditorAddPanel } from './EditorAddPanel.jsx'
 import { EditorVersionsPanel } from './EditorVersionsPanel.jsx'
 import { EditorChatPanel } from './EditorChatPanel.jsx'
+import { EditorCodexPanel } from './EditorCodexPanel.jsx'
 import { EditorImagesPanel } from './EditorImagesPanel.jsx'
 import { EditorDataPanel } from './EditorDataPanel.jsx'
 import { AI_ENABLED } from '../lib/aiImages.ts'
 import { PatternLockControls } from '../patterns/PatternLockControls.jsx'
+import { useT } from '../labels/useT.js'
 
 export function EditorAsidePanel({
   // Configure tab
@@ -62,6 +64,7 @@ export function EditorAsidePanel({
   onDeleteVersion,
   onRenameVersion,
 }) {
+  const t = useT()
   const [tab, setTab] = useState('configure')
   // One-shot request to focus the chat input, set when "Make with AI" opens a page.
   const [chatFocusRequest, setChatFocusRequest] = useState(false)
@@ -100,14 +103,15 @@ export function EditorAsidePanel({
   // The selected segment shows icon + label, the rest are icon-only — the
   // formal SegmentedControl `labelMode="selected"` pattern.
   const tabOptions = [
-    { value: 'configure', label: 'Configure', icon: 'tune' },
-    { value: 'add-component', label: 'Component', icon: 'widgets' },
-    { value: 'add-pattern', label: 'Pattern', icon: 'dashboard_customize' },
-    { value: 'images', label: 'Images', icon: 'photo_library' },
-    { value: 'data', label: 'Data', icon: 'table_chart' },
+    { value: 'configure', label: t('app.editor.configureTab', 'Configure'), icon: 'tune' },
+    { value: 'add-component', label: t('app.editor.componentTab', 'Component'), icon: 'widgets' },
+    { value: 'add-pattern', label: t('app.editor.patternTab', 'Pattern'), icon: 'dashboard_customize' },
+    { value: 'images', label: t('app.editor.imagesTab', 'Images'), icon: 'photo_library' },
+    { value: 'data', label: t('app.editor.dataTab', 'Data'), icon: 'table_chart' },
+    { value: 'codex', label: t('app.editor.codexTab', 'Codex'), icon: 'terminal' },
     ...(AI_ENABLED ? [{ value: 'ai', label: 'AI', icon: 'auto_awesome' }] : []),
-    { value: 'versions', label: 'Versions', icon: 'commit' },
-    { value: 'history', label: 'History', icon: 'history' },
+    { value: 'versions', label: t('app.editor.versionsTab', 'Versions'), icon: 'commit' },
+    { value: 'history', label: t('app.editor.historyTab', 'History'), icon: 'history' },
   ]
 
   return (
@@ -192,6 +196,10 @@ export function EditorAsidePanel({
 
         {tab === 'data' && (
           <EditorDataPanel projectId={projectId} />
+        )}
+
+        {tab === 'codex' && (
+          <EditorCodexPanel definition={definition} />
         )}
 
         {tab === 'ai' && (
