@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Product tour** (A1-83) — added a lightweight, first-visit A1 walkthrough that spotlights navigation, search/help, and the active workspace. The tour is keyboard-contained, dismissible with Escape, remembers dismissal or completion locally, and can be restarted from Ask Help. All tour copy is supplied by localized system labels.
+
 ## 0.28.0 — 2026-07-07
 
 - **Project themes** — Projects can now store an optional project-scoped theme. The project settings dialog exposes the theme selector, project cards show the chosen theme, import/export/cloud sync preserve it, and the editor canvas plus launched prototypes apply the theme locally to the project page instead of changing the whole a1-web app shell.

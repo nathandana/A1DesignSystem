@@ -87,6 +87,92 @@
           }
         }
       },
+      "tour": {
+        "dialogLabel": {
+          "$type": "string",
+          "$value": "Product tour",
+          "$description": "Accessible label for the guided product tour dialog.",
+          "locale": { "es": "Recorrido del producto", "fr": "Visite guidée du produit", "de": "Produkttour", "pt": "Tour pelo produto", "ja": "プロダクトツアー", "zh": "产品导览", "ar": "جولة في المنتج" }
+        },
+        "start": {
+          "$type": "string",
+          "$value": "Take a tour",
+          "$description": "Action that starts the guided product tour.",
+          "locale": { "es": "Hacer un recorrido", "fr": "Faire une visite", "de": "Tour starten", "pt": "Fazer um tour", "ja": "ツアーを開始", "zh": "开始导览", "ar": "بدء الجولة" }
+        },
+        "skip": {
+          "$type": "string",
+          "$value": "Skip tour",
+          "$description": "Action that dismisses the guided product tour.",
+          "locale": { "es": "Omitir recorrido", "fr": "Passer la visite", "de": "Tour überspringen", "pt": "Pular tour", "ja": "ツアーをスキップ", "zh": "跳过导览", "ar": "تخطي الجولة" }
+        },
+        "previous": {
+          "$type": "string",
+          "$value": "Previous",
+          "$description": "Action that returns to the preceding guided-tour step.",
+          "locale": { "es": "Anterior", "fr": "Précédent", "de": "Zurück", "pt": "Anterior", "ja": "前へ", "zh": "上一步", "ar": "السابق" }
+        },
+        "next": {
+          "$type": "string",
+          "$value": "Next",
+          "$description": "Action that advances the guided-tour step.",
+          "locale": { "es": "Siguiente", "fr": "Suivant", "de": "Weiter", "pt": "Próximo", "ja": "次へ", "zh": "下一步", "ar": "التالي" }
+        },
+        "done": {
+          "$type": "string",
+          "$value": "Done",
+          "$description": "Action that completes the guided product tour.",
+          "locale": { "es": "Listo", "fr": "Terminé", "de": "Fertig", "pt": "Concluído", "ja": "完了", "zh": "完成", "ar": "تم" }
+        },
+        "close": {
+          "$type": "string",
+          "$value": "Close tour",
+          "$description": "Accessible label for the control that closes the guided tour.",
+          "locale": { "es": "Cerrar recorrido", "fr": "Fermer la visite", "de": "Tour schließen", "pt": "Fechar tour", "ja": "ツアーを閉じる", "zh": "关闭导览", "ar": "إغلاق الجولة" }
+        },
+        "progress": {
+          "$type": "string",
+          "$value": "Step {current} of {total}",
+          "$description": "Progress text for the guided product tour, with current and total step counts.",
+          "locale": { "es": "Paso {current} de {total}", "fr": "Étape {current} sur {total}", "de": "Schritt {current} von {total}", "pt": "Etapa {current} de {total}", "ja": "ステップ {current} / {total}", "zh": "第 {current} 步，共 {total} 步", "ar": "الخطوة {current} من {total}" }
+        },
+        "navigationTitle": {
+          "$type": "string",
+          "$value": "Find your way",
+          "$description": "Title for the navigation step in the guided product tour.",
+          "locale": { "es": "Encuentre su camino", "fr": "Trouvez votre chemin", "de": "Orientierung finden", "pt": "Encontre seu caminho", "ja": "使い方を見つける", "zh": "找到方向", "ar": "اعثر على طريقك" }
+        },
+        "navigationDescription": {
+          "$type": "string",
+          "$value": "Use the top navigation to explore the system, open the editors, and return home from anywhere.",
+          "$description": "Supporting text for the navigation step in the guided product tour.",
+          "locale": { "es": "Use la navegación superior para explorar el sistema, abrir los editores y volver al inicio desde cualquier lugar.", "fr": "Utilisez la navigation supérieure pour explorer le système, ouvrir les éditeurs et revenir à l’accueil depuis n’importe où.", "de": "Nutzen Sie die obere Navigation, um das System zu erkunden, die Editoren zu öffnen und von überall zur Startseite zurückzukehren.", "pt": "Use a navegação superior para explorar o sistema, abrir os editores e voltar ao início de qualquer lugar.", "ja": "上部ナビゲーションからシステムを探索し、エディターを開き、どこからでもホームに戻れます。", "zh": "使用顶部导航探索系统、打开编辑器，并可随时返回主页。", "ar": "استخدم التنقل العلوي لاستكشاف النظام وفتح المحررات والعودة إلى الصفحة الرئيسية من أي مكان." }
+        },
+        "toolsTitle": {
+          "$type": "string",
+          "$value": "Search and get help",
+          "$description": "Title for the search and help step in the guided product tour.",
+          "locale": { "es": "Busque y obtenga ayuda", "fr": "Recherchez et obtenez de l’aide", "de": "Suchen und Hilfe erhalten", "pt": "Pesquise e obtenha ajuda", "ja": "検索とヘルプ", "zh": "搜索并获取帮助", "ar": "ابحث واحصل على المساعدة" }
+        },
+        "toolsDescription": {
+          "$type": "string",
+          "$value": "Search A1 for a page or component, or open Ask Help for answers and related guides.",
+          "$description": "Supporting text for the search and help step in the guided product tour.",
+          "locale": { "es": "Busque una página o componente en A1, o abra Preguntar a Ayuda para obtener respuestas y guías relacionadas.", "fr": "Recherchez une page ou un composant dans A1, ou ouvrez Demander de l’aide pour obtenir des réponses et des guides associés.", "de": "Suchen Sie in A1 nach einer Seite oder Komponente oder öffnen Sie Hilfe fragen für Antworten und passende Anleitungen.", "pt": "Pesquise uma página ou componente no A1, ou abra Perguntar à ajuda para ver respostas e guias relacionados.", "ja": "A1 でページやコンポーネントを検索するか、ヘルプに質問を開いて回答と関連ガイドを確認できます。", "zh": "在 A1 中搜索页面或组件，或打开“询问帮助”以获取答案和相关指南。", "ar": "ابحث في A1 عن صفحة أو مكوّن، أو افتح اسأل المساعدة للحصول على إجابات وأدلة ذات صلة." }
+        },
+        "workspaceTitle": {
+          "$type": "string",
+          "$value": "Work in context",
+          "$description": "Title for the workspace step in the guided product tour.",
+          "locale": { "es": "Trabaje en contexto", "fr": "Travaillez dans le contexte", "de": "Im Kontext arbeiten", "pt": "Trabalhe no contexto", "ja": "コンテキストで作業する", "zh": "在上下文中工作", "ar": "اعمل ضمن السياق" }
+        },
+        "workspaceDescription": {
+          "$type": "string",
+          "$value": "Each page keeps its tools and guidance close at hand. Start with the editor when you are ready to build.",
+          "$description": "Supporting text for the workspace step in the guided product tour.",
+          "locale": { "es": "Cada página mantiene sus herramientas y guías al alcance. Empiece con el editor cuando esté listo para crear.", "fr": "Chaque page garde ses outils et ses guides à portée de main. Commencez avec l’éditeur lorsque vous êtes prêt à créer.", "de": "Jede Seite hält ihre Werkzeuge und Anleitungen griffbereit. Starten Sie mit dem Editor, wenn Sie bereit sind zu erstellen.", "pt": "Cada página mantém suas ferramentas e guias por perto. Comece pelo editor quando estiver pronto para criar.", "ja": "各ページでは、必要なツールとガイダンスをすぐに利用できます。準備ができたらエディターから作成を始めましょう。", "zh": "每个页面都会将工具和指南放在手边。准备好后即可从编辑器开始创建。", "ar": "تُبقي كل صفحة أدواتها وإرشاداتها في متناول اليد. ابدأ بالمحرر عندما تكون مستعدًا للإنشاء." }
+        }
+      },
       "page": {
         "home": {
           "$type": "string",
