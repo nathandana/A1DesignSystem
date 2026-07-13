@@ -212,6 +212,104 @@ export function getDefaultConfig() {
   }
 }
 
+// ── Page-definition JSON (the configurator's JSON view, A1-1651) ─────────────
+// Round-trips the configuration through the A1 page-definition ComponentNode
+// shape, mirroring buildSectionSnippet's omit-defaults rules, so the node can
+// be exchanged with the Figma component JSON plugin. Child nodes are not part
+// of the configurator; the shell shows a notice when an imported node has them.
+export const jsonType = 'Section'
+
+const AS_VALUES = ['section', 'div', 'main', 'header', 'footer']
+const SURFACE_VALUES = ['page', 'panel', 'raised']
+const HEIGHT_VALUES = ['hero', 'screen']
+const ALIGN_VALUES = ['left', 'center', 'right']
+const GRADIENT_VALUES = ['accent', 'highlight', 'info', 'success', 'warn']
+const POSITION_VALUES = ['center', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left', 'top-left']
+const BG_FIT_VALUES = ['cover', 'contain', 'tile']
+const BG_OVERLAY_VALUES = ['darken', 'lighten']
+const BORDER_STYLE_VALUES = ['solid', 'dashed', 'dotted']
+const BORDER_VARIANT_VALUES = ['subtle', 'strong', 'accent']
+
+// A prop that supports responsive syntax: keep a valid string, or keep the
+// valid breakpoint keys of an object; anything else falls back.
+function responsiveOrValue(value, allowed, fallback) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const out = {}
+    for (const bp of ['xs', 'sm', 'md', 'lg', 'xl']) if (allowed.includes(value[bp])) out[bp] = value[bp]
+    return Object.keys(out).length > 0 ? out : fallback
+  }
+  return allowed.includes(value) ? value : fallback
+}
+
+export function toJson(config) {
+  const props = {}
+  if (config.as && config.as !== 'section') props.as = config.as
+  if (typeof config.padding === 'object') props.padding = config.padding
+  else if (config.padding && config.padding !== 'md') props.padding = config.padding
+  if (config.surface) props.surface = config.surface
+  if (config.gap) props.gap = config.gap
+  if (config.contentWidth) props.contentWidth = config.contentWidth
+  if (config.height) props.height = config.height
+  if (typeof config.align === 'object') props.align = config.align
+  else if (config.align) props.align = config.align
+  if (config.backgroundImage) {
+    props.backgroundImage = config.backgroundImage
+    if (config.backgroundFit !== 'cover') props.backgroundFit = config.backgroundFit
+    if (config.backgroundPosition !== 'center') props.backgroundPosition = config.backgroundPosition
+    if (config.backgroundOverlay) {
+      props.backgroundOverlay = config.backgroundOverlay
+      if (config.backgroundOverlayStrength !== 'md') props.backgroundOverlayStrength = config.backgroundOverlayStrength
+    }
+  } else if (config.gradient) {
+    // Gradient is suppressed by the component while a background image is set.
+    props.gradient = config.gradient
+    if (config.gradientPosition !== 'center') props.gradientPosition = config.gradientPosition
+  }
+  if (config.borderSize) props.borderSize = config.borderSize
+  if (config.borderStyle !== 'solid') props.borderStyle = config.borderStyle
+  if (config.borderVariant !== 'subtle') props.borderVariant = config.borderVariant
+  if (config.borderSize && config.borderSides.length !== 4) props.borderSides = config.borderSides
+  if (config.radius && config.radius !== 'none') props.radius = config.radius
+  if (config.inverse) props.inverse = true
+
+  const node = { id: 'section-1', type: 'Section' }
+  if (Object.keys(props).length > 0) node.props = props
+  return { node, note: null }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  // The node's semantics win over the configurator's showcase defaults: an
+  // absent prop maps to the component default ('' / none), not to the demo value.
+  config.as = AS_VALUES.includes(props.as) ? props.as : 'section'
+  config.padding = responsiveOrValue(props.padding, PADDING_VALUES, 'md')
+  config.surface = SURFACE_VALUES.includes(props.surface) ? props.surface : ''
+  config.gap = GAP_VALUES.includes(props.gap) ? props.gap : ''
+  config.contentWidth = CONTENT_WIDTH_VALUES.includes(props.contentWidth) ? props.contentWidth : ''
+  config.height = HEIGHT_VALUES.includes(props.height) ? props.height : ''
+  config.align = responsiveOrValue(props.align, ALIGN_VALUES, '')
+  config.gradient = GRADIENT_VALUES.includes(props.gradient) ? props.gradient : ''
+  config.gradientPosition = POSITION_VALUES.includes(props.gradientPosition) ? props.gradientPosition : 'center'
+  // Reject script-capable URL schemes (nodes can arrive via the ?json= handoff).
+  config.backgroundImage = typeof props.backgroundImage === 'string' && !/^\s*(javascript|vbscript):/i.test(props.backgroundImage)
+    ? props.backgroundImage
+    : ''
+  config.backgroundFit = BG_FIT_VALUES.includes(props.backgroundFit) ? props.backgroundFit : 'cover'
+  config.backgroundPosition = POSITION_VALUES.includes(props.backgroundPosition) ? props.backgroundPosition : 'center'
+  config.backgroundOverlay = BG_OVERLAY_VALUES.includes(props.backgroundOverlay) ? props.backgroundOverlay : ''
+  config.backgroundOverlayStrength = BG_OVERLAY_STRENGTH_VALUES.includes(props.backgroundOverlayStrength) ? props.backgroundOverlayStrength : 'md'
+  config.borderSize = BORDER_SIZE_VALUES.includes(props.borderSize) ? props.borderSize : ''
+  config.borderStyle = BORDER_STYLE_VALUES.includes(props.borderStyle) ? props.borderStyle : 'solid'
+  config.borderVariant = BORDER_VARIANT_VALUES.includes(props.borderVariant) ? props.borderVariant : 'subtle'
+  config.borderSides = Array.isArray(props.borderSides)
+    ? BORDER_SIDES.filter((side) => props.borderSides.includes(side))
+    : [...BORDER_SIDES]
+  config.radius = RADIUS_VALUES.includes(props.radius) ? props.radius : 'none'
+  config.inverse = props.inverse === true
+  return config
+}
+
 export function Preview({ config, utilityClass = utilityClassesFor('Section', config.utilities) }) {
   useImageLibraryVersion() // re-render when a library image hydrates
   return (

@@ -86,6 +86,55 @@ export function getDefaultConfig() {
   }
 }
 
+// ── Page-definition JSON (the configurator's JSON view, A1-1651) ─────────────
+// Round-trips the configuration through the A1 page-definition ComponentNode
+// shape (apps/a1-web/src/editor/pageTypes.ts) so it can be copied into page
+// definitions or exchanged with the Figma component JSON plugin
+// (packages/figma/plugins/a1-json). Defaults are omitted, matching the
+// snippet builders below and the componentCatalog defaultNode.
+export const jsonType = 'Button'
+
+export function toJson(config) {
+  const props = {}
+  if (config.variant !== 'primary') props.variant = config.variant
+  if (config.size !== 'md') props.size = config.size
+  if (config.href) props.href = config.href
+  if (config.icon) props.icon = config.icon
+  if (config.icon && config.iconPosition !== 'start') props.iconPosition = config.iconPosition
+  if (config.fullWidth) props.fullWidth = true
+  if (config.loading) props.loading = true
+  if (config.disabled) props.disabled = true
+
+  const node = { id: 'button-1', type: 'Button', content: { fallback: config.label || 'Button' } }
+  if (Object.keys(props).length > 0) node.props = props
+  // SplitButton has no page-definition type — the node describes the main action.
+  const note = config.split
+    ? {
+        key: 'label.app.configurator.jsonSplitNote',
+        fallback: 'Split button is not part of the page-definition schema — the JSON describes a standard Button.',
+      }
+    : null
+  return { node, note }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  if (typeof node.content?.fallback === 'string') config.label = node.content.fallback
+  if (VARIANT_OPTIONS.includes(props.variant)) config.variant = props.variant
+  if (SIZE_OPTIONS.includes(props.size)) config.size = props.size
+  // Nodes can arrive from a pasted document or the ?json= URL handoff, so
+  // reject script-capable URL schemes rather than rendering them on the
+  // preview button.
+  if (typeof props.href === 'string' && !/^\s*(javascript|data|vbscript):/i.test(props.href)) config.href = props.href
+  if (typeof props.icon === 'string') config.icon = props.icon
+  if (props.iconPosition === 'end') config.iconPosition = 'end'
+  config.fullWidth = props.fullWidth === true
+  config.loading = props.loading === true
+  config.disabled = props.disabled === true
+  return config
+}
+
 // Lazily loads <a1-button> and renders the real Lit web component.
 // React 19 sets unknown props on custom elements as DOM properties; since all
 // A1Button Lit properties have reflect:true they also keep their attributes in

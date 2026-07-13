@@ -352,6 +352,40 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 | `children` / `footer` as arbitrary React nodes | Represented by named slot frames, not by a complete React AST |
 | `className`, `style`, `ref`, `aria-*`, `id`, native dialog attributes | Runtime-only props |
 
+### Radio Group
+
+**Component structure:** `Radio Group` is a component set on the Radio Group page (`node 258:1456`). It contains three realistic options so designers can edit the label, group hint/error, and option labels/hints without rebuilding the field. The Professional option is the representative selected option.
+
+**Figma default:** The first/default variant is `Size=default, State=default`, matching React's default density. Its representative selection maps to `defaultValue="professional"` in Code Connect.
+
+**Color modes:** Radio Group binds its text, field, hover, focus, selected, error, disabled, and border roles to the shared Color collection. Do not add a dark/inverse variant. Apply the Color collection's Dark mode to a containing frame or page; the `Radio Group / Dark mode validation` frame on the component page demonstrates this.
+
+Variant properties:
+
+| React prop | Figma representation | Valid values |
+|------------|---------------------|--------------|
+| `size` | Variant `Size` | `comfortable` \| `default` \| `compact` |
+| `required`, `error`, `disabled` | Variant `State` | `default` \| `hover` \| `focus` \| `required` \| `error` \| `disabled` |
+
+Component properties:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `label` | `Label` + `Show label` | TEXT + BOOLEAN | The visible group legend |
+| `hint` | `Hint` + `Show hint` | TEXT + BOOLEAN | Hidden by the `error` state, matching React |
+| `error` | `Error` | TEXT | Visible in `State=error` |
+| `options` | `Option 1–3 label` and `Option 1–3 hint` + `Show option hints` | TEXT + BOOLEAN | The fixed three-option editing model |
+
+Gaps — props and behaviors that cannot currently be represented visually in Figma:
+
+| React prop / behavior | Gap reason |
+|-----------------------|------------|
+| `options` length, option `value`, option-level `disabled` | Figma v1 provides a fixed, representative three-option editing model; duplicate or remove rows when composing a specific screen |
+| `inline` | Runtime responsive layout choice; designers can arrange instances horizontally in a parent layout |
+| `value`, `defaultValue`, `onChange`, `name` | Native radio-group selection and form behavior are runtime-owned; the component shows Professional as the representative selection |
+| `id`, `className`, `ref`, `aria-*` | Runtime-only semantics and integration details |
+| `hover`, `focus` | Included as Figma visual states for inspection; Code Connect emits no React prop |
+
 ### Section
 
 **Component structure:** `Section` > `Section Slot` (SLOT, FILL width) > `_content` (FRAME, FIXED width bound to ContentWidth).
@@ -413,7 +447,33 @@ Gaps — props that cannot currently be represented visually in Figma:
 | Text Field | Text Field component set and related documentation |
 | Dialog | Dialog component set and related documentation |
 | Menu | Menu component set and related documentation |
+| Radio Group | Radio Group component set, examples, and dark-mode validation |
 | Icons | Material Symbols icon component sets used by component properties |
+
+---
+
+## Figma to JSON plugin (proof of concept)
+
+`packages/figma/plugins/a1-json/` (A1-1651) is a development plugin that bridges A1
+Figma components and the A1 page-definition JSON format in both directions:
+exporting a selected instance as a page-definition `ComponentNode` (automatic —
+the JSON follows the selection and its configuration changes) and rendering
+pasted page-definition JSON back onto the canvas as component instances. Button
+and Section so far; exporters/importers are keyed by component-set name, and the
+per-component gap tables above define which props are runtime-only (warned,
+never emitted/applied). Section is split across components on the Figma side —
+the Section set plus internal parts such as **Section Content**, which carries
+the content-width/padding properties — so the plugin scans the instance and its
+internal part instances for properties by canonicalised name (case/spacing
+insensitive) and merges them into the single React props, with the
+ContentWidth/Gap collection modes as fallbacks; `inverse` maps to the explicit
+Inverse/Dark Color mode, and registered descendants (Buttons) export as
+`children`. **Update selection** applies pasted JSON to the currently selected
+instance in place (properties only, not children). The same node JSON
+round-trips with the a1-web configurator's editable **JSON** format view
+(Button and Section pages), and the plugin's **Open in a1-web** link hands the
+node straight to the configurator via a `?json=` query parameter (localhost dev
+server for now). See the plugin README for install and usage.
 
 ---
 
@@ -424,7 +484,7 @@ Gaps — props that cannot currently be represented visually in Figma:
 | Color | COLOR | Light / Dark | All semantic color tokens (`surface/*`, `text/*`, `border/*`, `action/*`) + component-facing color aliases such as `color/button/*` |
 | Spacing | FLOAT | Default | `gap/xs–xl`, `radius/sm–lg` |
 | Primitives | mixed | Default | Base color ramp + primitive radius values |
-| Components | mixed | Value | Shared component variables including Menu shell/item dimensions and Dialog width/padding/radius/footer-border dimensions. |
+| Components | mixed | Value | Shared component variables including Menu shell/item dimensions, Dialog width/padding/radius/footer-border dimensions, and scoped `radioGroup/*` geometry variables. |
 | Button | mixed | Value | Button component variables. Color variables alias to Color collection roles (for example `button/secondary/background` → `color/button/secondary/background`); size/radius/spacing variables alias to primitive tokens. |
 | Field | FLOAT | Value | Text Field component variables for exact React heights, padding, gaps, border widths, focus dimensions, accent widths, and side-label widths. Field-specific interaction colours live in the shared Color collection as `color/field/*` aliases so light/dark mode is switched once through Color. |
 | Breakpoints | FLOAT | xs / sm / md / lg / xl | `min`, `max`, `canvas` — bind `canvas` to a frame's width then switch modes |

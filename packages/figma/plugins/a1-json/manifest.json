@@ -1,0 +1,8 @@
+{
+  "name": "A1 Design System – Component JSON",
+  "id": "a1-design-system-component-json",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"]
+}
