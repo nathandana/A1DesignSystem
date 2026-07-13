@@ -1,0 +1,256 @@
+<!-- A1 Design System – Component JSON plugin UI (A1-1651).
+     Figma plugin iframes cannot load the design system packages, so the CSS
+     below inlines resolved A1 token values, each annotated with its source
+     token (values from packages/pure/dist/a1-light.css) — the same approach
+     as the sibling generator plugin's code.js. -->
+<style>
+  :root {
+    --surface-page: #f7fafe;      /* --semantic-color-surface-page */
+    --surface-field: #ffffff;     /* --semantic-color-surface-field */
+    --text-default: #060b14;      /* --semantic-color-text-default */
+    --text-muted: #64748b;        /* --semantic-color-text-muted */
+    --border-subtle: #c8d2e0;     /* --semantic-color-border-subtle */
+    --border-strong: #64748b;     /* --semantic-color-border-strong */
+    --action-bg: #7c3aed;         /* --semantic-color-action-background */
+    --action-bg-hover: #5916b5;   /* --semantic-color-action-background-hover */
+    --action-fg: #e8e4ff;         /* --semantic-color-action-foreground */
+    --focus-ring: #5916b5;        /* --component-button-focus-ring */
+    --error-surface: #fff2f0;     /* --semantic-color-status-error-surface */
+    --error-text: #660005;        /* --semantic-color-status-error-text */
+    --warn-surface: #fff3ea;      /* --semantic-color-status-warn-surface */
+    --warn-text: #4f2700;         /* --semantic-color-status-warn-text */
+    --success-surface: #dfffe4;   /* --semantic-color-status-success-surface */
+    --success-text: #003f17;      /* --semantic-color-status-success-background (used as text on the success surface) */
+    --gap-xs: 8px;                /* --semantic-spacing-gap-xs */
+    --gap-sm: 12px;               /* --semantic-spacing-gap-sm */
+    --gap-md: 16px;               /* --semantic-spacing-gap-md */
+    --radius-md: 6px;             /* --base-radius-md */
+    --font-size-xs: 12px;         /* --semantic-font-size-body-xs */
+    --font-size-sm: 14px;         /* --semantic-font-size-body-sm */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: var(--gap-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    height: 100vh;
+    font-family: Inter, sans-serif;
+    font-size: var(--font-size-xs);
+    color: var(--text-default);
+    background: var(--surface-page);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .row {
+    display: flex;
+    gap: var(--gap-xs);
+    flex-wrap: wrap;
+  }
+
+  button, a.button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px; /* matches Button size="sm" target */
+    padding: 0 var(--gap-sm);
+    border: 1px solid var(--action-bg);
+    border-radius: var(--radius-md);
+    background: var(--action-bg);
+    color: var(--action-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  button:hover, a.button:hover { background: var(--action-bg-hover); border-color: var(--action-bg-hover); }
+
+  button:focus-visible, a.button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  button.secondary, a.button.secondary {
+    background: var(--surface-field);
+    border-color: var(--border-strong);
+    color: var(--text-default);
+  }
+
+  button.secondary:hover, a.button.secondary:hover { background: var(--surface-page); }
+
+  button:disabled, a.button[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; }
+
+  textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 180px;
+    padding: var(--gap-xs);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-field);
+    color: var(--text-default);
+    font-family: ui-monospace, monospace;
+    font-size: var(--font-size-xs);
+    resize: none;
+  }
+
+  textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  #status {
+    display: none;
+    padding: var(--gap-xs) var(--gap-sm);
+    border-radius: var(--radius-md);
+    white-space: pre-wrap;
+  }
+
+  #status.error { display: block; background: var(--error-surface); color: var(--error-text); }
+  #status.warn { display: block; background: var(--warn-surface); color: var(--warn-text); }
+  #status.success { display: block; background: var(--success-surface); color: var(--success-text); }
+</style>
+
+<h1>A1 component JSON</h1>
+<p id="hint">Select an A1 Button or Section instance — its page-definition JSON appears below automatically and follows configuration changes. Or paste JSON and render it on the canvas.</p>
+
+<div class="row">
+  <button id="export" type="button" disabled>Export selection</button>
+</div>
+
+<textarea id="json" aria-label="Component JSON" spellcheck="false"></textarea>
+
+<div class="row">
+  <button id="copy" type="button" class="secondary">Copy JSON</button>
+  <button id="render" type="button" class="secondary">Render on canvas</button>
+  <button id="update" type="button" class="secondary">Update selection</button>
+  <a id="open" class="button secondary" target="_blank" rel="noopener" aria-disabled="true">Open in a1-web</a>
+</div>
+
+<div id="status" role="status"></div>
+
+<script>
+  // Where "Open in a1-web" points. Localhost (the reserved a1-web dev port)
+  // for now; point this at the deployed site (https://a1design.app) later.
+  const A1_WEB_BASE = 'http://127.0.0.1:5177';
+
+  const exportButton = document.getElementById('export');
+  const copyButton = document.getElementById('copy');
+  const renderButton = document.getElementById('render');
+  const updateButton = document.getElementById('update');
+  const openLink = document.getElementById('open');
+  const jsonField = document.getElementById('json');
+  const status = document.getElementById('status');
+
+  // "Button" → "button", "TextField" → "text-field" — the a1-web route slugs.
+  function routeSlug(type) {
+    return type.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  }
+
+  // Keep the Open in a1-web link pointing at the configurator for the node
+  // currently in the textarea, carrying the (minified) node as ?json=.
+  function syncOpenLink() {
+    let node = null;
+    try { node = JSON.parse(jsonField.value); } catch { /* not valid JSON yet */ }
+    if (node && !Array.isArray(node) && typeof node === 'object' && typeof node.type === 'string') {
+      openLink.href = A1_WEB_BASE + '/components/' + routeSlug(node.type) +
+        '?json=' + encodeURIComponent(JSON.stringify(node));
+      openLink.removeAttribute('aria-disabled');
+    } else {
+      openLink.removeAttribute('href');
+      openLink.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  // Auto-exports must never clobber JSON the user is hand-editing for import:
+  // typing marks the textarea dirty, and only a manual Export selection (or a
+  // non-dirty auto export) replaces its content.
+  let dirty = false;
+
+  jsonField.addEventListener('input', () => {
+    dirty = true;
+    syncOpenLink();
+  });
+
+  function setStatus(kind, message) {
+    status.className = message ? kind : '';
+    status.textContent = message || '';
+  }
+
+  exportButton.onclick = () => {
+    setStatus('', '');
+    parent.postMessage({ pluginMessage: { type: 'export' } }, '*');
+  };
+
+  renderButton.onclick = () => {
+    setStatus('', '');
+    parent.postMessage({ pluginMessage: { type: 'import', text: jsonField.value } }, '*');
+  };
+
+  updateButton.onclick = () => {
+    setStatus('', '');
+    parent.postMessage({ pluginMessage: { type: 'update', text: jsonField.value } }, '*');
+  };
+
+  copyButton.onclick = () => {
+    jsonField.select();
+    document.execCommand('copy');
+    setStatus('success', 'Copied to the clipboard.');
+  };
+
+  window.onmessage = (event) => {
+    const message = event.data.pluginMessage;
+    if (!message) return;
+
+    if (message.type === 'selection') {
+      exportButton.disabled = !message.exportable;
+      if (message.componentName && !message.exportable) {
+        setStatus('warn', '"' + message.componentName + '" is not supported yet — Button and Section only for now.');
+      }
+    }
+    if (message.type === 'export-result') {
+      if (message.auto && dirty) {
+        setStatus('warn', 'Selection changed — kept your edited JSON. Click "Export selection" to replace it.');
+        return;
+      }
+      jsonField.value = message.json;
+      dirty = false;
+      syncOpenLink();
+      setStatus(
+        message.warnings.length ? 'warn' : 'success',
+        message.warnings.length
+          ? message.warnings.join('\n')
+          : 'Exported ' + message.componentName + ' — copy the JSON or open it in a1-web.'
+      );
+    }
+    if (message.type === 'update-result') {
+      // The applied JSON is now the instance's state; let the follow-up auto
+      // export replace the textarea with the canonical round-tripped node.
+      dirty = false;
+      setStatus(
+        message.warnings.length ? 'warn' : 'success',
+        message.warnings.length
+          ? message.warnings.join('\n')
+          : 'Updated the selected ' + message.componentName + ' from JSON.'
+      );
+    }
+    if (message.type === 'import-result') {
+      setStatus(
+        message.warnings.length ? 'warn' : 'success',
+        message.warnings.length
+          ? message.warnings.join('\n')
+          : 'Rendered ' + message.count + ' instance' + (message.count === 1 ? '' : 's') + ' on the canvas.'
+      );
+    }
+    if (message.type === 'error') {
+      setStatus('error', message.message);
+    }
+  };
+</script>

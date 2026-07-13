@@ -3411,6 +3411,148 @@
           }
         }
       },
+      "configurator": {
+        "format": {
+          "$type": "string",
+          "$value": "Format",
+          "$description": "Toolbar label for the component configurator's snippet format toggle (code or page-definition JSON).",
+          "locale": {
+            "es": "Formato",
+            "fr": "Format",
+            "de": "Format",
+            "pt": "Formato",
+            "ja": "形式",
+            "zh": "格式",
+            "ar": "التنسيق"
+          }
+        },
+        "formatCode": {
+          "$type": "string",
+          "$value": "Code",
+          "$description": "Format toggle option that shows the component's code snippet.",
+          "locale": {
+            "es": "Código",
+            "fr": "Code",
+            "de": "Code",
+            "pt": "Código",
+            "ja": "コード",
+            "zh": "代码",
+            "ar": "الكود"
+          }
+        },
+        "formatJson": {
+          "$type": "string",
+          "$value": "JSON",
+          "$description": "Format toggle option that shows the component as an A1 page-definition JSON node.",
+          "locale": {
+            "es": "JSON",
+            "fr": "JSON",
+            "de": "JSON",
+            "pt": "JSON",
+            "ja": "JSON",
+            "zh": "JSON",
+            "ar": "JSON"
+          }
+        },
+        "jsonEditableHint": {
+          "$type": "string",
+          "$value": "Edit the JSON to update the configuration — changes apply as you type.",
+          "$description": "Hint above the configurator's editable JSON view explaining that valid edits apply live.",
+          "locale": {
+            "es": "Edita el JSON para actualizar la configuración; los cambios se aplican mientras escribes.",
+            "fr": "Modifiez le JSON pour mettre à jour la configuration — les changements s'appliquent au fil de la saisie.",
+            "de": "Bearbeiten Sie das JSON, um die Konfiguration zu aktualisieren — Änderungen werden beim Tippen übernommen.",
+            "pt": "Edite o JSON para atualizar a configuração — as alterações são aplicadas enquanto você digita.",
+            "ja": "JSONを編集すると設定が更新されます。変更は入力中に適用されます。",
+            "zh": "编辑 JSON 即可更新配置——更改会在输入时应用。",
+            "ar": "حرّر JSON لتحديث الإعداد — تُطبَّق التغييرات أثناء الكتابة."
+          }
+        },
+        "importJsonEmpty": {
+          "$type": "string",
+          "$value": "Paste a component node to import.",
+          "$description": "Validation message in the configurator's editable JSON view when the input is empty.",
+          "locale": {
+            "es": "Pega un nodo de componente para importarlo.",
+            "fr": "Collez un nœud de composant à importer.",
+            "de": "Fügen Sie einen Komponentenknoten zum Importieren ein.",
+            "pt": "Cole um nó de componente para importar.",
+            "ja": "インポートするコンポーネントノードを貼り付けてください。",
+            "zh": "粘贴要导入的组件节点。",
+            "ar": "الصق عقدة مكوّن لاستيرادها."
+          }
+        },
+        "importJsonInvalid": {
+          "$type": "string",
+          "$value": "Not valid JSON.",
+          "$description": "Validation message in the configurator's editable JSON view when the input cannot be parsed; the parser detail is appended.",
+          "locale": {
+            "es": "El JSON no es válido.",
+            "fr": "JSON non valide.",
+            "de": "Kein gültiges JSON.",
+            "pt": "JSON inválido.",
+            "ja": "有効なJSONではありません。",
+            "zh": "JSON 无效。",
+            "ar": "‏JSON غير صالح."
+          }
+        },
+        "importJsonNotNode": {
+          "$type": "string",
+          "$value": "The JSON must be a single component node object.",
+          "$description": "Validation message in the configurator's editable JSON view when the input is an array or not an object.",
+          "locale": {
+            "es": "El JSON debe ser un único objeto de nodo de componente.",
+            "fr": "Le JSON doit être un seul objet de nœud de composant.",
+            "de": "Das JSON muss ein einzelnes Komponentenknoten-Objekt sein.",
+            "pt": "O JSON deve ser um único objeto de nó de componente.",
+            "ja": "JSONは単一のコンポーネントノードオブジェクトである必要があります。",
+            "zh": "JSON 必须是单个组件节点对象。",
+            "ar": "يجب أن يكون JSON كائن عقدة مكوّن واحدًا."
+          }
+        },
+        "importJsonWrongType": {
+          "$type": "string",
+          "$value": "The node type must be \"{type}\".",
+          "$description": "Validation message in the configurator's editable JSON view when the node's type does not match the current component; {type} is replaced with the expected type name.",
+          "locale": {
+            "es": "El tipo del nodo debe ser \"{type}\".",
+            "fr": "Le type du nœud doit être « {type} ».",
+            "de": "Der Knotentyp muss \"{type}\" sein.",
+            "pt": "O tipo do nó deve ser \"{type}\".",
+            "ja": "ノードのtypeは「{type}」である必要があります。",
+            "zh": "节点类型必须为“{type}”。",
+            "ar": "يجب أن يكون نوع العقدة \"{type}\"."
+          }
+        },
+        "jsonChildrenIgnored": {
+          "$type": "string",
+          "$value": "Child nodes were not applied — the configurator previews a single component with sample content.",
+          "$description": "Info banner in the configurator's JSON view when an imported node carries child nodes, which the single-component configurator cannot render.",
+          "locale": {
+            "es": "Los nodos hijos no se aplicaron; el configurador muestra un único componente con contenido de ejemplo.",
+            "fr": "Les nœuds enfants n'ont pas été appliqués — le configurateur présente un seul composant avec un contenu d'exemple.",
+            "de": "Untergeordnete Knoten wurden nicht übernommen — der Konfigurator zeigt eine einzelne Komponente mit Beispielinhalt.",
+            "pt": "Os nós filhos não foram aplicados — o configurador mostra um único componente com conteúdo de exemplo.",
+            "ja": "子ノードは適用されませんでした。コンフィギュレーターはサンプルコンテンツ付きの単一コンポーネントを表示します。",
+            "zh": "未应用子节点——配置器仅以示例内容预览单个组件。",
+            "ar": "لم تُطبَّق العقد الفرعية — تعرض أداة الضبط مكوّنًا واحدًا بمحتوى تجريبي."
+          }
+        },
+        "jsonSplitNote": {
+          "$type": "string",
+          "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",
+          "$description": "Info banner in the Button configurator's JSON view when the split (menu) option is on, which has no page-definition node type.",
+          "locale": {
+            "es": "El botón dividido no forma parte del esquema de definición de página; el JSON describe un botón estándar.",
+            "fr": "Le bouton scindé ne fait pas partie du schéma de définition de page — le JSON décrit un bouton standard.",
+            "de": "Der geteilte Button ist nicht Teil des Seitendefinitionsschemas — das JSON beschreibt einen Standard-Button.",
+            "pt": "O botão dividido não faz parte do esquema de definição de página — o JSON descreve um botão padrão.",
+            "ja": "スプリットボタンはページ定義スキーマに含まれていないため、JSONは標準のボタンを表します。",
+            "zh": "拆分按钮不在页面定义架构中——JSON 描述的是标准按钮。",
+            "ar": "الزر المنقسم ليس جزءًا من مخطط تعريف الصفحة — يصف JSON زرًا قياسيًا."
+          }
+        }
+      },
       "editor": {
         "screenReaderReportAction": {
           "$type": "string",
