@@ -104,6 +104,7 @@ import { BlogArticle } from './pages/BlogArticle.jsx'
 import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
 import { HelpAssistantMenu } from './help/HelpAssistantMenu.jsx'
+import { ProductTour } from './onboarding/ProductTour.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
@@ -147,6 +148,7 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
+const PRODUCT_TOUR_STORAGE_KEY = 'a1-web-product-tour-v1'
 const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
@@ -342,6 +344,26 @@ function resolveLabel(labels, locale, key, fallback) {
   return node.$value ?? fallback ?? key
 }
 
+function hasSeenProductTour() {
+  try {
+    return localStorage.getItem(PRODUCT_TOUR_STORAGE_KEY) !== null
+  } catch {
+    return false
+  }
+}
+
+function saveProductTourState(state) {
+  try {
+    localStorage.setItem(PRODUCT_TOUR_STORAGE_KEY, state)
+  } catch { /* Tour persistence is optional when storage is unavailable. */ }
+}
+
+function formatTourProgress(template, current, total) {
+  return template
+    .replace('{current}', String(current))
+    .replace('{total}', String(total))
+}
+
 
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
@@ -375,6 +397,7 @@ function App() {
   )
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
   const [helpAssistantOpen, setHelpAssistantOpen] = useState(false)
+  const [productTourOpen, setProductTourOpen] = useState(false)
   const helpAssistantAnchorRef = useRef(null)
   const [helpQuery, setHelpQuery] = useState(() => new URLSearchParams(window.location.search).get('q') || '')
   const [skipMenuOpen, setSkipMenuOpen] = useState(false)
@@ -503,11 +526,43 @@ function App() {
   const labelLocale = locale === 'en' ? null : locale
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+  const productTourLabels = useMemo(() => ({
+    dialogLabel: t('app.tour.dialogLabel', 'Product tour'),
+    close: t('app.tour.close', 'Close tour'),
+    skip: t('app.tour.skip', 'Skip tour'),
+    previous: t('app.tour.previous', 'Previous'),
+    next: t('app.tour.next', 'Next'),
+    done: t('app.tour.done', 'Done'),
+    progress: (current, total) => formatTourProgress(t('app.tour.progress', 'Step {current} of {total}'), current, total),
+  }), [t])
+  const productTourSteps = useMemo(() => [
+    {
+      target: '[data-a1-tour="navigation"] .a1-top-header__nav',
+      title: t('app.tour.navigationTitle', 'Find your way'),
+      description: t('app.tour.navigationDescription', 'Use the top navigation to explore the system, open the editors, and return home from anywhere.'),
+    },
+    {
+      target: '[data-a1-tour="navigation"] .a1-top-header__end',
+      title: t('app.tour.toolsTitle', 'Search and get help'),
+      description: t('app.tour.toolsDescription', 'Search A1 for a page or component, or open Ask Help for answers and related guides.'),
+    },
+    {
+      target: '.a1-page-layout__main-scroll',
+      title: t('app.tour.workspaceTitle', 'Work in context'),
+      description: t('app.tour.workspaceDescription', 'Each page keeps its tools and guidance close at hand. Start with the editor when you are ready to build.'),
+    },
+  ], [t])
 
   useEffect(() => {
     backlog?.setLabelResolver?.(t)
     return () => backlog?.setLabelResolver?.(null)
   }, [backlog?.setLabelResolver, t])
+
+  useEffect(() => {
+    if (activePage !== 'home' || hasSeenProductTour()) return undefined
+    const timer = window.setTimeout(() => setProductTourOpen(true), 0)
+    return () => window.clearTimeout(timer)
+  }, [activePage])
 
   const globalSearchEntries = useMemo(() => {
     const entries = []
@@ -938,6 +993,21 @@ function App() {
       ?? document.querySelector('.a1-web-app-header a[aria-label="Help"]')
       ?? null
     setHelpAssistantOpen(true)
+  }
+
+  function startProductTour() {
+    setHelpAssistantOpen(false)
+    setProductTourOpen(true)
+  }
+
+  function dismissProductTour() {
+    saveProductTourState('dismissed')
+    setProductTourOpen(false)
+  }
+
+  function completeProductTour() {
+    saveProductTourState('completed')
+    setProductTourOpen(false)
   }
 
   function focusMainContent() {
@@ -1728,6 +1798,7 @@ function App() {
         header={
           <TopHeader
             className="a1-web-app-header"
+            data-a1-tour="navigation"
             logo={logo}
             logoHref={getPath('home')}
             navItems={navItems}
@@ -2014,6 +2085,16 @@ function App() {
         anchorRef={helpAssistantAnchorRef}
         onClose={() => setHelpAssistantOpen(false)}
         onOpenHelp={openHelpPage}
+        onStartTour={startProductTour}
+        tourLabel={t('app.tour.start', 'Take a tour')}
+      />
+
+      <ProductTour
+        open={productTourOpen}
+        steps={productTourSteps}
+        labels={productTourLabels}
+        onDismiss={dismissProductTour}
+        onComplete={completeProductTour}
       />
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">

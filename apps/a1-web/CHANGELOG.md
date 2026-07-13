@@ -41,6 +41,7 @@
 - **Editor configurators — full audit** — every registered, addable component now has a working configurator in the project/pattern editor's Configure panel. Wired up the 13 that previously showed **"No configurator is registered for this component type"**: Stat, Autocomplete, Inline editable, Inline, Dialog, Menu, Context menu, Snackbar, Notification, Side nav, Bottom sheet, Canvas, and a focused single-Node configurator. Also fixed the **Card** configurator, which wasn't exposing **Surface** (or the hero separator options) in the editor — those now round-trip. Data-bound `Stat` values (`{{ dataset.column }}`) survive editing instead of being blanked.
 
 - **ApiGrid data-source samples** — added the five ApiGrid API-management dashboard datasets (`ApiGrid APIs`, `ApiGrid consumers`, `ApiGrid activity`, `ApiGrid traffic`, `ApiGrid request logs`) as built-in Data-source samples, transcribed from the ApiGrid design handoff. They appear as one-click **Add sample** datasets on the Data sources page and can be bound into pages (binding keys `apigrid_apis`, `apigrid_consumers`, `apigrid_activity`, `apigrid_traffic`, `apigrid_request_logs`).
+- **Product tour** (A1-83) — added a lightweight, first-visit A1 walkthrough that spotlights navigation, search/help, and the active workspace. The tour is keyboard-contained, dismissible with Escape, remembers dismissal or completion locally, and can be restarted from Ask Help. All tour copy is supplied by localized system labels.
 
 ## 0.28.0 — 2026-07-07
 

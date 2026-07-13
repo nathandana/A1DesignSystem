@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "A1 Jobs Autofill",
+  "description": "Scans and fills job application forms from reviewed A1 Jobs fill packages.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Open A1 Jobs side panel"
+  },
+  "permissions": [
+    "activeTab",
+    "clipboardRead",
+    "scripting",
+    "sidePanel",
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "host_permissions": [
+    "http://127.0.0.1:5186/*",
+    "http://localhost:5186/*",
+    "http://*/*",
+    "https://*/*"
+  ]
+}

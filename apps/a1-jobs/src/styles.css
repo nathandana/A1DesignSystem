@@ -1,0 +1,49 @@
+html,
+body,
+#root {
+  min-block-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--semantic-color-surface-page);
+}
+
+.a1-jobs-context-anchor {
+  position: fixed;
+  inline-size: var(--base-spacing-2);
+  block-size: var(--base-spacing-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.a1-jobs-application-titlebar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--base-spacing-16);
+}
+
+.a1-jobs-application-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--base-spacing-8);
+  max-inline-size: 52rem;
+}
+
+@media (width < 900px) {
+  .a1-jobs-application-titlebar {
+    flex-direction: column;
+  }
+
+  .a1-jobs-application-actions {
+    justify-content: flex-start;
+    max-inline-size: 100%;
+  }
+}

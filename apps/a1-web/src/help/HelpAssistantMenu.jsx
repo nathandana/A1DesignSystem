@@ -9,7 +9,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { answerHelpQuestion, HELP_ASSISTANT_STARTERS } from './helpAssistant.js'
 
-export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp }) {
+export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp, onStartTour, tourLabel }) {
   const inputRef = useRef(null)
   const [query, setQuery] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
@@ -109,6 +109,11 @@ export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp }) {
           )}
 
           <Stack direction="row" gap="xs" justify="end" wrap>
+            {onStartTour && (
+              <Button variant="secondary" size="sm" icon="tour" onClick={onStartTour}>
+                {tourLabel}
+              </Button>
+            )}
             <Button variant="secondary" size="sm" onClick={() => handleOpenHelp(query.trim() || submittedQuery)}>
               Open full Help
             </Button>
