@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "summary": { "type": "string" },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": ["string", "null"] },
+        "company": { "type": ["string", "null"] },
+        "location": { "type": ["string", "null"] },
+        "workMode": { "type": ["string", "null"] },
+        "seniority": { "type": ["string", "null"] },
+        "salaryRange": { "type": ["string", "null"] },
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "responsibilities": { "type": "array", "items": { "type": "string" } },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "company", "location", "workMode", "seniority", "salaryRange", "requirements", "responsibilities", "keywords"]
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] },
+        "signals": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["name", "notes", "signals"]
+    },
+    "fitScore": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+    "resume": { "type": ["string", "null"] },
+    "coverLetter": { "type": ["string", "null"] },
+    "portfolioNote": { "type": ["string", "null"] },
+    "a1Note": { "type": ["string", "null"] },
+    "outreach": { "type": ["string", "null"] },
+    "interviewPrep": { "type": ["string", "null"] },
+    "messageSummary": { "type": ["string", "null"] },
+    "statusSuggestion": { "type": ["string", "null"] },
+    "fieldMappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fieldId": { "type": "string" },
+          "label": { "type": "string" },
+          "targetKey": { "type": "string" },
+          "value": { "type": "string" },
+          "confidence": { "type": "number" },
+          "needsReview": { "type": "boolean" },
+          "reason": { "type": "string" }
+        },
+        "required": ["fieldId", "label", "targetKey", "value", "confidence", "needsReview", "reason"]
+      }
+    },
+    "questions": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "nextActions": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": [
+    "summary",
+    "position",
+    "company",
+    "fitScore",
+    "resume",
+    "coverLetter",
+    "portfolioNote",
+    "a1Note",
+    "outreach",
+    "interviewPrep",
+    "messageSummary",
+    "statusSuggestion",
+    "fieldMappings",
+    "questions",
+    "warnings",
+    "nextActions"
+  ]
+}

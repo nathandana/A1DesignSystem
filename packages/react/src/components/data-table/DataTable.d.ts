@@ -107,6 +107,10 @@ export interface DataTableProps extends React.HTMLAttributes<HTMLDivElement> {
   onSelectedRowIdsChange?: (ids: string[]) => void;
   onDeleteSelected?: (rows: Record<string, unknown>[], ids: string[]) => void;
   onCellChange?: (row: Record<string, unknown>, columnKey: string, value: string, rowIndex: number) => void;
+  /** Called when a row's context menu is opened. */
+  onRowContextMenu?: (row: Record<string, unknown>, event: React.MouseEvent) => void;
+  /** Highlights a row by its getRowId value. */
+  highlightRowId?: string | number;
   getRowId?: (row: Record<string, unknown>, index: number) => string | number;
   emptyTitle?: string;
   emptyDescription?: string;

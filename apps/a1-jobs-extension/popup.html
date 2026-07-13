@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A1 Jobs Autofill</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="a1-jobs-extension">
+      <header class="a1-jobs-extension__header">
+        <h1>A1 Jobs Autofill</h1>
+        <p>Send job pages, form scans, and visible contacts into your local A1 Jobs workspace.</p>
+      </header>
+
+      <div class="a1-jobs-extension__tabs" role="tablist" aria-label="A1 Jobs extension modes">
+        <button id="tab-form" class="a1-jobs-extension__tab" type="button" role="tab" aria-selected="true" aria-controls="panel-form" data-tab="form">Form autofill</button>
+        <button id="tab-job" class="a1-jobs-extension__tab" type="button" role="tab" aria-selected="false" aria-controls="panel-job" data-tab="job">Job page</button>
+        <button id="tab-linkedin" class="a1-jobs-extension__tab" type="button" role="tab" aria-selected="false" aria-controls="panel-linkedin" data-tab="linkedin">LinkedIn</button>
+      </div>
+
+      <section id="panel-job" class="a1-jobs-extension__panel" role="tabpanel" aria-labelledby="tab-job">
+        <div class="a1-jobs-extension__section-header">
+          <h2>Current job page</h2>
+          <button id="job-button" type="button">Send to A1 Jobs</button>
+        </div>
+        <textarea id="job-output" rows="11" readonly aria-label="Job page JSON"></textarea>
+        <div class="a1-jobs-extension__actions">
+          <button id="copy-job-button" type="button" disabled>Copy job JSON</button>
+        </div>
+      </section>
+
+      <section id="panel-form" class="a1-jobs-extension__panel" role="tabpanel" aria-labelledby="tab-form" hidden>
+        <div class="a1-jobs-extension__section-header">
+          <h2>Form scan</h2>
+          <button id="scan-button" type="button">Scan and send form</button>
+        </div>
+        <textarea id="form-scan-output" rows="9" readonly aria-label="Form scan JSON"></textarea>
+        <div class="a1-jobs-extension__actions">
+          <button id="copy-scan-button" type="button" disabled>Copy scan JSON</button>
+        </div>
+
+        <div class="a1-jobs-extension__section-header">
+          <h2>Fill package</h2>
+          <button id="fill-button" type="button">Fill form</button>
+        </div>
+        <textarea id="fill-input" rows="9" aria-label="Fill package JSON"></textarea>
+        <div>
+          <h2>Common values</h2>
+          <div id="common-values" class="a1-jobs-extension__common-values" aria-label="Common profile values"></div>
+        </div>
+        <div id="field-mappings" class="a1-jobs-extension__field-mappings" aria-label="Individual field controls"></div>
+      </section>
+
+      <section id="panel-linkedin" class="a1-jobs-extension__panel" role="tabpanel" aria-labelledby="tab-linkedin" hidden>
+        <div class="a1-jobs-extension__section-header">
+          <h2>Selected LinkedIn job</h2>
+          <button id="linkedin-job-button" type="button">Copy link and add job</button>
+        </div>
+        <div class="a1-jobs-extension__section-header">
+          <h2>Visible contacts</h2>
+          <button id="linkedin-button" type="button">Scan and send contacts</button>
+        </div>
+        <textarea id="linkedin-output" rows="11" readonly aria-label="LinkedIn scan JSON"></textarea>
+        <div class="a1-jobs-extension__actions">
+          <button id="copy-linkedin-button" type="button" disabled>Copy contacts JSON</button>
+        </div>
+      </section>
+
+      <section class="a1-jobs-extension__section" aria-labelledby="result-title">
+        <h2 id="result-title">Result</h2>
+        <pre id="result-output" aria-live="polite">Ready.</pre>
+      </section>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

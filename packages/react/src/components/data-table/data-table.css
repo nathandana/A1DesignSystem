@@ -127,6 +127,10 @@
   background: var(--semantic-color-surface-panel);
 }
 
+.a1-data-table tbody tr[data-highlighted="true"] td {
+  background: var(--semantic-color-action-surface);
+}
+
 .a1-data-table tbody tr[data-selectable-row="true"] {
   cursor: pointer;
 }
@@ -435,6 +439,10 @@
 
   .a1-data-table__mobile-card[data-selected="true"] {
     background: var(--semantic-color-surface-panel);
+  }
+
+  .a1-data-table__mobile-card[data-highlighted="true"] {
+    background: var(--semantic-color-action-surface);
   }
 
   .a1-data-table__mobile-card[data-selectable-row="true"] {

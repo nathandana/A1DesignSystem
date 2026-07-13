@@ -1,0 +1,9 @@
+.DS_Store
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+dist/
+node_modules/
+resumes/*.pdf
+!resumes/Nathan Dana - Resume - baseline.pdf

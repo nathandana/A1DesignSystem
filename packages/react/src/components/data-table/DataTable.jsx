@@ -30,6 +30,8 @@ import "./data-table.css";
  * }>
  * rows: Array<Record<string, any>>
  * getRowId?: (row: Record<string, any>, index: number) => string | number
+ * onRowContextMenu?: (row: Record<string, any>, event: React.MouseEvent) => void
+ * highlightRowId?: string | number
  * size?: "comfortable" | "default" | "compact"
  *   omit (default) — switches between densities automatically based on available container width
  * mobileLayout?: "cards" | "table"
@@ -283,6 +285,8 @@ export function DataTable({
   onSelectedRowIdsChange,
   onDeleteSelected,
   onCellChange,
+  onRowContextMenu,
+  highlightRowId,
   getRowId = defaultGetRowId,
   emptyTitle = "No results",
   emptyDescription,
@@ -317,6 +321,15 @@ export function DataTable({
       searchAccessor: column.searchAccessor,
       searchMatcher: column.searchMatcher,
     }));
+
+  // Auto-generated column filters are resolved after the initial state is
+  // created. Apply a default filter once those definitions become available,
+  // without reapplying it after the user changes or clears the filter.
+  useEffect(() => {
+    if (isFilterControlled || Object.keys(internalFilterValue).length > 0 || Object.keys(defaultFilterValue).length === 0) return;
+    setInternalFilterValue(normalizeFilterValue(resolvedFilters, defaultFilterValue));
+  }, [defaultFilterValue, internalFilterValue, isFilterControlled, resolvedFilters]);
+
   const activeDensity = isAuto ? autoDensity : size;
   const resolvedMobileLayout = mobileLayout === "table" ? "table" : "cards";
   const activeSort = isSortControlled ? normalizeSort(sort) : internalSort;
@@ -539,6 +552,12 @@ export function DataTable({
     toggleRowSelected(rowId, !selectedRowIdSet.has(rowId));
   }
 
+  function handleRowContextMenu(row, event) {
+    if (!onRowContextMenu) return;
+    event.preventDefault();
+    onRowContextMenu(row, event);
+  }
+
   // ── Cell rendering ──────────────────────────────────────────────────────
 
   function renderCell(col, value, row, rowIndex) {
@@ -696,8 +715,10 @@ export function DataTable({
           <div
             className="a1-data-table__mobile-card"
             data-selected={isSelected ? "true" : undefined}
+            data-highlighted={String(highlightRowId) === rowId ? "true" : undefined}
             data-selectable-row={supportsRowClickSelection ? "true" : undefined}
             onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
+            onContextMenu={(event) => handleRowContextMenu(row, event)}
           >
             <dl className="a1-data-table__mobile-definition-list">
               {selectable && (
@@ -866,8 +887,10 @@ export function DataTable({
                       <tr
                         className="a1-data-table__desktop-row"
                         data-selected={isSelected ? "true" : undefined}
+                        data-highlighted={String(highlightRowId) === rowId ? "true" : undefined}
                         data-selectable-row={supportsRowClickSelection ? "true" : undefined}
                         onClick={(event) => handleRowClick(rowId, supportsRowClickSelection, event)}
+                        onContextMenu={(event) => handleRowContextMenu(row, event)}
                       >
                         {selectable && (
                           <td
