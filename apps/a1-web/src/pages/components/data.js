@@ -367,7 +367,7 @@ export const PACKAGE_COVERAGE = {
   select:             ['React', 'Pure'],
   autocomplete:       ['React'],
   'checkbox-group':   ['React', 'Pure'],
-  'radio-group':      ['React', 'Pure'],
+  'radio-group':      ['React', 'Pure', 'Figma'],
   fieldset:           ['React', 'Pure'],
   'field-row':        ['React'],
   'inline-editable':  ['React'],

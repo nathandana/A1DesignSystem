@@ -354,37 +354,39 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 
 ### Radio Group
 
-**Component structure:** `Radio Group` is a component set on the Radio Group page (`node 258:1456`). It contains three realistic options so designers can edit the label, group hint/error, and option labels/hints without rebuilding the field. The Professional option is the representative selected option.
+**Component structure:** `Radio Group` is a component set on the Radio Group page (`node 283:1121`) with a `Radio Items` slot. The separate `Radio Option` component set (`node 269:1599`) supplies the editable option rows. The parent’s starter slot content uses matching-size option instances.
 
-**Figma default:** The first/default variant is `Size=default, State=default`, matching React's default density. Its representative selection maps to `defaultValue="professional"` in Code Connect.
+**Figma default:** Both component sets insert as `Size=default`. Radio Group’s starter slot contains a selected Starter option followed by two unselected options. Code Connect emits a representative `defaultValue="starter"` and options list.
 
-**Color modes:** Radio Group binds its text, field, hover, focus, selected, error, disabled, and border roles to the shared Color collection. Do not add a dark/inverse variant. Apply the Color collection's Dark mode to a containing frame or page; the `Radio Group / Dark mode validation` frame on the component page demonstrates this.
+**Color modes:** Radio Group and Radio Option bind their text, field, selected, hover, and border roles to the shared Color collection. Do not add a dark/inverse variant. Apply the Color collection's Dark mode to a containing frame or page; the `Radio Group / Dark mode validation` frame on the component page demonstrates this.
 
 Variant properties:
 
 | React prop | Figma representation | Valid values |
 |------------|---------------------|--------------|
-| `size` | Variant `Size` | `comfortable` \| `default` \| `compact` |
-| `required`, `error`, `disabled` | Variant `State` | `default` \| `hover` \| `focus` \| `required` \| `error` \| `disabled` |
+| `size` | Variant `Size` on both `Radio Group` and `Radio Option` | `comfortable` \| `default` \| `compact` |
+| option `selected` and visual hover inspection | `Radio Option` variants | `selected=true|false`; `state=default|hover` |
+| `required` | `Required` boolean | Shows the group’s required marker |
 
 Component properties:
 
 | React prop | Figma property | Type | Notes |
 |------------|----------------|------|-------|
-| `label` | `Label` + `Show label` | TEXT + BOOLEAN | The visible group legend |
-| `hint` | `Hint` + `Show hint` | TEXT + BOOLEAN | Hidden by the `error` state, matching React |
-| `error` | `Error` | TEXT | Visible in `State=error` |
-| `options` | `Option 1–3 label` and `Option 1–3 hint` + `Show option hints` | TEXT + BOOLEAN | The fixed three-option editing model |
+| `label` | `Label` | TEXT | The visible group legend |
+| `hint` | `Helper` | TEXT | The visible group helper text |
+| `required` | `Required` | BOOLEAN | The visible required marker |
+| `options` | `Radio Items` slot containing `Radio Option` instances | SLOT | Insert 2–20 A1 Radio Option instances; each exposes `Label`, `Hint`, `Show hint`, `Size`, `selected`, and visual `state` properties |
 
 Gaps — props and behaviors that cannot currently be represented visually in Figma:
 
 | React prop / behavior | Gap reason |
 |-----------------------|------------|
-| `options` length, option `value`, option-level `disabled` | Figma v1 provides a fixed, representative three-option editing model; duplicate or remove rows when composing a specific screen |
+| option `value`, option-level `disabled`, selected-value coordination | Figma represents individual option rows visually; native choice coordination is runtime-owned |
 | `inline` | Runtime responsive layout choice; designers can arrange instances horizontally in a parent layout |
-| `value`, `defaultValue`, `onChange`, `name` | Native radio-group selection and form behavior are runtime-owned; the component shows Professional as the representative selection |
+| `value`, `defaultValue`, `onChange`, `name` | Native radio-group selection and form behavior are runtime-owned; the component shows a representative Starter selection |
+| `error`, `disabled` parent states | The reusable parent currently focuses on composition and density; use the dark error validation example as a visual reference until those states are added back as parent properties |
 | `id`, `className`, `ref`, `aria-*` | Runtime-only semantics and integration details |
-| `hover`, `focus` | Included as Figma visual states for inspection; Code Connect emits no React prop |
+| option `hover` | Included as a Radio Option visual state for inspection; Code Connect emits no React prop |
 
 ### Section
 

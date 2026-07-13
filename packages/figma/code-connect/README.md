@@ -39,3 +39,13 @@ The Menu template maps the parent shell's `Aria label`, `Section label`, and ite
 - Template: `Dialog.figma.ts`
 
 The Dialog template maps `Size`, `Status`, `Title`, `Body`, `Show close`, and `Show footer` to a representative React `Dialog` composition. `Status=none` omits the React `status` prop; visible close affordances emit a placeholder `onClose`; visible footers emit representative A1 `Button` actions. Runtime-only behavior such as open-state ownership, native `<dialog>` behavior, Escape/backdrop dismissal, focus trap, focus restoration, refs, and arbitrary native dialog attributes remains omitted. The React `icon` override is not exposed in the Figma v1 component; status variants use the default icon through the `Dialog Hero Icon` child set.
+
+## Radio Group
+
+- Figma component set: `https://www.figma.com/design/zFjqo3SwHbkXwtCOoQCVMA/A1-Design-System?node-id=283-1121`
+- React source: `packages/react/src/components/radio-group/RadioGroup.jsx`
+- Template: `RadioGroup.figma.ts`
+
+The Radio Group template maps the parent component's `Size`, `Label`, `Helper`, and `Required` properties to the React density, label, hint, and required props. `Radio Items` is a slot composed from independently editable `Radio Option` instances, so the template emits a representative three-option list rather than reading slot content. Option state, selection, dynamic option counts, inline layout, input name, controlled value, and change handling remain runtime-owned.
+
+Live Code Connect publishing is blocked by this Figma plan: the integration requires a Dev or Full seat on an Organization or Enterprise plan. The checked-in template is ready to publish once that requirement is met.
