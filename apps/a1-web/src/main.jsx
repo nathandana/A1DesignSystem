@@ -94,6 +94,7 @@ import {
   acknowledgeFigmaPageCreate,
   acknowledgePlaygroundHandoff,
   consumePlaygroundHandoff,
+  isLocalBridgeFeatureEnabled,
   listenForFigmaPageCreate,
   listenForPlaygroundHandoff,
   registerFigmaWorkspace,
@@ -445,7 +446,7 @@ function App() {
   // volatile snapshot only on loopback, which lets the plugin populate its
   // Page Editor and pull the selected page's current JSON on demand.
   useEffect(() => {
-    if (IS_STANDALONE) return undefined
+    if (IS_STANDALONE || !isLocalBridgeFeatureEnabled()) return undefined
     const registerFigmaWorkspaceSnapshot = () => {
       const workspace = {
         projects: projectStore.loadProjects().map((project) => ({
@@ -486,7 +487,7 @@ function App() {
   // new page. Keep this separate from ordinary linked-page edits: this creates
   // the page once, then persists the new Figma/A1 link for subsequent syncs.
   useEffect(() => {
-    if (IS_STANDALONE) return undefined
+    if (IS_STANDALONE || !isLocalBridgeFeatureEnabled()) return undefined
     let cancelled = false
     let inFlight = false
     const receiveCreatedPage = async () => {
@@ -586,7 +587,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (activePage !== 'playground') return undefined
+    if (activePage !== 'playground' || !isLocalBridgeFeatureEnabled()) return undefined
     let cancelled = false
     let receivedId = null
     let timer = null
@@ -634,7 +635,7 @@ function App() {
 
   useEffect(() => {
     const handoffId = new URLSearchParams(window.location.search).get('handoff')
-    if (!handoffId) return undefined
+    if (!handoffId || !isLocalBridgeFeatureEnabled()) return undefined
     let cancelled = false
     consumePlaygroundHandoff(handoffId)
       .then(async (handoff) => {

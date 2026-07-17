@@ -8,7 +8,7 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
-import { queueFigmaHandoff } from '../lib/localCodex.ts'
+import { isLocalBridgeFeatureEnabled, queueFigmaHandoff } from '../lib/localCodex.ts'
 import {
   FIGMA_BRIDGE_IMAGE_TYPES,
   FIGMA_BRIDGE_MAX_IMAGE_BYTES,
@@ -113,6 +113,7 @@ export function JsonPlaygroundSidebar({ json, onJsonChange, error, open, onClose
   const [figmaHandoffStatus, setFigmaHandoffStatus] = useState('')
   const [figmaHandoffError, setFigmaHandoffError] = useState('')
   const [sendingToFigma, setSendingToFigma] = useState(false)
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled()
 
   async function sendToFigma() {
     if (!json.trim() || error || sendingToFigma) return
@@ -152,19 +153,21 @@ export function JsonPlaygroundSidebar({ json, onJsonChange, error, open, onClose
         >
           {json}
         </Code>
-        <Button
-          size="sm"
-          icon="open_in_new"
-          fullWidth
-          loading={sendingToFigma}
-          disabled={!json.trim() || Boolean(error)}
-          onClick={sendToFigma}
-        >
-          Send to Figma
-        </Button>
+        {bridgeFeaturesEnabled && (
+          <Button
+            size="sm"
+            icon="open_in_new"
+            fullWidth
+            loading={sendingToFigma}
+            disabled={!json.trim() || Boolean(error)}
+            onClick={sendToFigma}
+          >
+            Send to Figma
+          </Button>
+        )}
         {error && <Banner id="playground-json-error" status="error" variant="inline">{error}</Banner>}
-        {figmaHandoffStatus && <Banner status="success" variant="inline">{figmaHandoffStatus}</Banner>}
-        {figmaHandoffError && <Banner status="error" variant="inline">{figmaHandoffError}</Banner>}
+        {bridgeFeaturesEnabled && figmaHandoffStatus && <Banner status="success" variant="inline">{figmaHandoffStatus}</Banner>}
+        {bridgeFeaturesEnabled && figmaHandoffError && <Banner status="error" variant="inline">{figmaHandoffError}</Banner>}
       </Stack>
     </SideNav>
   )

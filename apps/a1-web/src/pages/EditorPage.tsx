@@ -63,6 +63,7 @@ import {
 } from '../projects/projectStore';
 import {
   acknowledgeFigmaPageSync,
+  isLocalBridgeFeatureEnabled,
   listenForFigmaPageSync,
   queueFigmaPageSync,
   registerFigmaWorkspace,
@@ -800,6 +801,7 @@ export function EditorPage({
     projectId && documentKind === 'page' ? getFigmaPageLink(projectId, exampleId)?.id ?? null : null,
   );
   const [figmaSyncBusy, setFigmaSyncBusy] = useState(false);
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled();
   // The child item being edited (e.g. a DefinitionList item) — shared by the
   // canvas (outline) and the configurator (active tab).
   const [activeItem, setActiveItem] = useState<{ nodeId: string; index: number } | null>(null);
@@ -815,7 +817,7 @@ export function EditorPage({
   // Figma plugin uses it only to label page choices; content still moves via a
   // deliberate page sync request and never persists in the bridge.
   useEffect(() => {
-    if (!projectId || documentKind !== 'page') return undefined;
+    if (!bridgeFeaturesEnabled || !projectId || documentKind !== 'page') return undefined;
     const register = () => {
       const workspace = {
         projects: loadProjects().map((project) => ({
@@ -849,12 +851,12 @@ export function EditorPage({
     register();
     const interval = window.setInterval(register, 20_000);
     return () => window.clearInterval(interval);
-  }, [projectId, documentKind, exampleId]);
+  }, [bridgeFeaturesEnabled, projectId, documentKind, exampleId]);
 
   // Accept page-scoped Figma edits as a normal page-history entry. A link id
   // prevents an unrelated Playground handoff from changing a project page.
   useEffect(() => {
-    if (!projectId || documentKind !== 'page') return undefined;
+    if (!bridgeFeaturesEnabled || !projectId || documentKind !== 'page') return undefined;
     let stopped = false;
     const poll = async () => {
       const link = getFigmaPageLink(projectId, exampleId);
@@ -886,10 +888,10 @@ export function EditorPage({
     const interval = window.setInterval(poll, 1500);
     poll();
     return () => { stopped = true; window.clearInterval(interval); };
-  }, [projectId, documentKind, exampleId]);
+  }, [bridgeFeaturesEnabled, projectId, documentKind, exampleId]);
 
   async function handleSendPageToFigma() {
-    if (!projectId || documentKind !== 'page' || !parsedDefinition.ok) return;
+    if (!bridgeFeaturesEnabled || !projectId || documentKind !== 'page' || !parsedDefinition.ok) return;
     setFigmaSyncBusy(true);
     try {
       const existing = getFigmaPageLink(projectId, exampleId);
@@ -2157,7 +2159,7 @@ export function EditorPage({
                 onClick={handleExpandPreview}
               />
             )}
-            {!isPattern && !isLayout && projectId && (
+            {bridgeFeaturesEnabled && !isPattern && !isLayout && projectId && (
               <ToolbarButton
                 icon={figmaLinkId ? 'sync' : 'add_link'}
                 label={figmaLinkId ? 'Send linked page to Figma' : 'Connect page to Figma'}

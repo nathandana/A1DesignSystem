@@ -10,6 +10,7 @@ import { EditorCodexPanel } from './EditorCodexPanel.jsx'
 import { EditorImagesPanel } from './EditorImagesPanel.jsx'
 import { EditorDataPanel } from './EditorDataPanel.jsx'
 import { AI_ENABLED } from '../lib/aiImages.ts'
+import { isLocalBridgeFeatureEnabled } from '../lib/localCodex.ts'
 import { PatternLockControls } from '../patterns/PatternLockControls.jsx'
 import { useT } from '../labels/useT.js'
 
@@ -66,6 +67,7 @@ export function EditorAsidePanel({
 }) {
   const t = useT()
   const [tab, setTab] = useState('configure')
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled()
   // One-shot request to focus the chat input, set when "Make with AI" opens a page.
   const [chatFocusRequest, setChatFocusRequest] = useState(false)
   // The editor panels are internal tooling — turn off browser/password-manager
@@ -83,6 +85,10 @@ export function EditorAsidePanel({
   useEffect(() => {
     if (selectedNodeId !== null && selectedNodeId !== undefined) setTab('configure')
   }, [selectedNodeId])
+
+  useEffect(() => {
+    if (!bridgeFeaturesEnabled && tab === 'codex') setTab('configure')
+  }, [bridgeFeaturesEnabled, tab])
 
   // "Make with AI" opened this page — land on the AI tab and focus the prompt,
   // then clear the flag so reopening the page later doesn't re-trigger it.
@@ -108,7 +114,7 @@ export function EditorAsidePanel({
     { value: 'add-pattern', label: t('app.editor.patternTab', 'Pattern'), icon: 'dashboard_customize' },
     { value: 'images', label: t('app.editor.imagesTab', 'Images'), icon: 'photo_library' },
     { value: 'data', label: t('app.editor.dataTab', 'Data'), icon: 'table_chart' },
-    { value: 'codex', label: t('app.editor.codexTab', 'Codex'), icon: 'terminal' },
+    ...(bridgeFeaturesEnabled ? [{ value: 'codex', label: t('app.editor.codexTab', 'Codex'), icon: 'terminal' }] : []),
     ...(AI_ENABLED ? [{ value: 'ai', label: 'AI', icon: 'auto_awesome' }] : []),
     { value: 'versions', label: t('app.editor.versionsTab', 'Versions'), icon: 'commit' },
     { value: 'history', label: t('app.editor.historyTab', 'History'), icon: 'history' },
@@ -198,7 +204,7 @@ export function EditorAsidePanel({
           <EditorDataPanel projectId={projectId} />
         )}
 
-        {tab === 'codex' && (
+        {bridgeFeaturesEnabled && tab === 'codex' && (
           <EditorCodexPanel definition={definition} />
         )}
 

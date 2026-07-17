@@ -7,6 +7,7 @@ import {
   listCustomIcons,
   subscribeCustomIconStore,
 } from '../../../lib/customIconStore.ts'
+import { isLocalBridgeFeatureEnabled } from '../../../lib/localCodex.ts'
 import { getActiveProjectId } from '../../../projects/projectStore.ts'
 
 // Friendlier names for a few Material Symbols category ids; the rest are
@@ -59,6 +60,7 @@ export function IconSelect({
   const [hint, setHint] = useState('')
   const [customIcons, setCustomIcons] = useState([])
   const wrapRef = useRef(null)
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled()
 
   useEffect(() => {
     let active = true
@@ -102,22 +104,26 @@ export function IconSelect({
             aria-label={label}
           />
         </Stack>
-        <IconButton
-          icon="auto_awesome"
-          size={size === 'compact' ? 'sm' : 'md'}
-          variant="secondary"
-          aria-label="Find an icon with AI"
-          onClick={openAi}
-        />
+        {bridgeFeaturesEnabled && (
+          <IconButton
+            icon="auto_awesome"
+            size={size === 'compact' ? 'sm' : 'md'}
+            variant="secondary"
+            aria-label="Find an icon with AI"
+            onClick={openAi}
+          />
+        )}
       </div>
-      <AiIconDialog
-        key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
-        open={aiOpen}
-        initialPrompt={hint}
-        customIcons={customIcons.map((icon) => ({ name: icon.name }))}
-        onClose={() => setAiOpen(false)}
-        onApply={(name) => onChange?.(name)}
-      />
+      {bridgeFeaturesEnabled && (
+        <AiIconDialog
+          key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
+          open={aiOpen}
+          initialPrompt={hint}
+          customIcons={customIcons.map((icon) => ({ name: icon.name }))}
+          onClose={() => setAiOpen(false)}
+          onApply={(name) => onChange?.(name)}
+        />
+      )}
     </>
   )
 }
