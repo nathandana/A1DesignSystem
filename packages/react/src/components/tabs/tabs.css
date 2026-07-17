@@ -351,7 +351,9 @@
 }
 
 .a1-tab--segment {
-  min-block-size: var(--a1-segmented-height);
+  /* Segment height = total control height minus the wrapper's padding and
+     border, keeping the OUTER segment strip on the 28/40/56 standard. */
+  min-block-size: calc(var(--a1-segmented-height) - 2 * (var(--component-segmented-padding) + var(--component-segmented-border-width)));
   padding: var(--component-segmented-segment-padding-block) var(--component-segmented-segment-padding-inline);
   font-size: var(--semantic-font-size-body-sm);
   font-weight: var(--base-font-weight-medium);

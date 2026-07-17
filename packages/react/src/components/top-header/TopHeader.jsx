@@ -719,9 +719,9 @@ export function TopHeader({
               <Button
                 variant="primary"
                 size="sm"
-                onClick={loginButton.onClick}
+                onClick={typeof loginButton === "object" ? loginButton.onClick : undefined}
               >
-                {loginButton.label ?? "Log in"}
+                {(typeof loginButton === "string" ? loginButton : loginButton.label) ?? "Log in"}
               </Button>
             </div>
           )}

@@ -3007,7 +3007,7 @@ function ComponentConfigureSurface({
 }) {
   const t = useT()
   // View JSON (A1-1651): detail modules that export jsonType/toJson/fromJson
-  // (Button only for now) get a Code | JSON format toggle on the snippet. The
+  // get a Code | JSON format toggle on the snippet. The
   // JSON view shows the current configuration as an A1 page-definition node in
   // an editable code block — valid edits apply to the configurator as you type.
   const hasJson = typeof detail.toJson === 'function' && typeof detail.fromJson === 'function'
@@ -3185,6 +3185,16 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
   const isExamplePage = Boolean(requestedExample)
   const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
+  // Reset config synchronously when navigating between component pages. The
+  // effect-based reset below runs only AFTER the first render with the new
+  // component, so without this the detail module renders once against the
+  // PREVIOUS page's config — crashing modules that index into config arrays
+  // (e.g. Definition List's config.items when arriving from another page).
+  const [configComponentId, setConfigComponentId] = useState(component.id)
+  if (configComponentId !== component.id) {
+    setConfigComponentId(component.id)
+    setConfig(detail.getDefaultConfig(component, category))
+  }
   const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExample?.id ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.

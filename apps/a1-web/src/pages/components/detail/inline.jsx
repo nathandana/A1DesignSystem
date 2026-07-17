@@ -224,3 +224,29 @@ export function Controls({ config, setConfig }) {
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildInlineSnippet(config, utilityClass)}</Code>
 }
+
+export const jsonType = 'Inline'
+
+export function toJson(config) {
+  const props = {}
+  if (config.inlineElement && config.inlineElement !== 'all') props.inlineElement = config.inlineElement
+  return {
+    node: {
+      id: 'inline-1',
+      type: 'Inline',
+      props,
+      content: {
+        fallback: config.children || SAMPLE_MARKDOWN,
+      },
+    },
+    note: null,
+  }
+}
+
+export function fromJson(node) {
+  const props = node?.props && typeof node.props === 'object' ? node.props : {}
+  return {
+    inlineElement: typeof props.inlineElement === 'string' ? props.inlineElement : 'all',
+    children: node?.content?.fallback || props.children || SAMPLE_MARKDOWN,
+  }
+}

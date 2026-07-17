@@ -7,4 +7,4 @@ const mod = createGroupModule({
   multiple: false,
 })
 
-export const { getDefaultConfig, Preview, Controls, Snippet } = mod
+export const { getDefaultConfig, Preview, Controls, Snippet, jsonType, toJson, fromJson } = mod

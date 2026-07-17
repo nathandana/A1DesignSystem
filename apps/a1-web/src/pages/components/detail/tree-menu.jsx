@@ -101,6 +101,53 @@ function stripPanelFlag(items) {
   }))
 }
 
+function normalizeTreeItems(items) {
+  if (!Array.isArray(items)) return []
+  return items
+    .filter((item) => item && typeof item === 'object')
+    .map((item, index) => {
+      const label = typeof item.label === 'string' && item.label.trim() ? item.label.trim() : `Item ${index + 1}`
+      const normalized = {
+        id: typeof item.id === 'string' && item.id.trim() ? item.id.trim() : label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `item-${index + 1}`,
+        label,
+        icon: typeof item.icon === 'string' ? item.icon : '',
+        openInPanel: false,
+        children: normalizeTreeItems(item.children),
+      }
+      if (typeof item.href === 'string' && item.href) normalized.href = item.href
+      if (item.disabled === true) normalized.disabled = true
+      return normalized
+    })
+}
+
+export const jsonType = 'TreeMenu'
+
+export function toJson(config) {
+  const props = {
+    items: stripPanelFlag(config.items ?? []),
+  }
+  if (config.variant && config.variant !== 'expanded') props.variant = config.variant
+  if (config.selectedId) props.selectedId = config.selectedId
+  if (Array.isArray(config.expandedIds) && config.expandedIds.length) props.expandedIds = config.expandedIds
+  if (config.showExpandControls === true) props.showExpandControls = true
+  if (config.draggable === true) props.draggable = true
+  return { node: { id: 'tree-menu-1', type: jsonType, props } }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  if (props.variant === 'expanded' || props.variant === 'collapsed') config.variant = props.variant
+  if (typeof props.selectedId === 'string') config.selectedId = props.selectedId
+  const expandedIds = Array.isArray(props.expandedIds) ? props.expandedIds : props.defaultExpandedIds
+  if (Array.isArray(expandedIds)) config.expandedIds = expandedIds.filter((id) => typeof id === 'string')
+  config.showExpandControls = props.showExpandControls === true
+  config.draggable = props.draggable === true
+  const items = normalizeTreeItems(props.items)
+  if (items.length > 0) config.items = items
+  return config
+}
+
 export function Preview({ config, utilityClass = '' }) {
   const [selectedId, setSelectedId] = useState(config.selectedId)
   const [expandedIds, setExpandedIds] = useState(config.expandedIds)

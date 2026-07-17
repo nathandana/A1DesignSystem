@@ -10,25 +10,45 @@
  *   the node's `fallback` used when no localized value is registered.
  * - Actions are NOT executed yet — see the TODO in `RenderNode`.
  */
-import { Code, InlineEditable, Heading, HeadingMark, Paragraph, Section, Stack, useLabel } from '@gtivr4/a1-design-system-react';
-import type { ReactNode } from 'react';
-import { createElement, createContext, useContext, useMemo, Fragment } from 'react';
-import { EditorSelectionBoundary } from './EditorSelectionBoundary';
-import type { ComponentType as ReactComponentType } from 'react';
-import { componentRegistry } from './componentRegistry';
-import { resolveSrc as resolveImageSrc } from '../lib/imageLibrary';
-import { useImageLibraryVersion } from './ImageLibraryContext';
-import { useDataSources } from '../data/DataSourcesContext.jsx';
-import { getActiveProjectId } from '../projects/projectStore';
-import { datasetAvailableToProject } from '../services/dataSources/types';
 import {
-  buildDatasetMap, hasBinding, resolveBinding, resolveBindingsToString,
-  type DatasetMap, type RowContext,
-} from '../data/bindings';
-import { normalizeRepeat, pickRepeatIndices } from '../data/repeat';
-import { collectionTargetFor, expandCollection } from '../data/collections';
-import { findRowIndexById } from '../services/dataSources/rowIds';
-import { utilityClassesFor } from './utilityRegistry';
+  Code,
+  InlineEditable,
+  Heading,
+  HeadingMark,
+  Link,
+  Paragraph,
+  Section,
+  Stack,
+  useLabel,
+} from "@gtivr4/a1-design-system-react";
+import type { ReactNode } from "react";
+import {
+  createElement,
+  createContext,
+  useContext,
+  useMemo,
+  Fragment,
+} from "react";
+import { EditorSelectionBoundary } from "./EditorSelectionBoundary";
+import type { ComponentType as ReactComponentType } from "react";
+import { componentRegistry } from "./componentRegistry";
+import { resolveSrc as resolveImageSrc } from "../lib/imageLibrary";
+import { useImageLibraryVersion } from "./ImageLibraryContext";
+import { useDataSources } from "../data/DataSourcesContext.jsx";
+import { getActiveProjectId } from "../projects/projectStore";
+import { datasetAvailableToProject } from "../services/dataSources/types";
+import {
+  buildDatasetMap,
+  hasBinding,
+  resolveBinding,
+  resolveBindingsToString,
+  type DatasetMap,
+  type RowContext,
+} from "../data/bindings";
+import { normalizeRepeat, pickRepeatIndices } from "../data/repeat";
+import { collectionTargetFor, expandCollection } from "../data/collections";
+import { findRowIndexById } from "../services/dataSources/rowIds";
+import { utilityClassesFor } from "./utilityRegistry";
 import type {
   A11yDefinition,
   ComponentNode,
@@ -36,68 +56,80 @@ import type {
   PageDefinition,
   PageLayoutDefinition,
   PageRegion,
-} from './pageTypes';
+} from "./pageTypes";
 
 const CONTAINER_TYPES = new Set([
-  'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
-  'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
-  'FieldRow', 'Slot',
+  "Section",
+  "Stack",
+  "Card",
+  "Grid",
+  "GridItem",
+  "Cluster",
+  "PageLayout",
+  "Accordion",
+  "Bleed",
+  "Inset",
+  "ButtonContainer",
+  "List",
+  "Fieldset",
+  "StickyActions",
+  "FieldRow",
+  "Slot",
 ]);
 
 // Components whose editable text is delivered via a named prop instead of as
 // children (e.g. Fieldset's <legend>). The renderer assigns the node's resolved
 // text — wrapped in InlineEditable in editor mode — to that prop.
 const TEXT_PROP_BY_TYPE: Record<string, string> = {
-  Fieldset: 'legend',
+  Fieldset: "legend",
 };
 
 const VOID_CHILD_TYPES = new Set([
-  'TextField',
-  'TextareaField',
-  'SelectField',
-  'NumberField',
-  'DateField',
-  'TimeField',
-  'PhoneField',
-  'ZipField',
-  'CreditCardField',
-  'Switch',
-  'Slider',
-  'Calendar',
-  'Icon',
-  'IconButton',
-  'LineChart',
-  'BarChart',
-  'AreaChart',
-  'ComposedChart',
-  'PieChart',
-  'ScatterChart',
-  'RadarChart',
-  'RadialBarChart',
-  'FunnelChart',
-  'TreemapChart',
-  'SankeyChart',
-  'SunburstChart',
-  'DataTable',
-  'StatusBar',
-  'CircularProgress',
-  'SegmentedControl',
+  "TextField",
+  "TextareaField",
+  "SelectField",
+  "NumberField",
+  "DateField",
+  "TimeField",
+  "PhoneField",
+  "ZipField",
+  "CreditCardField",
+  "Switch",
+  "Slider",
+  "Calendar",
+  "Icon",
+  "IconButton",
+  "LineChart",
+  "BarChart",
+  "AreaChart",
+  "ComposedChart",
+  "PieChart",
+  "ScatterChart",
+  "RadarChart",
+  "RadialBarChart",
+  "FunnelChart",
+  "TreemapChart",
+  "SankeyChart",
+  "SunburstChart",
+  "DataTable",
+  "StatusBar",
+  "CircularProgress",
+  "SegmentedControl",
 ]);
-
 
 /**
  * Extract a page id from an internal link href of the form `/?page={id}`.
  * Returns null for external/other hrefs so they keep their normal behaviour.
  */
 function pageIdFromHref(href: unknown): string | null {
-  if (typeof href !== 'string') return null;
+  if (typeof href !== "string") return null;
   const match = href.match(/[?&]page=([^&]+)/);
   return match ? decodeURIComponent(match[1]) : null;
 }
 
 /** Extract the detail-page `item` id from an internal link href, or null. */
 function itemIdFromHref(href: unknown): string | null {
-  if (typeof href !== 'string') return null;
+  if (typeof href !== "string") return null;
   const match = href.match(/[?&]item=([^&]+)/);
   return match ? decodeURIComponent(match[1]) : null;
 }
@@ -105,7 +137,9 @@ function itemIdFromHref(href: unknown): string | null {
 interface EditorModeContextValue {
   enabled: boolean;
   /** Preview-only: navigate to another page by id (with an optional detail `item`). */
-  onNavigate: ((pageId: string, opts?: { item?: string | null }) => void) | null;
+  onNavigate:
+    | ((pageId: string, opts?: { item?: string | null }) => void)
+    | null;
   /** Ids of nodes marked as locked (pattern editor) — shown with a lock badge. */
   lockedNodeIds: Set<string>;
   /** When true, a node's own `lock` metadata is enforced (page editor): locked
@@ -122,31 +156,50 @@ interface EditorModeContextValue {
   onUngroup: (nodeId: string) => void;
   onDuplicateNode: (nodeId: string) => void;
   onGroupAsStack: (nodeId: string) => void;
-  onConvertNode: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
+  onConvertNode: (
+    nodeId: string,
+    newType: string,
+    newProps: Record<string, unknown>,
+  ) => void;
   onCopyPattern: (nodeId: string) => void;
   onPastePattern: (nodeId: string) => void;
   onChooseTextLabel: (nodeId: string) => void;
   getNodeProps: (nodeId: string) => Record<string, unknown> | undefined;
-  getNodeInfo: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
+  getNodeInfo: (nodeId: string) => {
+    isFirst: boolean;
+    isLast: boolean;
+    hasChildren: boolean;
+  };
   onRequestAddChild: (nodeId: string) => void;
-  onCatalogDrop: (catalogType: string, targetNodeId: string, position: 'before' | 'into' | 'after') => void;
+  onCatalogDrop: (
+    catalogType: string,
+    targetNodeId: string,
+    position: "before" | "into" | "after",
+  ) => void;
   onDetachPattern: (nodeId: string) => void;
   onCreatePattern: (nodeId: string) => void;
   /** Edit the text of a child-item field (e.g. a DefinitionList item's label/value). */
-  onItemTextChange: (nodeId: string, index: number, field: string, value: string) => void;
+  onItemTextChange: (
+    nodeId: string,
+    index: number,
+    field: string,
+    value: string,
+  ) => void;
   /** The child item being edited (so the canvas can outline it). */
   activeItem: { nodeId: string; index: number } | null;
   /** Select a child item (e.g. clicking a DefinitionList item opens its tab). */
   onItemSelect: (nodeId: string, index: number) => void;
 }
 
-
 /**
  * Provides the active project's datasets (keyed for binding) to every node so a
  * `{{ dataset.column }}` token in a prop or text content resolves at render. Empty
  * by default (no bindings resolve, tokens render literally). See `data/bindings.ts`.
  */
-const PageDataContext = createContext<{ datasetMap: DatasetMap; rowContext: RowContext }>({ datasetMap: {}, rowContext: {} });
+const PageDataContext = createContext<{
+  datasetMap: DatasetMap;
+  rowContext: RowContext;
+}>({ datasetMap: {}, rowContext: {} });
 
 const EditorModeContext = createContext<EditorModeContextValue>({
   enabled: false,
@@ -194,7 +247,7 @@ function resolveComponent(type: string): ReactComponentType<any> | undefined {
  * sentinel is passed when a node has no key (its result is then discarded).
  */
 function useResolvedContent(content?: ContentDefinition): string | undefined {
-  const resolved = useLabel(content?.textKey ?? '', content?.fallback);
+  const resolved = useLabel(content?.textKey ?? "", content?.fallback);
   if (!content) return undefined;
   if (!content.textKey) return content.fallback;
   return resolved;
@@ -204,15 +257,17 @@ function useResolvedContent(content?: ContentDefinition): string | undefined {
 function a11yProps(a11y?: A11yDefinition): Record<string, string> {
   if (!a11y) return {};
   const props: Record<string, string> = {};
-  if (a11y.label) props['aria-label'] = a11y.label;
-  if (a11y.labelledBy) props['aria-labelledby'] = a11y.labelledBy;
-  if (a11y.describedBy) props['aria-describedby'] = a11y.describedBy;
+  if (a11y.label) props["aria-label"] = a11y.label;
+  if (a11y.labelledBy) props["aria-labelledby"] = a11y.labelledBy;
+  if (a11y.describedBy) props["aria-describedby"] = a11y.describedBy;
   if (a11y.role) props.role = a11y.role;
   return props;
 }
 
 function mergeClassNames(...classes: Array<unknown>): string | undefined {
-  const value = classes.filter((cls) => typeof cls === 'string' && cls.trim()).join(' ');
+  const value = classes
+    .filter((cls) => typeof cls === "string" && cls.trim())
+    .join(" ");
   return value || undefined;
 }
 
@@ -236,37 +291,51 @@ function UnsupportedComponent({ type }: { type: string }) {
         Unsupported component
       </Heading>
       <Paragraph size="sm" color="muted">
-        "{type}" is not a registered A1 component, so it was not rendered. Add it
-        to the component registry to enable it.
+        "{type}" is not a registered A1 component, so it was not rendered. Add
+        it to the component registry to enable it.
       </Paragraph>
     </Section>
   );
 }
 
-const UNDERLINE_STYLES = ['swoop', 'wave', 'sketch'];
+const UNDERLINE_STYLES = ["swoop", "wave", "sketch"];
 
 // Decode HTML entities (e.g. "&amp;" → "&") for plain-text display. Heading
 // content authored via the configurator is stored as HTML, so it may be encoded.
 function decodeEntities(str: string): string {
-  if (!str.includes('&') || typeof window === 'undefined') return str;
-  return new DOMParser().parseFromString(str, 'text/html').body.textContent ?? str;
+  if (!str.includes("&") || typeof window === "undefined") return str;
+  return (
+    new DOMParser().parseFromString(str, "text/html").body.textContent ?? str
+  );
 }
 
 // Render Heading content that contains heading-mark spans into real React nodes
 // (text + <HeadingMark>) so marks display as marks instead of literal markup.
 function renderHeadingRich(html: string): ReactNode {
-  if (typeof window === 'undefined') return html;
-  const root = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html').body.firstChild as HTMLElement;
+  if (typeof window === "undefined") return html;
+  const root = new DOMParser().parseFromString(
+    `<div>${html}</div>`,
+    "text/html",
+  ).body.firstChild as HTMLElement;
   const out: ReactNode[] = [];
   root.childNodes.forEach((node, i) => {
-    if (node.nodeType === 1 && (node as HTMLElement).classList.contains('a1-heading-mark')) {
+    if (
+      node.nodeType === 1 &&
+      (node as HTMLElement).classList.contains("a1-heading-mark")
+    ) {
       const el = node as HTMLElement;
-      const underline = el.classList.contains('a1-heading-mark--underline');
+      const underline = el.classList.contains("a1-heading-mark--underline");
       const underlineStyle = underline
-        ? (UNDERLINE_STYLES.find((s) => el.classList.contains(`a1-heading-mark--underline-${s}`)) ?? 'swoop')
+        ? (UNDERLINE_STYLES.find((s) =>
+            el.classList.contains(`a1-heading-mark--underline-${s}`),
+          ) ?? "swoop")
         : undefined;
       out.push(
-        <HeadingMark key={i} variant={underline ? 'underline' : 'highlight'} underlineStyle={underlineStyle}>
+        <HeadingMark
+          key={i}
+          variant={underline ? "underline" : "highlight"}
+          underlineStyle={underlineStyle}
+        >
           {el.textContent}
         </HeadingMark>,
       );
@@ -278,7 +347,7 @@ function renderHeadingRich(html: string): ReactNode {
 }
 
 function escapeHtmlBasic(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 // Map a parsed inline-markdown tree to React nodes, recursing so nested markup
@@ -294,12 +363,27 @@ function inlineNodesToReact(parent: HTMLElement): ReactNode[] {
     const el = node as HTMLElement;
     const kids = inlineNodesToReact(el);
     switch (el.tagName.toLowerCase()) {
-      case 'strong': out.push(<strong key={i}>{kids}</strong>); break;
-      case 'em':     out.push(<em key={i}>{kids}</em>); break;
-      case 's':      out.push(<s key={i}>{kids}</s>); break;
-      case 'mark':   out.push(<mark key={i}>{kids}</mark>); break;
-      case 'code':   out.push(<Code key={i} variant="inline">{el.textContent}</Code>); break;
-      default:       out.push(el.textContent);
+      case "strong":
+        out.push(<strong key={i}>{kids}</strong>);
+        break;
+      case "em":
+        out.push(<em key={i}>{kids}</em>);
+        break;
+      case "s":
+        out.push(<s key={i}>{kids}</s>);
+        break;
+      case "mark":
+        out.push(<mark key={i}>{kids}</mark>);
+        break;
+      case "code":
+        out.push(
+          <Code key={i} variant="inline">
+            {el.textContent}
+          </Code>,
+        );
+        break;
+      default:
+        out.push(el.textContent);
     }
   });
   return out;
@@ -310,17 +394,59 @@ function inlineNodesToReact(parent: HTMLElement): ReactNode[] {
 // markdown so callers can fall back to plain text / inline editing. Markers must
 // hug non-space characters, which keeps stray asterisks (e.g. "5 * 3") literal.
 function inlineMarkdownToNodes(text: string): ReactNode[] | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   const escaped = escapeHtmlBasic(text);
   const html = escaped
-    .replace(/\*\*(\S(?:.*?\S)?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(\S(?:.*?\S)?)\*/g, '<em>$1</em>')
-    .replace(/~~(\S(?:.*?\S)?)~~/g, '<s>$1</s>')
-    .replace(/==(\S(?:.*?\S)?)==/g, '<mark>$1</mark>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>');
+    .replace(/\*\*(\S(?:.*?\S)?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(\S(?:.*?\S)?)\*/g, "<em>$1</em>")
+    .replace(/~~(\S(?:.*?\S)?)~~/g, "<s>$1</s>")
+    .replace(/==(\S(?:.*?\S)?)==/g, "<mark>$1</mark>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
   if (html === escaped) return null;
-  const root = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html').body.firstChild as HTMLElement;
+  const root = new DOMParser().parseFromString(
+    `<div>${html}</div>`,
+    "text/html",
+  ).body.firstChild as HTMLElement;
   return inlineNodesToReact(root);
+}
+
+function inlineLinkNodes(
+  text: string,
+  content?: ContentDefinition,
+): ReactNode[] | null {
+  // Ranges are authored against fallback text. A localized string needs its own
+  // translated ranges before it can safely render inline links.
+  if (!content?.inlineLinks?.length || text !== content.fallback) return null;
+  const links = content.inlineLinks
+    .filter(
+      (link) =>
+        Number.isInteger(link.start) &&
+        Number.isInteger(link.end) &&
+        link.start >= 0 &&
+        link.end > link.start &&
+        link.end <= text.length,
+    )
+    .sort(
+      (first, second) => first.start - second.start || first.end - second.end,
+    );
+  if (!links.length) return null;
+
+  const out: ReactNode[] = [];
+  let cursor = 0;
+  for (const link of links) {
+    // Ignore overlapping/crossing ranges: the persisted fallback remains
+    // intact, and a subsequent valid range can still render safely.
+    if (link.start < cursor) continue;
+    if (link.start > cursor) out.push(text.slice(cursor, link.start));
+    out.push(
+      <Link key={`${link.start}-${link.end}`} {...link.props}>
+        {text.slice(link.start, link.end)}
+      </Link>,
+    );
+    cursor = link.end;
+  }
+  if (cursor < text.length) out.push(text.slice(cursor));
+  return out;
 }
 
 /** Render a single component node and its children.
@@ -331,16 +457,54 @@ function inlineMarkdownToNodes(text: string): ReactNode[] | null {
  * instance shows a highlight outline + pattern icon by default, and only reveals
  * its red lock outlines while it is active.
  */
-function RenderNode({ node, inPattern = false, patternActive = false }: { node: ComponentNode; inPattern?: boolean; patternActive?: boolean }) {
+function RenderNode({
+  node,
+  inPattern = false,
+  patternActive = false,
+}: {
+  node: ComponentNode;
+  inPattern?: boolean;
+  patternActive?: boolean;
+}) {
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
-  const labelKey = typeof node.props?.labelKey === 'string' ? node.props.labelKey : '';
-  const labelFallback = typeof node.props?.label === 'string' ? node.props.label : undefined;
-  const resolvedLabel = useLabel(labelKey, labelFallback ?? '');
+  const labelKey =
+    typeof node.props?.labelKey === "string" ? node.props.labelKey : "";
+  const labelFallback =
+    typeof node.props?.label === "string" ? node.props.label : undefined;
+  const resolvedLabel = useLabel(labelKey, labelFallback ?? "");
   // Re-render when the image library hydrates so Figure refs resolve to real URLs.
   useImageLibraryVersion();
   const editorCtx = useContext(EditorModeContext);
-  const { enabled: editorMode, onNavigate, lockedNodeIds, enforceLocks, activePatternRootId, selectedNodeId, onNodeSelect, onContentChange, onNodeDelete, onMoveUp, onMoveDown, onUngroup, onDuplicateNode, onGroupAsStack, onConvertNode, onCopyPattern, onPastePattern, onChooseTextLabel, getNodeProps, getNodeInfo, onRequestAddChild, onItemTextChange, activeItem, onItemSelect, onCatalogDrop, onDetachPattern, onCreatePattern } = editorCtx;
+  const {
+    enabled: editorMode,
+    onNavigate,
+    lockedNodeIds,
+    enforceLocks,
+    activePatternRootId,
+    selectedNodeId,
+    onNodeSelect,
+    onContentChange,
+    onNodeDelete,
+    onMoveUp,
+    onMoveDown,
+    onUngroup,
+    onDuplicateNode,
+    onGroupAsStack,
+    onConvertNode,
+    onCopyPattern,
+    onPastePattern,
+    onChooseTextLabel,
+    getNodeProps,
+    getNodeInfo,
+    onRequestAddChild,
+    onItemTextChange,
+    activeItem,
+    onItemSelect,
+    onCatalogDrop,
+    onDetachPattern,
+    onCreatePattern,
+  } = editorCtx;
   const { datasetMap, rowContext } = useContext(PageDataContext);
   const contentLocked = enforceLocks && !!node.lock?.content;
   const Component = resolveComponent(node.type);
@@ -349,7 +513,9 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // descendant) is selected; only then do its lock outlines show.
   const isPatternRoot = !!node.patternInstance;
   const nodeInPattern = isPatternRoot || inPattern;
-  const thisActive = isPatternRoot ? node.id === activePatternRootId : patternActive;
+  const thisActive = isPatternRoot
+    ? node.id === activePatternRootId
+    : patternActive;
   const childInPattern = nodeInPattern;
   const childPatternActive = nodeInPattern ? thisActive : false;
 
@@ -364,21 +530,42 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // is non-interactive. Falls through to a single render when the dataset is missing
   // or empty, so the node stays selectable/configurable.
   const repeatCfg = normalizeRepeat(node.repeat);
-  if (repeatCfg && datasetMap[repeatCfg.dataset] && (datasetMap[repeatCfg.dataset].rows?.length ?? 0) > 0) {
+  if (
+    repeatCfg &&
+    datasetMap[repeatCfg.dataset] &&
+    (datasetMap[repeatCfg.dataset].rows?.length ?? 0) > 0
+  ) {
     const repeatKey = repeatCfg.dataset;
-    const indices = pickRepeatIndices(datasetMap[repeatKey].rows.length, repeatCfg, node.id);
+    const indices = pickRepeatIndices(
+      datasetMap[repeatKey].rows.length,
+      repeatCfg,
+      node.id,
+    );
     const stripped: ComponentNode = { ...node, repeat: undefined };
     return indices.map((rowIndex, copyNum) => {
       const childRowContext = { ...rowContext, [repeatKey]: rowIndex };
       const inner = (
-        <PageDataContext.Provider value={{ datasetMap, rowContext: childRowContext }}>
-          <RenderNode node={stripped} inPattern={inPattern} patternActive={patternActive} />
+        <PageDataContext.Provider
+          value={{ datasetMap, rowContext: childRowContext }}
+        >
+          <RenderNode
+            node={stripped}
+            inPattern={inPattern}
+            patternActive={patternActive}
+          />
         </PageDataContext.Provider>
       );
       // First copy interactive in the editor; the rest are read-only projections.
-      return (editorMode && copyNum > 0)
-        ? <EditorModeContext.Provider key={`${node.id}__r${copyNum}`} value={{ ...editorCtx, enabled: false }}>{inner}</EditorModeContext.Provider>
-        : <Fragment key={`${node.id}__r${copyNum}`}>{inner}</Fragment>;
+      return editorMode && copyNum > 0 ? (
+        <EditorModeContext.Provider
+          key={`${node.id}__r${copyNum}`}
+          value={{ ...editorCtx, enabled: false }}
+        >
+          {inner}
+        </EditorModeContext.Provider>
+      ) : (
+        <Fragment key={`${node.id}__r${copyNum}`}>{inner}</Fragment>
+      );
     });
   }
 
@@ -391,17 +578,26 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // contains inline markdown (**bold**, *italic*, ~~strike~~, ==mark==, `code`)
   // is rendered into the matching inline elements. Both are edited via the
   // configurator rather than inline once they carry that markup.
-  const isHeading = node.type === 'Heading';
-  const headingHasMarks = isHeading && typeof text === 'string' && text.includes('a1-heading-mark');
-  const paragraphRich = node.type === 'Paragraph' && typeof text === 'string'
-    ? inlineMarkdownToNodes(text)
-    : null;
+  const isHeading = node.type === "Heading";
+  const headingHasMarks =
+    isHeading && typeof text === "string" && text.includes("a1-heading-mark");
+  const inlineLinks =
+    (node.type === "Heading" || node.type === "Paragraph") &&
+    typeof text === "string"
+      ? inlineLinkNodes(text, node.content)
+      : null;
+  const paragraphRich =
+    node.type === "Paragraph" && typeof text === "string"
+      ? inlineMarkdownToNodes(text)
+      : null;
 
   // Data-bound text ({{ dataset.column }}) resolves to a value from the project's
   // datasets. The raw token lives in node.content; the canvas shows the resolved
   // value (read-only inline — edit the binding in the Configure panel / Data tab).
-  const textBound = typeof text === 'string' && hasBinding(text);
-  const boundText = textBound ? resolveBindingsToString(text, datasetMap, rowContext) : text;
+  const textBound = typeof text === "string" && hasBinding(text);
+  const boundText = textBound
+    ? resolveBindingsToString(text, datasetMap, rowContext)
+    : text;
 
   // In editor mode, plain text content is wrapped in InlineEditable (seamless) so
   // the user can click any heading, paragraph, or button label to edit it in
@@ -420,13 +616,15 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
       <InlineEditable
         seamless
         value={isHeading ? decodeEntities(text) : text}
-        multiline={node.type === 'Paragraph'}
+        multiline={node.type === "Paragraph"}
         onChange={(v) => onContentChange(node.id, v)}
         aria-label="Edit text"
       />
     );
   } else if (headingHasMarks) {
     textContent = renderHeadingRich(text);
+  } else if (inlineLinks) {
+    textContent = inlineLinks;
   } else if (paragraphRich) {
     textContent = paragraphRich;
   } else {
@@ -442,15 +640,33 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   const childList: ReactNode[] = [];
   // For text-prop components (e.g. Fieldset) the text is assigned to a prop
   // below, not rendered as a child; everything else renders text as children.
-  if (!textProp && !VOID_CHILD_TYPES.has(node.type) && textContent !== undefined) childList.push(textContent);
+  if (
+    !textProp &&
+    !VOID_CHILD_TYPES.has(node.type) &&
+    textContent !== undefined
+  )
+    childList.push(textContent);
   if (!VOID_CHILD_TYPES.has(node.type) && node.children?.length) {
-    node.children.forEach((child) => childList.push(
-      <RenderNode key={child.id} node={child} inPattern={childInPattern} patternActive={childPatternActive} />,
-    ));
+    node.children.forEach((child) =>
+      childList.push(
+        <RenderNode
+          key={child.id}
+          node={child}
+          inPattern={childInPattern}
+          patternActive={childPatternActive}
+        />,
+      ),
+    );
   }
 
-  const resolvedProps: Record<string, unknown> = { ...(node.props ?? {}), ...a11yProps(node.a11y) };
-  resolvedProps.className = mergeClassNames(resolvedProps.className, utilityClassesFor(node.type, node.utilities));
+  const resolvedProps: Record<string, unknown> = {
+    ...(node.props ?? {}),
+    ...a11yProps(node.a11y),
+  };
+  resolvedProps.className = mergeClassNames(
+    resolvedProps.className,
+    utilityClassesFor(node.type, node.utilities),
+  );
   delete resolvedProps.labelKey;
   if (labelKey) resolvedProps.label = resolvedLabel;
 
@@ -458,7 +674,8 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
   for (const k of Object.keys(resolvedProps)) {
     const v = resolvedProps[k];
-    if (typeof v === 'string' && hasBinding(v)) resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
+    if (typeof v === "string" && hasBinding(v))
+      resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
   }
 
   // Data-driven collections: fill an array prop (items/options) from a dataset.
@@ -466,16 +683,55 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     const target = collectionTargetFor(node.type);
     const binding = target ? node.collections[target.prop] : undefined;
     if (target && binding?.dataset && datasetMap[binding.dataset]) {
-      resolvedProps[target.prop] = expandCollection(binding, target, datasetMap, rowContext, node.id);
+      resolvedProps[target.prop] = expandCollection(
+        binding,
+        target,
+        datasetMap,
+        rowContext,
+        node.id,
+      );
+    }
+  }
+
+  // Dialog.footer is a ReactNode, so project JSON carries its portable A1
+  // representation as Button nodes. Pass the Button nodes directly as footer
+  // children: Dialog itself owns the single ButtonContainer wrapper. This keeps
+  // every action a first-class Button and preserves its variant/size props.
+  if (node.type === "Dialog" && Array.isArray(resolvedProps.footerActions)) {
+    const footerActions = resolvedProps.footerActions.filter(
+      (action): action is ComponentNode =>
+        !!action &&
+        typeof action === "object" &&
+        typeof (action as ComponentNode).id === "string" &&
+        (action as ComponentNode).type === "Button",
+    );
+    delete resolvedProps.footerActions;
+    if (footerActions.length > 0 && resolvedProps.showFooter !== false) {
+      resolvedProps.footer = footerActions.map((action) => (
+        <RenderNode
+          key={action.id}
+          node={action}
+          inPattern={childInPattern}
+          patternActive={childPatternActive}
+        />
+      ));
     }
   }
 
   // Child-item inline editing: components whose data lives in an array prop render
   // their text via InlineEditable in editor mode so each item can be edited on the
   // canvas. (DefinitionList first — its `items` accept ReactNode label/value.)
-  if (editorMode && !contentLocked && !node.collections?.items && node.type === 'DefinitionList' && Array.isArray(resolvedProps.items)) {
-    const itemText = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v));
-    const activeIndex = activeItem && activeItem.nodeId === node.id ? activeItem.index : null;
+  if (
+    editorMode &&
+    !contentLocked &&
+    !node.collections?.items &&
+    node.type === "DefinitionList" &&
+    Array.isArray(resolvedProps.items)
+  ) {
+    const itemText = (v: unknown) =>
+      typeof v === "string" ? v : v == null ? "" : String(v);
+    const activeIndex =
+      activeItem && activeItem.nodeId === node.id ? activeItem.index : null;
     // Wrap a field so clicking/focusing it selects the item (opens its config tab)
     // and outlines the item that's being edited.
     const itemField = (i: number, child: ReactNode) => (
@@ -491,24 +747,28 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
         {child}
       </span>
     );
-    resolvedProps.items = (resolvedProps.items as Array<Record<string, unknown>>).map((item, i) => ({
+    resolvedProps.items = (
+      resolvedProps.items as Array<Record<string, unknown>>
+    ).map((item, i) => ({
       ...item,
-      label: itemField(i, (
+      label: itemField(
+        i,
         <InlineEditable
           seamless
           value={itemText(item.label)}
-          onChange={(val) => onItemTextChange(node.id, i, 'label', val)}
+          onChange={(val) => onItemTextChange(node.id, i, "label", val)}
           aria-label="Edit label"
-        />
-      )),
-      value: itemField(i, (
+        />,
+      ),
+      value: itemField(
+        i,
         <InlineEditable
           seamless
           value={itemText(item.value ?? item.children)}
-          onChange={(val) => onItemTextChange(node.id, i, 'value', val)}
+          onChange={(val) => onItemTextChange(node.id, i, "value", val)}
           aria-label="Edit value"
-        />
-      )),
+        />,
+      ),
       children: undefined,
     }));
   }
@@ -516,33 +776,150 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // Assign editable text to its named prop (legend, etc.). Falls back to an
   // existing string prop value for nodes authored before text moved to content.
   if (textProp) {
-    const raw = (text ?? (node.props?.[textProp] as string | undefined) ?? '') as string;
-    resolvedProps[textProp] = editorMode && !contentLocked ? (
-      <InlineEditable
-        seamless
-        value={raw}
-        onChange={(v) => onContentChange(node.id, v)}
-        aria-label="Edit legend"
-      />
-    ) : raw;
+    const raw = (text ??
+      (node.props?.[textProp] as string | undefined) ??
+      "") as string;
+    resolvedProps[textProp] =
+      editorMode && !contentLocked ? (
+        <InlineEditable
+          seamless
+          value={raw}
+          onChange={(v) => onContentChange(node.id, v)}
+          aria-label="Edit legend"
+        />
+      ) : (
+        raw
+      );
   }
 
   // A Button or IconButton with an href is a navigation action — render it as an
   // anchor so the link actually works. Both default to `as="button"`, which would
   // drop the href onto a <button> element where it does nothing.
-  if ((node.type === 'Button' || node.type === 'IconButton') && resolvedProps.href && !resolvedProps.as) {
-    resolvedProps.as = 'a';
+  if (
+    (node.type === "Button" || node.type === "IconButton") &&
+    resolvedProps.href &&
+    !resolvedProps.as
+  ) {
+    resolvedProps.as = "a";
+  }
+
+  // Page JSON represents a Figma Select's visible value explicitly. Native
+  // selects only display a value that exists in their option list, so create a
+  // preview option when the bridge says that value should be visible. Existing
+  // JSON options still render as normal native options.
+  if (node.type === "SelectField") {
+    const rawOptions = Array.isArray(resolvedProps.options)
+      ? resolvedProps.options
+      : [];
+    const selectOptions = rawOptions.flatMap((option) => {
+      if (!option || typeof option !== "object") return [];
+      const record = option as Record<string, unknown>;
+      const value =
+        typeof record.value === "string"
+          ? record.value
+          : typeof record.id === "string"
+            ? record.id
+            : "";
+      if (!value) return [];
+      return [{
+        value,
+        label: typeof record.label === "string" ? record.label : value,
+      }];
+    });
+    const showValue = resolvedProps.showValue === true;
+    const defaultValue =
+      typeof resolvedProps.defaultValue === "string"
+        ? resolvedProps.defaultValue
+        : undefined;
+
+    delete resolvedProps.options;
+    delete resolvedProps.showValue;
+
+    if (
+      showValue &&
+      defaultValue &&
+      !selectOptions.some((option) => option.value === defaultValue)
+    ) {
+      selectOptions.unshift({ value: defaultValue, label: defaultValue });
+    }
+
+    childList.push(
+      ...selectOptions.map((option, index) =>
+        createElement(
+          "option",
+          { key: `select-option-${index}-${option.value}`, value: option.value },
+          option.label,
+        ),
+      ),
+    );
   }
 
   // A Figure referencing a library image (`a1img://<id>`) resolves to the object
   // URL created from the locally-stored blob.
-  if (node.type === 'Figure' && typeof resolvedProps.src === 'string') {
+  if (node.type === "Figure" && typeof resolvedProps.src === "string") {
     resolvedProps.src = resolveImageSrc(resolvedProps.src);
   }
 
+  // Tabs carry their portable panel content on the matching item as
+  // `items[].children` (or, for older JSON, `panels[].children`). Convert those
+  // child node arrays to React nodes before handing the config to the Tabs
+  // Preview adapter.
+  if (node.type === "Tabs") {
+    const renderPanelChildren = (
+      children: unknown,
+      keyPrefix: string,
+    ): ReactNode[] | undefined => {
+      if (!Array.isArray(children)) return undefined;
+      return children
+        .filter(
+          (child): child is ComponentNode =>
+            !!child &&
+            typeof child === "object" &&
+            typeof (child as ComponentNode).id === "string" &&
+            typeof (child as ComponentNode).type === "string",
+        )
+        .map((child) => (
+          <RenderNode
+            key={`${keyPrefix}-${child.id}`}
+            node={child}
+            inPattern={childInPattern}
+            patternActive={childPatternActive}
+          />
+        ));
+    };
+
+    if (Array.isArray(resolvedProps.items)) {
+      resolvedProps.items = resolvedProps.items.map((item, index) => {
+        if (!item || typeof item !== "object") return item;
+        const record = item as Record<string, unknown>;
+        const children = renderPanelChildren(
+          record.children,
+          `tabs-item-${index}`,
+        );
+        return children ? { ...record, children } : record;
+      });
+    }
+    if (Array.isArray(resolvedProps.panels)) {
+      resolvedProps.panels = resolvedProps.panels.map((panel, index) => {
+        if (!panel || typeof panel !== "object") return panel;
+        const record = panel as Record<string, unknown>;
+        const children = renderPanelChildren(
+          record.children,
+          `tabs-panel-${index}`,
+        );
+        return children ? { ...record, children } : record;
+      });
+    }
+  }
+
   // A Section's decorative backgroundImage may likewise be a library ref.
-  if (node.type === 'Section' && typeof resolvedProps.backgroundImage === 'string') {
-    resolvedProps.backgroundImage = resolveImageSrc(resolvedProps.backgroundImage);
+  if (
+    node.type === "Section" &&
+    typeof resolvedProps.backgroundImage === "string"
+  ) {
+    resolvedProps.backgroundImage = resolveImageSrc(
+      resolvedProps.backgroundImage,
+    );
   }
 
   // In preview (not editor) mode, wire intra-prototype navigation directly to the
@@ -559,11 +936,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
     }
   }
 
-  const componentEl = createElement(
-    Component,
-    resolvedProps,
-    ...childList,
-  );
+  const componentEl = createElement(Component, resolvedProps, ...childList);
 
   if (!editorMode) return componentEl;
 
@@ -573,7 +946,7 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
   // offers only the components/patterns the slot accepts) instead of selecting
   // it for configuration. In the pattern editor (where the slot's own rules are
   // authored, `enforceLocks` is false) a click still selects it normally.
-  const slotAddMode = node.type === 'Slot' && enforceLocks;
+  const slotAddMode = node.type === "Slot" && enforceLocks;
   const handleSelect = slotAddMode
     ? () => onRequestAddChild(node.id)
     : onNodeSelect;
@@ -588,7 +961,10 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
       nodeId={node.id}
       nodeType={node.type}
       isSelected={node.id === selectedNodeId}
-      isLocked={(lockedNodeIds.has(node.id) || !!node.lock?.node) && (nodeInPattern ? thisActive : true)}
+      isLocked={
+        (lockedNodeIds.has(node.id) || !!node.lock?.node) &&
+        (nodeInPattern ? thisActive : true)
+      }
       patternOutline={isPatternRoot && !thisActive}
       patternInstance={node.patternInstance}
       selectedId={selectedNodeId}
@@ -606,7 +982,9 @@ function RenderNode({ node, inPattern = false, patternActive = false }: { node: 
       getNodeProps={getNodeProps}
       getNodeInfo={getNodeInfo}
       isContainer={isContainer}
-      onCatalogDrop={(catalogType, position) => onCatalogDrop(catalogType, node.id, position)}
+      onCatalogDrop={(catalogType, position) =>
+        onCatalogDrop(catalogType, node.id, position)
+      }
       onDetachPattern={onDetachPattern}
       onCreatePattern={onCreatePattern}
     >
@@ -695,17 +1073,34 @@ export function RenderPageDefinition({
   onUngroup?: (nodeId: string) => void;
   onDuplicateNode?: (nodeId: string) => void;
   onGroupAsStack?: (nodeId: string) => void;
-  onConvertNode?: (nodeId: string, newType: string, newProps: Record<string, unknown>) => void;
+  onConvertNode?: (
+    nodeId: string,
+    newType: string,
+    newProps: Record<string, unknown>,
+  ) => void;
   onCopyPattern?: (nodeId: string) => void;
   onPastePattern?: (nodeId: string) => void;
   onChooseTextLabel?: (nodeId: string) => void;
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
-  getNodeInfo?: (nodeId: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
+  getNodeInfo?: (nodeId: string) => {
+    isFirst: boolean;
+    isLast: boolean;
+    hasChildren: boolean;
+  };
   onRequestAddChild?: (nodeId: string) => void;
-  onCatalogDrop?: (catalogType: string, targetNodeId: string, position: 'before' | 'into' | 'after') => void;
+  onCatalogDrop?: (
+    catalogType: string,
+    targetNodeId: string,
+    position: "before" | "into" | "after",
+  ) => void;
   onDetachPattern?: (nodeId: string) => void;
   onCreatePattern?: (nodeId: string) => void;
-  onItemTextChange?: (nodeId: string, index: number, field: string, value: string) => void;
+  onItemTextChange?: (
+    nodeId: string,
+    index: number,
+    field: string,
+    value: string,
+  ) => void;
   activeItem?: { nodeId: string; index: number } | null;
   onItemSelect?: (nodeId: string, index: number) => void;
 }) {
@@ -715,7 +1110,9 @@ export function RenderPageDefinition({
   const datasets = dataCtx?.items ?? [];
   const datasetMap = useMemo(() => {
     const projectId = getActiveProjectId();
-    return buildDatasetMap(datasets.filter((d) => datasetAvailableToProject(d, projectId)));
+    return buildDatasetMap(
+      datasets.filter((d) => datasetAvailableToProject(d, projectId)),
+    );
   }, [datasets]);
 
   // Detail page: when the page is tagged to a dataset, resolve its bindings against
@@ -764,7 +1161,9 @@ export function RenderPageDefinition({
 
   return (
     <EditorModeContext.Provider value={ctx}>
-      <PageDataContext.Provider value={{ datasetMap, rowContext: rootRowContext }}>
+      <PageDataContext.Provider
+        value={{ datasetMap, rowContext: rootRowContext }}
+      >
         <RenderLayout layout={definition.page.layout} />
       </PageDataContext.Provider>
     </EditorModeContext.Provider>

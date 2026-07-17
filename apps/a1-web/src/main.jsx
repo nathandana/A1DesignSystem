@@ -89,6 +89,15 @@ import {
 } from './pages/Components.jsx'
 import { allComponents, rankComponentsForSearch } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
+import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
+import {
+  acknowledgeFigmaPageCreate,
+  acknowledgePlaygroundHandoff,
+  consumePlaygroundHandoff,
+  listenForFigmaPageCreate,
+  listenForPlaygroundHandoff,
+  registerFigmaWorkspace,
+} from './lib/localCodex.ts'
 import { patternToDefinition } from './patterns/patternDocument.js'
 import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
@@ -127,7 +136,7 @@ import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
-import { resetImageCache } from './lib/imageLibrary'
+import { importFigmaBridgeImages, resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
 import { setHistoryUser } from './services/historyDb'
 import { BacklogProvider } from './backlog/BacklogContext.jsx'
@@ -164,10 +173,11 @@ const PAGE_ICONS = {
   about: 'info',
   'kitchen-sink': 'dashboard_customize',
   'label-editor': 'translate',
+  playground: 'code',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -181,6 +191,7 @@ const PAGE_TITLES = {
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
   patterns: 'Patterns',
+  playground: 'JSON playground',
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   'image-library': 'Image library',
@@ -429,6 +440,105 @@ function App() {
   })
   const [openPageId, setOpenPageId] = useState(() => new URLSearchParams(window.location.search).get('doc') || null)
 
+  // Keep the local Figma bridge aware of every project while A1 is open—not
+  // just while the page editor happens to be mounted. The bridge receives this
+  // volatile snapshot only on loopback, which lets the plugin populate its
+  // Page Editor and pull the selected page's current JSON on demand.
+  useEffect(() => {
+    if (IS_STANDALONE) return undefined
+    const registerFigmaWorkspaceSnapshot = () => {
+      const workspace = {
+        projects: projectStore.loadProjects().map((project) => ({
+          id: project.id,
+          name: project.name,
+          pages: projectStore.loadPages(project.id).map((page) => {
+            const link = projectStore.getFigmaPageLink(project.id, page.id)
+              ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
+            return {
+              id: page.id,
+              title: page.title,
+              json: projectStore.resolvePageJson(page.id) ?? '',
+              link: link ? {
+                linkId: link.id,
+                projectId: project.id,
+                pageId: page.id,
+                mode: link.mode,
+                figmaFileKey: link.figmaFileKey,
+                figmaPageId: link.figmaPageId,
+                figmaRootNodeId: link.figmaRootNodeId,
+              } : null,
+            }
+          }),
+        })),
+      }
+      registerFigmaWorkspace(workspace).catch(() => {})
+    }
+    registerFigmaWorkspaceSnapshot()
+    const interval = window.setInterval(registerFigmaWorkspaceSnapshot, 15_000)
+    window.addEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
+    }
+  }, [])
+
+  // A Figma frame can be explicitly sent to an existing local A1 project as a
+  // new page. Keep this separate from ordinary linked-page edits: this creates
+  // the page once, then persists the new Figma/A1 link for subsequent syncs.
+  useEffect(() => {
+    if (IS_STANDALONE) return undefined
+    let cancelled = false
+    let inFlight = false
+    const receiveCreatedPage = async () => {
+      if (cancelled || inFlight) return
+      inFlight = true
+      try {
+        const handoff = await listenForFigmaPageCreate()
+        if (!handoff || cancelled) return
+        const project = projectStore.loadProjects().find((entry) => entry.id === handoff.projectId)
+        if (!project) {
+          console.warn('Discarding a Figma page creation request for a project that is no longer available.', handoff.projectId)
+          await acknowledgeFigmaPageCreate(handoff.id)
+          return
+        }
+        // Acknowledge retries safely if the prior localStorage write completed
+        // but the bridge acknowledgement was interrupted.
+        if (project.figmaPageLinks?.some((link) => link.id === handoff.figma.linkId)) {
+          await acknowledgeFigmaPageCreate(handoff.id)
+          return
+        }
+        await importFigmaBridgeImages(handoff.assets)
+        const { page } = projectStore.addPageFromJson(handoff.projectId, {
+          title: handoff.title || 'Untitled',
+          json: handoff.json,
+        })
+        projectStore.saveFigmaPageLink(handoff.projectId, {
+          id: handoff.figma.linkId,
+          pageId: page.id,
+          mode: 'manual',
+          figmaFileKey: handoff.figma.figmaFileKey || undefined,
+          figmaPageId: handoff.figma.figmaPageId || undefined,
+          figmaRootNodeId: handoff.figma.figmaRootNodeId || undefined,
+        })
+        if (activeProjectId === handoff.projectId) setProjectPages(projectStore.loadPages(handoff.projectId))
+        setProjects(projectStore.loadProjects())
+        window.dispatchEvent(new Event('a1:figma-workspace-changed'))
+        await acknowledgeFigmaPageCreate(handoff.id)
+      } catch {
+        // The loopback bridge is optional. Retain its queued message for the
+        // next poll if A1 cannot commit it yet.
+      } finally {
+        inFlight = false
+      }
+    }
+    receiveCreatedPage()
+    const interval = window.setInterval(receiveCreatedPage, 1200)
+    return () => {
+      cancelled = true
+      window.clearInterval(interval)
+    }
+  }, [activeProjectId])
+
   // Pattern authoring reuses the main editor: `?page=editor&pattern=<id>` opens a
   // pattern as a document (no project context). Derived from the URL each render.
   const editorSearchParams = new URLSearchParams(window.location.search)
@@ -474,6 +584,37 @@ function App() {
     mq.addEventListener?.('change', handler)
     return () => mq.removeEventListener?.('change', handler)
   }, [])
+
+  useEffect(() => {
+    if (activePage !== 'playground') return undefined
+    let cancelled = false
+    let receivedId = null
+    let timer = null
+
+    const listen = async () => {
+      try {
+        const handoff = await listenForPlaygroundHandoff()
+        if (!handoff || cancelled || handoff.id === receivedId) return
+        receivedId = handoff.id
+        setPlaygroundHandoffError('')
+        await importFigmaBridgeImages(handoff.assets)
+        setPlaygroundLiveView(handoff.live === true)
+        setPlaygroundJson(formatPlaygroundJson(handoff.json))
+        await acknowledgePlaygroundHandoff(handoff.id)
+      } catch (error) {
+        // The bridge is optional until a Figma handoff is requested. Preserve
+        // the current Playground JSON instead of surfacing background polling.
+      } finally {
+        if (!cancelled) timer = window.setTimeout(listen, 1200)
+      }
+    }
+
+    listen()
+    return () => {
+      cancelled = true
+      if (timer) window.clearTimeout(timer)
+    }
+  }, [activePage])
   // Bump on theme-store changes so the sidebar theme name stays live after a rename.
   const [, setThemesVersion] = useState(0)
   useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
@@ -482,9 +623,32 @@ function App() {
   const [rulesVersion, setRulesVersion] = useState(0)
   useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
+  const [playgroundJson, setPlaygroundJson] = useState(() => formatPlaygroundJson(new URLSearchParams(window.location.search).get('json') || ''))
+  const [playgroundHandoffError, setPlaygroundHandoffError] = useState('')
+  const [playgroundLiveView, setPlaygroundLiveView] = useState(false)
+  const playgroundResult = useMemo(() => parsePlaygroundJson(playgroundJson), [playgroundJson])
+  const playgroundError = playgroundHandoffError || playgroundResult.error
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  useEffect(() => {
+    const handoffId = new URLSearchParams(window.location.search).get('handoff')
+    if (!handoffId) return undefined
+    let cancelled = false
+    consumePlaygroundHandoff(handoffId)
+      .then(async (handoff) => {
+        if (!cancelled) {
+          await importFigmaBridgeImages(handoff.assets)
+          setPlaygroundLiveView(handoff.live === true)
+          setPlaygroundJson(formatPlaygroundJson(handoff.json))
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) setPlaygroundHandoffError(error instanceof Error ? error.message : 'Could not load the Playground handoff.')
+      })
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     if (!skipMenuOpen) return undefined
@@ -598,6 +762,7 @@ function App() {
     addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
     addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
     addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
+    addPage('playground', 'Paste larger A1 JSON definitions and preview the real renderer.', ['json', 'preview', 'render', 'testing'])
     addPage('editor', 'Create and edit projects with the governed JSON page model.', ['projects', 'pages', 'builder'])
     addPage('image-library', 'Manage reusable image assets for projects.', ['assets', 'media', 'dam'])
     addPage('custom-icons', 'Create and manage custom project icons.', ['symbols', 'iconography'])
@@ -1463,7 +1628,7 @@ function App() {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
       items: [
         {
           icon: 'folder',
@@ -1492,6 +1657,13 @@ function App() {
           href: getPath('patterns'),
           active: activePage === 'patterns',
           onClick: (e) => handleNavClick(e, 'patterns'),
+        },
+        {
+          icon: 'code',
+          label: pageTitle('playground'),
+          href: getPath('playground'),
+          active: activePage === 'playground',
+          onClick: (e) => handleNavClick(e, 'playground'),
         },
         {
           icon: 'photo_library',
@@ -1603,6 +1775,25 @@ function App() {
   }
 
   const patternDef = editorPatternId ? patternToDefinition(editorPatternId) : null
+
+  // Live view is a presentation surface fed by the Figma plugin, not an A1 Web
+  // workspace. Keep the renderer and its providers, but remove every piece of
+  // application chrome so the composition is the only thing on screen.
+  if (activePage === 'playground' && playgroundLiveView) {
+    return (
+      <TProvider value={t}>
+        <LabelsProvider locale={labelLocale} labels={allLabels}>
+          <CustomIconFontProvider projectId={activeProjectId}>
+            <ImageLibraryProvider>
+              <main className="a1-web-live-playground" aria-label="Live Figma preview">
+                <JsonPlayground result={playgroundResult} />
+              </main>
+            </ImageLibraryProvider>
+          </CustomIconFontProvider>
+        </LabelsProvider>
+      </TProvider>
+    )
+  }
 
   // Config/filter panels. At md+ they use the PageLayout aside rail; at xs/sm
   // they move into a BottomSheet. Backlog places its filter rail on the start
@@ -1769,6 +1960,18 @@ function App() {
                 onSelectCategory={setThemeCategory}
                 onBackToThemes={() => setActiveThemeId(null)}
               />
+            : activePage === 'playground' && !playgroundLiveView
+            ? <JsonPlaygroundSidebar
+                json={playgroundJson}
+                onJsonChange={(next) => {
+                  setPlaygroundHandoffError('')
+                  setPlaygroundLiveView(false)
+                  setPlaygroundJson(next)
+                }}
+                error={playgroundError}
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+              />
             : activePage === 'backlog' && !isSmDown
             ? asideEl
             : activePage === 'releases'
@@ -1819,6 +2022,16 @@ function App() {
             onClick={() => setSidebarOpen(true)}
           />
         )}
+        {activePage === 'playground' && !playgroundLiveView && (
+          <IconButton
+            className="a1-web-sidebar-toggle"
+            icon="code"
+            label="Open JSON panel"
+            size="sm"
+            variant="secondary"
+            onClick={() => setSidebarOpen(true)}
+          />
+        )}
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'dashboard' && <SystemDashboard onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
@@ -1846,6 +2059,7 @@ function App() {
           />
         )}
         {activePage === 'patterns' && <Patterns onNavigate={navigate} />}
+        {activePage === 'playground' && <JsonPlayground result={playgroundResult} />}
         {activePage === 'rules' && <RuleEditor onNavigate={navigate} />}
         {activePage === 'editor' && editorPatternId && (
           patternDef ? (

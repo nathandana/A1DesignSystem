@@ -1,0 +1,1125 @@
+{
+  "id": "page-layout-showcase",
+  "type": "PageLayout",
+  "props": {
+    "showHeader": false,
+    "showSidebar": false,
+    "showFooter": false
+  },
+  "children": [
+    {
+      "id": "top-header-showcase",
+      "type": "TopHeader",
+      "props": {
+        "logoText": "A1:Figma",
+        "navItems": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "icon": "dashboard",
+            "active": true
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "widgets"
+          },
+          {
+            "id": "docs",
+            "label": "Docs",
+            "icon": "article"
+          }
+        ],
+        "actions": [
+          {
+            "id": "search",
+            "label": "Search",
+            "icon": "search"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings"
+          }
+        ],
+        "loginButton": {
+          "label": "Sign in"
+        }
+      }
+    },
+    {
+      "id": "section-figma-component-showcase",
+      "type": "Section",
+      "props": {
+        "surface": "page",
+        "padding": "lg",
+        "contentWidth": "lg",
+        "gap": "lg"
+      },
+      "children": [
+        {
+          "id": "heading-showcase-title",
+          "type": "Heading",
+          "props": {
+            "as": "h1",
+            "type": "display",
+            "size": "lg",
+            "color": "accent"
+          },
+          "content": {
+            "fallback": "Figma component JSON showcase"
+          }
+        },
+        {
+          "id": "paragraph-showcase-intro",
+          "type": "Paragraph",
+          "props": {
+            "size": "lg",
+            "color": "muted"
+          },
+          "content": {
+            "fallback": "This single JSON file exercises every A1:Figma component currently supported by the plugin bridge, including Dialog."
+          }
+        },
+        {
+          "id": "link-showcase-docs",
+          "type": "Link",
+          "props": {
+            "size": "lg",
+            "weight": "strong",
+            "icon": "open_in_new",
+            "iconPosition": "end",
+            "href": "https://a1.design"
+          },
+          "content": {
+            "fallback": "Read the bridge documentation"
+          }
+        },
+        {
+          "id": "divider-showcase-accent",
+          "type": "Divider",
+          "props": {
+            "variant": "accent",
+            "lineStyle": "dashed",
+            "size": "sm"
+          }
+        },
+        {
+          "id": "grid-form-controls",
+          "type": "Grid",
+          "props": {
+            "columns": {
+              "xs": 2,
+              "md": 2,
+              "xl": 4
+            },
+            "gap": "lg",
+            "alignItems": "start"
+          },
+          "children": [
+            {
+              "id": "textfield-showcase-name",
+              "type": "TextField",
+              "props": {
+                "label": "Component name",
+                "hint": "Editable text input example.",
+                "defaultValue": "Showcase component",
+                "size": "default"
+              }
+            },
+            {
+              "id": "search-showcase-components",
+              "type": "SearchField",
+              "props": {
+                "label": "Search components",
+                "defaultValue": "Card",
+                "size": "compact"
+              }
+            },
+            {
+              "id": "select-showcase-status",
+              "type": "SelectField",
+              "props": {
+                "label": "Review status",
+                "hint": "The displayed value round-trips through the Figma component.",
+                "showValue": true,
+                "defaultValue": "In review",
+                "size": "compact",
+                "required": true
+              }
+            },
+            {
+              "id": "switch-showcase-live",
+              "type": "Switch",
+              "props": {
+                "label": "Enable live preview",
+                "hint": "Exports the selected top-level node to the playground.",
+                "defaultChecked": true,
+                "size": "comfortable"
+              }
+            },
+            {
+              "id": "textarea-showcase-notes",
+              "type": "TextareaField",
+              "props": {
+                "label": "Review notes",
+                "hint": "Textarea supports hint, count, required, and hidden value states.",
+                "defaultValue": "Check import, update selection, and export back to A1.",
+                "showCount": true,
+                "maxLength": 120,
+                "required": true,
+                "size": "default"
+              }
+            },
+            {
+              "id": "pagination-showcase-pages",
+              "type": "Pagination",
+              "props": {
+                "page": 2,
+                "totalPages": 5,
+                "size": "sm"
+              }
+            }
+          ]
+        },
+        {
+          "id": "stack-choice-controls",
+          "type": "Stack",
+          "props": {
+            "direction": "row",
+            "gap": "lg",
+            "align": "start",
+            "wrap": true
+          },
+          "children": [
+            {
+              "id": "radio-group-showcase-density",
+              "type": "RadioGroup",
+              "props": {
+                "label": "Density",
+                "hint": "Radio options reconcile through the Figma option slot.",
+                "defaultValue": "comfortable",
+                "size": "compact",
+                "required": true,
+                "options": [
+                  {
+                    "value": "compact",
+                    "label": "Compact",
+                    "hint": "Tighter controls"
+                  },
+                  {
+                    "value": "comfortable",
+                    "label": "Comfortable",
+                    "hint": "Default workspace feel"
+                  },
+                  {
+                    "value": "spacious",
+                    "label": "Spacious",
+                    "hint": "More breathing room"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "checkbox-group-showcase-export",
+              "type": "CheckboxGroup",
+              "props": {
+                "label": "Export options",
+                "hint": "Multiple selections round-trip as defaultValue arrays.",
+                "defaultValue": [
+                  "json",
+                  "figma"
+                ],
+                "size": "compact",
+                "options": [
+                  {
+                    "value": "json",
+                    "label": "A1 JSON",
+                    "hint": "Project-ready component data"
+                  },
+                  {
+                    "value": "figma",
+                    "label": "Figma page",
+                    "hint": "Editable design layers"
+                  },
+                  {
+                    "value": "assets",
+                    "label": "Figure images",
+                    "hint": "Local image handoff"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "stack-action-controls",
+          "type": "Stack",
+          "props": {
+            "direction": "row",
+            "gap": "md",
+            "align": "center",
+            "wrap": true
+          },
+          "children": [
+            {
+              "id": "segmented-showcase-mode",
+              "type": "SegmentedControl",
+              "props": {
+                "size": "md",
+                "value": "fix",
+                "options": [
+                  {
+                    "value": "fix",
+                    "label": "Fix",
+                    "icon": "build"
+                  },
+                  {
+                    "value": "playground",
+                    "label": "Playground",
+                    "icon": "science"
+                  },
+                  {
+                    "value": "page-editor",
+                    "label": "Page Editor",
+                    "icon": "article"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "icon-button-showcase-settings",
+              "type": "IconButton",
+              "props": {
+                "icon": "settings",
+                "label": "Open component settings",
+                "variant": "secondary",
+                "size": "md"
+              }
+            },
+            {
+              "id": "icon-showcase-psychology",
+              "type": "Icon",
+              "props": {
+                "name": "psychology",
+                "size": "lg"
+              }
+            },
+            {
+              "id": "tooltip-showcase-help",
+              "type": "Tooltip",
+              "props": {
+                "content": "Tooltip content is exported as supporting copy.",
+                "placement": "bottom"
+              }
+            },
+            {
+              "id": "page-nav-showcase-sections",
+              "type": "PageNav",
+              "props": {
+                "label": "On this page",
+                "sections": [
+                  {
+                    "id": "overview",
+                    "label": "Overview",
+                    "level": 1
+                  },
+                  {
+                    "id": "components",
+                    "label": "Components",
+                    "level": 1
+                  },
+                  {
+                    "id": "forms",
+                    "label": "Forms",
+                    "level": 2
+                  },
+                  {
+                    "id": "navigation",
+                    "label": "Navigation",
+                    "level": 2
+                  },
+                  {
+                    "id": "sync",
+                    "label": "Sync",
+                    "level": 1
+                  }
+                ]
+              }
+            },
+            {
+              "id": "tree-menu-showcase-navigation",
+              "type": "TreeMenu",
+              "props": {
+                "variant": "expanded",
+                "showExpandControls": true,
+                "draggable": true,
+                "selectedId": "dashboard",
+                "expandedIds": [
+                  "workspace"
+                ],
+                "items": [
+                  {
+                    "id": "dashboard",
+                    "label": "Dashboard",
+                    "icon": "dashboard"
+                  },
+                  {
+                    "id": "workspace",
+                    "label": "Workspace",
+                    "icon": "folder",
+                    "children": [
+                      {
+                        "id": "projects",
+                        "label": "Projects",
+                        "icon": "workspaces"
+                      },
+                      {
+                        "id": "settings",
+                        "label": "Settings",
+                        "icon": "settings"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "archive",
+                    "label": "Archive",
+                    "icon": "archive",
+                    "disabled": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "accordion-showcase-collapsed",
+          "type": "Accordion",
+          "props": {
+            "label": "Collapsed content slot",
+            "subtext": "Children should still export while collapsed.",
+            "defaultOpen": false,
+            "size": "sm"
+          },
+          "children": [
+            {
+              "id": "paragraph-accordion-body",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "This paragraph lives in the Accordion Content Slot even when the visual state is collapsed."
+              }
+            },
+            {
+              "id": "button-accordion-action",
+              "type": "Button",
+              "props": {
+                "variant": "secondary",
+                "size": "sm",
+                "icon": "check"
+              },
+              "content": {
+                "fallback": "Confirm"
+              }
+            }
+          ]
+        },
+        {
+          "id": "menu-showcase-actions",
+          "type": "Menu",
+          "props": {
+            "items": [
+              {
+                "id": "open",
+                "label": "Open in playground",
+                "icon": "open_in_new",
+                "shortcut": "⌘P"
+              },
+              {
+                "id": "sync",
+                "label": "Sync to A1",
+                "icon": "sync",
+                "active": true
+              },
+              {
+                "id": "divider-1",
+                "kind": "divider"
+              },
+              {
+                "id": "delete",
+                "label": "Delete draft",
+                "icon": "delete",
+                "destructive": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "banner-plugin-release",
+          "type": "Banner",
+          "props": {
+            "variant": "system",
+            "status": "info",
+            "title": "The Figma bridge is ready for review"
+          },
+          "children": [
+            {
+              "id": "paragraph-banner-release",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "This Banner exercises the native Content Slot with ordinary A1 content."
+              }
+            },
+            {
+              "id": "buttons-banner-release",
+              "type": "ButtonContainer",
+              "props": {
+                "align": "start"
+              },
+              "children": [
+                {
+                  "id": "button-banner-release",
+                  "type": "Button",
+                  "props": {
+                    "variant": "secondary",
+                    "size": "sm"
+                  },
+                  "content": {
+                    "fallback": "View details"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "banner-plugin-calendar",
+          "type": "Banner",
+          "props": {
+            "variant": "calendar",
+            "status": "success",
+            "title": "Design review",
+            "eyebrow": "Upcoming event",
+            "date": {
+              "month": "Jul",
+              "day": "22"
+            }
+          },
+          "children": [
+            {
+              "id": "paragraph-banner-calendar",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "Bring the latest interaction flows and component updates."
+              }
+            }
+          ]
+        },
+        {
+          "id": "grid-card-row",
+          "type": "Grid",
+          "props": {
+            "columns": 2,
+            "gap": "lg",
+            "alignItems": "stretch"
+          },
+          "children": [
+            {
+              "id": "card-plugin-default",
+              "type": "Card",
+              "props": {
+                "icon": "star"
+              },
+              "children": [
+                {
+                  "id": "badge-card-ready",
+                  "type": "MessageBadge",
+                  "props": {
+                    "status": "success",
+                    "subtle": true,
+                    "size": "sm",
+                    "icon": "info"
+                  },
+                  "content": {
+                    "fallback": "Ready to import"
+                  }
+                },
+                {
+                  "id": "heading-card-default",
+                  "type": "Heading",
+                  "props": {
+                    "as": "h2",
+                    "type": "heading",
+                    "size": "md"
+                  },
+                  "content": {
+                    "fallback": "Default Card"
+                  }
+                },
+                {
+                  "id": "paragraph-card-default",
+                  "type": "Paragraph",
+                  "props": {
+                    "size": "md",
+                    "color": "muted"
+                  },
+                  "content": {
+                    "fallback": "Tests the token-styled inline icon, Badge, and ordered Card content slot."
+                  }
+                },
+                {
+                  "id": "buttons-card-default",
+                  "type": "ButtonContainer",
+                  "props": {
+                    "align": "start"
+                  },
+                  "children": [
+                    {
+                      "id": "button-card-open",
+                      "type": "Button",
+                      "props": {
+                        "variant": "primary",
+                        "size": "sm",
+                        "icon": "arrow_forward",
+                        "iconPosition": "end"
+                      },
+                      "content": {
+                        "fallback": "Open"
+                      }
+                    },
+                    {
+                      "id": "button-card-details",
+                      "type": "Button",
+                      "props": {
+                        "variant": "tertiary",
+                        "size": "sm"
+                      },
+                      "content": {
+                        "fallback": "Details"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "card-plugin-accent",
+              "type": "Card",
+              "props": {
+                "surface": "accent",
+                "icon": "star_border"
+              },
+              "children": [
+                {
+                  "id": "badge-card-preview",
+                  "type": "MessageBadge",
+                  "props": {
+                    "status": "info",
+                    "size": "md",
+                    "icon": "bolt"
+                  },
+                  "content": {
+                    "fallback": "Accent surface"
+                  }
+                },
+                {
+                  "id": "heading-card-accent",
+                  "type": "Heading",
+                  "props": {
+                    "as": "h2",
+                    "type": "heading",
+                    "size": "md"
+                  },
+                  "content": {
+                    "fallback": "Accent Card"
+                  }
+                },
+                {
+                  "id": "paragraph-card-accent",
+                  "type": "Paragraph",
+                  "props": {
+                    "size": "md"
+                  },
+                  "content": {
+                    "fallback": "Change the surface or icon in Figma, then export to verify both properties round-trip."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "stack-reference-content",
+          "type": "Stack",
+          "props": {
+            "direction": "row",
+            "gap": "lg",
+            "align": "start",
+            "wrap": true
+          },
+          "children": [
+            {
+              "id": "figure-plugin-preview",
+              "type": "Figure",
+              "props": {
+                "src": "https://images.example.com/a1-plugin-preview.png",
+                "alt": "Abstract A1 component preview",
+                "size": "lg",
+                "aspectRatio": "16:9",
+                "caption": "The source URL remains editable metadata; change the image fill directly in Figma."
+              }
+            },
+            {
+              "id": "definition-list-plugin-details",
+              "type": "DefinitionList",
+              "props": {
+                "size": "lg",
+                "direction": "column",
+                "items": [
+                  {
+                    "id": "definition-plugin-version",
+                    "label": "Plugin version",
+                    "value": "A1 JSON bridge"
+                  },
+                  {
+                    "id": "definition-component-count",
+                    "label": "Component coverage",
+                    "value": "Every Figma-supported JSON component, including Dialog"
+                  },
+                  {
+                    "id": "definition-round-trip",
+                    "label": "Round trip",
+                    "value": "Import, edit in Figma, then export JSON"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "blockquote-plugin-quote",
+          "type": "Blockquote",
+          "props": {
+            "variant": "feature",
+            "cite": "A1 Design System",
+            "citeUrl": "https://a1.design"
+          },
+          "content": {
+            "fallback": "A reliable bridge starts with a small, explicit component contract and a real content slot."
+          }
+        },
+        {
+          "id": "empty-state-showcase",
+          "type": "MessageEmptyState",
+          "props": {
+            "scale": "section",
+            "icon": "inventory_2",
+            "title": "No unmapped components",
+            "description": "Missing Figma mappings render as visible placeholders instead of disappearing."
+          }
+        },
+        {
+          "id": "chip-group-showcase",
+          "type": "ChipGroup",
+          "props": {
+            "behavior": "single",
+            "label": "Filter by category",
+            "items": [
+              {
+                "id": "all",
+                "title": "All",
+                "selected": true
+              },
+              {
+                "id": "design",
+                "title": "Design",
+                "icon": "palette"
+              },
+              {
+                "id": "engineering",
+                "title": "Engineering",
+                "icon": "code"
+              },
+              {
+                "id": "sort-by",
+                "title": "Sort by",
+                "menu": true
+              },
+              {
+                "id": "archived",
+                "title": "Archived",
+                "disabled": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "data-table-showcase",
+          "type": "DataTable",
+          "props": {
+            "caption": "Team members",
+            "columns": [
+              {
+                "key": "name",
+                "label": "Name",
+                "sortable": true
+              },
+              {
+                "key": "role",
+                "label": "Role"
+              },
+              {
+                "key": "status",
+                "label": "Status"
+              },
+              {
+                "key": "points",
+                "label": "Points",
+                "sortable": true
+              }
+            ],
+            "rows": [
+              {
+                "id": "ava",
+                "name": "Ava Chen",
+                "role": "Product designer",
+                "status": "Active",
+                "points": "1,240"
+              },
+              {
+                "id": "leo",
+                "name": "Leo Fischer",
+                "role": "Engineer",
+                "status": "Active",
+                "points": "860"
+              },
+              {
+                "id": "mia",
+                "name": "Mia Torres",
+                "role": "Researcher",
+                "status": "Invited",
+                "points": "312"
+              },
+              {
+                "id": "noah",
+                "name": "Noah Patel",
+                "role": "Engineer",
+                "status": "Paused",
+                "points": "74"
+              }
+            ],
+            "defaultSort": {
+              "key": "name",
+              "direction": "asc"
+            }
+          }
+        },
+        {
+          "id": "choice-group-showcase",
+          "type": "ChoiceGroup",
+          "props": {
+            "label": "Choose a plan",
+            "required": true,
+            "hint": "Plans can be changed at any time.",
+            "columns": {
+              "xs": 2,
+              "md": 4
+            },
+            "defaultValue": "starter",
+            "options": [
+              {
+                "value": "starter",
+                "label": "Starter",
+                "subtext": "For individuals",
+                "icon": "rocket_launch"
+              },
+              {
+                "value": "pro",
+                "label": "Pro",
+                "subtext": "For small teams",
+                "icon": "workspace_premium"
+              },
+              {
+                "value": "team",
+                "label": "Team",
+                "subtext": "Up to 50 seats",
+                "icon": "groups"
+              },
+              {
+                "value": "enterprise",
+                "label": "Enterprise",
+                "subtext": "Contact sales",
+                "icon": "domain",
+                "disabled": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "divider-feature-exercises",
+          "type": "Divider",
+          "props": {
+            "variant": "strong",
+            "size": "sm"
+          }
+        },
+        {
+          "id": "heading-feature-exercises",
+          "type": "Heading",
+          "props": {
+            "as": "h2",
+            "type": "heading",
+            "size": "lg"
+          },
+          "content": {
+            "fallback": "Bridge feature exercises"
+          }
+        },
+        {
+          "id": "paragraph-inline-links",
+          "type": "Paragraph",
+          "props": {
+            "size": "md"
+          },
+          "content": {
+            "fallback": "Review the bridge contract and the component registry before editing.",
+            "inlineLinks": [
+              {
+                "start": 11,
+                "end": 26
+              },
+              {
+                "start": 35,
+                "end": 53
+              }
+            ]
+          }
+        },
+        {
+          "id": "segmented-label-mode-selected",
+          "type": "SegmentedControl",
+          "props": {
+            "size": "md",
+            "value": "playground",
+            "labelMode": "selected",
+            "options": [
+              {
+                "value": "fix",
+                "label": "Fix",
+                "icon": "build"
+              },
+              {
+                "value": "playground",
+                "label": "Playground",
+                "icon": "science"
+              },
+              {
+                "value": "page-editor",
+                "label": "Page Editor",
+                "icon": "article"
+              }
+            ]
+          }
+        },
+        {
+          "id": "accordion-feature-open",
+          "type": "Accordion",
+          "props": {
+            "label": "Open content slot",
+            "defaultOpen": true,
+            "size": "md"
+          },
+          "children": [
+            {
+              "id": "paragraph-accordion-open",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "An open md Accordion exercises the Size × Open variant axes with visible slot children."
+              }
+            }
+          ]
+        },
+        {
+          "id": "banner-feature-inline",
+          "type": "Banner",
+          "props": {
+            "status": "warn",
+            "title": "Inline banner variant"
+          },
+          "children": [
+            {
+              "id": "paragraph-banner-inline",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "The compact in-page alert — system and calendar variants appear earlier in this file."
+              }
+            }
+          ]
+        },
+        {
+          "id": "buttons-feature-states",
+          "type": "ButtonContainer",
+          "props": {
+            "align": "start"
+          },
+          "children": [
+            {
+              "id": "button-feature-loading",
+              "type": "Button",
+              "props": {
+                "variant": "primary",
+                "size": "md",
+                "loading": true
+              },
+              "content": {
+                "fallback": "Saving…"
+              }
+            },
+            {
+              "id": "button-feature-disabled",
+              "type": "Button",
+              "props": {
+                "variant": "secondary",
+                "size": "md",
+                "disabled": true
+              },
+              "content": {
+                "fallback": "Unavailable"
+              }
+            }
+          ]
+        },
+        {
+          "id": "stack-vertical-divider",
+          "type": "Stack",
+          "props": {
+            "direction": "row",
+            "gap": "md",
+            "align": "center"
+          },
+          "children": [
+            {
+              "id": "paragraph-divider-left",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "Left of a vertical divider"
+              }
+            },
+            {
+              "id": "divider-feature-vertical",
+              "type": "Divider",
+              "props": {
+                "orientation": "vertical",
+                "variant": "subtle",
+                "size": "xs"
+              }
+            },
+            {
+              "id": "paragraph-divider-right",
+              "type": "Paragraph",
+              "props": {
+                "size": "sm",
+                "color": "muted"
+              },
+              "content": {
+                "fallback": "Right of a vertical divider"
+              }
+            }
+          ]
+        },
+        {
+          "id": "dialog-feature-sync",
+          "type": "Dialog",
+          "props": {
+            "size": "lg",
+            "status": "info",
+            "title": "Sync this page to A1?",
+            "body": "The Dialog maps size, status hero, title, body-slot text, close visibility, and Button-only footer actions.",
+            "footerActions": [
+              {
+                "id": "button-dialog-cancel",
+                "type": "Button",
+                "props": {
+                  "variant": "secondary",
+                  "size": "md"
+                },
+                "content": {
+                  "fallback": "Cancel"
+                }
+              },
+              {
+                "id": "button-dialog-sync",
+                "type": "Button",
+                "props": {
+                  "variant": "primary",
+                  "size": "md",
+                  "icon": "sync"
+                },
+                "content": {
+                  "fallback": "Sync to A1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "buttons-showcase-actions",
+          "type": "ButtonContainer",
+          "props": {
+            "align": "center"
+          },
+          "children": [
+            {
+              "id": "button-showcase-render",
+              "type": "Button",
+              "props": {
+                "variant": "primary",
+                "size": "lg",
+                "icon": "arrow_forward",
+                "iconPosition": "end"
+              },
+              "content": {
+                "fallback": "Render on canvas"
+              }
+            },
+            {
+              "id": "button-showcase-export",
+              "type": "Button",
+              "props": {
+                "variant": "secondary",
+                "size": "lg",
+                "icon": "ios_share"
+              },
+              "content": {
+                "fallback": "Export JSON"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

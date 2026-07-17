@@ -51,6 +51,43 @@ function sendJson(res, status, body, origin) {
   res.end(JSON.stringify(body))
 }
 
+async function existingBridgeHealth() {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 1000)
+  try {
+    const res = await fetch(`http://${host}:${port}/health`, { signal: controller.signal })
+    const data = await res.json().catch(() => null)
+    if (!res.ok || data?.ok !== true || !Array.isArray(data.routes)) return null
+    return data
+  } catch {
+    return null
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+async function handleListenError(error) {
+  if (error?.code !== 'EADDRINUSE') {
+    console.error(error)
+    process.exitCode = 1
+    return
+  }
+
+  const existing = await existingBridgeHealth()
+  if (existing) {
+    console.log(`A1 Jobs Codex bridge is already running on http://${host}:${port}`)
+    console.log('Leave that terminal/process open and use the app normally.')
+    process.exitCode = 0
+    return
+  }
+
+  console.error(`Port ${host}:${port} is already in use by another process.`)
+  console.error('Stop that process, or start this bridge on another port, for example:')
+  console.error(`  A1_CODEX_BRIDGE_PORT=4319 npm run codex:bridge:jobs`)
+  console.error('If you change the port, update the Jobs app bridge URL to match.')
+  process.exitCode = 1
+}
+
 function readBody(req) {
   return new Promise((resolveBody, reject) => {
     let size = 0
@@ -457,6 +494,12 @@ const server = createServer(async (req, res) => {
     return
   }
   sendJson(res, 404, { ok: false, error: 'Not found' }, origin)
+})
+
+server.on('error', (error) => {
+  handleListenError(error).finally(() => {
+    process.exit(process.exitCode || 0)
+  })
 })
 
 server.listen(port, host, () => {

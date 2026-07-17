@@ -10,6 +10,14 @@ body {
   overflow: hidden;
 }
 
+/* The Figma-driven Playground is a clean renderer, intentionally outside the
+   normal PageLayout, navigation, and workspace controls. */
+.a1-web-live-playground {
+  block-size: 100%;
+  inline-size: 100%;
+  overflow: auto;
+}
+
 .a1-web-skip-menu-trigger {
   position: fixed;
   inset-block-start: var(--base-spacing-12);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { isValidElement, useEffect, useState } from 'react'
 import {
   Button,
   Code,
@@ -61,8 +61,28 @@ function normalizeItems(items) {
     : [createItem('Overview')]
 }
 
+function itemValue(item, index) {
+  return item?.id || item?.value || `tab-${index + 1}`
+}
+
 function resolveSize(size) {
   return size === 'compact' ? 'compact' : undefined
+}
+
+function renderablePanelChildren(children) {
+  if (children === undefined || children === null) return null
+  if (typeof children === 'string' || typeof children === 'number' || isValidElement(children)) return children
+  if (Array.isArray(children)) {
+    const valid = children.filter((child) =>
+      child === null ||
+      child === undefined ||
+      typeof child === 'string' ||
+      typeof child === 'number' ||
+      isValidElement(child)
+    )
+    return valid.length ? <>{valid}</> : null
+  }
+  return null
 }
 
 export function getDefaultConfig() {
@@ -116,8 +136,9 @@ function ItemEditor({ item, canRemove, onChange, onRemove }) {
 
 export function Preview({ config, utilityClass = '' }) {
   const items = normalizeItems(config.items)
-  const [active, setActive] = useState(items[0]?.id)
-  const activeValue = items.some((item) => item.id === active) ? active : items[0]?.id
+  const panels = Array.isArray(config.panels) ? config.panels : []
+  const [active, setActive] = useState(config.value || itemValue(items[0], 0))
+  const activeValue = items.some((item, index) => itemValue(item, index) === active) ? active : itemValue(items[0], 0)
 
   return (
     <Tabs
@@ -131,10 +152,10 @@ export function Preview({ config, utilityClass = '' }) {
       labelMode={config.labelMode}
     >
       <TabList>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <Tab
-            key={item.id}
-            value={item.id}
+            key={itemValue(item, index)}
+            value={itemValue(item, index)}
             icon={item.icon || undefined}
             iconPosition={item.iconPosition}
             count={item.count !== '' ? item.count : undefined}
@@ -144,13 +165,20 @@ export function Preview({ config, utilityClass = '' }) {
           </Tab>
         ))}
       </TabList>
-      {items.map((item) => (
-        <TabPanel key={item.id} value={item.id}>
-          <Paragraph size="sm" color="muted">
-            {item.label || 'Untitled'} panel content.
-          </Paragraph>
+      {items.map((item, index) => {
+        const value = itemValue(item, index)
+        const panel = panels.find((entry) => entry && (entry.id === value || entry.value === value))
+        const panelChildren = renderablePanelChildren(item.children) || renderablePanelChildren(panel?.children)
+        return (
+        <TabPanel key={value} value={value}>
+          {panelChildren || (
+            <Paragraph size="sm" color="muted">
+              {item.label || 'Untitled'} panel content.
+            </Paragraph>
+          )}
         </TabPanel>
-      ))}
+        )
+      })}
     </Tabs>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Button,
   Card,
@@ -16,7 +16,26 @@ import { useT } from '../labels/useT.js'
 import { PageTitleArea } from './PageTitleArea.jsx'
 import { summarizeLocks } from '../patterns/resolvePattern.js'
 import { getPattern } from '../patterns/patterns.js'
-import { createBlankPattern, deletePattern, duplicatePattern, getAllPatterns, isUserPattern } from '../patterns/patternStore.js'
+import { createBlankPattern, deletePattern, duplicatePattern, getAllPatterns, isUserPattern, savePattern } from '../patterns/patternStore.js'
+
+function importedPatternPayload(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  if (value.pattern && Array.isArray(value.pattern.nodes)) {
+    return {
+      nodes: value.pattern.nodes,
+      name: typeof value.pattern.name === 'string' ? value.pattern.name : 'Imported pattern',
+      description: typeof value.pattern.description === 'string' ? value.pattern.description : '',
+      category: typeof value.pattern.category === 'string' ? value.pattern.category : 'section',
+    }
+  }
+  if (typeof value.type === 'string') {
+    return { nodes: [value], name: value.type === 'Section' ? 'Imported Section' : `Imported ${value.type}`, description: '', category: 'section' }
+  }
+  if (Array.isArray(value.nodes) && value.nodes.every((node) => node && typeof node === 'object' && typeof node.type === 'string')) {
+    return { nodes: value.nodes, name: 'Imported pattern', description: '', category: 'section' }
+  }
+  return null
+}
 
 export function Patterns({ onNavigate }) {
   const t = useT()
@@ -24,6 +43,8 @@ export function Patterns({ onNavigate }) {
   const refresh = () => setTick((t) => t + 1)
   const [menu, setMenu] = useState(null) // { pattern, x, y }
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [importError, setImportError] = useState('')
+  const handledImportRef = useRef(false)
   const patterns = getAllPatterns()
 
   function openPattern(id) { window.location.href = `/editor?pattern=${id}` }
@@ -32,6 +53,35 @@ export function Patterns({ onNavigate }) {
     const def = createBlankPattern()
     window.location.href = `/editor?pattern=${def.pattern.id}`
   }
+
+  // The Figma bridge opens /patterns?json=<component-or-pattern-json>. Keep
+  // this handoff local, generate a fresh user-pattern id, and then use the
+  // normal pattern workspace instead of maintaining a second JSON editor.
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get('json')
+    if (!raw || handledImportRef.current) return
+    handledImportRef.current = true
+    try {
+      const payload = importedPatternPayload(JSON.parse(raw))
+      if (!payload || payload.nodes.length === 0) throw new Error('The JSON does not contain a component node or pattern nodes.')
+      const definition = createBlankPattern()
+      const imported = {
+        ...definition,
+        pattern: {
+          ...definition.pattern,
+          name: payload.name,
+          description: payload.description,
+          category: payload.category,
+          nodes: payload.nodes,
+        },
+      }
+      savePattern(imported)
+      onNavigate?.('editor', { path: `/editor?pattern=${encodeURIComponent(imported.pattern.id)}`, replace: true })
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : 'Could not import the supplied pattern JSON.')
+      window.history.replaceState({}, '', '/patterns')
+    }
+  }, [onNavigate])
 
   return (
     <>
@@ -56,6 +106,7 @@ export function Patterns({ onNavigate }) {
     />
     <Section padding="sm" aria-labelledby="patterns-heading" contentWidth="xl">
       <Stack direction="column" gap="sm">
+        {importError && <Paragraph>Couldn’t import Figma JSON: {importError}</Paragraph>}
         <Stack direction="row" align="start" justify="between" wrap gap="md">
         </Stack>
 

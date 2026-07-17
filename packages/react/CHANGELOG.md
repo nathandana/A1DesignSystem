@@ -1,5 +1,74 @@
 # @gtivr4/a1-design-system-react Changelog
 
+## Unreleased
+
+### Fixed
+
+- **Chip — `selected` now renders inside `selectionMode="none"` groups.**
+  `ChipGroup` passed an explicit `__selected: false` to every chip in
+  non-selectable rows, clobbering the chip's own `selected` prop through the
+  `__selected ?? selected` fallback — so documented filter-chip patterns (a
+  selected menu chip in a `selectionMode="none"` row, and the existing
+  "Filters" story) silently rendered unselected. The group now returns
+  `undefined` in none mode, since it carries no selection semantics there,
+  letting each chip's `selected` prop stand. Single/multiple selection
+  behavior is unchanged.
+
+### Changed
+
+- **TopHeader `loginButton` accepts a plain string label.** `loginButton` renders
+  a small primary Button after the actions; it now takes `{ label?, onClick? }`
+  or a plain string used as the label — the JSON-safe form emitted by page
+  definitions and the Figma JSON bridge. Previously a string rendered the
+  default "Log in" text. `TopHeader.d.ts` was corrected from the stale
+  `React.ReactNode` type to the actual `string | { label?, onClick? }` contract,
+  and a "Login button with string label" story was added.
+
+- **Control-height standard (28/40/56)** — sized controls now share one total-height
+  scale, and three components were brought onto it: **Segmented Control**'s tokens
+  now describe the OUTER track (28/40/56 total; segments derive 20/32/48 via
+  `calc`, sm segments drop their block padding), **Accordion** triggers now apply
+  their height tokens (previously declared but unused — heights were
+  padding-emergent 33/40/52) at 28/40/56 with tighter sm padding, and **Chip**
+  gained `component.chip.minHeight`/`smMinHeight`/`lgMinHeight` tokens
+  (28/40/56; previously untokenized 28/35/42). Tabs `variant="segment"` follows
+  the same derivation (40px strip). The standard — including the field-density
+  scale (32/40/52) and the 32px utility band — is documented in
+  `packages/react/ai/project-foundations.md` under "Control heights". Visual
+  regression baselines for these components need a `npm run test:qa:update`.
+
+### Fixed
+
+- **SegmentedControl — consumer `className` no longer clobbers component styling.**
+  The root spread `{...props}` came after the computed `className`, so passing any
+  `className` (including `undefined`, as the a1-web configurator's utility-class
+  wiring does) replaced the entire `a1-segmented` class list and the control
+  rendered unstyled — plain labels with no track, selected pill, or shadow.
+  `className` is now destructured and merged with the component's own classes
+  (the same pattern as Button), and is documented in `SegmentedControl.d.ts`.
+
+### Added
+
+- **Figma Link bridge** — the Component JSON plugin now imports, exports, and
+  updates Link size, weight, label, optional Material icon, and icon position.
+  A blue or blue-violet underlined standalone text layer receives a Link
+  suggestion; **AutoFix** applies the nearest named Link text style, underline,
+  and semantic `link/color` variable before it exports as Link JSON. Inline
+  underlined Heading and Paragraph ranges now render through
+  `content.inlineLinks` as nested A1 Links.
+
+- **Figma core primitives** — added documented Figma component sets for Link,
+  Icon Button, Select, and Divider. The assets reuse the package's existing
+  tokens and Material icon library, cover their visual React prop contracts,
+  and include repo-side Code Connect templates for later publication on a
+  supported Figma plan.
+
+- **Figma Link typography** — Link labels now use the named
+  `Link/{size}/{weight}` A1 text styles and expose the same solid, token-offset
+  underline as the React link text. Material icons remain outside the underline.
+
+- **Code line numbers** — `Code` now accepts `lineNumbers` for block code and `rows` to set an editable block's visible height. The non-interactive, aria-hidden gutter updates as editable content gains or removes lines, follows vertical editor scrolling, and aligns each logical number to wrapped code without changing copied content.
+
 ## 0.28.0 — 2026-07-07
 
 ### Added
@@ -90,7 +159,7 @@
 
 ### Fixed
 
-- **npm tarball was missing runtime `.js` modules — fresh installs could not build** — the `files` whitelist only included `src/index.js`, so the four internal runtime modules (`src/components/structure-utils.js`, `src/components/fieldset/FieldsetContext.js`, `src/components/field/maskUtils.js`, `src/components/icon/customIconRegistry.js`) were excluded from every published tarball. Fifteen shipped components (Stack, Cluster, Inset, Bleed, Fieldset, Switch, FieldRow, and the whole field family) had unresolvable imports, and since `src/index.js` re-exports everything, importing *anything* from the package root failed to bundle in a clean install (present since 0.3.1; consumers needed a postinstall patch). The whitelist now ships `src/**/*.js` and excludes `src/storybook/**` (Storybook-only helpers that import monorepo-relative JSON). Consumers can remove their `patch-design-system` postinstall workaround after upgrading to 0.26.0.
+- **npm tarball was missing runtime `.js` modules — fresh installs could not build** — the `files` whitelist only included `src/index.js`, so the four internal runtime modules (`src/components/structure-utils.js`, `src/components/fieldset/FieldsetContext.js`, `src/components/field/maskUtils.js`, `src/components/icon/customIconRegistry.js`) were excluded from every published tarball. Fifteen shipped components (Stack, Cluster, Inset, Bleed, Fieldset, Switch, FieldRow, and the whole field family) had unresolvable imports, and since `src/index.js` re-exports everything, importing _anything_ from the package root failed to bundle in a clean install (present since 0.3.1; consumers needed a postinstall patch). The whitelist now ships `src/**/*.js` and excludes `src/storybook/**` (Storybook-only helpers that import monorepo-relative JSON). Consumers can remove their `patch-design-system` postinstall workaround after upgrading to 0.26.0.
 - **Field `placeholder` discard is now visible** — `TextField` has always accepted-and-ignored the `placeholder` prop (fields communicate via `label`/`hint` by design), but silently; it now logs a one-time console warning in development. `TextareaField` previously **leaked** `placeholder` through to the DOM against the design contract — it is now stripped like the rest of the field family, with the same dev warning, and `TextareaField.d.ts` omits the prop.
 - **Snackbar deprecated props marked** — the accepted-but-ignored `variant` and `inverse` props are now declared with `@deprecated` JSDoc in `Snackbar.d.ts` so editors strike them through and consumers migrate before removal.
 - **Experimental DataGrid no longer ships** — `src/components/data-grid/` (an unexported react-data-grid evaluation wrapper) was included in the tarball while its `react-data-grid` dependency is a devDependency, so any consumer importing the file directly would hit an unresolvable module. Excluded from the package until it graduates.
@@ -140,7 +209,7 @@
 ### Changed
 
 - **Toolbar — subtle border by default** (A1-220) — `Toolbar` now carries a **hairline subtle border** (`--component-divider-size-xs` width, `--semantic-color-border-subtle` colour) by default for better definition against the page surface. The **accessible theme** and OS **high-contrast** (`prefers-contrast: more` / `forced-colors`) step the border up to the thicker `--component-divider-size-sm` width and the stronger `--semantic-color-border-default` colour for a clearly delimited boundary when more contrast is needed. CSS-variable only (`--a1-toolbar-border-width` / `-color`) — no API change; the `overlay` variant keeps its own card-on-page border.
-- **Toolbar label — tied to form-label tokens** (A1-165) — the Toolbar's visible `label` caption now uses the **same tokens as a compact form label**: `--semantic-font-size-form-label-compact` for size and `--component-field-compact-label-font-weight` for weight (colour was already `--semantic-color-text-default`, matching field labels). Previously it used `--semantic-font-size-body-xs` (same value) with the *default* field-label weight (600) — an inconsistent compact-size / default-weight mix. The caption now renders identically to a compact `Field` / `Fieldset` legend label sitting beside it (12px / weight 500 / text-default). CSS-only; no API change.
+- **Toolbar label — tied to form-label tokens** (A1-165) — the Toolbar's visible `label` caption now uses the **same tokens as a compact form label**: `--semantic-font-size-form-label-compact` for size and `--component-field-compact-label-font-weight` for weight (colour was already `--semantic-color-text-default`, matching field labels). Previously it used `--semantic-font-size-body-xs` (same value) with the _default_ field-label weight (600) — an inconsistent compact-size / default-weight mix. The caption now renders identically to a compact `Field` / `Fieldset` legend label sitting beside it (12px / weight 500 / text-default). CSS-only; no API change.
 
 ## 0.23.0 — 2026-06-22
 
@@ -152,18 +221,18 @@
 
 - **`SearchField`** — a field-family search input with a **leading search icon** inside the field and a **trailing clear button** that appears only when there's a value. Built on `TextField`, so it inherits label / hint / error / size (`compact` · `default` · `comfortable`) / `disabled` and the field-family sizing; renders a native `type="search"` input (the browser's own clear affordance is suppressed in favour of the A1 clear button). Works controlled or uncontrolled — the clear button dispatches a native input event so both styles update, `onSearch(value)` fires on Enter, and `onClear()` fires after clearing. Use `aria-label` (no visible `label`) for a compact search bar. The clear button's accessible name comes from the new `field.clearSearch` label (localised es/fr/de/pt/ja/zh/ar). CSS-variable architecture in `field.css` (`.a1-field--search` / `--search-has-value`, logical padding so it's RTL-correct); no new tokens. Stories cover empty/with-value, no-visible-label, sizes, and states; a1-web configurator added (Inputs → Search Field). React only.
 
-- **Marshmallow theme — soft pillowy pastel with subtle neumorphism** — a new system theme (`system/themes/marshmallow/`, shipped via `packages/react/src/themes.css`, selector `.a1-theme-marshmallow`). Dusty-lavender accent on warm marshmallow-cream surfaces (a deliberately mid-light, not pure-white, surface so both the light highlight and the soft shadow read), reusing the crochet pastel status ramps. The **subtle 3D / neumorphic depth is achieved entirely through existing tokens**: buttons set `--component-button-box-shadow` (a gentle dual highlight + drop shadow, raised at rest), `--component-button-box-shadow-hover` (more lift), `--component-button-box-shadow-active` (**inset** — the button reads as pressed *into* the surface), and `--component-button-press-transform: translateY(1px)`; cards and raised surfaces use a soft dual `--semantic-shadow-xs`/`-sm`; `--semantic-shadow-md` and `--component-dialog-shadow` are softened. Generous rounding (`--base-radius-md/lg/xl`, button `14px`, card `18px`, dialog `20px`). Rounded type — **Varela Round** for display + headings (single 400 weight; hierarchy carried by size) and **Nunito** for body. The only component change is theme-agnostic and a **no-op for every existing theme**: `.a1-button--tertiary` now nulls its box-shadow tokens so ghost (transparent) buttons never carry the raised shadow (which would otherwise halo an invisible body). Added to the Storybook theme toolbar.
+- **Marshmallow theme — soft pillowy pastel with subtle neumorphism** — a new system theme (`system/themes/marshmallow/`, shipped via `packages/react/src/themes.css`, selector `.a1-theme-marshmallow`). Dusty-lavender accent on warm marshmallow-cream surfaces (a deliberately mid-light, not pure-white, surface so both the light highlight and the soft shadow read), reusing the crochet pastel status ramps. The **subtle 3D / neumorphic depth is achieved entirely through existing tokens**: buttons set `--component-button-box-shadow` (a gentle dual highlight + drop shadow, raised at rest), `--component-button-box-shadow-hover` (more lift), `--component-button-box-shadow-active` (**inset** — the button reads as pressed _into_ the surface), and `--component-button-press-transform: translateY(1px)`; cards and raised surfaces use a soft dual `--semantic-shadow-xs`/`-sm`; `--semantic-shadow-md` and `--component-dialog-shadow` are softened. Generous rounding (`--base-radius-md/lg/xl`, button `14px`, card `18px`, dialog `20px`). Rounded type — **Varela Round** for display + headings (single 400 weight; hierarchy carried by size) and **Nunito** for body. The only component change is theme-agnostic and a **no-op for every existing theme**: `.a1-button--tertiary` now nulls its box-shadow tokens so ghost (transparent) buttons never carry the raised shadow (which would otherwise halo an invisible body). Added to the Storybook theme toolbar.
 - **Marshmallow theme tweaks** (A1-222) — **theme-token only**, no component changes: the **primary button is subtler so its dimension reads** — a light dusty-lavender fill (`accent-300`) with dark text (`accent-900`) instead of a saturated solid, a smaller `--component-button-border-radius` (14px → 10px), and an inner-structure (inset highlight + deboss) box-shadow per the requested neumorphic reference. Buttons, cards, dialogs, fields (recessed **wells**), and the switch & segmented-control tracks/thumbs get tuned raised/inset shadows; an elevated `--semantic-shadow-lg` lifts Menu / Snackbar / Toolbar / TopHeader. Heading + display type changed to **Space Grotesk** (weights 500 / 600; Nunito body; Space Grotesk added to the a1-web font link). Shadow values authored directly in `system/themes/marshmallow/theme.json`; tokens rebuilt.
 - **Card `status` side stripe + badge, with in-progress pulse** (A1-188) — `status` (`"neutral"` | `"info"` | `"success"` | `"warn"` | `"error"`, default none) draws a tokenized coloured **stripe** down the card's inline-start edge (a clipped `::before`, colours mirror the MessageBadge status tones). `statusLabel` renders a small matching `MessageBadge` at the top of the content — the "side stripe with a badge". `statusPulse` (boolean, default false) **subtly pulses** the stripe to signal in-progress/ongoing work and **respects `prefers-reduced-motion`** (the stripe stays static). The stripe is a decorative reinforcement, so pair it with `statusLabel` (or status text in the content) so meaning isn't conveyed by colour alone. New tokens `component.card.statusStripe.width` (4px) + `component.card.statusPulse.duration` (1800ms) + a `component.card.status.{neutral,info,success,warn,error}` stripe palette where **warn/success are two ramp steps lighter** (warn-500 `#d97706`, success-500 `#16a34a`) so a thin stripe reads as amber/green instead of the very dark status-background tone. CSS-variable architecture: `.a1-card--has-status` + `.a1-card--status-{tone}` + `.a1-card--status-pulse` + `.a1-card__status-badge`. Added a design rule **`card-status-not-color-only`** (`system/rules/card.yaml`): status must be conveyed by text, never the colour stripe alone — WCAG 2.1 SC 1.4.1, Level A (also fixed a long-standing YAML parse error in `card.yaml` that was silently dropping every Card rule). Added `Status stripe + badge` and `In progress (animated stripe)` stories, the three argTypes, and the a1-web Card configurator controls (switch-linked helper text) + Properties rows.
 - **Dialog `size`** (`"sm"` | `"md"` | `"lg"` | `"xl"`, default `"md"`) — sets the dialog width: `sm` (440px) for short confirmations, `md` (560px, the previous fixed width) for standard content, and `lg` (720px) / `xl` (920px) for wide, content-rich or tabbed dialogs (e.g. a record detail view with editable fields and tabs). Implemented via the CSS-variable architecture — a new `--a1-dialog-width` layer over `--component-dialog-width{,-sm,-lg,-xl}` tokens (`system/tokens/component/dialog.json`) — so every size still caps at the viewport (`calc(100vw - …)`). Added a `Wide (size=lg)` story, the `size` argType, plus the a1-web Dialog configurator **Width** control (switch-linked helper text) and Properties row.
 
 ### Changed
 
-- **Slider — handle now sits inside the track** — the track is as tall as the thumb and *contains* the handle instead of the thumb riding on a thin rail, so the whole track is a larger touch target; the track also gains a subtle 1px border (`--semantic-color-border-default`). Sizes scale together per `size` (compact / default / comfortable) and the thumb stays centered via the existing `(track − thumb) / 2` formula. CSS-variable only (`--a1-slider-track-height` / `-thumb-size` / new `--a1-slider-track-border`) — no API change, works across all themes. (Improves WCAG 2.2 target size.)
+- **Slider — handle now sits inside the track** — the track is as tall as the thumb and _contains_ the handle instead of the thumb riding on a thin rail, so the whole track is a larger touch target; the track also gains a subtle 1px border (`--semantic-color-border-default`). Sizes scale together per `size` (compact / default / comfortable) and the thumb stays centered via the existing `(track − thumb) / 2` formula. CSS-variable only (`--a1-slider-track-height` / `-thumb-size` / new `--a1-slider-track-border`) — no API change, works across all themes. (Improves WCAG 2.2 target size.)
 
 ### Fixed
 
-- **Slider — detent ticks/handle alignment + thumb fits the channel** — the detent tick dots and labels drifted off the thumb centre (most visible at the track ends) and the thumb bulged *outside* the track channel. Two causes in `slider.css`: the thumb's 2px ring used default `content-box`, so its rendered width was `thumb-size + 4px` — wider than the `thumb-size/2 + p·(100% − thumb-size)` calc the ticks/labels use, shifting the thumb centre off them; and the track's 1px `border` inset the thumb's travel range. Fixes: the thumb pseudo-elements now use `box-sizing: border-box` (rendered width = `thumb-size`, ring drawn inside, thumb sits flush in the channel), the track channel outline is an **inset `box-shadow`** instead of a `border` (so it no longer insets travel), and the tick dot transform is `translate(-50%, -50%)`. The native thumb centre now equals the tick/label position at every value. CSS-only — no API change, all sizes/themes. (Will shift Slider visual-regression baselines.)
+- **Slider — detent ticks/handle alignment + thumb fits the channel** — the detent tick dots and labels drifted off the thumb centre (most visible at the track ends) and the thumb bulged _outside_ the track channel. Two causes in `slider.css`: the thumb's 2px ring used default `content-box`, so its rendered width was `thumb-size + 4px` — wider than the `thumb-size/2 + p·(100% − thumb-size)` calc the ticks/labels use, shifting the thumb centre off them; and the track's 1px `border` inset the thumb's travel range. Fixes: the thumb pseudo-elements now use `box-sizing: border-box` (rendered width = `thumb-size`, ring drawn inside, thumb sits flush in the channel), the track channel outline is an **inset `box-shadow`** instead of a `border` (so it no longer insets travel), and the tick dot transform is `translate(-50%, -50%)`. The native thumb centre now equals the tick/label position at every value. CSS-only — no API change, all sizes/themes. (Will shift Slider visual-regression baselines.)
 - **Design-rule violations surfaced by the new lint gate** (A1-37) — `DataTable` avatar initials no longer uppercase the whole joined string (`charAt(0).toUpperCase()` per word — identical output, but compliant with the never-uppercase law); and raw colours in `page-nav.css` (active link `#fff` → `var(--semantic-color-text-inverse)`, separator shadow → `var(--semantic-shadow-sm)`), `token-select.css` (swatch hairlines → `var(--semantic-color-border-subtle)`), and `tokens/_shared.jsx` (demo swatch borders) now use tokens. These are now enforced by **`eslint-plugin-a1`** + the CSS gate (see the repo-level changelog / `packages/eslint-plugin-a1`).
 
 ## 0.21.0 — 2026-06-21

@@ -11,6 +11,10 @@ export interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   copyText?: string;
   /** Render the block as an editable textarea initialized from children. Only meaningful in block mode. Default: false */
   editable?: boolean;
+  /** Visible textarea rows when editable. Default: 10 */
+  rows?: number;
+  /** Show a non-interactive gutter with one number per logical line. Only meaningful for block code. Default: false */
+  lineNumbers?: boolean;
   /** Called with the current string value whenever the editable textarea changes. */
   onChangeValue?: (value: string) => void;
   /** Cap a long read-only block to `collapsedLines` with a fade + Show more/less toggle (the toggle appears only when the content overflows). Block, non-editable only. Default: false */

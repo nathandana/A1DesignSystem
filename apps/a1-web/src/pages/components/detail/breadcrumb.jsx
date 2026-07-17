@@ -242,3 +242,31 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildBreadcrumbSnippet(config, utilityClass)}</Code>
 }
+
+export const jsonType = 'Breadcrumb'
+
+export function toJson(config) {
+  const props = {
+    items: normalizeItems(config.items).map((item, index, items) => ({
+      id: item.id || `breadcrumb-item-${index + 1}`,
+      label: item.label || 'Untitled',
+      ...(index < items.length - 1 && item.behavior !== 'static' && item.href ? { href: item.href } : {}),
+    })),
+  }
+  if (config.backLabel && config.backLabel !== 'Back') props.backLabel = config.backLabel
+  return { node: { id: 'breadcrumb-1', type: 'Breadcrumb', props }, note: null }
+}
+
+export function fromJson(node) {
+  const props = node?.props && typeof node.props === 'object' ? node.props : {}
+  const items = normalizeItems(props.items).map((item, index, list) => ({
+    id: item.id || `breadcrumb-item-${index + 1}`,
+    label: item.label || 'Untitled',
+    behavior: index === list.length - 1 || !item.href ? 'static' : 'link',
+    href: item.href || '',
+  }))
+  return {
+    backLabel: typeof props.backLabel === 'string' ? props.backLabel : 'Back',
+    items,
+  }
+}

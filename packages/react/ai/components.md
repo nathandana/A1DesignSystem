@@ -4,15 +4,15 @@
 
 ## Package key
 
-| Column | What it covers |
-|--------|---------------|
-| **React** | `packages/react/src/components/{name}/` |
-| **Native** | `packages/react-native/src/components/{Name}/` |
-| **Pure** | `packages/pure/dist/a1-pure.css` — scoped HTML/CSS classes |
-| **Web Components** | `packages/web-components/src/components/{name}/a1-{name}.js` — Lit custom elements |
-| **Figma** | Component exists in the A1 Figma design system file and is documented in `packages/react/ai/figma-workflow.md`; repo-side Code Connect templates live in `packages/figma/code-connect/` when available. |
+| Column             | What it covers                                                                                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **React**          | `packages/react/src/components/{name}/`                                                                                                                                                                 |
+| **Native**         | `packages/react-native/src/components/{Name}/`                                                                                                                                                          |
+| **Pure**           | `packages/pure/dist/a1-pure.css` — scoped HTML/CSS classes                                                                                                                                              |
+| **Web Components** | `packages/web-components/src/components/{name}/a1-{name}.js` — Lit custom elements                                                                                                                      |
+| **Figma**          | Component exists in the A1 Figma design system file and is documented in `packages/react/ai/figma-workflow.md`; repo-side Code Connect templates live in `packages/figma/code-connect/` when available. |
 
-✓ = implemented  · — = not yet implemented
+✓ = implemented · — = not yet implemented
 
 ---
 
@@ -20,21 +20,22 @@
 
 The a1-web Components menu is defined from this registry. Keep the order, category names, and selected Material Symbols icon names aligned with this table when updating `apps/a1-web/src/pages/Components.jsx`.
 
-| Menu level | Route ID | Label | Selected icon | Children |
-|------------|----------|-------|---------------|----------|
-| Overview | `components` | Components | `widgets` | Component categories |
-| Category | `components-layout` | Layout & Display | `dashboard` | Section, Section Separator, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas |
-| Category | `components-typography` | Typography | `title` | Heading, Paragraph, Blockquote, List, Code, Divider, Inline |
-| Category | `components-actions` | Actions & Controls | `touch_app` | Button, Action Tiles, Chip, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link |
-| Category | `components-navigation` | Navigation | `near_me` | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu |
-| Category | `components-inputs` | Inputs | `edit_note` | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
-| Category | `components-feedback` | Feedback & Messaging | `campaign` | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker |
-| Category | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon |
-| Category | `components-overlay` | Overlay | `web_asset` | Dialog, Overlay, Menu, Context Menu, Tooltip |
-| Category | `components-data-viz` | Data Viz | `query_stats` | Node, Line Chart, Bar Chart, Area Chart, Composed Chart, Pie Chart, Scatter Chart, Radar Chart, Radial Bar Chart, Funnel Chart, Treemap Chart, Sankey Chart, Sunburst Chart |
-| Category | `components-data` | Data | `table_chart` | Data Table, Stat, Definition List, Pagination, Calendar |
+| Menu level | Route ID                       | Label                 | Selected icon  | Children                                                                                                                                                                                                     |
+| ---------- | ------------------------------ | --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Overview   | `components`                   | Components            | `widgets`      | Component categories                                                                                                                                                                                         |
+| Category   | `components-layout`            | Layout & Display      | `dashboard`    | Section, Section Separator, Card, Stack, Grid, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas                                                                                                   |
+| Category   | `components-typography`        | Typography            | `title`        | Heading, Paragraph, Blockquote, List, Code, Divider, Inline                                                                                                                                                  |
+| Category   | `components-actions`           | Actions & Controls    | `touch_app`    | Button, Split Button, Action Tiles, Chip, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link                                                                     |
+| Category   | `components-navigation`        | Navigation            | `near_me`      | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu                                                                                                                                         |
+| Category   | `components-inputs`            | Inputs                | `edit_note`    | Text Field, Search Field, Number Field, Date Field, Time Field, Phone Field, Zip Field, Credit Card Field, Textarea, Select, Checkbox Group, Radio Group, Choice Group, Fieldset, Field Row, Inline Editable |
+| Category   | `components-feedback`          | Feedback & Messaging  | `campaign`     | Banner, Badge, Notification, Snackbar, Empty State, Status Bar, Circular Progress, Step Tracker                                                                                                              |
+| Category   | `components-media-iconography` | Media and iconography | `insert_photo` | Figure, Icon                                                                                                                                                                                                 |
+| Category   | `components-overlay`           | Overlay               | `web_asset`    | Dialog, Overlay, Menu, Context Menu, Tooltip                                                                                                                                                                 |
+| Category   | `components-data-viz`          | Data Viz              | `query_stats`  | Node, Line Chart, Bar Chart, Area Chart, Composed Chart, Pie Chart, Scatter Chart, Radar Chart, Radial Bar Chart, Funnel Chart, Treemap Chart, Sankey Chart, Sunburst Chart                                  |
+| Category   | `components-data`              | Data                  | `table_chart`  | Data Table, Stat, Definition List, Pagination, Calendar                                                                                                                                                      |
 
 **Routing rules:**
+
 - Category pages use `components-{category-id}`.
 - Component pages use `component-{component-id}`.
 - If a component appears in more than one registry table, keep one canonical a1-web component page and avoid duplicate route IDs.
@@ -44,19 +45,19 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 
 ## Typography
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Heading | ✓ | ✓ | ✓ | — | — |
-| Paragraph | ✓ | ✓ | ✓ | — | — |
-| Blockquote | ✓ | ✓ | ✓ | — | — |
-| List | ✓ | ✓ | ✓ | — | — |
-| Code | ✓ | — | — | — | — |
-| Divider | ✓ | — | ✓ | — | — |
-| Inline (kbd, mark, and semantic inline text) | ✓ | — | ✓ | — | — |
+| Component                                    | React | Native | Pure | Web Components | Figma |
+| -------------------------------------------- | :---: | :----: | :--: | :------------: | :---: |
+| Heading                                      |   ✓   |   ✓    |  ✓   |       —        |   —   |
+| Paragraph                                    |   ✓   |   ✓    |  ✓   |       —        |   —   |
+| Blockquote                                   |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
+| List                                         |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
+| Code                                         |   ✓   |   —    |  —   |       —        |   ✓   |
+| Divider                                      |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Inline (kbd, mark, and semantic inline text) |   ✓   |   —    |  ✓   |       —        |   ✓   |
 
 > **Pure notes:** Heading uses `.a1-h1`–`.a1-h6` + `.a1-heading-*` modifiers. Paragraph uses `.a1-p`. List uses `.a1-ul` / `.a1-ol`. Divider uses `.a1-hr`. Inline code uses `.a1-code` / `.a1-pre` / `.a1-kbd` / `.a1-mark`.
 >
-> **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override), `editable` (boolean, default false — renders a `<textarea>` instead of `<pre><code>` so the block is user-editable; only meaningful in block mode), `onChangeValue` (callback receiving the current string value on each keystroke). When `editable` and `copyCode` are combined, the copy button copies the live textarea content, not the original `children`. Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
+> **React Code props:** `variant` ("inline" | "block", default "inline"), `wrapping` (boolean), `copyCode` (boolean), `copyText` (optional clipboard override), `editable` (boolean, default false — renders a `<textarea>` instead of `<pre><code>` so the block is user-editable; only meaningful in block mode), `rows` (positive integer, default `10` — visible textarea rows when editable), `lineNumbers` (boolean, default false — adds an `aria-hidden` gutter with one number per logical line; available for editable and read-only blocks. With `wrapping`, the gutter measures each wrapped logical line so its number stays aligned to the first visual row), `onChangeValue` (callback receiving the current string value on each keystroke). When `editable` and `copyCode` are combined, the copy button copies the live textarea content, not the original `children`. Copy affordance uses the standard `content_copy` icon and code labels from `system/labels/code.json`.
 >
 > **React Divider props:** `orientation` ("horizontal" | "vertical" | responsive object, default "horizontal"), `variant` ("subtle" | "strong" | "accent", default "subtle"), `lineStyle` ("solid" | "dashed" | "dotted", default "solid"), `size` ("xs" | "sm" | "md" | "lg", default "xs"), `space` ("none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl", default "sm"), `decorative` (boolean, default true). `variant` controls color tone and `lineStyle` controls border pattern so combinations like accent + dashed or subtle + dotted are valid.
 >
@@ -79,12 +80,14 @@ An eyebrow is a small label that sits above a heading to provide category or sec
   <Paragraph as="span" size="xs" color="muted">
     Category label
   </Paragraph>
-  <Heading as="h2" size="lg">Section heading</Heading>
+  <Heading as="h2" size="lg">
+    Section heading
+  </Heading>
 </Stack>
 ```
 
-
 **Rules:**
+
 - Use `Paragraph` (not a custom `<span>` or `<p>`) so font-family and size tokens are applied correctly.
 - Use `size="xs"` or `size="sm"` — never a raw `font-size`.
 - Use `color="muted"` for the default neutral eyebrow, or omit for default text colour.
@@ -95,22 +98,26 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Navigation
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Link | ✓ | ✓ | ✓ | — | — |
-| Breadcrumb | ✓ | — | — | — | — |
-| Side Nav | ✓ | ✓ | — | — | — |
-| Top Header | ✓ | — | ✓ | — | — |
-| Bottom Drawer | ✓ | — | ✓ | — | — |
-| Tabs | ✓ | — | — | — | — |
-| Page Nav | ✓ | — | — | — | — |
-| Tree Menu | ✓ | — | — | — | — |
+| Component     | React | Native | Pure | Web Components | Figma |
+| ------------- | :---: | :----: | :--: | :------------: | :---: |
+| Link          |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
+| Breadcrumb    |   ✓   |   —    |  —   |       —        |   ✓   |
+| Side Nav      |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Top Header    |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Bottom Drawer |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Tabs          |   ✓   |   —    |  —   |       —        |   ✓   |
+| Page Nav      |   ✓   |   —    |  —   |       —        |   ✓   |
+| Tree Menu     |   ✓   |   —    |  —   |       —        |   ✓   |
 
 > **Tree Menu props:** `items` (`TreeItem[]` — `{ id, label, icon?, href?, disabled?, children? }[]`), `variant` (`"expanded"` | `"collapsed"`, default `"expanded"` — collapsed renders root items as icon-only triggers and opens each branch's children in an A1 `Menu` flyout; leaf roots still select/navigate directly), `selectedId` (string | null), `onSelect` (callback), `defaultExpandedIds` (string[], uncontrolled), `expandedIds` (string[], controlled), `onExpandedChange` (callback), `showExpandControls` (boolean, default false — renders "Expand all" / "Collapse all" buttons above the expanded tree or inside a collapsed parent flyout), `onHoverChange` (callback, fires with id on mouseenter and null on mouseleave), `draggable` (boolean, default false — enables drag-and-drop reordering and reparenting), `onMove` (`({ draggedId, targetId, position: 'before' | 'into' | 'after' }) => void` — called when the user drops an item; the consumer is responsible for updating the `items` array), `editingId` (string | null — the id of the item being **renamed inline**; when set, that item's label is replaced by an auto-focused/selected text input and drag is suspended for it), `onRenameStart` (`(id) => void` — fired when the user requests a rename by **double-clicking** an item's label or pressing **F2** on the focused item; set `editingId` in response. Disabled items never fire it), `onRenameCommit` (`(id, label) => void` — fired on Enter or blur; an empty/whitespace value falls back to the original label), `onRenameCancel` (`() => void` — fired on Escape), `aria-label` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Supports unlimited nesting depth. Expand/collapse (`add_box` / `indeterminate_check_box`) is independent from selection: clicking the toggle icon only expands/collapses the branch; clicking the label selects the node. Keyboard in expanded mode: Arrow Right expands or descends into a branch; Arrow Left collapses or moves to parent; Home/End jump to first/last visible node; Enter/Space selects only. Keyboard in collapsed mode: Arrow Up/Down/Home/End rove between root icons; Arrow Right opens a branch flyout; Arrow Left closes it; Enter/Space use the focused root trigger. Selected state uses the full action background (`--semantic-color-action-background`) for a clear, unambiguous highlight; in collapsed mode a root icon is active when it or one of its descendants is selected. Roving tabindex keeps one item in the tab sequence at a time. **Drag-and-drop:** when `draggable` is true, each expanded row becomes a drag source and drop target. Dragging over the top 30% of a row shows a "drop before" indicator; over the bottom 30% shows "drop after"; over the middle 40% of a branch node shows "drop into" (reparent). Collapsed branches auto-expand after 600 ms when held over. An item cannot be dropped onto itself or any of its descendants. **Inline rename (A1-22):** the rename UI is consumer-driven — the consumer decides when to enter edit mode (e.g. from a context-menu "Rename" item, or from `onRenameStart` on double-click / F2) by setting `editingId`, then owns the `items` update in `onRenameCommit`. The input is a real `<input aria-label="Rename item">` styled as an A1 field (focus ring); Enter/blur commits, Escape cancels, and its keydown is stopped so the tree's arrow/Enter navigation doesn't fire while editing. The a1-web editor uses this for the Layers tree, persisting a custom `node.name` that overrides the auto-derived label.
 
 > **Pure notes:** Top Header uses `.a1-header`. Link uses `.a1-link`. Bottom Drawer uses `.a1-bottom-drawer`.
+> **Figma Top Header component:** created the Top Header component set on the Top Header page (`node 621:1132`, `Breakpoint=xs|sm|md|lg|xl` at the contract widths 480/640/1024/1440/1600 — xs/sm show the hamburger composition with the nav hidden, mirroring React's 768px switch) plus the `Top Header Nav Item` child set (`node 612:995`, `State=default|hover|active` with `Label`, `Show icon`, `Icon` swap, and `Show chevron` properties). The `Nav Items` and `Actions` areas are real Figma **Slots** (SLOT component properties) — instances compose freely per placement. The bar binds the new `topHeader/*` geometry variables (height aliasing `spacing/64`, paddings/gaps aliasing Primitives spacing) and shared Color roles (`surface/page` bar, `border/subtle` bottom hairline, `action/background` active underline); nav labels use the new `Top Header/Nav label` text style (Inter Medium 14), the logo uses `heading/sm`. The Nav Items area composes Nav Item instances, Actions composes existing Icon Button instances, and the optional Sign in Button is toggled by `Show login button`. Dark mode is validated through the Color collection mode. Code Connect template: `packages/figma/code-connect/TopHeader.figma.ts`. Dropdown submenus, the mobile overlay, responsive `navIconPosition`, badges on actions, and `logo`/`logoHref` remain documented gaps in `packages/react/ai/figma-workflow.md`.
+
 >
 > **TopHeader nav menu header:** each `navItems` entry may pass `menuHeader` (`ReactNode` or `({ onClose }) => ReactNode`) to render compact custom content above that item's submenu sections. Use this for governed menu chrome such as a `SearchField`; call `onClose()` after submit-style navigation so the menu closes cleanly. Keep interactive content short and built from A1 components.
+>
+> **TopHeader `loginButton`:** `{ label?, onClick? }` — renders a small primary Button after the actions (label defaults to "Log in"). A plain string is also accepted as the label; that is the JSON-safe form used by page definitions and the Figma JSON bridge (which round-trips the sign-in Button's label as `loginButton: { label }`; click behavior stays runtime-owned).
 >
 > **BottomDrawer props:** `items` (`{ id, label, icon, href?, onClick?, active?, badge?, disabled? }[]`, max 5), `aria-label` (string, required), `className` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Badge values are capped at 99+. Shares `--a1-nav-stacked-icon-size`, `--a1-nav-stacked-label-size`, and `--a1-nav-stacked-gap` CSS custom properties with TopHeader icon-above mode for visual consistency.
 >
@@ -118,13 +125,13 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Tabs `variant` covers five distinct patterns — do not build custom alternatives:**
 >
-> | variant | Use for |
-> |---------|---------|
-> | `"line"` | Standard horizontal navigation tabs (default) |
-> | `"pills"` | Pill-style filter or view-switcher tabs |
-> | `"segment"` | Compact segmented control — identical to SegmentedControl; prefer Tabs when you also need TabPanel content |
+> | variant      | Use for                                                                                                                                                                                                                                                                                                                              |
+> | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+> | `"line"`     | Standard horizontal navigation tabs (default)                                                                                                                                                                                                                                                                                        |
+> | `"pills"`    | Pill-style filter or view-switcher tabs                                                                                                                                                                                                                                                                                              |
+> | `"segment"`  | Compact segmented control — identical to SegmentedControl; prefer Tabs when you also need TabPanel content                                                                                                                                                                                                                           |
 > | `"progress"` | **Step-by-step wizards, multi-step forms, and progress indicators.** Each `Tab` accepts a `status` prop (`"completed"` \| `"error"` \| `"warning"`) to reflect step state. This is the correct component for anything described as a "stepper", "wizard", "multi-step form", or "progress indicator". Do not build a custom stepper. |
-> | `"folder"` | Browser-tab / folder-style navigation |
+> | `"folder"`   | Browser-tab / folder-style navigation                                                                                                                                                                                                                                                                                                |
 >
 > When a design brief, task description, or Priority Guide mentions a stepper, wizard, onboarding flow, checkout steps, or progress indicator, always reach for `<Tabs variant="progress">` before considering any custom implementation.
 >
@@ -135,6 +142,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **Tabs overflow (line variant) — scrolls, never forces width.** When a `line` tab strip has more tabs than fit, it **scrolls internally** and shows prev/next chevron arrows automatically; it never widens its container or forces a horizontal page scroll. This is handled in the component (the scrollable list has `min-width: 0`, and the Tabs root + list wrapper are capped at the parent width), so consumers don't need to wrap Tabs in their own scroll container. The **selected** tab is kept in view by adjusting only the strip's own horizontal scroll. (Other variants: `pills` wraps; `segment`/`progress`/`folder` size to content.)
 >
 > **SideNav behavior rules:**
+>
 > - **Desktop (≥1025px):** SideNav is sticky (`position: sticky; top: 0; height: 100vh`). Do not wrap it in a container that has `overflow: hidden` or `overflow: auto` — this breaks sticky positioning.
 > - **Mobile/tablet (≤1024px):** SideNav is a fixed overlay that slides in from the edge. Control it with the `open` and `onClose` props. Do not force it to be permanently visible at these breakpoints.
 > - **Internal scroll:** The nav item list scrolls internally when content overflows. The header and footer slots are outside the scroll region and always remain visible — do not place them inside the nav item list.
@@ -145,24 +153,24 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Actions & Controls** also includes **Tabs** and **Link** (see [Navigation](#navigation)) and **Accordion** (see [Disclosure / Accordion](#disclosure--accordion)); their coverage rows stay in those implementation-family sections.
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Button | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Split Button | ✓ | — | — | — | — |
-| Action Tiles | ✓ | — | — | — | — |
-| Chip | ✓ | — | — | — | — |
-| Icon Button | ✓ | ✓ | ✓ | — | — |
-| Switch | ✓ | — | — | — | — |
-| Segmented Control | ✓ | — | — | — | — |
-| Slider | ✓ | — | — | — | — |
-| Toolbar | ✓ | — | — | — | — |
-| Sticky Actions | ✓ | — | — | — | — |
+| Component         | React | Native | Pure | Web Components | Figma |
+| ----------------- | :---: | :----: | :--: | :------------: | :---: |
+| Button            |   ✓   |   ✓    |  ✓   |       ✓        |   ✓   |
+| Split Button      |   ✓   |   —    |  —   |       —        |   ✓   |
+| Action Tiles      |   ✓   |   —    |  —   |       —        |   —   |
+| Chip              |   ✓   |   —    |  —   |       —        |   ✓   |
+| Icon Button       |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
+| Switch            |   ✓   |   —    |  —   |       —        |   ✓   |
+| Segmented Control |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Slider            |   ✓   |   —    |  —   |       —        |   —   |
+| Toolbar           |   ✓   |   —    |  —   |       —        |   —   |
+| Sticky Actions    |   ✓   |   —    |  —   |       —        |   —   |
 
 > **Menu grouping:** **Accordion**, **Tabs**, and **Link** are also menu-grouped under **Actions & Controls**; their coverage rows and notes live in their implementation-family sections ([Disclosure / Accordion](#disclosure--accordion), [Navigation](#navigation)). **Split Button** has no separate menu page — it is surfaced via the Button page's **Split (menu)** toggle.
 >
 > **ActionTiles props (A1-389):** `layout` (`"grid" | "stack"`, default `"grid"`), `gap` (boolean, default `true`), `iconLayout` (`"auto" | "top" | "side" | "none"`, default `"auto"`), and `children` (one or more `<ActionTile />` elements; a single child is valid). `ActionTile` accepts `icon`, `title`, `subtitle`, optional `accessory`, optional `footer`, and optional `as` / `href` for whole-tile navigation or button semantics. The component no longer exposes a body slot or manual size prop: spacing, icon size, and heading scale respond to each tile's container width instead. `iconLayout="auto"` stacks the icon above the text on narrow containers and shifts it beside the copy on wider ones; `iconLayout="none"` hides icons at the group level. Interactive tiles use the same blue border treatment as navigation Card, do not carry a shadow, and automatically drop nested accessory/footer controls so interactive elements are never nested inside an interactive tile. Token-driven via `system/tokens/component/action-tile.json` (`--component-action-tile-*`). React only; has an a1-web component page + live configurator under **Actions & Controls** (`/components/action-tile`).
 >
-> **Chip props (A1-390):** `ChipGroup` owns chip rows and selection: `selectionMode` (`"none" | "single" | "multiple"`, default `"none"`), `value` / `defaultValue`, `onChange`, `wrap` (boolean, default `true`), `size` (`"sm" | "md" | "lg"`, default `"md"`), `label`, and `children`. `Chip` accepts `icon`, `title` or children, `selected`, `disabled`, `size`, `as` / `href` for navigation chips, and `menu` / `menuLabel` for filter chips that open an A1 `Menu`. Use `selectionMode="single"` or `"multiple"` for selectable filter chip rows, `selectionMode="none"` for navigation and menu-trigger rows, and `wrap={false}` only for intentionally one-line chip toolbars. React only; has an a1-web component page + live configurator under **Actions & Controls** (`/components/chip`).
+> **Chip props (A1-390):** `ChipGroup` owns chip rows and selection: `selectionMode` (`"none" | "single" | "multiple"`, default `"none"`), `value` / `defaultValue`, `onChange`, `wrap` (boolean, default `true`), `size` (`"sm" | "md" | "lg"`, default `"md"`), `label`, and `children`. `Chip` accepts `icon`, `title` or children, `selected`, `disabled`, `size`, `as` / `href` for navigation chips, and `menu` / `menuLabel` for filter chips that open an A1 `Menu`. Use `selectionMode="single"` or `"multiple"` for selectable filter chip rows, `selectionMode="none"` for navigation and menu-trigger rows, and `wrap={false}` only for intentionally one-line chip toolbars. In `selectionMode="none"` rows each chip's own `selected` prop is honored (the group only controls selection in single/multiple modes). React only; has an a1-web component page + live configurator under **Actions & Controls** (`/components/chip`). Chip heights are tokenized on the 28/40/56 control-height standard (`component.chip.minHeight`/`smMinHeight`/`lgMinHeight`) so chips row-align with same-size Buttons. **Figma:** the Chip page carries a `Chip` set (`Size=sm|md|lg` × `State=default|selected|disabled` with `Label`, `Show icon` + `Icon` swap, and `Show caret` for menu chips) plus a `Chip Group` component (wrapping md row with an optional compact label); Code Connect template `packages/figma/code-connect/Chip.figma.ts`; the A1:Figma plugin round-trips it as `ChipGroup` (slot reconciliation), and the a1-web configurator exposes the ChipGroup `label` prop with a JSON view.
 >
 > **SplitButton props:** `children` (main label), `onClick` (main action), `variant` / `size` / `icon` / `iconPosition` / `loading` / `disabled` (shared with Button — both targets), `actions` (`{ id, label, icon?, disabled?, onClick? }[]` shown in the dropdown `Menu`), `menuLabel`, `toggleLabel`. The main button runs the default action; the caret toggle on its inline-end opens the menu (`aria-haspopup="menu"` + `aria-expanded`). Composes the A1 `Button` + `Menu`; the two targets share one pill outline with a hairline divider. React only.
 >
@@ -170,11 +178,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Figma Button component:** A1-419 created the Figma component set in the A1 Design System file on the Button page (`node 123:701`) with `Variant`, `Size`, `State`, and `IconPosition` axes plus `Label`, `Show icon`, and `Icon` component properties. Figma asset search/insert intentionally defaults to `secondary` + `md`; React's runtime default remains `primary` + `md`. Button color variables are single-mode aliases to the Color collection's `color/button/*` roles so light/dark mode is switched only once through Color, including destructive/success hover and pressed states. Button labels use dedicated Figma text styles by size (`Button/sm`, `Button/md`, `Button/lg`) to match React font weights. See `packages/react/ai/figma-workflow.md` for the React-to-Figma mapping gaps and `packages/figma/code-connect/Button.figma.ts` for the Code Connect template.
 >
-> **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`.
+> **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`. Segmented Control uses `.a1-segmented` (+ `.a1-segmented-small` / `-large` / `-full-width`) with `.a1-segment` options — selection styles from `aria-checked="true"` / `aria-selected="true"` or the `.a1-segment-selected` modifier; track heights sit on the 28/40/56 standard. Pure ships no behavior — toggle the ARIA state with your own script.
 >
 > **Slider props:** `value` / `defaultValue` / `onChange(value)` (number; in detent mode the value is a detent's value), `min` (0), `max` (100), `step` (1) for continuous mode; `detents` (optional — `number[]` or `{ value, label?, icon? }[]`; the thumb snaps between detents, the keyboard moves one detent at a time, and labels render under the track, e.g. None/XS/SM/MD/LG. A detent's `icon` (Material Symbols name) renders in the label row **instead of** its text label — provide a `label` too so screen readers and the value bubble have a text alternative); `label` (a **visible field label** rendered above the control and associated via `htmlFor` — also the accessible name; sized to match the field family per `size`. Use `aria-label`/`aria-labelledby` for an invisible name); `size` ("compact" | "default" | "comfortable", default "default" — mirrors the **field family** so a Slider sits naturally beside fields; scales the label, detent labels, track, and thumb); `variant` ("default" | "subtle", default "default" — "subtle" shows the selection (fill, thumb, active detent) in **neutrals** instead of the action colour); `showValue` (boolean, default true — the floating value bubble shown while dragging/focused); `valuePosition` ("above" | "below", default "above" — flips to stay in the viewport); `formatValue(value)` (custom bubble + `aria-valuetext`); `bubbleLabel` (an alternate **value-bubble** label — a node, or `(value, detent) => node`; **visual only**, `aria-valuetext` is unchanged; falls back to the current bubble content when omitted — used to spell a size out in the bubble, e.g. "Small", while the detent under the track stays "SM"); `disabled`; `name` (form value). Built on a native `<input type="range">` so keyboard (arrows, Home/End, Page Up/Down), focus, touch, and form semantics work out of the box; the value is announced via `aria-valuetext`. The value bubble is anchored by progress (and its caret tracks the thumb) so it never spills past the control edges at the extremes. React only. Sample use: editor size/padding controls, or the Section configurator's Content width (compact, with a detent per size). **Visual model:** the thumb (handle) sits **inside** the track — the track is as tall as the thumb (it contains the handle rather than the handle riding on a thin rail) and carries a subtle 1px border, so the whole track is the touch target. Sizes scale together per `size`. Token-only (`--a1-slider-track-height` / `-thumb-size` / `-track-border`); no prop change.
 >
 > **Toolbar:** a compact container that groups related editing controls on one subtle surface — think a text-editor toolbar, or the controls in the component configurator (it's denser than a ChoiceGroup; ChoiceGroup is retained for full-size selectors). Compositional API — exports `Toolbar` plus tool sub-components, separated by `<ToolbarDivider />`. Toolbar props: `aria-label` (used when there's no visible label), `label` (optional visible caption rendered above the bar — tied to the **same tokens as a compact form label** (size, weight, colour) so it's styled identically to a field/legend label beside it, A1-165; also supplies the accessible name via `aria-labelledby`), `overlay` (boolean, default false — lifts the bar onto a floating, elevated surface (shadow + border) for a toolbar that hovers over page content, e.g. a selection formatting bar; the consumer positions it), `fullWidth` (boolean, default false — by default the bar is `fit-content` wide; when true it fills its container and the tools grow to share the available width, dividers keeping their natural size), `overflow` (boolean, default false — keeps the toolbar on one row and moves trailing direct children into a More menu when the toolbar is narrower than its contents; when a `ToolbarMenu` overflows, **its items render inline in the More menu as a labelled section** rather than opening a nested menu-from-a-menu — original order is preserved, the active selection stays marked, and choosing an inline item closes the More menu), and `overflowLabel` (accessible name/tooltip for that More trigger). Use Toolbar-level `overflow` for a whole bar that needs to stay one row; use `ToolbarGroup overflow` when only one group has many options. The bar carries a **hairline subtle border** by default (A1-220) for definition against the page surface, and steps that border up to a thicker, stronger boundary in the **accessible theme** and under OS **high-contrast** (`prefers-contrast: more` / `forced-colors`) so it stays clearly delimited. Sub-components:
+>
 > - **`ToolbarToggle`** — two-state toggle button (`icon`, `swatch`, `label`, `pressed`, `onChange(pressed)`, `showLabel`, `disabled`). `aria-pressed`.
 > - **`ToolbarButton`** — plain action button (`icon`, `swatch`, `label`, `onClick`, `showLabel`, `disabled`).
 > - **`ToolbarGroup`** — single-select button group with **radio semantics** (`role="radiogroup"`, roving tabindex, arrow-key navigation): `value`, `onChange(value)`, `options` (`{ value, label?, icon?, swatch?, showLabel?, overflowPriority?, disabled? }[]`), `showLabels` (default false = icon-only), `labelMode` (`"all"` default \| `"selected"` — `"selected"` shows the label only on the currently selected option; the rest render icon/swatch-only and a `"none"`/empty value falls back to the standard none icon, while non-selected options keep an `aria-label`. Use it for a swatch/variant picker where only the chosen option is named, e.g. Section surface/gradient and Button/IconButton variant), `columns` (set it for a grid — e.g. `columns={3}` for a 3×3 crop-direction picker, far smaller than a ChoiceGroup), `overflow` (boolean, default false — non-grid groups measure available inline space and add an icon-only overflow menu at the end containing the full option list in original `options` order; visible buttons may be prioritised with per-option `overflowPriority`), `aria-label`. An option with value `"none"`/`""`/`null` and no `icon` gets the standard none icon in icon-only mode.
@@ -191,6 +200,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **StickyActions props:** `contentWidth` ("xs" | "sm" | "md" | "lg" | "xl" | "2xl") — constrains the inner content to the same max-widths as Section's `contentWidth`. Match this to the `contentWidth` of the Section above for visual alignment.
 >
 > **StickyActions usage rules:**
+>
 > - **Do not combine with BottomDrawer.** Both occupy the bottom of the viewport and will overlap. Use StickyActions for flow navigation (onboarding, wizards, checkout) and BottomDrawer for persistent app navigation — never both on the same screen.
 > - **Always nest a ButtonContainer.** Do not place bare buttons directly inside StickyActions — ButtonContainer handles responsive layout, fill behaviour, and alignment.
 > - **Match contentWidth to the Section above.** If the page content uses `contentWidth="sm"`, set `StickyActions contentWidth="sm"` so buttons stay aligned with the content.
@@ -214,32 +224,34 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Inputs
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Text Field (text, email, password) | ✓ | — | ✓ | — | ✓ |
-| Search Field | ✓ | — | — | — | — |
-| Number Field | ✓ | — | — | — | — |
-| Date Field | ✓ | — | — | — | — |
-| Time Field | ✓ | — | — | — | — |
-| Phone Field | ✓ | — | — | — | — |
-| Zip Field | ✓ | — | — | — | — |
-| Credit Card Field | ✓ | — | — | — | — |
-| Textarea | ✓ | — | ✓ | — | — |
-| Select | ✓ | — | ✓ | — | — |
-| Checkbox Group | ✓ | — | ✓ | — | — |
-| Choice Group | ✓ | — | — | — | — |
-| Radio Group | ✓ | — | ✓ | — | — |
-| Fieldset | ✓ | — | ✓ | — | — |
-| Field Row | ✓ | — | — | — | — |
-| Switch (input) | ✓ | — | — | — | — |
-| Inline Editable | ✓ | — | — | — | — |
-| Autocomplete | ✓ | — | — | — | — |
+| Component                          | React | Native | Pure | Web Components | Figma |
+| ---------------------------------- | :---: | :----: | :--: | :------------: | :---: |
+| Text Field (text, email, password) |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Search Field                       |   ✓   |   —    |  —   |       —        |   ✓   |
+| Number Field                       |   ✓   |   —    |  —   |       —        |   —   |
+| Date Field                         |   ✓   |   —    |  —   |       —        |   —   |
+| Time Field                         |   ✓   |   —    |  —   |       —        |   —   |
+| Phone Field                        |   ✓   |   —    |  —   |       —        |   —   |
+| Zip Field                          |   ✓   |   —    |  —   |       —        |   —   |
+| Credit Card Field                  |   ✓   |   —    |  —   |       —        |   —   |
+| Textarea                           |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Select                             |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Checkbox Group                     |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Choice Group                       |   ✓   |   —    |  —   |       —        |   ✓   |
+| Radio Group                        |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Fieldset                           |   ✓   |   —    |  ✓   |       —        |   —   |
+| Field Row                          |   ✓   |   —    |  —   |       —        |   —   |
+| Switch (input)                     |   ✓   |   —    |  —   |       —        |   ✓   |
+| Inline Editable                    |   ✓   |   —    |  —   |       —        |   —   |
+| Autocomplete                       |   ✓   |   —    |  —   |       —        |   —   |
 
 > **Autocomplete props:** `options` (`(string | { value, label, swatch?, icon?, group? })[]`), `value` (string in single mode, `string[]` in multi), `onChange`, `multiple` (boolean, default false — renders removable chips), `allowCreate` (boolean, default false — offers an "Add …" option for a value not in the list) + `onCreate(value)`, `variant` ("default" | "color", default "default" — `"color"` renders a colour swatch beside each option, chip, and the selected value; each option's swatch is its `swatch` or, in colour mode, its `value`. Pair with `allowCreate` for a "pick from the palette or type a hex" colour field), `label`, `hint`, `error`, `size` ("compact" | "default" | "comfortable", matches the field family), `required`, `disabled`, `emptyText`, `createLabel(query)`, `maxVisible` (number — cap how many options render for very large lists; excess is hidden behind a "keep typing" footer), `moreText(shown)`, `aria-label`. **Option `icon`** renders a Material Symbols glyph beside the option / chip / selected value (e.g. an icon picker). **Option `group`** turns on grouped rendering: when any option has a `group`, the listbox shows a **sticky heading** before each group's options and orders results by each group's first appearance (pass options pre-sorted by group). The dropdown listbox portals to `document.body` (fixed-positioned, tracks the control) so it is never clipped inside an Accordion or other overflow container. ARIA combobox/listbox pattern: input `role="combobox"` with `aria-expanded`/`aria-activedescendant`; keyboard Arrow Up/Down to navigate, Enter to select, Escape to close, Backspace to remove the last chip (multi). Used by the a1-web image library for category tagging and the configurator **icon picker** (grouped by Material Symbols category). React only.
 
 > **Figma Text Field component:** A1-959 created the Text Field component set in the A1 Design System file on the Text Field page (`node 148:1360`) with `Size`, `LabelPosition`, and aggregate `State` variants plus `Label`, `Value`, `Hint`, and `Error` text properties. Field-specific hover/read-only/focus colors are Color collection aliases with Light/Dark values; exact field dimensions live in the Field FLOAT collection; label text uses Field label styles where React requires semibold weight. Code Connect template: `packages/figma/code-connect/TextField.figma.ts`. Runtime-only props (`type`, `autoComplete`, `inputOverlay`, events, native input passthrough, `aria-*`, `id`, `className`, `style`, `ref`) are documented as Figma gaps in `packages/react/ai/figma-workflow.md`.
 
-> **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile.
+> **Figma Select Menu composition:** the Select page includes a reusable `Select Menu` component (`node 533:1058`) for showing Select’s open state in design files. It composes the existing token-bound Menu shell and Menu Item instances, with representative default, selected, and disabled options. It is deliberately visual-only: native option data, selected state, keyboard handling, and overlay positioning stay with React `SelectField` rather than creating a second component API.
+
+> **Choice Group props:** `size` ("compact" | "default" | "comfortable", tile density, default "default"), `columns` (number for a fixed count at all breakpoints, or a breakpoint object `{ xs?, sm?, md?, lg?, xl? }` for responsive column counts; omit for auto-fill), `multiple` (boolean — false = radio/single-select, true = checkbox/multi-select, default false), `inlineIcon` (boolean — places each tile's icon to the left of the label/subtext instead of above the content block, default false), `hint`, `error`, `success` (group-level messages), `required`. Pass `options` for a flat list or `sections` (`{ label, options }[]`) for labeled subgroups with dividers. Each option accepts `value`, `label`, `subtext?`, `icon?` (Material Symbols name), `disabled?`. Value is `string` for single-select, `string[]` for multi-select. Selection indicator: circle for radio, rounded square for checkbox, both in the top-start corner of each tile. **Figma:** the Choice Group page carries a `Choice Option` set (`Type=radio|checkbox` × `State=default|selected|disabled` × `Size=compact|default|comfortable`, with Label / icon swap / subtext properties) and a `Choice Group` shell (legend + required marker + wrapping tile row + helper); Code Connect template `packages/figma/code-connect/ChoiceGroup.figma.ts`; the A1:Figma plugin round-trips it as `ChoiceGroup`, detecting an embedded Grid in the Options slot for the `columns` prop (responsive `{xs:n, md:n}` metadata included).
 >
 > **Field family:** the text-input family is a set of individual components that share the `TextField` base (label, hint, error, size, labelPosition, required, disabled, readOnly): `TextField` (text/email/password), `SearchField` (leading search icon + trailing clear button), `NumberField` (adds `prefix`, `unit`), `DateField`, `TimeField`, `PhoneField` (mask), `ZipField` (mask + `ZIP_MASKS`), `CreditCardField` (mask). They each have their own a1-web page and Storybook entry. Fields have no `placeholder` by design.
 >
@@ -261,19 +273,21 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Feedback & Messaging
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Banner | ✓ | ✓ | — | — | — |
-| Badge | ✓ | ✓ | — | — | — |
-| Notification | ✓ | — | — | — | — |
-| Snackbar | ✓ | ✓ | — | ✓ | — |
-| SnackbarStack | ✓ | — | — | — | — |
-| Empty State | ✓ | ✓ | — | — | — |
-| Status Bar | ✓ | — | — | — | — |
-| Circular Progress | ✓ | — | ✓ | — | — |
-| Step Tracker | ✓ | — | ✓ | — | — |
+| Component         | React | Native | Pure | Web Components | Figma |
+| ----------------- | :---: | :----: | :--: | :------------: | :---: |
+| Banner            |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Badge             |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Notification      |   ✓   |   —    |  —   |       —        |   —   |
+| Snackbar          |   ✓   |   ✓    |  —   |       ✓        |   —   |
+| SnackbarStack     |   ✓   |   —    |  —   |       —        |   —   |
+| Empty State       |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Status Bar        |   ✓   |   —    |  —   |       —        |   —   |
+| Circular Progress |   ✓   |   —    |  ✓   |       —        |   —   |
+| Step Tracker      |   ✓   |   —    |  ✓   |       —        |   —   |
 
 > **Banner `variant` prop:** `"inline"` (default) — compact in-page alert. `"system"` — full-width system-level announcement (formerly the separate `SystemBanner` component). Use `variant="system"` for any system-wide operational or maintenance notices. `"calendar"` — an event/date callout: a tokenized date block (`date` prop) replaces the status icon, an `eyebrow` overline sits above a larger `title`, and `action`/`onDismiss` still work. `date` accepts a `Date`, an ISO string, or `{ month, day }`; `status` still tints the date block. Month names render in sentence case (never uppercased). Uses `role="group"` instead of `role="alert"` since a date callout isn't an alert.
+
+> **Figma Banner component:** The Banner page (`node 467:977`) contains a `Banner` component set (`node 472:2065`) with all 15 `Variant` × `Status` combinations: inline/system/calendar and neutral/info/success/warn/error. `Title`, `Eyebrow`, `Month`, and `Day` are editable component text properties; the named `Content Slot` carries ordered JSON children through the A1 Figma plugin. Figma does not expose native Slot authoring in the plugin API, so a Banner rendered with JSON children is tagged and detached into an editable frame; rerender it to change visual Banner properties. Actions, dismiss behavior, custom icons, and live announcement semantics remain React-only. See `packages/react/ai/figma-workflow.md` for the bridge contract.
 >
 > **Badge props:** `status` ("neutral" | "info" | "success" | "warn" | "error", default "neutral"), `subtle` (boolean, default false), `size` ("sm" | "md" | "lg", default "md"), `icon` (Material Symbols name override; pass `null` to suppress the default status icon), `children` (badge label). React exports this as `MessageBadge`; React Native exports this as `Badge`.
 >
@@ -315,19 +329,20 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Menu category **Layout & Display**. Figure's coverage row stays in this table (implementation family) but it is **menu-grouped under [Media and iconography](#media-and-iconography)** — see the menu hierarchy table.
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Section | ✓ | ✓ | ✓ | — | — |
-| Section Separator | ✓ | — | — | — | — |
-| Card | ✓ | ✓ | — | — | — |
-| Stack | ✓ | — | — | — | — |
-| Grid | ✓ | — | — | — | — |
-| Bleed | ✓ | — | — | — | — |
-| Inset | ✓ | — | — | — | — |
-| Spacer | ✓ | — | — | — | — |
-| Page Layout | ✓ | — | — | — | — |
-| Button Container | ✓ | ✓ | — | — | — |
-| Figure | ✓ | — | ✓ | — | — |
+| Component         | React | Native | Pure | Web Components | Figma |
+| ----------------- | :---: | :----: | :--: | :------------: | :---: |
+| Section           |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
+| Section Separator |   ✓   |   —    |  —   |       —        |   —   |
+| Card              |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Stack             |   ✓   |   —    |  —   |       —        |   —   |
+| Grid              |   ✓   |   —    |  —   |       —        |   —   |
+| Grid Item         |   ✓   |   —    |  —   |       —        |   —   |
+| Bleed             |   ✓   |   —    |  —   |       —        |   —   |
+| Inset             |   ✓   |   —    |  —   |       —        |   —   |
+| Spacer            |   ✓   |   —    |  —   |       —        |   —   |
+| Page Layout       |   ✓   |   —    |  —   |       —        |   ✓   |
+| Button Container  |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Figure            |   ✓   |   —    |  ✓   |       —        |   ✓   |
 
 > **Pure notes:** Section uses `.a1-section`. Footer uses `.a1-footer`. Figure uses `.a1-figure` with `.a1-figure-ratio-16-9` / `.a1-figure-ratio-1-1` for fixed ratios and `.a1-figure-crop-{top|bottom|left|right|top-left|top-right|bottom-left|bottom-right}` for the crop focal point (sets `--a1-figure-crop`).
 >
@@ -340,6 +355,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > **Card `status` / `statusLabel` / `statusPulse`:** `status` (`"neutral" | "info" | "success" | "warn" | "error"`, default none) draws a tokenized **status frame**: the card border switches to the status colour and a clipped inline-start stripe fills the rounded edge. Status is ignored when `surface="accent"` because the accent surface and status frame compete. Stripe colours come from the `component.card.status.*` palette — neutral/info/error alias the semantic tokens, while **warn and success are two ramp steps lighter** than the status background so the frame reads as amber/green rather than the very dark background tone. The stripe width is `max(8px, card radius, component.card.statusStripe.width)` so it follows the card corner instead of looking like a second unrelated border. `statusLabel` (ReactNode) renders a small `MessageBadge` (tinted to match `status`) at the top of the card content — the "stripe with a badge". `statusPulse` (boolean, default false) **subtly pulses** the stripe to signal in-progress/ongoing work and **respects `prefers-reduced-motion`** (static under reduce). **Rule `card-status-not-color-only` (WCAG 1.4.1):** status must never be colour-only — pair the stripe with `statusLabel` or status text the card carries or sits within (e.g. a labelled board lane). Tokens: `component.card.statusStripe.width`, `component.card.statusPulse.duration`, `component.card.status.{neutral,info,success,warn,error}`. CSS: `.a1-card--has-status` + `.a1-card--status-{tone}` + `.a1-card--status-pulse` + `.a1-card__status-badge`. The a1-web Backlog board/queue cards use it via `STATUS_STRIPE_TONE` / `STATUS_STRIPE_PULSE` (New → no stripe, Triaged → neutral, Accepted → info, In progress → info + pulse, Done → success + pulse, Released → success; status named in the lane header / StatusBadge). (React only; the Pure package has no Card. React Native Card parity is a follow-up.)
 >
 > **Card vs Section — do not confuse these:**
+>
 > - Use `Section` for page-level regions: heroes, content rows, marketing blocks, full-width layout zones. Section handles surface colour, padding, width constraints, and theme tokens correctly at that scale.
 > - Use `Card` for small, repeated, bounded content units: product tiles, profile summaries, navigation destinations, data items in a grid.
 > - A Card that spans a full content column or wraps a long-form layout is a misuse of the component. When in doubt, ask: "Is this one item in a repeating set?" If yes, Card. If no, Section.
@@ -360,14 +376,14 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Overlay
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Dialog | ✓ | ✓ | — | — | ✓ |
-| Overlay | ✓ | — | — | — | — |
-| Menu | ✓ | — | — | — | ✓ |
-| Context Menu | ✓ | — | — | — | — |
-| Tooltip | ✓ | — | ✓ | — | — |
-| Bottom Sheet | ✓ | — | — | — | — |
+| Component    | React | Native | Pure | Web Components | Figma |
+| ------------ | :---: | :----: | :--: | :------------: | :---: |
+| Dialog       |   ✓   |   ✓    |  —   |       —        |   ✓   |
+| Overlay      |   ✓   |   —    |  —   |       —        |   —   |
+| Menu         |   ✓   |   —    |  —   |       —        |   ✓   |
+| Context Menu |   ✓   |   —    |  —   |       —        |   —   |
+| Tooltip      |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Bottom Sheet |   ✓   |   —    |  —   |       —        |   ✓   |
 
 > **Menu label styling:** `MenuSection` labels use compact muted menu chrome. When fields or choice groups are embedded inside a `Menu` (for settings-style panels), their labels and legends are overridden to the same compact muted treatment so full-form label emphasis does not appear inside menu panels. The controls themselves keep their component sizing and behavior.
 >
@@ -389,7 +405,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Dialog scrolling rule (`dialog-vertical-scroll-only`):** Dialog bodies scroll **vertically only**. Do not add horizontal scrolling to a dialog or let a child force the dialog wider than the viewport. Wide child content must wrap, shrink, clip, or use its own governed overflow behavior (for example Toolbar overflow), while the Dialog keeps a single vertical scroll axis. See `system/rules/dialog.yaml`.
 >
-> **Dismissal:** A dialog is *dismissable* when `onClose` is provided — it then closes on Escape, the close button, **and a backdrop click**. Backdrop dismissal requires the press *and* release to both land outside the dialog box, so selecting text and dragging past the edge won't close it. Omit `onClose` for a non-dismissable dialog (none of these dismiss it).
+> **Dismissal:** A dialog is _dismissable_ when `onClose` is provided — it then closes on Escape, the close button, **and a backdrop click**. Backdrop dismissal requires the press _and_ release to both land outside the dialog box, so selecting text and dragging past the edge won't close it. Omit `onClose` for a non-dismissable dialog (none of these dismiss it).
 >
 > **Dialog status variant:** When `status` is set, a full-bleed colored hero area appears above the title row with a centered icon. Uses the same semantic status background tokens as Card's heroColor. Default icons: success=`check_circle`, error=`error`, warn=`warning`, info=`info`, neutral=`info`. Pass `icon` to override.
 >
@@ -399,21 +415,21 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Data Viz
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Node | ✓ | — | — | — | — |
-| Line Chart | ✓ | — | — | — | — |
-| Bar Chart | ✓ | — | — | — | — |
-| Area Chart | ✓ | — | — | — | — |
-| Composed Chart | ✓ | — | — | — | — |
-| Pie Chart | ✓ | — | — | — | — |
-| Scatter Chart | ✓ | — | — | — | — |
-| Radar Chart | ✓ | — | — | — | — |
-| Radial Bar Chart | ✓ | — | — | — | — |
-| Funnel Chart | ✓ | — | — | — | — |
-| Treemap Chart | ✓ | — | — | — | — |
-| Sankey Chart | ✓ | — | — | — | — |
-| Sunburst Chart | ✓ | — | — | — | — |
+| Component        | React | Native | Pure | Web Components | Figma |
+| ---------------- | :---: | :----: | :--: | :------------: | :---: |
+| Node             |   ✓   |   —    |  —   |       —        |   —   |
+| Line Chart       |   ✓   |   —    |  —   |       —        |   —   |
+| Bar Chart        |   ✓   |   —    |  —   |       —        |   —   |
+| Area Chart       |   ✓   |   —    |  —   |       —        |   —   |
+| Composed Chart   |   ✓   |   —    |  —   |       —        |   —   |
+| Pie Chart        |   ✓   |   —    |  —   |       —        |   —   |
+| Scatter Chart    |   ✓   |   —    |  —   |       —        |   —   |
+| Radar Chart      |   ✓   |   —    |  —   |       —        |   —   |
+| Radial Bar Chart |   ✓   |   —    |  —   |       —        |   —   |
+| Funnel Chart     |   ✓   |   —    |  —   |       —        |   —   |
+| Treemap Chart    |   ✓   |   —    |  —   |       —        |   —   |
+| Sankey Chart     |   ✓   |   —    |  —   |       —        |   —   |
+| Sunburst Chart   |   ✓   |   —    |  —   |       —        |   —   |
 
 > **Recharts component props:** `LineChart`, `BarChart`, `AreaChart`, and `ComposedChart` share Cartesian props (`data`, `xKey`, `series`, `height` (`"xs" | "sm" | "md" | "lg"`, default `"md"`), `curve` where relevant, `stacked` where relevant, grid/axis/legend/tooltip toggles). `height="xs"` is for tiny embedded charts/sparklines inside status cards or dense operational summaries. `PieChart`, `RadialBarChart`, and `FunnelChart` use categorical `data`, `nameKey`, `valueKey`, legend, and tooltip props. `ScatterChart` uses `xKey`, `yKey`, optional `zKey`, and scatter `series`. `RadarChart` uses `axisKey`, `series`, polar grid/axis toggles, legend, and tooltip props. `TreemapChart`, `SankeyChart`, and `SunburstChart` use hierarchy/flow data with tooltip support. The compatibility `Chart` export remains for generic Cartesian rendering, but a1-web surfaces each Recharts type as its own component page under **Data Viz** (`/components/line-chart`, `/components/pie-chart`, etc.).
 >
@@ -425,12 +441,12 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Data
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Data Table | ✓ | — | ✓ | — | — |
-| Stat | ✓ | — | — | — | — |
-| Definition List | ✓ | — | ✓ | — | — |
-| Pagination | ✓ | ✓ | — | — | — |
+| Component       | React | Native | Pure | Web Components | Figma |
+| --------------- | :---: | :----: | :--: | :------------: | :---: |
+| Data Table      |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Stat            |   ✓   |   —    |  —   |       —        |   —   |
+| Definition List |   ✓   |   —    |  ✓   |       —        |   ✓   |
+| Pagination      |   ✓   |   ✓    |  —   |       —        |   ✓   |
 
 > **Stat props (A1-375):** `title` (metric label, shown above the value with an optional `icon`), `value` (number or node — numbers are formatted), `prefix` / `suffix` (e.g. a currency symbol or unit), `description` (supporting context below the value), `icon` (Material Symbols name beside the title), `badge` + `badgeStatus` ("neutral" | "info" | "success" | "warn" | "error", default "neutral") / `badgeSubtle` (default true) / `badgeSize` ("sm" | "md" | "lg", default "sm") / `badgeIcon` (override, `null` to suppress), `format` ("none" | "number" | "percent", default "number" — `percent` appends `%` without multiplying), `size` ("xs" | "sm" | "md" | "lg" | "xl", default "md"), `align` ("start" | "center" | "end", default "start"), `locale` / `precision` / `groupSeparator` (`false` disables grouping) / `decimalSeparator` for numeric formatting, `as` (element, default `"div"`). A single highlighted metric — big tokenized value with a muted label, optional supporting text and status badge. Token-driven via `system/tokens/component/stat.json` (`--component-stat-*`). React only; has an a1-web component page + live configurator under the **Data** category (`/components/stat`).
 
@@ -453,8 +469,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 ## Media and iconography
 
 | Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Icon | ✓ | — | ✓ | — | — |
+| --------- | :---: | :----: | :--: | :------------: | :---: |
+| Icon      |   ✓   |   —    |  ✓   |       —        |   ✓   |
 
 > **Icon props:** `name` (string, required), `size` ("xs" | "sm" | "md" | "lg" | "xl" | "jumbo" | "xJumbo", default "md" = inherits from parent), `color` ("muted" | "accent" | "inverse" | "success" | "error" | "warn" | "info", default = inherits current text color), `weight` (font variation 100–700), `grade` (-50–200), `opticalSize` (20|24|40|48), `fill` (boolean).
 >
@@ -471,21 +487,21 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > Implementation-family section. **Accordion is menu-grouped under [Actions & Controls](#actions--controls)** — the "Disclosure" menu category was retired.
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Accordion (React) / Disclosure (pure) | ✓ | — | ✓ | — | — |
+| Component                             | React | Native | Pure | Web Components | Figma |
+| ------------------------------------- | :---: | :----: | :--: | :------------: | :---: |
+| Accordion (React) / Disclosure (pure) |   ✓   |   —    |  ✓   |       —        |   ✓   |
 
 > **Naming note:** The React package calls this component "Accordion". The Pure package implements the same concept using the native `<details>` / `<summary>` elements with `.a1-details`.
 >
-> **Accordion `subtext` / `divider`:** `subtext` is optional secondary info shown in the trigger after the label — it only shows while the accordion is **collapsed** (a glanceable summary, e.g. the applied settings) and hides when open; it truncates with an ellipsis. `divider` (boolean) adds a bottom border to separate stacked accordions. The trigger has no border-radius and a compact inline padding. The a1-web Section configurator uses `subtext` to summarise each group's applied properties when collapsed and `divider` between groups. (React only — not yet in the Pure `<details>` version.)
+> **Accordion `subtext` / `divider`:** `subtext` is optional secondary info shown in the trigger after the label — it only shows while the accordion is **collapsed** (a glanceable summary, e.g. the applied settings) and hides when open; it truncates with an ellipsis. `divider` (boolean) adds a bottom border to separate stacked accordions. The trigger has no border-radius and a compact inline padding. The a1-web Section configurator uses `subtext` to summarise each group's applied properties when collapsed and `divider` between groups. (React only — not yet in the Pure `<details>` version.) Accordion trigger heights follow the 28/40/56 control-height standard (`component.accordion.triggerHeight*` bound as `min-block-size`).
 
 ---
 
 ## Calendar
 
 | Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Calendar | ✓ | — | — | — | — |
+| --------- | :---: | :----: | :--: | :------------: | :---: |
+| Calendar  |   ✓   |   —    |  —   |       —        |   —   |
 
 > **React props:** `variant` ("scroll" | "paginated", default "scroll"), `initialMonth` (Date or `{ year, month }`), `monthsToShow` (default 13, scroll only), `highlightToday` (default true), `dimPast` (default true), `todayButton` (default false, paginated only). Scroll variant renders months stacked vertically. Paginated shows one month at a time with prev/next buttons and month/year selects. Uses container queries for 3 density levels (≥ 480 px full, < 480 px medium, < 320 px compact). Supports RTL and locale-driven week-start via `LabelsProvider`.
 >
@@ -495,11 +511,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Canvas
 
-| Component | React | Native | Pure | Web Components | Figma |
-|-----------|:-----:|:------:|:----:|:--------------:|:-----:|
-| Canvas | ✓ | — | — | — | — |
-| Node | ✓ | — | — | — | — |
-| CanvasEdge | ✓ | — | — | — | — |
+| Component  | React | Native | Pure | Web Components | Figma |
+| ---------- | :---: | :----: | :--: | :------------: | :---: |
+| Canvas     |   ✓   |   —    |  —   |       —        |   —   |
+| Node       |   ✓   |   —    |  —   |       —        |   —   |
+| CanvasEdge |   ✓   |   —    |  —   |       —        |   —   |
 
 > **Compositional API — `Node` and `CanvasEdge` as children:**
 >

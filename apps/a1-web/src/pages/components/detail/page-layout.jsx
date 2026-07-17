@@ -147,7 +147,25 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config }) {
+export function Preview({ config, children }) {
+  // JSON-driven usage (editor / playground nodes) passes real children: render
+  // the layout at natural height with that content instead of the demo slots.
+  const hasChildren = children !== undefined && children !== null && (!Array.isArray(children) || children.length > 0)
+  const layout = (
+    <PageLayout
+      stickyHeader={config.stickyHeader}
+      viewportHeight={config.viewportHeight}
+      sidebarPlacement={config.sidebarPlacement}
+      asidePlacement={config.asidePlacement}
+      header={config.showHeader ? <HeaderSlot /> : undefined}
+      sidebar={config.showSidebar ? <SidebarSlot /> : undefined}
+      aside={config.showAside ? <AsideSlot /> : undefined}
+      footer={config.showFooter ? <FooterSlot /> : undefined}
+    >
+      {hasChildren ? children : <MainContent />}
+    </PageLayout>
+  )
+  if (hasChildren) return layout
   return (
     // A bounded frame so the full-page layout reads as a real page without
     // taking over the viewport.
@@ -160,18 +178,7 @@ export function Preview({ config }) {
         overflow: 'hidden',
       }}
     >
-      <PageLayout
-        stickyHeader={config.stickyHeader}
-        viewportHeight={config.viewportHeight}
-        sidebarPlacement={config.sidebarPlacement}
-        asidePlacement={config.asidePlacement}
-        header={config.showHeader ? <HeaderSlot /> : undefined}
-        sidebar={config.showSidebar ? <SidebarSlot /> : undefined}
-        aside={config.showAside ? <AsideSlot /> : undefined}
-        footer={config.showFooter ? <FooterSlot /> : undefined}
-      >
-        <MainContent />
-      </PageLayout>
+      {layout}
     </div>
   )
 }

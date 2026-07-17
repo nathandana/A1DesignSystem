@@ -56,8 +56,31 @@ export interface Project {
     publishedAt: number;
     updatedAt: number;
   };
+  /** Local-only links between A1 pages and roots created by the A1 Figma plugin. */
+  figmaPageLinks?: FigmaPageSyncLink[];
   createdAt: number;
   updatedAt: number;
+}
+
+/**
+ * A durable page identity shared with the local Figma bridge. Figma document
+ * identifiers are intentionally optional: a link is created by A1 first and
+ * completed by the plugin after its first render. This keeps the project
+ * export portable and never requires a cloud credential.
+ */
+export interface FigmaPageSyncLink {
+  id: string;
+  pageId: string;
+  mode: 'manual' | 'live';
+  figmaFileKey?: string;
+  figmaPageId?: string;
+  figmaRootNodeId?: string;
+  lastSynced?: {
+    a1Hash?: string;
+    figmaHash?: string;
+    revision: number;
+    syncedAt: number;
+  };
 }
 
 export interface ProjectPage {
@@ -170,6 +193,47 @@ export function updateProject(id: string, patch: Partial<Omit<Project, 'id' | 'c
   );
   saveProjects(projects);
   return projects;
+}
+
+export function getFigmaPageLink(projectId: string, pageId: string): FigmaPageSyncLink | null {
+  return loadProjectsRaw().find((project) => project.id === projectId)?.figmaPageLinks
+    ?.find((link) => link.pageId === pageId) ?? null;
+}
+
+/** Create or update one local Figma page link without disturbing other pages. */
+export function saveFigmaPageLink(
+  projectId: string,
+  link: Omit<FigmaPageSyncLink, 'id'> & { id?: string },
+): FigmaPageSyncLink | null {
+  const projects = loadProjectsRaw();
+  const project = projects.find((entry) => entry.id === projectId);
+  if (!project) return null;
+  const existing = project.figmaPageLinks?.find((entry) => entry.pageId === link.pageId);
+  const nextLink: FigmaPageSyncLink = {
+    id: link.id || existing?.id || uid('figma-link'),
+    pageId: link.pageId,
+    mode: link.mode,
+    ...(existing ?? {}),
+    ...link,
+  };
+  saveProjects(projects.map((entry) => entry.id === projectId
+    ? {
+      ...entry,
+      figmaPageLinks: [
+        ...(entry.figmaPageLinks ?? []).filter((candidate) => candidate.pageId !== link.pageId),
+        nextLink,
+      ],
+      updatedAt: Date.now(),
+    }
+    : entry));
+  return nextLink;
+}
+
+export function removeFigmaPageLink(projectId: string, pageId: string): void {
+  updateProject(projectId, {
+    figmaPageLinks: (loadProjectsRaw().find((entry) => entry.id === projectId)?.figmaPageLinks ?? [])
+      .filter((link) => link.pageId !== pageId),
+  });
 }
 
 /** Publish a project to a stable local/workspace prototype URL (`/p/{slug}`). */
@@ -314,6 +378,32 @@ export function addPage(
   const next = reindex([...pages, page]);
   savePages(projectId, next);
   return { pages: next, page };
+}
+
+/** Create a project page from an already-valid external page definition.
+ * The page receives A1's stable id before its first version is stored. */
+export function addPageFromJson(
+  projectId: string,
+  { title = 'Untitled', json }: { title?: string; json: string },
+): { pages: ProjectPage[]; page: ProjectPage } {
+  const created = addPage(projectId, { title });
+  let definitionJson = json;
+  try {
+    const definition = JSON.parse(json);
+    if (definition && typeof definition === 'object') {
+      definition.page = {
+        ...(definition.page && typeof definition.page === 'object' ? definition.page : {}),
+        id: created.page.id,
+        name: created.page.title,
+      };
+      definitionJson = JSON.stringify(definition, null, 2);
+    }
+  } catch {
+    // The bridge validates JSON before it reaches this store. Retain the input
+    // unchanged as a last-resort safeguard rather than dropping a new page.
+  }
+  seedPageContent(created.page.id, definitionJson, created.page.title);
+  return created;
 }
 
 /** Duplicate a page (and its content) as a sibling directly after it. */
@@ -646,7 +736,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, navStyle: proj.navStyle ?? '', published: proj.published ?? null })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -675,7 +765,7 @@ export function importAllText(
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; navStyle?: string; published?: Project['published'] | null };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -726,6 +816,7 @@ export function importAllText(
       archived: meta.archived ?? existing?.archived ?? undefined,
       navStyle: (meta.navStyle as Project['navStyle']) || existing?.navStyle || undefined,
       published: meta.published ?? existing?.published ?? undefined,
+      figmaPageLinks: Array.isArray(meta.figmaPageLinks) ? meta.figmaPageLinks : existing?.figmaPageLinks,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     });
@@ -758,6 +849,7 @@ interface NormalizedImport {
   description?: string;
   icon?: string;
   theme?: string;
+  figmaPageLinks?: FigmaPageSyncLink[];
   pages: NormalizedImportPage[];
 }
 
@@ -790,6 +882,7 @@ function normalizeImport(data: any): NormalizedImport | null {
       description: typeof data.description === 'string' ? data.description : undefined,
       icon: typeof data.icon === 'string' ? data.icon : undefined,
       theme: typeof data.theme === 'string' ? data.theme : undefined,
+      figmaPageLinks: Array.isArray(data.figmaPageLinks) ? data.figmaPageLinks : undefined,
       pages: data.pages.map((p: any, i: number): NormalizedImportPage => ({
         key: (typeof p?.id === 'string' && p.id) || `#${i}`,
         title: (typeof p?.title === 'string' && p.title.trim()) || `Page ${i + 1}`,
@@ -945,6 +1038,7 @@ export function importProjectJson(data: unknown): Project {
   if (!norm) throw new Error('Invalid project JSON.');
 
   const project = createProject({ name: norm.name, description: norm.description, icon: norm.icon, theme: norm.theme });
+  if (norm.figmaPageLinks?.length) updateProject(project.id, { figmaPageLinks: norm.figmaPageLinks });
 
   const keyToId = new Map<string, string>();
   norm.pages.forEach((p) => keyToId.set(p.key, uid('page')));
@@ -975,6 +1069,7 @@ export function exportProjectJson(projectId: string): string | null {
     description: project.description,
     icon: project.icon,
     theme: project.theme,
+    figmaPageLinks: project.figmaPageLinks,
     pages: loadPages(projectId).map((pg) => {
       const json = resolvePageJson(pg.id);
       let definition: unknown;

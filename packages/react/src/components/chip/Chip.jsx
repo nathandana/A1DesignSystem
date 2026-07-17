@@ -16,7 +16,10 @@ function isSelectedValue(selectionMode, value, selectedValue) {
     return Array.isArray(selectedValue) && selectedValue.includes(value);
   }
   if (selectionMode === "single") return selectedValue === value;
-  return false;
+  // selectionMode "none" carries no selection semantics: return undefined so
+  // `__selected ?? selected` lets each chip's own `selected` prop stand
+  // (filter/menu chips inside non-selectable rows).
+  return undefined;
 }
 
 function nextValue(selectionMode, value, currentValue) {

@@ -26,6 +26,11 @@ export interface SegmentedControlProps extends React.HTMLAttributes<HTMLDivEleme
    * "none" hides every label (fully icon-only).
    */
   labelMode?: "all" | "selected" | "none";
+  /**
+   * Additional CSS class names, merged with the component's own classes
+   * (a consumer-supplied class never replaces the `a1-segmented` styling).
+   */
+  className?: string;
 }
 
 export declare function SegmentedControl(props: SegmentedControlProps): React.ReactElement;

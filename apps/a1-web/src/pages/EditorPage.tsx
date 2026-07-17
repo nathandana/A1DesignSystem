@@ -52,11 +52,25 @@ import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
 import { propagatePatternToInstances } from '../patterns/propagatePattern.js';
-import { loadProjectLayout, saveProjectLayout, resolvePageJson } from '../projects/projectStore';
+import {
+  getFigmaPageLink,
+  loadPages,
+  loadProjectLayout,
+  loadProjects,
+  resolvePageJson,
+  saveFigmaPageLink,
+  saveProjectLayout,
+} from '../projects/projectStore';
+import {
+  acknowledgeFigmaPageSync,
+  listenForFigmaPageSync,
+  queueFigmaPageSync,
+  registerFigmaWorkspace,
+} from '../lib/localCodex';
 import { onRemoteHydrate } from '../projects/cloudSync.js';
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb';
 import { PagePresence } from '../editor/PagePresence.jsx';
-import { toImageRef } from '../lib/imageLibrary';
+import { importFigmaBridgeImages, toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, definitionContainsNodeType, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
 import { cleanUtilities } from '../editor/utilityRegistry';
@@ -782,6 +796,10 @@ export function EditorPage({
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [labelLookupNodeId, setLabelLookupNodeId] = useState<string | null>(null);
   const [notice, setNotice] = useState(''); // transient one-line snackbar (copy/paste pattern)
+  const [figmaLinkId, setFigmaLinkId] = useState<string | null>(() =>
+    projectId && documentKind === 'page' ? getFigmaPageLink(projectId, exampleId)?.id ?? null : null,
+  );
+  const [figmaSyncBusy, setFigmaSyncBusy] = useState(false);
   // The child item being edited (e.g. a DefinitionList item) — shared by the
   // canvas (outline) and the configurator (active tab).
   const [activeItem, setActiveItem] = useState<{ nodeId: string; index: number } | null>(null);
@@ -790,6 +808,117 @@ export function EditorPage({
   const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isDirty = history.workingJson !== canonicalJson;
+  const figmaSyncHistoryRef = useRef(history);
+  figmaSyncHistoryRef.current = history;
+
+  // Keep a tiny, local-only manifest available while an editor is open. The
+  // Figma plugin uses it only to label page choices; content still moves via a
+  // deliberate page sync request and never persists in the bridge.
+  useEffect(() => {
+    if (!projectId || documentKind !== 'page') return undefined;
+    const register = () => {
+      const workspace = {
+        projects: loadProjects().map((project) => ({
+          id: project.id,
+          name: project.name,
+          pages: loadPages(project.id).map((page) => {
+            // Every page gets a stable local link as soon as it is exposed to
+            // the Figma Page Editor. That lets Figma pull a selected page
+            // immediately and still send edits back through the same identity.
+            const link = getFigmaPageLink(project.id, page.id)
+              ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
+            return {
+              id: page.id,
+              title: page.title,
+              json: resolvePageJson(page.id) ?? '',
+              link: link ? {
+                linkId: link.id,
+                projectId: project.id,
+                pageId: page.id,
+                mode: link.mode,
+                figmaFileKey: link.figmaFileKey,
+                figmaPageId: link.figmaPageId,
+                figmaRootNodeId: link.figmaRootNodeId,
+              } : null,
+            };
+          }),
+        })),
+      };
+      registerFigmaWorkspace(workspace).catch(() => {});
+    };
+    register();
+    const interval = window.setInterval(register, 20_000);
+    return () => window.clearInterval(interval);
+  }, [projectId, documentKind, exampleId]);
+
+  // Accept page-scoped Figma edits as a normal page-history entry. A link id
+  // prevents an unrelated Playground handoff from changing a project page.
+  useEffect(() => {
+    if (!projectId || documentKind !== 'page') return undefined;
+    let stopped = false;
+    const poll = async () => {
+      const link = getFigmaPageLink(projectId, exampleId);
+      if (!link) return;
+      try {
+        const handoff = await listenForFigmaPageSync(link.id);
+        if (!handoff || stopped) return;
+        if (handoff.link.projectId !== projectId || handoff.link.pageId !== exampleId) return;
+        await importFigmaBridgeImages(handoff.assets);
+        JSON.parse(handoff.json);
+        // This is the page currently mounted in the editor, so commit through
+        // its live history rather than only writing localStorage. The canvas,
+        // inspector, and JSON view update in the same render as the handoff.
+        figmaSyncHistoryRef.current.commit(handoff.json, 'Synced from Figma');
+        saveFigmaPageLink(projectId, {
+          ...link,
+          mode: handoff.link.mode === 'live' ? 'live' : link.mode,
+          figmaFileKey: handoff.link.figmaFileKey ?? link.figmaFileKey,
+          figmaPageId: handoff.link.figmaPageId ?? link.figmaPageId,
+          figmaRootNodeId: handoff.link.figmaRootNodeId ?? link.figmaRootNodeId,
+          lastSynced: { ...link.lastSynced, figmaHash: handoff.baseHash, revision: Math.max(link.lastSynced?.revision ?? 0, handoff.revision ?? 0), syncedAt: Date.now() },
+        });
+        await acknowledgeFigmaPageSync(handoff.id);
+        setNotice('Reloaded this page from Figma.');
+      } catch {
+        // The optional local bridge is intentionally silent while it is absent.
+      }
+    };
+    const interval = window.setInterval(poll, 1500);
+    poll();
+    return () => { stopped = true; window.clearInterval(interval); };
+  }, [projectId, documentKind, exampleId]);
+
+  async function handleSendPageToFigma() {
+    if (!projectId || documentKind !== 'page' || !parsedDefinition.ok) return;
+    setFigmaSyncBusy(true);
+    try {
+      const existing = getFigmaPageLink(projectId, exampleId);
+      const link = existing ?? saveFigmaPageLink(projectId, { pageId: exampleId, mode: 'manual' });
+      if (!link) throw new Error('This project page could not be linked.');
+      const json = JSON.stringify(parsedDefinition.value, null, 2);
+      await queueFigmaPageSync({
+        link: {
+          linkId: link.id,
+          projectId,
+          pageId: exampleId,
+          mode: link.mode,
+          projectName,
+          pageTitle: projectPages?.find((page) => page.id === exampleId)?.title ?? parsedDefinition.value.page.name,
+          figmaFileKey: link.figmaFileKey,
+          figmaPageId: link.figmaPageId,
+          figmaRootNodeId: link.figmaRootNodeId,
+        },
+        json,
+        revision: (link.lastSynced?.revision ?? 0) + 1,
+      });
+      setFigmaLinkId(link.id);
+      setNotice(existing ? 'Sent the linked page to Figma.' : 'Created a Figma link and sent this page. Open the plugin to render it.');
+    } catch (error) {
+      setNotice(`${error instanceof Error ? error.message : 'Could not send this page to Figma.'} Start npm run codex:bridge:a1-web and try again.`);
+    } finally {
+      setFigmaSyncBusy(false);
+    }
+  }
 
   // History persistence is handled inside useEditorHistory via its storageKey.
   // Clean up any legacy draft key left from before history persistence was added.
@@ -2026,6 +2155,14 @@ export function EditorPage({
                 icon="open_in_new"
                 label="Launch prototype"
                 onClick={handleExpandPreview}
+              />
+            )}
+            {!isPattern && !isLayout && projectId && (
+              <ToolbarButton
+                icon={figmaLinkId ? 'sync' : 'add_link'}
+                label={figmaLinkId ? 'Send linked page to Figma' : 'Connect page to Figma'}
+                disabled={figmaSyncBusy || !parsedDefinition.ok}
+                onClick={handleSendPageToFigma}
               />
             )}
             </Toolbar>

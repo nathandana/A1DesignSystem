@@ -111,7 +111,7 @@ export function getConvertedProps(
 
   if ((fromType === 'Stack' && toType === 'Grid') || (fromType === 'Grid' && toType === 'Stack')) {
     const result: Record<string, unknown> = {};
-    if (props?.gap) result.gap = props.gap;
+    if (props?.gap !== undefined) result.gap = props.gap;
     if (toType === 'Stack') result.direction = 'row';
     if (toType === 'Grid') result.columns = 2;
     return result;

@@ -23,6 +23,37 @@ function resolveGap(key) {
   return SPACING_KEYS.includes(n) ? `var(--base-spacing-${n})` : undefined;
 }
 
+export function gridItemSpanClassNames({ span, rowSpan } = {}) {
+  const classes = [];
+
+  if (span && typeof span === "object") {
+    for (const [bp, value] of Object.entries(span)) {
+      if (!breakpoints.includes(bp)) continue;
+      if (value === "full") {
+        classes.push(`a1-grid-item--${bp}-span-full`);
+      } else if (typeof value === "number") {
+        classes.push(`a1-grid-item--${bp}-span-${value}`);
+      }
+    }
+  } else if (span === "full") {
+    classes.push("a1-grid-item--span-full");
+  } else if (typeof span === "number") {
+    classes.push(`a1-grid-item--span-${span}`);
+  }
+
+  if (rowSpan && typeof rowSpan === "object") {
+    for (const [bp, value] of Object.entries(rowSpan)) {
+      if (breakpoints.includes(bp) && typeof value === "number") {
+        classes.push(`a1-grid-item--${bp}-row-span-${value}`);
+      }
+    }
+  } else if (typeof rowSpan === "number") {
+    classes.push(`a1-grid-item--row-span-${rowSpan}`);
+  }
+
+  return classes.join(" ");
+}
+
 export function Grid({
   columns,
   gap,
@@ -85,32 +116,9 @@ export function GridItem({
   children,
   ...props
 }) {
+  const spanClasses = gridItemSpanClassNames({ span, rowSpan });
   const classes = ["a1-grid-item"];
-
-  if (span && typeof span === "object") {
-    for (const [bp, value] of Object.entries(span)) {
-      if (!breakpoints.includes(bp)) continue;
-      if (value === "full") {
-        classes.push(`a1-grid-item--${bp}-span-full`);
-      } else if (typeof value === "number") {
-        classes.push(`a1-grid-item--${bp}-span-${value}`);
-      }
-    }
-  } else if (span === "full") {
-    classes.push("a1-grid-item--span-full");
-  } else if (typeof span === "number") {
-    classes.push(`a1-grid-item--span-${span}`);
-  }
-
-  if (rowSpan && typeof rowSpan === "object") {
-    for (const [bp, value] of Object.entries(rowSpan)) {
-      if (breakpoints.includes(bp) && typeof value === "number") {
-        classes.push(`a1-grid-item--${bp}-row-span-${value}`);
-      }
-    }
-  } else if (typeof rowSpan === "number") {
-    classes.push(`a1-grid-item--row-span-${rowSpan}`);
-  }
+  if (spanClasses) classes.push(spanClasses);
 
   if (className) classes.push(className);
 

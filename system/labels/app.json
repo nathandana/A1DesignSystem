@@ -3538,6 +3538,20 @@
             "ar": "لم تُطبَّق العقد الفرعية — تعرض أداة الضبط مكوّنًا واحدًا بمحتوى تجريبي."
           }
         },
+        "jsonTopHeaderLogin": {
+          "$type": "string",
+          "$value": "loginButton carries only the { label } — its click behavior is composed at runtime.",
+          "$description": "Info note in the Top Header configurator's JSON view when a sign-in label is set, explaining the loginButton prop carries the label while click behavior is runtime-composed.",
+          "locale": {
+            "es": "loginButton solo lleva el { label }; su comportamiento de clic se compone en tiempo de ejecución.",
+            "fr": "loginButton ne porte que le { label } — son comportement au clic est composé à l'exécution.",
+            "de": "loginButton enthält nur das { label } — das Klickverhalten wird zur Laufzeit zusammengesetzt.",
+            "pt": "loginButton carrega apenas o { label } — o comportamento de clique é composto em tempo de execução.",
+            "ja": "loginButtonは{ label }のみを保持します。クリック時の動作は実行時に構成されます。",
+            "zh": "loginButton 仅携带 { label }——点击行为在运行时组合。",
+            "ar": "يحمل loginButton قيمة { label } فقط — يُركَّب سلوك النقر أثناء التشغيل."
+          }
+        },
         "jsonSplitNote": {
           "$type": "string",
           "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",

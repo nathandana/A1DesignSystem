@@ -31,6 +31,8 @@
   justify-content: center;
   gap: var(--component-chip-gap);
   box-sizing: border-box;
+  /* Total chip height on the 28/40/56 control-height standard. */
+  min-block-size: var(--component-chip-min-height);
   max-inline-size: 100%;
   min-inline-size: 0;
   padding: var(--component-chip-padding-block) var(--component-chip-padding-inline);
@@ -101,11 +103,13 @@ button.a1-chip {
 }
 
 .a1-chip--sm {
+  min-block-size: var(--component-chip-sm-min-height);
   padding: var(--component-chip-sm-padding-block) var(--component-chip-sm-padding-inline);
   font-size: var(--semantic-font-size-body-xs);
 }
 
 .a1-chip--lg {
+  min-block-size: var(--component-chip-lg-min-height);
   padding: var(--component-chip-lg-padding-block) var(--component-chip-lg-padding-inline);
   font-size: var(--semantic-font-size-body-md);
 }

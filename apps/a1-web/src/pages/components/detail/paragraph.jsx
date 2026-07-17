@@ -61,6 +61,56 @@ export function getDefaultConfig(component) {
   }
 }
 
+// ── Page-definition JSON (the configurator's JSON view, A1-1651) ─────────────
+// `color: "muted"` is the portable A1 token selector for the semantic
+// `text/muted` color. JSON deliberately never carries a resolved hex value.
+export const jsonType = 'Paragraph'
+
+const PARAGRAPH_COLOR_VALUES = ['default', 'muted']
+const PARAGRAPH_ALIGN_VALUES = ['left', 'center', 'right', 'start', 'end']
+
+function validResponsiveSize(value, fallback = 'md') {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    const responsive = {}
+    for (const breakpoint of ['xs', 'sm', 'md', 'lg', 'xl']) {
+      if (PARAGRAPH_SIZE_OPTIONS.includes(value[breakpoint])) responsive[breakpoint] = value[breakpoint]
+    }
+    return Object.keys(responsive).length > 0 ? responsive : fallback
+  }
+  return PARAGRAPH_SIZE_OPTIONS.includes(value) ? value : fallback
+}
+
+export function toJson(config) {
+  const props = {}
+  if (config.as && config.as !== 'p') props.as = config.as
+  if (typeof config.size === 'object') props.size = config.size
+  else if (config.size && config.size !== 'md') props.size = config.size
+  if (config.color && config.color !== 'default') props.color = config.color
+  if (config.weight && config.weight !== 'regular') props.weight = config.weight
+  if (config.align && config.align !== 'left') props.align = config.align
+  if (config.textWrap) props.textWrap = 'balance'
+  const node = {
+    id: 'paragraph-1',
+    type: jsonType,
+    content: { fallback: config.children || 'Paragraph' },
+  }
+  if (Object.keys(props).length > 0) node.props = props
+  return { node, note: null }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig({ title: 'Paragraph' })
+  const props = node.props ?? {}
+  config.as = PARAGRAPH_ELEMENT_OPTIONS.includes(props.as) ? props.as : 'p'
+  config.size = validResponsiveSize(props.size)
+  config.color = PARAGRAPH_COLOR_VALUES.includes(props.color) ? props.color : 'default'
+  config.weight = WEIGHT_OPTIONS.includes(props.weight) ? props.weight : 'regular'
+  config.align = PARAGRAPH_ALIGN_VALUES.includes(props.align) ? props.align : 'left'
+  config.textWrap = props.textWrap === 'balance'
+  if (typeof node.content?.fallback === 'string') config.children = node.content.fallback
+  return config
+}
+
 export function Preview({ component, config, utilityClass = '' }) {
   const textWrap = config.textWrap ? 'balance' : undefined
   return (

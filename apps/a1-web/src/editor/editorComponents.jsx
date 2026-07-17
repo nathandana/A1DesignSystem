@@ -13,7 +13,7 @@
  * wrapping element so canvas selection, hover outlines, and catalog drop still
  * work — the underlying Preview manages its own internal state.
  */
-import { DataTable, Grid, Icon, Paragraph, Section, Stack } from '@gtivr4/a1-design-system-react';
+import { BottomSheet, DataTable, Grid, Icon, Paragraph, Section, Stack } from '@gtivr4/a1-design-system-react';
 import { Preview as ActionTilesPreview } from '../pages/components/detail/action-tile.jsx';
 import { Preview as ChipPreview } from '../pages/components/detail/chip.jsx';
 import { Preview as BottomSheetPreview } from '../pages/components/detail/bottom-sheet.jsx';
@@ -60,14 +60,47 @@ export const EditorToolbar = makeAdapter(ToolbarPreview);
 export const EditorTreeMenu = makeAdapter(TreeMenuPreview);
 export const EditorActionTiles = makeAdapter(ActionTilesPreview);
 export const EditorChipGroup = makeAdapter(ChipPreview);
-export const EditorBottomSheet = makeAdapter(BottomSheetPreview);
 export const EditorCanvas = makeAdapter(CanvasPreview);
 export const EditorContextMenu = makeAdapter(ContextMenuPreview);
 export const EditorDialog = makeAdapter(DialogPreview);
 export const EditorInline = makeAdapter(InlinePreview);
 export const EditorMenu = makeAdapter(MenuPreview);
 export const EditorNotification = makeAdapter(NotificationPreview);
-export const EditorPageLayout = makeAdapter(PageLayoutPreview);
+export function EditorBottomSheet(props) {
+  const [dom, config] = splitEditorProps(props);
+  const { children, detents, defaultDetent, title, ...rest } = config;
+  if (children) {
+    return (
+      <div className="a1-web-editor-adapter" {...dom}>
+        <BottomSheet
+          title={typeof title === 'string' ? title : undefined}
+          detents={Array.isArray(detents) ? detents : [0.5, 0.92]}
+          defaultDetent={typeof defaultDetent === 'number' ? defaultDetent : 1}
+          {...rest}
+        >
+          {children}
+        </BottomSheet>
+      </div>
+    );
+  }
+  return (
+    <div className="a1-web-editor-adapter" {...dom}>
+      <BottomSheetPreview config={config} />
+    </div>
+  );
+}
+// Page Layout forwards real children (JSON page content) into the layout's
+// main area — the generic adapter drops children, which would swallow a
+// PageLayout node's entire page content.
+export function EditorPageLayout(props) {
+  const [dom, config] = splitEditorProps(props);
+  const { children, ...rest } = config;
+  return (
+    <div className="a1-web-editor-adapter" {...dom}>
+      <PageLayoutPreview config={rest}>{children}</PageLayoutPreview>
+    </div>
+  );
+}
 export const EditorSideNav = makeAdapter(SideNavPreview);
 export const EditorSnackbar = makeAdapter(SnackbarPreview);
 

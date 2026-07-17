@@ -38,3 +38,4 @@ export interface GridItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export declare function Grid(props: GridProps): React.ReactElement;
 export declare function GridItem(props: GridItemProps): React.ReactElement;
+export declare function gridItemSpanClassNames(options?: Pick<GridItemProps, "span" | "rowSpan">): string;
