@@ -294,6 +294,33 @@ These values are de-facto standards derived from existing component usage:
 
 ---
 
+## Control heights
+
+Interactive controls sit on a single height standard so any mix of controls in a row aligns. **Heights are TOTAL rendered height** — including borders and, for track-style components, the track padding (measure the outside of the control, not an inner element).
+
+### The scale
+
+| Size axis | sm | md | lg |
+|-----------|----|----|----|
+| `sm / md / lg` controls | **28px** (1.75rem) | **40px** (2.5rem) | **56px** (3.5rem) |
+
+Conforming components: **Button**, **Icon Button**, **Segmented Control** (the outer track; segments derive their height as `total − 2 × (track padding + border)` = 20/32/48), **Chip** (`component.chip.minHeight` / `smMinHeight` / `lgMinHeight`), **Accordion** (trigger `component.accordion.triggerHeight*`), and **Tabs `variant="segment"`** (the strip totals 40px like a md Segmented Control).
+
+### The field-density scale
+
+Field-family components (`compact / default / comfortable`) use **32 / 40 / 52px** control heights (`component.field.*-height`): Text Field and all derived fields, Textarea (per row), Select, Autocomplete, Checkbox/Radio group rows scale independently. The two scales intentionally share the **40px md/default anchor**, so default-density forms and md controls align in a row.
+
+### The 32px utility band
+
+Several single-size or content-driven components sit on a 32px band that pairs with compact fields: **Tabs** (line/pills/folder tabs, both densities), **Toolbar** controls (inside a 38px bar), and **Tree Menu** rows. Treat 32px as the target when adding dense chrome.
+
+### Rules
+
+1. New sized controls use the 28/40/56 scale; new field-family components use 32/40/52. Do not invent intermediate heights.
+2. Express heights as component tokens aliasing `base.spacing.40` / `base.spacing.56` (28px has no base token yet — use a literal until one exists) and apply them as `min-block-size` on the OUTER element.
+3. For track-style controls (a padded container around segments), the token names the total; inner elements use `calc()` from it rather than their own height token.
+4. Padding must never push a control past its height token — when block padding + line-height exceeds the target, reduce the padding and let flex centering do the work (see Accordion sm, Segmented sm).
+
 ## Z-index and Layering
 
 A1 stacks overlays with **two distinct mechanisms**. Mixing them is the usual cause of "my menu is behind the dialog" bugs — so decide which layer an element belongs to before assigning any `z-index`.

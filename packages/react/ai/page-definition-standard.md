@@ -123,12 +123,12 @@ in `pageTypes.ts` and mapped in `componentRegistry.ts`. The names are a locked J
 contract, but the membership is not frozen at the original proof-of-concept set.
 
 **The two code files are authoritative.** This table is a human-readable snapshot of
-the current 60 registered types; if it differs from either code file, follow the code
+the current registered types; if it differs from either code file, follow the code
 and update this document in the same change.
 
 | Group | Registered `type` values |
 |-------|--------------------------|
-| Layout | `PageLayout`, `Section`, `Stack`, `Grid`, `Cluster`, `Card`, `Bleed`, `Inset`, `Spacer`, `ButtonContainer` |
+| Layout | `PageLayout`, `Section`, `Stack`, `Grid`, `GridItem`, `Cluster`, `Card`, `Bleed`, `Inset`, `Spacer`, `ButtonContainer` |
 | Typography and media | `Heading`, `Paragraph`, `Blockquote`, `Code`, `Divider`, `List`, `ListItem`, `Icon`, `Figure` |
 | Actions and controls | `Link`, `Button`, `IconButton`, `Switch`, `SegmentedControl`, `Slider`, `Toolbar`, `Tabs`, `StickyActions`, `Accordion` |
 | Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker` |
@@ -141,6 +141,10 @@ Most entries map directly to the exported A1 React component with the same name.
 serializable props into their compositional A1 APIs. `Slot` and `Outlet` are
 editor-owned composition adapters. They are still registered types and should be
 used instead of hand-rolled wrappers when their semantics fit.
+
+For `Tabs`, put panel content on the matching tab item as `props.items[].children`
+(an array of normal A1 component nodes). Older `props.panels[].children` shapes
+also render, but `items[].children` is the preferred portable contract.
 
 **To add a component:** add its name to `ComponentType` in `pageTypes.ts` **and**
 register the real component or editor adapter in `componentRegistry.ts` (the
@@ -168,6 +172,23 @@ this table and `a1-agent-brief.md` in the same change. Never register a raw HTML
 - Use `Grid` for multi-column layouts and repeated card collections. Use `Stack`
   for one-dimensional flow, alignment, and wrapping. Do not recreate grid behavior
   with rows of nested `Stack`s when `Grid` expresses the structure directly.
+- Use `GridItem` only as a direct child of `Grid` when an item needs placement
+  metadata such as `span` or `rowSpan`. Put the real content component inside
+  the `GridItem`:
+
+```jsonc
+{
+  "type": "Grid",
+  "props": { "columns": { "xs": 1, "md": 2, "xl": 4 }, "gap": "lg" },
+  "children": [
+    {
+      "type": "GridItem",
+      "props": { "span": { "xs": "full", "md": 2 } },
+      "children": [{ "type": "Card", "children": [] }]
+    }
+  ]
+}
+```
 
 ### Structured prop shapes
 
@@ -222,10 +243,14 @@ Text lives in `content`, never inline in the renderer.
 |-------|------|:--------:|-------|
 | `textKey` | string | — | Localization key resolved via the A1 `useLabel` helper. |
 | `fallback` | string | ✓ | Literal text shown when `textKey` is absent or unregistered. |
+| `inlineLinks` | `InlineLinkDefinition[]` | — | Optional non-overlapping `{ start, end, props? }` UTF-16 ranges. The renderer wraps each range in an A1 `Link` inside Heading or Paragraph text. |
 
 - The renderer resolves `textKey` through **`useLabel`** (the existing A1 labels system). If the key is registered (and a locale is active) the localized value is used; otherwise it returns `fallback`.
 - `fallback` is always required so a node renders meaningful text even with no labels registered.
 - A node with `content` and `children` renders `content` first, then `children`.
+- Inline Links retain the complete literal fallback for localization and plain-text
+  consumers. Their `start`/`end` offsets refer to that fallback string; the
+  optional `props` are forwarded only to the inline A1 Link.
 - Text required by a structured prop API, such as a `DefinitionList` item's
   `label` and `value`, remains inside that prop object rather than becoming
   separate component nodes.
@@ -285,6 +310,9 @@ See `apps/a1-web/src/editor/examples/editorExamplePage.ts` for the full, current
 - **Do** keep `type` names matching exported A1 component names exactly.
 - **Do** give every node a unique, stable `id`.
 - **Do** put all text in `content` with a `fallback`; resolve via `useLabel`.
+- **Do** use a component's semantic color prop in JSON (for example,
+  `Paragraph.props.color: "muted"` for the A1 `text/muted` token); never store
+  resolved hex values in a page definition.
 - **Do** put layout/width/padding/gap on `Section`, not `PageLayout`.
 - **Do** check `pageTypes.ts` and `componentRegistry.ts` before building a
   workaround; components such as `Grid`, `Figure`, `DefinitionList`, `Pagination`,

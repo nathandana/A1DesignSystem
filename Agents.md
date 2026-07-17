@@ -41,3 +41,7 @@ For the generated color-token inventory and migration findings:
 For the prompt-to-video walkthrough capture pipeline:
 
 @packages/react/ai/walkthrough-pipeline.md
+
+For the planned A1 ↔ Figma breakpoint synchronization contract:
+
+@packages/react/ai/figma-breakpoint-sync-plan.md

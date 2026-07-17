@@ -37,6 +37,40 @@ export function getDefaultConfig() {
   }
 }
 
+export const jsonType = 'Menu'
+
+function jsonMenuItem(item, index) {
+  const id = typeof item?.id === 'string' && item.id ? item.id : `menu-item-${index + 1}`
+  if (item?.kind === 'divider') return { id, kind: 'divider' }
+  if (item?.kind === 'section') return {
+    id,
+    kind: 'section',
+    label: typeof item.label === 'string' ? item.label : 'Section',
+  }
+  return {
+    id,
+    kind: 'item',
+    label: typeof item?.label === 'string' ? item.label : 'Untitled',
+    icon: typeof item?.icon === 'string' ? item.icon : '',
+    shortcut: typeof item?.shortcut === 'string' ? item.shortcut : '',
+    destructive: item?.destructive === true,
+    ...(item?.active === true ? { active: true } : {}),
+    ...(item?.disabled === true ? { disabled: true } : {}),
+  }
+}
+
+export function toJson(config) {
+  const items = Array.isArray(config.items) ? config.items.map(jsonMenuItem) : []
+  return { node: { id: 'menu-1', type: jsonType, props: { items } } }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const items = Array.isArray(node.props?.items) ? node.props.items : null
+  if (items) config.items = items.filter((item) => item && typeof item === 'object').map(jsonMenuItem)
+  return config
+}
+
 // ── Config → rendered items ───────────────────────────────────────────────────
 
 function renderItems(configItems, onClose) {
@@ -65,6 +99,8 @@ function renderItems(configItems, onClose) {
           icon={item.icon || undefined}
           shortcut={item.shortcut || undefined}
           variant={item.destructive ? 'destructive' : undefined}
+          active={item.active || undefined}
+          disabled={item.disabled || undefined}
           onClick={() => onClose()}
         >
           {item.label || 'Untitled'}
@@ -89,6 +125,8 @@ function buildSnippet(configItems, utilityClass = '') {
       item.icon      ? ` icon="${item.icon}"` : '',
       item.shortcut  ? ` shortcut="${esc(item.shortcut)}"` : '',
       item.destructive ? ` variant="destructive"` : '',
+      item.active ? ` active` : '',
+      item.disabled ? ` disabled` : '',
     ].join('')
     return `  <MenuItem${props} onClick={() => {}}>${esc(item.label || 'Untitled')}</MenuItem>`
   }).join('\n')
@@ -174,6 +212,16 @@ function ItemEditor({ item, onChange, onRemove, isOpen, onToggleOpen }) {
               label="Destructive"
               value={!!item.destructive}
               onChange={(v) => onChange({ destructive: v })}
+            />
+            <Toggle
+              label="Active"
+              value={!!item.active}
+              onChange={(active) => onChange({ active })}
+            />
+            <Toggle
+              label="Disabled"
+              value={!!item.disabled}
+              onChange={(disabled) => onChange({ disabled })}
             />
           </>
         )}

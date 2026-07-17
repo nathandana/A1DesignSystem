@@ -207,3 +207,43 @@ export function Controls({ config, setConfig }) {
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildCodeSnippet(config, utilityClass)}</Code>
 }
+
+export const jsonType = 'Code'
+
+export function toJson(config) {
+  const props = {
+    variant: config.variant || 'block',
+  }
+  if (config.variant !== 'inline') {
+    if (config.wrapping) props.wrapping = true
+    if (config.editable) props.editable = true
+    if (config.copyCode) props.copyCode = true
+    if (config.copyText) props.copyText = config.copyText
+    if (config.collapsible) props.collapsible = true
+    if (config.collapsible && config.collapsedLines !== 14) props.collapsedLines = config.collapsedLines
+  }
+  return {
+    node: {
+      id: 'code-1',
+      type: 'Code',
+      props,
+      content: { fallback: config.children || sampleForVariant(config.variant || 'block') },
+    },
+    note: null,
+  }
+}
+
+export function fromJson(node) {
+  const props = node?.props && typeof node.props === 'object' ? node.props : {}
+  const variant = props.variant === 'inline' ? 'inline' : 'block'
+  return {
+    variant,
+    wrapping: variant === 'block' ? props.wrapping !== false : false,
+    editable: variant === 'block' ? props.editable === true : false,
+    copyCode: variant === 'block' ? props.copyCode === true : false,
+    copyText: variant === 'block' && typeof props.copyText === 'string' ? props.copyText : '',
+    collapsible: variant === 'block' ? props.collapsible === true : false,
+    collapsedLines: Number.isFinite(Number(props.collapsedLines)) ? Number(props.collapsedLines) : 14,
+    children: node?.content?.fallback || sampleForVariant(variant),
+  }
+}

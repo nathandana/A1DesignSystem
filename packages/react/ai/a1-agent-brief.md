@@ -114,7 +114,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 
 ---
 
-## 4. Component registry (all 60) — type · container · role · key props
+## 4. Component registry — type · container · role · key props
 
 `C` = container (accepts `children`). Sizes/values are defined in §5. Props listed are the common ones; see `components.md` for the full set.
 
@@ -125,6 +125,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `Section` | C | Page region: surface, padding, width, gap, border, alignment, background image. | `padding` (none–xl), `gap` (xs–xxl), `contentWidth` (xs–2xl), `surface` (page/panel/raised), `align` (none/start/center/end), `inverse` (bool), `gradient`, `height` (auto/screen/hero), `as`, `borderSize`/`borderStyle`/`borderVariant`/`borderSides`, `radius`, `backgroundImage` (URL, decorative; suppresses `gradient`), `backgroundFit` (cover/contain/tile), `backgroundPosition` (9 focal points), `backgroundOverlay` (darken/lighten — always add one under text; pair darken with `inverse`), `backgroundOverlayStrength` (sm/md/lg) |
 | `Stack` | C | Linear layout. | `direction` (column/row, responsive), `gap` (xs–xxl), `align`, `justify`, `wrap` (bool), `as` |
 | `Grid` | C | Multi-column grid. | `columns` (number or `{xs,md,…}`), `gap`, `rowGap`, `columnGap` |
+| `GridItem` | C | Direct child of `Grid` for column/row spanning. | `span` (number/`full`/responsive), `rowSpan` (number/responsive) |
 | `Cluster` | C | Wrapping row of items (deprecated — prefer `Stack direction="row" wrap`). | `gap`, `align`, `justify` |
 | `Card` | C | Bounded, repeatable content unit. | `variant` (default/navigation), `href` (navigation), `icon`, `heroIcon`, `iconDisplay` |
 | `Bleed` | C | Reach past surrounding inset padding. | `space` (spacing number) |
@@ -157,7 +158,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `SegmentedControl` | — | Compact single-select. | `options` (`{value,label}[]`), `value`, `size` |
 | `Slider` | — | Range / detent slider. | `label`, `value`, `min`, `max`, `step`, `detents`, `size`, `variant` |
 | `Toolbar` | C | Compact control bar. | `label`, `aria-label`, `overlay`, `fullWidth` |
-| `Tabs` | C | Tabbed nav / stepper. | `variant` (line/pills/segment/progress/folder), `value` |
+| `Tabs` | C | Tabbed nav / stepper. | `variant` (line/pills/segment/progress/folder), `value`; panel content goes on matching `items[].children` |
 | `Accordion` | C | Disclosure. | `label`, `subtext`, `divider` (bool), `defaultOpen` (bool), `size` |
 | `StickyActions` | C | Fixed bottom action bar (nest a `ButtonContainer`). | `contentWidth` |
 
@@ -166,7 +167,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 |------|:-:|------|-----------|
 | `TextField` | — | Text/email/password. | `label`, `type` (text/email/password), `value`, `hint`, `error`, `success`, `required`, `disabled`, `readOnly`, `size` (compact/default/comfortable), `labelPosition` (above/before), `autoComplete` |
 | `TextareaField` | — | Multiline. | `label`, `value`, `rows`, + field-family props |
-| `SelectField` | — | Select. | `label`, `options` (`{value,label}[]`), `value`, + field-family props |
+| `SelectField` | — | Select. | `label`, `options` (`{value,label}[]`), `value`; Figma preview uses `showValue: true` + `defaultValue`, + field-family props |
 | `NumberField` | — | Number. | `label`, `prefix`, `unit`, + field-family props |
 | `DateField` `TimeField` `PhoneField` `ZipField` `CreditCardField` | — | Masked fields. | `label`, `value`, + field-family props |
 | `Fieldset` | C | Group of fields. **legend via `props.legend`.** | `legend`, `labelPosition` |

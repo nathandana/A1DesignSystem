@@ -219,9 +219,9 @@
   --component-accordion-padding-inline-lg: 1rem;
   --component-accordion-padding-inline-md: 0.75rem;
   --component-accordion-padding-inline-sm: 0.5rem;
-  --component-accordion-trigger-height-lg: 3.25rem;
+  --component-accordion-trigger-height-lg: 3.5rem;
   --component-accordion-trigger-height-md: 2.5rem;
-  --component-accordion-trigger-height-sm: 2rem;
+  --component-accordion-trigger-height-sm: 1.75rem;
   --component-action-tile-border-radius: 0.5rem;
   --component-action-tile-border-width: 1px;
   --component-action-tile-copy-gap: 0.375rem;
@@ -467,8 +467,10 @@
   --component-chip-gap: 0.375rem;
   --component-chip-group-gap: 0.375rem;
   --component-chip-icon-size: 1.25em;
+  --component-chip-lg-min-height: 3.5rem;
   --component-chip-lg-padding-block: 0.5rem;
   --component-chip-lg-padding-inline: 1rem;
+  --component-chip-min-height: 2.5rem;
   --component-chip-padding-block: 0.375rem;
   --component-chip-padding-inline: 0.75rem;
   --component-chip-selected-background: #7c3aed;
@@ -480,6 +482,7 @@
   --component-chip-selected-foreground: #fcfbff;
   --component-chip-selected-foreground-hover: #f5f3ff;
   --component-chip-selected-foreground-pressed: #e8e4ff;
+  --component-chip-sm-min-height: 1.75rem;
   --component-chip-sm-padding-block: 0.25rem;
   --component-chip-sm-padding-inline: 0.5rem;
   --component-choice-group-border-radius: 0.5rem;
@@ -812,7 +815,7 @@
   --component-segmented-padding: 0.1875rem;
   --component-segmented-segment-padding-block: 0.25rem;
   --component-segmented-segment-padding-block-lg: 0.5rem;
-  --component-segmented-segment-padding-block-sm: 0.125rem;
+  --component-segmented-segment-padding-block-sm: 0;
   --component-segmented-segment-padding-inline: 0.5rem;
   --component-segmented-segment-padding-inline-lg: 1rem;
   --component-segmented-segment-padding-inline-sm: 0.5rem;

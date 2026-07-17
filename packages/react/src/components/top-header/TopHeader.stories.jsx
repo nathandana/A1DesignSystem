@@ -145,7 +145,11 @@ const meta = {
       control: "inline-radio",
       options: ["start", "above", "hidden"],
     },
-    loginButton: { control: "boolean", description: "Show login button" },
+    loginButton: {
+      control: "text",
+      description:
+        'Sign-in affordance after the actions: `{ label, onClick }` or a plain string used as the label (the JSON-safe form). Label defaults to "Log in".',
+    },
   },
 };
 
@@ -180,6 +184,23 @@ export const WithLoginButton = {
         navItems={NAV_ITEMS}
         actions={[ACTIONS[0]]}
         loginButton={{ label: "Log in", onClick: () => {} }}
+      />
+      {PAGE_CONTENT}
+    </div>
+  ),
+};
+
+export const LoginButtonStringLabel = {
+  name: "Login button with string label",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navItems={NAV_ITEMS}
+        actions={[ACTIONS[0]]}
+        loginButton="Create account"
       />
       {PAGE_CONTENT}
     </div>

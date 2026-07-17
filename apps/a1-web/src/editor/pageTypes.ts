@@ -21,95 +21,96 @@
  * is typed against this union so the two stay in sync.
  */
 export type ComponentType =
-  | 'PageLayout'
-  | 'Section'
-  | 'SectionSeparator'
-  | 'Stack'
-  | 'Grid'
-  | 'Cluster'
-  | 'Canvas'
-  | 'Card'
-  | 'Bleed'
-  | 'Inset'
-  | 'Spacer'
-  | 'ButtonContainer'
-  | 'Heading'
-  | 'Paragraph'
-  | 'Blockquote'
-  | 'Code'
-  | 'Divider'
-  | 'Inline'
-  | 'List'
-  | 'ListItem'
-  | 'Icon'
-  | 'Figure'
-  | 'Link'
-  | 'Button'
-  | 'ActionTiles'
-  | 'ChipGroup'
-  | 'IconButton'
-  | 'Switch'
-  | 'SegmentedControl'
-  | 'Banner'
-  | 'MessageBadge'
-  | 'MessageEmptyState'
-  | 'Notification'
-  | 'Snackbar'
-  | 'StatusBar'
-  | 'CircularProgress'
-  | 'StepTracker'
-  | 'TextField'
-  | 'SearchField'
-  | 'TextareaField'
-  | 'SelectField'
-  | 'Autocomplete'
-  | 'NumberField'
-  | 'DateField'
-  | 'TimeField'
-  | 'PhoneField'
-  | 'ZipField'
-  | 'CreditCardField'
-  | 'InlineEditable'
-  | 'Fieldset'
-  | 'CheckboxGroup'
-  | 'RadioGroup'
-  | 'ChoiceGroup'
-  | 'Stat'
-  | 'LineChart'
-  | 'BarChart'
-  | 'AreaChart'
-  | 'ComposedChart'
-  | 'PieChart'
-  | 'ScatterChart'
-  | 'RadarChart'
-  | 'RadialBarChart'
-  | 'FunnelChart'
-  | 'TreemapChart'
-  | 'SankeyChart'
-  | 'SunburstChart'
-  | 'DefinitionList'
-  | 'Pagination'
-  | 'Calendar'
-  | 'Node'
-  | 'Breadcrumb'
-  | 'SideNav'
-  | 'TopHeader'
-  | 'BottomDrawer'
-  | 'BottomSheet'
-  | 'StickyActions'
-  | 'Accordion'
-  | 'Dialog'
-  | 'Menu'
-  | 'ContextMenu'
-  | 'Slider'
-  | 'Toolbar'
-  | 'Tabs'
-  | 'FieldRow'
-  | 'PageNav'
-  | 'TreeMenu'
-  | 'DataTable'
-  | 'Slot'
-  | 'Outlet';
+  | "PageLayout"
+  | "Section"
+  | "SectionSeparator"
+  | "Stack"
+  | "Grid"
+  | "GridItem"
+  | "Cluster"
+  | "Canvas"
+  | "Card"
+  | "Bleed"
+  | "Inset"
+  | "Spacer"
+  | "ButtonContainer"
+  | "Heading"
+  | "Paragraph"
+  | "Blockquote"
+  | "Code"
+  | "Divider"
+  | "Inline"
+  | "List"
+  | "ListItem"
+  | "Icon"
+  | "Figure"
+  | "Link"
+  | "Button"
+  | "ActionTiles"
+  | "ChipGroup"
+  | "IconButton"
+  | "Switch"
+  | "SegmentedControl"
+  | "Banner"
+  | "MessageBadge"
+  | "MessageEmptyState"
+  | "Notification"
+  | "Snackbar"
+  | "StatusBar"
+  | "CircularProgress"
+  | "StepTracker"
+  | "TextField"
+  | "SearchField"
+  | "TextareaField"
+  | "SelectField"
+  | "Autocomplete"
+  | "NumberField"
+  | "DateField"
+  | "TimeField"
+  | "PhoneField"
+  | "ZipField"
+  | "CreditCardField"
+  | "InlineEditable"
+  | "Fieldset"
+  | "CheckboxGroup"
+  | "RadioGroup"
+  | "ChoiceGroup"
+  | "Stat"
+  | "LineChart"
+  | "BarChart"
+  | "AreaChart"
+  | "ComposedChart"
+  | "PieChart"
+  | "ScatterChart"
+  | "RadarChart"
+  | "RadialBarChart"
+  | "FunnelChart"
+  | "TreemapChart"
+  | "SankeyChart"
+  | "SunburstChart"
+  | "DefinitionList"
+  | "Pagination"
+  | "Calendar"
+  | "Node"
+  | "Breadcrumb"
+  | "SideNav"
+  | "TopHeader"
+  | "BottomDrawer"
+  | "BottomSheet"
+  | "StickyActions"
+  | "Accordion"
+  | "Dialog"
+  | "Menu"
+  | "ContextMenu"
+  | "Slider"
+  | "Toolbar"
+  | "Tabs"
+  | "FieldRow"
+  | "PageNav"
+  | "TreeMenu"
+  | "DataTable"
+  | "Slot"
+  | "Outlet";
 
 /**
  * A value that may vary by breakpoint. Mirrors A1's responsive object syntax
@@ -118,7 +119,7 @@ export type ComponentType =
  */
 export type ResponsiveDefinition<T> =
   | T
-  | Partial<Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', T>>;
+  | Partial<Record<"xs" | "sm" | "md" | "lg" | "xl", T>>;
 
 /**
  * Props passed straight through to the underlying A1 component.
@@ -149,6 +150,27 @@ export interface UtilityDefinition {
 }
 
 /**
+ * A Link embedded in a Heading or Paragraph fallback string. Ranges use UTF-16
+ * string offsets, matching JavaScript strings and Figma TextNode ranges.
+ */
+export interface InlineLinkDefinition {
+  /** Inclusive character offset within `fallback`. */
+  start: number;
+  /** Exclusive character offset within `fallback`. */
+  end: number;
+  /** Optional visual and navigation props forwarded to the inline A1 Link. */
+  props?: {
+    href?: string;
+    target?: string;
+    rel?: string;
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    weight?: "normal" | "medium" | "semibold" | "bold";
+    icon?: string;
+    iconPosition?: "start" | "end";
+  };
+}
+
+/**
  * Text content for a node. Supports a localization key plus direct fallback
  * text. The renderer resolves `textKey` through the A1 labels helper and shows
  * `fallback` when no localized value is registered.
@@ -158,6 +180,8 @@ export interface ContentDefinition {
   textKey?: string;
   /** Literal text shown when `textKey` has no registered/localized value. Always provided. */
   fallback: string;
+  /** Optional A1 Link ranges rendered inline inside Heading or Paragraph text. */
+  inlineLinks?: InlineLinkDefinition[];
 }
 
 /**
@@ -190,7 +214,7 @@ export interface A11yDefinition {
  * - `externalLink` → open an external URL (`target` = url)
  */
 export interface ActionDefinition {
-  type: 'navigate' | 'openDialog' | 'appAction' | 'submitForm' | 'externalLink';
+  type: "navigate" | "openDialog" | "appAction" | "submitForm" | "externalLink";
   /** Route, dialog id, app-action name, form id, or URL — depends on `type`. */
   target?: string;
   /** Arbitrary parameters for the future action handler. */
@@ -264,7 +288,9 @@ export interface ComponentNode {
    * form adds `limit` (max rows) and `random` (seeded random selection). Absent on
    * ordinary nodes.
    */
-  repeat?: string | { dataset: string; limit?: number | null; random?: boolean };
+  repeat?:
+    | string
+    | { dataset: string; limit?: number | null; random?: boolean };
   /**
    * Data-driven collections (A1-94): fills a component's array prop (e.g.
    * DefinitionList `items`, ChoiceGroup `options`) from a dataset, keyed by the prop
@@ -272,14 +298,17 @@ export interface ComponentNode {
    * optional column-to-field map. A node field (not props) so it survives configurator
    * round-trips. Expanded by the renderer.
    */
-  collections?: Record<string, {
-    dataset: string;
-    mode: 'rows' | 'fields' | 'distinct';
-    column?: string;
-    map?: Record<string, string>;
-    limit?: number | null;
-    random?: boolean;
-  }>;
+  collections?: Record<
+    string,
+    {
+      dataset: string;
+      mode: "rows" | "fields" | "distinct";
+      column?: string;
+      map?: Record<string, string>;
+      limit?: number | null;
+      random?: boolean;
+    }
+  >;
   /** Nested child nodes. */
   children?: ComponentNode[];
 }

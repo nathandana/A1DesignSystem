@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Segmented Control — A1 Pure</title>
+    <link rel="stylesheet" href="a1-pure.css">
+  </head>
+  <body class="a1-body">
+
+    <header class="a1-header">
+      <a href="index.html">A1 Pure</a>
+      <nav>
+        <a href="index.html">Overview</a>
+        <a href="typography.html">Typography</a>
+        <a href="button.html">Button</a>
+        <a href="segmented-control.html" aria-current="page">Segmented Control</a>
+        <a href="link.html">Link</a>
+        <a href="forms.html">Forms</a>
+        <a href="checkbox.html">Checkbox</a>
+        <a href="disclosure.html">Disclosure</a>
+        <a href="table.html">Table</a>
+        <a href="definition-list.html">Definition List</a>
+        <a href="circular-progress.html">Circular Progress</a>
+        <a href="step-tracker.html">Step Tracker</a>
+        <a href="bottom-drawer.html">Bottom Drawer</a>
+      </nav>
+      <details>
+        <summary>&#9776;</summary>
+        <nav>
+          <a href="index.html">Overview</a>
+          <a href="typography.html">Typography</a>
+          <a href="button.html">Button</a>
+          <a href="segmented-control.html" aria-current="page">Segmented Control</a>
+          <a href="link.html">Link</a>
+          <a href="forms.html">Forms</a>
+          <a href="checkbox.html">Checkbox</a>
+          <a href="disclosure.html">Disclosure</a>
+          <a href="table.html">Table</a>
+          <a href="definition-list.html">Definition List</a>
+          <a href="circular-progress.html">Circular Progress</a>
+          <a href="step-tracker.html">Step Tracker</a>
+          <a href="bottom-drawer.html">Bottom Drawer</a>
+        </nav>
+      </details>
+      <a href="index.html#get-started">Get started</a>
+    </header>
+
+    <main>
+
+      <section class="a1-section">
+        <h1 class="a1-h1 a1-heading-size-xxl">Segmented Control</h1>
+        <p class="a1-p">A raised track of mutually exclusive segments. Apply <code class="a1-code">class="a1-segmented"</code> to the track and <code class="a1-code">class="a1-segment"</code> to each option. Track heights sit on the 28/40/56 control-height standard — the outer control lands exactly on the standard and the segments derive their height from it.</p>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2 a1-heading-size-lg">Sizes</h2>
+        <p class="a1-p">The default track is 40px tall. Add <code class="a1-code">a1-segmented-small</code> (28px) or <code class="a1-code">a1-segmented-large</code> (56px).</p>
+
+        <div class="a1-segmented a1-segmented-small" role="radiogroup" aria-label="View density (small)">
+          <button type="button" class="a1-segment" role="radio" aria-checked="true">Day</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Week</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Month</button>
+        </div>
+
+        <div class="a1-segmented" role="radiogroup" aria-label="View density (medium)">
+          <button type="button" class="a1-segment" role="radio" aria-checked="true">Day</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Week</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Month</button>
+        </div>
+
+        <div class="a1-segmented a1-segmented-large" role="radiogroup" aria-label="View density (large)">
+          <button type="button" class="a1-segment" role="radio" aria-checked="true">Day</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Week</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Month</button>
+        </div>
+
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-segmented a1-segmented-small" role="radiogroup" aria-label="View density (small)"&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="true"&gt;Day&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Week&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Month&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="a1-segmented" role="radiogroup" aria-label="View density (medium)"&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="true"&gt;Day&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Week&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Month&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="a1-segmented a1-segmented-large" role="radiogroup" aria-label="View density (large)"&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="true"&gt;Day&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Week&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Month&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2 a1-heading-size-lg">Full width</h2>
+        <p class="a1-p">Add <code class="a1-code">a1-segmented-full-width</code> to fill the container; segments share the width equally.</p>
+
+        <div class="a1-segmented a1-segmented-full-width" role="radiogroup" aria-label="Billing period">
+          <button type="button" class="a1-segment" role="radio" aria-checked="false">Monthly</button>
+          <button type="button" class="a1-segment" role="radio" aria-checked="true">Yearly</button>
+        </div>
+
+        <pre class="a1-pre"><code class="a1-code">&lt;div class="a1-segmented a1-segmented-full-width" role="radiogroup" aria-label="Billing period"&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="false"&gt;Monthly&lt;/button&gt;
+  &lt;button type="button" class="a1-segment" role="radio" aria-checked="true"&gt;Yearly&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      </section>
+
+      <section class="a1-section">
+        <h2 class="a1-h2 a1-heading-size-lg">Selection state</h2>
+        <p class="a1-p">The selected segment is styled from <code class="a1-code">aria-checked="true"</code> (radiogroup pattern) or <code class="a1-code">aria-selected="true"</code> (tablist pattern). Use the <code class="a1-code">a1-segment-selected</code> modifier only when neither ARIA pattern applies. Toggle the state with your own script — A1 Pure ships no behavior.</p>
+        <ul class="a1-ul">
+          <li><strong>Selected</strong> — page surface on the raised track with the <code class="a1-code">--semantic-shadow-xs</code> lift</li>
+          <li><strong>Hover</strong> — unselected segments shift to the panel surface with default text</li>
+          <li><strong>Focus-visible</strong> — inset focus ring from the shared button focus token</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="a1-footer">
+      <p class="a1-p">A1 Design System — Pure HTML/CSS example.</p>
+    </footer>
+
+  </body>
+</html>

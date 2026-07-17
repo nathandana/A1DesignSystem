@@ -93,3 +93,21 @@ function buildSnippet(config, utilityClass = '') {
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }
+
+export const jsonType = 'BottomSheet'
+
+export function toJson(config) {
+  const props = {}
+  if (config.title) props.title = config.title
+  if (config.defaultDetent !== 1) props.defaultDetent = config.defaultDetent
+  const node = { id: 'bottom-sheet-1', type: 'BottomSheet', props }
+  return { node, note: 'BottomSheet children are page content; add child nodes in the page JSON when you need real sheet content.' }
+}
+
+export function fromJson(node) {
+  const props = node?.props && typeof node.props === 'object' ? node.props : {}
+  return {
+    title: typeof props.title === 'string' ? props.title : 'Filters',
+    defaultDetent: typeof props.defaultDetent === 'number' ? props.defaultDetent : 1,
+  }
+}

@@ -55,6 +55,8 @@ export function Code({
   copyCode = false,
   copyText,
   editable = false,
+  rows = 10,
+  lineNumbers = false,
   onChangeValue,
   collapsible = false,
   collapsedLines = 14,
@@ -67,9 +69,12 @@ export function Code({
   const [expanded, setExpanded] = useState(false);
   const [overflows, setOverflows] = useState(false);
   const preRef = useRef(null);
+  const lineNumbersRef = useRef(null);
+  const lineMeasureRef = useRef(null);
   const [editableValue, setEditableValue] = useState(() =>
     textFromChildren(Children.toArray(children))
   );
+  const [lineHeights, setLineHeights] = useState([]);
   const resetTimer = useRef(null);
 
   // Keep the textarea in sync when children change from outside (e.g. undo/redo).
@@ -90,8 +95,38 @@ export function Code({
     [children, copyText, editable, editableValue],
   );
   const shouldRenderBlock = resolvedVariant === "block" || copyCode || editable;
+  const editableRows = typeof rows === "number" && Number.isFinite(rows) && rows > 0
+    ? Math.floor(rows)
+    : 10;
+  const displayedText = editable ? editableValue : textFromChildren(Children.toArray(children));
+  const lineCount = Math.max(1, displayedText.split("\n").length);
+  const showLineNumbers = lineNumbers && shouldRenderBlock;
   // Collapsible only applies to a read-only block (not the editable textarea).
   const collapses = collapsible && !editable && shouldRenderBlock;
+
+  // Textareas do not expose their visual wrapped-line geometry. Measure an
+  // invisible twin of each logical line so each number occupies the same height
+  // as the wrapped code it labels.
+  useEffect(() => {
+    if (!showLineNumbers || !wrapping || !lineMeasureRef.current) {
+      setLineHeights([]);
+      return undefined;
+    }
+
+    const measure = () => {
+      const next = Array.from(lineMeasureRef.current.children, (line) => Math.ceil(line.getBoundingClientRect().height));
+      setLineHeights((current) => (
+        current.length === next.length && current.every((height, index) => height === next[index])
+          ? current
+          : next
+      ));
+    };
+
+    measure();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(lineMeasureRef.current);
+    return () => observer?.disconnect();
+  }, [displayedText, showLineNumbers, wrapping]);
 
   useEffect(() => {
     return () => {
@@ -113,6 +148,29 @@ export function Code({
     setEditableValue(e.target.value);
     onChangeValue?.(e.target.value);
   }
+
+  function syncLineNumberScroll(event) {
+    if (lineNumbersRef.current) lineNumbersRef.current.style.transform = `translateY(${-event.currentTarget.scrollTop}px)`;
+    props.onScroll?.(event);
+  }
+
+  const lineNumberGutter = showLineNumbers ? (
+    <div className="a1-code-block__line-number-gutter" aria-hidden="true">
+      <ol ref={lineNumbersRef} className="a1-code-block__line-numbers">
+        {Array.from({ length: lineCount }, (_, index) => (
+          <li key={index} style={wrapping && lineHeights[index] ? { blockSize: `${lineHeights[index]}px` } : undefined}>
+            {index + 1}
+          </li>
+        ))}
+      </ol>
+    </div>
+  ) : null;
+
+  const lineNumberMeasure = showLineNumbers && wrapping ? (
+    <div ref={lineMeasureRef} className="a1-code-block__line-number-measure" aria-hidden="true">
+      {displayedText.split("\n").map((line, index) => <span key={index}>{line || "\u00a0"}</span>)}
+    </div>
+  ) : null;
 
   async function handleCopy() {
     await writeClipboard(textToCopy);
@@ -166,29 +224,70 @@ export function Code({
         .join(" ")}
     >
       {editable ? (
-        <textarea
-          className={[
-            "a1-code-block__textarea",
-            wrapping && "a1-code-block__textarea--wrapping",
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          rows={10}
-          value={editableValue}
-          onChange={handleTextareaChange}
-          spellCheck={false}
-          {...editableProps}
-        />
+        showLineNumbers ? (
+          <div className="a1-code-block__line-numbered">
+            {lineNumberGutter}
+            <div className="a1-code-block__line-content">
+              <textarea
+                className={[
+                  "a1-code-block__textarea",
+                  wrapping && "a1-code-block__textarea--wrapping",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                rows={editableRows}
+                value={editableValue}
+                onChange={handleTextareaChange}
+                spellCheck={false}
+                {...editableProps}
+                onScroll={syncLineNumberScroll}
+              />
+              {lineNumberMeasure}
+            </div>
+          </div>
+        ) : (
+          <textarea
+            className={[
+              "a1-code-block__textarea",
+              wrapping && "a1-code-block__textarea--wrapping",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            rows={editableRows}
+            value={editableValue}
+            onChange={handleTextareaChange}
+            spellCheck={false}
+            {...editableProps}
+          />
+        )
       ) : (
-        <pre
-          ref={preRef}
-          className="a1-code-block__pre"
-          style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
-        >
-          <code className={codeClasses} {...props}>
-            {children}
-          </code>
-        </pre>
+        showLineNumbers ? (
+          <div className="a1-code-block__line-numbered">
+            {lineNumberGutter}
+            <div className="a1-code-block__line-content">
+              <pre
+                ref={preRef}
+                className="a1-code-block__pre"
+                style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
+              >
+                <code className={codeClasses} {...props}>
+                  {children}
+                </code>
+              </pre>
+              {lineNumberMeasure}
+            </div>
+          </div>
+        ) : (
+          <pre
+            ref={preRef}
+            className="a1-code-block__pre"
+            style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
+          >
+            <code className={codeClasses} {...props}>
+              {children}
+            </code>
+          </pre>
+        )
       )}
       {(copyCode || (collapses && overflows)) && (
         <div className="a1-code-block__actions">

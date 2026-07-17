@@ -294,6 +294,71 @@ function buildSnippet(config, utilityClass = '') {
   return `<ChoiceGroup\n  ${props}\n  options={[\n${optionLines}\n  ]}\n/>`
 }
 
+export const jsonType = 'ChoiceGroup'
+
+const JSON_CHOICE_SIZES = ['compact', 'default', 'comfortable']
+
+export function toJson(config) {
+  const props = {}
+  if (config.label) props.label = config.label
+  if (config.required) props.required = true
+  if (config.hint) props.hint = config.hint
+  if (config.error) props.error = config.error
+  if (config.success) props.success = config.success
+  if (config.size && config.size !== 'default') props.size = config.size
+  if (config.multiple) props.multiple = true
+  if (config.inlineIcon) props.inlineIcon = true
+  if (config.hideIndicator) props.hideIndicator = true
+  const columns = resolveColumns(config.columns)
+  if (columns !== undefined && !Number.isNaN(columns)) props.columns = columns
+  props.options = (Array.isArray(config.options) ? config.options : []).map((option, index) => {
+    const entry = { value: option.id || `option-${index + 1}`, label: option.label || `Option ${index + 1}` }
+    if (option.subtext) entry.subtext = option.subtext
+    if (option.icon) entry.icon = option.icon
+    if (option.disabled) entry.disabled = true
+    return entry
+  })
+  return { node: { id: 'choice-group-1', type: 'ChoiceGroup', props }, note: null }
+}
+
+function columnsToConfig(columns) {
+  if (Number.isInteger(columns) && columns > 0) return String(columns)
+  if (columns && typeof columns === 'object') {
+    const out = {}
+    for (const [key, value] of Object.entries(columns)) {
+      if (Number.isInteger(value) && value > 0) out[key] = String(value)
+    }
+    return Object.keys(out).length ? out : 'auto'
+  }
+  return 'auto'
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  config.label = typeof props.label === 'string' ? props.label : ''
+  config.required = props.required === true
+  config.hint = typeof props.hint === 'string' ? props.hint : ''
+  config.error = typeof props.error === 'string' ? props.error : ''
+  config.success = typeof props.success === 'string' ? props.success : ''
+  config.size = JSON_CHOICE_SIZES.includes(props.size) ? props.size : 'default'
+  config.multiple = props.multiple === true
+  config.inlineIcon = props.inlineIcon === true
+  config.hideIndicator = props.hideIndicator === true
+  config.columns = columnsToConfig(props.columns)
+  const rawOptions = Array.isArray(props.options) ? props.options.filter((option) => option && typeof option === 'object') : []
+  if (rawOptions.length > 0) {
+    config.options = rawOptions.map((option, index) => ({
+      id: String(option.value || `option-${index + 1}`),
+      label: typeof option.label === 'string' && option.label ? option.label : `Option ${index + 1}`,
+      subtext: typeof option.subtext === 'string' ? option.subtext : '',
+      icon: typeof option.icon === 'string' ? option.icon : '',
+      disabled: option.disabled === true,
+    }))
+  }
+  return config
+}
+
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildSnippet(config, utilityClass)}</Code>
 }

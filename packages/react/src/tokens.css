@@ -373,9 +373,9 @@
   --component-button-font-size: 1rem;
   --component-button-font-weight: 700;
   --component-button-font-line-height: normal;
-  --component-accordion-trigger-height-sm: 2rem;
-  --component-accordion-trigger-height-md: 2.5rem;
-  --component-accordion-trigger-height-lg: 3.25rem;
+  --component-accordion-trigger-height-sm: 1.75rem; /** Total trigger height on the 28/40/56 control-height standard. */
+  --component-accordion-trigger-height-md: 2.5rem; /** Total trigger height on the 28/40/56 control-height standard. */
+  --component-accordion-trigger-height-lg: 3.5rem; /** Total trigger height on the 28/40/56 control-height standard. */
   --component-accordion-padding-inline-sm: 0.5rem;
   --component-accordion-padding-inline-md: 0.75rem;
   --component-accordion-padding-inline-lg: 1rem;
@@ -547,6 +547,9 @@
   --component-checkbox-group-compact-row-padding-inline: 0.25rem;
   --component-chip-gap: 0.375rem;
   --component-chip-group-gap: 0.375rem;
+  --component-chip-min-height: 2.5rem; /** Total md chip height on the 28/40/56 control-height standard. */
+  --component-chip-sm-min-height: 1.75rem; /** Total sm chip height on the 28/40/56 control-height standard. */
+  --component-chip-lg-min-height: 3.5rem; /** Total lg chip height on the 28/40/56 control-height standard. */
   --component-chip-padding-block: 0.375rem;
   --component-chip-padding-inline: 0.75rem;
   --component-chip-border-radius: 624.9375rem;
@@ -904,13 +907,13 @@
   --component-segmented-gap: 0.125rem;
   --component-segmented-segment-padding-block: 0.25rem;
   --component-segmented-segment-padding-inline: 0.5rem;
-  --component-segmented-segment-padding-block-sm: 0.125rem;
+  --component-segmented-segment-padding-block-sm: 0;
   --component-segmented-segment-padding-inline-sm: 0.5rem;
   --component-segmented-segment-padding-block-lg: 0.5rem;
   --component-segmented-segment-padding-inline-lg: 1rem;
-  --component-segmented-height-sm: 1.75rem;
-  --component-segmented-height-md: 2.5rem;
-  --component-segmented-height-lg: 3.5rem;
+  --component-segmented-height-sm: 1.75rem; /** Total control height including track padding and border (28/40/56 standard). */
+  --component-segmented-height-md: 2.5rem; /** Total control height including track padding and border (28/40/56 standard). */
+  --component-segmented-height-lg: 3.5rem; /** Total control height including track padding and border (28/40/56 standard). */
   --component-segmented-border-width: 1px;
   --component-segmented-font-weight-default: 400;
   --component-segmented-font-weight-active: 500;

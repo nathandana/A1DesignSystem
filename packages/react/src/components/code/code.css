@@ -79,6 +79,82 @@
   box-shadow: 0 0 0 var(--component-card-border-width) var(--component-button-focus-ring);
 }
 
+.a1-code-block__line-numbered {
+  box-sizing: border-box;
+  position: relative;
+  align-self: stretch;
+  inline-size: 100%;
+  overflow: hidden;
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-code-block__line-numbered:focus-within {
+  border-color: var(--component-button-focus-ring);
+  box-shadow: 0 0 0 var(--component-card-border-width) var(--component-button-focus-ring);
+}
+
+.a1-code-block__line-number-gutter {
+  box-sizing: border-box;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--base-spacing-40);
+  overflow: hidden;
+  user-select: none;
+}
+
+.a1-code-block__line-content {
+  position: relative;
+  min-inline-size: 0;
+  margin-inline-start: var(--base-spacing-40);
+}
+
+.a1-code-block__line-numbers {
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--base-spacing-16) var(--base-spacing-8);
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  line-height: 1.6;
+  list-style: none;
+  text-align: end;
+  will-change: transform;
+}
+
+.a1-code-block__line-content .a1-code-block__pre,
+.a1-code-block__line-content .a1-code-block__textarea {
+  min-inline-size: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.a1-code-block__line-content .a1-code-block__textarea:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.a1-code-block__line-number-measure {
+  position: absolute;
+  inset-block-start: var(--base-spacing-16);
+  inset-inline: var(--base-spacing-16);
+  visibility: hidden;
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  line-height: 1.6;
+  pointer-events: none;
+}
+
+.a1-code-block__line-number-measure > span {
+  display: block;
+  min-block-size: 1.6em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .a1-code-block__textarea--wrapping {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

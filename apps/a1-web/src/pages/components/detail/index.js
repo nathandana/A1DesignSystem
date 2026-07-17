@@ -190,7 +190,7 @@ export function getDetailModule(componentId) {
     examples: specific.examples ?? componentExamples[componentId] ?? [],
     // Page-definition JSON contract (A1-1651). Modules that export jsonType +
     // toJson + fromJson get the Code | JSON format toggle with copy/import on
-    // their configurator snippet (Button only for now).
+    // their configurator snippet.
     jsonType: specific.jsonType ?? null,
     toJson: specific.toJson ?? null,
     fromJson: specific.fromJson ?? null,

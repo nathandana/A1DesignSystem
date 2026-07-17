@@ -11,6 +11,8 @@ const meta = {
     wrapping: false,
     copyCode: false,
     editable: false,
+    rows: 10,
+    lineNumbers: false,
   },
   argTypes: {
     variant: {
@@ -33,6 +35,14 @@ const meta = {
     editable: {
       control: "boolean",
       description: "Render the block as an editable textarea. Only meaningful in block mode.",
+    },
+    rows: {
+      control: { type: "number", min: 1 },
+      description: "Visible textarea rows when editable. Default 10.",
+    },
+    lineNumbers: {
+      control: "boolean",
+      description: "Show a non-interactive gutter with one number per logical line. Only meaningful in block mode.",
     },
     collapsible: {
       control: "boolean",
@@ -100,6 +110,20 @@ export const Editable = {
 export function Example() {
   return <Button icon="arrow_forward">Continue</Button>;
 }`,
+  },
+};
+
+export const LineNumbers = {
+  name: "Line numbers",
+  args: {
+    variant: "block",
+    editable: true,
+    rows: 4,
+    lineNumbers: true,
+    children: Array.from(
+      { length: 16 },
+      (_, index) => `const token${index + 1} = "var(--semantic-color-surface-panel)";`,
+    ).join("\n"),
   },
 };
 

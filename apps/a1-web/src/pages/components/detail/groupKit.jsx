@@ -235,5 +235,68 @@ export function createGroupModule({ Component, componentName, multiple }) {
     }
   }
 
-  return { getDefaultConfig, Preview, Controls, Snippet }
+  const jsonType = componentName
+
+  function toJson(config) {
+    const props = {}
+    if (config.label) props.label = config.label
+    if (config.hint) props.hint = config.hint
+    if (config.error) props.error = config.error
+    if (config.size && config.size !== 'default') props.size = config.size
+    if (config.inline) props.inline = true
+    if (config.required) props.required = true
+    if (config.disabled) props.disabled = true
+
+    const options = normalizeOptions(config.options).map((option) => ({
+      value: option.id,
+      label: option.label || 'Untitled',
+      ...(option.hint ? { hint: option.hint } : {}),
+      ...(option.disabled ? { disabled: true } : {}),
+    }))
+    if (options.length > 0) props.options = options
+
+    const defaultValue = selectedIds(normalizeOptions(config.options))
+    if (multiple && Array.isArray(defaultValue) && defaultValue.length > 0) props.defaultValue = defaultValue
+    if (!multiple && typeof defaultValue === 'string') props.defaultValue = defaultValue
+
+    return { node: { id: `${componentName.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/^-/, '')}-1`, type: jsonType, props } }
+  }
+
+  function fromJson(node) {
+    const config = getDefaultConfig()
+    const props = node.props ?? {}
+    if (typeof props.label === 'string') config.label = props.label
+    if (typeof props.hint === 'string') config.hint = props.hint
+    if (typeof props.error === 'string') config.error = props.error
+    if (['comfortable', 'default', 'compact'].includes(props.size)) config.size = props.size
+    config.inline = props.inline === true
+    config.required = props.required === true
+    config.disabled = props.disabled === true
+
+    const selected = multiple
+      ? new Set(Array.isArray(props.defaultValue) ? props.defaultValue.filter((value) => typeof value === 'string') : [])
+      : new Set(typeof props.defaultValue === 'string' ? [props.defaultValue] : [])
+    if (Array.isArray(props.options) && props.options.length > 0) {
+      const seen = new Set()
+      config.options = props.options
+        .filter((option) => option && typeof option === 'object' && typeof option.value === 'string')
+        .map((option, index) => {
+          let id = option.value
+          if (seen.has(id)) id = `${id}-${index + 1}`
+          seen.add(id)
+          return {
+            id,
+            label: typeof option.label === 'string' ? option.label : `Option ${index + 1}`,
+            hint: typeof option.hint === 'string' ? option.hint : '',
+            disabled: option.disabled === true,
+            selected: selected.has(option.value),
+          }
+        })
+      if (config.options.length === 0) config.options = getDefaultConfig().options
+    }
+    config.openItems = []
+    return config
+  }
+
+  return { getDefaultConfig, Preview, Controls, Snippet, jsonType, toJson, fromJson }
 }

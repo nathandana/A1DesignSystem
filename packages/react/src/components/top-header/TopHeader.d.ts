@@ -43,8 +43,12 @@ export interface TopHeaderProps extends React.HTMLAttributes<HTMLElement> {
   navItems?: TopHeaderNavItem[];
   /** Trailing action buttons/menus (icon buttons with optional dropdowns). */
   actions?: TopHeaderAction[];
-  /** Login affordance rendered after the actions. */
-  loginButton?: React.ReactNode;
+  /**
+   * Login affordance rendered after the actions as a small primary Button.
+   * Pass `{ label, onClick }` (label defaults to "Log in"), or a plain string
+   * used as the label — the JSON-safe form used by page definitions.
+   */
+  loginButton?: string | { label?: string; onClick?: React.MouseEventHandler<HTMLButtonElement> };
   /**
    * Position of nav-item icons relative to their labels, or "hidden" to
    * suppress nav items at that breakpoint. Accepts a single value or a
