@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2023",
+    "types": ["@figma/plugin-typings"]
+  },
+  "include": [
+    "plugins/a1-json/src/**/*.js",
+    "plugins/a1-json/src/**/*.ts",
+    "plugins/a1-json/tests/**/*.mjs",
+    "plugins/a1-json/scripts/**/*.mjs"
+  ]
+}

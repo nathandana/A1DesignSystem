@@ -94,9 +94,7 @@
                   "id": "card-responsive-one",
                   "type": "Card",
                   "props": {
-                    "icon": "looks_one",
-                    "iconDisplay": "hero",
-                    "heroColor": "success"
+                    "icon": "looks_one"
                   },
                   "children": [
                     {
@@ -130,7 +128,6 @@
               "id": "card-responsive-two",
               "type": "Card",
               "props": {
-                "bare": true,
                 "icon": "looks_two"
               },
               "children": [

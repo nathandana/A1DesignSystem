@@ -25,10 +25,10 @@ export default {
   metadata: {
     props: {
       visualStates: ["Sort"],
-      omittedProps: ["size", "zebra", "selectable", "search", "pagination", "notices", "scrollable", "onSelectionChange", "className"],
+      omittedProps: ["size", "selectable", "search", "pagination", "notices", "scrollable", "onSelectionChange", "className"],
       figmaGaps: [
-        "The Figma component is the default density only — compact/comfortable, zebra striping, row selection, search, pagination, notice rows, column types (image, etc.), and the mobile-cards layout are runtime-owned.",
-        "Columns/rows are composed from Data Table Header Cell (Sort=none|unsorted|ascending|descending × Align=start|end) and Data Table Cell (Align=start|end) instances; data is runtime, so the template emits a representative columns/rows model.",
+        "The Figma component is the default density only — compact/comfortable density, row selection, search, pagination, notice rows, column renderer functions, and the mobile-cards layout are runtime-owned.",
+        "Columns are composed from Data Table Column components. Each column owns one Data Table Header Cell and a Cell Slot of Data Table Cell instances; zebra is represented by the Data Table Cell stripe variant.",
         "The last row's bottom hairline is dropped via an instance stroke override, mirroring tbody tr:last-child td.",
       ],
     },

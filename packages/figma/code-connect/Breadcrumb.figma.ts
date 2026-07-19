@@ -4,9 +4,11 @@
 import figma from "figma";
 
 const instance = figma.selectedInstance;
-const variant = instance.getEnum("Variant", {
-  default: "default",
-  back: "back",
+const container = instance.getEnum("Container", {
+  sm: "sm",
+  md: "md",
+  lg: "lg",
+  xl: "xl",
 });
 const backLabel = instance.getString("Back label") || "Back";
 
@@ -14,7 +16,7 @@ function escapeAttr(value: string) {
   return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
-const backProp = variant === "back" && backLabel !== "Back" ? `\n  backLabel="${escapeAttr(backLabel)}"` : "";
+const backProp = container === "sm" && backLabel !== "Back" ? `\n  backLabel="${escapeAttr(backLabel)}"` : "";
 
 export default {
   id: "a1-breadcrumb",
@@ -28,11 +30,11 @@ export default {
 />`,
   metadata: {
     props: {
-      visualStates: ["Variant"],
+      visualStates: ["Container"],
       omittedProps: ["className", "style", "onClick", "aria-*"],
       figmaGaps: [
-        "The item list is composed from Breadcrumb Item instances (Type=link|current|ancestor) with / separators; item labels/hrefs are runtime data, so the template emits a representative items array.",
-        "Variant=back shows the <480px container form React switches to automatically — it is a preview, not a prop.",
+        "The trail is a real Items Slot of Breadcrumb Item instances (Type=link|current|ancestor); each item carries its own leading / separator via Show separator (off on the first item). Item labels/hrefs are runtime data, so the template emits a representative items array.",
+        "Container variants preview the 480px container query on the documented container-query scale (sm 320 / md 480 / lg 640 / xl 960), widths bound to the Container collection's container/width/preview — Container=sm shows the back-link form; the axis emits no React prop.",
       ],
     },
   },

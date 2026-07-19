@@ -1,0 +1,15 @@
+{
+  "name": "A1 JSON Dev Mode POC",
+  "id": "a1-design-system-dev-json-poc",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "dev"],
+  "capabilities": ["codegen"],
+  "codegenLanguages": [
+    {
+      "label": "A1 JSON",
+      "value": "a1-json"
+    }
+  ],
+  "documentAccess": "dynamic-page"
+}

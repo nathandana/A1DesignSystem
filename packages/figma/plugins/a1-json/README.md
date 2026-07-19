@@ -35,7 +35,8 @@ auto-layout Frames that map to **Stack** or native Figma **Grid**.
   Playground with its payload prefilled. The local bridge keeps the open
   Playground in sync with later plugin exports; it opens a named tab only when
   no Playground is listening. Start `npm run codex:bridge:a1-web` before using
-  this flow. The development target is configured by `A1_WEB_BASE` in `ui.html`.
+  this flow. The development target is configured by `A1_WEB_BASE` in
+  `src/ui.html`.
 
 - **Live view (optional)** — turn on the **Live view** checkbox to stream
   debounced Figma document changes to the local Playground. It keeps the active
@@ -46,12 +47,30 @@ auto-layout Frames that map to **Stack** or native Figma **Grid**.
   sending updates.
 
 - **A1 Pure styling** — the plugin UI is styled with the real A1 Pure library
-  as a showcase: `sync-ui-css.mjs` inlines `packages/pure/dist/a1-light.css` +
-  `a1-pure.css` into `ui.html` (Figma plugin iframes cannot load external
-  stylesheets). The mode tabs are a Pure Segmented Control, buttons/fields use
-  the Pure classes, and only app-shell layout plus the status banner are
-  plugin-local CSS (token-driven). Re-run `npm run figma:plugin:sync-css`
-  after any token or a1-pure change.
+  as a showcase. Edit `src/ui.html`; `npm run figma:plugin:build` generates
+  `dist/ui.html` and inlines `packages/pure/dist/a1-light.css` +
+  `a1-pure.css` because Figma plugin iframes cannot load external stylesheets.
+  The mode tabs are a Pure Segmented Control, buttons/fields use the Pure
+  classes, and only app-shell layout plus the status banner are plugin-local
+  CSS (token-driven). The legacy `npm run figma:plugin:sync-css` command now
+  delegates to the build.
+
+## Development
+
+Import `packages/figma/plugins/a1-json/manifest.json` in Figma. The manifest
+loads generated files from `dist/`; edit files in `src/` and rebuild. The build
+also injects `a1-library-manifest.json` into `dist/code.js`, so published Figma
+library keys have one checked-in source. Pure helper modules under `src/pure/`
+may be imported by `src/code.js`; the build inlines them so Figma still receives
+a single controller file.
+
+| Task | Command |
+|------|---------|
+| Build plugin artifacts | `npm run figma:plugin:build` |
+| Watch source and CSS inputs | `npm run figma:plugin:watch` |
+| Typecheck with official Figma typings | `npm run figma:plugin:typecheck` |
+| Run plugin tests | `npm run figma:plugin:test` |
+| Build, typecheck, test, and check generated output | `npm run figma:plugin:check` |
 
 - **Local Playground handoff** — with this plugin already open, start
   `npm run codex:bridge:a1-web` and choose **Send to Figma** in the local
@@ -123,7 +142,7 @@ auto-layout Frames that map to **Stack** or native Figma **Grid**.
 | Page Layout | `PageLayout` | v1 app shell: the nested Top Header exports as the first child (full Top Header bridge) and the Page Content Slot's contents as the remaining `children`; import/update applies TopHeader props to the nested instance and renders content into the slot. Exported `showHeader/showSidebar/showFooter: false` are playground-preview flags. Sidebar/aside/footer slots, sticky header, and viewport-height behavior remain runtime-owned. |
 | Chip / Chip Group | `ChipGroup` | Group label, first-chip size, and the ordered Chip slot as `items` with per-item `selected` / `disabled` / `menu` flags (a caret marks a menu chip; the group `behavior` selection semantic is never inferred from visuals). Import/update reconciles Chip instances in the slot and honors explicit item states over the first-chip demo selection. A lone Chip exports as a one-item ChipGroup. Menu contents and navigation hrefs stay runtime-owned and warn. |
 | Choice Group | `ChoiceGroup` | Legend/required/helper plus `options` from the Choice Option tiles in the Options slot (label, subtext, icon, disabled; selected tiles → `defaultValue`; checkbox tiles → `multiple`; first-tile density → `size`). An **embedded Grid** inside the slot is detected — native GRID column counts or responsive `{xs:n, md:n}` plugin-Grid metadata export as `columns`, and import/update syncs the grid's responsive metadata back. Tile reconciliation (1–20) targets the embedded grid when present. `inlineIcon`, `hideIndicator`, `sections`, and error/success messages warn as runtime-owned. |
-| Data Table | `DataTable` | Columns from the visible header cells (label, sortable, end alignment, `defaultSort` from the sorted header) and rows from the visible cell values. Import/update maps up to the fixed 4×4 grid — extra JSON columns/rows warn; unused headers, columns, and rows are hidden and the last visible row drops its hairline. Density, zebra, selection, search, pagination, notices, and column renderers are runtime-owned. |
+| Data Table | `DataTable` | Columns from Data Table Column instances (nested Header Cell label/sort/align) and rows from each column's visible Data Table Cell values. Import/update reconciles the Columns Slot and each column's Cell Slot (up to 10 columns × 20 rows), applies the Data Table Cell `stripe` variant when `props.zebra` is true, and drops the last visible row hairline. Density, selection, search, pagination, notices, mobile cards, and rich column renderers remain runtime-owned. |
 | Authored auto-layout Frame | `Stack` | Vertical/horizontal direction, A1 gap scale, cross-axis alignment, primary-axis distribution, horizontal wrap, grow, supported child node order, Hug-height default, and fill-width placement when nested in auto layout. |
 | Authored Grid auto-layout Frame | `Grid` | Fixed column count, flexible fill-width tracks, A1-scale row/column gaps, cross-axis alignment, and supported child node order. |
 
@@ -156,7 +175,7 @@ warning instead of selecting an arbitrary option.
 - **Button Container:** Figma has no container-query property, so the asset documents rather than automatically performs the React 480px stacked-to-row transition. Only `align` and Button Slot children round-trip. `size` and `fillButtons` are intentionally unsupported. When JSON has the same number of actions as the representative slot, the bridge updates the real Button instances and keeps the container attached. A native Slot can also change action count without detaching; a legacy frame-based Slot detaches only when it must add or remove actions.
 - **Icon Button:** the asset maps `variant`, `size`, `label` through its `Aria label` text property, and one Material Symbols `icon` through an instance swap. The required JSON `icon` falls back to the asset's visible `star` glyph only when a selected library copy cannot resolve its nested icon. Disabled, anchor/link rendering (`as`, `href`, `target`, `rel`), handlers, classes, and DOM IDs remain runtime-only.
 - **Card:** the compact asset maps `surface`, the normal inline `icon`, and its native Content Slot. Navigation, hero/status, and non-default `iconDisplay` behavior remain React-only; an unsupported display mode is represented by the inline icon with a warning.
-- **Banner:** the Figma asset maps its 3 visual variants × 5 statuses, title, calendar date fields, and ordered `Content Slot` children. `icon`, action controls, dismissal behavior, and live announcement semantics are runtime-only; the bridge reports them instead of inventing a static Figma approximation. Native Figma Slot authoring is not exposed through the plugin API, so Banner uses an explicitly named, zero-padding content frame as its bridge slot. Figma also rejects adding children to that frame while it is inside an instance: when JSON supplies content, the bridge applies visual properties, detaches the instance, tags the editable frame as `Banner`, and preserves the JSON contract for later export. Rerender that frame to change its visual Banner properties.
+- **Banner:** the Figma asset maps its 3 visual variants × 5 statuses, title, calendar date fields, an `Icon` instance-swap property backed by local A1 icon components, and ordered `Content Slot` children. Action controls, dismissal behavior, and live announcement semantics remain runtime-only; the bridge reports them instead of inventing a static Figma approximation. Native Figma Slot authoring is not exposed through the plugin API, so Banner uses an explicitly named, zero-padding content frame as its bridge slot. Figma also rejects adding children to that frame while it is inside an instance: when JSON supplies content, the bridge applies visual properties, detaches the instance, tags the editable frame as `Banner`, and preserves the JSON contract for later export. Rerender that frame to change its visual Banner properties.
 - **Badge:** the compact asset maps `status`, `subtle`, `sm`/`md`/`lg` size, label, and a configurable nested **Material icon** instance. `icon: null` maps to the Figma `Show icon` control. An icon name must exist as a Material icon component in the Figma library; otherwise the bridge keeps the status default and reports a warning.
 - **Grid:** Figma's native Grid maps fixed/responsive columns, row/column gaps, cross-axis alignment, and direct-child column/row spans. Spanned children export as `GridItem` wrappers with `span` / `rowSpan`; imported `GridItem` children apply the active breakpoint preview back to Figma's native span fields. Off-scale gutters export as the closest supported A1 gap. Custom track sizes and manual placement remain runtime-only/static-layout limits; child order is preserved and a warning identifies omitted manual placement.
 - **Figure:** Figma does not load arbitrary external URLs into an image fill. The bridge preserves `src`, `alt`, and caption as component properties. Its compact `2xs`–`xl` size values set only the Figure's maximum width (128 / 192 / 320 / 480 / 640 / 800 px); they do not alter the media geometry. Each `16:9` / `4:3` / `1:1` / `3:4` / `9:16` variant locks the nested Image layer to that ratio. The local-only handoff is the exception: it transfers Image Library PNG/JPEG/GIF bytes into the nested Image fill (or back into the local library) while retaining an `a1img://…` JSON reference. Unsupported React size/ratio values warn. Cropping and layout props remain React-only.
@@ -236,7 +255,8 @@ warning instead of selecting an arbitrary option.
 ## Adding a component
 
 The public Figma component must first have a stable counterpart in the A1
-page-definition registry. Add its exporter, importer, and in-place applier to
-the `EXPORTERS`, `IMPORTERS`, and `APPLIERS` registries in `code.js`, then
-document exact property and runtime gaps in
+page-definition registry. For now, add its exporter, importer, and in-place
+applier through the `COMPONENT_ADAPTERS` descriptor list in `src/code.js`; the
+legacy `EXPORTERS`, `IMPORTERS`, and `APPLIERS` maps are generated from those
+descriptors. Then document exact property and runtime gaps in
 `packages/react/ai/figma-workflow.md` and this file.

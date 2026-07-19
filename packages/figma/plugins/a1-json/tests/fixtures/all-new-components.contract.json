@@ -617,11 +617,8 @@
               "id": "card-plugin-accent",
               "type": "Card",
               "props": {
-                "variant": "navigation",
                 "surface": "accent",
-                "icon": "star_border",
-                "iconDisplay": "hero",
-                "heroColor": "info"
+                "icon": "star_border"
               },
               "children": [
                 {

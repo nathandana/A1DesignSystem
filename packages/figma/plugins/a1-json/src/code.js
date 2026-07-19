@@ -23,15 +23,208 @@
 //
 // Run via Plugins > Development > Import plugin from manifest.
 
+import {
+  A1_BREAKPOINTS,
+  A1_BREAKPOINT_WIDTHS,
+  breakpointForWidth,
+  collectAuthoredBreakpoints,
+  formatResponsiveGridColumns,
+  normalizeResponsiveColumns,
+  parseResponsiveGridColumnsName,
+  responsiveColumnsAt,
+  responsiveGridItemSpanAt,
+  responsiveGridName,
+  stripResponsiveGridColumnsName,
+} from './pure/breakpoints.js';
+import {
+  addSharedAuditIssue,
+  createSharedAuditReport,
+  finalizeSharedAuditReport,
+} from '../../../shared/audit-core.js';
+import {
+  AUDIT_SEVERITY,
+  auditA1CoverageCount,
+  auditReportFindings,
+  auditReportMetrics,
+  auditReportRecommendations,
+  auditReportSummary,
+  compactWarningMessage,
+  compactWarnings,
+  normalizeAuditIssueKey,
+  warningText,
+} from './pure/audit.js';
+import {
+  canonicalKey,
+  compactKey,
+  componentNameCandidatesForAliases,
+  figmaComponentNameMatchesForAliases,
+} from './pure/name-matching.js';
+import {
+  addDefaultTemplateWithId,
+  collectSupportedNodes,
+  componentId,
+  pageTitleFromFigmaFrame,
+  slugifyOptionValue,
+} from './pure/page-definition.js';
+import {
+  componentSourceFromImported,
+  findComponent,
+  findComponentSet,
+  findComponentSource,
+  sourceComponentSet,
+  sourceMatchesA1ComponentName,
+  sourceMatchesA1ComponentSetName,
+  sourceMatchesA1StandaloneComponentName,
+  sourceStandaloneComponent,
+} from './figma/component-source.js';
+import {
+  applyQueuedProperties,
+  componentProperty,
+  componentPropertyFromNames,
+  componentPropertyValue,
+  componentSetName,
+  iconNameFromEditableText,
+  iconNameFromTextValue,
+  iconSwapProperty,
+  iconSwapPropertyValue,
+  iconTextLayerValue,
+  iconTextProperty,
+  iconTextPropertyValue,
+  plainKey,
+  queueComponentProperty,
+  queueIconSwapProperty,
+  queueIconTextProperty,
+  queueOptionalComponentProperty,
+  readProperties,
+} from './figma/component-properties.js';
+import {
+  applyCollectionMode,
+  applyCollectionModeToTree,
+  bindGapProperty,
+  clearCollectionMode,
+  collectionForRoot,
+  collectionHasModes,
+  collectionModeByName,
+  collectionModeName,
+  explicitCollectionMode,
+  ensureGapFloatVariable,
+  gapNeedsVariableBinding,
+  importConfiguredFloatVariable,
+  localCollection,
+  localFloatVariables,
+  propertyHasBoundVariable,
+  pushGapVariableWarning,
+  resolvedCollectionsForRoot,
+  variableModeNodes,
+} from './figma/variables-and-styles.js';
+import {
+  DISPLAY_FONT_SIZES,
+  DISPLAY_SIZES,
+  HEADING_FONT_SIZES,
+  HEADING_SIZES,
+  PARAGRAPH_FONT_SIZES,
+  PARAGRAPH_SIZES,
+  colorDistance,
+  conversionTextAlignment,
+  currentTextNode,
+  exportTextNode,
+  firstSolidTextPaint,
+  headingElementForSize,
+  inferredLinkWeight,
+  inferredTextFamily,
+  inlineLinkRanges,
+  isBlackPaint,
+  isBluePaint,
+  isBlueUnderlinedText,
+  isLinkColorVariable,
+  linkTextSuggestion,
+  looseNameMatch,
+  nearestTextColorToken,
+  nearestTextSize,
+  nearestTextSizeDistance,
+  paintUsesLinkColor,
+  resolvedVariableColor,
+  textAlignment,
+  textColorToken,
+  textColorTokenFromVariable,
+  textFontStyleName,
+  textLayerNameSuggestsHeading,
+  textLayerPlainContent,
+  textLooksLikeHeading,
+  textLooksLikeShortTitle,
+  textStyleName,
+  textSuggestion,
+  textUsesLinkColor,
+  visibleSolidTextPaint,
+} from './figma/text-and-fonts.js';
+import {
+  layoutHeightMode,
+  layoutWidthMode,
+  syncAutoLayoutOwnSizingMode,
+  syncLayoutHeightMode,
+  syncLayoutWidthMode,
+  trySetLayoutProperty,
+} from './figma/layout.js';
+import {
+  componentBoolean,
+  componentText,
+  namedSlot,
+  nativeSlot,
+} from './figma/slots.js';
+import {
+  commonParent,
+  liveNode,
+  resolveNodeById,
+  resolveNodeByIdAsync,
+  safeParent,
+  selectionBoundsInParent,
+  selectedNodesInParentOrder,
+  stackFlowChildren,
+  topLevelSelectionNodes,
+} from './figma/selection.js';
+import {
+  exportBadge,
+  applyBadge,
+  importBadge,
+  badgeContextForSelection,
+  exportSwitch,
+  applySwitch,
+  importSwitch,
+  exportTooltip,
+  applyTooltip,
+  importTooltip,
+  exportCode,
+  applyCode,
+  importCode,
+  exportInline,
+  applyInline,
+  importInline,
+  exportDivider,
+  applyDivider,
+  importDivider,
+} from './adapters/atomic.js';
+import { buttonNodeFromFigma } from './shared/codegen.js';
+
 // ─── A1 contract (packages/react/src/components/button/Button.d.ts) ─────────
 
 const BUTTON_VARIANTS = ['primary', 'secondary', 'tertiary', 'destructive', 'success'];
 const BUTTON_SIZES = ['sm', 'md', 'lg'];
+const BUTTON_CONTEXT_STATES = ['default', 'disabled', 'loading'];
+const BUTTON_CONTEXT_ICON_MODES = ['hide', 'show'];
+const BUTTON_CONTEXT_WIDTH_MODES = ['hug', 'fill'];
+const BUTTON_FULL_WIDTH_NAME_PATTERN = /\s*(?:[-–—]\s*)?\{\s*fullWidth\s*:\s*(true|false)\s*\}\s*$/i;
+const GRID_CONTEXT_WIDTH_MODES = ['hug', 'fill'];
 const ICON_BUTTON_VARIANTS = ['tertiary', 'secondary', 'destructive', 'success'];
 const ICON_BUTTON_SIZES = ['sm', 'md', 'lg'];
 const ICON_SIZES = ['xs', 'sm', 'md', 'lg', 'xl', 'jumbo', 'xJumbo'];
 const ICON_SIZE_PIXELS = { xs: 16, sm: 20, md: 24, lg: 32, xl: 40, jumbo: 64, xJumbo: 96 };
 const BUTTON_CONTAINER_ALIGNS = ['start', 'center', 'end'];
+const BUTTON_CONTAINER_QUERY_WIDTH = 480;
+const BUTTON_CONTAINER_DIRECTION_PROPERTY_NAMES = ['Direction', 'direction', 'containerWidth', 'Container Width', 'ContainerWidth'];
+const BUTTON_CONTAINER_DIRECTION_VARIANTS = {
+  inline: ['inline (>480)', 'Inline (>480)', 'inline', 'Inline', 'row', 'Row', 'horizontal', 'Horizontal', 'wide', 'Wide', 'lg', 'LG', 'xl', 'XL'],
+  stacked: ['stacked (<480)', 'Stacked (<480)', 'stacked', 'Stacked', 'column', 'Column', 'vertical', 'Vertical', 'narrow', 'Narrow', 'xs', 'XS', 'sm', 'SM'],
+};
 // Figma-only inspection states that have no React prop (see
 // packages/react/ai/figma-workflow.md, Button gap table).
 const VISUAL_ONLY_STATES = ['hover', 'focus', 'pressed'];
@@ -97,6 +290,11 @@ const GROUP_SIZES = ['comfortable', 'default', 'compact'];
 const DIALOG_SIZES = ['sm', 'md', 'lg', 'xl'];
 const DIALOG_STATUSES = ['none', 'success', 'error', 'warn', 'info', 'neutral'];
 const CARD_SURFACES = ['default', 'accent'];
+const CARD_VARIANTS = ['default', 'navigation', 'bare'];
+const CARD_ICON_DISPLAYS = ['none', 'default', 'hero'];
+const CARD_HERO_COLORS = ['action', 'neutral', 'info', 'success', 'warn', 'error'];
+const CARD_ICON_START_MIN_WIDTH = 640;
+const BREADCRUMB_TRAIL_MIN_WIDTH = 480;
 const BADGE_STATUSES = ['neutral', 'info', 'success', 'warn', 'error'];
 const BADGE_SIZES = ['sm', 'md', 'lg'];
 const BADGE_DEFAULT_ICONS = {
@@ -109,11 +307,29 @@ const BADGE_DEFAULT_ICONS = {
 const BLOCKQUOTE_VARIANTS = ['border', 'filled', 'feature', 'minimal', 'accent', 'pull', 'ruled'];
 const BANNER_VARIANTS = ['inline', 'system', 'calendar'];
 const BANNER_STATUSES = ['neutral', 'info', 'success', 'warn', 'error'];
+const BANNER_DEFAULT_ICONS = {
+  neutral: 'info',
+  info: 'info',
+  success: 'check_circle',
+  warn: 'warning',
+  error: 'error',
+};
 const DEFINITION_LIST_DIRECTIONS = ['row', 'column'];
 const DEFINITION_LIST_SIZES = ['sm', 'md', 'lg'];
 const LINK_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 const LINK_WEIGHTS = ['normal', 'medium', 'semibold', 'bold'];
 const LINK_ICON_POSITIONS = ['start', 'end'];
+const ICON_SWAP_PROPERTY_NAMES = [
+  'Icon',
+  'icon',
+  'Material icon',
+  'Material Icon',
+  'Nav icon',
+  'Leading icon',
+  'Trailing icon',
+  'Glyph',
+  'Symbol',
+];
 // The Figma Figure asset intentionally uses a compact subset of React's
 // larger size/ratio surface to avoid a 64-variant matrix.
 const FIGURE_SIZES = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'];
@@ -131,10 +347,16 @@ const GROUP_SLOT_CONFIG = {
   TopHeader: { slotName: 'Nav Items', min: 0, max: 8 },
   TopHeaderActions: { slotName: 'Actions', min: 0, max: 6 },
   ChipGroup: { slotName: 'Chip slot', min: 1, max: 12 },
+  Breadcrumb: { slotName: 'Items Slot', min: 1, max: 8 },
 };
 const STACK_DIRECTIONS = ['column', 'column-reverse', 'row', 'row-reverse'];
+const STACK_CONTEXT_DIRECTIONS = ['column', 'row'];
 const STACK_ALIGNS = ['stretch', 'start', 'center', 'end', 'baseline'];
+const STACK_CONTEXT_ALIGNS = ['stretch', 'start', 'center', 'end'];
 const STACK_JUSTIFIES = ['start', 'center', 'end', 'between', 'around', 'evenly'];
+const STACK_CONTEXT_JUSTIFIES = ['start', 'center', 'end', 'between'];
+const STACK_CONTEXT_GAPS = ['none', 'xs', 'sm', 'md', 'lg', 'xl'];
+const STACK_CONTEXT_WIDTH_MODES = ['hug', 'fill'];
 const STACK_GAPS = [0, 1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 64, 96, 128];
 const STACK_SEMANTIC_GAPS = { xs: 8, sm: 12, md: 16, lg: 24, xl: 40 };
 const STACK_GAP_VARIABLE_NAMES = {
@@ -159,286 +381,157 @@ const STACK_ALIGN_FROM_FIGMA = { MIN: 'start', CENTER: 'center', MAX: 'end', BAS
 const STACK_ALIGN_TO_FIGMA = { start: 'MIN', center: 'CENTER', end: 'MAX', baseline: 'BASELINE' };
 const STACK_JUSTIFY_FROM_FIGMA = { MIN: 'start', CENTER: 'center', MAX: 'end', SPACE_BETWEEN: 'between' };
 const STACK_JUSTIFY_TO_FIGMA = { start: 'MIN', center: 'CENTER', end: 'MAX', between: 'SPACE_BETWEEN' };
-const SUPPORTED_COMPONENT_MESSAGE = 'Icon, Button, Icon Button, Button Container, Link, Breadcrumb, Card, Banner, Badge, Chip, Chip Group, Figure, Definition List, Blockquote, Code, Inline, Section, Bottom Sheet, Text Field, Search Field, Textarea, Select, Switch, Segmented Control, Tabs, Accordion, Tooltip, Pagination, Empty State, Divider, Menu, Dialog, Radio Group, Checkbox Group, Page Nav, Tree Menu, Top Header, Page Layout, Stack and Grid auto-layout frames, and standalone styled text';
 const LOCAL_FIGMA_IMAGE_MAX_BYTES = 4_000_000;
 const DETACHED_COMPONENT_NAMESPACE = 'a1_json';
 const DETACHED_COMPONENT_KEY = 'componentName';
 const DETACHED_BANNER_PROPS_KEY = 'bannerProps';
 const GRID_RESPONSIVE_COLUMNS_KEY = 'gridResponsiveColumns';
 const A1_BREAKPOINT_KEY = 'a1Breakpoint';
+const ACTION_TRIGGER_TARGET_KEY = 'actionTriggerTarget';
+const DIALOG_TRIGGER_TARGET_KEY = 'dialogTriggerTargetNodeId';
+const LEGACY_BUTTON_DIALOG_TARGET_KEY = 'buttonDialogTargetNodeId';
+const ACTION_TRIGGER_COMPONENT_NAMES = new Set(['Button', 'Icon Button']);
+const ACTION_TRIGGER_TARGET_TYPES = new Set(['Dialog', 'Menu']);
+const ACTION_TRIGGER_TARGET_CONFIG = {
+  Dialog: { actionType: 'openDialog', addTarget: 'dialog', defaultLabel: 'Dialog' },
+  Menu: { actionType: 'openMenu', addTarget: 'menu', defaultLabel: 'Menu' },
+};
+const ACTION_TRIGGER_TYPE_BY_ACTION = Object.fromEntries(
+  Object.entries(ACTION_TRIGGER_TARGET_CONFIG).map(([targetType, config]) => [config.actionType, targetType])
+);
+const ACTION_TRIGGER_NAME_PATTERN = /\s*\{\s*trigger\s*[=:]\s*([^}]+?)\s*\}\s*$/i;
+let activeActionTargetImportContext = null;
 const A1_LIBRARY_MANIFEST_STORAGE_KEY = 'a1_figma_library_manifest_v1';
 const A1_COMPONENT_KEY_REGISTRY_STORAGE_KEY = A1_LIBRARY_MANIFEST_STORAGE_KEY;
-const A1_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
-const A1_BREAKPOINT_WIDTHS = { xs: 480, sm: 640, md: 1024, lg: 1440, xl: 1600 };
 const INLINE_ELEMENTS = ['all', 'strong', 'b', 'em', 'i', 'u', 's', 'del', 'ins', 'mark', 'small', 'sub', 'sup', 'abbr', 'cite', 'q', 'time', 'code', 'kbd', 'samp', 'var', 'muted', 'accent'];
 let localFigureAssets = new Map();
 let activeRenderBreakpoint = '';
 let clientComponentKeyRegistryPromise = null;
 const gapVariableWarnings = new Set();
-const JSON_TYPE_BY_COMPONENT_NAME = {
-  'Icon Button': 'IconButton',
-  'Button Container': 'ButtonContainer',
-  Select: 'SelectField',
-  Badge: 'MessageBadge',
-  Breadcrumb: 'Breadcrumb',
-  'Definition List': 'DefinitionList',
-  Code: 'Code',
-  Inline: 'Inline',
-  'Text Field': 'TextField',
-  'Search Field': 'SearchField',
-  Textarea: 'TextareaField',
-  Switch: 'Switch',
-  'Segmented Control': 'SegmentedControl',
-  Tabs: 'Tabs',
-  Accordion: 'Accordion',
-  Tooltip: 'Tooltip',
-  Pagination: 'Pagination',
-  'Empty State': 'MessageEmptyState',
-  'Radio Group': 'RadioGroup',
-  'Checkbox Group': 'CheckboxGroup',
-  'Page Nav': 'PageNav',
-  'Tree Menu': 'TreeMenu',
-  'Top Header': 'TopHeader',
-  'Page Layout': 'PageLayout',
-  'Bottom Sheet': 'BottomSheet',
-  Chip: 'ChipGroup',
-  'Chip Group': 'ChipGroup',
-  'Data Table': 'DataTable',
-  'Choice Group': 'ChoiceGroup',
+
+// One descriptor registry owns the public JSON type, Figma names/aliases, and
+// behavior handlers. The legacy lookup maps below are generated from this list
+// while adapter functions continue to live in this controller.
+const COMPONENT_ADAPTERS = [
+  { jsonType: 'Icon', import: importIcon, figma: [{ name: 'Icon', export: exportIcon, apply: applyIcon }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Button', import: importButton, figma: [{ name: 'Button', export: exportButton, apply: applyButton }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'IconButton', import: importIconButton, figma: [{ name: 'Icon Button', aliases: ['IconButton'], export: exportIconButton, apply: applyIconButton }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'ButtonContainer', import: importButtonContainer, figma: [{ name: 'Button Container', aliases: ['ButtonContainer', 'Button Group', 'ButtonGroup'], export: exportButtonContainer, apply: applyButtonContainer }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'Link', import: importLink, figma: [{ name: 'Link', export: exportLink, apply: applyLink }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Breadcrumb', import: importBreadcrumb, figma: [{ name: 'Breadcrumb', aliases: ['Bread Crumb'], export: exportBreadcrumb, apply: applyBreadcrumb }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Card', import: importCard, figma: [{ name: 'Card', export: exportCard, apply: applyCard }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'Banner', import: importBanner, figma: [{ name: 'Banner', export: exportBanner, apply: applyBanner }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'MessageBadge', import: importBadge, figma: [{ name: 'Badge', aliases: ['Message Badge', 'MessageBadge'], export: exportBadge, apply: applyBadge }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Figure', import: importFigure, figma: [{ name: 'Figure', export: exportFigure, apply: applyFigure }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'DefinitionList', import: importDefinitionList, figma: [
+    { name: 'Definition List', aliases: ['DefinitionList'], export: exportDefinitionList, apply: applyDefinitionList },
+    { name: 'Definition List Item', aliases: ['DefinitionListItem'], export: exportDefinitionListItem },
+  ], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Blockquote', import: importBlockquote, figma: [{ name: 'Blockquote', aliases: ['BlockQuote', 'Block Quote'], export: exportBlockquote, apply: applyBlockquote }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Code', import: importCode, figma: [{ name: 'Code', export: exportCode, apply: applyCode }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Inline', import: importInline, figma: [{ name: 'Inline', aliases: ['Inline Text', 'InlineText'], export: exportInline, apply: applyInline }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Section', import: importSection, figma: [{ name: 'Section', export: exportSection, apply: applySection }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'TextField', import: importTextField, figma: [{ name: 'Text Field', aliases: ['TextField'], export: exportTextField, apply: applyTextField }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'SearchField', import: importSearchField, figma: [{ name: 'Search Field', aliases: ['SearchField'], export: exportSearchField, apply: applySearchField }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'TextareaField', import: importTextarea, figma: [{ name: 'Textarea', aliases: ['Text Area', 'TextareaField', 'Textarea Field'], export: exportTextarea, apply: applyTextarea }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'SelectField', import: importSelect, figma: [{ name: 'Select', aliases: ['SelectField', 'Select Field'], export: exportSelect, apply: applySelect }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Switch', import: importSwitch, figma: [{ name: 'Switch', export: exportSwitch, apply: applySwitch }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'SegmentedControl', import: importSegmentedControl, figma: [{ name: 'Segmented Control', aliases: ['SegmentedControl'], export: exportSegmentedControl, apply: applySegmentedControl }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Tabs', import: importTabs, figma: [{ name: 'Tabs', export: exportTabs, apply: applyTabs }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Accordion', import: importAccordion, figma: [{ name: 'Accordion', export: exportAccordion, apply: applyAccordion }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'Tooltip', import: importTooltip, figma: [{ name: 'Tooltip', export: exportTooltip, apply: applyTooltip }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Pagination', import: importPagination, figma: [{ name: 'Pagination', export: exportPagination, apply: applyPagination }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'MessageEmptyState', import: importEmptyState, figma: [{ name: 'Empty State', aliases: ['EmptyState', 'Message Empty State', 'MessageEmptyState'], export: exportEmptyState, apply: applyEmptyState }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Divider', import: importDivider, figma: [{ name: 'Divider', export: exportDivider, apply: applyDivider }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Menu', import: importMenu, figma: [{ name: 'Menu', export: exportMenu, apply: applyMenu }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Dialog', import: importDialog, figma: [{ name: 'Dialog', export: exportDialog, apply: applyDialog }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'RadioGroup', import: importRadioGroup, figma: [{ name: 'Radio Group', aliases: ['RadioGroup'], export: exportRadioGroup, apply: applyRadioGroup }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'CheckboxGroup', import: importCheckboxGroup, figma: [{ name: 'Checkbox Group', aliases: ['CheckboxGroup'], export: exportCheckboxGroup, apply: applyCheckboxGroup }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'PageNav', import: importPageNav, figma: [{ name: 'Page Nav', aliases: ['PageNav'], export: exportPageNav, apply: applyPageNav }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'TreeMenu', import: importTreeMenu, figma: [{ name: 'Tree Menu', aliases: ['TreeMenu'], export: exportTreeMenu, apply: applyTreeMenu }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'TopHeader', import: importTopHeader, figma: [{ name: 'Top Header', aliases: ['TopHeader'], export: exportTopHeader, apply: applyTopHeader }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'PageLayout', import: importPageLayout, figma: [{ name: 'Page Layout', aliases: ['PageLayout'], export: exportPageLayout, apply: applyPageLayout }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'BottomSheet', import: importBottomSheet, figma: [{ name: 'Bottom Sheet', aliases: ['BottomSheet', 'Bottom Sheet Component'], export: exportBottomSheet, apply: applyBottomSheet }], capabilities: { update: true, children: 'slot' } },
+  { jsonType: 'ChipGroup', import: importChipGroup, figma: [
+    { name: 'Chip', export: exportChip, apply: applyChip },
+    { name: 'Chip Group', aliases: ['ChipGroup'], export: exportChipGroup, apply: applyChipGroup },
+  ], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'DataTable', import: importDataTable, figma: [{ name: 'Data Table', aliases: ['DataTable'], export: exportDataTable, apply: applyDataTable }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'ChoiceGroup', import: importChoiceGroup, figma: [{ name: 'Choice Group', aliases: ['ChoiceGroup'], export: exportChoiceGroup, apply: applyChoiceGroup }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Stack', import: importStack, figma: [], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'Grid', import: importGrid, figma: [], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'GridItem', import: importGridItem, figma: [], capabilities: { update: false, children: 'custom' } },
+  { jsonType: 'Heading', import: importTextNode, figma: [], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Paragraph', import: importTextNode, figma: [], capabilities: { update: true, children: 'none' } },
+];
+
+const FIGMA_LIBRARY_COMPONENT_ALIASES = {
+  'Segmented Control Item': ['SegmentedControl Item', 'SegmentedControlItem'],
+  Tab: ['Tabs Item'],
+  'Tab Item': [],
+  'Menu Item': ['MenuItem'],
+  'Radio Option': ['RadioOption'],
+  'Checkbox Option': ['CheckboxOption'],
+  'Page Nav Item': ['PageNav Item', 'PageNavItem'],
+  'Tree Menu Item': ['TreeMenu Item', 'TreeMenuItem', 'Tree Item', 'TreeItem'],
+  'Top Header Nav Item': ['TopHeader Nav Item', 'TopHeaderNavItem'],
+  'Data Table Header Cell': ['DataTable Header Cell', 'DataTableHeaderCell'],
+  'Data Table Cell': ['DataTable Cell', 'DataTableCell'],
+  'Data Table Column': ['DataTable Column', 'DataTableColumn'],
+  'Choice Option': ['ChoiceOption'],
 };
-const FIGMA_COMPONENT_NAME_ALIASES = {
-  Button: ['Button'],
-  'Icon Button': ['Icon Button', 'IconButton'],
-  'Button Container': ['Button Container', 'ButtonContainer', 'Button Group', 'ButtonGroup'],
-  Link: ['Link'],
-  Breadcrumb: ['Breadcrumb', 'Bread Crumb'],
-  Card: ['Card'],
-  Banner: ['Banner'],
-  Badge: ['Badge', 'Message Badge', 'MessageBadge'],
-  Figure: ['Figure'],
-  'Definition List': ['Definition List', 'DefinitionList'],
-  'Definition List Item': ['Definition List Item', 'DefinitionListItem'],
-  Blockquote: ['Blockquote', 'BlockQuote', 'Block Quote'],
-  Code: ['Code'],
-  Inline: ['Inline', 'Inline Text', 'InlineText'],
-  Section: ['Section'],
-  'Text Field': ['Text Field', 'TextField'],
-  'Search Field': ['Search Field', 'SearchField'],
-  Textarea: ['Textarea', 'Text Area', 'TextareaField', 'Textarea Field'],
-  Select: ['Select', 'SelectField', 'Select Field'],
-  Switch: ['Switch'],
-  'Segmented Control': ['Segmented Control', 'SegmentedControl'],
-  'Segmented Control Item': ['Segmented Control Item', 'SegmentedControl Item', 'SegmentedControlItem'],
-  Tab: ['Tab', 'Tab Item', 'Tabs Item'],
-  'Tab Item': ['Tab Item', 'Tab', 'Tabs Item'],
-  Tabs: ['Tabs'],
-  Accordion: ['Accordion'],
-  Tooltip: ['Tooltip'],
-  Pagination: ['Pagination'],
-  'Empty State': ['Empty State', 'EmptyState', 'Message Empty State', 'MessageEmptyState'],
-  Divider: ['Divider'],
-  Menu: ['Menu'],
-  Dialog: ['Dialog'],
-  'Menu Item': ['Menu Item', 'MenuItem'],
-  'Radio Option': ['Radio Option', 'RadioOption'],
-  'Checkbox Option': ['Checkbox Option', 'CheckboxOption'],
-  'Radio Group': ['Radio Group', 'RadioGroup'],
-  'Checkbox Group': ['Checkbox Group', 'CheckboxGroup'],
-  'Page Nav': ['Page Nav', 'PageNav'],
-  'Page Nav Item': ['Page Nav Item', 'PageNav Item', 'PageNavItem'],
-  'Tree Menu': ['Tree Menu', 'TreeMenu'],
-  'Tree Menu Item': ['Tree Menu Item', 'TreeMenu Item', 'TreeMenuItem', 'Tree Item', 'TreeItem'],
-  'Top Header': ['Top Header', 'TopHeader'],
-  'Top Header Nav Item': ['Top Header Nav Item', 'TopHeader Nav Item', 'TopHeaderNavItem'],
-  'Page Layout': ['Page Layout', 'PageLayout'],
-  'Bottom Sheet': ['Bottom Sheet', 'BottomSheet', 'Bottom Sheet Component'],
-  Chip: ['Chip'],
-  'Chip Group': ['Chip Group', 'ChipGroup'],
-  'Data Table': ['Data Table', 'DataTable'],
-  'Data Table Header Cell': ['Data Table Header Cell', 'DataTable Header Cell', 'DataTableHeaderCell'],
-  'Data Table Cell': ['Data Table Cell', 'DataTable Cell', 'DataTableCell'],
-  'Choice Group': ['Choice Group', 'ChoiceGroup'],
-  'Choice Option': ['Choice Option', 'ChoiceOption'],
-};
+
+function componentRegistryFigmaEntries(adapters) {
+  return adapters.flatMap((adapter) => (adapter.figma || []).map((entry) => ({ ...entry, adapter })));
+}
+
+function componentRegistryMap(adapters, field, keyField = 'name') {
+  return componentRegistryFigmaEntries(adapters).reduce((map, entry) => {
+    if (entry[field]) map[entry[keyField]] = entry[field];
+    return map;
+  }, {});
+}
+
+function componentRegistryImporters(adapters) {
+  return adapters.reduce((map, adapter) => {
+    if (adapter.import) map[adapter.jsonType] = adapter.import;
+    return map;
+  }, {});
+}
+
+function componentRegistryJsonTypes(adapters) {
+  return componentRegistryFigmaEntries(adapters).reduce((map, entry) => {
+    map[entry.name] = entry.adapter.jsonType;
+    return map;
+  }, {});
+}
+
+function componentRegistryAliases(adapters, helperAliases) {
+  const map = {};
+  for (const entry of componentRegistryFigmaEntries(adapters)) {
+    map[entry.name] = [entry.name, ...(entry.aliases || [])];
+  }
+  for (const [name, aliases] of Object.entries(helperAliases)) {
+    map[name] = [name, ...aliases];
+  }
+  return map;
+}
+
+const JSON_TYPE_BY_COMPONENT_NAME = componentRegistryJsonTypes(COMPONENT_ADAPTERS);
+const FIGMA_COMPONENT_NAME_ALIASES = componentRegistryAliases(COMPONENT_ADAPTERS, FIGMA_LIBRARY_COMPONENT_ALIASES);
+const SUPPORTED_COMPONENT_MESSAGE = `${componentRegistryFigmaEntries(COMPONENT_ADAPTERS)
+  .filter((entry) => entry.export)
+  .map((entry) => entry.name)
+  .join(', ')}, Stack and Grid auto-layout frames, and standalone styled text`;
 
 // Figma plugin runtimes can import published library assets by key, but they
 // cannot reliably search enabled libraries by display name. Keep this manifest
 // synced with packages/figma/plugins/a1-json/a1-library-manifest.json after the
 // A1 Design System library is published so consumer files can import real A1
 // components, text styles, and variables without creating local assets.
-const A1_FIGMA_LIBRARY_MANIFEST = {
-  schemaVersion: '1.0',
-  library: {
-    name: 'A1 Design System',
-    fileKey: 'zFjqo3SwHbkXwtCOoQCVMA',
-    updatedAt: '2026-07-16T00:00:00.000Z',
-  },
-  componentSets: {
-    'Page Layout': 'd82ef3aba30e8b4d1d58e3a5ae5707560f541da3',
-    'Top Header': 'b29c94908da66c1e1470579729f621f4ac387ba2',
-    'Top Header Nav Item': '42492a243fd3a676f5280e5b1e5c93a8f8acd473',
-    Section: '68dc12cd4b1ac196b3760d6a2ae4b08de7e6f3e3',
-    Stack: '',
-    Grid: '',
-    Divider: '1ee9483d2205bc0afa3f57c233eaedf63198c931',
-    Heading: '',
-    Paragraph: '',
-    Link: 'a09495424aa0f98e80b1269a132278e125c403b5',
-    Breadcrumb: '',
-    Card: '7e852bd775ddad05b029273190deb4a53495d3c7',
-    Figure: 'aff5652e13cb6683be4bd739418ef44cec3a7697',
-    Blockquote: '5974e12793486e3a14e7c7a2230a3cd0873fe220',
-    Code: '',
-    Inline: '',
-    'Definition List': 'f76746e1de219d521b602fc3f317dd03f114bb21',
-    'Definition List Item': 'ce961eccb8ad3774f4b5d2e152672bdf1a3b67c6',
-    'Empty State': '6c1709cca520d7f8a2f3f9fecf5b3f851c78a835',
-    Badge: '75610ade739d2212122a3c527cc310f7fa5f03e7',
-    Banner: '9fb3f80af9b1ced16081e13f1bfc281f0d638430',
-    'Text Field': '1cd82ac5885adeb99522d00339b419400eb8af78',
-    'Search Field': 'b31a09b374032f1136996829cf0401e3e2e1488b',
-    Textarea: 'e5332238529186823e407d571c5b187005eee330',
-    Select: '69866387be40269a2e0c4562d5aa6ce2f99226fe',
-    Switch: 'd36da4007002b002f37ad6ff696abea5003f8569',
-    'Radio Group': '0de620856257bb4988362cbd1ea58f25d7d8e6d0',
-    'Radio Option': '75223d565ebde535b58dca7c4056c535319be8c8',
-    'Checkbox Group': '9ae5010b086c5b208591a578daeeec298b2365ec',
-    'Checkbox Option': '5492be70b0bb91dad3621d7bd2e5590f239887f7',
-    Button: 'da0f0db105c1ef1dbe698853a3832fe46e360e1f',
-    'Icon Button': '57ac131e905e1128c07357880aef71b5ee4523f5',
-    'Button Container': 'de7e9b9a007d0e846c3e99d8d324d764cbe81868',
-    'Segmented Control': '39d48c57f2b1b51339966db6b5298ba60612f227',
-    'Segmented Control Item': '5fa75519b6e7cdaed489bc3d96ad827c7350c76f',
-    Tab: '226e1f976d34b7c07d1ab9d70847fcb61b47fc75',
-    'Tab Item': '226e1f976d34b7c07d1ab9d70847fcb61b47fc75',
-    Chip: '80ef0f702d4be8336673e1dca8b203ded72d0edf',
-    'Data Table Header Cell': '0306b31325e9efd0285ce4f3bb2cc83cd43ef93b',
-    'Data Table Cell': '13afac0ac9aa20a04ca40da56b1f6e4d3a1a2455',
-    'Choice Option': '14ef0c68c313915551f530b138b8b7ea52de72c2',
-    'Page Nav Item': '114eb38f3b237c2bcebb63eca790051e1fbf81d1',
-    'Tree Menu Item': '9cf319073738842be1669f336043ccd31f67ca68',
-    Pagination: '58ae0a1f6a3f31c19ee3d86bf5874fed431a8127',
-    'Menu Item': '084d9c2f1bea89b00e7d027f2a7ca0a7c9e51fd9',
-    Tooltip: 'bf8663c9aa7880b7083cf7604964c62622b33e69',
-    Accordion: '19499d1ef073b61a2f8b2e9967f647437ff6c41c',
-    Dialog: '8fa31267ebf46c2186f59b353745ba08e63c9fcd',
-  },
-  components: {
-    Tabs: '5d546b02b22c470e9dfbe56681b6702f69a5f902',
-    Menu: 'cc29ada43150ce4a2cf3a6830fbfea00b155e537',
-    'Page Nav': '6717777701583a261a08ae2a5dda2002306ceed9',
-    'Tree Menu': '85b776f9b30d2949efb84865445517993a3777ff',
-    'Bottom Sheet': '',
-    'Chip Group': '9dc343087a890bad29c827b48d451f2c83dead56',
-    'Data Table': '4434a4cbc527493705f2195368e984834fd3a726',
-    'Choice Group': '01023c8436a7328bde010c6e624a32a67ae37cfc',
-    'A1 Audit Report Card': '2f8a918e426ceb3a1cd3587ce289c9ae636f3f3d',
-  },
-  textStyles: {
-    'Body/LG': '9f266ee604b73b55a38874edc7d625a577c9055b',
-    'Body/MD': 'eaff0648ee751d2317d6e98dad0a923600b61330',
-    'Body/SM': '22a35ef10624899ae3799d84ec4d9f2c9f2bf0d1',
-    'Breadcrumb/current': 'd4965a8e0263e1c58493618bd868dcbb339116f8',
-    'Button/lg': '0546dbf0291ae4f538897986bbfcf06b48f2e4a6',
-    'Button/md': '54aa7319053e9a4d202df084a419bbdd713920f9',
-    'Button/sm': '70b097c4740986ffea6d3fcd999f1e8da1c5442f',
-    'Chip/sm': '43c2ffcd79447672a2e98d933e5e3c5cfc9e0dc0',
-    'Chip/md': '5e726918966cecc92f43b9cf89a066744204ca5e',
-    'Chip/lg': '12058f52531347fcff9524c8ebdf9f1f81a01c41',
-    'Chip/Group label': 'a64eb90649ceae389b918f354eb2fe9ef957be7a',
-    'Choice/Label compact': 'c0b444acc47b847cba2a005c1b62829385ece30a',
-    'Choice/Label default': '9520fb4bcded3ad4a6245847b6ee3958f63bb66f',
-    'Choice/Label comfortable': '898ccbf12d47e8d6e3a059cbf158cf23d22b120f',
-    'Choice/Subtext compact': '2284bbadb088c89bc07619aa6d3fa6587433c490',
-    'Code/sm': '77df0cd55fa3cb8ccd6425a702a3e6ae8b34170b',
-    'Data Table/Header': 'db0b4f1dff9c5f8514fe42f9ff47149114489ae5',
-    'Field/Label/LG': 'd862402c7bcb64476bfcd8c6df2062dc7f97dc85',
-    'Field/Label/MD': 'f23c4eea472fdf87a020f05e24c8df9655d87367',
-    'Field/Label/SM': 'a8a66a560c8c76a39cccf9c315e191d5afbb9f1b',
-    'Heading/MD': '4bb109513898fb957c3421b8518e77523510d04b',
-    'Link/lg/bold': 'dbbacce65241cd9d0999828f1da479dec64e1a21',
-    'Link/lg/medium': 'd82cc09fd07ef2d8bd510aa5c13cbaee2abd1fc8',
-    'Link/lg/normal': '2cbd5a6943489d5c53dfdc4fd8cf5228cb425459',
-    'Link/lg/semibold': 'd1d21d92f06bec1e4cb5d5845f25917d22f58c8e',
-    'Link/md/bold': '81738e242b2962648b3b5a944beed0f3a1328d36',
-    'Link/md/medium': '2eb46c66b70625072718cd1e4b6f93eb23c15c7a',
-    'Link/md/normal': 'fcf2edf419640a25aaa3a1ee2a1dedabf15e0978',
-    'Link/md/semibold': 'f68c75c5420168d3abcd42eeb37cf65eade45266',
-    'Link/sm/bold': '4bbaf80a1011b6f6e78b34222f6a00e384c67205',
-    'Link/sm/medium': 'c434bf775bda5adb44604e2de71a6e456265885a',
-    'Link/sm/normal': '83d28cb3d2365bda739f329bc5f0865dbf17e083',
-    'Link/sm/semibold': 'c6cc901d9b82385fce2dadad5213b02388d73192',
-    'Link/xl/bold': '652b808944f45409099c1a727591cd34769a332d',
-    'Link/xl/medium': 'a8c7c1f0da83774e3f4e1681a38568f3c0117b74',
-    'Link/xl/normal': 'acddcc23ece8debe9dbe38d4ceab946be076e2fc',
-    'Link/xl/semibold': '2e7ab77f7ff258575ce4f27651c2c42dd40e0faf',
-    'Link/xs/bold': 'bbeab1475d9de523bc9b430fe44b476a3bb51dbb',
-    'Link/xs/medium': 'db82d3299fc6737932186903e252b6de6edb006a',
-    'Link/xs/normal': '6b2e72b24d33c456edcd87e155bfd50497469a45',
-    'Link/xs/semibold': '71961bf343161091e73d0a9b37210c9bc917ce40',
-    'Menu/Section label': 'ec7de2a34db9144b2a207b250e8c5f7861a0081d',
-    'Nav/Stacked label': 'ae86763616fb6acfc49f8a85dd72c48d69a64375',
-    'Page Nav/Heading': '8e44127bd0bab0f77eafb2a23f3fc5613257b587',
-    'Side Nav/Active label': 'f67ba56ee8a7b4943265449e8bcce816bc08fe4f',
-    'Tab/Label': '3123a295d5712a23364e54b3b763403ee4d3ef74',
-    'Tab/Step number': 'c060acb63f218ce854ef0e270030455618375c0a',
-    'Top Header/Nav label': '5570777b3e535b46f2d936e522f08ab233fc87eb',
-    'body/lg': 'b7296d29c9a7af16269c9ee11e48b9f14277f42e',
-    'body/md': '847de208310f51881fb2e22c44dbe2d0b21ccfa2',
-    'body/sm': '496e9eb43f479d32e62e74c0902e49be9f711841',
-    'body/xl': 'ff20ec67b70091bf3bd7cbb84a72961bcc907b9c',
-    'body/xs': '7c72a7fdc3a3f3f6806e528d2bbfd34ad642cc73',
-    'display/jumbo': '0d590b8204c32a1b3089cd2f9aa8a221f2caafa0',
-    'display/lg': 'daffb3240d5ccd726171d31884b154d6f783eedd',
-    'display/md': '8244c9eb661eae7bb09beda5d91e23a21ded43dc',
-    'display/sm': 'af6d910406fa13d132dc6af5e4c1bab62afa71a4',
-    'display/xJumbo': '7bd1721c9fa6a4bd010fcf4575d255a8a64fe109',
-    'display/xl': '0b46077fa81b5802422fddba1038daaf116fc445',
-    'display/xxl': '79a0d7f1e71e83b1a59af12f572ae29a0176a999',
-    'heading/lg': '8ba6eb9702d59588ed43ac9d7eb02d97c01ce724',
-    'heading/md': 'c89a84184412fbc98606ea7fdfbf55eaa0354976',
-    'heading/sm': '992e824ed56da23e698a994f7c0c1a56f3d19878',
-    'heading/xl': '971b1c66a45ead25eabf148687e54864b58b3be6',
-    'heading/xs': 'bb9c83ef68f2ffd22c8de3fb6976302a61ac743a',
-  },
-  variables: {
-    color: {
-      'color/link/default': '67b3fd5210a7d9c7d55db43a719f701c1a29e16f',
-      'color/link/hover': '78682b349b3866b8dd16bb8fbb98e764e37ede46',
-      'color/link/pressed': 'c584501c8761fca3f271ac32e6f041ca8cf70307',
-      'color/text/accent': '9f8756c1a8aba0a090043e9c8055c755f359dcc3',
-      'color/text/default': 'caedd67fb36f8d52f47f9418468bd4e1e09905ca',
-      'color/text/inverse': '68f1f69eb46ff2e4b46d39c8d73d0c59fa9478ae',
-      'color/text/muted': '5c2fe7ec6ed7e0839e66052090870593adfdcb4c',
-      'link/color': 'e84b98b292b913379f6791354da2cc20aff43500',
-    },
-    float: {
-      'gap/2': '3c0e7bcf606c9c8b58666c56a695e10875567492',
-      'gap/32': 'db75dd6d219d403a893fad87a79535e4d07d3108',
-      'gap/4': '5c0cafd054616f28b0e1bd273dab171d7ff65e89',
-      'gap/lg': '026fe530183b7e8b339f8124a80f5f9cffac0652',
-      'gap/md': 'a49ca80206b1fbd92a69d9f3f9e13beec16a44a4',
-      'gap/none': 'ca54a6f1de50bf862dd5d0d4cfdd675af9c7d5bc',
-      'gap/sm': '29040c6ec3756256e4e581ab5b6ec468aa2eda27',
-      'gap/xl': 'eb6007078b1ede6229d22df313c125ce297f66a1',
-      'gap/xs': 'f4f06ed50620e3ac4dc0c18e0aed5880f3ad2b2c',
-      'spacing/1': '56157c3a9493c8cddf0515fe26afd906faa84bad',
-      'spacing/12': '85641d32fb01545a584ec1998a13f35c005a0949',
-      'spacing/128': 'a4ae61541798a66111b7cb96b700095386553fc3',
-      'spacing/16': 'df5aae6a41feeefae9531ff3c3714cd548f6d398',
-      'spacing/2': '6d3fba326cbd90c0feb5f43b7281706229e6b44d',
-      'spacing/20': '0901786c040daed6f954c94808ffc372004cbe8a',
-      'spacing/24': 'df00806ce0bc1fb98828382240878d06cb95d89e',
-      'spacing/32': 'cbb995b22a0f39f4c2605029d7d72e0a9c6b3f93',
-      'spacing/4': 'a7301a220a40ed552a5d85bd4f2778b175941b9c',
-      'spacing/40': 'f5ad410d19cec163e0506cfa641b61416b7717f2',
-      'spacing/6': 'b383a0d99d1c0004c62d49933222bac77e391bac',
-      'spacing/64': '52f659fc3382d10105f5a051edfac3ea2743e437',
-      'spacing/8': '9f65e2232c3b2956ff2be0832862b099b4d975f6',
-      'spacing/96': '93f0aec4c9ab22bc8303593f4ec8f025627eab8d',
-    },
-  },
-};
+// The build injects packages/figma/plugins/a1-json/a1-library-manifest.json here
+// so published library keys have one checked-in maintenance point.
+const A1_FIGMA_LIBRARY_MANIFEST = __A1_FIGMA_LIBRARY_MANIFEST__;
 const A1_FIGMA_COMPONENT_SET_KEYS = A1_FIGMA_LIBRARY_MANIFEST.componentSets;
 const A1_FIGMA_COMPONENT_KEYS = A1_FIGMA_LIBRARY_MANIFEST.components;
 const A1_FIGMA_TEXT_STYLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.textStyles;
@@ -452,221 +545,12 @@ const A1_FIGMA_COMPONENT_KEY_VALUES = new Set(Object.values(A1_FIGMA_COMPONENT_K
 
 // Component property keys carry a "#nodeId" suffix for TEXT / BOOLEAN /
 // INSTANCE_SWAP properties ("Label#12:3"); variant properties are plain.
-function plainKey(key) {
-  return key.split('#')[0];
-}
-
-function readProperties(instance) {
-  const out = {};
-  const props = instance.componentProperties || {};
-  for (const key of Object.keys(props)) out[plainKey(key)] = props[key];
-  return out;
-}
-
-function componentSetName(instanceNode) {
-  try {
-    const main = instanceNode && instanceNode.mainComponent;
-    const set = main && main.parent && main.parent.type === 'COMPONENT_SET' ? main.parent : null;
-    return set ? set.name : main ? main.name : '';
-  } catch {
-    // Figma may retain a stale internal instance sublayer immediately after a
-    // component property or variant replacement. It is not a public component.
-    return '';
-  }
-}
-
-function componentProperty(instance, name, type) {
-  const wanted = canonicalKey(name);
-  const raw = instance.componentProperties || {};
-  for (const key of Object.keys(raw)) {
-    if (canonicalKey(key) !== wanted) continue;
-    if (type && raw[key].type !== type) continue;
-    return { key, property: raw[key] };
-  }
-  return null;
-}
-
-function componentPropertyValue(instance, name, type) {
-  const found = componentProperty(instance, name, type);
-  return found ? found.property.value : undefined;
-}
-
-function queueComponentProperty(instance, assignments, name, value, type, warnings, description) {
-  const found = componentProperty(instance, name, type);
-  if (!found) {
-    warnings.push(`${description || name} could not be applied — no matching Figma property was found.`);
-    return;
-  }
-  assignments[found.key] = value;
-}
-
-function queueOptionalComponentProperty(instance, assignments, name, value, type) {
-  const found = componentProperty(instance, name, type);
-  if (!found) return false;
-  assignments[found.key] = value;
-  return true;
-}
-
-function applyQueuedProperties(instance, assignments, warnings, description) {
-  if (Object.keys(assignments).length === 0) return;
-  try {
-    instance.setProperties(assignments);
-  } catch (error) {
-    warnings.push(`${description || 'Component properties'} could not be applied: ${error.message}`);
-  }
-}
-
-function componentId(type, instance) {
-  return type.replace(/[A-Z]/g, (letter) => '-' + letter.toLowerCase()).replace(/^-/, '') + '-' + instance.id.replace(/[^a-zA-Z0-9]+/g, '-');
-}
-
-function slugifyOptionValue(label, usedValues) {
-  const base = String(label || 'option')
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'option';
-  let value = base;
-  let index = 2;
-  while (usedValues.has(value)) value = `${base}-${index++}`;
-  usedValues.add(value);
-  return value;
-}
-
 function componentNameCandidates(name) {
-  const base = String(name || '').trim();
-  const aliases = FIGMA_COMPONENT_NAME_ALIASES[base] || [];
-  const compact = base.replace(/\s+/g, '');
-  const spaced = base.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
-  return [...new Set([base, ...aliases, compact, spaced].filter(Boolean))];
+  return componentNameCandidatesForAliases(name, FIGMA_COMPONENT_NAME_ALIASES);
 }
 
 function figmaComponentNameMatches(actualName, requestedName) {
-  const actual = String(actualName || '').trim();
-  if (!actual) return false;
-  const actualKey = canonicalKey(actual);
-  const actualCompact = compactKey(actual);
-  const parts = actual.split(/[\\/›>]+/).map((part) => part.trim()).filter(Boolean);
-  const partKeys = parts.map(canonicalKey);
-  const partCompacts = parts.map(compactKey);
-  return componentNameCandidates(requestedName).some((candidate) => {
-    const candidateKey = canonicalKey(candidate);
-    const candidateCompact = compactKey(candidate);
-    return actualKey === candidateKey
-      || actualCompact === candidateCompact
-      || partKeys.includes(candidateKey)
-      || partCompacts.includes(candidateCompact);
-  });
-}
-
-function sourceComponentSet(node) {
-  try {
-    if (!node) return null;
-    if (node.type === 'COMPONENT_SET') return node;
-    if (node.type === 'COMPONENT') return node.parent && node.parent.type === 'COMPONENT_SET' ? node.parent : null;
-    if (node.type === 'INSTANCE') {
-      const main = node.mainComponent;
-      return main && main.parent && main.parent.type === 'COMPONENT_SET' ? main.parent : null;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-function sourceStandaloneComponent(node) {
-  try {
-    if (!node) return null;
-    if (node.type === 'COMPONENT') return node.parent && node.parent.type === 'COMPONENT_SET' ? null : node;
-    if (node.type === 'INSTANCE') {
-      const main = node.mainComponent;
-      return main && (!main.parent || main.parent.type !== 'COMPONENT_SET') ? main : null;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-function keyMatchesConfiguredComponentSetName(key, name) {
-  if (!key) return false;
-  const expected = configuredLibraryKeyForName(A1_FIGMA_COMPONENT_SET_KEYS, name);
-  return expected ? key === expected : A1_FIGMA_COMPONENT_SET_KEY_VALUES.has(key);
-}
-
-function keyMatchesConfiguredComponentName(key, name) {
-  if (!key) return false;
-  const expected = configuredLibraryKeyForName(A1_FIGMA_COMPONENT_KEYS, name);
-  return expected ? key === expected : A1_FIGMA_COMPONENT_KEY_VALUES.has(key);
-}
-
-function sourceMatchesA1ComponentSetName(source, name) {
-  const set = sourceComponentSet(source);
-  return Boolean(set && figmaComponentNameMatches(set.name, name) && keyMatchesConfiguredComponentSetName(localPublishedKey(set), name));
-}
-
-function sourceMatchesA1StandaloneComponentName(source, name) {
-  const component = sourceStandaloneComponent(source);
-  return Boolean(component && figmaComponentNameMatches(component.name, name) && keyMatchesConfiguredComponentName(localPublishedKey(component), name));
-}
-
-function sourceMatchesA1ComponentName(source, name) {
-  return sourceMatchesA1ComponentSetName(source, name) || sourceMatchesA1StandaloneComponentName(source, name);
-}
-
-function findComponentSet(name) {
-  const local = figma.root.findOne((node) =>
-    node.type === 'COMPONENT_SET'
-    && figmaComponentNameMatches(node.name, name)
-    && sourceMatchesA1ComponentSetName(node, name));
-  if (local) return local;
-  const importedInstance = figma.root.findOne((node) => {
-    if (node.type !== 'INSTANCE') return false;
-    try {
-      const main = node.mainComponent;
-      const set = main && main.parent && main.parent.type === 'COMPONENT_SET' ? main.parent : null;
-      return Boolean(set && sourceMatchesA1ComponentSetName(set, name));
-    } catch {
-      return false;
-    }
-  });
-  if (!importedInstance || importedInstance.type !== 'INSTANCE') return null;
-  try {
-    const main = importedInstance.mainComponent;
-    return main && main.parent && main.parent.type === 'COMPONENT_SET' ? main.parent : null;
-  } catch {
-    return null;
-  }
-}
-
-function findComponent(name) {
-  const local = figma.root.findOne((node) =>
-    node.type === 'COMPONENT'
-    && figmaComponentNameMatches(node.name, name)
-    && sourceMatchesA1StandaloneComponentName(node, name));
-  if (local) return local;
-  const importedInstance = figma.root.findOne((node) => {
-    if (node.type !== 'INSTANCE') return false;
-    try {
-      const main = node.mainComponent;
-      return Boolean(main && sourceMatchesA1StandaloneComponentName(main, name));
-    } catch {
-      return false;
-    }
-  });
-  if (!importedInstance || importedInstance.type !== 'INSTANCE') return null;
-  try {
-    return importedInstance.mainComponent || null;
-  } catch {
-    return null;
-  }
-}
-
-function findComponentSource(name) {
-  const set = findComponentSet(name);
-  if (set) return set.defaultVariant;
-  if (A1_COMPONENT_SET_ONLY_NAMES.has(name)) return null;
-  return findComponent(name);
+  return figmaComponentNameMatchesForAliases(actualName, requestedName, FIGMA_COMPONENT_NAME_ALIASES);
 }
 
 const libraryComponentSourceCache = new Map();
@@ -744,17 +628,6 @@ function bestA1LibraryDescription(items, name) {
   return bestLibraryDescription((items || []).filter(libraryDescriptionLooksLikeA1), name);
 }
 
-function componentSourceFromImported(imported) {
-  if (!imported) return null;
-  if (imported.type === 'COMPONENT_SET') return imported.defaultVariant || imported.children[0] || null;
-  if (imported.type === 'COMPONENT') {
-    return imported.parent && imported.parent.type === 'COMPONENT_SET'
-      ? imported.parent.defaultVariant || imported
-      : imported;
-  }
-  return null;
-}
-
 function configuredLibraryKeyForName(map, name) {
   for (const candidate of componentNameCandidates(name)) {
     const direct = map[candidate];
@@ -764,6 +637,17 @@ function configuredLibraryKeyForName(map, name) {
     if (typeof matchingValue === 'string' && matchingValue.trim()) return matchingValue.trim();
   }
   return '';
+}
+
+function errorMessage(error, fallback = 'Unknown error') {
+  if (error && typeof error.message === 'string' && error.message) return error.message;
+  if (typeof error === 'string' && error) return error;
+  try {
+    const text = JSON.stringify(error);
+    return text && text !== 'undefined' ? text : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 function configuredLibraryKeyNames(name) {
@@ -820,13 +704,23 @@ async function importConfiguredLibraryComponentSource(name) {
   const stored = await readClientComponentKeyRegistry();
   const setKey = configuredLibraryKeyForName({ ...stored.componentSets, ...A1_FIGMA_COMPONENT_SET_KEYS }, name);
   if (setKey && typeof figma.importComponentSetByKeyAsync === 'function') {
-    const imported = await figma.importComponentSetByKeyAsync(setKey);
+    let imported = null;
+    try {
+      imported = await figma.importComponentSetByKeyAsync(setKey);
+    } catch (error) {
+      throw new Error(`componentSets["${name}"] key ${setKey} could not be imported: ${errorMessage(error)}`);
+    }
     return componentSourceFromImported(imported);
   }
   const componentKey = configuredLibraryKeyForName({ ...stored.components, ...A1_FIGMA_COMPONENT_KEYS }, name);
   if (componentKey && typeof figma.importComponentByKeyAsync === 'function') {
-    const imported = await figma.importComponentByKeyAsync(componentKey);
-    return componentSourceFromImported(imported);
+    let imported = null;
+    try {
+      imported = await figma.importComponentByKeyAsync(componentKey);
+    } catch (error) {
+      throw new Error(`components["${name}"] key ${componentKey} could not be imported: ${errorMessage(error)}`);
+    }
+    return imported && imported.type === 'COMPONENT' ? imported : componentSourceFromImported(imported);
   }
   return null;
 }
@@ -849,7 +743,7 @@ async function importLibraryComponentSource(name, warnings) {
   let source = null;
   try {
     source = await importConfiguredLibraryComponentSource(name);
-    if (source && (sourceMatchesA1ComponentName(source, name) || !hasConfiguredLibraryKeyForName(name))) {
+    if (source) {
       libraryComponentSourceCache.set(name, source);
       return source;
     }
@@ -917,14 +811,16 @@ function localPublishedKey(node) {
 }
 
 function findLocalComponentSetForRegistry(name) {
-  return figma.root.findOne((node) => node.type === 'COMPONENT_SET' && figmaComponentNameMatches(node.name, name));
+  const page = figma.currentPage;
+  return page ? page.findOne((node) => node.type === 'COMPONENT_SET' && figmaComponentNameMatches(node.name, name)) : null;
 }
 
 function findLocalStandaloneComponentForRegistry(name) {
-  return figma.root.findOne((node) =>
+  const page = figma.currentPage;
+  return page ? page.findOne((node) =>
     node.type === 'COMPONENT'
     && (!node.parent || node.parent.type !== 'COMPONENT_SET')
-    && figmaComponentNameMatches(node.name, name));
+    && figmaComponentNameMatches(node.name, name)) : null;
 }
 
 async function buildLocalLibraryManifest() {
@@ -1047,25 +943,36 @@ async function handleExportComponentKeys() {
 // named "Prop=value", so prefer the parent set's name in that case.
 function iconNameFromSwapValue(value) {
   if (!value || typeof value !== 'string') return null;
-  const node = figma.getNodeById(value);
+  const node = resolveNodeById(value);
   if (!node) return null;
+  const materialName = materialIconNameFromSource(node);
+  if (materialName) return materialName;
   const name = node.name.includes('=') && node.parent && node.parent.type === 'COMPONENT_SET'
     ? node.parent.name
     : node.name;
-  return name.split('/').pop().trim() || null;
+  return materialIconNameCandidate(name) || name.split('/').pop().trim() || null;
 }
 
 // Instance-swap properties can retain their set default after a variant
 // replacement, while the visible child instance has the actual Material icon.
 // Prefer that live child when exporting Badge (and retain the property lookup
 // as a fallback for older asset versions).
-function iconNameFromInstance(instance, childName = 'Icon') {
+function iconChildNameMatches(name, childName = 'Icon') {
+  const wanted = canonicalKey(childName);
+  const actual = canonicalKey(name);
+  if (!wanted || !actual) return false;
+  if (actual === wanted) return true;
+  if (wanted === 'icon') return actual === 'navicon' || actual.endsWith('icon') || actual.includes('icon');
+  return false;
+}
+
+function nestedIconInstance(instance, childName = 'Icon') {
   // Do not use `findOne` here. Figma can retain a just-replaced instance
   // sublayer in its native traversal; merely reading that proxy's `name`
   // throws outside the callback's normal try/catch. Re-fetch every descendant
   // by id before looking at it instead.
   const root = liveNode(instance);
-  if (!root || root.type !== 'INSTANCE') return null;
+  if (!root || !('children' in root)) return null;
   const queue = [...stackFlowChildren(root)];
   const visited = new Set();
   while (queue.length) {
@@ -1073,10 +980,7 @@ function iconNameFromInstance(instance, childName = 'Icon') {
     if (!candidate || visited.has(candidate.id)) continue;
     visited.add(candidate.id);
     try {
-      if (candidate.type === 'INSTANCE' && candidate.name === childName) {
-        const component = candidate.mainComponent;
-        return component ? iconNameFromSwapValue(component.id) : null;
-      }
+      if (candidate.type === 'INSTANCE' && iconChildNameMatches(candidate.name, childName)) return candidate;
       if ('children' in candidate) queue.push(...stackFlowChildren(candidate));
     } catch {
       // The sublayer changed during a variant swap. Skip only this icon.
@@ -1085,12 +989,120 @@ function iconNameFromInstance(instance, childName = 'Icon') {
   return null;
 }
 
+function iconNameFromInstance(instance, childName = 'Icon') {
+  const icon = nestedIconInstance(instance, childName);
+  if (!icon) return null;
+  try {
+    const component = icon.mainComponent;
+    return materialIconNameFromSource(component, icon.name) || (component ? iconNameFromSwapValue(component.id) : null);
+  } catch {
+    return null;
+  }
+}
+
+function materialIconTextLayer(root) {
+  const current = liveNode(root);
+  if (!current || !('children' in current)) return null;
+  const queue = [...stackFlowChildren(current)];
+  const visited = new Set();
+  const textCandidates = [];
+  while (queue.length) {
+    const candidate = liveNode(queue.shift());
+    if (!candidate || visited.has(candidate.id)) continue;
+    visited.add(candidate.id);
+    try {
+      if (candidate.type === 'TEXT') {
+        const name = canonicalKey(candidate.name || '');
+        const font = candidate.fontName !== figma.mixed && candidate.fontName
+          ? `${candidate.fontName.family || ''} ${candidate.fontName.style || ''}`
+          : '';
+        const iconNamed = name.includes('icon') || name.includes('glyph') || name.includes('symbol');
+        const materialFont = /material\s+(symbols|icons)/i.test(font);
+        if (materialFont || iconNamed) textCandidates.push({ text: candidate, materialFont, iconNamed });
+      }
+      if ('children' in candidate) queue.push(...stackFlowChildren(candidate));
+    } catch {
+      // Ignore stale instance internals during swaps.
+    }
+  }
+  return textCandidates.find((candidate) => candidate.materialFont && candidate.iconNamed)?.text
+    || textCandidates.find((candidate) => candidate.materialFont)?.text
+    || textCandidates.find((candidate) => candidate.iconNamed)?.text
+    || null;
+}
+
+async function applyMaterialIconText(root, iconName, warnings, description) {
+  const text = materialIconTextLayer(nestedIconInstance(root, 'Icon') || root);
+  if (!text || !iconName) return false;
+  try {
+    if (text.fontName !== figma.mixed) await figma.loadFontAsync(text.fontName);
+    text.characters = iconName;
+    return true;
+  } catch (error) {
+    warnings.push(`${description || 'Material icon text'} could not be updated: ${error.message}`);
+    return false;
+  }
+}
+
+async function finalizeMaterialIconUpdate(root, iconName, materialIcon, propertyApplied, warnings, description) {
+  const current = currentInstance(root) || root;
+  const iconSwapped = materialIcon
+    ? swapNestedMaterialIconInstance(current, materialIcon, warnings, description)
+    : false;
+  const textUpdated = await applyMaterialIconText(current, iconName, warnings, description);
+  if (!propertyApplied && !iconSwapped && !textUpdated) {
+    warnings.push(`${description || 'Material icon'} could not be applied — no exposed icon swap/text property or editable nested icon text was found.`);
+  }
+  return propertyApplied || iconSwapped || textUpdated;
+}
+
+function swapMaterialIconInstance(iconInstance, materialIcon, warnings, description) {
+  const icon = liveNode(iconInstance);
+  if (!icon || icon.type !== 'INSTANCE' || !materialIcon) return false;
+  try {
+    icon.swapComponent(materialIcon);
+    return true;
+  } catch (error) {
+    warnings.push(`${description || 'Material icon'} could not be swapped: ${error.message}`);
+    return false;
+  }
+}
+
+function swapNestedMaterialIconInstance(instance, materialIcon, warnings, description, childName = 'Icon', warnIfMissing = false) {
+  const icon = nestedIconInstance(instance, childName);
+  if (!icon) {
+    if (warnIfMissing) warnings.push(`${description || 'Material icon'} could not be updated because the nested ${childName} instance was not found.`);
+    return false;
+  }
+  return swapMaterialIconInstance(icon, materialIcon, warnings, description);
+}
+
 function findIconComponent(iconName) {
-  const match = figma.root.findOne((node) =>
-    (node.type === 'COMPONENT' || node.type === 'COMPONENT_SET') &&
-    (node.name === iconName || node.name.split('/').pop().trim() === iconName));
-  if (!match) return null;
-  return match.type === 'COMPONENT_SET' ? match.defaultVariant : match;
+  const requested = materialIconNameCandidate(iconName);
+  if (!requested) return null;
+  const page = figma.currentPage;
+  if (!page) return null;
+  const direct = page.findOne((node) =>
+    node.type === 'COMPONENT' &&
+    (
+      node.name === requested ||
+      node.name.split('/').pop().trim() === requested ||
+      sourceLooksLikeMaterialIcon(node, requested) ||
+      materialIconNameCandidate(node.name) === requested
+    ));
+  if (direct && direct.type === 'COMPONENT') return direct;
+  const set = page.findOne((node) =>
+    node.type === 'COMPONENT_SET' &&
+    (
+      node.name === requested ||
+      node.name.split('/').pop().trim() === requested ||
+      (node.children || []).some((child) => child.type === 'COMPONENT' && sourceLooksLikeMaterialIcon(child, requested))
+    ));
+  if (!set || set.type !== 'COMPONENT_SET') return null;
+  return set.children.find((child) => child.type === 'COMPONENT' && sourceLooksLikeMaterialIcon(child, requested))
+    || set.defaultVariant
+    || set.children[0]
+    || null;
 }
 
 function sourcePageName(node) {
@@ -1109,8 +1121,11 @@ function materialIconNameCandidate(value) {
   if (!raw) return '';
   const parenthesized = raw.match(/\bicon\s*\(([^)]+)\)/i);
   const tail = parenthesized ? parenthesized[1] : raw.split('/').pop().trim();
-  const normalized = tail.replace(/^Material Symbols?\s*[-:/]\s*/i, '').trim();
-  if (!normalized || /^[a-z]+=[^/]+$/i.test(normalized)) return '';
+  const variantValue = tail.match(/^[a-z][\w\s-]*=([^/]+)$/i);
+  const normalized = (variantValue ? variantValue[1] : tail)
+    .replace(/^Material Symbols?\s*[-:/]\s*/i, '')
+    .trim();
+  if (!normalized) return '';
   const key = canonicalKey(normalized);
   if (['icon', 'navicon', 'default', 'regular', 'outlined', 'filled', 'true', 'false'].includes(key)) return '';
   return normalized;
@@ -1215,37 +1230,6 @@ async function loadInstanceFonts(instance) {
     .map((text) => figma.loadFontAsync(text.fontName)));
 }
 
-const WARNING_SUMMARY_LIMIT = 18;
-
-function warningText(value) {
-  if (typeof value === 'string') return value.trim();
-  if (value === null || value === undefined) return '';
-  return String(value).trim();
-}
-
-function compactWarnings(warnings, limit = WARNING_SUMMARY_LIMIT) {
-  if (!Array.isArray(warnings)) return [];
-  const counts = new Map();
-  for (const warning of warnings) {
-    const text = warningText(warning);
-    if (!text) continue;
-    counts.set(text, (counts.get(text) || 0) + 1);
-  }
-  const compacted = [...counts.entries()].map(([text, count]) =>
-    count > 1 ? `${text} (${count}×)` : text);
-  if (compacted.length <= limit) return compacted;
-  const hidden = compacted.length - limit;
-  return [
-    ...compacted.slice(0, limit),
-    `${hidden} additional unique warning${hidden === 1 ? '' : 's'} omitted. Run Audit for the full finding list.`,
-  ];
-}
-
-function compactWarningMessage(message) {
-  if (typeof message !== 'string' || !message.includes('\n')) return message;
-  return compactWarnings(message.split('\n')).join('\n');
-}
-
 function postPluginMessage(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     figma.ui.postMessage(payload);
@@ -1309,582 +1293,7 @@ function isA1ComponentInstance(instanceNode, componentName) {
   }
 }
 
-// Figma can emit a document-change event after replacing an instance sublayer
-// but before its selection tree has settled. Never read layout/component fields
-// from that stale proxy: re-fetch it by id and skip it if it no longer exists.
-function liveNode(node) {
-  try {
-    if (!node || typeof node.id !== 'string') return null;
-    return figma.getNodeById(node.id) || null;
-  } catch {
-    return null;
-  }
-}
-
-function stackFlowChildren(frame) {
-  let children = [];
-  try {
-    children = frame && frame.children ? frame.children : [];
-  } catch {
-    return [];
-  }
-  return children
-    .map(liveNode)
-    .filter(Boolean)
-    .filter((child) => {
-      try {
-        return child.layoutPositioning !== 'ABSOLUTE';
-      } catch {
-        return false;
-      }
-    });
-}
-
-// ── Variable-collection helpers (ContentWidth / Gap / Color modes) ──────────
-
-function localCollection(name) {
-  return figma.variables.getLocalVariableCollections().find((collection) => collection.name === name) || null;
-}
-
-function collectionModeName(collection, modeId) {
-  const mode = collection.modes.find((entry) => entry.modeId === modeId);
-  return mode ? mode.name : null;
-}
-
-// The explicitly applied mode of a named collection on the node or any frame /
-// instance inside it (the ContentWidth mode may sit on the Section instance or
-// on the inner _content frame). Returns null when the mode is only inherited.
-function explicitCollectionMode(root, collectionName) {
-  const collection = localCollection(collectionName);
-  if (!collection) return null;
-  const liveRoot = root && root.type === 'INSTANCE' ? currentInstance(root) : root;
-  let descendants = [];
-  try {
-    descendants = liveRoot.findAll((node) => node.type === 'FRAME' || node.type === 'INSTANCE');
-  } catch {
-    return null;
-  }
-  const nodes = [liveRoot].concat(descendants);
-  for (const node of nodes) {
-    try {
-      const modes = node.explicitVariableModes || {};
-      if (modes[collection.id]) return collectionModeName(collection, modes[collection.id]);
-    } catch {
-      // A component variant swap can leave an internal frame/instance handle
-      // stale until Figma completes the document-change turn.
-    }
-  }
-  return null;
-}
-
-function applyCollectionMode(target, collectionName, wantedModeName) {
-  const collection = localCollection(collectionName);
-  if (!collection) return false;
-  const mode = collection.modes.find((entry) => entry.name === wantedModeName);
-  if (!mode) return false;
-  try {
-    target.setExplicitVariableModeForCollection(collection, mode.modeId);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-function pushGapVariableWarning(warnings, message) {
-  if (!warnings || gapVariableWarnings.has(message)) return;
-  gapVariableWarnings.add(message);
-  warnings.push(message);
-}
-
-function localFloatVariables() {
-  try {
-    if (typeof figma.variables.getLocalVariables === 'function') {
-      return figma.variables.getLocalVariables('FLOAT');
-    }
-  } catch {
-    return [];
-  }
-  return [];
-}
-
-async function importConfiguredFloatVariable(name) {
-  if (!figma.variables || typeof figma.variables.importVariableByKeyAsync !== 'function') return null;
-  try {
-    const stored = await readClientComponentKeyRegistry();
-    const map = { ...A1_FIGMA_FLOAT_VARIABLE_KEYS, ...stored.variables.float };
-    const key = configuredVariableKeyForName(map, name);
-    return key ? await figma.variables.importVariableByKeyAsync(key) : null;
-  } catch {
-    return null;
-  }
-}
-
-async function ensureGapFloatVariable(gap, warnings) {
-  const value = nearestStackGap(Number(gap));
-  const name = STACK_GAP_VARIABLE_NAMES[value] || `gap/${value}`;
-  const variable = localFloatVariables().find((candidate) =>
-    candidate
-      && candidate.name === name);
-  if (variable) return variable;
-  const imported = await importConfiguredFloatVariable(name);
-  if (imported) return imported;
-  if (!localCollection('Spacing')) {
-    pushGapVariableWarning(warnings, 'Spacing variable collection was not found. The plugin will not create local variables, so Stack/Grid gaps were normalized with pixel values only.');
-  } else {
-    pushGapVariableWarning(warnings, `Spacing variable "${name}" was not found. The plugin will not create local variables, so ${value}px was used directly.`);
-  }
-  return null;
-}
-
-async function bindGapProperty(node, property, value, warnings, label) {
-  const gap = nearestStackGap(Number(value));
-  try {
-    node[property] = gap;
-  } catch (error) {
-    warnings.push(`${label || property} could not be set to ${gap}px: ${error.message}`);
-    return gap;
-  }
-  if (gap === 0) return gap;
-  const variable = await ensureGapFloatVariable(gap, warnings);
-  if (!variable) return gap;
-  try {
-    node.setBoundVariable(property, variable);
-  } catch (error) {
-    warnings.push(`${label || property} could not be bound to ${variable.name}: ${error.message}`);
-  }
-  return gap;
-}
-
-function propertyHasBoundVariable(node, property) {
-  try {
-    const bound = node && node.boundVariables && node.boundVariables[property];
-    if (Array.isArray(bound)) return bound.some((entry) => entry && entry.id);
-    return Boolean(bound && bound.id);
-  } catch {
-    return false;
-  }
-}
-
-function gapNeedsVariableBinding(value) {
-  return nearestStackGap(Number(value)) !== 0;
-}
-
-// ── Section property carriers (the split Section model) ─────────────────────
-// The Figma Section is split across components: the outer Section set plus
-// internal part instances such as "Section Content", which carries the
-// contentWidth (and possibly padding) properties. Rather than guessing names,
-// property lookups scan the section instance and every internal part instance
-// (anything that isn't a registered component like Button), matching property
-// keys case- and spacing-insensitively.
-
-function canonicalKey(key) {
-  return plainKey(key).replace(/[\s_-]+/g, '').toLowerCase();
-}
-
-function compactKey(key) {
-  return plainKey(key).replace(/[^a-z0-9]+/gi, '').toLowerCase();
-}
-
-function looseNameMatch(candidateName, requestedName) {
-  const candidate = String(candidateName || '');
-  const requested = String(requestedName || '');
-  if (!candidate || !requested) return false;
-  const candidateCanonical = canonicalKey(candidate);
-  const requestedCanonical = canonicalKey(requested);
-  if (candidateCanonical === requestedCanonical || candidateCanonical.endsWith(requestedCanonical)) return true;
-  const candidateCompact = compactKey(candidate);
-  const requestedCompact = compactKey(requested);
-  return candidateCompact === requestedCompact || candidateCompact.endsWith(requestedCompact);
-}
-
-// ── Free Figma text → Heading / Paragraph ──────────────────────────────────
-// Figma deliberately models ordinary editorial copy as text layers with local
-// styles instead of component instances. These helpers make that convention
-// serializable without treating text inside an A1 component as a separate node.
-const HEADING_SIZES = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
-const DISPLAY_SIZES = ['sm', 'md', 'lg', 'xl', 'xxl', 'jumbo', 'xjumbo'];
-const PARAGRAPH_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
-const HEADING_FONT_SIZES = { xs: 18, sm: 20, md: 24, lg: 28, xl: 32, xxl: 40 };
-const DISPLAY_FONT_SIZES = { sm: 24, md: 28, lg: 32, xl: 40, xxl: 56, jumbo: 72, xjumbo: 96 };
-const PARAGRAPH_FONT_SIZES = { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 };
-
-function nearestTextSize(scale, fontSize, fallback) {
-  if (typeof fontSize !== 'number') return fallback;
-  return Object.keys(scale).reduce((nearest, size) =>
-    Math.abs(scale[size] - fontSize) < Math.abs(scale[nearest] - fontSize) ? size : nearest, fallback);
-}
-
-function nearestTextSizeDistance(scale, fontSize, fallback) {
-  const size = nearestTextSize(scale, fontSize, fallback);
-  return typeof fontSize === 'number' ? Math.abs(scale[size] - fontSize) : Infinity;
-}
-
-function inferredTextFamily(fontSize, likelyHeading) {
-  if (!likelyHeading) return 'body';
-  // Figma Display and Heading are separate A1 families. When there is no
-  // local A1 style to tell us which one it is, choose Display only when its
-  // scale is genuinely closer; ties retain Heading's semantic default.
-  const headingDistance = nearestTextSizeDistance(HEADING_FONT_SIZES, fontSize, 'md');
-  const displayDistance = nearestTextSizeDistance(DISPLAY_FONT_SIZES, fontSize, 'md');
-  return displayDistance < headingDistance ? 'display' : 'heading';
-}
-
-function textFontStyleName(text) {
-  try {
-    if (!text || text.fontName === figma.mixed) return '';
-    return String(text.fontName && text.fontName.style || '');
-  } catch {
-    return '';
-  }
-}
-
-function textLayerPlainContent(text) {
-  try {
-    return typeof text.characters === 'string' ? text.characters.trim() : '';
-  } catch {
-    return '';
-  }
-}
-
-function textLooksLikeShortTitle(text) {
-  const content = textLayerPlainContent(text);
-  if (!content) return false;
-  const lines = content.split(/\r?\n/).filter((line) => line.trim());
-  if (lines.length > 2 || content.length > 90) return false;
-  return !/[.!?]\s*$/.test(content);
-}
-
-function textLayerNameSuggestsHeading(text) {
-  try {
-    return /\b(heading|headline|title|display|hero|h[1-6])\b/i.test(String(text && text.name || ''));
-  } catch {
-    return false;
-  }
-}
-
-function textLooksLikeHeading(text, fontSize) {
-  if (typeof fontSize !== 'number') return textLayerNameSuggestsHeading(text);
-  if (textLayerNameSuggestsHeading(text)) return true;
-  if (fontSize >= 24) return true;
-  const shortTitle = textLooksLikeShortTitle(text);
-  if (fontSize >= 20 && shortTitle) return true;
-  if (fontSize >= 18 && shortTitle && /medium|semi|demi|bold|black/i.test(textFontStyleName(text))) return true;
-  return false;
-}
-
-function textStyleName(text) {
-  if (!text.textStyleId || text.textStyleId === figma.mixed) return '';
-  const style = figma.getStyleById(text.textStyleId);
-  return style && style.type === 'TEXT' ? style.name : '';
-}
-
-function textAlignment(text) {
-  const alignment = text.textAlignHorizontal;
-  if (alignment === 'CENTER') return 'center';
-  if (alignment === 'RIGHT') return 'right';
-  return 'left';
-}
-
-function conversionTextAlignment(text, warnings, label = 'Converted text') {
-  try {
-    if (text.textAlignHorizontal === 'CENTER') return 'center';
-    if (text.textAlignHorizontal === 'RIGHT') return 'right';
-    if (text.textAlignHorizontal === 'LEFT') return 'left';
-    if (text.textAlignHorizontal === 'JUSTIFIED') {
-      warnings.push(`${label} uses justified text alignment, which A1 Heading/Body does not support; left alignment was used.`);
-    }
-  } catch {
-    // Fall through to the default alignment below.
-  }
-  return 'left';
-}
-
-function textColorTokenFromVariable(variable) {
-  // `canonicalKey` intentionally keeps `/` for component/style paths. Color
-  // variables use that separator (`color/text/accent`), so normalize it before
-  // matching semantic token suffixes.
-  const name = variable && canonicalKey(variable.name).replaceAll('/', '');
-  if (name && name.endsWith('textdefault')) return 'default';
-  if (name && name.endsWith('textmuted')) return 'muted';
-  if (name && name.endsWith('textaccent')) return 'accent';
-  return null;
-}
-
-function isLinkColorVariable(variable) {
-  const name = variable && canonicalKey(variable.name);
-  return Boolean(name && (name === canonicalKey('link/color') || name.endsWith(canonicalKey('link/color'))));
-}
-
-function visibleSolidTextPaint(text) {
-  return Array.isArray(text.fills)
-    ? text.fills.find((entry) => entry && entry.type === 'SOLID' && entry.visible !== false)
-    : null;
-}
-
-function firstSolidTextPaint(text) {
-  const direct = visibleSolidTextPaint(text);
-  if (direct) return direct;
-  if (!text || !text.characters || typeof text.getRangeFills !== 'function') return null;
-  try {
-    const fills = text.getRangeFills(0, text.characters.length);
-    const rangePaint = Array.isArray(fills)
-      ? fills.find((entry) => entry && entry.type === 'SOLID' && entry.visible !== false)
-      : null;
-    if (rangePaint) return rangePaint;
-    // A mixed range can decline to expose a single fill array. Any single
-    // character supplies a valid paint carrier for the full AutoFix binding.
-    for (let index = 0; index < text.characters.length; index += 1) {
-      const characterFills = text.getRangeFills(index, index + 1);
-      const characterPaint = Array.isArray(characterFills)
-        ? characterFills.find((entry) => entry && entry.type === 'SOLID' && entry.visible !== false)
-        : null;
-      if (characterPaint) return characterPaint;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-function textColorToken(text) {
-  const paint = visibleSolidTextPaint(text);
-  const variableId = paint && paint.boundVariables && paint.boundVariables.color && paint.boundVariables.color.id;
-  const variable = variableId && figma.variables.getVariableById(variableId);
-  // The JSON model deliberately carries the component's semantic color prop
-  // (`color: "muted"`), never a rendered color. This maps to the Figma
-  // `color/text/muted` variable and lets every A1 renderer resolve its own
-  // theme. Figma's variable path includes the `color/` namespace, so match its
-  // semantic suffix rather than assuming a shortened variable name.
-  return textColorTokenFromVariable(variable);
-}
-
-function textUsesLinkColor(text) {
-  const paint = visibleSolidTextPaint(text);
-  return paintUsesLinkColor(paint);
-}
-
-function paintUsesLinkColor(paint) {
-  const variableId = paint && paint.boundVariables && paint.boundVariables.color && paint.boundVariables.color.id;
-  return Boolean(variableId && isLinkColorVariable(figma.variables.getVariableById(variableId)));
-}
-
-function isBluePaint(paint) {
-  const color = paint && paint.color;
-  return Boolean(color && color.b > color.g && color.b > color.r);
-}
-
-function isBlackPaint(paint) {
-  const color = paint && paint.color;
-  return Boolean(color && color.r === 0 && color.g === 0 && color.b === 0);
-}
-
-function isBlueUnderlinedText(text) {
-  if (!text || text.textDecoration !== 'UNDERLINE') return false;
-  if (textUsesLinkColor(text)) return true;
-  // A manually-authored blue or blue-violet underline is an intentional link
-  // cue. The AutoFix below replaces it with the A1 Link style and token rather
-  // than preserving a raw paint value in JSON.
-  return isBluePaint(visibleSolidTextPaint(text));
-}
-
-function inlineLinkRanges(text) {
-  if (!text || !text.characters || typeof text.getRangeTextDecoration !== 'function' || typeof text.getRangeFills !== 'function') return [];
-  const ranges = [];
-  let open = null;
-  const close = (end) => {
-    if (!open) return;
-    ranges.push({ start: open.start, end, needsFix: open.needsFix });
-    open = null;
-  };
-
-  for (let index = 0; index < text.characters.length; index += 1) {
-    let isLink = false;
-    let needsFix = true;
-    try {
-      const decoration = text.getRangeTextDecoration(index, index + 1);
-      const fills = text.getRangeFills(index, index + 1);
-      const paint = Array.isArray(fills) ? fills.find((entry) => entry && entry.type === 'SOLID' && entry.visible !== false) : null;
-      // Within a Heading or Paragraph, an underline is the explicit authored
-      // inline-link cue. The surrounding component owns typography; AutoFix
-      // normalizes the range itself to Link's semantic color token.
-      isLink = decoration === 'UNDERLINE';
-      needsFix = !paintUsesLinkColor(paint);
-    } catch {
-      // Range inspection is unavailable for a transient mixed-text selection.
-      // The layer can still export as ordinary Heading or Paragraph text.
-      isLink = false;
-    }
-    if (isLink && !open) open = { start: index, needsFix };
-    else if (isLink && open) open.needsFix = open.needsFix || needsFix;
-    else close(index);
-  }
-  close(text.characters.length);
-  return ranges;
-}
-
-function resolvedVariableColor(variable, modeId, seen = new Set()) {
-  if (!variable || seen.has(variable.id)) return null;
-  seen.add(variable.id);
-  const values = variable.valuesByMode || {};
-  const value = values[modeId] || values[Object.keys(values)[0]];
-  if (value && typeof value.r === 'number' && typeof value.g === 'number' && typeof value.b === 'number') return value;
-  if (value && value.type === 'VARIABLE_ALIAS' && value.id) {
-    return resolvedVariableColor(figma.variables.getVariableById(value.id), modeId, seen);
-  }
-  return null;
-}
-
-function colorDistance(first, second) {
-  const opacityA = first.opacity === undefined ? 1 : first.opacity;
-  const opacityB = second.a === undefined ? 1 : second.a;
-  return Math.hypot(first.color.r - second.r, first.color.g - second.g, first.color.b - second.b, opacityA - opacityB);
-}
-
-async function nearestTextColorToken(text, allowedTokens) {
-  const paint = visibleSolidTextPaint(text);
-  if (!paint || !paint.color) return null;
-  const variables = await figma.variables.getLocalVariablesAsync('COLOR');
-  let nearest = null;
-  for (const variable of variables) {
-    const token = textColorTokenFromVariable(variable);
-    if (!token || !allowedTokens.includes(token)) continue;
-    for (const modeId of Object.keys(variable.valuesByMode || {})) {
-      const color = resolvedVariableColor(variable, modeId);
-      if (!color) continue;
-      const distance = colorDistance(paint, color);
-      if (!nearest || distance < nearest.distance) nearest = { token, distance };
-    }
-  }
-  return nearest && nearest.token;
-}
-
-function currentTextNode(text) {
-  const current = text && figma.getNodeById(text.id);
-  return current && current.type === 'TEXT' ? current : text;
-}
-
-function headingElementForSize(size) {
-  return ({ xs: 'h6', sm: 'h5', md: 'h4', lg: 'h3', xl: 'h2', xxl: 'h1' })[size] || 'h2';
-}
-
-function inferredLinkWeight(text) {
-  if (!text || text.fontName === figma.mixed) return 'normal';
-  const style = String(text.fontName.style || '').toLowerCase();
-  if (/black|bold/.test(style)) return 'bold';
-  if (/semibold|demi/.test(style)) return 'semibold';
-  if (/medium/.test(style)) return 'medium';
-  return 'normal';
-}
-
-function linkTextSuggestion(text) {
-  const style = textStyleName(text).trim().toLowerCase();
-  const styleMatch = /^link\/(xs|sm|md|lg|xl)\/(normal|medium|semibold|bold)$/.exec(style);
-  const fontSize = text.fontSize === figma.mixed ? undefined : text.fontSize;
-  const styleSize = styleMatch && styleMatch[1];
-  const requestedSize = styleSize || nearestTextSize(PARAGRAPH_FONT_SIZES, fontSize, 'md');
-  const requestedWeight = styleMatch ? styleMatch[2] : inferredLinkWeight(text);
-  const hasCanonicalStyleSize = Boolean(styleMatch && typeof fontSize === 'number' && Math.abs(PARAGRAPH_FONT_SIZES[styleSize] - fontSize) < 0.01);
-  const hasLinkColor = textUsesLinkColor(text);
-  const issues = [];
-
-  if (!styleMatch || !hasCanonicalStyleSize) {
-    issues.push(`Blue underlined text looks like an A1 Link; Link/${requestedSize}/${requestedWeight} is the nearest match.`);
-  }
-  if (!hasLinkColor) issues.push('Its fill is not bound to the A1 link/color token.');
-  if (!['LEFT', 'CENTER', 'RIGHT'].includes(text.textAlignHorizontal)) {
-    issues.push('Its horizontal alignment is not supported by A1 Link text.');
-  }
-
-  return {
-    type: 'Link',
-    props: { size: requestedSize, weight: requestedWeight },
-    issues,
-    styleName: `link/${requestedSize}/${requestedWeight}`,
-    color: 'link',
-    align: textAlignment(text),
-  };
-}
-
-function textSuggestion(text) {
-  if (isBlueUnderlinedText(text)) return linkTextSuggestion(text);
-  const style = textStyleName(text).trim().toLowerCase();
-  const styleMatch = /^(heading|display|body)\/(xs|sm|md|lg|xl|xxl|jumbo|xjumbo)$/.exec(style);
-  if (!styleMatch && auditA1TextStyleName(style)) {
-    return {
-      type: 'Paragraph',
-      props: { size: 'md' },
-      issues: [],
-      styleName: style,
-      color: textColorToken(text) || 'default',
-      align: textAlignment(text),
-    };
-  }
-  const fontSize = text.fontSize === figma.mixed ? undefined : text.fontSize;
-  const likelyHeading = styleMatch
-    ? styleMatch[1] !== 'body'
-    : textLooksLikeHeading(text, fontSize);
-  const family = styleMatch ? styleMatch[1] : inferredTextFamily(fontSize, likelyHeading);
-  const scale = family === 'body' ? PARAGRAPH_FONT_SIZES : family === 'display' ? DISPLAY_FONT_SIZES : HEADING_FONT_SIZES;
-  const allowed = family === 'body' ? PARAGRAPH_SIZES : family === 'display' ? DISPLAY_SIZES : HEADING_SIZES;
-  const styleSize = styleMatch && allowed.includes(styleMatch[2]) ? styleMatch[2] : null;
-  // A Figma text style can stay attached while its font size is locally
-  // overridden. Treat the actual numeric size as authoritative so AutoFix
-  // selects the nearest A1 option instead of reapplying the stale style size.
-  const hasCanonicalStyleSize = styleSize && typeof fontSize === 'number' && Math.abs(scale[styleSize] - fontSize) < 0.01;
-  const requestedSize = hasCanonicalStyleSize
-    ? styleSize
-    : nearestTextSize(scale, fontSize, family === 'body' ? 'md' : 'md');
-  const detectedColor = textColorToken(text);
-  const color = family === 'body' && detectedColor === 'accent' ? 'default' : detectedColor;
-  const align = textAlignment(text);
-  const issues = [];
-  const inlineLinks = inlineLinkRanges(text);
-  if (!styleMatch || !styleSize) {
-    issues.push(`No A1 ${family === 'body' ? 'body' : family} text style is applied; ${family}/${requestedSize} is the nearest match.`);
-  } else if (!hasCanonicalStyleSize) {
-    const actualSize = typeof fontSize === 'number' ? `${fontSize}px` : 'mixed text sizes';
-    issues.push(`Its font size (${actualSize}) does not match ${family}/${styleSize}; ${family}/${requestedSize} is the nearest A1 size.`);
-  }
-  if (!color) issues.push('Its fill is not bound to an A1 text color token.');
-  if (family === 'body' && detectedColor === 'accent') issues.push('Paragraph does not support the A1 accent text color; default text color will be used.');
-  if (!['LEFT', 'CENTER', 'RIGHT'].includes(text.textAlignHorizontal)) issues.push('Its horizontal alignment is not supported by A1 text components.');
-  if (inlineLinks.some((link) => link.needsFix)) {
-    issues.push('Blue underlined inline text looks like an A1 Link; AutoFix will bind each Link range to the link/color token.');
-  }
-  const props = family === 'body'
-    ? { size: requestedSize, ...(color === 'muted' ? { color } : {}), ...(align !== 'left' ? { align } : {}) }
-    : { as: family === 'display' ? 'h1' : headingElementForSize(requestedSize), type: family === 'display' ? 'display' : 'heading', size: requestedSize === 'xjumbo' ? 'xJumbo' : requestedSize, ...(color ? { color } : {}), ...(align !== 'left' ? { align } : {}) };
-  return {
-    type: family === 'body' ? 'Paragraph' : 'Heading',
-    props,
-    issues,
-    styleName: `${family}/${requestedSize}`,
-    color: color || 'default',
-    align,
-    inlineLinks,
-  };
-}
-
-function exportTextNode(text) {
-  // Figma can retain a selected-node handle across a fill-variable edit. Read
-  // the current node again so manual color changes export the live binding.
-  const current = currentTextNode(text);
-  const suggestion = textSuggestion(current);
-  const inlineLinks = suggestion.type === 'Link'
-    ? []
-    : (suggestion.inlineLinks || []).map(({ start, end }) => ({ start, end }));
-  return {
-    node: {
-      id: componentId(suggestion.type, current),
-      type: suggestion.type,
-      props: suggestion.props,
-      content: { fallback: current.characters, ...(inlineLinks.length ? { inlineLinks } : {}) },
-    },
-    warnings: suggestion.issues,
-    review: suggestion.issues.length ? { issues: suggestion.issues, suggestion } : null,
-  };
-}
-
+// Variable, text, and layout helpers are defined in src/figma/*.js.
 // ── Free auto-layout frames → Stack / Grid ────────────────────────────────
 // Figma does not use a component instance for the general-purpose Stack. A
 // normal authored auto-layout Frame is its counterpart. Component internals
@@ -1912,6 +1321,89 @@ function isComponentImplementationNode(node) {
 
 function isStackFrame(node) {
   return isAutoLayoutFrame(node) && !isComponentImplementationNode(node);
+}
+
+function conversionSuggestion(target, primary = false) {
+  return { target, label: CONVERT_TARGET_LABELS[target] || target, primary };
+}
+
+function uniqueConversionSuggestions(targets, primaryTarget = '', excludedTargets = []) {
+  const seen = new Set();
+  const excluded = new Set(excludedTargets.filter((target) => typeof target === 'string' && target));
+  return targets
+    .filter((target) => typeof target === 'string' && target)
+    .filter((target) => !excluded.has(target))
+    .filter((target) => {
+      if (seen.has(target)) return false;
+      seen.add(target);
+      return true;
+    })
+    .map((target) => conversionSuggestion(target, target === primaryTarget));
+}
+
+function conversionRecommendationForSelection(selection) {
+  const selected = topLevelSelectionNodes(selection || []);
+  const target = selected.length === 1 ? liveNode(selected[0]) : null;
+  if (!target) {
+    return selected.length > 1 ? {
+      title: 'Selection',
+      reasoning: 'Multiple selected layers can be grouped into an A1 layout primitive.',
+      suggestions: uniqueConversionSuggestions(['stack', 'button-container', 'grid', 'section', 'card'], 'stack'),
+    } : null;
+  }
+  if (target.type === 'TEXT') {
+    const suggestion = textSuggestion(target);
+    const primary = suggestion.type === 'Heading' ? 'heading' : 'body';
+    const isReady = !Array.isArray(suggestion.issues) || suggestion.issues.length === 0;
+    if (isReady) {
+      const currentTarget = primary;
+      const alternateTargets = currentTarget === 'body' ? ['heading'] : ['body'];
+      return {
+        title: 'Text',
+        reasoning: '',
+        primaryFallback: false,
+        suggestions: uniqueConversionSuggestions(alternateTargets),
+      };
+    }
+    return {
+      title: 'Text',
+      reasoning: primary === 'heading'
+        ? 'This text looks closest to semantic Heading typography.'
+        : 'This text looks closest to semantic Body typography.',
+      suggestions: uniqueConversionSuggestions([primary, primary === 'heading' ? 'body' : 'heading'], primary),
+    };
+  }
+  if (isStackFrame(target)) {
+    return {
+      title: 'Auto layout',
+      reasoning: 'This frame is already a Stack. Use the alternates when it is acting as a surface, section, full page, or multi-column layout.',
+      primaryFallback: false,
+      suggestions: uniqueConversionSuggestions(['stack', 'button-container', 'card', 'section', 'grid', 'page-layout'], 'stack', ['stack']),
+    };
+  }
+  if (isGridFrame(target)) {
+    return {
+      title: 'Responsive Grid',
+      reasoning: 'This frame is already a responsive Grid. Use the alternates when the layout intent is simpler or the frame is acting as a surface.',
+      primaryFallback: false,
+      suggestions: uniqueConversionSuggestions(['grid', 'stack', 'section', 'card', 'page-layout'], 'grid', ['grid']),
+    };
+  }
+  if (target.type === 'FRAME' && target.parent && target.parent.type === 'PAGE') {
+    return {
+      title: 'Frame',
+      reasoning: 'Top-level frames are usually page structure. Use Page when it represents a full screen, Section for page structure, Stack/Grid for layout primitives, or Card for a contained surface.',
+      suggestions: uniqueConversionSuggestions(['section', 'page-layout', 'stack', 'grid', 'card'], 'section'),
+    };
+  }
+  if (target.type === 'FRAME' || target.type === 'GROUP') {
+    return {
+      title: target.type === 'GROUP' ? 'Group' : 'Frame',
+      reasoning: 'This selection can be converted into common A1 structure. Pick the option that best matches its visual role.',
+      suggestions: uniqueConversionSuggestions(['section', 'card', 'stack', 'grid', 'button-container'], 'section'),
+    };
+  }
+  return null;
 }
 
 function figmaNumber(value, fallback = 0) {
@@ -1980,6 +1472,41 @@ function syncStackPropsName(frame) {
   } catch {
     // Ignore stale or immutable layer names.
   }
+}
+
+function stackGapControlValue(value) {
+  const gap = nearestStackGap(value);
+  if (gap === 0) return 'none';
+  const semantic = Object.entries(STACK_SEMANTIC_GAPS)
+    .find(([, semanticValue]) => semanticValue === gap);
+  return semantic ? semantic[0] : 'md';
+}
+
+function stackGapControlToProp(value) {
+  if (value === 'none') return 0;
+  return STACK_CONTEXT_GAPS.includes(value) ? value : 'md';
+}
+
+function stackContextForSelection(frame) {
+  const direction = frame.layoutMode === 'HORIZONTAL' ? 'row' : 'column';
+  const align = stackUsesStretch(frame) ? 'stretch' : (STACK_ALIGN_FROM_FIGMA[frame.counterAxisAlignItems] || 'start');
+  const justify = STACK_JUSTIFY_FROM_FIGMA[frame.primaryAxisAlignItems] || 'start';
+  return {
+    direction,
+    directionOptions: STACK_CONTEXT_DIRECTIONS,
+    gap: stackGapControlValue(frame.itemSpacing),
+    gapOptions: STACK_CONTEXT_GAPS,
+    justify: STACK_CONTEXT_JUSTIFIES.includes(justify) ? justify : 'start',
+    justifyOptions: STACK_CONTEXT_JUSTIFIES,
+    align: STACK_CONTEXT_ALIGNS.includes(align) ? align : 'stretch',
+    alignOptions: STACK_CONTEXT_ALIGNS,
+    wrapMode: frame.layoutMode === 'HORIZONTAL' && frame.layoutWrap === 'WRAP' ? 'wrap' : 'nowrap',
+    wrapModeOptions: ['nowrap', 'wrap'],
+    widthMode: layoutWidthMode(frame),
+    widthModeOptions: STACK_CONTEXT_WIDTH_MODES,
+    heightMode: layoutHeightMode(frame),
+    heightModeOptions: STACK_CONTEXT_WIDTH_MODES,
+  };
 }
 
 function stackUsesStretch(frame) {
@@ -2181,10 +1708,20 @@ function gridChildWarnings(frame, warnings) {
   }
 }
 
-function gridItemSpanPropsFromFigmaChild(child) {
+function gridItemSpanPropsFromFigmaChild(child, warnings) {
   const props = {};
-  const columnSpan = figmaNumber(child && child.gridColumnSpan, NaN);
-  const rowSpan = figmaNumber(child && child.gridRowSpan, NaN);
+  let columnSpan = NaN;
+  let rowSpan = NaN;
+  try {
+    columnSpan = figmaNumber(child && child.gridColumnSpan, NaN);
+  } catch (error) {
+    if (warnings) warnings.push(`A Grid child span could not be read and was skipped: ${error.message}`);
+  }
+  try {
+    rowSpan = figmaNumber(child && child.gridRowSpan, NaN);
+  } catch (error) {
+    if (warnings) warnings.push(`A Grid child row span could not be read and was skipped: ${error.message}`);
+  }
   if (Number.isInteger(columnSpan) && columnSpan > 1) props.span = columnSpan;
   if (Number.isInteger(rowSpan) && rowSpan > 1) props.rowSpan = rowSpan;
   return props;
@@ -2240,53 +1777,6 @@ async function applyGridSuggestion(frame, suggestion, warnings) {
   await bindGapProperty(frame, 'gridColumnGap', suggestion.columnGap, warnings, 'Grid column gap');
 }
 
-function normalizeResponsiveColumns(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const out = {};
-  for (const key of A1_BREAKPOINTS) {
-    const columns = value[key];
-    if (Number.isInteger(columns) && columns > 0) out[key] = columns;
-  }
-  return Object.keys(out).length > 0 ? out : null;
-}
-
-function formatResponsiveGridColumns(columns) {
-  const responsiveColumns = normalizeResponsiveColumns(columns);
-  if (!responsiveColumns) return '';
-  return `{${A1_BREAKPOINTS
-    .filter((breakpoint) => Number.isInteger(responsiveColumns[breakpoint]) && responsiveColumns[breakpoint] > 0)
-    .map((breakpoint) => `${breakpoint}:${responsiveColumns[breakpoint]}`)
-    .join(', ')}}`;
-}
-
-function stripResponsiveGridColumnsName(name) {
-  // The dash separator is optional: hand-authored names like "Grid {xs:2}"
-  // must strip too, or re-syncing metadata accumulates suffix groups.
-  return String(name || 'Grid')
-    .replace(/\s*(?:[-–—]\s*)?\{\s*(?:(?:['"]?(?:xs|sm|md|lg|xl)['"]?)\s*:\s*\d+\s*,?\s*)+\}\s*$/i, '')
-    .trim() || 'Grid';
-}
-
-function parseResponsiveGridColumnsName(name) {
-  const match = String(name || '').match(/\{\s*([^{}]+)\s*\}\s*$/);
-  if (!match) return null;
-  const columns = {};
-  for (const part of match[1].split(',')) {
-    const pair = part.trim().match(/^['"]?(xs|sm|md|lg|xl)['"]?\s*:\s*(\d+)$/i);
-    if (!pair) return null;
-    const breakpoint = pair[1].toLowerCase();
-    const value = Number(pair[2]);
-    if (!Number.isInteger(value) || value < 1) return null;
-    columns[breakpoint] = value;
-  }
-  return normalizeResponsiveColumns(columns);
-}
-
-function responsiveGridName(baseName, columns) {
-  const suffix = formatResponsiveGridColumns(columns);
-  return suffix ? `${stripResponsiveGridColumnsName(baseName)} - ${suffix}` : stripResponsiveGridColumnsName(baseName);
-}
-
 function syncResponsiveGridColumnsMetadata(frame, columns) {
   const responsiveColumns = normalizeResponsiveColumns(columns);
   if (!frame || !responsiveColumns) return null;
@@ -2331,47 +1821,16 @@ function defineResponsiveGridBreakpoints(frame, columns, sourceWidth, warnings, 
   return normalized;
 }
 
-function responsiveColumnsAt(value, breakpoint) {
-  const columns = normalizeResponsiveColumns(value);
-  if (!columns) return null;
-  const targetIndex = Math.max(0, A1_BREAKPOINTS.indexOf(breakpoint));
-  let inherited = null;
-  for (let index = 0; index <= targetIndex; index += 1) {
-    const key = A1_BREAKPOINTS[index];
-    if (Number.isInteger(columns[key]) && columns[key] > 0) inherited = columns[key];
-  }
-  if (inherited !== null) return inherited;
-  for (const key of A1_BREAKPOINTS) {
-    if (Number.isInteger(columns[key]) && columns[key] > 0) return columns[key];
-  }
-  return null;
-}
-
-function responsiveGridItemSpanAt(value, breakpoint, fullSpan = null) {
-  const normalize = (candidate) => {
-    if (candidate === 'full') return Number.isInteger(fullSpan) && fullSpan > 0 ? fullSpan : null;
-    return Number.isInteger(candidate) && candidate > 0 ? candidate : null;
-  };
-  if (value && typeof value === 'object' && !Array.isArray(value)) {
-    const targetIndex = Math.max(0, A1_BREAKPOINTS.indexOf(breakpoint));
-    let inherited = null;
-    for (let index = 0; index <= targetIndex; index += 1) {
-      const key = A1_BREAKPOINTS[index];
-      const candidate = normalize(value[key]);
-      if (candidate !== null) inherited = candidate;
-    }
-    if (inherited !== null) return inherited;
-    for (const key of A1_BREAKPOINTS) {
-      const candidate = normalize(value[key]);
-      if (candidate !== null) return candidate;
-    }
-    return null;
-  }
-  return normalize(value);
-}
-
 function readBreakpointData(node) {
   if (!node) return '';
+  try {
+    if (node.type === 'INSTANCE') {
+      const variantValue = componentPropertyValue(node, 'Breakpoint', 'VARIANT');
+      if (A1_BREAKPOINTS.includes(variantValue)) return variantValue;
+    }
+  } catch {
+    // Ignore stale instance handles.
+  }
   try {
     if (typeof node.getPluginData === 'function') {
       const localValue = node.getPluginData(A1_BREAKPOINT_KEY);
@@ -2408,30 +1867,6 @@ function breakpointForNode(node, fallback = 'xs') {
   return A1_BREAKPOINTS.includes(fallback) ? fallback : 'xs';
 }
 
-function breakpointForWidth(width, fallback = 'md') {
-  if (typeof width !== 'number' || !Number.isFinite(width) || width <= 0) return fallback;
-  return A1_BREAKPOINTS.reduce((nearest, breakpoint) => {
-    const nearestWidth = A1_BREAKPOINT_WIDTHS[nearest] || width;
-    const candidateWidth = A1_BREAKPOINT_WIDTHS[breakpoint] || width;
-    return Math.abs(candidateWidth - width) < Math.abs(nearestWidth - width) ? breakpoint : nearest;
-  }, fallback);
-}
-
-function collectAuthoredBreakpoints(value, found = new Set()) {
-  if (Array.isArray(value)) {
-    for (const item of value) collectAuthoredBreakpoints(item, found);
-    return found;
-  }
-  if (!value || typeof value !== 'object') return found;
-  const keys = Object.keys(value);
-  const responsiveKeys = keys.filter((key) => A1_BREAKPOINTS.includes(key));
-  if (responsiveKeys.length > 0 && responsiveKeys.length === keys.length) {
-    for (const key of responsiveKeys) found.add(key);
-  }
-  for (const item of Object.values(value)) collectAuthoredBreakpoints(item, found);
-  return found;
-}
-
 function readResponsiveGridColumns(frame) {
   const nameColumns = parseResponsiveGridColumnsName(frame && frame.name);
   if (nameColumns) return nameColumns;
@@ -2441,6 +1876,22 @@ function readResponsiveGridColumns(frame) {
   } catch {
     return null;
   }
+}
+
+function gridWidthMode(frame) {
+  return layoutWidthMode(frame);
+}
+
+function syncGridWidthMode(frame, widthMode, warnings) {
+  syncLayoutWidthMode(frame, widthMode, warnings, 'Grid');
+}
+
+function gridHeightMode(frame) {
+  return layoutHeightMode(frame);
+}
+
+function syncGridHeightMode(frame, heightMode, warnings) {
+  syncLayoutHeightMode(frame, heightMode, warnings, 'Grid');
 }
 
 function gridExportId(frame) {
@@ -2565,18 +2016,29 @@ function exportGridChildren(frame, warnings, ancestors = new Set()) {
   const exported = [];
   const parentAncestors = new Set(ancestors);
   if (frame.id) parentAncestors.add(frame.id);
-  for (const child of frame.children || []) {
-    const childNodes = exportNodeAsFreeContent(child, warnings, parentAncestors);
-    const spanProps = gridItemSpanPropsFromFigmaChild(child);
-    if (gridItemHasSpanProps(spanProps) && childNodes.length > 0) {
-      exported.push({
-        id: componentId('GridItem', child),
-        type: 'GridItem',
-        props: spanProps,
-        children: childNodes,
-      });
-    } else {
-      exported.push(...childNodes);
+  let children = [];
+  try {
+    children = frame.children || [];
+  } catch (error) {
+    warnings.push(`Grid children could not be read during export: ${error.message}`);
+    return exported;
+  }
+  for (const child of children) {
+    try {
+      const childNodes = exportNodeAsFreeContent(child, warnings, parentAncestors);
+      const spanProps = gridItemSpanPropsFromFigmaChild(child, warnings);
+      if (gridItemHasSpanProps(spanProps) && childNodes.length > 0) {
+        exported.push({
+          id: componentId('GridItem', child),
+          type: 'GridItem',
+          props: spanProps,
+          children: childNodes,
+        });
+      } else {
+        exported.push(...childNodes);
+      }
+    } catch (error) {
+      warnings.push(`A Grid child Figma no longer exposes was skipped during export: ${error.message}`);
     }
   }
   return exported;
@@ -2750,34 +2212,55 @@ function assignSectionVariant(carriers, names, value) {
 
 // ─── Export: Figma instance → page-definition node ──────────────────────────
 
+function stripButtonFullWidthName(name) {
+  return String(name || '').replace(BUTTON_FULL_WIDTH_NAME_PATTERN, '').trim();
+}
+
+function buttonNameWithFullWidthMetadata(name, fullWidth) {
+  const base = stripButtonFullWidthName(name) || 'Button';
+  return fullWidth ? `${base} - {fullWidth:true}` : base;
+}
+
+function buttonFullWidthFromName(name) {
+  const match = String(name || '').match(BUTTON_FULL_WIDTH_NAME_PATTERN);
+  return Boolean(match && match[1].toLowerCase() === 'true');
+}
+
+function buttonWidthMode(instance) {
+  if (buttonFullWidthFromName(instance && instance.name)) return 'fill';
+  try {
+    return instance.layoutSizingHorizontal === 'FILL' ? 'fill' : 'hug';
+  } catch {
+    return 'hug';
+  }
+}
+
+function syncButtonFullWidthMetadata(instance, widthMode, warnings) {
+  const fullWidth = widthMode === 'fill';
+  try {
+    instance.name = buttonNameWithFullWidthMetadata(instance.name, fullWidth);
+  } catch (error) {
+    if (warnings) warnings.push(`Button fullWidth metadata could not be written to the layer name: ${error.message}`);
+  }
+  syncLayoutWidthMode(instance, fullWidth ? 'fill' : 'hug', warnings || [], 'Button');
+}
+
 function exportButton(instance) {
   const properties = readProperties(instance);
   const warnings = [];
-  const props = {};
-
-  const variant = properties.Variant && properties.Variant.value;
-  const size = properties.Size && properties.Size.value;
   const state = properties.State && properties.State.value;
-  const iconPosition = properties.IconPosition && properties.IconPosition.value;
   const showIcon = properties['Show icon'] &&
     (properties['Show icon'].value === true || properties['Show icon'].value === 'true');
+  let iconName = '';
 
-  // Defaults (variant=primary, size=md, iconPosition=start) are omitted, the
-  // same convention the a1-web configurator snippets use.
-  if (BUTTON_VARIANTS.includes(variant) && variant !== 'primary') props.variant = variant;
-  if (BUTTON_SIZES.includes(size) && size !== 'md') props.size = size;
-  if (state === 'disabled') props.disabled = true;
-  if (state === 'loading') props.loading = true;
   if (VISUAL_ONLY_STATES.includes(state)) {
     warnings.push(`State=${state} is a visual-only Figma state — no prop was emitted.`);
   }
   if (showIcon) {
-    const iconName = iconNameFromSwapValue(properties.Icon && properties.Icon.value);
-    if (iconName) {
-      props.icon = iconName;
-      if (iconPosition === 'end') props.iconPosition = 'end';
-      warnings.push(`Icon name "${iconName}" was read from the swapped component's name — confirm it is a Material Symbols name.`);
-    } else {
+    iconName = iconNameFromInstance(instance, 'Icon') ||
+      iconNameFromEditableText(instance) ||
+      iconNameFromSwapValue(iconSwapPropertyValue(instance) || (properties.Icon && properties.Icon.value));
+    if (!iconName) {
       warnings.push('The icon instance could not be resolved to a component name — icon omitted.');
     }
   }
@@ -2786,13 +2269,399 @@ function exportButton(instance) {
     ? properties.Label.value
     : 'Button';
 
-  const node = {
-    id: 'button-' + instance.id.replace(/[^a-zA-Z0-9]+/g, '-'),
-    type: 'Button',
-    content: { fallback: label },
-  };
-  if (Object.keys(props).length > 0) node.props = props;
+  const node = buttonNodeFromFigma({
+    id: instance.id,
+    properties,
+    label,
+    iconName,
+    fullWidth: buttonFullWidthFromName(instance.name),
+  });
+  applyActionTriggerAction(instance, node);
   return { node, warnings };
+}
+
+function buttonContextForSelection(instance) {
+  const properties = readProperties(instance);
+  const variant = properties.Variant && properties.Variant.value;
+  const size = properties.Size && properties.Size.value;
+  const state = properties.State && properties.State.value;
+  const iconPosition = properties.IconPosition && properties.IconPosition.value;
+  const showIcon = properties['Show icon'] &&
+    (properties['Show icon'].value === true || properties['Show icon'].value === 'true');
+  const label = properties.Label && typeof properties.Label.value === 'string'
+    ? properties.Label.value
+    : 'Button';
+  const icon = iconNameFromInstance(instance, 'Icon') ||
+    iconNameFromEditableText(instance) ||
+    iconNameFromSwapValue(iconSwapPropertyValue(instance) || (properties.Icon && properties.Icon.value)) ||
+    '';
+
+  return {
+    label,
+    variant: BUTTON_VARIANTS.includes(variant) ? variant : 'primary',
+    variantOptions: BUTTON_VARIANTS,
+    size: BUTTON_SIZES.includes(size) ? size : 'md',
+    sizeOptions: BUTTON_SIZES,
+    state: BUTTON_CONTEXT_STATES.includes(state) ? state : 'default',
+    stateOptions: BUTTON_CONTEXT_STATES,
+    iconMode: showIcon ? 'show' : 'hide',
+    iconModeOptions: BUTTON_CONTEXT_ICON_MODES,
+    iconPosition: iconPosition === 'end' ? 'end' : 'start',
+    iconPositionOptions: ['start', 'end'],
+    widthMode: buttonWidthMode(instance),
+    widthModeOptions: BUTTON_CONTEXT_WIDTH_MODES,
+    icon,
+    dialog: actionTriggerContext(instance, 'Dialog'),
+    menu: actionTriggerContext(instance, 'Menu'),
+  };
+}
+
+function actionTriggerTargetRecord(trigger) {
+  try {
+    if (!trigger || typeof trigger.getPluginData !== 'function') return '';
+    const raw = trigger.getPluginData(ACTION_TRIGGER_TARGET_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (
+        parsed &&
+        ACTION_TRIGGER_TARGET_TYPES.has(parsed.targetType) &&
+        typeof parsed.nodeId === 'string' &&
+        parsed.nodeId
+      ) {
+        return { targetType: parsed.targetType, nodeId: parsed.nodeId };
+      }
+    }
+    const legacyDialog = trigger.getPluginData(DIALOG_TRIGGER_TARGET_KEY) ||
+      trigger.getPluginData(LEGACY_BUTTON_DIALOG_TARGET_KEY);
+    return typeof legacyDialog === 'string' && legacyDialog
+      ? { targetType: 'Dialog', nodeId: legacyDialog }
+      : manualActionTriggerTargetRecord(trigger);
+  } catch {
+    return manualActionTriggerTargetRecord(trigger);
+  }
+}
+
+function actionTriggerTargetNodeId(trigger, targetType = '') {
+  const record = actionTriggerTargetRecord(trigger);
+  return record && (!targetType || record.targetType === targetType) ? record.nodeId : '';
+}
+
+function actionTriggerComponentName(trigger) {
+  try {
+    return trigger && trigger.type === 'INSTANCE' ? registeredSetName(trigger) : '';
+  } catch {
+    return '';
+  }
+}
+
+function supportsActionTrigger(trigger) {
+  return ACTION_TRIGGER_COMPONENT_NAMES.has(actionTriggerComponentName(trigger));
+}
+
+function actionTargetOptionLabel(target, index, targetType) {
+  const title = componentText(target, targetType === 'Dialog' ? 'Title' : 'Label', '').trim();
+  const name = typeof target.name === 'string' && target.name.trim() ? stripActionTriggerNameMetadata(target.name) : '';
+  return title || name || `${targetType} ${index + 1}`;
+}
+
+function stripActionTriggerNameMetadata(name) {
+  return String(name || '').replace(ACTION_TRIGGER_NAME_PATTERN, '').trim();
+}
+
+function actionTriggerNameMetadata(name) {
+  const match = String(name || '').match(ACTION_TRIGGER_NAME_PATTERN);
+  return match ? match[1].trim() : '';
+}
+
+function actionTargetNameWithTriggerMetadata(name, triggerName) {
+  const base = stripActionTriggerNameMetadata(name);
+  const trigger = String(triggerName || '').trim();
+  return trigger ? `${base || 'Action target'} {trigger=${trigger}}` : base;
+}
+
+function normalizedActionTriggerName(value) {
+  return canonicalKey(stripActionTriggerNameMetadata(value));
+}
+
+function actionTriggerDisplayNameFromSource(source) {
+  if (!source || typeof source !== 'object') return '';
+  const props = source.props && typeof source.props === 'object' ? source.props : {};
+  if (typeof props.label === 'string' && props.label.trim()) return props.label.trim();
+  if (source.content && typeof source.content === 'object' && typeof source.content.fallback === 'string' && source.content.fallback.trim()) {
+    return source.content.fallback.trim();
+  }
+  if (typeof source.label === 'string' && source.label.trim()) return source.label.trim();
+  if (typeof source.id === 'string' && source.id.trim()) return source.id.trim();
+  if (typeof source.type === 'string' && source.type.trim()) return source.type.trim();
+  return '';
+}
+
+function actionTriggerDisplayNameFromInstance(trigger) {
+  try {
+    const jsonId = trigger && typeof trigger.getPluginData === 'function' ? trigger.getPluginData('a1-json-id') : '';
+    if (jsonId) return jsonId;
+    const componentName = actionTriggerComponentName(trigger);
+    const label = componentName === 'Button'
+      ? componentText(trigger, 'Label', '')
+      : componentName === 'Icon Button'
+        ? componentText(trigger, 'Aria label', '')
+        : '';
+    if (label && label.trim()) return label.trim();
+    return stripActionTriggerNameMetadata(trigger && trigger.name) || componentName || 'Trigger';
+  } catch {
+    return 'Trigger';
+  }
+}
+
+function actionTriggerMatchNames(trigger) {
+  const names = [];
+  try {
+    const componentName = actionTriggerComponentName(trigger);
+    const jsonId = trigger && typeof trigger.getPluginData === 'function' ? trigger.getPluginData('a1-json-id') : '';
+    if (jsonId) names.push(jsonId);
+    if (componentName) names.push(componentId(componentName, trigger));
+    if (trigger && typeof trigger.name === 'string') names.push(trigger.name);
+    if (componentName === 'Button') names.push(componentText(trigger, 'Label', ''));
+    if (componentName === 'Icon Button') names.push(componentText(trigger, 'Aria label', ''));
+  } catch {
+    // A manual metadata fallback is best-effort only.
+  }
+  return [...new Set(names.map(normalizedActionTriggerName).filter(Boolean))];
+}
+
+function manualActionTriggerTargetRecord(trigger) {
+  const matchNames = actionTriggerMatchNames(trigger);
+  if (matchNames.length === 0) return null;
+  for (const targetType of ACTION_TRIGGER_TARGET_TYPES) {
+    for (const target of actionTargetInstancesOnPage(targetType)) {
+      const metadata = actionTriggerNameMetadata(target && target.name);
+      if (metadata && matchNames.includes(normalizedActionTriggerName(metadata))) {
+        return { targetType, nodeId: target.id };
+      }
+    }
+  }
+  return null;
+}
+
+function actionTargetInstancesOnPage(targetType) {
+  try {
+    return figma.currentPage.findAll((node) => {
+      try {
+        return node.type === 'INSTANCE' && registeredSetName(node) === targetType;
+      } catch {
+        return false;
+      }
+    });
+  } catch {
+    return [];
+  }
+}
+
+function linkedActionTargetForTrigger(trigger, targetType = '') {
+  const record = actionTriggerTargetRecord(trigger);
+  if (!record || (targetType && record.targetType !== targetType)) return null;
+  const targetNodeId = record.nodeId;
+  if (!targetNodeId) return null;
+  try {
+    const target = liveNode(resolveNodeById(targetNodeId));
+    return target && target.type === 'INSTANCE' && registeredSetName(target) === record.targetType
+      ? target
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function actionTriggerContext(trigger, targetType) {
+  const targets = actionTargetInstancesOnPage(targetType);
+  const linked = linkedActionTargetForTrigger(trigger, targetType);
+  const linkedId = linked ? linked.id : '';
+  const linkedIndex = linked ? targets.findIndex((target) => target.id === linked.id) : -1;
+  const options = targets.map((target, index) => ({
+    nodeId: target.id,
+    jsonId: componentId(targetType, target),
+    label: actionTargetOptionLabel(target, index, targetType),
+  }));
+  return {
+    targetNodeId: linkedId,
+    targetJsonId: linked ? componentId(targetType, linked) : '',
+    targetLabel: linked ? actionTargetOptionLabel(linked, linkedIndex, targetType) : '',
+    options,
+  };
+}
+
+function setActionTriggerTarget(trigger, targetType, targetNodeId) {
+  try {
+    const value = typeof targetNodeId === 'string' ? targetNodeId : '';
+    if (value && ACTION_TRIGGER_TARGET_TYPES.has(targetType)) {
+      trigger.setPluginData(ACTION_TRIGGER_TARGET_KEY, JSON.stringify({ targetType, nodeId: value }));
+    } else if (actionTriggerTargetRecord(trigger)?.targetType === targetType) {
+      trigger.setPluginData(ACTION_TRIGGER_TARGET_KEY, '');
+    }
+    trigger.setPluginData(DIALOG_TRIGGER_TARGET_KEY, '');
+    trigger.setPluginData(LEGACY_BUTTON_DIALOG_TARGET_KEY, '');
+  } catch {
+    // Non-fatal: the visual trigger still exists; the relationship just cannot persist.
+  }
+}
+
+function syncActionTargetTriggerNameMetadata(target, trigger) {
+  try {
+    if (!target || !trigger || typeof target.name !== 'string') return;
+    target.name = actionTargetNameWithTriggerMetadata(target.name, actionTriggerDisplayNameFromInstance(trigger));
+  } catch {
+    // The saved plugin relationship is the source of truth; layer-name metadata is a manual affordance.
+  }
+}
+
+function actionForLinkedTarget(trigger, exportedTargetNode = null) {
+  const record = actionTriggerTargetRecord(trigger);
+  if (!record) return null;
+  const config = ACTION_TRIGGER_TARGET_CONFIG[record.targetType];
+  if (!config) return null;
+  if (exportedTargetNode && typeof exportedTargetNode.id === 'string') {
+    return { type: config.actionType, target: exportedTargetNode.id };
+  }
+  const target = linkedActionTargetForTrigger(trigger, record.targetType);
+  return target ? { type: config.actionType, target: componentId(record.targetType, target) } : null;
+}
+
+function applyActionTriggerAction(trigger, node) {
+  const action = actionForLinkedTarget(trigger);
+  if (!action || !node) return node;
+  node.actions = {
+    ...(node.actions || {}),
+    onClick: action,
+  };
+  return node;
+}
+
+function nodeWithLinkedActionTargetExport(trigger, triggerNode, warnings) {
+  const componentName = actionTriggerComponentName(trigger) || 'Component';
+  const record = actionTriggerTargetRecord(trigger);
+  if (!record) return triggerNode;
+  const linkedTarget = linkedActionTargetForTrigger(trigger, record.targetType);
+  if (!linkedTarget) {
+    if (actionTriggerTargetNodeId(trigger)) warnings.push(`The ${componentName} has a saved ${record.targetType} link, but that ${record.targetType} no longer exists.`);
+    return triggerNode;
+  }
+  const exporter = EXPORTERS[record.targetType];
+  if (typeof exporter !== 'function') {
+    warnings.push(`${record.targetType} cannot be exported as an action target yet.`);
+    return triggerNode;
+  }
+  const targetResult = exporter(linkedTarget);
+  warnings.push(...targetResult.warnings);
+  const action = actionForLinkedTarget(trigger, targetResult.node);
+  if (!action) return triggerNode;
+  const linkedTrigger = {
+    ...triggerNode,
+    actions: {
+      ...(triggerNode.actions || {}),
+      onClick: action,
+    },
+  };
+  warnings.push(`${componentName} is linked to ${record.targetType} "${actionTargetOptionLabel(linkedTarget, 0, record.targetType)}"; exported both nodes with a ${action.type} action.`);
+  return {
+    id: componentId('Stack', `${trigger.id}-${record.targetType.toLowerCase()}-link`),
+    type: 'Stack',
+    props: { gap: 'md' },
+    children: [linkedTrigger, targetResult.node],
+  };
+}
+
+function collectNodeIds(node, ids = new Set()) {
+  if (!node || typeof node !== 'object') return ids;
+  if (typeof node.id === 'string' && node.id) ids.add(node.id);
+  for (const key of ['children', 'nodes', 'regions']) {
+    if (Array.isArray(node[key])) node[key].forEach((child) => collectNodeIds(child, ids));
+  }
+  collectNodeIds(node.page, ids);
+  collectNodeIds(node.layout, ids);
+  return ids;
+}
+
+function collectOpenActionTargets(node, targets = new Map()) {
+  if (Array.isArray(node)) {
+    node.forEach((child) => collectOpenActionTargets(child, targets));
+    return targets;
+  }
+  if (!node || typeof node !== 'object') return targets;
+  const actions = node.actions && typeof node.actions === 'object' ? node.actions : null;
+  const clickActions = [
+    actions && actions.onClick && typeof actions.onClick === 'object' ? actions.onClick : null,
+    node.action && typeof node.action === 'object' ? node.action : null,
+  ].filter(Boolean);
+  for (const action of clickActions) {
+    if (ACTION_TRIGGER_TYPE_BY_ACTION[action.type] && typeof action.target === 'string' && action.target) {
+      targets.set(action.target, ACTION_TRIGGER_TYPE_BY_ACTION[action.type]);
+    }
+  }
+  for (const key of ['children', 'nodes', 'regions', 'props', 'actions']) {
+    collectOpenActionTargets(node[key], targets);
+  }
+  collectOpenActionTargets(node.page, targets);
+  collectOpenActionTargets(node.layout, targets);
+  return targets;
+}
+
+function appendLinkedActionTargetNode(rootNode, targetNode) {
+  if (!rootNode || !targetNode) return rootNode;
+  const pageRegions = rootNode.page && rootNode.page.layout && rootNode.page.layout.regions;
+  if (Array.isArray(pageRegions) && pageRegions[0] && Array.isArray(pageRegions[0].nodes)) {
+    pageRegions[0].nodes.push(targetNode);
+    return rootNode;
+  }
+  const layoutRegions = rootNode.layout && rootNode.layout.regions;
+  if (Array.isArray(layoutRegions) && layoutRegions[0] && Array.isArray(layoutRegions[0].nodes)) {
+    layoutRegions[0].nodes.push(targetNode);
+    return rootNode;
+  }
+  if (Array.isArray(rootNode.regions) && rootNode.regions[0] && Array.isArray(rootNode.regions[0].nodes)) {
+    rootNode.regions[0].nodes.push(targetNode);
+    return rootNode;
+  }
+  if (Array.isArray(rootNode.nodes)) {
+    rootNode.nodes.push(targetNode);
+    return rootNode;
+  }
+  if (Array.isArray(rootNode.children) && rootNode.type !== 'TopHeader') {
+    rootNode.children.push(targetNode);
+    return rootNode;
+  }
+  return {
+    id: componentId('Stack', `${rootNode.id || 'root'}-action-targets`),
+    type: 'Stack',
+    props: { gap: 'md' },
+    children: [rootNode, targetNode],
+  };
+}
+
+function includeOpenActionTargets(rootNode, warnings) {
+  const targets = collectOpenActionTargets(rootNode);
+  if (targets.size === 0) return rootNode;
+  const existingIds = collectNodeIds(rootNode);
+  let outputNode = rootNode;
+  for (const [targetId, targetType] of targets.entries()) {
+    if (existingIds.has(targetId)) continue;
+    const target = actionTargetInstancesOnPage(targetType)
+      .find((candidate) => componentId(targetType, candidate) === targetId);
+    if (!target) {
+      warnings.push(`An action targets ${targetType} "${targetId}", but that ${targetType} was not found on this Figma page.`);
+      continue;
+    }
+    const exporter = EXPORTERS[targetType];
+    if (typeof exporter !== 'function') {
+      warnings.push(`${targetType} cannot be exported as an action target yet.`);
+      continue;
+    }
+    const result = exporter(target);
+    warnings.push(...result.warnings);
+    outputNode = appendLinkedActionTargetNode(outputNode, result.node);
+    collectNodeIds(outputNode, existingIds);
+    warnings.push(`Included linked ${targetType} "${actionTargetOptionLabel(target, 0, targetType)}" for open action.`);
+  }
+  return outputNode;
 }
 
 function exportIconButton(instance) {
@@ -2802,7 +2671,8 @@ function exportIconButton(instance) {
   const variant = componentPropertyValue(instance, 'Variant', 'VARIANT');
   const size = componentPropertyValue(instance, 'Size', 'VARIANT');
   const iconName = iconNameFromInstance(instance, 'Icon') ||
-    iconNameFromSwapValue(componentPropertyValue(instance, 'Icon', 'INSTANCE_SWAP'));
+    iconNameFromEditableText(instance) ||
+    iconNameFromSwapValue(iconSwapPropertyValue(instance));
 
   if (ICON_BUTTON_VARIANTS.includes(variant) && variant !== 'tertiary') props.variant = variant;
   if (ICON_BUTTON_SIZES.includes(size) && size !== 'md') props.size = size;
@@ -2816,13 +2686,32 @@ function exportIconButton(instance) {
   }
 
   const label = componentText(instance, 'Aria label', 'Icon button');
+  const node = {
+    id: componentId('IconButton', instance),
+    type: 'IconButton',
+    props: { ...props, label },
+  };
+  applyActionTriggerAction(instance, node);
+  return { node, warnings };
+}
+
+function iconButtonContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const variant = componentPropertyValue(instance, 'Variant', 'VARIANT');
+  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
+  const icon = iconNameFromInstance(instance, 'Icon') ||
+    iconNameFromEditableText(instance) ||
+    iconNameFromSwapValue(iconSwapPropertyValue(instance)) ||
+    'star';
   return {
-    node: {
-      id: componentId('IconButton', instance),
-      type: 'IconButton',
-      props: { ...props, label },
-    },
-    warnings,
+    label: componentText(instance, 'Aria label', 'Icon button'),
+    variant: ICON_BUTTON_VARIANTS.includes(variant) ? variant : 'tertiary',
+    variantOptions: ICON_BUTTON_VARIANTS,
+    size: ICON_BUTTON_SIZES.includes(size) ? size : 'md',
+    sizeOptions: ICON_BUTTON_SIZES,
+    icon,
+    dialog: actionTriggerContext(instance, 'Dialog'),
+    menu: actionTriggerContext(instance, 'Menu'),
   };
 }
 
@@ -2838,7 +2727,7 @@ function exportLink(instance) {
   if (LINK_SIZES.includes(size)) props.size = size;
   if (LINK_WEIGHTS.includes(weight)) props.weight = weight;
   if (showIcon === true) {
-    const iconName = iconNameFromInstance(instance, 'Icon') || iconNameFromSwapValue(componentPropertyValue(instance, 'Icon', 'INSTANCE_SWAP'));
+    const iconName = iconNameFromInstance(instance, 'Icon') || iconNameFromEditableText(instance) || iconNameFromSwapValue(iconSwapPropertyValue(instance));
     if (iconName) {
       props.icon = iconName;
       if (iconPosition === 'end') props.iconPosition = 'end';
@@ -2859,82 +2748,130 @@ function exportLink(instance) {
   };
 }
 
-function namedSlot(instance, name) {
-  const wanted = canonicalKey(name);
-  // The current Card library can expose its native Content Slot either as a
-  // SLOT node or as the equivalent named auto-layout Frame in an instance.
-  // Treat both as the same editable boundary; only Card uses the `Content`
-  // alias, so other component slots remain exact-name lookups.
-  const names = wanted === 'contentslot'
-    ? new Set(['contentslot', 'content', 'cardcontent', 'cardcontentslot'])
-    : new Set([wanted]);
-  // Figma can replace an instance sublayer while an export is walking a
-  // containing Section or Stack. `findOne` then throws while reading the
-  // obsolete child's name instead of returning no result. A missing slot is a
-  // recoverable representation limitation, so refresh the outer instance and
-  // treat an unavailable internal layer as absent rather than aborting the
-  // whole JSON export.
-  try {
-    const liveInstance = instance && instance.type === 'INSTANCE'
-      ? currentInstance(instance)
-      : instance;
-    return liveInstance && liveInstance.findOne((node) => {
-      try {
-        if (!names.has(canonicalKey(node.name))) return false;
-        return node.type === 'SLOT' || node.type === 'FRAME' || node.type === 'GROUP';
-      } catch {
-        return false;
-      }
-    }) || null;
-  } catch {
-    return null;
+function linkContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
+  const weight = componentPropertyValue(instance, 'Weight', 'VARIANT');
+  const rawIconPosition = componentPropertyValue(instance, 'Icon position', 'VARIANT');
+  const showIcon = componentPropertyValue(instance, 'Show icon', 'BOOLEAN') === true;
+  const icon = iconNameFromInstance(instance, 'Icon') || iconNameFromEditableText(instance) || iconNameFromSwapValue(iconSwapPropertyValue(instance)) || '';
+  return {
+    label: componentText(instance, 'Label', 'Link'),
+    size: LINK_SIZES.includes(size) ? size : 'md',
+    sizeOptions: LINK_SIZES,
+    weight: LINK_WEIGHTS.includes(weight) ? weight : 'normal',
+    weightOptions: LINK_WEIGHTS,
+    iconPosition: showIcon ? (rawIconPosition === 'end' ? 'end' : 'start') : 'none',
+    iconPositionOptions: ['none', ...LINK_ICON_POSITIONS],
+    icon,
+  };
+}
+
+// Slot and component-content helpers are defined in src/figma/slots.js.
+function normalizeCardSurface(value) {
+  const normalized = typeof value === 'string' ? value.toLowerCase() : '';
+  return CARD_SURFACES.includes(normalized) ? normalized : 'default';
+}
+
+function figmaCardSurface(value) {
+  return normalizeCardSurface(value) === 'accent' ? 'Accent' : 'default';
+}
+
+function normalizeCardVariant(props = {}) {
+  if (props.bare === true) return 'bare';
+  return props.variant === 'navigation' ? 'navigation' : 'default';
+}
+
+function normalizeCardVariantValue(value) {
+  const normalized = typeof value === 'string' ? value.toLowerCase() : '';
+  if (normalized === 'navigation') return 'navigation';
+  if (normalized === 'bare') return 'bare';
+  return 'default';
+}
+
+function figmaCardVariant(value) {
+  const normalized = normalizeCardVariantValue(value);
+  if (normalized === 'navigation') return 'Navigation';
+  if (normalized === 'bare') return 'Bare';
+  return 'Default';
+}
+
+function cardIconInstance(instance) {
+  const root = liveNode(currentInstance(instance));
+  if (!root || !('children' in root)) return null;
+  const queue = [...stackFlowChildren(root)];
+  const visited = new Set();
+  while (queue.length) {
+    const candidate = liveNode(queue.shift());
+    if (!candidate || visited.has(candidate.id)) continue;
+    visited.add(candidate.id);
+    try {
+      if (candidate.type === 'INSTANCE' && componentSetName(candidate) === 'Card Icon') return candidate;
+      if ('children' in candidate) queue.push(...stackFlowChildren(candidate));
+    } catch {
+      // Ignore stale native proxies; Card can replace its nested icon instance
+      // while the plugin is reading selection state.
+    }
   }
+  return null;
 }
 
-function nativeSlot(instance, name) {
-  const wanted = canonicalKey(name);
-  const liveInstance = instance && instance.type === 'INSTANCE'
-    ? currentInstance(instance)
-    : instance;
-  if (!liveInstance) return null;
-  try {
-    const slots = liveInstance.findAll((node) => {
-      try {
-        if (node.type !== 'SLOT' && node.type !== 'FRAME' && node.type !== 'GROUP') return false;
-        if (canonicalKey(node.name) === wanted) return true;
-        const refs = node.componentPropertyReferences || {};
-        return Object.values(refs).some((value) => canonicalKey(String(value || '')).startsWith(wanted));
-      } catch {
-        return false;
-      }
-    });
-    return slots.find((slot) => canonicalKey(slot.name) === wanted) || slots[0] || null;
-  } catch {
-    return namedSlot(liveInstance, name);
+function cardIconPositionForWidth(instance) {
+  const width = Number(instance && instance.width);
+  return Number.isFinite(width) && width >= CARD_ICON_START_MIN_WIDTH ? 'start' : 'top';
+}
+
+function syncCardIconPositionForWidth(instance, warnings = []) {
+  let current = currentInstance(instance);
+  if (!current || current.type !== 'INSTANCE') return current;
+  if (componentPropertyValue(current, 'Show icon', 'BOOLEAN') !== true) return current;
+
+  const cardPosition = cardIconPositionForWidth(current);
+  const iconPosition = cardPosition === 'start' ? 'left' : 'top';
+  const cardAssignments = {};
+  const currentCardPosition = componentPropertyValue(current, 'iconPosition', 'VARIANT');
+  if (currentCardPosition !== cardPosition) {
+    queueComponentProperty(current, cardAssignments, 'iconPosition', cardPosition, 'VARIANT', warnings, 'Card icon position');
+    applyQueuedProperties(current, cardAssignments, warnings, 'Card icon position');
+    current = currentInstance(current);
   }
-}
 
-function componentText(instance, name, fallback = '') {
-  const value = componentPropertyValue(instance, name, 'TEXT');
-  return typeof value === 'string' ? value : fallback;
-}
-
-function componentBoolean(instance, name, fallback = false) {
-  const value = componentPropertyValue(instance, name, 'BOOLEAN');
-  return typeof value === 'boolean' ? value : fallback;
+  const iconInstance = cardIconInstance(current);
+  if (iconInstance && componentPropertyValue(iconInstance, 'position', 'VARIANT') !== iconPosition) {
+    const iconAssignments = {};
+    queueComponentProperty(iconInstance, iconAssignments, 'position', iconPosition, 'VARIANT', warnings, 'Card nested icon position');
+    applyQueuedProperties(iconInstance, iconAssignments, warnings, 'Card nested icon position');
+    current = currentInstance(current);
+  }
+  return current;
 }
 
 function exportCard(instance) {
   instance = currentInstance(instance);
   const warnings = [];
   const props = {};
-  const surface = componentPropertyValue(instance, 'Surface', 'VARIANT');
+  instance = syncCardIconPositionForWidth(instance, warnings);
+  const surface = normalizeCardSurface(componentPropertyValue(instance, 'Surface', 'VARIANT'));
   if (CARD_SURFACES.includes(surface) && surface !== 'default') props.surface = surface;
+  const variant = normalizeCardVariantValue(componentPropertyValue(instance, 'Variant', 'VARIANT'));
+  if (variant === 'navigation') props.variant = 'navigation';
+  if (variant === 'bare') props.bare = true;
   const showIcon = componentPropertyValue(instance, 'Show icon', 'BOOLEAN');
   if (showIcon === true) {
-    const iconName = iconNameFromSwapValue(componentPropertyValue(instance, 'Icon', 'INSTANCE_SWAP'));
+    const iconInstance = cardIconInstance(instance);
+    const iconName = iconNameFromInstance(iconInstance || instance) ||
+      iconNameFromEditableText(iconInstance || instance) ||
+      iconNameFromSwapValue(iconSwapPropertyValue(iconInstance || instance)) ||
+      iconNameFromSwapValue(iconSwapPropertyValue(instance));
     if (iconName) props.icon = iconName;
     else warnings.push('Card icon is visible but its swapped icon component could not be resolved.');
+    const iconType = componentPropertyValue(iconInstance || instance, 'Type', 'VARIANT');
+    const iconDisplay = iconType === 'Hero' ? 'hero' : 'default';
+    if (iconDisplay !== 'default') props.iconDisplay = iconDisplay;
+    if (iconDisplay === 'hero') {
+      const heroColor = normalizeCardHeroColor(componentPropertyValue(iconInstance || instance, 'Color', 'VARIANT'));
+      if (heroColor !== 'action') props.heroColor = heroColor;
+    }
   }
   const slot = namedSlot(instance, 'Content Slot');
   const children = slot ? exportFreeContent(slot, warnings) : [];
@@ -2943,6 +2880,36 @@ function exportCard(instance) {
   if (Object.keys(props).length > 0) node.props = props;
   if (children.length > 0) node.children = children;
   return { node, warnings };
+}
+function cardContextForSelection(instance) {
+  instance = currentInstance(instance);
+  instance = syncCardIconPositionForWidth(instance, []);
+  const surface = normalizeCardSurface(componentPropertyValue(instance, 'Surface', 'VARIANT'));
+  const variant = normalizeCardVariantValue(componentPropertyValue(instance, 'Variant', 'VARIANT'));
+  const showIcon = componentPropertyValue(instance, 'Show icon', 'BOOLEAN');
+  const iconInstance = cardIconInstance(instance);
+  const iconType = componentPropertyValue(iconInstance || instance, 'Type', 'VARIANT');
+  const iconDisplay = showIcon === true
+    ? iconType === 'Hero' ? 'hero' : 'default'
+    : 'none';
+  const icon = iconNameFromInstance(iconInstance || instance) ||
+    iconNameFromEditableText(iconInstance || instance) ||
+    iconNameFromSwapValue(iconSwapPropertyValue(iconInstance || instance)) ||
+    iconNameFromSwapValue(iconSwapPropertyValue(instance))
+    || '';
+  return {
+    surface,
+    surfaceOptions: CARD_SURFACES,
+    variant,
+    variantOptions: CARD_VARIANTS,
+    iconDisplay,
+    iconDisplayOptions: CARD_ICON_DISPLAYS,
+    heroColor: normalizeCardHeroColor(componentPropertyValue(iconInstance || instance, 'Color', 'VARIANT')),
+    heroColorOptions: CARD_HERO_COLORS,
+    widthMode: layoutWidthMode(instance),
+    heightMode: layoutHeightMode(instance),
+    icon,
+  };
 }
 
 function detachedBannerProps(node) {
@@ -2988,6 +2955,13 @@ function exportBanner(instance) {
   if (BANNER_VARIANTS.includes(variant) && variant !== 'inline') props.variant = variant;
   if (BANNER_STATUSES.includes(status) && status !== 'neutral') props.status = status;
 
+  if (variant !== 'calendar') {
+    const defaultIcon = BANNER_DEFAULT_ICONS[BANNER_STATUSES.includes(status) ? status : 'neutral'];
+    const iconName = iconNameFromInstance(instance, 'Status Icon')
+      || iconNameFromSwapValue(iconSwapPropertyValue(instance));
+    if (iconName && iconName !== defaultIcon) props.icon = iconName;
+  }
+
   const title = (detached ? namedTextLayerValue(instance, 'Title', savedProps.title || '') : componentText(instance, 'Title', '')).trim();
   if (title) props.title = title;
 
@@ -3006,36 +2980,6 @@ function exportBanner(instance) {
   const node = { id: componentId('Banner', instance), type: 'Banner' };
   if (Object.keys(props).length > 0) node.props = props;
   if (children.length > 0) node.children = children;
-  return { node, warnings };
-}
-
-function exportBadge(instance) {
-  instance = currentInstance(instance);
-  const warnings = [];
-  const props = {};
-  const status = componentPropertyValue(instance, 'Status', 'VARIANT');
-  const subtle = componentPropertyValue(instance, 'Subtle', 'VARIANT');
-  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
-  if (BADGE_STATUSES.includes(status) && status !== 'neutral') props.status = status;
-  if (subtle === 'true' || subtle === true) props.subtle = true;
-  // Keep size explicit for Badge. Unlike most default props it materially
-  // affects the visual density of a compact status chip, and omitting `md`
-  // makes a Figma → JSON → Figma exchange lose that authored choice.
-  if (BADGE_SIZES.includes(size)) props.size = size;
-  if (!componentBoolean(instance, 'Show icon', true)) {
-    props.icon = null;
-  } else {
-    const defaultIcon = BADGE_DEFAULT_ICONS[BADGE_STATUSES.includes(status) ? status : 'neutral'];
-    const iconName = iconNameFromInstance(instance) || iconNameFromSwapValue(componentPropertyValue(instance, 'Icon', 'INSTANCE_SWAP'));
-    if (iconName && iconName !== defaultIcon) props.icon = iconName;
-    else if (!iconName) warnings.push('Badge icon is visible but its Material icon component could not be resolved.');
-  }
-  const node = {
-    id: componentId('MessageBadge', instance),
-    type: 'MessageBadge',
-    content: { fallback: componentText(instance, 'Label', 'Badge') },
-  };
-  if (Object.keys(props).length > 0) node.props = props;
   return { node, warnings };
 }
 
@@ -3124,6 +3068,24 @@ function exportDefinitionList(instance) {
   return { node: { id: componentId('DefinitionList', instance), type: 'DefinitionList', props }, warnings };
 }
 
+function definitionListContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const exported = exportDefinitionList(instance);
+  const props = exported.node.props || {};
+  const items = Array.isArray(props.items) ? props.items : [];
+  const direction = DEFINITION_LIST_DIRECTIONS.includes(props.direction) ? props.direction : 'row';
+  const size = DEFINITION_LIST_SIZES.includes(props.size) ? props.size : 'md';
+  const itemCount = Math.max(1, Math.min(10, items.length || 1));
+  return {
+    direction,
+    directionOptions: DEFINITION_LIST_DIRECTIONS,
+    size,
+    sizeOptions: DEFINITION_LIST_SIZES,
+    itemCount,
+    itemCountOptions: Array.from({ length: 10 }, (_, index) => String(index + 1)),
+  };
+}
+
 function exportDefinitionListItem(instance) {
   instance = currentInstance(instance);
   const warnings = [];
@@ -3155,99 +3117,6 @@ function exportBlockquote(instance) {
   };
   if (Object.keys(props).length > 0) node.props = props;
   return { node, warnings };
-}
-
-function codeTextValue(instance) {
-  const direct = componentText(instance, 'Code',
-    componentText(instance, 'Content',
-      componentText(instance, 'Value',
-        componentText(instance, 'Text', ''))));
-  if (direct) return direct;
-  try {
-    const texts = currentInstance(instance).findAll((node) => node.type === 'TEXT' && node.visible !== false);
-    const candidates = texts
-      .map((text) => (typeof text.characters === 'string' ? text.characters : ''))
-      .map((value) => value.trim())
-      .filter(Boolean)
-      .filter((value) => !/^(copy|show more|show less)$/i.test(value));
-    return candidates.sort((a, b) => b.length - a.length)[0] || '';
-  } catch {
-    return '';
-  }
-}
-
-function exportCode(instance) {
-  instance = currentInstance(instance);
-  const warnings = [];
-  const props = {};
-  const variant = componentPropertyValue(instance, 'Variant', 'VARIANT');
-  if (variant === 'inline' || variant === 'block') props.variant = variant;
-  const wrapping = componentBoolean(instance, 'Wrapping', undefined);
-  if (typeof wrapping === 'boolean') props.wrapping = wrapping;
-  const editable = componentBoolean(instance, 'Editable', undefined);
-  if (typeof editable === 'boolean') props.editable = editable;
-  const copyCode = componentBoolean(instance, 'Copy code', componentBoolean(instance, 'Copy Code', undefined));
-  if (typeof copyCode === 'boolean') props.copyCode = copyCode;
-  const copyText = componentText(instance, 'Copy text', componentText(instance, 'Copy Text', '')).trim();
-  if (copyText) props.copyText = copyText;
-  const collapsedLines = componentPropertyValue(instance, 'Collapsed lines', 'TEXT') || componentPropertyValue(instance, 'Collapsed Lines', 'TEXT');
-  const numericCollapsedLines = Number(collapsedLines);
-  if (Number.isFinite(numericCollapsedLines) && numericCollapsedLines > 0) props.collapsedLines = numericCollapsedLines;
-  return {
-    node: {
-      id: componentId('Code', instance),
-      type: 'Code',
-      props,
-      content: { fallback: codeTextValue(instance) || 'Code sample' },
-    },
-    warnings,
-  };
-}
-
-function inlineTextValue(instance) {
-  const direct = componentText(instance, 'Markdown',
-    componentText(instance, 'Content',
-      componentText(instance, 'Value',
-        componentText(instance, 'Text', ''))));
-  if (direct) return direct;
-  try {
-    const texts = currentInstance(instance).findAll((node) => node.type === 'TEXT' && node.visible !== false);
-    const candidates = texts
-      .map((text) => (typeof text.characters === 'string' ? text.characters : ''))
-      .map((value) => value.trim())
-      .filter(Boolean);
-    return candidates.sort((a, b) => b.length - a.length)[0] || '';
-  } catch {
-    return '';
-  }
-}
-
-function inlineElementValue(value) {
-  const normalized = String(value || '').trim();
-  if (!normalized) return '';
-  const compact = normalized.toLowerCase().replace(/\s+/g, '-');
-  return INLINE_ELEMENTS.includes(compact) ? compact : '';
-}
-
-function exportInline(instance) {
-  instance = currentInstance(instance);
-  const props = {};
-  const element = inlineElementValue(
-    componentPropertyValue(instance, 'Inline element', 'VARIANT')
-      || componentPropertyValue(instance, 'Element', 'VARIANT')
-      || componentPropertyValue(instance, 'Type', 'VARIANT')
-      || componentText(instance, 'Inline element', '')
-  );
-  if (element && element !== 'all') props.inlineElement = element;
-  return {
-    node: {
-      id: componentId('Inline', instance),
-      type: 'Inline',
-      props,
-      content: { fallback: inlineTextValue(instance) || 'Inline text' },
-    },
-    warnings: [],
-  };
 }
 
 // Export every registered descendant instance (e.g. Buttons inside a Section)
@@ -3339,6 +3208,63 @@ function sectionSuggestion(instance) {
   return { issues, fixes, carrier, gap };
 }
 
+function sectionVariantContextValue(instance, names, allowed, fallback, collectionName) {
+  const carriers = sectionPropertyCarriers(instance);
+  const found = findSectionProperty(carriers, names, 'VARIANT');
+  if (found && allowed.includes(found.property.value)) return found.property.value;
+  const mode = collectionName ? explicitCollectionMode(instance, collectionName) : null;
+  if (allowed.includes(mode)) return mode;
+  return fallback;
+}
+
+function sectionContextForSelection(instance) {
+  const section = currentInstance(instance);
+  const colorMode = explicitCollectionMode(section, 'Color');
+  return {
+    surface: sectionVariantContextValue(section, ['surface'], SECTION_SURFACES, 'page'),
+    surfaceOptions: SECTION_SURFACES,
+    inverse: colorMode === 'Dark',
+    padding: sectionVariantContextValue(section, ['padding'], SECTION_PADDINGS, 'sm'),
+    paddingOptions: SECTION_PADDINGS,
+    contentWidth: sectionVariantContextValue(section, ['contentwidth', 'width'], SECTION_WIDTHS, 'lg', 'ContentWidth'),
+    contentWidthOptions: SECTION_WIDTHS,
+    gap: sectionVariantContextValue(section, ['gap'], SECTION_GAPS, 'md', 'Gap'),
+    gapOptions: SECTION_GAPS,
+    widthMode: layoutWidthMode(section),
+    heightMode: layoutHeightMode(section),
+  };
+}
+
+function syncSectionInverseMode(instance, inverse, warnings) {
+  const section = currentInstance(instance);
+  if (inverse === true) {
+    const applied = applyCollectionModeToTree(section, 'Color', 'Dark');
+    if (!applied) {
+      const collections = resolvedCollectionsForRoot(section)
+        .map((collection) => `${collection.name} (${collection.modes.map((mode) => mode.name).join(', ')})`);
+      warnings.push(collections.length
+        ? `inverse could not be applied — no resolved Color collection with a Dark mode accepted the mode write. Resolved collections: ${collections.join('; ')}.`
+        : 'inverse could not be applied — no resolved Color collection was found on this Section.');
+    }
+    return;
+  }
+  clearCollectionMode(section, 'Color');
+}
+
+function syncSectionGapSpacing(instance, gap, warnings) {
+  if (!SECTION_GAPS.includes(gap)) return;
+  const carrier = sectionGapCarrier(currentInstance(instance));
+  if (!carrier) return;
+  trySetLayoutProperty(carrier, 'itemSpacing', SECTION_GAP_PIXELS[gap], warnings, 'Section content gap');
+  try {
+    if (carrier.layoutWrap === 'WRAP') {
+      trySetLayoutProperty(carrier, 'counterAxisSpacing', SECTION_GAP_PIXELS[gap], warnings, 'Section wrap gap');
+    }
+  } catch {
+    // Ignore unsupported wrap metadata on older Section content layers.
+  }
+}
+
 function applySectionSuggestion(instance, suggestion, warnings) {
   if (!suggestion.carrier || !suggestion.gap) return;
   try {
@@ -3380,8 +3306,8 @@ function exportSection(instance) {
 
   const padding = findSectionProperty(carriers, ['padding'], 'VARIANT');
   if (padding && SECTION_PADDINGS.includes(padding.property.value)) {
-    // md is the React default and is omitted from the JSON.
-    if (padding.property.value !== 'md') props.padding = padding.property.value;
+    // sm is the React/JSON default and is omitted from the JSON.
+    if (padding.property.value !== 'sm') props.padding = padding.property.value;
   } else {
     warnings.push('No Padding property found on the Section or its parts — padding omitted.');
   }
@@ -3420,7 +3346,6 @@ function exportSection(instance) {
   const colorMode = explicitCollectionMode(instance, 'Color');
   if (colorMode === 'Dark') {
     props.inverse = true;
-    warnings.push('inverse: true was derived from the explicit "Dark" Color mode on the section.');
   }
 
   // TEXT documentation properties (Gradient, Align, borders, background…).
@@ -3469,8 +3394,127 @@ function buttonContainerSlot(instance) {
     (node.type === 'FRAME' || node.type === 'SLOT') && canonicalKey(node.name) === 'buttonslot') || null;
 }
 
+function buttonContainerCompactForWidth(instance) {
+  const width = Number(instance && instance.width);
+  return Number.isFinite(width) && width < BUTTON_CONTAINER_QUERY_WIDTH;
+}
+
+function buttonContainerDirectionForWidth(instance) {
+  return buttonContainerCompactForWidth(instance) ? 'stacked' : 'inline';
+}
+
+function buttonContainerAlign(instance) {
+  const align = componentPropertyValue(instance, 'Align', 'VARIANT');
+  return BUTTON_CONTAINER_ALIGNS.includes(align) ? align : 'start';
+}
+
+function buttonContainerDirectionFromVariantValue(value) {
+  const key = canonicalKey(value);
+  for (const [direction, values] of Object.entries(BUTTON_CONTAINER_DIRECTION_VARIANTS)) {
+    if (values.some((candidate) => canonicalKey(candidate) === key)) return direction;
+  }
+  return '';
+}
+
+function buttonContainerDirectionProperty(instance) {
+  return componentPropertyFromNames(instance, BUTTON_CONTAINER_DIRECTION_PROPERTY_NAMES, 'VARIANT');
+}
+
+function preferredButtonContainerDirectionCandidates(direction, currentValue) {
+  const candidates = BUTTON_CONTAINER_DIRECTION_VARIANTS[direction] || [];
+  const current = String(currentValue || '');
+  return Array.from(new Set([...candidates, current].filter(Boolean)));
+}
+
+function syncButtonContainerDirection(instance, direction, warnings = []) {
+  let current = currentInstance(instance);
+  const found = buttonContainerDirectionProperty(current);
+  if (!found) return current;
+  if (buttonContainerDirectionFromVariantValue(found.property.value) === direction) return current;
+  const candidates = preferredButtonContainerDirectionCandidates(direction, found.property.value);
+  let lastError = null;
+  for (const candidate of candidates) {
+    try {
+      current.setProperties({ [found.key]: candidate });
+      return currentInstance(current);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  warnings.push(`Button Group direction could not be applied to the "${plainKey(found.key)}" variant property as ${direction}: ${lastError && lastError.message ? lastError.message : 'no matching variant value was accepted'}.`);
+  return currentInstance(current);
+}
+
+function buttonContainerButtonChildren(instance) {
+  const slot = buttonContainerSlot(currentInstance(instance));
+  if (!slot || !('children' in slot)) return [];
+  const isButton = (node) => node.type === 'INSTANCE' && registeredSetName(node) === 'Button';
+  const direct = slot.children.filter(isButton);
+  return direct.length > 0 || typeof slot.findAll !== 'function' ? direct : slot.findAll(isButton);
+}
+
+function buttonContainerAncestor(node) {
+  for (let parent = node && node.parent; parent; parent = parent.parent) {
+    const liveParent = liveNode(parent);
+    if (liveParent && liveParent.type === 'INSTANCE' && registeredSetName(liveParent) === 'Button Container') {
+      return liveParent;
+    }
+  }
+  return null;
+}
+
+function syncButtonContainerSlotLayout(slot, compact, align, warnings) {
+  if (!slot || slot.type !== 'FRAME') return;
+  trySetLayoutProperty(slot, 'layoutMode', compact ? 'VERTICAL' : 'HORIZONTAL', warnings, 'Button Group responsive layout');
+  trySetLayoutProperty(slot, 'layoutWrap', compact ? 'NO_WRAP' : 'WRAP', warnings, 'Button Group responsive wrap');
+  trySetLayoutProperty(slot, 'primaryAxisAlignItems', align === 'center' ? 'CENTER' : align === 'end' ? 'MAX' : 'MIN', warnings, 'Button Group alignment');
+  trySetLayoutProperty(slot, 'counterAxisAlignItems', compact ? 'STRETCH' : 'CENTER', warnings, 'Button Group cross-axis alignment');
+}
+
+function syncButtonContainerChildButtonSizing(button, compact, warnings, index) {
+  if (!button || button.type !== 'INSTANCE') return;
+  // A child Button owns its content height. Reset vertical Fill left by a
+  // previous responsive pass before applying the breakpoint-specific width.
+  syncLayoutHeightMode(button, 'hug', warnings, `Button Group child ${index}`);
+  if (compact) {
+    syncLayoutWidthMode(button, 'fill', warnings, `Button Group child ${index}`);
+    return;
+  }
+  syncLayoutWidthMode(button, 'hug', warnings, `Button Group child ${index}`);
+}
+
+function syncButtonContainerForWidth(instance, warnings = []) {
+  let current = currentInstance(instance);
+  if (!current || current.type !== 'INSTANCE') return current;
+  const direction = buttonContainerDirectionForWidth(current);
+  current = syncButtonContainerDirection(current, direction, warnings);
+  const compact = direction === 'stacked';
+  const align = buttonContainerAlign(current);
+  const slot = buttonContainerSlot(current);
+  syncButtonContainerSlotLayout(slot, compact, align, warnings);
+  buttonContainerButtonChildren(current).forEach((button, index) => {
+    syncButtonContainerChildButtonSizing(button, compact, warnings, index + 1);
+  });
+  current = currentInstance(current);
+  return current;
+}
+
+function buttonContainerContextForSelection(instance) {
+  instance = currentInstance(instance);
+  return {
+    align: buttonContainerAlign(instance),
+    alignOptions: BUTTON_CONTAINER_ALIGNS,
+    direction: buttonContainerDirectionForWidth(instance),
+    directionOptions: ['stacked', 'inline'],
+    compact: buttonContainerDirectionForWidth(instance) === 'stacked',
+    containerQueryWidth: BUTTON_CONTAINER_QUERY_WIDTH,
+    buttonCount: buttonContainerButtonChildren(instance).length,
+  };
+}
+
 function exportButtonContainer(instance) {
   const warnings = [];
+  instance = syncButtonContainerForWidth(instance, warnings);
   const props = {};
   const align = componentPropertyValue(instance, 'Align', 'VARIANT');
   if (BUTTON_CONTAINER_ALIGNS.includes(align)) {
@@ -3672,48 +3716,6 @@ async function applyTextarea(instance, node, warnings) {
 async function importTextarea(node, warnings) {
   const instance = await createComponentInstance('Textarea', warnings);
   await applyTextarea(instance, node, warnings);
-  return instance;
-}
-
-function exportSwitch(instance) {
-  const props = {};
-  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
-  const checked = componentPropertyValue(instance, 'Checked', 'VARIANT');
-  if (SWITCH_SIZES.includes(size) && size !== 'default') props.size = size;
-  if (checked === 'true' || checked === true) props.defaultChecked = true;
-  const label = componentText(instance, 'Label', namedTextValue(instance, 'Label')).trim();
-  const hint = componentText(instance, 'Hint', namedTextValue(instance, 'Hint')).trim();
-  const error = componentText(instance, 'Error', namedTextValue(instance, 'Error')).trim();
-  const showHint = componentBoolean(instance, 'Show hint', false);
-  const showError = componentBoolean(instance, 'Show error', false);
-  if (label) props.label = label;
-  if (showError && error) props.error = error;
-  else if (showHint && hint) props.hint = hint;
-  return { node: { id: componentId('Switch', instance), type: 'Switch', props }, warnings: [] };
-}
-
-async function applySwitch(instance, node, warnings) {
-  const props = node.props || {};
-  const live = currentInstance(instance);
-  const assignments = {};
-  const hint = typeof props.hint === 'string' ? props.hint : '';
-  const error = typeof props.error === 'string' ? props.error : '';
-  const showError = error.length > 0;
-  const showHint = hint.length > 0 && !showError;
-  queueComponentProperty(live, assignments, 'Size', SWITCH_SIZES.includes(props.size) ? props.size : 'default', 'VARIANT', warnings, 'Switch Size');
-  queueComponentProperty(live, assignments, 'Checked', props.checked === true || props.defaultChecked === true ? 'true' : 'false', 'VARIANT', warnings, 'Switch Checked');
-  queueComponentProperty(live, assignments, 'Label', typeof props.label === 'string' ? props.label : 'Enable option', 'TEXT', warnings, 'Switch Label');
-  queueComponentProperty(live, assignments, 'Hint', hint || 'Supporting text', 'TEXT', warnings, 'Switch Hint');
-  queueComponentProperty(live, assignments, 'Show hint', showHint, 'BOOLEAN', warnings, 'Switch Show hint');
-  queueComponentProperty(live, assignments, 'Error', error || 'This setting requires attention.', 'TEXT', warnings, 'Switch Error');
-  queueComponentProperty(live, assignments, 'Show error', showError, 'BOOLEAN', warnings, 'Switch Show error');
-  applyQueuedProperties(live, assignments, warnings, 'Switch properties');
-  if (props.checked !== undefined) warnings.push('Switch controlled checked state is represented as the current Figma Checked visual.');
-}
-
-async function importSwitch(node, warnings) {
-  const instance = await createComponentInstance('Switch', warnings);
-  await applySwitch(instance, node, warnings);
   return instance;
 }
 
@@ -4353,26 +4355,6 @@ async function importAccordion(node, warnings) {
   return instance;
 }
 
-function exportTooltip(instance) {
-  const props = {};
-  const placement = componentPropertyValue(instance, 'Placement', 'VARIANT');
-  if (TOOLTIP_PLACEMENTS.includes(placement) && placement !== 'top') props.placement = placement;
-  return { node: { id: componentId('Tooltip', instance), type: 'Tooltip', props: { ...props, content: namedTextValue(instance, 'Content', 'Helpful supporting text') } }, warnings: ['Tooltip trigger content is runtime-only and is not included in the standalone Figma surface export.'] };
-}
-
-async function applyTooltip(instance, node, warnings) {
-  const props = node.props || {};
-  setVariant(instance, 'Placement', TOOLTIP_PLACEMENTS.includes(props.placement) ? props.placement : 'top', warnings, 'Tooltip');
-  if (typeof props.content === 'string') await writeNamedText(instance, 'Content', props.content, warnings, 'Tooltip');
-}
-
-async function importTooltip(node, warnings) {
-  const instance = await createComponentInstance('Tooltip', warnings);
-  await applyTooltip(instance, node, warnings);
-  warnings.push('Tooltip was rendered as its visual surface; add its trigger relationship in Figma manually.');
-  return instance;
-}
-
 function exportPagination(instance) {
   const props = {};
   const size = componentPropertyValue(instance, 'Size', 'VARIANT');
@@ -4823,25 +4805,6 @@ function exportSelect(instance) {
   };
 }
 
-function exportDivider(instance) {
-  const warnings = [];
-  const props = {};
-  const orientation = componentPropertyValue(instance, 'Orientation', 'VARIANT');
-  const variant = componentPropertyValue(instance, 'Variant', 'VARIANT');
-  const lineStyle = componentPropertyValue(instance, 'Line style', 'VARIANT');
-  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
-
-  if (DIVIDER_ORIENTATIONS.includes(orientation) && orientation !== 'horizontal') props.orientation = orientation;
-  if (DIVIDER_VARIANTS.includes(variant) && variant !== 'subtle') props.variant = variant;
-  if (DIVIDER_LINE_STYLES.includes(lineStyle) && lineStyle !== 'solid') props.lineStyle = lineStyle;
-  if (DIVIDER_SIZES.includes(size) && size !== 'xs') props.size = size;
-
-  return {
-    node: { id: componentId('Divider', instance), type: 'Divider', ...(Object.keys(props).length ? { props } : {}) },
-    warnings,
-  };
-}
-
 function exportGroupOptions(instance, optionSetName, warnings) {
   const usedValues = new Set();
   const options = [];
@@ -4920,12 +4883,25 @@ function exportMenuItem(instance, index, warnings) {
 
 function exportMenu(instance) {
   const warnings = [];
-  const items = instance
-    .findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Menu Item' && node.visible !== false)
+  const items = menuItemInstances(instance)
+    .filter((item) => item.visible !== false)
     .map((item, index) => exportMenuItem(item, index, warnings));
   const props = { items };
   if (items.length === 0) warnings.push('No visible Menu Item slot instances were found — exported an empty items array.');
   return { node: { id: componentId('Menu', instance), type: 'Menu', props }, warnings };
+}
+
+function menuContextForSelection(instance) {
+  const rows = menuItemInstances(instance);
+  const rowCount = rows.filter((row) => row.visible !== false).length;
+  const maxRows = rows.length;
+  return {
+    rowCount,
+    maxRows,
+    rowCountOptions: maxRows > 0
+      ? Array.from({ length: maxRows }, (_, index) => String(index + 1))
+      : ['0'],
+  };
 }
 
 function dialogBodySlot(instance) {
@@ -5128,6 +5104,24 @@ function exportDialog(instance) {
   return { node, warnings };
 }
 
+function dialogContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const size = componentPropertyValue(instance, 'Size', 'VARIANT');
+  const status = componentPropertyValue(instance, 'Status', 'VARIANT');
+  const showClose = dialogBooleanPropertyValue(instance, ['Show close', 'Show close button', 'Close button', 'Close']) ?? dialogCloseLayerVisible(instance);
+  const showFooter = dialogBooleanPropertyValue(instance, ['Show footer', 'Show footer actions', 'Footer', 'Footer actions']);
+  return {
+    title: componentText(instance, 'Title', namedTextLayerValueAny(instance, ['Title', 'Dialog Title', 'Heading'], 'Dialog')).trim() || 'Dialog',
+    size: DIALOG_SIZES.includes(size) ? size : 'md',
+    sizeOptions: DIALOG_SIZES,
+    status: DIALOG_STATUSES.includes(status) ? status : 'none',
+    statusOptions: DIALOG_STATUSES,
+    showClose: showClose !== false,
+    showFooter: showFooter !== false,
+    booleanOptions: ['false', 'true'],
+  };
+}
+
 function isExportableNode(node) {
   if (!node) return false;
   if (registeredSetName(node)) return true;
@@ -5158,12 +5152,14 @@ function topmostExportableNode() {
 }
 
 function postExportResult({ auto, live, componentName, node, warnings, textReview }) {
+  const exportWarnings = Array.isArray(warnings) ? warnings : [];
+  const exportedNode = includeOpenActionTargets(node, exportWarnings);
   postPluginMessage({
     type: live ? 'live-preview' : 'export-result',
     auto: Boolean(auto),
     componentName,
-    json: JSON.stringify(node, null, 2),
-    warnings,
+    json: JSON.stringify(exportedNode, null, 2),
+    warnings: exportWarnings,
     ...(textReview ? { textReview } : {}),
   });
 }
@@ -5200,7 +5196,10 @@ function runExport(auto, explicitTarget = null, live = false) {
     // selections belong to the generic screen-content path below.
     const componentName = registeredSetName(target);
     if (componentName) {
-      const { node, warnings } = EXPORTERS[componentName](target);
+      let { node, warnings } = EXPORTERS[componentName](target);
+      if (ACTION_TRIGGER_COMPONENT_NAMES.has(componentName)) {
+        node = nodeWithLinkedActionTargetExport(target, node, warnings);
+      }
       postExportResult({ auto, live, componentName, node, warnings });
       return;
     }
@@ -5232,7 +5231,10 @@ function runExport(auto, explicitTarget = null, live = false) {
     return;
   }
   const { node, warnings } = EXPORTERS[componentName](target);
-  postExportResult({ auto, live, componentName, node, warnings });
+  const exportedNode = ACTION_TRIGGER_COMPONENT_NAMES.has(componentName)
+    ? nodeWithLinkedActionTargetExport(target, node, warnings)
+    : node;
+  postExportResult({ auto, live, componentName, node: exportedNode, warnings });
 }
 
 function figureImageMime(bytes) {
@@ -5281,30 +5283,6 @@ async function sendSelectedFigureImageToPlayground() {
 }
 
 // ─── Import: page-definition JSON → Figma instances ─────────────────────────
-
-// Accept a single node, an array of nodes, or a full page definition / project
-// bundle. A node with a type is always kept: supported types render as their
-// Figma component. If the matching importer/library component is unavailable,
-// rendering fails loudly instead of generating a local fallback layer.
-// Recursion still stops at component nodes because their importers own their
-// slots.
-function collectSupportedNodes(value, found) {
-  if (Array.isArray(value)) {
-    for (const item of value) collectSupportedNodes(item, found);
-    return;
-  }
-  if (!value || typeof value !== 'object') return;
-  if (typeof value.type === 'string') {
-    // Component nodes are renderable. PageLayout used to be treated only as
-    // page schema and flattened, but it now has a real Figma shell component;
-    // keep it intact so Render on canvas creates the app frame + content slot.
-    found.push(value);
-    return;
-  }
-  for (const key of ['children', 'nodes', 'regions', 'layout', 'page', 'pages', 'definition']) {
-    if (value[key]) collectSupportedNodes(value[key], found);
-  }
-}
 
 function setStackChildrenAlignment(frame, align, warnings) {
   for (const child of stackFlowChildren(frame)) {
@@ -5372,7 +5350,7 @@ const HUG_CONTENT_TYPES = new Set([
   'Pagination', 'SegmentedControl', 'Menu', 'DefinitionList',
   'Dialog', 'Tooltip',
   // Not yet bridged — pre-classified. SideNav is a fixed-width rail (280/52).
-  'Inline', 'Breadcrumb', 'SideNav',
+  'Inline', 'Breadcrumb', 'SideNav', 'Toolbar',
 ]);
 
 function fillImportedContainerWidth(parent, child, sourceNode, warnings) {
@@ -5399,7 +5377,7 @@ function fillImportedContainerWidth(parent, child, sourceNode, warnings) {
 }
 
 function setNodeToFillParentWidth(node, label, warnings) {
-  const parent = node && node.parent;
+  const parent = safeParent(node);
   if (!parent || parent.type === 'PAGE' || !['HORIZONTAL', 'VERTICAL', 'GRID'].includes(parent.layoutMode)) return;
   try {
     if (parent.layoutMode === 'VERTICAL') {
@@ -5500,33 +5478,128 @@ function fillImportedDividerAxis(parent, child, sourceNode, warnings) {
 }
 
 function appendImportedChild(parent, child, sourceNode, warnings) {
-  parent.appendChild(child);
-  fillImportedTextWidth(parent, child, sourceNode, warnings);
-  fillImportedContainerWidth(parent, child, sourceNode, warnings);
-  fillImportedStackWidth(parent, child, sourceNode, warnings);
-  fillImportedGridWidth(parent, child, sourceNode, warnings);
-  fillImportedButtonContainerWidth(parent, child, sourceNode, warnings);
-  fillImportedDividerAxis(parent, child, sourceNode, warnings);
-  applyImportedGridItemSpan(parent, child, sourceNode, warnings);
-  applyStackGrow(parent, child, sourceNode, warnings);
+  try {
+    parent.appendChild(child);
+  } catch (error) {
+    warnings.push(`Imported ${sourceNode && sourceNode.type ? sourceNode.type : 'node'} could not be attached to its parent: ${error.message}`);
+    return;
+  }
+  const liveParent = liveNode(parent) || parent;
+  const liveChild = liveNode(child) || child;
+  try {
+    fillImportedTextWidth(liveParent, liveChild, sourceNode, warnings);
+    fillImportedContainerWidth(liveParent, liveChild, sourceNode, warnings);
+    fillImportedStackWidth(liveParent, liveChild, sourceNode, warnings);
+    fillImportedGridWidth(liveParent, liveChild, sourceNode, warnings);
+    fillImportedButtonContainerWidth(liveParent, liveChild, sourceNode, warnings);
+    fillImportedDividerAxis(liveParent, liveChild, sourceNode, warnings);
+    applyImportedGridItemSpan(liveParent, liveChild, sourceNode, warnings);
+    applyStackGrow(liveParent, liveChild, sourceNode, warnings);
+  } catch (error) {
+    warnings.push(`Imported ${sourceNode && sourceNode.type ? sourceNode.type : 'node'} was attached, but its layout adjustments were skipped because Figma returned a stale layer handle: ${error.message}`);
+  }
+}
+
+async function createImportNoteLayer(node, message) {
+  const type = node && typeof node.type === 'string' && node.type ? node.type : 'Unknown';
+  const id = node && typeof node.id === 'string' && node.id ? node.id : '';
+  const frame = figma.createFrame();
+  frame.name = id ? `Import note · ${type} · ${id}` : `Import note · ${type}`;
+  frame.layoutMode = 'VERTICAL';
+  frame.primaryAxisSizingMode = 'AUTO';
+  frame.counterAxisSizingMode = 'FIXED';
+  frame.itemSpacing = 6;
+  frame.paddingLeft = 12;
+  frame.paddingRight = 12;
+  frame.paddingTop = 10;
+  frame.paddingBottom = 10;
+  frame.cornerRadius = 8;
+  frame.fills = [{ type: 'SOLID', color: { r: 1, g: 0.972, b: 0.862 } }];
+  frame.strokes = [{ type: 'SOLID', color: { r: 0.86, g: 0.61, b: 0.18 } }];
+  frame.strokeWeight = 1;
+  try { frame.resizeWithoutConstraints(360, 1); } catch { /* Auto layout will size the note. */ }
+
+  const title = figma.createText();
+  const body = figma.createText();
+  const titleFont = title.fontName;
+  const bodyFont = body.fontName;
+  if (titleFont !== figma.mixed) await figma.loadFontAsync(titleFont);
+  if (bodyFont !== figma.mixed) await figma.loadFontAsync(bodyFont);
+  title.characters = `Missing Figma component: ${type}`;
+  title.fontSize = 13;
+  title.fills = [{ type: 'SOLID', color: { r: 0.22, g: 0.15, b: 0.03 } }];
+  body.characters = id ? `${message}\nJSON id: ${id}` : message;
+  body.fontSize = 11;
+  body.fills = [{ type: 'SOLID', color: { r: 0.39, g: 0.28, b: 0.07 } }];
+  try {
+    title.textAutoResize = 'HEIGHT';
+    body.textAutoResize = 'HEIGHT';
+    title.layoutAlign = 'STRETCH';
+    body.layoutAlign = 'STRETCH';
+  } catch {
+    // Text auto-resize can be fussy in older plugin runtimes; fixed width is fine.
+  }
+  frame.appendChild(title);
+  frame.appendChild(body);
+  if (typeof frame.setPluginData === 'function') {
+    frame.setPluginData('a1-import-note', type);
+    if (id) frame.setPluginData('a1-json-id', id);
+  }
+  return frame;
 }
 
 async function renderImportedNode(node, warnings) {
   const importer = IMPORTERS[node.type];
   if (!importer) {
-    throw new Error(`No Figma importer exists for A1 component type "${node.type}".`);
+    const message = `No Figma importer exists for A1 component type "${node.type}".`;
+    warnings.push(message);
+    return createImportNoteLayer(node, message);
   }
   let layer;
   try {
     layer = await importer(node, warnings);
   } catch (error) {
-    throw new Error(`"${node.type}" could not be created from the current Figma library: ${error.message}`);
+    const message = `"${node.type}" could not be created from the current Figma library: ${error.message}`;
+    warnings.push(message);
+    return createImportNoteLayer(node, message);
   }
   // JSON ids are stable authoring identifiers. Showing them in Figma's layer
   // list makes rendered compositions traceable and makes updates unambiguous.
   if (typeof node.id === 'string' && node.id.trim()) {
     layer.name = node.id;
     if (typeof layer.setPluginData === 'function') layer.setPluginData('a1-json-id', node.id);
+  }
+  if (
+    activeActionTargetImportContext &&
+    node &&
+    typeof node === 'object' &&
+    typeof node.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(node.id)
+  ) {
+    layer.name = actionTargetNameWithTriggerMetadata(
+      layer.name,
+      activeActionTargetImportContext.triggerNames.get(node.id)
+    );
+  }
+  if (activeActionTargetImportContext && node && typeof node.id === 'string') {
+    activeActionTargetImportContext.renderedLayers.set(node.id, layer);
+    if (activeActionTargetImportContext.targetNodes.has(node.id)) {
+      activeActionTargetImportContext.targetLayers.set(node.id, layer);
+    }
+    const actions = node.actions && typeof node.actions === 'object' ? node.actions : null;
+    const action = actions && actions.onClick && typeof actions.onClick === 'object'
+      ? actions.onClick
+      : node.action && typeof node.action === 'object'
+        ? node.action
+        : null;
+    if (
+      action &&
+      ACTION_TRIGGER_TYPE_BY_ACTION[action.type] &&
+      typeof action.target === 'string' &&
+      action.target
+    ) {
+      activeActionTargetImportContext.pendingTriggers.push({ trigger: layer, action });
+    }
   }
   if (node.type === 'Grid') {
     const responsiveColumns = normalizeResponsiveColumns(node.props && node.props.columns);
@@ -5563,21 +5636,14 @@ async function applyStack(frame, node, warnings) {
       warnings.push(`Stack cross-axis sizing could not be applied: ${error.message}`);
     }
   }
-  frame.primaryAxisSizingMode = 'AUTO';
-  // Stacks should remain content-driven vertically. This explicit modern
-  // sizing value also covers horizontal stacks, where height is the cross axis.
-  try {
-    frame.layoutSizingVertical = 'HUG';
-  } catch (error) {
-    warnings.push(`Stack height could not be set to Hug contents: ${error.message}`);
-  }
+  trySetLayoutProperty(frame, 'primaryAxisSizingMode', 'AUTO', warnings, 'Stack primary-axis sizing');
   setStackChildrenAlignment(frame, align, warnings);
 
   if (wrap && frame.layoutMode === 'HORIZONTAL') {
-    frame.layoutWrap = 'WRAP';
+    trySetLayoutProperty(frame, 'layoutWrap', 'WRAP', warnings, 'Stack wrap');
     await bindGapProperty(frame, 'counterAxisSpacing', gap, warnings, 'Stack wrap row spacing');
   } else {
-    frame.layoutWrap = 'NO_WRAP';
+    trySetLayoutProperty(frame, 'layoutWrap', 'NO_WRAP', warnings, 'Stack wrap');
     if (wrap) warnings.push('Stack wrap is only representable by horizontal Figma auto layout; it was omitted for this direction.');
   }
 
@@ -5604,7 +5670,13 @@ async function importStack(node, warnings) {
   if ((node.children || []).some((child) => child && typeof child === 'object' && child.type && !IMPORTERS[child.type])) {
     warnings.push('Unsupported Stack child types were not rendered.');
   }
-  for (const childNode of children) {
+  for (const childNode of children.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ))) {
     const child = await renderImportedNode(childNode, warnings);
     appendImportedChild(frame, child, childNode, warnings);
   }
@@ -5680,7 +5752,13 @@ async function importGrid(node, warnings) {
   if ((node.children || []).some((child) => child && typeof child === 'object' && child.type && !IMPORTERS[child.type])) {
     warnings.push('Unsupported Grid child types were not rendered.');
   }
-  for (const childNode of children) {
+  for (const childNode of children.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ))) {
     const child = await renderImportedNode(childNode, warnings);
     appendImportedChild(frame, child, childNode, warnings);
   }
@@ -5701,7 +5779,13 @@ async function importGridItem(node, warnings) {
   if ((node.children || []).some((child) => child && typeof child === 'object' && child.type && !IMPORTERS[child.type])) {
     warnings.push('Unsupported GridItem child types were not rendered.');
   }
-  for (const childNode of children) {
+  for (const childNode of children.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ))) {
     const child = await renderImportedNode(childNode, warnings);
     appendImportedChild(frame, child, childNode, warnings);
   }
@@ -5709,7 +5793,7 @@ async function importGridItem(node, warnings) {
 }
 
 function findButtonSet() {
-  const byId = figma.getNodeById(BUTTON_SET_ID);
+  const byId = resolveNodeById(BUTTON_SET_ID);
   if (byId && byId.type === 'COMPONENT_SET' && byId.name === 'Button') return byId;
   return findComponentSet('Button');
 }
@@ -5719,6 +5803,7 @@ function findButtonSet() {
 async function applyButton(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
+  const iconName = typeof props.icon === 'string' && props.icon.length > 0 ? props.icon : '';
   const raw = instance.componentProperties || {};
   const keyFor = (prefix) => Object.keys(raw).find((key) => plainKey(key) === prefix);
   const assignments = {};
@@ -5737,16 +5822,21 @@ async function applyButton(instance, node, warnings) {
     assignments[labelKey] = node.content.fallback;
   }
   const showIconKey = keyFor('Show icon');
-  if (showIconKey) assignments[showIconKey] = typeof props.icon === 'string' && props.icon.length > 0;
-  const iconKey = keyFor('Icon');
-  if (iconKey && typeof props.icon === 'string' && props.icon.length > 0) {
-    const iconComponent = findIconComponent(props.icon);
-    if (iconComponent) assignments[iconKey] = iconComponent.id;
-    else warnings.push(`No icon component named "${props.icon}" exists in this file — the default glyph is shown.`);
+  if (showIconKey) assignments[showIconKey] = Boolean(iconName);
+  let iconComponent = null;
+  let iconPropertyApplied = false;
+  if (iconName) {
+    iconComponent = await findMaterialIconComponentAsync(iconName, warnings);
+    if (iconComponent) iconPropertyApplied = queueIconSwapProperty(instance, assignments, iconComponent);
+    if (!iconPropertyApplied) iconPropertyApplied = queueIconTextProperty(instance, assignments, iconName);
   }
-  if (Object.keys(assignments).length > 0) instance.setProperties(assignments);
+  applyQueuedProperties(instance, assignments, warnings, 'Button properties');
+  let current = currentInstance(instance);
+  if (iconName) await finalizeMaterialIconUpdate(current, iconName, iconComponent, iconPropertyApplied, warnings, 'Button icon');
+  current = currentInstance(current);
+  syncButtonFullWidthMetadata(current, props.fullWidth === true ? 'fill' : 'hug', warnings);
 
-  for (const runtimeProp of ['fullWidth', 'href', 'as']) {
+  for (const runtimeProp of ['href', 'as']) {
     if (props[runtimeProp] !== undefined) {
       warnings.push(`"${runtimeProp}" is a runtime prop with no Figma representation — ignored.`);
     }
@@ -5767,18 +5857,21 @@ async function applyIconButton(instance, node, warnings) {
   const size = ICON_BUTTON_SIZES.includes(props.size) ? props.size : 'md';
   const iconName = typeof props.icon === 'string' && props.icon.trim() ? props.icon.trim() : null;
   const label = typeof props.label === 'string' && props.label.trim() ? props.label : 'Icon button';
+  let icon = null;
+  let iconPropertyApplied = false;
 
   queueComponentProperty(instance, assignments, 'Variant', variant, 'VARIANT', warnings, 'Icon Button variant');
   queueComponentProperty(instance, assignments, 'Size', size, 'VARIANT', warnings, 'Icon Button size');
   queueComponentProperty(instance, assignments, 'Aria label', label, 'TEXT', warnings, 'Icon Button accessible label');
   if (iconName) {
-    const icon = findIconComponent(iconName);
-    if (icon) queueComponentProperty(instance, assignments, 'Icon', icon.id, 'INSTANCE_SWAP', warnings, 'Icon Button icon');
-    else warnings.push(`No Material icon component named "${iconName}" exists in this file — the default Icon Button glyph was retained.`);
+    icon = await findMaterialIconComponentAsync(iconName, warnings);
+    if (icon) iconPropertyApplied = queueIconSwapProperty(instance, assignments, icon);
+    if (!iconPropertyApplied) iconPropertyApplied = queueIconTextProperty(instance, assignments, iconName);
   } else {
     warnings.push('Icon Button requires an "icon" prop; the default Figma glyph was retained.');
   }
   applyQueuedProperties(instance, assignments, warnings, 'Icon Button properties');
+  if (iconName) await finalizeMaterialIconUpdate(instance, iconName, icon, iconPropertyApplied, warnings, 'Icon Button icon');
 
   for (const runtimeProp of ['disabled', 'as', 'href', 'target', 'rel', 'onClick', 'className', 'id']) {
     if (props[runtimeProp] !== undefined) {
@@ -5801,6 +5894,8 @@ async function applyLink(instance, node, warnings) {
   const weight = LINK_WEIGHTS.includes(props.weight) ? props.weight : 'normal';
   const iconPosition = LINK_ICON_POSITIONS.includes(props.iconPosition) ? props.iconPosition : 'start';
   const iconName = typeof props.icon === 'string' && props.icon.trim() ? props.icon.trim() : null;
+  let icon = null;
+  let iconPropertyApplied = false;
 
   queueComponentProperty(instance, assignments, 'Size', size, 'VARIANT', warnings, 'Link size');
   queueComponentProperty(instance, assignments, 'Weight', weight, 'VARIANT', warnings, 'Link weight');
@@ -5810,11 +5905,12 @@ async function applyLink(instance, node, warnings) {
     queueComponentProperty(instance, assignments, 'Label', node.content.fallback, 'TEXT', warnings, 'Link label');
   }
   if (iconName) {
-    const icon = findIconComponent(iconName);
-    if (icon) queueComponentProperty(instance, assignments, 'Icon', icon.id, 'INSTANCE_SWAP', warnings, 'Link icon');
-    else warnings.push(`No Material icon component named "${iconName}" exists in this file — the default Link glyph was retained.`);
+    icon = await findMaterialIconComponentAsync(iconName, warnings);
+    if (icon) iconPropertyApplied = queueIconSwapProperty(instance, assignments, icon);
+    if (!iconPropertyApplied) iconPropertyApplied = queueIconTextProperty(instance, assignments, iconName);
   }
   applyQueuedProperties(instance, assignments, warnings, 'Link properties');
+  if (iconName) await finalizeMaterialIconUpdate(instance, iconName, icon, iconPropertyApplied, warnings, 'Link icon');
 
   for (const runtimeProp of ['href', 'target', 'rel', 'as', 'onClick', 'className', 'id']) {
     if (props[runtimeProp] !== undefined) {
@@ -5857,9 +5953,53 @@ function breadcrumbTextValues(instance) {
   return labels;
 }
 
+function normalizedBreadcrumbItems(items, fallbackLabels = []) {
+  const usedIds = new Set();
+  const rawItems = Array.isArray(items)
+    ? items.filter((item) => item && typeof item === 'object')
+    : fallbackLabels.map((label) => ({ label }));
+  const normalized = rawItems
+    .map((item, index) => {
+      const label = typeof item.label === 'string' && item.label.trim()
+        ? item.label.trim()
+        : `Item ${index + 1}`;
+      return {
+        id: typeof item.id === 'string' && item.id.trim()
+          ? item.id.trim()
+          : slugifyOptionValue(label, usedIds),
+        label,
+        href: typeof item.href === 'string' && item.href ? item.href : undefined,
+      };
+    })
+    .slice(0, GROUP_SLOT_CONFIG.Breadcrumb.max);
+  if (normalized.length > 0) return normalized;
+  return [
+    { id: 'home', label: 'Home', href: '#' },
+    { id: 'current-page', label: 'Current page' },
+  ];
+}
+
+function breadcrumbBackButtonValueForWidth(instance) {
+  const width = Number(instance && instance.width);
+  return Number.isFinite(width) && width < BREADCRUMB_TRAIL_MIN_WIDTH ? 'True' : 'False';
+}
+
+function syncBreadcrumbBackButtonForWidth(instance, warnings = []) {
+  let current = currentInstance(instance);
+  if (!current || current.type !== 'INSTANCE') return current;
+  const desired = breadcrumbBackButtonValueForWidth(current);
+  if (componentPropertyValue(current, 'Back Button', 'VARIANT') === desired) return current;
+  const assignments = {};
+  queueComponentProperty(current, assignments, 'Back Button', desired, 'VARIANT', warnings, 'Breadcrumb responsive Back Button');
+  applyQueuedProperties(current, assignments, warnings, 'Breadcrumb responsive Back Button');
+  current = currentInstance(current);
+  return current;
+}
+
 function exportBreadcrumb(instance) {
   instance = currentInstance(instance);
   const warnings = [];
+  instance = syncBreadcrumbBackButtonForWidth(instance, warnings);
   const props = {};
   const backLabel = componentText(instance, 'Back label', componentText(instance, 'Back Label', '')).trim();
   if (backLabel) props.backLabel = backLabel;
@@ -5891,23 +6031,32 @@ function exportBreadcrumb(instance) {
 async function applyBreadcrumb(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
-  const rawItems = Array.isArray(props.items) ? props.items : [];
-  const items = rawItems
-    .map((item, index) => ({
-      id: typeof item.id === 'string' && item.id ? item.id : `item-${index + 1}`,
-      label: typeof item.label === 'string' && item.label ? item.label : `Item ${index + 1}`,
-      href: typeof item.href === 'string' ? item.href : undefined,
-    }))
-    .slice(0, 8);
+  const items = normalizedBreadcrumbItems(props.items, breadcrumbTextValues(instance));
   const assignments = {};
   const fallbackTextLayers = breadcrumbTextLayers(instance);
-  if (typeof props.backLabel === 'string') {
-    queueOptionalComponentProperty(instance, assignments, 'Back label', props.backLabel, 'TEXT')
-      || queueOptionalComponentProperty(instance, assignments, 'Back Label', props.backLabel, 'TEXT');
+  if (['sm', 'md', 'lg', 'xl'].includes(props.container)) {
+    queueOptionalComponentProperty(instance, assignments, 'Container', props.container, 'VARIANT');
   }
+  if (typeof props.backLabel === 'string') {
+    const backApplied = queueOptionalComponentProperty(instance, assignments, 'Back label', props.backLabel, 'TEXT')
+      || queueOptionalComponentProperty(instance, assignments, 'Back Label', props.backLabel, 'TEXT');
+    if (!backApplied) await writeNamedText(instance, 'Back label', props.backLabel, warnings, 'Breadcrumb back label');
+  }
+  const itemInstances = await reconcileGroupOptionInstances(instance, 'Breadcrumb', 'Breadcrumb Item', items.length, warnings);
   for (let index = 0; index < items.length; index += 1) {
     const item = items[index];
     const position = index + 1;
+    const itemInstance = itemInstances[index] ? currentInstance(itemInstances[index]) : null;
+    if (itemInstance) {
+      const itemAssignments = {};
+      const type = index === items.length - 1 ? 'current' : (index === 0 ? 'link' : 'ancestor');
+      const labelApplied = queueOptionalComponentProperty(itemInstance, itemAssignments, 'Label', item.label, 'TEXT')
+        || queueOptionalComponentProperty(itemInstance, itemAssignments, `Item ${position}`, item.label, 'TEXT');
+      queueOptionalComponentProperty(itemInstance, itemAssignments, 'Type', type, 'VARIANT');
+      queueOptionalComponentProperty(itemInstance, itemAssignments, 'Show separator', index > 0, 'BOOLEAN');
+      applyQueuedProperties(itemInstance, itemAssignments, warnings, `Breadcrumb item ${position} properties`);
+      if (labelApplied) continue;
+    }
     const applied = queueOptionalComponentProperty(instance, assignments, `Item ${position}`, item.label, 'TEXT')
       || queueOptionalComponentProperty(instance, assignments, `Label ${position}`, item.label, 'TEXT');
     if (!applied) {
@@ -5926,6 +6075,7 @@ async function applyBreadcrumb(instance, node, warnings) {
     }
   }
   applyQueuedProperties(instance, assignments, warnings, 'Breadcrumb properties');
+  syncBreadcrumbBackButtonForWidth(instance, warnings);
   for (const item of items) {
     if (item.href) warnings.push(`Breadcrumb href for "${item.label}" is runtime navigation — not represented in Figma.`);
   }
@@ -5949,7 +6099,13 @@ function supportedChildren(children, warnings, owner) {
   if ((children || []).some((child) => child && typeof child === 'object' && child.type && !IMPORTERS[child.type])) {
     warnings.push(`${owner} contains unsupported child types; those children will not render.`);
   }
-  return collected;
+  return collected.filter((node) => !(
+    activeActionTargetImportContext &&
+    node &&
+    typeof node === 'object' &&
+    typeof node.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(node.id)
+  ));
 }
 
 async function replaceNativeSlotChildren(instance, slotName, children, warnings, owner) {
@@ -5984,20 +6140,45 @@ async function replaceNativeSlotChildren(instance, slotName, children, warnings,
 async function applyCard(instance, node, warnings) {
   const props = node.props || {};
   const assignments = {};
-  const surface = CARD_SURFACES.includes(props.surface) ? props.surface : 'default';
-  queueComponentProperty(instance, assignments, 'Surface', surface, 'VARIANT', warnings, 'Card surface');
+  const surface = normalizeCardSurface(props.surface);
+  queueComponentProperty(instance, assignments, 'Surface', figmaCardSurface(surface), 'VARIANT', warnings, 'Card surface');
+  const variant = normalizeCardVariant(props);
+  queueComponentProperty(instance, assignments, 'Variant', figmaCardVariant(variant), 'VARIANT', warnings, 'Card variant');
   const iconName = typeof props.icon === 'string' && props.icon.length > 0 ? props.icon : null;
   const showIcon = Boolean(iconName) && props.iconDisplay !== 'none';
   queueComponentProperty(instance, assignments, 'Show icon', showIcon, 'BOOLEAN', warnings, 'Card icon visibility');
-  if (showIcon) {
-    const icon = findIconComponent(iconName);
-    if (icon) queueComponentProperty(instance, assignments, 'Icon', icon.id, 'INSTANCE_SWAP', warnings, 'Card icon');
-    else warnings.push(`No icon component named "${iconName}" exists in this file — the Card icon was not swapped.`);
-  }
   applyQueuedProperties(instance, assignments, warnings, 'Card properties');
-  if (props.iconDisplay && props.iconDisplay !== 'default' && props.iconDisplay !== 'none') {
-    warnings.push(`Card iconDisplay="${props.iconDisplay}" has no compact Figma representation; the inline icon was used.`);
+
+  const iconInstance = cardIconInstance(instance);
+  let icon = null;
+  let iconPropertyApplied = false;
+  if (showIcon && iconInstance) {
+    const iconAssignments = {};
+    const iconDisplay = normalizeCardIconDisplay(props.iconDisplay);
+    const iconType = iconDisplay === 'hero' ? 'Hero' : 'Default';
+    const heroColor = normalizeCardHeroColor(props.heroColor);
+    queueComponentProperty(iconInstance, iconAssignments, 'Type', iconType, 'VARIANT', warnings, 'Card icon display');
+    queueComponentProperty(iconInstance, iconAssignments, 'Color', iconDisplay === 'hero' ? heroColor : 'action', 'VARIANT', warnings, 'Card hero color');
+    icon = await findMaterialIconComponentAsync(iconName, warnings);
+    if (icon) iconPropertyApplied = queueIconSwapProperty(iconInstance, iconAssignments, icon);
+    if (!iconPropertyApplied) iconPropertyApplied = queueIconTextProperty(iconInstance, iconAssignments, iconName);
+    applyQueuedProperties(iconInstance, iconAssignments, warnings, 'Card icon properties');
+    await finalizeMaterialIconUpdate(iconInstance, iconName, icon, iconPropertyApplied, warnings, 'Card icon');
+  } else if (showIcon) {
+    const fallbackAssignments = {};
+    icon = await findMaterialIconComponentAsync(iconName, warnings);
+    if (icon) iconPropertyApplied = queueIconSwapProperty(instance, fallbackAssignments, icon);
+    if (!iconPropertyApplied) iconPropertyApplied = queueIconTextProperty(instance, fallbackAssignments, iconName);
+    applyQueuedProperties(instance, fallbackAssignments, warnings, 'Card icon properties');
+    await finalizeMaterialIconUpdate(instance, iconName, icon, iconPropertyApplied, warnings, 'Card icon');
   }
+  if (props.iconDisplay && !CARD_ICON_DISPLAYS.includes(props.iconDisplay)) {
+    warnings.push(`Card iconDisplay="${props.iconDisplay}" is not supported; the default icon display was used.`);
+  }
+  if (props.heroColor && !CARD_HERO_COLORS.includes(props.heroColor)) {
+    warnings.push(`Card heroColor="${props.heroColor}" is not supported; action was used.`);
+  }
+  syncCardIconPositionForWidth(instance, warnings);
 }
 
 async function importCard(node, warnings) {
@@ -6041,6 +6222,7 @@ async function applyBanner(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
   const assignments = {};
+  const hasIconProp = Object.prototype.hasOwnProperty.call(props, 'icon');
   const variant = BANNER_VARIANTS.includes(props.variant) ? props.variant : 'inline';
   const status = BANNER_STATUSES.includes(props.status) ? props.status : 'neutral';
   queueComponentProperty(instance, assignments, 'Variant', variant, 'VARIANT', warnings, 'Banner variant');
@@ -6056,8 +6238,16 @@ async function applyBanner(instance, node, warnings) {
       warnings.push('Banner date must be an ISO date string or { month, day }; the calendar date was not updated.');
     }
   }
+  const iconName = typeof props.icon === 'string' && props.icon.trim()
+    ? props.icon.trim()
+    : (variant !== 'calendar' ? BANNER_DEFAULT_ICONS[status] : '');
+  if (iconName) {
+    const icon = await findMaterialIconComponentAsync(iconName, warnings);
+    if (icon) queueIconSwapProperty(instance, assignments, icon);
+    else if (hasIconProp) warnings.push(`No Material icon component named "${iconName}" exists in this file — the Banner icon was not updated.`);
+  }
   applyQueuedProperties(instance, assignments, warnings, 'Banner properties');
-  for (const runtimeProp of ['icon', 'action', 'onDismiss']) {
+  for (const runtimeProp of ['action', 'onDismiss']) {
     if (props[runtimeProp] !== undefined) warnings.push(`Banner "${runtimeProp}" is runtime-only and was not applied in Figma.`);
   }
 }
@@ -6081,49 +6271,6 @@ async function importBanner(node, warnings) {
   await replaceNativeSlotChildren(detached, 'Content Slot', children, warnings, 'Banner');
   warnings.push('Banner was detached to render editable Content Slot children; rerender it to change visual Banner props.');
   return detached;
-}
-
-async function applyBadge(instance, node, warnings) {
-  await loadInstanceFonts(instance);
-  const props = node.props || {};
-  const assignments = {};
-  const status = BADGE_STATUSES.includes(props.status) ? props.status : 'neutral';
-  queueComponentProperty(instance, assignments, 'Status', status, 'VARIANT', warnings, 'Badge status');
-  queueComponentProperty(instance, assignments, 'Subtle', props.subtle === true ? 'true' : 'false', 'VARIANT', warnings, 'Badge subtle');
-  const size = BADGE_SIZES.includes(props.size) ? props.size : 'md';
-  queueComponentProperty(instance, assignments, 'Size', size, 'VARIANT', warnings, 'Badge size');
-  const hasIconProp = Object.prototype.hasOwnProperty.call(props, 'icon');
-  const iconName = typeof props.icon === 'string' && props.icon.length > 0
-    ? props.icon
-    : BADGE_DEFAULT_ICONS[status];
-  queueComponentProperty(instance, assignments, 'Show icon', props.icon !== null, 'BOOLEAN', warnings, 'Badge icon visibility');
-  if (node.content && typeof node.content.fallback === 'string') {
-    queueComponentProperty(instance, assignments, 'Label', node.content.fallback, 'TEXT', warnings, 'Badge label');
-  }
-  applyQueuedProperties(instance, assignments, warnings, 'Badge properties');
-  if (props.icon !== null) {
-    const materialIcon = findIconComponent(iconName);
-    const liveInstance = currentInstance(instance);
-    const icon = liveInstance.findOne((child) => child.type === 'INSTANCE' && child.name === 'Icon');
-    if (!materialIcon) {
-      if (hasIconProp) warnings.push(`No Material icon component named "${iconName}" exists in this file — the Badge default icon was kept.`);
-    } else if (!icon) {
-      warnings.push('Badge Material icon could not be updated because the nested Icon instance was not found.');
-    } else {
-      try {
-        icon.swapComponent(materialIcon);
-      } catch (error) {
-        warnings.push(`Badge Material icon could not be swapped: ${error.message}`);
-      }
-    }
-  }
-  if (props.size !== undefined && !BADGE_SIZES.includes(props.size)) warnings.push(`Badge size="${props.size}" is not available in Figma; md was used.`);
-}
-
-async function importBadge(node, warnings) {
-  const instance = await createComponentInstance('Badge', warnings);
-  await applyBadge(instance, node, warnings);
-  return instance;
 }
 
 function iconSizeFromNode(node) {
@@ -6420,7 +6567,7 @@ async function importBlockquote(node, warnings) {
   return instance;
 }
 
-async function applyCode(instance, node, warnings) {
+async function legacyApplyCode(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
   const assignments = {};
@@ -6464,13 +6611,13 @@ async function applyCode(instance, node, warnings) {
   }
 }
 
-async function importCode(node, warnings) {
+async function legacyImportCode(node, warnings) {
   const instance = await createComponentInstance('Code', warnings);
   await applyCode(instance, node, warnings);
   return instance;
 }
 
-async function applyInline(instance, node, warnings) {
+async function legacyApplyInline(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
   const assignments = {};
@@ -6498,7 +6645,7 @@ async function applyInline(instance, node, warnings) {
   }
 }
 
-async function importInline(node, warnings) {
+async function legacyImportInline(node, warnings) {
   const instance = await createComponentInstance('Inline', warnings);
   await applyInline(instance, node, warnings);
   return instance;
@@ -6527,8 +6674,15 @@ async function applyButtonContainer(instance, node, warnings) {
 function buttonContainerChildren(node, warnings) {
   const collected = [];
   collectSupportedNodes(node.children || [], collected);
-  const buttons = collected.filter((child) => child.type === 'Button');
-  if (collected.length !== buttons.length) {
+  const renderable = collected.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ));
+  const buttons = renderable.filter((child) => child.type === 'Button');
+  if (renderable.length !== buttons.length) {
     warnings.push('Only Button children are supported inside Button Container; unsupported children were omitted.');
   }
   return buttons;
@@ -6538,7 +6692,7 @@ async function importButtonContainer(node, warnings) {
   const instance = await createComponentInstance('Button Container', warnings);
   await applyButtonContainer(instance, node, warnings);
   const children = buttonContainerChildren(node, warnings);
-  if (children.length === 0) return instance;
+  if (children.length === 0) return syncButtonContainerForWidth(instance, warnings);
 
   const slot = buttonContainerSlot(instance);
   const existing = slot && 'children' in slot
@@ -6552,7 +6706,7 @@ async function importButtonContainer(node, warnings) {
     for (let index = 0; index < children.length; index += 1) {
       await applyButton(existing[index], children[index], warnings);
     }
-    return instance;
+    return syncButtonContainerForWidth(instance, warnings);
   }
 
   // A native Slot can accept structural changes while retaining the outer
@@ -6571,7 +6725,7 @@ async function importButtonContainer(node, warnings) {
       }
     }
     for (const child of children) slot.appendChild(await importButton(child, warnings));
-    return instance;
+    return syncButtonContainerForWidth(instance, warnings);
   }
 
   throw new Error('Button Container children could not be changed because the component does not expose a native Button Slot. The plugin no longer detaches component instances as a fallback layout.');
@@ -6599,6 +6753,7 @@ async function applyExistingButtonContainerChildren(instance, node, warnings) {
   if (existing.length !== expected.length) {
     warnings.push(`Button Container has ${existing.length} Button child${existing.length === 1 ? '' : 'ren'} but JSON has ${expected.length}; adding or removing actions requires Render on canvas.`);
   }
+  syncButtonContainerForWidth(instance, warnings);
 }
 
 // Apply a Section node's props to an existing Section instance (used both when
@@ -6622,8 +6777,9 @@ async function applySection(sectionInstance, node, warnings) {
   if (SECTION_SURFACES.includes(props.surface) && !assignSectionVariant(freshCarriers(), ['surface'], props.surface)) {
     warnings.push(`surface="${props.surface}" could not be applied — no Surface property found.`);
   }
-  if (SECTION_PADDINGS.includes(props.padding) && !assignSectionVariant(freshCarriers(), ['padding'], props.padding)) {
-    warnings.push(`padding="${props.padding}" could not be applied — no Padding property found.`);
+  const padding = SECTION_PADDINGS.includes(props.padding) ? props.padding : 'sm';
+  if (!assignSectionVariant(freshCarriers(), ['padding'], padding)) {
+    warnings.push(`padding="${padding}" could not be applied — no Padding property found.`);
   }
   // contentWidth — the split half of the Figma Section model: a width variant
   // on the Section or a part, then the ContentWidth variable mode as fallback.
@@ -6676,7 +6832,14 @@ async function importSection(node, warnings) {
   // mappings fail loudly instead of becoming local placeholders.
   const childNodes = [];
   collectSupportedNodes(node.children || [], childNodes);
-  if (childNodes.length > 0) {
+  const renderableChildNodes = childNodes.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ));
+  if (renderableChildNodes.length > 0) {
     if ((node.children || []).some((child) => child && typeof child === 'object' && child.type && !IMPORTERS[child.type])) {
       warnings.push('Unsupported child types inside the Section were not rendered.');
     }
@@ -6701,7 +6864,7 @@ async function importSection(node, warnings) {
           }
         }
       }
-      for (const child of childNodes) {
+      for (const child of renderableChildNodes) {
         const childInstance = await renderImportedNode(child, warnings);
         // Slot mutations can invalidate nested node handles, so resolve the
         // live Section Content Slot before every append.
@@ -6834,33 +6997,6 @@ async function importSelect(node, warnings) {
   return instance;
 }
 
-function staticDividerOrientation(value, warnings) {
-  if (DIVIDER_ORIENTATIONS.includes(value)) return value;
-  if (value && typeof value === 'object') warnings.push('Responsive Divider orientation has no static Figma representation; horizontal was used.');
-  else if (value !== undefined) warnings.push(`Unsupported Divider orientation "${value}" was ignored.`);
-  return 'horizontal';
-}
-
-function applyDivider(instance, node, warnings) {
-  const props = node.props || {};
-  const assignments = {};
-  queueComponentProperty(instance, assignments, 'Orientation', staticDividerOrientation(props.orientation, warnings), 'VARIANT', warnings, 'Divider orientation');
-  queueComponentProperty(instance, assignments, 'Variant', DIVIDER_VARIANTS.includes(props.variant) ? props.variant : 'subtle', 'VARIANT', warnings, 'Divider variant');
-  queueComponentProperty(instance, assignments, 'Line style', DIVIDER_LINE_STYLES.includes(props.lineStyle) ? props.lineStyle : 'solid', 'VARIANT', warnings, 'Divider line style');
-  queueComponentProperty(instance, assignments, 'Size', DIVIDER_SIZES.includes(props.size) ? props.size : 'xs', 'VARIANT', warnings, 'Divider size');
-  applyQueuedProperties(instance, assignments, warnings, 'Divider properties');
-
-  for (const runtimeProp of ['space', 'decorative', 'className', 'id']) {
-    if (props[runtimeProp] !== undefined) warnings.push(`"${runtimeProp}" has no Figma representation — ignored.`);
-  }
-}
-
-async function importDivider(node, warnings) {
-  const instance = await createComponentInstance('Divider', warnings);
-  applyDivider(instance, node, warnings);
-  return instance;
-}
-
 function groupOptionInstances(instance, optionSetName) {
   return instance.findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === optionSetName);
 }
@@ -6884,12 +7020,13 @@ function groupOptionInstancesInSlot(instance, slotName, optionSetName) {
 }
 
 function currentInstance(instance) {
-  const refreshed = figma.getNodeById(instance.id);
+  const refreshed = resolveNodeById(instance.id);
   return refreshed && refreshed.type === 'INSTANCE' ? refreshed : instance;
 }
 
 function groupOptionSlot(instance, slotName) {
-  return instance.findOne((node) => node.type === 'SLOT' && node.name === slotName);
+  const wanted = canonicalKey(slotName);
+  return instance.findOne((node) => node.type === 'SLOT' && canonicalKey(node.name) === wanted);
 }
 
 // The group components deliberately use Figma slots rather than a fixed set of
@@ -7013,7 +7150,28 @@ async function applyCheckboxGroup(instance, node, warnings) {
 }
 
 function menuItemInstances(instance) {
-  return instance.findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Menu Item');
+  const root = liveNode(currentInstance(instance));
+  if (!root || !('children' in root)) return [];
+  const rows = [];
+  const queue = [...stackFlowChildren(root)];
+  const visited = new Set();
+  while (queue.length) {
+    const candidate = liveNode(queue.shift());
+    if (!candidate || visited.has(candidate.id)) continue;
+    visited.add(candidate.id);
+    try {
+      if (candidate.type === 'INSTANCE' && componentSetName(candidate) === 'Menu Item') {
+        rows.push(candidate);
+        continue;
+      }
+      if ('children' in candidate) queue.push(...stackFlowChildren(candidate));
+    } catch {
+      // Figma can leave stale native instance sublayers immediately after an
+      // instance is imported or a row variant is changed. Skip those dead
+      // proxies instead of letting a get_name failure abort Menu creation.
+    }
+  }
+  return rows;
 }
 
 function applyMenuItem(instance, item, warnings) {
@@ -7487,6 +7645,52 @@ function textStyleRequestForNode(node) {
   return { styleName: `body/${size}`, color: typeof props.color === 'string' ? props.color : 'default', align: typeof props.align === 'string' ? props.align : 'left' };
 }
 
+const TEXT_CONTEXT_FAMILIES = ['body', 'heading', 'display'];
+const TEXT_CONTEXT_FAMILIES_WITH_LINK = ['link', ...TEXT_CONTEXT_FAMILIES];
+
+function textFamilyOptions(family) {
+  return family === 'link' ? TEXT_CONTEXT_FAMILIES_WITH_LINK : TEXT_CONTEXT_FAMILIES;
+}
+
+function textSizeOptionsForFamily(family) {
+  if (family === 'link') return LINK_SIZES;
+  if (family === 'display') return DISPLAY_SIZES;
+  if (family === 'heading') return HEADING_SIZES;
+  return PARAGRAPH_SIZES;
+}
+
+function textColorOptionsForFamily(family) {
+  if (family === 'link') return ['link'];
+  if (family === 'body') return ['default', 'muted'];
+  return ['default', 'muted', 'accent'];
+}
+
+function textContextForSelection(text, suggestion = textSuggestion(text)) {
+  const [rawFamily, rawSize, rawWeight] = String(suggestion.styleName || 'body/md').toLowerCase().split('/');
+  const family = rawFamily === 'paragraph' ? 'body' : rawFamily || 'body';
+  const sizeOptions = textSizeOptionsForFamily(family);
+  const colorOptions = textColorOptionsForFamily(family);
+  let widthMode = 'hug';
+  try {
+    widthMode = text.layoutSizingHorizontal === 'FILL' ? 'fill' : 'hug';
+  } catch {
+    widthMode = 'hug';
+  }
+  return {
+    type: suggestion.type,
+    family,
+    typeOptions: textFamilyOptions(family),
+    size: sizeOptions.includes(rawSize) ? rawSize : 'md',
+    sizeOptions,
+    color: colorOptions.includes(suggestion.color) ? suggestion.color : colorOptions[0],
+    colorOptions,
+    weight: LINK_WEIGHTS.includes(rawWeight) ? rawWeight : 'normal',
+    weightOptions: family === 'link' ? LINK_WEIGHTS : [],
+    widthMode,
+    ready: !Array.isArray(suggestion.issues) || suggestion.issues.length === 0,
+  };
+}
+
 async function applyTextSuggestion(text, suggestion, warnings) {
   const style = await findLocalTextStyle(suggestion.styleName);
   if (style) {
@@ -7547,6 +7751,944 @@ async function applyTextSuggestion(text, suggestion, warnings) {
       warnings.push(`The text fill could not be bound to the token: ${fallbackError.message || error.message}`);
     }
   }
+}
+
+async function handleSetTextProps(options = {}) {
+  const selection = figma.currentPage.selection;
+  if (selection.length !== 1 || selection[0].type !== 'TEXT') {
+    return postError('Select one text layer to edit its A1 text controls.');
+  }
+  const text = selection[0];
+  const current = textSuggestion(text);
+  const currentContext = textContextForSelection(text, current);
+  const familyOptions = textFamilyOptions(currentContext.family);
+  const family = typeof options.family === 'string' && familyOptions.includes(options.family)
+    ? options.family
+    : currentContext.family;
+  const sizeOptions = textSizeOptionsForFamily(family);
+  const colorOptions = textColorOptionsForFamily(family);
+  const fallbackSize = sizeOptions.includes(currentContext.size) ? currentContext.size : 'md';
+  const fallbackColor = colorOptions.includes(currentContext.color) ? currentContext.color : colorOptions[0];
+  const size = typeof options.size === 'string' && sizeOptions.includes(options.size) ? options.size : fallbackSize;
+  const color = typeof options.color === 'string' && colorOptions.includes(options.color) ? options.color : fallbackColor;
+  const weight = family === 'link' && typeof options.weight === 'string' && LINK_WEIGHTS.includes(options.weight)
+    ? options.weight
+    : currentContext.weight;
+  const styleName = family === 'link' ? `link/${size}/${weight}` : `${family}/${size}`;
+  const warnings = [];
+  await applyTextSuggestion(text, {
+    type: family === 'link' ? 'Link' : family === 'body' ? 'Paragraph' : 'Heading',
+    styleName,
+    color,
+    align: current.align || 'left',
+  }, warnings);
+  if (options.widthMode === 'fill' || options.widthMode === 'hug') {
+    syncLayoutWidthMode(text, options.widthMode, warnings, 'Text');
+    trySetLayoutProperty(
+      text,
+      'textAutoResize',
+      options.widthMode === 'fill' ? 'HEIGHT' : 'WIDTH_AND_HEIGHT',
+      warnings,
+      'Text auto resize'
+    );
+  }
+  const refreshedSuggestion = textSuggestion(text);
+  postPluginMessage({
+    type: 'text-props-result',
+    warnings,
+    message: 'Updated selected text controls.',
+    textContext: textContextForSelection(text, refreshedSuggestion),
+    textReview: refreshedSuggestion.issues.length ? { issues: refreshedSuggestion.issues, suggestion: refreshedSuggestion } : null,
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function selectedInstanceForContext(nodeId, componentName) {
+  let target = null;
+  if (typeof nodeId === 'string' && nodeId) {
+    try {
+      target = liveNode(resolveNodeById(nodeId));
+    } catch {
+      target = null;
+    }
+  }
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== componentName) {
+    const selection = figma.currentPage.selection;
+    target = selection.length === 1 ? liveNode(selection[0]) : null;
+  }
+  return target && target.type === 'INSTANCE' && registeredSetName(target) === componentName ? target : null;
+}
+
+async function handleSetPageLayoutProps(options = {}) {
+  const target = selectedInstanceForContext(options.pageLayoutNodeId, 'Page Layout');
+  if (!target) return postError('Select one A1 Page Layout instance to edit its controls.');
+  const currentContext = pageLayoutContextForSelection(target);
+  const breakpoint = typeof options.breakpoint === 'string' && A1_BREAKPOINTS.includes(options.breakpoint)
+    ? options.breakpoint
+    : currentContext.breakpoint;
+  const warnings = [];
+  const assignments = {};
+  queueComponentProperty(target, assignments, 'Breakpoint', breakpoint, 'VARIANT', warnings, 'Page Layout breakpoint preview');
+  applyQueuedProperties(target, assignments, warnings, 'Page Layout properties');
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'page-layout-props-result',
+    warnings,
+    message: 'Updated selected Page Layout controls.',
+    pageLayoutNodeId: refreshed.id,
+    pageLayoutContext: pageLayoutContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function topHeaderPropsWithShape(currentProps = {}, navCount = 0, actionCount = 0) {
+  const usedNavIds = new Set();
+  const navItems = (Array.isArray(currentProps.navItems) ? currentProps.navItems : [])
+    .filter((item) => item && typeof item === 'object')
+    .map((item, index) => ({
+      ...item,
+      id: typeof item.id === 'string' && item.id ? item.id : slugifyOptionValue(item.label || `nav-item-${index + 1}`, usedNavIds),
+      label: typeof item.label === 'string' && item.label ? item.label : `Nav item ${index + 1}`,
+    }));
+  while (navItems.length < navCount) {
+    const label = `Nav item ${navItems.length + 1}`;
+    navItems.push({ id: slugifyOptionValue(label, usedNavIds), label });
+  }
+
+  const usedActionIds = new Set();
+  const actions = (Array.isArray(currentProps.actions) ? currentProps.actions : [])
+    .filter((action) => action && typeof action === 'object')
+    .map((action, index) => ({
+      ...action,
+      id: typeof action.id === 'string' && action.id ? action.id : slugifyOptionValue(action.label || `action-${index + 1}`, usedActionIds),
+      label: typeof action.label === 'string' && action.label ? action.label : `Action ${index + 1}`,
+    }));
+  while (actions.length < actionCount) {
+    const label = `Action ${actions.length + 1}`;
+    actions.push({ id: slugifyOptionValue(label, usedActionIds), label });
+  }
+
+  return {
+    ...currentProps,
+    navItems: navItems.slice(0, navCount),
+    actions: actions.slice(0, actionCount),
+  };
+}
+
+async function handleSetTopHeaderProps(options = {}) {
+  const target = selectedInstanceForContext(options.topHeaderNodeId, 'Top Header');
+  if (!target) return postError('Select one A1 Top Header instance to edit its controls.');
+  const warnings = [];
+  const exported = exportTopHeader(target);
+  warnings.push(...exported.warnings);
+  const currentContext = topHeaderContextForSelection(target);
+  const navCount = Math.max(0, Math.min(GROUP_SLOT_CONFIG.TopHeader.max, Number(options.navCount) || 0));
+  const actionCount = Math.max(0, Math.min(GROUP_SLOT_CONFIG.TopHeaderActions.max, Number(options.actionCount) || 0));
+  const props = topHeaderPropsWithShape(exported.node.props || {}, navCount, actionCount);
+  props.logoText = typeof options.logoText === 'string' ? options.logoText : currentContext.logoText;
+  props.loginButton = options.showLogin === true
+    ? {
+        label: typeof options.loginLabel === 'string' && options.loginLabel.trim()
+          ? options.loginLabel.trim()
+          : currentContext.loginLabel,
+      }
+    : false;
+  await applyTopHeader(target, { type: 'TopHeader', props }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'top-header-props-result',
+    warnings,
+    message: 'Updated selected Top Header controls.',
+    topHeaderNodeId: refreshed.id,
+    topHeaderContext: topHeaderContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetLinkProps(options = {}) {
+  const target = selectedInstanceForContext(options.linkNodeId, 'Link');
+  if (!target) return postError('Select one A1 Link instance to edit its controls.');
+  const currentContext = linkContextForSelection(target);
+  const size = typeof options.size === 'string' && LINK_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const weight = typeof options.weight === 'string' && LINK_WEIGHTS.includes(options.weight)
+    ? options.weight
+    : currentContext.weight;
+  const iconMode = options.iconMode === 'show' ? 'show' : 'hide';
+  const iconPosition = options.iconPosition === 'end' ? 'end' : 'start';
+  const label = typeof options.label === 'string' && options.label.trim()
+    ? options.label.trim()
+    : currentContext.label;
+  const iconName = typeof options.iconName === 'string' && options.iconName.trim()
+    ? options.iconName.trim()
+    : currentContext.icon || 'arrow_forward';
+  const props = { size, weight };
+  if (iconMode === 'show') {
+    props.icon = iconName;
+    if (iconPosition === 'end') props.iconPosition = 'end';
+  }
+  const warnings = [];
+  await applyLink(target, {
+    type: 'Link',
+    props,
+    content: { fallback: label },
+  }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'link-props-result',
+    warnings,
+    message: 'Updated selected Link controls.',
+    linkNodeId: refreshed.id,
+    linkContext: linkContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function definitionListPropsWithShape(currentProps = {}, itemCount = 1) {
+  const usedIds = new Set();
+  const existingItems = Array.isArray(currentProps.items) ? currentProps.items : [];
+  const items = existingItems
+    .filter((item) => item && typeof item === 'object')
+    .map((item, index) => {
+      const label = typeof item.label === 'string' && item.label ? item.label : `Label ${index + 1}`;
+      return {
+        ...item,
+        id: typeof item.id === 'string' && item.id ? item.id : slugifyOptionValue(label, usedIds),
+        label,
+        value: typeof item.value === 'string' && item.value ? item.value : `Value ${index + 1}`,
+      };
+    });
+  while (items.length < itemCount) {
+    const index = items.length;
+    const label = `Label ${index + 1}`;
+    items.push({
+      id: slugifyOptionValue(label, usedIds),
+      label,
+      value: `Value ${index + 1}`,
+    });
+  }
+  return { ...currentProps, items: items.slice(0, itemCount) };
+}
+
+async function handleSetDefinitionListProps(options = {}) {
+  const target = selectedInstanceForContext(options.definitionListNodeId, 'Definition List');
+  if (!target) return postError('Select one A1 Definition List instance to edit its controls.');
+  const warnings = [];
+  const exported = exportDefinitionList(target);
+  warnings.push(...exported.warnings);
+  const currentContext = definitionListContextForSelection(target);
+  const direction = typeof options.direction === 'string' && DEFINITION_LIST_DIRECTIONS.includes(options.direction)
+    ? options.direction
+    : currentContext.direction;
+  const size = typeof options.size === 'string' && DEFINITION_LIST_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const itemCount = Math.max(1, Math.min(10, Number(options.itemCount) || currentContext.itemCount));
+  const props = definitionListPropsWithShape(exported.node.props || {}, itemCount);
+  props.direction = direction;
+  props.size = size;
+  await applyDefinitionList(target, { type: 'DefinitionList', props }, warnings);
+  await replaceDefinitionItems(target, { type: 'DefinitionList', props }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'definition-list-props-result',
+    warnings,
+    message: 'Updated selected Definition List controls.',
+    definitionListNodeId: refreshed.id,
+    definitionListContext: definitionListContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function choiceGroupPropsWithShape(currentProps = {}, optionCount = 1, multiple = false) {
+  const usedValues = new Set();
+  const existingOptions = Array.isArray(currentProps.options) ? currentProps.options : [];
+  const options = existingOptions
+    .filter((option) => option && typeof option === 'object')
+    .map((option, index) => {
+      const label = typeof option.label === 'string' && option.label ? option.label : `Option ${index + 1}`;
+      let value = typeof option.value === 'string' && option.value ? option.value : '';
+      if (!value || usedValues.has(value)) value = slugifyOptionValue(label, usedValues);
+      else usedValues.add(value);
+      return {
+        ...option,
+        value,
+        label,
+      };
+    });
+  const shapeTemplate = [...options].reverse().find((option) =>
+    (typeof option.subtext === 'string' && option.subtext.trim())
+    || (typeof option.icon === 'string' && option.icon.trim()));
+  while (options.length < optionCount) {
+    const index = options.length;
+    const label = `Option ${index + 1}`;
+    const option = {
+      value: slugifyOptionValue(label, usedValues),
+      label,
+    };
+    if (shapeTemplate && typeof shapeTemplate.subtext === 'string' && shapeTemplate.subtext.trim()) {
+      option.subtext = shapeTemplate.subtext;
+    }
+    if (shapeTemplate && typeof shapeTemplate.icon === 'string' && shapeTemplate.icon.trim()) {
+      option.icon = shapeTemplate.icon;
+    }
+    options.push(option);
+  }
+  const nextOptions = options.slice(0, optionCount);
+  const validValues = new Set(nextOptions.map((option) => option.value));
+  const rawSelection = currentProps.defaultValue !== undefined ? currentProps.defaultValue : currentProps.value;
+  const selectedValues = Array.isArray(rawSelection)
+    ? rawSelection.filter((value) => typeof value === 'string' && validValues.has(value))
+    : typeof rawSelection === 'string' && validValues.has(rawSelection) ? [rawSelection] : [];
+  const fallbackValue = nextOptions[0] ? nextOptions[0].value : '';
+  const nextProps = { ...currentProps, options: nextOptions };
+  if (multiple) nextProps.defaultValue = selectedValues.length ? selectedValues : (fallbackValue ? [fallbackValue] : []);
+  else nextProps.defaultValue = selectedValues[0] || fallbackValue;
+  delete nextProps.value;
+  return nextProps;
+}
+
+async function handleSetChoiceGroupProps(options = {}) {
+  const target = selectedInstanceForContext(options.choiceGroupNodeId, 'Choice Group');
+  if (!target) return postError('Select one A1 Choice Group instance to edit its controls.');
+  const warnings = [];
+  const exported = exportChoiceGroup(target);
+  warnings.push(...exported.warnings);
+  const currentContext = choiceGroupContextForSelection(target);
+  const multiple = options.choiceType === 'checkbox'
+    ? true
+    : options.choiceType === 'radio'
+      ? false
+      : currentContext.type === 'checkbox';
+  const size = typeof options.size === 'string' && CHOICE_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const optionCount = Math.max(1, Math.min(CHOICE_GROUP_CONTEXT_MAX_OPTIONS, Number(options.optionCount) || currentContext.optionCount));
+  const props = choiceGroupPropsWithShape(exported.node.props || {}, optionCount, multiple);
+  props.label = typeof options.label === 'string' ? options.label.trim() : currentContext.label;
+  props.hint = typeof options.helper === 'string' ? options.helper.trim() : currentContext.helper;
+  props.multiple = multiple;
+  props.size = size;
+  props.required = options.required === true;
+  props.hideIndicator = options.hideIndicator === true;
+  props.columns = normalizeResponsiveColumns(options.columns) || currentContext.columns || { xs: 1 };
+  await applyChoiceGroup(target, { type: 'ChoiceGroup', props }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'choice-group-props-result',
+    warnings,
+    message: 'Updated selected Choice Group controls.',
+    choiceGroupNodeId: refreshed.id,
+    choiceGroupContext: choiceGroupContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetButtonProps(options = {}) {
+  const selection = figma.currentPage.selection;
+  let target = selection.length === 1 ? liveNode(selection[0]) : null;
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== 'Button') {
+    return postError('Select one A1 Button instance to edit its controls.');
+  }
+  const currentContext = buttonContextForSelection(target);
+  const variant = typeof options.variant === 'string' && BUTTON_VARIANTS.includes(options.variant)
+    ? options.variant
+    : currentContext.variant;
+  const size = typeof options.size === 'string' && BUTTON_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const state = typeof options.state === 'string' && BUTTON_CONTEXT_STATES.includes(options.state)
+    ? options.state
+    : currentContext.state;
+  const iconMode = typeof options.iconMode === 'string' && BUTTON_CONTEXT_ICON_MODES.includes(options.iconMode)
+    ? options.iconMode
+    : currentContext.iconMode;
+  const iconPosition = options.iconPosition === 'end' ? 'end' : 'start';
+  const widthMode = typeof options.widthMode === 'string' && BUTTON_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : currentContext.widthMode;
+  const label = typeof options.label === 'string' && options.label.trim()
+    ? options.label.trim()
+    : currentContext.label;
+  const iconName = typeof options.iconName === 'string' && options.iconName.trim()
+    ? options.iconName.trim()
+    : currentContext.icon || 'star';
+  const props = { variant, size };
+  if (state === 'disabled') props.disabled = true;
+  if (state === 'loading') props.loading = true;
+  if (widthMode === 'fill') props.fullWidth = true;
+  if (iconMode === 'show') {
+    props.icon = iconName;
+    if (iconPosition === 'end') props.iconPosition = 'end';
+  }
+  const warnings = [];
+  await applyButton(target, {
+    type: 'Button',
+    props,
+    content: { fallback: label },
+  }, warnings);
+  const refreshed = currentInstance(target);
+  syncButtonFullWidthMetadata(refreshed, widthMode, warnings);
+  postPluginMessage({
+    type: 'button-props-result',
+    warnings,
+    message: 'Updated selected Button controls.',
+    buttonNodeId: refreshed.id,
+    buttonContext: buttonContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetButtonContainerProps(options = {}) {
+  const target = selectedInstanceForContext(options.buttonContainerNodeId, 'Button Container');
+  if (!target) {
+    return postError('Select one A1 Button Group instance to edit its controls.');
+  }
+  const currentContext = buttonContainerContextForSelection(target);
+  const align = typeof options.align === 'string' && BUTTON_CONTAINER_ALIGNS.includes(options.align)
+    ? options.align
+    : currentContext.align;
+  const warnings = [];
+  await applyButtonContainer(target, {
+    type: 'ButtonContainer',
+    props: { align },
+    children: [],
+  }, warnings);
+  const refreshed = syncButtonContainerForWidth(currentInstance(target), warnings);
+  postPluginMessage({
+    type: 'button-container-props-result',
+    warnings,
+    message: 'Updated selected Button Group controls.',
+    buttonContainerNodeId: refreshed.id,
+    buttonContainerContext: buttonContainerContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function actionTriggerPayload(trigger) {
+  const refreshed = currentInstance(trigger);
+  const componentName = actionTriggerComponentName(refreshed);
+  const payload = {
+    componentName,
+    triggerNodeId: refreshed.id,
+  };
+  if (componentName === 'Button') {
+    payload.buttonNodeId = refreshed.id;
+    payload.buttonContext = buttonContextForSelection(refreshed);
+  }
+  if (componentName === 'Icon Button') {
+    payload.iconButtonNodeId = refreshed.id;
+    payload.iconButtonContext = iconButtonContextForSelection(refreshed);
+  }
+  return payload;
+}
+
+function postActionTriggerResult(trigger, warnings, message) {
+  postPluginMessage({
+    type: 'action-trigger-result',
+    warnings,
+    message,
+    ...actionTriggerPayload(trigger),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function actionTriggerContextTarget(options = {}) {
+  const explicitComponentName = typeof options.componentName === 'string' ? options.componentName : '';
+  const componentName = ACTION_TRIGGER_COMPONENT_NAMES.has(explicitComponentName)
+    ? explicitComponentName
+    : (options.iconButtonNodeId ? 'Icon Button' : 'Button');
+  const nodeId = options.triggerNodeId || options.buttonNodeId || options.iconButtonNodeId || null;
+  const target = selectedInstanceForContext(nodeId, componentName);
+  return target && supportsActionTrigger(target) ? target : null;
+}
+
+async function handleSetActionTriggerLink(options = {}) {
+  const targetType = ACTION_TRIGGER_TARGET_TYPES.has(options.targetType) ? options.targetType : 'Dialog';
+  const target = actionTriggerContextTarget(options);
+  if (!target) return postError(`Select one A1 Button or Icon Button instance to connect it to a ${targetType}.`);
+  const warnings = [];
+  const targetNodeId = typeof options.targetNodeId === 'string'
+    ? options.targetNodeId
+    : typeof options.dialogNodeId === 'string'
+      ? options.dialogNodeId
+      : '';
+  if (!targetNodeId) {
+    setActionTriggerTarget(target, targetType, '');
+    postActionTriggerResult(target, warnings, `Disconnected this ${actionTriggerComponentName(target)} from its ${targetType}.`);
+    return;
+  }
+  let linkedTarget = null;
+  try {
+    linkedTarget = liveNode(resolveNodeById(targetNodeId));
+  } catch {
+    linkedTarget = null;
+  }
+  if (!linkedTarget || linkedTarget.type !== 'INSTANCE' || registeredSetName(linkedTarget) !== targetType) {
+    return postError(`Choose an existing A1 ${targetType} from this canvas.`);
+  }
+  setActionTriggerTarget(target, targetType, linkedTarget.id);
+  syncActionTargetTriggerNameMetadata(linkedTarget, target);
+  postActionTriggerResult(target, warnings, `Connected this ${actionTriggerComponentName(target)} to "${actionTargetOptionLabel(linkedTarget, 0, targetType)}".`);
+}
+
+async function handleAddActionTargetForTrigger(options = {}) {
+  const targetType = ACTION_TRIGGER_TARGET_TYPES.has(options.targetType) ? options.targetType : 'Dialog';
+  const targetConfig = ACTION_TRIGGER_TARGET_CONFIG[targetType];
+  const target = actionTriggerContextTarget(options);
+  if (!target) return postError(`Select one A1 Button or Icon Button instance before adding a connected ${targetType}.`);
+  const warnings = [];
+  let linkedTarget = null;
+  try {
+    linkedTarget = await addComponentFromPackage(targetConfig.addTarget, {}, warnings);
+  } catch (error) {
+    warnings.push(`${targetType} could not be added: ${error.message}`);
+  }
+  if (!linkedTarget) {
+    postPluginMessage({
+      type: 'action-trigger-result',
+      warnings,
+      message: warnings.join('\n') || `No ${targetType} was added.`,
+      ...actionTriggerPayload(target),
+    });
+    return;
+  }
+  try {
+    figma.currentPage.appendChild(linkedTarget);
+    const x = target.absoluteTransform && target.absoluteTransform[0] ? target.absoluteTransform[0][2] : target.x;
+    const y = target.absoluteTransform && target.absoluteTransform[1] ? target.absoluteTransform[1][2] : target.y;
+    linkedTarget.x = Math.round(x + target.width + 80);
+    linkedTarget.y = Math.round(y);
+  } catch (error) {
+    warnings.push(`${targetType} was added but could not be positioned next to the ${actionTriggerComponentName(target)}: ${error.message}`);
+  }
+  setActionTriggerTarget(target, targetType, linkedTarget.id);
+  syncActionTargetTriggerNameMetadata(linkedTarget, target);
+  figma.currentPage.selection = [target];
+  postActionTriggerResult(target, warnings, `Added and connected "${actionTargetOptionLabel(linkedTarget, 0, targetType)}".`);
+}
+
+async function handleSetIconButtonProps(options = {}) {
+  const target = selectedInstanceForContext(options.iconButtonNodeId, 'Icon Button');
+  if (!target) {
+    return postError('Select one A1 Icon Button instance to edit its controls.');
+  }
+  const currentContext = iconButtonContextForSelection(target);
+  const variant = typeof options.variant === 'string' && ICON_BUTTON_VARIANTS.includes(options.variant)
+    ? options.variant
+    : currentContext.variant;
+  const size = typeof options.size === 'string' && ICON_BUTTON_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const label = typeof options.label === 'string' && options.label.trim()
+    ? options.label.trim()
+    : currentContext.label;
+  const iconName = typeof options.iconName === 'string' && options.iconName.trim()
+    ? options.iconName.trim()
+    : currentContext.icon || 'star';
+  const warnings = [];
+  await applyIconButton(target, {
+    type: 'IconButton',
+    props: {
+      label,
+      variant,
+      size,
+      icon: iconName,
+    },
+  }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'icon-button-props-result',
+    warnings,
+    message: 'Updated selected Icon Button controls.',
+    iconButtonNodeId: refreshed.id,
+    iconButtonContext: iconButtonContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetBadgeProps(options = {}) {
+  const target = selectedInstanceForContext(options.badgeNodeId, 'Badge');
+  if (!target) {
+    return postError('Select one A1 Badge instance to edit its controls.');
+  }
+  const currentContext = badgeContextForSelection(target);
+  const status = typeof options.status === 'string' && BADGE_STATUSES.includes(options.status)
+    ? options.status
+    : currentContext.status;
+  const size = typeof options.size === 'string' && BADGE_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const label = typeof options.label === 'string' && options.label.trim()
+    ? options.label.trim()
+    : currentContext.label;
+  const iconName = typeof options.iconName === 'string' && options.iconName.trim()
+    ? options.iconName.trim()
+    : currentContext.icon || 'info';
+  const iconMode = options.iconMode === 'none' ? 'none' : 'show';
+  const props = {
+    status,
+    size,
+    subtle: options.subtle === true,
+  };
+  if (iconMode === 'none') {
+    props.icon = null;
+  } else {
+    props.icon = iconName;
+  }
+  const warnings = [];
+  await applyBadge(target, {
+    type: 'MessageBadge',
+    props,
+    content: { fallback: label },
+  }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'badge-props-result',
+    warnings,
+    message: 'Updated selected Badge controls.',
+    badgeNodeId: refreshed.id,
+    badgeContext: badgeContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetCardProps(options = {}) {
+  const warnings = [];
+  let target = null;
+  if (typeof options.cardNodeId === 'string' && options.cardNodeId) {
+    try {
+      target = liveNode(resolveNodeById(options.cardNodeId));
+    } catch {
+      target = null;
+    }
+  }
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== 'Card') {
+    const selection = figma.currentPage.selection;
+    target = selection.length === 1 ? liveNode(selection[0]) : null;
+  }
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== 'Card') {
+    return postError('Select one A1 Card instance to edit its controls.');
+  }
+  const currentContext = cardContextForSelection(target);
+  const surface = typeof options.surface === 'string' && CARD_SURFACES.includes(options.surface)
+    ? options.surface
+    : currentContext.surface;
+  const variant = typeof options.variant === 'string' && CARD_VARIANTS.includes(options.variant)
+    ? options.variant
+    : currentContext.variant;
+  const iconDisplay = typeof options.iconDisplay === 'string' && CARD_ICON_DISPLAYS.includes(options.iconDisplay)
+    ? options.iconDisplay
+    : options.iconMode === 'show' ? 'default' : currentContext.iconDisplay;
+  const heroColor = typeof options.heroColor === 'string' && CARD_HERO_COLORS.includes(options.heroColor)
+    ? options.heroColor
+    : currentContext.heroColor;
+  const iconName = typeof options.iconName === 'string' && options.iconName.trim()
+    ? options.iconName.trim()
+    : currentContext.icon || 'star';
+  const widthMode = typeof options.widthMode === 'string' && BUTTON_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : currentContext.widthMode;
+  const heightMode = typeof options.heightMode === 'string' && BUTTON_CONTEXT_WIDTH_MODES.includes(options.heightMode)
+    ? options.heightMode
+    : currentContext.heightMode;
+  await applyCard(target, {
+    type: 'Card',
+    props: {
+      surface,
+      ...(variant === 'navigation' ? { variant: 'navigation' } : {}),
+      ...(variant === 'bare' ? { bare: true } : {}),
+      ...(iconDisplay !== 'none'
+        ? {
+            icon: iconName,
+            ...(iconDisplay !== 'default' ? { iconDisplay } : {}),
+            ...(iconDisplay === 'hero' && heroColor !== 'action' ? { heroColor } : {}),
+          }
+        : { iconDisplay: 'none' }),
+    },
+    children: [],
+  }, warnings);
+  const refreshed = currentInstance(target);
+  syncLayoutWidthMode(refreshed, widthMode, warnings, 'Card');
+  syncLayoutHeightMode(refreshed, heightMode, warnings, 'Card');
+  const synced = syncCardIconPositionForWidth(refreshed, warnings);
+  postPluginMessage({
+    type: 'card-props-result',
+    warnings,
+    message: 'Updated selected Card controls.',
+    cardNodeId: synced.id,
+    cardContext: cardContextForSelection(synced),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetDialogProps(options = {}) {
+  const target = selectedInstanceForContext(options.dialogNodeId, 'Dialog');
+  if (!target) {
+    return postError('Select one A1 Dialog instance to edit its controls.');
+  }
+  const currentContext = dialogContextForSelection(target);
+  const size = typeof options.size === 'string' && DIALOG_SIZES.includes(options.size)
+    ? options.size
+    : currentContext.size;
+  const status = typeof options.status === 'string' && DIALOG_STATUSES.includes(options.status)
+    ? options.status
+    : currentContext.status;
+  const title = typeof options.title === 'string' && options.title.trim()
+    ? options.title.trim()
+    : currentContext.title;
+  const warnings = [];
+  await applyDialog(target, {
+    type: 'Dialog',
+    props: {
+      title,
+      size,
+      status,
+      showClose: options.showClose !== false,
+      showFooter: options.showFooter !== false,
+    },
+  }, warnings);
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'dialog-props-result',
+    warnings,
+    message: 'Updated selected Dialog controls.',
+    dialogNodeId: refreshed.id,
+    dialogContext: dialogContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function handleSetMenuProps(options = {}) {
+  const target = selectedInstanceForContext(options.menuNodeId, 'Menu');
+  if (!target) {
+    return postError('Select one A1 Menu instance to edit its controls.');
+  }
+  const warnings = [];
+  const rows = menuItemInstances(target);
+  const rowCount = Math.max(0, Math.min(rows.length, Number(options.rowCount) || 0));
+  rows.forEach((row, index) => {
+    try {
+      row.visible = index < rowCount;
+    } catch (error) {
+      warnings.push(`Menu row ${index + 1} visibility could not be changed: ${error.message}`);
+    }
+  });
+  const refreshed = currentInstance(target);
+  postPluginMessage({
+    type: 'menu-props-result',
+    warnings,
+    message: 'Updated selected Menu controls.',
+    menuNodeId: refreshed.id,
+    menuContext: menuContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetDataTableProps(options = {}) {
+  const target = selectedInstanceForContext(options.dataTableNodeId, 'Data Table');
+  if (!target) {
+    return postError('Select one A1 Data Table instance to edit its controls.');
+  }
+  const warnings = [];
+  const exported = exportDataTable(target);
+  warnings.push(...exported.warnings);
+  const currentProps = exported.node.props || {};
+  let props = null;
+  if (options.dataTableProps && typeof options.dataTableProps === 'object') {
+    props = dataTablePropsFromDataInput(options.dataTableProps);
+  } else {
+    const currentContext = dataTableContextForSelection(target);
+    const columnCount = Math.max(1, Math.min(DATA_TABLE_MAX_COLUMNS, Number(options.columnCount) || currentContext.columnCount));
+    const rowCount = Math.max(1, Math.min(DATA_TABLE_MAX_ROWS, Number(options.rowCount) || currentContext.rowCount));
+    props = dataTablePropsWithShape(currentProps, columnCount, rowCount);
+  }
+  props.zebra = options.zebra === true;
+  await applyDataTable(target, { type: 'DataTable', props }, warnings);
+  const refreshed = currentInstance(target);
+  const widthMode = typeof options.widthMode === 'string' && BUTTON_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : layoutWidthMode(refreshed);
+  const heightMode = typeof options.heightMode === 'string' && BUTTON_CONTEXT_WIDTH_MODES.includes(options.heightMode)
+    ? options.heightMode
+    : layoutHeightMode(refreshed);
+  syncLayoutWidthMode(refreshed, widthMode, warnings, 'Data Table');
+  syncLayoutHeightMode(refreshed, heightMode, warnings, 'Data Table');
+  postPluginMessage({
+    type: 'data-table-props-result',
+    warnings,
+    message: 'Updated selected Data Table controls.',
+    dataTableNodeId: refreshed.id,
+    dataTableContext: dataTableContextForSelection(refreshed),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetStackProps(options = {}) {
+  const warnings = [];
+  let target = null;
+  if (typeof options.stackNodeId === 'string' && options.stackNodeId) {
+    try {
+      target = liveNode(resolveNodeById(options.stackNodeId));
+    } catch {
+      target = null;
+    }
+  }
+  if (!isStackFrame(target)) {
+    const selection = figma.currentPage.selection;
+    target = selection.length === 1 ? liveNode(selection[0]) : null;
+  }
+  if (!isStackFrame(target)) {
+    return postError('Select one A1 Stack frame to edit its controls.');
+  }
+  const currentContext = stackContextForSelection(target);
+  const direction = typeof options.direction === 'string' && STACK_CONTEXT_DIRECTIONS.includes(options.direction)
+    ? options.direction
+    : currentContext.direction;
+  const gap = stackGapControlToProp(options.gap);
+  const justify = typeof options.justify === 'string' && STACK_CONTEXT_JUSTIFIES.includes(options.justify)
+    ? options.justify
+    : currentContext.justify;
+  const align = typeof options.align === 'string' && STACK_CONTEXT_ALIGNS.includes(options.align)
+    ? options.align
+    : currentContext.align;
+  const wrap = options.wrapMode === 'wrap' && direction === 'row';
+  const widthMode = typeof options.widthMode === 'string' && STACK_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : currentContext.widthMode;
+  const heightMode = typeof options.heightMode === 'string' && STACK_CONTEXT_WIDTH_MODES.includes(options.heightMode)
+    ? options.heightMode
+    : currentContext.heightMode;
+  await applyStack(target, {
+    type: 'Stack',
+    props: { direction, gap, justify, align, wrap },
+  }, warnings);
+  syncStackPropsName(target);
+  syncLayoutWidthMode(target, widthMode, warnings, 'Stack');
+  syncLayoutHeightMode(target, heightMode, warnings, 'Stack');
+  postPluginMessage({
+    type: 'stack-props-result',
+    warnings,
+    message: 'Updated selected Stack controls.',
+    stackNodeId: target.id,
+    stackContext: stackContextForSelection(target),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+async function handleSetSectionProps(options = {}) {
+  const warnings = [];
+  let target = null;
+  if (typeof options.sectionNodeId === 'string' && options.sectionNodeId) {
+    try {
+      target = liveNode(resolveNodeById(options.sectionNodeId));
+    } catch {
+      target = null;
+    }
+  }
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== 'Section') {
+    const selection = figma.currentPage.selection;
+    target = selection.length === 1 ? liveNode(selection[0]) : null;
+  }
+  if (!target || target.type !== 'INSTANCE' || registeredSetName(target) !== 'Section') {
+    return postError('Select one A1 Section instance to edit its controls.');
+  }
+  const currentContext = sectionContextForSelection(target);
+  const surface = typeof options.surface === 'string' && SECTION_SURFACES.includes(options.surface)
+    ? options.surface
+    : currentContext.surface;
+  const inverse = typeof options.inverse === 'boolean'
+    ? options.inverse
+    : currentContext.inverse === true;
+  const padding = typeof options.padding === 'string' && SECTION_PADDINGS.includes(options.padding)
+    ? options.padding
+    : currentContext.padding;
+  const contentWidth = typeof options.contentWidth === 'string' && SECTION_WIDTHS.includes(options.contentWidth)
+    ? options.contentWidth
+    : currentContext.contentWidth;
+  const shouldApplyGap = typeof options.gap === 'string' && SECTION_GAPS.includes(options.gap);
+  const gap = shouldApplyGap ? options.gap : null;
+  const widthMode = typeof options.widthMode === 'string' && STACK_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : currentContext.widthMode;
+  const heightMode = typeof options.heightMode === 'string' && STACK_CONTEXT_WIDTH_MODES.includes(options.heightMode)
+    ? options.heightMode
+    : currentContext.heightMode;
+  await applySection(target, {
+    type: 'Section',
+    props: { surface, padding, contentWidth, ...(shouldApplyGap ? { gap } : {}), ...(inverse ? { inverse: true } : {}) },
+    children: [],
+  }, warnings);
+  target = currentInstance(target);
+  syncSectionInverseMode(target, inverse, warnings);
+  if (shouldApplyGap) syncSectionGapSpacing(target, gap, warnings);
+  syncLayoutWidthMode(target, widthMode, warnings, 'Section');
+  syncLayoutHeightMode(target, heightMode, warnings, 'Section');
+  postPluginMessage({
+    type: 'section-props-result',
+    warnings,
+    message: 'Updated selected Section controls.',
+    sectionNodeId: target.id,
+    sectionContext: sectionContextForSelection(target),
+    sectionReview: sectionSuggestion(target),
+  });
+  postSelectionState();
+  scheduleAutoExport();
+}
+
+function handleSetGridProps(options = {}) {
+  const warnings = [];
+  let target = null;
+  if (typeof options.gridNodeId === 'string' && options.gridNodeId) {
+    try {
+      target = liveNode(resolveNodeById(options.gridNodeId));
+    } catch {
+      target = null;
+    }
+  }
+  if (!isGridFrame(target)) {
+    const selection = figma.currentPage.selection;
+    target = selection.length === 1 ? liveNode(selection[0]) : null;
+  }
+  if (!isGridFrame(target)) {
+    return postError('Select one A1 Grid frame to edit its controls.');
+  }
+  const widthMode = typeof options.widthMode === 'string' && GRID_CONTEXT_WIDTH_MODES.includes(options.widthMode)
+    ? options.widthMode
+    : gridWidthMode(target);
+  const heightMode = typeof options.heightMode === 'string' && GRID_CONTEXT_WIDTH_MODES.includes(options.heightMode)
+    ? options.heightMode
+    : gridHeightMode(target);
+  syncGridWidthMode(target, widthMode, warnings);
+  syncGridHeightMode(target, heightMode, warnings);
+  postPluginMessage({
+    type: 'grid-props-result',
+    warnings,
+    message: 'Updated selected Grid controls.',
+    gridNodeId: target.id,
+    gridColumns: readResponsiveGridColumns(target),
+    gridWidthMode: gridWidthMode(target),
+    gridHeightMode: gridHeightMode(target),
+  });
+  postSelectionState();
+  scheduleAutoExport();
 }
 
 async function applyInlineLinkRanges(text, inlineLinks, warnings) {
@@ -7635,6 +8777,7 @@ async function handleFixText() {
       : 'Applied the nearest A1 text style, color, and alignment.';
   figma.notify(message);
   postPluginMessage({ type: 'text-fix-result', warnings, message });
+  postSelectionState();
   scheduleAutoExport();
 }
 
@@ -7738,84 +8881,7 @@ function clearSectionSlot(slot) {
     try { child.remove(); } catch { try { child.visible = false; } catch { /* no-op */ } }
   }
 }
-
-function topLevelSelectionNodes(selection) {
-  const nodes = (selection || [])
-    .map(liveNode)
-    .filter(Boolean)
-    .filter((node) => !isAuditReportNode(node));
-  const selectedIds = new Set(nodes.map((node) => node.id));
-  return nodes.filter((node) => {
-    try {
-      if (node.type === 'PAGE' || !node.parent) return false;
-      if (['COMPONENT', 'COMPONENT_SET', 'SLOT'].includes(node.type) || isComponentImplementationNode(node)) return false;
-      for (let parent = node.parent; parent && parent.type !== 'PAGE'; parent = parent.parent) {
-        if (selectedIds.has(parent.id)) return false;
-      }
-      return true;
-    } catch {
-      return false;
-    }
-  });
-}
-
-function commonParent(nodes) {
-  if (!nodes.length) return null;
-  const parent = nodes[0].parent;
-  return nodes.every((node) => node.parent && node.parent.id === parent.id) ? parent : null;
-}
-
-function selectionBoundsInParent(nodes) {
-  if (!nodes.length) return null;
-  try {
-    const minX = Math.min(...nodes.map((node) => node.x));
-    const minY = Math.min(...nodes.map((node) => node.y));
-    const maxX = Math.max(...nodes.map((node) => node.x + node.width));
-    const maxY = Math.max(...nodes.map((node) => node.y + node.height));
-    return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
-  } catch {
-    return null;
-  }
-}
-
-function nearestSectionContentWidth(width) {
-  if (typeof width !== 'number' || !Number.isFinite(width) || width <= 0) return 'lg';
-  return SECTION_WIDTHS.reduce((nearest, size) =>
-    Math.abs(SECTION_CONTENT_WIDTH_PIXELS[size] - width) < Math.abs(SECTION_CONTENT_WIDTH_PIXELS[nearest] - width)
-      ? size
-      : nearest, 'lg');
-}
-
-function inferredSectionContentWidth(source, contentNodes, fallback = 'lg') {
-  const contentBounds = selectionBoundsInParent(contentNodes);
-  const width = contentBounds && contentBounds.width
-    ? contentBounds.width
-    : source && typeof source.width === 'number'
-      ? source.width
-      : null;
-  if (typeof width !== 'number' || !Number.isFinite(width) || width <= 0) return fallback;
-  return nearestSectionContentWidth(width);
-}
-
-function applySectionContentWidth(section, contentWidth, warnings) {
-  const width = SECTION_WIDTHS.includes(contentWidth) ? contentWidth : 'lg';
-  const applied = assignSectionVariant(sectionPropertyCarriers(currentInstance(section)), ['contentwidth', 'width'], width)
-    || applyCollectionMode(currentInstance(section), 'ContentWidth', width);
-  if (!applied) {
-    warnings.push(`contentWidth="${width}" could not be applied — no content-width property or ContentWidth variable mode matched.`);
-  }
-  return width;
-}
-
-function selectedNodesInParentOrder(parent, nodes) {
-  const ids = new Set(nodes.map((node) => node.id));
-  try {
-    return parent.children.filter((child) => ids.has(child.id));
-  } catch {
-    return nodes;
-  }
-}
-
+// Selection helpers are defined in src/figma/selection.js.
 function isSectionContentSource(node) {
   return Boolean(node && ['FRAME', 'GROUP', 'SECTION'].includes(node.type) && 'children' in node);
 }
@@ -7833,15 +8899,6 @@ async function convertFrameToCard(source, warnings) {
   parent.insertChild(Math.max(0, sourceIndex), card);
   copyCardPlacement(source, card, parent, warnings);
 
-  let slot = namedSlot(currentInstance(card), 'Content Slot');
-  if (!slot) {
-    card.remove();
-    warnings.push('The Card Content Slot was not found. The original frame was left unchanged.');
-    return null;
-  }
-  for (const child of [...slot.children]) {
-    try { child.remove(); } catch { try { child.visible = false; } catch { /* no-op */ } }
-  }
   for (const child of children) {
     slot = namedSlot(currentInstance(card), 'Content Slot');
     if (!slot) {
@@ -8213,6 +9270,7 @@ function conversionTargetComponentName(target) {
     stack: 'Stack',
     grid: 'Grid',
     button: 'Button',
+    'button-container': 'Button Container',
     'text-field': 'Text Field',
     'search-field': 'Search Field',
     textarea: 'Textarea',
@@ -8252,6 +9310,19 @@ function conversionPreparationRoot(node) {
 
 function prepareSelectionForConversion(selection, target, warnings) {
   const targetComponent = conversionTargetComponentName(target);
+  // Layout conversions should preserve authored A1 instances as children. In
+  // particular, converting a selection of Banners to a Grid must not detach
+  // the Banners first: detaching removes their component identity and the
+  // exporter can only recover the text layers afterward. The layout primitive
+  // owns the new container; its children should remain swappable A1 instances.
+  const preserveA1Instances = new Set([
+    'stack',
+    'grid',
+    'section',
+    'card',
+    'page-layout',
+    'button-container',
+  ]);
   const roots = (selection || [])
     .map(liveNode)
     .filter(Boolean)
@@ -8262,6 +9333,14 @@ function prepareSelectionForConversion(selection, target, warnings) {
   const prepared = [];
   for (const node of topLevel) {
     if (node.type !== 'INSTANCE') {
+      prepared.push(node);
+      continue;
+    }
+    if (target === 'button-container' && isA1ComponentInstance(node, 'Button')) {
+      prepared.push(node);
+      continue;
+    }
+    if (preserveA1Instances.has(target) && registeredSetName(node)) {
       prepared.push(node);
       continue;
     }
@@ -8743,6 +9822,145 @@ async function convertSelectionToButton(selection, warnings) {
   placeConvertedNode(button, context, warnings, { resize: false });
   removeConvertedSource(context, warnings);
   return button;
+}
+
+function buttonConversionLabelsFromNode(node, fallback) {
+  const labels = [];
+  for (const textNode of collectTextLayers(node)) {
+    const value = typeof textNode.characters === 'string' ? textNode.characters : '';
+    value
+      .split(/\n+/)
+      .map((line) => line.replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+      .forEach((line) => labels.push(line));
+  }
+  if (labels.length) return labels;
+  const content = selectionTextContent([node], fallback).replace(/\s+/g, ' ').trim();
+  return content ? [content] : [];
+}
+
+function buttonContainerButtonNodesFromContext(context, warnings) {
+  const nodes = [];
+  const usedLabels = new Set();
+  const addButtonNode = (node, fallbackLabel) => {
+    const current = liveNode(node);
+    if (current && current.type === 'INSTANCE' && registeredSetName(current) === 'Button') {
+      const result = exportButton(current);
+      warnings.push(...result.warnings);
+      nodes.push(result.node);
+      return;
+    }
+    const labels = buttonConversionLabelsFromNode(current, fallbackLabel);
+    labels.forEach((label) => {
+      const normalized = label.trim();
+      if (!normalized) return;
+      const key = normalized.toLowerCase();
+      if (usedLabels.has(key)) return;
+      usedLabels.add(key);
+      nodes.push({
+        type: 'Button',
+        props: { variant: nodes.length === 0 ? 'primary' : 'secondary', size: 'md' },
+        content: { fallback: normalized },
+      });
+    });
+  };
+
+  for (const node of context.contentNodes || []) {
+    addButtonNode(node, node && node.name ? node.name : `Action ${nodes.length + 1}`);
+  }
+  if (nodes.length === 0) {
+    const fallback = context.source && context.source.name ? context.source.name : 'Action';
+    nodes.push({
+      type: 'Button',
+      props: { variant: 'primary', size: 'md' },
+      content: { fallback },
+    });
+    warnings.push(`Button Group actions were inferred from the selected layer name "${fallback}" because no visible button labels were found.`);
+  }
+  return nodes;
+}
+
+async function replaceButtonContainerChildrenForConversion(instance, buttonNodes, warnings) {
+  let slot = buttonContainerSlot(currentInstance(instance));
+  if (!slot || !('children' in slot)) {
+    warnings.push('Button Slot was not found — Button Group actions were not applied.');
+    return false;
+  }
+  if (slot.type === 'SLOT') {
+    for (const child of [...slot.children]) {
+      try {
+        child.remove();
+      } catch {
+        try { child.visible = false; } catch { /* no-op */ }
+      }
+    }
+    for (const buttonNode of buttonNodes) {
+      slot = buttonContainerSlot(currentInstance(instance));
+      if (!slot || slot.type !== 'SLOT') {
+        warnings.push('Button Slot could not be refreshed while adding Button Group actions.');
+        break;
+      }
+      try {
+        slot.appendChild(await importButton(buttonNode, warnings));
+      } catch (error) {
+        warnings.push(`"${buttonNode.content && buttonNode.content.fallback ? buttonNode.content.fallback : 'Button'}" could not be added to the Button Group: ${error.message}`);
+      }
+    }
+    return true;
+  }
+
+  const existing = buttonContainerButtonChildren(instance);
+  if (!existing.length) {
+    warnings.push('Button Group has no editable child Button placeholders.');
+    return false;
+  }
+  const count = Math.min(existing.length, buttonNodes.length);
+  for (let index = 0; index < count; index += 1) {
+    try {
+      existing[index].visible = true;
+    } catch {
+      // Best-effort; applyButton may still work.
+    }
+    await applyButton(existing[index], buttonNodes[index], warnings);
+  }
+  for (let index = count; index < existing.length; index += 1) {
+    try {
+      existing[index].visible = false;
+    } catch (error) {
+      warnings.push(`Extra Button Group placeholder ${index + 1} could not be hidden: ${error.message}`);
+    }
+  }
+  if (buttonNodes.length > existing.length) {
+    warnings.push(`Button Group has ${existing.length} editable Button placeholder${existing.length === 1 ? '' : 's'}; ${buttonNodes.length - existing.length} selected action${buttonNodes.length - existing.length === 1 ? '' : 's'} could not be represented.`);
+  }
+  return count > 0;
+}
+
+async function convertSelectionToButtonContainer(selection, warnings) {
+  const liveSelection = (selection || []).map(liveNode).filter(Boolean);
+  if (liveSelection.length === 1 && closestA1ComponentAncestor(liveSelection[0], 'Button Container')) {
+    warnings.push('The selected layer is already inside an A1 Button Group.');
+    return null;
+  }
+  const contextWarnings = [];
+  let context = conversionContext(selection, contextWarnings, 'Select buttons, text, or layers to convert to an A1 Button Group.');
+  if (context) warnings.push(...contextWarnings);
+  else context = directConversionContext(selection, warnings, 'Select buttons, text, or layers to convert to an A1 Button Group.');
+  if (!context) return null;
+
+  const buttonNodes = buttonContainerButtonNodesFromContext(context, warnings);
+  const instance = await createComponentInstance('Button Container', warnings);
+  placeConvertedNode(instance, context, warnings);
+  setNodeToFillParentWidth(instance, 'Button Group', warnings);
+  await applyButtonContainer(instance, { type: 'ButtonContainer', props: { align: 'start' }, children: [] }, warnings);
+  const applied = await replaceButtonContainerChildrenForConversion(instance, buttonNodes, warnings);
+  if (!applied) {
+    try { instance.remove(); } catch { /* no-op */ }
+    return null;
+  }
+  syncButtonContainerForWidth(instance, warnings);
+  removeConvertedSource(context, warnings);
+  return currentInstance(instance);
 }
 
 async function convertSelectionToSwitch(selection, warnings) {
@@ -9494,6 +10712,12 @@ async function handleConvertTo(target, resultType = 'convert-result', options = 
         affected = [button];
         message = 'Converted the selection to an A1 Button.';
       }
+    } else if (normalized === 'button-container') {
+      const buttonContainer = await convertSelectionToButtonContainer(selection, warnings);
+      if (buttonContainer) {
+        affected = [buttonContainer];
+        message = 'Converted the selection to an A1 Button Group.';
+      }
     } else if (['text-field', 'search-field', 'textarea', 'select'].includes(normalized)) {
       const field = await convertSelectionToFormField(selection, normalized, warnings);
       if (field) {
@@ -9555,7 +10779,7 @@ async function handleConvertTo(target, resultType = 'convert-result', options = 
         message = 'Converted the selection to an A1 Figure.';
       }
     } else {
-      warnings.push('Choose a supported conversion target: Page Layout, Section, Card, Stack, Grid, Heading, Body, Button, Text Field, Search Field, Textarea, Select, Switch, Radio Group, Checkbox Group, Page Nav, Tree Menu, Pagination, Tabs, Definition Item, Link, or Figure.');
+      warnings.push('Choose a supported conversion target: Page Layout, Section, Card, Stack, Grid, Heading, Body, Button, Button Container, Text Field, Search Field, Textarea, Select, Switch, Radio Group, Checkbox Group, Page Nav, Tree Menu, Pagination, Tabs, Definition Item, Link, or Figure.');
     }
   } catch (error) {
     warnings.push(error.message);
@@ -9574,6 +10798,7 @@ async function handleConvertTo(target, resultType = 'convert-result', options = 
   figma.viewport.scrollAndZoomIntoView(affected);
   figma.notify(message);
   postPluginMessage({ type: resultType, warnings, message });
+  postSelectionState();
   scheduleAutoExport();
 }
 
@@ -9618,67 +10843,302 @@ const CONVERT_TARGET_LABELS = {
   dialog: 'Dialog',
 };
 
-function defaultNodeForAddTarget(target, options = {}) {
-  const normalized = typeof target === 'string' ? target.toLowerCase() : '';
-  const id = `${normalized || 'component'}-${Date.now()}`;
-  if (normalized === 'page-layout') {
-    return {
-      id,
-      type: 'PageLayout',
-      props: { showHeader: true, showSidebar: false, showFooter: false },
-      children: [
-        { id: `${id}-section`, type: 'Section', props: { surface: 'page', padding: 'lg', contentWidth: 'lg', gap: 'md' }, children: [
-          { id: `${id}-heading`, type: 'Heading', props: { as: 'h1', type: 'display', size: 'md' }, content: { fallback: 'Page title' } },
-          { id: `${id}-body`, type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Page supporting text.' } },
-        ] },
+const ADD_TARGET_DEFAULT_TEMPLATES = {
+  'page-layout': {
+    id: '$id',
+    type: 'PageLayout',
+    props: { showHeader: true, showSidebar: false, showFooter: false },
+    children: [
+      { id: '$id-section', type: 'Section', props: { surface: 'page', padding: 'lg', contentWidth: 'lg', gap: 'md' }, children: [
+        { id: '$id-heading', type: 'Heading', props: { as: 'h1', type: 'display', size: 'md' }, content: { fallback: 'Page title' } },
+        { id: '$id-body', type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Page supporting text.' } },
+      ] },
+    ],
+  },
+  'top-header': {
+    id: '$id',
+    type: 'TopHeader',
+    props: {
+      logoText: 'A1:Figma',
+      navItems: [{ id: 'overview', label: 'Overview', icon: 'dashboard', active: true }],
+      actions: [{ id: 'settings', label: 'Settings', icon: 'settings' }],
+      loginButton: { label: 'Sign in' },
+    },
+  },
+  section: {
+    id: '$id',
+    type: 'Section',
+    props: { surface: 'page', padding: 'lg', contentWidth: 'lg', gap: 'lg' },
+    children: [
+      { id: '$id-heading', type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Section heading' } },
+      { id: '$id-body', type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Section body text.' } },
+    ],
+  },
+  card: {
+    id: '$id',
+    type: 'Card',
+    props: { icon: 'star' },
+    children: [
+      { id: '$id-heading', type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Card title' } },
+      { id: '$id-body', type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Card supporting text.' } },
+    ],
+  },
+  stack: {
+    id: '$id',
+    type: 'Stack',
+    props: { direction: 'column', gap: 'md', align: 'stretch' },
+    children: [
+      { id: '$id-body', type: 'Paragraph', props: { size: 'md' }, content: { fallback: 'Stack content' } },
+    ],
+  },
+  heading: { id: '$id', type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Add a heading' } },
+  body: { id: '$id', type: 'Paragraph', props: { size: 'md' }, content: { fallback: 'Add body text.' } },
+  button: { id: '$id', type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Button' } },
+  icon: { id: '$id', type: 'Icon', props: { name: 'star', size: 'lg' } },
+  'icon-button': { id: '$id', type: 'IconButton', props: { icon: 'settings', label: 'Settings', variant: 'secondary', size: 'md' } },
+  'button-container': {
+    id: '$id',
+    type: 'ButtonContainer',
+    props: { align: 'start' },
+    children: [
+      { id: '$id-primary', type: 'Button', props: { variant: 'primary', size: 'md' }, content: { fallback: 'Primary' } },
+      { id: '$id-secondary', type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Secondary' } },
+    ],
+  },
+  switch: { id: '$id', type: 'Switch', props: { label: 'Enable setting', size: 'comfortable' } },
+  pagination: { id: '$id', type: 'Pagination', props: { page: 1, totalPages: 5, size: 'sm' } },
+  'page-nav': {
+    id: '$id',
+    type: 'PageNav',
+    props: {
+      label: 'On this page',
+      sections: [
+        { id: 'overview', label: 'Overview', level: 1 },
+        { id: 'getting-started', label: 'Getting started', level: 1 },
+        { id: 'installation', label: 'Installation', level: 2 },
+        { id: 'configuration', label: 'Configuration', level: 2 },
+        { id: 'api-reference', label: 'API reference', level: 1 },
       ],
-    };
-  }
-  if (normalized === 'top-header') {
-    return {
-      id,
-      type: 'TopHeader',
-      props: {
-        logoText: 'A1:Figma',
-        navItems: [{ id: 'overview', label: 'Overview', icon: 'dashboard', active: true }],
-        actions: [{ id: 'settings', label: 'Settings', icon: 'settings' }],
-        loginButton: { label: 'Sign in' },
-      },
-    };
-  }
-  if (normalized === 'section') {
-    return {
-      id,
-      type: 'Section',
-      props: { surface: 'page', padding: 'lg', contentWidth: 'lg', gap: 'lg' },
-      children: [
-        { id: `${id}-heading`, type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Section heading' } },
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Section body text.' } },
+    },
+  },
+  'tree-menu': {
+    id: '$id',
+    type: 'TreeMenu',
+    props: {
+      variant: 'expanded',
+      selectedId: 'invoices',
+      expandedIds: ['account', 'billing'],
+      showExpandControls: false,
+      draggable: false,
+      items: [
+        {
+          id: 'account',
+          label: 'Account',
+          icon: 'manage_accounts',
+          children: [
+            { id: 'profile', label: 'Profile', icon: 'person' },
+            { id: 'security', label: 'Security', icon: 'lock' },
+            {
+              id: 'billing',
+              label: 'Billing',
+              icon: 'credit_card',
+              children: [
+                { id: 'invoices', label: 'Invoices', icon: 'receipt_long' },
+                { id: 'payment', label: 'Payment methods', icon: 'payment' },
+              ],
+            },
+          ],
+        },
+        { id: 'notifications', label: 'Notifications', icon: 'notifications' },
+        { id: 'integrations', label: 'Integrations', icon: 'extension' },
       ],
-    };
-  }
-  if (normalized === 'card') {
-    return {
-      id,
-      type: 'Card',
-      props: { icon: 'star' },
-      children: [
-        { id: `${id}-heading`, type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Card title' } },
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'md', color: 'muted' }, content: { fallback: 'Card supporting text.' } }
-      ]
-    };
-  }
-  if (normalized === 'stack') {
-    return {
-      id,
-      type: 'Stack',
-      props: { direction: 'column', gap: 'md', align: 'stretch' },
-      children: [
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'md' }, content: { fallback: 'Stack content' } }
-      ]
-    };
-  }
-  if (normalized === 'grid') {
+    },
+  },
+  link: { id: '$id', type: 'Link', props: { size: 'md', href: '#' }, content: { fallback: 'Add a link' } },
+  breadcrumb: {
+    id: '$id',
+    type: 'Breadcrumb',
+    props: {
+      backLabel: 'Back',
+      items: [
+        { id: 'home', label: 'Home', href: '/' },
+        { id: 'section', label: 'Section', href: '#' },
+        { id: 'current', label: 'Current page' },
+      ],
+    },
+  },
+  code: {
+    id: '$id',
+    type: 'Code',
+    props: { variant: 'block', wrapping: true, copyCode: false },
+    content: { fallback: "import { Button } from '@gtivr4/a1-design-system-react'\n\n<Button>Continue</Button>" },
+  },
+  inline: {
+    id: '$id',
+    type: 'Inline',
+    props: { inlineElement: 'all' },
+    content: { fallback: 'Example paragraph with **strong** text, `code`, and [kbd:⌘K].' },
+  },
+  banner: {
+    id: '$id',
+    type: 'Banner',
+    props: { status: 'info', title: 'Banner title' },
+    children: [
+      { id: '$id-body', type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Banner supporting text.' } },
+    ],
+  },
+  badge: { id: '$id', type: 'MessageBadge', props: { status: 'info', size: 'md', icon: 'info' }, content: { fallback: 'Badge' } },
+  blockquote: { id: '$id', type: 'Blockquote', props: { variant: 'border', cite: 'Citation' }, content: { fallback: 'Add a quote' } },
+  'definition-list': {
+    id: '$id',
+    type: 'DefinitionList',
+    props: {
+      direction: 'row',
+      size: 'md',
+      items: [
+        { id: '$id-one', label: 'Label', value: 'Value' },
+        { id: '$id-two', label: 'Another label', value: 'Another value' },
+      ],
+    },
+  },
+  'data-table': {
+    id: '$id',
+    type: 'DataTable',
+    props: {
+      zebra: true,
+      columns: [
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'status', label: 'Status' },
+        { key: 'updated', label: 'Updated' },
+      ],
+      rows: [
+        { id: '$id-row-1', name: 'Ada Lovelace', status: 'Active', updated: 'Today' },
+        { id: '$id-row-2', name: 'Grace Hopper', status: 'Pending', updated: 'Yesterday' },
+        { id: '$id-row-3', name: 'Katherine Johnson', status: 'Complete', updated: 'Jul 15' },
+      ],
+    },
+  },
+  chip: { id: '$id', type: 'ChipGroup', props: { size: 'md', behavior: 'multiple', items: [{ id: 'chip', title: 'Chip' }] } },
+  'chip-group': { id: '$id', type: 'ChipGroup', props: { size: 'md', behavior: 'multiple', items: [{ id: 'chip', title: 'Chip' }] } },
+  'empty-state': { id: '$id', type: 'MessageEmptyState', props: { scale: 'section', icon: 'inventory_2', title: 'Empty state', description: 'Add a helpful empty-state description.' } },
+  'text-field': { id: '$id', type: 'TextField', props: { label: 'Text field', hint: 'Supporting text', defaultValue: 'Value', size: 'default' } },
+  'search-field': { id: '$id', type: 'SearchField', props: { label: 'Search', defaultValue: 'Search query', size: 'default' } },
+  textarea: { id: '$id', type: 'TextareaField', props: { label: 'Textarea', hint: 'Supporting text', defaultValue: 'Textarea value', showCount: true, maxLength: 120, size: 'default' } },
+  select: { id: '$id', type: 'SelectField', props: { label: 'Select option', hint: 'Choose one option.', showValue: true, defaultValue: 'Selected value', size: 'default' } },
+  'radio-group': {
+    id: '$id',
+    type: 'RadioGroup',
+    props: {
+      label: 'Radio group',
+      defaultValue: 'one',
+      options: [
+        { value: 'one', label: 'Option one' },
+        { value: 'two', label: 'Option two' },
+      ],
+    },
+  },
+  'checkbox-group': {
+    id: '$id',
+    type: 'CheckboxGroup',
+    props: {
+      label: 'Checkbox group',
+      defaultValue: ['one'],
+      options: [
+        { value: 'one', label: 'Option one' },
+        { value: 'two', label: 'Option two' },
+      ],
+    },
+  },
+  'choice-group': {
+    id: '$id',
+    type: 'ChoiceGroup',
+    props: {
+      label: 'Choice group',
+      columns: { xs: 1, md: 3 },
+      defaultValue: 'one',
+      options: [
+        { value: 'one', label: 'Option one', subtext: 'Supporting text' },
+        { value: 'two', label: 'Option two', subtext: 'Supporting text' },
+        { value: 'three', label: 'Option three', subtext: 'Supporting text' },
+      ],
+    },
+  },
+  'segmented-control': {
+    id: '$id',
+    type: 'SegmentedControl',
+    props: {
+      size: 'md',
+      value: 'one',
+      options: [
+        { value: 'one', label: 'One' },
+        { value: 'two', label: 'Two' },
+      ],
+    },
+  },
+  tabs: {
+    id: '$id',
+    type: 'Tabs',
+    props: {
+      items: [
+        { id: 'overview', label: 'Overview' },
+        { id: 'details', label: 'Details' },
+      ],
+      value: 'overview',
+    },
+    children: [
+      { id: '$id-panel', type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Active tab panel content.' } },
+    ],
+  },
+  accordion: {
+    id: '$id',
+    type: 'Accordion',
+    props: { label: 'Accordion item', subtext: 'Optional subtext', defaultOpen: true, size: 'md' },
+    children: [
+      { id: '$id-body', type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Accordion content.' } },
+    ],
+  },
+  tooltip: { id: '$id', type: 'Tooltip', props: { content: 'Tooltip content', placement: 'top' } },
+  divider: { id: '$id', type: 'Divider', props: { variant: 'subtle', lineStyle: 'solid', size: 'xs' } },
+  menu: {
+    id: '$id',
+    type: 'Menu',
+    props: {
+      items: [
+        { id: 'open', label: 'Open', icon: 'open_in_new' },
+        { id: 'sync', label: 'Sync', icon: 'sync', active: true },
+        { id: 'divider', kind: 'divider' },
+        { id: 'delete', label: 'Delete', icon: 'delete', destructive: true },
+      ],
+    },
+  },
+  dialog: {
+    id: '$id',
+    type: 'Dialog',
+    props: {
+      title: 'Dialog title',
+      body: 'Dialog body text.',
+      size: 'md',
+      status: 'none',
+      footerActions: [
+        { id: '$id-cancel', type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Cancel' } },
+        { id: '$id-confirm', type: 'Button', props: { variant: 'primary', size: 'md' }, content: { fallback: 'Confirm' } },
+      ],
+    },
+  },
+  figure: {
+    id: '$id',
+    type: 'Figure',
+    props: {
+      alt: 'Placeholder image',
+      size: 'md',
+      aspectRatio: '16:9',
+      caption: 'Figure caption',
+    },
+  },
+};
+
+const ADD_TARGET_DEFAULT_FACTORIES = {
+  grid(id, options) {
     const responsiveColumns = normalizeResponsiveColumns(options.responsiveColumns);
     return {
       id,
@@ -9686,311 +11146,19 @@ function defaultNodeForAddTarget(target, options = {}) {
       props: { columns: responsiveColumns || 2, gap: 'md', alignItems: 'stretch' },
       children: [
         { id: `${id}-one`, type: 'Card', children: [{ id: `${id}-one-body`, type: 'Paragraph', props: { size: 'sm' }, content: { fallback: 'Grid item' } }] },
-        { id: `${id}-two`, type: 'Card', children: [{ id: `${id}-two-body`, type: 'Paragraph', props: { size: 'sm' }, content: { fallback: 'Grid item' } }] }
-      ]
-    };
-  }
-  if (normalized === 'heading') {
-    return { id, type: 'Heading', props: { as: 'h2', type: 'heading', size: 'md' }, content: { fallback: 'Add a heading' } };
-  }
-  if (normalized === 'body') {
-    return { id, type: 'Paragraph', props: { size: 'md' }, content: { fallback: 'Add body text.' } };
-  }
-  if (normalized === 'button') {
-    return { id, type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Button' } };
-  }
-  if (normalized === 'icon') {
-    return { id, type: 'Icon', props: { name: 'star', size: 'lg' } };
-  }
-  if (normalized === 'icon-button') {
-    return { id, type: 'IconButton', props: { icon: 'settings', label: 'Settings', variant: 'secondary', size: 'md' } };
-  }
-  if (normalized === 'button-container') {
-    return {
-      id,
-      type: 'ButtonContainer',
-      props: { align: 'start' },
-      children: [
-        { id: `${id}-primary`, type: 'Button', props: { variant: 'primary', size: 'md' }, content: { fallback: 'Primary' } },
-        { id: `${id}-secondary`, type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Secondary' } },
+        { id: `${id}-two`, type: 'Card', children: [{ id: `${id}-two-body`, type: 'Paragraph', props: { size: 'sm' }, content: { fallback: 'Grid item' } }] },
       ],
     };
-  }
-  if (normalized === 'switch') {
-    return { id, type: 'Switch', props: { label: 'Enable setting', size: 'comfortable' } };
-  }
-  if (normalized === 'pagination') {
-    return { id, type: 'Pagination', props: { page: 1, totalPages: 5, size: 'sm' } };
-  }
-  if (normalized === 'page-nav') {
-    return {
-      id,
-      type: 'PageNav',
-      props: {
-        label: 'On this page',
-        sections: [
-          { id: 'overview', label: 'Overview', level: 1 },
-          { id: 'getting-started', label: 'Getting started', level: 1 },
-          { id: 'installation', label: 'Installation', level: 2 },
-          { id: 'configuration', label: 'Configuration', level: 2 },
-          { id: 'api-reference', label: 'API reference', level: 1 },
-        ],
-      },
-    };
-  }
-  if (normalized === 'tree-menu') {
-    return {
-      id,
-      type: 'TreeMenu',
-      props: {
-        variant: 'expanded',
-        selectedId: 'invoices',
-        expandedIds: ['account', 'billing'],
-        showExpandControls: false,
-        draggable: false,
-        items: [
-          {
-            id: 'account',
-            label: 'Account',
-            icon: 'manage_accounts',
-            children: [
-              { id: 'profile', label: 'Profile', icon: 'person' },
-              { id: 'security', label: 'Security', icon: 'lock' },
-              {
-                id: 'billing',
-                label: 'Billing',
-                icon: 'credit_card',
-                children: [
-                  { id: 'invoices', label: 'Invoices', icon: 'receipt_long' },
-                  { id: 'payment', label: 'Payment methods', icon: 'payment' },
-                ],
-              },
-            ],
-          },
-          { id: 'notifications', label: 'Notifications', icon: 'notifications' },
-          { id: 'integrations', label: 'Integrations', icon: 'extension' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'link') {
-    return { id, type: 'Link', props: { size: 'md', href: '#' }, content: { fallback: 'Add a link' } };
-  }
-  if (normalized === 'breadcrumb') {
-    return {
-      id,
-      type: 'Breadcrumb',
-      props: {
-        backLabel: 'Back',
-        items: [
-          { id: 'home', label: 'Home', href: '/' },
-          { id: 'section', label: 'Section', href: '#' },
-          { id: 'current', label: 'Current page' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'code') {
-    return {
-      id,
-      type: 'Code',
-      props: { variant: 'block', wrapping: true, copyCode: false },
-      content: { fallback: "import { Button } from '@gtivr4/a1-design-system-react'\n\n<Button>Continue</Button>" },
-    };
-  }
-  if (normalized === 'inline') {
-    return {
-      id,
-      type: 'Inline',
-      props: { inlineElement: 'all' },
-      content: { fallback: 'Example paragraph with **strong** text, `code`, and [kbd:⌘K].' },
-    };
-  }
-  if (normalized === 'banner') {
-    return {
-      id,
-      type: 'Banner',
-      props: { status: 'info', title: 'Banner title' },
-      children: [
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Banner supporting text.' } },
-      ],
-    };
-  }
-  if (normalized === 'badge') {
-    return { id, type: 'MessageBadge', props: { status: 'info', size: 'md', icon: 'info' }, content: { fallback: 'Badge' } };
-  }
-  if (normalized === 'blockquote') {
-    return { id, type: 'Blockquote', props: { variant: 'border', cite: 'Citation' }, content: { fallback: 'Add a quote' } };
-  }
-  if (normalized === 'definition-list') {
-    return {
-      id,
-      type: 'DefinitionList',
-      props: {
-        direction: 'row',
-        size: 'md',
-        items: [
-          { id: `${id}-one`, label: 'Label', value: 'Value' },
-          { id: `${id}-two`, label: 'Another label', value: 'Another value' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'chip' || normalized === 'chip-group') {
-    return {
-      id,
-      type: 'ChipGroup',
-      props: {
-        size: 'md',
-        behavior: 'multiple',
-        items: [
-          { id: 'chip', title: 'Chip' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'bottom-sheet') {
-    return {
-      id,
-      type: 'BottomSheet',
-      props: { title: 'Filters', defaultDetent: 1 },
-      children: [
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Bottom sheet content.' } },
-      ],
-    };
-  }
-  if (normalized === 'empty-state') {
-    return { id, type: 'MessageEmptyState', props: { scale: 'section', icon: 'inventory_2', title: 'Empty state', description: 'Add a helpful empty-state description.' } };
-  }
-  if (normalized === 'text-field') {
-    return { id, type: 'TextField', props: { label: 'Text field', hint: 'Supporting text', defaultValue: 'Value', size: 'default' } };
-  }
-  if (normalized === 'search-field') {
-    return { id, type: 'SearchField', props: { label: 'Search', defaultValue: 'Search query', size: 'default' } };
-  }
-  if (normalized === 'textarea') {
-    return { id, type: 'TextareaField', props: { label: 'Textarea', hint: 'Supporting text', defaultValue: 'Textarea value', showCount: true, maxLength: 120, size: 'default' } };
-  }
-  if (normalized === 'select') {
-    return { id, type: 'SelectField', props: { label: 'Select option', hint: 'Choose one option.', showValue: true, defaultValue: 'Selected value', size: 'default' } };
-  }
-  if (normalized === 'radio-group') {
-    return {
-      id,
-      type: 'RadioGroup',
-      props: {
-        label: 'Radio group',
-        defaultValue: 'one',
-        options: [
-          { value: 'one', label: 'Option one' },
-          { value: 'two', label: 'Option two' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'checkbox-group') {
-    return {
-      id,
-      type: 'CheckboxGroup',
-      props: {
-        label: 'Checkbox group',
-        defaultValue: ['one'],
-        options: [
-          { value: 'one', label: 'Option one' },
-          { value: 'two', label: 'Option two' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'segmented-control') {
-    return {
-      id,
-      type: 'SegmentedControl',
-      props: {
-        size: 'md',
-        value: 'one',
-        options: [
-          { value: 'one', label: 'One' },
-          { value: 'two', label: 'Two' },
-        ],
-      },
-    };
-  }
-  if (normalized === 'tabs') {
-    return {
-      id,
-      type: 'Tabs',
-      props: {
-        items: [
-          { id: 'overview', label: 'Overview' },
-          { id: 'details', label: 'Details' },
-        ],
-        value: 'overview',
-      },
-      children: [
-        { id: `${id}-panel`, type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Active tab panel content.' } },
-      ],
-    };
-  }
-  if (normalized === 'accordion') {
-    return {
-      id,
-      type: 'Accordion',
-      props: { label: 'Accordion item', subtext: 'Optional subtext', defaultOpen: true, size: 'md' },
-      children: [
-        { id: `${id}-body`, type: 'Paragraph', props: { size: 'sm', color: 'muted' }, content: { fallback: 'Accordion content.' } },
-      ],
-    };
-  }
-  if (normalized === 'tooltip') {
-    return { id, type: 'Tooltip', props: { content: 'Tooltip content', placement: 'top' } };
-  }
-  if (normalized === 'divider') {
-    return { id, type: 'Divider', props: { variant: 'subtle', lineStyle: 'solid', size: 'xs' } };
-  }
-  if (normalized === 'menu') {
-    return {
-      id,
-      type: 'Menu',
-      props: {
-        items: [
-          { id: 'open', label: 'Open', icon: 'open_in_new' },
-          { id: 'sync', label: 'Sync', icon: 'sync', active: true },
-          { id: 'divider', kind: 'divider' },
-          { id: 'delete', label: 'Delete', icon: 'delete', destructive: true },
-        ],
-      },
-    };
-  }
-  if (normalized === 'dialog') {
-    return {
-      id,
-      type: 'Dialog',
-      props: {
-        title: 'Dialog title',
-        body: 'Dialog body text.',
-        size: 'md',
-        status: 'none',
-        footerActions: [
-          { id: `${id}-cancel`, type: 'Button', props: { variant: 'secondary', size: 'md' }, content: { fallback: 'Cancel' } },
-          { id: `${id}-confirm`, type: 'Button', props: { variant: 'primary', size: 'md' }, content: { fallback: 'Confirm' } },
-        ],
-      },
-    };
-  }
-  if (normalized === 'figure') {
-    return {
-      id,
-      type: 'Figure',
-      props: {
-        alt: 'Placeholder image',
-        size: 'md',
-        aspectRatio: '16:9',
-        caption: 'Figure caption'
-      }
-    };
-  }
-  return null;
+  },
+};
+
+function defaultNodeForAddTarget(target, options = {}) {
+  const normalized = typeof target === 'string' ? target.toLowerCase() : '';
+  const id = `${normalized || 'component'}-${Date.now()}`;
+  const factory = ADD_TARGET_DEFAULT_FACTORIES[normalized];
+  if (factory) return factory(id, options || {});
+  const template = ADD_TARGET_DEFAULT_TEMPLATES[normalized];
+  return template ? addDefaultTemplateWithId(template, id) : null;
 }
 
 function addInsertionContext(selection) {
@@ -10099,10 +11267,10 @@ const ADD_TARGET_COMPONENT_NAMES = {
   badge: 'Badge',
   chip: 'Chip',
   'chip-group': 'Chip Group',
-  'bottom-sheet': 'Bottom Sheet',
   blockquote: 'Blockquote',
   code: 'Code',
   inline: 'Inline',
+  'data-table': 'Data Table',
   'definition-list': 'Definition List',
   'empty-state': 'Empty State',
   'text-field': 'Text Field',
@@ -10112,6 +11280,7 @@ const ADD_TARGET_COMPONENT_NAMES = {
   switch: 'Switch',
   'radio-group': 'Radio Group',
   'checkbox-group': 'Checkbox Group',
+  'choice-group': 'Choice Group',
   'page-nav': 'Page Nav',
   'tree-menu': 'Tree Menu',
   'button-container': 'Button Container',
@@ -10143,6 +11312,7 @@ async function applyStarterPropsToAddedInstance(target, instance, node, warnings
   if (target === 'blockquote') return applyBlockquote(instance, node, warnings);
   if (target === 'code') return applyCode(instance, node, warnings);
   if (target === 'inline') return applyInline(instance, node, warnings);
+  if (target === 'data-table') return applyDataTable(instance, node, warnings);
   if (target === 'definition-list') return applyDefinitionList(instance, node, warnings);
   if (target === 'empty-state') return applyEmptyState(instance, node, warnings);
   if (target === 'text-field') return applyTextField(instance, node, warnings);
@@ -10152,6 +11322,7 @@ async function applyStarterPropsToAddedInstance(target, instance, node, warnings
   if (target === 'switch') return applySwitch(instance, node, warnings);
   if (target === 'radio-group') return applyRadioGroup(instance, node, warnings);
   if (target === 'checkbox-group') return applyCheckboxGroup(instance, node, warnings);
+  if (target === 'choice-group') return applyChoiceGroup(instance, node, warnings);
   if (target === 'page-nav') return applyPageNav(instance, node, warnings);
   if (target === 'tree-menu') return applyTreeMenu(instance, node, warnings);
   if (target === 'button-container') return applyButtonContainer(instance, { ...node, children: [] }, warnings);
@@ -10220,6 +11391,19 @@ async function handleAddComponent(target, options = {}) {
   scheduleAutoExport();
 }
 
+function contextualGridBreakpoint(grid, explicitPrimary) {
+  if (A1_BREAKPOINTS.includes(explicitPrimary)) return explicitPrimary;
+  // A selected Grid inside a rendered breakpoint preview can carry stale local
+  // plugin metadata from an earlier edit. Prefer the surrounding preview/root
+  // breakpoint so changing `{ md: 3 }` updates the md preview, `{ xl: 4 }`
+  // updates the xl preview, etc.
+  for (let current = grid && grid.parent; current; current = current.parent) {
+    const breakpoint = readBreakpointData(current);
+    if (breakpoint) return breakpoint;
+  }
+  return readBreakpointData(grid) || breakpointForWidth(grid && grid.width, 'md');
+}
+
 function handleApplyGridBreakpoints(options = {}) {
   const warnings = [];
   const responsiveColumns = normalizeResponsiveColumns(options.responsiveColumns);
@@ -10232,7 +11416,7 @@ function handleApplyGridBreakpoints(options = {}) {
   const grids = [];
   if (typeof options.gridNodeId === 'string' && options.gridNodeId) {
     try {
-      const explicitGrid = liveNode(figma.getNodeById(options.gridNodeId));
+      const explicitGrid = liveNode(resolveNodeById(options.gridNodeId));
       if (isGridFrame(explicitGrid)) grids.push(explicitGrid);
     } catch {
       // Fall back to the current selection below.
@@ -10257,9 +11441,7 @@ function handleApplyGridBreakpoints(options = {}) {
 
   const names = [];
   for (const grid of unique) {
-    const breakpoint = A1_BREAKPOINTS.includes(options.primary)
-      ? options.primary
-      : breakpointForWidth(grid.width, 'md');
+    const breakpoint = contextualGridBreakpoint(grid, options.primary);
     const columns = responsiveColumnsAt(responsiveColumns, breakpoint) || Object.values(responsiveColumns)[0] || 1;
     const beforeName = grid.name || 'Grid';
     try {
@@ -10411,101 +11593,20 @@ function auditA1TextStyleName(styleName) {
   return Object.keys(A1_FIGMA_TEXT_STYLE_KEYS || {}).some((key) => key.toLowerCase() === name);
 }
 
-const AUDIT_SEVERITY = {
-  blocker: { label: 'JSON blocker', weight: 15 },
-  major: { label: 'Major translation issue', weight: 4 },
-  minor: { label: 'Minor system hygiene', weight: 1 },
-  advisory: { label: 'AutoFix suggestion', weight: 0.5 },
-};
-
-function normalizeAuditIssueKey(value) {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/"[^"]+"/g, '"…"')
-    .replace(/\b\d+(\.\d+)?\b/g, '#')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function auditIssueSeverity(issue) {
-  const text = String(issue || '').toLowerCase();
-  if (text.includes('missing figma component') || text.includes('visible placeholder')) return 'blocker';
-  if (text.includes('unsupported') || text.includes('not portable a1 json') || text.includes('could not be translated') || text.includes('cannot be represented')) return 'major';
-  if (text.includes('can be improved') || text.includes('autofix') || text.includes('nearest a1')) return 'advisory';
-  return 'minor';
-}
-
-function auditIssueBucket(report, text, options = {}) {
-  if (!report.issueGroups || typeof report.issueGroups !== 'object') report.issueGroups = {};
-  const severity = AUDIT_SEVERITY[options.severity] ? options.severity : auditIssueSeverity(text);
-  const groupKey = options.groupKey || `${severity}:${normalizeAuditIssueKey(text)}`;
-  if (!report.issueGroups[groupKey]) {
-    report.issueGroups[groupKey] = {
-      key: groupKey,
-      severity,
-      category: options.category || 'A1 compatibility',
-      text,
-      count: 0,
-    };
-  }
-  const group = report.issueGroups[groupKey];
-  group.count += 1;
-  // If later calls mark the same issue family as more severe, keep the larger
-  // impact. This prevents a broad family from being under-scored by an early
-  // minor sample.
-  if ((AUDIT_SEVERITY[severity]?.weight || 0) > (AUDIT_SEVERITY[group.severity]?.weight || 0)) group.severity = severity;
-  return group;
-}
-
-function auditScoreFromIssueGroups(report) {
-  const groups = Object.values(report.issueGroups || {});
-  const capBySeverity = { blocker: 45, major: 20, minor: 7, advisory: 3 };
-  const totals = { blocker: 0, major: 0, minor: 0, advisory: 0 };
-  for (const group of groups) {
-    const severity = AUDIT_SEVERITY[group.severity] ? group.severity : 'minor';
-    const weight = AUDIT_SEVERITY[severity].weight;
-    // Repetition matters a little for confidence/scale, but not linearly:
-    // ten identical text-color fixes should feel like one pattern, not ten
-    // unrelated failures.
-    const repeatFactor = 1 + Math.min(0.25, Math.log2(Math.max(1, group.count)) * 0.04);
-    totals[severity] += weight * repeatFactor;
-  }
-  const deduction = Object.keys(totals).reduce((sum, severity) => sum + Math.min(capBySeverity[severity], totals[severity]), 0);
-  return Math.max(0, Math.min(100, Math.round(100 - deduction)));
-}
-
-function auditA1CoverageCount(report) {
-  return (Number(report.supportedComponents) || 0) + (Number(report.supportedTextStyles) || 0);
-}
-
-function auditCoverageScoreCap(report) {
-  if (!report || !report.nodeCount) return 100;
-  const coverage = auditA1CoverageCount(report);
-  if (coverage === 0) return 55;
-  if ((Number(report.supportedComponents) || 0) === 0 && report.nodeCount > 8) return 82;
-  return 100;
-}
-
 function addAuditIssue(report, nodeOrIssue, maybeIssue, options = {}) {
   const issue = maybeIssue === undefined ? nodeOrIssue : maybeIssue;
   if (!issue) return;
   const text = String(issue);
   const node = maybeIssue === undefined ? null : liveNode(nodeOrIssue);
-  const group = auditIssueBucket(report, text, options);
-  report.issues.push(text);
-  if (Array.isArray(report.issueItems)) {
-    report.issueItems.push({
-      id: `audit-issue-${report.issueItems.length + 1}`,
-      text,
-      nodeId: node && typeof node.id === 'string' ? node.id : '',
-      nodeName: node ? auditNodeName(node) : '',
-      severity: group.severity,
-      severityLabel: AUDIT_SEVERITY[group.severity]?.label || 'Issue',
-      category: group.category,
-      groupKey: group.key,
-      metricKeys: Array.isArray(options.metricKeys) ? options.metricKeys : [],
-    });
-  }
+  return addSharedAuditIssue(report, {
+    text,
+    nodeId: node && typeof node.id === 'string' ? node.id : '',
+    nodeName: node ? auditNodeName(node) : '',
+    severity: options.severity,
+    category: options.category,
+    groupKey: options.groupKey,
+    metricKeys: options.metricKeys,
+  });
 }
 
 function addAuditPaintIssues(report, node, propertyName) {
@@ -10689,23 +11790,7 @@ function findExistingAuditReportCard() {
 
 function auditSelection(selection) {
   const roots = Array.isArray(selection) && selection.length ? selection : [figma.currentPage];
-  const report = {
-    auditedRoots: roots.length,
-    nodeCount: 0,
-    supportedComponents: 0,
-    supportedTextStyles: 0,
-    missingColorValues: 0,
-    missingTextStyles: 0,
-    unsupportedElements: 0,
-    missingComponents: 0,
-    autoFixOpportunities: 0,
-    issues: [],
-    issueItems: [],
-    issueGroups: {},
-    issueGroupCount: 0,
-    warnings: [],
-    ignoredLayers: 0,
-  };
+  const report = createSharedAuditReport(roots.length);
   if (!selection || selection.length === 0) {
     report.warnings.push('Nothing was selected, so the current Figma page was audited.');
   }
@@ -10848,21 +11933,8 @@ function auditSelection(selection) {
       metricKeys: ['a1-components', 'text-styles', 'element-support'],
     });
   }
-  // Score by issue family and severity, not by raw row count. This keeps ten
-  // repeated text-color misses from reading as ten independent design-system
-  // failures while still making untranslated/missing JSON model pieces hurt.
-  report.issueGroupCount = Object.keys(report.issueGroups || {}).length;
-  report.score = Math.min(auditScoreFromIssueGroups(report), auditCoverageScoreCap(report));
-  for (const item of report.issueItems) {
-    const group = report.issueGroups && report.issueGroups[item.groupKey];
-    if (group) item.groupCount = group.count;
-  }
-  report.grade = report.score >= 95 ? 'A'
-    : report.score >= 85 ? 'B'
-      : report.score >= 75 ? 'C'
-        : report.score >= 65 ? 'D'
-          : 'F';
-  return report;
+  // Shared finalization keeps scoring and issue metadata in one place.
+  return finalizeSharedAuditReport(report);
 }
 
 function auditSelectionBounds(selection) {
@@ -10881,52 +11953,6 @@ function auditSelectionBounds(selection) {
   const maxX = Math.max(...boxes.map((box) => box.x + box.width));
   const maxY = Math.max(...boxes.map((box) => box.y + box.height));
   return { x: minX, y: minY, right: maxX, bottom: maxY };
-}
-
-function auditReportMetrics(report) {
-  return [
-    { label: 'A1 components', value: report.supportedComponents, passes: report.supportedComponents > 0, filterKey: 'a1-components' },
-    { label: 'Color values', value: report.missingColorValues, passes: report.missingColorValues === 0, filterKey: 'color-values' },
-    { label: 'Text styles', value: report.missingTextStyles, passes: report.missingTextStyles === 0, filterKey: 'text-styles' },
-    { label: 'Element support', value: report.unsupportedElements, passes: report.unsupportedElements === 0, filterKey: 'element-support' },
-    { label: 'Figma components', value: report.missingComponents, passes: report.missingComponents === 0, filterKey: 'figma-components' },
-    { label: 'AutoFix', value: report.autoFixOpportunities, passes: report.autoFixOpportunities === 0, filterKey: 'autofix' },
-  ];
-}
-
-function auditReportRecommendations(report) {
-  const recommendations = [];
-  if (report.autoFixOpportunities) recommendations.push('Run AutoFix all to normalize supported text, Card, Stack, Grid, and Section issues.');
-  if (report.missingColorValues) recommendations.push('Bind raw or broken fills/strokes to valid A1 color variables before export.');
-  if (report.missingTextStyles) recommendations.push('Apply A1 text styles instead of detached typography.');
-  if (report.unsupportedElements || report.missingComponents) recommendations.push('Replace unsupported layers with A1 components or add the missing component mapping.');
-  return recommendations.slice(0, 4);
-}
-
-function auditReportSummary(report) {
-  const issueGroups = Number(report.issueGroupCount) || 0;
-  return `Audited ${report.nodeCount} layer${report.nodeCount === 1 ? '' : 's'} across ${report.auditedRoots} root${report.auditedRoots === 1 ? '' : 's'}; ${issueGroups} issue famil${issueGroups === 1 ? 'y' : 'ies'} scored.`;
-}
-
-function auditReportFindings(report) {
-  const groups = Object.values(report.issueGroups || {});
-  if (groups.length) {
-    return groups
-      .sort((a, b) => {
-        const aWeight = AUDIT_SEVERITY[a.severity]?.weight || 0;
-        const bWeight = AUDIT_SEVERITY[b.severity]?.weight || 0;
-        if (aWeight !== bWeight) return bWeight - aWeight;
-        return (b.count || 0) - (a.count || 0);
-      })
-      .slice(0, 8)
-      .map((group) => {
-        const label = AUDIT_SEVERITY[group.severity]?.label || 'Issue';
-        const count = Number(group.count) || 1;
-        const countSuffix = count > 1 ? ` (${count}× same pattern)` : '';
-        return `${label}: ${group.text}${countSuffix}`;
-      });
-  }
-  return (report.issues || []).slice(0, 8);
 }
 
 function auditReportProperty(instance, name, type) {
@@ -11387,6 +12413,109 @@ async function handleFixAll() {
   scheduleAutoExport();
 }
 
+async function handleTidyUp() {
+  const warnings = [];
+  const affected = new Map();
+  const remember = (node) => {
+    const current = liveNode(node);
+    if (current && current.id) affected.set(current.id, current);
+  };
+
+  const originalSelection = [...figma.currentPage.selection];
+  const pageNodes = [];
+  try {
+    pageNodes.push(...figma.currentPage.children);
+    pageNodes.push(...figma.currentPage.findAll((node) => !isAuditReportNode(node)));
+  } catch (error) {
+    warnings.push(`Current page could not be scanned completely: ${error.message}`);
+  }
+
+  const seen = new Set();
+  for (const nodeRef of pageNodes) {
+    const node = liveNode(nodeRef);
+    if (!node || seen.has(node.id) || isAuditReportNode(node)) continue;
+    seen.add(node.id);
+    try {
+      const breakpoint = readBreakpointData(node);
+      if (breakpoint && node.parent && node.parent.type === 'PAGE') {
+        applyBreakpointToTree(node, breakpoint, warnings);
+        remember(node);
+        continue;
+      }
+
+      if (node.type === 'INSTANCE') {
+        const componentName = registeredSetName(node);
+        if (componentName === 'Card') {
+          const synced = syncCardIconPositionForWidth(node, warnings);
+          syncLayoutWidthMode(synced, layoutWidthMode(synced), warnings, 'Card');
+          syncLayoutHeightMode(synced, layoutHeightMode(synced), warnings, 'Card');
+          remember(synced);
+        } else if (componentName === 'Breadcrumb') {
+          remember(syncBreadcrumbBackButtonForWidth(node, warnings));
+        } else if (componentName === 'Button Container') {
+          remember(syncButtonContainerForWidth(node, warnings));
+        } else if (componentName === 'Choice Group') {
+          syncChoiceGroupTileSizing(node, warnings);
+          remember(node);
+        } else if (componentName === 'Button') {
+          const parentButtonContainer = buttonContainerAncestor(node);
+          if (parentButtonContainer) {
+            remember(syncButtonContainerForWidth(parentButtonContainer, warnings));
+          } else {
+            syncButtonFullWidthMetadata(node, buttonWidthMode(node), warnings);
+            remember(node);
+          }
+        } else if (componentName === 'Data Table') {
+          syncLayoutWidthMode(node, layoutWidthMode(node), warnings, 'Data Table');
+          syncLayoutHeightMode(node, layoutHeightMode(node), warnings, 'Data Table');
+          remember(node);
+        } else if (componentName === 'Section') {
+          const suggestion = sectionSuggestion(node);
+          if (suggestion && suggestion.fixes && suggestion.fixes.length) applySectionSuggestion(node, suggestion, warnings);
+          syncLayoutWidthMode(node, layoutWidthMode(node), warnings, 'Section');
+          syncLayoutHeightMode(node, layoutHeightMode(node), warnings, 'Section');
+          remember(node);
+        }
+      } else if (isStackFrame(node)) {
+        const suggestion = stackSuggestion(node);
+        if (suggestion && suggestion.fixes && suggestion.fixes.length) await applyStackSuggestion(node, suggestion, warnings);
+        syncStackPropsName(node);
+        syncLayoutWidthMode(node, layoutWidthMode(node), warnings, 'Stack');
+        syncLayoutHeightMode(node, layoutHeightMode(node), warnings, 'Stack');
+        remember(node);
+      } else if (isGridFrame(node)) {
+        const responsive = readResponsiveGridColumns(node);
+        if (responsive) applyResponsiveGridColumnsForBreakpoint(node, breakpointForNode(node, 'md'), warnings);
+        const suggestion = gridSuggestion(node);
+        if (suggestion && suggestion.fixes && suggestion.fixes.length) await applyGridSuggestion(node, suggestion, warnings);
+        syncGridWidthMode(node, gridWidthMode(node), warnings);
+        syncGridHeightMode(node, gridHeightMode(node), warnings);
+        remember(node);
+      }
+    } catch (error) {
+      warnings.push(`"${auditNodeName(node)}" could not be tidied: ${error.message}`);
+    }
+  }
+
+  const affectedNodes = [...affected.values()].filter((node) => liveNode(node));
+  try {
+    figma.currentPage.selection = originalSelection.map((node) => liveNode(node)).filter(Boolean);
+  } catch {
+    // Preserve the successful tidy even if a previous selection node vanished.
+  }
+
+  const count = affectedNodes.length;
+  const message = count
+    ? `Tidied ${count} layer${count === 1 ? '' : 's'} on the current page.`
+    : 'No page-level tidy fixes were needed.';
+  if (count) {
+    figma.notify(message);
+    scheduleAutoExport();
+  }
+  postPluginMessage({ type: 'tidy-up-result', warnings, count, message });
+  postSelectionState();
+}
+
 async function handleFixAllText() {
   const selection = figma.currentPage.selection;
   if (!selection.length) {
@@ -11450,15 +12579,83 @@ async function handleImport(text, assets = [], targetParent = figma.currentPage,
     postError('Not valid JSON: ' + error.message);
     return null;
   }
-  const nodes = [];
-  collectSupportedNodes(data, nodes);
-  if (nodes.length === 0) {
+  const allNodes = [];
+  collectSupportedNodes(data, allNodes);
+  if (allNodes.length === 0) {
     postError(`No supported component nodes found. Supported: ${SUPPORTED_COMPONENT_MESSAGE}.`);
     return null;
   }
 
   const warnings = [];
   const instances = [];
+  const previousActionTargetImportContext = activeActionTargetImportContext;
+  const actionTargetTypes = new Map();
+  const actionTriggerNames = new Map();
+  const scanImportActions = (value) => {
+    if (Array.isArray(value)) {
+      value.forEach(scanImportActions);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+    const actions = value.actions && typeof value.actions === 'object' ? value.actions : null;
+    const clickActions = [
+      actions && actions.onClick && typeof actions.onClick === 'object' ? actions.onClick : null,
+      value.action && typeof value.action === 'object' ? value.action : null,
+    ].filter(Boolean);
+    for (const action of clickActions) {
+      const targetType = ACTION_TRIGGER_TYPE_BY_ACTION[action.type];
+      if (targetType && typeof action.target === 'string' && action.target) {
+        actionTargetTypes.set(action.target, targetType);
+        if (!actionTriggerNames.has(action.target)) {
+          actionTriggerNames.set(action.target, actionTriggerDisplayNameFromSource(value));
+        }
+      }
+    }
+    for (const key of ['children', 'nodes', 'regions', 'props', 'actions']) scanImportActions(value[key]);
+    scanImportActions(value.page);
+    scanImportActions(value.layout);
+  };
+  scanImportActions(data);
+  const actionTargetNodes = new Map();
+  const scanImportTargetNodes = (value) => {
+    if (Array.isArray(value)) {
+      value.forEach(scanImportTargetNodes);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+    if (
+      typeof value.id === 'string' &&
+      typeof value.type === 'string' &&
+      actionTargetTypes.get(value.id) === value.type &&
+      !actionTargetNodes.has(value.id)
+    ) {
+      actionTargetNodes.set(value.id, value);
+    }
+    for (const key of ['children', 'nodes', 'regions', 'props', 'actions']) scanImportTargetNodes(value[key]);
+    scanImportTargetNodes(value.page);
+    scanImportTargetNodes(value.layout);
+  };
+  scanImportTargetNodes(data);
+  for (const node of allNodes) {
+    if (!node || typeof node !== 'object' || typeof node.id !== 'string') continue;
+    const targetType = actionTargetTypes.get(node.id);
+    if (targetType && node.type === targetType && !actionTargetNodes.has(node.id)) actionTargetNodes.set(node.id, node);
+  }
+  activeActionTargetImportContext = {
+    targetTypes: actionTargetTypes,
+    targetNodes: actionTargetNodes,
+    triggerNames: actionTriggerNames,
+    targetLayers: new Map(),
+    renderedLayers: new Map(),
+    pendingTriggers: [],
+  };
+  const nodes = allNodes.filter((node) => !(
+    activeActionTargetImportContext &&
+    node &&
+    typeof node === 'object' &&
+    typeof node.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(node.id)
+  ));
   if (replaceTargetChildren && targetParent && 'children' in targetParent) {
     for (const child of [...targetParent.children]) child.remove();
   }
@@ -11475,35 +12672,69 @@ async function handleImport(text, assets = [], targetParent = figma.currentPage,
     : [''];
   let x = Math.round(figma.viewport.center.x);
   const y = Math.round(figma.viewport.center.y);
-  for (const breakpoint of renderBreakpoints) {
-    activeRenderBreakpoint = breakpoint;
-    try {
-      for (const node of nodes) {
-        const instance = await renderImportedNode(node, warnings);
-        if (breakpoint) {
-          instance.setPluginData(A1_BREAKPOINT_KEY, breakpoint);
-          instance.name = `${instance.name} · ${breakpoint}`;
-          const width = A1_BREAKPOINT_WIDTHS[breakpoint];
-          if (width && typeof instance.resizeWithoutConstraints === 'function') {
-            try {
-              instance.resizeWithoutConstraints(width, instance.height);
-            } catch (error) {
-              warnings.push(`${instance.name} could not be resized to the ${breakpoint} preview width (${width}px): ${error.message}`);
+  try {
+    for (const breakpoint of renderBreakpoints) {
+      activeRenderBreakpoint = breakpoint;
+      try {
+        for (const node of nodes) {
+          const instance = await renderImportedNode(node, warnings);
+          if (breakpoint) {
+            instance.setPluginData(A1_BREAKPOINT_KEY, breakpoint);
+            instance.name = `${instance.name} · ${breakpoint}`;
+            const width = A1_BREAKPOINT_WIDTHS[breakpoint];
+            if (width && typeof instance.resizeWithoutConstraints === 'function') {
+              try {
+                instance.resizeWithoutConstraints(width, instance.height);
+              } catch (error) {
+                warnings.push(`${instance.name} could not be resized to the ${breakpoint} preview width (${width}px): ${error.message}`);
+              }
             }
           }
+          if (targetParent === figma.currentPage) {
+            instance.x = x;
+            instance.y = y;
+          }
+          x += Math.round(instance.width) + 24; // gap/lg between rendered instances
+          appendImportedChild(targetParent, instance, node, warnings);
+          instances.push(instance);
         }
-        if (targetParent === figma.currentPage) {
-          instance.x = x;
-          instance.y = y;
-        }
-        x += Math.round(instance.width) + 24; // gap/lg between rendered instances
-        targetParent.appendChild(instance);
-        applyStackGrow(targetParent, instance, node, warnings);
-        instances.push(instance);
+      } finally {
+        activeRenderBreakpoint = '';
       }
-    } finally {
-      activeRenderBreakpoint = '';
     }
+    for (const targetNode of activeActionTargetImportContext.targetNodes.values()) {
+      const instance = await renderImportedNode(targetNode, warnings);
+      instance.x = x;
+      instance.y = y;
+      x += Math.round(instance.width) + 24;
+      figma.currentPage.appendChild(instance);
+      instances.push(instance);
+    }
+    for (const { trigger, action } of activeActionTargetImportContext.pendingTriggers) {
+      const targetType = ACTION_TRIGGER_TYPE_BY_ACTION[action.type];
+      let target = activeActionTargetImportContext.targetLayers.get(action.target);
+      if (!target) {
+        try {
+          target = figma.currentPage.findOne((node) => (
+            node.type === 'INSTANCE' &&
+            registeredSetName(node) === targetType &&
+            typeof node.getPluginData === 'function' &&
+            node.getPluginData('a1-json-id') === action.target
+          ));
+        } catch {
+          target = null;
+        }
+      }
+      if (!target) {
+        warnings.push(`A rendered trigger targets ${targetType} "${action.target}", but that target was not rendered on the canvas.`);
+        continue;
+      }
+      setActionTriggerTarget(trigger, targetType, target.id);
+      syncActionTargetTriggerNameMetadata(target, trigger);
+    }
+  } finally {
+    activeRenderBreakpoint = '';
+    activeActionTargetImportContext = previousActionTargetImportContext;
   }
   figma.currentPage.selection = instances;
   figma.viewport.scrollAndZoomIntoView(instances);
@@ -11589,6 +12820,16 @@ function applyResponsiveGridColumnsForBreakpoint(grid, breakpoint, warnings) {
   return true;
 }
 
+function applyChoiceGroupGridColumnsForBreakpoint(instance, breakpoint, warnings) {
+  instance = currentInstance(instance);
+  const { grid } = choiceGroupTileContainer(instance);
+  if (!grid) return false;
+  const responsiveColumns = readResponsiveGridColumns(grid);
+  if (!responsiveColumns) return false;
+  applyChoiceGroupGridColumns(instance, responsiveColumns, warnings, breakpoint);
+  return true;
+}
+
 function applyBreakpointToTree(root, breakpoint, warnings) {
   if (!root || !A1_BREAKPOINTS.includes(breakpoint)) return;
   try {
@@ -11612,6 +12853,11 @@ function applyBreakpointToTree(root, breakpoint, warnings) {
           const assignments = {};
           queueComponentProperty(live, assignments, 'Breakpoint', breakpoint, 'VARIANT', warnings, `${componentName} breakpoint preview`);
           applyQueuedProperties(live, assignments, warnings, `${componentName} properties`);
+        } else if (componentName === 'Choice Group') {
+          const gridBreakpoint = breakpointForSyncedNode(live, root, breakpoint);
+          applyChoiceGroupGridColumnsForBreakpoint(live, gridBreakpoint, warnings);
+        } else if (componentName === 'Button Container') {
+          syncButtonContainerForWidth(live, warnings);
         }
       } else if (isGridFrame(live)) {
         const gridBreakpoint = breakpointForSyncedNode(live, root, breakpoint);
@@ -11749,39 +12995,428 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
 
 const PAGE_SYNC_NAMESPACE = 'a1_page_sync';
 const PAGE_SYNC_LINK_KEY = 'link-id';
+const PATTERN_SYNC_NAMESPACE = 'a1_pattern_sync';
+const PATTERN_SYNC_ID_KEY = 'pattern-id';
+const PATTERN_SYNC_NAME_KEY = 'pattern-name';
+const PATTERN_SYNC_DESCRIPTION_KEY = 'pattern-description';
+const PATTERN_SYNC_CATEGORY_KEY = 'pattern-category';
 
-function linkedRootFor(link) {
-  const expectedId = link && link.figmaRootNodeId;
-  if (expectedId) {
-    try {
-      const byId = figma.getNodeById(expectedId);
-      if (byId && byId.type === 'FRAME' && byId.getPluginData(PAGE_SYNC_LINK_KEY) === link.linkId) return byId;
-    } catch { /* Figma can retain an instance-subnode id after changes. */ }
+function patternRecordFromMessage(pattern) {
+  if (!pattern || typeof pattern !== 'object' || typeof pattern.json !== 'string') {
+    throw new Error('Choose an A1 pattern first.');
   }
-  return figma.currentPage.findOne((node) => {
+  let definition;
+  try {
+    definition = JSON.parse(pattern.json);
+  } catch (error) {
+    throw new Error('The selected pattern JSON is invalid: ' + error.message);
+  }
+  const meta = definition && definition.pattern && typeof definition.pattern === 'object'
+    ? definition.pattern
+    : null;
+  if (!meta || typeof meta.id !== 'string' || !Array.isArray(meta.nodes)) {
+    throw new Error('The selected A1 pattern does not include pattern.nodes.');
+  }
+  return {
+    id: meta.id,
+    name: typeof meta.name === 'string' && meta.name.trim() ? meta.name.trim() : (pattern.name || meta.id),
+    description: typeof meta.description === 'string' ? meta.description : (pattern.description || ''),
+    category: typeof meta.category === 'string' && meta.category.trim() ? meta.category.trim() : (pattern.category || 'pattern'),
+    definition,
+    nodes: meta.nodes,
+  };
+}
+
+function patternComponentSetName(record) {
+  return `Pattern / ${record.name || record.id || 'Untitled'}`;
+}
+
+function isPatternComponentSet(node, patternId = '') {
+  try {
+    return node && node.type === 'COMPONENT_SET' &&
+      typeof node.getSharedPluginData === 'function' &&
+      (!patternId || node.getSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_ID_KEY) === patternId);
+  } catch {
+    return false;
+  }
+}
+
+function patternSetForId(patternId) {
+  if (!patternId) return null;
+  return figma.currentPage.findOne((node) => isPatternComponentSet(node, patternId));
+}
+
+function tagPatternNode(node, record, breakpoint = '') {
+  if (!node || typeof node.setSharedPluginData !== 'function') return;
+  node.setSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_ID_KEY, record.id || '');
+  node.setSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_NAME_KEY, record.name || '');
+  node.setSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_DESCRIPTION_KEY, record.description || '');
+  node.setSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_CATEGORY_KEY, record.category || 'pattern');
+  if (breakpoint) node.setPluginData(A1_BREAKPOINT_KEY, breakpoint);
+}
+
+function patternNodeJsonId(node) {
+  try {
+    return node && typeof node.getPluginData === 'function' ? node.getPluginData('a1-json-id') : '';
+  } catch {
+    return '';
+  }
+}
+
+function patternNodePath(root, node) {
+  const parts = [];
+  let current = node;
+  while (current && current !== root && current.parent && current.parent !== figma.currentPage) {
+    const parent = current.parent;
+    const siblings = parent && 'children' in parent ? parent.children : [];
+    const sameNameIndex = siblings.filter((sibling) => sibling.name === current.name).indexOf(current);
+    parts.unshift(`${String(current.name || current.type || 'Layer').replace(/\s+/g, ' ').trim()}${sameNameIndex > 0 ? ` ${sameNameIndex + 1}` : ''}`);
+    current = parent;
+  }
+  return parts.join(' / ');
+}
+
+function patternPropertyLabel(root, node, fallback = 'Layer') {
+  const id = patternNodeJsonId(node);
+  if (id) return id;
+  const path = patternNodePath(root, node);
+  if (path) return path;
+  return String(node && node.name || fallback || 'Layer');
+}
+
+function patternPropertyName(prefix, root, node, fallback) {
+  const raw = `${prefix} / ${patternPropertyLabel(root, node, fallback)}`
+    .replace(/\s+/g, ' ')
+    .trim();
+  return raw.slice(0, 100);
+}
+
+function hasAncestorOfTypeBefore(node, root, type) {
+  for (let current = node && node.parent; current && current !== root; current = current.parent) {
+    if (current.type === type) return true;
+  }
+  return false;
+}
+
+function componentMainId(instance) {
+  try {
+    return instance && instance.mainComponent && instance.mainComponent.id ? instance.mainComponent.id : '';
+  } catch {
+    return '';
+  }
+}
+
+function componentPreferredSwapValues(instance) {
+  try {
+    const main = instance && instance.mainComponent;
+    const parent = main && main.parent;
+    if (parent && parent.type === 'COMPONENT_SET' && parent.key) return [{ type: 'COMPONENT_SET', key: parent.key }];
+    if (main && main.key) return [{ type: 'COMPONENT', key: main.key }];
+  } catch {
+    // Local components may not have published keys; the default component id is enough.
+  }
+  return undefined;
+}
+
+function findPatternPropertyKey(owner, name, type) {
+  try {
+    const definitions = owner.componentPropertyDefinitions || {};
+    const wanted = canonicalKey(name);
+    for (const key of Object.keys(definitions)) {
+      if (canonicalKey(plainKey(key)) !== wanted) continue;
+      if (type && definitions[key].type !== type) continue;
+      return key;
+    }
+  } catch {
+    // Unsupported in older Figma runtimes.
+  }
+  return '';
+}
+
+function ensurePatternProperty(owner, name, type, defaultValue, warnings, options = {}) {
+  const existing = findPatternPropertyKey(owner, name, type);
+  if (existing) return existing;
+  if (!owner || typeof owner.addComponentProperty !== 'function') return '';
+  try {
+    return owner.addComponentProperty(name, type, defaultValue, options);
+  } catch (error) {
+    warnings.push(`Pattern property "${name}" could not be created: ${error.message}`);
+    return '';
+  }
+}
+
+function setPatternPropertyReference(node, field, propertyKey, warnings, description) {
+  if (!node || !propertyKey) return false;
+  try {
+    node.componentPropertyReferences = {
+      ...(node.componentPropertyReferences || {}),
+      [field]: propertyKey,
+    };
+    return true;
+  } catch (error) {
+    warnings.push(`${description || node.name || 'Pattern layer'} could not be exposed as a Pattern property: ${error.message}`);
+    return false;
+  }
+}
+
+function wirePatternComponentProperties(componentSet, warnings) {
+  if (!componentSet || componentSet.type !== 'COMPONENT_SET') return;
+  const variants = componentSet.children.filter((child) => child.type === 'COMPONENT');
+  let textCount = 0;
+  let exposedInstanceCount = 0;
+  let swapCount = 0;
+
+  for (const variant of variants) {
+    const texts = variant.findAll((node) => {
+      if (node.type !== 'TEXT' || node.visible === false) return false;
+      return Boolean(patternNodeJsonId(node));
+    });
+    for (const text of texts) {
+      const name = patternPropertyName('Text', variant, text, 'Text');
+      const key = ensurePatternProperty(componentSet, name, 'TEXT', text.characters || '', warnings);
+      if (setPatternPropertyReference(text, 'characters', key, warnings, `Text "${text.name}"`)) textCount += 1;
+    }
+
+    const instances = variant.findAll((node) => {
+      if (node.type !== 'INSTANCE' || node.visible === false) return false;
+      if (hasAncestorOfTypeBefore(node, variant, 'INSTANCE')) return false;
+      return Boolean(registeredSetName(node) || componentSetName(node) || patternNodeJsonId(node));
+    });
+    for (const instance of instances) {
+      try {
+        instance.isExposedInstance = true;
+        exposedInstanceCount += 1;
+      } catch (error) {
+        warnings.push(`Nested component "${instance.name}" could not be exposed on the Pattern instance: ${error.message}`);
+      }
+      const mainId = componentMainId(instance);
+      if (!mainId) continue;
+      const componentName = registeredSetName(instance) || componentSetName(instance) || instance.name || 'Component';
+      const name = patternPropertyName('Component', variant, instance, componentName);
+      const options = componentPreferredSwapValues(instance);
+      const key = ensurePatternProperty(
+        componentSet,
+        name,
+        'INSTANCE_SWAP',
+        mainId,
+        warnings,
+        options ? { preferredValues: options } : {}
+      );
+      if (setPatternPropertyReference(instance, 'mainComponent', key, warnings, `Nested component "${instance.name}"`)) swapCount += 1;
+    }
+  }
+  if (textCount || exposedInstanceCount || swapCount) {
+    warnings.push(`Pattern controls exposed ${textCount} text field${textCount === 1 ? '' : 's'}, ${exposedInstanceCount} nested component instance${exposedInstanceCount === 1 ? '' : 's'}, and ${swapCount} component swap${swapCount === 1 ? '' : 's'}.`);
+  }
+}
+
+async function renderPatternVariant(record, breakpoint, x, y, warnings) {
+  const component = figma.createComponent();
+  component.name = `Breakpoint=${breakpoint}`;
+  component.x = x;
+  component.y = y;
+  component.layoutMode = 'VERTICAL';
+  component.primaryAxisSizingMode = 'AUTO';
+  component.counterAxisSizingMode = 'FIXED';
+  component.itemSpacing = 16;
+  component.paddingLeft = 0;
+  component.paddingRight = 0;
+  component.paddingTop = 0;
+  component.paddingBottom = 0;
+  const width = A1_BREAKPOINT_WIDTHS[breakpoint] || 1200;
+  try { component.resizeWithoutConstraints(width, 1); } catch { /* Component will keep its natural size. */ }
+  tagPatternNode(component, record, breakpoint);
+  figma.currentPage.appendChild(component);
+  const previousBreakpoint = activeRenderBreakpoint;
+  activeRenderBreakpoint = breakpoint;
+  try {
+    for (const node of record.nodes) {
+      const layer = await renderImportedNode(node, warnings);
+      appendImportedChild(component, layer, node, warnings);
+    }
+  } finally {
+    activeRenderBreakpoint = previousBreakpoint;
+  }
+  applyBreakpointToTree(component, breakpoint, warnings);
+  component.name = `Breakpoint=${breakpoint}`;
+  return component;
+}
+
+async function importPatternAsComponentSet(pattern) {
+  const record = patternRecordFromMessage(pattern);
+  const warnings = [];
+  const existing = patternSetForId(record.id);
+  const x = existing && 'x' in existing ? existing.x : Math.round(figma.viewport.center.x);
+  const y = existing && 'y' in existing ? existing.y : Math.round(figma.viewport.center.y);
+  if (existing) {
+    try { existing.remove(); }
+    catch (error) { warnings.push(`Existing Pattern component set could not be replaced: ${error.message}`); }
+  }
+  const variants = [];
+  let nextX = x;
+  for (const breakpoint of A1_BREAKPOINTS) {
+    const variant = await renderPatternVariant(record, breakpoint, nextX, y, warnings);
+    variants.push(variant);
+    nextX += Math.round(variant.width) + 24;
+  }
+  let set = null;
+  try {
+    set = figma.combineAsVariants(variants, figma.currentPage);
+    set.name = patternComponentSetName(record);
+    set.x = x;
+    set.y = y;
+    tagPatternNode(set, record);
+    wirePatternComponentProperties(set, warnings);
+  } catch (error) {
+    warnings.push(`Pattern variants were rendered, but could not be combined into a component set: ${error.message}`);
+  }
+  const selection = set ? [set] : variants;
+  figma.currentPage.selection = selection;
+  figma.viewport.scrollAndZoomIntoView(selection);
+  figma.notify(`Imported Pattern "${record.name}" as breakpoint variants.`);
+  postPluginMessage({ type: 'pattern-import-result', count: variants.length, name: record.name, warnings });
+}
+
+function selectedPatternSetOrVariant() {
+  const selected = figma.currentPage.selection[0];
+  if (!selected) return { set: null, variant: null };
+  if (isPatternComponentSet(selected)) return { set: selected, variant: null };
+  if (selected.type === 'COMPONENT') {
+    const parent = selected.parent;
+    if (isPatternComponentSet(parent)) return { set: parent, variant: selected };
     try {
-      return node.type === 'FRAME' && node.getPluginData(PAGE_SYNC_LINK_KEY) === link.linkId;
-    } catch { return false; }
+      if (selected.getSharedPluginData(PATTERN_SYNC_NAMESPACE, PATTERN_SYNC_ID_KEY)) {
+        return { set: null, variant: selected };
+      }
+    } catch { /* ignore */ }
+  }
+  return { set: null, variant: null };
+}
+
+function breakpointFromVariantName(component) {
+  try {
+    const match = String(component.name || '').match(/Breakpoint\s*=\s*(xs|sm|md|lg|xl)/i);
+    if (match) return match[1].toLowerCase();
+  } catch { /* ignore */ }
+  return readBreakpointData(component);
+}
+
+function primaryPatternVariant(set, explicitVariant = null) {
+  if (explicitVariant) return explicitVariant;
+  const variants = set && 'children' in set
+    ? set.children.filter((child) => child.type === 'COMPONENT')
+    : [];
+  return variants.find((child) => breakpointFromVariantName(child) === 'md')
+    || variants.find((child) => breakpointFromVariantName(child) === 'xl')
+    || variants[0]
+    || null;
+}
+
+function patternMetaFromNode(node) {
+  const read = (key) => {
+    try { return node && typeof node.getSharedPluginData === 'function' ? node.getSharedPluginData(PATTERN_SYNC_NAMESPACE, key) : ''; }
+    catch { return ''; }
+  };
+  const id = read(PATTERN_SYNC_ID_KEY) || slugifyOptionValue(String(node && node.name || 'pattern'), new Set());
+  return {
+    id,
+    name: read(PATTERN_SYNC_NAME_KEY) || String(node && node.name || 'Pattern').replace(/^Pattern\s*\/\s*/i, ''),
+    description: read(PATTERN_SYNC_DESCRIPTION_KEY) || '',
+    category: read(PATTERN_SYNC_CATEGORY_KEY) || 'pattern',
+  };
+}
+
+function exportSelectedPattern() {
+  const { set, variant } = selectedPatternSetOrVariant();
+  const source = primaryPatternVariant(set, variant);
+  if (!source) throw new Error('Select a local Pattern component set or one of its breakpoint variants.');
+  const meta = patternMetaFromNode(set || source);
+  const { node, warnings } = exportContainerNode(source);
+  const nodes = Array.isArray(node.nodes) ? node.nodes : [];
+  const definition = {
+    schemaVersion: '1.0',
+    pattern: {
+      id: meta.id,
+      name: meta.name || 'Pattern',
+      description: meta.description || '',
+      category: meta.category || 'pattern',
+      nodes,
+    },
+  };
+  warnings.push(`Exported the ${breakpointFromVariantName(source) || 'selected'} Pattern variant as the A1 source pattern. Other breakpoint variants remain Figma-only previews for now.`);
+  postPluginMessage({
+    type: 'pattern-export-result',
+    name: definition.pattern.name,
+    json: JSON.stringify(definition, null, 2),
+    warnings,
   });
 }
 
-function prepareLinkedRoot(link, title) {
-  let root = linkedRootFor(link);
-  if (!root) {
-    root = figma.createFrame();
-    figma.currentPage.appendChild(root);
-    root.x = Math.round(figma.viewport.center.x);
-    root.y = Math.round(figma.viewport.center.y);
-  }
-  // The outer frame is intentionally human-readable so a copied/imported
-  // composition can be reconnected without first selecting a child layer.
+function linkedPageRootName(link, title) {
   const projectLabel = typeof link.projectName === 'string' && link.projectName.trim()
     ? link.projectName.trim()
     : link.projectId;
   const pageLabel = typeof link.pageTitle === 'string' && link.pageTitle.trim()
     ? link.pageTitle.trim()
     : (title || link.pageId);
-  root.name = `A1 · ${projectLabel} / ${pageLabel}`;
+  return `A1 · ${projectLabel} / ${pageLabel}`;
+}
+
+function canBeLinkedPageRoot(node) {
+  return Boolean(
+    node &&
+    ['FRAME', 'INSTANCE'].includes(node.type) &&
+    typeof node.getPluginData === 'function' &&
+    typeof node.setPluginData === 'function'
+  );
+}
+
+function tagLinkedPageRoot(root, link, title) {
+  if (!canBeLinkedPageRoot(root)) return root;
+  root.name = linkedPageRootName(link, title);
+  root.setPluginData(PAGE_SYNC_LINK_KEY, link.linkId);
+  root.setPluginData('project-id', link.projectId);
+  root.setPluginData('page-id', link.pageId);
+  root.setPluginData('mode', link.mode || 'manual');
+  return root;
+}
+
+function isLinkedPageRoot(node, link) {
+  try {
+    return canBeLinkedPageRoot(node) && node.getPluginData(PAGE_SYNC_LINK_KEY) === link.linkId;
+  } catch {
+    return false;
+  }
+}
+
+function linkedRootFor(link) {
+  const expectedId = link && link.figmaRootNodeId;
+  if (expectedId) {
+    try {
+      const byId = resolveNodeById(expectedId);
+      if (isLinkedPageRoot(byId, link)) return byId;
+    } catch { /* Figma can retain an instance-subnode id after changes. */ }
+  }
+  return figma.currentPage.findOne((node) => {
+    try { return isLinkedPageRoot(node, link); } catch { return false; }
+  });
+}
+
+function prepareLinkedRoot(link, title) {
+  let root = linkedRootFor(link);
+  if (root && root.type !== 'FRAME') {
+    try { root.remove(); } catch { /* Fall through and create a fresh frame root. */ }
+    root = null;
+  }
+  if (!root) {
+    root = figma.createFrame();
+    figma.currentPage.appendChild(root);
+    root.x = Math.round(figma.viewport.center.x);
+    root.y = Math.round(figma.viewport.center.y);
+  }
+  // Legacy fallback for non-PageLayout payloads. Proper A1 pages tag the
+  // PageLayout instance itself so PageLayout remains the top canvas layer.
+  tagLinkedPageRoot(root, link, title);
   root.layoutMode = 'VERTICAL';
   root.primaryAxisSizingMode = 'AUTO';
   root.counterAxisSizingMode = 'FIXED';
@@ -11791,17 +13426,70 @@ function prepareLinkedRoot(link, title) {
   root.paddingRight = 0;
   root.paddingTop = 0;
   root.paddingBottom = 0;
-  root.setPluginData(PAGE_SYNC_LINK_KEY, link.linkId);
-  root.setPluginData('project-id', link.projectId);
-  root.setPluginData('page-id', link.pageId);
-  root.setPluginData('mode', link.mode || 'manual');
   return root;
+}
+
+function pageLayoutDefinitionNode(data) {
+  if (data && data.type === 'PageLayout') return data;
+  if (data && data.page && data.page.layout && data.page.layout.type === 'PageLayout') return data.page.layout;
+  if (data && data.layout && data.layout.type === 'PageLayout') return data.layout;
+  return null;
+}
+
+function renderedPageLayoutRoot(instances, pageLayoutNode) {
+  const expectedId = pageLayoutNode && typeof pageLayoutNode.id === 'string' ? pageLayoutNode.id : '';
+  return (instances || []).find((node) => {
+    try {
+      return node.type === 'INSTANCE' &&
+        registeredSetName(node) === 'Page Layout' &&
+        (!expectedId || node.getPluginData('a1-json-id') === expectedId);
+    } catch {
+      return false;
+    }
+  }) || (instances || []).find((node) => {
+    try { return node.type === 'INSTANCE' && registeredSetName(node) === 'Page Layout'; }
+    catch { return false; }
+  }) || null;
+}
+
+function moveRenderedRoots(nodes, dx, dy) {
+  if (!Number.isFinite(dx) || !Number.isFinite(dy) || (dx === 0 && dy === 0)) return;
+  for (const node of nodes || []) {
+    try {
+      if ('x' in node) node.x += dx;
+      if ('y' in node) node.y += dy;
+    } catch {
+      // Ignore transient nodes; the render itself already succeeded.
+    }
+  }
 }
 
 async function handleLinkedPageImport(text, assets, link) {
   let parsed;
   try { parsed = JSON.parse(text); } catch (error) { postError('Not valid JSON: ' + error.message); return null; }
   const title = parsed && parsed.page && typeof parsed.page.name === 'string' ? parsed.page.name : link.pageId;
+  const pageLayoutNode = pageLayoutDefinitionNode(parsed);
+  if (pageLayoutNode) {
+    const previousRoot = linkedRootFor(link);
+    const targetX = previousRoot && 'x' in previousRoot ? previousRoot.x : Math.round(figma.viewport.center.x);
+    const targetY = previousRoot && 'y' in previousRoot ? previousRoot.y : Math.round(figma.viewport.center.y);
+    const result = await handleImport(text, assets, figma.currentPage, false);
+    if (!result) return null;
+    const renderedRoots = [...figma.currentPage.selection];
+    const root = renderedPageLayoutRoot(renderedRoots, pageLayoutNode);
+    if (!root) {
+      postError('The page JSON rendered, but no PageLayout root was created.');
+      return null;
+    }
+    moveRenderedRoots(renderedRoots, targetX - root.x, targetY - root.y);
+    tagLinkedPageRoot(root, link, title);
+    if (previousRoot && previousRoot.id !== root.id) {
+      try { previousRoot.remove(); } catch { /* The previous linked root may already be gone. */ }
+    }
+    figma.currentPage.selection = [root];
+    figma.viewport.scrollAndZoomIntoView([root]);
+    return { ...result, rootNodeId: root.id, figmaPageId: figma.currentPage.id, figmaFileKey: figma.fileKey || '' };
+  }
   const root = prepareLinkedRoot(link, title);
   const result = await handleImport(text, assets, root, true);
   if (!result) return null;
@@ -11884,15 +13572,22 @@ async function collectPageFigureAssets(root, pageNode, warnings) {
 async function exportLinkedPage(link) {
   const root = linkedRootFor(link);
   if (!root) throw new Error('The linked A1 page root was not found on this Figma page. Render it from A1 first.');
-  const { node, warnings } = exportContainerNode(root);
+  const componentName = root.type === 'INSTANCE' ? registeredSetName(root) : null;
+  const result = componentName && EXPORTERS[componentName]
+    ? EXPORTERS[componentName](root)
+    : exportContainerNode(root);
+  const { node, warnings } = result;
   const assets = await collectPageFigureAssets(root, node, warnings);
+  const layout = node && node.type === 'PageLayout'
+    ? node
+    : { type: 'PageLayout', regions: [{ id: 'main', name: 'Main', nodes: node.nodes || [] }] };
   return {
     json: JSON.stringify({
       schemaVersion: '1.0.0',
       page: {
         id: link.pageId,
         name: root.name.replace(/^A1 ·\s*/, '') || 'Untitled',
-        layout: { type: 'PageLayout', regions: [{ id: 'main', name: 'Main', nodes: node.nodes || [] }] },
+        layout,
       },
     }, null, 2),
     warnings,
@@ -11901,12 +13596,6 @@ async function exportLinkedPage(link) {
     figmaPageId: figma.currentPage.id,
     figmaFileKey: figma.fileKey || '',
   };
-}
-
-function pageTitleFromFigmaFrame(frame) {
-  const name = String(frame && frame.name || '').trim();
-  const linkedTitle = name.match(/^A1\s*·\s*.+?\s*\/\s*(.+)$/);
-  return (linkedTitle ? linkedTitle[1] : name) || 'Untitled';
 }
 
 function createPageLinkId() {
@@ -12042,9 +13731,6 @@ function exportTopHeader(instance) {
     const state = componentPropertyValue(nav, 'State', 'VARIANT');
     if (state === 'active') item.active = true;
     if (state === 'hover') warnings.push(`Nav item "${label}" is in a visual-only hover state — no prop was emitted.`);
-    if (componentPropertyValue(nav, 'Show chevron', 'BOOLEAN') === true) {
-      warnings.push(`Nav item "${label}" shows the submenu chevron — submenu contents are runtime-owned and were not exported.`);
-    }
     navItems.push(item);
   }
   if (navItems.length > 0) props.navItems = navItems;
@@ -12063,6 +13749,11 @@ function exportTopHeader(instance) {
       const entry = { id: slugifyOptionValue(label, usedActionIds), label };
       const iconName = iconNameFromInstance(action, 'Icon') || iconNameFromSwapValue(componentPropertyValue(action, 'Icon', 'INSTANCE_SWAP'));
       if (iconName) entry.icon = iconName;
+      const clickAction = actionForLinkedTarget(action);
+      if (clickAction) {
+        entry.actions = { onClick: clickAction };
+        warnings.push(`Top Header action "${label}" is linked to ${ACTION_TRIGGER_TYPE_BY_ACTION[clickAction.type] || 'action target'} "${clickAction.target}".`);
+      }
       actions.push(entry);
     }
     // A visible Button in the Actions slot is the sign-in affordance. It maps
@@ -12078,12 +13769,34 @@ function exportTopHeader(instance) {
   }
   if (actions.length > 0) props.actions = actions;
 
-  const breakpoint = componentPropertyValue(instance, 'Breakpoint', 'VARIANT');
-  if (breakpoint && breakpoint !== 'lg') {
-    warnings.push(`Breakpoint=${breakpoint} is a visual preview width — the React TopHeader is fluid and no breakpoint prop was emitted.`);
-  }
+  // Breakpoint variants are visual preview state only; TopHeader stays fluid in JSON.
 
   return { node: { id: componentId('TopHeader', instance), type: 'TopHeader', props }, warnings };
+}
+
+function topHeaderContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const result = exportTopHeader(instance);
+  const props = result.node.props || {};
+  const navItems = Array.isArray(props.navItems) ? props.navItems : [];
+  const actions = Array.isArray(props.actions) ? props.actions : [];
+  const showLoginProperty = componentPropertyValue(instance, 'Show login button', 'BOOLEAN');
+  const showLogin = showLoginProperty === false ? false : Boolean(props.loginButton);
+  const loginLabel = typeof props.loginButton === 'string'
+    ? props.loginButton
+    : props.loginButton && typeof props.loginButton === 'object' && typeof props.loginButton.label === 'string'
+      ? props.loginButton.label
+      : 'Sign in';
+  return {
+    logoText: typeof props.logoText === 'string' ? props.logoText : componentPropertyValue(instance, 'Logo text', 'TEXT') || '',
+    navCount: navItems.length,
+    navCountOptions: Array.from({ length: GROUP_SLOT_CONFIG.TopHeader.max + 1 }, (_, index) => String(index)),
+    actionCount: actions.length,
+    actionCountOptions: Array.from({ length: GROUP_SLOT_CONFIG.TopHeaderActions.max + 1 }, (_, index) => String(index)),
+    showLogin,
+    loginLabel,
+    booleanOptions: ['false', 'true'],
+  };
 }
 
 async function applyTopHeader(instance, node, warnings) {
@@ -12139,7 +13852,6 @@ async function applyTopHeader(instance, node, warnings) {
       else warnings.push(`No icon component named "${item.icon}" exists in this file — nav item "${label}" keeps the default glyph.`);
     }
     applyQueuedProperties(navInstance, navAssignments, warnings, `Nav item ${index + 1} properties`);
-    if (hasSubmenu) warnings.push(`Nav item "${label}" submenu contents are runtime-owned — the chevron affordance was applied.`);
   }
 
   const actions = Array.isArray(props.actions)
@@ -12158,6 +13870,22 @@ async function applyTopHeader(instance, node, warnings) {
       else warnings.push(`No icon component named "${action.icon}" exists in this file — action "${label}" keeps the default glyph.`);
     }
     applyQueuedProperties(actionInstance, actionAssignments, warnings, `Action ${index + 1} properties`);
+    if (activeActionTargetImportContext) {
+      const actionMap = action.actions && typeof action.actions === 'object' ? action.actions : null;
+      const clickAction = actionMap && actionMap.onClick && typeof actionMap.onClick === 'object'
+        ? actionMap.onClick
+        : action.action && typeof action.action === 'object'
+          ? action.action
+          : null;
+      if (
+        clickAction &&
+        ACTION_TRIGGER_TYPE_BY_ACTION[clickAction.type] &&
+        typeof clickAction.target === 'string' &&
+        clickAction.target
+      ) {
+        activeActionTargetImportContext.pendingTriggers.push({ trigger: actionInstance, action: clickAction });
+      }
+    }
     if (action.badge !== undefined) warnings.push(`Action "${label}" badge is not represented on the Figma Icon Button instance.`);
     if (Array.isArray(action.items) && action.items.length > 0) warnings.push(`Action "${label}" dropdown items are runtime-owned — not represented.`);
   }
@@ -12194,13 +13922,25 @@ function pageLayoutTopHeader(instance) {
 
 function pageLayoutChildNodes(node) {
   if (Array.isArray(node.children)) {
-    return node.children.filter((child) => child && typeof child === 'object');
+    return node.children
+      .filter((child) => child && typeof child === 'object')
+      .filter((child) => !(
+        activeActionTargetImportContext &&
+        typeof child.id === 'string' &&
+        activeActionTargetImportContext.targetNodes.has(child.id)
+      ));
   }
   const collected = [];
   for (const key of ['nodes', 'regions']) {
     if (node && node[key]) collectSupportedNodes(node[key], collected);
   }
-  return collected;
+  return collected.filter((child) => !(
+    activeActionTargetImportContext &&
+    child &&
+    typeof child === 'object' &&
+    typeof child.id === 'string' &&
+    activeActionTargetImportContext.targetNodes.has(child.id)
+  ));
 }
 
 function exportPageLayout(instance) {
@@ -12216,17 +13956,23 @@ function exportPageLayout(instance) {
   const slot = pageLayoutContentSlot(instance);
   if (slot) children.push(...exportFreeContent(slot, warnings));
   else warnings.push('No Page Content Slot was found — only the Top Header was exported.');
-  const breakpoint = componentPropertyValue(instance, 'breakpoint', 'VARIANT');
-  if (breakpoint && breakpoint !== 'xs') {
-    warnings.push(`breakpoint=${breakpoint} is a visual preview width — the React PageLayout is fluid and no breakpoint prop was emitted.`);
-  }
-  warnings.push('Page Layout v1 represents the Top Header and main content only — sidebar, aside, footer, sticky header, and viewport-height options are runtime-owned.');
+  // Breakpoint variants and unsupported chrome slots are visual preview state;
+  // PageLayout JSON exports the supported top header + main content contract.
   // The playground-preview flags suppress the configurator's placeholder
   // header/sidebar/footer slots so the exported children render alone.
   const props = { showHeader: false, showSidebar: false, showFooter: false };
   const node = { id: componentId('PageLayout', instance), type: 'PageLayout', props };
   if (children.length > 0) node.children = children;
   return { node, warnings };
+}
+
+function pageLayoutContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const breakpoint = componentPropertyValue(instance, 'Breakpoint', 'VARIANT');
+  return {
+    breakpoint: A1_BREAKPOINTS.includes(breakpoint) ? breakpoint : 'xl',
+    breakpointOptions: A1_BREAKPOINTS,
+  };
 }
 
 async function applyPageLayout(instance, node, warnings) {
@@ -12524,16 +14270,90 @@ async function importChipGroup(node, warnings) {
   return instance;
 }
 
-// ── Data Table (default density; fixed 4×4 grid, visibility reconcile) ──────
+// ── Data Table (column-slot model) ──────────────────────────────────────────
 
-const DATA_TABLE_MAX_COLUMNS = 4;
-const DATA_TABLE_MAX_ROWS = 4;
+const DATA_TABLE_MAX_COLUMNS = 10;
+const DATA_TABLE_MAX_ROWS = 20;
+const DATA_TABLE_CONTEXT_COLUMN_OPTIONS = Array.from({ length: DATA_TABLE_MAX_COLUMNS }, (_, index) => String(index + 1));
+const DATA_TABLE_CONTEXT_ROW_OPTIONS = ['1', '2', '3', '4', '5', '10', '20'];
 
-function dataTableHeaderCells(instance) {
+function dataTableFlexibleSlot(root, names, requiredKeyPart, childComponentName) {
+  const liveRoot = currentInstance(root);
+  for (const name of names) {
+    const slot = nativeSlot(liveRoot, name);
+    if (slot) return slot;
+  }
+  try {
+    const candidates = liveRoot.findAll((node) => {
+      try {
+        if (node.type !== 'SLOT' && node.type !== 'FRAME' && node.type !== 'GROUP') return false;
+        const key = canonicalKey(node.name);
+        if (requiredKeyPart && !key.includes(requiredKeyPart)) return false;
+        if (key.includes('slot')) return true;
+        return Boolean(childComponentName && node.findOne((child) => child.type === 'INSTANCE' && componentSetName(child) === childComponentName));
+      } catch {
+        return false;
+      }
+    });
+    return candidates.find((node) => canonicalKey(node.name).includes('slot')) || candidates[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+function dataTableColumnsSlot(instance) {
+  return dataTableFlexibleSlot(instance, ['Columns Slot', 'Column Slot', 'Columns'], 'column', 'Data Table Column');
+}
+
+function dataTableColumnInstances(instance, options = {}) {
+  const slot = dataTableColumnsSlot(instance);
+  const includeHidden = options.includeHidden === true;
+  const isColumn = (node) => {
+    try { return node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Column' && (includeHidden || node.visible !== false); }
+    catch { return false; }
+  };
+  if (!slot) return [];
+  try {
+    const direct = slot.children.filter(isColumn);
+    return direct.length > 0 ? direct : slot.findAll(isColumn);
+  } catch {
+    return [];
+  }
+}
+
+function dataTableHeaderCell(column) {
+  try {
+    return currentInstance(column).findOne((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Header Cell' && node.visible !== false);
+  } catch {
+    return null;
+  }
+}
+
+function dataTableColumnCellSlot(column) {
+  return dataTableFlexibleSlot(column, ['Cell Slot', 'Cells Slot', 'Cells'], 'cell', 'Data Table Cell');
+}
+
+function dataTableColumnCells(column, options = {}) {
+  const slot = dataTableColumnCellSlot(column);
+  const includeHidden = options.includeHidden === true;
+  const isCell = (node) => {
+    try { return node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Cell' && (includeHidden || node.visible !== false); }
+    catch { return false; }
+  };
+  if (!slot) return [];
+  try {
+    const direct = slot.children.filter(isCell);
+    return direct.length > 0 ? direct : slot.findAll(isCell);
+  } catch {
+    return [];
+  }
+}
+
+function dataTableLegacyHeaderCells(instance) {
   return currentInstance(instance).findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Header Cell');
 }
 
-function dataTableRowFrames(instance) {
+function dataTableLegacyRowFrames(instance) {
   return currentInstance(instance).findAll((node) => node.type === 'FRAME' && /^Row \d+$/.test(node.name));
 }
 
@@ -12543,7 +14363,11 @@ function exportDataTable(instance) {
   const usedKeys = new Set();
   const columns = [];
   let defaultSort = null;
-  for (const header of dataTableHeaderCells(instance)) {
+  const columnInstances = dataTableColumnInstances(instance);
+  const headerCells = columnInstances.length > 0
+    ? columnInstances.map(dataTableHeaderCell).filter(Boolean)
+    : dataTableLegacyHeaderCells(instance);
+  for (const header of headerCells) {
     if (header.visible === false) continue;
     const label = componentText(header, 'Label', `Column ${columns.length + 1}`);
     const sort = componentPropertyValue(header, 'Sort', 'VARIANT');
@@ -12557,22 +14381,227 @@ function exportDataTable(instance) {
     columns.push(column);
   }
   const rows = [];
-  for (const frame of dataTableRowFrames(instance)) {
-    if (frame.visible === false) continue;
-    const cells = frame.children.filter((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Cell');
-    const row = { id: `row-${rows.length + 1}` };
-    cells.forEach((cell, index) => {
-      if (cell.visible === false || !columns[index]) return;
-      row[columns[index].key] = componentText(cell, 'Value', '');
-    });
-    rows.push(row);
+  if (columnInstances.length > 0) {
+    const cellsByColumn = columnInstances.map(dataTableColumnCells);
+    const rowCount = Math.max(0, ...cellsByColumn.map((cells) => cells.length));
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+      const row = { id: `row-${rowIndex + 1}` };
+      cellsByColumn.forEach((cells, columnIndex) => {
+        const cell = cells[rowIndex];
+        if (!cell || cell.visible === false || !columns[columnIndex]) return;
+        row[columns[columnIndex].key] = componentText(cell, 'Value', '');
+      });
+      rows.push(row);
+    }
+  } else {
+    for (const frame of dataTableLegacyRowFrames(instance)) {
+      if (frame.visible === false) continue;
+      const cells = frame.children.filter((node) => node.type === 'INSTANCE' && componentSetName(node) === 'Data Table Cell');
+      const row = { id: `row-${rows.length + 1}` };
+      cells.forEach((cell, index) => {
+        if (cell.visible === false || !columns[index]) return;
+        row[columns[index].key] = componentText(cell, 'Value', '');
+      });
+      rows.push(row);
+    }
   }
   const props = {};
   if (columns.length > 0) props.columns = columns;
   if (rows.length > 0) props.rows = rows;
   if (defaultSort) props.defaultSort = defaultSort;
-  warnings.push('The Figma Data Table is the default density — size, zebra, selection, search, pagination, notices, and column renderers are runtime-owned.');
+  if (columnInstances.length > 0) {
+    const zebraCells = columnInstances.flatMap(dataTableColumnCells).filter((cell) => componentPropertyValue(cell, 'stripe', 'VARIANT') === 'zebra');
+    if (zebraCells.length > 0) props.zebra = true;
+  }
+  for (const runtimeProp of ['size', 'selectable', 'search', 'pagination', 'notices', 'scrollable', 'mobileLayout']) {
+    if (props[runtimeProp] !== undefined) warnings.push(`DataTable ${runtimeProp} is runtime-owned in Figma and was not exported.`);
+  }
   return { node: { id: componentId('DataTable', instance), type: 'DataTable', props }, warnings };
+}
+
+function dataTableContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const result = exportDataTable(instance);
+  const props = result.node.props || {};
+  const columns = Array.isArray(props.columns) ? props.columns : [];
+  const rows = Array.isArray(props.rows) ? props.rows : [];
+  const columnCount = Math.max(1, Math.min(DATA_TABLE_MAX_COLUMNS, columns.length || dataTableColumnInstances(instance).length || dataTableLegacyHeaderCells(instance).filter((header) => header.visible !== false).length || 1));
+  const rowCount = Math.max(1, Math.min(DATA_TABLE_MAX_ROWS, rows.length || 1));
+  return {
+    columnCount,
+    columnCountOptions: DATA_TABLE_CONTEXT_COLUMN_OPTIONS,
+    rowCount,
+    rowCountOptions: DATA_TABLE_CONTEXT_ROW_OPTIONS,
+    zebra: props.zebra === true,
+    booleanOptions: ['false', 'true'],
+    widthMode: layoutWidthMode(instance),
+    heightMode: layoutHeightMode(instance),
+  };
+}
+
+function dataTablePropsFromDataInput(input = {}) {
+  const sourceRows = Array.isArray(input.rows) ? input.rows.filter((row) => row && typeof row === 'object') : [];
+  const sourceColumns = Array.isArray(input.columns) ? input.columns.filter((column) => column && typeof column === 'object') : [];
+  const usedKeys = new Set();
+  const sourceKeyByOutputKey = {};
+  const columns = sourceColumns.slice(0, DATA_TABLE_MAX_COLUMNS).map((column, index) => {
+    const sourceKey = typeof column.key === 'string' && column.key.trim() ? column.key.trim() : '';
+    const labelSource = typeof column.label === 'string' && column.label.trim()
+      ? column.label.trim()
+      : (typeof column.name === 'string' && column.name.trim() ? column.name.trim() : '');
+    const label = labelSource || sourceKey || `Column ${index + 1}`;
+    const key = sourceKey && !usedKeys.has(sourceKey) ? sourceKey : slugifyOptionValue(label, usedKeys);
+    if (sourceKey && !usedKeys.has(sourceKey)) usedKeys.add(sourceKey);
+    sourceKeyByOutputKey[key] = sourceKey || key;
+    return {
+      key,
+      label,
+      ...(column.align === 'end' ? { align: 'end' } : {}),
+    };
+  });
+  if (!columns.length) {
+    sourceRows.forEach((row) => {
+      Object.keys(row).forEach((sourceKey) => {
+        if (sourceKey === 'id' || sourceKey === '__id' || columns.length >= DATA_TABLE_MAX_COLUMNS) return;
+        if (columns.some((column) => sourceKeyByOutputKey[column.key] === sourceKey)) return;
+        const key = sourceKey && !usedKeys.has(sourceKey) ? sourceKey : slugifyOptionValue(sourceKey || `Column ${columns.length + 1}`, usedKeys);
+        if (sourceKey && !usedKeys.has(sourceKey)) usedKeys.add(sourceKey);
+        sourceKeyByOutputKey[key] = sourceKey;
+        columns.push({ key, label: sourceKey || `Column ${columns.length + 1}` });
+      });
+    });
+  }
+  if (!columns.length) columns.push({ key: 'column-1', label: 'Column 1' });
+  const rows = sourceRows.slice(0, DATA_TABLE_MAX_ROWS).map((sourceRow, rowIndex) => {
+    const row = {
+      id: typeof sourceRow.id === 'string' && sourceRow.id ? sourceRow.id : `row-${rowIndex + 1}`,
+    };
+    columns.forEach((column) => {
+      const sourceKey = sourceKeyByOutputKey[column.key] || column.key;
+      const value = sourceRow[sourceKey];
+      row[column.key] = value === undefined || value === null ? '' : String(value);
+    });
+    return row;
+  });
+  return { columns, rows: rows.length ? rows : [{ id: 'row-1' }] };
+}
+
+function dataTablePropsWithShape(props, columnCount, rowCount) {
+  const usedKeys = new Set();
+  const sourceColumns = Array.isArray(props.columns) ? props.columns.filter((column) => column && typeof column === 'object') : [];
+  const columns = sourceColumns.slice(0, columnCount).map((column, index) => {
+    const label = typeof column.label === 'string' && column.label.trim() ? column.label.trim() : `Column ${index + 1}`;
+    const rawKey = typeof column.key === 'string' && column.key.trim() ? column.key.trim() : '';
+    const key = rawKey && !usedKeys.has(rawKey) ? rawKey : slugifyOptionValue(label, usedKeys);
+    if (rawKey && !usedKeys.has(rawKey)) usedKeys.add(rawKey);
+    return {
+      ...column,
+      key,
+      label,
+    };
+  });
+  while (columns.length < columnCount) {
+    const label = `Column ${columns.length + 1}`;
+    columns.push({ key: slugifyOptionValue(label, usedKeys), label });
+  }
+
+  const rows = (Array.isArray(props.rows) ? props.rows.filter((row) => row && typeof row === 'object') : [])
+    .slice(0, rowCount)
+    .map((row, index) => {
+      const next = {
+        ...row,
+        id: typeof row.id === 'string' && row.id ? row.id : `row-${index + 1}`,
+      };
+      columns.forEach((column) => {
+        if (next[column.key] === undefined || next[column.key] === null) next[column.key] = '';
+      });
+      return next;
+    });
+  while (rows.length < rowCount) {
+    const row = { id: `row-${rows.length + 1}` };
+    columns.forEach((column) => {
+      row[column.key] = '';
+    });
+    rows.push(row);
+  }
+
+  const nextProps = { columns, rows };
+  if (props.defaultSort && columns.some((column) => column.key === props.defaultSort.key)) {
+    nextProps.defaultSort = props.defaultSort;
+  }
+  return nextProps;
+}
+
+async function reconcileDataTableColumns(instance, requestedCount, warnings) {
+  const slot = dataTableColumnsSlot(instance);
+  if (!slot) {
+    warnings.push('Data Table Columns Slot could not be found — columns were not reconciled.');
+    return dataTableColumnInstances(instance);
+  }
+  const wanted = Math.max(1, Math.min(requestedCount || 1, DATA_TABLE_MAX_COLUMNS));
+  let columns = dataTableColumnInstances(instance, { includeHidden: true });
+  let source = null;
+  while (columns.length < wanted) {
+    const liveSlot = dataTableColumnsSlot(currentInstance(instance));
+    if (!liveSlot) break;
+    const template = columns[columns.length - 1] || columns[0] || null;
+    if (template && typeof template.clone === 'function') {
+      const clone = template.clone();
+      try { clone.visible = true; } catch { /* nested visibility can be locked */ }
+      liveSlot.appendChild(clone);
+    } else {
+      if (!source) source = await findComponentSourceAsync('Data Table Column', warnings);
+      if (!source) break;
+      liveSlot.appendChild(source.createInstance());
+    }
+    columns = dataTableColumnInstances(currentInstance(instance), { includeHidden: true });
+  }
+  if (columns.length < wanted) warnings.push('Data Table Columns could not be added because no local column template or A1 library component was available.');
+  columns = dataTableColumnInstances(currentInstance(instance), { includeHidden: true });
+  columns.forEach((column, index) => {
+    const shouldShow = index < wanted;
+    try { column.visible = shouldShow; } catch { /* nested visibility can be locked */ }
+    if (!shouldShow && column.visible !== false) {
+      try { column.remove(); } catch { /* library-owned child cannot be removed */ }
+    }
+  });
+  return dataTableColumnInstances(currentInstance(instance));
+}
+
+async function reconcileDataTableCells(column, requestedCount, warnings) {
+  const slot = dataTableColumnCellSlot(column);
+  if (!slot) {
+    warnings.push('Data Table Column Cell Slot could not be found — cells were not reconciled.');
+    return dataTableColumnCells(column);
+  }
+  const wanted = Math.max(1, Math.min(requestedCount || 1, DATA_TABLE_MAX_ROWS));
+  let cells = dataTableColumnCells(column, { includeHidden: true });
+  let source = null;
+  while (cells.length < wanted) {
+    const liveSlot = dataTableColumnCellSlot(currentInstance(column));
+    if (!liveSlot) break;
+    const template = cells[cells.length - 1] || cells[0] || null;
+    if (template && typeof template.clone === 'function') {
+      const clone = template.clone();
+      try { clone.visible = true; } catch { /* nested visibility can be locked */ }
+      liveSlot.appendChild(clone);
+    } else {
+      if (!source) source = await findComponentSourceAsync('Data Table Cell', warnings);
+      if (!source) break;
+      liveSlot.appendChild(source.createInstance());
+    }
+    cells = dataTableColumnCells(currentInstance(column), { includeHidden: true });
+  }
+  if (cells.length < wanted) warnings.push('Data Table Cells could not be added because no local cell template or A1 library component was available.');
+  cells = dataTableColumnCells(currentInstance(column), { includeHidden: true });
+  cells.forEach((cell, index) => {
+    const shouldShow = index < wanted;
+    try { cell.visible = shouldShow; } catch { /* nested visibility can be locked */ }
+    if (!shouldShow && cell.visible !== false) {
+      try { cell.remove(); } catch { /* library-owned child cannot be removed */ }
+    }
+  });
+  return dataTableColumnCells(currentInstance(column));
 }
 
 async function applyDataTable(instance, node, warnings) {
@@ -12584,7 +14613,39 @@ async function applyDataTable(instance, node, warnings) {
   if (rows.length > DATA_TABLE_MAX_ROWS) warnings.push(`The Figma Data Table shows up to ${DATA_TABLE_MAX_ROWS} rows — additional JSON rows were not rendered.`);
   const defaultSort = props.defaultSort && typeof props.defaultSort === 'object' ? props.defaultSort : null;
 
-  const headers = dataTableHeaderCells(instance);
+  let tableColumns = dataTableColumnInstances(instance);
+  if (tableColumns.length > 0 || dataTableColumnsSlot(instance)) {
+    tableColumns = await reconcileDataTableColumns(instance, columns.length || tableColumns.length || 1, warnings);
+    for (let index = 0; index < tableColumns.length; index += 1) {
+      const column = columns[index];
+      const columnInstance = currentInstance(tableColumns[index]);
+      const header = dataTableHeaderCell(columnInstance);
+      if (header && column) {
+        const assignments = {};
+        queueComponentProperty(header, assignments, 'Label', typeof column.label === 'string' ? column.label : `Column ${index + 1}`, 'TEXT', warnings, `Column ${index + 1} label`);
+        const sorted = defaultSort && defaultSort.key === column.key;
+        const sortValue = sorted ? (defaultSort.direction === 'desc' ? 'descending' : 'ascending') : (column.sortable ? 'unsorted' : 'none');
+        queueComponentProperty(header, assignments, 'Sort', sortValue, 'VARIANT', warnings, `Column ${index + 1} sort`);
+        queueComponentProperty(header, assignments, 'Align', column.align === 'end' ? 'end' : 'start', 'VARIANT', warnings, `Column ${index + 1} align`);
+        applyQueuedProperties(header, assignments, warnings, `Column ${index + 1} properties`);
+      }
+      const cells = await reconcileDataTableCells(columnInstance, rows.length || dataTableColumnCells(columnInstance).length || 1, warnings);
+      cells.forEach((cell, rowIndex) => {
+        const row = rows[rowIndex];
+        const value = row && column ? row[column.key] : '';
+        const assignments = {};
+        queueComponentProperty(cell, assignments, 'Value', value === undefined || value === null ? '' : String(value), 'TEXT', warnings, `Row ${rowIndex + 1} ${column ? column.key : `column-${index + 1}`}`);
+        queueComponentProperty(cell, assignments, 'Align', column && column.align === 'end' ? 'end' : 'start', 'VARIANT', warnings, `Row ${rowIndex + 1} align`);
+        queueOptionalComponentProperty(cell, assignments, 'Type', 'Text', 'VARIANT');
+        queueOptionalComponentProperty(cell, assignments, 'stripe', props.zebra === true && rowIndex % 2 === 1 ? 'zebra' : 'Default', 'VARIANT');
+        applyQueuedProperties(cell, assignments, warnings, `Row ${rowIndex + 1} cell properties`);
+        try { cell.strokeBottomWeight = rowIndex === cells.length - 1 ? 0 : 1; } catch { /* stroke override unavailable */ }
+      });
+    }
+    return instance;
+  }
+
+  const headers = dataTableLegacyHeaderCells(instance);
   headers.forEach((header, index) => {
     const column = columns[index];
     const inRange = Boolean(column) && index < DATA_TABLE_MAX_COLUMNS;
@@ -12601,7 +14662,7 @@ async function applyDataTable(instance, node, warnings) {
     applyQueuedProperties(header, assignments, warnings, `Column ${index + 1} properties`);
   });
 
-  const frames = dataTableRowFrames(instance);
+  const frames = dataTableLegacyRowFrames(instance);
   const visibleRows = Math.min(rows.length, DATA_TABLE_MAX_ROWS, frames.length);
   frames.forEach((frame, rowIndex) => {
     const row = rows[rowIndex];
@@ -12631,7 +14692,7 @@ async function applyDataTable(instance, node, warnings) {
 }
 
 async function importDataTable(node, warnings) {
-  const instance = createComponentInstance('Data Table');
+  const instance = await createComponentInstance('Data Table');
   await applyDataTable(instance, node, warnings);
   return instance;
 }
@@ -12639,7 +14700,8 @@ async function importDataTable(node, warnings) {
 // ── Choice Group (Options slot; tiles may sit inside an embedded Grid) ──────
 
 const CHOICE_SIZES = ['compact', 'default', 'comfortable'];
-const CHOICE_GROUP_MAX_OPTIONS = 20;
+const CHOICE_GROUP_MAX_OPTIONS = 12;
+const CHOICE_GROUP_CONTEXT_MAX_OPTIONS = 8;
 
 function choiceGroupOptionsSlot(instance) {
   return currentInstance(instance).findOne((node) => node.type === 'SLOT' && canonicalKey(node.name) === canonicalKey('Options'));
@@ -12664,6 +14726,120 @@ function choiceGroupTiles(instance) {
   const isTile = (node) => node.type === 'INSTANCE' && componentSetName(node) === 'Choice Option';
   const direct = container.children.filter(isTile);
   return direct.length > 0 ? direct : container.findAll(isTile);
+}
+
+function visibleChoiceGroupTiles(instance) {
+  return choiceGroupTiles(instance).filter((tile) => tile.visible !== false);
+}
+
+function choiceGroupTileHasIndicatorProperty(tile) {
+  return Boolean(componentProperty(tile, 'Show indicator', 'BOOLEAN'));
+}
+
+function choiceGroupTileShowsIndicator(tile) {
+  const found = componentProperty(tile, 'Show indicator', 'BOOLEAN');
+  return found ? found.property.value !== false : true;
+}
+
+function setChoiceGroupTileFillSizing(tile, warnings = [], description = 'Choice Group option') {
+  if (!tile) return;
+  try {
+    tile.layoutSizingHorizontal = 'FILL';
+  } catch (error) {
+    warnings.push(`${description} width could not be set to Fill: ${error.message}`);
+  }
+  try {
+    if ('layoutGrow' in tile) tile.layoutGrow = 1;
+  } catch {
+    // Some plugin-owned nodes ignore grow while still accepting Fill.
+  }
+}
+
+function setChoiceGroupTileGridPreviewSizing(tile, width, warnings = [], description = 'Choice Group option') {
+  if (!tile) return;
+  try {
+    tile.layoutSizingHorizontal = 'FIXED';
+  } catch (error) {
+    warnings.push(`${description} width could not be set to Fixed for the responsive grid preview: ${error.message}`);
+  }
+  try {
+    if ('layoutGrow' in tile) tile.layoutGrow = 0;
+  } catch {
+    // Some plugin-owned nodes ignore grow while still accepting fixed sizing.
+  }
+  try {
+    tile.resize(width, tile.height);
+  } catch (error) {
+    warnings.push(`${description} width could not be resized for the responsive grid preview: ${error.message}`);
+  }
+}
+
+function choiceGroupGridTiles(grid) {
+  if (!grid || !('children' in grid)) return [];
+  const isTile = (node) => node.type === 'INSTANCE' && node.visible !== false && componentSetName(node) === 'Choice Option';
+  const direct = grid.children.filter(isTile);
+  return direct.length > 0 ? direct : grid.findAll(isTile);
+}
+
+function choiceGroupTileTemplate(instance, tiles = choiceGroupTiles(instance)) {
+  const visible = tiles.filter((tile) => tile.visible !== false);
+  return visible[visible.length - 1] || tiles[tiles.length - 1] || tiles[0] || null;
+}
+
+function choiceGroupRows(instance) {
+  const rows = [];
+  for (const tile of visibleChoiceGroupTiles(instance)) {
+    const y = figmaNumber(tile.y, 0);
+    let row = rows.find((candidate) => Math.abs(candidate.y - y) <= 1);
+    if (!row) {
+      row = { y, tiles: [] };
+      rows.push(row);
+    }
+    row.tiles.push(tile);
+  }
+  rows.sort((a, b) => a.y - b.y);
+  rows.forEach((row) => row.tiles.sort((a, b) => figmaNumber(a.x, 0) - figmaNumber(b.x, 0)));
+  return rows;
+}
+
+function syncChoiceGroupRowHeights(instance, warnings = []) {
+  instance = currentInstance(instance);
+  const rows = choiceGroupRows(instance);
+  let changed = 0;
+  for (const row of rows) {
+    if (row.tiles.length < 2) continue;
+    const tallest = Math.max(...row.tiles.map((tile) => figmaNumber(tile.height, 0)));
+    for (const tile of row.tiles) {
+      if (figmaNumber(tile.height, 0) >= tallest - 0.5) continue;
+      try {
+        if (tile.layoutSizingVertical !== 'FILL') {
+          tile.layoutSizingVertical = 'FILL';
+          changed += 1;
+        }
+      } catch (error) {
+        try {
+          tile.resize(tile.width, tallest);
+          changed += 1;
+        } catch {
+          warnings.push(`Choice Group option height could not be synced: ${error.message}`);
+        }
+      }
+    }
+  }
+  return changed;
+}
+
+function syncChoiceGroupTileSizing(instance, warnings = []) {
+  const { grid } = choiceGroupTileContainer(instance);
+  const responsive = grid ? readResponsiveGridColumns(grid) : null;
+  if (responsive) {
+    applyChoiceGroupGridColumns(instance, responsive, warnings);
+    return syncChoiceGroupRowHeights(instance, warnings);
+  }
+  visibleChoiceGroupTiles(instance).forEach((tile, index) => {
+    setChoiceGroupTileFillSizing(tile, warnings, `Option ${index + 1}`);
+  });
+  return syncChoiceGroupRowHeights(instance, warnings);
 }
 
 function exportChoiceGroup(instance) {
@@ -12693,10 +14869,13 @@ function exportChoiceGroup(instance) {
   const usedValues = new Set();
   const options = [];
   const selectedValues = [];
+  const indicatorValues = [];
   let multiple = false;
-  let size = null;
+  const parentSize = componentPropertyValue(instance, 'Size', 'VARIANT');
+  let size = CHOICE_SIZES.includes(parentSize) ? parentSize : null;
   for (const tile of choiceGroupTiles(instance)) {
     if (tile.visible === false) continue;
+    if (choiceGroupTileHasIndicatorProperty(tile)) indicatorValues.push(choiceGroupTileShowsIndicator(tile));
     const tileLabel = componentText(tile, 'Label', `Option ${options.length + 1}`);
     const option = { value: slugifyOptionValue(tileLabel, usedValues), label: tileLabel };
     if (componentBoolean(tile, 'Show subtext', false)) {
@@ -12718,24 +14897,112 @@ function exportChoiceGroup(instance) {
   if (options.length > 0) props.options = options;
   if (multiple) props.multiple = true;
   if (size && size !== 'default') props.size = size;
+  if (indicatorValues.length > 0 && indicatorValues.every((showsIndicator) => showsIndicator === false)) props.hideIndicator = true;
+  else if (indicatorValues.some((showsIndicator) => showsIndicator === false)) {
+    warnings.push('Choice Group has mixed Show indicator values; JSON supports one group-level hideIndicator prop, so indicators were exported as visible.');
+  }
   if (selectedValues.length > 0) props.defaultValue = multiple ? selectedValues : selectedValues[0];
   return { node: { id: componentId('ChoiceGroup', instance), type: 'ChoiceGroup', props }, warnings };
+}
+
+function choiceGroupResponsiveColumnsForContext(instance, props = {}) {
+  const responsive = normalizeResponsiveColumns(props.columns);
+  if (responsive) return responsive;
+  if (Number.isInteger(props.columns) && props.columns > 0) return { xs: props.columns };
+  const { grid } = choiceGroupTileContainer(instance);
+  if (grid) {
+    const gridResponsive = readResponsiveGridColumns(grid);
+    if (gridResponsive) return gridResponsive;
+    if (grid.layoutMode === 'GRID') {
+      try {
+        if (Number.isInteger(grid.gridColumnCount) && grid.gridColumnCount > 0) return { xs: grid.gridColumnCount };
+      } catch {
+        // Ignore unavailable grid metadata.
+      }
+    }
+  }
+  return { xs: 1 };
+}
+
+function choiceGroupContextForSelection(instance) {
+  instance = currentInstance(instance);
+  const result = exportChoiceGroup(instance);
+  const props = result.node.props || {};
+  const options = Array.isArray(props.options) ? props.options : [];
+  return {
+    label: typeof props.label === 'string' ? props.label : '',
+    helper: componentText(instance, 'Helper', typeof props.hint === 'string' ? props.hint : ''),
+    type: props.multiple === true ? 'checkbox' : 'radio',
+    typeOptions: ['radio', 'checkbox'],
+    size: CHOICE_SIZES.includes(props.size) ? props.size : 'default',
+    sizeOptions: CHOICE_SIZES,
+    optionCount: Math.max(1, Math.min(CHOICE_GROUP_CONTEXT_MAX_OPTIONS, options.length || visibleChoiceGroupTiles(instance).length || 1)),
+    optionCountOptions: Array.from({ length: CHOICE_GROUP_CONTEXT_MAX_OPTIONS }, (_, index) => String(index + 1)),
+    required: props.required === true,
+    hideIndicator: props.hideIndicator === true,
+    booleanOptions: ['false', 'true'],
+    columns: choiceGroupResponsiveColumnsForContext(instance, props),
+  };
+}
+
+function applyChoiceGroupGridColumns(instance, columns, warnings = [], explicitBreakpoint = '') {
+  instance = currentInstance(instance);
+  const responsive = normalizeResponsiveColumns(columns)
+    || (Number.isInteger(columns) && columns > 0 ? { xs: columns } : null);
+  if (!responsive) return null;
+  const { grid } = choiceGroupTileContainer(instance);
+  if (!grid) {
+    warnings.push('Choice Group columns need an embedded Grid inside the Options slot — the value was not represented.');
+    return null;
+  }
+  const fallbackBreakpoint = readBreakpointData(grid) || 'md';
+  const breakpoint = A1_BREAKPOINTS.includes(explicitBreakpoint) ? explicitBreakpoint : breakpointForNode(instance, fallbackBreakpoint);
+  const count = responsiveColumnsAt(responsive, breakpoint) || Object.values(responsive)[0] || 1;
+  try {
+    if (grid.layoutMode === 'GRID') {
+      grid.gridColumnCount = count;
+      grid.gridColumnSizes.forEach((track) => {
+        track.type = 'FLEX';
+        track.value = 1;
+      });
+    } else if (grid.layoutMode === 'HORIZONTAL') {
+      const visibleTiles = choiceGroupGridTiles(grid);
+      const columnCount = Math.max(1, Math.min(count, Math.max(visibleTiles.length, 1)));
+      const horizontalGap = figmaNumber(grid.itemSpacing, 0);
+      const availableWidth = Math.max(1, figmaNumber(grid.width, 0) - figmaNumber(grid.paddingLeft, 0) - figmaNumber(grid.paddingRight, 0));
+      const tileWidth = Math.max(1, (availableWidth - horizontalGap * Math.max(0, columnCount - 1)) / columnCount);
+      grid.layoutWrap = 'WRAP';
+      try { grid.counterAxisSpacing = horizontalGap; } catch { /* Older files may not expose wrapped row gap. */ }
+      visibleTiles.forEach((tile, index) => setChoiceGroupTileGridPreviewSizing(tile, tileWidth, warnings, `Option ${index + 1}`));
+    }
+  } catch (error) {
+    warnings.push(`Choice Group Options Grid preview columns could not be set: ${error.message}`);
+  }
+  syncResponsiveGridColumnsMetadata(grid, responsive);
+  try {
+    grid.setPluginData(A1_BREAKPOINT_KEY, breakpoint);
+  } catch {
+    // The visible name suffix still carries the responsive contract.
+  }
+  return responsive;
 }
 
 async function applyChoiceGroup(instance, node, warnings) {
   await loadInstanceFonts(instance);
   const props = node.props || {};
+  const options = Array.isArray(props.options) ? props.options.filter((option) => option && typeof option === 'object') : [];
+  const multiple = props.multiple === true;
+  const size = CHOICE_SIZES.includes(props.size) ? props.size : 'default';
   const assignments = {};
   queueComponentProperty(instance, assignments, 'Label', typeof props.label === 'string' ? props.label : '', 'TEXT', warnings, 'Choice Group label');
   queueComponentProperty(instance, assignments, 'Required', props.required === true, 'BOOLEAN', warnings, 'Choice Group required');
   const hint = typeof props.hint === 'string' ? props.hint : '';
   queueComponentProperty(instance, assignments, 'Helper', hint, 'TEXT', warnings, 'Choice Group helper');
   queueComponentProperty(instance, assignments, 'Show helper', hint.trim().length > 0, 'BOOLEAN', warnings, 'Choice Group helper visibility');
+  queueOptionalComponentProperty(instance, assignments, 'Size', size, 'VARIANT');
   applyQueuedProperties(instance, assignments, warnings, 'Choice Group properties');
+  instance = currentInstance(instance);
 
-  const options = Array.isArray(props.options) ? props.options.filter((option) => option && typeof option === 'object') : [];
-  const multiple = props.multiple === true;
-  const size = CHOICE_SIZES.includes(props.size) ? props.size : 'default';
   const rawSelection = props.defaultValue !== undefined ? props.defaultValue : props.value;
   const selected = new Set(
     Array.isArray(rawSelection)
@@ -12751,13 +15018,24 @@ async function applyChoiceGroup(instance, node, warnings) {
     warnings.push(`Choice Group supports up to ${CHOICE_GROUP_MAX_OPTIONS} Figma tiles — additional JSON options were not rendered.`);
   }
   const wanted = options.length > 0 ? Math.min(options.length, CHOICE_GROUP_MAX_OPTIONS) : choiceGroupTiles(instance).length;
-  const source = options.length > 0 ? await findComponentSourceAsync('Choice Option', warnings) : null;
+  let source = null;
   let tiles = choiceGroupTiles(instance);
   while (tiles.length < wanted) {
-    if (!source) { warnings.push('No "Choice Option" component was found — missing tiles were not added.'); break; }
     const { container } = choiceGroupTileContainer(instance);
     if (!container) break;
-    container.appendChild(source.createInstance());
+    const template = choiceGroupTileTemplate(instance, tiles);
+    let added = null;
+    if (template && typeof template.clone === 'function') {
+      added = template.clone();
+      try { added.visible = true; } catch { /* nested visibility can be locked */ }
+      container.appendChild(added);
+    } else {
+      if (!source && options.length > 0) source = await findComponentSourceAsync('Choice Option', warnings);
+      if (!source) { warnings.push('No "Choice Option" component was found — missing tiles were not added.'); break; }
+      added = source.createInstance();
+      container.appendChild(added);
+    }
+    setChoiceGroupTileFillSizing(added, warnings, `Option ${tiles.length + 1}`);
     tiles = choiceGroupTiles(instance);
   }
   while (tiles.length > wanted) {
@@ -12768,19 +15046,18 @@ async function applyChoiceGroup(instance, node, warnings) {
   // columns lives on the embedded Grid: a responsive object (or a fixed count,
   // stored as its xs value) syncs the grid's name/plugin-data metadata.
   if (props.columns !== undefined) {
-    const { grid } = choiceGroupTileContainer(instance);
-    if (grid) {
-      const responsive = normalizeResponsiveColumns(props.columns)
-        || (Number.isInteger(props.columns) && props.columns > 0 ? { xs: props.columns } : null);
-      if (responsive) syncResponsiveGridColumnsMetadata(grid, responsive);
-      else warnings.push('Choice Group columns value was not recognized — the embedded Grid was left unchanged.');
-    } else {
-      warnings.push('Choice Group columns need an embedded Grid inside the Options slot — the value was not represented.');
-    }
+    const responsive = normalizeResponsiveColumns(props.columns)
+      || (Number.isInteger(props.columns) && props.columns > 0 ? { xs: props.columns } : null);
+    if (responsive) applyChoiceGroupGridColumns(instance, responsive, warnings);
+    else warnings.push('Choice Group columns value was not recognized — the embedded Grid was left unchanged.');
   }
 
   const usedValues = new Set();
   tiles = choiceGroupTiles(instance);
+  const hasResponsiveOptionsGrid = Boolean(choiceGroupTileContainer(instance).grid);
+  if (!hasResponsiveOptionsGrid) {
+    tiles.forEach((tile, index) => setChoiceGroupTileFillSizing(tile, warnings, `Option ${index + 1}`));
+  }
   for (let index = 0; index < Math.min(tiles.length, options.length || tiles.length); index += 1) {
     const tile = tiles[index];
     const option = options[index];
@@ -12793,6 +15070,7 @@ async function applyChoiceGroup(instance, node, warnings) {
     queueComponentProperty(tile, tileAssignments, 'Type', multiple ? 'checkbox' : 'radio', 'VARIANT', warnings, `Option ${index + 1} type`);
     queueComponentProperty(tile, tileAssignments, 'Size', size, 'VARIANT', warnings, `Option ${index + 1} size`);
     queueComponentProperty(tile, tileAssignments, 'State', state, 'VARIANT', warnings, `Option ${index + 1} state`);
+    queueOptionalComponentProperty(tile, tileAssignments, 'Show indicator', props.hideIndicator !== true, 'BOOLEAN');
     const subtext = typeof option.subtext === 'string' ? option.subtext : '';
     queueComponentProperty(tile, tileAssignments, 'Show subtext', subtext.trim().length > 0, 'BOOLEAN', warnings, `Option ${index + 1} subtext visibility`);
     if (subtext.trim()) queueComponentProperty(tile, tileAssignments, 'Subtext', subtext, 'TEXT', warnings, `Option ${index + 1} subtext`);
@@ -12804,152 +15082,31 @@ async function applyChoiceGroup(instance, node, warnings) {
     }
     applyQueuedProperties(tile, tileAssignments, warnings, `Option ${index + 1} properties`);
   }
+  if (props.hideIndicator !== undefined && options.length === 0) {
+    tiles.forEach((tile, index) => {
+      const tileAssignments = {};
+      queueOptionalComponentProperty(tile, tileAssignments, 'Show indicator', props.hideIndicator !== true, 'BOOLEAN');
+      applyQueuedProperties(tile, tileAssignments, warnings, `Option ${index + 1} indicator visibility`);
+    });
+  }
   if (props.inlineIcon === true) warnings.push('inlineIcon layout is runtime-owned — tiles keep the stacked icon layout.');
-  if (props.hideIndicator === true) warnings.push('hideIndicator is runtime-owned — tiles keep their selection indicators.');
   if (props.sections) warnings.push('Labeled sections are runtime-owned — options were applied as a flat list.');
   if (props.error || props.success) warnings.push('Error/success group messages are runtime-owned — the helper text was applied instead.');
+  syncChoiceGroupTileSizing(instance, warnings);
   return instance;
 }
 
 async function importChoiceGroup(node, warnings) {
-  const instance = createComponentInstance('Choice Group');
+  const instance = await createComponentInstance('Choice Group', warnings);
   await applyChoiceGroup(instance, node, warnings);
   return instance;
 }
 
-const EXPORTERS = {
-  Icon: exportIcon,
-  Button: exportButton,
-  'Icon Button': exportIconButton,
-  'Button Container': exportButtonContainer,
-  Link: exportLink,
-  Breadcrumb: exportBreadcrumb,
-  Card: exportCard,
-  Banner: exportBanner,
-  Badge: exportBadge,
-  Figure: exportFigure,
-  'Definition List': exportDefinitionList,
-  'Definition List Item': exportDefinitionListItem,
-  Blockquote: exportBlockquote,
-  Code: exportCode,
-  Inline: exportInline,
-  Section: exportSection,
-  'Text Field': exportTextField,
-  'Search Field': exportSearchField,
-  Textarea: exportTextarea,
-  Switch: exportSwitch,
-  'Segmented Control': exportSegmentedControl,
-  Tabs: exportTabs,
-  Accordion: exportAccordion,
-  Tooltip: exportTooltip,
-  Pagination: exportPagination,
-  'Page Nav': exportPageNav,
-  'Tree Menu': exportTreeMenu,
-  'Empty State': exportEmptyState,
-  Select: exportSelect,
-  Divider: exportDivider,
-  Menu: exportMenu,
-  Dialog: exportDialog,
-  'Radio Group': exportRadioGroup,
-  'Checkbox Group': exportCheckboxGroup,
-  'Top Header': exportTopHeader,
-  'Page Layout': exportPageLayout,
-  'Bottom Sheet': exportBottomSheet,
-  Chip: exportChip,
-  'Chip Group': exportChipGroup,
-  'Data Table': exportDataTable,
-  'Choice Group': exportChoiceGroup,
-};
-const IMPORTERS = {
-  Icon: importIcon,
-  Button: importButton,
-  IconButton: importIconButton,
-  ButtonContainer: importButtonContainer,
-  Link: importLink,
-  Breadcrumb: importBreadcrumb,
-  Card: importCard,
-  Banner: importBanner,
-  MessageBadge: importBadge,
-  Figure: importFigure,
-  DefinitionList: importDefinitionList,
-  Blockquote: importBlockquote,
-  Code: importCode,
-  Inline: importInline,
-  Section: importSection,
-  TextField: importTextField,
-  SearchField: importSearchField,
-  TextareaField: importTextarea,
-  Switch: importSwitch,
-  SegmentedControl: importSegmentedControl,
-  Tabs: importTabs,
-  Accordion: importAccordion,
-  Tooltip: importTooltip,
-  Pagination: importPagination,
-  PageNav: importPageNav,
-  TreeMenu: importTreeMenu,
-  MessageEmptyState: importEmptyState,
-  SelectField: importSelect,
-  Divider: importDivider,
-  Menu: importMenu,
-  Dialog: importDialog,
-  RadioGroup: importRadioGroup,
-  CheckboxGroup: importCheckboxGroup,
-  TopHeader: importTopHeader,
-  PageLayout: importPageLayout,
-  BottomSheet: importBottomSheet,
-  ChipGroup: importChipGroup,
-  DataTable: importDataTable,
-  ChoiceGroup: importChoiceGroup,
-  Stack: importStack,
-  Grid: importGrid,
-  GridItem: importGridItem,
-  Heading: importTextNode,
-  Paragraph: importTextNode,
-};
+const EXPORTERS = componentRegistryMap(COMPONENT_ADAPTERS, 'export');
+const IMPORTERS = componentRegistryImporters(COMPONENT_ADAPTERS);
 // Appliers update an EXISTING instance in place (the "Update selection" action)
 // — the same functions the importers use after creating a fresh instance.
-const APPLIERS = {
-  Icon: applyIcon,
-  Button: applyButton,
-  'Icon Button': applyIconButton,
-  'Button Container': applyButtonContainer,
-  Link: applyLink,
-  Breadcrumb: applyBreadcrumb,
-  Card: applyCard,
-  Banner: applyBanner,
-  Badge: applyBadge,
-  Figure: applyFigure,
-  'Definition List': applyDefinitionList,
-  Blockquote: applyBlockquote,
-  Code: applyCode,
-  Inline: applyInline,
-  Section: applySection,
-  'Text Field': applyTextField,
-  'Search Field': applySearchField,
-  Textarea: applyTextarea,
-  Switch: applySwitch,
-  'Segmented Control': applySegmentedControl,
-  Tabs: applyTabs,
-  Accordion: applyAccordion,
-  Tooltip: applyTooltip,
-  Pagination: applyPagination,
-  'Page Nav': applyPageNav,
-  'Tree Menu': applyTreeMenu,
-  'Empty State': applyEmptyState,
-  Select: applySelect,
-  Divider: applyDivider,
-  Menu: applyMenu,
-  Dialog: applyDialog,
-  'Radio Group': applyRadioGroup,
-  'Checkbox Group': applyCheckboxGroup,
-  'Top Header': applyTopHeader,
-  'Page Layout': applyPageLayout,
-  'Bottom Sheet': applyBottomSheet,
-  Chip: applyChip,
-  'Chip Group': applyChipGroup,
-  'Data Table': applyDataTable,
-  'Choice Group': applyChoiceGroup,
-};
+const APPLIERS = componentRegistryMap(COMPONENT_ADAPTERS, 'apply');
 
 // ── Update: apply pasted JSON to the currently selected instance ────────────
 
@@ -13019,6 +15176,7 @@ async function handleUpdate(text) {
     await applyExistingSectionChildren(target, node, warnings);
   } else if (componentName === 'Button Container') {
     await applyExistingButtonContainerChildren(target, node, warnings);
+    syncButtonContainerForWidth(target, warnings);
   } else if (componentName === 'Card') {
     await replaceNativeSlotChildren(target, 'Content Slot', node.children, warnings, 'Card');
   } else if (componentName === 'Banner') {
@@ -13036,55 +15194,172 @@ async function handleUpdate(text) {
 
 const PLUGIN_UI_SIZE = {
   default: { width: 620, height: 640 },
-  build: { width: 620, height: 720 },
+  buildFix: { width: 620, height: 600 },
   help: { width: 620, height: 640 },
+  patterns: { width: 620, height: 640 },
+  minimized: { width: 400, height: 40 },
+  context: { width: 420, height: 440 },
   // Live Edit has enough controls that the standard compact plugin window
   // hides the bottom of the interface on typical desktop Figma layouts.
-  liveEdit: { width: 620, height: 720 },
+  liveEdit: { width: 620, height: 640 },
 };
 
-figma.showUI(__html__, PLUGIN_UI_SIZE.default);
+const RELAUNCH_COMMAND = 'open';
+
+function setRelaunchDataSafe(node, description) {
+  if (!node || typeof node.setRelaunchData !== 'function') return;
+  try {
+    node.setRelaunchData({ [RELAUNCH_COMMAND]: description });
+  } catch {
+    // Older Figma runtimes may expose the plugin typings without the
+    // relaunch-data API. Relaunch metadata is optional and must not affect
+    // export, audit, or context-menu behavior.
+  }
+}
+
+function relaunchDescription(target, selectionCount) {
+  if (target && target.type === 'INSTANCE') {
+    const componentName = registeredSetName(target) || componentSetName(target);
+    if (componentName) return `Open A1:Figma to edit this ${componentName}.`;
+  }
+  if (target && target.type === 'TEXT') return 'Open A1:Figma to configure this text layer.';
+  if (selectionCount > 1) return 'Open A1:Figma to inspect the selected layers.';
+  return 'Open A1:Figma for this page.';
+}
+
+function updateRelaunchData(selection, target) {
+  const selected = Array.isArray(selection) ? selection : [];
+  const description = relaunchDescription(target, selected.length);
+  setRelaunchDataSafe(figma.currentPage, description);
+  selected.forEach((node) => setRelaunchDataSafe(node, description));
+}
+
+figma.showUI(__html__, PLUGIN_UI_SIZE.minimized);
 
 function postSelectionState() {
   const selection = figma.currentPage.selection;
   const autoFixAllCount = autoFixTargetCount(selection);
   const selectionCount = selection.length;
-  const target = selection.length === 1 ? liveNode(selection[0]) : null;
+  const conversionRecommendation = conversionRecommendationForSelection(selection);
+  const conversionSuggestions = conversionRecommendation ? conversionRecommendation.suggestions : [];
+  let target = selection.length === 1 ? liveNode(selection[0]) : null;
+  updateRelaunchData(selection, target);
   if (target && target.type === 'TEXT') {
-    const { review } = exportTextNode(target);
-    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Text', textReview: review, autoFixAllCount, selectionCount });
+    const suggestion = textSuggestion(target);
+    const review = suggestion.issues.length ? { issues: suggestion.issues, suggestion } : null;
+    postPluginMessage({
+      type: 'selection',
+      exportable: true,
+      componentName: 'Text',
+      textReview: review,
+      textContext: textContextForSelection(target, suggestion),
+      autoFixAllCount,
+      selectionCount,
+      conversionRecommendation,
+      conversionSuggestions
+    });
     return;
   }
   if (target && target.type === 'INSTANCE') {
     const componentName = registeredSetName(target);
     if (componentName) {
+      if (componentName === 'Card') target = syncCardIconPositionForWidth(target, []);
+      if (componentName === 'Breadcrumb') target = syncBreadcrumbBackButtonForWidth(target, []);
+      if (componentName === 'Button Container') target = syncButtonContainerForWidth(target, []);
+      if (componentName === 'Choice Group') {
+        const { grid } = choiceGroupTileContainer(target);
+        applyChoiceGroupGridColumnsForBreakpoint(target, breakpointForNode(target, readBreakpointData(grid) || 'md'), []);
+        syncChoiceGroupTileSizing(target, []);
+      }
       const sectionReview = componentName === 'Section' ? sectionSuggestion(target) : null;
-      postPluginMessage({ type: 'selection', exportable: true, componentName, sectionReview, autoFixAllCount, selectionCount });
+      const sectionContext = componentName === 'Section' ? sectionContextForSelection(target) : null;
+      const buttonContext = componentName === 'Button' ? buttonContextForSelection(target) : null;
+      const buttonContainerContext = componentName === 'Button Container' ? buttonContainerContextForSelection(target) : null;
+      const iconButtonContext = componentName === 'Icon Button' ? iconButtonContextForSelection(target) : null;
+      const badgeContext = componentName === 'Badge' ? badgeContextForSelection(target) : null;
+      const cardContext = componentName === 'Card' ? cardContextForSelection(target) : null;
+      const dialogContext = componentName === 'Dialog' ? dialogContextForSelection(target) : null;
+      const menuContext = componentName === 'Menu' ? menuContextForSelection(target) : null;
+      const pageLayoutContext = componentName === 'Page Layout' ? pageLayoutContextForSelection(target) : null;
+      const topHeaderContext = componentName === 'Top Header' ? topHeaderContextForSelection(target) : null;
+      const linkContext = componentName === 'Link' ? linkContextForSelection(target) : null;
+      const definitionListContext = componentName === 'Definition List' ? definitionListContextForSelection(target) : null;
+      const dataTableContext = componentName === 'Data Table' ? dataTableContextForSelection(target) : null;
+      const choiceGroupContext = componentName === 'Choice Group' ? choiceGroupContextForSelection(target) : null;
+      postPluginMessage({
+        type: 'selection',
+        exportable: true,
+        componentName,
+        pageLayoutNodeId: componentName === 'Page Layout' ? target.id : null,
+        pageLayoutContext,
+        topHeaderNodeId: componentName === 'Top Header' ? target.id : null,
+        topHeaderContext,
+        linkNodeId: componentName === 'Link' ? target.id : null,
+        linkContext,
+        cardNodeId: componentName === 'Card' ? target.id : null,
+        cardContext,
+        iconButtonNodeId: componentName === 'Icon Button' ? target.id : null,
+        iconButtonContext,
+        badgeNodeId: componentName === 'Badge' ? target.id : null,
+        badgeContext,
+        dialogNodeId: componentName === 'Dialog' ? target.id : null,
+        dialogContext,
+        menuNodeId: componentName === 'Menu' ? target.id : null,
+        menuContext,
+        definitionListNodeId: componentName === 'Definition List' ? target.id : null,
+        definitionListContext,
+        dataTableNodeId: componentName === 'Data Table' ? target.id : null,
+        dataTableContext,
+        choiceGroupNodeId: componentName === 'Choice Group' ? target.id : null,
+        choiceGroupContext,
+        sectionNodeId: componentName === 'Section' ? target.id : null,
+        sectionReview,
+        sectionContext,
+        buttonNodeId: componentName === 'Button' ? target.id : null,
+        buttonContext,
+        buttonContainerNodeId: componentName === 'Button Container' ? target.id : null,
+        buttonContainerContext,
+        autoFixAllCount,
+        selectionCount,
+        conversionRecommendation,
+        conversionSuggestions
+      });
       return;
     }
     if (materialIconNameFromInstance(target)) {
-      postPluginMessage({ type: 'selection', exportable: true, componentName: 'Icon', autoFixAllCount, selectionCount });
+      postPluginMessage({ type: 'selection', exportable: true, componentName: 'Icon', autoFixAllCount, selectionCount, conversionRecommendation, conversionSuggestions });
       return;
     }
     const privateComponentName = privateA1ImplementationComponentName(target);
     if (privateComponentName) {
-      postPluginMessage({ type: 'selection', exportable: false, componentName: privateComponentName, autoFixAllCount, selectionCount });
+      postPluginMessage({ type: 'selection', exportable: false, componentName: privateComponentName, autoFixAllCount, selectionCount, conversionRecommendation, conversionSuggestions });
       return;
     }
   }
   const pageLayoutReview = pageLayoutSuggestion(target);
   if (pageLayoutReview) {
-    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Page Layout candidate', pageLayoutReview, autoFixAllCount, selectionCount });
+    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Page Layout candidate', pageLayoutReview, autoFixAllCount, selectionCount, conversionRecommendation, conversionSuggestions });
     return;
   }
   const cardReview = cardSuggestion(target);
   if (cardReview) {
-    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Card candidate', cardReview, autoFixAllCount, selectionCount });
+    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Card candidate', cardReview, autoFixAllCount, selectionCount, conversionRecommendation, conversionSuggestions });
     return;
   }
   if (isStackFrame(target)) {
     const stackReview = stackSuggestion(target);
-    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Stack', stackReview, autoFixAllCount, selectionCount });
+    postPluginMessage({
+      type: 'selection',
+      exportable: true,
+      componentName: 'Stack',
+      stackNodeId: target.id,
+      stackContext: stackContextForSelection(target),
+      stackReview,
+      autoFixAllCount,
+      selectionCount,
+      conversionRecommendation,
+      conversionSuggestions
+    });
     return;
   }
   if (isGridFrame(target)) {
@@ -13094,13 +15369,17 @@ function postSelectionState() {
       componentName: 'Grid',
       gridNodeId: target.id,
       gridColumns: readResponsiveGridColumns(target),
+      gridWidthMode: gridWidthMode(target),
+      gridHeightMode: gridHeightMode(target),
       autoFixAllCount,
-      selectionCount
+      selectionCount,
+      conversionRecommendation,
+      conversionSuggestions
     });
     return;
   }
   if (target && canExportContainer(target)) {
-    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Screen content', autoFixAllCount, selectionCount });
+    postPluginMessage({ type: 'selection', exportable: true, componentName: 'Screen content', autoFixAllCount, selectionCount, conversionRecommendation, conversionSuggestions });
     return;
   }
   const componentName = target && target.type === 'INSTANCE' ? componentSetName(target) : null;
@@ -13110,6 +15389,8 @@ function postSelectionState() {
     componentName,
     autoFixAllCount,
     selectionCount,
+    conversionRecommendation,
+    conversionSuggestions,
   });
 }
 
@@ -13121,7 +15402,8 @@ function postSelectionState() {
 // textarea the user has typed into (manual Export selection does).
 let autoExportTimer = null;
 let liveViewEnabled = false;
-let pluginMode = 'fix';
+let pluginMode = 'build-fix';
+let pluginUiMode = 'minimized';
 let livePreviewTimer = null;
 let linkedPageLiveLink = null;
 let linkedPageLiveTimer = null;
@@ -13198,6 +15480,16 @@ function scheduleLinkedPagePreview() {
   }, 600);
 }
 
+let selectionStateRefreshTimer = null;
+
+function scheduleSelectionStateRefresh(delay = 120) {
+  if (selectionStateRefreshTimer) clearTimeout(selectionStateRefreshTimer);
+  selectionStateRefreshTimer = setTimeout(() => {
+    selectionStateRefreshTimer = null;
+    postSelectionState();
+  }, delay);
+}
+
 figma.on('selectionchange', () => {
   postSelectionState();
   syncSelectedInstancePropertySignature();
@@ -13205,7 +15497,7 @@ figma.on('selectionchange', () => {
   scheduleLivePreview();
 });
 
-figma.on('documentchange', (event) => {
+function handleCurrentPageNodeChange(event) {
   if (linkedPageLiveLink) scheduleLinkedPagePreview();
   if (liveViewEnabled) {
     scheduleLivePreview();
@@ -13221,15 +15513,16 @@ figma.on('documentchange', (event) => {
   // variable changes. If a text layer remains selected, re-export on the next
   // debounced document change and read its fresh fill binding above.
   if (target.type === 'TEXT') {
+    scheduleSelectionStateRefresh();
     scheduleAutoExport();
     return;
   }
-  const relevant = event.documentChanges.some((change) => {
+  const relevant = event.nodeChanges.some((change) => {
     if (!change.id) return false;
     if (change.id === target.id) return true;
     let changed = null;
     try {
-      changed = figma.getNodeById(change.id);
+      changed = resolveNodeById(change.id);
     } catch {
       return false;
     }
@@ -13238,8 +15531,34 @@ figma.on('documentchange', (event) => {
     }
     return false;
   });
-  if (relevant) scheduleAutoExport();
-});
+  if (relevant) {
+    if (target.type === 'INSTANCE' && registeredSetName(target) === 'Card') {
+      syncCardIconPositionForWidth(target, []);
+    }
+    if (target.type === 'INSTANCE' && registeredSetName(target) === 'Breadcrumb') {
+      syncBreadcrumbBackButtonForWidth(target, []);
+    }
+    if (target.type === 'INSTANCE' && registeredSetName(target) === 'Button Container') {
+      syncButtonContainerForWidth(target, []);
+    }
+    if (target.type === 'INSTANCE' && registeredSetName(target) === 'Choice Group') {
+      syncChoiceGroupTileSizing(target, []);
+    }
+    scheduleSelectionStateRefresh();
+    scheduleAutoExport();
+  }
+}
+
+let nodeChangePage = null;
+function bindCurrentPageNodeChange() {
+  const page = figma.currentPage;
+  if (!page || page === nodeChangePage) return;
+  nodeChangePage = page;
+  page.on('nodechange', handleCurrentPageNodeChange);
+}
+
+figma.on('currentpagechange', bindCurrentPageNodeChange);
+bindCurrentPageNodeChange();
 
 setInterval(() => {
   syncSelectedInstancePropertySignature({ schedule: true });
@@ -13256,6 +15575,7 @@ figma.ui.onmessage = async (message) => {
     if (message.type === 'audit-selection') await handleAuditSelection({ printReport: message.printReport === true });
     if (message.type === 'select-audit-issue') handleSelectAuditIssue(message.nodeId);
     if (message.type === 'ignore-audit-issue') handleIgnoreAuditIssue(message.nodeId);
+    if (message.type === 'tidy-up') await handleTidyUp();
     if (message.type === 'detach-all') await handleDetachAll();
     if (message.type === 'set-live-view') {
       // Live view is a plain toggle: the plugin window keeps its normal size
@@ -13268,15 +15588,53 @@ figma.ui.onmessage = async (message) => {
       if (liveViewEnabled) setTimeout(scheduleLivePreview, 900);
     }
     if (message.type === 'set-plugin-mode') {
-      pluginMode = ['audit', 'fix', 'build', 'live-edit', 'help'].includes(message.mode) ? message.mode : 'audit';
+      pluginMode = ['audit', 'build-fix', 'live-edit', 'patterns', 'help'].includes(message.mode) ? message.mode : 'build-fix';
+      if (pluginUiMode !== 'full') return;
       const size = pluginMode === 'live-edit'
         ? PLUGIN_UI_SIZE.liveEdit
-        : pluginMode === 'build'
-          ? PLUGIN_UI_SIZE.build
+        : pluginMode === 'build-fix'
+          ? PLUGIN_UI_SIZE.buildFix
+          : pluginMode === 'patterns'
+            ? PLUGIN_UI_SIZE.patterns
           : pluginMode === 'help'
             ? PLUGIN_UI_SIZE.help
           : PLUGIN_UI_SIZE.default;
       figma.ui.resize(size.width, size.height);
+    }
+    if (message.type === 'set-plugin-ui-mode') {
+      pluginUiMode = ['full', 'minimized', 'context'].includes(message.mode) ? message.mode : 'full';
+      const size = pluginUiMode === 'minimized'
+        ? PLUGIN_UI_SIZE.minimized
+        : pluginUiMode === 'context'
+          ? PLUGIN_UI_SIZE.context
+          : pluginMode === 'live-edit'
+            ? PLUGIN_UI_SIZE.liveEdit
+            : pluginMode === 'build-fix'
+              ? PLUGIN_UI_SIZE.buildFix
+              : pluginMode === 'patterns'
+                ? PLUGIN_UI_SIZE.patterns
+                : pluginMode === 'help'
+                  ? PLUGIN_UI_SIZE.help
+                  : PLUGIN_UI_SIZE.default;
+      figma.ui.resize(size.width, size.height);
+    }
+    if (message.type === 'set-plugin-compact') {
+      // Backward-compatible controller command for older UI bundles.
+      pluginUiMode = message.compact === true ? 'minimized' : 'full';
+      if (pluginUiMode === 'minimized') {
+        figma.ui.resize(PLUGIN_UI_SIZE.minimized.width, PLUGIN_UI_SIZE.minimized.height);
+      } else {
+        const size = pluginMode === 'live-edit'
+          ? PLUGIN_UI_SIZE.liveEdit
+          : pluginMode === 'build-fix'
+            ? PLUGIN_UI_SIZE.buildFix
+            : pluginMode === 'patterns'
+              ? PLUGIN_UI_SIZE.patterns
+              : pluginMode === 'help'
+                ? PLUGIN_UI_SIZE.help
+                : PLUGIN_UI_SIZE.default;
+        figma.ui.resize(size.width, size.height);
+      }
     }
     if (message.type === 'close-plugin') figma.closePlugin();
     if (message.type === 'set-linked-page-live') {
@@ -13321,7 +15679,7 @@ figma.ui.onmessage = async (message) => {
           warnings.push(`${page.link.pageTitle || page.link.pageId}: could not be rendered.`);
           continue;
         }
-        const root = figma.getNodeById(result.rootNodeId);
+        const root = resolveNodeById(result.rootNodeId);
         if (root && root.type === 'FRAME') {
           root.x = origin.x;
           root.y = nextY;
@@ -13349,6 +15707,12 @@ figma.ui.onmessage = async (message) => {
         ...result,
       });
     }
+    if (message.type === 'import-pattern') {
+      await importPatternAsComponentSet(message.pattern);
+    }
+    if (message.type === 'export-pattern') {
+      exportSelectedPattern();
+    }
     if (message.type === 'create-a1-page') {
       const result = await exportNewA1Page(message.project);
       postPluginMessage({ type: 'create-a1-page-result', ...result });
@@ -13359,6 +15723,29 @@ figma.ui.onmessage = async (message) => {
     }
     if (message.type === 'update') await handleUpdate(message.text);
     if (message.type === 'fix-text') await handleFixText();
+    if (message.type === 'set-page-layout-props') await handleSetPageLayoutProps(message);
+    if (message.type === 'set-top-header-props') await handleSetTopHeaderProps(message);
+    if (message.type === 'set-text-props') await handleSetTextProps(message);
+    if (message.type === 'set-link-props') await handleSetLinkProps(message);
+    if (message.type === 'set-button-props') await handleSetButtonProps(message);
+    if (message.type === 'set-button-container-props') await handleSetButtonContainerProps(message);
+    if (message.type === 'set-button-dialog-link') await handleSetActionTriggerLink({ ...message, componentName: 'Button', targetType: 'Dialog' });
+    if (message.type === 'add-dialog-for-button') await handleAddActionTargetForTrigger({ ...message, componentName: 'Button', targetType: 'Dialog' });
+    if (message.type === 'set-dialog-trigger-link') await handleSetActionTriggerLink({ ...message, targetType: 'Dialog' });
+    if (message.type === 'add-dialog-for-trigger') await handleAddActionTargetForTrigger({ ...message, targetType: 'Dialog' });
+    if (message.type === 'set-action-trigger-link') await handleSetActionTriggerLink(message);
+    if (message.type === 'add-action-trigger-target') await handleAddActionTargetForTrigger(message);
+    if (message.type === 'set-icon-button-props') await handleSetIconButtonProps(message);
+    if (message.type === 'set-badge-props') await handleSetBadgeProps(message);
+    if (message.type === 'set-card-props') await handleSetCardProps(message);
+    if (message.type === 'set-dialog-props') await handleSetDialogProps(message);
+    if (message.type === 'set-menu-props') handleSetMenuProps(message);
+    if (message.type === 'set-definition-list-props') await handleSetDefinitionListProps(message);
+    if (message.type === 'set-data-table-props') await handleSetDataTableProps(message);
+    if (message.type === 'set-choice-group-props') await handleSetChoiceGroupProps(message);
+    if (message.type === 'set-section-props') await handleSetSectionProps(message);
+    if (message.type === 'set-stack-props') await handleSetStackProps(message);
+    if (message.type === 'set-grid-props') handleSetGridProps(message);
     if (message.type === 'fix-all') await handleFixAll();
     if (message.type === 'fix-all-text') await handleFixAllText();
     if (message.type === 'fix-page-layout') await handleFixPageLayout();
