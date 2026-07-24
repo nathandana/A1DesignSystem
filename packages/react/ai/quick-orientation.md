@@ -12,6 +12,9 @@
 | Verify react npm tarball (imports, entry points, guidelines sync) | `npm run pack:check` |
 | Full QA (axe + visual + report) | `npm run test:qa` |
 | Update visual baselines | `npm run test:qa:update` |
+| A1-Web route baseline | `npm run test:a1-web` |
+| Update A1-Web route baselines | `npm run test:a1-web:update` |
+| A1-Web release gate | `npm run release:a1-web:check` |
 | Storybook dev | `npm run storybook` |
 | a1-web dev | `npm run dev:a1-web` |
 | General dev server | `npm run dev` |

@@ -347,13 +347,14 @@ export function Preview({ config, utilityClass = utilityClassesFor('Section', co
 }
 
 // A compact, subtle Slider over a string-value scale (index space ↔ value).
-function DetentSlider({ label, values, detents, value, onChange, prop }) {
+function DetentSlider({ label, values, detents, value, onChange, prop, "aria-label": ariaLabel }) {
   return (
     <Lockable prop={prop}>
       <Slider
         size="compact"
         variant="subtle"
         label={label}
+        aria-label={ariaLabel}
         detents={detents}
         value={Math.max(0, values.indexOf(value))}
         onChange={(index) => onChange(values[index])}
@@ -405,7 +406,7 @@ export function Controls({ config, setConfig, projectId }) {
       <Accordion label="Sizing" size="sm" subtext={sizingSummary} divider defaultOpen>
         <Stack gap="md">
           <ResponsiveControl label="Padding" prop="padding" value={config.padding} onChange={(padding) => set({ padding })} defaultValue="md">
-            {(val, setVal) => <DetentSlider values={PADDING_VALUES} detents={PADDING_DETENTS} value={val} onChange={setVal} />}
+            {(val, setVal) => <DetentSlider aria-label="Padding" values={PADDING_VALUES} detents={PADDING_DETENTS} value={val} onChange={setVal} />}
           </ResponsiveControl>
           <DetentSlider label="Gap" prop="gap" values={GAP_VALUES} detents={GAP_DETENTS} value={config.gap} onChange={(gap) => set({ gap })} />
           <DetentSlider label="Content width" prop="contentWidth" values={CONTENT_WIDTH_VALUES} detents={CONTENT_WIDTH_DETENTS} value={config.contentWidth} onChange={(contentWidth) => set({ contentWidth })} />

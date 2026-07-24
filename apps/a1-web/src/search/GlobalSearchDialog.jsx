@@ -5,6 +5,7 @@ import {
   MessageEmptyState,
   SearchField,
   Stack,
+  useLabel,
 } from '@gtivr4/a1-design-system-react'
 import './global-search-dialog.css'
 
@@ -110,6 +111,7 @@ function groupedResults(entries, query) {
 }
 
 export function GlobalSearchDialog({ open, entries = [], onClose }) {
+  const searchLabel = useLabel('app.action.globalSearch', 'Search A1')
   const dialogRef = useRef(null)
   const triggerRef = useRef(null)
   const inputRef = useRef(null)
@@ -203,15 +205,14 @@ export function GlobalSearchDialog({ open, entries = [], onClose }) {
     <dialog
       ref={dialogRef}
       className={['a1-global-search-dialog', closing && 'a1-global-search-dialog--closing'].filter(Boolean).join(' ')}
-      aria-label="Search A1"
+      aria-label={searchLabel}
     >
       <Stack direction="column" gap="sm" className="a1-global-search-dialog__layout">
         <div className="a1-global-search-dialog__field">
           <SearchField
             ref={inputRef}
             size="comfortable"
-            aria-label="Search A1"
-            placeholder="Search A1"
+            aria-label={searchLabel}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={handleSearchKeyDown}

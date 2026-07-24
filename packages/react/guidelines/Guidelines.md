@@ -9,6 +9,7 @@ Design system package: `@gtivr4/a1-design-system-react`
 Always read first:
 - `Guidelines.md` — this file; the main hub and entry point
 - `tokens.md` — foundational design tokens (color, typography, spacing); also covers required CSS imports and theming
+- `content-standards.md` — product and documentation voice, grammar, formatting, AP Style defaults, and A1 overrides
 
 Read on-demand:
 - `setup.md` — read once when installing: CSS imports, fonts, PostCSS, providers
@@ -29,6 +30,7 @@ These files live alongside `Guidelines.md` in the `/guidelines/` directory and s
 | `tokens.md` | Design tokens, color/typography/shadow/border tokens, theming, and CSS custom properties |
 | `styles.md` | Spacing scales, layout primitives, responsive patterns, and CSS methodology |
 | `setup.md` | Project setup instructions, provider configuration, required CSS imports, and peer dependency requirements |
+| `content-standards.md` | Product copy and documentation standards, including casing, numerals, dates, phone numbers, addresses, accessibility, and localization |
 
 ---
 
@@ -142,3 +144,4 @@ Wrap any section in `<Inverse>` to render it in the opposite color mode without 
 - `Dialog` uses the native `<dialog>` top layer; provide `onClose` to make it dismissable (Escape / close button / backdrop), or omit it for a non-dismissable dialog.
 - `PageLayout` is the correct shell for full-page layouts — don't hand-roll header/sidebar/footer structure.
 - `MessageBadge` uses `subtle` (a boolean prop), not `variant="subtle"`.
+- Follow `content-standards.md` for product copy and documentation. AP Style is the default unless the A1 standard or an approved product term explicitly overrides it.

@@ -32,7 +32,7 @@ export function Preview({ config, utilityClass = '' }) {
           style={{
             background: 'var(--semantic-color-action-background)',
             padding: 'var(--base-spacing-12)',
-            color: 'var(--semantic-color-text-inverse)',
+            '--a1-paragraph-color': 'var(--semantic-color-action-foreground)',
           }}
         >
           <Paragraph size="sm">

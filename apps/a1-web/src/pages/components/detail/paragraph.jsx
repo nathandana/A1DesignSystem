@@ -151,7 +151,7 @@ export function Controls({ config, setConfig, textAction = null }) {
         options={PARAGRAPH_ELEMENT_OPTIONS.map((opt) => ({ label: opt, value: opt }))}
       />
       <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
-        {(val, setVal) => <ConfigSlider values={PARAGRAPH_SIZE_OPTIONS} value={val} onChange={setVal} />}
+        {(val, setVal) => <ConfigSlider aria-label="Size" values={PARAGRAPH_SIZE_OPTIONS} value={val} onChange={setVal} />}
       </ResponsiveControl>
       <Choice prop="color"
         label="Color"

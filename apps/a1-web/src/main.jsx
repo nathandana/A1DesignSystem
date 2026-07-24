@@ -87,7 +87,12 @@ import {
   componentIdFromRouteSlug,
   getComponentExampleBySlug,
 } from './pages/Components.jsx'
-import { allComponents, rankComponentsForSearch } from './pages/components/utils.js'
+import {
+  allComponents,
+  componentExamples,
+  getComponentExamplePath,
+  rankComponentsForSearch,
+} from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
 import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
 import {
@@ -289,6 +294,47 @@ function getPath(page) {
   return `/${page}`
 }
 
+function getBaselineRoutes() {
+  const routes = []
+  const paths = new Set()
+  const addRoute = (id, path) => {
+    if (!id || !path || paths.has(path)) return
+    paths.add(path)
+    routes.push({ id, path })
+  }
+
+  for (const page of PAGES) {
+    if (['blog-article', 'backlog-ticket', 'virtual-team'].includes(page)) continue
+    addRoute(page, getPath(page))
+  }
+
+  for (const post of BLOG_POSTS) {
+    addRoute(`blog-${post.slug}`, `/blog/${post.slug}`)
+  }
+
+  for (const [componentId, examples] of Object.entries(componentExamples)) {
+    for (const example of examples) {
+      addRoute(
+        `component-${componentId}-example-${example.id}`,
+        getComponentExamplePath(componentId, example.id),
+      )
+    }
+  }
+
+  // Dynamic route families use deterministic missing-data states in baseline QA.
+  // Live entity data is tested separately from this release-blocking UI contract.
+  addRoute('backlog-ticket-not-found', '/backlog/A1-0')
+  addRoute('published-project-not-found', '/p/a1-web-baseline-missing')
+
+  return routes
+}
+
+const baselineRouteManifest = document.createElement('script')
+baselineRouteManifest.id = 'a1-web-baseline-routes'
+baselineRouteManifest.type = 'application/json'
+baselineRouteManifest.textContent = JSON.stringify(getBaselineRoutes())
+document.head.append(baselineRouteManifest)
+
 function isPlainLeftClick(e) {
   return e.button === 0 && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey
 }
@@ -341,6 +387,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'backlog-ticket': 'app.page.backlog',
   about: 'app.page.about',
   account: 'app.page.account',
+  'foundation-content-standards': 'app.contentStandards.title',
 }
 
 function resolveLabel(labels, locale, key, fallback) {
@@ -782,9 +829,9 @@ function App() {
     foundations.forEach((foundation) => {
       entries.push({
         id: `foundation-${foundation.id}`,
-        title: foundation.title,
+        title: t(foundation.titleLabelKey, foundation.title),
         category: 'Foundations',
-        description: foundation.body,
+        description: t(foundation.bodyLabelKey, foundation.body),
         icon: foundation.icon,
         keywords: [foundation.id, 'foundation', 'token', 'standard'],
         onSelect: () => navigate(foundation.id),
@@ -1474,12 +1521,12 @@ function App() {
   }, [activePage, locale, allLabels])
 
   const FOUNDATION_GROUPS = [
-    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-content-standards', 'foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
-    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
   ]
 
   const componentMenuSearchQuery = componentMenuSearch.trim()
@@ -1585,20 +1632,22 @@ function App() {
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
         { divider: true },
-        ...FOUNDATION_GROUPS.map(({ label, icon, ids }) => ({
-          icon,
-          label,
-          items: ids
-            .map((id) => foundations.find((f) => f.id === id))
-            .filter(Boolean)
-            .sort((a, b) => a.title.localeCompare(b.title))
-            .map((foundation) => ({
-              icon: foundation.icon,
-              label: foundation.title,
-              href: getPath(foundation.id),
-              onClick: (e) => handleNavClick(e, foundation.id),
-            })),
-        })),
+        ...[...FOUNDATION_GROUPS]
+          .sort((a, b) => a.label.localeCompare(b.label, locale))
+          .map(({ label, icon, ids }) => ({
+            icon,
+            label,
+            items: ids
+              .map((id) => foundations.find((f) => f.id === id))
+              .filter(Boolean)
+              .sort((a, b) => t(a.titleLabelKey, a.title).localeCompare(t(b.titleLabelKey, b.title), locale))
+              .map((foundation) => ({
+                icon: foundation.icon,
+                label: t(foundation.titleLabelKey, foundation.title),
+                href: getPath(foundation.id),
+                onClick: (e) => handleNavClick(e, foundation.id),
+              })),
+          })),
       ],
     },
     {
@@ -1761,6 +1810,7 @@ function App() {
   const logo = (
     <span className="a1-web-logo">
       <span className="a1-web-logo__mark" aria-hidden="true">A1:Design</span>
+      <span className="a1-sr-only">{t('app.page.home', 'Home')}</span>
     </span>
   )
 

@@ -13,6 +13,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/page-definition-standard.md` — the AI-readable standard for the A1 page-definition JSON feed (the layout-first format rendered into A1 components by the a1-web Editor and the future site builder). Read before authoring, generating, or rendering page definitions, or changing their types/registry/renderer.
 - `packages/react/ai/a1-agent-brief.md` — **single self-contained brief** for handing to a zero-context agent that generates A1 page/project JSON: the page-definition + project-bundle shapes, the full 60-type registry with key props, value vocabularies, rules, and worked examples. Keep its registry synchronized with `page-definition-standard.md`, `pageTypes.ts`, and `componentRegistry.ts`.
 - `packages/react/ai/a1-web-one-shot-instruction.md` — copy-paste instruction for asking any agent to create an A1-web website as an importable JSON project bundle, including the JSON contract, design rules, accessibility requirements, and validation checklist.
+- `packages/react/ai/content-standards.md` — AI-facing policy for product copy and documentation, including the source hierarchy, AP Style default, A1 overrides, and link to the canonical public standard.
 - `packages/react/ai/figma-workflow.md` — rules for creating Figma components: color/text variable binding, auto-layout constraints, component property ↔ React prop mapping, and a per-component gap table documenting what cannot be represented in Figma.
 - `system/icons/icon-usage.md` — system-level icon usage guidance for agents, with theme override rules and scenario mappings.
 - `TODO.md` (repo root) — the living backlog / idea space. Skim it before backlog work; triage new notes, keep items prioritized, and **remove items when they ship**. Maintenance conventions are in the file's header.
@@ -50,5 +51,6 @@ These eight rules govern all work in this repository. Read them before starting 
 3. Check `packages/react/ai/components.md` before asking whether a component exists or where it is implemented.
 4. Check `packages/react/ai/quick-orientation.md` for build commands and key file locations.
 5. Follow `packages/react/ai/a11y-policy.md` for accessibility-relevant changes.
+6. Follow `packages/react/ai/content-standards.md` when authoring or editing product copy, documentation, labels, or examples.
 
 Package-level context files may add package-specific rules on top of these foundations. The central rules here still apply.

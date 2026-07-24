@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+- **Content standards** (A1-2063) — added the shipped public content guide for
+  voice, grammar, casing, numerals, dates, phone numbers, addresses,
+  accessibility and localization. The guide uses the current AP Stylebook by
+  default and records explicit A1 overrides; matching AI guidance makes the
+  same decision hierarchy discoverable to repository agents. The canonical
+  guide also powers the a1-web Foundations → Content → Standards page. These
+  documentation surfaces add no automated enforcement.
+
 ## 0.29.0 — 2026-07-24
 
 ### Added

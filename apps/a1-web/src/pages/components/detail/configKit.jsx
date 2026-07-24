@@ -323,7 +323,7 @@ function longSizeLabel(value) {
  * thumb index back to the string value. Pass `format` to customise the short
  * detent labels; `bubbleFormat` customises the longer value-bubble label.
  */
-export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel, prop, helper }) {
+export function ConfigSlider({ label, values, value, onChange, format = defaultFormat, bubbleFormat = longSizeLabel, prop, helper, "aria-label": ariaLabel }) {
   const detents = values.map((v, index) => ({ value: index, label: format(v) }))
   const clampIndex = (index) => Math.max(0, Math.min(values.length - 1, Math.round(index)))
   return (
@@ -333,6 +333,7 @@ export function ConfigSlider({ label, values, value, onChange, format = defaultF
           size="compact"
           variant="subtle"
           label={label}
+          aria-label={ariaLabel}
           detents={detents}
           value={Math.max(0, values.indexOf(value))}
           onChange={(index) => onChange(values[index])}

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Release baseline testing** — Every A1-Web route now has automated page-load,
+  visual-regression and accessibility checks before publishing can continue.
+
 ## 0.30.0 — 2026-07-24
 
 ### Highlights
