@@ -61,7 +61,7 @@ export function FigmaPluginFoundationPage({ onNavigate }) {
         title="A1:Figma plugin"
         description="A practical bridge for building with A1 assets, checking design-system compatibility, and exchanging structured pages, patterns, and component data between Figma and the local A1 workspace."
       >
-        <Button
+        <ButtonContainer align="start"><Button
           as="a"
           href={FIGMA_LIBRARY_URL}
           target="_blank"
@@ -70,7 +70,7 @@ export function FigmaPluginFoundationPage({ onNavigate }) {
           iconPosition="end"
         >
           Open the Figma library
-        </Button>
+        </Button></ButtonContainer>
       </PageTitleArea>
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="figma-plugin-modes-heading">
