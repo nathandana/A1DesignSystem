@@ -40,13 +40,14 @@ const MARGIN_VALUES = ['', 'sm', 'md', 'lg']
 const MARGIN_DETENTS = MARGIN_VALUES.map((value, index) => ({ value: index, label: value ? optionLabel(value) : '--' }))
 
 // A compact, subtle Slider over a string-value scale (matches the Section configurator).
-function DetentSlider({ label, values, detents, value, onChange, prop }) {
+function DetentSlider({ label, values, detents, value, onChange, prop, "aria-label": ariaLabel }) {
   return (
     <Lockable prop={prop}>
       <Slider
         size="compact"
         variant="subtle"
         label={label}
+        aria-label={ariaLabel}
         detents={detents}
         value={Math.max(0, values.indexOf(value))}
         onChange={(index) => onChange(values[index])}
@@ -521,6 +522,7 @@ export function Controls({ config, setConfig, textAction = null }) {
       <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => set({ size })} defaultValue={sizeOptions[2]}>
         {(val, setVal) => (
           <DetentSlider
+            aria-label="Size"
             values={sizeOptions}
             detents={sizeOptions.map((value, index) => ({ value: index, label: optionLabel(value) }))}
             value={val}

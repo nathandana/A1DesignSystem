@@ -20,6 +20,7 @@ import {
   Stack,
   Tab,
   TabList,
+  TabPanel,
   Tabs,
   TextField,
   Toolbar,
@@ -341,9 +342,8 @@ export function ImageLibraryView({ projects = [], onNavigateHome }) {
             <Tab value="images" icon="photo_library">Images</Tab>
             <Tab value="categories" icon="sell">Categories</Tab>
           </TabList>
-        </Tabs>
 
-        {galleryView === 'images' && (<>
+        <TabPanel value="images">
         {images.length > 0 && (
           <Toolbar label="View" aria-label="Image view options">
             <ToolbarGroup
@@ -468,9 +468,9 @@ export function ImageLibraryView({ projects = [], onNavigateHome }) {
             </Grid>
           )}
         </div>
-        </>)}
+        </TabPanel>
 
-        {galleryView === 'categories' && (
+        <TabPanel value="categories">
           <Stack gap="sm">
             <Stack direction="row" gap="xs" align="end">
               <Stack grow>
@@ -496,7 +496,8 @@ export function ImageLibraryView({ projects = [], onNavigateHome }) {
               <DataTable columns={CATEGORY_COLUMNS} rows={categoryRows} size="compact" getRowId={(row) => row.id} />
             )}
           </Stack>
-        )}
+        </TabPanel>
+        </Tabs>
       </Stack>
 
       <ContextMenu

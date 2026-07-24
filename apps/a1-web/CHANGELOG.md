@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **A1-Web release baseline** (A1-2064) — added a release-blocking Playwright
+  suite for every registered production route. Each route must load without an
+  uncaught browser error, match its committed visual reference and have no
+  critical or serious axe-core finding. A representative core-theme matrix
+  covers xs–xl, the npm publish workflow now waits for the gate, and the new
+  release checklist standardizes tests, version updates, changelog, blog,
+  simplified release notes, deployment smoke testing and rollback review.
+
 - **Content standards Foundation page** (A1-2063) — added
   Foundations → Content → Standards at `/foundations/content-standards`. The
   page renders the canonical shipped content guide directly, uses A1 typography

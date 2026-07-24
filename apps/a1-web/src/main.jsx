@@ -87,7 +87,12 @@ import {
   componentIdFromRouteSlug,
   getComponentExampleBySlug,
 } from './pages/Components.jsx'
-import { allComponents, rankComponentsForSearch } from './pages/components/utils.js'
+import {
+  allComponents,
+  componentExamples,
+  getComponentExamplePath,
+  rankComponentsForSearch,
+} from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
 import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
 import {
@@ -288,6 +293,47 @@ function getPath(page) {
   if (page === 'backlog-ticket') return '/backlog'
   return `/${page}`
 }
+
+function getBaselineRoutes() {
+  const routes = []
+  const paths = new Set()
+  const addRoute = (id, path) => {
+    if (!id || !path || paths.has(path)) return
+    paths.add(path)
+    routes.push({ id, path })
+  }
+
+  for (const page of PAGES) {
+    if (['blog-article', 'backlog-ticket', 'virtual-team'].includes(page)) continue
+    addRoute(page, getPath(page))
+  }
+
+  for (const post of BLOG_POSTS) {
+    addRoute(`blog-${post.slug}`, `/blog/${post.slug}`)
+  }
+
+  for (const [componentId, examples] of Object.entries(componentExamples)) {
+    for (const example of examples) {
+      addRoute(
+        `component-${componentId}-example-${example.id}`,
+        getComponentExamplePath(componentId, example.id),
+      )
+    }
+  }
+
+  // Dynamic route families use deterministic missing-data states in baseline QA.
+  // Live entity data is tested separately from this release-blocking UI contract.
+  addRoute('backlog-ticket-not-found', '/backlog/A1-0')
+  addRoute('published-project-not-found', '/p/a1-web-baseline-missing')
+
+  return routes
+}
+
+const baselineRouteManifest = document.createElement('script')
+baselineRouteManifest.id = 'a1-web-baseline-routes'
+baselineRouteManifest.type = 'application/json'
+baselineRouteManifest.textContent = JSON.stringify(getBaselineRoutes())
+document.head.append(baselineRouteManifest)
 
 function isPlainLeftClick(e) {
   return e.button === 0 && !e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey
@@ -1764,6 +1810,7 @@ function App() {
   const logo = (
     <span className="a1-web-logo">
       <span className="a1-web-logo__mark" aria-hidden="true">A1:Design</span>
+      <span className="a1-sr-only">{t('app.page.home', 'Home')}</span>
     </span>
   )
 

@@ -9,9 +9,41 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
+  a1-web-baseline:
+    name: A1-Web release baseline
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          lfs: true
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run release checks
+        run: npm run release:a1-web:check
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a1-web-baseline-${{ github.sha }}
+          path: test-results/a1-web/
+          retention-days: 30
+          if-no-files-found: ignore
+
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
+    needs: a1-web-baseline
 
     steps:
       - uses: actions/checkout@v5

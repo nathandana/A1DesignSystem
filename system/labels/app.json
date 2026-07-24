@@ -412,6 +412,20 @@
             "ar": "الإصدارات"
           }
         },
+        "blogSearchLabel": {
+          "$type": "string",
+          "$value": "Search releases, demos, or topics",
+          "$description": "Accessible label for the search field on the A1-Web blog.",
+          "locale": {
+            "es": "Buscar lanzamientos, demostraciones o temas",
+            "fr": "Rechercher des versions, des démos ou des sujets",
+            "de": "Releases, Demos oder Themen durchsuchen",
+            "pt": "Pesquisar versões, demonstrações ou tópicos",
+            "ja": "リリース、デモ、トピックを検索",
+            "zh": "搜索版本、演示或主题",
+            "ar": "البحث في الإصدارات أو العروض التوضيحية أو الموضوعات"
+          }
+        },
         "releaseSearchLabel": {
           "$type": "string",
           "$value": "Search release notes",

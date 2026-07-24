@@ -353,8 +353,8 @@ export function KitchenSink({ onNavigate }) {
           </Card>
         </Grid>
         <Grid columns={{ xs: 1, sm: 2 }} gap="md">
-          <Figure src="" alt="" aspectRatio="16:9" caption="Figure with a tokenized placeholder" />
-          <Figure src="" alt="" aspectRatio="1:1" placeholderIcon="image" caption="Square figure placeholder" />
+          <Figure src="" alt="Figure with a tokenized placeholder" aspectRatio="16:9" caption="Figure with a tokenized placeholder" />
+          <Figure src="" alt="Square figure placeholder" aspectRatio="1:1" placeholderIcon="image" caption="Square figure placeholder" />
         </Grid>
       </Category>
 

@@ -921,7 +921,7 @@ function ScorigamiCanvasCard() {
           background="page"
           gridType="dots"
           gridSpacing={32}
-          defaultZoom={0.55}
+          defaultZoom={0.6}
           defaultPan={{ x: 40, y: 48 }}
           showControls
         >
@@ -1810,7 +1810,7 @@ export function NflScorigamiCanvas() {
           background="page"
           gridType="dots"
           gridSpacing={32}
-          defaultZoom={0.55}
+          defaultZoom={0.6}
           defaultPan={{ x: 40, y: 48 }}
           showControls
         >

@@ -289,11 +289,13 @@ export function EditorPreviewPage() {
         resolvedColorScheme={resolvedColorScheme}
       >
         {fallbackHeader}
-        <Section padding="md">
-          <Paragraph size="sm" color="muted">
-            No page definition found. Open this preview from the Editor page.
-          </Paragraph>
-        </Section>
+        <main>
+          <Section padding="md">
+            <Paragraph size="sm" color="muted">
+              No page definition found. Open this preview from the Editor page.
+            </Paragraph>
+          </Section>
+        </main>
       </ProjectThemeScope>
     );
   }

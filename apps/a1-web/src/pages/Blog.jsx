@@ -9,6 +9,7 @@ import {
   SearchField,
   Section,
   Stack,
+  useLabel,
 } from '@gtivr4/a1-design-system-react'
 import { BLOG_POSTS } from './blogPosts.js'
 import { PageTitleArea } from './PageTitleArea.jsx'
@@ -64,6 +65,7 @@ function BlogCard({ post, onNavigate }) {
 
 export function Blog({ onNavigate }) {
   const [query, setQuery] = useState('')
+  const searchLabel = useLabel('app.page.blogSearchLabel', 'Search releases, demos, or topics')
   const filteredPosts = useMemo(
     () => BLOG_POSTS.filter((post) => matchesPost(post, query)),
     [query],
@@ -81,7 +83,7 @@ export function Blog({ onNavigate }) {
       >
         <SearchField
           data-a1-page-search=""
-          placeholder="Search releases, demos, or topics"
+          aria-label={searchLabel}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onClear={() => setQuery('')}

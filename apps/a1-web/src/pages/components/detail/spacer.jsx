@@ -31,7 +31,7 @@ export function Preview({ config, utilityClass = '' }) {
 export function Controls({ config, setConfig }) {
   return (
     <ResponsiveControl prop="size" label="Size" value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} defaultValue="md">
-      {(val, setVal) => <ConfigSlider values={SIZE_OPTIONS} value={val} onChange={setVal} />}
+      {(val, setVal) => <ConfigSlider aria-label="Size" values={SIZE_OPTIONS} value={val} onChange={setVal} />}
     </ResponsiveControl>
   )
 }
