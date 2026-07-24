@@ -1475,6 +1475,7 @@ function App() {
 
   const FOUNDATION_GROUPS = [
     { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
     { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
     { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },

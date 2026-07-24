@@ -7,6 +7,7 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-07-24 | **A1 web 0.30.0 and React 0.29.0 release preparation:** cut the accumulated Unreleased changelog entries into dated release sections, synchronized workspace versions and package-lock metadata, restored missing simplified public release summaries, added release-focused blog coverage, and introduced a Figma Foundations category with plugin documentation plus a placeholder for embedded component views. |
 | 2026-07-24 | **Build with AI virtual engineer:** added a Codex-backed planning route with work classification, manual direction, blocking questions, and ponytail-guided minimal plans. CSS/styling guidance is omitted for unrelated ticket types; the existing local/deterministic planner remains the fallback. |
 | 2026-07-24 | **Build with AI virtual engineer review:** the engineer action is now one click like Virtual PO, evaluates the ticket, surfaces clarifying questions inline, and appends guidance to the existing plan rather than replacing it. |
 | 2026-07-24 | **Backlog virtual team:** development ticket dialogs now combine Product Owner and virtual-engineer actions into one Virtual team tab with medium-sized buttons; production keeps the Build with AI tab. |

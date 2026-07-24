@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.30.0 — 2026-07-24
+
+- **Figma Foundations category** — added dedicated Foundations navigation for a detailed A1:Figma plugin article and a Figma Components placeholder. The plugin page documents Build & Fix, Audit, Publish, Patterns, JSON exchange, linked-page sync, runtime boundaries, and local development; the component page establishes the route and inventory context for future embedded Figma component views.
+
+- **Release notes and blog coverage** — added public summaries for the releases since 0.24.0 and new articles covering the A1:Figma round trip, the Codex-backed virtual team, and the Dispatch theme.
+
 - **Dispatch theme** — added the new warm editorial `dispatch` theme to the a1-web theme switcher (`appThemes.ts`) and loaded its two new webfonts (Zilla Slab, Geist) in `index.html`; Atkinson Hyperlegible was already present. Cream paper + ink with an azure-blue action colour, a highlighter-yellow "important"/warn accent, and a Zilla Slab / Geist / Atkinson Hyperlegible type stack. Theme tokens live in `system/themes/dispatch/`; a standalone reproduction of the source mock lives at `examples/dispatch/`.
 
 - **Figma Autocomplete component (A1-1401)** — created the Autocomplete page in the A1 Figma file: an `Autocomplete` control set (`Size=compact|default|comfortable` × `State=default|error|disabled`, 9 variants mirroring the Select field family) with `Label` / `Value` / `Hint` / `Error message` TEXT properties and `Required` / `Show value` / `Show hint` BOOLEANs, plus a separate `Autocomplete Menu` listbox composition (plain / active / selected-with-check / colour-swatch / multi-checkbox rows, a group heading, and the "Add …" create row). The `multiple` (chips) and `variant="color"` (swatch) modes ship as example frames; dark mode is validated on a Color-mode Dark frame. All colour/geometry binds shared Color + `field/*` variables and the `Field/Label/*`, `body/*`, `Menu/Section label` text styles — no component-local dark overrides. The Components inventory now marks Autocomplete available under Figma; Code Connect template `packages/figma/code-connect/Autocomplete.figma.ts` added. Options data, selection, create behaviour, grouping, portal positioning, keyboard, and ARIA stay runtime-owned; JSON-bridge wiring is a follow-up.

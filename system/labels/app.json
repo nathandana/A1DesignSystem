@@ -6689,6 +6689,20 @@
             "ar": "تصور"
           }
         },
+        "figma": {
+          "$type": "string",
+          "$value": "Figma",
+          "$description": "Foundations submenu group for the A1 Figma library and plugin.",
+          "locale": {
+            "es": "Figma",
+            "fr": "Figma",
+            "de": "Figma",
+            "pt": "Figma",
+            "ja": "Figma",
+            "zh": "Figma",
+            "ar": "Figma"
+          }
+        },
         "visual": {
           "$type": "string",
           "$value": "Visual",

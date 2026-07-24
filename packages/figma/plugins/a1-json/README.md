@@ -66,11 +66,11 @@ a single controller file.
 
 | Task | Command |
 |------|---------|
-| Build plugin artifacts | `npm run figma:plugin:build` |
-| Watch source and CSS inputs | `npm run figma:plugin:watch` |
-| Typecheck with official Figma typings | `npm run figma:plugin:typecheck` |
-| Run plugin tests | `npm run figma:plugin:test` |
-| Build, typecheck, test, and check generated output | `npm run figma:plugin:check` |
+| Build plugin artifacts | `npm run build --workspace=@gtivr4/a1-design-system-figma` |
+| Watch source and CSS inputs | `npm run watch --workspace=@gtivr4/a1-design-system-figma` |
+| Typecheck with official Figma typings | `npm run typecheck --workspace=@gtivr4/a1-design-system-figma` |
+| Run plugin tests | `npm test --workspace=@gtivr4/a1-design-system-figma` |
+| Build, typecheck, test, and check generated output | `npm run check --workspace=@gtivr4/a1-design-system-figma` |
 
 - **Local Playground handoff** — with this plugin already open, start
   `npm run codex:bridge:a1-web` and choose **Send to Figma** in the local

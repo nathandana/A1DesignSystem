@@ -13,6 +13,8 @@ import { BreakpointsFoundationPage } from './BreakpointsFoundation.jsx'
 import { PropConventionsFoundationPage } from './PropConventionsFoundation.jsx'
 import { ZIndexFoundationPage } from './ZIndexFoundation.jsx'
 import { UtilitiesFoundationPage } from './UtilitiesFoundation.jsx'
+import { FigmaPluginFoundationPage } from './FigmaPluginFoundation.jsx'
+import { FigmaComponentsFoundationPage } from './FigmaComponentsFoundation.jsx'
 
 const ColorVisualizationFoundationPage = lazy(() => (
   import('./ColorVisualizationFoundation.jsx').then((module) => ({
@@ -24,6 +26,10 @@ export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
   switch (foundation?.id) {
     case 'foundation-system-map':
       return <SystemMapFoundationPage onNavigate={onNavigate} />
+    case 'foundation-figma-plugin':
+      return <FigmaPluginFoundationPage onNavigate={onNavigate} />
+    case 'foundation-figma-components':
+      return <FigmaComponentsFoundationPage onNavigate={onNavigate} />
     case 'foundation-color-visualization':
       return (
         <Suspense fallback={null}>
