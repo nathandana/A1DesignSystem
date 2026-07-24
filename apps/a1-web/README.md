@@ -10,7 +10,19 @@ Both commands are defined in the **repo root** `package.json` and use `--strictP
 # From the repo root
 npm run dev:a1-web     # → http://127.0.0.1:5177/
 npm run storybook      # → http://127.0.0.1:6006/  (component stories)
+npm run codex:bridge:a1-web  # optional local Codex bridge for Virtual PO + Build with AI (4318)
+# A1_CODEX_MODEL=gpt-5.2 npm run codex:bridge:a1-web  # override the cheaper default
+# A1_CODEX_REASONING_EFFORT=medium npm run codex:bridge:a1-web  # optional quality/latency tradeoff
 ```
+
+The Virtual PO's checked-in question skill lives at
+`src/services/backlog/personas/productOwnerSkill.md`. The bridge runs Codex in read-only
+mode, accepts only local browser connections, and falls back to the deterministic reviewer
+when it is not running. Build with AI sends the ticket, comments/Q&A, related tickets, and
+manual direction to the virtual-engineer route; the bridge also loads the installed ponytail
+skill so plans classify the work and omit irrelevant CSS guidance. The one-click engineer review
+keeps the existing Build with AI plan, appends Codex guidance after it, and surfaces clarifying
+questions inline for the next review.
 
 This project uses **Node 24** (via nvm). If `npm` can't be found:
 

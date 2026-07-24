@@ -133,8 +133,23 @@ export function createSupabaseBackend(getUser: () => BacklogUser | null): Backlo
     },
 
     async updateItem(id: string, patch: UpdateTicketPatch) {
-      const { data, error } = await sb
-        .from('backlog_items').update(rowFromPatch(patch)).eq('id', id).select(ITEM_COLS).single();
+      const row = rowFromPatch(patch);
+      let { data, error } = await sb
+        .from('backlog_items').update(row).eq('id', id).select(ITEM_COLS).single();
+      // Older shared workspaces predate the virtual-team `reviews` column. Keep the
+      // actual review/questions usable while that optional stamp is waiting for migration.
+      if (error && 'reviews' in row && /reviews|schema cache|column/i.test(error.message || '')) {
+        const { reviews: _reviews, ...legacyRow } = row;
+        if (Object.keys(legacyRow).length) {
+          ({ data, error } = await sb
+            .from('backlog_items').update(legacyRow).eq('id', id).select(ITEM_COLS).single());
+        } else {
+          // A review may only update its stamp. With no legacy fields left to write,
+          // read the current row so the caller can still add its questions/comments.
+          ({ data, error } = await sb
+            .from('backlog_items').select(ITEM_COLS).eq('id', id).single());
+        }
+      }
       if (error) {
         console.warn('[backlog] updateItem failed', error);
         if (patch.type === 'epic' && /check constraint|backlog_items_type_check/i.test(error.message)) {

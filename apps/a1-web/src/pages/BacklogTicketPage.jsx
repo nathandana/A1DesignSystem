@@ -23,12 +23,13 @@ import {
 import { resolveSrc } from '../lib/imageLibrary'
 import { ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge } from '../backlog/TicketBadges'
 import {
-  TitleField, DescriptionField, ThreadEntry, ReviewTags,
+  TitleField, DescriptionField, ReviewTags,
   PRIMARY_STATUSES, OVERFLOW_STATUSES,
 } from '../backlog/TicketDetail'
 import { TicketMergePanel } from '../backlog/TicketMergePanel'
 import { TicketAiPrompt } from '../backlog/TicketAiPrompt'
 import { TicketPersonaReview } from '../backlog/TicketPersonaReview'
+import { ThreadEntry } from '../backlog/TicketThreadEntry'
 import { useBacklog } from '../backlog/BacklogContext'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS,
@@ -399,7 +400,10 @@ export function BacklogTicketPage({ onNavigate }) {
         <Section padding="md" contentWidth="xl">
           <Stack gap="md">
             <Heading as="h2" size="lg">{t('label.app.backlog.virtualPo', 'Virtual PO')}</Heading>
-            <Paragraph size="sm" color="muted">{t('label.app.backlog.virtualPoDescription', 'Local, deterministic review — no API credits.')}</Paragraph>
+            <Paragraph size="sm" color="muted">
+              {t('label.app.backlog.virtualPoDescription', 'Local, deterministic review — no API credits.')}{' '}
+              {t('label.app.backlog.virtualPoCodexDescription', 'Codex improves the questions; the local Product Owner remains the fallback.')}
+            </Paragraph>
             <TicketPersonaReview item={item} />
           </Stack>
         </Section>

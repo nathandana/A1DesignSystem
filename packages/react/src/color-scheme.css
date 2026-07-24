@@ -1341,6 +1341,55 @@ html.a1-theme-crochet.a1-theme-light {
   --component-button-tertiary-border-pressed: var(--base-color-accent-100);
 }
 
+html.a1-theme-light.a1-theme-dispatch,
+html.a1-theme-dispatch.a1-theme-light {
+  --semantic-color-text-default: #252525;
+  --semantic-color-text-muted: #635C54;
+  --semantic-color-text-inverse: #FFFFFF;
+  --semantic-color-text-accent: var(--base-color-accent-600);
+  --semantic-color-surface-page: #FAF7F4;
+  --semantic-color-surface-card: #FFFFFF;
+  --semantic-color-surface-field: #FFFFFF;
+  --semantic-color-surface-panel: #F4F0EB;
+  --semantic-color-surface-raised: #E6E3E0;
+  --semantic-color-border-subtle: #D8D3CE;
+  --semantic-color-border-default: #C6C0BA;
+  --semantic-color-border-strong: #635C54;
+  --semantic-color-action-background: var(--base-color-accent-500);
+  --semantic-color-action-background-hover: var(--base-color-accent-600);
+  --semantic-color-action-background-pressed: var(--base-color-accent-700);
+  --semantic-color-action-foreground: var(--base-color-neutral-0);
+  --semantic-color-action-foreground-pressed: var(--base-color-neutral-100);
+  --semantic-color-action-surface: var(--base-color-accent-50);
+  --semantic-color-action-border: var(--base-color-accent-300);
+  --semantic-color-status-warn-foreground: var(--base-color-neutral-900);
+  --component-button-primary-background: var(--semantic-color-action-background);
+  --component-button-primary-background-hover: var(--semantic-color-action-background-hover);
+  --component-button-primary-background-pressed: var(--semantic-color-action-background-pressed);
+  --component-button-primary-foreground: var(--base-color-neutral-0);
+  --component-button-primary-foreground-hover: var(--base-color-neutral-0);
+  --component-button-primary-foreground-pressed: var(--base-color-neutral-100);
+  --component-button-primary-border: var(--semantic-color-action-background);
+  --component-button-secondary-background: var(--base-color-neutral-100);
+  --component-button-secondary-background-hover: var(--base-color-neutral-200);
+  --component-button-secondary-background-pressed: var(--base-color-neutral-300);
+  --component-button-secondary-foreground: var(--base-color-neutral-900);
+  --component-button-secondary-foreground-hover: var(--base-color-neutral-900);
+  --component-button-secondary-foreground-pressed: var(--base-color-neutral-900);
+  --component-button-secondary-border: var(--base-color-neutral-100);
+  --component-button-secondary-border-hover: var(--base-color-neutral-200);
+  --component-button-secondary-border-pressed: var(--base-color-neutral-300);
+  --component-button-tertiary-background: transparent;
+  --component-button-tertiary-background-hover: var(--base-color-accent-50);
+  --component-button-tertiary-background-pressed: var(--base-color-accent-100);
+  --component-button-tertiary-foreground: var(--base-color-accent-600);
+  --component-button-tertiary-foreground-hover: var(--base-color-accent-700);
+  --component-button-tertiary-foreground-pressed: var(--base-color-accent-800);
+  --component-button-tertiary-border: transparent;
+  --component-button-tertiary-border-hover: transparent;
+  --component-button-tertiary-border-pressed: transparent;
+}
+
 html.a1-theme-light.a1-theme-fresh,
 html.a1-theme-fresh.a1-theme-light {
   --semantic-color-text-default: var(--base-color-neutral-900);

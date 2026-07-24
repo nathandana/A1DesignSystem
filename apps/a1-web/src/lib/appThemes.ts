@@ -3,6 +3,7 @@ export const themeOptions = [
   { value: 'a1Heritage', label: 'Heritage' },
   { value: 'crochet', label: 'Crochet' },
   { value: 'aperture', label: 'Aperture' },
+  { value: 'dispatch', label: 'Dispatch' },
   { value: 'kong', label: 'Kong' },
   { value: 'lumen', label: 'Lumen' },
   { value: 'marshmallow', label: 'Marshmallow' },
@@ -22,6 +23,7 @@ export function themeClassName(theme) {
     case 'fresh': return 'a1-theme-fresh'
     case 'crochet': return 'a1-theme-crochet'
     case 'aperture': return 'a1-theme-aperture'
+    case 'dispatch': return 'a1-theme-dispatch'
     case 'kong': return 'a1-theme-kong'
     case 'lumen': return 'a1-theme-lumen'
     case 'marshmallow': return 'a1-theme-marshmallow'
