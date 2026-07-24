@@ -2,13 +2,12 @@
 
 ## Unreleased
 
-- **Release baseline testing** — Every A1-Web route now has automated page-load,
-  visual-regression and accessibility checks before publishing can continue.
-
 ## 0.30.0 — 2026-07-24
 
 ### Highlights
 
+- **Release baseline testing** — Every A1-Web route now has automated page-load,
+  visual-regression and accessibility checks before publishing can continue.
 - **Figma and A1 round trip** — More components can move between Figma, editable A1 JSON, configurators, and the page or pattern editor without losing their supported properties and content.
 - **Broader Figma library** — New token-bound assets and Code Connect templates expand coverage across navigation, typography, inputs, data, feedback, and layout components.
 - **Figma Foundations** — A new Foundations category explains the A1:Figma plugin end to end and establishes a dedicated Components page for embedded library views.

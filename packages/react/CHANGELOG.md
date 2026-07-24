@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.29.0 — 2026-07-24
+
 ### Added
 
 - **Content standards** (A1-2063) — added the shipped public content guide for
@@ -11,10 +13,6 @@
   same decision hierarchy discoverable to repository agents. The canonical
   guide also powers the a1-web Foundations → Content → Standards page. These
   documentation surfaces add no automated enforcement.
-
-## 0.29.0 — 2026-07-24
-
-### Added
 
 - **Dispatch theme** — new warm editorial theme (`.a1-theme-dispatch`, in the generated `themes.css`): cream paper (`#FAF7F4`) + ink (`#252525`), an azure-blue action colour for buttons and links (a single ramp anchored one step deeper than the source `#088CD4`, at `#0A76B4`, so white button labels **and** blue link text both clear WCAG AA on the cream page), a highlighter-yellow (`#E9E642`) warn/"important" accent with a dark-ink foreground, soft-grey solid secondary buttons (`neutral.100` = `#E6E3E0`, not the default outline), and a three-font stack — **Zilla Slab** Light (slab-serif display), **Geist** SemiBold (geometric-sans headings + buttons), and **Atkinson Hyperlegible** (body). Token overrides in `system/themes/dispatch/`; light-mode. Component-tier tokens that bake the default accent/info colour at build time (links, focus rings, chip/tab/switch/slider/tree-menu selected states, status-bar + circular-progress fills, heading mark, card accents) are remapped to the azure ramp via the theme's `customProperties` block. a11y-validated: axe-core reports **0 colour-contrast violations** across a full themed component gallery, and every text/link/button/badge pair clears WCAG AA. Live example at `examples/dispatch/`.
 
