@@ -241,6 +241,7 @@ token namespace.
 | `aperture` | `.a1-theme-aperture` | Modern, minimal, gallery-grade for a photography portfolio — near-monochrome graphite on clean whites (Apple/Audi inspired), refined Apple-blue info + Audi-red error; Pinyon Script (elegant script) display, Playfair Display (editorial serif) headings, Manrope (clean elegant sans) body; small radii |
 | `marshmallow` | `.a1-theme-marshmallow` | Soft, pillowy **subtle neumorphism** in pastels — dusty-lavender accent on warm marshmallow-cream surfaces, gentle raised/inset 3D shadows on buttons (raised at rest → inset when pressed) and cards, generous rounding; Varela Round (rounded) display & headings, Nunito (rounded) body. Achieved entirely through theme token overrides (`--component-button-box-shadow`/`-hover`/`-active`, `--component-button-press-transform`, `--semantic-shadow-*`) over warm-cream surfaces so both the light highlight and soft shadow read |
 | `wireframe` | `.a1-theme-wireframe` | Deliberately **un-designed low-fidelity** theme — black, grey and white **only** (a single hueless neutral ramp; every accent/status collapses to grey), all shadows removed (`--semantic-shadow-*`, card/dialog/switch shadows → `none`), sharp **zero-radius** corners, and a **monospace** stack for body, headings, display, and buttons. Used to review structure and content hierarchy before visual design, and as the target theme for **converting a Priority Guide into a wireframe** in a1-web. Because component-tier tokens bake accent literals at build time, the theme overrides the accent-derived component tokens directly (button/link/notification/card-status/status-bar/circular-progress/field-focus-ring/heading-mark) as well as the base ramps — a design-token override checklist worth reusing for any "colourless" theme. Light-mode only (`color-scheme: light`); web only |
+| `dispatch` | `.a1-theme-dispatch` | Warm **editorial** theme — cream paper (`#FAF7F4`) and ink (`#252525`) with a confident **azure-blue** action colour (buttons + links) and a **highlighter-yellow** (`#E9E642`) "important"/warn accent carrying a dark-ink foreground. Type: **Zilla Slab** Light (slab-serif display), **Geist** SemiBold (geometric-sans headings + buttons), **Atkinson Hyperlegible** (body). Secondary buttons are a soft-grey solid fill (`neutral.100` = `#E6E3E0`), not the default outline. The single azure ramp is anchored one step deeper than the source `#088CD4` (`accent.500`/`info.500` = `#0A76B4`) so white button labels **and** blue link text both clear WCAG AA on the cream page. Light-mode; live example at `examples/dispatch/`, and in the a1-web theme switcher as **Dispatch** |
 
 ### Breakpoints
 
@@ -293,6 +294,33 @@ These values are de-facto standards derived from existing component usage:
 ```
 
 ---
+
+## Control heights
+
+Interactive controls sit on a single height standard so any mix of controls in a row aligns. **Heights are TOTAL rendered height** — including borders and, for track-style components, the track padding (measure the outside of the control, not an inner element).
+
+### The scale
+
+| Size axis | sm | md | lg |
+|-----------|----|----|----|
+| `sm / md / lg` controls | **28px** (1.75rem) | **40px** (2.5rem) | **56px** (3.5rem) |
+
+Conforming components: **Button**, **Icon Button**, **Segmented Control** (the outer track; segments derive their height as `total − 2 × (track padding + border)` = 20/32/48), **Chip** (`component.chip.minHeight` / `smMinHeight` / `lgMinHeight`), **Accordion** (trigger `component.accordion.triggerHeight*`), and **Tabs `variant="segment"`** (the strip totals 40px like a md Segmented Control).
+
+### The field-density scale
+
+Field-family components (`compact / default / comfortable`) use **32 / 40 / 52px** control heights (`component.field.*-height`): Text Field and all derived fields, Textarea (per row), Select, Autocomplete, Checkbox/Radio group rows scale independently. The two scales intentionally share the **40px md/default anchor**, so default-density forms and md controls align in a row.
+
+### The 32px utility band
+
+Several single-size or content-driven components sit on a 32px band that pairs with compact fields: **Tabs** (line/pills/folder tabs, both densities), **Toolbar** controls (inside a 38px bar), and **Tree Menu** rows. Treat 32px as the target when adding dense chrome.
+
+### Rules
+
+1. New sized controls use the 28/40/56 scale; new field-family components use 32/40/52. Do not invent intermediate heights.
+2. Express heights as component tokens aliasing `base.spacing.40` / `base.spacing.56` (28px has no base token yet — use a literal until one exists) and apply them as `min-block-size` on the OUTER element.
+3. For track-style controls (a padded container around segments), the token names the total; inner elements use `calc()` from it rather than their own height token.
+4. Padding must never push a control past its height token — when block padding + line-height exceeds the target, reduce the padding and let flex centering do the work (see Accordion sm, Segmented sm).
 
 ## Z-index and Layering
 

@@ -26,23 +26,50 @@ function metaLine(item: BacklogItem): string {
   return parts.join(' · ');
 }
 
+export const WORK_TYPES = ['component', 'layout', 'styling', 'content', 'data', 'bug', 'docs', 'testing', 'architecture', 'mixed', 'unknown'] as const;
+export type WorkType = (typeof WORK_TYPES)[number];
+
+/** Small deterministic classifier used by the fallback and as context for Codex. */
+export function classifyWork(item: BacklogItem): { workType: WorkType; cssRelevant: boolean } {
+  const text = `${item.title} ${item.description ?? ''} ${item.scopeLabel ?? ''}`.toLowerCase();
+  const cssRelevant = /\b(css|style|styling|color|colour|spacing|typograph|token|responsive|breakpoint|theme|layout)\b/.test(text);
+  if (item.type === 'bug' || /\b(bug|broken|error|fix|doesn'?t work|not working)\b/.test(text)) return { workType: 'bug', cssRelevant };
+  if (item.scopeKind === 'component') return { workType: 'component', cssRelevant };
+  if (/\b(css|style|styling|color|colour|spacing|typograph|token|theme)\b/.test(text)) return { workType: 'styling', cssRelevant: true };
+  if (/\b(layout|grid|stack|responsive|breakpoint|page|section)\b/.test(text)) return { workType: 'layout', cssRelevant };
+  if (/\b(copy|content|label|text|wording|translation)\b/.test(text)) return { workType: 'content', cssRelevant };
+  if (/\b(data|dataset|table|schema|json|import|export)\b/.test(text)) return { workType: 'data', cssRelevant };
+  if (/\b(docs?|documentation|readme|guide)\b/.test(text)) return { workType: 'docs', cssRelevant };
+  if (/\b(test|testing|qa|coverage|spec)\b/.test(text)) return { workType: 'testing', cssRelevant };
+  if (/\b(architecture|refactor|shared|api|dependency|migration)\b/.test(text)) return { workType: 'architecture', cssRelevant };
+  return { workType: 'unknown', cssRelevant };
+}
+
 /** Questions a persona asked that nobody has answered yet. */
-function openQuestions(comments: BacklogComment[]): string[] {
+export function getOpenQuestions(comments: BacklogComment[]): BacklogComment[] {
   const answered = new Set(
     comments.filter((c) => c.kind === 'answer' && c.meta?.answersCommentId).map((c) => c.meta!.answersCommentId),
   );
   return comments
     .filter((c) => c.kind === 'question' && !answered.has(c.id) && c.body?.trim())
-    .map((c) => c.body!.trim().replace(/\s*\n\s*/g, ' '));
+}
+
+/** True when either the review stamp or a persisted Product Owner thread proves a review ran. */
+export function hasProductOwnerReview(item: BacklogItem, comments: BacklogComment[] = []): boolean {
+  return Object.keys(item.reviews ?? {}).some((id) => id === 'product-owner' || id.startsWith('product-owner:'))
+    || comments.some((c) => c.meta?.persona === 'product-owner');
 }
 
 /** The ticket as plain text: title, metadata, description, and the discussion thread. */
 export function buildTicketContext(
   item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
 ): string {
+  const classification = classifyWork(item);
   const lines = [
     `${ticketRef(item.number)}: ${item.title}`,
     metaLine(item),
+    `Work type: ${classification.workType}`,
+    `CSS-relevant: ${classification.cssRelevant ? 'yes' : 'no'}`,
     '',
   ];
   if (item.description?.trim()) lines.push('Description:', item.description.trim(), '');
@@ -60,7 +87,7 @@ export function buildTicketContext(
 
   const discussion = comments.filter((c) => c.kind !== 'activity' && c.body?.trim());
   if (discussion.length) {
-    lines.push('Discussion:');
+    lines.push('Comments and Q&A:');
     for (const c of discussion) {
       const who = c.meta?.personaName || c.userEmail || 'Someone';
       const tag = c.kind === 'question' ? ' (question)' : c.kind === 'answer' ? ' (answer)' : '';
@@ -68,6 +95,18 @@ export function buildTicketContext(
     }
   }
   return lines.join('\n').trim();
+}
+
+function appendDiscussion(out: string[], comments: BacklogComment[]): void {
+  const discussion = comments.filter((c) => c.kind !== 'activity' && c.body?.trim());
+  if (!discussion.length) return;
+  out.push('## Comments and Q&A');
+  for (const c of discussion) {
+    const who = c.meta?.personaName || c.userEmail || 'Someone';
+    const tag = c.kind === 'question' ? ' (question)' : c.kind === 'answer' ? ' (answer)' : '';
+    out.push(`- ${who}${tag}: ${c.body!.trim().replace(/\s*\n\s*/g, ' ')}`);
+  }
+  out.push('');
 }
 
 // ── Local-AI system prompt ──────────────────────────────────────────────────────
@@ -155,6 +194,8 @@ export const PLAN_SYSTEM = [
   '- When a component API/variant/state changes, update its Storybook stories, the a1-web',
   '  configurator, and the relevant changelogs in the SAME change.',
   '- Validate across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl).',
+  '- Apply the ponytail rule: choose the smallest working solution, reuse existing code, and ask for manual direction before resolving real ambiguity.',
+  '- Only include custom CSS, styling-token, and responsive styling guidance when the ticket is classified as styling/layout or explicitly CSS-relevant.',
   '',
   'Produce the MINIMUM ELEGANT plan to ship this ticket — what a senior engineer would actually',
   'do, no gold-plating. Be concrete and concise. Use exactly these sections:',
@@ -164,7 +205,7 @@ export const PLAN_SYSTEM = [
   '- Plan (numbered, ordered, concrete steps)',
   '- Likely files & areas',
   '- Done when (acceptance criteria, including docs / stories / configurator / changelog as applicable)',
-  '- Final standards review (for anything done in the session, justify any deviation from the existing system; cover custom styling, component usage, tokens and values, accessibility, interaction patterns, content and terminology, data and state handling, architecture and code standards, responsive behavior, test coverage, and standards debt created)',
+  '- Final standards review (for anything done in the session, justify deviations and cover only relevant checks; omit custom styling and styling-token guidance when CSS-relevant is no)',
   '',
   'The Final standards review section must use this exact checklist:',
   FINAL_STANDARDS_REVIEW_SECTION,
@@ -176,12 +217,53 @@ export const PLAN_SYSTEM = [
 export function buildPlanRequest(
   item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
 ): string {
-  return `Plan the work for this ticket.\n\n${buildTicketContext(item, comments, linked)}`;
+  const classification = classifyWork(item);
+  return [
+    'Plan the work for this ticket.',
+    `The deterministic classifier sees workType=${classification.workType}; cssRelevant=${classification.cssRelevant ? 'yes' : 'no'}.`,
+    classification.cssRelevant
+      ? 'Include styling and CSS/token checks only where they help.'
+      : 'Do not add custom CSS, styling-token, or CSS standards sections; focus on the relevant work.',
+    '',
+    buildTicketContext(item, comments, linked),
+  ].join('\n');
 }
 
-export function ensureFinalStandardsReview(plan: string): string {
-  if (/^##\s+Final standards review\b/im.test(plan)) return plan;
-  return `${plan.trim()}\n\n${FINAL_STANDARDS_REVIEW_SECTION}`;
+function finalStandardsReview(cssRelevant: boolean): string {
+  const lines = FINAL_STANDARDS_REVIEW_SECTION.split('\n');
+  if (cssRelevant) return lines.join('\n');
+  const skipped = new Set(['1. Custom styling', '3. Tokens and values']);
+  let omit = false;
+  return lines.filter((line) => {
+    if (/^\d+\. /.test(line)) omit = skipped.has(line);
+    return !omit;
+  }).join('\n');
+}
+
+/** Keep plans focused: non-CSS tickets should not carry the generic CSS audit sections. */
+export function stripIrrelevantCssSections(plan: string, cssRelevant: boolean): string {
+  if (cssRelevant) return plan;
+  const lines = plan.split('\n');
+  let inReview = false;
+  let omit = false;
+  const filtered = lines.filter((line) => {
+    if (/^##\s+Final standards review\b/i.test(line)) {
+      inReview = true;
+      omit = false;
+    } else if (inReview && /^##\s+/.test(line)) {
+      inReview = false;
+      omit = false;
+    }
+    if (inReview && /^\d+\. /.test(line)) omit = line === '1. Custom styling' || line === '3. Tokens and values';
+    return !(inReview && omit);
+  });
+  return filtered.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+export function ensureFinalStandardsReview(plan: string, cssRelevant = true): string {
+  const focused = stripIrrelevantCssSections(plan, cssRelevant);
+  if (/^##\s+Final standards review\b/im.test(focused)) return focused;
+  return `${focused.trim()}\n\n${finalStandardsReview(cssRelevant)}`;
 }
 
 // ── Deterministic fallback planner ──────────────────────────────────────────────
@@ -286,6 +368,7 @@ function fileAreas(item: BacklogItem): string[] {
 
 /** Ordered steps tailored to the ticket type + scope. */
 function steps(item: BacklogItem): string[] {
+  const cssRelevant = classifyWork(item).cssRelevant;
   const componentTarget = inferComponentTarget(item);
   const isComponent = !!componentTarget;
   const ripples = item.scopeKind === 'theme' || item.scopeKind === 'foundation';
@@ -321,8 +404,10 @@ function steps(item: BacklogItem): string[] {
     return [
       ...researchStep,
       `Confirm the ${componentLabel} public API and interaction model (props, variants, positions, stacking/queueing, dismissal, timing, and accessibility announcements) as a small, stable contract.`,
-      `Add or extend component tokens in system/tokens/component/${componentPath}.json if new separation, shadow, border, spacing, or motion values are needed; run build:tokens.`,
-      `Implement in packages/react/src/components/${componentPath}/ using the CSS-variable architecture (no hardcoded values).`,
+      ...(cssRelevant ? [`Add or extend component tokens in system/tokens/component/${componentPath}.json if new separation, shadow, border, spacing, or motion values are needed; run build:tokens.`] : []),
+      ...(cssRelevant
+        ? [`Implement in packages/react/src/components/${componentPath}/ using the CSS-variable architecture (no hardcoded values).`]
+        : [`Implement in packages/react/src/components/${componentPath}/ by reusing the existing component architecture.`]),
       `Add Storybook stories for single and multiple ${componentLabel} examples, including dark/inverse mode and narrow viewports.`,
       'Wire the a1-web configurator: controls + Properties rows + switch-linked helper text + a correct code snippet.',
       'Add any user-facing copy to system/labels/ with English descriptions and supported locale translations, then consume it through the label resolver.',
@@ -354,8 +439,8 @@ function doneWhen(item: BacklogItem): string[] {
   return done;
 }
 
-function appendFinalStandardsReview(out: string[]): void {
-  out.push(...FINAL_STANDARDS_REVIEW_SECTION.split('\n'));
+function appendFinalStandardsReview(out: string[], cssRelevant: boolean): void {
+  out.push(...finalStandardsReview(cssRelevant).split('\n'));
   out.push('');
 }
 
@@ -367,7 +452,8 @@ export function developPlanLocally(
   item: BacklogItem, comments: BacklogComment[] = [], linked: BacklogItem[] = [],
 ): string {
   const scale = assessScale(item);
-  const open = openQuestions(comments);
+  const classification = classifyWork(item);
+  const open = getOpenQuestions(comments).map((c) => c.body!.trim().replace(/\s*\n\s*/g, ' '));
   const ref = ticketRef(item.number);
 
   const out: string[] = [];
@@ -378,6 +464,8 @@ export function developPlanLocally(
   out.push(`Deliver: ${item.title}. ${metaLine(item)}.`);
   if (item.description?.trim()) out.push('', item.description.trim());
   out.push('');
+
+  appendDiscussion(out, comments);
 
   out.push('## Scale & approach');
   out.push(SCALE_APPROACH[scale], '');
@@ -410,7 +498,7 @@ export function developPlanLocally(
   for (const d of doneWhen(item)) out.push(`- ${d}`);
   out.push('');
 
-  appendFinalStandardsReview(out);
+  appendFinalStandardsReview(out, classification.cssRelevant);
 
   out.push('## Conventions');
   out.push(

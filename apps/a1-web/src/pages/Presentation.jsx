@@ -31,6 +31,12 @@ const SCREENS = [
   { id: 'example-demo', Screen: ConcreteExampleDemoScreen },
 ]
 
+const SHOW_DEMO_SCREENS = false
+const SHOW_SPEAKER_NOTES = false
+const VISIBLE_SCREENS = SHOW_DEMO_SCREENS
+  ? SCREENS
+  : SCREENS.filter((screen) => !screen.id.endsWith('-demo'))
+
 function SlideFrame({ direction, children }) {
   return (
     <Grid className="a1-web-presentation__stage" columns={1} gap="lg" alignItems="center">
@@ -58,6 +64,8 @@ function SlideCard({ eyebrow, title, icon, heroColor = 'info', children }) {
 }
 
 function SpeakerNotes({ children }) {
+  if (!SHOW_SPEAKER_NOTES) return null
+
   return (
     <Stack className="a1-web-presentation__notes" gap="xs">
       {children}
@@ -257,8 +265,8 @@ export function Presentation({ onNavigate }) {
   const [slideIndex, setSlideIndex] = useState(0)
   const [motionDirection, setMotionDirection] = useState('forward')
 
-  const totalSlides = SCREENS.length
-  const activeScreen = SCREENS[slideIndex]
+  const totalSlides = VISIBLE_SCREENS.length
+  const activeScreen = VISIBLE_SCREENS[slideIndex]
   const Screen = activeScreen.Screen
   const slideCount = `Slide ${slideIndex + 1} of ${totalSlides}`
 

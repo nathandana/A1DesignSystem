@@ -44,6 +44,20 @@
             "ar": "المكونات"
           }
         },
+        "searchComponents": {
+          "$type": "string",
+          "$value": "Search components",
+          "$description": "Accessible label for the search field inside the main Components navigation menu.",
+          "locale": {
+            "es": "Buscar componentes",
+            "fr": "Rechercher des composants",
+            "de": "Komponenten suchen",
+            "pt": "Pesquisar componentes",
+            "ja": "コンポーネントを検索",
+            "zh": "搜索组件",
+            "ar": "البحث في المكونات"
+          }
+        },
         "editors": {
           "$type": "string",
           "$value": "Editors",
@@ -85,6 +99,92 @@
             "zh": "所有项目",
             "ar": "كل المشاريع"
           }
+        }
+      },
+      "tour": {
+        "dialogLabel": {
+          "$type": "string",
+          "$value": "Product tour",
+          "$description": "Accessible label for the guided product tour dialog.",
+          "locale": { "es": "Recorrido del producto", "fr": "Visite guidée du produit", "de": "Produkttour", "pt": "Tour pelo produto", "ja": "プロダクトツアー", "zh": "产品导览", "ar": "جولة في المنتج" }
+        },
+        "start": {
+          "$type": "string",
+          "$value": "Take a tour",
+          "$description": "Action that starts the guided product tour.",
+          "locale": { "es": "Hacer un recorrido", "fr": "Faire une visite", "de": "Tour starten", "pt": "Fazer um tour", "ja": "ツアーを開始", "zh": "开始导览", "ar": "بدء الجولة" }
+        },
+        "skip": {
+          "$type": "string",
+          "$value": "Skip tour",
+          "$description": "Action that dismisses the guided product tour.",
+          "locale": { "es": "Omitir recorrido", "fr": "Passer la visite", "de": "Tour überspringen", "pt": "Pular tour", "ja": "ツアーをスキップ", "zh": "跳过导览", "ar": "تخطي الجولة" }
+        },
+        "previous": {
+          "$type": "string",
+          "$value": "Previous",
+          "$description": "Action that returns to the preceding guided-tour step.",
+          "locale": { "es": "Anterior", "fr": "Précédent", "de": "Zurück", "pt": "Anterior", "ja": "前へ", "zh": "上一步", "ar": "السابق" }
+        },
+        "next": {
+          "$type": "string",
+          "$value": "Next",
+          "$description": "Action that advances the guided-tour step.",
+          "locale": { "es": "Siguiente", "fr": "Suivant", "de": "Weiter", "pt": "Próximo", "ja": "次へ", "zh": "下一步", "ar": "التالي" }
+        },
+        "done": {
+          "$type": "string",
+          "$value": "Done",
+          "$description": "Action that completes the guided product tour.",
+          "locale": { "es": "Listo", "fr": "Terminé", "de": "Fertig", "pt": "Concluído", "ja": "完了", "zh": "完成", "ar": "تم" }
+        },
+        "close": {
+          "$type": "string",
+          "$value": "Close tour",
+          "$description": "Accessible label for the control that closes the guided tour.",
+          "locale": { "es": "Cerrar recorrido", "fr": "Fermer la visite", "de": "Tour schließen", "pt": "Fechar tour", "ja": "ツアーを閉じる", "zh": "关闭导览", "ar": "إغلاق الجولة" }
+        },
+        "progress": {
+          "$type": "string",
+          "$value": "Step {current} of {total}",
+          "$description": "Progress text for the guided product tour, with current and total step counts.",
+          "locale": { "es": "Paso {current} de {total}", "fr": "Étape {current} sur {total}", "de": "Schritt {current} von {total}", "pt": "Etapa {current} de {total}", "ja": "ステップ {current} / {total}", "zh": "第 {current} 步，共 {total} 步", "ar": "الخطوة {current} من {total}" }
+        },
+        "navigationTitle": {
+          "$type": "string",
+          "$value": "Find your way",
+          "$description": "Title for the navigation step in the guided product tour.",
+          "locale": { "es": "Encuentre su camino", "fr": "Trouvez votre chemin", "de": "Orientierung finden", "pt": "Encontre seu caminho", "ja": "使い方を見つける", "zh": "找到方向", "ar": "اعثر على طريقك" }
+        },
+        "navigationDescription": {
+          "$type": "string",
+          "$value": "Use the top navigation to explore the system, open the editors, and return home from anywhere.",
+          "$description": "Supporting text for the navigation step in the guided product tour.",
+          "locale": { "es": "Use la navegación superior para explorar el sistema, abrir los editores y volver al inicio desde cualquier lugar.", "fr": "Utilisez la navigation supérieure pour explorer le système, ouvrir les éditeurs et revenir à l’accueil depuis n’importe où.", "de": "Nutzen Sie die obere Navigation, um das System zu erkunden, die Editoren zu öffnen und von überall zur Startseite zurückzukehren.", "pt": "Use a navegação superior para explorar o sistema, abrir os editores e voltar ao início de qualquer lugar.", "ja": "上部ナビゲーションからシステムを探索し、エディターを開き、どこからでもホームに戻れます。", "zh": "使用顶部导航探索系统、打开编辑器，并可随时返回主页。", "ar": "استخدم التنقل العلوي لاستكشاف النظام وفتح المحررات والعودة إلى الصفحة الرئيسية من أي مكان." }
+        },
+        "toolsTitle": {
+          "$type": "string",
+          "$value": "Search and get help",
+          "$description": "Title for the search and help step in the guided product tour.",
+          "locale": { "es": "Busque y obtenga ayuda", "fr": "Recherchez et obtenez de l’aide", "de": "Suchen und Hilfe erhalten", "pt": "Pesquise e obtenha ajuda", "ja": "検索とヘルプ", "zh": "搜索并获取帮助", "ar": "ابحث واحصل على المساعدة" }
+        },
+        "toolsDescription": {
+          "$type": "string",
+          "$value": "Search A1 for a page or component, or open Ask Help for answers and related guides.",
+          "$description": "Supporting text for the search and help step in the guided product tour.",
+          "locale": { "es": "Busque una página o componente en A1, o abra Preguntar a Ayuda para obtener respuestas y guías relacionadas.", "fr": "Recherchez une page ou un composant dans A1, ou ouvrez Demander de l’aide pour obtenir des réponses et des guides associés.", "de": "Suchen Sie in A1 nach einer Seite oder Komponente oder öffnen Sie Hilfe fragen für Antworten und passende Anleitungen.", "pt": "Pesquise uma página ou componente no A1, ou abra Perguntar à ajuda para ver respostas e guias relacionados.", "ja": "A1 でページやコンポーネントを検索するか、ヘルプに質問を開いて回答と関連ガイドを確認できます。", "zh": "在 A1 中搜索页面或组件，或打开“询问帮助”以获取答案和相关指南。", "ar": "ابحث في A1 عن صفحة أو مكوّن، أو افتح اسأل المساعدة للحصول على إجابات وأدلة ذات صلة." }
+        },
+        "workspaceTitle": {
+          "$type": "string",
+          "$value": "Work in context",
+          "$description": "Title for the workspace step in the guided product tour.",
+          "locale": { "es": "Trabaje en contexto", "fr": "Travaillez dans le contexte", "de": "Im Kontext arbeiten", "pt": "Trabalhe no contexto", "ja": "コンテキストで作業する", "zh": "在上下文中工作", "ar": "اعمل ضمن السياق" }
+        },
+        "workspaceDescription": {
+          "$type": "string",
+          "$value": "Each page keeps its tools and guidance close at hand. Start with the editor when you are ready to build.",
+          "$description": "Supporting text for the workspace step in the guided product tour.",
+          "locale": { "es": "Cada página mantiene sus herramientas y guías al alcance. Empiece con el editor cuando esté listo para crear.", "fr": "Chaque page garde ses outils et ses guides à portée de main. Commencez avec l’éditeur lorsque vous êtes prêt à créer.", "de": "Jede Seite hält ihre Werkzeuge und Anleitungen griffbereit. Starten Sie mit dem Editor, wenn Sie bereit sind zu erstellen.", "pt": "Cada página mantém suas ferramentas e guias por perto. Comece pelo editor quando estiver pronto para criar.", "ja": "各ページでは、必要なツールとガイダンスをすぐに利用できます。準備ができたらエディターから作成を始めましょう。", "zh": "每个页面都会将工具和指南放在手边。准备好后即可从编辑器开始创建。", "ar": "تُبقي كل صفحة أدواتها وإرشاداتها في متناول اليد. ابدأ بالمحرر عندما تكون مستعدًا للإنشاء." }
         }
       },
       "page": {
@@ -1837,6 +1937,174 @@
             "zh": "即将推出。",
             "ar": "قريبًا."
           }
+        },
+        "publishProjectAction": {
+          "$type": "string",
+          "$value": "Publish",
+          "$description": "Project home action that publishes a project to a stable standalone preview URL.",
+          "locale": {
+            "es": "Publicar",
+            "fr": "Publier",
+            "de": "Veröffentlichen",
+            "pt": "Publicar",
+            "ja": "公開",
+            "zh": "发布",
+            "ar": "نشر"
+          }
+        },
+        "publishedProjectAction": {
+          "$type": "string",
+          "$value": "Published",
+          "$description": "Project home action label shown when a project already has a published preview URL.",
+          "locale": {
+            "es": "Publicado",
+            "fr": "Publié",
+            "de": "Veröffentlicht",
+            "pt": "Publicado",
+            "ja": "公開済み",
+            "zh": "已发布",
+            "ar": "منشور"
+          }
+        },
+        "publishDialogTitle": {
+          "$type": "string",
+          "$value": "Publish project",
+          "$description": "Dialog title before a project has been published.",
+          "locale": {
+            "es": "Publicar proyecto",
+            "fr": "Publier le projet",
+            "de": "Projekt veröffentlichen",
+            "pt": "Publicar projeto",
+            "ja": "プロジェクトを公開",
+            "zh": "发布项目",
+            "ar": "نشر المشروع"
+          }
+        },
+        "publishedDialogTitle": {
+          "$type": "string",
+          "$value": "Project published",
+          "$description": "Dialog title after a project has a published preview URL.",
+          "locale": {
+            "es": "Proyecto publicado",
+            "fr": "Projet publié",
+            "de": "Projekt veröffentlicht",
+            "pt": "Projeto publicado",
+            "ja": "プロジェクトは公開済み",
+            "zh": "项目已发布",
+            "ar": "تم نشر المشروع"
+          }
+        },
+        "publishDialogDescription": {
+          "$type": "string",
+          "$value": "Publish this project to create a stable A1 preview URL for this workspace. This does not deploy the project to a public host.",
+          "$description": "Dialog body explaining the scope of publishing before the project has a published URL.",
+          "locale": {
+            "es": "Publica este proyecto para crear una URL estable de vista previa de A1 para este espacio de trabajo. Esto no despliega el proyecto en un host público.",
+            "fr": "Publiez ce projet pour créer une URL d'aperçu A1 stable pour cet espace de travail. Cela ne déploie pas le projet sur un hébergeur public.",
+            "de": "Veröffentliche dieses Projekt, um eine stabile A1-Vorschau-URL für diesen Arbeitsbereich zu erstellen. Dadurch wird das Projekt nicht auf einem öffentlichen Host bereitgestellt.",
+            "pt": "Publique este projeto para criar uma URL estável de prévia A1 para este workspace. Isso não implanta o projeto em um host público.",
+            "ja": "このプロジェクトを公開して、このワークスペース用の安定した A1 プレビュー URL を作成します。プロジェクトを公開ホストへデプロイするものではありません。",
+            "zh": "发布此项目，为此工作区创建稳定的 A1 预览 URL。这不会将项目部署到公共主机。",
+            "ar": "انشر هذا المشروع لإنشاء عنوان URL ثابت لمعاينة A1 في مساحة العمل هذه. لا يؤدي ذلك إلى نشر المشروع على مضيف عام."
+          }
+        },
+        "publishedDialogDescription": {
+          "$type": "string",
+          "$value": "This project is available as a standalone prototype at this URL.",
+          "$description": "Dialog body shown after a project has a published URL.",
+          "locale": {
+            "es": "Este proyecto está disponible como prototipo independiente en esta URL.",
+            "fr": "Ce projet est disponible comme prototype autonome à cette URL.",
+            "de": "Dieses Projekt ist unter dieser URL als eigenständiger Prototyp verfügbar.",
+            "pt": "Este projeto está disponível como protótipo independente nesta URL.",
+            "ja": "このプロジェクトは、この URL でスタンドアロンのプロトタイプとして利用できます。",
+            "zh": "此项目可通过此 URL 作为独立原型访问。",
+            "ar": "يتوفر هذا المشروع كنموذج أولي مستقل على عنوان URL هذا."
+          }
+        },
+        "publishedStatus": {
+          "$type": "string",
+          "$value": "Published",
+          "$description": "Success badge label in the project publish dialog.",
+          "locale": {
+            "es": "Publicado",
+            "fr": "Publié",
+            "de": "Veröffentlicht",
+            "pt": "Publicado",
+            "ja": "公開済み",
+            "zh": "已发布",
+            "ar": "منشور"
+          }
+        },
+        "publishedUrlLabel": {
+          "$type": "string",
+          "$value": "Published URL",
+          "$description": "Accessible label for the copyable published project URL.",
+          "locale": {
+            "es": "URL publicada",
+            "fr": "URL publiée",
+            "de": "Veröffentlichte URL",
+            "pt": "URL publicada",
+            "ja": "公開 URL",
+            "zh": "已发布 URL",
+            "ar": "عنوان URL المنشور"
+          }
+        },
+        "publishProjectConfirm": {
+          "$type": "string",
+          "$value": "Publish project",
+          "$description": "Primary dialog button that publishes the project.",
+          "locale": {
+            "es": "Publicar proyecto",
+            "fr": "Publier le projet",
+            "de": "Projekt veröffentlichen",
+            "pt": "Publicar projeto",
+            "ja": "プロジェクトを公開",
+            "zh": "发布项目",
+            "ar": "نشر المشروع"
+          }
+        },
+        "openPublishedProject": {
+          "$type": "string",
+          "$value": "Open published page",
+          "$description": "Button label that opens the published project URL in a new tab.",
+          "locale": {
+            "es": "Abrir página publicada",
+            "fr": "Ouvrir la page publiée",
+            "de": "Veröffentlichte Seite öffnen",
+            "pt": "Abrir página publicada",
+            "ja": "公開ページを開く",
+            "zh": "打开已发布页面",
+            "ar": "فتح الصفحة المنشورة"
+          }
+        },
+        "unpublishProject": {
+          "$type": "string",
+          "$value": "Unpublish",
+          "$description": "Secondary dialog button that removes a project's published URL.",
+          "locale": {
+            "es": "Anular publicación",
+            "fr": "Dépublier",
+            "de": "Veröffentlichung zurücknehmen",
+            "pt": "Cancelar publicação",
+            "ja": "公開を停止",
+            "zh": "取消发布",
+            "ar": "إلغاء النشر"
+          }
+        },
+        "publishCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Secondary dialog button that closes the publish dialog without publishing.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
         }
       },
       "backlog": {
@@ -1922,6 +2190,20 @@
             "ja": "詳細",
             "zh": "详情",
             "ar": "التفاصيل"
+          }
+        },
+        "onThisPage": {
+          "$type": "string",
+          "$value": "On this page",
+          "$description": "Heading and accessible label for the in-page section navigation (PageNav) on the ticket detail page.",
+          "locale": {
+            "es": "En esta página",
+            "fr": "Sur cette page",
+            "de": "Auf dieser Seite",
+            "pt": "Nesta página",
+            "ja": "このページの内容",
+            "zh": "本页内容",
+            "ar": "في هذه الصفحة"
           }
         },
         "awaitingRequester": {
@@ -2414,6 +2696,440 @@
             "ar": "البناء بالذكاء الاصطناعي"
           }
         },
+        "buildWithAiVirtualPoNotRun": {
+          "$type": "string",
+          "$value": "Virtual PO has not reviewed this ticket",
+          "$description": "Warning title in Build with AI when the Product Owner persona has not reviewed the ticket.",
+          "locale": {
+            "es": "El PO virtual aún no ha revisado este ticket",
+            "fr": "Le PO virtuel n’a pas encore révisé ce ticket",
+            "de": "Der virtuelle PO hat dieses Ticket noch nicht geprüft",
+            "pt": "O PO virtual ainda não revisou este ticket",
+            "ja": "仮想 PO はまだこのチケットをレビューしていません",
+            "zh": "虚拟 PO 尚未评审此工单",
+            "ar": "لم يراجع مدير المنتج الافتراضي هذه التذكرة بعد"
+          }
+        },
+        "buildWithAiVirtualPoNotRunBody": {
+          "$type": "string",
+          "$value": "Run the Virtual PO review first if you want product questions included in the build context.",
+          "$description": "Warning body in Build with AI when the Product Owner persona has not reviewed the ticket.",
+          "locale": {
+            "es": "Ejecuta primero la revisión del PO virtual si quieres incluir preguntas de producto en el contexto de construcción.",
+            "fr": "Lancez d’abord la révision du PO virtuel pour inclure les questions produit dans le contexte de réalisation.",
+            "de": "Führe zuerst die Prüfung durch den virtuellen PO aus, wenn Produktfragen in den Build-Kontext einfließen sollen.",
+            "pt": "Execute primeiro a revisão do PO virtual para incluir perguntas de produto no contexto de construção.",
+            "ja": "ビルドコンテキストにプロダクトに関する質問を含めるには、先に仮想 PO のレビューを実行してください。",
+            "zh": "如果希望将产品问题加入构建上下文，请先运行虚拟 PO 评审。",
+            "ar": "شغّل مراجعة مدير المنتج الافتراضي أولاً إذا أردت تضمين أسئلة المنتج في سياق البناء."
+          }
+        },
+        "buildWithAiOutstandingQuestions": {
+          "$type": "string",
+          "$value": "Outstanding questions",
+          "$description": "Warning title in Build with AI when the ticket has unanswered questions.",
+          "locale": {
+            "es": "Preguntas pendientes",
+            "fr": "Questions en attente",
+            "de": "Offene Fragen",
+            "pt": "Perguntas pendentes",
+            "ja": "未回答の質問",
+            "zh": "待处理问题",
+            "ar": "أسئلة معلّقة"
+          }
+        },
+        "buildWithAiOutstandingQuestion": {
+          "$type": "string",
+          "$value": "question is unanswered.",
+          "$description": "Singular warning body fragment for one unanswered question in Build with AI.",
+          "locale": {
+            "es": "pregunta sin respuesta.",
+            "fr": "question sans réponse.",
+            "de": "Frage ist unbeantwortet.",
+            "pt": "pergunta sem resposta.",
+            "ja": "件の質問が未回答です。",
+            "zh": "个问题未回答。",
+            "ar": "سؤال بلا إجابة."
+          }
+        },
+        "buildWithAiOutstandingQuestionsPlural": {
+          "$type": "string",
+          "$value": "questions are unanswered.",
+          "$description": "Plural warning body fragment for unanswered questions in Build with AI.",
+          "locale": {
+            "es": "preguntas sin respuesta.",
+            "fr": "questions sans réponse.",
+            "de": "Fragen sind unbeantwortet.",
+            "pt": "perguntas sem resposta.",
+            "ja": "件の質問が未回答です。",
+            "zh": "个问题未回答。",
+            "ar": "أسئلة بلا إجابة."
+          }
+        },
+        "buildWithAiQuestionsIncluded": {
+          "$type": "string",
+          "$value": "They are included in the build context.",
+          "$description": "Follow-up text explaining that unanswered questions are included in the Build with AI context.",
+          "locale": {
+            "es": "Se incluyen en el contexto de construcción.",
+            "fr": "Elles sont incluses dans le contexte de réalisation.",
+            "de": "Sie sind im Build-Kontext enthalten.",
+            "pt": "Elas estão incluídas no contexto de construção.",
+            "ja": "ビルドコンテキストに含まれています。",
+            "zh": "它们已包含在构建上下文中。",
+            "ar": "تم تضمينها في سياق البناء."
+          }
+        },
+        "buildWithAiDiscussionEntry": {
+          "$type": "string",
+          "$value": "comment or Q&A entry",
+          "$description": "Singular summary label for one comment or question-and-answer entry included in Build with AI.",
+          "locale": {
+            "es": "comentario o entrada de preguntas y respuestas",
+            "fr": "commentaire ou entrée de questions-réponses",
+            "de": "Kommentar oder Frage-und-Antwort-Eintrag",
+            "pt": "comentário ou entrada de perguntas e respostas",
+            "ja": "コメントまたは Q&A エントリ",
+            "zh": "条评论或问答记录",
+            "ar": "تعليق أو إدخال سؤال وجواب"
+          }
+        },
+        "buildWithAiDiscussionEntries": {
+          "$type": "string",
+          "$value": "comments and Q&A entries",
+          "$description": "Plural summary label for comments and question-and-answer entries included in Build with AI.",
+          "locale": {
+            "es": "comentarios y entradas de preguntas y respuestas",
+            "fr": "commentaires et entrées de questions-réponses",
+            "de": "Kommentare und Frage-und-Antwort-Einträge",
+            "pt": "comentários e entradas de perguntas e respostas",
+            "ja": "コメントと Q&A エントリ",
+            "zh": "条评论和问答记录",
+            "ar": "تعليقات وإدخالات أسئلة وأجوبة"
+          }
+        },
+        "buildWithAiDiscussionIncluded": {
+          "$type": "string",
+          "$value": "are included in this plan.",
+          "$description": "Summary text explaining that ticket comments and question-and-answer entries are included in the Build with AI plan.",
+          "locale": {
+            "es": "se incluyen en este plan.",
+            "fr": "sont inclus dans ce plan.",
+            "de": "sind in diesem Plan enthalten.",
+            "pt": "estão incluídos neste plano.",
+            "ja": "このプランに含まれています。",
+            "zh": "已包含在此计划中。",
+            "ar": "مضمّنة في هذه الخطة."
+          }
+        },
+        "buildWithAiManualFeedback": {
+          "$type": "string",
+          "$value": "Manual direction for the virtual engineer",
+          "$description": "Textarea label for manual constraints, decisions, or answers supplied before asking the virtual engineer to plan.",
+          "locale": {
+            "es": "Dirección manual para el ingeniero virtual",
+            "fr": "Directives manuelles pour l’ingénieur virtuel",
+            "de": "Manuelle Vorgaben für den virtuellen Engineer",
+            "pt": "Direção manual para o engenheiro virtual",
+            "ja": "仮想エンジニアへの手動指示",
+            "zh": "为虚拟工程师提供手动指引",
+            "ar": "توجيه يدوي للمهندس الافتراضي"
+          }
+        },
+        "buildWithAiManualFeedbackHint": {
+          "$type": "string",
+          "$value": "Add constraints, decisions, or answers before asking it to plan. This is optional when the ticket is already clear.",
+          "$description": "Helper text for the Build with AI manual direction field.",
+          "locale": {
+            "es": "Añade restricciones, decisiones o respuestas antes de pedirle que planifique. Es opcional si el ticket ya está claro.",
+            "fr": "Ajoutez des contraintes, décisions ou réponses avant de demander le plan. Facultatif si le ticket est déjà clair.",
+            "de": "Füge vor der Planung Einschränkungen, Entscheidungen oder Antworten hinzu. Bei einem klaren Ticket optional.",
+            "pt": "Adicione restrições, decisões ou respostas antes de pedir o plano. Opcional quando o ticket já está claro.",
+            "ja": "計画を依頼する前に、制約、決定事項、回答を追加してください。チケットが明確なら任意です。",
+            "zh": "在请求规划前添加约束、决定或回答。如果工单已清晰，此项可选。",
+            "ar": "أضف القيود أو القرارات أو الإجابات قبل طلب الخطة. هذا اختياري عندما تكون التذكرة واضحة."
+          }
+        },
+        "buildWithAiAskEngineer": {
+          "$type": "string",
+          "$value": "Ask virtual engineer",
+          "$description": "Action that sends the ticket, discussion, and manual direction to the local Codex-backed virtual engineer.",
+          "locale": {
+            "es": "Preguntar al ingeniero virtual",
+            "fr": "Demander à l’ingénieur virtuel",
+            "de": "Virtuellen Engineer fragen",
+            "pt": "Perguntar ao engenheiro virtual",
+            "ja": "仮想エンジニアに質問",
+            "zh": "询问虚拟工程师",
+            "ar": "اسأل المهندس الافتراضي"
+          }
+        },
+        "buildWithAiReviewEngineer": {
+          "$type": "string",
+          "$value": "Review with Engineer",
+          "$description": "One-click action that evaluates a ticket with the virtual engineer and returns clarifying questions and supplemental build guidance.",
+          "locale": {
+            "es": "Revisar con el ingeniero",
+            "fr": "Réviser avec l’ingénieur",
+            "de": "Mit dem Engineer prüfen",
+            "pt": "Revisar com o engenheiro",
+            "ja": "エンジニアとレビュー",
+            "zh": "与工程师评审",
+            "ar": "راجع مع المهندس"
+          }
+        },
+        "buildWithAiAskAgain": {
+          "$type": "string",
+          "$value": "Answer questions and rebuild",
+          "$description": "Action that resubmits manual answers and previous virtual-engineer questions for a revised plan.",
+          "locale": {
+            "es": "Responder preguntas y reconstruir",
+            "fr": "Répondre et reconstruire",
+            "de": "Fragen beantworten und neu erstellen",
+            "pt": "Responder às perguntas e reconstruir",
+            "ja": "質問に答えて再構築",
+            "zh": "回答问题并重新构建",
+            "ar": "أجب عن الأسئلة وأعد البناء"
+          }
+        },
+        "buildWithAiCodexConnecting": {
+          "$type": "string",
+          "$value": "Connecting to the virtual engineer…",
+          "$description": "Live Build with AI status while connecting to the Codex-backed virtual engineer.",
+          "locale": {
+            "es": "Conectando con el ingeniero virtual…",
+            "fr": "Connexion à l’ingénieur virtuel…",
+            "de": "Verbindung zum virtuellen Engineer wird hergestellt…",
+            "pt": "Conectando ao engenheiro virtual…",
+            "ja": "仮想エンジニアに接続中…",
+            "zh": "正在连接虚拟工程师…",
+            "ar": "جارٍ الاتصال بالمهندس الافتراضي…"
+          }
+        },
+        "buildWithAiCodexThinking": {
+          "$type": "string",
+          "$value": "The virtual engineer is reading the ticket…",
+          "$description": "Live Build with AI status while Codex reads the ticket and discussion.",
+          "locale": {
+            "es": "El ingeniero virtual está leyendo el ticket…",
+            "fr": "L’ingénieur virtuel lit le ticket…",
+            "de": "Der virtuelle Engineer liest das Ticket…",
+            "pt": "O engenheiro virtual está lendo o ticket…",
+            "ja": "仮想エンジニアがチケットを確認中…",
+            "zh": "虚拟工程师正在阅读工单…",
+            "ar": "يقرأ المهندس الافتراضي التذكرة…"
+          }
+        },
+        "buildWithAiCodexClassifying": {
+          "$type": "string",
+          "$value": "Classifying the work…",
+          "$description": "Live Build with AI status while Codex classifies the ticket work type.",
+          "locale": {
+            "es": "Clasificando el trabajo…",
+            "fr": "Classification du travail…",
+            "de": "Arbeit wird klassifiziert…",
+            "pt": "Classificando o trabalho…",
+            "ja": "作業を分類中…",
+            "zh": "正在分类工作…",
+            "ar": "جارٍ تصنيف العمل…"
+          }
+        },
+        "buildWithAiCodexValidating": {
+          "$type": "string",
+          "$value": "Validating the plan…",
+          "$description": "Live Build with AI status while the structured virtual-engineer response is validated.",
+          "locale": {
+            "es": "Validando el plan…",
+            "fr": "Validation du plan…",
+            "de": "Plan wird validiert…",
+            "pt": "Validando o plano…",
+            "ja": "計画を検証中…",
+            "zh": "正在验证计划…",
+            "ar": "جارٍ التحقق من الخطة…"
+          }
+        },
+        "buildWithAiCodexComplete": {
+          "$type": "string",
+          "$value": "Virtual engineer plan complete.",
+          "$description": "Live Build with AI status after the virtual-engineer response is applied.",
+          "locale": {
+            "es": "Plan del ingeniero virtual completado.",
+            "fr": "Plan de l’ingénieur virtuel terminé.",
+            "de": "Plan des virtuellen Engineers abgeschlossen.",
+            "pt": "Plano do engenheiro virtual concluído.",
+            "ja": "仮想エンジニアの計画が完了しました。",
+            "zh": "虚拟工程师计划已完成。",
+            "ar": "اكتملت خطة المهندس الافتراضي."
+          }
+        },
+        "buildWithAiCodexErrorTitle": {
+          "$type": "string",
+          "$value": "Virtual engineer unavailable",
+          "$description": "Error title when the Build with AI Codex bridge cannot be reached.",
+          "locale": {
+            "es": "Ingeniero virtual no disponible",
+            "fr": "Ingénieur virtuel indisponible",
+            "de": "Virtueller Engineer nicht verfügbar",
+            "pt": "Engenheiro virtual indisponível",
+            "ja": "仮想エンジニアを利用できません",
+            "zh": "虚拟工程师不可用",
+            "ar": "المهندس الافتراضي غير متاح"
+          }
+        },
+        "buildWithAiCodexErrorBody": {
+          "$type": "string",
+          "$value": "The existing local planner remains available.",
+          "$description": "Error body explaining that Build with AI keeps its existing local fallback when Codex is unavailable.",
+          "locale": {
+            "es": "El planificador local existente sigue disponible.",
+            "fr": "Le planificateur local existant reste disponible.",
+            "de": "Der vorhandene lokale Planer bleibt verfügbar.",
+            "pt": "O planejador local existente continua disponível.",
+            "ja": "既存のローカルプランナーは引き続き利用できます。",
+            "zh": "现有的本地规划器仍可用。",
+            "ar": "لا يزال المخطط المحلي الحالي متاحاً."
+          }
+        },
+        "buildWithAiCodexQuestions": {
+          "$type": "string",
+          "$value": "Virtual engineer questions",
+          "$description": "Heading for blocking questions returned by the virtual engineer before refining a plan.",
+          "locale": {
+            "es": "Preguntas del ingeniero virtual",
+            "fr": "Questions de l’ingénieur virtuel",
+            "de": "Fragen des virtuellen Engineers",
+            "pt": "Perguntas do engenheiro virtual",
+            "ja": "仮想エンジニアからの質問",
+            "zh": "虚拟工程师问题",
+            "ar": "أسئلة المهندس الافتراضي"
+          }
+        },
+        "buildWithAiCodexQuestionsHint": {
+          "$type": "string",
+          "$value": "Answer these in the ticket comments, then review the ticket again.",
+          "$description": "Helper text explaining how to answer virtual-engineer questions in the ticket comments before reviewing again.",
+          "locale": {
+            "es": "Responde en los comentarios del ticket y vuelve a revisar.",
+            "fr": "Répondez dans les commentaires du ticket, puis relancez la révision.",
+            "de": "Beantworte sie in den Ticket-Kommentaren und starte die Prüfung erneut.",
+            "pt": "Responda nos comentários do ticket e revise novamente.",
+            "ja": "チケットのコメントで回答し、もう一度レビューしてください。",
+            "zh": "在工单评论中回答，然后再次评审。",
+            "ar": "أجب عنها في تعليقات التذكرة ثم راجعها مرة أخرى."
+          }
+        },
+        "buildWithAiCodexClassification": {
+          "$type": "string",
+          "$value": "Classified as",
+          "$description": "Prefix for the virtual-engineer work classification shown above its plan.",
+          "locale": {
+            "es": "Clasificado como",
+            "fr": "Classé comme",
+            "de": "Klassifiziert als",
+            "pt": "Classificado como",
+            "ja": "分類",
+            "zh": "分类为",
+            "ar": "مصنّف كـ"
+          }
+        },
+        "buildWithAiCodexStylingIncluded": {
+          "$type": "string",
+          "$value": "styling guidance included",
+          "$description": "Classification suffix when styling guidance is relevant to the virtual-engineer plan.",
+          "locale": {
+            "es": "incluye orientación de estilos",
+            "fr": "conseils de style inclus",
+            "de": "Styling-Hinweise enthalten",
+            "pt": "orientação de estilo incluída",
+            "ja": "スタイルのガイダンスを含む",
+            "zh": "包含样式指导",
+            "ar": "تتضمن إرشادات التنسيق"
+          }
+        },
+        "buildWithAiCodexStylingOmitted": {
+          "$type": "string",
+          "$value": "styling guidance omitted",
+          "$description": "Classification suffix when styling guidance is not relevant to the virtual-engineer plan.",
+          "locale": {
+            "es": "omite la orientación de estilos",
+            "fr": "conseils de style omis",
+            "de": "Styling-Hinweise ausgelassen",
+            "pt": "orientação de estilo omitida",
+            "ja": "スタイルのガイダンスを省略",
+            "zh": "省略样式指导",
+            "ar": "تم حذف إرشادات التنسيق"
+          }
+        },
+        "buildWithAiEngineerDialogTitle": {
+          "$type": "string",
+          "$value": "Ask the virtual engineer",
+          "$description": "Dialog title for sending Build with AI context to the virtual engineer.",
+          "locale": {
+            "es": "Preguntar al ingeniero virtual",
+            "fr": "Interroger l’ingénieur virtuel",
+            "de": "Virtuellen Engineer fragen",
+            "pt": "Perguntar ao engenheiro virtual",
+            "ja": "仮想エンジニアに質問",
+            "zh": "询问虚拟工程师",
+            "ar": "اسأل المهندس الافتراضي"
+          }
+        },
+        "buildWithAiEngineerDialogBody": {
+          "$type": "string",
+          "$value": "Review the ticket context, add any direction, and answer only the questions that need your decision. The result is added to the existing build instructions.",
+          "$description": "Dialog guidance explaining that virtual-engineer questions refine, rather than replace, the existing Build with AI instructions.",
+          "locale": {
+            "es": "Revisa el contexto del ticket, añade indicaciones y responde solo a las preguntas que requieran tu decisión. El resultado se añade a las instrucciones de construcción existentes.",
+            "fr": "Examinez le contexte du ticket, ajoutez vos indications et répondez uniquement aux questions qui nécessitent votre décision. Le résultat est ajouté aux instructions de réalisation existantes.",
+            "de": "Prüfe den Ticket-Kontext, füge Vorgaben hinzu und beantworte nur Fragen, die deine Entscheidung erfordern. Das Ergebnis wird zu den bestehenden Build-Anweisungen hinzugefügt.",
+            "pt": "Revise o contexto do ticket, adicione orientações e responda apenas às perguntas que exigem sua decisão. O resultado é adicionado às instruções de construção existentes.",
+            "ja": "チケットのコンテキストを確認し、指示を追加し、判断が必要な質問だけに答えてください。結果は既存のビルド指示に追加されます。",
+            "zh": "查看工单上下文，添加指引，只回答需要你决定的问题。结果会添加到现有构建说明中。",
+            "ar": "راجع سياق التذكرة وأضف التوجيهات وأجب فقط عن الأسئلة التي تتطلب قرارك. ستُضاف النتيجة إلى تعليمات البناء الحالية."
+          }
+        },
+        "buildWithAiEngineerDialogClose": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Button label that closes the virtual-engineer dialog.",
+          "locale": {
+            "es": "Cerrar",
+            "fr": "Fermer",
+            "de": "Schließen",
+            "pt": "Fechar",
+            "ja": "閉じる",
+            "zh": "关闭",
+            "ar": "إغلاق"
+          }
+        },
+        "buildWithAiUseAnswer": {
+          "$type": "string",
+          "$value": "Use answer",
+          "$description": "Button label for staging an answer to a virtual-engineer question before asking again.",
+          "locale": {
+            "es": "Usar respuesta",
+            "fr": "Utiliser la réponse",
+            "de": "Antwort verwenden",
+            "pt": "Usar resposta",
+            "ja": "回答を使用",
+            "zh": "使用回答",
+            "ar": "استخدم الإجابة"
+          }
+        },
+        "buildWithAiEngineerAddedGuidance": {
+          "$type": "string",
+          "$value": "The virtual engineer guidance was added to the existing build instructions.",
+          "$description": "Confirmation that virtual-engineer guidance was appended to the existing Build with AI plan.",
+          "locale": {
+            "es": "La orientación del ingeniero virtual se añadió a las instrucciones de construcción existentes.",
+            "fr": "Les conseils de l’ingénieur virtuel ont été ajoutés aux instructions de réalisation existantes.",
+            "de": "Die Hinweise des virtuellen Engineers wurden zu den bestehenden Build-Anweisungen hinzugefügt.",
+            "pt": "As orientações do engenheiro virtual foram adicionadas às instruções de construção existentes.",
+            "ja": "仮想エンジニアのガイダンスを既存のビルド指示に追加しました。",
+            "zh": "虚拟工程师的指导已添加到现有构建说明中。",
+            "ar": "تمت إضافة إرشادات المهندس الافتراضي إلى تعليمات البناء الحالية."
+          }
+        },
         "virtualPo": {
           "$type": "string",
           "$value": "Virtual PO",
@@ -2428,6 +3144,34 @@
             "ar": "مدير المنتج الافتراضي"
           }
         },
+        "virtualTeam": {
+          "$type": "string",
+          "$value": "Virtual Team",
+          "$description": "Dev-only backlog dialog tab combining Product Owner and virtual-engineer review tools.",
+          "locale": {
+            "es": "Equipo virtual",
+            "fr": "Équipe virtuelle",
+            "de": "Virtuelles Team",
+            "pt": "Equipe virtual",
+            "ja": "仮想チーム",
+            "zh": "虚拟团队",
+            "ar": "الفريق الافتراضي"
+          }
+        },
+        "virtualTeamDescription": {
+          "$type": "string",
+          "$value": "Product and engineering review the ticket together. Their questions and guidance stay with the build instructions.",
+          "$description": "Supporting text for the Virtual Team tab in the backlog ticket dialog.",
+          "locale": {
+            "es": "Producto e ingeniería revisan el ticket juntos. Sus preguntas y orientación permanecen con las instrucciones de construcción.",
+            "fr": "Les équipes produit et ingénierie examinent le ticket ensemble. Leurs questions et conseils restent associés aux instructions de réalisation.",
+            "de": "Produkt und Engineering prüfen das Ticket gemeinsam. Ihre Fragen und Hinweise bleiben bei den Build-Anweisungen.",
+            "pt": "Produto e engenharia revisam o ticket juntos. As perguntas e orientações permanecem com as instruções de construção.",
+            "ja": "プロダクトとエンジニアリングがチケットを一緒にレビューします。質問とガイダンスはビルド指示に残ります。",
+            "zh": "产品和工程团队共同评审工单。问题和指导会保留在构建说明中。",
+            "ar": "يراجع فريقا المنتج والهندسة التذكرة معاً. تبقى أسئلتهم وإرشاداتهم مع تعليمات البناء."
+          }
+        },
         "virtualPoDescription": {
           "$type": "string",
           "$value": "Local, deterministic review — no API credits.",
@@ -2440,6 +3184,174 @@
             "ja": "ローカルで確定的なレビュー — APIクレジット不要。",
             "zh": "本地确定性评审——无需 API 额度。",
             "ar": "مراجعة محلية وحتمية — بدون رصيد API."
+          }
+        },
+        "virtualPoQuestionsAndComments": {
+          "$type": "string",
+          "$value": "Questions and comments",
+          "$description": "Heading for Product Owner questions and comments shown in the Virtual PO panel.",
+          "locale": {
+            "es": "Preguntas y comentarios",
+            "fr": "Questions et commentaires",
+            "de": "Fragen und Kommentare",
+            "pt": "Perguntas e comentários",
+            "ja": "質問とコメント",
+            "zh": "问题和评论",
+            "ar": "الأسئلة والتعليقات"
+          }
+        },
+        "virtualPoLoadingThread": {
+          "$type": "string",
+          "$value": "Loading the Product Owner discussion…",
+          "$description": "Loading status while the Virtual PO panel reads its questions and comments.",
+          "locale": {
+            "es": "Cargando la conversación del PO…",
+            "fr": "Chargement de la discussion du PO…",
+            "de": "PO-Diskussion wird geladen…",
+            "pt": "Carregando a discussão do PO…",
+            "ja": "PO のディスカッションを読み込み中…",
+            "zh": "正在加载 PO 讨论…",
+            "ar": "جارٍ تحميل مناقشة مدير المنتج…"
+          }
+        },
+        "virtualPoNoThread": {
+          "$type": "string",
+          "$value": "No Product Owner questions or comments yet.",
+          "$description": "Empty state for Product Owner questions and comments in the Virtual PO panel.",
+          "locale": {
+            "es": "Aún no hay preguntas ni comentarios del PO.",
+            "fr": "Aucune question ni aucun commentaire du PO pour le moment.",
+            "de": "Noch keine Fragen oder Kommentare des PO.",
+            "pt": "Ainda não há perguntas ou comentários do PO.",
+            "ja": "PO の質問やコメントはまだありません。",
+            "zh": "暂无 PO 问题或评论。",
+            "ar": "لا توجد أسئلة أو تعليقات من مدير المنتج بعد."
+          }
+        },
+        "virtualPoCodex": {
+          "$type": "string",
+          "$value": "Review with Codex",
+          "$description": "Dev-only action that asks the local Codex bridge for Product Owner clarifying questions.",
+          "locale": {
+            "es": "Revisar con Codex",
+            "fr": "Réviser avec Codex",
+            "de": "Mit Codex prüfen",
+            "pt": "Revisar com Codex",
+            "ja": "Codexでレビュー",
+            "zh": "使用 Codex 评审",
+            "ar": "المراجعة باستخدام Codex"
+          }
+        },
+        "virtualPoCodexDescription": {
+          "$type": "string",
+          "$value": "Codex improves the questions; the local Product Owner remains the fallback.",
+          "$description": "Helper text explaining the Codex-backed Product Owner review path.",
+          "locale": {
+            "es": "Codex mejora las preguntas; el PO local sigue siendo el respaldo.",
+            "fr": "Codex améliore les questions ; le PO local reste la solution de secours.",
+            "de": "Codex verbessert die Fragen; der lokale PO bleibt der Fallback.",
+            "pt": "O Codex melhora as perguntas; o PO local continua sendo o fallback.",
+            "ja": "Codexが質問を改善し、ローカルPOがフォールバックになります。",
+            "zh": "Codex 改进问题；本地 PO 仍作为备用方案。",
+            "ar": "يحسّن Codex الأسئلة؛ ويظل مدير المنتج المحلي هو البديل."
+          }
+        },
+        "virtualPoCodexFallback": {
+          "$type": "string",
+          "$value": "Codex was unavailable, so the local Product Owner review was used.",
+          "$description": "Status text shown when the Codex bridge is unavailable and the deterministic Product Owner fallback runs.",
+          "locale": {
+            "es": "Codex no estaba disponible, así que se usó la revisión del PO local.",
+            "fr": "Codex n'était pas disponible ; la révision du PO local a donc été utilisée.",
+            "de": "Codex war nicht verfügbar; daher wurde die lokale PO-Prüfung verwendet.",
+            "pt": "O Codex não estava disponível, então a revisão do PO local foi usada.",
+            "ja": "Codexを利用できなかったため、ローカルPOのレビューを使用しました。",
+            "zh": "Codex 不可用，因此使用了本地 PO 评审。",
+            "ar": "لم يتوفر Codex، لذا استُخدمت مراجعة مدير المنتج المحلي."
+          }
+        },
+        "virtualPoCodexConnecting": {
+          "$type": "string",
+          "$value": "Connecting to Codex…",
+          "$description": "Live status while the Virtual PO review connects to the local Codex bridge.",
+          "locale": {
+            "es": "Conectando con Codex…",
+            "fr": "Connexion à Codex…",
+            "de": "Verbindung mit Codex wird hergestellt…",
+            "pt": "Conectando ao Codex…",
+            "ja": "Codexに接続中…",
+            "zh": "正在连接 Codex…",
+            "ar": "جارٍ الاتصال بـ Codex…"
+          }
+        },
+        "virtualPoCodexThinking": {
+          "$type": "string",
+          "$value": "Codex is reviewing the ticket…",
+          "$description": "Live status while Codex reviews the ticket for better Product Owner questions.",
+          "locale": {
+            "es": "Codex está revisando el ticket…",
+            "fr": "Codex examine le ticket…",
+            "de": "Codex prüft das Ticket…",
+            "pt": "O Codex está revisando o ticket…",
+            "ja": "Codexがチケットをレビュー中…",
+            "zh": "Codex 正在评审工单…",
+            "ar": "يراجع Codex التذكرة…"
+          }
+        },
+        "virtualPoCodexValidating": {
+          "$type": "string",
+          "$value": "Validating Codex questions…",
+          "$description": "Live status while the app validates the structured Codex response.",
+          "locale": {
+            "es": "Validando las preguntas de Codex…",
+            "fr": "Validation des questions de Codex…",
+            "de": "Codex-Fragen werden validiert…",
+            "pt": "Validando as perguntas do Codex…",
+            "ja": "Codexの質問を検証中…",
+            "zh": "正在验证 Codex 问题…",
+            "ar": "جارٍ التحقق من أسئلة Codex…"
+          }
+        },
+        "virtualPoCodexComplete": {
+          "$type": "string",
+          "$value": "Codex review complete.",
+          "$description": "Live status after the Codex-backed Product Owner review finishes.",
+          "locale": {
+            "es": "Revisión de Codex completada.",
+            "fr": "Révision Codex terminée.",
+            "de": "Codex-Prüfung abgeschlossen.",
+            "pt": "Revisão do Codex concluída.",
+            "ja": "Codexレビューが完了しました。",
+            "zh": "Codex 评审完成。",
+            "ar": "اكتملت مراجعة Codex."
+          }
+        },
+        "virtualPoCodexApplying": {
+          "$type": "string",
+          "$value": "Applying questions to the ticket…",
+          "$description": "Live status while validated Codex questions are being written to the ticket.",
+          "locale": {
+            "es": "Aplicando preguntas al ticket…",
+            "fr": "Application des questions au ticket…",
+            "de": "Fragen werden auf das Ticket angewendet…",
+            "pt": "Aplicando perguntas ao ticket…",
+            "ja": "質問をチケットに適用中…",
+            "zh": "正在将问题应用到工单…",
+            "ar": "جارٍ تطبيق الأسئلة على التذكرة…"
+          }
+        },
+        "virtualPoCodexErrorTitle": {
+          "$type": "string",
+          "$value": "Product Owner review failed",
+          "$description": "Error banner title when the Codex-backed Product Owner review cannot be applied to the ticket.",
+          "locale": {
+            "es": "La revisión del PO falló",
+            "fr": "La révision du PO a échoué",
+            "de": "PO-Prüfung fehlgeschlagen",
+            "pt": "A revisão do PO falhou",
+            "ja": "プロダクトオーナーのレビューに失敗しました",
+            "zh": "产品负责人评审失败",
+            "ar": "فشلت مراجعة مدير المنتج"
           }
         },
         "deleteDialogCancel": {
@@ -3126,6 +4038,1228 @@
             "ja": "自分のキュー",
             "zh": "我的队列",
             "ar": "قائمتي"
+          }
+        }
+      },
+      "configurator": {
+        "format": {
+          "$type": "string",
+          "$value": "Format",
+          "$description": "Toolbar label for the component configurator's snippet format toggle (code or page-definition JSON).",
+          "locale": {
+            "es": "Formato",
+            "fr": "Format",
+            "de": "Format",
+            "pt": "Formato",
+            "ja": "形式",
+            "zh": "格式",
+            "ar": "التنسيق"
+          }
+        },
+        "formatCode": {
+          "$type": "string",
+          "$value": "Code",
+          "$description": "Format toggle option that shows the component's code snippet.",
+          "locale": {
+            "es": "Código",
+            "fr": "Code",
+            "de": "Code",
+            "pt": "Código",
+            "ja": "コード",
+            "zh": "代码",
+            "ar": "الكود"
+          }
+        },
+        "formatJson": {
+          "$type": "string",
+          "$value": "JSON",
+          "$description": "Format toggle option that shows the component as an A1 page-definition JSON node.",
+          "locale": {
+            "es": "JSON",
+            "fr": "JSON",
+            "de": "JSON",
+            "pt": "JSON",
+            "ja": "JSON",
+            "zh": "JSON",
+            "ar": "JSON"
+          }
+        },
+        "jsonEditableHint": {
+          "$type": "string",
+          "$value": "Edit the JSON to update the configuration — changes apply as you type.",
+          "$description": "Hint above the configurator's editable JSON view explaining that valid edits apply live.",
+          "locale": {
+            "es": "Edita el JSON para actualizar la configuración; los cambios se aplican mientras escribes.",
+            "fr": "Modifiez le JSON pour mettre à jour la configuration — les changements s'appliquent au fil de la saisie.",
+            "de": "Bearbeiten Sie das JSON, um die Konfiguration zu aktualisieren — Änderungen werden beim Tippen übernommen.",
+            "pt": "Edite o JSON para atualizar a configuração — as alterações são aplicadas enquanto você digita.",
+            "ja": "JSONを編集すると設定が更新されます。変更は入力中に適用されます。",
+            "zh": "编辑 JSON 即可更新配置——更改会在输入时应用。",
+            "ar": "حرّر JSON لتحديث الإعداد — تُطبَّق التغييرات أثناء الكتابة."
+          }
+        },
+        "importJsonEmpty": {
+          "$type": "string",
+          "$value": "Paste a component node to import.",
+          "$description": "Validation message in the configurator's editable JSON view when the input is empty.",
+          "locale": {
+            "es": "Pega un nodo de componente para importarlo.",
+            "fr": "Collez un nœud de composant à importer.",
+            "de": "Fügen Sie einen Komponentenknoten zum Importieren ein.",
+            "pt": "Cole um nó de componente para importar.",
+            "ja": "インポートするコンポーネントノードを貼り付けてください。",
+            "zh": "粘贴要导入的组件节点。",
+            "ar": "الصق عقدة مكوّن لاستيرادها."
+          }
+        },
+        "importJsonInvalid": {
+          "$type": "string",
+          "$value": "Not valid JSON.",
+          "$description": "Validation message in the configurator's editable JSON view when the input cannot be parsed; the parser detail is appended.",
+          "locale": {
+            "es": "El JSON no es válido.",
+            "fr": "JSON non valide.",
+            "de": "Kein gültiges JSON.",
+            "pt": "JSON inválido.",
+            "ja": "有効なJSONではありません。",
+            "zh": "JSON 无效。",
+            "ar": "‏JSON غير صالح."
+          }
+        },
+        "importJsonNotNode": {
+          "$type": "string",
+          "$value": "The JSON must be a single component node object.",
+          "$description": "Validation message in the configurator's editable JSON view when the input is an array or not an object.",
+          "locale": {
+            "es": "El JSON debe ser un único objeto de nodo de componente.",
+            "fr": "Le JSON doit être un seul objet de nœud de composant.",
+            "de": "Das JSON muss ein einzelnes Komponentenknoten-Objekt sein.",
+            "pt": "O JSON deve ser um único objeto de nó de componente.",
+            "ja": "JSONは単一のコンポーネントノードオブジェクトである必要があります。",
+            "zh": "JSON 必须是单个组件节点对象。",
+            "ar": "يجب أن يكون JSON كائن عقدة مكوّن واحدًا."
+          }
+        },
+        "importJsonWrongType": {
+          "$type": "string",
+          "$value": "The node type must be \"{type}\".",
+          "$description": "Validation message in the configurator's editable JSON view when the node's type does not match the current component; {type} is replaced with the expected type name.",
+          "locale": {
+            "es": "El tipo del nodo debe ser \"{type}\".",
+            "fr": "Le type du nœud doit être « {type} ».",
+            "de": "Der Knotentyp muss \"{type}\" sein.",
+            "pt": "O tipo do nó deve ser \"{type}\".",
+            "ja": "ノードのtypeは「{type}」である必要があります。",
+            "zh": "节点类型必须为“{type}”。",
+            "ar": "يجب أن يكون نوع العقدة \"{type}\"."
+          }
+        },
+        "jsonChildrenIgnored": {
+          "$type": "string",
+          "$value": "Child nodes were not applied — the configurator previews a single component with sample content.",
+          "$description": "Info banner in the configurator's JSON view when an imported node carries child nodes, which the single-component configurator cannot render.",
+          "locale": {
+            "es": "Los nodos hijos no se aplicaron; el configurador muestra un único componente con contenido de ejemplo.",
+            "fr": "Les nœuds enfants n'ont pas été appliqués — le configurateur présente un seul composant avec un contenu d'exemple.",
+            "de": "Untergeordnete Knoten wurden nicht übernommen — der Konfigurator zeigt eine einzelne Komponente mit Beispielinhalt.",
+            "pt": "Os nós filhos não foram aplicados — o configurador mostra um único componente com conteúdo de exemplo.",
+            "ja": "子ノードは適用されませんでした。コンフィギュレーターはサンプルコンテンツ付きの単一コンポーネントを表示します。",
+            "zh": "未应用子节点——配置器仅以示例内容预览单个组件。",
+            "ar": "لم تُطبَّق العقد الفرعية — تعرض أداة الضبط مكوّنًا واحدًا بمحتوى تجريبي."
+          }
+        },
+        "jsonTopHeaderLogin": {
+          "$type": "string",
+          "$value": "loginButton carries only the { label } — its click behavior is composed at runtime.",
+          "$description": "Info note in the Top Header configurator's JSON view when a sign-in label is set, explaining the loginButton prop carries the label while click behavior is runtime-composed.",
+          "locale": {
+            "es": "loginButton solo lleva el { label }; su comportamiento de clic se compone en tiempo de ejecución.",
+            "fr": "loginButton ne porte que le { label } — son comportement au clic est composé à l'exécution.",
+            "de": "loginButton enthält nur das { label } — das Klickverhalten wird zur Laufzeit zusammengesetzt.",
+            "pt": "loginButton carrega apenas o { label } — o comportamento de clique é composto em tempo de execução.",
+            "ja": "loginButtonは{ label }のみを保持します。クリック時の動作は実行時に構成されます。",
+            "zh": "loginButton 仅携带 { label }——点击行为在运行时组合。",
+            "ar": "يحمل loginButton قيمة { label } فقط — يُركَّب سلوك النقر أثناء التشغيل."
+          }
+        },
+        "jsonSplitNote": {
+          "$type": "string",
+          "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",
+          "$description": "Info banner in the Button configurator's JSON view when the split (menu) option is on, which has no page-definition node type.",
+          "locale": {
+            "es": "El botón dividido no forma parte del esquema de definición de página; el JSON describe un botón estándar.",
+            "fr": "Le bouton scindé ne fait pas partie du schéma de définition de page — le JSON décrit un bouton standard.",
+            "de": "Der geteilte Button ist nicht Teil des Seitendefinitionsschemas — das JSON beschreibt einen Standard-Button.",
+            "pt": "O botão dividido não faz parte do esquema de definição de página — o JSON descreve um botão padrão.",
+            "ja": "スプリットボタンはページ定義スキーマに含まれていないため、JSONは標準のボタンを表します。",
+            "zh": "拆分按钮不在页面定义架构中——JSON 描述的是标准按钮。",
+            "ar": "الزر المنقسم ليس جزءًا من مخطط تعريف الصفحة — يصف JSON زرًا قياسيًا."
+          }
+        }
+      },
+      "editor": {
+        "screenReaderReportAction": {
+          "$type": "string",
+          "$value": "Screen reader report",
+          "$description": "Toolbar action label in the page editor that opens the screen reader report dialog.",
+          "locale": {
+            "es": "Informe de lector de pantalla",
+            "fr": "Rapport lecteur d'écran",
+            "de": "Screenreader-Bericht",
+            "pt": "Relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポート",
+            "zh": "屏幕阅读器报告",
+            "ar": "تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportTitle": {
+          "$type": "string",
+          "$value": "Screen reader report",
+          "$description": "Dialog title for the page editor screen reader report.",
+          "locale": {
+            "es": "Informe de lector de pantalla",
+            "fr": "Rapport lecteur d'écran",
+            "de": "Screenreader-Bericht",
+            "pt": "Relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポート",
+            "zh": "屏幕阅读器报告",
+            "ar": "تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportDescription": {
+          "$type": "string",
+          "$value": "A heuristic outline of the current page structure and the labels most screen readers are likely to announce. Use it to catch unlabeled icon buttons, missing field labels, heading jumps, and image-alt issues before manual assistive-technology testing.",
+          "$description": "Introductory description in the page editor screen reader report dialog.",
+          "locale": {
+            "es": "Un esquema heurístico de la estructura de la página actual y las etiquetas que la mayoría de lectores de pantalla probablemente anunciarán. Úsalo para detectar botones de solo icono sin etiqueta, campos sin etiqueta, saltos de encabezado y problemas de texto alternativo antes de probar con tecnología de asistencia.",
+            "fr": "Un aperçu heuristique de la structure de la page actuelle et des libellés que la plupart des lecteurs d'écran annonceront probablement. Utilisez-le pour repérer les boutons icône sans libellé, les champs non libellés, les sauts de titres et les problèmes de texte alternatif avant les tests avec technologie d'assistance.",
+            "de": "Eine heuristische Übersicht der aktuellen Seitenstruktur und der Bezeichnungen, die die meisten Screenreader wahrscheinlich ansagen. Nutze sie, um unbeschriftete Icon-Buttons, fehlende Feldlabels, Sprünge in der Überschriftenstruktur und Alt-Text-Probleme vor manuellen Tests mit assistiver Technologie zu finden.",
+            "pt": "Um resumo heurístico da estrutura da página atual e dos rótulos que a maioria dos leitores de tela provavelmente anunciará. Use para encontrar botões só com ícone sem rótulo, campos sem rótulo, saltos de cabeçalho e problemas de texto alternativo antes dos testes manuais com tecnologia assistiva.",
+            "ja": "現在のページ構造と、多くのスクリーンリーダーが読み上げる可能性が高いラベルのヒューリスティックな概要です。支援技術で手動テストする前に、ラベルのないアイコンボタン、フィールドラベルの欠落、見出しレベルの飛び、画像の代替テキストの問題を見つけるために使います。",
+            "zh": "当前页面结构以及大多数屏幕阅读器可能朗读的标签的启发式概要。用于在手动辅助技术测试前发现未标记的图标按钮、缺失的字段标签、标题跳级和图片替代文本问题。",
+            "ar": "مخطط إرشادي لبنية الصفحة الحالية والتسميات التي يُرجح أن تعلنها معظم قارئات الشاشة. استخدمه لاكتشاف أزرار الأيقونات غير المسماة، وتسميات الحقول المفقودة، وقفزات العناوين، ومشكلات النص البديل للصور قبل الاختبار اليدوي بتقنيات المساعدة."
+          }
+        },
+        "screenReaderReportScopeTitle": {
+          "$type": "string",
+          "$value": "Manual verification still matters",
+          "$description": "Banner heading in the screen reader report explaining the limits of the heuristic report.",
+          "locale": {
+            "es": "La verificación manual sigue importando",
+            "fr": "La vérification manuelle reste nécessaire",
+            "de": "Manuelle Prüfung bleibt wichtig",
+            "pt": "A verificação manual ainda importa",
+            "ja": "手動確認は引き続き重要です",
+            "zh": "仍需手动验证",
+            "ar": "لا يزال التحقق اليدوي مهمًا"
+          }
+        },
+        "screenReaderReportScopeBody": {
+          "$type": "string",
+          "$value": "This report reads the page definition, not a live screen reader transcript. Confirm focus order, dynamic announcements, and final wording in VoiceOver, NVDA, or another assistive technology before release.",
+          "$description": "Banner body in the screen reader report explaining that the report is heuristic.",
+          "locale": {
+            "es": "Este informe lee la definición de la página, no una transcripción real de un lector de pantalla. Confirma el orden de foco, los anuncios dinámicos y el texto final en VoiceOver, NVDA u otra tecnología de asistencia antes del lanzamiento.",
+            "fr": "Ce rapport lit la définition de la page, pas une transcription réelle de lecteur d'écran. Vérifiez l'ordre de focus, les annonces dynamiques et le libellé final dans VoiceOver, NVDA ou une autre technologie d'assistance avant la sortie.",
+            "de": "Dieser Bericht liest die Seitendefinition, kein Live-Transkript eines Screenreaders. Prüfe Fokusreihenfolge, dynamische Ansagen und finale Formulierungen vor der Veröffentlichung in VoiceOver, NVDA oder einer anderen assistiven Technologie.",
+            "pt": "Este relatório lê a definição da página, não uma transcrição real de leitor de tela. Confirme a ordem de foco, os anúncios dinâmicos e o texto final no VoiceOver, NVDA ou outra tecnologia assistiva antes do lançamento.",
+            "ja": "このレポートはライブのスクリーンリーダー記録ではなく、ページ定義を読み取ります。リリース前に VoiceOver、NVDA、または別の支援技術でフォーカス順序、動的な通知、最終的な文言を確認してください。",
+            "zh": "此报告读取页面定义，而不是实时屏幕阅读器记录。发布前请在 VoiceOver、NVDA 或其他辅助技术中确认焦点顺序、动态公告和最终文案。",
+            "ar": "يقرأ هذا التقرير تعريف الصفحة، وليس نصًا حيًا من قارئ شاشة. تحقق من ترتيب التركيز، والإعلانات الديناميكية، والصياغة النهائية في VoiceOver أو NVDA أو أي تقنية مساعدة أخرى قبل الإصدار."
+          }
+        },
+        "screenReaderReportSummaryLabel": {
+          "$type": "string",
+          "$value": "Screen reader report summary",
+          "$description": "Accessible label for the summary stats in the screen reader report dialog.",
+          "locale": {
+            "es": "Resumen del informe de lector de pantalla",
+            "fr": "Résumé du rapport lecteur d'écran",
+            "de": "Zusammenfassung des Screenreader-Berichts",
+            "pt": "Resumo do relatório de leitor de tela",
+            "ja": "スクリーンリーダーレポートの概要",
+            "zh": "屏幕阅读器报告摘要",
+            "ar": "ملخص تقرير قارئ الشاشة"
+          }
+        },
+        "screenReaderReportItemsReviewed": {
+          "$type": "string",
+          "$value": "Items reviewed",
+          "$description": "Stat label for the number of page nodes reviewed in the screen reader report.",
+          "locale": {
+            "es": "Elementos revisados",
+            "fr": "Éléments examinés",
+            "de": "Geprüfte Elemente",
+            "pt": "Itens revisados",
+            "ja": "確認した項目",
+            "zh": "已检查项",
+            "ar": "العناصر المراجعة"
+          }
+        },
+        "screenReaderReportHeadings": {
+          "$type": "string",
+          "$value": "Headings",
+          "$description": "Stat label for the heading count in the screen reader report.",
+          "locale": {
+            "es": "Encabezados",
+            "fr": "Titres",
+            "de": "Überschriften",
+            "pt": "Cabeçalhos",
+            "ja": "見出し",
+            "zh": "标题",
+            "ar": "العناوين"
+          }
+        },
+        "screenReaderReportControls": {
+          "$type": "string",
+          "$value": "Controls",
+          "$description": "Stat label for the interactive control count in the screen reader report.",
+          "locale": {
+            "es": "Controles",
+            "fr": "Contrôles",
+            "de": "Steuerelemente",
+            "pt": "Controles",
+            "ja": "コントロール",
+            "zh": "控件",
+            "ar": "عناصر التحكم"
+          }
+        },
+        "screenReaderReportIssues": {
+          "$type": "string",
+          "$value": "Issues",
+          "$description": "Stat label for combined issues and review items in the screen reader report.",
+          "locale": {
+            "es": "Problemas",
+            "fr": "Problèmes",
+            "de": "Probleme",
+            "pt": "Problemas",
+            "ja": "問題",
+            "zh": "问题",
+            "ar": "المشكلات"
+          }
+        },
+        "screenReaderReportStructureHeading": {
+          "$type": "string",
+          "$value": "Reading structure",
+          "$description": "Section heading above the structure table in the screen reader report dialog.",
+          "locale": {
+            "es": "Estructura de lectura",
+            "fr": "Structure de lecture",
+            "de": "Lesestruktur",
+            "pt": "Estrutura de leitura",
+            "ja": "読み上げ構造",
+            "zh": "朗读结构",
+            "ar": "بنية القراءة"
+          }
+        },
+        "screenReaderReportTableCaption": {
+          "$type": "string",
+          "$value": "Screen reader structure report",
+          "$description": "Table caption for the screen reader report DataTable.",
+          "locale": {
+            "es": "Informe de estructura para lector de pantalla",
+            "fr": "Rapport de structure pour lecteur d'écran",
+            "de": "Strukturbericht fuer Screenreader",
+            "pt": "Relatório de estrutura para leitor de tela",
+            "ja": "スクリーンリーダー構造レポート",
+            "zh": "屏幕阅读器结构报告",
+            "ar": "تقرير بنية قارئ الشاشة"
+          }
+        },
+        "screenReaderReportColumnDepth": {
+          "$type": "string",
+          "$value": "Level",
+          "$description": "Column heading for nesting level in the screen reader report table.",
+          "locale": {
+            "es": "Nivel",
+            "fr": "Niveau",
+            "de": "Ebene",
+            "pt": "Nível",
+            "ja": "レベル",
+            "zh": "层级",
+            "ar": "المستوى"
+          }
+        },
+        "screenReaderReportColumnElement": {
+          "$type": "string",
+          "$value": "Element",
+          "$description": "Column heading for component element in the screen reader report table.",
+          "locale": {
+            "es": "Elemento",
+            "fr": "Élément",
+            "de": "Element",
+            "pt": "Elemento",
+            "ja": "要素",
+            "zh": "元素",
+            "ar": "العنصر"
+          }
+        },
+        "screenReaderReportColumnRole": {
+          "$type": "string",
+          "$value": "Role",
+          "$description": "Column heading for role in the screen reader report table.",
+          "locale": {
+            "es": "Rol",
+            "fr": "Rôle",
+            "de": "Rolle",
+            "pt": "Função",
+            "ja": "ロール",
+            "zh": "角色",
+            "ar": "الدور"
+          }
+        },
+        "screenReaderReportColumnAnnouncement": {
+          "$type": "string",
+          "$value": "Likely announcement",
+          "$description": "Column heading for likely screen reader announcement in the report table.",
+          "locale": {
+            "es": "Anuncio probable",
+            "fr": "Annonce probable",
+            "de": "Wahrscheinliche Ansage",
+            "pt": "Anúncio provável",
+            "ja": "想定される読み上げ",
+            "zh": "可能朗读内容",
+            "ar": "الإعلان المحتمل"
+          }
+        },
+        "screenReaderReportColumnStatus": {
+          "$type": "string",
+          "$value": "Status",
+          "$description": "Column heading for status in the screen reader report table.",
+          "locale": {
+            "es": "Estado",
+            "fr": "Statut",
+            "de": "Status",
+            "pt": "Status",
+            "ja": "ステータス",
+            "zh": "状态",
+            "ar": "الحالة"
+          }
+        },
+        "screenReaderReportColumnNotes": {
+          "$type": "string",
+          "$value": "Notes",
+          "$description": "Column heading for notes in the screen reader report table.",
+          "locale": {
+            "es": "Notas",
+            "fr": "Notes",
+            "de": "Notizen",
+            "pt": "Notas",
+            "ja": "メモ",
+            "zh": "备注",
+            "ar": "ملاحظات"
+          }
+        },
+        "screenReaderReportStatusOk": {
+          "$type": "string",
+          "$value": "Pass",
+          "$description": "Status badge label for items that appear acceptable in the screen reader report.",
+          "locale": {
+            "es": "Aprobado",
+            "fr": "Réussi",
+            "de": "Bestanden",
+            "pt": "Aprovado",
+            "ja": "合格",
+            "zh": "通过",
+            "ar": "ناجح"
+          }
+        },
+        "screenReaderReportStatusReview": {
+          "$type": "string",
+          "$value": "Review",
+          "$description": "Status badge label for items that need manual review in the screen reader report.",
+          "locale": {
+            "es": "Revisar",
+            "fr": "À vérifier",
+            "de": "Prüfen",
+            "pt": "Revisar",
+            "ja": "要確認",
+            "zh": "需检查",
+            "ar": "مراجعة"
+          }
+        },
+        "screenReaderReportStatusIssue": {
+          "$type": "string",
+          "$value": "Issue",
+          "$description": "Status badge label for items with likely screen reader issues in the report.",
+          "locale": {
+            "es": "Problema",
+            "fr": "Problème",
+            "de": "Problem",
+            "pt": "Problema",
+            "ja": "問題",
+            "zh": "问题",
+            "ar": "مشكلة"
+          }
+        },
+        "screenReaderReportNoRowsTitle": {
+          "$type": "string",
+          "$value": "No readable items",
+          "$description": "Empty state title for the screen reader report table when no component nodes are present.",
+          "locale": {
+            "es": "Sin elementos legibles",
+            "fr": "Aucun élément lisible",
+            "de": "Keine lesbaren Elemente",
+            "pt": "Nenhum item legível",
+            "ja": "読み上げ可能な項目がありません",
+            "zh": "没有可朗读项",
+            "ar": "لا توجد عناصر قابلة للقراءة"
+          }
+        },
+        "screenReaderReportNoRowsDescription": {
+          "$type": "string",
+          "$value": "This page does not have any component nodes to inspect.",
+          "$description": "Empty state description for the screen reader report table.",
+          "locale": {
+            "es": "Esta página no tiene nodos de componente para inspeccionar.",
+            "fr": "Cette page ne contient aucun noeud de composant à inspecter.",
+            "de": "Diese Seite enthält keine Komponenten-Knoten zum Prüfen.",
+            "pt": "Esta página não tem nós de componente para inspecionar.",
+            "ja": "このページには検査するコンポーネントノードがありません。",
+            "zh": "此页面没有可检查的组件节点。",
+            "ar": "لا تحتوي هذه الصفحة على عُقد مكونات لفحصها."
+          }
+        },
+        "screenReaderReportClose": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Button label for closing the screen reader report dialog.",
+          "locale": {
+            "es": "Cerrar",
+            "fr": "Fermer",
+            "de": "Schließen",
+            "pt": "Fechar",
+            "ja": "閉じる",
+            "zh": "关闭",
+            "ar": "إغلاق"
+          }
+        },
+        "configureTab": {
+          "$type": "string",
+          "$value": "Configure",
+          "$description": "Editor side panel tab for configuring the selected component.",
+          "locale": {
+            "es": "Configurar",
+            "fr": "Configurer",
+            "de": "Konfigurieren",
+            "pt": "Configurar",
+            "ja": "設定",
+            "zh": "配置",
+            "ar": "تكوين"
+          }
+        },
+        "componentTab": {
+          "$type": "string",
+          "$value": "Component",
+          "$description": "Editor side panel tab for adding components.",
+          "locale": {
+            "es": "Componente",
+            "fr": "Composant",
+            "de": "Komponente",
+            "pt": "Componente",
+            "ja": "コンポーネント",
+            "zh": "组件",
+            "ar": "مكوّن"
+          }
+        },
+        "patternTab": {
+          "$type": "string",
+          "$value": "Pattern",
+          "$description": "Editor side panel tab for adding patterns.",
+          "locale": {
+            "es": "Patrón",
+            "fr": "Modèle",
+            "de": "Muster",
+            "pt": "Padrão",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "نمط"
+          }
+        },
+        "imagesTab": {
+          "$type": "string",
+          "$value": "Images",
+          "$description": "Editor side panel tab for image library controls.",
+          "locale": {
+            "es": "Imágenes",
+            "fr": "Images",
+            "de": "Bilder",
+            "pt": "Imagens",
+            "ja": "画像",
+            "zh": "图片",
+            "ar": "الصور"
+          }
+        },
+        "dataTab": {
+          "$type": "string",
+          "$value": "Data",
+          "$description": "Editor side panel tab for page data controls.",
+          "locale": {
+            "es": "Datos",
+            "fr": "Données",
+            "de": "Daten",
+            "pt": "Dados",
+            "ja": "データ",
+            "zh": "数据",
+            "ar": "البيانات"
+          }
+        },
+        "versionsTab": {
+          "$type": "string",
+          "$value": "Versions",
+          "$description": "Editor side panel tab for page versions.",
+          "locale": {
+            "es": "Versiones",
+            "fr": "Versions",
+            "de": "Versionen",
+            "pt": "Versões",
+            "ja": "バージョン",
+            "zh": "版本",
+            "ar": "الإصدارات"
+          }
+        },
+        "historyTab": {
+          "$type": "string",
+          "$value": "History",
+          "$description": "Editor side panel tab for edit history.",
+          "locale": {
+            "es": "Historial",
+            "fr": "Historique",
+            "de": "Verlauf",
+            "pt": "Histórico",
+            "ja": "履歴",
+            "zh": "历史记录",
+            "ar": "السجل"
+          }
+        },
+        "codexTab": {
+          "$type": "string",
+          "$value": "Codex",
+          "$description": "Editor side panel tab for local Codex review.",
+          "locale": {
+            "es": "Codex",
+            "fr": "Codex",
+            "de": "Codex",
+            "pt": "Codex",
+            "ja": "Codex",
+            "zh": "Codex",
+            "ar": "Codex"
+          }
+        },
+        "codexDescription": {
+          "$type": "string",
+          "$value": "Review the current page JSON with your local Codex CLI through a localhost bridge. The bridge runs Codex in read-only sandbox mode and returns findings to this panel.",
+          "$description": "Introductory description for the editor Codex review panel.",
+          "locale": {
+            "es": "Revisa el JSON de la página actual con tu CLI local de Codex mediante un puente localhost. El puente ejecuta Codex en modo de solo lectura y devuelve los hallazgos a este panel.",
+            "fr": "Passez en revue le JSON de la page actuelle avec votre CLI Codex local via un pont localhost. Le pont exécute Codex en mode bac à sable lecture seule et renvoie les constats dans ce panneau.",
+            "de": "Prüfe das JSON der aktuellen Seite mit deiner lokalen Codex-CLI über eine localhost-Brücke. Die Brücke führt Codex im schreibgeschützten Sandbox-Modus aus und zeigt die Ergebnisse in diesem Bereich.",
+            "pt": "Revise o JSON da página atual com a CLI local do Codex por uma ponte localhost. A ponte executa o Codex em modo de sandbox somente leitura e retorna os achados para este painel.",
+            "ja": "localhost ブリッジ経由でローカルの Codex CLI を使い、現在のページ JSON をレビューします。ブリッジは Codex を読み取り専用サンドボックスで実行し、結果をこのパネルに返します。",
+            "zh": "通过 localhost 桥接使用本地 Codex CLI 审查当前页面 JSON。桥接会以只读沙盒模式运行 Codex，并将发现返回到此面板。",
+            "ar": "راجع JSON للصفحة الحالية باستخدام واجهة Codex المحلية عبر جسر localhost. يشغّل الجسر Codex في وضع صندوق رمل للقراءة فقط ويعيد النتائج إلى هذه اللوحة."
+          }
+        },
+        "codexBridgeHostLabel": {
+          "$type": "string",
+          "$value": "Bridge host",
+          "$description": "Field label for the local Codex bridge host URL.",
+          "locale": {
+            "es": "Host del puente",
+            "fr": "Hôte du pont",
+            "de": "Bridge-Host",
+            "pt": "Host da ponte",
+            "ja": "ブリッジホスト",
+            "zh": "桥接主机",
+            "ar": "مضيف الجسر"
+          }
+        },
+        "codexSaveBridgeHost": {
+          "$type": "string",
+          "$value": "Save bridge",
+          "$description": "Button label for saving the local Codex bridge host URL.",
+          "locale": {
+            "es": "Guardar puente",
+            "fr": "Enregistrer le pont",
+            "de": "Bridge speichern",
+            "pt": "Salvar ponte",
+            "ja": "ブリッジを保存",
+            "zh": "保存桥接",
+            "ar": "حفظ الجسر"
+          }
+        },
+        "codexCheckBridge": {
+          "$type": "string",
+          "$value": "Check bridge",
+          "$description": "Button label for checking local Codex bridge connectivity.",
+          "locale": {
+            "es": "Comprobar puente",
+            "fr": "Vérifier le pont",
+            "de": "Bridge prüfen",
+            "pt": "Verificar ponte",
+            "ja": "ブリッジを確認",
+            "zh": "检查桥接",
+            "ar": "فحص الجسر"
+          }
+        },
+        "codexBridgeReady": {
+          "$type": "string",
+          "$value": "Codex bridge is reachable.",
+          "$description": "Success message shown when the local Codex bridge health check passes.",
+          "locale": {
+            "es": "Se puede acceder al puente de Codex.",
+            "fr": "Le pont Codex est joignable.",
+            "de": "Die Codex-Bridge ist erreichbar.",
+            "pt": "A ponte do Codex está acessível.",
+            "ja": "Codex ブリッジに接続できます。",
+            "zh": "Codex 桥接可访问。",
+            "ar": "يمكن الوصول إلى جسر Codex."
+          }
+        },
+        "codexBridgeMissing": {
+          "$type": "string",
+          "$value": "Start the local bridge with npm run codex:bridge:a1-web, then check again.",
+          "$description": "Warning shown when the local Codex bridge is not reachable.",
+          "locale": {
+            "es": "Inicia el puente local con npm run codex:bridge:a1-web y vuelve a comprobar.",
+            "fr": "Démarrez le pont local avec npm run codex:bridge:a1-web, puis vérifiez à nouveau.",
+            "de": "Starte die lokale Bridge mit npm run codex:bridge:a1-web und prüfe erneut.",
+            "pt": "Inicie a ponte local com npm run codex:bridge:a1-web e verifique novamente.",
+            "ja": "npm run codex:bridge:a1-web でローカルブリッジを起動してから、もう一度確認してください。",
+            "zh": "使用 npm run codex:bridge:a1-web 启动本地桥接，然后重新检查。",
+            "ar": "ابدأ الجسر المحلي باستخدام npm run codex:bridge:a1-web ثم افحص مرة أخرى."
+          }
+        },
+        "codexDefinitionMissing": {
+          "$type": "string",
+          "$value": "Fix the page JSON before running a Codex review.",
+          "$description": "Warning shown when the current page JSON cannot be reviewed.",
+          "locale": {
+            "es": "Corrige el JSON de la página antes de ejecutar una revisión de Codex.",
+            "fr": "Corrigez le JSON de la page avant de lancer une revue Codex.",
+            "de": "Korrigiere das Seiten-JSON, bevor du eine Codex-Prüfung ausführst.",
+            "pt": "Corrija o JSON da página antes de executar uma revisão do Codex.",
+            "ja": "Codex レビューを実行する前にページ JSON を修正してください。",
+            "zh": "运行 Codex 审查前请先修复页面 JSON。",
+            "ar": "أصلح JSON الصفحة قبل تشغيل مراجعة Codex."
+          }
+        },
+        "codexInstructionLabel": {
+          "$type": "string",
+          "$value": "Review focus",
+          "$description": "Textarea label for optional instructions sent to the Codex page review.",
+          "locale": {
+            "es": "Enfoque de revisión",
+            "fr": "Point de revue",
+            "de": "Prüffokus",
+            "pt": "Foco da revisão",
+            "ja": "レビューの焦点",
+            "zh": "审查重点",
+            "ar": "محور المراجعة"
+          }
+        },
+        "codexReviewAction": {
+          "$type": "string",
+          "$value": "Review page",
+          "$description": "Button label that starts a local Codex page review.",
+          "locale": {
+            "es": "Revisar página",
+            "fr": "Réviser la page",
+            "de": "Seite prüfen",
+            "pt": "Revisar página",
+            "ja": "ページをレビュー",
+            "zh": "审查页面",
+            "ar": "مراجعة الصفحة"
+          }
+        },
+        "codexReviewMeta": {
+          "$type": "string",
+          "$value": "Reviewed locally with Codex in read-only mode.",
+          "$description": "Status text shown above Codex review results.",
+          "locale": {
+            "es": "Revisado localmente con Codex en modo de solo lectura.",
+            "fr": "Révisé localement avec Codex en mode lecture seule.",
+            "de": "Lokal mit Codex im schreibgeschützten Modus geprüft.",
+            "pt": "Revisado localmente com Codex em modo somente leitura.",
+            "ja": "Codex の読み取り専用モードでローカルレビュー済み。",
+            "zh": "已使用 Codex 只读模式在本地审查。",
+            "ar": "تمت المراجعة محليًا باستخدام Codex في وضع القراءة فقط."
+          }
+        },
+        "codexTokenUsage": {
+          "$type": "string",
+          "$value": "{total} tokens ({input} in / {output} out).",
+          "$description": "Token usage summary for a completed local Codex request.",
+          "locale": {
+            "es": "{total} tokens ({input} entrada / {output} salida).",
+            "fr": "{total} jetons ({input} en entrée / {output} en sortie).",
+            "de": "{total} Tokens ({input} rein / {output} raus).",
+            "pt": "{total} tokens ({input} entrada / {output} saída).",
+            "ja": "{total} トークン（入力 {input} / 出力 {output}）。",
+            "zh": "{total} 个词元（{input} 输入 / {output} 输出）。",
+            "ar": "{total} رمزًا ({input} إدخال / {output} إخراج)."
+          }
+        },
+        "codexTokenUsageUnavailable": {
+          "$type": "string",
+          "$value": "Token usage was not reported for this turn.",
+          "$description": "Fallback token usage text when Codex JSON events do not include token counts.",
+          "locale": {
+            "es": "No se informó el uso de tokens para este turno.",
+            "fr": "L’utilisation des jetons n’a pas été signalée pour ce tour.",
+            "de": "Für diesen Durchlauf wurde keine Token-Nutzung gemeldet.",
+            "pt": "O uso de tokens não foi informado para este turno.",
+            "ja": "このターンのトークン使用量は報告されませんでした。",
+            "zh": "此轮未报告词元用量。",
+            "ar": "لم يتم الإبلاغ عن استخدام الرموز لهذه الجولة."
+          }
+        },
+        "codexSummaryHeading": {
+          "$type": "string",
+          "$value": "Summary",
+          "$description": "Heading above the Codex review summary.",
+          "locale": {
+            "es": "Resumen",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "pt": "Resumo",
+            "ja": "概要",
+            "zh": "摘要",
+            "ar": "ملخص"
+          }
+        },
+        "codexFindingsHeading": {
+          "$type": "string",
+          "$value": "Findings",
+          "$description": "Heading above Codex review findings.",
+          "locale": {
+            "es": "Hallazgos",
+            "fr": "Constats",
+            "de": "Ergebnisse",
+            "pt": "Achados",
+            "ja": "検出事項",
+            "zh": "发现",
+            "ar": "النتائج"
+          }
+        },
+        "codexNodeLabel": {
+          "$type": "string",
+          "$value": "Node",
+          "$description": "Label shown before a page node id in Codex review findings.",
+          "locale": {
+            "es": "Nodo",
+            "fr": "Noeud",
+            "de": "Knoten",
+            "pt": "Nó",
+            "ja": "ノード",
+            "zh": "节点",
+            "ar": "العقدة"
+          }
+        },
+        "codexNoFindings": {
+          "$type": "string",
+          "$value": "Codex did not report any violations.",
+          "$description": "Empty success message when Codex review returns no violations.",
+          "locale": {
+            "es": "Codex no informó ninguna infracción.",
+            "fr": "Codex n'a signalé aucune violation.",
+            "de": "Codex hat keine Verstöße gemeldet.",
+            "pt": "O Codex não relatou violações.",
+            "ja": "Codex は違反を報告しませんでした。",
+            "zh": "Codex 未报告任何违规。",
+            "ar": "لم يبلغ Codex عن أي مخالفات."
+          }
+        },
+        "codexSeverityInfo": {
+          "$type": "string",
+          "$value": "Info",
+          "$description": "Codex review severity label for informational findings.",
+          "locale": {
+            "es": "Información",
+            "fr": "Info",
+            "de": "Info",
+            "pt": "Informação",
+            "ja": "情報",
+            "zh": "信息",
+            "ar": "معلومات"
+          }
+        },
+        "codexSeverityWarn": {
+          "$type": "string",
+          "$value": "Warning",
+          "$description": "Codex review severity label for warning findings.",
+          "locale": {
+            "es": "Advertencia",
+            "fr": "Avertissement",
+            "de": "Warnung",
+            "pt": "Aviso",
+            "ja": "警告",
+            "zh": "警告",
+            "ar": "تحذير"
+          }
+        },
+        "codexSeverityError": {
+          "$type": "string",
+          "$value": "Error",
+          "$description": "Codex review severity label for error findings.",
+          "locale": {
+            "es": "Error",
+            "fr": "Erreur",
+            "de": "Fehler",
+            "pt": "Erro",
+            "ja": "エラー",
+            "zh": "错误",
+            "ar": "خطأ"
+          }
+        },
+        "codexGuidanceHeading": {
+          "$type": "string",
+          "$value": "Potential system guidance",
+          "$description": "Heading above possible new system guidance from a Codex review.",
+          "locale": {
+            "es": "Posible guía del sistema",
+            "fr": "Orientation système potentielle",
+            "de": "Mögliche Systemleitlinien",
+            "pt": "Possível orientação do sistema",
+            "ja": "システムガイダンス候補",
+            "zh": "潜在系统指南",
+            "ar": "إرشادات نظام محتملة"
+          }
+        },
+        "codexErrorTimeout": {
+          "$type": "string",
+          "$value": "Codex did not finish before the request timed out.",
+          "$description": "Error shown when a local Codex review request times out.",
+          "locale": {
+            "es": "Codex no terminó antes de que se agotara el tiempo de la solicitud.",
+            "fr": "Codex n'a pas terminé avant l'expiration de la requête.",
+            "de": "Codex wurde vor Ablauf der Anfragezeit nicht fertig.",
+            "pt": "O Codex não terminou antes do tempo limite da solicitação.",
+            "ja": "リクエストがタイムアウトする前に Codex が完了しませんでした。",
+            "zh": "请求超时前 Codex 未完成。",
+            "ar": "لم ينته Codex قبل انتهاء مهلة الطلب."
+          }
+        },
+        "codexErrorBridgeUnavailable": {
+          "$type": "string",
+          "$value": "The Codex bridge is not reachable. Start it locally, then try again.",
+          "$description": "Error shown when the browser cannot reach the local Codex bridge.",
+          "locale": {
+            "es": "No se puede acceder al puente de Codex. Inícialo localmente y vuelve a intentarlo.",
+            "fr": "Le pont Codex n'est pas joignable. Démarrez-le localement, puis réessayez.",
+            "de": "Die Codex-Bridge ist nicht erreichbar. Starte sie lokal und versuche es erneut.",
+            "pt": "A ponte do Codex não está acessível. Inicie localmente e tente novamente.",
+            "ja": "Codex ブリッジに接続できません。ローカルで起動してから再試行してください。",
+            "zh": "无法访问 Codex 桥接。请在本地启动后重试。",
+            "ar": "لا يمكن الوصول إلى جسر Codex. ابدأه محليًا ثم حاول مرة أخرى."
+          }
+        },
+        "codexErrorGeneric": {
+          "$type": "string",
+          "$value": "Codex could not complete the review. Check the bridge terminal for details.",
+          "$description": "Generic error shown when a local Codex review fails.",
+          "locale": {
+            "es": "Codex no pudo completar la revisión. Consulta la terminal del puente para ver detalles.",
+            "fr": "Codex n'a pas pu terminer la revue. Consultez le terminal du pont pour les détails.",
+            "de": "Codex konnte die Prüfung nicht abschließen. Details findest du im Bridge-Terminal.",
+            "pt": "O Codex não conseguiu concluir a revisão. Confira o terminal da ponte para detalhes.",
+            "ja": "Codex がレビューを完了できませんでした。詳細はブリッジのターミナルを確認してください。",
+            "zh": "Codex 无法完成审查。请查看桥接终端了解详情。",
+            "ar": "تعذر على Codex إكمال المراجعة. تحقق من طرفية الجسر للحصول على التفاصيل."
+          }
+        },
+        "iconAiTitle": {
+          "$type": "string",
+          "$value": "Find an icon with AI",
+          "$description": "Dialog title for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscar un icono con IA",
+            "fr": "Trouver une icône avec l’IA",
+            "de": "Icon mit KI finden",
+            "pt": "Encontrar um ícone com IA",
+            "ja": "AI でアイコンを探す",
+            "zh": "用 AI 查找图标",
+            "ar": "العثور على أيقونة بالذكاء الاصطناعي"
+          }
+        },
+        "iconAiDescription": {
+          "$type": "string",
+          "$value": "Describe the intent and A1 will ask your local Codex bridge for matching built-in and project custom icons. Returned names are validated before they appear here.",
+          "$description": "Introductory description for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Describe la intención y A1 pedirá al puente local de Codex iconos integrados y personalizados del proyecto que coincidan. Los nombres devueltos se validan antes de mostrarse aquí.",
+            "fr": "Décrivez l’intention et A1 demandera au pont Codex local des icônes intégrées et personnalisées du projet correspondantes. Les noms renvoyés sont validés avant d’apparaître ici.",
+            "de": "Beschreibe die Absicht, und A1 fragt die lokale Codex-Bridge nach passenden integrierten und projektspezifischen Icons. Zurückgegebene Namen werden vor der Anzeige validiert.",
+            "pt": "Descreva a intenção e o A1 pedirá à ponte local do Codex ícones integrados e personalizados do projeto correspondentes. Os nomes retornados são validados antes de aparecerem aqui.",
+            "ja": "意図を説明すると、A1 がローカル Codex ブリッジに一致する組み込みアイコンとプロジェクトのカスタムアイコンを尋ねます。返された名前は、ここに表示される前に検証されます。",
+            "zh": "描述意图后，A1 会询问本地 Codex 桥接以匹配内置图标和项目自定义图标。返回的名称会先验证，然后才会显示在此处。",
+            "ar": "صف الهدف وسيطلب A1 من جسر Codex المحلي أيقونات مدمجة ومخصصة للمشروع مطابقة. يتم التحقق من الأسماء المُعادة قبل ظهورها هنا."
+          }
+        },
+        "iconAiBridgeReady": {
+          "$type": "string",
+          "$value": "Codex bridge is running.",
+          "$description": "Success banner shown when the local Codex bridge is reachable from the icon finder.",
+          "locale": {
+            "es": "El puente de Codex está en ejecución.",
+            "fr": "Le pont Codex est en cours d’exécution.",
+            "de": "Die Codex-Bridge läuft.",
+            "pt": "A ponte do Codex está em execução.",
+            "ja": "Codex ブリッジが実行中です。",
+            "zh": "Codex 桥接正在运行。",
+            "ar": "جسر Codex قيد التشغيل."
+          }
+        },
+        "iconAiBridgeMissing": {
+          "$type": "string",
+          "$value": "Codex bridge is not running. Start it with npm run codex:bridge:a1-web.",
+          "$description": "Warning banner shown when the local Codex bridge is not reachable from the icon finder.",
+          "locale": {
+            "es": "El puente de Codex no está en ejecución. Inícialo con npm run codex:bridge:a1-web.",
+            "fr": "Le pont Codex n’est pas en cours d’exécution. Démarrez-le avec npm run codex:bridge:a1-web.",
+            "de": "Die Codex-Bridge läuft nicht. Starte sie mit npm run codex:bridge:a1-web.",
+            "pt": "A ponte do Codex não está em execução. Inicie com npm run codex:bridge:a1-web.",
+            "ja": "Codex ブリッジが実行されていません。npm run codex:bridge:a1-web で起動してください。",
+            "zh": "Codex 桥接未运行。请使用 npm run codex:bridge:a1-web 启动。",
+            "ar": "جسر Codex لا يعمل. ابدأه باستخدام npm run codex:bridge:a1-web."
+          }
+        },
+        "iconAiPromptLabel": {
+          "$type": "string",
+          "$value": "Describe the icon you want",
+          "$description": "Field label for the Codex-backed icon finder prompt.",
+          "locale": {
+            "es": "Describe el icono que quieres",
+            "fr": "Décrivez l’icône souhaitée",
+            "de": "Beschreibe das gewünschte Icon",
+            "pt": "Descreva o ícone desejado",
+            "ja": "欲しいアイコンを説明",
+            "zh": "描述你想要的图标",
+            "ar": "صف الأيقونة التي تريدها"
+          }
+        },
+        "iconAiPromptHint": {
+          "$type": "string",
+          "$value": "e.g. shopping cart, settings, a warning, download",
+          "$description": "Helper hint for the Codex-backed icon finder prompt field.",
+          "locale": {
+            "es": "p. ej., carrito de compra, configuración, una advertencia, descargar",
+            "fr": "p. ex. panier, paramètres, avertissement, télécharger",
+            "de": "z. B. Einkaufswagen, Einstellungen, Warnung, Download",
+            "pt": "ex.: carrinho de compras, configurações, um aviso, download",
+            "ja": "例: ショッピングカート、設定、警告、ダウンロード",
+            "zh": "例如：购物车、设置、警告、下载",
+            "ar": "مثلاً: عربة تسوق، إعدادات، تحذير، تنزيل"
+          }
+        },
+        "iconAiFind": {
+          "$type": "string",
+          "$value": "Find icons",
+          "$description": "Button label to run the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscar iconos",
+            "fr": "Trouver des icônes",
+            "de": "Icons finden",
+            "pt": "Encontrar ícones",
+            "ja": "アイコンを探す",
+            "zh": "查找图标",
+            "ar": "العثور على أيقونات"
+          }
+        },
+        "iconAiSearchAgain": {
+          "$type": "string",
+          "$value": "Search again",
+          "$description": "Button label to rerun the icon finder.",
+          "locale": {
+            "es": "Buscar de nuevo",
+            "fr": "Relancer la recherche",
+            "de": "Erneut suchen",
+            "pt": "Pesquisar novamente",
+            "ja": "再検索",
+            "zh": "再次搜索",
+            "ar": "البحث مرة أخرى"
+          }
+        },
+        "iconAiMore": {
+          "$type": "string",
+          "$value": "Show 3 more",
+          "$description": "Button label to request more icon suggestions.",
+          "locale": {
+            "es": "Mostrar 3 más",
+            "fr": "Afficher 3 de plus",
+            "de": "3 weitere anzeigen",
+            "pt": "Mostrar mais 3",
+            "ja": "さらに 3 件表示",
+            "zh": "再显示 3 个",
+            "ar": "عرض 3 أخرى"
+          }
+        },
+        "iconAiFinding": {
+          "$type": "string",
+          "$value": "Finding icons",
+          "$description": "Loading status for the Codex-backed icon finder.",
+          "locale": {
+            "es": "Buscando iconos",
+            "fr": "Recherche d’icônes",
+            "de": "Icons werden gesucht",
+            "pt": "Encontrando ícones",
+            "ja": "アイコンを検索中",
+            "zh": "正在查找图标",
+            "ar": "جارٍ العثور على الأيقونات"
+          }
+        },
+        "iconAiSelectLabel": {
+          "$type": "string",
+          "$value": "Select an icon",
+          "$description": "Choice group label for icon finder results.",
+          "locale": {
+            "es": "Selecciona un icono",
+            "fr": "Sélectionner une icône",
+            "de": "Icon auswählen",
+            "pt": "Selecionar um ícone",
+            "ja": "アイコンを選択",
+            "zh": "选择图标",
+            "ar": "اختر أيقونة"
+          }
+        },
+        "iconAiApply": {
+          "$type": "string",
+          "$value": "Apply icon",
+          "$description": "Button label to apply the selected icon.",
+          "locale": {
+            "es": "Aplicar icono",
+            "fr": "Appliquer l’icône",
+            "de": "Icon anwenden",
+            "pt": "Aplicar ícone",
+            "ja": "アイコンを適用",
+            "zh": "应用图标",
+            "ar": "تطبيق الأيقونة"
+          }
+        },
+        "iconAiCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button label to close the icon finder without applying an icon.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "iconAiUsageCodex": {
+          "$type": "string",
+          "$value": "Suggested locally through Codex in {seconds}s.",
+          "$description": "Usage line shown when the icon finder used the local Codex bridge.",
+          "locale": {
+            "es": "Sugerido localmente mediante Codex en {seconds}s.",
+            "fr": "Suggéré localement via Codex en {seconds}s.",
+            "de": "Lokal über Codex in {seconds}s vorgeschlagen.",
+            "pt": "Sugerido localmente pelo Codex em {seconds}s.",
+            "ja": "Codex 経由でローカルに {seconds} 秒で提案されました。",
+            "zh": "已通过 Codex 在本地用 {seconds} 秒建议。",
+            "ar": "اقتُرح محليًا عبر Codex خلال {seconds}ث."
+          }
+        },
+        "iconAiUsageFallback": {
+          "$type": "string",
+          "$value": "Used local registry matching.",
+          "$description": "Legacy usage line shown when the icon finder used deterministic registry matching.",
+          "locale": {
+            "es": "Se usó coincidencia local del registro.",
+            "fr": "Correspondance locale du registre utilisée.",
+            "de": "Lokale Registry-Treffer verwendet.",
+            "pt": "Foi usada correspondência local do registro.",
+            "ja": "ローカルレジストリ照合を使用しました。",
+            "zh": "已使用本地图标注册表匹配。",
+            "ar": "استُخدمت مطابقة السجل المحلية."
+          }
+        },
+        "iconAiUsageFallbackAfterModel": {
+          "$type": "string",
+          "$value": "Used registry matching after Codex returned no usable icon names.",
+          "$description": "Legacy usage line shown when fallback matching produced the results.",
+          "locale": {
+            "es": "Se usó coincidencia del registro después de que Codex no devolviera nombres de iconos utilizables.",
+            "fr": "Correspondance du registre utilisée après que Codex n’a renvoyé aucun nom d’icône utilisable.",
+            "de": "Registry-Treffer verwendet, nachdem Codex keine nutzbaren Icon-Namen zurückgegeben hat.",
+            "pt": "Foi usada correspondência do registro depois que o Codex não retornou nomes de ícones utilizáveis.",
+            "ja": "Codex が使用可能なアイコン名を返さなかったため、レジストリ照合を使用しました。",
+            "zh": "Codex 未返回可用图标名称后，已使用注册表匹配。",
+            "ar": "استُخدمت مطابقة السجل بعد أن لم يُرجع Codex أسماء أيقونات قابلة للاستخدام."
+          }
+        },
+        "iconAiNoResults": {
+          "$type": "string",
+          "$value": "No matching built-in or custom icons were found. Try a different description.",
+          "$description": "Error shown when no icon suggestions can be produced.",
+          "locale": {
+            "es": "No se encontraron iconos integrados ni personalizados coincidentes. Prueba con otra descripción.",
+            "fr": "Aucune icône intégrée ou personnalisée correspondante n’a été trouvée. Essayez une autre description.",
+            "de": "Keine passenden integrierten oder benutzerdefinierten Icons gefunden. Versuche eine andere Beschreibung.",
+            "pt": "Nenhum ícone integrado ou personalizado correspondente foi encontrado. Tente outra descrição.",
+            "ja": "一致する組み込みアイコンまたはカスタムアイコンが見つかりませんでした。別の説明を試してください。",
+            "zh": "未找到匹配的内置或自定义图标。请尝试其他描述。",
+            "ar": "لم يتم العثور على أيقونات مدمجة أو مخصصة مطابقة. جرّب وصفًا مختلفًا."
+          }
+        },
+        "iconAiErrorGeneric": {
+          "$type": "string",
+          "$value": "Could not find icons. Start the Codex bridge locally and try again.",
+          "$description": "Generic error shown when the Codex-backed icon finder fails.",
+          "locale": {
+            "es": "No se pudieron buscar iconos. Inicia el puente de Codex localmente e inténtalo de nuevo.",
+            "fr": "Impossible de trouver des icônes. Démarrez le pont Codex localement et réessayez.",
+            "de": "Icons konnten nicht gefunden werden. Starte die Codex-Bridge lokal und versuche es erneut.",
+            "pt": "Não foi possível encontrar ícones. Inicie a ponte do Codex localmente e tente novamente.",
+            "ja": "アイコンを見つけられませんでした。Codex ブリッジをローカルで起動して再試行してください。",
+            "zh": "无法查找图标。请在本地启动 Codex 桥接后重试。",
+            "ar": "تعذر العثور على أيقونات. ابدأ جسر Codex محليًا وحاول مرة أخرى."
+          }
+        },
+        "iconAiGuidelineTitle": {
+          "$type": "string",
+          "$value": "Guideline",
+          "$description": "Title prefix for icon usage guidance shown after selecting an icon.",
+          "locale": {
+            "es": "Guía",
+            "fr": "Directive",
+            "de": "Richtlinie",
+            "pt": "Diretriz",
+            "ja": "ガイドライン",
+            "zh": "指南",
+            "ar": "إرشاد"
+          }
+        },
+        "iconAiNoGuidelineTitle": {
+          "$type": "string",
+          "$value": "No guideline for this icon",
+          "$description": "Warning title when a selected icon has no usage guideline.",
+          "locale": {
+            "es": "Sin guía para este icono",
+            "fr": "Aucune directive pour cette icône",
+            "de": "Keine Richtlinie für dieses Icon",
+            "pt": "Sem diretriz para este ícone",
+            "ja": "このアイコンのガイドラインはありません",
+            "zh": "此图标没有指南",
+            "ar": "لا توجد إرشادات لهذه الأيقونة"
+          }
+        },
+        "iconAiNoGuidelineBody": {
+          "$type": "string",
+          "$value": "This icon is not in the icon usage guidelines. Double-check that it reads clearly in this context.",
+          "$description": "Warning body when a selected icon has no usage guideline.",
+          "locale": {
+            "es": "Este icono no está en las guías de uso de iconos. Comprueba que se entienda claramente en este contexto.",
+            "fr": "Cette icône ne figure pas dans les directives d’utilisation. Vérifiez qu’elle est claire dans ce contexte.",
+            "de": "Dieses Icon steht nicht in den Icon-Nutzungsrichtlinien. Prüfe, ob es in diesem Kontext eindeutig lesbar ist.",
+            "pt": "Este ícone não está nas diretrizes de uso de ícones. Confirme se ele é claro neste contexto.",
+            "ja": "このアイコンはアイコン使用ガイドラインにありません。この文脈で明確に伝わるか確認してください。",
+            "zh": "此图标不在图标使用指南中。请确认它在此上下文中表达清晰。",
+            "ar": "هذه الأيقونة غير موجودة في إرشادات استخدام الأيقونات. تحقق من أنها واضحة في هذا السياق."
           }
         }
       },
@@ -4553,6 +6687,20 @@
             "ja": "可視化",
             "zh": "可视化",
             "ar": "تصور"
+          }
+        },
+        "figma": {
+          "$type": "string",
+          "$value": "Figma",
+          "$description": "Foundations submenu group for the A1 Figma library and plugin.",
+          "locale": {
+            "es": "Figma",
+            "fr": "Figma",
+            "de": "Figma",
+            "pt": "Figma",
+            "ja": "Figma",
+            "zh": "Figma",
+            "ar": "Figma"
           }
         },
         "visual": {

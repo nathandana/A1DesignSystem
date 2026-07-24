@@ -29,7 +29,7 @@ export function imageFilesFromClipboard(clipboardData) {
 export async function attachImageFiles(files) {
   const imageFiles = imageFilesFromList(files)
   if (!imageFiles.length) return []
-  const metas = await Promise.all(imageFiles.map((file) => addImage(file)))
+  const metas = await Promise.all(imageFiles.map((file) => addImage(file, { hiddenFromLibrary: true })))
   return metas.map((meta) => toImageRef(meta.id))
 }
 

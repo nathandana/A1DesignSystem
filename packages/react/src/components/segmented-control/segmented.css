@@ -1,11 +1,14 @@
 /* ─── Segmented control ───────────────────────────────────────────────────── */
 
 .a1-segmented {
+  /* Total control height (28/40/56 standard) — the track including its
+     padding and border; segments derive their height from it below. */
   --a1-segmented-height: var(--component-segmented-height-md);
 
   box-sizing: border-box;
   display: inline-flex;
   align-items: stretch;
+  min-block-size: var(--a1-segmented-height);
   background: var(--semantic-color-surface-raised);
   border: var(--component-segmented-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-control);
@@ -55,7 +58,9 @@
   align-items: center;
   justify-content: center;
   gap: var(--base-spacing-8);
-  min-block-size: var(--a1-segmented-height);
+  /* Segment height = total control height minus the track's padding and
+     border on both block edges, so the OUTER control lands on 28/40/56. */
+  min-block-size: calc(var(--a1-segmented-height) - 2 * (var(--component-segmented-padding) + var(--component-segmented-border-width)));
   border: none;
   /* Inner radius sits flush inside the container */
   border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));

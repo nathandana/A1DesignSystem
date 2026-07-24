@@ -1119,15 +1119,16 @@ const HELP = [
       {
         id: 'ai-icons',
         title: 'AI icon finder',
-        keywords: 'ai icon finder material symbols describe suggest auto awesome configure icon button claude api key',
+        keywords: 'ai icon finder material symbols describe suggest auto awesome configure icon button codex bridge tokens registry',
         body: (
           <Stack gap="sm">
             <P>Wherever a component has an <strong>Icon</strong> field in the Configure panel, the <Icon name="auto_awesome" size="sm" /> <strong>Find an icon with AI</strong> button beside it opens the AI icon finder.</P>
             <Steps items={[
               'Describe the icon you want — e.g. "download arrow" or "lock".',
-              'Claude returns three Material Symbols options; pick one, ask for three more, or re-prompt.',
+              'The local Codex bridge returns Material Symbols options. A1 validates every returned name against the built-in icon registry before showing it.',
+              'Pick one, ask for three more, or re-prompt.',
             ]} />
-            <P color="muted">Uses the same in-browser Anthropic API key as the other AI tools.</P>
+            <P color="muted">No browser API key is required for this icon finder. Start the bridge with <Code>npm run codex:bridge:a1-web</Code>.</P>
           </Stack>
         ),
       },
@@ -1504,7 +1505,7 @@ const HELP = [
             <Bullets items={[
               <><strong>Account</strong> — sign in and out. When signed in, all workspace data (projects, pages, patterns, themes, labels, images) syncs to the cloud automatically.</>,
               <><strong>Editor</strong> — export all pages to a backup file, or import pages from a file to restore or migrate work. Also shows the current locale preference.</>,
-              <><strong>AI</strong> — enter your Anthropic API key for the AI image finder, AI icon finder, and AI page editor.</>,
+              <><strong>AI</strong> — enter your Anthropic API key for the AI image finder and AI page editor. The icon finder uses the local Codex bridge instead.</>,
             ]} />
           </Stack>
         ),
@@ -1512,10 +1513,10 @@ const HELP = [
       {
         id: 'ai-api-key',
         title: 'Setting up your AI API key',
-        keywords: 'anthropic api key claude ai image finder icon finder page editor setup settings enter first time local browser',
+        keywords: 'anthropic api key claude ai image finder page editor setup settings enter first time local browser',
         body: (
           <Stack gap="sm">
-            <P>The AI features (image finder, icon finder, and page chat editor) require an Anthropic API key. To set one up:</P>
+            <P>The AI image finder and page chat editor require an Anthropic API key. The icon finder uses the local Codex bridge instead. To set up browser API-key features:</P>
             <Steps items={[
               <>Open <strong>Settings → AI</strong>.</>,
               'Paste your Anthropic API key. It is stored only in this browser — never sent to any server.',

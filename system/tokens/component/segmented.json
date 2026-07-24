@@ -1,25 +1,81 @@
 {
   "component": {
     "segmented": {
-      "padding":               { "$type": "dimension",  "$value": "3px" },
-      "gap":                   { "$type": "dimension",  "$value": "2px" },
-      "segmentPaddingBlock":   { "$type": "dimension",  "$value": "{base.spacing.4}" },
-      "segmentPaddingInline":  { "$type": "dimension",  "$value": "{base.spacing.8}" },
-      "segmentPaddingBlockSm": { "$type": "dimension",  "$value": "2px" },
-      "segmentPaddingInlineSm":{ "$type": "dimension",  "$value": "{base.spacing.8}" },
-      "segmentPaddingBlockLg": { "$type": "dimension",  "$value": "{base.spacing.8}" },
-      "segmentPaddingInlineLg":{ "$type": "dimension",  "$value": "{base.spacing.16}" },
-      "heightSm":              { "$type": "dimension",  "$value": "28px" },
-      "heightMd":              { "$type": "dimension",  "$value": "{base.spacing.40}" },
-      "heightLg":              { "$type": "dimension",  "$value": "{base.spacing.56}" },
-      "borderWidth":           { "$type": "dimension",  "$value": "{base.spacing.1}" },
-      "fontWeightDefault":     { "$type": "fontWeight", "$value": "{base.font.weight.regular}" },
-      "fontWeightActive":      { "$type": "fontWeight", "$value": "{base.font.weight.medium}" },
-      "focusRingWidth":        { "$type": "dimension",  "$value": "2px" },
-      "focusRingOffset": { "$value": "-2px" },
+      "padding": {
+        "$type": "dimension",
+        "$value": "3px"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "2px"
+      },
+      "segmentPaddingBlock": {
+        "$type": "dimension",
+        "$value": "{base.spacing.4}"
+      },
+      "segmentPaddingInline": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "segmentPaddingBlockSm": {
+        "$type": "dimension",
+        "$value": "0px"
+      },
+      "segmentPaddingInlineSm": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "segmentPaddingBlockLg": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "segmentPaddingInlineLg": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}"
+      },
+      "heightSm": {
+        "$type": "dimension",
+        "$value": "28px",
+        "$description": "Total control height including track padding and border (28/40/56 standard)."
+      },
+      "heightMd": {
+        "$type": "dimension",
+        "$value": "{base.spacing.40}",
+        "$description": "Total control height including track padding and border (28/40/56 standard)."
+      },
+      "heightLg": {
+        "$type": "dimension",
+        "$value": "{base.spacing.56}",
+        "$description": "Total control height including track padding and border (28/40/56 standard)."
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.1}"
+      },
+      "fontWeightDefault": {
+        "$type": "fontWeight",
+        "$value": "{base.font.weight.regular}"
+      },
+      "fontWeightActive": {
+        "$type": "fontWeight",
+        "$value": "{base.font.weight.medium}"
+      },
+      "focusRingWidth": {
+        "$type": "dimension",
+        "$value": "2px"
+      },
+      "focusRingOffset": {
+        "$value": "-2px"
+      },
       "inactive": {
-        "color":      { "$type": "color", "$value": "{semantic.color.text.muted}" },
-        "colorHover": { "$type": "color", "$value": "{base.color.neutral.100}" }
+        "color": {
+          "$type": "color",
+          "$value": "{semantic.color.text.muted}"
+        },
+        "colorHover": {
+          "$type": "color",
+          "$value": "{base.color.neutral.100}"
+        }
       }
     }
   }

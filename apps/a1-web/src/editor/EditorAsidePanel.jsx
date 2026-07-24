@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Divider, Section, SegmentedControl, Stack } from '@gtivr4/a1-design-system-react'
 import { EditorPropsPanel, findNodeInDefinition } from './EditorPropsPanel.jsx'
+import { useSuppressAutofill } from './useSuppressAutofill.js'
 import { EditorHistoryPanel } from './EditorHistoryPanel.jsx'
 import { EditorAddPanel } from './EditorAddPanel.jsx'
 import { EditorVersionsPanel } from './EditorVersionsPanel.jsx'
 import { EditorChatPanel } from './EditorChatPanel.jsx'
+import { EditorCodexPanel } from './EditorCodexPanel.jsx'
 import { EditorImagesPanel } from './EditorImagesPanel.jsx'
 import { EditorDataPanel } from './EditorDataPanel.jsx'
 import { AI_ENABLED } from '../lib/aiImages.ts'
+import { isLocalBridgeFeatureEnabled } from '../lib/localCodex.ts'
 import { PatternLockControls } from '../patterns/PatternLockControls.jsx'
+import { useT } from '../labels/useT.js'
 
 export function EditorAsidePanel({
   // Configure tab
@@ -29,6 +33,7 @@ export function EditorAsidePanel({
   onPageMetadataChange,
   onConvertNode,
   onCreatePattern,
+  onDetachPattern,
   onDuplicatePage,
   onDeletePage,
   patternScope,
@@ -60,9 +65,16 @@ export function EditorAsidePanel({
   onDeleteVersion,
   onRenameVersion,
 }) {
+  const t = useT()
   const [tab, setTab] = useState('configure')
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled()
   // One-shot request to focus the chat input, set when "Make with AI" opens a page.
   const [chatFocusRequest, setChatFocusRequest] = useState(false)
+  // The editor panels are internal tooling — turn off browser/password-manager
+  // autofill for every field they render (it otherwise offers your email/address
+  // into config fields like a Stat "Description"). Covers later-mounting fields.
+  const fieldsRef = useRef(null)
+  useSuppressAutofill(fieldsRef)
 
   // Auto-switch to the (component) Add tab when a target is set from canvas/tree.
   useEffect(() => {
@@ -73,6 +85,10 @@ export function EditorAsidePanel({
   useEffect(() => {
     if (selectedNodeId !== null && selectedNodeId !== undefined) setTab('configure')
   }, [selectedNodeId])
+
+  useEffect(() => {
+    if (!bridgeFeaturesEnabled && tab === 'codex') setTab('configure')
+  }, [bridgeFeaturesEnabled, tab])
 
   // "Make with AI" opened this page — land on the AI tab and focus the prompt,
   // then clear the flag so reopening the page later doesn't re-trigger it.
@@ -93,18 +109,20 @@ export function EditorAsidePanel({
   // The selected segment shows icon + label, the rest are icon-only — the
   // formal SegmentedControl `labelMode="selected"` pattern.
   const tabOptions = [
-    { value: 'configure', label: 'Configure', icon: 'tune' },
-    { value: 'add-component', label: 'Component', icon: 'widgets' },
-    { value: 'add-pattern', label: 'Pattern', icon: 'dashboard_customize' },
-    { value: 'images', label: 'Images', icon: 'photo_library' },
-    { value: 'data', label: 'Data', icon: 'table_chart' },
+    { value: 'configure', label: t('app.editor.configureTab', 'Configure'), icon: 'tune' },
+    { value: 'add-component', label: t('app.editor.componentTab', 'Component'), icon: 'widgets' },
+    { value: 'add-pattern', label: t('app.editor.patternTab', 'Pattern'), icon: 'dashboard_customize' },
+    { value: 'images', label: t('app.editor.imagesTab', 'Images'), icon: 'photo_library' },
+    { value: 'data', label: t('app.editor.dataTab', 'Data'), icon: 'table_chart' },
+    ...(bridgeFeaturesEnabled ? [{ value: 'codex', label: t('app.editor.codexTab', 'Codex'), icon: 'terminal' }] : []),
     ...(AI_ENABLED ? [{ value: 'ai', label: 'AI', icon: 'auto_awesome' }] : []),
-    { value: 'versions', label: 'Versions', icon: 'commit' },
-    { value: 'history', label: 'History', icon: 'history' },
+    { value: 'versions', label: t('app.editor.versionsTab', 'Versions'), icon: 'commit' },
+    { value: 'history', label: t('app.editor.historyTab', 'History'), icon: 'history' },
   ]
 
   return (
     <Section padding="xs">
+      <div ref={fieldsRef}>
       <Stack gap="sm">
         <SegmentedControl
           options={tabOptions}
@@ -143,6 +161,7 @@ export function EditorAsidePanel({
               patternScope={patternScope}
               onConvertNode={onConvertNode}
               onCreatePattern={onCreatePattern}
+              onDetachPattern={onDetachPattern}
               onDuplicatePage={onDuplicatePage}
               onDeletePage={onDeletePage}
               lockEnforced={lockEnforced}
@@ -185,6 +204,10 @@ export function EditorAsidePanel({
           <EditorDataPanel projectId={projectId} />
         )}
 
+        {bridgeFeaturesEnabled && tab === 'codex' && (
+          <EditorCodexPanel definition={definition} />
+        )}
+
         {tab === 'ai' && (
           <EditorChatPanel
             definition={definition}
@@ -217,6 +240,7 @@ export function EditorAsidePanel({
           />
         )}
       </Stack>
+      </div>
     </Section>
   )
 }

@@ -61,4 +61,3 @@ Figma, Storybook, VS Code, Jira, Confluence, HTML, CSS, JavaScript, React, Style
     ],
   },
 }
-

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { SearchField } from "../field/SearchField.jsx";
 import { TopHeader } from "./TopHeader.jsx";
 
 // ── Shared example data ────────────────────────────────────────────────────────
@@ -86,6 +88,36 @@ const ACTIONS = [
   },
 ];
 
+const SEARCHABLE_COMPONENT_CATEGORIES = [
+  {
+    label: "Layout",
+    icon: "dashboard",
+    items: [
+      { label: "Card", icon: "article", href: "#" },
+      { label: "Grid", icon: "grid_view", href: "#" },
+      { label: "Stack", icon: "view_agenda", href: "#" },
+    ],
+  },
+  {
+    label: "Inputs",
+    icon: "edit_note",
+    items: [
+      { label: "Search field", icon: "search", href: "#" },
+      { label: "Text field", icon: "text_fields", href: "#" },
+      { label: "Select", icon: "arrow_drop_down_circle", href: "#" },
+    ],
+  },
+  {
+    label: "Navigation",
+    icon: "near_me",
+    items: [
+      { label: "Menu", icon: "menu", href: "#" },
+      { label: "Side nav", icon: "view_sidebar", href: "#" },
+      { label: "Top header", icon: "web_asset", href: "#" },
+    ],
+  },
+];
+
 const PAGE_CONTENT = (
   <div
     style={{
@@ -113,7 +145,11 @@ const meta = {
       control: "inline-radio",
       options: ["start", "above", "hidden"],
     },
-    loginButton: { control: "boolean", description: "Show login button" },
+    loginButton: {
+      control: "text",
+      description:
+        'Sign-in affordance after the actions: `{ label, onClick }` or a plain string used as the label (the JSON-safe form). Label defaults to "Log in".',
+    },
   },
 };
 
@@ -148,6 +184,23 @@ export const WithLoginButton = {
         navItems={NAV_ITEMS}
         actions={[ACTIONS[0]]}
         loginButton={{ label: "Log in", onClick: () => {} }}
+      />
+      {PAGE_CONTENT}
+    </div>
+  ),
+};
+
+export const LoginButtonStringLabel = {
+  name: "Login button with string label",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navItems={NAV_ITEMS}
+        actions={[ACTIONS[0]]}
+        loginButton="Create account"
       />
       {PAGE_CONTENT}
     </div>
@@ -222,6 +275,63 @@ export const ActiveInSubmenu = {
       {PAGE_CONTENT}
     </div>
   ),
+};
+
+function SearchableMenuExample() {
+  const [query, setQuery] = useState("");
+  const term = query.trim().toLowerCase();
+  const results = term
+    ? SEARCHABLE_COMPONENT_CATEGORIES
+        .flatMap((category) => category.items)
+        .filter((item) => item.label.toLowerCase().includes(term))
+    : SEARCHABLE_COMPONENT_CATEGORIES;
+
+  const componentItems = query.trim()
+    ? results
+    : SEARCHABLE_COMPONENT_CATEGORIES;
+
+  return (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Design"
+        logoHref="#"
+        navItems={[
+          { id: "home", label: "Home", icon: "home", href: "#" },
+          {
+            id: "components",
+            label: "Components",
+            icon: "widgets",
+            active: true,
+            menuHeader: ({ onClose }) => (
+              <SearchField
+                aria-label="Search components"
+                autoComplete="off"
+                name="top-header-components-search"
+                size="compact"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onSearch={() => onClose()}
+              />
+            ),
+            items: [
+              { label: "Overview", icon: "widgets", href: "#" },
+              { divider: true },
+              ...componentItems,
+            ],
+          },
+          { id: "docs", label: "Documentation", icon: "article", href: "#" },
+        ]}
+        actions={ACTIONS.slice(0, 2)}
+      />
+      {PAGE_CONTENT}
+    </div>
+  );
+}
+
+export const SearchableMenu = {
+  name: "Searchable submenu",
+  parameters: { controls: { include: [] } },
+  render: () => <SearchableMenuExample />,
 };
 
 export const IconAbove = {

@@ -171,4 +171,3 @@ export async function downloadResumePdf({ content, title = 'Tailored resume', co
 
   doc.save(`${safeFileName(`${header.name}-${company || title}`)}.pdf`)
 }
-

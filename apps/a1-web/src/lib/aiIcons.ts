@@ -1,22 +1,22 @@
 /**
- * "API for Claude" for icons: submit a description, get back a few **Material
- * Symbols Outlined** icon options to choose from. Mirrors `aiImages.ts` (same
- * browser-side Anthropic SDK + shared API key in localStorage) but for icons.
+ * Icon AI helpers: submit a description, get back a few built-in or project
+ * custom icon options to choose from.
  *
  * Every suggestion is validated against `system/icons/material-symbols.json`, so
- * the result is always a real icon from the standard set. Each is annotated with
- * any guidance from `system/icons/icon-usage.md` so the user knows the intended
- * context for that icon.
+ * built-in results are always real Material Symbols. Project custom suggestions
+ * must match the active project's custom icon registry. Built-ins are annotated
+ * with any guidance from `system/icons/icon-usage.md` so the user knows the
+ * intended context for that icon.
  */
 import Anthropic from '@anthropic-ai/sdk';
 import iconRegistry from '../../../../system/icons/material-symbols.json';
 import iconUsageRaw from '../../../../system/icons/icon-usage.md?raw';
 import { type AiUsage, getApiKey } from './aiImages';
 import { validateCustomIconSvg } from './customIconFont';
+import { suggestIconsWithCodex } from './localCodex';
 
-const MODEL = 'claude-haiku-4-5';
-
-// The standard set — only these names are ever returned.
+// The built-in Material Symbols set. Custom icons are validated separately by
+// active project name and returned with the `custom:` namespace.
 const VALID_ICONS = new Set<string>(
   (iconRegistry as { icons: { name: string }[] }).icons.map((i) => i.name),
 );
@@ -50,87 +50,88 @@ export interface IconSuggestion {
   guidance: string | null;
 }
 
-const ICON_SCHEMA = {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    icons: {
-      type: 'array',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        properties: {
-          name: {
-            type: 'string',
-            description:
-              'A real Material Symbols Outlined icon name in snake_case (e.g. shopping_cart, settings, warning). Never invent names.',
-          },
-          reason: { type: 'string', description: 'One short sentence on why this icon fits the request.' },
-        },
-        required: ['name', 'reason'],
-      },
-    },
-  },
-  required: ['icons'],
-} as const;
+export interface IconSuggestionUsage extends AiUsage {
+  source: 'codex';
+  codexUsageReported: boolean;
+  totalTokens: number | null;
+}
 
-/**
- * Ask Claude for `count` Material Symbols icons matching `description`. Results
- * are validated against the registry; invalid/duplicate/avoided names are
- * dropped. Pass already-shown names in `avoid` to get fresh options.
- */
-export async function suggestIcons(
-  { description, count = 3, avoid = [] }: { description: string; count?: number; avoid?: string[] },
-): Promise<{ icons: IconSuggestion[]; usage: AiUsage }> {
-  const apiKey = getApiKey();
-  if (!apiKey) throw new Error('NO_API_KEY');
+export interface CustomIconCandidate {
+  name: string;
+}
 
-  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
-  const avoidNote = avoid.length ? `\n\nDo NOT suggest any of these already-shown icons: ${avoid.join(', ')}.` : '';
+function customIconNameSet(customIcons: CustomIconCandidate[]): Set<string> {
+  return new Set(customIcons.map((icon) => String(icon.name ?? '').trim()).filter(Boolean));
+}
 
-  const t0 = performance.now();
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 1024,
-    system:
-      'You pick Material Symbols Outlined icons that match a description for a design system. ' +
-      'Return ONLY real Material Symbols Outlined icon names in snake_case (e.g. shopping_cart, settings, favorite, warning). ' +
-      'Prefer the clearest, most specific icon for the concept — do not use a generic icon when a specific one exists. ' +
-      'Vary the options so the user has meaningful choices. Never invent icon names.',
-    output_config: { format: { type: 'json_schema', schema: ICON_SCHEMA } },
-    // Over-request so we still have `count` after validation filtering.
-    messages: [{ role: 'user', content: `Suggest ${count + 3} Material Symbols icons for: "${description}".${avoidNote}` }],
-  } as Anthropic.MessageCreateParamsNonStreaming);
+function normalizeSuggestedIconName(name: string, customIconNames: Set<string>): string | null {
+  const trimmed = name.trim();
+  if (!trimmed) return null;
+  if (isValidIcon(trimmed)) return trimmed;
 
-  const elapsedMs = performance.now() - t0;
-
-  const textBlock = response.content.find((b) => b.type === 'text');
-  const raw = textBlock && 'text' in textBlock ? textBlock.text : '';
-  let parsed: { icons?: unknown };
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    throw new Error('Could not read Claude’s response.');
+  if (trimmed.startsWith('custom:')) {
+    const customName = trimmed.slice('custom:'.length).trim();
+    return customIconNames.has(customName) ? `custom:${customName}` : null;
   }
 
+  return customIconNames.has(trimmed) ? `custom:${trimmed}` : null;
+}
+
+function iconSuggestionsFromParsed(
+  {
+    parsed,
+    count,
+    avoid,
+    customIcons = [],
+  }: { parsed: { icons?: unknown }; count: number; avoid: string[]; customIcons?: CustomIconCandidate[] },
+): IconSuggestion[] {
   const icons = Array.isArray(parsed.icons) ? parsed.icons : [];
   const seen = new Set<string>();
+  const avoided = new Set(avoid);
+  const customIconNames = customIconNameSet(customIcons);
   const out: IconSuggestion[] = [];
   for (const it of icons) {
     const item = it as Record<string, unknown>;
-    const name = String(item.name ?? '').trim();
-    if (!isValidIcon(name) || seen.has(name) || avoid.includes(name)) continue;
+    const name = normalizeSuggestedIconName(String(item.name ?? ''), customIconNames);
+    if (!name || seen.has(name) || avoided.has(name)) continue;
     seen.add(name);
     out.push({ name, reason: String(item.reason ?? ''), guidance: iconGuidance(name) });
     if (out.length >= count) break;
   }
+  return out;
+}
+
+/**
+ * Ask the local Codex bridge for `count` icons matching `description`.
+ * Results are validated against the built-in and custom icon registries;
+ * invalid/duplicate/avoided names are dropped.
+ */
+export async function suggestIcons(
+  {
+    description,
+    count = 3,
+    avoid = [],
+    customIcons = [],
+  }: { description: string; count?: number; avoid?: string[]; customIcons?: CustomIconCandidate[] },
+): Promise<{ icons: IconSuggestion[]; usage: IconSuggestionUsage }> {
+  const response = await suggestIconsWithCodex({ description, count, avoid, customIcons });
+  const icons = iconSuggestionsFromParsed({
+    parsed: { icons: response.icons },
+    count,
+    avoid,
+    customIcons,
+  });
+
   return {
-    icons: out,
+    icons,
     usage: {
-      inputTokens: response.usage.input_tokens,
-      outputTokens: response.usage.output_tokens,
-      elapsedMs,
-      model: MODEL,
+      inputTokens: response.usage?.inputTokens ?? 0,
+      outputTokens: response.usage?.outputTokens ?? 0,
+      elapsedMs: response.elapsedMs,
+      model: 'Codex',
+      source: 'codex',
+      codexUsageReported: response.usage?.reported ?? false,
+      totalTokens: response.usage?.totalTokens ?? null,
     },
   };
 }
@@ -237,4 +238,3 @@ export async function designIcons(
     usage: { inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens, elapsedMs, model: 'claude-sonnet-4-6' },
   };
 }
-

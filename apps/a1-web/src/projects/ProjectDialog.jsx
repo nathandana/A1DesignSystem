@@ -17,6 +17,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
   const [description, setDescription] = useState(initial?.description ?? '')
   const [icon, setIcon] = useState(initial?.icon ?? 'folder')
   const [theme, setTheme] = useState(initial?.theme ?? 'a1Light')
+  const [navStyle, setNavStyle] = useState(initial?.navStyle ?? 'header')
   const [imageStyle, setImageStyle] = useState(initial?.meta?.imageStyle ?? '')
   const [suggesting, setSuggesting] = useState(false)
   const [error, setError] = useState('')
@@ -45,6 +46,7 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
       description: description.trim(),
       icon,
       theme: theme === 'a1Light' ? undefined : theme,
+      navStyle: navStyle === 'header' ? undefined : navStyle,
       meta: { ...(initial?.meta ?? {}), imageStyle: imageStyle.trim() || undefined },
     })
   }
@@ -83,6 +85,15 @@ export function ProjectDialog({ open, mode = 'create', initial, onCancel, onSubm
           {themeOptions.map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
+        </SelectField>
+        <SelectField
+          label="Primary navigation"
+          hint="How the prototype navigates between pages."
+          value={navStyle}
+          onChange={(e) => setNavStyle(e.target.value)}
+        >
+          <option value="header">Top header</option>
+          <option value="sidebar">Sidebar (tree menu)</option>
         </SelectField>
 
         <Stack gap="xs">

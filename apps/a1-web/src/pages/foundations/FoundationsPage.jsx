@@ -22,17 +22,17 @@ export function Foundations({ onNavigate }) {
           { label: 'Foundations' },
         ]}
         title="Foundations"
-        description="Foundations define the shared language for color, size, type, shape, motion, elevation, icons, and accessibility across every package."
+        description="Foundations define the shared language for visual decisions, layout, content, accessibility, and the Figma workflows that connect design assets to implementation."
       />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="foundation-list-heading">
         <Stack gap="lg">
           <Stack gap="sm">
             <Heading as="h2" id="foundation-list-heading" type="display" size={{ xs: 'lg', md: 'xl' }}>
-              Start with the primitives.
+              Start with the shared system.
             </Heading>
             <Paragraph size="sm" color="muted" className="a1-web-section-body">
-              Each foundation gets its own page. For now, the child pages are placeholders ready for deeper documentation.
+              Explore the primitives, standards, visualizations, and cross-tool workflows that every A1 package and product surface builds on.
             </Paragraph>
           </Stack>
 

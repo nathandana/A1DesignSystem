@@ -86,7 +86,7 @@ export {
   TOOLBAR_NONE_ICON,
 } from "./components/toolbar/Toolbar";
 export { Tabs, TabList, Tab, TabPanel } from "./components/tabs/Tabs";
-export { Grid, GridItem } from "./components/grid/Grid";
+export { Grid, GridItem, gridItemSpanClassNames } from "./components/grid/Grid";
 export { Inverse } from "./components/inverse/Inverse";
 export { Section } from "./components/section/Section";
 export { SectionSeparator } from "./components/section-separator/SectionSeparator";

@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Section,
   SegmentedControl,
+  SearchField,
   SelectField,
   Snackbar,
   Switch,
@@ -86,7 +87,18 @@ import {
   componentIdFromRouteSlug,
   getComponentExampleBySlug,
 } from './pages/Components.jsx'
+import { allComponents, rankComponentsForSearch } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
+import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
+import {
+  acknowledgeFigmaPageCreate,
+  acknowledgePlaygroundHandoff,
+  consumePlaygroundHandoff,
+  isLocalBridgeFeatureEnabled,
+  listenForFigmaPageCreate,
+  listenForPlaygroundHandoff,
+  registerFigmaWorkspace,
+} from './lib/localCodex.ts'
 import { patternToDefinition } from './patterns/patternDocument.js'
 import { getAllPatterns, subscribePatterns } from './patterns/patternStore.js'
 import { PatternWorkspaceSidebar } from './patterns/PatternWorkspaceSidebar.jsx'
@@ -102,6 +114,7 @@ import { BlogArticle } from './pages/BlogArticle.jsx'
 import { BLOG_POSTS } from './pages/blogPosts.js'
 import { Help } from './pages/Help.jsx'
 import { HelpAssistantMenu } from './help/HelpAssistantMenu.jsx'
+import { ProductTour } from './onboarding/ProductTour.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
 import { EditorPreviewPage } from './pages/EditorPreviewPage.tsx'
 import { ProjectsList } from './projects/ProjectsList.jsx'
@@ -124,7 +137,7 @@ import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { AuthGate } from './AuthGate.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
-import { resetImageCache } from './lib/imageLibrary'
+import { importFigmaBridgeImages, resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
 import { setHistoryUser } from './services/historyDb'
 import { BacklogProvider } from './backlog/BacklogContext.jsx'
@@ -141,9 +154,11 @@ import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
 const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalone')
+  || /^\/p(?:\/|$)/.test(window.location.pathname)
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
+const PRODUCT_TOUR_STORAGE_KEY = 'a1-web-product-tour-v1'
 const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
@@ -159,10 +174,11 @@ const PAGE_ICONS = {
   about: 'info',
   'kitchen-sink': 'dashboard_customize',
   'label-editor': 'translate',
+  playground: 'code',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -176,6 +192,7 @@ const PAGE_TITLES = {
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
   patterns: 'Patterns',
+  playground: 'JSON playground',
   editor: 'Editor',
   'editor-preview': 'Editor Preview',
   'image-library': 'Image library',
@@ -248,6 +265,9 @@ function getPage(search = window.location.search, pathname = window.location.pat
 
   // /backlog/A1-{n} → 'backlog-ticket'
   if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
+
+  // /p/{published-project-slug}[/page-id] → standalone published prototype
+  if (/^p\/[^/]+(?:\/[^/]+)?$/.test(path)) return 'editor-preview'
 
   // Direct match: /backlog → 'backlog', /editor → 'editor', etc.
   if (PAGES.includes(path)) return path
@@ -336,6 +356,26 @@ function resolveLabel(labels, locale, key, fallback) {
   return node.$value ?? fallback ?? key
 }
 
+function hasSeenProductTour() {
+  try {
+    return localStorage.getItem(PRODUCT_TOUR_STORAGE_KEY) !== null
+  } catch {
+    return false
+  }
+}
+
+function saveProductTourState(state) {
+  try {
+    localStorage.setItem(PRODUCT_TOUR_STORAGE_KEY, state)
+  } catch { /* Tour persistence is optional when storage is unavailable. */ }
+}
+
+function formatTourProgress(template, current, total) {
+  return template
+    .replace('{current}', String(current))
+    .replace('{total}', String(total))
+}
+
 
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
@@ -369,6 +409,7 @@ function App() {
   )
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false)
   const [helpAssistantOpen, setHelpAssistantOpen] = useState(false)
+  const [productTourOpen, setProductTourOpen] = useState(false)
   const helpAssistantAnchorRef = useRef(null)
   const [helpQuery, setHelpQuery] = useState(() => new URLSearchParams(window.location.search).get('q') || '')
   const [skipMenuOpen, setSkipMenuOpen] = useState(false)
@@ -377,6 +418,7 @@ function App() {
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
   const backlog = useBacklog()
+  const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
   const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
   const [releaseMode, setReleaseMode] = useState('simplified')
@@ -387,6 +429,7 @@ function App() {
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
   const [projects, setProjects] = useState(() => projectStore.loadProjects())
+  const [archivedProjects, setArchivedProjects] = useState(() => projectStore.loadArchivedProjects())
   const [activeProjectId, setActiveProjectId] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     return params.get('project') || projectStore.getActiveProjectId() || null
@@ -397,6 +440,105 @@ function App() {
     return pid ? projectStore.loadPages(pid) : []
   })
   const [openPageId, setOpenPageId] = useState(() => new URLSearchParams(window.location.search).get('doc') || null)
+
+  // Keep the local Figma bridge aware of every project while A1 is open—not
+  // just while the page editor happens to be mounted. The bridge receives this
+  // volatile snapshot only on loopback, which lets the plugin populate its
+  // Page Editor and pull the selected page's current JSON on demand.
+  useEffect(() => {
+    if (IS_STANDALONE || !isLocalBridgeFeatureEnabled()) return undefined
+    const registerFigmaWorkspaceSnapshot = () => {
+      const workspace = {
+        projects: projectStore.loadProjects().map((project) => ({
+          id: project.id,
+          name: project.name,
+          pages: projectStore.loadPages(project.id).map((page) => {
+            const link = projectStore.getFigmaPageLink(project.id, page.id)
+              ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
+            return {
+              id: page.id,
+              title: page.title,
+              json: projectStore.resolvePageJson(page.id) ?? '',
+              link: link ? {
+                linkId: link.id,
+                projectId: project.id,
+                pageId: page.id,
+                mode: link.mode,
+                figmaFileKey: link.figmaFileKey,
+                figmaPageId: link.figmaPageId,
+                figmaRootNodeId: link.figmaRootNodeId,
+              } : null,
+            }
+          }),
+        })),
+      }
+      registerFigmaWorkspace(workspace).catch(() => {})
+    }
+    registerFigmaWorkspaceSnapshot()
+    const interval = window.setInterval(registerFigmaWorkspaceSnapshot, 15_000)
+    window.addEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
+    }
+  }, [])
+
+  // A Figma frame can be explicitly sent to an existing local A1 project as a
+  // new page. Keep this separate from ordinary linked-page edits: this creates
+  // the page once, then persists the new Figma/A1 link for subsequent syncs.
+  useEffect(() => {
+    if (IS_STANDALONE || !isLocalBridgeFeatureEnabled()) return undefined
+    let cancelled = false
+    let inFlight = false
+    const receiveCreatedPage = async () => {
+      if (cancelled || inFlight) return
+      inFlight = true
+      try {
+        const handoff = await listenForFigmaPageCreate()
+        if (!handoff || cancelled) return
+        const project = projectStore.loadProjects().find((entry) => entry.id === handoff.projectId)
+        if (!project) {
+          console.warn('Discarding a Figma page creation request for a project that is no longer available.', handoff.projectId)
+          await acknowledgeFigmaPageCreate(handoff.id)
+          return
+        }
+        // Acknowledge retries safely if the prior localStorage write completed
+        // but the bridge acknowledgement was interrupted.
+        if (project.figmaPageLinks?.some((link) => link.id === handoff.figma.linkId)) {
+          await acknowledgeFigmaPageCreate(handoff.id)
+          return
+        }
+        await importFigmaBridgeImages(handoff.assets)
+        const { page } = projectStore.addPageFromJson(handoff.projectId, {
+          title: handoff.title || 'Untitled',
+          json: handoff.json,
+        })
+        projectStore.saveFigmaPageLink(handoff.projectId, {
+          id: handoff.figma.linkId,
+          pageId: page.id,
+          mode: 'manual',
+          figmaFileKey: handoff.figma.figmaFileKey || undefined,
+          figmaPageId: handoff.figma.figmaPageId || undefined,
+          figmaRootNodeId: handoff.figma.figmaRootNodeId || undefined,
+        })
+        if (activeProjectId === handoff.projectId) setProjectPages(projectStore.loadPages(handoff.projectId))
+        setProjects(projectStore.loadProjects())
+        window.dispatchEvent(new Event('a1:figma-workspace-changed'))
+        await acknowledgeFigmaPageCreate(handoff.id)
+      } catch {
+        // The loopback bridge is optional. Retain its queued message for the
+        // next poll if A1 cannot commit it yet.
+      } finally {
+        inFlight = false
+      }
+    }
+    receiveCreatedPage()
+    const interval = window.setInterval(receiveCreatedPage, 1200)
+    return () => {
+      cancelled = true
+      window.clearInterval(interval)
+    }
+  }, [activeProjectId])
 
   // Pattern authoring reuses the main editor: `?page=editor&pattern=<id>` opens a
   // pattern as a document (no project context). Derived from the URL each render.
@@ -443,6 +585,37 @@ function App() {
     mq.addEventListener?.('change', handler)
     return () => mq.removeEventListener?.('change', handler)
   }, [])
+
+  useEffect(() => {
+    if (activePage !== 'playground' || !isLocalBridgeFeatureEnabled()) return undefined
+    let cancelled = false
+    let receivedId = null
+    let timer = null
+
+    const listen = async () => {
+      try {
+        const handoff = await listenForPlaygroundHandoff()
+        if (!handoff || cancelled || handoff.id === receivedId) return
+        receivedId = handoff.id
+        setPlaygroundHandoffError('')
+        await importFigmaBridgeImages(handoff.assets)
+        setPlaygroundLiveView(handoff.live === true)
+        setPlaygroundJson(formatPlaygroundJson(handoff.json))
+        await acknowledgePlaygroundHandoff(handoff.id)
+      } catch (error) {
+        // The bridge is optional until a Figma handoff is requested. Preserve
+        // the current Playground JSON instead of surfacing background polling.
+      } finally {
+        if (!cancelled) timer = window.setTimeout(listen, 1200)
+      }
+    }
+
+    listen()
+    return () => {
+      cancelled = true
+      if (timer) window.clearTimeout(timer)
+    }
+  }, [activePage])
   // Bump on theme-store changes so the sidebar theme name stays live after a rename.
   const [, setThemesVersion] = useState(0)
   useEffect(() => subscribeThemes(() => setThemesVersion((v) => v + 1)), [])
@@ -451,9 +624,32 @@ function App() {
   const [rulesVersion, setRulesVersion] = useState(0)
   useEffect(() => subscribeRules(() => setRulesVersion((v) => v + 1)), [])
   const [editorMessage, setEditorMessage] = useState('') // transient editor notice (no action)
+  const [playgroundJson, setPlaygroundJson] = useState(() => formatPlaygroundJson(new URLSearchParams(window.location.search).get('json') || ''))
+  const [playgroundHandoffError, setPlaygroundHandoffError] = useState('')
+  const [playgroundLiveView, setPlaygroundLiveView] = useState(false)
+  const playgroundResult = useMemo(() => parsePlaygroundJson(playgroundJson), [playgroundJson])
+  const playgroundError = playgroundHandoffError || playgroundResult.error
   const resolvedColorScheme = colorMode === 'system' ? systemColorScheme : colorMode
 
   const activeProject = projects.find((p) => p.id === activeProjectId) ?? null
+
+  useEffect(() => {
+    const handoffId = new URLSearchParams(window.location.search).get('handoff')
+    if (!handoffId || !isLocalBridgeFeatureEnabled()) return undefined
+    let cancelled = false
+    consumePlaygroundHandoff(handoffId)
+      .then(async (handoff) => {
+        if (!cancelled) {
+          await importFigmaBridgeImages(handoff.assets)
+          setPlaygroundLiveView(handoff.live === true)
+          setPlaygroundJson(formatPlaygroundJson(handoff.json))
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) setPlaygroundHandoffError(error instanceof Error ? error.message : 'Could not load the Playground handoff.')
+      })
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     if (!skipMenuOpen) return undefined
@@ -495,11 +691,43 @@ function App() {
   const labelLocale = locale === 'en' ? null : locale
   const t = useCallback((key, fallback) => resolveLabel(allLabels, labelLocale, key, fallback), [allLabels, labelLocale])
   const pageTitle = (page) => t(PAGE_TITLE_LABEL_KEYS[page], PAGE_TITLES[page] ?? page)
+  const productTourLabels = useMemo(() => ({
+    dialogLabel: t('app.tour.dialogLabel', 'Product tour'),
+    close: t('app.tour.close', 'Close tour'),
+    skip: t('app.tour.skip', 'Skip tour'),
+    previous: t('app.tour.previous', 'Previous'),
+    next: t('app.tour.next', 'Next'),
+    done: t('app.tour.done', 'Done'),
+    progress: (current, total) => formatTourProgress(t('app.tour.progress', 'Step {current} of {total}'), current, total),
+  }), [t])
+  const productTourSteps = useMemo(() => [
+    {
+      target: '[data-a1-tour="navigation"] .a1-top-header__nav',
+      title: t('app.tour.navigationTitle', 'Find your way'),
+      description: t('app.tour.navigationDescription', 'Use the top navigation to explore the system, open the editors, and return home from anywhere.'),
+    },
+    {
+      target: '[data-a1-tour="navigation"] .a1-top-header__end',
+      title: t('app.tour.toolsTitle', 'Search and get help'),
+      description: t('app.tour.toolsDescription', 'Search A1 for a page or component, or open Ask Help for answers and related guides.'),
+    },
+    {
+      target: '.a1-page-layout__main-scroll',
+      title: t('app.tour.workspaceTitle', 'Work in context'),
+      description: t('app.tour.workspaceDescription', 'Each page keeps its tools and guidance close at hand. Start with the editor when you are ready to build.'),
+    },
+  ], [t])
 
   useEffect(() => {
     backlog?.setLabelResolver?.(t)
     return () => backlog?.setLabelResolver?.(null)
   }, [backlog?.setLabelResolver, t])
+
+  useEffect(() => {
+    if (activePage !== 'home' || hasSeenProductTour()) return undefined
+    const timer = window.setTimeout(() => setProductTourOpen(true), 0)
+    return () => window.clearTimeout(timer)
+  }, [activePage])
 
   const globalSearchEntries = useMemo(() => {
     const entries = []
@@ -535,6 +763,7 @@ function App() {
     addPage('foundations', 'Tokens, themes, accessibility, layout, and design standards.', ['tokens', 'color', 'type'])
     addPage('components', 'Browse and configure A1 design system components.', ['component library', 'ui'])
     addPage('patterns', 'Reusable page and project patterns.', ['templates', 'sections'])
+    addPage('playground', 'Paste larger A1 JSON definitions and preview the real renderer.', ['json', 'preview', 'render', 'testing'])
     addPage('editor', 'Create and edit projects with the governed JSON page model.', ['projects', 'pages', 'builder'])
     addPage('image-library', 'Manage reusable image assets for projects.', ['assets', 'media', 'dam'])
     addPage('custom-icons', 'Create and manage custom project icons.', ['symbols', 'iconography'])
@@ -685,6 +914,7 @@ function App() {
 
   function refreshProjects() {
     setProjects(projectStore.loadProjects())
+    setArchivedProjects(projectStore.loadArchivedProjects())
   }
 
   // Cloud sync: on sign-in pull the user's projects into local storage (then
@@ -788,7 +1018,21 @@ function App() {
     refreshProjects()
   }
 
+  // "Delete" is a soft delete: archive the project (hidden from the list, restorable)
+  // rather than removing it, so it reliably disappears and can be recovered.
   function handleDeleteProject(id) {
+    projectStore.archiveProject(id)
+    refreshProjects()
+    if (activeProjectId === id) handleBackToProjects()
+  }
+
+  function handleRestoreProject(id) {
+    projectStore.unarchiveProject(id)
+    refreshProjects()
+  }
+
+  // Permanent delete — only offered for already-archived projects.
+  function handleDeleteProjectPermanent(id) {
     projectStore.deleteProject(id)
     refreshProjects()
     if (activeProjectId === id) handleBackToProjects()
@@ -866,6 +1110,16 @@ function App() {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
+  function handlePublishProject(id) {
+    projectStore.publishProject(id)
+    refreshProjects()
+  }
+
+  function handleUnpublishProject(id) {
+    projectStore.unpublishProject(id)
+    refreshProjects()
+  }
+
   function resetRouteScroll() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
 
@@ -907,6 +1161,21 @@ function App() {
     setHelpAssistantOpen(true)
   }
 
+  function startProductTour() {
+    setHelpAssistantOpen(false)
+    setProductTourOpen(true)
+  }
+
+  function dismissProductTour() {
+    saveProductTourState('dismissed')
+    setProductTourOpen(false)
+  }
+
+  function completeProductTour() {
+    saveProductTourState('completed')
+    setProductTourOpen(false)
+  }
+
   function focusMainContent() {
     const main = document.querySelector('.a1-page-layout__main-scroll')
     if (main instanceof HTMLElement) main.focus()
@@ -916,6 +1185,22 @@ function App() {
     if (!isPlainLeftClick(e)) return
     e.preventDefault()
     navigate(page)
+  }
+
+  function handleComponentMenuNav(e, page) {
+    const shouldClearSearch = isPlainLeftClick(e)
+    handleNavClick(e, page)
+    if (shouldClearSearch) setComponentMenuSearch('')
+  }
+
+  function handleComponentMenuSearchSubmit(value, onClose) {
+    const query = String(value ?? '').trim()
+    if (!query) return
+    const first = rankComponentsForSearch(allComponents, query)[0]
+    if (!first) return
+    navigate(`component-${first.id}`)
+    setComponentMenuSearch('')
+    onClose?.()
   }
 
   useEffect(() => {
@@ -928,7 +1213,8 @@ function App() {
     const extra = search.toString()
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
-    const canonicalBase = page === 'backlog-ticket' || getComponentExampleTab()
+    const isPublishedPreview = page === 'editor-preview' && /^\/p(?:\/|$)/.test(window.location.pathname)
+    const canonicalBase = page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab()
       ? window.location.pathname
       : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
@@ -1189,11 +1475,78 @@ function App() {
 
   const FOUNDATION_GROUPS = [
     { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
     { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
     { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
   ]
+
+  const componentMenuSearchQuery = componentMenuSearch.trim()
+  const componentMenuSearchLabel = t('app.nav.searchComponents', 'Search components')
+  const componentMenuMatches = useMemo(
+    () => componentMenuSearchQuery
+      ? rankComponentsForSearch(allComponents, componentMenuSearchQuery).slice(0, 12)
+      : [],
+    [componentMenuSearchQuery],
+  )
+  const componentMenuItems = componentMenuSearchQuery
+    ? [
+        {
+          icon: 'widgets',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('components'),
+          onClick: (e) => handleComponentMenuNav(e, 'components'),
+        },
+        {
+          icon: PAGE_ICONS['kitchen-sink'],
+          label: pageTitle('kitchen-sink'),
+          href: getPath('kitchen-sink'),
+          onClick: (e) => handleComponentMenuNav(e, 'kitchen-sink'),
+        },
+        ...(componentMenuMatches.length ? [{ divider: true }] : []),
+        ...componentMenuMatches.map((component) => {
+          const page = `component-${component.id}`
+          return {
+            icon: component.icon,
+            label: component.title,
+            href: getPath(page),
+            active: activePage === page,
+            onClick: (e) => handleComponentMenuNav(e, page),
+          }
+        }),
+      ]
+    : [
+        {
+          icon: 'widgets',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('components'),
+          onClick: (e) => handleNavClick(e, 'components'),
+        },
+        {
+          icon: PAGE_ICONS['kitchen-sink'],
+          label: pageTitle('kitchen-sink'),
+          href: getPath('kitchen-sink'),
+          onClick: (e) => handleNavClick(e, 'kitchen-sink'),
+        },
+        { divider: true },
+        ...componentCategories.map((category) => ({
+          icon: category.icon,
+          label: category.title,
+          href: getPath(`components-${category.id}`),
+          active: activePage === `components-${category.id}`,
+          onClick: (e) => handleNavClick(e, `components-${category.id}`),
+          items: category.components.map((component) => {
+            const page = `component-${component.id}`
+            return {
+              label: component.title,
+              href: getPath(page),
+              active: activePage === page,
+              onClick: (e) => handleNavClick(e, page),
+            }
+          }),
+        })),
+      ]
 
   const navItems = [
     {
@@ -1253,38 +1606,31 @@ function App() {
       icon: 'widgets',
       label: pageTitle('components'),
       active: COMPONENT_ROUTE_IDS.includes(activePage) || activePage === 'kitchen-sink',
-      items: [
-        {
-          icon: 'widgets',
-          label: t('app.nav.overview', 'Overview'),
-          href: getPath('components'),
-          onClick: (e) => handleNavClick(e, 'components'),
-        },
-        {
-          icon: PAGE_ICONS['kitchen-sink'],
-          label: pageTitle('kitchen-sink'),
-          href: getPath('kitchen-sink'),
-          onClick: (e) => handleNavClick(e, 'kitchen-sink'),
-        },
-        { divider: true },
-        ...componentCategories.map((category) => ({
-          icon: category.icon,
-          label: category.title,
-          href: getPath(`components-${category.id}`),
-          onClick: (e) => handleNavClick(e, `components-${category.id}`),
-          items: category.components.map((component) => ({
-            label: component.title,
-            href: getPath(`component-${component.id}`),
-            onClick: (e) => handleNavClick(e, `component-${component.id}`),
-          })),
-        })),
-      ],
+      menuHeader: ({ onClose }) => (
+        <SearchField
+          data-1p-ignore="true"
+          data-bwignore="true"
+          data-form-type="other"
+          data-lpignore="true"
+          aria-label={componentMenuSearchLabel}
+          autoComplete="off"
+          autoCapitalize="none"
+          autoCorrect="off"
+          name="a1-components-main-menu-search"
+          size="compact"
+          spellCheck={false}
+          value={componentMenuSearch}
+          onChange={(event) => setComponentMenuSearch(event.target.value)}
+          onSearch={(value) => handleComponentMenuSearchSubmit(value, onClose)}
+        />
+      ),
+      items: componentMenuItems,
     },
     {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
       items: [
         {
           icon: 'folder',
@@ -1313,6 +1659,13 @@ function App() {
           href: getPath('patterns'),
           active: activePage === 'patterns',
           onClick: (e) => handleNavClick(e, 'patterns'),
+        },
+        {
+          icon: 'code',
+          label: pageTitle('playground'),
+          href: getPath('playground'),
+          active: activePage === 'playground',
+          onClick: (e) => handleNavClick(e, 'playground'),
         },
         {
           icon: 'photo_library',
@@ -1424,6 +1777,25 @@ function App() {
   }
 
   const patternDef = editorPatternId ? patternToDefinition(editorPatternId) : null
+
+  // Live view is a presentation surface fed by the Figma plugin, not an A1 Web
+  // workspace. Keep the renderer and its providers, but remove every piece of
+  // application chrome so the composition is the only thing on screen.
+  if (activePage === 'playground' && playgroundLiveView) {
+    return (
+      <TProvider value={t}>
+        <LabelsProvider locale={labelLocale} labels={allLabels}>
+          <CustomIconFontProvider projectId={activeProjectId}>
+            <ImageLibraryProvider>
+              <main className="a1-web-live-playground" aria-label="Live Figma preview">
+                <JsonPlayground result={playgroundResult} />
+              </main>
+            </ImageLibraryProvider>
+          </CustomIconFontProvider>
+        </LabelsProvider>
+      </TProvider>
+    )
+  }
 
   // Config/filter panels. At md+ they use the PageLayout aside rail; at xs/sm
   // they move into a BottomSheet. Backlog places its filter rail on the start
@@ -1590,6 +1962,18 @@ function App() {
                 onSelectCategory={setThemeCategory}
                 onBackToThemes={() => setActiveThemeId(null)}
               />
+            : activePage === 'playground' && !playgroundLiveView
+            ? <JsonPlaygroundSidebar
+                json={playgroundJson}
+                onJsonChange={(next) => {
+                  setPlaygroundHandoffError('')
+                  setPlaygroundLiveView(false)
+                  setPlaygroundJson(next)
+                }}
+                error={playgroundError}
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+              />
             : activePage === 'backlog' && !isSmDown
             ? asideEl
             : activePage === 'releases'
@@ -1619,6 +2003,7 @@ function App() {
         header={
           <TopHeader
             className="a1-web-app-header"
+            data-a1-tour="navigation"
             logo={logo}
             logoHref={getPath('home')}
             navItems={navItems}
@@ -1635,6 +2020,16 @@ function App() {
             icon="view_sidebar"
             label={t('app.action.openSidebar', 'Open sidebar')}
             size='sm'
+            variant="secondary"
+            onClick={() => setSidebarOpen(true)}
+          />
+        )}
+        {activePage === 'playground' && !playgroundLiveView && (
+          <IconButton
+            className="a1-web-sidebar-toggle"
+            icon="code"
+            label="Open JSON panel"
+            size="sm"
             variant="secondary"
             onClick={() => setSidebarOpen(true)}
           />
@@ -1666,6 +2061,7 @@ function App() {
           />
         )}
         {activePage === 'patterns' && <Patterns onNavigate={navigate} />}
+        {activePage === 'playground' && <JsonPlayground result={playgroundResult} />}
         {activePage === 'rules' && <RuleEditor onNavigate={navigate} />}
         {activePage === 'editor' && editorPatternId && (
           patternDef ? (
@@ -1711,6 +2107,9 @@ function App() {
               onRenameProject={handleRenameProject}
               onDuplicateProject={handleDuplicateProject}
               onDeleteProject={handleDeleteProject}
+              archivedProjects={archivedProjects}
+              onRestoreProject={handleRestoreProject}
+              onDeleteProjectPermanent={handleDeleteProjectPermanent}
               onImportProject={handleImportProject}
               onOpenImageLibrary={() => navigate('image-library')}
               onNavigateHome={() => navigate('home')}
@@ -1752,6 +2151,8 @@ function App() {
               onOpenPage={handleOpenPage}
               onAddPage={handleAddPage}
               onLaunchPrototype={() => launchProjectPrototype()}
+              onPublishProject={handlePublishProject}
+              onUnpublishProject={handleUnpublishProject}
               onRenameProject={handleRenameProject}
               onDeleteProject={handleDeleteProject}
               onNavigateHome={() => navigate('home')}
@@ -1847,6 +2248,9 @@ function App() {
             onRenameProject={handleRenameProject}
             onDuplicateProject={handleDuplicateProject}
             onDeleteProject={handleDeleteProject}
+            archivedProjects={archivedProjects}
+            onRestoreProject={handleRestoreProject}
+            onDeleteProjectPermanent={handleDeleteProjectPermanent}
             onImportProject={handleImportProject}
             onOpenImageLibrary={() => navigate('image-library')}
             onNavigateHome={() => navigate('home')}
@@ -1897,6 +2301,16 @@ function App() {
         anchorRef={helpAssistantAnchorRef}
         onClose={() => setHelpAssistantOpen(false)}
         onOpenHelp={openHelpPage}
+        onStartTour={startProductTour}
+        tourLabel={t('app.tour.start', 'Take a tour')}
+      />
+
+      <ProductTour
+        open={productTourOpen}
+        steps={productTourSteps}
+        labels={productTourLabels}
+        onDismiss={dismissProductTour}
+        onComplete={completeProductTour}
       />
 
       <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">

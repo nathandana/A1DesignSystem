@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Accordion,
   Button,
@@ -248,14 +248,73 @@ export function getDefaultConfig() {
     emptyDescription: '',
     emptyIcon: 'inbox',
     columns: DEFAULT_COLUMNS,
+    rows: null,
   }
+}
+
+function normalizeConfigRows(rows) {
+  if (!Array.isArray(rows) || rows.length === 0) return null
+  return rows
+    .filter((row) => row && typeof row === 'object')
+    .map((row, index) => ({ id: String(row.id ?? `row-${index + 1}`), ...row }))
+}
+
+export const jsonType = 'DataTable'
+
+const JSON_SIZES = ['responsive', 'compact', 'default', 'comfortable']
+
+export function toJson(config) {
+  const props = {}
+  if (config.caption && config.caption !== 'Team members') props.caption = config.caption
+  if (config.size && config.size !== 'responsive') props.size = config.size
+  if (config.zebra) props.zebra = true
+  props.columns = normalizeColumns(config).map((column) => {
+    const entry = { key: column.key, label: column.label }
+    if (column.sortable) entry.sortable = true
+    if (column.component && column.component !== 'text') entry.component = column.component
+    return entry
+  })
+  const rows = normalizeConfigRows(config.rows) ?? SAMPLE_ROWS
+  props.rows = rows.map((row) => ({ ...row }))
+  return { node: { id: 'data-table-1', type: 'DataTable', props }, note: null }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  if (typeof props.caption === 'string' && props.caption) config.caption = props.caption
+  if (JSON_SIZES.includes(props.size)) config.size = props.size
+  config.zebra = props.zebra === true
+  const rawColumns = Array.isArray(props.columns) ? props.columns.filter((column) => column && typeof column === 'object' && column.key) : []
+  if (rawColumns.length > 0) {
+    config.columns = rawColumns.map((column) => ({
+      key: String(column.key),
+      label: typeof column.label === 'string' && column.label ? column.label : String(column.key),
+      component: typeof column.component === 'string' ? column.component : 'text',
+      sortable: column.sortable === true,
+      filterable: false,
+      searchable: false,
+      editable: false,
+    }))
+    config.sortable = rawColumns.some((column) => column.sortable === true)
+  }
+  config.rows = normalizeConfigRows(props.rows)
+  return config
 }
 
 export function Preview({ config, utilityClass = '' }) {
   const columnConfig = normalizeColumns(config)
   const columns = buildColumns(config)
   const pageSizeOptions = parsePageSizeOptions(config.pageSizeOptions)
-  const [rows, setRows] = useState(SAMPLE_ROWS)
+  const configRows = normalizeConfigRows(config.rows)
+  const configRowsKey = JSON.stringify(configRows)
+  const [rows, setRows] = useState(configRows ?? SAMPLE_ROWS)
+  // JSON-driven rows (handoffs, page definitions) replace the editable sample
+  // set whenever the incoming data actually changes.
+  useEffect(() => {
+    const next = normalizeConfigRows(config.rows)
+    if (next) setRows(next)
+  }, [configRowsKey]) // eslint-disable-line react-hooks/exhaustive-deps
   const previewRows = buildPreviewRows(rows, columnConfig)
 
   return (

@@ -10,6 +10,14 @@ body {
   overflow: hidden;
 }
 
+/* The Figma-driven Playground is a clean renderer, intentionally outside the
+   normal PageLayout, navigation, and workspace controls. */
+.a1-web-live-playground {
+  block-size: 100%;
+  inline-size: 100%;
+  overflow: auto;
+}
+
 .a1-web-skip-menu-trigger {
   position: fixed;
   inset-block-start: var(--base-spacing-12);
@@ -345,6 +353,17 @@ body {
   outline: 2px dashed transparent;
   outline-offset: 3px;
   transition: outline-color 120ms ease;
+}
+
+/* SectionSeparator ships with pointer-events: none on its root — it's a
+   decorative divider between full-width sections and must not intercept clicks in
+   a rendered page. On the editor canvas that also blocks selection: the click
+   passes through, so the node never enters the event path and only the layers
+   tree can select it. Re-enable pointer events for the selectable editor node.
+   `data-editor-node` is present only in edit mode, so rendered pages are
+   unaffected. */
+[data-editor-node].a1-section-separator {
+  pointer-events: auto;
 }
 
 /* Hover: dashed accent outline — signals "you can select this".

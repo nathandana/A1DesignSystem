@@ -268,7 +268,7 @@
         }
       },
       "card": {
-        "borderRadius": { "$type": "dimension", "$value": "{base.radius.xl}" },
+        "borderRadius": { "$type": "dimension", "$value": "{base.radius.lg}" },
         "borderWidth": { "$type": "dimension", "$value": "3px" },
         "borderColor": { "$type": "color", "$value": "color-mix(in srgb, {base.color.neutral.0}, transparent 88%)" },
         "shadow": {

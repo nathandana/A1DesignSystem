@@ -3,7 +3,7 @@ import figmaComponentGuidelines from '../../../FIGMA_COMPONENT_GUIDELINES.md?raw
 
 const FIGMA_SCOPE_PREFIX = 'figma:'
 const REGISTRY_ONLY_COMPONENTS = [
-  { id: 'split-button', title: 'Split Button', packages: ['React'] },
+  { id: 'split-button', title: 'Split Button', packages: ['React', 'Figma'] },
   { id: 'snackbar-stack', title: 'SnackbarStack', packages: ['React'] },
   { id: 'canvas-edge', title: 'CanvasEdge', packages: ['React'] },
 ]

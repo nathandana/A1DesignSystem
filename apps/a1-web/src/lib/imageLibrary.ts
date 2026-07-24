@@ -25,6 +25,9 @@ const BLANK_PIXEL =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 const MAX_DIMENSION = 2000;
+// Reserved metadata marker: kept in `categories` so all existing image backends
+// persist it without a schema change, but filtered from the visible library list.
+const TICKET_ATTACHMENT_CATEGORY = '__a1_internal_ticket_attachment';
 
 /** A freeform crop rectangle as fractions (0–1) of the natural image. */
 export interface CropRect {
@@ -58,6 +61,23 @@ export interface ImageMeta {
   /** User-defined category tags. */
   categories: string[];
 }
+
+interface AddImageOptions {
+  hiddenFromLibrary?: boolean;
+  /** Used only by trusted local bridge imports so the JSON reference stays stable. */
+  id?: string;
+}
+
+/** A short-lived, local-only asset attached to a Figma Playground handoff. */
+export interface FigmaBridgeImageAsset {
+  id: string;
+  name: string;
+  type: string;
+  dataBase64: string;
+}
+
+export const FIGMA_BRIDGE_IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/gif']);
+export const FIGMA_BRIDGE_MAX_IMAGE_BYTES = 4_000_000;
 
 function uid(): string {
   return `img_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
@@ -223,12 +243,19 @@ function normalize(meta: ImageMeta): ImageMeta {
   };
 }
 
+function isVisibleLibraryImage(meta: ImageMeta): boolean {
+  return !(meta.categories ?? []).includes(TICKET_ATTACHMENT_CATEGORY);
+}
+
 /** Add an uploaded file to the library; returns its metadata. */
-export async function addImage(file: File): Promise<ImageMeta> {
+export async function addImage(file: File, options: AddImageOptions = {}): Promise<ImageMeta> {
   const { blob, width, height, type } = await processFile(file);
   const now = Date.now();
+  const requestedId = typeof options.id === 'string' && /^[A-Za-z0-9_-]{1,120}$/.test(options.id)
+    ? options.id
+    : null;
   const meta: ImageMeta = {
-    id: uid(),
+    id: requestedId ?? uid(),
     name: file.name.replace(/\.[^.]+$/, '') || 'Image',
     type,
     size: blob.size,
@@ -237,7 +264,7 @@ export async function addImage(file: File): Promise<ImageMeta> {
     createdAt: now,
     updatedAt: now,
     projectIds: [],
-    categories: [],
+    categories: options.hiddenFromLibrary ? [TICKET_ATTACHMENT_CATEGORY] : [],
   };
   const backend = await getBackend();
   await backend.save(meta, blob);
@@ -246,11 +273,53 @@ export async function addImage(file: File): Promise<ImageMeta> {
   return meta;
 }
 
+/** Read an image's metadata and bytes for a local Figma handoff. */
+export async function getImageBlob(id: string): Promise<{ meta: ImageMeta; blob: Blob } | null> {
+  const backend = await getBackend();
+  const [meta, blob] = await Promise.all([backend.getMeta(id), backend.getBlob(id)]);
+  return meta && blob ? { meta: normalize(meta), blob } : null;
+}
+
+function bridgeBase64ToBlob(dataBase64: string, type: string): Blob {
+  const binary = atob(dataBase64);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+  return new Blob([bytes], { type });
+}
+
+/**
+ * Persist image bytes received through the loopback Figma bridge. This is kept
+ * separate from JSON parsing: the JSON carries only an `a1img://<id>` ref.
+ */
+export async function importFigmaBridgeImages(assets: FigmaBridgeImageAsset[] | undefined): Promise<number> {
+  if (!Array.isArray(assets) || assets.length === 0) return 0;
+  let imported = 0;
+  for (const asset of assets) {
+    if (!asset || typeof asset.id !== 'string' || !/^[A-Za-z0-9_-]{1,120}$/.test(asset.id)) continue;
+    if (!FIGMA_BRIDGE_IMAGE_TYPES.has(asset.type) || typeof asset.dataBase64 !== 'string') continue;
+    try {
+      const blob = bridgeBase64ToBlob(asset.dataBase64, asset.type);
+      if (blob.size === 0 || blob.size > FIGMA_BRIDGE_MAX_IMAGE_BYTES) continue;
+      const extension = asset.type === 'image/jpeg' ? 'jpg' : asset.type.split('/')[1];
+      await addImage(new File([blob], `${asset.name || 'Figure image'}.${extension}`, { type: asset.type }), {
+        id: asset.id,
+      });
+      imported += 1;
+    } catch {
+      // A malformed local handoff must not break the otherwise valid JSON preview.
+    }
+  }
+  return imported;
+}
+
 /** All library images, newest first (metadata only — no blobs). */
 export async function listImages(): Promise<ImageMeta[]> {
   try {
     const backend = await getBackend();
-    return (await backend.list()).map(normalize).sort((a, b) => b.createdAt - a.createdAt);
+    return (await backend.list())
+      .map(normalize)
+      .filter(isVisibleLibraryImage)
+      .sort((a, b) => b.createdAt - a.createdAt);
   } catch {
     return [];
   }

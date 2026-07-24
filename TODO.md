@@ -124,7 +124,6 @@ _None._
 - [ ] **Rules tab — table layout** `P3 · S` — optimize how component rules display (e.g. a table) instead of the current layout.
 - [ ] **Feature set page (a1-web)** `P3 · M` — a maintained "feature set" surface in a1-web, updated as features ship. _Process + page._
 - [ ] **Plugin — React Aria DnD (keyboard drag-and-drop)** `P3 · M` — adopt React Aria's drag-and-drop for keyboard-accessible reordering (could upgrade the TreeMenu DnD, which has no keyboard support today).
-- [ ] **Plugin — Joyride (walkthrough / onboarding)** `P3 · M` — product walkthroughs and tours.
 - [ ] **Animations + AI-described motion** `P3 · L` — bring motion to the editor via an animation package (e.g. **Motion for React**), and let users **animate features by describing them in plain language** (AI → animation config applied to the selected node(s)). Worked example: *"animate these cards when they scroll into view, one at a time, with a fade and reveal from below"* → scroll-triggered **staggered** fade + translate-up. Cover enter / scroll-into-view / hover / state transitions; respect `prefers-reduced-motion`; emit tokenized durations/easings (motion tokens). _First target: the scroll-in card stagger. Pairs with the **Animation editor** (visual authoring) below + the AI page editor._
 - [ ] **Plugin — TanStack (data grids)** `P3 · L` — advanced data-grid integration.
 - [ ] **Expand codebase output + web-component proof** `P3 · L` — broaden the "Codebase" targets; build a **web-component Button** to prove out a Web Components output.

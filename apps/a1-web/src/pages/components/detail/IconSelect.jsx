@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Autocomplete, IconButton, Stack } from '@gtivr4/a1-design-system-react'
 import iconRegistry from '../../../../../../system/icons/material-symbols.json'
 import { AiIconDialog } from './AiIconDialog.jsx'
-import { AI_ENABLED } from '../../../lib/aiImages.ts'
 import {
   customIconMatchesProject,
   listCustomIcons,
   subscribeCustomIconStore,
 } from '../../../lib/customIconStore.ts'
+import { isLocalBridgeFeatureEnabled } from '../../../lib/localCodex.ts'
 import { getActiveProjectId } from '../../../projects/projectStore.ts'
 
 // Friendlier names for a few Material Symbols category ids; the rest are
@@ -60,6 +60,7 @@ export function IconSelect({
   const [hint, setHint] = useState('')
   const [customIcons, setCustomIcons] = useState([])
   const wrapRef = useRef(null)
+  const bridgeFeaturesEnabled = isLocalBridgeFeatureEnabled()
 
   useEffect(() => {
     let active = true
@@ -103,7 +104,7 @@ export function IconSelect({
             aria-label={label}
           />
         </Stack>
-        {AI_ENABLED && (
+        {bridgeFeaturesEnabled && (
           <IconButton
             icon="auto_awesome"
             size={size === 'compact' ? 'sm' : 'md'}
@@ -113,11 +114,12 @@ export function IconSelect({
           />
         )}
       </div>
-      {AI_ENABLED && (
+      {bridgeFeaturesEnabled && (
         <AiIconDialog
           key={aiOpen ? `icon-ai-open-${hint}` : 'icon-ai-closed'}
           open={aiOpen}
           initialPrompt={hint}
+          customIcons={customIcons.map((icon) => ({ name: icon.name }))}
           onClose={() => setAiOpen(false)}
           onApply={(name) => onChange?.(name)}
         />

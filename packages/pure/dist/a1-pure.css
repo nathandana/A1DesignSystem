@@ -1033,6 +1033,101 @@ aside > .a1-blockquote .a1-link:hover {
   --a1-icon-opsz: var(--component-button-icon-optical-size);
 }
 
+/* ─── Segmented control ──────────────────────────────────────────────── */
+/*
+  A raised track containing mutually exclusive segments. Track heights sit on
+  the 28/40/56 control-height standard (the token names the TOTAL height);
+  segments derive their height from the track so any size lands exactly on it.
+
+  Usage:
+    <div class="a1-segmented" role="radiogroup" aria-label="View">
+      <button class="a1-segment" role="radio" aria-checked="true">Day</button>
+      <button class="a1-segment" role="radio" aria-checked="false">Week</button>
+    </div>
+
+  Selection state: aria-checked (radiogroup) or aria-selected (tablist), or
+  the .a1-segment-selected modifier when neither ARIA pattern applies.
+*/
+
+.a1-segmented {
+  --a1-segmented-height: var(--component-segmented-height-md);
+
+  display: inline-flex;
+  align-items: stretch;
+  min-block-size: var(--a1-segmented-height);
+  background: var(--semantic-color-surface-raised);
+  border: var(--component-segmented-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-control);
+  padding: var(--component-segmented-padding);
+  gap: var(--component-segmented-gap);
+}
+
+.a1-segmented-small { --a1-segmented-height: var(--component-segmented-height-sm); }
+.a1-segmented-large { --a1-segmented-height: var(--component-segmented-height-lg); }
+
+.a1-segmented-full-width {
+  display: flex;
+  inline-size: 100%;
+}
+
+.a1-segmented-full-width .a1-segment { flex: 1; }
+
+.a1-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-8);
+  /* Segment height = total track height minus the track's padding and border
+     on both block edges, so the OUTER control lands on 28/40/56. */
+  min-block-size: calc(var(--a1-segmented-height) - 2 * (var(--component-segmented-padding) + var(--component-segmented-border-width)));
+  border: none;
+  border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  padding: var(--component-segmented-segment-padding-block)
+           var(--component-segmented-segment-padding-inline);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--component-segmented-font-weight-default);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--semantic-motion-duration-fast),
+    color var(--semantic-motion-duration-fast),
+    box-shadow var(--semantic-motion-duration-fast);
+}
+
+.a1-segment:hover:not([aria-checked="true"]):not([aria-selected="true"]):not(.a1-segment-selected) {
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-segment[aria-checked="true"],
+.a1-segment[aria-selected="true"],
+.a1-segment-selected {
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  box-shadow: var(--semantic-shadow-xs);
+}
+
+.a1-segment:focus-visible {
+  outline: var(--component-segmented-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-segmented-focus-ring-offset);
+}
+
+.a1-segmented-small .a1-segment {
+  padding: var(--component-segmented-segment-padding-block-sm)
+           var(--component-segmented-segment-padding-inline-sm);
+  font-size: var(--semantic-font-size-body-xs);
+  gap: var(--base-spacing-4);
+}
+
+.a1-segmented-large .a1-segment {
+  padding: var(--component-segmented-segment-padding-block-lg)
+           var(--component-segmented-segment-padding-inline-lg);
+  font-size: var(--semantic-font-size-body-md);
+}
+
 /* ─── Form ───────────────────────────────────────────────────────────── */
 
 .a1-form {

@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Banner,
   Button,
   ButtonContainer,
-  ChoiceGroup,
   Code,
   DefinitionList,
   Dialog,
   Figure,
-  Icon,
   IconButton,
   Link,
   List,
@@ -28,6 +26,7 @@ import {
   ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
 import { resolveSrc } from '../lib/imageLibrary'
+import { useT } from '../labels/useT'
 import { getPersona } from '../services/backlog/personas'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_KINDS,
@@ -39,6 +38,7 @@ import { attachImageFiles, attachmentStatus, imageFilesFromClipboard } from './i
 import { TicketAiPrompt } from './TicketAiPrompt'
 import { TicketMergePanel } from './TicketMergePanel'
 import { TicketPersonaReview } from './TicketPersonaReview'
+import { ThreadEntry } from './TicketThreadEntry'
 
 function when(iso) {
   try { return new Date(iso).toLocaleString() } catch { return '' }
@@ -46,8 +46,6 @@ function when(iso) {
 function reviewDate(iso) {
   try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) } catch { return '' }
 }
-
-const KIND_ICON = { question: 'help', answer: 'reply', activity: 'history', comment: 'chat' }
 
 // Per-persona "reviewed" tags (Virtual Team). Each shows who reviewed and when.
 export function ReviewTags({ reviews }) {
@@ -67,90 +65,9 @@ export function ReviewTags({ reviews }) {
   )
 }
 
-// Sentinel option value for the free-text "Something else…" choice.
-const OTHER_VALUE = '__other__'
-
-// Inline multiple-choice mini-form for an unanswered persona question. The
-// requester picks an answer from a compact ChoiceGroup (radio tiles) — choosing
-// "Something else…" reveals a free-text field — then submits (A1-208: choice
-// groups for PO feedback, not a stack of buttons).
-function QuestionChoices({ options, allowOther, onAnswer }) {
-  const [selected, setSelected] = useState(null)
-  const [other, setOther] = useState('')
-  const [busy, setBusy] = useState(false)
-
-  const isOther = selected === OTHER_VALUE
-  const choiceOptions = [
-    ...options.map((opt) => ({ value: opt, label: opt })),
-    ...(allowOther ? [{ value: OTHER_VALUE, label: 'Something else…', icon: 'edit' }] : []),
-  ]
-  const text = isOther ? other.trim() : selected
-  const canSubmit = !busy && !!selected && (!isOther || !!other.trim())
-
-  async function submit() {
-    if (!canSubmit) return
-    setBusy(true)
-    try { await onAnswer(text, isOther ? 'Other' : selected) } finally { setBusy(false) }
-  }
-
-  return (
-    <Stack gap="xs">
-      <ChoiceGroup
-        size="compact"
-        label="Your answer"
-        options={choiceOptions}
-        value={selected}
-        onChange={setSelected}
-      />
-      {isOther && (
-        <TextField
-          label="Other answer"
-          value={other}
-          onChange={(e) => setOther(e.target.value)}
-          autoComplete="off"
-        />
-      )}
-      <ButtonContainer align="start">
-        <Button size="sm" icon="reply" loading={busy} disabled={!canSubmit} onClick={submit}>
-          Submit answer
-        </Button>
-      </ButtonContainer>
-    </Stack>
-  )
-}
-
 // Common workflow stages stay visible first when the status toolbar overflows.
 export const PRIMARY_STATUSES = ['new', 'triaged', 'accepted', 'in_progress', 'paused', 'done']
 export const OVERFLOW_STATUSES = STATUSES.filter((s) => !PRIMARY_STATUSES.includes(s))
-
-export function ThreadEntry({ entry, answered, onAnswer }) {
-  const isActivity = entry.kind === 'activity'
-  const persona = entry.meta?.persona // a virtual-team comment (e.g. the Product Owner)
-  const author = persona ? (entry.meta?.personaName || entry.userEmail) : (entry.userEmail || 'Someone')
-  const options = entry.kind === 'question' && Array.isArray(entry.meta?.options) ? entry.meta.options : null
-  return (
-    <Stack direction="row" gap="sm" align="start">
-      <Icon name={persona ? 'smart_toy' : (KIND_ICON[entry.kind] || 'chat')} size="sm" color={persona ? 'accent' : 'muted'} />
-      <Stack gap="xs">
-        <Paragraph size="xs" color="muted">
-          {author}
-          {persona && ' · virtual'}
-          {entry.kind === 'question' && ' · asked the requester'}
-          {entry.kind === 'answer' && ' · answered'}
-          {' · '}{when(entry.createdAt)}
-        </Paragraph>
-        <Paragraph size="sm" color={isActivity ? 'muted' : undefined}>{entry.body}</Paragraph>
-        {options && !answered && onAnswer && (
-          <QuestionChoices
-            options={options}
-            allowOther={!!entry.meta?.allowOther}
-            onAnswer={(text, choice) => onAnswer(entry.id, text, choice)}
-          />
-        )}
-      </Stack>
-    </Stack>
-  )
-}
 
 // ── Lightweight markdown for ticket descriptions (imported from TODO.md) ─────────
 // Renders **bold**, _italic_, `code`, and `-` bullet lists into readable A1
@@ -273,14 +190,15 @@ export function DescriptionField({ item, onSave }) {
  *  - **Comments** — the comment / Q&A thread + activity log. A maintainer can "Ask the
  *    requester" (routes a question into their queue); the requester answers.
  *  - **Linked tickets** — the similarity finder + merge-duplicates panel.
- *  - **Build with AI** — a copy-pasteable implementation plan built from the ticket.
- *  - **Virtual PO** *(dev only)* — the local Virtual Team per-ticket review.
+ *  - **Build with AI** — a copy-pasteable implementation plan built from the ticket (production).
+ *  - **Virtual Team** *(dev only)* — Product Owner + virtual-engineer review and build guidance.
  *
- * Virtual PO is gated behind `import.meta.env.DEV` because the persona engine is local-only.
- * Build with AI is production-visible and falls back to the built-in planner when local AI is unavailable.
+ * Virtual Team is gated behind `import.meta.env.DEV` because its review tools are local-only.
+ * Build with AI remains production-visible; its plan moves into Virtual Team only in development.
  */
 export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, nextItem, onPreviousItem, onNextItem }) {
   const backlog = useBacklog()
+  const t = useT()
   const [thread, setThread] = useState([])
   const [draft, setDraft] = useState('')
   const [busy, setBusy] = useState(false)
@@ -288,6 +206,9 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [attachmentMessage, setAttachmentMessage] = useState('')
   const [attachmentError, setAttachmentError] = useState('')
+  const [teamAction, setTeamAction] = useState(null)
+  const engineerRef = useRef(null)
+  const productOwnerRef = useRef(null)
 
   const me = backlog?.user
   const voted = item ? backlog?.votedSet?.has(item.id) : false
@@ -359,6 +280,12 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
   // activity log. Virtual PO wraps local-only tooling.
   const commentCount = thread.filter((c) => c.kind !== 'activity').length
   const isDev = import.meta.env.DEV
+  async function runTeamAction(kind) {
+    const action = kind === 'engineer' ? engineerRef.current?.review : productOwnerRef.current?.review
+    if (!action) return
+    setTeamAction(kind)
+    try { await action() } finally { setTeamAction(null) }
+  }
   async function handleAnswer(questionId, body, choice) {
     if (busy) return
     setBusy(true)
@@ -449,8 +376,8 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
             <Tab value="details" icon="info">Details</Tab>
             <Tab value="comments" icon="forum" count={commentCount || undefined}>Comments</Tab>
             <Tab value="linked" icon="merge">Linked tickets</Tab>
-            <Tab value="build" icon="smart_toy">Build with AI</Tab>
-            {isDev && <Tab value="po" icon="reviews">Virtual PO</Tab>}
+            {!isDev && <Tab value="build" icon="smart_toy">Build with AI</Tab>}
+            {isDev && <Tab value="team" icon="groups">{t('label.app.backlog.virtualTeam', 'Virtual Team')}</Tab>}
           </TabList>
 
           <TabPanel value="details">
@@ -642,10 +569,35 @@ export function TicketDetail({ item, open, onClose, onOpenItem, previousItem, ne
           </TabPanel>
 
           {isDev && (
-            <TabPanel value="po">
-              <Stack gap="xs">
-                <Paragraph as="span" size="xs" color="muted">Virtual team (local) — evaluate this ticket; re-runs when it changes</Paragraph>
-                <TicketPersonaReview item={item} />
+            <TabPanel value="team">
+              <Stack gap="md">
+                <ButtonContainer align="start">
+                  <Button
+                    size="md"
+                    variant="secondary"
+                    icon="reviews"
+                    loading={teamAction === 'product-owner'}
+                    onClick={() => runTeamAction('product-owner')}
+                  >
+                    {t('label.app.backlog.virtualPoCodex', 'Review with Product Owner')}
+                  </Button>
+                  <Button
+                    size="md"
+                    variant="secondary"
+                    icon="auto_awesome"
+                    loading={teamAction === 'engineer'}
+                    onClick={() => runTeamAction('engineer')}
+                  >
+                    {t('label.app.backlog.buildWithAiReviewEngineer', 'Review with Engineer')}
+                  </Button>
+                </ButtonContainer>
+                <Stack gap="xs">
+                  <Paragraph as="span" size="xs" color="muted">
+                    {t('label.app.backlog.virtualTeamDescription', 'Product and engineering review the ticket together. Their questions and guidance stay with the build instructions.')}
+                  </Paragraph>
+                  <TicketPersonaReview ref={productOwnerRef} item={item} hideActions />
+                  <TicketAiPrompt ref={engineerRef} item={item} hideEngineerAction />
+                </Stack>
               </Stack>
             </TabPanel>
           )}

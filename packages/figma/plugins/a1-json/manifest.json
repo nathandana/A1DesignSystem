@@ -1,0 +1,23 @@
+{
+  "name": "A1:Figma",
+  "id": "a1-design-system-component-json",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "permissions": ["teamlibrary"],
+  "relaunchButtons": [
+    {
+      "command": "open",
+      "name": "Open A1:Figma",
+      "multipleSelection": true
+    }
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "devAllowedDomains": ["http://localhost:4318"]
+  }
+}

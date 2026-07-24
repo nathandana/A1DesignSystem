@@ -93,6 +93,8 @@ export interface PersonaItemOutcome {
   complexity?: Complexity | null;
   questions: number;
   rationale: string;
+  /** Provider used for this review; Codex is always local and falls back to heuristics. */
+  source?: 'heuristic' | 'codex' | 'fallback';
 }
 
 export interface PersonaRunSummary {

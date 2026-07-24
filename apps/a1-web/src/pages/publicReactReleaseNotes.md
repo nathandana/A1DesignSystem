@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+## 0.29.0 — 2026-07-24
+
+### Highlights
+
+- **Dispatch theme** — The package ships a warm editorial theme with accessible action, link, warning, surface, and typography decisions.
+- **Aligned control heights** — Segmented Control, Accordion, and Chip now follow the shared 28/40/56 control-height scale.
+- **Code line numbers** — Block code can show line numbers that remain aligned during editing, wrapping, and scrolling without changing copied content.
+- **Figma-ready primitives** — Link, Icon Button, Select, Divider, and additional component mappings gain documented Figma contracts and Code Connect coverage.
+- **Selection and class-name fixes** — Chip’s selected state works in non-selecting groups, and SegmentedControl safely merges consumer class names.
+
+## 0.28.0 — 2026-07-07
+
+### Highlights
+
+- **Recharts component family** — Governed wrappers cover line, bar, area, composed, pie, scatter, radar, radial bar, funnel, treemap, Sankey, and sunburst charts.
+- **Section Separator** — Shaped, responsive transitions can connect adjacent Section surfaces with independent inverse and border options.
+- **Accent and hero Cards** — Card gains an accent surface plus shaped separators between hero icon areas and content.
+- **Searchable TopHeader menus** — Navigation items can render a compact governed header such as SearchField above submenu sections.
+- **Per-bar chart colours** — Bar chart rows can apply built-in semantic tones or explicit data-provided fills to individual bars.
+
+## 0.27.0 — 2026-07-06
+
 ### Highlights
 
 - **Tree Menu collapsed mode** — TreeMenu can now show root items as icon-only triggers with child menus, making compact navigation patterns easier to build.
@@ -79,4 +101,3 @@
 
 - **SplitButton and Toolbar** — New controls arrived for split actions and compact editing toolbars.
 - **Figure, Slider, Section, and IconButton upgrades** — Core components gained more sizing, cropping, border, range, and link behavior options.
-

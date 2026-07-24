@@ -239,6 +239,23 @@ function navigate(path) {
   window.dispatchEvent(new PopStateEvent('popstate'))
 }
 
+function handleInternalLinkClick(event, path) {
+  // Preserve native browser link behavior for Cmd/Ctrl-click, middle-click,
+  // modifier-clicks, and keyboard "open in new tab" actions. Only plain
+  // primary clicks are handled by the lightweight SPA router.
+  if (
+    event.defaultPrevented
+    || event.button !== 0
+    || event.metaKey
+    || event.ctrlKey
+    || event.shiftKey
+    || event.altKey
+    || event.currentTarget?.target === '_blank'
+  ) return
+  event.preventDefault()
+  navigate(path)
+}
+
 function statusLabel(status) {
   return STATUS_OPTIONS.find(([value]) => value === status)?.[1] ?? status
 }
@@ -1397,7 +1414,7 @@ function Dashboard({ applications, onAddJob, onDelete, onFeedback, highlightedAp
       searchAccessor: (row) => `${row.title} ${row.company}`,
       renderCell: ({ row }) => (
         <Stack gap="none">
-          <Link href={`/applications/${row.id}`} onClick={(event) => { event.preventDefault(); navigate(`/applications/${row.id}`) }}>{row.title}</Link>
+          <Link href={`/applications/${row.id}`} onClick={(event) => handleInternalLinkClick(event, `/applications/${row.id}`)}>{row.title}</Link>
           <Paragraph size="xs" color="muted">{row.company}</Paragraph>
         </Stack>
       ),

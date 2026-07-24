@@ -10,6 +10,8 @@ export interface TopHeaderNavItem {
   /** Render the desktop nav item as an icon-only affordance with `label` as the accessible name. */
   iconOnly?: boolean;
   active?: boolean;
+  /** Optional custom content rendered above this item's submenu sections. */
+  menuHeader?: React.ReactNode | ((helpers: { onClose: () => void }) => React.ReactNode);
   /** Secondary line shown in dropdown/submenu entries. */
   description?: string;
   /** Nested items — renders the entry as a dropdown submenu. */
@@ -41,8 +43,12 @@ export interface TopHeaderProps extends React.HTMLAttributes<HTMLElement> {
   navItems?: TopHeaderNavItem[];
   /** Trailing action buttons/menus (icon buttons with optional dropdowns). */
   actions?: TopHeaderAction[];
-  /** Login affordance rendered after the actions. */
-  loginButton?: React.ReactNode;
+  /**
+   * Login affordance rendered after the actions as a small primary Button.
+   * Pass `{ label, onClick }` (label defaults to "Log in"), or a plain string
+   * used as the label — the JSON-safe form used by page definitions.
+   */
+  loginButton?: string | { label?: string; onClick?: React.MouseEventHandler<HTMLButtonElement> };
   /**
    * Position of nav-item icons relative to their labels, or "hidden" to
    * suppress nav items at that breakpoint. Accepts a single value or a

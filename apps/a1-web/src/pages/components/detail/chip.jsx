@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Chip,
   ChipGroup,
@@ -63,6 +63,7 @@ export function getDefaultConfig() {
     behavior: 'multiple',
     size: 'md',
     wrap: true,
+    label: '',
     items: [
       { id: 'chip-design', title: 'Design', icon: 'palette', href: '#design' },
       { id: 'chip-code', title: 'Code', icon: 'code', href: '#code' },
@@ -75,14 +76,23 @@ export function getDefaultConfig() {
 export function Preview({ config, utilityClass = '' }) {
   const items = normalizeItems(config.items)
   const selectionMode = config.behavior === 'single' ? 'single' : config.behavior === 'multiple' ? 'multiple' : 'none'
+  // Explicit per-item selection (from JSON / the item editor) wins; without it
+  // the demo keeps its first-item selection.
+  const selectedIds = items.filter((item) => item.selected).map((item) => item.id)
   const initialValue = config.behavior === 'multiple'
-    ? [items[0]?.id].filter(Boolean)
-    : items[0]?.id ?? ''
+    ? (selectedIds.length > 0 ? selectedIds : [items[0]?.id].filter(Boolean))
+    : (selectedIds[0] ?? items[0]?.id ?? '')
   const [value, setValue] = useState(initialValue)
+  // Explicit selections can arrive after mount (JSON handoffs update config in
+  // place) — re-sync the demo selection when they change.
+  const selectedKey = selectedIds.join('|')
+  useEffect(() => {
+    if (selectedIds.length > 0) setValue(config.behavior === 'multiple' ? selectedIds : selectedIds[0])
+  }, [selectedKey, config.behavior]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (config.behavior === 'menu') {
     return (
-      <ChipGroup className={utilityClass || undefined} wrap={config.wrap} size={config.size} selectionMode="none">
+      <ChipGroup className={utilityClass || undefined} wrap={config.wrap} size={config.size} selectionMode="none" label={config.label || undefined}>
         <Chip
           icon="filter_list"
           selected
@@ -111,14 +121,24 @@ export function Preview({ config, utilityClass = '' }) {
       onChange={setValue}
       wrap={config.wrap}
       size={config.size}
+      label={config.label || undefined}
     >
       {items.map((item) => (
         <Chip
           key={item.id}
           value={item.id}
           icon={item.icon || undefined}
-          as={config.behavior === 'navigation' ? 'a' : undefined}
-          href={config.behavior === 'navigation' ? (item.href || '#') : undefined}
+          selected={selectionMode === 'none' && item.selected ? true : undefined}
+          disabled={item.disabled || undefined}
+          menuLabel={item.menu ? `${item.title || 'Untitled'} options` : undefined}
+          menu={item.menu ? ({ close }) => (
+            <>
+              <MenuItem onClick={close}>Newest first</MenuItem>
+              <MenuItem onClick={close}>Oldest first</MenuItem>
+            </>
+          ) : undefined}
+          as={config.behavior === 'navigation' && !item.menu ? 'a' : undefined}
+          href={config.behavior === 'navigation' && !item.menu ? (item.href || '#') : undefined}
         >
           {item.title || 'Untitled'}
         </Chip>
@@ -162,6 +182,23 @@ function ItemEditor({ item, canRemove, behavior, onChange, onRemove }) {
           onChange={(event) => onChange({ href: event.target.value })}
         />
       )}
+      {(behavior === 'single' || behavior === 'multiple') && (
+        <Toggle
+          label="Selected"
+          value={!!item.selected}
+          onChange={(selected) => onChange({ selected })}
+        />
+      )}
+      <Toggle
+        label="Disabled"
+        value={!!item.disabled}
+        onChange={(disabled) => onChange({ disabled })}
+      />
+      <Toggle
+        label="Menu chip"
+        value={!!item.menu}
+        onChange={(menu) => onChange({ menu })}
+      />
     </Stack>
   )
 }
@@ -208,6 +245,12 @@ export function Controls({ config, setConfig, activeItemIndex = null, onSelectIt
       <Choice prop="behavior" label="Behavior" value={config.behavior} onChange={(behavior) => set({ behavior })} options={BEHAVIOR_OPTIONS} />
       <ConfigSlider prop="size" label="Size" values={SIZE_OPTIONS} value={config.size} onChange={(size) => set({ size })} />
       <Toggle prop="wrap" label="Wrap" value={config.wrap} onChange={(wrap) => set({ wrap })} />
+      <TextField
+        label="Group label"
+        size="compact"
+        value={config.label ?? ''}
+        onChange={(event) => set({ label: event.target.value })}
+      />
 
       <Divider space="none" />
 
@@ -243,16 +286,19 @@ function itemSnippet(item, behavior) {
   const props = [
     `value="${escapeJsString(item.id)}"`,
     item.icon ? `icon="${escapeJsString(item.icon)}"` : null,
-    behavior === 'navigation' ? 'as="a"' : null,
-    behavior === 'navigation' ? `href="${escapeJsString(item.href || '#')}"` : null,
+    item.disabled ? 'disabled' : null,
+    item.menu ? `menuLabel="${escapeJsString(item.title || 'Untitled')} options" menu={({ close }) => (/* MenuItems */)}` : null,
+    behavior === 'navigation' && !item.menu ? 'as="a"' : null,
+    behavior === 'navigation' && !item.menu ? `href="${escapeJsString(item.href || '#')}"` : null,
   ].filter(Boolean).join(' ')
   return `  <Chip ${props}>${escapeJsString(item.title || 'Untitled')}</Chip>`
 }
 
 function buildSnippet(config, utilityClass = '') {
   const items = normalizeItems(config.items)
+  const labelProp = config.label ? ` label="${escapeJsString(config.label)}"` : ''
   if (config.behavior === 'menu') {
-    return `<ChipGroup${utilityClass ? ` className="${escapeJsString(utilityClass)}"` : ''} selectionMode="none"${config.wrap === false ? ' wrap={false}' : ''}${config.size !== 'md' ? ` size="${config.size}"` : ''}>
+    return `<ChipGroup${utilityClass ? ` className="${escapeJsString(utilityClass)}"` : ''} selectionMode="none"${config.wrap === false ? ' wrap={false}' : ''}${config.size !== 'md' ? ` size="${config.size}"` : ''}${labelProp}>
   <Chip
     icon="filter_list"
     selected
@@ -269,9 +315,53 @@ ${items.map((item) => `        <MenuItem${item.icon ? ` icon="${escapeJsString(i
   }
 
   const selectionMode = config.behavior === 'single' ? 'single' : config.behavior === 'multiple' ? 'multiple' : 'none'
-  return `<ChipGroup${utilityClass ? ` className="${escapeJsString(utilityClass)}"` : ''} selectionMode="${selectionMode}" value={value} onChange={setValue}${config.wrap === false ? ' wrap={false}' : ''}${config.size !== 'md' ? ` size="${config.size}"` : ''}>
+  return `<ChipGroup${utilityClass ? ` className="${escapeJsString(utilityClass)}"` : ''} selectionMode="${selectionMode}" value={value} onChange={setValue}${config.wrap === false ? ' wrap={false}' : ''}${config.size !== 'md' ? ` size="${config.size}"` : ''}${labelProp}>
 ${items.map((item) => itemSnippet(item, config.behavior)).join('\n')}
 </ChipGroup>`
+}
+
+export const jsonType = 'ChipGroup'
+
+const JSON_BEHAVIORS = ['multiple', 'single', 'menu', 'navigation']
+
+export function toJson(config) {
+  const props = {}
+  if (config.behavior && config.behavior !== 'multiple') props.behavior = config.behavior
+  if (config.size && config.size !== 'md') props.size = config.size
+  if (config.wrap === false) props.wrap = false
+  if (config.label) props.label = config.label
+  props.items = normalizeItems(config.items).map((item, index) => {
+    const entry = { id: item.id || `chip-${index + 1}`, title: item.title || 'Untitled' }
+    if (item.icon) entry.icon = item.icon
+    if (item.selected) entry.selected = true
+    if (item.disabled) entry.disabled = true
+    if (item.menu) entry.menu = true
+    if (config.behavior === 'navigation' && item.href && item.href !== '#') entry.href = item.href
+    return entry
+  })
+  return { node: { id: 'chip-group-1', type: 'ChipGroup', props }, note: null }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  config.behavior = JSON_BEHAVIORS.includes(props.behavior) ? props.behavior : 'multiple'
+  config.size = SIZE_OPTIONS.includes(props.size) ? props.size : 'md'
+  config.wrap = props.wrap !== false
+  config.label = typeof props.label === 'string' ? props.label : ''
+  const rawItems = Array.isArray(props.items) ? props.items.filter((item) => item && typeof item === 'object') : []
+  if (rawItems.length > 0) {
+    config.items = rawItems.map((item, index) => ({
+      id: String(item.id || `chip-${index + 1}`),
+      title: typeof item.title === 'string' && item.title ? item.title : `Chip ${index + 1}`,
+      icon: typeof item.icon === 'string' ? item.icon : '',
+      href: typeof item.href === 'string' && item.href ? item.href : '#',
+      selected: item.selected === true,
+      disabled: item.disabled === true,
+      menu: item.menu === true,
+    }))
+  }
+  return config
 }
 
 export function Snippet({ config, utilityClass = '' }) {

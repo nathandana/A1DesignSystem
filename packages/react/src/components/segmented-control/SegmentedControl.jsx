@@ -12,6 +12,7 @@ export function SegmentedControl({
   fullWidth = false,
   size,
   labelMode = "all",
+  className = "",
   ...props
 }) {
   const items = options.map(normalize);
@@ -47,6 +48,7 @@ export function SegmentedControl({
         "a1-segmented",
         resolvedSize && `a1-segmented--${resolvedSize}`,
         fullWidth && "a1-segmented--full-width",
+        className,
       ]
         .filter(Boolean)
         .join(" ")}

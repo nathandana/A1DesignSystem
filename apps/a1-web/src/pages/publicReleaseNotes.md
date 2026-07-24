@@ -2,13 +2,63 @@
 
 ## Unreleased
 
+## 0.30.0 — 2026-07-24
+
 ### Highlights
 
-- **Public release notes** — Release notes now use simpler public-facing summaries so readers can understand what changed at a product level.
-- **Release notes search** — The Releases page now includes search, making it easier to find updates by component, feature, or workflow.
-- **Cleaner inline formatting** — Release-note text now renders common inline Markdown such as bold text, emphasis, code, and links.
-- **Priority Guide previews** — Priority Guide previews now focus on the standard wireframe view.
-- **Tree Menu preview** — The Tree Menu component page now shows the collapsed menu pattern more clearly.
+- **Figma and A1 round trip** — More components can move between Figma, editable A1 JSON, configurators, and the page or pattern editor without losing their supported properties and content.
+- **Broader Figma library** — New token-bound assets and Code Connect templates expand coverage across navigation, typography, inputs, data, feedback, and layout components.
+- **Figma Foundations** — A new Foundations category explains the A1:Figma plugin end to end and establishes a dedicated Components page for embedded library views.
+- **JSON playground and local handoff** — Structured component or page JSON can be previewed in A1 and sent to the open Figma plugin through the local bridge.
+- **Virtual product and engineering reviews** — Backlog tickets can ask a Codex-backed Product Owner and engineer for focused clarifying questions and supplemental build guidance, with deterministic fallbacks when the bridge is unavailable.
+- **Dispatch theme** — A warm editorial theme adds cream paper surfaces, ink typography, accessible azure actions, a yellow warning accent, and an expressive three-font stack.
+- **Release stories** — New blog articles explain the Figma workflow, the virtual team review model, and the design decisions behind Dispatch.
+
+## 0.29.0 — 2026-07-13
+
+### Highlights
+
+- **Component JSON bridge** — Button, Section, Text Field, Menu, Dialog, Radio Group, and Checkbox Group can move between Figma component instances and editable A1 JSON.
+- **Local Codex review** — The editor can send a page definition to a read-only local Codex bridge and show structured findings without exposing shell access to the browser.
+- **Smarter icon finding** — Plain-language icon suggestions use the local Material Symbols and project custom-icon registries, with invalid names filtered before display.
+- **Project publishing and routing** — Projects can publish stable prototype links, keep navigation inside the project, and choose top-header or sidebar navigation.
+- **Governed editor improvements** — Pattern edits propagate while preserving unlocked instance overrides, every addable component has an editor configurator, and project pages include a screen-reader report.
+
+## 0.28.0 — 2026-07-07
+
+### Highlights
+
+- **Project-scoped themes** — Projects can store a theme that follows export, import, cloud sync, editing, and published previews without changing the surrounding A1 app.
+- **Section separators and accent cards** — New layout treatments support shaped transitions between section surfaces and stronger action-colour cards.
+- **Chart components** — A dedicated Data Viz category adds governed Recharts components and configurators for common Cartesian, radial, hierarchy, and flow charts.
+- **More responsive navigation** — TopHeader gains a searchable submenu slot, while project and editor navigation continue to use shared A1 patterns.
+- **Release-ready component coverage** — Figma, configurator, editor, and documentation coverage expanded across core components.
+
+## 0.27.0 — 2026-07-07
+
+### Highlights
+
+- **System dashboard** — A new Explore dashboard summarizes backlog health, component coverage, token volume, rules, labels, and system flow.
+- **Data Viz workspace** — Separate component pages make charts easier to discover, configure, and add to projects.
+- **Figma Dialog and Menu** — Token-bound Figma assets document the visual contract for two important overlay components.
+- **Theme consistency** — System light and forced Light now resolve the same generated color contract while preserving theme-specific surfaces.
+- **Backlog reliability** — Cloud reads page through every ticket and generated Figma tickets no longer churn timestamps on load.
+
+## 0.26.0 — 2026-07-06
+
+### Highlights
+
+- **Presentation walkthrough** — A focused keyboard-navigable deck presents the A1 product, AI, and software-creation story without the normal app chrome.
+
+## 0.25.0 — 2026-07-06
+
+### Highlights
+
+- **Public release notes** — Releases now include searchable, simpler public summaries alongside detailed implementation notes for each package.
+- **Figma foundations** — Text Field joins the Figma library, component coverage becomes visible in A1, and missing Figma assets are tracked through generated backlog tickets.
+- **Backlog table filters** — All tickets can be filtered by type, status, priority, size, and scope without losing formatted table values.
+- **Overlay and Tooltip configurators** — Both components gain complete A1 web pages with live controls, rules, properties, and generated snippets.
+- **Priority Guide previews** — Priority Guide previews focus on the standard wireframe view, and Tree Menu’s component page demonstrates collapsed navigation more clearly.
 
 ## 0.24.0 — 2026-07-05
 

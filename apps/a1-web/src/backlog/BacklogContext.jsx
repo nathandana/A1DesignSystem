@@ -5,6 +5,7 @@ import { registerSyncSource } from '../lib/manualSync.js'
 import * as store from '../services/backlog/backlogStore'
 import { ensureFigmaComponentTickets } from '../services/backlog/figmaComponentTickets.js'
 import { runPersona, runPersonaOnItem, runStatusCleanup } from '../services/backlog/personas'
+import { runPersonaOnItemWithCodex } from '../services/backlog/personas/codexProductOwner'
 import changelog from '../../CHANGELOG.md?raw'
 import { ticketRef } from '../services/backlog/types'
 import { CreateTicketDialog } from './CreateTicketDialog'
@@ -27,6 +28,7 @@ export function BacklogProvider({ children }) {
   const [createScope, setCreateScope] = useState(null) // null = closed
   const [createOpen, setCreateOpen] = useState(false)
   const [toast, setToast] = useState(null)
+  const [threadVersion, setThreadVersion] = useState(0)
   const labelResolverRef = useRef((_key, fallback) => fallback)
   const reqId = useRef(0)
   const figmaSeededRef = useRef(new Set())
@@ -104,6 +106,7 @@ export function BacklogProvider({ children }) {
 
   const comment = useCallback(async (item, kind, body) => {
     const c = await store.addComment(item, kind, body)
+    setThreadVersion((version) => version + 1)
     await refresh()
     return c
   }, [refresh])
@@ -111,6 +114,7 @@ export function BacklogProvider({ children }) {
   // Answer a specific question inline (e.g. a multiple-choice answer to a PO question).
   const answer = useCallback(async (item, questionId, body, choice) => {
     const c = await store.answerQuestion(item, questionId, body, choice)
+    setThreadVersion((version) => version + 1)
     await refresh()
     return c
   }, [refresh])
@@ -193,6 +197,16 @@ export function BacklogProvider({ children }) {
   // the dialog reflects the new type/priority/size/tag/question. Passes the backlog for context.
   const reviewItem = useCallback(async (persona, item) => {
     const outcome = await runPersonaOnItem(persona, item, items)
+    setThreadVersion((version) => version + 1)
+    await refresh()
+    return outcome
+  }, [refresh, items])
+
+  // Explicit Codex path for the dev-only Virtual PO surface. The deterministic persona
+  // remains the fallback when the local bridge is unavailable.
+  const reviewItemWithCodex = useCallback(async (persona, item, onStatus) => {
+    const outcome = await runPersonaOnItemWithCodex(persona, item, items, onStatus)
+    setThreadVersion((version) => version + 1)
     await refresh()
     return outcome
   }, [refresh, items])
@@ -201,13 +215,13 @@ export function BacklogProvider({ children }) {
   const me = user ? { id: user.id, email: user.email } : null
 
   const value = useMemo(() => ({
-    items, notifications, unreadCount, votedSet, loading,
+    items, notifications, unreadCount, votedSet, loading, threadVersion,
     isCloud: store.isCloudBacklog(),
     user: me,
     openCreate, create: handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh,
-    reviewWithPersona, reviewItem, cleanupStatus, setLabelResolver,
+    reviewWithPersona, reviewItem, reviewItemWithCodex, cleanupStatus, setLabelResolver,
   }), [items, notifications, unreadCount, votedSet, loading, me,
-    openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, cleanupStatus, setLabelResolver])
+    threadVersion, openCreate, handleCreate, update, remove, comment, answer, vote, merge, link, unlink, markRead, loadComments, refresh, reviewWithPersona, reviewItem, reviewItemWithCodex, cleanupStatus, setLabelResolver])
 
   return (
     <BacklogContext.Provider value={value}>

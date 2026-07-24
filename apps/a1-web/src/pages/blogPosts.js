@@ -1,11 +1,163 @@
 export const BLOG_POSTS = [
   {
+    id: 'release-030-figma-round-trip',
+    slug: 'a1-030-closes-the-figma-loop',
+    title: 'A1 0.30.0 closes the Figma loop',
+    kicker: 'Release newsletter',
+    date: 'Jul 24, 2026',
+    version: '0.30.0',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas showing a structured page and its configuration panel.',
+    description: 'How editable A1 JSON, the local bridge, and broader component coverage turn Figma handoff into a practical round trip.',
+    keywords: ['release', '0.30.0', 'figma', 'json', 'playground', 'code connect', 'components', 'editor'],
+    subtitle: 'This release connects design assets, structured page definitions, configurators, and the editor so supported component work can travel in both directions.',
+    sections: [
+      {
+        title: 'A working round trip',
+        body: [
+          'The Component JSON workflow has grown beyond a proof of concept. Supported Figma instances export as A1 page-definition nodes, their editable properties and content can be reviewed in a1-web, and valid JSON can render back onto the Figma canvas or update the selected instance.',
+          'The JSON Playground adds a neutral inspection point for a single node, a node bundle, or a complete page definition. From there, Send to Figma queues the validated payload through the localhost bridge for the open plugin, keeping the browser and Figma sides separated by a small, inspectable contract.',
+        ],
+      },
+      {
+        title: 'Coverage that behaves like the system',
+        body: [
+          'New Figma assets and Code Connect templates cover more typography, navigation, actions, inputs, feedback, data, and layout components. The work is not only about drawing more component sets: shared color and geometry variables, dark-mode validation, component properties, and documented runtime gaps keep each asset tied to the React contract.',
+          'The bridge also handles practical composition details such as ordered Section content, Dialog body and footer actions, group option reconciliation, selected values, Menu dividers, Top Header actions, and the fill-versus-hug sizing rules that determine whether a component should stretch inside its parent.',
+          'A new Figma category in Foundations makes the workflow easier to discover. Its plugin article documents Build & Fix, Audit, Publish, Patterns, JSON exchange, and local page sync, while a dedicated Components page reserves a home for embedded views from the published Figma library.',
+        ],
+      },
+      {
+        title: 'A handoff with visible boundaries',
+        body: [
+          'A round trip is useful only when its limits are honest. Runtime behavior such as event handlers, portal positioning, live data, keyboard interaction, and arbitrary application logic remains owned by React and the host app. The Figma workflow records those gaps instead of inventing visual substitutes that look complete but cannot ship.',
+          'That boundary makes the workflow safer for both designers and developers: visual decisions remain editable in design, structured decisions remain reviewable as JSON, and behavior stays with the runtime that can test it.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'virtual-team-better-questions',
+    slug: 'virtual-team-asks-better-questions',
+    title: 'Better tickets start with better questions',
+    kicker: 'Feature note',
+    date: 'Jul 24, 2026',
+    version: '0.30.0',
+    image: '/help/backlog-board.png',
+    imageAlt: 'The A1 backlog board with tickets organized into workflow lanes.',
+    description: 'The development backlog now brings Product Owner and engineering reviews together before Build with AI creates a plan.',
+    keywords: ['release', '0.30.0', 'backlog', 'product owner', 'engineer', 'codex', 'planning', 'virtual team'],
+    subtitle: 'The virtual team is most useful when it improves the question before it tries to improve the answer.',
+    sections: [
+      {
+        title: 'Product questions before implementation',
+        body: [
+          'The Virtual Product Owner reviews a ticket for missing product intent, users, value, scope, and acceptance signals. When clarification is genuinely useful, it asks no more than two specific questions and keeps them with the ticket so answers can inform later planning.',
+          'The review includes the existing discussion and avoids repeating questions that have already been answered. Build with AI can then warn when the Product Owner review has not run or important questions remain unresolved instead of quietly treating an incomplete ticket as ready.',
+        ],
+      },
+      {
+        title: 'Engineering guidance without overbuilding',
+        body: [
+          'The virtual engineer classifies the work, asks only blocking questions, accepts manual direction, and appends supplemental guidance to the existing build instructions. It does not replace the plan or add styling advice to work that has nothing to do with presentation.',
+          'The engineer also uses the repository’s ponytail guidance: prefer the smallest viable implementation, native platform behavior, and existing system contracts before adding dependencies or abstractions. The goal is a better next step, not a longer plan.',
+        ],
+      },
+      {
+        title: 'Local, read-only, and recoverable',
+        body: [
+          'Both reviews use the local Codex bridge in development with read-only sandboxing and strict response schemas. Connection, thinking, and validation states remain visible so a slow or unavailable model does not look like a frozen interface.',
+          'When the bridge is offline or its response cannot be used, the deterministic Product Owner and local planner remain available. Older Supabase workspaces can also keep the generated questions before applying the optional review-stamp migration.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'dispatch-editorial-theme',
+    slug: 'dispatch-editorial-theme',
+    title: 'Dispatch gives A1 an editorial voice',
+    kicker: 'Theme note',
+    date: 'Jul 24, 2026',
+    version: '0.30.0',
+    image: '/help/project-pages.png',
+    imageAlt: 'Project pages in A1, where a project theme can be applied and reviewed.',
+    description: 'A closer look at the warm paper, ink, azure, highlighter yellow, and typography decisions behind the new Dispatch theme.',
+    keywords: ['release', '0.30.0', 'dispatch', 'theme', 'accessibility', 'color', 'typography', 'tokens'],
+    subtitle: 'Dispatch shows how far a product can change its voice while keeping the same A1 components, semantics, and accessibility expectations.',
+    sections: [
+      {
+        title: 'Warm paper, ink, and one confident blue',
+        body: [
+          'Dispatch starts with a cream page and dark ink instead of a cool white interface. A single azure ramp drives both actions and information, while a highlighter-yellow warning accent carries dark text for the “important” moments the theme is designed to emphasize.',
+          'Secondary buttons use a soft grey solid fill rather than the default outline. That small change gives the theme a more editorial, publication-like rhythm without asking consumers to create a new Button variant.',
+        ],
+      },
+      {
+        title: 'Typography changes the voice',
+        body: [
+          'Zilla Slab Light gives display text an expressive newspaper character, Geist SemiBold keeps headings and actions crisp, and Atkinson Hyperlegible keeps longer body copy comfortable to read. The three roles are assigned through theme tokens, so components inherit the typography without local font rules.',
+          'The result feels substantially different from the default system even though component markup and props stay the same. That is the useful promise of a theme: change expression without renegotiating behavior.',
+        ],
+      },
+      {
+        title: 'Accessibility is part of the palette',
+        body: [
+          'The azure anchor was moved deeper than the source inspiration so white button labels and blue links both clear WCAG AA on the cream surface. Muted neutrals and link colors were also tested on raised surfaces, and component-level tokens that had baked-in default colors were remapped to the theme ramp.',
+          'Dispatch is intentionally light-mode only. Its themed component gallery reports no automated color-contrast violations across the tested elements, while the normal reminder still applies: automated checks cannot replace review of content, motion, interaction, and assistive-technology behavior.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'local-ai-icon-finder',
+    slug: 'local-ai-icon-finder',
+    title: 'Local Codex icon finding in the editor',
+    kicker: 'Feature note',
+    date: 'Jul 8, 2026',
+    version: 'A1-409 follow-up',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with the configuration panel open.',
+    description: 'How the icon picker now uses the local Codex bridge to suggest real built-in and project custom icons without requiring a browser API key.',
+    keywords: ['icons', 'custom icons', 'ai', 'codex', 'local bridge', 'tokens', 'material symbols', 'editor', 'api'],
+    subtitle: 'The editor can now help choose icons from plain-language intent while keeping selection local, validated, token-reported, and easy to replace with an API-backed service later.',
+    sections: [
+      {
+        title: 'Where to use it',
+        body: [
+          'Use Find an icon with AI anywhere the editor shows an Icon field in the Configure panel. It is meant for everyday component work: button icons, card icons, navigation affordances, empty states, status panels, and small action controls where the right built-in or project custom icon is hard to remember by name.',
+          'The flow is intentionally narrow. You describe the intent, A1 asks the local Codex bridge for candidate built-in and active-project custom icons, validates every returned name against the local registries, and shows the icon usage guidance for Material Symbols when one exists. The result also reports elapsed time and token usage when Codex exposes it in the JSON event stream.',
+        ],
+      },
+      {
+        title: 'Why local helps',
+        body: [
+          'Local Codex icon search is low-risk AI: Codex is not generating production UI, changing page structure, or creating arbitrary artwork. It is ranking a known set of allowed icon names. That makes it a good place to use local assistance because the design-system contract still owns the result.',
+          'The biggest benefits are speed, traceability, and safety. Designers can ask for “secure checkout”, “download report”, or “empty inbox” instead of scanning two thousand icon names. The browser does not need an API key for this flow, Codex runs behind the localhost bridge, token usage is surfaced after each ask when available, and invalid or invented icon names are filtered out before they ever reach the component.',
+        ],
+      },
+      {
+        title: 'What it cannot do',
+        body: [
+          'The finder cannot guarantee the perfect semantic choice. It can suggest plausible icons, but a human still needs to check whether the symbol matches the action, label, tone, and accessibility context. It also cannot make a missing Material Symbol or custom icon exist; if the concept needs bespoke artwork, create it in the custom icon workflow first.',
+          'Codex can still return names that are close but not valid, or the bridge may be offline. A1 handles this by requiring structured output at the bridge and validating every name in the browser. It cannot guarantee the perfect semantic choice, and it cannot replace human review of whether the symbol matches the action, label, tone, and accessibility context.',
+        ],
+      },
+      {
+        title: 'Can this become a standard API feature?',
+        body: [
+          'Nothing about this method prevents a standard API-backed approach. The useful boundary is already in the app: the UI asks for candidates, the bridge/service returns icon names plus reasons and usage, and the registry validator decides what can be displayed. A server-side API version could keep the same response shape while swapping the local Codex bridge for a hosted model call.',
+          'The main differences would be operational, not architectural: API auth moves to a backend, rate limits and cost controls become explicit, and token accounting comes directly from the provider response instead of Codex JSON events. The same validation, guidance lookup, “show more” avoidance list, and editor apply flow would still work.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'search-shortcuts-and-walkthroughs',
     slug: 'search-shortcuts-and-walkthroughs',
     title: 'Search, shortcuts, and walkthroughs',
     kicker: 'Release newsletter',
     date: 'Jun 29, 2026',
-    version: 'Upcoming',
+    version: '0.18.0',
     image: '/blog/a1-global-search-open.png',
     imageAlt: 'The A1 global search overlay open on the home page.',
     description: 'How global search, keyboard shortcuts, and generated walkthrough videos make A1 easier to navigate and explain.',

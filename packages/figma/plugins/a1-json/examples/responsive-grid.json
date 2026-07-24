@@ -1,0 +1,231 @@
+{
+  "id": "page-layout-responsive-grid-poc",
+  "type": "PageLayout",
+  "props": {
+    "showHeader": true,
+    "showSidebar": false,
+    "showFooter": false
+  },
+  "children": [
+    {
+      "id": "top-header-responsive-grid-poc",
+      "type": "TopHeader",
+      "props": {
+        "logoText": "A1:Figma",
+        "navItems": [
+          {
+            "id": "overview",
+            "label": "Overview",
+            "icon": "dashboard",
+            "active": true
+          }
+        ],
+        "actions": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings"
+          }
+        ],
+        "loginButton": {
+          "label": "Sign in"
+        }
+      }
+    },
+    {
+      "id": "section-responsive-grid-poc",
+      "type": "Section",
+      "props": {
+        "surface": "page",
+        "padding": "lg",
+        "contentWidth": "lg",
+        "gap": "lg"
+      },
+      "children": [
+        {
+          "id": "heading-responsive-grid-title",
+          "type": "Heading",
+          "props": {
+            "as": "h1",
+            "type": "display",
+            "size": "md",
+            "color": "accent"
+          },
+          "content": {
+            "fallback": "Responsive Grid POC"
+          }
+        },
+        {
+          "id": "paragraph-responsive-grid-instructions",
+          "type": "Paragraph",
+          "props": {
+            "size": "md",
+            "color": "muted"
+          },
+          "content": {
+            "fallback": "This Grid keeps a sparse responsive columns object in JSON: xs previews as 1 column, md previews as 2 columns, and xl previews as 4 columns."
+          }
+        },
+        {
+          "id": "grid-responsive-cards",
+          "type": "Grid",
+          "props": {
+            "columns": {
+              "xs": 1,
+              "md": 2,
+              "xl": 4
+            },
+            "gap": "lg",
+            "alignItems": "stretch"
+          },
+          "children": [
+            {
+              "id": "grid-item-responsive-feature",
+              "type": "GridItem",
+              "props": {
+                "span": {
+                  "xs": "full",
+                  "md": 2,
+                  "xl": 2
+                }
+              },
+              "children": [
+                {
+                  "id": "card-responsive-one",
+                  "type": "Card",
+                  "props": {
+                    "icon": "looks_one",
+                    "iconDisplay": "hero",
+                    "heroColor": "success"
+                  },
+                  "children": [
+                    {
+                      "id": "heading-responsive-one",
+                      "type": "Heading",
+                      "props": {
+                        "as": "h2",
+                        "type": "heading",
+                        "size": "sm"
+                      },
+                      "content": {
+                        "fallback": "Featured"
+                      }
+                    },
+                    {
+                      "id": "paragraph-responsive-one",
+                      "type": "Paragraph",
+                      "props": {
+                        "size": "sm",
+                        "color": "muted"
+                      },
+                      "content": {
+                        "fallback": "This GridItem spans all xs columns and two columns at md and xl."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "card-responsive-two",
+              "type": "Card",
+              "props": {
+                "bare": true,
+                "icon": "looks_two"
+              },
+              "children": [
+                {
+                  "id": "heading-responsive-two",
+                  "type": "Heading",
+                  "props": {
+                    "as": "h2",
+                    "type": "heading",
+                    "size": "sm"
+                  },
+                  "content": {
+                    "fallback": "Two"
+                  }
+                },
+                {
+                  "id": "paragraph-responsive-two",
+                  "type": "Paragraph",
+                  "props": {
+                    "size": "sm",
+                    "color": "muted"
+                  },
+                  "content": {
+                    "fallback": "Second grid item."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "card-responsive-three",
+              "type": "Card",
+              "props": {
+                "icon": "looks_3"
+              },
+              "children": [
+                {
+                  "id": "heading-responsive-three",
+                  "type": "Heading",
+                  "props": {
+                    "as": "h2",
+                    "type": "heading",
+                    "size": "sm"
+                  },
+                  "content": {
+                    "fallback": "Three"
+                  }
+                },
+                {
+                  "id": "paragraph-responsive-three",
+                  "type": "Paragraph",
+                  "props": {
+                    "size": "sm",
+                    "color": "muted"
+                  },
+                  "content": {
+                    "fallback": "Third grid item."
+                  }
+                }
+              ]
+            },
+            {
+              "id": "card-responsive-four",
+              "type": "Card",
+              "props": {
+                "icon": "looks_4"
+              },
+              "children": [
+                {
+                  "id": "heading-responsive-four",
+                  "type": "Heading",
+                  "props": {
+                    "as": "h2",
+                    "type": "heading",
+                    "size": "sm"
+                  },
+                  "content": {
+                    "fallback": "Four"
+                  }
+                },
+                {
+                  "id": "paragraph-responsive-four",
+                  "type": "Paragraph",
+                  "props": {
+                    "size": "sm",
+                    "color": "muted"
+                  },
+                  "content": {
+                    "fallback": "Fourth grid item."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

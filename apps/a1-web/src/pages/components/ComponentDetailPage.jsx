@@ -56,6 +56,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { Toggle } from './detail/Toggle.jsx'
 import { ConfigHelpContext } from './detail/configKit.jsx'
+import { useT } from '../../labels/useT'
 import {
   COMPONENT_STATUS,
   PACKAGE_COLUMNS,
@@ -3001,7 +3002,106 @@ function ComponentConfigureSurface({
   viewAs,
   utilityClass,
   example,
+  jsonArrival = 0,
+  jsonArrivalHadChildren = false,
 }) {
+  const t = useT()
+  // View JSON (A1-1651): detail modules that export jsonType/toJson/fromJson
+  // get a Code | JSON format toggle on the snippet. The
+  // JSON view shows the current configuration as an A1 page-definition node in
+  // an editable code block — valid edits apply to the configurator as you type.
+  const hasJson = typeof detail.toJson === 'function' && typeof detail.fromJson === 'function'
+  const [snippetFormat, setSnippetFormat] = useState('code')
+  const utilityType = componentUtilityType(component)
+  const showJson = hasJson && snippetFormat === 'json'
+
+  let jsonText = null
+  let jsonNote = null
+  if (showJson) {
+    const { node, note } = detail.toJson(config)
+    const utilities = cleanUtilities(utilityType, config.utilities)
+    if (utilities && Object.keys(utilities).length > 0) node.utilities = utilities
+    jsonText = JSON.stringify(node, null, 2)
+    jsonNote = note ? t(note.key, note.fallback) : null
+  }
+
+  // The editable draft deliberately lags the canonical jsonText: while the user
+  // types, the code block must keep their exact text (not a reformatted node),
+  // so config changes that came *from* the JSON editor skip the resync below,
+  // while Controls-panel changes rewrite the draft with fresh canonical JSON.
+  const [jsonDraft, setJsonDraft] = useState(null)
+  const [jsonError, setJsonError] = useState(null)
+  // Informational notice (e.g. child nodes ignored) shown under the JSON block.
+  const [jsonInfo, setJsonInfo] = useState(null)
+  const jsonEditRef = useRef(false)
+
+  const childrenIgnoredNotice = t(
+    'label.app.configurator.jsonChildrenIgnored',
+    'Child nodes were not applied — the configurator previews a single component with sample content.',
+  )
+
+  // When a node arrives via the ?json= handoff (e.g. the Figma plugin's "Open
+  // in a1-web"), open the JSON view so the imported node is visible, and note
+  // when the handed-off node carried children the configurator cannot show.
+  // The ref lets that notice survive the resync that fires as the view opens.
+  const jsonArrivalRef = useRef(false)
+  useEffect(() => {
+    if (jsonArrival > 0 && hasJson) {
+      setSnippetFormat('json')
+      if (jsonArrivalHadChildren) {
+        jsonArrivalRef.current = true
+        setJsonInfo(childrenIgnoredNotice)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jsonArrival, hasJson])
+
+  useEffect(() => {
+    if (!showJson) return
+    if (jsonEditRef.current) {
+      jsonEditRef.current = false
+      return
+    }
+    setJsonDraft(jsonText)
+    setJsonError(null)
+    if (jsonArrivalRef.current) jsonArrivalRef.current = false
+    else setJsonInfo(null)
+    // config identity changes on every setConfig, so this runs exactly once per
+    // config change; jsonText is derived from config during the same render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config, showJson])
+
+  function handleJsonChange(text) {
+    setJsonDraft(text)
+    const trimmed = text.trim()
+    if (!trimmed) {
+      setJsonError(t('label.app.configurator.importJsonEmpty', 'Paste a component node to import.'))
+      return
+    }
+    let data
+    try {
+      data = JSON.parse(trimmed)
+    } catch (parseError) {
+      setJsonError(`${t('label.app.configurator.importJsonInvalid', 'Not valid JSON.')} ${parseError.message}`)
+      return
+    }
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      setJsonError(t('label.app.configurator.importJsonNotNode', 'The JSON must be a single component node object.'))
+      return
+    }
+    if (data.type !== detail.jsonType) {
+      setJsonError(t('label.app.configurator.importJsonWrongType', 'The node type must be "{type}".').replace('{type}', detail.jsonType))
+      return
+    }
+    setJsonError(null)
+    setJsonInfo(Array.isArray(data.children) && data.children.length > 0 ? childrenIgnoredNotice : null)
+    jsonEditRef.current = true
+    setConfig(() => ({
+      ...detail.fromJson(data),
+      utilities: cleanUtilities(utilityType, data.utilities),
+    }))
+  }
+
   const framedPreview = example?.preview?.frame !== false
   const barePreview = detail.bareDisplay || !framedPreview
   const preview = (
@@ -3044,7 +3144,33 @@ function ComponentConfigureSurface({
         </div>
       ) : preview}
       <Divider lineStyle="dashed" space="lg" />
-      <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
+      {hasJson && (
+        <Toolbar label={t('label.app.configurator.format', 'Format')}>
+          <ToolbarGroup
+            aria-label={t('label.app.configurator.format', 'Format')}
+            showLabels
+            value={snippetFormat}
+            onChange={setSnippetFormat}
+            options={[
+              { value: 'code', label: t('label.app.configurator.formatCode', 'Code'), icon: 'code' },
+              { value: 'json', label: t('label.app.configurator.formatJson', 'JSON'), icon: 'data_object' },
+            ]}
+          />
+        </Toolbar>
+      )}
+      {showJson ? (
+        <Stack gap="sm">
+          {jsonNote && <Banner status="info">{jsonNote}</Banner>}
+          <Paragraph size="sm" color="muted">
+            {t('label.app.configurator.jsonEditableHint', 'Edit the JSON to update the configuration — changes apply as you type.')}
+          </Paragraph>
+          <Code variant="block" editable wrapping copyCode onChangeValue={handleJsonChange}>{jsonDraft ?? ''}</Code>
+          {jsonError && <Banner status="error">{jsonError}</Banner>}
+          {!jsonError && jsonInfo && <Banner status="info">{jsonInfo}</Banner>}
+        </Stack>
+      ) : (
+        <detail.Snippet component={component} config={config} viewAs={viewAs} utilityClass={utilityClass} />
+      )}
     </Stack>
   )
 }
@@ -3059,6 +3185,16 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
   const isExamplePage = Boolean(requestedExample)
   const activeTab = isExamplePage ? 'configure' : visibleDetailTab(tab)
   const [config, setConfig] = useState(() => detail.getDefaultConfig(component, category))
+  // Reset config synchronously when navigating between component pages. The
+  // effect-based reset below runs only AFTER the first render with the new
+  // component, so without this the detail module renders once against the
+  // PREVIOUS page's config — crashing modules that index into config arrays
+  // (e.g. Definition List's config.items when arriving from another page).
+  const [configComponentId, setConfigComponentId] = useState(component.id)
+  if (configComponentId !== component.id) {
+    setConfigComponentId(component.id)
+    setConfig(detail.getDefaultConfig(component, category))
+  }
   const [selectedExampleId, setSelectedExampleId] = useState(() => requestedExample?.id ?? examples[0]?.id ?? null)
   // Platform the component is viewed/coded as (React / Native / Pure). Only
   // components whose detail module exports `viewAsModes` show the control.
@@ -3103,6 +3239,37 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
     wasExamplePage.current = isExamplePage
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExamplePage, component.id])
+
+  // Figma → a1-web handoff (A1-1651): a ?json= query param carrying a
+  // page-definition node for this component (e.g. from the Component JSON
+  // Figma plugin's "Open in a1-web" link) is applied to the configurator on
+  // arrival, then consumed from the URL so reloads don't re-apply it.
+  // Declared after the reset effects above so it wins on mount.
+  const [jsonArrival, setJsonArrival] = useState(0)
+  const [jsonArrivalHadChildren, setJsonArrivalHadChildren] = useState(false)
+  useEffect(() => {
+    if (typeof detail.fromJson !== 'function' || !detail.jsonType) return
+    const params = new URLSearchParams(window.location.search)
+    const raw = params.get('json')
+    if (!raw) return
+    let node
+    try {
+      node = JSON.parse(raw)
+    } catch {
+      return
+    }
+    if (!node || typeof node !== 'object' || Array.isArray(node) || node.type !== detail.jsonType) return
+    setConfig(() => ({
+      ...detail.fromJson(node),
+      utilities: cleanUtilities(componentUtilityType(component), node.utilities),
+    }))
+    setJsonArrivalHadChildren(Array.isArray(node.children) && node.children.length > 0)
+    setJsonArrival((count) => count + 1)
+    params.delete('json')
+    const query = params.toString()
+    window.history.replaceState(window.history.state, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [component.id])
 
   useEffect(() => {
     if (activeTab !== 'examples' && !isExamplePage) return
@@ -3199,6 +3366,8 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
                 viewAs={viewAs}
                 utilityClass={utilityClass}
                 example={activeExample}
+                jsonArrival={jsonArrival}
+                jsonArrivalHadChildren={jsonArrivalHadChildren}
               />
             </Stack>
           ) : (
@@ -3219,6 +3388,8 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
                 setDisplayConfig={setDisplayConfig}
                 viewAs={viewAs}
                 utilityClass={utilityClass}
+                jsonArrival={jsonArrival}
+                jsonArrivalHadChildren={jsonArrivalHadChildren}
               />
             </TabPanel>
 

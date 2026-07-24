@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "workType": {
+      "type": "string",
+      "enum": ["component", "layout", "styling", "content", "data", "bug", "docs", "testing", "architecture", "mixed", "unknown"]
+    },
+    "cssRelevant": { "type": "boolean" },
+    "summary": { "type": "string", "maxLength": 240 },
+    "questions": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": { "type": "string", "maxLength": 80 },
+          "text": { "type": "string", "maxLength": 500 },
+          "options": {
+            "type": ["array", "null"],
+            "maxItems": 4,
+            "items": { "type": "string", "maxLength": 160 }
+          },
+          "allowOther": { "type": ["boolean", "null"] }
+        },
+        "required": ["key", "text", "options", "allowOther"]
+      }
+    },
+    "plan": { "type": "string", "maxLength": 30000 }
+  },
+  "required": ["workType", "cssRelevant", "summary", "questions", "plan"]
+}

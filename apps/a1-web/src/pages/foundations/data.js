@@ -7,6 +7,20 @@ export const foundations = [
     points: ['Tokens → packages → components', 'Components → pages & patterns', 'Click to trace, drag to arrange'],
   },
   {
+    id: 'foundation-figma-plugin',
+    title: 'A1:Figma plugin',
+    icon: 'extension',
+    body: 'Build and repair governed assets, audit design-system compatibility, publish responsive views, sync pages and patterns, and exchange structured JSON with the local A1 workspace.',
+    points: ['Build, fix, and audit', 'Publish pages and patterns', 'Figma ↔ A1 JSON'],
+  },
+  {
+    id: 'foundation-figma-components',
+    title: 'Figma components',
+    icon: 'design_services',
+    body: 'A dedicated home for embedded views of the published A1 Figma component library and its implementation mappings.',
+    points: ['Published component sets', 'Properties and modes', 'Code Connect mappings'],
+  },
+  {
     id: 'foundation-color-visualization',
     title: 'Color visualization',
     icon: 'view_in_ar',

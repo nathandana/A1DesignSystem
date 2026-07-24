@@ -1,0 +1,12 @@
+{
+  "$schema": "../theme.schema.json",
+  "name": "Dispatch",
+  "description": "Warm editorial theme — cream paper (#FAF7F4) and ink (#252525) with a confident azure-blue action colour and a highlighter-yellow 'important' accent. Type: a slab-serif display (Zilla Slab Light), a clean geometric-sans heading (Geist SemiBold), and a hyperlegible body (Atkinson Hyperlegible). Apply class=\"a1-theme-dispatch\" to <html>.",
+  "selectors": [
+    {
+      "selector": ".a1-theme-dispatch",
+      "overrides": "overrides/default.json"
+    }
+  ],
+  "labels": {}
+}

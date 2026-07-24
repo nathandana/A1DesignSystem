@@ -1,0 +1,19 @@
+{
+  "name": "@gtivr4/a1-design-system-figma",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A1 Design System Figma plugins and Code Connect mappings.",
+  "scripts": {
+    "build": "node plugins/a1-json/scripts/build.mjs && node plugins/a1-dev-json-poc/scripts/build.mjs",
+    "build:dev-json": "node plugins/a1-dev-json-poc/scripts/build.mjs",
+    "watch": "node plugins/a1-json/scripts/build.mjs --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test plugins/a1-json/tests/*.test.mjs",
+    "check": "npm run build && npm run typecheck && npm test && node plugins/a1-json/scripts/build.mjs --check"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.131.0",
+    "typescript": "~6.0.3"
+  }
+}

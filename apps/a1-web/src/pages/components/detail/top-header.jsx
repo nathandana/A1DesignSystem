@@ -380,3 +380,80 @@ function buildTopHeaderSnippet(config, utilityClass = '') {
 export function Snippet({ config, utilityClass = '' }) {
   return <Code variant="block" wrapping copyCode>{buildTopHeaderSnippet(config, utilityClass)}</Code>
 }
+
+
+// ── Page-definition JSON (the configurator's JSON view, A1-1651) ─────────────
+// Node props are the real TopHeader props; the A1:Figma plugin exports the
+// same shape from the Top Header component set.
+export const jsonType = 'TopHeader'
+
+const NAV_ICON_POSITIONS = ['start', 'above', 'hidden']
+
+function sanitizeHref(href) {
+  return typeof href === 'string' && !/^\s*(javascript|data|vbscript):/i.test(href) ? href : ''
+}
+
+export function toJson(config) {
+  const props = {}
+  if (config.logoText) props.logoText = config.logoText
+  if (config.navIconPosition && config.navIconPosition !== 'start') props.navIconPosition = config.navIconPosition
+  const navItems = normalizeNavItems(config.navItems).map((item, index) => {
+    const entry = { id: item.id || `nav-${index + 1}`, label: item.label || 'Untitled' }
+    if (item.isLink && item.href && item.href !== '#') entry.href = item.href
+    if (item.icon) entry.icon = item.icon
+    if (item.active) entry.active = true
+    return entry
+  })
+  if (navItems.length > 0) props.navItems = navItems
+  const actions = normalizeActions(config.actions).map((action, index) => {
+    const entry = { id: action.id || `action-${index + 1}`, label: action.label || 'Action' }
+    if (action.icon) entry.icon = action.icon
+    if (action.badge) entry.badge = action.badge
+    return entry
+  })
+  if (actions.length > 0) props.actions = actions
+  if (config.loginLabel) props.loginButton = { label: config.loginLabel }
+  const note = config.loginLabel
+    ? {
+        key: 'label.app.configurator.jsonTopHeaderLogin',
+        fallback: 'loginButton carries only the { label } — its click behavior is composed at runtime.',
+      }
+    : null
+  return { node: { id: 'top-header-1', type: 'TopHeader', props }, note }
+}
+
+export function fromJson(node) {
+  const config = getDefaultConfig()
+  const props = node.props ?? {}
+  config.logoText = typeof props.logoText === 'string' ? props.logoText : (typeof props.logo === 'string' ? props.logo : '')
+  config.navIconPosition = NAV_ICON_POSITIONS.includes(props.navIconPosition) ? props.navIconPosition : 'start'
+  const rawNav = Array.isArray(props.navItems) ? props.navItems.filter((item) => item && typeof item === 'object') : []
+  if (rawNav.length > 0) {
+    config.navItems = rawNav.map((item, index) => {
+      const href = sanitizeHref(item.href)
+      return {
+        id: String(item.id || `nav-${index + 1}`),
+        label: typeof item.label === 'string' && item.label ? item.label : `Nav item ${index + 1}`,
+        isLink: Boolean(href),
+        href: href || '#',
+        icon: typeof item.icon === 'string' ? item.icon : '',
+        active: item.active === true,
+      }
+    })
+  }
+  const rawActions = Array.isArray(props.actions) ? props.actions.filter((action) => action && typeof action === 'object') : []
+  config.actions = rawActions.map((action, index) => ({
+    id: String(action.id || `action-${index + 1}`),
+    label: typeof action.label === 'string' && action.label ? action.label : `Action ${index + 1}`,
+    icon: typeof action.icon === 'string' ? action.icon : '',
+    badge: action.badge === undefined || action.badge === null ? '' : String(action.badge),
+  }))
+  config.loginLabel = typeof props.loginButton === 'string'
+    ? props.loginButton
+    : (props.loginButton && typeof props.loginButton === 'object' && typeof props.loginButton.label === 'string')
+      ? props.loginButton.label
+      : (props.loginButton ? 'Sign in' : '')
+  config.openNavItems = []
+  config.openActions = []
+  return config
+}
