@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Product tour fixes** (A1-2065) — kept the tour card fully on-screen at
+  mobile breakpoints and changed the navigation step to spotlight the
+  responsive top header instead of its desktop-only navigation region. The
+  tour is now opt-in and opens only when requested from Help.
+
 - **A1 logo** — added the supplied A1 SVG as the browser favicon and the
   persistent A1-Web top-header logo.
 

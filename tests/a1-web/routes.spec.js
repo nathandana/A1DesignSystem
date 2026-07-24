@@ -19,7 +19,6 @@ const BREAKPOINTS = [
 function seedStableState(theme) {
   const stableTheme = theme || localStorage.getItem('a1-web-theme') || 'a1Light'
   localStorage.clear()
-  localStorage.setItem('a1-web-product-tour-v1', 'dismissed')
   localStorage.setItem('a1-web-theme', stableTheme)
   localStorage.setItem('a1-web-color-mode', 'light')
   localStorage.setItem('a1-web-reduced-motion', 'true')
@@ -73,6 +72,59 @@ async function expectVisualBaseline(page, name) {
 
 test.beforeEach(async ({ context }) => {
   await context.addInitScript(seedStableState)
+})
+
+test('product tour stays within the viewport across breakpoints and core themes', async ({ page }) => {
+  const cases = CORE_THEMES.flatMap((theme) =>
+    BREAKPOINTS.map((breakpoint) => ({
+      ...breakpoint,
+      id: `${theme.id}-${breakpoint.id}`,
+      theme: theme.value,
+    })),
+  )
+
+  await page.goto('/')
+
+  for (const testCase of cases) {
+    await test.step(testCase.id, async () => {
+      await page.setViewportSize({ width: testCase.width, height: testCase.height })
+      await page.evaluate(seedStableState, testCase.theme)
+      await page.goto('/', { waitUntil: 'domcontentloaded' })
+      await waitForStablePage(page)
+
+      await expect(page.getByRole('dialog')).toHaveCount(0)
+      await page.getByRole('button', { name: 'Help' }).click()
+      await page.getByRole('button', { name: 'Take a tour' }).click()
+
+      const dialog = page.getByRole('dialog')
+      await expect(dialog).toBeVisible()
+      await expect(page.locator('.a1-product-tour__spotlight')).toBeVisible()
+      await expect(dialog.locator('[data-a1-product-tour-primary]')).toBeFocused()
+
+      if (testCase.id === 'default-xs') {
+        await page.locator('[data-a1-tour="navigation"]').evaluate((element) => element.remove())
+        await page.evaluate(() => window.dispatchEvent(new Event('resize')))
+        await expect(page.locator('.a1-product-tour__spotlight')).toHaveCount(0)
+      }
+
+      const box = await dialog.boundingBox()
+      const viewport = page.viewportSize()
+      expect(box).not.toBeNull()
+      expect(box.x).toBeGreaterThanOrEqual(0)
+      expect(box.y).toBeGreaterThanOrEqual(0)
+      expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
+      expect(box.y + box.height).toBeLessThanOrEqual(viewport.height)
+
+      const accessibility = await scanAccessibility(page, '.a1-product-tour')
+      expect(
+        blockingViolations(accessibility),
+        `${testCase.id} product tour has blocking accessibility violations: ${formatViolations(blockingViolations(accessibility))}`,
+      ).toEqual([])
+
+      await page.keyboard.press('Escape')
+      await expect(dialog).toHaveCount(0)
+    })
+  }
 })
 
 test('every release route loads, matches its visual baseline and clears the accessibility gate', async ({ page }) => {

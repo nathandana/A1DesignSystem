@@ -163,7 +163,6 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const PRODUCT_TOUR_STORAGE_KEY = 'a1-web-product-tour-v1'
 const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
@@ -401,20 +400,6 @@ function resolveLabel(labels, locale, key, fallback) {
   if (node == null) return fallback ?? key
   if (locale && node.locale?.[locale] != null) return node.locale[locale]
   return node.$value ?? fallback ?? key
-}
-
-function hasSeenProductTour() {
-  try {
-    return localStorage.getItem(PRODUCT_TOUR_STORAGE_KEY) !== null
-  } catch {
-    return false
-  }
-}
-
-function saveProductTourState(state) {
-  try {
-    localStorage.setItem(PRODUCT_TOUR_STORAGE_KEY, state)
-  } catch { /* Tour persistence is optional when storage is unavailable. */ }
 }
 
 function formatTourProgress(template, current, total) {
@@ -749,7 +734,7 @@ function App() {
   }), [t])
   const productTourSteps = useMemo(() => [
     {
-      target: '[data-a1-tour="navigation"] .a1-top-header__nav',
+      target: '[data-a1-tour="navigation"]',
       title: t('app.tour.navigationTitle', 'Find your way'),
       description: t('app.tour.navigationDescription', 'Use the top navigation to explore the system, open the editors, and return home from anywhere.'),
     },
@@ -769,12 +754,6 @@ function App() {
     backlog?.setLabelResolver?.(t)
     return () => backlog?.setLabelResolver?.(null)
   }, [backlog?.setLabelResolver, t])
-
-  useEffect(() => {
-    if (activePage !== 'home' || hasSeenProductTour()) return undefined
-    const timer = window.setTimeout(() => setProductTourOpen(true), 0)
-    return () => window.clearTimeout(timer)
-  }, [activePage])
 
   const globalSearchEntries = useMemo(() => {
     const entries = []
@@ -1214,12 +1193,10 @@ function App() {
   }
 
   function dismissProductTour() {
-    saveProductTourState('dismissed')
     setProductTourOpen(false)
   }
 
   function completeProductTour() {
-    saveProductTourState('completed')
     setProductTourOpen(false)
   }
 
