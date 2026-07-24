@@ -2696,6 +2696,440 @@
             "ar": "البناء بالذكاء الاصطناعي"
           }
         },
+        "buildWithAiVirtualPoNotRun": {
+          "$type": "string",
+          "$value": "Virtual PO has not reviewed this ticket",
+          "$description": "Warning title in Build with AI when the Product Owner persona has not reviewed the ticket.",
+          "locale": {
+            "es": "El PO virtual aún no ha revisado este ticket",
+            "fr": "Le PO virtuel n’a pas encore révisé ce ticket",
+            "de": "Der virtuelle PO hat dieses Ticket noch nicht geprüft",
+            "pt": "O PO virtual ainda não revisou este ticket",
+            "ja": "仮想 PO はまだこのチケットをレビューしていません",
+            "zh": "虚拟 PO 尚未评审此工单",
+            "ar": "لم يراجع مدير المنتج الافتراضي هذه التذكرة بعد"
+          }
+        },
+        "buildWithAiVirtualPoNotRunBody": {
+          "$type": "string",
+          "$value": "Run the Virtual PO review first if you want product questions included in the build context.",
+          "$description": "Warning body in Build with AI when the Product Owner persona has not reviewed the ticket.",
+          "locale": {
+            "es": "Ejecuta primero la revisión del PO virtual si quieres incluir preguntas de producto en el contexto de construcción.",
+            "fr": "Lancez d’abord la révision du PO virtuel pour inclure les questions produit dans le contexte de réalisation.",
+            "de": "Führe zuerst die Prüfung durch den virtuellen PO aus, wenn Produktfragen in den Build-Kontext einfließen sollen.",
+            "pt": "Execute primeiro a revisão do PO virtual para incluir perguntas de produto no contexto de construção.",
+            "ja": "ビルドコンテキストにプロダクトに関する質問を含めるには、先に仮想 PO のレビューを実行してください。",
+            "zh": "如果希望将产品问题加入构建上下文，请先运行虚拟 PO 评审。",
+            "ar": "شغّل مراجعة مدير المنتج الافتراضي أولاً إذا أردت تضمين أسئلة المنتج في سياق البناء."
+          }
+        },
+        "buildWithAiOutstandingQuestions": {
+          "$type": "string",
+          "$value": "Outstanding questions",
+          "$description": "Warning title in Build with AI when the ticket has unanswered questions.",
+          "locale": {
+            "es": "Preguntas pendientes",
+            "fr": "Questions en attente",
+            "de": "Offene Fragen",
+            "pt": "Perguntas pendentes",
+            "ja": "未回答の質問",
+            "zh": "待处理问题",
+            "ar": "أسئلة معلّقة"
+          }
+        },
+        "buildWithAiOutstandingQuestion": {
+          "$type": "string",
+          "$value": "question is unanswered.",
+          "$description": "Singular warning body fragment for one unanswered question in Build with AI.",
+          "locale": {
+            "es": "pregunta sin respuesta.",
+            "fr": "question sans réponse.",
+            "de": "Frage ist unbeantwortet.",
+            "pt": "pergunta sem resposta.",
+            "ja": "件の質問が未回答です。",
+            "zh": "个问题未回答。",
+            "ar": "سؤال بلا إجابة."
+          }
+        },
+        "buildWithAiOutstandingQuestionsPlural": {
+          "$type": "string",
+          "$value": "questions are unanswered.",
+          "$description": "Plural warning body fragment for unanswered questions in Build with AI.",
+          "locale": {
+            "es": "preguntas sin respuesta.",
+            "fr": "questions sans réponse.",
+            "de": "Fragen sind unbeantwortet.",
+            "pt": "perguntas sem resposta.",
+            "ja": "件の質問が未回答です。",
+            "zh": "个问题未回答。",
+            "ar": "أسئلة بلا إجابة."
+          }
+        },
+        "buildWithAiQuestionsIncluded": {
+          "$type": "string",
+          "$value": "They are included in the build context.",
+          "$description": "Follow-up text explaining that unanswered questions are included in the Build with AI context.",
+          "locale": {
+            "es": "Se incluyen en el contexto de construcción.",
+            "fr": "Elles sont incluses dans le contexte de réalisation.",
+            "de": "Sie sind im Build-Kontext enthalten.",
+            "pt": "Elas estão incluídas no contexto de construção.",
+            "ja": "ビルドコンテキストに含まれています。",
+            "zh": "它们已包含在构建上下文中。",
+            "ar": "تم تضمينها في سياق البناء."
+          }
+        },
+        "buildWithAiDiscussionEntry": {
+          "$type": "string",
+          "$value": "comment or Q&A entry",
+          "$description": "Singular summary label for one comment or question-and-answer entry included in Build with AI.",
+          "locale": {
+            "es": "comentario o entrada de preguntas y respuestas",
+            "fr": "commentaire ou entrée de questions-réponses",
+            "de": "Kommentar oder Frage-und-Antwort-Eintrag",
+            "pt": "comentário ou entrada de perguntas e respostas",
+            "ja": "コメントまたは Q&A エントリ",
+            "zh": "条评论或问答记录",
+            "ar": "تعليق أو إدخال سؤال وجواب"
+          }
+        },
+        "buildWithAiDiscussionEntries": {
+          "$type": "string",
+          "$value": "comments and Q&A entries",
+          "$description": "Plural summary label for comments and question-and-answer entries included in Build with AI.",
+          "locale": {
+            "es": "comentarios y entradas de preguntas y respuestas",
+            "fr": "commentaires et entrées de questions-réponses",
+            "de": "Kommentare und Frage-und-Antwort-Einträge",
+            "pt": "comentários e entradas de perguntas e respostas",
+            "ja": "コメントと Q&A エントリ",
+            "zh": "条评论和问答记录",
+            "ar": "تعليقات وإدخالات أسئلة وأجوبة"
+          }
+        },
+        "buildWithAiDiscussionIncluded": {
+          "$type": "string",
+          "$value": "are included in this plan.",
+          "$description": "Summary text explaining that ticket comments and question-and-answer entries are included in the Build with AI plan.",
+          "locale": {
+            "es": "se incluyen en este plan.",
+            "fr": "sont inclus dans ce plan.",
+            "de": "sind in diesem Plan enthalten.",
+            "pt": "estão incluídos neste plano.",
+            "ja": "このプランに含まれています。",
+            "zh": "已包含在此计划中。",
+            "ar": "مضمّنة في هذه الخطة."
+          }
+        },
+        "buildWithAiManualFeedback": {
+          "$type": "string",
+          "$value": "Manual direction for the virtual engineer",
+          "$description": "Textarea label for manual constraints, decisions, or answers supplied before asking the virtual engineer to plan.",
+          "locale": {
+            "es": "Dirección manual para el ingeniero virtual",
+            "fr": "Directives manuelles pour l’ingénieur virtuel",
+            "de": "Manuelle Vorgaben für den virtuellen Engineer",
+            "pt": "Direção manual para o engenheiro virtual",
+            "ja": "仮想エンジニアへの手動指示",
+            "zh": "为虚拟工程师提供手动指引",
+            "ar": "توجيه يدوي للمهندس الافتراضي"
+          }
+        },
+        "buildWithAiManualFeedbackHint": {
+          "$type": "string",
+          "$value": "Add constraints, decisions, or answers before asking it to plan. This is optional when the ticket is already clear.",
+          "$description": "Helper text for the Build with AI manual direction field.",
+          "locale": {
+            "es": "Añade restricciones, decisiones o respuestas antes de pedirle que planifique. Es opcional si el ticket ya está claro.",
+            "fr": "Ajoutez des contraintes, décisions ou réponses avant de demander le plan. Facultatif si le ticket est déjà clair.",
+            "de": "Füge vor der Planung Einschränkungen, Entscheidungen oder Antworten hinzu. Bei einem klaren Ticket optional.",
+            "pt": "Adicione restrições, decisões ou respostas antes de pedir o plano. Opcional quando o ticket já está claro.",
+            "ja": "計画を依頼する前に、制約、決定事項、回答を追加してください。チケットが明確なら任意です。",
+            "zh": "在请求规划前添加约束、决定或回答。如果工单已清晰，此项可选。",
+            "ar": "أضف القيود أو القرارات أو الإجابات قبل طلب الخطة. هذا اختياري عندما تكون التذكرة واضحة."
+          }
+        },
+        "buildWithAiAskEngineer": {
+          "$type": "string",
+          "$value": "Ask virtual engineer",
+          "$description": "Action that sends the ticket, discussion, and manual direction to the local Codex-backed virtual engineer.",
+          "locale": {
+            "es": "Preguntar al ingeniero virtual",
+            "fr": "Demander à l’ingénieur virtuel",
+            "de": "Virtuellen Engineer fragen",
+            "pt": "Perguntar ao engenheiro virtual",
+            "ja": "仮想エンジニアに質問",
+            "zh": "询问虚拟工程师",
+            "ar": "اسأل المهندس الافتراضي"
+          }
+        },
+        "buildWithAiReviewEngineer": {
+          "$type": "string",
+          "$value": "Review with Engineer",
+          "$description": "One-click action that evaluates a ticket with the virtual engineer and returns clarifying questions and supplemental build guidance.",
+          "locale": {
+            "es": "Revisar con el ingeniero",
+            "fr": "Réviser avec l’ingénieur",
+            "de": "Mit dem Engineer prüfen",
+            "pt": "Revisar com o engenheiro",
+            "ja": "エンジニアとレビュー",
+            "zh": "与工程师评审",
+            "ar": "راجع مع المهندس"
+          }
+        },
+        "buildWithAiAskAgain": {
+          "$type": "string",
+          "$value": "Answer questions and rebuild",
+          "$description": "Action that resubmits manual answers and previous virtual-engineer questions for a revised plan.",
+          "locale": {
+            "es": "Responder preguntas y reconstruir",
+            "fr": "Répondre et reconstruire",
+            "de": "Fragen beantworten und neu erstellen",
+            "pt": "Responder às perguntas e reconstruir",
+            "ja": "質問に答えて再構築",
+            "zh": "回答问题并重新构建",
+            "ar": "أجب عن الأسئلة وأعد البناء"
+          }
+        },
+        "buildWithAiCodexConnecting": {
+          "$type": "string",
+          "$value": "Connecting to the virtual engineer…",
+          "$description": "Live Build with AI status while connecting to the Codex-backed virtual engineer.",
+          "locale": {
+            "es": "Conectando con el ingeniero virtual…",
+            "fr": "Connexion à l’ingénieur virtuel…",
+            "de": "Verbindung zum virtuellen Engineer wird hergestellt…",
+            "pt": "Conectando ao engenheiro virtual…",
+            "ja": "仮想エンジニアに接続中…",
+            "zh": "正在连接虚拟工程师…",
+            "ar": "جارٍ الاتصال بالمهندس الافتراضي…"
+          }
+        },
+        "buildWithAiCodexThinking": {
+          "$type": "string",
+          "$value": "The virtual engineer is reading the ticket…",
+          "$description": "Live Build with AI status while Codex reads the ticket and discussion.",
+          "locale": {
+            "es": "El ingeniero virtual está leyendo el ticket…",
+            "fr": "L’ingénieur virtuel lit le ticket…",
+            "de": "Der virtuelle Engineer liest das Ticket…",
+            "pt": "O engenheiro virtual está lendo o ticket…",
+            "ja": "仮想エンジニアがチケットを確認中…",
+            "zh": "虚拟工程师正在阅读工单…",
+            "ar": "يقرأ المهندس الافتراضي التذكرة…"
+          }
+        },
+        "buildWithAiCodexClassifying": {
+          "$type": "string",
+          "$value": "Classifying the work…",
+          "$description": "Live Build with AI status while Codex classifies the ticket work type.",
+          "locale": {
+            "es": "Clasificando el trabajo…",
+            "fr": "Classification du travail…",
+            "de": "Arbeit wird klassifiziert…",
+            "pt": "Classificando o trabalho…",
+            "ja": "作業を分類中…",
+            "zh": "正在分类工作…",
+            "ar": "جارٍ تصنيف العمل…"
+          }
+        },
+        "buildWithAiCodexValidating": {
+          "$type": "string",
+          "$value": "Validating the plan…",
+          "$description": "Live Build with AI status while the structured virtual-engineer response is validated.",
+          "locale": {
+            "es": "Validando el plan…",
+            "fr": "Validation du plan…",
+            "de": "Plan wird validiert…",
+            "pt": "Validando o plano…",
+            "ja": "計画を検証中…",
+            "zh": "正在验证计划…",
+            "ar": "جارٍ التحقق من الخطة…"
+          }
+        },
+        "buildWithAiCodexComplete": {
+          "$type": "string",
+          "$value": "Virtual engineer plan complete.",
+          "$description": "Live Build with AI status after the virtual-engineer response is applied.",
+          "locale": {
+            "es": "Plan del ingeniero virtual completado.",
+            "fr": "Plan de l’ingénieur virtuel terminé.",
+            "de": "Plan des virtuellen Engineers abgeschlossen.",
+            "pt": "Plano do engenheiro virtual concluído.",
+            "ja": "仮想エンジニアの計画が完了しました。",
+            "zh": "虚拟工程师计划已完成。",
+            "ar": "اكتملت خطة المهندس الافتراضي."
+          }
+        },
+        "buildWithAiCodexErrorTitle": {
+          "$type": "string",
+          "$value": "Virtual engineer unavailable",
+          "$description": "Error title when the Build with AI Codex bridge cannot be reached.",
+          "locale": {
+            "es": "Ingeniero virtual no disponible",
+            "fr": "Ingénieur virtuel indisponible",
+            "de": "Virtueller Engineer nicht verfügbar",
+            "pt": "Engenheiro virtual indisponível",
+            "ja": "仮想エンジニアを利用できません",
+            "zh": "虚拟工程师不可用",
+            "ar": "المهندس الافتراضي غير متاح"
+          }
+        },
+        "buildWithAiCodexErrorBody": {
+          "$type": "string",
+          "$value": "The existing local planner remains available.",
+          "$description": "Error body explaining that Build with AI keeps its existing local fallback when Codex is unavailable.",
+          "locale": {
+            "es": "El planificador local existente sigue disponible.",
+            "fr": "Le planificateur local existant reste disponible.",
+            "de": "Der vorhandene lokale Planer bleibt verfügbar.",
+            "pt": "O planejador local existente continua disponível.",
+            "ja": "既存のローカルプランナーは引き続き利用できます。",
+            "zh": "现有的本地规划器仍可用。",
+            "ar": "لا يزال المخطط المحلي الحالي متاحاً."
+          }
+        },
+        "buildWithAiCodexQuestions": {
+          "$type": "string",
+          "$value": "Virtual engineer questions",
+          "$description": "Heading for blocking questions returned by the virtual engineer before refining a plan.",
+          "locale": {
+            "es": "Preguntas del ingeniero virtual",
+            "fr": "Questions de l’ingénieur virtuel",
+            "de": "Fragen des virtuellen Engineers",
+            "pt": "Perguntas do engenheiro virtual",
+            "ja": "仮想エンジニアからの質問",
+            "zh": "虚拟工程师问题",
+            "ar": "أسئلة المهندس الافتراضي"
+          }
+        },
+        "buildWithAiCodexQuestionsHint": {
+          "$type": "string",
+          "$value": "Answer these in the ticket comments, then review the ticket again.",
+          "$description": "Helper text explaining how to answer virtual-engineer questions in the ticket comments before reviewing again.",
+          "locale": {
+            "es": "Responde en los comentarios del ticket y vuelve a revisar.",
+            "fr": "Répondez dans les commentaires du ticket, puis relancez la révision.",
+            "de": "Beantworte sie in den Ticket-Kommentaren und starte die Prüfung erneut.",
+            "pt": "Responda nos comentários do ticket e revise novamente.",
+            "ja": "チケットのコメントで回答し、もう一度レビューしてください。",
+            "zh": "在工单评论中回答，然后再次评审。",
+            "ar": "أجب عنها في تعليقات التذكرة ثم راجعها مرة أخرى."
+          }
+        },
+        "buildWithAiCodexClassification": {
+          "$type": "string",
+          "$value": "Classified as",
+          "$description": "Prefix for the virtual-engineer work classification shown above its plan.",
+          "locale": {
+            "es": "Clasificado como",
+            "fr": "Classé comme",
+            "de": "Klassifiziert als",
+            "pt": "Classificado como",
+            "ja": "分類",
+            "zh": "分类为",
+            "ar": "مصنّف كـ"
+          }
+        },
+        "buildWithAiCodexStylingIncluded": {
+          "$type": "string",
+          "$value": "styling guidance included",
+          "$description": "Classification suffix when styling guidance is relevant to the virtual-engineer plan.",
+          "locale": {
+            "es": "incluye orientación de estilos",
+            "fr": "conseils de style inclus",
+            "de": "Styling-Hinweise enthalten",
+            "pt": "orientação de estilo incluída",
+            "ja": "スタイルのガイダンスを含む",
+            "zh": "包含样式指导",
+            "ar": "تتضمن إرشادات التنسيق"
+          }
+        },
+        "buildWithAiCodexStylingOmitted": {
+          "$type": "string",
+          "$value": "styling guidance omitted",
+          "$description": "Classification suffix when styling guidance is not relevant to the virtual-engineer plan.",
+          "locale": {
+            "es": "omite la orientación de estilos",
+            "fr": "conseils de style omis",
+            "de": "Styling-Hinweise ausgelassen",
+            "pt": "orientação de estilo omitida",
+            "ja": "スタイルのガイダンスを省略",
+            "zh": "省略样式指导",
+            "ar": "تم حذف إرشادات التنسيق"
+          }
+        },
+        "buildWithAiEngineerDialogTitle": {
+          "$type": "string",
+          "$value": "Ask the virtual engineer",
+          "$description": "Dialog title for sending Build with AI context to the virtual engineer.",
+          "locale": {
+            "es": "Preguntar al ingeniero virtual",
+            "fr": "Interroger l’ingénieur virtuel",
+            "de": "Virtuellen Engineer fragen",
+            "pt": "Perguntar ao engenheiro virtual",
+            "ja": "仮想エンジニアに質問",
+            "zh": "询问虚拟工程师",
+            "ar": "اسأل المهندس الافتراضي"
+          }
+        },
+        "buildWithAiEngineerDialogBody": {
+          "$type": "string",
+          "$value": "Review the ticket context, add any direction, and answer only the questions that need your decision. The result is added to the existing build instructions.",
+          "$description": "Dialog guidance explaining that virtual-engineer questions refine, rather than replace, the existing Build with AI instructions.",
+          "locale": {
+            "es": "Revisa el contexto del ticket, añade indicaciones y responde solo a las preguntas que requieran tu decisión. El resultado se añade a las instrucciones de construcción existentes.",
+            "fr": "Examinez le contexte du ticket, ajoutez vos indications et répondez uniquement aux questions qui nécessitent votre décision. Le résultat est ajouté aux instructions de réalisation existantes.",
+            "de": "Prüfe den Ticket-Kontext, füge Vorgaben hinzu und beantworte nur Fragen, die deine Entscheidung erfordern. Das Ergebnis wird zu den bestehenden Build-Anweisungen hinzugefügt.",
+            "pt": "Revise o contexto do ticket, adicione orientações e responda apenas às perguntas que exigem sua decisão. O resultado é adicionado às instruções de construção existentes.",
+            "ja": "チケットのコンテキストを確認し、指示を追加し、判断が必要な質問だけに答えてください。結果は既存のビルド指示に追加されます。",
+            "zh": "查看工单上下文，添加指引，只回答需要你决定的问题。结果会添加到现有构建说明中。",
+            "ar": "راجع سياق التذكرة وأضف التوجيهات وأجب فقط عن الأسئلة التي تتطلب قرارك. ستُضاف النتيجة إلى تعليمات البناء الحالية."
+          }
+        },
+        "buildWithAiEngineerDialogClose": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Button label that closes the virtual-engineer dialog.",
+          "locale": {
+            "es": "Cerrar",
+            "fr": "Fermer",
+            "de": "Schließen",
+            "pt": "Fechar",
+            "ja": "閉じる",
+            "zh": "关闭",
+            "ar": "إغلاق"
+          }
+        },
+        "buildWithAiUseAnswer": {
+          "$type": "string",
+          "$value": "Use answer",
+          "$description": "Button label for staging an answer to a virtual-engineer question before asking again.",
+          "locale": {
+            "es": "Usar respuesta",
+            "fr": "Utiliser la réponse",
+            "de": "Antwort verwenden",
+            "pt": "Usar resposta",
+            "ja": "回答を使用",
+            "zh": "使用回答",
+            "ar": "استخدم الإجابة"
+          }
+        },
+        "buildWithAiEngineerAddedGuidance": {
+          "$type": "string",
+          "$value": "The virtual engineer guidance was added to the existing build instructions.",
+          "$description": "Confirmation that virtual-engineer guidance was appended to the existing Build with AI plan.",
+          "locale": {
+            "es": "La orientación del ingeniero virtual se añadió a las instrucciones de construcción existentes.",
+            "fr": "Les conseils de l’ingénieur virtuel ont été ajoutés aux instructions de réalisation existantes.",
+            "de": "Die Hinweise des virtuellen Engineers wurden zu den bestehenden Build-Anweisungen hinzugefügt.",
+            "pt": "As orientações do engenheiro virtual foram adicionadas às instruções de construção existentes.",
+            "ja": "仮想エンジニアのガイダンスを既存のビルド指示に追加しました。",
+            "zh": "虚拟工程师的指导已添加到现有构建说明中。",
+            "ar": "تمت إضافة إرشادات المهندس الافتراضي إلى تعليمات البناء الحالية."
+          }
+        },
         "virtualPo": {
           "$type": "string",
           "$value": "Virtual PO",
@@ -2710,6 +3144,34 @@
             "ar": "مدير المنتج الافتراضي"
           }
         },
+        "virtualTeam": {
+          "$type": "string",
+          "$value": "Virtual Team",
+          "$description": "Dev-only backlog dialog tab combining Product Owner and virtual-engineer review tools.",
+          "locale": {
+            "es": "Equipo virtual",
+            "fr": "Équipe virtuelle",
+            "de": "Virtuelles Team",
+            "pt": "Equipe virtual",
+            "ja": "仮想チーム",
+            "zh": "虚拟团队",
+            "ar": "الفريق الافتراضي"
+          }
+        },
+        "virtualTeamDescription": {
+          "$type": "string",
+          "$value": "Product and engineering review the ticket together. Their questions and guidance stay with the build instructions.",
+          "$description": "Supporting text for the Virtual Team tab in the backlog ticket dialog.",
+          "locale": {
+            "es": "Producto e ingeniería revisan el ticket juntos. Sus preguntas y orientación permanecen con las instrucciones de construcción.",
+            "fr": "Les équipes produit et ingénierie examinent le ticket ensemble. Leurs questions et conseils restent associés aux instructions de réalisation.",
+            "de": "Produkt und Engineering prüfen das Ticket gemeinsam. Ihre Fragen und Hinweise bleiben bei den Build-Anweisungen.",
+            "pt": "Produto e engenharia revisam o ticket juntos. As perguntas e orientações permanecem com as instruções de construção.",
+            "ja": "プロダクトとエンジニアリングがチケットを一緒にレビューします。質問とガイダンスはビルド指示に残ります。",
+            "zh": "产品和工程团队共同评审工单。问题和指导会保留在构建说明中。",
+            "ar": "يراجع فريقا المنتج والهندسة التذكرة معاً. تبقى أسئلتهم وإرشاداتهم مع تعليمات البناء."
+          }
+        },
         "virtualPoDescription": {
           "$type": "string",
           "$value": "Local, deterministic review — no API credits.",
@@ -2722,6 +3184,174 @@
             "ja": "ローカルで確定的なレビュー — APIクレジット不要。",
             "zh": "本地确定性评审——无需 API 额度。",
             "ar": "مراجعة محلية وحتمية — بدون رصيد API."
+          }
+        },
+        "virtualPoQuestionsAndComments": {
+          "$type": "string",
+          "$value": "Questions and comments",
+          "$description": "Heading for Product Owner questions and comments shown in the Virtual PO panel.",
+          "locale": {
+            "es": "Preguntas y comentarios",
+            "fr": "Questions et commentaires",
+            "de": "Fragen und Kommentare",
+            "pt": "Perguntas e comentários",
+            "ja": "質問とコメント",
+            "zh": "问题和评论",
+            "ar": "الأسئلة والتعليقات"
+          }
+        },
+        "virtualPoLoadingThread": {
+          "$type": "string",
+          "$value": "Loading the Product Owner discussion…",
+          "$description": "Loading status while the Virtual PO panel reads its questions and comments.",
+          "locale": {
+            "es": "Cargando la conversación del PO…",
+            "fr": "Chargement de la discussion du PO…",
+            "de": "PO-Diskussion wird geladen…",
+            "pt": "Carregando a discussão do PO…",
+            "ja": "PO のディスカッションを読み込み中…",
+            "zh": "正在加载 PO 讨论…",
+            "ar": "جارٍ تحميل مناقشة مدير المنتج…"
+          }
+        },
+        "virtualPoNoThread": {
+          "$type": "string",
+          "$value": "No Product Owner questions or comments yet.",
+          "$description": "Empty state for Product Owner questions and comments in the Virtual PO panel.",
+          "locale": {
+            "es": "Aún no hay preguntas ni comentarios del PO.",
+            "fr": "Aucune question ni aucun commentaire du PO pour le moment.",
+            "de": "Noch keine Fragen oder Kommentare des PO.",
+            "pt": "Ainda não há perguntas ou comentários do PO.",
+            "ja": "PO の質問やコメントはまだありません。",
+            "zh": "暂无 PO 问题或评论。",
+            "ar": "لا توجد أسئلة أو تعليقات من مدير المنتج بعد."
+          }
+        },
+        "virtualPoCodex": {
+          "$type": "string",
+          "$value": "Review with Codex",
+          "$description": "Dev-only action that asks the local Codex bridge for Product Owner clarifying questions.",
+          "locale": {
+            "es": "Revisar con Codex",
+            "fr": "Réviser avec Codex",
+            "de": "Mit Codex prüfen",
+            "pt": "Revisar com Codex",
+            "ja": "Codexでレビュー",
+            "zh": "使用 Codex 评审",
+            "ar": "المراجعة باستخدام Codex"
+          }
+        },
+        "virtualPoCodexDescription": {
+          "$type": "string",
+          "$value": "Codex improves the questions; the local Product Owner remains the fallback.",
+          "$description": "Helper text explaining the Codex-backed Product Owner review path.",
+          "locale": {
+            "es": "Codex mejora las preguntas; el PO local sigue siendo el respaldo.",
+            "fr": "Codex améliore les questions ; le PO local reste la solution de secours.",
+            "de": "Codex verbessert die Fragen; der lokale PO bleibt der Fallback.",
+            "pt": "O Codex melhora as perguntas; o PO local continua sendo o fallback.",
+            "ja": "Codexが質問を改善し、ローカルPOがフォールバックになります。",
+            "zh": "Codex 改进问题；本地 PO 仍作为备用方案。",
+            "ar": "يحسّن Codex الأسئلة؛ ويظل مدير المنتج المحلي هو البديل."
+          }
+        },
+        "virtualPoCodexFallback": {
+          "$type": "string",
+          "$value": "Codex was unavailable, so the local Product Owner review was used.",
+          "$description": "Status text shown when the Codex bridge is unavailable and the deterministic Product Owner fallback runs.",
+          "locale": {
+            "es": "Codex no estaba disponible, así que se usó la revisión del PO local.",
+            "fr": "Codex n'était pas disponible ; la révision du PO local a donc été utilisée.",
+            "de": "Codex war nicht verfügbar; daher wurde die lokale PO-Prüfung verwendet.",
+            "pt": "O Codex não estava disponível, então a revisão do PO local foi usada.",
+            "ja": "Codexを利用できなかったため、ローカルPOのレビューを使用しました。",
+            "zh": "Codex 不可用，因此使用了本地 PO 评审。",
+            "ar": "لم يتوفر Codex، لذا استُخدمت مراجعة مدير المنتج المحلي."
+          }
+        },
+        "virtualPoCodexConnecting": {
+          "$type": "string",
+          "$value": "Connecting to Codex…",
+          "$description": "Live status while the Virtual PO review connects to the local Codex bridge.",
+          "locale": {
+            "es": "Conectando con Codex…",
+            "fr": "Connexion à Codex…",
+            "de": "Verbindung mit Codex wird hergestellt…",
+            "pt": "Conectando ao Codex…",
+            "ja": "Codexに接続中…",
+            "zh": "正在连接 Codex…",
+            "ar": "جارٍ الاتصال بـ Codex…"
+          }
+        },
+        "virtualPoCodexThinking": {
+          "$type": "string",
+          "$value": "Codex is reviewing the ticket…",
+          "$description": "Live status while Codex reviews the ticket for better Product Owner questions.",
+          "locale": {
+            "es": "Codex está revisando el ticket…",
+            "fr": "Codex examine le ticket…",
+            "de": "Codex prüft das Ticket…",
+            "pt": "O Codex está revisando o ticket…",
+            "ja": "Codexがチケットをレビュー中…",
+            "zh": "Codex 正在评审工单…",
+            "ar": "يراجع Codex التذكرة…"
+          }
+        },
+        "virtualPoCodexValidating": {
+          "$type": "string",
+          "$value": "Validating Codex questions…",
+          "$description": "Live status while the app validates the structured Codex response.",
+          "locale": {
+            "es": "Validando las preguntas de Codex…",
+            "fr": "Validation des questions de Codex…",
+            "de": "Codex-Fragen werden validiert…",
+            "pt": "Validando as perguntas do Codex…",
+            "ja": "Codexの質問を検証中…",
+            "zh": "正在验证 Codex 问题…",
+            "ar": "جارٍ التحقق من أسئلة Codex…"
+          }
+        },
+        "virtualPoCodexComplete": {
+          "$type": "string",
+          "$value": "Codex review complete.",
+          "$description": "Live status after the Codex-backed Product Owner review finishes.",
+          "locale": {
+            "es": "Revisión de Codex completada.",
+            "fr": "Révision Codex terminée.",
+            "de": "Codex-Prüfung abgeschlossen.",
+            "pt": "Revisão do Codex concluída.",
+            "ja": "Codexレビューが完了しました。",
+            "zh": "Codex 评审完成。",
+            "ar": "اكتملت مراجعة Codex."
+          }
+        },
+        "virtualPoCodexApplying": {
+          "$type": "string",
+          "$value": "Applying questions to the ticket…",
+          "$description": "Live status while validated Codex questions are being written to the ticket.",
+          "locale": {
+            "es": "Aplicando preguntas al ticket…",
+            "fr": "Application des questions au ticket…",
+            "de": "Fragen werden auf das Ticket angewendet…",
+            "pt": "Aplicando perguntas ao ticket…",
+            "ja": "質問をチケットに適用中…",
+            "zh": "正在将问题应用到工单…",
+            "ar": "جارٍ تطبيق الأسئلة على التذكرة…"
+          }
+        },
+        "virtualPoCodexErrorTitle": {
+          "$type": "string",
+          "$value": "Product Owner review failed",
+          "$description": "Error banner title when the Codex-backed Product Owner review cannot be applied to the ticket.",
+          "locale": {
+            "es": "La revisión del PO falló",
+            "fr": "La révision du PO a échoué",
+            "de": "PO-Prüfung fehlgeschlagen",
+            "pt": "A revisão do PO falhou",
+            "ja": "プロダクトオーナーのレビューに失敗しました",
+            "zh": "产品负责人评审失败",
+            "ar": "فشلت مراجعة مدير المنتج"
           }
         },
         "deleteDialogCancel": {

@@ -18,3 +18,5 @@ export type {
   Persona, PersonaVerdict, PersonaQuestion, PersonaRunSummary, PersonaChange, PersonaItemOutcome,
 } from './types';
 export { runPersona, runPersonaOnItem, runStatusCleanup } from './runPersona';
+export { runPersonaOnItemWithCodex, askCodexProductOwnerQuestions } from './codexProductOwner';
+export { askCodexEngineer } from './codexEngineer';

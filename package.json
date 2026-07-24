@@ -44,6 +44,7 @@
     "figma:plugin:sync-css": "node packages/figma/plugins/a1-json/sync-ui-css.mjs",
     "dev:a1-jobs": "vite apps/a1-jobs --host 127.0.0.1 --strictPort --port 5186",
     "codex:bridge:jobs": "node apps/a1-jobs/scripts/codex-bridge.mjs",
+    "codex:bridge:a1-web": "node apps/a1-web/scripts/codex-bridge.mjs",
     "backlog:pull": "node --env-file-if-exists=apps/a1-web/.env --env-file-if-exists=apps/a1-web/.env.local apps/a1-web/scripts/backlog-sync.mjs pull",
     "backlog:push": "node --env-file-if-exists=apps/a1-web/.env --env-file-if-exists=apps/a1-web/.env.local apps/a1-web/scripts/backlog-sync.mjs push",
     "backlog:import": "node --env-file-if-exists=apps/a1-web/.env --env-file-if-exists=apps/a1-web/.env.local apps/a1-web/scripts/backlog-import-todo.mjs",

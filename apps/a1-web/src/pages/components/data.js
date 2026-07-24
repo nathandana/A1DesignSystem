@@ -370,7 +370,7 @@ export const PACKAGE_COVERAGE = {
   'credit-card-field':['React'],
   textarea:           ['React', 'Pure', 'Figma'],
   select:             ['React', 'Pure', 'Figma'],
-  autocomplete:       ['React'],
+  autocomplete:       ['React', 'Figma'],
   'checkbox-group':   ['React', 'Pure', 'Figma'],
   'radio-group':      ['React', 'Pure', 'Figma'],
   fieldset:           ['React', 'Pure'],

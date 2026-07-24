@@ -48,7 +48,15 @@ function composeNote(
  */
 export async function reviewOne(
   persona: Persona, item: BacklogItem,
-  opts: { dryRun?: boolean; items?: BacklogItem[] } = {},
+  opts: {
+    dryRun?: boolean;
+    items?: BacklogItem[];
+    /** Supply a reviewed verdict from another provider while keeping this runner's safeguards. */
+    verdict?: PersonaVerdict | null;
+    /** Keep provider-specific review stamps separate from the deterministic persona review. */
+    reviewId?: string;
+    policyRevision?: string | number;
+  } = {},
 ): Promise<PersonaItemOutcome> {
   const dryRun = !!opts.dryRun;
   const base = {
@@ -59,11 +67,14 @@ export async function reviewOne(
     rationale: '',
   };
 
-  const policyRevision = persona.revision ?? 1;
+  const reviewId = opts.reviewId ?? persona.id;
+  const policyRevision = opts.policyRevision ?? persona.revision ?? 1;
   const sig = `${reviewSignature(item)}:${policyRevision}`;
-  if (item.reviews?.[persona.id]?.sig === sig) return { ...base, reason: 'unchanged' };
+  if (item.reviews?.[reviewId]?.sig === sig) return { ...base, reason: 'unchanged' };
 
-  const verdict = persona.evaluate(item, { items: opts.items ?? [] });
+  const verdict = opts.verdict === undefined
+    ? persona.evaluate(item, { items: opts.items ?? [] })
+    : opts.verdict;
   if (!verdict) return { ...base, reason: 'declined' };
 
   const patch: UpdateTicketPatch = {};
@@ -73,7 +84,7 @@ export async function reviewOne(
   const reviewedSig = `${reviewSignature({ ...item, ...patch })}:${policyRevision}`;
   patch.reviews = {
     ...(item.reviews ?? {}),
-    [persona.id]: { at: new Date().toISOString(), sig: reviewedSig },
+    [reviewId]: { at: new Date().toISOString(), sig: reviewedSig },
   };
 
   // Pick questions the persona hasn't already asked (don't repeat — match by stable key or

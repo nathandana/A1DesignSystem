@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "questions": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": { "type": "string", "maxLength": 80 },
+          "text": { "type": "string", "maxLength": 500 },
+          "options": {
+            "type": ["array", "null"],
+            "maxItems": 4,
+            "items": { "type": "string", "maxLength": 160 }
+          },
+          "allowOther": { "type": ["boolean", "null"] }
+        },
+        "required": ["key", "text", "options", "allowOther"]
+      }
+    }
+  },
+  "required": ["questions"]
+}

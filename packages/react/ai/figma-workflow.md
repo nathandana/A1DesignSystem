@@ -710,6 +710,50 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `responsive objects`                            | `padding={{ xs: 'sm', lg: 'lg' }}` and `align={{ xs: 'left', lg: 'center' }}` — Figma has no breakpoint-driven property switching                                             |
 | `className` / `style` / `ref` / `aria-*` / `id` | Not applicable in Figma                                                                                                                                                       |
 
+### Autocomplete
+
+**Component structure:** `Autocomplete` component set on the Autocomplete page (`node 882:7620`) with `Size` (`compact` \| `default` \| `comfortable`) × `State` (`default` \| `error` \| `disabled`) variants — 9 variants mirroring the Select field family. The single-select control shows the selected value, a clear (`close`) affordance, and a trailing `expand_more` chevron. A separate **`Autocomplete Menu`** composition (`node 886:17`) shows the open listbox — plain / active (panel surface) / selected-with-`check` / colour-swatch / multi-checkbox option rows, a group heading, and the bold "Add …" create row — the analog of Select Menu, reusing the field/menu/shadow tokens. Two example frames on the page show the **multiple** (removable chips) and **colour** (leading swatch) modes, and a "Dark mode validation" frame renders instances under the Color collection's Dark mode.
+
+**Figma default:** The first/default variant is `Size=default, State=default`, matching React's runtime `size="default"`.
+
+**Color modes:** all fills/strokes bind shared Color collection variables (`surface/field`, `surface/page`, `surface/panel`, `surface/raised`, `border/strong`, `border/subtle`, `border/default`, `text/default`, `text/muted`, `status/error/border`, `status/error/text`, `status/info/background`, `action/background`, `action/foreground`). Do not add a component dark mode; dark is controlled by the Color collection mode (validated on the Dark frame).
+
+**Typography:** labels use `Field/Label/SM|MD|LG` per size; the selected value uses `body/sm` (compact) / `body/md`; hint and error use `body/xs`; listbox options use `body/sm`; the group heading uses `Menu/Section label`.
+
+**Field geometry:** height, inline padding, and item gap bind `field/height`, `field/paddingInline`, `field/gap` per `{compact|default|comfortable}`; borders bind `field/borderWidth`; the error variant thickens the leading edge with `field/errorBorderWidth` (the whole stroke stays `color/status/error/border` — one colour, matching Text Field); radii bind `radius/sm` (compact) / `radius/control` (default) / `radius/lg` (comfortable); the listbox reuses `radius/control` and the `shadow/md` effect style.
+
+**Error border:** as with Text Field, the error outline is a single colour (`color/status/error/border`); only the leading edge is thickened via `field/errorBorderWidth`.
+
+Variant properties:
+
+| React prop | Figma representation | Valid values |
+|------------|---------------------|--------------|
+| `size` | Variant `Size` | `compact` \| `default` \| `comfortable` |
+| `error`, `disabled` | Variant `State` | `default` \| `error` \| `disabled` |
+
+Component properties:
+
+| React prop | Figma property | Type | Notes |
+|------------|----------------|------|-------|
+| `label` | `Label` | TEXT | Visible field label |
+| `value` (selected, single) | `Value` + `Show value` | TEXT + BOOLEAN | The selected value shown in the control |
+| `hint` | `Hint` + `Show hint` | TEXT + BOOLEAN | Helper text in non-error states |
+| `error` | `Error message` | TEXT | Error text when `State=error` |
+| `required` | `Required` | BOOLEAN | Shows the asterisk in the label row |
+
+Gaps — props and behaviors that cannot currently be represented as variants in Figma:
+
+| React prop / behavior | Gap reason |
+|-----------------------|------------|
+| `options`, `value` / `onChange` | Option data and selection state are runtime-owned |
+| `multiple` (removable chips) | Shown as the "multiple" example frame, not a variant axis |
+| `variant="color"` (swatch) | Shown as the "colour" example frame + the swatch option row in `Autocomplete Menu` |
+| `allowCreate` / `onCreate`, `createLabel` | Shown as the "Add …" create row in `Autocomplete Menu` |
+| option `group` / `icon` / `swatch`, `emptyText`, `maxVisible` / `moreText` | The listbox composition shows representative rows; long-list capping and grouping are runtime |
+| `open` / focus, portal positioning, keyboard, `aria-*`, `name`, `id`, `className` | Combobox runtime behavior |
+
+**Component keys:** set `70b9bc426a6780ba5bd66f8a034b1c35876b6c43`, `Autocomplete Menu` `8376317911f324eaace29e9baca95b56e4c79fb1`. Code Connect template: `packages/figma/code-connect/Autocomplete.figma.ts`. JSON-bridge support is a follow-up (the a1-json plugin is mid-refactor on this branch).
+
 ---
 
 ## Pages in the Figma file
@@ -755,6 +799,7 @@ Gaps — props that cannot currently be represented visually in Figma:
 | Chip             | Size (sm/md/lg) × State (default/selected/disabled) pill chips with icon swap and menu caret, plus a wrapping Chip Group                                                                                                     |
 | Data Table       | default-density table — Header Cell set (Sort=none/unsorted/ascending/descending × Align) + Cell set (Align) composed into a 640px shell                                                                                    |
 | Page Layout      | v1 app shell — a fill-width Top Header instance above a Page Content Slot; JSON bridge round-trips the header and slot children                                                                                            |
+| Autocomplete     | Autocomplete control set (Size × State) + `Autocomplete Menu` listbox composition + multiple/colour example frames + dark-mode validation                                                                                |
 | Icons            | Material Symbols icon component sets used by component properties                                                                                                                                                          |
 
 ---
