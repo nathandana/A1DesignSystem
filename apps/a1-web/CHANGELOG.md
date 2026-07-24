@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Supabase backup workflow** (A1-2066) — fixed the daily and manual backup
+  workflow failing validation before any job started by using a context that is
+  available when GitHub evaluates job-level environment variables.
+
 - **Product tour fixes** (A1-2065) — kept the tour card fully on-screen at
   mobile breakpoints and changed the navigation step to spotlight the
   responsive top header instead of its desktop-only navigation region. The
