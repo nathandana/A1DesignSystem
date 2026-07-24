@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.30.0 — 2026-07-24
+
 - **A1-Web release baseline** (A1-2064) — added a release-blocking Playwright
   suite for every registered production route. Each route must load without an
   uncaught browser error, match its committed visual reference and have no
@@ -30,8 +32,6 @@
   always-mounted global search field now keeps its existing translated
   accessible label without passing an ignored placeholder to `SearchField`,
   removing the related development warning.
-
-## 0.30.0 — 2026-07-24
 
 - **Figma Foundations category** — added dedicated Foundations navigation for a detailed A1:Figma plugin article and a Figma Components placeholder. The plugin page documents Build & Fix, Audit, Publish, Patterns, JSON exchange, linked-page sync, runtime boundaries, and local development; the component page establishes the route and inventory context for future embedded Figma component views.
 
