@@ -1809,7 +1809,7 @@ function App() {
 
   const logo = (
     <span className="a1-web-logo">
-      <span className="a1-web-logo__mark" aria-hidden="true">A1:Design</span>
+      <img src="/a1-logo.svg" width="36" height="36" alt="" aria-hidden="true" />
       <span className="a1-sr-only">{t('app.page.home', 'Home')}</span>
     </span>
   )

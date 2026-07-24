@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **A1 logo** — added the supplied A1 SVG as the browser favicon and the
+  persistent A1-Web top-header logo.
+
 ## 0.30.0 — 2026-07-24
 
 - **A1-Web release baseline** (A1-2064) — added a release-blocking Playwright
