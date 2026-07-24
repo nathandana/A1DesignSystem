@@ -73,3 +73,4 @@ The `guidelines/` directory ships inside this package:
 - `guidelines/icon-discovery.md` — icon naming, sizes, custom icons
 - `guidelines/tokens.md` — token tiers, theming, dark mode
 - `guidelines/styles.md` — layout primitives, spacing, breakpoints
+- `guidelines/content-standards.md` — voice, grammar, formatting, AP Style defaults, and A1 content overrides

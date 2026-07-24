@@ -45,3 +45,7 @@ For the prompt-to-video walkthrough capture pipeline:
 For the planned A1 ↔ Figma breakpoint synchronization contract:
 
 @packages/react/ai/figma-breakpoint-sync-plan.md
+
+For product copy, documentation, formatting, grammar, and AP Style defaults:
+
+@packages/react/ai/content-standards.md

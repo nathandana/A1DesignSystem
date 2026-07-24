@@ -2,15 +2,54 @@ import {
   Card,
   Grid,
   Heading,
-  List,
-  ListItem,
-  MessageBadge,
   Paragraph,
   Section,
   Stack,
+  useLabel,
 } from '@gtivr4/a1-design-system-react'
 import { PageTitleArea } from '../PageTitleArea.jsx'
 import { foundations } from './data.js'
+
+const sortedFoundations = [...foundations].sort((a, b) => a.title.localeCompare(b.title))
+
+function shortDescription(value, maxWords = 10) {
+  const words = value.trim().split(/\s+/)
+  return words.length > maxWords
+    ? `${words.slice(0, maxWords).join(' ').replace(/[,:;]$/, '')}…`
+    : value
+}
+
+function FoundationCard({ foundation, onNavigate }) {
+  const title = useLabel(
+    foundation.titleLabelKey ?? `app.foundationTitle.${foundation.id}`,
+    foundation.title,
+  )
+  const body = useLabel(
+    foundation.bodyLabelKey ?? `app.foundationDescription.${foundation.id}`,
+    foundation.body,
+  )
+
+  return (
+    <Card
+      variant="navigation"
+      href={`/foundations/${foundation.id.slice('foundation-'.length)}`}
+      icon={foundation.icon}
+      onClick={(event) => {
+        event.preventDefault()
+        onNavigate?.(foundation.id)
+      }}
+    >
+      <Stack gap="xs">
+        <Heading as="h3" size="md">
+          {title}
+        </Heading>
+        <Paragraph size="sm" color="muted">
+          {shortDescription(body)}
+        </Paragraph>
+      </Stack>
+    </Card>
+  )
+}
 
 export function Foundations({ onNavigate }) {
   return (
@@ -37,31 +76,12 @@ export function Foundations({ onNavigate }) {
           </Stack>
 
           <Grid columns={{ xs: 1, sm: 2, lg: 4 }} gap="md">
-            {foundations.map((foundation) => (
-              <Card
+            {sortedFoundations.map((foundation) => (
+              <FoundationCard
                 key={foundation.id}
-                variant="navigation"
-                href={`/foundations/${foundation.id.slice('foundation-'.length)}`}
-                icon={foundation.icon}
-                onClick={(event) => {
-                  event.preventDefault()
-                  onNavigate?.(foundation.id)
-                }}
-              >
-                <Stack direction="column" gap="sm">
-                  <Heading as="h3" size="md">
-                    {foundation.title}
-                  </Heading>
-                  <Paragraph size="sm" color="muted">
-                    {foundation.body}
-                  </Paragraph>
-                  <List icon="check" size="sm" color="muted">
-                    {foundation.points.map((point) => (
-                      <ListItem key={point}>{point}</ListItem>
-                    ))}
-                  </List>
-                </Stack>
-              </Card>
+                foundation={foundation}
+                onNavigate={onNavigate}
+              />
             ))}
           </Grid>
         </Stack>

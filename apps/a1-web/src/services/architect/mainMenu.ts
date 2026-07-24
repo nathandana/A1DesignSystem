@@ -53,12 +53,12 @@ const EDITOR: NavNode = {
 };
 
 const FOUNDATION_GROUPS = [
-  { label: 'Visualize', icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+  { label: 'Content', icon: 'article', ids: ['foundation-content-standards', 'foundation-iconography', 'foundation-labels'] },
   { label: 'Figma', icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
-  { label: 'Visual', icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-  { label: 'Content', icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
   { label: 'Layout', icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
   { label: 'Standards', icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+  { label: 'Visual', icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+  { label: 'Visualize', icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
 ];
 
 function foundationsGroup(): NavNode {

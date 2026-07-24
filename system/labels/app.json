@@ -6674,6 +6674,50 @@
           }
         }
       },
+      "contentStandards": {
+        "title": {
+          "$type": "string",
+          "$value": "A1 content standards",
+          "$description": "Page title for the public A1 writing standards under Foundations > Content.",
+          "locale": {
+            "es": "Estándares de contenido de A1",
+            "fr": "Normes de contenu A1",
+            "de": "A1-Inhaltsstandards",
+            "pt": "Padrões de conteúdo do A1",
+            "ja": "A1 コンテンツ標準",
+            "zh": "A1 内容标准",
+            "ar": "معايير محتوى A1"
+          }
+        },
+        "introduction": {
+          "$type": "string",
+          "$value": "Use these standards for English product copy, documentation, examples, release notes and AI-generated content. They define how A1 writes; they do not add linting or other automated enforcement.",
+          "$description": "Introduction to the public content standards page.",
+          "locale": {
+            "es": "Use estos estándares para el contenido de producto en inglés, la documentación, los ejemplos, las notas de la versión y el contenido generado por IA. Definen cómo escribe A1; no añaden análisis de estilo ni otra aplicación automatizada.",
+            "fr": "Utilisez ces normes pour les textes produit en anglais, la documentation, les exemples, les notes de version et le contenu généré par l’IA. Elles définissent la manière dont A1 écrit, sans ajouter de contrôle de style ni d’autre application automatisée.",
+            "de": "Verwenden Sie diese Standards für englische Produkttexte, Dokumentationen, Beispiele, Versionshinweise und KI-generierte Inhalte. Sie definieren, wie A1 schreibt; sie fügen keine Stilprüfung oder andere automatisierte Durchsetzung hinzu.",
+            "pt": "Use estes padrões para textos de produto em inglês, documentação, exemplos, notas de versão e conteúdo gerado por IA. Eles definem como o A1 escreve; não adicionam verificação de estilo nem outra aplicação automatizada.",
+            "ja": "英語の製品コピー、ドキュメント、例、リリースノート、AI 生成コンテンツには、この標準を使用します。この標準は A1 の文章表現を定義するもので、文体チェックなどの自動適用を追加するものではありません。",
+            "zh": "这些标准适用于英文产品文案、文档、示例、发行说明和 AI 生成的内容。它们定义 A1 的写作方式，但不会增加文体检查或其他自动执行机制。",
+            "ar": "استخدم هذه المعايير لنصوص المنتجات الإنجليزية والوثائق والأمثلة وملاحظات الإصدار والمحتوى الذي ينشئه الذكاء الاصطناعي. وهي تحدد أسلوب كتابة A1، ولا تضيف تدقيقًا أسلوبيًا أو أي تطبيق آلي آخر."
+          }
+        },
+        "summary": {
+          "$type": "string",
+          "$value": "Writing standards for A1 product copy, documentation and AI-generated content.",
+          "$description": "Search description for the public content standards page.",
+          "locale": {
+            "es": "Estándares de redacción para el contenido de producto, la documentación y el contenido generado por IA de A1.",
+            "fr": "Normes rédactionnelles pour les textes produit, la documentation et le contenu généré par l’IA d’A1.",
+            "de": "Schreibstandards für A1-Produkttexte, Dokumentationen und KI-generierte Inhalte.",
+            "pt": "Padrões de redação para textos de produto, documentação e conteúdo gerado por IA do A1.",
+            "ja": "A1 の製品コピー、ドキュメント、AI 生成コンテンツの文章標準。",
+            "zh": "适用于 A1 产品文案、文档和 AI 生成内容的写作标准。",
+            "ar": "معايير الكتابة لنصوص منتجات A1 والوثائق والمحتوى الذي ينشئه الذكاء الاصطناعي."
+          }
+        }
+      },
       "foundationGroup": {
         "visualize": {
           "$type": "string",

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Code,
   DataTable,
   Heading,
   Icon,

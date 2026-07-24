@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- **Content standards Foundation page** (A1-2063) — added
+  Foundations → Content → Standards at `/foundations/content-standards`. The
+  page renders the canonical shipped content guide directly, uses A1 typography
+  and list components, and localizes its page title, introduction, and search
+  description across every supported locale.
+
+- **Foundations overview cards** — sorted all cards A–Z and simplified each card
+  to a title plus a short description preview. Removed the three-item checklist
+  from every card while preserving the existing navigation targets.
+
+- **Foundations menu order** — kept Overview pinned first and sorted the
+  remaining Foundations groups A–Z: Content, Figma, Layout, Standards, Visual,
+  and Visualize. Child foundation pages remain alphabetized within each group,
+  and the information-architecture audit model now mirrors the same order.
+
+- **Iconography Foundation runtime fix** — imported the A1 `Code` component used
+  in the page introduction, preventing the `Code is not defined` crash. The
+  always-mounted global search field now keeps its existing translated
+  accessible label without passing an ignored placeholder to `SearchField`,
+  removing the related development warning.
+
 ## 0.30.0 — 2026-07-24
 
 - **Figma Foundations category** — added dedicated Foundations navigation for a detailed A1:Figma plugin article and a Figma Components placeholder. The plugin page documents Build & Fix, Audit, Publish, Patterns, JSON exchange, linked-page sync, runtime boundaries, and local development; the component page establishes the route and inventory context for future embedded Figma component views.

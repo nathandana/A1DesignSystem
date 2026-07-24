@@ -15,6 +15,7 @@ import { ZIndexFoundationPage } from './ZIndexFoundation.jsx'
 import { UtilitiesFoundationPage } from './UtilitiesFoundation.jsx'
 import { FigmaPluginFoundationPage } from './FigmaPluginFoundation.jsx'
 import { FigmaComponentsFoundationPage } from './FigmaComponentsFoundation.jsx'
+import { ContentStandardsFoundationPage } from './ContentStandardsFoundation.jsx'
 
 const ColorVisualizationFoundationPage = lazy(() => (
   import('./ColorVisualizationFoundation.jsx').then((module) => ({
@@ -64,6 +65,8 @@ export function FoundationDetail({ foundation, onNavigate, theme, colorMode }) {
       return <AccessibilityFoundationPage onNavigate={onNavigate} />
     case 'foundation-labels':
       return <LabelsFoundationPage onNavigate={onNavigate} />
+    case 'foundation-content-standards':
+      return <ContentStandardsFoundationPage onNavigate={onNavigate} />
     case 'foundation-responsive':
       return <BreakpointsFoundationPage onNavigate={onNavigate} />
     case 'foundation-prop-conventions':

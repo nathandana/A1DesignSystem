@@ -91,6 +91,15 @@ export const foundations = [
     points: ['Dot-notation label keys', 'Per-locale translations', 'LabelsProvider and useLabel hook'],
   },
   {
+    id: 'foundation-content-standards',
+    title: 'Standards',
+    titleLabelKey: 'app.foundationGroup.standards',
+    icon: 'spellcheck',
+    body: 'Writing standards for A1 product copy, documentation and AI-generated content.',
+    bodyLabelKey: 'app.contentStandards.summary',
+    points: ['AP Style defaults', 'Explicit A1 overrides', 'Interface and localization rules'],
+  },
+  {
     id: 'foundation-responsive',
     title: 'Responsive',
     icon: 'devices',

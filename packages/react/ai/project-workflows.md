@@ -158,6 +158,12 @@ Every time a new prop is added to any component, all of the following must happe
 
 ## Content and Priority Guides
 
+Follow [`content-standards.md`](content-standards.md) for new or revised product
+copy, documentation, labels and examples. It makes the current AP Stylebook the
+default and records A1-specific overrides. The approved-content rules below
+still take precedence: flag a conflict instead of silently rewriting agreed
+copy.
+
 ### What Priority Guides are
 
 Priority Guides are pre-approved content documents that define the information hierarchy, labeling, and copy for a screen or component. They represent agreed content — not a starting point for creative rewriting.

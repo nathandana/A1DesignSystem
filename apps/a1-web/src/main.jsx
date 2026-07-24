@@ -341,6 +341,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'backlog-ticket': 'app.page.backlog',
   about: 'app.page.about',
   account: 'app.page.account',
+  'foundation-content-standards': 'app.contentStandards.title',
 }
 
 function resolveLabel(labels, locale, key, fallback) {
@@ -782,9 +783,9 @@ function App() {
     foundations.forEach((foundation) => {
       entries.push({
         id: `foundation-${foundation.id}`,
-        title: foundation.title,
+        title: t(foundation.titleLabelKey, foundation.title),
         category: 'Foundations',
-        description: foundation.body,
+        description: t(foundation.bodyLabelKey, foundation.body),
         icon: foundation.icon,
         keywords: [foundation.id, 'foundation', 'token', 'standard'],
         onSelect: () => navigate(foundation.id),
@@ -1474,12 +1475,12 @@ function App() {
   }, [activePage, locale, allLabels])
 
   const FOUNDATION_GROUPS = [
-    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
+    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-content-standards', 'foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
-    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
-    { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-iconography', 'foundation-labels'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
+    { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
+    { label: t('app.foundationGroup.visualize', 'Visualize'), icon: 'visibility', ids: ['foundation-color-visualization', 'foundation-system-map'] },
   ]
 
   const componentMenuSearchQuery = componentMenuSearch.trim()
@@ -1585,20 +1586,22 @@ function App() {
           onClick: (e) => handleNavClick(e, 'foundations'),
         },
         { divider: true },
-        ...FOUNDATION_GROUPS.map(({ label, icon, ids }) => ({
-          icon,
-          label,
-          items: ids
-            .map((id) => foundations.find((f) => f.id === id))
-            .filter(Boolean)
-            .sort((a, b) => a.title.localeCompare(b.title))
-            .map((foundation) => ({
-              icon: foundation.icon,
-              label: foundation.title,
-              href: getPath(foundation.id),
-              onClick: (e) => handleNavClick(e, foundation.id),
-            })),
-        })),
+        ...[...FOUNDATION_GROUPS]
+          .sort((a, b) => a.label.localeCompare(b.label, locale))
+          .map(({ label, icon, ids }) => ({
+            icon,
+            label,
+            items: ids
+              .map((id) => foundations.find((f) => f.id === id))
+              .filter(Boolean)
+              .sort((a, b) => t(a.titleLabelKey, a.title).localeCompare(t(b.titleLabelKey, b.title), locale))
+              .map((foundation) => ({
+                icon: foundation.icon,
+                label: t(foundation.titleLabelKey, foundation.title),
+                href: getPath(foundation.id),
+                onClick: (e) => handleNavClick(e, foundation.id),
+              })),
+          })),
       ],
     },
     {
