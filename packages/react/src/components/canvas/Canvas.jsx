@@ -246,7 +246,7 @@ export function Node({ id, x, y, label, sublabel, title, shape = 'circle', color
         e.stopPropagation()
         ctx.onNodeContextMenu(id, e.clientX, e.clientY)
       }}
-      onKeyDown={(e) => {
+      onKeyDown={hasConnectControl ? undefined : (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
           if (inCanvas) ctx.onNodeSelect(id)

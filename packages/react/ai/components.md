@@ -533,6 +533,13 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Node props:** `label` (required), `id?`, `x?`, `y?` (canvas-space px, center of node — needed when used inside Canvas for positioning and edge routing), `sublabel?`, `shape?` (`circle` default), `color?` (`neutral` default), `subtle?` (boolean). Standalone: renders inline at natural dimensions with no Canvas context needed. Inside Canvas: absolutely positioned; selection, drag, and context-menu callbacks are injected from `CanvasCtx`.
 >
+> **Accessibility:** In view mode, a node is a focusable button with pressed
+> state for selection. In edit mode, where the node contains a separate
+> connection button, the outer node uses non-focusable group semantics so
+> interactive controls are not nested and cannot intercept the connection
+> button's native keyboard activation. Node labels provide the accessible names,
+> and status foreground/background pairs are token governed.
+>
 > **Node shapes:** `circle` (default, 80×80px) · `square` (80×80px, `--base-radius-md`) · `squircle` (80×80px, `--base-radius-xl`) · `rectangle` (128×56px). Edge routing correctly intersects circle circumference or rectangle boundary.
 >
 > **Node colors:** `neutral / info / success / warn / error / accent`. Add `subtle` for a tinted surface (uses `*-surface` tokens) instead of the full status background.

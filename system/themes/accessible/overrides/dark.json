@@ -1,0 +1,18 @@
+{
+  "tokens": {
+    "semantic": {
+      "color": {
+        "action": {
+          "foreground": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          },
+          "foregroundPressed": {
+            "$type": "color",
+            "$value": "{base.color.accent.0}"
+          }
+        }
+      }
+    }
+  }
+}

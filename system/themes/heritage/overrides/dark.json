@@ -1,0 +1,16 @@
+{
+  "tokens": {
+    "semantic": {
+      "color": {
+        "status": {
+          "success": {
+            "foreground": {
+              "$type": "color",
+              "$value": "{base.color.neutral.1000}"
+            }
+          }
+        }
+      }
+    }
+  }
+}

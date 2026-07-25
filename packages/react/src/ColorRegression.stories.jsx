@@ -131,29 +131,19 @@ const dark = (theme) => ({
   render: () => <ReferenceFixture />,
 });
 
-const optionalLight = (theme) => ({
-  ...light(theme),
-  parameters: { a11y: { disable: true } },
-});
-
-const optionalDark = (theme) => ({
-  ...dark(theme),
-  parameters: { a11y: { disable: true } },
-});
-
 export const A1Light = light("a1Light");
 export const A1Dark = dark("a1Light");
 export const AccessibleLight = light("a1Accessible");
 export const AccessibleDark = dark("a1Accessible");
 export const ApertureLight = light("a1Aperture");
 export const ApertureDark = dark("a1Aperture");
-export const CatLympicsLight = optionalLight("a1CatLympics");
-export const CatLympicsDark = optionalDark("a1CatLympics");
-export const CrochetLight = optionalLight("a1Crochet");
-export const CrochetDark = optionalDark("a1Crochet");
+export const CatLympicsLight = light("a1CatLympics");
+export const CatLympicsDark = dark("a1CatLympics");
+export const CrochetLight = light("a1Crochet");
+export const CrochetDark = dark("a1Crochet");
 export const FreshLight = light("a1Fresh");
 export const FreshDark = dark("a1Fresh");
 export const HeritageLight = light("a1Heritage");
 export const HeritageDark = dark("a1Heritage");
-export const MarshmallowLight = optionalLight("a1Marshmallow");
-export const MarshmallowDark = optionalDark("a1Marshmallow");
+export const MarshmallowLight = light("a1Marshmallow");
+export const MarshmallowDark = dark("a1Marshmallow");

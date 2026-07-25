@@ -816,7 +816,9 @@ html.a1-theme-light .a1-inverse {
    that file after themes.css. */
 
 html.a1-theme-light.a1-theme-accessible,
-html.a1-theme-accessible.a1-theme-light {
+html.a1-theme-accessible.a1-theme-light,
+html.a1-theme-dark.a1-theme-accessible .a1-inverse,
+html.a1-theme-accessible.a1-theme-dark .a1-inverse {
   --semantic-color-border-subtle: var(--base-color-neutral-400);
   --semantic-color-border-default: var(--base-color-neutral-500);
   --component-button-secondary-border: var(--base-color-accent-700);
@@ -828,7 +830,9 @@ html.a1-theme-accessible.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-aperture,
-html.a1-theme-aperture.a1-theme-light {
+html.a1-theme-aperture.a1-theme-light,
+html.a1-theme-dark.a1-theme-aperture .a1-inverse,
+html.a1-theme-aperture.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: #1D1D1F;
   --semantic-color-text-muted: #6E6E73;
   --semantic-color-text-inverse: #FFFFFF;
@@ -892,7 +896,9 @@ html.a1-theme-aperture.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-catlympics,
-html.a1-theme-catlympics.a1-theme-light {
+html.a1-theme-catlympics.a1-theme-light,
+html.a1-theme-dark.a1-theme-catlympics .a1-inverse,
+html.a1-theme-catlympics.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted: var(--base-color-neutral-700);
   --semantic-color-text-inverse: var(--base-color-neutral-0);
@@ -953,7 +959,9 @@ html.a1-theme-catlympics.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-crochet,
-html.a1-theme-crochet.a1-theme-light {
+html.a1-theme-crochet.a1-theme-light,
+html.a1-theme-dark.a1-theme-crochet .a1-inverse,
+html.a1-theme-crochet.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: #3B2F2C;
   --semantic-color-text-muted: #6B5C55;
   --semantic-color-text-inverse: #FFFFFF;
@@ -1017,7 +1025,9 @@ html.a1-theme-crochet.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-dispatch,
-html.a1-theme-dispatch.a1-theme-light {
+html.a1-theme-dispatch.a1-theme-light,
+html.a1-theme-dark.a1-theme-dispatch .a1-inverse,
+html.a1-theme-dispatch.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: #252525;
   --semantic-color-text-muted: #635C54;
   --semantic-color-text-inverse: #FFFFFF;
@@ -1066,7 +1076,9 @@ html.a1-theme-dispatch.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-fresh,
-html.a1-theme-fresh.a1-theme-light {
+html.a1-theme-fresh.a1-theme-light,
+html.a1-theme-dark.a1-theme-fresh .a1-inverse,
+html.a1-theme-fresh.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted: var(--base-color-neutral-600);
   --semantic-color-text-inverse: var(--base-color-neutral-0);
@@ -1130,7 +1142,9 @@ html.a1-theme-fresh.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-heritage,
-html.a1-theme-heritage.a1-theme-light {
+html.a1-theme-heritage.a1-theme-light,
+html.a1-theme-dark.a1-theme-heritage .a1-inverse,
+html.a1-theme-heritage.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted: var(--base-color-neutral-800);
   --semantic-color-text-inverse: var(--base-color-neutral-0);
@@ -1188,7 +1202,9 @@ html.a1-theme-heritage.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-kong,
-html.a1-theme-kong.a1-theme-light {
+html.a1-theme-kong.a1-theme-light,
+html.a1-theme-dark.a1-theme-kong .a1-inverse,
+html.a1-theme-kong.a1-theme-dark .a1-inverse {
   --semantic-color-surface-page: var(--base-color-neutral-50);
   --component-button-primary-background: var(--base-color-accent-500);
   --component-button-primary-background-hover: var(--base-color-accent-0);
@@ -1212,7 +1228,9 @@ html.a1-theme-kong.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-marshmallow,
-html.a1-theme-marshmallow.a1-theme-light {
+html.a1-theme-marshmallow.a1-theme-light,
+html.a1-theme-dark.a1-theme-marshmallow .a1-inverse,
+html.a1-theme-marshmallow.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: var(--base-color-neutral-900);
   --semantic-color-text-muted: var(--base-color-neutral-700);
   --semantic-color-text-inverse: var(--base-color-neutral-100);
@@ -1276,7 +1294,9 @@ html.a1-theme-marshmallow.a1-theme-light {
 }
 
 html.a1-theme-light.a1-theme-wireframe,
-html.a1-theme-wireframe.a1-theme-light {
+html.a1-theme-wireframe.a1-theme-light,
+html.a1-theme-dark.a1-theme-wireframe .a1-inverse,
+html.a1-theme-wireframe.a1-theme-dark .a1-inverse {
   --semantic-color-text-default: #141414;
   --semantic-color-text-muted: #6B6B6B;
   --semantic-color-text-inverse: #FFFFFF;
@@ -1352,8 +1372,17 @@ html.a1-theme-accessible.a1-theme-light, html.a1-theme-light.a1-theme-accessible
   --semantic-color-status-success-foreground: var(--base-color-success-0);
 }
 
+html.a1-theme-accessible.a1-theme-dark, html.a1-theme-dark.a1-theme-accessible {
+  --semantic-color-action-foreground: var(--base-color-accent-0);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-0);
+}
+
 html.a1-theme-catlympics.a1-theme-dark, html.a1-theme-dark.a1-theme-catlympics {
   color-scheme: light;
+}
+
+html.a1-theme-heritage.a1-theme-dark, html.a1-theme-dark.a1-theme-heritage {
+  --semantic-color-status-success-foreground: var(--base-color-neutral-1000);
 }
 
 html.a1-theme-dark.a1-theme-kong, html.a1-theme-kong.a1-theme-dark, html.a1-theme-light.a1-theme-kong .a1-inverse, html.a1-theme-kong.a1-theme-light .a1-inverse {

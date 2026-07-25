@@ -1178,7 +1178,7 @@
   --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-success-background: var(--base-color-success-400);
   --semantic-color-status-success-border: var(--base-color-success-500);
-  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-1000);
   --semantic-color-status-success-surface: var(--base-color-success-900);
   --semantic-color-status-success-text: var(--base-color-success-300);
   --semantic-color-status-warn-background: var(--base-color-warn-400);
@@ -1265,7 +1265,7 @@
   --semantic-color-status-info-text: var(--base-color-info-300);
   --semantic-color-status-success-background: var(--base-color-success-400);
   --semantic-color-status-success-border: var(--base-color-success-500);
-  --semantic-color-status-success-foreground: var(--base-color-neutral-900);
+  --semantic-color-status-success-foreground: var(--base-color-neutral-1000);
   --semantic-color-status-success-surface: var(--base-color-success-900);
   --semantic-color-status-success-text: var(--base-color-success-300);
   --semantic-color-status-warn-background: var(--base-color-warn-400);

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Theme and Canvas accessibility** (A1-368) — completed the accessibility
+  cleanup for the reported Canvas and color-regression stories. Theme-specific
+  light component tokens now restore correctly inside inverse scopes on dark
+  pages, Accessible/Heritage dark Canvas status labels use their existing
+  high-contrast foreground tokens, and every optional-theme regression story
+  participates in release QA. Edit-mode connection buttons also retain native
+  Enter/Space activation. The affected stories pass automated accessibility
+  checks across xs–xl.
+
 - **Supabase backup workflow** (A1-2066) — fixed the daily and manual backup
   workflow failing validation before any job started by using a context that is
   available when GitHub evaluates job-level environment variables.
