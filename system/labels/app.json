@@ -3508,48 +3508,6 @@
             "ar": "نسخ المعرّف"
           }
         },
-        "workflowSectionLabel": {
-          "$type": "string",
-          "$value": "Workflow",
-          "$description": "Section heading for the active workflow swimlanes on the Backlog board.",
-          "locale": {
-            "es": "Flujo de trabajo",
-            "fr": "Flux de travail",
-            "de": "Workflow",
-            "pt": "Fluxo de trabalho",
-            "ja": "ワークフロー",
-            "zh": "工作流",
-            "ar": "سير العمل"
-          }
-        },
-        "closedSectionLabel": {
-          "$type": "string",
-          "$value": "Closed",
-          "$description": "Section heading for closed Backlog board outcomes.",
-          "locale": {
-            "es": "Cerrados",
-            "fr": "Fermés",
-            "de": "Geschlossen",
-            "pt": "Fechados",
-            "ja": "終了済み",
-            "zh": "已关闭",
-            "ar": "مغلقة"
-          }
-        },
-        "terminalSectionLabel": {
-          "$type": "string",
-          "$value": "Terminal outcomes",
-          "$description": "Nested section heading for Backlog swimlanes that close a ticket without continuing the active workflow.",
-          "locale": {
-            "es": "Resultados finales",
-            "fr": "Résultats finaux",
-            "de": "Endzustände",
-            "pt": "Resultados finais",
-            "ja": "最終結果",
-            "zh": "终态结果",
-            "ar": "النتائج النهائية"
-          }
-        },
         "swimlanesToolbarLabel": {
           "$type": "string",
           "$value": "Show or hide swimlanes",

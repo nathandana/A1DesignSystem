@@ -2,12 +2,10 @@
 
 ## Unreleased
 
-- **Backlog board nested sections** (A1-2071) — changed the Backlog board from
-  one flat swimlane strip to a small recursive section tree. Active workflow
-  lanes render under Workflow, and terminal lanes render inside a nested Closed
-  → Terminal outcomes section when those lanes are shown. Leaf swimlanes still
-  use the existing lane renderer, so ticket cards, pagination, drag-to-status on
-  desktop, and small-screen lane tabs keep their existing behavior.
+- **Backlog ticket page nested sections** (A1-2071) — changed the ticket detail
+  page's in-page navigation so Activity, Linked tickets, Build with AI, and
+  Virtual PO render as nested entries under Details. The Backlog board swimlanes
+  remain flat and keep their prior layout.
 
 - **Build with AI — simple story fast path** (A1-2070) — added fast-path
   guidance to the local and Codex-backed Build with AI planners. Simple stories

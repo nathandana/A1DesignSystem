@@ -73,28 +73,6 @@ const makeViewOptions = (t) => [
 // How many cards a swimlane shows per page before paginating.
 const LANE_PAGE_SIZE = 8
 
-const BOARD_SECTION_TREE = [
-  {
-    id: 'workflow',
-    labelKey: 'app.backlog.workflowSectionLabel',
-    fallback: 'Workflow',
-    statuses: STATUS_FLOW,
-  },
-  {
-    id: 'closed',
-    labelKey: 'app.backlog.closedSectionLabel',
-    fallback: 'Closed',
-    children: [
-      {
-        id: 'terminal',
-        labelKey: 'app.backlog.terminalSectionLabel',
-        fallback: 'Terminal outcomes',
-        statuses: TERMINAL_STATUSES,
-      },
-    ],
-  },
-]
-
 function applyFilters(items, { type, priority, scope, complexity }) {
   return items.filter((it) =>
     (type === 'all' || it.type === type)
@@ -208,7 +186,7 @@ function LaneCards({ items, onOpen, onContextMenu, onCardDragStart }) {
 
 // A swimlane: an A1 Section (surface differentiates adjacent lanes) with a left
 // border acting as the vertical divider. Laid out in a zero-gap Grid (see Board).
-function BoardColumn({ status, items, index, headingAs = 'h2', onOpen, onContextMenu, onCardDragStart, onLaneDragOver, onLaneDragLeave, onLaneDrop, isDropTarget }) {
+function BoardColumn({ status, items, index, onOpen, onContextMenu, onCardDragStart, onLaneDragOver, onLaneDragLeave, onLaneDrop, isDropTarget }) {
   return (
     <Section
       padding="xs"
@@ -223,161 +201,10 @@ function BoardColumn({ status, items, index, headingAs = 'h2', onOpen, onContext
     >
       <Stack gap="sm">
         <Stack direction="row" gap="xs" align="center">
-          <Heading as={headingAs} size="sm">{STATUS_LABELS[status]}</Heading>
-          <Heading as={headingAs} color="muted" size="xs">{items.length}</Heading>
+          <Heading as="h2" size="sm">{STATUS_LABELS[status]}</Heading>
+                    <Heading as="h2" color='muted' size="xs">{items.length}</Heading>
         </Stack>
         <LaneCards items={items} onOpen={onOpen} onContextMenu={onContextMenu} onCardDragStart={onCardDragStart} />
-      </Stack>
-    </Section>
-  )
-}
-
-function boardSectionLanes(section, visibleLanes) {
-  if (section.statuses) return section.statuses.filter((status) => visibleLanes.has(status))
-  return (section.children ?? []).flatMap((child) => boardSectionLanes(child, visibleLanes))
-}
-
-function BoardLaneSet({
-  lanes,
-  byStatus,
-  isSmall,
-  activeLane,
-  setActiveLane,
-  onOpen,
-  onContextMenu,
-  onCardDragStart,
-  onLaneDragOver,
-  onLaneDragLeave,
-  onLaneDrop,
-  dragOverStatus,
-  headingAs,
-  boardAreaLabel,
-}) {
-  if (isSmall) {
-    const activeSafe = lanes.includes(activeLane) ? activeLane : lanes[0]
-    return (
-      <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact">
-        <TabList>
-          {lanes.map((s) => (
-            <Tab key={s} value={s} icon={STATUS_ICON[s]} count={byStatus[s].length}>{STATUS_LABELS[s]}</Tab>
-          ))}
-        </TabList>
-        {lanes.map((s) => (
-          <TabPanel key={s} value={s}>
-            <LaneCards items={byStatus[s]} onOpen={onOpen} onContextMenu={onContextMenu} />
-          </TabPanel>
-        ))}
-      </Tabs>
-    )
-  }
-
-  return (
-    <div className="a1-web-backlog-board-strip" tabIndex={0} aria-label={boardAreaLabel}>
-      <Grid columns={lanes.length} gap="none" className="a1-web-backlog-board-grid">
-        {lanes.map((s, i) => (
-          <BoardColumn
-            key={s}
-            status={s}
-            items={byStatus[s]}
-            index={i}
-            headingAs={headingAs}
-            onOpen={onOpen}
-            onContextMenu={onContextMenu}
-            onCardDragStart={onCardDragStart}
-            onLaneDragOver={onLaneDragOver}
-            onLaneDragLeave={onLaneDragLeave}
-            onLaneDrop={onLaneDrop}
-            isDropTarget={dragOverStatus === s}
-          />
-        ))}
-      </Grid>
-    </div>
-  )
-}
-
-function BoardSection({
-  section,
-  visibleLanes,
-  byStatus,
-  depth = 0,
-  t,
-  isSmall,
-  activeLane,
-  setActiveLane,
-  onOpen,
-  onContextMenu,
-  onCardDragStart,
-  onLaneDragOver,
-  onLaneDragLeave,
-  onLaneDrop,
-  dragOverStatus,
-}) {
-  const lanes = boardSectionLanes(section, visibleLanes)
-  if (lanes.length === 0) return null
-
-  const headingId = `backlog-board-section-${section.id}`
-  const headingLevel = Math.min(2 + depth, 6)
-  const laneHeadingAs = `h${Math.min(headingLevel + 1, 6)}`
-  const total = lanes.reduce((sum, status) => sum + byStatus[status].length, 0)
-
-  return (
-    <Section
-      padding="xs"
-      surface={depth % 2 === 0 ? 'panel' : 'raised'}
-      borderSize="xs"
-      borderVariant="subtle"
-      borderSides={depth === 0 ? ['top'] : ['left']}
-      radius="md"
-      aria-labelledby={headingId}
-    >
-      <Stack gap="sm">
-        <Stack direction="row" gap="xs" align="center" wrap>
-          <Heading id={headingId} as={`h${headingLevel}`} size={depth === 0 ? 'md' : 'sm'}>
-            {t(section.labelKey, section.fallback)}
-          </Heading>
-          <MessageBadge status="neutral" subtle size="sm">{total}</MessageBadge>
-        </Stack>
-        {section.statuses ? (
-          <BoardLaneSet
-            lanes={lanes}
-            byStatus={byStatus}
-            isSmall={isSmall}
-            activeLane={activeLane}
-            setActiveLane={setActiveLane}
-            onOpen={onOpen}
-            onContextMenu={onContextMenu}
-            onCardDragStart={onCardDragStart}
-            onLaneDragOver={onLaneDragOver}
-            onLaneDragLeave={onLaneDragLeave}
-            onLaneDrop={onLaneDrop}
-            dragOverStatus={dragOverStatus}
-            headingAs={laneHeadingAs}
-            boardAreaLabel={t('app.backlog.boardAreaLabel', 'Backlog swimlanes')}
-          />
-        ) : (
-          <Stack gap="sm">
-            {section.children.map((child) => (
-              <BoardSection
-                key={child.id}
-                section={child}
-                visibleLanes={visibleLanes}
-                byStatus={byStatus}
-                depth={depth + 1}
-                t={t}
-                isSmall={isSmall}
-                activeLane={activeLane}
-                setActiveLane={setActiveLane}
-                onOpen={onOpen}
-                onContextMenu={onContextMenu}
-                onCardDragStart={onCardDragStart}
-                onLaneDragOver={onLaneDragOver}
-                onLaneDragLeave={onLaneDragLeave}
-                onLaneDrop={onLaneDrop}
-                dragOverStatus={dragOverStatus}
-              />
-            ))}
-          </Stack>
-        )}
       </Stack>
     </Section>
   )
@@ -764,28 +591,44 @@ export function Backlog({ onNavigate }) {
                 if (lanes.length === 0) {
                   return <MessageEmptyState icon="visibility_off" title={t('app.backlog.noLanesTitle', 'No swimlanes shown')} description={t('app.backlog.noLanesDesc', 'Turn a swimlane on above to see its tickets.')} />
                 }
+                // xs/sm: one tab per swimlane (a single scrollable column). md+: the grid.
+                if (isSmall) {
+                  const activeSafe = lanes.includes(activeLane) ? activeLane : lanes[0]
+                  return (
+                    <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact">
+                      <TabList>
+                        {lanes.map((s) => (
+                          <Tab key={s} value={s} icon={STATUS_ICON[s]} count={byStatus[s].length}>{STATUS_LABELS[s]}</Tab>
+                        ))}
+                      </TabList>
+                      {lanes.map((s) => (
+                        <TabPanel key={s} value={s}>
+                          <LaneCards items={byStatus[s]} onOpen={open} onContextMenu={openMenu} />
+                        </TabPanel>
+                      ))}
+                    </Tabs>
+                  )
+                }
                 return (
-                  <Stack gap="sm">
-                    {BOARD_SECTION_TREE.map((section) => (
-                      <BoardSection
-                        key={section.id}
-                        section={section}
-                        visibleLanes={visibleLanes}
-                        byStatus={byStatus}
-                        t={t}
-                        isSmall={isSmall}
-                        activeLane={activeLane}
-                        setActiveLane={setActiveLane}
-                        onOpen={open}
-                        onContextMenu={openMenu}
-                        onCardDragStart={handleCardDragStart}
-                        onLaneDragOver={handleLaneDragOver}
-                        onLaneDragLeave={() => setDragOverStatus(null)}
-                        onLaneDrop={handleLaneDrop}
-                        dragOverStatus={dragOverStatus}
-                      />
-                    ))}
-                  </Stack>
+                  <div className="a1-web-backlog-board-strip" tabIndex={0} aria-label={t('app.backlog.boardAreaLabel', 'Backlog swimlanes')}>
+                    <Grid columns={lanes.length} gap="none" className="a1-web-backlog-board-grid">
+                      {lanes.map((s, i) => (
+                        <BoardColumn
+                          key={s}
+                          status={s}
+                          items={byStatus[s]}
+                          index={i}
+                          onOpen={open}
+                          onContextMenu={openMenu}
+                          onCardDragStart={handleCardDragStart}
+                          onLaneDragOver={handleLaneDragOver}
+                          onLaneDragLeave={() => setDragOverStatus(null)}
+                          onLaneDrop={handleLaneDrop}
+                          isDropTarget={dragOverStatus === s}
+                        />
+                      ))}
+                    </Grid>
+                  </div>
                 )
               })()}
             </Stack>

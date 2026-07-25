@@ -167,10 +167,10 @@ export function BacklogTicketPage({ onNavigate }) {
   // In-page navigation: one entry per body section (Virtual PO is dev-only).
   const navSections = [
     { id: 'ticket-details', label: t('label.app.backlog.details', 'Details') },
-    { id: 'ticket-activity', label: t('label.app.backlog.activity', 'Activity') },
-    { id: 'ticket-linked', label: t('label.app.backlog.linkedTickets', 'Linked tickets') },
-    { id: 'ticket-build', label: t('label.app.backlog.buildWithAi', 'Build with AI') },
-    ...(import.meta.env.DEV ? [{ id: 'ticket-virtual-po', label: t('label.app.backlog.virtualPo', 'Virtual PO') }] : []),
+    { id: 'ticket-activity', label: t('label.app.backlog.activity', 'Activity'), level: 2 },
+    { id: 'ticket-linked', label: t('label.app.backlog.linkedTickets', 'Linked tickets'), level: 2 },
+    { id: 'ticket-build', label: t('label.app.backlog.buildWithAi', 'Build with AI'), level: 2 },
+    ...(import.meta.env.DEV ? [{ id: 'ticket-virtual-po', label: t('label.app.backlog.virtualPo', 'Virtual PO'), level: 2 }] : []),
   ]
 
   return (
