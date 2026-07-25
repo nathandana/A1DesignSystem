@@ -17,6 +17,7 @@ import {
   Paragraph,
   Section,
   SelectField,
+  Spacer,
   Stack,
   TextareaField,
   Toolbar,
@@ -194,7 +195,7 @@ export function BacklogTicketPage({ onNavigate }) {
 
       {/* ── Alert banners ──────────────────────────────────────────────── */}
       {(item.awaitingRequester || item.duplicateOf) && (
-        <Section padding="xs" contentWidth="xl">
+        <Section padding="none" contentWidth="xl">
           <Stack gap="xs">
             {item.awaitingRequester && (
               <Banner status="warn" variant="inline">
@@ -221,13 +222,15 @@ export function BacklogTicketPage({ onNavigate }) {
       )}
 
       {/* ── Body: sections (left) + in-page navigation (right, sticky) ──── */}
-      <Section padding="md" contentWidth="xl">
+      <Section padding="none" contentWidth="xl">
         <Grid columns={{ xs: 1, lg: 4 }} gap="lg">
           <GridItem span={{ xs: 1, lg: 3 }}>
             <Stack gap="lg">
 
       {/* ── Details ────────────────────────────────────────────────────── */}
-      <Section id="ticket-details" padding="md">
+      <Section id="ticket-details" padding="none">
+        <Spacer
+          size="md"></Spacer>
         <Stack gap="lg">
           <Heading as="h2" size="lg">{t('label.app.backlog.details', 'Details')}</Heading>
 
@@ -430,6 +433,9 @@ export function BacklogTicketPage({ onNavigate }) {
             </Stack>
           </GridItem>
           <GridItem span={{ xs: 1, lg: 1 }}>
+                    <Spacer
+          size="md"></Spacer>
+
             <PageNav
               sections={navSections}
               label={t('label.app.backlog.onThisPage', 'On this page')}
