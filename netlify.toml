@@ -1,29 +1,6 @@
 [build]
-  command = "npm run build:a1-web"
-  publish = "apps/a1-web/dist"
-  functions = "apps/a1-web/netlify/functions"
+  command = "npm run build:tesla-a1"
+  publish = "apps/tesla-a1/dist"
 
 [build.environment]
   NODE_VERSION = "24"
-  # Supabase (accounts + cloud sync). Vite inlines VITE_* at build time, so these
-  # must be present in the build env. The ANON/publishable key is client-safe —
-  # it ships in the public JS bundle and is protected by row-level security; the
-  # `sb_secret_` service key must NEVER be placed here. (Override via Netlify's
-  # Environment Variables UI to rotate without a commit.)
-  VITE_SUPABASE_URL = "https://pszmkbfvyjkifbyututo.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "sb_publishable_a_CSB8TLB8AziGTAVN4zoQ_Uum-Wr4I"
-  # PostHog product analytics. The phc_ project key is client-safe (it ships in
-  # the public bundle by design). US cloud host.
-  VITE_POSTHOG_KEY = "phc_sKdJsNwba3qDJAR3butqHz57etVVmZ2GRyqSv73WQ66k"
-  VITE_POSTHOG_HOST = "https://us.i.posthog.com"
-
-[functions]
-  node_bundler = "esbuild"
-
-# SPA catch-all. Netlify serves functions at /.netlify/functions/* and static
-# files before applying this rewrite, so it does not shadow them — no explicit
-# function pass-through rule is needed (and one without a `to` is invalid).
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
