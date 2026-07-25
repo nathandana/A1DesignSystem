@@ -358,6 +358,12 @@
   line-height: var(--component-tree-menu-item-line-height);
 }
 
+@media (--bp-sm-down) {
+  .a1-tree-menu__rename-input {
+    font-size: var(--semantic-font-size-body-md);
+  }
+}
+
 .a1-tree-menu__rename-input:focus-visible {
   outline: none;
   border-color: var(--semantic-color-border-strong);

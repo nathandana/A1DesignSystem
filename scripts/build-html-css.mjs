@@ -54,14 +54,18 @@ function flattenTokens(object, prefix = [], out = {}) {
 }
 
 function readThemeOverrides(themeFile) {
-  if (!existsSync(themeFile)) return {};
+  const overrides = { base: {}, light: {}, dark: {} };
+  if (!existsSync(themeFile)) return overrides;
 
   const theme = readTheme(themeFile);
-  const overrides = {};
-
-  for (const { declarations } of theme.selectors) {
+  for (const { selector, declarations } of theme.selectors) {
+    const mode = selector.includes(".a1-theme-dark")
+      ? "dark"
+      : selector.includes(".a1-theme-light")
+        ? "light"
+        : "base";
     for (const [key, value] of Object.entries(declarations ?? {})) {
-      if (key.startsWith("--")) overrides[key] = value;
+      if (key.startsWith("--")) overrides[mode][key] = value;
     }
   }
 
@@ -86,9 +90,15 @@ function themeCss(theme) {
   const baseVars = Object.fromEntries(
     Object.entries(flattenTokens(rawTokens)).filter(([name]) => shouldIncludeVariable(name)),
   );
+  const themeOverrides = readThemeOverrides(theme.themeFile);
   const themeVars = {
     ...baseVars,
-    ...readThemeOverrides(theme.themeFile),
+    ...themeOverrides.base,
+    ...themeOverrides.light,
+  };
+  const darkVars = {
+    ...DARK_MODE_VARIABLES,
+    ...themeOverrides.dark,
   };
 
   return `/**
@@ -103,13 +113,13 @@ ${declarations(themeVars)}
 @media (prefers-color-scheme: dark) {
   :root:not(.a1-theme-light) {
     color-scheme: dark;
-${declarations(DARK_MODE_VARIABLES, LIGHT_MODE_VARIABLES)}
+${declarations(darkVars, LIGHT_MODE_VARIABLES)}
   }
 }
 
 .a1-theme-dark {
   color-scheme: dark;
-${declarations(DARK_MODE_VARIABLES, LIGHT_MODE_VARIABLES)}
+${declarations(darkVars, LIGHT_MODE_VARIABLES)}
 }
 
 .a1-theme-light {

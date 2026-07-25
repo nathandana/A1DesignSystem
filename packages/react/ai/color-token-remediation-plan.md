@@ -11,7 +11,11 @@ Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a cl
 - 573 Storybook stories have matching committed screenshots in `visual-baselines/`.
 - 16 focused color-reference stories cover eight runtime themes in explicit light and dark modes, including inverse and nested-inverse boundaries.
 - The comparison run passed all 106 suites and 573 stories with zero visual regressions.
-- The accompanying axe scan recorded 15 serious contrast violations across 13 stories. The focused color references exposed existing failures in Aperture light, CatLympics light/dark, Crochet light, Fresh light/dark, Heritage dark, and Marshmallow light.
+- The accompanying axe scan recorded 15 serious violations across 13 stories.
+  The focused color references exposed existing contrast failures in Aperture
+  light, CatLympics light/dark, Crochet light, Fresh light/dark, Heritage dark,
+  and Marshmallow light; Canvas also exposed contrast and nested-interactive
+  findings. A1-368 subsequently resolved this captured starting set.
 - Figure stories use repository images so remote image responses cannot invalidate the reference.
 
 ## Implementation Status
@@ -25,7 +29,9 @@ Captured on June 24, 2026 with `npm run test:qa:update`, then verified with a cl
 - Added a computed-style contract for all 16 focused theme/mode stories at `tests/color/color-contract.json`, maintained with `tokens:contract:update` and checked with `tokens:contract:check`.
 - Fixed `InlineEditable` references to nonexistent radius and interaction-color variables; it now uses the established radius and field focus-ring tokens.
 - Rebuilt every target with no generated token/theme/Pure/Native output differences from centralizing the mode data.
-- Verified 573 Storybook stories with zero visual regressions. The 15 pre-existing contrast violations remain the known starting set.
+- Verified 573 Storybook stories with zero visual regressions. The 15
+  pre-existing accessibility violations were recorded as the known starting
+  set and were subsequently resolved by A1-368.
 
 ### Remediation complete
 
@@ -224,8 +230,12 @@ Status: **Complete.**
   inverse, nested inverse, and native top-layer dialog scopes.
 - Updated the intentional Segmented Control token-table baseline and verified
   all 106 suites and 573 stories with zero visual regressions.
-- The accessibility report remains at the established baseline of 15 findings
-  across 13 stories; this remediation introduced no new accessibility findings.
+- A1-368 subsequently resolved the established 15-finding accessibility
+  baseline across 13 stories. Theme-specific authored light exceptions now
+  restore inside inverse scopes on explicit dark pages, and all 16 focused
+  theme/mode regression stories participate in release QA. React and Pure CSS
+  generators preserve base, light, and dark theme overrides in their matching
+  mode scopes.
 - Updated the color foundations, system map, architecture guidance,
   maintenance notes, changelogs, and this release plan.
 

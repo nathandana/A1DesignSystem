@@ -10,6 +10,10 @@
     {
       "selector": ".a1-theme-accessible.a1-theme-light, .a1-theme-light.a1-theme-accessible",
       "overrides": "overrides/light.json"
+    },
+    {
+      "selector": ".a1-theme-accessible.a1-theme-dark, .a1-theme-dark.a1-theme-accessible",
+      "overrides": "overrides/dark.json"
     }
   ],
   "labels": {

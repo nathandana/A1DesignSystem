@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+### Fixed
+
+- **Compact form font size** (A1-184) — compact form elements now keep a 16px
+  minimum text size on xs/sm viewports to prevent mobile focus zoom and
+  preserve readable touch forms. This covers the shared Field family,
+  Autocomplete, DataTable's searchable column selector, CheckboxGroup,
+  RadioGroup, ChoiceGroup, Slider, Switch, inline edit inputs, and TreeMenu
+  rename inputs while preserving compact typography on larger screens.
+
+- **Theme and Canvas accessibility** (A1-368) — restored each theme's authored
+  light-mode component exceptions inside inverse scopes on explicit dark
+  pages, resolving the remaining button contrast failure in the CatLympics
+  dark regression story. Accessible dark action nodes and Heritage dark
+  success nodes now use their existing high-contrast foreground ramp steps so
+  their labels meet AA without changing the theme backgrounds. Edit-mode node
+  groups no longer intercept Enter or Space from their nested connection
+  buttons, preserving native keyboard activation.
+  CatLympics, Crochet, and Marshmallow light/dark regression stories are now
+  included in release accessibility and visual gates instead of being
+  optional. React and Pure CSS generation keep mode-specific theme overrides in
+  their matching light/dark scopes. The full A1-368 Canvas and
+  color-regression set now passes axe across xs–xl.
+
 ## 0.29.0 — 2026-07-24
 
 ### Added

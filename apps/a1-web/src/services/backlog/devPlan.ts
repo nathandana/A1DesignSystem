@@ -109,6 +109,14 @@ function appendDiscussion(out: string[], comments: BacklogComment[]): void {
   out.push('');
 }
 
+const FAST_PATH_CRITERIA = [
+  'Only small, localized code changes with low regression risk qualify for the simple-story fast path.',
+  'The fast path is not available when the ticket changes component APIs, tokens/themes, package contracts, migrations, data schemas, release gates, or broad architecture.',
+  'Do not use the fast path while Product Owner or engineer questions remain unanswered, or when linked tickets may need to ship together.',
+  'Minimum verification is a smoke check of the touched surface and any directly affected behavior.',
+  'An engineer must approve skipping the fuller testing path; record that approval in the plan or handoff.',
+].join('\n');
+
 // ── Local-AI system prompt ──────────────────────────────────────────────────────
 
 const FINAL_STANDARDS_REVIEW_SECTION = [
@@ -196,11 +204,14 @@ export const PLAN_SYSTEM = [
   '- Validate across themes (base, a1-light, accessible, heritage) and breakpoints (xs–xl).',
   '- Apply the ponytail rule: choose the smallest working solution, reuse existing code, and ask for manual direction before resolving real ambiguity.',
   '- Only include custom CSS, styling-token, and responsive styling guidance when the ticket is classified as styling/layout or explicitly CSS-relevant.',
+  '- For simple stories, decide whether the fast path applies. Use these criteria:',
+  FAST_PATH_CRITERIA.split('\n').map((line) => `  - ${line}`).join('\n'),
   '',
   'Produce the MINIMUM ELEGANT plan to ship this ticket — what a senior engineer would actually',
   'do, no gold-plating. Be concrete and concise. Use exactly these sections:',
   '- Objective (one line)',
   '- Scale & approach (how big it really is, and the smallest clean way to do it)',
+  '- Simple story fast path (qualifies / does not qualify, why, minimum verification, and whether engineer approval is required to skip fuller testing)',
   '- Open questions (only genuinely blocking ones — write "None" if the ticket already settles it)',
   '- Plan (numbered, ordered, concrete steps)',
   '- Likely files & areas',
@@ -224,6 +235,8 @@ export function buildPlanRequest(
     classification.cssRelevant
       ? 'Include styling and CSS/token checks only where they help.'
       : 'Do not add custom CSS, styling-token, or CSS standards sections; focus on the relevant work.',
+    'If the story is simple, decide whether it qualifies for the fast path using these criteria:',
+    FAST_PATH_CRITERIA,
     '',
     buildTicketContext(item, comments, linked),
   ].join('\n');
@@ -305,6 +318,21 @@ const SCALE_APPROACH: Record<Scale, string> = {
   medium: 'Medium — scoped but real. Do the smallest design that fully satisfies the ask; resist gold-plating.',
   large: 'Large — slice it. Identify the thinnest vertical slice that ships value first, then layer the rest behind it.',
 };
+
+function hasRiskyFastPathLanguage(item: BacklogItem): boolean {
+  return /\b(api|contract|token|theme|migration|schema|release|security|permission|auth|architecture|refactor|dependency|package|breaking|performance|database|supabase|workflow|ci|visual baseline|qa gate)\b/i
+    .test(`${item.title} ${item.description ?? ''} ${item.scopeLabel ?? ''}`);
+}
+
+function qualifiesForFastPath(item: BacklogItem, comments: BacklogComment[], linked: BacklogItem[], scale: Scale): boolean {
+  if (scale !== 'small') return false;
+  if (item.type === 'epic') return false;
+  if (linked.length > 0 || getOpenQuestions(comments).length > 0) return false;
+  if (['component', 'theme', 'foundation', 'package'].includes(item.scopeKind)) return false;
+  const { workType } = classifyWork(item);
+  if (['architecture', 'data', 'testing', 'mixed'].includes(workType)) return false;
+  return !hasRiskyFastPathLanguage(item);
+}
 
 function kebab(value: string): string {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -469,6 +497,18 @@ export function developPlanLocally(
 
   out.push('## Scale & approach');
   out.push(SCALE_APPROACH[scale], '');
+
+  out.push('## Simple story fast path');
+  if (qualifiesForFastPath(item, comments, linked, scale)) {
+    out.push('Qualifies — this appears to be a small, localized change with low regression risk.');
+    out.push('Minimum verification: smoke check the touched surface and any directly affected behavior.');
+    out.push('Engineer approval is required to skip the fuller testing path; record that approval before shipping.');
+  } else {
+    out.push('Does not qualify — use the normal verification path unless the engineer explicitly reclassifies the story as small, localized, and low risk.');
+    out.push('Fast-path criteria:');
+    FAST_PATH_CRITERIA.split('\n').forEach((line) => out.push(`- ${line}`));
+  }
+  out.push('');
 
   out.push('## Open questions');
   if (open.length) {

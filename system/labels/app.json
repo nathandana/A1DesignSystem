@@ -3578,132 +3578,6 @@
             "ar": "قم بتشغيل مسار أعلاه لعرض تذاكره."
           }
         },
-        "signInForQueueTitle": {
-          "$type": "string",
-          "$value": "Sign in for your queue",
-          "$description": "Empty state title shown on the My queue tab of the Backlog when the user is not signed in.",
-          "locale": {
-            "es": "Inicia sesión para ver tu cola",
-            "fr": "Connectez-vous pour accéder à votre file",
-            "de": "Melde dich an, um deine Warteschlange zu sehen",
-            "pt": "Entre para ver sua fila",
-            "ja": "キューを表示するにはサインインしてください",
-            "zh": "登录以查看您的队列",
-            "ar": "سجّل الدخول للوصول إلى قائمتك"
-          }
-        },
-        "signInForQueueDesc": {
-          "$type": "string",
-          "$value": "Your queue shows tickets you created or are assigned.",
-          "$description": "Empty state description shown on the My queue tab when the user is not signed in.",
-          "locale": {
-            "es": "Tu cola muestra los tickets que creaste o que tienes asignados.",
-            "fr": "Votre file affiche les tickets que vous avez créés ou qui vous sont assignés.",
-            "de": "Deine Warteschlange zeigt Tickets, die du erstellt hast oder die dir zugewiesen wurden.",
-            "pt": "Sua fila mostra tickets que você criou ou que foram atribuídos a você.",
-            "ja": "キューには自分が作成または割り当てられたチケットが表示されます。",
-            "zh": "您的队列显示您创建或被分配的工单。",
-            "ar": "تعرض قائمتك التذاكر التي أنشأتها أو المعيَّنة إليك."
-          }
-        },
-        "queueAwaiting": {
-          "$type": "string",
-          "$value": "Awaiting your answer",
-          "$description": "Group heading in the My queue tab for tickets that have a clarifying question awaiting the signed-in user's response.",
-          "locale": {
-            "es": "Esperando tu respuesta",
-            "fr": "En attente de votre réponse",
-            "de": "Warte auf deine Antwort",
-            "pt": "Aguardando sua resposta",
-            "ja": "あなたの回答待ち",
-            "zh": "等待您的回复",
-            "ar": "في انتظار ردك"
-          }
-        },
-        "queueAwaitingEmpty": {
-          "$type": "string",
-          "$value": "No clarifying questions for you right now.",
-          "$description": "Empty paragraph shown in the Awaiting your answer group when no tickets need the user's input.",
-          "locale": {
-            "es": "No hay preguntas aclaratorias para ti en este momento.",
-            "fr": "Aucune question de clarification pour vous pour l'instant.",
-            "de": "Derzeit keine Klärungsfragen für dich.",
-            "pt": "Sem perguntas de esclarecimento para você no momento.",
-            "ja": "現在、確認事項はありません。",
-            "zh": "目前没有需要您回答的澄清问题。",
-            "ar": "لا توجد أسئلة توضيحية لك الآن."
-          }
-        },
-        "queueAssigned": {
-          "$type": "string",
-          "$value": "Assigned to you",
-          "$description": "Group heading in the My queue tab for tickets assigned to the signed-in user.",
-          "locale": {
-            "es": "Asignado a ti",
-            "fr": "Assigné à vous",
-            "de": "Dir zugewiesen",
-            "pt": "Atribuído a você",
-            "ja": "自分に割り当て済み",
-            "zh": "分配给您",
-            "ar": "معيَّن إليك"
-          }
-        },
-        "queueAssignedEmpty": {
-          "$type": "string",
-          "$value": "Nothing assigned to you yet.",
-          "$description": "Empty paragraph shown in the Assigned to you group when the user has no assigned tickets.",
-          "locale": {
-            "es": "Aún no tienes tickets asignados.",
-            "fr": "Rien ne vous est assigné pour l'instant.",
-            "de": "Dir ist noch nichts zugewiesen.",
-            "pt": "Nada atribuído a você ainda.",
-            "ja": "まだ割り当てられたものはありません。",
-            "zh": "尚未有任何工单分配给您。",
-            "ar": "لا شيء معيَّن إليك بعد."
-          }
-        },
-        "queueCreated": {
-          "$type": "string",
-          "$value": "Created by you",
-          "$description": "Group heading in the My queue tab for tickets created by the signed-in user.",
-          "locale": {
-            "es": "Creado por ti",
-            "fr": "Créé par vous",
-            "de": "Von dir erstellt",
-            "pt": "Criado por você",
-            "ja": "自分が作成",
-            "zh": "由您创建",
-            "ar": "أنشأتَه"
-          }
-        },
-        "queueCreatedEmpty": {
-          "$type": "string",
-          "$value": "You haven't created any tickets yet.",
-          "$description": "Empty paragraph shown in the Created by you group when the user has not created any tickets.",
-          "locale": {
-            "es": "Aún no has creado ningún ticket.",
-            "fr": "Vous n'avez pas encore créé de ticket.",
-            "de": "Du hast noch keine Tickets erstellt.",
-            "pt": "Você ainda não criou nenhum ticket.",
-            "ja": "まだチケットを作成していません。",
-            "zh": "您还未创建任何工单。",
-            "ar": "لم تُنشئ أي تذاكر بعد."
-          }
-        },
-        "queueOpen": {
-          "$type": "string",
-          "$value": "Open",
-          "$description": "Button label to open a ticket detail dialog from a queue group card in the My queue tab.",
-          "locale": {
-            "es": "Abrir",
-            "fr": "Ouvrir",
-            "de": "Öffnen",
-            "pt": "Abrir",
-            "ja": "開く",
-            "zh": "打开",
-            "ar": "فتح"
-          }
-        },
         "tableCaption": {
           "$type": "string",
           "$value": "All backlog tickets",
@@ -3777,7 +3651,7 @@
         "viewLabel": {
           "$type": "string",
           "$value": "Backlog view",
-          "$description": "Accessible aria-label for the SegmentedControl that switches between Board, All tickets, and My queue views.",
+          "$description": "Accessible aria-label for the SegmentedControl that switches between Board and All tickets views.",
           "locale": {
             "es": "Vista del backlog",
             "fr": "Vue du carnet de travail",
@@ -4038,20 +3912,6 @@
             "ja": "すべてのチケット",
             "zh": "所有工单",
             "ar": "جميع التذاكر"
-          }
-        },
-        "viewMyQueue": {
-          "$type": "string",
-          "$value": "My queue",
-          "$description": "Segmented control option label for the personal queue view on the Backlog page.",
-          "locale": {
-            "es": "Mi cola",
-            "fr": "Ma file",
-            "de": "Meine Warteschlange",
-            "pt": "Minha fila",
-            "ja": "自分のキュー",
-            "zh": "我的队列",
-            "ar": "قائمتي"
           }
         }
       },

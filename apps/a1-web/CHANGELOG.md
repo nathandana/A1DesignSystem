@@ -2,6 +2,55 @@
 
 ## Unreleased
 
+- **Backlog ticket page nested sections** (A1-2071) — changed the ticket detail
+  page's in-page navigation so Activity, Linked tickets, Build with AI, and
+  Virtual PO render as nested entries under Details. The Backlog board swimlanes
+  remain flat and keep their prior layout.
+
+- **Build with AI — simple story fast path** (A1-2070) — added fast-path
+  guidance to the local and Codex-backed Build with AI planners. Simple stories
+  qualify only when they are small, localized code changes with low regression
+  risk; the generated plan now records whether the fast path applies, keeps the
+  minimum verification to a smoke check, and requires engineer approval before
+  skipping fuller testing.
+
+- **Backlog queue view removal** (A1-2069) — removed the personal queue from
+  the Backlog view switcher and deleted its queue-only rendering path. The
+  Backlog view control and narrow swimlane tabs now show every label instead of
+  only the selected label.
+
+- **Component History** (A1-2067) — added a **History** tab to every component
+  detail page. It shows the component's change history in three categories —
+  code changes, decisions, and release/version notes — newest first, each with
+  an optional shipped version and backlog ticket, plus a "Suggest a history
+  entry" action and a link to the full per-package Releases page. Every
+  component is covered: hand-curated highlights (`COMPONENT_HISTORY` in
+  `data.js`) take precedence, all other components' entries are generated from
+  the component maintenance log (`npm run history:generate`), and any remaining
+  component shows a last-updated baseline — no History tab is empty.
+- **Deep-linkable, persistent detail tabs** — the active component detail tab
+  (Configure / Rules / Properties / Accessibility / History) is now carried in
+  the URL as `?tab=<id>`, so tabs are bookmarkable and shareable, and switching
+  components in the sidebar keeps the current tab open.
+
+- **Theme and Canvas accessibility** (A1-368) — completed the accessibility
+  cleanup for the reported Canvas and color-regression stories. Theme-specific
+  light component tokens now restore correctly inside inverse scopes on dark
+  pages, Accessible/Heritage dark Canvas status labels use their existing
+  high-contrast foreground tokens, and every optional-theme regression story
+  participates in release QA. Edit-mode connection buttons also retain native
+  Enter/Space activation. The affected stories pass automated accessibility
+  checks across xs–xl.
+
+- **Supabase backup workflow** (A1-2066) — fixed the daily and manual backup
+  workflow failing validation before any job started by using a context that is
+  available when GitHub evaluates job-level environment variables.
+
+- **Product tour fixes** (A1-2065) — kept the tour card fully on-screen at
+  mobile breakpoints and changed the navigation step to spotlight the
+  responsive top header instead of its desktop-only navigation region. The
+  tour is now opt-in and opens only when requested from Help.
+
 - **A1 logo** — added the supplied A1 SVG as the browser favicon and the
   persistent A1-Web top-header logo.
 

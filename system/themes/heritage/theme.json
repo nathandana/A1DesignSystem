@@ -6,6 +6,10 @@
     {
       "selector": ".a1-theme-heritage",
       "overrides": "overrides/default.json"
+    },
+    {
+      "selector": ".a1-theme-heritage.a1-theme-dark, .a1-theme-dark.a1-theme-heritage",
+      "overrides": "overrides/dark.json"
     }
   ],
   "labels": {}

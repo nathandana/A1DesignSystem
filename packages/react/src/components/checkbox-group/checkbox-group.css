@@ -71,6 +71,16 @@
   --a1-cb-msg-size:    var(--semantic-font-size-body-xs);
 }
 
+/* Compact form text stays at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-checkbox-group--compact {
+    --a1-cb-legend-size: var(--semantic-font-size-body-md);
+    --a1-cb-label-size:  var(--semantic-font-size-body-md);
+    --a1-cb-hint-size:   var(--semantic-font-size-body-md);
+    --a1-cb-msg-size:    var(--semantic-font-size-body-md);
+  }
+}
+
 /* ─── Legend ──────────────────────────────────────────────────────────────── */
 
 .a1-checkbox-group__legend {

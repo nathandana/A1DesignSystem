@@ -26,6 +26,14 @@
   --a1-ac-accent-width: var(--component-field-compact-accent-border-width);
 }
 
+/* Compact form controls stay at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-autocomplete--compact {
+    --a1-ac-font-size: var(--semantic-font-size-body-md);
+    --a1-ac-label-size: var(--semantic-font-size-body-md);
+  }
+}
+
 .a1-autocomplete--comfortable {
   --a1-ac-height: var(--component-field-comfortable-height);
   --a1-ac-padding-inline: var(--component-field-comfortable-padding-inline);
@@ -335,6 +343,17 @@
   margin: 0;
   font-size: var(--semantic-font-size-body-xs);
   line-height: var(--semantic-font-line-height-body);
+}
+
+@media (--bp-sm-down) {
+  .a1-autocomplete--compact .a1-autocomplete__chip,
+  .a1-autocomplete--compact .a1-autocomplete__message,
+  .a1-autocomplete__listbox--compact .a1-autocomplete__option,
+  .a1-autocomplete__listbox--compact .a1-autocomplete__empty,
+  .a1-autocomplete__listbox--compact .a1-autocomplete__group,
+  .a1-autocomplete__listbox--compact .a1-autocomplete__more {
+    font-size: var(--semantic-font-size-body-md);
+  }
 }
 
 .a1-autocomplete__message--hint {

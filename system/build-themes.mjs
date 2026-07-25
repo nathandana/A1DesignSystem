@@ -44,7 +44,9 @@ function explicitLightThemeRestoreCss() {
       );
       if (!entries.length) continue;
       blocks.push(`html.a1-theme-light.${className},
-html.${className}.a1-theme-light {
+html.${className}.a1-theme-light,
+html.a1-theme-dark.${className} .a1-inverse,
+html.${className}.a1-theme-dark .a1-inverse {
 ${cssBlock(Object.fromEntries(entries))}
 }`);
     }

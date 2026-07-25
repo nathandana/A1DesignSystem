@@ -95,4 +95,8 @@
     bottom: var(--base-spacing-16);
     top: auto;
   }
+
+  .a1-product-tour__card:not([style*="card-block-start"]) {
+    transform: none;
+  }
 }

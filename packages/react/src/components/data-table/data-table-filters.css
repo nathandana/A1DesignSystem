@@ -165,3 +165,10 @@
     flex-basis: 100%;
   }
 }
+
+/* Compact form controls stay at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-dt-filters__scope-select {
+    font-size: var(--semantic-font-size-body-md);
+  }
+}

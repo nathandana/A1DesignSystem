@@ -312,7 +312,11 @@ export function Autocomplete({
       {open && !disabled && menuPos && createPortal(
         <ul
           ref={listRef}
-          className="a1-autocomplete__listbox a1-autocomplete__listbox--floating"
+          className={[
+            "a1-autocomplete__listbox",
+            "a1-autocomplete__listbox--floating",
+            `a1-autocomplete__listbox--${resolvedSize}`,
+          ].join(" ")}
           role="listbox"
           id={listId}
           aria-multiselectable={multiple || undefined}

@@ -36,6 +36,14 @@
   --a1-slider-detent-size: var(--semantic-font-size-body-xs);
 }
 
+/* Compact form text stays at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-slider--compact {
+    --a1-slider-label-size: var(--semantic-font-size-body-md);
+    --a1-slider-detent-size: var(--semantic-font-size-body-md);
+  }
+}
+
 .a1-slider--comfortable {
   --a1-slider-track-height: var(--base-spacing-32);
   --a1-slider-thumb-size: var(--base-spacing-32);

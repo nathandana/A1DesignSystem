@@ -46,17 +46,9 @@ const A11Y_SKIP_IDS = new Set([
   'components-navigation-breadcrumb--a-11-y-current-page-missing',
 ]);
 
-// Optional/product-style themes are intentionally excluded from baseline QA.
-// They can carry brand-specific contrast/visual choices that should not block
-// the core design-system release gates.
-const THEME_QA_SKIP_IDS = new Set([
-  'foundations-color-regression--cat-lympics-light',
-  'foundations-color-regression--cat-lympics-dark',
-  'foundations-color-regression--crochet-light',
-  'foundations-color-regression--crochet-dark',
-  'foundations-color-regression--marshmallow-light',
-  'foundations-color-regression--marshmallow-dark',
-]);
+// Theme regression stories are release-gated. Keep this set only for a
+// documented temporary exception; A1-368 removed the previous exclusions.
+const THEME_QA_SKIP_IDS = new Set();
 
 // ─── Lazy dir creation (idempotent; setup script handles initial clear) ───────
 

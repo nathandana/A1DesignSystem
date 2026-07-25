@@ -74,10 +74,12 @@
   --a1-field-accent-compensation: var(--component-field-accent-compensation-compact);
 }
 
-/* Compact restores 16px input font on small screens (prevents iOS zoom) */
+/* Compact form controls stay at least 16px on small screens. */
 @media (--bp-sm-down) {
   .a1-field--compact {
     --a1-field-font-size: var(--semantic-font-size-body-md);
+    --a1-field-label-size: var(--semantic-font-size-body-md);
+    --a1-field-message-size: var(--semantic-font-size-body-md);
   }
 }
 

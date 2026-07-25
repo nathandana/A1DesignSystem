@@ -10,6 +10,7 @@
 | Update computed color contract | `npm run tokens:contract:update` |
 | Check computed color contract | `npm run tokens:contract:check` |
 | Verify react npm tarball (imports, entry points, guidelines sync) | `npm run pack:check` |
+| Regenerate component History from the maintenance log | `npm run history:generate` (`:check` to verify freshness) |
 | Full QA (axe + visual + report) | `npm run test:qa` |
 | Update visual baselines | `npm run test:qa:update` |
 | A1-Web route baseline | `npm run test:a1-web` |
@@ -28,6 +29,8 @@ Use the root scripts for bookmarkable local URLs. They all use `--strictPort`, s
 | Examples index | `npm run dev` | `http://127.0.0.1:5176/` |
 | a1-web | `npm run dev:a1-web` | `http://127.0.0.1:5177/` |
 | a1-web local bridge (Codex + Figma handoff) | `npm run codex:bridge:a1-web` | `http://127.0.0.1:4318/` |
+| Tesla A1 | `npm run dev:tesla-a1` | `http://127.0.0.1:5188/` |
+| Tesla A1 proxy-backed app | `npm run serve:tesla-a1` | `http://127.0.0.1:5189/` |
 | Storybook | `npm run storybook` | `http://127.0.0.1:6006/` |
 | Priority Guide | `npm run dev:priority-guide` | `http://127.0.0.1:5178/examples/priority-guide/` |
 | Cat Stack Cafe | `npm run dev:cat-stack-cafe` | `http://127.0.0.1:5179/examples/cat-stack-cafe/` |

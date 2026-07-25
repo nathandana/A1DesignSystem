@@ -1163,8 +1163,8 @@
   --semantic-color-action-background-hover: var(--base-color-accent-300);
   --semantic-color-action-background-pressed: var(--base-color-accent-500);
   --semantic-color-action-border: var(--base-color-accent-500);
-  --semantic-color-action-foreground: var(--base-color-accent-1000);
-  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-foreground: var(--base-color-accent-0);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-0);
   --semantic-color-action-surface: var(--base-color-accent-900);
   --semantic-color-border-default: var(--base-color-neutral-600);
   --semantic-color-border-strong: var(--base-color-neutral-400);
@@ -1250,8 +1250,8 @@
   --semantic-color-action-background-hover: var(--base-color-accent-300);
   --semantic-color-action-background-pressed: var(--base-color-accent-500);
   --semantic-color-action-border: var(--base-color-accent-500);
-  --semantic-color-action-foreground: var(--base-color-accent-1000);
-  --semantic-color-action-foreground-pressed: var(--base-color-accent-1000);
+  --semantic-color-action-foreground: var(--base-color-accent-0);
+  --semantic-color-action-foreground-pressed: var(--base-color-accent-0);
   --semantic-color-action-surface: var(--base-color-accent-900);
   --semantic-color-border-default: var(--base-color-neutral-600);
   --semantic-color-border-strong: var(--base-color-neutral-400);
