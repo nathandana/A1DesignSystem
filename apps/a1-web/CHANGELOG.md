@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Backlog queue view removal** (A1-2069) — removed the personal queue from
+  the Backlog view switcher and deleted its queue-only rendering path. The
+  Backlog view control and narrow swimlane tabs now show every label instead of
+  only the selected label.
+
 - **Component History** (A1-2067) — added a **History** tab to every component
   detail page. It shows the component's change history in three categories —
   code changes, decisions, and release/version notes — newest first, each with

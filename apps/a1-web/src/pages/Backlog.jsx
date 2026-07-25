@@ -12,8 +12,6 @@ import {
   Divider,
   Grid,
   Heading,
-  Icon,
-  IconButton,
   Link,
   MessageBadge,
   MessageEmptyState,
@@ -36,7 +34,7 @@ import {
 import { useBacklog } from '../backlog/BacklogContext'
 import { TicketDetail } from '../backlog/TicketDetail'
 import {
-  ComplexityBadge, PriorityBadge, ScopeBadge, StatusBadge, TypeBadge,
+  ComplexityBadge, PriorityBadge, ScopeBadge, TypeBadge,
 } from '../backlog/TicketBadges'
 import {
   COMPLEXITIES, COMPLEXITY_LABELS, PRIORITIES, PRIORITY_LABELS, SCOPE_LABELS,
@@ -70,7 +68,6 @@ const makeSortOptions = (t) => [
 const makeViewOptions = (t) => [
   { value: 'board', label: t('app.backlog.viewBoard', 'Board'), icon: 'view_kanban' },
   { value: 'all', label: t('app.backlog.viewAllTickets', 'All tickets'), icon: 'table_rows' },
-  { value: 'queue', label: t('app.backlog.viewMyQueue', 'My queue'), icon: 'assignment_ind' },
 ]
 
 // How many cards a swimlane shows per page before paginating.
@@ -122,43 +119,31 @@ function countActiveFilters(filters, searching) {
 // The whole card is a navigation control — click opens the ticket dialog; right-click
 // opens a context menu of actions (rule 6a: a navigation card holds only static
 // content, so vote/assign/etc. live in the menu, not inline buttons).
-function TicketCard({ item, variant = 'board', onOpen, onContextMenu, onDragStart, actionLabel }) {
-  const isQueue = variant === 'queue'
-  const cardProps = isQueue
-    ? { status: STATUS_STRIPE_TONE[item.status], statusPulse: !!STATUS_STRIPE_PULSE[item.status] }
-    : {
-        variant: 'navigation',
-        status: STATUS_STRIPE_TONE[item.status],
-        statusPulse: !!STATUS_STRIPE_PULSE[item.status],
-        draggable: onDragStart ? true : undefined,
-        onDragStart: onDragStart ? (e) => onDragStart(e, item) : undefined,
-        onClick: () => onOpen(item),
-        onContextMenu: onContextMenu ? (e) => onContextMenu(item, e) : undefined,
-      }
+function TicketCard({ item, onOpen, onContextMenu, onDragStart }) {
+  const cardProps = {
+    variant: 'navigation',
+    status: STATUS_STRIPE_TONE[item.status],
+    statusPulse: !!STATUS_STRIPE_PULSE[item.status],
+    draggable: onDragStart ? true : undefined,
+    onDragStart: onDragStart ? (e) => onDragStart(e, item) : undefined,
+    onClick: () => onOpen(item),
+    onContextMenu: onContextMenu ? (e) => onContextMenu(item, e) : undefined,
+  }
 
   return (
     <Card {...cardProps}>
-      <Stack direction={isQueue ? 'row' : 'column'} gap={isQueue ? 'sm' : 'none'} align={isQueue ? 'center' : undefined} justify={isQueue ? 'between' : undefined} wrap={isQueue}>
-        <Stack gap={isQueue ? 'xs' : 'none'}>
+      <Stack direction="column" gap="none">
+        <Stack gap="none">
           <Paragraph as="span" size="xs" color="muted" className="a1-m-0">{ticketRef(item.number)}</Paragraph>
           <Heading size="xs" className="a1-m-0">{item.title}</Heading>
-          {!isQueue && <Divider />}
+          <Divider />
           <Stack direction="row" gap="xs" wrap>
-            {isQueue && <StatusBadge status={item.status} />}
             <TypeBadge type={item.type} />
             <PriorityBadge priority={item.priority} />
             <ComplexityBadge complexity={item.complexity} />
             <ScopeBadge scopeKind={item.scopeKind} scopeLabel={item.scopeLabel} />
           </Stack>
         </Stack>
-        {isQueue && (
-          <IconButton
-            icon="open_in_new"
-            label={actionLabel}
-            variant="secondary"
-            onClick={() => onOpen(item)}
-          />
-        )}
       </Stack>
     </Card>
   )
@@ -442,8 +427,8 @@ export function Backlog({ onNavigate }) {
   // Smart search ranks the whole backlog (A1-187); an empty query passes items through.
   const searched = useMemo(() => smartSearchBacklog(items, query), [items, query])
 
-  // Search + the panel filters (Type/Priority/Size/Scope) — the shared set behind EVERY view
-  // (board, the all-tickets table, and my queue), so one panel drives them all.
+  // Search + the panel filters (Type/Priority/Size/Scope) — the shared set behind
+  // board and all tickets, so one panel drives both views.
   const filteredItems = useMemo(() => applyFilters(searched, filters), [searched, filters])
 
   // Board additionally applies the chosen sort (relevance order while searching).
@@ -468,20 +453,10 @@ export function Backlog({ onNavigate }) {
     return map
   }, [filtered])
 
-  const queue = useMemo(() => {
-    if (!me) return { awaiting: [], mine: [], assigned: [] }
-    const base = filteredItems // honour the panel's search + filters
-    const awaiting = base.filter((it) => it.awaitingRequester && it.createdBy === me.id)
-    const mine = base.filter((it) => it.createdBy === me.id && !awaiting.includes(it))
-    const assigned = base.filter((it) => it.assigneeId === me.id && it.createdBy !== me.id)
-    return { awaiting, mine, assigned }
-  }, [filteredItems, me])
-
   const reviewItems = useMemo(() => {
-    if (tab === 'queue') return [...queue.awaiting, ...queue.assigned, ...queue.mine]
     if (tab === 'all') return filteredItems.slice().sort(SORTERS.number)
     return filtered
-  }, [filtered, filteredItems, queue, tab])
+  }, [filtered, filteredItems, tab])
 
   const open = (it) => setSelected(it)
   const vote = (it, v) => backlog?.vote(it, v)
@@ -579,7 +554,7 @@ export function Backlog({ onNavigate }) {
           </Paragraph>
         )}
 
-        {/* The view switcher (Board / All tickets / My queue) lives in the
+        {/* The view switcher (Board / All tickets) lives in the
             left-side panel now (A1) — here we just render the active view. */}
         {tab === 'board' && (
             <Stack gap="md">
@@ -620,7 +595,7 @@ export function Backlog({ onNavigate }) {
                 if (isSmall) {
                   const activeSafe = lanes.includes(activeLane) ? activeLane : lanes[0]
                   return (
-                    <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact" labelMode="selected">
+                    <Tabs value={activeSafe} onChange={setActiveLane} variant="line" size="compact">
                       <TabList>
                         {lanes.map((s) => (
                           <Tab key={s} value={s} icon={STATUS_ICON[s]} count={byStatus[s].length}>{STATUS_LABELS[s]}</Tab>
@@ -661,39 +636,6 @@ export function Backlog({ onNavigate }) {
 
         {tab === 'all' && (
           <AllTable items={filteredItems} onOpen={open} onNavigate={onNavigate} t={t} />
-        )}
-
-        {tab === 'queue' && (
-          !me ? (
-            <MessageEmptyState icon="person" title={t('app.backlog.signInForQueueTitle', 'Sign in for your queue')} description={t('app.backlog.signInForQueueDesc', 'Your queue shows tickets you created or are assigned.')} />
-          ) : (
-            <Stack gap="lg">
-              <QueueGroup
-                title={t('app.backlog.queueAwaiting', 'Awaiting your answer')}
-                icon="help"
-                items={queue.awaiting}
-                empty={t('app.backlog.queueAwaitingEmpty', 'No clarifying questions for you right now.')}
-                openLabel={t('app.backlog.queueOpen', 'Open')}
-                onOpen={open}
-              />
-              <QueueGroup
-                title={t('app.backlog.queueAssigned', 'Assigned to you')}
-                icon="engineering"
-                items={queue.assigned}
-                empty={t('app.backlog.queueAssignedEmpty', 'Nothing assigned to you yet.')}
-                openLabel={t('app.backlog.queueOpen', 'Open')}
-                onOpen={open}
-              />
-              <QueueGroup
-                title={t('app.backlog.queueCreated', 'Created by you')}
-                icon="edit_note"
-                items={queue.mine}
-                empty={t('app.backlog.queueCreatedEmpty', "You haven't created any tickets yet.")}
-                openLabel={t('app.backlog.queueOpen', 'Open')}
-                onOpen={open}
-              />
-            </Stack>
-          )
         )}
 
         </Stack>
@@ -744,7 +686,6 @@ export function Backlog({ onNavigate }) {
             <SegmentedControl
               aria-label={t('app.backlog.viewLabel', 'Backlog view')}
               fullWidth
-              labelMode="selected"
               options={makeViewOptions(t)}
               value={tab}
               onChange={setTab}
@@ -759,7 +700,7 @@ export function Backlog({ onNavigate }) {
             />
 
             {/* Filters drive every ticket view; sort is board-only because the table
-                sorts by column and the queue is grouped. */}
+                sorts by column. */}
             <>
               <Divider space="none" />
 
@@ -772,7 +713,6 @@ export function Backlog({ onNavigate }) {
                 <Toolbar label={t('app.backlog.sortByLabel', 'Sort by')} aria-label={t('app.backlog.sortToolbarLabel', 'Sort tickets')}>
                   <ToolbarGroup
                     aria-label={t('app.backlog.sortByLabel', 'Sort by')}
-                    labelMode="selected"
                     value={sort}
                     onChange={setSort}
                     options={makeSortOptions(t)}
@@ -845,32 +785,5 @@ export function Backlog({ onNavigate }) {
         asideNode,
       )}
     </>
-  )
-}
-
-function QueueGroup({ title, icon, items, empty, openLabel, onOpen }) {
-  return (
-    <Stack gap="sm">
-      <Stack direction="row" gap="xs" align="center">
-        <Icon name={icon} size="sm" color="muted" />
-        <Heading as="h2" size="sm">{title}</Heading>
-        <MessageBadge status="neutral" subtle size="sm">{items.length}</MessageBadge>
-      </Stack>
-      {items.length === 0 ? (
-        <Paragraph size="sm" color="muted">{empty}</Paragraph>
-      ) : (
-        <Stack gap="xs">
-          {items.map((it) => (
-            <TicketCard
-              key={it.id}
-              item={it}
-              variant="queue"
-              onOpen={onOpen}
-              actionLabel={`${openLabel ?? 'Open'} ${ticketRef(it.number)}`}
-            />
-          ))}
-        </Stack>
-      )}
-    </Stack>
   )
 }
