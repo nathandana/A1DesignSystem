@@ -13,6 +13,7 @@ import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
+import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
@@ -65,6 +66,78 @@ export const COMPONENT_LAST_UPDATED = {
   'status-bar': '2026-06-09',
   calendar: '2026-06-07',
 }
+
+// Curated per-component change history (A1-2067). Each entry is one dated,
+// typed record so a component's History tab can show the three requested
+// categories at a glance:
+//   type: 'code'     — a code / API / behaviour change
+//         'decision' — a design or contract decision that governs the component
+//         'release'  — a shipped release or version note
+// Entries are authored newest-first and seeded from the real, attributable log
+// in packages/react/ai/components-maintenance.md and the package CHANGELOGs —
+// keep them factual and add to them as part of the component change checklist.
+// `version` (optional) names the shipped package version; `ticket` (optional)
+// is the backlog reference. Components without an entry fall back to their
+// last-documented-update date plus the full release notes (see HistoryPanel).
+export const COMPONENT_HISTORY = {
+  chip: [
+    { date: '2026-07-24', type: 'release', version: 'React 0.29.0', ticket: 'A1-390', summary: 'Chip gained control-height tokens (minHeight / smMinHeight / lgMinHeight) on the 28/40/56 standard so chips row-align with same-size Buttons.' },
+    { date: '2026-07-16', type: 'decision', ticket: 'A1-390', summary: 'ChipGroup items carry per-item selected / disabled / menu flags; group selection behaviour is never inferred from a caret. The Figma bridge and configurator follow the same contract.' },
+    { date: '2026-07-16', type: 'code', ticket: 'A1-390', summary: '`selected` now renders inside `selectionMode="none"` groups — the group returns undefined in none mode instead of clobbering each chip’s own selected prop.' },
+    { date: '2026-07-16', type: 'code', summary: 'Added to the A1:Figma JSON bridge and Build quick-add; a lone Chip round-trips as a one-item ChipGroup.' },
+  ],
+  'segmented-control': [
+    { date: '2026-07-24', type: 'release', version: 'React 0.29.0', summary: 'Tokens now describe the OUTER track (28/40/56 total height); segments derive 20/32/48 via calc, and sm segments drop their block padding.' },
+    { date: '2026-07-24', type: 'code', version: 'React 0.29.0', summary: 'A consumer `className` no longer clobbers component styling — it is destructured and merged with the component classes (same pattern as Button).' },
+  ],
+  accordion: [
+    { date: '2026-07-24', type: 'release', version: 'React 0.29.0', summary: 'Triggers now apply their height tokens on the 28/40/56 control-height standard (previously padding-emergent 33/40/52) with tighter sm padding.' },
+  ],
+  'top-header': [
+    { date: '2026-07-24', type: 'code', version: 'React 0.29.0', summary: '`loginButton` accepts a plain string label as well as `{ label?, onClick? }` — the JSON-safe form emitted by page definitions and the Figma bridge. The stale `.d.ts` type was corrected.' },
+  ],
+  tabs: [
+    { date: '2026-07-24', type: 'release', version: 'React 0.29.0', summary: 'Tabs `variant="segment"` follows the 28/40/56 control-height derivation (40px strip), matching a md Segmented Control.' },
+    { date: '2026-07-16', type: 'code', summary: 'A1:Figma Tabs panel-content bridge — the folder variant is preserved and `{tab=…}` markers export panel content into `items[].children`, which a1-web renders as real panel children.' },
+  ],
+  dialog: [
+    { date: '2026-07-16', type: 'decision', summary: 'An omitted `showClose` now defaults to enabled, matching the JSON contract default (the preview passes `onClose` unless `showClose` is explicitly false).' },
+    { date: '2026-07-16', type: 'code', summary: 'The Dialog body is a real content slot in the Figma→JSON→a1-web path: the Body Slot exports as `children`, with `props.body` kept only as a legacy plain-text fallback.' },
+    { date: '2026-07-16', type: 'code', summary: 'Footer buttons export as `footerActions`; the a1-web preview renders renderer-provided footer content instead of dropping it.' },
+  ],
+  autocomplete: [
+    { date: '2026-07-24', type: 'code', ticket: 'A1-1401', summary: 'Figma Autocomplete page created — a control set (Size × State) plus an Autocomplete Menu listbox composition, with multiple / colour example frames and a validated dark mode.' },
+  ],
+  'choice-group': [
+    { date: '2026-07-16', type: 'code', summary: 'JSON bridge with embedded-Grid detection — ChoiceGroup round-trips legend / required / helper, options, defaultValue, multiple and size; a Grid in the Options slot exports as the `columns` prop.' },
+    { date: '2026-07-16', type: 'code', summary: 'Figma Choice Group page created — a Choice Option tile set (radio / checkbox × state × density) and a legend / helper shell with a wrapping tile row.' },
+  ],
+  'tree-menu': [
+    { date: '2026-07-16', type: 'code', summary: 'A1:Figma Convert to Tree Menu and JSON bridge — round-trips variant, showExpandControls, draggable, nested items, selectedId and expandedIds; the a1-web page exposes jsonType / toJson / fromJson.' },
+  ],
+  'data-table': [
+    { date: '2026-07-16', type: 'code', summary: 'Hooked into the A1:Figma JSON bridge — columns with label / sortable / end-align plus defaultSort, rows from cell values, clamped onto the 4×4 grid; the configurator accepts JSON `rows`.' },
+  ],
+  'action-tile': [
+    { date: '2026-07-02', type: 'release', ticket: 'A1-389', summary: 'ActionTiles shipped — layout / gap / iconLayout props with container-driven spacing; interactive tiles use the navigation Card blue border and drop nested interactive controls.' },
+  ],
+  stat: [
+    { date: '2026-06-30', type: 'release', ticket: 'A1-375', summary: 'Stat shipped — a single highlighted metric with a tokenized value, muted label, prefix / suffix, status badge and number / percent formatting; token-driven via component/stat.json.' },
+  ],
+  button: [
+    { date: '2026-07-06', type: 'code', ticket: 'A1-419', summary: 'Figma Button component set created — Variant / Size / State / IconPosition axes; Button colour variables alias the shared color/button/* roles and labels use dedicated Button/{sm,md,lg} text styles.' },
+  ],
+}
+
+// History entries for a component, newest first. Hand-curated COMPONENT_HISTORY
+// (polished, typed entries) takes precedence per component; otherwise the
+// entries mined from the maintenance log (componentHistory.generated.js) are
+// used. Components with neither get a last-updated baseline in the panel.
+export function getComponentHistory(componentId) {
+  const entries = COMPONENT_HISTORY[componentId] ?? GENERATED_COMPONENT_HISTORY[componentId] ?? []
+  return [...entries].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+}
+
 export const PACKAGE_COLUMNS = ['React', 'Native', 'Pure', 'Web Components', 'Figma']
 
 // Mirrors the "A1 Web menu hierarchy" section in packages/react/ai/components.md.

@@ -14,6 +14,16 @@ This file governs all agent work that creates or updates components in the A1 Fi
 
 ---
 
+## Component history (A1-2067)
+
+Each component has a **change history** — code changes, design/contract decisions, and release/version notes. It is authored once in a single, platform-agnostic source and surfaced in both the web app and Figma:
+
+- **Source of truth:** `apps/a1-web/src/pages/components/data.js` → `COMPONENT_HISTORY[<component-id>]`, an array of typed entries (`type: 'code' | 'decision' | 'release'`, plus `date`, `summary`, and optional `version` / `ticket`). Seed it from the dated `packages/react/ai/components-maintenance.md` log and the package CHANGELOGs — the same records the Figma per-component notes are written from.
+- **Web app surface:** the component detail page's **History** tab (see `ComponentDetailPage.jsx` → `HistoryPanel`) renders these entries newest-first, with a link to the full per-package Releases page.
+- **Figma surface:** the per-component sections in this file (and the matching Figma page notes) already carry each component's Figma history in prose — e.g. "A1-419 created the Figma Button…", "A1-1418 created the Dialog set…". When you add or change a Figma component, add the same change to `COMPONENT_HISTORY` (as a `code` entry with its `A1-nnnn` ticket) so the web History tab and the Figma notes stay in sync. An **embedded, interactive history panel inside the Figma file** is a documented follow-up; the data is already structured and portable for it.
+
+---
+
 ## Variable collections
 
 | Collection       | Contains                                             | Used for                                                                                                          |
