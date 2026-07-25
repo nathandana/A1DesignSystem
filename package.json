@@ -76,6 +76,8 @@
     "a11y:reports": "node scripts/a11y/generate-component-reports.mjs",
     "a11y:reports:check": "node scripts/a11y/generate-component-reports.mjs --check",
     "a11y:full": "npm run test:qa && npm run a11y:playwright",
+    "history:generate": "node scripts/build-component-history.mjs",
+    "history:generate:check": "node scripts/build-component-history.mjs --check",
     "build:eslint-rules": "node scripts/build-eslint-rules.mjs",
     "lint": "node scripts/build-eslint-rules.mjs --check && eslint . && node scripts/lint-a1-css.mjs",
     "lint:fix": "node scripts/build-eslint-rules.mjs && eslint . --fix && node scripts/lint-a1-css.mjs",

@@ -92,6 +92,7 @@ import {
   componentExamples,
   getComponentExamplePath,
   rankComponentsForSearch,
+  DETAIL_TAB_IDS,
 } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
 import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
@@ -235,6 +236,28 @@ function getComponentExampleTab(pathname = window.location.pathname) {
   const componentId = componentIdFromRouteSlug(componentSlug)
   const example = getComponentExampleBySlug(componentId, exampleSlug)
   return example ? `example:${example.id}` : null
+}
+
+// Resolve the active component detail tab from the URL: an example segment
+// (`/components/x/<slug>`) wins, otherwise a `?tab=` query param naming a
+// standard tab, otherwise the default Configure tab. This makes every tab
+// deep-linkable and bookmarkable.
+function getComponentTab(pathname = window.location.pathname, search = window.location.search) {
+  const example = getComponentExampleTab(pathname)
+  if (example) return example
+  const tab = new URLSearchParams(search).get('tab')
+  return DETAIL_TAB_IDS.includes(tab) ? tab : 'configure'
+}
+
+// Build the URL for a component + tab. Example tabs use their path segment; a
+// standard non-default tab is carried as `?tab=`; Configure (the default) stays
+// clean with no query string.
+function componentPathWithTab(componentId, tab) {
+  if (tab && tab.startsWith('example:')) {
+    return getComponentExamplePath(componentId, tab.slice('example:'.length))
+  }
+  const base = `/components/${componentRouteSlug(componentId)}`
+  return tab && tab !== 'configure' && DETAIL_TAB_IDS.includes(tab) ? `${base}?tab=${tab}` : base
 }
 
 function getPage(search = window.location.search, pathname = window.location.pathname) {
@@ -467,7 +490,7 @@ function App() {
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
-  const [detailTab, setDetailTab] = useState(() => getComponentExampleTab() ?? 'configure')
+  const [detailTab, setDetailTab] = useState(() => getComponentTab())
   const [releaseMode, setReleaseMode] = useState('simplified')
   const [releaseSource, setReleaseSource] = useState('a1-web')
   const [releaseSearch, setReleaseSearch] = useState('')
@@ -1180,17 +1203,45 @@ function App() {
 
   function navigate(page, { replace = false, path: pathOverride = null } = {}) {
     const next = PAGES.includes(page) ? page : 'home'
-    const nextPath = pathOverride ?? getPath(next)
+    let nextPath = pathOverride ?? getPath(next)
+    let nextTab = null
+    if (next.startsWith('component-')) {
+      const componentId = next.slice('component-'.length)
+      if (pathOverride) {
+        // An explicit destination (e.g. an example link) decides the tab.
+        const url = new URL(pathOverride, window.location.origin)
+        nextTab = getComponentTab(url.pathname, url.search)
+      } else {
+        // Plain component navigation (tree menu, search): keep the current
+        // standard tab so switching components stays on the same tab, and
+        // reflect it in the URL so the destination is deep-linkable.
+        nextTab = DETAIL_TAB_IDS.includes(detailTab) ? detailTab : 'configure'
+        nextPath = componentPathWithTab(componentId, nextTab)
+      }
+    }
     const currentPath = `${window.location.pathname}${window.location.search}`
     if (nextPath !== currentPath) {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
     }
     setActivePage(next)
     if (next.startsWith('component-')) {
-      setDetailTab(getComponentExampleTab(nextPath) ?? 'configure')
+      setDetailTab(nextTab ?? 'configure')
     }
     setSidebarOpen(false)
     resetRouteScroll()
+  }
+
+  // Select a component detail tab: update state and keep the URL in sync so the
+  // tab is deep-linkable (replaceState — a tab switch is not a new history entry).
+  function selectDetailTab(nextTab) {
+    setDetailTab(nextTab)
+    if (!activePage.startsWith('component-')) return
+    const componentId = activePage.slice('component-'.length)
+    const path = componentPathWithTab(componentId, nextTab)
+    const currentPath = `${window.location.pathname}${window.location.search}`
+    if (path !== currentPath) {
+      window.history.replaceState({ page: activePage }, '', path)
+    }
   }
 
   function openHelpPage(query = '') {
@@ -1267,10 +1318,10 @@ function App() {
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
     window.history.replaceState({ page }, '', canonicalUrl)
     setActivePage(page)
-    setDetailTab(getComponentExampleTab() ?? 'configure')
+    setDetailTab(getComponentTab())
       const onPop = () => {
       setActivePage(getPage())
-      setDetailTab(getComponentExampleTab() ?? 'configure')
+      setDetailTab(getComponentTab())
       setHelpQuery(new URLSearchParams(window.location.search).get('q') || '')
       const params = new URLSearchParams(window.location.search)
       const proj = params.get('project') || null
@@ -2043,7 +2094,7 @@ function App() {
                 activePage,
                 detailTab,
                 onNavigate: navigate,
-                onSelectDetailTab: setDetailTab,
+                onSelectDetailTab: selectDetailTab,
                 search: componentSearch,
                 setSearch: setComponentSearch,
               })
@@ -2107,7 +2158,7 @@ function App() {
             search={componentSearch}
             setSearch={setComponentSearch}
             detailTab={detailTab}
-            setDetailTab={setDetailTab}
+            setDetailTab={selectDetailTab}
           />
         )}
         {activePage === 'patterns' && <Patterns onNavigate={navigate} />}

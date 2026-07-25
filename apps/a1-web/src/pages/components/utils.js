@@ -2,6 +2,7 @@ import {
   COMPONENT_SEARCH_KEYWORDS,
   COMPONENT_RELATED,
   COMPONENT_LAST_UPDATED,
+  getComponentHistory,
   PACKAGE_COVERAGE,
   LAST_UPDATED,
   componentCategories,
@@ -148,6 +149,12 @@ export const componentPageIds = componentCategories.flatMap((category) =>
   category.components.map((component) => `component-${component.id}`)
 )
 
+// The standard, always-present tabs on a component detail page, in display
+// order. Shared with main.jsx so tab state, URL (`?tab=`) deep-linking, and
+// cross-component persistence agree on the valid set. Example tabs use the
+// `example:<id>` form and are handled separately.
+export const DETAIL_TAB_IDS = ['configure', 'rules', 'properties', 'accessibility', 'history']
+
 export const componentPageTitles = {
   components: 'Components',
   ...Object.fromEntries(componentCategories.map((category) => [`components-${category.id}`, category.title])),
@@ -164,6 +171,7 @@ export const allComponents = componentCategories.flatMap((category) =>
       categoryTitle: category.title,
       categoryIcon: category.icon,
       updated: COMPONENT_LAST_UPDATED[component.id] ?? LAST_UPDATED,
+      history: getComponentHistory(component.id),
       packages: PACKAGE_COVERAGE[component.id] ?? ['React'],
     }
     return {

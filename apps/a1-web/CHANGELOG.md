@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- **Component History** (A1-2067) — added a **History** tab to every component
+  detail page. It shows the component's change history in three categories —
+  code changes, decisions, and release/version notes — newest first, each with
+  an optional shipped version and backlog ticket, plus a "Suggest a history
+  entry" action and a link to the full per-package Releases page. Every
+  component is covered: hand-curated highlights (`COMPONENT_HISTORY` in
+  `data.js`) take precedence, all other components' entries are generated from
+  the component maintenance log (`npm run history:generate`), and any remaining
+  component shows a last-updated baseline — no History tab is empty.
+- **Deep-linkable, persistent detail tabs** — the active component detail tab
+  (Configure / Rules / Properties / Accessibility / History) is now carried in
+  the URL as `?tab=<id>`, so tabs are bookmarkable and shareable, and switching
+  components in the sidebar keeps the current tab open.
+
 - **A1 logo** — added the supplied A1 SVG as the browser favicon and the
   persistent A1-Web top-header logo.
 

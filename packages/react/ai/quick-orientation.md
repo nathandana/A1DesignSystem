@@ -10,6 +10,7 @@
 | Update computed color contract | `npm run tokens:contract:update` |
 | Check computed color contract | `npm run tokens:contract:check` |
 | Verify react npm tarball (imports, entry points, guidelines sync) | `npm run pack:check` |
+| Regenerate component History from the maintenance log | `npm run history:generate` (`:check` to verify freshness) |
 | Full QA (axe + visual + report) | `npm run test:qa` |
 | Update visual baselines | `npm run test:qa:update` |
 | A1-Web route baseline | `npm run test:a1-web` |

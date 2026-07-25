@@ -76,6 +76,7 @@ import {
   getRulesForComponent,
   navigateCard,
   navigateBreadcrumb,
+  DETAIL_TAB_IDS,
 } from './utils.js'
 import { GENERATED_PROP_TABLES } from './generatedPropTables.js'
 import { BUTTON_CONTRAST_ROWS, BUTTON_TARGET_SIZE_ROWS } from './accessibilityReports.generated.js'
@@ -1685,7 +1686,7 @@ const PADDING_ITEMS = [
   { value: 'lg', label: 'LG' },
 ]
 
-const VISIBLE_DETAIL_TABS = new Set(['configure', 'rules', 'properties', 'accessibility'])
+const VISIBLE_DETAIL_TABS = new Set(DETAIL_TAB_IDS)
 const EXAMPLE_TAB_PREFIX = 'example:'
 const GENERATED_PROP_ALIASES = {
   'date-field': 'text-field',
@@ -2875,6 +2876,103 @@ function AccessibilityPanel({ component }) {
   return <ComponentAccessibilityReport component={component} />
 }
 
+// Visual treatment per history entry type (see COMPONENT_HISTORY in data.js).
+// The three types map to the requested history categories: code changes,
+// linked decisions, and release / version notes.
+const HISTORY_TYPE_META = {
+  code:     { label: 'Code change', icon: 'code',          status: 'info' },
+  decision: { label: 'Decision',    icon: 'gavel',         status: 'neutral' },
+  release:  { label: 'Release',      icon: 'new_releases',  status: 'success' },
+}
+
+// Format an ISO YYYY-MM-DD date without pulling the value across a timezone
+// boundary (parse the parts and build a local date), falling back to the raw
+// string if it isn't a well-formed date.
+function formatHistoryDate(iso) {
+  const [year, month, day] = String(iso ?? '').split('-').map(Number)
+  if (!year || !month || !day) return iso
+  try {
+    return new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+      .format(new Date(year, month - 1, day))
+  } catch {
+    return iso
+  }
+}
+
+function HistoryPanel({ component, onNavigate }) {
+  const history = component.history ?? []
+  // Every component gets at least a baseline entry from its last documented
+  // update, so the History tab is never empty (detailed entries are curated in
+  // COMPONENT_HISTORY or mined from the maintenance log — see data.js).
+  const entries = history.length > 0
+    ? history
+    : [{
+        date: component.updated,
+        type: 'release',
+        summary: 'Latest documented update to this component. A detailed change history has not been curated yet — see Releases for the full version notes.',
+      }]
+
+  return (
+    <Stack gap="lg">
+      <Stack gap="xs">
+        <Heading as="h2" size="md">Change history</Heading>
+        <Paragraph size="sm" color="muted">
+          Code changes, decisions, and release notes recorded for {component.title}. Newest first.
+        </Paragraph>
+      </Stack>
+
+      <Stack gap="sm">
+        {entries.map((entry, index) => {
+          const meta = HISTORY_TYPE_META[entry.type] ?? HISTORY_TYPE_META.code
+          return (
+            <Card key={`${entry.date}-${index}`} shadow="xs">
+              <Stack direction="column" gap="xs">
+                <Stack direction="row" gap="xs" align="center" wrap>
+                  <MessageBadge status={meta.status} icon={meta.icon} subtle>{meta.label}</MessageBadge>
+                  <Paragraph as="span" size="sm" color="muted">{formatHistoryDate(entry.date)}</Paragraph>
+                  {entry.version && (
+                    <MessageBadge status="neutral" icon="sell" subtle>{entry.version}</MessageBadge>
+                  )}
+                  {entry.ticket && (
+                    <MessageBadge status="neutral" icon="confirmation_number" subtle>{entry.ticket}</MessageBadge>
+                  )}
+                </Stack>
+                <Paragraph size="sm">{entry.summary}</Paragraph>
+              </Stack>
+            </Card>
+          )
+        })}
+      </Stack>
+
+      <Card shadow="xs">
+        <Stack direction="row" gap="sm" align="center" justify="between" wrap>
+          <Stack direction="column" gap="xs">
+            <Heading as="h3" size="xs">Release notes</Heading>
+            <Paragraph size="sm" color="muted">Full per-package version history lives in Releases.</Paragraph>
+          </Stack>
+          <Stack direction="row" gap="sm" align="center" wrap>
+            <CreateTicketButton
+              scope={{ kind: 'component', ref: component.id, label: component.title }}
+              label="Suggest a history entry"
+              icon="history_edu"
+              variant="secondary"
+              size="sm"
+            />
+            <Link
+              href={getComponentPath('releases')}
+              icon="arrow_forward"
+              iconPosition="end"
+              onClick={(event) => navigateCard(event, onNavigate, 'releases')}
+            >
+              View release notes
+            </Link>
+          </Stack>
+        </Stack>
+      </Card>
+    </Stack>
+  )
+}
+
 /* The component configuration controls. Rendered into the PageLayout aside slot
    (right rail) via a portal — see ComponentDetailPage. */
 function ConfigurationPanel({
@@ -3377,6 +3475,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
               <Tab value="rules">Rules</Tab>
               <Tab value="properties">Properties</Tab>
               <Tab value="accessibility">Accessibility</Tab>
+              <Tab value="history">History</Tab>
             </TabList>
             <TabPanel value="configure">
               <ComponentConfigureSurface
@@ -3465,6 +3564,10 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
             <TabPanel value="accessibility">
               <AccessibilityPanel component={component} />
+            </TabPanel>
+
+            <TabPanel value="history">
+              <HistoryPanel component={component} onNavigate={onNavigate} />
             </TabPanel>
           </Tabs>
           )}
