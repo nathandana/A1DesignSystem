@@ -59,6 +59,14 @@
   --a1-sw-msg-size:     var(--semantic-font-size-body-xs);
 }
 
+/* Compact form text stays at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-switch--compact {
+    --a1-sw-label-size: var(--semantic-font-size-body-md);
+    --a1-sw-msg-size:   var(--semantic-font-size-body-md);
+  }
+}
+
 /* ─── Input — sr-only ────────────────────────────────────────────────────────
    Hidden from sighted users; the adjacent .a1-switch__track span provides all
    visual affordance. Keyboard and screen-reader users interact with the input

@@ -4,6 +4,13 @@
 
 ### Fixed
 
+- **Compact form font size** (A1-184) — compact form elements now keep a 16px
+  minimum text size on xs/sm viewports to prevent mobile focus zoom and
+  preserve readable touch forms. This covers the shared Field family,
+  Autocomplete, DataTable's searchable column selector, CheckboxGroup,
+  RadioGroup, ChoiceGroup, Slider, Switch, inline edit inputs, and TreeMenu
+  rename inputs while preserving compact typography on larger screens.
+
 - **Theme and Canvas accessibility** (A1-368) — restored each theme's authored
   light-mode component exceptions inside inverse scopes on explicit dark
   pages, resolving the remaining button contrast failure in the CatLympics

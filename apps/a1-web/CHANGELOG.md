@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- **Backlog board nested sections** (A1-2071) — changed the Backlog board from
+  one flat swimlane strip to a small recursive section tree. Active workflow
+  lanes render under Workflow, and terminal lanes render inside a nested Closed
+  → Terminal outcomes section when those lanes are shown. Leaf swimlanes still
+  use the existing lane renderer, so ticket cards, pagination, drag-to-status on
+  desktop, and small-screen lane tabs keep their existing behavior.
+
+- **Build with AI — simple story fast path** (A1-2070) — added fast-path
+  guidance to the local and Codex-backed Build with AI planners. Simple stories
+  qualify only when they are small, localized code changes with low regression
+  risk; the generated plan now records whether the fast path applies, keeps the
+  minimum verification to a smoke check, and requires engineer approval before
+  skipping fuller testing.
+
 - **Backlog queue view removal** (A1-2069) — removed the personal queue from
   the Backlog view switcher and deleted its queue-only rendering path. The
   Backlog view control and narrow swimlane tabs now show every label instead of

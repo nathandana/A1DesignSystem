@@ -70,6 +70,16 @@
   --a1-rb-msg-size:    var(--semantic-font-size-body-xs);
 }
 
+/* Compact form text stays at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-radio-group--compact {
+    --a1-rb-legend-size: var(--semantic-font-size-body-md);
+    --a1-rb-label-size:  var(--semantic-font-size-body-md);
+    --a1-rb-hint-size:   var(--semantic-font-size-body-md);
+    --a1-rb-msg-size:    var(--semantic-font-size-body-md);
+  }
+}
+
 /* ─── Legend ──────────────────────────────────────────────────────────────── */
 
 .a1-radio-group__legend {

@@ -48,6 +48,16 @@
   --a1-cg-items-top-gap:  var(--component-choice-group-compact-items-top-gap);
 }
 
+/* Compact form text stays at least 16px on small screens. */
+@media (--bp-sm-down) {
+  .a1-choice-group--compact {
+    --a1-cg-label-size:         var(--semantic-font-size-body-md);
+    --a1-cg-subtext-size:       var(--semantic-font-size-body-md);
+    --a1-cg-legend-size:        var(--semantic-font-size-body-md);
+    --a1-cg-section-label-size: var(--semantic-font-size-body-md);
+  }
+}
+
 .a1-choice-group--comfortable {
   --a1-cg-padding:             var(--component-choice-group-comfortable-padding);
   --a1-cg-icon-size:           var(--component-choice-group-comfortable-icon-size);
