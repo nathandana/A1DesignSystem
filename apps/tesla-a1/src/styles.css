@@ -1,0 +1,29 @@
+.tesla-a1-app {
+  min-block-size: 100vh;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-primary);
+}
+
+.tesla-a1-app main {
+  min-block-size: 100vh;
+}
+
+.tesla-a1-span-2 {
+  grid-column: span 2;
+}
+
+.tesla-a1-detail {
+  padding-block-end: var(--semantic-spacing-gap-xs);
+  border-block-end: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
+}
+
+.tesla-a1-detail:last-child {
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+
+@media (max-width: 1024px) {
+  .tesla-a1-span-2 {
+    grid-column: auto;
+  }
+}
