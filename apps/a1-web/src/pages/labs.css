@@ -1,0 +1,67 @@
+.a1-field-row > .a1-web-labs-dob-field {
+  flex: none;
+}
+
+.a1-web-labs-dob-compact-row {
+  gap: var(--base-spacing-4);
+}
+
+.a1-web-labs-dob-field {
+  --a1-web-labs-dob-text-width: 10ch;
+  --a1-web-labs-dob-control-extra: 0px;
+  display: inline-grid;
+  width: min(
+    100%,
+    calc(
+      var(--a1-web-labs-dob-text-width) +
+      (var(--a1-field-padding-inline) * 2) +
+      var(--a1-web-labs-dob-control-extra)
+    )
+  );
+  max-width: 100%;
+}
+
+.a1-web-labs-dob-field--date,
+.a1-web-labs-dob-field--autoformat {
+  --a1-web-labs-dob-text-width: 10ch;
+}
+
+.a1-web-labs-dob-field--month-select {
+  --a1-web-labs-dob-text-width: 9ch;
+  --a1-web-labs-dob-control-extra: calc(var(--a1-field-chevron-size) + var(--base-spacing-6));
+}
+
+.a1-web-labs-dob-field--month-number,
+.a1-web-labs-dob-field--day {
+  --a1-web-labs-dob-text-width: 2ch;
+}
+
+.a1-web-labs-dob-field--year {
+  --a1-web-labs-dob-text-width: 4ch;
+}
+
+.a1-web-labs-dob-field .a1-field__input {
+  width: min(
+    100%,
+    calc(var(--a1-web-labs-dob-text-width) + (var(--a1-field-padding-inline) * 2))
+  );
+}
+
+.a1-web-labs-dob-field .a1-field__select {
+  width: min(
+    100%,
+    calc(
+      var(--a1-web-labs-dob-text-width) +
+      (var(--a1-field-padding-inline) * 2) +
+      var(--a1-field-chevron-size) +
+      var(--base-spacing-6)
+    )
+  );
+}
+
+@media (--bp-sm-down) {
+  .a1-field-row > .a1-web-labs-dob-field {
+    width: fit-content;
+    max-width: 100%;
+  }
+}
