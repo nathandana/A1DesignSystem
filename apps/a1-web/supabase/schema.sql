@@ -1,10 +1,8 @@
 -- A1 Web — Supabase schema (SHARED workspace)
 -- Run in the Supabase dashboard: SQL Editor → New Query → paste & run. Idempotent.
 --
--- Scope: everything is SHARED across all signed-in users — one workspace that any
--- authenticated user can read AND write. (Earlier this was per-user; this schema
--- migrates that data into the shared row.) RLS still requires a signed-in user;
--- it just no longer scopes rows to an owner.
+-- Scope: data is shared across signed-in users. Role-based policies reserve
+-- governance and backlog writes for editors and administrators.
 
 -- ─── updated_at trigger ──────────────────────────────────────────────────────
 create or replace function public.set_updated_at()
@@ -14,6 +12,77 @@ begin
   return new;
 end;
 $$;
+
+-- ─── Access roles ────────────────────────────────────────────────────────────
+-- Hosted roles are assigned in auth.users.raw_app_meta_data. User metadata is
+-- intentionally ignored because account holders can edit it themselves.
+create or replace function public.a1_current_role()
+returns text
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select case coalesce(auth.jwt() -> 'app_metadata' ->> 'role', 'user')
+    when 'admin' then 'admin'
+    when 'editor' then 'editor'
+    else 'user'
+  end;
+$$;
+
+create or replace function public.a1_has_min_role(required_role text)
+returns boolean
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select
+    case public.a1_current_role()
+      when 'admin' then 3
+      when 'editor' then 2
+      else 1
+    end
+    >=
+    case required_role
+      when 'admin' then 3
+      when 'editor' then 2
+      else 1
+    end;
+$$;
+
+revoke all on function public.a1_current_role() from public;
+revoke all on function public.a1_has_min_role(text) from public;
+grant execute on function public.a1_current_role() to authenticated;
+grant execute on function public.a1_has_min_role(text) to authenticated;
+
+-- ─── Administrator user-management audit ────────────────────────────────────
+-- Account listing, invitations and role changes run through the server-only
+-- Netlify function. Browser clients receive no direct table privileges.
+create table if not exists public.a1_user_admin_audit (
+  id              uuid        primary key default gen_random_uuid(),
+  actor_user_id   uuid        references auth.users(id) on delete set null,
+  actor_email     text,
+  target_user_id  uuid        references auth.users(id) on delete set null,
+  target_email    text,
+  action          text        not null
+                                check (action in ('user_invited', 'role_changed')),
+  previous_role   text
+                                check (previous_role is null or previous_role in ('user', 'editor', 'admin')),
+  new_role        text        not null
+                                check (new_role in ('user', 'editor', 'admin')),
+  created_at      timestamptz not null default now()
+);
+
+create index if not exists a1_user_admin_audit_created_idx
+  on public.a1_user_admin_audit (created_at desc);
+
+alter table public.a1_user_admin_audit enable row level security;
+revoke all on table public.a1_user_admin_audit from anon, authenticated;
+grant select, insert on table public.a1_user_admin_audit to service_role;
+
+comment on table public.a1_user_admin_audit is
+  'Server-only audit history for A1 account invitations and role changes.';
 
 -- ─── Shared workspace bundle ─────────────────────────────────────────────────
 -- A single row (id = 1) holds the full bundle (the app's exportEnvelope():
@@ -56,7 +125,9 @@ alter table public.workspace_labels enable row level security;
 drop policy if exists "workspace_labels: read"  on public.workspace_labels;
 drop policy if exists "workspace_labels: write" on public.workspace_labels;
 create policy "workspace_labels: read"  on public.workspace_labels for select to authenticated using (true);
-create policy "workspace_labels: write" on public.workspace_labels for all    to authenticated using (true) with check (true);
+create policy "workspace_labels: write" on public.workspace_labels for all    to authenticated
+  using ((select public.a1_has_min_role('editor')))
+  with check ((select public.a1_has_min_role('editor')));
 
 drop trigger if exists workspace_labels_updated_at on public.workspace_labels;
 create trigger workspace_labels_updated_at
@@ -166,7 +237,7 @@ as $$
 $$;
 
 -- ─── Backlog (shared, attributed) — a lightweight Jira ───────────────────────
--- A ticketing tool: every signed-in user sees and can edit every ticket (one
+-- A ticketing tool: editors and administrators see and edit every ticket (one
 -- shared workspace), each tagged with who created it. A user's "queue" is just a
 -- filtered view (created-by-me / assigned-to-me / awaiting-my-answer). Tickets
 -- carry a human ref A1-<number> from a sequence, a status workflow, a suggested
@@ -229,8 +300,11 @@ create index if not exists backlog_items_assignee_idx  on public.backlog_items (
 alter table public.backlog_items enable row level security;
 drop policy if exists "backlog_items: read"  on public.backlog_items;
 drop policy if exists "backlog_items: write" on public.backlog_items;
-create policy "backlog_items: read"  on public.backlog_items for select to authenticated using (true);
-create policy "backlog_items: write" on public.backlog_items for all    to authenticated using (true) with check (true);
+create policy "backlog_items: read"  on public.backlog_items for select to authenticated
+  using ((select public.a1_has_min_role('editor')));
+create policy "backlog_items: write" on public.backlog_items for all    to authenticated
+  using ((select public.a1_has_min_role('editor')))
+  with check ((select public.a1_has_min_role('editor')));
 
 drop trigger if exists backlog_items_updated_at on public.backlog_items;
 create trigger backlog_items_updated_at
@@ -255,8 +329,11 @@ create index if not exists backlog_comments_item_idx on public.backlog_comments 
 alter table public.backlog_comments enable row level security;
 drop policy if exists "backlog_comments: read"  on public.backlog_comments;
 drop policy if exists "backlog_comments: write" on public.backlog_comments;
-create policy "backlog_comments: read"  on public.backlog_comments for select to authenticated using (true);
-create policy "backlog_comments: write" on public.backlog_comments for all    to authenticated using (true) with check (true);
+create policy "backlog_comments: read"  on public.backlog_comments for select to authenticated
+  using ((select public.a1_has_min_role('editor')));
+create policy "backlog_comments: write" on public.backlog_comments for all    to authenticated
+  using ((select public.a1_has_min_role('editor')))
+  with check ((select public.a1_has_min_role('editor')));
 
 -- One vote per user per ticket. A trigger keeps backlog_items.vote_count in sync.
 create table if not exists public.backlog_votes (
@@ -269,8 +346,11 @@ create table if not exists public.backlog_votes (
 alter table public.backlog_votes enable row level security;
 drop policy if exists "backlog_votes: read"  on public.backlog_votes;
 drop policy if exists "backlog_votes: write" on public.backlog_votes;
-create policy "backlog_votes: read"  on public.backlog_votes for select to authenticated using (true);
-create policy "backlog_votes: write" on public.backlog_votes for all    to authenticated using (true) with check (true);
+create policy "backlog_votes: read"  on public.backlog_votes for select to authenticated
+  using ((select public.a1_has_min_role('editor')));
+create policy "backlog_votes: write" on public.backlog_votes for all    to authenticated
+  using ((select public.a1_has_min_role('editor')))
+  with check ((select public.a1_has_min_role('editor')));
 
 create or replace function public.backlog_sync_votes()
 returns trigger language plpgsql as $$
@@ -307,8 +387,11 @@ create index if not exists backlog_notifications_user_idx on public.backlog_noti
 alter table public.backlog_notifications enable row level security;
 drop policy if exists "backlog_notifications: read"  on public.backlog_notifications;
 drop policy if exists "backlog_notifications: write" on public.backlog_notifications;
-create policy "backlog_notifications: read"  on public.backlog_notifications for select to authenticated using (true);
-create policy "backlog_notifications: write" on public.backlog_notifications for all    to authenticated using (true) with check (true);
+create policy "backlog_notifications: read"  on public.backlog_notifications for select to authenticated
+  using ((select public.a1_has_min_role('editor')));
+create policy "backlog_notifications: write" on public.backlog_notifications for all    to authenticated
+  using ((select public.a1_has_min_role('editor')))
+  with check ((select public.a1_has_min_role('editor')));
 
 -- ─── Data sources (datasets) ─────────────────────────────────────────────────
 -- Reusable datasets (A1-94): a named table of `columns` + `rows`, scoped to projects

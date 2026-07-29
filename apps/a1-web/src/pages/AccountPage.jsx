@@ -4,6 +4,7 @@ import {
   Button,
   ButtonContainer,
   Card,
+  CheckboxGroup,
   Heading,
   MessageBadge,
   Paragraph,
@@ -12,6 +13,8 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { useAuth } from '../lib/AuthContext.jsx'
+import { useAccess } from '../access/AccessContext.jsx'
+import { accessRoleLabel } from '../access/PageAccessBoundary.jsx'
 import { pushLocalData } from '../projects/cloudSync.js'
 import { runManualSync } from '../lib/manualSync.js'
 import { loadProjects } from '../projects/projectStore'
@@ -21,16 +24,18 @@ import { useT } from '../labels/useT.js'
 import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Account page built from A1 components. Invite-only: sign-in only (no public
-// sign-up — the whole app is gated by AuthGate). Signed in: account info, a
+// sign-up). Signed in: account info, a
 // storage-location panel, "import local data", sign out, and delete. Cloud sync
 // follows the session automatically. Replaces the former Account dialog.
 export function AccountPage({ onNavigate }) {
   const { user, configured, signIn, signOut, resetPassword, deleteAccount } = useAuth()
+  const { role } = useAccess()
   const t = useT()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [agreed, setAgreed] = useState(false)
   const [pushing, setPushing] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [storage, setStorage] = useState(null)
@@ -82,11 +87,12 @@ export function AccountPage({ onNavigate }) {
 
   async function submit() {
     if (!email || !password) { setStatus({ status: 'warn', message: t('app.account.warnEmailPassword', 'Enter an email and password.') }); return }
+    if (!agreed) { setStatus({ status: 'warn', message: t('app.account.warnAgreement', 'Accept the alpha agreement to continue.') }); return }
     setBusy(true); setStatus(null)
     const error = await signIn(email, password)
     setBusy(false)
     if (error) { setStatus({ status: 'error', message: error.message }); return }
-    setEmail(''); setPassword(''); setStatus(null)
+    setEmail(''); setPassword(''); setAgreed(false); setStatus(null)
   }
 
   async function handleReset() {
@@ -119,6 +125,9 @@ export function AccountPage({ onNavigate }) {
           <Card>
           <Stack gap="lg">
             <Paragraph>{t('app.account.signedInAs', 'Signed in as')} <strong>{user.email}</strong>. {t('app.account.sharedWorkspace', 'This is a shared workspace — every signed-in user sees and edits the same projects, themes, patterns, and images.')}</Paragraph>
+            <MessageBadge status="info" subtle icon="badge">
+              {t('app.access.currentRole', 'Role')}: {accessRoleLabel(t, role)}
+            </MessageBadge>
             {status && <Banner status={status.status}>{status.message}</Banner>}
             {storage && (
               <Stack gap="xs">
@@ -166,9 +175,17 @@ export function AccountPage({ onNavigate }) {
             <Paragraph size="sm" color="muted">{t('app.account.inviteOnly', 'Accounts are invite-only — sign in to continue.')}</Paragraph>
             <TextField label={t('app.account.emailLabel', 'Email')} type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <TextField label={t('app.account.passwordLabel', 'Password')} type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <CheckboxGroup
+              value={agreed ? ['agree'] : []}
+              onChange={(values) => setAgreed(values.includes('agree'))}
+              options={[{
+                value: 'agree',
+                label: t('app.account.alphaAgreement', 'I agree that this is an alpha site and the intellectual property of Nathan Dana. I will not share it without permission.'),
+              }]}
+            />
             {status && <Banner status={status.status}>{status.message}</Banner>}
             <ButtonContainer fillButtons>
-              <Button variant="primary" loading={busy} onClick={submit}>{t('app.action.signIn', 'Sign in')}</Button>
+              <Button variant="primary" loading={busy} disabled={!agreed} onClick={submit}>{t('app.action.signIn', 'Sign in')}</Button>
             </ButtonContainer>
             <Button variant="tertiary" size="sm" icon="lock_reset" onClick={handleReset}>{t('app.account.forgotPassword', 'Forgot password?')}</Button>
           </Stack>

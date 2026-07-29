@@ -1435,7 +1435,7 @@ const RAW_HELP = [
           <Stack gap="sm">
             <P>There's no save button — every change is saved automatically as you work. Where it lives depends on whether you're signed in:</P>
             <Bullets items={[
-              <><strong>Signed in</strong> — projects, pages, patterns, and themes sync to a shared cloud workspace in near-real-time, so your work is available on any device you sign in from.</>,
+              <><strong>Signed in</strong> — projects and pages sync to a shared cloud workspace, and your assigned role controls access to other shared tools.</>,
               <><strong>Signed out (or no account configured)</strong> — everything is saved in this browser only; it persists across reloads but stays on this device.</>,
             ]} />
           </Stack>
@@ -1447,7 +1447,7 @@ const RAW_HELP = [
         keywords: 'account sign in login cloud sync shared workspace supabase invite collaborate devices edit history who changed attribution',
         body: (
           <Stack gap="sm">
-            <P>Accounts are <strong>invite-only</strong> — open <strong>Settings → Account</strong> to sign in. Once signed in, A1 is a <strong>shared workspace</strong>: every signed-in user sees and edits the same projects, pages, patterns, themes, and images.</P>
+            <P>Accounts are <strong>invite-only</strong> — open <strong>Settings → Account</strong> to sign in. A1 uses User, Editor, and Administrator roles to control shared workspace tools. Editors manage governance content and the Backlog; administrators can open high-impact previews such as Theme editor.</P>
             <Bullets items={[
               'Changes sync automatically across devices and are visible to everyone signed in.',
               'Edits are attributed — the History panel shows who changed what, with restore.',
@@ -1481,7 +1481,7 @@ const RAW_HELP = [
           <Stack gap="sm">
             <P>Open <strong>Settings</strong> from the top navigation. The settings page has three tabs:</P>
             <Bullets items={[
-              <><strong>Account</strong> — sign in and out. When signed in, all workspace data (projects, pages, patterns, themes, labels, images) syncs to the cloud automatically.</>,
+              <><strong>Account</strong> — sign in and out, review your current role, sync allowed workspace data, and manage your account.</>,
               <><strong>Editor</strong> — export all pages to a backup file, or import pages from a file to restore or migrate work. Also shows the current locale preference.</>,
               <><strong>AI</strong> — enter your Anthropic API key for the AI image finder and AI page editor. The icon finder uses the local Codex bridge instead.</>,
             ]} />
