@@ -4,7 +4,7 @@ import {
   handleUserAdminRequest,
   roleFromUser,
   serializeUser,
-} from './user-admin.mjs'
+} from '../netlify/functions/user-admin.mjs'
 
 function request(method = 'GET', body) {
   return new Request('https://a1.example/.netlify/functions/user-admin', {
