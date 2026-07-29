@@ -45,6 +45,30 @@ Run from `apps/a1-web/` (the root `dev:a1-web` script is preferred for the stabl
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Preview the production build on `127.0.0.1:4177` |
 
+## Access roles
+
+Hosted access uses cumulative Guest, User, Editor and Administrator roles.
+Signed-in roles come from trusted Supabase `app_metadata.role`; accounts without
+an explicit role default to User. Apply
+[`supabase/migrations/20260729_a1_405_user_access.sql`](supabase/migrations/20260729_a1_405_user_access.sql)
+and
+[`supabase/migrations/20260729_a1_405_user_management.sql`](supabase/migrations/20260729_a1_405_user_management.sql)
+to existing workspaces before enabling role-based policies and administrator
+user management.
+
+The Administration page calls the same-origin Netlify function at
+`/.netlify/functions/user-admin`. Configure `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` through Netlify's environment-variable UI, with the
+service key available only to Functions when scoped variables are supported.
+Never add the service key to a `VITE_*` variable or the client bundle. The
+function verifies the caller's Supabase session and Administrator role before
+listing accounts, sending invitations or changing roles. Use Netlify Dev when
+testing this function locally; the Vite-only development server does not host
+Netlify functions. See
+[`packages/react/ai/access-control.md`](../../packages/react/ai/access-control.md)
+for the feature matrix, bootstrap guidance, enforcement boundaries and
+remaining follow-ups.
+
 ## Architecture
 
 A single-page app with **no router dependency** — navigation is driven by a `?page=` query param managed with the History API.

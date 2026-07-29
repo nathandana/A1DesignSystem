@@ -230,6 +230,20 @@
             "ar": "البدء"
           }
         },
+        "labs": {
+          "$type": "string",
+          "$value": "Labs",
+          "$description": "Labs page title for experimental patterns and proposed components.",
+          "locale": {
+            "es": "Laboratorios",
+            "fr": "Labos",
+            "de": "Labs",
+            "pt": "Labs",
+            "ja": "ラボ",
+            "zh": "实验室",
+            "ar": "المختبرات"
+          }
+        },
         "patterns": {
           "$type": "string",
           "$value": "Patterns",
@@ -733,6 +747,738 @@
             "zh": "账户",
             "ar": "الحساب"
           }
+        },
+        "admin": {
+          "$type": "string",
+          "$value": "Administration",
+          "$description": "Administrator-only page title and navigation label.",
+          "locale": {
+            "es": "Administración",
+            "fr": "Administration",
+            "de": "Administration",
+            "pt": "Administração",
+            "ja": "管理",
+            "zh": "管理",
+            "ar": "الإدارة"
+          }
+        }
+      },
+      "access": {
+        "roleGuest": {
+          "$type": "string",
+          "$value": "Guest",
+          "$description": "Access role for a visitor who is not signed in.",
+          "locale": { "es": "Invitado", "fr": "Invité", "de": "Gast", "pt": "Visitante", "ja": "ゲスト", "zh": "访客", "ar": "ضيف" }
+        },
+        "roleUser": {
+          "$type": "string",
+          "$value": "User",
+          "$description": "Standard signed-in access role.",
+          "locale": { "es": "Usuario", "fr": "Utilisateur", "de": "Benutzer", "pt": "Usuário", "ja": "ユーザー", "zh": "用户", "ar": "مستخدم" }
+        },
+        "roleEditor": {
+          "$type": "string",
+          "$value": "Editor",
+          "$description": "Access role for people who manage governance content and the backlog.",
+          "locale": { "es": "Editor", "fr": "Éditeur", "de": "Editor", "pt": "Editor", "ja": "編集者", "zh": "编辑者", "ar": "محرر" }
+        },
+        "roleAdmin": {
+          "$type": "string",
+          "$value": "Administrator",
+          "$description": "Highest access role for administrative and preview tools.",
+          "locale": { "es": "Administrador", "fr": "Administrateur", "de": "Administrator", "pt": "Administrador", "ja": "管理者", "zh": "管理员", "ar": "مسؤول" }
+        },
+        "deniedTitle": {
+          "$type": "string",
+          "$value": "Access required",
+          "$description": "Page title shown when a person cannot open a restricted page.",
+          "locale": { "es": "Acceso requerido", "fr": "Accès requis", "de": "Zugriff erforderlich", "pt": "Acesso necessário", "ja": "アクセスが必要です", "zh": "需要访问权限", "ar": "الوصول مطلوب" }
+        },
+        "deniedUser": {
+          "$type": "string",
+          "$value": "Sign in with an A1 account to open this page.",
+          "$description": "Recovery guidance for a page that requires any signed-in user.",
+          "locale": { "es": "Inicia sesión con una cuenta de A1 para abrir esta página.", "fr": "Connectez-vous avec un compte A1 pour ouvrir cette page.", "de": "Melden Sie sich mit einem A1-Konto an, um diese Seite zu öffnen.", "pt": "Entre com uma conta A1 para abrir esta página.", "ja": "このページを開くには、A1 アカウントでサインインしてください。", "zh": "使用 A1 账户登录以打开此页面。", "ar": "سجّل الدخول باستخدام حساب A1 لفتح هذه الصفحة." }
+        },
+        "deniedEditor": {
+          "$type": "string",
+          "$value": "This page is available to editors and administrators.",
+          "$description": "Access explanation for an editor-only page.",
+          "locale": { "es": "Esta página está disponible para editores y administradores.", "fr": "Cette page est accessible aux éditeurs et aux administrateurs.", "de": "Diese Seite ist für Editoren und Administratoren verfügbar.", "pt": "Esta página está disponível para editores e administradores.", "ja": "このページは編集者と管理者が利用できます。", "zh": "此页面仅供编辑者和管理员使用。", "ar": "هذه الصفحة متاحة للمحررين والمسؤولين." }
+        },
+        "deniedAdmin": {
+          "$type": "string",
+          "$value": "This page is available to administrators.",
+          "$description": "Access explanation for an administrator-only page.",
+          "locale": { "es": "Esta página está disponible para administradores.", "fr": "Cette page est accessible aux administrateurs.", "de": "Diese Seite ist für Administratoren verfügbar.", "pt": "Esta página está disponível para administradores.", "ja": "このページは管理者が利用できます。", "zh": "此页面仅供管理员使用。", "ar": "هذه الصفحة متاحة للمسؤولين." }
+        },
+        "requiredRole": {
+          "$type": "string",
+          "$value": "Required role",
+          "$description": "Label for the minimum role needed to open a restricted page.",
+          "locale": { "es": "Rol requerido", "fr": "Rôle requis", "de": "Erforderliche Rolle", "pt": "Função necessária", "ja": "必要なロール", "zh": "所需角色", "ar": "الدور المطلوب" }
+        },
+        "currentAccess": {
+          "$type": "string",
+          "$value": "Your access",
+          "$description": "Heading for a summary of the current person's access.",
+          "locale": { "es": "Tu acceso", "fr": "Votre accès", "de": "Ihr Zugriff", "pt": "Seu acesso", "ja": "アクセス権", "zh": "你的访问权限", "ar": "صلاحية وصولك" }
+        },
+        "currentRole": {
+          "$type": "string",
+          "$value": "Role",
+          "$description": "Label for the current person's access role.",
+          "locale": { "es": "Rol", "fr": "Rôle", "de": "Rolle", "pt": "Função", "ja": "ロール", "zh": "角色", "ar": "الدور" }
+        },
+        "roleSource": {
+          "$type": "string",
+          "$value": "Role source",
+          "$description": "Label for the system that supplied the current role.",
+          "locale": { "es": "Origen del rol", "fr": "Source du rôle", "de": "Rollenquelle", "pt": "Origem da função", "ja": "ロールの提供元", "zh": "角色来源", "ar": "مصدر الدور" }
+        },
+        "sourceLocal": {
+          "$type": "string",
+          "$value": "Local build",
+          "$description": "Role source used when cloud accounts are not configured.",
+          "locale": { "es": "Versión local", "fr": "Version locale", "de": "Lokaler Build", "pt": "Versão local", "ja": "ローカルビルド", "zh": "本地构建", "ar": "إصدار محلي" }
+        },
+        "sourceAccount": {
+          "$type": "string",
+          "$value": "Account metadata",
+          "$description": "Role source used for hosted signed-in accounts.",
+          "locale": { "es": "Metadatos de la cuenta", "fr": "Métadonnées du compte", "de": "Kontometadaten", "pt": "Metadados da conta", "ja": "アカウントメタデータ", "zh": "账户元数据", "ar": "بيانات الحساب الوصفية" }
+        },
+        "adminDescription": {
+          "$type": "string",
+          "$value": "Manage accounts, roles and administrator-only preview tools.",
+          "$description": "Introductory description for the Administration page.",
+          "locale": { "es": "Administra cuentas, roles y herramientas de vista previa solo para administradores.", "fr": "Gérez les comptes, les rôles et les outils de prévisualisation réservés aux administrateurs.", "de": "Verwalten Sie Konten, Rollen und Vorschauwerkzeuge nur für Administratoren.", "pt": "Gerencie contas, funções e ferramentas de prévia exclusivas para administradores.", "ja": "アカウント、ロール、管理者専用のプレビューツールを管理します。", "zh": "管理账户、角色和仅限管理员使用的预览工具。", "ar": "أدِر الحسابات والأدوار وأدوات المعاينة المخصصة للمسؤولين." }
+        },
+        "adminRoleGuidance": {
+          "$type": "string",
+          "$value": "Hosted roles come from trusted Supabase account metadata. Local builds keep administrator access so offline development continues to work.",
+          "$description": "Explanation of role assignment on the Administration page.",
+          "locale": { "es": "Los roles alojados provienen de metadatos de cuenta confiables de Supabase. Las versiones locales conservan el acceso de administrador para que el desarrollo sin conexión siga funcionando.", "fr": "Les rôles hébergés proviennent des métadonnées de compte Supabase approuvées. Les versions locales conservent l’accès administrateur pour permettre le développement hors ligne.", "de": "Gehostete Rollen stammen aus vertrauenswürdigen Supabase-Kontometadaten. Lokale Builds behalten Administratorzugriff, damit die Offline-Entwicklung weiter funktioniert.", "pt": "As funções hospedadas vêm de metadados confiáveis da conta Supabase. As versões locais mantêm o acesso de administrador para permitir o desenvolvimento offline.", "ja": "ホスト環境のロールは、信頼できる Supabase アカウントメタデータから取得します。ローカルビルドでは、オフライン開発を続けられるよう管理者アクセスを維持します。", "zh": "托管角色来自可信的 Supabase 账户元数据。本地构建保留管理员权限，以便离线开发继续进行。", "ar": "تأتي الأدوار المستضافة من بيانات حساب Supabase الوصفية الموثوقة. تحتفظ الإصدارات المحلية بوصول المسؤول ليستمر التطوير دون اتصال." }
+        },
+        "previewTools": {
+          "$type": "string",
+          "$value": "Preview tools",
+          "$description": "Heading for administrator-only preview features.",
+          "locale": { "es": "Herramientas de vista previa", "fr": "Outils de prévisualisation", "de": "Vorschauwerkzeuge", "pt": "Ferramentas de prévia", "ja": "プレビューツール", "zh": "预览工具", "ar": "أدوات المعاينة" }
+        },
+        "themeEditorDescription": {
+          "$type": "string",
+          "$value": "Theme editing is an administrator preview because it changes shared visual foundations.",
+          "$description": "Reason the theme editor requires administrator access.",
+          "locale": { "es": "La edición de temas es una vista previa para administradores porque cambia las bases visuales compartidas.", "fr": "La modification des thèmes est une prévisualisation administrateur, car elle change les fondations visuelles partagées.", "de": "Die Theme-Bearbeitung ist eine Administratorvorschau, da sie gemeinsame visuelle Grundlagen ändert.", "pt": "A edição de temas é uma prévia para administradores porque altera as bases visuais compartilhadas.", "ja": "テーマ編集は共有の視覚的基盤を変更するため、管理者向けプレビューです。", "zh": "主题编辑会更改共享的视觉基础，因此属于管理员预览功能。", "ar": "تحرير السمات معاينة للمسؤول لأنه يغيّر الأسس المرئية المشتركة." }
+        },
+        "openThemeEditor": {
+          "$type": "string",
+          "$value": "Open theme editor",
+          "$description": "Action that opens the administrator-only theme editor.",
+          "locale": { "es": "Abrir el editor de temas", "fr": "Ouvrir l’éditeur de thèmes", "de": "Theme-Editor öffnen", "pt": "Abrir o editor de temas", "ja": "テーマエディターを開く", "zh": "打开主题编辑器", "ar": "فتح محرر السمات" }
+        },
+        "userManagementUnavailable": {
+          "$type": "string",
+          "$value": "Cloud user management is unavailable",
+          "$description": "Heading shown when user management cannot run without cloud configuration.",
+          "locale": { "es": "La administración de usuarios en la nube no está disponible", "fr": "La gestion des utilisateurs dans le nuage n’est pas disponible", "de": "Cloud-Benutzerverwaltung ist nicht verfügbar", "pt": "O gerenciamento de usuários na nuvem não está disponível", "ja": "クラウドユーザー管理を利用できません", "zh": "云用户管理不可用", "ar": "إدارة مستخدمي السحابة غير متاحة" }
+        },
+        "userManagementUnavailableDescription": {
+          "$type": "string",
+          "$value": "Configure Supabase and the server-only service key to list accounts, send invitations and assign roles.",
+          "$description": "Recovery guidance when cloud user management is unavailable.",
+          "locale": { "es": "Configura Supabase y la clave de servicio exclusiva del servidor para enumerar cuentas, enviar invitaciones y asignar roles.", "fr": "Configurez Supabase et la clé de service réservée au serveur pour répertorier les comptes, envoyer des invitations et attribuer des rôles.", "de": "Konfigurieren Sie Supabase und den nur serverseitigen Service-Schlüssel, um Konten aufzulisten, Einladungen zu senden und Rollen zuzuweisen.", "pt": "Configure o Supabase e a chave de serviço exclusiva do servidor para listar contas, enviar convites e atribuir funções.", "ja": "アカウントの一覧表示、招待の送信、ロールの割り当てを行うには、Supabase とサーバー専用サービスキーを設定してください。", "zh": "配置 Supabase 和仅限服务器使用的服务密钥，以列出账户、发送邀请和分配角色。", "ar": "اضبط Supabase ومفتاح الخدمة المخصص للخادم لعرض الحسابات وإرسال الدعوات وتعيين الأدوار." }
+        },
+        "userManagement": {
+          "$type": "string",
+          "$value": "User management",
+          "$description": "Heading for administrator account management.",
+          "locale": { "es": "Administración de usuarios", "fr": "Gestion des utilisateurs", "de": "Benutzerverwaltung", "pt": "Gerenciamento de usuários", "ja": "ユーザー管理", "zh": "用户管理", "ar": "إدارة المستخدمين" }
+        },
+        "userManagementDescription": {
+          "$type": "string",
+          "$value": "Invite people and control access with trusted account roles.",
+          "$description": "Description of administrator account management.",
+          "locale": { "es": "Invita a personas y controla el acceso con roles de cuenta confiables.", "fr": "Invitez des personnes et contrôlez l’accès avec des rôles de compte approuvés.", "de": "Laden Sie Personen ein und steuern Sie den Zugriff mit vertrauenswürdigen Kontorollen.", "pt": "Convide pessoas e controle o acesso com funções de conta confiáveis.", "ja": "ユーザーを招待し、信頼できるアカウントロールでアクセスを制御します。", "zh": "邀请人员并使用可信账户角色控制访问权限。", "ar": "ادعُ الأشخاص وتحكّم في الوصول باستخدام أدوار الحساب الموثوقة." }
+        },
+        "inviteUser": {
+          "$type": "string",
+          "$value": "Invite user",
+          "$description": "Action and dialog title for inviting an account.",
+          "locale": { "es": "Invitar usuario", "fr": "Inviter un utilisateur", "de": "Benutzer einladen", "pt": "Convidar usuário", "ja": "ユーザーを招待", "zh": "邀请用户", "ar": "دعوة مستخدم" }
+        },
+        "userEmail": {
+          "$type": "string",
+          "$value": "Email",
+          "$description": "Column and field label for a user's email address.",
+          "locale": { "es": "Correo electrónico", "fr": "Adresse courriel", "de": "E-Mail", "pt": "E-mail", "ja": "メールアドレス", "zh": "电子邮件", "ar": "البريد الإلكتروني" }
+        },
+        "accountStatus": {
+          "$type": "string",
+          "$value": "Status",
+          "$description": "Column label for an account's invitation status.",
+          "locale": { "es": "Estado", "fr": "État", "de": "Status", "pt": "Status", "ja": "ステータス", "zh": "状态", "ar": "الحالة" }
+        },
+        "accountActive": {
+          "$type": "string",
+          "$value": "Active",
+          "$description": "Status for an account that accepted its invitation.",
+          "locale": { "es": "Activo", "fr": "Actif", "de": "Aktiv", "pt": "Ativo", "ja": "有効", "zh": "有效", "ar": "نشط" }
+        },
+        "invitationPending": {
+          "$type": "string",
+          "$value": "Invitation pending",
+          "$description": "Status for an account that has not accepted its invitation.",
+          "locale": { "es": "Invitación pendiente", "fr": "Invitation en attente", "de": "Einladung ausstehend", "pt": "Convite pendente", "ja": "招待保留中", "zh": "邀请待处理", "ar": "الدعوة معلّقة" }
+        },
+        "lastSignIn": {
+          "$type": "string",
+          "$value": "Last sign-in",
+          "$description": "Column label for the most recent account sign-in.",
+          "locale": { "es": "Último inicio de sesión", "fr": "Dernière connexion", "de": "Letzte Anmeldung", "pt": "Último acesso", "ja": "最終サインイン", "zh": "上次登录", "ar": "آخر تسجيل دخول" }
+        },
+        "never": {
+          "$type": "string",
+          "$value": "Never",
+          "$description": "Fallback when an account has not signed in.",
+          "locale": { "es": "Nunca", "fr": "Jamais", "de": "Nie", "pt": "Nunca", "ja": "未完了", "zh": "从未", "ar": "أبدًا" }
+        },
+        "userActions": {
+          "$type": "string",
+          "$value": "Actions",
+          "$description": "Column label for account actions.",
+          "locale": { "es": "Acciones", "fr": "Actions", "de": "Aktionen", "pt": "Ações", "ja": "操作", "zh": "操作", "ar": "الإجراءات" }
+        },
+        "currentAccount": {
+          "$type": "string",
+          "$value": "Current account",
+          "$description": "Label that identifies the signed-in administrator in the user table.",
+          "locale": { "es": "Cuenta actual", "fr": "Compte actuel", "de": "Aktuelles Konto", "pt": "Conta atual", "ja": "現在のアカウント", "zh": "当前账户", "ar": "الحساب الحالي" }
+        },
+        "editRole": {
+          "$type": "string",
+          "$value": "Edit role",
+          "$description": "Action that opens the role editor for an account.",
+          "locale": { "es": "Editar rol", "fr": "Modifier le rôle", "de": "Rolle bearbeiten", "pt": "Editar função", "ja": "ロールを編集", "zh": "编辑角色", "ar": "تعديل الدور" }
+        },
+        "loadingUsers": {
+          "$type": "string",
+          "$value": "Loading users",
+          "$description": "Loading status and accessible progress label for user management.",
+          "locale": { "es": "Cargando usuarios", "fr": "Chargement des utilisateurs", "de": "Benutzer werden geladen", "pt": "Carregando usuários", "ja": "ユーザーを読み込んでいます", "zh": "正在加载用户", "ar": "جارٍ تحميل المستخدمين" }
+        },
+        "retryUserManagement": {
+          "$type": "string",
+          "$value": "Retry user management",
+          "$description": "Action to retry loading user-management data.",
+          "locale": { "es": "Reintentar la administración de usuarios", "fr": "Réessayer la gestion des utilisateurs", "de": "Benutzerverwaltung erneut versuchen", "pt": "Tentar novamente o gerenciamento de usuários", "ja": "ユーザー管理を再試行", "zh": "重试用户管理", "ar": "إعادة محاولة إدارة المستخدمين" }
+        },
+        "usersTableCaption": {
+          "$type": "string",
+          "$value": "A1 user accounts",
+          "$description": "Accessible caption for the administrator user table.",
+          "locale": { "es": "Cuentas de usuario de A1", "fr": "Comptes utilisateurs A1", "de": "A1-Benutzerkonten", "pt": "Contas de usuário do A1", "ja": "A1 ユーザーアカウント", "zh": "A1 用户账户", "ar": "حسابات مستخدمي A1" }
+        },
+        "noUsersTitle": {
+          "$type": "string",
+          "$value": "No users yet",
+          "$description": "Empty-state heading when no managed accounts exist.",
+          "locale": { "es": "Aún no hay usuarios", "fr": "Aucun utilisateur pour le moment", "de": "Noch keine Benutzer", "pt": "Nenhum usuário ainda", "ja": "ユーザーはまだいません", "zh": "尚无用户", "ar": "لا يوجد مستخدمون بعد" }
+        },
+        "noUsersDescription": {
+          "$type": "string",
+          "$value": "Invite a user to create the first account.",
+          "$description": "Empty-state recovery when no managed accounts exist.",
+          "locale": { "es": "Invita a un usuario para crear la primera cuenta.", "fr": "Invitez un utilisateur pour créer le premier compte.", "de": "Laden Sie einen Benutzer ein, um das erste Konto zu erstellen.", "pt": "Convide um usuário para criar a primeira conta.", "ja": "ユーザーを招待して最初のアカウントを作成してください。", "zh": "邀请用户以创建第一个账户。", "ar": "ادعُ مستخدمًا لإنشاء الحساب الأول." }
+        },
+        "inviteDialogDescription": {
+          "$type": "string",
+          "$value": "The person will receive an email invitation and the selected role.",
+          "$description": "Explanation in the invite-user dialog.",
+          "locale": { "es": "La persona recibirá una invitación por correo electrónico y el rol seleccionado.", "fr": "La personne recevra une invitation par courriel et le rôle sélectionné.", "de": "Die Person erhält eine E-Mail-Einladung und die ausgewählte Rolle.", "pt": "A pessoa receberá um convite por e-mail e a função selecionada.", "ja": "招待メールと選択したロールがユーザーに送信されます。", "zh": "此人将收到电子邮件邀请和所选角色。", "ar": "سيتلقى الشخص دعوة عبر البريد الإلكتروني والدور المحدد." }
+        },
+        "sendInvite": {
+          "$type": "string",
+          "$value": "Send invitation",
+          "$description": "Submit action in the invite-user dialog.",
+          "locale": { "es": "Enviar invitación", "fr": "Envoyer l’invitation", "de": "Einladung senden", "pt": "Enviar convite", "ja": "招待を送信", "zh": "发送邀请", "ar": "إرسال الدعوة" }
+        },
+        "cancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Action that closes an administrator dialog without saving.",
+          "locale": { "es": "Cancelar", "fr": "Annuler", "de": "Abbrechen", "pt": "Cancelar", "ja": "キャンセル", "zh": "取消", "ar": "إلغاء" }
+        },
+        "inviteSuccess": {
+          "$type": "string",
+          "$value": "Invitation sent and role assigned.",
+          "$description": "Success message after inviting an account.",
+          "locale": { "es": "Invitación enviada y rol asignado.", "fr": "Invitation envoyée et rôle attribué.", "de": "Einladung gesendet und Rolle zugewiesen.", "pt": "Convite enviado e função atribuída.", "ja": "招待を送信し、ロールを割り当てました。", "zh": "邀请已发送，角色已分配。", "ar": "أُرسلت الدعوة وعُيّن الدور." }
+        },
+        "editRoleDialogTitle": {
+          "$type": "string",
+          "$value": "Edit user role",
+          "$description": "Title of the account role editor dialog.",
+          "locale": { "es": "Editar rol de usuario", "fr": "Modifier le rôle de l’utilisateur", "de": "Benutzerrolle bearbeiten", "pt": "Editar função do usuário", "ja": "ユーザーロールを編集", "zh": "编辑用户角色", "ar": "تعديل دور المستخدم" }
+        },
+        "saveRole": {
+          "$type": "string",
+          "$value": "Save role",
+          "$description": "Submit action in the account role editor.",
+          "locale": { "es": "Guardar rol", "fr": "Enregistrer le rôle", "de": "Rolle speichern", "pt": "Salvar função", "ja": "ロールを保存", "zh": "保存角色", "ar": "حفظ الدور" }
+        },
+        "roleRefreshGuidance": {
+          "$type": "string",
+          "$value": "The account must refresh its session after the role changes.",
+          "$description": "Guidance shown before an administrator changes an account role.",
+          "locale": { "es": "La cuenta debe actualizar su sesión después de que cambie el rol.", "fr": "Le compte doit actualiser sa session après la modification du rôle.", "de": "Das Konto muss seine Sitzung nach der Rollenänderung aktualisieren.", "pt": "A conta deve atualizar a sessão após a alteração da função.", "ja": "ロールの変更後、アカウントはセッションを更新する必要があります。", "zh": "角色更改后，该账户必须刷新会话。", "ar": "يجب أن يحدّث الحساب جلسته بعد تغيير الدور." }
+        },
+        "roleUpdateSuccess": {
+          "$type": "string",
+          "$value": "Role updated. The account must refresh its session to receive the change.",
+          "$description": "Success and recovery message after an account role changes.",
+          "locale": { "es": "Rol actualizado. La cuenta debe actualizar su sesión para recibir el cambio.", "fr": "Rôle mis à jour. Le compte doit actualiser sa session pour recevoir la modification.", "de": "Rolle aktualisiert. Das Konto muss seine Sitzung aktualisieren, um die Änderung zu erhalten.", "pt": "Função atualizada. A conta deve atualizar a sessão para receber a alteração.", "ja": "ロールを更新しました。変更を受け取るには、アカウントでセッションを更新する必要があります。", "zh": "角色已更新。该账户必须刷新会话才能获得更改。", "ar": "حُدّث الدور. يجب أن يحدّث الحساب جلسته لتلقي التغيير." }
+        },
+        "auditTitle": {
+          "$type": "string",
+          "$value": "Recent access activity",
+          "$description": "Heading for administrator access audit history.",
+          "locale": { "es": "Actividad de acceso reciente", "fr": "Activité d’accès récente", "de": "Letzte Zugriffsaktivität", "pt": "Atividade de acesso recente", "ja": "最近のアクセスアクティビティ", "zh": "最近的访问活动", "ar": "نشاط الوصول الأخير" }
+        },
+        "auditDescription": {
+          "$type": "string",
+          "$value": "Review the 50 most recent invitations and role changes.",
+          "$description": "Description of administrator access audit history.",
+          "locale": { "es": "Revisa las 50 invitaciones y cambios de rol más recientes.", "fr": "Consultez les 50 invitations et modifications de rôle les plus récentes.", "de": "Prüfen Sie die 50 neuesten Einladungen und Rollenänderungen.", "pt": "Revise os 50 convites e alterações de função mais recentes.", "ja": "最新の招待とロール変更を 50 件確認します。", "zh": "查看最近 50 次邀请和角色更改。", "ar": "راجع أحدث 50 دعوة وتغييرًا للدور." }
+        },
+        "auditTableCaption": {
+          "$type": "string",
+          "$value": "User administration audit history",
+          "$description": "Accessible caption for user administration audit history.",
+          "locale": { "es": "Historial de auditoría de administración de usuarios", "fr": "Historique d’audit de la gestion des utilisateurs", "de": "Prüfverlauf der Benutzerverwaltung", "pt": "Histórico de auditoria do gerenciamento de usuários", "ja": "ユーザー管理の監査履歴", "zh": "用户管理审核历史记录", "ar": "سجل تدقيق إدارة المستخدمين" }
+        },
+        "auditAction": {
+          "$type": "string",
+          "$value": "Action",
+          "$description": "Audit table column for the administrator action.",
+          "locale": { "es": "Acción", "fr": "Action", "de": "Aktion", "pt": "Ação", "ja": "操作", "zh": "操作", "ar": "الإجراء" }
+        },
+        "auditActor": {
+          "$type": "string",
+          "$value": "Administrator",
+          "$description": "Audit table column for the acting administrator.",
+          "locale": { "es": "Administrador", "fr": "Administrateur", "de": "Administrator", "pt": "Administrador", "ja": "管理者", "zh": "管理员", "ar": "المسؤول" }
+        },
+        "auditTarget": {
+          "$type": "string",
+          "$value": "Account",
+          "$description": "Audit table column for the affected account.",
+          "locale": { "es": "Cuenta", "fr": "Compte", "de": "Konto", "pt": "Conta", "ja": "アカウント", "zh": "账户", "ar": "الحساب" }
+        },
+        "auditChange": {
+          "$type": "string",
+          "$value": "Role change",
+          "$description": "Audit table column for the assigned role or role transition.",
+          "locale": { "es": "Cambio de rol", "fr": "Modification du rôle", "de": "Rollenänderung", "pt": "Alteração de função", "ja": "ロール変更", "zh": "角色更改", "ar": "تغيير الدور" }
+        },
+        "auditDate": {
+          "$type": "string",
+          "$value": "Date",
+          "$description": "Audit table column for when an action occurred.",
+          "locale": { "es": "Fecha", "fr": "Date", "de": "Datum", "pt": "Data", "ja": "日付", "zh": "日期", "ar": "التاريخ" }
+        },
+        "auditInvited": {
+          "$type": "string",
+          "$value": "Invitation sent",
+          "$description": "Audit action label for a user invitation.",
+          "locale": { "es": "Invitación enviada", "fr": "Invitation envoyée", "de": "Einladung gesendet", "pt": "Convite enviado", "ja": "招待を送信", "zh": "邀请已发送", "ar": "أُرسلت الدعوة" }
+        },
+        "auditRoleChanged": {
+          "$type": "string",
+          "$value": "Role changed",
+          "$description": "Audit action label for an account role change.",
+          "locale": { "es": "Rol cambiado", "fr": "Rôle modifié", "de": "Rolle geändert", "pt": "Função alterada", "ja": "ロールを変更", "zh": "角色已更改", "ar": "تغيّر الدور" }
+        },
+        "deletedAccount": {
+          "$type": "string",
+          "$value": "Deleted account",
+          "$description": "Audit fallback when an associated account no longer exists.",
+          "locale": { "es": "Cuenta eliminada", "fr": "Compte supprimé", "de": "Gelöschtes Konto", "pt": "Conta excluída", "ja": "削除されたアカウント", "zh": "已删除账户", "ar": "حساب محذوف" }
+        },
+        "noAuditTitle": {
+          "$type": "string",
+          "$value": "No access activity yet",
+          "$description": "Empty-state heading for access audit history.",
+          "locale": { "es": "Aún no hay actividad de acceso", "fr": "Aucune activité d’accès pour le moment", "de": "Noch keine Zugriffsaktivität", "pt": "Nenhuma atividade de acesso ainda", "ja": "アクセスアクティビティはまだありません", "zh": "尚无访问活动", "ar": "لا يوجد نشاط وصول بعد" }
+        },
+        "noAuditDescription": {
+          "$type": "string",
+          "$value": "Invitations and role changes will appear here.",
+          "$description": "Empty-state description for access audit history.",
+          "locale": { "es": "Las invitaciones y los cambios de rol aparecerán aquí.", "fr": "Les invitations et les modifications de rôle apparaîtront ici.", "de": "Einladungen und Rollenänderungen werden hier angezeigt.", "pt": "Convites e alterações de função aparecerão aqui.", "ja": "招待とロール変更がここに表示されます。", "zh": "邀请和角色更改将显示在此处。", "ar": "ستظهر الدعوات وتغييرات الأدوار هنا." }
+        }
+      },
+      "labs": {
+        "description": {
+          "$type": "string",
+          "$value": "Explore experiments for patterns and proposed components before they become system guidance.",
+          "$description": "Introductory description for the Labs page.",
+          "locale": { "es": "Explora experimentos para patrones y componentes propuestos antes de que se conviertan en guía del sistema.", "fr": "Explorez des expérimentations de modèles et de composants proposés avant qu’ils ne deviennent des recommandations du système.", "de": "Erkunde Experimente für Muster und vorgeschlagene Komponenten, bevor sie zur Systemrichtlinie werden.", "pt": "Explore experimentos para padrões e componentes propostos antes que se tornem orientação do sistema.", "ja": "パターンや提案コンポーネントがシステムガイダンスになる前に、実験として確認できます。", "zh": "在模式和拟议组件成为系统指南之前，先探索相关实验。", "ar": "استكشف تجارب للأنماط والمكوّنات المقترحة قبل أن تصبح إرشادات للنظام." }
+        },
+        "searchLabel": {
+          "$type": "string",
+          "$value": "Search labs",
+          "$description": "Accessible label for the Labs sidebar search field.",
+          "locale": { "es": "Buscar laboratorios", "fr": "Rechercher dans les labos", "de": "Labs durchsuchen", "pt": "Pesquisar labs", "ja": "ラボを検索", "zh": "搜索实验室", "ar": "البحث في المختبرات" }
+        },
+        "treeLabel": {
+          "$type": "string",
+          "$value": "Labs experiments",
+          "$description": "Accessible label for the Labs experiment tree menu.",
+          "locale": { "es": "Experimentos de laboratorio", "fr": "Expériences des labos", "de": "Lab-Experimente", "pt": "Experimentos de labs", "ja": "ラボの実験", "zh": "实验室实验", "ar": "تجارب المختبرات" }
+        },
+        "treeRoot": {
+          "$type": "string",
+          "$value": "Experiments",
+          "$description": "Root tree item label for Labs experiments.",
+          "locale": { "es": "Experimentos", "fr": "Expériences", "de": "Experimente", "pt": "Experimentos", "ja": "実験", "zh": "实验", "ar": "التجارب" }
+        },
+        "dobGroupTitle": {
+          "$type": "string",
+          "$value": "Date of birth inputs",
+          "$description": "Labs tree group for date of birth input experiments.",
+          "locale": { "es": "Entradas de fecha de nacimiento", "fr": "Champs de date de naissance", "de": "Geburtsdatum-Eingaben", "pt": "Entradas de data de nascimento", "ja": "生年月日入力", "zh": "出生日期输入", "ar": "إدخالات تاريخ الميلاد" }
+        },
+        "generalGroupTitle": {
+          "$type": "string",
+          "$value": "General",
+          "$description": "Labs tree group for general experiments.",
+          "locale": { "es": "General", "fr": "Général", "de": "Allgemein", "pt": "Geral", "ja": "一般", "zh": "通用", "ar": "عام" }
+        },
+        "prototypeTitle": {
+          "$type": "string",
+          "$value": "Prototype",
+          "$description": "Heading above a Labs prototype area.",
+          "locale": { "es": "Prototipo", "fr": "Prototype", "de": "Prototyp", "pt": "Protótipo", "ja": "プロトタイプ", "zh": "原型", "ar": "النموذج الأولي" }
+        },
+        "testingFocusTitle": {
+          "$type": "string",
+          "$value": "Testing focus",
+          "$description": "Heading for what to evaluate during a Labs usability test.",
+          "locale": { "es": "Enfoque de prueba", "fr": "Point à tester", "de": "Testfokus", "pt": "Foco do teste", "ja": "テストの焦点", "zh": "测试重点", "ar": "محور الاختبار" }
+        },
+        "watchForTitle": {
+          "$type": "string",
+          "$value": "Watch for",
+          "$description": "Heading for risks or observations during a Labs usability test.",
+          "locale": { "es": "Observar", "fr": "À observer", "de": "Worauf achten", "pt": "Observar", "ja": "注目点", "zh": "观察点", "ar": "راقب" }
+        },
+        "dobFieldLabel": {
+          "$type": "string",
+          "$value": "Date of birth",
+          "$description": "Field label or fieldset legend for date of birth prototype inputs.",
+          "locale": { "es": "Fecha de nacimiento", "fr": "Date de naissance", "de": "Geburtsdatum", "pt": "Data de nascimento", "ja": "生年月日", "zh": "出生日期", "ar": "تاريخ الميلاد" }
+        },
+        "monthLabel": {
+          "$type": "string",
+          "$value": "Month",
+          "$description": "Date of birth input label for month.",
+          "locale": { "es": "Mes", "fr": "Mois", "de": "Monat", "pt": "Mês", "ja": "月", "zh": "月", "ar": "الشهر" }
+        },
+        "dayLabel": {
+          "$type": "string",
+          "$value": "Day",
+          "$description": "Date of birth input label for day.",
+          "locale": { "es": "Día", "fr": "Jour", "de": "Tag", "pt": "Dia", "ja": "日", "zh": "日", "ar": "اليوم" }
+        },
+        "yearLabel": {
+          "$type": "string",
+          "$value": "Year",
+          "$description": "Date of birth input label for year.",
+          "locale": { "es": "Año", "fr": "Année", "de": "Jahr", "pt": "Ano", "ja": "年", "zh": "年", "ar": "السنة" }
+        },
+        "selectMonthOption": {
+          "$type": "string",
+          "$value": "Select month",
+          "$description": "Empty option for date of birth month select.",
+          "locale": { "es": "Seleccionar mes", "fr": "Sélectionner le mois", "de": "Monat auswählen", "pt": "Selecionar mês", "ja": "月を選択", "zh": "选择月份", "ar": "اختر الشهر" }
+        },
+        "selectDayOption": {
+          "$type": "string",
+          "$value": "Select day",
+          "$description": "Empty option for date of birth day select.",
+          "locale": { "es": "Seleccionar día", "fr": "Sélectionner le jour", "de": "Tag auswählen", "pt": "Selecionar dia", "ja": "日を選択", "zh": "选择日期", "ar": "اختر اليوم" }
+        },
+        "selectYearOption": {
+          "$type": "string",
+          "$value": "Select year",
+          "$description": "Empty option for date of birth year select.",
+          "locale": { "es": "Seleccionar año", "fr": "Sélectionner l’année", "de": "Jahr auswählen", "pt": "Selecionar ano", "ja": "年を選択", "zh": "选择年份", "ar": "اختر السنة" }
+        },
+        "normalizedValueLabel": {
+          "$type": "string",
+          "$value": "Normalized value",
+          "$description": "Label shown below the single autoformatting date of birth input.",
+          "locale": { "es": "Valor normalizado", "fr": "Valeur normalisée", "de": "Normalisierter Wert", "pt": "Valor normalizado", "ja": "正規化された値", "zh": "规范化值", "ar": "القيمة المنسقة" }
+        },
+        "emptyValue": {
+          "$type": "string",
+          "$value": "No value yet",
+          "$description": "Fallback text when the autoformatted date of birth input is empty.",
+          "locale": { "es": "Sin valor todavía", "fr": "Aucune valeur pour l’instant", "de": "Noch kein Wert", "pt": "Ainda sem valor", "ja": "まだ値がありません", "zh": "尚无值", "ar": "لا توجد قيمة بعد" }
+        },
+        "dobNativeDateTitle": {
+          "$type": "string",
+          "$value": "Existing date input",
+          "$description": "Labs experiment title for the existing native date input.",
+          "locale": { "es": "Entrada de fecha existente", "fr": "Champ de date existant", "de": "Vorhandene Datumseingabe", "pt": "Entrada de data existente", "ja": "既存の日付入力", "zh": "现有日期输入", "ar": "إدخال التاريخ الحالي" }
+        },
+        "dobNativeDateSummary": {
+          "$type": "string",
+          "$value": "Use the current A1 DateField and the browser date picker as the baseline.",
+          "$description": "Summary for the native date input Labs experiment.",
+          "locale": { "es": "Usa el DateField actual de A1 y el selector de fecha del navegador como referencia.", "fr": "Utilise le DateField A1 actuel et le sélecteur de date du navigateur comme référence.", "de": "Verwendet das aktuelle A1 DateField und den Browser-Datumsauswahler als Basis.", "pt": "Usa o DateField atual do A1 e o seletor de data do navegador como referência.", "ja": "現在の A1 DateField とブラウザーの日付ピッカーをベースラインとして使用します。", "zh": "使用当前 A1 DateField 和浏览器日期选择器作为基准。", "ar": "استخدم DateField الحالي في A1 ومنتقي التاريخ في المتصفح كخط أساس." }
+        },
+        "dobNativeDateHint": {
+          "$type": "string",
+          "$value": "Baseline: current A1 DateField behavior.",
+          "$description": "Hint for the native date input Labs experiment.",
+          "locale": { "es": "Referencia: comportamiento actual de A1 DateField.", "fr": "Référence : comportement actuel du DateField A1.", "de": "Basis: aktuelles Verhalten des A1 DateField.", "pt": "Referência: comportamento atual do A1 DateField.", "ja": "ベースライン: 現在の A1 DateField の動作。", "zh": "基准：当前 A1 DateField 行为。", "ar": "خط الأساس: سلوك A1 DateField الحالي." }
+        },
+        "dobNativeDateFocus": {
+          "$type": "string",
+          "$value": "How well the browser picker supports keyboard entry, screen readers, and older birth years.",
+          "$description": "Testing focus for the native date input Labs experiment.",
+          "locale": { "es": "Qué tan bien el selector del navegador admite teclado, lectores de pantalla y años de nacimiento antiguos.", "fr": "Évaluer la prise en charge du clavier, des lecteurs d’écran et des années de naissance anciennes par le sélecteur du navigateur.", "de": "Wie gut der Browser-Auswahler Tastatureingabe, Screenreader und ältere Geburtsjahre unterstützt.", "pt": "Quão bem o seletor do navegador oferece suporte a teclado, leitores de tela e anos de nascimento antigos.", "ja": "ブラウザーピッカーがキーボード入力、スクリーンリーダー、古い出生年にどれだけ対応するか。", "zh": "浏览器选择器对键盘输入、屏幕阅读器和较早出生年份的支持情况。", "ar": "مدى دعم منتقي المتصفح لإدخال لوحة المفاتيح وقارئات الشاشة وسنوات الميلاد القديمة." }
+        },
+        "dobNativeDateWatch": {
+          "$type": "string",
+          "$value": "Whether people recognize the expected format before the native picker opens.",
+          "$description": "Observation prompt for the native date input Labs experiment.",
+          "locale": { "es": "Si las personas reconocen el formato esperado antes de que se abra el selector nativo.", "fr": "Voir si les personnes reconnaissent le format attendu avant l’ouverture du sélecteur natif.", "de": "Ob Menschen das erwartete Format erkennen, bevor der native Auswahler geöffnet wird.", "pt": "Se as pessoas reconhecem o formato esperado antes de o seletor nativo abrir.", "ja": "ネイティブピッカーが開く前に期待される形式を認識できるか。", "zh": "用户是否能在原生选择器打开前识别预期格式。", "ar": "ما إذا كان الأشخاص يتعرفون على التنسيق المتوقع قبل فتح المنتقي الأصلي." }
+        },
+        "dobSelectsTitle": {
+          "$type": "string",
+          "$value": "Month, day, and year selects",
+          "$description": "Labs experiment title for the three-select date of birth input.",
+          "locale": { "es": "Selectores de mes, día y año", "fr": "Menus mois, jour et année", "de": "Monat-, Tag- und Jahr-Auswahl", "pt": "Seletores de mês, dia e ano", "ja": "月、日、年の選択", "zh": "月、日、年选择", "ar": "قوائم الشهر واليوم والسنة" }
+        },
+        "dobSelectsSummary": {
+          "$type": "string",
+          "$value": "Use three selects so every value is constrained before submission.",
+          "$description": "Summary for the three-select date of birth Labs experiment.",
+          "locale": { "es": "Usa tres selectores para restringir cada valor antes del envío.", "fr": "Utilise trois menus pour contraindre chaque valeur avant l’envoi.", "de": "Verwendet drei Auswahllisten, damit jeder Wert vor dem Absenden begrenzt ist.", "pt": "Usa três seletores para restringir cada valor antes do envio.", "ja": "送信前にすべての値を制約するため、3 つの選択欄を使います。", "zh": "使用三个选择框，在提交前限制每个值。", "ar": "استخدم ثلاث قوائم اختيار لتقييد كل قيمة قبل الإرسال." }
+        },
+        "dobSelectsFocus": {
+          "$type": "string",
+          "$value": "Whether constrained choices reduce entry errors without making older years tedious.",
+          "$description": "Testing focus for the three-select date of birth Labs experiment.",
+          "locale": { "es": "Si las opciones restringidas reducen errores sin volver tediosos los años antiguos.", "fr": "Voir si les choix contraints réduisent les erreurs sans rendre les anciennes années pénibles.", "de": "Ob begrenzte Auswahlwerte Eingabefehler reduzieren, ohne ältere Jahre mühsam zu machen.", "pt": "Se escolhas restritas reduzem erros sem tornar anos antigos cansativos.", "ja": "制約された選択肢が、古い年の選択を面倒にせず入力ミスを減らすか。", "zh": "受限选项是否能减少输入错误，同时不会让选择较早年份变得繁琐。", "ar": "ما إذا كانت الخيارات المقيدة تقلل أخطاء الإدخال دون جعل السنوات القديمة مملة." }
+        },
+        "dobSelectsWatch": {
+          "$type": "string",
+          "$value": "How quickly people can move through three menus on touch and keyboard.",
+          "$description": "Observation prompt for the three-select date of birth Labs experiment.",
+          "locale": { "es": "Qué tan rápido pueden las personas avanzar por tres menús con tacto y teclado.", "fr": "La rapidité avec laquelle les personnes parcourent trois menus au toucher et au clavier.", "de": "Wie schnell Menschen per Touch und Tastatur durch drei Menüs kommen.", "pt": "Quão rápido as pessoas passam por três menus com toque e teclado.", "ja": "タッチとキーボードで 3 つのメニューをどれだけ速く進めるか。", "zh": "用户使用触控和键盘完成三个菜单的速度。", "ar": "مدى سرعة انتقال الأشخاص عبر ثلاث قوائم باللمس ولوحة المفاتيح." }
+        },
+        "dobNumericFieldsTitle": {
+          "$type": "string",
+          "$value": "Numeric month, day, and year",
+          "$description": "Labs experiment title for the three-number-field date of birth input.",
+          "locale": { "es": "Mes, día y año numéricos", "fr": "Mois, jour et année numériques", "de": "Numerischer Monat, Tag und Jahr", "pt": "Mês, dia e ano numéricos", "ja": "数値の月、日、年", "zh": "数字月、日、年", "ar": "الشهر واليوم والسنة بالأرقام" }
+        },
+        "dobNumericFieldsSummary": {
+          "$type": "string",
+          "$value": "Use three compact numeric fields for fast keyboard entry.",
+          "$description": "Summary for the three-number-field date of birth Labs experiment.",
+          "locale": { "es": "Usa tres campos numéricos compactos para una entrada rápida con teclado.", "fr": "Utilise trois champs numériques compacts pour une saisie rapide au clavier.", "de": "Verwendet drei kompakte numerische Felder für schnelle Tastatureingabe.", "pt": "Usa três campos numéricos compactos para entrada rápida pelo teclado.", "ja": "高速なキーボード入力のため、3 つのコンパクトな数値フィールドを使います。", "zh": "使用三个紧凑数字字段，便于快速键盘输入。", "ar": "استخدم ثلاثة حقول رقمية مدمجة للإدخال السريع بلوحة المفاتيح." }
+        },
+        "dobNumericFieldsFocus": {
+          "$type": "string",
+          "$value": "Whether separate numeric fields feel faster while keeping each part understandable.",
+          "$description": "Testing focus for the three-number-field date of birth Labs experiment.",
+          "locale": { "es": "Si los campos numéricos separados se sienten más rápidos y cada parte sigue siendo clara.", "fr": "Voir si les champs numériques séparés semblent plus rapides tout en gardant chaque partie compréhensible.", "de": "Ob separate numerische Felder schneller wirken und jeder Teil verständlich bleibt.", "pt": "Se campos numéricos separados parecem mais rápidos mantendo cada parte compreensível.", "ja": "分割された数値フィールドが速く感じられ、各部分が理解しやすいか。", "zh": "分开的数字字段是否更快，同时每个部分仍易于理解。", "ar": "ما إذا كانت الحقول الرقمية المنفصلة أسرع مع بقاء كل جزء مفهومًا." }
+        },
+        "dobNumericFieldsWatch": {
+          "$type": "string",
+          "$value": "Whether people type leading zeroes, jump between fields naturally, and avoid invalid ranges.",
+          "$description": "Observation prompt for the three-number-field date of birth Labs experiment.",
+          "locale": { "es": "Si las personas escriben ceros iniciales, saltan entre campos con naturalidad y evitan rangos no válidos.", "fr": "Voir si les personnes saisissent des zéros initiaux, passent naturellement entre les champs et évitent les plages invalides.", "de": "Ob Menschen führende Nullen tippen, natürlich zwischen Feldern wechseln und ungültige Bereiche vermeiden.", "pt": "Se as pessoas digitam zeros à esquerda, alternam naturalmente entre campos e evitam intervalos inválidos.", "ja": "先頭ゼロを入力するか、自然にフィールド間を移動するか、無効な範囲を避けられるか。", "zh": "用户是否输入前导零、自然跳转字段，并避免无效范围。", "ar": "ما إذا كان الأشخاص يكتبون الأصفار البادئة وينتقلون بين الحقول طبيعيًا ويتجنبون النطاقات غير الصالحة." }
+        },
+        "dobNumericAutoAdvanceTitle": {
+          "$type": "string",
+          "$value": "Numeric fields with auto-advance",
+          "$description": "Labs experiment title for the three-number-field date of birth input with automatic focus advance.",
+          "locale": { "es": "Campos numéricos con avance automático", "fr": "Champs numériques avec avance automatique", "de": "Numerische Felder mit automatischem Wechsel", "pt": "Campos numéricos com avanço automático", "ja": "自動移動する数値フィールド", "zh": "自动前进的数字字段", "ar": "حقول رقمية مع انتقال تلقائي" }
+        },
+        "dobNumericAutoAdvanceSummary": {
+          "$type": "string",
+          "$value": "Move focus to the next date part once month or day has enough digits.",
+          "$description": "Summary for the three-number-field date of birth Labs experiment with automatic focus advance.",
+          "locale": { "es": "Mueve el foco a la siguiente parte de la fecha cuando mes o día tienen suficientes dígitos.", "fr": "Déplace le focus vers la partie suivante dès que le mois ou le jour contient assez de chiffres.", "de": "Bewegt den Fokus zum nächsten Datumsteil, sobald Monat oder Tag genug Ziffern hat.", "pt": "Move o foco para a próxima parte da data quando mês ou dia tem dígitos suficientes.", "ja": "月または日が十分な桁数になると、次の日付部分へフォーカスを移動します。", "zh": "当月或日已有足够位数时，将焦点移到下一个日期部分。", "ar": "انقل التركيز إلى جزء التاريخ التالي عندما يحتوي الشهر أو اليوم على أرقام كافية." }
+        },
+        "dobNumericAutoAdvanceFocus": {
+          "$type": "string",
+          "$value": "Whether automatic focus movement makes numeric entry faster or feels unexpected.",
+          "$description": "Testing focus for the three-number-field date of birth Labs experiment with automatic focus advance.",
+          "locale": { "es": "Si el movimiento automático del foco acelera la entrada numérica o se siente inesperado.", "fr": "Voir si le déplacement automatique du focus accélère la saisie numérique ou surprend.", "de": "Ob automatische Fokusbewegung numerische Eingabe beschleunigt oder unerwartet wirkt.", "pt": "Se o movimento automático do foco torna a entrada numérica mais rápida ou inesperada.", "ja": "自動フォーカス移動が数値入力を速くするか、予期しない挙動に感じられるか。", "zh": "自动移动焦点是否让数字输入更快，或是否让人意外。", "ar": "ما إذا كان انتقال التركيز تلقائيًا يجعل الإدخال الرقمي أسرع أو يبدو غير متوقع." }
+        },
+        "dobNumericAutoAdvanceWatch": {
+          "$type": "string",
+          "$value": "Whether people can correct month and day values easily after focus moves forward.",
+          "$description": "Observation prompt for the three-number-field date of birth Labs experiment with automatic focus advance.",
+          "locale": { "es": "Si las personas pueden corregir mes y día fácilmente después de que el foco avanza.", "fr": "Voir si les personnes peuvent corriger facilement le mois et le jour après le déplacement du focus.", "de": "Ob Menschen Monats- und Tageswerte leicht korrigieren können, nachdem der Fokus weitergesprungen ist.", "pt": "Se as pessoas conseguem corrigir mês e dia facilmente depois que o foco avança.", "ja": "フォーカス移動後に月と日を簡単に修正できるか。", "zh": "焦点前进后，用户是否能轻松更正月和日。", "ar": "ما إذا كان الأشخاص يستطيعون تصحيح قيم الشهر واليوم بسهولة بعد انتقال التركيز للأمام." }
+        },
+        "dobMixedFieldsTitle": {
+          "$type": "string",
+          "$value": "Month select with numeric day and year",
+          "$description": "Labs experiment title for the mixed date of birth input.",
+          "locale": { "es": "Selector de mes con día y año numéricos", "fr": "Mois en menu avec jour et année numériques", "de": "Monatsauswahl mit numerischem Tag und Jahr", "pt": "Seletor de mês com dia e ano numéricos", "ja": "月選択と数値の日・年", "zh": "月份选择加数字日和年", "ar": "اختيار الشهر مع اليوم والسنة بالأرقام" }
+        },
+        "dobMixedFieldsSummary": {
+          "$type": "string",
+          "$value": "Constrain the month while keeping day and year quick to type.",
+          "$description": "Summary for the mixed date of birth Labs experiment.",
+          "locale": { "es": "Restringe el mes y mantiene día y año rápidos de escribir.", "fr": "Contraint le mois tout en gardant le jour et l’année rapides à saisir.", "de": "Begrenzt den Monat und hält Tag und Jahr schnell eintippbar.", "pt": "Restringe o mês mantendo dia e ano rápidos de digitar.", "ja": "月を制約しつつ、日と年は素早く入力できます。", "zh": "限制月份，同时保持日和年可快速输入。", "ar": "قيّد الشهر مع إبقاء اليوم والسنة سريعي الإدخال." }
+        },
+        "dobMixedFieldsFocus": {
+          "$type": "string",
+          "$value": "Whether choosing the month removes ambiguity while day and year stay quick to enter.",
+          "$description": "Testing focus for the mixed date of birth Labs experiment.",
+          "locale": { "es": "Si elegir el mes elimina ambigüedad mientras día y año siguen siendo rápidos.", "fr": "Voir si choisir le mois retire l’ambiguïté tout en gardant le jour et l’année rapides.", "de": "Ob die Monatsauswahl Mehrdeutigkeit entfernt, während Tag und Jahr schnell bleiben.", "pt": "Se escolher o mês remove ambiguidade enquanto dia e ano continuam rápidos.", "ja": "月を選ぶことで曖昧さが減り、日と年を素早く入力できるか。", "zh": "选择月份是否消除歧义，同时日和年仍能快速输入。", "ar": "ما إذا كان اختيار الشهر يزيل الالتباس مع بقاء اليوم والسنة سريعي الإدخال." }
+        },
+        "dobMixedFieldsWatch": {
+          "$type": "string",
+          "$value": "Whether the mixed control types feel coherent or interrupt the entry rhythm.",
+          "$description": "Observation prompt for the mixed date of birth Labs experiment.",
+          "locale": { "es": "Si los tipos de control mixtos se sienten coherentes o interrumpen el ritmo de entrada.", "fr": "Voir si les types de contrôles mélangés semblent cohérents ou cassent le rythme de saisie.", "de": "Ob die gemischten Steuerelemente stimmig wirken oder den Eingaberhythmus stören.", "pt": "Se os tipos de controle mistos parecem coerentes ou interrompem o ritmo de entrada.", "ja": "混在したコントロールが一貫して感じられるか、入力のリズムを妨げるか。", "zh": "混合控件类型是否连贯，或是否打断输入节奏。", "ar": "ما إذا كانت أنواع عناصر التحكم المختلطة متماسكة أو تقطع إيقاع الإدخال." }
+        },
+        "dobAutoformatTitle": {
+          "$type": "string",
+          "$value": "Single autoformatting input",
+          "$description": "Labs experiment title for the single autoformatting date of birth input.",
+          "locale": { "es": "Entrada única con formato automático", "fr": "Champ unique avec formatage automatique", "de": "Einzelfeld mit Autoformatierung", "pt": "Entrada única com formatação automática", "ja": "単一の自動整形入力", "zh": "单个自动格式化输入", "ar": "إدخال واحد بتنسيق تلقائي" }
+        },
+        "dobAutoformatSummary": {
+          "$type": "string",
+          "$value": "Let people type naturally and format digits into month, day, and year as they go.",
+          "$description": "Summary for the single autoformatting date of birth Labs experiment.",
+          "locale": { "es": "Permite escribir con naturalidad y formatea los dígitos como mes, día y año durante la entrada.", "fr": "Permet une saisie naturelle et formate les chiffres en mois, jour et année au fil de la saisie.", "de": "Lässt Menschen natürlich tippen und formatiert Ziffern laufend zu Monat, Tag und Jahr.", "pt": "Permite digitar naturalmente e formata os dígitos em mês, dia e ano durante a entrada.", "ja": "自然に入力でき、数字を入力しながら月、日、年に整形します。", "zh": "让用户自然输入，并在输入过程中将数字格式化为月、日和年。", "ar": "اسمح للأشخاص بالكتابة طبيعيًا ونسّق الأرقام إلى شهر ويوم وسنة أثناء الإدخال." }
+        },
+        "dobAutoformatHint": {
+          "$type": "string",
+          "$value": "Type digits only. For example, 61279 becomes 06/12/1979 and 61211 becomes 06/12/2011.",
+          "$description": "Hint for the single autoformatting date of birth input.",
+          "locale": { "es": "Escribe solo dígitos. Por ejemplo, 6121988 se convierte en 06/12/1988.", "fr": "Saisissez uniquement des chiffres. Par exemple, 6121988 devient 06/12/1988.", "de": "Nur Ziffern eingeben. Zum Beispiel wird 6121988 zu 06/12/1988.", "pt": "Digite apenas números. Por exemplo, 6121988 vira 06/12/1988.", "ja": "数字だけを入力します。たとえば 6121988 は 06/12/1988 になります。", "zh": "仅输入数字。例如，6121988 会变为 06/12/1988。", "ar": "اكتب الأرقام فقط. مثلًا، يصبح 6121988 هو 06/12/1988." }
+        },
+        "dobAutoformatFocus": {
+          "$type": "string",
+          "$value": "Whether people can type naturally without needing leading zeroes or separate fields.",
+          "$description": "Testing focus for the single autoformatting date of birth Labs experiment.",
+          "locale": { "es": "Si las personas pueden escribir con naturalidad sin ceros iniciales ni campos separados.", "fr": "Voir si les personnes peuvent saisir naturellement sans zéros initiaux ni champs séparés.", "de": "Ob Menschen natürlich tippen können, ohne führende Nullen oder separate Felder zu brauchen.", "pt": "Se as pessoas conseguem digitar naturalmente sem zeros à esquerda nem campos separados.", "ja": "先頭ゼロや分割フィールドなしで自然に入力できるか。", "zh": "用户是否无需前导零或分开字段即可自然输入。", "ar": "ما إذا كان الأشخاص يستطيعون الكتابة طبيعيًا دون أصفار بادئة أو حقول منفصلة." }
+        },
+        "dobAutoformatWatch": {
+          "$type": "string",
+          "$value": "Whether auto-inserted slashes and month detection help or surprise people.",
+          "$description": "Observation prompt for the single autoformatting date of birth Labs experiment.",
+          "locale": { "es": "Si las barras insertadas automáticamente y la detección de mes ayudan o sorprenden.", "fr": "Voir si les barres ajoutées automatiquement et la détection du mois aident ou surprennent.", "de": "Ob automatisch eingefügte Schrägstriche und Monatserkennung helfen oder überraschen.", "pt": "Se barras automáticas e detecção de mês ajudam ou surpreendem as pessoas.", "ja": "自動挿入されるスラッシュと月の検出が役立つか、驚かせるか。", "zh": "自动插入斜杠和月份检测是帮助用户还是让用户意外。", "ar": "ما إذا كانت الشرطات المائلة التلقائية واكتشاف الشهر تساعد الأشخاص أو تفاجئهم." }
+        },
+        "dobAutoformatFieldsTitle": {
+          "$type": "string",
+          "$value": "Autoformatting month, day, and year",
+          "$description": "Labs experiment title for separate autoformatting date of birth fields.",
+          "locale": { "es": "Mes, día y año con formato automático", "fr": "Mois, jour et année avec formatage automatique", "de": "Monat, Tag und Jahr mit Autoformatierung", "pt": "Mês, dia e ano com formatação automática", "ja": "自動整形する月、日、年", "zh": "自动格式化的月、日和年", "ar": "الشهر واليوم والسنة بتنسيق تلقائي" }
+        },
+        "dobAutoformatFieldsSummary": {
+          "$type": "string",
+          "$value": "Use three separate fields that normalize short month, day, and year values.",
+          "$description": "Summary for separate autoformatting date of birth fields.",
+          "locale": { "es": "Usa tres campos separados que normalizan valores cortos de mes, día y año.", "fr": "Utilise trois champs séparés qui normalisent les valeurs courtes de mois, jour et année.", "de": "Verwendet drei separate Felder, die kurze Monats-, Tages- und Jahreswerte normalisieren.", "pt": "Usa três campos separados que normalizam valores curtos de mês, dia e ano.", "ja": "月、日、年の短い値を正規化する 3 つの分割フィールドを使います。", "zh": "使用三个分开的字段来规范化较短的月、日和年值。", "ar": "استخدم ثلاثة حقول منفصلة تطبّع قيم الشهر واليوم والسنة القصيرة." }
+        },
+        "dobAutoformatFieldsFocus": {
+          "$type": "string",
+          "$value": "Whether separate fields keep the clarity of labels while preserving fast, forgiving date entry.",
+          "$description": "Testing focus for separate autoformatting date of birth fields.",
+          "locale": { "es": "Si los campos separados mantienen la claridad de las etiquetas y conservan una entrada de fecha rápida y flexible.", "fr": "Voir si les champs séparés gardent la clarté des libellés tout en conservant une saisie rapide et tolérante.", "de": "Ob separate Felder klare Beschriftungen behalten und trotzdem schnelle, tolerante Datumseingabe ermöglichen.", "pt": "Se campos separados mantêm a clareza dos rótulos enquanto preservam entrada de data rápida e flexível.", "ja": "分割フィールドがラベルの明確さを保ちながら、速く寛容な日付入力を維持できるか。", "zh": "分开的字段是否在保持标签清晰的同时，仍支持快速、宽容的日期输入。", "ar": "ما إذا كانت الحقول المنفصلة تحافظ على وضوح التسميات مع إبقاء إدخال التاريخ سريعًا ومتسامحًا." }
+        },
+        "dobAutoformatFieldsWatch": {
+          "$type": "string",
+          "$value": "Whether automatic zero-padding, focus movement, and year expansion feel helpful or too active.",
+          "$description": "Observation prompt for separate autoformatting date of birth fields.",
+          "locale": { "es": "Si el relleno automático con cero, el movimiento del foco y la expansión del año se sienten útiles o demasiado activos.", "fr": "Voir si l’ajout automatique de zéros, le déplacement du focus et l’expansion de l’année aident ou semblent trop actifs.", "de": "Ob automatische Nullauffüllung, Fokusbewegung und Jahr-Erweiterung hilfreich oder zu aktiv wirken.", "pt": "Se zeros automáticos, movimento do foco e expansão do ano parecem úteis ou ativos demais.", "ja": "自動ゼロ埋め、フォーカス移動、年の展開が役立つか、過剰に感じられるか。", "zh": "自动补零、焦点移动和年份展开是有帮助，还是过于主动。", "ar": "ما إذا كانت إضافة الأصفار تلقائيًا ونقل التركيز وتوسيع السنة مفيدة أو نشطة أكثر من اللازم." }
+        },
+        "patternAssemblyBenchTitle": {
+          "$type": "string",
+          "$value": "Pattern assembly bench",
+          "$description": "Initial placeholder experiment title on the Labs page.",
+          "locale": { "es": "Mesa de ensamblaje de patrones", "fr": "Banc d’assemblage de modèles", "de": "Muster-Montagefläche", "pt": "Bancada de montagem de padrões", "ja": "パターン組み立てベンチ", "zh": "模式组装台", "ar": "منضدة تجميع الأنماط" }
+        },
+        "patternAssemblyBenchSummary": {
+          "$type": "string",
+          "$value": "A placeholder for assembling patterns and proposed components before they become production guidance.",
+          "$description": "Summary for the initial Labs placeholder experiment.",
+          "locale": { "es": "Un marcador para ensamblar patrones y componentes propuestos antes de que se conviertan en guía de producción.", "fr": "Un emplacement pour assembler des modèles et des composants proposés avant qu’ils ne deviennent des recommandations de production.", "de": "Ein Platzhalter zum Zusammenstellen von Mustern und vorgeschlagenen Komponenten, bevor sie zur Produktionsrichtlinie werden.", "pt": "Um espaço reservado para montar padrões e componentes propostos antes que se tornem orientação de produção.", "ja": "パターンや提案コンポーネントが本番向けガイダンスになる前に組み立てるためのプレースホルダーです。", "zh": "用于在模式和拟议组件成为生产指南之前进行组装的占位区域。", "ar": "مساحة مؤقتة لتجميع الأنماط والمكوّنات المقترحة قبل أن تصبح إرشادات إنتاج." }
+        },
+        "placeholderBadge": {
+          "$type": "string",
+          "$value": "Placeholder",
+          "$description": "Badge label indicating the Labs page is an initial placeholder.",
+          "locale": { "es": "Marcador", "fr": "Emplacement", "de": "Platzhalter", "pt": "Marcador", "ja": "プレースホルダー", "zh": "占位", "ar": "عنصر نائب" }
+        },
+        "experimentEyebrow": {
+          "$type": "string",
+          "$value": "Experiment",
+          "$description": "Eyebrow label above the selected Labs experiment title.",
+          "locale": { "es": "Experimento", "fr": "Expérience", "de": "Experiment", "pt": "Experimento", "ja": "実験", "zh": "实验", "ar": "تجربة" }
+        },
+        "placeholderTitle": {
+          "$type": "string",
+          "$value": "This lab is ready for experiments",
+          "$description": "Empty-state title for the placeholder Labs experiment.",
+          "locale": { "es": "Este laboratorio está listo para experimentos", "fr": "Ce labo est prêt pour les expériences", "de": "Dieses Lab ist bereit für Experimente", "pt": "Este lab está pronto para experimentos", "ja": "このラボは実験の準備ができています", "zh": "此实验室已准备好开展实验", "ar": "هذا المختبر جاهز للتجارب" }
+        },
+        "placeholderDescription": {
+          "$type": "string",
+          "$value": "Use this space to assemble pattern drafts, component proposals, and interaction studies as they become ready to review.",
+          "$description": "Empty-state description for the placeholder Labs experiment.",
+          "locale": { "es": "Usa este espacio para ensamblar borradores de patrones, propuestas de componentes y estudios de interacción cuando estén listos para revisión.", "fr": "Utilisez cet espace pour assembler des brouillons de modèles, des propositions de composants et des études d’interaction lorsqu’ils sont prêts à être relus.", "de": "Nutze diesen Bereich, um Musterentwürfe, Komponentenvorschläge und Interaktionsstudien zusammenzustellen, sobald sie prüfbereit sind.", "pt": "Use este espaço para montar rascunhos de padrões, propostas de componentes e estudos de interação quando estiverem prontos para revisão.", "ja": "レビュー準備が整ったパターンドラフト、コンポーネント提案、インタラクション調査をここで組み立てます。", "zh": "当模式草稿、组件提案和交互研究准备好评审时，可在此处进行组装。", "ar": "استخدم هذه المساحة لتجميع مسودات الأنماط ومقترحات المكوّنات ودراسات التفاعل عندما تصبح جاهزة للمراجعة." }
+        },
+        "whatFitsTitle": {
+          "$type": "string",
+          "$value": "What belongs here",
+          "$description": "Labs guidance card heading for appropriate experiment content.",
+          "locale": { "es": "Qué corresponde aquí", "fr": "Ce qui appartient ici", "de": "Was hierher gehört", "pt": "O que pertence aqui", "ja": "ここに置くもの", "zh": "这里适合放什么", "ar": "ما الذي ينتمي إلى هنا" }
+        },
+        "whatFitsBody": {
+          "$type": "string",
+          "$value": "Draft patterns, proposed components, and exploratory workflows that need a visible review surface.",
+          "$description": "Labs guidance copy describing what content belongs on the page.",
+          "locale": { "es": "Borradores de patrones, componentes propuestos y flujos exploratorios que necesitan una superficie visible de revisión.", "fr": "Des brouillons de modèles, des composants proposés et des flux exploratoires qui nécessitent une surface de revue visible.", "de": "Musterentwürfe, vorgeschlagene Komponenten und explorative Workflows, die eine sichtbare Prüffläche brauchen.", "pt": "Rascunhos de padrões, componentes propostos e fluxos exploratórios que precisam de uma área visível de revisão.", "ja": "見えるレビュー面が必要なパターンドラフト、提案コンポーネント、探索的ワークフロー。", "zh": "需要可见评审界面的模式草稿、拟议组件和探索性工作流。", "ar": "مسودات الأنماط والمكوّنات المقترحة وسير العمل الاستكشافي التي تحتاج إلى مساحة مراجعة مرئية." }
+        },
+        "nextTitle": {
+          "$type": "string",
+          "$value": "Next slice",
+          "$description": "Labs guidance card heading for the expected follow-up work.",
+          "locale": { "es": "Siguiente parte", "fr": "Prochaine tranche", "de": "Nächster Abschnitt", "pt": "Próxima fatia", "ja": "次のスライス", "zh": "下一步切片", "ar": "الشريحة التالية" }
+        },
+        "nextBody": {
+          "$type": "string",
+          "$value": "Replace this placeholder with the first real experiment and keep each experiment deep-linkable.",
+          "$description": "Labs guidance copy describing the expected next implementation slice.",
+          "locale": { "es": "Reemplaza este marcador con el primer experimento real y mantén enlaces directos para cada experimento.", "fr": "Remplacez cet emplacement par la première vraie expérience et conservez un lien direct pour chaque expérience.", "de": "Ersetze diesen Platzhalter durch das erste echte Experiment und halte jedes Experiment direkt verlinkbar.", "pt": "Substitua este marcador pelo primeiro experimento real e mantenha cada experimento com link direto.", "ja": "このプレースホルダーを最初の実際の実験に置き換え、各実験をディープリンク可能に保ちます。", "zh": "用第一个真实实验替换此占位内容，并保持每个实验都可深度链接。", "ar": "استبدل هذا العنصر النائب بأول تجربة حقيقية واجعل كل تجربة قابلة للرابط المباشر." }
+        },
+        "noResultsTitle": {
+          "$type": "string",
+          "$value": "No labs found",
+          "$description": "Empty-state title when Labs sidebar search has no matches.",
+          "locale": { "es": "No se encontraron laboratorios", "fr": "Aucun labo trouvé", "de": "Keine Labs gefunden", "pt": "Nenhum lab encontrado", "ja": "ラボが見つかりません", "zh": "未找到实验室", "ar": "لم يتم العثور على مختبرات" }
+        },
+        "noResultsBody": {
+          "$type": "string",
+          "$value": "Try a different experiment name or clear the search.",
+          "$description": "Empty-state description when Labs sidebar search has no matches.",
+          "locale": { "es": "Prueba con otro nombre de experimento o borra la búsqueda.", "fr": "Essayez un autre nom d’expérience ou effacez la recherche.", "de": "Versuche einen anderen Experimentnamen oder lösche die Suche.", "pt": "Tente outro nome de experimento ou limpe a pesquisa.", "ja": "別の実験名を試すか、検索をクリアしてください。", "zh": "请尝试其他实验名称或清除搜索。", "ar": "جرّب اسم تجربة مختلفًا أو امسح البحث." }
         }
       },
       "action": {
@@ -906,6 +1652,34 @@
         }
       },
       "account": {
+        "alphaAgreement": {
+          "$type": "string",
+          "$value": "I agree that this is an alpha site and the intellectual property of Nathan Dana. I will not share it without permission.",
+          "$description": "Required agreement shown before an invited account can sign in.",
+          "locale": {
+            "es": "Acepto que este es un sitio alfa y propiedad intelectual de Nathan Dana. No lo compartiré sin permiso.",
+            "fr": "J’accepte que ce site soit en version alpha et qu’il constitue la propriété intellectuelle de Nathan Dana. Je ne le partagerai pas sans autorisation.",
+            "de": "Ich stimme zu, dass dies eine Alpha-Website und geistiges Eigentum von Nathan Dana ist. Ich werde sie nicht ohne Erlaubnis weitergeben.",
+            "pt": "Concordo que este é um site alfa e propriedade intelectual de Nathan Dana. Não o compartilharei sem permissão.",
+            "ja": "これはアルファ版サイトであり、Nathan Dana の知的財産であることに同意します。許可なく共有しません。",
+            "zh": "我同意这是一个 Alpha 版网站，也是 Nathan Dana 的知识产权。未经许可，我不会分享。",
+            "ar": "أوافق على أن هذا موقع في مرحلة ألفا وملكية فكرية لـ Nathan Dana. لن أشاركه دون إذن."
+          }
+        },
+        "warnAgreement": {
+          "$type": "string",
+          "$value": "Accept the alpha agreement to continue.",
+          "$description": "Validation message shown when sign-in is attempted without accepting the alpha agreement.",
+          "locale": {
+            "es": "Acepta el acuerdo alfa para continuar.",
+            "fr": "Acceptez l’accord relatif à la version alpha pour continuer.",
+            "de": "Akzeptieren Sie die Alpha-Vereinbarung, um fortzufahren.",
+            "pt": "Aceite o acordo da versão alfa para continuar.",
+            "ja": "続行するには、アルファ版に関する同意事項を承認してください。",
+            "zh": "接受 Alpha 版协议以继续。",
+            "ar": "وافق على اتفاقية الإصدار ألفا للمتابعة."
+          }
+        },
         "notConfigured": {
           "$type": "string",
           "$value": "Cloud accounts aren't configured for this build.",
@@ -936,16 +1710,16 @@
         },
         "sharedWorkspace": {
           "$type": "string",
-          "$value": "This is a shared workspace — every signed-in user sees and edits the same projects, themes, patterns, and images.",
-          "$description": "Paragraph on the Account page explaining that the workspace is shared among all signed-in users.",
+          "$value": "This is a shared workspace. Your role controls which projects, tools, and system settings you can view or edit.",
+          "$description": "Paragraph on the Account page explaining that role-based access applies to the shared workspace.",
           "locale": {
-            "es": "Este es un espacio de trabajo compartido: todos los usuarios que han iniciado sesión ven y editan los mismos proyectos, temas, patrones e imágenes.",
-            "fr": "Il s'agit d'un espace de travail partagé — chaque utilisateur connecté voit et modifie les mêmes projets, thèmes, modèles et images.",
-            "de": "Dies ist ein gemeinsamer Arbeitsbereich – jeder angemeldete Benutzer sieht und bearbeitet dieselben Projekte, Designs, Muster und Bilder.",
-            "pt": "Este é um espaço de trabalho compartilhado — todos os usuários conectados veem e editam os mesmos projetos, temas, padrões e imagens.",
-            "ja": "これは共有ワークスペースです。サインイン中のすべてのユーザーが同じプロジェクト、テーマ、パターン、画像を参照・編集できます。",
-            "zh": "这是一个共享工作区——所有已登录用户可以查看和编辑相同的项目、主题、模式和图片。",
-            "ar": "هذه مساحة عمل مشتركة — يرى كل مستخدم مسجّل الدخول المشاريع والسمات والأنماط والصور ذاتها ويحررها."
+            "es": "Este es un espacio de trabajo compartido. Tu rol controla qué proyectos, herramientas y ajustes del sistema puedes ver o editar.",
+            "fr": "Il s’agit d’un espace de travail partagé. Votre rôle détermine les projets, outils et paramètres système que vous pouvez consulter ou modifier.",
+            "de": "Dies ist ein gemeinsamer Arbeitsbereich. Ihre Rolle bestimmt, welche Projekte, Werkzeuge und Systemeinstellungen Sie ansehen oder bearbeiten können.",
+            "pt": "Este é um espaço de trabalho compartilhado. Sua função controla quais projetos, ferramentas e configurações do sistema você pode ver ou editar.",
+            "ja": "これは共有ワークスペースです。ロールによって、表示または編集できるプロジェクト、ツール、システム設定が決まります。",
+            "zh": "这是一个共享工作区。你的角色决定你可以查看或编辑哪些项目、工具和系统设置。",
+            "ar": "هذه مساحة عمل مشتركة. يحدد دورك المشاريع والأدوات وإعدادات النظام التي يمكنك عرضها أو تحريرها."
           }
         },
         "whereDataStored": {

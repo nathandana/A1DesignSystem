@@ -113,6 +113,7 @@ import { Releases, ReleasesSidebar } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
+import { Labs, getLabsSidebar } from './pages/Labs.jsx'
 import { About } from './pages/About.jsx'
 import { KitchenSink } from './pages/KitchenSink.jsx'
 import { Blog } from './pages/Blog.jsx'
@@ -141,7 +142,10 @@ import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
+import { Admin } from './pages/Admin.jsx'
 import { AuthGate } from './AuthGate.jsx'
+import { AccessProvider, useAccess } from './access/AccessContext.jsx'
+import { PageAccessBoundary, accessRoleLabel } from './access/PageAccessBoundary.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
 import { importFigmaBridgeImages, resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
@@ -164,13 +168,14 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'labs', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
   features: 'star',
   'get-started': 'rocket_launch',
   presentation: 'slideshow',
   blog: 'article',
+  labs: 'science',
   help: 'help',
   backlog: 'task_alt',
   'virtual-team': 'groups',
@@ -179,11 +184,12 @@ const PAGE_ICONS = {
   about: 'info',
   'kitchen-sink': 'dashboard_customize',
   'label-editor': 'translate',
+  admin: 'admin_panel_settings',
   playground: 'code',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -193,6 +199,7 @@ const PAGE_TITLES = {
   presentation: 'Presentation',
   blog: 'Blog',
   'blog-article': 'Search, shortcuts, and walkthroughs',
+  labs: 'Labs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -217,6 +224,7 @@ const PAGE_TITLES = {
   about: 'About',
   'kitchen-sink': 'Kitchen sink',
   account: 'Account',
+  admin: 'Administration',
 }
 
 const colorSchemeOptions = [
@@ -265,6 +273,7 @@ function getPage(search = window.location.search, pathname = window.location.pat
   if (!path) return 'home'
   if (path === 'blog') return 'blog'
   if (path.startsWith('blog/')) return 'blog-article'
+  if (path === 'labs' || path.startsWith('labs/')) return 'labs'
 
   // /foundations → 'foundations', /foundations/color → 'foundation-color'
   if (path === 'foundations') return 'foundations'
@@ -388,6 +397,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'get-started': 'app.page.getStarted',
   blog: 'app.page.blog',
   'blog-article': 'app.page.blogArticle',
+  labs: 'app.page.labs',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
   patterns: 'app.page.patterns',
@@ -409,6 +419,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'backlog-ticket': 'app.page.backlog',
   about: 'app.page.about',
   account: 'app.page.account',
+  admin: 'app.page.admin',
   'foundation-content-standards': 'app.contentStandards.title',
 }
 
@@ -472,6 +483,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
+  const { canAccessPage, canUseFeature, role: accessRole } = useAccess()
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
@@ -480,6 +492,8 @@ function App() {
   const [releaseSource, setReleaseSource] = useState('a1-web')
   const [releaseSearch, setReleaseSearch] = useState('')
   const [selectedReleaseId, setSelectedReleaseId] = useState(null)
+  const canViewDetailedReleases = canUseFeature('detailedReleaseNotes')
+  const effectiveReleaseMode = canViewDetailedReleases ? releaseMode : 'simplified'
   // ── Projects state ─────────────────────────────────────────────────────────
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
@@ -781,6 +795,7 @@ function App() {
   const globalSearchEntries = useMemo(() => {
     const entries = []
     const addPage = (id, description, keywords = []) => {
+      if (!canAccessPage(id)) return
       entries.push({
         id: `page-${id}`,
         title: pageTitle(id),
@@ -798,6 +813,7 @@ function App() {
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
     addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
     addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
+    addPage('labs', 'Experiments for patterns, proposed components, and interaction studies.', ['experiments', 'prototypes', 'patterns', 'component proposals'])
     BLOG_POSTS.forEach((post) => {
       entries.push({
         id: `blog-${post.slug}`,
@@ -820,6 +836,7 @@ function App() {
     addPage('theme-editor', 'Create and adjust custom themes.', ['color', 'tokens', 'brand'])
     addPage('rules', 'Define and review UI, component, and product rules.', ['governance', 'standards'])
     addPage('label-editor', 'Shared labels and translations.', ['locale', 'copy', 'language'])
+    addPage('admin', t('app.access.adminDescription', 'Review access and open administrator-only preview tools.'), ['roles', 'permissions', 'rbac'])
     addPage('backlog', 'Plan, prioritize, and review A1 work.', ['tickets', 'issues', 'roadmap'])
     addPage('help', 'Guidance for using A1.', ['docs', 'support'])
     addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
@@ -896,7 +913,7 @@ function App() {
       })
     })
 
-    getAllPatterns().forEach((pattern) => {
+    if (canAccessPage('patterns')) getAllPatterns().forEach((pattern) => {
       entries.push({
         id: `pattern-${pattern.pattern.id}`,
         title: pattern.pattern.name,
@@ -908,7 +925,7 @@ function App() {
       })
     })
 
-    listAllRules().forEach((rule) => {
+    if (canAccessPage('rules')) listAllRules().forEach((rule) => {
       entries.push({
         id: `rule-${rule.id}`,
         title: rule.requirement,
@@ -921,7 +938,7 @@ function App() {
       })
     })
 
-    getLabels().items.forEach((label) => {
+    if (canAccessPage('label-editor')) getLabels().items.forEach((label) => {
       entries.push({
         id: `label-${label.key}`,
         title: label.key,
@@ -933,7 +950,7 @@ function App() {
       })
     })
 
-    backlog?.items?.forEach((item) => {
+    if (canAccessPage('backlog')) backlog?.items?.forEach((item) => {
       entries.push({
         id: `ticket-${item.id}`,
         title: `A1-${item.number} ${item.title}`,
@@ -947,7 +964,7 @@ function App() {
     })
 
     return entries
-  }, [backlog?.items, locale, patternsVersion, projects, rulesVersion, allLabels])
+  }, [allLabels, backlog?.items, canAccessPage, locale, patternsVersion, projects, rulesVersion])
 
   // The initial definition for an open page: a built-in example's definition, or
   // a blank page (seeded page content in localStorage overrides this anyway).
@@ -1289,7 +1306,7 @@ function App() {
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
     const isPublishedPreview = page === 'editor-preview' && /^\/p(?:\/|$)/.test(window.location.pathname)
-    const canonicalBase = page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab()
+    const canonicalBase = page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab() || (page === 'labs' && /^\/labs\//.test(window.location.pathname))
       ? window.location.pathname
       : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
@@ -1411,7 +1428,7 @@ function App() {
 
       // "!" opens the "New ticket" dialog from anywhere (A1-393). The dialog is
       // owned by BacklogProvider above <App />, so openCreate works app-wide.
-      if (!event.metaKey && !event.ctrlKey && !event.altKey && event.key === '!') {
+      if (canUseFeature('backlog') && !event.metaKey && !event.ctrlKey && !event.altKey && event.key === '!') {
         event.preventDefault()
         clearGoTarget()
         backlog?.openCreate({ kind: 'general' })
@@ -1420,7 +1437,7 @@ function App() {
 
       if (awaitingGoTarget) {
         const targetPage = goTargets[event.key.toLowerCase()]
-        if (targetPage) {
+        if (targetPage && canAccessPage(targetPage)) {
           event.preventDefault()
           clearGoTarget()
           navigate(targetPage)
@@ -1448,7 +1465,7 @@ function App() {
       clearGoTarget()
       window.removeEventListener('keydown', handleGlobalShortcut)
     }
-  }, [])
+  }, [backlog, canAccessPage, canUseFeature])
 
   // Mirror the open page's definition metadata (name/description/icon) into its
   // project page record so the page tree and generated nav stay in sync as you
@@ -1623,6 +1640,8 @@ function App() {
         })),
       ]
 
+  const explorePageIds = EXPLORE_PAGE_IDS.filter(canAccessPage)
+
   const navItems = [
     {
       id: 'home',
@@ -1637,8 +1656,8 @@ function App() {
       id: 'explore',
       icon: 'menu_book',
       label: t('app.nav.explore', 'Explore'),
-      active: EXPLORE_PAGE_IDS.includes(activePage) || activePage === 'blog-article',
-      items: [...EXPLORE_PAGE_IDS]
+      active: explorePageIds.includes(activePage) || activePage === 'blog-article',
+      items: [...explorePageIds]
         .sort((a, b) => pageTitle(a).localeCompare(pageTitle(b)))
         .map((id) => ({
           icon: PAGE_ICONS[id],
@@ -1707,7 +1726,7 @@ function App() {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide' || activePage === 'admin',
       items: [
         {
           icon: 'folder',
@@ -1730,13 +1749,13 @@ function App() {
             })),
           ],
         },
-        {
+        ...(canAccessPage('patterns') ? [{
           icon: 'dashboard_customize',
           label: pageTitle('patterns'),
           href: getPath('patterns'),
           active: activePage === 'patterns',
           onClick: (e) => handleNavClick(e, 'patterns'),
-        },
+        }] : []),
         {
           icon: 'code',
           label: pageTitle('playground'),
@@ -1744,55 +1763,62 @@ function App() {
           active: activePage === 'playground',
           onClick: (e) => handleNavClick(e, 'playground'),
         },
-        {
+        ...(canAccessPage('image-library') ? [{
           icon: 'photo_library',
           label: pageTitle('image-library'),
           href: getPath('image-library'),
           active: activePage === 'image-library',
           onClick: (e) => handleNavClick(e, 'image-library'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('custom-icons') ? [{
           icon: 'font_download',
           label: pageTitle('custom-icons'),
           href: getPath('custom-icons'),
           active: activePage === 'custom-icons',
           onClick: (e) => handleNavClick(e, 'custom-icons'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('data') ? [{
           icon: 'table_chart',
           label: pageTitle('data'),
           href: getPath('data'),
           active: activePage === 'data',
           onClick: (e) => handleNavClick(e, 'data'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('theme-editor') ? [{
           icon: 'palette',
           label: pageTitle('theme-editor'),
           href: getPath('theme-editor'),
           active: activePage === 'theme-editor',
           onClick: (e) => handleNavClick(e, 'theme-editor'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('rules') ? [{
           icon: 'gavel',
           label: pageTitle('rules'),
           href: getPath('rules'),
           active: activePage === 'rules',
           onClick: (e) => handleNavClick(e, 'rules'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('label-editor') ? [{
           icon: 'translate',
           label: pageTitle('label-editor'),
           href: getPath('label-editor'),
           active: activePage === 'label-editor',
           onClick: (e) => handleNavClick(e, 'label-editor'),
-        },
-        {
+        }] : []),
+        ...(canAccessPage('priority-guide') ? [{
           icon: 'list_alt',
           label: pageTitle('priority-guide'),
           href: getPath('priority-guide'),
           active: activePage === 'priority-guide',
           onClick: (e) => handleNavClick(e, 'priority-guide'),
-        },
+        }] : []),
+        ...(canAccessPage('admin') ? [{
+          icon: PAGE_ICONS.admin,
+          label: pageTitle('admin'),
+          href: getPath('admin'),
+          active: activePage === 'admin',
+          onClick: (e) => handleNavClick(e, 'admin'),
+        }] : []),
       ],
     },
   ]
@@ -1815,14 +1841,16 @@ function App() {
         openHelpAssistant(event.currentTarget)
       },
     },
-    { id: 'action-divider', divider: true },
-    {
+    ...(canUseFeature('backlog') ? [
+      { id: 'action-divider', divider: true },
+      {
       id: 'new-ticket',
       icon: 'flag',
       iconOnly: true,
       label: t('app.action.createTicket', 'Create a ticket'),
       onClick: () => backlog?.openCreate({ kind: 'general' }),
-    },
+      },
+    ] : []),
     {
       id: 'settings',
       icon: 'settings',
@@ -1855,6 +1883,7 @@ function App() {
   }
 
   const patternDef = editorPatternId ? patternToDefinition(editorPatternId) : null
+  const pageAccessAllowed = canAccessPage(activePage)
 
   // Live view is a presentation surface fed by the Figma plugin, not an A1 Web
   // workspace. Keep the renderer and its providers, but remove every piece of
@@ -1878,8 +1907,8 @@ function App() {
   // Config/filter panels. At md+ they use the PageLayout aside rail; at xs/sm
   // they move into a BottomSheet. Backlog places its filter rail on the start
   // side so it reads like navigation rather than a right-side configurator.
-  const asideEl =
-    (activePage === 'editor' && editorPatternId) || (activePage === 'editor' && activeProject && openPageId)
+  const asideEl = pageAccessAllowed
+    ? (activePage === 'editor' && editorPatternId) || (activePage === 'editor' && activeProject && openPageId)
       ? <div id="a1-web-editor-aside-slot" className="a1-web-config-aside" />
       : activePage === 'theme-editor' && activeThemeId
       ? <div id="a1-web-theme-aside-slot" className="a1-web-config-aside" />
@@ -1888,6 +1917,7 @@ function App() {
       : activePage === 'foundation-color-visualization'
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
       : getComponentsAside({ activePage, detailTab })
+    : undefined
 
   function runSkipMenuAction(action) {
     setSkipMenuOpen(false)
@@ -1942,9 +1972,11 @@ function App() {
           <MenuItem icon="search" shortcut="Shortcut: / or Cmd/Ctrl+K" onClick={() => runSkipMenuAction(() => setGlobalSearchOpen(true))}>
             Search A1
           </MenuItem>
-          <MenuItem icon="add_task" shortcut="Shortcut: !" onClick={() => runSkipMenuAction(() => backlog?.openCreate({ kind: 'general' }))}>
-            New ticket
-          </MenuItem>
+          {canUseFeature('backlog') ? (
+            <MenuItem icon="add_task" shortcut="Shortcut: !" onClick={() => runSkipMenuAction(() => backlog?.openCreate({ kind: 'general' }))}>
+              New ticket
+            </MenuItem>
+          ) : null}
           <MenuItem icon="keyboard" shortcut="Shortcut: Cmd/Ctrl+/" onClick={() => skipMenuAnchorRef.current?.focus()}>
             Show all shortcuts
           </MenuItem>
@@ -1962,26 +1994,38 @@ function App() {
           <MenuItem icon="edit" shortcut="Shortcut: G then E" onClick={() => runSkipMenuAction(() => navigate('editor'))}>
             Editor
           </MenuItem>
-          <MenuItem icon="view_quilt" shortcut="Shortcut: G then P" onClick={() => runSkipMenuAction(() => navigate('patterns'))}>
-            Patterns
-          </MenuItem>
-          <MenuItem icon="task_alt" shortcut="Shortcut: G then B" onClick={() => runSkipMenuAction(() => navigate('backlog'))}>
-            Backlog
-          </MenuItem>
+          {canAccessPage('patterns') ? (
+            <MenuItem icon="view_quilt" shortcut="Shortcut: G then P" onClick={() => runSkipMenuAction(() => navigate('patterns'))}>
+              Patterns
+            </MenuItem>
+          ) : null}
+          {canAccessPage('backlog') ? (
+            <MenuItem icon="task_alt" shortcut="Shortcut: G then B" onClick={() => runSkipMenuAction(() => navigate('backlog'))}>
+              Backlog
+            </MenuItem>
+          ) : null}
         </MenuSection>
         <MenuSection label="Tools and help">
-          <MenuItem icon="rule" shortcut="Shortcut: G then R" onClick={() => runSkipMenuAction(() => navigate('rules'))}>
-            Rules
-          </MenuItem>
-          <MenuItem icon="translate" shortcut="Shortcut: G then L" onClick={() => runSkipMenuAction(() => navigate('label-editor'))}>
-            Labels
-          </MenuItem>
-          <MenuItem icon="database" shortcut="Shortcut: G then D" onClick={() => runSkipMenuAction(() => navigate('data'))}>
-            Data sources
-          </MenuItem>
-          <MenuItem icon="palette" shortcut="Shortcut: G then T" onClick={() => runSkipMenuAction(() => navigate('theme-editor'))}>
-            Theme editor
-          </MenuItem>
+          {canAccessPage('rules') ? (
+            <MenuItem icon="rule" shortcut="Shortcut: G then R" onClick={() => runSkipMenuAction(() => navigate('rules'))}>
+              Rules
+            </MenuItem>
+          ) : null}
+          {canAccessPage('label-editor') ? (
+            <MenuItem icon="translate" shortcut="Shortcut: G then L" onClick={() => runSkipMenuAction(() => navigate('label-editor'))}>
+              Labels
+            </MenuItem>
+          ) : null}
+          {canAccessPage('data') ? (
+            <MenuItem icon="database" shortcut="Shortcut: G then D" onClick={() => runSkipMenuAction(() => navigate('data'))}>
+              Data sources
+            </MenuItem>
+          ) : null}
+          {canAccessPage('theme-editor') ? (
+            <MenuItem icon="palette" shortcut="Shortcut: G then T" onClick={() => runSkipMenuAction(() => navigate('theme-editor'))}>
+              Theme editor
+            </MenuItem>
+          ) : null}
           <MenuItem icon="accessibility" shortcut="Shortcut: G then A" onClick={() => runSkipMenuAction(() => navigate('accessibility'))}>
             Accessibility
           </MenuItem>
@@ -1994,8 +2038,8 @@ function App() {
         className="a1-web-page-layout"
         stickyHeader
         viewportHeight
-        sidebar={
-          activePage === 'editor' && editorPatternId
+        sidebar={pageAccessAllowed
+          ? activePage === 'editor' && editorPatternId
             ? <PatternWorkspaceSidebar
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
@@ -2056,7 +2100,8 @@ function App() {
             ? asideEl
             : activePage === 'releases'
             ? <ReleasesSidebar
-                mode={releaseMode}
+                mode={effectiveReleaseMode}
+                allowDetailed={canViewDetailedReleases}
                 sourceId={releaseSource}
                 onSourceChange={setReleaseSource}
                 search={releaseSearch}
@@ -2066,6 +2111,8 @@ function App() {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
               />
+            : activePage === 'labs'
+            ? getLabsSidebar({ onNavigate: navigate })
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({
                 activePage,
@@ -2076,6 +2123,7 @@ function App() {
                 setSearch: setComponentSearch,
               })
             : undefined
+          : undefined
         }
         aside={isSmDown || activePage === 'backlog' ? undefined : asideEl}
         header={
@@ -2089,6 +2137,7 @@ function App() {
           />
         }
       >
+        <PageAccessBoundary page={activePage} onNavigate={navigate}>
         {/* The editor renders its own sidebar toggle inline in its toolbar row
             (see EditorPage's onOpenSidebar); the theme editor still uses this
             content-column toggle. */}
@@ -2118,6 +2167,7 @@ function App() {
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
         {activePage === 'blog-article' && <BlogArticle onNavigate={navigate} />}
+        {activePage === 'labs' && <Labs onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail
@@ -2336,13 +2386,15 @@ function App() {
           />
         )}
         {activePage === 'account' && <AccountPage onNavigate={navigate} />}
+        {activePage === 'admin' && <Admin onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} initialQuery={helpQuery} />}
         {activePage === 'releases' && (
           <Releases
             onNavigate={navigate}
-            mode={releaseMode}
+            mode={effectiveReleaseMode}
             onModeChange={setReleaseMode}
+            allowDetailed={canViewDetailedReleases}
             sourceId={releaseSource}
             onSourceChange={setReleaseSource}
             search={releaseSearch}
@@ -2366,6 +2418,7 @@ function App() {
             {asideEl}
           </BottomSheet>
         )}
+        </PageAccessBoundary>
       </PageLayout>
 
       <GlobalSearchDialog
@@ -2471,7 +2524,7 @@ function App() {
         <MenuSection label={t('app.page.account', 'Account')}>
           {authUser && (
             <MenuItem icon="account_circle" onClick={() => { setSettingsOpen(false); navigate('account') }}>
-              {authUser.email}
+              {authUser.email} · {accessRoleLabel(t, accessRole)}
             </MenuItem>
           )}
           <MenuItem
@@ -2504,11 +2557,13 @@ initPostHog()
 const tree = (
   <AuthProvider>
     <AuthGate>
-      <BacklogProvider>
-        <DataSourcesProvider>
-          <App />
-        </DataSourcesProvider>
-      </BacklogProvider>
+      <AccessProvider>
+        <BacklogProvider>
+          <DataSourcesProvider>
+            <App />
+          </DataSourcesProvider>
+        </BacklogProvider>
+      </AccessProvider>
     </AuthGate>
   </AuthProvider>
 )

@@ -30,8 +30,13 @@ const EXPLORE: NavNode = {
   children: [
     { id: 'about', label: 'About', icon: 'info', href: '/about' },
     { id: 'accessibility', label: 'Accessibility', icon: 'accessibility', href: '/accessibility' },
+    { id: 'backlog', label: 'Backlog', icon: 'task_alt', href: '/backlog' },
+    { id: 'blog', label: 'Blog', icon: 'article', href: '/blog' },
+    { id: 'dashboard', label: 'Dashboard', icon: 'monitoring', href: '/dashboard' },
     { id: 'features', label: 'Features', icon: 'star', href: '/features' },
     { id: 'get-started', label: 'Get started', icon: 'rocket_launch', href: '/get-started' },
+    { id: 'labs', label: 'Labs', icon: 'science', href: '/labs' },
+    { id: 'presentation', label: 'Presentation', icon: 'slideshow', href: '/presentation' },
     { id: 'releases', label: 'Releases', icon: 'new_releases', href: '/releases' },
   ],
 };

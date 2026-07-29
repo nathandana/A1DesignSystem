@@ -11,6 +11,7 @@ import {
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
+import { useAccess } from '../access/AccessContext.jsx'
 import { useT } from '../labels/useT.js'
 import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
 import { componentCategories as registryCategories } from './components/data.js'
@@ -38,6 +39,7 @@ const HOME_CATEGORY_LABEL_KEYS = {
 
 export function Home({ onNavigate }) {
   const t = useT()
+  const { canAccessPage } = useAccess()
 
   const stats = [
     { value: String(componentCount), label: t('app.home.statComponents', 'Components') },
@@ -141,7 +143,7 @@ export function Home({ onNavigate }) {
       body: t('app.home.toolLabelsBody', 'Shared labels and translations for reusable, locale-ready interface text.'),
       aiReady: true,
     },
-  ]
+  ].filter((tool) => canAccessPage(tool.page))
 
   const platforms = [
     {
@@ -269,20 +271,22 @@ export function Home({ onNavigate }) {
               </Inset>
             ))}
           </Grid>
-          <Stack align="center">
-            <Link
-              href="#"
-              icon="link"
-              size="lg"
-              weight="semibold"
-              onClick={(event) => {
-                event.preventDefault()
-                onNavigate('dashboard')
-              }}
-            >
-              {t('app.home.dashboardLink', 'System dashboard')}
-            </Link>
-          </Stack>
+          {canAccessPage('dashboard') ? (
+            <Stack align="center">
+              <Link
+                href="#"
+                icon="link"
+                size="lg"
+                weight="semibold"
+                onClick={(event) => {
+                  event.preventDefault()
+                  onNavigate('dashboard')
+                }}
+              >
+                {t('app.home.dashboardLink', 'System dashboard')}
+              </Link>
+            </Stack>
+          ) : null}
         </Stack>
       </Section>
 

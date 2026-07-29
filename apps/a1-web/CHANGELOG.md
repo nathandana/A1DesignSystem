@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **User-level access** (A1-405) — replaced the hosted app's all-or-nothing sign-in gate with cumulative Guest, User, Editor and Administrator roles sourced from trusted Supabase account metadata. Public visitors can read system guidance, use simplified release notes and try the browser-local page builder; signed-in users gain shared workspace tools and detailed release notes; Backlog and governance editors require Editor; Theme editor, Administration and Virtual team require Administrator. Restricted navigation, global search, shortcuts, providers and direct URLs now follow one tested policy. The Administration page securely lists accounts, sends invitations, edits roles and shows the 50 most recent access changes through an administrator-authenticated Netlify function whose service key remains server-only. Added localized access and user-management copy, an audit table, editor-only Backlog row-level security, editor-only workspace-label writes, migrations for existing Supabase workspaces, server-policy tests and an access matrix with sequenced follow-ups.
+
+- **Date of birth Labs experiments** (A1-2114) — added seven scoped Labs experiment pages for comparing date-of-birth input patterns: existing `DateField`, month/day/year selects, numeric month/day/year fields, numeric fields that auto-advance from month to day to year, month select with numeric day/year fields, one autoformatting input, and separate autoformatting month/day/year fields. The autoformat prototypes turn natural digit entry such as `6121988` into `06/12/1988`, expand two-digit years with a current-year pivot, and normalize entries such as `61279` and `61211` to `06/12/1979` and `06/12/2011`. Each prototype sizes its controls to the expected input length, and the single autoformatting input shows an `MM/DD/YYYY` format cue before entry.
+
+- **Labs page** (A1-2116) — added `/labs` under Explore as a placeholder workspace for experiments. The page uses the same a1-web sidebar pattern as component detail pages: a searchable TreeMenu on the left and deep-linkable selected experiment views, ready for future pattern and proposed-component experiments.
+
 - **Backlog ticket page nested sections** (A1-2071) — changed the ticket detail
   page's in-page navigation so Activity, Linked tickets, Build with AI, and
   Virtual PO render as nested entries under Details. The Backlog board swimlanes

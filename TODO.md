@@ -120,7 +120,7 @@ _None._
 - [ ] **AI-flow → A1 rebuild + ZIP import/convert** `P3 · XL` — experiment: take an AI-generated flow/app and **rebuild it with A1 components while retaining functionality**; and support **uploading a project as a ZIP** and converting it into the A1 project / page-definition format. Feasibility test + import pipeline. _Relates to the page-definition standard + project import._
 - [ ] **Interactivity — states, triggers & functions** `P3 · XL` — let pages, forms, and elements carry **states**: forms have standard states (error, success) + custom ones; **buttons / form elements / toolbars initiate states**; states can trigger other behaviour; **whole pages** have states (empty, error, …). Includes simple **functions** wiring — e.g. a toolbar control that turns a part of a page on/off. A state-machine + event layer for the a1-web editor / prototypes. _Large: needs a state model + trigger/event wiring + per-state visibility._
 - [ ] **Export project → React package / standalone site** `P3 · XL` — figure out the design→prod path: export an a1-web project as a downloadable **React package** (zip) and/or a simple **standalone website**. The complement of the import item (AI-flow / ZIP → A1). _Strategy + codegen; decide the output shape (component package vs static site)._
-- [ ] **User accounts** `P3 · XL` — add accounts to the site (a1-web): sign-up, login, and persisted per-user state — likely via **Supabase** (auth + data storage). Major future enhancement; no current consumer. _Q: which surfaces need it (editor projects, image library, themes?)._
+- [ ] **Workspace membership & ownership** `P3 · XL` — replace the global shared envelope with explicit personal or team workspaces, membership roles and ownership-aware Supabase policies. Administrator account invitations, role management and access audit history shipped in A1-405; this follow-up scopes each protected resource to the people who should access it. _Sequencing and acceptance criteria: `packages/react/ai/access-control.md`._
 - [ ] **Rules tab — table layout** `P3 · S` — optimize how component rules display (e.g. a table) instead of the current layout.
 - [ ] **Feature set page (a1-web)** `P3 · M` — a maintained "feature set" surface in a1-web, updated as features ship. _Process + page._
 - [ ] **Plugin — React Aria DnD (keyboard drag-and-drop)** `P3 · M` — adopt React Aria's drag-and-drop for keyboard-accessible reordering (could upgrade the TreeMenu DnD, which has no keyboard support today).
@@ -166,7 +166,7 @@ to an existing TODO entry or are already built are noted inline.
 
 ### Collaboration & platform
 - **Multi-user / joint editing** — realtime co-editing + presence.
-- **Users + DB storage / admin** — accounts & database-backed storage (_expands the P3 "User accounts" item_); a **user manager** / admin tools; **manage users**.
+- **Users + DB storage / admin** — accounts, invitations, role management and access audits have shipped; remaining lifecycle work includes workspace membership, invitation resend, deactivation and administrator-led account removal.
 - **Folders for projects** — teams, drafts, add users.
 - **Review & approval workflow** — permissions + **sign-off on a chunk**; **auto-summarize changes**; status **tags** (idea / in review / revised); page & project **status** (draft → pending → live; who can publish).
 - **Comment mode** — select an item, add comments, review them; optional **AI auto-fix**.

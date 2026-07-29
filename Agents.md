@@ -49,3 +49,7 @@ For the planned A1 ↔ Figma breakpoint synchronization contract:
 For product copy, documentation, formatting, grammar, and AP Style defaults:
 
 @packages/react/ai/content-standards.md
+
+For a1-web roles, page and feature access, Supabase policy, and follow-up sequencing:
+
+@packages/react/ai/access-control.md
