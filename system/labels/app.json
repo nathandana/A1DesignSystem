@@ -747,6 +747,376 @@
             "zh": "账户",
             "ar": "الحساب"
           }
+        },
+        "admin": {
+          "$type": "string",
+          "$value": "Administration",
+          "$description": "Administrator-only page title and navigation label.",
+          "locale": {
+            "es": "Administración",
+            "fr": "Administration",
+            "de": "Administration",
+            "pt": "Administração",
+            "ja": "管理",
+            "zh": "管理",
+            "ar": "الإدارة"
+          }
+        }
+      },
+      "access": {
+        "roleGuest": {
+          "$type": "string",
+          "$value": "Guest",
+          "$description": "Access role for a visitor who is not signed in.",
+          "locale": { "es": "Invitado", "fr": "Invité", "de": "Gast", "pt": "Visitante", "ja": "ゲスト", "zh": "访客", "ar": "ضيف" }
+        },
+        "roleUser": {
+          "$type": "string",
+          "$value": "User",
+          "$description": "Standard signed-in access role.",
+          "locale": { "es": "Usuario", "fr": "Utilisateur", "de": "Benutzer", "pt": "Usuário", "ja": "ユーザー", "zh": "用户", "ar": "مستخدم" }
+        },
+        "roleEditor": {
+          "$type": "string",
+          "$value": "Editor",
+          "$description": "Access role for people who manage governance content and the backlog.",
+          "locale": { "es": "Editor", "fr": "Éditeur", "de": "Editor", "pt": "Editor", "ja": "編集者", "zh": "编辑者", "ar": "محرر" }
+        },
+        "roleAdmin": {
+          "$type": "string",
+          "$value": "Administrator",
+          "$description": "Highest access role for administrative and preview tools.",
+          "locale": { "es": "Administrador", "fr": "Administrateur", "de": "Administrator", "pt": "Administrador", "ja": "管理者", "zh": "管理员", "ar": "مسؤول" }
+        },
+        "deniedTitle": {
+          "$type": "string",
+          "$value": "Access required",
+          "$description": "Page title shown when a person cannot open a restricted page.",
+          "locale": { "es": "Acceso requerido", "fr": "Accès requis", "de": "Zugriff erforderlich", "pt": "Acesso necessário", "ja": "アクセスが必要です", "zh": "需要访问权限", "ar": "الوصول مطلوب" }
+        },
+        "deniedUser": {
+          "$type": "string",
+          "$value": "Sign in with an A1 account to open this page.",
+          "$description": "Recovery guidance for a page that requires any signed-in user.",
+          "locale": { "es": "Inicia sesión con una cuenta de A1 para abrir esta página.", "fr": "Connectez-vous avec un compte A1 pour ouvrir cette page.", "de": "Melden Sie sich mit einem A1-Konto an, um diese Seite zu öffnen.", "pt": "Entre com uma conta A1 para abrir esta página.", "ja": "このページを開くには、A1 アカウントでサインインしてください。", "zh": "使用 A1 账户登录以打开此页面。", "ar": "سجّل الدخول باستخدام حساب A1 لفتح هذه الصفحة." }
+        },
+        "deniedEditor": {
+          "$type": "string",
+          "$value": "This page is available to editors and administrators.",
+          "$description": "Access explanation for an editor-only page.",
+          "locale": { "es": "Esta página está disponible para editores y administradores.", "fr": "Cette page est accessible aux éditeurs et aux administrateurs.", "de": "Diese Seite ist für Editoren und Administratoren verfügbar.", "pt": "Esta página está disponível para editores e administradores.", "ja": "このページは編集者と管理者が利用できます。", "zh": "此页面仅供编辑者和管理员使用。", "ar": "هذه الصفحة متاحة للمحررين والمسؤولين." }
+        },
+        "deniedAdmin": {
+          "$type": "string",
+          "$value": "This page is available to administrators.",
+          "$description": "Access explanation for an administrator-only page.",
+          "locale": { "es": "Esta página está disponible para administradores.", "fr": "Cette page est accessible aux administrateurs.", "de": "Diese Seite ist für Administratoren verfügbar.", "pt": "Esta página está disponível para administradores.", "ja": "このページは管理者が利用できます。", "zh": "此页面仅供管理员使用。", "ar": "هذه الصفحة متاحة للمسؤولين." }
+        },
+        "requiredRole": {
+          "$type": "string",
+          "$value": "Required role",
+          "$description": "Label for the minimum role needed to open a restricted page.",
+          "locale": { "es": "Rol requerido", "fr": "Rôle requis", "de": "Erforderliche Rolle", "pt": "Função necessária", "ja": "必要なロール", "zh": "所需角色", "ar": "الدور المطلوب" }
+        },
+        "currentAccess": {
+          "$type": "string",
+          "$value": "Your access",
+          "$description": "Heading for a summary of the current person's access.",
+          "locale": { "es": "Tu acceso", "fr": "Votre accès", "de": "Ihr Zugriff", "pt": "Seu acesso", "ja": "アクセス権", "zh": "你的访问权限", "ar": "صلاحية وصولك" }
+        },
+        "currentRole": {
+          "$type": "string",
+          "$value": "Role",
+          "$description": "Label for the current person's access role.",
+          "locale": { "es": "Rol", "fr": "Rôle", "de": "Rolle", "pt": "Função", "ja": "ロール", "zh": "角色", "ar": "الدور" }
+        },
+        "roleSource": {
+          "$type": "string",
+          "$value": "Role source",
+          "$description": "Label for the system that supplied the current role.",
+          "locale": { "es": "Origen del rol", "fr": "Source du rôle", "de": "Rollenquelle", "pt": "Origem da função", "ja": "ロールの提供元", "zh": "角色来源", "ar": "مصدر الدور" }
+        },
+        "sourceLocal": {
+          "$type": "string",
+          "$value": "Local build",
+          "$description": "Role source used when cloud accounts are not configured.",
+          "locale": { "es": "Versión local", "fr": "Version locale", "de": "Lokaler Build", "pt": "Versão local", "ja": "ローカルビルド", "zh": "本地构建", "ar": "إصدار محلي" }
+        },
+        "sourceAccount": {
+          "$type": "string",
+          "$value": "Account metadata",
+          "$description": "Role source used for hosted signed-in accounts.",
+          "locale": { "es": "Metadatos de la cuenta", "fr": "Métadonnées du compte", "de": "Kontometadaten", "pt": "Metadados da conta", "ja": "アカウントメタデータ", "zh": "账户元数据", "ar": "بيانات الحساب الوصفية" }
+        },
+        "adminDescription": {
+          "$type": "string",
+          "$value": "Manage accounts, roles and administrator-only preview tools.",
+          "$description": "Introductory description for the Administration page.",
+          "locale": { "es": "Administra cuentas, roles y herramientas de vista previa solo para administradores.", "fr": "Gérez les comptes, les rôles et les outils de prévisualisation réservés aux administrateurs.", "de": "Verwalten Sie Konten, Rollen und Vorschauwerkzeuge nur für Administratoren.", "pt": "Gerencie contas, funções e ferramentas de prévia exclusivas para administradores.", "ja": "アカウント、ロール、管理者専用のプレビューツールを管理します。", "zh": "管理账户、角色和仅限管理员使用的预览工具。", "ar": "أدِر الحسابات والأدوار وأدوات المعاينة المخصصة للمسؤولين." }
+        },
+        "adminRoleGuidance": {
+          "$type": "string",
+          "$value": "Hosted roles come from trusted Supabase account metadata. Local builds keep administrator access so offline development continues to work.",
+          "$description": "Explanation of role assignment on the Administration page.",
+          "locale": { "es": "Los roles alojados provienen de metadatos de cuenta confiables de Supabase. Las versiones locales conservan el acceso de administrador para que el desarrollo sin conexión siga funcionando.", "fr": "Les rôles hébergés proviennent des métadonnées de compte Supabase approuvées. Les versions locales conservent l’accès administrateur pour permettre le développement hors ligne.", "de": "Gehostete Rollen stammen aus vertrauenswürdigen Supabase-Kontometadaten. Lokale Builds behalten Administratorzugriff, damit die Offline-Entwicklung weiter funktioniert.", "pt": "As funções hospedadas vêm de metadados confiáveis da conta Supabase. As versões locais mantêm o acesso de administrador para permitir o desenvolvimento offline.", "ja": "ホスト環境のロールは、信頼できる Supabase アカウントメタデータから取得します。ローカルビルドでは、オフライン開発を続けられるよう管理者アクセスを維持します。", "zh": "托管角色来自可信的 Supabase 账户元数据。本地构建保留管理员权限，以便离线开发继续进行。", "ar": "تأتي الأدوار المستضافة من بيانات حساب Supabase الوصفية الموثوقة. تحتفظ الإصدارات المحلية بوصول المسؤول ليستمر التطوير دون اتصال." }
+        },
+        "previewTools": {
+          "$type": "string",
+          "$value": "Preview tools",
+          "$description": "Heading for administrator-only preview features.",
+          "locale": { "es": "Herramientas de vista previa", "fr": "Outils de prévisualisation", "de": "Vorschauwerkzeuge", "pt": "Ferramentas de prévia", "ja": "プレビューツール", "zh": "预览工具", "ar": "أدوات المعاينة" }
+        },
+        "themeEditorDescription": {
+          "$type": "string",
+          "$value": "Theme editing is an administrator preview because it changes shared visual foundations.",
+          "$description": "Reason the theme editor requires administrator access.",
+          "locale": { "es": "La edición de temas es una vista previa para administradores porque cambia las bases visuales compartidas.", "fr": "La modification des thèmes est une prévisualisation administrateur, car elle change les fondations visuelles partagées.", "de": "Die Theme-Bearbeitung ist eine Administratorvorschau, da sie gemeinsame visuelle Grundlagen ändert.", "pt": "A edição de temas é uma prévia para administradores porque altera as bases visuais compartilhadas.", "ja": "テーマ編集は共有の視覚的基盤を変更するため、管理者向けプレビューです。", "zh": "主题编辑会更改共享的视觉基础，因此属于管理员预览功能。", "ar": "تحرير السمات معاينة للمسؤول لأنه يغيّر الأسس المرئية المشتركة." }
+        },
+        "openThemeEditor": {
+          "$type": "string",
+          "$value": "Open theme editor",
+          "$description": "Action that opens the administrator-only theme editor.",
+          "locale": { "es": "Abrir el editor de temas", "fr": "Ouvrir l’éditeur de thèmes", "de": "Theme-Editor öffnen", "pt": "Abrir o editor de temas", "ja": "テーマエディターを開く", "zh": "打开主题编辑器", "ar": "فتح محرر السمات" }
+        },
+        "userManagementUnavailable": {
+          "$type": "string",
+          "$value": "Cloud user management is unavailable",
+          "$description": "Heading shown when user management cannot run without cloud configuration.",
+          "locale": { "es": "La administración de usuarios en la nube no está disponible", "fr": "La gestion des utilisateurs dans le nuage n’est pas disponible", "de": "Cloud-Benutzerverwaltung ist nicht verfügbar", "pt": "O gerenciamento de usuários na nuvem não está disponível", "ja": "クラウドユーザー管理を利用できません", "zh": "云用户管理不可用", "ar": "إدارة مستخدمي السحابة غير متاحة" }
+        },
+        "userManagementUnavailableDescription": {
+          "$type": "string",
+          "$value": "Configure Supabase and the server-only service key to list accounts, send invitations and assign roles.",
+          "$description": "Recovery guidance when cloud user management is unavailable.",
+          "locale": { "es": "Configura Supabase y la clave de servicio exclusiva del servidor para enumerar cuentas, enviar invitaciones y asignar roles.", "fr": "Configurez Supabase et la clé de service réservée au serveur pour répertorier les comptes, envoyer des invitations et attribuer des rôles.", "de": "Konfigurieren Sie Supabase und den nur serverseitigen Service-Schlüssel, um Konten aufzulisten, Einladungen zu senden und Rollen zuzuweisen.", "pt": "Configure o Supabase e a chave de serviço exclusiva do servidor para listar contas, enviar convites e atribuir funções.", "ja": "アカウントの一覧表示、招待の送信、ロールの割り当てを行うには、Supabase とサーバー専用サービスキーを設定してください。", "zh": "配置 Supabase 和仅限服务器使用的服务密钥，以列出账户、发送邀请和分配角色。", "ar": "اضبط Supabase ومفتاح الخدمة المخصص للخادم لعرض الحسابات وإرسال الدعوات وتعيين الأدوار." }
+        },
+        "userManagement": {
+          "$type": "string",
+          "$value": "User management",
+          "$description": "Heading for administrator account management.",
+          "locale": { "es": "Administración de usuarios", "fr": "Gestion des utilisateurs", "de": "Benutzerverwaltung", "pt": "Gerenciamento de usuários", "ja": "ユーザー管理", "zh": "用户管理", "ar": "إدارة المستخدمين" }
+        },
+        "userManagementDescription": {
+          "$type": "string",
+          "$value": "Invite people and control access with trusted account roles.",
+          "$description": "Description of administrator account management.",
+          "locale": { "es": "Invita a personas y controla el acceso con roles de cuenta confiables.", "fr": "Invitez des personnes et contrôlez l’accès avec des rôles de compte approuvés.", "de": "Laden Sie Personen ein und steuern Sie den Zugriff mit vertrauenswürdigen Kontorollen.", "pt": "Convide pessoas e controle o acesso com funções de conta confiáveis.", "ja": "ユーザーを招待し、信頼できるアカウントロールでアクセスを制御します。", "zh": "邀请人员并使用可信账户角色控制访问权限。", "ar": "ادعُ الأشخاص وتحكّم في الوصول باستخدام أدوار الحساب الموثوقة." }
+        },
+        "inviteUser": {
+          "$type": "string",
+          "$value": "Invite user",
+          "$description": "Action and dialog title for inviting an account.",
+          "locale": { "es": "Invitar usuario", "fr": "Inviter un utilisateur", "de": "Benutzer einladen", "pt": "Convidar usuário", "ja": "ユーザーを招待", "zh": "邀请用户", "ar": "دعوة مستخدم" }
+        },
+        "userEmail": {
+          "$type": "string",
+          "$value": "Email",
+          "$description": "Column and field label for a user's email address.",
+          "locale": { "es": "Correo electrónico", "fr": "Adresse courriel", "de": "E-Mail", "pt": "E-mail", "ja": "メールアドレス", "zh": "电子邮件", "ar": "البريد الإلكتروني" }
+        },
+        "accountStatus": {
+          "$type": "string",
+          "$value": "Status",
+          "$description": "Column label for an account's invitation status.",
+          "locale": { "es": "Estado", "fr": "État", "de": "Status", "pt": "Status", "ja": "ステータス", "zh": "状态", "ar": "الحالة" }
+        },
+        "accountActive": {
+          "$type": "string",
+          "$value": "Active",
+          "$description": "Status for an account that accepted its invitation.",
+          "locale": { "es": "Activo", "fr": "Actif", "de": "Aktiv", "pt": "Ativo", "ja": "有効", "zh": "有效", "ar": "نشط" }
+        },
+        "invitationPending": {
+          "$type": "string",
+          "$value": "Invitation pending",
+          "$description": "Status for an account that has not accepted its invitation.",
+          "locale": { "es": "Invitación pendiente", "fr": "Invitation en attente", "de": "Einladung ausstehend", "pt": "Convite pendente", "ja": "招待保留中", "zh": "邀请待处理", "ar": "الدعوة معلّقة" }
+        },
+        "lastSignIn": {
+          "$type": "string",
+          "$value": "Last sign-in",
+          "$description": "Column label for the most recent account sign-in.",
+          "locale": { "es": "Último inicio de sesión", "fr": "Dernière connexion", "de": "Letzte Anmeldung", "pt": "Último acesso", "ja": "最終サインイン", "zh": "上次登录", "ar": "آخر تسجيل دخول" }
+        },
+        "never": {
+          "$type": "string",
+          "$value": "Never",
+          "$description": "Fallback when an account has not signed in.",
+          "locale": { "es": "Nunca", "fr": "Jamais", "de": "Nie", "pt": "Nunca", "ja": "未完了", "zh": "从未", "ar": "أبدًا" }
+        },
+        "userActions": {
+          "$type": "string",
+          "$value": "Actions",
+          "$description": "Column label for account actions.",
+          "locale": { "es": "Acciones", "fr": "Actions", "de": "Aktionen", "pt": "Ações", "ja": "操作", "zh": "操作", "ar": "الإجراءات" }
+        },
+        "currentAccount": {
+          "$type": "string",
+          "$value": "Current account",
+          "$description": "Label that identifies the signed-in administrator in the user table.",
+          "locale": { "es": "Cuenta actual", "fr": "Compte actuel", "de": "Aktuelles Konto", "pt": "Conta atual", "ja": "現在のアカウント", "zh": "当前账户", "ar": "الحساب الحالي" }
+        },
+        "editRole": {
+          "$type": "string",
+          "$value": "Edit role",
+          "$description": "Action that opens the role editor for an account.",
+          "locale": { "es": "Editar rol", "fr": "Modifier le rôle", "de": "Rolle bearbeiten", "pt": "Editar função", "ja": "ロールを編集", "zh": "编辑角色", "ar": "تعديل الدور" }
+        },
+        "loadingUsers": {
+          "$type": "string",
+          "$value": "Loading users",
+          "$description": "Loading status and accessible progress label for user management.",
+          "locale": { "es": "Cargando usuarios", "fr": "Chargement des utilisateurs", "de": "Benutzer werden geladen", "pt": "Carregando usuários", "ja": "ユーザーを読み込んでいます", "zh": "正在加载用户", "ar": "جارٍ تحميل المستخدمين" }
+        },
+        "retryUserManagement": {
+          "$type": "string",
+          "$value": "Retry user management",
+          "$description": "Action to retry loading user-management data.",
+          "locale": { "es": "Reintentar la administración de usuarios", "fr": "Réessayer la gestion des utilisateurs", "de": "Benutzerverwaltung erneut versuchen", "pt": "Tentar novamente o gerenciamento de usuários", "ja": "ユーザー管理を再試行", "zh": "重试用户管理", "ar": "إعادة محاولة إدارة المستخدمين" }
+        },
+        "usersTableCaption": {
+          "$type": "string",
+          "$value": "A1 user accounts",
+          "$description": "Accessible caption for the administrator user table.",
+          "locale": { "es": "Cuentas de usuario de A1", "fr": "Comptes utilisateurs A1", "de": "A1-Benutzerkonten", "pt": "Contas de usuário do A1", "ja": "A1 ユーザーアカウント", "zh": "A1 用户账户", "ar": "حسابات مستخدمي A1" }
+        },
+        "noUsersTitle": {
+          "$type": "string",
+          "$value": "No users yet",
+          "$description": "Empty-state heading when no managed accounts exist.",
+          "locale": { "es": "Aún no hay usuarios", "fr": "Aucun utilisateur pour le moment", "de": "Noch keine Benutzer", "pt": "Nenhum usuário ainda", "ja": "ユーザーはまだいません", "zh": "尚无用户", "ar": "لا يوجد مستخدمون بعد" }
+        },
+        "noUsersDescription": {
+          "$type": "string",
+          "$value": "Invite a user to create the first account.",
+          "$description": "Empty-state recovery when no managed accounts exist.",
+          "locale": { "es": "Invita a un usuario para crear la primera cuenta.", "fr": "Invitez un utilisateur pour créer le premier compte.", "de": "Laden Sie einen Benutzer ein, um das erste Konto zu erstellen.", "pt": "Convide um usuário para criar a primeira conta.", "ja": "ユーザーを招待して最初のアカウントを作成してください。", "zh": "邀请用户以创建第一个账户。", "ar": "ادعُ مستخدمًا لإنشاء الحساب الأول." }
+        },
+        "inviteDialogDescription": {
+          "$type": "string",
+          "$value": "The person will receive an email invitation and the selected role.",
+          "$description": "Explanation in the invite-user dialog.",
+          "locale": { "es": "La persona recibirá una invitación por correo electrónico y el rol seleccionado.", "fr": "La personne recevra une invitation par courriel et le rôle sélectionné.", "de": "Die Person erhält eine E-Mail-Einladung und die ausgewählte Rolle.", "pt": "A pessoa receberá um convite por e-mail e a função selecionada.", "ja": "招待メールと選択したロールがユーザーに送信されます。", "zh": "此人将收到电子邮件邀请和所选角色。", "ar": "سيتلقى الشخص دعوة عبر البريد الإلكتروني والدور المحدد." }
+        },
+        "sendInvite": {
+          "$type": "string",
+          "$value": "Send invitation",
+          "$description": "Submit action in the invite-user dialog.",
+          "locale": { "es": "Enviar invitación", "fr": "Envoyer l’invitation", "de": "Einladung senden", "pt": "Enviar convite", "ja": "招待を送信", "zh": "发送邀请", "ar": "إرسال الدعوة" }
+        },
+        "cancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Action that closes an administrator dialog without saving.",
+          "locale": { "es": "Cancelar", "fr": "Annuler", "de": "Abbrechen", "pt": "Cancelar", "ja": "キャンセル", "zh": "取消", "ar": "إلغاء" }
+        },
+        "inviteSuccess": {
+          "$type": "string",
+          "$value": "Invitation sent and role assigned.",
+          "$description": "Success message after inviting an account.",
+          "locale": { "es": "Invitación enviada y rol asignado.", "fr": "Invitation envoyée et rôle attribué.", "de": "Einladung gesendet und Rolle zugewiesen.", "pt": "Convite enviado e função atribuída.", "ja": "招待を送信し、ロールを割り当てました。", "zh": "邀请已发送，角色已分配。", "ar": "أُرسلت الدعوة وعُيّن الدور." }
+        },
+        "editRoleDialogTitle": {
+          "$type": "string",
+          "$value": "Edit user role",
+          "$description": "Title of the account role editor dialog.",
+          "locale": { "es": "Editar rol de usuario", "fr": "Modifier le rôle de l’utilisateur", "de": "Benutzerrolle bearbeiten", "pt": "Editar função do usuário", "ja": "ユーザーロールを編集", "zh": "编辑用户角色", "ar": "تعديل دور المستخدم" }
+        },
+        "saveRole": {
+          "$type": "string",
+          "$value": "Save role",
+          "$description": "Submit action in the account role editor.",
+          "locale": { "es": "Guardar rol", "fr": "Enregistrer le rôle", "de": "Rolle speichern", "pt": "Salvar função", "ja": "ロールを保存", "zh": "保存角色", "ar": "حفظ الدور" }
+        },
+        "roleRefreshGuidance": {
+          "$type": "string",
+          "$value": "The account must refresh its session after the role changes.",
+          "$description": "Guidance shown before an administrator changes an account role.",
+          "locale": { "es": "La cuenta debe actualizar su sesión después de que cambie el rol.", "fr": "Le compte doit actualiser sa session après la modification du rôle.", "de": "Das Konto muss seine Sitzung nach der Rollenänderung aktualisieren.", "pt": "A conta deve atualizar a sessão após a alteração da função.", "ja": "ロールの変更後、アカウントはセッションを更新する必要があります。", "zh": "角色更改后，该账户必须刷新会话。", "ar": "يجب أن يحدّث الحساب جلسته بعد تغيير الدور." }
+        },
+        "roleUpdateSuccess": {
+          "$type": "string",
+          "$value": "Role updated. The account must refresh its session to receive the change.",
+          "$description": "Success and recovery message after an account role changes.",
+          "locale": { "es": "Rol actualizado. La cuenta debe actualizar su sesión para recibir el cambio.", "fr": "Rôle mis à jour. Le compte doit actualiser sa session pour recevoir la modification.", "de": "Rolle aktualisiert. Das Konto muss seine Sitzung aktualisieren, um die Änderung zu erhalten.", "pt": "Função atualizada. A conta deve atualizar a sessão para receber a alteração.", "ja": "ロールを更新しました。変更を受け取るには、アカウントでセッションを更新する必要があります。", "zh": "角色已更新。该账户必须刷新会话才能获得更改。", "ar": "حُدّث الدور. يجب أن يحدّث الحساب جلسته لتلقي التغيير." }
+        },
+        "auditTitle": {
+          "$type": "string",
+          "$value": "Recent access activity",
+          "$description": "Heading for administrator access audit history.",
+          "locale": { "es": "Actividad de acceso reciente", "fr": "Activité d’accès récente", "de": "Letzte Zugriffsaktivität", "pt": "Atividade de acesso recente", "ja": "最近のアクセスアクティビティ", "zh": "最近的访问活动", "ar": "نشاط الوصول الأخير" }
+        },
+        "auditDescription": {
+          "$type": "string",
+          "$value": "Review the 50 most recent invitations and role changes.",
+          "$description": "Description of administrator access audit history.",
+          "locale": { "es": "Revisa las 50 invitaciones y cambios de rol más recientes.", "fr": "Consultez les 50 invitations et modifications de rôle les plus récentes.", "de": "Prüfen Sie die 50 neuesten Einladungen und Rollenänderungen.", "pt": "Revise os 50 convites e alterações de função mais recentes.", "ja": "最新の招待とロール変更を 50 件確認します。", "zh": "查看最近 50 次邀请和角色更改。", "ar": "راجع أحدث 50 دعوة وتغييرًا للدور." }
+        },
+        "auditTableCaption": {
+          "$type": "string",
+          "$value": "User administration audit history",
+          "$description": "Accessible caption for user administration audit history.",
+          "locale": { "es": "Historial de auditoría de administración de usuarios", "fr": "Historique d’audit de la gestion des utilisateurs", "de": "Prüfverlauf der Benutzerverwaltung", "pt": "Histórico de auditoria do gerenciamento de usuários", "ja": "ユーザー管理の監査履歴", "zh": "用户管理审核历史记录", "ar": "سجل تدقيق إدارة المستخدمين" }
+        },
+        "auditAction": {
+          "$type": "string",
+          "$value": "Action",
+          "$description": "Audit table column for the administrator action.",
+          "locale": { "es": "Acción", "fr": "Action", "de": "Aktion", "pt": "Ação", "ja": "操作", "zh": "操作", "ar": "الإجراء" }
+        },
+        "auditActor": {
+          "$type": "string",
+          "$value": "Administrator",
+          "$description": "Audit table column for the acting administrator.",
+          "locale": { "es": "Administrador", "fr": "Administrateur", "de": "Administrator", "pt": "Administrador", "ja": "管理者", "zh": "管理员", "ar": "المسؤول" }
+        },
+        "auditTarget": {
+          "$type": "string",
+          "$value": "Account",
+          "$description": "Audit table column for the affected account.",
+          "locale": { "es": "Cuenta", "fr": "Compte", "de": "Konto", "pt": "Conta", "ja": "アカウント", "zh": "账户", "ar": "الحساب" }
+        },
+        "auditChange": {
+          "$type": "string",
+          "$value": "Role change",
+          "$description": "Audit table column for the assigned role or role transition.",
+          "locale": { "es": "Cambio de rol", "fr": "Modification du rôle", "de": "Rollenänderung", "pt": "Alteração de função", "ja": "ロール変更", "zh": "角色更改", "ar": "تغيير الدور" }
+        },
+        "auditDate": {
+          "$type": "string",
+          "$value": "Date",
+          "$description": "Audit table column for when an action occurred.",
+          "locale": { "es": "Fecha", "fr": "Date", "de": "Datum", "pt": "Data", "ja": "日付", "zh": "日期", "ar": "التاريخ" }
+        },
+        "auditInvited": {
+          "$type": "string",
+          "$value": "Invitation sent",
+          "$description": "Audit action label for a user invitation.",
+          "locale": { "es": "Invitación enviada", "fr": "Invitation envoyée", "de": "Einladung gesendet", "pt": "Convite enviado", "ja": "招待を送信", "zh": "邀请已发送", "ar": "أُرسلت الدعوة" }
+        },
+        "auditRoleChanged": {
+          "$type": "string",
+          "$value": "Role changed",
+          "$description": "Audit action label for an account role change.",
+          "locale": { "es": "Rol cambiado", "fr": "Rôle modifié", "de": "Rolle geändert", "pt": "Função alterada", "ja": "ロールを変更", "zh": "角色已更改", "ar": "تغيّر الدور" }
+        },
+        "deletedAccount": {
+          "$type": "string",
+          "$value": "Deleted account",
+          "$description": "Audit fallback when an associated account no longer exists.",
+          "locale": { "es": "Cuenta eliminada", "fr": "Compte supprimé", "de": "Gelöschtes Konto", "pt": "Conta excluída", "ja": "削除されたアカウント", "zh": "已删除账户", "ar": "حساب محذوف" }
+        },
+        "noAuditTitle": {
+          "$type": "string",
+          "$value": "No access activity yet",
+          "$description": "Empty-state heading for access audit history.",
+          "locale": { "es": "Aún no hay actividad de acceso", "fr": "Aucune activité d’accès pour le moment", "de": "Noch keine Zugriffsaktivität", "pt": "Nenhuma atividade de acesso ainda", "ja": "アクセスアクティビティはまだありません", "zh": "尚无访问活动", "ar": "لا يوجد نشاط وصول بعد" }
+        },
+        "noAuditDescription": {
+          "$type": "string",
+          "$value": "Invitations and role changes will appear here.",
+          "$description": "Empty-state description for access audit history.",
+          "locale": { "es": "Las invitaciones y los cambios de rol aparecerán aquí.", "fr": "Les invitations et les modifications de rôle apparaîtront ici.", "de": "Einladungen und Rollenänderungen werden hier angezeigt.", "pt": "Convites e alterações de função aparecerão aqui.", "ja": "招待とロール変更がここに表示されます。", "zh": "邀请和角色更改将显示在此处。", "ar": "ستظهر الدعوات وتغييرات الأدوار هنا." }
         }
       },
       "labs": {
@@ -1282,6 +1652,34 @@
         }
       },
       "account": {
+        "alphaAgreement": {
+          "$type": "string",
+          "$value": "I agree that this is an alpha site and the intellectual property of Nathan Dana. I will not share it without permission.",
+          "$description": "Required agreement shown before an invited account can sign in.",
+          "locale": {
+            "es": "Acepto que este es un sitio alfa y propiedad intelectual de Nathan Dana. No lo compartiré sin permiso.",
+            "fr": "J’accepte que ce site soit en version alpha et qu’il constitue la propriété intellectuelle de Nathan Dana. Je ne le partagerai pas sans autorisation.",
+            "de": "Ich stimme zu, dass dies eine Alpha-Website und geistiges Eigentum von Nathan Dana ist. Ich werde sie nicht ohne Erlaubnis weitergeben.",
+            "pt": "Concordo que este é um site alfa e propriedade intelectual de Nathan Dana. Não o compartilharei sem permissão.",
+            "ja": "これはアルファ版サイトであり、Nathan Dana の知的財産であることに同意します。許可なく共有しません。",
+            "zh": "我同意这是一个 Alpha 版网站，也是 Nathan Dana 的知识产权。未经许可，我不会分享。",
+            "ar": "أوافق على أن هذا موقع في مرحلة ألفا وملكية فكرية لـ Nathan Dana. لن أشاركه دون إذن."
+          }
+        },
+        "warnAgreement": {
+          "$type": "string",
+          "$value": "Accept the alpha agreement to continue.",
+          "$description": "Validation message shown when sign-in is attempted without accepting the alpha agreement.",
+          "locale": {
+            "es": "Acepta el acuerdo alfa para continuar.",
+            "fr": "Acceptez l’accord relatif à la version alpha pour continuer.",
+            "de": "Akzeptieren Sie die Alpha-Vereinbarung, um fortzufahren.",
+            "pt": "Aceite o acordo da versão alfa para continuar.",
+            "ja": "続行するには、アルファ版に関する同意事項を承認してください。",
+            "zh": "接受 Alpha 版协议以继续。",
+            "ar": "وافق على اتفاقية الإصدار ألفا للمتابعة."
+          }
+        },
         "notConfigured": {
           "$type": "string",
           "$value": "Cloud accounts aren't configured for this build.",
@@ -1312,16 +1710,16 @@
         },
         "sharedWorkspace": {
           "$type": "string",
-          "$value": "This is a shared workspace — every signed-in user sees and edits the same projects, themes, patterns, and images.",
-          "$description": "Paragraph on the Account page explaining that the workspace is shared among all signed-in users.",
+          "$value": "This is a shared workspace. Your role controls which projects, tools, and system settings you can view or edit.",
+          "$description": "Paragraph on the Account page explaining that role-based access applies to the shared workspace.",
           "locale": {
-            "es": "Este es un espacio de trabajo compartido: todos los usuarios que han iniciado sesión ven y editan los mismos proyectos, temas, patrones e imágenes.",
-            "fr": "Il s'agit d'un espace de travail partagé — chaque utilisateur connecté voit et modifie les mêmes projets, thèmes, modèles et images.",
-            "de": "Dies ist ein gemeinsamer Arbeitsbereich – jeder angemeldete Benutzer sieht und bearbeitet dieselben Projekte, Designs, Muster und Bilder.",
-            "pt": "Este é um espaço de trabalho compartilhado — todos os usuários conectados veem e editam os mesmos projetos, temas, padrões e imagens.",
-            "ja": "これは共有ワークスペースです。サインイン中のすべてのユーザーが同じプロジェクト、テーマ、パターン、画像を参照・編集できます。",
-            "zh": "这是一个共享工作区——所有已登录用户可以查看和编辑相同的项目、主题、模式和图片。",
-            "ar": "هذه مساحة عمل مشتركة — يرى كل مستخدم مسجّل الدخول المشاريع والسمات والأنماط والصور ذاتها ويحررها."
+            "es": "Este es un espacio de trabajo compartido. Tu rol controla qué proyectos, herramientas y ajustes del sistema puedes ver o editar.",
+            "fr": "Il s’agit d’un espace de travail partagé. Votre rôle détermine les projets, outils et paramètres système que vous pouvez consulter ou modifier.",
+            "de": "Dies ist ein gemeinsamer Arbeitsbereich. Ihre Rolle bestimmt, welche Projekte, Werkzeuge und Systemeinstellungen Sie ansehen oder bearbeiten können.",
+            "pt": "Este é um espaço de trabalho compartilhado. Sua função controla quais projetos, ferramentas e configurações do sistema você pode ver ou editar.",
+            "ja": "これは共有ワークスペースです。ロールによって、表示または編集できるプロジェクト、ツール、システム設定が決まります。",
+            "zh": "这是一个共享工作区。你的角色决定你可以查看或编辑哪些项目、工具和系统设置。",
+            "ar": "هذه مساحة عمل مشتركة. يحدد دورك المشاريع والأدوات وإعدادات النظام التي يمكنك عرضها أو تحريرها."
           }
         },
         "whereDataStored": {

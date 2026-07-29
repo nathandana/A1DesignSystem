@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Snackbar } from '@gtivr4/a1-design-system-react'
+import { useAccess } from '../access/AccessContext.jsx'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { registerSyncSource } from '../lib/manualSync.js'
 import * as store from '../services/backlog/backlogStore'
@@ -21,6 +22,8 @@ const BacklogContext = createContext(null)
 
 export function BacklogProvider({ children }) {
   const { user } = useAuth()
+  const { canUseFeature } = useAccess()
+  const hasBacklogAccess = canUseFeature('backlog')
   const [items, setItems] = useState([])
   const [notifications, setNotifications] = useState([])
   const [votedSet, setVotedSet] = useState(() => new Set())
@@ -49,16 +52,24 @@ export function BacklogProvider({ children }) {
   // subscribe. Re-runs when the signed-in user changes so we resubscribe to the new
   // backend and pick up that user's notifications / votes.
   useEffect(() => {
+    if (!hasBacklogAccess) {
+      store.setBacklogUser(null)
+      setItems([])
+      setNotifications([])
+      setVotedSet(new Set())
+      setLoading(false)
+      return undefined
+    }
     store.setBacklogUser(user ?? null)
     setLoading(true)
     refresh()
     const unsub = store.subscribe(refresh)
     const unregister = registerSyncSource('backlog', refresh)
     return () => { unsub(); unregister() }
-  }, [user?.id, refresh]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hasBacklogAccess, user?.id, refresh]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (loading) return
+    if (!hasBacklogAccess || loading) return
     const seedKey = `${store.isCloudBacklog() ? 'cloud' : 'local'}:${user?.id ?? 'anonymous'}`
     if (figmaSeededRef.current.has(seedKey)) return
     figmaSeededRef.current.add(seedKey)
@@ -73,12 +84,13 @@ export function BacklogProvider({ children }) {
     }
     seedFigmaTickets()
     return () => { cancelled = true }
-  }, [items, loading, refresh, user?.id])
+  }, [hasBacklogAccess, items, loading, refresh, user?.id])
 
   const openCreate = useCallback((scope) => {
+    if (!hasBacklogAccess) return
     setCreateScope(scope || { kind: 'general' })
     setCreateOpen(true)
-  }, [])
+  }, [hasBacklogAccess])
 
   const handleCreate = useCallback(async (input) => {
     const item = await store.createItem(input)
@@ -226,13 +238,15 @@ export function BacklogProvider({ children }) {
   return (
     <BacklogContext.Provider value={value}>
       {children}
-      <CreateTicketDialog
-        open={createOpen}
-        scope={createScope}
-        existingItems={items}
-        onClose={() => setCreateOpen(false)}
-        onSubmit={handleCreate}
-      />
+      {hasBacklogAccess ? (
+        <CreateTicketDialog
+          open={createOpen}
+          scope={createScope}
+          existingItems={items}
+          onClose={() => setCreateOpen(false)}
+          onSubmit={handleCreate}
+        />
+      ) : null}
       <Snackbar
         open={!!toast}
         position="bottom"

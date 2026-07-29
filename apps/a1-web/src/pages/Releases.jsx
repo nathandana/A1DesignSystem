@@ -267,11 +267,15 @@ function useReleaseSources() {
   )
 }
 
-function useReleaseView(mode, query, sourceId) {
+function useReleaseView(mode, query, sourceId, allowDetailed = true) {
   const releaseSources = useReleaseSources()
   const activeSources = useMemo(
-    () => releaseSources.filter((source) => Object.keys(source.markdownByMode).length > 0),
-    [releaseSources],
+    () => releaseSources.filter((source) => (
+      allowDetailed
+        ? Object.keys(source.markdownByMode).length > 0
+        : !!source.markdownByMode[RELEASE_NOTE_MODES.simplified]
+    )),
+    [allowDetailed, releaseSources],
   )
   const activeSourceId = activeSources.some((source) => source.id === sourceId)
     ? sourceId
@@ -470,6 +474,7 @@ function ReleaseSection({ release, searchTokens = [] }) {
 
 export function ReleasesSidebar({
   mode = DEFAULT_RELEASE_NOTE_MODE,
+  allowDetailed = true,
   sourceId,
   onSourceChange,
   search = '',
@@ -484,7 +489,7 @@ export function ReleasesSidebar({
     releaseTreeLabel,
     searchLabel,
   } = useReleaseLabels(mode)
-  const { activeSources, activeSourceId, filteredReleases } = useReleaseView(mode, search, sourceId)
+  const { activeSources, activeSourceId, filteredReleases } = useReleaseView(mode, search, sourceId, allowDetailed)
   const releaseTreeItems = useMemo(
     () => filteredReleases.map((release) => ({
       id: release.id,
@@ -548,6 +553,7 @@ export function ReleasesSidebar({
 export function Releases({
   onNavigate,
   mode = DEFAULT_RELEASE_NOTE_MODE,
+  allowDetailed = true,
   onModeChange,
   sourceId,
   onSourceChange,
@@ -567,7 +573,7 @@ export function Releases({
     releaseDescription,
     releaseViewLabel,
   } = useReleaseLabels(mode)
-  const { activeSourceId, releases, filteredReleases, searchTokens } = useReleaseView(mode, search, sourceId)
+  const { activeSourceId, releases, filteredReleases, searchTokens } = useReleaseView(mode, search, sourceId, allowDetailed)
   const isSearching = searchTokens.length > 0
   const visibleRelease = filteredReleases.find((release) => release.id === activeRelease) ?? filteredReleases[0] ?? null
   const visibleReleases = isSearching ? filteredReleases : (visibleRelease ? [visibleRelease] : [])
@@ -602,13 +608,15 @@ export function Releases({
         description={emptyDescription}
         actions={(
           <>
-            <SegmentedControl
-              aria-label={releaseViewLabel}
-              size="compact"
-              value={mode}
-              onChange={onModeChange}
-              options={releaseModeOptions}
-            />
+            {allowDetailed ? (
+              <SegmentedControl
+                aria-label={releaseViewLabel}
+                size="compact"
+                value={mode}
+                onChange={onModeChange}
+                options={releaseModeOptions}
+              />
+            ) : null}
             {sideNavIsOverlay && onOpenSidebar ? (
               <Button icon="menu_open" variant="secondary" onClick={onOpenSidebar}>
                 {releaseOpenNavLabel}
@@ -633,13 +641,15 @@ export function Releases({
         description={releaseDescription}
         actions={(
           <>
-            <SegmentedControl
-              aria-label={releaseViewLabel}
-              size="compact"
-              value={mode}
-              onChange={onModeChange}
-              options={releaseModeOptions}
-            />
+            {allowDetailed ? (
+              <SegmentedControl
+                aria-label={releaseViewLabel}
+                size="compact"
+                value={mode}
+                onChange={onModeChange}
+                options={releaseModeOptions}
+              />
+            ) : null}
             {sideNavIsOverlay && onOpenSidebar ? (
               <Button icon="menu_open" variant="secondary" onClick={onOpenSidebar}>
                 {releaseOpenNavLabel}
