@@ -6,14 +6,14 @@ A1-405 introduces end-to-end role-based access for a1-web. It
 replaces the hosted app's all-or-nothing sign-in gate with four roles, enforces
 page and feature policy in one client module, and adds database policies where
 the current data model can enforce them safely. The Administration page also
-uses a server-only function to list accounts, send invitations, assign roles
-and read an append-only access audit trail.
+uses a server-only function to list accounts, show detailed profiles, send
+invitations, assign roles, delete accounts and read append-only account and
+login audit trails.
 
 This slice does not add public sign-up, teams, per-user workspaces, account
-deactivation or account deletion by administrators. It also does not claim that
-a hidden client route is a security boundary. Supabase row-level security and
-the authenticated server function remain the authorities for protected
-operations.
+deactivation or invitation resend. It also does not claim that a hidden client
+route is a security boundary. Supabase row-level security and the authenticated
+server function remain the authorities for protected operations.
 
 ## Roles
 
@@ -60,7 +60,7 @@ These recommendations are the policy implemented in
 | Label editor | Editor | Workspace label writes are restricted by Supabase policy |
 | Priority Guide editor | Editor | Shared content-planning authoring |
 | Theme editor | Administrator | High-impact preview that changes shared visual foundations |
-| Administration | Administrator | Account list, invitations, role assignment, access audit and preview entry point |
+| Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, and preview entry point |
 | Virtual team | Administrator | Development-only administrative automation |
 
 Navigation visibility is convenience, not authorization. Direct URLs render an
@@ -77,12 +77,19 @@ Apply these migrations to an existing workspace:
 - `apps/a1-web/supabase/migrations/20260729_a1_405_user_management.sql` adds the
   server-only `a1_user_admin_audit` table. Authenticated and anonymous browser
   roles receive no privileges or row-level policies for this table.
+- `apps/a1-web/supabase/migrations/20260729_a1_405_user_profile_management.sql`
+  adds account-deletion audit support and the browser-inaccessible
+  `a1_user_login_audit` table. It also adds the authenticated
+  `a1_record_login()` recorder used after successful A1 password sign-in.
 
 Bootstrap the first administrator through the Supabase dashboard by setting
 `auth.users.raw_app_meta_data.role` to `admin`. After that, administrators can
 use the Administration page to invite accounts and assign `user`, `editor`, or
 `admin`. The page does not allow an administrator to change their own role, so
-one account cannot accidentally remove its own access.
+one account cannot accidentally remove its own access. It also prevents the
+signed-in administrator from deleting their own account. Deleting another
+account requires the administrator to type its email address, or its user ID
+when no email exists, exactly.
 
 ## User-administration server boundary
 
@@ -92,8 +99,11 @@ access token. The Netlify function:
 1. validates the token with Supabase;
 2. requires trusted `app_metadata.role = "admin"`;
 3. uses `SUPABASE_SERVICE_ROLE_KEY` only on the server;
-4. returns a limited account projection instead of complete Auth records; and
-5. records invitations and role changes in `a1_user_admin_audit`.
+4. returns a limited account projection instead of complete Auth records;
+5. reads complete per-account lifecycle and login history;
+6. blocks role changes and deletion for the acting administrator; and
+7. records invitations, role changes and deletions in
+   `a1_user_admin_audit`.
 
 Configure `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` through Netlify's
 environment-variable UI. A `VITE_SUPABASE_URL` value declared only in
@@ -106,6 +116,16 @@ because the Vite-only server does not host Netlify functions.
 A changed account must refresh its session, usually by signing out and back in,
 before the new role reaches its JSON Web Token. The actor cannot change their
 own role from the page.
+
+After a successful password sign-in, the browser calls the security-definer
+`a1_record_login()` function. Supabase supplies the authenticated user ID and
+email from the session; the database supplies the timestamp. Browser clients
+cannot select, insert, update or delete rows in `a1_user_login_audit`, while the
+administrator-authenticated Netlify function can read the complete list. A
+30-second duplicate guard prevents repeated submissions for the same sign-in.
+The history begins when the profile-management migration and recorder are
+deployed; Supabase does not provide a retroactive list of earlier sign-ins.
+Session refreshes and already-active sessions are not recorded as new logins.
 
 ## Remaining slices
 

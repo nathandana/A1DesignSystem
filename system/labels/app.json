@@ -1048,9 +1048,9 @@
         },
         "auditDescription": {
           "$type": "string",
-          "$value": "Review the 50 most recent invitations and role changes.",
+          "$value": "Review the 50 most recent invitations, role changes and deletions.",
           "$description": "Description of administrator access audit history.",
-          "locale": { "es": "Revisa las 50 invitaciones y cambios de rol más recientes.", "fr": "Consultez les 50 invitations et modifications de rôle les plus récentes.", "de": "Prüfen Sie die 50 neuesten Einladungen und Rollenänderungen.", "pt": "Revise os 50 convites e alterações de função mais recentes.", "ja": "最新の招待とロール変更を 50 件確認します。", "zh": "查看最近 50 次邀请和角色更改。", "ar": "راجع أحدث 50 دعوة وتغييرًا للدور." }
+          "locale": { "es": "Revisa las 50 invitaciones, cambios de rol y eliminaciones más recientes.", "fr": "Consultez les 50 invitations, modifications de rôle et suppressions les plus récentes.", "de": "Prüfen Sie die 50 neuesten Einladungen, Rollenänderungen und Löschungen.", "pt": "Revise os 50 convites, alterações de função e exclusões mais recentes.", "ja": "最新の招待、ロール変更、削除を 50 件確認します。", "zh": "查看最近 50 次邀请、角色更改和删除操作。", "ar": "راجع أحدث 50 دعوة وتغييرًا للدور وعملية حذف." }
         },
         "auditTableCaption": {
           "$type": "string",
@@ -1114,9 +1114,219 @@
         },
         "noAuditDescription": {
           "$type": "string",
-          "$value": "Invitations and role changes will appear here.",
+          "$value": "Invitations, role changes and deletions will appear here.",
           "$description": "Empty-state description for access audit history.",
-          "locale": { "es": "Las invitaciones y los cambios de rol aparecerán aquí.", "fr": "Les invitations et les modifications de rôle apparaîtront ici.", "de": "Einladungen und Rollenänderungen werden hier angezeigt.", "pt": "Convites e alterações de função aparecerão aqui.", "ja": "招待とロール変更がここに表示されます。", "zh": "邀请和角色更改将显示在此处。", "ar": "ستظهر الدعوات وتغييرات الأدوار هنا." }
+          "locale": { "es": "Las invitaciones, los cambios de rol y las eliminaciones aparecerán aquí.", "fr": "Les invitations, les modifications de rôle et les suppressions apparaîtront ici.", "de": "Einladungen, Rollenänderungen und Löschungen werden hier angezeigt.", "pt": "Convites, alterações de função e exclusões aparecerão aqui.", "ja": "招待、ロール変更、削除がここに表示されます。", "zh": "邀请、角色更改和删除操作将显示在此处。", "ar": "ستظهر الدعوات وتغييرات الأدوار وعمليات الحذف هنا." }
+        },
+        "viewProfile": {
+          "$type": "string",
+          "$value": "View profile",
+          "$description": "Action that opens an account's detailed administrator profile.",
+          "locale": { "es": "Ver perfil", "fr": "Voir le profil", "de": "Profil anzeigen", "pt": "Ver perfil", "ja": "プロフィールを表示", "zh": "查看个人资料", "ar": "عرض الملف الشخصي" }
+        },
+        "userProfileTitle": {
+          "$type": "string",
+          "$value": "User profile",
+          "$description": "Title of the administrator user-profile dialog.",
+          "locale": { "es": "Perfil de usuario", "fr": "Profil utilisateur", "de": "Benutzerprofil", "pt": "Perfil do usuário", "ja": "ユーザープロフィール", "zh": "用户个人资料", "ar": "الملف الشخصي للمستخدم" }
+        },
+        "close": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Action that closes a user-profile dialog.",
+          "locale": { "es": "Cerrar", "fr": "Fermer", "de": "Schließen", "pt": "Fechar", "ja": "閉じる", "zh": "关闭", "ar": "إغلاق" }
+        },
+        "loadingUserProfile": {
+          "$type": "string",
+          "$value": "Loading user profile",
+          "$description": "Loading status and accessible progress label for a user profile.",
+          "locale": { "es": "Cargando perfil de usuario", "fr": "Chargement du profil utilisateur", "de": "Benutzerprofil wird geladen", "pt": "Carregando perfil do usuário", "ja": "ユーザープロフィールを読み込んでいます", "zh": "正在加载用户个人资料", "ar": "جارٍ تحميل الملف الشخصي للمستخدم" }
+        },
+        "retryUserProfile": {
+          "$type": "string",
+          "$value": "Retry profile",
+          "$description": "Action that retries loading an administrator user profile.",
+          "locale": { "es": "Reintentar perfil", "fr": "Réessayer le profil", "de": "Profil erneut laden", "pt": "Tentar perfil novamente", "ja": "プロフィールを再試行", "zh": "重试个人资料", "ar": "إعادة محاولة تحميل الملف الشخصي" }
+        },
+        "notProvided": {
+          "$type": "string",
+          "$value": "Not provided",
+          "$description": "Fallback when optional account information is unavailable.",
+          "locale": { "es": "No proporcionado", "fr": "Non fourni", "de": "Nicht angegeben", "pt": "Não informado", "ja": "未提供", "zh": "未提供", "ar": "غير متوفر" }
+        },
+        "accountSuspended": {
+          "$type": "string",
+          "$value": "Suspended",
+          "$description": "Status for an account that Supabase has suspended.",
+          "locale": { "es": "Suspendida", "fr": "Suspendu", "de": "Gesperrt", "pt": "Suspensa", "ja": "停止中", "zh": "已暂停", "ar": "معلّق" }
+        },
+        "userId": {
+          "$type": "string",
+          "$value": "User ID",
+          "$description": "Label for a Supabase account identifier.",
+          "locale": { "es": "ID de usuario", "fr": "ID utilisateur", "de": "Benutzer-ID", "pt": "ID do usuário", "ja": "ユーザー ID", "zh": "用户 ID", "ar": "معرّف المستخدم" }
+        },
+        "userPhone": {
+          "$type": "string",
+          "$value": "Phone",
+          "$description": "Label for an account phone number.",
+          "locale": { "es": "Teléfono", "fr": "Téléphone", "de": "Telefon", "pt": "Telefone", "ja": "電話番号", "zh": "电话", "ar": "الهاتف" }
+        },
+        "signInProviders": {
+          "$type": "string",
+          "$value": "Sign-in providers",
+          "$description": "Label for the authentication providers associated with an account.",
+          "locale": { "es": "Proveedores de inicio de sesión", "fr": "Fournisseurs de connexion", "de": "Anmeldeanbieter", "pt": "Provedores de acesso", "ja": "サインインプロバイダー", "zh": "登录提供商", "ar": "موفرو تسجيل الدخول" }
+        },
+        "accountCreated": {
+          "$type": "string",
+          "$value": "Created",
+          "$description": "Label for when an account was created.",
+          "locale": { "es": "Creada", "fr": "Créé", "de": "Erstellt", "pt": "Criada", "ja": "作成日時", "zh": "创建时间", "ar": "تاريخ الإنشاء" }
+        },
+        "invitationSentAt": {
+          "$type": "string",
+          "$value": "Invitation sent",
+          "$description": "Label for when an account invitation was sent.",
+          "locale": { "es": "Invitación enviada", "fr": "Invitation envoyée", "de": "Einladung gesendet", "pt": "Convite enviado", "ja": "招待送信日時", "zh": "邀请发送时间", "ar": "تاريخ إرسال الدعوة" }
+        },
+        "emailConfirmedAt": {
+          "$type": "string",
+          "$value": "Email confirmed",
+          "$description": "Label for when an account email was confirmed.",
+          "locale": { "es": "Correo electrónico confirmado", "fr": "Adresse courriel confirmée", "de": "E-Mail bestätigt", "pt": "E-mail confirmado", "ja": "メール確認日時", "zh": "电子邮件确认时间", "ar": "تاريخ تأكيد البريد الإلكتروني" }
+        },
+        "accountUpdated": {
+          "$type": "string",
+          "$value": "Last updated",
+          "$description": "Label for when an account record was most recently updated.",
+          "locale": { "es": "Última actualización", "fr": "Dernière mise à jour", "de": "Zuletzt aktualisiert", "pt": "Última atualização", "ja": "最終更新日時", "zh": "上次更新时间", "ar": "آخر تحديث" }
+        },
+        "fullHistoryTitle": {
+          "$type": "string",
+          "$value": "Full account history",
+          "$description": "Heading for a user's complete administrator-recorded lifecycle history.",
+          "locale": { "es": "Historial completo de la cuenta", "fr": "Historique complet du compte", "de": "Vollständiger Kontoverlauf", "pt": "Histórico completo da conta", "ja": "アカウントの全履歴", "zh": "完整账户历史记录", "ar": "السجل الكامل للحساب" }
+        },
+        "fullHistoryDescription": {
+          "$type": "string",
+          "$value": "Every recorded invitation, role change and deletion associated with this account.",
+          "$description": "Description of a user's complete administrator-recorded lifecycle history.",
+          "locale": { "es": "Todas las invitaciones, cambios de rol y eliminaciones registrados asociados con esta cuenta.", "fr": "Chaque invitation, modification de rôle et suppression enregistrée associée à ce compte.", "de": "Jede aufgezeichnete Einladung, Rollenänderung und Löschung für dieses Konto.", "pt": "Todos os convites, alterações de função e exclusões registrados associados a esta conta.", "ja": "このアカウントに関連付けられた、記録済みの招待、ロール変更、削除のすべて。", "zh": "与此账户关联的所有已记录邀请、角色更改和删除操作。", "ar": "كل دعوة وتغيير دور وعملية حذف مسجّلة مرتبطة بهذا الحساب." }
+        },
+        "fullHistoryCaption": {
+          "$type": "string",
+          "$value": "Complete account access history",
+          "$description": "Accessible caption for a user's complete lifecycle-history table.",
+          "locale": { "es": "Historial completo de acceso de la cuenta", "fr": "Historique complet des accès au compte", "de": "Vollständiger Kontozugriffsverlauf", "pt": "Histórico completo de acesso da conta", "ja": "アカウントアクセスの全履歴", "zh": "完整账户访问历史记录", "ar": "سجل وصول الحساب الكامل" }
+        },
+        "noUserHistoryTitle": {
+          "$type": "string",
+          "$value": "No account history yet",
+          "$description": "Empty-state heading for a user's lifecycle history.",
+          "locale": { "es": "Aún no hay historial de la cuenta", "fr": "Aucun historique du compte pour le moment", "de": "Noch kein Kontoverlauf", "pt": "Nenhum histórico da conta ainda", "ja": "アカウント履歴はまだありません", "zh": "尚无账户历史记录", "ar": "لا يوجد سجل للحساب بعد" }
+        },
+        "noUserHistoryDescription": {
+          "$type": "string",
+          "$value": "Invitations, role changes and deletions for this account will appear here.",
+          "$description": "Empty-state description for a user's lifecycle history.",
+          "locale": { "es": "Las invitaciones, los cambios de rol y las eliminaciones de esta cuenta aparecerán aquí.", "fr": "Les invitations, les modifications de rôle et les suppressions de ce compte apparaîtront ici.", "de": "Einladungen, Rollenänderungen und Löschungen für dieses Konto werden hier angezeigt.", "pt": "Convites, alterações de função e exclusões desta conta aparecerão aqui.", "ja": "このアカウントの招待、ロール変更、削除がここに表示されます。", "zh": "此账户的邀请、角色更改和删除操作将显示在此处。", "ar": "ستظهر هنا الدعوات وتغييرات الأدوار وعمليات الحذف لهذا الحساب." }
+        },
+        "auditDeleted": {
+          "$type": "string",
+          "$value": "User deleted",
+          "$description": "Audit action label for an account deletion.",
+          "locale": { "es": "Usuario eliminado", "fr": "Utilisateur supprimé", "de": "Benutzer gelöscht", "pt": "Usuário excluído", "ja": "ユーザーを削除", "zh": "用户已删除", "ar": "حُذف المستخدم" }
+        },
+        "deleteUser": {
+          "$type": "string",
+          "$value": "Delete user",
+          "$description": "Destructive action that permanently deletes an account.",
+          "locale": { "es": "Eliminar usuario", "fr": "Supprimer l’utilisateur", "de": "Benutzer löschen", "pt": "Excluir usuário", "ja": "ユーザーを削除", "zh": "删除用户", "ar": "حذف المستخدم" }
+        },
+        "deleteUserTitle": {
+          "$type": "string",
+          "$value": "Delete user",
+          "$description": "Title of the administrator account-deletion dialog.",
+          "locale": { "es": "Eliminar usuario", "fr": "Supprimer l’utilisateur", "de": "Benutzer löschen", "pt": "Excluir usuário", "ja": "ユーザーを削除", "zh": "删除用户", "ar": "حذف المستخدم" }
+        },
+        "deleteUserWarning": {
+          "$type": "string",
+          "$value": "This permanently deletes the account and associated authentication data. This action cannot be undone.",
+          "$description": "Warning shown before an administrator permanently deletes an account.",
+          "locale": { "es": "Esto elimina permanentemente la cuenta y los datos de autenticación asociados. Esta acción no se puede deshacer.", "fr": "Cette action supprime définitivement le compte et les données d’authentification associées. Elle est irréversible.", "de": "Dadurch werden das Konto und die zugehörigen Authentifizierungsdaten dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", "pt": "Isso exclui permanentemente a conta e os dados de autenticação associados. Essa ação não pode ser desfeita.", "ja": "アカウントと関連する認証データが完全に削除されます。この操作は取り消せません。", "zh": "这将永久删除该账户及关联的身份验证数据。此操作无法撤销。", "ar": "يؤدي هذا إلى حذف الحساب وبيانات المصادقة المرتبطة به نهائيًا. لا يمكن التراجع عن هذا الإجراء." }
+        },
+        "deleteUserConfirmationGuidance": {
+          "$type": "string",
+          "$value": "Type the account email or user ID exactly to confirm.",
+          "$description": "Guidance for the exact-value confirmation required before account deletion.",
+          "locale": { "es": "Escribe exactamente el correo electrónico de la cuenta o el ID de usuario para confirmar.", "fr": "Saisissez exactement l’adresse courriel du compte ou l’ID utilisateur pour confirmer.", "de": "Geben Sie zur Bestätigung die E-Mail-Adresse des Kontos oder die Benutzer-ID genau ein.", "pt": "Digite exatamente o e-mail da conta ou o ID do usuário para confirmar.", "ja": "確認するには、アカウントのメールアドレスまたはユーザー ID を正確に入力してください。", "zh": "准确输入账户电子邮件或用户 ID 以确认。", "ar": "اكتب البريد الإلكتروني للحساب أو معرّف المستخدم تمامًا للتأكيد." }
+        },
+        "deleteUserConfirmationLabel": {
+          "$type": "string",
+          "$value": "Account email or user ID",
+          "$description": "Field label for the exact account-deletion confirmation value.",
+          "locale": { "es": "Correo electrónico de la cuenta o ID de usuario", "fr": "Adresse courriel du compte ou ID utilisateur", "de": "Konto-E-Mail oder Benutzer-ID", "pt": "E-mail da conta ou ID do usuário", "ja": "アカウントのメールアドレスまたはユーザー ID", "zh": "账户电子邮件或用户 ID", "ar": "البريد الإلكتروني للحساب أو معرّف المستخدم" }
+        },
+        "deleteSuccess": {
+          "$type": "string",
+          "$value": "User deleted.",
+          "$description": "Success message after an administrator deletes an account.",
+          "locale": { "es": "Usuario eliminado.", "fr": "Utilisateur supprimé.", "de": "Benutzer gelöscht.", "pt": "Usuário excluído.", "ja": "ユーザーを削除しました。", "zh": "用户已删除。", "ar": "حُذف المستخدم." }
+        },
+        "loginHistoryTitle": {
+          "$type": "string",
+          "$value": "Login history",
+          "$description": "Heading for the administrator-wide successful-login list.",
+          "locale": { "es": "Historial de inicios de sesión", "fr": "Historique des connexions", "de": "Anmeldeverlauf", "pt": "Histórico de acessos", "ja": "ログイン履歴", "zh": "登录历史记录", "ar": "سجل تسجيل الدخول" }
+        },
+        "loginHistoryDescription": {
+          "$type": "string",
+          "$value": "Review every successful A1 password sign-in recorded after login tracking was enabled.",
+          "$description": "Description of the administrator-wide successful-login list.",
+          "locale": { "es": "Revisa todos los inicios de sesión correctos con contraseña de A1 registrados desde que se habilitó el seguimiento.", "fr": "Consultez chaque connexion A1 réussie par mot de passe enregistrée depuis l’activation du suivi.", "de": "Prüfen Sie jede erfolgreiche A1-Passwortanmeldung, die seit Aktivierung der Anmeldeverfolgung aufgezeichnet wurde.", "pt": "Revise todos os acessos bem-sucedidos ao A1 com senha registrados desde que o rastreamento foi ativado.", "ja": "ログイン追跡を有効にしてから記録された、A1 へのパスワードによる正常なサインインをすべて確認します。", "zh": "查看启用登录跟踪后记录的每次成功 A1 密码登录。", "ar": "راجع كل عملية تسجيل دخول ناجحة إلى A1 بكلمة مرور سُجّلت بعد تفعيل التتبّع." }
+        },
+        "loginHistoryCaption": {
+          "$type": "string",
+          "$value": "All recorded user logins",
+          "$description": "Accessible caption for the administrator-wide login-history table.",
+          "locale": { "es": "Todos los inicios de sesión de usuarios registrados", "fr": "Toutes les connexions utilisateur enregistrées", "de": "Alle aufgezeichneten Benutzeranmeldungen", "pt": "Todos os acessos de usuários registrados", "ja": "記録されたすべてのユーザーログイン", "zh": "所有已记录的用户登录", "ar": "كل عمليات تسجيل دخول المستخدمين المسجّلة" }
+        },
+        "signedInAt": {
+          "$type": "string",
+          "$value": "Signed in",
+          "$description": "Login-history column for the date and time of a successful sign-in.",
+          "locale": { "es": "Inicio de sesión", "fr": "Connexion", "de": "Angemeldet", "pt": "Acesso", "ja": "サインイン日時", "zh": "登录时间", "ar": "وقت تسجيل الدخول" }
+        },
+        "noLoginsTitle": {
+          "$type": "string",
+          "$value": "No logins recorded",
+          "$description": "Empty-state heading for login history.",
+          "locale": { "es": "No hay inicios de sesión registrados", "fr": "Aucune connexion enregistrée", "de": "Keine Anmeldungen aufgezeichnet", "pt": "Nenhum acesso registrado", "ja": "記録されたログインはありません", "zh": "未记录登录", "ar": "لا توجد عمليات تسجيل دخول مسجّلة" }
+        },
+        "noLoginsDescription": {
+          "$type": "string",
+          "$value": "Successful sign-ins recorded after login tracking was enabled will appear here.",
+          "$description": "Empty-state description for login history.",
+          "locale": { "es": "Los inicios de sesión correctos registrados después de habilitar el seguimiento aparecerán aquí.", "fr": "Les connexions réussies enregistrées après l’activation du suivi apparaîtront ici.", "de": "Erfolgreiche Anmeldungen, die nach Aktivierung der Anmeldeverfolgung aufgezeichnet wurden, werden hier angezeigt.", "pt": "Os acessos bem-sucedidos registrados após a ativação do rastreamento aparecerão aqui.", "ja": "ログイン追跡を有効にしてから記録された正常なサインインがここに表示されます。", "zh": "启用登录跟踪后记录的成功登录将显示在此处。", "ar": "ستظهر هنا عمليات تسجيل الدخول الناجحة المسجّلة بعد تفعيل التتبّع." }
+        },
+        "fullLoginHistoryTitle": {
+          "$type": "string",
+          "$value": "Full login history",
+          "$description": "Heading for a single account's complete successful-login history.",
+          "locale": { "es": "Historial completo de inicios de sesión", "fr": "Historique complet des connexions", "de": "Vollständiger Anmeldeverlauf", "pt": "Histórico completo de acessos", "ja": "全ログイン履歴", "zh": "完整登录历史记录", "ar": "سجل تسجيل الدخول الكامل" }
+        },
+        "fullLoginHistoryDescription": {
+          "$type": "string",
+          "$value": "Every successful A1 password sign-in recorded for this account after login tracking was enabled.",
+          "$description": "Description of a single account's complete successful-login history.",
+          "locale": { "es": "Todos los inicios de sesión correctos con contraseña de A1 registrados para esta cuenta desde que se habilitó el seguimiento.", "fr": "Chaque connexion A1 réussie par mot de passe enregistrée pour ce compte depuis l’activation du suivi.", "de": "Jede erfolgreiche A1-Passwortanmeldung für dieses Konto, die seit Aktivierung der Anmeldeverfolgung aufgezeichnet wurde.", "pt": "Todos os acessos bem-sucedidos ao A1 com senha registrados para esta conta desde que o rastreamento foi ativado.", "ja": "ログイン追跡を有効にしてから、このアカウントについて記録された A1 へのパスワードによる正常なサインインのすべて。", "zh": "启用登录跟踪后为此账户记录的每次成功 A1 密码登录。", "ar": "كل عملية تسجيل دخول ناجحة إلى A1 بكلمة مرور سُجّلت لهذا الحساب بعد تفعيل التتبّع." }
+        },
+        "fullLoginHistoryCaption": {
+          "$type": "string",
+          "$value": "Complete account login history",
+          "$description": "Accessible caption for a single account's complete login-history table.",
+          "locale": { "es": "Historial completo de inicios de sesión de la cuenta", "fr": "Historique complet des connexions au compte", "de": "Vollständiger Kontoanmeldeverlauf", "pt": "Histórico completo de acessos da conta", "ja": "アカウントの全ログイン履歴", "zh": "完整账户登录历史记录", "ar": "سجل تسجيل دخول الحساب الكامل" }
         }
       },
       "labs": {

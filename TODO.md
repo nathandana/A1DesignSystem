@@ -166,7 +166,7 @@ to an existing TODO entry or are already built are noted inline.
 
 ### Collaboration & platform
 - **Multi-user / joint editing** — realtime co-editing + presence.
-- **Users + DB storage / admin** — accounts, invitations, role management and access audits have shipped; remaining lifecycle work includes workspace membership, invitation resend, deactivation and administrator-led account removal.
+- **Users + DB storage / admin** — accounts, invitations, role management, administrator-led account removal, detailed profiles, access audits and successful-login history have shipped; remaining lifecycle work includes workspace membership, invitation resend and deactivation.
 - **Folders for projects** — teams, drafts, add users.
 - **Review & approval workflow** — permissions + **sign-off on a chunk**; **auto-summarize changes**; status **tags** (idea / in review / revised); page & project **status** (draft → pending → live; who can publish).
 - **Comment mode** — select an item, add comments, review them; optional **AI auto-fix**.

@@ -2,8 +2,12 @@ import { createClient } from '@supabase/supabase-js'
 
 const VALID_ROLES = new Set(['user', 'editor', 'admin'])
 const AUDIT_TABLE = 'a1_user_admin_audit'
+const LOGIN_AUDIT_TABLE = 'a1_user_login_audit'
 const USER_PAGE_SIZE = 1000
 const AUDIT_LIMIT = 50
+const AUDIT_PAGE_SIZE = 1000
+const AUDIT_COLUMNS = 'id,actor_user_id,actor_email,target_user_id,target_email,action,previous_role,new_role,created_at'
+const LOGIN_AUDIT_COLUMNS = 'id,user_id,user_email,signed_in_at'
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -19,7 +23,7 @@ function json(data, status = 200) {
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store',
       'access-control-allow-headers': 'authorization,content-type',
-      'access-control-allow-methods': 'GET,POST,PATCH,OPTIONS',
+      'access-control-allow-methods': 'GET,POST,PATCH,DELETE,OPTIONS',
     },
   })
 }
@@ -35,9 +39,17 @@ export function serializeUser(user) {
     email: user.email ?? '',
     role: roleFromUser(user),
     createdAt: user.created_at ?? null,
+    updatedAt: user.updated_at ?? null,
     invitedAt: user.invited_at ?? null,
+    confirmationSentAt: user.confirmation_sent_at ?? null,
     emailConfirmedAt: user.email_confirmed_at ?? null,
     lastSignInAt: user.last_sign_in_at ?? null,
+    phone: user.phone ?? '',
+    providers: Array.isArray(user.app_metadata?.providers)
+      ? user.app_metadata.providers.filter((provider) => typeof provider === 'string')
+      : [],
+    bannedUntil: user.banned_until ?? null,
+    isAnonymous: Boolean(user.is_anonymous),
   }
 }
 
@@ -104,7 +116,7 @@ async function listAllUsers(client) {
 async function listAudit(client) {
   const { data, error } = await client
     .from(AUDIT_TABLE)
-    .select('id,actor_user_id,actor_email,target_user_id,target_email,action,previous_role,new_role,created_at')
+    .select(AUDIT_COLUMNS)
     .order('created_at', { ascending: false })
     .limit(AUDIT_LIMIT)
 
@@ -112,6 +124,90 @@ async function listAudit(client) {
     throw new HttpError(503, 'User administration is not ready. Apply the A1-405 user-management migration.')
   }
   return data ?? []
+}
+
+async function listAuditBy(client, column, value) {
+  const entries = []
+  let from = 0
+
+  while (true) {
+    const { data, error } = await client
+      .from(AUDIT_TABLE)
+      .select(AUDIT_COLUMNS)
+      .eq(column, value)
+      .order('created_at', { ascending: false })
+      .range(from, from + AUDIT_PAGE_SIZE - 1)
+
+    if (error) {
+      throw new HttpError(503, 'User administration is not ready. Apply the A1-405 profile-management migration.')
+    }
+    const batch = data ?? []
+    entries.push(...batch)
+    if (batch.length < AUDIT_PAGE_SIZE) break
+    from += AUDIT_PAGE_SIZE
+  }
+
+  return entries
+}
+
+async function listLoginAudit(client) {
+  const entries = []
+  let from = 0
+
+  while (true) {
+    const { data, error } = await client
+      .from(LOGIN_AUDIT_TABLE)
+      .select(LOGIN_AUDIT_COLUMNS)
+      .order('signed_in_at', { ascending: false })
+      .range(from, from + AUDIT_PAGE_SIZE - 1)
+
+    if (error) {
+      throw new HttpError(503, 'Login history is not ready. Apply the A1-405 profile-management migration.')
+    }
+    const batch = data ?? []
+    entries.push(...batch)
+    if (batch.length < AUDIT_PAGE_SIZE) break
+    from += AUDIT_PAGE_SIZE
+  }
+
+  return entries
+}
+
+async function listLoginAuditBy(client, column, value) {
+  const entries = []
+  let from = 0
+
+  while (true) {
+    const { data, error } = await client
+      .from(LOGIN_AUDIT_TABLE)
+      .select(LOGIN_AUDIT_COLUMNS)
+      .eq(column, value)
+      .order('signed_in_at', { ascending: false })
+      .range(from, from + AUDIT_PAGE_SIZE - 1)
+
+    if (error) {
+      throw new HttpError(503, 'Login history is not ready. Apply the A1-405 profile-management migration.')
+    }
+    const batch = data ?? []
+    entries.push(...batch)
+    if (batch.length < AUDIT_PAGE_SIZE) break
+    from += AUDIT_PAGE_SIZE
+  }
+
+  return entries
+}
+
+async function getUserProfile(client, userId) {
+  const { data, error } = await client.auth.admin.getUserById(userId)
+  if (error || !data?.user) throw new HttpError(404, error?.message ?? 'Account not found.')
+
+  const user = serializeUser(data.user)
+  const [history, logins] = await Promise.all([
+    listAuditBy(client, 'target_user_id', user.id),
+    listLoginAuditBy(client, 'user_id', user.id),
+  ])
+
+  return json({ user, history, logins })
 }
 
 async function ensureAuditReady(client) {
@@ -194,6 +290,40 @@ async function updateRole(client, actor, request) {
   return json({ user: serializeUser(updated?.user ?? current.user) })
 }
 
+async function deleteUser(client, actor, request) {
+  const body = await request.json()
+  const userId = requiredUserId(body?.userId)
+  if (userId === actor.id) {
+    throw new HttpError(400, 'You cannot delete your own administrator account.')
+  }
+  await ensureAuditReady(client)
+
+  const { data: current, error: getError } = await client.auth.admin.getUserById(userId)
+  if (getError || !current?.user) throw new HttpError(404, getError?.message ?? 'Account not found.')
+
+  const identifier = String(current.user.email || current.user.id).trim()
+  const confirmation = String(body?.confirmEmail ?? '').trim()
+  if (!identifier || confirmation.toLowerCase() !== identifier.toLowerCase()) {
+    throw new HttpError(400, 'Enter the account email or user ID exactly to confirm deletion.')
+  }
+
+  const previousRole = roleFromUser(current.user)
+  const { error } = await client.auth.admin.deleteUser(userId)
+  if (error) throw new HttpError(400, error.message)
+
+  await recordAudit(client, {
+    actor_user_id: actor.id,
+    actor_email: actor.email ?? null,
+    target_user_id: null,
+    target_email: current.user.email ?? null,
+    action: 'user_deleted',
+    previous_role: previousRole,
+    new_role: null,
+  })
+
+  return json({ deletedUserId: userId })
+}
+
 export async function handleUserAdminRequest(request, dependencies = {}) {
   if (request.method === 'OPTIONS') return json({}, 204)
 
@@ -215,11 +345,18 @@ export async function handleUserAdminRequest(request, dependencies = {}) {
     const actor = await requireAdministrator(client, request)
 
     if (request.method === 'GET') {
-      const [users, audit] = await Promise.all([listAllUsers(client), listAudit(client)])
-      return json({ users, audit })
+      const userId = new URL(request.url).searchParams.get('userId')
+      if (userId) return await getUserProfile(client, requiredUserId(userId))
+      const [users, audit, logins] = await Promise.all([
+        listAllUsers(client),
+        listAudit(client),
+        listLoginAudit(client),
+      ])
+      return json({ users, audit, logins })
     }
     if (request.method === 'POST') return await inviteUser(client, actor, request)
     if (request.method === 'PATCH') return await updateRole(client, actor, request)
+    if (request.method === 'DELETE') return await deleteUser(client, actor, request)
     throw new HttpError(405, 'Method not allowed.')
   } catch (error) {
     const status = error instanceof HttpError ? error.status : 500
