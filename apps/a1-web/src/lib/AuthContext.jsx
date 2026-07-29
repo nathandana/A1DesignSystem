@@ -34,7 +34,10 @@ export function AuthProvider({ children }) {
   }
 
   async function signIn(email, password) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (!error && data?.session) {
+      await supabase.rpc('a1_record_login')
+    }
     return error
   }
 
