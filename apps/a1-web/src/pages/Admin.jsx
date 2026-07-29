@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Banner,
   Button,
@@ -19,10 +19,13 @@ import {
 import { accessRoleLabel } from '../access/PageAccessBoundary.jsx'
 import { useAccess } from '../access/AccessContext.jsx'
 import {
+  deleteManagedUser,
+  getManagedUserProfile,
   inviteManagedUser,
   listManagedUsers,
   updateManagedUserRole,
 } from '../admin/userAdminApi.js'
+import { UserDeleteDialog, UserProfileDialog } from '../admin/UserProfileDialogs.jsx'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { useT } from '../labels/useT.js'
 import { PageTitleArea } from './PageTitleArea.jsx'
@@ -46,6 +49,18 @@ function formatDate(value, fallback) {
   }
 }
 
+function formatDateTime(value, fallback) {
+  if (!value) return fallback
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(new Date(value))
+  } catch {
+    return fallback
+  }
+}
+
 function RoleOptions({ t }) {
   return (
     <>
@@ -62,6 +77,7 @@ export function Admin({ onNavigate }) {
   const { configured, user: currentUser } = useAuth()
   const [users, setUsers] = useState([])
   const [audit, setAudit] = useState([])
+  const [logins, setLogins] = useState([])
   const [loading, setLoading] = useState(configured)
   const [error, setError] = useState('')
   const [feedback, setFeedback] = useState('')
@@ -72,6 +88,16 @@ export function Admin({ onNavigate }) {
   const [editingRole, setEditingRole] = useState('user')
   const [dialogError, setDialogError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [profileUser, setProfileUser] = useState(null)
+  const [profileHistory, setProfileHistory] = useState([])
+  const [profileLogins, setProfileLogins] = useState([])
+  const [profileLoading, setProfileLoading] = useState(false)
+  const [profileError, setProfileError] = useState('')
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleteConfirmation, setDeleteConfirmation] = useState('')
+  const [deleteError, setDeleteError] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const profileRequestRef = useRef(0)
 
   const sourceLabel = source === 'local'
     ? t('app.access.sourceLocal', 'Local build')
@@ -85,6 +111,7 @@ export function Admin({ onNavigate }) {
       const result = await listManagedUsers()
       setUsers(result.users ?? [])
       setAudit(result.audit ?? [])
+      setLogins(result.logins ?? [])
     } catch (loadError) {
       setError(loadError.message)
     } finally {
@@ -107,6 +134,58 @@ export function Admin({ onNavigate }) {
     setEditingUser(managedUser)
     setEditingRole(managedUser.role)
     setDialogError('')
+  }
+
+  const loadProfile = useCallback(async (managedUser) => {
+    const requestId = profileRequestRef.current + 1
+    profileRequestRef.current = requestId
+    setProfileLoading(true)
+    setProfileError('')
+    try {
+      const result = await getManagedUserProfile(managedUser.id)
+      if (profileRequestRef.current !== requestId) return
+      setProfileUser(result.user ?? managedUser)
+      setProfileHistory(result.history ?? [])
+      setProfileLogins(result.logins ?? [])
+    } catch (loadError) {
+      if (profileRequestRef.current !== requestId) return
+      setProfileError(loadError.message)
+    } finally {
+      if (profileRequestRef.current === requestId) setProfileLoading(false)
+    }
+  }, [])
+
+  function openProfile(managedUser) {
+    setProfileUser(managedUser)
+    setProfileHistory([])
+    setProfileLogins([])
+    loadProfile(managedUser)
+  }
+
+  function closeProfile() {
+    profileRequestRef.current += 1
+    setProfileUser(null)
+    setProfileHistory([])
+    setProfileLogins([])
+    setProfileError('')
+  }
+
+  function editRoleFromProfile(managedUser) {
+    closeProfile()
+    openRoleDialog(managedUser)
+  }
+
+  function openDeleteDialog(managedUser) {
+    closeProfile()
+    setDeleteTarget(managedUser)
+    setDeleteConfirmation('')
+    setDeleteError('')
+  }
+
+  function closeDeleteDialog() {
+    setDeleteTarget(null)
+    setDeleteConfirmation('')
+    setDeleteError('')
   }
 
   async function handleInvite(event) {
@@ -142,6 +221,22 @@ export function Admin({ onNavigate }) {
     }
   }
 
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      await deleteManagedUser(deleteTarget.id, deleteConfirmation)
+      closeDeleteDialog()
+      await loadData()
+      setFeedback(t('app.access.deleteSuccess', 'User deleted.'))
+    } catch (deleteUserError) {
+      setDeleteError(deleteUserError.message)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   const neverLabel = t('app.access.never', 'Never')
   const activeLabel = t('app.access.accountActive', 'Active')
   const invitedLabel = t('app.access.invitationPending', 'Invitation pending')
@@ -168,14 +263,21 @@ export function Admin({ onNavigate }) {
       ),
       lastSignIn: formatDate(managedUser.lastSignInAt, neverLabel),
       lastSignInAt: managedUser.lastSignInAt,
-      action: isCurrentUser ? (
-        <Paragraph as="span" size="xs" color="muted">
-          {t('app.access.currentAccount', 'Current account')}
-        </Paragraph>
-      ) : (
-        <Button size="sm" variant="secondary" onClick={() => openRoleDialog(managedUser)}>
-          {t('app.access.editRole', 'Edit role')}
-        </Button>
+      action: (
+        <ButtonContainer align="start">
+          <Button size="sm" variant="secondary" onClick={() => openProfile(managedUser)}>
+            {t('app.access.viewProfile', 'View profile')}
+          </Button>
+          {isCurrentUser ? (
+            <Paragraph as="span" size="xs" color="muted">
+              {t('app.access.currentAccount', 'Current account')}
+            </Paragraph>
+          ) : (
+            <Button size="sm" variant="secondary" onClick={() => openRoleDialog(managedUser)}>
+              {t('app.access.editRole', 'Edit role')}
+            </Button>
+          )}
+        </ButtonContainer>
       ),
     }
   })
@@ -218,12 +320,16 @@ export function Admin({ onNavigate }) {
     id: entry.id,
     action: entry.action === 'user_invited'
       ? t('app.access.auditInvited', 'Invitation sent')
-      : t('app.access.auditRoleChanged', 'Role changed'),
+      : entry.action === 'user_deleted'
+        ? t('app.access.auditDeleted', 'User deleted')
+        : t('app.access.auditRoleChanged', 'Role changed'),
     actor: entry.actor_email ?? t('app.access.deletedAccount', 'Deleted account'),
     target: entry.target_email ?? t('app.access.deletedAccount', 'Deleted account'),
-    change: entry.previous_role
-      ? `${accessRoleLabel(t, entry.previous_role)} → ${accessRoleLabel(t, entry.new_role)}`
-      : accessRoleLabel(t, entry.new_role),
+    change: entry.action === 'user_deleted'
+      ? accessRoleLabel(t, entry.previous_role)
+      : entry.previous_role
+        ? `${accessRoleLabel(t, entry.previous_role)} → ${accessRoleLabel(t, entry.new_role)}`
+        : accessRoleLabel(t, entry.new_role),
     occurred: formatDate(entry.created_at, neverLabel),
     occurredAt: entry.created_at,
   }))
@@ -238,6 +344,35 @@ export function Admin({ onNavigate }) {
       label: t('app.access.auditDate', 'Date'),
       sortable: true,
       sortAccessor: (row) => row.occurredAt,
+    },
+  ]
+
+  const loginRows = logins.map((entry) => ({
+    id: entry.id,
+    email: entry.user_email ?? t('app.access.deletedAccount', 'Deleted account'),
+    userId: entry.user_id ?? t('app.access.deletedAccount', 'Deleted account'),
+    signedIn: formatDateTime(entry.signed_in_at, neverLabel),
+    signedInAt: entry.signed_in_at,
+  }))
+
+  const loginColumns = [
+    {
+      key: 'email',
+      label: t('app.access.userEmail', 'Email'),
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'userId',
+      label: t('app.access.userId', 'User ID'),
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'signedIn',
+      label: t('app.access.signedInAt', 'Signed in'),
+      sortable: true,
+      sortAccessor: (row) => row.signedInAt,
     },
   ]
 
@@ -368,7 +503,7 @@ export function Admin({ onNavigate }) {
                   <Stack gap="xs">
                     <Heading as="h2" size="sm">{t('app.access.auditTitle', 'Recent access activity')}</Heading>
                     <Paragraph size="sm" color="muted">
-                      {t('app.access.auditDescription', 'Review the 50 most recent invitations and role changes.')}
+                      {t('app.access.auditDescription', 'Review the 50 most recent invitations, role changes and deletions.')}
                     </Paragraph>
                   </Stack>
                   <DataTable
@@ -378,8 +513,38 @@ export function Admin({ onNavigate }) {
                     getRowId={(row) => row.id}
                     defaultSort={{ key: 'occurred', direction: 'desc' }}
                     emptyTitle={t('app.access.noAuditTitle', 'No access activity yet')}
-                    emptyDescription={t('app.access.noAuditDescription', 'Invitations and role changes will appear here.')}
+                    emptyDescription={t('app.access.noAuditDescription', 'Invitations, role changes and deletions will appear here.')}
                     emptyIcon="history"
+                    scrollable
+                  />
+                </Stack>
+              </Card>
+
+              <Card>
+                <Stack gap="md">
+                  <Stack gap="xs">
+                    <Heading as="h2" size="sm">
+                      {t('app.access.loginHistoryTitle', 'Login history')}
+                    </Heading>
+                    <Paragraph size="sm" color="muted">
+                      {t('app.access.loginHistoryDescription', 'Review every successful A1 password sign-in recorded after login tracking was enabled.')}
+                    </Paragraph>
+                  </Stack>
+                  <DataTable
+                    caption={t('app.access.loginHistoryCaption', 'All recorded user logins')}
+                    columns={loginColumns}
+                    rows={loginRows}
+                    getRowId={(row) => row.id}
+                    searchableColumns={[
+                      { key: 'email', label: t('app.access.userEmail', 'Email') },
+                      { key: 'userId', label: t('app.access.userId', 'User ID') },
+                    ]}
+                    defaultSort={{ key: 'signedIn', direction: 'desc' }}
+                    defaultPageSize={25}
+                    pageSizeOptions={[25, 50, 100]}
+                    emptyTitle={t('app.access.noLoginsTitle', 'No logins recorded')}
+                    emptyDescription={t('app.access.noLoginsDescription', 'Successful sign-ins recorded after login tracking was enabled will appear here.')}
+                    emptyIcon="login"
                     scrollable
                   />
                 </Stack>
@@ -475,6 +640,30 @@ export function Admin({ onNavigate }) {
           </Stack>
         </form>
       </Dialog>
+
+      <UserProfileDialog
+        open={!!profileUser}
+        user={profileUser}
+        history={profileHistory}
+        logins={profileLogins}
+        loading={profileLoading}
+        error={profileError}
+        currentUserId={currentUser?.id}
+        onClose={closeProfile}
+        onRetry={() => profileUser && loadProfile(profileUser)}
+        onEditRole={editRoleFromProfile}
+        onDelete={openDeleteDialog}
+      />
+
+      <UserDeleteDialog
+        user={deleteTarget}
+        confirmation={deleteConfirmation}
+        error={deleteError}
+        saving={deleting}
+        onConfirmationChange={setDeleteConfirmation}
+        onClose={closeDeleteDialog}
+        onDelete={handleDelete}
+      />
     </>
   )
 }

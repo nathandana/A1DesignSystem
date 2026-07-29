@@ -53,6 +53,8 @@ an explicit role default to User. Apply
 [`supabase/migrations/20260729_a1_405_user_access.sql`](supabase/migrations/20260729_a1_405_user_access.sql)
 and
 [`supabase/migrations/20260729_a1_405_user_management.sql`](supabase/migrations/20260729_a1_405_user_management.sql)
+and
+[`supabase/migrations/20260729_a1_405_user_profile_management.sql`](supabase/migrations/20260729_a1_405_user_profile_management.sql)
 to existing workspaces before enabling role-based policies and administrator
 user management.
 
@@ -62,9 +64,11 @@ The Administration page calls the same-origin Netlify function at
 service key available only to Functions when scoped variables are supported.
 Never add the service key to a `VITE_*` variable or the client bundle. The
 function verifies the caller's Supabase session and Administrator role before
-listing accounts, sending invitations or changing roles. Use Netlify Dev when
-testing this function locally; the Vite-only development server does not host
-Netlify functions. See
+listing account profiles and login history, sending invitations, changing roles
+or deleting accounts. Successful A1 password sign-ins are recorded only after
+the profile-management migration is applied; earlier sign-ins are not
+backfilled. Use Netlify Dev when testing this function locally; the Vite-only
+development server does not host Netlify functions. See
 [`packages/react/ai/access-control.md`](../../packages/react/ai/access-control.md)
 for the feature matrix, bootstrap guidance, enforcement boundaries and
 remaining follow-ups.
