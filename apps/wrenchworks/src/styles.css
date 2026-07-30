@@ -1,0 +1,1176 @@
+html,
+body,
+#root {
+  min-block-size: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.a1-wrenchworks-app {
+  --a1-wrenchworks-sky: var(--base-color-info-100);
+  --a1-wrenchworks-sky-deep: var(--base-color-info-300);
+  --a1-wrenchworks-sun: var(--base-color-highlighted-300);
+  --a1-wrenchworks-cloud: var(--base-color-neutral-0);
+  --a1-wrenchworks-ground: var(--base-color-success-200);
+  --a1-wrenchworks-road: var(--base-color-neutral-800);
+  --a1-wrenchworks-road-line: var(--base-color-highlighted-200);
+  --a1-wrenchworks-building: var(--base-color-neutral-300);
+  --a1-wrenchworks-building-dark: var(--base-color-neutral-700);
+  --a1-wrenchworks-shop-wall: var(--base-color-neutral-50);
+  --a1-wrenchworks-shop-trim: var(--base-color-neutral-700);
+  --a1-wrenchworks-window: var(--base-color-info-200);
+  --a1-wrenchworks-wheel: var(--base-color-neutral-900);
+  --a1-wrenchworks-wheel-hub: var(--base-color-neutral-300);
+  --a1-wrenchworks-skin: var(--base-color-warn-200);
+  --a1-wrenchworks-coverall: var(--base-color-info-700);
+  --a1-wrenchworks-accent: var(--base-color-accent-500);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  block-size: 100dvh;
+  overflow: hidden;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-wrenchworks-app,
+.a1-wrenchworks-app * {
+  box-sizing: border-box;
+}
+
+.a1-wrenchworks-app main {
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.a1-wrenchworks-shell {
+  block-size: 100%;
+  max-inline-size: var(--base-content-width-2xl);
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.a1-wrenchworks-view {
+  block-size: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding:
+    var(--base-spacing-12)
+    var(--base-spacing-12)
+    calc(var(--base-spacing-96) + env(safe-area-inset-bottom));
+  scrollbar-color:
+    var(--semantic-color-border-default)
+    var(--semantic-color-surface-page);
+  animation:
+    a1-wrenchworks-view-enter
+    var(--semantic-motion-duration-normal)
+    var(--semantic-motion-easing-enter);
+}
+
+.a1-wrenchworks-screen {
+  min-block-size: 100%;
+}
+
+.a1-wrenchworks-screen-heading {
+  flex: none;
+}
+
+.a1-wrenchworks-screen-intro {
+  display: none;
+}
+
+.a1-wrenchworks-workshop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--semantic-spacing-gap-md);
+  min-inline-size: 0;
+}
+
+.a1-wrenchworks-workshop-layout__controls {
+  min-inline-size: 0;
+}
+
+.a1-wrenchworks-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--semantic-z-sticky);
+  border-block-end: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-card);
+  box-shadow: var(--semantic-shadow-sm);
+}
+
+.a1-wrenchworks-header__inner {
+  max-inline-size: var(--base-content-width-2xl);
+  margin-inline: auto;
+  padding:
+    max(var(--base-spacing-8), env(safe-area-inset-top))
+    var(--base-spacing-12)
+    var(--base-spacing-8);
+}
+
+.a1-wrenchworks-brand-mark,
+.a1-wrenchworks-decision__icon,
+.a1-wrenchworks-goal-icon,
+.a1-wrenchworks-promise-icon,
+.a1-wrenchworks-playbook-item__icon,
+.a1-wrenchworks-scene__job-icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-text-accent);
+}
+
+.a1-wrenchworks-brand-copy {
+  display: none;
+  min-inline-size: 0;
+}
+
+.a1-wrenchworks-brand-copy strong,
+.a1-wrenchworks-brand-copy small,
+.a1-wrenchworks-hud-chip strong,
+.a1-wrenchworks-hud-chip small {
+  display: block;
+}
+
+.a1-wrenchworks-brand-copy strong {
+  font-family: var(--base-font-family-heading);
+  font-size: var(--semantic-font-size-heading-xs);
+  line-height: var(--semantic-font-line-height-heading);
+}
+
+.a1-wrenchworks-brand-copy small,
+.a1-wrenchworks-hud-chip small {
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-wrenchworks-desktop-nav {
+  display: none;
+}
+
+/* The HUD is a game-specific compact readout; A1 Stack supplies its outer layout. */
+.a1-wrenchworks-hud-chip {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, auto);
+  align-items: center;
+  gap: var(--base-spacing-6);
+  min-block-size: var(--base-spacing-40);
+  padding-inline: var(--base-spacing-8);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+}
+
+.a1-wrenchworks-hud-chip > .a1-icon {
+  color: var(--semantic-color-text-accent);
+}
+
+.a1-wrenchworks-hud-chip strong {
+  overflow: hidden;
+  max-inline-size: var(--base-width-2xs);
+  font-size: var(--semantic-font-size-body-sm);
+  line-height: var(--semantic-font-line-height-heading);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-wrenchworks-hud-chip--wide {
+  display: none;
+}
+
+.a1-wrenchworks-decision {
+  overflow: hidden;
+  border-color: var(--semantic-color-status-info-border);
+  background: var(--semantic-color-status-info-surface);
+}
+
+.a1-wrenchworks-decision__choice {
+  height: 100%;
+  padding: var(--base-spacing-16);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-card);
+}
+
+.a1-wrenchworks-progress {
+  display: block;
+  overflow: hidden;
+  inline-size: 100%;
+  block-size: var(--base-spacing-8);
+  border: 0;
+  border-radius: var(--base-radius-pill);
+  appearance: none;
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-wrenchworks-progress::-webkit-progress-bar {
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-raised);
+}
+
+.a1-wrenchworks-progress::-webkit-progress-value {
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+  transition:
+    inline-size var(--semantic-motion-duration-normal)
+    var(--semantic-motion-easing-linear);
+}
+
+.a1-wrenchworks-progress::-moz-progress-bar {
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+}
+
+/*
+ * GarageScene, VehicleArt, MechanicArt and BusinessThumbnail are the game
+ * canvas. Their unique positional CSS is intentional: A1 layout components
+ * govern the interface, while this code-native illustration needs layered art.
+ */
+.a1-wrenchworks-scene {
+  position: relative;
+  overflow: hidden;
+  min-block-size: calc(var(--base-spacing-192) + var(--base-spacing-32));
+  margin: 0;
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-xl);
+  background: var(--a1-wrenchworks-ground);
+  box-shadow: var(--semantic-shadow-lg);
+  isolation: isolate;
+}
+
+.a1-wrenchworks-scene--highlighted {
+  --a1-wrenchworks-accent: var(--base-color-highlighted-500);
+}
+
+.a1-wrenchworks-scene--info {
+  --a1-wrenchworks-accent: var(--base-color-info-500);
+}
+
+.a1-wrenchworks-scene--error {
+  --a1-wrenchworks-accent: var(--base-color-error-500);
+}
+
+.a1-wrenchworks-scene--accent {
+  --a1-wrenchworks-accent: var(--base-color-accent-500);
+}
+
+.a1-wrenchworks-scene--warn {
+  --a1-wrenchworks-accent: var(--base-color-warn-500);
+}
+
+.a1-wrenchworks-scene--success {
+  --a1-wrenchworks-accent: var(--base-color-success-500);
+}
+
+.a1-wrenchworks-scene__sky {
+  position: absolute;
+  inset: 0 0 var(--base-spacing-64);
+  overflow: hidden;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--a1-wrenchworks-sky),
+      var(--a1-wrenchworks-sky-deep)
+    );
+}
+
+.a1-wrenchworks-scene__sun {
+  position: absolute;
+  inset-block-start: var(--base-spacing-20);
+  inset-inline-end: var(--base-spacing-24);
+  inline-size: var(--base-spacing-48);
+  block-size: var(--base-spacing-48);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-sun);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+.a1-wrenchworks-scene__cloud {
+  position: absolute;
+  display: block;
+  inline-size: var(--base-spacing-64);
+  block-size: var(--base-spacing-16);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-cloud);
+  opacity: var(--base-space-button-disabled-opacity);
+}
+
+.a1-wrenchworks-scene__cloud::before,
+.a1-wrenchworks-scene__cloud::after {
+  position: absolute;
+  inset-block-end: 0;
+  border-radius: var(--base-radius-pill);
+  background: inherit;
+  content: "";
+}
+
+.a1-wrenchworks-scene__cloud::before {
+  inset-inline-start: var(--base-spacing-12);
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-32);
+}
+
+.a1-wrenchworks-scene__cloud::after {
+  inset-inline-end: var(--base-spacing-8);
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-24);
+}
+
+.a1-wrenchworks-scene__cloud--one {
+  inset-block-start: var(--base-spacing-40);
+  inset-inline-start: var(--base-spacing-32);
+}
+
+.a1-wrenchworks-scene__cloud--two {
+  display: none;
+  inset-block-start: var(--base-spacing-64);
+  inset-inline-end: var(--base-spacing-128);
+}
+
+.a1-wrenchworks-scene__building {
+  position: absolute;
+  inset-block-end: 0;
+  display: block;
+  inline-size: var(--base-spacing-48);
+  border: var(--base-spacing-1) solid var(--a1-wrenchworks-building-dark);
+  border-block-end: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      var(--a1-wrenchworks-building),
+      var(--a1-wrenchworks-building) var(--base-spacing-12),
+      var(--a1-wrenchworks-building-dark) var(--base-spacing-12),
+      var(--a1-wrenchworks-building-dark) var(--base-spacing-16)
+    );
+  opacity: var(--base-space-button-disabled-opacity);
+}
+
+.a1-wrenchworks-scene__building--one {
+  inset-inline-start: var(--base-spacing-12);
+  block-size: var(--base-spacing-96);
+}
+
+.a1-wrenchworks-scene__building--two {
+  inset-inline-start: var(--base-spacing-64);
+  block-size: var(--base-spacing-128);
+}
+
+.a1-wrenchworks-scene__building--three {
+  inset-inline-end: var(--base-spacing-20);
+  block-size: calc(var(--base-spacing-128) + var(--base-spacing-40));
+}
+
+.a1-wrenchworks-shop {
+  position: absolute;
+  inset-block-end: var(--base-spacing-64);
+  inset-inline-start: 8%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: var(--base-spacing-40) 1fr;
+  overflow: visible;
+  inline-size: 84%;
+  block-size: calc(var(--base-spacing-128) + var(--base-spacing-32));
+  border: var(--base-spacing-4) solid var(--a1-wrenchworks-shop-trim);
+  border-block-end: 0;
+  border-radius: var(--base-radius-md) var(--base-radius-md) 0 0;
+  background: var(--a1-wrenchworks-shop-wall);
+  box-shadow: var(--semantic-shadow-lg);
+}
+
+.a1-wrenchworks-shop__roof {
+  position: absolute;
+  inset-block-start: var(--base-spacing-neg-12);
+  inset-inline: var(--base-spacing-neg-8);
+  block-size: var(--base-spacing-16);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-wrenchworks-shop-trim);
+}
+
+.a1-wrenchworks-shop__sign {
+  position: absolute;
+  inset-block-start: var(--base-spacing-neg-32);
+  inset-inline-start: var(--base-spacing-12);
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-wrenchworks-accent);
+  color: var(--semantic-color-text-inverse);
+  font-family: var(--base-font-family-heading);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-extra-bold);
+  line-height: var(--semantic-font-line-height-heading);
+  box-shadow: var(--semantic-shadow-sm);
+}
+
+.a1-wrenchworks-shop__office {
+  display: none;
+}
+
+.a1-wrenchworks-shop__bay {
+  position: relative;
+  grid-row: 2;
+  overflow: hidden;
+  margin-inline: var(--base-spacing-4);
+  border: var(--base-spacing-4) solid var(--a1-wrenchworks-shop-trim);
+  border-block-end: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      var(--base-color-neutral-100),
+      var(--base-color-neutral-100) var(--base-spacing-8),
+      var(--base-color-neutral-200) var(--base-spacing-8),
+      var(--base-color-neutral-200) var(--base-spacing-12)
+    );
+}
+
+.a1-wrenchworks-shop__bay--one {
+  grid-column: 1;
+}
+
+.a1-wrenchworks-shop__bay--two {
+  grid-column: 2;
+}
+
+.a1-wrenchworks-shop__lift {
+  position: absolute;
+  inset-block-end: var(--base-spacing-8);
+  inset-inline-start: 50%;
+  inline-size: var(--base-spacing-48);
+  block-size: var(--base-spacing-4);
+  background: var(--a1-wrenchworks-accent);
+  transform: translateX(-50%);
+}
+
+.a1-wrenchworks-shop__lift::before,
+.a1-wrenchworks-shop__lift::after {
+  position: absolute;
+  inset-block-end: 0;
+  inline-size: var(--base-spacing-4);
+  block-size: var(--base-spacing-48);
+  background: var(--a1-wrenchworks-accent);
+  content: "";
+}
+
+.a1-wrenchworks-shop__lift::before {
+  inset-inline-start: 0;
+}
+
+.a1-wrenchworks-shop__lift::after {
+  inset-inline-end: 0;
+}
+
+.a1-wrenchworks-shop__manager {
+  display: none;
+}
+
+.a1-wrenchworks-scene--managed .a1-wrenchworks-shop__manager {
+  position: absolute;
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-end: var(--base-spacing-12);
+  display: block;
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-24);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+  background: var(--a1-wrenchworks-window);
+}
+
+.a1-wrenchworks-scene--managed .a1-wrenchworks-shop__manager::after {
+  position: absolute;
+  inset-block-end: var(--base-spacing-neg-12);
+  inset-inline-start: 50%;
+  border: var(--base-spacing-6) solid transparent;
+  border-block-start-color: var(--a1-wrenchworks-shop-trim);
+  content: "";
+  transform: translateX(-50%);
+}
+
+.a1-wrenchworks-scene__road {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  overflow: hidden;
+  block-size: var(--base-spacing-64);
+  border-block-start: var(--base-spacing-4) solid var(--base-color-neutral-500);
+  background: var(--a1-wrenchworks-road);
+}
+
+.a1-wrenchworks-scene__road-line {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  display: block;
+  block-size: var(--base-spacing-4);
+  background:
+    repeating-linear-gradient(
+      to right,
+      var(--a1-wrenchworks-road-line),
+      var(--a1-wrenchworks-road-line) var(--base-spacing-32),
+      transparent var(--base-spacing-32),
+      transparent var(--base-spacing-64)
+    );
+  transform: translateY(-50%);
+}
+
+.a1-wrenchworks-car {
+  --a1-wrenchworks-car-color: var(--base-color-accent-500);
+  position: absolute;
+  z-index: 2;
+  inline-size: var(--base-spacing-128);
+  block-size: var(--base-spacing-48);
+}
+
+.a1-wrenchworks-car--wagon {
+  --a1-wrenchworks-car-color: var(--base-color-info-500);
+}
+
+.a1-wrenchworks-car--sedan {
+  --a1-wrenchworks-car-color: var(--base-color-error-500);
+}
+
+.a1-wrenchworks-car--coupe {
+  --a1-wrenchworks-car-color: var(--base-color-accent-500);
+}
+
+.a1-wrenchworks-car--muscle {
+  --a1-wrenchworks-car-color: var(--base-color-warn-500);
+}
+
+.a1-wrenchworks-car--suv {
+  --a1-wrenchworks-car-color: var(--base-color-success-500);
+}
+
+.a1-wrenchworks-car--classic {
+  --a1-wrenchworks-car-color: var(--base-color-highlighted-500);
+}
+
+.a1-wrenchworks-car--sport {
+  --a1-wrenchworks-car-color: var(--base-color-info-600);
+}
+
+.a1-wrenchworks-car--executive {
+  --a1-wrenchworks-car-color: var(--base-color-neutral-700);
+}
+
+.a1-wrenchworks-car--supercar {
+  --a1-wrenchworks-car-color: var(--base-color-error-600);
+}
+
+.a1-wrenchworks-car__body {
+  position: absolute;
+  inset-block-end: var(--base-spacing-8);
+  inset-inline: 0;
+  block-size: var(--base-spacing-24);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-wheel);
+  border-radius:
+    var(--base-radius-lg)
+    var(--base-radius-xl)
+    var(--base-radius-md)
+    var(--base-radius-md);
+  background: var(--a1-wrenchworks-car-color);
+}
+
+.a1-wrenchworks-car__cabin {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--base-spacing-32);
+  inline-size: var(--base-spacing-64);
+  block-size: var(--base-spacing-24);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-wheel);
+  border-radius: var(--base-radius-xl) var(--base-radius-xl) 0 0;
+  background: var(--a1-wrenchworks-car-color);
+  transform: skewX(-8deg);
+}
+
+.a1-wrenchworks-car--wagon .a1-wrenchworks-car__cabin,
+.a1-wrenchworks-car--suv .a1-wrenchworks-car__cabin {
+  inset-inline-start: var(--base-spacing-24);
+  inline-size: var(--base-spacing-96);
+  transform: skewX(-4deg);
+}
+
+.a1-wrenchworks-car--coupe .a1-wrenchworks-car__cabin,
+.a1-wrenchworks-car--sport .a1-wrenchworks-car__cabin,
+.a1-wrenchworks-car--supercar .a1-wrenchworks-car__cabin {
+  inset-block-start: var(--base-spacing-8);
+  block-size: var(--base-spacing-16);
+  transform: skewX(-18deg);
+}
+
+.a1-wrenchworks-car__window {
+  position: absolute;
+  inset-block-start: var(--base-spacing-4);
+  z-index: 1;
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-12);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-wrenchworks-window);
+}
+
+.a1-wrenchworks-car__window--front {
+  inset-inline-start: var(--base-spacing-64);
+  transform: skewX(-8deg);
+}
+
+.a1-wrenchworks-car__window--rear {
+  inset-inline-start: var(--base-spacing-40);
+}
+
+.a1-wrenchworks-car__light {
+  position: absolute;
+  inset-block-end: var(--base-spacing-20);
+  inset-inline-end: var(--base-spacing-neg-4);
+  z-index: 2;
+  inline-size: var(--base-spacing-8);
+  block-size: var(--base-spacing-6);
+  border-radius: var(--base-radius-pill);
+  background: var(--base-color-highlighted-100);
+}
+
+.a1-wrenchworks-car__wheel {
+  position: absolute;
+  inset-block-end: 0;
+  z-index: 3;
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-24);
+  border: var(--base-spacing-6) solid var(--a1-wrenchworks-wheel);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-wheel-hub);
+}
+
+.a1-wrenchworks-car__wheel--front {
+  inset-inline-end: var(--base-spacing-16);
+}
+
+.a1-wrenchworks-car__wheel--rear {
+  inset-inline-start: var(--base-spacing-16);
+}
+
+.a1-wrenchworks-scene__road > .a1-wrenchworks-car {
+  inset-block-end: var(--base-spacing-8);
+  animation:
+    a1-wrenchworks-drive
+    calc(var(--semantic-motion-duration-slowest) * 12)
+    var(--semantic-motion-easing-linear)
+    infinite;
+}
+
+.a1-wrenchworks-car--parked {
+  inset-block-end: var(--base-spacing-neg-8);
+  inset-inline-start: 50%;
+  transform: translateX(-50%) scale(0.55);
+  transform-origin: bottom center;
+}
+
+.a1-wrenchworks-scene__crew {
+  position: absolute;
+  inset-block-end: var(--base-spacing-56);
+  inset-inline: 0;
+  z-index: 4;
+}
+
+.a1-wrenchworks-mechanic {
+  position: absolute;
+  inset-block-end: 0;
+  display: block;
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-56);
+  animation:
+    a1-wrenchworks-mechanic-bob
+    calc(var(--semantic-motion-duration-slowest) * 3)
+    var(--semantic-motion-easing-standard)
+    infinite;
+}
+
+.a1-wrenchworks-mechanic--1 {
+  inset-inline-start: 12%;
+}
+
+.a1-wrenchworks-mechanic--2 {
+  inset-inline-start: 78%;
+  animation-delay: var(--semantic-motion-duration-slower);
+}
+
+.a1-wrenchworks-mechanic--3 {
+  display: none;
+  inset-inline-start: 56%;
+  animation-delay: var(--semantic-motion-duration-slowest);
+}
+
+.a1-wrenchworks-mechanic__head {
+  position: absolute;
+  inset-block-start: var(--base-spacing-4);
+  inset-inline-start: var(--base-spacing-6);
+  inline-size: var(--base-spacing-16);
+  block-size: var(--base-spacing-16);
+  border: var(--base-spacing-1) solid var(--base-color-neutral-700);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-skin);
+}
+
+.a1-wrenchworks-mechanic__cap {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--base-spacing-4);
+  z-index: 1;
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-8);
+  border-radius: var(--base-radius-pill) var(--base-radius-pill) 0 0;
+  background: var(--a1-wrenchworks-accent);
+}
+
+.a1-wrenchworks-mechanic__body {
+  position: absolute;
+  inset-block-start: var(--base-spacing-20);
+  inset-inline-start: var(--base-spacing-4);
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-24);
+  border-radius: var(--base-radius-sm);
+  background: var(--a1-wrenchworks-coverall);
+}
+
+.a1-wrenchworks-mechanic__arm {
+  position: absolute;
+  inset-block-start: var(--base-spacing-24);
+  inset-inline-end: var(--base-spacing-neg-8);
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-6);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-coverall);
+  transform: rotate(-28deg);
+  transform-origin: left center;
+}
+
+.a1-wrenchworks-mechanic__legs {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: var(--base-spacing-6);
+  inline-size: var(--base-spacing-16);
+  block-size: var(--base-spacing-16);
+  border-inline:
+    var(--base-spacing-4)
+    solid
+    var(--a1-wrenchworks-coverall);
+}
+
+.a1-wrenchworks-scene__earnings {
+  position: absolute;
+  inset-block-start: var(--base-spacing-56);
+  inset-inline-end: var(--base-spacing-16);
+  z-index: 5;
+  padding: var(--base-spacing-6) var(--base-spacing-8);
+  border: var(--base-spacing-1) solid var(--semantic-color-status-success-border);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-status-success-surface);
+  color: var(--semantic-color-status-success-background);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-bold);
+  box-shadow: var(--semantic-shadow-sm);
+  animation:
+    a1-wrenchworks-earnings
+    calc(var(--semantic-motion-duration-slowest) * 4)
+    var(--semantic-motion-easing-enter)
+    infinite;
+}
+
+.a1-wrenchworks-scene__job {
+  position: absolute;
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-start: var(--base-spacing-12);
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto minmax(var(--base-width-2xs), 1fr);
+  align-items: center;
+  gap: var(--base-spacing-8);
+  max-inline-size: calc(100% - var(--base-spacing-96));
+  padding: var(--base-spacing-8);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-card);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+.a1-wrenchworks-scene__job-icon {
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-32);
+}
+
+.a1-wrenchworks-scene__job-copy {
+  display: grid;
+  gap: var(--base-spacing-6);
+  min-inline-size: 0;
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-wrenchworks-scene__job-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.a1-wrenchworks-thumbnail {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-accent-500);
+  position: relative;
+  overflow: hidden;
+  block-size: var(--base-spacing-128);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background:
+    linear-gradient(
+      to bottom,
+      var(--a1-wrenchworks-sky) 0 65%,
+      var(--a1-wrenchworks-ground) 65% 100%
+    );
+}
+
+.a1-wrenchworks-thumbnail--highlighted {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-highlighted-500);
+}
+
+.a1-wrenchworks-thumbnail--info {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-info-500);
+}
+
+.a1-wrenchworks-thumbnail--error {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-error-500);
+}
+
+.a1-wrenchworks-thumbnail--accent {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-accent-500);
+}
+
+.a1-wrenchworks-thumbnail--warn {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-warn-500);
+}
+
+.a1-wrenchworks-thumbnail--success {
+  --a1-wrenchworks-thumbnail-accent: var(--base-color-success-500);
+}
+
+.a1-wrenchworks-thumbnail__sun {
+  position: absolute;
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-end: var(--base-spacing-16);
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-24);
+  border-radius: var(--base-radius-pill);
+  background: var(--a1-wrenchworks-sun);
+}
+
+.a1-wrenchworks-thumbnail__shop {
+  position: absolute;
+  inset-block-end: var(--base-spacing-20);
+  inset-inline-start: 10%;
+  inline-size: 58%;
+  block-size: var(--base-spacing-64);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+  background: var(--a1-wrenchworks-shop-wall);
+}
+
+.a1-wrenchworks-thumbnail__roof {
+  position: absolute;
+  inset-block-start: var(--base-spacing-neg-8);
+  inset-inline: var(--base-spacing-neg-4);
+  block-size: var(--base-spacing-8);
+  background: var(--a1-wrenchworks-thumbnail-accent);
+}
+
+.a1-wrenchworks-thumbnail__door {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: var(--base-spacing-8);
+  inline-size: 48%;
+  block-size: var(--base-spacing-40);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+  border-block-end: 0;
+  background: var(--base-color-neutral-200);
+}
+
+.a1-wrenchworks-thumbnail__window {
+  position: absolute;
+  inset-block-start: var(--base-spacing-12);
+  inset-inline-end: var(--base-spacing-8);
+  inline-size: var(--base-spacing-24);
+  block-size: var(--base-spacing-20);
+  border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+  background: var(--a1-wrenchworks-window);
+}
+
+.a1-wrenchworks-thumbnail > .a1-wrenchworks-car {
+  inset-block-end: var(--base-spacing-8);
+  inset-inline-end: var(--base-spacing-neg-16);
+  transform: scale(0.5);
+  transform-origin: bottom right;
+}
+
+.a1-wrenchworks-thumbnail--locked {
+  filter: grayscale(1);
+}
+
+.a1-wrenchworks-thumbnail__lock {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--base-color-neutral-800);
+  color: var(--semantic-color-text-inverse);
+  opacity: var(--base-space-button-disabled-opacity);
+}
+
+.a1-wrenchworks-business-card {
+  height: 100%;
+}
+
+.a1-wrenchworks-playbook-item {
+  padding-block-end: var(--base-spacing-12);
+  border-block-end: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+}
+
+.a1-wrenchworks-playbook-item:last-child {
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+
+.a1-wrenchworks-playbook-item__icon,
+.a1-wrenchworks-goal-icon,
+.a1-wrenchworks-promise-icon {
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+}
+
+.a1-wrenchworks-franchise {
+  background:
+    linear-gradient(
+      to bottom right,
+      var(--semantic-color-surface-card),
+      var(--semantic-color-action-surface)
+    );
+}
+
+.a1-wrenchworks-office-hero {
+  background:
+    linear-gradient(
+      to bottom right,
+      var(--semantic-color-action-surface),
+      var(--semantic-color-status-success-surface)
+    );
+}
+
+.a1-wrenchworks-no-ads {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--base-spacing-12);
+  padding: var(--base-spacing-12) var(--base-spacing-16);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-success-border);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-card);
+  color: var(--semantic-color-status-success-background);
+}
+
+.a1-wrenchworks-no-ads__mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-32);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-status-success-surface);
+}
+
+.a1-wrenchworks-snackbar {
+  inset-block-end: calc(var(--base-spacing-96) + env(safe-area-inset-bottom));
+}
+
+@keyframes a1-wrenchworks-drive {
+  from {
+    transform: translateX(-120%);
+  }
+
+  to {
+    transform: translateX(calc(100vw + 120%));
+  }
+}
+
+@keyframes a1-wrenchworks-mechanic-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(var(--base-spacing-neg-4));
+  }
+}
+
+@keyframes a1-wrenchworks-earnings {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--base-spacing-8));
+  }
+
+  20%,
+  70% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(var(--base-spacing-neg-12));
+  }
+}
+
+@keyframes a1-wrenchworks-view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--base-spacing-8));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (--bp-sm-up) {
+  .a1-wrenchworks-brand-copy {
+    display: block;
+  }
+
+  .a1-wrenchworks-hud-chip--wide {
+    display: inline-grid;
+  }
+
+  .a1-wrenchworks-screen-intro {
+    display: block;
+  }
+
+  .a1-wrenchworks-scene__cloud--two,
+  .a1-wrenchworks-mechanic--3 {
+    display: block;
+  }
+
+  .a1-wrenchworks-shop {
+    inset-inline-start: 12%;
+    grid-template-columns: minmax(var(--base-spacing-96), 0.65fr) 1fr 1fr;
+    inline-size: 76%;
+  }
+
+  .a1-wrenchworks-shop__office {
+    position: relative;
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    border-inline-end: var(--base-spacing-4) solid var(--a1-wrenchworks-shop-trim);
+  }
+
+  .a1-wrenchworks-shop__office-window {
+    position: absolute;
+    inset-block-start: var(--base-spacing-16);
+    inset-inline: var(--base-spacing-12);
+    block-size: var(--base-spacing-32);
+    border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+    background: var(--a1-wrenchworks-window);
+  }
+
+  .a1-wrenchworks-shop__office-door {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 50%;
+    inline-size: var(--base-spacing-32);
+    block-size: var(--base-spacing-48);
+    border: var(--base-spacing-2) solid var(--a1-wrenchworks-shop-trim);
+    border-block-end: 0;
+    background: var(--a1-wrenchworks-accent);
+    transform: translateX(-50%);
+  }
+
+  .a1-wrenchworks-shop__bay--one {
+    grid-column: 2;
+  }
+
+  .a1-wrenchworks-shop__bay--two {
+    grid-column: 3;
+  }
+
+  .a1-wrenchworks-scene__earnings {
+    inset-inline-end: var(--base-spacing-32);
+  }
+}
+
+@media (--bp-md-up) {
+  .a1-wrenchworks-header__inner {
+    padding:
+      max(var(--base-spacing-8), env(safe-area-inset-top))
+      var(--base-spacing-24)
+      var(--base-spacing-8);
+  }
+
+  .a1-wrenchworks-desktop-nav {
+    display: block;
+  }
+
+  .a1-wrenchworks-app > .a1-bottom-drawer {
+    display: none;
+  }
+
+  .a1-wrenchworks-view {
+    padding: var(--base-spacing-24);
+  }
+
+  .a1-wrenchworks-scene {
+    min-block-size: calc(var(--base-spacing-192) + var(--base-spacing-128));
+  }
+
+  .a1-wrenchworks-shop {
+    inset-inline-start: 16%;
+    inline-size: 68%;
+    block-size: var(--base-spacing-192);
+  }
+
+  .a1-wrenchworks-scene__job {
+    inset-block-start: var(--base-spacing-16);
+    inset-inline-start: var(--base-spacing-16);
+  }
+
+  .a1-wrenchworks-snackbar {
+    inset-block-end: var(--base-spacing-24);
+  }
+}
+
+@media (--bp-lg-up) {
+  .a1-wrenchworks-workshop-layout {
+    grid-template-columns: minmax(0, 1.55fr) minmax(var(--base-width-md), 0.85fr);
+    align-items: start;
+  }
+
+  .a1-wrenchworks-workshop-layout > .a1-wrenchworks-scene {
+    position: sticky;
+    inset-block-start: 0;
+    min-block-size: calc(var(--base-spacing-192) * 2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-wrenchworks-scene__road > .a1-wrenchworks-car,
+  .a1-wrenchworks-mechanic,
+  .a1-wrenchworks-scene__earnings {
+    animation: none;
+  }
+
+  .a1-wrenchworks-scene__road > .a1-wrenchworks-car {
+    inset-inline-start: var(--base-spacing-24);
+  }
+
+  .a1-wrenchworks-scene__earnings {
+    opacity: 1;
+  }
+
+  .a1-wrenchworks-view {
+    animation: none;
+  }
+}

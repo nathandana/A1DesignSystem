@@ -31,6 +31,7 @@ Use the root scripts for bookmarkable local URLs. They all use `--strictPort`, s
 | a1-web local bridge (Codex + Figma handoff) | `npm run codex:bridge:a1-web` | `http://127.0.0.1:4318/` |
 | Tesla A1 | `npm run dev:tesla-a1` | `http://127.0.0.1:5188/` |
 | Tesla A1 proxy-backed app | `npm run serve:tesla-a1` | `http://127.0.0.1:5189/` |
+| Wrenchworks | `npm run dev:wrenchworks` | `http://127.0.0.1:5190/` |
 | Storybook | `npm run storybook` | `http://127.0.0.1:6006/` |
 | Priority Guide | `npm run dev:priority-guide` | `http://127.0.0.1:5178/examples/priority-guide/` |
 | Cat Stack Cafe | `npm run dev:cat-stack-cafe` | `http://127.0.0.1:5179/examples/cat-stack-cafe/` |
