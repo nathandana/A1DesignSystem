@@ -70,7 +70,7 @@
     "preview:a1-jobs": "vite preview apps/a1-jobs --host 127.0.0.1 --strictPort --port 4187",
     "preview:tesla-a1": "vite preview apps/tesla-a1 --host 127.0.0.1 --strictPort --port 4188",
     "preview:wrenchworks": "vite preview apps/wrenchworks --host 127.0.0.1 --strictPort --port 4190",
-    "test:wrenchworks": "node --test apps/wrenchworks/src/gameEngine.test.js",
+    "test:wrenchworks": "node --test apps/wrenchworks/src/*.test.js",
     "storybook": "storybook dev --host 127.0.0.1 --port 6006",
     "test:qa": "sh -c 'node .storybook/qa-setup.mjs && (test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'",
     "test:qa:update": "sh -c 'node .storybook/qa-setup.mjs && (UPDATE_SNAPSHOTS=true test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'",

@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1 --strictPort --port 5190",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --strictPort --port 4190",
-    "test": "node --test src/gameEngine.test.js"
+    "test": "node --test src/*.test.js"
   },
   "dependencies": {
     "@gtivr4/a1-design-system-react": "*",

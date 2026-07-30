@@ -1,39 +1,22 @@
 import { useState } from 'react'
 import {
-  BottomDrawer,
   Button,
   Card,
-  Dialog,
   Grid,
   Heading,
   Icon,
   MessageBadge,
+  Overlay,
   Paragraph,
-  SegmentedControl,
   Snackbar,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { MILESTONES } from './gameData.js'
-import {
-  getEmpireEconomy,
-  getMilestoneValue,
-  getPendingDecision,
-} from './gameEngine.js'
+import { getEmpireEconomy } from './gameEngine.js'
 import { formatDuration, formatMoney, formatNumber, formatRate } from './formatters.js'
 import { GarageView } from './GarageView.jsx'
-import { EmpireView } from './EmpireView.jsx'
-import { GoalsView } from './GoalsView.jsx'
-import { OfficeView } from './OfficeView.jsx'
 import { useWrenchworks } from './useWrenchworks.js'
 
-const viewOptions = [
-  { value: 'garage', label: 'Garage', icon: 'home_repair_service' },
-  { value: 'empire', label: 'Empire', icon: 'location_city' },
-  { value: 'goals', label: 'Goals', icon: 'flag' },
-  { value: 'office', label: 'Office', icon: 'storefront' },
-]
-
-function GameHeader({ game, activeView, onViewChange }) {
+function GameHeader({ game }) {
   const economy = getEmpireEconomy(game)
 
   return (
@@ -46,19 +29,9 @@ function GameHeader({ game, activeView, onViewChange }) {
             </span>
             <span className="a1-wrenchworks-brand-copy">
               <strong>Wrenchworks</strong>
-              <small>No-ads garage empire</small>
+              <small>{game.franchises > 0 ? `Franchise ${game.franchises + 1}` : 'Garage empire'}</small>
             </span>
           </Stack>
-
-          <div className="a1-wrenchworks-desktop-nav">
-            <SegmentedControl
-              aria-label="Game sections"
-              options={viewOptions}
-              value={activeView}
-              onChange={onViewChange}
-              size="sm"
-            />
-          </div>
 
           <Stack direction="row" gap="xs" align="center">
             <span className="a1-wrenchworks-hud-chip">
@@ -68,10 +41,17 @@ function GameHeader({ game, activeView, onViewChange }) {
                 <strong>{formatMoney(game.cash)}</strong>
               </span>
             </span>
+            <span className="a1-wrenchworks-hud-chip">
+              <Icon name="thumb_up" aria-hidden="true" />
+              <span>
+                <small>Reputation</small>
+                <strong>{formatNumber(game.reputation)}</strong>
+              </span>
+            </span>
             <span className="a1-wrenchworks-hud-chip a1-wrenchworks-hud-chip--wide">
               <Icon name="analytics" aria-hidden="true" />
               <span>
-                <small>Income</small>
+                <small>Empire income</small>
                 <strong>{formatRate(economy.incomeRate)}</strong>
               </span>
             </span>
@@ -82,132 +62,90 @@ function GameHeader({ game, activeView, onViewChange }) {
   )
 }
 
-function OfflineDialog({ summary, open, onClose }) {
+function OfflineOverlay({ summary, open, onClose }) {
   if (!summary) return null
 
   return (
-    <Dialog
+    <Overlay
       open={open}
-      title="The crew kept working"
       status="success"
       icon="engineering"
+      title="The crew kept working"
+      body="Every staffed shop kept earning while you were away."
       onClose={onClose}
-      footer={(
-        <Button variant="primary" icon="check" fullWidth onClick={onClose}>
-          Collect and continue
+      actions={(
+        <Button variant="primary" size="lg" icon="check" onClick={onClose}>
+          Collect and walk in
         </Button>
       )}
     >
-      <Stack gap="md">
-        <Paragraph>
-          While you were away, every staffed shop kept earning at its normal rate.
-        </Paragraph>
-        <Grid columns={{ xs: 2 }} gap="sm">
-          <Card>
-            <Stack gap="xs">
-              <Paragraph size="sm" color="muted">Cash earned</Paragraph>
-              <Heading as="p" size="md">{formatMoney(summary.earned)}</Heading>
-            </Stack>
-          </Card>
-          <Card>
-            <Stack gap="xs">
-              <Paragraph size="sm" color="muted">Reputation earned</Paragraph>
-              <Heading as="p" size="md">{formatNumber(summary.reputationEarned)}</Heading>
-            </Stack>
-          </Card>
-        </Grid>
-        <Paragraph size="sm" color="muted">
-          Progress covered {formatDuration(summary.elapsedSeconds)}
-          {summary.capped ? ', the 12-hour offline maximum.' : '.'}
-        </Paragraph>
-      </Stack>
-    </Dialog>
+      <Grid columns={{ xs: 2 }} gap="sm">
+        <Card>
+          <Stack gap="xs">
+            <Paragraph size="sm" color="muted">Cash earned</Paragraph>
+            <Heading as="p" size="md">{formatMoney(summary.earned)}</Heading>
+          </Stack>
+        </Card>
+        <Card>
+          <Stack gap="xs">
+            <Paragraph size="sm" color="muted">Reputation</Paragraph>
+            <Heading as="p" size="md">+{formatNumber(summary.reputationEarned)}</Heading>
+          </Stack>
+        </Card>
+      </Grid>
+      <Paragraph size="sm" color="muted">
+        Progress covered {formatDuration(summary.elapsedSeconds)}
+        {summary.capped ? ', the 12-hour offline maximum.' : '.'}
+      </Paragraph>
+    </Overlay>
   )
 }
 
 export function App() {
   const { game, actions, offlineSummary, dismissOfflineSummary } = useWrenchworks()
-  const [activeView, setActiveView] = useState('garage')
   const [franchiseConfirmOpen, setFranchiseConfirmOpen] = useState(false)
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false)
   const [dismissedEventId, setDismissedEventId] = useState(0)
-
-  const pendingDecision = getPendingDecision(game)
-  const readyMilestones = MILESTONES.filter(
-    (milestone) =>
-      !game.claimedMilestones.includes(milestone.id)
-      && getMilestoneValue(game, milestone) >= milestone.target,
-  ).length
-  const goalsBadge = readyMilestones + (pendingDecision ? 1 : 0)
   const eventOpen = Boolean(game.lastEvent && game.lastEvent.id !== dismissedEventId)
-
-  function visitBusiness(businessId) {
-    actions.selectBusiness(businessId)
-    setActiveView('garage')
-  }
 
   function confirmFranchise() {
     actions.startFranchise()
     setFranchiseConfirmOpen(false)
-    setActiveView('garage')
   }
 
   function confirmReset() {
     actions.resetGame()
     setResetConfirmOpen(false)
-    setActiveView('garage')
   }
-
-  const bottomItems = viewOptions.map((option) => ({
-    id: option.value,
-    label: option.label,
-    icon: option.icon,
-    active: activeView === option.value,
-    badge: option.value === 'goals' ? goalsBadge : 0,
-    onClick: () => setActiveView(option.value),
-  }))
 
   return (
     <div className="a1-wrenchworks-app a1-theme-light">
-      <GameHeader game={game} activeView={activeView} onViewChange={setActiveView} />
+      <GameHeader game={game} />
 
       <main id="a1-wrenchworks-main">
-        <div className="a1-wrenchworks-shell">
-          <div className="a1-wrenchworks-view" key={activeView}>
-            {activeView === 'garage' && <GarageView game={game} actions={actions} />}
-            {activeView === 'empire' && (
-              <EmpireView game={game} actions={actions} onVisit={visitBusiness} />
-            )}
-            {activeView === 'goals' && (
-              <GoalsView
-                game={game}
-                actions={actions}
-                onFranchiseRequest={() => setFranchiseConfirmOpen(true)}
-              />
-            )}
-            {activeView === 'office' && (
-              <OfficeView game={game} onResetRequest={() => setResetConfirmOpen(true)} />
-            )}
-          </div>
-        </div>
+        <GarageView
+          game={game}
+          actions={actions}
+          onFranchiseRequest={() => setFranchiseConfirmOpen(true)}
+          onResetRequest={() => setResetConfirmOpen(true)}
+        />
       </main>
 
-      <BottomDrawer items={bottomItems} aria-label="Game sections" />
-
-      <OfflineDialog
+      <OfflineOverlay
         summary={offlineSummary}
         open={Boolean(offlineSummary)}
         onClose={dismissOfflineSummary}
       />
 
-      <Dialog
+      <Overlay
         open={franchiseConfirmOpen}
-        title="Start a new franchise?"
         status="warn"
         icon="hub"
+        title="Start a new franchise?"
+        body="Your shops, crew, cash and most reputation will reset. Career milestones and strategic choices stay with you."
         onClose={() => setFranchiseConfirmOpen(false)}
-        footer={(
-          <Stack direction={{ xs: 'column', sm: 'row' }} gap="sm" justify="end">
+        actions={(
+          <Stack direction={{ xs: 'column', sm: 'row' }} gap="sm">
             <Button variant="tertiary" onClick={() => setFranchiseConfirmOpen(false)}>
               Keep this empire
             </Button>
@@ -217,25 +155,20 @@ export function App() {
           </Stack>
         )}
       >
-        <Stack gap="sm">
-          <Paragraph>
-            Your current shops, crew, cash and most reputation will reset. Career
-            milestones and strategic choices stay with you.
-          </Paragraph>
-          <MessageBadge status="warn" subtle>
-            Permanent income bonus: +60%
-          </MessageBadge>
-        </Stack>
-      </Dialog>
+        <MessageBadge status="warn" subtle>
+          Permanent future-income bonus: +60%
+        </MessageBadge>
+      </Overlay>
 
-      <Dialog
+      <Overlay
         open={resetConfirmOpen}
-        title="Delete your Wrenchworks save?"
         status="error"
         icon="delete_forever"
+        title="Delete your Wrenchworks save?"
+        body="This permanently removes every business, upgrade, milestone and franchise from this browser."
         onClose={() => setResetConfirmOpen(false)}
-        footer={(
-          <Stack direction={{ xs: 'column', sm: 'row' }} gap="sm" justify="end">
+        actions={(
+          <Stack direction={{ xs: 'column', sm: 'row' }} gap="sm">
             <Button variant="tertiary" onClick={() => setResetConfirmOpen(false)}>
               Keep my save
             </Button>
@@ -244,17 +177,12 @@ export function App() {
             </Button>
           </Stack>
         )}
-      >
-        <Paragraph>
-          This permanently removes every business, upgrade, milestone and franchise from
-          this browser.
-        </Paragraph>
-      </Dialog>
+      />
 
       <Snackbar
         open={eventOpen}
-        position="bottom-right"
-        autoHideDuration={3500}
+        position="top-right"
+        autoHideDuration={3200}
         onClose={() => setDismissedEventId(game.lastEvent?.id ?? 0)}
         role={game.lastEvent?.type === 'error' ? 'alert' : 'status'}
         className="a1-wrenchworks-snackbar"

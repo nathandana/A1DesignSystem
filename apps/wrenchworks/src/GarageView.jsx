@@ -1,17 +1,15 @@
+import { useEffect, useRef, useState } from 'react'
 import {
   Button,
   Card,
   Grid,
   Heading,
   Icon,
+  IconButton,
   MessageBadge,
   Paragraph,
   Stack,
   Stat,
-  Tab,
-  TabList,
-  TabPanel,
-  Tabs,
 } from '@gtivr4/a1-design-system-react'
 import { BUSINESSES, MAX_SERVICE_LEVEL } from './gameData.js'
 import {
@@ -19,228 +17,317 @@ import {
   getBusinessEconomy,
   getHireCost,
   getManagerCost,
-  getManualSecondsRemaining,
   getMaxStaff,
   getPendingDecision,
   getUpgradeCost,
 } from './gameEngine.js'
-import { formatClock, formatDuration, formatMoney, formatRate } from './formatters.js'
-import { GarageScene } from './GameArt.jsx'
+import { formatDuration, formatMoney, formatRate } from './formatters.js'
+import { EmpireView } from './EmpireView.jsx'
+import { GoalsView } from './GoalsView.jsx'
+import { OfficeView } from './OfficeView.jsx'
+import { WorkshopWorld } from './WorkshopWorld.jsx'
+
+const panelTitles = {
+  tools: ['Tool bench', 'upgrade'],
+  office: ['Front office', 'badge'],
+  city: ['Wrenchworks city map', 'location_city'],
+  goals: ['Career ledger', 'flag'],
+  settings: ['Game and save', 'settings'],
+}
+
+function ToolBenchPanel({ game, business, actions }) {
+  const serviceState = game.businesses[business.id]
+  const economy = getBusinessEconomy(game, business.id)
+  const upgradeCost = getUpgradeCost(game, business.id)
+  const upgradeMaxed = serviceState.level >= MAX_SERVICE_LEVEL
+
+  return (
+    <Stack gap="md">
+      <Stack gap="xs">
+        <Paragraph size="sm" color="muted">{business.name}</Paragraph>
+        <Heading as="h2" size="lg">Build a better shop</Heading>
+        <Paragraph color="muted">
+          Better lifts, tools and diagnostics raise every crew member's output.
+        </Paragraph>
+      </Stack>
+
+      <Grid columns={{ xs: 2 }} gap="sm">
+        <Card>
+          <Stat title="Shop level" value={serviceState.level} icon="upgrade" size="sm" />
+        </Card>
+        <Card>
+          <Stat
+            title="Job value"
+            value={formatMoney(economy.jobRevenue)}
+            format="none"
+            icon="payments"
+            size="sm"
+          />
+        </Card>
+      </Grid>
+
+      <Card status={upgradeMaxed ? 'success' : 'info'}>
+        <Stack gap="md">
+          <Stack direction="row" gap="sm" justify="between" align="center">
+            <span className="a1-wrenchworks-panel-icon" aria-hidden="true">
+              <Icon name="construction" />
+            </span>
+            <MessageBadge status={upgradeMaxed ? 'success' : 'info'} subtle>
+              {upgradeMaxed ? 'Maximum level' : `Level ${serviceState.level + 1}`}
+            </MessageBadge>
+          </Stack>
+          <Stack gap="xs">
+            <Heading as="h3" size="md">Workshop upgrade</Heading>
+            <Paragraph size="sm" color="muted">
+              Increase revenue, add room for technicians and visibly advance this location.
+            </Paragraph>
+          </Stack>
+          <Button
+            variant="primary"
+            size="lg"
+            icon="upgrade"
+            fullWidth
+            disabled={upgradeMaxed}
+            onClick={() => actions.upgradeBusiness(business.id)}
+          >
+            {upgradeMaxed ? 'Shop fully upgraded' : `Install upgrade · ${formatMoney(upgradeCost)}`}
+          </Button>
+        </Stack>
+      </Card>
+
+      <Paragraph size="sm" color="muted">
+        Walk back onto the shop floor to continue the current job route.
+      </Paragraph>
+    </Stack>
+  )
+}
 
 function DecisionPanel({ decision, onChoose }) {
   return (
-    <Card className="a1-wrenchworks-decision" status="info" statusLabel="Decision ready" statusPulse>
+    <Card status="info" statusLabel="Decision ready" statusPulse>
       <Stack gap="md">
         <Stack gap="xs">
-          <Heading as="h2" size="md">{decision.title}</Heading>
+          <Heading as="h3" size="md">{decision.title}</Heading>
           <Paragraph>{decision.prompt}</Paragraph>
         </Stack>
-        <Grid columns={{ xs: 1, md: 3 }} gap="sm">
+        <Stack gap="sm">
           {decision.choices.map((choice) => (
-            <div className="a1-wrenchworks-decision__choice" key={choice.id}>
-              <Stack gap="sm">
-                <span className="a1-wrenchworks-decision__icon" aria-hidden="true">
-                  <Icon name={choice.icon} />
-                </span>
-                <Stack gap="xs">
-                  <Heading as="h3" size="xs">{choice.label}</Heading>
-                  <Paragraph size="sm" color="muted">{choice.description}</Paragraph>
-                </Stack>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  fullWidth
-                  onClick={() => onChoose(decision.id, choice.id)}
-                >
-                  Choose this path
-                </Button>
-              </Stack>
-            </div>
+            <Button
+              variant="secondary"
+              icon={choice.icon}
+              fullWidth
+              key={choice.id}
+              onClick={() => onChoose(decision.id, choice.id)}
+            >
+              {choice.label} · {choice.description}
+            </Button>
           ))}
-        </Grid>
+        </Stack>
       </Stack>
     </Card>
   )
 }
 
-function Workshop({ game, business, actions }) {
+function OfficePanel({ game, business, actions, onOpenPanel }) {
   const serviceState = game.businesses[business.id]
   const economy = getBusinessEconomy(game, business.id)
-  const upgradeCost = getUpgradeCost(game, business.id)
   const hireCost = getHireCost(game, business.id)
   const managerCost = getManagerCost(game, business.id)
   const maxStaff = getMaxStaff(serviceState)
-  const manualRemaining = getManualSecondsRemaining(game, business.id, game.lastTickAt)
-  const upgradeMaxed = serviceState.level >= MAX_SERVICE_LEVEL
   const crewFull = serviceState.staff >= maxStaff
   const managerReady = canHireManager(game, business.id)
-
-  return (
-    <div className="a1-wrenchworks-workshop-layout">
-      <GarageScene
-        business={business}
-        serviceState={serviceState}
-        economy={economy}
-        game={game}
-      />
-
-      <Stack gap="md" className="a1-wrenchworks-workshop-layout__controls">
-        <Card>
-          <Stack gap="md">
-            <Stack direction="row" gap="sm" justify="between" align="start" wrap>
-              <Stack gap="xs">
-                <Paragraph size="sm" color="muted">{business.district}</Paragraph>
-                <Heading as="h2" size="lg">{business.name}</Heading>
-                <Paragraph color="muted">{business.description}</Paragraph>
-              </Stack>
-              <Stack direction="row" gap="xs" wrap>
-                <MessageBadge status="info" subtle icon={null}>
-                  Level {serviceState.level}
-                </MessageBadge>
-                <MessageBadge status="success" subtle icon={null}>
-                  {serviceState.staff} tech{serviceState.staff === 1 ? '' : 's'}
-                </MessageBadge>
-                {serviceState.manager && (
-                  <MessageBadge status="warn" subtle icon="badge">Managed</MessageBadge>
-                )}
-              </Stack>
-            </Stack>
-
-            <Grid columns={{ xs: 2, sm: 3 }} gap="sm">
-              <Stat
-                title="Shop income"
-                value={formatRate(economy.incomeRate)}
-                format="none"
-                icon="payments"
-                size="sm"
-              />
-              <Stat
-                title="Job value"
-                value={formatMoney(economy.jobRevenue)}
-                format="none"
-                icon="receipt_long"
-                size="sm"
-              />
-              <Stat
-                title="Crew cycle"
-                value={formatDuration(economy.jobDuration)}
-                format="none"
-                icon="timer"
-                size="sm"
-              />
-            </Grid>
-          </Stack>
-        </Card>
-
-        <Card>
-          <Stack gap="md">
-            <Stack gap="xs">
-              <Heading as="h2" size="md">Run this shop</Heading>
-              <Paragraph color="muted">
-                Your crew earns automatically. Jump in or invest where it matters.
-              </Paragraph>
-            </Stack>
-
-            <Button
-              variant="primary"
-              size="lg"
-              icon={manualRemaining > 0 ? 'hourglass_top' : business.icon}
-              fullWidth
-              disabled={manualRemaining > 0}
-              onClick={() => actions.workJob(business.id)}
-            >
-              {manualRemaining > 0
-                ? `Bay ready in ${formatClock(manualRemaining)}`
-                : `${business.actionLabel} for ${formatMoney(economy.manualRevenue)}`}
-            </Button>
-
-            <Grid columns={{ xs: 1, sm: 2 }} gap="sm">
-              <Button
-                variant="secondary"
-                icon="upgrade"
-                fullWidth
-                disabled={upgradeMaxed}
-                onClick={() => actions.upgradeBusiness(business.id)}
-              >
-                {upgradeMaxed
-                  ? 'Fully upgraded'
-                  : `Upgrade · ${formatMoney(upgradeCost)}`}
-              </Button>
-              <Button
-                variant="secondary"
-                icon="person_add"
-                fullWidth
-                disabled={crewFull}
-                onClick={() => actions.hireStaff(business.id)}
-              >
-                {crewFull
-                  ? `Crew full · ${serviceState.staff}/${maxStaff}`
-                  : `Hire tech · ${formatMoney(hireCost)}`}
-              </Button>
-            </Grid>
-
-            {!serviceState.manager && (
-              <Button
-                variant={managerReady ? 'success' : 'tertiary'}
-                icon="badge"
-                fullWidth
-                disabled={!managerReady}
-                onClick={() => actions.hireManager(business.id)}
-              >
-                {managerReady
-                  ? `Promote manager · ${formatMoney(managerCost)}`
-                  : 'Manager unlocks at level 5 with 3 technicians'}
-              </Button>
-            )}
-          </Stack>
-        </Card>
-      </Stack>
-    </div>
-  )
-}
-
-export function GarageView({ game, actions }) {
-  const unlockedBusinesses = BUSINESSES.filter(
-    (business) => game.businesses[business.id].unlocked,
-  )
   const pendingDecision = getPendingDecision(game)
 
   return (
-    <Stack gap="md" className="a1-wrenchworks-screen">
-      <Stack gap="xs" className="a1-wrenchworks-screen-heading">
-        <Paragraph size="sm" color="muted" className="a1-wrenchworks-screen-eyebrow">
-          Hands-on when you want, idle when you do not
-        </Paragraph>
-        <Heading as="h1" size="lg">Your garage</Heading>
-        <Paragraph color="muted" className="a1-wrenchworks-screen-intro">
-          Move between shops, help with a job and let your crew handle the rest.
+    <Stack gap="md">
+      <Stack gap="xs">
+        <Paragraph size="sm" color="muted">{business.name}</Paragraph>
+        <Heading as="h2" size="lg">Run the crew</Heading>
+        <Paragraph color="muted">
+          The team keeps earning while you work the floor—or while the game is closed.
         </Paragraph>
       </Stack>
+
+      <Grid columns={{ xs: 2 }} gap="sm">
+        <Card>
+          <Stat
+            title="Crew"
+            value={`${serviceState.staff} / ${maxStaff}`}
+            format="none"
+            icon="groups"
+            size="sm"
+          />
+        </Card>
+        <Card>
+          <Stat
+            title="Passive income"
+            value={formatRate(economy.incomeRate)}
+            format="none"
+            icon="analytics"
+            size="sm"
+          />
+        </Card>
+      </Grid>
 
       {pendingDecision && (
         <DecisionPanel decision={pendingDecision} onChoose={actions.chooseDecision} />
       )}
 
-      <Tabs
-        value={game.activeBusinessId}
-        onChange={actions.selectBusiness}
-        variant="line"
-        labelMode="selected"
-      >
-        <TabList>
-          {unlockedBusinesses.map((business) => (
-            <Tab value={business.id} icon={business.icon} key={business.id}>
-              {business.shortName}
-            </Tab>
-          ))}
-        </TabList>
+      <Card>
+        <Stack gap="md">
+          <Stack gap="xs">
+            <Heading as="h3" size="md">Shop staff</Heading>
+            <Paragraph size="sm" color="muted">
+              Each technician runs another service cycle in the background.
+            </Paragraph>
+          </Stack>
+          <Button
+            variant="primary"
+            icon="person_add"
+            fullWidth
+            disabled={crewFull}
+            onClick={() => actions.hireStaff(business.id)}
+          >
+            {crewFull
+              ? `Crew full · ${serviceState.staff}/${maxStaff}`
+              : `Hire technician · ${formatMoney(hireCost)}`}
+          </Button>
+          {!serviceState.manager && (
+            <Button
+              variant={managerReady ? 'success' : 'tertiary'}
+              icon="badge"
+              fullWidth
+              disabled={!managerReady}
+              onClick={() => actions.hireManager(business.id)}
+            >
+              {managerReady
+                ? `Promote manager · ${formatMoney(managerCost)}`
+                : 'Manager requires level 5 and 3 technicians'}
+            </Button>
+          )}
+          {serviceState.manager && (
+            <MessageBadge status="success" subtle icon="badge">
+              Managed · 80% faster output
+            </MessageBadge>
+          )}
+        </Stack>
+      </Card>
 
-        {unlockedBusinesses.map((business) => (
-          <TabPanel value={business.id} key={business.id}>
-            <Workshop game={game} business={business} actions={actions} />
-          </TabPanel>
-        ))}
-      </Tabs>
+      <Grid columns={{ xs: 1, sm: 2 }} gap="sm">
+        <Button variant="secondary" icon="flag" onClick={() => onOpenPanel('goals')}>
+          Open career ledger
+        </Button>
+        <Button variant="tertiary" icon="settings" onClick={() => onOpenPanel('settings')}>
+          Game and save
+        </Button>
+      </Grid>
+
+      <Paragraph size="sm" color="muted">
+        Current crew cycle: {formatDuration(economy.jobDuration)}.
+      </Paragraph>
     </Stack>
+  )
+}
+
+function WorldPanel({ panel, onClose, children }) {
+  const [title, icon] = panelTitles[panel]
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  return (
+    <div className="a1-wrenchworks-world-panel-layer">
+      <button
+        className="a1-wrenchworks-world-panel__scrim"
+        type="button"
+        aria-label="Close panel"
+        onClick={onClose}
+      />
+      <aside className="a1-wrenchworks-world-panel" aria-label={title}>
+        <header className="a1-wrenchworks-world-panel__header">
+          <Stack direction="row" gap="sm" align="center">
+            <span className="a1-wrenchworks-panel-icon" aria-hidden="true">
+              <Icon name={icon} />
+            </span>
+            <Heading as="h2" size="md">{title}</Heading>
+          </Stack>
+          <IconButton icon="close" label={`Close ${title}`} onClick={onClose} />
+        </header>
+        <div className="a1-wrenchworks-world-panel__content">
+          {children}
+        </div>
+      </aside>
+    </div>
+  )
+}
+
+export function GarageView({
+  game,
+  actions,
+  onFranchiseRequest,
+  onResetRequest,
+}) {
+  const [panel, setPanel] = useState(null)
+  const previousBusinessRef = useRef(game.activeBusinessId)
+  const business = BUSINESSES.find((item) => item.id === game.activeBusinessId) ?? BUSINESSES[0]
+
+  useEffect(() => {
+    if (
+      panel === 'city'
+      && previousBusinessRef.current !== game.activeBusinessId
+    ) {
+      setPanel(null)
+    }
+    previousBusinessRef.current = game.activeBusinessId
+  }, [game.activeBusinessId, panel])
+
+  function visitBusiness(businessId) {
+    actions.selectBusiness(businessId)
+    setPanel(null)
+  }
+
+  return (
+    <div className="a1-wrenchworks-game">
+      <WorkshopWorld
+        game={game}
+        actions={actions}
+        panelOpen={Boolean(panel)}
+        onOpenPanel={setPanel}
+      />
+
+      {panel && (
+        <WorldPanel panel={panel} onClose={() => setPanel(null)}>
+          {panel === 'tools' && (
+            <ToolBenchPanel game={game} business={business} actions={actions} />
+          )}
+          {panel === 'office' && (
+            <OfficePanel
+              game={game}
+              business={business}
+              actions={actions}
+              onOpenPanel={setPanel}
+            />
+          )}
+          {panel === 'city' && (
+            <EmpireView game={game} actions={actions} onVisit={visitBusiness} />
+          )}
+          {panel === 'goals' && (
+            <GoalsView
+              game={game}
+              actions={actions}
+              onFranchiseRequest={onFranchiseRequest}
+            />
+          )}
+          {panel === 'settings' && (
+            <OfficeView game={game} onResetRequest={onResetRequest} />
+          )}
+        </WorldPanel>
+      )}
+    </div>
   )
 }
