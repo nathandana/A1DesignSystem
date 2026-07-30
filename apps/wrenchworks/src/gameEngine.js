@@ -308,6 +308,46 @@ export function workJob(game, businessId, now = Date.now()) {
   )
 }
 
+export function completeContract(
+  game,
+  businessId,
+  rewardMultiplier = 1,
+  reputationMultiplier = 1,
+  contractName = 'Field contract',
+  now = Date.now(),
+) {
+  const business = businessById.get(businessId)
+  const serviceState = game.businesses[businessId]
+  if (!business || !serviceState?.unlocked) {
+    return insufficient(game, 'Open this business before taking a contract.')
+  }
+
+  const economy = getBusinessEconomy(game, businessId)
+  const safeRewardMultiplier = Math.min(4, Math.max(1, numberOr(rewardMultiplier, 1)))
+  const safeReputationMultiplier = Math.min(4, Math.max(1, numberOr(reputationMultiplier, 1)))
+  const payout = economy.manualRevenue * safeRewardMultiplier
+  const reputationEarned = business.baseReputation * 1.5 * safeReputationMultiplier
+
+  return withEvent(
+    {
+      ...game,
+      cash: game.cash + payout,
+      runEarned: game.runEarned + payout,
+      lifetimeEarned: game.lifetimeEarned + payout,
+      reputation: game.reputation + reputationEarned,
+      businesses: {
+        ...game.businesses,
+        [businessId]: {
+          ...serviceState,
+          lastManualAt: now,
+        },
+      },
+    },
+    'success',
+    `${contractName} complete. You earned ${formatMoney(payout)}.`,
+  )
+}
+
 export function upgradeBusiness(game, businessId) {
   const business = businessById.get(businessId)
   const serviceState = game.businesses[businessId]

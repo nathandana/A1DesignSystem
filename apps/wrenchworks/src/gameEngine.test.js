@@ -4,6 +4,7 @@ import {
   advanceGame,
   chooseDecision,
   claimMilestone,
+  completeContract,
   createNewGame,
   getBusinessEconomy,
   getEmpireEconomy,
@@ -83,6 +84,23 @@ test('hands-on jobs pay immediately and respect their cooldown', () => {
   assert.equal(worked.lastEvent.type, 'success')
   assert.equal(repeated.cash, worked.cash)
   assert.equal(repeated.lastEvent.type, 'error')
+})
+
+test('field contracts pay a bounded reward and reputation multiplier', () => {
+  const game = createNewGame(1000)
+  const economy = getBusinessEconomy(game, 'oil-stand')
+  const completed = completeContract(
+    game,
+    'oil-stand',
+    2,
+    1.5,
+    'Roadside rescue',
+    5000,
+  )
+
+  assert.equal(completed.cash, game.cash + economy.manualRevenue * 2)
+  assert.equal(completed.reputation, game.reputation + 2.25)
+  assert.match(completed.lastEvent.message, /Roadside rescue complete/)
 })
 
 test('upgrades and hires spend cash and increase production', () => {

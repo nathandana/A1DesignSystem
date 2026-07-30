@@ -4,6 +4,7 @@ import {
   chooseDecision,
   claimMilestone,
   clearSavedGame,
+  completeContract,
   createNewGame,
   hireManager,
   hireStaff,
@@ -69,6 +70,22 @@ export function useWrenchworks() {
     ),
     workJob: useCallback(
       (businessId) => runCommand((current) => workJob(current, businessId, Date.now())),
+      [runCommand],
+    ),
+    completeContract: useCallback(
+      (
+        businessId,
+        rewardMultiplier,
+        reputationMultiplier,
+        contractName,
+      ) => runCommand((current) => completeContract(
+        current,
+        businessId,
+        rewardMultiplier,
+        reputationMultiplier,
+        contractName,
+        Date.now(),
+      )),
       [runCommand],
     ),
     upgradeBusiness: useCallback(

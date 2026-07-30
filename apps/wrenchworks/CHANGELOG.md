@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 — July 30, 2026
+
+- **Multi-scene contracts** — Added six rotating contract types spanning the
+  garage, a city test route, and an explorable salvage yard.
+- **Driving and scavenging** — Added a controllable service car, road hazards,
+  boost control, timed checkpoints, hidden salvage parts, radar, and compass.
+- **Performance rewards** — Added speed bonuses, time penalties, contract
+  streaks, and larger active-play payouts.
+- **Smooth mobile camera** — Moved player and camera animation off React's
+  render cycle and onto one frame-synchronized transform loop.
+
 ## 1.1.0 — July 30, 2026
 
 - **Walkable workshop** — Replaced the control-dashboard loop with direct

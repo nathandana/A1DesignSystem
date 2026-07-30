@@ -40,7 +40,19 @@ services are used.
 - Use WASD or the arrow keys with a keyboard.
 - Walk near Tools, Office, or City and press E/Enter—or use the contextual
   action—to open that station.
-- Follow the glowing task marker to complete hands-on jobs.
+- Follow the active contract across the workshop, city test route, and salvage
+  yard.
+- Steer the service car on road contracts, avoid hazards, and hold Boost on
+  clear stretches.
+- Use the salvage radar and compass to hunt hidden parts.
+
+## Contracts
+
+The dispatch board rotates roadside rescues, timed performance tests, rare
+parts hunts, auction flips, fleet emergencies, and mystery-diagnostic jobs.
+Fast completion builds a payout streak; hazards add time penalties. Contract
+rewards scale with the currently active business, so field work stays useful
+through the full empire.
 
 ## Netlify
 

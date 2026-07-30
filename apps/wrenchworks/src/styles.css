@@ -141,7 +141,6 @@ body,
   background-repeat: no-repeat;
   background-size: 100% 100%;
   transform-origin: top left;
-  transition: transform 100ms linear;
   will-change: transform;
 }
 
@@ -208,6 +207,28 @@ body,
   font-size: var(--semantic-font-size-body-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.a1-wrenchworks-task__timer {
+  display: none;
+  flex: none;
+  min-inline-size: var(--base-width-3xs);
+  text-align: end;
+}
+
+.a1-wrenchworks-task__timer small,
+.a1-wrenchworks-task__timer strong {
+  display: block;
+}
+
+.a1-wrenchworks-task__timer small {
+  color: color-mix(in srgb, var(--semantic-color-text-inverse) 68%, transparent);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-wrenchworks-task__timer strong {
+  font-family: var(--base-font-family-mono);
+  font-size: var(--semantic-font-size-body-sm);
 }
 
 .a1-wrenchworks-station {
@@ -309,6 +330,15 @@ body,
   animation: a1-wrenchworks-walk 440ms ease-in-out infinite alternate;
 }
 
+.a1-wrenchworks-player--vehicle {
+  inline-size: clamp(4.75rem, 9%, 7.5rem);
+  transform: translate(-50%, -50%);
+}
+
+.a1-wrenchworks-player--vehicle img {
+  transform-origin: 50% 50%;
+}
+
 .a1-wrenchworks-player__shadow {
   position: absolute;
   inset-block-end: 1%;
@@ -374,6 +404,167 @@ body,
   background: color-mix(in srgb, var(--semantic-color-action-surface) 55%, transparent);
   transform: translate(-50%, -50%);
   animation: a1-wrenchworks-tap 800ms ease-in-out infinite alternate;
+}
+
+.a1-wrenchworks-field-objective {
+  position: absolute;
+  z-index: 18;
+  display: grid;
+  justify-items: center;
+  gap: var(--base-spacing-4);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.a1-wrenchworks-field-objective > span {
+  display: grid;
+  place-items: center;
+  inline-size: clamp(3rem, 6vw, 4.75rem);
+  block-size: clamp(3rem, 6vw, 4.75rem);
+  border: var(--base-spacing-4) solid var(--base-color-highlighted-300);
+  border-radius: var(--base-radius-pill);
+  background:
+    color-mix(in srgb, var(--semantic-color-action-background) 82%, transparent);
+  color: var(--semantic-color-action-foreground);
+  box-shadow:
+    0 0 0 var(--base-spacing-8)
+    color-mix(in srgb, var(--semantic-color-action-background) 28%, transparent),
+    var(--semantic-shadow-lg);
+  animation: a1-wrenchworks-objective 1.2s ease-in-out infinite;
+  backdrop-filter: blur(var(--component-scrim-blur));
+}
+
+.a1-wrenchworks-field-objective strong {
+  max-inline-size: var(--base-width-xs);
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+  border-radius: var(--base-radius-pill);
+  background:
+    color-mix(in srgb, var(--base-color-neutral-900) 84%, transparent);
+  color: var(--semantic-color-text-inverse);
+  font-size: var(--semantic-font-size-body-xs);
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: var(--semantic-shadow-sm);
+}
+
+.a1-wrenchworks-field-objective--hidden > span {
+  border-style: dashed;
+}
+
+.a1-wrenchworks-hazard {
+  position: absolute;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  inline-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  block-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-warn-border);
+  border-radius: var(--base-radius-pill);
+  background:
+    color-mix(in srgb, var(--semantic-color-status-warn-surface) 82%, transparent);
+  color: var(--semantic-color-status-warn-text);
+  box-shadow: var(--semantic-shadow-md);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  backdrop-filter: blur(var(--component-scrim-blur));
+}
+
+.a1-wrenchworks-scene-name {
+  position: absolute;
+  inset-block-start: calc(var(--base-spacing-96) + var(--base-spacing-8));
+  inset-inline-start: 50%;
+  z-index: 38;
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-8) var(--base-spacing-12);
+  border: var(--base-spacing-1) solid
+    color-mix(in srgb, var(--semantic-color-text-inverse) 36%, transparent);
+  border-radius: var(--base-radius-pill);
+  background:
+    color-mix(in srgb, var(--base-color-neutral-900) 84%, transparent);
+  color: var(--semantic-color-text-inverse);
+  box-shadow: var(--semantic-shadow-lg);
+  transform: translateX(-50%);
+  animation: a1-wrenchworks-scene-name 2.4s ease both;
+  pointer-events: none;
+  backdrop-filter: blur(var(--component-scrim-blur));
+}
+
+.a1-wrenchworks-scene-name small,
+.a1-wrenchworks-scene-name strong {
+  display: block;
+  line-height: var(--semantic-font-line-height-heading);
+}
+
+.a1-wrenchworks-scene-name small {
+  color: color-mix(in srgb, var(--semantic-color-text-inverse) 68%, transparent);
+  font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-wrenchworks-radar,
+.a1-wrenchworks-hazard-alert {
+  position: absolute;
+  inset-block-start: calc(var(--base-spacing-96) + var(--base-spacing-16));
+  inset-inline-end: var(--base-spacing-16);
+  z-index: 39;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-8) var(--base-spacing-12);
+  border-radius: var(--base-radius-pill);
+  box-shadow: var(--semantic-shadow-lg);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-bold);
+}
+
+.a1-wrenchworks-radar {
+  background: var(--semantic-color-status-info-surface);
+  color: var(--semantic-color-status-info-text);
+}
+
+.a1-wrenchworks-radar > .a1-icon {
+  animation: a1-wrenchworks-radar 1.6s linear infinite;
+}
+
+.a1-wrenchworks-compass {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--base-spacing-16);
+  z-index: 40;
+  display: grid;
+  justify-items: center;
+  gap: var(--base-spacing-4);
+  color: var(--semantic-color-text-inverse);
+  font-size: var(--semantic-font-size-body-xs);
+  text-shadow: var(--semantic-shadow-md);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.a1-wrenchworks-compass > span {
+  display: grid;
+  place-items: center;
+  inline-size: var(--base-spacing-48);
+  block-size: var(--base-spacing-48);
+  border: var(--base-spacing-2) solid
+    color-mix(in srgb, var(--semantic-color-text-inverse) 56%, transparent);
+  border-radius: var(--base-radius-pill);
+  background:
+    color-mix(in srgb, var(--base-color-neutral-900) 72%, transparent);
+  color: var(--base-color-highlighted-300);
+  box-shadow: var(--semantic-shadow-lg);
+  backdrop-filter: blur(var(--component-scrim-blur));
+  will-change: transform;
+}
+
+.a1-wrenchworks-hazard-alert {
+  background: var(--semantic-color-status-warn-surface);
+  color: var(--semantic-color-status-warn-text);
+  animation:
+    a1-wrenchworks-hazard-alert
+    var(--semantic-motion-duration-normal)
+    var(--semantic-motion-easing-enter);
 }
 
 .a1-wrenchworks-world__status {
@@ -470,6 +661,63 @@ body,
     color-mix(in srgb, var(--base-color-neutral-900) 78%, transparent);
   color: var(--semantic-color-text-inverse);
   font-size: var(--semantic-font-size-body-xs);
+}
+
+.a1-wrenchworks-boost {
+  position: absolute;
+  inset-block-end: max(var(--base-spacing-16), env(safe-area-inset-bottom));
+  inset-inline-end: var(--base-spacing-16);
+  z-index: 42;
+  touch-action: none;
+}
+
+.a1-wrenchworks-contract-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 74;
+  display: grid;
+  place-items: center;
+  padding: var(--base-spacing-12);
+}
+
+.a1-wrenchworks-contract-layer__scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background:
+    color-mix(in srgb, var(--base-color-neutral-900) 62%, transparent);
+  cursor: default;
+  backdrop-filter: blur(var(--component-scrim-blur));
+}
+
+.a1-wrenchworks-contract-picker {
+  position: relative;
+  overflow: auto;
+  inline-size: min(58rem, 100%);
+  max-block-size: calc(100dvh - var(--base-spacing-32));
+  padding: var(--base-spacing-16);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-xl);
+  background: var(--semantic-color-surface-card);
+  box-shadow: var(--semantic-shadow-xl);
+  animation:
+    a1-wrenchworks-contract-enter
+    var(--semantic-motion-duration-normal)
+    var(--semantic-motion-easing-enter);
+}
+
+.a1-wrenchworks-contract-card {
+  height: 100%;
+}
+
+.a1-wrenchworks-contract-card__icon {
+  display: grid;
+  place-items: center;
+  inline-size: var(--base-spacing-48);
+  block-size: var(--base-spacing-48);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-text-accent);
 }
 
 /* Game panels stay over the world instead of navigating to a page. */
@@ -720,6 +968,50 @@ body,
   }
 }
 
+@keyframes a1-wrenchworks-scene-name {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, var(--base-spacing-neg-12)) scale(0.94);
+  }
+  14%,
+  72% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, var(--base-spacing-neg-8)) scale(0.98);
+  }
+}
+
+@keyframes a1-wrenchworks-radar {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes a1-wrenchworks-hazard-alert {
+  from {
+    opacity: 0;
+    transform: translateX(var(--base-spacing-24));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes a1-wrenchworks-contract-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--base-spacing-24)) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @keyframes a1-wrenchworks-panel-enter {
   from {
     opacity: 0;
@@ -738,6 +1030,10 @@ body,
 
   .a1-wrenchworks-hud-chip--wide {
     display: inline-grid;
+  }
+
+  .a1-wrenchworks-task__timer {
+    display: block;
   }
 
   .a1-wrenchworks-world__status {
@@ -764,8 +1060,8 @@ body,
   }
 
   .a1-wrenchworks-world__hint {
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
+    inset-inline-start: var(--base-spacing-16);
+    transform: none;
   }
 }
 
@@ -779,6 +1075,14 @@ body,
     display: none;
   }
 
+  .a1-wrenchworks-task__dispatch {
+    display: none;
+  }
+
+  .a1-wrenchworks-world__hint {
+    display: none;
+  }
+
   .a1-wrenchworks-hud-chip:nth-of-type(2) {
     display: none;
   }
@@ -787,6 +1091,31 @@ body,
     max-inline-size: var(--base-width-2xs);
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .a1-wrenchworks-scene-name {
+    inset-block-start: calc(var(--base-spacing-64) + var(--base-spacing-24));
+  }
+
+  .a1-wrenchworks-radar,
+  .a1-wrenchworks-hazard-alert {
+    inset-block-start: auto;
+    inset-block-end: calc(var(--base-spacing-96) + var(--base-spacing-32));
+    inset-inline: auto var(--base-spacing-12);
+    max-inline-size: calc(100% - var(--base-spacing-128));
+    font-size: var(--semantic-font-size-body-xs);
+  }
+
+  .a1-wrenchworks-compass {
+    inset-block-start: auto;
+    inset-block-end: calc(var(--base-spacing-96) + var(--base-spacing-40));
+    inset-inline-end: auto;
+    inset-inline-start: var(--base-spacing-12);
+    transform: none;
+  }
+
+  .a1-wrenchworks-boost .a1-button {
+    min-inline-size: 0;
   }
 }
 
@@ -797,6 +1126,12 @@ body,
   .a1-wrenchworks-station__ring,
   .a1-wrenchworks-reward-burst,
   .a1-wrenchworks-tap-target,
+  .a1-wrenchworks-field-objective > span,
+  .a1-wrenchworks-scene-name,
+  .a1-wrenchworks-radar > .a1-icon,
+  .a1-wrenchworks-compass > span,
+  .a1-wrenchworks-hazard-alert,
+  .a1-wrenchworks-contract-picker,
   .a1-wrenchworks-world-panel,
   .a1-wrenchworks-thumbnail img {
     animation: none;
