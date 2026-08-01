@@ -159,6 +159,7 @@ import { PriorityGuideEditor } from './pages/PriorityGuideEditor.jsx'
 import { GlobalSearchDialog } from './search/GlobalSearchDialog.jsx'
 import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
+import { recordPageView, startVisitHeartbeat } from './lib/visitAnalytics.js'
 import { themeClassName, themeOptions, settingsThemeOptions, settingsThemeValues, VALID_THEMES } from './lib/appThemes.ts'
 import './styles.css'
 
@@ -493,6 +494,16 @@ function App() {
   const [releaseSearch, setReleaseSearch] = useState('')
   const [selectedReleaseId, setSelectedReleaseId] = useState(null)
   const canViewDetailedReleases = canUseFeature('detailedReleaseNotes')
+
+  useEffect(() => {
+    recordPageView(activePage, window.location.pathname)
+  }, [activePage])
+
+  useEffect(() => startVisitHeartbeat(() => ({
+    page: getPage(),
+    path: window.location.pathname,
+  })), [])
+
   const effectiveReleaseMode = canViewDetailedReleases ? releaseMode : 'simplified'
   // ── Projects state ─────────────────────────────────────────────────────────
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`

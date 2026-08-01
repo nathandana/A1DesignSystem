@@ -23,6 +23,7 @@ function makeClient({
   target = null,
   audit = [],
   logins = [],
+  visits = [],
 } = {}) {
   const auditEntries = [...audit]
   const loginEntries = [...logins]
@@ -78,7 +79,11 @@ function makeClient({
     },
     from: (table) => {
       let filter = null
-      const entries = table === 'a1_user_login_audit' ? loginEntries : auditEntries
+      const entries = table === 'a1_user_login_audit'
+        ? loginEntries
+        : table === 'a1_site_visit_audit'
+          ? visits
+          : auditEntries
       const rows = () => filter
         ? entries.filter((entry) => entry[filter.column] === filter.value)
         : entries
@@ -172,6 +177,13 @@ test('lists users for an administrator', async () => {
       { id: 'a', email: 'a@example.com', app_metadata: {} },
     ],
     logins: [loginEntry],
+    visits: [{
+      session_id: 'visit-1',
+      ip_addresses: ['203.0.113.10'],
+      pages: [{ page: 'home', path: '/', viewed_at: '2026-07-31T12:00:00Z' }],
+      started_at: '2026-07-31T12:00:00Z',
+      last_seen_at: '2026-07-31T12:02:00Z',
+    }],
   })
   const response = await handleUserAdminRequest(request(), dependencies(client))
   const body = await response.json()
@@ -180,6 +192,7 @@ test('lists users for an administrator', async () => {
   assert.deepEqual(body.users.map((user) => user.email), ['a@example.com', 'z@example.com'])
   assert.deepEqual(body.users.map((user) => user.role), ['user', 'editor'])
   assert.deepEqual(body.logins, [loginEntry])
+  assert.deepEqual(body.visits.map((visit) => visit.session_id), ['visit-1'])
 })
 
 test('returns a detailed profile with complete account and login history', async () => {
