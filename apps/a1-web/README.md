@@ -55,8 +55,10 @@ and
 [`supabase/migrations/20260729_a1_405_user_management.sql`](supabase/migrations/20260729_a1_405_user_management.sql)
 and
 [`supabase/migrations/20260729_a1_405_user_profile_management.sql`](supabase/migrations/20260729_a1_405_user_profile_management.sql)
+and
+[`supabase/migrations/20260731_a1_site_visit_analytics.sql`](supabase/migrations/20260731_a1_site_visit_analytics.sql)
 to existing workspaces before enabling role-based policies and administrator
-user management.
+user management and visit analytics.
 
 The Administration page calls the same-origin Netlify function at
 `/.netlify/functions/user-admin`. Configure `SUPABASE_URL` and
@@ -72,6 +74,14 @@ development server does not host Netlify functions. See
 [`packages/react/ai/access-control.md`](../../packages/react/ai/access-control.md)
 for the feature matrix, bootstrap guidance, enforcement boundaries and
 remaining follow-ups.
+
+Basic first-party visit analytics posts to
+`/.netlify/functions/visit-analytics`. Netlify supplies the client IP; the
+browser supplies only a generated visit ID and the current route without its
+query string. A 30-second heartbeat makes visit duration approximate. The
+Administration page reads the server-only audit table through `user-admin`.
+Because full IP addresses are personal data in many jurisdictions, production
+deployments need an appropriate privacy notice and an explicit retention policy.
 
 ## Architecture
 

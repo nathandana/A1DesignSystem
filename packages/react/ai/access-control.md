@@ -8,7 +8,8 @@ page and feature policy in one client module, and adds database policies where
 the current data model can enforce them safely. The Administration page also
 uses a server-only function to list accounts, show detailed profiles, send
 invitations, assign roles, delete accounts and read append-only account and
-login audit trails.
+login audit trails. It also lists first-party site visits recorded through a
+separate public write-only server endpoint.
 
 This slice does not add public sign-up, teams, per-user workspaces, account
 deactivation or invitation resend. It also does not claim that a hidden client
@@ -60,7 +61,7 @@ These recommendations are the policy implemented in
 | Label editor | Editor | Workspace label writes are restricted by Supabase policy |
 | Priority Guide editor | Editor | Shared content-planning authoring |
 | Theme editor | Administrator | High-impact preview that changes shared visual foundations |
-| Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, and preview entry point |
+| Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, first-party visit analytics, and preview entry point |
 | Virtual team | Administrator | Development-only administrative automation |
 
 Navigation visibility is convenience, not authorization. Direct URLs render an
@@ -81,6 +82,9 @@ Apply these migrations to an existing workspace:
   adds account-deletion audit support and the browser-inaccessible
   `a1_user_login_audit` table. It also adds the authenticated
   `a1_record_login()` recorder used after successful A1 password sign-in.
+- `apps/a1-web/supabase/migrations/20260731_a1_site_visit_analytics.sql` adds
+  the browser-inaccessible `a1_site_visit_audit` table and the service-only
+  recorder used by the visit-analytics Netlify function.
 
 Bootstrap the first administrator through the Supabase dashboard by setting
 `auth.users.raw_app_meta_data.role` to `admin`. After that, administrators can
@@ -126,6 +130,27 @@ administrator-authenticated Netlify function can read the complete list. A
 The history begins when the profile-management migration and recorder are
 deployed; Supabase does not provide a retroactive list of earlier sign-ins.
 Session refreshes and already-active sessions are not recorded as new logins.
+
+## Site-visit analytics boundary
+
+The browser calls `/.netlify/functions/visit-analytics` for the initial route,
+SPA route changes, a 30-second heartbeat and a best-effort page-exit event. The
+endpoint accepts anonymous requests so public visits are included, but it takes
+the IP address only from Netlify's trusted function context. A valid Supabase
+session adds the account ID and email; it is never accepted from request JSON.
+
+A visit is one browser-tab session with a 30-minute inactivity boundary. The
+database stores every IP observed during that session, ordered route paths,
+page-view timestamps, the visit start, last heartbeat and best-effort end time.
+Visit length is therefore approximate. Query strings, fragments, page content,
+geolocation, referrers, fingerprints and user-agent strings are not stored.
+Browser roles cannot read or write the table directly; the public endpoint can
+only call the service-role recorder, and the administrator-authenticated
+`user-admin` function performs reads.
+
+IP addresses are personal data in many jurisdictions. Before production use,
+publish the appropriate privacy notice and define a retention/deletion policy;
+this implementation does not automatically expire records.
 
 ## Remaining slices
 
