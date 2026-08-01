@@ -54,6 +54,7 @@ const PAGE_ACCESS = Object.freeze({
   'theme-editor': USER_ROLES.ADMIN,
   'virtual-team': USER_ROLES.ADMIN,
   admin: USER_ROLES.ADMIN,
+  'admin-analytics': USER_ROLES.ADMIN,
 })
 
 export function normalizeRole(value, fallback = USER_ROLES.USER) {
@@ -93,4 +94,3 @@ export function resolveAccessRole({ user, configured }) {
     source: user.app_metadata?.role ? 'app_metadata' : 'default',
   }
 }
-

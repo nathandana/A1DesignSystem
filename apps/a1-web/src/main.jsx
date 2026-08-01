@@ -143,6 +143,7 @@ import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
 import { Admin } from './pages/Admin.jsx'
+import { AdminAnalytics } from './pages/AdminAnalytics.jsx'
 import { AuthGate } from './AuthGate.jsx'
 import { AccessProvider, useAccess } from './access/AccessContext.jsx'
 import { PageAccessBoundary, accessRoleLabel } from './access/PageAccessBoundary.jsx'
@@ -186,11 +187,12 @@ const PAGE_ICONS = {
   'kitchen-sink': 'dashboard_customize',
   'label-editor': 'translate',
   admin: 'admin_panel_settings',
+  'admin-analytics': 'monitoring',
   playground: 'code',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -226,6 +228,7 @@ const PAGE_TITLES = {
   'kitchen-sink': 'Kitchen sink',
   account: 'Account',
   admin: 'Administration',
+  'admin-analytics': 'Visit analytics',
 }
 
 const colorSchemeOptions = [
@@ -303,6 +306,8 @@ function getPage(search = window.location.search, pathname = window.location.pat
   // /backlog/A1-{n} → 'backlog-ticket'
   if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
 
+  if (path === 'admin/analytics') return 'admin-analytics'
+
   // /p/{published-project-slug}[/page-id] → standalone published prototype
   if (/^p\/[^/]+(?:\/[^/]+)?$/.test(path)) return 'editor-preview'
 
@@ -323,6 +328,7 @@ function getPath(page) {
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
   if (page.startsWith('component-')) return `/components/${componentRouteSlug(page.slice('component-'.length))}`
   if (page === 'backlog-ticket') return '/backlog'
+  if (page === 'admin-analytics') return '/admin/analytics'
   return `/${page}`
 }
 
@@ -421,6 +427,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   about: 'app.page.about',
   account: 'app.page.account',
   admin: 'app.page.admin',
+  'admin-analytics': 'app.access.visitAnalyticsTitle',
   'foundation-content-standards': 'app.contentStandards.title',
 }
 
@@ -848,6 +855,7 @@ function App() {
     addPage('rules', 'Define and review UI, component, and product rules.', ['governance', 'standards'])
     addPage('label-editor', 'Shared labels and translations.', ['locale', 'copy', 'language'])
     addPage('admin', t('app.access.adminDescription', 'Review access and open administrator-only preview tools.'), ['roles', 'permissions', 'rbac'])
+    addPage('admin-analytics', t('app.access.visitAnalyticsDescription', 'Review first-party visit IP addresses, pages viewed and approximate visit length.'), ['analytics', 'visits', 'ip', 'location'])
     addPage('backlog', 'Plan, prioritize, and review A1 work.', ['tickets', 'issues', 'roadmap'])
     addPage('help', 'Guidance for using A1.', ['docs', 'support'])
     addPage('accessibility', 'Accessibility reports, standards, and checks.', ['a11y', 'wcag', 'contrast'])
@@ -1737,7 +1745,7 @@ function App() {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
-      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide' || activePage === 'admin',
+      active: activePage === 'editor' || activePage === 'patterns' || activePage === 'playground' || activePage === 'image-library' || activePage === 'custom-icons' || activePage === 'data' || activePage === 'theme-editor' || activePage === 'rules' || activePage === 'label-editor' || activePage === 'priority-guide' || activePage === 'admin' || activePage === 'admin-analytics',
       items: [
         {
           icon: 'folder',
@@ -1826,9 +1834,23 @@ function App() {
         ...(canAccessPage('admin') ? [{
           icon: PAGE_ICONS.admin,
           label: pageTitle('admin'),
-          href: getPath('admin'),
-          active: activePage === 'admin',
-          onClick: (e) => handleNavClick(e, 'admin'),
+          active: activePage === 'admin' || activePage === 'admin-analytics',
+          items: [
+            {
+              icon: PAGE_ICONS.admin,
+              label: pageTitle('admin'),
+              href: getPath('admin'),
+              active: activePage === 'admin',
+              onClick: (e) => handleNavClick(e, 'admin'),
+            },
+            {
+              icon: PAGE_ICONS['admin-analytics'],
+              label: pageTitle('admin-analytics'),
+              href: getPath('admin-analytics'),
+              active: activePage === 'admin-analytics',
+              onClick: (e) => handleNavClick(e, 'admin-analytics'),
+            },
+          ],
         }] : []),
       ],
     },
@@ -2398,6 +2420,7 @@ function App() {
         )}
         {activePage === 'account' && <AccountPage onNavigate={navigate} />}
         {activePage === 'admin' && <Admin onNavigate={navigate} />}
+        {activePage === 'admin-analytics' && <AdminAnalytics onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
         {activePage === 'help' && <Help onNavigate={navigate} initialQuery={helpQuery} />}
         {activePage === 'releases' && (

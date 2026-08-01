@@ -8,8 +8,9 @@ page and feature policy in one client module, and adds database policies where
 the current data model can enforce them safely. The Administration page also
 uses a server-only function to list accounts, show detailed profiles, send
 invitations, assign roles, delete accounts and read append-only account and
-login audit trails. It also lists first-party site visits recorded through a
-separate public write-only server endpoint.
+login audit trails. The separate Visit analytics page lists first-party site
+visits recorded through a public write-only server endpoint and provides
+administrator-only session details.
 
 This slice does not add public sign-up, teams, per-user workspaces, account
 deactivation or invitation resend. It also does not claim that a hidden client
@@ -61,7 +62,8 @@ These recommendations are the policy implemented in
 | Label editor | Editor | Workspace label writes are restricted by Supabase policy |
 | Priority Guide editor | Editor | Shared content-planning authoring |
 | Theme editor | Administrator | High-impact preview that changes shared visual foundations |
-| Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, first-party visit analytics, and preview entry point |
+| Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, and preview entry point |
+| Visit analytics | Administrator | First-party visit list, full session timeline and on-demand approximate IP location and network details |
 | Virtual team | Administrator | Development-only administrative automation |
 
 Navigation visibility is convenience, not authorization. Direct URLs render an
@@ -146,7 +148,14 @@ Visit length is therefore approximate. Query strings, fragments, page content,
 geolocation, referrers, fingerprints and user-agent strings are not stored.
 Browser roles cannot read or write the table directly; the public endpoint can
 only call the service-role recorder, and the administrator-authenticated
-`user-admin` function performs reads.
+`user-admin` function performs reads for `/admin/analytics`.
+
+Opening a session-details dialog sends each stored IP address from the Netlify
+function to ipapi.co and returns a limited projection of approximate location,
+time-zone and network-ownership fields. This lookup is on demand, is not stored
+in Supabase and can fail independently without hiding the recorded session.
+The dialog identifies the external provider and describes the data as
+approximate.
 
 IP addresses are personal data in many jurisdictions. Before production use,
 publish the appropriate privacy notice and define a retention/deletion policy;
