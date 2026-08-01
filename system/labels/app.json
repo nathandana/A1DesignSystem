@@ -1274,6 +1274,78 @@
           "$description": "Success message after an administrator deletes an account.",
           "locale": { "es": "Usuario eliminado.", "fr": "Utilisateur supprimé.", "de": "Benutzer gelöscht.", "pt": "Usuário excluído.", "ja": "ユーザーを削除しました。", "zh": "用户已删除。", "ar": "حُذف المستخدم." }
         },
+        "visitAnalyticsTitle": {
+          "$type": "string",
+          "$value": "Visit analytics",
+          "$description": "Heading for the administrator-only site-visit analytics table.",
+          "locale": { "es": "Análisis de visitas", "fr": "Analyse des visites", "de": "Besuchsanalysen", "pt": "Análise de visitas", "ja": "訪問分析", "zh": "访问分析", "ar": "تحليلات الزيارات" }
+        },
+        "visitAnalyticsDescription": {
+          "$type": "string",
+          "$value": "Review first-party visit IP addresses, pages viewed and approximate visit length.",
+          "$description": "Description of the limited data recorded for basic site-visit analytics.",
+          "locale": { "es": "Revisa las direcciones IP de las visitas propias, las páginas vistas y la duración aproximada de las visitas.", "fr": "Consultez les adresses IP des visites directes, les pages consultées et la durée approximative des visites.", "de": "Prüfen Sie IP-Adressen aus Erstanbieterdaten, aufgerufene Seiten und die ungefähre Besuchsdauer.", "pt": "Revise os endereços IP das visitas diretas, as páginas visualizadas e a duração aproximada das visitas.", "ja": "ファーストパーティーの訪問 IP アドレス、閲覧ページ、おおよその訪問時間を確認します。", "zh": "查看第一方访问 IP 地址、浏览的页面和大致访问时长。", "ar": "راجع عناوين IP للزيارات المباشرة والصفحات المعروضة والمدة التقريبية للزيارة." }
+        },
+        "visitAnalyticsCaption": {
+          "$type": "string",
+          "$value": "Recorded A1 site visits",
+          "$description": "Accessible caption for the administrator site-visit analytics table.",
+          "locale": { "es": "Visitas registradas al sitio de A1", "fr": "Visites enregistrées du site A1", "de": "Aufgezeichnete Besuche der A1-Website", "pt": "Visitas registradas ao site A1", "ja": "記録された A1 サイト訪問", "zh": "已记录的 A1 网站访问", "ar": "زيارات موقع A1 المسجّلة" }
+        },
+        "ipAddress": {
+          "$type": "string",
+          "$value": "IP address",
+          "$description": "Column and search label for a recorded visitor IP address.",
+          "locale": { "es": "Dirección IP", "fr": "Adresse IP", "de": "IP-Adresse", "pt": "Endereço IP", "ja": "IP アドレス", "zh": "IP 地址", "ar": "عنوان IP" }
+        },
+        "visitor": {
+          "$type": "string",
+          "$value": "Visitor",
+          "$description": "Column and search label for the person associated with a visit.",
+          "locale": { "es": "Visitante", "fr": "Visiteur", "de": "Besucher", "pt": "Visitante", "ja": "訪問者", "zh": "访客", "ar": "الزائر" }
+        },
+        "anonymousVisitor": {
+          "$type": "string",
+          "$value": "Anonymous visitor",
+          "$description": "Fallback for a visit that is not associated with a signed-in account.",
+          "locale": { "es": "Visitante anónimo", "fr": "Visiteur anonyme", "de": "Anonymer Besucher", "pt": "Visitante anônimo", "ja": "匿名の訪問者", "zh": "匿名访客", "ar": "زائر مجهول" }
+        },
+        "pagesVisited": {
+          "$type": "string",
+          "$value": "Pages visited",
+          "$description": "Column and search label for the A1 routes viewed during a visit.",
+          "locale": { "es": "Páginas visitadas", "fr": "Pages consultées", "de": "Besuchte Seiten", "pt": "Páginas visitadas", "ja": "訪問したページ", "zh": "访问的页面", "ar": "الصفحات التي تمت زيارتها" }
+        },
+        "pageViews": {
+          "$type": "string",
+          "$value": "Page views",
+          "$description": "Column label for the number of recorded page views in a visit.",
+          "locale": { "es": "Vistas de página", "fr": "Pages vues", "de": "Seitenaufrufe", "pt": "Visualizações de página", "ja": "ページビュー", "zh": "页面浏览量", "ar": "مشاهدات الصفحة" }
+        },
+        "visitLength": {
+          "$type": "string",
+          "$value": "Visit length",
+          "$description": "Column label for the approximate duration of a recorded visit.",
+          "locale": { "es": "Duración de la visita", "fr": "Durée de la visite", "de": "Besuchsdauer", "pt": "Duração da visita", "ja": "訪問時間", "zh": "访问时长", "ar": "مدة الزيارة" }
+        },
+        "visitStarted": {
+          "$type": "string",
+          "$value": "Started",
+          "$description": "Column label for when a recorded visit began.",
+          "locale": { "es": "Inicio", "fr": "Début", "de": "Beginn", "pt": "Início", "ja": "開始日時", "zh": "开始时间", "ar": "وقت البدء" }
+        },
+        "noVisitsTitle": {
+          "$type": "string",
+          "$value": "No visits recorded",
+          "$description": "Empty-state heading for site-visit analytics.",
+          "locale": { "es": "No hay visitas registradas", "fr": "Aucune visite enregistrée", "de": "Keine Besuche aufgezeichnet", "pt": "Nenhuma visita registrada", "ja": "記録された訪問はありません", "zh": "未记录访问", "ar": "لا توجد زيارات مسجّلة" }
+        },
+        "noVisitsDescription": {
+          "$type": "string",
+          "$value": "Visits recorded after analytics was enabled will appear here.",
+          "$description": "Empty-state description for site-visit analytics.",
+          "locale": { "es": "Las visitas registradas después de habilitar el análisis aparecerán aquí.", "fr": "Les visites enregistrées après l’activation de l’analyse apparaîtront ici.", "de": "Besuche, die nach Aktivierung der Analyse aufgezeichnet werden, erscheinen hier.", "pt": "As visitas registradas após a ativação da análise aparecerão aqui.", "ja": "分析を有効にした後に記録された訪問がここに表示されます。", "zh": "启用分析后记录的访问将显示在此处。", "ar": "ستظهر هنا الزيارات المسجّلة بعد تفعيل التحليلات." }
+        },
         "loginHistoryTitle": {
           "$type": "string",
           "$value": "Login history",

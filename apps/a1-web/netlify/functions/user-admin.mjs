@@ -3,11 +3,13 @@ import { createClient } from '@supabase/supabase-js'
 const VALID_ROLES = new Set(['user', 'editor', 'admin'])
 const AUDIT_TABLE = 'a1_user_admin_audit'
 const LOGIN_AUDIT_TABLE = 'a1_user_login_audit'
+const VISIT_AUDIT_TABLE = 'a1_site_visit_audit'
 const USER_PAGE_SIZE = 1000
 const AUDIT_LIMIT = 50
 const AUDIT_PAGE_SIZE = 1000
 const AUDIT_COLUMNS = 'id,actor_user_id,actor_email,target_user_id,target_email,action,previous_role,new_role,created_at'
 const LOGIN_AUDIT_COLUMNS = 'id,user_id,user_email,signed_in_at'
+const VISIT_AUDIT_COLUMNS = 'session_id,user_id,user_email,ip_addresses,pages,started_at,last_seen_at,ended_at'
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -163,6 +165,30 @@ async function listLoginAudit(client) {
 
     if (error) {
       throw new HttpError(503, 'Login history is not ready. Apply the A1-405 profile-management migration.')
+    }
+    const batch = data ?? []
+    entries.push(...batch)
+    if (batch.length < AUDIT_PAGE_SIZE) break
+    from += AUDIT_PAGE_SIZE
+  }
+
+  return entries
+}
+
+async function listVisitAudit(client) {
+  // ponytail: the current admin dataset is small; add server pagination when volume warrants it.
+  const entries = []
+  let from = 0
+
+  while (true) {
+    const { data, error } = await client
+      .from(VISIT_AUDIT_TABLE)
+      .select(VISIT_AUDIT_COLUMNS)
+      .order('started_at', { ascending: false })
+      .range(from, from + AUDIT_PAGE_SIZE - 1)
+
+    if (error) {
+      throw new HttpError(503, 'Visit analytics is not ready. Apply the site-visit analytics migration.')
     }
     const batch = data ?? []
     entries.push(...batch)
@@ -347,12 +373,13 @@ export async function handleUserAdminRequest(request, dependencies = {}) {
     if (request.method === 'GET') {
       const userId = new URL(request.url).searchParams.get('userId')
       if (userId) return await getUserProfile(client, requiredUserId(userId))
-      const [users, audit, logins] = await Promise.all([
+      const [users, audit, logins, visits] = await Promise.all([
         listAllUsers(client),
         listAudit(client),
         listLoginAudit(client),
+        listVisitAudit(client),
       ])
-      return json({ users, audit, logins })
+      return json({ users, audit, logins, visits })
     }
     if (request.method === 'POST') return await inviteUser(client, actor, request)
     if (request.method === 'PATCH') return await updateRole(client, actor, request)

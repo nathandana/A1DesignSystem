@@ -61,6 +61,17 @@ function formatDateTime(value, fallback) {
   }
 }
 
+function formatDuration(startedAt, endedAt, fallback) {
+  const milliseconds = new Date(endedAt).getTime() - new Date(startedAt).getTime()
+  if (!Number.isFinite(milliseconds) || milliseconds < 0) return fallback
+  const seconds = Math.floor(milliseconds / 1000)
+  if (seconds < 60) return `${seconds}s`
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ${seconds % 60}s`
+  const hours = Math.floor(minutes / 60)
+  return `${hours}h ${minutes % 60}m`
+}
+
 function RoleOptions({ t }) {
   return (
     <>
@@ -78,6 +89,7 @@ export function Admin({ onNavigate }) {
   const [users, setUsers] = useState([])
   const [audit, setAudit] = useState([])
   const [logins, setLogins] = useState([])
+  const [visits, setVisits] = useState([])
   const [loading, setLoading] = useState(configured)
   const [error, setError] = useState('')
   const [feedback, setFeedback] = useState('')
@@ -112,6 +124,7 @@ export function Admin({ onNavigate }) {
       setUsers(result.users ?? [])
       setAudit(result.audit ?? [])
       setLogins(result.logins ?? [])
+      setVisits(result.visits ?? [])
     } catch (loadError) {
       setError(loadError.message)
     } finally {
@@ -376,6 +389,60 @@ export function Admin({ onNavigate }) {
     },
   ]
 
+  const anonymousLabel = t('app.access.anonymousVisitor', 'Anonymous visitor')
+  const visitRows = visits.map((entry) => {
+    const paths = Array.isArray(entry.pages)
+      ? entry.pages.map((view) => view?.path || view?.page).filter(Boolean)
+      : []
+    const ipAddresses = Array.isArray(entry.ip_addresses) ? entry.ip_addresses.join(', ') : ''
+    return {
+      id: entry.session_id,
+      ipAddresses,
+      visitor: entry.user_email ?? anonymousLabel,
+      pages: paths.length ? paths.join(' → ') : neverLabel,
+      pageViews: paths.length,
+      duration: formatDuration(entry.started_at, entry.ended_at ?? entry.last_seen_at, neverLabel),
+      started: formatDateTime(entry.started_at, neverLabel),
+      startedAt: entry.started_at,
+    }
+  })
+
+  const visitColumns = [
+    {
+      key: 'ipAddresses',
+      label: t('app.access.ipAddress', 'IP address'),
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'visitor',
+      label: t('app.access.visitor', 'Visitor'),
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'pages',
+      label: t('app.access.pagesVisited', 'Pages visited'),
+      searchable: true,
+    },
+    {
+      key: 'pageViews',
+      label: t('app.access.pageViews', 'Page views'),
+      sortable: true,
+      type: 'number',
+    },
+    {
+      key: 'duration',
+      label: t('app.access.visitLength', 'Visit length'),
+    },
+    {
+      key: 'started',
+      label: t('app.access.visitStarted', 'Started'),
+      sortable: true,
+      sortAccessor: (row) => row.startedAt,
+    },
+  ]
+
   return (
     <>
       <PageTitleArea
@@ -545,6 +612,37 @@ export function Admin({ onNavigate }) {
                     emptyTitle={t('app.access.noLoginsTitle', 'No logins recorded')}
                     emptyDescription={t('app.access.noLoginsDescription', 'Successful sign-ins recorded after login tracking was enabled will appear here.')}
                     emptyIcon="login"
+                    scrollable
+                  />
+                </Stack>
+              </Card>
+
+              <Card>
+                <Stack gap="md">
+                  <Stack gap="xs">
+                    <Heading as="h2" size="sm">
+                      {t('app.access.visitAnalyticsTitle', 'Visit analytics')}
+                    </Heading>
+                    <Paragraph size="sm" color="muted">
+                      {t('app.access.visitAnalyticsDescription', 'Review first-party visit IP addresses, pages viewed and approximate visit length.')}
+                    </Paragraph>
+                  </Stack>
+                  <DataTable
+                    caption={t('app.access.visitAnalyticsCaption', 'Recorded A1 site visits')}
+                    columns={visitColumns}
+                    rows={visitRows}
+                    getRowId={(row) => row.id}
+                    searchableColumns={[
+                      { key: 'ipAddresses', label: t('app.access.ipAddress', 'IP address') },
+                      { key: 'visitor', label: t('app.access.visitor', 'Visitor') },
+                      { key: 'pages', label: t('app.access.pagesVisited', 'Pages visited') },
+                    ]}
+                    defaultSort={{ key: 'started', direction: 'desc' }}
+                    defaultPageSize={25}
+                    pageSizeOptions={[25, 50, 100]}
+                    emptyTitle={t('app.access.noVisitsTitle', 'No visits recorded')}
+                    emptyDescription={t('app.access.noVisitsDescription', 'Visits recorded after analytics was enabled will appear here.')}
+                    emptyIcon="monitoring"
                     scrollable
                   />
                 </Stack>
