@@ -79,7 +79,11 @@ Basic first-party visit analytics posts to
 `/.netlify/functions/visit-analytics`. Netlify supplies the client IP; the
 browser supplies only a generated visit ID and the current route without its
 query string. A 30-second heartbeat makes visit duration approximate. The
-Administration page reads the server-only audit table through `user-admin`.
+administrator page at `/admin/analytics` reads the server-only audit table
+through `user-admin`. Opening a session performs an on-demand server-side
+lookup through ipapi.co for approximate city, region, country, time zone,
+coordinates, network, organization and ASN details. The enrichment is not
+stored in Supabase and lookup failures do not hide the recorded session.
 Because full IP addresses are personal data in many jurisdictions, production
 deployments need an appropriate privacy notice and an explicit retention policy.
 

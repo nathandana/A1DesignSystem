@@ -1346,6 +1346,216 @@
           "$description": "Empty-state description for site-visit analytics.",
           "locale": { "es": "Las visitas registradas después de habilitar el análisis aparecerán aquí.", "fr": "Les visites enregistrées après l’activation de l’analyse apparaîtront ici.", "de": "Besuche, die nach Aktivierung der Analyse aufgezeichnet werden, erscheinen hier.", "pt": "As visitas registradas após a ativação da análise aparecerão aqui.", "ja": "分析を有効にした後に記録された訪問がここに表示されます。", "zh": "启用分析后记录的访问将显示在此处。", "ar": "ستظهر هنا الزيارات المسجّلة بعد تفعيل التحليلات." }
         },
+        "viewVisitDetails": {
+          "$type": "string",
+          "$value": "View details",
+          "$description": "Action that opens the full details for a recorded visit session.",
+          "locale": { "es": "Ver detalles", "fr": "Voir les détails", "de": "Details anzeigen", "pt": "Ver detalhes", "ja": "詳細を表示", "zh": "查看详情", "ar": "عرض التفاصيل" }
+        },
+        "visitDetailsTitle": {
+          "$type": "string",
+          "$value": "Session details",
+          "$description": "Title of the administrator visit-session details dialog.",
+          "locale": { "es": "Detalles de la sesión", "fr": "Détails de la session", "de": "Sitzungsdetails", "pt": "Detalhes da sessão", "ja": "セッションの詳細", "zh": "会话详情", "ar": "تفاصيل الجلسة" }
+        },
+        "loadingVisitDetails": {
+          "$type": "string",
+          "$value": "Loading session details",
+          "$description": "Loading status for the administrator visit-session details dialog.",
+          "locale": { "es": "Cargando detalles de la sesión", "fr": "Chargement des détails de la session", "de": "Sitzungsdetails werden geladen", "pt": "Carregando detalhes da sessão", "ja": "セッションの詳細を読み込んでいます", "zh": "正在加载会话详情", "ar": "جارٍ تحميل تفاصيل الجلسة" }
+        },
+        "retryVisitDetails": {
+          "$type": "string",
+          "$value": "Retry session details",
+          "$description": "Action that retries loading administrator visit-session details.",
+          "locale": { "es": "Reintentar detalles de la sesión", "fr": "Réessayer les détails de la session", "de": "Sitzungsdetails erneut laden", "pt": "Tentar novamente os detalhes da sessão", "ja": "セッションの詳細を再試行", "zh": "重试会话详情", "ar": "إعادة محاولة تفاصيل الجلسة" }
+        },
+        "visitSummaryTitle": {
+          "$type": "string",
+          "$value": "Session summary",
+          "$description": "Heading for the visit-session metadata summary.",
+          "locale": { "es": "Resumen de la sesión", "fr": "Résumé de la session", "de": "Sitzungsübersicht", "pt": "Resumo da sessão", "ja": "セッションの概要", "zh": "会话摘要", "ar": "ملخص الجلسة" }
+        },
+        "visitSessionId": {
+          "$type": "string",
+          "$value": "Session ID",
+          "$description": "Label for the generated identifier of a recorded visit session.",
+          "locale": { "es": "ID de sesión", "fr": "ID de session", "de": "Sitzungs-ID", "pt": "ID da sessão", "ja": "セッション ID", "zh": "会话 ID", "ar": "معرّف الجلسة" }
+        },
+        "visitLastSeen": {
+          "$type": "string",
+          "$value": "Last activity",
+          "$description": "Label for the most recent recorded activity in a visit session.",
+          "locale": { "es": "Última actividad", "fr": "Dernière activité", "de": "Letzte Aktivität", "pt": "Última atividade", "ja": "最終アクティビティ", "zh": "最近活动", "ar": "آخر نشاط" }
+        },
+        "visitEnded": {
+          "$type": "string",
+          "$value": "Ended",
+          "$description": "Label for when a recorded visit session ended.",
+          "locale": { "es": "Finalización", "fr": "Fin", "de": "Beendet", "pt": "Término", "ja": "終了日時", "zh": "结束时间", "ar": "وقت الانتهاء" }
+        },
+        "visitActive": {
+          "$type": "string",
+          "$value": "Active",
+          "$description": "Status for a visit session without a recorded end event.",
+          "locale": { "es": "Activa", "fr": "Active", "de": "Aktiv", "pt": "Ativa", "ja": "アクティブ", "zh": "活跃", "ar": "نشطة" }
+        },
+        "ipLookupTitle": {
+          "$type": "string",
+          "$value": "IP lookup",
+          "$description": "Heading for approximate location and network details derived from visit IP addresses.",
+          "locale": { "es": "Consulta de IP", "fr": "Recherche IP", "de": "IP-Suche", "pt": "Consulta de IP", "ja": "IP 検索", "zh": "IP 查询", "ar": "البحث عن عنوان IP" }
+        },
+        "ipLookupDescription": {
+          "$type": "string",
+          "$value": "Location and network data are approximate and fetched from ipapi.co when this dialog opens.",
+          "$description": "Privacy and accuracy note for on-demand IP lookup in visit-session details.",
+          "locale": { "es": "Los datos de ubicación y red son aproximados y se obtienen de ipapi.co al abrir este cuadro de diálogo.", "fr": "Les données de localisation et de réseau sont approximatives et récupérées auprès d’ipapi.co à l’ouverture de cette boîte de dialogue.", "de": "Standort- und Netzwerkdaten sind Näherungswerte und werden beim Öffnen dieses Dialogs von ipapi.co abgerufen.", "pt": "Os dados de localização e rede são aproximados e obtidos do ipapi.co quando esta caixa de diálogo é aberta.", "ja": "位置情報とネットワーク情報は概算で、このダイアログを開いたときに ipapi.co から取得されます。", "zh": "位置和网络数据为近似值，并在打开此对话框时从 ipapi.co 获取。", "ar": "بيانات الموقع والشبكة تقريبية ويتم جلبها من ipapi.co عند فتح مربع الحوار هذا." }
+        },
+        "approximateLocation": {
+          "$type": "string",
+          "$value": "Approximate location",
+          "$description": "Label for the approximate city, region and country returned by an IP lookup.",
+          "locale": { "es": "Ubicación aproximada", "fr": "Localisation approximative", "de": "Ungefährer Standort", "pt": "Localização aproximada", "ja": "おおよその位置", "zh": "大致位置", "ar": "الموقع التقريبي" }
+        },
+        "postalCode": {
+          "$type": "string",
+          "$value": "Postal code",
+          "$description": "Label for an approximate postal code returned by an IP lookup.",
+          "locale": { "es": "Código postal", "fr": "Code postal", "de": "Postleitzahl", "pt": "Código postal", "ja": "郵便番号", "zh": "邮政编码", "ar": "الرمز البريدي" }
+        },
+        "coordinates": {
+          "$type": "string",
+          "$value": "Coordinates",
+          "$description": "Label for approximate latitude and longitude returned by an IP lookup.",
+          "locale": { "es": "Coordenadas", "fr": "Coordonnées", "de": "Koordinaten", "pt": "Coordenadas", "ja": "座標", "zh": "坐标", "ar": "الإحداثيات" }
+        },
+        "timeZone": {
+          "$type": "string",
+          "$value": "Time zone",
+          "$description": "Label for the time zone returned by an IP lookup.",
+          "locale": { "es": "Zona horaria", "fr": "Fuseau horaire", "de": "Zeitzone", "pt": "Fuso horário", "ja": "タイムゾーン", "zh": "时区", "ar": "المنطقة الزمنية" }
+        },
+        "networkOrganization": {
+          "$type": "string",
+          "$value": "Organization",
+          "$description": "Label for the network organization returned by an IP lookup.",
+          "locale": { "es": "Organización", "fr": "Organisation", "de": "Organisation", "pt": "Organização", "ja": "組織", "zh": "组织", "ar": "المؤسسة" }
+        },
+        "autonomousSystemNumber": {
+          "$type": "string",
+          "$value": "ASN",
+          "$description": "Label for the autonomous system number returned by an IP lookup.",
+          "locale": { "es": "ASN", "fr": "ASN", "de": "ASN", "pt": "ASN", "ja": "ASN", "zh": "ASN", "ar": "ASN" }
+        },
+        "networkRange": {
+          "$type": "string",
+          "$value": "Network",
+          "$description": "Label for the network range returned by an IP lookup.",
+          "locale": { "es": "Red", "fr": "Réseau", "de": "Netzwerk", "pt": "Rede", "ja": "ネットワーク", "zh": "网络", "ar": "الشبكة" }
+        },
+        "ipVersion": {
+          "$type": "string",
+          "$value": "IP version",
+          "$description": "Label for the IP protocol version returned by an IP lookup.",
+          "locale": { "es": "Versión de IP", "fr": "Version IP", "de": "IP-Version", "pt": "Versão do IP", "ja": "IP バージョン", "zh": "IP 版本", "ar": "إصدار IP" }
+        },
+        "ipLookupUnavailable": {
+          "$type": "string",
+          "$value": "Location and network details are unavailable for this IP address.",
+          "$description": "Message shown when an on-demand IP lookup does not return details.",
+          "locale": { "es": "Los detalles de ubicación y red no están disponibles para esta dirección IP.", "fr": "Les détails de localisation et de réseau ne sont pas disponibles pour cette adresse IP.", "de": "Standort- und Netzwerkdetails sind für diese IP-Adresse nicht verfügbar.", "pt": "Os detalhes de localização e rede não estão disponíveis para este endereço IP.", "ja": "この IP アドレスの位置情報とネットワーク情報は利用できません。", "zh": "无法获取此 IP 地址的位置和网络详情。", "ar": "تفاصيل الموقع والشبكة غير متاحة لعنوان IP هذا." }
+        },
+        "pageTimelineTitle": {
+          "$type": "string",
+          "$value": "Page timeline",
+          "$description": "Heading for the ordered page views in a recorded visit session.",
+          "locale": { "es": "Cronología de páginas", "fr": "Chronologie des pages", "de": "Seitenverlauf", "pt": "Linha do tempo de páginas", "ja": "ページのタイムライン", "zh": "页面时间线", "ar": "المخطط الزمني للصفحات" }
+        },
+        "pageTimelineDescription": {
+          "$type": "string",
+          "$value": "Routes are shown in the order they were recorded during this browser-tab session.",
+          "$description": "Description of the page-view order in visit-session details.",
+          "locale": { "es": "Las rutas se muestran en el orden en que se registraron durante esta sesión de pestaña del navegador.", "fr": "Les routes sont affichées dans l’ordre où elles ont été enregistrées pendant cette session d’onglet de navigateur.", "de": "Die Routen werden in der Reihenfolge angezeigt, in der sie während dieser Browser-Tab-Sitzung aufgezeichnet wurden.", "pt": "As rotas são mostradas na ordem em que foram registradas durante esta sessão da guia do navegador.", "ja": "ルートは、このブラウザータブのセッション中に記録された順に表示されます。", "zh": "路由按其在此浏览器标签页会话中的记录顺序显示。", "ar": "تظهر المسارات بالترتيب الذي سُجّلت به خلال جلسة علامة تبويب المتصفح هذه." }
+        },
+        "pageTimelineCaption": {
+          "$type": "string",
+          "$value": "Recorded pages for this session",
+          "$description": "Accessible caption for the page timeline in visit-session details.",
+          "locale": { "es": "Páginas registradas para esta sesión", "fr": "Pages enregistrées pour cette session", "de": "Aufgezeichnete Seiten für diese Sitzung", "pt": "Páginas registradas nesta sessão", "ja": "このセッションで記録されたページ", "zh": "此会话中记录的页面", "ar": "الصفحات المسجّلة لهذه الجلسة" }
+        },
+        "pageIdentifier": {
+          "$type": "string",
+          "$value": "A1 page",
+          "$description": "Column label for the A1 page identifier in a visit timeline.",
+          "locale": { "es": "Página de A1", "fr": "Page A1", "de": "A1-Seite", "pt": "Página do A1", "ja": "A1 ページ", "zh": "A1 页面", "ar": "صفحة A1" }
+        },
+        "pagePath": {
+          "$type": "string",
+          "$value": "Path",
+          "$description": "Column label for the route path in a visit timeline.",
+          "locale": { "es": "Ruta", "fr": "Chemin", "de": "Pfad", "pt": "Caminho", "ja": "パス", "zh": "路径", "ar": "المسار" }
+        },
+        "viewedAt": {
+          "$type": "string",
+          "$value": "Viewed",
+          "$description": "Column label for when a page view was recorded.",
+          "locale": { "es": "Vista", "fr": "Consultée", "de": "Aufgerufen", "pt": "Visualizada", "ja": "閲覧日時", "zh": "浏览时间", "ar": "وقت العرض" }
+        },
+        "noPagesRecorded": {
+          "$type": "string",
+          "$value": "No pages recorded",
+          "$description": "Empty-state heading for a visit session without a page view.",
+          "locale": { "es": "No hay páginas registradas", "fr": "Aucune page enregistrée", "de": "Keine Seiten aufgezeichnet", "pt": "Nenhuma página registrada", "ja": "記録されたページはありません", "zh": "未记录页面", "ar": "لا توجد صفحات مسجّلة" }
+        },
+        "noPagesRecordedDescription": {
+          "$type": "string",
+          "$value": "This session does not include a recorded page view.",
+          "$description": "Empty-state description for a visit session without a page view.",
+          "locale": { "es": "Esta sesión no incluye una vista de página registrada.", "fr": "Cette session ne comprend aucune page consultée enregistrée.", "de": "Diese Sitzung enthält keinen aufgezeichneten Seitenaufruf.", "pt": "Esta sessão não inclui uma visualização de página registrada.", "ja": "このセッションには記録されたページビューがありません。", "zh": "此会话不包含已记录的页面浏览。", "ar": "لا تتضمن هذه الجلسة مشاهدة صفحة مسجّلة." }
+        },
+        "analyticsUnavailable": {
+          "$type": "string",
+          "$value": "Visit analytics is unavailable",
+          "$description": "Heading shown when cloud visit analytics is not configured.",
+          "locale": { "es": "El análisis de visitas no está disponible", "fr": "L’analyse des visites n’est pas disponible", "de": "Besuchsanalysen sind nicht verfügbar", "pt": "A análise de visitas não está disponível", "ja": "訪問分析は利用できません", "zh": "访问分析不可用", "ar": "تحليلات الزيارات غير متاحة" }
+        },
+        "analyticsUnavailableDescription": {
+          "$type": "string",
+          "$value": "Configure Supabase and the server-only service key to review recorded visits.",
+          "$description": "Guidance shown when cloud visit analytics is not configured.",
+          "locale": { "es": "Configura Supabase y la clave de servicio solo para el servidor para revisar las visitas registradas.", "fr": "Configurez Supabase et la clé de service réservée au serveur pour consulter les visites enregistrées.", "de": "Konfigurieren Sie Supabase und den nur serverseitigen Service-Schlüssel, um aufgezeichnete Besuche zu prüfen.", "pt": "Configure o Supabase e a chave de serviço exclusiva do servidor para revisar as visitas registradas.", "ja": "記録された訪問を確認するには、Supabase とサーバー専用のサービスキーを設定してください。", "zh": "配置 Supabase 和仅限服务器使用的服务密钥，以查看已记录的访问。", "ar": "اضبط Supabase ومفتاح الخدمة الخاص بالخادم لمراجعة الزيارات المسجّلة." }
+        },
+        "recordedVisitsTitle": {
+          "$type": "string",
+          "$value": "Recorded visits",
+          "$description": "Heading for the visit table on the administrator analytics page.",
+          "locale": { "es": "Visitas registradas", "fr": "Visites enregistrées", "de": "Aufgezeichnete Besuche", "pt": "Visitas registradas", "ja": "記録された訪問", "zh": "已记录的访问", "ar": "الزيارات المسجّلة" }
+        },
+        "recordedVisitsDescription": {
+          "$type": "string",
+          "$value": "Open a session to review its full timeline and approximate IP location and network details.",
+          "$description": "Description above the visit table on the administrator analytics page.",
+          "locale": { "es": "Abre una sesión para revisar su cronología completa y los detalles aproximados de ubicación IP y red.", "fr": "Ouvrez une session pour consulter sa chronologie complète ainsi que les détails approximatifs de localisation IP et de réseau.", "de": "Öffnen Sie eine Sitzung, um den vollständigen Verlauf sowie ungefähre IP-Standort- und Netzwerkdetails zu prüfen.", "pt": "Abra uma sessão para revisar a linha do tempo completa e os detalhes aproximados de localização do IP e da rede.", "ja": "セッションを開いて、完全なタイムラインと IP のおおよその位置情報およびネットワーク情報を確認します。", "zh": "打开会话以查看完整时间线及大致 IP 位置和网络详情。", "ar": "افتح جلسة لمراجعة مخططها الزمني الكامل وتفاصيل موقع IP والشبكة التقريبية." }
+        },
+        "refreshAnalytics": {
+          "$type": "string",
+          "$value": "Refresh analytics",
+          "$description": "Action that refreshes the visit analytics table.",
+          "locale": { "es": "Actualizar análisis", "fr": "Actualiser l’analyse", "de": "Analysen aktualisieren", "pt": "Atualizar análise", "ja": "分析を更新", "zh": "刷新分析", "ar": "تحديث التحليلات" }
+        },
+        "retryAnalytics": {
+          "$type": "string",
+          "$value": "Retry analytics",
+          "$description": "Action that retries loading the visit analytics table after an error.",
+          "locale": { "es": "Reintentar análisis", "fr": "Réessayer l’analyse", "de": "Analysen erneut laden", "pt": "Tentar análise novamente", "ja": "分析を再試行", "zh": "重试分析", "ar": "إعادة محاولة التحليلات" }
+        },
+        "loadingAnalytics": {
+          "$type": "string",
+          "$value": "Loading analytics",
+          "$description": "Loading status for the administrator visit analytics page.",
+          "locale": { "es": "Cargando análisis", "fr": "Chargement de l’analyse", "de": "Analysen werden geladen", "pt": "Carregando análise", "ja": "分析を読み込んでいます", "zh": "正在加载分析", "ar": "جارٍ تحميل التحليلات" }
+        },
         "loginHistoryTitle": {
           "$type": "string",
           "$value": "Login history",

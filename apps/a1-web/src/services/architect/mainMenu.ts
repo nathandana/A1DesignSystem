@@ -54,6 +54,13 @@ const EDITOR: NavNode = {
     { id: 'image-library', label: 'Image library', icon: 'photo_library', href: '/image-library' },
     { id: 'theme-editor', label: 'Theme', icon: 'palette', href: '/theme-editor' },
     { id: 'rules', label: 'Rules', icon: 'gavel', href: '/rules' },
+    {
+      id: 'admin', label: 'Administration', icon: 'admin_panel_settings',
+      children: [
+        { id: 'admin-users', label: 'Administration', icon: 'admin_panel_settings', href: '/admin' },
+        { id: 'admin-analytics', label: 'Visit analytics', icon: 'monitoring', href: '/admin/analytics' },
+      ],
+    },
   ],
 };
 

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   handleUserAdminRequest,
+  lookupIpAddress,
   roleFromUser,
   serializeUser,
 } from '../netlify/functions/user-admin.mjs'
@@ -110,13 +111,56 @@ function makeClient({
   }
 }
 
-function dependencies(client) {
+function dependencies(client, overrides = {}) {
   return {
     supabaseUrl: 'https://project.supabase.co',
     serviceRoleKey: 'server-secret',
     createClient: () => client,
+    ...overrides,
   }
 }
+
+test('projects the supported location and network fields from an IP lookup', async () => {
+  const result = await lookupIpAddress('8.8.8.8', async (url) => {
+    assert.equal(url, 'https://ipapi.co/8.8.8.8/json/')
+    return new Response(JSON.stringify({
+      network: '8.8.8.0/24',
+      version: 'IPv4',
+      city: 'Mountain View',
+      region: 'California',
+      region_code: 'CA',
+      country_name: 'United States',
+      country_code: 'US',
+      postal: '94043',
+      latitude: 37.4,
+      longitude: -122.1,
+      timezone: 'America/Los_Angeles',
+      utc_offset: '-0700',
+      asn: 'AS15169',
+      org: 'Google LLC',
+      unused: 'not returned',
+    }), { status: 200 })
+  })
+
+  assert.deepEqual(result, {
+    ip: '8.8.8.8',
+    available: true,
+    network: '8.8.8.0/24',
+    version: 'IPv4',
+    city: 'Mountain View',
+    region: 'California',
+    regionCode: 'CA',
+    country: 'United States',
+    countryCode: 'US',
+    postalCode: '94043',
+    latitude: 37.4,
+    longitude: -122.1,
+    timeZone: 'America/Los_Angeles',
+    utcOffset: '-0700',
+    asn: 'AS15169',
+    organization: 'Google LLC',
+  })
+})
 
 test('normalizes roles and serializes only administration fields', () => {
   assert.equal(roleFromUser({ app_metadata: { role: 'editor' } }), 'editor')
@@ -164,7 +208,7 @@ test('requires a bearer session before creating an admin client operation', asyn
   assert.equal(response.status, 401)
 })
 
-test('lists users for an administrator', async () => {
+test('lists users without loading visit analytics for an administrator', async () => {
   const loginEntry = {
     id: 'login-1',
     user_id: 'a',
@@ -177,13 +221,6 @@ test('lists users for an administrator', async () => {
       { id: 'a', email: 'a@example.com', app_metadata: {} },
     ],
     logins: [loginEntry],
-    visits: [{
-      session_id: 'visit-1',
-      ip_addresses: ['203.0.113.10'],
-      pages: [{ page: 'home', path: '/', viewed_at: '2026-07-31T12:00:00Z' }],
-      started_at: '2026-07-31T12:00:00Z',
-      last_seen_at: '2026-07-31T12:02:00Z',
-    }],
   })
   const response = await handleUserAdminRequest(request(), dependencies(client))
   const body = await response.json()
@@ -192,7 +229,70 @@ test('lists users for an administrator', async () => {
   assert.deepEqual(body.users.map((user) => user.email), ['a@example.com', 'z@example.com'])
   assert.deepEqual(body.users.map((user) => user.role), ['user', 'editor'])
   assert.deepEqual(body.logins, [loginEntry])
-  assert.deepEqual(body.visits.map((visit) => visit.session_id), ['visit-1'])
+  assert.equal(body.visits, undefined)
+})
+
+test('lists visits through the dedicated analytics resource', async () => {
+  const visit = {
+    session_id: '018f25f4-8c0a-7cd5-b8fa-a64db2912e31',
+    ip_addresses: ['203.0.113.10'],
+    pages: [{ page: 'home', path: '/', viewed_at: '2026-07-31T12:00:00Z' }],
+    started_at: '2026-07-31T12:00:00Z',
+    last_seen_at: '2026-07-31T12:02:00Z',
+  }
+  const response = await handleUserAdminRequest(
+    request('GET', undefined, '?resource=visits'),
+    dependencies(makeClient({ visits: [visit] })),
+  )
+  const body = await response.json()
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(body.visits, [visit])
+})
+
+test('returns a visit session with on-demand details for each IP address', async () => {
+  const sessionId = '018f25f4-8c0a-7cd5-b8fa-a64db2912e31'
+  const visit = {
+    session_id: sessionId,
+    user_id: null,
+    user_email: null,
+    ip_addresses: ['203.0.113.10', '2001:db8::1'],
+    pages: [{ page: 'home', path: '/', viewed_at: '2026-07-31T12:00:00Z' }],
+    started_at: '2026-07-31T12:00:00Z',
+    last_seen_at: '2026-07-31T12:02:00Z',
+    ended_at: null,
+  }
+  const lookedUp = []
+  const response = await handleUserAdminRequest(
+    request('GET', undefined, `?resource=visits&sessionId=${sessionId}`),
+    dependencies(makeClient({ visits: [visit] }), {
+      lookupIpAddress: async (ip) => {
+        lookedUp.push(ip)
+        return { ip, available: true, country: 'Example' }
+      },
+    }),
+  )
+  const body = await response.json()
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(body.visit, visit)
+  assert.deepEqual(lookedUp, visit.ip_addresses)
+  assert.deepEqual(body.ipLookups.map((entry) => entry.ip), visit.ip_addresses)
+})
+
+test('rejects an invalid visit ID before performing an IP lookup', async () => {
+  let lookupCalled = false
+  const response = await handleUserAdminRequest(
+    request('GET', undefined, '?resource=visits&sessionId=not-a-session'),
+    dependencies(makeClient(), {
+      lookupIpAddress: async () => {
+        lookupCalled = true
+      },
+    }),
+  )
+
+  assert.equal(response.status, 400)
+  assert.equal(lookupCalled, false)
 })
 
 test('returns a detailed profile with complete account and login history', async () => {

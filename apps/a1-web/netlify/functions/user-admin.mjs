@@ -1,3 +1,4 @@
+import { isIP } from 'node:net'
 import { createClient } from '@supabase/supabase-js'
 
 const VALID_ROLES = new Set(['user', 'editor', 'admin'])
@@ -10,6 +11,8 @@ const AUDIT_PAGE_SIZE = 1000
 const AUDIT_COLUMNS = 'id,actor_user_id,actor_email,target_user_id,target_email,action,previous_role,new_role,created_at'
 const LOGIN_AUDIT_COLUMNS = 'id,user_id,user_email,signed_in_at'
 const VISIT_AUDIT_COLUMNS = 'session_id,user_id,user_email,ip_addresses,pages,started_at,last_seen_at,ended_at'
+const SESSION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const IP_LOOKUP_BASE_URL = 'https://ipapi.co'
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -79,6 +82,51 @@ function requiredUserId(value) {
   const userId = String(value ?? '').trim()
   if (!userId) throw new HttpError(400, 'User id is required.')
   return userId
+}
+
+function requiredSessionId(value) {
+  const sessionId = String(value ?? '').trim()
+  if (!SESSION_ID_PATTERN.test(sessionId)) throw new HttpError(400, 'A valid visit ID is required.')
+  return sessionId
+}
+
+function optionalText(value) {
+  return typeof value === 'string' && value.trim() ? value.trim() : null
+}
+
+export async function lookupIpAddress(ipAddress, fetchImpl = fetch) {
+  const ip = String(ipAddress ?? '').trim()
+  if (!isIP(ip)) return { ip, available: false }
+
+  try {
+    const response = await fetchImpl(`${IP_LOOKUP_BASE_URL}/${encodeURIComponent(ip)}/json/`, {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(5000),
+    })
+    const data = await response.json()
+    if (!response.ok || data?.error) return { ip, available: false }
+
+    return {
+      ip,
+      available: true,
+      network: optionalText(data.network),
+      version: optionalText(data.version),
+      city: optionalText(data.city),
+      region: optionalText(data.region),
+      regionCode: optionalText(data.region_code),
+      country: optionalText(data.country_name),
+      countryCode: optionalText(data.country_code),
+      postalCode: optionalText(data.postal),
+      latitude: Number.isFinite(data.latitude) ? data.latitude : null,
+      longitude: Number.isFinite(data.longitude) ? data.longitude : null,
+      timeZone: optionalText(data.timezone),
+      utcOffset: optionalText(data.utc_offset),
+      asn: optionalText(data.asn),
+      organization: optionalText(data.org),
+    }
+  } catch {
+    return { ip, available: false }
+  }
 }
 
 async function requireAdministrator(client, request) {
@@ -197,6 +245,26 @@ async function listVisitAudit(client) {
   }
 
   return entries
+}
+
+async function getVisitDetails(client, sessionId, dependencies) {
+  const { data, error } = await client
+    .from(VISIT_AUDIT_TABLE)
+    .select(VISIT_AUDIT_COLUMNS)
+    .eq('session_id', sessionId)
+    .limit(1)
+
+  if (error) {
+    throw new HttpError(503, 'Visit analytics is not ready. Apply the site-visit analytics migration.')
+  }
+  const visit = data?.[0]
+  if (!visit) throw new HttpError(404, 'Visit not found.')
+
+  const lookup = dependencies.lookupIpAddress
+    ?? ((ip) => lookupIpAddress(ip, dependencies.fetch ?? fetch))
+  const ipAddresses = [...new Set(Array.isArray(visit.ip_addresses) ? visit.ip_addresses : [])]
+  const ipLookups = await Promise.all(ipAddresses.map((ip) => lookup(ip)))
+  return json({ visit, ipLookups })
 }
 
 async function listLoginAuditBy(client, column, value) {
@@ -371,15 +439,25 @@ export async function handleUserAdminRequest(request, dependencies = {}) {
     const actor = await requireAdministrator(client, request)
 
     if (request.method === 'GET') {
-      const userId = new URL(request.url).searchParams.get('userId')
+      const searchParams = new URL(request.url).searchParams
+      const resource = searchParams.get('resource')
+      if (resource === 'visits') {
+        const sessionId = searchParams.get('sessionId')
+        if (sessionId) {
+          return await getVisitDetails(client, requiredSessionId(sessionId), dependencies)
+        }
+        return json({ visits: await listVisitAudit(client) })
+      }
+      if (resource) throw new HttpError(400, 'Unknown administration resource.')
+
+      const userId = searchParams.get('userId')
       if (userId) return await getUserProfile(client, requiredUserId(userId))
-      const [users, audit, logins, visits] = await Promise.all([
+      const [users, audit, logins] = await Promise.all([
         listAllUsers(client),
         listAudit(client),
         listLoginAudit(client),
-        listVisitAudit(client),
       ])
-      return json({ users, audit, logins, visits })
+      return json({ users, audit, logins })
     }
     if (request.method === 'POST') return await inviteUser(client, actor, request)
     if (request.method === 'PATCH') return await updateRole(client, actor, request)
