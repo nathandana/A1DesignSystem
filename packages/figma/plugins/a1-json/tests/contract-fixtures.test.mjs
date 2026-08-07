@@ -36,6 +36,7 @@ test('library manifest has the expected published-key sections', () => {
   const manifest = JSON.parse(readFileSync(resolve(pluginRoot, 'a1-library-manifest.json'), 'utf8'));
   assert.equal(manifest.schemaVersion, '1.0');
   assert.ok(manifest.library?.fileKey, 'library fileKey is required');
+  assert.match(manifest.imageLibrary?.publicBaseUrl || '', /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/images\/shared$/);
   for (const key of ['componentSets', 'components', 'textStyles', 'variables']) {
     assert.equal(typeof manifest[key], 'object', `${key} should be an object`);
   }
@@ -48,6 +49,10 @@ test('plugin manifest exposes the A1:Figma relaunch action', () => {
   const relaunch = manifest.relaunchButtons?.find((button) => button.command === 'open');
   assert.equal(relaunch?.name, 'Open A1:Figma');
   assert.equal(relaunch?.multipleSelection, true);
+  assert.ok(
+    manifest.networkAccess?.allowedDomains?.includes('https://pszmkbfvyjkifbyututo.supabase.co'),
+    'the public A1 Image Library origin must be available to Figure imports',
+  );
 });
 
 test('configured manifest imports are trusted without fragile name revalidation', () => {

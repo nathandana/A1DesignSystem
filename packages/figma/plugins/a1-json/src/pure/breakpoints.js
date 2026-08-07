@@ -1,6 +1,34 @@
 export const A1_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
 export const A1_BREAKPOINT_WIDTHS = { xs: 480, sm: 640, md: 1024, lg: 1440, xl: 1600 };
 
+export function resolveBreakpointVisibility(value) {
+  if (typeof value === 'boolean') {
+    return Object.fromEntries(A1_BREAKPOINTS.map((breakpoint) => [breakpoint, value]));
+  }
+  let current = true;
+  const resolved = {};
+  for (const breakpoint of A1_BREAKPOINTS) {
+    if (value && typeof value === 'object' && !Array.isArray(value) && typeof value[breakpoint] === 'boolean') {
+      current = value[breakpoint];
+    }
+    resolved[breakpoint] = current;
+  }
+  return resolved;
+}
+
+export function compactBreakpointVisibility(value) {
+  const resolved = resolveBreakpointVisibility(value);
+  const compact = {};
+  let previous = true;
+  for (const breakpoint of A1_BREAKPOINTS) {
+    if (resolved[breakpoint] !== previous) {
+      compact[breakpoint] = resolved[breakpoint];
+      previous = resolved[breakpoint];
+    }
+  }
+  return Object.keys(compact).length ? compact : null;
+}
+
 export function normalizeResponsiveColumns(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const out = {};
