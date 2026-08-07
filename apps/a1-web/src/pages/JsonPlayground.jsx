@@ -9,13 +9,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
 import { isLocalBridgeFeatureEnabled, queueFigmaHandoff } from '../lib/localCodex.ts'
-import {
-  FIGMA_BRIDGE_IMAGE_TYPES,
-  FIGMA_BRIDGE_MAX_IMAGE_BYTES,
-  getImageBlob,
-  idFromRef,
-  isImageRef,
-} from '../lib/imageLibrary.ts'
+import { collectFigmaFigureAssets } from '../lib/imageLibrary.ts'
 
 function isObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -65,50 +59,6 @@ export function parsePlaygroundJson(json) {
   }
 }
 
-function blobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result).split(',')[1] || '')
-    reader.onerror = () => reject(reader.error || new Error('Could not read the local image.'))
-    reader.readAsDataURL(blob)
-  })
-}
-
-function figureImageRefs(value, refs = new Set()) {
-  if (Array.isArray(value)) {
-    value.forEach((item) => figureImageRefs(item, refs))
-  } else if (isObject(value)) {
-    if (value.type === 'Figure' && isImageRef(value.props?.src)) refs.add(value.props.src)
-    Object.values(value).forEach((item) => figureImageRefs(item, refs))
-  }
-  return refs
-}
-
-/** Build a volatile sidecar for local Figure refs; it is never written into JSON. */
-async function figureHandoffAssets(json) {
-  const refs = figureImageRefs(JSON.parse(json))
-  const assets = []
-  let totalBytes = 0
-  for (const ref of refs) {
-    const record = await getImageBlob(idFromRef(ref))
-    if (!record) throw new Error(`The local Figure image "${idFromRef(ref)}" is unavailable.`)
-    if (!FIGMA_BRIDGE_IMAGE_TYPES.has(record.blob.type)) {
-      throw new Error(`"${record.meta.name}" is ${record.blob.type || 'an unsupported format'}; use PNG, JPEG, or GIF for Figma.`)
-    }
-    totalBytes += record.blob.size
-    if (totalBytes > FIGMA_BRIDGE_MAX_IMAGE_BYTES) {
-      throw new Error('Local Figure images must total 4 MB or less for this local handoff.')
-    }
-    assets.push({
-      id: record.meta.id,
-      name: record.meta.name,
-      type: record.blob.type,
-      dataBase64: await blobToBase64(record.blob),
-    })
-  }
-  return assets
-}
-
 export function JsonPlaygroundSidebar({ json, onJsonChange, error, open, onClose }) {
   const [figmaHandoffStatus, setFigmaHandoffStatus] = useState('')
   const [figmaHandoffError, setFigmaHandoffError] = useState('')
@@ -121,7 +71,7 @@ export function JsonPlaygroundSidebar({ json, onJsonChange, error, open, onClose
     setFigmaHandoffError('')
     setFigmaHandoffStatus('')
     try {
-      const assets = await figureHandoffAssets(json)
+      const assets = await collectFigmaFigureAssets(json)
       await queueFigmaHandoff(json, assets)
       setFigmaHandoffStatus(assets.length
         ? `Queued ${assets.length} local Figure image${assets.length === 1 ? '' : 's'} and JSON for the open A1 Figma plugin.`

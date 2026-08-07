@@ -159,6 +159,8 @@ create table if not exists public.a1_site_visit_audit (
   ip_addresses inet[]      not null,
   pages        jsonb       not null default '[]'::jsonb
                             check (jsonb_typeof(pages) = 'array'),
+  visitor_context jsonb    not null default '{}'::jsonb
+                            check (jsonb_typeof(visitor_context) = 'object'),
   started_at   timestamptz not null default now(),
   last_seen_at timestamptz not null default now(),
   ended_at     timestamptz
@@ -181,7 +183,8 @@ create or replace function public.a1_record_site_visit(
   p_path text default null,
   p_user_id uuid default null,
   p_user_email text default null,
-  p_end boolean default false
+  p_end boolean default false,
+  p_visitor_context jsonb default '{}'::jsonb
 )
 returns void
 language plpgsql
@@ -197,6 +200,11 @@ declare
       'viewed_at', now()
     )
   end;
+  safe_visitor_context jsonb := case
+    when jsonb_typeof(coalesce(p_visitor_context, '{}'::jsonb)) = 'object'
+      then coalesce(p_visitor_context, '{}'::jsonb)
+    else '{}'::jsonb
+  end;
 begin
   insert into public.a1_site_visit_audit as visit (
     session_id,
@@ -204,6 +212,7 @@ begin
     user_email,
     ip_addresses,
     pages,
+    visitor_context,
     ended_at
   )
   values (
@@ -212,6 +221,7 @@ begin
     p_user_email,
     array[p_ip_address],
     case when page_entry is null then '[]'::jsonb else jsonb_build_array(page_entry) end,
+    safe_visitor_context,
     case when p_end then now() else null end
   )
   on conflict (session_id) do update
@@ -227,16 +237,20 @@ begin
       when page_entry is null then visit.pages
       else visit.pages || jsonb_build_array(page_entry)
     end,
+    visitor_context = visit.visitor_context || safe_visitor_context,
     last_seen_at = now(),
     ended_at = case when p_end then now() else null end;
 end;
 $$;
 
-revoke all on function public.a1_record_site_visit(uuid, inet, text, text, uuid, text, boolean) from public;
-grant execute on function public.a1_record_site_visit(uuid, inet, text, text, uuid, text, boolean) to service_role;
+revoke all on function public.a1_record_site_visit(uuid, inet, text, text, uuid, text, boolean, jsonb) from public;
+grant execute on function public.a1_record_site_visit(uuid, inet, text, text, uuid, text, boolean, jsonb) to service_role;
+
+comment on column public.a1_site_visit_audit.visitor_context is
+  'Whitelisted Netlify geolocation/request metadata and browser-reported user-agent/client-hint context.';
 
 comment on table public.a1_site_visit_audit is
-  'Server-only first-party A1 visit sessions with IP addresses, routes and approximate duration.';
+  'Server-only first-party A1 visit sessions with IP addresses, routes, approximate duration and visitor context.';
 
 -- ─── Shared workspace bundle ─────────────────────────────────────────────────
 -- A single row (id = 1) holds the full bundle (the app's exportEnvelope():

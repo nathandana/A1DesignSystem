@@ -36,6 +36,17 @@ export function safeParent(node) {
   }
 }
 
+// Native instance sublayers can vanish between a findAll/findOne result and a
+// later export pass. Reading `children` through this guard keeps one stale
+// implementation layer from aborting the entire page export.
+export function safeChildren(node) {
+  try {
+    return node && node.children ? [...node.children] : [];
+  } catch {
+    return [];
+  }
+}
+
 export function stackFlowChildren(frame) {
   let children = [];
   try {

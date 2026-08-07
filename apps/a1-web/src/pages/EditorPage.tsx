@@ -71,7 +71,7 @@ import {
 import { onRemoteHydrate } from '../projects/cloudSync.js';
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb';
 import { PagePresence } from '../editor/PagePresence.jsx';
-import { importFigmaBridgeImages, toImageRef } from '../lib/imageLibrary';
+import { collectFigmaFigureAssets, importFigmaBridgeImages, toImageRef } from '../lib/imageLibrary';
 import { combinePageIntoLayout, definitionContainsNodeType, splitLayoutAtOutlet } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
 import { cleanUtilities } from '../editor/utilityRegistry';
@@ -359,6 +359,17 @@ function setNodeUtilitiesInNode(node: ComponentNode, id: string, utilities: Comp
   }
   if (!node.children) return node;
   return { ...node, children: node.children.map((c) => setNodeUtilitiesInNode(c, id, utilities)) };
+}
+
+function setNodeVisibilityInNode(node: ComponentNode, id: string, visibility: ComponentNode['visibility'] | null): ComponentNode {
+  if (node.id === id) {
+    const next = { ...node };
+    if (visibility) next.visibility = visibility;
+    else delete next.visibility;
+    return next;
+  }
+  if (!node.children) return node;
+  return { ...node, children: node.children.map((c) => setNodeVisibilityInNode(c, id, visibility)) };
 }
 
 function freshId(): string {
@@ -818,38 +829,50 @@ export function EditorPage({
   // deliberate page sync request and never persists in the bridge.
   useEffect(() => {
     if (!bridgeFeaturesEnabled || !projectId || documentKind !== 'page') return undefined;
-    const register = () => {
-      const workspace = {
-        projects: loadProjects().map((project) => ({
-          id: project.id,
-          name: project.name,
-          pages: loadPages(project.id).map((page) => {
-            // Every page gets a stable local link as soon as it is exposed to
-            // the Figma Page Editor. That lets Figma pull a selected page
-            // immediately and still send edits back through the same identity.
-            const link = getFigmaPageLink(project.id, page.id)
-              ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
-            return {
-              id: page.id,
-              title: page.title,
-              json: resolvePageJson(page.id) ?? '',
-              link: link ? {
-                linkId: link.id,
-                projectId: project.id,
-                pageId: page.id,
-                mode: link.mode,
-                figmaFileKey: link.figmaFileKey,
-                figmaPageId: link.figmaPageId,
-                figmaRootNodeId: link.figmaRootNodeId,
-              } : null,
-            };
-          }),
-        })),
-      };
-      registerFigmaWorkspace(workspace).catch(() => {});
+    let registering = false;
+    const register = async () => {
+      if (registering) return;
+      registering = true;
+      try {
+        const workspace = {
+          projects: await Promise.all(loadProjects().map(async (project) => ({
+            id: project.id,
+            name: project.name,
+            pages: await Promise.all(loadPages(project.id).map(async (page) => {
+              // Every page gets a stable local link as soon as it is exposed to
+              // the Figma Page Editor. That lets Figma pull a selected page
+              // immediately and still send edits back through the same identity.
+              const link = getFigmaPageLink(project.id, page.id)
+                ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
+              const json = resolvePageJson(page.id) ?? '';
+              const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : [];
+              return {
+                id: page.id,
+                title: page.title,
+                json,
+                assets,
+                link: link ? {
+                  linkId: link.id,
+                  projectId: project.id,
+                  pageId: page.id,
+                  mode: link.mode,
+                  figmaFileKey: link.figmaFileKey,
+                  figmaPageId: link.figmaPageId,
+                  figmaRootNodeId: link.figmaRootNodeId,
+                } : null,
+              };
+            })),
+          }))),
+        };
+        await registerFigmaWorkspace(workspace);
+      } catch {
+        // The optional local bridge is intentionally silent while unavailable.
+      } finally {
+        registering = false;
+      }
     };
-    register();
-    const interval = window.setInterval(register, 20_000);
+    void register();
+    const interval = window.setInterval(() => { void register(); }, 20_000);
     return () => window.clearInterval(interval);
   }, [bridgeFeaturesEnabled, projectId, documentKind, exampleId]);
 
@@ -898,6 +921,7 @@ export function EditorPage({
       const link = existing ?? saveFigmaPageLink(projectId, { pageId: exampleId, mode: 'manual' });
       if (!link) throw new Error('This project page could not be linked.');
       const json = JSON.stringify(parsedDefinition.value, null, 2);
+      const assets = await collectFigmaFigureAssets(parsedDefinition.value);
       await queueFigmaPageSync({
         link: {
           linkId: link.id,
@@ -911,10 +935,12 @@ export function EditorPage({
           figmaRootNodeId: link.figmaRootNodeId,
         },
         json,
+        assets,
         revision: (link.lastSynced?.revision ?? 0) + 1,
       });
       setFigmaLinkId(link.id);
-      setNotice(existing ? 'Sent the linked page to Figma.' : 'Created a Figma link and sent this page. Open the plugin to render it.');
+      const imageNote = assets.length ? ` with ${assets.length} Figure image${assets.length === 1 ? '' : 's'}` : '';
+      setNotice(existing ? `Sent the linked page${imageNote} to Figma.` : `Created a Figma link and sent this page${imageNote}. Open the plugin to render it.`);
     } catch (error) {
       setNotice(`${error instanceof Error ? error.message : 'Could not send this page to Figma.'} Start npm run codex:bridge:a1-web and try again.`);
     } finally {
@@ -1589,6 +1615,13 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), utilities ? `Updated ${getNodeType(nodeId)} utilities` : `Cleared ${getNodeType(nodeId)} utilities`);
   }
 
+  function handleSetNodeVisibility(nodeId: string, visibility: ComponentNode['visibility'] | null) {
+    if (!parsedDefinition.ok) return;
+    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    const newDef = patchRegions(parsedDefinition.value, (node) => setNodeVisibilityInNode(node, nodeId, visibility));
+    history.commit(JSON.stringify(newDef, null, 2), visibility ? `Updated ${getNodeType(nodeId)} breakpoint visibility` : `Reset ${getNodeType(nodeId)} breakpoint visibility`);
+  }
+
   function handleGroupAsStack(nodeId: string) {
     if (!parsedDefinition.ok) return;
     if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
@@ -2022,6 +2055,7 @@ export function EditorPage({
           onSetNodeRepeat={handleSetNodeRepeat}
           onSetNodeCollections={handleSetNodeCollections}
           onSetNodeUtilities={handleSetNodeUtilities}
+          onSetNodeVisibility={handleSetNodeVisibility}
           historyEntries={panelEntries}
           historyIndex={panelIndex}
           onHistoryRestore={handleHistoryRestore}

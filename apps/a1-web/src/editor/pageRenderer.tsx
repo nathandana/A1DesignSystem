@@ -49,6 +49,7 @@ import { normalizeRepeat, pickRepeatIndices } from "../data/repeat";
 import { collectionTargetFor, expandCollection } from "../data/collections";
 import { findRowIndexById } from "../services/dataSources/rowIds";
 import { utilityClassesFor } from "./utilityRegistry";
+import { responsiveVisibilityClasses } from "./responsiveVisibility.js";
 import type {
   A11yDefinition,
   ComponentNode,
@@ -666,6 +667,7 @@ function RenderNode({
   resolvedProps.className = mergeClassNames(
     resolvedProps.className,
     utilityClassesFor(node.type, node.utilities),
+    responsiveVisibilityClasses(node.visibility),
   );
   delete resolvedProps.labelKey;
   if (labelKey) resolvedProps.label = resolvedLabel;

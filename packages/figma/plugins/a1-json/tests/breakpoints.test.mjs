@@ -3,12 +3,14 @@ import test from 'node:test';
 import {
   breakpointForWidth,
   collectAuthoredBreakpoints,
+  compactBreakpointVisibility,
   formatResponsiveGridColumns,
   normalizeResponsiveColumns,
   parseResponsiveGridColumnsName,
   responsiveColumnsAt,
   responsiveGridItemSpanAt,
   responsiveGridName,
+  resolveBreakpointVisibility,
   stripResponsiveGridColumnsName,
 } from '../src/pure/breakpoints.js';
 
@@ -49,4 +51,20 @@ test('maps widths and authored responsive objects to breakpoints', () => {
   assert.equal(breakpointForWidth(1500), 'lg');
   assert.equal(breakpointForWidth(-1, 'xl'), 'xl');
   assert.deepEqual([...collectAuthoredBreakpoints({ props: { columns: { xs: 1, md: 2 } }, span: { lg: 3 } })].sort(), ['lg', 'md', 'xs']);
+});
+
+test('resolves and compacts responsive node visibility', () => {
+  assert.deepEqual(resolveBreakpointVisibility({ xs: false, md: true, xl: false }), {
+    xs: false,
+    sm: false,
+    md: true,
+    lg: true,
+    xl: false,
+  });
+  assert.deepEqual(compactBreakpointVisibility({ xs: false, sm: false, md: true, lg: true, xl: false }), {
+    xs: false,
+    md: true,
+    xl: false,
+  });
+  assert.equal(compactBreakpointVisibility(true), null);
 });

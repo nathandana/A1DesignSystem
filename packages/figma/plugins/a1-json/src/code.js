@@ -27,6 +27,7 @@ import {
   A1_BREAKPOINTS,
   A1_BREAKPOINT_WIDTHS,
   breakpointForWidth,
+  compactBreakpointVisibility,
   collectAuthoredBreakpoints,
   formatResponsiveGridColumns,
   normalizeResponsiveColumns,
@@ -34,6 +35,7 @@ import {
   responsiveColumnsAt,
   responsiveGridItemSpanAt,
   responsiveGridName,
+  resolveBreakpointVisibility,
   stripResponsiveGridColumnsName,
 } from './pure/breakpoints.js';
 import {
@@ -42,6 +44,7 @@ import {
   finalizeSharedAuditReport,
 } from '../../../shared/audit-core.js';
 import {
+  AUDIT_SUPPORTED_PRIVATE_COMPONENTS,
   AUDIT_SEVERITY,
   auditA1CoverageCount,
   auditReportFindings,
@@ -60,9 +63,28 @@ import {
   figmaComponentNameMatchesForAliases,
 } from './pure/name-matching.js';
 import {
+  CARD_HERO_COLORS,
+  CARD_ICON_DISPLAYS,
+  normalizeCardHeroColor,
+  normalizeCardIconDisplay,
+} from './pure/card.js';
+import { base64ToBytes, bytesToBase64 } from './pure/base64.js';
+import { a1ImageIdFromRef, publicA1ImageUrl } from './pure/figure-image.js';
+import {
+  ICON_COLORS,
+  ICON_COLOR_VARIABLE_NAMES,
+  ICON_SIZES,
+  ICON_SIZE_PIXELS,
+  iconColorFromVariableName,
+  iconNameProp,
+  normalizeIconColor,
+  normalizeIconSize,
+} from './pure/icon.js';
+import {
   addDefaultTemplateWithId,
   collectSupportedNodes,
   componentId,
+  pageLayoutForPageExport,
   pageTitleFromFigmaFrame,
   slugifyOptionValue,
 } from './pure/page-definition.js';
@@ -176,6 +198,7 @@ import {
   liveNode,
   resolveNodeById,
   resolveNodeByIdAsync,
+  safeChildren,
   safeParent,
   selectionBoundsInParent,
   selectedNodesInParentOrder,
@@ -216,8 +239,6 @@ const BUTTON_FULL_WIDTH_NAME_PATTERN = /\s*(?:[-–—]\s*)?\{\s*fullWidth\s*:\s
 const GRID_CONTEXT_WIDTH_MODES = ['hug', 'fill'];
 const ICON_BUTTON_VARIANTS = ['tertiary', 'secondary', 'destructive', 'success'];
 const ICON_BUTTON_SIZES = ['sm', 'md', 'lg'];
-const ICON_SIZES = ['xs', 'sm', 'md', 'lg', 'xl', 'jumbo', 'xJumbo'];
-const ICON_SIZE_PIXELS = { xs: 16, sm: 20, md: 24, lg: 32, xl: 40, jumbo: 64, xJumbo: 96 };
 const BUTTON_CONTAINER_ALIGNS = ['start', 'center', 'end'];
 const BUTTON_CONTAINER_QUERY_WIDTH = 480;
 const BUTTON_CONTAINER_DIRECTION_PROPERTY_NAMES = ['Direction', 'direction', 'containerWidth', 'Container Width', 'ContainerWidth'];
@@ -291,8 +312,6 @@ const DIALOG_SIZES = ['sm', 'md', 'lg', 'xl'];
 const DIALOG_STATUSES = ['none', 'success', 'error', 'warn', 'info', 'neutral'];
 const CARD_SURFACES = ['default', 'accent'];
 const CARD_VARIANTS = ['default', 'navigation', 'bare'];
-const CARD_ICON_DISPLAYS = ['none', 'default', 'hero'];
-const CARD_HERO_COLORS = ['action', 'neutral', 'info', 'success', 'warn', 'error'];
 const CARD_ICON_START_MIN_WIDTH = 640;
 const BREADCRUMB_TRAIL_MIN_WIDTH = 480;
 const BADGE_STATUSES = ['neutral', 'info', 'success', 'warn', 'error'];
@@ -387,9 +406,12 @@ const DETACHED_COMPONENT_KEY = 'componentName';
 const DETACHED_BANNER_PROPS_KEY = 'bannerProps';
 const GRID_RESPONSIVE_COLUMNS_KEY = 'gridResponsiveColumns';
 const A1_BREAKPOINT_KEY = 'a1Breakpoint';
+const A1_BREAKPOINT_VISIBILITY_KEY = 'a1BreakpointVisibility';
 const ACTION_TRIGGER_TARGET_KEY = 'actionTriggerTarget';
 const DIALOG_TRIGGER_TARGET_KEY = 'dialogTriggerTargetNodeId';
 const LEGACY_BUTTON_DIALOG_TARGET_KEY = 'buttonDialogTargetNodeId';
+const A1_ICON_NAME_KEY = 'iconName';
+const A1_ICON_COLOR_KEY = 'iconColor';
 const ACTION_TRIGGER_COMPONENT_NAMES = new Set(['Button', 'Icon Button']);
 const ACTION_TRIGGER_TARGET_TYPES = new Set(['Dialog', 'Menu']);
 const ACTION_TRIGGER_TARGET_CONFIG = {
@@ -537,6 +559,7 @@ const A1_FIGMA_COMPONENT_KEYS = A1_FIGMA_LIBRARY_MANIFEST.components;
 const A1_FIGMA_TEXT_STYLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.textStyles;
 const A1_FIGMA_COLOR_VARIABLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.variables.color;
 const A1_FIGMA_FLOAT_VARIABLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.variables.float;
+const A1_FIGMA_IMAGE_LIBRARY_PUBLIC_BASE_URL = A1_FIGMA_LIBRARY_MANIFEST.imageLibrary?.publicBaseUrl || '';
 const A1_COMPONENT_SET_ONLY_NAMES = new Set(Object.keys(A1_FIGMA_COMPONENT_SET_KEYS));
 const A1_FIGMA_COMPONENT_SET_KEY_VALUES = new Set(Object.values(A1_FIGMA_COMPONENT_SET_KEYS).filter((value) => typeof value === 'string' && value.trim()));
 const A1_FIGMA_COMPONENT_KEY_VALUES = new Set(Object.values(A1_FIGMA_COMPONENT_KEYS).filter((value) => typeof value === 'string' && value.trim()));
@@ -1221,6 +1244,106 @@ function materialIconNameFromInstance(instance) {
   return '';
 }
 
+function iconPluginData(node, key) {
+  try {
+    return node && typeof node.getPluginData === 'function' ? node.getPluginData(key) : '';
+  } catch {
+    return '';
+  }
+}
+
+function setIconPluginData(node, name, color = '') {
+  try {
+    if (!node || typeof node.setPluginData !== 'function') return;
+    node.setPluginData(A1_ICON_NAME_KEY, name || '');
+    node.setPluginData(A1_ICON_COLOR_KEY, color || '');
+  } catch {
+    // Plugin data improves round-tripping but never blocks a visible icon.
+  }
+}
+
+function materialIconFontName(text) {
+  try {
+    if (!text || text.type !== 'TEXT' || text.fontName === figma.mixed) return null;
+    return /material\s+(symbols|icons)/i.test(String(text.fontName && text.fontName.family || ''))
+      ? text.fontName
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function materialIconNameFromTextNode(text) {
+  const current = liveNode(text) || text;
+  if (!current || current.type !== 'TEXT') return '';
+  const taggedName = materialIconNameCandidate(iconPluginData(current, A1_ICON_NAME_KEY));
+  if (taggedName) return taggedName;
+  if (!materialIconFontName(current)) return '';
+  try {
+    return materialIconNameCandidate(current.characters);
+  } catch {
+    return '';
+  }
+}
+
+function isMaterialIconTextNode(node) {
+  return Boolean(materialIconNameFromTextNode(node));
+}
+
+function existingMaterialIconFontName() {
+  try {
+    const text = figma.currentPage.findOne((node) => node.type === 'TEXT' && Boolean(materialIconFontName(node)));
+    return text && text.type === 'TEXT' ? materialIconFontName(text) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function loadMaterialIconFont() {
+  const existing = existingMaterialIconFontName();
+  let available = [];
+  try {
+    available = (await figma.listAvailableFontsAsync())
+      .map((font) => font.fontName)
+      .filter((fontName) => /material\s+(symbols|icons)/i.test(String(fontName && fontName.family || '')))
+      .sort((first, second) => Number(second.family === 'Material Symbols Outlined') - Number(first.family === 'Material Symbols Outlined'));
+  } catch {
+    // The known Material font names below cover older Figma runtimes.
+  }
+  const candidates = [
+    existing,
+    ...available,
+    { family: 'Material Symbols Outlined', style: 'Regular' },
+    { family: 'Material Icons', style: 'Regular' },
+  ].filter(Boolean);
+  for (const fontName of candidates) {
+    try {
+      await figma.loadFontAsync(fontName);
+      return fontName;
+    } catch {
+      // Try the next installed Material icon font.
+    }
+  }
+  throw new Error('Material Symbols Outlined is unavailable in Figma. Install or enable the font, then render the Icon again.');
+}
+
+async function createMaterialIconTextNode(name) {
+  const text = figma.createText();
+  try {
+    text.fontName = await loadMaterialIconFont();
+    text.characters = name;
+    text.textAutoResize = 'WIDTH_AND_HEIGHT';
+    text.textAlignHorizontal = 'CENTER';
+    text.textAlignVertical = 'CENTER';
+    text.name = `Icon (${name})`;
+    setIconPluginData(text, name);
+    return text;
+  } catch (error) {
+    try { text.remove(); } catch { /* The failed text layer may already be unavailable. */ }
+    throw error;
+  }
+}
+
 // setProperties on a TEXT property re-renders the label, which requires the
 // label's font to be loaded first.
 async function loadInstanceFonts(instance) {
@@ -1236,6 +1359,15 @@ function postPluginMessage(payload) {
     return;
   }
   const message = { ...payload };
+  if (payload.type === 'selection') {
+    const selection = figma.currentPage.selection;
+    const target = selection.length === 1 ? liveNode(selection[0]) : null;
+    const configurable = target && typeof target.getPluginData === 'function' && typeof target.setPluginData === 'function';
+    message.breakpointVisibilityNodeId = configurable ? target.id : null;
+    message.breakpointVisibility = configurable
+      ? resolveBreakpointVisibility(readBreakpointVisibility(target))
+      : null;
+  }
   if (Array.isArray(message.warnings)) {
     const originalWarnings = message.warnings.map(warningText).filter(Boolean);
     const originalMessage = originalWarnings.join('\n');
@@ -1250,6 +1382,68 @@ function postPluginMessage(payload) {
 
 function postError(message) {
   postPluginMessage({ type: 'error', message });
+}
+
+function readBreakpointVisibility(node) {
+  if (!node || typeof node.getPluginData !== 'function') return null;
+  try {
+    const raw = node.getPluginData(A1_BREAKPOINT_VISIBILITY_KEY);
+    return raw ? compactBreakpointVisibility(JSON.parse(raw)) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeBreakpointVisibility(node, value) {
+  if (!node || typeof node.setPluginData !== 'function') return null;
+  const visibility = compactBreakpointVisibility(value);
+  node.setPluginData(A1_BREAKPOINT_VISIBILITY_KEY, visibility ? JSON.stringify(visibility) : '');
+  return visibility;
+}
+
+function handleSetBreakpointVisibility(message) {
+  const selection = figma.currentPage.selection;
+  const target = selection.length === 1 ? liveNode(selection[0]) : null;
+  if (!target || target.id !== message.breakpointVisibilityNodeId || typeof target.setPluginData !== 'function') {
+    postPluginMessage({
+      type: 'breakpoint-visibility-result',
+      outcome: 'selection-changed',
+      warnings: [],
+    });
+    return;
+  }
+  const visibility = writeBreakpointVisibility(target, message.visibility);
+  const resolved = resolveBreakpointVisibility(visibility);
+  let previewBreakpoint = '';
+  for (let current = target; current && !previewBreakpoint; current = current.parent) {
+    previewBreakpoint = readBreakpointData(current);
+  }
+  if (A1_BREAKPOINTS.includes(previewBreakpoint)) {
+    try {
+      target.visible = resolved[previewBreakpoint] !== false;
+    } catch {
+      // Metadata remains authoritative if this layer cannot change visibility.
+    }
+  }
+  postPluginMessage({
+    type: 'breakpoint-visibility-result',
+    breakpointVisibilityNodeId: target.id,
+    breakpointVisibility: resolved,
+    outcome: visibility ? 'updated' : 'reset',
+    warnings: [],
+  });
+  postSelectionState();
+  scheduleAutoExport();
+  scheduleLivePreview();
+  scheduleLinkedPagePreview();
+}
+
+function withBreakpointVisibility(sourceNode, result) {
+  if (!result || !result.node || typeof result.node.type !== 'string') return result;
+  const visibility = readBreakpointVisibility(sourceNode);
+  return visibility
+    ? { ...result, node: { ...result.node, visibility } }
+    : result;
 }
 
 // The component-set name (or bare component name) an instance belongs to, if
@@ -1351,6 +1545,7 @@ function conversionRecommendationForSelection(selection) {
       suggestions: uniqueConversionSuggestions(['stack', 'button-container', 'grid', 'section', 'card'], 'stack'),
     } : null;
   }
+  if (target.type === 'TEXT' && isMaterialIconTextNode(target)) return null;
   if (target.type === 'TEXT') {
     const suggestion = textSuggestion(target);
     const primary = suggestion.type === 'Heading' ? 'heading' : 'body';
@@ -1964,13 +2159,19 @@ function exportNodeAsFreeContent(node, warnings, ancestors = new Set()) {
       }
       const componentName = registeredSetName(current);
       if (componentName) {
-        const result = EXPORTERS[componentName](current);
+        const result = withBreakpointVisibility(current, EXPORTERS[componentName](current));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (current.type === 'INSTANCE' && materialIconNameFromInstance(current)) {
-        const result = exportIcon(current);
+        const result = withBreakpointVisibility(current, exportIcon(current));
+        exported.push(result.node);
+        warnings.push(...result.warnings);
+        return;
+      }
+      if (current.type === 'TEXT' && isMaterialIconTextNode(current)) {
+        const result = withBreakpointVisibility(current, exportIcon(current));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
@@ -1982,21 +2183,25 @@ function exportNodeAsFreeContent(node, warnings, ancestors = new Set()) {
         return;
       }
       if (isStackFrame(current)) {
-        const result = exportStack(current, branchAncestors);
+        const result = withBreakpointVisibility(current, exportStack(current, branchAncestors));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (isGridFrame(current)) {
-        const result = exportGrid(current, branchAncestors);
+        const result = withBreakpointVisibility(current, exportGrid(current, branchAncestors));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (current.type === 'TEXT') {
-        const result = exportTextNode(current);
+        const result = withBreakpointVisibility(current, exportTextNode(current));
         exported.push(result.node);
         warnings.push(...result.warnings);
+        return;
+      }
+      if (readBreakpointVisibility(current) && 'children' in current) {
+        exported.push(exportBreakpointVisibilityContainer(current, warnings, branchAncestors));
         return;
       }
       if ('children' in current) {
@@ -2010,6 +2215,22 @@ function exportNodeAsFreeContent(node, warnings, ancestors = new Set()) {
   };
   walk(node, new Set(ancestors));
   return exported;
+}
+
+function exportBreakpointVisibilityContainer(frame, warnings, ancestors = new Set()) {
+  const visibility = readBreakpointVisibility(frame);
+  const childAncestors = new Set(ancestors);
+  if (frame.id) childAncestors.add(frame.id);
+  const children = [];
+  for (const child of safeChildren(frame)) {
+    children.push(...exportNodeAsFreeContent(child, warnings, childAncestors));
+  }
+  return {
+    id: componentId('Stack', frame),
+    type: 'Stack',
+    ...(visibility ? { visibility } : {}),
+    ...(children.length ? { children } : {}),
+  };
 }
 
 function exportGridChildren(frame, warnings, ancestors = new Set()) {
@@ -2071,33 +2292,43 @@ function exportFreeContent(root, warnings, ancestors = new Set()) {
       // JSON slot content—owns its implementation layers. Export it as one
       // node before treating generic auto-layout frames as Stacks.
       if (componentName) {
-        const result = EXPORTERS[componentName](node);
+        const result = withBreakpointVisibility(node, EXPORTERS[componentName](node));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (node.type === 'INSTANCE' && materialIconNameFromInstance(node)) {
-        const result = exportIcon(node);
+        const result = withBreakpointVisibility(node, exportIcon(node));
+        exported.push(result.node);
+        warnings.push(...result.warnings);
+        return;
+      }
+      if (node.type === 'TEXT' && isMaterialIconTextNode(node)) {
+        const result = withBreakpointVisibility(node, exportIcon(node));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (isStackFrame(node)) {
-        const result = exportStack(node, branchAncestors);
+        const result = withBreakpointVisibility(node, exportStack(node, branchAncestors));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (isGridFrame(node)) {
-        const result = exportGrid(node, branchAncestors);
+        const result = withBreakpointVisibility(node, exportGrid(node, branchAncestors));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
       }
       if (node.type === 'TEXT') {
-        const result = exportTextNode(node);
+        const result = withBreakpointVisibility(node, exportTextNode(node));
         exported.push(result.node);
         warnings.push(...result.warnings);
+        return;
+      }
+      if (readBreakpointVisibility(node) && 'children' in node) {
+        exported.push(exportBreakpointVisibilityContainer(node, warnings, branchAncestors));
         return;
       }
       if ('children' in node) {
@@ -2109,9 +2340,15 @@ function exportFreeContent(root, warnings, ancestors = new Set()) {
       warnings.push(`A child Figma no longer exposes was skipped during export: ${error.message}`);
     }
   };
+  const liveRoot = liveNode(root);
+  if (!liveRoot) {
+    warnings.push('A Figma container disappeared during export and was skipped.');
+    return exported;
+  }
   const rootAncestors = new Set(ancestors);
-  if (root.id) rootAncestors.add(root.id);
-  for (const child of root.children || []) walk(child, rootAncestors);
+  if (liveRoot.id) rootAncestors.add(liveRoot.id);
+  const rootChildren = safeChildren(liveRoot);
+  for (const child of rootChildren) walk(child, rootAncestors);
   const unusedAttachments = attachMarkedTabContent(exported, tabAttachments, warnings);
   for (const attachment of unusedAttachments) exported.push(...attachment.children);
   return exported;
@@ -2121,6 +2358,18 @@ function exportContainerNode(root) {
   const warnings = [];
   const children = exportFreeContent(root, warnings);
   if (children.length === 0) warnings.push('This container has no supported A1 instances or standalone text layers to export.');
+  const visibility = readBreakpointVisibility(root);
+  if (visibility) {
+    return {
+      node: {
+        id: componentId('Stack', root),
+        type: 'Stack',
+        visibility,
+        ...(children.length ? { children } : {}),
+      },
+      warnings,
+    };
+  }
   return {
     // A screen selection is an interchange bundle, not an invented layout
     // component. In particular, plain Heading and Paragraph nodes must land on
@@ -2550,7 +2799,7 @@ function nodeWithLinkedActionTargetExport(trigger, triggerNode, warnings) {
     warnings.push(`${record.targetType} cannot be exported as an action target yet.`);
     return triggerNode;
   }
-  const targetResult = exporter(linkedTarget);
+  const targetResult = withBreakpointVisibility(linkedTarget, exporter(linkedTarget));
   warnings.push(...targetResult.warnings);
   const action = actionForLinkedTarget(trigger, targetResult.node);
   if (!action) return triggerNode;
@@ -2655,7 +2904,7 @@ function includeOpenActionTargets(rootNode, warnings) {
       warnings.push(`${targetType} cannot be exported as an action target yet.`);
       continue;
     }
-    const result = exporter(target);
+    const result = withBreakpointVisibility(target, exporter(target));
     warnings.push(...result.warnings);
     outputNode = appendLinkedActionTargetNode(outputNode, result.node);
     collectNodeIds(outputNode, existingIds);
@@ -3132,7 +3381,7 @@ function exportRegisteredDescendants(root, warnings) {
       if (covered.has(parent.id)) { insideExported = true; break; }
     }
     if (insideExported) continue;
-    const result = EXPORTERS[name](instanceNode);
+    const result = withBreakpointVisibility(instanceNode, EXPORTERS[name](instanceNode));
     exported.push(result.node);
     for (const warning of result.warnings) warnings.push(warning);
     covered.add(instanceNode.id);
@@ -5176,17 +5425,22 @@ function runExport(auto, explicitTarget = null, live = false) {
     return;
   }
   if (target.type === 'TEXT') {
-    const { node, warnings, review } = exportTextNode(target);
+    if (isMaterialIconTextNode(target)) {
+      const { node, warnings } = withBreakpointVisibility(target, exportIcon(target));
+      postExportResult({ auto, live, componentName: 'Icon', node, warnings });
+      return;
+    }
+    const { node, warnings, review } = withBreakpointVisibility(target, exportTextNode(target));
     postExportResult({ auto, live, componentName: node.type, node, warnings, textReview: review });
     return;
   }
   if (isStackFrame(target)) {
-    const { node, warnings } = exportStack(target);
+    const { node, warnings } = withBreakpointVisibility(target, exportStack(target));
     postExportResult({ auto, live, componentName: 'Stack', node, warnings });
     return;
   }
   if (isGridFrame(target)) {
-    const { node, warnings } = exportGrid(target);
+    const { node, warnings } = withBreakpointVisibility(target, exportGrid(target));
     postExportResult({ auto, live, componentName: 'Grid', node, warnings });
     return;
   }
@@ -5196,7 +5450,7 @@ function runExport(auto, explicitTarget = null, live = false) {
     // selections belong to the generic screen-content path below.
     const componentName = registeredSetName(target);
     if (componentName) {
-      let { node, warnings } = EXPORTERS[componentName](target);
+      let { node, warnings } = withBreakpointVisibility(target, EXPORTERS[componentName](target));
       if (ACTION_TRIGGER_COMPONENT_NAMES.has(componentName)) {
         node = nodeWithLinkedActionTargetExport(target, node, warnings);
       }
@@ -5205,7 +5459,7 @@ function runExport(auto, explicitTarget = null, live = false) {
     }
     const iconName = materialIconNameFromInstance(target);
     if (iconName) {
-      const { node, warnings } = exportIcon(target);
+      const { node, warnings } = withBreakpointVisibility(target, exportIcon(target));
       postExportResult({ auto, live, componentName: 'Icon', node, warnings });
       return;
     }
@@ -5223,14 +5477,14 @@ function runExport(auto, explicitTarget = null, live = false) {
   if (!componentName) {
     const iconName = materialIconNameFromInstance(target);
     if (iconName) {
-      const { node, warnings } = exportIcon(target);
+      const { node, warnings } = withBreakpointVisibility(target, exportIcon(target));
       postExportResult({ auto, live, componentName: 'Icon', node, warnings });
       return;
     }
     if (!auto) postError(`The selected component is not supported yet. Supported: ${SUPPORTED_COMPONENT_MESSAGE}.`);
     return;
   }
-  const { node, warnings } = EXPORTERS[componentName](target);
+  const { node, warnings } = withBreakpointVisibility(target, EXPORTERS[componentName](target));
   const exportedNode = ACTION_TRIGGER_COMPONENT_NAMES.has(componentName)
     ? nodeWithLinkedActionTargetExport(target, node, warnings)
     : node;
@@ -5242,15 +5496,6 @@ function figureImageMime(bytes) {
   if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
   if (bytes.length >= 6 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return 'image/gif';
   return null;
-}
-
-function bytesToBase64(bytes) {
-  const chunkSize = 0x8000;
-  let binary = '';
-  for (let index = 0; index < bytes.length; index += chunkSize) {
-    binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
-  }
-  return btoa(binary);
 }
 
 async function sendSelectedFigureImageToPlayground() {
@@ -5561,13 +5806,23 @@ async function renderImportedNode(node, warnings) {
   } catch (error) {
     const message = `"${node.type}" could not be created from the current Figma library: ${error.message}`;
     warnings.push(message);
-    return createImportNoteLayer(node, message);
+    const note = await createImportNoteLayer(node, message);
+    writeBreakpointVisibility(note, node.visibility);
+    return note;
   }
   // JSON ids are stable authoring identifiers. Showing them in Figma's layer
   // list makes rendered compositions traceable and makes updates unambiguous.
   if (typeof node.id === 'string' && node.id.trim()) {
     layer.name = node.id;
     if (typeof layer.setPluginData === 'function') layer.setPluginData('a1-json-id', node.id);
+  }
+  writeBreakpointVisibility(layer, node.visibility);
+  if (A1_BREAKPOINTS.includes(activeRenderBreakpoint)) {
+    try {
+      layer.visible = resolveBreakpointVisibility(node.visibility)[activeRenderBreakpoint] !== false;
+    } catch {
+      // The saved metadata still carries the contract if visibility is immutable.
+    }
   }
   if (
     activeActionTargetImportContext &&
@@ -6274,7 +6529,11 @@ async function importBanner(node, warnings) {
 }
 
 function iconSizeFromNode(node) {
-  const pixels = Math.max(figmaNumber(node && node.width, 0), figmaNumber(node && node.height, 0));
+  const current = liveNode(node) || node;
+  const fontSize = current && current.type === 'TEXT' && current.fontSize !== figma.mixed
+    ? figmaNumber(current.fontSize, 0)
+    : 0;
+  const pixels = fontSize || Math.max(figmaNumber(current && current.width, 0), figmaNumber(current && current.height, 0));
   if (!pixels) return '';
   let best = 'md';
   let delta = Infinity;
@@ -6288,58 +6547,172 @@ function iconSizeFromNode(node) {
   return best;
 }
 
-function applyIconSize(instance, size, warnings) {
-  if (!ICON_SIZES.includes(size) || size === 'md') return;
+function applyIconSize(node, requestedSize, warnings) {
+  const size = normalizeIconSize(requestedSize);
   const pixels = ICON_SIZE_PIXELS[size];
   if (!pixels) return;
+  const current = liveNode(node) || node;
   try {
-    instance.resize(pixels, pixels);
+    if (current.type === 'TEXT') {
+      current.fontSize = pixels;
+      current.lineHeight = { unit: 'PIXELS', value: pixels };
+      current.textAutoResize = 'WIDTH_AND_HEIGHT';
+    } else {
+      current.resize(pixels, pixels);
+    }
   } catch (error) {
     warnings.push(`Icon size="${size}" could not be applied in Figma: ${error.message}`);
   }
 }
 
-function exportIcon(instance) {
-  const name = materialIconNameFromInstance(instance);
+function iconPaintCarriers(node) {
+  const current = liveNode(node) || node;
+  if (!current) return [];
+  if (current.type === 'TEXT') return [current];
+  try {
+    if (!('findAll' in current)) return [];
+    const carriers = current.findAll((child) => {
+      try {
+        return Array.isArray(child.fills)
+          && child.fills.some((paint) => paint && paint.type === 'SOLID' && paint.visible !== false);
+      } catch {
+        return false;
+      }
+    });
+    if (carriers.length) return carriers;
+    return Array.isArray(current.fills) ? [current] : [];
+  } catch {
+    return [];
+  }
+}
+
+function iconColorFromNode(node) {
+  for (const carrier of iconPaintCarriers(node)) {
+    try {
+      const paints = Array.isArray(carrier.fills) ? carrier.fills : [];
+      for (const paint of paints) {
+        const variable = boundColorVariable(paint);
+        const color = iconColorFromVariableName(variable && variable.name);
+        if (color) return color;
+      }
+    } catch {
+      // Continue to the next visible icon paint.
+    }
+  }
+  return normalizeIconColor(iconPluginData(node, A1_ICON_COLOR_KEY));
+}
+
+function bindIconCarrierColor(carrier, colorVariable) {
+  const existing = Array.isArray(carrier.fills) ? carrier.fills : [];
+  let boundCount = 0;
+  const fills = existing.map((paint) => {
+    if (!paint || paint.type !== 'SOLID' || paint.visible === false) return paint;
+    boundCount += 1;
+    return figma.variables.setBoundVariableForPaint({ ...paint }, 'color', colorVariable);
+  });
+  if (!boundCount) return false;
+  if (carrier.type === 'TEXT' && carrier.characters.length > 0 && typeof carrier.setRangeFills === 'function') {
+    carrier.setRangeFills(0, carrier.characters.length, fills);
+  } else {
+    carrier.fills = fills;
+  }
+  return true;
+}
+
+async function applyIconColor(node, color, warnings) {
+  const variable = await findIconColorVariable(color);
+  const variableName = ICON_COLOR_VARIABLE_NAMES[color || 'default'];
+  if (!variable) {
+    warnings.push(`No A1 color variable named "${variableName}" was found in this file or enabled libraries; Icon color was not applied.`);
+    return false;
+  }
+  let applied = false;
+  for (const carrier of iconPaintCarriers(node)) {
+    try {
+      applied = bindIconCarrierColor(carrier, variable) || applied;
+    } catch {
+      // An inherited instance layer can reject an override; try the next paint.
+    }
+  }
+  if (!applied) warnings.push(`Icon has no editable solid fill to bind to "${variableName}".`);
+  return applied;
+}
+
+function iconNameFromNode(node) {
+  const current = liveNode(node) || node;
+  if (current && current.type === 'TEXT') return materialIconNameFromTextNode(current);
+  const overriddenName = materialIconNameCandidate(iconPluginData(current, A1_ICON_NAME_KEY));
+  return overriddenName || materialIconNameFromInstance(current);
+}
+
+function exportIcon(icon) {
+  const name = iconNameFromNode(icon);
   const warnings = [];
   if (!name) warnings.push('The selected icon could not be resolved to a Material Symbols name.');
   const props = { name: name || 'star' };
-  const size = iconSizeFromNode(instance);
+  const size = iconSizeFromNode(icon);
   if (ICON_SIZES.includes(size) && size !== 'md') props.size = size;
+  const color = iconColorFromNode(icon);
+  if (ICON_COLORS.includes(color)) props.color = color;
   return {
-    node: { id: componentId('Icon', instance), type: 'Icon', props },
+    node: { id: componentId('Icon', icon), type: 'Icon', props },
     warnings,
   };
 }
 
-async function applyIcon(instance, node, warnings) {
+async function applyIcon(icon, node, warnings, resolvedSource = undefined) {
   const props = node.props || {};
-  const name = materialIconNameCandidate(props.name) || 'star';
-  const source = await findMaterialIconComponentAsync(name, warnings);
-  if (!source) {
-    warnings.push(`No Material icon component named "${name}" was found in the A1 library or current file.`);
-    return instance;
+  const rawName = iconNameProp(props);
+  const name = materialIconNameCandidate(rawName) || 'star';
+  const size = normalizeIconSize(props.size);
+  const color = normalizeIconColor(props.color);
+  if (props.size !== undefined && size === 'md' && String(props.size).trim().toLowerCase() !== 'md') {
+    warnings.push(`Icon size="${props.size}" is not supported; size="md" was used.`);
   }
-  try {
-    if (instance.mainComponent && instance.mainComponent.id !== source.id) instance.swapComponent(source);
-  } catch (error) {
-    warnings.push(`Icon could not be swapped to "${name}": ${error.message}`);
+  if (props.color !== undefined && !color) {
+    warnings.push(`Icon color="${props.color}" is not supported; color/text/default was used.`);
   }
-  applyIconSize(currentInstance(instance), props.size, warnings);
-  for (const prop of ['color', 'fill', 'weight', 'grade', 'opticalSize']) {
+  let current = liveNode(icon) || icon;
+  let source = resolvedSource;
+  if (current.type === 'INSTANCE') {
+    if (source === undefined) source = await findMaterialIconComponentAsync(name, warnings);
+    if (source) {
+      try {
+        if (current.mainComponent && current.mainComponent.id !== source.id) current.swapComponent(source);
+        current = currentInstance(current);
+        setIconPluginData(current, '', color);
+      } catch (error) {
+        warnings.push(`Icon could not be swapped to "${name}": ${error.message}`);
+      }
+    } else {
+      const textUpdated = await applyMaterialIconText(current, name, warnings, 'Icon');
+      if (textUpdated) setIconPluginData(current, name, color);
+      else warnings.push(`No Material icon component named "${name}" was found, and the selected icon has no editable Material Symbols text.`);
+    }
+  } else if (current.type === 'TEXT') {
+    try {
+      if (current.fontName !== figma.mixed) await figma.loadFontAsync(current.fontName);
+      current.characters = name;
+      setIconPluginData(current, name, color);
+    } catch (error) {
+      warnings.push(`Icon glyph could not be changed to "${name}": ${error.message}`);
+    }
+  }
+  applyIconSize(current, size, warnings);
+  await applyIconColor(current, color, warnings);
+  setIconPluginData(current, current.type === 'TEXT' ? name : iconPluginData(current, A1_ICON_NAME_KEY), color);
+  for (const prop of ['fill', 'weight', 'grade', 'opticalSize']) {
     if (props[prop] !== undefined) warnings.push(`Icon ${prop} is runtime-owned for raw Material icon instances and was not applied in Figma.`);
   }
-  return currentInstance(instance);
+  return liveNode(current) || current;
 }
 
 async function importIcon(node, warnings) {
   const props = node.props || {};
-  const name = materialIconNameCandidate(props.name) || 'star';
+  const name = materialIconNameCandidate(iconNameProp(props)) || 'star';
   const source = await findMaterialIconComponentAsync(name, warnings);
-  if (!source) throw new Error(`No Material icon component named "${name}" was found in the A1 library or current file.`);
-  const instance = source.createInstance();
-  await applyIcon(instance, node, warnings);
-  return instance;
+  const icon = source ? source.createInstance() : await createMaterialIconTextNode(name);
+  return applyIcon(icon, node, warnings, source);
 }
 
 function imagePaintOn(node) {
@@ -6367,36 +6740,39 @@ function figureImageLayer(instance) {
 }
 
 function localFigureAsset(src) {
-  if (typeof src !== 'string' || !src.startsWith('a1img://')) return null;
-  return localFigureAssets.get(src.slice('a1img://'.length)) || null;
+  const id = a1ImageIdFromRef(src);
+  return id ? localFigureAssets.get(id) || null : null;
 }
 
-function base64Bytes(value) {
-  const binary = atob(value);
-  const bytes = new Uint8Array(binary.length);
-  for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
-  return bytes;
-}
-
-async function applyLocalFigureImage(instance, src, warnings) {
+async function applyA1FigureImage(instance, src, warnings) {
+  const id = a1ImageIdFromRef(src);
+  if (!id) return false;
   const asset = localFigureAsset(src);
-  if (!asset) return false;
+  const publicUrl = publicA1ImageUrl(src, A1_FIGMA_IMAGE_LIBRARY_PUBLIC_BASE_URL);
   try {
-    const bytes = base64Bytes(asset.dataBase64);
-    if (bytes.byteLength === 0 || bytes.byteLength > LOCAL_FIGMA_IMAGE_MAX_BYTES) {
-      warnings.push('Local Figure image was not applied because it exceeds the 4 MB handoff limit.');
-      return true;
-    }
     const imageLayer = figureImageLayer(currentInstance(instance));
     if (!imageLayer) {
-      warnings.push('Local Figure image was received, but the Figure Image layer was not found.');
+      warnings.push('The A1 Figure image was resolved, but the Figure Image layer was not found.');
       return true;
     }
-    const image = figma.createImage(bytes);
+    let image;
+    if (asset) {
+      const bytes = base64ToBytes(asset.dataBase64);
+      if (bytes.byteLength === 0 || bytes.byteLength > LOCAL_FIGMA_IMAGE_MAX_BYTES) {
+        warnings.push('Local Figure image was not applied because it exceeds the 4 MB handoff limit.');
+        return true;
+      }
+      image = figma.createImage(bytes);
+    } else if (publicUrl) {
+      image = await figma.createImageAsync(publicUrl);
+    } else {
+      warnings.push(`A1 Figure image "${id}" is not available in this local handoff or the public Image Library.`);
+      return true;
+    }
     imageLayer.fills = [{ type: 'IMAGE', imageHash: image.hash, scaleMode: 'FILL' }];
     return true;
   } catch (error) {
-    warnings.push(`Local Figure image could not be applied: ${error.message}`);
+    warnings.push(`A1 Figure image "${id}" could not be applied: ${error.message}`);
     return true;
   }
 }
@@ -6454,8 +6830,8 @@ async function applyFigure(instance, node, warnings) {
     FIGURE_ASPECT_RATIOS.includes(props.aspectRatio) ? props.aspectRatio : '16:9',
     warnings,
   );
-  const appliedLocalImage = await applyLocalFigureImage(instance, props.src, warnings);
-  if (props.src && !appliedLocalImage) warnings.push('Figure source is retained as component metadata; edit the image fill directly in Figma when a visual needs to change.');
+  const appliedA1Image = await applyA1FigureImage(instance, props.src, warnings);
+  if (props.src && !appliedA1Image) warnings.push('Figure source is retained as component metadata; edit the image fill directly in Figma when a visual needs to change.');
 }
 
 async function importFigure(node, warnings) {
@@ -6884,7 +7260,7 @@ async function importSection(node, warnings) {
 }
 
 function sectionSlotJsonType(existing) {
-  if (existing.type === 'TEXT') return textSuggestion(existing).type;
+  if (existing.type === 'TEXT') return isMaterialIconTextNode(existing) ? 'Icon' : textSuggestion(existing).type;
   if (existing.type !== 'INSTANCE') return null;
   const componentName = registeredSetName(existing);
   return componentName ? (JSON_TYPE_BY_COMPONENT_NAME[componentName] || componentName) : null;
@@ -6921,6 +7297,8 @@ async function applyExistingSectionChildren(sectionInstance, node, warnings) {
         if (current.fontName !== figma.mixed) await figma.loadFontAsync(current.fontName);
         current.characters = child.content.fallback;
       }
+    } else if (child.type === 'Icon' && (current.type === 'TEXT' || current.type === 'INSTANCE')) {
+      await applyIcon(current, child, warnings);
     } else if (child.type === 'Button' && current.type === 'INSTANCE') {
       await applyButton(current, child, warnings);
     } else {
@@ -7624,6 +8002,32 @@ async function findTextColorVariable(token) {
     const name = canonicalKey(variable.name);
     return name === wanted || name.endsWith(wanted);
   });
+}
+
+function colorVariableNameMatches(variable, requestedName) {
+  const actual = canonicalKey(variable && variable.name);
+  const requested = canonicalKey(requestedName);
+  return Boolean(actual && requested && (actual === requested || actual.endsWith(requested)));
+}
+
+async function findIconColorVariable(color) {
+  const token = ICON_COLOR_VARIABLE_NAMES[color || 'default'] || ICON_COLOR_VARIABLE_NAMES.default;
+  const localVariables = await figma.variables.getLocalVariablesAsync('COLOR');
+  const local = localVariables.find((variable) => colorVariableNameMatches(variable, token));
+  if (local) return local;
+
+  try {
+    const stored = await readClientComponentKeyRegistry();
+    const key = configuredVariableKeyForName({ ...A1_FIGMA_COLOR_VARIABLE_KEYS, ...stored.variables.color }, token);
+    if (key && typeof figma.variables.importVariableByKeyAsync === 'function') {
+      const imported = await figma.variables.importVariableByKeyAsync(key);
+      if (imported) return imported;
+    }
+  } catch {
+    // Fall through to the enabled-library lookup.
+  }
+
+  return findLibraryColorVariable((variable) => colorVariableNameMatches(variable, token));
 }
 
 function textStyleRequestForNode(node) {
@@ -9163,6 +9567,7 @@ function collectTextLayers(root, out = []) {
   const node = liveNode(root);
   if (!node || isAuditReportNode(node) || !isVisibleForTextConversion(node)) return out;
   if (node.type === 'TEXT') {
+    if (isMaterialIconTextNode(node)) return out;
     out.push(node);
     return out;
   }
@@ -11505,6 +11910,7 @@ function collectAutoFixTargets(selection) {
     seen.add(current.id);
     if (['COMPONENT', 'COMPONENT_SET', 'SLOT'].includes(current.type) || isComponentImplementationNode(current)) return;
     if (current.type === 'TEXT') {
+      if (isMaterialIconTextNode(current)) return;
       if (textSuggestion(current).issues.length) targets.texts.push(current.id);
       return;
     }
@@ -11542,6 +11948,7 @@ function collectTextAutoFixTargets(selection) {
     if (['COMPONENT', 'COMPONENT_SET'].includes(current.type) || isComponentImplementationNode(current)) return;
     if (current.type === 'INSTANCE') return;
     if (current.type === 'TEXT') {
+      if (isMaterialIconTextNode(current)) return;
       if (textSuggestion(current).issues.length) out.push(current.id);
       return;
     }
@@ -11705,19 +12112,6 @@ function supportedInstanceSlots(instance) {
   }
 }
 
-const AUDIT_SUPPORTED_PRIVATE_COMPONENTS = new Set([
-  'Checkbox Option',
-  'Definition List Item',
-  'Icon',
-  'Menu Item',
-  'Nav icon',
-  'Page Nav Item',
-  'Radio Option',
-  'Segmented Control Item',
-  'Tab',
-  'Tab Item',
-  'Top Header Nav Item',
-]);
 const AUDIT_REPORT_COMPONENT_NAME = 'A1 Audit Report Card';
 const AUDIT_REPORT_TEMPLATE_KEY = 'a1-audit-template';
 const AUDIT_IGNORE_MARKER = ' [A1 ignore]';
@@ -11822,6 +12216,20 @@ function auditSelection(selection) {
       }
     } catch {
       // Ignore plugin data read failures on transient Figma nodes.
+    }
+
+    if (current.type === 'TEXT' && isMaterialIconTextNode(current)) {
+      report.supportedComponents += 1;
+      if (!iconColorFromNode(current)) {
+        report.missingColorValues += 1;
+        addAuditIssue(report, current, `${auditNodeName(current)} icon color is not bound to an A1 semantic color variable.`, {
+          severity: 'minor',
+          category: 'Color token',
+          groupKey: 'icon-color-variable',
+          metricKeys: ['color-values'],
+        });
+      }
+      return;
     }
 
     if (current.type === 'TEXT') {
@@ -12847,6 +13255,8 @@ function applyBreakpointToTree(root, breakpoint, warnings) {
     const live = liveNode(node) || node;
     if (!live) return;
     try {
+      const visibility = readBreakpointVisibility(live);
+      if (visibility) live.visible = resolveBreakpointVisibility(visibility)[breakpoint] !== false;
       if (live.type === 'INSTANCE') {
         const componentName = registeredSetName(live);
         if (componentName === 'Page Layout' || componentName === 'Top Header') {
@@ -12964,7 +13374,7 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
   const primaryRoot = breakpointRootByKey(selected, primary) || roots[0];
   const componentName = primaryRoot.type === 'INSTANCE' ? registeredSetName(primaryRoot) : null;
   const result = componentName && EXPORTERS[componentName]
-    ? EXPORTERS[componentName](primaryRoot)
+    ? withBreakpointVisibility(primaryRoot, EXPORTERS[componentName](primaryRoot))
     : exportContainerNode(primaryRoot);
   const columnsById = new Map();
   const warnings = [...(result.warnings || [])];
@@ -13574,13 +13984,11 @@ async function exportLinkedPage(link) {
   if (!root) throw new Error('The linked A1 page root was not found on this Figma page. Render it from A1 first.');
   const componentName = root.type === 'INSTANCE' ? registeredSetName(root) : null;
   const result = componentName && EXPORTERS[componentName]
-    ? EXPORTERS[componentName](root)
+    ? withBreakpointVisibility(root, EXPORTERS[componentName](root))
     : exportContainerNode(root);
   const { node, warnings } = result;
   const assets = await collectPageFigureAssets(root, node, warnings);
-  const layout = node && node.type === 'PageLayout'
-    ? node
-    : { type: 'PageLayout', regions: [{ id: 'main', name: 'Main', nodes: node.nodes || [] }] };
+  const layout = pageLayoutForPageExport(node);
   return {
     json: JSON.stringify({
       schemaVersion: '1.0.0',
@@ -13607,12 +14015,17 @@ async function exportNewA1Page(project) {
   if (!project || typeof project.id !== 'string' || !project.id) {
     throw new Error('Choose an A1 project before creating a page.');
   }
-  const root = topmostExportableNode();
-  if (!root || root.type !== 'FRAME' || !canExportContainer(root)) {
-    throw new Error('Select one top-level Figma frame with supported A1 content before creating a page.');
+  let root = liveNode(topmostExportableNode());
+  const isPageLayout = root && root.type === 'INSTANCE' && registeredSetName(root) === 'Page Layout';
+  if (!root || (!isPageLayout && (root.type !== 'FRAME' || !canExportContainer(root)))) {
+    throw new Error('Select one top-level Figma frame with supported A1 content, or one A1 Page Layout instance, before creating a page.');
   }
-  const { node, warnings } = exportContainerNode(root);
+  const { node, warnings } = isPageLayout ? exportPageLayout(root) : exportContainerNode(root);
   const assets = await collectPageFigureAssets(root, node, warnings);
+  root = liveNode(root);
+  if (!root) {
+    throw new Error('The selected Figma root changed while it was being exported. Select it again and retry.');
+  }
   const title = pageTitleFromFigmaFrame(root);
   const linkId = createPageLinkId();
   const projectName = typeof project.name === 'string' && project.name.trim() ? project.name.trim() : project.id;
@@ -13631,7 +14044,7 @@ async function exportNewA1Page(project) {
       page: {
         id: `figma-${String(root.id).replace(/[^a-zA-Z0-9_-]+/g, '-')}`,
         name: title,
-        layout: { type: 'PageLayout', regions: [{ id: 'main', name: 'Main', nodes: node.nodes || [] }] },
+        layout: pageLayoutForPageExport(node),
       },
     }, null, 2),
     warnings,
@@ -13949,13 +14362,24 @@ function exportPageLayout(instance) {
   const children = [];
   const header = pageLayoutTopHeader(instance);
   if (header) {
-    const result = exportTopHeader(header);
-    children.push(result.node);
-    for (const warning of result.warnings) warnings.push(warning);
+    try {
+      const result = exportTopHeader(header);
+      children.push(result.node);
+      for (const warning of result.warnings) warnings.push(warning);
+    } catch (error) {
+      warnings.push(`The Page Layout Top Header changed during export and was skipped: ${error.message}`);
+    }
   }
   const slot = pageLayoutContentSlot(instance);
-  if (slot) children.push(...exportFreeContent(slot, warnings));
-  else warnings.push('No Page Content Slot was found — only the Top Header was exported.');
+  if (slot) {
+    try {
+      children.push(...exportFreeContent(slot, warnings));
+    } catch (error) {
+      warnings.push(`The Page Content Slot changed during export and was skipped: ${error.message}`);
+    }
+  } else {
+    warnings.push('No Page Content Slot was found — only the Top Header was exported.');
+  }
   // Breakpoint variants and unsupported chrome slots are visual preview state;
   // PageLayout JSON exports the supported top header + main content contract.
   // The playground-preview flags suppress the configurator's placeholder
@@ -15121,6 +15545,16 @@ async function handleUpdate(text) {
   const nodes = [];
   collectSupportedNodes(data, nodes);
   if (selection.length === 1 && selection[0].type === 'TEXT') {
+    if (isMaterialIconTextNode(selection[0])) {
+      const iconNode = nodes.find((entry) => entry.type === 'Icon');
+      if (!iconNode) return postError('The JSON has no Icon node to apply to the selected Material icon.');
+      const warnings = [];
+      await applyIcon(selection[0], iconNode, warnings);
+      writeBreakpointVisibility(selection[0], iconNode.visibility);
+      figma.notify('Updated the selected Icon from JSON.');
+      postPluginMessage({ type: 'update-result', componentName: 'Icon', warnings });
+      return;
+    }
     const textNode = nodes.find((entry) => ['Heading', 'Paragraph', 'Link'].includes(entry.type));
     if (!textNode) return postError('The JSON has no Heading, Paragraph, or Link node to apply to the selected text layer.');
     const warnings = [];
@@ -15131,6 +15565,7 @@ async function handleUpdate(text) {
       text.characters = textNode.content.fallback;
     }
     await applyInlineLinkRanges(selection[0], textNode.content && textNode.content.inlineLinks, warnings);
+    writeBreakpointVisibility(selection[0], textNode.visibility);
     figma.notify('Updated the selected text layer from JSON.');
     postPluginMessage({ type: 'update-result', componentName: textNode.type, warnings });
     return;
@@ -15140,6 +15575,7 @@ async function handleUpdate(text) {
     if (!stackNode) return postError('The JSON has no Stack node to apply to the selected auto-layout frame.');
     const warnings = [];
     await applyStack(selection[0], stackNode, warnings);
+    writeBreakpointVisibility(selection[0], stackNode.visibility);
     syncStackPropsName(selection[0]);
     if (Array.isArray(stackNode.children) && stackNode.children.length > 0) {
       warnings.push('Child nodes were not applied — updating a selected Stack changes its layout properties only. Use Render on canvas to create its child tree.');
@@ -15153,6 +15589,7 @@ async function handleUpdate(text) {
     if (!iconNode) return postError('The JSON has no Icon node to apply to the selected Material icon.');
     const warnings = [];
     await applyIcon(selection[0], iconNode, warnings);
+    writeBreakpointVisibility(selection[0], iconNode.visibility);
     figma.notify('Updated the selected Icon from JSON.');
     postPluginMessage({ type: 'update-result', componentName: 'Icon', warnings });
     return;
@@ -15172,6 +15609,7 @@ async function handleUpdate(text) {
   }
   const warnings = [];
   await APPLIERS[componentName](target, node, warnings);
+  writeBreakpointVisibility(target, node.visibility);
   if (componentName === 'Section') {
     await applyExistingSectionChildren(target, node, warnings);
   } else if (componentName === 'Button Container') {
@@ -15222,6 +15660,7 @@ function relaunchDescription(target, selectionCount) {
     const componentName = registeredSetName(target) || componentSetName(target);
     if (componentName) return `Open A1:Figma to edit this ${componentName}.`;
   }
+  if (target && target.type === 'TEXT' && isMaterialIconTextNode(target)) return 'Open A1:Figma to configure this Icon.';
   if (target && target.type === 'TEXT') return 'Open A1:Figma to configure this text layer.';
   if (selectionCount > 1) return 'Open A1:Figma to inspect the selected layers.';
   return 'Open A1:Figma for this page.';
@@ -15244,6 +15683,18 @@ function postSelectionState() {
   const conversionSuggestions = conversionRecommendation ? conversionRecommendation.suggestions : [];
   let target = selection.length === 1 ? liveNode(selection[0]) : null;
   updateRelaunchData(selection, target);
+  if (target && target.type === 'TEXT' && isMaterialIconTextNode(target)) {
+    postPluginMessage({
+      type: 'selection',
+      exportable: true,
+      componentName: 'Icon',
+      autoFixAllCount,
+      selectionCount,
+      conversionRecommendation,
+      conversionSuggestions
+    });
+    return;
+  }
   if (target && target.type === 'TEXT') {
     const suggestion = textSuggestion(target);
     const review = suggestion.issues.length ? { issues: suggestion.issues, suggestion } : null;
@@ -15636,6 +16087,7 @@ figma.ui.onmessage = async (message) => {
         figma.ui.resize(size.width, size.height);
       }
     }
+    if (message.type === 'set-breakpoint-visibility') handleSetBreakpointVisibility(message);
     if (message.type === 'close-plugin') figma.closePlugin();
     if (message.type === 'set-linked-page-live') {
       linkedPageLiveLink = message.enabled === true ? message.link : null;

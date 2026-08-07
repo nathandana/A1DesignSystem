@@ -256,6 +256,11 @@ export interface ComponentNode {
    * responsive objects inline, so this is for future editor ergonomics.
    */
   responsive?: Record<string, ResponsiveDefinition<unknown>>;
+  /**
+   * Whether this node is rendered at each viewport breakpoint. Values cascade
+   * from xs through xl like other A1 responsive objects; omitted means visible.
+   */
+  visibility?: ResponsiveDefinition<boolean>;
   /** Primary text content (resolved through the labels helper). */
   content?: ContentDefinition;
   /** Accessibility metadata mapped onto the component. */
