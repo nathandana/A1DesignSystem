@@ -20,6 +20,12 @@ import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 import { UtilityControls } from './UtilityControls.jsx'
 import { LabelLookupButton } from './LabelLookupDialog.jsx'
 import { ALL_CATALOG_ENTRIES } from './componentCatalog.ts'
+import { useT } from '../labels/useT.js'
+import {
+  RESPONSIVE_VISIBILITY_BREAKPOINTS,
+  visibilityFromBreakpoints,
+  visibleBreakpoints,
+} from './responsiveVisibility.js'
 
 // Layout
 import { Controls as SectionControls } from '../pages/components/detail/section.jsx'
@@ -2337,7 +2343,9 @@ export function EditorPropsPanel({
   onSetNodeRepeat,
   onSetNodeCollections,
   onSetNodeUtilities,
+  onSetNodeVisibility,
 }) {
+  const t = useT()
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
 
@@ -2420,6 +2428,25 @@ export function EditorPropsPanel({
     />
   )
 
+  const VisibilitySection = (
+    <CheckboxGroup
+      label={t('app.editor.breakpointVisibilityLabel', 'Visible at breakpoints')}
+      hint={t(
+        'app.editor.breakpointVisibilityHint',
+        'Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.',
+      )}
+      size="compact"
+      inline
+      disabled={lockEnforced && !!node.lock?.node}
+      value={visibleBreakpoints(node.visibility)}
+      onChange={(next) => onSetNodeVisibility?.(node.id, visibilityFromBreakpoints(next))}
+      options={RESPONSIVE_VISIBILITY_BREAKPOINTS.map((breakpoint) => ({
+        value: breakpoint,
+        label: breakpoint,
+      }))}
+    />
+  )
+
   if (!Controls) {
     return (
       <Stack gap="sm">
@@ -2429,6 +2456,7 @@ export function EditorPropsPanel({
         <Paragraph size="sm" color="muted">
           No configurator is registered for this component type.
         </Paragraph>
+        {VisibilitySection}
         {UtilitiesSection}
         {ConvertSection}
       </Stack>
@@ -2590,6 +2618,7 @@ export function EditorPropsPanel({
       )}
       {lockNote}
       {(lock || lockAuthoring) ? lockedControls : controls}
+      {VisibilitySection}
       {!lockAuthoring && UtilitiesSection}
       {BindSection}
       {CollectionSection}

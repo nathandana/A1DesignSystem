@@ -6,6 +6,7 @@
  */
 import type { A11yDefinition, ComponentNode, ComponentProps, PageDefinition } from './pageTypes';
 import { utilityClassesFor } from './utilityRegistry';
+import { responsiveVisibilityClasses } from './responsiveVisibility.js';
 
 function escapeAttr(value: string): string {
   return value.replace(/"/g, '&quot;');
@@ -35,14 +36,15 @@ function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition
 
 function propsWithUtilityClass(node: ComponentNode): ComponentProps | undefined {
   const utilityClass = utilityClassesFor(node.type, node.utilities);
+  const visibilityClass = responsiveVisibilityClasses(node.visibility);
   const props = node.props ? { ...node.props } : undefined;
   if (props && (node.type === 'TextField' || node.type === 'TextareaField')) {
     delete props.labelKey;
   }
-  if (!utilityClass) return props;
+  if (!utilityClass && !visibilityClass) return props;
   return {
     ...(props ?? {}),
-    className: [props?.className, utilityClass].filter(Boolean).join(' '),
+    className: [props?.className, utilityClass, visibilityClass].filter(Boolean).join(' '),
   };
 }
 
