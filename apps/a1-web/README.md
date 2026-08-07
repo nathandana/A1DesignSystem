@@ -57,6 +57,8 @@ and
 [`supabase/migrations/20260729_a1_405_user_profile_management.sql`](supabase/migrations/20260729_a1_405_user_profile_management.sql)
 and
 [`supabase/migrations/20260731_a1_site_visit_analytics.sql`](supabase/migrations/20260731_a1_site_visit_analytics.sql)
+and
+[`supabase/migrations/20260801_a1_site_visit_context.sql`](supabase/migrations/20260801_a1_site_visit_context.sql)
 to existing workspaces before enabling role-based policies and administrator
 user management and visit analytics.
 
@@ -76,20 +78,37 @@ for the feature matrix, bootstrap guidance, enforcement boundaries and
 remaining follow-ups.
 
 Basic first-party visit analytics posts to
-`/.netlify/functions/visit-analytics`. Netlify supplies the client IP; the
-browser supplies only a generated visit ID and the current route without its
-query string. A 30-second heartbeat makes visit duration approximate. The
-administrator page at `/admin/analytics` reads the server-only audit table
-through `user-admin`. Opening a session performs an on-demand server-side
-lookup through ipapi.co for approximate city, region, country, time zone,
-coordinates, network, organization and ASN details. The enrichment is not
-stored in Supabase and lookup failures do not hide the recorded session.
+`/.netlify/functions/visit-analytics`. Netlify supplies the client IP,
+approximate geolocation, request ID, execution region and safe site/deploy
+metadata. The endpoint also records Netlify's user-agent category and a
+whitelist of browser-reported User-Agent, language and Client Hints headers so
+the analytics page can infer device, browser and platform. Browser-reported
+values are optional and can be missing or spoofed. The browser JSON body still
+supplies only a generated visit ID and the current route without its query
+string. A 30-second heartbeat makes visit duration approximate.
+
+The administrator page at `/admin/analytics` reads the server-only audit table
+through `user-admin` and provides summary metrics, daily and page/device charts,
+an approximate visitor map, a session table and a non-persistent synthetic-data
+mode. Sample mode uses documentation-only IP ranges, stays in the browser and
+does not affect live metrics. Opening a session performs an on-demand
+server-side lookup through ipapi.co for approximate city, region, country, time
+zone, coordinates, network, organization and ASN details. That additional IP
+enrichment is not stored in Supabase and lookup failures do not hide the
+recorded session.
 Because full IP addresses are personal data in many jurisdictions, production
 deployments need an appropriate privacy notice and an explicit retention policy.
 
 ## Architecture
 
 A single-page app with **no router dependency** — navigation is driven by a `?page=` query param managed with the History API.
+
+Page definitions may give any component node a responsive `visibility` value,
+for example `{ "xs": false, "md": true }`. Values cascade from xs through xl,
+matching other A1 responsive props. The page editor’s **Visible at breakpoints**
+control resolves that syntax into five explicit choices; an unchecked choice
+removes the node from layout and the accessibility tree at that exact viewport
+range. Select a hidden node from the Layers tree to make it visible again.
 
 - **Entry:** [src/main.jsx](src/main.jsx) — mounts the `App`, owns global state (theme, color scheme, locale, reduced-motion, contrast, active page, component search, detail tab), and renders the `PageLayout` shell, `TopHeader`, and the settings `Menu`.
 - **Shell:** Uses the design system's `PageLayout` with three slots:

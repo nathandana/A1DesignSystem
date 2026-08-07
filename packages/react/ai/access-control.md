@@ -63,7 +63,7 @@ These recommendations are the policy implemented in
 | Priority Guide editor | Editor | Shared content-planning authoring |
 | Theme editor | Administrator | High-impact preview that changes shared visual foundations |
 | Administration | Administrator | Account list, detailed profiles, invitations, role assignment, deletion, lifecycle and login history, and preview entry point |
-| Visit analytics | Administrator | First-party visit list, full session timeline and on-demand approximate IP location and network details |
+| Visit analytics | Administrator | First-party metrics, charts, visitor map, visit list, device/request context, full session timeline and on-demand approximate IP location and network details |
 | Virtual team | Administrator | Development-only administrative automation |
 
 Navigation visibility is convenience, not authorization. Direct URLs render an
@@ -87,6 +87,9 @@ Apply these migrations to an existing workspace:
 - `apps/a1-web/supabase/migrations/20260731_a1_site_visit_analytics.sql` adds
   the browser-inaccessible `a1_site_visit_audit` table and the service-only
   recorder used by the visit-analytics Netlify function.
+- `apps/a1-web/supabase/migrations/20260801_a1_site_visit_context.sql` adds the
+  whitelisted Netlify geolocation/request and browser-reported device context
+  used by charts, the visitor map and session details.
 
 Bootstrap the first administrator through the Supabase dashboard by setting
 `auth.users.raw_app_meta_data.role` to `admin`. After that, administrators can
@@ -144,11 +147,22 @@ session adds the account ID and email; it is never accepted from request JSON.
 A visit is one browser-tab session with a 30-minute inactivity boundary. The
 database stores every IP observed during that session, ordered route paths,
 page-view timestamps, the visit start, last heartbeat and best-effort end time.
-Visit length is therefore approximate. Query strings, fragments, page content,
-geolocation, referrers, fingerprints and user-agent strings are not stored.
+Visit length is therefore approximate. It also stores a whitelisted context
+object: Netlify geolocation, request ID, execution region, deploy/site metadata
+and the trusted `Netlify-Agent-Category` header; plus raw User-Agent,
+Accept-Language and available User-Agent Client Hints from the request. The
+device type, browser and platform are inferred from those headers. Browser
+headers are optional client claims, not verified identity, and can be missing
+or spoofed. The recorder truncates string fields and does not store cookies,
+authorization headers, Netlify account metadata, skew-protection tokens,
+referrers, query strings, fragments, page content or fingerprints.
+
 Browser roles cannot read or write the table directly; the public endpoint can
 only call the service-role recorder, and the administrator-authenticated
-`user-admin` function performs reads for `/admin/analytics`.
+`user-admin` function performs reads for `/admin/analytics`. The page summarizes
+the selected live or sample dataset with metrics, daily/page/device charts and
+a map of sessions that have Netlify coordinates. Sample mode is deterministic,
+uses reserved documentation IP ranges and never writes to Supabase.
 
 Opening a session-details dialog sends each stored IP address from the Netlify
 function to ipapi.co and returns a limited projection of approximate location,

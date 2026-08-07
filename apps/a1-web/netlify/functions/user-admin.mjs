@@ -10,7 +10,7 @@ const AUDIT_LIMIT = 50
 const AUDIT_PAGE_SIZE = 1000
 const AUDIT_COLUMNS = 'id,actor_user_id,actor_email,target_user_id,target_email,action,previous_role,new_role,created_at'
 const LOGIN_AUDIT_COLUMNS = 'id,user_id,user_email,signed_in_at'
-const VISIT_AUDIT_COLUMNS = 'session_id,user_id,user_email,ip_addresses,pages,started_at,last_seen_at,ended_at'
+const VISIT_AUDIT_COLUMNS = 'session_id,user_id,user_email,ip_addresses,pages,visitor_context,started_at,last_seen_at,ended_at'
 const SESSION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const IP_LOOKUP_BASE_URL = 'https://ipapi.co'
 
@@ -236,7 +236,7 @@ async function listVisitAudit(client) {
       .range(from, from + AUDIT_PAGE_SIZE - 1)
 
     if (error) {
-      throw new HttpError(503, 'Visit analytics is not ready. Apply the site-visit analytics migration.')
+      throw new HttpError(503, 'Visit analytics is not ready. Apply the latest site-visit analytics migrations.')
     }
     const batch = data ?? []
     entries.push(...batch)
@@ -255,7 +255,7 @@ async function getVisitDetails(client, sessionId, dependencies) {
     .limit(1)
 
   if (error) {
-    throw new HttpError(503, 'Visit analytics is not ready. Apply the site-visit analytics migration.')
+    throw new HttpError(503, 'Visit analytics is not ready. Apply the latest site-visit analytics migrations.')
   }
   const visit = data?.[0]
   if (!visit) throw new HttpError(404, 'Visit not found.')

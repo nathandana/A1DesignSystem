@@ -1282,9 +1282,243 @@
         },
         "visitAnalyticsDescription": {
           "$type": "string",
-          "$value": "Review first-party visit IP addresses, pages viewed and approximate visit length.",
-          "$description": "Description of the limited data recorded for basic site-visit analytics.",
-          "locale": { "es": "Revisa las direcciones IP de las visitas propias, las páginas vistas y la duración aproximada de las visitas.", "fr": "Consultez les adresses IP des visites directes, les pages consultées et la durée approximative des visites.", "de": "Prüfen Sie IP-Adressen aus Erstanbieterdaten, aufgerufene Seiten und die ungefähre Besuchsdauer.", "pt": "Revise os endereços IP das visitas diretas, as páginas visualizadas e a duração aproximada das visitas.", "ja": "ファーストパーティーの訪問 IP アドレス、閲覧ページ、おおよその訪問時間を確認します。", "zh": "查看第一方访问 IP 地址、浏览的页面和大致访问时长。", "ar": "راجع عناوين IP للزيارات المباشرة والصفحات المعروضة والمدة التقريبية للزيارة." }
+          "$value": "Review first-party visits, device context, pages viewed, locations and approximate visit length.",
+          "$description": "Description of the data shown in administrator visit analytics.",
+          "locale": { "es": "Revisa las visitas propias, el contexto del dispositivo, las páginas vistas, las ubicaciones y la duración aproximada.", "fr": "Consultez les visites directes, le contexte des appareils, les pages vues, les emplacements et la durée approximative.", "de": "Prüfen Sie Erstanbieterbesuche, Gerätekontext, aufgerufene Seiten, Standorte und die ungefähre Dauer.", "pt": "Revise visitas diretas, contexto do dispositivo, páginas visualizadas, locais e duração aproximada.", "ja": "ファーストパーティーの訪問、デバイス情報、閲覧ページ、位置、おおよその訪問時間を確認します。", "zh": "查看第一方访问、设备信息、浏览页面、位置和大致访问时长。", "ar": "راجع الزيارات المباشرة وسياق الجهاز والصفحات المعروضة والمواقع والمدة التقريبية." }
+        },
+        "totalVisits": {
+          "$type": "string",
+          "$value": "Visits",
+          "$description": "Label for the total number of recorded visit sessions.",
+          "locale": { "es": "Visitas", "fr": "Visites", "de": "Besuche", "pt": "Visitas", "ja": "訪問", "zh": "访问次数", "ar": "الزيارات" }
+        },
+        "uniqueIpAddresses": {
+          "$type": "string",
+          "$value": "Unique IP addresses",
+          "$description": "Metric label for distinct recorded IP addresses.",
+          "locale": { "es": "Direcciones IP únicas", "fr": "Adresses IP uniques", "de": "Eindeutige IP-Adressen", "pt": "Endereços IP únicos", "ja": "一意の IP アドレス", "zh": "唯一 IP 地址", "ar": "عناوين IP الفريدة" }
+        },
+        "averageVisitLength": {
+          "$type": "string",
+          "$value": "Average visit length",
+          "$description": "Metric label for average approximate visit duration.",
+          "locale": { "es": "Duración media de la visita", "fr": "Durée moyenne des visites", "de": "Durchschnittliche Besuchsdauer", "pt": "Duração média da visita", "ja": "平均訪問時間", "zh": "平均访问时长", "ar": "متوسط مدة الزيارة" }
+        },
+        "visitsOverTime": {
+          "$type": "string",
+          "$value": "Visits over time",
+          "$description": "Title for the daily visit chart.",
+          "locale": { "es": "Visitas a lo largo del tiempo", "fr": "Visites au fil du temps", "de": "Besuche im Zeitverlauf", "pt": "Visitas ao longo do tempo", "ja": "訪問数の推移", "zh": "访问趋势", "ar": "الزيارات بمرور الوقت" }
+        },
+        "visitsOverTimeDescription": {
+          "$type": "string",
+          "$value": "Recorded sessions during the last 14 days.",
+          "$description": "Description for the daily visit chart.",
+          "locale": { "es": "Sesiones registradas durante los últimos 14 días.", "fr": "Sessions enregistrées au cours des 14 derniers jours.", "de": "Aufgezeichnete Sitzungen der letzten 14 Tage.", "pt": "Sessões registradas nos últimos 14 dias.", "ja": "過去 14 日間に記録されたセッションです。", "zh": "过去 14 天记录的会话。", "ar": "الجلسات المسجّلة خلال آخر 14 يومًا." }
+        },
+        "deviceBreakdown": {
+          "$type": "string",
+          "$value": "Device breakdown",
+          "$description": "Title for the visit device-type chart.",
+          "locale": { "es": "Distribución por dispositivo", "fr": "Répartition par appareil", "de": "Geräteverteilung", "pt": "Distribuição por dispositivo", "ja": "デバイスの内訳", "zh": "设备分布", "ar": "توزيع الأجهزة" }
+        },
+        "deviceBreakdownDescription": {
+          "$type": "string",
+          "$value": "Device type inferred from Netlify and browser-reported request headers.",
+          "$description": "Accuracy note for the device-type chart.",
+          "locale": { "es": "Tipo de dispositivo inferido de Netlify y de los encabezados informados por el navegador.", "fr": "Type d’appareil déduit de Netlify et des en-têtes déclarés par le navigateur.", "de": "Aus Netlify- und browsergemeldeten Anfrage-Headern abgeleiteter Gerätetyp.", "pt": "Tipo de dispositivo inferido do Netlify e dos cabeçalhos informados pelo navegador.", "ja": "Netlify とブラウザーが報告するリクエストヘッダーから推定したデバイス種別です。", "zh": "根据 Netlify 和浏览器报告的请求标头推断的设备类型。", "ar": "نوع الجهاز المستنتج من Netlify وترويسات الطلب التي يبلغ عنها المتصفح." }
+        },
+        "topPages": {
+          "$type": "string",
+          "$value": "Top pages",
+          "$description": "Title for the most-viewed routes chart.",
+          "locale": { "es": "Páginas principales", "fr": "Pages principales", "de": "Top-Seiten", "pt": "Principais páginas", "ja": "上位のページ", "zh": "热门页面", "ar": "أهم الصفحات" }
+        },
+        "topPagesDescription": {
+          "$type": "string",
+          "$value": "Most-viewed routes in the selected dataset.",
+          "$description": "Description for the most-viewed routes chart.",
+          "locale": { "es": "Rutas más vistas en el conjunto de datos seleccionado.", "fr": "Itinéraires les plus consultés dans le jeu de données sélectionné.", "de": "Meistaufgerufene Routen im ausgewählten Datensatz.", "pt": "Rotas mais visualizadas no conjunto de dados selecionado.", "ja": "選択したデータセットで最も閲覧されたルートです。", "zh": "所选数据集中浏览次数最多的路由。", "ar": "المسارات الأكثر مشاهدة في مجموعة البيانات المحددة." }
+        },
+        "visitorMap": {
+          "$type": "string",
+          "$value": "Visitor map",
+          "$description": "Heading and accessible name for the approximate visitor-location map.",
+          "locale": { "es": "Mapa de visitantes", "fr": "Carte des visiteurs", "de": "Besucherkarte", "pt": "Mapa de visitantes", "ja": "訪問者マップ", "zh": "访客地图", "ar": "خريطة الزوار" }
+        },
+        "visitorMapDescription": {
+          "$type": "string",
+          "$value": "Approximate locations supplied by Netlify. A visit appears after coordinates are recorded.",
+          "$description": "Accuracy and availability note for the visitor-location map.",
+          "locale": { "es": "Ubicaciones aproximadas proporcionadas por Netlify. Una visita aparece después de registrar las coordenadas.", "fr": "Emplacements approximatifs fournis par Netlify. Une visite apparaît après l’enregistrement des coordonnées.", "de": "Von Netlify bereitgestellte ungefähre Standorte. Ein Besuch erscheint nach der Aufzeichnung von Koordinaten.", "pt": "Locais aproximados fornecidos pelo Netlify. Uma visita aparece após o registro das coordenadas.", "ja": "Netlify が提供するおおよその位置です。座標が記録されると訪問が表示されます。", "zh": "由 Netlify 提供的大致位置。记录坐标后，访问才会显示。", "ar": "مواقع تقريبية يوفّرها Netlify. تظهر الزيارة بعد تسجيل الإحداثيات." }
+        },
+        "visitorLocationsCaption": {
+          "$type": "string",
+          "$value": "Visitor locations and visit counts",
+          "$description": "Accessible caption for the location list paired with the visitor map.",
+          "locale": { "es": "Ubicaciones de visitantes y recuentos de visitas", "fr": "Emplacements des visiteurs et nombre de visites", "de": "Besucherstandorte und Besuchszahlen", "pt": "Locais dos visitantes e contagens de visitas", "ja": "訪問者の位置と訪問数", "zh": "访客位置和访问次数", "ar": "مواقع الزوار وأعداد الزيارات" }
+        },
+        "noLocationData": {
+          "$type": "string",
+          "$value": "No location data recorded",
+          "$description": "Empty message for analytics without Netlify coordinates.",
+          "locale": { "es": "No hay datos de ubicación registrados", "fr": "Aucune donnée de localisation enregistrée", "de": "Keine Standortdaten aufgezeichnet", "pt": "Nenhum dado de localização registrado", "ja": "位置データは記録されていません", "zh": "未记录位置数据", "ar": "لا توجد بيانات موقع مسجّلة" }
+        },
+        "showSampleData": {
+          "$type": "string",
+          "$value": "Show sample data",
+          "$description": "Action that replaces live analytics with synthetic browser-only sessions.",
+          "locale": { "es": "Mostrar datos de muestra", "fr": "Afficher les données d’exemple", "de": "Beispieldaten anzeigen", "pt": "Mostrar dados de exemplo", "ja": "サンプルデータを表示", "zh": "显示示例数据", "ar": "عرض بيانات نموذجية" }
+        },
+        "showLiveData": {
+          "$type": "string",
+          "$value": "Show live data",
+          "$description": "Action that returns from synthetic analytics to live sessions.",
+          "locale": { "es": "Mostrar datos reales", "fr": "Afficher les données réelles", "de": "Live-Daten anzeigen", "pt": "Mostrar dados reais", "ja": "ライブデータを表示", "zh": "显示实时数据", "ar": "عرض البيانات الفعلية" }
+        },
+        "sampleDataTitle": {
+          "$type": "string",
+          "$value": "Sample analytics data",
+          "$description": "Heading for the synthetic analytics-data notice.",
+          "locale": { "es": "Datos de análisis de muestra", "fr": "Données d’analyse d’exemple", "de": "Beispiel-Analysedaten", "pt": "Dados de análise de exemplo", "ja": "サンプル分析データ", "zh": "示例分析数据", "ar": "بيانات تحليلات نموذجية" }
+        },
+        "sampleDataDescription": {
+          "$type": "string",
+          "$value": "This synthetic data is shown only in your browser. It is not saved and does not affect live metrics.",
+          "$description": "Privacy notice for the non-persistent analytics sample mode.",
+          "locale": { "es": "Estos datos sintéticos se muestran solo en tu navegador. No se guardan ni afectan a las métricas reales.", "fr": "Ces données synthétiques s’affichent uniquement dans votre navigateur. Elles ne sont pas enregistrées et n’affectent pas les mesures réelles.", "de": "Diese synthetischen Daten werden nur in Ihrem Browser angezeigt. Sie werden nicht gespeichert und beeinflussen keine Live-Metriken.", "pt": "Esses dados sintéticos são exibidos apenas no navegador. Eles não são salvos nem afetam as métricas reais.", "ja": "この合成データはブラウザー内にのみ表示されます。保存されず、ライブ指標には影響しません。", "zh": "这些合成数据仅显示在您的浏览器中。它不会保存，也不会影响实时指标。", "ar": "تُعرض هذه البيانات الاصطناعية في متصفحك فقط. لا تُحفظ ولا تؤثر في المقاييس الفعلية." }
+        },
+        "location": {
+          "$type": "string",
+          "$value": "Location",
+          "$description": "Column label for a visit's approximate location.",
+          "locale": { "es": "Ubicación", "fr": "Emplacement", "de": "Standort", "pt": "Local", "ja": "位置", "zh": "位置", "ar": "الموقع" }
+        },
+        "device": {
+          "$type": "string",
+          "$value": "Device",
+          "$description": "Label for the inferred visitor device type.",
+          "locale": { "es": "Dispositivo", "fr": "Appareil", "de": "Gerät", "pt": "Dispositivo", "ja": "デバイス", "zh": "设备", "ar": "الجهاز" }
+        },
+        "deviceDesktop": {
+          "$type": "string",
+          "$value": "Desktop",
+          "$description": "Inferred desktop device category.",
+          "locale": { "es": "Escritorio", "fr": "Ordinateur", "de": "Desktop", "pt": "Desktop", "ja": "デスクトップ", "zh": "桌面设备", "ar": "سطح المكتب" }
+        },
+        "deviceMobile": {
+          "$type": "string",
+          "$value": "Mobile",
+          "$description": "Inferred mobile device category.",
+          "locale": { "es": "Móvil", "fr": "Mobile", "de": "Mobil", "pt": "Celular", "ja": "モバイル", "zh": "移动设备", "ar": "هاتف محمول" }
+        },
+        "deviceTablet": {
+          "$type": "string",
+          "$value": "Tablet",
+          "$description": "Inferred tablet device category.",
+          "locale": { "es": "Tableta", "fr": "Tablette", "de": "Tablet", "pt": "Tablet", "ja": "タブレット", "zh": "平板设备", "ar": "جهاز لوحي" }
+        },
+        "deviceAutomated": {
+          "$type": "string",
+          "$value": "Automated",
+          "$description": "Inferred bot, crawler or automated-client category.",
+          "locale": { "es": "Automatizado", "fr": "Automatisé", "de": "Automatisiert", "pt": "Automatizado", "ja": "自動化", "zh": "自动程序", "ar": "آلي" }
+        },
+        "deviceUnknown": {
+          "$type": "string",
+          "$value": "Unknown",
+          "$description": "Fallback when a visitor device category cannot be inferred.",
+          "locale": { "es": "Desconocido", "fr": "Inconnu", "de": "Unbekannt", "pt": "Desconhecido", "ja": "不明", "zh": "未知", "ar": "غير معروف" }
+        },
+        "browser": {
+          "$type": "string",
+          "$value": "Browser",
+          "$description": "Label for the inferred browser name.",
+          "locale": { "es": "Navegador", "fr": "Navigateur", "de": "Browser", "pt": "Navegador", "ja": "ブラウザー", "zh": "浏览器", "ar": "المتصفح" }
+        },
+        "platform": {
+          "$type": "string",
+          "$value": "Platform",
+          "$description": "Label for the visitor operating-system platform.",
+          "locale": { "es": "Plataforma", "fr": "Plateforme", "de": "Plattform", "pt": "Plataforma", "ja": "プラットフォーム", "zh": "平台", "ar": "المنصة" }
+        },
+        "userAgent": {
+          "$type": "string",
+          "$value": "User agent",
+          "$description": "Label for the raw browser-reported user-agent header.",
+          "locale": { "es": "Agente de usuario", "fr": "Agent utilisateur", "de": "User-Agent", "pt": "Agente do usuário", "ja": "ユーザーエージェント", "zh": "用户代理", "ar": "وكيل المستخدم" }
+        },
+        "acceptLanguage": {
+          "$type": "string",
+          "$value": "Accepted languages",
+          "$description": "Label for the browser-reported Accept-Language header.",
+          "locale": { "es": "Idiomas aceptados", "fr": "Langues acceptées", "de": "Akzeptierte Sprachen", "pt": "Idiomas aceitos", "ja": "受け入れ言語", "zh": "接受的语言", "ar": "اللغات المقبولة" }
+        },
+        "clientHintBrands": {
+          "$type": "string",
+          "$value": "Browser brands",
+          "$description": "Label for browser brand client hints.",
+          "locale": { "es": "Marcas del navegador", "fr": "Marques du navigateur", "de": "Browsermarken", "pt": "Marcas do navegador", "ja": "ブラウザーブランド", "zh": "浏览器品牌", "ar": "علامات المتصفح" }
+        },
+        "clientHintModel": {
+          "$type": "string",
+          "$value": "Device model",
+          "$description": "Label for an optional browser-reported device model client hint.",
+          "locale": { "es": "Modelo del dispositivo", "fr": "Modèle de l’appareil", "de": "Gerätemodell", "pt": "Modelo do dispositivo", "ja": "デバイスモデル", "zh": "设备型号", "ar": "طراز الجهاز" }
+        },
+        "clientHintPlatformVersion": {
+          "$type": "string",
+          "$value": "Platform version",
+          "$description": "Label for an optional browser-reported platform-version client hint.",
+          "locale": { "es": "Versión de la plataforma", "fr": "Version de la plateforme", "de": "Plattformversion", "pt": "Versão da plataforma", "ja": "プラットフォームのバージョン", "zh": "平台版本", "ar": "إصدار المنصة" }
+        },
+        "deviceAndRequestTitle": {
+          "$type": "string",
+          "$value": "Device and request context",
+          "$description": "Heading for device and browser-request fields in session details.",
+          "locale": { "es": "Contexto del dispositivo y la solicitud", "fr": "Contexte de l’appareil et de la requête", "de": "Geräte- und Anfragekontext", "pt": "Contexto do dispositivo e da solicitação", "ja": "デバイスとリクエストの情報", "zh": "设备和请求信息", "ar": "سياق الجهاز والطلب" }
+        },
+        "deviceAndRequestDescription": {
+          "$type": "string",
+          "$value": "Netlify supplies request and approximate location fields. Device and browser values are inferred from optional, browser-reported headers and can be missing or spoofed.",
+          "$description": "Trust-boundary note for stored request and device context.",
+          "locale": { "es": "Netlify proporciona los campos de solicitud y ubicación aproximada. Los valores del dispositivo y navegador se infieren de encabezados opcionales informados por el navegador y pueden faltar o falsificarse.", "fr": "Netlify fournit les champs de requête et de localisation approximative. Les valeurs d’appareil et de navigateur sont déduites d’en-têtes facultatifs déclarés par le navigateur et peuvent manquer ou être falsifiées.", "de": "Netlify liefert Anfrage- und ungefähre Standortfelder. Geräte- und Browserwerte werden aus optionalen, browsergemeldeten Headern abgeleitet und können fehlen oder manipuliert sein.", "pt": "O Netlify fornece campos de solicitação e localização aproximada. Os valores de dispositivo e navegador são inferidos de cabeçalhos opcionais informados pelo navegador e podem estar ausentes ou falsificados.", "ja": "Netlify はリクエストとおおよその位置情報を提供します。デバイスとブラウザーの値は任意のブラウザー報告ヘッダーから推定されるため、欠落または偽装される場合があります。", "zh": "Netlify 提供请求和大致位置信息。设备和浏览器值根据浏览器报告的可选标头推断，可能缺失或被伪造。", "ar": "يوفّر Netlify حقول الطلب والموقع التقريبي. تُستنتج قيم الجهاز والمتصفح من ترويسات اختيارية يبلغ عنها المتصفح وقد تكون مفقودة أو منتحلة." }
+        },
+        "netlifyContextTitle": {
+          "$type": "string",
+          "$value": "Netlify context",
+          "$description": "Heading for Netlify-supplied metadata in session details.",
+          "locale": { "es": "Contexto de Netlify", "fr": "Contexte Netlify", "de": "Netlify-Kontext", "pt": "Contexto do Netlify", "ja": "Netlify コンテキスト", "zh": "Netlify 信息", "ar": "سياق Netlify" }
+        },
+        "netlifyAgentCategory": {
+          "$type": "string",
+          "$value": "Netlify agent category",
+          "$description": "Label for Netlify's trusted user-agent category header.",
+          "locale": { "es": "Categoría de agente de Netlify", "fr": "Catégorie d’agent Netlify", "de": "Netlify-Agentenkategorie", "pt": "Categoria de agente do Netlify", "ja": "Netlify エージェントカテゴリ", "zh": "Netlify 代理类别", "ar": "فئة وكيل Netlify" }
+        },
+        "netlifyRequestId": {
+          "$type": "string",
+          "$value": "Netlify request ID",
+          "$description": "Label for the Netlify request identifier.",
+          "locale": { "es": "ID de solicitud de Netlify", "fr": "ID de requête Netlify", "de": "Netlify-Anfrage-ID", "pt": "ID da solicitação do Netlify", "ja": "Netlify リクエスト ID", "zh": "Netlify 请求 ID", "ar": "معرّف طلب Netlify" }
+        },
+        "netlifyServerRegion": {
+          "$type": "string",
+          "$value": "Netlify server region",
+          "$description": "Label for the Netlify function execution region.",
+          "locale": { "es": "Región del servidor de Netlify", "fr": "Région du serveur Netlify", "de": "Netlify-Serverregion", "pt": "Região do servidor Netlify", "ja": "Netlify サーバーリージョン", "zh": "Netlify 服务器区域", "ar": "منطقة خادم Netlify" }
+        },
+        "netlifyDeployContext": {
+          "$type": "string",
+          "$value": "Netlify deploy context",
+          "$description": "Label for the Netlify deployment context.",
+          "locale": { "es": "Contexto de despliegue de Netlify", "fr": "Contexte de déploiement Netlify", "de": "Netlify-Deploy-Kontext", "pt": "Contexto de implantação do Netlify", "ja": "Netlify デプロイコンテキスト", "zh": "Netlify 部署上下文", "ar": "سياق نشر Netlify" }
+        },
+        "netlifySite": {
+          "$type": "string",
+          "$value": "Netlify site",
+          "$description": "Label for the Netlify site name and URL.",
+          "locale": { "es": "Sitio de Netlify", "fr": "Site Netlify", "de": "Netlify-Website", "pt": "Site do Netlify", "ja": "Netlify サイト", "zh": "Netlify 站点", "ar": "موقع Netlify" }
         },
         "visitAnalyticsCaption": {
           "$type": "string",
@@ -1534,9 +1768,9 @@
         },
         "recordedVisitsDescription": {
           "$type": "string",
-          "$value": "Open a session to review its full timeline and approximate IP location and network details.",
+          "$value": "Open a session to review its full timeline, device context and approximate location and network details.",
           "$description": "Description above the visit table on the administrator analytics page.",
-          "locale": { "es": "Abre una sesión para revisar su cronología completa y los detalles aproximados de ubicación IP y red.", "fr": "Ouvrez une session pour consulter sa chronologie complète ainsi que les détails approximatifs de localisation IP et de réseau.", "de": "Öffnen Sie eine Sitzung, um den vollständigen Verlauf sowie ungefähre IP-Standort- und Netzwerkdetails zu prüfen.", "pt": "Abra uma sessão para revisar a linha do tempo completa e os detalhes aproximados de localização do IP e da rede.", "ja": "セッションを開いて、完全なタイムラインと IP のおおよその位置情報およびネットワーク情報を確認します。", "zh": "打开会话以查看完整时间线及大致 IP 位置和网络详情。", "ar": "افتح جلسة لمراجعة مخططها الزمني الكامل وتفاصيل موقع IP والشبكة التقريبية." }
+          "locale": { "es": "Abre una sesión para revisar su cronología completa, el contexto del dispositivo y los detalles aproximados de ubicación y red.", "fr": "Ouvrez une session pour consulter sa chronologie complète, le contexte de l’appareil et les détails approximatifs de localisation et de réseau.", "de": "Öffnen Sie eine Sitzung, um den vollständigen Verlauf, den Gerätekontext sowie ungefähre Standort- und Netzwerkdetails zu prüfen.", "pt": "Abra uma sessão para revisar a linha do tempo completa, o contexto do dispositivo e os detalhes aproximados de localização e rede.", "ja": "セッションを開いて、完全なタイムライン、デバイス情報、おおよその位置情報とネットワーク情報を確認します。", "zh": "打开会话以查看完整时间线、设备信息以及大致位置和网络详情。", "ar": "افتح جلسة لمراجعة مخططها الزمني الكامل وسياق الجهاز وتفاصيل الموقع والشبكة التقريبية." }
         },
         "refreshAnalytics": {
           "$type": "string",
@@ -5686,6 +5920,90 @@
             "ja": "設定",
             "zh": "配置",
             "ar": "تكوين"
+          }
+        },
+        "breakpointVisibilityLabel": {
+          "$type": "string",
+          "$value": "Visible at breakpoints",
+          "$description": "Legend for the page-editor control that chooses the viewport breakpoints where a selected element is rendered.",
+          "locale": {
+            "es": "Visible en los puntos de interrupción",
+            "fr": "Visible aux points de rupture",
+            "de": "An Breakpoints sichtbar",
+            "pt": "Visível nos pontos de interrupção",
+            "ja": "表示するブレークポイント",
+            "zh": "显示的断点",
+            "ar": "مرئي عند نقاط التوقف"
+          }
+        },
+        "breakpointVisibilityHint": {
+          "$type": "string",
+          "$value": "Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.",
+          "$description": "Helper text for the page-editor breakpoint visibility control.",
+          "locale": {
+            "es": "Elige dónde se incluye este elemento. Los puntos de interrupción no seleccionados lo eliminan del diseño y de la tecnología de asistencia.",
+            "fr": "Choisissez où cet élément est inclus. Les points de rupture non sélectionnés le retirent de la mise en page et des technologies d’assistance.",
+            "de": "Wählen Sie aus, wo dieses Element enthalten ist. Nicht ausgewählte Breakpoints entfernen es aus Layout und assistiven Technologien.",
+            "pt": "Escolha onde este elemento será incluído. Pontos de interrupção não selecionados o removem do layout e da tecnologia assistiva.",
+            "ja": "この要素を含める場所を選択します。選択されていないブレークポイントでは、レイアウトと支援技術から削除されます。",
+            "zh": "选择包含此元素的位置。未选择的断点会将其从布局和辅助技术中移除。",
+            "ar": "اختر مواضع تضمين هذا العنصر. تؤدي نقاط التوقف غير المحددة إلى إزالته من التخطيط والتقنيات المساعدة."
+          }
+        },
+        "breakpointVisibilityUpdating": {
+          "$type": "string",
+          "$value": "Updating breakpoint visibility…",
+          "$description": "Progress message while the Figma plugin saves breakpoint visibility metadata.",
+          "locale": {
+            "es": "Actualizando la visibilidad en los puntos de interrupción…",
+            "fr": "Mise à jour de la visibilité aux points de rupture…",
+            "de": "Breakpoint-Sichtbarkeit wird aktualisiert…",
+            "pt": "Atualizando a visibilidade nos pontos de interrupção…",
+            "ja": "ブレークポイントの表示設定を更新しています…",
+            "zh": "正在更新断点可见性…",
+            "ar": "جارٍ تحديث مستوى الظهور عند نقاط التوقف…"
+          }
+        },
+        "breakpointVisibilityUpdated": {
+          "$type": "string",
+          "$value": "Updated breakpoint visibility.",
+          "$description": "Success message after the Figma plugin saves breakpoint visibility metadata.",
+          "locale": {
+            "es": "Se actualizó la visibilidad en los puntos de interrupción.",
+            "fr": "La visibilité aux points de rupture a été mise à jour.",
+            "de": "Breakpoint-Sichtbarkeit aktualisiert.",
+            "pt": "A visibilidade nos pontos de interrupção foi atualizada.",
+            "ja": "ブレークポイントの表示設定を更新しました。",
+            "zh": "已更新断点可见性。",
+            "ar": "تم تحديث مستوى الظهور عند نقاط التوقف."
+          }
+        },
+        "breakpointVisibilityReset": {
+          "$type": "string",
+          "$value": "Visible at every breakpoint.",
+          "$description": "Success message after the Figma plugin resets a layer to visible at every breakpoint.",
+          "locale": {
+            "es": "Visible en todos los puntos de interrupción.",
+            "fr": "Visible à tous les points de rupture.",
+            "de": "An allen Breakpoints sichtbar.",
+            "pt": "Visível em todos os pontos de interrupção.",
+            "ja": "すべてのブレークポイントで表示されます。",
+            "zh": "在所有断点均可见。",
+            "ar": "مرئي عند جميع نقاط التوقف."
+          }
+        },
+        "breakpointVisibilitySelectionChanged": {
+          "$type": "string",
+          "$value": "The selected Figma layer changed before breakpoint visibility could be saved.",
+          "$description": "Error message when the Figma selection changes before breakpoint visibility metadata is saved.",
+          "locale": {
+            "es": "La capa de Figma seleccionada cambió antes de que se pudiera guardar la visibilidad en los puntos de interrupción.",
+            "fr": "Le calque Figma sélectionné a changé avant que la visibilité aux points de rupture puisse être enregistrée.",
+            "de": "Die ausgewählte Figma-Ebene wurde geändert, bevor die Breakpoint-Sichtbarkeit gespeichert werden konnte.",
+            "pt": "A camada selecionada no Figma mudou antes que a visibilidade nos pontos de interrupção pudesse ser salva.",
+            "ja": "ブレークポイントの表示設定を保存する前に、選択中の Figma レイヤーが変更されました。",
+            "zh": "保存断点可见性之前，所选 Figma 图层已更改。",
+            "ar": "تغيرت طبقة Figma المحددة قبل حفظ مستوى الظهور عند نقاط التوقف."
           }
         },
         "componentTab": {
