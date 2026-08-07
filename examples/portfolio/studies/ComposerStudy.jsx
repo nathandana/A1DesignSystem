@@ -20,7 +20,7 @@ export function ComposerStudy() {
         { label: "Role", value: "Senior UX Designer" },
       ]}
     >
-      <Section as="div" padding="lg" contentWidth="md">
+      <Section as="div" padding="lg" contentWidth="md" gap="md">
 
         <Figure src="/img/composer-main.png" alt="Composer CMS" marginBottom="lg" />
 

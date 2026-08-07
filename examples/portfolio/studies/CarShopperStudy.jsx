@@ -18,7 +18,7 @@ export function CarShopperStudy() {
         { label: "Role", value: "Senior UX Designer" },
       ]}
     >
-      <Section as="div" padding="lg" contentWidth="md">
+      <Section as="div" padding="lg" contentWidth="md" gap="md">
 
         <Figure src="/img/desktop-vdp.png" alt="Car Shopper UX" marginBottom="lg" />
 

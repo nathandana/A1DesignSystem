@@ -47,7 +47,7 @@ export function AboutPage({ navigate }) {
           Designing at the edge of what's possible
         </Heading>
         <Paragraph size={{ xs: "md", md: "lg" }} color="muted">
-          I'm a <strong>Principal AI Designer</strong> with over 20 years of experience shaping
+          I'm a <strong>Principal Designer</strong> with over 20 years of experience shaping
           enterprise products, design systems, and — more recently — AI-native
           experiences. I bring systems thinking, deep accessibility knowledge,
           and a bias toward clarity to every problem I touch.

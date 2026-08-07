@@ -18,7 +18,7 @@ export function FilterStudy() {
         { label: "Role", value: "UX Architect" },
       ]}
     >
-      <Section as="div" padding="lg" contentWidth="md">
+      <Section as="div" padding="lg" contentWidth="md" gap="md">
 
         <Figure src="/img/filter-group.png" alt="Filter Component interface" marginBottom="lg" />
 
