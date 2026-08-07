@@ -5464,6 +5464,342 @@
             "ar": "إغلاق"
           }
         },
+        "contrastCheckAction": {
+          "$type": "string",
+          "$value": "Contrast check",
+          "$description": "Toolbar action label in the page editor that opens the contrast check dialog.",
+          "locale": {
+            "es": "Comprobación de contraste",
+            "fr": "Vérification du contraste",
+            "de": "Kontrastprüfung",
+            "pt": "Verificação de contraste",
+            "ja": "コントラストチェック",
+            "zh": "对比度检查",
+            "ar": "فحص التباين"
+          }
+        },
+        "contrastCheckTitle": {
+          "$type": "string",
+          "$value": "Contrast check",
+          "$description": "Dialog title for the page editor contrast check.",
+          "locale": {
+            "es": "Comprobación de contraste",
+            "fr": "Vérification du contraste",
+            "de": "Kontrastprüfung",
+            "pt": "Verificação de contraste",
+            "ja": "コントラストチェック",
+            "zh": "对比度检查",
+            "ar": "فحص التباين"
+          }
+        },
+        "contrastCheckDescription": {
+          "$type": "string",
+          "$value": "Checks the color contrast of the current page, or a selected element and its contents, against the WCAG AA text-contrast minimums. Reads live rendered colors, so it reflects the current theme, color mode, and any overrides exactly as painted.",
+          "$description": "Introductory description in the page editor contrast check dialog.",
+          "locale": {
+            "es": "Comprueba el contraste de color de la página actual, o de un elemento seleccionado y su contenido, frente a los mínimos de contraste de texto AA de WCAG. Lee los colores realmente renderizados, por lo que refleja el tema actual, el modo de color y cualquier anulación tal como se pintan.",
+            "fr": "Vérifie le contraste des couleurs de la page actuelle, ou d'un élément sélectionné et de son contenu, par rapport aux minimums de contraste de texte AA du WCAG. Lit les couleurs réellement affichées, ce qui reflète le thème actuel, le mode couleur et toute surcharge telle qu'elle est rendue.",
+            "de": "Prüft den Farbkontrast der aktuellen Seite oder eines ausgewählten Elements samt Inhalt anhand der WCAG-AA-Mindestwerte für Textkontrast. Liest die tatsächlich gerenderten Farben, sodass aktuelles Theme, Farbmodus und alle Overrides genau so berücksichtigt werden, wie sie dargestellt sind.",
+            "pt": "Verifica o contraste de cor da página atual, ou de um elemento selecionado e seu conteúdo, em relação aos mínimos de contraste de texto AA do WCAG. Lê as cores realmente renderizadas, refletindo o tema atual, o modo de cor e quaisquer substituições exatamente como são exibidas.",
+            "ja": "現在のページ、または選択した要素とその内容の配色コントラストを、WCAG AA のテキストコントラスト最小基準と照らし合わせて確認します。実際にレンダリングされた色を読み取るため、現在のテーマ、カラーモード、上書きされた値がそのまま反映されます。",
+            "zh": "对照 WCAG AA 文本对比度最低标准，检查当前页面或所选元素及其内容的颜色对比度。读取实际渲染的颜色，因此会准确反映当前主题、颜色模式以及任何覆盖设置。",
+            "ar": "يتحقق من تباين الألوان في الصفحة الحالية، أو في عنصر محدد ومحتواه، مقابل الحد الأدنى لتباين النص وفق WCAG AA. يقرأ الألوان المعروضة فعليًا، لذا يعكس السمة الحالية ووضع الألوان وأي تجاوزات كما هي مرسومة."
+          }
+        },
+        "contrastCheckScopeTitle": {
+          "$type": "string",
+          "$value": "Text contrast only, current view",
+          "$description": "Banner heading in the contrast check explaining the limits of the report.",
+          "locale": {
+            "es": "Solo contraste de texto, vista actual",
+            "fr": "Contraste du texte uniquement, vue actuelle",
+            "de": "Nur Textkontrast, aktuelle Ansicht",
+            "pt": "Apenas contraste de texto, visualização atual",
+            "ja": "テキストのコントラストのみ、現在の表示",
+            "zh": "仅文本对比度，当前视图",
+            "ar": "تباين النص فقط، العرض الحالي"
+          }
+        },
+        "contrastCheckScopeBody": {
+          "$type": "string",
+          "$value": "This checks text contrast in the theme, color mode, and viewport currently shown in the editor canvas — re-run it after switching any of those. Non-text contrast (borders, focus rings, icon-only controls) is not covered yet and still needs manual review.",
+          "$description": "Banner body in the contrast check explaining scope and known gaps.",
+          "locale": {
+            "es": "Esto comprueba el contraste de texto en el tema, modo de color y viewport que se muestran actualmente en el lienzo del editor; vuelve a ejecutarlo tras cambiar cualquiera de ellos. El contraste no textual (bordes, anillos de foco, controles solo de icono) aún no está cubierto y sigue necesitando revisión manual.",
+            "fr": "Ceci vérifie le contraste du texte dans le thème, le mode couleur et le viewport actuellement affichés dans le canevas de l'éditeur ; relancez-le après avoir changé l'un de ces éléments. Le contraste non textuel (bordures, anneaux de focus, contrôles icône seule) n'est pas encore couvert et nécessite toujours une vérification manuelle.",
+            "de": "Dies prüft den Textkontrast im Theme, Farbmodus und Viewport, die aktuell im Editor-Canvas angezeigt werden – führe die Prüfung nach jeder Änderung erneut aus. Nicht-Text-Kontrast (Rahmen, Fokusringe, reine Icon-Steuerelemente) wird noch nicht abgedeckt und erfordert weiterhin manuelle Prüfung.",
+            "pt": "Isso verifica o contraste de texto no tema, modo de cor e viewport atualmente exibidos na tela do editor; execute novamente após alterar qualquer um deles. O contraste não textual (bordas, anéis de foco, controles apenas com ícone) ainda não é coberto e continua exigindo revisão manual.",
+            "ja": "これはエディターキャンバスに現在表示されているテーマ、カラーモード、ビューポートでのテキストコントラストを確認します。いずれかを切り替えた後は再実行してください。非テキストのコントラスト（枠線、フォーカスリング、アイコンのみのコントロール）はまだ対象外で、引き続き手動での確認が必要です。",
+            "zh": "此检查针对编辑器画布当前显示的主题、颜色模式和视口中的文本对比度；更改其中任意一项后请重新运行。非文本对比度（边框、焦点环、纯图标控件）尚未覆盖，仍需人工审查。",
+            "ar": "يتحقق هذا من تباين النص في السمة ووضع الألوان ومنفذ العرض المعروضة حاليًا في لوحة المحرر — أعد تشغيله بعد تغيير أي منها. التباين غير النصي (الحدود، حلقات التركيز، عناصر التحكم ذات الأيقونة فقط) غير مشمول بعد ولا يزال يحتاج إلى مراجعة يدوية."
+          }
+        },
+        "contrastCheckScopeWhole": {
+          "$type": "string",
+          "$value": "Whole page",
+          "$description": "Scope label in the contrast check when no node is selected and the whole page is checked.",
+          "locale": {
+            "es": "Página completa",
+            "fr": "Page entière",
+            "de": "Gesamte Seite",
+            "pt": "Página inteira",
+            "ja": "ページ全体",
+            "zh": "整个页面",
+            "ar": "الصفحة بأكملها"
+          }
+        },
+        "contrastCheckSummaryLabel": {
+          "$type": "string",
+          "$value": "Contrast check summary",
+          "$description": "Accessible label for the summary stats in the contrast check dialog.",
+          "locale": {
+            "es": "Resumen de la comprobación de contraste",
+            "fr": "Résumé de la vérification du contraste",
+            "de": "Zusammenfassung der Kontrastprüfung",
+            "pt": "Resumo da verificação de contraste",
+            "ja": "コントラストチェックの概要",
+            "zh": "对比度检查摘要",
+            "ar": "ملخص فحص التباين"
+          }
+        },
+        "contrastCheckElementsChecked": {
+          "$type": "string",
+          "$value": "Elements checked",
+          "$description": "Stat label for the number of elements checked in the contrast check.",
+          "locale": {
+            "es": "Elementos comprobados",
+            "fr": "Éléments vérifiés",
+            "de": "Geprüfte Elemente",
+            "pt": "Elementos verificados",
+            "ja": "確認した要素",
+            "zh": "已检查元素",
+            "ar": "العناصر المفحوصة"
+          }
+        },
+        "contrastCheckPassing": {
+          "$type": "string",
+          "$value": "Passing",
+          "$description": "Stat label for the number of elements that pass the contrast check.",
+          "locale": {
+            "es": "Aprobados",
+            "fr": "Conformes",
+            "de": "Bestanden",
+            "pt": "Aprovados",
+            "ja": "合格",
+            "zh": "通过",
+            "ar": "ناجح"
+          }
+        },
+        "contrastCheckNeedsReview": {
+          "$type": "string",
+          "$value": "Needs review",
+          "$description": "Stat label for the number of elements that need review in the contrast check.",
+          "locale": {
+            "es": "Necesita revisión",
+            "fr": "À vérifier",
+            "de": "Zu prüfen",
+            "pt": "Precisa de revisão",
+            "ja": "要確認",
+            "zh": "需要审查",
+            "ar": "يحتاج إلى مراجعة"
+          }
+        },
+        "contrastCheckTableHeading": {
+          "$type": "string",
+          "$value": "Elements checked",
+          "$description": "Heading above the contrast check findings table.",
+          "locale": {
+            "es": "Elementos comprobados",
+            "fr": "Éléments vérifiés",
+            "de": "Geprüfte Elemente",
+            "pt": "Elementos verificados",
+            "ja": "確認した要素",
+            "zh": "已检查元素",
+            "ar": "العناصر المفحوصة"
+          }
+        },
+        "contrastCheckTableCaption": {
+          "$type": "string",
+          "$value": "Contrast check findings",
+          "$description": "Accessible table caption for the contrast check findings table.",
+          "locale": {
+            "es": "Resultados de la comprobación de contraste",
+            "fr": "Résultats de la vérification du contraste",
+            "de": "Ergebnisse der Kontrastprüfung",
+            "pt": "Resultados da verificação de contraste",
+            "ja": "コントラストチェックの結果",
+            "zh": "对比度检查结果",
+            "ar": "نتائج فحص التباين"
+          }
+        },
+        "contrastCheckColumnElement": {
+          "$type": "string",
+          "$value": "Element",
+          "$description": "Column header for the element type in the contrast check table.",
+          "locale": {
+            "es": "Elemento",
+            "fr": "Élément",
+            "de": "Element",
+            "pt": "Elemento",
+            "ja": "要素",
+            "zh": "元素",
+            "ar": "العنصر"
+          }
+        },
+        "contrastCheckColumnText": {
+          "$type": "string",
+          "$value": "Text",
+          "$description": "Column header for the rendered text sample in the contrast check table.",
+          "locale": {
+            "es": "Texto",
+            "fr": "Texte",
+            "de": "Text",
+            "pt": "Texto",
+            "ja": "テキスト",
+            "zh": "文本",
+            "ar": "النص"
+          }
+        },
+        "contrastCheckColumnRatio": {
+          "$type": "string",
+          "$value": "Ratio",
+          "$description": "Column header for the computed contrast ratio in the contrast check table.",
+          "locale": {
+            "es": "Proporción",
+            "fr": "Rapport",
+            "de": "Verhältnis",
+            "pt": "Proporção",
+            "ja": "比率",
+            "zh": "比例",
+            "ar": "النسبة"
+          }
+        },
+        "contrastCheckColumnThreshold": {
+          "$type": "string",
+          "$value": "AA minimum",
+          "$description": "Column header for the applicable WCAG AA minimum ratio in the contrast check table.",
+          "locale": {
+            "es": "Mínimo AA",
+            "fr": "Minimum AA",
+            "de": "AA-Minimum",
+            "pt": "Mínimo AA",
+            "ja": "AA 最小値",
+            "zh": "AA 最低标准",
+            "ar": "الحد الأدنى AA"
+          }
+        },
+        "contrastCheckColumnStatus": {
+          "$type": "string",
+          "$value": "Status",
+          "$description": "Column header for the pass/review status in the contrast check table.",
+          "locale": {
+            "es": "Estado",
+            "fr": "Statut",
+            "de": "Status",
+            "pt": "Status",
+            "ja": "ステータス",
+            "zh": "状态",
+            "ar": "الحالة"
+          }
+        },
+        "contrastCheckColumnNotes": {
+          "$type": "string",
+          "$value": "Notes",
+          "$description": "Column header for improvement guidance in the contrast check table.",
+          "locale": {
+            "es": "Notas",
+            "fr": "Notes",
+            "de": "Hinweise",
+            "pt": "Notas",
+            "ja": "メモ",
+            "zh": "备注",
+            "ar": "ملاحظات"
+          }
+        },
+        "contrastCheckStatusPass": {
+          "$type": "string",
+          "$value": "Pass",
+          "$description": "Status badge label for a passing contrast check row.",
+          "locale": {
+            "es": "Aprobado",
+            "fr": "Conforme",
+            "de": "Bestanden",
+            "pt": "Aprovado",
+            "ja": "合格",
+            "zh": "通过",
+            "ar": "ناجح"
+          }
+        },
+        "contrastCheckStatusReview": {
+          "$type": "string",
+          "$value": "Review",
+          "$description": "Status badge label for a contrast check row that needs review.",
+          "locale": {
+            "es": "Revisar",
+            "fr": "À vérifier",
+            "de": "Prüfen",
+            "pt": "Revisar",
+            "ja": "要確認",
+            "zh": "需审查",
+            "ar": "مراجعة"
+          }
+        },
+        "contrastCheckNoRowsTitle": {
+          "$type": "string",
+          "$value": "No text elements found",
+          "$description": "Empty-state title in the contrast check table when nothing was scanned.",
+          "locale": {
+            "es": "No se encontraron elementos de texto",
+            "fr": "Aucun élément de texte trouvé",
+            "de": "Keine Textelemente gefunden",
+            "pt": "Nenhum elemento de texto encontrado",
+            "ja": "テキスト要素が見つかりませんでした",
+            "zh": "未找到文本元素",
+            "ar": "لم يتم العثور على عناصر نصية"
+          }
+        },
+        "contrastCheckNoRowsDescription": {
+          "$type": "string",
+          "$value": "This page or selection does not have any visible text to check.",
+          "$description": "Empty-state description in the contrast check table.",
+          "locale": {
+            "es": "Esta página o selección no tiene texto visible que comprobar.",
+            "fr": "Cette page ou sélection ne contient aucun texte visible à vérifier.",
+            "de": "Diese Seite oder Auswahl enthält keinen sichtbaren Text zum Prüfen.",
+            "pt": "Esta página ou seleção não tem texto visível para verificar.",
+            "ja": "このページまたは選択範囲には確認できる表示テキストがありません。",
+            "zh": "此页面或所选内容没有可检查的可见文本。",
+            "ar": "لا تحتوي هذه الصفحة أو التحديد على نص مرئي للتحقق منه."
+          }
+        },
+        "contrastCheckRerun": {
+          "$type": "string",
+          "$value": "Re-run",
+          "$description": "Button label to re-scan the canvas without closing the contrast check dialog.",
+          "locale": {
+            "es": "Volver a ejecutar",
+            "fr": "Relancer",
+            "de": "Erneut ausführen",
+            "pt": "Executar novamente",
+            "ja": "再実行",
+            "zh": "重新运行",
+            "ar": "إعادة التشغيل"
+          }
+        },
+        "contrastCheckClose": {
+          "$type": "string",
+          "$value": "Close",
+          "$description": "Button label for closing the contrast check dialog.",
+          "locale": {
+            "es": "Cerrar",
+            "fr": "Fermer",
+            "de": "Schließen",
+            "pt": "Fechar",
+            "ja": "閉じる",
+            "zh": "关闭",
+            "ar": "إغلاق"
+          }
+        },
         "configureTab": {
           "$type": "string",
           "$value": "Configure",
