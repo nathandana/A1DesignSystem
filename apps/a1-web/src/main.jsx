@@ -148,7 +148,7 @@ import { AuthGate } from './AuthGate.jsx'
 import { AccessProvider, useAccess } from './access/AccessContext.jsx'
 import { PageAccessBoundary, accessRoleLabel } from './access/PageAccessBoundary.jsx'
 import { startCloudSync, stopCloudSync } from './projects/cloudSync.js'
-import { importFigmaBridgeImages, resetImageCache } from './lib/imageLibrary'
+import { collectFigmaFigureAssets, importFigmaBridgeImages, resetImageCache } from './lib/imageLibrary'
 import { setSupabaseImageUser } from './lib/imageStore'
 import { setHistoryUser } from './services/historyDb'
 import { BacklogProvider } from './backlog/BacklogContext.jsx'
@@ -534,35 +534,47 @@ function App() {
   // Page Editor and pull the selected page's current JSON on demand.
   useEffect(() => {
     if (IS_STANDALONE || !isLocalBridgeFeatureEnabled()) return undefined
-    const registerFigmaWorkspaceSnapshot = () => {
-      const workspace = {
-        projects: projectStore.loadProjects().map((project) => ({
-          id: project.id,
-          name: project.name,
-          pages: projectStore.loadPages(project.id).map((page) => {
-            const link = projectStore.getFigmaPageLink(project.id, page.id)
-              ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
-            return {
-              id: page.id,
-              title: page.title,
-              json: projectStore.resolvePageJson(page.id) ?? '',
-              link: link ? {
-                linkId: link.id,
-                projectId: project.id,
-                pageId: page.id,
-                mode: link.mode,
-                figmaFileKey: link.figmaFileKey,
-                figmaPageId: link.figmaPageId,
-                figmaRootNodeId: link.figmaRootNodeId,
-              } : null,
-            }
-          }),
-        })),
+    let registering = false
+    const registerFigmaWorkspaceSnapshot = async () => {
+      if (registering) return
+      registering = true
+      try {
+        const workspace = {
+          projects: await Promise.all(projectStore.loadProjects().map(async (project) => ({
+            id: project.id,
+            name: project.name,
+            pages: await Promise.all(projectStore.loadPages(project.id).map(async (page) => {
+              const link = projectStore.getFigmaPageLink(project.id, page.id)
+                ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
+              const json = projectStore.resolvePageJson(page.id) ?? ''
+              const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : []
+              return {
+                id: page.id,
+                title: page.title,
+                json,
+                assets,
+                link: link ? {
+                  linkId: link.id,
+                  projectId: project.id,
+                  pageId: page.id,
+                  mode: link.mode,
+                  figmaFileKey: link.figmaFileKey,
+                  figmaPageId: link.figmaPageId,
+                  figmaRootNodeId: link.figmaRootNodeId,
+                } : null,
+              }
+            })),
+          }))),
+        }
+        await registerFigmaWorkspace(workspace)
+      } catch {
+        // The optional local bridge is intentionally silent while unavailable.
+      } finally {
+        registering = false
       }
-      registerFigmaWorkspace(workspace).catch(() => {})
     }
-    registerFigmaWorkspaceSnapshot()
-    const interval = window.setInterval(registerFigmaWorkspaceSnapshot, 15_000)
+    void registerFigmaWorkspaceSnapshot()
+    const interval = window.setInterval(() => { void registerFigmaWorkspaceSnapshot() }, 15_000)
     window.addEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
     return () => {
       window.clearInterval(interval)

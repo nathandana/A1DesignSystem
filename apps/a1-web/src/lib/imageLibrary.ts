@@ -15,6 +15,14 @@
  * be reused across many figures without duplicating bytes.
  */
 import { getBackend, localBackend } from './imageStore';
+import {
+  FIGMA_BRIDGE_IMAGE_TYPES,
+  FIGMA_BRIDGE_MAX_IMAGE_BYTES,
+  buildFigmaFigureAssets,
+  figureImageRefs,
+} from './figmaImageHandoff.js';
+
+export { FIGMA_BRIDGE_IMAGE_TYPES, FIGMA_BRIDGE_MAX_IMAGE_BYTES } from './figmaImageHandoff.js';
 
 /** The src scheme used to reference a library image from a Figure. */
 export const IMAGE_REF_SCHEME = 'a1img://';
@@ -76,9 +84,6 @@ export interface FigmaBridgeImageAsset {
   dataBase64: string;
 }
 
-export const FIGMA_BRIDGE_IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/gif']);
-export const FIGMA_BRIDGE_MAX_IMAGE_BYTES = 4_000_000;
-
 function uid(): string {
   return `img_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -93,6 +98,7 @@ function uid(): string {
 
 const urlCache = new Map<string, string>();
 const blobUrls = new Set<string>(); // which cached URLs we created and must revoke
+const figmaFigureAssetCache = new Map<string, Promise<FigmaBridgeImageAsset[]>>();
 let loadPromise: Promise<void> | null = null;
 
 /** Resolve and cache the URL for one image (object URL, or backend direct URL). */
@@ -186,6 +192,8 @@ export function subscribeLibrary(fn: Listener): () => void {
   return () => listeners.delete(fn);
 }
 function notify(): void {
+  // Image metadata/bytes may have changed while the stable a1img:// id did not.
+  figmaFigureAssetCache.clear();
   for (const fn of listeners) fn();
 }
 
@@ -278,6 +286,34 @@ export async function getImageBlob(id: string): Promise<{ meta: ImageMeta; blob:
   const backend = await getBackend();
   const [meta, blob] = await Promise.all([backend.getMeta(id), backend.getBlob(id)]);
   return meta && blob ? { meta: normalize(meta), blob } : null;
+}
+
+function figmaBlobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+    reader.onerror = () => reject(reader.error || new Error('Could not read the local image.'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+/** Build the volatile image sidecar required to resolve a1img:// Figure refs in Figma. */
+export function collectFigmaFigureAssets(value: unknown): Promise<FigmaBridgeImageAsset[]> {
+  const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+  const cacheKey = [...figureImageRefs(parsed)].join('\n');
+  if (!cacheKey) return Promise.resolve([]);
+  const cached = figmaFigureAssetCache.get(cacheKey);
+  if (cached) return cached;
+
+  const pending = buildFigmaFigureAssets(parsed, {
+    getImage: getImageBlob,
+    encodeBlob: figmaBlobToBase64,
+  });
+  figmaFigureAssetCache.set(cacheKey, pending);
+  void pending.catch(() => {
+    if (figmaFigureAssetCache.get(cacheKey) === pending) figmaFigureAssetCache.delete(cacheKey);
+  });
+  return pending;
 }
 
 function bridgeBase64ToBlob(dataBase64: string, type: string): Blob {
