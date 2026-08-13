@@ -639,7 +639,7 @@ export function ToolbarGroup({
           label={overflowLabel}
           value={overflowActive ? value : undefined}
           onChange={onChange}
-          items={options}
+          items={overflowOptions}
           disabled={disabled}
           aria-label={ariaLabel ? `${ariaLabel} overflow` : "More options"}
         />

@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### Added
+
+- **Section and Card background colors** (A1-2537) — `Section.surface` and
+  `Card.surface` each gained five new named surfaces (`accent`, `info`,
+  `success`, `warn`, `error`), backed by existing semantic surface tokens, and
+  now accept any custom CSS color (e.g. a hex value) as an escape hatch,
+  matching the pattern `Card.heroColor` already used. Any non-default Card
+  surface disables status-stripe rendering. The a1-web editor's Section/Card
+  surface pickers gained a "Custom" color option (a small dialog with a hex
+  field and native swatch picker) and turned on `ToolbarGroup`'s `overflow` so
+  the original color set stays visible while the new ones move into an
+  overflow menu on narrow containers.
+
+### Fixed
+
+- **`ToolbarGroup overflow` menu duplicated every visible option** — the
+  overflow `ToolbarMenu` was fed the full `options` list instead of just the
+  options that didn't fit, so anything already visible in the toolbar row
+  appeared a second time in the overflow menu. Affects every existing
+  `ToolbarGroup overflow` consumer, not just Section/Card.
+- **`Section inverse` silently overrode an explicit `surface`** — including
+  the pre-existing `page` / `panel` / `raised` values, not only the new ones
+  added in this release. `.a1-section.a1-inverse`'s two-class specificity beat
+  the single-class surface modifier rules; the surface rules are now qualified
+  to match and ordered to win. The equivalent generated Pure CSS
+  (`packages/pure/dist/a1-base.css`, from `scripts/build-html-css.mjs`) had the
+  same issue via source order and was fixed the same way.
+
 ### Fixed
 
 - **Compact form font size** (A1-184) — compact form elements now keep a 16px

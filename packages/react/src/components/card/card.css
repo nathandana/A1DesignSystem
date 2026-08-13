@@ -77,6 +77,18 @@ button.a1-card--navigation {
   color: var(--a1-card-accent-foreground);
 }
 
+/* Subtle tinted surfaces — simple background swatches with no foreground/
+   border contrast remapping (unlike --surface-accent above). Matches Section's
+   equivalent surface vocabulary. */
+.a1-card--surface-info    { --a1-card-surface-color: var(--semantic-color-status-info-surface); background: var(--a1-card-surface-color); }
+.a1-card--surface-success { --a1-card-surface-color: var(--semantic-color-status-success-surface); background: var(--a1-card-surface-color); }
+.a1-card--surface-warn    { --a1-card-surface-color: var(--semantic-color-status-warn-surface); background: var(--a1-card-surface-color); }
+.a1-card--surface-error   { --a1-card-surface-color: var(--semantic-color-status-error-surface); background: var(--a1-card-surface-color); }
+
+/* A custom (non-token) background color, e.g. an author-supplied hex value —
+   the value itself travels via --a1-card-surface-custom, set inline. */
+.a1-card--surface-custom  { --a1-card-surface-color: var(--a1-card-surface-custom); background: var(--a1-card-surface-color); }
+
 /* ─── Content wrapper ─────────────────────────────────────────────────────── */
 
 .a1-card__content {

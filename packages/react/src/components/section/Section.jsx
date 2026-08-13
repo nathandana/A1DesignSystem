@@ -3,7 +3,7 @@ import "../../color-scheme.css";
 import "./section.css";
 
 const VALID_PADDING = ["lg", "md", "sm", "xs", "none"];
-const VALID_SURFACES = ["page", "panel", "raised"];
+const VALID_SURFACES = ["page", "panel", "raised", "accent", "info", "success", "warn", "error"];
 const VALID_GAPS = ["xs", "sm", "md", "lg", "xl"];
 const VALID_GRADIENTS = ["accent", "highlight", "info", "success", "warn"];
 const VALID_GRADIENT_POSITIONS = [
@@ -92,8 +92,14 @@ export function Section({
     }
   }
 
+  // A recognized token applies the matching class; any other truthy value is
+  // treated as a raw CSS color (e.g. a custom hex) applied via inline style —
+  // mirrors Card's heroColor escape hatch.
+  const isCustomSurface = surface && !VALID_SURFACES.includes(surface);
   if (surface && VALID_SURFACES.includes(surface)) {
     classes.push(`a1-section--surface-${surface}`);
+  } else if (isCustomSurface) {
+    classes.push("a1-section--surface-custom");
   }
 
   // When contentWidth is set, gap moves to the inner wrapper — keep section flat.
@@ -184,9 +190,11 @@ export function Section({
 
   // The image URL is data, not a style decision — it travels to the CSS via a
   // custom property (same pattern as Figure's cropRect and CircularProgress).
-  const mergedStyle = hasBgImage
-    ? { "--a1-section-bg-image": `url("${backgroundImage.replaceAll('"', '\\"')}")`, ...style }
-    : style;
+  const mergedStyle = {
+    ...(isCustomSurface ? { "--a1-section-surface-custom": surface } : null),
+    ...(hasBgImage ? { "--a1-section-bg-image": `url("${backgroundImage.replaceAll('"', '\\"')}")` } : null),
+    ...style,
+  };
 
   return (
     <Component

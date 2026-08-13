@@ -19,7 +19,7 @@ const meta = {
     },
     surface: {
       control: "select",
-      options: ["page", "panel", "raised", undefined],
+      options: ["page", "panel", "raised", "accent", "info", "success", "warn", "error", undefined],
     },
     gap: {
       control: "select",
@@ -482,6 +482,46 @@ export const SurfaceVariants = {
         </Paragraph>
       </Section>
 
+      <Section padding="md" surface="accent">
+        <MessageBadge subtle status="info">accent</MessageBadge>
+        <Heading as="h2" size="xl">Accent surface</Heading>
+        <Paragraph size="lg" color="muted">
+          A subtle tinted wash from the action color role. Use to draw light attention to a section without the strong contrast of Card&apos;s accent surface.
+        </Paragraph>
+      </Section>
+
+      <Section padding="md" surface="info">
+        <MessageBadge subtle status="info">info</MessageBadge>
+        <Heading as="h2" size="xl">Info surface</Heading>
+        <Paragraph size="lg" color="muted">
+          A subtle tinted surface from the info status role.
+        </Paragraph>
+      </Section>
+
+      <Section padding="md" surface="success">
+        <MessageBadge subtle status="success">success</MessageBadge>
+        <Heading as="h2" size="xl">Success surface</Heading>
+        <Paragraph size="lg" color="muted">
+          A subtle tinted surface from the success status role.
+        </Paragraph>
+      </Section>
+
+      <Section padding="md" surface="warn">
+        <MessageBadge subtle status="warn">warn</MessageBadge>
+        <Heading as="h2" size="xl">Warn surface</Heading>
+        <Paragraph size="lg" color="muted">
+          A subtle tinted surface from the warn status role.
+        </Paragraph>
+      </Section>
+
+      <Section padding="md" surface="error">
+        <MessageBadge subtle status="error">error</MessageBadge>
+        <Heading as="h2" size="xl">Error surface</Heading>
+        <Paragraph size="lg" color="muted">
+          A subtle tinted surface from the error status role.
+        </Paragraph>
+      </Section>
+
       <Section padding="md" inverse>
         <MessageBadge subtle>inverse</MessageBadge>
         <Heading as="h2" size="xl">Inverse surface</Heading>
@@ -490,6 +530,28 @@ export const SurfaceVariants = {
         </Paragraph>
       </Section>
     </>
+  ),
+};
+
+/**
+ * `surface` also accepts any valid CSS color (e.g. a hex value) as a custom
+ * background, for cases the named tokens don't cover. Prefer a named surface
+ * whenever one fits — a custom color is not theme-aware, so always check
+ * content contrast manually (or with the editor's Contrast check tool) and
+ * re-check after switching themes.
+ */
+export const CustomSurfaceColor = {
+  name: "Custom surface color",
+  render: () => (
+    <Section padding="md" surface="#fde9c8">
+      <MessageBadge subtle>surface=&quot;#fde9c8&quot;</MessageBadge>
+      <Heading as="h2" size="xl">Custom background color</Heading>
+      <Paragraph size="lg" color="muted">
+        A raw hex value applied directly as the section background. Not a token — verify
+        contrast for any text or component placed on it (pick a light custom color if using
+        default-toned text, as shown here), and re-check after theme changes.
+      </Paragraph>
+    </Section>
   ),
 };
 

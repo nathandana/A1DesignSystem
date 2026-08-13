@@ -67,7 +67,7 @@ export const DENSITY_SIZE_OPTIONS = [
  * - `iconOnly` hides the labels (icon-only buttons) and keeps `columns` so icon
  *   grids (e.g. a 3×3 picker) stay a grid; labelled groups wrap instead.
  */
-export function Choice({ label, value, onChange, options, iconOnly = false, columns, prop, helper, labelMode }) {
+export function Choice({ label, value, onChange, options, iconOnly = false, columns, prop, helper, labelMode, overflow }) {
   return (
     <WithHelp helper={helper}>
       <Lockable prop={prop}>
@@ -77,6 +77,7 @@ export function Choice({ label, value, onChange, options, iconOnly = false, colu
             showLabels={!iconOnly}
             labelMode={labelMode}
             columns={iconOnly ? columns : undefined}
+            overflow={overflow}
             value={value}
             onChange={onChange}
             options={options}

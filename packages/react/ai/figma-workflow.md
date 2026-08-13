@@ -718,6 +718,8 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `radius` (visual)                               | Corner radius requires more variants — deferred                                                                                                                               |
 | `background*` (visual)                          | A designer can approximate with an IMAGE fill + a translucent overlay rectangle, but fit/tile/overlay-strength cannot be bound to tokens — documented as TEXT properties only |
 | `responsive objects`                            | `padding={{ xs: 'sm', lg: 'lg' }}` and `align={{ xs: 'left', lg: 'center' }}` — Figma has no breakpoint-driven property switching                                             |
+| `surface="accent" \| "info" \| "success" \| "warn" \| "error"` (A1-2537) | The `Surface` variant set currently only has `page \| panel \| raised`; the five new named surfaces need matching variant options added to the component set — follow-up |
+| `surface` as a custom CSS colour (A1-2537)      | Arbitrary/custom colours cannot be expressed as a Figma variant; a designer can approximate one-off with a manual fill override on a detached instance                       |
 | `className` / `style` / `ref` / `aria-*` / `id` | Not applicable in Figma                                                                                                                                                       |
 
 ### Autocomplete
@@ -851,7 +853,10 @@ fallback. Selected-instance updates reconcile existing actions only.
 Card maps its `surface` variant, normal inline `icon` through a `Show icon`
 boolean plus `Icon` instance swap, a token-bound action-surface icon tile with
 a `color/text/default` glyph, and native Content Slot; child add/remove
-and updates stay attached. Badge maps status, subtle, size, its editable label,
+and updates stay attached. (The Figma Card set currently exposes only
+`default`/`accent`; the four new tinted surfaces and custom-colour escape
+hatch added in React for A1-2537 are not yet represented in Figma — a
+follow-up, same as Section's equivalent gap above.) Badge maps status, subtle, size, its editable label,
 and a nested native Material icon (or `icon: null` through `Show icon`).
 Banner maps its inline/system/calendar variants, every status treatment,
 editable title and calendar fields, and ordered `Content Slot` children. The
