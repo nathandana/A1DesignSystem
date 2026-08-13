@@ -19,7 +19,7 @@ export function A1Study() {
       meta={[
         { label: "Year", value: "2026" },
         { label: "Type", value: "Personal project" },
-        { label: "Role", value: "Principal AI Designer" },
+        { label: "Role", value: "Principal Designer" },
       ]}
     >
       <Section as="div" padding="sm" contentWidth="md">
@@ -83,6 +83,7 @@ export function A1Study() {
         <Paragraph size="lg">
           Most design systems document components. A1 documents decisions.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           Tokens, components, patterns, page layouts, labels, icons,
@@ -252,13 +253,14 @@ export function A1Study() {
           <ListItem>Faster implementation</ListItem>
           <ListItem>Higher-quality AI output</ListItem>
         </List>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           Next: AI-generated pages, automatic design reviews, and heuristic
           scoring.
         </Paragraph>
 
-        <Divider />
+<Spacer></Spacer>
 
         <Heading as="h3" size="lg" margin="md">
           Labels and Localization
@@ -268,11 +270,13 @@ export function A1Study() {
           Most applications treat text as something added late. That creates
           duplicated copy, inconsistent terminology, and painful localization.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           A1 turns labels into reusable product assets: one definition, shared
           everywhere, designed for translation from the beginning.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           Next: context-aware translation, terminology governance, and
@@ -289,6 +293,7 @@ export function A1Study() {
           The biggest problem with design handoff is not code generation. It is
           inconsistency. Figma allows almost anything. Production systems cannot.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           I built a Figma plugin that rebuilds pages into strict,
@@ -296,11 +301,13 @@ export function A1Study() {
           system rules, exporting to production-ready code becomes much more
           direct.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           The result is rapid prototyping with real components, not visual
           approximations.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           Next: bidirectional synchronization and implementation validation.
@@ -315,6 +322,7 @@ export function A1Study() {
         <Paragraph size="lg">
           Ideas happen everywhere. Most disappear before they reach Jira.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           A1 includes a lightweight backlog inside the product itself. While
@@ -330,6 +338,7 @@ export function A1Study() {
           <ListItem>Stay focused instead of switching tools</ListItem>
         </List>
 
+<Spacer></Spacer>
         <Paragraph size="lg">
           Next: AI clustering, duplicate detection, and automatic
           prioritization.
@@ -346,6 +355,7 @@ export function A1Study() {
           patterns, and prompts are not separate artifacts. They are layers of
           the same system.
         </Paragraph>
+<Spacer></Spacer>
 
         <Heading as="h3" size="lg" margin="md">
           Tokens
@@ -355,6 +365,7 @@ export function A1Study() {
           and motion. The structure supports theming while keeping behavior
           predictable.
         </Paragraph>
+<Spacer></Spacer>
 
         <Heading as="h3" size="lg" margin="md">
           Components
@@ -435,6 +446,7 @@ export function A1Study() {
           of imagined. Rules evolve through practice instead of documentation
           alone.
         </Paragraph>
+<Spacer></Spacer>
 
         <Paragraph size="lg">
           Some rules in A1 come from years of design systems experience. Some
@@ -457,6 +469,7 @@ export function A1Study() {
           exploration of what happens when every layer of product development
           shares the same language.
         </Paragraph>
+<Spacer></Spacer>
 
         <List variant="unordered" size="lg">
           <ListItem>Tokens</ListItem>

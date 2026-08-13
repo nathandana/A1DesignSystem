@@ -14,10 +14,14 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
    * `"accent"` uses the stronger action/accent background step (darker in light
    * mode, lighter in dark mode), applies the primary-action foreground as its
    * local text context, and disables status stripe rendering because the two
-   * treatments compete.
+   * treatments compete. `"info"` / `"success"` / `"warn"` / `"error"` are
+   * subtle tinted surfaces from the matching semantic color role, with no
+   * foreground remapping. Accepts any valid CSS color (e.g. a hex value) as a
+   * custom background; status stripe rendering is disabled on any non-default
+   * surface, including custom colors.
    * Default: "default"
    */
-  surface?: "default" | "accent";
+  surface?: "default" | "accent" | "info" | "success" | "warn" | "error" | (string & {});
   /** Material Symbols icon name. Used by `iconDisplay` to render the icon. */
   icon?: string;
   /**

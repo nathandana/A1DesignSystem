@@ -19,6 +19,8 @@
 | Storybook dev | `npm run storybook` |
 | a1-web dev | `npm run dev:a1-web` |
 | General dev server | `npm run dev` |
+| Rebuild the MCP server's static index | `npm run build:mcp-index` |
+| MCP server local dev | `npm run dev:mcp-server` |
 
 ## Stable local ports
 
@@ -36,6 +38,7 @@ Use the root scripts for bookmarkable local URLs. They all use `--strictPort`, s
 | Cat Stack Cafe | `npm run dev:cat-stack-cafe` | `http://127.0.0.1:5179/examples/cat-stack-cafe/` |
 | Theme Editor | `npm run dev:theme-editor` | `http://127.0.0.1:5180/examples/theme-editor/` |
 | Catlympics | `npm run dev:catlympics` | `http://127.0.0.1:5181/examples/cat-lympics/` |
+| MCP server | `npm run dev:mcp-server` | `http://127.0.0.1:5190/mcp` |
 
 Always run `npm run build:tokens && npm run build:html-css` after any change to `system/tokens/` or `system/themes/` before testing or committing.
 
@@ -53,6 +56,7 @@ Always run `npm run build:tokens && npm run build:html-css` after any change to 
 | Component registry | `packages/react/ai/components.md` |
 | a1-web app | `apps/a1-web/src/` |
 | Accessibility report data | `reports/a11y.json` |
+| MCP server (remote, agent-facing design-system API) | `packages/mcp-server/` |
 
 ## Node version
 

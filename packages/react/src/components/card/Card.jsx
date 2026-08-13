@@ -12,7 +12,7 @@ const HERO_COLORS = {
 };
 
 const VALID_ICON_DISPLAY = ["none", "default", "hero"];
-const VALID_SURFACES = ["default", "accent"];
+const VALID_SURFACES = ["default", "accent", "info", "success", "warn", "error"];
 const VALID_HERO_SEPARATOR_SHAPES = ["wave", "swell", "curve", "slope", "peak", "valley", "ribbon"];
 
 const HERO_SEPARATOR_PATHS = {
@@ -75,17 +75,23 @@ export function Card({
   statusLabel,
   statusPulse = false,
   className = "",
+  style,
   children,
   ...props
 }) {
   const isNavigation = variant === "navigation";
   const Component = as ?? (isNavigation ? (href ? "a" : "button") : "div");
-  const resolvedSurface = VALID_SURFACES.includes(surface) ? surface : "default";
+  // A recognized token resolves to itself; any other truthy value is treated
+  // as a raw CSS color (e.g. a custom hex) — mirrors the heroColor escape hatch.
+  const isCustomSurface = surface && !VALID_SURFACES.includes(surface);
+  const resolvedSurface = VALID_SURFACES.includes(surface) ? surface : (isCustomSurface ? "custom" : "default");
 
   const resolvedDisplay = icon && VALID_ICON_DISPLAY.includes(iconDisplay)
     ? iconDisplay
     : "none";
 
+  // Status stripes only make sense on the plain default surface — any tinted
+  // or custom surface competes visually with the stripe treatment.
   const resolvedStatus = resolvedSurface === "default" && VALID_STATUS.includes(status) ? status : null;
   const hasStatusBadge = resolvedStatus && statusLabel != null && statusLabel !== "";
 
@@ -117,8 +123,12 @@ export function Card({
     : "top-end";
   const [badgeBlock, badgeInline] = badgePos.split("-");
 
+  const mergedStyle = isCustomSurface
+    ? { "--a1-card-surface-custom": surface, ...style }
+    : style;
+
   return (
-    <Component className={classes} href={href} {...interactiveProps} {...props}>
+    <Component className={classes} href={href} style={mergedStyle} {...interactiveProps} {...props}>
       <div className="a1-card__layout">
         {resolvedDisplay === "hero" && (
           <div className="a1-card__hero" style={{ "--a1-card-hero-bg": heroBg }}>

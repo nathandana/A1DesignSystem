@@ -17,7 +17,7 @@ export function HomePage({ navigate }) {
     <>
       <Section inverse padding="lg" gap="md" contentWidth="lg">
           <MessageBadge size="lg" status="info" icon="person">
-            Principal AI Designer
+            Principal Designer
           </MessageBadge>
           <Heading
             as="h1"
@@ -25,13 +25,13 @@ export function HomePage({ navigate }) {
             size={{ xs: "xl", md: "jumbo", lg: "xJumbo" }}
             className="pf-hero-heading"
           >
-            I Speak{" "}
-            <span className="pf-accent">AI.</span>
+            Nathan{" "}
+            <span className="pf-accent">Dana</span>
           </Heading>
-          <Paragraph size="lg">Design has been centered on creating representations of an experience: wireframes, mockups, prototypes, and polished files that describe what a product <em>should</em> be. It gets passed to developers, becomes something real, and then if we are lucky, we have time to iterate. <strong>AI has changed that</strong>. It closes the gap between imagining an experience and actually building, testing, and improving it in real time.</Paragraph>
-          <Paragraph size="lg">My strength is leading that process. I combine UX architecture, design systems, accessibility, visual design, product strategy, and technical implementation to direct AI toward better outcomes. I know how to prompt it, challenge it, refine it, and recognize when the output is impressive but wrong. My focus is helping teams use AI to create clearer, stronger, more scalable products without lowering the bar for quality.</Paragraph>
+          <Heading>I design complex products and the systems behind them.</Heading>
+          <Paragraph size="lg">Design leader focused on turning complex enterprise problems into clear, scalable experiences. I work across product strategy, UX, interaction design, Figma, design systems, and emerging AI workflows—connecting the big picture to the details required to ship.</Paragraph>
 
-          <ButtonContainer size="lg">
+          <ButtonContainer>
             <Button
               variant="primary"
               icon="arrow_downward"
@@ -66,12 +66,12 @@ onClick={(event) => navigate("process", event)}>
 
       <Section surface="panel" gap="lg" padding="md" contentWidth="lg">
               <Heading as="h2" size={{ xs: "xl", md: "xxl" }}>
-                Trusted design systems leader
+                Designing at enterprise scale
               </Heading>
               <div>
               <Paragraph size="lg">
-                As a trusted design systems leader, I specialize in building
-                predictable, accessible systems that drive strategy,
+                As a trusted design leader, I specialize in building
+                predictable, accessible products and systems that drive strategy,
                 consistency, and scalability across enterprise products.
               </Paragraph>
               <Paragraph size="lg">

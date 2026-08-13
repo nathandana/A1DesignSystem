@@ -20,6 +20,7 @@ import { Choice, ResponsiveControl, responsiveProp, WithHelp } from './configKit
 import { Lockable } from './configKit.jsx'
 import { utilityClassesFor } from '../../../editor/utilityRegistry.ts'
 import { ImageLibraryDialog } from './ImageLibraryDialog.jsx'
+import { CustomColorDialog } from './CustomColorDialog.jsx'
 import { isImageRef, resolveSrc } from '../../../lib/imageLibrary.ts'
 import { useImageLibraryVersion } from '../../../editor/ImageLibraryContext.jsx'
 
@@ -51,12 +52,32 @@ const labelItems = (values) => values.map((value) => ({ value, label: optionLabe
 
 const AS_ITEMS = labelItems(['section', 'div', 'main', 'header', 'footer'])
 // Surface options preview the actual surface colours via Toolbar swatches.
-const SURFACE_ITEMS = [
-  { value: '', label: 'None' },
-  { value: 'page', label: 'Page', swatch: 'var(--semantic-color-surface-page)' },
-  { value: 'panel', label: 'Panel', swatch: 'var(--semantic-color-surface-panel)' },
-  { value: 'raised', label: 'Raised', swatch: 'var(--semantic-color-surface-raised)' },
+// The original four stay visible first (lowest overflowPriority); the newer
+// tinted surfaces and Custom trail into the overflow menu on narrow containers.
+const SURFACE_TOKEN_ITEMS = [
+  { value: '', label: 'None', overflowPriority: 0 },
+  { value: 'page', label: 'Page', swatch: 'var(--semantic-color-surface-page)', overflowPriority: 1 },
+  { value: 'panel', label: 'Panel', swatch: 'var(--semantic-color-surface-panel)', overflowPriority: 2 },
+  { value: 'raised', label: 'Raised', swatch: 'var(--semantic-color-surface-raised)', overflowPriority: 3 },
+  { value: 'accent', label: 'Accent', swatch: 'var(--semantic-color-action-surface)', overflowPriority: 4 },
+  { value: 'info', label: 'Info', swatch: 'var(--semantic-color-status-info-surface)', overflowPriority: 5 },
+  { value: 'success', label: 'Success', swatch: 'var(--semantic-color-status-success-surface)', overflowPriority: 6 },
+  { value: 'warn', label: 'Warn', swatch: 'var(--semantic-color-status-warn-surface)', overflowPriority: 7 },
+  { value: 'error', label: 'Error', swatch: 'var(--semantic-color-status-error-surface)', overflowPriority: 8 },
 ]
+const SURFACE_TOKEN_VALUES = new Set(SURFACE_TOKEN_ITEMS.map((item) => item.value))
+const CUSTOM_SURFACE_ITEM = { value: '__custom__', label: 'Custom', icon: 'palette', overflowPriority: 9 }
+
+// Builds the live options list for the Surface ToolbarGroup, adding a swatch
+// entry for the current custom hex (if any) so it renders selected.
+function surfaceItems(surface) {
+  const isCustom = surface && !SURFACE_TOKEN_VALUES.has(surface)
+  if (!isCustom) return [...SURFACE_TOKEN_ITEMS, CUSTOM_SURFACE_ITEM]
+  return [
+    ...SURFACE_TOKEN_ITEMS,
+    { value: surface, label: `Custom (${surface})`, swatch: surface, overflowPriority: 9 },
+  ]
+}
 // Slider detents (index space). The lowest/none stop renders as "--".
 const sliderDetents = (values) => values.map((value, index) => ({ value: index, label: (value && value !== 'none') ? optionLabel(value) : '--' }))
 const PADDING_DETENTS = sliderDetents(PADDING_VALUES)
@@ -375,6 +396,7 @@ export function Controls({ config, setConfig, projectId }) {
   // Background image source (library ref or URL) — mirrors the Figure configurator.
   const [libraryOpen, setLibraryOpen] = useState(false)
   const [urlMode, setUrlMode] = useState(false)
+  const [customColorOpen, setCustomColorOpen] = useState(false)
   const fromLibrary = isImageRef(config.backgroundImage)
   const showUrlField = !fromLibrary && (urlMode || !!config.backgroundImage)
 
@@ -415,13 +437,29 @@ export function Controls({ config, setConfig, projectId }) {
 
       <Accordion label="Background" size="sm" subtext={backgroundSummary} divider defaultOpen>
         <Stack gap="lg">
-          <WithHelp helper="Sets the section's background surface token (page → panel → raised). Inverse flips the section to a dark island.">
+          <WithHelp helper="Sets the section's background surface — a neutral step, a tinted tone, or a custom color. Inverse flips the section to a dark island.">
             <Lockable prop="surface"><Toolbar label="Surface">
-              <ToolbarGroup aria-label="Surface" labelMode="selected" value={config.surface} onChange={(surface) => set({ surface })} options={SURFACE_ITEMS} />
+              <ToolbarGroup
+                aria-label="Surface"
+                labelMode="selected"
+                overflow
+                value={config.surface}
+                onChange={(surface) => {
+                  if (surface === CUSTOM_SURFACE_ITEM.value) setCustomColorOpen(true)
+                  else set({ surface })
+                }}
+                options={surfaceItems(config.surface)}
+              />
               <ToolbarDivider />
               <ToolbarToggle icon="invert_colors" label="Inverse" pressed={config.inverse} onChange={(inverse) => set({ inverse })} />
             </Toolbar></Lockable>
           </WithHelp>
+          <CustomColorDialog
+            open={customColorOpen}
+            value={SURFACE_TOKEN_VALUES.has(config.surface) ? '' : config.surface}
+            onClose={() => setCustomColorOpen(false)}
+            onApply={(hex) => set({ surface: hex })}
+          />
           {config.backgroundImage ? null : (
             <Choice prop="gradient" label="Gradient" labelMode="selected"
               helper="Applies a tokenized gradient wash over the surface in the chosen tone. Hidden while a background image is set — the image takes precedence."

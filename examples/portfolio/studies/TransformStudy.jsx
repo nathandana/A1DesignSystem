@@ -7,6 +7,7 @@ import {
   ListItem,
   Paragraph,
   Section,
+  Stack,
 } from "../../../packages/react/src/index.js";
 import { CaseStudyLayout } from "../pages/CaseStudyLayout.jsx";
 
@@ -24,13 +25,13 @@ export function TransformStudy() {
       <Section as="div" padding="sm" contentWidth="md">
 
         <Figure src="/img/transform/transform_cover.png" alt="Transform Design System" marginBottom="lg" />
-
+<Stack gap="lg">
         <Paragraph size="lg">
           I led the creation and evolution of Transform, an internal design system that streamlined TruCare Cloud. TruCare Cloud is an enterprise application that facilitates the insurance authorization process, has extensive work management, creates long term service and support requests and more. Used daily by 20,000 employees at Centene, a Fortune 25 enterprise, it directly impacts the health and well-being of tens of millions of Americans.
         </Paragraph>
         <Paragraph size="lg">
           Initially developed as a small design library, Transform has grown into the interface backbone of this essential tool. The goal of Transform was to improve user experience, enhance consistency, and reduce development time by offering a centralized, reusable set of design components. Over time, Transform evolved into a full-fledged design system with scalable processes, robust governance, and strong cross-functional collaboration.
-        </Paragraph>
+        </Paragraph></Stack>
         </Section>
         <Section as="div" padding="sm" surface="raised" contentWidth="md" inverse>
 
@@ -45,6 +46,7 @@ export function TransformStudy() {
           </List>
         </Section>
         <Section as="div" padding="md" contentWidth="md">
+<Stack gap="lg">
 
         <Heading as="h2" size="xl" margin="md">Team Formation &amp; Cross-functional Growth</Heading>
         <Paragraph size="lg">
@@ -55,7 +57,7 @@ export function TransformStudy() {
         </Paragraph>
         <Paragraph size="lg">
           With the growing complexity of Transform, we hired a development lead to manage technical architecture and grow the team. At peak, Transform was supported by an 11-person cross-functional team: myself as lead, two UX designers, a development lead, four developers, a product owner, a business analyst, and a scrum master. Together, we ran full agile sprints, refined our processes, and built the collaborative infrastructure that made the system sustainable at scale.
-        </Paragraph>
+        </Paragraph></Stack>
         <Figure
           src="/img/transform/timeline.png"
           alt="Timeline of Transform's development"
@@ -101,6 +103,7 @@ export function TransformStudy() {
           }
         />
 
+<Stack gap="lg">
         <Heading as="h3" size="lg" margin="md">Pattern Library</Heading>
         <Paragraph size="lg">
           We built a dynamic Pattern Library site that served as a showcase, playground, and code resource. Users could configure components, explore usage scenarios, and export code—all through an intuitive interface.
@@ -118,7 +121,6 @@ export function TransformStudy() {
           marginTop="lg"
           marginBottom="lg"
         />
-
         <Heading as="h2" size="xl" margin="md">Support Model</Heading>
         <Paragraph size="lg">
           As TruCare Cloud grew, so did Transform. When I started, I was able to stay in touch with every designer on the project, supporting, co-designing, gathering feedback, joining forces in research. That became harder as my role expanded. To scale that support, I worked with leadership to create a liaison model: each Transform designer was assigned as a dedicated point of contact for a segment of our customer teams. At its largest, this model supported a community of 30 designers and their associated product teams. Customers always knew who to talk to, which built trust and made feedback loops faster and more honest.
@@ -140,6 +142,7 @@ export function TransformStudy() {
         size="lg"
         align="center"
         />
+        </Stack>
         </Section>
         <Section as="div" padding="sm" surface="raised" contentWidth="md">
 
@@ -157,6 +160,7 @@ export function TransformStudy() {
         size="md"
         align="center"
         />
+<Stack gap="lg">
 
         <Heading as="h3" size="lg" margin="md">Component-First &gt; App-First</Heading>
         <Paragraph size="lg">
@@ -191,7 +195,7 @@ export function TransformStudy() {
           marginTop="lg"
           marginBottom="lg"
         />
-
+</Stack>
       </Section>
     </CaseStudyLayout>
   );

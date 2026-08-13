@@ -21,7 +21,7 @@ export function FondueStudy() {
         { label: "Role", value: "Design Systems Lead" },
       ]}
     >
-      <Section as="div" padding="lg" contentWidth="md">
+      <Section as="div" padding="lg" contentWidth="md" gap="md">
 
         <Figure
           src="/img/fondue-logo.png"

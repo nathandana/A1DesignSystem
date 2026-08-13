@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Card,
   Code,
@@ -11,6 +12,7 @@ import {
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
 import { Choice, Lockable, WithHelp, statusOptions } from './configKit.jsx'
+import { CustomColorDialog } from './CustomColorDialog.jsx'
 
 // 3×3 hero-badge placement → directional icons for the alignment-grid picker.
 const HERO_BADGE_POSITIONS = [
@@ -28,10 +30,29 @@ import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
 const AS_OPTIONS = ['div', 'article', 'section']
-const SURFACE_OPTIONS = [
-  { label: 'Default', value: 'default', swatch: 'var(--semantic-color-surface-card)' },
-  { label: 'Accent', value: 'accent', swatch: 'var(--semantic-color-action-background-hover)' },
+// The original two stay visible first (lowest overflowPriority); the newer
+// tinted surfaces and Custom trail into the overflow menu on narrow containers.
+const SURFACE_TOKEN_OPTIONS = [
+  { label: 'Default', value: 'default', swatch: 'var(--semantic-color-surface-card)', overflowPriority: 0 },
+  { label: 'Accent', value: 'accent', swatch: 'var(--semantic-color-action-background-hover)', overflowPriority: 1 },
+  { label: 'Info', value: 'info', swatch: 'var(--semantic-color-status-info-surface)', overflowPriority: 2 },
+  { label: 'Success', value: 'success', swatch: 'var(--semantic-color-status-success-surface)', overflowPriority: 3 },
+  { label: 'Warn', value: 'warn', swatch: 'var(--semantic-color-status-warn-surface)', overflowPriority: 4 },
+  { label: 'Error', value: 'error', swatch: 'var(--semantic-color-status-error-surface)', overflowPriority: 5 },
 ]
+const SURFACE_TOKEN_VALUES = new Set(SURFACE_TOKEN_OPTIONS.map((item) => item.value))
+const CUSTOM_SURFACE_OPTION = { label: 'Custom', value: '__custom__', icon: 'palette', overflowPriority: 6 }
+
+// Builds the live options list for the Surface Choice, adding a swatch entry
+// for the current custom hex (if any) so it renders selected.
+function surfaceOptions(surface) {
+  const isCustom = surface && !SURFACE_TOKEN_VALUES.has(surface)
+  if (!isCustom) return [...SURFACE_TOKEN_OPTIONS, CUSTOM_SURFACE_OPTION]
+  return [
+    ...SURFACE_TOKEN_OPTIONS,
+    { label: `Custom (${surface})`, value: surface, swatch: surface, overflowPriority: 6 },
+  ]
+}
 // None first and the standard circle-slash none icon; None is the default.
 const ICON_DISPLAY_OPTIONS = ['none', 'default', 'hero']
 const HERO_COLOR_OPTIONS = ['action', 'neutral', 'info', 'success', 'warn', 'error']
@@ -158,6 +179,8 @@ export function Preview({ config, utilityClass = '' }) {
 }
 
 export function Controls({ config, setConfig, pages }) {
+  const [customColorOpen, setCustomColorOpen] = useState(false)
+
   return (
     <Stack gap="lg">
       {/* <TextField
@@ -190,18 +213,29 @@ export function Controls({ config, setConfig, pages }) {
         label="Surface"
         size="compact"
         hideIndicator
-        columns={2}
+        overflow
         helper={config.surface === 'accent'
           ? 'Accent surface disables status stripe options and applies the primary-action foreground locally. Still check complex nested controls and explicit colour props for contrast.'
-          : undefined}
+          : config.surface !== 'default'
+            ? 'Non-default surfaces disable status stripe options. Check content contrast against tinted and custom backgrounds.'
+            : undefined}
         value={config.surface}
-        onChange={(surface) => setConfig((current) => ({
-          ...current,
-          surface,
-          status: surface === 'accent' ? '' : current.status,
-          statusPulse: surface === 'accent' ? false : current.statusPulse,
-        }))}
-        options={SURFACE_OPTIONS}
+        onChange={(surface) => {
+          if (surface === CUSTOM_SURFACE_OPTION.value) { setCustomColorOpen(true); return }
+          setConfig((current) => ({
+            ...current,
+            surface,
+            status: surface === 'default' ? current.status : '',
+            statusPulse: surface === 'default' ? current.statusPulse : false,
+          }))
+        }}
+        options={surfaceOptions(config.surface)}
+      />
+      <CustomColorDialog
+        open={customColorOpen}
+        value={SURFACE_TOKEN_VALUES.has(config.surface) ? '' : config.surface}
+        onClose={() => setCustomColorOpen(false)}
+        onApply={(hex) => setConfig((current) => ({ ...current, surface: hex, status: '', statusPulse: false }))}
       />
       {config.variant !== 'navigation' && (
         <Choice prop="as"

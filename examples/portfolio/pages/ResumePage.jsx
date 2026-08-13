@@ -19,7 +19,7 @@ export function ResumePage() {
           Nathan Dana
         </Heading>
         <Heading as="h2" size={{ xs: "sm", md: "xl" }}>
-          Principal AI Designer
+          Principal Designer
         </Heading>
         <Stack direction={{ xs: "column", sm: "row" }} wrap gap="xs" align="start" justify="start">
           <Paragraph><strong>Fort Mill, SC</strong></Paragraph>
@@ -35,18 +35,17 @@ export function ResumePage() {
       <Section padding="md" gap="md" surface="panel" contentWidth="md">
         <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>Professional Summary</Heading>
         <Paragraph size={{ xs: "md", md: "lg" }}>
-          As a trusted design systems leader, I specialize in wildly predictable, accessible, rules-driven systems that help enterprise teams move faster with greater consistency and clarity. I combine UX architecture, design systems strategy, accessibility, and hands-on implementation with <strong>AI-enabled workflows</strong> to turn defined standards into scalable product outcomes. My strength is creating the structure AI needs to be useful: clear rules, reusable patterns, quality checks, and human judgment. I help product, design, and engineering teams translate complexity into systems that are usable, governable, and ready to scale.
+          As a trusted design leader, I specialize in wildly predictable, accessible, rules-driven products and systems that help enterprise teams move faster with greater consistency and clarity. I combine UX architecture, design systems strategy, accessibility, and hands-on implementation with <strong>AI-enabled workflows</strong> to turn defined standards into scalable product outcomes. My strength is creating the structure AI needs to be useful: clear rules, reusable patterns, quality checks, and human judgment. I help product, design, and engineering teams translate complexity into systems that are usable, governable, and ready to scale.
 
         </Paragraph>
-        <Paragraph size={{ xs: "md", md: "lg" }}>
+        {/* <Paragraph size={{ xs: "md", md: "lg" }}>
           As a trusted design systems leader, I specialize in building predictable, accessible systems that drive strategy, consistency, and scalability across enterprise products. I combine creative vision with hands-on execution to deliver high-performing user experiences. With strong cross-functional leadership, I unite product, design, and engineering teams to translate complexity into clarity. I thrive in collaborative, fast-paced environments, I lead with empathy, design with precision, and deliver with impact.
-        </Paragraph>
+        </Paragraph> */}
       </Section>
 
-      <Section as="div" padding="md" gap="md" contentWidth="md">
+      <Section as="div" padding="md" gap="sm" contentWidth="md">
         <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>Professional Experience</Heading>
 
-        <div>
           <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
             Centene
           </Heading>
@@ -63,11 +62,9 @@ export function ResumePage() {
             <ListItem>Provided system office hours, stakeholder workshops, and Figma training to empower designers and developers across the organization.</ListItem>
             <ListItem>Collaborated with product design to revamp the <Link href={getRoutePath("member-menu")}><strong>TruCare Cloud navigation system</strong></Link> through design sprints, research, planning and leadership review.</ListItem>
           </List>
-        </div>
 
         <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
 
-        <div>
           <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
             Dealer.com / Cox Automotive
           </Heading>
@@ -81,11 +78,9 @@ export function ResumePage() {
             <ListItem>Created fully interactive HTML/CSS/JavaScript prototypes to bridge communication between design and engineering and accelerate handoff.</ListItem>
             <ListItem>Facilitated design sprints, stakeholder alignment sessions, and cross-functional workshops to explore innovation opportunities and product vision.</ListItem>
           </List>
-        </div>
 
         <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
 
-        <div>
           <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
             hmc² Advertising
           </Heading>
@@ -98,7 +93,6 @@ export function ResumePage() {
             <ListItem>Designed and coded responsive websites, HTML5 campaigns, and content management system templates to support agency clients across multiple industries.</ListItem>
             <ListItem>Balanced creative direction with hands-on execution in a high-velocity agency environment.</ListItem>
           </List>
-        </div>
       </Section>
 
       <Section as="div" padding="md" gap="md" surface="raised" contentWidth="md">
@@ -134,7 +128,7 @@ export function ResumePage() {
             "Advanced Prototyping",
             "User Research & Data-Driven Design",
             "Front-End Collaboration (HTML/CSS, JS)",
-            "Mentorship & Design Reviews",
+            "Mentorship & Design Reviews, Critiques",
           ].map((s) => <ListItem key={s}>{s}</ListItem>)}
         </List>
       </Section>
@@ -163,8 +157,11 @@ export function ResumePage() {
                 "ChatGPT",
                 "Codex",
                 "Claude Code",
+                "Claude Design",
                 "Cursor",
                 "Co-pilot",
+                "Figma Make",
+                "Gemini",
               ].map((s) => <ListItem key={s}>{s}</ListItem>)}
             </List>
           </div>

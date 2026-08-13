@@ -461,6 +461,17 @@ function componentCss() {
   --a1-section-gradient-strength: var(--component-section-gradient-strength);
 }
 
+/* Inverse only supplies a default background — placed before the surface
+   rules below (equal specificity) so an explicit surface class, applied
+   alongside .a1-section-inverse, always wins via cascade order. */
+.a1-section-inverse {
+  color-scheme: dark;
+  --a1-section-background: var(--semantic-color-surface-inverse);
+  --semantic-color-text-default: var(--semantic-color-text-inverse);
+  --semantic-color-text-muted: var(--base-color-neutral-300);
+  --a1-section-gradient-strength: var(--component-section-gradient-strength-inverse);
+}
+
 .a1-section-surface-page,
 .a1-section--surface-page {
   --a1-section-surface: var(--semantic-color-surface-page);
@@ -487,12 +498,42 @@ function componentCss() {
   --a1-section-background: var(--a1-section-surface);
 }
 
-.a1-section-inverse {
-  color-scheme: dark;
-  --a1-section-background: var(--semantic-color-surface-inverse);
-  --semantic-color-text-default: var(--semantic-color-text-inverse);
-  --semantic-color-text-muted: var(--base-color-neutral-300);
-  --a1-section-gradient-strength: var(--component-section-gradient-strength-inverse);
+.a1-section-surface-accent,
+.a1-section--surface-accent {
+  --a1-section-surface: var(--semantic-color-action-surface);
+  --a1-section-background: var(--a1-section-surface);
+}
+
+.a1-section-surface-info,
+.a1-section--surface-info {
+  --a1-section-surface: var(--semantic-color-status-info-surface);
+  --a1-section-background: var(--a1-section-surface);
+}
+
+.a1-section-surface-success,
+.a1-section--surface-success {
+  --a1-section-surface: var(--semantic-color-status-success-surface);
+  --a1-section-background: var(--a1-section-surface);
+}
+
+.a1-section-surface-warn,
+.a1-section--surface-warn {
+  --a1-section-surface: var(--semantic-color-status-warn-surface);
+  --a1-section-background: var(--a1-section-surface);
+}
+
+.a1-section-surface-error,
+.a1-section--surface-error {
+  --a1-section-surface: var(--semantic-color-status-error-surface);
+  --a1-section-background: var(--a1-section-surface);
+}
+
+/* A custom (non-token) background color, e.g. an author-supplied hex value —
+   the value itself travels via --a1-section-surface-custom, set inline. */
+.a1-section-surface-custom,
+.a1-section--surface-custom {
+  --a1-section-surface: var(--a1-section-surface-custom);
+  --a1-section-background: var(--a1-section-surface);
 }
 
 .a1-section-gap-xs,

@@ -37,6 +37,7 @@ import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.js
 import { LabelLookupDialog } from '../editor/LabelLookupDialog.jsx';
 import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { ScreenReaderReportDialog } from '../editor/ScreenReaderReportDialog.jsx';
+import { ContrastCheckDialog } from '../editor/ContrastCheckDialog.jsx';
 import { useT } from '../labels/useT.js';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
@@ -804,6 +805,8 @@ export function EditorPage({
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [screenReaderReportOpen, setScreenReaderReportOpen] = useState(false);
+  const [contrastReportOpen, setContrastReportOpen] = useState(false);
+  const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const [deletedLabel, setDeletedLabel] = useState('');
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [labelLookupNodeId, setLabelLookupNodeId] = useState<string | null>(null);
@@ -2170,6 +2173,14 @@ export function EditorPage({
                 onClick={() => setScreenReaderReportOpen(true)}
               />
             )}
+            {!isPattern && !isLayout && view === 'edit' && (
+              <ToolbarButton
+                icon="contrast"
+                label={t('app.editor.contrastCheckAction', 'Contrast check')}
+                disabled={!parsedDefinition.ok}
+                onClick={() => setContrastReportOpen(true)}
+              />
+            )}
             <ToolbarButton
               icon="flag"
               label="Create a ticket"
@@ -2235,33 +2246,35 @@ export function EditorPage({
           {view === 'edit' && (
             parsedDefinition.ok ? (
               <>
-                <RenderPageDefinition
-                  definition={parsedDefinition.value}
-                  enforceLocks={!isPattern}
-                  activePatternRootId={activePatternRootId}
-                  selectedNodeId={selectedNodeId}
-                  onNodeSelect={onSelectNode}
-                  onContentChange={handleContentChange}
-                  onItemTextChange={handleItemTextChange}
-                  activeItem={activeItem}
-                  onItemSelect={handleItemSelect}
-                  onNodeDelete={handleNodeDelete}
-                  onMoveUp={handleMoveUp}
-                  onMoveDown={handleMoveDown}
-                  onUngroup={handleUngroup}
-                  onDuplicateNode={handleDuplicateNode}
-                  onGroupAsStack={handleGroupAsStack}
-                  onConvertNode={handleConvertNode}
-                  onCopyPattern={handleCopyPattern}
-                  onPastePattern={handlePastePattern}
-                  onChooseTextLabel={setLabelLookupNodeId}
-                  getNodeProps={getNodeProps}
-                  getNodeInfo={getNodeInfoFn}
-                  onRequestAddChild={handleRequestAddChild}
-                  onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
-                  onDetachPattern={handleDetachPattern}
-                  onCreatePattern={handleCreatePatternFromNode}
-                />
+                <div ref={canvasContainerRef}>
+                  <RenderPageDefinition
+                    definition={parsedDefinition.value}
+                    enforceLocks={!isPattern}
+                    activePatternRootId={activePatternRootId}
+                    selectedNodeId={selectedNodeId}
+                    onNodeSelect={onSelectNode}
+                    onContentChange={handleContentChange}
+                    onItemTextChange={handleItemTextChange}
+                    activeItem={activeItem}
+                    onItemSelect={handleItemSelect}
+                    onNodeDelete={handleNodeDelete}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    onUngroup={handleUngroup}
+                    onDuplicateNode={handleDuplicateNode}
+                    onGroupAsStack={handleGroupAsStack}
+                    onConvertNode={handleConvertNode}
+                    onCopyPattern={handleCopyPattern}
+                    onPastePattern={handlePastePattern}
+                    onChooseTextLabel={setLabelLookupNodeId}
+                    getNodeProps={getNodeProps}
+                    getNodeInfo={getNodeInfoFn}
+                    onRequestAddChild={handleRequestAddChild}
+                    onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+                    onDetachPattern={handleDetachPattern}
+                    onCreatePattern={handleCreatePatternFromNode}
+                  />
+                </div>
                 <div
                   className="a1-web-canvas-floor"
                   onDragOver={(e) => {
@@ -2370,6 +2383,14 @@ export function EditorPage({
         open={screenReaderReportOpen}
         onClose={() => setScreenReaderReportOpen(false)}
         definition={parsedDefinition.ok ? parsedDefinition.value : null}
+      />
+
+      <ContrastCheckDialog
+        open={contrastReportOpen}
+        onClose={() => setContrastReportOpen(false)}
+        containerRef={canvasContainerRef}
+        scopeNodeId={selectedNodeId}
+        scopeLabel={selectedNodeId ? getNodeType(selectedNodeId) : null}
       />
     </>
   );

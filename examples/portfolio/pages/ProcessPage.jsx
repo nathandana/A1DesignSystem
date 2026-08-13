@@ -13,7 +13,7 @@ import { getRoutePath } from "../utils/routing.js";
 export function ProcessPage({ navigate }) {
   return (
     <>
-      <Section inverse padding="md" gap="xs" contentWidth="lg">
+      <Section inverse padding="lg" gap="md" contentWidth="lg">
         <MessageBadge size="lg" status="success" icon="psychology">Design process</MessageBadge>
         <Heading as="h1" type="display" size={{ xs: "lg", md: "xxl" }}>
           From curiosity to craft
@@ -28,7 +28,6 @@ export function ProcessPage({ navigate }) {
 
       <Section surface="panel" padding="lg" gap="xs" contentWidth="md">
         <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-          <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>01.</Heading>
           <Stack gap="lg" direction="column">
             <Heading type="display" size={{ xs: "lg", md: "xxl" }}>Asking bold questions</Heading>
             <Paragraph size="lg" color="muted">
@@ -41,7 +40,6 @@ export function ProcessPage({ navigate }) {
 
       <Section padding="lg" gap="xs" contentWidth="md">
         <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-          <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>02.</Heading>
           <Stack gap="lg">
             <Heading type="display" size={{ xs: "lg", md: "xxl" }}>Start ugly and sharp</Heading>
             <Paragraph size="lg" color="muted">
@@ -54,7 +52,6 @@ export function ProcessPage({ navigate }) {
 
       <Section surface="panel" padding="lg" gap="xs" contentWidth="md">
         <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-          <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>03.</Heading>
           <Stack gap="lg">
             <Heading type="display" size={{ xs: "lg", md: "xxl" }}>Jumping into Figma</Heading>
             <Paragraph size="lg" color="muted">
@@ -67,7 +64,6 @@ export function ProcessPage({ navigate }) {
 
       <Section padding="lg" gap="xs" contentWidth="md">
         <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-          <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>04.</Heading>
           <Stack gap="lg">
             <Heading type="display" size={{ xs: "lg", md: "xxl" }}>Feedback is fuel</Heading>
             <Paragraph size="lg" color="muted">
@@ -80,7 +76,6 @@ export function ProcessPage({ navigate }) {
 
       <Section surface="panel" padding="lg" gap="xs" contentWidth="md">
         <Stack direction={{ xs: "column", sm: "row" }} gap="lg">
-          <Heading type="display" color="accent" size={{ xs: "xl", md: "xJumbo" }}>05.</Heading>
           <Stack gap="lg">
             <Heading type="display" size={{ xs: "lg", md: "xxl" }}>Obsess the details</Heading>
             <Paragraph size="lg" color="muted">

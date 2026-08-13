@@ -11,8 +11,13 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   as?: React.ElementType;
   /** Block padding scale. Responsive object syntax supported. Default: "md" */
   padding?: ResponsivePadding;
-  /** Background surface treatment */
-  surface?: "page" | "panel" | "raised";
+  /**
+   * Background surface treatment. `"page"` / `"panel"` / `"raised"` are the
+   * neutral surface steps; `"accent"` / `"info"` / `"success"` / `"warn"` /
+   * `"error"` are subtle tinted surfaces from the matching semantic color role.
+   * Accepts any valid CSS color (e.g. a hex value) as a custom background.
+   */
+  surface?: "page" | "panel" | "raised" | "accent" | "info" | "success" | "warn" | "error" | (string & {});
   /** Gap between direct children */
   gap?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Gradient overlay colour. Suppressed while `backgroundImage` is set. */

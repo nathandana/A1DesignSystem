@@ -28,6 +28,11 @@ export function App() {
   const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
+    document.documentElement.classList.add("a1-theme-dispatch");
+    return () => document.documentElement.classList.remove("a1-theme-dispatch");
+  }, []);
+
+  useEffect(() => {
     window.history.replaceState({ page: activePage }, "", window.location.href);
     const onPopState = () => {
       setActivePage(getPageFromLocation());
@@ -40,7 +45,7 @@ export function App() {
   useEffect(() => {
     const activeStudy = caseStudies.find((study) => study.id === activePage);
     const titles = {
-      home: "Nathan Dana — Principal AI Designer",
+      home: "Nathan Dana — Principal Designer",
       about: "About — Nathan Dana",
       process: "Design Process — Nathan Dana",
       resume: "Résumé & Experience — Nathan Dana",
@@ -79,7 +84,7 @@ export function App() {
             <span className="pf-nav-brand-name">
               Nathan <span className="pf-mobile-logo-accent">Dana</span>
             </span>
-            <span className="pf-nav-brand-title">Principal AI Designer</span>
+            <span className="pf-nav-brand-title">Principal Designer</span>
           </div>
         ) : null
       }
@@ -142,7 +147,7 @@ export function App() {
   );
 
   const mobileHeader = (
-    <Stack direction="row" align="center" gap="sm"  className="pf-mobile-header">
+    <Stack direction="row" align="center" gap="sm" className="pf-mobile-header">
       <IconButton
         icon="menu"
         label="Open navigation"

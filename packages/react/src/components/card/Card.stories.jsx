@@ -40,9 +40,9 @@ const meta = {
       description: "Removes all visual chrome and padding",
     },
     surface: {
-      control: "inline-radio",
-      options: ["default", "accent"],
-      description: "Card surface treatment. Accent uses the action background and disables status stripe rendering.",
+      control: "select",
+      options: ["default", "accent", "info", "success", "warn", "error"],
+      description: "Card surface treatment. Accent uses the action background; info/success/warn/error are subtle tinted surfaces. Any non-default surface disables status stripe rendering.",
     },
     icon: {
       ...iconArgType("Material Symbols icon name"),
@@ -379,6 +379,49 @@ export const AccentSurface = {
       <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>Accent card</Heading>
       <Paragraph size="sm">
         A strong accent surface is available, but nested content still needs contrast review.
+      </Paragraph>
+    </Card>
+  ),
+};
+
+const TINTED_SURFACE_CARDS = [
+  { surface: "info", label: "Info surface" },
+  { surface: "success", label: "Success surface" },
+  { surface: "warn", label: "Warn surface" },
+  { surface: "error", label: "Error surface" },
+];
+
+export const TintedSurfaces = {
+  name: "Tinted surfaces",
+  parameters: { controls: { include: ["surface"] } },
+  render: () => (
+    <div style={{ display: "flex", gap: "var(--base-spacing-16)", flexWrap: "wrap" }}>
+      {TINTED_SURFACE_CARDS.map(({ surface, label }) => (
+        <Card key={surface} surface={surface} style={{ width: 240 }}>
+          <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>{label}</Heading>
+          <Paragraph size="sm">
+            A subtle tinted surface from the {surface} status role. Status stripe rendering is
+            disabled on any non-default surface.
+          </Paragraph>
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+/**
+ * `surface` also accepts any valid CSS color (e.g. a hex value) as a custom
+ * background. Not a token — verify contrast for any content placed on it, and
+ * re-check after theme changes.
+ */
+export const CustomSurfaceColor = {
+  name: "Custom surface color",
+  render: () => (
+    <Card surface="#fde9c8" style={{ width: 320 }}>
+      <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>Custom background color</Heading>
+      <Paragraph size="sm">
+        surface=&quot;#fde9c8&quot; — a raw hex value applied directly. Verify content contrast
+        manually, and re-check after theme changes since a custom color isn&apos;t theme-aware.
       </Paragraph>
     </Card>
   ),
