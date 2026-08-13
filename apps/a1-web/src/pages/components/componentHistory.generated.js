@@ -107,6 +107,8 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-15","type":"code","summary":"Figma Empty State icon bridge"},
   ],
   "figure": [
+    {"date":"2026-08-01","type":"code","summary":"A1:Figma Figure image controller fix"},
+    {"date":"2026-08-01","type":"code","summary":"A1:Figma Figure image sync across page flows"},
     {"date":"2026-07-14","type":"code","summary":"Figma Figure image page sync"},
     {"date":"2026-07-14","type":"code","summary":"Figma Figure bridge sizing contract"},
     {"date":"2026-07-14","type":"code","summary":"Figma Figure, Definition List, Blockquote, and Badge refinements"},
@@ -179,6 +181,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-22","type":"code","summary":"SearchField — new field-family component"},
   ],
   "section": [
+    {"date":"2026-08-07","type":"code","summary":"Section and Card background colors","ticket":"A1-2537"},
     {"date":"2026-07-16","type":"code","summary":"A1:Figma Section conversion child sizing"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Section fill sizing"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Section content width"},

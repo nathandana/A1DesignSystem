@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Centered session loading indicator** (A1-2539) — centered the existing Circular Progress animation in the full app viewport while a configured identity provider restores its session.
+
 ## 0.31.0 — 2026-08-13
 
 - **Breakpoint-specific element visibility** (A1-2488) — every page-editor node can now be included or removed independently at the xs–xl viewport breakpoints. The Configure panel exposes an accessible five-option visibility control, stores the result as A1’s cascading responsive-object syntax, and removes hidden nodes from both layout and the accessibility tree in the real responsive preview. The A1:Figma bridge round-trips the same `visibility` field through selected-layer plugin metadata and a contextual breakpoint toolbar; imported breakpoint previews apply the saved visibility. Figma’s contextual controls now use the real A1 Toolbar stylesheet and BEM classes instead of unstyled native buttons.
