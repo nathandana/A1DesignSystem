@@ -1,6 +1,7 @@
 <!-- A1 Design System – Component JSON plugin UI (A1-1651).
      Styled with the real A1 Pure library as a showcase. The plugin build
-     inlines packages/pure/dist/a1-light.css + a1-pure.css between the markers
+     inlines packages/pure/dist/a1-light.css + a1-pure.css and the A1 Toolbar
+     component stylesheet between the markers
      below because Figma plugin iframes cannot load external stylesheets. The
      second style block is plugin chrome only — layout and the status banner —
      with every value drawn from the inlined tokens. -->
@@ -305,12 +306,12 @@
     justify-self: stretch;
   }
 
-  .choice-group-grid-config .context-toolbar .a1-toolbar-group {
+  .choice-group-grid-config .context-toolbar .a1-toolbar__group {
     flex-wrap: nowrap;
     inline-size: 100%;
   }
 
-  .choice-group-grid-config .context-toolbar .a1-toolbar-button {
+  .choice-group-grid-config .context-toolbar .a1-toolbar__button {
     flex: 1 1 0;
     min-inline-size: 0;
   }
@@ -365,37 +366,37 @@
     flex-wrap: nowrap;
   }
 
-  .context-toolbar .a1-toolbar-group {
+  .context-toolbar .a1-toolbar__group {
     flex-wrap: wrap;
   }
 
-  .context-toolbar-fill .a1-toolbar-group {
+  .context-toolbar-fill .a1-toolbar__group {
     flex: 1 1 auto;
     inline-size: 100%;
   }
 
-  .context-toolbar-with-action .a1-toolbar-group {
+  .context-toolbar-with-action .a1-toolbar__group {
     flex: 1 1 auto;
     inline-size: auto;
     min-inline-size: 0;
     flex-wrap: nowrap;
   }
 
-  .context-toolbar-fill .a1-toolbar-button {
+  .context-toolbar-fill .a1-toolbar__button {
     flex: 1 1 0;
     min-inline-size: 0;
   }
 
-  .context-toolbar-with-action > .a1-toolbar-button {
+  .context-toolbar-with-action > .a1-toolbar__button {
     flex: 0 0 auto;
   }
 
-  .context-toolbar-icon .a1-toolbar-button {
+  .context-toolbar-icon .a1-toolbar__button {
     justify-content: center;
     min-inline-size: var(--base-spacing-40);
   }
 
-  .context-toolbar .a1-toolbar-label {
+  .context-toolbar .a1-toolbar__label {
     display: block;
     min-inline-size: 0;
     max-inline-size: 100%;
@@ -404,7 +405,7 @@
     white-space: nowrap;
   }
 
-  .context-toolbar .a1-toolbar-button[aria-pressed="true"] {
+  .context-toolbar .a1-toolbar__button[aria-pressed="true"] {
     background: var(--component-button-secondary-background);
     color: var(--component-button-secondary-foreground);
   }
@@ -758,6 +759,9 @@
   }
 
   .plugin-context-panel-host {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-spacing-gap-xs);
     flex: 1 1 auto;
     min-block-size: 0;
     inline-size: 100%;
@@ -913,6 +917,15 @@
 
       <div id="build-fix-panel" class="mode-panel" data-tab-panel="build-fix" role="tabpanel" aria-labelledby="build-fix-tab">
         <div class="panel-grid">
+          <section id="breakpoint-visibility-context-panel" class="panel-card panel-card-muted" hidden>
+            <h2 id="breakpoint-visibility-title" class="a1-h6">Visible at breakpoints</h2>
+            <div class="context-field-grid">
+              <div class="context-field">
+                <div id="breakpoint-visibility-control" class="context-toolbar" aria-labelledby="breakpoint-visibility-title" aria-describedby="breakpoint-visibility-hint"></div>
+              </div>
+            </div>
+            <p id="breakpoint-visibility-hint" class="a1-p a1-small muted">Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.</p>
+          </section>
           <section id="page-layout-context-panel" class="panel-card panel-card-muted" hidden>
             <h2 class="a1-h6">Page Layout</h2>
             <div id="page-layout-context-controls" class="context-field-grid">
@@ -1521,6 +1534,13 @@
   const A1_WEB_BASE = 'http://127.0.0.1:5177';
   const A1_HANDOFF_BRIDGE = 'http://localhost:4318';
   const HANDOFF_POLL_INTERVAL_MS = 1200;
+  const A1_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
+  const A1_PLUGIN_LABELS = __A1_PLUGIN_LABELS__;
+  const A1_PLUGIN_LOCALE = String(navigator.language || 'en').split('-')[0].toLowerCase();
+  function pluginLabel(key, fallback) {
+    const values = A1_PLUGIN_LABELS && A1_PLUGIN_LABELS[key];
+    return values && (values[A1_PLUGIN_LOCALE] || values.en) || fallback;
+  }
   let lastAuditReport = null;
   let activeAuditFilter = '';
 
@@ -1708,6 +1728,19 @@
   const conversionSuggestionsReason = document.getElementById('conversion-suggestions-reason');
   const conversionSuggestionList = document.getElementById('conversion-suggestion-list');
   const conversionContextControls = document.getElementById('conversion-context-controls');
+  const breakpointVisibilityContextPanel = document.getElementById('breakpoint-visibility-context-panel');
+  const breakpointVisibilityControl = document.getElementById('breakpoint-visibility-control');
+  const breakpointVisibilityTitle = document.getElementById('breakpoint-visibility-title');
+  const breakpointVisibilityHint = document.getElementById('breakpoint-visibility-hint');
+  if (breakpointVisibilityTitle) {
+    breakpointVisibilityTitle.textContent = pluginLabel('breakpointVisibilityLabel', 'Visible at breakpoints');
+  }
+  if (breakpointVisibilityHint) {
+    breakpointVisibilityHint.textContent = pluginLabel(
+      'breakpointVisibilityHint',
+      'Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.',
+    );
+  }
   const textContextPanel = document.getElementById('text-context-panel');
   const pageLayoutContextPanel = document.getElementById('page-layout-context-panel');
   const pageLayoutControlBreakpoint = document.getElementById('page-layout-control-breakpoint');
@@ -1855,6 +1888,7 @@
   const responsiveGridColumns = Array.from(document.querySelectorAll('.responsive-grid-column'));
   const gridControlFill = document.getElementById('grid-control-fill');
   const contextPanelRecords = [
+    breakpointVisibilityContextPanel,
     pageLayoutContextPanel,
     topHeaderContextPanel,
     textContextPanel,
@@ -1879,6 +1913,8 @@
     return { panel, marker };
   });
   let pluginUiMode = 'minimized';
+  let hydratingBreakpointVisibility = false;
+  let selectedBreakpointVisibilityNodeId = null;
   let hydratingResponsiveGridColumns = false;
   let hydratingPageLayoutControls = false;
   let hydratingTopHeaderControls = false;
@@ -1948,7 +1984,7 @@
 
   function setToolbarSelection(toolbar, value) {
     if (!toolbar) return;
-    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar-button[role="radio"]'));
+    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar__button[role="radio"]'));
     buttons.forEach((button) => {
       const selected = button.dataset.value === value;
       button.setAttribute('aria-checked', String(selected));
@@ -1957,7 +1993,7 @@
   }
 
   function moveToolbarSelection(toolbar, currentIndex, delta) {
-    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar-button[role="radio"]'));
+    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar__button[role="radio"]'));
     if (!buttons.length) return;
     const nextIndex = (currentIndex + delta + buttons.length) % buttons.length;
     buttons[nextIndex].focus();
@@ -1974,20 +2010,20 @@
       : toolbar.getAttribute('aria-label') || groupName;
     const fill = settings.fill !== false;
     toolbar.className = fill
-      ? 'a1-toolbar a1-toolbar-full-width context-toolbar context-toolbar-fill'
+      ? 'a1-toolbar a1-toolbar--full-width context-toolbar context-toolbar-fill'
       : 'a1-toolbar context-toolbar';
     toolbar.setAttribute('role', 'toolbar');
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
     toolbar.textContent = '';
     const radioGroup = document.createElement('div');
-    radioGroup.className = 'a1-toolbar-group';
+    radioGroup.className = 'a1-toolbar__group a1-toolbar__group-radios';
     radioGroup.setAttribute('role', 'radiogroup');
     radioGroup.setAttribute('aria-label', groupLabel);
     values.forEach((option, index) => {
       const label = labels[option] || option;
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.id = radioOptionId(groupName, option);
       button.dataset.value = option;
       button.setAttribute('role', 'radio');
@@ -2003,7 +2039,7 @@
         button.appendChild(icon);
       }
       const text = document.createElement('span');
-      text.className = 'a1-toolbar-label';
+      text.className = 'a1-toolbar__label';
       text.textContent = label;
       button.appendChild(text);
       button.onclick = () => {
@@ -2042,14 +2078,14 @@
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
     toolbar.textContent = '';
     const radioGroup = document.createElement('div');
-    radioGroup.className = 'a1-toolbar-group';
+    radioGroup.className = 'a1-toolbar__group a1-toolbar__group-radios';
     radioGroup.setAttribute('role', 'radiogroup');
     radioGroup.setAttribute('aria-label', groupLabel);
     values.forEach((option, index) => {
       const label = labels[option] || option;
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.id = radioOptionId(groupName, option);
       button.dataset.value = option;
       button.setAttribute('role', 'radio');
@@ -2093,7 +2129,7 @@
       : toolbar.getAttribute('aria-label') || 'Toggles';
     const fill = settings.fill === true;
     toolbar.className = fill
-      ? 'a1-toolbar a1-toolbar-full-width context-toolbar context-toolbar-fill'
+      ? 'a1-toolbar a1-toolbar--full-width context-toolbar context-toolbar-fill'
       : 'a1-toolbar context-toolbar';
     toolbar.setAttribute('role', 'toolbar');
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
@@ -2101,16 +2137,23 @@
     (toggles || []).forEach((toggle) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.dataset.value = toggle.value;
       button.setAttribute('aria-pressed', String(toggle.pressed === true));
       button.setAttribute('aria-label', toggle.label);
       button.title = toggle.label;
-      const icon = document.createElement('span');
-      icon.className = ['a1-icon', 'a1-icon-sm', toggle.iconClass].filter(Boolean).join(' ');
-      icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = toggle.icon;
-      button.appendChild(icon);
+      if (toggle.icon) {
+        const icon = document.createElement('span');
+        icon.className = ['a1-icon', 'a1-icon-sm', toggle.iconClass].filter(Boolean).join(' ');
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = toggle.icon;
+        button.appendChild(icon);
+      } else {
+        const text = document.createElement('span');
+        text.className = 'a1-toolbar__label';
+        text.textContent = toggle.text || toggle.label;
+        button.appendChild(text);
+      }
       button.onclick = () => {
         const pressed = button.getAttribute('aria-pressed') === 'true';
         const nextPressed = !pressed;
@@ -2121,6 +2164,51 @@
       };
       toolbar.appendChild(button);
     });
+  }
+
+  function breakpointVisibilityFromUi() {
+    const values = {};
+    if (!breakpointVisibilityControl) return values;
+    breakpointVisibilityControl.querySelectorAll('.a1-toolbar__button[data-value]').forEach((button) => {
+      if (A1_BREAKPOINTS.includes(button.dataset.value)) {
+        values[button.dataset.value] = button.getAttribute('aria-pressed') === 'true';
+      }
+    });
+    return values;
+  }
+
+  function applyBreakpointVisibilityFromUi() {
+    if (hydratingBreakpointVisibility || !selectedBreakpointVisibilityNodeId) return;
+    setStatus('', pluginLabel('breakpointVisibilityUpdating', 'Updating breakpoint visibility…'));
+    parent.postMessage({
+      pluginMessage: {
+        type: 'set-breakpoint-visibility',
+        breakpointVisibilityNodeId: selectedBreakpointVisibilityNodeId,
+        visibility: breakpointVisibilityFromUi(),
+      },
+    }, '*');
+  }
+
+  function hydrateBreakpointVisibility(message) {
+    if (!breakpointVisibilityContextPanel || !breakpointVisibilityControl) return;
+    const visibility = message && message.breakpointVisibility;
+    const nodeId = message && message.breakpointVisibilityNodeId;
+    const available = !!nodeId && visibility && typeof visibility === 'object';
+    breakpointVisibilityContextPanel.hidden = !available;
+    selectedBreakpointVisibilityNodeId = available ? nodeId : null;
+    if (!available) return;
+    hydratingBreakpointVisibility = true;
+    renderToolbarToggles(
+      breakpointVisibilityControl,
+      A1_BREAKPOINTS.map((breakpoint) => ({
+        value: breakpoint,
+        label: `${breakpoint}: ${pluginLabel('breakpointVisibilityLabel', 'Visible at breakpoints')}`,
+        text: breakpoint,
+        pressed: visibility[breakpoint] !== false,
+      })),
+      { fill: true, onToggle: applyBreakpointVisibilityFromUi },
+    );
+    hydratingBreakpointVisibility = false;
   }
 
   function appendToolbarDivider(toolbar) {
@@ -2136,7 +2224,7 @@
     if (!toolbar || !toggle) return null;
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'a1-toolbar-button';
+    button.className = 'a1-toolbar__button';
     button.dataset.value = toggle.value;
     button.setAttribute('aria-pressed', String(toggle.pressed === true));
     button.setAttribute('aria-label', toggle.label);
@@ -2213,14 +2301,14 @@
   }
 
   function sectionInverseControlValue() {
-    const button = sectionControlSurface && sectionControlSurface.querySelector(`.a1-toolbar-button[data-value="${SECTION_INVERSE_TOGGLE_VALUE}"]`);
+    const button = sectionControlSurface && sectionControlSurface.querySelector(`.a1-toolbar__button[data-value="${SECTION_INVERSE_TOGGLE_VALUE}"]`);
     return Boolean(button && button.getAttribute('aria-pressed') === 'true');
   }
 
   function fillSizingControlState(toolbar, toggles = FILL_AXIS_TOGGLES) {
     const state = { widthMode: 'hug', heightMode: 'hug' };
     toggles.forEach((toggle) => {
-      const button = toolbar && toolbar.querySelector(`.a1-toolbar-button[data-value="${toggle.value}"]`);
+      const button = toolbar && toolbar.querySelector(`.a1-toolbar__button[data-value="${toggle.value}"]`);
       state[toggle.modeKey] = button && button.getAttribute('aria-pressed') === 'true' ? 'fill' : 'hug';
     });
     return state;
@@ -2256,7 +2344,7 @@
   function checkedRadioValue(group) {
     const checked = group ? group.querySelector('input[type="radio"]:checked') : null;
     if (checked) return checked.value;
-    const checkedButton = group ? group.querySelector('.a1-toolbar-button[role="radio"][aria-checked="true"]') : null;
+    const checkedButton = group ? group.querySelector('.a1-toolbar__button[role="radio"][aria-checked="true"]') : null;
     return checkedButton ? checkedButton.dataset.value || '' : '';
   }
 
@@ -3440,9 +3528,11 @@
 
   function syncContextPanelPlacement() {
     if (pluginUiMode !== 'context' || !pluginContextPanelHost) return;
-    const active = contextPanelRecords.find(({ panel }) => !panel.hidden);
+    const visibilityRecord = contextPanelRecords.find(({ panel }) => panel === breakpointVisibilityContextPanel && !panel.hidden);
+    const contextualRecord = contextPanelRecords.find(({ panel }) => panel !== breakpointVisibilityContextPanel && !panel.hidden);
+    const activePanels = new Set([visibilityRecord && visibilityRecord.panel, contextualRecord && contextualRecord.panel].filter(Boolean));
     contextPanelRecords.forEach(({ panel, marker }) => {
-      if (panel === (active && active.panel)) {
+      if (activePanels.has(panel)) {
         pluginContextPanelHost.appendChild(panel);
       } else if (panel.parentNode === pluginContextPanelHost) {
         marker.parentNode.insertBefore(panel, marker.nextSibling);
@@ -3639,6 +3729,7 @@
   let pendingLinkedExport = null;
   let pendingLinkedPullLinkId = null;
   let pendingLinkedProjectId = null;
+  const NEW_A1_PAGE_OPTION = '__new-a1-page__';
 
   function pageLinkForSelection() {
     const project = (workspaceManifest && workspaceManifest.projects || []).find((entry) => entry.id === syncProject.value);
@@ -3675,13 +3766,21 @@
     if ((workspaceManifest && workspaceManifest.projects || []).some((project) => project.id === selectedProject)) syncProject.value = selectedProject;
     const project = (workspaceManifest && workspaceManifest.projects || []).find((entry) => entry.id === syncProject.value);
     syncPage.innerHTML = '<option value="">Choose page</option>';
+    if (project) {
+      const option = document.createElement('option');
+      option.value = NEW_A1_PAGE_OPTION;
+      option.textContent = 'New page...';
+      syncPage.appendChild(option);
+    }
     (project && project.pages || []).forEach((page) => {
       const option = document.createElement('option');
       option.value = page.id;
       option.textContent = page.title + (page.link ? ' · linked' : '');
       syncPage.appendChild(option);
     });
-    if ((project && project.pages || []).some((page) => page.id === selectedPage)) syncPage.value = selectedPage;
+    if (selectedPage === NEW_A1_PAGE_OPTION || (project && project.pages || []).some((page) => page.id === selectedPage)) {
+      syncPage.value = selectedPage;
+    }
     updateLinkedControls();
   }
 
@@ -3793,7 +3892,7 @@
       dirty = false;
       syncOpenLink();
       parent.postMessage({
-        pluginMessage: { type: 'linked-page-import', text: data.page.json, assets: [], link: data.page.link || link },
+        pluginMessage: { type: 'linked-page-import', text: data.page.json, assets: data.page.assets || [], link: data.page.link || link },
       }, '*');
     } catch (error) {
       setStatus('warn', (error && error.message ? error.message : 'Could not load the selected A1 page.') + ' Keep the A1 editor open and start npm run codex:bridge:a1-web.');
@@ -3820,7 +3919,7 @@
         }
         pages.push({
           text: data.page.json,
-          assets: [],
+          assets: data.page.assets || [],
           link: { ...page.link, projectName: project.name, pageTitle: page.title },
         });
       }
@@ -3936,7 +4035,11 @@
   syncProject.onchange = rebuildPageOptions;
   syncPage.onchange = () => {
     updateLinkedControls();
-    if (pageLinkForSelection()) setStatus('', 'Page selected. Choose “Render in Figma” to add it to the canvas.');
+    if (syncPage.value === NEW_A1_PAGE_OPTION) {
+      setStatus('', 'New page selected. Choose “Create A1 page” to send the selected Figma Page Layout to this project.');
+    } else if (pageLinkForSelection()) {
+      setStatus('', 'Page selected. Choose “Render in Figma” to add it to the canvas.');
+    }
   };
   renderLinkedProjectButton.onclick = pullSelectedA1Project;
   renderLinkedPageButton.onclick = pullSelectedA1Page;
@@ -4511,6 +4614,7 @@
       exportButton.disabled = !message.exportable;
       sendFigureImageButton.hidden = message.componentName !== 'Figure';
       sendFigureImageButton.disabled = message.componentName !== 'Figure';
+      hydrateBreakpointVisibility(message);
       hydratePageLayoutContext(message);
       hydrateTopHeaderContext(message);
       hydrateTextContext(message);
@@ -4673,6 +4777,21 @@
         message.warnings && message.warnings.length
           ? message.warnings.join('\n')
           : `Created ${message.count} breakpoint preview${message.count === 1 ? '' : 's'}.`
+      );
+    }
+    if (message.type === 'breakpoint-visibility-result') {
+      if (message.breakpointVisibilityNodeId) hydrateBreakpointVisibility(message);
+      const outcomeText = message.outcome === 'updated'
+        ? pluginLabel('breakpointVisibilityUpdated', 'Updated breakpoint visibility.')
+        : message.outcome === 'reset'
+          ? pluginLabel('breakpointVisibilityReset', 'Visible at every breakpoint.')
+          : pluginLabel(
+              'breakpointVisibilitySelectionChanged',
+              'The selected Figma layer changed before breakpoint visibility could be saved.',
+            );
+      setStatus(
+        message.warnings.length || message.outcome === 'selection-changed' ? 'warn' : 'success',
+        message.warnings.length ? message.warnings.join('\n') : outcomeText
       );
     }
     if (message.type === 'grid-breakpoints-result') {

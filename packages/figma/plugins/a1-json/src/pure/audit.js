@@ -1,5 +1,23 @@
 export const WARNING_SUMMARY_LIMIT = 18;
 
+// Reusable implementation assets that are valid only inside their public A1
+// parent component. Audit counts them as A1 coverage without presenting them
+// as standalone JSON bridge targets.
+export const AUDIT_SUPPORTED_PRIVATE_COMPONENTS = new Set([
+  'Checkbox Option',
+  'Choice Option',
+  'Definition List Item',
+  'Icon',
+  'Menu Item',
+  'Nav icon',
+  'Page Nav Item',
+  'Radio Option',
+  'Segmented Control Item',
+  'Tab',
+  'Tab Item',
+  'Top Header Nav Item',
+]);
+
 export const AUDIT_SEVERITY = {
   blocker: { label: 'JSON blocker', weight: 15 },
   major: { label: 'Major translation issue', weight: 4 },

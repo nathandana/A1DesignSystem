@@ -45,6 +45,8 @@
     "preview:a1-web": "vite preview apps/a1-web --host 127.0.0.1 --strictPort --port 4177",
     "codex:bridge:a1-web": "node apps/a1-web/scripts/codex-bridge.mjs",
     "figma:plugin:sync-css": "node packages/figma/plugins/a1-json/sync-ui-css.mjs",
+    "build:mcp-index": "npm run build:mcp-index --workspace=@gtivr4/a1-design-system-mcp",
+    "dev:mcp-server": "npm run dev --workspace=@gtivr4/a1-design-system-mcp",
     "dev:a1-jobs": "vite apps/a1-jobs --host 127.0.0.1 --strictPort --port 5186",
     "dev:tesla-a1": "vite apps/tesla-a1 --host 127.0.0.1 --strictPort --port 5188",
     "serve:tesla-a1": "npm run build:tesla-a1 && npm run serve --workspace=tesla-a1",

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A1 Design System — MCP Server</title>
+<style>
+  body { font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 640px; margin: 4rem auto; padding: 0 1.5rem; color: #1a1a1a; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #f4f4f5; border-radius: 4px; }
+  code { padding: 0.1em 0.4em; }
+  pre { padding: 1rem; overflow-x: auto; }
+  h1 { font-size: 1.5rem; }
+  a { color: #7c3aed; }
+</style>
+</head>
+<body>
+  <h1>A1 Design System — MCP server</h1>
+  <p>
+    A remote <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> server exposing the
+    <a href="https://github.com/nathandana/A1DesignSystem">A1 Design System</a>'s component registry,
+    design tokens, design rules, and page-definition contract to AI coding agents.
+  </p>
+  <p>Endpoint: <code>POST /mcp</code> (MCP Streamable HTTP, stateless — one JSON-RPC request per response).</p>
+  <p>Connect a local MCP client, e.g. with the Claude Code CLI:</p>
+  <pre>claude mcp add --transport http a1-design https://mcp.a1design.app/mcp</pre>
+  <p>Tools: <code>list_components</code>, <code>get_component</code>, <code>search_tokens</code>,
+    <code>get_token</code>, <code>list_themes</code>, <code>list_rules</code>, <code>list_page_types</code>.</p>
+  <p>Resources: <code>a1://docs/agent-brief</code>, <code>a1://docs/page-definition-standard</code>.</p>
+</body>
+</html>

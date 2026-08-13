@@ -1,11 +1,11 @@
 {
   "code": {
-    "lines": 15764,
+    "lines": 16216,
     "functions": {
-      "total": 1135,
-      "topLevel": 694
+      "total": 1163,
+      "topLevel": 712
     },
-    "topLevelDeclarations": 868,
+    "topLevelDeclarations": 885,
     "registries": {
       "adapters": 44,
       "figmaNames": 41,
@@ -49,6 +49,7 @@
       "select-audit-issue",
       "set-action-trigger-link",
       "set-badge-props",
+      "set-breakpoint-visibility",
       "set-button-container-props",
       "set-button-dialog-link",
       "set-button-props",
@@ -78,7 +79,7 @@
     ]
   },
   "ui": {
-    "lines": 5047,
+    "lines": 5166,
     "handledMessages": [
       "action-trigger-result",
       "add-component-result",
@@ -87,6 +88,7 @@
       "audit-select-result",
       "badge-props-result",
       "breakpoint-create-result",
+      "breakpoint-visibility-result",
       "button-container-props-result",
       "button-dialog-result",
       "button-props-result",
@@ -162,6 +164,7 @@
       "select-audit-issue",
       "set-action-trigger-link",
       "set-badge-props",
+      "set-breakpoint-visibility",
       "set-button-container-props",
       "set-button-props",
       "set-card-props",

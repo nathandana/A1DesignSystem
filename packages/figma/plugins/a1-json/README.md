@@ -91,14 +91,20 @@ a single controller file.
   cloud services. Automatic merge/conflict resolution is intentionally not in
   this POC—use explicit sends in either direction.
 
-- **Local Figure image POC** — the same loopback handoff can carry PNG, JPEG,
-  or GIF Figure bytes alongside JSON that references `a1img://…`. In the
-  Playground, **Send to Figma** applies local Image Library Figures to Figma's
-  Image fill. In Figma, select one Figure and choose **Send Figure image to
-  Playground** to save its fill into the local Image Library and receive a
-  stable `a1img://…` reference. Assets are memory-only, expire with the
-  five-minute handoff, support up to 4 MB total, and are never embedded in the
-  JSON document or sent to a remote service.
+- **Local Figure image POC** — every A1 → Figma page path carries PNG, JPEG, or
+  GIF Figure bytes alongside JSON that references `a1img://…`: Playground
+  **Send to Figma**, editor **Connect/Send page to Figma**, and Page Editor
+  pulls all apply Image Library Figures to Figma's nested Image fill. In Figma,
+  select one Figure and choose **Send Figure image to Playground** to save its
+  fill into the local Image Library and receive a stable `a1img://…` reference.
+  Assets are memory-only, expire with their local bridge snapshot/handoff,
+  support up to eight images and 4 MB total per page, and are never embedded in
+  the JSON document or sent to a remote service.
+
+  Cloud-backed A1 Image Library refs also resolve directly from the public A1
+  Supabase Storage bucket when JSON reaches the plugin without a sidecar, such
+  as a pasted Figure node. Browser-local Image Library refs still require the
+  localhost sidecar.
 
 ## Component mappings
 
@@ -112,7 +118,7 @@ a single controller file.
 | Card | `Card` | Default/accent surface, configurable inline icon (`Show icon` + `Icon` swap), ordered native Content Slot children, and fill-width placement in imported auto-layout or Grid parents. The icon is displayed in a token-bound action-surface tile with a legible text-foreground glyph. The plugin adds, removes, exports, and updates supported children while retaining the Card instance. |
 | Banner | `Banner` | Inline/system/calendar variants; neutral/info/success/warn/error status; editable title, calendar eyebrow/month/day fields; and ordered Content Slot children. Legacy `content.fallback` becomes a muted Paragraph child on import. A Banner carrying imported children is tagged and detached so Figma can edit that frame-based slot. |
 | Badge | `MessageBadge` | Status, subtle treatment, `sm`/`md`/`lg` size, editable label, and a nested native Material icon instance. `icon: null` round-trips through the Figma `Show icon` control. |
-| Material icon instance | `Icon` | A selected Material Symbols instance exports as `Icon.props.name` using the glyph/component name, with size inferred from the rendered dimensions when it matches the A1 icon scale. Import/update finds the glyph by name from the current file or enabled A1 library icon page; individual icon glyphs are intentionally not listed in the manifest. |
+| Material icon instance or text layer | `Icon` | `Icon.props.name`, all A1 `size` values, and semantic `color` values round-trip. Import/update uses a matching glyph component when available and otherwise creates editable Material Symbols text, so valid names such as `light_mode` do not require one published Figma component per glyph. Size maps to the 16/20/24/32/40/64/96 px scale; color binds to A1 text/status variables. |
 | Figure | `Figure` | Source URL, alt text, optional caption, compact `size` max-width and `aspectRatio` variants, and a token-bound image fill. Aspect ratio is locked on the nested Image layer; source remains JSON metadata. |
 | Definition List | `DefinitionList` | `sm`/`md`/`lg` size, row/column direction, and ordered reusable Definition List Item instances in the native Items Slot. |
 | Blockquote | `Blockquote` | Visual style, quote text, optional citation, and citation URL. |
@@ -146,6 +152,23 @@ a single controller file.
 | Authored auto-layout Frame | `Stack` | Vertical/horizontal direction, A1 gap scale, cross-axis alignment, primary-axis distribution, horizontal wrap, grow, supported child node order, Hug-height default, and fill-width placement when nested in auto layout. |
 | Authored Grid auto-layout Frame | `Grid` | Fixed column count, flexible fill-width tracks, A1-scale row/column gaps, cross-axis alignment, and supported child node order. |
 
+### Breakpoint visibility
+
+Select one Figma layer and use the contextual **Breakpoint visibility** toolbar
+to choose where it appears at xs, sm, md, lg and xl. The plugin stores compact
+`a1BreakpointVisibility` plugin data on that layer and round-trips it as the
+page-definition node’s cascading `visibility` object. A layer with no saved
+metadata is visible everywhere. When the plugin renders or synchronizes
+breakpoint roots, it also applies the resolved value to Figma’s layer
+visibility for that preview. A plain container with breakpoint metadata exports
+as a Stack so the authored grouping and visibility contract are not flattened.
+
+Contextual option groups use the same A1 Toolbar component stylesheet and DOM
+class contract as the React package. The stylesheet is inlined into the plugin
+bundle because Figma plugin iframes cannot load the package CSS at runtime. The
+breakpoint toolbar's copy is likewise generated from `system/labels/app.json`
+and resolved from the iframe locale instead of maintaining plugin-only strings.
+
 ## End-to-end fixture
 
 Paste [`examples/all-new-components.json`](examples/all-new-components.json) into
@@ -178,7 +201,7 @@ warning instead of selecting an arbitrary option.
 - **Banner:** the Figma asset maps its 3 visual variants × 5 statuses, title, calendar date fields, an `Icon` instance-swap property backed by local A1 icon components, and ordered `Content Slot` children. Action controls, dismissal behavior, and live announcement semantics remain runtime-only; the bridge reports them instead of inventing a static Figma approximation. Native Figma Slot authoring is not exposed through the plugin API, so Banner uses an explicitly named, zero-padding content frame as its bridge slot. Figma also rejects adding children to that frame while it is inside an instance: when JSON supplies content, the bridge applies visual properties, detaches the instance, tags the editable frame as `Banner`, and preserves the JSON contract for later export. Rerender that frame to change its visual Banner properties.
 - **Badge:** the compact asset maps `status`, `subtle`, `sm`/`md`/`lg` size, label, and a configurable nested **Material icon** instance. `icon: null` maps to the Figma `Show icon` control. An icon name must exist as a Material icon component in the Figma library; otherwise the bridge keeps the status default and reports a warning.
 - **Grid:** Figma's native Grid maps fixed/responsive columns, row/column gaps, cross-axis alignment, and direct-child column/row spans. Spanned children export as `GridItem` wrappers with `span` / `rowSpan`; imported `GridItem` children apply the active breakpoint preview back to Figma's native span fields. Off-scale gutters export as the closest supported A1 gap. Custom track sizes and manual placement remain runtime-only/static-layout limits; child order is preserved and a warning identifies omitted manual placement.
-- **Figure:** Figma does not load arbitrary external URLs into an image fill. The bridge preserves `src`, `alt`, and caption as component properties. Its compact `2xs`–`xl` size values set only the Figure's maximum width (128 / 192 / 320 / 480 / 640 / 800 px); they do not alter the media geometry. Each `16:9` / `4:3` / `1:1` / `3:4` / `9:16` variant locks the nested Image layer to that ratio. The local-only handoff is the exception: it transfers Image Library PNG/JPEG/GIF bytes into the nested Image fill (or back into the local library) while retaining an `a1img://…` JSON reference. Unsupported React size/ratio values warn. Cropping and layout props remain React-only.
+- **Figure:** Figma does not load arbitrary external URLs into an image fill. The bridge preserves `src`, `alt`, and caption as component properties. Its compact `2xs`–`xl` size values set only the Figure's maximum width (128 / 192 / 320 / 480 / 640 / 800 px); they do not alter the media geometry. Each `16:9` / `4:3` / `1:1` / `3:4` / `9:16` variant locks the nested Image layer to that ratio. A1 Image Library `a1img://…` refs are the exception: cloud-backed IDs resolve from the public A1 storage origin, while the localhost handoff transfers PNG/JPEG/GIF bytes for browser-local images. Both paths replace the nested Image fill while retaining the stable JSON reference. Unsupported React size/ratio values warn. Cropping and layout props remain React-only.
 - **Definition List:** the compact asset maps `size`, `direction`, and serializable string Label/Value pairs through reusable Definition List Item instances. Label width, copy controls, and rich React-node values remain runtime-only.
 - **Blockquote:** the asset maps visual variant, quote, citation, and citation URL. Citation links are stored as data; Figma has no interactive link behavior in this component preview.
 - **Section children:** the bridge writes imported children to the native

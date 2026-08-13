@@ -467,7 +467,8 @@ const server = createServer(async (req, res) => {
 
   // A1 registers the pages available in this local browser session. The bridge
   // intentionally keeps this snapshot in memory only; Figma sees names and
-  // ids, while the full JSON travels only for a page the user explicitly sends.
+  // ids. Full JSON and volatile Figure image sidecars are returned only after
+  // the plugin explicitly requests one selected page.
   if (req.method === 'POST' && pathname === '/workspace/register') {
     try {
       const body = await readBody(req, workspaceMaxBytes)
@@ -493,6 +494,7 @@ const server = createServer(async (req, res) => {
               id: page.id.slice(0, 160),
               title: page.title.slice(0, 240),
               json,
+              assets: handoffAssets(page.assets),
               link: page.link && validPageIdentity(page.link) ? page.link : null,
             }
           }),
@@ -513,7 +515,7 @@ const server = createServer(async (req, res) => {
       workspace: workspace ? {
         projects: workspace.projects.map((project) => ({
           ...project,
-          pages: project.pages.map(({ json: _json, ...page }) => page),
+          pages: project.pages.map(({ json: _json, assets: _assets, ...page }) => page),
         })),
         updatedAt: workspace.updatedAt,
       } : null,
@@ -535,7 +537,7 @@ const server = createServer(async (req, res) => {
     }
     sendFigmaHandoffJson(res, 200, {
       ok: true,
-      page: { id: page.id, title: page.title, json: page.json, link: page.link },
+      page: { id: page.id, title: page.title, json: page.json, assets: page.assets, link: page.link },
     }, origin)
     return
   }

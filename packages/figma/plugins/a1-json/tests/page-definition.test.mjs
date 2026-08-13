@@ -5,6 +5,7 @@ import {
   collectSupportedNodes,
   componentId,
   kebabComponentType,
+  pageLayoutForPageExport,
   pageTitleFromFigmaFrame,
   slugifyOptionValue,
 } from '../src/pure/page-definition.js';
@@ -53,4 +54,13 @@ test('derives page titles from linked and plain Figma frame names', () => {
   assert.equal(pageTitleFromFigmaFrame('A1 · Project / Dashboard'), 'Dashboard');
   assert.equal(pageTitleFromFigmaFrame({ name: 'Marketing page' }), 'Marketing page');
   assert.equal(pageTitleFromFigmaFrame(''), 'Untitled');
+});
+
+test('preserves a PageLayout export and wraps frame bundles in a PageLayout', () => {
+  const pageLayout = { id: 'layout', type: 'PageLayout', children: [{ id: 'heading', type: 'Heading' }] };
+  assert.equal(pageLayoutForPageExport(pageLayout), pageLayout);
+  assert.deepEqual(pageLayoutForPageExport({ nodes: [{ id: 'heading', type: 'Heading' }] }), {
+    type: 'PageLayout',
+    regions: [{ id: 'main', name: 'Main', nodes: [{ id: 'heading', type: 'Heading' }] }],
+  });
 });

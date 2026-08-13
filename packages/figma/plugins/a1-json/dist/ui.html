@@ -1,6 +1,7 @@
 <!-- A1 Design System – Component JSON plugin UI (A1-1651).
      Styled with the real A1 Pure library as a showcase. The plugin build
-     inlines packages/pure/dist/a1-light.css + a1-pure.css between the markers
+     inlines packages/pure/dist/a1-light.css + a1-pure.css and the A1 Toolbar
+     component stylesheet between the markers
      below because Figma plugin iframes cannot load external stylesheets. The
      second style block is plugin chrome only — layout and the status banner —
      with every value drawn from the inlined tokens. -->
@@ -3060,6 +3061,379 @@ aside > .a1-blockquote .a1-link:hover {
     animation: none;
   }
 }
+/* A1 Toolbar component CSS used by the plugin context controls. */
+/* ══════════════════════════════════════════════════════════════════════════
+   Toolbar
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Labelled field wrapper ────────────────────────────────────────────────── */
+/* Optional caption above the bar — matches the compact ChoiceGroup label so a
+   Toolbar sits naturally next to form controls. */
+.a1-toolbar-field {
+  display: flex;
+  flex-direction: column;
+  /* Keep the label and bar at their natural width so a stretching flex parent
+     (e.g. a column Stack with the default `align-items: stretch`) doesn't force
+     the bar to full width. A `fullWidth` bar still fills (it sets its own
+     `inline-size: 100%`). */
+  align-items: flex-start;
+  gap: var(--component-choice-group-compact-group-gap);
+}
+
+.a1-toolbar-field__label {
+  font-family: var(--component-paragraph-font-family);
+  /* Tied to the same tokens as a compact form label (size, weight, colour) so a
+     Toolbar caption is styled identically to a field/legend label beside it —
+     especially its colour. (A1-165) */
+  font-size: var(--semantic-font-size-form-label-compact);
+  font-weight: var(--component-field-compact-label-font-weight);
+  color: var(--semantic-color-text-default);
+  line-height: var(--semantic-font-line-height-body);
+}
+
+.a1-toolbar {
+  /* Variant layer — every value resolves to a Style Dictionary token. */
+  --a1-toolbar-item-size: var(--base-spacing-32);
+  --a1-toolbar-padding: var(--base-spacing-2);
+  --a1-toolbar-radius: var(--base-radius-md);
+  --a1-toolbar-tool-radius: max(0px, calc(var(--a1-toolbar-radius) - var(--a1-toolbar-padding)));
+  --a1-toolbar-bg: var(--semantic-color-surface-raised);
+  /* Unselected tools sit back in muted text; the selected tool steps forward
+     with default text on a darker neutral background — low-contrast, neutral. */
+  --a1-toolbar-fg: var(--semantic-color-text-muted);
+  --a1-toolbar-hover-bg: color-mix(in srgb, var(--semantic-color-text-default) 8%, transparent);
+  --a1-toolbar-selected-bg: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+  --a1-toolbar-selected-fg: var(--semantic-color-text-default);
+  /* A hairline subtle border by default gives the bar definition against the
+     page surface. The accessible theme and high-contrast modes step it up to a
+     thicker, stronger border so it is clearly delimited at high contrast. */
+  --a1-toolbar-border-width: var(--component-divider-size-xs);
+  --a1-toolbar-border-color: var(--semantic-color-border-subtle);
+
+  display: inline-flex;
+  /* Prevent a flex/grid parent from stretching the bar to full width when
+     there is no `.a1-toolbar-field` wrapper (i.e. no `label` prop). The
+     `fullWidth` modifier overrides this via its explicit `inline-size: 100%`. */
+  align-self: flex-start;
+  align-items: center;
+  /* Tools wrap onto new rows when they run out of width — never overflow the
+     container and never scroll horizontally. */
+  flex-wrap: wrap;
+  max-inline-size: 100%;
+  position: relative;
+  gap: var(--base-spacing-2);
+  padding: var(--a1-toolbar-padding);
+  background: var(--a1-toolbar-bg);
+  border: var(--a1-toolbar-border-width) solid var(--a1-toolbar-border-color);
+  border-radius: var(--a1-toolbar-radius);
+}
+
+/* Accessible theme: thicken the border and step the colour up to the stronger
+   default border for a clearly delimited boundary at high contrast. The theme
+   is activated by `.a1-theme-accessible` on <html> (see themes.css). */
+.a1-theme-accessible .a1-toolbar {
+  --a1-toolbar-border-width: var(--component-divider-size-sm);
+  --a1-toolbar-border-color: var(--semantic-color-border-default);
+}
+
+/* OS high-contrast / forced-colors: apply the same stronger boundary. */
+@media (prefers-contrast: more) {
+  .a1-toolbar {
+    --a1-toolbar-border-width: var(--component-divider-size-sm);
+    --a1-toolbar-border-color: var(--semantic-color-border-default);
+  }
+}
+
+@media (forced-colors: active) {
+  .a1-toolbar {
+    --a1-toolbar-border-width: var(--component-divider-size-sm);
+    --a1-toolbar-border-color: var(--semantic-color-border-default);
+  }
+}
+
+/* ── Full width (fill container, tools share the space) ────────────────────── */
+.a1-toolbar--full-width {
+  display: flex;
+  inline-size: 100%;
+}
+
+/* Tools grow to share the available space; dividers keep their natural size. */
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) > :not(.a1-toolbar__divider):not(.a1-toolbar__measure) {
+  flex: 1 1 0;
+}
+
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
+}
+
+/* A stretched (non-grid) group distributes its own buttons across its share. */
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-toolbar__button {
+  flex: 1 1 0;
+}
+
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-tooltip__trigger {
+  flex: 1 1 0;
+}
+
+.a1-toolbar--full-width:not(.a1-toolbar--overflow) .a1-toolbar__group:not(.a1-toolbar__group--grid) .a1-toolbar__group-radios > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
+}
+
+/* ── Overlay (floating, elevated bar over page content) ────────────────────── */
+.a1-toolbar--overlay {
+  background: var(--semantic-color-surface-card);
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-default);
+  box-shadow: var(--semantic-shadow-lg);
+}
+
+/* ── Buttons (toggle / action / group items) ───────────────────────────────── */
+
+.a1-toolbar__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-4);
+  min-inline-size: var(--a1-toolbar-item-size);
+  block-size: var(--a1-toolbar-item-size);
+  padding-inline: var(--base-spacing-6);
+  margin: 0;
+  border: none;
+  border-radius: var(--a1-toolbar-tool-radius);
+  background: transparent;
+  color: var(--a1-toolbar-fg);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.a1-toolbar__button:hover {
+  background: var(--a1-toolbar-hover-bg);
+}
+
+.a1-toolbar__button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--component-button-focus-ring-width) var(--component-field-focus-ring-color);
+}
+
+/* Selected state for toggles (aria-pressed) and group items (aria-checked) —
+   default text on a darker neutral fill. */
+.a1-toolbar__button[aria-pressed="true"],
+.a1-toolbar__button[aria-checked="true"] {
+  background: var(--a1-toolbar-selected-bg);
+  color: var(--a1-toolbar-selected-fg);
+}
+
+/* A toggle (aria-pressed) can be turned off, so it keeps hover feedback when on.
+   A radio group item (aria-checked) can't be deselected, so it shows no hover or
+   active change — clicking it does nothing. */
+.a1-toolbar__button[aria-pressed="true"]:hover {
+  background: color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+}
+
+.a1-toolbar__button[aria-checked="true"]:hover,
+.a1-toolbar__button[aria-checked="true"]:active {
+  background: var(--a1-toolbar-selected-bg);
+}
+
+.a1-toolbar__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.a1-toolbar > .a1-tooltip__trigger,
+.a1-toolbar__group-radios > .a1-tooltip__trigger,
+.a1-toolbar__overflow-panel > .a1-tooltip__trigger {
+  flex: 0 0 auto;
+  min-inline-size: 0;
+}
+
+.a1-toolbar__group-radios--grid > .a1-tooltip__trigger,
+.a1-toolbar__group-radios--grid > .a1-tooltip__trigger > .a1-toolbar__button {
+  inline-size: 100%;
+}
+
+.a1-toolbar__label {
+  white-space: nowrap;
+}
+
+/* Colour swatch shown inside a tool to preview a specific colour. The border
+   keeps a light swatch from bleeding into the toolbar surface. */
+.a1-toolbar__swatch {
+  flex: none;
+  inline-size: var(--base-spacing-16);
+  block-size: var(--base-spacing-16);
+  border-radius: var(--base-radius-sm);
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-default);
+}
+
+/* Responsive label visibility (showLabel/showLabels as a breakpoint object).
+   The component emits one cascading class per breakpoint (xs → xl); the last
+   matching media query wins, mirroring Divider's responsive pattern. */
+.a1-toolbar__label--hide-xs { display: none; }
+.a1-toolbar__label--show-xs { display: inline; }
+
+@media (--bp-sm-up) {
+  .a1-toolbar__label--hide-sm { display: none; }
+  .a1-toolbar__label--show-sm { display: inline; }
+}
+
+@media (--bp-md-up) {
+  .a1-toolbar__label--hide-md { display: none; }
+  .a1-toolbar__label--show-md { display: inline; }
+}
+
+@media (--bp-lg-up) {
+  .a1-toolbar__label--hide-lg { display: none; }
+  .a1-toolbar__label--show-lg { display: inline; }
+}
+
+@media (--bp-xl) {
+  .a1-toolbar__label--hide-xl { display: none; }
+  .a1-toolbar__label--show-xl { display: inline; }
+}
+
+/* ── Menu button (opens a dropdown Menu) ───────────────────────────────────── */
+
+.a1-toolbar__menu-button {
+  inline-size: auto;
+}
+
+.a1-toolbar--overflow {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.a1-toolbar--overflow > :not(.a1-toolbar__measure) {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar--overflow .a1-toolbar__group-radios {
+  flex-wrap: nowrap;
+}
+
+.a1-toolbar__overflow-button {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar__overflow-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--base-spacing-2);
+  min-inline-size: var(--base-width-2xs);
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__button,
+.a1-toolbar__overflow-panel > .a1-toolbar__menu-button,
+.a1-toolbar__overflow-panel > .a1-tooltip__trigger {
+  flex: 0 0 auto;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__divider {
+  flex: 1 0 100%;
+  align-self: stretch;
+  inline-size: auto;
+  min-block-size: var(--component-divider-size-xs);
+  block-size: var(--component-divider-size-xs);
+  margin-block: var(--base-spacing-2);
+  margin-inline: 0;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__group {
+  flex: 0 1 auto;
+  max-inline-size: 100%;
+}
+
+.a1-toolbar__overflow-panel > .a1-toolbar__group .a1-toolbar__group-radios {
+  flex-wrap: wrap;
+}
+
+/* Inline overflow menu item (a ToolbarMenu rendered inside the More menu). The
+   selected item uses the Toolbar's subtler selected treatment — default text on
+   a darker neutral fill — rather than the bold action-background MenuItem
+   highlight, so it reads like the rest of the toolbar. */
+.a1-toolbar__overflow-item.a1-menu-item--active,
+.a1-toolbar__overflow-item.a1-menu-item--active:hover,
+.a1-toolbar__overflow-item.a1-menu-item--active:active {
+  color: var(--semantic-color-text-default);
+  background: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+}
+
+.a1-toolbar__overflow-item.a1-menu-item--active:hover {
+  background: color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+}
+
+.a1-toolbar__overflow-item.a1-menu-item--active .a1-menu-item__icon {
+  color: var(--semantic-color-text-default);
+}
+
+.a1-toolbar__caret {
+  /* Pull the caret tight to the icon/label so the menu button stays compact. */
+  margin-inline-start: calc(-1 * var(--base-spacing-2));
+}
+
+/* ── Group (segmented) + grid ──────────────────────────────────────────────── */
+
+.a1-toolbar__group {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 0;
+  position: relative;
+  gap: var(--base-spacing-2);
+}
+
+.a1-toolbar__group-radios {
+  display: inline-flex;
+  align-items: center;
+  /* A wide single group wraps its own buttons rather than overflowing the bar. */
+  flex-wrap: wrap;
+  gap: var(--base-spacing-2);
+  min-inline-size: 0;
+}
+
+.a1-toolbar__group-radios--grid {
+  display: grid;
+  grid-template-columns: repeat(var(--a1-toolbar-grid-columns, 3), var(--a1-toolbar-item-size));
+  gap: var(--base-spacing-2);
+}
+
+.a1-toolbar__group--overflow {
+  flex-wrap: nowrap;
+}
+
+.a1-toolbar__group--overflow .a1-toolbar__group-radios {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.a1-toolbar__measure {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: inline-flex;
+  gap: var(--base-spacing-2);
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.a1-toolbar__measure-item {
+  display: inline-flex;
+}
+
+/* ── Divider ───────────────────────────────────────────────────────────────── */
+
+.a1-toolbar__divider {
+  align-self: stretch;
+  inline-size: var(--component-divider-size-xs);
+  min-block-size: var(--a1-toolbar-item-size);
+  margin-inline: var(--base-spacing-2);
+  background: var(--semantic-color-border-default);
+  border-radius: var(--base-radius-pill);
+}
 /* == END A1 PURE == */
 </style>
 
@@ -3355,12 +3729,12 @@ aside > .a1-blockquote .a1-link:hover {
     justify-self: stretch;
   }
 
-  .choice-group-grid-config .context-toolbar .a1-toolbar-group {
+  .choice-group-grid-config .context-toolbar .a1-toolbar__group {
     flex-wrap: nowrap;
     inline-size: 100%;
   }
 
-  .choice-group-grid-config .context-toolbar .a1-toolbar-button {
+  .choice-group-grid-config .context-toolbar .a1-toolbar__button {
     flex: 1 1 0;
     min-inline-size: 0;
   }
@@ -3415,37 +3789,37 @@ aside > .a1-blockquote .a1-link:hover {
     flex-wrap: nowrap;
   }
 
-  .context-toolbar .a1-toolbar-group {
+  .context-toolbar .a1-toolbar__group {
     flex-wrap: wrap;
   }
 
-  .context-toolbar-fill .a1-toolbar-group {
+  .context-toolbar-fill .a1-toolbar__group {
     flex: 1 1 auto;
     inline-size: 100%;
   }
 
-  .context-toolbar-with-action .a1-toolbar-group {
+  .context-toolbar-with-action .a1-toolbar__group {
     flex: 1 1 auto;
     inline-size: auto;
     min-inline-size: 0;
     flex-wrap: nowrap;
   }
 
-  .context-toolbar-fill .a1-toolbar-button {
+  .context-toolbar-fill .a1-toolbar__button {
     flex: 1 1 0;
     min-inline-size: 0;
   }
 
-  .context-toolbar-with-action > .a1-toolbar-button {
+  .context-toolbar-with-action > .a1-toolbar__button {
     flex: 0 0 auto;
   }
 
-  .context-toolbar-icon .a1-toolbar-button {
+  .context-toolbar-icon .a1-toolbar__button {
     justify-content: center;
     min-inline-size: var(--base-spacing-40);
   }
 
-  .context-toolbar .a1-toolbar-label {
+  .context-toolbar .a1-toolbar__label {
     display: block;
     min-inline-size: 0;
     max-inline-size: 100%;
@@ -3454,7 +3828,7 @@ aside > .a1-blockquote .a1-link:hover {
     white-space: nowrap;
   }
 
-  .context-toolbar .a1-toolbar-button[aria-pressed="true"] {
+  .context-toolbar .a1-toolbar__button[aria-pressed="true"] {
     background: var(--component-button-secondary-background);
     color: var(--component-button-secondary-foreground);
   }
@@ -3808,6 +4182,9 @@ aside > .a1-blockquote .a1-link:hover {
   }
 
   .plugin-context-panel-host {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-spacing-gap-xs);
     flex: 1 1 auto;
     min-block-size: 0;
     inline-size: 100%;
@@ -3963,6 +4340,15 @@ aside > .a1-blockquote .a1-link:hover {
 
       <div id="build-fix-panel" class="mode-panel" data-tab-panel="build-fix" role="tabpanel" aria-labelledby="build-fix-tab">
         <div class="panel-grid">
+          <section id="breakpoint-visibility-context-panel" class="panel-card panel-card-muted" hidden>
+            <h2 id="breakpoint-visibility-title" class="a1-h6">Visible at breakpoints</h2>
+            <div class="context-field-grid">
+              <div class="context-field">
+                <div id="breakpoint-visibility-control" class="context-toolbar" aria-labelledby="breakpoint-visibility-title" aria-describedby="breakpoint-visibility-hint"></div>
+              </div>
+            </div>
+            <p id="breakpoint-visibility-hint" class="a1-p a1-small muted">Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.</p>
+          </section>
           <section id="page-layout-context-panel" class="panel-card panel-card-muted" hidden>
             <h2 class="a1-h6">Page Layout</h2>
             <div id="page-layout-context-controls" class="context-field-grid">
@@ -4571,6 +4957,13 @@ aside > .a1-blockquote .a1-link:hover {
   const A1_WEB_BASE = 'http://127.0.0.1:5177';
   const A1_HANDOFF_BRIDGE = 'http://localhost:4318';
   const HANDOFF_POLL_INTERVAL_MS = 1200;
+  const A1_BREAKPOINTS = ['xs', 'sm', 'md', 'lg', 'xl'];
+  const A1_PLUGIN_LABELS = {"breakpointVisibilityLabel":{"en":"Visible at breakpoints","es":"Visible en los puntos de interrupción","fr":"Visible aux points de rupture","de":"An Breakpoints sichtbar","pt":"Visível nos pontos de interrupção","ja":"表示するブレークポイント","zh":"显示的断点","ar":"مرئي عند نقاط التوقف"},"breakpointVisibilityHint":{"en":"Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.","es":"Elige dónde se incluye este elemento. Los puntos de interrupción no seleccionados lo eliminan del diseño y de la tecnología de asistencia.","fr":"Choisissez où cet élément est inclus. Les points de rupture non sélectionnés le retirent de la mise en page et des technologies d’assistance.","de":"Wählen Sie aus, wo dieses Element enthalten ist. Nicht ausgewählte Breakpoints entfernen es aus Layout und assistiven Technologien.","pt":"Escolha onde este elemento será incluído. Pontos de interrupção não selecionados o removem do layout e da tecnologia assistiva.","ja":"この要素を含める場所を選択します。選択されていないブレークポイントでは、レイアウトと支援技術から削除されます。","zh":"选择包含此元素的位置。未选择的断点会将其从布局和辅助技术中移除。","ar":"اختر مواضع تضمين هذا العنصر. تؤدي نقاط التوقف غير المحددة إلى إزالته من التخطيط والتقنيات المساعدة."},"breakpointVisibilityUpdating":{"en":"Updating breakpoint visibility…","es":"Actualizando la visibilidad en los puntos de interrupción…","fr":"Mise à jour de la visibilité aux points de rupture…","de":"Breakpoint-Sichtbarkeit wird aktualisiert…","pt":"Atualizando a visibilidade nos pontos de interrupção…","ja":"ブレークポイントの表示設定を更新しています…","zh":"正在更新断点可见性…","ar":"جارٍ تحديث مستوى الظهور عند نقاط التوقف…"},"breakpointVisibilityUpdated":{"en":"Updated breakpoint visibility.","es":"Se actualizó la visibilidad en los puntos de interrupción.","fr":"La visibilité aux points de rupture a été mise à jour.","de":"Breakpoint-Sichtbarkeit aktualisiert.","pt":"A visibilidade nos pontos de interrupção foi atualizada.","ja":"ブレークポイントの表示設定を更新しました。","zh":"已更新断点可见性。","ar":"تم تحديث مستوى الظهور عند نقاط التوقف."},"breakpointVisibilityReset":{"en":"Visible at every breakpoint.","es":"Visible en todos los puntos de interrupción.","fr":"Visible à tous les points de rupture.","de":"An allen Breakpoints sichtbar.","pt":"Visível em todos os pontos de interrupção.","ja":"すべてのブレークポイントで表示されます。","zh":"在所有断点均可见。","ar":"مرئي عند جميع نقاط التوقف."},"breakpointVisibilitySelectionChanged":{"en":"The selected Figma layer changed before breakpoint visibility could be saved.","es":"La capa de Figma seleccionada cambió antes de que se pudiera guardar la visibilidad en los puntos de interrupción.","fr":"Le calque Figma sélectionné a changé avant que la visibilité aux points de rupture puisse être enregistrée.","de":"Die ausgewählte Figma-Ebene wurde geändert, bevor die Breakpoint-Sichtbarkeit gespeichert werden konnte.","pt":"A camada selecionada no Figma mudou antes que a visibilidade nos pontos de interrupção pudesse ser salva.","ja":"ブレークポイントの表示設定を保存する前に、選択中の Figma レイヤーが変更されました。","zh":"保存断点可见性之前，所选 Figma 图层已更改。","ar":"تغيرت طبقة Figma المحددة قبل حفظ مستوى الظهور عند نقاط التوقف."}};
+  const A1_PLUGIN_LOCALE = String(navigator.language || 'en').split('-')[0].toLowerCase();
+  function pluginLabel(key, fallback) {
+    const values = A1_PLUGIN_LABELS && A1_PLUGIN_LABELS[key];
+    return values && (values[A1_PLUGIN_LOCALE] || values.en) || fallback;
+  }
   let lastAuditReport = null;
   let activeAuditFilter = '';
 
@@ -4758,6 +5151,19 @@ aside > .a1-blockquote .a1-link:hover {
   const conversionSuggestionsReason = document.getElementById('conversion-suggestions-reason');
   const conversionSuggestionList = document.getElementById('conversion-suggestion-list');
   const conversionContextControls = document.getElementById('conversion-context-controls');
+  const breakpointVisibilityContextPanel = document.getElementById('breakpoint-visibility-context-panel');
+  const breakpointVisibilityControl = document.getElementById('breakpoint-visibility-control');
+  const breakpointVisibilityTitle = document.getElementById('breakpoint-visibility-title');
+  const breakpointVisibilityHint = document.getElementById('breakpoint-visibility-hint');
+  if (breakpointVisibilityTitle) {
+    breakpointVisibilityTitle.textContent = pluginLabel('breakpointVisibilityLabel', 'Visible at breakpoints');
+  }
+  if (breakpointVisibilityHint) {
+    breakpointVisibilityHint.textContent = pluginLabel(
+      'breakpointVisibilityHint',
+      'Choose where this element is included. Unselected breakpoints remove it from layout and assistive technology.',
+    );
+  }
   const textContextPanel = document.getElementById('text-context-panel');
   const pageLayoutContextPanel = document.getElementById('page-layout-context-panel');
   const pageLayoutControlBreakpoint = document.getElementById('page-layout-control-breakpoint');
@@ -4905,6 +5311,7 @@ aside > .a1-blockquote .a1-link:hover {
   const responsiveGridColumns = Array.from(document.querySelectorAll('.responsive-grid-column'));
   const gridControlFill = document.getElementById('grid-control-fill');
   const contextPanelRecords = [
+    breakpointVisibilityContextPanel,
     pageLayoutContextPanel,
     topHeaderContextPanel,
     textContextPanel,
@@ -4929,6 +5336,8 @@ aside > .a1-blockquote .a1-link:hover {
     return { panel, marker };
   });
   let pluginUiMode = 'minimized';
+  let hydratingBreakpointVisibility = false;
+  let selectedBreakpointVisibilityNodeId = null;
   let hydratingResponsiveGridColumns = false;
   let hydratingPageLayoutControls = false;
   let hydratingTopHeaderControls = false;
@@ -4998,7 +5407,7 @@ aside > .a1-blockquote .a1-link:hover {
 
   function setToolbarSelection(toolbar, value) {
     if (!toolbar) return;
-    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar-button[role="radio"]'));
+    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar__button[role="radio"]'));
     buttons.forEach((button) => {
       const selected = button.dataset.value === value;
       button.setAttribute('aria-checked', String(selected));
@@ -5007,7 +5416,7 @@ aside > .a1-blockquote .a1-link:hover {
   }
 
   function moveToolbarSelection(toolbar, currentIndex, delta) {
-    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar-button[role="radio"]'));
+    const buttons = Array.from(toolbar.querySelectorAll('.a1-toolbar__button[role="radio"]'));
     if (!buttons.length) return;
     const nextIndex = (currentIndex + delta + buttons.length) % buttons.length;
     buttons[nextIndex].focus();
@@ -5024,20 +5433,20 @@ aside > .a1-blockquote .a1-link:hover {
       : toolbar.getAttribute('aria-label') || groupName;
     const fill = settings.fill !== false;
     toolbar.className = fill
-      ? 'a1-toolbar a1-toolbar-full-width context-toolbar context-toolbar-fill'
+      ? 'a1-toolbar a1-toolbar--full-width context-toolbar context-toolbar-fill'
       : 'a1-toolbar context-toolbar';
     toolbar.setAttribute('role', 'toolbar');
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
     toolbar.textContent = '';
     const radioGroup = document.createElement('div');
-    radioGroup.className = 'a1-toolbar-group';
+    radioGroup.className = 'a1-toolbar__group a1-toolbar__group-radios';
     radioGroup.setAttribute('role', 'radiogroup');
     radioGroup.setAttribute('aria-label', groupLabel);
     values.forEach((option, index) => {
       const label = labels[option] || option;
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.id = radioOptionId(groupName, option);
       button.dataset.value = option;
       button.setAttribute('role', 'radio');
@@ -5053,7 +5462,7 @@ aside > .a1-blockquote .a1-link:hover {
         button.appendChild(icon);
       }
       const text = document.createElement('span');
-      text.className = 'a1-toolbar-label';
+      text.className = 'a1-toolbar__label';
       text.textContent = label;
       button.appendChild(text);
       button.onclick = () => {
@@ -5092,14 +5501,14 @@ aside > .a1-blockquote .a1-link:hover {
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
     toolbar.textContent = '';
     const radioGroup = document.createElement('div');
-    radioGroup.className = 'a1-toolbar-group';
+    radioGroup.className = 'a1-toolbar__group a1-toolbar__group-radios';
     radioGroup.setAttribute('role', 'radiogroup');
     radioGroup.setAttribute('aria-label', groupLabel);
     values.forEach((option, index) => {
       const label = labels[option] || option;
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.id = radioOptionId(groupName, option);
       button.dataset.value = option;
       button.setAttribute('role', 'radio');
@@ -5143,7 +5552,7 @@ aside > .a1-blockquote .a1-link:hover {
       : toolbar.getAttribute('aria-label') || 'Toggles';
     const fill = settings.fill === true;
     toolbar.className = fill
-      ? 'a1-toolbar a1-toolbar-full-width context-toolbar context-toolbar-fill'
+      ? 'a1-toolbar a1-toolbar--full-width context-toolbar context-toolbar-fill'
       : 'a1-toolbar context-toolbar';
     toolbar.setAttribute('role', 'toolbar');
     if (!labelledBy) toolbar.setAttribute('aria-label', groupLabel);
@@ -5151,16 +5560,23 @@ aside > .a1-blockquote .a1-link:hover {
     (toggles || []).forEach((toggle) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'a1-toolbar-button';
+      button.className = 'a1-toolbar__button';
       button.dataset.value = toggle.value;
       button.setAttribute('aria-pressed', String(toggle.pressed === true));
       button.setAttribute('aria-label', toggle.label);
       button.title = toggle.label;
-      const icon = document.createElement('span');
-      icon.className = ['a1-icon', 'a1-icon-sm', toggle.iconClass].filter(Boolean).join(' ');
-      icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = toggle.icon;
-      button.appendChild(icon);
+      if (toggle.icon) {
+        const icon = document.createElement('span');
+        icon.className = ['a1-icon', 'a1-icon-sm', toggle.iconClass].filter(Boolean).join(' ');
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = toggle.icon;
+        button.appendChild(icon);
+      } else {
+        const text = document.createElement('span');
+        text.className = 'a1-toolbar__label';
+        text.textContent = toggle.text || toggle.label;
+        button.appendChild(text);
+      }
       button.onclick = () => {
         const pressed = button.getAttribute('aria-pressed') === 'true';
         const nextPressed = !pressed;
@@ -5171,6 +5587,51 @@ aside > .a1-blockquote .a1-link:hover {
       };
       toolbar.appendChild(button);
     });
+  }
+
+  function breakpointVisibilityFromUi() {
+    const values = {};
+    if (!breakpointVisibilityControl) return values;
+    breakpointVisibilityControl.querySelectorAll('.a1-toolbar__button[data-value]').forEach((button) => {
+      if (A1_BREAKPOINTS.includes(button.dataset.value)) {
+        values[button.dataset.value] = button.getAttribute('aria-pressed') === 'true';
+      }
+    });
+    return values;
+  }
+
+  function applyBreakpointVisibilityFromUi() {
+    if (hydratingBreakpointVisibility || !selectedBreakpointVisibilityNodeId) return;
+    setStatus('', pluginLabel('breakpointVisibilityUpdating', 'Updating breakpoint visibility…'));
+    parent.postMessage({
+      pluginMessage: {
+        type: 'set-breakpoint-visibility',
+        breakpointVisibilityNodeId: selectedBreakpointVisibilityNodeId,
+        visibility: breakpointVisibilityFromUi(),
+      },
+    }, '*');
+  }
+
+  function hydrateBreakpointVisibility(message) {
+    if (!breakpointVisibilityContextPanel || !breakpointVisibilityControl) return;
+    const visibility = message && message.breakpointVisibility;
+    const nodeId = message && message.breakpointVisibilityNodeId;
+    const available = !!nodeId && visibility && typeof visibility === 'object';
+    breakpointVisibilityContextPanel.hidden = !available;
+    selectedBreakpointVisibilityNodeId = available ? nodeId : null;
+    if (!available) return;
+    hydratingBreakpointVisibility = true;
+    renderToolbarToggles(
+      breakpointVisibilityControl,
+      A1_BREAKPOINTS.map((breakpoint) => ({
+        value: breakpoint,
+        label: `${breakpoint}: ${pluginLabel('breakpointVisibilityLabel', 'Visible at breakpoints')}`,
+        text: breakpoint,
+        pressed: visibility[breakpoint] !== false,
+      })),
+      { fill: true, onToggle: applyBreakpointVisibilityFromUi },
+    );
+    hydratingBreakpointVisibility = false;
   }
 
   function appendToolbarDivider(toolbar) {
@@ -5186,7 +5647,7 @@ aside > .a1-blockquote .a1-link:hover {
     if (!toolbar || !toggle) return null;
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'a1-toolbar-button';
+    button.className = 'a1-toolbar__button';
     button.dataset.value = toggle.value;
     button.setAttribute('aria-pressed', String(toggle.pressed === true));
     button.setAttribute('aria-label', toggle.label);
@@ -5263,14 +5724,14 @@ aside > .a1-blockquote .a1-link:hover {
   }
 
   function sectionInverseControlValue() {
-    const button = sectionControlSurface && sectionControlSurface.querySelector(`.a1-toolbar-button[data-value="${SECTION_INVERSE_TOGGLE_VALUE}"]`);
+    const button = sectionControlSurface && sectionControlSurface.querySelector(`.a1-toolbar__button[data-value="${SECTION_INVERSE_TOGGLE_VALUE}"]`);
     return Boolean(button && button.getAttribute('aria-pressed') === 'true');
   }
 
   function fillSizingControlState(toolbar, toggles = FILL_AXIS_TOGGLES) {
     const state = { widthMode: 'hug', heightMode: 'hug' };
     toggles.forEach((toggle) => {
-      const button = toolbar && toolbar.querySelector(`.a1-toolbar-button[data-value="${toggle.value}"]`);
+      const button = toolbar && toolbar.querySelector(`.a1-toolbar__button[data-value="${toggle.value}"]`);
       state[toggle.modeKey] = button && button.getAttribute('aria-pressed') === 'true' ? 'fill' : 'hug';
     });
     return state;
@@ -5306,7 +5767,7 @@ aside > .a1-blockquote .a1-link:hover {
   function checkedRadioValue(group) {
     const checked = group ? group.querySelector('input[type="radio"]:checked') : null;
     if (checked) return checked.value;
-    const checkedButton = group ? group.querySelector('.a1-toolbar-button[role="radio"][aria-checked="true"]') : null;
+    const checkedButton = group ? group.querySelector('.a1-toolbar__button[role="radio"][aria-checked="true"]') : null;
     return checkedButton ? checkedButton.dataset.value || '' : '';
   }
 
@@ -6490,9 +6951,11 @@ aside > .a1-blockquote .a1-link:hover {
 
   function syncContextPanelPlacement() {
     if (pluginUiMode !== 'context' || !pluginContextPanelHost) return;
-    const active = contextPanelRecords.find(({ panel }) => !panel.hidden);
+    const visibilityRecord = contextPanelRecords.find(({ panel }) => panel === breakpointVisibilityContextPanel && !panel.hidden);
+    const contextualRecord = contextPanelRecords.find(({ panel }) => panel !== breakpointVisibilityContextPanel && !panel.hidden);
+    const activePanels = new Set([visibilityRecord && visibilityRecord.panel, contextualRecord && contextualRecord.panel].filter(Boolean));
     contextPanelRecords.forEach(({ panel, marker }) => {
-      if (panel === (active && active.panel)) {
+      if (activePanels.has(panel)) {
         pluginContextPanelHost.appendChild(panel);
       } else if (panel.parentNode === pluginContextPanelHost) {
         marker.parentNode.insertBefore(panel, marker.nextSibling);
@@ -6689,6 +7152,7 @@ aside > .a1-blockquote .a1-link:hover {
   let pendingLinkedExport = null;
   let pendingLinkedPullLinkId = null;
   let pendingLinkedProjectId = null;
+  const NEW_A1_PAGE_OPTION = '__new-a1-page__';
 
   function pageLinkForSelection() {
     const project = (workspaceManifest && workspaceManifest.projects || []).find((entry) => entry.id === syncProject.value);
@@ -6725,13 +7189,21 @@ aside > .a1-blockquote .a1-link:hover {
     if ((workspaceManifest && workspaceManifest.projects || []).some((project) => project.id === selectedProject)) syncProject.value = selectedProject;
     const project = (workspaceManifest && workspaceManifest.projects || []).find((entry) => entry.id === syncProject.value);
     syncPage.innerHTML = '<option value="">Choose page</option>';
+    if (project) {
+      const option = document.createElement('option');
+      option.value = NEW_A1_PAGE_OPTION;
+      option.textContent = 'New page...';
+      syncPage.appendChild(option);
+    }
     (project && project.pages || []).forEach((page) => {
       const option = document.createElement('option');
       option.value = page.id;
       option.textContent = page.title + (page.link ? ' · linked' : '');
       syncPage.appendChild(option);
     });
-    if ((project && project.pages || []).some((page) => page.id === selectedPage)) syncPage.value = selectedPage;
+    if (selectedPage === NEW_A1_PAGE_OPTION || (project && project.pages || []).some((page) => page.id === selectedPage)) {
+      syncPage.value = selectedPage;
+    }
     updateLinkedControls();
   }
 
@@ -6843,7 +7315,7 @@ aside > .a1-blockquote .a1-link:hover {
       dirty = false;
       syncOpenLink();
       parent.postMessage({
-        pluginMessage: { type: 'linked-page-import', text: data.page.json, assets: [], link: data.page.link || link },
+        pluginMessage: { type: 'linked-page-import', text: data.page.json, assets: data.page.assets || [], link: data.page.link || link },
       }, '*');
     } catch (error) {
       setStatus('warn', (error && error.message ? error.message : 'Could not load the selected A1 page.') + ' Keep the A1 editor open and start npm run codex:bridge:a1-web.');
@@ -6870,7 +7342,7 @@ aside > .a1-blockquote .a1-link:hover {
         }
         pages.push({
           text: data.page.json,
-          assets: [],
+          assets: data.page.assets || [],
           link: { ...page.link, projectName: project.name, pageTitle: page.title },
         });
       }
@@ -6986,7 +7458,11 @@ aside > .a1-blockquote .a1-link:hover {
   syncProject.onchange = rebuildPageOptions;
   syncPage.onchange = () => {
     updateLinkedControls();
-    if (pageLinkForSelection()) setStatus('', 'Page selected. Choose “Render in Figma” to add it to the canvas.');
+    if (syncPage.value === NEW_A1_PAGE_OPTION) {
+      setStatus('', 'New page selected. Choose “Create A1 page” to send the selected Figma Page Layout to this project.');
+    } else if (pageLinkForSelection()) {
+      setStatus('', 'Page selected. Choose “Render in Figma” to add it to the canvas.');
+    }
   };
   renderLinkedProjectButton.onclick = pullSelectedA1Project;
   renderLinkedPageButton.onclick = pullSelectedA1Page;
@@ -7561,6 +8037,7 @@ aside > .a1-blockquote .a1-link:hover {
       exportButton.disabled = !message.exportable;
       sendFigureImageButton.hidden = message.componentName !== 'Figure';
       sendFigureImageButton.disabled = message.componentName !== 'Figure';
+      hydrateBreakpointVisibility(message);
       hydratePageLayoutContext(message);
       hydrateTopHeaderContext(message);
       hydrateTextContext(message);
@@ -7723,6 +8200,21 @@ aside > .a1-blockquote .a1-link:hover {
         message.warnings && message.warnings.length
           ? message.warnings.join('\n')
           : `Created ${message.count} breakpoint preview${message.count === 1 ? '' : 's'}.`
+      );
+    }
+    if (message.type === 'breakpoint-visibility-result') {
+      if (message.breakpointVisibilityNodeId) hydrateBreakpointVisibility(message);
+      const outcomeText = message.outcome === 'updated'
+        ? pluginLabel('breakpointVisibilityUpdated', 'Updated breakpoint visibility.')
+        : message.outcome === 'reset'
+          ? pluginLabel('breakpointVisibilityReset', 'Visible at every breakpoint.')
+          : pluginLabel(
+              'breakpointVisibilitySelectionChanged',
+              'The selected Figma layer changed before breakpoint visibility could be saved.',
+            );
+      setStatus(
+        message.warnings.length || message.outcome === 'selection-changed' ? 'warn' : 'success',
+        message.warnings.length ? message.warnings.join('\n') : outcomeText
       );
     }
     if (message.type === 'grid-breakpoints-result') {

@@ -43,6 +43,7 @@ export function EditorAsidePanel({
   onSetNodeRepeat,
   onSetNodeCollections,
   onSetNodeUtilities,
+  onSetNodeVisibility,
   // History tab
   historyEntries,
   historyIndex,
@@ -170,6 +171,7 @@ export function EditorAsidePanel({
               onSetNodeRepeat={onSetNodeRepeat}
               onSetNodeCollections={onSetNodeCollections}
               onSetNodeUtilities={onSetNodeUtilities}
+              onSetNodeVisibility={onSetNodeVisibility}
             />
           </div>
         )}

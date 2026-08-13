@@ -24,6 +24,9 @@
   border-width: var(--a1-section-border-top) var(--a1-section-border-right) var(--a1-section-border-bottom) var(--a1-section-border-left);
 }
 
+/* Inverse only supplies a default background — an explicit surface (any of the
+   rules below, all qualified with .a1-section to match this rule's two-class
+   specificity and placed after it in source order) always wins over it. */
 .a1-section.a1-inverse {
   --a1-section-surface: var(--semantic-color-surface-page);
   --a1-section-gradient-strength: var(--component-section-gradient-strength-inverse);
@@ -31,9 +34,18 @@
 
 /* ── Surface ───────────────────────────────────────────────────────────────── */
 
-.a1-section--surface-page   { --a1-section-surface: var(--semantic-color-surface-page); background: var(--a1-section-surface); }
-.a1-section--surface-panel  { --a1-section-surface: var(--semantic-color-surface-panel); background: var(--a1-section-surface); }
-.a1-section--surface-raised { --a1-section-surface: var(--semantic-color-surface-raised); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-page    { --a1-section-surface: var(--semantic-color-surface-page); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-panel   { --a1-section-surface: var(--semantic-color-surface-panel); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-raised  { --a1-section-surface: var(--semantic-color-surface-raised); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-accent  { --a1-section-surface: var(--semantic-color-action-surface); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-info    { --a1-section-surface: var(--semantic-color-status-info-surface); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-success { --a1-section-surface: var(--semantic-color-status-success-surface); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-warn    { --a1-section-surface: var(--semantic-color-status-warn-surface); background: var(--a1-section-surface); }
+.a1-section.a1-section--surface-error   { --a1-section-surface: var(--semantic-color-status-error-surface); background: var(--a1-section-surface); }
+
+/* A custom (non-token) background color, e.g. an author-supplied hex value —
+   the value itself travels via --a1-section-surface-custom, set inline. */
+.a1-section.a1-section--surface-custom  { --a1-section-surface: var(--a1-section-surface-custom); background: var(--a1-section-surface); }
 
 /* ── Border ────────────────────────────────────────────────────────────────── */
 

@@ -5,6 +5,9 @@
     "fileKey": "zFjqo3SwHbkXwtCOoQCVMA",
     "updatedAt": "2026-07-18T00:00:00.000Z"
   },
+  "imageLibrary": {
+    "publicBaseUrl": "https://pszmkbfvyjkifbyututo.supabase.co/storage/v1/object/public/images/shared"
+  },
   "componentSets": {
     "Page Layout": "d82ef3aba30e8b4d1d58e3a5ae5707560f541da3",
     "Top Header": "b29c94908da66c1e1470579729f621f4ac387ba2",

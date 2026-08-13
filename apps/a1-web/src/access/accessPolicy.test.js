@@ -32,6 +32,8 @@ test('applies the page hierarchy and defaults unknown pages to admin', () => {
   assert.equal(canRoleAccessPage(USER_ROLES.EDITOR, 'backlog-ticket'), true)
   assert.equal(canRoleAccessPage(USER_ROLES.EDITOR, 'theme-editor'), false)
   assert.equal(canRoleAccessPage(USER_ROLES.ADMIN, 'theme-editor'), true)
+  assert.equal(canRoleAccessPage(USER_ROLES.EDITOR, 'admin-analytics'), false)
+  assert.equal(canRoleAccessPage(USER_ROLES.ADMIN, 'admin-analytics'), true)
   assert.equal(minimumRoleForPage('future-sensitive-page'), USER_ROLES.ADMIN)
 })
 
@@ -49,4 +51,3 @@ test('restricts feature capabilities independently from routes', () => {
   assert.equal(canRoleUseFeature(USER_ROLES.EDITOR, 'administration'), false)
   assert.equal(canRoleUseFeature(USER_ROLES.ADMIN, 'administration'), true)
 })
-

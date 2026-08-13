@@ -18,6 +18,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/figma-workflow.md` — rules for creating Figma components: color/text variable binding, auto-layout constraints, component property ↔ React prop mapping, and a per-component gap table documenting what cannot be represented in Figma.
 - `system/icons/icon-usage.md` — system-level icon usage guidance for agents, with theme override rules and scenario mappings.
 - `TODO.md` (repo root) — the living backlog / idea space. Skim it before backlog work; triage new notes, keep items prioritized, and **remove items when they ship**. Maintenance conventions are in the file's header.
+- `packages/mcp-server/README.md` — remote MCP server exposing the component registry, tokens, rules, and page-definition contract to AI agents as JSON-RPC tools/resources (`mcp.a1design.app`). Its static index is built from this same `ai/` context plus each component's `.d.ts`; re-run `npm run build:mcp-index` after any change here that should be reflected there.
 
 > **Scope reminder:** This is a multi-package design system. Changes to tokens, themes, labels, or component APIs can ripple across React, HTML/CSS, React Native, examples, and apps. Before making changes, identify which packages are affected and update all of them.
 

@@ -78,7 +78,7 @@ export interface FigmaWorkspaceManifest {
   projects: Array<{
     id: string
     name: string
-    pages: Array<{ id: string; title: string; json?: string; link: FigmaPageSyncLinkRef | null }>
+    pages: Array<{ id: string; title: string; json?: string; assets?: FigmaBridgeImageAsset[]; link: FigmaPageSyncLinkRef | null }>
   }>
 }
 

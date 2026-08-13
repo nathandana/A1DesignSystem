@@ -1,4 +1,27 @@
 /* ── Global ── */
+/* Node visibility follows the exact A1 viewport ranges. The editor emits only
+   the hide classes needed for the resolved responsive value, so a component's
+   native flex/grid/block display is left untouched at visible breakpoints. */
+@media (--bp-xs) {
+  .a1-web-node-hidden-xs { display: none !important; }
+}
+
+@media (--bp-sm) {
+  .a1-web-node-hidden-sm { display: none !important; }
+}
+
+@media (--bp-md) {
+  .a1-web-node-hidden-md { display: none !important; }
+}
+
+@media (--bp-lg) {
+  .a1-web-node-hidden-lg { display: none !important; }
+}
+
+@media (--bp-xl) {
+  .a1-web-node-hidden-xl { display: none !important; }
+}
+
 html,
 body,
 #root {

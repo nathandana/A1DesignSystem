@@ -65,3 +65,13 @@ export function pageTitleFromFigmaFrame(frameOrName) {
   const linkedTitle = name.match(/^A1\s*·\s*.+?\s*\/\s*(.+)$/);
   return (linkedTitle ? linkedTitle[1] : name) || 'Untitled';
 }
+
+// A raw Figma frame exports as a `{ nodes }` bundle, while an A1 Page Layout
+// instance already provides the complete page layout contract.
+export function pageLayoutForPageExport(node) {
+  if (node && node.type === 'PageLayout') return node;
+  return {
+    type: 'PageLayout',
+    regions: [{ id: 'main', name: 'Main', nodes: Array.isArray(node && node.nodes) ? node.nodes : [] }],
+  };
+}

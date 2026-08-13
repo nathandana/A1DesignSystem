@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  AUDIT_SUPPORTED_PRIVATE_COMPONENTS,
   auditCoverageScoreCap,
   auditGrade,
   auditIssueBucket,
@@ -13,6 +14,12 @@ import {
   compactWarnings,
   normalizeAuditIssueKey,
 } from '../src/pure/audit.js';
+
+test('treats Choice Option as a supported private A1 subcomponent', () => {
+  assert.equal(AUDIT_SUPPORTED_PRIVATE_COMPONENTS.has('Choice Option'), true);
+  assert.equal(AUDIT_SUPPORTED_PRIVATE_COMPONENTS.has('Radio Option'), true);
+  assert.equal(AUDIT_SUPPORTED_PRIVATE_COMPONENTS.has('Choice Group'), false);
+});
 
 test('compacts repeated warnings and multiline warning messages', () => {
   assert.deepEqual(compactWarnings(['A', 'B', 'A', '', null]), ['A (2×)', 'B']);

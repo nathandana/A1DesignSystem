@@ -718,6 +718,8 @@ Gaps — props that cannot currently be represented visually in Figma:
 | `radius` (visual)                               | Corner radius requires more variants — deferred                                                                                                                               |
 | `background*` (visual)                          | A designer can approximate with an IMAGE fill + a translucent overlay rectangle, but fit/tile/overlay-strength cannot be bound to tokens — documented as TEXT properties only |
 | `responsive objects`                            | `padding={{ xs: 'sm', lg: 'lg' }}` and `align={{ xs: 'left', lg: 'center' }}` — Figma has no breakpoint-driven property switching                                             |
+| `surface="accent" \| "info" \| "success" \| "warn" \| "error"` (A1-2537) | The `Surface` variant set currently only has `page \| panel \| raised`; the five new named surfaces need matching variant options added to the component set — follow-up |
+| `surface` as a custom CSS colour (A1-2537)      | Arbitrary/custom colours cannot be expressed as a Figma variant; a designer can approximate one-off with a manual fill override on a detached instance                       |
 | `className` / `style` / `ref` / `aria-*` / `id` | Not applicable in Figma                                                                                                                                                       |
 
 ### Autocomplete
@@ -851,8 +853,18 @@ fallback. Selected-instance updates reconcile existing actions only.
 Card maps its `surface` variant, normal inline `icon` through a `Show icon`
 boolean plus `Icon` instance swap, a token-bound action-surface icon tile with
 a `color/text/default` glyph, and native Content Slot; child add/remove
-and updates stay attached. Badge maps status, subtle, size, its editable label,
+and updates stay attached. (The Figma Card set currently exposes only
+`default`/`accent`; the four new tinted surfaces and custom-colour escape
+hatch added in React for A1-2537 are not yet represented in Figma — a
+follow-up, same as Section's equivalent gap above.) Badge maps status, subtle, size, its editable label,
 and a nested native Material icon (or `icon: null` through `Show icon`).
+Standalone `Icon` JSON maps `name`, the complete A1 icon size scale, and
+semantic `color`. The bridge keeps a matching Material glyph component when
+one is available; otherwise it creates an editable Material Symbols text layer
+instead of emitting a missing-component placeholder. Those text fallbacks
+remain first-class Icon selections for export, update, audit, and Section slot
+round-tripping. Icon colors bind to `color/text/*` or
+`color/status/*/background` variables rather than raw fills.
 Banner maps its inline/system/calendar variants, every status treatment,
 editable title and calendar fields, and ordered `Content Slot` children. The
 plugin promotes legacy `content.fallback` to a muted Paragraph child. Banner
@@ -864,8 +876,12 @@ tagged as a Banner for export, and should be rerendered to change its visual
 properties.
 Figure preserves source/alt/caption JSON, maps its compact Figma size as an
 outer maximum width and locks each aspect ratio on the nested Image layer, and
-uses an editable image fill rather than downloading
-an external URL. Definition List maps its `sm`/`md`/`lg` size and row/column
+uses an editable image fill rather than downloading an external URL. Local
+Image Library `a1img://…` refs are resolved through a volatile asset sidecar on
+Playground sends, linked-page sends, and Page Editor pulls. Cloud-backed A1
+image IDs also resolve from the public A1 Supabase Storage origin when only the
+JSON reaches the plugin; browser-local IDs continue to require the sidecar. Definition List
+maps its `sm`/`md`/`lg` size and row/column
 direction plus ordered, reusable Definition List Item instances in its slot.
 Blockquote maps visual variant, quote, citation, and citation URL. Their
 compact Figma models intentionally warn for React-only presentation and runtime
@@ -891,6 +907,18 @@ or removed (Radio Group: 2–20; Checkbox Group: 1–20). Their option values ar
 deterministic slugs of visible labels because Figma does not expose a value
 property; counts outside the supported range warn and are clamped.
 
+For breakpoint-specific composition (A1-2488), every exportable layer may carry
+`a1BreakpointVisibility` plugin data. The contextual five-toggle toolbar edits
+that metadata and the JSON bridge maps it to `ComponentNode.visibility` using
+the same cascading `{ xs?, sm?, md?, lg?, xl? }` boolean syntax as A1 responsive
+props. Breakpoint preview roots set the corresponding Figma layer `visible`
+state without deleting the layer. A metadata-bearing plain container exports as
+a Stack so its visibility boundary survives rather than being flattened. The
+plugin bundles the React Toolbar stylesheet and emits its BEM class contract for
+all context controls; this is shared component CSS, not a Choice Group-specific
+skin. Its breakpoint copy is embedded from the shared system label catalog at
+build time and resolved from the Figma iframe locale.
+
 The plugin's **Open in a1-web** link passes a selected node through `?json=` to
 the local component route. Its **Local Playground handoff** uses the existing
 localhost bridge: start `npm run codex:bridge:a1-web`, leave the plugin open,
@@ -903,10 +931,15 @@ exact mappings, limits, and install steps.
 
 For the local Figure image POC, the handoff may include a volatile asset
 sidecar: local Image Library `a1img://…` references send their PNG, JPEG, or GIF
-bytes to the Figure Image fill in Figma; the selected Figma Figure can be sent
-back to the Playground to create the same local reference. This remains a
-loopback-only, user-invoked transfer (4 MB total, five-minute expiry). The
-bytes are not stored in the page JSON or sent to any remote service.
+bytes to the Figure Image fill in Figma. This applies to Playground sends,
+linked-page sends, and plugin Page Editor pulls; the selected Figma Figure can
+also be sent back to the Playground to create the same local reference. This
+remains a loopback-only, user-invoked transfer (up to eight images and 4 MB
+total per page; bridge snapshot/handoff expiry still applies). The bytes are
+not stored in the page JSON or sent to any remote service.
+Cloud-backed `a1img://…` IDs additionally resolve from the existing public A1
+Image Library bucket, so pasted JSON does not depend on a live sidecar. This
+does not apply to IndexedDB-only images.
 
 ---
 
