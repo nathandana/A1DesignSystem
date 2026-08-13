@@ -15,14 +15,14 @@ export function ResumePage() {
   return (
     <>
       <Section padding="md" gap="xs" surface="raised" contentWidth="md">
-        <Heading as="h1" type="display" size={{ xs: "lg", md: "xxl" }}>
+        <Heading as="h1" type="display" size={{ xs: "lg", md: "jumbo" }}>
           Nathan Dana
         </Heading>
-        <Heading as="h2" size={{ xs: "sm", md: "xl" }}>
-          Principal Designer
+        <Heading as="h2" size={{ xs: "sm", md: "lg" }}>
+          Principal User Experience Designer
         </Heading>
         <Stack direction={{ xs: "column", sm: "row" }} wrap gap="xs" align="start" justify="start">
-          <Paragraph><strong>Fort Mill, SC</strong></Paragraph>
+          <Paragraph>Fort Mill, SC</Paragraph>
           <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
           <Link href="mailto:nathan.dana@gmail.com">nathan.dana@gmail.com</Link>
           <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
@@ -47,10 +47,32 @@ export function ResumePage() {
         <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>Professional Experience</Heading>
 
           <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
+            A1 Design
+          </Heading>
+          <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">
+            Owner | 2026–Present
+          </Heading>
+          <List size={{ xs: "md", md: "lg" }}>
+            <ListItem>Founded and built A1 Design (<Link href={getRoutePath("a1")}>read case study</Link>), an AI-first design system and prototyping platform connecting Figma, production-ready React components, design tokens, documentation, and AI-assisted development workflows.</ListItem>
+            <ListItem>Architected a reusable component ecosystem distributed through npm and Storybook, with structured component metadata, accessibility guidance, theming, and token-based styling.</ListItem>
+            <ListItem>Developed an MCP-enabled workflow that allows AI tools to understand and interact with the design system, reducing the gap between design intent, prototypes, and implementation.</ListItem>
+            <ListItem>Created tools for generating data-connected, production-realistic prototypes, enabling faster experimentation and more representative usability testing than static mockups.</ListItem>
+            <ListItem>Designed workflows that connect structured datasets directly to prototypes and Figma, allowing teams to rapidly test complex enterprise experiences with realistic content and states.</ListItem>
+            <ListItem>Built accessibility automation into the system, including component-level reporting and opportunities for CI/CD accessibility validation.</ListItem>
+            <ListItem>Used A1 as an ongoing exploration of how design systems can become machine-readable platforms, enabling designers, developers, and AI agents to work from a shared source of truth.</ListItem>
+          </List>
+          <Paragraph size={{ xs: "md", md: "lg" }}>
+            <strong>Technologies:</strong> Figma, React, TypeScript, Storybook, npm, Style Dictionary, MCP, AI-assisted development, accessibility automation
+          </Paragraph>
+          <Link href="https://a1design.app" size="xl"><strong>a1design.app</strong></Link>
+
+        <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
+
+          <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
             Centene
           </Heading>
           <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">
-            UX Architect - Design Systems Lead | 2020 – Present
+            UX Architect - Design Systems Lead | 2020 – 2026
           </Heading>
           <List size={{ xs: "md", md: "lg" }}>
             <ListItem>Spearheaded the 0-1 creation and evolution of the <Link href={getRoutePath("transform")}><strong>Transform Design System</strong></Link>, enabling design and development for internal healthcare applications serving 20,000+ users.</ListItem>
