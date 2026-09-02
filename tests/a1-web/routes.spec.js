@@ -229,3 +229,44 @@ test('core themes render across xs through xl breakpoints', async ({ page }) => 
 
   expect(failures, `A1-Web theme and breakpoint failures:\n${failures.join('\n\n')}`).toEqual([])
 })
+
+test('project sidebar navigation matches the editor edit and preview canvases', async ({ page }) => {
+  const project = {
+    id: 'sidebar-navigation-probe',
+    name: 'Sidebar navigation probe',
+    navStyle: 'sidebar',
+    createdAt: 0,
+    updatedAt: 0,
+  }
+  const projectPages = [
+    { id: 'sidebar-root', title: 'Sidebar root', parentId: null, order: 0 },
+    { id: 'sidebar-child', title: 'Sidebar child', parentId: 'sidebar-root', order: 0 },
+  ]
+
+  await page.addInitScript(({ nextProject, nextPages }) => {
+    if (new URLSearchParams(window.location.search).get('project') !== nextProject.id) return
+    localStorage.setItem('a1-web-theme', 'a1Light')
+    localStorage.setItem('a1-web-color-mode', 'light')
+    localStorage.setItem('a1-web-reduced-motion', 'true')
+    localStorage.setItem('a1-web-locale', 'en')
+    localStorage.setItem('a1-projects', JSON.stringify([nextProject]))
+    localStorage.setItem(`a1-project-${nextProject.id}-pages`, JSON.stringify(nextPages))
+  }, { nextProject: project, nextPages: projectPages })
+
+  await page.goto('/editor?project=sidebar-navigation-probe&doc=sidebar-child', { waitUntil: 'domcontentloaded' })
+  await waitForStablePage(page)
+
+  const projectTree = page.getByRole('tree', { name: 'Project pages' })
+  await expect(projectTree).toBeVisible()
+  await expect(projectTree.getByRole('treeitem', { name: 'Sidebar child' })).toHaveAttribute('aria-selected', 'true')
+  await expect(page.locator('.a1-web-generated-header')).toHaveCount(0)
+
+  await projectTree.locator('[data-tree-id="sidebar-root"]').click()
+  await expect(page).toHaveURL(/doc=sidebar-root/)
+  await expect(projectTree.getByRole('treeitem', { name: 'Sidebar root' })).toHaveAttribute('aria-selected', 'true')
+
+  await page.getByRole('radio', { name: 'Preview' }).click()
+  await expect(projectTree).toBeVisible()
+  await expect(projectTree.getByRole('treeitem', { name: 'Sidebar root' })).toHaveAttribute('aria-selected', 'true')
+  await expect(page.locator('.a1-web-generated-header')).toHaveCount(0)
+})

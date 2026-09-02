@@ -5572,6 +5572,40 @@
         }
       },
       "editor": {
+        "backToProjectOverview": {
+          "$type": "string",
+          "$value": "Back to project overview",
+          "$description": "Persistent page-editor toolbar action that returns from an open page to the active project's overview.",
+          "locale": {
+            "es": "Volver al resumen del proyecto",
+            "fr": "Retour à la vue d’ensemble du projet",
+            "de": "Zur Projektübersicht zurück",
+            "pt": "Voltar à visão geral do projeto",
+            "ja": "プロジェクトの概要に戻る",
+            "zh": "返回项目概览",
+            "ar": "العودة إلى نظرة عامة على المشروع"
+          }
+        },
+        "projectPagesNavigation": {
+          "$type": "string",
+          "$value": "Project pages",
+          "$description": "Accessible label for the automatically generated project page tree in sidebar navigation.",
+          "locale": {
+            "es": "Páginas del proyecto",
+            "fr": "Pages du projet",
+            "de": "Projektseiten",
+            "pt": "Páginas do projeto",
+            "ja": "プロジェクトページ",
+            "zh": "项目页面",
+            "ar": "صفحات المشروع"
+          }
+        },
+        "multiSelectionMixed": {
+          "$type": "string",
+          "$value": "Select elements of the same type to edit shared properties.",
+          "$description": "Guidance shown when the editor sidebar selection contains different component types.",
+          "locale": { "es": "Seleccione elementos del mismo tipo para editar propiedades compartidas.", "fr": "Sélectionnez des éléments du même type pour modifier les propriétés partagées.", "de": "Wählen Sie Elemente desselben Typs aus, um gemeinsame Eigenschaften zu bearbeiten.", "pt": "Selecione elementos do mesmo tipo para editar propriedades compartilhadas.", "ja": "共有プロパティを編集するには、同じ種類の要素を選択してください。", "zh": "请选择相同类型的元素以编辑共享属性。", "ar": "حدد عناصر من النوع نفسه لتحرير الخصائص المشتركة." }
+        },
         "screenReaderReportAction": {
           "$type": "string",
           "$value": "Screen reader report",
