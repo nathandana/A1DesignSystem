@@ -657,6 +657,7 @@ function App() {
   const [editorView, setEditorView] = useState('edit')
   const [editorDirty, setEditorDirty] = useState(false)
   const [editorSelectedNodeId, setEditorSelectedNodeId] = useState(null)
+  const [editorSelectedNodeIds, setEditorSelectedNodeIds] = useState([])
   const [editorDefinition, setEditorDefinition] = useState(null)
   const [editorPendingMove, setEditorPendingMove] = useState(null)
   const [editorAddTarget, setEditorAddTarget] = useState(null)
@@ -1054,6 +1055,26 @@ function App() {
     setEditorSelectedNodeId(null)
     setEditorDefinition(null)
     navigate('editor')
+  }
+
+  // Keep the current project active, but close its open page so the editor
+  // returns to the project's overview rather than the all-projects list.
+  function handleBackToProjectOverview() {
+    setOpenPageId(null)
+    setEditorSelectedNodeId(null)
+    setEditorSelectedNodeIds([])
+    setEditorDefinition(null)
+    setEditorView('edit')
+  }
+
+  function handleEditorSidebarSelection(ids, primaryId) {
+    setEditorSelectedNodeIds(ids)
+    setEditorSelectedNodeId(primaryId)
+  }
+
+  function handleEditorCanvasSelection(nodeId) {
+    setEditorSelectedNodeId(nodeId)
+    setEditorSelectedNodeIds(nodeId ? [nodeId] : [])
   }
 
   // Top-nav "Editor" always lands on the Projects list (editor home).
@@ -2091,7 +2112,9 @@ function App() {
                 patternId={editorPatternId}
                 definition={editorDefinition}
                 selectedNodeId={editorSelectedNodeId}
+                selectedNodeIds={editorSelectedNodeIds}
                 onSelectNode={setEditorSelectedNodeId}
+                onSelectionChange={handleEditorSidebarSelection}
                 onRequestAdd={setEditorAddTarget}
                 onNodeAction={setEditorPendingAction}
                 onNodeMove={setEditorPendingMove}
@@ -2114,7 +2137,9 @@ function App() {
                 onMovePage={handleMoveProjectPage}
                 definition={editorDefinition}
                 selectedNodeId={editorSelectedNodeId}
+                selectedNodeIds={editorSelectedNodeIds}
                 onSelectNode={setEditorSelectedNodeId}
+                onSelectionChange={handleEditorSidebarSelection}
                 onNodeMove={setEditorPendingMove}
                 onRequestAdd={setEditorAddTarget}
                 onNodeAction={setEditorPendingAction}
@@ -2248,7 +2273,8 @@ function App() {
               exampleId={`pattern-${editorPatternId}`}
               definition={patternDef}
               selectedNodeId={editorSelectedNodeId}
-              onSelectNode={setEditorSelectedNodeId}
+              selectedNodeIds={editorSelectedNodeIds}
+              onSelectNode={handleEditorCanvasSelection}
               onViewChange={setEditorView}
               onDefinitionChange={setEditorDefinition}
               pendingMove={editorPendingMove}
@@ -2297,6 +2323,7 @@ function App() {
               projectId={activeProjectId}
               projectName={activeProject.name}
               projectTheme={activeProject.theme}
+              projectNavStyle={activeProject.navStyle}
               colorMode={colorMode}
               resolvedColorScheme={resolvedColorScheme}
               selectedNodeId={editorSelectedNodeId}
@@ -2340,10 +2367,12 @@ function App() {
               projectId={activeProjectId}
               projectName={activeProject.name}
               projectTheme={activeProject.theme}
+              projectNavStyle={activeProject.navStyle}
               colorMode={colorMode}
               resolvedColorScheme={resolvedColorScheme}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
+              onBackToProjectOverview={handleBackToProjectOverview}
               composeWithAi={openPageId === aiComposePageId}
               onAiComposeConsumed={() => setAiComposePageId(null)}
               pageLevel={projectStore.getPageLevel(projectPages, openPageId)}
@@ -2352,7 +2381,8 @@ function App() {
               onDuplicatePage={() => handleDuplicateProjectPage(openPageId)}
               onDeletePage={() => handleDeleteProjectPage(openPageId)}
               selectedNodeId={editorSelectedNodeId}
-              onSelectNode={setEditorSelectedNodeId}
+              selectedNodeIds={editorSelectedNodeIds}
+              onSelectNode={handleEditorCanvasSelection}
               onViewChange={setEditorView}
               onDirtyChange={setEditorDirty}
               onDefinitionChange={setEditorDefinition}

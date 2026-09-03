@@ -26,8 +26,12 @@ export interface TreeMenuProps {
   variant?: 'expanded' | 'collapsed';
   /** ID of the currently selected item (controlled). */
   selectedId?: string | null;
-  /** Called with the id of the item the user activates. */
-  onSelect?: (id: string) => void;
+  /** IDs of selected items when `selectionMode="multiple"`. */
+  selectedIds?: string[];
+  /** Selection behavior. Default: `single`. */
+  selectionMode?: 'single' | 'multiple';
+  /** Called with the id of the item the user activates and its triggering event. */
+  onSelect?: (id: string, event?: React.SyntheticEvent) => void;
   /** IDs of items that are expanded on initial render (uncontrolled). */
   defaultExpandedIds?: string[];
   /** IDs of currently expanded items (controlled). */

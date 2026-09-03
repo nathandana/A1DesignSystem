@@ -2320,6 +2320,7 @@ function PageConfigForm({ definition, projectId, pageLevel, availableLevels, onS
 
 export function EditorPropsPanel({
   selectedNodeId,
+  selectedNodeIds = [],
   definition,
   projectId,
   pages = [],
@@ -2349,7 +2350,19 @@ export function EditorPropsPanel({
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
 
-  const node = selectedNodeId ? findNodeInDefinition(definition, selectedNodeId) : null
+  const selectedIds = selectedNodeIds.length ? selectedNodeIds : (selectedNodeId ? [selectedNodeId] : [])
+  const selectedNodes = selectedIds.map((id) => findNodeInDefinition(definition, id)).filter(Boolean)
+  const node = selectedNodeId ? findNodeInDefinition(definition, selectedNodeId) : selectedNodes[0] ?? null
+  const hasMixedTypes = selectedNodes.length > 1 && new Set(selectedNodes.map((selected) => selected.type)).size > 1
+
+  if (hasMixedTypes) {
+    return (
+      <Stack gap="sm">
+        <Heading as="h3" size="xs">{selectedNodes.length} elements selected</Heading>
+        <Paragraph size="sm" color="muted">{t('app.editor.multiSelectionMixed', 'Select elements of the same type to edit shared properties.')}</Paragraph>
+      </Stack>
+    )
+  }
 
   if (!node) {
     return (
@@ -2497,12 +2510,24 @@ export function EditorPropsPanel({
     const convert = configToNodeUpdate[node.type]
     if (!convert) return
     const { props: newProps, contentFallback } = convert(next)
+    const baseline = convert(config)
+    const changedPropKeys = Object.keys({ ...baseline.props, ...newProps }).filter(
+      (key) => JSON.stringify(baseline.props[key]) !== JSON.stringify(newProps[key]),
+    )
     const labelMarkerUnchanged = !!textLabelMarker && next[textLabelField] === textLabelConfigValue
     const nextContentFallback = labelMarkerUnchanged
       ? (node.content?.fallback ?? '')
       : contentFallback
     const nextContentKey = textLabelMarker && !labelMarkerUnchanged ? null : undefined
-    onNodePropsChange(node.id, newProps, nextContentFallback, nextContentKey)
+    const multiEdit = selectedIds.length > 1
+    const contentChanged = baseline.contentFallback !== contentFallback || nextContentKey !== undefined
+    onNodePropsChange(
+      multiEdit ? selectedIds : node.id,
+      newProps,
+      multiEdit && !contentChanged ? undefined : nextContentFallback,
+      multiEdit && !contentChanged ? undefined : nextContentKey,
+      multiEdit ? changedPropKeys : undefined,
+    )
   }
 
   // Pattern-instance governance: locked *properties* and locked *text* render

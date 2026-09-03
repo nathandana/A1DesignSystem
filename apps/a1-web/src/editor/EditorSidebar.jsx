@@ -110,7 +110,9 @@ function getAncestorIds(items, targetId, path = []) {
 export function ComponentTreePanel({
   definition,
   selectedNodeId,
+  selectedNodeIds = [],
   onSelectNode,
+  onSelectionChange,
   onNodeMove,
   onRequestAdd,
   onNodeAction,
@@ -119,6 +121,7 @@ export function ComponentTreePanel({
   const [expandedIds, setExpandedIds] = useState([])
   const [treeCtxMenu, setTreeCtxMenu] = useState(null) // { id, x, y }
   const [editingId, setEditingId] = useState(null) // id of the node being renamed inline
+  const [selectionAnchorId, setSelectionAnchorId] = useState(null)
 
   const treeItems = definitionToTreeItems(definition)
 
@@ -145,8 +148,29 @@ export function ComponentTreePanel({
     }
   }
 
-  function handleTreeSelect(id) {
-    onSelectNode(id)
+  function handleTreeSelect(id, event) {
+    const ids = []
+    const collect = (items) => items.forEach((item) => {
+      ids.push(item.id)
+      if (item.children?.length && expandedIds.includes(item.id)) collect(item.children)
+    })
+    collect(treeItems)
+    let nextIds
+    if (event?.shiftKey && selectionAnchorId && ids.includes(selectionAnchorId)) {
+      const from = ids.indexOf(selectionAnchorId)
+      const to = ids.indexOf(id)
+      nextIds = ids.slice(Math.min(from, to), Math.max(from, to) + 1)
+    } else if (event?.metaKey || event?.ctrlKey) {
+      nextIds = selectedNodeIds.includes(id)
+        ? selectedNodeIds.filter((selectedId) => selectedId !== id)
+        : [...selectedNodeIds, id]
+    } else {
+      nextIds = [id]
+      setSelectionAnchorId(id)
+    }
+    const primaryId = nextIds.includes(id) ? id : (nextIds.at(-1) ?? null)
+    onSelectionChange?.(nextIds, primaryId)
+    onSelectNode(primaryId)
     if (id) {
       requestAnimationFrame(() => {
         const el = document.querySelector(`[data-editor-node="${CSS.escape(id)}"]`)
@@ -261,7 +285,17 @@ export function ComponentTreePanel({
       },
     })
 
-    if (nodeType !== 'Stack') {
+    if (selectedNodeIds.length > 1) {
+      items.push({
+        id: 'group-selection-as-stack',
+        label: 'Group selection as Stack',
+        icon: 'view_agenda',
+        onClick: () => {
+          setTreeCtxMenu(null)
+          onNodeAction?.({ type: 'group-as-stack', nodeId: id, nodeIds: selectedNodeIds })
+        },
+      })
+    } else if (nodeType !== 'Stack') {
       items.push({
         id: 'group-as-stack',
         label: 'Group as Stack',
@@ -347,6 +381,8 @@ export function ComponentTreePanel({
               <TreeMenu
                 items={treeItems}
                 selectedId={selectedNodeId}
+                selectedIds={selectedNodeIds}
+                selectionMode="multiple"
                 onSelect={handleTreeSelect}
                 onHoverChange={handleTreeHover}
                 onItemContextMenu={handleItemContextMenu}

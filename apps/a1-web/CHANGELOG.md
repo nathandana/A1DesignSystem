@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Editor sidebar multi-select** (A1-2557) — Layers now support Shift-click range selection and Cmd/Ctrl-click toggling. Same-type selections share the Configure panel, mixed selections explain how to continue, and selected sibling layers can be grouped as a Stack.
+
+- **Editor sidebar navigation** (A1-2556) — render a sidebar-configured project's page tree in edit and preview canvases, matching the published prototype while retaining the editor workspace controls.
+
+- **Editor — return to project overview** (A1-2555) — added a persistent, localized back control to the page-editor toolbar. It closes the open page and returns to the active project's overview without taking the user back to the all-projects list.
+
 ## 0.31.0 — 2026-08-13
 
 - **Breakpoint-specific element visibility** (A1-2488) — every page-editor node can now be included or removed independently at the xs–xl viewport breakpoints. The Configure panel exposes an accessible five-option visibility control, stores the result as A1’s cascading responsive-object syntax, and removes hidden nodes from both layout and the accessibility tree in the real responsive preview. The A1:Figma bridge round-trips the same `visibility` field through selected-layer plugin metadata and a contextual breakpoint toolbar; imported breakpoint previews apply the saved visibility. Figma’s contextual controls now use the real A1 Toolbar stylesheet and BEM classes instead of unstyled native buttons.
