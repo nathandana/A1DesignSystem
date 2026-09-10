@@ -1,3 +1,5 @@
+"use client";
+
 import "./blockquote.css";
 
 const VARIANTS = ["border", "filled", "feature", "minimal", "accent", "pull", "ruled"];

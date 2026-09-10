@@ -1,3 +1,5 @@
+"use client";
+
 import "./stack.css";
 import { resolveSpacing } from "../structure-utils.js";
 

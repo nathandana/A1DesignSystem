@@ -1,3 +1,5 @@
+"use client";
+
 import React, { Children, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from 'react'
 import { ContextMenu } from '../context-menu/ContextMenu.jsx'
 import './canvas.css'

@@ -1,3 +1,5 @@
+"use client";
+
 import "./snackbar.css";
 import { Children, cloneElement, isValidElement, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";

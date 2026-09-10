@@ -42,7 +42,7 @@ accepted and ignored.
 | Component | Key props | Notes |
 |---|---|---|
 | `Stack` | `direction="column\|row"`, `gap`, `align`, `justify`, `wrap`, `as` | The default column/row layout. Use instead of a flex `<div>`. |
-| `Cluster` | `gap`, `align` | Wrapping inline row for groups of small elements. |
+| `Cluster` | `gap="xs\|sm\|md\|lg\|xl"` or numeric spacing token, `rowGap`, `columnGap`, `align` | Deprecated wrapping inline row. Prefer `Stack direction="row" wrap`; Cluster now accepts the same semantic gap scale for migration compatibility. |
 | `Grid` / `GridItem` | `columns` (number or `{ xs, sm, md, lg, xl }`), `gap`; `span`, `rowSpan` on `GridItem` | Responsive CSS grid. |
 | `Section` | `surface="page\|panel\|raised"`, `padding`, `gap`, `contentWidth`, `inverse`, `gradient`, `height="screen\|hero"`, `align`, `radius`, `border*`, `background*` | Page-level region: heroes, content rows, full-width zones. Place as a direct child of `<main>` — never wrap it in Stack/Grid/Card. |
 | `SectionSeparator` | `topSurface`, `bottomSurface`, `inverse`, `topInverse`, `bottomInverse`, `shape`, `size`, `border`, `borderSize`, `borderVariant` | Organic responsive divider between adjacent full-width Sections. Use it between surfaces; do not place content inside it. |

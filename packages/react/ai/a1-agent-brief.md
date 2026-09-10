@@ -126,7 +126,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `Stack` | C | Linear layout. | `direction` (column/row, responsive), `gap` (xs–xxl), `align`, `justify`, `wrap` (bool), `as` |
 | `Grid` | C | Multi-column grid. | `columns` (number or `{xs,md,…}`), `gap`, `rowGap`, `columnGap` |
 | `GridItem` | C | Direct child of `Grid` for column/row spanning. | `span` (number/`full`/responsive), `rowSpan` (number/responsive) |
-| `Cluster` | C | Wrapping row of items (deprecated — prefer `Stack direction="row" wrap`). | `gap`, `align`, `justify` |
+| `Cluster` | C | Wrapping row of items (deprecated — prefer `Stack direction="row" wrap`). | `gap` (`xs`–`xl` or numeric token), `rowGap`, `columnGap`, `align`, `justify` |
 | `Card` | C | Bounded, repeatable content unit. | `variant` (default/navigation), `href` (navigation), `icon`, `heroIcon`, `iconDisplay` |
 | `Bleed` | C | Reach past surrounding inset padding. | `space` (spacing number) |
 | `Inset` | C | Uniform padding around content. | `space` (spacing number) |

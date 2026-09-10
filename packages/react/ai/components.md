@@ -14,6 +14,11 @@
 
 ✓ = implemented · — = not yet implemented
 
+All shipped React component modules declare `"use client"`. Next.js Server
+Components may import them from the package root and render them as client
+boundaries after configuring `transpilePackages`; see
+`packages/react/guidelines/setup.md` for the complete Next.js setup.
+
 ---
 
 ## A1 Web menu hierarchy

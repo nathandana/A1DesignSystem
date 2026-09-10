@@ -1,3 +1,5 @@
+"use client";
+
 import "./divider.css";
 
 const orientations = ["horizontal", "vertical"];

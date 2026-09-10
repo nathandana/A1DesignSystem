@@ -1,3 +1,5 @@
+"use client";
+
 import "./spacer.css";
 
 const sizes = ["xs", "sm", "md", "lg", "xl", "xxl"];

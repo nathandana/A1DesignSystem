@@ -1,3 +1,5 @@
+"use client";
+
 // Shared mask utilities for PhoneField and ZipField.
 // '#' in a mask is a digit placeholder; any other character is a literal separator.
 

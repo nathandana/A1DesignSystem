@@ -1,3 +1,5 @@
+"use client";
+
 import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { Heading } from "../heading/Heading.jsx";

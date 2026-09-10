@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import "./menu.css";
 import { Divider } from "../divider/Divider.jsx";

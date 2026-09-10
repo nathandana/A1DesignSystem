@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { Chip, ChipGroup } from "../chip/Chip.jsx";

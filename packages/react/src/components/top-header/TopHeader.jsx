@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { Icon } from "../icon/Icon.jsx";
@@ -28,6 +30,13 @@ function resolveNavMode(prop) {
     }
   }
   return resolved; // "start" | "above" | "hidden"
+}
+
+// Server rendering and the client's first render must resolve the same value.
+// Viewport-specific modes are applied by the effect after hydration.
+function resolveInitialNavMode(prop) {
+  if (!prop || typeof prop === "string") return prop ?? "start";
+  return prop.xs ?? "start";
 }
 
 // Split a flat items array into sections separated by { divider: true } markers.
@@ -615,7 +624,7 @@ export function TopHeader({
   className = "",
   ...rest
 }) {
-  const [navMode, setNavMode] = useState(() => resolveNavMode(navIconPosition));
+  const [navMode, setNavMode] = useState(() => resolveInitialNavMode(navIconPosition));
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [openAction, setOpenAction] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);

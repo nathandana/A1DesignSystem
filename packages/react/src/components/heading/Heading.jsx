@@ -1,3 +1,5 @@
+"use client";
+
 import "./heading.css";
 
 const headingSizes = ["xxl", "xl", "lg", "md", "sm", "xs"];

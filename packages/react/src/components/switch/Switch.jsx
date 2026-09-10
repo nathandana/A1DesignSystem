@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useState, useContext } from "react";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
 import "./switch.css";

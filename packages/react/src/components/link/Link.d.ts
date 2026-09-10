@@ -1,6 +1,8 @@
 import * as React from "react";
 
 export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Underlying element or component to render. Default: "a" */
+  as?: React.ElementType;
   /** Font size. Inherits from context when omitted. */
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Font weight override. */

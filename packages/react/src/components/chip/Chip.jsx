@@ -1,3 +1,5 @@
+"use client";
+
 import { Children, cloneElement, forwardRef, isValidElement, useId, useRef, useState } from "react";
 import "./chip.css";
 import { Icon } from "../icon/Icon.jsx";

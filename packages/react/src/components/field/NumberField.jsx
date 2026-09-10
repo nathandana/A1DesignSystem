@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useCallback, useState, forwardRef } from "react";
 import { TextField } from "./TextField.jsx";
 

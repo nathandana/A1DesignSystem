@@ -1,3 +1,5 @@
+"use client";
+
 import "./breadcrumb.css";
 import { Icon } from "../icon/Icon.jsx";
 import { Link } from "../link/Link.jsx";

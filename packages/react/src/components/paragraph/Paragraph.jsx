@@ -1,3 +1,5 @@
+"use client";
+
 import "./paragraph.css";
 
 const sizes = ["xs", "sm", "md", "lg", "xl"];
