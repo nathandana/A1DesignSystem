@@ -42,6 +42,9 @@ import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { ScreenReaderReportDialog } from '../editor/ScreenReaderReportDialog.jsx';
 import { ContrastCheckDialog } from '../editor/ContrastCheckDialog.jsx';
 import { useT } from '../labels/useT.js';
+import { buildLabelsObject, buildProjectLabelsObject, deepMergeLabels, getLabels } from '../labels/labelStore.js';
+import { SYSTEM_LABELS, resolveLabel } from '../labels/systemLabels.js';
+import { materializeResolvedLabelContent } from '../editor/contentText.js';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
 import { isMac } from '../editor/shortcuts.ts';
@@ -874,35 +877,62 @@ export function EditorPage({
       if (registering) return;
       registering = true;
       try {
+        const workspaceLabels = buildLabelsObject(getLabels().items);
+        const locale = localStorage.getItem('a1-web-locale');
         const workspace = {
-          projects: await Promise.all(loadProjects().map(async (project) => ({
-            id: project.id,
-            name: project.name,
-            pages: await Promise.all(loadPages(project.id).map(async (page) => {
-              // Every page gets a stable local link as soon as it is exposed to
-              // the Figma Page Editor. That lets Figma pull a selected page
-              // immediately and still send edits back through the same identity.
-              const link = getFigmaPageLink(project.id, page.id)
-                ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
-              const json = resolvePageJson(page.id) ?? '';
-              const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : [];
-              return {
-                id: page.id,
-                title: page.title,
-                json,
-                assets,
-                link: link ? {
-                  linkId: link.id,
-                  projectId: project.id,
-                  pageId: page.id,
-                  mode: link.mode,
-                  figmaFileKey: link.figmaFileKey,
-                  figmaPageId: link.figmaPageId,
-                  figmaRootNodeId: link.figmaRootNodeId,
-                } : null,
-              };
-            })),
-          }))),
+          projects: await Promise.all(loadProjects().map(async (project) => {
+            const projectLabels = project.labelOverrides
+              ? buildProjectLabelsObject(project.labelOverrides)
+              : { label: {} };
+            const labels = {
+              label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabels.label, projectLabels.label),
+            };
+            const resolveProjectText = (key: string, fallback?: string) => resolveLabel(
+              labels,
+              locale && locale !== 'en' ? locale : null,
+              key,
+              fallback,
+            );
+            return {
+              id: project.id,
+              name: project.name,
+              pages: await Promise.all(loadPages(project.id).map(async (page) => {
+                // Every page gets a stable local link as soon as it is exposed to
+                // the Figma Page Editor. That lets Figma pull a selected page
+                // immediately and still send edits back through the same identity.
+                const link = getFigmaPageLink(project.id, page.id)
+                  ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
+                const pageJson = resolvePageJson(page.id) ?? '';
+                let json = pageJson;
+                try {
+                  json = JSON.stringify(
+                    materializeResolvedLabelContent(JSON.parse(pageJson), resolveProjectText),
+                    null,
+                    2,
+                  );
+                } catch {
+                  // Keep malformed legacy JSON available for the editor's own
+                  // validation instead of hiding the page from the bridge.
+                }
+                const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : [];
+                return {
+                  id: page.id,
+                  title: page.title,
+                  json,
+                  assets,
+                  link: link ? {
+                    linkId: link.id,
+                    projectId: project.id,
+                    pageId: page.id,
+                    mode: link.mode,
+                    figmaFileKey: link.figmaFileKey,
+                    figmaPageId: link.figmaPageId,
+                    figmaRootNodeId: link.figmaRootNodeId,
+                  } : null,
+                };
+              })),
+            };
+          })),
         };
         await registerFigmaWorkspace(workspace);
       } catch {
@@ -960,8 +990,9 @@ export function EditorPage({
       const existing = getFigmaPageLink(projectId, exampleId);
       const link = existing ?? saveFigmaPageLink(projectId, { pageId: exampleId, mode: 'manual' });
       if (!link) throw new Error('This project page could not be linked.');
-      const json = JSON.stringify(parsedDefinition.value, null, 2);
-      const assets = await collectFigmaFigureAssets(parsedDefinition.value);
+      const handoffDefinition = materializeResolvedLabelContent(parsedDefinition.value, t);
+      const json = JSON.stringify(handoffDefinition, null, 2);
+      const assets = await collectFigmaFigureAssets(handoffDefinition);
       await queueFigmaPageSync({
         link: {
           linkId: link.id,

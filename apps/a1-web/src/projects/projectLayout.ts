@@ -15,8 +15,17 @@ function nodesContainType(nodes: ComponentNode[], type: string): boolean {
   ));
 }
 
+function layoutRegions(definition: PageDefinition | null | undefined) {
+  const regions = definition?.page?.layout?.regions;
+  return Array.isArray(regions) ? regions : [];
+}
+
+function regionNodes(nodes: unknown): ComponentNode[] {
+  return Array.isArray(nodes) ? nodes as ComponentNode[] : [];
+}
+
 export function definitionContainsNodeType(definition: PageDefinition | null | undefined, type: string): boolean {
-  return !!definition?.page.layout.regions.some((region) => nodesContainType(region.nodes, type));
+  return layoutRegions(definition).some((region) => nodesContainType(regionNodes(region.nodes), type));
 }
 
 /** The default shared layout: a TopHeader, the page Outlet, and a simple footer.
@@ -146,9 +155,9 @@ export function splitLayoutAtOutlet(
   layoutDef: PageDefinition,
   { navItems, logoFallback = '', logoHref }: { navItems?: unknown; logoFallback?: string; logoHref?: string } = {},
 ): { before: PageDefinition | null; after: PageDefinition | null } {
-  const region = layoutDef.page.layout.regions[0];
+  const region = layoutRegions(layoutDef)[0];
   if (!region) return { before: null, after: null };
-  const nodes = region.nodes.map((n) => decorateHeaders(n, navItems, logoFallback, logoHref));
+  const nodes = regionNodes(region.nodes).map((n) => decorateHeaders(n, navItems, logoFallback, logoHref));
   const idx = nodes.findIndex((n) => n.type === 'Outlet');
   if (idx === -1) return { before: nodes.length ? nodesToDefinition(nodes) : null, after: null };
   const before = nodes.slice(0, idx);
@@ -170,14 +179,15 @@ export function combinePageIntoLayout(
   pageDef: PageDefinition,
   { navItems, logoFallback = '', logoHref }: { navItems?: unknown; logoFallback?: string; logoHref?: string } = {},
 ): PageDefinition {
-  const pageNodes = pageDef.page.layout.regions.flatMap((r) => r.nodes);
-  const regions = layoutDef.page.layout.regions.map((region) => {
-    const [nodes] = substitute(region.nodes, pageNodes, navItems, logoFallback, logoHref);
+  const pageNodes = layoutRegions(pageDef).flatMap((region) => regionNodes(region.nodes));
+  const sourceRegions = layoutRegions(layoutDef);
+  const regions = sourceRegions.map((region) => {
+    const [nodes] = substitute(regionNodes(region.nodes), pageNodes, navItems, logoFallback, logoHref);
     return { ...region, nodes };
   });
   // Guarantee the page renders even if the layout has no Outlet.
-  const anyOutlet = layoutDef.page.layout.regions.some((r) =>
-    JSON.stringify(r.nodes).includes('"Outlet"'),
+  const anyOutlet = sourceRegions.some((region) =>
+    JSON.stringify(regionNodes(region.nodes)).includes('"Outlet"'),
   );
   if (!anyOutlet && regions[0]) regions[0] = { ...regions[0], nodes: [...regions[0].nodes, ...pageNodes] };
 

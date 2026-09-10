@@ -2,6 +2,7 @@ import type { PageDefinition } from '../pageTypes';
 import { editorExamplePage } from './editorExamplePage';
 import { onboardingPage } from './onboardingPage';
 import { landingPage } from './landingPage';
+import a1WebHomePage from './a1WebHomePage.json';
 
 export interface EditorExample {
   id: string;
@@ -48,6 +49,12 @@ export function makeBlankPage(id: string, name = 'Untitled'): PageDefinition {
 export const NEW_PAGE_ID = 'new-page';
 
 export const EDITOR_EXAMPLES: EditorExample[] = [
+  {
+    id: 'a1-web-home',
+    label: 'A1 Web home',
+    icon: 'home',
+    definition: a1WebHomePage as PageDefinition,
+  },
   {
     id: 'component-showcase',
     label: 'Component showcase',

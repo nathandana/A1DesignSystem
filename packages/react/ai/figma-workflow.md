@@ -297,7 +297,11 @@ Gaps — props that cannot currently be represented visually in Figma:
 
 ### Button Container
 
-**Component structure:** `Button Container` component set on the Button Container page (`node 348:1649`) with an `Align` variant and a named `Button Slot` frame containing real A1 Button instances. Documentation includes narrow and wide examples because the React component changes flow through a container query.
+**Component structure:** `Button Container` component set on the Button Container page (`node 348:1649`) with `Align` and `direction` variants plus a named `Button Slot` frame containing real A1 Button instances. The A1:Figma plugin derives `direction` from the instance's actual rendered width while it is open, including width changes caused by a parent or breakpoint root: stacked below 480 px and inline at 480 px and above, matching React's container query.
+During import, the plugin performs a final descendant pass after the complete
+screen root has been resized and placed. This prevents nested Button Containers
+from retaining the inline direction calculated against PageLayout's temporary
+library-default width while the screen was still being constructed.
 
 Variant properties:
 
@@ -315,7 +319,6 @@ Gaps — props and behavior that cannot currently be represented visually in Fig
 
 | React prop / behavior                      | Gap reason                                                                                                                                                                                          |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Responsive stacked-to-row flow             | React uses a 480px container query; Figma documents narrow and wide states but cannot switch automatically by container width.                                                                      |
 | `size`                                     | Child Button sizing remains a child concern; it is intentionally not a Button Container Figma control.                                                                                              |
 | `fillButtons`                              | Runtime layout behavior has no v1 Figma representation.                                                                                                                                             |
 | `className`, events, `ref`, `aria-*`, `id` | Runtime-only props.                                                                                                                                                                                 |
@@ -865,6 +868,11 @@ instead of emitting a missing-component placeholder. Those text fallbacks
 remain first-class Icon selections for export, update, audit, and Section slot
 round-tripping. Icon colors bind to `color/text/*` or
 `color/status/*/background` variables rather than raw fills.
+Button, Link, Badge, and Card icon swaps resolve checked-in `iconSets` keys from
+the A1 library manifest before searching enabled libraries, so the public-page
+project does not require designers to enable the library manually. Badge status
+defaults and the published Badge/Card glyphs used by A1 page models are covered;
+additional Material Symbols still use enabled-library discovery.
 Banner maps its inline/system/calendar variants, every status treatment,
 editable title and calendar fields, and ordered `Content Slot` children. The
 plugin promotes legacy `content.fallback` to a muted Paragraph child. Banner
@@ -883,6 +891,11 @@ image IDs also resolve from the public A1 Supabase Storage origin when only the
 JSON reaches the plugin; browser-local IDs continue to require the sidecar. Definition List
 maps its `sm`/`md`/`lg` size and row/column
 direction plus ordered, reusable Definition List Item instances in its slot.
+Before A1 sends any linked page to Figma, it resolves label-bound text through
+the active locale and the system → workspace → project label cascade, writes
+that visible string into `content.fallback`, and retains `content.textKey` as
+binding metadata in the outbound model. The plugin therefore receives the same copy shown on the A1
+canvas instead of raw fallback Markdown or a stale untranslated fallback.
 Blockquote maps visual variant, quote, citation, and citation URL. Their
 compact Figma models intentionally warn for React-only presentation and runtime
 props such as Figure crop/layout and Definition List copy controls. Native Figma

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ContextMenu, Paragraph, TreeMenu } from '@gtivr4/a1-design-system-react'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+import { contentLayerLabel } from './contentText.js'
+import { useT } from '../labels/useT.js'
 
 // ── Node → tree item conversion ───────────────────────────────────────────────
 
@@ -51,8 +53,8 @@ const CONTAINER_TYPES = new Set([
   'Slot',
 ])
 
-function nodeToTreeItem(node) {
-  const text = node.content?.fallback
+function nodeToTreeItem(node, resolveText) {
+  const text = contentLayerLabel(node.content, resolveText)
   // A custom name (set via inline rename) wins. Otherwise a pattern instance
   // shows the pattern's name; then the text content; then the component type.
   const label = node.name
@@ -70,20 +72,20 @@ function nodeToTreeItem(node) {
     // Container types always expose children (even when empty) so the tree
     // renders them as branch nodes and allows drag-into in drag-and-drop mode.
     children: isContainer
-      ? (node.children?.length ? node.children.map(nodeToTreeItem) : [])
-      : (node.children?.length ? node.children.map(nodeToTreeItem) : undefined),
+      ? (node.children?.length ? node.children.map(child => nodeToTreeItem(child, resolveText)) : [])
+      : (node.children?.length ? node.children.map(child => nodeToTreeItem(child, resolveText)) : undefined),
   }
 }
 
-function definitionToTreeItems(definition) {
+function definitionToTreeItems(definition, resolveText) {
   if (!definition) return []
   const regions = definition.page.layout.regions
-  if (regions.length === 1) return regions[0].nodes.map(nodeToTreeItem)
+  if (regions.length === 1) return regions[0].nodes.map(node => nodeToTreeItem(node, resolveText))
   return regions.map(region => ({
     id: region.id,
     label: region.name ?? region.id,
     icon: 'space_dashboard',
-    children: region.nodes.map(nodeToTreeItem),
+    children: region.nodes.map(node => nodeToTreeItem(node, resolveText)),
   }))
 }
 
@@ -118,12 +120,13 @@ export function ComponentTreePanel({
   onNodeAction,
   onConvertNode,
 }) {
+  const t = useT()
   const [expandedIds, setExpandedIds] = useState([])
   const [treeCtxMenu, setTreeCtxMenu] = useState(null) // { id, x, y }
   const [editingId, setEditingId] = useState(null) // id of the node being renamed inline
   const [selectionAnchorId, setSelectionAnchorId] = useState(null)
 
-  const treeItems = definitionToTreeItems(definition)
+  const treeItems = definitionToTreeItems(definition, t)
 
   // When a node is selected in the canvas, expand its ancestors in the tree.
   useEffect(() => {
@@ -188,7 +191,7 @@ export function ComponentTreePanel({
     const node = findNode(id)
     // The label shown is derived; only persist a custom name when the user
     // actually changed it away from the current display label.
-    const currentLabel = node ? nodeToTreeItem(node).label : null
+    const currentLabel = node ? nodeToTreeItem(node, t).label : null
     if (label !== currentLabel) onNodeAction?.({ type: 'rename', nodeId: id, name: label })
   }
 

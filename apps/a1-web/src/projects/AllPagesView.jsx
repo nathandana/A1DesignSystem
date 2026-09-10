@@ -17,7 +17,8 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
-import { getPublishedProjectPath, exportProjectJson, resolvePageJson } from './projectStore'
+import { componentRegistry } from '../editor/componentRegistry'
+import { getPublishedProjectPath, exportProjectJson, resolvePageJson, validateProjectImport } from './projectStore'
 import { useT } from '../labels/useT.js'
 
 /** Flatten the page tree into document order, tagging each with its level. */
@@ -144,6 +145,7 @@ export function AllPagesView({
   onUnpublishProject,
   onEditLayout,
   onRenameProject,
+  onSaveProjectJson,
   onDeleteProject,
   onNavigateHome,
   onBackToProjects,
@@ -155,7 +157,14 @@ export function AllPagesView({
   const [jsonOpen, setJsonOpen] = useState(false)
   const [publishOpen, setPublishOpen] = useState(false)
   const [viewMode, setViewMode] = useState('list')
-  const projectJson = jsonOpen ? (exportProjectJson(project?.id) ?? '{}') : ''
+  const [projectJson, setProjectJson] = useState('')
+  const [jsonValidationResult, setJsonValidationResult] = useState(null)
+  const knownTypes = useMemo(() => new Set(Object.keys(componentRegistry)), [])
+  const jsonValidation = useMemo(() => {
+    if (!projectJson.trim()) return { errors: ['Project JSON cannot be empty.'], warnings: [] }
+    try { return validateProjectImport(JSON.parse(projectJson), knownTypes) }
+    catch (error) { return { errors: [`Invalid JSON: ${error.message}`], warnings: [] } }
+  }, [projectJson, knownTypes])
   const publishedPath = project?.published ? getPublishedProjectPath(project) : ''
   const publishedUrl = publishedPath && typeof window !== 'undefined'
     ? `${window.location.origin}${publishedPath}`
@@ -164,6 +173,34 @@ export function AllPagesView({
   function openPublishDialog() {
     if (project?.id && !project.published) onPublishProject?.(project.id)
     setPublishOpen(true)
+  }
+
+  function openJsonDialog() {
+    setProjectJson(exportProjectJson(project?.id) ?? '{}')
+    setJsonValidationResult(null)
+    setJsonOpen(true)
+  }
+
+  function editProjectJson(value) {
+    setProjectJson(value)
+    setJsonValidationResult(null)
+  }
+
+  function validateProjectJson() {
+    if (jsonValidation.errors.length > 0) {
+      setJsonValidationResult({ status: 'error', message: jsonValidation.errors[0] })
+    } else if (jsonValidation.warnings.length > 0) {
+      setJsonValidationResult({ status: 'warn', message: `Valid JSON. ${jsonValidation.warnings[0]}` })
+    } else {
+      setJsonValidationResult({ status: 'success', message: 'Valid JSON — ready to save.' })
+    }
+  }
+
+  function saveProjectJson() {
+    try {
+      onSaveProjectJson?.(project.id, JSON.parse(projectJson))
+      setJsonOpen(false)
+    } catch { /* validation already presents parse errors */ }
   }
 
   return (
@@ -184,7 +221,7 @@ export function AllPagesView({
               <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
             )}
             <Button variant="secondary" icon="archive"  size='sm' onClick={() => setConfirmDelete(true)}>Archive</Button>
-            <Button variant="secondary" icon="data_object" size='sm' onClick={() => setJsonOpen(true)}>JSON</Button>
+            <Button variant="secondary" icon="data_object" size='sm' onClick={openJsonDialog}>JSON</Button>
             {flat.length > 0 && (
               <>
                 <Button
@@ -275,13 +312,32 @@ export function AllPagesView({
         open={jsonOpen}
         onClose={() => setJsonOpen(false)}
         title={`${project?.name ?? 'Project'} — definition`}
+        footer={(
+          <>
+            <Button variant="secondary" onClick={() => setJsonOpen(false)}>Cancel</Button>
+            <Button variant="secondary" icon="fact_check" onClick={validateProjectJson}>Validate JSON</Button>
+            <Button icon="save" disabled={jsonValidation.errors.length > 0} onClick={saveProjectJson}>Save JSON</Button>
+          </>
+        )}
       >
         <Stack direction="column" gap="sm">
           <Paragraph size="sm" color="muted">
-            The whole project as a JSON bundle — every page and its definition. This is the same
-            shape the project importer accepts, so it round-trips.
+            Edit the whole project bundle, including page metadata and definitions. Invalid JSON or
+            structural errors cannot be saved.
           </Paragraph>
-          <Code variant="block" copyCode editable wrapping rows={18} aria-label="Project definition JSON">{projectJson}</Code>
+          <Code variant="block" copyCode editable wrapping rows={18} onChangeValue={editProjectJson} aria-label="Project definition JSON">{projectJson}</Code>
+          {jsonValidation.errors.length > 0 && (
+            <Paragraph size="sm" color="danger" role="alert">{jsonValidation.errors[0]}</Paragraph>
+          )}
+          {jsonValidation.errors.length === 0 && jsonValidation.warnings.length > 0 && (
+            <Paragraph size="sm" color="muted" role="status">Warning: {jsonValidation.warnings[0]}</Paragraph>
+          )}
+          {jsonValidationResult?.status === 'error' && (
+            <Paragraph size="sm" color="danger" role="alert">{jsonValidationResult.message}</Paragraph>
+          )}
+          {jsonValidationResult && jsonValidationResult.status !== 'error' && (
+            <Paragraph size="sm" color="muted" role="status">{jsonValidationResult.message}</Paragraph>
+          )}
         </Stack>
       </Dialog>
 

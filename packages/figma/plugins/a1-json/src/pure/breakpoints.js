@@ -92,6 +92,63 @@ export function responsiveColumnsAt(value, breakpoint) {
   return null;
 }
 
+export function normalizeResponsiveTextSizes(value, allowedSizes) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || !Array.isArray(allowedSizes)) return null;
+  const allowed = new Set(allowedSizes.map((size) => String(size).toLowerCase()));
+  const out = {};
+  for (const key of A1_BREAKPOINTS) {
+    const size = typeof value[key] === 'string' ? value[key].toLowerCase() : '';
+    if (allowed.has(size)) out[key] = size;
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+export function formatResponsiveTextSizes(value, allowedSizes) {
+  const sizes = normalizeResponsiveTextSizes(value, allowedSizes);
+  if (!sizes) return '';
+  return `{${A1_BREAKPOINTS
+    .filter((breakpoint) => sizes[breakpoint])
+    .map((breakpoint) => `${breakpoint}:${sizes[breakpoint]}`)
+    .join(', ')}}`;
+}
+
+export function parseResponsiveTextSizesName(name, allowedSizes) {
+  const match = String(name || '').match(/\{\s*([^{}]+)\s*\}\s*$/);
+  if (!match) return null;
+  const sizes = {};
+  for (const part of match[1].split(',')) {
+    const pair = part.trim().match(/^['"]?(xs|sm|md|lg|xl)['"]?\s*:\s*['"]?([a-z][a-z0-9]*)['"]?$/i);
+    if (!pair) return null;
+    sizes[pair[1].toLowerCase()] = pair[2].toLowerCase();
+  }
+  return normalizeResponsiveTextSizes(sizes, allowedSizes);
+}
+
+export function stripResponsiveTextSizesName(name, allowedSizes) {
+  const source = String(name || 'Text');
+  if (!parseResponsiveTextSizesName(source, allowedSizes)) return source.trim() || 'Text';
+  return source.replace(/\s*(?:[-–—]\s*)?\{\s*[^{}]+\s*\}\s*$/, '').trim() || 'Text';
+}
+
+export function responsiveTextName(baseName, value, allowedSizes) {
+  const suffix = formatResponsiveTextSizes(value, allowedSizes);
+  const base = stripResponsiveTextSizesName(baseName, allowedSizes);
+  return suffix ? `${base} - ${suffix}` : base;
+}
+
+export function responsiveTextSizeAt(value, breakpoint, allowedSizes) {
+  const sizes = normalizeResponsiveTextSizes(value, allowedSizes);
+  if (!sizes) return null;
+  const targetIndex = Math.max(0, A1_BREAKPOINTS.indexOf(breakpoint));
+  let inherited = null;
+  for (let index = 0; index <= targetIndex; index += 1) {
+    const size = sizes[A1_BREAKPOINTS[index]];
+    if (size) inherited = size;
+  }
+  if (inherited) return inherited;
+  return A1_BREAKPOINTS.map((key) => sizes[key]).find(Boolean) || null;
+}
+
 export function responsiveGridItemSpanAt(value, breakpoint, fullSpan = null) {
   const normalize = (candidate) => {
     if (candidate === 'full') return Number.isInteger(fullSpan) && fullSpan > 0 ? fullSpan : null;

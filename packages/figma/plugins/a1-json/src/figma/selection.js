@@ -36,6 +36,26 @@ export function safeParent(node) {
   }
 }
 
+// Figma nodechange events can reference an instance sublayer that disappeared
+// during a variant swap or import. Walk ancestors through safeParent so a stale
+// native proxy cannot throw `get_parent` and abort the whole plugin operation.
+export function hasAncestorId(node, ancestorId) {
+  if (!node || !ancestorId) return false;
+  const visited = new Set();
+  for (let parent = safeParent(node); parent; parent = safeParent(parent)) {
+    let parentId = '';
+    try {
+      parentId = parent.id;
+    } catch {
+      return false;
+    }
+    if (parentId === ancestorId) return true;
+    if (!parentId || visited.has(parentId)) return false;
+    visited.add(parentId);
+  }
+  return false;
+}
+
 // Native instance sublayers can vanish between a findAll/findOne result and a
 // later export pass. Reading `children` through this guard keeps one stale
 // implementation layer from aborting the entire page export.
