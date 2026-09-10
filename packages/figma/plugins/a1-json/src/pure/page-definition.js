@@ -66,10 +66,22 @@ export function pageTitleFromFigmaFrame(frameOrName) {
   return (linkedTitle ? linkedTitle[1] : name) || 'Untitled';
 }
 
-// A raw Figma frame exports as a `{ nodes }` bundle, while an A1 Page Layout
-// instance already provides the complete page layout contract.
+// A raw Figma frame exports as a `{ nodes }` bundle. A PageLayout component
+// export uses `{ children }`, but the persisted page-definition contract uses
+// named `{ regions }`; normalize both forms before handing JSON to A1 Web.
 export function pageLayoutForPageExport(node) {
-  if (node && node.type === 'PageLayout') return node;
+  if (node && node.type === 'PageLayout') {
+    if (Array.isArray(node.regions)) return node;
+    return {
+      type: 'PageLayout',
+      ...(node.props && typeof node.props === 'object' ? { props: node.props } : {}),
+      regions: [{
+        id: 'main',
+        name: 'Main',
+        nodes: Array.isArray(node.children) ? node.children : Array.isArray(node.nodes) ? node.nodes : [],
+      }],
+    };
+  }
   return {
     type: 'PageLayout',
     regions: [{ id: 'main', name: 'Main', nodes: Array.isArray(node && node.nodes) ? node.nodes : [] }],

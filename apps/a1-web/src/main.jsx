@@ -26,14 +26,6 @@ import {
   Switch,
   TopHeader,
 } from '@gtivr4/a1-design-system-react'
-import appLabels       from '../../../system/labels/app.json'
-import actionLabels    from '../../../system/labels/action.json'
-import backlogLabels   from '../../../system/labels/backlog.json'
-import calendarLabels  from '../../../system/labels/calendar.json'
-import codeLabels      from '../../../system/labels/code.json'
-import fieldLabels     from '../../../system/labels/field.json'
-import statusBarLabels from '../../../system/labels/status-bar.json'
-import treeMenuLabels  from '../../../system/labels/tree-menu.json'
 import {
   getLabels,
   hydrateLabels,
@@ -43,19 +35,7 @@ import {
   buildProjectLabelsObject,
   deepMergeLabels,
 } from './labels/labelStore.js'
-
-const SYSTEM_LABELS = {
-  label: {
-    ...appLabels.label,
-    ...actionLabels.label,
-    ...backlogLabels.label,
-    ...calendarLabels.label,
-    ...codeLabels.label,
-    ...fieldLabels.label,
-    ...statusBarLabels.label,
-    ...treeMenuLabels.label,
-  },
-}
+import { SYSTEM_LABELS, resolveLabel } from './labels/systemLabels.js'
 
 const localeOptions = [
   { value: 'en', label: 'English' },
@@ -135,6 +115,9 @@ import { listAllRules, subscribeRules } from './rules/ruleStore.ts'
 import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
+import { combinePageIntoLayout } from './projects/projectLayout'
+import { buildProjectNav } from './projects/projectNav'
+import { materializeResolvedLabelContent } from './editor/contentText.js'
 import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
@@ -431,19 +414,6 @@ const PAGE_TITLE_LABEL_KEYS = {
   'foundation-content-standards': 'app.contentStandards.title',
 }
 
-function resolveLabel(labels, locale, key, fallback) {
-  if (!key || !labels) return fallback ?? key
-  const parts = key.split('.')
-  let node = labels.label
-  for (const part of parts) {
-    if (node == null || typeof node !== 'object') return fallback ?? key
-    node = node[part]
-  }
-  if (node == null) return fallback ?? key
-  if (locale && node.locale?.[locale] != null) return node.locale[locale]
-  return node.$value ?? fallback ?? key
-}
-
 function formatTourProgress(template, current, total) {
   return template
     .replace('{current}', String(current))
@@ -539,32 +509,74 @@ function App() {
       if (registering) return
       registering = true
       try {
+        const workspaceLabels = buildLabelsObject(getLabels().items)
         const workspace = {
-          projects: await Promise.all(projectStore.loadProjects().map(async (project) => ({
-            id: project.id,
-            name: project.name,
-            pages: await Promise.all(projectStore.loadPages(project.id).map(async (page) => {
-              const link = projectStore.getFigmaPageLink(project.id, page.id)
-                ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
-              const json = projectStore.resolvePageJson(page.id) ?? ''
-              const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : []
-              return {
-                id: page.id,
-                title: page.title,
-                json,
-                assets,
-                link: link ? {
-                  linkId: link.id,
-                  projectId: project.id,
-                  pageId: page.id,
-                  mode: link.mode,
-                  figmaFileKey: link.figmaFileKey,
-                  figmaPageId: link.figmaPageId,
-                  figmaRootNodeId: link.figmaRootNodeId,
-                } : null,
-              }
-            })),
-          }))),
+          projects: await Promise.all(projectStore.loadProjects().map(async (project) => {
+            const projectLabels = project.labelOverrides
+              ? buildProjectLabelsObject(project.labelOverrides)
+              : { label: {} }
+            const labels = {
+              label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabels.label, projectLabels.label),
+            }
+            const resolveProjectText = (key, fallback) => resolveLabel(
+              labels,
+              locale === 'en' ? null : locale,
+              key,
+              fallback,
+            )
+            return {
+              id: project.id,
+              name: project.name,
+              pages: await Promise.all(projectStore.loadPages(project.id).map(async (page) => {
+                const link = projectStore.getFigmaPageLink(project.id, page.id)
+                  ?? projectStore.saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' })
+                const pageJson = projectStore.resolvePageJson(page.id) ?? ''
+                // Figma's Page Layout contains a built-in Top Header. Send the
+                // page composed with A1's shared layout so that header receives
+                // the project's wordmark and generated navigation instead of
+                // retaining the component-library default ("A1:Design").
+                let json = pageJson
+                try {
+                  const definition = JSON.parse(pageJson)
+                  const layout = JSON.parse(projectStore.loadProjectLayout(project.id))
+                  const projectPages = projectStore.loadPages(project.id)
+                  const navItems = buildProjectNav(projectPages, {
+                    activePageId: page.id,
+                    onNavigate: () => {},
+                    hrefFor: (pageId) => `?project=${encodeURIComponent(project.id)}&doc=${encodeURIComponent(pageId)}`,
+                  })
+                  const composedDefinition = combinePageIntoLayout(layout, definition, {
+                    navItems,
+                    logoFallback: project.name || '',
+                  })
+                  json = JSON.stringify(
+                    materializeResolvedLabelContent(composedDefinition, resolveProjectText),
+                    null,
+                    2,
+                  )
+                } catch {
+                  // Preserve the raw page JSON when an older local document is
+                  // malformed; the editor will surface its validation error.
+                }
+                const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : []
+                return {
+                  id: page.id,
+                  title: page.title,
+                  json,
+                  assets,
+                  link: link ? {
+                    linkId: link.id,
+                    projectId: project.id,
+                    pageId: page.id,
+                    mode: link.mode,
+                    figmaFileKey: link.figmaFileKey,
+                    figmaPageId: link.figmaPageId,
+                    figmaRootNodeId: link.figmaRootNodeId,
+                  } : null,
+                }
+              })),
+            }
+          })),
         }
         await registerFigmaWorkspace(workspace)
       } catch {
@@ -580,7 +592,7 @@ function App() {
       window.clearInterval(interval)
       window.removeEventListener('a1:figma-workspace-changed', registerFigmaWorkspaceSnapshot)
     }
-  }, [])
+  }, [locale])
 
   // A Figma frame can be explicitly sent to an existing local A1 project as a
   // new page. Keep this separate from ordinary linked-page edits: this creates
@@ -657,6 +669,7 @@ function App() {
   const [editorView, setEditorView] = useState('edit')
   const [editorDirty, setEditorDirty] = useState(false)
   const [editorSelectedNodeId, setEditorSelectedNodeId] = useState(null)
+  const [editorSelectedNodeIds, setEditorSelectedNodeIds] = useState([])
   const [editorDefinition, setEditorDefinition] = useState(null)
   const [editorPendingMove, setEditorPendingMove] = useState(null)
   const [editorAddTarget, setEditorAddTarget] = useState(null)
@@ -1056,6 +1069,26 @@ function App() {
     navigate('editor')
   }
 
+  // Keep the current project active, but close its open page so the editor
+  // returns to the project's overview rather than the all-projects list.
+  function handleBackToProjectOverview() {
+    setOpenPageId(null)
+    setEditorSelectedNodeId(null)
+    setEditorSelectedNodeIds([])
+    setEditorDefinition(null)
+    setEditorView('edit')
+  }
+
+  function handleEditorSidebarSelection(ids, primaryId) {
+    setEditorSelectedNodeIds(ids)
+    setEditorSelectedNodeId(primaryId)
+  }
+
+  function handleEditorCanvasSelection(nodeId) {
+    setEditorSelectedNodeId(nodeId)
+    setEditorSelectedNodeIds(nodeId ? [nodeId] : [])
+  }
+
   // Top-nav "Editor" always lands on the Projects list (editor home).
   function handleEditorNav(e) {
     if (!isPlainLeftClick(e)) return
@@ -1103,6 +1136,12 @@ function App() {
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
     refreshProjects()
+  }
+
+  function handleSaveProjectJson(id, data) {
+    projectStore.replaceProjectJson(id, data)
+    refreshProjects()
+    setProjectPages(projectStore.loadPages(id))
   }
 
   function handleUpdateProjectLabels(projectId, labelOverrides) {
@@ -2091,7 +2130,9 @@ function App() {
                 patternId={editorPatternId}
                 definition={editorDefinition}
                 selectedNodeId={editorSelectedNodeId}
+                selectedNodeIds={editorSelectedNodeIds}
                 onSelectNode={setEditorSelectedNodeId}
+                onSelectionChange={handleEditorSidebarSelection}
                 onRequestAdd={setEditorAddTarget}
                 onNodeAction={setEditorPendingAction}
                 onNodeMove={setEditorPendingMove}
@@ -2114,7 +2155,9 @@ function App() {
                 onMovePage={handleMoveProjectPage}
                 definition={editorDefinition}
                 selectedNodeId={editorSelectedNodeId}
+                selectedNodeIds={editorSelectedNodeIds}
                 onSelectNode={setEditorSelectedNodeId}
+                onSelectionChange={handleEditorSidebarSelection}
                 onNodeMove={setEditorPendingMove}
                 onRequestAdd={setEditorAddTarget}
                 onNodeAction={setEditorPendingAction}
@@ -2248,7 +2291,8 @@ function App() {
               exampleId={`pattern-${editorPatternId}`}
               definition={patternDef}
               selectedNodeId={editorSelectedNodeId}
-              onSelectNode={setEditorSelectedNodeId}
+              selectedNodeIds={editorSelectedNodeIds}
+              onSelectNode={handleEditorCanvasSelection}
               onViewChange={setEditorView}
               onDefinitionChange={setEditorDefinition}
               pendingMove={editorPendingMove}
@@ -2297,6 +2341,7 @@ function App() {
               projectId={activeProjectId}
               projectName={activeProject.name}
               projectTheme={activeProject.theme}
+              projectNavStyle={activeProject.navStyle}
               colorMode={colorMode}
               resolvedColorScheme={resolvedColorScheme}
               selectedNodeId={editorSelectedNodeId}
@@ -2327,6 +2372,7 @@ function App() {
               onPublishProject={handlePublishProject}
               onUnpublishProject={handleUnpublishProject}
               onRenameProject={handleRenameProject}
+              onSaveProjectJson={handleSaveProjectJson}
               onDeleteProject={handleDeleteProject}
               onNavigateHome={() => navigate('home')}
               onBackToProjects={handleBackToProjects}
@@ -2340,10 +2386,12 @@ function App() {
               projectId={activeProjectId}
               projectName={activeProject.name}
               projectTheme={activeProject.theme}
+              projectNavStyle={activeProject.navStyle}
               colorMode={colorMode}
               resolvedColorScheme={resolvedColorScheme}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
+              onBackToProjectOverview={handleBackToProjectOverview}
               composeWithAi={openPageId === aiComposePageId}
               onAiComposeConsumed={() => setAiComposePageId(null)}
               pageLevel={projectStore.getPageLevel(projectPages, openPageId)}
@@ -2352,7 +2400,8 @@ function App() {
               onDuplicatePage={() => handleDuplicateProjectPage(openPageId)}
               onDeletePage={() => handleDeleteProjectPage(openPageId)}
               selectedNodeId={editorSelectedNodeId}
-              onSelectNode={setEditorSelectedNodeId}
+              selectedNodeIds={editorSelectedNodeIds}
+              onSelectNode={handleEditorCanvasSelection}
               onViewChange={setEditorView}
               onDirtyChange={setEditorDirty}
               onDefinitionChange={setEditorDefinition}

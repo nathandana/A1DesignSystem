@@ -1,0 +1,2559 @@
+{
+  "name": "A1 Web page set",
+  "description": "Editor-compatible pages derived from A1 Web markup. Text uses connected labels with fallbacks for translation compatibility.",
+  "icon": "language",
+  "pages": [
+    {
+      "id": "a1-web-home",
+      "title": "Home",
+      "icon": "home",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-home",
+          "name": "A1 Web home",
+          "description": "Editor-compatible version of the A1 Web home page.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "hero",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "height": "hero",
+                      "inverse": true,
+                      "contentWidth": "md",
+                      "gap": "lg",
+                      "align": "center",
+                      "surface": "page",
+                      "gradient": "accent",
+                      "gradientPosition": "center"
+                    },
+                    "children": [
+                      {
+                        "id": "hero-title-stack",
+                        "type": "Stack",
+                        "props": {
+                          "direction": "column",
+                          "gap": "xs",
+                          "align": "center"
+                        },
+                        "children": [
+                          {
+                            "id": "hero-title",
+                            "type": "Heading",
+                            "props": {
+                              "as": "h1",
+                              "type": "display",
+                              "color": "accent",
+                              "align": "center",
+                              "size": {
+                                "xs": "xl",
+                                "md": "xxl",
+                                "lg": "xJumbo"
+                              }
+                            },
+                            "content": {
+                              "fallback": "A1:Design"
+                            }
+                          },
+                          {
+                            "id": "hero-tagline",
+                            "type": "Heading",
+                            "props": {
+                              "as": "p",
+                              "type": "display",
+                              "align": "center",
+                              "size": "xxl"
+                            },
+                            "content": {
+                              "fallback": "By the rules",
+                              "textKey": "app.home.heroTagline"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "hero-copy",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "align": "center"
+                        },
+                        "content": {
+                          "fallback": "A1 is a rules-based design system and product workspace. Explore the component registry, build projects with patterns and datasets, review accessibility reports, and use AI helpers inside clear system guardrails.",
+                          "textKey": "app.home.heroParagraph"
+                        }
+                      },
+                      {
+                        "id": "hero-actions",
+                        "type": "ButtonContainer",
+                        "props": {
+                          "align": "center"
+                        },
+                        "children": [
+                          {
+                            "id": "build-project",
+                            "type": "Button",
+                            "props": {
+                              "variant": "primary",
+                              "size": "lg",
+                              "icon": "arrow_forward",
+                              "iconPosition": "end",
+                              "href": "/?page=editor"
+                            },
+                            "content": {
+                              "fallback": "Build a project",
+                              "textKey": "app.home.buildProject"
+                            }
+                          },
+                          {
+                            "id": "explore-components",
+                            "type": "Button",
+                            "props": {
+                              "variant": "secondary",
+                              "size": "lg",
+                              "icon": "widgets",
+                              "iconPosition": "start",
+                              "href": "/?page=components"
+                            },
+                            "content": {
+                              "fallback": "Explore components",
+                              "textKey": "app.home.exploreComponents"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "statistics",
+                    "type": "Section",
+                    "props": {
+                      "padding": "sm",
+                      "surface": "raised",
+                      "contentWidth": "lg",
+                      "align": "center"
+                    },
+                    "children": [
+                      {
+                        "id": "stat-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 2,
+                            "sm": 4
+                          },
+                          "gap": "md"
+                        },
+                        "children": [
+                          {
+                            "id": "stat-components",
+                            "type": "Stack",
+                            "props": {
+                              "direction": "column",
+                              "gap": "xs",
+                              "align": "center"
+                            },
+                            "children": [
+                              {
+                                "id": "stat-components-value",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "p",
+                                  "type": "display",
+                                  "size": "xl"
+                                },
+                                "content": {
+                                  "fallback": "120+"
+                                }
+                              },
+                              {
+                                "id": "stat-components-label",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted",
+                                  "align": "center"
+                                },
+                                "content": {
+                                  "fallback": "Components",
+                                  "textKey": "app.home.statComponents"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "stat-platforms",
+                            "type": "Stack",
+                            "props": {
+                              "direction": "column",
+                              "gap": "xs",
+                              "align": "center"
+                            },
+                            "children": [
+                              {
+                                "id": "stat-platforms-value",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "p",
+                                  "type": "display",
+                                  "size": "xl"
+                                },
+                                "content": {
+                                  "fallback": "4"
+                                }
+                              },
+                              {
+                                "id": "stat-platforms-label",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted",
+                                  "align": "center"
+                                },
+                                "content": {
+                                  "fallback": "Packages",
+                                  "textKey": "app.home.statPlatforms"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "stat-themes",
+                            "type": "Stack",
+                            "props": {
+                              "direction": "column",
+                              "gap": "xs",
+                              "align": "center"
+                            },
+                            "children": [
+                              {
+                                "id": "stat-themes-value",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "p",
+                                  "type": "display",
+                                  "size": "xl"
+                                },
+                                "content": {
+                                  "fallback": "9"
+                                }
+                              },
+                              {
+                                "id": "stat-themes-label",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted",
+                                  "align": "center"
+                                },
+                                "content": {
+                                  "fallback": "Themes",
+                                  "textKey": "app.home.statThemes"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "stat-tokens",
+                            "type": "Stack",
+                            "props": {
+                              "direction": "column",
+                              "gap": "xs",
+                              "align": "center"
+                            },
+                            "children": [
+                              {
+                                "id": "stat-tokens-value",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "p",
+                                  "type": "display",
+                                  "size": "xl"
+                                },
+                                "content": {
+                                  "fallback": "1,000+"
+                                }
+                              },
+                              {
+                                "id": "stat-tokens-label",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted",
+                                  "align": "center"
+                                },
+                                "content": {
+                                  "fallback": "Tokens",
+                                  "textKey": "app.home.statTokens"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "dashboard-wrap",
+                        "type": "Stack",
+                        "props": {
+                          "align": "center"
+                        },
+                        "children": [
+                          {
+                            "id": "dashboard-link",
+                            "type": "Link",
+                            "props": {
+                              "href": "/?page=dashboard",
+                              "icon": "link",
+                              "size": "lg",
+                              "weight": "semibold"
+                            },
+                            "content": {
+                              "fallback": "System dashboard",
+                              "textKey": "app.home.dashboardLink"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "capabilities",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "contentWidth": "lg",
+                      "gap": "lg"
+                    },
+                    "children": [
+                      {
+                        "id": "capabilities-intro",
+                        "type": "Stack",
+                        "props": {
+                          "direction": "column",
+                          "gap": "sm"
+                        },
+                        "children": [
+                          {
+                            "id": "capabilities-badge",
+                            "type": "MessageBadge",
+                            "props": {
+                              "icon": "hub"
+                            },
+                            "content": {
+                              "fallback": "How it works",
+                              "textKey": "app.home.howItWorksBadge"
+                            }
+                          },
+                          {
+                            "id": "capabilities-title",
+                            "type": "Heading",
+                            "props": {
+                              "as": "h2",
+                              "type": "display",
+                              "size": "xl"
+                            },
+                            "content": {
+                              "fallback": "Current capabilities. One system.",
+                              "textKey": "app.home.featuresHeading"
+                            }
+                          },
+                          {
+                            "id": "capabilities-copy",
+                            "type": "Paragraph",
+                            "props": {
+                              "size": "lg",
+                              "color": "muted"
+                            },
+                            "content": {
+                              "fallback": "A1 brings the component registry, editor workflows, labels, accessibility reporting, and AI guardrails into one governed workspace.",
+                              "textKey": "app.home.featuresParagraph"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "capabilities-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "sm": 2,
+                            "lg": 4
+                          },
+                          "gap": "lg"
+                        },
+                        "children": [
+                          {
+                            "id": "cap-registry",
+                            "type": "Card",
+                            "props": {
+                              "icon": "widgets"
+                            },
+                            "children": [
+                              {
+                                "id": "cap-registry-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Registry-backed",
+                                  "textKey": "app.home.featureTokenTitle"
+                                }
+                              },
+                              {
+                                "id": "cap-registry-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "md",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Every visible component is defined from the registry, with live configurators, rules, and accessibility reports.",
+                                  "textKey": "app.home.featureTokenBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "cap-editor",
+                            "type": "Card",
+                            "props": {
+                              "icon": "edit_square"
+                            },
+                            "children": [
+                              {
+                                "id": "cap-editor-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Editor-ready",
+                                  "textKey": "app.home.featureMultiTitle"
+                                }
+                              },
+                              {
+                                "id": "cap-editor-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "md",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Build projects from A1 components, patterns, datasets, image libraries, and label-driven content.",
+                                  "textKey": "app.home.featureMultiBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "cap-ai",
+                            "type": "Card",
+                            "props": {
+                              "icon": "auto_awesome"
+                            },
+                            "children": [
+                              {
+                                "id": "cap-ai-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Governed AI workflows",
+                                  "textKey": "app.home.featureAiTitle"
+                                }
+                              },
+                              {
+                                "id": "cap-ai-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "md",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Structured rules help propose components and generate data-aware pages without inventing patterns.",
+                                  "textKey": "app.home.featureAiBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "cap-a11y",
+                            "type": "Card",
+                            "props": {
+                              "icon": "accessibility_new"
+                            },
+                            "children": [
+                              {
+                                "id": "cap-a11y-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Automated quality",
+                                  "textKey": "app.home.featureA11yTitle"
+                                }
+                              },
+                              {
+                                "id": "cap-a11y-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "md",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Reports cover contrast, keyboard behavior, screen reader expectations, and WCAG mappings.",
+                                  "textKey": "app.home.featureA11yBody"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "tools",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "surface": "raised",
+                      "contentWidth": "lg",
+                      "gap": "lg"
+                    },
+                    "children": [
+                      {
+                        "id": "tools-intro",
+                        "type": "Stack",
+                        "props": {
+                          "direction": "column",
+                          "gap": "sm"
+                        },
+                        "children": [
+                          {
+                            "id": "tools-badge",
+                            "type": "MessageBadge",
+                            "props": {
+                              "icon": "apps"
+                            },
+                            "content": {
+                              "fallback": "Tools",
+                              "textKey": "app.home.toolsBadge"
+                            }
+                          },
+                          {
+                            "id": "tools-title",
+                            "type": "Heading",
+                            "props": {
+                              "as": "h2",
+                              "type": "display",
+                              "size": "xl"
+                            },
+                            "content": {
+                              "fallback": "Tools for making governed systems",
+                              "textKey": "app.home.toolsHeading"
+                            }
+                          },
+                          {
+                            "id": "tools-copy",
+                            "type": "Paragraph",
+                            "props": {
+                              "size": "lg",
+                              "color": "muted"
+                            },
+                            "content": {
+                              "fallback": "A1 combines project editing, shared assets, data, themes, labels, and rules so teams can build with structure instead of starting from a blank page.",
+                              "textKey": "app.home.toolsParagraph"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "tools-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "sm": 2,
+                            "lg": 4
+                          },
+                          "gap": "md"
+                        },
+                        "children": [
+                          {
+                            "id": "tool-projects",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "folder",
+                              "href": "/?page=editor"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-projects-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Projects",
+                                  "textKey": "app.home.toolProjectsTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-projects-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Create and edit governed projects through a JSON page model.",
+                                  "textKey": "app.home.toolProjectsBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-patterns",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "dashboard_customize",
+                              "href": "/?page=patterns"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-patterns-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Patterns",
+                                  "textKey": "app.home.toolPatternsTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-patterns-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Commonly defined patterns that can be shared within or across projects.",
+                                  "textKey": "app.home.toolPatternsBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-data",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "table_chart",
+                              "href": "/?page=data"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-data-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Data sources",
+                                  "textKey": "app.home.toolDataSourcesTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-data-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Plug-and-play datasets for binding pages to real content.",
+                                  "textKey": "app.home.toolDataSourcesBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-rules",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "gavel",
+                              "href": "/?page=rules"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-rules-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Rules engine",
+                                  "textKey": "app.home.toolRulesTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-rules-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Define UI, component, accessibility, and workflow rules for humans and agents.",
+                                  "textKey": "app.home.toolRulesBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-image-library",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "photo_library",
+                              "href": "/?page=image-library"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-image-library-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Image library",
+                                  "textKey": "app.home.toolImageLibraryTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-image-library-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Lightweight digital asset management for project images and reusable media.",
+                                  "textKey": "app.home.toolImageLibraryBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-custom-icons",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "font_download",
+                              "href": "/?page=custom-icons"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-custom-icons-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Icons",
+                                  "textKey": "app.home.toolIconsTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-custom-icons-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Quick custom icons with upload, validation, and font generation.",
+                                  "textKey": "app.home.toolIconsBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-theme-editor",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "palette",
+                              "href": "/?page=theme-editor"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-theme-editor-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Theme editor",
+                                  "textKey": "app.home.toolThemeEditorTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-theme-editor-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Custom themes with a few clicks, from color ramps to typography and semantic roles.",
+                                  "textKey": "app.home.toolThemeEditorBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "tool-label-editor",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "translate",
+                              "href": "/?page=label-editor"
+                            },
+                            "children": [
+                              {
+                                "id": "tool-label-editor-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Labels",
+                                  "textKey": "app.home.toolLabelsTitle"
+                                }
+                              },
+                              {
+                                "id": "tool-label-editor-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Shared labels and translations for reusable, locale-ready interface text.",
+                                  "textKey": "app.home.toolLabelsBody"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "categories",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "contentWidth": "lg",
+                      "surface": "panel",
+                      "gap": "lg"
+                    },
+                    "children": [
+                      {
+                        "id": "categories-intro",
+                        "type": "Stack",
+                        "props": {
+                          "direction": "column",
+                          "gap": "sm"
+                        },
+                        "children": [
+                          {
+                            "id": "categories-badge",
+                            "type": "MessageBadge",
+                            "props": {
+                              "icon": "widgets"
+                            },
+                            "content": {
+                              "fallback": "Components",
+                              "textKey": "app.home.componentsBadge"
+                            }
+                          },
+                          {
+                            "id": "categories-title",
+                            "type": "Heading",
+                            "props": {
+                              "as": "h2",
+                              "type": "display",
+                              "size": {
+                                "xs": "lg",
+                                "md": "xl"
+                              }
+                            },
+                            "content": {
+                              "fallback": "Components by category",
+                              "textKey": "app.home.componentsCatHeading"
+                            }
+                          },
+                          {
+                            "id": "categories-copy",
+                            "type": "Paragraph",
+                            "props": {
+                              "size": "lg",
+                              "color": "muted"
+                            },
+                            "content": {
+                              "fallback": "120+ components · 10 categories. From typography primitives to complex data tables — everything is tokenized, accessible, responsive, and connected to the live component docs.",
+                              "textKey": "app.home.componentsCatParagraph"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "categories-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 2,
+                            "sm": 4
+                          },
+                          "gap": "sm"
+                        },
+                        "children": [
+                          {
+                            "id": "category-layout",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "dashboard",
+                              "href": "/?page=components-layout"
+                            },
+                            "children": [
+                              {
+                                "id": "category-layout-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Layout",
+                                  "textKey": "app.home.catlayout"
+                                }
+                              },
+                              {
+                                "id": "category-layout-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "10 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-typography",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "text_fields",
+                              "href": "/?page=components-typography"
+                            },
+                            "children": [
+                              {
+                                "id": "category-typography-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Typography",
+                                  "textKey": "app.home.cattypography"
+                                }
+                              },
+                              {
+                                "id": "category-typography-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "8 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-actions",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "smart_button",
+                              "href": "/?page=components-actions"
+                            },
+                            "children": [
+                              {
+                                "id": "category-actions-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Actions",
+                                  "textKey": "app.home.catactions"
+                                }
+                              },
+                              {
+                                "id": "category-actions-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "13 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-navigation",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "menu",
+                              "href": "/?page=components-navigation"
+                            },
+                            "children": [
+                              {
+                                "id": "category-navigation-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Navigation",
+                                  "textKey": "app.home.catnavigation"
+                                }
+                              },
+                              {
+                                "id": "category-navigation-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "11 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-inputs",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "input",
+                              "href": "/?page=components-inputs"
+                            },
+                            "children": [
+                              {
+                                "id": "category-inputs-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Inputs",
+                                  "textKey": "app.home.catinputs"
+                                }
+                              },
+                              {
+                                "id": "category-inputs-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "20 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-feedback",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "campaign",
+                              "href": "/?page=components-feedback"
+                            },
+                            "children": [
+                              {
+                                "id": "category-feedback-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Feedback",
+                                  "textKey": "app.home.catfeedback"
+                                }
+                              },
+                              {
+                                "id": "category-feedback-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "13 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-media-iconography",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "image",
+                              "href": "/?page=components-media-iconography"
+                            },
+                            "children": [
+                              {
+                                "id": "category-media-iconography-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Media & iconography",
+                                  "textKey": "app.home.catmedia-iconography"
+                                }
+                              },
+                              {
+                                "id": "category-media-iconography-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "7 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-overlay",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "layers",
+                              "href": "/?page=components-overlay"
+                            },
+                            "children": [
+                              {
+                                "id": "category-overlay-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Overlay",
+                                  "textKey": "app.home.catoverlay"
+                                }
+                              },
+                              {
+                                "id": "category-overlay-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "7 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-data-viz",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "bar_chart",
+                              "href": "/?page=components-data-viz"
+                            },
+                            "children": [
+                              {
+                                "id": "category-data-viz-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Data visualization",
+                                  "textKey": "app.home.catdata-viz"
+                                }
+                              },
+                              {
+                                "id": "category-data-viz-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "8 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "category-data",
+                            "type": "Card",
+                            "props": {
+                              "variant": "navigation",
+                              "icon": "table_chart",
+                              "href": "/?page=components-data"
+                            },
+                            "children": [
+                              {
+                                "id": "category-data-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Data",
+                                  "textKey": "app.home.catdata"
+                                }
+                              },
+                              {
+                                "id": "category-data-count",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "10 components",
+                                  "textKey": "app.home.catComponentCount"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "platforms",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "contentWidth": "lg",
+                      "gap": "lg"
+                    },
+                    "children": [
+                      {
+                        "id": "platforms-intro",
+                        "type": "Stack",
+                        "props": {
+                          "direction": "column",
+                          "gap": "sm"
+                        },
+                        "children": [
+                          {
+                            "id": "platforms-badge",
+                            "type": "MessageBadge",
+                            "props": {
+                              "subtle": true,
+                              "icon": "devices"
+                            },
+                            "content": {
+                              "fallback": "Platforms",
+                              "textKey": "app.home.platformsBadge"
+                            }
+                          },
+                          {
+                            "id": "platforms-title",
+                            "type": "Heading",
+                            "props": {
+                              "as": "h2",
+                              "size": "xl"
+                            },
+                            "content": {
+                              "fallback": "One token source. Every surface.",
+                              "textKey": "app.home.platformsHeading"
+                            }
+                          },
+                          {
+                            "id": "platforms-copy",
+                            "type": "Paragraph",
+                            "props": {
+                              "size": "lg",
+                              "color": "muted"
+                            },
+                            "content": {
+                              "fallback": "The same token foundations power React, pure HTML/CSS, React Native, and Web Components package output.",
+                              "textKey": "app.home.platformsParagraph"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "platforms-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "sm": 2
+                          },
+                          "gap": "md"
+                        },
+                        "children": [
+                          {
+                            "id": "platform-react",
+                            "type": "Card",
+                            "props": {
+                              "icon": "code"
+                            },
+                            "children": [
+                              {
+                                "id": "platform-react-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "React"
+                                }
+                              },
+                              {
+                                "id": "platform-react-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Fully typed components with a stable prop API.",
+                                  "textKey": "app.home.platformReactBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "platform-html",
+                            "type": "Card",
+                            "props": {
+                              "icon": "palette"
+                            },
+                            "children": [
+                              {
+                                "id": "platform-html-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "HTML / CSS"
+                                }
+                              },
+                              {
+                                "id": "platform-html-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "BEM-style classes and scoped utilities for use on any page without a framework.",
+                                  "textKey": "app.home.platformHtmlBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "platform-native",
+                            "type": "Card",
+                            "props": {
+                              "icon": "phone_iphone"
+                            },
+                            "children": [
+                              {
+                                "id": "platform-native-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "React Native"
+                                }
+                              },
+                              {
+                                "id": "platform-native-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Token-driven mobile components that share the A1 design language.",
+                                  "textKey": "app.home.platformNativeBody"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "platform-web-components",
+                            "type": "Card",
+                            "props": {
+                              "icon": "integration_instructions"
+                            },
+                            "children": [
+                              {
+                                "id": "platform-web-components-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Web Components"
+                                }
+                              },
+                              {
+                                "id": "platform-web-components-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Standards-based custom elements for framework-agnostic surfaces.",
+                                  "textKey": "app.home.platformWebComponentsBody"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "cta",
+                    "type": "Section",
+                    "props": {
+                      "padding": "lg",
+                      "inverse": true,
+                      "gradient": "accent",
+                      "gradientPosition": "top",
+                      "contentWidth": "lg",
+                      "align": "center",
+                      "gap": "lg"
+                    },
+                    "children": [
+                      {
+                        "id": "cta-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "type": "display",
+                          "size": "xxl",
+                          "align": "center"
+                        },
+                        "content": {
+                          "fallback": "Start building with A1.",
+                          "textKey": "app.home.ctaHeading"
+                        }
+                      },
+                      {
+                        "id": "cta-copy",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted",
+                          "align": "center"
+                        },
+                        "content": {
+                          "fallback": "Explore components, read the token docs, or open the system in Storybook.",
+                          "textKey": "app.home.ctaParagraph"
+                        }
+                      },
+                      {
+                        "id": "cta-actions",
+                        "type": "ButtonContainer",
+                        "props": {
+                          "align": "center"
+                        },
+                        "children": [
+                          {
+                            "id": "cta-editor",
+                            "type": "Button",
+                            "props": {
+                              "variant": "primary",
+                              "icon": "arrow_forward",
+                              "iconPosition": "end",
+                              "href": "/?page=editor"
+                            },
+                            "content": {
+                              "fallback": "Open the editor",
+                              "textKey": "app.home.openEditor"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a1-web-about",
+      "title": "About",
+      "icon": "info",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-about",
+          "name": "About",
+          "description": "Editor-compatible version of the A1 Web About page.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "about-intro",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "about-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h1",
+                          "size": "xl"
+                        },
+                        "content": {
+                          "fallback": "About A1",
+                          "textKey": "app.about.title"
+                        }
+                      },
+                      {
+                        "id": "about-description",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it.",
+                          "textKey": "app.about.description"
+                        }
+                      },
+                      {
+                        "id": "about-version",
+                        "type": "MessageBadge",
+                        "props": {
+                          "status": "info"
+                        },
+                        "content": {
+                          "fallback": "Version 0.30.0",
+                          "textKey": "app.about.version"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "about-explore",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "about-explore-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "Explore",
+                          "textKey": "app.about.explore.title"
+                        }
+                      },
+                      {
+                        "id": "about-explore-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "sm": 2,
+                            "lg": 3
+                          },
+                          "gap": "md"
+                        },
+                        "children": [
+                          {
+                            "id": "about-foundations",
+                            "type": "Card",
+                            "props": {
+                              "icon": "palette"
+                            },
+                            "children": [
+                              {
+                                "id": "about-foundations-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Foundations",
+                                  "textKey": "app.about.explore.foundations.title"
+                                }
+                              },
+                              {
+                                "id": "about-foundations-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Colour, type, spacing, shape, motion, and icons — the tokens every component is built from.",
+                                  "textKey": "app.about.explore.foundations.body"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "about-components",
+                            "type": "Card",
+                            "props": {
+                              "icon": "widgets"
+                            },
+                            "children": [
+                              {
+                                "id": "about-components-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Components",
+                                  "textKey": "app.about.explore.components.title"
+                                }
+                              },
+                              {
+                                "id": "about-components-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Browse every component with a live configurator, properties, rules, and copy-paste code.",
+                                  "textKey": "app.about.explore.components.body"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "about-editor",
+                            "type": "Card",
+                            "props": {
+                              "icon": "edit_square"
+                            },
+                            "children": [
+                              {
+                                "id": "about-editor-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Editor",
+                                  "textKey": "app.about.explore.editor.title"
+                                }
+                              },
+                              {
+                                "id": "about-editor-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Compose pages from A1 components on a canvas, then preview, prototype, and export.",
+                                  "textKey": "app.about.explore.editor.body"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a1-web-blog",
+      "title": "Blog",
+      "icon": "article",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-blog",
+          "name": "Blog",
+          "description": "Editor-compatible version of the A1 Web Blog page.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "blog-intro",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "blog-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h1",
+                          "size": "xl"
+                        },
+                        "content": {
+                          "fallback": "Blog",
+                          "textKey": "app.page.blog.title"
+                        }
+                      },
+                      {
+                        "id": "blog-description",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "Release newsletters, demos, and walkthroughs from the A1 product and design system.",
+                          "textKey": "app.page.blog.description"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "blog-posts",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "blog-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "md": 2,
+                            "xl": 3
+                          },
+                          "gap": "xl"
+                        },
+                        "children": [
+                          {
+                            "id": "blog-figma-loop",
+                            "type": "Card",
+                            "children": [
+                              {
+                                "id": "blog-figma-meta",
+                                "type": "MessageBadge",
+                                "props": {
+                                  "status": "info"
+                                },
+                                "content": {
+                                  "fallback": "Release newsletter · 0.30.0 · Jul 24, 2026",
+                                  "textKey": "app.page.blog.figmaLoop.meta"
+                                }
+                              },
+                              {
+                                "id": "blog-figma-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h2",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "A1 0.30.0 closes the Figma loop",
+                                  "textKey": "app.page.blog.figmaLoop.title"
+                                }
+                              },
+                              {
+                                "id": "blog-figma-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "How editable A1 JSON, the local bridge, and broader component coverage turn Figma handoff into a practical round trip.",
+                                  "textKey": "app.page.blog.figmaLoop.description"
+                                }
+                              },
+                              {
+                                "id": "blog-figma-action",
+                                "type": "Button",
+                                "props": {
+                                  "variant": "tertiary",
+                                  "href": "/?page=a1-web-blog-detail",
+                                  "icon": "arrow_forward",
+                                  "iconPosition": "end"
+                                },
+                                "content": {
+                                  "fallback": "Read article",
+                                  "textKey": "app.page.blog.readArticle"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "blog-tickets",
+                            "type": "Card",
+                            "children": [
+                              {
+                                "id": "blog-tickets-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h2",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Better tickets start with better questions",
+                                  "textKey": "app.page.blog.tickets.title"
+                                }
+                              },
+                              {
+                                "id": "blog-tickets-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "The development backlog brings Product Owner and engineering reviews together before Build with AI creates a plan.",
+                                  "textKey": "app.page.blog.tickets.description"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "blog-dispatch",
+                            "type": "Card",
+                            "children": [
+                              {
+                                "id": "blog-dispatch-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h2",
+                                  "size": "md"
+                                },
+                                "content": {
+                                  "fallback": "Dispatch gives A1 an editorial voice",
+                                  "textKey": "app.page.blog.dispatch.title"
+                                }
+                              },
+                              {
+                                "id": "blog-dispatch-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "A closer look at the typography and colour decisions behind the Dispatch theme.",
+                                  "textKey": "app.page.blog.dispatch.description"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a1-web-blog-detail",
+      "title": "A1 0.30.0 closes the Figma loop",
+      "icon": "description",
+      "parentId": "a1-web-blog",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-blog-detail",
+          "name": "A1 0.30.0 closes the Figma loop",
+          "description": "Editor-compatible blog detail page from A1 Web.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "detail-intro",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "detail-meta",
+                        "type": "MessageBadge",
+                        "props": {
+                          "status": "info"
+                        },
+                        "content": {
+                          "fallback": "Release newsletter · 0.30.0 · Jul 24, 2026",
+                          "textKey": "app.page.blog.figmaLoop.meta"
+                        }
+                      },
+                      {
+                        "id": "detail-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h1",
+                          "size": "xl"
+                        },
+                        "content": {
+                          "fallback": "A1 0.30.0 closes the Figma loop",
+                          "textKey": "app.page.blog.figmaLoop.title"
+                        }
+                      },
+                      {
+                        "id": "detail-subtitle",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "This release connects design assets, structured page definitions, configurators, and the editor so supported component work can travel in both directions.",
+                          "textKey": "app.page.blog.figmaLoop.subtitle"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "detail-round-trip",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "detail-round-trip-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "A working round trip",
+                          "textKey": "app.page.blog.figmaLoop.roundTrip.title"
+                        }
+                      },
+                      {
+                        "id": "detail-round-trip-copy",
+                        "type": "Paragraph",
+                        "props": {
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "Supported Figma instances export as A1 page-definition nodes. Their editable properties and content can be reviewed in A1 Web, and valid JSON can render back onto the Figma canvas or update the selected instance.",
+                          "textKey": "app.page.blog.figmaLoop.roundTrip.copy"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "detail-boundaries",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl",
+                      "surface": "panel"
+                    },
+                    "children": [
+                      {
+                        "id": "detail-boundaries-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "A handoff with visible boundaries",
+                          "textKey": "app.page.blog.figmaLoop.boundaries.title"
+                        }
+                      },
+                      {
+                        "id": "detail-boundaries-copy",
+                        "type": "Paragraph",
+                        "props": {
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "Runtime behavior such as event handlers, portal positioning, live data, keyboard interaction, and application logic remains owned by React and the host app.",
+                          "textKey": "app.page.blog.figmaLoop.boundaries.copy"
+                        }
+                      },
+                      {
+                        "id": "detail-banner",
+                        "type": "Banner",
+                        "props": {
+                          "status": "info",
+                          "title": "Review before shipping",
+                          "variant": "inline"
+                        },
+                        "content": {
+                          "fallback": "Visual decisions remain editable in design, structured decisions remain reviewable as JSON, and behavior stays with the runtime that can test it.",
+                          "textKey": "app.page.blog.figmaLoop.boundaries.banner"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a1-web-figma-plugin",
+      "title": "A1:Figma plugin",
+      "icon": "design_services",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-figma-plugin",
+          "name": "A1:Figma plugin",
+          "description": "Editor-compatible A1:Figma plugin foundation page.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "figma-intro",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "figma-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h1",
+                          "size": "xl"
+                        },
+                        "content": {
+                          "fallback": "A1:Figma plugin",
+                          "textKey": "app.foundation.figma.title"
+                        }
+                      },
+                      {
+                        "id": "figma-description",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "A practical bridge for building with A1 assets, checking design-system compatibility, and exchanging structured pages, patterns, and component data between Figma and the local A1 workspace.",
+                          "textKey": "app.foundation.figma.description"
+                        }
+                      },
+                      {
+                        "id": "figma-library",
+                        "type": "Button",
+                        "props": {
+                          "href": "https://www.figma.com/design/zFjqo3SwHbkXwtCOoQCVMA/A1-Design-System",
+                          "icon": "open_in_new",
+                          "iconPosition": "end"
+                        },
+                        "content": {
+                          "fallback": "Open the Figma library",
+                          "textKey": "app.foundation.figma.openLibrary"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "figma-modes",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "figma-modes-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "One workbench, five focused modes",
+                          "textKey": "app.foundation.figma.modes.title"
+                        }
+                      },
+                      {
+                        "id": "figma-modes-grid",
+                        "type": "Grid",
+                        "props": {
+                          "columns": {
+                            "xs": 1,
+                            "sm": 2,
+                            "lg": 3
+                          },
+                          "gap": "md"
+                        },
+                        "children": [
+                          {
+                            "id": "figma-build",
+                            "type": "Card",
+                            "props": {
+                              "icon": "construction"
+                            },
+                            "children": [
+                              {
+                                "id": "figma-build-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Build & Fix",
+                                  "textKey": "app.foundation.figma.build.title"
+                                }
+                              },
+                              {
+                                "id": "figma-build-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Add governed A1 assets, convert compatible selections, and apply focused repairs.",
+                                  "textKey": "app.foundation.figma.build.body"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "figma-audit",
+                            "type": "Card",
+                            "props": {
+                              "icon": "fact_check"
+                            },
+                            "children": [
+                              {
+                                "id": "figma-audit-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Audit",
+                                  "textKey": "app.foundation.figma.audit.title"
+                                }
+                              },
+                              {
+                                "id": "figma-audit-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Inspect a selection for A1 compatibility and create a visible design-system report.",
+                                  "textKey": "app.foundation.figma.audit.body"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "id": "figma-publish",
+                            "type": "Card",
+                            "props": {
+                              "icon": "publish"
+                            },
+                            "children": [
+                              {
+                                "id": "figma-publish-title",
+                                "type": "Heading",
+                                "props": {
+                                  "as": "h3",
+                                  "size": "sm"
+                                },
+                                "content": {
+                                  "fallback": "Publish",
+                                  "textKey": "app.foundation.figma.publish.title"
+                                }
+                              },
+                              {
+                                "id": "figma-publish-copy",
+                                "type": "Paragraph",
+                                "props": {
+                                  "size": "sm",
+                                  "color": "muted"
+                                },
+                                "content": {
+                                  "fallback": "Preview structured JSON and explicitly sync linked project pages.",
+                                  "textKey": "app.foundation.figma.publish.body"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "figma-boundaries",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl",
+                      "surface": "panel"
+                    },
+                    "children": [
+                      {
+                        "id": "figma-boundaries-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "Honest boundaries",
+                          "textKey": "app.foundation.figma.boundaries.title"
+                        }
+                      },
+                      {
+                        "id": "figma-boundaries-copy",
+                        "type": "Paragraph",
+                        "props": {
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "The plugin preserves the parts Figma can represent and names the parts that must stay with production code.",
+                          "textKey": "app.foundation.figma.boundaries.description"
+                        }
+                      },
+                      {
+                        "id": "figma-boundaries-banner",
+                        "type": "Banner",
+                        "props": {
+                          "status": "info",
+                          "title": "Local by design",
+                          "variant": "inline"
+                        },
+                        "content": {
+                          "fallback": "Playground handoffs and linked-page sync use the localhost bridge. Queues are held in memory and the plugin is opened manually.",
+                          "textKey": "app.foundation.figma.boundaries.banner"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a1-web-buttons",
+      "title": "Button components",
+      "icon": "smart_button",
+      "definition": {
+        "schemaVersion": "1.0.0",
+        "page": {
+          "id": "a1-web-buttons",
+          "name": "Button components",
+          "description": "Editor-compatible Button components page from A1 Web.",
+          "layout": {
+            "type": "PageLayout",
+            "regions": [
+              {
+                "id": "main",
+                "name": "Main",
+                "nodes": [
+                  {
+                    "id": "button-intro",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "button-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h1",
+                          "size": "xl"
+                        },
+                        "content": {
+                          "fallback": "Button",
+                          "textKey": "app.component.button.title"
+                        }
+                      },
+                      {
+                        "id": "button-description",
+                        "type": "Paragraph",
+                        "props": {
+                          "size": "lg",
+                          "color": "muted"
+                        },
+                        "content": {
+                          "fallback": "Buttons trigger actions, submit forms, and navigate people through a task. Choose one clear primary action per decision area.",
+                          "textKey": "app.component.button.description"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "button-variants",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl"
+                    },
+                    "children": [
+                      {
+                        "id": "button-variants-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "Variants",
+                          "textKey": "app.component.button.variants.title"
+                        }
+                      },
+                      {
+                        "id": "button-actions",
+                        "type": "ButtonContainer",
+                        "props": {
+                          "align": "start"
+                        },
+                        "children": [
+                          {
+                            "id": "button-primary",
+                            "type": "Button",
+                            "content": {
+                              "fallback": "Save changes",
+                              "textKey": "app.component.button.primary.example"
+                            }
+                          },
+                          {
+                            "id": "button-secondary",
+                            "type": "Button",
+                            "props": {
+                              "variant": "secondary"
+                            },
+                            "content": {
+                              "fallback": "Preview",
+                              "textKey": "app.component.button.secondary.example"
+                            }
+                          },
+                          {
+                            "id": "button-tertiary",
+                            "type": "Button",
+                            "props": {
+                              "variant": "tertiary"
+                            },
+                            "content": {
+                              "fallback": "Learn more",
+                              "textKey": "app.component.button.tertiary.example"
+                            }
+                          },
+                          {
+                            "id": "button-success",
+                            "type": "Button",
+                            "props": {
+                              "variant": "success",
+                              "icon": "check"
+                            },
+                            "content": {
+                              "fallback": "Confirm",
+                              "textKey": "app.component.button.success.example"
+                            }
+                          },
+                          {
+                            "id": "button-destructive",
+                            "type": "Button",
+                            "props": {
+                              "variant": "destructive",
+                              "icon": "delete"
+                            },
+                            "content": {
+                              "fallback": "Delete",
+                              "textKey": "app.component.button.destructive.example"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "button-guidance",
+                    "type": "Section",
+                    "props": {
+                      "padding": "md",
+                      "contentWidth": "xl",
+                      "surface": "panel"
+                    },
+                    "children": [
+                      {
+                        "id": "button-guidance-title",
+                        "type": "Heading",
+                        "props": {
+                          "as": "h2",
+                          "size": "lg"
+                        },
+                        "content": {
+                          "fallback": "Usage guidance",
+                          "textKey": "app.component.button.guidance.title"
+                        }
+                      },
+                      {
+                        "id": "button-guidance-banner",
+                        "type": "Banner",
+                        "props": {
+                          "status": "info",
+                          "title": "Keep labels specific",
+                          "variant": "inline"
+                        },
+                        "content": {
+                          "fallback": "Begin with a verb that describes the outcome, such as “Save changes” or “Add to project.” Avoid generic labels when the destination or result can be named.",
+                          "textKey": "app.component.button.guidance.banner"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -5,13 +5,19 @@ import {
   collectAuthoredBreakpoints,
   compactBreakpointVisibility,
   formatResponsiveGridColumns,
+  formatResponsiveTextSizes,
   normalizeResponsiveColumns,
+  normalizeResponsiveTextSizes,
   parseResponsiveGridColumnsName,
+  parseResponsiveTextSizesName,
   responsiveColumnsAt,
   responsiveGridItemSpanAt,
   responsiveGridName,
+  responsiveTextName,
+  responsiveTextSizeAt,
   resolveBreakpointVisibility,
   stripResponsiveGridColumnsName,
+  stripResponsiveTextSizesName,
 } from '../src/pure/breakpoints.js';
 
 test('normalizes responsive Grid columns to positive integer breakpoints', () => {
@@ -35,6 +41,18 @@ test('formats and parses responsive Grid name suffixes', () => {
   assert.deepEqual(parseResponsiveGridColumnsName('Product Grid - {xs:1, md:2, xl:4}'), { xs: 1, md: 2, xl: 4 });
   assert.equal(parseResponsiveGridColumnsName('Product Grid - {xs:nope}'), null);
   assert.equal(responsiveGridName('Product Grid - {xs:1}', { xs: 1, lg: 3 }), 'Product Grid - {xs:1, lg:3}');
+});
+
+test('formats, parses, and resolves responsive typography name suffixes', () => {
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
+  assert.deepEqual(normalizeResponsiveTextSizes({ xs: 'SM', md: 'lg', xl: 'nope' }, sizes), { xs: 'sm', md: 'lg' });
+  assert.equal(formatResponsiveTextSizes({ xs: 'sm', md: 'lg' }, sizes), '{xs:sm, md:lg}');
+  assert.deepEqual(parseResponsiveTextSizesName('Paragraph - {xs:sm, md:lg}', sizes), { xs: 'sm', md: 'lg' });
+  assert.equal(parseResponsiveTextSizesName('Paragraph - {xs:jumbo}', sizes), null);
+  assert.equal(stripResponsiveTextSizesName('Paragraph {xs:sm, md:lg}', sizes), 'Paragraph');
+  assert.equal(responsiveTextName('Paragraph - {xs:sm}', { xs: 'xs', lg: 'xl' }, sizes), 'Paragraph - {xs:xs, lg:xl}');
+  assert.equal(responsiveTextSizeAt({ xs: 'sm', md: 'lg' }, 'lg', sizes), 'lg');
+  assert.equal(responsiveTextSizeAt({ md: 'md' }, 'xs', sizes), 'md');
 });
 
 test('resolves responsive GridItem spans', () => {

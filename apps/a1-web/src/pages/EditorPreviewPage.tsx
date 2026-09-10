@@ -13,6 +13,7 @@ import {
 } from '../projects/projectStore';
 import { combinePageIntoLayout, definitionContainsNodeType } from '../projects/projectLayout';
 import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
+import { useT } from '../labels/useT.js';
 import type { PageDefinition } from '../editor/pageTypes';
 
 const SESSION_KEY = 'a1-editor-preview';
@@ -131,6 +132,7 @@ function urlForScreen(pageId: string, itemId?: string | null): string {
 }
 
 export function EditorPreviewPage() {
+  const t = useT();
   // styles.css sets body { overflow: hidden } for the main app's viewportHeight
   // PageLayout scroll model. In standalone mode there is no PageLayout, so we
   // need the document to scroll normally.
@@ -319,7 +321,7 @@ export function EditorPreviewPage() {
                 selectedId={screenId}
                 onSelect={(pageId) => navigateToScreen(pageId)}
                 defaultExpandedIds={tree.expandedIds}
-                aria-label="Project pages"
+                aria-label={t('app.editor.projectPagesNavigation', 'Project pages')}
               />
             </SideNav>
           )}

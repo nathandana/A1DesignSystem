@@ -100,8 +100,9 @@ not claim breakpoint-aware round-tripping.
 
 ## Current proof of concept
 
-The A1:Figma plugin has a narrow responsive Grid POC for `Grid.props.columns`.
-When JSON uses a sparse responsive object, such as
+The A1:Figma plugin currently supports responsive Grid columns and typography
+sizes for `Grid.props.columns`, `Heading.props.size`, and
+`Paragraph.props.size`. When JSON uses a sparse responsive object, such as
 `{ "xs": 1, "md": 2, "xl": 4 }`, **Render on canvas** detects the authored
 breakpoint keys — or the breakpoints selected in the plugin UI — and creates
 one separate Figma root for each key (`xs`, `md`, and `xl` in this example).
@@ -112,14 +113,21 @@ create breakpoint roots from an existing design, sync the primary root to the
 selected breakpoints, and export a responsive diff.
 
 Grid frames store the full responsive columns object in plugin metadata.
-Export responsive diff preserves that sparse object and writes changed Figma
-Grid column counts back to the matching active breakpoint keys. Direct child
-spans use the shared `GridItem` JSON wrapper (`props.span` / `props.rowSpan`);
-Figma exports native `gridColumnSpan` / `gridRowSpan` into that wrapper and
-imports scalar or sparse responsive span props into the active preview
-breakpoint. Unsupported visual/layout differences are reported as warnings
-instead of being serialized.
+Heading and Paragraph text layers likewise store their full responsive size
+map and expose it in the layer name, for example
+`Heading - {xs:sm, md:lg, xl:xxl}`. The selected-text controls can author or
+clear each breakpoint value, while the ordinary Size control changes the
+active preview's value. Creating or syncing breakpoint roots applies the
+resolved A1 text style at each width.
+
+Export responsive diff preserves these maps and writes changed Figma Grid
+column counts and Heading/Paragraph sizes back to the matching active
+breakpoint keys. Direct child spans use the shared `GridItem` JSON wrapper
+(`props.span` / `props.rowSpan`); Figma exports native `gridColumnSpan` /
+`gridRowSpan` into that wrapper and imports scalar or sparse responsive span
+props into the active preview breakpoint. Unsupported visual/layout
+differences are reported as warnings instead of being serialized.
 
 This is intentionally not the full multi-root breakpoint sync. It proves the
-property-level contract for responsive columns while keeping the current
+property-level contract for responsive columns and typography while keeping the current
 single-layout bridge honest.

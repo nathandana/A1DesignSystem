@@ -282,6 +282,13 @@
     align-items: start;
   }
 
+  .responsive-text-sizes .responsive-grid-field {
+    display: grid;
+    grid-template-columns: var(--a1-context-label-width, var(--base-spacing-64)) minmax(0, 1fr);
+    gap: var(--semantic-spacing-gap-xs);
+    align-items: start;
+  }
+
   .choice-group-grid-config .responsive-grid-field {
     display: grid;
     grid-template-columns: var(--a1-context-label-width, var(--base-spacing-64)) minmax(0, 1fr);
@@ -988,6 +995,16 @@
                 <div id="text-control-width-label" class="context-field-label">Fill</div>
                 <div id="text-control-width" class="context-toolbar" aria-labelledby="text-control-width-label"></div>
               </div>
+              <div id="text-responsive-sizes-field" class="context-field context-field-full">
+                <div class="context-field-label">Breakpoint sizes</div>
+                <div class="responsive-grid-panel responsive-text-sizes" aria-label="Responsive text sizes">
+                  <div class="responsive-grid-field"><div id="text-size-xs-label" class="context-field-label">xs</div><div class="responsive-text-size context-toolbar" data-breakpoint="xs" aria-labelledby="text-size-xs-label"></div></div>
+                  <div class="responsive-grid-field"><div id="text-size-sm-label" class="context-field-label">sm</div><div class="responsive-text-size context-toolbar" data-breakpoint="sm" aria-labelledby="text-size-sm-label"></div></div>
+                  <div class="responsive-grid-field"><div id="text-size-md-label" class="context-field-label">md</div><div class="responsive-text-size context-toolbar" data-breakpoint="md" aria-labelledby="text-size-md-label"></div></div>
+                  <div class="responsive-grid-field"><div id="text-size-lg-label" class="context-field-label">lg</div><div class="responsive-text-size context-toolbar" data-breakpoint="lg" aria-labelledby="text-size-lg-label"></div></div>
+                  <div class="responsive-grid-field"><div id="text-size-xl-label" class="context-field-label">xl</div><div class="responsive-text-size context-toolbar" data-breakpoint="xl" aria-labelledby="text-size-xl-label"></div></div>
+                </div>
+              </div>
             </div>
           </section>
           <section id="button-context-panel" class="panel-card panel-card-muted" hidden>
@@ -1555,6 +1572,7 @@
     'grid',
     'heading',
     'link',
+    'list',
     'page-layout',
     'page-nav',
     'pagination',
@@ -1601,6 +1619,7 @@
         { target: 'icon', label: 'Icon' },
         { target: 'inline', label: 'Inline' },
         { target: 'link', label: 'Link' },
+        { target: 'list', label: 'List' },
       ],
     },
     {
@@ -1762,6 +1781,8 @@
   const textControlWeight = document.getElementById('text-control-weight');
   const textControlWeightField = document.getElementById('text-control-weight-field');
   const textControlWidth = document.getElementById('text-control-width');
+  const textResponsiveSizesField = document.getElementById('text-responsive-sizes-field');
+  const responsiveTextSizes = Array.from(document.querySelectorAll('.responsive-text-size'));
   const buttonContextPanel = document.getElementById('button-context-panel');
   const buttonContextSummary = document.getElementById('button-context-summary');
   const buttonControlLabel = document.getElementById('button-control-label');
@@ -2442,6 +2463,17 @@
       { body: 'Body', heading: 'Heading', display: 'Display', link: 'Link' }
     );
     renderToolbarOptions(textControlSize, 'text-control-size', context.sizeOptions || [], context.size);
+    const responsiveValues = context.responsiveSizes && typeof context.responsiveSizes === 'object' ? context.responsiveSizes : {};
+    responsiveTextSizes.forEach((group) => {
+      renderToolbarOptions(
+        group,
+        `text-size-${group.dataset.breakpoint || 'breakpoint'}`,
+        ['', ...(context.sizeOptions || [])],
+        responsiveValues[group.dataset.breakpoint] || '',
+        { '': '--' }
+      );
+    });
+    if (textResponsiveSizesField) textResponsiveSizesField.hidden = context.family === 'link';
     renderToolbarOptions(textControlColor, 'text-control-color', context.colorOptions || [], context.color);
     renderToolbarOptions(textControlWeight, 'text-control-weight', context.weightOptions || [], context.weight);
     renderFillSizingControl(
@@ -2468,6 +2500,9 @@
         type: 'set-text-props',
         family: checkedRadioValue(textControlType),
         size: checkedRadioValue(textControlSize),
+        responsiveSizes: Object.fromEntries(responsiveTextSizes
+          .map((group) => [group.dataset.breakpoint, checkedRadioValue(group)])
+          .filter((entry) => entry[0] && entry[1])),
         color: checkedRadioValue(textControlColor),
         weight: checkedRadioValue(textControlWeight),
         widthMode: modes.widthMode,
@@ -4377,7 +4412,7 @@
     setStatus('', 'Applying the suggested A1 text fix…');
     parent.postMessage({ pluginMessage: { type: 'fix-text' } }, '*');
   };
-  [textControlType, textControlSize, textControlColor, textControlWeight, textControlWidth].forEach((control) => {
+  [textControlType, textControlSize, textControlColor, textControlWeight, textControlWidth, ...responsiveTextSizes].forEach((control) => {
     if (control) control.onchange = applyTextControlsFromUi;
   });
   [

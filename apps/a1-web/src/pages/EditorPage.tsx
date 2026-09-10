@@ -16,9 +16,11 @@ import {
   Code,
   IconButton,
   MessageBadge,
+  PageLayout,
   Paragraph,
   Section,
   SelectField,
+  SideNav,
   Snackbar,
   Stack,
   Toolbar,
@@ -27,10 +29,11 @@ import {
   ToolbarGroup,
   ToolbarMenu,
   TopHeader,
+  TreeMenu,
 } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
 import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
-import { buildProjectNav, type ProjectNavItem } from '../projects/projectNav';
+import { buildProjectNav, buildProjectTree, type ProjectNavItem } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
@@ -39,6 +42,9 @@ import { EditorShortcutsDialog } from '../editor/EditorShortcutsDialog.jsx';
 import { ScreenReaderReportDialog } from '../editor/ScreenReaderReportDialog.jsx';
 import { ContrastCheckDialog } from '../editor/ContrastCheckDialog.jsx';
 import { useT } from '../labels/useT.js';
+import { buildLabelsObject, buildProjectLabelsObject, deepMergeLabels, getLabels } from '../labels/labelStore.js';
+import { SYSTEM_LABELS, resolveLabel } from '../labels/systemLabels.js';
+import { materializeResolvedLabelContent } from '../editor/contentText.js';
 import { useEditorHistory } from '../editor/useEditorHistory';
 import { useOpenCreateTicket } from '../backlog/BacklogContext';
 import { isMac } from '../editor/shortcuts.ts';
@@ -464,6 +470,32 @@ function wrapDefinitionNodeInStack(def: PageDefinition, nodeId: string): PageDef
   };
 }
 
+function wrapSiblingNodesInStack(nodes: ComponentNode[], nodeIds: Set<string>): ComponentNode[] | null {
+  const selected = nodes.filter((node) => nodeIds.has(node.id));
+  if (selected.length === nodeIds.size) {
+    const firstIndex = nodes.findIndex((node) => nodeIds.has(node.id));
+    const wrapper: ComponentNode = {
+      id: freshId(),
+      type: 'Stack' as ComponentType,
+      props: { direction: 'column', gap: 'md' },
+      children: selected,
+    };
+    const result: ComponentNode[] = [];
+    nodes.forEach((node, index) => {
+      if (index === firstIndex) result.push(wrapper);
+      if (!nodeIds.has(node.id)) result.push(node);
+    });
+    return result;
+  }
+  for (let index = 0; index < nodes.length; index++) {
+    const node = nodes[index];
+    if (!node.children?.length) continue;
+    const children = wrapSiblingNodesInStack(node.children, nodeIds);
+    if (children) return [...nodes.slice(0, index), { ...node, children }, ...nodes.slice(index + 1)];
+  }
+  return null;
+}
+
 function removeNodeFromList(nodes: ComponentNode[], id: string): ComponentNode[] {
   return nodes
     .filter((n) => n.id !== id)
@@ -656,10 +688,12 @@ export function EditorPage({
   projectId = null,
   projectName,
   projectTheme,
+  projectNavStyle,
   colorMode = 'system',
   resolvedColorScheme = 'light',
   projectPages = [],
   onNavigateToPage,
+  onBackToProjectOverview,
   composeWithAi = false,
   onAiComposeConsumed,
   pageLevel,
@@ -668,6 +702,7 @@ export function EditorPage({
   onDuplicatePage,
   onDeletePage,
   selectedNodeId = null,
+  selectedNodeIds = [],
   onSelectNode,
   onViewChange,
   onDirtyChange,
@@ -699,10 +734,13 @@ export function EditorPage({
   projectId?: string | null;
   projectName?: string;
   projectTheme?: string;
+  projectNavStyle?: 'header' | 'sidebar';
   colorMode?: string;
   resolvedColorScheme?: string;
   projectPages?: ProjectPage[];
   onNavigateToPage?: (id: string) => void;
+  /** Return from an open project page to its project overview. */
+  onBackToProjectOverview?: () => void;
   composeWithAi?: boolean;
   onAiComposeConsumed?: () => void;
   pageLevel?: number;
@@ -711,6 +749,7 @@ export function EditorPage({
   onDuplicatePage?: () => void;
   onDeletePage?: () => void;
   selectedNodeId?: string | null;
+  selectedNodeIds?: string[];
   onSelectNode?: (id: string | null) => void;
   onViewChange?: (view: string) => void;
   onDirtyChange?: (isDirty: boolean) => void;
@@ -720,7 +759,7 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string } | { type: 'rename'; nodeId: string; name: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string; nodeIds?: string[] } | { type: 'rename'; nodeId: string; name: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
@@ -736,6 +775,7 @@ export function EditorPage({
   // enforce them), and hide page/project-only chrome.
   const isPattern = documentKind === 'pattern';
   const isLayout = documentKind === 'layout';
+  const canReturnToProjectOverview = documentKind === 'page' && !!projectId && !!onBackToProjectOverview;
   const openTicket = useOpenCreateTicket();
 
   // Use any legacy draft as the fallback so existing unsaved work is preserved.
@@ -837,35 +877,62 @@ export function EditorPage({
       if (registering) return;
       registering = true;
       try {
+        const workspaceLabels = buildLabelsObject(getLabels().items);
+        const locale = localStorage.getItem('a1-web-locale');
         const workspace = {
-          projects: await Promise.all(loadProjects().map(async (project) => ({
-            id: project.id,
-            name: project.name,
-            pages: await Promise.all(loadPages(project.id).map(async (page) => {
-              // Every page gets a stable local link as soon as it is exposed to
-              // the Figma Page Editor. That lets Figma pull a selected page
-              // immediately and still send edits back through the same identity.
-              const link = getFigmaPageLink(project.id, page.id)
-                ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
-              const json = resolvePageJson(page.id) ?? '';
-              const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : [];
-              return {
-                id: page.id,
-                title: page.title,
-                json,
-                assets,
-                link: link ? {
-                  linkId: link.id,
-                  projectId: project.id,
-                  pageId: page.id,
-                  mode: link.mode,
-                  figmaFileKey: link.figmaFileKey,
-                  figmaPageId: link.figmaPageId,
-                  figmaRootNodeId: link.figmaRootNodeId,
-                } : null,
-              };
-            })),
-          }))),
+          projects: await Promise.all(loadProjects().map(async (project) => {
+            const projectLabels = project.labelOverrides
+              ? buildProjectLabelsObject(project.labelOverrides)
+              : { label: {} };
+            const labels = {
+              label: deepMergeLabels(SYSTEM_LABELS.label, workspaceLabels.label, projectLabels.label),
+            };
+            const resolveProjectText = (key: string, fallback?: string) => resolveLabel(
+              labels,
+              locale && locale !== 'en' ? locale : null,
+              key,
+              fallback,
+            );
+            return {
+              id: project.id,
+              name: project.name,
+              pages: await Promise.all(loadPages(project.id).map(async (page) => {
+                // Every page gets a stable local link as soon as it is exposed to
+                // the Figma Page Editor. That lets Figma pull a selected page
+                // immediately and still send edits back through the same identity.
+                const link = getFigmaPageLink(project.id, page.id)
+                  ?? saveFigmaPageLink(project.id, { pageId: page.id, mode: 'manual' });
+                const pageJson = resolvePageJson(page.id) ?? '';
+                let json = pageJson;
+                try {
+                  json = JSON.stringify(
+                    materializeResolvedLabelContent(JSON.parse(pageJson), resolveProjectText),
+                    null,
+                    2,
+                  );
+                } catch {
+                  // Keep malformed legacy JSON available for the editor's own
+                  // validation instead of hiding the page from the bridge.
+                }
+                const assets = json ? await collectFigmaFigureAssets(json).catch(() => []) : [];
+                return {
+                  id: page.id,
+                  title: page.title,
+                  json,
+                  assets,
+                  link: link ? {
+                    linkId: link.id,
+                    projectId: project.id,
+                    pageId: page.id,
+                    mode: link.mode,
+                    figmaFileKey: link.figmaFileKey,
+                    figmaPageId: link.figmaPageId,
+                    figmaRootNodeId: link.figmaRootNodeId,
+                  } : null,
+                };
+              })),
+            };
+          })),
         };
         await registerFigmaWorkspace(workspace);
       } catch {
@@ -923,8 +990,9 @@ export function EditorPage({
       const existing = getFigmaPageLink(projectId, exampleId);
       const link = existing ?? saveFigmaPageLink(projectId, { pageId: exampleId, mode: 'manual' });
       if (!link) throw new Error('This project page could not be linked.');
-      const json = JSON.stringify(parsedDefinition.value, null, 2);
-      const assets = await collectFigmaFigureAssets(parsedDefinition.value);
+      const handoffDefinition = materializeResolvedLabelContent(parsedDefinition.value, t);
+      const json = JSON.stringify(handoffDefinition, null, 2);
+      const assets = await collectFigmaFigureAssets(handoffDefinition);
       await queueFigmaPageSync({
         link: {
           linkId: link.id,
@@ -1187,7 +1255,7 @@ export function EditorPage({
     if (pendingAction.type === 'delete') handleNodeDelete(pendingAction.nodeId);
     else if (pendingAction.type === 'ungroup') handleUngroup(pendingAction.nodeId);
     else if (pendingAction.type === 'duplicate') handleDuplicateNode(pendingAction.nodeId);
-    else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeId);
+    else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeIds ?? pendingAction.nodeId);
     else if (pendingAction.type === 'copy-pattern') handleCopyPattern(pendingAction.nodeId);
     else if (pendingAction.type === 'paste-pattern') handlePastePattern(pendingAction.nodeId);
     else if (pendingAction.type === 'detach') handleDetachPattern(pendingAction.nodeId);
@@ -1397,34 +1465,44 @@ export function EditorPage({
   }
 
   function handleNodePropsChange(
-    nodeId: string,
+    nodeId: string | string[],
     newProps: ComponentProps,
     newContentFallback?: string,
     newContentTextKey?: string | null,
+    changedPropKeys?: string[],
   ) {
     if (!parsedDefinition.ok) return;
-    const lock = getNodeLock(nodeId);
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId];
     // A structural lock (lock.node) doesn't lock config: unlocked props/text stay
     // editable; locked props are reverted below and locked text is skipped.
 
-    let props = newProps;
-    // Locked props are read-only: restore their current values so any change reverts.
-    if (lock?.props?.length) {
-      const current = getNodeProps(nodeId) ?? {};
-      props = { ...newProps };
-      for (const key of lock.props) {
+    let patched = parsedDefinition.value;
+    for (const id of nodeIds) {
+      const lock = getNodeLock(id);
+      const current = getNodeProps(id) ?? {};
+      // Multi-edit applies only the keys changed in the configurator. This keeps
+      // each selected node's unrelated properties intact.
+      const props = changedPropKeys
+        ? { ...current }
+        : { ...newProps };
+      for (const key of changedPropKeys ?? []) {
+        if (key in newProps) props[key] = newProps[key];
+        else delete props[key];
+      }
+      // Locked props are read-only: restore their current values so any change reverts.
+      for (const key of lock?.props ?? []) {
         if (key in current) props[key] = current[key];
         else delete props[key];
       }
-    }
-    let patched = patchDefinitionProps(parsedDefinition.value, nodeId, props);
-    if (newContentTextKey !== undefined && !lock?.content) {
-      patched = patchDefinitionContentKey(patched, nodeId, newContentTextKey, newContentFallback);
-    } else if (newContentFallback !== undefined && !lock?.content) {
-      patched = patchDefinitionContent(patched, nodeId, newContentFallback);
+      patched = patchDefinitionProps(patched, id, props);
+      if (newContentTextKey !== undefined && !getNodeLock(id)?.content) {
+        patched = patchDefinitionContentKey(patched, id, newContentTextKey, newContentFallback);
+      } else if (newContentFallback !== undefined && !getNodeLock(id)?.content) {
+        patched = patchDefinitionContent(patched, id, newContentFallback);
+      }
     }
     const newJson = JSON.stringify(patched, null, 2);
-    history.commitProp(newJson, `Edited ${getNodeType(nodeId)}`);
+    history.commitProp(newJson, `Edited ${nodeIds.length > 1 ? `${nodeIds.length} ${getNodeType(nodeIds[0])} elements` : getNodeType(nodeIds[0])}`);
   }
 
   function handleNodeDelete(nodeId: string) {
@@ -1625,12 +1703,28 @@ export function EditorPage({
     history.commit(JSON.stringify(newDef, null, 2), visibility ? `Updated ${getNodeType(nodeId)} breakpoint visibility` : `Reset ${getNodeType(nodeId)} breakpoint visibility`);
   }
 
-  function handleGroupAsStack(nodeId: string) {
+  function handleGroupAsStack(nodeId: string | string[]) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
-    const nodeType = getNodeType(nodeId);
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId];
+    if (nodeIds.some((id) => getNodeLock(id)?.node && !isPatternInstanceRoot(id))) { notifyLocked(); return; }
+    const nodeType = getNodeType(nodeIds[0]);
+    if (nodeIds.length > 1) {
+      const ids = new Set(nodeIds);
+      let grouped = false;
+      const regions = parsedDefinition.value.page.layout.regions.map((region) => {
+        if (grouped) return region;
+        const nodes = wrapSiblingNodesInStack(region.nodes, ids);
+        if (!nodes) return region;
+        grouped = true;
+        return { ...region, nodes };
+      });
+      if (!grouped) { setNotice('Select sibling elements to group them as a Stack'); return; }
+      const newDef = { ...parsedDefinition.value, page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions } } };
+      history.commit(JSON.stringify(newDef, null, 2), `Grouped ${nodeIds.length} elements as Stack`);
+      return;
+    }
     if (nodeType === 'Stack') return;
-    const newDef = wrapDefinitionNodeInStack(parsedDefinition.value, nodeId);
+    const newDef = wrapDefinitionNodeInStack(parsedDefinition.value, nodeIds[0]);
     history.commit(JSON.stringify(newDef, null, 2), `Grouped ${nodeType} as Stack`);
   }
 
@@ -1952,6 +2046,15 @@ export function EditorPage({
     : [];
   const projectHomeHref = projectId ? `/editor?project=${encodeURIComponent(projectId)}` : '/editor';
 
+  // Sidebar navigation is project chrome for content pages only. It deliberately
+  // replaces generated and shared header chrome so this canvas matches the
+  // published prototype; editor controls remain in the workspace toolbar above.
+  const useSidebarNav = documentKind === 'page' && projectNavStyle === 'sidebar' && projectPages.length > 0;
+  const projectTree = useMemo(
+    () => (useSidebarNav ? buildProjectTree(projectPages, exampleId) : null),
+    [useSidebarNav, projectPages, exampleId],
+  );
+
   const generatedHeader = projectNavItems.length ? (
     <TopHeader
       className="a1-web-generated-header"
@@ -1969,28 +2072,28 @@ export function EditorPage({
     try { return JSON.parse(loadProjectLayout(projectId)) as PageDefinition; } catch { return null; }
   }, [documentKind, projectId]);
   const sharedLayoutHasTopHeader = definitionContainsNodeType(sharedLayoutDef, 'TopHeader');
-  const shouldRenderGeneratedHeader = projectNavItems.length > 0 && (!sharedLayoutDef || !sharedLayoutHasTopHeader);
+  const shouldRenderGeneratedHeader = !useSidebarNav && projectNavItems.length > 0 && (!sharedLayoutDef || !sharedLayoutHasTopHeader);
 
   const layoutChrome = useMemo(
-    () => (sharedLayoutDef
+    () => (!useSidebarNav && sharedLayoutDef
       ? splitLayoutAtOutlet(sharedLayoutDef, {
           navItems: projectNavItems,
           logoFallback: projectName ?? '',
           logoHref: projectHomeHref,
         })
       : null),
-    [sharedLayoutDef, projectNavItems, projectName, projectHomeHref],
+    [useSidebarNav, sharedLayoutDef, projectNavItems, projectName, projectHomeHref],
   );
 
   const composedPreviewDef = useMemo(
-    () => (sharedLayoutDef && parsedDefinition.ok
+    () => (!useSidebarNav && sharedLayoutDef && parsedDefinition.ok
       ? combinePageIntoLayout(sharedLayoutDef, parsedDefinition.value, {
           navItems: projectNavItems,
           logoFallback: projectName ?? '',
           logoHref: projectHomeHref,
         })
       : null),
-    [sharedLayoutDef, parsedDefinition, projectNavItems, projectName, projectHomeHref],
+    [useSidebarNav, sharedLayoutDef, parsedDefinition, projectNavItems, projectName, projectHomeHref],
   );
 
   // Only patterns available to the active project (unrestricted, or scoped to it).
@@ -2036,6 +2139,7 @@ export function EditorPage({
     ? createPortal(
         <EditorAsidePanel
           selectedNodeId={selectedNodeId}
+          selectedNodeIds={selectedNodeIds}
           definition={parsedDefinition.ok ? parsedDefinition.value : null}
           onApplyDefinition={(def: PageDefinition, label: string) =>
             history.commit(JSON.stringify(def, null, 2), label)}
@@ -2087,6 +2191,76 @@ export function EditorPage({
       )
     : null;
 
+  const projectSidebar = projectTree ? (
+    <SideNav header={projectName || 'Project'}>
+      <TreeMenu
+        items={projectTree.items}
+        selectedId={exampleId}
+        onSelect={(pageId) => onNavigateToPage?.(pageId)}
+        defaultExpandedIds={projectTree.expandedIds}
+        aria-label={t('app.editor.projectPagesNavigation', 'Project pages')}
+      />
+    </SideNav>
+  ) : null;
+
+  const editCanvas = parsedDefinition.ok ? (
+    <>
+      <div ref={canvasContainerRef}>
+        <RenderPageDefinition
+          definition={parsedDefinition.value}
+          enforceLocks={!isPattern}
+          activePatternRootId={activePatternRootId}
+          selectedNodeId={selectedNodeId}
+          onNodeSelect={onSelectNode}
+          onContentChange={handleContentChange}
+          onItemTextChange={handleItemTextChange}
+          activeItem={activeItem}
+          onItemSelect={handleItemSelect}
+          onNodeDelete={handleNodeDelete}
+          onMoveUp={handleMoveUp}
+          onMoveDown={handleMoveDown}
+          onUngroup={handleUngroup}
+          onDuplicateNode={handleDuplicateNode}
+          onGroupAsStack={handleGroupAsStack}
+          onConvertNode={handleConvertNode}
+          onCopyPattern={handleCopyPattern}
+          onPastePattern={handlePastePattern}
+          onChooseTextLabel={setLabelLookupNodeId}
+          getNodeProps={getNodeProps}
+          getNodeInfo={getNodeInfoFn}
+          onRequestAddChild={handleRequestAddChild}
+          onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+          onDetachPattern={handleDetachPattern}
+          onCreatePattern={handleCreatePatternFromNode}
+        />
+      </div>
+      <div
+        className="a1-web-canvas-floor"
+        onDragOver={(e) => {
+          if (e.dataTransfer.types.includes('a1-catalog-type')) {
+            e.preventDefault();
+            e.currentTarget.setAttribute('data-active', 'true');
+          }
+        }}
+        onDragLeave={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            e.currentTarget.removeAttribute('data-active');
+          }
+        }}
+        onDrop={(e) => {
+          const catalogType = e.dataTransfer.getData('a1-catalog-type');
+          if (!catalogType) return;
+          e.preventDefault();
+          e.currentTarget.removeAttribute('data-active');
+          handleCatalogDrop(catalogType, null, 'after');
+        }}
+      />
+      {layoutChrome?.after && (
+        <RenderPageDefinition definition={layoutChrome.after} onNavigate={(id) => onNavigateToPage?.(id)} />
+      )}
+    </>
+  ) : parseError;
+
   return (
     <>
       <Section padding="xs" surface="panel" borderSize="xs"
@@ -2108,6 +2282,13 @@ export function EditorPage({
               />
             )}
             <Toolbar aria-label="Editor" overflow overflowLabel="More tools">
+              {canReturnToProjectOverview && (
+                <ToolbarButton
+                  icon="arrow_back"
+                  label={t('app.editor.backToProjectOverview', 'Back to project overview')}
+                  onClick={onBackToProjectOverview}
+                />
+              )}
               <ToolbarGroup
                 aria-label="Editor view"
                 showLabels
@@ -2239,68 +2420,20 @@ export function EditorPage({
           colorMode={colorMode}
           resolvedColorScheme={resolvedColorScheme}
         >
-          {view === 'edit' && shouldRenderGeneratedHeader && generatedHeader}
-          {view === 'edit' && layoutChrome?.before && (
-            <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
-          )}
           {view === 'edit' && (
-            parsedDefinition.ok ? (
+            useSidebarNav && projectSidebar ? (
+              <PageLayout viewportHeight sidebar={projectSidebar}>
+                {editCanvas}
+              </PageLayout>
+            ) : (
               <>
-                <div ref={canvasContainerRef}>
-                  <RenderPageDefinition
-                    definition={parsedDefinition.value}
-                    enforceLocks={!isPattern}
-                    activePatternRootId={activePatternRootId}
-                    selectedNodeId={selectedNodeId}
-                    onNodeSelect={onSelectNode}
-                    onContentChange={handleContentChange}
-                    onItemTextChange={handleItemTextChange}
-                    activeItem={activeItem}
-                    onItemSelect={handleItemSelect}
-                    onNodeDelete={handleNodeDelete}
-                    onMoveUp={handleMoveUp}
-                    onMoveDown={handleMoveDown}
-                    onUngroup={handleUngroup}
-                    onDuplicateNode={handleDuplicateNode}
-                    onGroupAsStack={handleGroupAsStack}
-                    onConvertNode={handleConvertNode}
-                    onCopyPattern={handleCopyPattern}
-                    onPastePattern={handlePastePattern}
-                    onChooseTextLabel={setLabelLookupNodeId}
-                    getNodeProps={getNodeProps}
-                    getNodeInfo={getNodeInfoFn}
-                    onRequestAddChild={handleRequestAddChild}
-                    onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
-                    onDetachPattern={handleDetachPattern}
-                    onCreatePattern={handleCreatePatternFromNode}
-                  />
-                </div>
-                <div
-                  className="a1-web-canvas-floor"
-                  onDragOver={(e) => {
-                    if (e.dataTransfer.types.includes('a1-catalog-type')) {
-                      e.preventDefault();
-                      e.currentTarget.setAttribute('data-active', 'true');
-                    }
-                  }}
-                  onDragLeave={(e) => {
-                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                      e.currentTarget.removeAttribute('data-active');
-                    }
-                  }}
-                  onDrop={(e) => {
-                    const catalogType = e.dataTransfer.getData('a1-catalog-type');
-                    if (!catalogType) return;
-                    e.preventDefault();
-                    e.currentTarget.removeAttribute('data-active');
-                    handleCatalogDrop(catalogType, null, 'after');
-                  }}
-                />
-                {layoutChrome?.after && (
-                  <RenderPageDefinition definition={layoutChrome.after} onNavigate={(id) => onNavigateToPage?.(id)} />
+                {shouldRenderGeneratedHeader && generatedHeader}
+                {layoutChrome?.before && (
+                  <RenderPageDefinition definition={layoutChrome.before} onNavigate={(id) => onNavigateToPage?.(id)} />
                 )}
+                {editCanvas}
               </>
-            ) : parseError
+            )
           )}
         </ProjectThemeScope>
 
@@ -2312,7 +2445,11 @@ export function EditorPage({
                 colorMode={colorMode}
                 resolvedColorScheme={resolvedColorScheme}
               >
-                {composedPreviewDef
+                {useSidebarNav && projectSidebar ? (
+                  <PageLayout viewportHeight sidebar={projectSidebar}>
+                    <RenderPageDefinition definition={parsedDefinition.value} onNavigate={(id) => onNavigateToPage?.(id)} />
+                  </PageLayout>
+                ) : composedPreviewDef
                   ? (
                     <>
                       {shouldRenderGeneratedHeader && generatedHeader}

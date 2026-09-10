@@ -56,9 +56,18 @@ test('derives page titles from linked and plain Figma frame names', () => {
   assert.equal(pageTitleFromFigmaFrame(''), 'Untitled');
 });
 
-test('preserves a PageLayout export and wraps frame bundles in a PageLayout', () => {
-  const pageLayout = { id: 'layout', type: 'PageLayout', children: [{ id: 'heading', type: 'Heading' }] };
-  assert.equal(pageLayoutForPageExport(pageLayout), pageLayout);
+test('normalizes PageLayout component exports and wraps frame bundles in a PageLayout', () => {
+  const pageLayout = {
+    id: 'layout',
+    type: 'PageLayout',
+    props: { showHeader: false },
+    children: [{ id: 'heading', type: 'Heading' }],
+  };
+  assert.deepEqual(pageLayoutForPageExport(pageLayout), {
+    type: 'PageLayout',
+    props: { showHeader: false },
+    regions: [{ id: 'main', name: 'Main', nodes: [{ id: 'heading', type: 'Heading' }] }],
+  });
   assert.deepEqual(pageLayoutForPageExport({ nodes: [{ id: 'heading', type: 'Heading' }] }), {
     type: 'PageLayout',
     regions: [{ id: 'main', name: 'Main', nodes: [{ id: 'heading', type: 'Heading' }] }],

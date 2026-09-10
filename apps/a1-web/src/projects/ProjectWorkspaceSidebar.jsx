@@ -28,7 +28,9 @@ export function ProjectWorkspaceSidebar({
   // Layers tab
   definition,
   selectedNodeId,
+  selectedNodeIds,
   onSelectNode,
+  onSelectionChange,
   onNodeMove,
   onRequestAdd,
   onNodeAction,
@@ -117,7 +119,9 @@ export function ProjectWorkspaceSidebar({
         <ComponentTreePanel
           definition={hasOpenPage ? definition : null}
           selectedNodeId={selectedNodeId}
+          selectedNodeIds={selectedNodeIds}
           onSelectNode={onSelectNode}
+          onSelectionChange={onSelectionChange}
           onNodeMove={onNodeMove}
           onRequestAdd={onRequestAdd}
           onNodeAction={onNodeAction}

@@ -92,6 +92,63 @@ function responsiveColumnsAt(value, breakpoint) {
   return null;
 }
 
+function normalizeResponsiveTextSizes(value, allowedSizes) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || !Array.isArray(allowedSizes)) return null;
+  const allowed = new Set(allowedSizes.map((size) => String(size).toLowerCase()));
+  const out = {};
+  for (const key of A1_BREAKPOINTS) {
+    const size = typeof value[key] === 'string' ? value[key].toLowerCase() : '';
+    if (allowed.has(size)) out[key] = size;
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+function formatResponsiveTextSizes(value, allowedSizes) {
+  const sizes = normalizeResponsiveTextSizes(value, allowedSizes);
+  if (!sizes) return '';
+  return `{${A1_BREAKPOINTS
+    .filter((breakpoint) => sizes[breakpoint])
+    .map((breakpoint) => `${breakpoint}:${sizes[breakpoint]}`)
+    .join(', ')}}`;
+}
+
+function parseResponsiveTextSizesName(name, allowedSizes) {
+  const match = String(name || '').match(/\{\s*([^{}]+)\s*\}\s*$/);
+  if (!match) return null;
+  const sizes = {};
+  for (const part of match[1].split(',')) {
+    const pair = part.trim().match(/^['"]?(xs|sm|md|lg|xl)['"]?\s*:\s*['"]?([a-z][a-z0-9]*)['"]?$/i);
+    if (!pair) return null;
+    sizes[pair[1].toLowerCase()] = pair[2].toLowerCase();
+  }
+  return normalizeResponsiveTextSizes(sizes, allowedSizes);
+}
+
+function stripResponsiveTextSizesName(name, allowedSizes) {
+  const source = String(name || 'Text');
+  if (!parseResponsiveTextSizesName(source, allowedSizes)) return source.trim() || 'Text';
+  return source.replace(/\s*(?:[-–—]\s*)?\{\s*[^{}]+\s*\}\s*$/, '').trim() || 'Text';
+}
+
+function responsiveTextName(baseName, value, allowedSizes) {
+  const suffix = formatResponsiveTextSizes(value, allowedSizes);
+  const base = stripResponsiveTextSizesName(baseName, allowedSizes);
+  return suffix ? `${base} - ${suffix}` : base;
+}
+
+function responsiveTextSizeAt(value, breakpoint, allowedSizes) {
+  const sizes = normalizeResponsiveTextSizes(value, allowedSizes);
+  if (!sizes) return null;
+  const targetIndex = Math.max(0, A1_BREAKPOINTS.indexOf(breakpoint));
+  let inherited = null;
+  for (let index = 0; index <= targetIndex; index += 1) {
+    const size = sizes[A1_BREAKPOINTS[index]];
+    if (size) inherited = size;
+  }
+  if (inherited) return inherited;
+  return A1_BREAKPOINTS.map((key) => sizes[key]).find(Boolean) || null;
+}
+
 function responsiveGridItemSpanAt(value, breakpoint, fullSpan = null) {
   const normalize = (candidate) => {
     if (candidate === 'full') return Number.isInteger(fullSpan) && fullSpan > 0 ? fullSpan : null;
@@ -521,6 +578,13 @@ function base64ToBytes(value) {
   return bytes;
 }
 
+const BUTTON_CONTAINER_QUERY_WIDTH = 480;
+
+function buttonContainerDirectionAtWidth(width) {
+  const value = Number(width);
+  return Number.isFinite(value) && value < BUTTON_CONTAINER_QUERY_WIDTH ? 'stacked' : 'inline';
+}
+
 const A1_IMAGE_REF_PATTERN = /^a1img:\/\/([A-Za-z0-9_-]{1,120})$/;
 
 function a1ImageIdFromRef(src) {
@@ -532,6 +596,66 @@ function publicA1ImageUrl(src, publicBaseUrl) {
   const id = a1ImageIdFromRef(src);
   const base = typeof publicBaseUrl === 'string' ? publicBaseUrl.replace(/\/+$/, '') : '';
   return id && base ? `${base}/${encodeURIComponent(id)}` : '';
+}
+
+// Canvas geometry for linked A1 project imports. These values use the existing
+// A1 base spacing scale: 64 between screens and 128 between page sections.
+const PROJECT_SCREEN_GAP = 64;
+const PROJECT_SECTION_PADDING = 64;
+const PROJECT_SECTION_GAP = 128;
+
+function positiveDimension(value) {
+  return Number.isFinite(value) && value > 0 ? Math.ceil(value) : 1;
+}
+
+function horizontalProjectSectionLayout(sizes, options = {}) {
+  const gap = positiveDimension(options.gap || PROJECT_SCREEN_GAP);
+  const padding = positiveDimension(options.padding || PROJECT_SECTION_PADDING);
+  const normalized = (Array.isArray(sizes) ? sizes : []).map((size) => ({
+    width: positiveDimension(size && size.width),
+    height: positiveDimension(size && size.height),
+  }));
+  let nextX = padding;
+  let maxHeight = 1;
+  const items = normalized.map((size) => {
+    const item = { x: nextX, y: padding, ...size };
+    nextX += size.width + gap;
+    maxHeight = Math.max(maxHeight, size.height);
+    return item;
+  });
+  return {
+    items,
+    width: items.length ? nextX - gap + padding : padding * 2,
+    height: maxHeight + (padding * 2),
+  };
+}
+
+function nextProjectSectionY(y, sectionHeight, gap = PROJECT_SECTION_GAP) {
+  return Math.round(y) + positiveDimension(sectionHeight) + positiveDimension(gap);
+}
+
+const LIST_VARIANTS = ['unordered', 'ordered', 'icon', 'divider'];
+const LIST_MAX_ITEMS = 3;
+
+function listVariantFromProps(props = {}) {
+  if (LIST_VARIANTS.includes(props.variant)) return props.variant;
+  if (props.as === 'ol') return 'ordered';
+  if (typeof props.icon === 'string' && props.icon.trim()) return 'icon';
+  return 'unordered';
+}
+
+function listPropsFromVariant(variant) {
+  if (variant === 'ordered') return { as: 'ol' };
+  if (variant === 'icon') return { icon: 'check_circle' };
+  if (variant === 'divider') return { variant: 'divider' };
+  return {};
+}
+
+function listItemTexts(node = {}) {
+  return (Array.isArray(node.children) ? node.children : [])
+    .filter((child) => child && child.type === 'ListItem')
+    .map((child) => typeof child.content?.fallback === 'string' ? child.content.fallback.trim() : '')
+    .filter(Boolean);
 }
 
 const ICON_SIZES = ['xs', 'sm', 'md', 'lg', 'xl', 'jumbo', 'xJumbo'];
@@ -645,10 +769,22 @@ function pageTitleFromFigmaFrame(frameOrName) {
   return (linkedTitle ? linkedTitle[1] : name) || 'Untitled';
 }
 
-// A raw Figma frame exports as a `{ nodes }` bundle, while an A1 Page Layout
-// instance already provides the complete page layout contract.
+// A raw Figma frame exports as a `{ nodes }` bundle. A PageLayout component
+// export uses `{ children }`, but the persisted page-definition contract uses
+// named `{ regions }`; normalize both forms before handing JSON to A1 Web.
 function pageLayoutForPageExport(node) {
-  if (node && node.type === 'PageLayout') return node;
+  if (node && node.type === 'PageLayout') {
+    if (Array.isArray(node.regions)) return node;
+    return {
+      type: 'PageLayout',
+      ...(node.props && typeof node.props === 'object' ? { props: node.props } : {}),
+      regions: [{
+        id: 'main',
+        name: 'Main',
+        nodes: Array.isArray(node.children) ? node.children : Array.isArray(node.nodes) ? node.nodes : [],
+      }],
+    };
+  }
   return {
     type: 'PageLayout',
     regions: [{ id: 'main', name: 'Main', nodes: Array.isArray(node && node.nodes) ? node.nodes : [] }],
@@ -1783,6 +1919,26 @@ function safeParent(node) {
   }
 }
 
+// Figma nodechange events can reference an instance sublayer that disappeared
+// during a variant swap or import. Walk ancestors through safeParent so a stale
+// native proxy cannot throw `get_parent` and abort the whole plugin operation.
+function hasAncestorId(node, ancestorId) {
+  if (!node || !ancestorId) return false;
+  const visited = new Set();
+  for (let parent = safeParent(node); parent; parent = safeParent(parent)) {
+    let parentId = '';
+    try {
+      parentId = parent.id;
+    } catch {
+      return false;
+    }
+    if (parentId === ancestorId) return true;
+    if (!parentId || visited.has(parentId)) return false;
+    visited.add(parentId);
+  }
+  return false;
+}
+
 // Native instance sublayers can vanish between a findAll/findOne result and a
 // later export pass. Reading `children` through this guard keeps one stale
 // implementation layer from aborting the entire page export.
@@ -1889,9 +2045,69 @@ function exportBadge(instance) {
     if (iconName && iconName !== defaultIcon) props.icon = iconName;
     else if (!iconName) warnings.push('Badge icon is visible but its Material icon component could not be resolved.');
   }
-  const node = { id: componentId('MessageBadge', instance), type: 'MessageBadge', content: { fallback: componentText(instance, 'Label', 'Badge') } };
+  const node = { id: componentId('MessageBadge', instance), type: 'MessageBadge', content: { fallback: badgeLabel(instance) } };
   if (Object.keys(props).length > 0) node.props = props;
   return { node, warnings };
+}
+
+function badgeLabel(instance) {
+  const propertyValue = componentText(instance, 'Label', '');
+  if (propertyValue) return propertyValue;
+  const text = badgeLabelTextLayer(instance);
+  try {
+    return text && typeof text.characters === 'string' ? text.characters : 'Badge';
+  } catch {
+    return 'Badge';
+  }
+}
+
+function badgeLabelTextLayer(instance) {
+  const live = currentInstance(instance);
+  let texts = [];
+  try {
+    texts = live.findAll((node) => node.type === 'TEXT' && node.visible !== false);
+  } catch {
+    return null;
+  }
+  const referenced = texts.find((node) => {
+    try {
+      return Object.values(node.componentPropertyReferences || {})
+        .some((reference) => canonicalKey(String(reference || '')).startsWith('label'));
+    } catch {
+      return false;
+    }
+  });
+  if (referenced) return referenced;
+  const named = texts.find((node) => {
+    try {
+      return ['label', 'badge', 'content'].includes(canonicalKey(node.name));
+    } catch {
+      return false;
+    }
+  });
+  return named || texts.find((node) => {
+    try {
+      return !/(icon|glyph|symbol)/.test(canonicalKey(node.name));
+    } catch {
+      return false;
+    }
+  }) || null;
+}
+
+async function writeBadgeLabel(instance, value, warnings, propertyApplied) {
+  const text = badgeLabelTextLayer(instance);
+  if (!text) {
+    if (!propertyApplied) warnings.push('Badge label text layer was not found — the value was not applied.');
+    return false;
+  }
+  try {
+    if (text.fontName !== figma.mixed) await figma.loadFontAsync(text.fontName);
+    text.characters = value;
+    return true;
+  } catch (error) {
+    if (!propertyApplied) warnings.push(`Badge label could not be updated: ${error.message}`);
+    return false;
+  }
 }
 
 function badgeContextForSelection(instance) {
@@ -1905,7 +2121,7 @@ function badgeContextForSelection(instance) {
   const defaultIcon = BADGE_DEFAULT_ICONS[status];
   const icon = iconNameFromInstance(instance) || iconNameFromEditableText(instance) || iconNameFromSwapValue(iconSwapPropertyValue(instance)) || defaultIcon;
   return {
-    label: componentText(instance, 'Label', 'Badge'), status, statusOptions: BADGE_STATUSES,
+    label: badgeLabel(instance), status, statusOptions: BADGE_STATUSES,
     size, sizeOptions: BADGE_SIZES, subtle: subtle === 'true' || subtle === true ? 'true' : 'false',
     subtleOptions: ['false', 'true'], iconMode: showIcon ? 'show' : 'none', iconModeOptions: ['none', 'show'],
     icon, iconCustom: Boolean(icon && icon !== defaultIcon),
@@ -1928,8 +2144,13 @@ async function applyBadge(instance, node, warnings) {
   if (materialIcon) iconPropertyApplied = queueIconSwapProperty(instance, assignments, materialIcon);
   if (!iconPropertyApplied && props.icon !== null) iconPropertyApplied = queueIconTextProperty(instance, assignments, iconName);
   queueComponentProperty(instance, assignments, 'Show icon', props.icon !== null, 'BOOLEAN', warnings, 'Badge icon visibility');
-  if (node.content && typeof node.content.fallback === 'string') queueComponentProperty(instance, assignments, 'Label', node.content.fallback, 'TEXT', warnings, 'Badge label');
+  const label = node.content && typeof node.content.fallback === 'string' ? node.content.fallback : null;
+  const labelPropertyApplied = label === null
+    ? false
+    : queueOptionalComponentProperty(instance, assignments, 'Label', label, 'TEXT');
   applyQueuedProperties(instance, assignments, warnings, 'Badge properties');
+  if (label !== null) await writeBadgeLabel(instance, label, warnings, labelPropertyApplied);
+  syncLayoutHeightMode(currentInstance(instance), 'hug', warnings, 'Badge');
   if (props.icon !== null) {
     if (!materialIcon && hasIconProp && !iconPropertyApplied) warnings.push(`No Material icon component named "${iconName}" exists in this file — trying the editable Badge icon text fallback.`);
     await finalizeMaterialIconUpdate(instance, iconName, materialIcon, iconPropertyApplied, warnings, 'Badge Material icon');
@@ -2248,7 +2469,7 @@ function buttonNodeFromFigma({ id, properties = {}, label, iconName, fullWidth =
 //   supported node as an instance of the matching Figma component.
 //
 // Supported component sets: Button, Icon Button, Button Container, Link, Card, Banner,
-// Badge, Chip, Chip Group, Figure, Definition List, Blockquote, Section, Bottom Sheet, Text Field, Search Field,
+// Badge, Chip, Chip Group, Figure, List, Definition List, Blockquote, Section, Bottom Sheet, Text Field, Search Field,
 // Textarea, Select, Switch, Segmented Control, Tabs, Accordion, Tooltip, Pagination,
 // Empty State, Divider, Menu, Dialog, Radio Group, Checkbox Group, Page Nav,
 // Top Header, and Page Layout,
@@ -2276,7 +2497,6 @@ const GRID_CONTEXT_WIDTH_MODES = ['hug', 'fill'];
 const ICON_BUTTON_VARIANTS = ['tertiary', 'secondary', 'destructive', 'success'];
 const ICON_BUTTON_SIZES = ['sm', 'md', 'lg'];
 const BUTTON_CONTAINER_ALIGNS = ['start', 'center', 'end'];
-const BUTTON_CONTAINER_QUERY_WIDTH = 480;
 const BUTTON_CONTAINER_DIRECTION_PROPERTY_NAMES = ['Direction', 'direction', 'containerWidth', 'Container Width', 'ContainerWidth'];
 const BUTTON_CONTAINER_DIRECTION_VARIANTS = {
   inline: ['inline (>480)', 'Inline (>480)', 'inline', 'Inline', 'row', 'Row', 'horizontal', 'Horizontal', 'wide', 'Wide', 'lg', 'LG', 'xl', 'XL'],
@@ -2385,14 +2605,17 @@ const ICON_SWAP_PROPERTY_NAMES = [
   'Glyph',
   'Symbol',
 ];
-// The Figma Figure asset intentionally uses a compact subset of React's
-// larger size/ratio surface to avoid a 64-variant matrix.
-const FIGURE_SIZES = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'];
+// The Figma Figure asset exposes a compact subset of the React size scale.
+// Keep the full A1 contract here so imports never discard `3xs` or `xxl`;
+// those endpoints use the nearest published Figma variant plus their exact
+// A1 width constraint below.
+const FIGURE_SIZES = ['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+const FIGURE_FIGMA_SIZES = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'];
 const FIGURE_ASPECT_RATIOS = ['16:9', '4:3', '1:1', '3:4', '9:16'];
 // These are maximum widths, matching the React Figure size scale. The Figure
 // itself remains flexible in an auto-layout parent; only its outer boundary is
 // capped. Aspect ratios belong to the nested image, never to that boundary.
-const FIGURE_MAX_WIDTHS = { '2xs': 128, xs: 192, sm: 320, md: 480, lg: 640, xl: 800 };
+const FIGURE_MAX_WIDTHS = { '3xs': 80, '2xs': 128, xs: 192, sm: 320, md: 480, lg: 640, xl: 800, xxl: 960 };
 const FIGURE_RATIO_VALUES = { '16:9': 16 / 9, '4:3': 4 / 3, '1:1': 1, '3:4': 3 / 4, '9:16': 9 / 16 };
 const TEXT_FIELD_VISUAL_STATES = ['hover', 'focus'];
 const MENU_ITEM_VISUAL_STATES = ['hover', 'focus', 'pressed'];
@@ -2441,6 +2664,7 @@ const DETACHED_COMPONENT_NAMESPACE = 'a1_json';
 const DETACHED_COMPONENT_KEY = 'componentName';
 const DETACHED_BANNER_PROPS_KEY = 'bannerProps';
 const GRID_RESPONSIVE_COLUMNS_KEY = 'gridResponsiveColumns';
+const TEXT_RESPONSIVE_SIZES_KEY = 'textResponsiveSizes';
 const A1_BREAKPOINT_KEY = 'a1Breakpoint';
 const A1_BREAKPOINT_VISIBILITY_KEY = 'a1BreakpointVisibility';
 const ACTION_TRIGGER_TARGET_KEY = 'actionTriggerTarget';
@@ -2481,6 +2705,7 @@ const COMPONENT_ADAPTERS = [
   { jsonType: 'Banner', import: importBanner, figma: [{ name: 'Banner', export: exportBanner, apply: applyBanner }], capabilities: { update: true, children: 'slot' } },
   { jsonType: 'MessageBadge', import: importBadge, figma: [{ name: 'Badge', aliases: ['Message Badge', 'MessageBadge'], export: exportBadge, apply: applyBadge }], capabilities: { update: true, children: 'none' } },
   { jsonType: 'Figure', import: importFigure, figma: [{ name: 'Figure', export: exportFigure, apply: applyFigure }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'List', import: importList, figma: [{ name: 'List', export: exportList, apply: applyList }], capabilities: { update: true, children: 'custom' } },
   { jsonType: 'DefinitionList', import: importDefinitionList, figma: [
     { name: 'Definition List', aliases: ['DefinitionList'], export: exportDefinitionList, apply: applyDefinitionList },
     { name: 'Definition List Item', aliases: ['DefinitionListItem'], export: exportDefinitionListItem },
@@ -2599,6 +2824,71 @@ const A1_FIGMA_LIBRARY_MANIFEST = {
   "imageLibrary": {
     "publicBaseUrl": "https://pszmkbfvyjkifbyututo.supabase.co/storage/v1/object/public/images/shared"
   },
+  "iconSets": {
+    "accessibility": "4ef02f4b0ca99a4463d7df69e52b1eec3ebcd3b0",
+    "accessibility_new": "73d08fb7c2d17547d537fe851c78d88ca47194b0",
+    "account_tree": "18c5055e58f50e0d6730352baf20bc89a0a3e63b",
+    "apps": "1b2d5d85fcdbe710d9819336ec9a021da1f56355",
+    "arrow_forward": "917fcdb332f9e8518614d4f6a8d22a260ff9f25b",
+    "auto_awesome": "f23875946cdcd040e31eeed89a2802de05284380",
+    "bar_chart": "f43225a6c773b861b3fc06a156d6cb3a8fd14768",
+    "bolt": "b28a9865e5be500b5a6b1dabae4a246bd1f7b504",
+    "campaign": "e0f4f32b6a10e5f46b0212b664e85c4a2a39636f",
+    "category": "414861ffa15d63ecc47350bf7b9a48adf9e8eaca",
+    "check_circle": "06aae2934f9c4997d834b9013c177c10e2e7408d",
+    "code": "487371a185207d38ac40019b029cd079de338b15",
+    "construction": "75de078249230db5335b89ffb764b6d3616e93ae",
+    "dashboard": "c452d11b8af2d6b089555782dcc6b7139587eb82",
+    "dashboard_customize": "08e86ce71c5aa4856115eff090bbf654a42eb242",
+    "data_object": "41001962dae72dd2bf735a6f7c06715c5b4c0a34",
+    "design_services": "fecf2d1b0abebac1b1001ded832834f474aee11c",
+    "devices": "b644c10a35d19cbac00dbfab385f72ee27f36ea4",
+    "edit_note": "470024a224dddd428e6de5473859fe9cdaeaced6",
+    "error": "6d562bf2c7d7b29ce8b84ba96017ec5c5f128719",
+    "fact_check": "95b11d761d53bb1a4fac68d9c5fe126bde94a0cf",
+    "folder": "1cfe0229aab9e8014b0bfd915ed5efd556e16d80",
+    "font_download": "725d8796d5a11d7ff3ba4b2e8db74b32d8067f93",
+    "format_paint": "f59669b543e78d403d5a9236709d35d942677909",
+    "foundation": "10742d13929335d8edb4148ce81aa435a03c0227",
+    "gavel": "0bc552a4cf0d0285fb44c9f02039de9a816f94e6",
+    "hub": "4c45e2f0902440d3bf4676efb13ab74d2a7796a0",
+    "image": "84ce0ad610a13bfdef88ba9cfcb744f788623100",
+    "info": "3878b92308cd744f746bc5960f084badede82c58",
+    "input": "30e58a8a0b695be94d6c466c1c52425b341e765e",
+    "insert_photo": "43e26c150a1b0a02968a26b80c2b3becd3156003",
+    "integration_instructions": "bbcd5e33a931df5ec0232abf1404173d850b272f",
+    "language": "db05e958d502087cf53609ff3be8a29b0d3bdceb",
+    "layers": "ad54d97565640e4bb8ddab6eaa92206cafd8a29d",
+    "link": "b587274220e715e79a538c049a2c3589834d75c4",
+    "looks_3": "38e65270dee1c1e15ce610ac7dac92fd8c102c7e",
+    "looks_4": "209c47bd12f9ae796c58f38ae5eaec300bb357b6",
+    "looks_one": "b4af4d214a40c57c552faad103b702e418dc8ef1",
+    "looks_two": "88ce46bf2ec2f8f738d1c5f40cf39f3904377007",
+    "menu": "0a94f00857acdfe206abe6b0f6437d1f68230f8d",
+    "near_me": "1b13ce95b3748c322a2c2b295dc3796b539ce324",
+    "open_in_new": "bd1560f11b27a058ae111875e13904e74db724ba",
+    "palette": "9e9c75e7048931865fa5a65a64129fa1a470c6ad",
+    "phone_iphone": "3cccf5edbad925bd2a7f28a533580f9c24751670",
+    "photo_library": "ffc2b9a90087146a267e17f3eb535e1da972e971",
+    "precision_manufacturing": "5001380e64c0939c416ab269aedee4ff854f5ed8",
+    "publish": "00e4173ca37c0dd74d2dd3c1b100a5f5a9304d06",
+    "query_stats": "ee44faee3cb910d0217eb0e50790d22f359fc154",
+    "route": "1735a1085d7ec0ecc1b855642333037aef7c57d3",
+    "smart_button": "31ec80d45c08e8b224b0cb02111bc38fbba03811",
+    "star": "cd1fcb85026c410567ae4d1c0c38f58098ccc2d1",
+    "star_border": "bbb8a21717ec626a9d64ba0bb71c59ed4ac32e88",
+    "table_chart": "e45f8a9e8e4b62bfdeb7f0ec4c60ec93df322510",
+    "task_alt": "b84a685f66f3df159e82b06dc1090d40c30bc312",
+    "terminal": "4067b2fad0cfbc024bc776c9fd992219816794fb",
+    "text_fields": "d7bd7f278782eb35645c35867e677999fd9851c2",
+    "title": "2f379a9c58f5162145a3c3ee3c44a54fe571658c",
+    "token": "4139bb251d5bc4cfa9e5559670684db80de8b053",
+    "touch_app": "43130c3dabccc77adf7c8841b95bf44a9eadb571",
+    "translate": "0d3410f724dc99c0283add5c5740965c35a8110b",
+    "warning": "3f1d3c6185c316dbd149baae2579cfa0a1071674",
+    "web_asset": "0c49531b4ad7b138eeafd67d79c0e3306d149c53",
+    "widgets": "14e506132dc6c611be66a1db0d5444dee20132a6"
+  },
   "componentSets": {
     "Page Layout": "d82ef3aba30e8b4d1d58e3a5ae5707560f541da3",
     "Top Header": "b29c94908da66c1e1470579729f621f4ac387ba2",
@@ -2616,6 +2906,7 @@ const A1_FIGMA_LIBRARY_MANIFEST = {
     "Blockquote": "5974e12793486e3a14e7c7a2230a3cd0873fe220",
     "Code": "cb0598e67920bb5f48a232eb7e86be7f46cc2824",
     "Inline": "c3e535a37f3e9f3064c809ff6890139628a518ee",
+    "List": "ce3d66d643fc3172e67eb8779834678da3cebc12",
     "Definition List": "f76746e1de219d521b602fc3f317dd03f114bb21",
     "Definition List Item": "ce961eccb8ad3774f4b5d2e152672bdf1a3b67c6",
     "Empty State": "6c1709cca520d7f8a2f3f9fecf5b3f851c78a835",
@@ -2792,6 +3083,7 @@ const A1_FIGMA_LIBRARY_MANIFEST = {
 };
 const A1_FIGMA_COMPONENT_SET_KEYS = A1_FIGMA_LIBRARY_MANIFEST.componentSets;
 const A1_FIGMA_COMPONENT_KEYS = A1_FIGMA_LIBRARY_MANIFEST.components;
+const A1_FIGMA_ICON_SET_KEYS = A1_FIGMA_LIBRARY_MANIFEST.iconSets || {};
 const A1_FIGMA_TEXT_STYLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.textStyles;
 const A1_FIGMA_COLOR_VARIABLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.variables.color;
 const A1_FIGMA_FLOAT_VARIABLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.variables.float;
@@ -2813,6 +3105,7 @@ function figmaComponentNameMatches(actualName, requestedName) {
 }
 
 const libraryComponentSourceCache = new Map();
+const materialIconSourceCache = new Map();
 
 function libraryDescriptionTextValues(description) {
   const values = [];
@@ -2927,6 +3220,7 @@ function emptyLibraryManifest() {
     library: { ...A1_FIGMA_LIBRARY_MANIFEST.library },
     componentSets: {},
     components: {},
+    iconSets: {},
     textStyles: {},
     variables: { color: {}, float: {} },
   };
@@ -2938,6 +3232,7 @@ function normalizeLibraryManifest(value) {
   if (value.library && typeof value.library === 'object') out.library = { ...out.library, ...value.library };
   out.componentSets = value.componentSets && typeof value.componentSets === 'object' ? value.componentSets : {};
   out.components = value.components && typeof value.components === 'object' ? value.components : {};
+  out.iconSets = value.iconSets && typeof value.iconSets === 'object' ? value.iconSets : {};
   out.textStyles = value.textStyles && typeof value.textStyles === 'object' ? value.textStyles : {};
   const variables = value.variables && typeof value.variables === 'object' ? value.variables : {};
   out.variables = {
@@ -2982,6 +3277,15 @@ async function importConfiguredLibraryComponentSource(name) {
     return imported && imported.type === 'COMPONENT' ? imported : componentSourceFromImported(imported);
   }
   return null;
+}
+
+async function importConfiguredMaterialIconSource(name) {
+  if (typeof figma.importComponentSetByKeyAsync !== 'function') return null;
+  const stored = await readClientComponentKeyRegistry();
+  const setKey = configuredLibraryKeyForName({ ...stored.iconSets, ...A1_FIGMA_ICON_SET_KEYS }, name);
+  if (!setKey) return null;
+  const imported = await figma.importComponentSetByKeyAsync(setKey);
+  return componentSourceFromImported(imported);
 }
 
 async function importLibraryComponentSetSource(name) {
@@ -3085,6 +3389,7 @@ function findLocalStandaloneComponentForRegistry(name) {
 async function buildLocalLibraryManifest() {
   const componentSets = {};
   const components = {};
+  const iconSets = {};
   const textStyles = {};
   const colorVariables = {};
   const floatVariables = {};
@@ -3109,6 +3414,12 @@ async function buildLocalLibraryManifest() {
       continue;
     }
     missing.push(name);
+  }
+
+  for (const name of Object.keys(A1_FIGMA_ICON_SET_KEYS).sort((a, b) => a.localeCompare(b))) {
+    const set = figma.currentPage.findOne((node) => node.type === 'COMPONENT_SET' && node.name === name);
+    const key = localPublishedKey(set);
+    if (key) iconSets[name] = key;
   }
 
   try {
@@ -3147,6 +3458,7 @@ async function buildLocalLibraryManifest() {
     },
     componentSets,
     components,
+    iconSets,
     textStyles,
     variables: {
       color: colorVariables,
@@ -3170,6 +3482,7 @@ function formatLibraryManifest(registry) {
     library: registry.library || A1_FIGMA_LIBRARY_MANIFEST.library,
     componentSets: formatObject(registry.componentSets),
     components: formatObject(registry.components),
+    iconSets: formatObject(registry.iconSets),
     textStyles: formatObject(registry.textStyles),
     variables: {
       color: formatObject(registry.variables && registry.variables.color),
@@ -3184,6 +3497,7 @@ async function handleExportComponentKeys() {
   clientComponentKeyRegistryPromise = Promise.resolve(normalizeLibraryManifest(registry));
   const text = formatLibraryManifest(registry);
   const found = Object.keys(registry.componentSets).length + Object.keys(registry.components).length;
+  const iconCount = Object.keys(registry.iconSets).length;
   const textStyleCount = Object.keys(registry.textStyles).length;
   const variableCount = Object.keys(registry.variables.color).length + Object.keys(registry.variables.float).length;
   const warnings = registry.missing.length
@@ -3193,7 +3507,7 @@ async function handleExportComponentKeys() {
     type: 'component-key-registry-result',
     text,
     warnings,
-    message: `Exported A1 library manifest: ${found} component key${found === 1 ? '' : 's'}, ${textStyleCount} text style key${textStyleCount === 1 ? '' : 's'}, and ${variableCount} variable key${variableCount === 1 ? '' : 's'}.`,
+    message: `Exported A1 library manifest: ${found} component key${found === 1 ? '' : 's'}, ${iconCount} icon set key${iconCount === 1 ? '' : 's'}, ${textStyleCount} text style key${textStyleCount === 1 ? '' : 's'}, and ${variableCount} variable key${variableCount === 1 ? '' : 's'}.`,
   });
 }
 
@@ -3417,8 +3731,26 @@ function sourceLooksLikeMaterialIcon(component, requestedName = '') {
 async function findMaterialIconComponentAsync(iconName, warnings) {
   const requested = materialIconNameCandidate(iconName);
   if (!requested) return null;
+  if (materialIconSourceCache.has(requested)) return materialIconSourceCache.get(requested);
   const local = findIconComponent(requested);
-  if (local && (sourceLooksLikeMaterialIcon(local, requested) || materialIconNameCandidate(local.name) === requested)) return local;
+  if (local && (sourceLooksLikeMaterialIcon(local, requested) || materialIconNameCandidate(local.name) === requested)) {
+    materialIconSourceCache.set(requested, local);
+    return local;
+  }
+
+  // Consumer files can import published components by their manifest keys even
+  // when the A1 library is not enabled in the file. Every component adapter
+  // shares this resolver; enabled-library name search remains the fallback for
+  // Material Symbols that are not yet checked into the manifest.
+  try {
+    const configured = await importConfiguredMaterialIconSource(requested);
+    if (configured) {
+      materialIconSourceCache.set(requested, configured);
+      return configured;
+    }
+  } catch (error) {
+    if (warnings) warnings.push(`Material icon "${requested}" could not be imported from the A1 manifest: ${errorMessage(error)}`);
+  }
 
   if (!figma.teamLibrary || typeof figma.teamLibrary.getAvailableComponentSetsAsync !== 'function') return local || null;
 
@@ -3429,7 +3761,10 @@ async function findMaterialIconComponentAsync(iconName, warnings) {
       if (description && description.key) {
         const imported = await figma.importComponentSetByKeyAsync(description.key);
         const source = componentSourceFromImported(imported);
-        if (source && sourceLooksLikeMaterialIcon(source, requested)) return source;
+        if (source && sourceLooksLikeMaterialIcon(source, requested)) {
+          materialIconSourceCache.set(requested, source);
+          return source;
+        }
       }
     }
     if (typeof figma.teamLibrary.getAvailableComponentsAsync === 'function' && typeof figma.importComponentByKeyAsync === 'function') {
@@ -3438,7 +3773,10 @@ async function findMaterialIconComponentAsync(iconName, warnings) {
       if (description && description.key) {
         const imported = await figma.importComponentByKeyAsync(description.key);
         const source = componentSourceFromImported(imported);
-        if (source && sourceLooksLikeMaterialIcon(source, requested)) return source;
+        if (source && sourceLooksLikeMaterialIcon(source, requested)) {
+          materialIconSourceCache.set(requested, source);
+          return source;
+        }
       }
     }
   } catch (error) {
@@ -4431,7 +4769,7 @@ function exportNodeAsFreeContent(node, warnings, ancestors = new Set()) {
         return;
       }
       if (current.type === 'TEXT') {
-        const result = withBreakpointVisibility(current, exportTextNode(current));
+        const result = withBreakpointVisibility(current, exportResponsiveTextNode(current));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
@@ -4558,7 +4896,7 @@ function exportFreeContent(root, warnings, ancestors = new Set()) {
         return;
       }
       if (node.type === 'TEXT') {
-        const result = withBreakpointVisibility(node, exportTextNode(node));
+        const result = withBreakpointVisibility(node, exportResponsiveTextNode(node));
         exported.push(result.node);
         warnings.push(...result.warnings);
         return;
@@ -5553,6 +5891,29 @@ function exportDefinitionList(instance) {
   return { node: { id: componentId('DefinitionList', instance), type: 'DefinitionList', props }, warnings };
 }
 
+function exportList(instance) {
+  instance = currentInstance(instance);
+  const warnings = [];
+  const variant = componentPropertyValue(instance, 'Variant', 'VARIANT');
+  const props = listPropsFromVariant(LIST_VARIANTS.includes(variant) ? variant : 'unordered');
+  const children = Array.from({ length: LIST_MAX_ITEMS }, (_, index) => componentText(instance, `Item ${index + 1}`, '').trim())
+    .filter(Boolean)
+    .map((text, index) => ({
+      id: `${componentId('ListItem', instance)}-${index + 1}`,
+      type: 'ListItem',
+      content: { fallback: text },
+    }));
+  return {
+    node: {
+      id: componentId('List', instance),
+      type: 'List',
+      ...(Object.keys(props).length ? { props } : {}),
+      children,
+    },
+    warnings,
+  };
+}
+
 function definitionListContextForSelection(instance) {
   instance = currentInstance(instance);
   const exported = exportDefinitionList(instance);
@@ -5807,8 +6168,6 @@ function exportSection(instance) {
     props.contentWidth = width.property.value;
   } else if (SECTION_WIDTHS.includes(modeWidth)) {
     props.contentWidth = modeWidth;
-  } else {
-    warnings.push('No content-width property or explicit ContentWidth mode found — contentWidth omitted.');
   }
 
   const gapVariant = findSectionProperty(carriers, ['gap'], 'VARIANT');
@@ -5879,13 +6238,8 @@ function buttonContainerSlot(instance) {
     (node.type === 'FRAME' || node.type === 'SLOT') && canonicalKey(node.name) === 'buttonslot') || null;
 }
 
-function buttonContainerCompactForWidth(instance) {
-  const width = Number(instance && instance.width);
-  return Number.isFinite(width) && width < BUTTON_CONTAINER_QUERY_WIDTH;
-}
-
 function buttonContainerDirectionForWidth(instance) {
-  return buttonContainerCompactForWidth(instance) ? 'stacked' : 'inline';
+  return buttonContainerDirectionAtWidth(instance && instance.width);
 }
 
 function buttonContainerAlign(instance) {
@@ -5939,7 +6293,7 @@ function buttonContainerButtonChildren(instance) {
 }
 
 function buttonContainerAncestor(node) {
-  for (let parent = node && node.parent; parent; parent = parent.parent) {
+  for (let parent = safeParent(node); parent; parent = safeParent(parent)) {
     const liveParent = liveNode(parent);
     if (liveParent && liveParent.type === 'INSTANCE' && registeredSetName(liveParent) === 'Button Container') {
       return liveParent;
@@ -5982,6 +6336,39 @@ function syncButtonContainerForWidth(instance, warnings = []) {
   });
   current = currentInstance(current);
   return current;
+}
+
+function buttonContainersForDimensions(node) {
+  const root = liveNode(node);
+  if (!root) return [];
+  const found = new Map();
+  const remember = (candidate) => {
+    const current = liveNode(candidate);
+    if (current && current.type === 'INSTANCE' && registeredSetName(current) === 'Button Container') {
+      found.set(current.id, current);
+    }
+  };
+  remember(root);
+  remember(buttonContainerAncestor(root));
+  try {
+    if ('findAll' in root) {
+      root.findAll((candidate) => (
+        candidate.type === 'INSTANCE' && registeredSetName(candidate) === 'Button Container'
+      )).forEach(remember);
+    }
+  } catch {
+    // A variant swap can invalidate an implementation layer during traversal.
+  }
+  return [...found.values()];
+}
+
+function syncButtonContainersForDimensions(node, warnings = []) {
+  const synced = [];
+  for (const container of buttonContainersForDimensions(node)) {
+    const current = syncButtonContainerForWidth(container, warnings);
+    if (current) synced.push(current);
+  }
+  return synced;
 }
 
 function buttonContainerContextForSelection(instance) {
@@ -7666,7 +8053,7 @@ function runExport(auto, explicitTarget = null, live = false) {
       postExportResult({ auto, live, componentName: 'Icon', node, warnings });
       return;
     }
-    const { node, warnings, review } = withBreakpointVisibility(target, exportTextNode(target));
+    const { node, warnings, review } = withBreakpointVisibility(target, exportResponsiveTextNode(target));
     postExportResult({ auto, live, componentName: node.type, node, warnings, textReview: review });
     return;
   }
@@ -7792,13 +8179,20 @@ function fillImportedTextWidth(parent, child, sourceNode, warnings) {
   if (!sourceNode || !['Heading', 'Paragraph'].includes(sourceNode.type) || child.type !== 'TEXT') return;
   if (!parent) return;
   try {
-    // Text is block content in A1. Stretch handles vertical auto-layout;
-    // FILL handles Grid cells; grow is the horizontal-stack equivalent.
+    // Text is block content in A1. Stretch handles vertical auto-layout and
+    // FILL handles Grid cells. In a horizontal Stack, a Heading must hug its
+    // content: it is commonly followed by MessageBadges, which should sit
+    // immediately after the heading rather than at the far end of the row.
     if (parent.layoutMode === 'VERTICAL') {
       child.layoutAlign = 'STRETCH';
       child.layoutSizingHorizontal = 'FILL';
     }
-    else if (parent.layoutMode === 'HORIZONTAL') child.layoutGrow = 1;
+    else if (parent.layoutMode === 'HORIZONTAL') {
+      if (sourceNode.type === 'Heading') {
+        child.layoutGrow = 0;
+        child.layoutSizingHorizontal = 'HUG';
+      } else child.layoutGrow = 1;
+    }
     // Figma accepts FILL for imported Grid children and resolves it to the
     // flexible track width, so text remains a true block in every layout.
     else if (parent.layoutMode === 'GRID') child.layoutSizingHorizontal = 'FILL';
@@ -7819,10 +8213,10 @@ const FILL_CONTAINER_TYPES = [
   'Stack', 'Grid', 'GridItem', 'Card', 'Banner', 'Blockquote', 'Figure', 'Accordion',
   'TextField', 'SearchField', 'SelectField', 'TextareaField',
   'RadioGroup', 'CheckboxGroup',
-  'TopHeader', 'Section', 'MessageEmptyState', 'PageLayout', 'DataTable', 'ChipGroup', 'ChoiceGroup',
+  'TopHeader', 'Section', 'MessageEmptyState', 'PageLayout', 'DataTable', 'ChipGroup', 'ChoiceGroup', 'List',
   'BottomSheet',
   // Not yet bridged — pre-classified so sizing is correct when importers land.
-  'List', 'BottomDrawer', 'PageNav', 'TreeMenu',
+  'BottomDrawer',
   // Code is variant-dependent: block fills, inline hugs (guard below).
   'Code',
 ];
@@ -7973,6 +8367,11 @@ function appendImportedChild(parent, child, sourceNode, warnings) {
     fillImportedStackWidth(liveParent, liveChild, sourceNode, warnings);
     fillImportedGridWidth(liveParent, liveChild, sourceNode, warnings);
     fillImportedButtonContainerWidth(liveParent, liveChild, sourceNode, warnings);
+    // Fill sizing resolves only after insertion. Re-read the resulting width so
+    // Button Container uses the same 480px direction as its React query.
+    if (sourceNode && sourceNode.type === 'ButtonContainer') {
+      syncButtonContainerForWidth(liveChild, warnings);
+    }
     fillImportedDividerAxis(liveParent, liveChild, sourceNode, warnings);
     applyImportedGridItemSpan(liveParent, liveChild, sourceNode, warnings);
     applyStackGrow(liveParent, liveChild, sourceNode, warnings);
@@ -8962,14 +9361,14 @@ function imagePaintOn(node) {
 }
 
 function figureImageLayer(instance) {
+  const isImageSurface = (node) => ['FRAME', 'RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'INSTANCE'].includes(node.type) && Boolean(imagePaintOn(node));
+  const isNamedImageLayer = (node) => {
+    try { return canonicalKey(node.name) === 'image'; } catch { return false; }
+  };
   try {
-    let namedImageLayer = null;
-    const imagePaintLayer = instance.findOne((child) => {
-      if (!['FRAME', 'RECTANGLE', 'INSTANCE'].includes(child.type)) return false;
-      if (canonicalKey(child.name) === 'image' && !namedImageLayer) namedImageLayer = child;
-      return Boolean(imagePaintOn(child));
-    });
-    return imagePaintLayer || namedImageLayer;
+    const root = currentInstance(instance);
+    const layers = [root, ...root.findAll((node) => isImageSurface(node) || isNamedImageLayer(node))];
+    return layers.find(isImageSurface) || layers.find(isNamedImageLayer) || null;
   } catch {
     return null;
   }
@@ -8980,15 +9379,27 @@ function localFigureAsset(src) {
   return id ? localFigureAssets.get(id) || null : null;
 }
 
-async function applyA1FigureImage(instance, src, warnings) {
+function figureImageUrl(src) {
+  const a1Url = publicA1ImageUrl(src, A1_FIGMA_IMAGE_LIBRARY_PUBLIC_BASE_URL);
+  if (a1Url) return a1Url;
+  if (typeof src !== 'string') return '';
+  try {
+    const url = new URL(src);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
+async function applyA1FigureImage(instance, src, warnings, aspectRatio = null) {
   const id = a1ImageIdFromRef(src);
-  if (!id) return false;
   const asset = localFigureAsset(src);
-  const publicUrl = publicA1ImageUrl(src, A1_FIGMA_IMAGE_LIBRARY_PUBLIC_BASE_URL);
+  const imageUrl = figureImageUrl(src);
+  if (!asset && !imageUrl) return false;
   try {
     const imageLayer = figureImageLayer(currentInstance(instance));
     if (!imageLayer) {
-      warnings.push('The A1 Figure image was resolved, but the Figure Image layer was not found.');
+      warnings.push('The Figure image was resolved, but the Figure Image layer was not found.');
       return true;
     }
     let image;
@@ -8999,16 +9410,24 @@ async function applyA1FigureImage(instance, src, warnings) {
         return true;
       }
       image = figma.createImage(bytes);
-    } else if (publicUrl) {
-      image = await figma.createImageAsync(publicUrl);
+    } else if (imageUrl) {
+      image = await figma.createImageAsync(imageUrl);
     } else {
-      warnings.push(`A1 Figure image "${id}" is not available in this local handoff or the public Image Library.`);
+      warnings.push(`Figure image "${id || src}" is not available in this local handoff or at its source URL.`);
       return true;
     }
     imageLayer.fills = [{ type: 'IMAGE', imageHash: image.hash, scaleMode: 'FILL' }];
+    if (!aspectRatio) {
+      const natural = await image.getSizeAsync();
+      const figure = currentInstance(instance);
+      const width = Number.isFinite(figure.width) && figure.width > 0 ? figure.width : imageLayer.width;
+      if (natural.width > 0 && natural.height > 0 && width > 0) {
+        imageLayer.resizeWithoutConstraints(width, Math.round(width * natural.height / natural.width));
+      }
+    }
     return true;
   } catch (error) {
-    warnings.push(`A1 Figure image "${id}" could not be applied: ${error.message}`);
+    warnings.push(`Figure image "${id || src}" could not be applied: ${error.message}`);
     return true;
   }
 }
@@ -9022,6 +9441,25 @@ function applyFigureLayout(instance, size, aspectRatio, warnings) {
       liveInstance.minWidth = null;
     } catch (error) {
       warnings.push(`Figure max width could not be applied: ${error.message}`);
+    }
+    // The published Figure component currently has no `3xs` / `xxl` variants.
+    // Its nearest compact variant establishes the component internals; resize
+    // the outer boundary to preserve the authored A1 endpoint.
+    if (!FIGURE_FIGMA_SIZES.includes(size)) {
+      try {
+        liveInstance.resizeWithoutConstraints(maxWidth, liveInstance.height);
+      } catch (error) {
+        warnings.push(`Figure ${size} width could not be applied: ${error.message}`);
+      }
+    }
+  } else {
+    try {
+      // An omitted A1 size means “unconstrained,” not the compact Figma
+      // asset's default `sm` width. This also clears a stale bound on update.
+      liveInstance.maxWidth = null;
+      liveInstance.minWidth = null;
+    } catch (error) {
+      warnings.push(`Figure unconstrained width could not be applied: ${error.message}`);
     }
   }
   const image = figureImageLayer(liveInstance);
@@ -9052,8 +9490,12 @@ async function applyFigure(instance, node, warnings) {
   queueComponentProperty(instance, assignments, 'Caption', caption, 'TEXT', warnings, 'Figure caption');
   queueComponentProperty(instance, assignments, 'Show caption', Boolean(caption), 'BOOLEAN', warnings, 'Figure caption visibility');
   if (props.size !== undefined) {
-    if (FIGURE_SIZES.includes(props.size)) queueComponentProperty(instance, assignments, 'Size', props.size, 'VARIANT', warnings, 'Figure size');
-    else warnings.push(`Figure size="${props.size}" is not available in the compact Figma Figure asset.`);
+    if (FIGURE_SIZES.includes(props.size)) {
+      const figmaSize = FIGURE_FIGMA_SIZES.includes(props.size)
+        ? props.size
+        : props.size === '3xs' ? '2xs' : 'xl';
+      queueComponentProperty(instance, assignments, 'Size', figmaSize, 'VARIANT', warnings, 'Figure size');
+    } else warnings.push(`Figure size="${props.size}" is not an A1 Figure size.`);
   }
   if (props.aspectRatio !== undefined) {
     if (FIGURE_ASPECT_RATIOS.includes(props.aspectRatio)) queueComponentProperty(instance, assignments, 'Aspect ratio', props.aspectRatio, 'VARIANT', warnings, 'Figure aspect ratio');
@@ -9062,11 +9504,16 @@ async function applyFigure(instance, node, warnings) {
   applyQueuedProperties(instance, assignments, warnings, 'Figure properties');
   applyFigureLayout(
     instance,
-    FIGURE_SIZES.includes(props.size) ? props.size : 'sm',
-    FIGURE_ASPECT_RATIOS.includes(props.aspectRatio) ? props.aspectRatio : '16:9',
+    FIGURE_SIZES.includes(props.size) ? props.size : null,
+    FIGURE_ASPECT_RATIOS.includes(props.aspectRatio) ? props.aspectRatio : null,
     warnings,
   );
-  const appliedA1Image = await applyA1FigureImage(instance, props.src, warnings);
+  const appliedA1Image = await applyA1FigureImage(
+    instance,
+    props.src,
+    warnings,
+    FIGURE_ASPECT_RATIOS.includes(props.aspectRatio) ? props.aspectRatio : null,
+  );
   if (props.src && !appliedA1Image) warnings.push('Figure source is retained as component metadata; edit the image fill directly in Figma when a visual needs to change.');
 }
 
@@ -9154,6 +9601,31 @@ async function importDefinitionList(node, warnings) {
   const instance = await createComponentInstance('Definition List', warnings);
   await applyDefinitionList(instance, node, warnings);
   await replaceDefinitionItems(instance, node, warnings);
+  return instance;
+}
+
+async function applyList(instance, node, warnings) {
+  await loadInstanceFonts(instance);
+  const props = node.props || {};
+  const variant = listVariantFromProps(props);
+  const items = listItemTexts(node);
+  const assignments = {};
+  queueComponentProperty(instance, assignments, 'Variant', variant, 'VARIANT', warnings, 'List variant');
+  for (let index = 0; index < LIST_MAX_ITEMS; index += 1) {
+    queueComponentProperty(instance, assignments, `Item ${index + 1}`, items[index] || '', 'TEXT', warnings, `List item ${index + 1}`);
+  }
+  applyQueuedProperties(instance, assignments, warnings, 'List properties');
+  if (items.length > LIST_MAX_ITEMS) warnings.push(`List supports ${LIST_MAX_ITEMS} Figma items; ${items.length - LIST_MAX_ITEMS} additional item(s) were not rendered.`);
+  if (items.length < LIST_MAX_ITEMS) warnings.push(`The Figma List asset has ${LIST_MAX_ITEMS} fixed item rows; unused rows were cleared.`);
+  if (props.icon && variant === 'icon' && props.icon !== 'check_circle') warnings.push('The Figma List icon variant uses check_circle; custom list and per-item icons remain runtime-owned.');
+  for (const prop of ['size', 'color', 'marginBottom']) {
+    if (props[prop] !== undefined) warnings.push(`List ${prop} has no representation in the compact Figma component.`);
+  }
+}
+
+async function importList(node, warnings) {
+  const instance = await createComponentInstance('List', warnings);
+  await applyList(instance, node, warnings);
   return instance;
 }
 
@@ -10266,7 +10738,7 @@ async function findIconColorVariable(color) {
   return findLibraryColorVariable((variable) => colorVariableNameMatches(variable, token));
 }
 
-function textStyleRequestForNode(node) {
+function textStyleRequestForNode(node, figmaText = null) {
   const props = node.props || {};
   if (node.type === 'Link') {
     const size = typeof props.size === 'string' && LINK_SIZES.includes(props.size) ? props.size : 'md';
@@ -10276,12 +10748,18 @@ function textStyleRequestForNode(node) {
   if (node.type === 'Heading') {
     const family = props.type === 'display' ? 'display' : 'heading';
     const sizes = family === 'display' ? DISPLAY_SIZES : HEADING_SIZES;
-    const size = typeof props.size === 'string' && sizes.includes(props.size.toLowerCase())
-      ? props.size.toLowerCase()
-      : 'md';
+    const responsiveSizes = normalizeResponsiveTextSizes(props.size, sizes);
+    const size = responsiveSizes
+      ? responsiveTextSizeAt(responsiveSizes, breakpointForNode(figmaText, 'md'), sizes)
+      : typeof props.size === 'string' && sizes.includes(props.size.toLowerCase())
+        ? props.size.toLowerCase()
+        : 'md';
     return { styleName: `${family}/${size}`, color: typeof props.color === 'string' ? props.color : 'default', align: typeof props.align === 'string' ? props.align : 'left' };
   }
-  const size = typeof props.size === 'string' && PARAGRAPH_SIZES.includes(props.size) ? props.size : 'md';
+  const responsiveSizes = normalizeResponsiveTextSizes(props.size, PARAGRAPH_SIZES);
+  const size = responsiveSizes
+    ? responsiveTextSizeAt(responsiveSizes, breakpointForNode(figmaText, 'md'), PARAGRAPH_SIZES)
+    : typeof props.size === 'string' && PARAGRAPH_SIZES.includes(props.size) ? props.size : 'md';
   return { styleName: `body/${size}`, color: typeof props.color === 'string' ? props.color : 'default', align: typeof props.align === 'string' ? props.align : 'left' };
 }
 
@@ -10297,6 +10775,59 @@ function textSizeOptionsForFamily(family) {
   if (family === 'display') return DISPLAY_SIZES;
   if (family === 'heading') return HEADING_SIZES;
   return PARAGRAPH_SIZES;
+}
+
+function responsiveTextSizesForJsonNode(node) {
+  if (!node || !['Heading', 'Paragraph'].includes(node.type)) return null;
+  const props = node.props || {};
+  const family = node.type === 'Heading' && props.type === 'display' ? 'display' : node.type === 'Heading' ? 'heading' : 'body';
+  return normalizeResponsiveTextSizes(props.size, textSizeOptionsForFamily(family));
+}
+
+function readResponsiveTextSizes(text, allowedSizes) {
+  const nameSizes = parseResponsiveTextSizesName(text && text.name, allowedSizes);
+  if (nameSizes) return nameSizes;
+  try {
+    const raw = text.getPluginData(TEXT_RESPONSIVE_SIZES_KEY);
+    return raw ? normalizeResponsiveTextSizes(JSON.parse(raw), allowedSizes) : null;
+  } catch {
+    return null;
+  }
+}
+
+function syncResponsiveTextSizesMetadata(text, value, allowedSizes) {
+  if (!text) return null;
+  const sizes = normalizeResponsiveTextSizes(value, allowedSizes);
+  const allTypographySizes = [...new Set([...PARAGRAPH_SIZES, ...HEADING_SIZES, ...DISPLAY_SIZES])];
+  const baseName = stripResponsiveTextSizesName(text.name || 'Text', allTypographySizes);
+  try { text.setPluginData(TEXT_RESPONSIVE_SIZES_KEY, sizes ? JSON.stringify(sizes) : ''); } catch { /* Layer name remains portable. */ }
+  try {
+    text.name = sizes
+      ? responsiveTextName(baseName, sizes, allowedSizes)
+      : baseName;
+  } catch { /* Ignore stale or immutable text layers. */ }
+  return sizes;
+}
+
+function exportResponsiveTextNode(text) {
+  const result = exportTextNode(text);
+  const suggestion = textSuggestion(text);
+  if (!['Heading', 'Paragraph'].includes(suggestion.type)) return result;
+  const [family, currentSize] = String(suggestion.styleName || '').toLowerCase().split('/');
+  const allowedSizes = textSizeOptionsForFamily(family);
+  const responsiveSizes = readResponsiveTextSizes(text, allowedSizes);
+  if (!responsiveSizes) return result;
+  const breakpoint = breakpointForNode(text, 'md');
+  const sizes = { ...responsiveSizes };
+  if (allowedSizes.includes(currentSize) && responsiveTextSizeAt(sizes, breakpoint, allowedSizes) !== currentSize) {
+    sizes[breakpoint] = currentSize;
+  }
+  const normalized = syncResponsiveTextSizesMetadata(text, sizes, allowedSizes);
+  if (normalized) {
+    result.node.props.size = Object.fromEntries(Object.entries(normalized)
+      .map(([key, value]) => [key, value === 'xjumbo' ? 'xJumbo' : value]));
+  }
+  return result;
 }
 
 function textColorOptionsForFamily(family) {
@@ -10322,6 +10853,8 @@ function textContextForSelection(text, suggestion = textSuggestion(text)) {
     typeOptions: textFamilyOptions(family),
     size: sizeOptions.includes(rawSize) ? rawSize : 'md',
     sizeOptions,
+    breakpoint: breakpointForNode(text, 'md'),
+    responsiveSizes: readResponsiveTextSizes(text, sizeOptions),
     color: colorOptions.includes(suggestion.color) ? suggestion.color : colorOptions[0],
     colorOptions,
     weight: LINK_WEIGHTS.includes(rawWeight) ? rawWeight : 'normal',
@@ -10409,7 +10942,15 @@ async function handleSetTextProps(options = {}) {
   const colorOptions = textColorOptionsForFamily(family);
   const fallbackSize = sizeOptions.includes(currentContext.size) ? currentContext.size : 'md';
   const fallbackColor = colorOptions.includes(currentContext.color) ? currentContext.color : colorOptions[0];
-  const size = typeof options.size === 'string' && sizeOptions.includes(options.size) ? options.size : fallbackSize;
+  const requestedSize = typeof options.size === 'string' && sizeOptions.includes(options.size) ? options.size : fallbackSize;
+  const requestedResponsiveSizes = normalizeResponsiveTextSizes(options.responsiveSizes, sizeOptions);
+  const currentBreakpoint = breakpointForNode(text, 'md');
+  const responsiveSizes = requestedResponsiveSizes
+    ? { ...requestedResponsiveSizes, [currentBreakpoint]: requestedSize }
+    : null;
+  const size = responsiveSizes
+    ? responsiveTextSizeAt(responsiveSizes, currentBreakpoint, sizeOptions)
+    : requestedSize;
   const color = typeof options.color === 'string' && colorOptions.includes(options.color) ? options.color : fallbackColor;
   const weight = family === 'link' && typeof options.weight === 'string' && LINK_WEIGHTS.includes(options.weight)
     ? options.weight
@@ -10422,6 +10963,7 @@ async function handleSetTextProps(options = {}) {
     color,
     align: current.align || 'left',
   }, warnings);
+  if (family !== 'link') syncResponsiveTextSizesMetadata(text, responsiveSizes, sizeOptions);
   if (options.widthMode === 'fill' || options.widthMode === 'hug') {
     syncLayoutWidthMode(text, options.widthMode, warnings, 'Text');
     trySetLayoutProperty(
@@ -11371,6 +11913,11 @@ async function importTextNode(node, warnings) {
   await applyTextSuggestion(text, suggestion, warnings);
   await applyInlineLinkRanges(text, node.content && node.content.inlineLinks, warnings);
   text.name = node.type;
+  const responsiveSizes = responsiveTextSizesForJsonNode(node);
+  if (responsiveSizes) {
+    const family = node.type === 'Heading' && (node.props || {}).type === 'display' ? 'display' : node.type === 'Heading' ? 'heading' : 'body';
+    syncResponsiveTextSizesMetadata(text, responsiveSizes, textSizeOptionsForFamily(family));
+  }
   return text;
 }
 
@@ -11923,6 +12470,7 @@ function conversionTargetComponentName(target) {
     'tree-menu': 'Tree Menu',
     pagination: 'Pagination',
     tabs: 'Tabs',
+    list: 'List',
     'definition-list': 'Definition List Item',
     'definition-item': 'Definition List Item',
     link: 'Link',
@@ -12956,6 +13504,35 @@ async function convertSelectionToTabs(selection, warnings) {
   return tabs;
 }
 
+async function convertSelectionToList(selection, warnings) {
+  const liveSelection = (selection || []).map(liveNode).filter(Boolean);
+  if (liveSelection.length === 1 && closestA1ComponentAncestor(liveSelection[0], 'List')) {
+    warnings.push('The selected layer is already inside an A1 List component.');
+    return null;
+  }
+  const contextWarnings = [];
+  let context = conversionContext(selection, contextWarnings, 'Select one or more text layers to convert to an A1 List.');
+  if (context) warnings.push(...contextWarnings);
+  else context = directConversionContext(selection, warnings, 'Select one or more text layers to convert to an A1 List.');
+  if (!context) return null;
+  const values = uniqueOptionTexts(conversionTextValues(conversionInferenceNodes(context)));
+  if (values.length > LIST_MAX_ITEMS) warnings.push(`List supports ${LIST_MAX_ITEMS} Figma items; ${values.length - LIST_MAX_ITEMS} additional selected item(s) were not rendered.`);
+  const labels = values.length ? values.slice(0, LIST_MAX_ITEMS) : ['First item', 'Second item', 'Third item'];
+  if (!values.length) warnings.push('No visible text labels were found; default List items were used.');
+  const list = await importList({
+    type: 'List',
+    children: labels.map((label, index) => ({
+      id: `list-item-${index + 1}`,
+      type: 'ListItem',
+      content: { fallback: label },
+    })),
+  }, warnings);
+  placeConvertedNode(list, context, warnings, { resize: false });
+  setNodeToFillParentWidth(list, 'List', warnings);
+  removeConvertedSource(context, warnings);
+  return list;
+}
+
 function definitionListItemsFromSelection(nodes, fallbackLabel = 'Label') {
   const text = selectionTextContent(nodes, '');
   const lines = text
@@ -13401,6 +13978,12 @@ async function handleConvertTo(target, resultType = 'convert-result', options = 
         affected = [tabs];
         message = 'Converted the selected text to A1 Tabs and created Tab items in the Tabs slot.';
       }
+    } else if (normalized === 'list') {
+      const list = await convertSelectionToList(selection, warnings);
+      if (list) {
+        affected = [list];
+        message = 'Converted the selected text to an A1 List.';
+      }
     } else if (normalized === 'definition-item' || normalized === 'definition-list') {
       const definitionItem = await convertSelectionToDefinitionItem(selection, warnings);
       if (definitionItem) {
@@ -13420,7 +14003,7 @@ async function handleConvertTo(target, resultType = 'convert-result', options = 
         message = 'Converted the selection to an A1 Figure.';
       }
     } else {
-      warnings.push('Choose a supported conversion target: Page Layout, Section, Card, Stack, Grid, Heading, Body, Button, Button Container, Text Field, Search Field, Textarea, Select, Switch, Radio Group, Checkbox Group, Page Nav, Tree Menu, Pagination, Tabs, Definition Item, Link, or Figure.');
+      warnings.push('Choose a supported conversion target: Page Layout, Section, Card, Stack, Grid, Heading, Body, List, Button, Button Container, Text Field, Search Field, Textarea, Select, Switch, Radio Group, Checkbox Group, Page Nav, Tree Menu, Pagination, Tabs, Definition Item, Link, or Figure.');
     }
   } catch (error) {
     warnings.push(error.message);
@@ -13452,6 +14035,7 @@ const CONVERT_TARGET_LABELS = {
   grid: 'Grid',
   heading: 'Heading',
   body: 'Body',
+  list: 'List',
   button: 'Button',
   'icon-button': 'Icon Button',
   'button-container': 'Button Container',
@@ -13630,6 +14214,15 @@ const ADD_TARGET_DEFAULT_TEMPLATES = {
   },
   badge: { id: '$id', type: 'MessageBadge', props: { status: 'info', size: 'md', icon: 'info' }, content: { fallback: 'Badge' } },
   blockquote: { id: '$id', type: 'Blockquote', props: { variant: 'border', cite: 'Citation' }, content: { fallback: 'Add a quote' } },
+  list: {
+    id: '$id',
+    type: 'List',
+    children: [
+      { id: '$id-one', type: 'ListItem', content: { fallback: 'First item in the list' } },
+      { id: '$id-two', type: 'ListItem', content: { fallback: 'Second item with more detail' } },
+      { id: '$id-three', type: 'ListItem', content: { fallback: 'Third item' } },
+    ],
+  },
   'definition-list': {
     id: '$id',
     type: 'DefinitionList',
@@ -13909,6 +14502,7 @@ const ADD_TARGET_COMPONENT_NAMES = {
   chip: 'Chip',
   'chip-group': 'Chip Group',
   blockquote: 'Blockquote',
+  list: 'List',
   code: 'Code',
   inline: 'Inline',
   'data-table': 'Data Table',
@@ -13951,6 +14545,7 @@ async function applyStarterPropsToAddedInstance(target, instance, node, warnings
   if (target === 'chip-group') return applyChipGroup(instance, node, warnings);
   if (target === 'bottom-sheet') return applyBottomSheet(instance, node, warnings);
   if (target === 'blockquote') return applyBlockquote(instance, node, warnings);
+  if (target === 'list') return applyList(instance, node, warnings);
   if (target === 'code') return applyCode(instance, node, warnings);
   if (target === 'inline') return applyInline(instance, node, warnings);
   if (target === 'data-table') return applyDataTable(instance, node, warnings);
@@ -15082,7 +15677,7 @@ async function handleTidyUp() {
     try {
       const breakpoint = readBreakpointData(node);
       if (breakpoint && node.parent && node.parent.type === 'PAGE') {
-        applyBreakpointToTree(node, breakpoint, warnings);
+        await applyBreakpointToTree(node, breakpoint, warnings);
         remember(node);
         continue;
       }
@@ -15340,6 +15935,11 @@ async function handleImport(text, assets = [], targetParent = figma.currentPage,
           }
           x += Math.round(instance.width) + 24; // gap/lg between rendered instances
           appendImportedChild(targetParent, instance, node, warnings);
+          // Nested Button Containers are first rendered while a PageLayout is
+          // still at its library-default width. Re-run their responsive layout
+          // after the completed screen has been resized and placed so each one
+          // reads its settled Figma width, not the temporary wide width.
+          syncButtonContainersForDimensions(instance, warnings);
           instances.push(instance);
         }
       } finally {
@@ -15474,7 +16074,20 @@ function applyChoiceGroupGridColumnsForBreakpoint(instance, breakpoint, warnings
   return true;
 }
 
-function applyBreakpointToTree(root, breakpoint, warnings) {
+async function applyResponsiveTextSizeForBreakpoint(text, breakpoint, warnings) {
+  const suggestion = textSuggestion(text);
+  if (!['Heading', 'Paragraph'].includes(suggestion.type)) return false;
+  const [family] = String(suggestion.styleName || '').toLowerCase().split('/');
+  const allowedSizes = textSizeOptionsForFamily(family);
+  const sizes = readResponsiveTextSizes(text, allowedSizes);
+  const size = responsiveTextSizeAt(sizes, breakpoint, allowedSizes);
+  if (!size) return false;
+  await applyTextSuggestion(text, { ...suggestion, styleName: `${family}/${size}` }, warnings);
+  syncResponsiveTextSizesMetadata(text, sizes, allowedSizes);
+  return true;
+}
+
+async function applyBreakpointToTree(root, breakpoint, warnings) {
   if (!root || !A1_BREAKPOINTS.includes(breakpoint)) return;
   try {
     root.setPluginData(A1_BREAKPOINT_KEY, breakpoint);
@@ -15487,7 +16100,7 @@ function applyBreakpointToTree(root, breakpoint, warnings) {
     warnings.push(`Could not size ${root.name || 'breakpoint root'} for ${breakpoint}: ${error.message}`);
   }
 
-  const visit = (node) => {
+  const visit = async (node) => {
     const live = liveNode(node) || node;
     if (!live) return;
     try {
@@ -15505,30 +16118,32 @@ function applyBreakpointToTree(root, breakpoint, warnings) {
         } else if (componentName === 'Button Container') {
           syncButtonContainerForWidth(live, warnings);
         }
+      } else if (live.type === 'TEXT' && !isMaterialIconTextNode(live)) {
+        await applyResponsiveTextSizeForBreakpoint(live, breakpointForSyncedNode(live, root, breakpoint), warnings);
       } else if (isGridFrame(live)) {
         const gridBreakpoint = breakpointForSyncedNode(live, root, breakpoint);
         applyResponsiveGridColumnsForBreakpoint(live, gridBreakpoint, warnings);
       }
       if ('children' in live) {
-        for (const child of [...live.children]) visit(child);
+        for (const child of [...live.children]) await visit(child);
       }
     } catch (error) {
       warnings.push(`Unsupported or unavailable breakpoint adjustment on "${live.name || 'layer'}": ${error.message}`);
     }
   };
-  visit(root);
+  await visit(root);
 }
 
-function cloneRootForBreakpoint(sourceRoot, breakpoint, warnings) {
+async function cloneRootForBreakpoint(sourceRoot, breakpoint, warnings) {
   const clone = sourceRoot.clone();
   clone.x = sourceRoot.x + (A1_BREAKPOINT_WIDTHS[breakpoint] || sourceRoot.width) + 24;
   clone.y = sourceRoot.y;
   sourceRoot.parent.appendChild(clone);
-  applyBreakpointToTree(clone, breakpoint, warnings);
+  await applyBreakpointToTree(clone, breakpoint, warnings);
   return clone;
 }
 
-function createBreakpointRoots({ primary = 'xl', breakpoints = [] } = {}) {
+async function createBreakpointRoots({ primary = 'xl', breakpoints = [] } = {}) {
   const warnings = [];
   const selected = selectedBreakpointRoot();
   if (!selected) {
@@ -15546,7 +16161,7 @@ function createBreakpointRoots({ primary = 'xl', breakpoints = [] } = {}) {
   for (const breakpoint of targets) {
     let root = breakpointRootByKey(source, breakpoint);
     if (root === source) {
-      applyBreakpointToTree(root, breakpoint, warnings);
+      await applyBreakpointToTree(root, breakpoint, warnings);
       created.push(root);
       x = Math.max(x, root.x + root.width + 24);
       continue;
@@ -15555,7 +16170,7 @@ function createBreakpointRoots({ primary = 'xl', breakpoints = [] } = {}) {
     clone.x = x;
     clone.y = source.y;
     source.parent.appendChild(clone);
-    applyBreakpointToTree(clone, breakpoint, warnings);
+    await applyBreakpointToTree(clone, breakpoint, warnings);
     if (root && root !== source) {
       clone.x = root.x;
       clone.y = root.y;
@@ -15566,7 +16181,7 @@ function createBreakpointRoots({ primary = 'xl', breakpoints = [] } = {}) {
   }
   figma.currentPage.selection = created;
   figma.viewport.scrollAndZoomIntoView(created);
-  warnings.push('Created breakpoint roots from one design. Supported automatic adjustments: Page Layout breakpoint, Top Header breakpoint, and responsive Grid columns. Other visual differences remain local until explicit responsive diff support is added.');
+  warnings.push('Created breakpoint roots from one design. Supported automatic adjustments: Page Layout breakpoint, Top Header breakpoint, responsive Grid columns, and responsive Heading/Paragraph sizes. Other visual differences remain local until explicit responsive diff support is added.');
   postPluginMessage({ type: 'breakpoint-create-result', count: created.length, warnings });
 }
 
@@ -15595,6 +16210,31 @@ function mergeGridColumnsIntoNode(node, columnsById) {
   }
 }
 
+function textResponsiveIdentity(text) {
+  try {
+    const jsonId = text.getPluginData('a1-json-id');
+    if (jsonId) return jsonId;
+  } catch {
+    // Ignore stale text handles.
+  }
+  try { return exportTextNode(text).node.id; } catch { return ''; }
+}
+
+function mergeTextSizesIntoNode(node, sizesById) {
+  if (!node || typeof node !== 'object') return;
+  if (['Heading', 'Paragraph'].includes(node.type)) {
+    const sizes = sizesById.get(typeof node.id === 'string' ? node.id : '');
+    if (sizes && Object.keys(sizes).length > 0) {
+      node.props = node.props || {};
+      node.props.size = Object.fromEntries(Object.entries(sizes)
+        .map(([key, value]) => [key, value === 'xjumbo' ? 'xJumbo' : value]));
+    }
+  }
+  for (const key of ['children', 'nodes']) {
+    if (Array.isArray(node[key])) node[key].forEach((child) => mergeTextSizesIntoNode(child, sizesById));
+  }
+}
+
 function exportResponsiveDiff({ primary = 'xl' } = {}) {
   const selected = selectedBreakpointRoot();
   if (!selected) {
@@ -15613,6 +16253,7 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
     ? withBreakpointVisibility(primaryRoot, EXPORTERS[componentName](primaryRoot))
     : exportContainerNode(primaryRoot);
   const columnsById = new Map();
+  const textSizesById = new Map();
   const warnings = [...(result.warnings || [])];
   for (const root of roots) {
     const breakpoint = readBreakpointData(root);
@@ -15623,6 +16264,16 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
       if (!columnsById.has(id)) columnsById.set(id, {});
       columnsById.get(id)[breakpoint] = figmaNumber(grid.gridColumnCount, 1) || 1;
     }
+    const texts = root.findAll((node) => node.type === 'TEXT' && !isMaterialIconTextNode(node));
+    for (const text of texts) {
+      const suggestion = textSuggestion(text);
+      if (!['Heading', 'Paragraph'].includes(suggestion.type)) continue;
+      const id = textResponsiveIdentity(text);
+      const size = String(suggestion.styleName || '').toLowerCase().split('/')[1];
+      if (!id || !size) continue;
+      if (!textSizesById.has(id)) textSizesById.set(id, {});
+      textSizesById.get(id)[breakpoint] = size;
+    }
   }
   for (const root of roots) {
     const grids = root.findAll((node) => isGridFrame(node));
@@ -15631,9 +16282,17 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
       const columns = columnsById.get(id);
       if (columns) syncResponsiveGridColumnsMetadata(grid, columns);
     }
+    const texts = root.findAll((node) => node.type === 'TEXT' && !isMaterialIconTextNode(node));
+    for (const text of texts) {
+      const sizes = textSizesById.get(textResponsiveIdentity(text));
+      if (!sizes) continue;
+      const family = String(textSuggestion(text).styleName || 'body/md').toLowerCase().split('/')[0];
+      syncResponsiveTextSizesMetadata(text, sizes, textSizeOptionsForFamily(family));
+    }
   }
   mergeGridColumnsIntoNode(result.node, columnsById);
-  warnings.push('Responsive diff currently writes supported Grid column differences. Unsupported visual/layout differences are not serialized yet.');
+  mergeTextSizesIntoNode(result.node, textSizesById);
+  warnings.push('Responsive diff writes supported Grid column and Heading/Paragraph size differences. Unsupported visual/layout differences are not serialized yet.');
   postExportResult({ auto: false, live: false, componentName: 'Responsive breakpoints', node: result.node, warnings });
 }
 
@@ -15641,6 +16300,7 @@ function exportResponsiveDiff({ primary = 'xl' } = {}) {
 
 const PAGE_SYNC_NAMESPACE = 'a1_page_sync';
 const PAGE_SYNC_LINK_KEY = 'link-id';
+const PROJECT_PAGE_SECTION_LINK_KEY = 'project-section-link-id';
 const PATTERN_SYNC_NAMESPACE = 'a1_pattern_sync';
 const PATTERN_SYNC_ID_KEY = 'pattern-id';
 const PATTERN_SYNC_NAME_KEY = 'pattern-name';
@@ -15883,7 +16543,7 @@ async function renderPatternVariant(record, breakpoint, x, y, warnings) {
   } finally {
     activeRenderBreakpoint = previousBreakpoint;
   }
-  applyBreakpointToTree(component, breakpoint, warnings);
+  await applyBreakpointToTree(component, breakpoint, warnings);
   component.name = `Breakpoint=${breakpoint}`;
   return component;
 }
@@ -16008,6 +16668,47 @@ function linkedPageRootName(link, title) {
   return `A1 · ${projectLabel} / ${pageLabel}`;
 }
 
+function isLinkedProjectPageSection(node, link) {
+  try {
+    return Boolean(
+      node &&
+      node.type === 'SECTION' &&
+      typeof node.getPluginData === 'function' &&
+      node.getPluginData(PROJECT_PAGE_SECTION_LINK_KEY) === link.linkId
+    );
+  } catch {
+    return false;
+  }
+}
+
+function linkedProjectPageSectionFor(link) {
+  return figma.currentPage.findOne((node) => isLinkedProjectPageSection(node, link));
+}
+
+function createLinkedProjectPageSection(link, title, screenRoots, position) {
+  const roots = (screenRoots || []).map(liveNode).filter(Boolean);
+  if (!roots.length) return null;
+  const layout = horizontalProjectSectionLayout(roots.map((root) => ({ width: root.width, height: root.height })));
+  const section = figma.createSection();
+  figma.currentPage.appendChild(section);
+  section.name = linkedPageRootName(link, title);
+  section.setPluginData(PROJECT_PAGE_SECTION_LINK_KEY, link.linkId);
+  section.setPluginData('project-id', link.projectId);
+  section.setPluginData('page-id', link.pageId);
+  section.resizeWithoutConstraints(layout.width, layout.height);
+  roots.forEach((root, index) => {
+    section.appendChild(root);
+    root.x = layout.items[index].x;
+    root.y = layout.items[index].y;
+  });
+  // Reassert the measured bounds after reparenting because Figma may expand a
+  // section temporarily while a child still has its old canvas coordinates.
+  section.resizeWithoutConstraints(layout.width, layout.height);
+  section.x = Math.round(position.x);
+  section.y = Math.round(position.y);
+  return section;
+}
+
 function canBeLinkedPageRoot(node) {
   return Boolean(
     node &&
@@ -16110,7 +16811,7 @@ function moveRenderedRoots(nodes, dx, dy) {
   }
 }
 
-async function handleLinkedPageImport(text, assets, link) {
+async function handleLinkedPageImport(text, assets, link, options = {}) {
   let parsed;
   try { parsed = JSON.parse(text); } catch (error) { postError('Not valid JSON: ' + error.message); return null; }
   const title = parsed && parsed.page && typeof parsed.page.name === 'string' ? parsed.page.name : link.pageId;
@@ -16133,15 +16834,29 @@ async function handleLinkedPageImport(text, assets, link) {
       try { previousRoot.remove(); } catch { /* The previous linked root may already be gone. */ }
     }
     figma.currentPage.selection = [root];
-    figma.viewport.scrollAndZoomIntoView([root]);
-    return { ...result, rootNodeId: root.id, figmaPageId: figma.currentPage.id, figmaFileKey: figma.fileKey || '' };
+    if (options.focus !== false) figma.viewport.scrollAndZoomIntoView([root]);
+    return {
+      ...result,
+      title,
+      rootNodeId: root.id,
+      renderedRootNodeIds: renderedRoots.map((node) => node.id),
+      figmaPageId: figma.currentPage.id,
+      figmaFileKey: figma.fileKey || '',
+    };
   }
   const root = prepareLinkedRoot(link, title);
   const result = await handleImport(text, assets, root, true);
   if (!result) return null;
   figma.currentPage.selection = [root];
-  figma.viewport.scrollAndZoomIntoView([root]);
-  return { ...result, rootNodeId: root.id, figmaPageId: figma.currentPage.id, figmaFileKey: figma.fileKey || '' };
+  if (options.focus !== false) figma.viewport.scrollAndZoomIntoView([root]);
+  return {
+    ...result,
+    title,
+    rootNodeId: root.id,
+    renderedRootNodeIds: [root.id],
+    figmaPageId: figma.currentPage.id,
+    figmaFileKey: figma.fileKey || '',
+  };
 }
 
 function figureJsonNodes(value, found = new Map()) {
@@ -16215,6 +16930,26 @@ async function collectPageFigureAssets(root, pageNode, warnings) {
   return assets;
 }
 
+// A linked A1 project page is rendered inside the project's shared layout.
+// The PageLayout component also has a visual Top Header, but returning that as
+// page content would make A1 render its shared header a second time.
+function pageLayoutForProjectPageExport(node) {
+  const layout = pageLayoutForPageExport(node);
+  let strippedTopHeader = false;
+  const regions = Array.isArray(layout.regions) ? layout.regions.map((region) => {
+    const nodes = Array.isArray(region && region.nodes) ? region.nodes : [];
+    const retained = nodes.filter((child) => {
+      if (child && child.type === 'TopHeader') {
+        strippedTopHeader = true;
+        return false;
+      }
+      return true;
+    });
+    return { ...region, nodes: retained };
+  }) : [];
+  return { layout: { ...layout, regions }, strippedTopHeader };
+}
+
 async function exportLinkedPage(link) {
   const root = linkedRootFor(link);
   if (!root) throw new Error('The linked A1 page root was not found on this Figma page. Render it from A1 first.');
@@ -16224,7 +16959,8 @@ async function exportLinkedPage(link) {
     : exportContainerNode(root);
   const { node, warnings } = result;
   const assets = await collectPageFigureAssets(root, node, warnings);
-  const layout = pageLayoutForPageExport(node);
+  const { layout, strippedTopHeader } = pageLayoutForProjectPageExport(node);
+  if (strippedTopHeader) warnings.push('The PageLayout Top Header was omitted because A1 renders the project shared header.');
   return {
     json: JSON.stringify({
       schemaVersion: '1.0.0',
@@ -16258,6 +16994,8 @@ async function exportNewA1Page(project) {
   }
   const { node, warnings } = isPageLayout ? exportPageLayout(root) : exportContainerNode(root);
   const assets = await collectPageFigureAssets(root, node, warnings);
+  const { layout, strippedTopHeader } = pageLayoutForProjectPageExport(node);
+  if (strippedTopHeader) warnings.push('The PageLayout Top Header was omitted because A1 renders the project shared header.');
   root = liveNode(root);
   if (!root) {
     throw new Error('The selected Figma root changed while it was being exported. Select it again and retry.');
@@ -16280,7 +17018,7 @@ async function exportNewA1Page(project) {
       page: {
         id: `figma-${String(root.id).replace(/[^a-zA-Z0-9_-]+/g, '-')}`,
         name: title,
-        layout: pageLayoutForPageExport(node),
+        layout,
       },
     }, null, 2),
     warnings,
@@ -17794,7 +18532,12 @@ async function handleUpdate(text) {
     const textNode = nodes.find((entry) => ['Heading', 'Paragraph', 'Link'].includes(entry.type));
     if (!textNode) return postError('The JSON has no Heading, Paragraph, or Link node to apply to the selected text layer.');
     const warnings = [];
-    await applyTextSuggestion(selection[0], textStyleRequestForNode(textNode), warnings);
+    await applyTextSuggestion(selection[0], textStyleRequestForNode(textNode, selection[0]), warnings);
+    const responsiveSizes = responsiveTextSizesForJsonNode(textNode);
+    if (textNode.type !== 'Link') {
+      const family = textNode.type === 'Heading' && (textNode.props || {}).type === 'display' ? 'display' : textNode.type === 'Heading' ? 'heading' : 'body';
+      syncResponsiveTextSizesMetadata(selection[0], responsiveSizes, textSizeOptionsForFamily(family));
+    }
     if (textNode.content && typeof textNode.content.fallback === 'string') {
       const text = selection[0];
       if (text.fontName !== figma.mixed) await figma.loadFontAsync(text.fontName);
@@ -17918,6 +18661,7 @@ function postSelectionState() {
   const conversionRecommendation = conversionRecommendationForSelection(selection);
   const conversionSuggestions = conversionRecommendation ? conversionRecommendation.suggestions : [];
   let target = selection.length === 1 ? liveNode(selection[0]) : null;
+  if (target) syncButtonContainersForDimensions(target, []);
   updateRelaunchData(selection, target);
   if (target && target.type === 'TEXT' && isMaterialIconTextNode(target)) {
     postPluginMessage({
@@ -18186,12 +18930,13 @@ figma.on('selectionchange', () => {
 
 function handleCurrentPageNodeChange(event) {
   if (linkedPageLiveLink) scheduleLinkedPagePreview();
+  const selection = figma.currentPage.selection;
+  const target = selection.length === 1 ? liveNode(selection[0]) : null;
   if (liveViewEnabled) {
+    if (target) syncButtonContainersForDimensions(target, []);
     scheduleLivePreview();
     return;
   }
-  const selection = figma.currentPage.selection;
-  const target = selection.length === 1 ? liveNode(selection[0]) : null;
   if (!target || (!['INSTANCE', 'TEXT'].includes(target.type) && !canExportContainer(target))) return;
   if (target.type === 'INSTANCE') {
     syncSelectedInstancePropertySignature({ schedule: true });
@@ -18213,20 +18958,17 @@ function handleCurrentPageNodeChange(event) {
     } catch {
       return false;
     }
-    for (let parent = changed && changed.parent; parent; parent = parent.parent) {
-      if (parent.id === target.id) return true;
-    }
-    return false;
+    // Width can change because the selected component's parent or breakpoint
+    // root was resized, so treat ancestor changes as relevant too.
+    return hasAncestorId(changed, target.id) || hasAncestorId(target, change.id);
   });
   if (relevant) {
+    syncButtonContainersForDimensions(target, []);
     if (target.type === 'INSTANCE' && registeredSetName(target) === 'Card') {
       syncCardIconPositionForWidth(target, []);
     }
     if (target.type === 'INSTANCE' && registeredSetName(target) === 'Breadcrumb') {
       syncBreadcrumbBackButtonForWidth(target, []);
-    }
-    if (target.type === 'INSTANCE' && registeredSetName(target) === 'Button Container') {
-      syncButtonContainerForWidth(target, []);
     }
     if (target.type === 'INSTANCE' && registeredSetName(target) === 'Choice Group') {
       syncChoiceGroupTileSizing(target, []);
@@ -18336,7 +19078,7 @@ figma.ui.onmessage = async (message) => {
       }
     }
     if (message.type === 'create-breakpoints' || message.type === 'sync-breakpoints') {
-      createBreakpointRoots({ primary: message.primary, breakpoints: message.breakpoints });
+      await createBreakpointRoots({ primary: message.primary, breakpoints: message.breakpoints });
     }
     if (message.type === 'export-responsive-diff') {
       exportResponsiveDiff({ primary: message.primary });
@@ -18352,7 +19094,7 @@ figma.ui.onmessage = async (message) => {
     }
     if (message.type === 'linked-project-import') {
       const pages = Array.isArray(message.pages) ? message.pages.slice(0, 100) : [];
-      const roots = [];
+      const sections = [];
       const warnings = [];
       const origin = { x: Math.round(figma.viewport.center.x), y: Math.round(figma.viewport.center.y) };
       let nextY = origin.y;
@@ -18362,28 +19104,40 @@ figma.ui.onmessage = async (message) => {
           warnings.push(`Page ${index + 1} could not be rendered.`);
           continue;
         }
-        const result = await handleLinkedPageImport(page.text, page.assets || [], page.link);
+        const previousSection = linkedProjectPageSectionFor(page.link);
+        const result = await handleLinkedPageImport(page.text, page.assets || [], page.link, { focus: false });
         if (!result) {
           warnings.push(`${page.link.pageTitle || page.link.pageId}: could not be rendered.`);
           continue;
         }
-        const root = resolveNodeById(result.rootNodeId);
-        if (root && root.type === 'FRAME') {
-          root.x = origin.x;
-          root.y = nextY;
-          nextY += Math.max(root.height, 800) + 120;
-          roots.push(root);
+        const screenRoots = (result.renderedRootNodeIds || [result.rootNodeId])
+          .map(resolveNodeById)
+          .filter(Boolean);
+        const section = createLinkedProjectPageSection(
+          page.link,
+          result.title,
+          screenRoots,
+          { x: origin.x, y: nextY },
+        );
+        if (section) {
+          if (previousSection && previousSection.id !== section.id) {
+            try { previousSection.remove(); } catch { /* The previous section may already be gone. */ }
+          }
+          nextY = nextProjectSectionY(section.y, section.height);
+          sections.push(section);
+        } else {
+          warnings.push(`${page.link.pageTitle || page.link.pageId}: rendered screens could not be grouped into a section.`);
         }
         if (Array.isArray(result.warnings)) warnings.push(...result.warnings);
       }
-      if (roots.length) {
-        figma.currentPage.selection = roots;
-        figma.viewport.scrollAndZoomIntoView(roots);
+      if (sections.length) {
+        figma.currentPage.selection = sections;
+        figma.viewport.scrollAndZoomIntoView(sections);
       }
       postPluginMessage({
         type: 'linked-project-import-result',
         projectId: message.projectId,
-        count: roots.length,
+        count: sections.length,
         warnings,
       });
     }

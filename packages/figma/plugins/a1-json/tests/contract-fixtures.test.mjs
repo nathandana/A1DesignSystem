@@ -37,8 +37,24 @@ test('library manifest has the expected published-key sections', () => {
   assert.equal(manifest.schemaVersion, '1.0');
   assert.ok(manifest.library?.fileKey, 'library fileKey is required');
   assert.match(manifest.imageLibrary?.publicBaseUrl || '', /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\/images\/shared$/);
-  for (const key of ['componentSets', 'components', 'textStyles', 'variables']) {
+  for (const key of ['componentSets', 'components', 'iconSets', 'textStyles', 'variables']) {
     assert.equal(typeof manifest[key], 'object', `${key} should be an object`);
+  }
+  const badgeAndCardIcons = [
+    'accessibility', 'accessibility_new', 'account_tree', 'apps', 'auto_awesome',
+    'bar_chart', 'bolt', 'campaign', 'category', 'check_circle', 'code', 'construction',
+    'dashboard', 'dashboard_customize', 'data_object', 'design_services', 'devices',
+    'edit_note', 'error', 'fact_check', 'folder', 'font_download', 'format_paint',
+    'foundation', 'gavel', 'hub', 'image', 'info', 'input', 'insert_photo',
+    'integration_instructions', 'language', 'layers', 'looks_3', 'looks_4',
+    'looks_one', 'looks_two', 'menu', 'near_me', 'palette', 'phone_iphone',
+    'photo_library', 'precision_manufacturing', 'publish', 'query_stats', 'route',
+    'smart_button', 'star', 'star_border', 'table_chart', 'task_alt', 'terminal',
+    'text_fields', 'title', 'token', 'touch_app', 'translate', 'warning', 'web_asset',
+    'widgets',
+  ];
+  for (const icon of ['arrow_forward', 'link', 'open_in_new', ...badgeAndCardIcons]) {
+    assert.match(manifest.iconSets[icon] || '', /^[a-f0-9]{40}$/, `${icon} needs a published component-set key`);
   }
   assert.equal(typeof manifest.variables.color, 'object', 'variables.color should be an object');
   assert.equal(typeof manifest.variables.float, 'object', 'variables.float should be an object');
@@ -53,6 +69,10 @@ test('plugin manifest exposes the A1:Figma relaunch action', () => {
     manifest.networkAccess?.allowedDomains?.includes('https://pszmkbfvyjkifbyututo.supabase.co'),
     'the public A1 Image Library origin must be available to Figure imports',
   );
+  assert.ok(
+    manifest.networkAccess?.allowedDomains?.includes('*') && manifest.networkAccess?.reasoning,
+    'explicitly imported Figures need network access and a user-facing explanation for direct image URLs',
+  );
 });
 
 test('configured manifest imports are trusted without fragile name revalidation', () => {
@@ -64,4 +84,23 @@ test('configured manifest imports are trusted without fragile name revalidation'
     false,
     'exact configured component keys must not be rejected because default variants have different names',
   );
+});
+
+test('material icons use configured keys before enabled-library discovery', () => {
+  const source = readFileSync(resolve(pluginRoot, 'src/code.js'), 'utf8');
+  const resolver = source.match(/async function findMaterialIconComponentAsync[\s\S]*?\n}\n\nfunction materialIconNameFromInstance/);
+  assert.ok(resolver, 'material icon resolver should exist');
+  const configured = resolver[0].indexOf('importConfiguredMaterialIconSource(requested)');
+  const discovery = resolver[0].indexOf('getAvailableComponentSetsAsync');
+  assert.ok(configured >= 0, 'material icons should support configured manifest imports');
+  assert.ok(discovery > configured, 'configured icon keys should be attempted before enabled-library discovery');
+});
+
+test('Badge and Card imports use the shared async Material icon resolver', () => {
+  const source = readFileSync(resolve(pluginRoot, 'src/code.js'), 'utf8');
+  const atomic = readFileSync(resolve(pluginRoot, 'src/adapters/atomic.js'), 'utf8');
+  const cardApply = source.match(/async function applyCard[\s\S]*?\n}\n\nasync function importCard/);
+  const badgeApply = atomic.match(/async function applyBadge[\s\S]*?\n}\n\nasync function importBadge/);
+  assert.ok(cardApply?.[0].includes('await findMaterialIconComponentAsync(iconName, warnings)'));
+  assert.ok(badgeApply?.[0].includes('await findMaterialIconComponentAsync(iconName, warnings)'));
 });
