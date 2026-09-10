@@ -1,3 +1,5 @@
+"use client";
+
 import "./page-layout.css";
 
 export function PageLayout({

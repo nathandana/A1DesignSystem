@@ -1,3 +1,5 @@
+"use client";
+
 import { useContext } from "react";
 import { FieldsetContext } from "../fieldset/FieldsetContext.js";
 import "./field-row.css";

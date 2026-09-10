@@ -26,6 +26,7 @@
     "tokens:contract:update": "node scripts/color/capture-color-contract.mjs --update",
     "tokens:contract:check": "node scripts/color/capture-color-contract.mjs",
     "pack:check": "node scripts/verify-pack.mjs",
+    "test:rsc": "node scripts/test-rsc-compat.mjs && npm run typecheck --workspace=@gtivr4/a1-design-system-react",
     "build:storybook": "storybook build",
     "check": "npm --version",
     "clean:tokens": "style-dictionary clean",

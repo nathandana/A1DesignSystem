@@ -1398,9 +1398,9 @@ const COMPONENT_PROPS = {
   ],
   cluster: [
     { id: 'as',          name: 'as',          type: 'ElementType', description: 'Underlying HTML element. Default: "div".' },
-    { id: 'gap',         name: 'gap',         type: 'number',      description: 'Gap applied to both row and column axes. Default: 8.' },
-    { id: 'rowGap',      name: 'rowGap',      type: 'number',      description: 'Row gap override.' },
-    { id: 'columnGap',   name: 'columnGap',   type: 'number',      description: 'Column gap override.' },
+    { id: 'gap',         name: 'gap',         type: '"xs" | "sm" | "md" | "lg" | "xl" | number', description: 'Gap applied to both axes. Accepts the Stack semantic scale or a numeric spacing token. Default: 8.' },
+    { id: 'rowGap',      name: 'rowGap',      type: '"xs" | "sm" | "md" | "lg" | "xl" | number', description: 'Row gap override using a semantic or numeric spacing token.' },
+    { id: 'columnGap',   name: 'columnGap',   type: '"xs" | "sm" | "md" | "lg" | "xl" | number', description: 'Column gap override using a semantic or numeric spacing token.' },
     { id: 'align',       name: 'align',       type: '"start" | "center" | "end" | "stretch" | "baseline"', description: 'Align-items. Default: "center".' },
     { id: 'justify',     name: 'justify',     type: '"start" | "center" | "end" | "between" | "around" | "evenly"', description: 'Justify-content. Default: "start".' },
     { id: 'children',    name: 'children',    type: 'ReactNode',   description: 'Inline content to cluster.' },

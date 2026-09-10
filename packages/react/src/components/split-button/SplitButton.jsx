@@ -1,3 +1,5 @@
+"use client";
+
 import "./split-button.css";
 import { useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";

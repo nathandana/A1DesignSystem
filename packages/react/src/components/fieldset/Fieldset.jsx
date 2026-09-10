@@ -1,3 +1,5 @@
+"use client";
+
 import { FieldsetContext } from "./FieldsetContext.js";
 import "./fieldset.css";
 

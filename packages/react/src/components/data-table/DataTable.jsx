@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { SelectField } from "../field/SelectField.jsx";

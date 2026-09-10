@@ -5416,6 +5416,20 @@
         }
       },
       "configurator": {
+        "clusterGapHelp": {
+          "$type": "string",
+          "$value": "Use the semantic xs–xl scale or a numeric spacing token.",
+          "$description": "Helper text for the deprecated Cluster component's gap control.",
+          "locale": {
+            "es": "Usa la escala semántica de xs a xl o un token de espaciado numérico.",
+            "fr": "Utilisez l’échelle sémantique de xs à xl ou un jeton d’espacement numérique.",
+            "de": "Verwenden Sie die semantische Skala von xs bis xl oder ein numerisches Abstandstoken.",
+            "pt": "Use a escala semântica de xs a xl ou um token numérico de espaçamento.",
+            "ja": "xsからxlのセマンティックスケール、または数値のスペーシングトークンを使用します。",
+            "zh": "使用从 xs 到 xl 的语义比例或数字间距令牌。",
+            "ar": "استخدم المقياس الدلالي من xs إلى xl أو رمز تباعد رقميًا."
+          }
+        },
         "avatarName": {
           "$type": "string",
           "$value": "Name",

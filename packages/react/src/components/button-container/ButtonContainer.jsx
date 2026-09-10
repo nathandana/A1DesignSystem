@@ -1,3 +1,5 @@
+"use client";
+
 import "./button-container.css";
 import { Children, cloneElement, isValidElement } from "react";
 import { Button } from "../button/Button.jsx";

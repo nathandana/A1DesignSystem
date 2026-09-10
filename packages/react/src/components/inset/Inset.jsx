@@ -1,3 +1,5 @@
+"use client";
+
 import "./inset.css";
 import { resolveSpacing } from "../structure-utils.js";
 

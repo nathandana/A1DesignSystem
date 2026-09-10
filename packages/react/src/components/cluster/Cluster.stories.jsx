@@ -13,7 +13,7 @@ const meta = {
   argTypes: {
     gap: {
       control: "select",
-      options: [0, 2, 4, 8, 12, 16, 24, 32],
+      options: ["xs", "sm", "md", "lg", "xl", 0, 2, 4, 8, 12, 16, 24, 32],
     },
     align: {
       control: "select",
@@ -63,4 +63,14 @@ export const WrappingActions = {
       </Cluster>
     </Card>
   ),
+};
+
+export const SemanticGap = {
+  name: "Semantic gap",
+  args: {
+    gap: "lg",
+    align: "center",
+    justify: "start",
+  },
+  render: Configurable.render,
 };

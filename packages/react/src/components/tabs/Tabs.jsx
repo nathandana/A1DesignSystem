@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";
 import "./tabs.css";

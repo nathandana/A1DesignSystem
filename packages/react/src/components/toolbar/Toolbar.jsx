@@ -1,3 +1,5 @@
+"use client";
+
 import "./toolbar.css";
 import { Children, cloneElement, isValidElement, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";

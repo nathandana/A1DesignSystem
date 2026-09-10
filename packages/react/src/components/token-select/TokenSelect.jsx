@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useRef, useState } from "react";
 import { Menu, MenuSection } from "../menu/Menu.jsx";
 import { Icon } from "../icon/Icon.jsx";

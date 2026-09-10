@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useState, useEffect } from "react";
 import { Button } from "../button/Button.jsx";
 import { useLabel } from "../labels/Labels.jsx";

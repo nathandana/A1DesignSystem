@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useLayoutEffect, useRef, useCallback, forwardRef, useContext } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";

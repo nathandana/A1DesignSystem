@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Icon } from '../icon/Icon.jsx';
 import { useLabel } from '../labels/Labels.jsx';

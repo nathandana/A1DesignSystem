@@ -1,3 +1,5 @@
+"use client";
+
 import "./button.css";
 import { CircularProgress } from "../circular-progress/CircularProgress.jsx";
 import { Icon } from "../icon/Icon.jsx";

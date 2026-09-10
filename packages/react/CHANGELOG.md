@@ -4,6 +4,8 @@
 
 ### Added
 
+- **React Server Component compatibility** (A1-2554) — marked shipped component modules as client boundaries, documented Next.js `transpilePackages` and supported PostCSS configuration, made TopHeader's responsive initial render hydration-stable, aligned the Button and Link declarations with their polymorphic runtime APIs, and allowed deprecated Cluster gaps to use Stack's semantic `xs`–`xl` scale.
+
 - **Avatar** (A1-2055) — added a token-driven user image and initials component with `xs` through `xl` sizes, automatic failed-image fallback, accessible naming, TypeScript declarations, Storybook coverage, usage rules, and a1-web configurator/editor support.
 
 ## 0.30.0 — 2026-08-13

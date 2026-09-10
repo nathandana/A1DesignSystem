@@ -19,8 +19,22 @@ bundler must transform `.jsx` files inside `node_modules`:
 
 - **Vite 4+** — works out of the box (esbuild transforms `.jsx` everywhere with
   the automatic JSX runtime).
+- **Next.js** — add the package to `transpilePackages` in `next.config.mjs`:
+  ```js
+  const nextConfig = {
+    transpilePackages: ["@gtivr4/a1-design-system-react"],
+  };
+
+  export default nextConfig;
+  ```
 - **webpack / other** — extend your JSX loader rule to include this package
   (do not exclude `node_modules/@gtivr4`).
+
+The package marks its shipped component modules with `"use client"`. React
+Server Components may import them from the package root and render them
+without adding a wrapper solely to establish the client boundary. Props passed
+across that boundary must still be serializable; put event handlers and other
+client-owned behavior in your own Client Component.
 
 ---
 
@@ -59,7 +73,36 @@ Component CSS uses `@custom-media` breakpoint queries (e.g.
 build time or browsers drop the rules — responsive behavior in Grid, Stack,
 field layouts, SideNav, and others silently breaks.
 
-Add a `postcss.config.mjs` at your project root:
+Install the required plugins:
+
+```sh
+npm install -D postcss-custom-media @csstools/postcss-global-data
+```
+
+### Next.js
+
+Next.js expects named PostCSS plugins in an object map. Add a CommonJS
+`postcss.config.js` at the project root:
+
+```js
+const breakpoints = require.resolve(
+  "@gtivr4/a1-design-system-react/breakpoints.css",
+);
+
+module.exports = {
+  plugins: {
+    "@csstools/postcss-global-data": { files: [breakpoints] },
+    "postcss-custom-media": {},
+  },
+};
+```
+
+Do not pass pre-invoked plugin functions in an array to Next.js; its built-in
+PostCSS loader rejects that configuration shape.
+
+### Vite and other ESM-based tools
+
+Add a `postcss.config.mjs` at the project root:
 
 ```js
 import postcssGlobalData from "@csstools/postcss-global-data";
@@ -75,10 +118,6 @@ export default {
     postcssCustomMedia(),
   ],
 };
-```
-
-```sh
-npm install -D postcss-custom-media @csstools/postcss-global-data
 ```
 
 Vite picks up `postcss.config.mjs` automatically.

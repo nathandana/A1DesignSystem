@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Cluster semantic gaps** (A1-2554) — the deprecated Cluster configurator now accepts the same semantic `xs`–`xl` gap scale as Stack, while retaining numeric spacing tokens for migration compatibility.
+
 - **Avatar component** (A1-2055) — added Avatar documentation and a live configurator for image-library selection, uploads, URLs and AI image sources, automatic initials fallbacks, accessible alternative text, initials overrides, and the `xs`–`xl` size scale. Avatar is also available in the project and pattern editor and in page-definition JSON.
 
 - **Centered session loading indicator** (A1-2539) — centered the existing Circular Progress animation in the full app viewport while a configured identity provider restores its session.

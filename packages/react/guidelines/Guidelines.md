@@ -37,6 +37,8 @@ These files live alongside `Guidelines.md` in the `/guidelines/` directory and s
 ## Quick-start checklist
 
 1. **Install**: `pnpm add @gtivr4/a1-design-system-react`
+   - Next.js projects must also add `"@gtivr4/a1-design-system-react"` to
+     `transpilePackages` in `next.config.mjs`; see `setup.md`.
 2. **Import CSS** at your app entry point — **all three imports, in this order**:
    ```ts
    import "@gtivr4/a1-design-system-react/tokens.css";
@@ -60,20 +62,17 @@ These files live alongside `Guidelines.md` in the `/guidelines/` directory and s
    ```ts
    import "@gtivr4/a1-design-system-react/utilities/spacing.css";
    ```
-6. **Configure PostCSS** (required for responsive Grid, Stack breakpoints, and other components). Add a `postcss.config.mjs` at your project root:
+6. **Configure PostCSS** (required for responsive Grid, Stack breakpoints, and other components). Next.js uses a CommonJS `postcss.config.js` with a named-plugin object:
    ```js
-   import postcssGlobalData from "@csstools/postcss-global-data";
-   import postcssCustomMedia from "postcss-custom-media";
-   import { createRequire } from "module";
-   const require = createRequire(import.meta.url);
    const breakpoints = require.resolve("@gtivr4/a1-design-system-react/breakpoints.css");
-   export default {
-     plugins: [
-       postcssGlobalData({ files: [breakpoints] }),
-       postcssCustomMedia(),
-     ],
+   module.exports = {
+     plugins: {
+       "@csstools/postcss-global-data": { files: [breakpoints] },
+       "postcss-custom-media": {},
+     },
    };
    ```
+   Vite and other ESM-based tools may use the plugin-function array shown in `setup.md`.
    Install the PostCSS dependencies: `pnpm add -D postcss-custom-media @csstools/postcss-global-data`
 
 ---

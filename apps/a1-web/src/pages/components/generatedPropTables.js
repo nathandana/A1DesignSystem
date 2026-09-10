@@ -1100,6 +1100,12 @@ export const GENERATED_PROP_TABLES = {
           "description": "Underlying element or component to render. Default: \"button\""
         },
         {
+          "id": "href",
+          "name": "href",
+          "type": "string",
+          "description": "Link destination when rendering with `as=\"a\"` or another link component."
+        },
+        {
           "id": "variant",
           "name": "variant",
           "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"destructive\" | \"success\"",
@@ -3292,6 +3298,12 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Link",
       "rows": [
+        {
+          "id": "as",
+          "name": "as",
+          "type": "React.ElementType",
+          "description": "Underlying element or component to render. Default: \"a\""
+        },
         {
           "id": "size",
           "name": "size",

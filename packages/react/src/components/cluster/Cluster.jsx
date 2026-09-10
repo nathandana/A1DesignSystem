@@ -1,3 +1,5 @@
+"use client";
+
 import "./cluster.css";
 import { resolveSpacing } from "../structure-utils.js";
 
@@ -13,6 +15,12 @@ function warnDeprecated() {
 
 const alignments = ["start", "center", "end", "stretch", "baseline"];
 const justifications = ["start", "center", "end", "between", "around", "evenly"];
+const semanticGaps = ["xs", "sm", "md", "lg", "xl"];
+
+function resolveGap(gap) {
+  if (semanticGaps.includes(gap)) return `var(--semantic-spacing-gap-${gap})`;
+  return resolveSpacing(gap);
+}
 
 const alignMap = {
   start: "flex-start",
@@ -45,11 +53,11 @@ export function Cluster({
   warnDeprecated();
   const resolvedAlign = alignments.includes(align) ? align : "center";
   const resolvedJustify = justifications.includes(justify) ? justify : "start";
-  const gapValue = resolveSpacing(gap);
+  const gapValue = resolveGap(gap);
 
   const style = {
-    "--a1-cluster-row-gap": resolveSpacing(rowGap) ?? gapValue,
-    "--a1-cluster-column-gap": resolveSpacing(columnGap) ?? gapValue,
+    "--a1-cluster-row-gap": resolveGap(rowGap) ?? gapValue,
+    "--a1-cluster-column-gap": resolveGap(columnGap) ?? gapValue,
     "--a1-cluster-align": alignMap[resolvedAlign],
     "--a1-cluster-justify": justifyMap[resolvedJustify],
     ...props.style,
