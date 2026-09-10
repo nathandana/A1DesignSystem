@@ -43,6 +43,7 @@ export type ComponentType =
   | "List"
   | "ListItem"
   | "Icon"
+  | "Avatar"
   | "Figure"
   | "Link"
   | "Button"

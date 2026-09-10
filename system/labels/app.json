@@ -5416,6 +5416,54 @@
         }
       },
       "configurator": {
+        "avatarName": {
+          "$type": "string",
+          "$value": "Name",
+          "$description": "Label for the person's name field in the Avatar configurator.",
+          "locale": { "es": "Nombre", "fr": "Nom", "de": "Name", "pt": "Nome", "ja": "名前", "zh": "姓名", "ar": "الاسم" }
+        },
+        "avatarNameHelp": {
+          "$type": "string",
+          "$value": "Used for the fallback initials and default accessible name.",
+          "$description": "Helper text explaining how Avatar uses the person's name.",
+          "locale": { "es": "Se usa para las iniciales alternativas y el nombre accesible predeterminado.", "fr": "Utilisé pour les initiales de remplacement et le nom accessible par défaut.", "de": "Wird für die Ersatzinitialen und den standardmäßigen zugänglichen Namen verwendet.", "pt": "Usado para as iniciais alternativas e o nome acessível padrão.", "ja": "フォールバックのイニシャルと既定のアクセシブル名に使用されます。", "zh": "用于备用姓名首字母和默认无障碍名称。", "ar": "يُستخدم للأحرف الأولى البديلة والاسم الافتراضي المخصص لإمكانية الوصول." }
+        },
+        "avatarAltText": {
+          "$type": "string",
+          "$value": "Alternative text",
+          "$description": "Label for the image alternative text field in the Avatar configurator.",
+          "locale": { "es": "Texto alternativo", "fr": "Texte alternatif", "de": "Alternativtext", "pt": "Texto alternativo", "ja": "代替テキスト", "zh": "替代文本", "ar": "النص البديل" }
+        },
+        "avatarAltTextHelp": {
+          "$type": "string",
+          "$value": "Use an empty value when an adjacent label already names the person.",
+          "$description": "Helper text explaining when an Avatar should be decorative.",
+          "locale": { "es": "Usa un valor vacío cuando una etiqueta adyacente ya identifica a la persona.", "fr": "Utilisez une valeur vide lorsqu’un libellé adjacent nomme déjà la personne.", "de": "Verwenden Sie einen leeren Wert, wenn eine benachbarte Beschriftung die Person bereits nennt.", "pt": "Use um valor vazio quando um rótulo adjacente já identificar a pessoa.", "ja": "隣接するラベルに人物名がある場合は空にします。", "zh": "当相邻标签已标明此人姓名时，请留空。", "ar": "استخدم قيمة فارغة عندما تعرض تسمية مجاورة اسم الشخص بالفعل." }
+        },
+        "avatarInitials": {
+          "$type": "string",
+          "$value": "Initials override",
+          "$description": "Label for the optional initials override field in the Avatar configurator.",
+          "locale": { "es": "Iniciales personalizadas", "fr": "Initiales personnalisées", "de": "Benutzerdefinierte Initialen", "pt": "Iniciais personalizadas", "ja": "イニシャルの上書き", "zh": "自定义姓名首字母", "ar": "أحرف أولى مخصصة" }
+        },
+        "avatarInitialsHelp": {
+          "$type": "string",
+          "$value": "Leave empty to derive initials from the name.",
+          "$description": "Helper text for the Avatar initials override field.",
+          "locale": { "es": "Déjalo vacío para obtener las iniciales del nombre.", "fr": "Laissez vide pour générer les initiales à partir du nom.", "de": "Leer lassen, um die Initialen aus dem Namen abzuleiten.", "pt": "Deixe em branco para gerar as iniciais a partir do nome.", "ja": "名前からイニシャルを生成するには空のままにします。", "zh": "留空以根据姓名生成首字母。", "ar": "اتركه فارغًا لاشتقاق الأحرف الأولى من الاسم." }
+        },
+        "avatarSize": {
+          "$type": "string",
+          "$value": "Size",
+          "$description": "Label for the Avatar size control.",
+          "locale": { "es": "Tamaño", "fr": "Taille", "de": "Größe", "pt": "Tamanho", "ja": "サイズ", "zh": "尺寸", "ar": "الحجم" }
+        },
+        "avatarSizeHelp": {
+          "$type": "string",
+          "$value": "Choose an A1 size from extra small through extra large.",
+          "$description": "Helper text for the Avatar size control.",
+          "locale": { "es": "Elige un tamaño A1 de extrapequeño a extragrande.", "fr": "Choisissez une taille A1 de très petite à très grande.", "de": "Wählen Sie eine A1-Größe von extra klein bis extra groß.", "pt": "Escolha um tamanho A1 de extrapequeno a extragrande.", "ja": "極小から特大までのA1サイズを選択します。", "zh": "选择从超小到超大的 A1 尺寸。", "ar": "اختر حجم A1 من صغير جدًا إلى كبير جدًا." }
+        },
         "format": {
           "$type": "string",
           "$value": "Format",

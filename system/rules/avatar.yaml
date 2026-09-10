@@ -1,0 +1,41 @@
+component: Avatar
+rules:
+  - id: avatar-name-required
+    requirement: Always provide the person's name.
+    do: Use the person's preferred display name so image alternatives and generated initials remain meaningful.
+    dont: Render an anonymous image or initials without a name.
+    applies_to:
+      - accessibility
+      - content
+
+  - id: avatar-decorative-context
+    requirement: Avoid repeating an adjacent visible name to assistive technology.
+    do: Pass an empty alt value when the same person's name is immediately adjacent to the avatar.
+    dont: Announce the same name twice in a row.
+    applies_to:
+      - accessibility
+      - semantics
+
+  - id: avatar-initials-fallback
+    requirement: Preserve the initials fallback for missing and failed images.
+    do: Let Avatar derive initials from the person's name or provide a deliberate initials override.
+    dont: Replace failed images with an unlabeled empty shape.
+    applies_to:
+      - accessibility
+      - resilience
+
+  - id: avatar-not-an-action
+    requirement: Keep Avatar presentational.
+    do: Place Avatar inside a Button or Link when the combined element performs an action.
+    dont: Add click handlers or button semantics directly to Avatar.
+    applies_to:
+      - interaction
+      - semantics
+
+  - id: avatar-tokenized-sizes
+    requirement: Use the xs through xl size scale.
+    do: Select the size that matches the surrounding component density.
+    dont: resize Avatar with one-off width, height, font-size, or border-radius overrides.
+    applies_to:
+      - sizing
+      - system-design

@@ -179,6 +179,7 @@ tooltip, or surrounding text so meaning is not communicated by color alone.
 
 | Export | Notes |
 |---|---|
+| `Avatar` | `name` (required), optional `src`, `alt`, `initials`, and `size="xs\|sm\|md\|lg\|xl"`; failed images fall back to initials. Pass `alt=""` when an adjacent label already names the person. |
 | `Icon` | `name` (Material Symbols ligature), `size`, `color`, `weight`, `grade`, `fill` — see `icon-discovery.md` before using any icon |
 | `registerCustomIconFont` / `clearCustomIconFont` | Register a custom icon font so `name="custom:<name>"` resolves |
 

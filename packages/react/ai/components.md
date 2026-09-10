@@ -478,8 +478,11 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Component | React | Native | Pure | Web Components | Figma |
 | --------- | :---: | :----: | :--: | :------------: | :---: |
+| Avatar    |   ✓   |   —    |  —   |       —        |   —   |
 | Icon      |   ✓   |   —    |  ✓   |       —        |   ✓   |
 
+> **Avatar props:** `name` (string, required — provides derived initials and the default accessible name), `src` (optional image URL; failed images fall back to initials), `alt` (defaults to `name`; pass `""` when an adjacent label already names the person), `initials` (optional override), and `size` (`"xs" | "sm" | "md" | "lg" | "xl"`, default `"md"`). Avatar is presentational; wrap it in a Button or Link rather than adding interaction directly.
+>
 > **Icon props:** `name` (string, required), `size` ("xs" | "sm" | "md" | "lg" | "xl" | "jumbo" | "xJumbo", default "md" = inherits from parent), `color` ("muted" | "accent" | "inverse" | "success" | "error" | "warn" | "info", default = inherits current text color), `weight` (font variation 100–700), `grade` (-50–200), `opticalSize` (20|24|40|48), `fill` (boolean).
 >
 > **Icon size px values:** xs=16, sm=20, md=inherit/~24, lg=32, xl=40, jumbo=64, xJumbo=96. Size classes also set `--a1-icon-opsz` automatically for sharp rendering at that scale.

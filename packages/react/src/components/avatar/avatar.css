@@ -1,0 +1,57 @@
+.a1-avatar {
+  box-sizing: border-box;
+  --a1-avatar-size: var(--component-avatar-size-md);
+  --a1-avatar-font-size: var(--component-avatar-font-size-md);
+  --a1-avatar-border-width: var(--component-avatar-border-width);
+
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: var(--a1-avatar-size);
+  block-size: var(--a1-avatar-size);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: var(--a1-avatar-border-width) solid var(--component-avatar-border-color);
+  border-radius: var(--component-avatar-border-radius);
+  background: var(--component-avatar-background);
+  color: var(--component-avatar-foreground);
+  font-family: var(--component-avatar-font-family);
+  font-size: var(--a1-avatar-font-size);
+  font-weight: var(--component-avatar-font-weight);
+  line-height: var(--component-avatar-line-height);
+}
+
+.a1-avatar--xs {
+  --a1-avatar-size: var(--component-avatar-size-xs);
+  --a1-avatar-font-size: var(--component-avatar-font-size-xs);
+}
+
+.a1-avatar--sm {
+  --a1-avatar-size: var(--component-avatar-size-sm);
+  --a1-avatar-font-size: var(--component-avatar-font-size-sm);
+}
+
+.a1-avatar--lg {
+  --a1-avatar-size: var(--component-avatar-size-lg);
+  --a1-avatar-font-size: var(--component-avatar-font-size-lg);
+  --a1-avatar-border-width: var(--component-avatar-border-width-large);
+}
+
+.a1-avatar--xl {
+  --a1-avatar-size: var(--component-avatar-size-xl);
+  --a1-avatar-font-size: var(--component-avatar-font-size-xl);
+  --a1-avatar-border-width: var(--component-avatar-border-width-large);
+}
+
+.a1-avatar__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.a1-avatar__initials {
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}

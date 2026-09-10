@@ -75,6 +75,7 @@ import * as dataTable from './data-table.jsx'
 import * as chart from './chart.jsx'
 import * as pagination from './pagination.jsx'
 import * as icon from './icon.jsx'
+import * as avatar from './avatar.jsx'
 import * as accordion from './accordion.jsx'
 import componentExamples from '../componentExamples.json'
 
@@ -169,6 +170,7 @@ const REGISTRY = {
   'sunburst-chart': chart.sunburstChartDetail,
   pagination,
   icon,
+  avatar,
   accordion,
 }
 

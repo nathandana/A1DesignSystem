@@ -1,0 +1,29 @@
+{
+  "component": {
+    "avatar": {
+      "size": {
+        "xs": { "$type": "dimension", "$value": "{base.spacing.20}" },
+        "sm": { "$type": "dimension", "$value": "{base.spacing.32}" },
+        "md": { "$type": "dimension", "$value": "{base.spacing.48}" },
+        "lg": { "$type": "dimension", "$value": "{base.spacing.64}" },
+        "xl": { "$type": "dimension", "$value": "{base.spacing.128}" }
+      },
+      "fontSize": {
+        "xs": { "$type": "dimension", "$value": "{semantic.font.size.body.2xs}" },
+        "sm": { "$type": "dimension", "$value": "{semantic.font.size.body.sm}" },
+        "md": { "$type": "dimension", "$value": "{semantic.font.size.heading.xs}" },
+        "lg": { "$type": "dimension", "$value": "{semantic.font.size.heading.sm}" },
+        "xl": { "$type": "dimension", "$value": "{semantic.font.size.heading.xxl}" }
+      },
+      "fontFamily": { "$type": "fontFamily", "$value": "{base.font.family.body}" },
+      "fontWeight": { "$type": "fontWeight", "$value": "{base.font.weight.semibold}" },
+      "lineHeight": { "$type": "lineHeight", "$value": "{semantic.font.lineHeight.heading}" },
+      "borderWidth": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "borderWidthLarge": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "borderRadius": { "$type": "dimension", "$value": "{base.radius.pill}" },
+      "borderColor": { "$type": "color", "$value": "{semantic.color.border.default}" },
+      "background": { "$type": "color", "$value": "{semantic.color.surface.raised}" },
+      "foreground": { "$type": "color", "$value": "{semantic.color.text.default}" }
+    }
+  }
+}

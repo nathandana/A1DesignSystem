@@ -13,10 +13,12 @@ import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
+import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
+  avatar: '2026-09-10',
   'line-chart': '2026-07-06',
   'bar-chart': '2026-07-06',
   'area-chart': '2026-07-06',
@@ -258,6 +260,7 @@ export const componentCategories = [
     icon: 'insert_photo',
     body: 'Visual primitives for media, symbols, and supporting imagery.',
     components: [
+      { id: 'avatar', icon: 'account_circle', title: 'Avatar', body: 'User images with resilient initials fallbacks in A1 sizes.' },
       { id: 'figure', icon: 'image', title: 'Figure', body: 'Images or media with accessible captions.' },
       { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols and registered custom-font wrapper with A1 sizing and color.' },
     ],
@@ -405,6 +408,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   calendar: ['date grid', 'month', 'datepicker', 'date picker'],
   node: ['shape', 'graph node', 'diagram node'],
   icon: ['symbol', 'glyph', 'material symbol', 'custom icon'],
+  avatar: ['profile image', 'user image', 'initials', 'portrait'],
 }
 
 export const PACKAGE_COVERAGE = {
@@ -494,6 +498,7 @@ export const PACKAGE_COVERAGE = {
   calendar:           ['React'],
   node:               ['React'],
   icon:               ['React', 'Pure', 'Figma'],
+  avatar:             ['React'],
   accordion:          ['React', 'Pure', 'Figma'],
 }
 
@@ -586,6 +591,7 @@ export const COMPONENT_STATUS = {
   canvas:              'experimental',
   node:                'experimental',
   icon:                'beta',
+  avatar:              'beta',
   accordion:           'beta',
 }
 
@@ -683,6 +689,7 @@ export const COMPONENT_RELATED = {
   calendar:            ['data-table', 'definition-list', 'date-field', 'pagination'],
   canvas:              ['data-table', 'card', 'dialog'],
   icon:                ['icon-button', 'badge'],
+  avatar:              ['figure', 'icon', 'data-table'],
   accordion:           ['tabs', 'section'],
 }
 
@@ -702,4 +709,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/tooltip.yaml', raw: tooltipRules },
   { file: 'system/rules/overlay.yaml', raw: overlayRules },
   { file: 'system/rules/chart.yaml', raw: chartRules },
+  { file: 'system/rules/avatar.yaml', raw: avatarRules },
 ]

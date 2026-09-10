@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- **Avatar** (A1-2055) — added a token-driven user image and initials component with `xs` through `xl` sizes, automatic failed-image fallback, accessible naming, TypeScript declarations, Storybook coverage, usage rules, and a1-web configurator/editor support.
+
 ## 0.30.0 — 2026-08-13
 
 ### Added

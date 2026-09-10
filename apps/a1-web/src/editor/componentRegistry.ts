@@ -13,6 +13,7 @@
 import {
   Accordion,
   Autocomplete,
+  Avatar,
   Banner,
   Bleed,
   Blockquote,
@@ -132,6 +133,7 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   List,
   ListItem,
   Icon,
+  Avatar,
   Figure,
   // Navigation & actions
   Link,

@@ -129,7 +129,7 @@ and update this document in the same change.
 | Group | Registered `type` values |
 |-------|--------------------------|
 | Layout | `PageLayout`, `Section`, `Stack`, `Grid`, `GridItem`, `Cluster`, `Card`, `Bleed`, `Inset`, `Spacer`, `ButtonContainer` |
-| Typography and media | `Heading`, `Paragraph`, `Blockquote`, `Code`, `Divider`, `List`, `ListItem`, `Icon`, `Figure` |
+| Typography and media | `Heading`, `Paragraph`, `Blockquote`, `Code`, `Divider`, `List`, `ListItem`, `Avatar`, `Icon`, `Figure` |
 | Actions and controls | `Link`, `Button`, `IconButton`, `Switch`, `SegmentedControl`, `Slider`, `Toolbar`, `Tabs`, `StickyActions`, `Accordion` |
 | Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker` |
 | Form inputs | `TextField`, `TextareaField`, `SelectField`, `NumberField`, `DateField`, `TimeField`, `PhoneField`, `ZipField`, `CreditCardField`, `Fieldset`, `FieldRow`, `CheckboxGroup`, `RadioGroup`, `ChoiceGroup` |
