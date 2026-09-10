@@ -15,7 +15,12 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-19","type":"code","summary":"Autocomplete"},
     {"date":"2026-06-18","type":"code","summary":"Autocomplete"},
   ],
+  "avatar": [
+    {"date":"2026-09-10","type":"code","summary":"Avatar component (A1-2055)","ticket":"A1-2055"},
+  ],
   "badge": [
+    {"date":"2026-09-09","type":"code","summary":"A1:Figma Badge and Card icon imports"},
+    {"date":"2026-09-08","type":"code","summary":"A1:Figma Badge import"},
     {"date":"2026-07-14","type":"code","summary":"Figma Badge Material icons and Grid bridge"},
   ],
   "banner": [
@@ -30,6 +35,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-16","type":"code","summary":"A1:Figma Breadcrumb + Code bridge"},
   ],
   "button": [
+    {"date":"2026-09-09","type":"code","summary":"A1:Figma Button and Link icon imports"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Button simplified"},
     {"date":"2026-07-07","type":"code","summary":"Button, Toolbar, SegmentedControl, and compact Field polish"},
     {"date":"2026-07-06","type":"code","summary":"Figma Button component","ticket":"A1-419"},
@@ -38,6 +44,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-23","type":"code","summary":"Button small size fix","ticket":"A1-274"},
   ],
   "button-container": [
+    {"date":"2026-09-09","type":"code","summary":"A1:Figma Button Container responsive direction"},
     {"date":"2026-07-13","type":"code","summary":"Figma Button Container fill width"},
     {"date":"2026-06-10","type":"code","summary":"ButtonContainer"},
   ],
@@ -107,6 +114,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-15","type":"code","summary":"Figma Empty State icon bridge"},
   ],
   "figure": [
+    {"date":"2026-09-08","type":"code","summary":"A1:Figma Figure import"},
     {"date":"2026-08-01","type":"code","summary":"A1:Figma Figure image controller fix"},
     {"date":"2026-08-01","type":"code","summary":"A1:Figma Figure image sync across page flows"},
     {"date":"2026-07-14","type":"code","summary":"Figma Figure image page sync"},
@@ -181,6 +189,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-22","type":"code","summary":"SearchField — new field-family component"},
   ],
   "section": [
+    {"date":"2026-09-08","type":"code","summary":"A1:Figma Section export"},
     {"date":"2026-08-07","type":"code","summary":"Section and Card background colors","ticket":"A1-2537"},
     {"date":"2026-07-16","type":"code","summary":"A1:Figma Section conversion child sizing"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Section fill sizing"},

@@ -380,6 +380,16 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'Avatar',
+        label: 'Avatar',
+        icon: 'account_circle',
+        description: 'User image with initials fallback',
+        defaultNode: {
+          type: 'Avatar',
+          props: { name: 'Morgan Lee', size: 'md' },
+        },
+      },
+      {
         type: 'Icon',
         label: 'Icon',
         icon: 'interests',

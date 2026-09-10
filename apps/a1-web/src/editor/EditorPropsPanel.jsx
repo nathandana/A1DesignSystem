@@ -46,6 +46,7 @@ import { Controls as BlockquoteControls } from '../pages/components/detail/block
 import { Controls as CodeControls } from '../pages/components/detail/code.jsx'
 import { Controls as DividerControls } from '../pages/components/detail/divider.jsx'
 import { Controls as IconControls } from '../pages/components/detail/icon.jsx'
+import { Controls as AvatarControls, getDefaultConfig as avatarDefaults } from '../pages/components/detail/avatar.jsx'
 import { Controls as FigureControls } from '../pages/components/detail/figure.jsx'
 
 // Actions
@@ -375,6 +376,12 @@ export const propsToConfig = {
     size: props?.size ?? 'lg',
     color: props?.color ?? '',
     fill: props?.fill ?? false,
+  }),
+
+  Avatar: (props) => ({
+    ...avatarDefaults(),
+    ...(props ?? {}),
+    alt: props?.alt === undefined ? (props?.name ?? avatarDefaults().name) : props.alt,
   }),
 
   Figure: (props) => ({
@@ -1156,6 +1163,16 @@ export const configToNodeUpdate = {
       size: config.size || undefined,
       color: config.color || undefined,
       fill: config.fill || undefined,
+    },
+  }),
+
+  Avatar: (config) => ({
+    props: {
+      name: config.name || 'Morgan Lee',
+      src: config.src || undefined,
+      alt: config.alt,
+      initials: config.initials || undefined,
+      size: config.size && config.size !== 'md' ? config.size : undefined,
     },
   }),
 
@@ -2078,6 +2095,7 @@ const CONTROLS_BY_TYPE = {
   Code: CodeControls,
   Divider: DividerControls,
   Icon: IconControls,
+  Avatar: AvatarControls,
   Figure: FigureEditorControls,
   // Actions
   Link: LinkControls,

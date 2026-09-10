@@ -10,6 +10,7 @@ export { Notification } from "./components/notification/Notification.jsx";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar.jsx";
 export { StatusBar } from "./components/status-bar/StatusBar.jsx";
 export { Stat } from "./components/stat/Stat.jsx";
+export { Avatar } from "./components/avatar/Avatar.jsx";
 export {
   AreaChart,
   BarChart,

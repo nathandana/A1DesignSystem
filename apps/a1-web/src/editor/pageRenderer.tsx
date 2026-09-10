@@ -474,7 +474,7 @@ function RenderNode({
   const labelFallback =
     typeof node.props?.label === "string" ? node.props.label : undefined;
   const resolvedLabel = useLabel(labelKey, labelFallback ?? "");
-  // Re-render when the image library hydrates so Figure refs resolve to real URLs.
+  // Re-render when the image library hydrates so media refs resolve to real URLs.
   useImageLibraryVersion();
   const editorCtx = useContext(EditorModeContext);
   const {
@@ -856,9 +856,9 @@ function RenderNode({
     );
   }
 
-  // A Figure referencing a library image (`a1img://<id>`) resolves to the object
-  // URL created from the locally-stored blob.
-  if (node.type === "Figure" && typeof resolvedProps.src === "string") {
+  // Media referencing a library image (`a1img://<id>`) resolves to the object URL
+  // created from the locally-stored blob.
+  if ((node.type === "Figure" || node.type === "Avatar") && typeof resolvedProps.src === "string") {
     resolvedProps.src = resolveImageSrc(resolvedProps.src);
   }
 
