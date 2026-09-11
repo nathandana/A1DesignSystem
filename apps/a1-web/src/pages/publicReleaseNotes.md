@@ -6,6 +6,7 @@
 
 ### Highlights
 
+- **Roomier homepage introductions** — Supporting copy in the capabilities and tools sections now uses the page's normal responsive content width.
 - **Easier help navigation** — Every help topic now has its own linkable page, while the Help index works like a searchable results page and articles surface related guidance.
 - **Responsive Grid Items** — Grid Item is now a first-class component with controls for configuring its parent grid, editing multiple items, and setting column spans independently from xs through xl.
 - **Avatar component** — Projects can add accessible user avatars, choose images from the shared image library, fall back to initials, and use a more distinct xs–xl size scale.

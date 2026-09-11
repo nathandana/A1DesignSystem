@@ -300,7 +300,7 @@ export function Home({ onNavigate }) {
             <Heading as="h2" type="display" id="features-heading" size={{ xs: 'lg', md: 'xl' }}>
               {t('app.home.featuresHeading', 'Current capabilities. One system.')}
             </Heading>
-            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
+            <Paragraph size="lg" color="muted">
               {t('app.home.featuresParagraph', 'A1 brings the component registry, editor workflows, labels, accessibility reporting, and AI guardrails into one governed workspace.')}
             </Paragraph>
           </Stack>
@@ -332,7 +332,7 @@ export function Home({ onNavigate }) {
             <Heading as="h2" type="display" id="tools-heading" size={{ xs: 'lg', md: 'xl' }}>
               {t('app.home.toolsHeading', 'Tools for making governed systems')}
             </Heading>
-            <Paragraph size="lg" color="muted" style={{ maxInlineSize: 'var(--base-content-width-xs)' }}>
+            <Paragraph size="lg" color="muted">
               {t('app.home.toolsParagraph', 'A1 combines project editing, shared assets, data, themes, labels, and rules so teams can build with structure instead of starting from a blank page.')}
             </Paragraph>
           </Stack>

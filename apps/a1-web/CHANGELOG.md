@@ -4,6 +4,8 @@
 
 ## 0.32.0 — 2026-09-11
 
+- **Homepage section introductions** — removed the extra-small content-width cap from the Current capabilities and Tools introductions so the supporting copy follows the section's normal responsive content width.
+
 - **Help article pages** — Help topics now open as individual, directly linkable pages. The Help index presents searchable results with linked article headings and short summaries, article pages use a responsive two-to-one content and related-articles layout, and Help assistant results link straight to each guide.
 
 - **Responsive Grid item spans** (A1-2487) — Grid Item is now a first-class component with its own component page, properties, related-component links, and editor Add-panel entry. Its live configurator controls the parent Grid and multiple independently editable Grid Items, including add/remove actions and scalar or `xs`–`xl` spans from 1–12 or full width. Editor Grid Item nodes expose the same responsive column-span control, with usage guidance in Help.
