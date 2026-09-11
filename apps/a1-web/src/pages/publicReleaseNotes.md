@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+## 0.32.0 — 2026-09-11
+
+### Highlights
+
+- **Roomier homepage introductions** — Supporting copy in the capabilities and tools sections now uses the page's normal responsive content width.
+- **Easier help navigation** — Every help topic now has its own linkable page, while the Help index works like a searchable results page and articles surface related guidance.
+- **Responsive Grid Items** — Grid Item is now a first-class component with controls for configuring its parent grid, editing multiple items, and setting column spans independently from xs through xl.
+- **Avatar component** — Projects can add accessible user avatars, choose images from the shared image library, fall back to initials, and use a more distinct xs–xl size scale.
+- **More capable editor navigation** — The editor adds layer multi-select, consistent project sidebar navigation across editing and preview, and a direct route back to the project overview.
+- **Stronger A1-to-Figma handoff** — Imported projects use named, non-overlapping sections; responsive typography and button-container direction are preserved; icons sync across links, buttons, badges and cards; and removed Figma sublayers no longer interrupt synchronization.
+- **React Server Component support** — The React package now exposes stable client boundaries and documented setup for frameworks that render with React Server Components.
+
+## 0.31.0 — 2026-08-13
+
+### Highlights
+
+- **Responsive element visibility** — Editor content can be shown or hidden independently at each A1 breakpoint, with the same settings preserved through responsive previews and Figma.
+- **Account roles and administration** — Guest, User, Editor and Administrator access now govern product areas consistently, with safer account management and audit history for administrators.
+- **Visit analytics** — Administrators can review privacy-conscious visit summaries, page journeys, device context and aggregate visualizations from a dedicated analytics page.
+- **Component history** — Every component page now includes a persistent, linkable History view covering code changes, decisions and shipped versions.
+- **Labs workspace** — A dedicated experiments area makes proposed patterns easier to compare, including several accessible date-of-birth input approaches.
+- **Broader Figma coverage** — More A1 components, responsive properties and image-library assets can move through the Figma bridge while preserving documented runtime boundaries.
+- **Accessibility and release safeguards** — Theme contrast, Canvas keyboard behavior, product-tour responsiveness, release checks and backup automation received focused reliability improvements.
+
 ## 0.30.0 — 2026-07-24
 
 ### Highlights

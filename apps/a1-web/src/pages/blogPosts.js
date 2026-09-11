@@ -1,5 +1,41 @@
 export const BLOG_POSTS = [
   {
+    id: 'release-032-editor-and-components',
+    slug: 'a1-032-editor-components-and-help',
+    title: 'A1 0.32.0 makes structured creation easier',
+    kicker: 'Release newsletter',
+    date: 'Sep 11, 2026',
+    version: '0.32.0',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with a page structure and component configuration controls.',
+    description: 'A clearer Help experience, responsive Grid Items, Avatar support, and a more reliable A1-to-Figma handoff.',
+    keywords: ['release', '0.32.0', 'editor', 'help', 'grid item', 'avatar', 'figma', 'responsive'],
+    subtitle: 'This release makes component-led page creation easier to learn, configure, and carry between A1 and Figma.',
+    sections: [
+      {
+        title: 'Help that is easier to find and share',
+        body: [
+          'Help topics now open as individual pages with stable links. The Help index presents searchable titles and summaries, while each article keeps related guidance close without hiding the main content in accordions.',
+          'The result is a documentation experience that works better for direct links, search, and focused reading across device sizes.',
+        ],
+      },
+      {
+        title: 'Responsive structure and identity',
+        body: [
+          'Grid Item is now a first-class component. Its configurator can shape the parent grid, manage multiple items, and assign inherited column spans at every A1 breakpoint. The editor exposes the same responsive contract.',
+          'The new Avatar component supports shared image-library assets, accessible initials fallbacks, and a more distinct xs-through-xl scale for compact lists through prominent profile views.',
+        ],
+      },
+      {
+        title: 'A more dependable Figma round trip',
+        body: [
+          'A1-to-Figma imports now arrange pages as named, non-overlapping sections and preserve more responsive component metadata. Button containers choose their direction from the imported width, while typography retains breakpoint-specific sizing.',
+          'Icons now transfer consistently across links, buttons, badges, and cards, and synchronization safely handles Figma nodes that disappear during document changes.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'release-030-figma-round-trip',
     slug: 'a1-030-closes-the-figma-loop',
     title: 'A1 0.30.0 closes the Figma loop',
