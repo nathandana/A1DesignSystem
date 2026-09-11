@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## 0.31.0 — 2026-09-11
+
+### Highlights
+
+- **Avatar component** — Display a user image or accessible initials with automatic image-error fallback and a clearly differentiated xs–xl size scale.
+- **React Server Component compatibility** — Published interactive modules now declare their client boundary, with documented Next.js and PostCSS setup and hydration-stable TopHeader markup.
+- **Consistent polymorphic types** — Button and Link declarations now match their runtime element and ref behavior more accurately.
+- **Shared semantic gaps** — Deprecated Cluster layouts accept the same xs–xl semantic gap scale as Stack, making migration more predictable.
+
+## 0.30.0 — 2026-08-13
+
+### Highlights
+
+- **More flexible Section and Card surfaces** — Both components support additional semantic surfaces and intentional custom-color overrides, with consistent behavior inside inverse regions.
+- **Compact mobile forms** — Compact fields and related controls preserve readable text sizing on small screens to avoid mobile focus zoom.
+- **Stronger theme contrast** — Accessible and Heritage dark-mode exceptions now keep action and status content at WCAG AA contrast.
+- **Reliable Canvas keyboard controls** — Edit-mode node groups no longer intercept Enter or Space from nested connection controls.
+- **Cleaner Toolbar overflow** — Overflow menus contain only actions that do not fit instead of duplicating visible options.
+
 ## 0.29.0 — 2026-07-24
 
 ### Highlights

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.31.0 — 2026-09-11
+
 ### Added
 
 - **React Server Component compatibility** (A1-2554) — marked shipped component modules as client boundaries, documented Next.js `transpilePackages` and supported PostCSS configuration, made TopHeader's responsive initial render hydration-stable, aligned the Button and Link declarations with their polymorphic runtime APIs, and allowed deprecated Cluster gaps to use Stack's semantic `xs`–`xl` scale.
