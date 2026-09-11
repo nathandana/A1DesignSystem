@@ -16,12 +16,13 @@ function extractText(node) {
   if (!isValidElement(node)) return ''
 
   const parts = []
-  const { alt, caption, children, label, title } = node.props || {}
+  const { alt, caption, children, items, label, title } = node.props || {}
 
   if (typeof title === 'string' && title.trim()) parts.push(title)
   if (typeof label === 'string' && label.trim()) parts.push(label)
   if (typeof alt === 'string' && alt.trim()) parts.push(alt)
   if (typeof caption === 'string' && caption.trim()) parts.push(caption)
+  if (items != null) parts.push(extractText(items))
   if (children != null) parts.push(extractText(children))
 
   return parts.filter(Boolean).join(' ')
@@ -30,6 +31,10 @@ function extractText(node) {
 function normalizeArticle(category, article) {
   const keywords = keywordList(article.keywords)
   const bodyText = normalizeWhitespace(extractText(article.body))
+  const firstSentence = bodyText.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim() || bodyText
+  const summary = article.summary || (firstSentence.length > 180
+    ? `${firstSentence.slice(0, 177).trimEnd()}…`
+    : firstSentence)
   const searchText = normalizeWhitespace([
     category.title,
     article.title,
@@ -41,6 +46,7 @@ function normalizeArticle(category, article) {
     ...article,
     keywords,
     bodyText,
+    summary,
     searchText,
   }
 }
@@ -66,6 +72,7 @@ export function buildHelpAiCatalog(categories) {
       articleTitle: article.title,
       keywords: article.keywords,
       bodyText: article.bodyText,
+      summary: article.summary,
     })),
   )
 }

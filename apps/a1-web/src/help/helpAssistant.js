@@ -68,6 +68,7 @@ function sentenceFragments(text) {
 }
 
 function summarizeArticle(article) {
+  if (article.summary) return article.summary
   const sentences = sentenceFragments(article.bodyText)
   if (!sentences.length) return ''
   return sentences.slice(0, 2).join(' ')

@@ -595,6 +595,14 @@ function AnatomyComponentPreview({ component }) {
           <Card><Paragraph size="sm">Two</Paragraph></Card>
         </Grid>
       )
+    case 'grid-item':
+      return (
+        <Grid columns={4} gap="sm">
+          <GridItem span={3}>
+            <Card><Paragraph size="sm">Grid Item spans three columns.</Paragraph></Card>
+          </GridItem>
+        </Grid>
+      )
     case 'bleed':
       return (
         <Inset>
@@ -1406,26 +1414,18 @@ const COMPONENT_PROPS = {
     { id: 'children',    name: 'children',    type: 'ReactNode',   description: 'Inline content to cluster.' },
   ],
   grid: [
-    {
-      title: 'Grid',
-      rows: [
-        { id: 'columns',   name: 'columns',   type: 'number | ResponsiveObject', description: 'Number of columns. Pass a number or a responsive object, e.g. { xs: 1, md: 2, lg: 3 }.' },
-        { id: 'gap',       name: 'gap',       type: '"sm" | "md" | "lg" | "xl" | "xxl" | number', description: 'Gap for both row and column. Semantic token or numeric spacing value.' },
-        { id: 'rowGap',    name: 'rowGap',    type: 'GapKey',   description: 'Row gap override. Falls back to gap.' },
-        { id: 'columnGap', name: 'columnGap', type: 'GapKey',   description: 'Column gap override. Falls back to gap.' },
-        { id: 'layout',    name: 'layout',    type: '"default" | "bento"', description: 'Grid layout preset. Default: "default".' },
-        { id: 'autoRows',  name: 'autoRows',  type: 'string',   description: 'CSS value for grid-auto-rows.' },
-        { id: 'children',  name: 'children',  type: 'ReactNode',description: 'Grid content. Use GridItem for per-cell span control.' },
-      ],
-    },
-    {
-      title: 'GridItem',
-      rows: [
-        { id: 'span',     name: 'span',     type: 'number | "full" | ResponsiveObject', description: 'Column span. Pass a number, "full" to span all columns, or a responsive object.' },
-        { id: 'rowSpan',  name: 'rowSpan',  type: 'number | ResponsiveObject',          description: 'Row span. Pass a number or a responsive object.' },
-        { id: 'children', name: 'children', type: 'ReactNode',                           description: 'Cell content.' },
-      ],
-    },
+    { id: 'columns',   name: 'columns',   type: 'number | ResponsiveObject', description: 'Number of columns. Pass a number or a responsive object, e.g. { xs: 1, md: 2, lg: 3 }.' },
+    { id: 'gap',       name: 'gap',       type: '"sm" | "md" | "lg" | "xl" | "xxl" | number', description: 'Gap for both row and column. Semantic token or numeric spacing value.' },
+    { id: 'rowGap',    name: 'rowGap',    type: 'GapKey',   description: 'Row gap override. Falls back to gap.' },
+    { id: 'columnGap', name: 'columnGap', type: 'GapKey',   description: 'Column gap override. Falls back to gap.' },
+    { id: 'layout',    name: 'layout',    type: '"default" | "bento"', description: 'Grid layout preset. Default: "default".' },
+    { id: 'autoRows',  name: 'autoRows',  type: 'string',   description: 'CSS value for grid-auto-rows.' },
+    { id: 'children',  name: 'children',  type: 'ReactNode',description: 'Grid content. Use GridItem for per-cell span control.' },
+  ],
+  'grid-item': [
+    { id: 'span',     name: 'span',     type: 'number | "full" | ResponsiveObject', description: 'Column span. Pass a number, "full" to span all columns, or a responsive object.' },
+    { id: 'rowSpan',  name: 'rowSpan',  type: 'number | ResponsiveObject',          description: 'Row span. Pass a number or a responsive object.' },
+    { id: 'children', name: 'children', type: 'ReactNode',                           description: 'Cell content.' },
   ],
   bleed: [
     { id: 'as',       name: 'as',       type: 'ElementType',         description: 'Underlying HTML element. Default: "div".' },

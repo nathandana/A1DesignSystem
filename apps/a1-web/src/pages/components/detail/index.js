@@ -63,6 +63,7 @@ import * as contextMenu from './context-menu.jsx'
 import * as tooltip from './tooltip.jsx'
 import * as cluster from './cluster.jsx'
 import * as grid from './grid.jsx'
+import * as gridItem from './grid-item.jsx'
 import * as bleed from './bleed.jsx'
 import * as inset from './inset.jsx'
 import * as spacer from './spacer.jsx'
@@ -147,6 +148,7 @@ const REGISTRY = {
   tooltip,
   cluster,
   grid,
+  'grid-item': gridItem,
   bleed,
   inset,
   spacer,

@@ -13,7 +13,7 @@
 import { useContext, useState } from 'react'
 import { Button, CheckboxGroup, ChoiceGroup, Divider, Heading, Icon, IconButton, Link, MessageBadge, NumberField, Paragraph, SelectField, Stack, Switch, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { getAllPatterns, getPatternProjects, loadPattern, setPatternProjects } from '../patterns/patternStore.js'
-import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
+import { Choice, ConfigSlider, ResponsiveControl } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
@@ -274,6 +274,11 @@ export const propsToConfig = {
     columns: props?.columns ?? 2,
     gap: props?.gap ?? 'md',
     layout: props?.layout ?? 'default',
+  }),
+
+  GridItem: (props) => ({
+    span: props?.span ?? 1,
+    rowSpan: props?.rowSpan,
   }),
 
   Cluster: (props) => ({
@@ -1042,6 +1047,13 @@ export const configToNodeUpdate = {
       columns: config.columns && typeof config.columns === 'object' ? config.columns : Number(config.columns),
       gap: config.gap,
       layout: config.layout !== 'default' ? config.layout : undefined,
+    },
+  }),
+
+  GridItem: (config) => ({
+    props: {
+      span: config.span === 1 ? undefined : config.span,
+      rowSpan: config.rowSpan,
     },
   }),
 
@@ -2076,12 +2088,45 @@ function TextareaFieldEditorControls({ config, setConfig }) {
   )
 }
 
+const GRID_ITEM_SPAN_OPTIONS = [...Array.from({ length: 12 }, (_, index) => index + 1), 'full']
+
+function GridItemEditorControls({ config, setConfig }) {
+  const t = useT()
+  return (
+    <ResponsiveControl
+      prop="span"
+      label={t('app.configurator.gridItemColumnSpan', 'Column span')}
+      helper={t(
+        'app.configurator.gridItemColumnSpanHelp',
+        'Choose how many grid columns this item spans at each breakpoint.',
+      )}
+      value={config.span}
+      onChange={(span) => setConfig((current) => ({ ...current, span }))}
+      defaultValue={1}
+    >
+      {(value, onChange) => (
+        <Choice
+          value={value}
+          onChange={onChange}
+          options={GRID_ITEM_SPAN_OPTIONS.map((option) => ({
+            value: option,
+            label: option === 'full'
+              ? t('app.configurator.gridItemFullSpan', 'Full width')
+              : String(option),
+          }))}
+        />
+      )}
+    </ResponsiveControl>
+  )
+}
+
 const CONTROLS_BY_TYPE = {
   // Layout
   Section: SectionControls,
   SectionSeparator: SectionSeparatorControls,
   Stack: StackControls,
   Grid: GridControls,
+  GridItem: GridItemEditorControls,
   Cluster: ClusterControls,
   Card: CardControls,
   Bleed: BleedControls,
@@ -2426,7 +2471,9 @@ export function EditorPropsPanel({
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
-  const componentHref = `/components/${node.type.toLowerCase()}`
+  const componentHref = node.type === 'GridItem'
+    ? '/components/grid-item'
+    : `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
   const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)

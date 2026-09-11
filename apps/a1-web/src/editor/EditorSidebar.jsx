@@ -11,6 +11,7 @@ const TYPE_ICONS = {
   Section:          'crop_free',
   Stack:            'view_agenda',
   Grid:             'grid_view',
+  GridItem:         'select_all',
   Cluster:          'hub',
   Card:             'article',
   Bleed:            'open_in_full',
@@ -48,7 +49,7 @@ const TYPE_ICONS = {
 }
 
 const CONTAINER_TYPES = new Set([
-  'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
+  'Section', 'Stack', 'Card', 'Grid', 'GridItem', 'Cluster', 'PageLayout', 'Accordion',
   'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
   'Slot',
 ])

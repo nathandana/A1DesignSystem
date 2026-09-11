@@ -99,7 +99,15 @@ import { KitchenSink } from './pages/KitchenSink.jsx'
 import { Blog } from './pages/Blog.jsx'
 import { BlogArticle } from './pages/BlogArticle.jsx'
 import { BLOG_POSTS } from './pages/blogPosts.js'
-import { Help } from './pages/Help.jsx'
+import {
+  Help,
+  HELP_ARTICLE_PAGE_IDS,
+  HELP_ARTICLE_PAGE_PREFIX,
+  HELP_ARTICLE_PAGE_TITLES,
+  getHelpArticlePath,
+  helpArticleIdFromPage,
+  helpArticlePageId,
+} from './pages/Help.jsx'
 import { HelpAssistantMenu } from './help/HelpAssistantMenu.jsx'
 import { ProductTour } from './onboarding/ProductTour.jsx'
 import { EditorPage } from './pages/EditorPage.tsx'
@@ -175,7 +183,7 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -202,6 +210,7 @@ const PAGE_TITLES = {
   'priority-guide': 'Priority guides',
   projects: 'Projects',
   help: 'Help',
+  ...HELP_ARTICLE_PAGE_TITLES,
   accessibility: 'Accessibility',
   releases: 'Releases',
   backlog: 'Backlog',
@@ -291,6 +300,11 @@ function getPage(search = window.location.search, pathname = window.location.pat
 
   if (path === 'admin/analytics') return 'admin-analytics'
 
+  if (path.startsWith('help/')) {
+    const articlePage = helpArticlePageId(path.slice('help/'.length))
+    return HELP_ARTICLE_PAGE_IDS.includes(articlePage) ? articlePage : 'help'
+  }
+
   // /p/{published-project-slug}[/page-id] → standalone published prototype
   if (/^p\/[^/]+(?:\/[^/]+)?$/.test(path)) return 'editor-preview'
 
@@ -312,6 +326,7 @@ function getPath(page) {
   if (page.startsWith('component-')) return `/components/${componentRouteSlug(page.slice('component-'.length))}`
   if (page === 'backlog-ticket') return '/backlog'
   if (page === 'admin-analytics') return '/admin/analytics'
+  if (page.startsWith(HELP_ARTICLE_PAGE_PREFIX)) return getHelpArticlePath(helpArticleIdFromPage(page))
   return `/${page}`
 }
 
@@ -1317,6 +1332,13 @@ function App() {
     navigate('help', { path: nextPath })
   }
 
+  function openHelpArticle(articleId) {
+    const page = helpArticlePageId(articleId)
+    if (!HELP_ARTICLE_PAGE_IDS.includes(page)) return
+    setHelpQuery('')
+    navigate(page)
+  }
+
   function openHelpAssistant(anchor = null) {
     helpAssistantAnchorRef.current = anchor
       ?? document.querySelector('.a1-web-app-header button[aria-label="Help"]')
@@ -1920,7 +1942,7 @@ function App() {
       icon: PAGE_ICONS.help,
       iconOnly: true,
       label: pageTitle('help'),
-      active: activePage === 'help',
+      active: activePage === 'help' || activePage.startsWith(HELP_ARTICLE_PAGE_PREFIX),
       onClick: (event) => {
         openHelpAssistant(event.currentTarget)
       },
@@ -2483,7 +2505,13 @@ function App() {
         {activePage === 'admin' && <Admin onNavigate={navigate} />}
         {activePage === 'admin-analytics' && <AdminAnalytics onNavigate={navigate} />}
         {activePage === 'accessibility' && <Accessibility onNavigate={navigate} />}
-        {activePage === 'help' && <Help onNavigate={navigate} initialQuery={helpQuery} />}
+        {(activePage === 'help' || activePage.startsWith(HELP_ARTICLE_PAGE_PREFIX)) && (
+          <Help
+            onNavigate={navigate}
+            initialQuery={helpQuery}
+            articleId={helpArticleIdFromPage(activePage)}
+          />
+        )}
         {activePage === 'releases' && (
           <Releases
             onNavigate={navigate}
@@ -2527,6 +2555,7 @@ function App() {
         anchorRef={helpAssistantAnchorRef}
         onClose={() => setHelpAssistantOpen(false)}
         onOpenHelp={openHelpPage}
+        onOpenHelpArticle={openHelpArticle}
         onStartTour={startProductTour}
         tourLabel={t('app.tour.start', 'Take a tour')}
       />

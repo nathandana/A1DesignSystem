@@ -367,7 +367,7 @@ const RAW_HELP = [
       {
         id: 'stack-grid-component',
         title: 'Stack and Grid: arranging content',
-        keywords: 'stack grid direction row column gap wrap responsive columns align justify layout horizontal vertical flex arrange spacing',
+        keywords: 'stack grid griditem span full width breakpoint configure direction row column gap wrap responsive columns align justify layout horizontal vertical flex arrange spacing',
         body: (
           <Stack gap="sm">
             <P>
@@ -386,7 +386,16 @@ const RAW_HELP = [
             <Bullets items={[
               <><strong>columns</strong> — number of equal columns, or a responsive object (<Kbd>{'{ xs: 1, sm: 2, lg: 3 }'}</Kbd>).</>,
               <><strong>gap</strong> — the gutter between cells.</>,
-              <><strong>GridItem span</strong> — a child can span multiple columns: <Kbd>{'<GridItem span={{ xs: 1, lg: 2 }}>'}</Kbd>.</>,
+              <><strong>GridItem span</strong> — wrap the content in a GridItem, then choose how many of the parent Grid's columns it occupies. GridItem must be a direct child of Grid.</>,
+              <><strong>Responsive spans</strong> — pass a breakpoint object such as <Kbd>{'<GridItem span={{ xs: "full", md: 2 }}>'}</Kbd>. Here the item fills the one-column grid at xs, then spans two columns from md upward.</>,
+              <><strong>Full width</strong> — use <Kbd>span="full"</Kbd> when the item should occupy every available column, even when the Grid's column count changes.</>,
+            ]} />
+            <Heading as="h3" size="xs">Set a column span in the editor</Heading>
+            <Bullets items={[
+              <>In the Layers panel, select the <strong>Grid Item</strong> that wraps the content you want to span, then open <strong>Configure</strong>.</>,
+              <>Under <strong>Column span</strong>, choose a value from 1–12 or <strong>Full width</strong>. Do not choose a number greater than the parent Grid's column count at that breakpoint.</>,
+              <>Use the device control beside Column span to add breakpoint-specific values. A value continues into larger breakpoints until you set another override.</>,
+              <>Check the result at xs–xl in Preview, especially when the parent Grid also changes its column count.</>,
             ]} />
             <P color="muted">
               Use Stack for one axis (column or row). Use Grid for equal-width columns or two-dimensional layouts.
