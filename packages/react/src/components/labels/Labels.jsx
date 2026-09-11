@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext } from "react";
 
 const LabelsContext = createContext({ locale: null, brand: null, labels: null });

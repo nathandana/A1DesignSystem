@@ -15,10 +15,12 @@
   ],
   "networkAccess": {
     "allowedDomains": [
+      "*",
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com",
       "https://pszmkbfvyjkifbyututo.supabase.co"
     ],
+    "reasoning": "A1 Figures can reference user-provided image URLs, which the plugin loads only when a user explicitly imports or updates that Figure.",
     "devAllowedDomains": ["http://localhost:4318"]
   }
 }

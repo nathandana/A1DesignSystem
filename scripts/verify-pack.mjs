@@ -13,6 +13,8 @@
  *      the named exports of src/index.js;
  *   5. src/index.d.ts declares the same export names as src/index.js, and
  *      every module it references resolves to a shipped .d.ts file.
+ *   6. shipped component modules preserve their React Server Component
+ *      client-boundary directives.
  *
  * Usage: npm run pack:check
  */
@@ -111,6 +113,17 @@ for (const name of dtsExports) {
 for (const m of dtsSrc.matchAll(/from\s*"(\.[^"]+)"/g)) {
   const rel = path.posix.join("src", m[1].replace(/\.jsx?$/, "") + ".d.ts");
   if (!shipped.has(rel)) failures.push(`index.d.ts references a module with no shipped .d.ts: ${m[1]}`);
+}
+
+// ── 7. RSC client-boundary directives ship intact ──────────────────────────
+const clientBoundaryFiles = [...shipped].filter((file) =>
+  /^src\/components\/.*\.(js|jsx)$/.test(file) && !file.endsWith(".stories.jsx")
+);
+for (const file of clientBoundaryFiles) {
+  const source = readFileSync(path.join(pkgDir, file), "utf8");
+  if (!/^\s*["']use client["'];/.test(source)) {
+    failures.push(`RSC client boundary missing from shipped module: ${file}`);
+  }
 }
 
 // ── Report ──────────────────────────────────────────────────────────────────

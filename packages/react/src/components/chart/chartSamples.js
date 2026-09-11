@@ -1,3 +1,5 @@
+"use client";
+
 export const categoricalData = [
   { name: "Organic", value: 420, tone: "accent" },
   { name: "Referral", value: 280, tone: "info" },

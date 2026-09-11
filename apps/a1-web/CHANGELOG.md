@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- **Help article pages** — Help topics now open as individual, directly linkable pages. The Help index presents searchable results with linked article headings and short summaries, article pages use a responsive two-to-one content and related-articles layout, and Help assistant results link straight to each guide.
+
+- **Responsive Grid item spans** (A1-2487) — Grid Item is now a first-class component with its own component page, properties, related-component links, and editor Add-panel entry. Its live configurator controls the parent Grid and multiple independently editable Grid Items, including add/remove actions and scalar or `xs`–`xl` spans from 1–12 or full width. Editor Grid Item nodes expose the same responsive column-span control, with usage guidance in Help.
+
+- **Cluster semantic gaps** (A1-2554) — the deprecated Cluster configurator now accepts the same semantic `xs`–`xl` gap scale as Stack, while retaining numeric spacing tokens for migration compatibility.
+
+- **Avatar component** (A1-2055) — added Avatar documentation and a live configurator for image-library selection, uploads, URLs and AI image sources, automatic initials fallbacks, accessible alternative text, initials overrides, and the `xs`–`xl` size scale. Avatar is also available in the project and pattern editor and in page-definition JSON.
+
+- **Centered session loading indicator** (A1-2539) — centered the existing Circular Progress animation in the full app viewport while a configured identity provider restores its session.
+
+- **Editor sidebar multi-select** (A1-2557) — Layers now support Shift-click range selection and Cmd/Ctrl-click toggling. Same-type selections share the Configure panel, mixed selections explain how to continue, and selected sibling layers can be grouped as a Stack.
+
+- **Editor sidebar navigation** (A1-2556) — render a sidebar-configured project's page tree in edit and preview canvases, matching the published prototype while retaining the editor workspace controls.
+
+- **Editor — return to project overview** (A1-2555) — added a persistent, localized back control to the page-editor toolbar. It closes the open page and returns to the active project's overview without taking the user back to the all-projects list.
+
 ## 0.31.0 — 2026-08-13
 
 - **Breakpoint-specific element visibility** (A1-2488) — every page-editor node can now be included or removed independently at the xs–xl viewport breakpoints. The Configure panel exposes an accessible five-option visibility control, stores the result as A1’s cascading responsive-object syntax, and removes hidden nodes from both layout and the accessibility tree in the real responsive preview. The A1:Figma bridge round-trips the same `visibility` field through selected-layer plugin metadata and a contextual breakpoint toolbar; imported breakpoint previews apply the saved visibility. Figma’s contextual controls now use the real A1 Toolbar stylesheet and BEM classes instead of unstyled native buttons.

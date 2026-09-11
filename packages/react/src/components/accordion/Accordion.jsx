@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useLayoutEffect, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";
 import "./accordion.css";

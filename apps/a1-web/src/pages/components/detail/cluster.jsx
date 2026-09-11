@@ -7,8 +7,9 @@ import {
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { Choice } from './configKit.jsx'
+import { useT } from '../../../labels/useT.js'
 
-const GAP_OPTIONS = [4, 8, 12, 16, 24, 32]
+const GAP_OPTIONS = ['xs', 'sm', 'md', 'lg', 'xl', 4, 8, 12, 16, 24, 32]
 const ALIGN_OPTIONS = ['start', 'center', 'end', 'stretch', 'baseline']
 const JUSTIFY_OPTIONS = ['start', 'center', 'end', 'between', 'around', 'evenly']
 
@@ -63,6 +64,7 @@ export function Preview({ config, utilityClass = '' }) {
 }
 
 export function Controls({ config, setConfig }) {
+  const t = useT()
   const set = (patch) => setConfig((current) => ({ ...current, ...patch }))
 
   return (
@@ -74,6 +76,7 @@ export function Controls({ config, setConfig }) {
       </Banner>
       <Choice prop="gap"
         label="Gap"
+        helper={t('app.configurator.clusterGapHelp', 'Use the semantic xs–xl scale or a numeric spacing token.')}
         size="compact"
         hideIndicator
         columns={3}

@@ -17,6 +17,7 @@ import { useT } from '../labels/useT.js'
 export function EditorAsidePanel({
   // Configure tab
   selectedNodeId,
+  selectedNodeIds = [],
   definition,
   onApplyDefinition,
   composeWithAi,
@@ -148,6 +149,7 @@ export function EditorAsidePanel({
             })()}
             <EditorPropsPanel
               selectedNodeId={selectedNodeId}
+              selectedNodeIds={selectedNodeIds}
               definition={definition}
               projectId={projectId}
               pages={pages}

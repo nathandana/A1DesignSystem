@@ -1,3 +1,5 @@
+"use client";
+
 import "./icon-button.css";
 import { Icon } from "../icon/Icon.jsx";
 

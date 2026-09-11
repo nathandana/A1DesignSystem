@@ -1,3 +1,5 @@
+"use client";
+
 let version = 0;
 let family = "A1 Custom Icons";
 let icons = new Map();

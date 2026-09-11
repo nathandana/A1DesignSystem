@@ -9,7 +9,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { answerHelpQuestion, HELP_ASSISTANT_STARTERS } from './helpAssistant.js'
 
-export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp, onStartTour, tourLabel }) {
+export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp, onOpenHelpArticle, onStartTour, tourLabel }) {
   const inputRef = useRef(null)
   const [query, setQuery] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
@@ -34,6 +34,11 @@ export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp, onStar
   function handleOpenHelp(nextQuery = '') {
     onClose?.()
     onOpenHelp?.(nextQuery)
+  }
+
+  function handleOpenHelpArticle(articleId) {
+    onClose?.()
+    onOpenHelpArticle?.(articleId)
   }
 
   return (
@@ -95,7 +100,7 @@ export function HelpAssistantMenu({ open, anchorRef, onClose, onOpenHelp, onStar
                         key={match.articleId}
                         type="button"
                         className="a1-web-help-assistant__match"
-                        onClick={() => handleOpenHelp(match.articleTitle)}
+                        onClick={() => handleOpenHelpArticle(match.articleId)}
                       >
                         <span className="a1-web-help-assistant__match-category">{match.categoryTitle}</span>
                         <span className="a1-web-help-assistant__match-title">{match.articleTitle}</span>

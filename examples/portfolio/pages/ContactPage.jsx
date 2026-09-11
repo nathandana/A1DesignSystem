@@ -34,7 +34,7 @@ export function ContactPage() {
             <Link href="tel:+18028467679">802-846-7679</Link>
           </ListItem>
           <ListItem icon="location_on">
-            Fort Mill, SC
+            Fort Mill, SC (Charlotte, NC metro area)
           </ListItem>
         </List>
       </Section>

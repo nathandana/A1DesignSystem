@@ -185,6 +185,22 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'GridItem',
+        label: 'Grid item',
+        icon: 'select_all',
+        description: 'Responsive column-spanning child for a Grid',
+        defaultNode: {
+          type: 'GridItem',
+          props: { span: 1 },
+          children: [
+            {
+              type: 'Paragraph',
+              content: { fallback: 'Grid item content' },
+            },
+          ],
+        },
+      },
+      {
         type: 'Canvas',
         label: 'Canvas',
         icon: 'polyline',
@@ -377,6 +393,16 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
             { type: 'ListItem', content: { fallback: 'Second item' } },
             { type: 'ListItem', content: { fallback: 'Third item' } },
           ],
+        },
+      },
+      {
+        type: 'Avatar',
+        label: 'Avatar',
+        icon: 'account_circle',
+        description: 'User image with initials fallback',
+        defaultNode: {
+          type: 'Avatar',
+          props: { name: 'Morgan Lee', size: 'md' },
         },
       },
       {

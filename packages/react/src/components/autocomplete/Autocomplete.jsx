@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "../icon/Icon.jsx";

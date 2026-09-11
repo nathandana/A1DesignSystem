@@ -1,3 +1,5 @@
+"use client";
+
 import "./grid.css";
 
 const SPACING_KEYS = [1, 2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 64, 96, 128];

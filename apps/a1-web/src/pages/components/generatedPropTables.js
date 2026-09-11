@@ -2,6 +2,18 @@
 // Update by regenerating this file when package prop declarations change.
 
 export const GENERATED_PROP_TABLES = {
+  "avatar": [
+    {
+      "title": "Avatar",
+      "rows": [
+        { "id": "name", "name": "name", "type": "string", "description": "Person's name. Used to derive initials and as the default accessible name." },
+        { "id": "src", "name": "src", "type": "string", "description": "Optional image source. A missing or failed image falls back to initials." },
+        { "id": "alt", "name": "alt", "type": "string", "description": "Image alternative text. Defaults to name; pass an empty string when decorative." },
+        { "id": "initials", "name": "initials", "type": "string", "description": "Initials override. When omitted, the first letters of the first and last name are used." },
+        { "id": "size", "name": "size", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "description": "Avatar size. Default: \"md\"" }
+      ]
+    }
+  ],
   "line-chart": [
     {
       "title": "LineChart",
@@ -1086,6 +1098,12 @@ export const GENERATED_PROP_TABLES = {
           "name": "as",
           "type": "React.ElementType",
           "description": "Underlying element or component to render. Default: \"button\""
+        },
+        {
+          "id": "href",
+          "name": "href",
+          "type": "string",
+          "description": "Link destination when rendering with `as=\"a\"` or another link component."
         },
         {
           "id": "variant",
@@ -3280,6 +3298,12 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Link",
       "rows": [
+        {
+          "id": "as",
+          "name": "as",
+          "type": "React.ElementType",
+          "description": "Underlying element or component to render. Default: \"a\""
+        },
         {
           "id": "size",
           "name": "size",

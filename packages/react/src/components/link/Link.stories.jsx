@@ -2,6 +2,10 @@ import { Link } from "./Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { iconArgType } from "../../storybook/icon-controls.js";
 
+function RouterLink({ href, ...props }) {
+  return <a href={href} data-router-link="true" {...props} />;
+}
+
 const meta = {
   title: "Components/Controls/Link",
   component: Link,
@@ -38,6 +42,15 @@ const meta = {
 export default meta;
 
 export const Configurable = {};
+
+export const CustomLinkComponent = {
+  name: "Custom link component",
+  args: {
+    as: RouterLink,
+    href: "/documentation",
+    children: "Open documentation",
+  },
+};
 
 export const Sizes = {
   parameters: { controls: { include: ["weight", "icon", "iconPosition"] } },

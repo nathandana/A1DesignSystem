@@ -22,9 +22,69 @@ function exportBadge(instance) {
     if (iconName && iconName !== defaultIcon) props.icon = iconName;
     else if (!iconName) warnings.push('Badge icon is visible but its Material icon component could not be resolved.');
   }
-  const node = { id: componentId('MessageBadge', instance), type: 'MessageBadge', content: { fallback: componentText(instance, 'Label', 'Badge') } };
+  const node = { id: componentId('MessageBadge', instance), type: 'MessageBadge', content: { fallback: badgeLabel(instance) } };
   if (Object.keys(props).length > 0) node.props = props;
   return { node, warnings };
+}
+
+function badgeLabel(instance) {
+  const propertyValue = componentText(instance, 'Label', '');
+  if (propertyValue) return propertyValue;
+  const text = badgeLabelTextLayer(instance);
+  try {
+    return text && typeof text.characters === 'string' ? text.characters : 'Badge';
+  } catch {
+    return 'Badge';
+  }
+}
+
+function badgeLabelTextLayer(instance) {
+  const live = currentInstance(instance);
+  let texts = [];
+  try {
+    texts = live.findAll((node) => node.type === 'TEXT' && node.visible !== false);
+  } catch {
+    return null;
+  }
+  const referenced = texts.find((node) => {
+    try {
+      return Object.values(node.componentPropertyReferences || {})
+        .some((reference) => canonicalKey(String(reference || '')).startsWith('label'));
+    } catch {
+      return false;
+    }
+  });
+  if (referenced) return referenced;
+  const named = texts.find((node) => {
+    try {
+      return ['label', 'badge', 'content'].includes(canonicalKey(node.name));
+    } catch {
+      return false;
+    }
+  });
+  return named || texts.find((node) => {
+    try {
+      return !/(icon|glyph|symbol)/.test(canonicalKey(node.name));
+    } catch {
+      return false;
+    }
+  }) || null;
+}
+
+async function writeBadgeLabel(instance, value, warnings, propertyApplied) {
+  const text = badgeLabelTextLayer(instance);
+  if (!text) {
+    if (!propertyApplied) warnings.push('Badge label text layer was not found — the value was not applied.');
+    return false;
+  }
+  try {
+    if (text.fontName !== figma.mixed) await figma.loadFontAsync(text.fontName);
+    text.characters = value;
+    return true;
+  } catch (error) {
+    if (!propertyApplied) warnings.push(`Badge label could not be updated: ${error.message}`);
+    return false;
+  }
 }
 
 function badgeContextForSelection(instance) {
@@ -38,7 +98,7 @@ function badgeContextForSelection(instance) {
   const defaultIcon = BADGE_DEFAULT_ICONS[status];
   const icon = iconNameFromInstance(instance) || iconNameFromEditableText(instance) || iconNameFromSwapValue(iconSwapPropertyValue(instance)) || defaultIcon;
   return {
-    label: componentText(instance, 'Label', 'Badge'), status, statusOptions: BADGE_STATUSES,
+    label: badgeLabel(instance), status, statusOptions: BADGE_STATUSES,
     size, sizeOptions: BADGE_SIZES, subtle: subtle === 'true' || subtle === true ? 'true' : 'false',
     subtleOptions: ['false', 'true'], iconMode: showIcon ? 'show' : 'none', iconModeOptions: ['none', 'show'],
     icon, iconCustom: Boolean(icon && icon !== defaultIcon),
@@ -61,8 +121,13 @@ async function applyBadge(instance, node, warnings) {
   if (materialIcon) iconPropertyApplied = queueIconSwapProperty(instance, assignments, materialIcon);
   if (!iconPropertyApplied && props.icon !== null) iconPropertyApplied = queueIconTextProperty(instance, assignments, iconName);
   queueComponentProperty(instance, assignments, 'Show icon', props.icon !== null, 'BOOLEAN', warnings, 'Badge icon visibility');
-  if (node.content && typeof node.content.fallback === 'string') queueComponentProperty(instance, assignments, 'Label', node.content.fallback, 'TEXT', warnings, 'Badge label');
+  const label = node.content && typeof node.content.fallback === 'string' ? node.content.fallback : null;
+  const labelPropertyApplied = label === null
+    ? false
+    : queueOptionalComponentProperty(instance, assignments, 'Label', label, 'TEXT');
   applyQueuedProperties(instance, assignments, warnings, 'Badge properties');
+  if (label !== null) await writeBadgeLabel(instance, label, warnings, labelPropertyApplied);
+  syncLayoutHeightMode(currentInstance(instance), 'hug', warnings, 'Badge');
   if (props.icon !== null) {
     if (!materialIcon && hasIconProp && !iconPropertyApplied) warnings.push(`No Material icon component named "${iconName}" exists in this file — trying the editable Badge icon text fallback.`);
     await finalizeMaterialIconUpdate(instance, iconName, materialIcon, iconPropertyApplied, warnings, 'Badge Material icon');

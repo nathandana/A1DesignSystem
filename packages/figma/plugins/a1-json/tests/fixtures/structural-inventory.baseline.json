@@ -1,18 +1,18 @@
 {
   "code": {
-    "lines": 16216,
+    "lines": 16704,
     "functions": {
-      "total": 1163,
-      "topLevel": 712
+      "total": 1201,
+      "topLevel": 730
     },
-    "topLevelDeclarations": 885,
+    "topLevelDeclarations": 907,
     "registries": {
-      "adapters": 44,
-      "figmaNames": 41,
-      "jsonTypes": 44,
-      "exporters": 41,
-      "importers": 44,
-      "appliers": 40
+      "adapters": 45,
+      "figmaNames": 42,
+      "jsonTypes": 45,
+      "exporters": 42,
+      "importers": 45,
+      "appliers": 41
     },
     "inboundMessages": [
       "add-action-trigger-target",
@@ -79,7 +79,7 @@
     ]
   },
   "ui": {
-    "lines": 5166,
+    "lines": 5201,
     "handledMessages": [
       "action-trigger-result",
       "add-component-result",

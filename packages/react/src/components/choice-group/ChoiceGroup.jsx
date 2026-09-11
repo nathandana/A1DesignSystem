@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment, useId, useState } from "react";
 import { useLabel } from "../labels/Labels.jsx";
 import { MessageBadge } from "../message/Message.jsx";

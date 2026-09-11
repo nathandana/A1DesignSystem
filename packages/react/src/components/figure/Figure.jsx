@@ -1,3 +1,5 @@
+"use client";
+
 import "./figure.css";
 import { useEffect, useState } from "react";
 import { Bleed } from "../bleed/Bleed.jsx";

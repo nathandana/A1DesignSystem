@@ -13,10 +13,14 @@ import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
+import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
+  avatar: '2026-09-10',
+  grid: '2026-09-11',
+  'grid-item': '2026-09-11',
   'line-chart': '2026-07-06',
   'bar-chart': '2026-07-06',
   'area-chart': '2026-07-06',
@@ -35,14 +39,16 @@ export const COMPONENT_LAST_UPDATED = {
   'checkbox-group': '2026-07-13',
   'radio-group': '2026-07-13',
   textarea: '2026-07-06',
-  button: '2026-07-06',
+  button: '2026-09-10',
+  cluster: '2026-09-10',
+  link: '2026-09-10',
   overlay: '2026-07-05',
   'tree-menu': '2026-07-05',
   snackbar: '2026-07-05',
   chip: '2026-07-02',
   'action-tile': '2026-07-02',
   stat: '2026-06-30',
-  'top-header': '2026-06-27',
+  'top-header': '2026-09-10',
   icon: '2026-06-25',
   canvas: '2026-06-23',
   node: '2026-06-23',
@@ -153,6 +159,7 @@ export const componentCategories = [
       { id: 'card', icon: 'article', title: 'Card', body: 'Grouped content and navigation surfaces.' },
       { id: 'stack', icon: 'view_agenda', title: 'Stack', body: 'One-dimensional spacing and alignment.' },
       { id: 'grid', icon: 'grid_view', title: 'Grid', body: 'Responsive grid layouts and bento arrangements.' },
+      { id: 'grid-item', icon: 'select_all', title: 'Grid Item', body: 'Responsive column and row placement for content inside a Grid.' },
       { id: 'bleed', icon: 'open_in_full', title: 'Bleed', body: 'Content that reaches beyond a parent inset.' },
       { id: 'inset', icon: 'padding', title: 'Inset', body: 'Tokenized inner spacing wrappers.' },
       { id: 'spacer', icon: 'space_bar', title: 'Spacer', body: 'Explicit responsive spacing blocks.' },
@@ -258,6 +265,7 @@ export const componentCategories = [
     icon: 'insert_photo',
     body: 'Visual primitives for media, symbols, and supporting imagery.',
     components: [
+      { id: 'avatar', icon: 'account_circle', title: 'Avatar', body: 'User images with resilient initials fallbacks in A1 sizes.' },
       { id: 'figure', icon: 'image', title: 'Figure', body: 'Images or media with accessible captions.' },
       { id: 'icon', icon: 'interests', title: 'Icon', body: 'Material Symbols and registered custom-font wrapper with A1 sizing and color.' },
     ],
@@ -375,6 +383,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   card: ['tile', 'panel', 'surface', 'content card'],
   stack: ['vertical layout', 'horizontal layout', 'flex', 'spacing'],
   grid: ['layout grid', 'columns', 'rows', 'responsive grid', 'bento', 'grd'],
+  'grid-item': ['grid child', 'column span', 'row span', 'responsive span', 'full width', 'griditem'],
   bleed: ['full bleed', 'edge to edge', 'breakout'],
   inset: ['padding', 'inner spacing', 'content inset'],
   spacer: ['space', 'gap', 'vertical rhythm'],
@@ -405,6 +414,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   calendar: ['date grid', 'month', 'datepicker', 'date picker'],
   node: ['shape', 'graph node', 'diagram node'],
   icon: ['symbol', 'glyph', 'material symbol', 'custom icon'],
+  avatar: ['profile image', 'user image', 'initials', 'portrait'],
 }
 
 export const PACKAGE_COVERAGE = {
@@ -463,6 +473,7 @@ export const PACKAGE_COVERAGE = {
   card:               ['React', 'Native', 'Figma'],
   stack:              ['React'],
   grid:               ['React'],
+  'grid-item':        ['React'],
   bleed:              ['React'],
   inset:              ['React'],
   spacer:             ['React'],
@@ -494,6 +505,7 @@ export const PACKAGE_COVERAGE = {
   calendar:           ['React'],
   node:               ['React'],
   icon:               ['React', 'Pure', 'Figma'],
+  avatar:             ['React'],
   accordion:          ['React', 'Pure', 'Figma'],
 }
 
@@ -555,6 +567,7 @@ export const COMPONENT_STATUS = {
   card:                'beta',
   stack:               'beta',
   grid:                'beta',
+  'grid-item':         'beta',
   bleed:               'beta',
   inset:               'beta',
   spacer:              'beta',
@@ -586,6 +599,7 @@ export const COMPONENT_STATUS = {
   canvas:              'experimental',
   node:                'experimental',
   icon:                'beta',
+  avatar:              'beta',
   accordion:           'beta',
 }
 
@@ -650,7 +664,8 @@ export const COMPONENT_RELATED = {
   'section-separator': ['section', 'divider', 'spacer'],
   card:                ['section', 'grid'],
   stack:               ['grid', 'section'],
-  grid:                ['stack', 'section'],
+  grid:                ['grid-item', 'stack', 'section'],
+  'grid-item':         ['grid', 'card', 'stack'],
   bleed:               ['section', 'inset'],
   inset:               ['section', 'spacer'],
   spacer:              ['inset', 'stack'],
@@ -683,6 +698,7 @@ export const COMPONENT_RELATED = {
   calendar:            ['data-table', 'definition-list', 'date-field', 'pagination'],
   canvas:              ['data-table', 'card', 'dialog'],
   icon:                ['icon-button', 'badge'],
+  avatar:              ['figure', 'icon', 'data-table'],
   accordion:           ['tabs', 'section'],
 }
 
@@ -702,4 +718,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/tooltip.yaml', raw: tooltipRules },
   { file: 'system/rules/overlay.yaml', raw: overlayRules },
   { file: 'system/rules/chart.yaml', raw: chartRules },
+  { file: 'system/rules/avatar.yaml', raw: avatarRules },
 ]

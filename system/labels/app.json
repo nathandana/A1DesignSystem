@@ -398,6 +398,62 @@
             "ar": "المساعدة"
           }
         },
+        "helpDescription": {
+          "$type": "string",
+          "$value": "Search guides for the editor, projects, components, themes, data, and A1 workflows.",
+          "$description": "Introductory description on the Help article index.",
+          "locale": {
+            "es": "Busca guías sobre el editor, los proyectos, los componentes, los temas, los datos y los flujos de trabajo de A1.",
+            "fr": "Recherchez des guides sur l’éditeur, les projets, les composants, les thèmes, les données et les flux de travail A1.",
+            "de": "Durchsuchen Sie Anleitungen zum Editor, zu Projekten, Komponenten, Themes, Daten und A1-Arbeitsabläufen.",
+            "pt": "Pesquise guias sobre o editor, projetos, componentes, temas, dados e fluxos de trabalho do A1.",
+            "ja": "エディター、プロジェクト、コンポーネント、テーマ、データ、A1ワークフローのガイドを検索します。",
+            "zh": "搜索有关编辑器、项目、组件、主题、数据和 A1 工作流程的指南。",
+            "ar": "ابحث في أدلة المحرر والمشاريع والمكونات والسمات والبيانات وسير عمل A1."
+          }
+        },
+        "helpSearchLabel": {
+          "$type": "string",
+          "$value": "Search help",
+          "$description": "Label for the search field on the Help article index.",
+          "locale": {
+            "es": "Buscar en la ayuda",
+            "fr": "Rechercher dans l’aide",
+            "de": "Hilfe durchsuchen",
+            "pt": "Pesquisar na ajuda",
+            "ja": "ヘルプを検索",
+            "zh": "搜索帮助",
+            "ar": "البحث في المساعدة"
+          }
+        },
+        "helpBackToAllArticles": {
+          "$type": "string",
+          "$value": "Back to all help articles",
+          "$description": "Return link at the end of an individual Help article.",
+          "locale": {
+            "es": "Volver a todos los artículos de ayuda",
+            "fr": "Retour à tous les articles d’aide",
+            "de": "Zurück zu allen Hilfeartikeln",
+            "pt": "Voltar a todos os artigos de ajuda",
+            "ja": "すべてのヘルプ記事に戻る",
+            "zh": "返回所有帮助文章",
+            "ar": "العودة إلى جميع مقالات المساعدة"
+          }
+        },
+        "helpRelatedArticles": {
+          "$type": "string",
+          "$value": "Related articles",
+          "$description": "Heading and accessible label for related Help links on an article page.",
+          "locale": {
+            "es": "Artículos relacionados",
+            "fr": "Articles associés",
+            "de": "Verwandte Artikel",
+            "pt": "Artigos relacionados",
+            "ja": "関連記事",
+            "zh": "相关文章",
+            "ar": "مقالات ذات صلة"
+          }
+        },
         "accessibility": {
           "$type": "string",
           "$value": "Accessibility",
@@ -5416,6 +5472,180 @@
         }
       },
       "configurator": {
+        "gridItemLabel": {
+          "$type": "string",
+          "$value": "Grid item",
+          "$description": "Base label for a numbered Grid Item in the component configurator.",
+          "locale": {
+            "es": "Elemento de cuadrícula",
+            "fr": "Élément de grille",
+            "de": "Rasterelement",
+            "pt": "Item da grade",
+            "ja": "グリッド項目",
+            "zh": "网格项",
+            "ar": "عنصر الشبكة"
+          }
+        },
+        "gridItems": {
+          "$type": "string",
+          "$value": "Grid items",
+          "$description": "Heading for the Grid Item collection in the component configurator.",
+          "locale": {
+            "es": "Elementos de cuadrícula",
+            "fr": "Éléments de grille",
+            "de": "Rasterelemente",
+            "pt": "Itens da grade",
+            "ja": "グリッド項目",
+            "zh": "网格项",
+            "ar": "عناصر الشبكة"
+          }
+        },
+        "gridItemContent": {
+          "$type": "string",
+          "$value": "Content",
+          "$description": "Field label for representative Grid Item content in the component configurator.",
+          "locale": {
+            "es": "Contenido",
+            "fr": "Contenu",
+            "de": "Inhalt",
+            "pt": "Conteúdo",
+            "ja": "コンテンツ",
+            "zh": "内容",
+            "ar": "المحتوى"
+          }
+        },
+        "gridItemAdd": {
+          "$type": "string",
+          "$value": "Add grid item",
+          "$description": "Button label for adding another Grid Item in the component configurator.",
+          "locale": {
+            "es": "Añadir elemento de cuadrícula",
+            "fr": "Ajouter un élément de grille",
+            "de": "Rasterelement hinzufügen",
+            "pt": "Adicionar item da grade",
+            "ja": "グリッド項目を追加",
+            "zh": "添加网格项",
+            "ar": "إضافة عنصر شبكة"
+          }
+        },
+        "gridItemRemove": {
+          "$type": "string",
+          "$value": "Remove grid item",
+          "$description": "Button label for removing a Grid Item in the component configurator.",
+          "locale": {
+            "es": "Eliminar elemento de cuadrícula",
+            "fr": "Supprimer l’élément de grille",
+            "de": "Rasterelement entfernen",
+            "pt": "Remover item da grade",
+            "ja": "グリッド項目を削除",
+            "zh": "移除网格项",
+            "ar": "إزالة عنصر الشبكة"
+          }
+        },
+        "gridItemColumnSpan": {
+          "$type": "string",
+          "$value": "Column span",
+          "$description": "Label for the Grid Item column span control.",
+          "locale": {
+            "es": "Extensión de columnas",
+            "fr": "Étendue des colonnes",
+            "de": "Spaltenbreite",
+            "pt": "Extensão de colunas",
+            "ja": "列のスパン",
+            "zh": "列跨度",
+            "ar": "امتداد الأعمدة"
+          }
+        },
+        "gridItemColumnSpanHelp": {
+          "$type": "string",
+          "$value": "Choose how many grid columns this item spans at each breakpoint.",
+          "$description": "Helper text for the responsive Grid Item column span control.",
+          "locale": {
+            "es": "Elige cuántas columnas de la cuadrícula abarca este elemento en cada punto de interrupción.",
+            "fr": "Choisissez le nombre de colonnes de grille occupées par cet élément à chaque point de rupture.",
+            "de": "Wählen Sie aus, wie viele Rasterspalten dieses Element an jedem Breakpoint umfasst.",
+            "pt": "Escolha quantas colunas da grade este item ocupa em cada ponto de interrupção.",
+            "ja": "各ブレークポイントでこの項目がまたがるグリッド列数を選択します。",
+            "zh": "选择此项目在每个断点跨越的网格列数。",
+            "ar": "اختر عدد أعمدة الشبكة التي يمتد عبرها هذا العنصر عند كل نقطة توقف."
+          }
+        },
+        "gridItemFullSpan": {
+          "$type": "string",
+          "$value": "Full width",
+          "$description": "Option label for making a Grid Item span every available column.",
+          "locale": {
+            "es": "Ancho completo",
+            "fr": "Pleine largeur",
+            "de": "Volle Breite",
+            "pt": "Largura total",
+            "ja": "全幅",
+            "zh": "全宽",
+            "ar": "العرض الكامل"
+          }
+        },
+        "clusterGapHelp": {
+          "$type": "string",
+          "$value": "Use the semantic xs–xl scale or a numeric spacing token.",
+          "$description": "Helper text for the deprecated Cluster component's gap control.",
+          "locale": {
+            "es": "Usa la escala semántica de xs a xl o un token de espaciado numérico.",
+            "fr": "Utilisez l’échelle sémantique de xs à xl ou un jeton d’espacement numérique.",
+            "de": "Verwenden Sie die semantische Skala von xs bis xl oder ein numerisches Abstandstoken.",
+            "pt": "Use a escala semântica de xs a xl ou um token numérico de espaçamento.",
+            "ja": "xsからxlのセマンティックスケール、または数値のスペーシングトークンを使用します。",
+            "zh": "使用从 xs 到 xl 的语义比例或数字间距令牌。",
+            "ar": "استخدم المقياس الدلالي من xs إلى xl أو رمز تباعد رقميًا."
+          }
+        },
+        "avatarName": {
+          "$type": "string",
+          "$value": "Name",
+          "$description": "Label for the person's name field in the Avatar configurator.",
+          "locale": { "es": "Nombre", "fr": "Nom", "de": "Name", "pt": "Nome", "ja": "名前", "zh": "姓名", "ar": "الاسم" }
+        },
+        "avatarNameHelp": {
+          "$type": "string",
+          "$value": "Used for the fallback initials and default accessible name.",
+          "$description": "Helper text explaining how Avatar uses the person's name.",
+          "locale": { "es": "Se usa para las iniciales alternativas y el nombre accesible predeterminado.", "fr": "Utilisé pour les initiales de remplacement et le nom accessible par défaut.", "de": "Wird für die Ersatzinitialen und den standardmäßigen zugänglichen Namen verwendet.", "pt": "Usado para as iniciais alternativas e o nome acessível padrão.", "ja": "フォールバックのイニシャルと既定のアクセシブル名に使用されます。", "zh": "用于备用姓名首字母和默认无障碍名称。", "ar": "يُستخدم للأحرف الأولى البديلة والاسم الافتراضي المخصص لإمكانية الوصول." }
+        },
+        "avatarAltText": {
+          "$type": "string",
+          "$value": "Alternative text",
+          "$description": "Label for the image alternative text field in the Avatar configurator.",
+          "locale": { "es": "Texto alternativo", "fr": "Texte alternatif", "de": "Alternativtext", "pt": "Texto alternativo", "ja": "代替テキスト", "zh": "替代文本", "ar": "النص البديل" }
+        },
+        "avatarAltTextHelp": {
+          "$type": "string",
+          "$value": "Use an empty value when an adjacent label already names the person.",
+          "$description": "Helper text explaining when an Avatar should be decorative.",
+          "locale": { "es": "Usa un valor vacío cuando una etiqueta adyacente ya identifica a la persona.", "fr": "Utilisez une valeur vide lorsqu’un libellé adjacent nomme déjà la personne.", "de": "Verwenden Sie einen leeren Wert, wenn eine benachbarte Beschriftung die Person bereits nennt.", "pt": "Use um valor vazio quando um rótulo adjacente já identificar a pessoa.", "ja": "隣接するラベルに人物名がある場合は空にします。", "zh": "当相邻标签已标明此人姓名时，请留空。", "ar": "استخدم قيمة فارغة عندما تعرض تسمية مجاورة اسم الشخص بالفعل." }
+        },
+        "avatarInitials": {
+          "$type": "string",
+          "$value": "Initials override",
+          "$description": "Label for the optional initials override field in the Avatar configurator.",
+          "locale": { "es": "Iniciales personalizadas", "fr": "Initiales personnalisées", "de": "Benutzerdefinierte Initialen", "pt": "Iniciais personalizadas", "ja": "イニシャルの上書き", "zh": "自定义姓名首字母", "ar": "أحرف أولى مخصصة" }
+        },
+        "avatarInitialsHelp": {
+          "$type": "string",
+          "$value": "Leave empty to derive initials from the name.",
+          "$description": "Helper text for the Avatar initials override field.",
+          "locale": { "es": "Déjalo vacío para obtener las iniciales del nombre.", "fr": "Laissez vide pour générer les initiales à partir du nom.", "de": "Leer lassen, um die Initialen aus dem Namen abzuleiten.", "pt": "Deixe em branco para gerar as iniciais a partir do nome.", "ja": "名前からイニシャルを生成するには空のままにします。", "zh": "留空以根据姓名生成首字母。", "ar": "اتركه فارغًا لاشتقاق الأحرف الأولى من الاسم." }
+        },
+        "avatarSize": {
+          "$type": "string",
+          "$value": "Size",
+          "$description": "Label for the Avatar size control.",
+          "locale": { "es": "Tamaño", "fr": "Taille", "de": "Größe", "pt": "Tamanho", "ja": "サイズ", "zh": "尺寸", "ar": "الحجم" }
+        },
+        "avatarSizeHelp": {
+          "$type": "string",
+          "$value": "Choose an A1 size from extra small through extra large.",
+          "$description": "Helper text for the Avatar size control.",
+          "locale": { "es": "Elige un tamaño A1 de extrapequeño a extragrande.", "fr": "Choisissez une taille A1 de très petite à très grande.", "de": "Wählen Sie eine A1-Größe von extra klein bis extra groß.", "pt": "Escolha um tamanho A1 de extrapequeno a extragrande.", "ja": "極小から特大までのA1サイズを選択します。", "zh": "选择从超小到超大的 A1 尺寸。", "ar": "اختر حجم A1 من صغير جدًا إلى كبير جدًا." }
+        },
         "format": {
           "$type": "string",
           "$value": "Format",
@@ -5572,6 +5802,40 @@
         }
       },
       "editor": {
+        "backToProjectOverview": {
+          "$type": "string",
+          "$value": "Back to project overview",
+          "$description": "Persistent page-editor toolbar action that returns from an open page to the active project's overview.",
+          "locale": {
+            "es": "Volver al resumen del proyecto",
+            "fr": "Retour à la vue d’ensemble du projet",
+            "de": "Zur Projektübersicht zurück",
+            "pt": "Voltar à visão geral do projeto",
+            "ja": "プロジェクトの概要に戻る",
+            "zh": "返回项目概览",
+            "ar": "العودة إلى نظرة عامة على المشروع"
+          }
+        },
+        "projectPagesNavigation": {
+          "$type": "string",
+          "$value": "Project pages",
+          "$description": "Accessible label for the automatically generated project page tree in sidebar navigation.",
+          "locale": {
+            "es": "Páginas del proyecto",
+            "fr": "Pages du projet",
+            "de": "Projektseiten",
+            "pt": "Páginas do projeto",
+            "ja": "プロジェクトページ",
+            "zh": "项目页面",
+            "ar": "صفحات المشروع"
+          }
+        },
+        "multiSelectionMixed": {
+          "$type": "string",
+          "$value": "Select elements of the same type to edit shared properties.",
+          "$description": "Guidance shown when the editor sidebar selection contains different component types.",
+          "locale": { "es": "Seleccione elementos del mismo tipo para editar propiedades compartidas.", "fr": "Sélectionnez des éléments du même type pour modifier les propriétés partagées.", "de": "Wählen Sie Elemente desselben Typs aus, um gemeinsame Eigenschaften zu bearbeiten.", "pt": "Selecione elementos do mesmo tipo para editar propriedades compartilhadas.", "ja": "共有プロパティを編集するには、同じ種類の要素を選択してください。", "zh": "请选择相同类型的元素以编辑共享属性。", "ar": "حدد عناصر من النوع نفسه لتحرير الخصائص المشتركة." }
+        },
         "screenReaderReportAction": {
           "$type": "string",
           "$value": "Screen reader report",

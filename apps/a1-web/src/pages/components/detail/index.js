@@ -63,6 +63,7 @@ import * as contextMenu from './context-menu.jsx'
 import * as tooltip from './tooltip.jsx'
 import * as cluster from './cluster.jsx'
 import * as grid from './grid.jsx'
+import * as gridItem from './grid-item.jsx'
 import * as bleed from './bleed.jsx'
 import * as inset from './inset.jsx'
 import * as spacer from './spacer.jsx'
@@ -75,6 +76,7 @@ import * as dataTable from './data-table.jsx'
 import * as chart from './chart.jsx'
 import * as pagination from './pagination.jsx'
 import * as icon from './icon.jsx'
+import * as avatar from './avatar.jsx'
 import * as accordion from './accordion.jsx'
 import componentExamples from '../componentExamples.json'
 
@@ -146,6 +148,7 @@ const REGISTRY = {
   tooltip,
   cluster,
   grid,
+  'grid-item': gridItem,
   bleed,
   inset,
   spacer,
@@ -169,6 +172,7 @@ const REGISTRY = {
   'sunburst-chart': chart.sunburstChartDetail,
   pagination,
   icon,
+  avatar,
   accordion,
 }
 

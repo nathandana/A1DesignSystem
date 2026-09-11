@@ -13,7 +13,7 @@
 import { useContext, useState } from 'react'
 import { Button, CheckboxGroup, ChoiceGroup, Divider, Heading, Icon, IconButton, Link, MessageBadge, NumberField, Paragraph, SelectField, Stack, Switch, TextField, TextareaField } from '@gtivr4/a1-design-system-react'
 import { getAllPatterns, getPatternProjects, loadPattern, setPatternProjects } from '../patterns/patternStore.js'
-import { Choice, ConfigSlider } from '../pages/components/detail/configKit.jsx'
+import { Choice, ConfigSlider, ResponsiveControl } from '../pages/components/detail/configKit.jsx'
 import { IconSelect } from '../pages/components/detail/IconSelect.jsx'
 import { ConfigLockContext } from '../pages/components/detail/configLock.jsx'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
@@ -46,6 +46,7 @@ import { Controls as BlockquoteControls } from '../pages/components/detail/block
 import { Controls as CodeControls } from '../pages/components/detail/code.jsx'
 import { Controls as DividerControls } from '../pages/components/detail/divider.jsx'
 import { Controls as IconControls } from '../pages/components/detail/icon.jsx'
+import { Controls as AvatarControls, getDefaultConfig as avatarDefaults } from '../pages/components/detail/avatar.jsx'
 import { Controls as FigureControls } from '../pages/components/detail/figure.jsx'
 
 // Actions
@@ -275,6 +276,11 @@ export const propsToConfig = {
     layout: props?.layout ?? 'default',
   }),
 
+  GridItem: (props) => ({
+    span: props?.span ?? 1,
+    rowSpan: props?.rowSpan,
+  }),
+
   Cluster: (props) => ({
     gap: props?.gap ?? 8,
     align: props?.align ?? 'center',
@@ -375,6 +381,12 @@ export const propsToConfig = {
     size: props?.size ?? 'lg',
     color: props?.color ?? '',
     fill: props?.fill ?? false,
+  }),
+
+  Avatar: (props) => ({
+    ...avatarDefaults(),
+    ...(props ?? {}),
+    alt: props?.alt === undefined ? (props?.name ?? avatarDefaults().name) : props.alt,
   }),
 
   Figure: (props) => ({
@@ -1038,6 +1050,13 @@ export const configToNodeUpdate = {
     },
   }),
 
+  GridItem: (config) => ({
+    props: {
+      span: config.span === 1 ? undefined : config.span,
+      rowSpan: config.rowSpan,
+    },
+  }),
+
   Cluster: (config) => ({
     props: {
       gap: config.gap,
@@ -1156,6 +1175,16 @@ export const configToNodeUpdate = {
       size: config.size || undefined,
       color: config.color || undefined,
       fill: config.fill || undefined,
+    },
+  }),
+
+  Avatar: (config) => ({
+    props: {
+      name: config.name || 'Morgan Lee',
+      src: config.src || undefined,
+      alt: config.alt,
+      initials: config.initials || undefined,
+      size: config.size && config.size !== 'md' ? config.size : undefined,
     },
   }),
 
@@ -2059,12 +2088,45 @@ function TextareaFieldEditorControls({ config, setConfig }) {
   )
 }
 
+const GRID_ITEM_SPAN_OPTIONS = [...Array.from({ length: 12 }, (_, index) => index + 1), 'full']
+
+function GridItemEditorControls({ config, setConfig }) {
+  const t = useT()
+  return (
+    <ResponsiveControl
+      prop="span"
+      label={t('app.configurator.gridItemColumnSpan', 'Column span')}
+      helper={t(
+        'app.configurator.gridItemColumnSpanHelp',
+        'Choose how many grid columns this item spans at each breakpoint.',
+      )}
+      value={config.span}
+      onChange={(span) => setConfig((current) => ({ ...current, span }))}
+      defaultValue={1}
+    >
+      {(value, onChange) => (
+        <Choice
+          value={value}
+          onChange={onChange}
+          options={GRID_ITEM_SPAN_OPTIONS.map((option) => ({
+            value: option,
+            label: option === 'full'
+              ? t('app.configurator.gridItemFullSpan', 'Full width')
+              : String(option),
+          }))}
+        />
+      )}
+    </ResponsiveControl>
+  )
+}
+
 const CONTROLS_BY_TYPE = {
   // Layout
   Section: SectionControls,
   SectionSeparator: SectionSeparatorControls,
   Stack: StackControls,
   Grid: GridControls,
+  GridItem: GridItemEditorControls,
   Cluster: ClusterControls,
   Card: CardControls,
   Bleed: BleedControls,
@@ -2078,6 +2140,7 @@ const CONTROLS_BY_TYPE = {
   Code: CodeControls,
   Divider: DividerControls,
   Icon: IconControls,
+  Avatar: AvatarControls,
   Figure: FigureEditorControls,
   // Actions
   Link: LinkControls,
@@ -2320,6 +2383,7 @@ function PageConfigForm({ definition, projectId, pageLevel, availableLevels, onS
 
 export function EditorPropsPanel({
   selectedNodeId,
+  selectedNodeIds = [],
   definition,
   projectId,
   pages = [],
@@ -2349,7 +2413,19 @@ export function EditorPropsPanel({
   // UI-only accordion expand state per node (does not map to node props).
   const [openItemsByNode, setOpenItemsByNode] = useState({})
 
-  const node = selectedNodeId ? findNodeInDefinition(definition, selectedNodeId) : null
+  const selectedIds = selectedNodeIds.length ? selectedNodeIds : (selectedNodeId ? [selectedNodeId] : [])
+  const selectedNodes = selectedIds.map((id) => findNodeInDefinition(definition, id)).filter(Boolean)
+  const node = selectedNodeId ? findNodeInDefinition(definition, selectedNodeId) : selectedNodes[0] ?? null
+  const hasMixedTypes = selectedNodes.length > 1 && new Set(selectedNodes.map((selected) => selected.type)).size > 1
+
+  if (hasMixedTypes) {
+    return (
+      <Stack gap="sm">
+        <Heading as="h3" size="xs">{selectedNodes.length} elements selected</Heading>
+        <Paragraph size="sm" color="muted">{t('app.editor.multiSelectionMixed', 'Select elements of the same type to edit shared properties.')}</Paragraph>
+      </Stack>
+    )
+  }
 
   if (!node) {
     return (
@@ -2395,7 +2471,9 @@ export function EditorPropsPanel({
   }
 
   const Controls = CONTROLS_BY_TYPE[node.type]
-  const componentHref = `/components/${node.type.toLowerCase()}`
+  const componentHref = node.type === 'GridItem'
+    ? '/components/grid-item'
+    : `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
   const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
@@ -2497,12 +2575,24 @@ export function EditorPropsPanel({
     const convert = configToNodeUpdate[node.type]
     if (!convert) return
     const { props: newProps, contentFallback } = convert(next)
+    const baseline = convert(config)
+    const changedPropKeys = Object.keys({ ...baseline.props, ...newProps }).filter(
+      (key) => JSON.stringify(baseline.props[key]) !== JSON.stringify(newProps[key]),
+    )
     const labelMarkerUnchanged = !!textLabelMarker && next[textLabelField] === textLabelConfigValue
     const nextContentFallback = labelMarkerUnchanged
       ? (node.content?.fallback ?? '')
       : contentFallback
     const nextContentKey = textLabelMarker && !labelMarkerUnchanged ? null : undefined
-    onNodePropsChange(node.id, newProps, nextContentFallback, nextContentKey)
+    const multiEdit = selectedIds.length > 1
+    const contentChanged = baseline.contentFallback !== contentFallback || nextContentKey !== undefined
+    onNodePropsChange(
+      multiEdit ? selectedIds : node.id,
+      newProps,
+      multiEdit && !contentChanged ? undefined : nextContentFallback,
+      multiEdit && !contentChanged ? undefined : nextContentKey,
+      multiEdit ? changedPropKeys : undefined,
+    )
   }
 
   // Pattern-instance governance: locked *properties* and locked *text* render

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ContextMenu, Paragraph, TreeMenu } from '@gtivr4/a1-design-system-react'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
+import { contentLayerLabel } from './contentText.js'
+import { useT } from '../labels/useT.js'
 
 // ── Node → tree item conversion ───────────────────────────────────────────────
 
@@ -9,6 +11,7 @@ const TYPE_ICONS = {
   Section:          'crop_free',
   Stack:            'view_agenda',
   Grid:             'grid_view',
+  GridItem:         'select_all',
   Cluster:          'hub',
   Card:             'article',
   Bleed:            'open_in_full',
@@ -46,13 +49,13 @@ const TYPE_ICONS = {
 }
 
 const CONTAINER_TYPES = new Set([
-  'Section', 'Stack', 'Card', 'Grid', 'Cluster', 'PageLayout', 'Accordion',
+  'Section', 'Stack', 'Card', 'Grid', 'GridItem', 'Cluster', 'PageLayout', 'Accordion',
   'Bleed', 'Inset', 'ButtonContainer', 'List', 'Fieldset', 'StickyActions',
   'Slot',
 ])
 
-function nodeToTreeItem(node) {
-  const text = node.content?.fallback
+function nodeToTreeItem(node, resolveText) {
+  const text = contentLayerLabel(node.content, resolveText)
   // A custom name (set via inline rename) wins. Otherwise a pattern instance
   // shows the pattern's name; then the text content; then the component type.
   const label = node.name
@@ -70,20 +73,20 @@ function nodeToTreeItem(node) {
     // Container types always expose children (even when empty) so the tree
     // renders them as branch nodes and allows drag-into in drag-and-drop mode.
     children: isContainer
-      ? (node.children?.length ? node.children.map(nodeToTreeItem) : [])
-      : (node.children?.length ? node.children.map(nodeToTreeItem) : undefined),
+      ? (node.children?.length ? node.children.map(child => nodeToTreeItem(child, resolveText)) : [])
+      : (node.children?.length ? node.children.map(child => nodeToTreeItem(child, resolveText)) : undefined),
   }
 }
 
-function definitionToTreeItems(definition) {
+function definitionToTreeItems(definition, resolveText) {
   if (!definition) return []
   const regions = definition.page.layout.regions
-  if (regions.length === 1) return regions[0].nodes.map(nodeToTreeItem)
+  if (regions.length === 1) return regions[0].nodes.map(node => nodeToTreeItem(node, resolveText))
   return regions.map(region => ({
     id: region.id,
     label: region.name ?? region.id,
     icon: 'space_dashboard',
-    children: region.nodes.map(nodeToTreeItem),
+    children: region.nodes.map(node => nodeToTreeItem(node, resolveText)),
   }))
 }
 
@@ -110,17 +113,21 @@ function getAncestorIds(items, targetId, path = []) {
 export function ComponentTreePanel({
   definition,
   selectedNodeId,
+  selectedNodeIds = [],
   onSelectNode,
+  onSelectionChange,
   onNodeMove,
   onRequestAdd,
   onNodeAction,
   onConvertNode,
 }) {
+  const t = useT()
   const [expandedIds, setExpandedIds] = useState([])
   const [treeCtxMenu, setTreeCtxMenu] = useState(null) // { id, x, y }
   const [editingId, setEditingId] = useState(null) // id of the node being renamed inline
+  const [selectionAnchorId, setSelectionAnchorId] = useState(null)
 
-  const treeItems = definitionToTreeItems(definition)
+  const treeItems = definitionToTreeItems(definition, t)
 
   // When a node is selected in the canvas, expand its ancestors in the tree.
   useEffect(() => {
@@ -145,8 +152,29 @@ export function ComponentTreePanel({
     }
   }
 
-  function handleTreeSelect(id) {
-    onSelectNode(id)
+  function handleTreeSelect(id, event) {
+    const ids = []
+    const collect = (items) => items.forEach((item) => {
+      ids.push(item.id)
+      if (item.children?.length && expandedIds.includes(item.id)) collect(item.children)
+    })
+    collect(treeItems)
+    let nextIds
+    if (event?.shiftKey && selectionAnchorId && ids.includes(selectionAnchorId)) {
+      const from = ids.indexOf(selectionAnchorId)
+      const to = ids.indexOf(id)
+      nextIds = ids.slice(Math.min(from, to), Math.max(from, to) + 1)
+    } else if (event?.metaKey || event?.ctrlKey) {
+      nextIds = selectedNodeIds.includes(id)
+        ? selectedNodeIds.filter((selectedId) => selectedId !== id)
+        : [...selectedNodeIds, id]
+    } else {
+      nextIds = [id]
+      setSelectionAnchorId(id)
+    }
+    const primaryId = nextIds.includes(id) ? id : (nextIds.at(-1) ?? null)
+    onSelectionChange?.(nextIds, primaryId)
+    onSelectNode(primaryId)
     if (id) {
       requestAnimationFrame(() => {
         const el = document.querySelector(`[data-editor-node="${CSS.escape(id)}"]`)
@@ -164,7 +192,7 @@ export function ComponentTreePanel({
     const node = findNode(id)
     // The label shown is derived; only persist a custom name when the user
     // actually changed it away from the current display label.
-    const currentLabel = node ? nodeToTreeItem(node).label : null
+    const currentLabel = node ? nodeToTreeItem(node, t).label : null
     if (label !== currentLabel) onNodeAction?.({ type: 'rename', nodeId: id, name: label })
   }
 
@@ -261,7 +289,17 @@ export function ComponentTreePanel({
       },
     })
 
-    if (nodeType !== 'Stack') {
+    if (selectedNodeIds.length > 1) {
+      items.push({
+        id: 'group-selection-as-stack',
+        label: 'Group selection as Stack',
+        icon: 'view_agenda',
+        onClick: () => {
+          setTreeCtxMenu(null)
+          onNodeAction?.({ type: 'group-as-stack', nodeId: id, nodeIds: selectedNodeIds })
+        },
+      })
+    } else if (nodeType !== 'Stack') {
       items.push({
         id: 'group-as-stack',
         label: 'Group as Stack',
@@ -347,6 +385,8 @@ export function ComponentTreePanel({
               <TreeMenu
                 items={treeItems}
                 selectedId={selectedNodeId}
+                selectedIds={selectedNodeIds}
+                selectionMode="multiple"
                 onSelect={handleTreeSelect}
                 onHoverChange={handleTreeHover}
                 onItemContextMenu={handleItemContextMenu}

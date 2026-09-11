@@ -1,3 +1,5 @@
+"use client";
+
 import "./step-tracker.css";
 
 const ALIGNS = ["left", "center", "right", "full"];

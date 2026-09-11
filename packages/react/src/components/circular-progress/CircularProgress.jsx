@@ -1,3 +1,5 @@
+"use client";
+
 import "./circular-progress.css";
 
 const SIZES = ["xs", "sm", "md", "lg", "xl"];

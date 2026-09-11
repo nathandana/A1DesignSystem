@@ -1,3 +1,5 @@
+"use client";
+
 import "./message.css";
 import { Icon } from "../icon/Icon.jsx";
 import { Heading } from "../heading/Heading.jsx";

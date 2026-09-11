@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useId, useRef, useState } from "react";
 import "./overlay.css";
 import { Icon } from "../icon/Icon.jsx";

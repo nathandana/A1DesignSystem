@@ -1,16 +1,17 @@
 import * as React from "react";
 
 type SpacingToken = 1 | 2 | 4 | 6 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 64 | 96 | 128;
+type SemanticGap = "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface ClusterProps extends React.HTMLAttributes<HTMLElement> {
   /** Underlying element. Default: "div" */
   as?: React.ElementType;
-  /** Gap applied to both row and column. Default: 8 */
-  gap?: SpacingToken;
+  /** Gap applied to both row and column. Accepts the Stack semantic scale. Default: 8 */
+  gap?: SemanticGap | SpacingToken;
   /** Row gap override */
-  rowGap?: SpacingToken;
+  rowGap?: SemanticGap | SpacingToken;
   /** Column gap override */
-  columnGap?: SpacingToken;
+  columnGap?: SemanticGap | SpacingToken;
   /** Align-items. Default: "center" */
   align?: "start" | "center" | "end" | "stretch" | "baseline";
   /** Justify-content. Default: "start" */

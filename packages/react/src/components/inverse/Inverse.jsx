@@ -1,3 +1,5 @@
+"use client";
+
 import "../../themes.css";
 import "../../color-scheme.css";
 

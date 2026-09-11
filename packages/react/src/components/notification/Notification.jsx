@@ -1,3 +1,5 @@
+"use client";
+
 import "./notification.css";
 
 const statuses = ["neutral", "error", "success", "warn", "info"];

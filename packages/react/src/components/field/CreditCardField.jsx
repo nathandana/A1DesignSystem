@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useLayoutEffect } from "react";
 import { TextField } from "./TextField.jsx";
 import { buildDisplay, extractDigits, maskMaxDigits, nextSlotIndex } from "./maskUtils.js";

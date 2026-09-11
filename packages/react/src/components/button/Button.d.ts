@@ -3,6 +3,8 @@ import * as React from "react";
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Underlying element or component to render. Default: "button" */
   as?: React.ElementType;
+  /** Link destination when rendering with `as="a"` or another link component. */
+  href?: string;
   /** Visual style. Default: "primary" */
   variant?: "primary" | "secondary" | "tertiary" | "destructive" | "success";
   /** Size. Default: "md" */

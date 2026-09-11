@@ -1057,6 +1057,74 @@ export function importProjectJson(data: unknown): Project {
   return project;
 }
 
+/** Replace an existing project's editable bundle while retaining its stable
+ * project identity. Existing page ids are retained; newly added pages receive
+ * fresh ids so they cannot collide with another project. */
+export function replaceProjectJson(projectId: string, data: unknown): Project {
+  const norm = normalizeImport(data);
+  if (!norm || !Array.isArray((data as any)?.pages)) throw new Error('Invalid project JSON.');
+
+  const projects = loadProjectsRaw();
+  const existing = projects.find((project) => project.id === projectId);
+  if (!existing) throw new Error('Project not found.');
+
+  const priorPages = loadPages(projectId);
+  const priorIds = new Set(priorPages.map((page) => page.id));
+  const pageIdByKey = new Map<string, string>();
+  for (const page of norm.pages) {
+    if (pageIdByKey.has(page.key)) throw new Error('Project JSON contains duplicate page ids.');
+    pageIdByKey.set(page.key, priorIds.has(page.key) ? page.key : uid('page'));
+  }
+
+  const pages: ProjectPage[] = norm.pages.map((page, index) => ({
+    id: pageIdByKey.get(page.key)!,
+    title: page.title,
+    icon: page.icon,
+    description: page.description,
+    parentId: page.parentKey != null ? pageIdByKey.get(page.parentKey) ?? null : null,
+    order: index,
+  }));
+  const pageIds = new Set(pages.map((page) => page.id));
+  const links = norm.figmaPageLinks?.map((link) => ({
+    ...link,
+    pageId: pageIdByKey.get(link.pageId) ?? link.pageId,
+  })).filter((link) => pageIds.has(link.pageId));
+
+  const now = Date.now();
+  const next: Project = {
+    ...existing,
+    name: norm.name,
+    description: norm.description,
+    icon: norm.icon,
+    theme: norm.theme,
+    figmaPageLinks: links,
+    updatedAt: now,
+  };
+  saveProjects(projects.map((project) => project.id === projectId ? next : project));
+  writeStored(pagesKey(projectId), JSON.stringify(reindex(pages)));
+
+  for (let index = 0; index < norm.pages.length; index += 1) {
+    const source = norm.pages[index];
+    const page = pages[index];
+    let json = source.definitionJson ?? JSON.stringify(makeBlankPage(page.id, page.title), null, 2);
+    try {
+      const definition = JSON.parse(json);
+      if (definition && typeof definition === 'object') {
+        definition.page = {
+          ...(definition.page && typeof definition.page === 'object' ? definition.page : {}),
+          id: page.id,
+          name: page.title,
+        };
+        json = JSON.stringify(definition, null, 2);
+      }
+    } catch { /* validation prevents invalid definitions */ }
+    if (priorIds.has(page.id)) commitPageJson(page.id, json, 'Updated project JSON');
+    else seedPageContent(page.id, json, page.title);
+  }
+  priorPages.filter((page) => !pageIds.has(page.id)).forEach((page) => purgePageContent(page.id));
+  return next;
+}
+
 /** Serialise a single project as a **project bundle** JSON string — the same
  *  shape {@link importProjectJson} accepts, so a downloaded file round-trips.
  *  Each page's `definition` is the parsed page-definition object; `id`/`parentId`

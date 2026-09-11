@@ -1,3 +1,5 @@
+"use client";
+
 import "./bleed.css";
 import { resolveSpacing } from "../structure-utils.js";
 

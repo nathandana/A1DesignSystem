@@ -1,3 +1,5 @@
+"use client";
+
 import "./slider.css";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { Icon } from "../icon/Icon.jsx";

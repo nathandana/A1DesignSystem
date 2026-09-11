@@ -5,6 +5,20 @@ This package is the canonical source of truth for A1 component behavior, API, an
 ### File structure per component
 
 ```
+
+### React Server Components
+
+- Every shipped component module must begin with `"use client"`. This
+  establishes the correct boundary when a Next.js Server Component imports A1
+  from the package root or a component subpath, while leaving the package barrel
+  available for non-component exports.
+- Keep the directive as the first statement. `npm run pack:check` verifies it
+  survives packaging.
+- Consumers may render A1 components from Server Components, but functions and
+  other non-serializable props must originate in a consumer-owned Client
+  Component.
+- The package ships JSX source. Next.js consumers must configure
+  `transpilePackages`; the canonical setup is in `guidelines/setup.md`.
 src/components/{component-name}/
 ├── ComponentName.jsx         Component logic and JSX
 ├── ComponentName.d.ts        TypeScript prop types

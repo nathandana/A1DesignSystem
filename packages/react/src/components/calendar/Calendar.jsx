@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { Button }      from "../button/Button.jsx";
 import { IconButton }  from "../icon-button/IconButton.jsx";

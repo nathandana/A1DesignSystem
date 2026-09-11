@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "../icon/Icon.jsx";
 import "./bottom-drawer.css";
 

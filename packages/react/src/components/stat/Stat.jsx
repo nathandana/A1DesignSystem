@@ -1,3 +1,5 @@
+"use client";
+
 import "./stat.css";
 import { Icon } from "../icon/Icon.jsx";
 import { MessageBadge } from "../message/Message.jsx";

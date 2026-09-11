@@ -80,14 +80,11 @@ export function About({ onNavigate }) {
             <Heading as="h2" size="lg">How it's built</Heading>
             <Grid columns={{ xs: 1, md: 2 }} gap="md">
               {PRINCIPLES.map((p) => (
-                <Card key={p.title}>
-                  <Stack direction="row" gap="sm" align="start">
-                    <Icon name={p.icon} color="accent" />
+                <Card key={p.title}  icon={p.icon}>
                     <Stack gap="3xs">
                       <Heading as="h3" size="sm">{p.title}</Heading>
                       <Paragraph size="sm" color="muted">{p.body}</Paragraph>
                     </Stack>
-                  </Stack>
                 </Card>
               ))}
             </Grid>

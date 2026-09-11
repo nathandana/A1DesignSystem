@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Icon } from '../icon/Icon.jsx';
 import { useLabel } from '../labels/Labels.jsx';
@@ -10,6 +12,8 @@ const TREE_MENU_VARIANTS = ['expanded', 'collapsed'];
 
 const TreeCtx = createContext({
   selectedId: null,
+  selectedIds: [],
+  selectionMode: 'single',
   rovingId: null,
   onSelect: () => {},
   expandedIds: new Set(),
@@ -153,7 +157,7 @@ function RenameInput({ defaultValue, onCommit, onCancel }) {
 
 function TreeItem({ item, depth }) {
   const {
-    selectedId, rovingId, onSelect, expandedIds, onToggle, onRoving, onHoverChange, onItemContextMenu, nodeRefs,
+    selectedId, selectedIds, selectionMode, rovingId, onSelect, expandedIds, onToggle, onRoving, onHoverChange, onItemContextMenu, nodeRefs,
     isDraggable, dragState, forbiddenIds,
     onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
     editingId, onRenameStart, onRenameCommit, onRenameCancel,
@@ -166,7 +170,7 @@ function TreeItem({ item, depth }) {
   const isBranch = Array.isArray(item.children);
   const hasChildren = !!item.children?.length;
   const isExpanded = expandedIds.has(item.id);
-  const isSelected = item.id === selectedId;
+  const isSelected = selectionMode === 'multiple' ? selectedIds.includes(item.id) : item.id === selectedId;
   const isRoving = item.id === rovingId;
   const isEditing = item.id === editingId;
   const isForbidden = forbiddenIds.has(item.id);
@@ -197,7 +201,7 @@ function TreeItem({ item, depth }) {
   function handleSelect(e) {
     if (item.disabled) return;
     e.stopPropagation();
-    onSelect(item.id);
+    onSelect(item.id, e);
     onRoving(item.id);
   }
 
@@ -595,6 +599,8 @@ export function TreeMenu({
   items = [],
   variant = 'expanded',
   selectedId = null,
+  selectedIds = [],
+  selectionMode = 'single',
   onSelect,
   defaultExpandedIds = [],
   expandedIds: controlledExpandedIds,
@@ -763,7 +769,7 @@ export function TreeMenu({
         e.preventDefault();
         if (currentIndex >= 0) {
           const cur = visible[currentIndex];
-          if (!cur.disabled) onSelect?.(cur.id);
+          if (!cur.disabled) onSelect?.(cur.id, e);
         }
         break;
       }
@@ -811,6 +817,8 @@ export function TreeMenu({
     <TreeCtx.Provider
       value={{
         selectedId,
+        selectedIds,
+        selectionMode,
         rovingId: activeRovingId,
         onSelect: onSelect ?? (() => {}),
         expandedIds,
@@ -836,6 +844,7 @@ export function TreeMenu({
     >
       <ul
         role="tree"
+        aria-multiselectable={selectionMode === 'multiple' || undefined}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         className={['a1-tree-menu', className].filter(Boolean).join(' ')}

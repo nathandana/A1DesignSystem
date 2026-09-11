@@ -1,3 +1,5 @@
+"use client";
+
 import "./segmented.css";
 import { Icon } from "../icon/Icon.jsx";
 

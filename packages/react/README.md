@@ -10,7 +10,21 @@ npm install @gtivr4/a1-design-system-react
 
 React 18+ is a peer dependency. The package ships untranspiled ESM + JSX source,
 so your bundler must transform `.jsx` inside `node_modules` — Vite 4+ handles
-this out of the box.
+this out of the box. In Next.js, add the package to `transpilePackages`:
+
+```js
+// next.config.mjs
+const nextConfig = {
+  transpilePackages: ["@gtivr4/a1-design-system-react"],
+};
+
+export default nextConfig;
+```
+
+The package's component modules declare `"use client"`, so A1 components can
+be imported from the package root and rendered by a React Server Component. Standard
+React Server Component serialization rules still apply to props crossing that
+boundary; event handlers belong in a consumer-owned Client Component.
 
 ## Setup
 
@@ -42,7 +56,7 @@ faces — see `guidelines/setup.md` for the full list.
 
 Component CSS uses `@custom-media` breakpoints. Expand them at build time with
 `postcss-custom-media` fed from this package's `breakpoints.css` — the exact
-config is in `guidelines/setup.md`. Without it, responsive component behavior
+Vite and Next.js configurations are in `guidelines/setup.md`. Without it, responsive component behavior
 (Grid, Stack, field layouts, and more) is dropped.
 
 ## Usage

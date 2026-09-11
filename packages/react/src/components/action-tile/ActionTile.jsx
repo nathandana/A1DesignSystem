@@ -1,3 +1,5 @@
+"use client";
+
 import { Children, cloneElement, isValidElement } from "react";
 import "./action-tile.css";
 import { Icon } from "../icon/Icon.jsx";
