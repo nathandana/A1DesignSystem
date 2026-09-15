@@ -46,3 +46,52 @@ test('shared Button serializer emits live non-default properties', () => {
     content: { fallback: 'Open dialog' },
   });
 });
+
+test('shared Button serializer accepts the POC boolean state properties', () => {
+  assert.deepEqual(buttonNodeFromFigma({
+    id: '42:9',
+    properties: {
+      Variant: { value: 'success' },
+      Size: { value: 'sm' },
+      Disabled: { value: true },
+      Loading: { value: 'true' },
+    },
+    label: 'Saved',
+  }), {
+    id: 'button-42-9',
+    type: 'Button',
+    props: {
+      variant: 'success',
+      size: 'sm',
+      disabled: true,
+      loading: true,
+    },
+    content: { fallback: 'Saved' },
+  });
+});
+
+test('shared Button serializer maps the POC loading state to the developed prop', () => {
+  assert.deepEqual(buttonNodeFromFigma({
+    id: '42:10',
+    properties: {
+      Variant: { value: 'tertiary' },
+      Size: { value: 'lg' },
+      State: { value: 'loading' },
+      'Show icon': { value: true },
+      IconPosition: { value: 'end' },
+    },
+    label: 'Saving…',
+    iconName: 'arrow_forward',
+  }), {
+    id: 'button-42-10',
+    type: 'Button',
+    props: {
+      variant: 'tertiary',
+      size: 'lg',
+      loading: true,
+      icon: 'arrow_forward',
+      iconPosition: 'end',
+    },
+    content: { fallback: 'Saving…' },
+  });
+});

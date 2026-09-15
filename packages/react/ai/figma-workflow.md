@@ -11,6 +11,11 @@ This file governs all agent work that creates or updates components in the A1 Fi
 1. **No hardcoded colors.** Every fill and stroke must be bound to a variable from the Color collection. Raw hex, RGB, or opacity-only paints are not allowed.
 2. **No hardcoded text styles.** Every text node must use a named text style (`textStyleId`). For labels or annotations that have no matching text style, bind font size and weight to values that trace back to token equivalents — never invent raw values.
 3. **Component properties must match the React API 1:1.** Variant property names and values must mirror the exact prop names and valid values in the React component. If a React prop cannot be expressed in Figma, document the gap in the per-component table below.
+4. **Public components stay at page top level.** Every published component and component set must be a direct child of its Figma page, never nested in a frame or section. This prevents unintended nesting in the Figma Assets menu. Use a locked presentation placeholder behind the top-level asset when it must visually align with an Auto Layout documentation frame.
+5. **Bounded slots declare their child contract.** Add preferred instances for only the approved child components, set the slot's Auto Layout direction and wrapping explicitly, and seed it with useful child-component defaults without property overrides. Preferred instances may be omitted only for intentionally open, high-level composition slots such as a full page or section.
+6. **Public asset names are flat.** Use only the component name, with no page, category, status, POC or other prefix and no `/` hierarchy separator. If 2 public assets share a name, external tooling must distinguish them by stable published component or component-set key.
+7. **Required treatment follows density.** Every form component with a developed `required` prop uses the same label treatment. Compact/default labels show a blue asterisk bound to `color/status/info/background`; comfortable labels show an inline `Badge` instance with `Size=sm`, `Status=info`, `Subtle=true`, `Show icon=false` and `Label=Required`. New or refactored assets expose one `Required` Boolean and bind both forms to it; the existing Text Field keeps its documented aggregate `State=required` mapping until that broader variant contract is migrated. Use the established spacing variable between label and marker.
+8. **Nested properties mirror API ownership.** Reuse an established child component when it owns the visual or behavior. Expose the nested instance or selected nested properties only when the developed parent API delegates those settings to the child. Keep implementation-only children unexposed and never expose a parent property and an equivalent nested property at the same time.
 
 ---
 
@@ -253,11 +258,54 @@ These keep their natural content size — never stretch them:
 
 ---
 
+## Slot composition contract
+
+Treat a slot as a typed composition boundary whenever its developed API limits
+the children it accepts:
+
+- Add preferred instances for every allowed child component variant and no
+  unrelated components. Preferred values guide Figma authoring; the documented
+  parent/child contract remains authoritative where Figma cannot hard-block an
+  arbitrary pasted layer.
+- Set `layoutMode` explicitly to `VERTICAL` or `HORIZONTAL`, and define wrapping
+  rather than relying on inherited or incidental layout settings.
+- Use a small, useful default composition whose child instances retain their own
+  component defaults. Do not override their text, variant, Boolean, instance
+  swap, or visibility properties in the master component.
+- Omit preferred instances only when an intentionally open slot represents
+  high-level composition, such as a page or section that accepts heterogeneous
+  content.
+
+The Checkbox Group implementation is the reference bounded slot: `Checkbox
+Items` prefers Checkbox item variants only, uses vertical direction when
+`Inline=False` and horizontal direction when `Inline=True`, and starts with one
+unoverridden default Checkbox item.
+
+### Nested component properties
+
+Nested properties are part of the public component contract, not a shortcut for
+surfacing every child control:
+
+- Prefer the established nested component over a hand-built copy.
+- Expose its instance swap or selected child properties when consumers are
+  expected to configure that child directly and the developed parent API has a
+  matching delegation point.
+- Keep structural or implementation-only children unexposed. The comfortable
+  Required Badge is the reference example: its variant and label are fixed by
+  the parent contract, while only the parent's `Required` Boolean is public.
+- Do not expose duplicate controls at both parent and nested levels.
+- Apply preferred instances to bounded nested content and slots; omit them only
+  for intentionally open, high-level composition such as a page or section.
+
+---
+
 ## Per-component property gaps
 
 This table is the canonical record of props that exist in React but cannot be represented (or are not yet represented) in Figma. Update it as components are built.
 
 ### Button
+
+**A1-2639 POC:** The flat-named `Button` proof-of-concept set on the component-requirements page (`node 1101:7550`) mirrors the developed API with `Variant=primary|secondary|tertiary|destructive|success`, `Size=sm|md|lg`, `IconPosition=start|end`, and `State=default|hover|active|disabled|loading`. `State=disabled` and `State=loading` map to the developed Boolean props; hover and active are visual-only. Label, icon visibility, A1-library icon swap, and a separate Boolean `Focus ring` remain native component properties. Loading replaces the icon and disabled styling is direct rather than veil-based. The bridge retains compatibility with the POC's former `Disabled` and `Loading` Boolean properties. Its stable component-set key is retained under the manifest's legacy internal tracking entry `POC / Button`; public Figma naming must not reproduce that prefix.
 
 **Component structure:** `Button` component set with variants for visual styling, size, interactive state, and icon placement. Component properties expose label text, icon visibility, and an icon instance swap.
 
@@ -365,8 +413,9 @@ Gaps — props and behavior that cannot currently be represented visually in Fig
 | `showValue`         | `Show value`             | BOOLEAN                                       |
 | `defaultValue`      | `Value`                  | TEXT when `showValue=true`                    |
 | `hint` / `error`    | `Hint` / `Error message` | TEXT                                          |
+| `required`          | `Required`               | BOOLEAN                                       |
 
-**JSON bridge:** imports, exports, and updates `SelectField` nodes with size, label, hint/error copy, disabled state, and a visible-value preview. When the Figma `Show value` property is on, export emits `showValue: true` plus `defaultValue`; import only reveals `defaultValue` when that boolean is true. The a1-web JSON renderer supplies a matching preview option so the native Select visibly shows it. Figma does not model a native option list or selected-value data, so authored `options`, controlled values, `labelPosition="before"`, required state, browser validation, events, and native ARIA behavior remain runtime-owned.
+**JSON bridge:** imports, exports, and updates `SelectField` nodes with size, label, hint/error copy, disabled and required state, and a visible-value preview. When the Figma `Show value` property is on, export emits `showValue: true` plus `defaultValue`; import only reveals `defaultValue` when that boolean is true. The a1-web JSON renderer supplies a matching preview option so the native Select visibly shows it. Figma does not model a native option list or selected-value data, so authored `options`, controlled values, `labelPosition="before"`, browser validation, events, and native ARIA behavior remain runtime-owned.
 
 **Select Menu composition:** `Select Menu` (`node 533:1058`) is a reusable open-state composition on the Select page. It reuses the token-bound Menu shell and four Menu Item instances, including one `State=active` selection and one disabled option. Use it adjacent to a Select in Figma when an open menu must be shown. It is not a second React component or an exported JSON node: the native `SelectField` remains the source of interaction and option data.
 
@@ -385,7 +434,7 @@ Gaps — props and behavior that cannot currently be represented visually in Fig
 
 ### Text Field
 
-**Component structure:** `Text Field` component set on the Text Field page (`node 148:1360`) with variants for size and visual state. Component properties expose the visible label, input value, hint text, error text, required badge text, and label/hint visibility toggles. Documentation/example frames live beside it (`node 148:1361`).
+**Component structure:** `Text Field` component set on the Text Field page (`node 148:1360`) with variants for size and visual state. Component properties expose the visible label, input value, hint text, error text, and label/hint visibility toggles. Its required marker is fixed by the size-aware component contract rather than editable copy. Documentation/example frames live beside it (`node 148:1361`).
 
 **Figma default:** The first/default variant is `Size=default, State=default`, matching React's runtime `size="default"` and showing the default label-above presentation.
 
@@ -413,7 +462,7 @@ Component properties:
 | `hint`                        | `Hint` + `Show hint` | TEXT + BOOLEAN | Helper text in non-error states; `Show hint=false` hides the hint and Code Connect omits `hint` |
 | `error`                       | `Error`              | TEXT           | Error text when `State=error`                                                                   |
 | `label` presence              | `Show label`         | BOOLEAN        | Hides the visible label and Code Connect omits `label`                                          |
-| comfortable `required` marker | `Required label`     | TEXT           | The comfortable required state uses a small subtle info badge; default/compact use an asterisk  |
+| `required` marker             | `State=required`     | VARIANT        | Compact/default use the info-blue asterisk; comfortable uses an unexposed nested subtle info Badge |
 
 Gaps — props that cannot currently be represented visually in Figma:
 
@@ -512,6 +561,8 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 
 **Component structure:** `Radio Group` is a component set on the Radio Group page (`node 283:1121`). Its `Radio Items` slot contains `Radio Option` instances (`node 269:1599`), so designers can add up to 20 rows without rebuilding the group.
 
+**Required marker:** compact/default use the info-blue asterisk; comfortable reuses the inline subtle info Badge. Both are controlled by the existing `Required` Boolean.
+
 **Figma default:** The first/default variant is `Size=default, Inline=False`, matching React's default density and stacked layout. The group has no field-level error/disabled state; selection belongs to individual option instances.
 
 Variant properties:
@@ -544,7 +595,11 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 
 **Component structure:** `Checkbox Group` is a component set on the Checkbox Group page (`node 296:1058`). Its `Checkbox Items` slot accepts 1–20 `Checkbox Option` instances (`node 293:1031`). It has the same group property model as Radio Group, with independent selected option rows.
 
-**Figma default:** `Size=default, Inline=False` with three visible options.
+**Required marker:** compact/default use the info-blue asterisk; comfortable reuses the inline subtle info Badge. Both are controlled by the existing `Required` Boolean. The POC uses the same treatment.
+
+**A1-2639 POC:** The flat-named `Checkbox Group` proof-of-concept set (`node 1118:7837`) matches the developed CheckboxGroup API with `Size=compact|default|comfortable`, `Inline=False|True`, label, hint, required, disabled, error, and error/hint visibility properties. Its native `Checkbox Items` slot accepts 0–20 `Checkbox Item` instances, matching the React component's empty `options` default. The slot's preferred instances are restricted to all 24 Checkbox Item variants, its direction is vertical for `Inline=False` and horizontal for `Inline=True`, and every group master starts with one unoverridden `Size=default, selected=false, State=default` child. The item set (`node 1106:7569`) exposes `Size=compact|default|comfortable`, `selected=false|true`, and `State=default|hover|active|disabled`, plus label/hint properties, hint visibility, and a separate Boolean `Focus ring`. `State=disabled` maps to `options[].disabled`; the bridge accepts the former `disabled` axis for migration compatibility. Required uses the shared blue asterisk at compact/default and an inline info Badge at comfortable. Option `value`, controlled state, callbacks, name, id, and class name remain runtime-owned. The adapter distinguishes the duplicate flat `Checkbox Group` name by stable component-set key; legacy POC names remain internal manifest aliases only.
+
+**Figma default:** `Size=default, Inline=False` with one canonical Checkbox item using the child component's own default properties. Designers add, remove, reorder, and configure approved Checkbox item instances in the slot.
 
 | React prop                    | Figma representation                                                    | Valid values                            |
 | ----------------------------- | ----------------------------------------------------------------------- | --------------------------------------- |
@@ -595,6 +650,8 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 ### Choice Group
 
 **Component structure:** the Choice Group page carries a `Choice Option` component set (`node 762:124`) — `Type=radio|checkbox` × `State=default|selected|disabled` × `Size=compact|default|comfortable` (18 variants) — and a `Choice Group` shell (`node 762:125`). Tiles are 8px-radius cards on the field surface with the selection indicator absolutely positioned in the top-start corner (circle for radio, rounded square for checkbox); **selected** binds the action surface with a 2px accent border and a filled indicator (`color/action/foreground` dot or check); **disabled** is the raised surface at 50%. Densities follow the compact/default/comfortable scale (padding 8/12/16, indicator 12/16/20, icon 20/24/32) with new `Choice/Label {density}` weight-500 text styles and a `Choice/Subtext compact` (body-2xs) style. Option properties: `Label`, `Show icon` + `Icon` swap, `Show subtext` + `Subtext`. The shell exposes `Label`, `Required`, and `Helper` + `Show helper`, and composes a wrapping equal-width tile row.
+
+**Required marker:** compact/default use the info-blue asterisk; comfortable reuses the inline subtle info Badge. Both are controlled by the existing `Required` Boolean.
 
 **JSON bridge:** exports as `ChoiceGroup` with real React props — legend/required/hint, `options` (label/subtext/icon/disabled), `defaultValue` from selected tiles, `multiple` from checkbox tiles, and `size` from tile density. The Options slot's **embedded Grid is detected**: a native GRID's column count or a responsive plugin Grid's `{xs:n, md:n}` metadata exports as `columns`, and import/update syncs the metadata back onto the grid (a `columns` value without an embedded Grid warns). Tile reconciliation (1–20) appends inside the grid when present. The choice-group configurator has the matching JSON view; its config carries no selection, so `defaultValue` renders in the playground/editor but not the configurator preview.
 
@@ -754,7 +811,7 @@ Component properties:
 | `value` (selected, single) | `Value` + `Show value` | TEXT + BOOLEAN | The selected value shown in the control |
 | `hint` | `Hint` + `Show hint` | TEXT + BOOLEAN | Helper text in non-error states |
 | `error` | `Error message` | TEXT | Error text when `State=error` |
-| `required` | `Required` | BOOLEAN | Shows the asterisk in the label row |
+| `required` | `Required` | BOOLEAN | Shows the info-blue asterisk at compact/default or inline subtle info Badge at comfortable |
 
 Gaps — props and behaviors that cannot currently be represented as variants in Figma:
 

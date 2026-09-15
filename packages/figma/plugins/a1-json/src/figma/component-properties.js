@@ -21,6 +21,16 @@ export function componentSetName(instanceNode) {
   }
 }
 
+export function componentSetKey(instanceNode) {
+  try {
+    const main = instanceNode && instanceNode.mainComponent;
+    const set = main && main.parent && main.parent.type === 'COMPONENT_SET' ? main.parent : null;
+    return set ? set.key : main ? main.key : '';
+  } catch {
+    return '';
+  }
+}
+
 export function componentProperty(instance, name, type) {
   const wanted = canonicalKey(name);
   const raw = instance.componentProperties || {};

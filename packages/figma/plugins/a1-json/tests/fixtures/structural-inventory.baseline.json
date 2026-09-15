@@ -1,11 +1,11 @@
 {
   "code": {
-    "lines": 16704,
+    "lines": 16752,
     "functions": {
-      "total": 1201,
-      "topLevel": 730
+      "total": 1204,
+      "topLevel": 733
     },
-    "topLevelDeclarations": 907,
+    "topLevelDeclarations": 912,
     "registries": {
       "adapters": 45,
       "figmaNames": 42,

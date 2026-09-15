@@ -1659,7 +1659,7 @@ function App() {
 
   const FOUNDATION_GROUPS = [
     { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-content-standards', 'foundation-iconography', 'foundation-labels'] },
-    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
+    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin', 'foundation-figma-standards'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
     { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
@@ -1779,10 +1779,10 @@ function App() {
             items: ids
               .map((id) => foundations.find((f) => f.id === id))
               .filter(Boolean)
-              .sort((a, b) => t(a.titleLabelKey, a.title).localeCompare(t(b.titleLabelKey, b.title), locale))
+              .sort((a, b) => t(a.titleLabelKey, a.navigationTitle ?? a.title).localeCompare(t(b.titleLabelKey, b.navigationTitle ?? b.title), locale))
               .map((foundation) => ({
                 icon: foundation.icon,
-                label: t(foundation.titleLabelKey, foundation.title),
+                label: t(foundation.titleLabelKey, foundation.navigationTitle ?? foundation.title),
                 href: getPath(foundation.id),
                 onClick: (e) => handleNavClick(e, foundation.id),
               })),
