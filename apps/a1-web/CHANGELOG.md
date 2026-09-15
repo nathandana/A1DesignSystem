@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Figma standards foundation page** — added Foundations → Figma → Standards at `/foundations/figma-standards`. The page is a static A1 content article covering resilient component organization, presentation, nested elements, properties, interactions, validation and handoff. It uses clean A1 markup without a Markdown parser, generated checklist state or content data structures.
+
+- **A1-2639 Figma form contracts and flat asset names** — aligned Required rendering across Text Field, Search Field, Textarea, Select, Autocomplete, Checkbox Group, Radio Group, Choice Group and the Checkbox Group POC: compact/default use the blue info asterisk and comfortable uses the inline subtle info Badge. Repaired Badge `Label` wiring across all 30 variants so nested badges render configured text. Renamed the POC assets to flat `Button`, `Checkbox Item` and `Checkbox Group` names while preserving their published keys, and updated the A1:Figma bridge to distinguish duplicate names by stable component-set key. Added nested-property ownership guidance; the page-definition JSON schema is unchanged.
+
+- **A1-2639 bounded Figma slots** — restricted the POC Checkbox Group's preferred slot choices to all 24 Checkbox item variants, explicitly set vertical versus inline direction, and reset every master to one unoverridden default Checkbox item. Published the reusable slot standard in A1 Foundations and the repository: bounded slots declare preferred instances, direction, wrapping, and child-default content; intentionally open page/section slots may omit preferred instances. Component keys and the JSON schema remain unchanged.
+
+- **A1-2639 Figma component-library completion** — completed the documented component-set presentation, top-level page placement, library-icon, interaction-state, Boolean focus-ring, disabled, loading, property-coverage, prototype, and contract-synchronization requirements. The Button and Checkbox item POCs now use State-based visual contracts with developed-prop translation, generated plugin artifacts and fixtures are current, all tracked component keys remain stable, and the plugin suite passes 60 of 60 tests.
+
+- **A1-2639 Figma component requirements** — added token-bound Button, Checkbox item, and Checkbox group proof-of-concept sets with developed-property parity, native Checkbox Items slots, light/dark validation, and a dedicated A1 Foundations standards page. The A1:Figma bridge now recognizes the POC assets, maps their Boolean loading/disabled and group error/disabled properties, permits an empty Checkbox Group slot, tracks all three published component keys, and validates the JSON contract and generated plugin output.
+
 ## 0.32.0 — 2026-09-11
 
 - **Homepage section introductions** — removed the extra-small content-width cap from the Current capabilities and Tools introductions so the supporting copy follows the section's normal responsive content width.

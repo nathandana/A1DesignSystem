@@ -116,7 +116,7 @@ a single controller file.
 
 | Figma asset | JSON node | Round-tripped representation |
 |-------------|-----------|------------------------------|
-| Button | `Button` | Variant, size, disabled/loading state, label, icon, and icon position. Visual hover/focus/pressed states warn rather than becoming runtime props. |
+| Button | `Button` | Variant, size, disabled/loading state (canonical `State`, with legacy POC Boolean compatibility), label, icon, and icon position. Visual hover/active states and the Boolean focus-ring preview warn rather than becoming runtime props. |
 | Icon Button | `IconButton` | Variant, size, accessible label, and nested Material icon swap. `disabled`, link rendering, and event props are runtime-owned and warn rather than becoming Figma behavior. |
 | Button Container | `ButtonContainer` | `align` plus its ordered Button Slot children and fill-width placement when nested in auto layout. While the plugin is open, the Figma `direction` variant follows the rendered width: stacked below 480 px and inline at 480 px and above. Matching action counts update the representative Button instances without detaching the container; only a legacy frame-based slot that must add/remove actions detaches. |
 | Link | `Link` | Size, weight, editable label, icon visibility/swap, and icon position. Runtime navigation props such as `href`, `target`, and `rel` warn rather than becoming Figma interaction settings. Blue or blue-violet underlined standalone text is recognized as a Link candidate; **AutoFix** applies the nearest `Link/{size}/{weight}` text style, underline, and `link/color` variable without storing a raw fill. Any underlined range inside Heading or Paragraph text exports as `content.inlineLinks` and renders as an inline A1 Link. |
@@ -133,7 +133,7 @@ a single controller file.
 | Inline | `Inline` | Inline markdown/text content as `content.fallback` plus optional `props.inlineElement` when the Figma asset exposes an element selector. |
 | Section | `Section` | Surface, padding, content width, gap, explicit Dark Color mode (`inverse: true`), documentation properties, and the ordered `Section Content Slot` tree as `children` (including A1-styled Heading/Paragraph text and Buttons). |
 | Text Field | `TextField` | Size, label visibility/text, default value, hint visibility/text, error, required, read-only, and disabled. `hover` and `focus` are visual-only. |
-| Search Field | `SearchField` | Compact/default/comfortable size, visible label, and default value. Search submission, clear behavior, controlled values, and native input attributes remain runtime-owned. |
+| Search Field | `SearchField` | Compact/default/comfortable size, visible label, required state, and default value. Search submission, clear behavior, controlled values, and native input attributes remain runtime-owned. |
 | Textarea | `TextareaField` | Compact/default/comfortable size; editable label, value, hint, and count; plus a required indicator. Value, hint, and count each have a visibility property and start hidden. A visible count maps to `showCount`; a `0 / maximum` count also maps its maximum to `maxLength`. Rows, validation, and native textarea behavior remain runtime-owned. |
 | Select | `SelectField` | Size, visible label, hint/error copy, disabled state, required indicator, and explicit `showValue`/`defaultValue` display preview. Native options and selected-value data remain runtime-owned. |
 | Switch | `Switch` | Compact/default/comfortable size, checked visual, editable label, and independently visible hint/error messages. The current visual exports as `defaultChecked`; controlled callbacks remain runtime-owned. |
@@ -149,7 +149,7 @@ a single controller file.
 | Dialog | `Dialog` | Size, status, title, close/footer visibility, footer Button actions, and Body Slot content. Rich slot content round-trips through `children`; `props.body` remains the simple text fallback. |
 | Bottom Sheet | `BottomSheet` | Title, default detent preview, and ordered Content Slot children. Detents, drag behavior, controlled state, and mobile-only mounting stay runtime-owned. |
 | Radio Group | `RadioGroup` | Size, inline layout, label, helper, required state, visible option labels/hints, and representative selected option as `defaultValue`. |
-| Checkbox Group | `CheckboxGroup` | Size, inline layout, label, helper, required state, visible option labels/hints, and selected options as `defaultValue`. |
+| Checkbox Group | `CheckboxGroup` | Size, inline layout, label, hint, required/disabled/error state, visible option labels/hints/disabled state, and selected options as `defaultValue`. The flat-named POC's native Checkbox Items slot supports 0–20 options, prefers only the 24 `Checkbox Item` variants, sets vertical/horizontal direction from `Inline`, and starts with one unoverridden default item. Duplicate `Checkbox Group` names are distinguished by stable component-set key. |
 | Standalone text | `Heading` or `Paragraph` | A1 `heading/*`, `display/*`, and `body/*` local text styles, text color token, alignment, literal text content, and fill-width placement inside imported layout containers. |
 | Top Header | `TopHeader` | Logo text, `Breakpoint` preview variants (visual only), the Nav Items slot's Top Header Nav Item instances as `navItems` (label, icon, active; chevron warns that submenus are runtime), and the Actions slot's Icon Button instances as `actions` (a wrapper frame inside the slot is tolerated via a deep-scan fallback). A visible sign-in Button in the Actions slot exports as `loginButton: { label }` — its label round-trips both ways; click behavior stays runtime-owned, and only the first Button is exported. Import/update reconciles both slots to the JSON counts, applies the `loginButton` label (object or legacy string) onto the sign-in Button instance, and accepts projectLayout's `logo` wordmark string. |
 | Page Layout | `PageLayout` | v1 app shell: the nested Top Header exports as the first child (full Top Header bridge) and the Page Content Slot's contents as the remaining `children`; import/update applies TopHeader props to the nested instance and renders content into the slot. Exported `showHeader/showSidebar/showFooter: false` are playground-preview flags. Sidebar/aside/footer slots, sticky header, and viewport-height behavior remain runtime-owned. |
@@ -272,10 +272,27 @@ warning instead of selecting an arbitrary option.
   in an A1 `Inset`, not Stack.
 - **Radio Group / Checkbox Group:** the bridge reconciles Figma's real option
   slots when JSON items are added or removed: Radio Group supports 2–20 rows
-  and Checkbox Group supports 1–20 rows. Values outside those ranges warn and
+  and the Checkbox Group POC supports 0–20 rows. Values outside those ranges warn and
   are clamped to the supported slot count. Disabled/error state, option-level
   disabled, native names, controlled values, callbacks, and ARIA are
-  runtime-only for the current Figma assets.
+  runtime-only for the production Figma assets. The Checkbox Group POC master slot
+  prefers only Checkbox item variants, uses an explicit axis for each Inline
+  variant, and keeps its canonical child free of property overrides; JSON import
+  intentionally configures and reconciles those child instances at runtime.
+
+### Figma naming, Required markers and nested properties
+
+- Public Figma assets use only the component name. Do not add category, page,
+  status or POC prefixes and do not use `/` hierarchy separators. Where 2 sets
+  share a public name, the bridge uses the published 40-character component-set
+  key to select the correct contract.
+- Form components with a developed `required` prop share one `Required` Boolean.
+  Compact/default use the blue info-color asterisk; comfortable uses the inline
+  subtle info `Badge` labeled “Required.” The Badge is an unexposed nested
+  implementation detail, not another public parent control.
+- Expose nested instances or nested properties only when the developed parent
+  API delegates that choice to the child. Keep implementation-only children
+  unexposed and avoid duplicate parent/nested controls.
 
 ## Install
 

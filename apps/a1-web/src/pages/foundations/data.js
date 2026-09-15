@@ -21,6 +21,14 @@ export const foundations = [
     points: ['Published component sets', 'Properties and modes', 'Code Connect mappings'],
   },
   {
+    id: 'foundation-figma-standards',
+    title: 'Figma standards',
+    navigationTitle: 'Standards',
+    icon: 'checklist',
+    body: 'Best practices for building resilient Figma components that work reliably for people and design-to-code workflows.',
+    points: ['Organization and presentation', 'Properties and interactions', 'Validation and handoff'],
+  },
+  {
     id: 'foundation-color-visualization',
     title: 'Color visualization',
     icon: 'view_in_ar',

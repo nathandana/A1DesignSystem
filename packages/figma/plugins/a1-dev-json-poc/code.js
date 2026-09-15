@@ -37,14 +37,18 @@ function buttonNodeFromFigma({ id, properties = {}, label, iconName, fullWidth =
   const variant = componentValue(properties, ['Variant'], 'primary');
   const size = componentValue(properties, ['Size'], 'md');
   const state = componentValue(properties, ['State'], 'default');
+  const disabled = componentValue(properties, ['Disabled'], false) === true ||
+    componentValue(properties, ['Disabled'], false) === 'true';
+  const loading = componentValue(properties, ['Loading'], false) === true ||
+    componentValue(properties, ['Loading'], false) === 'true';
   const iconPosition = componentValue(properties, ['IconPosition', 'Icon position'], 'start');
   const showIcon = componentValue(properties, ['Show icon', 'ShowIcon'], false) === true ||
     componentValue(properties, ['Show icon', 'ShowIcon'], false) === 'true';
 
   if (A1_BUTTON_VARIANTS.includes(variant) && variant !== 'primary') props.variant = variant;
   if (A1_BUTTON_SIZES.includes(size) && size !== 'md') props.size = size;
-  if (state === 'disabled') props.disabled = true;
-  if (state === 'loading') props.loading = true;
+  if (state === 'disabled' || disabled) props.disabled = true;
+  if (state === 'loading' || loading) props.loading = true;
   if (fullWidth === true) props.fullWidth = true;
   if (showIcon && iconName) {
     props.icon = iconName;
