@@ -1,3 +1,4 @@
+import { focusAttributes } from "../utils/focus.js";
 import {
   Blockquote,
   Card,
@@ -33,7 +34,7 @@ export function TestimonialsPage() {
         <Grid columns={{ xs: 1, md: 2 }} gap="xxl">
           {testimonials.map((item) => (
             
-              <Blockquote  key={item.author} variant="minimal" cite={item.author}>
+              <Blockquote {...focusAttributes(item)} key={item.author} variant="minimal" cite={item.author}>
                 {item.quote}
               </Blockquote>
           ))}

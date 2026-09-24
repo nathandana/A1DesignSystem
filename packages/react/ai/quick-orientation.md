@@ -65,3 +65,75 @@ This project uses Node v24 via nvm. If commands fail to find `npm`, run:
 ```
 export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use 24
 ```
+
+
+## Portfolio homepage
+
+Run `npm run dev`, then open
+`http://127.0.0.1:5176/examples/portfolio/`. Standalone deployments use
+`/`. The former alternate design is now `pages/HomePage.jsx`; `/alternate` remains
+a compatible alias. The original source is preserved in `pages/archive/HomePage.jsx`.
+Open it directly; it uses the unchanged portfolio sidebar, mobile
+navigation and shared footer. Build with
+`npm run build --prefix examples/portfolio`.
+
+The page follows the broad content structure of https://nabauer.com/ while using
+Nathan Dana's existing content, case-study assets and demo files. The placeholder
+writing section has been removed. The page uses existing A1 components and the portfolio's Dispatch
+theme; no custom CSS or component contracts were added.
+
+### Reference site robots inspection — Sept. 22, 2026
+
+- https://nabauer.com/robots.txt returns HTTP 200 with `User-agent: *`, `Allow: /`
+  and `Sitemap: https://nabauer.com/sitemap.xml`. It has no disallow rules or
+  crawler-specific AI restrictions.
+- The homepage includes `<meta name="robots" content="index, follow">` and a
+  self-referencing canonical URL. Its inspected HTTP response has no
+  `X-Robots-Tag` header.
+- The sitemap returns XML listing the homepage, work, articles and other pages,
+  with modification dates, change frequencies and priorities.
+- HTML contains Next.js assets and rendered page content; the HTTP server header
+  identifies Cloudflare. This supports Next.js behind Cloudflare, but does not
+  establish the origin hosting service.
+- These are crawler directives, not access controls or a guarantee of indexing.
+  This inspection does not establish how every individual crawler is treated.
+
+The local portfolio currently has no dedicated robots.txt or sitemap.xml and no
+robots meta tag in its HTML entry point. Its Netlify catch-all rewrites unmatched
+paths to index.html, so absent static robots/sitemap files can receive the SPA
+HTML instead. This is a source-configuration observation, not a live-domain
+check. No crawler configuration was changed for this alternate-page request.
+
+### Primary case studies and archives
+
+Transform, A1 and Fondue now render their promoted alternate designs at the
+existing primary URLs: `/case-studies/transform`, `/case-studies/a1` and
+`/case-studies/fondue`. Prefix these paths with
+`http://127.0.0.1:5176/examples/portfolio` for local development.
+
+Primary source files are `examples/portfolio/studies/TransformStudy.jsx`,
+`A1Study.jsx` and `FondueStudy.jsx`. The original implementations are preserved
+in `examples/portfolio/studies/archive/` with corrected relative imports. Archives
+are source snapshots, not published pages or navigation entries.
+
+Existing `*-alternate` URLs and `fondue-alternate-2` remain compatible aliases
+through `data/caseStudyAliases.js`. They resolve to the canonical study for
+rendering, titles, navigation selection and focus metadata. New internal links
+use the primary URLs. The promoted homepage is at `/`; `/alternate` remains a compatible alias.
+
+The promoted pages retain their content, figures, overview cards and numbered
+sections. Transform includes the supplied TruCare Cloud determinations example;
+Fondue includes its component inventory and preventive care example.
+
+### Audience-specific portfolio setup
+
+See [the portfolio audience guide](../../../examples/portfolio/AUDIENCE-PORTFOLIOS.md)
+for the proposed Netlify subdomain redirects, audience selection, application
+attribution and PostHog overlap reporting. This is an implementation guide;
+audience rendering and analytics are not enabled by the documentation change.
+
+### Portfolio UX/DS content classification
+
+See [portfolio-focus.md](portfolio-focus.md) for the content metadata contract,
+page registry, inline annotations, inheritance and future filtering helpers.
+Run `node --test examples/portfolio/tests/focus.test.js` for the contract checks.

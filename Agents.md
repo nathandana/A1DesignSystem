@@ -53,3 +53,7 @@ For product copy, documentation, formatting, grammar, and AP Style defaults:
 For a1-web roles, page and feature access, Supabase policy, and follow-up sequencing:
 
 @packages/react/ai/access-control.md
+
+For portfolio UX/DS content classification and future audience filtering:
+
+@packages/react/ai/portfolio-focus.md

@@ -4,12 +4,12 @@ import {
 } from "../../../packages/react/src/index.js";
 import { getRouteBase, getRoutePath } from "../utils/routing.js";
 
-export function FondueStudy() {
+export function FondueAlternateStudy() {
   return (
     <article>
       <Section padding="md" surface="raised" contentWidth="xl" gap="sm">
         <Cluster gap="lg">
-          <Link href={getRoutePath("home")}>← Home</Link>
+          <Link href={getRoutePath("alternate")}>← Home</Link>
         </Cluster>
         <Heading as="h1" type="display" size={{ xs: "lg", md: "jumbo" }}>
           I turned Fondue into a system teams could <HeadingMark>trust and use</HeadingMark>.
@@ -371,7 +371,7 @@ export function FondueStudy() {
               <Paragraph>My involvement in the transformation of the Fondue design system was both challenging and rewarding. By improving processes, rebuilding relationships, and ensuring that accessibility was prioritized, I played a critical role in shaping a design system that is now a central part of the organization's design and development efforts.</Paragraph>
               <Paragraph>Fondue is now a robust, well-supported, and trusted system, thanks to the improvements I made in process, collaboration, and accessibility. By rebuilding relationships with key stakeholders, I was able to align the entire team around a shared vision and create a design system that truly meets the needs of the organization.</Paragraph>
         <Cluster gap="lg">
-          <Link href={getRoutePath("home")}>Explore more work →</Link>
+          <Link href={getRoutePath("alternate")}>Explore more work →</Link>
         </Cluster>
       </Section>
     </article>

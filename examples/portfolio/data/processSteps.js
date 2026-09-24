@@ -1,6 +1,7 @@
 export const processSteps = [
   {
     id: "discovery",
+    focus: ["ux", "ds"],
     number: "01",
     label: "Discovery",
     icon: "travel_explore",
@@ -14,6 +15,7 @@ export const processSteps = [
   },
   {
     id: "wireframe",
+    focus: ["ux", "ds"],
     number: "02",
     label: "Wireframe",
     icon: "draw",
@@ -27,6 +29,7 @@ export const processSteps = [
   },
   {
     id: "design",
+    focus: ["ux", "ds"],
     number: "03",
     label: "Design",
     icon: "design_services",
@@ -40,6 +43,7 @@ export const processSteps = [
   },
   {
     id: "validate",
+    focus: ["ux", "ds"],
     number: "04",
     label: "Validate",
     icon: "fact_check",
@@ -53,6 +57,7 @@ export const processSteps = [
   },
   {
     id: "finalize",
+    focus: ["ux", "ds"],
     number: "05",
     label: "Finalize",
     icon: "check_circle",

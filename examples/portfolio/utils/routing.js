@@ -1,3 +1,4 @@
+import { caseStudyAliases } from "../data/caseStudyAliases.js";
 import { caseStudies } from "../data/caseStudies.js";
 
 export function getRouteBase(pathname = window.location.pathname) {
@@ -7,6 +8,8 @@ export function getRouteBase(pathname = window.location.pathname) {
 export function getRoutePath(page = "home") {
   const base = getRouteBase();
   const prefix = base || "";
+  page = caseStudyAliases[page] ?? page;
+  if (page === "alternate") return `${prefix}/`;
   if (page === "home") return `${prefix}/`;
   if (page === "process") return `${prefix}/process`;
   if (page === "resume") return `${prefix}/resume`;
@@ -20,6 +23,7 @@ export function getRoutePath(page = "home") {
 export function getPageFromLocation(pathname = window.location.pathname) {
   const base = getRouteBase(pathname);
   const path = (base ? pathname.slice(base.length) : pathname).replace(/\/+$/, "") || "/";
+  if (path === "/alternate") return "home";
   if (path === "/") return "home";
   if (path === "/process") return "process";
   if (path === "/resume") return "resume";
@@ -27,8 +31,9 @@ export function getPageFromLocation(pathname = window.location.pathname) {
   if (path === "/contact") return "contact";
   if (path === "/about") return "about";
   const caseMatch = path.match(/^\/case-studies\/([^/]+)$/);
-  if (caseMatch && caseStudies.some((study) => study.id === caseMatch[1])) {
-    return caseMatch[1];
+  const studyId = caseMatch && (caseStudyAliases[caseMatch[1]] ?? caseMatch[1]);
+  if (studyId && caseStudies.some((study) => study.id === studyId)) {
+    return studyId;
   }
   return "home";
 }

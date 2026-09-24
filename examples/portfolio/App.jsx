@@ -1,3 +1,5 @@
+import { getPageFocus } from "./data/portfolioFocus.js";
+import { focusAttributes } from "./utils/focus.js";
 import { useEffect, useState } from "react";
 import {
   Cluster,
@@ -114,6 +116,7 @@ export function App() {
         {caseStudies.map((study) => (
           <SideNavItem
             key={study.id}
+            {...focusAttributes(study)}
             href={getRoutePath(study.id)}
             label={study.title}
             active={activePage === study.id}
@@ -165,6 +168,7 @@ export function App() {
 
   const footer = (
     <Stack
+      {...focusAttributes()}
       className="pf-footer"
       direction={{ xs: "column", md: "row" }}
       align="center"
@@ -202,7 +206,7 @@ export function App() {
   return (
     <LabelsProvider locale="en" labels={actionLabels}>
       <PageLayout className="pf-page-shell" stickyHeader sidebar={sidebar} header={mobileHeader}>
-        <div className="pf-content-wrapper">
+        <div className="pf-content-wrapper" data-portfolio-page={activePage} {...focusAttributes(getPageFocus(activePage))}>
           {activePage === "home" && <HomePage navigate={navigate} />}
           {activePage === "process" && <ProcessPage navigate={navigate} />}
           {activeStudy && <activeStudy.component />}
