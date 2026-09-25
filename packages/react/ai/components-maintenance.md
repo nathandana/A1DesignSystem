@@ -7,6 +7,7 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-09-25 | **Portfolio case-study priority:** retain every study in both audience homepages and main menus. DS and UX now change only project order; new studies append after prioritized projects. Added coverage for complete ordering, source preservation and new-study visibility. |
 | 2026-09-25 | **Release baseline review:** reviewed and refreshed 37 route captures and added 86 missing captures, including the new release newsletter. Blog routes now assert their own URL and heading before visual comparison. Snapshot thresholds and accessibility gates remain unchanged. |
 | 2026-09-25 | **Blog route preservation:** release validation found initial URL canonicalization replaced every blog slug with the latest post. Preserve article paths and synchronize the article on same-route navigation/history changes. Added route-title assertions and a direct-link/history regression test. |
 | 2026-09-25 | **Release preparation:** staged A1 Web 0.33.0, React 0.32.0, Pure CSS 0.2.0 and MCP 0.1.1 with synchronized package/lock versions, package changelogs, public release notes and the 0.33 release newsletter. Validation status is tracked in release-preparation-2026-09-25.md. |

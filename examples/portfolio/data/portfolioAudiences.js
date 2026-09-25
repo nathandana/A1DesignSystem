@@ -1,5 +1,3 @@
-import { filterByFocus } from "../utils/focus.js";
-
 export const portfolioAudiences = {
   general: {
     title: "Principal Designer",
@@ -18,7 +16,7 @@ export const portfolioAudiences = {
     headline: "Design systems teams can build on.",
     emphasis: "Design systems",
     introduction: "I build enterprise design systems across Figma and code, grow the teams and practices behind them, and structure their rules for AI-assisted work.",
-    order: ["fondue", "transform", "a1", "filter"],
+    order: ["fondue", "transform", "a1", "filter", "member-menu", "carshopper", "composer"],
     cards: [
       { icon: "hub", title: "Component architecture", body: "Tokens, component APIs and composition rules connect design libraries with implementation across product teams." },
       { icon: "groups", title: "Adoption and leadership", body: "Team formation, documentation, office hours and designer liaisons make a shared system usable in everyday work." },
@@ -30,7 +28,7 @@ export const portfolioAudiences = {
     headline: "Making complex products easier to use.",
     emphasis: "complex products",
     introduction: "I use research, collaborative workshops and prototypes to improve the way people navigate, make decisions and complete work across healthcare and automotive products.",
-    order: ["member-menu", "carshopper", "composer", "filter", "transform"],
+    order: ["member-menu", "carshopper", "composer", "filter", "transform", "fondue", "a1"],
     cards: [
       { icon: "search", title: "Research and discovery", body: "Interviews, observation and usability testing uncover where people lose context and what they need to move forward." },
       { icon: "groups", title: "Alignment and workshops", body: "I bring design, product and engineering together around user needs, business priorities and implementation constraints." },
@@ -41,5 +39,9 @@ export const portfolioAudiences = {
 
 export function audienceStudies(studies, audience = "general") {
   const config = portfolioAudiences[audience] ?? portfolioAudiences.general;
-  return filterByFocus(studies, audience).slice().sort((a, b) => config.order.indexOf(a.id) - config.order.indexOf(b.id));
+  const priority = (id) => {
+    const index = config.order.indexOf(id);
+    return index === -1 ? config.order.length : index;
+  };
+  return studies.slice().sort((a, b) => priority(a.id) - priority(b.id));
 }

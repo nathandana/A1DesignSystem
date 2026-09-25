@@ -13,12 +13,15 @@ internal URLs; referral parameters and hash anchors remain intact.
 
 Both domains serve the same portfolio build. Keep the UX hostname intact;
 do not redirect it to the Design systems hostname. Direct case-study URLs
-remain accessible regardless of which collection includes the project.
+remain accessible on both hosts.
 
 ## Content
 
 Design systems leads with Fondue, Transform, A1 and Filtering. UX leads with
-Member Menu, Car Shopper, Composer, Filtering and Transform. Homepage copy,
+Member Menu, Car Shopper, Composer, Filtering and Transform. All seven studies
+remain visible on both homepages and in both main menus; audience changes only
+their priority. DS appends Member Menu, Car Shopper and Composer; UX appends
+Fondue and A1. New studies without an explicit priority appear at the end. Homepage copy,
 navigation, About title, document title, testimonials and résumé follow the
 hostname selection. Contact and education remain shared. Existing claims are
 retained in the case studies.

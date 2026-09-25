@@ -1,8 +1,8 @@
 # Portfolio content focus
 
 The portfolio uses editorial classifications for its UX and design systems
-presentations. App-level audience selection now filters homepage and navigation
-collections and testimonials, tailors introductions, and defaults the résumé.
+presentations. App-level audience selection orders all case studies on the homepage
+and in navigation, filters testimonials, tailors introductions, and defaults the résumé.
 Direct case-study URLs remain accessible. Analytics and domain redirects are
 not enabled.
 
@@ -93,11 +93,12 @@ or résumé. URL parameters and session storage do not override the hostname.
 Internal URLs preserve referral parameters and hash anchors and remove legacy
 `audience` parameters.
 
-Use `filterByFocus` and `matchesFocus` at intentional content boundaries.
+Use `filterByFocus` and `matchesFocus` for testimonials and other intentional
+content boundaries, never to hide case studies from homepage or navigation.
 `data/portfolioAudiences.js` supplies the homepage copy and deliberate project
 order; App supplies the same audience to navigation, testimonials, About and
 the résumé. Shared contact and education content remain available. Direct
-case-study links render even when the study is outside the selected collection.
+case-study links and all seven studies remain available for every audience.
 Do not hide arbitrary parents with CSS attribute selectors.
 
 See [Audience-specific portfolios](../../../examples/portfolio/AUDIENCE-PORTFOLIOS.md)
