@@ -1,3 +1,4 @@
+import { portfolioAudiences } from "../data/portfolioAudiences.js";
 import {
   Blockquote,
   ButtonContainer,
@@ -37,17 +38,17 @@ const values = [
   },
 ];
 
-export function AboutPage({ navigate }) {
+export function AboutPage({ navigate, audience = "general" }) {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <Section inverse padding="lg" gap="md" contentWidth="lg">
         <MessageBadge size="lg" icon="person">About me</MessageBadge>
         <Heading as="h1" type="display" size={{ xs: "xl", md: "jumbo" }}>
-          Designing at the edge of what's possible
+          {audience === "ux" ? "UX for complex products" : audience === "systems" ? "Design systems across teams and technologies" : "Design systems and product UX"}
         </Heading>
         <Paragraph size={{ xs: "md", md: "lg" }} color="muted">
-          I'm a <strong>Principal Designer</strong> with over 20 years of experience shaping
+          I'm a <strong>{portfolioAudiences[audience].title}</strong> with over 20 years of experience shaping
           enterprise products, design systems, and — more recently — AI-native
           experiences. I bring systems thinking, deep accessibility knowledge,
           and a bias toward clarity to every problem I touch.

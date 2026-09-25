@@ -1,5 +1,4 @@
 import { focusAttributes } from "../utils/focus.js";
-import { useState } from "react";
 import {
   Cluster,
   Stack,
@@ -11,13 +10,12 @@ import {
   ListItem,
   Paragraph,
   Section,
-  SegmentedControl,
 } from "../../../packages/react/src/index.js";
 import { getRoutePath } from "../utils/routing.js";
 import { resumeVersions } from "../data/resumeVersions.js";
 
-export function ResumePage() {
-  const [version, setVersion] = useState("systems");
+export function ResumePage({ audience = "general" }) {
+  const version = audience === "ux" ? "ux" : "systems";
   const resume = resumeVersions[version];
   const website = version === "ux" ? "nathan.a1design.app" : "nathandana.a1design.app";
 
@@ -43,15 +41,6 @@ export function ResumePage() {
             {website}
           </Link>
         </Stack>
-        <SegmentedControl
-          aria-labelledby="resume-version-label"
-          options={[
-            { value: "systems", label: "Design systems" },
-            { value: "ux", label: "General UX" },
-          ]}
-          value={version}
-          onChange={setVersion}
-        />
       </Section>
 
       <Section padding="md" gap="md" surface="panel" contentWidth="md" {...focusAttributes(resume)}>

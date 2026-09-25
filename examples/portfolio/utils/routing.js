@@ -1,3 +1,4 @@
+import { withAudience } from "./audience.js";
 import { caseStudyAliases } from "../data/caseStudyAliases.js";
 import { caseStudies } from "../data/caseStudies.js";
 
@@ -5,7 +6,7 @@ export function getRouteBase(pathname = window.location.pathname) {
   return pathname.startsWith("/examples/portfolio") ? "/examples/portfolio" : "";
 }
 
-export function getRoutePath(page = "home") {
+function getPlainRoutePath(page = "home") {
   const base = getRouteBase();
   const prefix = base || "";
   page = caseStudyAliases[page] ?? page;
@@ -18,6 +19,10 @@ export function getRoutePath(page = "home") {
   if (page === "about") return `${prefix}/about`;
   if (caseStudies.some((study) => study.id === page)) return `${prefix}/case-studies/${page}`;
   return `${prefix}/`;
+}
+
+export function getRoutePath(page = "home", audience) {
+  return withAudience(getPlainRoutePath(page), audience, typeof window === "undefined" ? "" : window.location.search);
 }
 
 export function getPageFromLocation(pathname = window.location.pathname) {

@@ -4,6 +4,58 @@
 
 **Scope:** The live homepage, About, Process, Résumé, Testimonials and Contact pages; both résumé variants; all seven routed case studies; homepage cards and shared content data. Archived and unrouted duplicates were inspected for context but are not treated as published content.
 
+## Current comparison — Sept. 25, 2026
+
+This update supersedes the status statements below. The original Sept. 24 audit is retained as a historical reference; its line numbers, writing counts and quoted A1/Member Menu passages are no longer a description of the current pages. Compared the active routed source and shared data, including the uncommitted portfolio updates. This is a content review, not a new external fact check or verification of internal research reports.
+
+### Resolved or superseded
+
+- **Member Menu:** removed the anonymous user quote, “architectural glue” and the inflated closing claims. Added the original eight-step and revised four-step journey, explicitly described as the illustrated example rather than a measured efficiency result. The supplied presentation now supports the narrative and four figures. The homepage no longer claims a single-click workflow; its lead emphasizes research, alignment and workshopping.
+- **A1:** replaced the old article with “Training the system.” The cited manifesto passages, opening counts and “production-ready” wording are gone. The new article distinguishes MCP experimentation and early RTL work, and names gaps in accessibility enforcement. Retire the old instruction to cut specific passages that no longer exist. An end-to-end demonstration remains useful.
+- **Fondue dates:** the active study now says 2023–2026, matching the Centene end year. The audit’s date blocker is closed.
+- **Transform conclusion:** the current closing section describes practices carried into Fondue. The old claim of continued use without dedicated support and the cited repeated ending are gone.
+- **Car Shopper presentation:** now has three lead cards, numbered offset labels, sentence-case section headings, responsive layout, base-aware asset paths and seven centered large figures with captions. This closes layout and heading work, not the editorial or evidence findings below.
+- **Homepage organization:** all seven projects are now in Case studies; the Product demos section is removed. The A1 summary matches the new article.
+
+### Highest-priority remaining work
+
+| Priority | Current source | What still needs to change |
+| --- | --- | --- |
+| 1 | `studies/FondueStudy.jsx`, opening statistics | 25 teams and 40% less assembly time remain beside a `DRAFT / UNVERIFIED` source comment. A new footnote identifies an internal study of 10 product teams, but supplies no date, baseline, task or methodology. Reconcile the comment with the evidence; retain the figures only if the supporting report substantiates them. A footnote alone does not close this finding. |
+| 2 | `data/resumeVersions.js`, UX Centene bullet | 48% less fatigue and 72% better efficiency remain unchanged. Supply the actual measures and study context or replace them with the design work performed. |
+| 3 | `data/testimonials.js` | All 12 lightly attributed quotations remain. Compare with original recommendations, preserve contiguous wording or indicate omissions, and improve attribution. Authenticity has not been reverified in this pass. |
+| 4 | `studies/TransformStudy.jsx`, Impact | The full-library WCAG 2.2 AA assertion remains broader than the later description of internal audits. Specify audited scope, version and date. Add source context for users, applications, components and designers; the new Member Menu deck supports the team story but does not independently validate every impact number. |
+| 5 | `data/resumeVersions.js` | Dealer.com still starts in August 2010 in one variant and 2011 in the other. Align or explain the chronology and intentional title differences. |
+
+### Remaining page work
+
+| Page | Current assessment and next action |
+| --- | --- |
+| A1 | **Resolved:** recovered and installed all four supplied screenshots from the local conversation record; the article placeholders and suggestion captions are replaced. The homepage’s empty A1 figure is intentional and should remain unless requested otherwise. The editor screenshot shows the visual editor and properties, not JSON text; caption it accurately or add a real code example. Add a short prompt → result → review → correction example when available. |
+| Member Menu | Most original findings are closed. The journey figures are presentation artifacts, not measured usability outcomes. Keep that distinction. The new research/workshopping emphasis would be stronger with one specific finding or workshop decision and who participated; do not invent participant counts. Keep automatic saving scoped to the described flow, since the final interface still warns about logout/timeout. |
+| Car Shopper | Body paragraphs were deliberately preserved during the layout update: present-tense references to 2019–2020 work, “web site,” “delve deep,” “ultimately,” “added a lot of clarity” and being ahead “by years” remain. Edit tense and wording, explain the observed result of the “Included” test, and clarify individual ownership. The 15,000-dealership figure remains unverified; the new heading repeats it. Resolve the original audit’s 13,000-versus-15,000 source discrepancy before changing the number. |
+| Fondue | The inventory total is now explicitly labeled as inventory, but still includes the proposed AEM-only Carousel. Distinguish inventory from released scope; confirm release status before asserting “45 released.” Nate Bauer’s historical company figures still lack a source link and date. |
+| Homepage | “Bridging AI and  Systems.” still has spacing/case problems. The two AI cards overlap, and the claim of less rework, fewer tokens and lower operating cost remains unbenchmarked. Use concrete mechanisms or supply a comparison. Car Shopper’s card still says “deep execution”; make it as specific as the new Member Menu overview. |
+| About and Process | Most original editorial recommendations remain: abstract claims, repeated contrast constructions and polished generalities instead of examples. Preserve the distinctive Sharpie/Post-it, triangle/pyramid and coded-prototype details. Clarify years of UX experience versus the earlier web-design career rather than assuming these dates contradict each other. |
+| Filter | Still uses the older layout, repeats the same opening image, claims adoption by dozens of teams and clear ROI without evidence, and says filters have “no limits.” Replace those claims with supported scope and one concrete use case; consolidate the conclusion. |
+| Composer | Still uses the older layout. Images say “Proposed,” while the Impact copy implies delivered improvement. Clarify shipped/validated/proposed status, then revise the cognitive-overhead and impact claims to match the evidence. |
+| Résumé | Besides the metric and chronology issues, A1 token-reduction language remains unbenchmarked. Align employer naming and date punctuation; verify credentials against the actual qualifications. |
+| Contact | No new content issue identified; no revision needed based on this comparison. |
+
+### Recommended next pass
+
+1. Resolve Fondue and résumé statistics, Transform’s audit scope, and testimonial attribution.
+2. **Completed:** installed the four supplied A1 images and replaced their suggestion captions.
+3. Edit Car Shopper’s older prose and clarify Composer’s delivery status.
+4. Update Filter and Composer to the shared layout while addressing their evidence findings.
+5. Revise homepage, About and Process copy; finish terminology, date and title consistency.
+
+Only this audit document was updated during the comparison. No public-facing copy or claims were changed.
+
+---
+
+## Original audit — Sept. 24, 2026
+
 ## Overall assessment
 
 The portfolio has a credible core. The strongest material names real products, explains Nathan's role, shows artifacts and describes specific design-system decisions. Transform's team formation, Fondue's component inventory, Composer's research methods and the working A1 repository give a reviewer useful evidence.
@@ -190,9 +242,6 @@ Examples include "signal of architectural maturity," "turning point," "vital too
 4. Link each quote to its recommendation when the platform permits. A single generic profile link makes verification harder.
 5. Consider six strong, well-attributed recommendations instead of 12 lightly attributed ones. Credibility is more useful than volume.
 
-### Contact
-
-No placeholder or invented content was found. The copy is direct. Confirm that the public phone number, email address and location are intentionally published.
 
 ### A1 Design System case study
 
