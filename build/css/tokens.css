@@ -625,6 +625,10 @@
   --component-circular-progress-fill-color: #7c3aed;
   --component-circular-progress-gap: 0.5rem;
   --component-circular-progress-indeterminate-duration: 1200ms;
+  --component-custom-block-height-sm: 12rem;
+  --component-custom-block-height-md: 24rem;
+  --component-custom-block-height-lg: 36rem;
+  --component-custom-block-border-width: 1px;
   --component-data-table-border-width: 1px;
   --component-data-table-border-radius: 0.5rem;
   --component-data-table-header-font-weight: 500;
@@ -722,6 +726,7 @@
   --component-heading-mark-highlight-background-color: #fff066;
   --component-heading-mark-highlight-foreground-color: #060b14;
   --component-heading-mark-highlight-font-weight: 900;
+  --component-heading-mark-highlight-background-inset-block: 0.08em;
   --component-heading-mark-highlight-padding-block: 0.02em;
   --component-heading-mark-highlight-padding-inline: 0.14em;
   --component-heading-mark-highlight-shadow: 0px 1px 3px 0px rgba(6, 11, 20, 0.10), 0px 1px 2px -1px rgba(6, 11, 20, 0.06);

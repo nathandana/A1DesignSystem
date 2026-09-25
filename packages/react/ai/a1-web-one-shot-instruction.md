@@ -120,7 +120,7 @@ For charts and analytics, use the A1 data-viz components when they are available
 ## A1 system rules
 
 - Use A1 components only. Never use `div`, `p`, `span`, or arbitrary HTML as a node type.
-- Use token vocabulary, not raw px, hex, rem, inline styles, gradients, or custom CSS in JSON.
+- Use token vocabulary, not raw px, hex, rem or host inline styles. Only when the existing model cannot express a small region, use `CustomBlock` with string `title`, `markup`, `css`, `js` and `height: "sm" | "md" | "lg"`. Keep custom CSS tokenized and explain the model gap. Its iframe is isolated, starts empty, has no A1 children and cannot access parent DOM/storage or external scripts. See the Custom block contract in `a1-agent-brief.md`.
 - Use sentence case. Never author all-caps labels or headings.
 - Use semantic heading order and one `h1` per page.
 - Every form control has a visible label or an explicit accessible name.

@@ -14,6 +14,7 @@ import {
   ChoiceGroup,
   CircularProgress,
   Code,
+  CustomBlock,
   Cluster,
   DataTable,
   DefinitionList,
@@ -389,6 +390,8 @@ function AnatomyComponentPreview({ component }) {
   const [page, setPage] = useState(2)
 
   switch (component.id) {
+    case 'custom-block':
+      return <CustomBlock title={component.title} />
     case 'heading':
       return <Heading as="h3" size="lg">{component.title}</Heading>
     case 'paragraph':
@@ -1714,7 +1717,11 @@ function examplePreviewStyle(example) {
   return width ? { '--a1-web-example-preview-width': width } : undefined
 }
 
-function normalizePropTables(component) {
+function normalizePropTables(component, t) {
+  if (component.id === 'custom-block') return [{ title: component.title, rows: [
+    ...['title', 'markup', 'css', 'js'].map((name) => ({ id: name, name, type: 'string', description: t(`customBlock.${name}Help`) })),
+    { id: 'height', name: 'height', type: '"sm" | "md" | "lg"', description: t('customBlock.heightHelp') },
+  ] }]
   const generatedAlias = GENERATED_PROP_ALIASES[component.id]
   const generatedEntry = GENERATED_PROP_TABLES[component.id] ?? GENERATED_PROP_TABLES[generatedAlias]
   if (generatedEntry?.length) {
@@ -3274,6 +3281,7 @@ function ComponentConfigureSurface({
 }
 
 export function ComponentDetailPage({ component, category, onNavigate, projectId = null, tab = 'overview', onTabChange }) {
+  const t = useT()
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
   const requestedExampleId = exampleIdFromTab(tab)
@@ -3544,7 +3552,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
             <TabPanel value="properties">
               <Stack gap="xl">
-                {normalizePropTables(component).map((table, i) => (
+                {normalizePropTables(component, t).map((table, i) => (
                   <Stack key={i} gap="sm">
                     {table.title && <Heading as="h3" size="sm">{table.title}</Heading>}
                     <DataTable

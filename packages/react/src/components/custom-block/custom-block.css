@@ -1,0 +1,24 @@
+/* An iframe needs its own viewport; layout components cannot provide isolation. */
+.a1-custom-block {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: var(--component-custom-block-height-md);
+  border: var(--component-custom-block-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--semantic-radius-control);
+  overflow: hidden;
+  color: var(--semantic-color-text-default);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-md);
+  line-height: var(--semantic-font-line-height-body);
+}
+.a1-custom-block--sm { block-size: var(--component-custom-block-height-sm); }
+.a1-custom-block--lg { block-size: var(--component-custom-block-height-lg); }
+.a1-custom-block__frame {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+/* In edit mode the selection boundary owns pointer and keyboard interactions. */
+.a1-custom-block[data-editor-node] > .a1-custom-block__frame { pointer-events: none; }

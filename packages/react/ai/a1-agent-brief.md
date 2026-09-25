@@ -97,7 +97,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 2. **Exact names.** `type` matches the exported component name exactly (PascalCase): `Heading`, `MessageBadge`, `TextField`. Don't lowercase/alias.
 3. **Real props only.** Unknown prop keys leak to the DOM and warn. Use the props in §4/§5.
 4. **Utilities use `utilities`, not fake props.** One-off tokenized width/spacing adjustments go in `utilities`; do not emit raw `className` utility strings unless you are preserving an existing class.
-5. **Tokens, not raw values.** Use the scale values (`gap: "md"`, `size: "lg"`, `color: "muted"`) — never raw px/hex/rem in props. There is no `style` escape hatch in the definition.
+5. **Tokens, not raw values.** Use the scale values (`gap: "md"`, `size: "lg"`, `color: "muted"`) — never raw px/hex/rem in props. There is no host `style` escape hatch. `CustomBlock` source props are the narrow exception below.
 6. **Semantic structure.** A heading is a `Heading`, an action is a `Button`, navigation is a `Link`. Pick the component by meaning, not looks.
 7. **Never uppercase.** Author text in sentence case ("Create account"). Never ALL-CAPS content.
 8. **Layout via layout components.** Use `Section`/`Stack`/`Grid`/`Card`, not ad-hoc wrappers. Put width/padding/gap on `Section` (see §5).
@@ -122,6 +122,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | type | C | role | key props |
 |------|:-:|------|-----------|
 | `PageLayout` | C | App-shell layout (top of `page.layout`). **Does not** take width/padding/gap — put those on `Section`. | (slots managed by layout) |
+| `CustomBlock` | — | Isolated custom region only when existing A1 components cannot express the need. | `title`, `markup` (HTML), `css`, `js` (strings, initially empty), `height` (sm/md/lg, default md). No child nodes. |
 | `Section` | C | Page region: surface, padding, width, gap, border, alignment, background image. | `padding` (none–xl), `gap` (xs–xxl), `contentWidth` (xs–2xl), `surface` (page/panel/raised), `align` (none/start/center/end), `inverse` (bool), `gradient`, `height` (auto/screen/hero), `as`, `borderSize`/`borderStyle`/`borderVariant`/`borderSides`, `radius`, `backgroundImage` (URL, decorative; suppresses `gradient`), `backgroundFit` (cover/contain/tile), `backgroundPosition` (9 focal points), `backgroundOverlay` (darken/lighten — always add one under text; pair darken with `inverse`), `backgroundOverlayStrength` (sm/md/lg) |
 | `Stack` | C | Linear layout. | `direction` (column/row, responsive), `gap` (xs–xxl), `align`, `justify`, `wrap` (bool), `as` |
 | `Grid` | C | Multi-column grid. | `columns` (number or `{xs,md,…}`), `gap`, `rowGap`, `columnGap` |
@@ -289,3 +290,71 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 - **Don't** nest a `Section` inside another layout to constrain it; don't nest `Card` in `Card`; don't put interactive controls inside a `Card variant="navigation"`.
 
 > Unknown component types and unknown props won't crash — unknown `type` renders a labeled fallback. But both are bugs to fix, not features.
+
+## Custom block — A1-2541
+
+`CustomBlock` is a React component and a leaf node in page-definition JSON.
+Use it only for a small region that registered A1 components and props cannot
+express, such as an unusual positioned annotation or a specialized local
+interaction. Explain the model gap in the handoff. Prefer improving a reusable
+A1 component when the need is common. Do not rebuild ordinary sections, grids,
+headings, buttons, forms or navigation with custom markup.
+
+```json
+{
+  "id": "positioned-annotation",
+  "type": "CustomBlock",
+  "props": {
+    "title": "Positioned annotation",
+    "height": "sm",
+    "markup": "<p class=\"a1-annotation\">Annotation within this block</p>",
+    "css": ".a1-annotation { position: absolute; inset-inline-end: var(--semantic-spacing-gap-md); inset-block-end: var(--semantic-spacing-gap-md); color: var(--semantic-color-text-accent); }",
+    "js": ""
+  }
+}
+```
+
+The five props are `title`, `markup`, `css`, `js` and `height`. Source strings
+start empty and stay literal: `markup`, `css` and `js` do not interpolate
+`{{ dataset.column }}` bindings. A missing or blank title uses the localized Custom block label;
+provide a meaningful title for finished content. Height is `sm`, `md` (default)
+or `lg`, backed by `component.customBlock.height.*` tokens (192, 384 and 576 px).
+The frame fills its container's width, and overflow scrolls inside the frame.
+Media queries use the block viewport, not the outer page viewport. Custom
+blocks do not accept A1 child nodes or `content`; text belongs in the authored
+markup and authors own its localization.
+
+CSS is confined to a sandboxed iframe. Absolute and fixed positioning stay
+inside that frame. The block copies computed A1 base, semantic and component
+token variables from its actual parent scope, including project themes and
+inverse scopes. It also copies body text defaults, direction and language.
+It does not copy component stylesheets or host web fonts. Reference token
+variables in custom CSS and use semantic HTML; a class such as `a1-button`
+does not instantiate the A1 Button. Custom source is the explicit exception
+to the JSON model's prohibition on arbitrary markup and CSS, only inside
+these source props. There is no host-page style or script injection.
+
+JavaScript runs after markup in an opaque-origin `sandbox="allow-scripts"`
+frame. It can manipulate its own document. Parent DOM access, host storage,
+fetch, external scripts/styles/fonts, popups and form submission are blocked.
+Images and embedded fonts may use data URLs. Scripts in the markup fragment
+are inert; put code in `js` and bind native events there. This is a browser
+sandbox, not a CPU/time limit or a guarantee that author code is accessible.
+Browser consoles report script errors. The host Content Security Policy must
+permit the inline script/style bootstrap; a stricter inherited policy can block
+the frame. A frame can navigate itself; it cannot
+navigate the parent. No host message bridge is installed.
+
+Changing source, text defaults or theme tokens reloads the document and resets
+local script state. Every block has a separate document. In editor mode the
+frame is inert so pointer and keyboard actions select the block; use the
+component preview or launched page to interact with its contents.
+
+Author semantic controls, accessible names, focus indicators, keyboard behavior,
+contrast, responsive overflow and reduced-motion handling inside the frame.
+Isolation does not repair inaccessible HTML. Avoid scripts for static content.
+Review each authored block across themes, breakpoints and assistive technology.
+
+The component is currently React-only. Pure CSS cannot reproduce its document
+and script lifecycle; Native would need an explicit WebView contract. Neither
+package claims support. Figma translation is also outside this contract.

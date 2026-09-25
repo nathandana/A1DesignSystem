@@ -1,0 +1,216 @@
+{
+  "label": {
+    "customBlock": {
+      "name": {
+        "$type": "string",
+        "$value": "Custom block",
+        "$description": "Custom block name: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Bloque personalizado",
+          "fr": "Bloc personnalisé",
+          "de": "Benutzerdefinierter Block",
+          "pt": "Bloco personalizado",
+          "ja": "カスタムブロック",
+          "zh": "自定义区块",
+          "ar": "كتلة مخصصة"
+        }
+      },
+      "description": {
+        "$type": "string",
+        "$value": "Isolated markup, CSS and JavaScript for needs beyond existing A1 components.",
+        "$description": "Custom block description: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Marcado, CSS y JavaScript aislados para necesidades que superan los componentes A1 existentes.",
+          "fr": "Balisage, CSS et JavaScript isolés pour les besoins non couverts par les composants A1 existants.",
+          "de": "Isoliertes Markup, CSS und JavaScript für Anforderungen außerhalb bestehender A1-Komponenten.",
+          "pt": "Marcação, CSS e JavaScript isolados para necessidades além dos componentes A1 existentes.",
+          "ja": "既存の A1 コンポーネントで対応できない場合の、分離されたマークアップ、CSS、JavaScript。",
+          "zh": "用于现有 A1 组件无法满足的需求，隔离运行标记、CSS 和 JavaScript。",
+          "ar": "ترميز وCSS وJavaScript معزولة لتلبية احتياجات لا تغطيها مكونات A1 الحالية."
+        }
+      },
+      "title": {
+        "$type": "string",
+        "$value": "Accessible title",
+        "$description": "Custom block title: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Título accesible",
+          "fr": "Titre accessible",
+          "de": "Barrierefreier Titel",
+          "pt": "Título acessível",
+          "ja": "アクセシブルなタイトル",
+          "zh": "无障碍标题",
+          "ar": "عنوان قابل للوصول"
+        }
+      },
+      "markup": {
+        "$type": "string",
+        "$value": "Markup (HTML)",
+        "$description": "Custom block markup: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Marcado (HTML)",
+          "fr": "Balisage (HTML)",
+          "de": "Markup (HTML)",
+          "pt": "Marcação (HTML)",
+          "ja": "マークアップ (HTML)",
+          "zh": "标记 (HTML)",
+          "ar": "الترميز (HTML)"
+        }
+      },
+      "css": {
+        "$type": "string",
+        "$value": "CSS",
+        "$description": "Custom block css: component name, description or configurator guidance.",
+        "locale": {
+          "es": "CSS",
+          "fr": "CSS",
+          "de": "CSS",
+          "pt": "CSS",
+          "ja": "CSS",
+          "zh": "CSS",
+          "ar": "CSS"
+        }
+      },
+      "js": {
+        "$type": "string",
+        "$value": "JavaScript",
+        "$description": "Custom block js: component name, description or configurator guidance.",
+        "locale": {
+          "es": "JavaScript",
+          "fr": "JavaScript",
+          "de": "JavaScript",
+          "pt": "JavaScript",
+          "ja": "JavaScript",
+          "zh": "JavaScript",
+          "ar": "JavaScript"
+        }
+      },
+      "height": {
+        "$type": "string",
+        "$value": "Height",
+        "$description": "Custom block height: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Altura",
+          "fr": "Hauteur",
+          "de": "Höhe",
+          "pt": "Altura",
+          "ja": "高さ",
+          "zh": "高度",
+          "ar": "الارتفاع"
+        }
+      },
+      "sm": {
+        "$type": "string",
+        "$value": "Small",
+        "$description": "Custom block sm: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Pequeña",
+          "fr": "Petite",
+          "de": "Klein",
+          "pt": "Pequena",
+          "ja": "小",
+          "zh": "小",
+          "ar": "صغير"
+        }
+      },
+      "md": {
+        "$type": "string",
+        "$value": "Medium",
+        "$description": "Custom block md: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Mediana",
+          "fr": "Moyenne",
+          "de": "Mittel",
+          "pt": "Média",
+          "ja": "中",
+          "zh": "中",
+          "ar": "متوسط"
+        }
+      },
+      "lg": {
+        "$type": "string",
+        "$value": "Large",
+        "$description": "Custom block lg: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Grande",
+          "fr": "Grande",
+          "de": "Groß",
+          "pt": "Grande",
+          "ja": "大",
+          "zh": "大",
+          "ar": "كبير"
+        }
+      },
+      "titleHelp": {
+        "$type": "string",
+        "$value": "Name this content for screen reader users.",
+        "$description": "Custom block titleHelp: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Asigna un nombre a este contenido para usuarios de lectores de pantalla.",
+          "fr": "Nommez ce contenu pour les utilisateurs de lecteurs d’écran.",
+          "de": "Benennen Sie diesen Inhalt für Screenreader-Nutzer.",
+          "pt": "Dê um nome a este conteúdo para usuários de leitores de tela.",
+          "ja": "スクリーンリーダー利用者向けに内容の名前を付けてください。",
+          "zh": "为屏幕阅读器用户命名此内容。",
+          "ar": "سمّ هذا المحتوى لمستخدمي قارئات الشاشة."
+        }
+      },
+      "markupHelp": {
+        "$type": "string",
+        "$value": "Use semantic HTML only when existing A1 components cannot express the need. The block starts empty.",
+        "$description": "Custom block markupHelp: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Usa HTML semántico solo cuando los componentes A1 existentes no cubran la necesidad. El bloque comienza vacío.",
+          "fr": "Utilisez du HTML sémantique uniquement si les composants A1 existants ne répondent pas au besoin. Le bloc est vide au départ.",
+          "de": "Verwenden Sie semantisches HTML nur, wenn bestehende A1-Komponenten nicht ausreichen. Der Block ist anfangs leer.",
+          "pt": "Use HTML semântico apenas quando os componentes A1 existentes não atenderem à necessidade. O bloco começa vazio.",
+          "ja": "既存の A1 コンポーネントで対応できない場合のみ、セマンティック HTML を使用してください。ブロックは空で開始します。",
+          "zh": "仅在现有 A1 组件无法满足需求时使用语义化 HTML。区块初始为空。",
+          "ar": "استخدم HTML الدلالي فقط عندما لا تلبي مكونات A1 الحالية الحاجة. تبدأ الكتلة فارغة."
+        }
+      },
+      "cssHelp": {
+        "$type": "string",
+        "$value": "Styles stay inside this block. Use A1 token variables for spacing, typography and color.",
+        "$description": "Custom block cssHelp: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Los estilos permanecen dentro de este bloque. Usa variables de tokens A1 para espaciado, tipografía y color.",
+          "fr": "Les styles restent dans ce bloc. Utilisez les variables de tokens A1 pour l’espacement, la typographie et la couleur.",
+          "de": "Stile bleiben in diesem Block. Verwenden Sie A1-Tokenvariablen für Abstände, Typografie und Farben.",
+          "pt": "Os estilos ficam neste bloco. Use variáveis de tokens A1 para espaçamento, tipografia e cor.",
+          "ja": "スタイルはこのブロック内に限定されます。余白、書体、色には A1 トークン変数を使用してください。",
+          "zh": "样式仅作用于此区块。间距、字体和颜色请使用 A1 令牌变量。",
+          "ar": "تبقى الأنماط داخل هذه الكتلة. استخدم متغيرات رموز A1 للمسافات والخطوط والألوان."
+        }
+      },
+      "jsHelp": {
+        "$type": "string",
+        "$value": "Runs after markup in a sandbox and restarts when code or theme changes. Parent access, storage, fetch, external scripts, popups and form submissions are blocked.",
+        "$description": "Custom block jsHelp: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Se ejecuta tras el marcado en un entorno aislado y se reinicia al cambiar el código o tema. Se bloquean el acceso al padre, almacenamiento, fetch, scripts externos, ventanas emergentes y envío de formularios.",
+          "fr": "S’exécute après le balisage dans un bac à sable et redémarre si le code ou le thème change. L’accès au parent, le stockage, fetch, les scripts externes, les fenêtres contextuelles et l’envoi de formulaires sont bloqués.",
+          "de": "Läuft nach dem Markup in einer Sandbox und startet bei Code- oder Designänderungen neu. Zugriff auf das Elterndokument, Speicher, fetch, externe Skripte, Pop-ups und Formularübermittlung sind gesperrt.",
+          "pt": "Executa após a marcação em um ambiente isolado e reinicia quando o código ou tema muda. Acesso ao documento pai, armazenamento, fetch, scripts externos, pop-ups e envio de formulários são bloqueados.",
+          "ja": "マークアップの後にサンドボックスで実行され、コードやテーマの変更時に再起動します。親へのアクセス、ストレージ、fetch、外部スクリプト、ポップアップ、フォーム送信はブロックされます。",
+          "zh": "在沙盒中于标记之后运行，代码或主题更改时重新启动。禁止访问父页面、存储、fetch、外部脚本、弹出窗口和表单提交。",
+          "ar": "يعمل بعد الترميز في بيئة معزولة ويُعاد تشغيله عند تغيير الشفرة أو السمة. يُحظر الوصول إلى الصفحة الأم والتخزين وfetch والبرامج النصية الخارجية والنوافذ المنبثقة وإرسال النماذج."
+        }
+      },
+      "heightHelp": {
+        "$type": "string",
+        "$value": "Choose a tokenized viewport height. Overflow scrolls inside the block; media queries use the block width.",
+        "$description": "Custom block heightHelp: component name, description or configurator guidance.",
+        "locale": {
+          "es": "Elige una altura de vista basada en tokens. El desbordamiento se desplaza dentro del bloque; las consultas de medios usan el ancho del bloque.",
+          "fr": "Choisissez une hauteur de fenêtre basée sur les tokens. Le contenu débordant défile dans le bloc ; les requêtes média utilisent sa largeur.",
+          "de": "Wählen Sie eine tokenbasierte Höhe. Überlauf scrollt im Block; Media Queries verwenden dessen Breite.",
+          "pt": "Escolha uma altura de área de exibição baseada em tokens. O excedente rola dentro do bloco; as consultas de mídia usam a largura do bloco.",
+          "ja": "トークンに基づく表示領域の高さを選択してください。はみ出した内容はブロック内でスクロールし、メディアクエリはブロック幅を使用します。",
+          "zh": "选择基于令牌的视口高度。溢出内容在区块内滚动；媒体查询使用区块宽度。",
+          "ar": "اختر ارتفاع عرض يستند إلى الرموز. يُمرر المحتوى الزائد داخل الكتلة؛ وتستخدم استعلامات الوسائط عرض الكتلة."
+        }
+      }
+    }
+  }
+}

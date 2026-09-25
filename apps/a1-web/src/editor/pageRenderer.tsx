@@ -86,6 +86,7 @@ const TEXT_PROP_BY_TYPE: Record<string, string> = {
 };
 
 const VOID_CHILD_TYPES = new Set([
+  "CustomBlock",
   "TextField",
   "TextareaField",
   "SelectField",
@@ -675,6 +676,9 @@ function RenderNode({
   // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
   for (const k of Object.keys(resolvedProps)) {
+    // Custom source is literal code, not a data-binding template. Interpolation
+    // would corrupt template syntax and could turn dataset content into code.
+    if (node.type === "CustomBlock" && ["markup", "css", "js"].includes(k)) continue;
     const v = resolvedProps[k];
     if (typeof v === "string" && hasBinding(v))
       resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);

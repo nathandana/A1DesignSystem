@@ -105,3 +105,6 @@ export { DataTableFilters } from "./components/data-table/DataTableFilters";
 export { Figure } from "./components/figure/Figure";
 export { Spacer } from "./components/spacer/Spacer";
 export { StickyActions } from "./components/sticky-actions/StickyActions";
+
+export { CustomBlock } from "./components/custom-block/CustomBlock";
+export type { CustomBlockProps } from "./components/custom-block/CustomBlock";

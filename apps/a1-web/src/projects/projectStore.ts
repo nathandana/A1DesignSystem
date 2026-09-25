@@ -1238,7 +1238,7 @@ function ensureSampleProjects(): void {
 
 let migrated = false;
 
-/** Seed the first run: the 3 built-in examples become an "A1 Showcase" project,
+/** Seed the first run: built-in examples become an "A1 Showcase" project,
  *  and any legacy flat user pages become a "My pages" project, so nothing that
  *  existed before Projects is lost. */
 function migrate(): void {

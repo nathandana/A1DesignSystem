@@ -1,4 +1,7 @@
+import { focusAttributes } from "../utils/focus.js";
+import { useState } from "react";
 import {
+  Cluster,
   Stack,
   Divider,
   Grid,
@@ -8,10 +11,16 @@ import {
   ListItem,
   Paragraph,
   Section,
+  SegmentedControl,
 } from "../../../packages/react/src/index.js";
 import { getRoutePath } from "../utils/routing.js";
+import { resumeVersions } from "../data/resumeVersions.js";
 
 export function ResumePage() {
+  const [version, setVersion] = useState("systems");
+  const resume = resumeVersions[version];
+  const website = version === "ux" ? "nathan.a1design.app" : "nathandana.a1design.app";
+
   return (
     <>
       <Section padding="md" gap="xs" surface="raised" contentWidth="md">
@@ -19,106 +28,77 @@ export function ResumePage() {
           Nathan Dana
         </Heading>
         <Heading as="h2" size={{ xs: "sm", md: "lg" }}>
-          Principal User Experience Designer
+          {version === "ux" ? "Senior UX Designer" : "Design Systems Leader"}
         </Heading>
         <Stack direction={{ xs: "column", sm: "row" }} wrap gap="xs" align="start" justify="start">
           <Paragraph>Fort Mill, SC</Paragraph>
-          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
+          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm" />
           <Link href="mailto:nathan.dana@gmail.com">nathan.dana@gmail.com</Link>
-          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
-          <Link href="http://linkedin.com/in/midbrain" target="_blank" rel="noopener noreferrer">linkedin.com/in/midbrain</Link>
-          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm"  />
-          <Link href="http://nathandana.a1design.app" target="_blank" rel="noopener noreferrer">nathandana.a1design.app</Link>
+          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm" />
+          <Link href="http://linkedin.com/in/midbrain" target="_blank" rel="noopener noreferrer">
+            linkedin.com/in/midbrain
+          </Link>
+          <Divider orientation={{ xs: "horizontal", sm: "vertical" }} decorative size="sm" />
+          <Link href={`https://${website}`} target="_blank" rel="noopener noreferrer">
+            {website}
+          </Link>
         </Stack>
+        <SegmentedControl
+          aria-labelledby="resume-version-label"
+          options={[
+            { value: "systems", label: "Design systems" },
+            { value: "ux", label: "General UX" },
+          ]}
+          value={version}
+          onChange={setVersion}
+        />
       </Section>
 
-      <Section padding="md" gap="md" surface="panel" contentWidth="md">
-        <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>Professional Summary</Heading>
-        <Paragraph size={{ xs: "md", md: "lg" }}>
-          As a trusted design leader, I specialize in wildly predictable, accessible, rules-driven products and systems that help enterprise teams move faster with greater consistency and clarity. I combine UX architecture, design systems strategy, accessibility, and hands-on implementation with <strong>AI-enabled workflows</strong> to turn defined standards into scalable product outcomes. My strength is creating the structure AI needs to be useful: clear rules, reusable patterns, quality checks, and human judgment. I help product, design, and engineering teams translate complexity into systems that are usable, governable, and ready to scale.
-
-        </Paragraph>
-        {/* <Paragraph size={{ xs: "md", md: "lg" }}>
-          As a trusted design systems leader, I specialize in building predictable, accessible systems that drive strategy, consistency, and scalability across enterprise products. I combine creative vision with hands-on execution to deliver high-performing user experiences. With strong cross-functional leadership, I unite product, design, and engineering teams to translate complexity into clarity. I thrive in collaborative, fast-paced environments, I lead with empathy, design with precision, and deliver with impact.
-        </Paragraph> */}
+      <Section padding="md" gap="md" surface="panel" contentWidth="md" {...focusAttributes(resume)}>
+        <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>
+          Professional summary
+        </Heading>
+        <Paragraph size={{ xs: "md", md: "lg" }}>{resume.summary}</Paragraph>
       </Section>
-
-      <Section as="div" padding="md" gap="sm" contentWidth="md">
-        <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>Professional Experience</Heading>
-
-          <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
-            A1 Design
+      {[
+        { title: "Professional experience", jobs: resume.experience, surface: "page" },
+        { title: "Independent work", jobs: resume.independentWork, surface: "panel" },
+      ].map((group) => (
+        <Section key={group.title} padding="md" gap="lg" contentWidth="md" surface={group.surface}>
+          <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>
+            {group.title}
           </Heading>
-          <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">
-            Owner | 2026–Present
-          </Heading>
-          <List size={{ xs: "md", md: "lg" }}>
-            <ListItem>Founded and built A1 Design (<Link href={getRoutePath("a1")}>read case study</Link>), an AI-first design system and prototyping platform connecting Figma, production-ready React components, design tokens, documentation, and AI-assisted development workflows.</ListItem>
-            <ListItem>Architected a reusable component ecosystem distributed through npm and Storybook, with structured component metadata, accessibility guidance, theming, and token-based styling.</ListItem>
-            <ListItem>Developed an MCP-enabled workflow that allows AI tools to understand and interact with the design system, reducing the gap between design intent, prototypes, and implementation.</ListItem>
-            <ListItem>Created tools for generating data-connected, production-realistic prototypes, enabling faster experimentation and more representative usability testing than static mockups.</ListItem>
-            <ListItem>Designed workflows that connect structured datasets directly to prototypes and Figma, allowing teams to rapidly test complex enterprise experiences with realistic content and states.</ListItem>
-            <ListItem>Built accessibility automation into the system, including component-level reporting and opportunities for CI/CD accessibility validation.</ListItem>
-            <ListItem>Used A1 as an ongoing exploration of how design systems can become machine-readable platforms, enabling designers, developers, and AI agents to work from a shared source of truth.</ListItem>
-          </List>
-          <Paragraph size={{ xs: "md", md: "lg" }}>
-            <strong>Technologies:</strong> Figma, React, TypeScript, Storybook, npm, Style Dictionary, MCP, AI-assisted development, accessibility automation
-          </Paragraph>
-          <Link href="https://a1design.app" size="xl"><strong>a1design.app</strong></Link>
-
-        <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
-
-          <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
-            Centene
-          </Heading>
-          <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">
-            UX Architect - Design Systems Lead | 2020 – 2026
-          </Heading>
-          <List size={{ xs: "md", md: "lg" }}>
-            <ListItem>Spearheaded the 0-1 creation and evolution of the <Link href={getRoutePath("transform")}><strong>Transform Design System</strong></Link>, enabling design and development for internal healthcare applications serving 20,000+ users.</ListItem>
-            <ListItem>Founded and scaled a dedicated design systems team, defining intake workflows, governance models, sprint planning, and documentation processes to streamline support and feature development.</ListItem>
-            <ListItem>Reimagined the enterprise-wide <Link href={getRoutePath("fondue")}><strong>Fondue Design System</strong></Link>, implementing cross-team processes for contribution, accessibility reviews, and naming conventions—driving adoption across multiple business units.</ListItem>
-            <ListItem>Led accessibility remediation efforts (WCAG 2.3 AA), collaborated with accessibility teams, and embedded accessibility checks into design workflows.</ListItem>
-            <ListItem>Established component lifecycle governance, integrating Figma libraries with Storybook and front-end frameworks like Angular, React, and HTML/CSS to ensure fidelity between design and code.</ListItem>
-            <ListItem>Partnered with engineering leads to resolve technical debt, enforce token-based theming, and enable flexible multi-brand theming.</ListItem>
-            <ListItem>Provided system office hours, stakeholder workshops, and Figma training to empower designers and developers across the organization.</ListItem>
-            <ListItem>Collaborated with product design to revamp the <Link href={getRoutePath("member-menu")}><strong>TruCare Cloud navigation system</strong></Link> through design sprints, research, planning and leadership review.</ListItem>
-          </List>
-
-        <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
-
-          <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
-            Dealer.com / Cox Automotive
-          </Heading>
-
-          <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">Senior User Experience Designer – Interactive | 2011 – 2020</Heading>
-          <List size={{ xs: "md", md: "lg" }}>
-            <ListItem>Drove UX strategy and design for high-impact projects including the <Link href={getRoutePath("composer")}><strong>Composer CMS</strong></Link> overhaul, empowering dealers to manage site content with a modern, flexible UI.</ListItem>
-            <ListItem>Created modular, scalable patterns across key <Link href={getRoutePath("carshopper")}><strong>car shopping journeys</strong></Link> such as Search Results Pages (SRP) and Vehicle Details Pages (VDP)—supporting ~15,000 dealership websites across multiple OEMs.</ListItem>
-            <ListItem>Introduced UX research and validation workflows, leading heuristic evaluations, shadowing sessions, and remote usability tests to shape roadmap decisions.</ListItem>
-            <ListItem>Championed responsive design standards, accessibility best practices, and robust design QA workflows to ensure production readiness.</ListItem>
-            <ListItem>Created fully interactive HTML/CSS/JavaScript prototypes to bridge communication between design and engineering and accelerate handoff.</ListItem>
-            <ListItem>Facilitated design sprints, stakeholder alignment sessions, and cross-functional workshops to explore innovation opportunities and product vision.</ListItem>
-          </List>
-
-        <Divider decorative orientation="horizontal" size="md" space="md" variant="accent" />
-
-          <Heading as="h3" size={{ xs: "md", md: "lg" }} margin="sm">
-            hmc² Advertising
-          </Heading>
-          <Heading as="h4" color="muted" size={{ xs: "xs", md: "sm" }} margin="md">
-            Art Director | 2007 – 2011
-          </Heading>
-          <List size={{ xs: "md", md: "lg" }}>
-            <ListItem>Led digital design and brand strategy for public and private sector clients, including large-scale work for the State of Vermont.</ListItem>
-            <ListItem>Delivered full-cycle creative solutions—from discovery and ideation through interface design and development—across web, identity, and print.</ListItem>
-            <ListItem>Designed and coded responsive websites, HTML5 campaigns, and content management system templates to support agency clients across multiple industries.</ListItem>
-            <ListItem>Balanced creative direction with hands-on execution in a high-velocity agency environment.</ListItem>
-          </List>
-      </Section>
-
+          {group.jobs.map((job, index) => (
+            <Stack key={job.company} gap="sm" {...focusAttributes(job, resume.focus)}>
+              {index > 0 && <Divider decorative size="md" space="md" variant="accent" />}
+              <Heading as="h3" size={{ xs: "md", md: "xl" }}>
+                {job.role}
+              </Heading>
+              <Heading size="sm" as="h4" color="muted">
+                {[job.dates, job.company, job.location].filter(Boolean).join(" • ")}
+              </Heading>
+              <List size={{ xs: "md", md: "lg" }}>
+                {job.bullets.map((bullet) => (
+                  <ListItem key={bullet}>{bullet}</ListItem>
+                ))}
+              </List>
+              {job.links.length > 0 && (
+                <Cluster gap="md">
+                  {job.links.map((link) => (
+                    <Link key={link.page} href={getRoutePath(link.page)}>
+                      {link.label}
+                    </Link>
+                  ))}
+                </Cluster>
+              )}
+            </Stack>
+          ))}
+        </Section>
+      ))}
       <Section as="div" padding="md" gap="md" surface="raised" contentWidth="md">
-        <Heading as="h2" size="xxl" margin="md">Education</Heading>
+        <Heading as="h2" size="xxl" margin="md">
+          Education
+        </Heading>
 
         <div>
           <Heading as="h3" size="md" margin="sm">
@@ -137,56 +117,23 @@ export function ResumePage() {
         </div>
       </Section>
 
-      <Section as="div" surface="panel" padding="md" gap="md" contentWidth="md">
-        <Heading as="h2" size="lg">Core Competencies</Heading>
-        <List variant="divider" size="md">
-          {[
-            "Design Systems Leadership",
-            "AI driven Design and Development",
-            "UX Strategy & Architecture",
-            "Agile & Cross-Functional Collaboration",
-            "Component Libraries & Documentation",
-            "Accessibility (WCAG, Governance)",
-            "Advanced Prototyping",
-            "User Research & Data-Driven Design",
-            "Front-End Collaboration (HTML/CSS, JS)",
-            "Mentorship & Design Reviews, Critiques",
-          ].map((s) => <ListItem key={s}>{s}</ListItem>)}
-        </List>
-      </Section>
-
-      <Section as="div" surface="raised" padding="md" gap="md" contentWidth="md">
-        <Grid columns={{ xs: 1, lg: 2 }} gap="lg">
-          <div>
-            <Heading as="h2" size="lg" margin="md">Software</Heading>
-            <List variant="divider" size="md">
-              {[
-                "Figma",
-                "Storybook",
-                "VSCode",
-                "Jira, Confluence",
-                "SCSS, Pug, jQuery",
-                "VSCode",
-                "HTML / JS / CSS",
-                "Adobe Creative Cloud",
-              ].map((s) => <ListItem key={s}>{s}</ListItem>)}
-            </List>
-          </div>
-          <div>
-            <Heading as="h2" size="lg" margin="md">AI Agents</Heading>
-            <List variant="divider" size="md">
-              {[
-                "ChatGPT",
-                "Codex",
-                "Claude Code",
-                "Claude Design",
-                "Cursor",
-                "Co-pilot",
-                "Figma Make",
-                "Gemini",
-              ].map((s) => <ListItem key={s}>{s}</ListItem>)}
-            </List>
-          </div>
+      <Section surface="panel" padding="md" gap="lg" contentWidth="xl" inverse>
+        <Heading as="h2" size={{ xs: "lg", md: "xxl" }}>
+          Skills
+        </Heading>
+        <Grid columns={{ xs: 1, md: 2, xl: 3 }} gap="xl">
+          {resume.skills.map((skill) => (
+            <Stack key={skill.label} gap="sm" {...focusAttributes(skill, resume.focus)}>
+              <Heading as="h3" size="md">
+                {skill.label}
+              </Heading>
+              <List variant="unordered" size="md">
+                {skill.items.map((item) => (
+                  <ListItem key={item}>{item}</ListItem>
+                ))}
+              </List>
+            </Stack>
+          ))}
         </Grid>
       </Section>
     </>

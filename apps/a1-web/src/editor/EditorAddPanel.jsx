@@ -12,6 +12,7 @@ import {
   ToolbarMenu,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
+import { useT } from '../labels/useT.js'
 import { componentCategories } from '../pages/components/data.js'
 import { CATALOG_ENTRIES_BY_ID, COMMON_COMPONENT_IDS } from './componentCatalog.ts'
 
@@ -30,7 +31,7 @@ import { CATALOG_ENTRIES_BY_ID, COMMON_COMPONENT_IDS } from './componentCatalog.
 
 // Build the display model once: categories (in source-of-truth order) holding the
 // components that have an addable catalog entry, plus a flat alphabetical list.
-function buildModel() {
+function buildModel(t) {
   const categories = componentCategories
     .map((category) => ({
       id: category.id,
@@ -40,9 +41,9 @@ function buildModel() {
         .filter((component) => CATALOG_ENTRIES_BY_ID[component.id])
         .map((component) => ({
           id: component.id,
-          label: component.title,
+          label: component.titleKey ? t(component.titleKey, component.title) : component.title,
           icon: component.icon,
-          description: component.body,
+          description: component.bodyKey ? t(component.bodyKey, component.body) : component.body,
           entry: CATALOG_ENTRIES_BY_ID[component.id],
         })),
     }))
@@ -64,6 +65,7 @@ function matchesQuery(item, query) {
 }
 
 export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPattern, slotFilter = null, kind: forcedKind = null }) {
+  const t = useT()
   const [search, setSearch] = useState('')
   const [view, setView] = useState('grid') // 'grid' | 'list'
   const [grouped, setGrouped] = useState(true)
@@ -86,7 +88,7 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
   const componentPasses = (item) => !slot || slotOpen || (allowTypes?.has(item.entry.type) ?? false)
   const patternPasses = (p) => !slot || slotOpen || (allowPatternIds?.has(p.id) ?? false)
 
-  const fullModel = useMemo(buildModel, [])
+  const fullModel = useMemo(() => buildModel(t), [t])
 
   // The "Common" set is a curated subset of the most-used components; "All"
   // reveals everything. A slot restricting to specific types forces "All" so an

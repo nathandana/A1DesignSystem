@@ -1,3 +1,4 @@
+import { getPageFocus } from "./portfolioFocus.js";
 import { A1Study } from "../studies/A1Study.jsx";
 import { TransformStudy } from "../studies/TransformStudy.jsx";
 import { FondueStudy } from "../studies/FondueStudy.jsx";
@@ -9,6 +10,7 @@ import { ComposerStudy } from "../studies/ComposerStudy.jsx";
 export const caseStudies = [
   {
     id: "a1",
+    ...getPageFocus("a1"),
     title: "A1 Design System",
     tags: ["Design Systems", "AI Design"],
     cardImage: "/img/a1-cover.png",
@@ -19,6 +21,7 @@ export const caseStudies = [
   },
   {
     id: "transform",
+    ...getPageFocus("transform"),
     title: "Transform",
     tags: ["Design Systems", "Enterprise UX"],
     cardImage: "/img/transform/Transform-Logo.png",
@@ -29,6 +32,7 @@ export const caseStudies = [
   },
   {
     id: "fondue",
+    ...getPageFocus("fondue"),
     title: "Fondue",
     tags: ["Design Systems", "Enterprise UX"],
     cardImage: "/img/fondue-logo.png",
@@ -39,6 +43,7 @@ export const caseStudies = [
   },
   {
     id: "member-menu",
+    ...getPageFocus("member-menu"),
     title: "Member Menu",
     tags: ["UX Architecture", "Navigation"],
     cardImage: "/img/mega-menu-final.png",
@@ -49,6 +54,7 @@ export const caseStudies = [
   },
   {
     id: "carshopper",
+    ...getPageFocus("carshopper"),
     title: "Car Shopper UX",
     tags: ["UX Design", "Consumer-facing"],
     cardImage: "/img/desktop-vdp.png",
@@ -59,6 +65,7 @@ export const caseStudies = [
   },
   {
     id: "filter",
+    ...getPageFocus("filter"),
     title: "Filtering Component",
     tags: ["Design Systems", "UX Architecture"],
     cardImage: "/img/filter-panel.png",
@@ -69,6 +76,7 @@ export const caseStudies = [
   },
   {
     id: "composer",
+    ...getPageFocus("composer"),
     title: "Composer Architecture",
     tags: ["UX Design", "CMS"],
     cardImage: "/img/composer-ui-sm.png",
