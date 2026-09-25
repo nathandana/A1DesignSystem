@@ -1,8 +1,10 @@
 # Portfolio content focus
 
-The portfolio has an editorial classification layer for future UX and design
-systems presentations. It does not enable audience switching, analytics,
-automatic hiding, redirects or access restrictions. Current content stays visible.
+The portfolio uses editorial classifications for its UX and design systems
+presentations. App-level audience selection now filters homepage and navigation
+collections and testimonials, tailors introductions, and defaults the résumé.
+Direct case-study URLs remain accessible. Analytics and domain redirects are
+not enabled.
 
 ## Contract
 
@@ -83,41 +85,31 @@ annotated ancestor, so a child's explicit classification overrides the page's.
 If no ancestor is annotated, it returns both. The helper returns relevance,
 not the visitor's current selection.
 
-## Future site-wide selection
+## Site-wide selection
 
-Use `filterByFocus(caseStudies, selectedFocus)` for collections and
-`matchesFocus(item, selectedFocus, parentFocus)` for individual blocks. Filtering
-preserves the authored order and original records. Example:
+The hostname is the only audience selection: `nathan.a1design.app` means UX;
+every other host means Design systems. No selectors appear in the application
+or résumé. URL parameters and session storage do not override the hostname.
+Internal URLs preserve referral parameters and hash anchors and remove legacy
+`audience` parameters.
 
-```js
-const selectedStudies = filterByFocus(caseStudies, "ds");
-const selectedResume = Object.values(resumeVersions).find((resume) =>
-  matchesFocus(resume, "ds"),
-);
-```
+Use `filterByFocus` and `matchesFocus` at intentional content boundaries.
+`data/portfolioAudiences.js` supplies the homepage copy and deliberate project
+order; App supplies the same audience to navigation, testimonials, About and
+the résumé. Shared contact and education content remain available. Direct
+case-study links render even when the study is outside the selected collection.
+Do not hide arbitrary parents with CSS attribute selectors.
 
-When implementing the switch, keep its state at the portfolio App level. Resolve
-the audience before rendering, carry it through links and browser history, and
-use the same selection for homepage collections, navigation, testimonials,
-résumé defaults and any tailored introductions. Let shared contact and education
-content remain available. Provide alternate copy before removing the existing
-DS-only introduction from the UX presentation.
-
-Do not hide arbitrary parents with CSS attribute selectors: a shared child
-cannot reappear inside a hidden parent. Filter at intentional content boundaries
-and avoid empty grids or headings. Classification alone does not block a direct
-case-study URL; decide direct-link behavior explicitly during audience work.
-
-For deployment and analytics planning, see
-[Audience-specific portfolios](../../../examples/portfolio/AUDIENCE-PORTFOLIOS.md).
-Keep content relevance separate from the audience property on analytics events.
+See [Audience-specific portfolios](../../../examples/portfolio/AUDIENCE-PORTFOLIOS.md)
+for hostname, hosting and validation details. Content relevance remains separate
+from audience selection; metadata continues to use lowercase `ux` and `ds`.
 
 ## Validation
 
 From the repository root:
 
 ```sh
-node --test examples/portfolio/tests/focus.test.js
+node --test examples/portfolio/tests/*.test.js
 npm run build --prefix examples/portfolio
 ```
 
