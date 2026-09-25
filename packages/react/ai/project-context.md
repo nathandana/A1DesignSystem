@@ -3,6 +3,7 @@
 This file is the entry point for all agents and AI assistants working in this repository. Read it first, then follow the linked context files for implementation details.
 
 **Related files in this directory:**
+- `packages/react/ai/release-preparation-2026-09-25.md` — prepared package versions, release scope and validation results.
 - `packages/react/ai/project-foundations.md` — repository structure, token flow, themes, labels, and shared system concepts.
 - `packages/react/ai/project-workflows.md` — CSS rules, component architecture, package-specific rules, and invariants.
 - `packages/react/ai/components.md` — live registry of every component and which packages it exists in. Read it before asking "does X exist?" or "where is Y implemented?". Update it when components change.

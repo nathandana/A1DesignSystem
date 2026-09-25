@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.32.0 — 2026-09-25
+
+### Highlights
+
+- **CustomBlock** — A React-only component for specialized markup, CSS and JavaScript, with sandboxed document isolation, scoped theme tokens, accessible frame titles and tokenized heights. Existing components remain the first choice for supported interfaces.
+- **HeadingMark spacing** — A shared background-inset token keeps highlights from overlapping glyphs on the preceding line.
+
 ## 0.31.0 — 2026-09-11
 
 ### Highlights

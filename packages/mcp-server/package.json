@@ -1,6 +1,6 @@
 {
   "name": "@gtivr4/a1-design-system-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Remote MCP server exposing the A1 Design System's components, tokens, rules, and page-definition contract to AI coding agents.",
   "type": "module",

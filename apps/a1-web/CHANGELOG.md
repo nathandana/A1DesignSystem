@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.33.0 — 2026-09-25
+
+- **Blog article links** — direct links, refreshes and Back/Forward navigation now preserve the selected article instead of resetting to the newest post.
+
 - **Custom block showcase** — added an interactive seating map to the bundled A1 Showcase, with a responsive spatial layout, keyboard selection, unavailable seats and a live summary. Existing saved projects can import the example as a new page.
 
 - **Custom banner showcase** — added a second, simpler A1 Showcase homepage inspired by a luminous product launch concept. Only its static visual banner uses Custom block; the supporting feature cards, headings and calls to action are standard A1 components.

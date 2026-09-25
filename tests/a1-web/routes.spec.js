@@ -1,3 +1,4 @@
+import { BLOG_POSTS } from "../../apps/a1-web/src/pages/blogPosts.js"
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
@@ -159,6 +160,11 @@ test('every release route loads, matches its visual baseline and clears the acce
         await waitForStablePage(page)
         expect(runtimeErrors, `${route.path} raised an uncaught browser error`).toEqual([])
 
+        const article = BLOG_POSTS.find((post) => route.path === `/blog/${post.slug}`)
+        if (article) {
+          await expect(page).toHaveURL(new RegExp(`/blog/${article.slug}$`))
+          await expect(page.locator('h1')).toHaveText(article.title)
+        }
         await expectVisualBaseline(page, `${route.id}.png`)
 
         const accessibility = await scanAccessibility(page)
@@ -271,4 +277,23 @@ test('project sidebar navigation matches the editor edit and preview canvases', 
   await expect(projectTree).toBeVisible()
   await expect(projectTree.getByRole('treeitem', { name: 'Sidebar root' })).toHaveAttribute('aria-selected', 'true')
   await expect(page.locator('.a1-web-generated-header')).toHaveCount(0)
+})
+
+
+test('blog deep links and history preserve the selected article', async ({ page }) => {
+  const older = BLOG_POSTS[1]
+  const newest = BLOG_POSTS[0]
+  await page.goto(`/blog/${older.slug}`)
+  await expect(page.locator('h1')).toHaveText(older.title)
+  await expect(page).toHaveURL(new RegExp(`/blog/${older.slug}$`))
+  // Same-page popstate must update the article even though the route type stays blog-article.
+  await page.evaluate((path) => {
+    history.pushState({ page: 'blog-article' }, '', path)
+    dispatchEvent(new PopStateEvent('popstate'))
+  }, `/blog/${newest.slug}`)
+  await expect(page.locator('h1')).toHaveText(newest.title)
+  await page.goBack()
+  await expect(page.locator('h1')).toHaveText(older.title)
+  await page.goForward()
+  await expect(page.locator('h1')).toHaveText(newest.title)
 })

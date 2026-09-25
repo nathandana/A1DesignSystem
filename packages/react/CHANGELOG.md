@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.32.0 — 2026-09-25
+
 - **Heading mark line spacing** — Highlighted `HeadingMark` text now uses a tokenized vertical paint inset so its background does not overlap glyphs on the preceding line in wrapped display headings.
 
 - **Custom block** (A1-2541) — Added the React-only `CustomBlock` with empty markup/CSS/JavaScript source, sandboxed document isolation, scoped theme-token inheritance, accessible titles, tokenized heights, declarations and stories.

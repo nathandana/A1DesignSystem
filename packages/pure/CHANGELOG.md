@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-09-25
+
 - **Heading mark line spacing** — `.a1-mark` now uses the shared heading-mark background-inset token, keeping its highlight clear of glyphs on the preceding line.
 
 - **Custom block tokens** (A1-2541) — generated theme CSS includes the shared height and border-width tokens for the React CustomBlock. Pure CSS does not implement the sandbox runtime.

@@ -197,13 +197,13 @@ function bodyDefinition(post) {
   }
 }
 
-function currentSlug() {
-  const path = window.location.pathname.replace(/^\/|\/$/g, '')
+function currentSlug(pathname) {
+  const path = pathname.replace(/^\/|\/$/g, '')
   return path.startsWith('blog/') ? path.slice('blog/'.length) : BLOG_POSTS[0].slug
 }
 
-export function BlogArticle({ onNavigate }) {
-  const post = getBlogPostBySlug(currentSlug()) || BLOG_POSTS[0]
+export function BlogArticle({ onNavigate, pathname = window.location.pathname }) {
+  const post = getBlogPostBySlug(currentSlug(pathname)) || BLOG_POSTS[0]
   const body = bodyDefinition(post)
 
   return (
