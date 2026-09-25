@@ -13,11 +13,13 @@ import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
+import customBlockRules from '../../../../../system/rules/custom-block.yaml?raw'
 import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
+  'custom-block': '2026-09-24',
   avatar: '2026-09-10',
   grid: '2026-09-11',
   'grid-item': '2026-09-11',
@@ -35,11 +37,15 @@ export const COMPONENT_LAST_UPDATED = {
   'sunburst-chart': '2026-07-06',
   dialog: '2026-07-06',
   menu: '2026-07-06',
-  'text-field': '2026-07-06',
-  'checkbox-group': '2026-07-13',
-  'radio-group': '2026-07-13',
-  textarea: '2026-07-06',
-  button: '2026-09-10',
+  'text-field': '2026-09-15',
+  'search-field': '2026-09-15',
+  'checkbox-group': '2026-09-15',
+  'radio-group': '2026-09-15',
+  'choice-group': '2026-09-15',
+  textarea: '2026-09-15',
+  select: '2026-09-15',
+  autocomplete: '2026-09-15',
+  button: '2026-09-15',
   cluster: '2026-09-10',
   link: '2026-09-10',
   overlay: '2026-07-05',
@@ -61,7 +67,7 @@ export const COMPONENT_LAST_UPDATED = {
   'icon-button': '2026-06-15',
   'context-menu': '2026-06-15',
   banner: '2026-06-15',
-  badge: '2026-06-15',
+  badge: '2026-09-15',
   'empty-state': '2026-06-15',
   pagination: '2026-06-15',
   'bottom-drawer': '2026-06-15',
@@ -86,6 +92,12 @@ export const COMPONENT_LAST_UPDATED = {
 // is the backlog reference. Components without an entry fall back to their
 // last-documented-update date plus the full release notes (see HistoryPanel).
 export const COMPONENT_HISTORY = {
+  'custom-block': [
+    { date: '2026-09-24', type: 'code', ticket: 'A1-2541', summary: 'Added isolated custom markup, CSS and JavaScript with shared component/editor controls, tokenized heights, scoped theme tokens and JSON import/export.' },
+  ],
+  badge: [
+    { date: '2026-09-15', type: 'code', ticket: 'A1-2639', summary: 'Repaired the Figma Badge Label property across all 30 variants so nested badge instances render configured copy, including the comfortable form-field “Required” marker.' },
+  ],
   chip: [
     { date: '2026-07-24', type: 'release', version: 'React 0.29.0', ticket: 'A1-390', summary: 'Chip gained control-height tokens (minHeight / smMinHeight / lgMinHeight) on the 28/40/56 standard so chips row-align with same-size Buttons.' },
     { date: '2026-07-16', type: 'decision', ticket: 'A1-390', summary: 'ChipGroup items carry per-item selected / disabled / menu flags; group selection behaviour is never inferred from a caret. The Figma bridge and configurator follow the same contract.' },
@@ -112,9 +124,11 @@ export const COMPONENT_HISTORY = {
     { date: '2026-07-16', type: 'code', summary: 'Footer buttons export as `footerActions`; the a1-web preview renders renderer-provided footer content instead of dropping it.' },
   ],
   autocomplete: [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment now matches the developed density contract: compact/default use the info-blue asterisk and comfortable uses the inline subtle info Badge.' },
     { date: '2026-07-24', type: 'code', ticket: 'A1-1401', summary: 'Figma Autocomplete page created — a control set (Size × State) plus an Autocomplete Menu listbox composition, with multiple / colour example frames and a validated dark mode.' },
   ],
   'choice-group': [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment now matches the developed density contract: compact/default use the info-blue asterisk and comfortable uses the inline subtle info Badge.' },
     { date: '2026-07-16', type: 'code', summary: 'JSON bridge with embedded-Grid detection — ChoiceGroup round-trips legend / required / helper, options, defaultValue, multiple and size; a Grid in the Options slot exports as the `columns` prop.' },
     { date: '2026-07-16', type: 'code', summary: 'Figma Choice Group page created — a Choice Option tile set (radio / checkbox × state × density) and a legend / helper shell with a wrapping tile row.' },
   ],
@@ -131,7 +145,26 @@ export const COMPONENT_HISTORY = {
     { date: '2026-06-30', type: 'release', ticket: 'A1-375', summary: 'Stat shipped — a single highlighted metric with a tokenized value, muted label, prefix / suffix, status badge and number / percent formatting; token-driven via component/stat.json.' },
   ],
   button: [
+    { date: '2026-09-15', type: 'code', ticket: 'A1-2639', summary: 'Figma POC completed — the top-level component set now covers all Variant / Size / IconPosition / State combinations, uses the A1 icon library, exposes a Boolean focus ring, prototypes hover and press, and replaces veil-based disabled/loading treatments.' },
     { date: '2026-07-06', type: 'code', ticket: 'A1-419', summary: 'Figma Button component set created — Variant / Size / State / IconPosition axes; Button colour variables alias the shared color/button/* roles and labels use dedicated Button/{sm,md,lg} text styles.' },
+  ],
+  'text-field': [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment was standardized: compact/default use the info-blue asterisk and comfortable reuses the inline subtle info Badge as an unexposed nested implementation detail.' },
+  ],
+  'search-field': [
+    { date: '2026-09-15', type: 'code', ticket: 'A1-2639', summary: 'Added the missing Figma Required Boolean and the shared density-aware marker: info-blue asterisk for compact/default and inline subtle info Badge for comfortable.' },
+  ],
+  textarea: [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment now matches the developed density contract: compact/default use the info-blue asterisk and comfortable uses the inline subtle info Badge.' },
+  ],
+  select: [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment now matches the developed density contract across default, disabled and error variants.' },
+  ],
+  'radio-group': [
+    { date: '2026-09-15', type: 'decision', ticket: 'A1-2639', summary: 'Figma Required treatment now matches the developed density contract: compact/default use the info-blue asterisk and comfortable uses the inline subtle info Badge.' },
+  ],
+  'checkbox-group': [
+    { date: '2026-09-15', type: 'code', ticket: 'A1-2639', summary: 'Figma POC completed with flat `Checkbox Item` / `Checkbox Group` names, stable-key bridge routing, the bounded 0–20 item slot, and the shared Required treatment: info-blue asterisk for compact/default and inline subtle info Badge for comfortable. The production Checkbox Group uses the same marker contract.' },
   ],
 }
 
@@ -166,6 +199,7 @@ export const componentCategories = [
       { id: 'page-layout', icon: 'space_dashboard', title: 'Page Layout', body: 'Header, sidebar, aside, main, and footer app shell layout.' },
       { id: 'button-container', icon: 'view_week', title: 'Button Container', body: 'Responsive action grouping and alignment.' },
       { id: 'canvas', icon: 'polyline', title: 'Canvas', body: 'Infinite pan/zoom canvas for visualizing node graphs with labeled circles, shapes, and directional connectors.' },
+      { id: 'custom-block', icon: 'code', title: 'Custom block', titleKey: 'customBlock.name', body: 'Isolated markup, CSS and JavaScript for needs beyond existing A1 components.', bodyKey: 'customBlock.description' },
     ],
   },
   {
@@ -333,6 +367,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   paragraph: ['body copy', 'copy', 'text', 'prose', 'description'],
   blockquote: ['quote', 'citation', 'pull quote', 'testimonial'],
   list: ['bullets', 'bullet list', 'numbered list', 'ordered list', 'unordered list'],
+  'custom-block': ['custom', 'html', 'css', 'javascript', 'sandbox'],
   code: ['snippet', 'pre', 'kbd', 'keyboard', 'developer'],
   divider: ['rule', 'separator', 'line', 'horizontal rule'],
   inline: ['mark', 'highlight', 'keyboard', 'kbd', 'semantic text'],
@@ -422,6 +457,7 @@ export const PACKAGE_COVERAGE = {
   paragraph:          ['React', 'Native', 'Pure'],
   blockquote:         ['React', 'Native', 'Pure', 'Figma'],
   list:               ['React', 'Native', 'Pure', 'Figma'],
+  'custom-block': ['React'],
   code:               ['React', 'Figma'],
   divider:            ['React', 'Pure', 'Figma'],
   inline:             ['React', 'Pure', 'Figma'],
@@ -703,6 +739,7 @@ export const COMPONENT_RELATED = {
 }
 
 export const ruleSourceFiles = [
+  { file: 'system/rules/custom-block.yaml', raw: customBlockRules },
   { file: 'system/rules/button.yaml', raw: buttonRules },
   { file: 'system/rules/action-tile.yaml', raw: actionTileRules },
   { file: 'system/rules/chip.yaml', raw: chipRules },

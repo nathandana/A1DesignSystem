@@ -1,3 +1,4 @@
+import { useT } from '../../labels/useT.js'
 import { useEffect, useMemo, useState } from 'react'
 import {
   SearchField,
@@ -62,6 +63,7 @@ function getSearchMatches(query) {
 }
 
 function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, search, view }) {
+  const t = useT()
   const query = search.trim()
   const activeExampleId = exampleIdFromDetailTab(detailTab)
   const selectedId = activePage.startsWith('component-') && activeExampleId
@@ -110,7 +112,7 @@ function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, s
           { id: 'components', label: 'All Components', icon: 'widgets' },
           ...visibleAzComponents.map((component) => ({
             id: `component-${component.id}`,
-            label: component.title,
+            label: component.titleKey ? t(component.titleKey, component.title) : component.title,
             icon: component.icon,
           })),
         ]
@@ -127,7 +129,7 @@ function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, s
             const componentPageId = `component-${component.id}`
             return {
               id: componentPageId,
-              label: component.title,
+              label: component.titleKey ? t(component.titleKey, component.title) : component.title,
               icon: component.icon,
               ...(examples.length
                 ? {
@@ -143,7 +145,7 @@ function ComponentTree({ activePage, detailTab, onNavigate, onSelectDetailTab, s
         })),
       ]
     },
-    [view, visibleAzComponents, visibleCategories],
+    [view, visibleAzComponents, visibleCategories, t],
   )
 
   // Expanded branches are controlled so we can auto-open categories that match a

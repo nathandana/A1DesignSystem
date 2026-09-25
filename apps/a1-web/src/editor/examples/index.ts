@@ -2,6 +2,8 @@ import type { PageDefinition } from '../pageTypes';
 import { editorExamplePage } from './editorExamplePage';
 import { onboardingPage } from './onboardingPage';
 import { landingPage } from './landingPage';
+import { customBlockPage } from './customBlockPage';
+import { customBlockBannerPage } from './customBlockBannerPage';
 import a1WebHomePage from './a1WebHomePage.json';
 
 export interface EditorExample {
@@ -72,6 +74,18 @@ export const EDITOR_EXAMPLES: EditorExample[] = [
     label: 'Landing page',
     icon: 'web',
     definition: landingPage,
+  },
+  {
+    id: 'custom-block-example',
+    label: 'Custom block',
+    icon: 'code',
+    definition: customBlockPage,
+  },
+  {
+    id: 'custom-block-banner-example',
+    label: 'Custom banner',
+    icon: 'view_carousel',
+    definition: customBlockBannerPage,
   },
 ];
 

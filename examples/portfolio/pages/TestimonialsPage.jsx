@@ -1,3 +1,4 @@
+import { filterByFocus, focusAttributes } from "../utils/focus.js";
 import {
   Blockquote,
   Card,
@@ -10,7 +11,7 @@ import {
 } from "../../../packages/react/src/index.js";
 import { testimonials } from "../data/testimonials.js";
 
-export function TestimonialsPage() {
+export function TestimonialsPage({ audience = "general" }) {
   return (
     <>
       <Section inverse padding="lg" contentWidth="lg">
@@ -31,9 +32,9 @@ export function TestimonialsPage() {
 
       <Section as="div" padding="lg" contentWidth="lg">
         <Grid columns={{ xs: 1, md: 2 }} gap="xxl">
-          {testimonials.map((item) => (
+          {filterByFocus(testimonials, audience).map((item) => (
             
-              <Blockquote  key={item.author} variant="minimal" cite={item.author}>
+              <Blockquote {...focusAttributes(item)} key={item.author} variant="minimal" cite={item.author}>
                 {item.quote}
               </Blockquote>
           ))}

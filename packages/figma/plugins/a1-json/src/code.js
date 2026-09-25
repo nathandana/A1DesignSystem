@@ -16,8 +16,8 @@
 // exported as Heading, Paragraph, or (when blue and underlined) Link. Section
 // is split in two on the Figma side (the Section set + a separate content-width
 // carrier), so its exporter and importer translate contentWidth between the
-// shapes. The exporters/importers are keyed by component-set name so additional
-// public A1 assets can be added without touching the plumbing. Export runs
+// shapes. The exporters/importers use canonical names for routing and stable
+// component-set keys where duplicate public names require disambiguation. Export runs
 // automatically when the selection or the selected instance's configuration
 // changes.
 //
@@ -124,6 +124,7 @@ import {
   componentProperty,
   componentPropertyFromNames,
   componentPropertyValue,
+  componentSetKey,
   componentSetName,
   iconNameFromEditableText,
   iconNameFromTextValue,
@@ -385,7 +386,7 @@ const TEXT_FIELD_VISUAL_STATES = ['hover', 'focus'];
 const MENU_ITEM_VISUAL_STATES = ['hover', 'focus', 'pressed'];
 const GROUP_SLOT_CONFIG = {
   RadioGroup: { slotName: 'Radio Items', min: 2, max: 20 },
-  CheckboxGroup: { slotName: 'Checkbox Items', min: 1, max: 20 },
+  CheckboxGroup: { slotName: 'Checkbox Items', min: 0, max: 20 },
   TopHeader: { slotName: 'Nav Items', min: 0, max: 8 },
   TopHeaderActions: { slotName: 'Actions', min: 0, max: 6 },
   ChipGroup: { slotName: 'Chip slot', min: 1, max: 12 },
@@ -460,7 +461,7 @@ const gapVariableWarnings = new Set();
 // while adapter functions continue to live in this controller.
 const COMPONENT_ADAPTERS = [
   { jsonType: 'Icon', import: importIcon, figma: [{ name: 'Icon', export: exportIcon, apply: applyIcon }], capabilities: { update: true, children: 'none' } },
-  { jsonType: 'Button', import: importButton, figma: [{ name: 'Button', export: exportButton, apply: applyButton }], capabilities: { update: true, children: 'none' } },
+  { jsonType: 'Button', import: importButton, figma: [{ name: 'Button', aliases: ['POC / Button'], export: exportButton, apply: applyButton }], capabilities: { update: true, children: 'none' } },
   { jsonType: 'IconButton', import: importIconButton, figma: [{ name: 'Icon Button', aliases: ['IconButton'], export: exportIconButton, apply: applyIconButton }], capabilities: { update: true, children: 'none' } },
   { jsonType: 'ButtonContainer', import: importButtonContainer, figma: [{ name: 'Button Container', aliases: ['ButtonContainer', 'Button Group', 'ButtonGroup'], export: exportButtonContainer, apply: applyButtonContainer }], capabilities: { update: true, children: 'slot' } },
   { jsonType: 'Link', import: importLink, figma: [{ name: 'Link', export: exportLink, apply: applyLink }], capabilities: { update: true, children: 'none' } },
@@ -493,7 +494,7 @@ const COMPONENT_ADAPTERS = [
   { jsonType: 'Menu', import: importMenu, figma: [{ name: 'Menu', export: exportMenu, apply: applyMenu }], capabilities: { update: true, children: 'custom' } },
   { jsonType: 'Dialog', import: importDialog, figma: [{ name: 'Dialog', export: exportDialog, apply: applyDialog }], capabilities: { update: true, children: 'slot' } },
   { jsonType: 'RadioGroup', import: importRadioGroup, figma: [{ name: 'Radio Group', aliases: ['RadioGroup'], export: exportRadioGroup, apply: applyRadioGroup }], capabilities: { update: true, children: 'custom' } },
-  { jsonType: 'CheckboxGroup', import: importCheckboxGroup, figma: [{ name: 'Checkbox Group', aliases: ['CheckboxGroup'], export: exportCheckboxGroup, apply: applyCheckboxGroup }], capabilities: { update: true, children: 'custom' } },
+  { jsonType: 'CheckboxGroup', import: importCheckboxGroup, figma: [{ name: 'Checkbox Group', aliases: ['CheckboxGroup', 'POC / Checkbox group'], export: exportCheckboxGroup, apply: applyCheckboxGroup }], capabilities: { update: true, children: 'custom' } },
   { jsonType: 'PageNav', import: importPageNav, figma: [{ name: 'Page Nav', aliases: ['PageNav'], export: exportPageNav, apply: applyPageNav }], capabilities: { update: true, children: 'custom' } },
   { jsonType: 'TreeMenu', import: importTreeMenu, figma: [{ name: 'Tree Menu', aliases: ['TreeMenu'], export: exportTreeMenu, apply: applyTreeMenu }], capabilities: { update: true, children: 'custom' } },
   { jsonType: 'TopHeader', import: importTopHeader, figma: [{ name: 'Top Header', aliases: ['TopHeader'], export: exportTopHeader, apply: applyTopHeader }], capabilities: { update: true, children: 'slot' } },
@@ -519,6 +520,7 @@ const FIGMA_LIBRARY_COMPONENT_ALIASES = {
   'Menu Item': ['MenuItem'],
   'Radio Option': ['RadioOption'],
   'Checkbox Option': ['CheckboxOption'],
+  'Checkbox Item': ['POC / Checkbox item', 'POC Checkbox item'],
   'Page Nav Item': ['PageNav Item', 'PageNavItem'],
   'Tree Menu Item': ['TreeMenu Item', 'TreeMenuItem', 'Tree Item', 'TreeItem'],
   'Top Header Nav Item': ['TopHeader Nav Item', 'TopHeaderNavItem'],
@@ -580,6 +582,9 @@ const SUPPORTED_COMPONENT_MESSAGE = `${componentRegistryFigmaEntries(COMPONENT_A
 // so published library keys have one checked-in maintenance point.
 const A1_FIGMA_LIBRARY_MANIFEST = __A1_FIGMA_LIBRARY_MANIFEST__;
 const A1_FIGMA_COMPONENT_SET_KEYS = A1_FIGMA_LIBRARY_MANIFEST.componentSets;
+const A1_POC_CHECKBOX_GROUP_COMPONENT_SET_KEY = A1_FIGMA_COMPONENT_SET_KEYS['POC / Checkbox group'];
+const A1_POC_CHECKBOX_ITEM_COMPONENT_SET_KEY = A1_FIGMA_COMPONENT_SET_KEYS['Checkbox Item']
+  || A1_FIGMA_COMPONENT_SET_KEYS['POC / Checkbox item'];
 const A1_FIGMA_COMPONENT_KEYS = A1_FIGMA_LIBRARY_MANIFEST.components;
 const A1_FIGMA_ICON_SET_KEYS = A1_FIGMA_LIBRARY_MANIFEST.iconSets || {};
 const A1_FIGMA_TEXT_STYLE_KEYS = A1_FIGMA_LIBRARY_MANIFEST.textStyles;
@@ -600,6 +605,22 @@ function componentNameCandidates(name) {
 
 function figmaComponentNameMatches(actualName, requestedName) {
   return figmaComponentNameMatchesForAliases(actualName, requestedName, FIGMA_COMPONENT_NAME_ALIASES);
+}
+
+function isPocCheckboxGroup(instance) {
+  return Boolean(A1_POC_CHECKBOX_GROUP_COMPONENT_SET_KEY)
+    && componentSetKey(currentInstance(instance)) === A1_POC_CHECKBOX_GROUP_COMPONENT_SET_KEY;
+}
+
+function isPocCheckboxItem(instance) {
+  return Boolean(A1_POC_CHECKBOX_ITEM_COMPONENT_SET_KEY)
+    && componentSetKey(instance) === A1_POC_CHECKBOX_ITEM_COMPONENT_SET_KEY;
+}
+
+function isGroupOptionInstance(instance, optionSetName) {
+  if (!instance || instance.type !== 'INSTANCE') return false;
+  if (optionSetName === 'Checkbox Item') return isPocCheckboxItem(instance);
+  return componentSetName(instance) === optionSetName;
 }
 
 const libraryComponentSourceCache = new Map();
@@ -5179,7 +5200,7 @@ function exportGroupOptions(instance, optionSetName, warnings) {
   const usedValues = new Set();
   const options = [];
   const selected = [];
-  for (const optionInstance of instance.findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === optionSetName)) {
+  for (const optionInstance of instance.findAll((node) => isGroupOptionInstance(node, optionSetName))) {
     if (optionInstance.visible === false) continue;
     const label = componentPropertyValue(optionInstance, 'Label', 'TEXT') || 'Option';
     const value = slugifyOptionValue(label, usedValues);
@@ -5188,7 +5209,8 @@ function exportGroupOptions(instance, optionSetName, warnings) {
     if (componentPropertyValue(optionInstance, 'Show hint', 'BOOLEAN') === true && typeof hint === 'string' && hint) option.hint = hint;
     if (componentPropertyValue(optionInstance, 'selected', 'VARIANT') === 'true') selected.push(value);
     const state = componentPropertyValue(optionInstance, 'state', 'VARIANT');
-    if (state === 'hover') warnings.push(`Option "${label}" is in a visual-only hover state — no JSON prop was emitted.`);
+    if (state === 'hover' || state === 'active') warnings.push(`Option "${label}" is in a visual-only ${state} state — no JSON prop was emitted.`);
+    if (state === 'disabled' || componentPropertyValue(optionInstance, 'disabled', 'VARIANT') === 'true') option.disabled = true;
     options.push(option);
   }
   return { options, selected };
@@ -5200,16 +5222,21 @@ function exportLegacyChoiceGroup(instance, type, optionSetName) {
   const size = componentPropertyValue(instance, 'Size', 'VARIANT');
   const inline = componentPropertyValue(instance, 'Inline', 'VARIANT');
   const label = componentPropertyValue(instance, 'Label', 'TEXT');
-  const hint = componentPropertyValue(instance, 'Helper', 'TEXT');
-  const showHelper = componentPropertyValue(instance, 'Show helper', 'BOOLEAN');
+  const hint = componentPropertyValue(instance, 'Helper', 'TEXT') ?? componentPropertyValue(instance, 'Hint', 'TEXT');
+  const showHelper = componentPropertyValue(instance, 'Show helper', 'BOOLEAN') ?? componentPropertyValue(instance, 'Show hint', 'BOOLEAN');
   const required = componentPropertyValue(instance, 'Required', 'BOOLEAN');
+  const disabled = componentPropertyValue(instance, 'Disabled', 'BOOLEAN');
+  const error = componentPropertyValue(instance, 'Error', 'TEXT');
+  const showError = componentPropertyValue(instance, 'Show error', 'BOOLEAN');
   const { options, selected } = exportGroupOptions(instance, optionSetName, warnings);
 
   if (GROUP_SIZES.includes(size) && size !== 'default') props.size = size;
   if (inline === 'True') props.inline = true;
   if (typeof label === 'string' && label) props.label = label;
-  if (typeof hint === 'string' && hint && showHelper !== false) props.hint = hint;
+  if (typeof hint === 'string' && hint && showHelper !== false && showError !== true) props.hint = hint;
   if (required === true) props.required = true;
+  if (disabled === true) props.disabled = true;
+  if (showError === true && typeof error === 'string' && error) props.error = error;
   if (options.length > 0) props.options = options;
   if (type === 'RadioGroup' && selected.length > 0) props.defaultValue = selected[0];
   if (type === 'CheckboxGroup' && selected.length > 0) props.defaultValue = selected;
@@ -5223,7 +5250,8 @@ function exportRadioGroup(instance) {
 }
 
 function exportCheckboxGroup(instance) {
-  return exportLegacyChoiceGroup(instance, 'CheckboxGroup', 'Checkbox Option');
+  const optionSetName = isPocCheckboxGroup(instance) ? 'Checkbox Item' : 'Checkbox Option';
+  return exportLegacyChoiceGroup(instance, 'CheckboxGroup', optionSetName);
 }
 
 function exportMenuItem(instance, index, warnings) {
@@ -6202,6 +6230,10 @@ async function applyButton(instance, node, warnings) {
   if (sizeKey) assignments[sizeKey] = BUTTON_SIZES.includes(props.size) ? props.size : 'md';
   const stateKey = keyFor('State');
   if (stateKey) assignments[stateKey] = props.disabled === true ? 'disabled' : props.loading === true ? 'loading' : 'default';
+  const disabledKey = keyFor('Disabled');
+  if (disabledKey) assignments[disabledKey] = props.disabled === true;
+  const loadingKey = keyFor('Loading');
+  if (loadingKey) assignments[loadingKey] = props.loading === true;
   const positionKey = keyFor('IconPosition');
   if (positionKey) assignments[positionKey] = props.iconPosition === 'end' ? 'end' : 'start';
 
@@ -7582,7 +7614,7 @@ async function importSelect(node, warnings) {
 }
 
 function groupOptionInstances(instance, optionSetName) {
-  return instance.findAll((node) => node.type === 'INSTANCE' && componentSetName(node) === optionSetName);
+  return instance.findAll((node) => isGroupOptionInstance(node, optionSetName));
 }
 
 function groupOptionInstancesInSlot(instance, slotName, optionSetName) {
@@ -7590,7 +7622,7 @@ function groupOptionInstancesInSlot(instance, slotName, optionSetName) {
   if (!slot) return [];
   const isOption = (node) => {
     try {
-      return node.type === 'INSTANCE' && componentSetName(node) === optionSetName;
+      return isGroupOptionInstance(node, optionSetName);
     } catch {
       return false;
     }
@@ -7674,25 +7706,34 @@ async function applyLegacyChoiceGroup(instance, node, type, optionSetName, warni
   await loadInstanceFonts(instance);
   const props = node.props || {};
   const size = GROUP_SIZES.includes(props.size) ? props.size : 'default';
+  const pocCheckboxGroup = type === 'CheckboxGroup' && isPocCheckboxGroup(instance);
+  const resolvedOptionSetName = pocCheckboxGroup ? 'Checkbox Item' : optionSetName;
   const groupAssignments = {};
   queueComponentProperty(instance, groupAssignments, 'Size', size, 'VARIANT', warnings);
   queueComponentProperty(instance, groupAssignments, 'Inline', props.inline === true ? 'True' : 'False', 'VARIANT', warnings);
   queueComponentProperty(instance, groupAssignments, 'Required', props.required === true, 'BOOLEAN', warnings);
   if (typeof props.label === 'string') queueComponentProperty(instance, groupAssignments, 'Label', props.label, 'TEXT', warnings);
-  if (typeof props.hint === 'string') queueComponentProperty(instance, groupAssignments, 'Helper', props.hint, 'TEXT', warnings);
-  queueOptionalComponentProperty(instance, groupAssignments, 'Show helper', typeof props.hint === 'string' && props.hint.length > 0, 'BOOLEAN');
+  if (typeof props.hint === 'string') {
+    queueComponentProperty(instance, groupAssignments, pocCheckboxGroup ? 'Hint' : 'Helper', props.hint, 'TEXT', warnings);
+  }
+  queueOptionalComponentProperty(instance, groupAssignments, pocCheckboxGroup ? 'Show hint' : 'Show helper', typeof props.hint === 'string' && props.hint.length > 0, 'BOOLEAN');
+  if (pocCheckboxGroup) {
+    queueComponentProperty(instance, groupAssignments, 'Disabled', props.disabled === true, 'BOOLEAN', warnings);
+    if (typeof props.error === 'string') queueComponentProperty(instance, groupAssignments, 'Error', props.error, 'TEXT', warnings);
+    queueComponentProperty(instance, groupAssignments, 'Show error', typeof props.error === 'string' && props.error.length > 0, 'BOOLEAN', warnings);
+  }
   applyQueuedProperties(instance, groupAssignments, warnings, `${type} properties`);
 
   const options = Array.isArray(props.options) ? props.options.filter((option) => option && typeof option === 'object') : [];
-  const optionInstances = await reconcileGroupOptionInstances(instance, type, optionSetName, options.length, warnings);
+  const optionInstances = await reconcileGroupOptionInstances(instance, type, resolvedOptionSetName, options.length, warnings);
   const selectedValues = selectedValuesForGroup(type, props);
   const matchedSelectedValues = new Set();
-  if (props.disabled === true || props.error !== undefined || props.name !== undefined || props.value !== undefined) {
-    warnings.push('disabled, error, name, and controlled value are runtime-only for the current Figma group component — ignored.');
+  if ((!pocCheckboxGroup && (props.disabled === true || props.error !== undefined)) || props.name !== undefined || props.value !== undefined) {
+    warnings.push(`${pocCheckboxGroup ? 'name and controlled value are' : 'disabled, error, name, and controlled value are'} runtime-only for the current Figma group component — ignored.`);
   }
 
   for (let index = 0; index < optionInstances.length; index += 1) {
-    const optionInstance = groupOptionInstances(currentInstance(instance), optionSetName)[index];
+    const optionInstance = groupOptionInstances(currentInstance(instance), resolvedOptionSetName)[index];
     const option = options[index];
     const label = typeof option?.label === 'string' && option.label ? option.label : `Option ${index + 1}`;
     const hint = typeof option?.hint === 'string' ? option.hint : '';
@@ -7705,8 +7746,15 @@ async function applyLegacyChoiceGroup(instance, node, type, optionSetName, warni
     queueComponentProperty(optionInstance, optionAssignments, 'Show hint', Boolean(hint), 'BOOLEAN', warnings, `Option ${index + 1} hint visibility`);
     queueComponentProperty(optionInstance, optionAssignments, 'Size', size, 'VARIANT', warnings, `Option ${index + 1} size`);
     queueComponentProperty(optionInstance, optionAssignments, 'selected', selected ? 'true' : 'false', 'VARIANT', warnings, `Option ${index + 1} selection`);
+    if (pocCheckboxGroup) {
+      const disabled = props.disabled === true || option?.disabled === true;
+      const stateApplied = queueOptionalComponentProperty(optionInstance, optionAssignments, 'State', disabled ? 'disabled' : 'default', 'VARIANT');
+      if (!stateApplied) {
+        queueComponentProperty(optionInstance, optionAssignments, 'disabled', disabled ? 'true' : 'false', 'VARIANT', warnings, `Option ${index + 1} disabled state`);
+      }
+    }
     applyQueuedProperties(optionInstance, optionAssignments, warnings, `Option ${index + 1} properties`);
-    if (option?.disabled === true) warnings.push(`Option "${label}" is disabled in JSON, but option-level disabled is not represented by the Figma component.`);
+    if (!pocCheckboxGroup && option?.disabled === true) warnings.push(`Option "${label}" is disabled in JSON, but option-level disabled is not represented by the Figma component.`);
   }
   for (const value of selectedValues) {
     if (!matchedSelectedValues.has(value)) warnings.push(`defaultValue "${value}" did not match an imported ${type} option value.`);

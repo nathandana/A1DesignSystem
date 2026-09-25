@@ -1,3 +1,4 @@
+import { useT } from '../../labels/useT.js'
 import {
   Card,
   Grid,
@@ -16,6 +17,7 @@ function sortByTitle(a, b) {
 }
 
 export function ComponentCategoryPage({ category, onNavigate }) {
+  const t = useT()
   const components = [...category.components].sort(sortByTitle)
 
   return (
@@ -41,8 +43,8 @@ export function ComponentCategoryPage({ category, onNavigate }) {
             onClick={(event) => navigateCard(event, onNavigate, `component-${component.id}`)}
           >
             <Stack direction="column" gap="xs">
-              <Heading as="h3" size="sm">{component.title}</Heading>
-              <Paragraph size="xs" color="muted">{component.body}</Paragraph>
+              <Heading as="h3" size="sm">{component.titleKey ? t(component.titleKey, component.title) : component.title}</Heading>
+              <Paragraph size="xs" color="muted">{component.bodyKey ? t(component.bodyKey, component.body) : component.body}</Paragraph>
               <MessageBadge size='sm' subtle>{LAST_UPDATED}</MessageBadge>
             </Stack>
           </Card>

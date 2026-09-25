@@ -88,3 +88,5 @@ The `guidelines/` directory ships inside this package:
 - `guidelines/tokens.md` — token tiers, theming, dark mode
 - `guidelines/styles.md` — layout primitives, spacing, breakpoints
 - `guidelines/content-standards.md` — voice, grammar, formatting, AP Style defaults, and A1 content overrides
+
+For isolated custom markup, CSS and JavaScript, see [Custom block](guidelines/custom-block.md). Use it only when existing A1 components cannot express the need.

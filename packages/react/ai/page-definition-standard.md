@@ -13,7 +13,7 @@ Read this before authoring, editing, importing, or generating any page definitio
 
 1. **The JSON definition is the source of truth.** The rendered page and any generated code are derived from it — never the other way around. Do not hardcode rendered content in a component when it belongs in the definition.
 2. **Layout-first.** A definition starts from structure (layout → regions → nodes), not from content. Content hangs off the structure.
-3. **A1 components only.** Every node maps to a registered A1 component. Arbitrary HTML elements (`div`, `p`, `span`, …) are not allowed and must never be added to the registry.
+3. **A1 components only.** Every node maps to a registered A1 component. Arbitrary HTML elements (`div`, `p`, `span`, …) are not allowed as node types. `CustomBlock` is the deliberate, isolated escape hatch described below.
 4. **Names are a locked contract.** Component `type` values match the exported A1 React component names **exactly** (PascalCase). Do not normalise, alias, or lowercase them.
 5. **Fail safe.** An unknown/unregistered `type` renders a visible fallback that names the offending type — it never throws and never silently drops content.
 6. **Props must be real.** A node's `props` are passed straight through to the A1 component, so they must be valid props for that component (see "Props rules").
@@ -134,6 +134,7 @@ and update this document in the same change.
 | Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker` |
 | Form inputs | `TextField`, `TextareaField`, `SelectField`, `NumberField`, `DateField`, `TimeField`, `PhoneField`, `ZipField`, `CreditCardField`, `Fieldset`, `FieldRow`, `CheckboxGroup`, `RadioGroup`, `ChoiceGroup` |
 | Data and navigation | `DefinitionList`, `Pagination`, `Calendar`, `Breadcrumb`, `TopHeader`, `BottomDrawer`, `PageNav`, `TreeMenu`, `DataTable` |
+| Custom content | `CustomBlock` |
 | Pattern and project composition | `Slot`, `Outlet` |
 
 Most entries map directly to the exported A1 React component with the same name.
@@ -338,3 +339,87 @@ See `apps/a1-web/src/editor/examples/editorExamplePage.ts` for the full, current
 ## Versioning
 
 `schemaVersion` is semver. Additive, backward-compatible fields → minor bump. Renames, removals, or shape changes to existing fields → major bump, and update this standard plus every consumer in the same change.
+
+## Custom block — A1-2541
+
+`CustomBlock` is a React component and a leaf node in page-definition JSON.
+Use it only for a small region that registered A1 components and props cannot
+express, such as an unusual positioned annotation or a specialized local
+interaction. Explain the model gap in the handoff. Prefer improving a reusable
+A1 component when the need is common. Do not rebuild ordinary sections, grids,
+headings, buttons, forms or navigation with custom markup.
+
+```json
+{
+  "id": "positioned-annotation",
+  "type": "CustomBlock",
+  "props": {
+    "title": "Positioned annotation",
+    "height": "sm",
+    "markup": "<p class=\"a1-annotation\">Annotation within this block</p>",
+    "css": ".a1-annotation { position: absolute; inset-inline-end: var(--semantic-spacing-gap-md); inset-block-end: var(--semantic-spacing-gap-md); color: var(--semantic-color-text-accent); }",
+    "js": ""
+  }
+}
+```
+
+The five props are `title`, `markup`, `css`, `js` and `height`. Source strings
+start empty and stay literal: `markup`, `css` and `js` do not interpolate
+`{{ dataset.column }}` bindings. A missing or blank title uses the localized Custom block label;
+provide a meaningful title for finished content. Height is `sm`, `md` (default)
+or `lg`, backed by `component.customBlock.height.*` tokens (192, 384 and 576 px).
+The frame fills its container's width, and overflow scrolls inside the frame.
+Media queries use the block viewport, not the outer page viewport. Custom
+blocks do not accept A1 child nodes or `content`; text belongs in the authored
+markup and authors own its localization.
+
+CSS is confined to a sandboxed iframe. Absolute and fixed positioning stay
+inside that frame. The block copies computed A1 base, semantic and component
+token variables from its actual parent scope, including project themes and
+inverse scopes. It also copies body text defaults, direction and language.
+It does not copy component stylesheets or host web fonts. Reference token
+variables in custom CSS and use semantic HTML; a class such as `a1-button`
+does not instantiate the A1 Button. Custom source is the explicit exception
+to the JSON model's prohibition on arbitrary markup and CSS, only inside
+these source props. There is no host-page style or script injection.
+
+JavaScript runs after markup in an opaque-origin `sandbox="allow-scripts"`
+frame. It can manipulate its own document. Parent DOM access, host storage,
+fetch, external scripts/styles/fonts, popups and form submission are blocked.
+Images and embedded fonts may use data URLs. Scripts in the markup fragment
+are inert; put code in `js` and bind native events there. This is a browser
+sandbox, not a CPU/time limit or a guarantee that author code is accessible.
+Browser consoles report script errors. The host Content Security Policy must
+permit the inline script/style bootstrap; a stricter inherited policy can block
+the frame. A frame can navigate itself; it cannot
+navigate the parent. No host message bridge is installed.
+
+Changing source, text defaults or theme tokens reloads the document and resets
+local script state. Every block has a separate document. In editor mode the
+frame is inert so pointer and keyboard actions select the block; use the
+component preview or launched page to interact with its contents.
+
+Author semantic controls, accessible names, focus indicators, keyboard behavior,
+contrast, responsive overflow and reduced-motion handling inside the frame.
+Isolation does not repair inaccessible HTML. Avoid scripts for static content.
+Review each authored block across themes, breakpoints and assistive technology.
+
+The component is currently React-only. Pure CSS cannot reproduce its document
+and script lifecycle; Native would need an explicit WebView contract. Neither
+package claims support. Figma translation is also outside this contract.
+
+### A1-2541 standards review — Sept. 24, 2026
+
+| Area | Decision and evidence |
+|------|-----------------------|
+| Custom styling | The shared component adds only an iframe viewport, tokenized border/radius/text defaults, full-width sizing, overflow containment and editor pointer suppression. The frame reset uses zero margins, border-box sizing, relative positioning and a full-height body so absolute positioning has a stable containing block. Layout components cannot supply document isolation. No application-specific stylesheet or layout patch was added. |
+| Component use | The configurator reuses Stack, TextField, TextareaField, Choice/Toolbar, Lockable, WithHelp and Code. One shared CustomBlock renderer and one shared Controls implementation serve component pages and project/pattern editing. No parallel custom controls were introduced. |
+| Tokens and values | Four new component tokens define sm/md/lg heights and border width. Heights are 192, 384 and 576 px; border width aliases base spacing 1. Radius, typography and colors use existing tokens. Structural 0, 100% and 100vh values are viewport/reset mechanics, not design scale additions. Copied computed tokens and body defaults cross the iframe boundary through CSSOM; they are not local host styling overrides. Raw probe colors exist only in tests to detect CSS leakage. |
+| Accessibility | The iframe always has a localized or authored title and receives the host language/direction. Native iframe keyboard navigation is retained in preview, and the editor makes its content inert for selection. Custom authors remain responsible for semantic content, focus visibility, contrast, targets, motion and keyboard behavior. Focused Storybook axe, iframe-content axe, configurator axe and a keyboard enter/exit check passed. No assistive-technology manual audit was performed. |
+| Interaction | Source edits reload only the block document. The empty block has no invented demo content. Existing height choices, Helper text toggle, pattern locks, editor selection, Add panel, JSON editor and history behavior are reused. No new dialog, notification or drag/drop pattern was introduced. |
+| Content | Fifteen name, description, field, option and help labels live in system/labels/custom-block.json with English descriptions and es/fr/de/pt/ja/zh/ar translations. Resolver-backed catalog metadata covers the new entry across menu, overview, category, detail and Add panel. Source text is author-owned content, including its localization. |
+| Data and state | Source is three ordinary JSON strings. They bypass dataset interpolation, preserving template syntax and preventing dataset values from becoming source code. Empty/null source is normalized safely, invalid height falls back to md, and blank title uses the localized label. Existing JSON errors and throttled history/storage remain the editing model. Script exceptions are reported by the browser console; there is no new error UI or host message channel. |
+| Architecture | The only runtime additions are CustomBlock, its declarations/styles and a small document serializer. No dependency was added. The registry, catalog, selected-node bridge, JSX export, package exports, MCP index and agent contracts were updated together. The schema addition is backward compatible. Pure, Native and Figma do not claim runtime support. |
+| Responsive behavior | The outer block fills available width and uses tokenized height presets. The inner document owns overflow and media queries; fixed/absolute content cannot cover the host. Core base/light, accessible and heritage configurations were exercised at xs/sm/md/lg/xl widths. Authors must validate their own markup at narrow widths and zoom. |
+| Verification | Five browser tests cover isolation from host/siblings, sandbox access limits, literal source, local keyboard behavior, scoped tokens, dimensions, configurator/JSON editing, editor Add/selection/persistence and all supported locales. Package/type/RSC checks, token audit, the CSS/ESLint gate and three focused Storybook accessibility scans passed. The broad run passed four suites (responsive visibility, product tour, core-theme matrix and project sidebar navigation); its all-routes suite found missing/outdated screenshots. The new route has its own reviewed baseline. The final focused run passed all 10 tests, including that release-route check and the four shared suites. |
+| Standards debt | The isolated-source exception and web-only coverage are documented and accepted for this feature. The new metadata keys make catalog labels localizable without migrating unrelated existing copy. The shared model should gain a normal A1 prop or component when a custom pattern becomes reusable. Sandbox boundaries and source ownership needed explicit agent guidance; that guidance is now part of this standard, the agent brief and published package guidelines. |

@@ -438,6 +438,7 @@ function formatTourProgress(template, current, total) {
 
 function App() {
   const [activePage, setActivePage] = useState(() => getPage())
+  const [routePath, setRoutePath] = useState(() => window.location.pathname)
   const [theme, setTheme] = useState(() => {
     // A standalone preview may force a theme via `?theme=` (e.g. the Priority
     // Guide editor's "Preview as wireframe"). It wins so the single authoritative
@@ -1305,6 +1306,7 @@ function App() {
       window.history[replace ? 'replaceState' : 'pushState']({ page: next }, '', nextPath)
     }
     setActivePage(next)
+    setRoutePath(new URL(nextPath, window.location.origin).pathname)
     if (next.startsWith('component-')) {
       setDetailTab(nextTab ?? 'configure')
     }
@@ -1398,7 +1400,7 @@ function App() {
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
     const isPublishedPreview = page === 'editor-preview' && /^\/p(?:\/|$)/.test(window.location.pathname)
-    const canonicalBase = page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab() || (page === 'labs' && /^\/labs\//.test(window.location.pathname))
+    const canonicalBase = page === 'blog-article' || page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab() || (page === 'labs' && /^\/labs\//.test(window.location.pathname))
       ? window.location.pathname
       : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
@@ -1407,6 +1409,7 @@ function App() {
     setDetailTab(getComponentTab())
       const onPop = () => {
       setActivePage(getPage())
+      setRoutePath(window.location.pathname)
       setDetailTab(getComponentTab())
       setHelpQuery(new URLSearchParams(window.location.search).get('q') || '')
       const params = new URLSearchParams(window.location.search)
@@ -1659,7 +1662,7 @@ function App() {
 
   const FOUNDATION_GROUPS = [
     { label: t('app.foundationGroup.content', 'Content'), icon: 'article', ids: ['foundation-content-standards', 'foundation-iconography', 'foundation-labels'] },
-    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin'] },
+    { label: t('app.foundationGroup.figma', 'Figma'), icon: 'design_services', ids: ['foundation-figma-components', 'foundation-figma-plugin', 'foundation-figma-standards'] },
     { label: t('app.foundationGroup.layout', 'Layout'), icon: 'dashboard', ids: ['foundation-responsive', 'foundation-utilities', 'foundation-z-index'] },
     { label: t('app.foundationGroup.standards', 'Standards'), icon: 'verified', ids: ['foundation-accessibility', 'foundation-prop-conventions'] },
     { label: t('app.foundationGroup.visual', 'Visual'), icon: 'palette', ids: ['foundation-color', 'foundation-elevation', 'foundation-motion', 'foundation-shape', 'foundation-size', 'foundation-type-scale'] },
@@ -1779,10 +1782,10 @@ function App() {
             items: ids
               .map((id) => foundations.find((f) => f.id === id))
               .filter(Boolean)
-              .sort((a, b) => t(a.titleLabelKey, a.title).localeCompare(t(b.titleLabelKey, b.title), locale))
+              .sort((a, b) => t(a.titleLabelKey, a.navigationTitle ?? a.title).localeCompare(t(b.titleLabelKey, b.navigationTitle ?? b.title), locale))
               .map((foundation) => ({
                 icon: foundation.icon,
-                label: t(foundation.titleLabelKey, foundation.title),
+                label: t(foundation.titleLabelKey, foundation.navigationTitle ?? foundation.title),
                 href: getPath(foundation.id),
                 onClick: (e) => handleNavClick(e, foundation.id),
               })),
@@ -2276,7 +2279,7 @@ function App() {
         {activePage === 'features' && <Features onNavigate={navigate} />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
-        {activePage === 'blog-article' && <BlogArticle onNavigate={navigate} />}
+        {activePage === 'blog-article' && <BlogArticle pathname={routePath} onNavigate={navigate} />}
         {activePage === 'labs' && <Labs onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (

@@ -1,3 +1,7 @@
+import { currentAudience, withAudience } from "./utils/audience.js";
+import { audienceStudies, portfolioAudiences } from "./data/portfolioAudiences.js";
+import { getPageFocus } from "./data/portfolioFocus.js";
+import { focusAttributes } from "./utils/focus.js";
 import { useEffect, useState } from "react";
 import {
   Cluster,
@@ -25,6 +29,8 @@ import "./styles.css";
 
 export function App() {
   const [activePage, setActivePage] = useState(() => getPageFromLocation());
+  const [audience, setAudience] = useState(currentAudience);
+  const audienceConfig = portfolioAudiences[audience];
   const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
@@ -33,9 +39,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    window.history.replaceState({ page: activePage }, "", window.location.href);
+    window.history.replaceState({ page: activePage }, "", withAudience(`${window.location.pathname}${window.location.hash}`, audience, window.location.search));
     const onPopState = () => {
       setActivePage(getPageFromLocation());
+      setAudience(currentAudience());
       setNavOpen(false);
     };
     window.addEventListener("popstate", onPopState);
@@ -45,7 +52,7 @@ export function App() {
   useEffect(() => {
     const activeStudy = caseStudies.find((study) => study.id === activePage);
     const titles = {
-      home: "Nathan Dana — Principal Designer",
+      home: `Nathan Dana — ${audienceConfig.title}`,
       about: "About — Nathan Dana",
       process: "Design Process — Nathan Dana",
       resume: "Résumé & Experience — Nathan Dana",
@@ -55,14 +62,14 @@ export function App() {
     document.title = activeStudy
       ? `${activeStudy.title} — Case Study — Nathan Dana`
       : titles[activePage] ?? titles.home;
-  }, [activePage]);
+  }, [activePage, audience]);
 
   const navigate = (page, event) => {
     if (event) {
       if (!isPlainLeftClick(event)) return;
       event.preventDefault();
     }
-    const nextPath = getRoutePath(page);
+    const nextPath = getRoutePath(page, audience);
     const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
     if (nextPath !== currentPath) {
       window.history.pushState({ page }, "", nextPath);
@@ -84,7 +91,7 @@ export function App() {
             <span className="pf-nav-brand-name">
               Nathan <span className="pf-mobile-logo-accent">Dana</span>
             </span>
-            <span className="pf-nav-brand-title">Principal Designer</span>
+            <span className="pf-nav-brand-title">{audienceConfig.title}</span>
           </div>
         ) : null
       }
@@ -111,9 +118,10 @@ export function App() {
         onClick={(event) => navigate("process", event)}
       />
       <SideNavGroup icon="work" label="Case studies" defaultOpen>
-        {caseStudies.map((study) => (
+        {audienceStudies(caseStudies, audience).map((study) => (
           <SideNavItem
             key={study.id}
+            {...focusAttributes(study)}
             href={getRoutePath(study.id)}
             label={study.title}
             active={activePage === study.id}
@@ -165,6 +173,7 @@ export function App() {
 
   const footer = (
     <Stack
+      {...focusAttributes()}
       className="pf-footer"
       direction={{ xs: "column", md: "row" }}
       align="center"
@@ -202,13 +211,13 @@ export function App() {
   return (
     <LabelsProvider locale="en" labels={actionLabels}>
       <PageLayout className="pf-page-shell" stickyHeader sidebar={sidebar} header={mobileHeader}>
-        <div className="pf-content-wrapper">
-          {activePage === "home" && <HomePage navigate={navigate} />}
+        <div className="pf-content-wrapper" data-portfolio-page={activePage} data-portfolio-audience={audience} {...focusAttributes(getPageFocus(activePage))}>
+          {activePage === "home" && <HomePage navigate={navigate} audience={audience} />}
           {activePage === "process" && <ProcessPage navigate={navigate} />}
           {activeStudy && <activeStudy.component />}
-          {activePage === "resume" && <ResumePage />}
-          {activePage === "testimonials" && <TestimonialsPage />}
-          {activePage === "about" && <AboutPage navigate={navigate} />}
+          {activePage === "resume" && <ResumePage key={audience} audience={audience} />}
+          {activePage === "testimonials" && <TestimonialsPage audience={audience} />}
+          {activePage === "about" && <AboutPage navigate={navigate} audience={audience} />}
           {activePage === "contact" && <ContactPage />}
           {footer}
         </div>

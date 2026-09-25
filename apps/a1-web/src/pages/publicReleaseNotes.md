@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.33.0 — 2026-09-25
+
+- **Blog article links** — direct links, refreshes and Back/Forward navigation now preserve the selected article instead of resetting to the newest post.
+
+### Highlights
+
+- **Custom blocks for specialized interfaces** — Add markup, CSS and JavaScript inside an isolated, sandboxed document when existing A1 components cannot express the required interface. Custom blocks can be configured, selected in the editor and carried through code and JSON workflows.
+- **Working showcase examples** — The A1 Showcase includes an interactive seating map with keyboard selection and a separate product-launch banner example. Supporting page content uses standard A1 components.
+- **Figma construction standards** — A new Foundations article documents component organization, properties, bounded slots, interaction states and handoff requirements. Button and Checkbox proof-of-concept assets follow the shared contracts, and the bridge resolves duplicate asset names through stable keys.
+- **Clearer wrapped highlights** — HeadingMark backgrounds leave space for glyphs on the preceding line in wrapped display headings.
+
 ## 0.32.0 — 2026-09-11
 
 ### Highlights

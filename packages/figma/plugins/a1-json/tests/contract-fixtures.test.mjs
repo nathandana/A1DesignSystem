@@ -58,6 +58,25 @@ test('library manifest has the expected published-key sections', () => {
   }
   assert.equal(typeof manifest.variables.color, 'object', 'variables.color should be an object');
   assert.equal(typeof manifest.variables.float, 'object', 'variables.float should be an object');
+  assert.deepEqual({
+    button: manifest.componentSets['POC / Button'],
+    checkboxItem: manifest.componentSets['Checkbox Item'],
+    checkboxItemLegacy: manifest.componentSets['POC / Checkbox item'],
+    checkboxGroup: manifest.componentSets['POC / Checkbox group'],
+  }, {
+    button: '93c7289bb785c8389d8e987b321e4963850c1d82',
+    checkboxItem: '318c659e78e499c4803b45733ee0c44ddaef0ae4',
+    checkboxItemLegacy: '318c659e78e499c4803b45733ee0c44ddaef0ae4',
+    checkboxGroup: '4ad3f8bbc0ee7beb5929454b124411814a33047b',
+  });
+});
+
+test('flat POC Checkbox Group names are disambiguated by stable component-set keys', () => {
+  const source = readFileSync(resolve(pluginRoot, 'src/code.js'), 'utf8');
+  assert.match(source, /componentSetKey\(currentInstance\(instance\)\) === A1_POC_CHECKBOX_GROUP_COMPONENT_SET_KEY/);
+  assert.match(source, /componentSetKey\(instance\) === A1_POC_CHECKBOX_ITEM_COMPONENT_SET_KEY/);
+  assert.equal(source.includes("componentSetName(currentInstance(instance)) === 'POC / Checkbox group'"), false);
+  assert.equal(source.includes("? 'POC / Checkbox item' : optionSetName"), false);
 });
 
 test('plugin manifest exposes the A1:Figma relaunch action', () => {

@@ -27,6 +27,7 @@ These files live alongside `Guidelines.md` in the `/guidelines/` directory and s
 |---|---|
 | `components.md` | Component imports, props/API surfaces, variants, composition patterns, and usage examples |
 | `icon-discovery.md` | Icon naming convention, import path, available sizes, and how to search for icons |
+| `custom-block.md` | Isolated custom HTML, CSS and JavaScript for explicit gaps in the A1 model |
 | `tokens.md` | Design tokens, color/typography/shadow/border tokens, theming, and CSS custom properties |
 | `styles.md` | Spacing scales, layout primitives, responsive patterns, and CSS methodology |
 | `setup.md` | Project setup instructions, provider configuration, required CSS imports, and peer dependency requirements |
@@ -83,7 +84,7 @@ The full catalog — each component's key props, variants, and usage rules — i
 in `components.md`. **Check it before creating any UI element.** Every named
 export, by category:
 
-- **Layout:** `Section` `SectionSeparator` `Card` `Stack` `Cluster` `Grid` `GridItem` `gridItemSpanClassNames` `Bleed` `Inset` `Spacer` `Inverse` `PageLayout` `ButtonContainer` `StickyActions`
+- **Layout:** `CustomBlock` `Section` `SectionSeparator` `Card` `Stack` `Cluster` `Grid` `GridItem` `gridItemSpanClassNames` `Bleed` `Inset` `Spacer` `Inverse` `PageLayout` `ButtonContainer` `StickyActions`
 - **Media:** `Avatar` `Figure`
 - **Typography:** `Heading` `HeadingMark` `Paragraph` `Blockquote` `List` `ListItem` `Code` `Divider`
 - **Actions & controls:** `Button` `SplitButton` `IconButton` `ActionTiles` `ActionTile` `Chip` `ChipGroup` `Switch` `SegmentedControl` `Slider` `Toolbar` `ToolbarToggle` `ToolbarButton` `ToolbarGroup` `ToolbarMenu` `ToolbarDivider` `TOOLBAR_NONE_ICON` `Accordion` `Tabs` `TabList` `Tab` `TabPanel` `Link`

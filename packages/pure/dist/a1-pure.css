@@ -504,8 +504,14 @@ abbr[title] { text-decoration: underline dotted; cursor: help; }
   padding-block: var(--component-heading-mark-highlight-padding-block);
   padding-inline: var(--component-heading-mark-highlight-padding-inline);
   border-radius: 2px;
-  background: var(--component-heading-mark-highlight-background-color);
   color: var(--component-heading-mark-highlight-foreground-color);
+  background: linear-gradient(
+    to bottom,
+    transparent var(--component-heading-mark-highlight-background-inset-block),
+    var(--component-heading-mark-highlight-background-color) var(--component-heading-mark-highlight-background-inset-block),
+    var(--component-heading-mark-highlight-background-color) calc(100% - var(--component-heading-mark-highlight-background-inset-block)),
+    transparent calc(100% - var(--component-heading-mark-highlight-background-inset-block))
+  );
 }
 
 /* ─── Link ───────────────────────────────────────────────────────────── */

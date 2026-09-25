@@ -3,6 +3,7 @@ import * as heading from './heading.jsx'
 import * as paragraph from './paragraph.jsx'
 import * as blockquote from './blockquote.jsx'
 import * as code from './code.jsx'
+import * as customBlock from './custom-block.jsx'
 import * as divider from './divider.jsx'
 import * as inline from './inline.jsx'
 import * as link from './link.jsx'
@@ -88,6 +89,7 @@ const REGISTRY = {
   paragraph,
   blockquote,
   code,
+  'custom-block': customBlock,
   divider,
   inline,
   link,

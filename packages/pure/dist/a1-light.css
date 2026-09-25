@@ -539,6 +539,10 @@
   --component-circular-progress-track-color: #e1e8f3;
   --component-circular-progress-xl-size: 12rem;
   --component-circular-progress-xs-size: 3rem;
+  --component-custom-block-border-width: 1px;
+  --component-custom-block-height-lg: 36rem;
+  --component-custom-block-height-md: 24rem;
+  --component-custom-block-height-sm: 12rem;
   --component-data-table-border-radius: 0.5rem;
   --component-data-table-border-width: 1px;
   --component-data-table-density-comfortable-cell-padding-block: 1.25rem;
@@ -640,6 +644,7 @@
   --component-heading-font-weight-display: 900;
   --component-heading-font-weight-heading: 700;
   --component-heading-mark-highlight-background-color: #fff066;
+  --component-heading-mark-highlight-background-inset-block: 0.08em;
   --component-heading-mark-highlight-font-weight: 900;
   --component-heading-mark-highlight-foreground-color: #060b14;
   --component-heading-mark-highlight-padding-block: 0.02em;

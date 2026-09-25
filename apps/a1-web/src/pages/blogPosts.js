@@ -1,5 +1,41 @@
 export const BLOG_POSTS = [
   {
+    id: 'release-033-custom-blocks-and-figma',
+    slug: 'a1-033-custom-blocks-and-figma-standards',
+    title: 'A1 0.33.0 adds custom blocks and Figma standards',
+    kicker: 'Release newsletter',
+    date: 'Sep 25, 2026',
+    version: '0.33.0',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with page structure and component configuration controls.',
+    description: 'A sandbox for specialized interfaces, working showcase examples and clearer contracts for building components in Figma.',
+    keywords: ['release', '0.33.0', 'custom block', 'figma', 'components', 'sandbox', 'editor'],
+    subtitle: 'Custom blocks extend what a page can express while component contracts keep the surrounding system consistent.',
+    sections: [
+      {
+        title: 'A bounded place for custom interfaces',
+        body: [
+          'CustomBlock accepts markup, CSS and JavaScript inside a sandboxed document. Its styles stay isolated from the surrounding page, while scoped theme tokens and tokenized heights connect the result to A1.',
+          'The component is available in the configurator and editor, with source controls and code/JSON workflows. Agent guidance reserves it for explicit gaps in the existing component model.',
+        ],
+      },
+      {
+        title: 'Examples that show the boundary',
+        body: [
+          'The A1 Showcase now includes a seating map with keyboard selection, unavailable seats and a live summary. A second example uses a custom visual banner alongside standard A1 headings, cards and actions.',
+          'These pages demonstrate two different uses of custom source while leaving ordinary page structure to the component library.',
+        ],
+      },
+      {
+        title: 'Consistent construction in Figma',
+        body: [
+          'The new Figma Standards article covers component organization, presentation, nested elements, properties, interaction states and handoff. The Button and Checkbox proof-of-concept assets use documented state and property contracts.',
+          'Bounded Checkbox slots declare preferred child instances and defaults. The bridge tracks stable component keys so duplicate asset names do not determine which contract applies.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'release-032-editor-and-components',
     slug: 'a1-032-editor-components-and-help',
     title: 'A1 0.32.0 makes structured creation easier',

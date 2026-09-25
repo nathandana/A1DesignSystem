@@ -3,7 +3,7 @@
   "library": {
     "name": "A1 Design System",
     "fileKey": "zFjqo3SwHbkXwtCOoQCVMA",
-    "updatedAt": "2026-07-18T00:00:00.000Z"
+    "updatedAt": "2026-09-15T00:00:00.000Z"
   },
   "imageLibrary": {
     "publicBaseUrl": "https://pszmkbfvyjkifbyututo.supabase.co/storage/v1/object/public/images/shared"
@@ -126,7 +126,11 @@
     "Choice Group": "90aed2b3167595ef51410e77d379d357af4b71d0",
     "Choice Option": "14ef0c68c313915551f530b138b8b7ea52de72c2",
     "Toolbar Tool": "459e1f506fe30cf07c7347ae090ea5ee283ba5f4",
-    "Toolbar": "64fff55f29fbfa7a7707acfeab505d1df06bebce"
+    "Toolbar": "64fff55f29fbfa7a7707acfeab505d1df06bebce",
+    "POC / Button": "93c7289bb785c8389d8e987b321e4963850c1d82",
+    "Checkbox Item": "318c659e78e499c4803b45733ee0c44ddaef0ae4",
+    "POC / Checkbox item": "318c659e78e499c4803b45733ee0c44ddaef0ae4",
+    "POC / Checkbox group": "4ad3f8bbc0ee7beb5929454b124411814a33047b"
   },
   "components": {
     "Tabs": "5d546b02b22c470e9dfbe56681b6702f69a5f902",

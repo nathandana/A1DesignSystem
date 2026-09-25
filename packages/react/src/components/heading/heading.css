@@ -123,7 +123,13 @@
   padding: var(--component-heading-mark-highlight-padding-block) var(--component-heading-mark-highlight-padding-inline);
   color: var(--component-heading-mark-highlight-foreground-color);
   font-weight: var(--component-heading-mark-highlight-font-weight);
-  background: var(--component-heading-mark-highlight-background-color);
+  background: linear-gradient(
+    to bottom,
+    transparent var(--component-heading-mark-highlight-background-inset-block),
+    var(--component-heading-mark-highlight-background-color) var(--component-heading-mark-highlight-background-inset-block),
+    var(--component-heading-mark-highlight-background-color) calc(100% - var(--component-heading-mark-highlight-background-inset-block)),
+    transparent calc(100% - var(--component-heading-mark-highlight-background-inset-block))
+  );
   box-shadow: var(--component-heading-mark-highlight-shadow);
 }
 

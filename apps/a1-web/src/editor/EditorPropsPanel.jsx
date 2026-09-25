@@ -43,6 +43,7 @@ import { Controls as ButtonContainerControls } from '../pages/components/detail/
 import { Controls as HeadingControls } from '../pages/components/detail/heading.jsx'
 import { Controls as ParagraphControls } from '../pages/components/detail/paragraph.jsx'
 import { Controls as BlockquoteControls } from '../pages/components/detail/blockquote.jsx'
+import { Controls as CustomBlockControls, fromJson as customBlockFromJson } from '../pages/components/detail/custom-block.jsx'
 import { Controls as CodeControls } from '../pages/components/detail/code.jsx'
 import { Controls as DividerControls } from '../pages/components/detail/divider.jsx'
 import { Controls as IconControls } from '../pages/components/detail/icon.jsx'
@@ -354,6 +355,7 @@ export const propsToConfig = {
     children: content?.fallback ?? '',
   }),
 
+  CustomBlock: (props) => customBlockFromJson({ props }),
   Code: (props, content) => ({
     variant: props?.variant ?? 'block',
     wrapping: props?.wrapping ?? true,
@@ -980,6 +982,7 @@ export const propsToConfig = {
 // ── Config bridges: Controls config → node update ─────────────────────────────
 
 export const configToNodeUpdate = {
+  CustomBlock: (config) => ({ props: customBlockFromJson({ props: config }) }),
   // Layout
   Section: (config) => ({
     props: {
@@ -2138,6 +2141,7 @@ const CONTROLS_BY_TYPE = {
   Paragraph: ParagraphControls,
   Blockquote: BlockquoteControls,
   Code: CodeControls,
+  CustomBlock: CustomBlockControls,
   Divider: DividerControls,
   Icon: IconControls,
   Avatar: AvatarControls,

@@ -1,9 +1,11 @@
+import { focusAttributes } from "../utils/focus.js";
 import { Card, Heading, MessageBadge, Paragraph } from "../../../packages/react/src/index.js";
 import { getRoutePath } from "../utils/routing.js";
 
 export function CaseStudyCard({ study, navigate }) {
   return (
     <Card
+      {...focusAttributes(study)}
       as="a"
       className="pf-study-card"
       href={getRoutePath(study.id)}

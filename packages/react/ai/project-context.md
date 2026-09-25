@@ -3,6 +3,7 @@
 This file is the entry point for all agents and AI assistants working in this repository. Read it first, then follow the linked context files for implementation details.
 
 **Related files in this directory:**
+- `packages/react/ai/release-preparation-2026-09-25.md` — prepared package versions, release scope and validation results.
 - `packages/react/ai/project-foundations.md` — repository structure, token flow, themes, labels, and shared system concepts.
 - `packages/react/ai/project-workflows.md` — CSS rules, component architecture, package-specific rules, and invariants.
 - `packages/react/ai/components.md` — live registry of every component and which packages it exists in. Read it before asking "does X exist?" or "where is Y implemented?". Update it when components change.
@@ -15,7 +16,8 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/a1-web-one-shot-instruction.md` — copy-paste instruction for asking any agent to create an A1-web website as an importable JSON project bundle, including the JSON contract, design rules, accessibility requirements, and validation checklist.
 - `packages/react/ai/content-standards.md` — AI-facing policy for product copy and documentation, including the source hierarchy, AP Style default, A1 overrides, and link to the canonical public standard.
 - `packages/react/ai/access-control.md` — a1-web roles, feature/page recommendations, Supabase enforcement boundaries, and follow-up sequencing.
-- `packages/react/ai/figma-workflow.md` — rules for creating Figma components: color/text variable binding, auto-layout constraints, component property ↔ React prop mapping, and a per-component gap table documenting what cannot be represented in Figma.
+- `packages/react/ai/figma-workflow.md` — rules for creating Figma components: flat public naming, color/text variable binding, auto-layout constraints, size-aware Required markers, nested-property ownership, component property ↔ React prop mapping, and a per-component gap table.
+- `packages/react/ai/figma-component-library-future-changes.md` — active checklist and A1-2639 completion record for top-level placement, flat naming, presentation grids and labels, icon-library use, bounded slots, nested properties, size-aware Required markers, interactive states, Boolean focus rings, prototype behavior, and contract synchronization.
 - `system/icons/icon-usage.md` — system-level icon usage guidance for agents, with theme override rules and scenario mappings.
 - `TODO.md` (repo root) — the living backlog / idea space. Skim it before backlog work; triage new notes, keep items prioritized, and **remove items when they ship**. Maintenance conventions are in the file's header.
 - `packages/mcp-server/README.md` — remote MCP server exposing the component registry, tokens, rules, and page-definition contract to AI agents as JSON-RPC tools/resources (`mcp.a1design.app`). Its static index is built from this same `ai/` context plus each component's `.d.ts`; re-run `npm run build:mcp-index` after any change here that should be reflected there.

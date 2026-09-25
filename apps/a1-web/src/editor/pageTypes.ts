@@ -38,6 +38,7 @@ export type ComponentType =
   | "Paragraph"
   | "Blockquote"
   | "Code"
+  | "CustomBlock"
   | "Divider"
   | "Inline"
   | "List"
