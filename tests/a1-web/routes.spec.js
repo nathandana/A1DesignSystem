@@ -17,6 +17,8 @@ const BREAKPOINTS = [
 ]
 
 function seedStableState(theme) {
+  // Init scripts also run in child frames; custom blocks intentionally deny storage.
+  if (window.top !== window) return
   const stableTheme = theme || localStorage.getItem('a1-web-theme') || 'a1Light'
   localStorage.clear()
   localStorage.setItem('a1-web-theme', stableTheme)

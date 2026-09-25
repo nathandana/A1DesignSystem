@@ -49,6 +49,13 @@ If a design or brand asset shows uppercase text, treat it as a visual style to b
 
 **Never hardcode visual values.** Every color, spacing unit, font size, border radius, shadow, and duration must reference a CSS custom property that maps to a Style Dictionary token. Raw fallback values in CSS (e.g. `var(--token, 8px)`) are acceptable only for tokens that are guaranteed to exist — always verify in `packages/pure/dist/a1-light.css` before adding a fallback.
 
+### Isolated custom content
+
+`CustomBlock` is the A1-2541 exception for authored HTML, CSS and JavaScript
+when the registered model is insufficient. Its source runs only inside a
+sandboxed document; the host component and configurator still follow system
+token and component rules. See [the page-definition contract](page-definition-standard.md#custom-block--a1-2541).
+
 ### Class naming
 
 All CSS classes use the `a1-` prefix. The HTML/CSS package uses two patterns:

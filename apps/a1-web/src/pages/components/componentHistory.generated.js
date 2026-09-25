@@ -83,6 +83,9 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-16","type":"code","summary":"Figma Choice Group"},
     {"date":"2026-06-14","type":"code","summary":"ChoiceGroup"},
   ],
+  "custom-block": [
+    {"date":"2026-09-24","type":"code","summary":"Custom block showcase"},
+  ],
   "data-table": [
     {"date":"2026-07-15","type":"code","summary":"Figma Data Table (default density)"},
     {"date":"2026-07-07","type":"code","summary":"Data Table radius token + Lumen treatment"},

@@ -13,11 +13,13 @@ import sectionRules from '../../../../../system/rules/section.yaml?raw'
 import tooltipRules from '../../../../../system/rules/tooltip.yaml?raw'
 import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
+import customBlockRules from '../../../../../system/rules/custom-block.yaml?raw'
 import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
+  'custom-block': '2026-09-24',
   avatar: '2026-09-10',
   grid: '2026-09-11',
   'grid-item': '2026-09-11',
@@ -90,6 +92,9 @@ export const COMPONENT_LAST_UPDATED = {
 // is the backlog reference. Components without an entry fall back to their
 // last-documented-update date plus the full release notes (see HistoryPanel).
 export const COMPONENT_HISTORY = {
+  'custom-block': [
+    { date: '2026-09-24', type: 'code', ticket: 'A1-2541', summary: 'Added isolated custom markup, CSS and JavaScript with shared component/editor controls, tokenized heights, scoped theme tokens and JSON import/export.' },
+  ],
   badge: [
     { date: '2026-09-15', type: 'code', ticket: 'A1-2639', summary: 'Repaired the Figma Badge Label property across all 30 variants so nested badge instances render configured copy, including the comfortable form-field “Required” marker.' },
   ],
@@ -194,6 +199,7 @@ export const componentCategories = [
       { id: 'page-layout', icon: 'space_dashboard', title: 'Page Layout', body: 'Header, sidebar, aside, main, and footer app shell layout.' },
       { id: 'button-container', icon: 'view_week', title: 'Button Container', body: 'Responsive action grouping and alignment.' },
       { id: 'canvas', icon: 'polyline', title: 'Canvas', body: 'Infinite pan/zoom canvas for visualizing node graphs with labeled circles, shapes, and directional connectors.' },
+      { id: 'custom-block', icon: 'code', title: 'Custom block', titleKey: 'customBlock.name', body: 'Isolated markup, CSS and JavaScript for needs beyond existing A1 components.', bodyKey: 'customBlock.description' },
     ],
   },
   {
@@ -361,6 +367,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   paragraph: ['body copy', 'copy', 'text', 'prose', 'description'],
   blockquote: ['quote', 'citation', 'pull quote', 'testimonial'],
   list: ['bullets', 'bullet list', 'numbered list', 'ordered list', 'unordered list'],
+  'custom-block': ['custom', 'html', 'css', 'javascript', 'sandbox'],
   code: ['snippet', 'pre', 'kbd', 'keyboard', 'developer'],
   divider: ['rule', 'separator', 'line', 'horizontal rule'],
   inline: ['mark', 'highlight', 'keyboard', 'kbd', 'semantic text'],
@@ -450,6 +457,7 @@ export const PACKAGE_COVERAGE = {
   paragraph:          ['React', 'Native', 'Pure'],
   blockquote:         ['React', 'Native', 'Pure', 'Figma'],
   list:               ['React', 'Native', 'Pure', 'Figma'],
+  'custom-block': ['React'],
   code:               ['React', 'Figma'],
   divider:            ['React', 'Pure', 'Figma'],
   inline:             ['React', 'Pure', 'Figma'],
@@ -731,6 +739,7 @@ export const COMPONENT_RELATED = {
 }
 
 export const ruleSourceFiles = [
+  { file: 'system/rules/custom-block.yaml', raw: customBlockRules },
   { file: 'system/rules/button.yaml', raw: buttonRules },
   { file: 'system/rules/action-tile.yaml', raw: actionTileRules },
   { file: 'system/rules/chip.yaml', raw: chipRules },

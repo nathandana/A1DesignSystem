@@ -1,0 +1,24 @@
+{
+  "component": {
+    "customBlock": {
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "{base.spacing.192}"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "384px"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "576px"
+        }
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.1}"
+      }
+    }
+  }
+}

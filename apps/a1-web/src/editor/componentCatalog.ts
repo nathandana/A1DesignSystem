@@ -137,6 +137,11 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
     icon: 'dashboard',
     entries: [
       {
+        type: 'CustomBlock', label: 'Custom block', icon: 'code',
+        description: 'Isolated markup, CSS and JavaScript for needs beyond existing A1 components.',
+        defaultNode: { type: 'CustomBlock', props: { markup: '', css: '', js: '', height: 'md' } },
+      },
+      {
         type: 'Section',
         label: 'Section',
         icon: 'crop_free',

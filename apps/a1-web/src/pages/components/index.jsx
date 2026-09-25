@@ -1,3 +1,4 @@
+import { useT } from '../../labels/useT.js'
 import { componentCategories } from './data.js'
 import {
   allComponents,
@@ -27,6 +28,7 @@ export {
 }
 
 export function Components({ activePage = 'components', onNavigate, projectId = null, detailTab = 'configure', setDetailTab }) {
+  const t = useT()
   const { category, component } = getComponentEntry(activePage)
   const currentComponent = component
     ? allComponents.find((item) => item.id === component.id) ?? component
@@ -36,7 +38,11 @@ export function Components({ activePage = 'components', onNavigate, projectId = 
     <>
       {currentComponent ? (
         <ComponentDetailPage
-          component={currentComponent}
+          component={{
+            ...currentComponent,
+            title: currentComponent.titleKey ? t(currentComponent.titleKey, currentComponent.title) : currentComponent.title,
+            body: currentComponent.bodyKey ? t(currentComponent.bodyKey, currentComponent.body) : currentComponent.body,
+          }}
           category={category}
           onNavigate={onNavigate}
           projectId={projectId}

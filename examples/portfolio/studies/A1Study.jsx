@@ -25,7 +25,7 @@ export function A1Study() {
           <Link href={getRoutePath("home")}>← Home</Link>
         </Cluster>
         <Heading as="h1" type="display" size={{ xs: "lg", md: "jumbo" }}>
-          I built A1 to give people and AI <HeadingMark>a shared design language</HeadingMark>.
+          I built A1 to give people and AI a <HeadingMark>shared design language</HeadingMark>.
         </Heading>
         <Paragraph size="lg">
           A personal exploration of how tokens, components, documentation and explicit rules can support more

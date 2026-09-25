@@ -28,7 +28,7 @@ The a1-web Components menu is defined from this registry. Keep the order, catego
 | Menu level | Route ID                       | Label                 | Selected icon  | Children                                                                                                                                                                                                     |
 | ---------- | ------------------------------ | --------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Overview   | `components`                   | Components            | `widgets`      | Component categories                                                                                                                                                                                         |
-| Category   | `components-layout`            | Layout & Display      | `dashboard`    | Section, Section Separator, Card, Stack, Grid, Grid Item, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas                                                                                        |
+| Category   | `components-layout`            | Layout & Display      | `dashboard`    | Section, Section Separator, Card, Stack, Grid, Grid Item, Bleed, Inset, Spacer, Page Layout, Button Container, Canvas, Custom block                                                                                        |
 | Category   | `components-typography`        | Typography            | `title`        | Heading, Paragraph, Blockquote, List, Code, Divider, Inline                                                                                                                                                  |
 | Category   | `components-actions`           | Actions & Controls    | `touch_app`    | Button, Split Button, Action Tiles, Chip, Icon Button, Switch, Segmented Control, Slider, Toolbar, Sticky Actions, Accordion, Tabs, Link                                                                     |
 | Category   | `components-navigation`        | Navigation            | `near_me`      | Breadcrumb, Side Nav, Top Header, Bottom Drawer, Page Nav, Tree Menu                                                                                                                                         |
@@ -342,6 +342,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 | Component         | React | Native | Pure | Web Components | Figma |
 | ----------------- | :---: | :----: | :--: | :------------: | :---: |
+| CustomBlock       |   ✓   |   —    |  —   |       —        |   —   |
 | Section           |   ✓   |   ✓    |  ✓   |       —        |   ✓   |
 | Section Separator |   ✓   |   —    |  —   |       —        |   —   |
 | Card              |   ✓   |   ✓    |  —   |       —        |   ✓   |
@@ -571,3 +572,5 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 The dated log of component/token/theme/a1-web changes moved to
 [`components-maintenance.md`](components-maintenance.md) — add new entries there (newest at the top).
 Keep this registry's tables and notes current as before.
+
+> **CustomBlock (React only):** `markup`, `css` and `js` strings render in an isolated sandboxed document. `title` names the iframe; `height` accepts `sm`, `md` or `lg`. Defaults are empty source and medium height. The component configurator and page editor share controls and preserve source through JSON import/export. Use only for an explicit model gap. See [the Custom block contract](page-definition-standard.md#custom-block--a1-2541) for isolation, lifecycle and author accessibility responsibilities.

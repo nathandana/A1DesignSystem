@@ -186,6 +186,12 @@ export const ExpressiveMarks = {
       </Heading>
 
       <Heading as="h2" type="display" size="xl">
+        People and AI share
+        <br />
+        <HeadingMark>design language</HeadingMark>.
+      </Heading>
+
+      <Heading as="h2" type="display" size="xl">
         Make the moment <HeadingMark variant="underline">impossible to miss</HeadingMark>.
       </Heading>
 

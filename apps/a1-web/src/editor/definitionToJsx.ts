@@ -25,9 +25,12 @@ function propToken([key, value]: [string, unknown]): string | null {
   return `${key}={${JSON.stringify(value)}}`;
 }
 
-function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition): string {
+function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition, literalStrings = false): string {
   const tokens = Object.entries(props ?? {})
-    .map(propToken)
+    // Custom source must preserve newlines, entities and quotes as literal strings.
+    .map(([key, value]) => literalStrings && typeof value === 'string'
+      ? `${key}={${JSON.stringify(value)}}`
+      : propToken([key, value]))
     .filter((token): token is string => token !== null);
   if (a11y?.label) tokens.push(`aria-label="${escapeAttr(a11y.label)}"`);
   if (a11y?.role) tokens.push(`role="${escapeAttr(a11y.role)}"`);
@@ -49,7 +52,7 @@ function propsWithUtilityClass(node: ComponentNode): ComponentProps | undefined 
 }
 
 function serializeNode(node: ComponentNode, indent: string): string {
-  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y)}`;
+  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y, node.type === 'CustomBlock')}`;
   const text = node.content?.fallback;
   const children = node.children ?? [];
 

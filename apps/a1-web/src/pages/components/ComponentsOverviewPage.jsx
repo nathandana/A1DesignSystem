@@ -1,3 +1,4 @@
+import { useT } from '../../labels/useT.js'
 import {
   Card,
   DataTable,
@@ -12,6 +13,7 @@ import { ruleSourceFiles } from './data.js'
 import { allComponents, getComponentPath, navigateCard, rankComponentsForSearch, scoreComponentSearch } from './utils.js'
 
 function OverviewTable({ onNavigate }) {
+  const t = useT()
   const [searchQuery, setSearchQuery] = useState('')
   const [sort, setSort] = useState({ key: 'category', direction: 'asc' })
   const hasSearch = searchQuery.trim().length > 0
@@ -32,7 +34,7 @@ function OverviewTable({ onNavigate }) {
     id: component.id,
     component: {
       href: getComponentPath(`component-${component.id}`),
-      label: component.title,
+      label: component.titleKey ? t(component.titleKey, component.title) : component.title,
       icon: component.icon ?? 'arrow_forward',
     },
     category: component.categoryTitle,

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Custom block showcase** — added an interactive seating map to the bundled A1 Showcase, with a responsive spatial layout, keyboard selection, unavailable seats and a live summary. Existing saved projects can import the example as a new page.
+
+- **Custom banner showcase** — added a second, simpler A1 Showcase homepage inspired by a luminous product launch concept. Only its static visual banner uses Custom block; the supporting feature cards, headings and calls to action are standard A1 components.
+
+- **Custom block** (A1-2541) — Added Custom block to Components and the editor Add panel with shared source controls, localized labels/help, Properties and code/JSON import/export. Custom blocks stay selectable in the editor and interactive in preview. Updated agent guidance to reserve custom source for explicit model gaps.
+
 - **Figma standards foundation page** — added Foundations → Figma → Standards at `/foundations/figma-standards`. The page is a static A1 content article covering resilient component organization, presentation, nested elements, properties, interactions, validation and handoff. It uses clean A1 markup without a Markdown parser, generated checklist state or content data structures.
 
 - **A1-2639 Figma form contracts and flat asset names** — aligned Required rendering across Text Field, Search Field, Textarea, Select, Autocomplete, Checkbox Group, Radio Group, Choice Group and the Checkbox Group POC: compact/default use the blue info asterisk and comfortable uses the inline subtle info Badge. Repaired Badge `Label` wiring across all 30 variants so nested badges render configured text. Renamed the POC assets to flat `Button`, `Checkbox Item` and `Checkbox Group` names while preserving their published keys, and updated the A1:Figma bridge to distinguish duplicate names by stable component-set key. Added nested-property ownership guidance; the page-definition JSON schema is unchanged.

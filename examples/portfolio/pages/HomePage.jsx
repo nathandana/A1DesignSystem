@@ -29,7 +29,7 @@ export function HomePage({ navigate }) {
               <Button as="a" href={getRoutePath("resume")} variant="secondary" onClick={(event) => navigate("resume", event)}>View résumé</Button>
             </ButtonContainer>
           </Stack>
-          <Figure src={asset("/img/nathan-dana-tranxsparent-portrait.png")} alt="Illustrated portrait of Nathan Dana" />
+          <Figure src={asset("/img/nathan-dana-transparent-portrait.png")} alt="Illustrated portrait of Nathan Dana" />
         </Grid>
         <Divider size="lg" />
         <Grid columns={{ xs: 1, lg: 3 }} gap="lg">

@@ -37,6 +37,10 @@
             "$type": "number",
             "$value": "{base.font.weight.extraBold}"
           },
+          "backgroundInsetBlock": {
+            "$type": "dimension",
+            "$value": "0.08em"
+          },
           "paddingBlock": {
             "$type": "dimension",
             "$value": "0.02em"

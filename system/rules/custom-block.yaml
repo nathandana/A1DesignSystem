@@ -1,0 +1,17 @@
+component: CustomBlock
+rules:
+  - id: custom-block-last-resort
+    requirement: Use CustomBlock only when the existing A1 model cannot express the need.
+    do: Explain the missing capability and keep the custom region as small as possible.
+    dont: Recreate existing layouts, typography, buttons, forms or navigation in custom HTML.
+    applies_to: [system-design, content]
+  - id: custom-block-isolation
+    requirement: Keep markup, styles and scripts inside the sandboxed document.
+    do: Use markup, css and js strings and A1 token variables.
+    dont: Enable same-origin access or inject custom source into the host page.
+    applies_to: [architecture]
+  - id: custom-block-accessibility
+    requirement: Authors own accessibility within the custom document.
+    do: Provide a meaningful title, semantic HTML, keyboard support, focus indicators, contrast and reduced-motion handling.
+    dont: Assume sandbox isolation makes arbitrary markup accessible.
+    applies_to: [accessibility, semantics]
