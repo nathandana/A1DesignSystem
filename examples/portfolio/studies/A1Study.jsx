@@ -6,6 +6,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  HeadingMark,
   Link,
   List,
   ListItem,
@@ -23,10 +24,10 @@ export function A1Study() {
           <Link href={getRoutePath("home")}>← Home</Link>
         </Cluster>
         <Heading as="h1" type="display" size={{ xs: "lg", md: "jumbo" }}>
-          Training the system
+          A1 Design System started as a way to understand <HeadingMark>what AI actually needs</HeadingMark> from a design system.
         </Heading>
-        <Paragraph size="lg">
-          <em>A1 started as a way to understand what AI actually needs from a design system. It grew into a working system for testing components, rules, Figma workflows, accessibility, localization and agent behavior.</em>
+        <Paragraph size="xl">
+          <em>It grew into a working system for testing components, rules, Figma workflows, accessibility, localization and agent behavior.</em>
         </Paragraph>
       </Section>
 
@@ -59,7 +60,7 @@ export function A1Study() {
           src={`${getRouteBase()}/img/a1-button.png`}
           alt="A1 Button configuration page showing the Save changes preview, React code and controls for label, variant, size, icon and state."
           caption="The Button configuration page connects a live preview and React code with the component’s supported properties."
-          size="lg"
+          size="xxl"
           align="center"
           radius="md"
         />
@@ -121,9 +122,8 @@ export function A1Study() {
           src={`${getRouteBase()}/img/a1-backlog.png`}
           alt="A1 backlog filtered for custom work, with ticket cards grouped into New, Triaged, Accepted, In progress and Released columns."
           caption="Building A1’s backlog put its own components to work, exposing gaps in properties and layout through everyday use."
-          size="lg"
+          size="xxl"
           align="center"
-          radius="md"
         />
       </Section>
 
@@ -177,9 +177,8 @@ export function A1Study() {
           src={`${getRouteBase()}/img/a1-json-editor.png`}
           alt="A1 page editor showing a landing page with the Get started free Button selected and its properties in the side panel."
           caption="The page editor renders the structured page definition with A1 components. Selecting a Button exposes its label, variant, size, icon, destination and breakpoint visibility."
-          size="lg"
+          size="xxl"
           align="center"
-          radius="md"
         />
       </Section>
 
@@ -266,9 +265,8 @@ export function A1Study() {
           src={`${getRouteBase()}/img/a1-figma-anatomy.png`}
           alt="Figma Button component set with 150 variants and properties for variant, size, icon position, state, label, icon visibility and focus ring."
           caption="The Figma Button component set exposes a controlled API aligned with React, including variants, states, labels and icon properties."
-          size="lg"
+          size="xxl"
           align="center"
-          radius="md"
         />
       </Section>
 
