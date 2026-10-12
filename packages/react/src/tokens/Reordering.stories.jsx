@@ -1,0 +1,3 @@
+import { tokenPage } from './_shared.jsx'
+export default { title: 'Foundations/Tokens/Reordering', parameters: { layout: 'fullscreen', controls: { disable: true } } }
+export const Story = tokenPage('Reordering', 'Lift, squash, tilt, spring, pop, slide and fade geometry for isolated Labs placement treatments, plus side-marker, glow and arrow indicator sizes. Magnetic reordering adds snap distances, attraction, hysteresis and spring stiffness/damping. A1 supplies surfaces, focus colors, duration and easing. Reduced motion skips placement and neighbor movement.', key => key.startsWith('--component-reordering-') || key.startsWith('--component-magnetic-reordering-'))

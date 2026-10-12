@@ -1,0 +1,105 @@
+/* Opt-in studies on A1 progress tabs. The default retains A1's styling.
+   A1 Tabs owns buttons, roving focus and panels. These scoped rules explore
+   step geometry unavailable through its visual variants. Layout outside the
+   tab strip uses A1 Section/Stack. All measurements and colors use A1 tokens. */
+.a1-steps-study__scroll {
+  overflow-x: auto;
+  padding: var(--base-spacing-4);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.a1-steps-study:not([data-treatment='default']) .a1-tab-list {
+  gap: var(--base-spacing-8);
+  align-items: stretch;
+}
+.a1-steps-study:not([data-treatment='default']) .a1-tab {
+  min-inline-size: var(--base-spacing-96);
+  font-size: var(--semantic-font-size-body-sm);
+}
+.a1-steps-study:not([data-treatment='default']) .a1-tab::before,
+.a1-steps-study:not([data-treatment='default']) .a1-tab::after { content: none; }
+.a1-steps-study__state, .a1-steps-study__detail {
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-regular);
+}
+.a1-steps-study__state[data-error] { color: var(--semantic-color-status-error-background); }
+.a1-steps-study[data-treatment='dots'] .a1-tab { --_step-size: var(--base-spacing-12); }
+.a1-steps-study[data-treatment='dots'] .a1-tab__step::before,
+.a1-steps-study[data-treatment='dots'] .a1-tab__step .a1-icon { display: none; }
+.a1-steps-study[data-treatment='dots'] .a1-tab[aria-selected='true'] .a1-tab__step { background: var(--semantic-color-action-background); }
+.a1-steps-study[data-treatment='bars'] .a1-tab__step {
+  inline-size: 100%;
+  block-size: var(--base-spacing-6);
+  border-radius: var(--base-radius-pill);
+  border: none;
+  background: var(--semantic-color-border-default);
+}
+.a1-steps-study[data-treatment='bars'] .a1-tab__step::before,
+.a1-steps-study[data-treatment='bars'] .a1-tab__step .a1-icon { display: none; }
+.a1-steps-study[data-treatment='bars'] .a1-tab[aria-selected='true'] .a1-tab__step { background: var(--semantic-color-action-background); }
+.a1-steps-study[data-treatment='bars'] .a1-tab--status-completed .a1-tab__step { background: var(--semantic-color-status-success-background); }
+.a1-steps-study:is([data-treatment='pills'], [data-treatment='tiles'], [data-treatment='chevrons']) .a1-tab {
+  border: var(--component-tab-border-width) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-control);
+  padding: var(--base-spacing-12);
+  background: var(--semantic-color-surface-panel);
+}
+.a1-steps-study:is([data-treatment='pills'], [data-treatment='tiles'], [data-treatment='chevrons']) .a1-tab[aria-selected='true'] {
+  border-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-surface-raised);
+}
+.a1-steps-study[data-treatment='pills'] .a1-tab {
+  border-radius: var(--base-radius-pill);
+  flex-direction: row;
+  gap: var(--base-spacing-8);
+  min-inline-size: max-content;
+  text-align: start;
+}
+.a1-steps-study[data-treatment='tiles'] .a1-tab {
+  min-inline-size: var(--base-spacing-128);
+  align-items: flex-start;
+  text-align: start;
+  padding: var(--base-spacing-16);
+  gap: var(--base-spacing-16);
+}
+.a1-steps-study[data-treatment='chevrons'] .a1-tab { margin-inline-end: var(--base-spacing-12); }
+.a1-steps-study .a1-steps-study__chevron {
+  position: absolute;
+  inset-inline-start: calc(100% + var(--base-spacing-4));
+  inset-block-start: 50%;
+  font-size: var(--component-tab-icon-size);
+  color: var(--semantic-color-text-muted);
+  transform: translateY(-50%);
+}
+.a1-steps-study[data-treatment='vertical'] .a1-tab-list { flex-direction: column; }
+.a1-steps-study[data-treatment='vertical'] .a1-tab {
+  flex-direction: row;
+  align-items: center;
+  text-align: start;
+  gap: var(--base-spacing-16);
+  padding: var(--base-spacing-12);
+  border-inline-start: var(--component-tab-progress-line-height) solid var(--semantic-color-border-default);
+}
+.a1-steps-study[data-treatment='vertical'] .a1-tab[aria-selected='true'] {
+  border-inline-start-color: var(--semantic-color-action-background);
+  background: var(--semantic-color-surface-panel);
+}
+.a1-steps-study[data-treatment='compact'] .a1-tab { min-inline-size: var(--base-spacing-40); }
+.a1-steps-study[data-treatment='compact'] .a1-tab[aria-selected='true'] { flex-grow: 3; }
+/* Keep hidden compact labels available as accessible tab names. */
+.a1-steps-study[data-treatment='compact'] .a1-tab[aria-selected='false'] .a1-tab__label {
+  position: absolute;
+  inline-size: var(--base-spacing-1);
+  block-size: var(--base-spacing-1);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .a1-steps-study .a1-tab, .a1-steps-study .a1-tab__step { transition: none; }
+}
+@media (forced-colors: active) {
+  .a1-steps-study .a1-tab[aria-selected='true'] { outline: var(--component-tab-focus-ring-width) solid Highlight; }
+  .a1-steps-study .a1-tab__step { border: var(--component-tab-border-width) solid ButtonText; }
+  .a1-steps-study__state[data-error] { color: CanvasText; }
+}

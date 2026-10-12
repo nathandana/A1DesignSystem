@@ -175,6 +175,19 @@ export const FileExplorer = {
   ),
 };
 
+export const DispatchSelected = {
+  render: () => (
+    <Section className="a1-theme-dispatch">
+      <TreeMenu
+        items={NAV_TREE}
+        defaultExpandedIds={['foundations']}
+        selectedId="tokens"
+        aria-label="Dispatch navigation"
+      />
+    </Section>
+  ),
+};
+
 export const DocumentNavigation = {
   render: () => (
     <Controlled

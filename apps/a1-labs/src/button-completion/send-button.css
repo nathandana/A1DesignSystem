@@ -1,0 +1,103 @@
+/* Send variant: one large, fixed-size button. Builds on completion-button.css
+   for tones, typography and focus; owns its stage size. At rest the icon,
+   label and description are centred; on press that content slides down and
+   fades while a bottom row shows the working/result label. The stage artwork
+   is Canvas 2D drawn in the button's own foreground/background roles
+   (paper-plane.js). */
+
+.a1-button-completion--send {
+  position: relative;
+  inline-size: min(var(--component-button-completion-stage-width), 100%);
+  block-size: var(--component-button-completion-stage-height);
+  padding: 0;
+  border-radius: var(--component-card-border-radius);
+}
+
+.a1-button-completion--send.a1-button-completion--full-width {
+  inline-size: 100%;
+}
+
+.a1-button-completion__stage {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Resting content: icon, label and description stacked and centred. */
+.a1-button-completion__intro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing-4);
+  padding-inline: var(--a1-button-completion-padding-inline);
+  white-space: normal;
+  text-align: center;
+  transition:
+    opacity var(--semantic-motion-duration-fast) var(--semantic-motion-easing-exit),
+    translate var(--component-button-completion-change-duration) var(--semantic-motion-easing-standard),
+    visibility 0s linear var(--component-button-completion-change-duration);
+}
+
+.a1-button-completion__intro .a1-button-completion__icon {
+  margin-block-end: var(--base-spacing-4);
+}
+
+/* Secondary text: the resting description and every bottom-row message share
+   one size and weight, so only the words change between states. */
+.a1-button-completion__description,
+.a1-button-completion__row .a1-button-completion__label {
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-regular);
+}
+
+/* On press the resting content slides toward the bottom row and fades. The
+   icon goes first, as the plane grows from where it stood. */
+.a1-button-completion--send:not([data-status='idle']) .a1-button-completion__intro {
+  opacity: 0;
+  translate: 0 var(--component-button-completion-intro-travel);
+  visibility: hidden;
+}
+
+.a1-button-completion--send:not([data-status='idle']) .a1-button-completion__intro .a1-button-completion__icon {
+  opacity: 0;
+  transition: opacity var(--semantic-motion-duration-fast) var(--semantic-motion-easing-exit);
+}
+
+/* The working label waits for the resting text to clear before fading in. */
+.a1-button-completion--send[data-status='working'] .a1-button-completion__row .a1-button-completion__label {
+  animation-delay: var(--semantic-motion-duration-fast);
+}
+
+/* No pop/fade replay on the resting content when the button returns to idle. */
+.a1-button-completion--send .a1-button-completion__intro .a1-button-completion__icon,
+.a1-button-completion--send .a1-button-completion__intro .a1-button-completion__label {
+  animation: none;
+}
+
+/* The working/result label (and result icon) in a bottom row. Long text wraps
+   and the row grows upward; the artwork uses the space above it. */
+.a1-button-completion__row {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--component-button-gap);
+  min-block-size: var(--a1-button-completion-height);
+  padding-block: var(--component-button-padding-block);
+  padding-inline: var(--a1-button-completion-padding-inline);
+  white-space: normal;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-button-completion__intro,
+  .a1-button-completion--send:not([data-status='idle']) .a1-button-completion__intro .a1-button-completion__icon {
+    transition: none;
+  }
+}

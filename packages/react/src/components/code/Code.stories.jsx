@@ -90,6 +90,27 @@ export const Wrapping = {
   },
 };
 
+/** Wrapped lines hang at their own indentation (spaces or tabs), and line numbers stay level with each wrapped line. */
+export const WrappingIndented = {
+  name: "Wrapping with indentation and line numbers",
+  args: {
+    variant: "block",
+    wrapping: true,
+    lineNumbers: true,
+    children: [
+      "export function notify(user, items) {",
+      "  // A long comment that wraps: continuation lines stay under the comment, not at the left edge of the block.",
+      "  if (items.length > 0) {",
+      "    sendMessage(user.email, `You have ${items.length} items waiting in your basket, including ${items[0].name} and others.`)",
+      "\t\treturn { sent: true, count: items.length, channel: 'email', reason: 'basket reminder after twenty-four hours' }",
+      "  }",
+      "}",
+    ].join("\n"),
+  },
+  parameters: { docs: { story: { inline: true } } },
+  decorators: [(Story) => <div style={{ maxWidth: 420 }}><Story /></div>],
+};
+
 export const CopyCode = {
   name: "Copy Code",
   args: {

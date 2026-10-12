@@ -1,0 +1,18 @@
+{
+  "component": {
+    "pageSunrise": {
+      "expectedFast": { "$type": "duration", "$value": "2000ms", "$description": "Quick: a typical load; the sun covers most of its climb in about this time." },
+      "expectedDuration": { "$type": "duration", "$value": "4000ms", "$description": "Default typical load; the sun keeps slowing if loading takes longer." },
+      "expectedSlow": { "$type": "duration", "$value": "7000ms", "$description": "Relaxed typical load." },
+      "exitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "The sun reaching full day and the page appearing when loading finishes." },
+      "sunSize": { "$type": "dimension", "$value": "{base.spacing.96}", "$description": "Diameter of the sun." },
+      "nightTop": { "$type": "color", "$value": "{base.color.info.900}", "$description": "Night sky, top." },
+      "nightBottom": { "$type": "color", "$value": "{base.color.accent.800}", "$description": "Night sky, at the horizon." },
+      "dayTop": { "$type": "color", "$value": "{base.color.info.200}", "$description": "Day sky, top." },
+      "dayBottom": { "$type": "color", "$value": "{base.color.warn.100}", "$description": "Day sky, at the horizon." },
+      "sunLow": { "$type": "color", "$value": "{base.color.error.500}", "$description": "The sun near the horizon." },
+      "sunHigh": { "$type": "color", "$value": "{base.color.warn.300}", "$description": "The sun high in the sky." },
+      "silhouette": { "$type": "color", "$value": "{base.color.neutral.900}", "$description": "The page's blocks as silhouettes at night." }
+    }
+  }
+}

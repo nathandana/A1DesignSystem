@@ -1,0 +1,138 @@
+/* Frosted glass experiment — sample page layout and backdrop artwork.
+   Demonstration scaffolding only (not part of the reusable core). Raw values
+   by request; scoped to .a1-frosted-glass-demo. */
+
+/* The viewport's own sheet of glass; everything else rests on it. */
+.a1-frosted-glass-demo__page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.a1-frosted-glass-demo__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.a1-frosted-glass-demo__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.a1-frosted-glass-demo__mark {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 2px 6px rgb(79 70 229 / 0.3);
+}
+
+.a1-frosted-glass-demo__chip {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.a1-frosted-glass-demo__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 8px;
+}
+
+.a1-frosted-glass-demo__form {
+  inline-size: min(100%, 440px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+.a1-frosted-glass-demo__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.a1-frosted-glass-demo__intro,
+.a1-frosted-glass-demo__status {
+  margin: 0;
+  color: var(--a1-frosted-glass-ink-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.a1-frosted-glass-demo__status {
+  min-block-size: 1.5em;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Backdrop: a soft gradient with crisp shapes, three palettes. */
+.a1-frosted-glass-demo .a1-frosted-glass__backdrop {
+  background: linear-gradient(135deg, var(--a1-frosted-glass-demo-sky-1), var(--a1-frosted-glass-demo-sky-2) 55%, var(--a1-frosted-glass-demo-sky-3));
+}
+
+/* Diffuse daylight behind the tiles reaches the top of the whole scene.
+   Broad light bands stay behind the glass, so every etched face transmits
+   the same illumination instead of painting an opaque white header. */
+.a1-frosted-glass-demo .a1-frosted-glass__backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(125deg, rgb(255 255 255 / 0.75), transparent 32%, rgb(255 255 255 / 0.34) 48%, transparent 65%),
+    radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.62), transparent 65%);
+  pointer-events: none;
+}
+
+.a1-frosted-glass-demo[data-backdrop='aurora'] {
+  --a1-frosted-glass-demo-sky-1: #a5f3fc;
+  --a1-frosted-glass-demo-sky-2: #c4b5fd;
+  --a1-frosted-glass-demo-sky-3: #fbcfe8;
+  --a1-frosted-glass-demo-a: #06b6d4;
+  --a1-frosted-glass-demo-b: #8b5cf6;
+  --a1-frosted-glass-demo-c: #ec4899;
+  --a1-frosted-glass-demo-d: #22c55e;
+}
+
+.a1-frosted-glass-demo[data-backdrop='sunset'] {
+  --a1-frosted-glass-demo-sky-1: #fed7aa;
+  --a1-frosted-glass-demo-sky-2: #fda4af;
+  --a1-frosted-glass-demo-sky-3: #c4b5fd;
+  --a1-frosted-glass-demo-a: #f97316;
+  --a1-frosted-glass-demo-b: #e11d48;
+  --a1-frosted-glass-demo-c: #a855f7;
+  --a1-frosted-glass-demo-d: #facc15;
+}
+
+.a1-frosted-glass-demo[data-backdrop='meadow'] {
+  --a1-frosted-glass-demo-sky-1: #bbf7d0;
+  --a1-frosted-glass-demo-sky-2: #a7f3d0;
+  --a1-frosted-glass-demo-sky-3: #bae6fd;
+  --a1-frosted-glass-demo-a: #16a34a;
+  --a1-frosted-glass-demo-b: #0ea5e9;
+  --a1-frosted-glass-demo-c: #eab308;
+  --a1-frosted-glass-demo-d: #14b8a6;
+}
+
+.a1-frosted-glass-demo__shape {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.a1-frosted-glass-demo__shape--1 { inline-size: 46vmax; block-size: 46vmax; inset-block-start: -12vmax; inset-inline-start: -14vmax; background: var(--a1-frosted-glass-demo-a); }
+.a1-frosted-glass-demo__shape--2 { inline-size: 34vmax; block-size: 34vmax; inset-block-start: 30%; inset-inline-end: -12vmax; background: var(--a1-frosted-glass-demo-b); }
+.a1-frosted-glass-demo__shape--3 { inline-size: 26vmax; block-size: 26vmax; inset-block-end: -8vmax; inset-inline-start: 18%; background: var(--a1-frosted-glass-demo-c); }
+.a1-frosted-glass-demo__shape--4 { inline-size: 14vmax; block-size: 14vmax; inset-block-start: 18%; inset-inline-start: 45%; background: var(--a1-frosted-glass-demo-d); }
+.a1-frosted-glass-demo__shape--5 { inline-size: 22vmax; block-size: 9vmax; inset-block-start: 55%; inset-inline-start: 4%; border-radius: 999px; background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.9) 0 10px, transparent 10px 22px); }
+.a1-frosted-glass-demo__shape--6 { inline-size: 18vmax; block-size: 18vmax; inset-block-start: 4%; inset-inline-end: 12%; border-radius: 28%; background: var(--a1-frosted-glass-demo-c); transform: rotate(18deg); }

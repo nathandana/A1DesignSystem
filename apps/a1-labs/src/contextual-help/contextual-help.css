@@ -1,0 +1,80 @@
+/* Contextual help — scoped Labs styles. Surfaces use A1 surface, border,
+   radius and shadow roles; sizes come from component.contextualHelp; all
+   movement uses motion tokens and stops with reduced motion. */
+
+/* A help button inside the field, at its inline end. */
+.a1-help-field--has-button .a1-field__input {
+  padding-inline-end: calc(var(--component-button-small-height) + var(--base-spacing-8));
+}
+.a1-help-field__button {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--base-spacing-6);
+  display: flex;
+  align-items: center;
+}
+
+/* A help button beside the field: the input gives up room at its end and
+   the button sits in that space, centred on the input (not the label or hint). */
+.a1-help-field--button-outside .a1-field__control {
+  margin-inline-end: calc(var(--component-icon-button-size) + var(--base-spacing-8));
+}
+.a1-help-field__button--outside {
+  inset-inline-end: calc(-1 * (var(--component-icon-button-size) + var(--base-spacing-8)));
+}
+
+/* Popover: a card in the top layer, positioned by script beside its trigger. */
+.a1-help-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  inline-size: min(var(--component-contextual-help-popover-width), calc(100vw - 2 * var(--component-contextual-help-popover-gap)));
+  padding: var(--base-spacing-16);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-raised);
+  color: var(--semantic-color-text-default);
+  box-shadow: var(--semantic-shadow-lg);
+}
+.a1-help-popover:focus-visible {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+/* Inline expansion: rows animate from 0 to the content's height. */
+.a1-help-inline {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+}
+.a1-help-inline[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+.a1-help-inline__clip { overflow: hidden; min-block-size: 0; }
+.a1-help-inline__body {
+  margin-block-start: var(--base-spacing-8);
+  padding: var(--base-spacing-12) var(--base-spacing-16);
+  border-inline-start: var(--base-spacing-4) solid var(--semantic-color-status-info-background);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .a1-help-inline {
+    transition:
+      grid-template-rows var(--semantic-motion-duration-slow) var(--semantic-motion-easing-standard),
+      visibility var(--semantic-motion-duration-slow);
+  }
+  .a1-help-popover:popover-open {
+    animation: a1-help-enter var(--semantic-motion-duration-normal) var(--semantic-motion-easing-enter);
+  }
+  .a1-help-popover[data-side='above'] { --a1-help-enter-direction: 1; }
+}
+
+@keyframes a1-help-enter {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--a1-help-enter-direction, -1) * var(--component-contextual-help-enter-offset));
+  }
+}

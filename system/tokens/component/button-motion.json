@@ -1,0 +1,24 @@
+{
+  "component": {
+    "buttonMotion": {
+      "subtleHoverScale": { "$type": "number", "$value": 1.015 },
+      "subtlePressScale": { "$type": "number", "$value": 0.98 },
+      "lift": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "pressDistance": { "$type": "dimension", "$value": "{base.spacing.1}" },
+      "hoverScale": { "$type": "number", "$value": 1.04 },
+      "pressScale": { "$type": "number", "$value": 0.94 },
+      "tilt": { "$value": "-3deg" },
+      "pressTilt": { "$value": "2deg" },
+      "springLift": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "springHoverScale": { "$type": "number", "$value": 1.08 },
+      "springPressScale": { "$type": "number", "$value": 0.9 },
+      "rippleScale": { "$type": "number", "$value": 1.35 },
+      "shadowOffset": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "shadowBlur": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "shadowAlpha": { "$value": "20%" },
+      "glowBlur": { "$type": "dimension", "$value": "{base.spacing.12}" },
+      "glowPressBlur": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "glowAlpha": { "$value": "45%" }
+    }
+  }
+}

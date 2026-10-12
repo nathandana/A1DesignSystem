@@ -1,0 +1,24 @@
+{
+  "component": {
+    "buttonCompletion": {
+      "processingFast": { "$type": "duration", "$value": "1000ms", "$description": "Shortest simulated processing time in the Labs button completion experiment." },
+      "processingDuration": { "$type": "duration", "$value": "2000ms", "$description": "Default simulated processing time." },
+      "processingSlow": { "$type": "duration", "$value": "4000ms", "$description": "Longest simulated processing time." },
+      "failureHold": { "$type": "duration", "$value": "1500ms", "$description": "How long the Not published state holds before the button becomes a Try again action." },
+      "changeDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Icon pop and label fade when the button changes state. The button width never changes." },
+      "shakeDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Length of the error shake." },
+      "shakeDistance": { "$type": "dimension", "$value": "{base.spacing.6}", "$description": "Horizontal travel of the error shake." },
+      "enterDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Send email version: the icon growing into a paper plane resting in the slingshot." },
+      "introTravel": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Send email version: how far the resting icon, label and description slide down as they fade on press." },
+      "aimDuration": { "$type": "duration", "$value": "500ms", "$description": "Send email version: the plane being drawn back in the slingshot before release." },
+      "slingExitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Send email version: the slingshot recoiling out through the left edge after launch." },
+      "expectedDuration": { "$type": "duration", "$value": "2000ms", "$description": "Send email version: a typical send. The plane covers most of its arc in about this time while sending is pending, and keeps slowing if sending takes longer." },
+      "finishDuration": { "$type": "duration", "$value": "1200ms", "$description": "Send email version: the pace for flying the rest of the arc (or dropping on failure) once the result is known, as a whole-arc duration." },
+      "resultBeatDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Send email version: the pause after the plane leaves (or the crash burst fades) before the result mark draws." },
+      "markDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Send email version: the checkmark or cross drawing itself on." },
+      "stageWidth": { "$type": "dimension", "$value": "{base.width.sm}", "$description": "Send email version: maximum width of the button (never wider than its container)." },
+      "stageHeight": { "$type": "dimension", "$value": "{base.width.2xs}", "$description": "Send email version: the fixed height of the button, including the bottom label row." },
+      "strokeWidth": { "$type": "dimension", "$value": "{base.spacing.2}", "$description": "Send email version: slingshot frame, band and paper crease line width." }
+    }
+  }
+}

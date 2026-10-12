@@ -11,11 +11,13 @@ export default {
     max: 100,
     size: "md",
     indeterminate: false,
+    showPauseControl: true,
   },
   argTypes: {
     size:          { control: "inline-radio", options: ["sm", "md", "lg"] },
     labelPosition: { control: "inline-radio", options: ["above", "below", "before", "after"] },
     indeterminate: { control: "boolean" },
+    showPauseControl: { control: "boolean" },
     value:         { control: { type: "range", min: 0, max: 100, step: 1 } },
     max:           { control: "number" },
     label:         { control: "text" },
@@ -263,4 +265,13 @@ export const Examples = {
 
     </div>
   ),
+};
+
+export const AutomaticVerification = {
+  name: "Automatic verification",
+  args: {
+    indeterminate: true,
+    showPauseControl: false,
+    label: "Verifying the organization automatically…",
+  },
 };

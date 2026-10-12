@@ -20,8 +20,8 @@ export interface SideNavProps {
   collapsed?: boolean;
   /** Called with next boolean when collapsed state changes */
   onCollapsedChange?: (collapsed: boolean) => void;
-  /** Where the desktop collapse toggle appears. Default: "header" */
-  collapseButtonPlacement?: "header" | "footer";
+  /** Where the desktop collapse toggle appears, or "none" to hide it. Mobile close remains available. Default: "header" */
+  collapseButtonPlacement?: "header" | "footer" | "none";
   /** Side of the layout the nav occupies. Default: "start" */
   placement?: "start" | "end";
   className?: string;

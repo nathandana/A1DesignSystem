@@ -1,0 +1,11 @@
+{
+  "component": {
+    "accordionMotion": {
+      "shift": { "$type": "dimension", "$value": "{base.spacing.16}", "$description": "Slide, Bounce and Stagger: how far content travels as it opens or closes." },
+      "blur": { "$type": "dimension", "$value": "{base.spacing.8}", "$description": "Blur: how out of focus closed content is." },
+      "unfoldAngle": { "$value": "-75deg", "$description": "Unfold: how far content is folded back while closed." },
+      "bounceScale": { "$type": "number", "$value": 0.94, "$description": "Bounce: content's scale while closed, springing to full size as it opens." },
+      "staggerStep": { "$type": "duration", "$value": "{semantic.motion.duration.quick}", "$description": "Stagger: delay between each piece of content appearing." }
+    }
+  }
+}

@@ -345,6 +345,17 @@
 
 /* Mobile drawer uses the DS SideNav component — no custom drawer CSS needed. */
 
+/* ── Custom end content (endContent prop) ─────────────────────────────────── */
+/* Composed controls (e.g. appearance settings) that belong inside the bar, so
+   they share its surface and bottom border instead of sitting beside it. */
+
+.a1-top-header__end-content {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  margin-inline-start: var(--base-spacing-4);
+}
+
 /* ── Login button in end zone ─────────────────────────────────────────────── */
 
 .a1-top-header__login {

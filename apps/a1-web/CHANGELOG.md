@@ -2,6 +2,42 @@
 
 ## Unreleased
 
+- **Code wrapping and scrolling** — Code blocks across A1 Web keep indentation on wrapped lines, keep line numbers level with wrapped lines, and can be scrolled with the keyboard when lines overflow (shared React fix).
+
+- **Current tabs** — selected tabs and counts no longer change appearance on hover or press; reselecting the current tab does not emit a change. Horizontal tab scrolling respects reduced motion.
+
+- **Category flyout activation** — clicking a header category keeps its submenu open when hover opened it first; keyboard and touch opening remain available.
+
+- **Toolbar selected state** — selected tools in every Toolbar (including the component configurators) now use the SegmentedControl selected treatment, so the active option is clear in dark mode (shared React fix).
+
+- **Labs removed from A1 Web** — the in-app Labs page (`/labs`) is gone: its Explore menu entry, sidebar, search entry, route, access rule and page-only labels. It held a placeholder Pattern assembly bench and the 7 date-of-birth studies, which live on in standalone A1 Labs (`apps/a1-labs`). Old `/labs` links now open the A1 Web home page.
+
+- **DataTable pagination: Both** — the Pagination position control adds Both (matching controls above and below the rows), with updated helper text, code snippets and JSON import/export.
+
+- **Top Header configurator: End content** — a new toggle (with helper text) previews the TopHeader `endContent` prop using an inline color-scheme switcher and adds it to the code snippet. The JSON view notes that endContent is runtime-only.
+
+- **DataTable custom page navigation** — optional `renderPagination(context)` replaces only the page controls while retaining the built-in result count, page-size menu, placement, sorting and filtering. Includes resolved page/range context, Storybook and a compact example in the A1 Web configurator/editor.
+
+- **Global search dialog wording props** — `GlobalSearchDialog` accepts optional `label` and `emptyDescription` so another app (A1 Labs) can reuse the overlay with its own wording. A1 Web keeps its defaults; no behavior change.
+
+- **PageLayout sticky header fix** — pages that scroll as a whole now keep a `stickyHeader` pinned past the first screen (shared React fix).
+
+- **Inline DataTable pagination** — `paginationPosition="inline"` places page controls beside filters when they fit, wrapping below on narrower layouts. Preserves page/filter state and keeps one pager. Documented in Storybook, types and A1 Web configurator/editor.
+
+- **DataTable pagination placement** — `paginationPosition="top" | "bottom"` places the result count and page controls above or below the rows, defaulting to bottom. `paginationSize="sm" | "md"` controls page button size (default small). Includes Storybook, types, A1 Web configurator/snippets and editor support; used by the Labs Table pagination experiment.
+
+- **Date-of-birth studies in Labs** — the existing 7 studies now share their implementation with standalone A1 Labs. Existing A1 Web routes remain available. Removed local field-width overrides in favor of shared A1 field layouts and added visible labels to formatted date parts.
+
+- **StatusBar pause control** — added `showPauseControl` (default `true`) so automatic verification flows can omit the delayed animation pause/play button while preserving reduced-motion behavior. Includes the Storybook example, property documentation and A1 Web configurator/editor support.
+
+- **Responsive preview height fitting** — shared device previews now fit both available width and height, including their bezel, surrounding panel and bottom configuration sheet. Resizing preserves the actual iframe dimensions and content; the Fit option is unchanged.
+
+- **Reusable color visualization** — moved the Foundations color visualization styles beside the component and exposed its controls and tabbed content through `useColorVisualization`, so A1 Labs can show the same visualization. No visual or behaviour change in a1-web.
+
+- **Reusable responsive preview** (A1-2698) — moved device-frame styles beside the preview component so Labs can reuse the same viewport pattern. Scaling now includes the bezel width, and iframe content follows live theme classes and styles.
+
+- **SideNav collapse control** (A1-2698) — exposed the existing None placement in the configurator and property documentation; generated snippets and the shared editor controls support hiding the desktop collapse button.
+
 ## 0.33.0 — 2026-09-25
 
 - **Blog article links** — direct links, refreshes and Back/Forward navigation now preserve the selected article instead of resetting to the newest post.

@@ -1,0 +1,16 @@
+{
+  "component": {
+    "timeline": {
+      "lineWidth": { "$type": "dimension", "$value": "{base.spacing.4}", "$description": "Stroke width of the timeline's connectors and end nodes." },
+      "badgeSize": { "$type": "dimension", "$value": "{base.spacing.64}", "$description": "Diameter of each milestone's circular badge." },
+      "arcGap": { "$type": "dimension", "$value": "{base.spacing.32}", "$description": "Space between a badge and the quarter arc that wraps it (arc radius = badge radius + arcGap)." },
+      "nodeSize": { "$type": "dimension", "$value": "{base.spacing.16}", "$description": "Diameter of the hollow node at the end of each connector stem." },
+      "nodeGap": { "$type": "dimension", "$value": "{base.spacing.8}", "$description": "Space between a connector's end node and its milestone details." },
+      "stemMin": { "$type": "dimension", "$value": "{base.spacing.48}", "$description": "Shortest vertical stem from an arc to its node in the horizontal layout." },
+      "stemMinInline": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Shortest horizontal stem from an arc to its node in the vertical layout." },
+      "columnMin": { "$type": "dimension", "$value": "{base.spacing.192}", "$description": "Narrowest milestone column in the horizontal layout; narrower containers scroll." },
+      "rowGap": { "$type": "dimension", "$value": "{base.spacing.48}", "$description": "Space between milestones in the vertical layout." },
+      "yearGap": { "$type": "dimension", "$value": "{base.spacing.12}", "$description": "Space between a badge and its year label." }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+/* Opt-in visual studies on A1 tabs. A1 owns layout, overflow and keyboard behavior.
+   These surfaces/geometry are the experiment itself, not shell overrides. */
+.a1-tabs-study { min-width: 0; }
+.a1-tabs-study:not([data-treatment="default"]) .a1-tab-list {
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-8);
+}
+.a1-tabs-study:not([data-treatment="default"]) .a1-tab {
+  margin-bottom: 0;
+  border: var(--component-tab-indicator-size) solid transparent;
+  border-radius: var(--base-radius-control);
+}
+.a1-tabs-study:not([data-treatment="default"]) .a1-tab[aria-selected="true"] {
+  border-color: var(--component-tab-selected-foreground);
+}
+.a1-tabs-study:not([data-treatment="default"]) .a1-tab-list-wrapper { border-bottom: 0; }
+.a1-tabs-study:not([data-treatment="default"]) .a1-tab-panel { padding: 0; }
+
+/* Overlap the sheet border by its width so the selected surface joins it.
+   Positioning the strip paints it above the unpositioned panel, without z-index. */
+.a1-tabs-study[data-treatment="folder"] .a1-tab-list-wrapper {
+  position: relative;
+  margin-bottom: calc(0px - var(--component-tab-border-width));
+}
+.a1-tabs-study[data-treatment="folder"] .a1-tab-list {
+  padding-bottom: 0;
+  gap: var(--base-spacing-4);
+}
+.a1-tabs-study[data-treatment="folder"] .a1-tab {
+  border: var(--component-tab-border-width) solid var(--semantic-color-border-default);
+  border-bottom-color: var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-xl) var(--base-radius-xl) 0 0;
+  background: var(--semantic-color-surface-raised);
+  margin-top: var(--base-spacing-8);
+}
+.a1-tabs-study[data-treatment="folder"] .a1-tab[aria-selected="true"] {
+  margin-top: 0;
+  padding-top: calc(var(--component-tab-padding-block) + var(--base-spacing-8));
+  background: var(--semantic-color-surface-card);
+  color: var(--semantic-color-text-default);
+  border-color: var(--semantic-color-border-strong);
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.a1-tabs-study[data-treatment="folder"] .a1-tab-panel {
+  background: var(--semantic-color-surface-card);
+  border: var(--component-tab-border-width) solid var(--semantic-color-border-strong);
+  border-radius: 0 0 var(--base-radius-lg) var(--base-radius-lg);
+}
+.a1-tabs-study[data-treatment="bold"] .a1-tab[aria-selected="true"],
+.a1-tabs-study[data-treatment="pills"] .a1-tab[aria-selected="true"],
+.a1-tabs-study[data-treatment="bookmark"] .a1-tab[aria-selected="true"] {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  border-color: var(--semantic-color-action-background);
+}
+
+.a1-tabs-study[data-treatment="pills"] .a1-tab {
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-panel);
+}
+.a1-tabs-study[data-treatment="outline"] .a1-tab[aria-selected="true"] {
+  background: var(--semantic-color-surface-page);
+}
+.a1-tabs-study[data-treatment="raised"] .a1-tab-list {
+  background: var(--semantic-color-surface-panel);
+  border-radius: var(--base-radius-lg);
+}
+.a1-tabs-study[data-treatment="raised"] .a1-tab[aria-selected="true"] {
+  background: var(--semantic-color-surface-card);
+  border-color: var(--semantic-color-border-subtle);
+  box-shadow: var(--semantic-shadow-sm);
+}
+.a1-tabs-study[data-treatment="top-rail"] .a1-tab {
+  border-radius: 0;
+  border: 0;
+  border-top: var(--base-spacing-4) solid transparent;
+}
+.a1-tabs-study[data-treatment="top-rail"] .a1-tab[aria-selected="true"] {
+  background: var(--semantic-color-surface-panel);
+  border-top-color: var(--component-tab-selected-foreground);
+}
+.a1-tabs-study[data-treatment="bookmark"] .a1-tab {
+  border-radius: 0;
+  padding-bottom: var(--base-spacing-24);
+  /* Clip only the decorative ribbon, never the native focus outline. */
+  position: relative;
+}
+.a1-tabs-study[data-treatment="bookmark"] .a1-tab[aria-selected="true"]::after {
+  content: '';
+  position: absolute;
+  inset: auto calc(50% - var(--base-spacing-8)) calc(0px - var(--component-tab-indicator-size));
+  border-inline: var(--base-spacing-8) solid transparent;
+  border-bottom: var(--base-spacing-8) solid var(--semantic-color-surface-page);
+}
+.a1-tabs-study .a1-tab-panel:focus-visible {
+  outline: var(--component-tab-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-tab-focus-ring-offset);
+}
+@media (prefers-reduced-motion: reduce) {
+  .a1-tabs-study .a1-tab { transition: none; }
+}
+@media (forced-colors: active) {
+  .a1-tabs-study:not([data-treatment="default"]) .a1-tab[aria-selected="true"] {
+    outline: var(--component-tab-indicator-size) solid Highlight;
+    outline-offset: var(--component-tab-focus-ring-offset);
+  }
+}
+
+.a1-tabs-study[data-treatment="folder"] .a1-tab[aria-selected="true"] .a1-tab__count {
+  color: var(--semantic-color-text-default);
+}

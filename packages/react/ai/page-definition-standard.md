@@ -191,6 +191,14 @@ this table and `a1-agent-brief.md` in the same change. Never register a raw HTML
 }
 ```
 
+DataTable accepts `paginationPosition: "top" | "bottom" | "both" | "inline"` (default `"bottom"`)
+to position its page controls and result count (inline wraps alongside filters), with `pageSize` to enable paging
+and `paginationSize: "sm" | "md"` (default `"sm"`) to size the page buttons.
+The editor forwards these props for real data and exposes them in the table configurator.
+For the custom-navigation demonstration, `paginationExample: "compact"` maps to
+a trusted local renderer in the DataTable editor adapter; omit it for A1.
+The React-only `renderPagination` callback cannot be serialized into page JSON.
+
 ### Structured prop shapes
 
 Some registered components receive serializable item arrays rather than child

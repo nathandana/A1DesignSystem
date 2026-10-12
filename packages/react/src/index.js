@@ -38,7 +38,7 @@ export { ButtonContainer } from "./components/button-container/ButtonContainer.j
 export { Card } from "./components/card/Card.jsx";
 export { Cluster } from "./components/cluster/Cluster.jsx";
 export { CustomBlock } from "./components/custom-block/CustomBlock.jsx";
-export { Code } from "./components/code/Code.jsx";
+export { Code, codeLineIndent } from "./components/code/Code.jsx";
 export { DefinitionList } from "./components/definition-list/DefinitionList.jsx";
 export { Dialog } from "./components/dialog/Dialog.jsx";
 export { Divider } from "./components/divider/Divider.jsx";

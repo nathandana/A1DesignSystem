@@ -1,0 +1,16 @@
+/* Fenex — sizing and display states for the inlined character SVG. The
+   character's own animation lives inside fenex-celebrate.svg. */
+
+.a1-fenex {
+  --a1-fenex-height: var(--component-celebration-character-height);
+  display: inline-flex;
+  max-inline-size: 100%;
+}
+.a1-fenex svg {
+  inline-size: min(100%, calc(var(--a1-fenex-height) * 5 / 6));
+  block-size: auto;
+  aspect-ratio: 400 / 480;
+}
+/* Still: his resting pose, as with reduced motion. */
+.a1-fenex[data-still] * { animation: none; }
+.a1-fenex[data-confetti='off'] .fenex-fall { display: none; }

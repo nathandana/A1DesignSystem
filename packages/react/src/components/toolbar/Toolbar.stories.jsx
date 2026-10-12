@@ -140,6 +140,17 @@ export const LabeledGroup = {
   },
 };
 
+export const ApertureTextContrast = {
+  ...LabeledGroup,
+  decorators: [(Story) => <div className="a1-theme-aperture"><Story /></div>],
+};
+
+export const FreshDarkTextContrast = {
+  ...LabeledGroup,
+  decorators: [(Story) => <div className="a1-theme-fresh a1-theme-dark"><Story /></div>],
+  parameters: { docs: { description: { story: 'The component.toolbar.interactionShade token darkens hover and selected fills, keeping light text readable on Fresh’s colored dark surfaces.' } } },
+};
+
 export const LabelOnSelected = {
   name: "Label on selected only (swatch picker)",
   render: () => {

@@ -1,3 +1,4 @@
+import { Inset } from "../inset/Inset.jsx";
 import { useState } from "react";
 import { PageLayout } from "./PageLayout.jsx";
 import { Heading } from "../heading/Heading.jsx";
@@ -354,6 +355,21 @@ export const ViewportHeightMainScroll = {
           </div>
         ))}
       </div>
+    </PageLayout>
+  ),
+};
+
+export const NamedPanelLandmarks = {
+  name: "Named panel landmarks",
+  parameters: {
+    docs: { description: { story: 'Sidebar and supplementary content have distinct landmark names when both panels are present. PageLayout supplies the banner; pass role="presentation" to a nested TopHeader.' } },
+  },
+  render: () => (
+    <PageLayout
+      sidebar={<Inset><Heading as="h2" size="sm">Experiments</Heading></Inset>}
+      aside={<Inset><Heading as="h2" size="sm">Configuration</Heading></Inset>}
+    >
+      <Inset><Heading as="h1" size="lg">Experiment placeholder</Heading></Inset>
     </PageLayout>
   ),
 };

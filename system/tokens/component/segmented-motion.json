@@ -1,0 +1,10 @@
+{
+  "component": {
+    "segmentedMotion": {
+      "growFrom": { "$type": "number", "$value": 0.6, "$description": "Grow: the scale a new selection grows from (and the old one shrinks to)." },
+      "stretchLag": { "$type": "number", "$value": 0.45, "$description": "Stretch: how far behind (fraction of the duration) the trailing edge follows the leading edge." },
+      "morphBar": { "$type": "dimension", "$value": "{base.spacing.4}", "$description": "Morph: height of the bar the selection shrinks to while it travels." },
+      "morphWidth": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Morph: width of the travelling bar." }
+    }
+  }
+}

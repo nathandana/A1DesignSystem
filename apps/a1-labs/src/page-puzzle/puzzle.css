@@ -1,0 +1,80 @@
+/* Jigsaw page loader — reusable core styles. Pieces carry the page's layout
+   as a skeleton in surface roles; timing and piece size come from tokens. */
+
+.a1-page-puzzle {
+  position: relative;
+  min-block-size: 100vh;
+}
+
+/* The page stays hidden (and out of the tab order) until loading finishes. */
+.a1-page-puzzle:not([data-phase='exit']) [data-loading-block] > * {
+  visibility: hidden;
+}
+
+.a1-page-puzzle__board {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.a1-page-puzzle__piece {
+  position: absolute;
+  box-sizing: border-box;
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-sm);
+  opacity: 0;
+  transform: var(--a1-page-puzzle-from);
+  transition:
+    transform var(--component-page-puzzle-fly-duration) var(--semantic-motion-easing-expressive),
+    opacity var(--semantic-motion-duration-fast) var(--semantic-motion-easing-enter);
+}
+
+.a1-page-puzzle__piece[data-placed='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Finished but still loading: a shine sweeps across the puzzle. */
+.a1-page-puzzle__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, var(--semantic-color-surface-panel) 50%, transparent 65%) 0 0 / 300% 100%;
+  opacity: 0;
+}
+
+.a1-page-puzzle[data-phase='idle'] .a1-page-puzzle__shine {
+  opacity: 0.6;
+  animation: a1-page-puzzle-shine var(--component-page-puzzle-shine-duration) var(--semantic-motion-easing-linear) infinite;
+}
+
+.a1-page-puzzle[data-paused='true'] .a1-page-puzzle__shine {
+  animation-play-state: paused;
+}
+
+/* Done: pieces drop away in arrival order, revealing the page. */
+.a1-page-puzzle[data-phase='exit'] .a1-page-puzzle__piece {
+  opacity: 0;
+  transform: translateY(var(--base-spacing-24)) rotate(6deg) scale(0.9);
+  transition:
+    transform var(--component-page-puzzle-exit-duration) var(--semantic-motion-easing-exit),
+    opacity var(--component-page-puzzle-exit-duration) var(--semantic-motion-easing-exit);
+  transition-delay: calc(min(var(--a1-page-puzzle-order), 60) * 6ms);
+}
+
+@keyframes a1-page-puzzle-shine {
+  from { background-position: 100% 0; }
+  to { background-position: -50% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-puzzle__piece,
+  .a1-page-puzzle[data-phase='exit'] .a1-page-puzzle__piece {
+    transition: none;
+  }
+
+  .a1-page-puzzle[data-phase='idle'] .a1-page-puzzle__shine {
+    animation: none;
+    opacity: 0;
+  }
+}

@@ -702,15 +702,15 @@
     },
     "--component-tree-menu-item-selected-foreground": {
       "$type": "color",
-      "$value": "{base.color.accent.100}"
+      "$value": "{base.color.neutral.0}"
     },
     "--component-tree-menu-item-selected-foreground-hover": {
       "$type": "color",
-      "$value": "{base.color.accent.100}"
+      "$value": "{base.color.neutral.0}"
     },
     "--component-tree-menu-item-selected-foreground-pressed": {
       "$type": "color",
-      "$value": "{base.color.accent.100}"
+      "$value": "{base.color.neutral.0}"
     }
   }
 }

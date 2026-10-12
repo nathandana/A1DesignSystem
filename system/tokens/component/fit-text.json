@@ -1,0 +1,11 @@
+{
+  "component": {
+    "fitText": {
+      "measureSize": { "$type": "number", "$value": 100, "$description": "Font size (px) each line is measured at before it is scaled to fit." },
+      "minSize": { "$type": "dimension", "$value": "{semantic.font.size.display.sm}", "$description": "Smallest fitted size. A line that would need less wraps instead." },
+      "lineHeight": { "$type": "number", "$value": 1, "$description": "Line height for fitted lines, tight so the block reads as one shape." },
+      "lineGap": { "$type": "dimension", "$value": "{base.spacing.4}", "$description": "Space between fitted lines." },
+      "maxLarge": { "$type": "dimension", "$value": "{base.spacing.128}", "$description": "The largest size cap offered after the display sizes." }
+    }
+  }
+}

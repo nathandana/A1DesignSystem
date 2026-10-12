@@ -1,0 +1,31 @@
+/* Mobile data tables — scoped Labs styles. Breakpoints come from the A1
+   breakpoint tokens (postcss custom media); everything else is A1 tokens. */
+
+/* Below md the chosen mobile pattern shows; from md up, the standard table. */
+.a1-mt-wide { display: none; }
+@media (--bp-md-up) {
+  .a1-mt-narrow { display: none; }
+  .a1-mt-wide { display: block; }
+}
+
+/* Frozen first column: the product column stays put while the table scrolls
+   sideways. A1 Data Table has no frozen-column option, so this pins the first
+   cell of every row and gives it the table surface and an edge. */
+.a1-mt-frozen thead th:first-child,
+.a1-mt-frozen tbody .a1-data-table__desktop-row > td:first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: var(--semantic-color-surface-page);
+  box-shadow: inset calc(-1 * var(--component-field-border-width)) 0 0 var(--semantic-color-border-default);
+}
+.a1-mt-frozen thead th:first-child { background: var(--semantic-color-surface-panel); }
+
+/* Grouped: each group's heading stays at the top while its items scroll. */
+.a1-mt-group__heading {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  padding-block: var(--base-spacing-8);
+  background: var(--semantic-color-surface-page);
+}

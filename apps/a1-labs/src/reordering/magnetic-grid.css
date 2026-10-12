@@ -1,0 +1,23 @@
+/* Grid/Stack/Card own layout. These wrappers isolate the magnetic preview,
+   measured 2D transforms and the pointer ghost from A1 component styling. */
+.a1-magnetic-reorder { inline-size: 100%; }
+.a1-magnetic-reorder__tile { position: relative; min-inline-size: 0; }
+.a1-magnetic-reorder__tile[data-picked] {
+  outline: var(--component-button-focus-ring-width) dashed var(--component-button-focus-ring);
+  outline-offset: var(--base-spacing-4);
+  border-radius: var(--component-card-border-radius);
+}
+.a1-magnetic-reorder__tile[data-snapped] { outline-style: solid; }
+.a1-magnetic-reorder__handle { touch-action: none; cursor: grab; }
+.a1-magnetic-reorder__tile[data-picked] .a1-magnetic-reorder__handle { cursor: grabbing; }
+.a1-magnetic-reorder__ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: var(--component-tooltip-z-index);
+  opacity: var(--component-reordering-ghost-opacity);
+  border-radius: var(--component-card-border-radius);
+  box-shadow: var(--semantic-shadow-lg);
+}
+@media (forced-colors: active) {
+  .a1-magnetic-reorder__tile[data-picked] { outline-color: Highlight; }
+}

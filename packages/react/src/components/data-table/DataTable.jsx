@@ -8,6 +8,7 @@ import { IconButton } from "../icon-button/IconButton.jsx";
 import { InlineEditable } from "../inline-editable/InlineEditable.jsx";
 import { Link } from "../link/Link.jsx";
 import { MessageBadge, MessageEmptyState } from "../message/Message.jsx";
+import { Stack } from "../stack/Stack.jsx";
 import { Pagination } from "../pagination/Pagination.jsx";
 import { DataTableFilters } from "./DataTableFilters.jsx";
 import "./data-table.css";
@@ -262,6 +263,9 @@ export function DataTable({
   pageSize,
   defaultPageSize,
   pageSizeOptions = [],
+  paginationPosition = "bottom",
+  paginationSize = "sm",
+  renderPagination,
   totalPages,
   totalRows,
   onPageChange,
@@ -752,23 +756,89 @@ export function DataTable({
 
   // ── Render ──────────────────────────────────────────────────────────────
 
+  const paginationCount = (showPagination || filteredRows.length > 0) && (
+    <span className="a1-data-table-footer__count">
+      {showPagination
+        ? `Showing ${rowStart}–${rowEnd} of ${knownTotal} results`
+        : `${filteredRows.length} ${filteredRows.length === 1 ? "result" : "results"}`}
+    </span>
+  );
+  // With paginationPosition="both" the footer renders twice; each copy gets a
+  // distinct landmark name so screen-reader users can tell them apart.
+  const paginationPlacement = (placement) => (
+    paginationPosition === "both" ? `Pagination ${placement === "top" ? "above" : "below"} table` : undefined
+  );
+  const renderPageNavigation = (placement) => showPagination && (
+    <div className="a1-data-table-footer__controls">
+      {pageSizeChoices.length > 1 && (
+        <SelectField
+          label="Rows per page"
+          size="compact"
+          value={String(activePageSize)}
+          onChange={(event) => updatePageSize(event.target.value)}
+        >
+          {pageSizeChoices.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </SelectField>
+      )}
+      {typeof renderPagination === "function" ? renderPagination({
+        page: clampedPage,
+        totalPages: resolvedTotalPages,
+        pageSize: activePageSize,
+        totalRows: knownTotal,
+        rowStart,
+        rowEnd,
+        size: ["sm", "md"].includes(paginationSize) ? paginationSize : "sm",
+        placement,
+        label: paginationPlacement(placement),
+        onChange: updatePage,
+      }) : (
+      <Pagination
+        page={clampedPage}
+        totalPages={resolvedTotalPages}
+        onChange={updatePage}
+        size={["sm", "md"].includes(paginationSize) ? paginationSize : "sm"}
+        {...(paginationPlacement(placement) ? { "aria-label": paginationPlacement(placement) } : {})}
+      />
+      )}
+    </div>
+  );
+  const renderPaginationControls = (placement) => paginationCount && (
+    <div className="a1-data-table-footer">
+      {paginationCount}
+      {renderPageNavigation(placement)}
+    </div>
+  );
+  const showTopPagination = paginationPosition === "top" || paginationPosition === "both";
+  const showBottomPagination = !["top", "inline"].includes(paginationPosition);
+  const filterControls = hasFilterControls && (
+    <DataTableFilters
+      filters={resolvedFilters}
+      value={activeFilterValue}
+      onChange={updateFilterValue}
+      searchValue={activeSearchValue}
+      onSearchChange={onSearchChange != null || searchValue !== undefined || resolvedSearchableColumns.length > 0 ? updateSearchValue : undefined}
+      searchColumn={activeSearchColumn}
+      onSearchColumnChange={updateSearchColumn}
+      searchableColumns={resolvedSearchableColumns}
+      sortOptions={sortableColumns.map((column) => ({ key: column.key, label: column.label }))}
+      sortValue={activeSortValue}
+      onSortValueChange={sortableColumns.length > 0 ? updateMobileSortValue : undefined}
+    />
+  );
+
   return (
     <div ref={wrapperRef} className={wrapperClass} {...props}>
-      {hasFilterControls && (
-        <DataTableFilters
-          filters={resolvedFilters}
-          value={activeFilterValue}
-          onChange={updateFilterValue}
-          searchValue={activeSearchValue}
-          onSearchChange={onSearchChange != null || searchValue !== undefined || resolvedSearchableColumns.length > 0 ? updateSearchValue : undefined}
-          searchColumn={activeSearchColumn}
-          onSearchColumnChange={updateSearchColumn}
-          searchableColumns={resolvedSearchableColumns}
-          sortOptions={sortableColumns.map((column) => ({ key: column.key, label: column.label }))}
-          sortValue={activeSortValue}
-          onSortValueChange={sortableColumns.length > 0 ? updateMobileSortValue : undefined}
-        />
-      )}
+      {paginationPosition === "inline" ? (
+        <Stack gap={12} className="a1-data-table-inline-pagination">
+          <Stack direction="row" wrap align="end" justify="between" gap={16}>
+            {filterControls}
+            {renderPageNavigation("inline")}
+          </Stack>
+          {paginationCount}
+        </Stack>
+      ) : filterControls}
       {selectable && selectedCount > 0 && (
         <div className="a1-data-table-bulk-actions" role="region" aria-label="Bulk actions">
           <span className="a1-data-table-bulk-actions__count">
@@ -815,6 +885,7 @@ export function DataTable({
           </SelectField>
         </div>
       )}
+      {showTopPagination && renderPaginationControls("top")}
       <div className={["a1-data-table-scroll", scrollable && "a1-data-table-scroll--scrollable"].filter(Boolean).join(" ")} tabIndex={scrollable ? 0 : undefined}>
         {filteredRows.length === 0 ? (
           <div className="a1-data-table__empty">
@@ -926,37 +997,7 @@ export function DataTable({
         )}
       </div>
 
-      {(showPagination || filteredRows.length > 0) && (
-        <div className="a1-data-table-footer">
-          <span className="a1-data-table-footer__count">
-            {showPagination
-              ? `Showing ${rowStart}–${rowEnd} of ${knownTotal} results`
-              : `${filteredRows.length} ${filteredRows.length === 1 ? "result" : "results"}`}
-          </span>
-          {showPagination && (
-            <div className="a1-data-table-footer__controls">
-              {pageSizeChoices.length > 1 && (
-                <SelectField
-                  label="Rows per page"
-                  size="compact"
-                  value={String(activePageSize)}
-                  onChange={(event) => updatePageSize(event.target.value)}
-                >
-                  {pageSizeChoices.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </SelectField>
-              )}
-              <Pagination
-                page={clampedPage}
-                totalPages={resolvedTotalPages}
-                onChange={updatePage}
-                size="sm"
-              />
-            </div>
-          )}
-        </div>
-      )}
+      {showBottomPagination && renderPaginationControls("bottom")}
     </div>
   );
 }

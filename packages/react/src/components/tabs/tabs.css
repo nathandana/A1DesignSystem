@@ -160,16 +160,6 @@
   color: var(--component-tab-selected-foreground);
 }
 
-.a1-tab[aria-selected="true"]:hover .a1-tab__count {
-  background: var(--semantic-color-surface-panel);
-  color: var(--component-tab-selected-foreground-hover);
-}
-
-.a1-tab[aria-selected="true"]:active .a1-tab__count {
-  background: var(--semantic-color-surface-panel);
-  color: var(--component-tab-selected-foreground-pressed);
-}
-
 /* ── Line tab ───────────────────────────────────────────────────────────── */
 
 .a1-tab--line {
@@ -191,18 +181,6 @@
   background: var(--component-tab-selected-background);
   border-bottom-color: var(--component-tab-selected-foreground);
   cursor: default;
-}
-
-.a1-tab--line[aria-selected="true"]:hover {
-  color: var(--component-tab-selected-foreground-hover);
-  background: var(--component-tab-selected-background-hover);
-  border-bottom-color: var(--component-tab-selected-foreground-hover);
-}
-
-.a1-tab--line[aria-selected="true"]:active {
-  color: var(--component-tab-selected-foreground-pressed);
-  background: var(--component-tab-selected-background-pressed);
-  border-bottom-color: var(--component-tab-selected-foreground-pressed);
 }
 
 /* ── Folder tab ─────────────────────────────────────────────────────────── */
@@ -293,29 +271,9 @@
   cursor: default;
 }
 
-.a1-tab--pills[aria-selected="true"]:hover {
-  color: var(--component-tab-selected-foreground-hover);
-  background: var(--component-tab-selected-background-hover);
-}
-
-.a1-tab--pills[aria-selected="true"]:active {
-  color: var(--component-tab-selected-foreground-pressed);
-  background: var(--component-tab-selected-background-pressed);
-}
-
 .a1-tab--pills[aria-selected="true"] .a1-tab__count {
   background: var(--semantic-color-surface-panel);
   color: var(--component-tab-selected-foreground);
-}
-
-.a1-tab--pills[aria-selected="true"]:hover .a1-tab__count {
-  background: var(--semantic-color-surface-panel);
-  color: var(--component-tab-selected-foreground-hover);
-}
-
-.a1-tab--pills[aria-selected="true"]:active .a1-tab__count {
-  background: var(--semantic-color-surface-panel);
-  color: var(--component-tab-selected-foreground-pressed);
 }
 
 /* ── Segment variant (mirrors SegmentedControl) ─────────────────────────── */
@@ -374,16 +332,6 @@
   cursor: default;
 }
 
-.a1-tab--segment[aria-selected="true"]:hover {
-  color: var(--component-tab-selected-foreground-hover);
-  background: var(--component-tab-selected-background-hover);
-}
-
-.a1-tab--segment[aria-selected="true"]:active {
-  color: var(--component-tab-selected-foreground-pressed);
-  background: var(--component-tab-selected-background-pressed);
-}
-
 /* ── Progress variant ───────────────────────────────────────────────────── */
 
 .a1-tab-list-wrapper--progress {
@@ -428,7 +376,7 @@
   cursor: pointer;
 }
 
-.a1-tab--progress:hover {
+.a1-tab--progress:hover:not([aria-selected="true"]) {
   color: var(--semantic-color-text-default);
 }
 

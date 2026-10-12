@@ -1,6 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Stack } from '@gtivr4/a1-design-system-react'
 import { ResponsivePreviewContext } from './responsivePreview.js'
+import './responsive-preview-frame.css'
+import { previewScale } from './preview-scale.js'
 
 // Device presets for the responsive preview control (shared by the component
 // detail pages and the editor).
@@ -35,20 +38,70 @@ export function ResponsivePreviewFrame({ width, height, children }) {
   const [scale, setScale] = useState(1)
   const [body, setBody] = useState(null)
 
-  // Scale = available panel width ÷ device width (never enlarge past 1:1). The
-  // device keeps a real fixed height; its page scrolls inside the iframe.
+  // Fit both dimensions, including caption, bezel and any bottom configuration
+  // sheet. Measure the host's scrolling panel; content still scrolls in the iframe.
   useLayoutEffect(() => {
-    if (!width) return undefined
+    if (!width || !height) return undefined
+    const outer = outerRef.current
+    if (!outer) return undefined
+    const host = outer.ownerDocument.defaultView
+    const viewport = outer.querySelector('.a1-web-responsive-preview__viewport')
+    const ancestors = []
+    for (let node = outer.parentElement; node; node = node.parentElement) ancestors.push(node)
+    const panels = ancestors.filter(node => /auto|scroll|hidden|clip/.test(host.getComputedStyle(node).overflowY))
+    const observedSheets = new Set()
+    let ro
+    let frame
     const measure = () => {
-      const available = outerRef.current?.clientWidth ?? width
-      setScale(Math.min(1, available / width))
+      const rect = outer.getBoundingClientRect()
+      const device = viewport.getBoundingClientRect()
+      const style = host.getComputedStyle(viewport)
+      let bottom = host.visualViewport ? host.visualViewport.offsetTop + host.visualViewport.height : host.innerHeight
+      for (const panel of panels) {
+        const bounds = panel.getBoundingClientRect()
+        bottom = Math.min(bottom, bounds.top + panel.clientTop + panel.clientHeight)
+      }
+      // Account for the host's existing token-backed bottom padding.
+      let padding = 0
+      for (const ancestor of ancestors) {
+        padding += parseFloat(host.getComputedStyle(ancestor).paddingBottom) || 0
+        if (panels.includes(ancestor)) break
+      }
+      bottom -= padding
+      for (const sheet of outer.ownerDocument.querySelectorAll('.a1-bottom-sheet')) {
+        if (ro && !observedSheets.has(sheet)) { ro.observe(sheet); observedSheets.add(sheet) }
+        const bounds = sheet.getBoundingClientRect()
+        if (bounds.width && bounds.height && bounds.right > rect.left && bounds.left < rect.right) {
+          bottom = Math.min(bottom, bounds.top)
+        }
+      }
+      setScale(previewScale({ width, height,
+        availableWidth: outer.clientWidth,
+        availableHeight: bottom - device.top,
+        bezelWidth: parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth),
+        bezelHeight: parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth),
+      }))
     }
+    const schedule = () => { host.cancelAnimationFrame(frame); frame = host.requestAnimationFrame(measure) }
     measure()
-    const ro = new ResizeObserver(measure)
-    if (outerRef.current) ro.observe(outerRef.current)
-    window.addEventListener('resize', measure)
-    return () => { ro.disconnect(); window.removeEventListener('resize', measure) }
-  }, [width])
+    ro = new ResizeObserver(schedule)
+    for (const node of [outer, outer.firstElementChild, ...ancestors]) if (node) ro.observe(node)
+    // The configuration sheet can mount after crossing the host breakpoint.
+    const chromeObserver = new MutationObserver(schedule)
+    chromeObserver.observe(panels[0] || outer.parentElement, { childList: true, subtree: true })
+    schedule()
+    host.addEventListener('resize', schedule)
+    host.addEventListener('scroll', schedule, true)
+    host.visualViewport?.addEventListener('resize', schedule)
+    host.visualViewport?.addEventListener('scroll', schedule)
+    return () => {
+      ro.disconnect(); chromeObserver.disconnect(); host.cancelAnimationFrame(frame)
+      host.removeEventListener('resize', schedule)
+      host.removeEventListener('scroll', schedule, true)
+      host.visualViewport?.removeEventListener('resize', schedule)
+      host.visualViewport?.removeEventListener('scroll', schedule)
+    }
+  }, [width, height])
 
   // Prepare the iframe document: clone the app stylesheets + theme so A1 CSS
   // applies inside, and expose its <body> as the portal target. A src-less
@@ -56,6 +109,18 @@ export function ResponsivePreviewFrame({ width, height, children }) {
   // and also on `load`.
   useEffect(() => {
     if (!iframeEl) { setBody(null); return undefined }
+    const syncAppearance = () => {
+      const doc = iframeEl.contentDocument
+      if (!doc) return
+      const html = document.documentElement
+      doc.documentElement.className = html.className
+      doc.documentElement.style.cssText = html.style.cssText
+      if (html.hasAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
+      else doc.documentElement.removeAttribute('data-theme')
+      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
+      doc.documentElement.style.height = 'auto'
+      doc.documentElement.style.overflow = 'auto'
+    }
     const setup = () => {
       const doc = iframeEl.contentDocument
       if (!doc || !doc.body) return
@@ -65,9 +130,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
         clone.setAttribute('data-a1-cloned', '')
         doc.head.appendChild(clone)
       })
-      const html = document.documentElement
-      if (html.getAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
-      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
+      syncAppearance()
       // Force the iframe document to scroll: the cloned app stylesheets set the
       // shell to a fixed-height, overflow-hidden viewport, which would otherwise
       // clip the page instead of letting it scroll inside the device.
@@ -81,14 +144,16 @@ export function ResponsivePreviewFrame({ width, height, children }) {
       setBody(doc.body)
     }
     setup()
+    const appearanceObserver = new MutationObserver(syncAppearance)
+    appearanceObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
     iframeEl.addEventListener('load', setup)
-    return () => iframeEl.removeEventListener('load', setup)
+    return () => { appearanceObserver.disconnect(); iframeEl.removeEventListener('load', setup) }
   }, [iframeEl])
 
   if (!width) return children
 
   return (
-    <div ref={outerRef} className="a1-web-responsive-preview">
+    <Stack ref={outerRef} align="center" gap={8} className="a1-web-responsive-preview">
       <div className="a1-web-responsive-preview__caption">
         {width} × {height}px{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
       </div>
@@ -111,6 +176,6 @@ export function ResponsivePreviewFrame({ width, height, children }) {
           body,
         )}
       </div>
-    </div>
+    </Stack>
   )
 }

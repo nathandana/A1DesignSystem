@@ -110,8 +110,15 @@ function groupedResults(entries, query) {
     }, [])
 }
 
-export function GlobalSearchDialog({ open, entries = [], onClose }) {
-  const searchLabel = useLabel('app.action.globalSearch', 'Search A1')
+export function GlobalSearchDialog({
+  open,
+  entries = [],
+  onClose,
+  label,
+  emptyDescription = 'Try a page, component, project, ticket, label, or related term.',
+}) {
+  const defaultLabel = useLabel('app.action.globalSearch', 'Search A1')
+  const searchLabel = label ?? defaultLabel
   const dialogRef = useRef(null)
   const triggerRef = useRef(null)
   const inputRef = useRef(null)
@@ -265,7 +272,7 @@ export function GlobalSearchDialog({ open, entries = [], onClose }) {
               <MessageEmptyState
                 icon="search_off"
                 title="No matching results"
-                description="Try a page, component, project, ticket, label, or related term."
+                description={emptyDescription}
               />
             )}
           </div>

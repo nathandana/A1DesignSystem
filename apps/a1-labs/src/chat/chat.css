@@ -1,0 +1,48 @@
+/* A1 owns layout, typography and controls. These message surfaces and entrance
+   wrappers are the experiment; no shared component selectors are overridden. */
+.a1-chat-study { min-inline-size: 0; }
+.a1-chat-study__log {
+  block-size: var(--component-chat-transcript-height);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--base-spacing-16);
+  border: var(--component-card-border-width) solid var(--component-card-border-color);
+  border-radius: var(--component-card-border-radius);
+}
+.a1-chat-study__log:focus-visible { outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring); outline-offset: var(--base-spacing-4); }
+.a1-chat-study__message { max-inline-size: var(--component-chat-message-width); align-self: flex-start; min-inline-size: 0; }
+.a1-chat-study__message[data-sender="you"] { align-self: flex-end; }
+.a1-chat-study__body {
+  padding: var(--base-spacing-12) var(--base-spacing-16);
+  border-radius: var(--component-card-border-radius);
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.a1-chat-study[data-style="bubbles"] .a1-chat-study__message[data-sender="you"] .a1-chat-study__body { background: var(--component-button-primary-background); --a1-paragraph-color: var(--component-button-primary-foreground); }
+.a1-chat-study[data-style="bubbles"] .a1-chat-study__body { border-end-start-radius: 0; }
+.a1-chat-study[data-style="bubbles"] .a1-chat-study__message[data-sender="you"] .a1-chat-study__body { border-end-start-radius: var(--component-card-border-radius); border-end-end-radius: 0; }
+.a1-chat-study[data-style="soft"] .a1-chat-study__message { max-inline-size: 100%; align-self: stretch; }
+.a1-chat-study[data-style="soft"] .a1-chat-study__message[data-sender="you"] .a1-chat-study__body { border-inline-start: var(--base-spacing-4) solid var(--semantic-color-text-accent); }
+.a1-chat-study[data-style="outline"] .a1-chat-study__body { background: transparent; border: var(--component-card-border-width) solid var(--component-card-border-color); }
+.a1-chat-study[data-style="editorial"] .a1-chat-study__message,
+.a1-chat-study[data-style="compact"] .a1-chat-study__message { max-inline-size: 100%; align-self: stretch; }
+.a1-chat-study[data-style="editorial"] .a1-chat-study__body { background: transparent; border-radius: 0; padding-inline: 0; border-block-end: var(--component-card-border-width) solid var(--component-card-border-color); }
+.a1-chat-study[data-style="compact"] .a1-chat-study__body { background: transparent; padding: 0; }
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .a1-chat-study__message[data-motion] { animation-duration: var(--semantic-motion-duration-slow); animation-timing-function: var(--semantic-motion-easing-enter); transform-origin: bottom; }
+  .a1-chat-study__message[data-duration="quick"] { animation-duration: var(--semantic-motion-duration-quick); }
+  .a1-chat-study__message[data-duration="slower"] { animation-duration: var(--semantic-motion-duration-slower); }
+  .a1-chat-study__message[data-motion="fade"] { animation-name: a1-chat-fade; }
+  .a1-chat-study__message[data-motion="rise"] { animation-name: a1-chat-rise; }
+  .a1-chat-study__message[data-motion="slide"] { animation-name: a1-chat-slide; }
+  .a1-chat-study__message[data-motion="pop"] { animation-name: a1-chat-pop; animation-timing-function: var(--semantic-motion-easing-expressive); }
+  .a1-chat-study__message[data-motion="unfold"] { animation-name: a1-chat-unfold; }
+}
+@keyframes a1-chat-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes a1-chat-rise { from { opacity: 0; transform: translateY(var(--component-chat-rise)); } to { opacity: 1; transform: none; } }
+@keyframes a1-chat-slide { from { opacity: 0; transform: translateX(calc(-1 * var(--component-chat-travel))); } to { opacity: 1; transform: none; } }
+@keyframes a1-chat-pop { from { opacity: 0; transform: scale(var(--component-chat-pop-scale)); } to { opacity: 1; transform: none; } }
+@keyframes a1-chat-unfold { from { opacity: 0; clip-path: inset(100% 0 0 0); } to { opacity: 1; clip-path: inset(0); } }
+@media (forced-colors: active) { .a1-chat-study__body { border: var(--component-card-border-width) solid CanvasText; } }

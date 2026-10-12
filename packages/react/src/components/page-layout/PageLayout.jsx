@@ -34,17 +34,17 @@ export function PageLayout({
 
       <div className="a1-page-layout__body">
         {sidebar && (
-          <aside className="a1-page-layout__sidebar">{sidebar}</aside>
+          <aside className="a1-page-layout__sidebar" aria-label="Sidebar">{sidebar}</aside>
         )}
         <div className="a1-page-layout__content">
           {aside && asidePlacement === "start" && (
-            <aside className="a1-page-layout__aside">{aside}</aside>
+            <aside className="a1-page-layout__aside" aria-label="Supplementary content">{aside}</aside>
           )}
           <main className="a1-page-layout__main">
             <div className="a1-page-layout__main-scroll" tabIndex={0}>{children}</div>
           </main>
           {aside && asidePlacement !== "start" && (
-            <aside className="a1-page-layout__aside">{aside}</aside>
+            <aside className="a1-page-layout__aside" aria-label="Supplementary content">{aside}</aside>
           )}
         </div>
       </div>

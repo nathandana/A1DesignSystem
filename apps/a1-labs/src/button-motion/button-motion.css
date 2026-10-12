@@ -1,0 +1,79 @@
+/* A1 keeps button typography, surfaces, focus, hit semantics and sizing.
+   A separate wrapper carries only this experiment's transform and shadow. */
+.a1-button-motion {
+  --a1-button-motion-easing: var(--semantic-motion-easing-standard);
+  --a1-button-motion-hover: scale(var(--component-button-motion-subtle-hover-scale));
+  --a1-button-motion-press: scale(var(--component-button-motion-subtle-press-scale));
+  --a1-button-motion-hover-filter: none;
+  --a1-button-motion-press-filter: none;
+  --a1-button-motion-shadow: color-mix(in srgb, var(--semantic-color-text-default) var(--component-button-motion-shadow-alpha), transparent);
+  --a1-button-motion-glow: color-mix(in srgb, var(--component-field-focus-ring-color) var(--component-button-motion-glow-alpha), transparent);
+  position: relative;
+  display: inline-grid;
+  vertical-align: middle;
+}
+.a1-button-motion__surface {
+  display: inline-grid;
+  transform-origin: center;
+  transition: transform var(--a1-button-motion-duration) var(--a1-button-motion-easing),
+    filter var(--a1-button-motion-duration) var(--a1-button-motion-easing);
+}
+.a1-button-motion[data-treatment='lift'] {
+  --a1-button-motion-hover: translateY(calc(-1 * var(--component-button-motion-lift)));
+  --a1-button-motion-press: translateY(var(--component-button-motion-press-distance)) scale(var(--component-button-motion-subtle-press-scale));
+  --a1-button-motion-hover-filter: drop-shadow(0 var(--component-button-motion-shadow-offset) var(--component-button-motion-shadow-blur) var(--a1-button-motion-shadow));
+}
+.a1-button-motion[data-treatment='glow'] {
+  --a1-button-motion-hover: scale(var(--component-button-motion-hover-scale));
+  --a1-button-motion-press: scale(var(--component-button-motion-press-scale));
+  --a1-button-motion-hover-filter: drop-shadow(0 0 var(--component-button-motion-glow-blur) var(--a1-button-motion-glow));
+  --a1-button-motion-press-filter: drop-shadow(0 0 var(--component-button-motion-glow-press-blur) var(--a1-button-motion-glow));
+}
+.a1-button-motion[data-treatment='tilt'] {
+  --a1-button-motion-hover: translateY(calc(-1 * var(--component-button-motion-lift))) rotate(var(--component-button-motion-tilt)) scale(var(--component-button-motion-hover-scale));
+  --a1-button-motion-press: rotate(var(--component-button-motion-press-tilt)) scale(var(--component-button-motion-press-scale));
+}
+.a1-button-motion[data-treatment='spring'] {
+  --a1-button-motion-easing: var(--semantic-motion-easing-expressive);
+  --a1-button-motion-hover: translateY(calc(-1 * var(--component-button-motion-spring-lift))) scale(var(--component-button-motion-spring-hover-scale));
+  --a1-button-motion-press: translateY(var(--component-button-motion-press-distance)) scale(var(--component-button-motion-spring-press-scale));
+  --a1-button-motion-hover-filter: drop-shadow(0 var(--component-button-motion-shadow-offset) var(--component-button-motion-shadow-blur) var(--a1-button-motion-shadow));
+}
+.a1-button-motion[data-treatment='ripple'] {
+  --a1-button-motion-hover: translateY(calc(-1 * var(--component-button-motion-lift)));
+  --a1-button-motion-press: translateY(var(--component-button-motion-press-distance));
+}
+.a1-button-motion__ripple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  border-radius: var(--a1-button-motion-radius);
+  animation: a1-button-motion-ripple var(--a1-button-motion-duration) var(--semantic-motion-easing-exit) both;
+}
+@keyframes a1-button-motion-ripple {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(var(--component-button-motion-ripple-scale)); opacity: 0; }
+}
+@media (hover: hover) {
+  .a1-button-motion:not([data-inert='true']):hover > .a1-button-motion__surface {
+    transform: var(--a1-button-motion-hover);
+    filter: var(--a1-button-motion-hover-filter);
+  }
+}
+.a1-button-motion:not([data-inert='true']):has(button:focus-visible) > .a1-button-motion__surface {
+  transform: var(--a1-button-motion-hover);
+  filter: var(--a1-button-motion-hover-filter);
+}
+.a1-button-motion:not([data-inert='true']):is(:has(button:active), [data-pressed='true']) > .a1-button-motion__surface {
+  transform: var(--a1-button-motion-press);
+  filter: var(--a1-button-motion-press-filter);
+}
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .a1-button-motion__ripple { display: none; animation: none; }
+  .a1-button-motion > .a1-button-motion__surface {
+    transition: none;
+    transform: none !important;
+    filter: none !important;
+  }
+}

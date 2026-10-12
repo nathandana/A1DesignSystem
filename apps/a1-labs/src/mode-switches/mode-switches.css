@@ -1,0 +1,287 @@
+/* Mode switches — reusable core styles, one namespace per control. Sizes,
+   timing and the eclipse illustration palette come from
+   component.modeSwitches tokens; surfaces, text and focus are live A1 roles. */
+
+/* Shared focus ring for the custom controls. */
+:is(.a1-mode-cord__bead, .a1-mode-dial__knob, .a1-mode-eclipse):focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+/* 1. Pull cord: a ceiling plate, the cord (SVG) and a bead that can be pulled. */
+.a1-mode-cord {
+  position: relative;
+  inline-size: var(--component-mode-switches-cord-width);
+  block-size: calc(var(--component-mode-switches-cord-length) + var(--component-mode-switches-cord-max-pull) + var(--component-mode-switches-bead));
+}
+.a1-mode-cord__plate {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(50% - var(--base-spacing-16));
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-6);
+  border-radius: 0 0 var(--base-radius-sm) var(--base-radius-sm);
+  background: var(--semantic-color-text-muted);
+}
+.a1-mode-cord__cord {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.a1-mode-cord__cord path {
+  fill: none;
+  stroke: var(--component-mode-switches-metal-dark);
+  stroke-width: var(--component-mode-switches-cord-width-stroke);
+}
+/* Nickel-plated balls: a fixed metal palette, like the real fitting. */
+.a1-mode-cord__metal-light { stop-color: var(--component-mode-switches-metal-light); }
+.a1-mode-cord__metal-mid { stop-color: var(--component-mode-switches-metal-mid); }
+.a1-mode-cord__metal-dark { stop-color: var(--component-mode-switches-metal-dark); }
+.a1-mode-cord__bead {
+  position: absolute;
+  top: var(--component-mode-switches-cord-length);
+  left: calc(50% - var(--component-mode-switches-bead) / 2);
+  display: grid;
+  place-items: center;
+  inline-size: var(--component-mode-switches-bead);
+  block-size: var(--component-mode-switches-bead);
+  border: 0;
+  border-radius: var(--base-radius-pill);
+  /* The pull: a larger metal ball with the mode engraved. */
+  background: radial-gradient(circle at 35% 30%, var(--component-mode-switches-metal-light), var(--component-mode-switches-metal-mid) 55%, var(--component-mode-switches-metal-dark));
+  color: var(--component-mode-switches-metal-ink);
+  box-shadow: var(--semantic-shadow-md);
+  cursor: grab;
+  touch-action: none;
+}
+.a1-mode-cord__bead:active { cursor: grabbing; }
+
+/* 2. Sun and moon switch: the A1 Switch thumb carries an icon, using the
+   same icon font variable as A1 Icon. Only the icon animates: the thumb moves
+   with `translate` (not A1's translateX transform) so the spin happens in
+   place and never carries the thumb outside the track; each glyph grows in. */
+.a1-mode-sunmoon .a1-switch__track::before {
+  content: 'light_mode';
+  display: grid;
+  place-items: center;
+  color: var(--component-mode-switches-sun);
+  font-family: var(--a1-icon-font-family, 'Material Symbols Outlined');
+  font-size: var(--component-mode-switches-sun-moon-icon);
+  font-variation-settings: 'FILL' 1;
+  line-height: var(--a1-sw-thumb);
+  text-align: center;
+  transform: none;
+  translate: 0 0;
+  rotate: 0deg;
+  animation: a1-mode-sun-in var(--component-mode-switches-settle) var(--semantic-motion-easing-expressive);
+  transition:
+    translate var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    background-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    rotate var(--component-mode-switches-settle) var(--semantic-motion-easing-standard);
+}
+.a1-mode-sunmoon .a1-switch__track--on::before {
+  content: 'dark_mode';
+  color: var(--component-mode-switches-sky-night);
+  transform: none;
+  translate: calc(var(--a1-sw-track-width) - var(--a1-sw-track-height)) 0;
+  rotate: 360deg;
+  animation-name: a1-mode-moon-in;
+}
+/* Two names so the grow-in replays on every change. */
+@keyframes a1-mode-sun-in { from { font-size: 0; } }
+@keyframes a1-mode-moon-in { from { font-size: 0; } }
+
+/* 3. Dial: a knob that turns to Light, Auto or Dark; labels around the top. */
+.a1-mode-dial {
+  position: relative;
+  inline-size: calc(2 * var(--component-mode-switches-dial-label-radius) + var(--base-spacing-48));
+  block-size: calc(var(--component-mode-switches-dial-label-radius) + var(--component-mode-switches-dial) / 2 + var(--base-spacing-24));
+}
+.a1-mode-dial__knob {
+  position: absolute;
+  inset-block-start: calc(var(--component-mode-switches-dial-label-radius) + var(--base-spacing-16) - var(--component-mode-switches-dial) / 2);
+  inset-inline-start: calc(50% - var(--component-mode-switches-dial) / 2);
+  inline-size: var(--component-mode-switches-dial);
+  block-size: var(--component-mode-switches-dial);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-pill);
+  background: radial-gradient(circle at 35% 30%, var(--semantic-color-surface-page), var(--semantic-color-surface-raised));
+  box-shadow: var(--semantic-shadow-md);
+  cursor: grab;
+  touch-action: none;
+  rotate: calc(var(--component-mode-switches-dial-angle) * var(--a1-mode-dial-step));
+  transition: rotate var(--semantic-motion-duration-slow) var(--semantic-motion-easing-expressive);
+}
+.a1-mode-dial__notch {
+  position: absolute;
+  inset-block-start: var(--base-spacing-8);
+  inset-inline-start: calc(50% - var(--base-spacing-2));
+  inline-size: var(--base-spacing-4);
+  block-size: var(--base-spacing-20);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+}
+.a1-mode-dial__label {
+  position: absolute;
+  inset-block-start: var(--base-spacing-16);
+  inset-inline-start: 50%;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  cursor: pointer;
+  translate: -50% -50%;
+  transform-origin: center;
+  /* Placed on an arc around the knob's centre. */
+  transform:
+    translateY(var(--component-mode-switches-dial-label-radius))
+    rotate(calc(var(--component-mode-switches-dial-angle) * var(--a1-mode-dial-label-step)))
+    translateY(calc(-1 * var(--component-mode-switches-dial-label-radius)))
+    rotate(calc(-1 * var(--component-mode-switches-dial-angle) * var(--a1-mode-dial-label-step)));
+}
+.a1-mode-dial__label[data-active] {
+  color: var(--semantic-color-text-default);
+  font-weight: var(--base-font-weight-semibold);
+}
+
+/* 4. Eclipse: the moon slides over the sun. */
+.a1-mode-eclipse {
+  display: grid;
+  gap: var(--base-spacing-8);
+  justify-items: center;
+  padding: var(--base-spacing-8);
+  border: 0;
+  border-radius: var(--base-radius-md);
+  background: transparent;
+  color: var(--semantic-color-text-default);
+  font: inherit;
+  cursor: pointer;
+}
+.a1-mode-eclipse__sky {
+  position: relative;
+  overflow: hidden;
+  inline-size: var(--component-mode-switches-eclipse);
+  block-size: var(--component-mode-switches-eclipse);
+  border-radius: var(--base-radius-pill);
+  transition: box-shadow var(--component-mode-switches-settle) var(--semantic-motion-easing-standard);
+}
+.a1-mode-eclipse__sun,
+.a1-mode-eclipse__moon {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--base-radius-pill);
+}
+.a1-mode-eclipse__sun { background: var(--component-mode-switches-sun); }
+.a1-mode-eclipse__moon {
+  background: var(--component-mode-switches-sky-night);
+  translate: 100% 0;
+  transition: translate var(--component-mode-switches-settle) var(--semantic-motion-easing-standard);
+}
+.a1-mode-eclipse[data-mode='system'] .a1-mode-eclipse__moon { translate: var(--component-mode-switches-moon-partial) 0; }
+.a1-mode-eclipse[data-mode='dark'] .a1-mode-eclipse__moon { translate: var(--component-mode-switches-moon-total) 0; }
+.a1-mode-eclipse[data-mode='dark'] .a1-mode-eclipse__sky {
+  box-shadow: 0 0 var(--component-mode-switches-corona) var(--component-mode-switches-sun);
+}
+.a1-mode-eclipse__label { font-size: var(--semantic-font-size-body-sm); }
+
+/* 5. Slide switch: a three-position hardware slider. Native radios (visually
+   hidden) under each label; the ridged thumb moves to the checked one. */
+.a1-mode-slide {
+  display: grid;
+  gap: var(--base-spacing-8);
+  inline-size: var(--component-mode-switches-slide-width);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.a1-mode-slide__legend {
+  position: absolute;
+  inline-size: var(--base-spacing-1);
+  block-size: var(--base-spacing-1);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.a1-mode-slide__track {
+  position: relative;
+  block-size: var(--component-mode-switches-slide-height);
+  border: var(--base-spacing-1) solid var(--semantic-color-border-default);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-page);
+  box-shadow: inset 0 var(--base-spacing-2) var(--base-spacing-6) color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+}
+.a1-mode-slide__thumb {
+  position: absolute;
+  inset-block: var(--base-spacing-4);
+  inset-inline-start: var(--base-spacing-4);
+  inline-size: calc((100% - var(--base-spacing-8)) / 3);
+  border-radius: var(--base-radius-sm);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 var(--base-spacing-4), color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent) var(--base-spacing-4) var(--base-spacing-6)),
+    linear-gradient(var(--semantic-color-surface-raised), var(--semantic-color-surface-panel));
+  box-shadow: var(--semantic-shadow-md);
+  translate: calc(100% * var(--a1-mode-slide-step)) 0;
+  transition: translate var(--semantic-motion-duration-slow) var(--semantic-motion-easing-expressive);
+}
+.a1-mode-slide:has(:focus-visible) .a1-mode-slide__thumb {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+.a1-mode-slide__options {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.a1-mode-slide__option {
+  display: grid;
+  gap: var(--base-spacing-4);
+  justify-items: center;
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  cursor: pointer;
+}
+.a1-mode-slide__option:has(:checked) { color: var(--semantic-color-text-default); font-weight: var(--base-font-weight-semibold); }
+.a1-mode-slide__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+/* The track is the drag surface; the thumb follows the pointer while
+   dragging and snaps to the nearest position on release. */
+.a1-mode-slide__track { cursor: grab; touch-action: none; }
+.a1-mode-slide[data-dragging] .a1-mode-slide__track { cursor: grabbing; }
+.a1-mode-slide[data-dragging] .a1-mode-slide__thumb { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-mode-dial__knob,
+  .a1-mode-eclipse__sky,
+  .a1-mode-eclipse__moon,
+  .a1-mode-slide__thumb,
+  .a1-mode-sunmoon .a1-switch__track::before { transition: none; animation: none; }
+}
+
+@media (forced-colors: active) {
+  .a1-mode-cord__bead, .a1-mode-dial__knob, .a1-mode-eclipse__sky { border: var(--base-spacing-2) solid ButtonText; }
+  .a1-mode-cord__cord path { stroke: CanvasText; }
+}
+
+/* The Labs page shows one control at a time on a roomy stage. */
+.a1-mode-switches { max-inline-size: var(--base-width-xl); margin-inline: auto; }
+.a1-mode-switches__stage { min-block-size: var(--base-width-xs); }
+
+/* Transition between modes (same-document View Transitions). Set on the
+   document only while a change is running; duration is a motion token. */
+html[data-a1-mode-transition]::view-transition-old(root),
+html[data-a1-mode-transition]::view-transition-new(root) {
+  animation-duration: var(--a1-mode-transition-duration);
+  animation-timing-function: var(--semantic-motion-easing-standard);
+}
+html[data-a1-mode-transition='reveal']::view-transition-old(root) { animation: none; }
+html[data-a1-mode-transition='reveal']::view-transition-new(root) {
+  animation: a1-mode-reveal var(--a1-mode-transition-duration) var(--semantic-motion-easing-standard);
+}
+@keyframes a1-mode-reveal {
+  from { clip-path: circle(0 at var(--a1-mode-x) var(--a1-mode-y)); }
+  to { clip-path: circle(var(--a1-mode-r) at var(--a1-mode-x) var(--a1-mode-y)); }
+}
+/* Let clicks reach the page while a mode transition is running. */
+html[data-a1-mode-transition]::view-transition { pointer-events: none; }

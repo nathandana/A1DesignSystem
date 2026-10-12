@@ -1,0 +1,27 @@
+/* The WebGL surface needs measured bounds; A1 owns all surrounding layout,
+   controls and copy. Physical materials and geometry use flip-clock tokens. */
+.a1-flip-clock {
+  inline-size: 100%;
+  max-inline-size: var(--component-flip-clock-max-width);
+  margin-inline: auto;
+}
+
+.a1-flip-clock__stage {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: var(--component-flip-clock-stage-ratio);
+}
+
+.a1-flip-clock__stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.a1-flip-clock[data-variant='compact'] {
+  max-inline-size: var(--component-flip-clock-compact-max-width);
+}
+
+.a1-flip-clock[data-variant='compact'] .a1-flip-clock__stage {
+  aspect-ratio: var(--component-flip-clock-compact-stage-ratio);
+}

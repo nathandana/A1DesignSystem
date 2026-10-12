@@ -1,0 +1,99 @@
+/* Dialog motion — scoped Labs restyle of the A1 dialog and its scrim.
+   Distances, scales and angles are component.dialogMotion tokens; durations
+   and easing are semantic motion tokens. Movement only plays with
+   prefers-reduced-motion: no-preference. The scrim keeps its chosen colour,
+   opacity and blur either way. */
+
+/* Scrim: any colour at the chosen opacity (relative colour syntax replaces
+   its alpha), with the chosen blur. ::backdrop inherits these properties from
+   the dialog. */
+.a1-dialog-motion[open]::backdrop {
+  background: rgb(from var(--a1-dm-scrim-color) r g b / var(--a1-dm-scrim-opacity));
+  backdrop-filter: blur(var(--a1-dm-scrim-blur));
+}
+
+/* Direction: a unit vector toward the edge the dialog enters from, and the
+   one it leaves toward (the same edge, or the opposite edge to carry on). */
+.a1-dialog-motion { --a1-dm-x: 0; --a1-dm-y: 0; --a1-dm-hinge: center; }
+.a1-dialog-motion[data-direction='top'] { --a1-dm-y: -1; --a1-dm-hinge: top center; }
+.a1-dialog-motion[data-direction='bottom'] { --a1-dm-y: 1; --a1-dm-hinge: bottom center; }
+.a1-dialog-motion[data-direction='left'] { --a1-dm-x: -1; --a1-dm-hinge: center left; }
+.a1-dialog-motion[data-direction='right'] { --a1-dm-x: 1; --a1-dm-hinge: center right; }
+.a1-dialog-motion { --a1-dm-out-x: var(--a1-dm-x); --a1-dm-out-y: var(--a1-dm-y); }
+.a1-dialog-motion[data-exit='continue'] { --a1-dm-out-x: calc(var(--a1-dm-x) * -1); --a1-dm-out-y: calc(var(--a1-dm-y) * -1); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .a1-dialog-motion:not([data-motion='default']),
+  .a1-dialog-motion:not([data-motion='default'])::backdrop {
+    transition-property: opacity, translate, scale, transform, filter, background-color, backdrop-filter;
+    transition-duration: var(--a1-dm-duration);
+    transition-timing-function: var(--semantic-motion-easing-exit);
+  }
+  .a1-dialog-motion[open],
+  .a1-dialog-motion[open]::backdrop {
+    transition-timing-function: var(--semantic-motion-easing-enter);
+  }
+  .a1-dialog-motion[data-motion='pop'][open] { transition-timing-function: var(--semantic-motion-easing-expressive); }
+
+  /* Keep the dialog and its scrim in the top layer while they leave. */
+  @supports (overlay: auto) {
+    .a1-dialog-motion:not([data-motion='default']),
+    .a1-dialog-motion:not([data-motion='default'])::backdrop {
+      transition-property: opacity, translate, scale, transform, filter, background-color, backdrop-filter, display, overlay;
+      transition-behavior: allow-discrete;
+    }
+  }
+
+  /* Leaving: the closed state each motion transitions to. */
+  .a1-dialog-motion:not([data-motion='default']):not([open]) { opacity: 0; }
+  .a1-dialog-motion:not([data-motion='default']):not([open])::backdrop { background-color: transparent; backdrop-filter: blur(0); }
+  .a1-dialog-motion[data-motion='scale']:not([open]) { scale: var(--component-dialog-motion-scale-from); }
+  .a1-dialog-motion[data-motion='pop']:not([open]) { scale: var(--component-dialog-motion-scale-from); }
+  .a1-dialog-motion[data-motion='slide']:not([open]) {
+    translate: calc(var(--a1-dm-out-x) * var(--component-dialog-motion-slide-distance)) calc(var(--a1-dm-out-y) * var(--component-dialog-motion-slide-distance));
+  }
+  .a1-dialog-motion[data-motion='flip'],
+  .a1-dialog-motion[data-motion='swing'] { transform: perspective(var(--component-dialog-motion-perspective)); }
+  .a1-dialog-motion[data-motion='swing'] { transform-origin: var(--a1-dm-hinge); }
+  .a1-dialog-motion[data-motion='flip']:not([open]) {
+    transform: perspective(var(--component-dialog-motion-perspective))
+      rotateX(calc(var(--a1-dm-out-y) * var(--component-dialog-motion-flip-angle)))
+      rotateY(calc(var(--a1-dm-out-x) * -1 * var(--component-dialog-motion-flip-angle)));
+  }
+  .a1-dialog-motion[data-motion='swing']:not([open]) {
+    transform: perspective(var(--component-dialog-motion-perspective))
+      rotateX(calc(var(--a1-dm-y) * -1 * var(--component-dialog-motion-swing-angle)))
+      rotateY(calc(var(--a1-dm-x) * var(--component-dialog-motion-swing-angle)));
+  }
+  .a1-dialog-motion[data-motion='blur']:not([open]) { scale: var(--component-dialog-motion-scale-from); filter: blur(var(--component-dialog-motion-blur-from)); }
+  .a1-dialog-motion[data-motion='origin']:not([open]) {
+    translate: var(--a1-dm-origin-x) var(--a1-dm-origin-y);
+    scale: var(--component-dialog-motion-origin-from);
+  }
+
+  /* Entering: where each motion starts from. */
+  @starting-style {
+    .a1-dialog-motion:not([data-motion='default'])[open] { opacity: 0; }
+    .a1-dialog-motion:not([data-motion='default'])[open]::backdrop { background-color: transparent; backdrop-filter: blur(0); }
+    .a1-dialog-motion[data-motion='scale'][open] { scale: var(--component-dialog-motion-scale-from); }
+    .a1-dialog-motion[data-motion='pop'][open] { scale: var(--component-dialog-motion-pop-from); }
+    .a1-dialog-motion[data-motion='slide'][open] {
+      translate: calc(var(--a1-dm-x) * var(--component-dialog-motion-slide-distance)) calc(var(--a1-dm-y) * var(--component-dialog-motion-slide-distance));
+    }
+    .a1-dialog-motion[data-motion='flip'][open] {
+      transform: perspective(var(--component-dialog-motion-perspective))
+        rotateX(calc(var(--a1-dm-y) * var(--component-dialog-motion-flip-angle)))
+        rotateY(calc(var(--a1-dm-x) * -1 * var(--component-dialog-motion-flip-angle)));
+    }
+    .a1-dialog-motion[data-motion='swing'][open] {
+      transform: perspective(var(--component-dialog-motion-perspective))
+        rotateX(calc(var(--a1-dm-y) * -1 * var(--component-dialog-motion-swing-angle)))
+        rotateY(calc(var(--a1-dm-x) * var(--component-dialog-motion-swing-angle)));
+    }
+    .a1-dialog-motion[data-motion='blur'][open] { scale: var(--component-dialog-motion-scale-from); filter: blur(var(--component-dialog-motion-blur-from)); }
+    .a1-dialog-motion[data-motion='origin'][open] {
+      translate: var(--a1-dm-origin-x) var(--a1-dm-origin-y);
+      scale: var(--component-dialog-motion-origin-from);
+    }
+  }
+}

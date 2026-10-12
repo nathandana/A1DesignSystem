@@ -1,0 +1,10 @@
+{
+  "component": {
+    "trackerMotion": {
+      "fadeOpacity": { "$type": "number", "$value": 0.2 },
+      "popScale": { "$type": "number", "$value": 0.6 },
+      "bounceLift": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "rippleScale": { "$type": "number", "$value": 2 }
+    }
+  }
+}

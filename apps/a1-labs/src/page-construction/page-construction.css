@@ -1,0 +1,241 @@
+/* "Under construction" page loader — reusable core styles. A tower crane on
+   the theme's warning (construction yellow) roles places each block as a
+   placeholder. Dimensions and timing come from component.pageConstruction
+   tokens; JS (PageConstruction.jsx) drives the crane's position through the
+   --a1-page-construction-* custom properties. */
+
+.a1-page-construction {
+  position: relative;
+  /* Page-level: fill the viewport so the mast reaches the ground. */
+  min-block-size: 100vh;
+  padding-block-start: var(--component-page-construction-headroom);
+  transition: padding-block-start var(--component-page-construction-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* Once the crane has gone, its headroom closes and the page settles up. */
+.a1-page-construction[data-phase='exit'] {
+  padding-block-start: 0;
+}
+
+/* Blocks ------------------------------------------------------------------ */
+
+.a1-page-construction :is([data-construction-block], [data-loading-block]) {
+  position: relative;
+}
+
+/* Not yet delivered: keeps its space, invisible. */
+.a1-page-construction [data-construction-state='pending'] {
+  visibility: hidden;
+}
+
+/* Delivered: a placeholder in the block's exact footprint. */
+.a1-page-construction [data-construction-state='placed'] > * {
+  visibility: hidden;
+}
+
+.a1-page-construction :is([data-construction-block], [data-loading-block])::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-raised);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--component-page-construction-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+.a1-page-construction [data-construction-state='placed']::before {
+  opacity: 1;
+  transition: none;
+  transform-origin: bottom center;
+  animation: a1-page-construction-land var(--component-page-construction-settle-duration) var(--semantic-motion-easing-expressive);
+}
+
+/* Dust puffs at both bottom corners as a block lands. */
+.a1-page-construction :is([data-construction-block], [data-loading-block])::after {
+  content: '';
+  position: absolute;
+  inset-block-end: calc(var(--component-page-construction-dust-size) / -2);
+  inset-inline: calc(var(--component-page-construction-dust-size) / -2);
+  block-size: var(--component-page-construction-dust-size);
+  background:
+    radial-gradient(circle at var(--component-page-construction-dust-size) 50%, var(--semantic-color-text-muted) 0 30%, transparent 32%),
+    radial-gradient(circle at calc(100% - var(--component-page-construction-dust-size)) 50%, var(--semantic-color-text-muted) 0 30%, transparent 32%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.a1-page-construction [data-construction-state='placed']::after {
+  animation: a1-page-construction-dust var(--component-page-construction-settle-duration) var(--semantic-motion-easing-exit);
+}
+
+/* Built, still loading: the placeholders shimmer. */
+.a1-page-construction[data-phase='idle'] [data-construction-state='placed']::before {
+  background:
+    linear-gradient(100deg, transparent 30%, var(--semantic-color-surface-panel) 50%, transparent 70%) 0 0 / 300% 100%,
+    var(--semantic-color-surface-raised);
+  animation: a1-page-construction-shimmer var(--component-page-construction-shimmer-duration) var(--semantic-motion-easing-linear) infinite;
+}
+
+.a1-page-construction[data-paused='true'] [data-construction-state='placed']::before {
+  animation-play-state: paused;
+}
+
+/* Done: the page shows through as the placeholders fade. */
+.a1-page-construction [data-construction-state='done']::before {
+  opacity: 0;
+}
+
+/* Crane ------------------------------------------------------------------- */
+
+.a1-page-construction__crane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    transform var(--component-page-construction-exit-duration) var(--semantic-motion-easing-exit),
+    opacity var(--component-page-construction-exit-duration) var(--semantic-motion-easing-exit);
+}
+
+.a1-page-construction[data-phase='exit'] .a1-page-construction__crane {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+/* The jib: a yellow lattice girder across the top. */
+.a1-page-construction__jib {
+  position: absolute;
+  inset-block-start: var(--base-spacing-8);
+  inset-inline: 0;
+  block-size: var(--component-page-construction-jib-height);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 var(--base-spacing-6),
+      var(--semantic-color-status-warn-foreground) var(--base-spacing-6) calc(var(--base-spacing-6) + var(--base-spacing-2))
+    ),
+    var(--semantic-color-status-warn-background);
+  border-block: var(--base-spacing-2) solid var(--semantic-color-status-warn-foreground);
+}
+
+/* The mast: a matching lattice tower on the inline-end edge. */
+.a1-page-construction__mast {
+  position: absolute;
+  inset-block: 0;
+  /* Sits in the page's inline-end gutter, clear of the content. */
+  inset-inline-end: var(--base-spacing-2);
+  inline-size: var(--component-page-construction-mast-width);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 var(--base-spacing-6),
+      var(--semantic-color-status-warn-foreground) var(--base-spacing-6) calc(var(--base-spacing-6) + var(--base-spacing-2))
+    ),
+    var(--semantic-color-status-warn-background);
+  border-inline: var(--base-spacing-2) solid var(--semantic-color-status-warn-foreground);
+}
+
+/* The operator's cab where jib meets mast. */
+.a1-page-construction__cab {
+  position: absolute;
+  inset-block-start: calc(var(--base-spacing-8) + var(--component-page-construction-jib-height));
+  inset-inline-end: calc(var(--base-spacing-2) + var(--component-page-construction-mast-width));
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-16);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-warn-foreground);
+  border-radius: 0 0 var(--base-radius-sm) var(--base-radius-sm);
+  background:
+    linear-gradient(var(--semantic-color-surface-raised) 0 0) var(--base-spacing-2) var(--base-spacing-2) / calc(100% - var(--base-spacing-4)) 50% no-repeat,
+    var(--semantic-color-status-warn-background);
+}
+
+/* The trolley runs along the underside of the jib; JS sets its x. */
+.a1-page-construction__trolley {
+  position: absolute;
+  inset-block-start: calc(var(--base-spacing-8) + var(--component-page-construction-jib-height));
+  inset-inline-start: 0;
+  inline-size: var(--component-page-construction-trolley-width);
+  block-size: var(--base-spacing-8);
+  border-radius: 0 0 var(--base-radius-sm) var(--base-radius-sm);
+  background: var(--semantic-color-text-default);
+  transform: translateX(calc(var(--a1-page-construction-x, 0px) - 50%));
+}
+
+/* The rig hangs from the trolley and swings from its top. */
+.a1-page-construction__rig {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 50%;
+  transform: rotate(var(--a1-page-construction-sway, 0deg));
+  transform-origin: top center;
+}
+
+.a1-page-construction__rope {
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: var(--component-page-construction-rope-width);
+  block-size: var(--a1-page-construction-rope, 0px);
+  background: var(--semantic-color-text-muted);
+  transform: translateX(-50%);
+}
+
+.a1-page-construction__hook {
+  position: absolute;
+  inset-block-start: var(--a1-page-construction-rope, 0px);
+  inline-size: var(--component-page-construction-hook-size);
+  block-size: var(--component-page-construction-hook-size);
+  border-radius: var(--base-radius-sm) var(--base-radius-sm) var(--base-radius-pill) var(--base-radius-pill);
+  background: var(--semantic-color-status-warn-background);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-warn-foreground);
+  transform: translateX(-50%);
+}
+
+/* The load: a placeholder the size of the block being delivered. */
+.a1-page-construction__load {
+  position: absolute;
+  inset-block-start: calc(var(--a1-page-construction-rope, 0px) + var(--component-page-construction-hook-size));
+  inline-size: var(--a1-page-construction-load-width, 0px);
+  block-size: var(--a1-page-construction-load-height, 0px);
+  border: var(--component-divider-size-xs) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-raised);
+  box-shadow: var(--semantic-shadow-md);
+  opacity: 0;
+  transform: translateX(-50%);
+}
+
+.a1-page-construction__crane[data-carrying='true'] .a1-page-construction__load {
+  opacity: 1;
+}
+
+@keyframes a1-page-construction-land {
+  0% { transform: scaleY(0.92); }
+  60% { transform: scaleY(1.02); }
+  100% { transform: none; }
+}
+
+@keyframes a1-page-construction-dust {
+  0% { opacity: 0.7; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(1.4) translateY(calc(var(--component-page-construction-dust-size) / -2)); }
+}
+
+@keyframes a1-page-construction-shimmer {
+  from { background-position: 100% 0, 0 0; }
+  to { background-position: -50% 0, 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-construction [data-construction-state='placed']::before,
+  .a1-page-construction [data-construction-state='placed']::after,
+  .a1-page-construction[data-phase='idle'] [data-construction-state='placed']::before {
+    animation: none;
+  }
+
+  .a1-page-construction,
+  .a1-page-construction__crane,
+  .a1-page-construction :is([data-construction-block], [data-loading-block])::before {
+    transition: none;
+  }
+}

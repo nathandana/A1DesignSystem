@@ -1,0 +1,13 @@
+{
+  "component": {
+    "pagePuzzle": {
+      "buildFast": { "$type": "duration", "$value": "3000ms", "$description": "Quick: time for every piece to arrive." },
+      "buildDuration": { "$type": "duration", "$value": "5000ms", "$description": "Default time for every piece to arrive." },
+      "buildSlow": { "$type": "duration", "$value": "8000ms", "$description": "Relaxed: time for every piece to arrive." },
+      "flyDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "One piece flying in and snapping into place." },
+      "shineDuration": { "$type": "duration", "$value": "1800ms", "$description": "A shine sweeping across the finished puzzle while still loading." },
+      "exitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slower}", "$description": "Each piece falling away when loading finishes." },
+      "tileSize": { "$type": "dimension", "$value": "{base.width.3xs}", "$description": "Approximate size of one puzzle piece." }
+    }
+  }
+}

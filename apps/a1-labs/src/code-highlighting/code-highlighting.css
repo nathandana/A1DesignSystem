@@ -1,0 +1,200 @@
+/* Labs code highlighting: an extension of A1 Code. Each palette sets one
+   variable per token role; roles read them. Colours are mode-aware semantic
+   text roles, so every palette follows light, dark and theme changes. All
+   selectors live under .a1-code-hl. */
+
+/* ── Palettes ────────────────────────────────────────────────────────────── */
+
+/* Full colour: five hues plus muted comments and punctuation. */
+.a1-code-hl--full {
+  --a1-code-hl-keyword: var(--semantic-color-status-error-text);
+  --a1-code-hl-string: var(--semantic-color-status-success-text);
+  --a1-code-hl-number: var(--semantic-color-status-warn-text);
+  --a1-code-hl-constant: var(--semantic-color-status-warn-text);
+  --a1-code-hl-function: var(--semantic-color-text-accent);
+  --a1-code-hl-tag: var(--semantic-color-status-info-text);
+  --a1-code-hl-attribute: var(--semantic-color-text-accent);
+  --a1-code-hl-property: var(--semantic-color-status-info-text);
+  --a1-code-hl-selector: var(--semantic-color-status-info-text);
+  --a1-code-hl-comment: var(--semantic-color-text-muted);
+  --a1-code-hl-punctuation: var(--semantic-color-text-muted);
+  --a1-code-hl-comment-style: italic;
+}
+
+/* Subtle: structure in the accent, strings in green, everything else plain. */
+.a1-code-hl--subtle {
+  --a1-code-hl-keyword: var(--semantic-color-text-accent);
+  --a1-code-hl-tag: var(--semantic-color-text-accent);
+  --a1-code-hl-selector: var(--semantic-color-text-accent);
+  --a1-code-hl-string: var(--semantic-color-status-success-text);
+  --a1-code-hl-comment: var(--semantic-color-text-muted);
+  --a1-code-hl-comment-style: italic;
+}
+
+/* Monochrome: no hue and no italics — weight marks structure (keywords,
+   tags, selectors) and comments are muted, so meaning never depends on hue
+   and code keeps an upright, even texture. */
+.a1-code-hl--mono {
+  --a1-code-hl-emphasis: var(--component-code-highlight-emphasis-weight);
+  --a1-code-hl-comment: var(--semantic-color-text-muted);
+}
+
+/* ── Line spacing ────────────────────────────────────────────────────────── */
+/* Separated: a little more space between logical lines and a little less
+   between the rows of a wrapped line, through A1 Code's line spacing hooks
+   so the gutter and its wrap measurement follow. */
+.a1-code-hl--separated {
+  --a1-code-line-height: var(--component-code-highlight-separated-line-height);
+  --a1-code-line-gap: var(--component-code-highlight-separated-line-gap);
+}
+
+/* ── Roles ───────────────────────────────────────────────────────────────── */
+/* Each role reads its palette colour. Hued roles keep the palette's hue and
+   chroma but take most of their lightness from the default text colour, which
+   every theme keeps readable on its surfaces; the theme status text colours
+   alone drop below 4.5:1 on code surfaces in several themes (Lumen, Kong,
+   Dispatch, Heritage dark). Muted roles move part way to the text colour. */
+
+.a1-code-hl__token--keyword { --a1-code-hl-hue: var(--a1-code-hl-keyword); font-weight: var(--a1-code-hl-emphasis, inherit); }
+.a1-code-hl__token--string { --a1-code-hl-hue: var(--a1-code-hl-string); }
+.a1-code-hl__token--number { --a1-code-hl-hue: var(--a1-code-hl-number); }
+.a1-code-hl__token--constant { --a1-code-hl-hue: var(--a1-code-hl-constant); }
+.a1-code-hl__token--function { --a1-code-hl-hue: var(--a1-code-hl-function); }
+.a1-code-hl__token--tag { --a1-code-hl-hue: var(--a1-code-hl-tag); font-weight: var(--a1-code-hl-emphasis, inherit); }
+.a1-code-hl__token--attribute { --a1-code-hl-hue: var(--a1-code-hl-attribute); }
+.a1-code-hl__token--property { --a1-code-hl-hue: var(--a1-code-hl-property); }
+.a1-code-hl__token--selector { --a1-code-hl-hue: var(--a1-code-hl-selector); font-weight: var(--a1-code-hl-emphasis, inherit); }
+.a1-code-hl__token--comment { --a1-code-hl-muted: var(--a1-code-hl-comment); font-style: var(--a1-code-hl-comment-style, inherit); }
+.a1-code-hl__token--punctuation { --a1-code-hl-muted: var(--a1-code-hl-punctuation); }
+
+/* A role without a palette colour leaves its variable unset, so the colour
+   declaration is invalid at computed time and the token inherits the text
+   colour. Browsers without relative colour syntax use the palette colour. */
+[class*="a1-code-hl__token--"] {
+  color: var(--a1-code-hl-hue);
+}
+
+.a1-code-hl__token--comment,
+.a1-code-hl__token--punctuation {
+  color: color-mix(
+    in oklab,
+    var(--a1-code-hl-muted) calc(var(--component-code-highlight-muted-weight) * 100%),
+    var(--semantic-color-text-default)
+  );
+}
+
+@supports (color: oklch(from red l c h)) {
+  [class*="a1-code-hl__token--"]:not(.a1-code-hl__token--comment, .a1-code-hl__token--punctuation) {
+    color: oklch(
+      from color-mix(
+        in oklch,
+        var(--a1-code-hl-hue) calc(var(--component-code-highlight-hue-weight) * 100%),
+        var(--semantic-color-text-default)
+      )
+      l calc(c / var(--component-code-highlight-hue-weight)) h
+    );
+  }
+}
+
+/* ── Lines: highlight and diff ───────────────────────────────────────────── */
+/* Lines use A1 Code's own line wrapper (.a1-code-block__line: a full-width
+   inline block with a hanging indent when wrapping), followed by a real
+   newline so the text, copy and line numbers stay exactly the source. */
+
+.a1-code-hl__line--highlight { --a1-code-hl-line-bg: var(--semantic-color-action-surface); --a1-code-hl-marker: var(--semantic-color-action-background); }
+.a1-code-hl__line--added { --a1-code-hl-line-bg: var(--semantic-color-status-success-surface); --a1-code-hl-marker: var(--semantic-color-status-success-background); }
+.a1-code-hl__line--removed { --a1-code-hl-line-bg: var(--semantic-color-status-error-surface); --a1-code-hl-marker: var(--semantic-color-status-error-background); }
+
+.a1-code-hl__line--highlight,
+.a1-code-hl__line--added,
+.a1-code-hl__line--removed {
+  background: var(--a1-code-hl-line-bg);
+  box-shadow: inset var(--component-code-highlight-line-marker-width) 0 0 var(--a1-code-hl-marker);
+}
+
+[dir="rtl"] .a1-code-hl__line--highlight,
+[dir="rtl"] .a1-code-hl__line--added,
+[dir="rtl"] .a1-code-hl__line--removed {
+  box-shadow: inset calc(-1 * var(--component-code-highlight-line-marker-width)) 0 0 var(--a1-code-hl-marker);
+}
+
+@media (forced-colors: active) {
+  .a1-code-hl__line--highlight,
+  .a1-code-hl__line--added,
+  .a1-code-hl__line--removed {
+    outline: var(--component-card-border-width) solid Highlight;
+  }
+}
+
+/* ── Live editor (experimental) ──────────────────────────────────────────── */
+/* A transparent textarea over a highlighted layer. Both share font, padding,
+   line height and wrapping so the caret sits on the coloured text. */
+
+.a1-code-hl-editor {
+  display: grid;
+  box-sizing: border-box;
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+  overflow: hidden;
+}
+
+.a1-code-hl-editor:focus-within {
+  border-color: var(--component-button-focus-ring);
+  box-shadow: 0 0 0 var(--component-card-border-width) var(--component-button-focus-ring);
+}
+
+.a1-code-hl-editor__layer,
+.a1-code-hl-editor__input {
+  grid-area: 1 / 1;
+  box-sizing: border-box;
+  inline-size: 100%;
+  margin: 0;
+  padding: var(--base-spacing-16);
+  border: 0;
+  font-family: var(--component-inline-font-family-mono);
+  font-size: var(--component-inline-code-font-size);
+  line-height: var(--component-code-highlight-line-height);
+  letter-spacing: normal;
+  font-variant-ligatures: none;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+/* The global inline `code` rule (inline.css) scales code to 0.875em and pads
+   it; inside the layer that would shrink the coloured text under the caret. */
+.a1-code-hl-editor__layer code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+}
+
+.a1-code-hl-editor__layer {
+  overflow: hidden;
+  color: var(--semantic-color-text-default);
+  pointer-events: none;
+}
+
+.a1-code-hl-editor__input {
+  resize: vertical;
+  overflow: auto;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--semantic-color-text-default);
+  outline: none;
+}
+
+/* Translucent, so the coloured layer underneath shows through the selection
+   (the textarea's own text is transparent). */
+.a1-code-hl-editor__input::selection {
+  background: color-mix(in srgb, var(--semantic-color-action-background) calc(var(--component-code-highlight-selection-strength) * 100%), transparent);
+  color: transparent;
+}
+
+/* Forced colours drops the transparent text trick: show the textarea's own
+   text and hide the colour layer so nothing doubles up. */
+@media (forced-colors: active) {
+  .a1-code-hl-editor__input { color: CanvasText; }
+  .a1-code-hl-editor__layer { visibility: hidden; }
+}

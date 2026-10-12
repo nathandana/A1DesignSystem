@@ -1,0 +1,29 @@
+/* Responsive preview — an iframe sized to a device width, scaled to fit available width and height. */
+.a1-web-responsive-preview {
+  inline-size: 100%;
+}
+
+.a1-web-responsive-preview__caption {
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  color: var(--semantic-color-text-muted);
+}
+
+.a1-web-responsive-preview__viewport {
+  position: relative;
+  /* content-box so the thick bezel wraps the scaled device without shrinking it */
+  box-sizing: content-box;
+  overflow: hidden;
+  /* A chunky device bezel. */
+  border: var(--base-spacing-12) solid var(--semantic-color-surface-inverse);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+.a1-web-responsive-preview__frame {
+  display: block;
+  border: 0;
+  /* The device page scrolls inside the iframe. */
+  transform-origin: top left;
+}

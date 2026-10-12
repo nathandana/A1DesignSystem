@@ -35,6 +35,7 @@ function buildStatusBarSnippet(config, utilityClass = '') {
     config.labelPosition !== 'above' ? `labelPosition="${config.labelPosition}"` : null,
     config.size !== 'md' ? `size="${config.size}"` : null,
     config.indeterminate ? 'indeterminate' : null,
+    config.showPauseControl === false ? 'showPauseControl={false}' : null,
   ].filter(Boolean).join('\n  ')
 
   return `<StatusBar\n  ${props}\n/>`
@@ -49,6 +50,7 @@ export function getDefaultConfig() {
     labelPosition: 'above',
     size: 'md',
     indeterminate: false,
+    showPauseControl: true,
   }
 }
 
@@ -63,6 +65,7 @@ export function Preview({ config, utilityClass = '' }) {
         labelPosition={config.labelPosition}
         size={config.size}
         indeterminate={config.indeterminate}
+        showPauseControl={config.showPauseControl !== false}
         aria-label={config.label ? undefined : (config.ariaLabel || 'Progress')}
       />
     </div>
@@ -114,6 +117,12 @@ export function Controls({ config, setConfig }) {
         label="Indeterminate"
         value={config.indeterminate}
         onChange={(indeterminate) => set({ indeterminate })}
+      />
+      <Toggle prop="showPauseControl"
+        label="Show pause control"
+        helper="Shows an animation pause/play button after 3 seconds of indeterminate progress. Turn off for automatic verification flows; reduced motion still applies."
+        value={config.showPauseControl !== false}
+        onChange={(showPauseControl) => set({ showPauseControl })}
       />
     </Stack>
   )

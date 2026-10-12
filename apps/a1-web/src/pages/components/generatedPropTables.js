@@ -2323,6 +2323,24 @@ export const GENERATED_PROP_TABLES = {
           "description": "Number of rows per page for built-in pagination"
         },
         {
+          "id": "paginationSize",
+          "name": "paginationSize",
+          "type": "\"sm\" | \"md\"",
+          "description": "Size of the page navigation buttons. Default: \"sm\""
+        },
+        {
+          "id": "renderPagination",
+          "name": "renderPagination",
+          "type": "(context: DataTablePaginationContext) => React.ReactNode",
+          "description": "Replace page navigation while retaining built-in filtering, sorting, result count, page-size menu and placement. Called only for multiple pages."
+        },
+        {
+          "id": "paginationPosition",
+          "name": "paginationPosition",
+          "type": "\"top\" | \"bottom\" | \"inline\"",
+          "description": "Place pagination above/below rows, or inline with filters when space permits (wrapping otherwise). Default: \"bottom\""
+        },
+        {
           "id": "totalPages",
           "name": "totalPages",
           "type": "number",
@@ -4391,8 +4409,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "collapseButtonPlacement",
           "name": "collapseButtonPlacement",
-          "type": "\"header\" | \"footer\"",
-          "description": "Where the desktop collapse toggle appears. Default: \"header\""
+          "type": "\"header\" | \"footer\" | \"none\"",
+          "description": "Where the desktop collapse toggle appears, or \"none\" to hide it. Mobile close remains available. Default: \"header\""
         },
         {
           "id": "placement",
@@ -4773,7 +4791,13 @@ export const GENERATED_PROP_TABLES = {
           "id": "indeterminate",
           "name": "indeterminate",
           "type": "boolean",
-          "description": "Shows an animated loading sweep instead of a value-based fill. Removes aria-valuenow so assistive technology announces an indeterminate state. After 3 seconds a pause/resume button appears. Default: false"
+          "description": "Shows an animated loading sweep instead of a value-based fill. Removes aria-valuenow so assistive technology announces an indeterminate state. After 3 seconds a pause/resume button appears unless showPauseControl is false. Default: false"
+        },
+        {
+          "id": "showPauseControl",
+          "name": "showPauseControl",
+          "type": "boolean",
+          "description": "Show the delayed animation pause/play control. Disable for automatic verification; reduced motion still applies. Default: true."
         },
         {
           "id": "className",

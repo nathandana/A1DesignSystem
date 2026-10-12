@@ -4,6 +4,11 @@ import motion          from "../../../../system/tokens/motion.json";
 import colorRamp        from "../../../../system/tokens/color-ramp.json";
 import componentNotification from "../../../../system/tokens/component/notification.json";
 import componentButton  from "../../../../system/tokens/component/button.json";
+import componentImageGeneration from "../../../../system/tokens/component/image-generation.json";
+import componentThinkingTerminal from "../../../../system/tokens/component/thinking-terminal.json";
+import componentSwitchMorph from "../../../../system/tokens/component/switch-morph.json";
+import componentFocusAnimation from "../../../../system/tokens/component/focus-animation.json";
+import componentPageLoading from "../../../../system/tokens/component/page-loading.json";
 import componentCard    from "../../../../system/tokens/component/card.json";
 import componentCheckboxGroup from "../../../../system/tokens/component/checkbox-group.json";
 import componentDialog  from "../../../../system/tokens/component/dialog.json";
@@ -57,7 +62,7 @@ const SOURCE_FILES = [
   breakpoint, motion, colorRamp, componentNotification, componentButton, componentCard, componentDialog,
   componentCheckboxGroup, componentDivider, componentField, componentIconBtn, componentInline,
   componentLink, componentMenu, componentMsg, componentPag, componentRadioGroup, componentSeg,
-  componentTab, componentPageLayout, componentSwitch, shadow, spacing, typography,
+  componentTab, componentPageLayout, componentSwitch, componentImageGeneration, componentPageLoading, componentFocusAnimation, componentSwitchMorph, componentThinkingTerminal, shadow, spacing, typography,
 ];
 
 export const TOKEN_REFS = SOURCE_FILES.reduce(

@@ -197,7 +197,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `TreeMenu` | — | Hierarchical tree. | `items`, `variant` (`expanded`/`collapsed`), `selectedId`, `showExpandControls` |
 | `Pagination` | — | Pager. | `page`, `pageCount`, `onPageChange` |
 | `DefinitionList` | — | Label/value pairs. | `items` (`{label,value}[]`; `label` is required and renders the term; do not use `term`), `direction` (row/column), `size`, `labelWidth` |
-| `DataTable` | — | Table. | `columns` (`{key,label}[]`), `rows` (objects keyed by each column `key`, include a unique `id`), `size` (**`comfortable`/`default`/`compact`** — not sm/md/lg; omit for auto), `notices` |
+| `DataTable` | — | Table. | `columns` (`{key,label}[]`), `rows` (objects keyed by each column `key`, include a unique `id`), `size` (**`comfortable`/`default`/`compact`** — not sm/md/lg; omit for auto), `notices`, `pageSize`, `paginationPosition` (`top`/`bottom`/`both`/`inline`, default bottom), `paginationSize` (`sm`/`md`, default sm), editor `paginationExample` (`a1`/`compact`; never serialize a callback) |
 | `Calendar` | — | Calendar (experimental). | `variant`, `initialMonth`, `selectable` |
 
 > **Note:** `TopHeader`, `BottomDrawer`, `PageNav`, `TreeMenu`, `DataTable`, `Tabs`, `Toolbar`, `Slider`, `Calendar`, `Pagination` take structured array/object props — generate them sparingly and follow the prop shapes in `components.md` if used.

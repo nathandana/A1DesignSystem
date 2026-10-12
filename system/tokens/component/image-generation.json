@@ -1,0 +1,98 @@
+{
+  "component": {
+    "imageGeneration": {
+      "duration": {
+        "$type": "duration",
+        "$value": "15000ms"
+      },
+      "completionHold": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slow}"
+      },
+      "revealDuration": {
+        "$type": "duration",
+        "$value": "1500ms"
+      },
+      "orbitDuration": {
+        "$type": "duration",
+        "$value": "18000ms"
+      },
+      "pulseDuration": {
+        "$type": "duration",
+        "$value": "3000ms"
+      },
+      "maxWidth": {
+        "$type": "dimension",
+        "$value": "{base.width.2xl}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{component.card.borderRadius}"
+      },
+      "borderWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.2}"
+      },
+      "glow": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}"
+      },
+      "background": {
+        "$type": "color",
+        "$value": "{semantic.color.surface.card}"
+      },
+      "startColor": {
+        "$type": "color",
+        "$value": "{semantic.color.status.info.background}"
+      },
+      "endColor": {
+        "$type": "color",
+        "$value": "{semantic.color.status.success.background}"
+      },
+      "discCountMin": {
+        "$type": "number",
+        "$value": 8
+      },
+      "discCountMax": {
+        "$type": "number",
+        "$value": 96
+      },
+      "discRadius": {
+        "$type": "number",
+        "$value": 0.12,
+        "$description": "Disc radius as a fraction of the shorter frame edge."
+      },
+      "discOpacity": {
+        "$type": "number",
+        "$value": 0.24
+      },
+      "pulseStrength": {
+        "$type": "number",
+        "$value": 0.12
+      },
+      "waveAmplitude": {
+        "$type": "number",
+        "$value": 0.035,
+        "$description": "Reveal wave amplitude as a fraction of the frame height."
+      },
+      "blobRadiusMin": {
+        "$type": "number", "$value": 0.2,
+        "$description": "Initial blob radius as a fraction of the shorter frame edge."
+      },
+      "blobRadiusMax": {
+        "$type": "number", "$value": 0.34,
+        "$description": "Final blob radius as a fraction of the shorter frame edge."
+      },
+      "blobComplexityMin": { "$type": "number", "$value": 2 },
+      "blobComplexityMax": { "$type": "number", "$value": 9 },
+      "blobAmplitude": { "$type": "number", "$value": 0.32 },
+      "blobBrightnessMin": { "$type": "number", "$value": 0.24 },
+      "blobBrightnessMax": { "$type": "number", "$value": 0.95 },
+      "blobLayers": { "$type": "number", "$value": 4 },
+      "blobGlow": { "$type": "dimension", "$value": "{base.spacing.64}" },
+      "blobHighlightColor": {
+        "$type": "color", "$value": "{semantic.color.text.default}"
+      }
+    }
+  }
+}

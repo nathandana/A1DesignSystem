@@ -1,0 +1,13 @@
+/* A1 owns the hero layout. Only the isolated WebGL surface needs explicit
+   bounds so the shared physical scene can fit its camera to the container. */
+.a1-flip-billboard__stage {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: var(--component-flip-billboard-stage-ratio);
+}
+
+.a1-flip-billboard__stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}

@@ -15,6 +15,7 @@ export function StatusBar({
   labelPosition = "above",
   size          = "md",
   indeterminate = false,
+  showPauseControl = true,
   className     = "",
   ...props
 }) {
@@ -27,14 +28,14 @@ export function StatusBar({
   const [showPause, setShowPause] = useState(false);
 
   useEffect(() => {
-    if (!indeterminate) {
+    if (!indeterminate || !showPauseControl) {
       setShowPause(false);
       setPaused(false);
       return;
     }
     const t = setTimeout(() => setShowPause(true), 3000);
     return () => clearTimeout(t);
-  }, [indeterminate]);
+  }, [indeterminate, showPauseControl]);
 
   const resolvedSize     = SIZES.includes(size) ? size : "md";
   const resolvedPosition = POSITIONS.includes(labelPosition) ? labelPosition : "above";
@@ -76,7 +77,7 @@ export function StatusBar({
             style={indeterminate ? undefined : { inlineSize: `${pct}%` }}
           />
         </div>
-        {showPause && (
+        {showPauseControl && showPause && (
           <Button
             size="sm"
             variant="secondary"
