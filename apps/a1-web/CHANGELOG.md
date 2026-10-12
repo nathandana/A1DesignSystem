@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **npm release automation** — publishing now runs on release-branch pushes as well as main, uses npm trusted publishing, rebuilds and checks packages, and verifies registry versions and uploaded integrity before reporting success. Existing website release checks remain required; older reruns cannot move npm's latest tag backwards.
+- **Release screenshot runner** — run the visual gate on macOS to match the authored baselines and avoid Ubuntu font-rendering mismatches. Package checks and publication stay on Ubuntu. Only publication is serialized, so separate release checks can run concurrently.
 
 ## 0.34.0 — 2026-10-12
 

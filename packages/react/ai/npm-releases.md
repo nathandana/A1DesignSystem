@@ -2,8 +2,9 @@
 
 The release workflow is `.github/workflows/publish.yml`. Pushes to `release`
 and `main` run it automatically; **Run workflow** can retry either branch.
-Other branches cannot publish through this workflow. Runs are serialized to
-prevent concurrent changes to npm's `latest` tag.
+Other branches cannot publish through this workflow. Publication jobs are
+serialized to prevent concurrent changes to npm's `latest` tag; validation jobs
+can run independently.
 
 ## Release contract
 
@@ -14,6 +15,11 @@ prevent concurrent changes to npm's `latest` tag.
    existing A1 Web release gate must pass before publication. The publish job
    rebuilds tokens, checks RSC compatibility and declarations, validates the
    React tarball and runs the publication-script tests.
+   Visual checks run on `macos-15`, matching the platform used to author the
+   checked-in screenshots. Comparing those baselines on Ubuntu caused widespread
+   font-rendering differences despite a passing fresh local build. npm package
+   checks and publication continue to run on Ubuntu. Screenshot thresholds and
+   accessibility checks are unchanged.
 3. The workflow publishes React and React Native only. Private packages,
    including Pure CSS, and separately deployed apps are outside this npm job.
 4. `scripts/publish-npm.mjs` publishes missing stable versions, verifies uploaded
