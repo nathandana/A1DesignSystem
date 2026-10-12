@@ -89,6 +89,12 @@ review to avoid awkward word breaks without changing component styling.
 Website publication does not publish npm packages, create a GitHub release/tag
 or merge release to main. Labs 0.73.2 remains live on its separate site.
 
+React 0.33.0 was subsequently published to npm on Oct. 12, 2026 after a fresh
+token build, RSC/declaration checks and tarball validation. The public registry
+confirmed `latest` at 0.33.0 and matching tarball integrity. See
+[npm releases](npm-releases.md) for the automatic release workflow and its
+required publication checks.
+
 The previous A1 Web production deployment is
 `6ab6a1b144a3550008afb4ff` (main at `b8fc8fb9`). Restore that Netlify deployment to
 roll back the website. Keep the release branch and package changelogs as the

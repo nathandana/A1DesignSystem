@@ -26,6 +26,10 @@ For build commands and key file locations:
 
 @packages/react/ai/quick-orientation.md
 
+For npm publication, release completion checks and trusted publishing:
+
+@packages/react/ai/npm-releases.md
+
 For the accessibility check policy and a11y commands:
 
 @packages/react/ai/a11y-policy.md
