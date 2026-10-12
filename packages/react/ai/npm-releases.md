@@ -20,6 +20,9 @@ can run independently.
    font-rendering differences despite a passing fresh local build. npm package
    checks and publication continue to run on Ubuntu. Screenshot thresholds and
    accessibility checks are unchanged.
+   The Figure route serves its existing demo photo from a checked-in test
+   fixture and waits for decoding before capturing, so CDN timing cannot switch
+   the baseline between an empty region and the loaded image.
 3. The workflow publishes React and React Native only. Private packages,
    including Pure CSS, and separately deployed apps are outside this npm job.
 4. `scripts/publish-npm.mjs` publishes missing stable versions, verifies uploaded
@@ -71,3 +74,12 @@ npm view @gtivr4/a1-design-system-react-native version
 ```
 
 `node scripts/publish-npm.mjs` is a publishing command, not a dry run.
+
+## Figure test asset
+
+`tests/a1-web/fixtures/figure-demo.jpg` freezes the existing configurator photo
+from [Unsplash](https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1280&q=80&fm=jpg&fit=crop),
+captured Oct. 12, 2026. The route test intercepts only that demo URL while
+checking `/components/figure`, then removes the handler. The application and
+its source controls keep their existing URL. The reviewed loaded-image baseline
+replaces an empty capture taken before the photo loaded.
