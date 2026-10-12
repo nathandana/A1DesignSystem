@@ -5786,6 +5786,20 @@
             "ar": "يحمل loginButton قيمة { label } فقط — يُركَّب سلوك النقر أثناء التشغيل."
           }
         },
+        "jsonTopHeaderEndContent": {
+          "$type": "string",
+          "$value": "endContent is composed at runtime and is not included in the JSON.",
+          "$description": "Info note in the Top Header configurator's JSON view when End content is on, explaining the endContent prop is a runtime ReactNode that page definitions do not carry.",
+          "locale": {
+            "es": "endContent se compone en tiempo de ejecución y no se incluye en el JSON.",
+            "fr": "endContent est composé à l'exécution et n'est pas inclus dans le JSON.",
+            "de": "endContent wird zur Laufzeit zusammengesetzt und ist nicht im JSON enthalten.",
+            "pt": "endContent é composto em tempo de execução e não é incluído no JSON.",
+            "ja": "endContentは実行時に構成され、JSONには含まれません。",
+            "zh": "endContent 在运行时组合，不包含在 JSON 中。",
+            "ar": "يُركَّب endContent أثناء التشغيل ولا يُضمَّن في JSON."
+          }
+        },
         "jsonSplitNote": {
           "$type": "string",
           "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",

@@ -223,7 +223,9 @@
 
 /* ── Zebra striping ──────────────────────────────────────────────────────── */
 
-.a1-data-table--zebra tbody tr:nth-child(even) td {
+/* Every data row is followed by a (hidden) mobile-card row, so counting all
+   rows would only ever stripe the hidden card rows. Count data rows only. */
+.a1-data-table--zebra tbody tr:nth-child(even of .a1-data-table__desktop-row) td {
   background: var(--semantic-color-surface-panel);
 }
 
@@ -513,7 +515,7 @@
     justify-content: flex-start;
   }
 
-  .a1-data-table-wrapper--mobile-cards .a1-data-table--zebra tbody tr:nth-child(even) td {
+  .a1-data-table-wrapper--mobile-cards .a1-data-table--zebra tbody tr:nth-child(even of .a1-data-table__desktop-row) td {
     background: transparent;
   }
 

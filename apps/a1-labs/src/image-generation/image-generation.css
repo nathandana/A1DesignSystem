@@ -1,0 +1,20 @@
+/* App-specific procedural artwork: A1 has no disc-field/perimeter-reveal
+   component. Visual values live in component.imageGeneration tokens; the
+   canvas renderer uses those tokens for all color, size and motion settings. */
+.a1-image-generation {
+  inline-size: 100%;
+  max-inline-size: var(--component-image-generation-max-width);
+  margin-inline: auto;
+}
+
+.a1-image-generation__canvas {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: var(--a1-image-generation-ratio);
+  border-radius: var(--component-image-generation-radius);
+  background: var(--component-image-generation-background);
+}
+
+.a1-image-generation__percentage {
+  font-variant-numeric: tabular-nums;
+}

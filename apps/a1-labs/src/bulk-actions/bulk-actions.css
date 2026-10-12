@@ -1,0 +1,50 @@
+/* Bulk actions — the experiment draws its own always-visible bar (reusing
+   A1's bulk bar styles), so A1 Data Table's built-in show/hide bar, which
+   lives inside the table wrapper, is hidden. */
+.a1-bulk-lab .a1-data-table-wrapper .a1-data-table-bulk-actions { display: none; }
+
+/* Select-all checkbox in the bar: the table header's checkbox is hidden
+   (its column stays, so the table doesn't shift) and the bar's checkbox,
+   with A1's own checkbox style, sits beside the count. */
+.a1-bulk-lab[data-bar-checkbox] .a1-data-table__select-header .a1-data-table__checkbox { visibility: hidden; }
+/* Keep the column named for screen readers once its checkbox is hidden. */
+.a1-bulk-lab[data-bar-checkbox] .a1-data-table__select-header { position: relative; }
+.a1-bulk-lab[data-bar-checkbox] .a1-data-table__select-header::after {
+  content: "Select";
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.a1-bulk-lab__select-page {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-8);
+  cursor: pointer;
+}
+
+/* Select all products: the scope message sits in the bar beside Delete. */
+.a1-bulk-lab__scope {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--base-spacing-8);
+}
+
+/* Animate away: deleted rows flash the error surface, slide and fade out.
+   The rows below then glide up (scripted, Web Animations). Movement only
+   plays with prefers-reduced-motion: no-preference; otherwise rows go at once. */
+@media (prefers-reduced-motion: no-preference) {
+  .a1-bulk-lab[data-leaving] .a1-data-table__desktop-row[data-selected='true'] > td,
+  .a1-bulk-lab[data-leaving] .a1-data-table__mobile-card[data-selected='true'] {
+    animation: a1-bulk-leave var(--component-bulk-actions-leave-duration) var(--semantic-motion-easing-exit) forwards;
+  }
+}
+
+@keyframes a1-bulk-leave {
+  0% { opacity: 1; translate: 0 0; }
+  30% { opacity: 1; translate: 0 0; background-color: var(--semantic-color-status-error-surface); }
+  100% { opacity: 0; translate: var(--component-bulk-actions-leave-distance) 0; background-color: var(--semantic-color-status-error-surface); }
+}

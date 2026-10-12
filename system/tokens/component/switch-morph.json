@@ -1,0 +1,23 @@
+{
+  "component": {
+    "switchMorph": {
+      "scaleStandard": { "$type": "number", "$value": 1 },
+      "scaleSmall": { "$type": "number", "$value": 2 },
+      "scaleMedium": { "$type": "number", "$value": 3 },
+      "scaleLarge": { "$type": "number", "$value": 4 },
+      "strokeThickness": { "$type": "number", "$value": 0.075 },
+      "easing": { "$value": "cubic-bezier(0.25, 0.4, 0.75, 0.6)", "$description": "Gentle easing keeps the middle moving, with only a slight slowdown relative to the ends." },
+      "strokeRotation": { "$value": "90deg" },
+      "strokeAngle": { "$value": "45deg" },
+      "crossStart": { "$type": "number", "$value": 0.28 },
+      "crossEnd": { "$type": "number", "$value": 0.72 },
+      "crossLength": { "$type": "number", "$value": 0.622254 },
+      "checkStartX": { "$type": "number", "$value": 0.22 },
+      "checkStartY": { "$type": "number", "$value": 0.52 },
+      "checkJointX": { "$type": "number", "$value": 0.42 },
+      "checkJointY": { "$type": "number", "$value": 0.72 },
+      "checkShortLength": { "$type": "number", "$value": 0.282843 },
+      "checkLongLength": { "$type": "number", "$value": 0.537401 }
+    }
+  }
+}

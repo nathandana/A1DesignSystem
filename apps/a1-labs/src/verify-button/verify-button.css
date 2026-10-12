@@ -1,0 +1,66 @@
+/* Unique safety-shutter artwork only. A1 Stack, Button and Paragraph retain
+   all layout, typography, focus and interaction styling. */
+.a1-verify-button {
+  --a1-verify-button-ink: var(--semantic-color-status-error-background);
+  inline-size: 100%;
+  max-inline-size: var(--base-width-sm);
+  text-align: center;
+}
+.a1-verify-button__mechanism {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  inline-size: 100%;
+  padding-block: var(--base-spacing-32);
+  border: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-surface-panel);
+}
+.a1-verify-button__shutter {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 50%;
+  z-index: -1;
+  background: repeating-linear-gradient(var(--component-verify-button-shutter-angle), var(--semantic-color-surface-panel) 0 var(--component-verify-button-stripe-size), var(--semantic-color-border-default) var(--component-verify-button-stripe-size) calc(var(--component-verify-button-stripe-size) * 2));
+  transition: transform var(--semantic-motion-duration-slower) var(--semantic-motion-easing-expressive);
+}
+.a1-verify-button__shutter--left { inset-inline-start: 0; }
+.a1-verify-button__shutter--right { inset-inline-end: 0; }
+.a1-verify-button:not([data-phase="locked"]) .a1-verify-button__shutter--left { transform: translateX(calc(-1 * var(--component-verify-button-shutter-travel))); }
+.a1-verify-button:not([data-phase="locked"]) .a1-verify-button__shutter--right { transform: translateX(var(--component-verify-button-shutter-travel)); }
+.a1-verify-button__dial {
+  position: relative;
+  inline-size: var(--component-verify-button-dial-size);
+  block-size: var(--component-verify-button-dial-size);
+  margin-inline: auto;
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-page);
+}
+.a1-verify-button__dial::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--component-verify-button-ring-width);
+  background: conic-gradient(var(--a1-verify-button-ink) var(--a1-verify-button-progress), var(--semantic-color-border-strong) 0);
+  mask: linear-gradient(currentColor 0 0) content-box, linear-gradient(currentColor 0 0);
+  mask-composite: exclude;
+}
+.a1-verify-button__symbol { color: var(--semantic-color-text-default); }
+.a1-verify-button[data-phase="complete"] { --a1-verify-button-ink: var(--semantic-color-status-success-background); }
+.a1-verify-button[data-phase="complete"] .a1-verify-button__symbol {
+  animation: a1-verify-button-arrive var(--semantic-motion-duration-slower) var(--semantic-motion-easing-expressive) both;
+}
+@keyframes a1-verify-button-arrive {
+  from { opacity: 0; transform: translateY(var(--component-verify-button-launch-travel)) scale(0); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a1-verify-button__shutter { transition: none; }
+  .a1-verify-button__symbol { animation: none !important; }
+  .a1-verify-button__dial::before { background: var(--semantic-color-border-strong); }
+}
+@media (forced-colors: active) {
+  .a1-verify-button__dial { border: var(--component-verify-button-ring-width) solid ButtonText; }
+  .a1-verify-button__dial::before { display: none; }
+}

@@ -1,0 +1,77 @@
+/* Accordion motion — scoped transitions for the A1 Accordion. A1 opens by
+   moving its body's grid row from 0fr to 1fr; these variants set that timing
+   and add movement to the body's inner content, both ways. Distances and
+   timing come from component.accordionMotion and the motion tokens. All
+   movement sits inside prefers-reduced-motion: no-preference. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Every variant except Default: height and chevron follow the duration. */
+  .a1-accordion-motion:not([data-motion='default']) .a1-accordion__body {
+    transition: grid-template-rows var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard);
+  }
+  .a1-accordion-motion:not([data-motion='default']) .a1-accordion__chevron {
+    transition: transform var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard);
+  }
+  .a1-accordion-motion:not([data-motion='default']) .a1-accordion__body-inner {
+    transition:
+      opacity var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard),
+      transform var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard),
+      filter var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard),
+      clip-path var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard);
+  }
+
+  /* Smooth: the content fades with the height. */
+  .a1-accordion-motion[data-motion='smooth'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner { opacity: 0; }
+
+  /* Slide: content slides down from above as it fades in. */
+  .a1-accordion-motion[data-motion='slide'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--component-accordion-motion-shift)));
+  }
+
+  /* Bounce: content springs to size with an overshooting ease. */
+  .a1-accordion-motion[data-motion='bounce'] .a1-accordion__body-inner,
+  .a1-accordion-motion[data-motion='bounce'] .a1-accordion__chevron {
+    transition-timing-function: var(--semantic-motion-easing-expressive);
+  }
+  .a1-accordion-motion[data-motion='bounce'] .a1-accordion__body-inner { transform-origin: top center; }
+  .a1-accordion-motion[data-motion='bounce'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--component-accordion-motion-shift))) scale(var(--component-accordion-motion-bounce-scale));
+  }
+
+  /* Stagger: each piece of content appears in turn when opening; all leave
+     together when closing. */
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion__body-inner > * > * {
+    transition:
+      opacity var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard),
+      transform var(--a1-accordion-motion-duration) var(--semantic-motion-easing-standard);
+  }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner > * > * {
+    opacity: 0;
+    transform: translateY(var(--component-accordion-motion-shift));
+  }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion--open .a1-accordion__body-inner > * > :nth-child(2) { transition-delay: var(--component-accordion-motion-stagger-step); }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion--open .a1-accordion__body-inner > * > :nth-child(3) { transition-delay: calc(2 * var(--component-accordion-motion-stagger-step)); }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion--open .a1-accordion__body-inner > * > :nth-child(4) { transition-delay: calc(3 * var(--component-accordion-motion-stagger-step)); }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion--open .a1-accordion__body-inner > * > :nth-child(5) { transition-delay: calc(4 * var(--component-accordion-motion-stagger-step)); }
+  .a1-accordion-motion[data-motion='stagger'] .a1-accordion--open .a1-accordion__body-inner > * > :nth-child(n + 6) { transition-delay: calc(5 * var(--component-accordion-motion-stagger-step)); }
+
+  /* Unfold: content hinges down from the header in perspective. */
+  .a1-accordion-motion[data-motion='unfold'] .a1-accordion__body { perspective: var(--base-width-md); }
+  .a1-accordion-motion[data-motion='unfold'] .a1-accordion__body-inner { transform-origin: top center; }
+  .a1-accordion-motion[data-motion='unfold'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner {
+    opacity: 0;
+    transform: rotateX(var(--component-accordion-motion-unfold-angle));
+  }
+
+  /* Blur: content comes into focus. */
+  .a1-accordion-motion[data-motion='blur'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner {
+    opacity: 0;
+    filter: blur(var(--component-accordion-motion-blur));
+  }
+
+  /* Wipe: content is revealed from the top down. */
+  .a1-accordion-motion[data-motion='wipe'] .a1-accordion__body-inner { clip-path: inset(0 0 0 0); }
+  .a1-accordion-motion[data-motion='wipe'] .a1-accordion:not(.a1-accordion--open) .a1-accordion__body-inner { clip-path: inset(0 0 100% 0); }
+}

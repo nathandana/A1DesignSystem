@@ -1,0 +1,20 @@
+{
+  "component": {
+    "switchThree": {
+      "canvasPadding": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "trackDepth": { "$type": "number", "$value": 2.4 },
+      "thumbDepth": { "$type": "number", "$value": 2 },
+      "bevel": { "$type": "number", "$value": 0.5 },
+      "strokeDepth": { "$type": "number", "$value": 0.5 },
+      "lift": { "$type": "number", "$value": 1.2 },
+      "tilt": { "$type": "number", "$value": 0.14 },
+      "viewTilt": { "$type": "number", "$value": 0.24 },
+      "roughness": { "$type": "number", "$value": 0.32 },
+      "metalness": { "$type": "number", "$value": 0.15 },
+      "ambientIntensity": { "$type": "number", "$value": 2 },
+      "keyIntensity": { "$type": "number", "$value": 3 },
+      "fillIntensity": { "$type": "number", "$value": 1 },
+      "light": { "$type": "color", "$value": "{base.color.neutral.0}" }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "component": {
+    "radioVariants": {
+      "hoverScale": {
+        "$type": "number",
+        "$value": 1.15,
+        "$description": "Grow: the ring swells on hover."
+      },
+      "pressScale": {
+        "$type": "number",
+        "$value": 0.88,
+        "$description": "Grow: the ring squishes while pressed."
+      },
+      "popScale": {
+        "$type": "number",
+        "$value": 1.25,
+        "$description": "Grow: peak swell as a radio becomes selected."
+      },
+      "settleScale": {
+        "$type": "number",
+        "$value": 0.95,
+        "$description": "Grow: brief undershoot before the ring settles."
+      },
+      "previewDot": {
+        "$type": "number",
+        "$value": 0.5,
+        "$description": "Grow: size of the faint dot previewed on hover, as a fraction of the selected dot."
+      },
+      "dotOvershoot": {
+        "$type": "number",
+        "$value": 1.4,
+        "$description": "Grow: how far the selected dot overshoots its size as it springs in."
+      },
+      "ripple": {
+        "$type": "dimension",
+        "$value": "{base.spacing.12}",
+        "$description": "Ripple: how far the ring ripples out when a radio is chosen."
+      },
+      "halo": {
+        "$type": "dimension",
+        "$value": "{base.spacing.4}",
+        "$description": "Ripple: width of the soft halo around a hovered radio."
+      },
+      "drop": {
+        "$type": "dimension",
+        "$value": "{base.spacing.12}",
+        "$description": "Bounce: how far above the centre the dot falls from, and below it drops to when deselected."
+      },
+      "rebound": {
+        "$type": "dimension",
+        "$value": "{base.spacing.2}",
+        "$description": "Bounce: height of the dot's small rebound."
+      },
+      "squashWide": {
+        "$type": "number",
+        "$value": 1.12,
+        "$description": "Bounce and Jelly: horizontal stretch as the ring squashes."
+      },
+      "squashTall": {
+        "$type": "number",
+        "$value": 0.86,
+        "$description": "Bounce and Jelly: vertical squash as the ring squashes."
+      },
+      "hoverWide": {
+        "$type": "number",
+        "$value": 1.08,
+        "$description": "Jelly: horizontal stretch of a hovered ring."
+      },
+      "hoverTall": {
+        "$type": "number",
+        "$value": 0.94,
+        "$description": "Jelly: vertical squash of a hovered ring."
+      },
+      "travelStretch": {
+        "$type": "number",
+        "$value": 1.35,
+        "$description": "Travel: how much the selection stretches along its path mid-flight."
+      },
+      "travelPinch": {
+        "$type": "number",
+        "$value": 0.8,
+        "$description": "Travel: how much the selection narrows across its path mid-flight."
+      },
+      "thickenHoverHole": {
+        "$type": "number",
+        "$value": 0.82,
+        "$description": "Thicken: the open centre of a hovered ring, as a fraction of the radio (the ring thickens slightly)."
+      }
+    }
+  }
+}

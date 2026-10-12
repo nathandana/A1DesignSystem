@@ -1,3 +1,5 @@
+import { Inverse } from "../inverse/Inverse.jsx";
+import { Inset } from "../inset/Inset.jsx";
 import { useState } from "react";
 import { SegmentedControl } from "./SegmentedControl.jsx";
 
@@ -130,6 +132,33 @@ export const SelectedLabelOnly = {
           { value: "history",   label: "History",   icon: "history" },
         ]}
       />
+    );
+  },
+};
+
+export const InverseColorScheme = {
+  name: "Inverse color scheme",
+  parameters: {
+    docs: { description: { story: 'Inactive and hovered segments use semantic text colors from their current mode or inverse scope, including icon-only controls.' } },
+  },
+  render: () => {
+    const [value, setValue] = useState('dark');
+    return (
+      <Inverse>
+        <Inset space={16}>
+          <SegmentedControl
+            size="sm"
+            aria-label="Color scheme"
+            value={value}
+            onChange={setValue}
+            options={[
+              { value: 'light', icon: 'light_mode', ariaLabel: 'Light mode' },
+              { value: 'dark', icon: 'dark_mode', ariaLabel: 'Dark mode' },
+              { value: 'system', icon: 'desktop_windows', ariaLabel: 'System mode' },
+            ]}
+          />
+        </Inset>
+      </Inverse>
     );
   },
 };

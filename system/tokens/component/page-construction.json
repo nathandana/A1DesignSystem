@@ -1,0 +1,20 @@
+{
+  "component": {
+    "pageConstruction": {
+      "stepFast": { "$type": "duration", "$value": "800ms", "$description": "Quick: time for the crane to fetch, place and return for one block." },
+      "stepDuration": { "$type": "duration", "$value": "1300ms", "$description": "Default time for the crane to fetch, place and return for one block." },
+      "stepSlow": { "$type": "duration", "$value": "2000ms", "$description": "Relaxed: time for the crane to fetch, place and return for one block." },
+      "headroom": { "$type": "dimension", "$value": "{base.spacing.56}", "$description": "Space above the page reserved for the crane's jib and trolley." },
+      "jibHeight": { "$type": "dimension", "$value": "{base.spacing.16}", "$description": "Thickness of the crane's horizontal jib." },
+      "mastWidth": { "$type": "dimension", "$value": "{base.spacing.12}", "$description": "Width of the crane's vertical mast." },
+      "trolleyWidth": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Width of the trolley that runs along the jib." },
+      "ropeWidth": { "$type": "dimension", "$value": "{base.spacing.2}", "$description": "Width of the hoist rope." },
+      "hookSize": { "$type": "dimension", "$value": "{base.spacing.12}", "$description": "Size of the hook block at the end of the rope." },
+      "raisedRope": { "$type": "dimension", "$value": "{base.spacing.8}", "$description": "Rope length while the hook is raised." },
+      "dustSize": { "$type": "dimension", "$value": "{base.spacing.12}", "$description": "Size of the dust puffs when a block lands." },
+      "settleDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slow}", "$description": "A block's small squash as it lands, and its dust puff." },
+      "exitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "The crane lifting away, and placeholders turning into the page, when loading finishes." },
+      "shimmerDuration": { "$type": "duration", "$value": "1600ms", "$description": "Placeholder shimmer while the page is built but still loading." }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+/* Fitted type — scoped Labs styles. Font sizes are set per line by script;
+   everything else comes from type tokens and component.fitText. */
+
+.a1-fit-text {
+  display: grid;
+  gap: var(--component-fit-text-line-gap);
+  margin: 0;
+  font-family: var(--a1-fit-text-font, var(--component-heading-font-family-display));
+  line-height: var(--component-fit-text-line-height);
+  color: var(--semantic-color-text-default);
+  overflow-wrap: anywhere;
+}
+.a1-fit-text[data-weight='bold'] { font-weight: var(--base-font-weight-bold); }
+.a1-fit-text[data-weight='regular'] { font-weight: var(--base-font-weight-regular); }
+
+.a1-fit-text__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--base-spacing-8);
+}
+.a1-fit-text[data-align='center'] .a1-fit-text__row { justify-content: center; }
+
+/* Measured on one line; a line that would be smaller than the minimum wraps. */
+.a1-fit-text__line { white-space: nowrap; }
+.a1-fit-text__line[data-wraps='true'] { white-space: normal; }
+
+.a1-fit-text__size {
+  flex-shrink: 0;
+  font-family: var(--base-font-family-mono);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-regular);
+  color: var(--semantic-color-text-muted);
+}
+
+/* The preview frame: a container whose width the configuration sets. */
+.a1-fit-text-frame {
+  inline-size: min(100%, var(--a1-fit-text-frame-width, 100%));
+  padding: var(--base-spacing-24);
+  border: var(--component-field-border-width) dashed var(--semantic-color-border-default);
+  border-radius: var(--base-radius-lg);
+}

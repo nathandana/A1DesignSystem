@@ -7,6 +7,7 @@ import { PageLayout } from "../page-layout/PageLayout.jsx";
 import { PageNav } from "../page-nav/PageNav.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { Section } from "../section/Section.jsx";
+import { Stack } from "../stack/Stack.jsx";
 import { DataTable } from "./DataTable.jsx";
 import { Banner } from "../banner/Banner.jsx";
 import { requiredIconArgType } from "../../storybook/icon-controls.js";
@@ -131,6 +132,8 @@ export const Configurable = {
     pageSize:         undefined,
     defaultPageSize:  undefined,
     pageSizeOptions:  [],
+    paginationPosition: "bottom",
+    paginationSize: "sm",
     rowCount:         8,
   },
   argTypes: {
@@ -148,6 +151,9 @@ export const Configurable = {
     emptyIcon:        { ...requiredIconArgType("Empty state icon name") },
     pageSize:         { control: "number", description: "Controlled rows per page for built-in client-side pagination" },
     defaultPageSize:  { control: "number", description: "Initial rows per page for uncontrolled built-in pagination" },
+    renderPagination: { control: false, description: "Render custom page navigation from the resolved page context; see CustomPagination" },
+    paginationSize: { control: "inline-radio", options: ["sm", "md"], description: "Size of the pagination buttons" },
+    paginationPosition: { control: "inline-radio", options: ["top", "bottom", "both", "inline"], description: "Position of pagination and result count" },
     pageSizeOptions:  { control: "object", description: "Rows-per-page choices shown in the pagination footer" },
     rowCount: {
       control: { type: "range", min: 0, max: 20 },
@@ -262,6 +268,33 @@ export const Sortable = {
       />
     );
   },
+};
+
+export const PaginationAbove = {
+  render: () => <DataTable columns={SORTABLE_COLUMNS} rows={ALL_ROWS} defaultPageSize={3} pageSizeOptions={[3, 5, 10]} paginationPosition="top" caption="Team directory with pagination above" />,
+};
+
+/** Duplicate, synchronized controls above and below; each navigation landmark has its own name. */
+export const PaginationBoth = {
+  render: () => <DataTable columns={SORTABLE_COLUMNS} rows={ALL_ROWS} defaultPageSize={3} pageSizeOptions={[3, 5, 10]} paginationPosition="both" caption="Team directory with pagination above and below" />,
+};
+
+export const InlinePagination = {
+  render: () => <DataTable columns={SORTABLE_COLUMNS.map(column => ({ ...column, searchable: true }))} rows={ALL_ROWS} defaultPageSize={3} pageSizeOptions={[3, 5, 10]} paginationPosition="inline" caption="Team directory with inline pagination" />,
+};
+
+export const CustomPagination = {
+  render: () => <DataTable columns={SORTABLE_COLUMNS} rows={ALL_ROWS} defaultPageSize={3} caption="Team directory with custom page navigation" renderPagination={({ page, totalPages, onChange, size }) => (
+    <Stack as="nav" aria-label="Pagination" direction="row" wrap align="center" gap={8}>
+      <Button size={size} variant="tertiary" disabled={page === 1} onClick={() => onChange(page - 1)}>Previous</Button>
+      <Paragraph>Page {page} of {totalPages}</Paragraph>
+      <Button size={size} variant="tertiary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next</Button>
+    </Stack>
+  )} />,
+};
+
+export const PaginationSizes = {
+  render: () => <Stack gap={24}>{["sm", "md"].map(size => <DataTable key={size} columns={SORTABLE_COLUMNS} rows={ALL_ROWS} defaultPageSize={3} paginationSize={size} caption={`Pagination size: ${size}`} />)}</Stack>,
 };
 
 // ── Selection + bulk actions ───────────────────────────────────────────────
@@ -498,6 +531,9 @@ const PROP_ROWS = [
   { name: <CodeValue>defaultPage</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>1</CodeValue>, description: "Initial page for uncontrolled pagination" },
   { name: <CodeValue>pageSize</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Rows per page for built-in client-side pagination" },
   { name: <CodeValue>defaultPageSize</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Initial rows per page for uncontrolled built-in pagination" },
+  { name: <CodeValue>renderPagination</CodeValue>, type: <CodeValue>(context) =&gt; ReactNode</CodeValue>, defaultVal: <CodeValue muted>undefined</CodeValue>, description: "Replace page navigation; context supplies page, totalPages, pageSize, totalRows, rowStart, rowEnd, size and onChange" },
+  { name: <CodeValue>paginationSize</CodeValue>, type: <CodeValue>"sm"|"md"</CodeValue>, defaultVal: <CodeValue muted>"sm"</CodeValue>, description: "Size of the pagination buttons" },
+  { name: <CodeValue>paginationPosition</CodeValue>, type: <CodeValue>"top"|"bottom"|"both"|"inline"</CodeValue>, defaultVal: <CodeValue muted>"bottom"</CodeValue>, description: "Places pagination above/below rows, in both places, or alongside filters when space permits" },
   { name: <CodeValue>pageSizeOptions</CodeValue>, type: <CodeValue>number[]</CodeValue>, defaultVal: <CodeValue muted>[]</CodeValue>, description: "Shows a Rows per page selector in the pagination footer" },
   { name: <CodeValue>totalPages</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total number of pages" },
   { name: <CodeValue>totalRows</CodeValue>, type: <CodeValue>number</CodeValue>, defaultVal: <CodeValue muted>—</CodeValue>, description: "Total row count across all pages (for footer text)" },

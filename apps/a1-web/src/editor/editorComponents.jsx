@@ -21,7 +21,7 @@ import { Preview as CanvasPreview } from '../pages/components/detail/canvas.jsx'
 import { Preview as ContextMenuPreview } from '../pages/components/detail/context-menu.jsx';
 import { Preview as TabsPreview } from '../pages/components/detail/tabs.jsx';
 import { Preview as ToolbarPreview } from '../pages/components/detail/toolbar.jsx';
-import { Preview as DataTablePreview } from '../pages/components/detail/data-table.jsx';
+import { Preview as DataTablePreview, renderCompactPagination } from '../pages/components/detail/data-table.jsx';
 import { Preview as DialogPreview } from '../pages/components/detail/dialog.jsx';
 import { Preview as InlinePreview } from '../pages/components/detail/inline.jsx';
 import { Preview as MenuPreview } from '../pages/components/detail/menu.jsx';
@@ -113,12 +113,13 @@ export function EditorDataTable(props) {
   const [dom, config] = splitEditorProps(props);
   const hasRealData = Array.isArray(config.columns) && config.columns.length > 0;
   if (hasRealData) {
-    const { columns, rows = [], size, ...rest } = config;
+    const { columns, rows = [], size, paginationExample, ...rest } = config;
     return (
       <div className="a1-web-editor-adapter" {...dom}>
         <DataTable
           columns={columns}
           rows={rows}
+          renderPagination={paginationExample === 'compact' ? renderCompactPagination : undefined}
           size={DATA_TABLE_SIZES.has(size) ? size : undefined}
           {...rest}
         />

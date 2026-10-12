@@ -1,0 +1,98 @@
+/* Sunrise page loader — reusable core styles. Sky, sun and silhouette colours
+   come from component.pageSunrise tokens; JS sets --a1-page-sunrise-day
+   (0 night → 1 day) every frame while loading, and CSS carries it to 1 when
+   loading finishes. */
+
+@property --a1-page-sunrise-day {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.a1-page-sunrise {
+  --a1-page-sunrise-percent: calc(var(--a1-page-sunrise-day) * 100%);
+  position: relative;
+  min-block-size: 100vh;
+  overflow: hidden;
+}
+
+.a1-page-sunrise[data-phase='exit'] {
+  --a1-page-sunrise-day: 1;
+  transition: --a1-page-sunrise-day var(--component-page-sunrise-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* The page stays hidden (and out of the tab order) until loading finishes. */
+.a1-page-sunrise:not([data-phase='exit']) [data-loading-block] > * {
+  visibility: hidden;
+}
+
+.a1-page-sunrise__sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    color-mix(in oklch, var(--component-page-sunrise-night-top), var(--component-page-sunrise-day-top) var(--a1-page-sunrise-percent)),
+    color-mix(in oklch, var(--component-page-sunrise-night-bottom), var(--component-page-sunrise-day-bottom) var(--a1-page-sunrise-percent))
+  );
+  pointer-events: none;
+  transition: opacity var(--component-page-sunrise-exit-duration) var(--semantic-motion-easing-standard) var(--component-page-sunrise-exit-duration);
+}
+
+/* Stars fade as the sky brightens. */
+.a1-page-sunrise__stars {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle, var(--component-page-sunrise-day-bottom) 0 1px, transparent 1.5px) 0 0 / var(--base-spacing-56) var(--base-spacing-56),
+    radial-gradient(circle, var(--component-page-sunrise-day-top) 0 1px, transparent 1.5px) var(--base-spacing-24) var(--base-spacing-32) / var(--base-spacing-40) var(--base-spacing-40);
+  opacity: calc(1 - var(--a1-page-sunrise-day) * 1.6);
+}
+
+/* The sun rises from below the horizon. It sits in front of the silhouettes
+   with a screen blend, so it glows through them like light between buildings. */
+.a1-page-sunrise__sun {
+  position: absolute;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity var(--component-page-sunrise-exit-duration) var(--semantic-motion-easing-standard) var(--component-page-sunrise-exit-duration);
+  inset-inline-start: 50%;
+  inset-block-start: calc(100% - var(--a1-page-sunrise-day) * 88%);
+  inline-size: var(--component-page-sunrise-sun-size);
+  block-size: var(--component-page-sunrise-sun-size);
+  border-radius: var(--base-radius-pill);
+  background: color-mix(in oklch, var(--component-page-sunrise-sun-low), var(--component-page-sunrise-sun-high) var(--a1-page-sunrise-percent));
+  box-shadow: 0 0 calc(var(--component-page-sunrise-sun-size) * (0.4 + var(--a1-page-sunrise-day)))
+    color-mix(in oklch, var(--component-page-sunrise-sun-low), var(--component-page-sunrise-sun-high) var(--a1-page-sunrise-percent));
+  translate: -50% -50%;
+}
+
+/* The page's blocks as silhouettes, lightening with the day. */
+.a1-page-sunrise [data-loading-block] {
+  position: relative;
+}
+
+.a1-page-sunrise [data-loading-block]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--base-radius-md);
+  background: color-mix(in oklch, var(--component-page-sunrise-silhouette), var(--semantic-color-surface-raised) var(--a1-page-sunrise-percent));
+  pointer-events: none;
+  transition: opacity var(--component-page-sunrise-exit-duration) var(--semantic-motion-easing-standard) var(--component-page-sunrise-exit-duration);
+}
+
+/* Done: full day, then the sky and silhouettes give way to the page. */
+.a1-page-sunrise[data-phase='exit'] .a1-page-sunrise__sky,
+.a1-page-sunrise[data-phase='exit'] .a1-page-sunrise__sun,
+.a1-page-sunrise[data-phase='exit'] [data-loading-block]::before {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-sunrise[data-phase='exit'],
+  .a1-page-sunrise__sky,
+  .a1-page-sunrise__sun,
+  .a1-page-sunrise [data-loading-block]::before {
+    transition: none;
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "component": {
+    "slides": {
+      "canvasWidth": {
+        "$type": "dimension",
+        "$value": "{base.width.2xl}",
+        "$description": "Design width of a slide; the 16:9 canvas is scaled to fit the stage."
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{base.spacing.48}",
+        "$description": "Inner margin of a slide."
+      },
+      "stripe": {
+        "$type": "dimension",
+        "$value": "{base.spacing.6}",
+        "$description": "Height of the multicolour footer stripe."
+      },
+      "bigIcon": {
+        "$type": "dimension",
+        "$value": "{base.spacing.192}",
+        "$description": "Glyph size of a statement slide's large icon."
+      },
+      "logo": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Size of the logo tile on the title slide."
+      },
+      "shift": {
+        "$type": "dimension",
+        "$value": "{base.spacing.24}",
+        "$description": "Distance pieces travel when they cascade or rise into place."
+      },
+      "zoomOut": {
+        "$type": "number",
+        "$value": 1.12,
+        "$description": "Zoom: scale the outgoing slide grows to as it fades."
+      },
+      "zoomIn": {
+        "$type": "number",
+        "$value": 0.92,
+        "$description": "Zoom: scale the incoming slide grows from."
+      },
+      "speedQuick": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slow}",
+        "$description": "Quick slide transition."
+      },
+      "speedStandard": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slower}",
+        "$description": "Standard slide transition."
+      },
+      "speedRelaxed": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slowest}",
+        "$description": "Relaxed slide transition."
+      },
+      "staggerStep": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.quick}",
+        "$description": "Delay between pieces in a cascade or a rising build."
+      },
+      "buildDuration": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slow}",
+        "$description": "Duration of each piece's build animation."
+      },
+      "aspectRatio": {
+        "$value": "16 / 9",
+        "$description": "Proportion of the stage and the slide canvas."
+      },
+      "rampWarm": {
+        "0": {
+          "$type": "color",
+          "$value": "{base.color.warn.50}",
+          "$description": "Warm ramp swatch 1 (Foundations slide)."
+        },
+        "1": {
+          "$type": "color",
+          "$value": "{base.color.warn.100}",
+          "$description": "Warm ramp swatch 2 (Foundations slide)."
+        },
+        "2": {
+          "$type": "color",
+          "$value": "{base.color.warn.200}",
+          "$description": "Warm ramp swatch 3 (Foundations slide)."
+        },
+        "3": {
+          "$type": "color",
+          "$value": "{base.color.warn.300}",
+          "$description": "Warm ramp swatch 4 (Foundations slide)."
+        },
+        "4": {
+          "$type": "color",
+          "$value": "{base.color.warn.400}",
+          "$description": "Warm ramp swatch 5 (Foundations slide)."
+        },
+        "5": {
+          "$type": "color",
+          "$value": "{base.color.warn.500}",
+          "$description": "Warm ramp swatch 6 (Foundations slide)."
+        },
+        "6": {
+          "$type": "color",
+          "$value": "{base.color.warn.600}",
+          "$description": "Warm ramp swatch 7 (Foundations slide)."
+        },
+        "7": {
+          "$type": "color",
+          "$value": "{base.color.warn.700}",
+          "$description": "Warm ramp swatch 8 (Foundations slide)."
+        },
+        "8": {
+          "$type": "color",
+          "$value": "{base.color.warn.800}",
+          "$description": "Warm ramp swatch 9 (Foundations slide)."
+        },
+        "9": {
+          "$type": "color",
+          "$value": "{base.color.warn.900}",
+          "$description": "Warm ramp swatch 10 (Foundations slide)."
+        }
+      },
+      "rampCool": {
+        "0": {
+          "$type": "color",
+          "$value": "{base.color.info.50}",
+          "$description": "Cool ramp swatch 1 (Components slide)."
+        },
+        "1": {
+          "$type": "color",
+          "$value": "{base.color.info.100}",
+          "$description": "Cool ramp swatch 2 (Components slide)."
+        },
+        "2": {
+          "$type": "color",
+          "$value": "{base.color.info.200}",
+          "$description": "Cool ramp swatch 3 (Components slide)."
+        },
+        "3": {
+          "$type": "color",
+          "$value": "{base.color.info.300}",
+          "$description": "Cool ramp swatch 4 (Components slide)."
+        },
+        "4": {
+          "$type": "color",
+          "$value": "{base.color.info.400}",
+          "$description": "Cool ramp swatch 5 (Components slide)."
+        },
+        "5": {
+          "$type": "color",
+          "$value": "{base.color.info.500}",
+          "$description": "Cool ramp swatch 6 (Components slide)."
+        },
+        "6": {
+          "$type": "color",
+          "$value": "{base.color.info.600}",
+          "$description": "Cool ramp swatch 7 (Components slide)."
+        },
+        "7": {
+          "$type": "color",
+          "$value": "{base.color.info.700}",
+          "$description": "Cool ramp swatch 8 (Components slide)."
+        },
+        "8": {
+          "$type": "color",
+          "$value": "{base.color.info.800}",
+          "$description": "Cool ramp swatch 9 (Components slide)."
+        },
+        "9": {
+          "$type": "color",
+          "$value": "{base.color.info.900}",
+          "$description": "Cool ramp swatch 10 (Components slide)."
+        }
+      },
+      "handoff": {
+        "$type": "number",
+        "$value": 0.5,
+        "$description": "Point in a transition (fraction of its duration) where the next slide takes over: the wipe swap and the start of cascade arrivals."
+      },
+      "fadeOutBy": {
+        "$type": "number",
+        "$value": 0.4,
+        "$description": "Fraction of a transition by which outgoing content has faded or started to leave."
+      },
+      "fadeInFrom": {
+        "$type": "number",
+        "$value": 0.45,
+        "$description": "Fraction of a transition after which incoming content fades in."
+      },
+      "pieceShare": {
+        "$type": "number",
+        "$value": 0.4,
+        "$description": "Cascade: each piece's movement as a fraction of the transition."
+      }
+    }
+  }
+}

@@ -124,6 +124,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **TopHeader nav menu header:** each `navItems` entry may pass `menuHeader` (`ReactNode` or `({ onClose }) => ReactNode`) to render compact custom content above that item's submenu sections. Use this for governed menu chrome such as a `SearchField`; call `onClose()` after submit-style navigation so the menu closes cleanly. Keep interactive content short and built from A1 components.
 >
+> **TopHeader `endContent`:** `ReactNode` rendered in the end zone after `actions` (before `loginButton`), inside the header's surface and bottom border. Use it for compact composed controls that belong in the bar — e.g. A1 Labs' inline color-scheme SegmentedControl + theme SelectField at md+. Do not place such controls beside the TopHeader in a wrapper: they fall outside its bottom border. Keep heights within the md 40px standard and collapse the content on small screens (the bar does not wrap). Runtime-only: not in page-definition JSON or Figma.
+>
 > **TopHeader `loginButton`:** `{ label?, onClick? }` — renders a small primary Button after the actions (label defaults to "Log in"). A plain string is also accepted as the label; that is the JSON-safe form used by page definitions and the Figma JSON bridge (which round-trips the sign-in Button's label as `loginButton: { label }`; click behavior stays runtime-owned).
 >
 > **BottomDrawer props:** `items` (`{ id, label, icon, href?, onClick?, active?, badge?, disabled? }[]`, max 5), `aria-label` (string, required), `className` (string). Items render as `<a>` when `href` is provided, `<button>` otherwise. Badge values are capped at 99+. Shares `--a1-nav-stacked-icon-size`, `--a1-nav-stacked-label-size`, and `--a1-nav-stacked-gap` CSS custom properties with TopHeader icon-above mode for visual consistency.
@@ -150,6 +152,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **SideNav behavior rules:**
 >
+> - **Collapse control:** `collapseButtonPlacement` accepts `"header"` (default), `"footer"` or `"none"`. `"none"` omits the desktop collapse button while retaining the mobile close button; collapsed state can still be controlled externally.
 > - **Desktop (≥1025px):** SideNav is sticky (`position: sticky; top: 0; height: 100vh`). Do not wrap it in a container that has `overflow: hidden` or `overflow: auto` — this breaks sticky positioning.
 > - **Mobile/tablet (≤1024px):** SideNav is a fixed overlay that slides in from the edge. Control it with the `open` and `onClose` props. Do not force it to be permanently visible at these breakpoints.
 > - **Internal scroll:** The nav item list scrolls internally when content overflows. The header and footer slots are outside the scroll region and always remain visible — do not place them inside the nav item list.
@@ -185,6 +188,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Figma Button component:** A1-419 created the Figma component set in the A1 Design System file on the Button page (`node 123:701`) with `Variant`, `Size`, `State`, and `IconPosition` axes plus `Label`, `Show icon`, and `Icon` component properties. Figma asset search/insert intentionally defaults to `secondary` + `md`; React's runtime default remains `primary` + `md`. Button color variables are single-mode aliases to the Color collection's `color/button/*` roles so light/dark mode is switched only once through Color, including destructive/success hover and pressed states. Button labels use dedicated Figma text styles by size (`Button/sm`, `Button/md`, `Button/lg`) to match React font weights. See `packages/react/ai/figma-workflow.md` for the React-to-Figma mapping gaps and `packages/figma/code-connect/Button.figma.ts` for the Code Connect template.
 >
+> **SegmentedControl color scopes:** inactive and hovered segments use semantic text roles in light, dark and inverse contexts. Do not reintroduce dark-only inactive color overrides; they bypass the mode contract. See the Inverse color scheme story.
+
 > **Pure notes:** Button uses `.a1-button` + `.a1-button-{type}` + `.a1-button-{size}` + `.a1-button-pill`. Icon Button uses `.a1-icon-button`. Segmented Control uses `.a1-segmented` (+ `.a1-segmented-small` / `-large` / `-full-width`) with `.a1-segment` options — selection styles from `aria-checked="true"` / `aria-selected="true"` or the `.a1-segment-selected` modifier; track heights sit on the 28/40/56 standard. Pure ships no behavior — toggle the ARIA state with your own script.
 >
 > **Slider props:** `value` / `defaultValue` / `onChange(value)` (number; in detent mode the value is a detent's value), `min` (0), `max` (100), `step` (1) for continuous mode; `detents` (optional — `number[]` or `{ value, label?, icon? }[]`; the thumb snaps between detents, the keyboard moves one detent at a time, and labels render under the track, e.g. None/XS/SM/MD/LG. A detent's `icon` (Material Symbols name) renders in the label row **instead of** its text label — provide a `label` too so screen readers and the value bubble have a text alternative); `label` (a **visible field label** rendered above the control and associated via `htmlFor` — also the accessible name; sized to match the field family per `size`. Use `aria-label`/`aria-labelledby` for an invisible name); `size` ("compact" | "default" | "comfortable", default "default" — mirrors the **field family** so a Slider sits naturally beside fields; scales the label, detent labels, track, and thumb); `variant` ("default" | "subtle", default "default" — "subtle" shows the selection (fill, thumb, active detent) in **neutrals** instead of the action colour); `showValue` (boolean, default true — the floating value bubble shown while dragging/focused); `valuePosition` ("above" | "below", default "above" — flips to stay in the viewport); `formatValue(value)` (custom bubble + `aria-valuetext`); `bubbleLabel` (an alternate **value-bubble** label — a node, or `(value, detent) => node`; **visual only**, `aria-valuetext` is unchanged; falls back to the current bubble content when omitted — used to spell a size out in the bubble, e.g. "Small", while the detent under the track stays "SM"); `disabled`; `name` (form value). Built on a native `<input type="range">` so keyboard (arrows, Home/End, Page Up/Down), focus, touch, and form semantics work out of the box; the value is announced via `aria-valuetext`. The value bubble is anchored by progress (and its caret tracks the thumb) so it never spills past the control edges at the extremes. React only. Sample use: editor size/padding controls, or the Section configurator's Content width (compact, with a detent per size). **Visual model:** the thumb (handle) sits **inside** the track — the track is as tall as the thumb (it contains the handle rather than the handle riding on a thin rail) and carries a subtle 1px border, so the whole track is the touch target. Sizes scale together per `size`. Token-only (`--a1-slider-track-height` / `-thumb-size` / `-track-border`); no prop change.
@@ -203,6 +208,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 > One size for now. React only. CSS-variable architecture (`--a1-toolbar-*`) over existing tokens.
 >
 > **Toolbar surface rule (`toolbar-surface-contrast`):** Place a Toolbar on a **panel or page surface only — never on a raised surface.** The bar's background is the **raised** surface token, so on a raised surface it has no contrast against the background and the toolbar visually disappears. (Use it on the page background or a panel surface, e.g. the configurator/editor side panel.) See `system/rules/toolbar.yaml`.
+
+> **Toolbar text contrast:** enabled tools use semantic default text on the raised toolbar surface; muted text is insufficient in some themes. The selected background distinguishes the active tool. Hover/selected backgrounds use `component.toolbar.interactionShade` to darken the surface in both modes; mixing in the text color can lighten dark surfaces enough to fail contrast.
 >
 > **StickyActions props:** `contentWidth` ("xs" | "sm" | "md" | "lg" | "xl" | "2xl") — constrains the inner content to the same max-widths as Section's `contentWidth`. Match this to the `contentWidth` of the Section above for visual alignment.
 >
@@ -312,7 +319,7 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Notification props:** `status` ("neutral" | "error" | "success" | "warn" | "info", default "neutral"), `position` ("top-right" | "top-left" | "bottom-right" | "bottom-left", default "top-right"), `count` (number), `label` (string — used when count is not set), `dot` (boolean — show a dot with no content), `max` (number, default 99).
 >
-> **Status Bar props:** `value` (number, default 0), `max` (number, default 100 — fill percentage is `value/max`), `size` ("sm" | "md" | "lg", default "md"), `labelPosition` ("above" | "below" | "before" | "after", default "above" — "before" and "after" use a row layout and are RTL-aware), `indeterminate` (boolean — shows an animated loading sweep, hides value-based fill, removes `aria-valuenow`, default false). When no `label` is provided, pass `aria-label` for the progressbar's accessible name. After 3 seconds of `indeterminate` playback, a `<Button size="sm" variant="secondary">` appears with "Pause" / "Play" labels sourced from `system/labels/status-bar.json` (`statusBar.pause`, `statusBar.play`) — wrap in `LabelsProvider` to translate.
+> **Status Bar props:** `value` (number, default 0), `max` (number, default 100 — fill percentage is `value/max`), `size` ("sm" | "md" | "lg", default "md"), `labelPosition` ("above" | "below" | "before" | "after", default "above" — "before" and "after" use a row layout and are RTL-aware), `indeterminate` (boolean — shows an animated loading sweep, hides value-based fill, removes `aria-valuenow`, default false). When no `label` is provided, pass `aria-label` for the progressbar's accessible name. The `showPauseControl` boolean defaults to `true`; set it to `false` for automatic verification flows without an animation pause/play control. Reduced motion still applies, and this control never pauses the underlying work. After 3 seconds of `indeterminate` playback with `showPauseControl` enabled, a `<Button size="sm" variant="secondary">` appears with "Pause" / "Play" labels sourced from `system/labels/status-bar.json` (`statusBar.pause`, `statusBar.play`) — wrap in `LabelsProvider` to translate.
 >
 > **Status Bar accessible theme:** The track gains a `2px` border (via `--component-status-bar-border-width`) in the accessible theme to distinguish the track boundary at high contrast. No other theme overrides are needed — the fill and track colors come from semantic color tokens that already adapt.
 >
@@ -376,6 +383,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Do not nest Cards inside Cards.** A Card inside a Card creates ambiguous visual hierarchy, conflicting surface elevations, and unclear interaction boundaries. If you need a grouped sub-item within a Card, use a `Stack` or `Inset` to structure the content, not another Card.
 >
+> **PageLayout landmarks:** sidebar and supplementary panels have distinct accessible names. PageLayout supplies the header landmark; use `role="presentation"` on a nested TopHeader to avoid duplicate banner landmarks. The `NamedPanelLandmarks` story demonstrates both rails.
+
 > **PageLayout no-gap rule:** There is no gap between the sidebar and main area. Do not add `gap`, `margin`, or `padding` to `.a1-page-layout__body`, `.a1-page-layout__sidebar`, or `.a1-page-layout__main`. Apply all inset spacing inside the main content child — use a `Section` or padded wrapper as the first element in the main slot.
 >
 > **Section spans the full viewport:** `Section` is designed to fill the full available width. Place it as the direct child of `<main>` inside `PageLayout` — do not wrap it in a `Stack`, `Grid`, `Card`, or any other container that would constrain its width. Nesting a `Section` inside another layout component breaks the full-bleed surface and padding model.
@@ -468,6 +477,10 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 > **DataTable `size` prop:** `size` ("comfortable" | "default" | "compact") sets cell padding density. Omit `size` entirely to let the table auto-select density based on available container width — this is the default and replaces the old `density="auto"` value.
 
+> **DataTable pagination placement:** `paginationPosition="top" | "bottom" | "both" | "inline"` (default bottom) moves the existing result count and pagination controls in DOM order. `"both"` renders the count and controls above **and** below the rows; both copies drive the same page/page-size state, and their navigation landmarks are named "Pagination above table" / "Pagination below table" (custom `renderPagination` receives `placement` and that `label`). Prefer it for long pages where readers finish at the bottom. Inline places filters and controls in a wrapping A1 Stack, with the count beneath. `paginationSize="sm" | "md"` controls button size, defaulting to small. Sorting, filtering and paging remain built in. Pure tables have no built-in JavaScript pagination API.
+
+> **DataTable custom pagination:** `renderPagination(context)` optionally replaces the page navigation. Context includes `page`, `totalPages`, `pageSize`, `totalRows`, `rowStart`, `rowEnd`, `size`, `onChange`. The table retains result counts, page sizes, placement and data operations. A1 Web/editor offer a compact callback example via the serializable `paginationExample` setting; callbacks are React-only, not JSON functions.
+
 > **DataTable search matching:** `searchableColumns` entries and searchable column definitions may include `searchMatcher(row, query) => boolean` to opt into alias, fuzzy, or domain-specific matching while keeping the built-in search UI. If no matcher is supplied, DataTable continues to use the column's `searchAccessor` / cell value substring match.
 
 > **DataTable column `type="image"`:** renders a small fixed-size thumbnail (`.a1-data-table__thumb`, ~2.5rem, `object-fit: cover`; ~2rem at compact). The cell value is an image URL string or `{ src, alt }`; an empty/missing value renders a dashed placeholder. Used by the a1-web image library's table view.
@@ -530,6 +543,9 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 
 ## Canvas
 
+The [Labs nodes and canvas experiment](labs-connected-nodes.md) combines these
+existing components into one connected graph with shared configuration.
+
 | Component  | React | Native | Pure | Web Components | Figma |
 | ---------- | :---: | :----: | :--: | :------------: | :---: |
 | Canvas     |   ✓   |   —    |  —   |       —        |   —   |
@@ -574,3 +590,14 @@ The dated log of component/token/theme/a1-web changes moved to
 Keep this registry's tables and notes current as before.
 
 > **CustomBlock (React only):** `markup`, `css` and `js` strings render in an isolated sandboxed document. `title` names the iframe; `height` accepts `sm`, `md` or `lg`. Defaults are empty source and medium height. The component configurator and page editor share controls and preserve source through JSON import/export. Use only for an explicit model gap. See [the Custom block contract](page-definition-standard.md#custom-block--a1-2541) for isolation, lifecycle and author accessibility responsibilities.
+
+The [Labs verify button](labs-verify-button.md) composes A1 Button into an animated
+critical-action intent gate. It is an isolated Labs candidate, not a shared Button prop.
+
+The [Labs reordering experiment](labs-reordering.md) composes A1 Card, Stack and
+IconButton into a controlled reorder list with placement motion. It is a Labs
+candidate, not a published shared component.
+
+The [Labs billboard with actions](labs-billboard-actions.md) composes existing
+Section, Grid, Stack, Card and Action Tile APIs into a portable hero pattern.
+No shared component API or package coverage changes.

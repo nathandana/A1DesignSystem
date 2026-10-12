@@ -1,0 +1,134 @@
+/* Procedural two-stroke morph. Layout comes from A1 Stack; general styling
+   uses the same live tokens as A1 Switch. These selectors never escape here. */
+.a1-switch-morph {
+  --a1-switch-morph-width: calc(var(--component-switch-track-width) * var(--a1-switch-morph-scale));
+  --a1-switch-morph-height: calc(var(--component-switch-track-height) * var(--a1-switch-morph-scale));
+  --a1-switch-morph-thumb: calc(var(--component-switch-thumb-size) * var(--a1-switch-morph-scale));
+  --a1-switch-morph-gap: calc(var(--component-switch-gap) * var(--a1-switch-morph-scale));
+  position: relative;
+  cursor: pointer;
+}
+
+.a1-switch-morph__track {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  box-sizing: content-box;
+  inline-size: var(--a1-switch-morph-width);
+  block-size: var(--a1-switch-morph-height);
+  border: calc(var(--component-field-border-width) * var(--a1-switch-morph-scale)) solid var(--semantic-color-border-strong);
+  border-radius: var(--a1-switch-morph-height);
+  background: var(--semantic-color-surface-field);
+  transition: background-color var(--a1-switch-morph-duration) var(--component-switch-morph-easing),
+    border-color var(--a1-switch-morph-duration) var(--component-switch-morph-easing);
+}
+
+.a1-switch-morph__thumb {
+  position: absolute;
+  inset-block-start: var(--a1-switch-morph-gap);
+  inset-inline-start: var(--a1-switch-morph-gap);
+  inline-size: var(--a1-switch-morph-thumb);
+  block-size: var(--a1-switch-morph-thumb);
+  border-radius: 50%;
+  background: var(--component-switch-thumb-background);
+  color: var(--component-switch-thumb-on-background);
+  box-shadow: var(--component-switch-thumb-shadow);
+  /* Change the paired colors together: blending inverse colors hides the mark midway. */
+  transition: inset-inline-start var(--a1-switch-morph-duration) var(--component-switch-morph-easing);
+}
+
+/* Include both round caps in the box, keeping token endpoints at cap centers. */
+.a1-switch-morph__stroke {
+  position: absolute;
+  left: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-cross-start));
+  width: calc(var(--a1-switch-morph-thumb) * (var(--component-switch-morph-cross-length) + var(--component-switch-morph-stroke-thickness)));
+  height: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-stroke-thickness));
+  border-radius: var(--base-radius-pill);
+  transform-origin: left center;
+  transition: left var(--a1-switch-morph-duration) var(--component-switch-morph-easing),
+    top var(--a1-switch-morph-duration) var(--component-switch-morph-easing),
+    width var(--a1-switch-morph-duration) var(--component-switch-morph-easing);
+}
+
+/* Rotate the ink around its own center while its box morphs. A quarter-turn
+   takes the crossed diagonals into the checkmark with less spin. */
+.a1-switch-morph__stroke::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  transform: rotate(calc(-1 * var(--component-switch-morph-stroke-rotation)));
+  transition: transform var(--a1-switch-morph-duration) var(--component-switch-morph-easing);
+}
+
+.a1-switch-morph__input:checked + .a1-switch-morph__track .a1-switch-morph__stroke::before {
+  transform: rotate(0deg);
+}
+
+.a1-switch-morph__stroke--short {
+  top: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-cross-start));
+  transform: translateY(-50%) rotate(var(--component-switch-morph-stroke-angle)) translateX(calc(-0.5 * var(--a1-switch-morph-thumb) * var(--component-switch-morph-stroke-thickness)));
+}
+
+.a1-switch-morph__stroke--long {
+  top: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-cross-end));
+  transform: translateY(-50%) rotate(calc(-1 * var(--component-switch-morph-stroke-angle))) translateX(calc(-0.5 * var(--a1-switch-morph-thumb) * var(--component-switch-morph-stroke-thickness)));
+}
+
+.a1-switch-morph__input:checked + .a1-switch-morph__track {
+  background: var(--component-switch-track-on-background);
+  border-color: var(--component-switch-track-on-border);
+}
+
+.a1-switch-morph__input:checked + .a1-switch-morph__track .a1-switch-morph__thumb {
+  inset-inline-start: calc(var(--a1-switch-morph-width) - var(--a1-switch-morph-height) + var(--a1-switch-morph-gap));
+  background: var(--component-switch-thumb-on-background);
+  color: var(--component-switch-track-on-background);
+}
+
+/* Both existing strokes move and resize; both rotate a quarter-turn without swapping or cross-fading. */
+.a1-switch-morph__input:checked + .a1-switch-morph__track .a1-switch-morph__stroke--short {
+  left: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-check-start-x));
+  top: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-check-start-y));
+  width: calc(var(--a1-switch-morph-thumb) * (var(--component-switch-morph-check-short-length) + var(--component-switch-morph-stroke-thickness)));
+}
+
+.a1-switch-morph__input:checked + .a1-switch-morph__track .a1-switch-morph__stroke--long {
+  left: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-check-joint-x));
+  top: calc(var(--a1-switch-morph-thumb) * var(--component-switch-morph-check-joint-y));
+  width: calc(var(--a1-switch-morph-thumb) * (var(--component-switch-morph-check-long-length) + var(--component-switch-morph-stroke-thickness)));
+}
+
+.a1-switch-morph__input:focus-visible + .a1-switch-morph__track {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+
+.a1-switch-morph:has(.a1-switch-morph__input:disabled) { cursor: not-allowed; }
+.a1-switch-morph__input:disabled + .a1-switch-morph__track {
+  background: var(--semantic-color-surface-raised);
+  border-color: var(--semantic-color-border-subtle);
+}
+.a1-switch-morph__input:disabled + .a1-switch-morph__track .a1-switch-morph__thumb {
+  background: var(--semantic-color-border-default);
+  color: var(--semantic-color-text-muted);
+  box-shadow: none;
+}
+.a1-switch-morph__input:checked:disabled + .a1-switch-morph__track {
+  background: var(--semantic-color-border-default);
+}
+.a1-switch-morph__input:checked:disabled + .a1-switch-morph__track .a1-switch-morph__thumb {
+  background: var(--semantic-color-surface-raised);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-switch-morph__track, .a1-switch-morph__thumb, .a1-switch-morph__stroke,
+  .a1-switch-morph__stroke::before { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .a1-switch-morph__track { border-color: ButtonText; }
+  .a1-switch-morph__thumb { outline: var(--component-field-border-width) solid ButtonText; }
+  .a1-switch-morph__stroke { color: ButtonText; forced-color-adjust: none; }
+}

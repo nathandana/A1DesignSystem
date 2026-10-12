@@ -1,0 +1,173 @@
+/* Timeline — reusable core styles. Grid layout for the milestones; the SVG
+   connectors are drawn over the same box from measured positions. Geometry
+   comes from component.timeline tokens. Tones use the live action and status
+   background roles, which follow theme and light/dark mode (the chart series
+   tokens are fixed at build time and too dark in places). */
+
+.a1-timeline {
+  --a1-timeline-surface: var(--semantic-color-surface-page);
+}
+
+.a1-timeline__scroller {
+  overflow-x: auto;
+}
+
+.a1-timeline__scroller:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-timeline__track {
+  position: relative;
+}
+
+.a1-timeline__connectors {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.a1-timeline__connectors path {
+  fill: none;
+  stroke: var(--a1-timeline-tone);
+  stroke-width: var(--component-timeline-line-width);
+}
+
+.a1-timeline__connectors circle {
+  fill: var(--a1-timeline-surface);
+  stroke: var(--a1-timeline-tone);
+  stroke-width: var(--component-timeline-line-width);
+}
+
+.a1-timeline [data-tone='accent'] { --a1-timeline-tone: var(--semantic-color-action-background); }
+.a1-timeline [data-tone='info'] { --a1-timeline-tone: var(--semantic-color-status-info-background); }
+.a1-timeline [data-tone='success'] { --a1-timeline-tone: var(--semantic-color-status-success-background); }
+.a1-timeline [data-tone='warn'] { --a1-timeline-tone: var(--semantic-color-status-warn-background); }
+.a1-timeline [data-tone='error'] { --a1-timeline-tone: var(--semantic-color-status-error-background); }
+.a1-timeline [data-tone='neutral'] { --a1-timeline-tone: var(--semantic-color-text-muted); }
+
+.a1-timeline__list,
+.a1-timeline__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-timeline__list {
+  position: relative;
+  display: grid;
+}
+
+.a1-timeline__item {
+  display: grid;
+}
+
+/* The milestone badge: a raised disc carrying the milestone's icon. */
+.a1-timeline__badge {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: var(--component-timeline-badge-size);
+  block-size: var(--component-timeline-badge-size);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-raised);
+  box-shadow: var(--semantic-shadow-md);
+  color: var(--a1-timeline-tone);
+}
+
+.a1-timeline__year {
+  margin: 0;
+}
+
+.a1-timeline__points {
+  display: grid;
+  gap: var(--base-spacing-4);
+  margin-block-start: var(--base-spacing-8);
+}
+
+/* Horizontal: five shared rows (details above, reach, axis, reach, details
+   below); milestones alternate above and below the axis. */
+.a1-timeline[data-orientation='horizontal'] .a1-timeline__list {
+  --a1-timeline-reach: calc(var(--component-timeline-arc-gap) + var(--component-timeline-stem-min) + var(--component-timeline-node-size) + var(--component-timeline-node-gap));
+  grid-template-columns: repeat(var(--a1-timeline-count), minmax(var(--component-timeline-column-min), 1fr));
+  grid-template-rows: auto var(--a1-timeline-reach) var(--component-timeline-badge-size) var(--a1-timeline-reach) auto;
+}
+
+.a1-timeline[data-orientation='horizontal'] .a1-timeline__item {
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  text-align: center;
+}
+
+.a1-timeline[data-orientation='horizontal'] .a1-timeline__badge {
+  grid-row: 3;
+}
+
+/* Details may run into the neighbouring columns, which are empty on this side. */
+.a1-timeline[data-orientation='horizontal'] .a1-timeline__details {
+  inline-size: max-content;
+  max-inline-size: 200%;
+}
+
+.a1-timeline[data-orientation='horizontal'] [data-side='above'] .a1-timeline__details {
+  grid-row: 1;
+  align-self: end;
+}
+
+.a1-timeline[data-orientation='horizontal'] [data-side='above'] .a1-timeline__year {
+  grid-row: 4;
+  align-self: start;
+  margin-block-start: var(--component-timeline-year-gap);
+}
+
+.a1-timeline[data-orientation='horizontal'] [data-side='below'] .a1-timeline__details {
+  grid-row: 5;
+  align-self: start;
+}
+
+.a1-timeline[data-orientation='horizontal'] [data-side='below'] .a1-timeline__year {
+  grid-row: 2;
+  align-self: end;
+  margin-block-end: var(--component-timeline-year-gap);
+}
+
+/* Vertical: the axis runs down the inline start; every milestone's details
+   sit after its stem, with the year as an eyebrow above the title. */
+.a1-timeline[data-orientation='vertical'] .a1-timeline__list {
+  --a1-timeline-reach: calc(var(--component-timeline-arc-gap) + var(--component-timeline-stem-min-inline) + var(--component-timeline-node-size) + var(--component-timeline-node-gap));
+  grid-template-columns: var(--component-timeline-badge-size) minmax(0, 1fr);
+  row-gap: var(--component-timeline-row-gap);
+  padding-block-start: var(--component-timeline-stem-min);
+}
+
+.a1-timeline[data-orientation='vertical'] .a1-timeline__item {
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto auto;
+  row-gap: var(--semantic-spacing-gap-xs);
+}
+
+.a1-timeline[data-orientation='vertical'] .a1-timeline__badge {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.a1-timeline[data-orientation='vertical'] .a1-timeline__year,
+.a1-timeline[data-orientation='vertical'] .a1-timeline__details {
+  grid-column: 2;
+  margin-inline-start: var(--a1-timeline-reach);
+}
+
+.a1-timeline[data-orientation='vertical'] .a1-timeline__year {
+  grid-row: 1;
+  align-self: end;
+}
+
+.a1-timeline[data-orientation='vertical'] .a1-timeline__details {
+  grid-row: 2;
+  align-self: start;
+}

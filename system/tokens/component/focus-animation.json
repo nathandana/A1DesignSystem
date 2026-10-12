@@ -1,0 +1,11 @@
+{
+  "component": {
+    "focusAnimation": {
+      "travel": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "accentWidth": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "zoomScale": { "$type": "number", "$value": 1.015, "$description": "A subtle 1.5% enlargement while focused; disabled with reduced motion." },
+      "liftDistance": { "$type": "dimension", "$value": "{base.spacing.2}" },
+      "cornerLength": { "$type": "dimension", "$value": "{base.spacing.12}" }
+    }
+  }
+}

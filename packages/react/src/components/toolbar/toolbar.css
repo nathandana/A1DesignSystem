@@ -34,11 +34,13 @@
   --a1-toolbar-radius: var(--base-radius-md);
   --a1-toolbar-tool-radius: max(0px, calc(var(--a1-toolbar-radius) - var(--a1-toolbar-padding)));
   --a1-toolbar-bg: var(--semantic-color-surface-raised);
-  /* Unselected tools sit back in muted text; the selected tool steps forward
-     with default text on a darker neutral background — low-contrast, neutral. */
-  --a1-toolbar-fg: var(--semantic-color-text-muted);
-  --a1-toolbar-hover-bg: color-mix(in srgb, var(--semantic-color-text-default) 8%, transparent);
-  --a1-toolbar-selected-bg: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+  /* Enabled tools need readable text on the raised surface in every theme.
+     Selection is distinguished by its neutral background, not dimmer text. */
+  --a1-toolbar-fg: var(--semantic-color-text-default);
+  /* Darken the surface in both modes. Mixing in light text in dark mode can
+     lighten a colored surface enough to fail text contrast (Fresh). */
+  --a1-toolbar-hover-bg: color-mix(in srgb, var(--component-toolbar-interaction-shade) 8%, transparent);
+  --a1-toolbar-selected-bg: color-mix(in srgb, var(--component-toolbar-interaction-shade) 16%, transparent);
   --a1-toolbar-selected-fg: var(--semantic-color-text-default);
   /* A hairline subtle border by default gives the bar definition against the
      page surface. The accessible theme and high-contrast modes step it up to a
@@ -164,7 +166,7 @@
    A radio group item (aria-checked) can't be deselected, so it shows no hover or
    active change — clicking it does nothing. */
 .a1-toolbar__button[aria-pressed="true"]:hover {
-  background: color-mix(in srgb, var(--semantic-color-text-default) 22%, transparent);
+  background: color-mix(in srgb, var(--component-toolbar-interaction-shade) 22%, transparent);
 }
 
 .a1-toolbar__button[aria-checked="true"]:hover,

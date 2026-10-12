@@ -1,0 +1,64 @@
+/* A native input owns interaction; this isolated surface sizes the decorative
+   WebGL scene and its no-WebGL/forced-color fallback. */
+.a1-switch-three {
+  --a1-switch-three-width: calc(var(--component-switch-track-width) * var(--a1-switch-three-scale));
+  --a1-switch-three-height: calc(var(--component-switch-track-height) * var(--a1-switch-three-scale));
+  --a1-switch-three-thumb: calc(var(--component-switch-thumb-size) * var(--a1-switch-three-scale));
+  --a1-switch-three-gap: calc(var(--component-switch-gap) * var(--a1-switch-three-scale));
+  --a1-switch-three-padding: calc(var(--component-switch-three-canvas-padding) * var(--a1-switch-three-scale));
+  position: relative;
+  cursor: pointer;
+}
+.a1-switch-three__surface {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  inline-size: var(--a1-switch-three-width);
+  block-size: var(--a1-switch-three-height);
+  border-radius: var(--base-radius-pill);
+}
+.a1-switch-three__canvas {
+  position: absolute;
+  inset: calc(-1 * var(--a1-switch-three-padding));
+  pointer-events: none;
+}
+.a1-switch-three__canvas canvas { display: block; }
+.a1-switch-three__fallback {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--semantic-color-surface-field);
+  outline: var(--component-field-border-width) solid var(--semantic-color-border-strong);
+  visibility: hidden;
+}
+.a1-switch-three__thumb {
+  position: absolute;
+  inset-block-start: var(--a1-switch-three-gap);
+  inset-inline-start: var(--a1-switch-three-gap);
+  inline-size: var(--a1-switch-three-thumb);
+  block-size: var(--a1-switch-three-thumb);
+  display: grid;
+  place-items: center;
+  border-radius: var(--base-radius-pill);
+  background: var(--component-switch-thumb-background);
+  color: var(--component-switch-thumb-on-background);
+  font-size: var(--a1-switch-three-thumb);
+  line-height: 1;
+}
+.a1-switch-three__input:checked + .a1-switch-three__surface .a1-switch-three__fallback { background: var(--component-switch-track-on-background); }
+.a1-switch-three__input:checked + .a1-switch-three__surface .a1-switch-three__thumb {
+  inset-inline-start: calc(var(--a1-switch-three-width) - var(--a1-switch-three-thumb) - var(--a1-switch-three-gap));
+  background: var(--component-switch-thumb-on-background);
+  color: var(--component-switch-track-on-background);
+}
+.a1-switch-three__input:focus-visible + .a1-switch-three__surface {
+  outline: var(--component-field-focus-ring-width) solid var(--component-field-focus-ring-color);
+  outline-offset: var(--component-field-focus-ring-offset);
+}
+.a1-switch-three:has(:disabled) { cursor: not-allowed; }
+.a1-switch-three[data-fallback='true'] .a1-switch-three__fallback { visibility: visible; }
+.a1-switch-three[data-fallback='true'] .a1-switch-three__canvas { display: none; }
+@media (forced-colors: active) {
+  .a1-switch-three__fallback, .a1-switch-three__thumb { outline: var(--component-field-border-width) solid ButtonText; }
+  .a1-switch-three__thumb { color: ButtonText; }
+}

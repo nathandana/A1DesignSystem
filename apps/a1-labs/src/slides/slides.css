@@ -1,0 +1,302 @@
+/* Slides — reusable deck styles. The stage keeps 16:9; slides are drawn on a
+   fixed design canvas (component.slides.canvasWidth) scaled to fit, so A1 type
+   tokens keep their proportions. Every value is a token: slide artwork uses
+   live semantic roles, and the ramp swatches are component.slides ramp tokens. */
+
+.a1-slides {
+  display: grid;
+  gap: var(--base-spacing-16);
+}
+
+.a1-slides__stage {
+  position: relative;
+  aspect-ratio: var(--component-slides-aspect-ratio);
+  overflow: hidden;
+  border: var(--base-spacing-1) solid var(--semantic-color-border-subtle);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+.a1-slides__stage:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+/* The canvas is a drawing scaled from its top-left corner, so it is placed
+   physically (not by writing direction). */
+.a1-slides__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  inline-size: var(--component-slides-canvas-width);
+  aspect-ratio: var(--component-slides-aspect-ratio);
+  transform: scale(var(--a1-slides-scale, 1));
+  transform-origin: top left;
+}
+
+.a1-slides__slide {
+  position: absolute;
+  inset: 0;
+}
+
+/* Stacking follows DOM order: incoming slide, outgoing slide above it, then
+   the wipe panel. */
+
+.a1-slides__wipe {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  background: var(--a1-slides-wipe, var(--semantic-color-action-background));
+  pointer-events: none;
+}
+
+[data-build-hidden] { visibility: hidden; }
+
+.a1-slides__sr {
+  position: absolute;
+  inline-size: var(--base-spacing-1);
+  block-size: var(--base-spacing-1);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Every slide's surface; transitions animate its background. */
+.a1-slides__layout {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: var(--component-slides-padding);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+}
+
+/* Footer stripe in the status and action colours. */
+.a1-slides__stripe {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  block-size: var(--component-slides-stripe);
+}
+.a1-slides__stripe span { flex: 1; }
+.a1-slides__stripe span:nth-child(1) { background: var(--semantic-color-status-error-background); }
+.a1-slides__stripe span:nth-child(2) { background: var(--semantic-color-status-warn-background); }
+.a1-slides__stripe span:nth-child(3) { background: var(--semantic-color-status-success-background); }
+.a1-slides__stripe span:nth-child(4) { background: var(--semantic-color-status-info-background); }
+.a1-slides__stripe span:nth-child(5) { background: var(--semantic-color-action-background); }
+.a1-slides__stripe span:nth-child(6) { background: var(--semantic-color-text-muted); }
+
+/* Title */
+.a1-slides__layout--title {
+  display: flex;
+  gap: var(--base-spacing-32);
+  align-items: center;
+  justify-content: center;
+}
+.a1-slides__lockup { display: grid; gap: var(--base-spacing-4); }
+
+.a1-slides__logo {
+  display: grid;
+  place-items: center;
+  inline-size: var(--component-slides-logo);
+  block-size: var(--component-slides-logo);
+  border-radius: var(--base-radius-lg);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  font-size: var(--semantic-font-size-display-xxl);
+}
+.a1-slides__logo--sm {
+  inline-size: var(--base-spacing-56);
+  block-size: var(--base-spacing-56);
+  font-size: var(--semantic-font-size-heading-xl);
+}
+
+/* Ramp + title card */
+.a1-slides__layout--ramp { padding: 0; }
+.a1-slides__ramp {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+.a1-slides__ramp span { flex: 1; }
+
+.a1-slides__card {
+  position: absolute;
+  display: grid;
+  gap: var(--base-spacing-4);
+  padding: var(--base-spacing-16) var(--base-spacing-24);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+}
+.a1-slides__card--bottom { inset-block-end: 0; inset-inline-end: 0; }
+.a1-slides__card--top { inset-block-start: var(--base-spacing-96); inset-inline-end: 0; }
+.a1-slides__card--side {
+  inset-block-start: var(--base-spacing-192);
+  inset-inline-end: 0;
+  max-inline-size: var(--base-width-md);
+}
+
+/* Header band + content */
+.a1-slides__layout--banded { padding: 0; }
+.a1-slides__header {
+  padding: var(--base-spacing-20) var(--component-slides-padding);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  /* Heading has no on-colour option; point its colour at the band's pair. */
+  --a1-heading-color: var(--semantic-color-action-foreground);
+}
+
+.a1-slides__points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--base-spacing-24) var(--base-spacing-32);
+  margin: 0;
+  padding: var(--base-spacing-40) var(--component-slides-padding);
+  list-style: none;
+}
+.a1-slides__points li {
+  display: flex;
+  gap: var(--base-spacing-12);
+  align-items: center;
+}
+.a1-slides__number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-32);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-info-border);
+  border-radius: var(--base-radius-pill);
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+}
+
+.a1-slides__copy {
+  display: grid;
+  gap: var(--base-spacing-16);
+  max-inline-size: var(--base-width-2xl);
+  padding: var(--base-spacing-40) var(--component-slides-padding);
+}
+
+/* A collection of: pills on the inverse surface */
+.a1-slides__layout--collection {
+  display: grid;
+  gap: var(--base-spacing-20);
+  align-content: center;
+}
+.a1-slides__pills {
+  display: grid;
+  gap: var(--base-spacing-12);
+  max-inline-size: var(--base-width-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.a1-slides__pills li {
+  display: flex;
+  gap: var(--base-spacing-12);
+  align-items: center;
+  padding: var(--base-spacing-8) var(--base-spacing-24) var(--base-spacing-8) var(--base-spacing-8);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-raised);
+}
+.a1-slides__pills li > span:last-child { display: grid; }
+.a1-slides__pill-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--base-spacing-40);
+  block-size: var(--base-spacing-40);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+/* Statement: a big icon and a title card on a tinted surface */
+.a1-slides__layout--statement[data-tone='success'] {
+  --a1-slides-tone: var(--semantic-color-status-success-background);
+  background: var(--semantic-color-status-success-surface);
+}
+.a1-slides__layout--statement[data-tone='info'] {
+  --a1-slides-tone: var(--semantic-color-status-info-background);
+  background: var(--semantic-color-status-info-surface);
+}
+.a1-slides__big-icon {
+  position: absolute;
+  inset-block-start: var(--base-spacing-128);
+  inset-inline-start: var(--base-spacing-96);
+  display: grid;
+  place-items: center;
+  inline-size: var(--component-slides-big-icon);
+  block-size: var(--component-slides-big-icon);
+  color: var(--a1-slides-tone);
+  font-size: var(--component-slides-big-icon);
+}
+
+/* Why: a big question and rising bars */
+.a1-slides__layout--why {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--base-spacing-32);
+  align-items: end;
+}
+.a1-slides__why-copy {
+  display: grid;
+  gap: var(--base-spacing-8);
+  align-self: center;
+}
+.a1-slides__bars {
+  display: flex;
+  gap: var(--base-spacing-24);
+  align-items: stretch;
+  block-size: 100%;
+  margin: 0;
+  padding: 0 0 var(--base-spacing-16);
+  list-style: none;
+}
+.a1-slides__bars li {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--base-spacing-8);
+  justify-content: flex-end;
+}
+.a1-slides__bar {
+  block-size: var(--a1-slides-bar);
+  border-radius: var(--base-radius-sm) var(--base-radius-sm) 0 0;
+  background: var(--semantic-color-status-error-background);
+}
+.a1-slides__bars li:nth-child(2) .a1-slides__bar { background: var(--semantic-color-status-warn-background); }
+.a1-slides__bars li:nth-child(3) .a1-slides__bar { background: var(--semantic-color-status-success-background); }
+
+/* Together */
+.a1-slides__layout--together {
+  display: grid;
+  gap: var(--base-spacing-32);
+  place-content: center;
+  justify-items: center;
+  background: var(--semantic-color-surface-panel);
+}
+.a1-slides__equation {
+  display: flex;
+  gap: var(--base-spacing-16);
+  align-items: center;
+}
+.a1-slides__equation-text {
+  display: inline-flex;
+  gap: var(--base-spacing-16);
+  align-items: center;
+}
+.a1-slides__badge {
+  padding: var(--base-spacing-12) var(--base-spacing-32);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-warn-border);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-status-warn-surface);
+}
+
+@media (forced-colors: active) {
+  .a1-slides__header, .a1-slides__card, .a1-slides__pills li, .a1-slides__badge { border: var(--base-spacing-1) solid CanvasText; }
+}

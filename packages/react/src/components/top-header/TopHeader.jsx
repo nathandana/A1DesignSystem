@@ -620,6 +620,7 @@ export function TopHeader({
   navItems = [],
   actions = [],
   loginButton,
+  endContent,
   navIconPosition = "start",
   className = "",
   ...rest
@@ -722,6 +723,9 @@ export function TopHeader({
                     setOpenAction(openAction === action.id ? null : action.id)
                   }
                 />
+          )}
+          {endContent != null && endContent !== false && (
+            <div className="a1-top-header__end-content">{endContent}</div>
           )}
           {loginButton && (
             <div className="a1-top-header__login">

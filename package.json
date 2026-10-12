@@ -88,7 +88,10 @@
     "build:eslint-rules": "node scripts/build-eslint-rules.mjs",
     "lint": "node scripts/build-eslint-rules.mjs --check && eslint . && node scripts/lint-a1-css.mjs",
     "lint:fix": "node scripts/build-eslint-rules.mjs && eslint . --fix && node scripts/lint-a1-css.mjs",
-    "lint:rules": "npm test --workspace=eslint-plugin-a1"
+    "lint:rules": "npm test --workspace=eslint-plugin-a1",
+    "dev:a1-labs": "vite apps/a1-labs --host 127.0.0.1 --strictPort --port 5187",
+    "build:a1-labs": "npm run build:tokens && vite build apps/a1-labs",
+    "preview:a1-labs": "vite preview apps/a1-labs --host 127.0.0.1 --strictPort --port 4189"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",

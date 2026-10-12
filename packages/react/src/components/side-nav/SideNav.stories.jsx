@@ -10,6 +10,7 @@ const meta = {
   parameters: { layout: "fullscreen" },
   argTypes: {
     placement: { control: "inline-radio", options: ["start", "end"] },
+    collapseButtonPlacement: { control: "inline-radio", options: ["header", "footer", "none"] },
   },
 };
 
@@ -235,6 +236,19 @@ export const Responsive = {
           header={(collapsed) => <HeaderSlot collapsed={collapsed} />}
           footer={<FooterSlot />}
         >
+          <NavItems />
+        </SideNav>
+      </AppShell>
+    );
+  },
+};
+
+export const WithoutCollapseButton = {
+  render: () => {
+    const [navOpen, setNavOpen] = useState(false);
+    return (
+      <AppShell navOpen={navOpen} setNavOpen={setNavOpen}>
+        <SideNav open={navOpen} onClose={() => setNavOpen(false)} collapseButtonPlacement="none">
           <NavItems />
         </SideNav>
       </AppShell>

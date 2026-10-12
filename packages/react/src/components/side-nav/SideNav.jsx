@@ -116,7 +116,7 @@ export function SideNavGroup({ icon, label, defaultOpen = false, open: controlle
  * - lg/xl (≥1025px): persistent in the document flow; built-in collapse (‹/›) toggle
  *
  * The close button is rendered inline with the header content. The desktop
- * collapse button can be rendered in the header or footer.
+ * collapse button can be rendered in the header or footer, or omitted with "none".
  *
  * @param {object} props
  * @param {React.ReactNode | ((collapsed: boolean) => React.ReactNode)} [props.header]
@@ -129,7 +129,7 @@ export function SideNavGroup({ icon, label, defaultOpen = false, open: controlle
  * @param {boolean} [props.defaultCollapsed=false] - Initial collapsed state for lg/xl (uncontrolled)
  * @param {boolean} [props.collapsed] - Controlled collapsed state for lg/xl
  * @param {function} [props.onCollapsedChange] - Called with next boolean when collapsed state changes
- * @param {"header"|"footer"} [props.collapseButtonPlacement="header"] - Where the desktop collapse button appears
+ * @param {"header"|"footer"|"none"} [props.collapseButtonPlacement="header"] - Where the desktop collapse button appears; "none" hides it without removing mobile close
  * @param {"start"|"end"} [props.placement="start"] - Side of the viewport/layout where the nav appears
  * @param {string} [props.className]
  */

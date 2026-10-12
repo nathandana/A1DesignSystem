@@ -5,6 +5,7 @@ import {
   Code,
   DataTable,
   NumberField,
+  Paragraph,
   Stack,
   Tab,
   TabList,
@@ -17,8 +18,18 @@ import {
   ToolbarGroup,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { FieldState } from './configKit.jsx'
+import { FieldState, WithHelp } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
+
+// Named example for the configurator/editor; callbacks themselves are not JSON.
+export function CompactTablePagination({ page, totalPages, onChange, size }) {
+  return <Stack as="nav" aria-label="Pagination" direction="row" wrap align="center" gap={8}>
+    <Button size={size} variant="tertiary" disabled={page === 1} onClick={() => onChange(page - 1)}>Previous</Button>
+    <Paragraph>Page {page} of {totalPages}</Paragraph>
+    <Button size={size} variant="tertiary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next</Button>
+  </Stack>
+}
+export const renderCompactPagination = context => <CompactTablePagination {...context} />
 
 // Density as icons: responsive (auto) plus the three density steps.
 const SIZE_OPTIONS = [
@@ -202,6 +213,15 @@ function buildSnippet(config, utilityClass = '') {
     config.size !== 'responsive' ? `  size="${config.size}"` : null,
     config.zebra ? '  zebra' : null,
     config.scrollable ? '  scrollable' : null,
+    config.paginationExample === 'compact' ? `  renderPagination={({ page, totalPages, onChange, size }) => (
+    <Stack as="nav" aria-label="Pagination" direction="row" wrap align="center" gap={8}>
+      <Button size={size} variant="tertiary" disabled={page === 1} onClick={() => onChange(page - 1)}>Previous</Button>
+      <Paragraph>Page {page} of {totalPages}</Paragraph>
+      <Button size={size} variant="tertiary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next</Button>
+    </Stack>
+  )}` : null,
+    config.paginationSize && config.paginationSize !== 'sm' ? `  paginationSize="${config.paginationSize}"` : null,
+    ['top', 'both', 'inline'].includes(config.paginationPosition) ? `  paginationPosition="${config.paginationPosition}"` : null,
     config.mobileLayout === 'table' ? '  mobileLayout="table"' : null,
     config.sortable ? '  // Columns carry sortable flags' : null,
     config.showSearch ? '  // Columns carry searchable flags' : null,
@@ -240,6 +260,9 @@ export function getDefaultConfig() {
     showFilters: false,
     showPagination: false,
     pageSize: 3,
+    paginationPosition: 'bottom',
+    paginationSize: 'sm',
+    paginationExample: 'a1',
     showPageSizeMenu: false,
     pageSizeOptions: '3, 5, 10',
     selectable: false,
@@ -268,6 +291,10 @@ export function toJson(config) {
   if (config.caption && config.caption !== 'Team members') props.caption = config.caption
   if (config.size && config.size !== 'responsive') props.size = config.size
   if (config.zebra) props.zebra = true
+  if (['top', 'both', 'inline'].includes(config.paginationPosition)) props.paginationPosition = config.paginationPosition
+  if (config.paginationSize === 'md') props.paginationSize = config.paginationSize
+  if (config.paginationExample === 'compact') props.paginationExample = 'compact'
+  if (config.showPagination) props.pageSize = config.pageSize
   props.columns = normalizeColumns(config).map((column) => {
     const entry = { key: column.key, label: column.label }
     if (column.sortable) entry.sortable = true
@@ -285,6 +312,10 @@ export function fromJson(node) {
   if (typeof props.caption === 'string' && props.caption) config.caption = props.caption
   if (JSON_SIZES.includes(props.size)) config.size = props.size
   config.zebra = props.zebra === true
+  config.paginationPosition = ['top', 'both', 'inline'].includes(props.paginationPosition) ? props.paginationPosition : 'bottom'
+  config.paginationSize = ['sm', 'md'].includes(props.paginationSize) ? props.paginationSize : 'sm'
+  config.paginationExample = props.paginationExample === 'compact' ? 'compact' : 'a1'
+  if (props.showPagination || props.pageSize) { config.showPagination = true; config.pageSize = props.pageSize || 3 }
   const rawColumns = Array.isArray(props.columns) ? props.columns.filter((column) => column && typeof column === 'object' && column.key) : []
   if (rawColumns.length > 0) {
     config.columns = rawColumns.map((column) => ({
@@ -325,6 +356,9 @@ export function Preview({ config, utilityClass = '' }) {
       zebra={config.zebra}
       scrollable={config.scrollable}
       mobileLayout={config.mobileLayout}
+      paginationPosition={config.paginationPosition}
+      paginationSize={config.paginationSize}
+      renderPagination={config.paginationExample === 'compact' ? renderCompactPagination : undefined}
       selectable={config.selectable}
       onDeleteSelected={config.selectable && config.showDeleteSelected ? () => {} : undefined}
       pageSize={config.showPagination && !config.showPageSizeMenu ? (config.pageSize || 3) : undefined}
@@ -437,6 +471,21 @@ export function Controls({ config, setConfig }) {
           />
           {config.showPagination && (
             <>
+              <WithHelp helper="Use the standard A1 navigation or a compact example of the renderPagination callback. The table still owns sorting, filtering and page counts.">
+                <Toolbar label="Page navigation">
+                  <ToolbarGroup aria-label="Page navigation" value={config.paginationExample ?? 'a1'} onChange={(paginationExample) => set({ paginationExample })} showLabels options={[{ value: 'a1', label: 'A1' }, { value: 'compact', label: 'Custom' }]} />
+                </Toolbar>
+              </WithHelp>
+              <WithHelp helper="Choose the size of the page navigation buttons independently of table density.">
+                <Toolbar label="Pagination size">
+                  <ToolbarGroup aria-label="Pagination size" value={config.paginationSize ?? 'sm'} onChange={(paginationSize) => set({ paginationSize })} showLabels options={[{ value: 'sm', label: 'Small' }, { value: 'md', label: 'Medium' }]} />
+                </Toolbar>
+              </WithHelp>
+              <WithHelp helper="Place page controls above or below rows, both (matching controls above and below that stay in sync), or inline with filters when space allows. Inline controls wrap below filters on narrower screens.">
+                <Toolbar label="Pagination position">
+                  <ToolbarGroup aria-label="Pagination position" value={config.paginationPosition ?? 'bottom'} onChange={(paginationPosition) => set({ paginationPosition })} showLabels options={[{ value: 'top', label: 'Above' }, { value: 'bottom', label: 'Below' }, { value: 'both', label: 'Both' }, { value: 'inline', label: 'Inline' }]} />
+                </Toolbar>
+              </WithHelp>
               <NumberField
                 label="Page size"
                 size="compact"

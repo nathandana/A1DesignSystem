@@ -50,6 +50,15 @@ export interface TopHeaderProps extends React.HTMLAttributes<HTMLElement> {
    */
   loginButton?: string | { label?: string; onClick?: React.MouseEventHandler<HTMLButtonElement> };
   /**
+   * Custom content rendered in the end zone after the actions (before the
+   * login button), inside the header's surface and bottom border — for
+   * composed controls such as an inline appearance switcher. Keep it compact
+   * (control heights up to the md 40px standard) and hide or collapse it on
+   * small screens; the header does not wrap. Runtime-only: not representable
+   * in page-definition JSON or Figma. Default: undefined
+   */
+  endContent?: React.ReactNode;
+  /**
    * Position of nav-item icons relative to their labels, or "hidden" to
    * suppress nav items at that breakpoint. Accepts a single value or a
    * responsive object. Default: "start"

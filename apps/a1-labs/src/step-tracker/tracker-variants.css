@@ -1,0 +1,101 @@
+/* Six opt-in presentations of the real, display-only A1 StepTracker.
+   Default retains its shipped appearance. Neutral semantic roles preserve
+   position-only meaning. Geometry uses existing tracker, tab and spacing tokens.
+   No shared styles or other experiments are affected. */
+.a1-tracker-study[data-treatment='rings'],
+.a1-tracker-study[data-treatment='numbers'] {
+  --a1-st-dot-size: var(--component-tab-progress-step-size);
+  --a1-st-active-width: var(--component-tab-progress-step-size);
+  --a1-st-gap: var(--base-spacing-12);
+}
+.a1-tracker-study[data-treatment='rings'] .a1-step-tracker__step {
+  box-sizing: border-box;
+  border: var(--component-tab-progress-step-border-width) solid var(--a1-st-dot-color);
+  background: transparent;
+}
+.a1-tracker-study[data-treatment='rings'] .a1-step-tracker__step--current {
+  border-color: var(--a1-st-active-color);
+  background: var(--a1-st-active-color);
+  box-shadow: inset 0 0 0 var(--base-spacing-4) var(--semantic-color-surface-page);
+}
+.a1-tracker-study[data-treatment='segments'] {
+  --a1-st-dot-size: var(--base-spacing-4);
+}
+.a1-tracker-study[data-treatment='segments'] .a1-step-tracker__step {
+  inline-size: var(--component-step-tracker-active-width);
+  border-radius: var(--base-radius-control);
+}
+.a1-tracker-study[data-treatment='ticks'] {
+  --a1-st-dot-size: var(--base-spacing-4);
+  --a1-st-active-width: var(--base-spacing-4);
+  --a1-st-gap: var(--base-spacing-12);
+}
+.a1-tracker-study[data-treatment='ticks'] .a1-step-tracker__step { block-size: var(--base-spacing-12); }
+.a1-tracker-study[data-treatment='ticks'] .a1-step-tracker__step--current { block-size: var(--base-spacing-24); }
+.a1-tracker-study[data-treatment='numbers'] { counter-reset: a1-tracker-position; }
+.a1-tracker-study[data-treatment='numbers'] .a1-step-tracker__step {
+  counter-increment: a1-tracker-position;
+  background: transparent;
+  color: var(--semantic-color-text-muted);
+  box-sizing: border-box;
+  border: var(--component-tab-border-width) solid var(--a1-st-dot-color);
+  font-family: var(--component-paragraph-font-family);
+  font-size: var(--semantic-font-size-body-xs);
+  font-weight: var(--base-font-weight-semibold);
+  line-height: calc(var(--a1-st-dot-size) - 2 * var(--component-tab-border-width));
+  text-align: center;
+}
+.a1-tracker-study[data-treatment='numbers'] .a1-step-tracker__step::before { content: counter(a1-tracker-position); }
+.a1-tracker-study[data-treatment='numbers'] .a1-step-tracker__step--current {
+  color: var(--semantic-color-surface-page);
+  border-color: var(--a1-st-active-color);
+  background: var(--a1-st-active-color);
+}
+.a1-tracker-study[data-treatment='spotlight'] {
+  --a1-st-active-width: var(--component-step-tracker-dot-size);
+  --a1-st-gap: var(--base-spacing-16);
+  padding-block: var(--base-spacing-8);
+  padding-inline: var(--base-spacing-8);
+}
+.a1-tracker-study[data-treatment='spotlight'] .a1-step-tracker__step--current {
+  outline: var(--component-tab-progress-step-border-width) solid var(--a1-st-active-color);
+  outline-offset: var(--base-spacing-4);
+}
+/* Full alignment keeps non-pill marks intact and distributes them. Only the
+   equal-segment study stretches every segment; Default keeps A1's fluid pill. */
+.a1-tracker-study:not([data-treatment='default']).a1-step-tracker--full { justify-content: space-between; }
+.a1-tracker-study:not([data-treatment='default']).a1-step-tracker--full .a1-step-tracker__step--current { flex: 0 0 auto; }
+.a1-tracker-study[data-treatment='segments'].a1-step-tracker--full .a1-step-tracker__step { flex: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .a1-tracker-study .a1-step-tracker__step { transition: none; }
+}
+@media (forced-colors: active) {
+  .a1-tracker-study .a1-step-tracker__step { border: var(--component-tab-border-width) solid CanvasText; }
+  .a1-tracker-study .a1-step-tracker__step--current {
+    outline: var(--component-tab-progress-step-border-width) solid Highlight;
+    outline-offset: var(--base-spacing-2);
+  }
+}
+
+/* Motion stays on decorative markers. Measured travel and ripple placement are
+   supplied by the local WAAPI hook, without changing A1's accessible content. */
+.a1-tracker-study { position: relative; }
+.a1-tracker-study[data-transition='standard'] .a1-step-tracker__step {
+  transition: inline-size var(--a1-tracker-study-duration) var(--semantic-motion-easing-standard),
+    block-size var(--a1-tracker-study-duration) var(--semantic-motion-easing-standard),
+    background-color var(--a1-tracker-study-duration) var(--semantic-motion-easing-standard),
+    color var(--a1-tracker-study-duration) var(--semantic-motion-easing-standard),
+    box-shadow var(--a1-tracker-study-duration) var(--semantic-motion-easing-standard);
+}
+.a1-tracker-study:not([data-transition='standard']) .a1-step-tracker__step { transition: none; }
+.a1-tracker-study__ripple {
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: var(--component-tab-progress-step-border-width) solid var(--semantic-color-text-default);
+  border-radius: var(--base-radius-pill);
+}
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .a1-tracker-study[data-transition] .a1-step-tracker__step { transition: none; }
+  .a1-tracker-study__ripple { display: none; }
+}

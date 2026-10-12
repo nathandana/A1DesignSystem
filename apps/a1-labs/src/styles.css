@@ -1,0 +1,18 @@
+.a1-labs-body {
+  margin: 0;
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+}
+
+/* Match a1-web's fixed configuration rail. PageLayout provides independent
+   panel scrolling; SideNav and BottomSheet own their responsive behavior. */
+.a1-labs-experiment-layout.a1-page-layout--aside-end .a1-page-layout__content {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.a1-labs-configuration {
+  inline-size: var(--component-page-layout-sidebar-width);
+  min-block-size: 100%;
+  background: var(--semantic-color-surface-panel);
+  border-inline-start: var(--component-divider-size-sm) solid var(--semantic-color-border-subtle);
+}

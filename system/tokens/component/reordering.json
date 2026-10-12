@@ -1,0 +1,25 @@
+{
+  "component": {
+    "reordering": {
+      "lift": { "$type": "dimension", "$value": "{base.spacing.8}" },
+      "bounce": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "liftScale": { "$type": "number", "$value": 1.025 },
+      "squashX": { "$type": "number", "$value": 1.04 },
+      "squashY": { "$type": "number", "$value": 0.94 },
+      "tilt": { "$value": "-2deg" },
+      "counterTilt": { "$value": "1deg" },
+      "slide": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Slide in: how far the placed item travels in from the inline start." },
+      "popScale": { "$type": "number", "$value": 1.05, "$description": "Pop: peak scale as the placed item swells." },
+      "popSettle": { "$type": "number", "$value": 0.98, "$description": "Pop: brief undershoot before settling." },
+      "fadeScale": { "$type": "number", "$value": 0.96, "$description": "Fade in: starting scale as the placed item appears." },
+      "gutter": { "$type": "dimension", "$value": "{base.spacing.40}", "$description": "Margin reserved beside the list for the side marker, pointer and position rail, so they never sit under the dragged item or off screen." },
+      "markerSize": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Diameter of the numbered bubble on the side marker and position rail." },
+      "railDot": { "$type": "dimension", "$value": "{base.spacing.8}", "$description": "Position rail: diameter of each position's dot." },
+      "markerOffset": { "$type": "dimension", "$value": "{base.spacing.20}", "$description": "Margin indicators: distance from the slot's inline start to the centre of the gutter." },
+      "glowSpread": { "$type": "dimension", "$value": "{base.spacing.12}", "$description": "Glow: blur radius of the target slot's halo." },
+      "arrowSize": { "$type": "dimension", "$value": "{base.spacing.8}", "$description": "Arrows: size of the arrowheads at each end of the insertion line." },
+      "ghostOpacity": { "$type": "number", "$value": 0.9 },
+      "placeholderOpacity": { "$type": "number", "$value": 0.3 }
+    }
+  }
+}

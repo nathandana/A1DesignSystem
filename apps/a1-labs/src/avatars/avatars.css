@@ -1,0 +1,262 @@
+/* Labs avatar study. Sizes, type and the hairline border come from the A1
+   Avatar tokens (component.avatar); everything new comes from
+   component.avatarLab. All selectors live under .a1-avatar-lab. */
+
+.a1-avatar-lab {
+  --a1-avatar-lab-size: var(--component-avatar-size-md);
+  --a1-avatar-lab-font-size: var(--component-avatar-font-size-md);
+  --a1-avatar-lab-border-width: var(--component-avatar-border-width);
+  --a1-avatar-lab-radius: calc(var(--a1-avatar-lab-size) / 2);
+  /* Semantic roles rather than component.avatar colours: those are not yet in
+     the light/dark mode contract, so they stay light in dark mode. */
+  --a1-avatar-lab-bg: var(--semantic-color-surface-raised);
+  --a1-avatar-lab-fg: var(--semantic-color-text-default);
+  --a1-avatar-lab-border-color: var(--semantic-color-border-default);
+  --a1-avatar-lab-ring: var(--semantic-color-action-background);
+  --a1-avatar-lab-status: clamp(
+    var(--component-avatar-lab-status-min-size),
+    calc(var(--a1-avatar-lab-size) * var(--component-avatar-lab-status-ratio)),
+    var(--component-avatar-lab-status-max-size)
+  );
+
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--a1-avatar-lab-size);
+  block-size: var(--a1-avatar-lab-size);
+  vertical-align: middle;
+}
+
+/* ── Sizes (A1 Avatar scale) ─────────────────────────────────────────────── */
+
+.a1-avatar-lab--xs { --a1-avatar-lab-size: var(--component-avatar-size-xs); --a1-avatar-lab-font-size: var(--component-avatar-font-size-xs); }
+.a1-avatar-lab--sm { --a1-avatar-lab-size: var(--component-avatar-size-sm); --a1-avatar-lab-font-size: var(--component-avatar-font-size-sm); }
+.a1-avatar-lab--lg { --a1-avatar-lab-size: var(--component-avatar-size-lg); --a1-avatar-lab-font-size: var(--component-avatar-font-size-lg); --a1-avatar-lab-border-width: var(--component-avatar-border-width-large); }
+.a1-avatar-lab--xl { --a1-avatar-lab-size: var(--component-avatar-size-xl); --a1-avatar-lab-font-size: var(--component-avatar-font-size-xl); --a1-avatar-lab-border-width: var(--component-avatar-border-width-large); }
+
+/* ── Radius ──────────────────────────────────────────────────────────────── */
+
+.a1-avatar-lab--radius-none { --a1-avatar-lab-radius: 0px; }
+.a1-avatar-lab--radius-sm { --a1-avatar-lab-radius: var(--base-radius-sm); }
+.a1-avatar-lab--radius-md { --a1-avatar-lab-radius: var(--base-radius-md); }
+.a1-avatar-lab--radius-lg { --a1-avatar-lab-radius: var(--base-radius-lg); }
+.a1-avatar-lab--radius-xl { --a1-avatar-lab-radius: var(--base-radius-xl); }
+/* full keeps the default: half the size, a circle. */
+
+/* ── Tone ────────────────────────────────────────────────────────────────── */
+
+.a1-avatar-lab--tone-info { --a1-avatar-lab-bg: var(--semantic-color-status-info-surface); --a1-avatar-lab-fg: var(--semantic-color-status-info-text); }
+.a1-avatar-lab--tone-success { --a1-avatar-lab-bg: var(--semantic-color-status-success-surface); --a1-avatar-lab-fg: var(--semantic-color-status-success-text); }
+.a1-avatar-lab--tone-warn { --a1-avatar-lab-bg: var(--semantic-color-status-warn-surface); --a1-avatar-lab-fg: var(--semantic-color-status-warn-text); }
+.a1-avatar-lab--tone-error { --a1-avatar-lab-bg: var(--semantic-color-status-error-surface); --a1-avatar-lab-fg: var(--semantic-color-status-error-text); }
+.a1-avatar-lab--tone-accent { --a1-avatar-lab-bg: var(--semantic-color-action-background); --a1-avatar-lab-fg: var(--semantic-color-action-foreground); }
+
+/* ── Frame and content ───────────────────────────────────────────────────── */
+
+.a1-avatar-lab__frame {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: var(--a1-avatar-lab-border-width) solid var(--a1-avatar-lab-border-color);
+  border-radius: var(--a1-avatar-lab-radius);
+  background: var(--a1-avatar-lab-bg);
+  color: var(--a1-avatar-lab-fg);
+  font-family: var(--component-avatar-font-family);
+  font-size: var(--a1-avatar-lab-font-size);
+  font-weight: var(--component-avatar-font-weight);
+  line-height: var(--component-avatar-line-height);
+}
+
+.a1-avatar-lab--border-none .a1-avatar-lab__frame,
+.a1-avatar-lab--border-ring .a1-avatar-lab__frame,
+.a1-avatar-lab--border-gradient .a1-avatar-lab__frame {
+  border-width: 0;
+}
+
+.a1-avatar-lab__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.a1-avatar-lab__initials {
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.a1-avatar-lab--content-icon .a1-avatar-lab__frame {
+  font-size: calc(var(--a1-avatar-lab-size) * var(--component-avatar-lab-icon-ratio));
+}
+
+/* Generated pattern: a mirrored grid, filled in the tone's text colour. */
+.a1-avatar-lab__pattern {
+  display: grid;
+  grid-template-columns: repeat(var(--component-avatar-lab-pattern-cells), 1fr);
+  grid-template-rows: repeat(var(--component-avatar-lab-pattern-cells), 1fr);
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: calc(var(--a1-avatar-lab-size) * var(--component-avatar-lab-pattern-inset));
+}
+
+.a1-avatar-lab__cell--on {
+  background: currentColor;
+}
+
+/* ── Ring and gradient ring ──────────────────────────────────────────────── */
+/* Two layers behind the frame: the ring colour, then a page-coloured gap. */
+
+.a1-avatar-lab--border-ring::before,
+.a1-avatar-lab--border-ring::after,
+.a1-avatar-lab--border-gradient::before,
+.a1-avatar-lab--border-gradient::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+}
+
+.a1-avatar-lab--border-ring::before,
+.a1-avatar-lab--border-gradient::before {
+  inset: calc(-1 * (var(--component-avatar-lab-ring-gap) + var(--component-avatar-lab-ring-width)));
+  border-radius: calc(var(--a1-avatar-lab-radius) + var(--component-avatar-lab-ring-gap) + var(--component-avatar-lab-ring-width));
+  background: var(--a1-avatar-lab-ring);
+}
+
+.a1-avatar-lab--border-ring::after,
+.a1-avatar-lab--border-gradient::after {
+  inset: calc(-1 * var(--component-avatar-lab-ring-gap));
+  border-radius: calc(var(--a1-avatar-lab-radius) + var(--component-avatar-lab-ring-gap));
+  background: var(--semantic-color-surface-page);
+}
+
+.a1-avatar-lab--border-gradient {
+  --a1-avatar-lab-ring: linear-gradient(
+    to bottom right,
+    var(--semantic-color-action-background),
+    var(--semantic-color-status-info-background),
+    var(--semantic-color-status-success-background)
+  );
+}
+
+/* ── Break the frame (experimental) ──────────────────────────────────────── */
+/* A cut-out portrait taller than the frame: the bottom follows the frame's
+   curve, while the head rises above it. */
+
+.a1-avatar-lab--pop-out .a1-avatar-lab__frame {
+  overflow: visible;
+  border-width: 0;
+  background: none;
+}
+
+.a1-avatar-lab__backdrop {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--a1-avatar-lab-border-width) solid var(--a1-avatar-lab-border-color);
+  border-radius: var(--a1-avatar-lab-radius);
+  background: var(--a1-avatar-lab-bg);
+}
+
+.a1-avatar-lab--border-none .a1-avatar-lab__backdrop,
+.a1-avatar-lab--border-ring .a1-avatar-lab__backdrop,
+.a1-avatar-lab--border-gradient .a1-avatar-lab__backdrop {
+  border-width: 0;
+}
+
+/* Neutral reads as an empty plate behind a cut-out; use the accent surface. */
+.a1-avatar-lab--pop-out.a1-avatar-lab--tone-neutral {
+  --a1-avatar-lab-bg: var(--semantic-color-action-surface);
+}
+
+.a1-avatar-lab--pop-out .a1-avatar-lab__image {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  block-size: calc(100% * var(--component-avatar-lab-pop-out-ratio));
+  object-fit: cover;
+  object-position: bottom;
+  clip-path: inset(-100% 0 0 0 round 0 0 var(--a1-avatar-lab-radius) var(--a1-avatar-lab-radius));
+}
+
+/* ── Status (shape and colour, so it is never colour-only) ───────────────── */
+
+.a1-avatar-lab__status {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  box-sizing: border-box;
+  inline-size: var(--a1-avatar-lab-status);
+  block-size: var(--a1-avatar-lab-status);
+  border-radius: var(--base-radius-pill);
+  box-shadow: 0 0 0 var(--component-avatar-lab-status-cutout) var(--semantic-color-surface-page);
+  overflow: hidden;
+}
+
+/* On a circle, sit on the edge at 45°: 1 − √2/2 of the radius from the corner. */
+.a1-avatar-lab--radius-full .a1-avatar-lab__status {
+  inset-block-end: calc(var(--a1-avatar-lab-size) * 0.1464 - var(--a1-avatar-lab-status) / 2);
+  inset-inline-end: calc(var(--a1-avatar-lab-size) * 0.1464 - var(--a1-avatar-lab-status) / 2);
+}
+
+.a1-avatar-lab__status--online { background: var(--semantic-color-status-success-background); }
+
+/* Away: a crescent. */
+.a1-avatar-lab__status--away { background: var(--semantic-color-status-warn-background); }
+.a1-avatar-lab__status--away::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(var(--a1-avatar-lab-status) * var(--component-avatar-lab-status-away-offset) * -1);
+  inset-inline-end: calc(var(--a1-avatar-lab-status) * var(--component-avatar-lab-status-away-offset) * -1);
+  inline-size: calc(var(--a1-avatar-lab-status) * var(--component-avatar-lab-status-away-cut));
+  block-size: calc(var(--a1-avatar-lab-status) * var(--component-avatar-lab-status-away-cut));
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-page);
+}
+
+/* Busy: a bar, like a no-entry sign. */
+.a1-avatar-lab__status--busy { background: var(--semantic-color-status-error-background); }
+.a1-avatar-lab__status--busy::after {
+  content: "";
+  position: absolute;
+  inset-block: calc(var(--a1-avatar-lab-status) * (1 - var(--component-avatar-lab-status-busy-bar-height)) / 2);
+  inset-inline: calc(var(--a1-avatar-lab-status) * (1 - var(--component-avatar-lab-status-busy-bar-width)) / 2);
+  background: var(--semantic-color-surface-page);
+}
+
+/* Offline: a hollow ring. */
+.a1-avatar-lab__status--offline {
+  border: calc(var(--a1-avatar-lab-status) * var(--component-avatar-lab-status-offline-ring)) solid var(--semantic-color-text-muted);
+  background: var(--semantic-color-surface-page);
+}
+
+/* ── Group ───────────────────────────────────────────────────────────────── */
+
+.a1-avatar-lab-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.a1-avatar-lab-group > .a1-avatar-lab + .a1-avatar-lab {
+  margin-inline-start: calc(var(--a1-avatar-lab-size) * var(--component-avatar-lab-group-overlap) * -1);
+}
+
+.a1-avatar-lab-group > .a1-avatar-lab .a1-avatar-lab__frame {
+  box-shadow: 0 0 0 var(--component-avatar-lab-group-cutout) var(--semantic-color-surface-page);
+}
+
+@media (forced-colors: active) {
+  .a1-avatar-lab__frame,
+  .a1-avatar-lab__backdrop,
+  .a1-avatar-lab__status {
+    border: var(--component-avatar-border-width) solid CanvasText;
+  }
+}

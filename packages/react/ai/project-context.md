@@ -3,6 +3,50 @@
 This file is the entry point for all agents and AI assistants working in this repository. Read it first, then follow the linked context files for implementation details.
 
 **Related files in this directory:**
+- `packages/react/ai/labs-avatars.md` — Labs avatars: `LabAvatar`/`LabAvatarGroup` API (content, sizes, radii, colour, borders, status, Break the frame, generated pattern), tokens and accessibility.
+- `packages/react/ai/labs-pagination-types.md` — long-table page navigation variants and shared render callback.
+- `packages/react/ai/labs-data-tables.md` — pagination placement and configurable data table scale.
+- `packages/react/ai/labs-automation-builder.md` — sentence/block rule editing and local tests.
+- `packages/react/ai/labs-token-studies.md` — token-name treatments and authored hierarchy tracing.
+- `packages/react/ai/labs-chat.md` — message styles, entrance motion, composer, scrolling and simulated reply lifecycle.
+- `packages/react/ai/labs-step-tracker.md` — six noninteractive A1 position indicator treatments and their configuration.
+- `packages/react/ai/labs-steps.md` — eight A1 progress-tab presentations, state ownership, keyboard behavior and responsive strip.
+- `packages/react/ai/labs-button-motion.md` — six button hover/press treatments, native behavior and isolated wrappers.
+- `packages/react/ai/labs-segmented-motion.md` — Labs segmented control transitions on the A1 SegmentedControl: eight background transitions, `AnimatedSegmentedControl` API, tokens and accessibility.
+- `packages/react/ai/labs-accordion-motion.md` — Labs accordion transitions on the A1 Accordion: eight opening/closing variants, `AccordionMotion` API, tokens and accessibility.
+- `packages/react/ai/labs-switch-three.md` — Three.js switch, native semantics, token geometry and fallbacks.
+- `packages/react/ai/labs-mobile-tables.md` — Labs mobile data tables: nine phone patterns (cards, compact/plain/labeled/legend lists, scrolling, frozen column, expandable, pick a column, grouped) switching to A1 DataTable at md, datasets and findings.
+- `packages/react/ai/labs-bulk-actions.md` — Labs bulk actions: selecting many table rows and acting on them from an always-visible bar on A1 DataTable, persistent deletion, and findings for A1.
+- `packages/react/ai/labs-data-grid.md` — Labs data grid: A1's experimental react-data-grid wrapper as an editable 127-item inventory, the tested grid model and inventory generator, and evaluation notes.
+- `packages/react/ai/labs-fenex.md` — Labs Fenex celebrates: the self-contained animated SVG fox, the shared `Fenex` component (playback, still, confetti, settle), its palette exception and accessibility.
+- `packages/react/ai/labs-fit-text.md` — Labs fitted type: lines scaled to fill their container, line-breaking and sizing model, `FitText` API, tokens and accessibility.
+- `packages/react/ai/labs-celebrations.md` — Labs submission celebrations: seven success celebrations from a check to Fenex and confetti, the particle physics, `Celebration` API, tokens and accessibility.
+- `packages/react/ai/labs-dialog-motion.md` — Labs dialog motion on the A1 Dialog: nine enter/exit animations with direction and exit, scrim color/opacity/blur, `MotionDialog` API, tokens and the Section-margin placement gap.
+- `packages/react/ai/labs-contextual-help.md` — Labs contextual help: five help patterns, four triggers, which combinations are allowed and why, `HelpPopover`/`InlineHelp` API, tokens and accessibility.
+- `packages/react/ai/labs-password-strength.md` — Labs password strength meters: seven styles, the local strength model, rules, `StrengthMeter` API, tokens and accessibility.
+- `packages/react/ai/labs-checkbox-motion.md` — Labs checkbox motion on the A1 CheckboxGroup: eight check/uncheck/mixed animations, `LivelyCheckboxGroup` API, tokens and accessibility.
+- `packages/react/ai/labs-radio-variants.md` — Labs animated radio button variants on the A1 RadioGroup: variants, `LivelyRadioGroup` API, tokens and accessibility.
+- `packages/react/ai/labs-flip-billboard.md` — split-flap landing hero, shared clock mechanism, copy and playback.
+- `packages/react/ai/labs-flip-clock.md` — Three.js split-flap clock, timing, motion, tokens and lifecycle.
+- `packages/react/ai/labs-mode-switches.md` — Labs light/dark mode switches: five controls (binary and Auto), their API, physics, tokens and accessibility.
+- `packages/react/ai/labs-home.md` — Labs home search and sorting, experiment type tags, responsive gallery and appearance controls.
+- `packages/react/ai/labs-form-experiments.md` — long-form chunking and the shared A1 Web/Labs date-of-birth studies.
+- `packages/react/ai/labs-slides.md` — Labs slide deck: transitions from cut to content-aware cascade and morph, content builds, `SlideDeck` API, tokens and validation.
+- `packages/react/ai/labs-verification-journey.md` — automatic multi-service verification, checkpoints, errors, receipts and Sticky Actions.
+- `packages/react/ai/labs-timeline.md` — Labs timeline: kept connector geometry, horizontal/vertical layouts, `Timeline` API, tokens and validation.
+- `packages/react/ai/labs-required-fields.md` — Labs required-fields comparison: five new marking variations (no A1 asterisk or badge), submission treatments, form model API and accessibility.
+- `packages/react/ai/labs-billboard-actions.md` — A1-only billboard composition, content/action inputs and responsive preview guidance.
+- `packages/react/ai/labs-reordering.md` — controlled reorder list, placement motion, insertion cues and accessibility guidance.
+- `packages/react/ai/labs-verify-button.md` — reusable critical-action intent gate, cancellation, animation and accessibility contract.
+- `packages/react/ai/labs-connected-nodes.md` — combined Canvas/Node composition, configuration and validation guidance.
+- `packages/react/ai/labs-thinking-terminal.md` — terminal activity indicator API, timing, accessibility and promotion guidance.
+- `packages/react/ai/labs-switch-morph.md` — reusable switch morph API, token geometry and validation/promotion notes.
+- `packages/react/ai/labs-focus-animations.md` — isolated focus experiment API, token dependencies and validation/promotion guidance.
+- `packages/react/ai/labs-page-loaders.md` — Labs Blueprint, Jigsaw, Fresh paint and Sunrise page loaders: shared `loading-preview` scaffold, each core's API, timelines, tokens and validation.
+- `packages/react/ai/labs-page-construction.md` — Labs "Under construction" page loader: `PageConstruction` API, crane timeline, tokens and validation.
+- `packages/react/ai/labs-frosted-glass.md` — Labs frosted glass visual study: `FrostedGlass`/`GlassPane` API, the backdrop-root technique, its user-approved raw-value/token exception and validation.
+- `packages/react/ai/labs-button-completion.md` — Labs button-completion experiment (fixed-width and expanding send buttons): API, token dependencies, states and validation/promotion guidance.
+- `packages/react/ai/labs-contributing.md` — Labs contribution workflow, sidebar categories, agent instruction maintenance and synchronized app version/changelog policy.
 - `packages/react/ai/release-preparation-2026-09-25.md` — prepared package versions, release scope and validation results.
 - `packages/react/ai/project-foundations.md` — repository structure, token flow, themes, labels, and shared system concepts.
 - `packages/react/ai/project-workflows.md` — CSS rules, component architecture, package-specific rules, and invariants.
@@ -58,3 +102,5 @@ These eight rules govern all work in this repository. Read them before starting 
 6. Follow `packages/react/ai/content-standards.md` when authoring or editing product copy, documentation, labels, or examples.
 
 Package-level context files may add package-specific rules on top of these foundations. The central rules here still apply.
+
+For Labs shared demonstration records, Small/Medium/Large presets and the consolidation audit, read [Sample data](labs-sample-data.md).

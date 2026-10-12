@@ -1,0 +1,38 @@
+{
+  "component": {
+    "chat": {
+      "transcriptHeight": {
+        "$type": "dimension",
+        "$value": "28rem"
+      },
+      "messageWidth": {
+        "$type": "dimension",
+        "$value": "85%"
+      },
+      "rise": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}"
+      },
+      "travel": {
+        "$type": "dimension",
+        "$value": "{base.spacing.32}"
+      },
+      "popScale": {
+        "$type": "number",
+        "$value": 0.9
+      },
+      "replyFast": {
+        "$type": "duration",
+        "$value": "750ms"
+      },
+      "replyDefault": {
+        "$type": "duration",
+        "$value": "1500ms"
+      },
+      "replySlow": {
+        "$type": "duration",
+        "$value": "3000ms"
+      }
+    }
+  }
+}

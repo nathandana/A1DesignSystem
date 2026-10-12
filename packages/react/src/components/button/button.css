@@ -10,7 +10,10 @@
   border-width: var(--a1-button-border-width, var(--component-button-border-width));
   border-style: solid;
   border-radius: var(--a1-button-border-radius, var(--component-button-border-radius));
-  padding-block: var(--component-button-padding-block);
+  /* Heights are total rendered height (28 / 40 / 56). Bordered variants
+     subtract their border from the block padding so the border doesn't push
+     them past the standard (see Control heights in project-foundations.md). */
+  padding-block: calc(var(--component-button-padding-block) - var(--a1-button-padding-adjust, 0px));
   padding-inline: var(--a1-button-padding-inline, var(--component-button-padding-inline));
   font-family: var(--component-button-font-family);
   font-size: var(--a1-button-font-size, var(--component-button-font-size));
@@ -120,6 +123,7 @@
   --a1-button-border-hover: var(--component-button-secondary-border-hover);
   --a1-button-border-pressed: var(--component-button-secondary-border-pressed);
   --a1-button-border-width: var(--component-button-secondary-border-width);
+  --a1-button-padding-adjust: var(--component-button-secondary-border-width);
 }
 
 .a1-button--tertiary {
@@ -133,6 +137,7 @@
   --a1-button-border-hover: var(--component-button-tertiary-border-hover);
   --a1-button-border-pressed: var(--component-button-tertiary-border-pressed);
   --a1-button-border-width: var(--component-button-tertiary-border-width);
+  --a1-button-padding-adjust: var(--component-button-tertiary-border-width);
   /* Ghost/tertiary buttons stay flat: a raised drop shadow would draw a halo
      around the transparent body. Themes that opt buttons into a neumorphic
      shadow (e.g. Marshmallow) only lift the solid variants. No-op for themes
@@ -170,7 +175,7 @@
 
 .a1-button--sm {
   --a1-button-height: var(--component-button-small-height);
-  padding-block: var(--component-button-small-padding-block);
+  padding-block: calc(var(--component-button-small-padding-block) - var(--a1-button-padding-adjust, 0px));
   --a1-button-font-size: var(--semantic-font-size-body-sm);
   --a1-button-font-weight: var(--base-font-weight-semibold);
   --a1-button-border-radius: var(--component-button-small-border-radius);

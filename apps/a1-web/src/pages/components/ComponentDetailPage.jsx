@@ -980,7 +980,7 @@ const COMPONENT_PROPS = {
         { id: 'defaultCollapsed',       name: 'defaultCollapsed',       type: 'boolean',      description: 'Initial collapsed state on lg/xl (uncontrolled). Default: false.' },
         { id: 'collapsed',              name: 'collapsed',              type: 'boolean',      description: 'Controlled collapsed state for lg/xl.' },
         { id: 'onCollapsedChange',      name: 'onCollapsedChange',      type: '(collapsed: boolean) => void', description: 'Called with the next boolean when collapsed state changes.' },
-        { id: 'collapseButtonPlacement',name: 'collapseButtonPlacement',type: '"header" | "footer"', description: 'Where the desktop collapse toggle appears. Default: "header".' },
+        { id: 'collapseButtonPlacement',name: 'collapseButtonPlacement',type: '"header" | "footer" | "none"', description: 'Where the desktop collapse toggle appears; "none" hides it while preserving mobile close. Default: "header".' },
         { id: 'placement',              name: 'placement',              type: '"start" | "end"', description: 'Side of the layout the nav occupies. Default: "start".' },
       ],
     },

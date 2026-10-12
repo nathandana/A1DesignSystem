@@ -1,0 +1,144 @@
+/* Fresh paint page loader — reusable core styles. Fidelity layers stack in
+   order (layout coat → detail coat → page → soft veil), each hidden until its
+   pass of the roller reveals it (JS sets clip-path). Colours are live surface,
+   text and action roles; sizes and timing come from component.pagePaint. */
+
+.a1-page-paint {
+  position: relative;
+  isolation: isolate;
+  min-block-size: 100vh;
+  overflow: hidden;
+}
+
+.a1-page-paint__coat,
+.a1-page-paint__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Each layer starts hidden; the roller reveals it. */
+.a1-page-paint__coat,
+.a1-page-paint__page,
+.a1-page-paint__veil {
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Fidelity 1: the layout's blocks, wet and glossy. */
+.a1-page-paint__coat {
+  z-index: 1;
+  background:
+    linear-gradient(170deg, color-mix(in srgb, var(--semantic-color-action-background) 12%, transparent), transparent 60%),
+    var(--a1-page-paint-layer, none);
+  transition: opacity var(--component-page-paint-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* Fidelity 2: text lines at their real sizes, and buttons in their colour. */
+.a1-page-paint__coat--detail {
+  z-index: 2;
+  background: var(--a1-page-paint-layer, none);
+}
+
+/* Fidelity 3: the real page, on its own surface so it covers the coats. */
+.a1-page-paint__page {
+  position: relative;
+  z-index: 3;
+  background: var(--semantic-color-surface-page);
+}
+
+/* …still soft and grey until the paint dries. */
+.a1-page-paint__veil {
+  z-index: 4;
+  background: color-mix(in srgb, var(--semantic-color-surface-page) 20%, transparent);
+  backdrop-filter: grayscale(1) blur(var(--base-spacing-2));
+  -webkit-backdrop-filter: grayscale(1) blur(var(--base-spacing-2));
+  transition: opacity var(--component-page-paint-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* A glossy wet band just behind the roller. */
+.a1-page-paint__wet {
+  position: absolute;
+  z-index: 5;
+  inset-inline: 0;
+  inset-block-start: calc(var(--a1-page-paint-y, 0%) - var(--component-page-paint-wet-edge));
+  block-size: var(--component-page-paint-wet-edge);
+  background: linear-gradient(transparent, color-mix(in srgb, var(--semantic-color-action-background) 30%, transparent));
+  pointer-events: none;
+}
+
+.a1-page-paint[data-direction='up'] .a1-page-paint__wet {
+  inset-block-start: var(--a1-page-paint-y, 0%);
+  background: linear-gradient(color-mix(in srgb, var(--semantic-color-action-background) 30%, transparent), transparent);
+}
+
+/* The roller: a drum in the paint colour on a handle arm. */
+.a1-page-paint__roller {
+  position: absolute;
+  z-index: 6;
+  inset-inline: var(--base-spacing-8);
+  inset-block-start: var(--a1-page-paint-y, 0%);
+  block-size: var(--component-page-paint-roller-height);
+  translate: 0 -50%;
+  pointer-events: none;
+  transition:
+    opacity var(--component-page-paint-exit-duration) var(--semantic-motion-easing-exit),
+    translate var(--component-page-paint-exit-duration) var(--semantic-motion-easing-exit);
+}
+
+.a1-page-paint__drum {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--base-radius-pill);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 var(--base-spacing-4), color-mix(in srgb, var(--semantic-color-action-foreground) 18%, transparent) var(--base-spacing-4) var(--base-spacing-6)),
+    linear-gradient(var(--semantic-color-action-background-hover), var(--semantic-color-action-background) 45%, var(--semantic-color-action-background-pressed));
+  box-shadow: var(--semantic-shadow-md);
+}
+
+/* The handle arm trails behind the drum. */
+.a1-page-paint__handle {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-end: 50%;
+  inline-size: var(--base-spacing-4);
+  block-size: var(--component-page-paint-handle-height);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-text-muted);
+  translate: -50% 0;
+}
+
+.a1-page-paint[data-direction='up'] .a1-page-paint__handle {
+  inset-block: 50% auto;
+}
+
+/* Done: the roller leaves and the paint dries to full colour. */
+.a1-page-paint[data-phase='exit'] .a1-page-paint__page {
+  clip-path: none;
+}
+
+.a1-page-paint[data-phase='exit'] .a1-page-paint__veil {
+  clip-path: none;
+  opacity: 0;
+}
+
+.a1-page-paint[data-phase='exit'] .a1-page-paint__wet,
+.a1-page-paint[data-phase='exit'] .a1-page-paint__roller {
+  opacity: 0;
+}
+
+.a1-page-paint[data-phase='exit'] .a1-page-paint__roller {
+  translate: 0 calc(-50% + var(--base-spacing-40));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-paint__coat,
+  .a1-page-paint__veil,
+  .a1-page-paint__roller {
+    transition: none;
+  }
+
+  .a1-page-paint[data-phase='idle'] .a1-page-paint__roller,
+  .a1-page-paint[data-phase='idle'] .a1-page-paint__wet {
+    opacity: 0;
+  }
+}

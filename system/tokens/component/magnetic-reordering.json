@@ -1,0 +1,17 @@
+{
+  "component": {
+    "magneticReordering": {
+      "radiusNear": { "$type": "dimension", "$value": "{base.spacing.64}" },
+      "radiusDefault": { "$type": "dimension", "$value": "{base.spacing.96}" },
+      "radiusWide": { "$type": "dimension", "$value": "{base.spacing.128}" },
+      "attraction": { "$type": "number", "$value": 0.75 },
+      "hysteresis": { "$type": "number", "$value": 1.2 },
+      "stiffnessSoft": { "$type": "number", "$value": 180 },
+      "stiffnessDefault": { "$type": "number", "$value": 260 },
+      "stiffnessFirm": { "$type": "number", "$value": 360 },
+      "dampingLow": { "$type": "number", "$value": 18 },
+      "dampingDefault": { "$type": "number", "$value": 24 },
+      "dampingHigh": { "$type": "number", "$value": 32 }
+    }
+  }
+}

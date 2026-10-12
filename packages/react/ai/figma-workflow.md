@@ -642,6 +642,7 @@ Gaps — props and behaviors that cannot currently be represented visually in Fi
 | Mobile nav overlay | The xs/sm variants show the closed hamburger composition; the opened overlay is runtime behavior |
 | `navIconPosition` (responsive) | Breakpoint variants change composition, not per-item icon position; nav icons show the `start` position via `Show icon` |
 | `logo` (node), `logoHref` | The Figma v1 represents the text wordmark only |
+| `endContent` | Arbitrary runtime ReactNode in the end zone; compose instances into the `Actions` slot instead |
 | action `badge` | Not represented on the Icon Button instances |
 | `loginButton.onClick` | Click behavior is runtime-owned; only the `{ label }` round-trips through the JSON bridge |
 | `onClick`, `href`, `className`, `id`, `aria-*`, `ref` | Runtime-only props |
