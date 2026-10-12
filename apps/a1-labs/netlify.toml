@@ -1,0 +1,21 @@
+# Dedicated Labs site. Keep the Netlify base directory at the repository root
+# and set its package directory to apps/a1-labs so this file takes precedence
+# over the root configuration, which belongs to A1 Web.
+[build]
+  command = "npm test --workspace=a1-labs && npm run build:a1-labs"
+  publish = "apps/a1-labs/dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# The SPA fallback is copied from public/_redirects by Vite.
+# Only content-hashed Vite assets receive immutable caching.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

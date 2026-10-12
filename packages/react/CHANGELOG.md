@@ -2,6 +2,103 @@
 
 ## Unreleased
 
+## 0.33.0 — 2026-10-12
+
+- **Package export documentation** — included `codeLineIndent` in the shipped guidelines export inventory.
+
+- **Labs token families** (A1-2698) — includes tokens for avatars, code highlighting, celebrations, slides, timelines, page construction and loading, fitted type, contextual help, password strength, mode switches, and animated radio, checkbox, accordion, dialog and segmented-control studies. Experiment implementations remain isolated in A1 Labs.
+
+- **Code: wrapped lines keep their indentation** — with `wrapping`, continuation rows of an indented line (spaces or tabs) now align with that line's code instead of the block's left edge. Plain-text children render as per-line spans; the new `codeLineIndent(line)` export gives the same indent for element children (e.g. highlighted spans). New "Wrapping with indentation and line numbers" story.
+- **Code: line numbers stay aligned when wrapping** — each wrapped line's number was rounded up to a whole pixel, drifting about 0.6px per line down the block; numbers now use exact heights.
+- **Code: line spacing hooks** — `--a1-code-line-height` and `--a1-code-line-gap` (unset by default, so nothing changes) set the line height and the space between logical lines for the code, line-number gutter and wrap measurement together.
+- **Code: scrollable blocks are keyboard-reachable** — a read-only block whose lines overflow sideways becomes a focusable region named "Scrollable code" (`code.scrollRegion`, 7 locales) with the focus ring, fixing axe `scrollable-region-focusable`. Short blocks add no tab stop.
+
+- **Current tabs** — selected tabs and counts no longer change appearance on hover or press; reselecting the current tab does not emit a change. Horizontal tab scrolling respects reduced motion.
+
+- **Category flyout activation** — clicking a header category keeps its submenu open when hover opened it first; keyboard and touch opening remain available.
+
+- **Toolbar selected state is clear in dark mode** — selected toggles and group items now use the same treatment as a selected SegmentedControl segment: the page surface with `semantic.shadow.xs`, on the raised bar. In dark mode the selected fill now reaches 1.55:1 against the bar (from about 1.15:1 with the old 16% shade). The overflow menu's inline active item matches, a focused selected tool keeps its focus ring, and hover on a pressed toggle darkens the selected fill. Visual baselines for Toolbar stories will change.
+
+- **DataTable `paginationPosition="both"`** — renders the result count and page controls above and below the rows. Both copies share one page/page-size state; their navigation landmarks are named "Pagination above table" and "Pagination below table". `renderPagination` now also receives `placement` (`"top" | "bottom" | "inline"`) and, for both, that `label`. Includes types, a PaginationBoth story and the A1 Web configurator option.
+
+- **TopHeader `endContent`** — new optional `ReactNode` rendered in the end zone after `actions`, inside the header's surface and bottom border, for compact composed controls such as an inline appearance switcher. Previously such controls had to sit beside the TopHeader, where its bottom border stopped short of them. Includes types, an "End content" Storybook story and the A1 Web configurator toggle. Runtime-only: not in page JSON or Figma.
+
+- **DataTable custom page navigation** — optional `renderPagination(context)` replaces only the page controls while retaining the built-in result count, page-size menu, placement, sorting and filtering. Includes resolved page/range context, Storybook and a compact example in the A1 Web configurator/editor.
+
+- **PageLayout sticky header in document-scroll mode** — without `viewportHeight`, `__main` and `__main-scroll` used `flex: 1 1 0` with `min-height: 0`, so the layout stayed one viewport tall while its content overflowed it, and `stickyHeader` stopped sticking after the first screen. In document-scroll mode they now size to content (`flex-basis: auto`); `viewportHeight` layouts are unchanged. Found on the Labs home page.
+
+- **Inline DataTable pagination** — `paginationPosition="inline"` places page controls beside filters when they fit, wrapping below on narrower layouts. Preserves page/filter state and keeps one pager. Documented in Storybook, types and A1 Web configurator/editor.
+
+- **DataTable zebra rows fixed** — `zebra` never striped desktop rows: each data row is followed by a hidden mobile-card row, so `tbody tr:nth-child(even)` only ever matched those hidden rows. Striping now counts data rows only (`:nth-child(even of .a1-data-table__desktop-row)`). Visual baselines for zebra stories will change.
+
+- **Button heights match the control standard** — secondary and tertiary buttons were 2px taller than other variants at `sm` (30 vs 28) and `md` (42 vs 40) because their 1px border was added on top of the block padding. Bordered variants now subtract their border width (`--a1-button-padding-adjust`), so every variant is 28 / 40 / 56 px in all themes. Visual baselines for secondary/tertiary buttons will change by 2px.
+
+- **DataTable pagination placement** — `paginationPosition="top" | "bottom"` places the result count and page controls above or below the rows, defaulting to bottom. `paginationSize="sm" | "md"` controls page button size (default small). Includes Storybook, types, A1 Web configurator/snippets and editor support; used by the Labs Table pagination experiment.
+
+- **Chat experiment tokens** — added transcript/message dimensions, entrance geometry and simulated reply pacing. Shared component behavior is unchanged.
+
+- **Magnetic reordering tokens** — added snap-distance aliases, attraction, hysteresis and spring stiffness/damping for the isolated Labs grid option.
+
+- **Step tracker motion tokens** — added fade, pop, bounce and ripple geometry for isolated Labs transitions. Shared StepTracker markup and styles are unchanged.
+
+- **Button interaction tokens** — added wrapper motion, shadow and ripple values for six isolated Labs hover/press treatments. Shared Button styling is unchanged.
+
+- **Labs 3D switch and billboard tokens** — added physical switch depth, bevel, lighting and lift tokens; added rapid per-character durations for the billboard wheel.
+
+- **Flip clock tokens** — added compact maximum width and stage ratio for the frameless Labs clock variant.
+
+- **Flip billboard tokens** — removed the unused per-card stagger duration; the Labs billboard flips all cards simultaneously.
+
+- **Focus animation tokens** — added subtle zoom scale, lift distance and corner length for four new isolated Labs focus treatments. Shared control focus styles remain unchanged.
+
+- **Flip billboard tokens** — added the headline grid, letter fitting, camera and stagger/hold timing for a Labs landing-page hero using the shared split-flap mechanism.
+
+- **Flip clock tokens** — added physical monochrome card materials, housing geometry, camera and lighting tokens for the isolated Labs Three.js clock.
+
+- **StatusBar pause control** — added `showPauseControl` (default `true`) so automatic verification flows can omit the delayed animation pause/play button while preserving reduced-motion behavior. Includes the Storybook example, property documentation and A1 Web configurator/editor support.
+
+- **Reordering tokens** (A1-2698) — added isolated Labs lift, squash, tilt and drag-opacity tokens. Existing semantic motion and A1 component styles remain unchanged.
+
+- **Verify button tokens** (A1-2698) — added isolated Labs safety-shutter geometry and 1/2/3-second hold durations; rebuilt token outputs. Shared Button behavior is unchanged.
+
+- **Thinking cursor height** (A1-2698) — changed the cursor-height token to 1em to follow the text size.
+
+- **Thinking terminal output** (A1-2698) — removed the unused reserved-height token as the Labs indicator now renders as a background-free text row.
+
+- **Thinking terminal tokens** (A1-2698) — added typing, reading, cursor timing and output geometry tokens for the isolated Labs AI thinking experiment.
+
+- **Switch morph gentler easing** (A1-2698) — softened the experiment’s easing curve to remove the pronounced midpoint slowdown.
+
+- **Switch morph rotation refinement** (A1-2698) — reduced the experiment’s stroke rotation token to 90 degrees.
+
+- **Switch morph easing** (A1-2698) — added an experiment-specific curve with a slower middle and faster ends. Shared Switch motion is unchanged.
+
+- **Switch morph rotation token** (A1-2698) — added a 180-degree stroke rotation token for the isolated Labs switch animation.
+
+- **Switch morph standard scale** (A1-2698) — added the 1× scale token so the Labs switch can use standard A1 dimensions.
+
+- **Switch morph tokens** (A1-2698) — added scale factors and normalized two-stroke geometry for the Labs switch transition, with a Foundations token story. Existing A1 switch, field and motion tokens supply general styling; shared Switch behavior is unchanged.
+
+- **Focus animation tokens** (A1-2698) — added experiment-scoped focus travel/accent dimensions and a Foundations token story. The Labs focus scope uses existing theme focus and motion tokens without changing shared focus behavior.
+
+- **Page loading tokens** (A1-2698) — added Labs viewport-border cycle durations, width, glow and radius tokens, with a Foundations token story. No shared component API changes.
+
+- **Image generation color modes** (A1-2698) — changed animation colors to semantic aliases and registered them in the shared light/dark mode contract, including system and inverse scopes. Canvas consumers can now resolve the active theme instead of a fixed black/blue/green palette.
+
+- **Glowing blob tokens** (A1-2698) — added experimental image-generation tokens for blob geometry, complexity, luminosity, layers and glow. The Image generation token story includes the new style’s values.
+
+- **SideNav collapse control** (A1-2698) — documented and typed the existing `collapseButtonPlacement="none"` option, with a responsive story. It hides the desktop collapse button while retaining mobile close.
+
+- **Toolbar text contrast** (A1-2698) — enabled tools use the default semantic text role on the raised toolbar surface. Fixes inactive labels falling below AA contrast in Aperture. Hover/selected fills darken the surface in both modes, avoiding low-contrast lightened selected fills in Fresh dark mode.
+
+- **Dispatch tree selection contrast** (A1-2698) — use the existing white token for selected TreeMenu labels in default, hover and pressed states. Fixes the theme’s pale-blue label contrast; added a focused story.
+
+- **Segmented control contrast** (A1-2698) — removed legacy dark/inverse inactive-color overrides so the existing semantic text roles govern default and hovered segments. Fixes dim inactive icons in dark settings menus and matches Pure CSS behavior.
+
+- **Image generation tokens** (A1-2698) — added experimental timing, geometry and palette tokens for the A1 Labs loading animation, with a Foundations token story. No existing component tokens changed.
+
+- **PageLayout landmarks** (A1-2698) — gave sidebar and supplementary panels distinct accessible names so layouts with both panels have distinguishable landmarks.
+
 ## 0.32.0 — 2026-09-25
 
 - **Heading mark line spacing** — Highlighted `HeadingMark` text now uses a tokenized vertical paint inset so its background does not overlap glyphs on the preceding line in wrapped display headings.

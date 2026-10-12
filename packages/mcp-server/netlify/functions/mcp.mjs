@@ -15,12 +15,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import manifest from '../../package.json' with { type: 'json' };
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_PATH = path.resolve(HERE, '../../index.json');
 
 const SERVER_NAME = 'a1-design-system';
-const SERVER_VERSION = '0.1.0';
+const SERVER_VERSION = manifest.version;
 const PROTOCOL_VERSION = '2025-06-18';
 
 let cachedIndex = null;

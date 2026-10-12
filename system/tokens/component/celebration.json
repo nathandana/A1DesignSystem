@@ -1,0 +1,89 @@
+{
+  "component": {
+    "celebration": {
+      "stageSize": {
+        "$type": "dimension",
+        "$value": "{base.spacing.128}",
+        "$description": "Height of the area that holds the check, rings, stamp or sparkles."
+      },
+      "checkPopScale": {
+        "$type": "number",
+        "$value": 1.15,
+        "$description": "Check: how far the check overshoots as it springs in."
+      },
+      "ringScale": {
+        "$type": "number",
+        "$value": 2.4,
+        "$description": "Rings: how large each ring grows before it fades."
+      },
+      "stampFrom": {
+        "$type": "number",
+        "$value": 2.5,
+        "$description": "Stamp: starting size before it slams down."
+      },
+      "stampAngle": {
+        "$type": "string",
+        "$value": "-8deg",
+        "$description": "Stamp: the angle it lands at."
+      },
+      "sparkleDistance": {
+        "$type": "dimension",
+        "$value": "{base.spacing.64}",
+        "$description": "Sparkles: how far from the check the sparkles appear."
+      },
+      "confettiLight": {
+        "$type": "number",
+        "$value": 60,
+        "$description": "Confetti pieces for a light amount."
+      },
+      "confettiNormal": {
+        "$type": "number",
+        "$value": 150,
+        "$description": "Confetti pieces for a normal amount."
+      },
+      "confettiLots": {
+        "$type": "number",
+        "$value": 320,
+        "$description": "Confetti pieces for lots."
+      },
+      "rocketsLight": {
+        "$type": "number",
+        "$value": 2,
+        "$description": "Fireworks for a light amount."
+      },
+      "rocketsNormal": {
+        "$type": "number",
+        "$value": 4,
+        "$description": "Fireworks for a normal amount."
+      },
+      "rocketsLots": {
+        "$type": "number",
+        "$value": 7,
+        "$description": "Fireworks for lots."
+      },
+      "gravity": {
+        "$type": "number",
+        "$value": 900,
+        "$description": "Confetti gravity, in pixels per second squared."
+      },
+      "sparkLife": {
+        "$type": "number",
+        "$value": 1.4,
+        "$description": "Fireworks: seconds before a spark fades away."
+      },
+      "sendDelay": {
+        "$value": "800ms",
+        "$description": "How long the simulated submission takes."
+      },
+      "characterHeight": {
+        "$type": "dimension",
+        "$value": "{base.width.sm}",
+        "$description": "Fenex: height of the character animation."
+      },
+      "characterSettle": {
+        "$value": "4800ms",
+        "$description": "Fenex in a celebration: how long he plays before settling into his still pose (moving content must stop or be pausable within 5 seconds)."
+      }
+    }
+  }
+}

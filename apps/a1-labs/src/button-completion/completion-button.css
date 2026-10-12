@@ -1,0 +1,185 @@
+/* Experiment-only button that turns into its own completion state. It mirrors
+   the A1 primary Button through the shared button tokens, so every theme and
+   mode styles it. Its width is fixed to its widest face (measured in CompletionButton.jsx) so the
+   button never resizes; only colour, icon and label change. Timing and shake
+   values live in button-completion tokens. */
+
+.a1-button-completion {
+  --a1-button-completion-height: var(--component-button-min-height);
+  --a1-button-completion-padding-inline: var(--component-button-padding-inline);
+  --a1-button-completion-radius: var(--component-button-border-radius);
+  --a1-button-completion-font-size: var(--component-button-font-size);
+  --a1-button-completion-font-weight: var(--base-font-weight-bold);
+  --a1-button-completion-icon-size: var(--component-button-medium-icon-size);
+  --a1-button-completion-background: var(--component-button-primary-background);
+  --a1-button-completion-background-hover: var(--component-button-primary-background-hover);
+  --a1-button-completion-background-pressed: var(--component-button-primary-background-pressed);
+  --a1-button-completion-foreground: var(--component-button-primary-foreground);
+  --a1-button-completion-border: var(--component-button-primary-border);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--component-button-gap);
+  block-size: var(--a1-button-completion-height);
+  inline-size: var(--a1-button-completion-width, auto);
+  padding-block: 0;
+  padding-inline: var(--a1-button-completion-padding-inline);
+  border: var(--component-button-primary-border-width) solid var(--a1-button-completion-border);
+  border-radius: var(--a1-button-completion-radius);
+  background: var(--a1-button-completion-background);
+  color: var(--a1-button-completion-foreground);
+  box-shadow: var(--component-button-box-shadow, none);
+  font-family: var(--component-button-font-family);
+  font-size: var(--a1-button-completion-font-size);
+  font-weight: var(--a1-button-completion-font-weight);
+  line-height: var(--component-button-font-line-height);
+  white-space: nowrap;
+  overflow: clip;
+  cursor: pointer;
+  --a1-icon-weight: 700;
+  transition:
+    background var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+/* Fill the container, like A1 Button's fullWidth. The width still never
+   changes between statuses. */
+.a1-button-completion--full-width {
+  inline-size: 100%;
+}
+
+.a1-button-completion--sm {
+  --a1-button-completion-height: var(--component-button-small-height);
+  --a1-button-completion-padding-inline: var(--base-spacing-8);
+  --a1-button-completion-radius: var(--component-button-small-border-radius);
+  --a1-button-completion-font-size: var(--semantic-font-size-body-sm);
+  --a1-button-completion-font-weight: var(--base-font-weight-semibold);
+  --a1-button-completion-icon-size: var(--component-button-small-icon-size);
+}
+
+.a1-button-completion--lg {
+  --a1-button-completion-height: var(--component-button-large-height);
+  --a1-button-completion-padding-inline: var(--base-spacing-20);
+  --a1-button-completion-radius: var(--component-button-large-border-radius, var(--base-radius-lg));
+  --a1-button-completion-font-size: var(--semantic-font-size-body-lg);
+  --a1-button-completion-font-weight: var(--base-font-weight-extra-bold);
+  --a1-button-completion-icon-size: var(--component-button-icon-size);
+}
+
+/* Result tones reuse the A1 success and destructive button roles. */
+.a1-button-completion[data-tone='success'] {
+  --a1-button-completion-background: var(--component-button-success-background);
+  --a1-button-completion-background-hover: var(--component-button-success-background);
+  --a1-button-completion-background-pressed: var(--component-button-success-background);
+  --a1-button-completion-foreground: var(--component-button-success-foreground);
+  --a1-button-completion-border: var(--component-button-success-border);
+}
+
+.a1-button-completion[data-tone='error'] {
+  --a1-button-completion-background: var(--component-button-destructive-background);
+  --a1-button-completion-background-hover: var(--component-button-destructive-background-hover);
+  --a1-button-completion-background-pressed: var(--component-button-destructive-background-pressed);
+  --a1-button-completion-foreground: var(--component-button-destructive-foreground);
+  --a1-button-completion-border: var(--component-button-destructive-border);
+}
+
+.a1-button-completion:not([aria-disabled='true']):hover {
+  background: var(--a1-button-completion-background-hover);
+}
+
+.a1-button-completion:not([aria-disabled='true']):active {
+  background: var(--a1-button-completion-background-pressed);
+  transform: var(--component-button-press-transform, none);
+}
+
+.a1-button-completion:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+/* Unavailable while working or complete, but never dimmed like disabled:
+   the colour carries the state. aria-disabled keeps keyboard focus in place. */
+.a1-button-completion[aria-disabled='true'] {
+  cursor: default;
+}
+
+.a1-button-completion[data-status='working'] {
+  cursor: progress;
+}
+
+.a1-button-completion__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: var(--a1-button-completion-icon-size);
+}
+
+.a1-button-completion__spinner {
+  --a1-cp-size: var(--a1-button-completion-icon-size);
+  --a1-cp-fill: currentColor;
+  --a1-cp-track: transparent;
+}
+
+/* On each state change the new icon pops in and the new label fades in.
+   Icon and label are keyed in React, so they remount and replay. */
+.a1-button-completion:not([data-status='idle']) .a1-button-completion__icon {
+  animation: a1-button-completion-pop var(--component-button-completion-change-duration) var(--semantic-motion-easing-expressive) both;
+}
+
+.a1-button-completion:not([data-status='idle']) .a1-button-completion__label {
+  animation: a1-button-completion-fade var(--component-button-completion-change-duration) var(--semantic-motion-easing-enter) both;
+}
+
+.a1-button-completion[data-status='failed'] {
+  animation: a1-button-completion-shake var(--component-button-completion-shake-duration) var(--semantic-motion-easing-standard);
+}
+
+/* Hidden copies of every face, measured to fix the button's width. */
+/* A zero-size clipped box, so the copies never add page overflow. */
+.a1-button-completion-measure {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.a1-button-completion-measure .a1-button-completion,
+.a1-button-completion-measure .a1-button-completion__icon,
+.a1-button-completion-measure .a1-button-completion__label {
+  animation: none;
+}
+
+@keyframes a1-button-completion-pop {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes a1-button-completion-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes a1-button-completion-shake {
+  20%, 60% { transform: translateX(calc(-1 * var(--component-button-completion-shake-distance))); }
+  40%, 80% { transform: translateX(var(--component-button-completion-shake-distance)); }
+}
+
+/* Reduced motion: states change instantly; colour, icon and text still carry
+   the outcome. The spinner is the shared CircularProgress. */
+@media (prefers-reduced-motion: reduce) {
+  .a1-button-completion,
+  .a1-button-completion:not([data-status='idle']) .a1-button-completion__icon,
+  .a1-button-completion:not([data-status='idle']) .a1-button-completion__label {
+    transition: none;
+    animation: none;
+  }
+}

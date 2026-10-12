@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.34.0 — 2026-10-12
+
+### Highlights
+
+- **A1 Labs is live** — Explore 51 configurable experiments at [labs.a1design.app](https://labs.a1design.app), from AI feedback and motion to long forms, data tables and token displays. Search by name or tag, compare settings and switch themes or appearance modes. Labs has its own [release notes](https://labs.a1design.app/release-notes).
+- **More flexible table pagination** — Place page controls above, below, on both sides of a table or beside filters when space permits. Choose their size or provide custom page navigation while keeping the table's filtering and page state.
+- **Clearer component feedback** — Selected tabs stay visually steady, toolbar selections are easier to see in dark mode and header flyouts remain open when clicked after hover.
+- **Better code and page layouts** — Wrapped code preserves indentation and aligned line numbers. Overflowing code supports keyboard scrolling, document headers remain sticky and device previews fit the available height and width.
+- **Composed header controls** — TopHeader can include custom end content, such as appearance controls. Automatic verification interfaces can hide StatusBar's pause control while retaining reduced-motion support.
+
 ## 0.33.0 — 2026-09-25
 
 - **Blog article links** — direct links, refreshes and Back/Forward navigation now preserve the selected article instead of resetting to the newest post.

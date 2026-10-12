@@ -1,0 +1,34 @@
+/* Token-reference treatments are the experiment. Inline wrapping is specific to
+   a code label; all page layout and the baseline treatment use A1 components. */
+.a1-token-label {
+  display: inline-block;
+  max-inline-size: 100%;
+  padding: var(--base-spacing-8) var(--base-spacing-12);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+  color: var(--semantic-color-text-default);
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+.a1-token-label__name { font-family: var(--component-inline-font-family-mono); font-size: var(--component-inline-code-font-size); line-height: var(--semantic-font-line-height-body); }
+.a1-token-label[data-treatment="pill"] { border-radius: var(--base-radius-pill); }
+.a1-token-label[data-treatment="outline"] { background: transparent; border: var(--component-card-border-width) solid var(--component-card-border-color); }
+.a1-token-label[data-treatment="namespace"] { background: transparent; padding-inline: 0; }
+.a1-token-label__namespace { color: var(--semantic-color-text-muted); }
+.a1-token-label__swatch {
+  display: inline-block;
+  inline-size: var(--base-spacing-12);
+  block-size: var(--base-spacing-12);
+  margin-inline-end: var(--base-spacing-8);
+  border-radius: var(--base-radius-sm);
+  border: var(--component-card-border-width) solid var(--component-card-border-color);
+  background: var(--a1-token-label-swatch, var(--semantic-color-surface-raised));
+}
+.a1-token-label__value { display: block; margin-block-start: var(--base-spacing-4); font-family: var(--component-inline-font-family-mono); font-size: var(--semantic-font-size-body-xs); color: var(--semantic-color-text-muted); }
+@media (forced-colors: active) { .a1-token-label { border: var(--component-card-border-width) solid CanvasText; } }
+
+.a1-token-label__punctuation { color: var(--semantic-color-text-muted); }
+.a1-token-label__level { color: var(--semantic-color-text-accent); }
+.a1-token-label__type { color: var(--semantic-color-status-info-text); }
+.a1-token-label__group { color: var(--semantic-color-status-warn-text); }
+.a1-token-label__final { color: var(--semantic-color-status-success-text); }

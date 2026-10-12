@@ -1,0 +1,13 @@
+{
+  "component": {
+    "pagePaint": {
+      "coatFast": { "$type": "duration", "$value": "1600ms", "$description": "Quick: one pass of the roller down (or back up) the page." },
+      "coatDuration": { "$type": "duration", "$value": "2600ms", "$description": "Default: one pass of the roller down (or back up) the page." },
+      "coatSlow": { "$type": "duration", "$value": "4000ms", "$description": "Relaxed: one pass of the roller down (or back up) the page." },
+      "rollerHeight": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Diameter of the paint roller." },
+      "handleHeight": { "$type": "dimension", "$value": "{base.spacing.40}", "$description": "Height of the roller's handle arm." },
+      "wetEdge": { "$type": "dimension", "$value": "{base.spacing.16}", "$description": "Depth of the glossy wet band just behind the roller." },
+      "exitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "The paint drying into the page when loading finishes." }
+    }
+  }
+}

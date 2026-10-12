@@ -32,9 +32,11 @@ export interface StatusBarProps {
   /**
    * Shows an animated loading sweep instead of a value-based fill.
    * Removes aria-valuenow so assistive technology announces an indeterminate
-   * state. After 3 seconds a pause/resume button appears. Default: false
+   * state. After 3 seconds a pause/resume button appears unless showPauseControl is false. Default: false
    */
   indeterminate?: boolean;
+  /** Show the delayed animation pause/play control. Set false for automatic verification flows; reduced motion still applies. Does not pause the underlying work. Default: true. */
+  showPauseControl?: boolean;
   /** Additional CSS class names applied to the root element. */
   className?: string;
 }

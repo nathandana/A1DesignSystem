@@ -93,7 +93,6 @@ import { Releases, ReleasesSidebar } from './pages/Releases.jsx'
 import { Backlog } from './pages/Backlog.jsx'
 import { BacklogTicketPage } from './pages/BacklogTicketPage.jsx'
 import { VirtualTeam } from './pages/VirtualTeam.jsx'
-import { Labs, getLabsSidebar } from './pages/Labs.jsx'
 import { About } from './pages/About.jsx'
 import { KitchenSink } from './pages/KitchenSink.jsx'
 import { Blog } from './pages/Blog.jsx'
@@ -161,14 +160,13 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'labs', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
   features: 'star',
   'get-started': 'rocket_launch',
   presentation: 'slideshow',
   blog: 'article',
-  labs: 'science',
   help: 'help',
   backlog: 'task_alt',
   'virtual-team': 'groups',
@@ -183,7 +181,7 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'labs', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -193,7 +191,6 @@ const PAGE_TITLES = {
   presentation: 'Presentation',
   blog: 'Blog',
   'blog-article': 'Search, shortcuts, and walkthroughs',
-  labs: 'Labs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
@@ -269,7 +266,6 @@ function getPage(search = window.location.search, pathname = window.location.pat
   if (!path) return 'home'
   if (path === 'blog') return 'blog'
   if (path.startsWith('blog/')) return 'blog-article'
-  if (path === 'labs' || path.startsWith('labs/')) return 'labs'
 
   // /foundations → 'foundations', /foundations/color → 'foundation-color'
   if (path === 'foundations') return 'foundations'
@@ -402,7 +398,6 @@ const PAGE_TITLE_LABEL_KEYS = {
   'get-started': 'app.page.getStarted',
   blog: 'app.page.blog',
   'blog-article': 'app.page.blogArticle',
-  labs: 'app.page.labs',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
   patterns: 'app.page.patterns',
@@ -872,7 +867,6 @@ function App() {
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
     addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
     addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
-    addPage('labs', 'Experiments for patterns, proposed components, and interaction studies.', ['experiments', 'prototypes', 'patterns', 'component proposals'])
     BLOG_POSTS.forEach((post) => {
       entries.push({
         id: `blog-${post.slug}`,
@@ -1400,7 +1394,7 @@ function App() {
     // For pages whose path encodes extra info (backlog-ticket = /backlog/A1-{n}),
     // preserve the current pathname rather than collapsing to the base page path.
     const isPublishedPreview = page === 'editor-preview' && /^\/p(?:\/|$)/.test(window.location.pathname)
-    const canonicalBase = page === 'blog-article' || page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab() || (page === 'labs' && /^\/labs\//.test(window.location.pathname))
+    const canonicalBase = page === 'blog-article' || page === 'backlog-ticket' || isPublishedPreview || getComponentExampleTab()
       ? window.location.pathname
       : getPath(page)
     const canonicalUrl = extra ? `${canonicalBase}?${extra}` : canonicalBase
@@ -2224,8 +2218,6 @@ function App() {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
               />
-            : activePage === 'labs'
-            ? getLabsSidebar({ onNavigate: navigate })
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({
                 activePage,
@@ -2280,7 +2272,6 @@ function App() {
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
         {activePage === 'blog-article' && <BlogArticle pathname={routePath} onNavigate={navigate} />}
-        {activePage === 'labs' && <Labs onNavigate={navigate} />}
         {activePage === 'foundations' && <Foundations onNavigate={navigate} />}
         {FOUNDATION_PAGE_IDS.includes(activePage) && (
           <FoundationDetail

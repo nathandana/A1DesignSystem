@@ -56,6 +56,20 @@
           "zh": "显示更少",
           "ar": "عرض أقل"
         }
+      },
+      "scrollRegion": {
+        "$type": "string",
+        "$value": "Scrollable code",
+        "$description": "Accessible name for a code block that overflows horizontally and becomes keyboard-focusable so it can be scrolled.",
+        "locale": {
+          "es": "Código desplazable",
+          "fr": "Code défilant",
+          "de": "Scrollbarer Code",
+          "pt": "Código rolável",
+          "ja": "スクロール可能なコード",
+          "zh": "可滚动的代码",
+          "ar": "رمز قابل للتمرير"
+        }
       }
     }
   }

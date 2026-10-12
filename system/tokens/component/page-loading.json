@@ -1,0 +1,12 @@
+{
+  "component": {
+    "pageLoading": {
+      "cycleFast": { "$type": "duration", "$value": "2000ms" },
+      "cycleDuration": { "$type": "duration", "$value": "4000ms" },
+      "cycleSlow": { "$type": "duration", "$value": "8000ms" },
+      "borderWidth": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "glow": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "radius": { "$type": "dimension", "$value": "{base.radius.sm}" }
+    }
+  }
+}

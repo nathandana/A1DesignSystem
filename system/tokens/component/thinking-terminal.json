@@ -1,0 +1,12 @@
+{
+  "component": {
+    "thinkingTerminal": {
+      "characterDuration": { "$value": "35ms" },
+      "readingCharacterDuration": { "$value": "30ms" },
+      "minimumHold": { "$value": "1200ms" },
+      "cursorDuration": { "$value": "1000ms" },
+      "cursorHeight": { "$type": "dimension", "$value": "1em" },
+      "cursorWidth": { "$type": "dimension", "$value": "{base.spacing.8}" }
+    }
+  }
+}

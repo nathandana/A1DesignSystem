@@ -1,0 +1,209 @@
+/* Placement indicators and motion layers are experiment artwork; Cards and
+   controls retain A1 styling. Stack owns row/list layout. */
+.a1-reordering { inline-size: 100%; max-inline-size: var(--base-width-lg); }
+.a1-reordering__list { list-style: none; margin: 0; padding: 0; }
+.a1-reordering__item { position: relative; min-inline-size: 0; }
+.a1-reordering__landing { transform-origin: center bottom; }
+.a1-reordering__handle { touch-action: none; cursor: grab; }
+.a1-reordering__item[data-active] .a1-reordering__handle { cursor: grabbing; }
+.a1-reordering__item[data-active] .a1-reordering__landing { opacity: var(--component-reordering-placeholder-opacity); }
+.a1-reordering__item[data-active]:has(:focus-visible) .a1-reordering__landing { opacity: 1; }
+.a1-reordering__insertion {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(-1 * var(--base-spacing-8));
+  border-block-start: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  padding-inline: var(--base-spacing-8);
+  color: var(--semantic-color-text-default);
+  background: var(--semantic-color-surface-page);
+  font: inherit;
+  pointer-events: none;
+}
+.a1-reordering__item[data-indicator="outline"] .a1-reordering__insertion {
+  inset-block: 0;
+  border: var(--component-button-focus-ring-width) dashed var(--component-button-focus-ring);
+  border-radius: var(--component-card-border-radius);
+  background: transparent;
+}
+.a1-reordering__item[data-placed]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  border-radius: var(--component-card-border-radius);
+  pointer-events: none;
+}
+.a1-reordering__ghost {
+  position: fixed;
+  z-index: var(--component-tooltip-z-index);
+  pointer-events: none;
+  opacity: var(--component-reordering-ghost-opacity);
+  box-shadow: var(--semantic-shadow-lg);
+  border-radius: var(--component-card-border-radius);
+}
+@media (forced-colors: active) {
+  .a1-reordering__insertion, .a1-reordering__item[data-placed]::after { border-color: Highlight; }
+}
+
+/* Empty slot: the item leaves a recessed, empty slot behind it. Drawn under
+   the card so a keyboard user's still-visible card and focus ring stay on top. */
+.a1-reordering__item[data-indicator="slot"] { isolation: isolate; }
+.a1-reordering__item[data-indicator="slot"][data-active] .a1-reordering__landing { opacity: 0; }
+.a1-reordering__item[data-indicator="slot"][data-active]:has(:focus-visible) .a1-reordering__landing { opacity: 1; }
+.a1-reordering__item[data-indicator="slot"] .a1-reordering__insertion {
+  z-index: -1;
+  inset-block: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--component-card-border-radius);
+  background: var(--semantic-color-surface-panel);
+  box-shadow: inset 0 var(--base-spacing-2) var(--base-spacing-6) color-mix(in srgb, var(--semantic-color-text-default) 18%, transparent);
+  color: var(--semantic-color-text-muted);
+}
+
+/* Margin indicators (side marker, pointer, position rail) sit in a reserved
+   gutter beside the list, so the dragged item never covers them. */
+.a1-reordering__list:is([data-indicator="marker"], [data-indicator="pointer"], [data-indicator="rail"]) {
+  padding-inline-start: var(--component-reordering-gutter);
+}
+.a1-reordering__item:is([data-indicator="marker"], [data-indicator="pointer"], [data-indicator="rail"]) .a1-reordering__insertion {
+  inset-block: 0;
+  inset-inline: calc(-1 * var(--component-reordering-marker-offset)) auto;
+  inline-size: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.a1-reordering__item:is([data-indicator="marker"], [data-indicator="pointer"], [data-indicator="rail"], [data-indicator="glow"], [data-indicator="arrows"]) .a1-reordering__insertion-label { display: none; }
+
+/* The numbered bubble shared by the side marker and position rail. */
+.a1-reordering__item:is([data-indicator="marker"], [data-indicator="rail"]) .a1-reordering__insertion::after {
+  content: attr(data-position);
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--component-reordering-marker-size) / -2);
+  display: grid;
+  place-items: center;
+  inline-size: var(--component-reordering-marker-size);
+  block-size: var(--component-reordering-marker-size);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  translate: 0 -50%;
+}
+
+/* Side marker: a bar the height of the slot, with the bubble at its middle. */
+.a1-reordering__item[data-indicator="marker"] .a1-reordering__insertion::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--component-button-focus-ring-width) / -2);
+  inline-size: var(--component-button-focus-ring-width);
+  border-radius: var(--base-radius-pill);
+  background: var(--component-button-focus-ring);
+}
+
+/* Pointer: a numbered tag in the gutter, its tip pointing at the slot. */
+.a1-reordering__item[data-indicator="pointer"] .a1-reordering__insertion::before {
+  content: attr(data-position);
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: calc(-1 * var(--component-reordering-marker-offset) + var(--component-reordering-arrow-size));
+  display: grid;
+  place-items: center;
+  min-inline-size: var(--component-reordering-marker-size);
+  block-size: var(--component-reordering-marker-size);
+  border-start-start-radius: var(--base-radius-sm);
+  border-end-start-radius: var(--base-radius-sm);
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  translate: 0 -50%;
+}
+.a1-reordering__item[data-indicator="pointer"] .a1-reordering__insertion::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: calc(-1 * var(--component-reordering-marker-offset));
+  border-block: calc(var(--component-reordering-marker-size) / 2) solid transparent;
+  border-inline-start: var(--component-reordering-arrow-size) solid var(--semantic-color-action-background);
+  translate: 0 -50%;
+}
+
+/* Position rail: while dragging, a track in the gutter shows a dot for every
+   position; the target position becomes the numbered bubble. */
+.a1-reordering__list[data-indicator="rail"][data-dragging] { position: relative; }
+.a1-reordering__list[data-indicator="rail"][data-dragging]::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--base-spacing-24);
+  inset-inline-start: calc(var(--component-reordering-gutter) - var(--component-reordering-marker-offset) - var(--base-spacing-1));
+  inline-size: var(--base-spacing-2);
+  background: var(--semantic-color-border-strong);
+}
+.a1-reordering__list[data-indicator="rail"][data-dragging] .a1-reordering__item::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(-1 * var(--component-reordering-marker-offset) - var(--component-reordering-rail-dot) / 2);
+  box-sizing: border-box;
+  inline-size: var(--component-reordering-rail-dot);
+  block-size: var(--component-reordering-rail-dot);
+  border: var(--base-spacing-2) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-page);
+  translate: 0 -50%;
+}
+
+/* Glow: the target slot is ringed and softly pulses. */
+.a1-reordering__item[data-indicator="glow"] .a1-reordering__insertion {
+  inset-block: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--component-card-border-radius);
+  background: transparent;
+  box-shadow:
+    0 0 0 var(--component-button-focus-ring-width) var(--component-button-focus-ring),
+    0 0 var(--component-reordering-glow-spread) var(--component-button-focus-ring);
+  animation: a1-reordering-glow var(--semantic-motion-duration-slower) var(--semantic-motion-easing-standard) infinite alternate;
+}
+@keyframes a1-reordering-glow { to { opacity: .55; } }
+
+/* Arrows: an insertion line with arrowheads pointing in from both ends. */
+.a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion {
+  padding: 0;
+  background: transparent;
+}
+.a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::before,
+.a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::after {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(-1 * var(--component-reordering-arrow-size) - var(--component-button-focus-ring-width) / 2);
+  border-block: var(--component-reordering-arrow-size) solid transparent;
+}
+.a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::before {
+  inset-inline-start: calc(-1 * var(--component-reordering-arrow-size));
+  border-inline-start: var(--component-reordering-arrow-size) solid var(--component-button-focus-ring);
+}
+.a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::after {
+  inset-inline-end: calc(-1 * var(--component-reordering-arrow-size));
+  border-inline-end: var(--component-reordering-arrow-size) solid var(--component-button-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-reordering__item[data-indicator="glow"] .a1-reordering__insertion { animation: none; }
+}
+@media (forced-colors: active) {
+  .a1-reordering__item[data-indicator="marker"] .a1-reordering__insertion::before,
+  .a1-reordering__item:is([data-indicator="marker"], [data-indicator="rail"], [data-indicator="pointer"]) .a1-reordering__insertion::after,
+  .a1-reordering__item[data-indicator="pointer"] .a1-reordering__insertion::before { background: Highlight; color: HighlightText; }
+  .a1-reordering__item[data-indicator="pointer"] .a1-reordering__insertion::after { background: none; border-inline-start-color: Highlight; }
+  .a1-reordering__item[data-indicator="glow"] .a1-reordering__insertion { outline: var(--component-button-focus-ring-width) solid Highlight; }
+  .a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::before { border-inline-start-color: Highlight; }
+  .a1-reordering__item[data-indicator="arrows"] .a1-reordering__insertion::after { border-inline-end-color: Highlight; }
+}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SearchField } from "../field/SearchField.jsx";
+import { SegmentedControl } from "../segmented-control/SegmentedControl.jsx";
 import { TopHeader } from "./TopHeader.jsx";
 
 // ── Shared example data ────────────────────────────────────────────────────────
@@ -145,6 +146,11 @@ const meta = {
       control: "inline-radio",
       options: ["start", "above", "hidden"],
     },
+    endContent: {
+      control: false,
+      description:
+        "Custom content in the end zone after the actions, inside the header's surface and bottom border — e.g. an inline appearance switcher. Runtime-only (ReactNode).",
+    },
     loginButton: {
       control: "text",
       description:
@@ -188,6 +194,40 @@ export const WithLoginButton = {
       {PAGE_CONTENT}
     </div>
   ),
+};
+
+const COLOR_MODES = [
+  { value: "light", label: "Light", icon: "light_mode", ariaLabel: "Light mode" },
+  { value: "dark", label: "Dark", icon: "dark_mode", ariaLabel: "Dark mode" },
+  { value: "system", label: "System", icon: "desktop_windows", ariaLabel: "System mode" },
+];
+
+function EndContentExample() {
+  const [mode, setMode] = useState("system");
+  return (
+    <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
+      <TopHeader
+        logoText="A1 Labs"
+        logoHref="#"
+        navItems={[
+          { id: "experiments", label: "All experiments", href: "#", active: true },
+          { id: "about", label: "About", href: "#" },
+        ]}
+        actions={[{ id: "search", icon: "search", iconOnly: true, label: "Search", onClick: () => {} }]}
+        endContent={
+          <SegmentedControl options={COLOR_MODES} value={mode} onChange={setMode} aria-label="Color scheme" size="md" />
+        }
+      />
+      {PAGE_CONTENT}
+    </div>
+  );
+}
+
+/** `endContent` places composed controls inside the bar, so the bottom border spans them. */
+export const EndContent = {
+  name: "End content",
+  parameters: { controls: { include: [] } },
+  render: () => <EndContentExample />,
 };
 
 export const LoginButtonStringLabel = {
@@ -238,7 +278,10 @@ export const NoIcons = {
 
 export const ActiveInSubmenu = {
   name: "Active item in secondary/tertiary menu",
-  parameters: { controls: { include: [] } },
+  parameters: {
+    controls: { include: [] },
+    docs: { description: { story: "Category flyouts open on hover, click, Enter or ArrowRight. Clicking a category that hover already opened keeps it open." } },
+  },
   render: () => (
     <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
       <TopHeader

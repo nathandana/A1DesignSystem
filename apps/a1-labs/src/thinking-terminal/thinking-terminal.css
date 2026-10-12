@@ -1,0 +1,21 @@
+/* A1 Paragraph owns the text row. Native code keeps terminal typography
+   without A1 Code’s inline/block surface; no shared styles are overridden. */
+.a1-thinking-terminal { min-inline-size: 0; }
+.a1-thinking-terminal__output {
+  font-family: var(--component-inline-font-family-mono);
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+.a1-thinking-terminal__cursor {
+  display: inline-block;
+  inline-size: var(--component-thinking-terminal-cursor-width);
+  block-size: var(--component-thinking-terminal-cursor-height);
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: a1-thinking-terminal-blink var(--component-thinking-terminal-cursor-duration) step-end infinite;
+}
+.a1-thinking-terminal[data-paused="true"] .a1-thinking-terminal__cursor { animation-play-state: paused; }
+@keyframes a1-thinking-terminal-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .a1-thinking-terminal__cursor { animation: none; }
+}

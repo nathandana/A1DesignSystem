@@ -1,0 +1,143 @@
+{
+  "component": {
+    "modeSwitches": {
+      "cordWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Pull cord: width of its stage (room to sway)."
+      },
+      "cordLength": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Pull cord: resting length from the ceiling plate to the bead."
+      },
+      "cordMaxPull": {
+        "$type": "dimension",
+        "$value": "{base.spacing.64}",
+        "$description": "Pull cord: furthest the bead can be pulled."
+      },
+      "cordThreshold": {
+        "$type": "number",
+        "$value": 0.5,
+        "$description": "Pull cord: fraction of the full pull that switches the mode."
+      },
+      "cordWidthStroke": {
+        "$type": "dimension",
+        "$value": "{base.spacing.2}",
+        "$description": "Pull cord: thickness of the cord."
+      },
+      "bead": {
+        "$type": "dimension",
+        "$value": "{base.spacing.40}",
+        "$description": "Pull cord: diameter of the pull bead."
+      },
+      "springStiffness": {
+        "$type": "number",
+        "$value": 0.12,
+        "$description": "Pull cord: spring stiffness (per frame) pulling the bead back to rest."
+      },
+      "springDamping": {
+        "$type": "number",
+        "$value": 0.86,
+        "$description": "Pull cord: velocity kept each frame (lower settles sooner)."
+      },
+      "springKick": {
+        "$type": "dimension",
+        "$value": "{base.spacing.24}",
+        "$description": "Pull cord: initial tug when pulled by keyboard or a tap."
+      },
+      "sunMoonIcon": {
+        "$type": "dimension",
+        "$value": "{base.spacing.20}",
+        "$description": "Sun and moon switch: icon size inside the thumb."
+      },
+      "dial": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Mode dial: knob diameter."
+      },
+      "dialAngle": {
+        "$value": "50deg",
+        "$description": "Mode dial: rotation of the Light and Dark detents either side of Auto."
+      },
+      "dialLabelRadius": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Mode dial: distance of the labels from the centre."
+      },
+      "eclipse": {
+        "$type": "dimension",
+        "$value": "{base.spacing.64}",
+        "$description": "Eclipse button: disc diameter."
+      },
+      "corona": {
+        "$type": "dimension",
+        "$value": "{base.spacing.12}",
+        "$description": "Eclipse button: glow around the eclipsed sun."
+      },
+      "skyNight": {
+        "$type": "color",
+        "$value": "{base.color.info.800}",
+        "$description": "Eclipse button and sun and moon switch: the moon and night sky (illustration palette, fixed in both modes)."
+      },
+      "sun": {
+        "$type": "color",
+        "$value": "{base.color.warn.400}",
+        "$description": "Eclipse button and sun and moon switch: the sun."
+      },
+      "settle": {
+        "$type": "duration",
+        "$value": "{semantic.motion.duration.slower}",
+        "$description": "Sun and moon switch and eclipse: time to settle into a new mode."
+      },
+      "moonPartial": {
+        "$value": "50%",
+        "$description": "Eclipse button: how far the moon covers the sun for Auto."
+      },
+      "moonTotal": {
+        "$value": "8%",
+        "$description": "Eclipse button: the moon almost covers the sun for Dark, leaving a sliver."
+      },
+      "slideWidth": {
+        "$type": "dimension",
+        "$value": "{base.spacing.192}",
+        "$description": "Slide switch: track width (three positions)."
+      },
+      "slideHeight": {
+        "$type": "dimension",
+        "$value": "{base.spacing.40}",
+        "$description": "Slide switch: track height."
+      },
+      "chainBall": {
+        "$type": "dimension",
+        "$value": "{base.spacing.6}",
+        "$description": "Pull cord: diameter of each ball in the ball chain."
+      },
+      "chainSpacing": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}",
+        "$description": "Pull cord: distance between ball centres along the chain."
+      },
+      "metalLight": {
+        "$type": "color",
+        "$value": "{base.color.neutral.50}",
+        "$description": "Pull cord: highlight on the metal balls (fixed in both modes, like real nickel)."
+      },
+      "metalMid": {
+        "$type": "color",
+        "$value": "{base.color.neutral.300}",
+        "$description": "Pull cord: body of the metal balls."
+      },
+      "metalDark": {
+        "$type": "color",
+        "$value": "{base.color.neutral.600}",
+        "$description": "Pull cord: shaded edge of the metal balls and the wire."
+      },
+      "metalInk": {
+        "$type": "color",
+        "$value": "{base.color.neutral.800}",
+        "$description": "Pull cord: icon engraved on the metal pull."
+      }
+    }
+  }
+}

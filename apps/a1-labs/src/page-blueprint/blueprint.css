@@ -1,0 +1,110 @@
+/* Blueprint page loader — reusable core styles. A classic blueprint: the
+   theme's strong info colour as paper, its paired foreground for lines and
+   labels (a contrast-safe pair in every theme and mode, read live so it
+   follows light/dark). Timing and sizes come from component.pageBlueprint. */
+
+.a1-page-blueprint {
+  --a1-page-blueprint-paper: var(--semantic-color-status-info-background);
+  --a1-page-blueprint-ink: var(--semantic-color-status-info-foreground);
+  --a1-page-blueprint-grid: color-mix(in srgb, var(--a1-page-blueprint-ink) 22%, transparent);
+}
+
+.a1-page-blueprint {
+  position: relative;
+  min-block-size: 100vh;
+  background-color: transparent;
+  transition: background-color var(--component-page-blueprint-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* Blueprint paper with a drafting grid while loading. */
+.a1-page-blueprint:not([data-phase='exit']) {
+  background-color: var(--a1-page-blueprint-paper);
+  background-image:
+    linear-gradient(var(--a1-page-blueprint-grid) var(--component-divider-size-xs), transparent var(--component-divider-size-xs)),
+    linear-gradient(90deg, var(--a1-page-blueprint-grid) var(--component-divider-size-xs), transparent var(--component-divider-size-xs));
+  background-size: var(--component-page-blueprint-grid-size) var(--component-page-blueprint-grid-size);
+}
+
+/* Drafted, still loading: the grid drifts. */
+.a1-page-blueprint[data-phase='idle'] {
+  animation: a1-page-blueprint-drift var(--component-page-blueprint-pan-duration) var(--semantic-motion-easing-linear) infinite;
+}
+
+.a1-page-blueprint[data-paused='true'] {
+  animation-play-state: paused;
+}
+
+.a1-page-blueprint [data-loading-block] {
+  position: relative;
+}
+
+/* Content stays hidden (and out of the tab order) until loading finishes. */
+.a1-page-blueprint [data-loading-state]:not([data-loading-state='done']) > * {
+  visibility: hidden;
+}
+
+/* The drafted outline: corner-to-corner reveal while drafting. */
+.a1-page-blueprint [data-loading-block]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--component-page-blueprint-line-width) solid var(--a1-page-blueprint-ink);
+  border-radius: var(--base-radius-sm);
+  clip-path: inset(0 100% 100% 0);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity var(--component-page-blueprint-exit-duration) var(--semantic-motion-easing-standard);
+}
+
+/* Its measurements, written above the inline-end corner. */
+.a1-page-blueprint [data-loading-block]::after {
+  content: attr(data-dimensions);
+  position: absolute;
+  inset-block-end: 100%;
+  inset-inline-end: 0;
+  padding-block-end: var(--base-spacing-2);
+  color: var(--a1-page-blueprint-ink);
+  font-family: var(--base-font-family-mono);
+  font-size: var(--semantic-font-size-body-xs);
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+.a1-page-blueprint [data-loading-state='drafting']::before {
+  animation: a1-page-blueprint-draw var(--component-page-blueprint-draw-duration) var(--semantic-motion-easing-standard) forwards;
+}
+
+.a1-page-blueprint [data-loading-state='drafted']::before {
+  clip-path: inset(0);
+}
+
+.a1-page-blueprint [data-loading-state='drafted']::after {
+  opacity: 1;
+}
+
+/* Done: the drafting fades away as the page appears. */
+.a1-page-blueprint [data-loading-state='done']::before {
+  clip-path: inset(0);
+  opacity: 0;
+}
+
+@keyframes a1-page-blueprint-draw {
+  from { clip-path: inset(0 100% 100% 0); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes a1-page-blueprint-drift {
+  from { background-position: 0 0; }
+  to { background-position: var(--component-page-blueprint-grid-size) var(--component-page-blueprint-grid-size); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-blueprint,
+  .a1-page-blueprint [data-loading-block]::before,
+  .a1-page-blueprint [data-loading-block]::after {
+    animation: none;
+    transition: none;
+  }
+}

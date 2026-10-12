@@ -1,0 +1,13 @@
+/* Data grid experiment — scoped Labs styles on top of A1's experimental
+   DataGrid theme (packages/react/src/components/data-grid/data-grid.css). */
+
+/* Up to 15 rows show at once (plus the header and totals); the grid scrolls
+   and virtualizes the rest, keeping the header and totals row in view. */
+.a1-grid-lab .a1-data-grid {
+  block-size: calc(var(--a1-grid-row-height) * min(var(--a1-grid-row-count), 17) + var(--component-field-border-width) * 2);
+}
+/* Numbers line up on the right. */
+.a1-grid-lab__number { text-align: end; font-variant-numeric: tabular-nums; }
+/* Center the status badge vertically in its cell. */
+.a1-grid-lab__badge { display: flex; align-items: center; }
+.a1-grid-lab__total { font-weight: var(--base-font-weight-bold); }

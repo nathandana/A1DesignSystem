@@ -1,0 +1,145 @@
+/* Intentional experiment-only focus replacement. Radio rows carry the effect
+   so their native selected dots remain intact. No shared A1 selectors change. */
+.a1-focus-animation {
+  --a1-focus-animation-color: var(--component-field-focus-ring-color);
+}
+
+.a1-focus-animation button[data-a1-focus-target] {
+  --a1-focus-animation-color: var(--component-button-focus-ring);
+}
+
+/* Suppress the radio's default ring only where its focused row replaces it. */
+.a1-focus-animation [data-a1-focus-radios] label:has(input:focus) input:focus {
+  outline: none;
+}
+.a1-focus-animation[data-style] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  outline: var(--component-button-focus-ring-width) solid var(--a1-focus-animation-color);
+  outline-offset: var(--component-button-focus-ring-offset);
+  animation-duration: var(--a1-focus-animation-duration);
+  animation-timing-function: var(--semantic-motion-easing-enter);
+  animation-iteration-count: 1;
+}
+
+.a1-focus-animation[data-style='settle'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  animation-name: a1-focus-animation-settle;
+}
+
+.a1-focus-animation[data-style='halo'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  animation-name: a1-focus-animation-halo;
+}
+
+.a1-focus-animation[data-style='underline'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  background-image: linear-gradient(var(--a1-focus-animation-color), var(--a1-focus-animation-color));
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-size: 100% var(--component-focus-animation-accent-width);
+  animation-name: a1-focus-animation-underline;
+}
+
+.a1-focus-animation[data-style='double'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  outline-style: double;
+  outline-width: var(--component-focus-animation-accent-width);
+  animation-name: a1-focus-animation-double;
+}
+
+/* Individual transform properties preserve any transform owned by a control.
+   Neither effect changes layout or moves neighbouring fields. */
+.a1-focus-animation[data-style='zoom'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  scale: var(--component-focus-animation-zoom-scale);
+  animation-name: a1-focus-animation-zoom;
+}
+
+.a1-focus-animation[data-style='lift'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  translate: 0 calc(-1 * var(--component-focus-animation-lift-distance));
+  animation-name: a1-focus-animation-lift;
+}
+
+.a1-focus-animation[data-style='corners'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  --a1-focus-animation-corner-ink: linear-gradient(var(--a1-focus-animation-color), var(--a1-focus-animation-color));
+  background-image:
+    var(--a1-focus-animation-corner-ink), var(--a1-focus-animation-corner-ink),
+    var(--a1-focus-animation-corner-ink), var(--a1-focus-animation-corner-ink),
+    var(--a1-focus-animation-corner-ink), var(--a1-focus-animation-corner-ink),
+    var(--a1-focus-animation-corner-ink), var(--a1-focus-animation-corner-ink);
+  background-position: left top, right top, left bottom, right bottom, left top, right top, left bottom, right bottom;
+  background-repeat: no-repeat;
+  background-size:
+    var(--component-focus-animation-corner-length) var(--component-button-focus-ring-width),
+    var(--component-focus-animation-corner-length) var(--component-button-focus-ring-width),
+    var(--component-focus-animation-corner-length) var(--component-button-focus-ring-width),
+    var(--component-focus-animation-corner-length) var(--component-button-focus-ring-width),
+    var(--component-button-focus-ring-width) var(--component-focus-animation-corner-length),
+    var(--component-button-focus-ring-width) var(--component-focus-animation-corner-length),
+    var(--component-button-focus-ring-width) var(--component-focus-animation-corner-length),
+    var(--component-button-focus-ring-width) var(--component-focus-animation-corner-length);
+  animation-name: a1-focus-animation-corners;
+}
+
+.a1-focus-animation[data-style='inset'] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+  box-shadow: inset 0 0 0 var(--component-button-focus-ring-width) var(--a1-focus-animation-color);
+  animation-name: a1-focus-animation-inset;
+}
+
+@keyframes a1-focus-animation-settle {
+  from { outline-offset: var(--component-focus-animation-travel); }
+  to { outline-offset: var(--component-button-focus-ring-offset); }
+}
+
+@keyframes a1-focus-animation-halo {
+  from { box-shadow: 0 0 0 var(--component-focus-animation-travel) var(--a1-focus-animation-color); }
+  to { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes a1-focus-animation-underline {
+  from { background-size: 0% var(--component-focus-animation-accent-width); }
+  to { background-size: 100% var(--component-focus-animation-accent-width); }
+}
+
+@keyframes a1-focus-animation-double {
+  from { outline-width: var(--component-focus-animation-travel); }
+  to { outline-width: var(--component-focus-animation-accent-width); }
+}
+
+@keyframes a1-focus-animation-zoom {
+  from { scale: 1; }
+  to { scale: var(--component-focus-animation-zoom-scale); }
+}
+
+@keyframes a1-focus-animation-lift {
+  from { translate: 0 0; }
+  to { translate: 0 calc(-1 * var(--component-focus-animation-lift-distance)); }
+}
+
+@keyframes a1-focus-animation-corners {
+  from { background-size: 0 0; }
+  /* The focused rule supplies the eight final corner dimensions. */
+}
+
+@keyframes a1-focus-animation-inset {
+  from { box-shadow: inset 0 0 0 var(--component-focus-animation-travel) var(--a1-focus-animation-color); }
+  to { box-shadow: inset 0 0 0 var(--component-button-focus-ring-width) var(--a1-focus-animation-color); }
+}
+
+/* Immediate, equally clear focus when motion is reduced, including a live
+   preference change during an animation. Never hide the settled indicator. */
+@media (prefers-reduced-motion: reduce) {
+  .a1-focus-animation[data-style] :is([data-a1-focus-target], [data-a1-focus-radios] input, [data-a1-focus-radios] label),
+  .a1-focus-animation[data-style] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+    animation: none;
+    transition: none;
+    scale: none;
+    translate: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .a1-focus-animation[data-style] :is([data-a1-focus-target]:not(:disabled):focus, [data-a1-focus-radios] label:has(input:focus)) {
+    animation: none;
+    transition: none;
+    scale: none;
+    translate: none;
+    outline-color: Highlight;
+    background-image: none;
+    box-shadow: none;
+  }
+}

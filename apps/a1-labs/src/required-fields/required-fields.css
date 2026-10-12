@@ -1,0 +1,260 @@
+/* Required fields experiment — new required/optional markers, each scoped to
+   its variation under .a1-required-fields[data-variant]. A1 supplies only the
+   controls; none of A1's own required markers are used. Colours are live
+   semantic roles so every theme and light/dark mode follows. */
+
+.a1-required-fields {
+  --a1-required-fields-error: var(--semantic-color-status-error-text);
+}
+
+.a1-required-fields__sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.a1-required-fields__item {
+  position: relative;
+}
+
+/* Shared missing-field message, styled further per variation. */
+.a1-required-fields__error {
+  display: flex;
+  gap: var(--base-spacing-6);
+  align-items: center;
+  margin: var(--base-spacing-6) 0 0;
+  color: var(--a1-required-fields-error);
+  font-size: var(--semantic-font-size-body-sm);
+}
+
+.a1-required-fields__optional {
+  color: var(--semantic-color-text-muted);
+  font-weight: var(--base-font-weight-regular);
+}
+
+.a1-required-fields__message:focus {
+  outline: none;
+}
+
+.a1-required-fields__message:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+/* 1. Margin tick: a thin line in the margin beside each required field, so
+   the layout itself doesn't change. On submission, missing fields' ticks
+   thicken and turn red. */
+.a1-required-fields[data-variant='tick'] .a1-required-fields__item[data-required='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(100% + var(--base-spacing-6));
+  inline-size: var(--base-spacing-2);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-action-background);
+  transition: inline-size var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-required-fields[data-variant='tick'] .a1-required-fields__item[data-invalid='true']::before {
+  inline-size: var(--base-spacing-6);
+  background: var(--semantic-color-status-error-border);
+}
+
+/* 2. Ink lines: required controls are drawn solid with a heavier base line;
+   optional controls (and option groups) are dashed. On submission, missing
+   fields are redrawn in red and the message gets a spellcheck-style wave. */
+.a1-required-fields[data-variant='ink'] [data-required='true'][data-kind='control'] :is(input, select, textarea) {
+  border-block-end-width: var(--base-spacing-4);
+  border-block-end-color: var(--semantic-color-text-default);
+}
+
+.a1-required-fields[data-variant='ink'] [data-required='false'][data-kind='control'] :is(input, select, textarea) {
+  border-style: dashed;
+  border-color: var(--semantic-color-border-strong);
+}
+
+.a1-required-fields[data-variant='ink'] [data-kind='group'] {
+  padding: var(--base-spacing-12) var(--base-spacing-16);
+  border: var(--base-spacing-2) dashed var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-md);
+}
+
+.a1-required-fields[data-variant='ink'] [data-kind='group'][data-required='true'] {
+  border-style: solid;
+  border-block-end-width: var(--base-spacing-4);
+  border-color: var(--semantic-color-text-default);
+}
+
+.a1-required-fields[data-variant='ink'] [data-invalid='true'][data-kind='control'] :is(input, select, textarea),
+.a1-required-fields[data-variant='ink'] [data-invalid='true'][data-kind='group'] {
+  border-color: var(--semantic-color-status-error-border);
+}
+
+.a1-required-fields[data-variant='ink'] .a1-required-fields__error-text {
+  text-decoration: underline wavy var(--semantic-color-status-error-border);
+  text-underline-offset: var(--base-spacing-4);
+}
+
+/* 3. Completion rings: a ring after each required label, hollow until the
+   field is answered. On submission, empty rings turn red. */
+.a1-required-fields__ring {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--base-spacing-20);
+  block-size: var(--base-spacing-20);
+  margin-inline-start: var(--base-spacing-4);
+  border: var(--base-spacing-2) solid var(--semantic-color-action-background);
+  border-radius: var(--base-radius-pill);
+  vertical-align: middle;
+  transition: background-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+.a1-required-fields__ring[data-state='done'] {
+  background: var(--semantic-color-action-background);
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-required-fields__ring[data-state='missing'] {
+  border-color: var(--semantic-color-status-error-background);
+  background: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+}
+
+.a1-required-fields__counter {
+  margin-inline-start: var(--base-spacing-8);
+  color: var(--semantic-color-text-muted);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-regular);
+}
+
+.a1-required-fields__counter[data-state='missing'] {
+  color: var(--a1-required-fields-error);
+  font-weight: var(--base-font-weight-semibold);
+}
+
+/* 4. Opt-in extras: a "Before you send" checklist by the submit button. */
+.a1-required-fields__checklist {
+  padding: var(--base-spacing-16);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-error-border);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-status-error-surface);
+}
+
+.a1-required-fields__checklist-list {
+  display: grid;
+  gap: var(--base-spacing-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-required-fields__checklist-list li {
+  display: flex;
+  gap: var(--base-spacing-8);
+  align-items: center;
+  color: var(--a1-required-fields-error);
+}
+
+/* 5. Required rail: numbered stops on a track for required fields; optional
+   fields sit off it. Answered stops become success checkmarks. On submission,
+   missing stops turn red and the track breaks into a red dashed line. */
+.a1-required-fields[data-variant='rail'] .a1-required-fields__list {
+  position: relative;
+}
+
+.a1-required-fields[data-variant='rail'] .a1-required-fields__list::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--base-spacing-16);
+  inset-inline-start: calc(var(--base-spacing-16) - var(--base-spacing-2) / 2);
+  inline-size: var(--base-spacing-2);
+  background: var(--semantic-color-border-strong);
+}
+
+.a1-required-fields[data-variant='rail'] .a1-required-fields__list[data-missing='true']::before {
+  background: repeating-linear-gradient(
+    var(--semantic-color-status-error-border) 0 var(--base-spacing-6),
+    transparent var(--base-spacing-6) var(--base-spacing-12)
+  );
+}
+
+.a1-required-fields[data-variant='rail'] .a1-required-fields__item {
+  padding-inline-start: var(--base-spacing-48);
+}
+
+/* Stops: numbered circles on the track. */
+.a1-required-fields__stop {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: grid;
+  place-items: center;
+  inline-size: var(--base-spacing-32);
+  block-size: var(--base-spacing-32);
+  border: var(--base-spacing-2) solid var(--semantic-color-action-background);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+  font-size: var(--semantic-font-size-body-sm);
+  font-weight: var(--base-font-weight-semibold);
+  transition:
+    background-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard),
+    border-color var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+/* Answered: a success checkmark that pops in. */
+.a1-required-fields__item[data-done='true'] > .a1-required-fields__stop {
+  border-color: var(--semantic-color-status-success-background);
+  background: var(--semantic-color-status-success-background);
+  color: var(--semantic-color-status-success-foreground);
+  animation: a1-required-fields-stop-done var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
+}
+
+@keyframes a1-required-fields-stop-done {
+  from { scale: 0.6; }
+}
+
+.a1-required-fields__item[data-invalid='true'] > .a1-required-fields__stop {
+  border-color: var(--semantic-color-status-error-background);
+  background: var(--semantic-color-status-error-background);
+  color: var(--semantic-color-status-error-foreground);
+}
+
+/* Optional fields: a small hollow marker beside the track, not on it. */
+.a1-required-fields[data-variant='rail'] .a1-required-fields__item[data-required='false']::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--base-spacing-8);
+  inset-inline-start: var(--base-spacing-12);
+  inline-size: var(--base-spacing-8);
+  block-size: var(--base-spacing-8);
+  border: var(--base-spacing-2) solid var(--semantic-color-border-strong);
+  border-radius: var(--base-radius-pill);
+  background: var(--semantic-color-surface-page);
+}
+
+/* The sticky bar that steps through missing stops. */
+.a1-required-fields__dock {
+  position: sticky;
+  z-index: 2;
+  inset-block-end: var(--base-spacing-8);
+  padding: var(--base-spacing-12) var(--base-spacing-16);
+  border: var(--base-spacing-2) solid var(--semantic-color-status-error-border);
+  border-radius: var(--base-radius-md);
+  background: var(--semantic-color-surface-panel);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-required-fields__item::before,
+  .a1-required-fields__ring,
+  .a1-required-fields__stop {
+    transition: none;
+    animation: none;
+  }
+}

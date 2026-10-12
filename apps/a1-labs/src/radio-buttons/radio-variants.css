@@ -1,0 +1,161 @@
+/* Radio variants — scoped restyles of the A1 radio control. The selected dot
+   is redrawn as a token-coloured radial gradient so its size and position
+   can animate; the ring moves with `scale` and `box-shadow`, which never
+   shift layout. Sizes come from component.radioVariants; colours and
+   durations are A1 roles and tokens. All movement sits inside
+   prefers-reduced-motion: no-preference; with reduced motion the dot and
+   colours change instantly. Selection animations play only after a person
+   changes the group (data-touched), never on load. */
+
+.a1-radio-lively {
+  --a1-radio-lively-ink: var(--semantic-color-status-info-background);
+  --a1-radio-lively-on-ink: var(--semantic-color-status-info-foreground);
+  --a1-radio-lively-dot-size: var(--component-radio-group-dot-size);
+  position: relative;
+}
+
+/* Shared: the dot as a gradient, 0 when not selected. */
+.a1-radio-lively[data-variant] .a1-radio-item__input {
+  --a1-radio-lively-dot: 0px;
+  background-image: radial-gradient(circle closest-side, var(--a1-radio-lively-dot-color, var(--semantic-color-text-muted)) 96%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--a1-radio-lively-dot) var(--a1-radio-lively-dot);
+}
+.a1-radio-lively[data-variant] .a1-radio-item__input:checked {
+  --a1-radio-lively-dot: var(--a1-radio-lively-dot-size);
+  --a1-radio-lively-dot-color: var(--a1-radio-lively-on-ink);
+}
+
+/* Grow: on hover, a faint dot previews the choice. */
+.a1-radio-lively[data-variant='grow'] .a1-radio-item:not(.a1-radio-item--disabled):hover .a1-radio-item__input:not(:checked) {
+  --a1-radio-lively-dot: calc(var(--a1-radio-lively-dot-size) * var(--component-radio-variants-preview-dot));
+}
+
+/* Bounce: an unselected dot waits below the centre, so deselecting drops it. */
+.a1-radio-lively[data-variant='bounce'] .a1-radio-item__input:not(:checked) {
+  background-position: center calc(50% + var(--component-radio-variants-drop));
+}
+
+/* Thicken: the ring grows inward until only a dot-sized centre is left. The
+   ring is a gradient whose open centre (--a1-radio-lively-hole) shrinks from
+   the whole radio to A1's dot size; the centre shows the selected foreground. */
+@property --a1-radio-lively-hole { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+@property --a1-radio-lively-ring { syntax: '<color>'; inherits: false; initial-value: transparent; }
+.a1-radio-lively[data-variant='thicken'] .a1-radio-item__input {
+  background-image: radial-gradient(circle closest-side, transparent var(--a1-radio-lively-hole), var(--a1-radio-lively-ring) calc(var(--a1-radio-lively-hole) + 1%));
+  background-size: 100% 100%;
+}
+.a1-radio-lively[data-variant='thicken'] .a1-radio-item:not(.a1-radio-item--disabled):hover .a1-radio-item__input:not(:checked) {
+  --a1-radio-lively-hole: calc(var(--component-radio-variants-thicken-hover-hole) * 100%);
+  --a1-radio-lively-ring: var(--a1-field-hover-border-color);
+}
+.a1-radio-lively[data-variant='thicken'] .a1-radio-item__input:checked {
+  --a1-radio-lively-hole: var(--a1-radio-lively-dot-size);
+  --a1-radio-lively-ring: var(--a1-radio-lively-ink);
+  background-color: var(--a1-radio-lively-on-ink);
+}
+.a1-radio-lively[data-variant='thicken'] .a1-radio-item__input:checked:disabled {
+  --a1-radio-lively-ring: var(--semantic-color-border-default);
+}
+
+/* Travel: while the selection is in flight, the chosen radio still looks empty. */
+.a1-radio-lively[data-traveling] .a1-radio-item__input:checked {
+  --a1-radio-lively-dot: 0px;
+  background-color: var(--semantic-color-surface-field);
+  border-color: var(--semantic-color-border-strong);
+}
+.a1-radio-lively__traveller {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side, var(--a1-radio-lively-on-ink) 96%, transparent 100%) center / var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size) no-repeat, var(--a1-radio-lively-ink);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .a1-radio-lively[data-variant] .a1-radio-item__input {
+    transition:
+      scale var(--a1-radio-lively-duration) var(--semantic-motion-easing-expressive),
+      background-size var(--a1-radio-lively-duration) var(--semantic-motion-easing-expressive),
+      background-position var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard),
+      box-shadow var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard),
+      border-color var(--semantic-motion-duration-fast),
+      background-color var(--semantic-motion-duration-fast);
+  }
+  .a1-radio-lively[data-variant='thicken'] .a1-radio-item__input {
+    transition:
+      --a1-radio-lively-hole var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard),
+      --a1-radio-lively-ring var(--a1-radio-lively-duration),
+      border-color var(--a1-radio-lively-duration),
+      background-color var(--a1-radio-lively-duration);
+  }
+
+  /* Grow: the ring swells on hover and squishes when pressed (the press rule
+     is as specific as the hover rule, and later). */
+  .a1-radio-lively[data-variant='grow'] .a1-radio-item:not(.a1-radio-item--disabled):hover .a1-radio-item__input:not(:checked) {
+    scale: var(--component-radio-variants-hover-scale);
+  }
+  .a1-radio-lively[data-variant='grow'] .a1-radio-item:not(.a1-radio-item--disabled):active .a1-radio-item__input:not(:checked),
+  .a1-radio-lively[data-variant='grow'] .a1-radio-item:not(.a1-radio-item--disabled):active .a1-radio-item__input:checked {
+    scale: var(--component-radio-variants-press-scale);
+  }
+  .a1-radio-lively[data-variant='grow'][data-touched] .a1-radio-item__input:checked {
+    animation: a1-radio-lively-pop var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard);
+  }
+
+  /* Ripple: a soft halo on hover; choosing sends a ring rippling outward. */
+  .a1-radio-lively[data-variant='ripple'] .a1-radio-item:not(.a1-radio-item--disabled):hover .a1-radio-item__input:not(:checked) {
+    box-shadow: 0 0 0 var(--component-radio-variants-halo) color-mix(in srgb, var(--a1-radio-lively-ink) 20%, transparent);
+  }
+  .a1-radio-lively[data-variant='ripple'][data-touched] .a1-radio-item__input:checked {
+    animation: a1-radio-lively-ripple var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard);
+  }
+
+  /* Bounce: the dot falls in from above, the ring squashes on impact and the
+     dot rebounds once; deselecting drops the dot out of the bottom. */
+  .a1-radio-lively[data-variant='bounce'][data-touched] .a1-radio-item__input:checked {
+    animation: a1-radio-lively-bounce var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard);
+  }
+
+  /* Jelly: a hovered ring sags; choosing makes it wobble while the dot grows. */
+  .a1-radio-lively[data-variant='jelly'] .a1-radio-item:not(.a1-radio-item--disabled):hover .a1-radio-item__input:not(:checked) {
+    scale: var(--component-radio-variants-hover-wide) var(--component-radio-variants-hover-tall);
+  }
+  .a1-radio-lively[data-variant='jelly'][data-touched] .a1-radio-item__input:checked {
+    animation: a1-radio-lively-jelly var(--a1-radio-lively-duration) var(--semantic-motion-easing-standard);
+  }
+}
+
+@keyframes a1-radio-lively-pop {
+  0% { scale: 1; background-size: 0 0; }
+  45% {
+    scale: var(--component-radio-variants-pop-scale);
+    background-size:
+      calc(var(--a1-radio-lively-dot-size) * var(--component-radio-variants-dot-overshoot))
+      calc(var(--a1-radio-lively-dot-size) * var(--component-radio-variants-dot-overshoot));
+  }
+  75% { scale: var(--component-radio-variants-settle-scale); }
+  100% { scale: 1; background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+}
+
+@keyframes a1-radio-lively-ripple {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a1-radio-lively-ink) 55%, transparent); background-size: 0 0; }
+  35% { background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+  100% { box-shadow: 0 0 0 var(--component-radio-variants-ripple) transparent; background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+}
+
+@keyframes a1-radio-lively-bounce {
+  0% { background-position: center calc(50% - var(--component-radio-variants-drop)); background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); scale: 1; animation-timing-function: var(--semantic-motion-easing-exit); }
+  45% { background-position: center; scale: 1; }
+  58% { scale: var(--component-radio-variants-squash-wide) var(--component-radio-variants-squash-tall); background-position: center calc(50% + var(--component-radio-variants-rebound)); }
+  76% { scale: 1; background-position: center calc(50% - var(--component-radio-variants-rebound)); }
+  100% { background-position: center; background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+}
+
+@keyframes a1-radio-lively-jelly {
+  0% { scale: 1; background-size: 0 0; }
+  25% { scale: var(--component-radio-variants-squash-wide) var(--component-radio-variants-squash-tall); }
+  50% { scale: var(--component-radio-variants-squash-tall) var(--component-radio-variants-squash-wide); background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+  75% { scale: var(--component-radio-variants-hover-wide) var(--component-radio-variants-hover-tall); }
+  100% { scale: 1; background-size: var(--a1-radio-lively-dot-size) var(--a1-radio-lively-dot-size); }
+}

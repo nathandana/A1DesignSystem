@@ -3,6 +3,7 @@ import {
   Button,
   Code,
   Divider,
+  SegmentedControl,
   Stack,
   TextField,
   TopHeader,
@@ -30,6 +31,13 @@ function escapeJsString(value) {
     .replaceAll('\n', '\\n')
 }
 
+// Sample endContent: an inline color-scheme switcher, as A1 Labs uses.
+const END_CONTENT_MODES = [
+  { value: 'light', label: 'Light', icon: 'light_mode', ariaLabel: 'Light mode' },
+  { value: 'dark', label: 'Dark', icon: 'dark_mode', ariaLabel: 'Dark mode' },
+  { value: 'system', label: 'System', icon: 'desktop_windows', ariaLabel: 'System mode' },
+]
+
 function uid(prefix) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
@@ -55,6 +63,8 @@ export function getDefaultConfig() {
     logoText: 'A1 Design System',
     navIconPosition: 'start',
     loginLabel: '',
+    showEndContent: false,
+    endContentMode: 'system',
     navItems: [
       { id: 'nav-products', label: 'Products', isLink: true, href: '#', icon: '', active: true },
       { id: 'nav-solutions', label: 'Solutions', isLink: true, href: '#', icon: '', active: false },
@@ -69,7 +79,7 @@ export function getDefaultConfig() {
   }
 }
 
-export function Preview({ config, utilityClass = '' }) {
+export function Preview({ config, setConfig, utilityClass = '' }) {
   const navItems = normalizeNavItems(config.navItems).map((item) => ({
     id: item.id,
     label: item.label || 'Untitled',
@@ -96,6 +106,15 @@ export function Preview({ config, utilityClass = '' }) {
         actions={actions}
         navIconPosition={config.navIconPosition}
         loginButton={config.loginLabel ? { label: config.loginLabel } : undefined}
+        endContent={config.showEndContent ? (
+          <SegmentedControl
+            options={END_CONTENT_MODES}
+            value={config.endContentMode || 'system'}
+            onChange={(endContentMode) => setConfig?.((current) => ({ ...current, endContentMode }))}
+            aria-label="Color scheme"
+            size="md"
+          />
+        ) : undefined}
       />
     </div>
   )
@@ -204,6 +223,13 @@ export function Controls({ config, setConfig }) {
         size="compact"
         value={config.loginLabel}
         onChange={(event) => setConfig((current) => ({ ...current, loginLabel: event.target.value }))}
+      />
+      <Toggle
+        prop="endContent"
+        label="End content"
+        helper="Composed controls placed after the actions, inside the header's surface and bottom border. The preview shows an inline color-scheme switcher. Runtime-only: not saved in page JSON."
+        value={config.showEndContent === true}
+        onChange={(showEndContent) => setConfig((current) => ({ ...current, showEndContent }))}
       />
 
       <Stack gap="sm">
@@ -372,6 +398,9 @@ function buildTopHeaderSnippet(config, utilityClass = '') {
     config.loginLabel ? `  loginButton={{ label: '${escapeJsString(config.loginLabel)}' }}` : null,
     `  navItems={[\n${navItems.map(navItemSnippet).join('\n')}\n  ]}`,
     actions.length > 0 ? `  actions={[\n${actions.map(actionSnippet).join('\n')}\n  ]}` : null,
+    config.showEndContent
+      ? `  endContent={\n    <SegmentedControl options={colorModes} value={mode} onChange={setMode} aria-label="Color scheme" size="md" />\n  }`
+      : null,
   ].filter(Boolean).join('\n')
 
   return `<TopHeader\n${props}\n/>`
@@ -418,7 +447,12 @@ export function toJson(config) {
         key: 'label.app.configurator.jsonTopHeaderLogin',
         fallback: 'loginButton carries only the { label } — its click behavior is composed at runtime.',
       }
-    : null
+    : config.showEndContent
+      ? {
+          key: 'label.app.configurator.jsonTopHeaderEndContent',
+          fallback: 'endContent is composed at runtime and is not included in the JSON.',
+        }
+      : null
   return { node: { id: 'top-header-1', type: 'TopHeader', props }, note }
 }
 

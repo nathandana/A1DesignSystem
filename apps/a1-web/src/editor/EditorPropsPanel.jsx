@@ -507,6 +507,7 @@ export const propsToConfig = {
     labelPosition: props?.labelPosition ?? 'above',
     size: props?.size ?? 'md',
     indeterminate: props?.indeterminate ?? false,
+    showPauseControl: props?.showPauseControl ?? true,
   }),
 
   CircularProgress: (props) => ({
@@ -1317,6 +1318,7 @@ export const configToNodeUpdate = {
       labelPosition: config.labelPosition,
       size: config.size,
       indeterminate: config.indeterminate || undefined,
+      showPauseControl: config.showPauseControl === false ? false : undefined,
     },
   }),
 

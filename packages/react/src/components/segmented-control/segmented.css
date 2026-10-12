@@ -135,17 +135,8 @@
   padding-inline: var(--component-segmented-segment-padding-block-sm);
 }
 
-/* ─── Dark mode ───────────────────────────────────────────────────────────── */
-
-.a1-theme-dark .a1-segment:not([aria-checked="true"]),
-.a1-inverse .a1-segment:not([aria-checked="true"]) {
-  color: var(--component-segmented-inactive-color);
-}
-
-.a1-theme-dark .a1-segment:hover:not([aria-checked="true"]),
-.a1-inverse .a1-segment:hover:not([aria-checked="true"]) {
-  color: var(--component-segmented-inactive-color-hover);
-}
+/* Semantic text roles above resolve inside light, dark and inverse scopes.
+   Do not override them with baked light-palette inactive colors here. */
 
 /* ─── Full width ──────────────────────────────────────────────────────────── */
 

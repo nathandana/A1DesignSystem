@@ -333,6 +333,10 @@ html.a1-theme-light.a1-theme-fresh body {
 
 :root {
   color-scheme: light;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-card: var(--base-color-neutral-0);
   --semantic-color-surface-field: var(--base-color-neutral-0);
@@ -434,6 +438,10 @@ html.a1-theme-light.a1-theme-fresh body {
 
 .a1-inverse {
   color-scheme: dark;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-field: var(--base-color-neutral-700);
@@ -537,6 +545,10 @@ html.a1-theme-light.a1-theme-fresh body {
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
+    --component-image-generation-background: var(--semantic-color-surface-card);
+    --component-image-generation-start-color: var(--semantic-color-status-info-background);
+    --component-image-generation-end-color: var(--semantic-color-status-success-background);
+    --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
     --semantic-color-surface-page: var(--base-color-neutral-900);
     --semantic-color-surface-card: var(--base-color-neutral-800);
     --semantic-color-surface-field: var(--base-color-neutral-700);
@@ -635,6 +647,10 @@ html.a1-theme-light.a1-theme-fresh body {
   /* .a1-inverse inside a system-dark page inverts back to light */
   .a1-inverse {
     color-scheme: light;
+    --component-image-generation-background: var(--semantic-color-surface-card);
+    --component-image-generation-start-color: var(--semantic-color-status-info-background);
+    --component-image-generation-end-color: var(--semantic-color-status-success-background);
+    --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
     --semantic-color-surface-page: var(--base-color-neutral-0);
     --semantic-color-surface-card: var(--base-color-neutral-0);
     --semantic-color-surface-field: var(--base-color-neutral-0);
@@ -735,6 +751,10 @@ html.a1-theme-light.a1-theme-fresh body {
 
 html.a1-theme-dark {
   color-scheme: dark;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-field: var(--base-color-neutral-700);
@@ -838,6 +858,10 @@ html.a1-theme-dark {
 html.a1-theme-dark .a1-inverse,
 html.a1-theme-dark .a1-theme-light {
   color-scheme: light;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-card: var(--base-color-neutral-0);
   --semantic-color-surface-field: var(--base-color-neutral-0);
@@ -938,6 +962,10 @@ html.a1-theme-dark .a1-theme-light {
 
 html.a1-theme-light {
   color-scheme: light;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-0);
   --semantic-color-surface-card: var(--base-color-neutral-0);
   --semantic-color-surface-field: var(--base-color-neutral-0);
@@ -1039,6 +1067,10 @@ html.a1-theme-light {
 
 html.a1-theme-light .a1-inverse {
   color-scheme: dark;
+  --component-image-generation-background: var(--semantic-color-surface-card);
+  --component-image-generation-start-color: var(--semantic-color-status-info-background);
+  --component-image-generation-end-color: var(--semantic-color-status-success-background);
+  --component-image-generation-blob-highlight-color: var(--semantic-color-text-default);
   --semantic-color-surface-page: var(--base-color-neutral-900);
   --semantic-color-surface-card: var(--base-color-neutral-800);
   --semantic-color-surface-field: var(--base-color-neutral-700);

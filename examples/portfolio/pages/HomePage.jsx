@@ -60,11 +60,7 @@ export function HomePage({ navigate, audience = "general" }) {
                 <Paragraph size="lg">{study.description}</Paragraph>
                 <Paragraph>Read case study →</Paragraph>
               </Stack>
-              {study.id === "a1" ? (
-                <Figure placeholder aspectRatio="16:9" alt="A1 case study figure placeholder" radius="md" />
-              ) : (
-                <Figure src={asset(study.cardImage)} alt={`${study.title} project artwork`} radius="md" />
-              )}
+              <Figure src={asset(study.cardImage)} alt={study.cardImageAlt ?? `${study.title} project artwork`} radius="md" />
             </Grid>
           </Card>
         ))}

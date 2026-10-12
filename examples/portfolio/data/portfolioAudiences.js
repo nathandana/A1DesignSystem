@@ -13,8 +13,8 @@ export const portfolioAudiences = {
   },
   systems: {
     title: "Design Systems Leader",
-    headline: "Design systems teams can build on.",
-    emphasis: "Design systems",
+    headline: "Bridging AI and design systems.",
+    emphasis: "AI",
     introduction: "I build enterprise design systems across Figma and code, grow the teams and practices behind them, and structure their rules for AI-assisted work.",
     order: ["fondue", "transform", "a1", "filter", "member-menu", "carshopper", "composer"],
     cards: [

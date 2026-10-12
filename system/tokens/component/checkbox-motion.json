@@ -1,0 +1,50 @@
+{
+  "component": {
+    "checkboxMotion": {
+      "popScale": {
+        "$type": "number",
+        "$value": 1.2,
+        "$description": "Pop: peak swell as a checkbox is checked."
+      },
+      "settleScale": {
+        "$type": "number",
+        "$value": 0.94,
+        "$description": "Pop and Jelly: brief undershoot before settling."
+      },
+      "jellyWide": {
+        "$type": "number",
+        "$value": 1.18,
+        "$description": "Jelly: how wide the box squashes."
+      },
+      "jellyTall": {
+        "$type": "number",
+        "$value": 0.84,
+        "$description": "Jelly: how short the box squashes (and the reverse)."
+      },
+      "glyphOvershoot": {
+        "$type": "number",
+        "$value": 1.27,
+        "$description": "Pop and Fill: how large the tick or dash grows (times A1's glyph size) before settling."
+      },
+      "pulse": {
+        "$type": "dimension",
+        "$value": "{base.spacing.12}",
+        "$description": "Pulse: how far the ring spreads from the box."
+      },
+      "slide": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}",
+        "$description": "Slide: how far the tick or dash travels in or out."
+      },
+      "flipAngle": {
+        "$value": "90deg",
+        "$description": "Flip: the box turns edge-on and back as it changes."
+      },
+      "perspective": {
+        "$type": "dimension",
+        "$value": "{base.spacing.64}",
+        "$description": "Flip: depth of the turn."
+      }
+    }
+  }
+}

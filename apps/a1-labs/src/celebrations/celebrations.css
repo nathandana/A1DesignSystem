@@ -1,0 +1,123 @@
+/* Celebrations — scoped Labs styles. Colours are A1 status and action roles;
+   sizes and scales are component.celebration tokens; durations and easing are
+   semantic motion tokens. Every style rests on its final, still state, and
+   movement only plays with prefers-reduced-motion: no-preference. */
+
+.a1-celebration {
+  --a1-celebration-ink: var(--semantic-color-status-success-background);
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: var(--component-celebration-stage-size);
+}
+.a1-celebration > * { grid-area: 1 / 1; }
+
+.a1-celebration__check {
+  display: inline-flex;
+  color: var(--a1-celebration-ink);
+}
+
+/* Rings: outlines that grow from the check and fade. */
+.a1-celebration__ring {
+  inline-size: var(--base-spacing-96);
+  block-size: var(--base-spacing-96);
+  border: var(--base-spacing-2) solid var(--a1-celebration-ink);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Stamp: bordered, slightly tilted text. */
+.a1-celebration__stamp {
+  padding: var(--base-spacing-8) var(--base-spacing-24);
+  border: var(--base-spacing-4) solid var(--a1-celebration-ink);
+  border-radius: var(--base-radius-lg);
+  color: var(--a1-celebration-ink);
+  font-family: var(--component-heading-font-family-heading);
+  font-size: var(--semantic-font-size-heading-lg);
+  font-weight: var(--base-font-weight-bold);
+  rotate: var(--component-celebration-stamp-angle);
+}
+
+/* Sparkles: placed around the check on a circle. */
+.a1-celebration__sparkle {
+  display: inline-flex;
+  color: var(--semantic-color-status-warn-background);
+  translate:
+    calc(cos(var(--a1-celebration-index) * 45deg) * var(--component-celebration-sparkle-distance))
+    calc(sin(var(--a1-celebration-index) * 45deg) * var(--component-celebration-sparkle-distance));
+  opacity: 0;
+}
+
+/* Fenex: the shared character component (its SVG animates itself). */
+.a1-celebration[data-variant='fenex'] { block-size: auto; }
+.a1-celebration__character { display: inline-flex; }
+
+/* The full-screen particle canvas (a manual popover in the top layer). */
+.a1-celebration__particles {
+  position: fixed;
+  inset: 0;
+  inline-size: 100vw;
+  block-size: 100vh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .a1-celebration__check {
+    animation: a1-celebration-pop var(--semantic-motion-duration-slowest) var(--semantic-motion-easing-expressive) both;
+  }
+  .a1-celebration__character {
+    animation: a1-celebration-pop var(--semantic-motion-duration-slowest) var(--semantic-motion-easing-expressive) both;
+  }
+  .a1-celebration[data-variant='rings'] .a1-celebration__ring {
+    animation: a1-celebration-ring calc(var(--semantic-motion-duration-slowest) * 2) var(--semantic-motion-easing-exit) both;
+    animation-delay: calc(var(--a1-celebration-index) * var(--semantic-motion-duration-fast) + var(--semantic-motion-duration-normal));
+  }
+  .a1-celebration[data-variant='stamp'] .a1-celebration__stamp {
+    animation: a1-celebration-stamp var(--semantic-motion-duration-slow) var(--semantic-motion-easing-exit) both;
+  }
+  .a1-celebration[data-variant='sparkles'] .a1-celebration__sparkle {
+    animation: a1-celebration-twinkle calc(var(--semantic-motion-duration-slowest) * 2) var(--semantic-motion-easing-standard) both;
+    animation-delay: calc(var(--a1-celebration-index) * var(--semantic-motion-duration-quick) + var(--semantic-motion-duration-slow));
+  }
+  /* The stamp's landing jolts whatever holds the celebration. */
+  .a1-celebration-host:has(.a1-celebration[data-variant='stamp']) {
+    animation: a1-celebration-jolt var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard) var(--semantic-motion-duration-slow);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Still states: rings and sparkles aren't shown. */
+  .a1-celebration__ring { display: none; }
+  .a1-celebration__sparkle { opacity: 1; }
+}
+
+@keyframes a1-celebration-pop {
+  0% { scale: 0; opacity: 0; }
+  60% { scale: var(--component-celebration-check-pop-scale); opacity: 1; }
+  100% { scale: 1; }
+}
+@keyframes a1-celebration-ring {
+  0% { scale: 0.6; opacity: 0.8; }
+  100% { scale: var(--component-celebration-ring-scale); opacity: 0; }
+}
+@keyframes a1-celebration-stamp {
+  0% { scale: var(--component-celebration-stamp-from); opacity: 0; rotate: 0deg; }
+  70% { opacity: 1; }
+  100% { scale: 1; rotate: var(--component-celebration-stamp-angle); }
+}
+@keyframes a1-celebration-twinkle {
+  0% { opacity: 0; scale: 0; }
+  30% { opacity: 1; scale: 1.2; }
+  60% { opacity: 0.6; scale: 0.9; }
+  100% { opacity: 1; scale: 1; }
+}
+@keyframes a1-celebration-jolt {
+  0%, 100% { translate: 0 0; }
+  30% { translate: 0 var(--base-spacing-4); }
+  60% { translate: 0 calc(var(--base-spacing-2) * -1); }
+}

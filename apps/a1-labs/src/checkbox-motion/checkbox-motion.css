@@ -1,0 +1,205 @@
+/* Checkbox motion — scoped animations for the A1 checkbox. The tick and dash
+   are A1's own glyphs (mirrored here as background layers so they can grow,
+   slide, draw and fill); colours are A1's checked roles. Only the box that
+   changed animates: it carries data-a1-animate (on / off / mixed) until its
+   animation ends. Movement only plays with prefers-reduced-motion:
+   no-preference; otherwise boxes change instantly, as in A1. */
+
+.a1-checkbox-lively {
+  --a1-cb-ink: var(--semantic-color-status-info-background);
+  --a1-cb-field: var(--semantic-color-surface-field);
+  --a1-cb-edge: var(--semantic-color-border-strong);
+  --a1-cb-glyph: var(--component-checkbox-group-icon-size);
+  --a1-cb-glyph-big: calc(var(--component-checkbox-group-icon-size) * var(--component-checkbox-motion-glyph-overshoot));
+  /* A1's tick and dash glyphs (same paths and colour as the A1 checkbox). */
+  --a1-cb-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpolyline points='2,6 5,9.5 10,3' fill='none' stroke='%23fafcff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --a1-cb-dash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%23fafcff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* Every variant except Default keeps the glyph present at size 0 when
+   unchecked, so it can grow in and shrink out. */
+.a1-checkbox-lively:not([data-variant='default']) .a1-checkbox-item__input {
+  background-image: var(--a1-cb-check);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0 0;
+}
+.a1-checkbox-lively:not([data-variant='default']) .a1-checkbox-item__input:checked {
+  background-image: var(--a1-cb-check);
+  background-size: var(--a1-cb-glyph) var(--a1-cb-glyph);
+}
+.a1-checkbox-lively:not([data-variant='default']) .a1-checkbox-item__input:indeterminate {
+  background-image: var(--a1-cb-dash);
+  background-size: var(--a1-cb-glyph) var(--a1-cb-glyph);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .a1-checkbox-lively [data-a1-animate] {
+    animation-duration: var(--a1-checkbox-lively-duration);
+    animation-timing-function: var(--semantic-motion-easing-standard);
+  }
+
+  /* Pop */
+  .a1-checkbox-lively[data-variant='pop'] .a1-checkbox-item__input[data-a1-animate='on'] { animation-name: a1-cb-pop-on; }
+  .a1-checkbox-lively[data-variant='pop'] .a1-checkbox-item__input[data-a1-animate='mixed'] { animation-name: a1-cb-pop-mixed; }
+  .a1-checkbox-lively[data-variant='pop'] .a1-checkbox-item__input[data-a1-animate='off'] { animation-name: a1-cb-pop-off; }
+
+  /* Draw: an ink cover slides off the tick left to right; the dash is
+     uncovered from the centre out; unchecking covers the tick right to left,
+     then the box empties. */
+  .a1-checkbox-lively[data-variant='draw'] .a1-checkbox-item__input[data-a1-animate='on'] {
+    background-image: linear-gradient(var(--a1-cb-ink), var(--a1-cb-ink)), var(--a1-cb-check);
+    background-position: right center, center;
+    animation-name: a1-cb-draw-on;
+  }
+  .a1-checkbox-lively[data-variant='draw'] .a1-checkbox-item__input[data-a1-animate='mixed'] {
+    background-image: linear-gradient(var(--a1-cb-ink), var(--a1-cb-ink)), linear-gradient(var(--a1-cb-ink), var(--a1-cb-ink)), var(--a1-cb-dash);
+    background-position: left center, right center, center;
+    animation-name: a1-cb-draw-mixed;
+  }
+  .a1-checkbox-lively[data-variant='draw'] .a1-checkbox-item__input[data-a1-animate='off'] {
+    background-image: linear-gradient(currentColor, currentColor), var(--a1-cb-check);
+    background-position: right center, center;
+    animation-name: a1-cb-draw-off;
+  }
+
+  /* Fill: colour floods from the centre, then the glyph appears. */
+  .a1-checkbox-lively[data-variant='fill'] .a1-checkbox-item__input[data-a1-animate='on'] {
+    background-color: var(--a1-cb-field);
+    background-image: var(--a1-cb-check), radial-gradient(circle closest-side, var(--a1-cb-ink) 98%, transparent 100%);
+    background-position: center;
+    animation-name: a1-cb-fill-on;
+  }
+  .a1-checkbox-lively[data-variant='fill'] .a1-checkbox-item__input[data-a1-animate='mixed'] {
+    background-color: var(--a1-cb-field);
+    background-image: var(--a1-cb-dash), radial-gradient(circle closest-side, var(--a1-cb-ink) 98%, transparent 100%);
+    background-position: center;
+    animation-name: a1-cb-fill-mixed;
+  }
+  .a1-checkbox-lively[data-variant='fill'] .a1-checkbox-item__input[data-a1-animate='off'] {
+    background-image: var(--a1-cb-check), radial-gradient(circle closest-side, var(--a1-cb-ink) 98%, transparent 100%);
+    background-position: center;
+    animation-name: a1-cb-fill-off;
+  }
+
+  /* Flip */
+  .a1-checkbox-lively[data-variant='flip'] .a1-checkbox-item__input[data-a1-animate='on'] { animation-name: a1-cb-flip-on; }
+  .a1-checkbox-lively[data-variant='flip'] .a1-checkbox-item__input[data-a1-animate='mixed'] { animation-name: a1-cb-flip-mixed; }
+  .a1-checkbox-lively[data-variant='flip'] .a1-checkbox-item__input[data-a1-animate='off'] { animation-name: a1-cb-flip-off; }
+
+  /* Jelly */
+  .a1-checkbox-lively[data-variant='jelly'] .a1-checkbox-item__input[data-a1-animate='on'] { animation-name: a1-cb-jelly-on; }
+  .a1-checkbox-lively[data-variant='jelly'] .a1-checkbox-item__input[data-a1-animate='mixed'] { animation-name: a1-cb-jelly-mixed; }
+  .a1-checkbox-lively[data-variant='jelly'] .a1-checkbox-item__input[data-a1-animate='off'] { animation-name: a1-cb-jelly-off; }
+
+  /* Pulse: a ring spreads out as the box is checked. */
+  .a1-checkbox-lively[data-variant='pulse'] .a1-checkbox-item__input[data-a1-animate='on'] { animation-name: a1-cb-pulse-on; }
+  .a1-checkbox-lively[data-variant='pulse'] .a1-checkbox-item__input[data-a1-animate='mixed'] { animation-name: a1-cb-pulse-mixed; }
+  .a1-checkbox-lively[data-variant='pulse'] .a1-checkbox-item__input[data-a1-animate='off'] { animation-name: a1-cb-shrink-off; }
+
+  /* Slide: the glyph slides up into the box, and up and out. */
+  .a1-checkbox-lively[data-variant='slide'] .a1-checkbox-item__input[data-a1-animate='on'] { animation-name: a1-cb-slide-on; }
+  .a1-checkbox-lively[data-variant='slide'] .a1-checkbox-item__input[data-a1-animate='mixed'] { animation-name: a1-cb-slide-mixed; }
+  .a1-checkbox-lively[data-variant='slide'] .a1-checkbox-item__input[data-a1-animate='off'] { animation-name: a1-cb-slide-off; }
+}
+
+/* Pop */
+@keyframes a1-cb-pop-on {
+  0% { scale: 1; background-size: 0 0; }
+  45% { scale: var(--component-checkbox-motion-pop-scale); background-size: var(--a1-cb-glyph-big) var(--a1-cb-glyph-big); }
+  75% { scale: var(--component-checkbox-motion-settle-scale); }
+  100% { scale: 1; background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+@keyframes a1-cb-pop-mixed {
+  0% { scale: 1; background-size: 0 0; }
+  45% { scale: var(--component-checkbox-motion-pop-scale); background-size: var(--a1-cb-glyph-big) var(--a1-cb-glyph-big); }
+  75% { scale: var(--component-checkbox-motion-settle-scale); }
+  100% { scale: 1; background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+@keyframes a1-cb-pop-off {
+  0% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); scale: 1; }
+  45% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: 0 0; scale: var(--component-checkbox-motion-settle-scale); }
+  100% { scale: 1; background-size: 0 0; }
+}
+/* Unchecking for variants without their own: the glyph shrinks, then the box empties. */
+@keyframes a1-cb-shrink-off {
+  0% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  60% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: 0 0; }
+  100% { background-size: 0 0; }
+}
+
+/* Draw */
+@keyframes a1-cb-draw-on {
+  from { background-size: 100% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  to { background-size: 0% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+@keyframes a1-cb-draw-mixed {
+  from { background-size: 50% 100%, 50% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  to { background-size: 0% 100%, 0% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+@keyframes a1-cb-draw-off {
+  0% { color: var(--a1-cb-ink); background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: 0% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  60% { color: var(--a1-cb-ink); background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: 100% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  100% { color: var(--a1-cb-field); background-color: var(--a1-cb-field); border-color: var(--a1-cb-edge); background-size: 100% 100%, var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+
+/* Fill */
+@keyframes a1-cb-fill-on {
+  0% { background-size: 0 0, 0 0; border-color: var(--a1-cb-edge); }
+  55% { background-size: 0 0, 150% 150%; }
+  80% { background-size: var(--a1-cb-glyph-big) var(--a1-cb-glyph-big), 150% 150%; }
+  100% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph), 150% 150%; }
+}
+@keyframes a1-cb-fill-mixed {
+  0% { background-size: 0 0, 0 0; border-color: var(--a1-cb-edge); }
+  55% { background-size: 0 0, 150% 150%; }
+  80% { background-size: var(--a1-cb-glyph-big) var(--a1-cb-glyph-big), 150% 150%; }
+  100% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph), 150% 150%; }
+}
+@keyframes a1-cb-fill-off {
+  0% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph), 150% 150%; border-color: var(--a1-cb-ink); }
+  40% { background-size: 0 0, 150% 150%; border-color: var(--a1-cb-ink); }
+  100% { background-size: 0 0, 0 0; }
+}
+
+/* Flip: turn edge-on and back. */
+@keyframes a1-cb-flip-on { from { transform: perspective(var(--component-checkbox-motion-perspective)) rotateY(var(--component-checkbox-motion-flip-angle)); } }
+@keyframes a1-cb-flip-mixed { from { transform: perspective(var(--component-checkbox-motion-perspective)) rotateX(var(--component-checkbox-motion-flip-angle)); } }
+@keyframes a1-cb-flip-off { from { transform: perspective(var(--component-checkbox-motion-perspective)) rotateY(calc(-1 * var(--component-checkbox-motion-flip-angle))); } }
+
+/* Jelly: squash wide, then tall, then settle. */
+@keyframes a1-cb-jelly-on {
+  30% { scale: var(--component-checkbox-motion-jelly-wide) var(--component-checkbox-motion-jelly-tall); }
+  55% { scale: var(--component-checkbox-motion-jelly-tall) var(--component-checkbox-motion-jelly-wide); }
+  80% { scale: var(--component-checkbox-motion-settle-scale) 1; }
+}
+@keyframes a1-cb-jelly-mixed {
+  30% { scale: var(--component-checkbox-motion-jelly-wide) var(--component-checkbox-motion-jelly-tall); }
+  55% { scale: var(--component-checkbox-motion-jelly-tall) var(--component-checkbox-motion-jelly-wide); }
+  80% { scale: var(--component-checkbox-motion-settle-scale) 1; }
+}
+@keyframes a1-cb-jelly-off {
+  30% { scale: var(--component-checkbox-motion-jelly-tall) var(--component-checkbox-motion-jelly-wide); }
+  60% { scale: var(--component-checkbox-motion-jelly-wide) var(--component-checkbox-motion-jelly-tall); }
+}
+
+/* Pulse */
+@keyframes a1-cb-pulse-on {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a1-cb-ink) 55%, transparent); background-size: 0 0; }
+  40% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  100% { box-shadow: 0 0 0 var(--component-checkbox-motion-pulse) transparent; background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+@keyframes a1-cb-pulse-mixed {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a1-cb-ink) 55%, transparent); background-size: 0 0; }
+  40% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+  100% { box-shadow: 0 0 0 var(--component-checkbox-motion-pulse) transparent; background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); }
+}
+
+/* Slide */
+@keyframes a1-cb-slide-on { from { background-position: center calc(50% + var(--component-checkbox-motion-slide)); } }
+@keyframes a1-cb-slide-mixed { from { background-position: center calc(50% + var(--component-checkbox-motion-slide)); } }
+@keyframes a1-cb-slide-off {
+  0% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); background-position: center; }
+  65% { background-color: var(--a1-cb-ink); border-color: var(--a1-cb-ink); background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); background-position: center calc(50% - var(--component-checkbox-motion-slide)); }
+  100% { background-size: var(--a1-cb-glyph) var(--a1-cb-glyph); background-position: center calc(50% - var(--component-checkbox-motion-slide)); }
+}

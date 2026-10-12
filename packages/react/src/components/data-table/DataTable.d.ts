@@ -39,6 +39,21 @@ export interface DataTableFilter {
   options: Array<{ value: string; label: string }>;
 }
 
+export interface DataTablePaginationContext {
+  page: number;
+  totalPages: number;
+  pageSize?: number;
+  totalRows: number;
+  rowStart: number;
+  rowEnd: number;
+  size: "sm" | "md";
+  /** Which copy of the navigation is rendering: "top", "bottom" or "inline". */
+  placement: "top" | "bottom" | "inline";
+  /** Distinct accessible name for this copy when `paginationPosition="both"` (e.g. "Pagination above table"); otherwise undefined. Apply it as the navigation's aria-label. */
+  label?: string;
+  onChange: (page: number) => void;
+}
+
 export interface DataTableProps extends React.HTMLAttributes<HTMLDivElement> {
   columns?: DataTableColumn[];
   rows?: Record<string, unknown>[];
@@ -69,6 +84,16 @@ export interface DataTableProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultPageSize?: number;
   /** Page-size choices shown in the pagination footer */
   pageSizeOptions?: number[];
+  /**
+   * Place pagination above or below the rows, both (duplicate synchronized
+   * controls above and below, each with a distinct navigation name), or inline
+   * with filters when space permits (wrapping otherwise). Default: "bottom"
+   */
+  paginationPosition?: "top" | "bottom" | "both" | "inline";
+  /** Size of the page navigation buttons. Default: "sm" */
+  paginationSize?: "sm" | "md";
+  /** Replace page navigation while retaining built-in filtering, sorting, result count, page-size menu and placement. Called only for multiple pages. */
+  renderPagination?: (context: DataTablePaginationContext) => React.ReactNode;
   /** Total page count for server-side pagination */
   totalPages?: number;
   /** Total row count for server-side row counter */

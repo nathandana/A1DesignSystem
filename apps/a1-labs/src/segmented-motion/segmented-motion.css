@@ -1,0 +1,119 @@
+/* Segmented control transitions — scoped restyles of the A1
+   SegmentedControl's selected background. The selected background uses A1's
+   own roles (surface page, shadow xs, inner radius). Distances and scales come
+   from component.segmentedMotion; durations from the motion tokens. Movement
+   is inside prefers-reduced-motion: no-preference. */
+
+.a1-segmented-motion {
+  position: relative;
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+/* Segments sit above the travelling indicator. */
+.a1-segmented-motion .a1-segment {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Every variant except Default and Fade draws its own selected background. */
+.a1-segmented-motion:not([data-motion='default'], [data-motion='fade']) .a1-segment[aria-checked='true'] {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* The travelling indicator (slide, spring, stretch, morph). */
+.a1-segmented-motion__indicator {
+  position: absolute;
+  z-index: 0;
+  border-radius: calc(var(--base-radius-control) - var(--component-segmented-padding));
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-xs);
+  pointer-events: none;
+}
+
+/* Per-segment backgrounds (grow, wipe) are drawn behind each label. */
+.a1-segmented-motion:is([data-motion='grow'], [data-motion='wipe']) .a1-segment::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-xs);
+  opacity: 0;
+}
+.a1-segmented-motion:is([data-motion='grow'], [data-motion='wipe']) .a1-segment[aria-checked='true']::before { opacity: 1; }
+
+/* Grow: from the centre. */
+.a1-segmented-motion[data-motion='grow'] .a1-segment::before { scale: var(--component-segmented-motion-grow-from); }
+.a1-segmented-motion[data-motion='grow'] .a1-segment[aria-checked='true']::before { scale: 1; }
+
+/* Wipe: the new background enters from the side you came from, the old one
+   leaves towards where you are going. Unselected segments stay hidden, so only
+   the segment being left shows its wipe out. */
+.a1-segmented-motion[data-motion='wipe'][data-direction='forward'] .a1-segment:not([aria-checked='true'])::before { clip-path: inset(0 0 0 100%); }
+.a1-segmented-motion[data-motion='wipe'][data-direction='back'] .a1-segment:not([aria-checked='true'])::before { clip-path: inset(0 100% 0 0); }
+.a1-segmented-motion[data-motion='wipe'] .a1-segment[aria-checked='true']::before { clip-path: inset(0); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Fade: a slower cross-fade of A1's own selected background. */
+  .a1-segmented-motion[data-motion='fade'] .a1-segment {
+    transition:
+      background var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      box-shadow var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      color var(--semantic-motion-duration-fast);
+  }
+
+  /* The indicator is placed by its left and right edges, so each edge can
+     move on its own. */
+  .a1-segmented-motion[data-ready][data-motion='slide'] .a1-segmented-motion__indicator {
+    transition:
+      left var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      right var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard);
+  }
+  .a1-segmented-motion[data-ready][data-motion='spring'] .a1-segmented-motion__indicator {
+    transition:
+      left var(--a1-segmented-motion-duration) var(--semantic-motion-easing-expressive),
+      right var(--a1-segmented-motion-duration) var(--semantic-motion-easing-expressive);
+  }
+
+  /* Stretch: the leading edge goes first and the trailing edge catches up —
+     the right edge leads moving forward, the left edge moving back. */
+  .a1-segmented-motion[data-ready][data-motion='stretch'][data-direction='forward'] .a1-segmented-motion__indicator {
+    transition:
+      right var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      left var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard) calc(var(--a1-segmented-motion-duration) * var(--component-segmented-motion-stretch-lag));
+  }
+  .a1-segmented-motion[data-ready][data-motion='stretch'][data-direction='back'] .a1-segmented-motion__indicator {
+    transition:
+      left var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      right var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard) calc(var(--a1-segmented-motion-duration) * var(--component-segmented-motion-stretch-lag));
+  }
+
+  .a1-segmented-motion[data-motion='grow'] .a1-segment::before {
+    transition:
+      opacity var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      scale var(--a1-segmented-motion-duration) var(--semantic-motion-easing-expressive);
+  }
+
+  /* The segment being left stays visible until its wipe out ends; the new
+     one shows at once and wipes in. */
+  .a1-segmented-motion[data-motion='wipe'] .a1-segment::before {
+    transition:
+      clip-path var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      opacity 0s linear var(--a1-segmented-motion-duration);
+  }
+  .a1-segmented-motion[data-motion='wipe'] .a1-segment[aria-checked='true']::before {
+    transition:
+      clip-path var(--a1-segmented-motion-duration) var(--semantic-motion-easing-standard),
+      opacity 0s;
+  }
+}
+
+/* Full width: the wrapper fills like the A1 control would. */
+.a1-segmented-motion:has(.a1-segmented--full-width) { display: block; }
+
+/* Labs page stage. */
+.a1-segmented-motion-stage { padding-block: var(--base-spacing-64); }

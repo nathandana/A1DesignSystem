@@ -89,9 +89,17 @@ export const LIGHT_MODE_VARIABLES = [
   "--component-button-success-border-hover",
   "--component-button-success-border-pressed",
   "--component-sticky-actions-background",
+  "--component-image-generation-background",
+  "--component-image-generation-start-color",
+  "--component-image-generation-end-color",
+  "--component-image-generation-blob-highlight-color",
 ];
 
 export const DARK_MODE_VARIABLES = {
+  "--component-image-generation-background": "var(--semantic-color-surface-card)",
+  "--component-image-generation-start-color": "var(--semantic-color-status-info-background)",
+  "--component-image-generation-end-color": "var(--semantic-color-status-success-background)",
+  "--component-image-generation-blob-highlight-color": "var(--semantic-color-text-default)",
   "--semantic-color-surface-page": "var(--base-color-neutral-900)",
   "--semantic-color-surface-card": "var(--base-color-neutral-800)",
   "--semantic-color-surface-field": "var(--base-color-neutral-700)",
@@ -188,6 +196,10 @@ export const DARK_MODE_VARIABLES = {
 };
 
 export const LIGHT_MODE_DECLARATIONS = {
+  "--component-image-generation-background": "var(--semantic-color-surface-card)",
+  "--component-image-generation-start-color": "var(--semantic-color-status-info-background)",
+  "--component-image-generation-end-color": "var(--semantic-color-status-success-background)",
+  "--component-image-generation-blob-highlight-color": "var(--semantic-color-text-default)",
   "--semantic-color-surface-page":   "var(--base-color-neutral-0)",
   "--semantic-color-surface-card":   "var(--base-color-neutral-0)",
   "--semantic-color-surface-field":  "var(--base-color-neutral-0)",

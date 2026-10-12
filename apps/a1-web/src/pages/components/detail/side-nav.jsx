@@ -18,7 +18,7 @@ import { Toggle } from './Toggle.jsx'
 export const bareDisplay = true
 
 const PLACEMENT_OPTIONS = ['start', 'end']
-const COLLAPSE_BUTTON_OPTIONS = ['header', 'footer']
+const COLLAPSE_BUTTON_OPTIONS = ['header', 'footer', 'none']
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -164,9 +164,10 @@ export function Controls({ config, setConfig }) {
       />
       <Choice prop="collapseButtonPlacement"
         label="Collapse button"
+        helper="Place the desktop collapse button in the header or footer, or choose None to hide it. Mobile navigation keeps its close button."
         size="compact"
         hideIndicator
-        columns={2}
+        columns={3}
         value={config.collapseButtonPlacement}
         onChange={(collapseButtonPlacement) => setConfig((current) => ({ ...current, collapseButtonPlacement }))}
         options={COLLAPSE_BUTTON_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt }))}

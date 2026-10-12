@@ -1,0 +1,9 @@
+{
+  "component": {
+    "bulkActions": {
+      "leaveDuration": { "$value": "{semantic.motion.duration.slower}", "$description": "Animate away: how long deleted rows take to tint, slide and fade out." },
+      "reflowDuration": { "$value": "{semantic.motion.duration.slow}", "$description": "Animate away: how long the rows below take to glide up into the space." },
+      "leaveDistance": { "$type": "dimension", "$value": "{base.spacing.48}", "$description": "Animate away: how far deleted rows slide as they fade." }
+    }
+  }
+}

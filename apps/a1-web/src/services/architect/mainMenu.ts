@@ -35,7 +35,6 @@ const EXPLORE: NavNode = {
     { id: 'dashboard', label: 'Dashboard', icon: 'monitoring', href: '/dashboard' },
     { id: 'features', label: 'Features', icon: 'star', href: '/features' },
     { id: 'get-started', label: 'Get started', icon: 'rocket_launch', href: '/get-started' },
-    { id: 'labs', label: 'Labs', icon: 'science', href: '/labs' },
     { id: 'presentation', label: 'Presentation', icon: 'slideshow', href: '/presentation' },
     { id: 'releases', label: 'Releases', icon: 'new_releases', href: '/releases' },
   ],

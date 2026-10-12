@@ -1,0 +1,71 @@
+/* Experiment-specific viewport overlay. A1 layouts own the sample page and
+   controls; the mask is procedural artwork, with all visual values tokenized. */
+@property --a1-page-loading-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.a1-page-loading-border {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--component-page-loading-radius);
+  transition: opacity var(--semantic-motion-duration-slow) var(--semantic-motion-easing-exit);
+}
+
+.a1-page-loading-border__glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: var(--component-page-loading-glow);
+  border-radius: inherit;
+  background: conic-gradient(from var(--a1-page-loading-angle),
+    var(--semantic-color-text-accent),
+    var(--semantic-color-status-info-background),
+    var(--semantic-color-status-success-background),
+    var(--semantic-color-status-warn-background),
+    var(--semantic-color-status-error-background),
+    var(--semantic-color-text-accent));
+  mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+  mask-composite: exclude;
+  animation: a1-page-loading-orbit var(--component-page-loading-cycle-duration) var(--semantic-motion-easing-linear) infinite;
+}
+
+.a1-page-loading-border__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Blur the masked child, rather than clipping a blur with the same mask. */
+  filter: blur(var(--component-page-loading-glow));
+}
+
+/* A softer inner rim gives the broad halo definition without a hard stroke. */
+.a1-page-loading-border__glow--inner {
+  filter: blur(var(--component-page-loading-border-width));
+}
+
+.a1-page-loading-border__glow--inner::before {
+  padding: var(--component-page-loading-border-width);
+}
+
+.a1-page-loading-border[data-phase='paused'] .a1-page-loading-border__glow::before {
+  animation-play-state: paused;
+}
+
+.a1-page-loading-border[data-phase='complete'] {
+  opacity: 0;
+}
+
+.a1-page-loading-border[data-phase='complete'] .a1-page-loading-border__glow::before {
+  animation: none;
+}
+
+@keyframes a1-page-loading-orbit {
+  to { --a1-page-loading-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-page-loading-border { transition: none; }
+  .a1-page-loading-border__glow::before { animation: none; }
+}

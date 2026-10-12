@@ -1,11 +1,33 @@
 "use client";
 
-import { Children, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { Children, Fragment, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../button/Button.jsx";
 import { useLabel } from "../labels/Labels.jsx";
 import "./code.css";
 
 const variants = ["inline", "block"];
+// Browsers' default `tab-size`; Code does not override it.
+const TAB_SIZE = 8;
+
+/**
+ * Width of a line's leading spaces and tabs, in character cells (`ch`). Used
+ * as a hanging indent so wrapped continuation lines align with the line's
+ * indentation. Tabs advance to the next tab stop.
+ */
+export function codeLineIndent(line) {
+  let column = 0;
+  for (const char of String(line ?? "")) {
+    if (char === " ") column += 1;
+    else if (char === "\t") column += TAB_SIZE - (column % TAB_SIZE);
+    else break;
+  }
+  return column;
+}
+
+const indentStyle = (line) => {
+  const indent = codeLineIndent(line);
+  return indent ? { "--a1-code-indent": indent } : undefined;
+};
 
 function textFromChildren(children) {
   if (children == null || typeof children === "boolean") return "";
@@ -92,6 +114,7 @@ export function Code({
   const editLabel = useLabel("code.editCode", "Edit code");
   const showMoreLabel = useLabel("code.showMore", "Show more");
   const showLessLabel = useLabel("code.showLess", "Show less");
+  const scrollRegionLabel = useLabel("code.scrollRegion", "Scrollable code");
   const textToCopy = useMemo(
     () => copyText || (editable ? editableValue : textFromChildren(Children.toArray(children))),
     [children, copyText, editable, editableValue],
@@ -116,7 +139,9 @@ export function Code({
     }
 
     const measure = () => {
-      const next = Array.from(lineMeasureRef.current.children, (line) => Math.ceil(line.getBoundingClientRect().height));
+      // Exact (fractional) heights: rounding each line up to a whole pixel
+      // drifts the numbers about 0.6px per line away from the code.
+      const next = Array.from(lineMeasureRef.current.children, (line) => line.getBoundingClientRect().height);
       setLineHeights((current) => (
         current.length === next.length && current.every((height, index) => height === next[index])
           ? current
@@ -146,6 +171,24 @@ export function Code({
     if (el) setOverflows(el.scrollHeight - el.clientHeight > 4);
   }, [collapses, expanded, children, collapsedLines]);
 
+  // A read-only block whose lines overflow sideways must be reachable by
+  // keyboard to scroll (WCAG 2.1.1; axe scrollable-region-focusable). Only then
+  // does the <pre> become a focusable, named region, so short snippets add no
+  // tab stop.
+  const [scrollsInline, setScrollsInline] = useState(false);
+  useEffect(() => {
+    const el = preRef.current;
+    if (!el || editable) { setScrollsInline(false); return undefined; }
+    const check = () => setScrollsInline(el.scrollWidth - el.clientWidth > 1);
+    check();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(check);
+    observer?.observe(el);
+    return () => observer?.disconnect();
+  }, [children, wrapping, editable, showLineNumbers]);
+  const scrollRegionProps = scrollsInline
+    ? { tabIndex: 0, role: "region", "aria-label": scrollRegionLabel }
+    : {};
+
   function handleTextareaChange(e) {
     setEditableValue(e.target.value);
     onChangeValue?.(e.target.value);
@@ -170,7 +213,7 @@ export function Code({
 
   const lineNumberMeasure = showLineNumbers && wrapping ? (
     <div ref={lineMeasureRef} className="a1-code-block__line-number-measure" aria-hidden="true">
-      {displayedText.split("\n").map((line, index) => <span key={index}>{line || "\u00a0"}</span>)}
+      {displayedText.split("\n").map((line, index) => <span key={index} style={indentStyle(line)}>{line || "\u00a0"}</span>)}
     </div>
   ) : null;
 
@@ -197,6 +240,18 @@ export function Code({
     ...props,
     ...(!props["aria-label"] && !props["aria-labelledby"] ? { "aria-label": editLabel } : null),
   };
+
+  // Wrapped plain-text blocks render one span per line so continuation lines
+  // hang at the line's indentation. Element children (e.g. highlighted spans)
+  // render as given; apply codeLineIndent to their own line wrappers.
+  const blockContent = wrapping && (typeof children === "string" || typeof children === "number")
+    ? String(children).split("\n").map((line, index, lines) => (
+        <Fragment key={index}>
+          <span className="a1-code-block__line" style={indentStyle(line)}>{line}</span>
+          {index < lines.length - 1 ? "\n" : null}
+        </Fragment>
+      ))
+    : children;
 
   if (!shouldRenderBlock) {
     return (
@@ -271,9 +326,10 @@ export function Code({
                 ref={preRef}
                 className="a1-code-block__pre"
                 style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
+                {...scrollRegionProps}
               >
                 <code className={codeClasses} {...props}>
-                  {children}
+                  {blockContent}
                 </code>
               </pre>
               {lineNumberMeasure}
@@ -284,9 +340,10 @@ export function Code({
             ref={preRef}
             className="a1-code-block__pre"
             style={collapses ? { "--a1-code-collapsed-max": `${collapsedLines * 1.6}em` } : undefined}
+            {...scrollRegionProps}
           >
             <code className={codeClasses} {...props}>
-              {children}
+              {blockContent}
             </code>
           </pre>
         )

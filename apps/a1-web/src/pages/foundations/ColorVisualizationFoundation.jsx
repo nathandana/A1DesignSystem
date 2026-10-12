@@ -23,6 +23,7 @@ import * as THREE from 'three'
 import tokens from '../../../../../build/json/tokens.json'
 import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
+import './color-visualization.css'
 
 const toOklch = converter('oklch')
 const isInSrgb = inGamut('rgb')
@@ -278,6 +279,7 @@ function ColorScene({
         camera={{ position: [7, 5.5, 7], fov: 46, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         fallback={<p className="a1-web-color-space-fallback">This browser cannot render the 3D color space.</p>}
+        role="group"
         aria-label="Interactive OKLCH color token space. Drag to orbit, scroll to zoom, and use the token selector for an accessible alternative."
       >
         <ambientLight intensity={1.7} />
@@ -540,7 +542,12 @@ function StepAlignment({ ramps, selectedStep }) {
   )
 }
 
-export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode }) {
+/**
+ * The color visualization without the a1-web page shell: its state, its
+ * configuration controls and its tabbed content (3D space, ramp inspector,
+ * step alignment). The a1-web Foundations page and A1 Labs both render it.
+ */
+export function useColorVisualization({ theme, colorMode } = {}) {
   const resolvedRampValues = useResolvedRampValues(theme, colorMode)
   const ramps = useMemo(() => buildColorModel(resolvedRampValues), [resolvedRampValues])
   const [activeTab, setActiveTab] = useState('space')
@@ -553,12 +560,98 @@ export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode 
   const [showGamutWarnings, setShowGamutWarnings] = useState(true)
   const [showLabels, setShowLabels] = useState(false)
   const [selectedStep, setSelectedStep] = useState(500)
-  const [asideNode, setAsideNode] = useState(null)
 
   const selectedRamp = ramps.find((ramp) => ramp.id === selectedRampId) ?? ramps[0]
   const visibleRamps = showAllRamps ? ramps : [selectedRamp]
   const selectedPoint = ramps.flatMap((ramp) => ramp.points).find((point) => point.id === selectedPointId)
     ?? selectedRamp.points[0]
+
+  function selectRamp(id) {
+    setSelectedRampId(id)
+    const ramp = ramps.find((item) => item.id === id)
+    setSelectedPointId(ramp?.points.find((point) => point.step === 500)?.id ?? ramp?.points[0]?.id)
+  }
+
+  return {
+    controls: (
+      <VisualizationControls
+        ramps={ramps}
+        selectedRamp={selectedRamp}
+        selectedPoint={selectedPoint}
+        onSelectRamp={selectRamp}
+        onSelectPoint={setSelectedPointId}
+        showAllRamps={showAllRamps}
+        onShowAllRamps={setShowAllRamps}
+        connectRamps={connectRamps}
+        onConnectRamps={setConnectRamps}
+        showPlanes={showPlanes}
+        onShowPlanes={setShowPlanes}
+        showGamut={showGamut}
+        onShowGamut={setShowGamut}
+        showGamutWarnings={showGamutWarnings}
+        onShowGamutWarnings={setShowGamutWarnings}
+        showLabels={showLabels}
+        onShowLabels={setShowLabels}
+        activeTab={activeTab}
+        selectedStep={selectedStep}
+        onSelectedStep={setSelectedStep}
+      />
+    ),
+    content: (
+      <Tabs value={activeTab} onChange={setActiveTab} variant="line">
+        <TabList>
+          <Tab value="space" icon="deployed_code">3D space</Tab>
+          <Tab value="ramp" icon="timeline">Ramp inspector</Tab>
+          <Tab value="alignment" icon="align_vertical_center">Step alignment</Tab>
+        </TabList>
+
+        <TabPanel value="space">
+          <Stack gap="md">
+            <ColorScene
+              ramps={visibleRamps}
+              selectedPointId={selectedPoint.id}
+              onSelectPoint={(id) => {
+                setSelectedPointId(id)
+                const point = ramps.flatMap((ramp) => ramp.points).find((item) => item.id === id)
+                if (point) setSelectedRampId(point.ramp)
+              }}
+              connectRamps={connectRamps}
+              showPlanes={showPlanes}
+              showGamut={showGamut}
+              showGamutWarnings={showGamutWarnings}
+              showLabels={showLabels}
+            />
+            <RampDiagnostics ramp={selectedRamp} selectedPoint={selectedPoint} />
+          </Stack>
+        </TabPanel>
+
+        <TabPanel value="ramp">
+          <Stack gap="md">
+            <ColorScene
+              ramps={[selectedRamp]}
+              selectedPointId={selectedPoint.id}
+              onSelectPoint={setSelectedPointId}
+              connectRamps={connectRamps}
+              showPlanes={showPlanes}
+              showGamut={showGamut}
+              showGamutWarnings={showGamutWarnings}
+              showLabels={showLabels}
+            />
+            <RampDiagnostics ramp={selectedRamp} selectedPoint={selectedPoint} />
+          </Stack>
+        </TabPanel>
+
+        <TabPanel value="alignment">
+          <StepAlignment ramps={ramps} selectedStep={selectedStep} />
+        </TabPanel>
+      </Tabs>
+    ),
+  }
+}
+
+export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode }) {
+  const { controls, content } = useColorVisualization({ theme, colorMode })
+  const [asideNode, setAsideNode] = useState(null)
 
   useLayoutEffect(() => {
     const find = () => setAsideNode(document.getElementById('a1-web-color-visualization-aside-slot'))
@@ -567,39 +660,9 @@ export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode 
     return () => window.removeEventListener('resize', find)
   }, [])
 
-  function selectRamp(id) {
-    setSelectedRampId(id)
-    const ramp = ramps.find((item) => item.id === id)
-    setSelectedPointId(ramp?.points.find((point) => point.step === 500)?.id ?? ramp?.points[0]?.id)
-  }
-
   return (
     <>
-      {asideNode && createPortal(
-        <VisualizationControls
-          ramps={ramps}
-          selectedRamp={selectedRamp}
-          selectedPoint={selectedPoint}
-          onSelectRamp={selectRamp}
-          onSelectPoint={setSelectedPointId}
-          showAllRamps={showAllRamps}
-          onShowAllRamps={setShowAllRamps}
-          connectRamps={connectRamps}
-          onConnectRamps={setConnectRamps}
-          showPlanes={showPlanes}
-          onShowPlanes={setShowPlanes}
-          showGamut={showGamut}
-          onShowGamut={setShowGamut}
-          showGamutWarnings={showGamutWarnings}
-          onShowGamutWarnings={setShowGamutWarnings}
-          showLabels={showLabels}
-          onShowLabels={setShowLabels}
-          activeTab={activeTab}
-          selectedStep={selectedStep}
-          onSelectedStep={setSelectedStep}
-        />,
-        asideNode,
-      )}
+      {asideNode && createPortal(controls, asideNode)}
       <PageTitleArea
         headingId="color-visualization-heading"
         breadcrumbItems={getFoundationBreadcrumbItems('Color visualization', onNavigate)}
@@ -608,53 +671,7 @@ export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode 
       />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="color-visualization-heading">
-        <Tabs value={activeTab} onChange={setActiveTab} variant="line">
-          <TabList>
-            <Tab value="space" icon="deployed_code">3D space</Tab>
-            <Tab value="ramp" icon="timeline">Ramp inspector</Tab>
-            <Tab value="alignment" icon="align_vertical_center">Step alignment</Tab>
-          </TabList>
-
-          <TabPanel value="space">
-            <Stack gap="md">
-              <ColorScene
-                ramps={visibleRamps}
-                selectedPointId={selectedPoint.id}
-                onSelectPoint={(id) => {
-                  setSelectedPointId(id)
-                  const point = ramps.flatMap((ramp) => ramp.points).find((item) => item.id === id)
-                  if (point) setSelectedRampId(point.ramp)
-                }}
-                connectRamps={connectRamps}
-                showPlanes={showPlanes}
-                showGamut={showGamut}
-                showGamutWarnings={showGamutWarnings}
-                showLabels={showLabels}
-              />
-              <RampDiagnostics ramp={selectedRamp} selectedPoint={selectedPoint} />
-            </Stack>
-          </TabPanel>
-
-          <TabPanel value="ramp">
-            <Stack gap="md">
-              <ColorScene
-                ramps={[selectedRamp]}
-                selectedPointId={selectedPoint.id}
-                onSelectPoint={setSelectedPointId}
-                connectRamps={connectRamps}
-                showPlanes={showPlanes}
-                showGamut={showGamut}
-                showGamutWarnings={showGamutWarnings}
-                showLabels={showLabels}
-              />
-              <RampDiagnostics ramp={selectedRamp} selectedPoint={selectedPoint} />
-            </Stack>
-          </TabPanel>
-
-          <TabPanel value="alignment">
-            <StepAlignment ramps={ramps} selectedStep={selectedStep} />
-          </TabPanel>
-        </Tabs>
+        {content}
       </Section>
     </>
   )

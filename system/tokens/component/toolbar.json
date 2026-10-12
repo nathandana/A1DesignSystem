@@ -1,0 +1,11 @@
+{
+  "component": {
+    "toolbar": {
+      "interactionShade": {
+        "$type": "color",
+        "$value": "{base.color.neutral.1000}",
+        "$description": "Neutral shade mixed into hover and selected surfaces without lightening dark-mode backgrounds."
+      }
+    }
+  }
+}

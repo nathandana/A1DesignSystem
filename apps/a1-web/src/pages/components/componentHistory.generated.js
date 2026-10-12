@@ -35,6 +35,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-16","type":"code","summary":"A1:Figma Breadcrumb + Code bridge"},
   ],
   "button": [
+    {"date":"2026-10-11","type":"code","summary":"Button control-height fix"},
     {"date":"2026-09-09","type":"code","summary":"A1:Figma Button and Link icon imports"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Button simplified"},
     {"date":"2026-07-07","type":"code","summary":"Button, Toolbar, SegmentedControl, and compact Field polish"},
@@ -87,6 +88,8 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-09-24","type":"code","summary":"Custom block showcase"},
   ],
   "data-table": [
+    {"date":"2026-10-11","type":"code","summary":"DataTable `paginationPosition=\"both\"`"},
+    {"date":"2026-10-11","type":"code","summary":"DataTable zebra fix"},
     {"date":"2026-07-15","type":"code","summary":"Figma Data Table (default density)"},
     {"date":"2026-07-07","type":"code","summary":"Data Table radius token + Lumen treatment"},
     {"date":"2026-06-30","type":"code","summary":"DataTable icon-only row actions"},
@@ -150,6 +153,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-10","type":"code","summary":"IconButton"},
   ],
   "inline": [
+    {"date":"2026-10-11","type":"code","summary":"Inline table pagination"},
     {"date":"2026-07-16","type":"code","summary":"A1:Figma Inline bridge"},
   ],
   "link": [
@@ -170,6 +174,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-05","type":"code","summary":"Overlay component","ticket":"A1-417"},
   ],
   "page-layout": [
+    {"date":"2026-10-11","type":"code","summary":"PageLayout document-scroll sizing + Labs sitewide search"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Page Layout AutoFix"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma PageLayout breakpoint variant"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma PageLayout render fix"},
@@ -279,6 +284,8 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-14","type":"code","summary":"Figma Textarea content controls"},
   ],
   "toolbar": [
+    {"date":"2026-10-11","type":"code","summary":"Toolbar selected state"},
+    {"date":"2026-10-11","type":"code","summary":"Toolbar text contrast","ticket":"A1-2698"},
     {"date":"2026-07-07","type":"code","summary":"Toolbar delayed tooltips"},
     {"date":"2026-06-30","type":"code","summary":"Toolbar label — tied to form-label tokens","ticket":"A1-165"},
     {"date":"2026-06-30","type":"code","summary":"Toolbar — subtle border by default","ticket":"A1-220"},
@@ -289,6 +296,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-16","type":"code","summary":"Toolbar"},
   ],
   "top-header": [
+    {"date":"2026-10-11","type":"code","summary":"TopHeader `endContent`"},
     {"date":"2026-07-15","type":"code","summary":"Figma Top Header nav icon tokens"},
     {"date":"2026-07-15","type":"code","summary":"A1:Figma TopHeader action-slot scoping"},
     {"date":"2026-07-15","type":"code","summary":"Top Header loginButton bridge + actions hardening"},

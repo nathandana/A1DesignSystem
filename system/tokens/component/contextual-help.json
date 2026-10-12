@@ -1,0 +1,21 @@
+{
+  "component": {
+    "contextualHelp": {
+      "popoverWidth": {
+        "$type": "dimension",
+        "$value": "{base.width.sm}",
+        "$description": "Width of the help popover (narrower viewports shrink it to fit)."
+      },
+      "popoverGap": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}",
+        "$description": "Space between the popover and its trigger, and the popover's minimum distance from the viewport edge."
+      },
+      "enterOffset": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}",
+        "$description": "How far popovers and panels slide as they appear."
+      }
+    }
+  }
+}

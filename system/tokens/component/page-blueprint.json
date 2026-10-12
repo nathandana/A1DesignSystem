@@ -1,0 +1,14 @@
+{
+  "component": {
+    "pageBlueprint": {
+      "stepFast": { "$type": "duration", "$value": "500ms", "$description": "Quick: time between drafting one block and the next." },
+      "stepDuration": { "$type": "duration", "$value": "900ms", "$description": "Default time between drafting one block and the next." },
+      "stepSlow": { "$type": "duration", "$value": "1400ms", "$description": "Relaxed: time between drafting one block and the next." },
+      "drawDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "A block's outline drawing itself on." },
+      "panDuration": { "$type": "duration", "$value": "6000ms", "$description": "One cycle of the drafting grid drifting while the page is drafted but still loading." },
+      "exitDuration": { "$type": "duration", "$value": "{semantic.motion.duration.slowest}", "$description": "The blueprint fading into the page when loading finishes." },
+      "gridSize": { "$type": "dimension", "$value": "{base.spacing.24}", "$description": "Spacing of the blueprint grid lines." },
+      "lineWidth": { "$type": "dimension", "$value": "{base.spacing.2}", "$description": "Width of the drafted outlines." }
+    }
+  }
+}

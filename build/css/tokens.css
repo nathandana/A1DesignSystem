@@ -373,6 +373,11 @@
   --component-button-font-size: 1rem;
   --component-button-font-weight: 700;
   --component-button-font-line-height: normal;
+  --component-accordion-motion-shift: 1rem; /** Slide, Bounce and Stagger: how far content travels as it opens or closes. */
+  --component-accordion-motion-blur: 0.5rem; /** Blur: how out of focus closed content is. */
+  --component-accordion-motion-unfold-angle: -75deg; /** Unfold: how far content is folded back while closed. */
+  --component-accordion-motion-bounce-scale: 0.94; /** Bounce: content's scale while closed, springing to full size as it opens. */
+  --component-accordion-motion-stagger-step: 100ms; /** Stagger: delay between each piece of content appearing. */
   --component-accordion-trigger-height-sm: 1.75rem; /** Total trigger height on the 28/40/56 control-height standard. */
   --component-accordion-trigger-height-md: 2.5rem; /** Total trigger height on the 28/40/56 control-height standard. */
   --component-accordion-trigger-height-lg: 3.5rem; /** Total trigger height on the 28/40/56 control-height standard. */
@@ -418,6 +423,23 @@
   --component-action-tile-subtitle-font-size: 0.75rem;
   --component-action-tile-focus-ring-width: 0.1875rem;
   --component-action-tile-focus-ring: #5916b5;
+  --component-avatar-lab-icon-ratio: 0.6; /** Icon content: glyph size as a fraction of the avatar size. */
+  --component-avatar-lab-status-ratio: 0.3; /** Status indicator diameter as a fraction of the avatar size. */
+  --component-avatar-lab-status-min-size: 0.5rem; /** Smallest status indicator, so it stays visible on xs and sm avatars. */
+  --component-avatar-lab-status-max-size: 1.5rem; /** Largest status indicator, so it stays secondary on xl avatars. */
+  --component-avatar-lab-status-away-cut: 0.7; /** Away indicator: diameter of the page-coloured circle that cuts the crescent, as a fraction of the indicator. */
+  --component-avatar-lab-status-away-offset: 0.15; /** Away indicator: how far the cutting circle sits past the top and end edges, as a fraction of the indicator. */
+  --component-avatar-lab-status-busy-bar-width: 0.6; /** Busy indicator: bar width as a fraction of the indicator. */
+  --component-avatar-lab-status-busy-bar-height: 0.2; /** Busy indicator: bar height as a fraction of the indicator. */
+  --component-avatar-lab-status-offline-ring: 0.25; /** Offline indicator: ring thickness as a fraction of the indicator, leaving a hollow centre. */
+  --component-avatar-lab-status-cutout: 0.125rem; /** Page-coloured ring separating the status indicator from the avatar. */
+  --component-avatar-lab-ring-width: 0.125rem; /** Ring and gradient ring stroke width. */
+  --component-avatar-lab-ring-gap: 0.125rem; /** Transparent gap between the avatar and its ring. */
+  --component-avatar-lab-group-overlap: 0.3; /** Avatar group: how far each avatar overlaps the previous one, as a fraction of its size. */
+  --component-avatar-lab-group-cutout: 0.125rem; /** Avatar group: page-coloured ring that separates overlapping avatars. */
+  --component-avatar-lab-pop-out-ratio: 1.17; /** Break the frame: cut-out portrait height as a fraction of the frame width; the excess rises above the frame. */
+  --component-avatar-lab-pattern-inset: 0.18; /** Generated pattern: inner margin as a fraction of the avatar size, so the motif clears circular corners. */
+  --component-avatar-lab-pattern-cells: 5; /** Generated pattern: cells per row and column (mirrored left to right). */
   --component-avatar-size-xs: 1.25rem;
   --component-avatar-size-sm: 2rem;
   --component-avatar-size-md: 3rem;
@@ -455,6 +477,45 @@
   --component-bottom-sheet-z-index: 200;
   --component-bottom-sheet-margin-inline: 1rem; /** Horizontal margin at xs — creates space between the sheet edges and the screen sides. */
   --component-bottom-sheet-margin-inline-sm: 2rem; /** Horizontal margin at sm (481px+) — wider margin on larger phones. */
+  --component-bulk-actions-leave-duration: 500ms; /** Animate away: how long deleted rows take to tint, slide and fade out. */
+  --component-bulk-actions-reflow-duration: 300ms; /** Animate away: how long the rows below take to glide up into the space. */
+  --component-bulk-actions-leave-distance: 3rem; /** Animate away: how far deleted rows slide as they fade. */
+  --component-button-completion-processing-fast: 1000ms; /** Shortest simulated processing time in the Labs button completion experiment. */
+  --component-button-completion-processing-duration: 2000ms; /** Default simulated processing time. */
+  --component-button-completion-processing-slow: 4000ms; /** Longest simulated processing time. */
+  --component-button-completion-failure-hold: 1500ms; /** How long the Not published state holds before the button becomes a Try again action. */
+  --component-button-completion-change-duration: 500ms; /** Icon pop and label fade when the button changes state. The button width never changes. */
+  --component-button-completion-shake-duration: 500ms; /** Length of the error shake. */
+  --component-button-completion-shake-distance: 0.375rem; /** Horizontal travel of the error shake. */
+  --component-button-completion-enter-duration: 500ms; /** Send email version: the icon growing into a paper plane resting in the slingshot. */
+  --component-button-completion-intro-travel: 1.5rem; /** Send email version: how far the resting icon, label and description slide down as they fade on press. */
+  --component-button-completion-aim-duration: 500ms; /** Send email version: the plane being drawn back in the slingshot before release. */
+  --component-button-completion-sling-exit-duration: 500ms; /** Send email version: the slingshot recoiling out through the left edge after launch. */
+  --component-button-completion-expected-duration: 2000ms; /** Send email version: a typical send. The plane covers most of its arc in about this time while sending is pending, and keeps slowing if sending takes longer. */
+  --component-button-completion-finish-duration: 1200ms; /** Send email version: the pace for flying the rest of the arc (or dropping on failure) once the result is known, as a whole-arc duration. */
+  --component-button-completion-result-beat-duration: 500ms; /** Send email version: the pause after the plane leaves (or the crash burst fades) before the result mark draws. */
+  --component-button-completion-mark-duration: 500ms; /** Send email version: the checkmark or cross drawing itself on. */
+  --component-button-completion-stage-width: 20rem; /** Send email version: maximum width of the button (never wider than its container). */
+  --component-button-completion-stage-height: 10rem; /** Send email version: the fixed height of the button, including the bottom label row. */
+  --component-button-completion-stroke-width: 0.125rem; /** Send email version: slingshot frame, band and paper crease line width. */
+  --component-button-motion-subtle-hover-scale: 1.015;
+  --component-button-motion-subtle-press-scale: 0.98;
+  --component-button-motion-lift: 0.125rem;
+  --component-button-motion-press-distance: 1px;
+  --component-button-motion-hover-scale: 1.04;
+  --component-button-motion-press-scale: 0.94;
+  --component-button-motion-tilt: -3deg;
+  --component-button-motion-press-tilt: 2deg;
+  --component-button-motion-spring-lift: 0.5rem;
+  --component-button-motion-spring-hover-scale: 1.08;
+  --component-button-motion-spring-press-scale: 0.9;
+  --component-button-motion-ripple-scale: 1.35;
+  --component-button-motion-shadow-offset: 0.25rem;
+  --component-button-motion-shadow-blur: 0.5rem;
+  --component-button-motion-shadow-alpha: 20%;
+  --component-button-motion-glow-blur: 0.75rem;
+  --component-button-motion-glow-press-blur: 0.25rem;
+  --component-button-motion-glow-alpha: 45%;
   --component-calendar-month-gap: 2rem;
   --component-calendar-heading-padding-block: 0.75rem;
   --component-calendar-heading-padding-block-compact: 0.5rem;
@@ -493,6 +554,23 @@
   --component-card-body-font-size: 1rem;
   --component-card-body-font-weight: 400;
   --component-card-body-font-line-height: 1.5em;
+  --component-celebration-stage-size: 8rem; /** Height of the area that holds the check, rings, stamp or sparkles. */
+  --component-celebration-check-pop-scale: 1.15; /** Check: how far the check overshoots as it springs in. */
+  --component-celebration-ring-scale: 2.4; /** Rings: how large each ring grows before it fades. */
+  --component-celebration-stamp-from: 2.5; /** Stamp: starting size before it slams down. */
+  --component-celebration-stamp-angle: -8deg; /** Stamp: the angle it lands at. */
+  --component-celebration-sparkle-distance: 4rem; /** Sparkles: how far from the check the sparkles appear. */
+  --component-celebration-confetti-light: 60; /** Confetti pieces for a light amount. */
+  --component-celebration-confetti-normal: 150; /** Confetti pieces for a normal amount. */
+  --component-celebration-confetti-lots: 320; /** Confetti pieces for lots. */
+  --component-celebration-rockets-light: 2; /** Fireworks for a light amount. */
+  --component-celebration-rockets-normal: 4; /** Fireworks for a normal amount. */
+  --component-celebration-rockets-lots: 7; /** Fireworks for lots. */
+  --component-celebration-gravity: 900; /** Confetti gravity, in pixels per second squared. */
+  --component-celebration-spark-life: 1.4; /** Fireworks: seconds before a spark fades away. */
+  --component-celebration-send-delay: 800ms; /** How long the simulated submission takes. */
+  --component-celebration-character-height: 20rem; /** Fenex: height of the character animation. */
+  --component-celebration-character-settle: 4800ms; /** Fenex in a celebration: how long he plays before settling into his still pose (moving content must stop or be pausable within 5 seconds). */
   --component-chart-gap: 0.75rem;
   --component-chart-caption-gap: 0.25rem;
   --component-chart-border-radius: 0.375rem;
@@ -534,6 +612,14 @@
   --component-chart-focus-ring: #5916b5;
   --component-chart-focus-ring-width: 0.1875rem;
   --component-chart-focus-ring-offset: 0.125rem;
+  --component-chat-transcript-height: 28rem;
+  --component-chat-message-width: 85%;
+  --component-chat-rise: 1rem;
+  --component-chat-travel: 2rem;
+  --component-chat-pop-scale: 0.9;
+  --component-chat-reply-fast: 750ms;
+  --component-chat-reply-default: 1500ms;
+  --component-chat-reply-slow: 3000ms;
   --component-checkbox-group-box-size: 1rem;
   --component-checkbox-group-gap: 0.5rem;
   --component-checkbox-group-item-gap: 0.125rem;
@@ -564,6 +650,15 @@
   --component-checkbox-group-compact-input-nudge: 0.1875rem;
   --component-checkbox-group-compact-row-padding-block: 0.125rem;
   --component-checkbox-group-compact-row-padding-inline: 0.25rem;
+  --component-checkbox-motion-pop-scale: 1.2; /** Pop: peak swell as a checkbox is checked. */
+  --component-checkbox-motion-settle-scale: 0.94; /** Pop and Jelly: brief undershoot before settling. */
+  --component-checkbox-motion-jelly-wide: 1.18; /** Jelly: how wide the box squashes. */
+  --component-checkbox-motion-jelly-tall: 0.84; /** Jelly: how short the box squashes (and the reverse). */
+  --component-checkbox-motion-glyph-overshoot: 1.27; /** Pop and Fill: how large the tick or dash grows (times A1's glyph size) before settling. */
+  --component-checkbox-motion-pulse: 0.75rem; /** Pulse: how far the ring spreads from the box. */
+  --component-checkbox-motion-slide: 1rem; /** Slide: how far the tick or dash travels in or out. */
+  --component-checkbox-motion-flip-angle: 90deg; /** Flip: the box turns edge-on and back as it changes. */
+  --component-checkbox-motion-perspective: 4rem; /** Flip: depth of the turn. */
   --component-chip-gap: 0.375rem;
   --component-chip-group-gap: 0.375rem;
   --component-chip-min-height: 2.5rem; /** Total md chip height on the 28/40/56 control-height standard. */
@@ -625,6 +720,17 @@
   --component-circular-progress-fill-color: #7c3aed;
   --component-circular-progress-gap: 0.5rem;
   --component-circular-progress-indeterminate-duration: 1200ms;
+  --component-code-highlight-line-marker-width: 0.25rem; /** Width of the inline-start bar marking a highlighted, added or removed line. */
+  --component-code-highlight-line-height: 1.6; /** Code line height. Mirrors the A1 Code block (currently a literal in code.css) so the live editor's text and highlight layers align with Code. */
+  --component-code-highlight-hue-weight: 0.3; /** Share of a syntax colour's lightness taken from its palette hue; the rest comes from the default text colour. 0.3 keeps every hued role at 4.5:1 or more on code surfaces in all Labs themes and modes except Fresh dark, where default text itself is 4.96:1. */
+  --component-code-highlight-muted-weight: 0.75; /** Share of muted text in comments and punctuation; the rest is default text. 0.75 is the smallest step that clears 4.5:1 on panel and raised surfaces in every Labs theme and mode. */
+  --component-code-highlight-selection-strength: 0.35; /** Live editor: opacity of the action colour behind selected text, so the highlighted text stays visible through the selection. */
+  --component-code-highlight-separated-line-height: 1.25rem; /** Separated line spacing: distance between the rows of one wrapped line (20px), tighter than Code's default 22.4px so a wrapped line reads as one unit. */
+  --component-code-highlight-separated-line-gap: 0.5rem; /** Separated line spacing: extra space between logical lines, so lines are 28px apart (20px line height + 8px). */
+  --component-code-highlight-emphasis-weight: 600; /** Weight that carries keywords, tags and selectors in the Monochrome palette, where colour is not used. */
+  --component-contextual-help-popover-width: 20rem; /** Width of the help popover (narrower viewports shrink it to fit). */
+  --component-contextual-help-popover-gap: 0.5rem; /** Space between the popover and its trigger, and the popover's minimum distance from the viewport edge. */
+  --component-contextual-help-enter-offset: 0.5rem; /** How far popovers and panels slide as they appear. */
   --component-custom-block-height-sm: 12rem;
   --component-custom-block-height-md: 24rem;
   --component-custom-block-height-lg: 36rem;
@@ -657,6 +763,14 @@
   --component-definition-list-label-width-max: 8rem;
   --component-definition-list-label-font-weight: 500;
   --component-definition-list-copy-gap: 0.5rem;
+  --component-dialog-motion-slide-distance: 6rem; /** Slide: how far the dialog travels in and out. */
+  --component-dialog-motion-scale-from: 0.92; /** Scale and Blur: the dialog's size as it starts to appear. */
+  --component-dialog-motion-pop-from: 0.6; /** Pop: starting size before it springs past full size and settles. */
+  --component-dialog-motion-origin-from: 0.1; /** From the button: starting size, at the button that opened it. */
+  --component-dialog-motion-flip-angle: 70deg; /** Flip: how far the dialog is turned as it starts to appear. */
+  --component-dialog-motion-swing-angle: 90deg; /** Swing: how far the dialog is turned on its hinge edge. */
+  --component-dialog-motion-perspective: 60rem; /** Viewing distance for Flip and Swing. */
+  --component-dialog-motion-blur-from: 0.5rem; /** Blur: how blurred the dialog is as it starts to appear. */
   --component-dialog-padding: 1.5rem;
   --component-dialog-border-radius: 0.75rem;
   --component-dialog-border-width: 1px;
@@ -718,6 +832,73 @@
   --component-field-credit-card-badge-min-width: 2.5rem;
   --component-field-credit-card-badge-line-height: 1.4;
   --component-field-credit-card-detected-offset: 3.25rem;
+  --component-fit-text-measure-size: 100; /** Font size (px) each line is measured at before it is scaled to fit. */
+  --component-fit-text-min-size: 1.5rem; /** Smallest fitted size. A line that would need less wraps instead. */
+  --component-fit-text-line-height: 1; /** Line height for fitted lines, tight so the block reads as one shape. */
+  --component-fit-text-line-gap: 0.25rem; /** Space between fitted lines. */
+  --component-fit-text-max-large: 8rem; /** The largest size cap offered after the display sizes. */
+  --component-flip-billboard-stage-ratio: 3 / 1;
+  --component-flip-billboard-columns: 12;
+  --component-flip-billboard-rows: 2;
+  --component-flip-billboard-row-gap: 0.13;
+  --component-flip-billboard-ink-width: 0.86;
+  --component-flip-billboard-numeral-scale: 0.76;
+  --component-flip-billboard-step-duration-fast: 20ms;
+  --component-flip-billboard-step-duration: 35ms;
+  --component-flip-billboard-step-duration-slow: 60ms;
+  --component-flip-billboard-hold-duration: 6000ms;
+  --component-flip-billboard-view-elevation: 0.045;
+  --component-flip-billboard-view-azimuth: 0;
+  --component-flip-billboard-camera-padding: 1.12;
+  --component-flip-clock-black: #101010; /** Physical black card stock; intentionally monochrome in both UI modes. */
+  --component-flip-clock-white: #f5f5f2;
+  --component-flip-clock-housing: #252525;
+  --component-flip-clock-recess: #050505;
+  --component-flip-clock-metal: #a7a7a7;
+  --component-flip-clock-light: #ffffff;
+  --component-flip-clock-max-width: 60rem;
+  --component-flip-clock-compact-max-width: 28.5rem;
+  --component-flip-clock-compact-stage-ratio: 3 / 1;
+  --component-flip-clock-stage-ratio: 16 / 9;
+  --component-flip-clock-duration: 500ms;
+  --component-flip-clock-digit-width: 1.1;
+  --component-flip-clock-digit-height: 1.8;
+  --component-flip-clock-digit-gap: 0.13;
+  --component-flip-clock-pair-gap: 0.48;
+  --component-flip-clock-seam: 0.018;
+  --component-flip-clock-card-depth: 0.035;
+  --component-flip-clock-card-radius: 0.025;
+  --component-flip-clock-card-front: 0.51;
+  --component-flip-clock-housing-padding: 0.5;
+  --component-flip-clock-housing-depth: 0.85;
+  --component-flip-clock-housing-radius: 0.16;
+  --component-flip-clock-foot-width: 0.65;
+  --component-flip-clock-foot-height: 0.18;
+  --component-flip-clock-pin-radius: 0.042;
+  --component-flip-clock-pin-length: 0.13;
+  --component-flip-clock-dot-radius: 0.055;
+  --component-flip-clock-roughness: 0.78;
+  --component-flip-clock-metalness: 0.65;
+  --component-flip-clock-ambient-intensity: 2;
+  --component-flip-clock-key-intensity: 4;
+  --component-flip-clock-fill-intensity: 1.5;
+  --component-flip-clock-light-height: 7;
+  --component-flip-clock-light-side: -4;
+  --component-flip-clock-light-front: 6;
+  --component-flip-clock-camera-fov: 32;
+  --component-flip-clock-camera-padding: 1.22;
+  --component-flip-clock-view-elevation: 0.16;
+  --component-flip-clock-view-azimuth: 0.1;
+  --component-flip-clock-shadow-opacity: 0.2;
+  --component-flip-clock-texture-width: 512;
+  --component-flip-clock-texture-height: 840;
+  --component-flip-clock-numeral-scale: 0.84;
+  --component-flip-clock-numeral-weight: 600;
+  --component-focus-animation-travel: 0.5rem;
+  --component-focus-animation-accent-width: 0.25rem;
+  --component-focus-animation-zoom-scale: 1.015; /** A subtle 1.5% enlargement while focused; disabled with reduced motion. */
+  --component-focus-animation-lift-distance: 0.125rem;
+  --component-focus-animation-corner-length: 0.75rem;
   --component-heading-accent-background-color: rgba(0, 0, 0, 0);
   --component-heading-accent-foreground-color: #7c3aed;
   --component-heading-accent-padding-block: 0;
@@ -745,6 +926,34 @@
   --component-icon-button-icon-optical-size: 24;
   --component-icon-button-focus-ring-width: 0.125rem;
   --component-icon-button-focus-ring-offset: 1px;
+  --component-image-generation-duration: 15000ms;
+  --component-image-generation-completion-hold: 300ms;
+  --component-image-generation-reveal-duration: 1500ms;
+  --component-image-generation-orbit-duration: 18000ms;
+  --component-image-generation-pulse-duration: 3000ms;
+  --component-image-generation-max-width: 50rem;
+  --component-image-generation-radius: 0.5rem;
+  --component-image-generation-border-width: 0.125rem;
+  --component-image-generation-glow: 1rem;
+  --component-image-generation-background: #ffffff;
+  --component-image-generation-start-color: #2563eb;
+  --component-image-generation-end-color: #003f17;
+  --component-image-generation-disc-count-min: 8;
+  --component-image-generation-disc-count-max: 96;
+  --component-image-generation-disc-radius: 0.12; /** Disc radius as a fraction of the shorter frame edge. */
+  --component-image-generation-disc-opacity: 0.24;
+  --component-image-generation-pulse-strength: 0.12;
+  --component-image-generation-wave-amplitude: 0.035; /** Reveal wave amplitude as a fraction of the frame height. */
+  --component-image-generation-blob-radius-min: 0.2; /** Initial blob radius as a fraction of the shorter frame edge. */
+  --component-image-generation-blob-radius-max: 0.34; /** Final blob radius as a fraction of the shorter frame edge. */
+  --component-image-generation-blob-complexity-min: 2;
+  --component-image-generation-blob-complexity-max: 9;
+  --component-image-generation-blob-amplitude: 0.32;
+  --component-image-generation-blob-brightness-min: 0.24;
+  --component-image-generation-blob-brightness-max: 0.95;
+  --component-image-generation-blob-layers: 4;
+  --component-image-generation-blob-glow: 4rem;
+  --component-image-generation-blob-highlight-color: #060b14;
   --component-inline-padding-block: 0.1em;
   --component-inline-padding-inline: 0.35em;
   --component-inline-kbd-padding-inline: 0.4em;
@@ -763,6 +972,17 @@
   --component-link-inverse-color: #dce8ff;
   --component-link-inverse-color-hover: #f0f5ff;
   --component-link-inverse-color-pressed: #b9d2ff;
+  --component-magnetic-reordering-radius-near: 4rem;
+  --component-magnetic-reordering-radius-default: 6rem;
+  --component-magnetic-reordering-radius-wide: 8rem;
+  --component-magnetic-reordering-attraction: 0.75;
+  --component-magnetic-reordering-hysteresis: 1.2;
+  --component-magnetic-reordering-stiffness-soft: 180;
+  --component-magnetic-reordering-stiffness-default: 260;
+  --component-magnetic-reordering-stiffness-firm: 360;
+  --component-magnetic-reordering-damping-low: 18;
+  --component-magnetic-reordering-damping-default: 24;
+  --component-magnetic-reordering-damping-high: 32;
   --component-menu-width: 16.25rem;
   --component-menu-viewport-offset: 1rem;
   --component-menu-border-width: 1px;
@@ -813,6 +1033,34 @@
   --component-message-empty-state-wrap-size-card: 2.25rem;
   --component-message-empty-state-max-width-page: 30rem;
   --component-message-empty-state-max-width-section: 22.5rem;
+  --component-mode-switches-cord-width: 6rem; /** Pull cord: width of its stage (room to sway). */
+  --component-mode-switches-cord-length: 6rem; /** Pull cord: resting length from the ceiling plate to the bead. */
+  --component-mode-switches-cord-max-pull: 4rem; /** Pull cord: furthest the bead can be pulled. */
+  --component-mode-switches-cord-threshold: 0.5; /** Pull cord: fraction of the full pull that switches the mode. */
+  --component-mode-switches-cord-width-stroke: 0.125rem; /** Pull cord: thickness of the cord. */
+  --component-mode-switches-bead: 2.5rem; /** Pull cord: diameter of the pull bead. */
+  --component-mode-switches-spring-stiffness: 0.12; /** Pull cord: spring stiffness (per frame) pulling the bead back to rest. */
+  --component-mode-switches-spring-damping: 0.86; /** Pull cord: velocity kept each frame (lower settles sooner). */
+  --component-mode-switches-spring-kick: 1.5rem; /** Pull cord: initial tug when pulled by keyboard or a tap. */
+  --component-mode-switches-sun-moon-icon: 1.25rem; /** Sun and moon switch: icon size inside the thumb. */
+  --component-mode-switches-dial: 6rem; /** Mode dial: knob diameter. */
+  --component-mode-switches-dial-angle: 50deg; /** Mode dial: rotation of the Light and Dark detents either side of Auto. */
+  --component-mode-switches-dial-label-radius: 6rem; /** Mode dial: distance of the labels from the centre. */
+  --component-mode-switches-eclipse: 4rem; /** Eclipse button: disc diameter. */
+  --component-mode-switches-corona: 0.75rem; /** Eclipse button: glow around the eclipsed sun. */
+  --component-mode-switches-sky-night: #001451; /** Eclipse button and sun and moon switch: the moon and night sky (illustration palette, fixed in both modes). */
+  --component-mode-switches-sun: #ca782e; /** Eclipse button and sun and moon switch: the sun. */
+  --component-mode-switches-settle: 500ms; /** Sun and moon switch and eclipse: time to settle into a new mode. */
+  --component-mode-switches-moon-partial: 50%; /** Eclipse button: how far the moon covers the sun for Auto. */
+  --component-mode-switches-moon-total: 8%; /** Eclipse button: the moon almost covers the sun for Dark, leaving a sliver. */
+  --component-mode-switches-slide-width: 12rem; /** Slide switch: track width (three positions). */
+  --component-mode-switches-slide-height: 2.5rem; /** Slide switch: track height. */
+  --component-mode-switches-chain-ball: 0.375rem; /** Pull cord: diameter of each ball in the ball chain. */
+  --component-mode-switches-chain-spacing: 0.5rem; /** Pull cord: distance between ball centres along the chain. */
+  --component-mode-switches-metal-light: #f0f6fe; /** Pull cord: highlight on the metal balls (fixed in both modes, like real nickel). */
+  --component-mode-switches-metal-mid: #a6b2c4; /** Pull cord: body of the metal balls. */
+  --component-mode-switches-metal-dark: #414e61; /** Pull cord: shaded edge of the metal balls and the wire. */
+  --component-mode-switches-metal-ink: #151d29; /** Pull cord: icon engraved on the metal pull. */
   --component-notification-height: 1.125rem;
   --component-notification-dot-size: 0.5rem;
   --component-notification-padding-inline: 0.3125rem;
@@ -850,8 +1098,62 @@
   --component-overlay-close-background-strength: 44%;
   --component-overlay-close-hover-strength: 14%;
   --component-overlay-z-index: 1200;
+  --component-page-blueprint-step-fast: 500ms; /** Quick: time between drafting one block and the next. */
+  --component-page-blueprint-step-duration: 900ms; /** Default time between drafting one block and the next. */
+  --component-page-blueprint-step-slow: 1400ms; /** Relaxed: time between drafting one block and the next. */
+  --component-page-blueprint-draw-duration: 750ms; /** A block's outline drawing itself on. */
+  --component-page-blueprint-pan-duration: 6000ms; /** One cycle of the drafting grid drifting while the page is drafted but still loading. */
+  --component-page-blueprint-exit-duration: 750ms; /** The blueprint fading into the page when loading finishes. */
+  --component-page-blueprint-grid-size: 1.5rem; /** Spacing of the blueprint grid lines. */
+  --component-page-blueprint-line-width: 0.125rem; /** Width of the drafted outlines. */
+  --component-page-construction-step-fast: 800ms; /** Quick: time for the crane to fetch, place and return for one block. */
+  --component-page-construction-step-duration: 1300ms; /** Default time for the crane to fetch, place and return for one block. */
+  --component-page-construction-step-slow: 2000ms; /** Relaxed: time for the crane to fetch, place and return for one block. */
+  --component-page-construction-headroom: 3.5rem; /** Space above the page reserved for the crane's jib and trolley. */
+  --component-page-construction-jib-height: 1rem; /** Thickness of the crane's horizontal jib. */
+  --component-page-construction-mast-width: 0.75rem; /** Width of the crane's vertical mast. */
+  --component-page-construction-trolley-width: 1.5rem; /** Width of the trolley that runs along the jib. */
+  --component-page-construction-rope-width: 0.125rem; /** Width of the hoist rope. */
+  --component-page-construction-hook-size: 0.75rem; /** Size of the hook block at the end of the rope. */
+  --component-page-construction-raised-rope: 0.5rem; /** Rope length while the hook is raised. */
+  --component-page-construction-dust-size: 0.75rem; /** Size of the dust puffs when a block lands. */
+  --component-page-construction-settle-duration: 300ms; /** A block's small squash as it lands, and its dust puff. */
+  --component-page-construction-exit-duration: 750ms; /** The crane lifting away, and placeholders turning into the page, when loading finishes. */
+  --component-page-construction-shimmer-duration: 1600ms; /** Placeholder shimmer while the page is built but still loading. */
   --component-page-layout-sidebar-width: 17.5rem;
   --component-page-layout-gap: 1.5rem;
+  --component-page-loading-cycle-fast: 2000ms;
+  --component-page-loading-cycle-duration: 4000ms;
+  --component-page-loading-cycle-slow: 8000ms;
+  --component-page-loading-border-width: 0.25rem;
+  --component-page-loading-glow: 1rem;
+  --component-page-loading-radius: 0.25rem;
+  --component-page-paint-coat-fast: 1600ms; /** Quick: one pass of the roller down (or back up) the page. */
+  --component-page-paint-coat-duration: 2600ms; /** Default: one pass of the roller down (or back up) the page. */
+  --component-page-paint-coat-slow: 4000ms; /** Relaxed: one pass of the roller down (or back up) the page. */
+  --component-page-paint-roller-height: 1.5rem; /** Diameter of the paint roller. */
+  --component-page-paint-handle-height: 2.5rem; /** Height of the roller's handle arm. */
+  --component-page-paint-wet-edge: 1rem; /** Depth of the glossy wet band just behind the roller. */
+  --component-page-paint-exit-duration: 750ms; /** The paint drying into the page when loading finishes. */
+  --component-page-puzzle-build-fast: 3000ms; /** Quick: time for every piece to arrive. */
+  --component-page-puzzle-build-duration: 5000ms; /** Default time for every piece to arrive. */
+  --component-page-puzzle-build-slow: 8000ms; /** Relaxed: time for every piece to arrive. */
+  --component-page-puzzle-fly-duration: 750ms; /** One piece flying in and snapping into place. */
+  --component-page-puzzle-shine-duration: 1800ms; /** A shine sweeping across the finished puzzle while still loading. */
+  --component-page-puzzle-exit-duration: 500ms; /** Each piece falling away when loading finishes. */
+  --component-page-puzzle-tile-size: 5rem; /** Approximate size of one puzzle piece. */
+  --component-page-sunrise-expected-fast: 2000ms; /** Quick: a typical load; the sun covers most of its climb in about this time. */
+  --component-page-sunrise-expected-duration: 4000ms; /** Default typical load; the sun keeps slowing if loading takes longer. */
+  --component-page-sunrise-expected-slow: 7000ms; /** Relaxed typical load. */
+  --component-page-sunrise-exit-duration: 750ms; /** The sun reaching full day and the page appearing when loading finishes. */
+  --component-page-sunrise-sun-size: 6rem; /** Diameter of the sun. */
+  --component-page-sunrise-night-top: #00062a; /** Night sky, top. */
+  --component-page-sunrise-night-bottom: #230051; /** Night sky, at the horizon. */
+  --component-page-sunrise-day-top: #b9d2ff; /** Day sky, top. */
+  --component-page-sunrise-day-bottom: #ffe2cc; /** Day sky, at the horizon. */
+  --component-page-sunrise-sun-low: #dc2626; /** The sun near the horizon. */
+  --component-page-sunrise-sun-high: #e59f68; /** The sun high in the sky. */
+  --component-page-sunrise-silhouette: #060b14; /** The page's blocks as silhouettes at night. */
   --component-pagination-item-size: 2.25rem;
   --component-pagination-item-size-sm: 1.75rem;
   --component-pagination-gap: 0.25rem;
@@ -871,6 +1173,12 @@
   --component-pagination-focus-ring-offset: 0.125rem;
   --component-pagination-disabled-opacity: 0.35;
   --component-pagination-ellipsis-padding-bottom: 0.25rem;
+  --component-password-strength-segment-height: 0.375rem; /** Height of each segment in the Segments meter. */
+  --component-password-strength-segment-gap: 0.25rem; /** Space between segments. */
+  --component-password-strength-underline-height: 0.25rem; /** Thickness of the meter drawn along the field's bottom edge. */
+  --component-password-strength-bar-minimum: 0.04; /** Smallest visible fill (as a fraction) once anything is typed, so the bar and underline never look broken. */
+  --component-password-strength-pause-delay: 500ms; /** After a pause: how long typing must stop before the meter updates. */
+  --component-password-strength-announce-delay: 1000ms; /** How long typing must stop before screen readers hear the new strength. */
   --component-radio-group-control-size: 1rem;
   --component-radio-group-gap: 0.5rem;
   --component-radio-group-item-gap: 0.125rem;
@@ -900,6 +1208,42 @@
   --component-radio-group-compact-input-nudge: 0.1875rem;
   --component-radio-group-compact-row-padding-block: 0.125rem;
   --component-radio-group-compact-row-padding-inline: 0.25rem;
+  --component-radio-variants-hover-scale: 1.15; /** Grow: the ring swells on hover. */
+  --component-radio-variants-press-scale: 0.88; /** Grow: the ring squishes while pressed. */
+  --component-radio-variants-pop-scale: 1.25; /** Grow: peak swell as a radio becomes selected. */
+  --component-radio-variants-settle-scale: 0.95; /** Grow: brief undershoot before the ring settles. */
+  --component-radio-variants-preview-dot: 0.5; /** Grow: size of the faint dot previewed on hover, as a fraction of the selected dot. */
+  --component-radio-variants-dot-overshoot: 1.4; /** Grow: how far the selected dot overshoots its size as it springs in. */
+  --component-radio-variants-ripple: 0.75rem; /** Ripple: how far the ring ripples out when a radio is chosen. */
+  --component-radio-variants-halo: 0.25rem; /** Ripple: width of the soft halo around a hovered radio. */
+  --component-radio-variants-drop: 0.75rem; /** Bounce: how far above the centre the dot falls from, and below it drops to when deselected. */
+  --component-radio-variants-rebound: 0.125rem; /** Bounce: height of the dot's small rebound. */
+  --component-radio-variants-squash-wide: 1.12; /** Bounce and Jelly: horizontal stretch as the ring squashes. */
+  --component-radio-variants-squash-tall: 0.86; /** Bounce and Jelly: vertical squash as the ring squashes. */
+  --component-radio-variants-hover-wide: 1.08; /** Jelly: horizontal stretch of a hovered ring. */
+  --component-radio-variants-hover-tall: 0.94; /** Jelly: vertical squash of a hovered ring. */
+  --component-radio-variants-travel-stretch: 1.35; /** Travel: how much the selection stretches along its path mid-flight. */
+  --component-radio-variants-travel-pinch: 0.8; /** Travel: how much the selection narrows across its path mid-flight. */
+  --component-radio-variants-thicken-hover-hole: 0.82; /** Thicken: the open centre of a hovered ring, as a fraction of the radio (the ring thickens slightly). */
+  --component-reordering-lift: 0.5rem;
+  --component-reordering-bounce: 0.25rem;
+  --component-reordering-lift-scale: 1.025;
+  --component-reordering-squash-x: 1.04;
+  --component-reordering-squash-y: 0.94;
+  --component-reordering-tilt: -2deg;
+  --component-reordering-counter-tilt: 1deg;
+  --component-reordering-slide: 1.5rem; /** Slide in: how far the placed item travels in from the inline start. */
+  --component-reordering-pop-scale: 1.05; /** Pop: peak scale as the placed item swells. */
+  --component-reordering-pop-settle: 0.98; /** Pop: brief undershoot before settling. */
+  --component-reordering-fade-scale: 0.96; /** Fade in: starting scale as the placed item appears. */
+  --component-reordering-gutter: 2.5rem; /** Margin reserved beside the list for the side marker, pointer and position rail, so they never sit under the dragged item or off screen. */
+  --component-reordering-marker-size: 1.5rem; /** Diameter of the numbered bubble on the side marker and position rail. */
+  --component-reordering-rail-dot: 0.5rem; /** Position rail: diameter of each position's dot. */
+  --component-reordering-marker-offset: 1.25rem; /** Margin indicators: distance from the slot's inline start to the centre of the gutter. */
+  --component-reordering-glow-spread: 0.75rem; /** Glow: blur radius of the target slot's halo. */
+  --component-reordering-arrow-size: 0.5rem; /** Arrows: size of the arrowheads at each end of the insertion line. */
+  --component-reordering-ghost-opacity: 0.9;
+  --component-reordering-placeholder-opacity: 0.3;
   --component-scrim-color: rgba(15, 0, 42, 0.6);
   --component-scrim-color-light: rgba(15, 0, 42, 0.6);
   --component-scrim-color-dark: rgba(181, 160, 255, 0.6);
@@ -927,6 +1271,10 @@
   --component-section-background-overlay-strength-sm: 25;
   --component-section-background-overlay-strength-md: 45;
   --component-section-background-overlay-strength-lg: 65;
+  --component-segmented-motion-grow-from: 0.6; /** Grow: the scale a new selection grows from (and the old one shrinks to). */
+  --component-segmented-motion-stretch-lag: 0.45; /** Stretch: how far behind (fraction of the duration) the trailing edge follows the leading edge. */
+  --component-segmented-motion-morph-bar: 0.25rem; /** Morph: height of the bar the selection shrinks to while it travels. */
+  --component-segmented-motion-morph-width: 1.5rem; /** Morph: width of the travelling bar. */
   --component-segmented-padding: 0.1875rem;
   --component-segmented-gap: 0.125rem;
   --component-segmented-segment-padding-block: 0.25rem;
@@ -967,6 +1315,44 @@
   --component-side-nav-item-chevron-size: 1.125rem;
   --component-slider-active-color: #7c3aed;
   --component-slider-thumb-color: #7c3aed;
+  --component-slides-canvas-width: 50rem; /** Design width of a slide; the 16:9 canvas is scaled to fit the stage. */
+  --component-slides-padding: 3rem; /** Inner margin of a slide. */
+  --component-slides-stripe: 0.375rem; /** Height of the multicolour footer stripe. */
+  --component-slides-big-icon: 12rem; /** Glyph size of a statement slide's large icon. */
+  --component-slides-logo: 6rem; /** Size of the logo tile on the title slide. */
+  --component-slides-shift: 1.5rem; /** Distance pieces travel when they cascade or rise into place. */
+  --component-slides-zoom-out: 1.12; /** Zoom: scale the outgoing slide grows to as it fades. */
+  --component-slides-zoom-in: 0.92; /** Zoom: scale the incoming slide grows from. */
+  --component-slides-speed-quick: 300ms; /** Quick slide transition. */
+  --component-slides-speed-standard: 500ms; /** Standard slide transition. */
+  --component-slides-speed-relaxed: 750ms; /** Relaxed slide transition. */
+  --component-slides-stagger-step: 100ms; /** Delay between pieces in a cascade or a rising build. */
+  --component-slides-build-duration: 300ms; /** Duration of each piece's build animation. */
+  --component-slides-aspect-ratio: 16 / 9; /** Proportion of the stage and the slide canvas. */
+  --component-slides-ramp-warm-0: #fff3ea; /** Warm ramp swatch 1 (Foundations slide). */
+  --component-slides-ramp-warm-1: #ffe2cc; /** Warm ramp swatch 2 (Foundations slide). */
+  --component-slides-ramp-warm-2: #fdc498; /** Warm ramp swatch 3 (Foundations slide). */
+  --component-slides-ramp-warm-3: #e59f68; /** Warm ramp swatch 4 (Foundations slide). */
+  --component-slides-ramp-warm-4: #ca782e; /** Warm ramp swatch 5 (Foundations slide). */
+  --component-slides-ramp-warm-5: #d97706; /** Warm ramp swatch 6 (Foundations slide). */
+  --component-slides-ramp-warm-6: #743d00; /** Warm ramp swatch 7 (Foundations slide). */
+  --component-slides-ramp-warm-7: #4f2700; /** Warm ramp swatch 8 (Foundations slide). */
+  --component-slides-ramp-warm-8: #2f1500; /** Warm ramp swatch 9 (Foundations slide). */
+  --component-slides-ramp-warm-9: #160700; /** Warm ramp swatch 10 (Foundations slide). */
+  --component-slides-ramp-cool-0: #f0f5ff; /** Cool ramp swatch 1 (Components slide). */
+  --component-slides-ramp-cool-1: #dce8ff; /** Cool ramp swatch 2 (Components slide). */
+  --component-slides-ramp-cool-2: #b9d2ff; /** Cool ramp swatch 3 (Components slide). */
+  --component-slides-ramp-cool-3: #87b0ff; /** Cool ramp swatch 4 (Components slide). */
+  --component-slides-ramp-cool-4: #5189fd; /** Cool ramp swatch 5 (Components slide). */
+  --component-slides-ramp-cool-5: #2563eb; /** Cool ramp swatch 6 (Components slide). */
+  --component-slides-ramp-cool-6: #0b3fb2; /** Cool ramp swatch 7 (Components slide). */
+  --component-slides-ramp-cool-7: #002582; /** Cool ramp swatch 8 (Components slide). */
+  --component-slides-ramp-cool-8: #001451; /** Cool ramp swatch 9 (Components slide). */
+  --component-slides-ramp-cool-9: #00062a; /** Cool ramp swatch 10 (Components slide). */
+  --component-slides-handoff: 0.5; /** Point in a transition (fraction of its duration) where the next slide takes over: the wipe swap and the start of cascade arrivals. */
+  --component-slides-fade-out-by: 0.4; /** Fraction of a transition by which outgoing content has faded or started to leave. */
+  --component-slides-fade-in-from: 0.45; /** Fraction of a transition after which incoming content fades in. */
+  --component-slides-piece-share: 0.4; /** Cascade: each piece's movement as a fraction of the transition. */
   --component-snackbar-z-index: 1100;
   --component-snackbar-max-width: 26.25rem; /** Maximum width for a snackbar surface. */
   --component-snackbar-min-height: 3.5rem;
@@ -1024,6 +1410,37 @@
   --component-sticky-actions-padding-inline: 1rem;
   --component-sticky-actions-gap: 0.75rem;
   --component-sticky-actions-z-index: 150;
+  --component-switch-morph-scale-standard: 1;
+  --component-switch-morph-scale-small: 2;
+  --component-switch-morph-scale-medium: 3;
+  --component-switch-morph-scale-large: 4;
+  --component-switch-morph-stroke-thickness: 0.075;
+  --component-switch-morph-easing: cubic-bezier(0.25, 0.4, 0.75, 0.6); /** Gentle easing keeps the middle moving, with only a slight slowdown relative to the ends. */
+  --component-switch-morph-stroke-rotation: 90deg;
+  --component-switch-morph-stroke-angle: 45deg;
+  --component-switch-morph-cross-start: 0.28;
+  --component-switch-morph-cross-end: 0.72;
+  --component-switch-morph-cross-length: 0.622254;
+  --component-switch-morph-check-start-x: 0.22;
+  --component-switch-morph-check-start-y: 0.52;
+  --component-switch-morph-check-joint-x: 0.42;
+  --component-switch-morph-check-joint-y: 0.72;
+  --component-switch-morph-check-short-length: 0.282843;
+  --component-switch-morph-check-long-length: 0.537401;
+  --component-switch-three-canvas-padding: 0.25rem;
+  --component-switch-three-track-depth: 2.4;
+  --component-switch-three-thumb-depth: 2;
+  --component-switch-three-bevel: 0.5;
+  --component-switch-three-stroke-depth: 0.5;
+  --component-switch-three-lift: 1.2;
+  --component-switch-three-tilt: 0.14;
+  --component-switch-three-view-tilt: 0.24;
+  --component-switch-three-roughness: 0.32;
+  --component-switch-three-metalness: 0.15;
+  --component-switch-three-ambient-intensity: 2;
+  --component-switch-three-key-intensity: 3;
+  --component-switch-three-fill-intensity: 1;
+  --component-switch-three-light: #ffffff;
   --component-switch-track-width: 2.5rem;
   --component-switch-track-height: 1.375rem;
   --component-switch-thumb-size: 1rem;
@@ -1095,6 +1512,23 @@
   --component-tab-progress-step-border-width: 0.125rem;
   --component-tab-progress-completed-icon-size: 1rem;
   --component-tab-progress-selected-ring: 0 0 0 3px color-mix(in srgb, var(--semantic-color-action-background) 25%, transparent);
+  --component-thinking-terminal-character-duration: 35ms;
+  --component-thinking-terminal-reading-character-duration: 30ms;
+  --component-thinking-terminal-minimum-hold: 1200ms;
+  --component-thinking-terminal-cursor-duration: 1000ms;
+  --component-thinking-terminal-cursor-height: 1em;
+  --component-thinking-terminal-cursor-width: 0.5rem;
+  --component-timeline-line-width: 0.25rem; /** Stroke width of the timeline's connectors and end nodes. */
+  --component-timeline-badge-size: 4rem; /** Diameter of each milestone's circular badge. */
+  --component-timeline-arc-gap: 2rem; /** Space between a badge and the quarter arc that wraps it (arc radius = badge radius + arcGap). */
+  --component-timeline-node-size: 1rem; /** Diameter of the hollow node at the end of each connector stem. */
+  --component-timeline-node-gap: 0.5rem; /** Space between a connector's end node and its milestone details. */
+  --component-timeline-stem-min: 3rem; /** Shortest vertical stem from an arc to its node in the horizontal layout. */
+  --component-timeline-stem-min-inline: 1.5rem; /** Shortest horizontal stem from an arc to its node in the vertical layout. */
+  --component-timeline-column-min: 12rem; /** Narrowest milestone column in the horizontal layout; narrower containers scroll. */
+  --component-timeline-row-gap: 3rem; /** Space between milestones in the vertical layout. */
+  --component-timeline-year-gap: 0.75rem; /** Space between a badge and its year label. */
+  --component-toolbar-interaction-shade: #000000; /** Neutral shade mixed into hover and selected surfaces without lightening dark-mode backgrounds. */
   --component-tooltip-background: #060b14;
   --component-tooltip-foreground: #ffffff;
   --component-tooltip-border-color: #060b14;
@@ -1118,6 +1552,10 @@
   --component-top-header-border-width: 1px;
   --component-top-header-logo-foreground: #060b14;
   --component-top-header-z-index: 100;
+  --component-tracker-motion-fade-opacity: 0.2;
+  --component-tracker-motion-pop-scale: 0.6;
+  --component-tracker-motion-bounce-lift: 0.5rem;
+  --component-tracker-motion-ripple-scale: 2;
   --component-tree-menu-item-height: 2rem;
   --component-tree-menu-item-gap: 0.5rem;
   --component-tree-menu-item-indent: 0.75rem;
@@ -1136,6 +1574,15 @@
   --component-tree-menu-item-focus-ring-offset: -2px;
   --component-tree-menu-item-disabled-opacity: 0.4;
   --component-tree-menu-collapsed-item-size: 2.5rem;
+  --component-verify-button-hold-short: 1000ms;
+  --component-verify-button-hold-default: 2000ms;
+  --component-verify-button-hold-long: 3000ms;
+  --component-verify-button-dial-size: 8rem;
+  --component-verify-button-ring-width: 0.25rem;
+  --component-verify-button-shutter-angle: -12deg;
+  --component-verify-button-shutter-travel: 85%;
+  --component-verify-button-stripe-size: 1rem;
+  --component-verify-button-launch-travel: 2rem;
   --component-paragraph-font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --component-paragraph-font-weight: 400;
   --component-paragraph-font-line-height: 1.75em;

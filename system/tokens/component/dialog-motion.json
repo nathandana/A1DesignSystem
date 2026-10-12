@@ -1,0 +1,46 @@
+{
+  "component": {
+    "dialogMotion": {
+      "slideDistance": {
+        "$type": "dimension",
+        "$value": "{base.spacing.96}",
+        "$description": "Slide: how far the dialog travels in and out."
+      },
+      "scaleFrom": {
+        "$type": "number",
+        "$value": 0.92,
+        "$description": "Scale and Blur: the dialog's size as it starts to appear."
+      },
+      "popFrom": {
+        "$type": "number",
+        "$value": 0.6,
+        "$description": "Pop: starting size before it springs past full size and settles."
+      },
+      "originFrom": {
+        "$type": "number",
+        "$value": 0.1,
+        "$description": "From the button: starting size, at the button that opened it."
+      },
+      "flipAngle": {
+        "$type": "string",
+        "$value": "70deg",
+        "$description": "Flip: how far the dialog is turned as it starts to appear."
+      },
+      "swingAngle": {
+        "$type": "string",
+        "$value": "90deg",
+        "$description": "Swing: how far the dialog is turned on its hinge edge."
+      },
+      "perspective": {
+        "$type": "dimension",
+        "$value": "{base.contentWidth.lg}",
+        "$description": "Viewing distance for Flip and Swing."
+      },
+      "blurFrom": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}",
+        "$description": "Blur: how blurred the dialog is as it starts to appear."
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "component": {
+    "verifyButton": {
+      "holdShort": { "$value": "1000ms" },
+      "holdDefault": { "$value": "2000ms" },
+      "holdLong": { "$value": "3000ms" },
+      "dialSize": { "$type": "dimension", "$value": "8rem" },
+      "ringWidth": { "$type": "dimension", "$value": "{base.spacing.4}" },
+      "shutterAngle": { "$value": "-12deg" },
+      "shutterTravel": { "$value": "85%" },
+      "stripeSize": { "$type": "dimension", "$value": "{base.spacing.16}" },
+      "launchTravel": { "$type": "dimension", "$value": "{base.spacing.32}" }
+    }
+  }
+}
