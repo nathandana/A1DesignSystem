@@ -2,6 +2,11 @@
   "name": "@gtivr4/a1-design-system-react-native",
   "version": "0.1.1",
   "description": "React Native components for the A1 Design System.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathandana/A1DesignSystem.git",
+    "directory": "packages/react-native"
+  },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "keywords": [

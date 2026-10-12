@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-No unreleased changes.
+- **Publishing metadata** — declared the GitHub repository for npm trusted publishing and provenance on the next versioned React Native release. The already published 0.1.1 package remains unchanged.
 
 ## 0.1.1 — 2026-07-06
 

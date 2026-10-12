@@ -35,6 +35,8 @@ read the legacy GitHub `NPM_TOKEN` secret.
 
 Both package trust relationships were configured and confirmed on Oct. 12,
 2026, with direct-publish permission for this repository and workflow.
+React Native's repository metadata is prepared in its Unreleased changes for
+the next version bump; the existing 0.1.1 upload is not replaced.
 
 Trusted publishing must allow direct `npm publish`. Configure or inspect it
 with npm's package settings or `npm trust`; creating a trust relationship
