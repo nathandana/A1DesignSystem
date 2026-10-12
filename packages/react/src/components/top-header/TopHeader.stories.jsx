@@ -278,7 +278,10 @@ export const NoIcons = {
 
 export const ActiveInSubmenu = {
   name: "Active item in secondary/tertiary menu",
-  parameters: { controls: { include: [] } },
+  parameters: {
+    controls: { include: [] },
+    docs: { description: { story: "Category flyouts open on hover, click, Enter or ArrowRight. Clicking a category that hover already opened keeps it open." } },
+  },
   render: () => (
     <div style={{ background: "var(--semantic-color-surface-page)", minHeight: 300 }}>
       <TopHeader

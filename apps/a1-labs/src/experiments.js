@@ -464,7 +464,7 @@ export const allExperiments = [
     icon: 'view_week',
     description: 'The A1 segmented control with eight ways for its selected background to move: fade, slide, spring, stretch, grow, wipe and morph.',
     preview: '/previews/segmented-motion.png',
-    previewAlt: 'A segmented control for day, week, month and quarter, with the selected background stretching between segments.',
+    previewAlt: 'A segmented control for day, week, month and quarter, with a settled selected background around Quarter.',
   },
   {
     id: 'flip-clock', addedIn: '0.33.0',
@@ -591,6 +591,20 @@ export const allExperiments = [
     title: 'Avatars', href: '/experiments/avatars', icon: 'account_circle',
     description: 'Initials, images, icons and generated patterns across sizes and radii, with tints, rings, status and a portrait that breaks the frame.',
     preview: '/previews/avatars.png', previewAlt: 'A large circular illustrated portrait with an online status dot, beside the same avatar at five smaller sizes.',
+  },
+  {
+    id: 'code-highlighting', addedIn: '0.73.0', category: 'layout', types: ['page-layout'],
+    tags: ['syntax highlighting', 'code block', 'snippet', 'source code', 'jsx', 'css', 'html', 'json', 'diff', 'line highlight', 'editor', 'monospace'],
+    title: 'Code syntax highlighting', href: '/experiments/code-highlighting', icon: 'code',
+    description: 'A1 Code with syntax highlighting for JSX, CSS, HTML and JSON: three palettes, highlighted lines, diffs, inline code and live editing.',
+    preview: '/previews/code-highlighting.png', previewAlt: 'A JSX component in an A1 code block with line numbers, keywords, strings, tags and attributes in different colours.',
+  },
+  {
+    id: 'tabs', addedIn: '0.72.0', category: 'interaction', types: ['page-layout', 'design-tool'],
+    tags: ['tab', 'tabbed navigation', 'folder', 'pill', 'selected state', 'underline', 'bookmark', 'panels', 'views'],
+    title: 'Tabs', href: '/experiments/tabs', icon: 'tab',
+    description: 'Eight tab treatments: A1 default, folders, bold selection, pills, outlines, raised surfaces, top rails and bookmarks.',
+    preview: '/previews/tabs.png', previewAlt: 'Folder-shaped tabs behind a continuously bordered project overview sheet, with Files, Activity, Team and Settings alongside.',
   },
 ]
 

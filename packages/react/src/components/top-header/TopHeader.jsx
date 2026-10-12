@@ -105,7 +105,8 @@ function NavMenuItem({ item, onClose }) {
       }
     : {
         type: "button",
-        onClick: () => setOpen((next) => !next),
+        // Hover may already have opened the flyout before the click arrives.
+        onClick: () => setOpen(true),
       };
 
   const focusFirstFlyoutItem = () => {

@@ -91,7 +91,9 @@
     "lint:rules": "npm test --workspace=eslint-plugin-a1",
     "dev:a1-labs": "vite apps/a1-labs --host 127.0.0.1 --strictPort --port 5187",
     "build:a1-labs": "npm run build:tokens && vite build apps/a1-labs",
-    "preview:a1-labs": "vite preview apps/a1-labs --host 127.0.0.1 --strictPort --port 4189"
+    "preview:a1-labs": "vite preview apps/a1-labs --host 127.0.0.1 --strictPort --port 4189",
+    "deploy:a1-labs:preview": "netlify deploy --filter a1-labs --site 92a835d6-4240-4984-aef3-bc744f9d81db",
+    "deploy:a1-labs": "netlify deploy --filter a1-labs --site 92a835d6-4240-4984-aef3-bc744f9d81db --prod"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",

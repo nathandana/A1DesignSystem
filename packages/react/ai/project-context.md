@@ -3,6 +3,7 @@
 This file is the entry point for all agents and AI assistants working in this repository. Read it first, then follow the linked context files for implementation details.
 
 **Related files in this directory:**
+- `packages/react/ai/labs-code-highlighting.md` — Labs code syntax highlighting: tokenizer, `HighlightedCode`/`LiveHighlightEditor` API, palettes and contrast derivation, line spacing, and the A1 Code wrapping/indent/scroll changes it relies on.
 - `packages/react/ai/labs-avatars.md` — Labs avatars: `LabAvatar`/`LabAvatarGroup` API (content, sizes, radii, colour, borders, status, Break the frame, generated pattern), tokens and accessibility.
 - `packages/react/ai/labs-pagination-types.md` — long-table page navigation variants and shared render callback.
 - `packages/react/ai/labs-data-tables.md` — pagination placement and configurable data table scale.
@@ -30,7 +31,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/labs-flip-clock.md` — Three.js split-flap clock, timing, motion, tokens and lifecycle.
 - `packages/react/ai/labs-mode-switches.md` — Labs light/dark mode switches: five controls (binary and Auto), their API, physics, tokens and accessibility.
 - `packages/react/ai/labs-home.md` — Labs home search and sorting, experiment type tags, responsive gallery and appearance controls.
-- `packages/react/ai/labs-form-experiments.md` — long-form chunking and the shared A1 Web/Labs date-of-birth studies.
+- `packages/react/ai/labs-form-experiments.md` — long-form chunking and the date-of-birth studies (originally from A1 Web).
 - `packages/react/ai/labs-slides.md` — Labs slide deck: transitions from cut to content-aware cascade and morph, content builds, `SlideDeck` API, tokens and validation.
 - `packages/react/ai/labs-verification-journey.md` — automatic multi-service verification, checkpoints, errors, receipts and Sticky Actions.
 - `packages/react/ai/labs-timeline.md` — Labs timeline: kept connector geometry, horizontal/vertical layouts, `Timeline` API, tokens and validation.
@@ -104,3 +105,7 @@ These eight rules govern all work in this repository. Read them before starting 
 Package-level context files may add package-specific rules on top of these foundations. The central rules here still apply.
 
 For Labs shared demonstration records, Small/Medium/Large presets and the consolidation audit, read [Sample data](labs-sample-data.md).
+
+For Labs tab styling and keyboard/selection behavior, read [Tabs](labs-tabs.md).
+
+For Labs deployment, DNS and release checks, read [Publishing Labs](labs-publishing.md).

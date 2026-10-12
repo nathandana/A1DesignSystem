@@ -1,10 +1,11 @@
 export async function captureBuilders(page, origin, output, only) {
-  for (const id of only ? [only] : ['automation-builder', 'token-styling', 'token-hierarchy', 'data-tables', 'pagination-types', 'avatars']) {
+  for (const id of only ? [only] : ['automation-builder', 'token-styling', 'token-hierarchy', 'data-tables', 'pagination-types', 'avatars', 'tabs', 'code-highlighting']) {
     await page.goto(`${origin}/experiments/${id}`)
-    const selector = { avatars: '.a1-avatars-lab', 'pagination-types': '.a1-pagination-types-lab', 'data-tables': '.a1-data-tables-lab', 'automation-builder': '.a1-automation-builder', 'token-styling': '.a1-token-study', 'token-hierarchy': '.a1-token-hierarchy' }[id]
+    if (id === 'tabs') await page.getByRole('radio', { name: 'Folder tabs', exact: true }).press('Space')
+    const selector = { 'code-highlighting': '.a1-code-highlighting-lab', tabs: '.a1-tabs-study', avatars: '.a1-avatars-lab', 'pagination-types': '.a1-pagination-types-lab', 'data-tables': '.a1-data-tables-lab', 'automation-builder': '.a1-automation-builder', 'token-styling': '.a1-token-study', 'token-hierarchy': '.a1-token-hierarchy' }[id]
     await page.locator(selector).waitFor()
     // Keep only the parts that read at card size (for avatars: profile and sizes).
-    const keep = { avatars: ':scope > :nth-child(1), :scope > :nth-child(2)' }[id]
+    const keep = { avatars: ':scope > :nth-child(1), :scope > :nth-child(2)', 'code-highlighting': ':scope > :nth-child(1)' }[id]
     await page.evaluate(async ({ selector, keep }) => {
       await document.fonts.ready
       const stage = document.createElement('div'); stage.id = 'builder-capture'

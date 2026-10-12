@@ -7,7 +7,7 @@ import { Paragraph } from "../paragraph/Paragraph.jsx";
 const meta = {
   title: "Components/Controls/Tabs",
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { layout: "padded", docs: { description: { component: "The current tab stays visually unchanged on hover and press, and reselecting it does not call onChange. It remains keyboard focusable. Overflow scrolling respects reduced motion." } } },
   argTypes: {
     variant: {
       control: "inline-radio",

@@ -40,8 +40,12 @@
   /* Darken the surface in both modes. Mixing in light text in dark mode can
      lighten a colored surface enough to fail text contrast (Fresh). */
   --a1-toolbar-hover-bg: color-mix(in srgb, var(--component-toolbar-interaction-shade) 8%, transparent);
-  --a1-toolbar-selected-bg: color-mix(in srgb, var(--component-toolbar-interaction-shade) 16%, transparent);
+  /* Selected matches SegmentedControl: the page surface lifted off the raised
+     bar by a small shadow. A shade mixed into the bar barely registered in
+     dark mode, where the bar is already near-black. */
+  --a1-toolbar-selected-bg: var(--semantic-color-surface-page);
   --a1-toolbar-selected-fg: var(--semantic-color-text-default);
+  --a1-toolbar-selected-shadow: var(--semantic-shadow-xs);
   /* A hairline subtle border by default gives the bar definition against the
      page surface. The accessible theme and high-contrast modes step it up to a
      thicker, stronger border so it is clearly delimited at high contrast. */
@@ -155,18 +159,25 @@
 }
 
 /* Selected state for toggles (aria-pressed) and group items (aria-checked) —
-   default text on a darker neutral fill. */
+   the same treatment as a selected SegmentedControl segment. */
 .a1-toolbar__button[aria-pressed="true"],
 .a1-toolbar__button[aria-checked="true"] {
   background: var(--a1-toolbar-selected-bg);
   color: var(--a1-toolbar-selected-fg);
+  box-shadow: var(--a1-toolbar-selected-shadow);
+}
+
+/* Keep the focus ring visible on a selected tool (both use box-shadow). */
+.a1-toolbar__button[aria-pressed="true"]:focus-visible,
+.a1-toolbar__button[aria-checked="true"]:focus-visible {
+  box-shadow: 0 0 0 var(--component-button-focus-ring-width) var(--component-field-focus-ring-color), var(--a1-toolbar-selected-shadow);
 }
 
 /* A toggle (aria-pressed) can be turned off, so it keeps hover feedback when on.
    A radio group item (aria-checked) can't be deselected, so it shows no hover or
    active change — clicking it does nothing. */
 .a1-toolbar__button[aria-pressed="true"]:hover {
-  background: color-mix(in srgb, var(--component-toolbar-interaction-shade) 22%, transparent);
+  background: color-mix(in srgb, var(--component-toolbar-interaction-shade) 8%, var(--a1-toolbar-selected-bg));
 }
 
 .a1-toolbar__button[aria-checked="true"]:hover,
@@ -289,14 +300,15 @@
 }
 
 /* Inline overflow menu item (a ToolbarMenu rendered inside the More menu). The
-   selected item uses the Toolbar's subtler selected treatment — default text on
-   a darker neutral fill — rather than the bold action-background MenuItem
-   highlight, so it reads like the rest of the toolbar. */
+   selected item uses the Toolbar's selected treatment — default text on the
+   page surface with a small shadow — rather than the bold action-background
+   MenuItem highlight, so it reads like the rest of the toolbar. */
 .a1-toolbar__overflow-item.a1-menu-item--active,
 .a1-toolbar__overflow-item.a1-menu-item--active:hover,
 .a1-toolbar__overflow-item.a1-menu-item--active:active {
   color: var(--semantic-color-text-default);
-  background: color-mix(in srgb, var(--semantic-color-text-default) 16%, transparent);
+  background: var(--semantic-color-surface-page);
+  box-shadow: var(--semantic-shadow-xs);
 }
 
 .a1-toolbar__overflow-item.a1-menu-item--active:hover {

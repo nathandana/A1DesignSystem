@@ -25,8 +25,16 @@ export const labsSearchEntries = [
     id: 'page-about',
     title: 'About Labs',
     category: 'Pages',
-    description: 'What Labs is, how it relates to A1 and its release history.',
-    keywords: ['release notes', 'changelog', 'version', 'history'],
+    description: 'What Labs is and how it relates to the A1 Design System.',
+    keywords: ['about', 'design system', 'playground'],
     href: '/about',
+  },
+  {
+    id: 'page-release-notes',
+    title: 'Release notes',
+    category: 'Pages',
+    description: 'What changed in Labs, newest first.',
+    keywords: ['changelog', 'version', 'history', 'updates'],
+    href: '/release-notes',
   },
 ]

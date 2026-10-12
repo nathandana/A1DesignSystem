@@ -8,7 +8,7 @@ const devices = {xs:'Phone',sm:'Landscape phone',md:'Tablet',lg:'Laptop',xl:'Des
 const actions = [
   {id:'explore',icon:'science',title:'Find your next experiment',description:'Explore ideas in motion, interaction and interface design.',href:'/',target:'_top'},
   {id:'system',icon:'widgets',title:'Build with A1',description:'Explore the components and foundations. Opens a new tab.',href:'https://a1design.app',target:'_blank'},
-  {id:'notes',icon:'history',title:'See what’s new',description:'Follow recent experiments and release notes.',href:'/about#release-notes',target:'_top'},
+  {id:'notes',icon:'history',title:'See what’s new',description:'Follow recent experiments and release notes.',href:'/release-notes',target:'_top'},
 ]
 const features=[
   {id:'tokens',icon:'palette',label:'Built with A1 tokens'},

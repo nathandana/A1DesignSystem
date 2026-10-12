@@ -635,6 +635,14 @@
   --component-circular-progress-track-color: #e1e8f3;
   --component-circular-progress-xl-size: 12rem;
   --component-circular-progress-xs-size: 3rem;
+  --component-code-highlight-emphasis-weight: 600;
+  --component-code-highlight-hue-weight: 0.3;
+  --component-code-highlight-line-height: 1.6;
+  --component-code-highlight-line-marker-width: 0.25rem;
+  --component-code-highlight-muted-weight: 0.75;
+  --component-code-highlight-selection-strength: 0.35;
+  --component-code-highlight-separated-line-gap: 0.5rem;
+  --component-code-highlight-separated-line-height: 1.25rem;
   --component-contextual-help-enter-offset: 0.5rem;
   --component-contextual-help-popover-gap: 0.5rem;
   --component-contextual-help-popover-width: 20rem;

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Card, Figure, Grid, Heading, PageLayout, Paragraph, Section, SelectField, Stack } from '@gtivr4/a1-design-system-react'
 import { GlobalSearchDialog } from '../../a1-web/src/search/GlobalSearchDialog.jsx'
 import { AboutPage } from './AboutPage.jsx'
+import { ReleaseNotesPage } from './ReleaseNotesPage.jsx'
 import { ExperimentPage } from './ExperimentPage.jsx'
 import { LabsHeader } from './LabsHeader.jsx'
 import { allExperiments, experimentRedirects, experiments } from './experiments.js'
@@ -21,6 +22,10 @@ export function App() {
     onSelect: () => window.location.assign(entry.href),
   })), [])
   let path = window.location.pathname.replace(/\/$/, '')
+  if (path === '/about' && window.location.hash === '#release-notes') {
+    window.history.replaceState(null, '', `/release-notes${window.location.search}`)
+    path = '/release-notes'
+  }
   if (experimentRedirects[path]) {
     window.history.replaceState(null, '', experimentRedirects[path])
     path = window.location.pathname
@@ -30,7 +35,7 @@ export function App() {
   return (
     <AppearanceContext.Provider value={settings}>
       <LabsSearchContext.Provider value={search}>
-        {path === '/about' ? <AboutPage onOpenSettings={settings.openSettings} /> : experiment
+        {path === '/release-notes' ? <ReleaseNotesPage onOpenSettings={settings.openSettings} /> : path === '/about' ? <AboutPage onOpenSettings={settings.openSettings} /> : experiment
           ? <ExperimentPage experiment={experiment} onOpenSettings={settings.openSettings} appearance={settings} />
           : <ExperimentGallery onOpenSettings={settings.openSettings} />}
         <AppearanceSettings settings={settings} />

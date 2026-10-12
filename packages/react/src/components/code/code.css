@@ -3,7 +3,7 @@
   max-inline-size: 100%;
   font-family: var(--component-inline-font-family-mono);
   font-size: var(--component-inline-code-font-size);
-  line-height: 1.6;
+  line-height: var(--a1-code-line-height, 1.6);
   color: var(--semantic-color-text-default);
 }
 
@@ -40,6 +40,15 @@
   border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-md);
   background: var(--semantic-color-surface-panel);
+}
+
+/* A sideways-scrolling block is focusable (see Code.jsx); show the same ring
+   as the textarea. With line numbers, the framed wrapper's :focus-within
+   rule shows it instead. */
+.a1-code-block__pre:focus-visible {
+  outline: none;
+  border-color: var(--component-button-focus-ring);
+  box-shadow: 0 0 0 var(--component-card-border-width) var(--component-button-focus-ring);
 }
 
 .a1-code--block {
@@ -111,6 +120,18 @@
   margin-inline-start: var(--base-spacing-40);
 }
 
+/* Optional line spacing hooks, unset by default (current spacing):
+   --a1-code-line-height — line height (unitless or a length) of the code,
+   gutter and measure copy;
+   --a1-code-line-gap — extra space between logical lines (not between the
+   rows of one wrapped line). The gap applies to per-line content
+   (.a1-code-block__line) and is mirrored on the gutter and measure copy so
+   line numbers stay aligned. */
+.a1-code-block__line-numbers > li {
+  box-sizing: border-box;
+  padding-block: calc(var(--a1-code-line-gap, 0em) / 2);
+}
+
 .a1-code-block__line-numbers {
   box-sizing: border-box;
   margin: 0;
@@ -118,7 +139,7 @@
   color: var(--semantic-color-text-muted);
   font-family: var(--component-inline-font-family-mono);
   font-size: var(--component-inline-code-font-size);
-  line-height: 1.6;
+  line-height: var(--a1-code-line-height, 1.6);
   list-style: none;
   text-align: end;
   will-change: transform;
@@ -144,15 +165,40 @@
   visibility: hidden;
   font-family: var(--component-inline-font-family-mono);
   font-size: var(--component-inline-code-font-size);
-  line-height: 1.6;
+  line-height: var(--a1-code-line-height, 1.6);
   pointer-events: none;
 }
 
 .a1-code-block__line-number-measure > span {
   display: block;
-  min-block-size: 1.6em;
+  box-sizing: border-box;
+  min-block-size: calc(1lh + var(--a1-code-line-gap, 0em));
+  padding-block: calc(var(--a1-code-line-gap, 0em) / 2);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* Hanging indent for wrapped lines: each line is a full-width inline block
+   (followed by a real newline, so text and copy are unchanged) padded by its
+   own leading whitespace — `--a1-code-indent`, in character cells, set per
+   line from codeLineIndent(). The first line pulls back by the same amount,
+   so only continuation lines move. The measure copy uses the same rule so
+   line numbers keep matching wrapped heights. */
+.a1-code-block__line {
+  display: inline-block;
+  box-sizing: border-box;
+  min-inline-size: 100%;
+  /* An empty line still takes a full line plus the gap, like its number. */
+  min-block-size: calc(1lh + var(--a1-code-line-gap, 0em));
+  padding-block: calc(var(--a1-code-line-gap, 0em) / 2);
+  line-height: var(--a1-code-line-height, 1.6);
+  vertical-align: top;
+}
+
+.a1-code--wrapping .a1-code-block__line,
+.a1-code-block__line-number-measure > span {
+  padding-inline-start: calc(var(--a1-code-indent, 0) * 1ch);
+  text-indent: calc(var(--a1-code-indent, 0) * -1ch);
 }
 
 .a1-code-block__textarea--wrapping {

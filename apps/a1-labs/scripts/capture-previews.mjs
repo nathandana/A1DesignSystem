@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test'
 
 // Run against the Labs dev server so the capture can use the actual renderer.
 const origin = process.argv[2] ?? 'http://127.0.0.1:5187'
-const builderOnly = { '--avatars-only': 'avatars', '--pagination-types-only': 'pagination-types', '--data-tables-only': 'data-tables', '--automation-only': 'automation-builder', '--token-styling-only': 'token-styling', '--token-hierarchy-only': 'token-hierarchy' }[process.argv[3]]
+const builderOnly = { '--code-highlighting-only': 'code-highlighting', '--tabs-only': 'tabs', '--avatars-only': 'avatars', '--pagination-types-only': 'pagination-types', '--data-tables-only': 'data-tables', '--automation-only': 'automation-builder', '--token-styling-only': 'token-styling', '--token-hierarchy-only': 'token-hierarchy' }[process.argv[3]]
 const chatOnly = process.argv[3] === '--chat-only'
 const trackerOnly = process.argv[3] === '--step-tracker-only'
 const stepsOnly = process.argv[3] === '--steps-only'
@@ -45,6 +45,27 @@ const bulkOnly = process.argv[3] === '--bulk-only'
 const mobileTablesOnly = process.argv[3] === '--mobile-tables-only'
 const output = new URL('../public/previews/', import.meta.url)
 await mkdir(output, { recursive: true })
+
+// Capture the actual rendered DOM against a clean 16:9 export background.
+// Preserve measured geometry (including fitted text/indicator coordinates).
+async function captureIsolatedPreview(page, selector, filename) {
+  await page.evaluate(async selector => {
+    await document.fonts.ready
+    const source = document.querySelector(selector)
+    const bounds = source.getBoundingClientRect()
+    const stage = document.createElement('div')
+    stage.id = 'preview-capture'
+    Object.assign(stage.style, { position: 'fixed', inset: '0 auto auto 0', width: '640px', height: '360px', overflow: 'hidden', background: 'var(--semantic-color-surface-page)' })
+    const preview = source.cloneNode(true)
+    const scale = Math.min(592 / bounds.width, 312 / bounds.height)
+    Object.assign(preview.style, { position: 'absolute', width: `${bounds.width}px`, height: `${bounds.height}px`, left: `${(640 - bounds.width * scale) / 2}px`, top: `${(360 - bounds.height * scale) / 2}px`, transformOrigin: 'top left', transform: `scale(${scale})` })
+    stage.appendChild(preview)
+    document.body.appendChild(stage)
+    document.getElementById('root').style.visibility = 'hidden'
+  }, selector)
+  await page.locator('#preview-capture').screenshot({ path: new URL(filename, output).pathname })
+}
+
 // Software WebGL so headless captures can render the 3D token visualizer.
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] })
 try {
@@ -419,19 +440,14 @@ try {
     await page.locator('.a1-web-responsive-preview__viewport').screenshot({path:new URL('long-form.png', output).pathname})
   }
   if (segmentedOnly || !process.argv[3]) {
-    // Segmented control transitions: Stretch caught mid-move, in a larger size.
+    // Capture a settled selection, not a stretched indicator between segments.
     await page.goto(`${origin}/experiments/segmented-motion`)
     await page.locator('.a1-segmented-motion').waitFor()
-    await page.locator('input[name=segment-transition][value=stretch]').check({ force: true })
-    await page.getByRole('radio', { name: 'Large' }).click()
-    await page.getByRole('slider', { name: 'Duration (ms)' }).press('End')
+    await page.getByRole('radio', { name: 'Large', exact: true }).click()
+    await page.getByRole('radiogroup', { name: 'Time period' }).getByRole('radio', { name: 'Quarter', exact: true }).click()
     await page.mouse.move(0, 0)
-    await page.waitForTimeout(800)
-    const stage = await page.locator('.a1-segmented-motion-stage').boundingBox()
-    await page.getByRole('radiogroup', { name: 'Time period' }).getByRole('radio', { name: 'Quarter' }).click()
-    await page.waitForTimeout(330)
-    const height = stage.height
-    await page.screenshot({ path: new URL('segmented-motion.png', output).pathname, clip: { x: stage.x + stage.width / 2 - height * 8 / 9, y: stage.y, width: height * 16 / 9, height } })
+    await page.waitForTimeout(1000)
+    await captureIsolatedPreview(page, '.a1-segmented-motion', 'segmented-motion.png')
   }
   if (accordionOnly || !process.argv[3]) {
     // Accordion transitions: Returns opening with the Stagger transition.
@@ -447,17 +463,23 @@ try {
     await page.screenshot({ path: new URL('accordion-motion.png', output).pathname, clip: { x: box.x - 24, y: box.y - 24, width: box.width + 48, height: (box.width + 48) * 9 / 16 } })
   }
   if (mobileTablesOnly || !process.argv[3]) {
-    // Mobile data tables: the frozen first column on a phone, scrolled sideways.
+    // Capture only the device viewport; never widen the crop into Labs panels.
     await page.goto(`${origin}/experiments/mobile-tables`)
-    await page.locator('input[name="mobile-pattern"][value="frozen"]').check({ force: true })
-    await page.waitForTimeout(1500)
-    const frame = page.frames().find(f => f !== page.mainFrame())
-    await frame.evaluate(() => { document.querySelector('.a1-mt-narrow .a1-data-table-scroll').scrollLeft = 220 })
-    await page.waitForTimeout(200)
-    const box = await page.locator('iframe').boundingBox()
-    const height = Math.min(box.height, 720)
-    const width = height * 16 / 9
-    await page.screenshot({ path: new URL('mobile-tables.png', output).pathname, clip: { x: box.x + box.width / 2 - width / 2, y: box.y, width, height } })
+    await page.locator('input[name="mobile-pattern"][value="frozen"]').press('Space')
+    const frame = page.frameLocator('iframe')
+    await frame.locator('.a1-mt-narrow .a1-data-table-scroll').waitFor()
+    await frame.locator('body').evaluate(() => document.fonts.ready)
+    await frame.locator('.a1-mt-narrow .a1-data-table-scroll').evaluate(el => { el.scrollLeft = 220 })
+    // Keep the live iframe in place (moving/cloning it loses its rendered content).
+    // Hide the shell and fit the whole device into a clean landscape card.
+    await page.evaluate(() => {
+      const viewport = document.querySelector('.a1-web-responsive-preview__viewport')
+      const box = viewport.getBoundingClientRect()
+      const scale = Math.min(592 / box.width, 336 / box.height)
+      document.getElementById('root').style.visibility = 'hidden'
+      Object.assign(viewport.style, { visibility: 'visible', position: 'fixed', left: `${(640 - box.width * scale) / 2}px`, top: `${(360 - box.height * scale) / 2}px`, transformOrigin: 'top left', transform: `scale(${scale})` })
+    })
+    await page.screenshot({ path: new URL('mobile-tables.png', output).pathname, clip: { x: 0, y: 0, width: 640, height: 360 } })
   }
   if (bulkOnly || !process.argv[3]) {
     // Bulk actions: three rows selected with the A1 bulk action bar showing.
@@ -495,16 +517,13 @@ try {
     await page.screenshot({ path: new URL('fenex.png', output).pathname, clip: { x: box.x + box.width / 2 - width / 2, y: box.y - 16, width, height } })
   }
   if (fitOnly || !process.argv[3]) {
-    // Fitted type: the event example, each line filling the container.
+    // Fit the actual type container into the card, without Labs navigation/help.
     await page.goto(`${origin}/experiments/fit-text`)
-    const frame = page.locator('.a1-fit-text-frame')
-    await frame.waitFor()
-    await page.getByRole('radio', { name: 'Event' }).click()
+    await page.locator('.a1-fit-text-frame').waitFor()
+    await page.getByRole('radio', { name: 'Event', exact: true }).click()
+    await page.evaluate(() => document.fonts.ready)
     await page.waitForTimeout(500)
-    const box = await frame.boundingBox()
-    const height = box.height + 48
-    const width = Math.max(box.width + 48, height * 16 / 9)
-    await page.screenshot({ path: new URL('fit-text.png', output).pathname, clip: { x: box.x + box.width / 2 - width / 2, y: box.y - 24, width, height: width * 9 / 16 } })
+    await captureIsolatedPreview(page, '.a1-fit-text-frame', 'fit-text.png')
   }
   if (celebrationOnly || !process.argv[3]) {
     // Submission celebrations: confetti bursting from the success check.

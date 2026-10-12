@@ -720,6 +720,14 @@
   --component-circular-progress-fill-color: #7c3aed;
   --component-circular-progress-gap: 0.5rem;
   --component-circular-progress-indeterminate-duration: 1200ms;
+  --component-code-highlight-line-marker-width: 0.25rem; /** Width of the inline-start bar marking a highlighted, added or removed line. */
+  --component-code-highlight-line-height: 1.6; /** Code line height. Mirrors the A1 Code block (currently a literal in code.css) so the live editor's text and highlight layers align with Code. */
+  --component-code-highlight-hue-weight: 0.3; /** Share of a syntax colour's lightness taken from its palette hue; the rest comes from the default text colour. 0.3 keeps every hued role at 4.5:1 or more on code surfaces in all Labs themes and modes except Fresh dark, where default text itself is 4.96:1. */
+  --component-code-highlight-muted-weight: 0.75; /** Share of muted text in comments and punctuation; the rest is default text. 0.75 is the smallest step that clears 4.5:1 on panel and raised surfaces in every Labs theme and mode. */
+  --component-code-highlight-selection-strength: 0.35; /** Live editor: opacity of the action colour behind selected text, so the highlighted text stays visible through the selection. */
+  --component-code-highlight-separated-line-height: 1.25rem; /** Separated line spacing: distance between the rows of one wrapped line (20px), tighter than Code's default 22.4px so a wrapped line reads as one unit. */
+  --component-code-highlight-separated-line-gap: 0.5rem; /** Separated line spacing: extra space between logical lines, so lines are 28px apart (20px line height + 8px). */
+  --component-code-highlight-emphasis-weight: 600; /** Weight that carries keywords, tags and selectors in the Monochrome palette, where colour is not used. */
   --component-contextual-help-popover-width: 20rem; /** Width of the help popover (narrower viewports shrink it to fit). */
   --component-contextual-help-popover-gap: 0.5rem; /** Space between the popover and its trigger, and the popover's minimum distance from the viewport edge. */
   --component-contextual-help-enter-offset: 0.5rem; /** How far popovers and panels slide as they appear. */

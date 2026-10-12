@@ -1,3 +1,4 @@
+import { TabsExperiment } from './tabs/TabsExperiment.jsx'
 import { PaginationTypesExperiment } from './pagination-types/PaginationTypesExperiment.jsx'
 import { DataTablesExperiment } from './data-tables/DataTablesExperiment.jsx'
 import { AutomationBuilderExperiment } from './automation-builder/AutomationBuilderExperiment.jsx'
@@ -20,6 +21,7 @@ import { SlidesExperiment } from './slides/SlidesExperiment.jsx'
 import { ModeSwitchesExperiment } from './mode-switches/ModeSwitchesExperiment.jsx'
 import { RadioButtonsExperiment } from './radio-buttons/RadioButtonsExperiment.jsx'
 import { AvatarsExperiment } from './avatars/AvatarsExperiment.jsx'
+import { CodeHighlightingExperiment } from './code-highlighting/CodeHighlightingExperiment.jsx'
 import { CheckboxMotionExperiment } from './checkbox-motion/CheckboxMotionExperiment.jsx'
 import { PasswordStrengthExperiment } from './password-strength/PasswordStrengthExperiment.jsx'
 import { ContextualHelpExperiment } from './contextual-help/ContextualHelpExperiment.jsx'
@@ -65,6 +67,7 @@ const DataGridExperiment = lazy(() => import('./data-grid/DataGridExperiment.jsx
 const TokenHierarchyExperiment = lazy(() => import('./token-hierarchy/TokenHierarchyExperiment.jsx').then(module => ({ default: module.TokenHierarchyExperiment })))
 
 const experimentPages = {
+  tabs: TabsExperiment,
   'pagination-types': PaginationTypesExperiment,
   'data-tables': DataTablesExperiment,
   'token-hierarchy': TokenHierarchyExperiment,
@@ -87,6 +90,7 @@ const experimentPages = {
   'mode-switches': ModeSwitchesExperiment,
   'radio-buttons': RadioButtonsExperiment,
   avatars: AvatarsExperiment,
+  'code-highlighting': CodeHighlightingExperiment,
   'checkbox-motion': CheckboxMotionExperiment,
   'password-strength': PasswordStrengthExperiment,
   'contextual-help': ContextualHelpExperiment,

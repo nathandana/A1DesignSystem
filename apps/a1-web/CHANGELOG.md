@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Code wrapping and scrolling** — Code blocks across A1 Web keep indentation on wrapped lines, keep line numbers level with wrapped lines, and can be scrolled with the keyboard when lines overflow (shared React fix).
+
+- **Current tabs** — selected tabs and counts no longer change appearance on hover or press; reselecting the current tab does not emit a change. Horizontal tab scrolling respects reduced motion.
+
+- **Category flyout activation** — clicking a header category keeps its submenu open when hover opened it first; keyboard and touch opening remain available.
+
+- **Toolbar selected state** — selected tools in every Toolbar (including the component configurators) now use the SegmentedControl selected treatment, so the active option is clear in dark mode (shared React fix).
+
+- **Labs removed from A1 Web** — the in-app Labs page (`/labs`) is gone: its Explore menu entry, sidebar, search entry, route, access rule and page-only labels. It held a placeholder Pattern assembly bench and the 7 date-of-birth studies, which live on in standalone A1 Labs (`apps/a1-labs`). Old `/labs` links now open the A1 Web home page.
+
 - **DataTable pagination: Both** — the Pagination position control adds Both (matching controls above and below the rows), with updated helper text, code snippets and JSON import/export.
 
 - **Top Header configurator: End content** — a new toggle (with helper text) previews the TopHeader `endContent` prop using an inline color-scheme switcher and adds it to the code snippet. The JSON view notes that endContent is runtime-only.

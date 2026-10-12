@@ -162,7 +162,8 @@ contrast sweeps unless a color/theme change or regression warrants them.
 Run `npm run dev:a1-labs` on reserved port 5187. Build with `npm run build:a1-labs`;
 output is `apps/a1-labs/dist`. For Netlify, use the repository root as the base,
 that build command and that publish directory, then assign `labs.a1design.app`
-to the site. Domain assignment and deployment are not performed by the local app.
+to the site. The dedicated project and deployment commands are now configured;
+see [Publishing Labs](labs-publishing.md) for DNS/TLS and initial activation.
 
 The initial dark screen shows registered experiments in a responsive A1 Grid:
 xs 1 column, sm/md 2, lg 3, xl 4. Cards follow the selected name/first-release sort with 16:9 A1 Figure
@@ -225,8 +226,9 @@ arrow/Home/End keys and touch. Both controls work in the mobile sheet. No
 custom app CSS is needed for these configuration toolbars. Shared Toolbar uses
 default semantic text for enabled tools so labels remain readable on its raised
 surface, including in Aperture. The `component.toolbar.interactionShade` alias
-darkens hover/selected fills in both modes, preserving contrast in Fresh dark
-mode. These corrections belong in the shared Toolbar CSS and token layer;
+darkens hover fills in both modes, preserving contrast in Fresh dark mode.
+Selected tools use the SegmentedControl selected treatment (page surface plus
+`semantic.shadow.xs`) so selection stays clear in dark mode. These corrections belong in the shared Toolbar CSS and token layer;
 configuration layout uses A1 props without local styling. The
 percentage and clockwise rounded-rectangle border share one elapsed-time value.
 At 100%, the border holds for 300ms, then a 1.5-second wave reveals the local

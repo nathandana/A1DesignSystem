@@ -1,19 +1,7 @@
 import React, { useEffect } from 'react'
-import { Button, Card, Code, Heading, Link, List, ListItem, PageLayout, Paragraph, Section, Stack } from '@gtivr4/a1-design-system-react'
+import { Button, Heading, Link, PageLayout, Paragraph, Section, Stack } from '@gtivr4/a1-design-system-react'
 import { LabsHeader } from './LabsHeader.jsx'
-import { parseReleaseNotes } from './release-notes.js'
-import changelog from '../CHANGELOG.md?raw'
 import { version } from '../package.json'
-
-const releases = parseReleaseNotes(changelog)
-
-function ReleaseEntry({ text }) {
-  return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, index) => {
-    if (part.startsWith('**')) return <strong key={index}>{part.slice(2, -2)}</strong>
-    if (part.startsWith('`')) return <Code key={index} wrapping>{part.slice(1, -1)}</Code>
-    return part
-  })
-}
 
 export function AboutPage({ onOpenSettings }) {
   useEffect(() => { document.title = 'About Labs · A1 Labs' }, [])
@@ -33,7 +21,7 @@ export function AboutPage({ onOpenSettings }) {
             <Button as="a" href="/" icon="science">Explore experiments</Button>
             <Button as="a" href="https://a1design.app" variant="secondary" icon="arrow_outward" iconPosition="end">Visit A1 Web</Button>
           </Stack>
-          <Link href="#release-notes">Read the release notes</Link>
+          <Link href="/release-notes">Read the release notes</Link>
         </Stack>
 
         <Stack gap={16}>
@@ -72,6 +60,7 @@ export function AboutPage({ onOpenSettings }) {
             Try <Link href="/experiments/step-tracker">Step tracker</Link> for A1’s position indicator and five additional treatments.
           </Paragraph>
           <Paragraph>
+            Explore <Link href="/experiments/tabs">Tabs</Link> for eight navigation styles, from A1’s default to folder-shaped tabs.
             Compare <Link href="/experiments/steps">Steps</Link> for eight progress treatments, including A1’s default.
           </Paragraph>
           <Paragraph>
@@ -235,25 +224,7 @@ export function AboutPage({ onOpenSettings }) {
           </Paragraph>
         </Stack>
 
-        <Stack as="section" gap={24} id="release-notes" aria-labelledby="release-notes-heading">
-          <Stack gap={8}>
-            <Heading as="h2" size="lg" id="release-notes-heading">Release notes</Heading>
-            <Paragraph color="muted">What’s changed in Labs, newest first.</Paragraph>
-          </Stack>
-          {releases.map(release => (
-            <Card as="article" key={release.version} aria-labelledby={`release-${release.version}`}>
-              <Stack gap={16}>
-                <Stack gap={8}>
-                  <Heading as="h3" size="md" id={`release-${release.version}`}>Version {release.version}</Heading>
-                  <Paragraph size="sm" color="muted">{release.date}{release.version === version ? ' · Current version' : ''}</Paragraph>
-                </Stack>
-                <List size="sm">
-                  {release.entries.map((entry, index) => <ListItem key={index}><ReleaseEntry text={entry} /></ListItem>)}
-                </List>
-              </Stack>
-            </Card>
-          ))}
-        </Stack>
+
       </Section>
     </PageLayout>
   )

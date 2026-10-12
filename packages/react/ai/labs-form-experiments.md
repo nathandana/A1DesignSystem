@@ -44,10 +44,12 @@ motion or local CSS is needed. This is a candidate pattern, not a shared A1 API.
 
 ## Date of birth
 
-The 7 original studies from A1 Web now live in
+The 7 original studies from A1 Web now live only in
 `src/date-of-birth/DateOfBirthExamples.jsx`. `DATE_OF_BIRTH_EXPERIMENTS` contains
-IDs, copy keys/fallbacks and renderers. A1 Web imports the same implementation,
-so its `/labs/dob-*` routes remain available without a divergent copy.
+IDs, copy keys/fallbacks and renderers. A1 Web's Labs page, which imported them
+at `/labs/dob-*`, was removed; standalone Labs is their only home. The
+`app.labs.dob*` label keys stay in `system/labels/app.json` with their
+translations, though Labs currently renders the English fallbacks.
 In Labs the 7 studies are one experiment, `/experiments/date-of-birth`, with the
 study in `?study=<id>`. The former `/experiments/dob-*` addresses redirect there
 (`experimentRedirects` in `experiments.js`); one card preview, `date-of-birth.png`.
@@ -75,8 +77,8 @@ were removed: FieldRow and the field components now own responsive sizing.
 
 ## Validation and maintenance
 
-Run `npm test --workspace=a1-labs`, Labs build and A1 Web build when the shared
-DOB examples change. Exercise layout switching, hidden-field errors, scrolling,
+Run `npm test --workspace=a1-labs` and the Labs build when the DOB examples
+change. Exercise layout switching, hidden-field errors, scrolling,
 completion, phone side-navigation focus/Escape, all 7 date routes and formatting.
 Use focused default-theme accessibility checks; do not repeatedly sweep themes.
 Actual screen-reader speech and user preference for auto-advance need human review.

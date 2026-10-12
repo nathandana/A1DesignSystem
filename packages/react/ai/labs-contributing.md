@@ -72,6 +72,11 @@ when an experiment's concept changes. With the Labs dev server running,
 `npm run capture:previews --workspace=a1-labs` refreshes the current assets
 using Playwright and the actual renderers. Extend that capture script for new
 experiments. Static captures do not animate in the gallery or change with the theme.
+Frame the experiment itself, excluding Labs navigation, configuration and helper
+copy. For Mobile data tables, keep the live iframe and fit only its device
+viewport into the export; cloning an iframe loses its rendered content. Fitted
+type captures the measured text container. Segmented controls should use a
+settled selection, not an ambiguous mid-stretch indicator.
 
 ## Isolate experiments and prepare them for A1
 
@@ -274,6 +279,14 @@ with cancellable queued timers, and keep ChatConversation controlled. Animate on
 new messages; retain named senders, a polite addition-only log, keyboard/IME
 handling, reading-position retention and live reduced-motion/forced-color fallbacks.
 Never imply real delivery or a connected AI service. Keep message CSS isolated.
+
+## Tabs contract
+
+Read [Tabs](labs-tabs.md). Keep all eight treatments on A1 Tabs with the default
+unchanged, local opt-in CSS, a named tablist and focusable active panel. Current
+tabs have no hover/pressed feedback; folder selection stays neutral and joins the
+content sheet without a bottom border or visible seam. Preserve keyboard navigation, internal
+overflow and reduced-motion scrolling.
 
 ## Steps contract
 
@@ -535,6 +548,12 @@ of sidebar group order. Category/type filter controls are retired.
 
 ## Preserve shared behavior
 
+- The shared header’s Experiments menu uses A1 TopHeader `menuHeader` search and
+  category submenus, as in A1 Web’s Components menu. Generate it through
+  `experiment-menu.js` from `experimentTree`; never maintain a separate list.
+  Keep the gallery link, hidden-item exclusion, tags/search, keyboard submission,
+  empty-results status and mobile search. See [Home](labs-home.md#experiments-header-menu).
+
 - `ExperimentLayout` shows its visible experiment title and sidebar opener only
   while SideNav uses its overlay layout: xs/sm/md, through 1,024px. At lg/xl
   (1,025px+) the persistent tree identifies the experiment; keep an `a1-sr-only`
@@ -546,9 +565,11 @@ of sidebar group order. Category/type filter controls are retired.
   experiment/configuration guidance in the configuration panel. Preserve actual
   example content, field instructions, data labels and status/progress/error messages.
 
-- `/about` explains Labs, links to A1 Web and displays release notes from
-  `CHANGELOG.md`. Keep it reachable from the gallery and `LabsHeader.jsx`, which
-  is shared by the About and experiment pages. Keep settings available there.
+- `/about` explains Labs and links to A1 Web. `/release-notes` owns the public
+  history from `CHANGELOG.md`; do not duplicate the history on About. Keep both
+  pages in the shared `LabsHeader.jsx` and sitewide search, with appearance
+  settings available. Preserve the redirect from `/about#release-notes` and
+  point new release-history links directly to `/release-notes`.
 - Public release notes use dated `## X.Y.Z — Month D, YYYY` headings and top-level
   `- ` bullets, with wrapped continuation lines, bold text and inline code.
   Keep this format or update `release-notes.js` and its tests when extending it.
@@ -689,3 +710,9 @@ Small (10), Medium (100), Large (1,000) and intermediate counts. Keep generators
 pure, deterministic and independent of UI; keep authored workflow/graph scenarios
 local. Do not import another experiment's private fixtures. Preserve stable IDs,
 grid edits and persisted deletions when switching sizes.
+
+## Publish Labs
+
+Read [Publishing Labs](labs-publishing.md) before changing deployment settings.
+Keep the Labs project/configuration separate from A1 Web; use the explicit
+Labs deployment commands and verify direct routes on a draft before publishing.

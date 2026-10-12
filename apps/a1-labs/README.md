@@ -22,7 +22,7 @@ unanswered question; configuration can fill the example or clear it.
 
 The Forms category also contains all 7 date-of-birth studies from A1 Web: native
 date, selects, numeric fields, auto-advance, mixed fields, single autoformat and
-formatted date parts. Both apps share the implementation. Choose a study from the choice group in the right configuration panel
+formatted date parts. A1 Web no longer has a Labs page; these studies live here. Choose a study from the choice group in the right configuration panel
 (or the configuration sheet on mobile). It renders directly in the workspace
 without a device frame or viewport controls, with a reset control. Each study’s
 description appears directly below its input example, before the testing notes. See the [form experiment contract](../../packages/react/ai/labs-form-experiments.md).
@@ -127,8 +127,9 @@ Theme and mode changes redraw the animation without restarting it.
 ## About Labs and release notes
 
 The [About Labs page](http://127.0.0.1:5187/about) explains the playground, links
-to A1 Web and shows release notes. Open it from the gallery or experiment header;
-on small screens the header navigation is available from its menu. Release notes
+to A1 Web and links to the separate [Release notes page](http://127.0.0.1:5187/release-notes).
+Both pages are available from the shared header and sitewide search; on small
+screens use the header menu. Old `/about#release-notes` links redirect to the new page. Release notes
 read numbered sections from `CHANGELOG.md`, and the current version comes from
 `package.json`. Unreleased notes stay out of the public page.
 
@@ -144,6 +145,16 @@ A visible step count also announces changes. All variants use neutral theme
 tokens and honor reduced motion and forced colors.
 See [the step tracker contract](../../packages/react/ai/labs-step-tracker.md).
 Capture its card with `npm run capture:previews --workspace=a1-labs -- http://127.0.0.1:5187 --step-tracker-only`.
+
+## Tabs
+
+[Tabs](http://127.0.0.1:5187/experiments/tabs) compares eight treatments, one at a
+time: A1 default, folder tabs, bold selected, pills, outline, raised, top rail
+and bookmarks. Configure compact/default sizing, icons and counts. Folder tabs
+use neutral surfaces and text that join the content sheet without a bottom seam;
+current tabs have no hover or pressed feedback. Arrow keys, Home and End change
+views; Tab enters the panel. Overflow stays inside the strip and reduced motion
+makes scrolling immediate. See [the contract](../../packages/react/ai/labs-tabs.md).
 
 ## Steps
 
@@ -717,6 +728,17 @@ no photo, so Image shows its initials fallback. See
 [the avatars contract](../../packages/react/ai/labs-avatars.md). Capture its
 card with `capture:previews -- http://127.0.0.1:5187 --avatars-only`.
 
+## Code syntax highlighting
+
+`/experiments/code-highlighting` highlights the real A1 Code block for JSX,
+CSS, HTML and JSON. Choose a palette (Full color, Subtle, Monochrome), line
+spacing (Default or Separated: 28px between lines, 20px within a wrapped
+line), highlighted lines, line numbers, wrapping, copy and collapse. Diff
+shows a change with added and removed lines; Live editing highlights as you
+type. Below the block are inline code in a sentence and a legend of token
+colors. See [the code highlighting contract](../../packages/react/ai/labs-code-highlighting.md).
+Capture its card with `capture:previews -- http://127.0.0.1:5187 --code-highlighting-only`.
+
 ## Mode switches
 
 Open `/experiments/mode-switches` and choose one of five light/dark controls in
@@ -746,9 +768,10 @@ Capture its card with `npm run capture:previews --workspace=a1-labs -- http://12
 | File | Responsibility |
 | --- | --- |
 | [src/App.jsx](src/App.jsx) | Route lookup, responsive card gallery, search and sorting |
-| [src/AboutPage.jsx](src/AboutPage.jsx) | Labs overview, A1 Web link and public release notes at `/about` |
+| [src/AboutPage.jsx](src/AboutPage.jsx) | Labs overview and A1 Web link at `/about` |
 | [src/LabsHeader.jsx](src/LabsHeader.jsx) | Shared experiment/About navigation and settings action |
-| [src/release-notes.js](src/release-notes.js) | Numbered changelog sections for the About page |
+| [src/ReleaseNotesPage.jsx](src/ReleaseNotesPage.jsx) | Public release history at `/release-notes` |
+| [src/release-notes.js](src/release-notes.js) | Parses numbered changelog sections for the Release notes page |
 | [src/token-visualizer/TokenVisualizerExperiment.jsx](src/token-visualizer/TokenVisualizerExperiment.jsx) | Labs shell for a1-web's color visualization (lazy-loaded) |
 | [src/loading-preview/LoadingPreviewExperiment.jsx](src/loading-preview/LoadingPreviewExperiment.jsx) | Shared page for the page loaders: viewport, speed, finish/pause/replay, status |
 | [src/loading-preview/SamplePage.jsx](src/loading-preview/SamplePage.jsx) | The sample page every loader loads |
@@ -788,6 +811,7 @@ Capture its card with `npm run capture:previews --workspace=a1-labs -- http://12
 | [src/checkbox-motion/checkbox-model.js](src/checkbox-motion/checkbox-model.js) | Changed-box detection and Select all state |
 | [src/radio-buttons/LivelyRadioGroup.jsx](src/radio-buttons/LivelyRadioGroup.jsx) | A1 RadioGroup with animated radio variants |
 | [src/avatars/LabAvatar.jsx](src/avatars/LabAvatar.jsx) | Configurable avatar and avatar group (candidate A1 Avatar extension) |
+| [src/code-highlighting/HighlightedCode.jsx](src/code-highlighting/HighlightedCode.jsx) | Syntax-highlighted A1 Code and experimental live editor |
 | [src/mode-switches/ModeSwitches.jsx](src/mode-switches/ModeSwitches.jsx) | Five light/dark controls: ball-chain pull cord, sun and moon switch, dial, eclipse, slide switch |
 | [src/mode-switches/mode-model.js](src/mode-switches/mode-model.js) | Mode resolution, cycling, dial detents and cord spring physics |
 | [src/slides/SlideDeck.jsx](src/slides/SlideDeck.jsx) | Reusable deck: scaled stage, layered transitions, morph, builds, navigation |
@@ -796,6 +820,7 @@ Capture its card with `npm run capture:previews --workspace=a1-labs -- http://12
 | [src/timeline/Timeline.jsx](src/timeline/Timeline.jsx) | Reusable timeline: grid layout, measured SVG connectors |
 | [src/timeline/timeline-geometry.js](src/timeline/timeline-geometry.js) | Connector path math and layout choice |
 | [src/timeline/TimelineExperiment.jsx](src/timeline/TimelineExperiment.jsx) | Sample content, device preview and layout control |
+| [src/tabs/StyledTabs.jsx](src/tabs/StyledTabs.jsx) | Eight controlled tab styling treatments |
 | [src/steps/Steps.jsx](src/steps/Steps.jsx) | Eight controlled progress-tab presentations |
 | [src/experiments.js](src/experiments.js) | Experiment IDs, categories, titles, URLs, icons, previews and grouped tree builder and first-release sorting metadata |
 | [scripts/capture-previews.mjs](scripts/capture-previews.mjs) | Static card artwork from the actual experiment renderers |
@@ -871,13 +896,20 @@ is the current-version source of truth. Versioned changes do not imply deploymen
 
 ## Static hosting
 
-For a separate Netlify site, use the repository root as the base directory,
-`npm run build:a1-labs` as the build command and `apps/a1-labs/dist` as the publish
-directory. Configure the site for `labs.a1design.app` separately.
+Labs is configured as its own Netlify project, `a1design-labs`, for
+`https://labs.a1design.app`. Its [Netlify configuration](netlify.toml) uses the
+repository root as base, `apps/a1-labs` as package directory and
+`apps/a1-labs/dist` as output. It runs tests and the full token + Labs build.
 
-[public/_redirects](public/_redirects) provides the SPA fallback needed to load
-experiment URLs directly. Other hosts need an equivalent rewrite to `index.html`.
-Building locally does not deploy the app or configure its domain.
+With Netlify CLI installed and authenticated, run `npm run deploy:a1-labs:preview`
+from the repository root to create a draft, or `npm run deploy:a1-labs` to publish.
+Both commands explicitly target the Labs project. Git/main deployment is linked
+but stopped until the Labs setup has been merged into main.
+
+Read [Publishing Labs](../../packages/react/ai/labs-publishing.md) for the project,
+DNS/TLS setup, release checks and how to enable continuous deployment.
+[public/_redirects](public/_redirects) provides direct-route SPA fallback.
+Building locally alone does not publish.
 
 ## Switch transition 3D
 
@@ -988,3 +1020,20 @@ button that opens experiment navigation. At lg and larger (1,025px+), the tree
 stays visible and the center title is visually hidden, retaining its accessible
 h1. Examples start without introductory summaries; configuration help and
 functional form/status content remain in their appropriate panels.
+
+## Experiments header menu
+
+The shared header’s Experiments menu follows A1 Web’s Components menu: a search
+field, All experiments gallery link, and alphabetical categories with every
+visible experiment. Search shows matching experiment links using the same
+vocabulary as the sidebar, including tags such as Drag. Enter opens the first
+alphabetical match; an empty query keeps category browsing. The mobile navigation
+includes the same search and categories. Hidden experiments remain unlisted.
+The separate Search Labs action still searches pages as well as experiments.
+
+### Focused gallery captures
+
+Use `capture:previews` with `--mobile-tables-only`, `--fit-only` or
+`--segmented-only` to refresh these cards. Captures isolate the device or
+component from Labs navigation and configuration in a 16:9 export. Segmented
+controls use a settled selection so the static preview stays clear.

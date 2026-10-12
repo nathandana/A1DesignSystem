@@ -284,6 +284,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-14","type":"code","summary":"Figma Textarea content controls"},
   ],
   "toolbar": [
+    {"date":"2026-10-11","type":"code","summary":"Toolbar selected state"},
     {"date":"2026-10-11","type":"code","summary":"Toolbar text contrast","ticket":"A1-2698"},
     {"date":"2026-07-07","type":"code","summary":"Toolbar delayed tooltips"},
     {"date":"2026-06-30","type":"code","summary":"Toolbar label — tied to form-label tokens","ticket":"A1-165"},

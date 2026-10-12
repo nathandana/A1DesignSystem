@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+## 0.73.2 — Oct. 12, 2026
+
+- **Publishing setup** — dedicated Netlify configuration and explicit preview/production deployment commands for `labs.a1design.app`. Builds run Labs tests and regenerate shared tokens; direct experiment URLs use the existing SPA fallback. Hashed assets use immutable caching.
+
+## 0.73.1 — Oct. 12, 2026
+
+- **Gallery previews** — recaptured Mobile data tables and Fitted type with only their actual previews, excluding Labs navigation and configuration. Segmented control transitions now shows a settled selection instead of a distorted mid-stretch frame. Capture scripts preserve these compositions on future refreshes.
+
+## 0.73.0 — Oct. 12, 2026
+
+- **Code syntax highlighting** — a new experiment that adds syntax highlighting to the A1 Code block for JSX, CSS, HTML and JSON. Choose Full color, Subtle or Monochrome; highlight lines; show a diff with added and removed lines; inline code in a sentence; and a legend of every token color. Colors stay readable in every theme except Fresh dark. Experimental: live editing that highlights as you type.
+- **Line spacing** — Separated puts lines 28px apart and the rows of a wrapped line 20px apart, so a wrapped line reads as one unit.
+- **Better wrapping in A1 Code** — wrapped lines now continue at their own indentation, line numbers stay level with every wrapped line (they used to drift lower down the block), and a code block that scrolls sideways can be reached and scrolled with the keyboard.
+
+## 0.72.1 — Oct. 11, 2026
+
+- **Folder tab seam** — removes the visible line beneath the current folder tab by overlapping the content border. The selected neutral surface now joins the content sheet; the remaining container border stays visible.
+
+## 0.72.0 — Oct. 11, 2026
+
+- **Tabs** — eight configurable treatments: A1 default, neutral folder tabs, bold selection, pills, outlines, raised surfaces, top rails and bookmarks. Includes optional icons/counts, compact sizing, horizontal overflow and keyboard navigation. Folder tabs sit behind a continuously bordered content sheet. Current tabs have no hover or pressed feedback and reselecting them does not emit a change; tab-strip scrolling respects reduced motion.
+
+## 0.71.0 — Oct. 11, 2026
+
+- **Searchable Experiments menu** — the header now lists every visible experiment in category submenus, matching A1 Web’s Components menu. Search by title, category, type or tag to get direct links; Enter opens the first match. Includes All experiments for the gallery, an empty-results message and the same search in mobile navigation. Clicking a category now keeps its flyout open if hover already opened it.
+
+## 0.70.0 — Oct. 11, 2026
+
+- **Dedicated release notes page** — moves version history from About Labs to `/release-notes`, available through the shared header, About link and sitewide search. Old `/about#release-notes` links redirect to the new page. Notes continue to come directly from the changelog.
+
 ## 0.69.1 — Oct. 11, 2026
 
 - **Avatars: no intro text** — removed the explanatory paragraph above the avatar, so the page opens on the profile.

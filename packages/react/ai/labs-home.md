@@ -128,3 +128,19 @@ Gallery checks recorded Oct. 11, 2026 (0.64.0): breakpoint boundaries from
 390–1441px, document-only scrolling with the header pinned, no horizontal
 overflow, URL-restored sort and sort/count alignment passed. Desktop and phone
 screenshots, and the search overlay, were reviewed.
+
+The shared header and sitewide search include `/release-notes`. About links to
+that page; only ReleaseNotesPage renders the changelog history. Legacy
+`/about#release-notes` addresses redirect to the dedicated page.
+
+## Experiments header menu
+
+`LabsHeader` composes A1 TopHeader’s `menuHeader` slot and nested `items`, the
+same pattern as A1 Web’s Components menu. `experiment-menu.js` derives categories
+and links from `experimentTree` (the single search vocabulary and hidden-item
+filter), with alphabetical direct links while searching. Keep All experiments
+as the first link to `/`. Enter navigates only for a nonempty query with a match;
+no-results feedback uses a polite status. TopHeader owns desktop flyouts, mobile
+groups, dismissal and focus handling. Do not add a separate menu implementation
+or duplicate the experiment registry. The menu is active on the gallery and
+experiment routes; the active experiment/category is marked in its items.

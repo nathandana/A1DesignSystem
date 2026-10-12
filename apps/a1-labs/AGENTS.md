@@ -79,3 +79,9 @@ For long-table page navigation variants and the shared render callback:
 For shared Labs datasets, size presets and the consolidation audit:
 
 [Sample data](../../packages/react/ai/labs-sample-data.md).
+
+For tab styling, current-tab feedback and neutral folder selection:
+
+[Tabs](../../packages/react/ai/labs-tabs.md).
+
+[Publishing Labs](../../packages/react/ai/labs-publishing.md) — separate Netlify project, build configuration, domain and release workflow.

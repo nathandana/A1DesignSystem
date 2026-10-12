@@ -63,14 +63,14 @@ export function TabList({ children }) {
     const elRect = el.getBoundingClientRect();
     const aRect = active.getBoundingClientRect();
     if (aRect.left < elRect.left) {
-      el.scrollBy({ left: aRect.left - elRect.left - pad, behavior: "smooth" });
+      el.scrollBy({ left: aRect.left - elRect.left - pad, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     } else if (aRect.right > elRect.right) {
-      el.scrollBy({ left: aRect.right - elRect.right + pad, behavior: "smooth" });
+      el.scrollBy({ left: aRect.right - elRect.right + pad, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     }
   }, [value, enableScroll]);
 
   const scrollBy = (dir) => {
-    scrollRef.current?.scrollBy({ left: dir * 200, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: dir * 200, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   };
 
   const handleKeyDown = (e) => {
@@ -153,7 +153,7 @@ export function Tab({ children, value: tabValue, count, icon, iconPosition = "st
         iconPosition === "above" && "a1-tab--icon-above",
         status && `a1-tab--status-${status}`,
       ].filter(Boolean).join(" ")}
-      onClick={() => onChange?.(tabValue)}
+      onClick={() => { if (!isSelected) onChange?.(tabValue); }}
     >
       {variant === "progress" && (
         <span className="a1-tab__step" aria-hidden="true">

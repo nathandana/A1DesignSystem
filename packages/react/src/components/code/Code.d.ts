@@ -3,7 +3,7 @@ import * as React from "react";
 export interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   /** Code presentation. Inline keeps minimal padding for prose; block renders a preformatted block. Default: "inline" */
   variant?: "inline" | "block";
-  /** Allow long inline snippets or block code to wrap. Default: false */
+  /** Allow long inline snippets or block code to wrap. Wrapped block lines hang at their own indentation. Default: false */
   wrapping?: boolean;
   /** Show a small tertiary copy button at the bottom-left of the code block. Default: false */
   copyCode?: boolean;
@@ -25,3 +25,12 @@ export interface CodeProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export declare function Code(props: CodeProps): React.ReactElement;
+
+/**
+ * Width of a line's leading spaces and tabs in character cells (tabs advance to
+ * the next tab stop of 8). Code uses it as a hanging indent for wrapped lines;
+ * when passing element children (e.g. highlighted spans) with `wrapping`, wrap
+ * each line in `<span className="a1-code-block__line" style={{ "--a1-code-indent": n }}>`
+ * followed by a newline so continuation lines and line numbers stay aligned.
+ */
+export declare function codeLineIndent(line: string): number;

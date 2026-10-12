@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- **Code: wrapped lines keep their indentation** — with `wrapping`, continuation rows of an indented line (spaces or tabs) now align with that line's code instead of the block's left edge. Plain-text children render as per-line spans; the new `codeLineIndent(line)` export gives the same indent for element children (e.g. highlighted spans). New "Wrapping with indentation and line numbers" story.
+- **Code: line numbers stay aligned when wrapping** — each wrapped line's number was rounded up to a whole pixel, drifting about 0.6px per line down the block; numbers now use exact heights.
+- **Code: line spacing hooks** — `--a1-code-line-height` and `--a1-code-line-gap` (unset by default, so nothing changes) set the line height and the space between logical lines for the code, line-number gutter and wrap measurement together.
+- **Code: scrollable blocks are keyboard-reachable** — a read-only block whose lines overflow sideways becomes a focusable region named "Scrollable code" (`code.scrollRegion`, 7 locales) with the focus ring, fixing axe `scrollable-region-focusable`. Short blocks add no tab stop.
+
+- **Current tabs** — selected tabs and counts no longer change appearance on hover or press; reselecting the current tab does not emit a change. Horizontal tab scrolling respects reduced motion.
+
+- **Category flyout activation** — clicking a header category keeps its submenu open when hover opened it first; keyboard and touch opening remain available.
+
+- **Toolbar selected state is clear in dark mode** — selected toggles and group items now use the same treatment as a selected SegmentedControl segment: the page surface with `semantic.shadow.xs`, on the raised bar. In dark mode the selected fill now reaches 1.55:1 against the bar (from about 1.15:1 with the old 16% shade). The overflow menu's inline active item matches, a focused selected tool keeps its focus ring, and hover on a pressed toggle darkens the selected fill. Visual baselines for Toolbar stories will change.
+
 - **DataTable `paginationPosition="both"`** — renders the result count and page controls above and below the rows. Both copies share one page/page-size state; their navigation landmarks are named "Pagination above table" and "Pagination below table". `renderPagination` now also receives `placement` (`"top" | "bottom" | "inline"`) and, for both, that `label`. Includes types, a PaginationBoth story and the A1 Web configurator option.
 
 - **TopHeader `endContent`** — new optional `ReactNode` rendered in the end zone after `actions`, inside the header's surface and bottom border, for compact composed controls such as an inline appearance switcher. Previously such controls had to sit beside the TopHeader, where its bottom border stopped short of them. Includes types, an "End content" Storybook story and the A1 Web configurator toggle. Runtime-only: not in page JSON or Figma.

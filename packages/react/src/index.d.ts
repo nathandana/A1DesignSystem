@@ -41,7 +41,7 @@ export { SplitButton } from "./components/split-button/SplitButton";
 export { ButtonContainer } from "./components/button-container/ButtonContainer";
 export { Card } from "./components/card/Card";
 export { Cluster } from "./components/cluster/Cluster";
-export { Code } from "./components/code/Code";
+export { Code, codeLineIndent } from "./components/code/Code";
 export { DefinitionList } from "./components/definition-list/DefinitionList";
 export { Dialog } from "./components/dialog/Dialog";
 export { Divider } from "./components/divider/Divider";

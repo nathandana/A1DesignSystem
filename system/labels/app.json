@@ -230,20 +230,6 @@
             "ar": "البدء"
           }
         },
-        "labs": {
-          "$type": "string",
-          "$value": "Labs",
-          "$description": "Labs page title for experimental patterns and proposed components.",
-          "locale": {
-            "es": "Laboratorios",
-            "fr": "Labos",
-            "de": "Labs",
-            "pt": "Labs",
-            "ja": "ラボ",
-            "zh": "实验室",
-            "ar": "المختبرات"
-          }
-        },
         "patterns": {
           "$type": "string",
           "$value": "Patterns",
@@ -1902,42 +1888,6 @@
         }
       },
       "labs": {
-        "description": {
-          "$type": "string",
-          "$value": "Explore experiments for patterns and proposed components before they become system guidance.",
-          "$description": "Introductory description for the Labs page.",
-          "locale": { "es": "Explora experimentos para patrones y componentes propuestos antes de que se conviertan en guía del sistema.", "fr": "Explorez des expérimentations de modèles et de composants proposés avant qu’ils ne deviennent des recommandations du système.", "de": "Erkunde Experimente für Muster und vorgeschlagene Komponenten, bevor sie zur Systemrichtlinie werden.", "pt": "Explore experimentos para padrões e componentes propostos antes que se tornem orientação do sistema.", "ja": "パターンや提案コンポーネントがシステムガイダンスになる前に、実験として確認できます。", "zh": "在模式和拟议组件成为系统指南之前，先探索相关实验。", "ar": "استكشف تجارب للأنماط والمكوّنات المقترحة قبل أن تصبح إرشادات للنظام." }
-        },
-        "searchLabel": {
-          "$type": "string",
-          "$value": "Search labs",
-          "$description": "Accessible label for the Labs sidebar search field.",
-          "locale": { "es": "Buscar laboratorios", "fr": "Rechercher dans les labos", "de": "Labs durchsuchen", "pt": "Pesquisar labs", "ja": "ラボを検索", "zh": "搜索实验室", "ar": "البحث في المختبرات" }
-        },
-        "treeLabel": {
-          "$type": "string",
-          "$value": "Labs experiments",
-          "$description": "Accessible label for the Labs experiment tree menu.",
-          "locale": { "es": "Experimentos de laboratorio", "fr": "Expériences des labos", "de": "Lab-Experimente", "pt": "Experimentos de labs", "ja": "ラボの実験", "zh": "实验室实验", "ar": "تجارب المختبرات" }
-        },
-        "treeRoot": {
-          "$type": "string",
-          "$value": "Experiments",
-          "$description": "Root tree item label for Labs experiments.",
-          "locale": { "es": "Experimentos", "fr": "Expériences", "de": "Experimente", "pt": "Experimentos", "ja": "実験", "zh": "实验", "ar": "التجارب" }
-        },
-        "dobGroupTitle": {
-          "$type": "string",
-          "$value": "Date of birth inputs",
-          "$description": "Labs tree group for date of birth input experiments.",
-          "locale": { "es": "Entradas de fecha de nacimiento", "fr": "Champs de date de naissance", "de": "Geburtsdatum-Eingaben", "pt": "Entradas de data de nascimento", "ja": "生年月日入力", "zh": "出生日期输入", "ar": "إدخالات تاريخ الميلاد" }
-        },
-        "generalGroupTitle": {
-          "$type": "string",
-          "$value": "General",
-          "$description": "Labs tree group for general experiments.",
-          "locale": { "es": "General", "fr": "Général", "de": "Allgemein", "pt": "Geral", "ja": "一般", "zh": "通用", "ar": "عام" }
-        },
         "prototypeTitle": {
           "$type": "string",
           "$value": "Prototype",
@@ -1979,24 +1929,6 @@
           "$value": "Year",
           "$description": "Date of birth input label for year.",
           "locale": { "es": "Año", "fr": "Année", "de": "Jahr", "pt": "Ano", "ja": "年", "zh": "年", "ar": "السنة" }
-        },
-        "selectMonthOption": {
-          "$type": "string",
-          "$value": "Select month",
-          "$description": "Empty option for date of birth month select.",
-          "locale": { "es": "Seleccionar mes", "fr": "Sélectionner le mois", "de": "Monat auswählen", "pt": "Selecionar mês", "ja": "月を選択", "zh": "选择月份", "ar": "اختر الشهر" }
-        },
-        "selectDayOption": {
-          "$type": "string",
-          "$value": "Select day",
-          "$description": "Empty option for date of birth day select.",
-          "locale": { "es": "Seleccionar día", "fr": "Sélectionner le jour", "de": "Tag auswählen", "pt": "Selecionar dia", "ja": "日を選択", "zh": "选择日期", "ar": "اختر اليوم" }
-        },
-        "selectYearOption": {
-          "$type": "string",
-          "$value": "Select year",
-          "$description": "Empty option for date of birth year select.",
-          "locale": { "es": "Seleccionar año", "fr": "Sélectionner l’année", "de": "Jahr auswählen", "pt": "Selecionar ano", "ja": "年を選択", "zh": "选择年份", "ar": "اختر السنة" }
         },
         "normalizedValueLabel": {
           "$type": "string",
@@ -2189,78 +2121,6 @@
           "$value": "Whether automatic zero-padding, focus movement, and year expansion feel helpful or too active.",
           "$description": "Observation prompt for separate autoformatting date of birth fields.",
           "locale": { "es": "Si el relleno automático con cero, el movimiento del foco y la expansión del año se sienten útiles o demasiado activos.", "fr": "Voir si l’ajout automatique de zéros, le déplacement du focus et l’expansion de l’année aident ou semblent trop actifs.", "de": "Ob automatische Nullauffüllung, Fokusbewegung und Jahr-Erweiterung hilfreich oder zu aktiv wirken.", "pt": "Se zeros automáticos, movimento do foco e expansão do ano parecem úteis ou ativos demais.", "ja": "自動ゼロ埋め、フォーカス移動、年の展開が役立つか、過剰に感じられるか。", "zh": "自动补零、焦点移动和年份展开是有帮助，还是过于主动。", "ar": "ما إذا كانت إضافة الأصفار تلقائيًا ونقل التركيز وتوسيع السنة مفيدة أو نشطة أكثر من اللازم." }
-        },
-        "patternAssemblyBenchTitle": {
-          "$type": "string",
-          "$value": "Pattern assembly bench",
-          "$description": "Initial placeholder experiment title on the Labs page.",
-          "locale": { "es": "Mesa de ensamblaje de patrones", "fr": "Banc d’assemblage de modèles", "de": "Muster-Montagefläche", "pt": "Bancada de montagem de padrões", "ja": "パターン組み立てベンチ", "zh": "模式组装台", "ar": "منضدة تجميع الأنماط" }
-        },
-        "patternAssemblyBenchSummary": {
-          "$type": "string",
-          "$value": "A placeholder for assembling patterns and proposed components before they become production guidance.",
-          "$description": "Summary for the initial Labs placeholder experiment.",
-          "locale": { "es": "Un marcador para ensamblar patrones y componentes propuestos antes de que se conviertan en guía de producción.", "fr": "Un emplacement pour assembler des modèles et des composants proposés avant qu’ils ne deviennent des recommandations de production.", "de": "Ein Platzhalter zum Zusammenstellen von Mustern und vorgeschlagenen Komponenten, bevor sie zur Produktionsrichtlinie werden.", "pt": "Um espaço reservado para montar padrões e componentes propostos antes que se tornem orientação de produção.", "ja": "パターンや提案コンポーネントが本番向けガイダンスになる前に組み立てるためのプレースホルダーです。", "zh": "用于在模式和拟议组件成为生产指南之前进行组装的占位区域。", "ar": "مساحة مؤقتة لتجميع الأنماط والمكوّنات المقترحة قبل أن تصبح إرشادات إنتاج." }
-        },
-        "placeholderBadge": {
-          "$type": "string",
-          "$value": "Placeholder",
-          "$description": "Badge label indicating the Labs page is an initial placeholder.",
-          "locale": { "es": "Marcador", "fr": "Emplacement", "de": "Platzhalter", "pt": "Marcador", "ja": "プレースホルダー", "zh": "占位", "ar": "عنصر نائب" }
-        },
-        "experimentEyebrow": {
-          "$type": "string",
-          "$value": "Experiment",
-          "$description": "Eyebrow label above the selected Labs experiment title.",
-          "locale": { "es": "Experimento", "fr": "Expérience", "de": "Experiment", "pt": "Experimento", "ja": "実験", "zh": "实验", "ar": "تجربة" }
-        },
-        "placeholderTitle": {
-          "$type": "string",
-          "$value": "This lab is ready for experiments",
-          "$description": "Empty-state title for the placeholder Labs experiment.",
-          "locale": { "es": "Este laboratorio está listo para experimentos", "fr": "Ce labo est prêt pour les expériences", "de": "Dieses Lab ist bereit für Experimente", "pt": "Este lab está pronto para experimentos", "ja": "このラボは実験の準備ができています", "zh": "此实验室已准备好开展实验", "ar": "هذا المختبر جاهز للتجارب" }
-        },
-        "placeholderDescription": {
-          "$type": "string",
-          "$value": "Use this space to assemble pattern drafts, component proposals, and interaction studies as they become ready to review.",
-          "$description": "Empty-state description for the placeholder Labs experiment.",
-          "locale": { "es": "Usa este espacio para ensamblar borradores de patrones, propuestas de componentes y estudios de interacción cuando estén listos para revisión.", "fr": "Utilisez cet espace pour assembler des brouillons de modèles, des propositions de composants et des études d’interaction lorsqu’ils sont prêts à être relus.", "de": "Nutze diesen Bereich, um Musterentwürfe, Komponentenvorschläge und Interaktionsstudien zusammenzustellen, sobald sie prüfbereit sind.", "pt": "Use este espaço para montar rascunhos de padrões, propostas de componentes e estudos de interação quando estiverem prontos para revisão.", "ja": "レビュー準備が整ったパターンドラフト、コンポーネント提案、インタラクション調査をここで組み立てます。", "zh": "当模式草稿、组件提案和交互研究准备好评审时，可在此处进行组装。", "ar": "استخدم هذه المساحة لتجميع مسودات الأنماط ومقترحات المكوّنات ودراسات التفاعل عندما تصبح جاهزة للمراجعة." }
-        },
-        "whatFitsTitle": {
-          "$type": "string",
-          "$value": "What belongs here",
-          "$description": "Labs guidance card heading for appropriate experiment content.",
-          "locale": { "es": "Qué corresponde aquí", "fr": "Ce qui appartient ici", "de": "Was hierher gehört", "pt": "O que pertence aqui", "ja": "ここに置くもの", "zh": "这里适合放什么", "ar": "ما الذي ينتمي إلى هنا" }
-        },
-        "whatFitsBody": {
-          "$type": "string",
-          "$value": "Draft patterns, proposed components, and exploratory workflows that need a visible review surface.",
-          "$description": "Labs guidance copy describing what content belongs on the page.",
-          "locale": { "es": "Borradores de patrones, componentes propuestos y flujos exploratorios que necesitan una superficie visible de revisión.", "fr": "Des brouillons de modèles, des composants proposés et des flux exploratoires qui nécessitent une surface de revue visible.", "de": "Musterentwürfe, vorgeschlagene Komponenten und explorative Workflows, die eine sichtbare Prüffläche brauchen.", "pt": "Rascunhos de padrões, componentes propostos e fluxos exploratórios que precisam de uma área visível de revisão.", "ja": "見えるレビュー面が必要なパターンドラフト、提案コンポーネント、探索的ワークフロー。", "zh": "需要可见评审界面的模式草稿、拟议组件和探索性工作流。", "ar": "مسودات الأنماط والمكوّنات المقترحة وسير العمل الاستكشافي التي تحتاج إلى مساحة مراجعة مرئية." }
-        },
-        "nextTitle": {
-          "$type": "string",
-          "$value": "Next slice",
-          "$description": "Labs guidance card heading for the expected follow-up work.",
-          "locale": { "es": "Siguiente parte", "fr": "Prochaine tranche", "de": "Nächster Abschnitt", "pt": "Próxima fatia", "ja": "次のスライス", "zh": "下一步切片", "ar": "الشريحة التالية" }
-        },
-        "nextBody": {
-          "$type": "string",
-          "$value": "Replace this placeholder with the first real experiment and keep each experiment deep-linkable.",
-          "$description": "Labs guidance copy describing the expected next implementation slice.",
-          "locale": { "es": "Reemplaza este marcador con el primer experimento real y mantén enlaces directos para cada experimento.", "fr": "Remplacez cet emplacement par la première vraie expérience et conservez un lien direct pour chaque expérience.", "de": "Ersetze diesen Platzhalter durch das erste echte Experiment und halte jedes Experiment direkt verlinkbar.", "pt": "Substitua este marcador pelo primeiro experimento real e mantenha cada experimento com link direto.", "ja": "このプレースホルダーを最初の実際の実験に置き換え、各実験をディープリンク可能に保ちます。", "zh": "用第一个真实实验替换此占位内容，并保持每个实验都可深度链接。", "ar": "استبدل هذا العنصر النائب بأول تجربة حقيقية واجعل كل تجربة قابلة للرابط المباشر." }
-        },
-        "noResultsTitle": {
-          "$type": "string",
-          "$value": "No labs found",
-          "$description": "Empty-state title when Labs sidebar search has no matches.",
-          "locale": { "es": "No se encontraron laboratorios", "fr": "Aucun labo trouvé", "de": "Keine Labs gefunden", "pt": "Nenhum lab encontrado", "ja": "ラボが見つかりません", "zh": "未找到实验室", "ar": "لم يتم العثور على مختبرات" }
-        },
-        "noResultsBody": {
-          "$type": "string",
-          "$value": "Try a different experiment name or clear the search.",
-          "$description": "Empty-state description when Labs sidebar search has no matches.",
-          "locale": { "es": "Prueba con otro nombre de experimento o borra la búsqueda.", "fr": "Essayez un autre nom d’expérience ou effacez la recherche.", "de": "Versuche einen anderen Experimentnamen oder lösche die Suche.", "pt": "Tente outro nome de experimento ou limpe a pesquisa.", "ja": "別の実験名を試すか、検索をクリアしてください。", "zh": "请尝试其他实验名称或清除搜索。", "ar": "جرّب اسم تجربة مختلفًا أو امسح البحث." }
         }
       },
       "action": {
