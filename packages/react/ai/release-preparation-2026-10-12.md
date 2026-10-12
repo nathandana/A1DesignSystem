@@ -59,7 +59,9 @@ valid group role. No screenshot thresholds or accessibility checks were relaxed.
 
 The final non-updating release gate passed all 13 suites, including all 273
 production routes, the core-theme breakpoint matrix and article deep-link/history
-checks. Logs and reviewed captures are retained in
+checks. The final copy-only newsletter headline adjustment was then checked
+with the blog index and article route gates (3 tests, including deep-link/history
+coverage); both reviewed baselines were refreshed. Logs and reviewed captures are retained in
 `/tmp/a1-release-prep-2026-10-12/`.
 
 Lint retains 46 existing warnings and zero errors. Vite reports the existing
@@ -69,9 +71,23 @@ was added.
 
 ## Publication and rollback
 
-The user requested publication on the A1 website, including release notes and
-the release blog post. Website publication does not publish npm packages or
-merge release to main. Labs 0.73.2 is already live on its separate site.
+Published A1 Web 0.34.0 on Oct. 12, 2026:
+
+- Release notes: https://a1design.app/releases
+- Newsletter: https://a1design.app/blog/a1-034-labs-and-component-refinements
+- Final Netlify deploy: `6acce5590061e5497fc09fcd`
+- Immutable preview: https://6acce5590061e5497fc09fcd--a1designsystem.netlify.app
+
+The production-context build was verified on its draft URL and promoted
+unchanged. Live checks passed for A1 Web and React release notes, the blog index,
+article direct links and reload, homepage, Button page, editor, missing public
+project route, newsletter image and mobile layouts. No browser page errors were
+observed. Netlify's published deployment ID was checked against the expected ID.
+The final newsletter headline is “A1 0.34.0 opens Labs,” shortened after mobile
+review to avoid awkward word breaks without changing component styling.
+
+Website publication does not publish npm packages, create a GitHub release/tag
+or merge release to main. Labs 0.73.2 remains live on its separate site.
 
 The previous A1 Web production deployment is
 `6ab6a1b144a3550008afb4ff` (main at `b8fc8fb9`). Restore that Netlify deployment to

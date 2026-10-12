@@ -2,7 +2,7 @@ export const BLOG_POSTS = [
   {
     "id": "release-034-labs-and-component-refinements",
     "slug": "a1-034-labs-and-component-refinements",
-    "title": "A1 0.34.0 introduces Labs and more flexible components",
+    "title": "A1 0.34.0 opens Labs",
     "kicker": "Release newsletter",
     "date": "Oct. 12, 2026",
     "version": "0.34.0",
