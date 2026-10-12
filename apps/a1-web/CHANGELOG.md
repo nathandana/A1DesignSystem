@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.34.0 — 2026-10-12
+
+- **Color visualization accessibility** — gave the interactive 3D wrapper a group role so its accessible label is valid. Release captures now wait for the selected token label before comparing the scene.
+
+- **Standalone A1 Labs** (A1-2698) — published 51 configurable experiments at https://labs.a1design.app, with searchable categories, responsive previews, theme and mode controls, and its own versioned release notes. Experimental implementations remain isolated from the shared component library.
+
 - **Code wrapping and scrolling** — Code blocks across A1 Web keep indentation on wrapped lines, keep line numbers level with wrapped lines, and can be scrolled with the keyboard when lines overflow (shared React fix).
 
 - **Current tabs** — selected tabs and counts no longer change appearance on hover or press; reselecting the current tab does not emit a change. Horizontal tab scrolling respects reduced motion.
@@ -26,7 +32,7 @@
 
 - **DataTable pagination placement** — `paginationPosition="top" | "bottom"` places the result count and page controls above or below the rows, defaulting to bottom. `paginationSize="sm" | "md"` controls page button size (default small). Includes Storybook, types, A1 Web configurator/snippets and editor support; used by the Labs Table pagination experiment.
 
-- **Date-of-birth studies in Labs** — the existing 7 studies now share their implementation with standalone A1 Labs. Existing A1 Web routes remain available. Removed local field-width overrides in favor of shared A1 field layouts and added visible labels to formatted date parts.
+- **Date-of-birth studies in Labs** — the existing 7 studies now live in standalone A1 Labs. The former A1 Web Labs route has been removed. Removed local field-width overrides in favor of shared A1 field layouts and added visible labels to formatted date parts.
 
 - **StatusBar pause control** — added `showPauseControl` (default `true`) so automatic verification flows can omit the delayed animation pause/play button while preserving reduced-motion behavior. Includes the Storybook example, property documentation and A1 Web configurator/editor support.
 

@@ -158,6 +158,11 @@ test('every release route loads, matches its visual baseline and clears the acce
         expect(response.status(), `${route.path} returned HTTP ${response.status()}`).toBeLessThan(400)
 
         await waitForStablePage(page)
+        if (route.path === '/foundations/color-visualization') {
+          // The lazy Three.js scene renders after the page shell and fonts.
+          // Its selected token label appears only when the scene is mounted.
+          await expect(page.locator('.a1-web-color-space-label').first()).toBeVisible()
+        }
         expect(runtimeErrors, `${route.path} raised an uncaught browser error`).toEqual([])
 
         const article = BLOG_POSTS.find((post) => route.path === `/blog/${post.slug}`)

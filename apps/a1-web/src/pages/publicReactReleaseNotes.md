@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.33.0 — 2026-10-12
+
+### Highlights
+
+- **Flexible DataTable pagination** — New placement and size options include top, bottom, both and inline controls. The optional `renderPagination` callback supports custom page navigation without replacing table state or filtering.
+- **TopHeader end content** — Compose additional controls inside the header's end zone with `endContent`.
+- **Accessible Code improvements** — Wrapped lines preserve indentation and accurate line numbers. Overflowing read-only blocks become named keyboard-scrollable regions; `codeLineIndent` supports highlighted content.
+- **Consistent control feedback** — Selected tabs no longer react to hover or reselection, bordered buttons match standard heights, zebra rows stripe correctly and Toolbar selections remain clear in dark mode.
+- **Layout and motion controls** — Document-scroll headers stay sticky, PageLayout side panels have distinct landmark names and StatusBar supports optional pause controls. Tab scrolling respects reduced motion.
+- **Labs tokens** — New experiment-specific token families support portable studies without changing the shared components into experimental variants.
+
 ## 0.32.0 — 2026-09-25
 
 ### Highlights

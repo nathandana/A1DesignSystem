@@ -625,3 +625,10 @@ no pause control. See [the contract](labs-verification-journey.md).
 Shared `ResponsivePreviewFrame.jsx` and `preview-scale.js` fit both available
 axes, subtracting bezel, caption, host padding/panel boundaries and visible
 BottomSheet height. Device dimensions and iframe scroll remain unchanged.
+
+### Color visualization release checks
+
+The Three.js Canvas wrapper has `role="group"` so its descriptive label is
+valid. The A1 Web route check waits for the selected token label before its
+screenshot; page-shell readiness does not guarantee the lazy 3D scene has
+rendered. The existing token controls provide the keyboard alternative.

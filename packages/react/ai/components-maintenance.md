@@ -7,6 +7,7 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-10-12 | **Release preparation:** versioned A1 Web 0.34.0, React 0.33.0, Pure CSS 0.3.0 and MCP 0.1.2; prepared public notes and the Labs release newsletter; synchronized the Code export inventory and MCP initialization version. Labs remains 0.73.2. Validation and publication are recorded in `release-preparation-2026-10-12.md`. |
 | 2026-10-12 | **Labs published**: promoted verified v0.73.2 deploy `6accda1f7e136c3f40f7bd7d` to labs.a1design.app. Live routes, preview assets, iframe/lazy rendering and HTTPS redirect checked. Automatic Git builds remain stopped pending merge. Deployment only; no application or CSS changes. |
 | 2026-10-12 | **Labs publishing**: 0.73.2 adds a dedicated Netlify configuration, test/token/build pipeline and explicit Labs draft/production commands. Creates the separate a1design-labs project, links GitHub/main with builds stopped until merge, and assigns labs.a1design.app with managed DNS/TLS. No CSS changes. |
 | 2026-10-12 | **Labs preview framing**: 0.73.1 recaptures Mobile data tables, Fitted type and Segmented control transitions. Isolates the actual viewport/component in 16:9; selected segment is settled. Updates repeatable capture instructions and alt text. No application CSS changes. |

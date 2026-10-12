@@ -231,3 +231,7 @@ For shared Labs datasets, size presets and the consolidation audit:
 [Tabs](packages/react/ai/labs-tabs.md).
 
 [Publishing Labs](packages/react/ai/labs-publishing.md).
+
+For the Oct. 12 release scope, verification and website publication:
+
+@packages/react/ai/release-preparation-2026-10-12.md

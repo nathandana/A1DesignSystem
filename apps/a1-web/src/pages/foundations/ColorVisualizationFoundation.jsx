@@ -279,6 +279,7 @@ function ColorScene({
         camera={{ position: [7, 5.5, 7], fov: 46, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         fallback={<p className="a1-web-color-space-fallback">This browser cannot render the 3D color space.</p>}
+        role="group"
         aria-label="Interactive OKLCH color token space. Drag to orbit, scroll to zoom, and use the token selector for an accessible alternative."
       >
         <ambientLight intensity={1.7} />

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.3.0 — 2026-10-12
+
+- **Labs token families** (A1-2698) — includes tokens for avatars, code highlighting, celebrations, slides, timelines, page construction and loading, fitted type, contextual help, password strength, mode switches, and animated radio, checkbox, accordion, dialog and segmented-control studies. Experiment implementations remain isolated in A1 Labs.
+
 - **Chat experiment tokens** — added transcript/message dimensions, entrance geometry and simulated reply pacing. Shared component behavior is unchanged.
 
 - **Magnetic reordering tokens** — added snap-distance aliases, attraction, hysteresis and spring stiffness/damping for the isolated Labs grid option.

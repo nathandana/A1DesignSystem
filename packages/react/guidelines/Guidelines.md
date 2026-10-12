@@ -86,7 +86,7 @@ export, by category:
 
 - **Layout:** `CustomBlock` `Section` `SectionSeparator` `Card` `Stack` `Cluster` `Grid` `GridItem` `gridItemSpanClassNames` `Bleed` `Inset` `Spacer` `Inverse` `PageLayout` `ButtonContainer` `StickyActions`
 - **Media:** `Avatar` `Figure`
-- **Typography:** `Heading` `HeadingMark` `Paragraph` `Blockquote` `List` `ListItem` `Code` `Divider`
+- **Typography:** `Heading` `HeadingMark` `Paragraph` `Blockquote` `List` `ListItem` `Code` `codeLineIndent` `Divider`
 - **Actions & controls:** `Button` `SplitButton` `IconButton` `ActionTiles` `ActionTile` `Chip` `ChipGroup` `Switch` `SegmentedControl` `Slider` `Toolbar` `ToolbarToggle` `ToolbarButton` `ToolbarGroup` `ToolbarMenu` `ToolbarDivider` `TOOLBAR_NONE_ICON` `Accordion` `Tabs` `TabList` `Tab` `TabPanel` `Link`
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`
 - **Inputs:** `TextField` `SearchField` `NumberField` `DateField` `TimeField` `PhoneField` `ZipField` `ZIP_MASKS` `CreditCardField` `TextareaField` `SelectField` `Autocomplete` `CheckboxGroup` `RadioGroup` `ChoiceGroup` `Fieldset` `FieldRow` `InlineEditable` `TokenSelect`

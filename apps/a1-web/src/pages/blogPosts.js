@@ -1,5 +1,58 @@
 export const BLOG_POSTS = [
   {
+    "id": "release-034-labs-and-component-refinements",
+    "slug": "a1-034-labs-and-component-refinements",
+    "title": "A1 0.34.0 introduces Labs and more flexible components",
+    "kicker": "Release newsletter",
+    "date": "Oct. 12, 2026",
+    "version": "0.34.0",
+    "image": "/blog/labs-tabs.png",
+    "imageAlt": "The A1 Labs tab styling experiment with folder tabs and a content panel.",
+    "description": "A dedicated home for 51 interface experiments, flexible table pagination and refinements to everyday controls.",
+    "keywords": [
+      "release",
+      "0.34.0",
+      "labs",
+      "experiments",
+      "pagination",
+      "tabs",
+      "code",
+      "accessibility"
+    ],
+    "subtitle": "Explore interface ideas in Labs and use the shared component improvements in A1.",
+    "sections": [
+      {
+        "title": "A dedicated home for experiments",
+        "body": [
+          "A1 Labs is now available at labs.a1design.app with 51 configurable studies. The gallery covers AI feedback, page loading, forms, data tables, navigation, motion and token presentation. Searchable categories and tags help you find related ideas.",
+          "Each experiment keeps its implementation and styles isolated so a validated pattern can be brought into A1. Theme, appearance and responsive controls help compare behavior. Labs maintains its own version history and release notes; its current version is 0.73.2."
+        ]
+      },
+      {
+        "title": "Page navigation that fits the table",
+        "body": [
+          "DataTable can place pagination above, below or on both sides of its rows. Inline placement puts the controls beside filters when space is available and wraps them on smaller screens.",
+          "The pagination size is configurable. Applications can also provide custom page controls through renderPagination while retaining the table’s result count, page-size selection, sorting and filtering."
+        ]
+      },
+      {
+        "title": "Clearer feedback in everyday components",
+        "body": [
+          "Current tabs remain visually steady on hover and do not emit another change when reselected. Header categories stay open when a click follows hover, and toolbar selections are easier to distinguish in dark mode.",
+          "Bordered buttons now match the standard control heights and DataTable zebra rows stripe the intended rows. TopHeader accepts composed end content, including appearance controls."
+        ]
+      },
+      {
+        "title": "Code and layouts that hold together",
+        "body": [
+          "Wrapped code preserves indentation and keeps line numbers aligned. Read-only code that overflows becomes keyboard-scrollable, with a named region and a visible focus indicator.",
+          "Document-scroll headers remain sticky, responsive previews fit the available height as well as width, and automatic verification flows can omit StatusBar’s pause control. Reduced-motion behavior remains available."
+        ]
+      }
+    ]
+  },
+
+  {
     id: 'release-033-custom-blocks-and-figma',
     slug: 'a1-033-custom-blocks-and-figma-standards',
     title: 'A1 0.33.0 adds custom blocks and Figma standards',

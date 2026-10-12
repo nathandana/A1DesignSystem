@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.1.2 — 2026-10-12
+
+- **Reported server version** — MCP initialization now reads the package version instead of reporting the original hardcoded 0.1.0.
+
+- **Labs and shared component contracts** (A1-2698) — refreshed the static index with Labs token families, DataTable pagination configuration, TopHeader end content, StatusBar pause control, Code wrapping utilities and updated agent guidance.
+
 ## 0.1.1 — 2026-09-25
 
 - **Custom block** (A1-2541) — Indexed the CustomBlock React API, usage rules, tokens and JSON authoring contract, including the last-resort and sandbox boundaries.

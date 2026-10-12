@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.33.0 — 2026-10-12
+
+- **Package export documentation** — included `codeLineIndent` in the shipped guidelines export inventory.
+
+- **Labs token families** (A1-2698) — includes tokens for avatars, code highlighting, celebrations, slides, timelines, page construction and loading, fitted type, contextual help, password strength, mode switches, and animated radio, checkbox, accordion, dialog and segmented-control studies. Experiment implementations remain isolated in A1 Labs.
+
 - **Code: wrapped lines keep their indentation** — with `wrapping`, continuation rows of an indented line (spaces or tabs) now align with that line's code instead of the block's left edge. Plain-text children render as per-line spans; the new `codeLineIndent(line)` export gives the same indent for element children (e.g. highlighted spans). New "Wrapping with indentation and line numbers" story.
 - **Code: line numbers stay aligned when wrapping** — each wrapped line's number was rounded up to a whole pixel, drifting about 0.6px per line down the block; numbers now use exact heights.
 - **Code: line spacing hooks** — `--a1-code-line-height` and `--a1-code-line-gap` (unset by default, so nothing changes) set the line height and the space between logical lines for the code, line-number gutter and wrap measurement together.

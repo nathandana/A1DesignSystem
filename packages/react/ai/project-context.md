@@ -48,6 +48,7 @@ This file is the entry point for all agents and AI assistants working in this re
 - `packages/react/ai/labs-frosted-glass.md` — Labs frosted glass visual study: `FrostedGlass`/`GlassPane` API, the backdrop-root technique, its user-approved raw-value/token exception and validation.
 - `packages/react/ai/labs-button-completion.md` — Labs button-completion experiment (fixed-width and expanding send buttons): API, token dependencies, states and validation/promotion guidance.
 - `packages/react/ai/labs-contributing.md` — Labs contribution workflow, sidebar categories, agent instruction maintenance and synchronized app version/changelog policy.
+- `packages/react/ai/release-preparation-2026-10-12.md` — Labs release scope, synchronized package versions, validation and website publication.
 - `packages/react/ai/release-preparation-2026-09-25.md` — prepared package versions, release scope and validation results.
 - `packages/react/ai/project-foundations.md` — repository structure, token flow, themes, labels, and shared system concepts.
 - `packages/react/ai/project-workflows.md` — CSS rules, component architecture, package-specific rules, and invariants.
