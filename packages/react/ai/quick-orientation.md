@@ -38,6 +38,7 @@ Use the root scripts for bookmarkable local URLs. They all use `--strictPort`, s
 | Cat Stack Cafe | `npm run dev:cat-stack-cafe` | `http://127.0.0.1:5179/examples/cat-stack-cafe/` |
 | Theme Editor | `npm run dev:theme-editor` | `http://127.0.0.1:5180/examples/theme-editor/` |
 | Catlympics | `npm run dev:catlympics` | `http://127.0.0.1:5181/examples/cat-lympics/` |
+| Word finder | `npm run dev:word` | `http://127.0.0.1:5187/examples/word/` |
 | MCP server | `npm run dev:mcp-server` | `http://127.0.0.1:5190/mcp` |
 
 Always run `npm run build:tokens && npm run build:html-css` after any change to `system/tokens/` or `system/themes/` before testing or committing.
