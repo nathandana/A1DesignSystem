@@ -9,7 +9,10 @@ input[data-word-tiles] {
   text-transform: uppercase;
 }
 
-/* Result words: the best word and the words in the table. */
+/* Result words: the best word and the words in the table. Capitals are
+   wider, so keep each word on one line rather than breaking it mid-word
+   in a narrow table column. */
 .word-result {
   text-transform: uppercase;
+  white-space: nowrap;
 }
