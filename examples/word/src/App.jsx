@@ -1,13 +1,11 @@
 import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
   Banner,
-  Button,
   Card,
   DataTable,
-  FieldRow,
-  Fieldset,
   Grid,
   Heading,
+  IconButton,
   MessageBadge,
   MessageEmptyState,
   Paragraph,
@@ -15,6 +13,7 @@ import {
   Stack,
   Stat,
   TextField,
+  Tooltip,
 } from "../../../packages/react/src/index.js";
 import wordListUrl from "./data/enable1.txt?url";
 import { BINGO_BONUS, normalizeBoardLetters, normalizeRack, parseWordList, solve } from "./lib/solver.js";
@@ -28,9 +27,9 @@ const TILE_INPUT_PROPS = {
 };
 
 const COLUMNS = [
-  { key: "word", label: "Word", sortable: true, searchable: true },
+  { key: "word", label: "Word", sortable: true },
   { key: "points", label: "Points", type: "number", align: "end", sortable: true },
-  { key: "length", label: "Letters", type: "number", align: "end", sortable: true, filterable: true },
+  { key: "length", label: "Letters", type: "number", align: "end", sortable: true },
   {
     key: "notes",
     label: "Notes",
@@ -141,14 +140,13 @@ export function App() {
     <main>
       <Section surface="panel" padding={{ xs: "sm", md: "md" }} contentWidth="md">
         <Stack gap="lg">
-          <Stack gap="xs">
+          <Stack direction="row" justify="between" align="center" gap="sm">
             <Heading as="h1" size="xl">
               Word finder
             </Heading>
-            <Paragraph color="muted">
-              Type the tiles on your rack. To build on the board, add the letters your word starts
-              with, contains or ends with. Every word you can make is listed, highest score first.
-            </Paragraph>
+            <Tooltip content="Reset" placement="left">
+              <IconButton icon="restart_alt" label="Reset" variant="secondary" onClick={reset} />
+            </Tooltip>
           </Stack>
 
           <form role="search" aria-label="Find words" onSubmit={(event) => event.preventDefault()}>
@@ -164,39 +162,32 @@ export function App() {
                 autoFocus
                 {...TILE_INPUT_PROPS}
               />
-              <Fieldset legend="Letters on the board" size="comfortable">
-                <FieldRow>
-                  <TextField
-                    label="Starting letters"
-                    hint="The word starts with these."
-                    value={startsWith}
-                    onChange={(event) => setStartsWith(normalizeBoardLetters(event.target.value))}
-                    enterKeyHint="search"
-                    {...TILE_INPUT_PROPS}
-                  />
-                  <TextField
-                    label="Containing letters"
-                    hint="In a row, anywhere in the word."
-                    value={contains}
-                    onChange={(event) => setContains(normalizeBoardLetters(event.target.value))}
-                    enterKeyHint="search"
-                    {...TILE_INPUT_PROPS}
-                  />
-                  <TextField
-                    label="Ending letters"
-                    hint="The word ends with these."
-                    value={endsWith}
-                    onChange={(event) => setEndsWith(normalizeBoardLetters(event.target.value))}
-                    enterKeyHint="search"
-                    {...TILE_INPUT_PROPS}
-                  />
-                </FieldRow>
-              </Fieldset>
-              <Stack direction="row" wrap>
-                <Button type="button" variant="secondary" icon="restart_alt" onClick={reset}>
-                  Reset
-                </Button>
-              </Stack>
+              <Grid columns={3} gap="sm" role="group" aria-label="Letters on the board">
+                <TextField
+                  label="Starts with"
+                  size="compact"
+                  value={startsWith}
+                  onChange={(event) => setStartsWith(normalizeBoardLetters(event.target.value))}
+                  enterKeyHint="search"
+                  {...TILE_INPUT_PROPS}
+                />
+                <TextField
+                  label="Contains"
+                  size="compact"
+                  value={contains}
+                  onChange={(event) => setContains(normalizeBoardLetters(event.target.value))}
+                  enterKeyHint="search"
+                  {...TILE_INPUT_PROPS}
+                />
+                <TextField
+                  label="Ends with"
+                  size="compact"
+                  value={endsWith}
+                  onChange={(event) => setEndsWith(normalizeBoardLetters(event.target.value))}
+                  enterKeyHint="search"
+                  {...TILE_INPUT_PROPS}
+                />
+              </Grid>
             </Stack>
           </form>
         </Stack>

@@ -5,15 +5,14 @@ A fast word finder for Scrabble-style games, planned for
 already on the board. Every playable word is listed, highest score first.
 
 - `?` or `*` is a blank tile. Blanks score 0 and are shown in the Notes column.
-- **Starting**, **containing**, and **ending letters** are tiles already on the
-  board. Each is a run of adjacent letters: the word starts with the starting
-  letters, ends with the ending letters, and has the containing letters
-  somewhere between them. Board letters score their face value but don't count
+- **Starts with**, **Contains**, and **Ends with** take tiles already on the
+  board. Each is a run of adjacent letters: the word starts and ends with those
+  letters, and has the "Contains" letters somewhere between them. Board letters score their face value but don't count
   as rack tiles. A word must use at least one rack tile.
 - Using all 7 rack tiles adds the 50-point bingo bonus.
 - Scores are face values before board multipliers.
 - The letters field has focus on load. Typing a letter while nothing editable
-  has focus sends it to that field. **Reset** clears every field and the
+  has focus sends it to that field. The **Reset** icon button beside the heading clears every field and the
   results and returns focus to the letters field.
 
 The dictionary is the public-domain ENABLE word list
@@ -21,7 +20,7 @@ The dictionary is the public-domain ENABLE word list
 official tournament dictionaries. Vite emits it as a separate, content-hashed
 asset that the app fetches on load, so it is not bundled into the JavaScript.
 
-The UI is built only from A1 components (`Section`, `TextField`, `FieldRow`,
+The UI is built only from A1 components (`Section`, `TextField`, `Grid`,
 `Stat`, `DataTable`, `MessageEmptyState`, `Banner`); it has no custom CSS.
 Solver logic lives in `src/lib/solver.js` as pure functions.
 
