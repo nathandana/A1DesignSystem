@@ -3,7 +3,10 @@ import {
   Banner,
   Card,
   DataTable,
+  DefinitionList,
+  Divider,
   Grid,
+  GridItem,
   Heading,
   IconButton,
   MessageBadge,
@@ -11,7 +14,6 @@ import {
   Paragraph,
   Section,
   Stack,
-  Stat,
   TextField,
   Tooltip,
 } from "../../../packages/react/src/index.js";
@@ -20,6 +22,8 @@ import { BINGO_BONUS, normalizeBoardLetters, normalizeRack, parseWordList, solve
 
 // Typing aids that keep mobile keyboards from "correcting" a rack of tiles.
 const TILE_INPUT_PROPS = {
+  // Shown in capitals by styles.css.
+  "data-word-tiles": "",
   autoComplete: "off",
   autoCapitalize: "none",
   autoCorrect: "off",
@@ -27,7 +31,17 @@ const TILE_INPUT_PROPS = {
 };
 
 const COLUMNS = [
-  { key: "word", label: "Word", sortable: true },
+  {
+    key: "word",
+    label: "Word",
+    sortable: true,
+    // One step above the compact table's body-xs text, so the word stands out.
+    renderCell: ({ value }) => (
+      <Paragraph as="span" size="sm" weight="bold" className="word-result">
+        {value}
+      </Paragraph>
+    ),
+  },
   { key: "points", label: "Points", type: "number", align: "end", sortable: true },
   { key: "length", label: "Letters", type: "number", align: "end", sortable: true },
   {
@@ -100,6 +114,21 @@ function useTypeToFocus(inputRef) {
   }, [inputRef]);
 }
 
+// A1's lg breakpoint starts at 1025px (system/tokens/breakpoint.json).
+const LG_UP = "(min-width: 1025px)";
+
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const list = window.matchMedia(query);
+    const update = () => setMatches(list.matches);
+    update();
+    list.addEventListener("change", update);
+    return () => list.removeEventListener("change", update);
+  }, [query]);
+  return matches;
+}
+
 export function App() {
   const { words, error } = useWordList();
   const [rack, setRack] = useState("");
@@ -108,6 +137,9 @@ export function App() {
   const [endsWith, setEndsWith] = useState("");
   const rackRef = useRef(null);
   useTypeToFocus(rackRef);
+  // From lg up, search sits in a card beside the results; below lg it stacks above them.
+  const sideBySide = useMediaQuery(LG_UP);
+  const boardFieldSize = sideBySide ? "comfortable" : "compact";
 
   const tiles = normalizeRack(rack);
   const deferredTiles = useDeferredValue(tiles);
@@ -136,130 +168,131 @@ export function App() {
     rackRef.current?.focus();
   }
 
+  const search = (
+    <Stack gap="md">
+      <Stack direction="row" justify="between" align="center" gap="sm">
+        <Heading as="h1" size="xl">
+          Word finder
+        </Heading>
+        <Tooltip content="Reset" placement="left">
+          <IconButton icon="restart_alt" label="Reset" variant="secondary" onClick={reset} />
+        </Tooltip>
+      </Stack>
+
+      <form role="search" aria-label="Find words" onSubmit={(event) => event.preventDefault()}>
+        <Stack gap="md">
+          <TextField
+            ref={rackRef}
+            label="Your letters"
+            size="comfortable"
+            value={rack}
+            onChange={(event) => setRack(normalizeRack(event.target.value))}
+            enterKeyHint="search"
+            autoFocus
+            {...TILE_INPUT_PROPS}
+          />
+          {/* Stacked at full card width from lg up; three across below lg. */}
+          <Grid columns={sideBySide ? 1 : 3} gap={sideBySide ? "md" : "sm"} role="group" aria-label="Letters on the board">
+            <TextField
+              label="Starts with"
+              size={boardFieldSize}
+              value={startsWith}
+              onChange={(event) => setStartsWith(normalizeBoardLetters(event.target.value))}
+              enterKeyHint="search"
+              {...TILE_INPUT_PROPS}
+            />
+            <TextField
+              label="Contains"
+              size={boardFieldSize}
+              value={contains}
+              onChange={(event) => setContains(normalizeBoardLetters(event.target.value))}
+              enterKeyHint="search"
+              {...TILE_INPUT_PROPS}
+            />
+            <TextField
+              label="Ends with"
+              size={boardFieldSize}
+              value={endsWith}
+              onChange={(event) => setEndsWith(normalizeBoardLetters(event.target.value))}
+              enterKeyHint="search"
+              {...TILE_INPUT_PROPS}
+            />
+          </Grid>
+        </Stack>
+      </form>
+    </Stack>
+  );
+
   return (
     <main>
-      <Section surface="panel" padding={{ xs: "sm", md: "md" }} contentWidth="md">
-        <Stack gap="lg">
-          <Stack direction="row" justify="between" align="center" gap="sm">
-            <Heading as="h1" size="xl">
-              Word finder
-            </Heading>
-            <Tooltip content="Reset" placement="left">
-              <IconButton icon="restart_alt" label="Reset" variant="secondary" onClick={reset} />
-            </Tooltip>
-          </Stack>
+      <Section padding={{ xs: "sm", md: "md" }} contentWidth="xl">
+        <Grid columns={{ xs: 1, lg: 3 }} gap="lg" alignItems="start">
+          <GridItem>{sideBySide ? <Card>{search}</Card> : search}</GridItem>
 
-          <form role="search" aria-label="Find words" onSubmit={(event) => event.preventDefault()}>
+          <GridItem span={{ lg: 2 }}>
             <Stack gap="md">
-              <TextField
-                ref={rackRef}
-                label="Your letters"
-                hint="Use ? or * for a blank tile."
-                size="comfortable"
-                value={rack}
-                onChange={(event) => setRack(normalizeRack(event.target.value))}
-                enterKeyHint="search"
-                autoFocus
-                {...TILE_INPUT_PROPS}
-              />
-              <Grid columns={3} gap="sm" role="group" aria-label="Letters on the board">
-                <TextField
-                  label="Starts with"
-                  size="compact"
-                  value={startsWith}
-                  onChange={(event) => setStartsWith(normalizeBoardLetters(event.target.value))}
-                  enterKeyHint="search"
-                  {...TILE_INPUT_PROPS}
+              {!sideBySide && <Divider space="none" />}
+
+              {/* Announced to screen readers only; the results speak for themselves visually. */}
+              <Paragraph role="status" aria-live="polite" className="a1-sr-only">
+                {status}
+              </Paragraph>
+
+              {error ? (
+                <Banner status="error" title="The word list could not be loaded">
+                  Check your connection and reload the page.
+                </Banner>
+              ) : !hasInput ? (
+                <MessageEmptyState
+                  scale="section"
+                  icon="abc"
+                  title="Enter your letters"
+                  description="Words you can play appear here, sorted by points."
                 />
-                <TextField
-                  label="Contains"
-                  size="compact"
-                  value={contains}
-                  onChange={(event) => setContains(normalizeBoardLetters(event.target.value))}
-                  enterKeyHint="search"
-                  {...TILE_INPUT_PROPS}
-                />
-                <TextField
-                  label="Ends with"
-                  size="compact"
-                  value={endsWith}
-                  onChange={(event) => setEndsWith(normalizeBoardLetters(event.target.value))}
-                  enterKeyHint="search"
-                  {...TILE_INPUT_PROPS}
-                />
-              </Grid>
+              ) : best ? (
+                <>
+                  <DefinitionList
+                    items={[
+                      {
+                        label: "Best word",
+                        value: (
+                          <Stack direction="row" wrap gap="xs" align="center">
+                            <span>
+                              <strong className="word-result">{best.word}</strong>, {best.points} points
+                            </span>
+                            {best.bingo && (
+                              <MessageBadge status="success" size="sm">
+                                Bingo
+                              </MessageBadge>
+                            )}
+                          </Stack>
+                        ),
+                      },
+                    ]}
+                  />
+
+                  <DataTable
+                    key={resultsKey}
+                    caption="Playable words"
+                    columns={COLUMNS}
+                    rows={results}
+                    defaultSort={{ key: "points", direction: "desc" }}
+                    defaultPageSize={25}
+                    pageSizeOptions={[25, 50, 100]}
+                    mobileLayout="table"
+                    size="compact"
+                  />
+                </>
+              ) : null}
+
+              <Paragraph size="sm" color="muted">
+                Scores are tile values before board bonuses; using all 7 tiles adds {BINGO_BONUS} points.
+                Words come from the public-domain ENABLE list, which is close to, but not the same as,
+                official tournament dictionaries.
+              </Paragraph>
             </Stack>
-          </form>
-        </Stack>
-      </Section>
-
-      <Section padding={{ xs: "sm", md: "md" }} contentWidth="md">
-        <Stack gap="lg">
-          <Paragraph role="status" aria-live="polite" size="sm" color="muted">
-            {status}
-          </Paragraph>
-
-          {error ? (
-            <Banner status="error" title="The word list could not be loaded">
-              Check your connection and reload the page.
-            </Banner>
-          ) : !hasInput ? (
-            <MessageEmptyState
-              scale="section"
-              icon="abc"
-              title="Enter your letters"
-              description="Words you can play appear here, sorted by points."
-            />
-          ) : words && results.length === 0 ? (
-            <MessageEmptyState
-              scale="section"
-              icon="search_off"
-              title="No words found"
-              description="Try different letters, add a blank, or remove some board letters."
-            />
-          ) : best ? (
-            <>
-              <Grid columns={{ xs: 1, sm: 2 }} gap="md">
-                <Card>
-                  <Stat
-                    title="Best word"
-                    icon="emoji_events"
-                    value={best.word}
-                    format="none"
-                    description={`${best.points} points`}
-                    badge={best.bingo ? "Bingo" : undefined}
-                    badgeStatus="success"
-                  />
-                </Card>
-                <Card>
-                  <Stat
-                    title="Words found"
-                    icon="format_list_numbered"
-                    value={results.length}
-                    description={`Up to ${results.reduce((max, r) => Math.max(max, r.length), 0)} letters long`}
-                  />
-                </Card>
-              </Grid>
-
-              <DataTable
-                key={resultsKey}
-                caption="Playable words"
-                columns={COLUMNS}
-                rows={results}
-                defaultSort={{ key: "points", direction: "desc" }}
-                defaultPageSize={25}
-                pageSizeOptions={[25, 50, 100]}
-                mobileLayout="table"
-              />
-            </>
-          ) : null}
-
-          <Paragraph size="sm" color="muted">
-            Scores are tile values before board bonuses; using all 7 tiles adds {BINGO_BONUS} points.
-            Words come from the public-domain ENABLE list, which is close to, but not the same as,
-            official tournament dictionaries.
-          </Paragraph>
-        </Stack>
+          </GridItem>
+        </Grid>
       </Section>
     </main>
   );

@@ -20,8 +20,11 @@ The dictionary is the public-domain ENABLE word list
 official tournament dictionaries. Vite emits it as a separate, content-hashed
 asset that the app fetches on load, so it is not bundled into the JavaScript.
 
-The UI is built only from A1 components (`Section`, `TextField`, `Grid`,
-`Stat`, `DataTable`, `MessageEmptyState`, `Banner`); it has no custom CSS.
+The UI is built from A1 components (`Section`, `Card`, `Grid`, `TextField`,
+`DefinitionList`, `DataTable`, `MessageEmptyState`, `Banner`). The only local
+CSS is `styles.css`, which shows tile letters and result words in capitals like
+game tiles. That's a deliberate exception to A1's no-uppercase rule; the
+underlying text stays lowercase for screen readers and copy and paste.
 Solver logic lives in `src/lib/solver.js` as pure functions.
 
 ## Local development

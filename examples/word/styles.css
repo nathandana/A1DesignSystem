@@ -1,0 +1,15 @@
+/* Word finder: letters and words display in capitals, like game tiles.
+   Deliberate, user-requested exception to the A1 "never uppercase" rule,
+   scoped to tile letters and result words only. It is visual: the DOM text
+   and input values stay lowercase, so screen readers, copy/paste and the
+   solver all work with the real lowercase text. */
+
+/* Letter inputs (TextField passes data-* attributes through to the input). */
+input[data-word-tiles] {
+  text-transform: uppercase;
+}
+
+/* Result words: the best word and the words in the table. */
+.word-result {
+  text-transform: uppercase;
+}
