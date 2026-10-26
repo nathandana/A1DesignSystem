@@ -33,6 +33,17 @@ import {
   VEHICLE_PROJECT_ID,
   VEHICLE_PROJECT_SEED_FLAG,
 } from './sampleVehicles';
+import {
+  sportsBlogProject,
+  sportsBlogPages,
+  sportsBlogContent,
+  SPORTS_BLOG_PROJECT_ID,
+  SPORTS_BLOG_SEED_FLAG,
+} from './sampleSportsBlog';
+
+/** Projects seeded from bundled samples. A cloud pull keeps these when the
+ *  shared copy predates them, so a newly bundled sample isn't wiped on sign-in. */
+const SAMPLE_PROJECT_IDS = new Set([RESTAURANT_PROJECT_ID, VEHICLE_PROJECT_ID, SPORTS_BLOG_PROJECT_ID]);
 
 export interface Project {
   id: string;
@@ -825,9 +836,13 @@ export function importAllText(
 
   if (replaceProjects) {
     for (const project of existingProjects) {
-      if (!importedProjectIds.has(project.id)) purgeProjectStorage(project.id);
+      if (importedProjectIds.has(project.id)) continue;
+      // A local bundled sample the imported bundle doesn't know about yet stays;
+      // the next push shares it.
+      if (SAMPLE_PROJECT_IDS.has(project.id)) byId.set(project.id, project);
+      else purgeProjectStorage(project.id);
     }
-    if (!importedProjectIds.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
+    if (!byId.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
   }
 
   saveProjects([...byId.values()]);
@@ -1201,6 +1216,13 @@ function ensureSampleProjects(): void {
       project: vehicleProject,
       pages: vehiclePages,
       content: vehicleContent,
+    },
+    {
+      flag: SPORTS_BLOG_SEED_FLAG,
+      projectId: SPORTS_BLOG_PROJECT_ID,
+      project: sportsBlogProject,
+      pages: sportsBlogPages,
+      content: sportsBlogContent,
     },
   ];
 

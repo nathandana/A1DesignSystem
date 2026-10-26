@@ -192,3 +192,12 @@
   font-size: var(--base-spacing-48);
   opacity: 0.6;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep an image and its caption together. */
+
+@media print {
+  .a1-figure {
+    break-inside: avoid;
+  }
+}

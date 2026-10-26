@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Sign out works when the account service is down** — signing out waited indefinitely if Supabase Auth was unreachable, and supabase-js keeps the local session when its revoke call fails, so nothing happened. Sign-out now falls back to clearing this device's session after 5 seconds.
+
+- **Print-friendly pages** (A1-2707) — printing any page now gives every page of its content in light mode, without navigation, the configurator or filter rail, or other screen-only controls. Previously a page printed only its first screen, and dark mode printed pale text.
+- **Editor print preview** (A1-2707) — a new **Print preview** toolbar action shows the page with the print stylesheet applied, right in the editor: the Preview view switches to a **Print (Letter)** or **Print (A4)** sheet sized to the printable area, so print rules, light mode and paper-width breakpoints all take effect without a print dialog. Project pages in dark mode now also print light: the project theme scope swaps to light while printing, through a shared `usePrintLightMode` hook used by the app root too. Documented in Help → Preview & prototype.
+- **Queen City Sideline sample project** — a new seeded example blog about Charlotte sports: a landing page, pro/college/high school sections and six long-form articles with Unsplash figures, headings, blockquotes, lists, definition lists and inline formatting. Uses the Dispatch theme. Articles are illustrative; bylines and quotes are fictional composites.
+- **Bundled samples survive cloud sync** — signing in replaced the local project list with the shared cloud copy, which wiped any sample project bundled after that copy was saved (and the seed flag stopped it coming back). A cloud pull now keeps local bundled samples the remote doesn't have yet, and the next push shares them.
+
 - **Backlog badges stay inside their cards** (A1-2704) — long Scope, label and persona badges on backlog cards and ticket details now truncate with an ellipsis instead of spilling past the card edge. Hover a truncated badge to see its full text.
 
 - **npm release automation** — publishing now runs on release-branch pushes as well as main, uses npm trusted publishing, rebuilds and checks packages, and verifies registry versions and uploaded integrity before reporting success. Existing website release checks remain required; older reruns cannot move npm's latest tag backwards.

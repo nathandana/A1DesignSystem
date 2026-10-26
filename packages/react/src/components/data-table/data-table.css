@@ -557,3 +557,16 @@
     display: none;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Show every column instead of a scroll window, and keep rows whole. */
+
+@media print {
+  .a1-data-table-scroll {
+    overflow: visible;
+  }
+
+  .a1-data-table tr {
+    break-inside: avoid;
+  }
+}

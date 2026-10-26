@@ -6060,6 +6060,20 @@
             "ar": "فحص التباين"
           }
         },
+        "printPreviewAction": {
+          "$type": "string",
+          "$value": "Print preview",
+          "$description": "Toolbar action label in the page editor that switches the preview to a paper size with the print stylesheet applied.",
+          "locale": {
+            "es": "Vista previa de impresión",
+            "fr": "Aperçu avant impression",
+            "de": "Druckvorschau",
+            "pt": "Visualizar impressão",
+            "ja": "印刷プレビュー",
+            "zh": "打印预览",
+            "ar": "معاينة الطباعة"
+          }
+        },
         "contrastCheckTitle": {
           "$type": "string",
           "$value": "Contrast check",

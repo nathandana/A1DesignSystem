@@ -91,6 +91,26 @@ Portals: native top-layer elements (`<dialog>`) keep the inherited scope
 because they remain DOM descendants. A portal you move outside an inverse
 subtree does not — give it an explicit mode class.
 
+**Printing:** paper is always light. The system-preference dark query and
+inverse islands are screen-only, so a page that follows the OS prints in light
+mode with inverse sections in the page's light colours. If your app sets
+`.a1-theme-dark` on `<html>` itself, swap it for `.a1-theme-light` on
+`beforeprint` and restore it on `afterprint`:
+
+```js
+window.addEventListener("beforeprint", () => {
+  document.documentElement.classList.replace("a1-theme-dark", "a1-theme-light");
+});
+// afterprint: reapply the reader's mode classes
+```
+
+Components carry their own print rules: navigation chrome (SideNav, TopHeader
+nav and actions, BottomDrawer, BottomSheet, StickyActions, PageNav, Snackbar,
+Tooltip) is hidden; PageLayout releases viewport-height scrolling so content
+paginates; code wraps and expands; tables show every column; headings stay with
+their content; cards, figures and banners don't split across pages; external
+links print their URL; and small filled controls keep their background colour.
+
 ---
 
 ## Overriding tokens (app-level theming)

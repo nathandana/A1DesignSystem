@@ -91,6 +91,40 @@ they remain descendants in the DOM. A consumer-created portal moved outside the
 inverse DOM subtree does not inherit the scope automatically and must carry an
 explicit mode class or render inside the scoped dialog/container.
 
+### Print contract (A1-2707)
+
+Paper is always light. `@media (prefers-color-scheme: dark)` blocks are
+generated and authored as `@media screen and (prefers-color-scheme: dark)`, and
+the `.a1-inverse` dark blocks are wrapped in `@media screen`, so printed pages
+use the light baseline and inverse islands take the page's light values
+(browsers drop backgrounds by default, which would leave light text on white).
+An explicit `.a1-theme-dark` class is app-controlled: the app swaps it for
+`.a1-theme-light` on `beforeprint` and restores it on `afterprint` (a1-web does
+this in `main.jsx`).
+
+Print rules live at the end of each component's own stylesheet, inside
+`@media print`, so they follow the screen rules they override. Use only
+keywords there (`display: none`, `position: static`, `break-*`,
+`print-color-adjust: exact`, `overflow: visible`) — no visual values.
+- **Hide** screen-only chrome: SideNav, scrim, TopHeader nav/end/hamburger,
+  BottomDrawer, BottomSheet, StickyActions (+ `.a1-sticky-actions__spacer`),
+  PageNav, Snackbar/SnackbarStack, Tooltip, Code copy/expand controls,
+  PageLayout sidebar.
+- **Release** PageLayout viewport-height heights and inner scrolling; put sticky
+  headers in flow; reset Section `height="screen"`/`"hero"` minimums; expand
+  collapsed code and wrap its long lines; show every DataTable column.
+- **Break** — headings `break-after: avoid`; Card, Figure, Banner and table rows
+  `break-inside: avoid`.
+- **Keep colour** (`print-color-adjust: exact`) only on small elements whose
+  background carries legibility or meaning: Button, Badge, Banner, Chip,
+  Notification, Avatar, StatusBar, CircularProgress, StepTracker,
+  SegmentedControl, Switch, Checkbox/Radio/Choice groups, Slider, Card status
+  and hero, `kbd`. Page surfaces follow the reader's print setting.
+- **Links** — external `.a1-link` prints its URL after the text.
+
+When a new component is chrome, scrolls internally, or relies on a filled
+background, add its `@media print` block in the same change.
+
 ### Token format (DTCG)
 
 All tokens use the W3C Design Token Community Group format:

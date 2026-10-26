@@ -377,3 +377,18 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
     flex: 1 1 auto;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep each card whole; keep status and hero colour on paper. */
+
+@media print {
+  .a1-card {
+    break-inside: avoid;
+  }
+
+  .a1-card--has-status,
+  .a1-card__hero {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

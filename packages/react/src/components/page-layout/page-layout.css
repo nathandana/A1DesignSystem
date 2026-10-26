@@ -182,3 +182,33 @@
     grid-column: auto;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Paper has no viewport: release app-shell heights and inner scrolling so
+   the main column paginates, put the sticky header in flow, drop the
+   navigation sidebar, and stack an aside below the main content. */
+
+@media print {
+  .a1-page-layout,
+  .a1-page-layout .a1-page-layout__body,
+  .a1-page-layout .a1-page-layout__content,
+  .a1-page-layout .a1-page-layout__main,
+  .a1-page-layout .a1-page-layout__main-scroll {
+    height: auto;
+    min-height: 0;
+    flex-basis: auto;
+    overflow: visible;
+  }
+
+  .a1-page-layout .a1-page-layout__content {
+    display: block;
+  }
+
+  .a1-page-layout .a1-page-layout__header {
+    position: static;
+  }
+
+  .a1-page-layout__sidebar {
+    display: none;
+  }
+}

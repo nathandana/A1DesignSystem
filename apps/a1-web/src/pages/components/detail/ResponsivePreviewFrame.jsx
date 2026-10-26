@@ -17,11 +17,47 @@ export const VIEWPORT_PRESETS = [
   { value: 'xl', label: 'XL', icon: 'desktop_windows', width: 1600, height: 1000 },
 ]
 
+// Paper presets for print preview (A1-2707): the printable area of the page at
+// the browser's default margins, in CSS px (96 per inch), so viewport media
+// queries respond as they do on paper. Print rules apply via `media: 'print'`.
+export const PRINT_PRESETS = [
+  { value: 'print-letter', label: 'Print (Letter)', icon: 'print', width: 739, height: 979, media: 'print' },
+  { value: 'print-a4', label: 'Print (A4)', icon: 'print', width: 718, height: 1047, media: 'print' },
+]
+
 // Resolve a device size from a viewport value, or null for "Fit".
 export function viewportSize(value) {
   if (!value || value === 'fit') return null
-  const preset = VIEWPORT_PRESETS.find((p) => p.value === value)
-  return preset?.width ? { width: preset.width, height: preset.height } : null
+  const preset = [...VIEWPORT_PRESETS, ...PRINT_PRESETS].find((p) => p.value === value)
+  return preset?.width ? { width: preset.width, height: preset.height, media: preset.media } : null
+}
+
+// Swap the `print` and `screen` media types in a media list, so print-only rules
+// match on screen and screen-only rules (dark-mode queries, inverse islands) don't.
+function swapMediaTypes(list) {
+  if (!list?.length) return
+  list.mediaText = Array.from(list)
+    .map((medium) => medium.replace(/\b(print|screen)\b/g, (type) => (type === 'print' ? 'screen' : 'print')))
+    .join(', ')
+}
+
+function emulatePrintRules(rules) {
+  for (const rule of Array.from(rules ?? [])) {
+    if (rule.media) swapMediaTypes(rule.media)
+    if (rule.cssRules) emulatePrintRules(rule.cssRules)
+  }
+}
+
+// Apply print emulation to one cloned <style>/<link> once its sheet is parsed.
+function emulatePrintSheet(node) {
+  const apply = () => {
+    try {
+      swapMediaTypes(node.sheet?.media)
+      emulatePrintRules(node.sheet?.cssRules)
+    } catch { /* ignore cross-origin sheets (e.g. web fonts) */ }
+  }
+  if (node.sheet) apply()
+  else node.addEventListener('load', apply, { once: true })
 }
 
 /**
@@ -31,7 +67,8 @@ export function viewportSize(value) {
  * layout is viewable inside a narrow panel. `width` null = "fit" (no simulation;
  * children render normally).
  */
-export function ResponsivePreviewFrame({ width, height, children }) {
+export function ResponsivePreviewFrame({ width, height, media, children }) {
+  const print = media === 'print'
   const outerRef = useRef(null)
   // Callback ref (state) so the setup effect runs once the iframe is in the DOM.
   const [iframeEl, setIframeEl] = useState(null)
@@ -118,6 +155,12 @@ export function ResponsivePreviewFrame({ width, height, children }) {
       if (html.hasAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
       else doc.documentElement.removeAttribute('data-theme')
       doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
+      // Paper is always light: mirror the before-print swap of an explicit dark class.
+      if (print) {
+        doc.documentElement.classList.remove('a1-theme-dark')
+        doc.documentElement.classList.add('a1-theme-light')
+        doc.documentElement.style.colorScheme = 'light'
+      }
       doc.documentElement.style.height = 'auto'
       doc.documentElement.style.overflow = 'auto'
     }
@@ -129,6 +172,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
         const clone = node.cloneNode(true)
         clone.setAttribute('data-a1-cloned', '')
         doc.head.appendChild(clone)
+        if (print) emulatePrintSheet(clone)
       })
       syncAppearance()
       // Force the iframe document to scroll: the cloned app stylesheets set the
@@ -148,7 +192,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
     appearanceObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
     iframeEl.addEventListener('load', setup)
     return () => { appearanceObserver.disconnect(); iframeEl.removeEventListener('load', setup) }
-  }, [iframeEl])
+  }, [iframeEl, print])
 
   if (!width) return children
 
@@ -158,7 +202,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
         {width} × {height}px{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
       </div>
       <div
-        className="a1-web-responsive-preview__viewport"
+        className={`a1-web-responsive-preview__viewport${print ? ' a1-web-responsive-preview__viewport--paper' : ''}`}
         style={{ inlineSize: `${width * scale}px`, blockSize: `${height * scale}px` }}
       >
         <iframe

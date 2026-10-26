@@ -239,3 +239,26 @@
   align-items: center;
   gap: var(--base-spacing-8);
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Print the whole block: expand collapsed code, drop the copy and expand
+   controls, and wrap long lines instead of clipping them. Line-numbered
+   blocks keep their measured rows so the numbers stay aligned. */
+
+@media print {
+  .a1-code-block__actions,
+  .a1-code-block__toggle,
+  .a1-code-block--clipped .a1-code-block__pre::after {
+    display: none;
+  }
+
+  .a1-code-block--collapsed .a1-code-block__pre {
+    max-block-size: none;
+  }
+
+  .a1-code-block__pre:not(.a1-code-block__line-numbered *) {
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

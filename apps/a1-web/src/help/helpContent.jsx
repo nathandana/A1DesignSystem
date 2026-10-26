@@ -1419,6 +1419,17 @@ const RAW_HELP = [
         ),
       },
       {
+        id: 'print-preview',
+        title: 'Print preview',
+        keywords: 'print preview printer paper pdf save as pdf page break dark mode',
+        body: (
+          <Stack gap="sm">
+            <P>Choose <strong>Print preview</strong> (the <Icon name="print" size="sm" /> action) to see the page as it will print, right in the editor: the <strong>Preview</strong> view switches to a sheet of paper with the print stylesheet applied. Use the responsive preview menu to switch between <strong>Print (Letter)</strong> and <strong>Print (A4)</strong>, or back to a screen size.</P>
+            <P>Pages always print in light mode. Navigation and other screen-only controls are left out, long pages flow across sheets, and external links print their address. The preview shows one continuous sheet — your browser decides exactly where pages break, and its print settings (such as background graphics) still apply.</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'responsive-preview',
         title: 'Previewing at different screen sizes',
         keywords: 'responsive preview viewport breakpoint device width phone tablet desktop xs sm md lg xl resize fit',

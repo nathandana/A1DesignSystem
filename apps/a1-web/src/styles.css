@@ -33,6 +33,22 @@ body {
   overflow: hidden;
 }
 
+/* A1-2707 — the app shell scrolls inside a viewport-height layout; on paper the
+   document must grow so every page prints (PageLayout releases its own panels). */
+@media print {
+  html,
+  body,
+  #root {
+    block-size: auto;
+    overflow: visible;
+  }
+
+  /* a1-web's aside is always a configurator or filter rail: controls, not content. */
+  .a1-web-page-layout .a1-page-layout__aside {
+    display: none;
+  }
+}
+
 /* The Figma-driven Playground is a clean renderer, intentionally outside the
    normal PageLayout, navigation, and workspace controls. */
 .a1-web-live-playground {

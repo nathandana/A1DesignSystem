@@ -1583,7 +1583,7 @@
   --semantic-spacing-gap-xs: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root:not(.a1-theme-light) {
     color-scheme: dark;
   --component-button-destructive-background: var(--semantic-color-status-error-background);

@@ -32,7 +32,7 @@ import {
   TreeMenu,
 } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
-import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
+import { PRINT_PRESETS, ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
 import { buildProjectNav, buildProjectTree, type ProjectNavItem } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
@@ -842,6 +842,8 @@ export function EditorPage({
   const [codeFormat, setCodeFormat] = useState<'json' | 'react'>('json');
   // Responsive preview device for the Preview view ('fit' = no simulation).
   const [previewViewport, setPreviewViewport] = useState('fit');
+  // A paper preset previews the page with the print stylesheet applied (A1-2707).
+  const printPreview = viewportSize(previewViewport)?.media === 'print';
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [screenReaderReportOpen, setScreenReaderReportOpen] = useState(false);
@@ -2320,11 +2322,12 @@ export function EditorPage({
                 <ToolbarDivider />
                 <ToolbarMenu
                   aria-label="Responsive preview"
-                  label={VIEWPORT_PRESETS.find((p) => p.value === previewViewport)?.label ?? 'Fit'}
+                  label={[...VIEWPORT_PRESETS, ...PRINT_PRESETS].find((p) => p.value === previewViewport)?.label ?? 'Fit'}
                   value={previewViewport}
                   onChange={(v) => setPreviewViewport(v as string)}
-                  items={VIEWPORT_PRESETS}
+                  items={[...VIEWPORT_PRESETS, ...PRINT_PRESETS]}
                 />
+
               </>
             )}
             <ToolbarDivider />
@@ -2385,6 +2388,17 @@ export function EditorPage({
                 onClick={handleExpandPreview}
               />
             )}
+            {!isPattern && !isLayout && (
+              <ToolbarButton
+                icon="print"
+                label={t('app.editor.printPreviewAction', 'Print preview')}
+                disabled={!parsedDefinition.ok}
+                onClick={() => {
+                  handleViewChange('preview');
+                  if (!printPreview) setPreviewViewport('print-letter');
+                }}
+              />
+            )}
             {bridgeFeaturesEnabled && !isPattern && !isLayout && projectId && (
               <ToolbarButton
                 icon={figmaLinkId ? 'sync' : 'add_link'}
@@ -2442,8 +2456,8 @@ export function EditorPage({
             <ResponsivePreviewFrame {...(viewportSize(previewViewport) ?? {})}>
               <ProjectThemeScope
                 theme={isPattern ? undefined : projectTheme}
-                colorMode={colorMode}
-                resolvedColorScheme={resolvedColorScheme}
+                colorMode={printPreview ? 'light' : colorMode}
+                resolvedColorScheme={printPreview ? 'light' : resolvedColorScheme}
               >
                 {useSidebarNav && projectSidebar ? (
                   <PageLayout viewportHeight sidebar={projectSidebar}>

@@ -288,7 +288,7 @@ html.a1-theme-dark.a1-theme-fresh body {
   background-color: var(--a1-theme-fresh-dark-surface-page);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   html.a1-theme-fresh {
     --semantic-color-surface-page:   var(--a1-theme-fresh-dark-surface-page);
     --semantic-color-surface-panel:  var(--a1-theme-fresh-dark-surface-panel);
