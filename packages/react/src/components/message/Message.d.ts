@@ -11,6 +11,15 @@ export interface MessageBadgeProps {
    * Override the default status icon. Pass `null` to suppress the icon entirely.
    */
   icon?: string | null;
+  /**
+   * Hover text for the badge. Defaults to the label when `children` is a string or
+   * number, so a label truncated with an ellipsis stays readable on hover.
+   */
+  title?: string;
+  /**
+   * Badge label. Badges stay on one line: a label wider than the available space
+   * truncates with an ellipsis (the full text remains in the DOM for screen readers).
+   */
   children?: React.ReactNode;
 }
 

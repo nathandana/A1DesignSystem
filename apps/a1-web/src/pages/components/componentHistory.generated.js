@@ -19,6 +19,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-09-10","type":"code","summary":"Avatar component (A1-2055)","ticket":"A1-2055"},
   ],
   "badge": [
+    {"date":"2026-10-26","type":"code","summary":"Badge overflow","ticket":"A1-2704"},
     {"date":"2026-09-09","type":"code","summary":"A1:Figma Badge and Card icon imports"},
     {"date":"2026-09-08","type":"code","summary":"A1:Figma Badge import"},
     {"date":"2026-07-14","type":"code","summary":"Figma Badge Material icons and Grid bridge"},
