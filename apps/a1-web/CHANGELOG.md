@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Backlog badges stay inside their cards** (A1-2704) — long Scope, label and persona badges on backlog cards and ticket details now truncate with an ellipsis instead of spilling past the card edge. Hover a truncated badge to see its full text.
+
 - **npm release automation** — publishing now runs on release-branch pushes as well as main, uses npm trusted publishing, rebuilds and checks packages, and verifies registry versions and uploaded integrity before reporting success. Existing website release checks remain required; older reruns cannot move npm's latest tag backwards.
 
 ## 0.34.0 — 2026-10-12

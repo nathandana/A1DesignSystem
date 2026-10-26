@@ -159,6 +159,17 @@
 
 .a1-message-badge .a1-icon {
   font-size: var(--component-message-badge-icon-size);
+  flex-shrink: 0;
+}
+
+/* A1-2704 — badges stay on one line; a label wider than the available space
+   truncates with an ellipsis instead of overflowing the badge. `overflow-x: clip`
+   (not `hidden`) leaves the block axis visible so descenders aren't cut by the
+   badge's line-height: 1. */
+.a1-message-badge__label {
+  min-width: 0;
+  overflow-x: clip;
+  text-overflow: ellipsis;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

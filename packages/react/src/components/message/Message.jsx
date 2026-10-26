@@ -26,10 +26,13 @@ const ES_SCALE_CONFIG = {
    MessageBadge  (inline filled status chip)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, className = "", children, ...rest }) {
+export function MessageBadge({ status = "neutral", subtle = false, size = "md", icon, className = "", title, children, ...rest }) {
   const resolvedStatus = STATUSES.includes(status) ? status : "neutral";
   // icon={null} explicitly suppresses the icon; undefined falls back to the status default
   const resolvedIcon = icon === null ? null : (icon ?? STATUS_ICONS[resolvedStatus]);
+  // A long label truncates with an ellipsis (A1-2704); plain-text labels keep the full
+  // text available on hover. Screen readers always read the full DOM text.
+  const resolvedTitle = title ?? (typeof children === "string" || typeof children === "number" ? String(children) : undefined);
 
   return (
     <span
@@ -41,10 +44,11 @@ export function MessageBadge({ status = "neutral", subtle = false, size = "md", 
         size === "lg" && "a1-message-badge--lg",
         className,
       ].filter(Boolean).join(" ")}
+      title={resolvedTitle}
       {...rest}
     >
       {resolvedIcon && <Icon name={resolvedIcon} />}
-      {children}
+      {children != null && children !== false && <span className="a1-message-badge__label">{children}</span>}
     </span>
   );
 }

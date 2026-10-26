@@ -94,3 +94,16 @@ export const InlineUsage = {
     </div>
   ),
 };
+
+export const LongLabels = {
+  name: "Long labels — truncate",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-12)", inlineSize: "var(--base-spacing-192)", padding: "var(--base-spacing-8)", outline: "var(--component-message-badge-border-width) dashed var(--semantic-color-border-subtle)" }}>
+      <MessageBadge status="neutral" subtle size="sm" icon="sell">Component: Search field with autocomplete</MessageBadge>
+      <MessageBadge status="info" icon="smart_toy">Virtual product owner review</MessageBadge>
+      <MessageBadge status="warn" size="lg">Pending accessibility review</MessageBadge>
+      <MessageBadge status="success" subtle>Short</MessageBadge>
+    </div>
+  ),
+};

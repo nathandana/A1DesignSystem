@@ -313,6 +313,8 @@ An eyebrow is a small label that sits above a heading to provide category or sec
 >
 > **Badge props:** `status` ("neutral" | "info" | "success" | "warn" | "error", default "neutral"), `subtle` (boolean, default false), `size` ("sm" | "md" | "lg", default "md"), `icon` (Material Symbols name override; pass `null` to suppress the default status icon), `children` (badge label). React exports this as `MessageBadge`; React Native exports this as `Badge`.
 >
+> **Badge overflow (A1-2704):** badges stay on one line. A label wider than the available space truncates with an ellipsis inside the pill (`.a1-message-badge__label`) rather than wrapping or overflowing; the icon never shrinks. A string/number label is also set as the badge `title` so the full text is available on hover (pass `title` to override); screen readers always read the full DOM text. React Native's Badge matches (`numberOfLines={1}`). Keep badge copy short — truncation is a safety net, not a layout tool.
+>
 > **Empty State props:** `scale` ("page" | "section" | "card", default "section"), `icon` (Material Symbols name, default "inbox"), `title`, `description`, `action` (ReactNode, usually a Button). React exports this as `MessageEmptyState`; React Native exports this as `EmptyState`.
 >
 > **CircularProgress props:** `value` (number, default 0), `max` (number, default 100), `size` ("xs" | "sm" | "md" | "lg", default "md"), `indeterminate` (boolean, default false), `children` (ReactNode — centered inside the ring for sm/md/lg; rendered inline after the ring for xs). Always pass `aria-label` for the progressbar's accessible name since inner children receive `aria-hidden="true"`.

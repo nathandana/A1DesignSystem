@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Badge: long labels truncate** (A1-2704) — a `MessageBadge` label wider than its container now ends in an ellipsis inside the pill instead of overflowing it. The label renders in a new `.a1-message-badge__label` span; string labels also become the badge's `title`, so the full text shows on hover (pass `title` to override). Screen readers still read the full label. New "Long labels — truncate" story.
+
 ## 0.33.0 — 2026-10-12
 
 - **Package export documentation** — included `codeLineIndent` in the shipped guidelines export inventory.
