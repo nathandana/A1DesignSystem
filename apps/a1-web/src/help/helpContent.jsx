@@ -136,7 +136,7 @@ const RAW_HELP = [
           <Stack gap="sm">
             <P>Each project is a card showing its icon, description, page count, and last-updated date.</P>
             <Bullets items={[
-              <><strong>Open</strong> — click the card's Open button (or right-click → Open).</>,
+              <><strong>Open</strong> — choose the card's <strong>Edit</strong> button (or right-click → Open).</>,
               <><strong>Rename / Duplicate / Delete</strong> — right-click a card for the options menu. Delete asks for confirmation and removes the project and its pages.</>,
             ]} />
             <Shot
@@ -145,6 +145,22 @@ const RAW_HELP = [
               caption="Each project is a card on the Projects list — right-click one for rename, duplicate, or delete."
             />
             <P>The <Link href="/editor?project=proj-ember-oak" onClick={(e) => e.preventDefault()}>Ember &amp; Oak</Link> sample project is bundled as a complete worked example — explore it to see the features in context.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'organize-projects',
+        title: 'Favoriting, hiding, tagging & ordering projects',
+        keywords: 'organize favorite favourite star pin hide hidden show tag tags filter order reorder move up down sort menu',
+        body: (
+          <Stack gap="sm">
+            <P>Each project card has an <strong>Edit</strong> button (<Icon name="edit" size="sm" />) that opens the project, and a <strong>More options</strong> button (<Icon name="more_vert" size="sm" />) for organizing it. Changes save as you make them.</P>
+            <Bullets items={[
+              <><strong>Favorite</strong> — favorites come first, under their own heading on the Projects list and in the <strong>Editors → Projects</strong> menu.</>,
+              <><strong>Move to top, Move up 1, Move down 1, Move to bottom</strong> — set the order projects appear in, within favorites or within the rest.</>,
+              <><strong>Add tags</strong> — type to add a tag, or pick one you've used before. Tags show on each card, and the <strong>Filter by tag</strong> chips narrow the list to one tag.</>,
+            ]} />
+            <P>To hide a project, right-click its card and choose <strong>Hide</strong>. A hidden project stays active but is left out of the Projects menu and list; turn on <strong>Show hidden</strong> to see hidden projects again. To remove a project, archive it instead. Your organization syncs with the rest of your projects when you're signed in.</P>
           </Stack>
         ),
       },

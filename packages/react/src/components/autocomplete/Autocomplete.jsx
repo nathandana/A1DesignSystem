@@ -212,6 +212,8 @@ export function Autocomplete({
       if (open && activeIndex >= 0 && visible[activeIndex]) { e.preventDefault(); commit(visible[activeIndex]); }
       else if (open && visible.length === 1) { e.preventDefault(); commit(visible[0]); }
     } else if (e.key === "Escape") {
+      // An open listbox consumes Escape so an enclosing native <dialog> stays open.
+      if (open) { e.preventDefault(); e.stopPropagation(); }
       setOpen(false);
     } else if (e.key === "Backspace" && multiple && query === "" && selectedValues.length) {
       removeValue(selectedValues[selectedValues.length - 1]);

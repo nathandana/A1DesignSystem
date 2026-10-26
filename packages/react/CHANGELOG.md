@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Autocomplete: Escape no longer closes an enclosing Dialog** — pressing Escape while the listbox is open now closes only the listbox, as the combobox pattern expects. Previously the key also reached the native `<dialog>`, which closed the whole Dialog.
+
 - **Print stylesheet** (A1-2707) — pages now print cleanly with no extra import. Paper is always light: system-preference dark and inverse sections are screen-only, so a dark or inverse page no longer prints pale text on white. Each component carries its own `@media print` rules: navigation chrome (SideNav, TopHeader nav and actions, BottomDrawer, BottomSheet, StickyActions, PageNav, Snackbar, Tooltip) is hidden; PageLayout's viewport-height mode releases its inner scrolling so long pages paginate instead of printing one screen; hero and full-screen Sections lose their minimum height; code expands and wraps; DataTables show every column; headings stay with their content and cards, figures, banners and table rows don't split; external links print their URL; and buttons, badges, banners, chips, switches, checkboxes and other filled controls keep their colour. StickyActions' spacer gains the `a1-sticky-actions__spacer` class. Apps that set `.a1-theme-dark` themselves should swap to `.a1-theme-light` while printing — see the tokens guideline.
 
 - **Badge: long labels truncate** (A1-2704) — a `MessageBadge` label wider than its container now ends in an ellipsis inside the pill instead of overflowing it. The label renders in a new `.a1-message-badge__label` span; string labels also become the badge's `title`, so the full text shows on hover (pass `title` to override). Screen readers still read the full label. New "Long labels — truncate" story.

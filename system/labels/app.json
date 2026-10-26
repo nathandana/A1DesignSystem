@@ -3535,6 +3535,314 @@
             "zh": "取消",
             "ar": "إلغاء"
           }
+        },
+        "tagsDone": {
+          "$type": "string",
+          "$value": "Done",
+          "$description": "Button that closes the Add tags dialog on the Projects page. Tags are saved as they are added.",
+          "locale": {
+            "es": "Listo",
+            "fr": "Terminé",
+            "de": "Fertig",
+            "pt": "Concluído",
+            "ja": "完了",
+            "zh": "完成",
+            "ar": "تم"
+          }
+        },
+        "favorite": {
+          "$type": "string",
+          "$value": "Favorite",
+          "$description": "Project card menu item that marks the project as a favorite, which pins it to the top of the Projects menu and list.",
+          "locale": {
+            "es": "Favorito",
+            "fr": "Favori",
+            "de": "Favorit",
+            "pt": "Favorito",
+            "ja": "お気に入り",
+            "zh": "收藏",
+            "ar": "مفضّل"
+          }
+        },
+        "hidden": {
+          "$type": "string",
+          "$value": "Hidden",
+          "$description": "Toggle label in the Organize projects dialog, and a badge on hidden project cards.",
+          "locale": {
+            "es": "Oculto",
+            "fr": "Masqué",
+            "de": "Ausgeblendet",
+            "pt": "Oculto",
+            "ja": "非表示",
+            "zh": "已隐藏",
+            "ar": "مخفي"
+          }
+        },
+        "moveUp": {
+          "$type": "string",
+          "$value": "Move up 1",
+          "$description": "Project card menu item that moves the project one place earlier in the Projects menu and list.",
+          "locale": {
+            "es": "Subir 1",
+            "fr": "Monter de 1",
+            "de": "1 nach oben",
+            "pt": "Mover 1 para cima",
+            "ja": "1つ上へ",
+            "zh": "上移 1 位",
+            "ar": "نقل لأعلى بمقدار 1"
+          }
+        },
+        "moveDown": {
+          "$type": "string",
+          "$value": "Move down 1",
+          "$description": "Project card menu item that moves the project one place later in the Projects menu and list.",
+          "locale": {
+            "es": "Bajar 1",
+            "fr": "Descendre de 1",
+            "de": "1 nach unten",
+            "pt": "Mover 1 para baixo",
+            "ja": "1つ下へ",
+            "zh": "下移 1 位",
+            "ar": "نقل لأسفل بمقدار 1"
+          }
+        },
+        "tags": {
+          "$type": "string",
+          "$value": "Tags",
+          "$description": "Field label in the Add tags dialog on the Projects page.",
+          "locale": {
+            "es": "Etiquetas",
+            "fr": "Étiquettes",
+            "de": "Tags",
+            "pt": "Etiquetas",
+            "ja": "タグ",
+            "zh": "标签",
+            "ar": "الوسوم"
+          }
+        },
+        "removeFromFavorites": {
+          "$type": "string",
+          "$value": "Remove from favorites",
+          "$description": "Project card menu item that removes the project from favorites.",
+          "locale": {
+            "es": "Quitar de favoritos",
+            "fr": "Retirer des favoris",
+            "de": "Aus Favoriten entfernen",
+            "pt": "Remover dos favoritos",
+            "ja": "お気に入りから削除",
+            "zh": "从收藏中移除",
+            "ar": "إزالة من المفضلة"
+          }
+        },
+        "hide": {
+          "$type": "string",
+          "$value": "Hide",
+          "$description": "Project card menu item that hides the project from the Projects menu and list.",
+          "locale": {
+            "es": "Ocultar",
+            "fr": "Masquer",
+            "de": "Ausblenden",
+            "pt": "Ocultar",
+            "ja": "非表示にする",
+            "zh": "隐藏",
+            "ar": "إخفاء"
+          }
+        },
+        "show": {
+          "$type": "string",
+          "$value": "Show",
+          "$description": "Project card menu item that shows a hidden project again.",
+          "locale": {
+            "es": "Mostrar",
+            "fr": "Afficher",
+            "de": "Einblenden",
+            "pt": "Mostrar",
+            "ja": "表示する",
+            "zh": "显示",
+            "ar": "إظهار"
+          }
+        },
+        "favoritesHeading": {
+          "$type": "string",
+          "$value": "Favorites",
+          "$description": "Heading above favorite projects on the Projects page.",
+          "locale": {
+            "es": "Favoritos",
+            "fr": "Favoris",
+            "de": "Favoriten",
+            "pt": "Favoritos",
+            "ja": "お気に入り",
+            "zh": "收藏",
+            "ar": "المفضلة"
+          }
+        },
+        "otherProjectsHeading": {
+          "$type": "string",
+          "$value": "Other projects",
+          "$description": "Heading above non-favorite projects on the Projects page when favorites exist.",
+          "locale": {
+            "es": "Otros proyectos",
+            "fr": "Autres projets",
+            "de": "Weitere Projekte",
+            "pt": "Outros projetos",
+            "ja": "その他のプロジェクト",
+            "zh": "其他项目",
+            "ar": "مشاريع أخرى"
+          }
+        },
+        "filterByTag": {
+          "$type": "string",
+          "$value": "Filter by tag",
+          "$description": "Label for the tag filter chips on the Projects page.",
+          "locale": {
+            "es": "Filtrar por etiqueta",
+            "fr": "Filtrer par étiquette",
+            "de": "Nach Tag filtern",
+            "pt": "Filtrar por etiqueta",
+            "ja": "タグで絞り込み",
+            "zh": "按标签筛选",
+            "ar": "التصفية حسب الوسم"
+          }
+        },
+        "allTags": {
+          "$type": "string",
+          "$value": "All",
+          "$description": "Tag filter chip that shows projects with any tag.",
+          "locale": {
+            "es": "Todos",
+            "fr": "Tous",
+            "de": "Alle",
+            "pt": "Todos",
+            "ja": "すべて",
+            "zh": "全部",
+            "ar": "الكل"
+          }
+        },
+        "showHidden": {
+          "$type": "string",
+          "$value": "Show hidden",
+          "$description": "Toggle on the Projects page that includes hidden projects in the list. A count follows in parentheses.",
+          "locale": {
+            "es": "Mostrar ocultos",
+            "fr": "Afficher les masqués",
+            "de": "Ausgeblendete anzeigen",
+            "pt": "Mostrar ocultos",
+            "ja": "非表示を表示",
+            "zh": "显示隐藏项目",
+            "ar": "إظهار المخفية"
+          }
+        },
+        "allHiddenTitle": {
+          "$type": "string",
+          "$value": "All projects are hidden",
+          "$description": "Empty state title on the Projects page when every active project is hidden.",
+          "locale": {
+            "es": "Todos los proyectos están ocultos",
+            "fr": "Tous les projets sont masqués",
+            "de": "Alle Projekte sind ausgeblendet",
+            "pt": "Todos os projetos estão ocultos",
+            "ja": "すべてのプロジェクトが非表示です",
+            "zh": "所有项目均已隐藏",
+            "ar": "جميع المشاريع مخفية"
+          }
+        },
+        "allHiddenDescription": {
+          "$type": "string",
+          "$value": "Turn on Show hidden to see them.",
+          "$description": "Empty state description on the Projects page when every active project is hidden.",
+          "locale": {
+            "es": "Activa Mostrar ocultos para verlos.",
+            "fr": "Activez Afficher les masqués pour les voir.",
+            "de": "Aktiviere „Ausgeblendete anzeigen“, um sie zu sehen.",
+            "pt": "Ative Mostrar ocultos para vê-los.",
+            "ja": "表示するには「非表示を表示」をオンにしてください。",
+            "zh": "开启“显示隐藏项目”即可查看。",
+            "ar": "فعّل «إظهار المخفية» لعرضها."
+          }
+        },
+        "edit": {
+          "$type": "string",
+          "$value": "Edit",
+          "$description": "Icon button on a project card that opens the project in the editor.",
+          "locale": {
+            "es": "Editar",
+            "fr": "Modifier",
+            "de": "Bearbeiten",
+            "pt": "Editar",
+            "ja": "編集",
+            "zh": "编辑",
+            "ar": "تعديل"
+          }
+        },
+        "moreOptions": {
+          "$type": "string",
+          "$value": "More options",
+          "$description": "Icon button on a project card that opens its menu of favorite, ordering and tag actions.",
+          "locale": {
+            "es": "Más opciones",
+            "fr": "Plus d’options",
+            "de": "Weitere Optionen",
+            "pt": "Mais opções",
+            "ja": "その他のオプション",
+            "zh": "更多选项",
+            "ar": "مزيد من الخيارات"
+          }
+        },
+        "moveToTop": {
+          "$type": "string",
+          "$value": "Move to top",
+          "$description": "Project card menu item that moves the project to the start of its group in the Projects menu and list.",
+          "locale": {
+            "es": "Mover al principio",
+            "fr": "Placer en premier",
+            "de": "Ganz nach oben",
+            "pt": "Mover para o topo",
+            "ja": "先頭へ移動",
+            "zh": "移到顶部",
+            "ar": "نقل إلى الأعلى"
+          }
+        },
+        "moveToBottom": {
+          "$type": "string",
+          "$value": "Move to bottom",
+          "$description": "Project card menu item that moves the project to the end of its group in the Projects menu and list.",
+          "locale": {
+            "es": "Mover al final",
+            "fr": "Placer en dernier",
+            "de": "Ganz nach unten",
+            "pt": "Mover para o fim",
+            "ja": "末尾へ移動",
+            "zh": "移到底部",
+            "ar": "نقل إلى الأسفل"
+          }
+        },
+        "addTags": {
+          "$type": "string",
+          "$value": "Add tags…",
+          "$description": "Project card menu item that opens the Add tags dialog.",
+          "locale": {
+            "es": "Añadir etiquetas…",
+            "fr": "Ajouter des étiquettes…",
+            "de": "Tags hinzufügen …",
+            "pt": "Adicionar etiquetas…",
+            "ja": "タグを追加…",
+            "zh": "添加标签…",
+            "ar": "إضافة وسوم…"
+          }
+        },
+        "addTagsTitle": {
+          "$type": "string",
+          "$value": "Add tags",
+          "$description": "Title of the dialog for adding tags to a project.",
+          "locale": {
+            "es": "Añadir etiquetas",
+            "fr": "Ajouter des étiquettes",
+            "de": "Tags hinzufügen",
+            "pt": "Adicionar etiquetas",
+            "ja": "タグを追加",
+            "zh": "添加标签",
+            "ar": "إضافة وسوم"
+          }
         }
       },
       "backlog": {
