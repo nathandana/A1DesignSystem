@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Queen City Sideline lives in the shared workspace** — the example blog is now a starter project: it's added once and then owned by the shared Supabase workspace like any other project, so a sample update no longer rewrites its pages and edits are kept. When a cloud pull finds a bundled sample the shared copy doesn't have yet, it now pushes it straight away instead of waiting for the next edit.
+
+- **Organize projects** (A1-2712) — favorite, hide, tag and order projects. Favorites lead the Projects list and the **Editors → Projects** menu under their own headings; hidden projects stay active but drop out of the menu and list until **Show hidden** is on; tags show on cards and filter the list; **Move to top / up 1 / down 1 / to bottom** sets the order. Project cards are no longer whole-card links: each has an **Edit** button that opens the project and a **More options** menu for favoriting, moving and **Add tags** (which opens a tags dialog); **Hide** is on the card's right-click menu. Organization syncs with cloud projects and doesn't change a project's Updated date. Labels in all seven locales; documented in Help → Projects.
+
 - **Sign out works when the account service is down** — signing out waited indefinitely if Supabase Auth was unreachable, and supabase-js keeps the local session when its revoke call fails, so nothing happened. Sign-out now falls back to clearing this device's session after 5 seconds.
 
 - **Print-friendly pages** (A1-2707) — printing any page now gives every page of its content in light mode, without navigation, the configurator or filter rail, or other screen-only controls. Previously a page printed only its first screen, and dark mode printed pale text.

@@ -498,6 +498,8 @@ function App() {
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
   const [projects, setProjects] = useState(() => projectStore.loadProjects())
+  // Projects menu: visible projects, favorites first, in manual order (A1-2712).
+  const menuProjects = useMemo(() => projectStore.sortProjects(projects.filter((project) => !project.hidden)), [projects])
   const [archivedProjects, setArchivedProjects] = useState(() => projectStore.loadArchivedProjects())
   const [activeProjectId, setActiveProjectId] = useState(() => {
     const params = new URLSearchParams(window.location.search)
@@ -1146,6 +1148,21 @@ function App() {
 
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleOrganizeProject(id, patch) {
+    projectStore.organizeProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleMoveProject(id, direction) {
+    projectStore.moveProject(id, direction)
+    refreshProjects()
+  }
+
+  function handleMoveProjectToEdge(id, edge) {
+    projectStore.moveProjectToEdge(id, edge)
     refreshProjects()
   }
 
@@ -1831,14 +1848,25 @@ function App() {
               href: getPath('editor'),
               onClick: handleEditorNav,
             },
-            ...(projects.length ? [{ divider: true }] : []),
-            ...projects.map((project) => ({
-              icon: project.icon || 'folder',
-              label: project.name,
-              href: `/editor?project=${project.id}`,
-              active: activePage === 'editor' && activeProjectId === project.id,
-              onClick: (e) => handleProjectNav(e, project.id),
-            })),
+            // Hidden projects stay out of the menu; favorites come first. When any
+            // exist, labelled sections set them off from the rest (A1-2712).
+            ...menuProjects.flatMap((project, index) => [
+              ...(index === 0 || (!project.favorite && menuProjects[index - 1].favorite)
+                ? [{
+                    divider: true,
+                    ...(menuProjects[0].favorite
+                      ? { label: project.favorite ? t('app.projects.favoritesHeading', 'Favorites') : t('app.projects.otherProjectsHeading', 'Other projects') }
+                      : {}),
+                  }]
+                : []),
+              {
+                icon: project.icon || 'folder',
+                label: project.name,
+                href: `/editor?project=${project.id}`,
+                active: activePage === 'editor' && activeProjectId === project.id,
+                onClick: (e) => handleProjectNav(e, project.id),
+              },
+            ]),
           ],
         },
         ...(canAccessPage('patterns') ? [{
@@ -2341,6 +2369,9 @@ function App() {
               onOpenProject={openProject}
               onCreateProject={handleCreateProject}
               onRenameProject={handleRenameProject}
+              onOrganizeProject={handleOrganizeProject}
+              onMoveProject={handleMoveProject}
+              onMoveProjectToEdge={handleMoveProjectToEdge}
               onDuplicateProject={handleDuplicateProject}
               onDeleteProject={handleDeleteProject}
               archivedProjects={archivedProjects}
@@ -2487,6 +2518,9 @@ function App() {
             onOpenProject={openProject}
             onCreateProject={handleCreateProject}
             onRenameProject={handleRenameProject}
+            onOrganizeProject={handleOrganizeProject}
+            onMoveProject={handleMoveProject}
+            onMoveProjectToEdge={handleMoveProjectToEdge}
             onDuplicateProject={handleDuplicateProject}
             onDeleteProject={handleDeleteProject}
             archivedProjects={archivedProjects}

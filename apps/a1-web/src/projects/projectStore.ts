@@ -58,6 +58,13 @@ export interface Project {
   labelOverrides?: Record<string, Record<string, string>>;
   /** Archived projects are hidden from the projects list (soft delete). Restorable. */
   archived?: boolean;
+  /** Favorites come first in the Projects menu and list (A1-2712). */
+  favorite?: boolean;
+  /** Hidden projects stay active but are left out of the Projects menu, and out
+   *  of the Projects list unless hidden projects are shown (A1-2712). */
+  hidden?: boolean;
+  /** Free-form tags for filtering the Projects list (A1-2712). */
+  tags?: string[];
   /** Primary navigation style for the project's prototype: an auto TopHeader
    *  (default) or a left sidebar (SideNav + TreeMenu from the page hierarchy). */
   navStyle?: 'header' | 'sidebar';
@@ -195,6 +202,68 @@ export function createProject(input: { name: string; description?: string; icon?
   saveProjects([...projects, project]);
   savePages(project.id, []);
   return project;
+}
+
+// ── Organizing (A1-2712) ──────────────────────────────────────────────────────
+// Favorites, hidden and tags organize the list rather than edit the project, so
+// they don't bump `updatedAt`. Manual order is the order of the stored list.
+
+type ProjectOrganization = Pick<Project, 'favorite' | 'hidden' | 'tags'>;
+
+/** Set a project's favorite / hidden / tags. Empty values are removed. */
+export function organizeProject(id: string, patch: ProjectOrganization): Project[] {
+  const projects = loadProjectsRaw().map((p) => {
+    if (p.id !== id) return p;
+    const next: Project = { ...p, ...patch };
+    if (!next.favorite) delete next.favorite;
+    if (!next.hidden) delete next.hidden;
+    next.tags = [...new Set((next.tags ?? []).map((tag) => tag.trim()).filter(Boolean))];
+    if (!next.tags.length) delete next.tags;
+    return next;
+  });
+  saveProjects(projects);
+  return projects;
+}
+
+/** Display order: favorites first, each group in manual order. */
+export function sortProjects<T extends Pick<Project, 'favorite'>>(projects: T[]): T[] {
+  return [...projects.filter((p) => p.favorite), ...projects.filter((p) => !p.favorite)];
+}
+
+/** Move a project one place earlier (-1) or later (1) within its display group
+ *  (favorites or the rest), by swapping it with that group's neighbor. */
+export function moveProject(id: string, direction: -1 | 1): Project[] {
+  const projects = loadProjectsRaw();
+  const from = projects.findIndex((p) => p.id === id);
+  if (from < 0) return projects;
+  const group = (p: Project) => !p.archived && !!p.favorite === !!projects[from].favorite;
+  let to = from + direction;
+  while (to >= 0 && to < projects.length && !group(projects[to])) to += direction;
+  if (to < 0 || to >= projects.length) return projects;
+  const next = [...projects];
+  [next[from], next[to]] = [next[to], next[from]];
+  saveProjects(next);
+  return next;
+}
+
+/** Move a project to the top or bottom of its display group (favorites or the rest). */
+export function moveProjectToEdge(id: string, edge: 'top' | 'bottom'): Project[] {
+  const projects = loadProjectsRaw();
+  const moving = projects.find((p) => p.id === id);
+  if (!moving) return projects;
+  const inGroup = (p: Project) => !p.archived && !!p.favorite === !!moving.favorite;
+  const rest = projects.filter((p) => p.id !== id);
+  const groupIndexes = rest.flatMap((p, index) => (inGroup(p) ? [index] : []));
+  if (!groupIndexes.length) return projects;
+  const at = edge === 'top' ? groupIndexes[0] : groupIndexes[groupIndexes.length - 1] + 1;
+  const next = [...rest.slice(0, at), moving, ...rest.slice(at)];
+  saveProjects(next);
+  return next;
+}
+
+/** Every tag used by an active project, sorted for display. */
+export function projectTags(projects: Pick<Project, 'tags'>[]): string[] {
+  return [...new Set(projects.flatMap((p) => p.tags ?? []))].sort((a, b) => a.localeCompare(b));
 }
 
 export function updateProject(id: string, patch: Partial<Omit<Project, 'id' | 'createdAt'>>): Project[] {
@@ -747,7 +816,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, favorite: proj.favorite ?? false, hidden: proj.hidden ?? false, tags: proj.tags ?? [], navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -763,20 +832,21 @@ export function exportAllText(): string {
 export function importAllText(
   text: string,
   { replaceProjects = false }: { replaceProjects?: boolean } = {},
-): { projects: number; pages: number } {
+): { projects: number; pages: number; keptSamples: string[] } {
   const projMatches = [...text.matchAll(/^##### PROJECT (.*) #####$/gm)];
-  if (!projMatches.length) return { projects: 0, pages: 0 };
+  if (!projMatches.length) return { projects: 0, pages: 0, keptSamples: [] };
 
   const existingProjects = loadProjectsRaw();
   const existingPages = replaceProjects
     ? new Map(existingProjects.map((project) => [project.id, loadPages(project.id)]))
     : new Map<string, ProjectPage[]>();
   const importedProjectIds = new Set<string>();
+  const keptSamples: string[] = [];
   const byId = new Map<string, Project>(replaceProjects ? [] : existingProjects.map((p) => [p.id, p]));
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; favorite?: boolean; hidden?: boolean; tags?: string[]; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -816,6 +886,7 @@ export function importAllText(
 
     const now = Date.now();
     const existing = existingProjects.find((project) => project.id === meta.id);
+    const tags = Array.isArray(meta.tags) ? meta.tags : existing?.tags;
     byId.set(meta.id, {
       id: meta.id,
       name: meta.name || existing?.name || 'Imported project',
@@ -825,6 +896,10 @@ export function importAllText(
       // Preserve soft-delete + nav style across export/import (and cloud sync),
       // else an archived project reappears on the next hydrate.
       archived: meta.archived ?? existing?.archived ?? undefined,
+      // Organization (A1-2712) syncs like archive; an older bundle without it keeps local values.
+      favorite: (meta.favorite ?? existing?.favorite) || undefined,
+      hidden: (meta.hidden ?? existing?.hidden) || undefined,
+      tags: tags?.length ? tags : undefined,
       navStyle: (meta.navStyle as Project['navStyle']) || existing?.navStyle || undefined,
       published: meta.published ?? existing?.published ?? undefined,
       figmaPageLinks: Array.isArray(meta.figmaPageLinks) ? meta.figmaPageLinks : existing?.figmaPageLinks,
@@ -839,14 +914,17 @@ export function importAllText(
       if (importedProjectIds.has(project.id)) continue;
       // A local bundled sample the imported bundle doesn't know about yet stays;
       // the next push shares it.
-      if (SAMPLE_PROJECT_IDS.has(project.id)) byId.set(project.id, project);
+      if (SAMPLE_PROJECT_IDS.has(project.id)) {
+        byId.set(project.id, project);
+        keptSamples.push(project.id);
+      }
       else purgeProjectStorage(project.id);
     }
     if (!byId.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
   }
 
   saveProjects([...byId.values()]);
-  return { projects: projMatches.length, pages: pageCount };
+  return { projects: projMatches.length, pages: pageCount, keptSamples };
 }
 
 // ── Upload a project from a single JSON object ──────────────────────────────────
@@ -1223,6 +1301,9 @@ function ensureSampleProjects(): void {
       project: sportsBlogProject,
       pages: sportsBlogPages,
       content: sportsBlogContent,
+      // A starter project: added once, then owned by the shared (Supabase)
+      // workspace. A seed-flag bump never rewrites pages that already exist.
+      starter: true,
     },
   ];
 
@@ -1230,6 +1311,11 @@ function ensureSampleProjects(): void {
     try {
       if (localStorage.getItem(sample.flag)) continue;
     } catch {
+      continue;
+    }
+
+    if ('starter' in sample && sample.starter && loadProjectsRaw().some((project) => project.id === sample.projectId)) {
+      try { localStorage.setItem(sample.flag, '1'); } catch { /* ignore */ }
       continue;
     }
 
