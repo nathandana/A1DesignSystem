@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Light print output** (A1-2707) — the system dark-mode media queries are now screen-only, so pages print in light mode even when the reader's device prefers dark.
+
 ## 0.3.0 — 2026-10-12
 
 - **Labs token families** (A1-2698) — includes tokens for avatars, code highlighting, celebrations, slides, timelines, page construction and loading, fitted type, contextual help, password strength, mode switches, and animated radio, checkbox, accordion, dialog and segmented-control studies. Experiment implementations remain isolated in A1 Labs.

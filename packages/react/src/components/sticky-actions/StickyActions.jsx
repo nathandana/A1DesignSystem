@@ -28,7 +28,7 @@ export function StickyActions({ contentWidth, className = "", children, ...props
     <>
       {/* Spacer holds the bar's height in document flow so content above is
           never hidden. Height is measured and kept in sync via ResizeObserver. */}
-      <div style={{ height: offset }} aria-hidden="true" />
+      <div className="a1-sticky-actions__spacer" style={{ height: offset }} aria-hidden="true" />
       <div
         ref={barRef}
         className={["a1-sticky-actions", className].filter(Boolean).join(" ")}

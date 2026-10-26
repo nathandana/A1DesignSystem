@@ -252,3 +252,18 @@
 .a1-message-empty__action {
   margin-top: var(--base-spacing-4);
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep banners whole; keep banner and badge status colour on paper. */
+
+@media print {
+  .a1-message-banner {
+    break-inside: avoid;
+  }
+
+  .a1-message-banner,
+  .a1-message-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

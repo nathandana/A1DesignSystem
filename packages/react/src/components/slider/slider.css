@@ -258,3 +258,14 @@
 .a1-slider--disabled .a1-slider__input {
   cursor: not-allowed;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep this background on paper: browsers drop backgrounds by default,
+   which would leave white text on white or erase meaning carried by colour. */
+
+@media print {
+  .a1-slider {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

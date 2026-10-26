@@ -110,7 +110,7 @@ function themeCss(theme) {
 ${declarations(themeVars)}
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root:not(.a1-theme-light) {
     color-scheme: dark;
 ${declarations(darkVars, LIGHT_MODE_VARIABLES)}
@@ -1560,7 +1560,7 @@ html.a1-theme-dark .a1-tooltip {
   --a1-tooltip-foreground: var(--semantic-color-text-inverse);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   html:not(.a1-theme-light):not(.a1-theme-dark) .a1-tooltip {
     --a1-tooltip-background: var(--semantic-color-surface-inverse);
     --a1-tooltip-border-color: var(--semantic-color-surface-inverse);

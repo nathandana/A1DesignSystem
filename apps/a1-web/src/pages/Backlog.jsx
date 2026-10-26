@@ -537,7 +537,7 @@ export function Backlog({ onNavigate }) {
               and follow what's in flight.
             </Paragraph> */}
             <MessageBadge status="info"  size="md">{counts.open} open</MessageBadge>
-            <MessageBadge status="neutral" subtle size="mdprefe">{counts.total} total</MessageBadge>
+            <MessageBadge status="neutral" subtle size="md">{counts.total} total</MessageBadge>
           </Stack>
           {backlog && !backlog.isCloud && (
             <Banner status="info" variant="inline">

@@ -411,3 +411,13 @@
   .a1-section--lg-padding-md   { padding-block: var(--base-spacing-64); padding-inline: var(--base-spacing-40); }
   .a1-section--lg-padding-lg   { padding-block: var(--base-spacing-96); padding-inline: var(--base-spacing-64); }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   A hero or full-screen section would otherwise fill a whole page. */
+
+@media print {
+  .a1-section--height-screen,
+  .a1-section--height-hero {
+    min-block-size: auto;
+  }
+}

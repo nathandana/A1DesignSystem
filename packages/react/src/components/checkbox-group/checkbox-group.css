@@ -312,3 +312,14 @@
 .a1-checkbox-group__message--error {
   font-weight: var(--component-checkbox-group-error-message-font-weight);
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep this background on paper: browsers drop backgrounds by default,
+   which would leave white text on white or erase meaning carried by colour. */
+
+@media print {
+  .a1-checkbox-group {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -434,3 +434,19 @@
     display: none;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep the logo so the printout names the product; drop navigation and
+   actions, and let the bar sit in flow instead of repeating. */
+
+@media print {
+  .a1-top-header {
+    position: static;
+  }
+
+  .a1-top-header__nav,
+  .a1-top-header__end,
+  .a1-top-header__hamburger {
+    display: none;
+  }
+}

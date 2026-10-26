@@ -152,6 +152,7 @@ import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import { recordPageView, startVisitHeartbeat } from './lib/visitAnalytics.js'
 import { themeClassName, themeOptions, settingsThemeOptions, settingsThemeValues, VALID_THEMES } from './lib/appThemes.ts'
+import { usePrintLightMode } from './lib/usePrintLightMode.js'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -1428,6 +1429,8 @@ function App() {
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
     document.documentElement.classList.toggle('a1-contrast-more', contrastMore)
   }, [theme, resolvedColorScheme, colorMode, reducedMotion, contrastMore])
+
+  usePrintLightMode(document.documentElement, { dark: resolvedColorScheme === 'dark', light: colorMode === 'light' })
 
   // Don't persist a standalone preview's forced theme — it must not leak into the
   // main app window's stored preference.

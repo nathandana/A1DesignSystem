@@ -29,3 +29,13 @@
 .a1-sticky-actions__inner--lg  { max-width: 60rem;   }
 .a1-sticky-actions__inner--xl  { max-width: 70rem;   }
 .a1-sticky-actions__inner--2xl { max-width: 90rem;   }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-sticky-actions,
+  .a1-sticky-actions__spacer {
+    display: none;
+  }
+}

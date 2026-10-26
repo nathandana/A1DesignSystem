@@ -178,3 +178,12 @@
     overflow: hidden auto;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-page-nav {
+    display: none;
+  }
+}

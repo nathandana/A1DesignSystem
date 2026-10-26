@@ -136,3 +136,12 @@
   white-space: nowrap;
   max-inline-size: 100%;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-bottom-drawer {
+    display: none;
+  }
+}

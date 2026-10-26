@@ -78,331 +78,331 @@ _None._
 
 ### Raw authored CSS colors
 
-- `#1D1D1F` at `packages/react/src/color-scheme-modes.css:868`
-- `#6E6E73` at `packages/react/src/color-scheme-modes.css:869`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:870`
-- `#FAFAFA` at `packages/react/src/color-scheme-modes.css:872`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:873`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:874`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:875`
-- `#F0F0F2` at `packages/react/src/color-scheme-modes.css:876`
-- `#EBEBED` at `packages/react/src/color-scheme-modes.css:877`
-- `#D2D2D7` at `packages/react/src/color-scheme-modes.css:878`
-- `#AEAEB2` at `packages/react/src/color-scheme-modes.css:879`
-- `#3B2F2C` at `packages/react/src/color-scheme-modes.css:997`
-- `#6B5C55` at `packages/react/src/color-scheme-modes.css:998`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:999`
-- `#FAF4EF` at `packages/react/src/color-scheme-modes.css:1001`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1002`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1003`
-- `#FFFDFB` at `packages/react/src/color-scheme-modes.css:1004`
-- `#F6ECE4` at `packages/react/src/color-scheme-modes.css:1005`
-- `#EFE0D6` at `packages/react/src/color-scheme-modes.css:1006`
-- `#DDC8BB` at `packages/react/src/color-scheme-modes.css:1007`
-- `#BCA294` at `packages/react/src/color-scheme-modes.css:1008`
-- `#252525` at `packages/react/src/color-scheme-modes.css:1063`
-- `#635C54` at `packages/react/src/color-scheme-modes.css:1064`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1065`
-- `#FAF7F4` at `packages/react/src/color-scheme-modes.css:1067`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1068`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1069`
-- `#F4F0EB` at `packages/react/src/color-scheme-modes.css:1070`
-- `#E6E3E0` at `packages/react/src/color-scheme-modes.css:1071`
-- `#D8D3CE` at `packages/react/src/color-scheme-modes.css:1072`
-- `#C6C0BA` at `packages/react/src/color-scheme-modes.css:1073`
-- `#635C54` at `packages/react/src/color-scheme-modes.css:1074`
-- `#D7FFF8` at `packages/react/src/color-scheme-modes.css:1118`
-- `#E9E3DC` at `packages/react/src/color-scheme-modes.css:1316`
-- `#141414` at `packages/react/src/color-scheme-modes.css:1332`
-- `#6B6B6B` at `packages/react/src/color-scheme-modes.css:1333`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1334`
-- `#141414` at `packages/react/src/color-scheme-modes.css:1335`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1336`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1337`
-- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1338`
-- `#F5F5F5` at `packages/react/src/color-scheme-modes.css:1339`
-- `#EBEBEB` at `packages/react/src/color-scheme-modes.css:1340`
-- `#D6D6D6` at `packages/react/src/color-scheme-modes.css:1341`
-- `#B8B8B8` at `packages/react/src/color-scheme-modes.css:1342`
-- `#8F8F8F` at `packages/react/src/color-scheme-modes.css:1343`
-- `#fcfcfc` at `packages/react/src/color-scheme-modes.css:1455`
-- `#e7e9e8` at `packages/react/src/color-scheme-modes.css:1456`
-- `#d3d6d4` at `packages/react/src/color-scheme-modes.css:1457`
-- `#bec3bf` at `packages/react/src/color-scheme-modes.css:1458`
-- `#a7aeaa` at `packages/react/src/color-scheme-modes.css:1459`
-- `#909892` at `packages/react/src/color-scheme-modes.css:1460`
-- `#717A74` at `packages/react/src/color-scheme-modes.css:1461`
-- `#49504b` at `packages/react/src/color-scheme-modes.css:1462`
-- `#2e3330` at `packages/react/src/color-scheme-modes.css:1463`
-- `#171b19` at `packages/react/src/color-scheme-modes.css:1464`
-- `#060706` at `packages/react/src/color-scheme-modes.css:1465`
-- `#000000` at `packages/react/src/color-scheme-modes.css:1466`
-- `#fbfcfa` at `packages/react/src/color-scheme-modes.css:1467`
-- `#f7ffef` at `packages/react/src/color-scheme-modes.css:1468`
-- `#f1ffe0` at `packages/react/src/color-scheme-modes.css:1469`
-- `#e9ffcb` at `packages/react/src/color-scheme-modes.css:1470`
-- `#e1ffb5` at `packages/react/src/color-scheme-modes.css:1471`
-- `#d8ff9b` at `packages/react/src/color-scheme-modes.css:1472`
-- `#ceff76` at `packages/react/src/color-scheme-modes.css:1473`
-- `#BEFF00` at `packages/react/src/color-scheme-modes.css:1474`
-- `#b2ef00` at `packages/react/src/color-scheme-modes.css:1475`
-- `#516f00` at `packages/react/src/color-scheme-modes.css:1476`
-- `#2c3e00` at `packages/react/src/color-scheme-modes.css:1477`
-- `#0d1600` at `packages/react/src/color-scheme-modes.css:1478`
-- `#000000` at `packages/react/src/color-scheme-modes.css:1479`
-- `#F8FBFF` at `packages/react/src/color-scheme-modes.css:1564`
-- `#EEF4FF` at `packages/react/src/color-scheme-modes.css:1565`
-- `#DDE8FA` at `packages/react/src/color-scheme-modes.css:1566`
-- `#C8D7F0` at `packages/react/src/color-scheme-modes.css:1567`
-- `#AFC2E6` at `packages/react/src/color-scheme-modes.css:1568`
-- `#8EA3CC` at `packages/react/src/color-scheme-modes.css:1569`
-- `#6B80AD` at `packages/react/src/color-scheme-modes.css:1570`
-- `#4C5E86` at `packages/react/src/color-scheme-modes.css:1571`
-- `#334164` at `packages/react/src/color-scheme-modes.css:1572`
-- `#202C4F` at `packages/react/src/color-scheme-modes.css:1573`
-- `#121F3D` at `packages/react/src/color-scheme-modes.css:1574`
-- `#07122C` at `packages/react/src/color-scheme-modes.css:1575`
-- `#050916` at `packages/react/src/color-scheme-modes.css:1576`
-- `#FBF9FF` at `packages/react/src/color-scheme-modes.css:1577`
-- `#F4F0FF` at `packages/react/src/color-scheme-modes.css:1578`
-- `#ECE5FF` at `packages/react/src/color-scheme-modes.css:1579`
-- `#D9CBFF` at `packages/react/src/color-scheme-modes.css:1580`
-- `#BBA5FF` at `packages/react/src/color-scheme-modes.css:1581`
-- `#9C7AFF` at `packages/react/src/color-scheme-modes.css:1582`
-- `#8057F0` at `packages/react/src/color-scheme-modes.css:1583`
-- `#6848D9` at `packages/react/src/color-scheme-modes.css:1584`
-- `#5135B5` at `packages/react/src/color-scheme-modes.css:1585`
-- `#3B2489` at `packages/react/src/color-scheme-modes.css:1586`
-- `#27195A` at `packages/react/src/color-scheme-modes.css:1587`
-- `#160E34` at `packages/react/src/color-scheme-modes.css:1588`
-- `#080512` at `packages/react/src/color-scheme-modes.css:1589`
-- `#F7FDFF` at `packages/react/src/color-scheme-modes.css:1590`
-- `#ECFBFF` at `packages/react/src/color-scheme-modes.css:1591`
-- `#DDF8FF` at `packages/react/src/color-scheme-modes.css:1592`
-- `#B9F0FF` at `packages/react/src/color-scheme-modes.css:1593`
-- `#82E3FF` at `packages/react/src/color-scheme-modes.css:1594`
-- `#4CCEFF` at `packages/react/src/color-scheme-modes.css:1595`
-- `#1EA7FF` at `packages/react/src/color-scheme-modes.css:1596`
-- `#0B7FE8` at `packages/react/src/color-scheme-modes.css:1597`
-- `#075FBF` at `packages/react/src/color-scheme-modes.css:1598`
-- `#084C82` at `packages/react/src/color-scheme-modes.css:1599`
-- `#06345A` at `packages/react/src/color-scheme-modes.css:1600`
-- `#041F36` at `packages/react/src/color-scheme-modes.css:1601`
-- `#020F1B` at `packages/react/src/color-scheme-modes.css:1602`
-- `#F5FEFC` at `packages/react/src/color-scheme-modes.css:1603`
-- `#E9FCF6` at `packages/react/src/color-scheme-modes.css:1604`
-- `#D2F7EC` at `packages/react/src/color-scheme-modes.css:1605`
-- `#A9ECD8` at `packages/react/src/color-scheme-modes.css:1606`
-- `#75DBBC` at `packages/react/src/color-scheme-modes.css:1607`
-- `#45C79F` at `packages/react/src/color-scheme-modes.css:1608`
-- `#28AB83` at `packages/react/src/color-scheme-modes.css:1609`
-- `#168967` at `packages/react/src/color-scheme-modes.css:1610`
-- `#0F684F` at `packages/react/src/color-scheme-modes.css:1611`
-- `#0A4B39` at `packages/react/src/color-scheme-modes.css:1612`
-- `#063326` at `packages/react/src/color-scheme-modes.css:1613`
-- `#041F17` at `packages/react/src/color-scheme-modes.css:1614`
-- `#020F0B` at `packages/react/src/color-scheme-modes.css:1615`
-- `#FFFCF7` at `packages/react/src/color-scheme-modes.css:1616`
-- `#FFF7EA` at `packages/react/src/color-scheme-modes.css:1617`
-- `#FFEFD3` at `packages/react/src/color-scheme-modes.css:1618`
-- `#FFDDA8` at `packages/react/src/color-scheme-modes.css:1619`
-- `#FFC16D` at `packages/react/src/color-scheme-modes.css:1620`
-- `#F9A63F` at `packages/react/src/color-scheme-modes.css:1621`
-- `#DF8420` at `packages/react/src/color-scheme-modes.css:1622`
-- `#B86414` at `packages/react/src/color-scheme-modes.css:1623`
-- `#8F4B0E` at `packages/react/src/color-scheme-modes.css:1624`
-- `#67350A` at `packages/react/src/color-scheme-modes.css:1625`
-- `#452306` at `packages/react/src/color-scheme-modes.css:1626`
-- `#291403` at `packages/react/src/color-scheme-modes.css:1627`
-- `#140901` at `packages/react/src/color-scheme-modes.css:1628`
-- `#FFF8FB` at `packages/react/src/color-scheme-modes.css:1629`
-- `#FFF0F7` at `packages/react/src/color-scheme-modes.css:1630`
-- `#FFE2EF` at `packages/react/src/color-scheme-modes.css:1631`
-- `#FFC2DD` at `packages/react/src/color-scheme-modes.css:1632`
-- `#FF8FBC` at `packages/react/src/color-scheme-modes.css:1633`
-- `#F75F9C` at `packages/react/src/color-scheme-modes.css:1634`
-- `#E23E80` at `packages/react/src/color-scheme-modes.css:1635`
-- `#BD2765` at `packages/react/src/color-scheme-modes.css:1636`
-- `#951B4E` at `packages/react/src/color-scheme-modes.css:1637`
-- `#6F1339` at `packages/react/src/color-scheme-modes.css:1638`
-- `#4A0C25` at `packages/react/src/color-scheme-modes.css:1639`
-- `#2A0614` at `packages/react/src/color-scheme-modes.css:1640`
-- `#140309` at `packages/react/src/color-scheme-modes.css:1641`
-- `#FFFBF4` at `packages/react/src/color-scheme-modes.css:1642`
-- `#FFF4DD` at `packages/react/src/color-scheme-modes.css:1643`
-- `#FFE8BA` at `packages/react/src/color-scheme-modes.css:1644`
-- `#FFD483` at `packages/react/src/color-scheme-modes.css:1645`
-- `#FFB74A` at `packages/react/src/color-scheme-modes.css:1646`
-- `#F69422` at `packages/react/src/color-scheme-modes.css:1647`
-- `#D87412` at `packages/react/src/color-scheme-modes.css:1648`
-- `#B2570B` at `packages/react/src/color-scheme-modes.css:1649`
-- `#894006` at `packages/react/src/color-scheme-modes.css:1650`
-- `#622D04` at `packages/react/src/color-scheme-modes.css:1651`
-- `#421E03` at `packages/react/src/color-scheme-modes.css:1652`
-- `#271101` at `packages/react/src/color-scheme-modes.css:1653`
-- `#130800` at `packages/react/src/color-scheme-modes.css:1654`
-- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1662`
-- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1662`
-- `rgba(0, 8, 24, 0.78)` at `packages/react/src/color-scheme-modes.css:1663`
-- `rgba(255, 255, 255, 0.07)` at `packages/react/src/color-scheme-modes.css:1663`
-- `rgba(255, 255, 255, 0.14)` at `packages/react/src/color-scheme-modes.css:1663`
-- `rgba(0, 8, 24, 0.84)` at `packages/react/src/color-scheme-modes.css:1664`
-- `rgba(255, 255, 255, 0.16)` at `packages/react/src/color-scheme-modes.css:1664`
-- `rgba(0, 8, 24, 0.88)` at `packages/react/src/color-scheme-modes.css:1665`
-- `rgba(30, 167, 255, 0.38)` at `packages/react/src/color-scheme-modes.css:1665`
-- `rgba(0, 8, 24, 0.92)` at `packages/react/src/color-scheme-modes.css:1666`
-- `rgba(76, 206, 255, 0.36)` at `packages/react/src/color-scheme-modes.css:1666`
-- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1724`
-- `rgba(255, 255, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:1724`
-- `rgba(76, 206, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:1724`
-- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1725`
-- `rgba(76, 206, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1725`
-- `rgba(0, 8, 24, 0.34)` at `packages/react/src/color-scheme-modes.css:1726`
-- `rgba(0, 0, 0, 0.40)` at `packages/react/src/color-scheme-modes.css:1739`
-- `#04112E` at `packages/react/src/color-scheme-modes.css:1739`
-- `rgba(0, 8, 24, 0.82)` at `packages/react/src/color-scheme-modes.css:1756`
-- `rgba(255, 255, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:1756`
-- `rgba(0, 8, 24, 0.26)` at `packages/react/src/color-scheme-modes.css:1756`
-- `rgba(0, 0, 0, 0.34)` at `packages/react/src/color-scheme-modes.css:1782`
-- `rgba(4, 17, 46, 0.32)` at `packages/react/src/color-scheme-modes.css:1782`
-- `rgba(0, 0, 0, 0.10)` at `packages/react/src/color-scheme-modes.css:1804`
-- `rgba(105, 139, 169, 0.40)` at `packages/react/src/color-scheme-modes.css:1804`
-- `rgba(32, 44, 79, 0.22)` at `packages/react/src/color-scheme-modes.css:1824`
-- `rgba(255, 255, 255, 0.88)` at `packages/react/src/color-scheme-modes.css:1824`
-- `rgba(30, 167, 255, 0.06)` at `packages/react/src/color-scheme-modes.css:1824`
-- `rgba(255, 255, 255, 0.94)` at `packages/react/src/color-scheme-modes.css:1825`
-- `rgba(30, 167, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:1825`
-- `rgba(32, 44, 79, 0.12)` at `packages/react/src/color-scheme-modes.css:1826`
-- `rgba(32, 44, 79, 0.18)` at `packages/react/src/color-scheme-modes.css:1831`
-- `rgba(255, 255, 255, 0.82)` at `packages/react/src/color-scheme-modes.css:1831`
-- `rgba(32, 44, 79, 0.08)` at `packages/react/src/color-scheme-modes.css:1831`
-- `rgba(32, 44, 79, 0.14)` at `packages/react/src/color-scheme-modes.css:1839`
-- `rgba(175, 194, 230, 0.20)` at `packages/react/src/color-scheme-modes.css:1839`
-- `#F8FBFF` at `packages/react/src/color-scheme-modes.css:1846`
-- `#EEF4FF` at `packages/react/src/color-scheme-modes.css:1847`
-- `#DDE8FA` at `packages/react/src/color-scheme-modes.css:1848`
-- `#C8D7F0` at `packages/react/src/color-scheme-modes.css:1849`
-- `#AFC2E6` at `packages/react/src/color-scheme-modes.css:1850`
-- `#8EA3CC` at `packages/react/src/color-scheme-modes.css:1851`
-- `#6B80AD` at `packages/react/src/color-scheme-modes.css:1852`
-- `#4C5E86` at `packages/react/src/color-scheme-modes.css:1853`
-- `#334164` at `packages/react/src/color-scheme-modes.css:1854`
-- `#202C4F` at `packages/react/src/color-scheme-modes.css:1855`
-- `#121F3D` at `packages/react/src/color-scheme-modes.css:1856`
-- `#07122C` at `packages/react/src/color-scheme-modes.css:1857`
-- `#050916` at `packages/react/src/color-scheme-modes.css:1858`
-- `#FBF9FF` at `packages/react/src/color-scheme-modes.css:1859`
-- `#F4F0FF` at `packages/react/src/color-scheme-modes.css:1860`
-- `#ECE5FF` at `packages/react/src/color-scheme-modes.css:1861`
-- `#D9CBFF` at `packages/react/src/color-scheme-modes.css:1862`
-- `#BBA5FF` at `packages/react/src/color-scheme-modes.css:1863`
-- `#9C7AFF` at `packages/react/src/color-scheme-modes.css:1864`
-- `#8057F0` at `packages/react/src/color-scheme-modes.css:1865`
-- `#6848D9` at `packages/react/src/color-scheme-modes.css:1866`
-- `#5135B5` at `packages/react/src/color-scheme-modes.css:1867`
-- `#3B2489` at `packages/react/src/color-scheme-modes.css:1868`
-- `#27195A` at `packages/react/src/color-scheme-modes.css:1869`
-- `#160E34` at `packages/react/src/color-scheme-modes.css:1870`
-- `#080512` at `packages/react/src/color-scheme-modes.css:1871`
-- `#F7FDFF` at `packages/react/src/color-scheme-modes.css:1872`
-- `#ECFBFF` at `packages/react/src/color-scheme-modes.css:1873`
-- `#DDF8FF` at `packages/react/src/color-scheme-modes.css:1874`
-- `#B9F0FF` at `packages/react/src/color-scheme-modes.css:1875`
-- `#82E3FF` at `packages/react/src/color-scheme-modes.css:1876`
-- `#4CCEFF` at `packages/react/src/color-scheme-modes.css:1877`
-- `#1EA7FF` at `packages/react/src/color-scheme-modes.css:1878`
-- `#0B7FE8` at `packages/react/src/color-scheme-modes.css:1879`
-- `#075FBF` at `packages/react/src/color-scheme-modes.css:1880`
-- `#084C82` at `packages/react/src/color-scheme-modes.css:1881`
-- `#06345A` at `packages/react/src/color-scheme-modes.css:1882`
-- `#041F36` at `packages/react/src/color-scheme-modes.css:1883`
-- `#020F1B` at `packages/react/src/color-scheme-modes.css:1884`
-- `#F5FEFC` at `packages/react/src/color-scheme-modes.css:1885`
-- `#E9FCF6` at `packages/react/src/color-scheme-modes.css:1886`
-- `#D2F7EC` at `packages/react/src/color-scheme-modes.css:1887`
-- `#A9ECD8` at `packages/react/src/color-scheme-modes.css:1888`
-- `#75DBBC` at `packages/react/src/color-scheme-modes.css:1889`
-- `#45C79F` at `packages/react/src/color-scheme-modes.css:1890`
-- `#28AB83` at `packages/react/src/color-scheme-modes.css:1891`
-- `#168967` at `packages/react/src/color-scheme-modes.css:1892`
-- `#0F684F` at `packages/react/src/color-scheme-modes.css:1893`
-- `#0A4B39` at `packages/react/src/color-scheme-modes.css:1894`
-- `#063326` at `packages/react/src/color-scheme-modes.css:1895`
-- `#041F17` at `packages/react/src/color-scheme-modes.css:1896`
-- `#020F0B` at `packages/react/src/color-scheme-modes.css:1897`
-- `#FFFCF7` at `packages/react/src/color-scheme-modes.css:1898`
-- `#FFF7EA` at `packages/react/src/color-scheme-modes.css:1899`
-- `#FFEFD3` at `packages/react/src/color-scheme-modes.css:1900`
-- `#FFDDA8` at `packages/react/src/color-scheme-modes.css:1901`
-- `#FFC16D` at `packages/react/src/color-scheme-modes.css:1902`
-- `#F9A63F` at `packages/react/src/color-scheme-modes.css:1903`
-- `#DF8420` at `packages/react/src/color-scheme-modes.css:1904`
-- `#B86414` at `packages/react/src/color-scheme-modes.css:1905`
-- `#8F4B0E` at `packages/react/src/color-scheme-modes.css:1906`
-- `#67350A` at `packages/react/src/color-scheme-modes.css:1907`
-- `#452306` at `packages/react/src/color-scheme-modes.css:1908`
-- `#291403` at `packages/react/src/color-scheme-modes.css:1909`
-- `#140901` at `packages/react/src/color-scheme-modes.css:1910`
-- `#FFF8FB` at `packages/react/src/color-scheme-modes.css:1911`
-- `#FFF0F7` at `packages/react/src/color-scheme-modes.css:1912`
-- `#FFE2EF` at `packages/react/src/color-scheme-modes.css:1913`
-- `#FFC2DD` at `packages/react/src/color-scheme-modes.css:1914`
-- `#FF8FBC` at `packages/react/src/color-scheme-modes.css:1915`
-- `#F75F9C` at `packages/react/src/color-scheme-modes.css:1916`
-- `#E23E80` at `packages/react/src/color-scheme-modes.css:1917`
-- `#BD2765` at `packages/react/src/color-scheme-modes.css:1918`
-- `#951B4E` at `packages/react/src/color-scheme-modes.css:1919`
-- `#6F1339` at `packages/react/src/color-scheme-modes.css:1920`
-- `#4A0C25` at `packages/react/src/color-scheme-modes.css:1921`
-- `#2A0614` at `packages/react/src/color-scheme-modes.css:1922`
-- `#140309` at `packages/react/src/color-scheme-modes.css:1923`
-- `#FFFBF4` at `packages/react/src/color-scheme-modes.css:1924`
-- `#FFF4DD` at `packages/react/src/color-scheme-modes.css:1925`
-- `#FFE8BA` at `packages/react/src/color-scheme-modes.css:1926`
-- `#FFD483` at `packages/react/src/color-scheme-modes.css:1927`
-- `#FFB74A` at `packages/react/src/color-scheme-modes.css:1928`
-- `#F69422` at `packages/react/src/color-scheme-modes.css:1929`
-- `#D87412` at `packages/react/src/color-scheme-modes.css:1930`
-- `#B2570B` at `packages/react/src/color-scheme-modes.css:1931`
-- `#894006` at `packages/react/src/color-scheme-modes.css:1932`
-- `#622D04` at `packages/react/src/color-scheme-modes.css:1933`
-- `#421E03` at `packages/react/src/color-scheme-modes.css:1934`
-- `#271101` at `packages/react/src/color-scheme-modes.css:1935`
-- `#130800` at `packages/react/src/color-scheme-modes.css:1936`
-- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1944`
-- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1944`
-- `rgba(0, 8, 24, 0.78)` at `packages/react/src/color-scheme-modes.css:1945`
-- `rgba(255, 255, 255, 0.07)` at `packages/react/src/color-scheme-modes.css:1945`
-- `rgba(255, 255, 255, 0.14)` at `packages/react/src/color-scheme-modes.css:1945`
-- `rgba(0, 8, 24, 0.84)` at `packages/react/src/color-scheme-modes.css:1946`
-- `rgba(255, 255, 255, 0.16)` at `packages/react/src/color-scheme-modes.css:1946`
-- `rgba(0, 8, 24, 0.88)` at `packages/react/src/color-scheme-modes.css:1947`
-- `rgba(30, 167, 255, 0.38)` at `packages/react/src/color-scheme-modes.css:1947`
-- `rgba(0, 8, 24, 0.92)` at `packages/react/src/color-scheme-modes.css:1948`
-- `rgba(76, 206, 255, 0.36)` at `packages/react/src/color-scheme-modes.css:1948`
-- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:2006`
-- `rgba(255, 255, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:2006`
-- `rgba(76, 206, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:2006`
-- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:2007`
-- `rgba(76, 206, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:2007`
-- `rgba(0, 8, 24, 0.34)` at `packages/react/src/color-scheme-modes.css:2008`
-- `rgba(0, 0, 0, 0.40)` at `packages/react/src/color-scheme-modes.css:2021`
-- `#04112E` at `packages/react/src/color-scheme-modes.css:2021`
-- `rgba(0, 8, 24, 0.82)` at `packages/react/src/color-scheme-modes.css:2038`
-- `rgba(255, 255, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:2038`
-- `rgba(0, 8, 24, 0.26)` at `packages/react/src/color-scheme-modes.css:2038`
-- `rgba(0, 0, 0, 0.34)` at `packages/react/src/color-scheme-modes.css:2064`
-- `rgba(4, 17, 46, 0.32)` at `packages/react/src/color-scheme-modes.css:2064`
-- `rgba(0, 0, 0, 0.10)` at `packages/react/src/color-scheme-modes.css:2086`
-- `rgba(105, 139, 169, 0.40)` at `packages/react/src/color-scheme-modes.css:2086`
-- `rgba(32, 44, 79, 0.22)` at `packages/react/src/color-scheme-modes.css:2106`
-- `rgba(255, 255, 255, 0.88)` at `packages/react/src/color-scheme-modes.css:2106`
-- `rgba(30, 167, 255, 0.06)` at `packages/react/src/color-scheme-modes.css:2106`
-- `rgba(255, 255, 255, 0.94)` at `packages/react/src/color-scheme-modes.css:2107`
-- `rgba(30, 167, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:2107`
-- `rgba(32, 44, 79, 0.12)` at `packages/react/src/color-scheme-modes.css:2108`
-- `rgba(32, 44, 79, 0.18)` at `packages/react/src/color-scheme-modes.css:2113`
-- `rgba(255, 255, 255, 0.82)` at `packages/react/src/color-scheme-modes.css:2113`
-- `rgba(32, 44, 79, 0.08)` at `packages/react/src/color-scheme-modes.css:2113`
-- `rgba(32, 44, 79, 0.14)` at `packages/react/src/color-scheme-modes.css:2121`
-- `rgba(175, 194, 230, 0.20)` at `packages/react/src/color-scheme-modes.css:2121`
+- `#1D1D1F` at `packages/react/src/color-scheme-modes.css:876`
+- `#6E6E73` at `packages/react/src/color-scheme-modes.css:877`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:878`
+- `#FAFAFA` at `packages/react/src/color-scheme-modes.css:880`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:881`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:882`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:883`
+- `#F0F0F2` at `packages/react/src/color-scheme-modes.css:884`
+- `#EBEBED` at `packages/react/src/color-scheme-modes.css:885`
+- `#D2D2D7` at `packages/react/src/color-scheme-modes.css:886`
+- `#AEAEB2` at `packages/react/src/color-scheme-modes.css:887`
+- `#3B2F2C` at `packages/react/src/color-scheme-modes.css:1005`
+- `#6B5C55` at `packages/react/src/color-scheme-modes.css:1006`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1007`
+- `#FAF4EF` at `packages/react/src/color-scheme-modes.css:1009`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1010`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1011`
+- `#FFFDFB` at `packages/react/src/color-scheme-modes.css:1012`
+- `#F6ECE4` at `packages/react/src/color-scheme-modes.css:1013`
+- `#EFE0D6` at `packages/react/src/color-scheme-modes.css:1014`
+- `#DDC8BB` at `packages/react/src/color-scheme-modes.css:1015`
+- `#BCA294` at `packages/react/src/color-scheme-modes.css:1016`
+- `#252525` at `packages/react/src/color-scheme-modes.css:1071`
+- `#635C54` at `packages/react/src/color-scheme-modes.css:1072`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1073`
+- `#FAF7F4` at `packages/react/src/color-scheme-modes.css:1075`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1076`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1077`
+- `#F4F0EB` at `packages/react/src/color-scheme-modes.css:1078`
+- `#E6E3E0` at `packages/react/src/color-scheme-modes.css:1079`
+- `#D8D3CE` at `packages/react/src/color-scheme-modes.css:1080`
+- `#C6C0BA` at `packages/react/src/color-scheme-modes.css:1081`
+- `#635C54` at `packages/react/src/color-scheme-modes.css:1082`
+- `#D7FFF8` at `packages/react/src/color-scheme-modes.css:1126`
+- `#E9E3DC` at `packages/react/src/color-scheme-modes.css:1324`
+- `#141414` at `packages/react/src/color-scheme-modes.css:1340`
+- `#6B6B6B` at `packages/react/src/color-scheme-modes.css:1341`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1342`
+- `#141414` at `packages/react/src/color-scheme-modes.css:1343`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1344`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1345`
+- `#FFFFFF` at `packages/react/src/color-scheme-modes.css:1346`
+- `#F5F5F5` at `packages/react/src/color-scheme-modes.css:1347`
+- `#EBEBEB` at `packages/react/src/color-scheme-modes.css:1348`
+- `#D6D6D6` at `packages/react/src/color-scheme-modes.css:1349`
+- `#B8B8B8` at `packages/react/src/color-scheme-modes.css:1350`
+- `#8F8F8F` at `packages/react/src/color-scheme-modes.css:1351`
+- `#fcfcfc` at `packages/react/src/color-scheme-modes.css:1463`
+- `#e7e9e8` at `packages/react/src/color-scheme-modes.css:1464`
+- `#d3d6d4` at `packages/react/src/color-scheme-modes.css:1465`
+- `#bec3bf` at `packages/react/src/color-scheme-modes.css:1466`
+- `#a7aeaa` at `packages/react/src/color-scheme-modes.css:1467`
+- `#909892` at `packages/react/src/color-scheme-modes.css:1468`
+- `#717A74` at `packages/react/src/color-scheme-modes.css:1469`
+- `#49504b` at `packages/react/src/color-scheme-modes.css:1470`
+- `#2e3330` at `packages/react/src/color-scheme-modes.css:1471`
+- `#171b19` at `packages/react/src/color-scheme-modes.css:1472`
+- `#060706` at `packages/react/src/color-scheme-modes.css:1473`
+- `#000000` at `packages/react/src/color-scheme-modes.css:1474`
+- `#fbfcfa` at `packages/react/src/color-scheme-modes.css:1475`
+- `#f7ffef` at `packages/react/src/color-scheme-modes.css:1476`
+- `#f1ffe0` at `packages/react/src/color-scheme-modes.css:1477`
+- `#e9ffcb` at `packages/react/src/color-scheme-modes.css:1478`
+- `#e1ffb5` at `packages/react/src/color-scheme-modes.css:1479`
+- `#d8ff9b` at `packages/react/src/color-scheme-modes.css:1480`
+- `#ceff76` at `packages/react/src/color-scheme-modes.css:1481`
+- `#BEFF00` at `packages/react/src/color-scheme-modes.css:1482`
+- `#b2ef00` at `packages/react/src/color-scheme-modes.css:1483`
+- `#516f00` at `packages/react/src/color-scheme-modes.css:1484`
+- `#2c3e00` at `packages/react/src/color-scheme-modes.css:1485`
+- `#0d1600` at `packages/react/src/color-scheme-modes.css:1486`
+- `#000000` at `packages/react/src/color-scheme-modes.css:1487`
+- `#F8FBFF` at `packages/react/src/color-scheme-modes.css:1572`
+- `#EEF4FF` at `packages/react/src/color-scheme-modes.css:1573`
+- `#DDE8FA` at `packages/react/src/color-scheme-modes.css:1574`
+- `#C8D7F0` at `packages/react/src/color-scheme-modes.css:1575`
+- `#AFC2E6` at `packages/react/src/color-scheme-modes.css:1576`
+- `#8EA3CC` at `packages/react/src/color-scheme-modes.css:1577`
+- `#6B80AD` at `packages/react/src/color-scheme-modes.css:1578`
+- `#4C5E86` at `packages/react/src/color-scheme-modes.css:1579`
+- `#334164` at `packages/react/src/color-scheme-modes.css:1580`
+- `#202C4F` at `packages/react/src/color-scheme-modes.css:1581`
+- `#121F3D` at `packages/react/src/color-scheme-modes.css:1582`
+- `#07122C` at `packages/react/src/color-scheme-modes.css:1583`
+- `#050916` at `packages/react/src/color-scheme-modes.css:1584`
+- `#FBF9FF` at `packages/react/src/color-scheme-modes.css:1585`
+- `#F4F0FF` at `packages/react/src/color-scheme-modes.css:1586`
+- `#ECE5FF` at `packages/react/src/color-scheme-modes.css:1587`
+- `#D9CBFF` at `packages/react/src/color-scheme-modes.css:1588`
+- `#BBA5FF` at `packages/react/src/color-scheme-modes.css:1589`
+- `#9C7AFF` at `packages/react/src/color-scheme-modes.css:1590`
+- `#8057F0` at `packages/react/src/color-scheme-modes.css:1591`
+- `#6848D9` at `packages/react/src/color-scheme-modes.css:1592`
+- `#5135B5` at `packages/react/src/color-scheme-modes.css:1593`
+- `#3B2489` at `packages/react/src/color-scheme-modes.css:1594`
+- `#27195A` at `packages/react/src/color-scheme-modes.css:1595`
+- `#160E34` at `packages/react/src/color-scheme-modes.css:1596`
+- `#080512` at `packages/react/src/color-scheme-modes.css:1597`
+- `#F7FDFF` at `packages/react/src/color-scheme-modes.css:1598`
+- `#ECFBFF` at `packages/react/src/color-scheme-modes.css:1599`
+- `#DDF8FF` at `packages/react/src/color-scheme-modes.css:1600`
+- `#B9F0FF` at `packages/react/src/color-scheme-modes.css:1601`
+- `#82E3FF` at `packages/react/src/color-scheme-modes.css:1602`
+- `#4CCEFF` at `packages/react/src/color-scheme-modes.css:1603`
+- `#1EA7FF` at `packages/react/src/color-scheme-modes.css:1604`
+- `#0B7FE8` at `packages/react/src/color-scheme-modes.css:1605`
+- `#075FBF` at `packages/react/src/color-scheme-modes.css:1606`
+- `#084C82` at `packages/react/src/color-scheme-modes.css:1607`
+- `#06345A` at `packages/react/src/color-scheme-modes.css:1608`
+- `#041F36` at `packages/react/src/color-scheme-modes.css:1609`
+- `#020F1B` at `packages/react/src/color-scheme-modes.css:1610`
+- `#F5FEFC` at `packages/react/src/color-scheme-modes.css:1611`
+- `#E9FCF6` at `packages/react/src/color-scheme-modes.css:1612`
+- `#D2F7EC` at `packages/react/src/color-scheme-modes.css:1613`
+- `#A9ECD8` at `packages/react/src/color-scheme-modes.css:1614`
+- `#75DBBC` at `packages/react/src/color-scheme-modes.css:1615`
+- `#45C79F` at `packages/react/src/color-scheme-modes.css:1616`
+- `#28AB83` at `packages/react/src/color-scheme-modes.css:1617`
+- `#168967` at `packages/react/src/color-scheme-modes.css:1618`
+- `#0F684F` at `packages/react/src/color-scheme-modes.css:1619`
+- `#0A4B39` at `packages/react/src/color-scheme-modes.css:1620`
+- `#063326` at `packages/react/src/color-scheme-modes.css:1621`
+- `#041F17` at `packages/react/src/color-scheme-modes.css:1622`
+- `#020F0B` at `packages/react/src/color-scheme-modes.css:1623`
+- `#FFFCF7` at `packages/react/src/color-scheme-modes.css:1624`
+- `#FFF7EA` at `packages/react/src/color-scheme-modes.css:1625`
+- `#FFEFD3` at `packages/react/src/color-scheme-modes.css:1626`
+- `#FFDDA8` at `packages/react/src/color-scheme-modes.css:1627`
+- `#FFC16D` at `packages/react/src/color-scheme-modes.css:1628`
+- `#F9A63F` at `packages/react/src/color-scheme-modes.css:1629`
+- `#DF8420` at `packages/react/src/color-scheme-modes.css:1630`
+- `#B86414` at `packages/react/src/color-scheme-modes.css:1631`
+- `#8F4B0E` at `packages/react/src/color-scheme-modes.css:1632`
+- `#67350A` at `packages/react/src/color-scheme-modes.css:1633`
+- `#452306` at `packages/react/src/color-scheme-modes.css:1634`
+- `#291403` at `packages/react/src/color-scheme-modes.css:1635`
+- `#140901` at `packages/react/src/color-scheme-modes.css:1636`
+- `#FFF8FB` at `packages/react/src/color-scheme-modes.css:1637`
+- `#FFF0F7` at `packages/react/src/color-scheme-modes.css:1638`
+- `#FFE2EF` at `packages/react/src/color-scheme-modes.css:1639`
+- `#FFC2DD` at `packages/react/src/color-scheme-modes.css:1640`
+- `#FF8FBC` at `packages/react/src/color-scheme-modes.css:1641`
+- `#F75F9C` at `packages/react/src/color-scheme-modes.css:1642`
+- `#E23E80` at `packages/react/src/color-scheme-modes.css:1643`
+- `#BD2765` at `packages/react/src/color-scheme-modes.css:1644`
+- `#951B4E` at `packages/react/src/color-scheme-modes.css:1645`
+- `#6F1339` at `packages/react/src/color-scheme-modes.css:1646`
+- `#4A0C25` at `packages/react/src/color-scheme-modes.css:1647`
+- `#2A0614` at `packages/react/src/color-scheme-modes.css:1648`
+- `#140309` at `packages/react/src/color-scheme-modes.css:1649`
+- `#FFFBF4` at `packages/react/src/color-scheme-modes.css:1650`
+- `#FFF4DD` at `packages/react/src/color-scheme-modes.css:1651`
+- `#FFE8BA` at `packages/react/src/color-scheme-modes.css:1652`
+- `#FFD483` at `packages/react/src/color-scheme-modes.css:1653`
+- `#FFB74A` at `packages/react/src/color-scheme-modes.css:1654`
+- `#F69422` at `packages/react/src/color-scheme-modes.css:1655`
+- `#D87412` at `packages/react/src/color-scheme-modes.css:1656`
+- `#B2570B` at `packages/react/src/color-scheme-modes.css:1657`
+- `#894006` at `packages/react/src/color-scheme-modes.css:1658`
+- `#622D04` at `packages/react/src/color-scheme-modes.css:1659`
+- `#421E03` at `packages/react/src/color-scheme-modes.css:1660`
+- `#271101` at `packages/react/src/color-scheme-modes.css:1661`
+- `#130800` at `packages/react/src/color-scheme-modes.css:1662`
+- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1670`
+- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1670`
+- `rgba(0, 8, 24, 0.78)` at `packages/react/src/color-scheme-modes.css:1671`
+- `rgba(255, 255, 255, 0.07)` at `packages/react/src/color-scheme-modes.css:1671`
+- `rgba(255, 255, 255, 0.14)` at `packages/react/src/color-scheme-modes.css:1671`
+- `rgba(0, 8, 24, 0.84)` at `packages/react/src/color-scheme-modes.css:1672`
+- `rgba(255, 255, 255, 0.16)` at `packages/react/src/color-scheme-modes.css:1672`
+- `rgba(0, 8, 24, 0.88)` at `packages/react/src/color-scheme-modes.css:1673`
+- `rgba(30, 167, 255, 0.38)` at `packages/react/src/color-scheme-modes.css:1673`
+- `rgba(0, 8, 24, 0.92)` at `packages/react/src/color-scheme-modes.css:1674`
+- `rgba(76, 206, 255, 0.36)` at `packages/react/src/color-scheme-modes.css:1674`
+- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1732`
+- `rgba(255, 255, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:1732`
+- `rgba(76, 206, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:1732`
+- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1733`
+- `rgba(76, 206, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1733`
+- `rgba(0, 8, 24, 0.34)` at `packages/react/src/color-scheme-modes.css:1734`
+- `rgba(0, 0, 0, 0.40)` at `packages/react/src/color-scheme-modes.css:1747`
+- `#04112E` at `packages/react/src/color-scheme-modes.css:1747`
+- `rgba(0, 8, 24, 0.82)` at `packages/react/src/color-scheme-modes.css:1764`
+- `rgba(255, 255, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:1764`
+- `rgba(0, 8, 24, 0.26)` at `packages/react/src/color-scheme-modes.css:1764`
+- `rgba(0, 0, 0, 0.34)` at `packages/react/src/color-scheme-modes.css:1790`
+- `rgba(4, 17, 46, 0.32)` at `packages/react/src/color-scheme-modes.css:1790`
+- `rgba(0, 0, 0, 0.10)` at `packages/react/src/color-scheme-modes.css:1812`
+- `rgba(105, 139, 169, 0.40)` at `packages/react/src/color-scheme-modes.css:1812`
+- `rgba(32, 44, 79, 0.22)` at `packages/react/src/color-scheme-modes.css:1832`
+- `rgba(255, 255, 255, 0.88)` at `packages/react/src/color-scheme-modes.css:1832`
+- `rgba(30, 167, 255, 0.06)` at `packages/react/src/color-scheme-modes.css:1832`
+- `rgba(255, 255, 255, 0.94)` at `packages/react/src/color-scheme-modes.css:1833`
+- `rgba(30, 167, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:1833`
+- `rgba(32, 44, 79, 0.12)` at `packages/react/src/color-scheme-modes.css:1834`
+- `rgba(32, 44, 79, 0.18)` at `packages/react/src/color-scheme-modes.css:1839`
+- `rgba(255, 255, 255, 0.82)` at `packages/react/src/color-scheme-modes.css:1839`
+- `rgba(32, 44, 79, 0.08)` at `packages/react/src/color-scheme-modes.css:1839`
+- `rgba(32, 44, 79, 0.14)` at `packages/react/src/color-scheme-modes.css:1847`
+- `rgba(175, 194, 230, 0.20)` at `packages/react/src/color-scheme-modes.css:1847`
+- `#F8FBFF` at `packages/react/src/color-scheme-modes.css:1854`
+- `#EEF4FF` at `packages/react/src/color-scheme-modes.css:1855`
+- `#DDE8FA` at `packages/react/src/color-scheme-modes.css:1856`
+- `#C8D7F0` at `packages/react/src/color-scheme-modes.css:1857`
+- `#AFC2E6` at `packages/react/src/color-scheme-modes.css:1858`
+- `#8EA3CC` at `packages/react/src/color-scheme-modes.css:1859`
+- `#6B80AD` at `packages/react/src/color-scheme-modes.css:1860`
+- `#4C5E86` at `packages/react/src/color-scheme-modes.css:1861`
+- `#334164` at `packages/react/src/color-scheme-modes.css:1862`
+- `#202C4F` at `packages/react/src/color-scheme-modes.css:1863`
+- `#121F3D` at `packages/react/src/color-scheme-modes.css:1864`
+- `#07122C` at `packages/react/src/color-scheme-modes.css:1865`
+- `#050916` at `packages/react/src/color-scheme-modes.css:1866`
+- `#FBF9FF` at `packages/react/src/color-scheme-modes.css:1867`
+- `#F4F0FF` at `packages/react/src/color-scheme-modes.css:1868`
+- `#ECE5FF` at `packages/react/src/color-scheme-modes.css:1869`
+- `#D9CBFF` at `packages/react/src/color-scheme-modes.css:1870`
+- `#BBA5FF` at `packages/react/src/color-scheme-modes.css:1871`
+- `#9C7AFF` at `packages/react/src/color-scheme-modes.css:1872`
+- `#8057F0` at `packages/react/src/color-scheme-modes.css:1873`
+- `#6848D9` at `packages/react/src/color-scheme-modes.css:1874`
+- `#5135B5` at `packages/react/src/color-scheme-modes.css:1875`
+- `#3B2489` at `packages/react/src/color-scheme-modes.css:1876`
+- `#27195A` at `packages/react/src/color-scheme-modes.css:1877`
+- `#160E34` at `packages/react/src/color-scheme-modes.css:1878`
+- `#080512` at `packages/react/src/color-scheme-modes.css:1879`
+- `#F7FDFF` at `packages/react/src/color-scheme-modes.css:1880`
+- `#ECFBFF` at `packages/react/src/color-scheme-modes.css:1881`
+- `#DDF8FF` at `packages/react/src/color-scheme-modes.css:1882`
+- `#B9F0FF` at `packages/react/src/color-scheme-modes.css:1883`
+- `#82E3FF` at `packages/react/src/color-scheme-modes.css:1884`
+- `#4CCEFF` at `packages/react/src/color-scheme-modes.css:1885`
+- `#1EA7FF` at `packages/react/src/color-scheme-modes.css:1886`
+- `#0B7FE8` at `packages/react/src/color-scheme-modes.css:1887`
+- `#075FBF` at `packages/react/src/color-scheme-modes.css:1888`
+- `#084C82` at `packages/react/src/color-scheme-modes.css:1889`
+- `#06345A` at `packages/react/src/color-scheme-modes.css:1890`
+- `#041F36` at `packages/react/src/color-scheme-modes.css:1891`
+- `#020F1B` at `packages/react/src/color-scheme-modes.css:1892`
+- `#F5FEFC` at `packages/react/src/color-scheme-modes.css:1893`
+- `#E9FCF6` at `packages/react/src/color-scheme-modes.css:1894`
+- `#D2F7EC` at `packages/react/src/color-scheme-modes.css:1895`
+- `#A9ECD8` at `packages/react/src/color-scheme-modes.css:1896`
+- `#75DBBC` at `packages/react/src/color-scheme-modes.css:1897`
+- `#45C79F` at `packages/react/src/color-scheme-modes.css:1898`
+- `#28AB83` at `packages/react/src/color-scheme-modes.css:1899`
+- `#168967` at `packages/react/src/color-scheme-modes.css:1900`
+- `#0F684F` at `packages/react/src/color-scheme-modes.css:1901`
+- `#0A4B39` at `packages/react/src/color-scheme-modes.css:1902`
+- `#063326` at `packages/react/src/color-scheme-modes.css:1903`
+- `#041F17` at `packages/react/src/color-scheme-modes.css:1904`
+- `#020F0B` at `packages/react/src/color-scheme-modes.css:1905`
+- `#FFFCF7` at `packages/react/src/color-scheme-modes.css:1906`
+- `#FFF7EA` at `packages/react/src/color-scheme-modes.css:1907`
+- `#FFEFD3` at `packages/react/src/color-scheme-modes.css:1908`
+- `#FFDDA8` at `packages/react/src/color-scheme-modes.css:1909`
+- `#FFC16D` at `packages/react/src/color-scheme-modes.css:1910`
+- `#F9A63F` at `packages/react/src/color-scheme-modes.css:1911`
+- `#DF8420` at `packages/react/src/color-scheme-modes.css:1912`
+- `#B86414` at `packages/react/src/color-scheme-modes.css:1913`
+- `#8F4B0E` at `packages/react/src/color-scheme-modes.css:1914`
+- `#67350A` at `packages/react/src/color-scheme-modes.css:1915`
+- `#452306` at `packages/react/src/color-scheme-modes.css:1916`
+- `#291403` at `packages/react/src/color-scheme-modes.css:1917`
+- `#140901` at `packages/react/src/color-scheme-modes.css:1918`
+- `#FFF8FB` at `packages/react/src/color-scheme-modes.css:1919`
+- `#FFF0F7` at `packages/react/src/color-scheme-modes.css:1920`
+- `#FFE2EF` at `packages/react/src/color-scheme-modes.css:1921`
+- `#FFC2DD` at `packages/react/src/color-scheme-modes.css:1922`
+- `#FF8FBC` at `packages/react/src/color-scheme-modes.css:1923`
+- `#F75F9C` at `packages/react/src/color-scheme-modes.css:1924`
+- `#E23E80` at `packages/react/src/color-scheme-modes.css:1925`
+- `#BD2765` at `packages/react/src/color-scheme-modes.css:1926`
+- `#951B4E` at `packages/react/src/color-scheme-modes.css:1927`
+- `#6F1339` at `packages/react/src/color-scheme-modes.css:1928`
+- `#4A0C25` at `packages/react/src/color-scheme-modes.css:1929`
+- `#2A0614` at `packages/react/src/color-scheme-modes.css:1930`
+- `#140309` at `packages/react/src/color-scheme-modes.css:1931`
+- `#FFFBF4` at `packages/react/src/color-scheme-modes.css:1932`
+- `#FFF4DD` at `packages/react/src/color-scheme-modes.css:1933`
+- `#FFE8BA` at `packages/react/src/color-scheme-modes.css:1934`
+- `#FFD483` at `packages/react/src/color-scheme-modes.css:1935`
+- `#FFB74A` at `packages/react/src/color-scheme-modes.css:1936`
+- `#F69422` at `packages/react/src/color-scheme-modes.css:1937`
+- `#D87412` at `packages/react/src/color-scheme-modes.css:1938`
+- `#B2570B` at `packages/react/src/color-scheme-modes.css:1939`
+- `#894006` at `packages/react/src/color-scheme-modes.css:1940`
+- `#622D04` at `packages/react/src/color-scheme-modes.css:1941`
+- `#421E03` at `packages/react/src/color-scheme-modes.css:1942`
+- `#271101` at `packages/react/src/color-scheme-modes.css:1943`
+- `#130800` at `packages/react/src/color-scheme-modes.css:1944`
+- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:1952`
+- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:1952`
+- `rgba(0, 8, 24, 0.78)` at `packages/react/src/color-scheme-modes.css:1953`
+- `rgba(255, 255, 255, 0.07)` at `packages/react/src/color-scheme-modes.css:1953`
+- `rgba(255, 255, 255, 0.14)` at `packages/react/src/color-scheme-modes.css:1953`
+- `rgba(0, 8, 24, 0.84)` at `packages/react/src/color-scheme-modes.css:1954`
+- `rgba(255, 255, 255, 0.16)` at `packages/react/src/color-scheme-modes.css:1954`
+- `rgba(0, 8, 24, 0.88)` at `packages/react/src/color-scheme-modes.css:1955`
+- `rgba(30, 167, 255, 0.38)` at `packages/react/src/color-scheme-modes.css:1955`
+- `rgba(0, 8, 24, 0.92)` at `packages/react/src/color-scheme-modes.css:1956`
+- `rgba(76, 206, 255, 0.36)` at `packages/react/src/color-scheme-modes.css:1956`
+- `rgba(0, 8, 24, 0.72)` at `packages/react/src/color-scheme-modes.css:2014`
+- `rgba(255, 255, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:2014`
+- `rgba(76, 206, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:2014`
+- `rgba(255, 255, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:2015`
+- `rgba(76, 206, 255, 0.12)` at `packages/react/src/color-scheme-modes.css:2015`
+- `rgba(0, 8, 24, 0.34)` at `packages/react/src/color-scheme-modes.css:2016`
+- `rgba(0, 0, 0, 0.40)` at `packages/react/src/color-scheme-modes.css:2029`
+- `#04112E` at `packages/react/src/color-scheme-modes.css:2029`
+- `rgba(0, 8, 24, 0.82)` at `packages/react/src/color-scheme-modes.css:2046`
+- `rgba(255, 255, 255, 0.08)` at `packages/react/src/color-scheme-modes.css:2046`
+- `rgba(0, 8, 24, 0.26)` at `packages/react/src/color-scheme-modes.css:2046`
+- `rgba(0, 0, 0, 0.34)` at `packages/react/src/color-scheme-modes.css:2072`
+- `rgba(4, 17, 46, 0.32)` at `packages/react/src/color-scheme-modes.css:2072`
+- `rgba(0, 0, 0, 0.10)` at `packages/react/src/color-scheme-modes.css:2094`
+- `rgba(105, 139, 169, 0.40)` at `packages/react/src/color-scheme-modes.css:2094`
+- `rgba(32, 44, 79, 0.22)` at `packages/react/src/color-scheme-modes.css:2114`
+- `rgba(255, 255, 255, 0.88)` at `packages/react/src/color-scheme-modes.css:2114`
+- `rgba(30, 167, 255, 0.06)` at `packages/react/src/color-scheme-modes.css:2114`
+- `rgba(255, 255, 255, 0.94)` at `packages/react/src/color-scheme-modes.css:2115`
+- `rgba(30, 167, 255, 0.10)` at `packages/react/src/color-scheme-modes.css:2115`
+- `rgba(32, 44, 79, 0.12)` at `packages/react/src/color-scheme-modes.css:2116`
+- `rgba(32, 44, 79, 0.18)` at `packages/react/src/color-scheme-modes.css:2121`
+- `rgba(255, 255, 255, 0.82)` at `packages/react/src/color-scheme-modes.css:2121`
+- `rgba(32, 44, 79, 0.08)` at `packages/react/src/color-scheme-modes.css:2121`
+- `rgba(32, 44, 79, 0.14)` at `packages/react/src/color-scheme-modes.css:2129`
+- `rgba(175, 194, 230, 0.20)` at `packages/react/src/color-scheme-modes.css:2129`

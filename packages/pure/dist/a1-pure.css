@@ -50,7 +50,7 @@ body {
   background: linear-gradient(207.43deg, #D7FFF8 0%, #CDF5EE 57.44%) fixed #D7FFF8;
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   .a1-theme-fresh .a1-body,
   .a1-theme-fresh.a1-body {
     background: linear-gradient(207.43deg, #046756 0%, #03453A 57.44%) fixed #03453A;
